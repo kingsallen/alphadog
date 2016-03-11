@@ -1,0 +1,4 @@
+rootProject.name = 'moseeker-basic-service'
+include 'service-manager'
+include 'user-thrift-service'
+
