@@ -19,11 +19,15 @@ package com.moseeker.thrift.server;
  * under the License.
  */
 
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.thrift.server.TServer;
 import org.apache.thrift.server.TServer.Args;
 import org.apache.thrift.server.TSimpleServer;
 import org.apache.thrift.transport.TServerSocket;
 import org.apache.thrift.transport.TServerTransport;
+import org.apache.zookeeper.CreateMode;
 
 import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerServices;
 import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerServices.Processor;
@@ -39,6 +43,23 @@ public class CompanyfollowersServer {
 		try {
 			handler = new CompanyfollowerServicesImpl();
 			processor = new Processor<CompanyfollowerServicesImpl>(handler);
+			
+			
+			CuratorFramework zooclient = CuratorFrameworkFactory
+					.builder()
+					.connectString("127.0.0.1:2181")  
+			        .sessionTimeoutMs(30000)  
+			        .connectionTimeoutMs(30000)  
+			        .canBeReadOnly(false)  
+			        .retryPolicy(new ExponentialBackoffRetry(1000, 290))  
+			        .namespace("services/companyfollowers")  
+			        .defaultData(null)  
+			        .build();  
+			zooclient.start();	
+			
+			//byte[] servers = zooclient.getData().forPath("/servers");
+			zooclient.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath("/servers/127.0.0.1:9090");
+
 
 			new Thread(new Runnable() {
 				public void run() {
