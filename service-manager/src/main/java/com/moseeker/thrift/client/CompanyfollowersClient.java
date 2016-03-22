@@ -35,6 +35,8 @@ import org.apache.thrift.protocol.TProtocol;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.data.Stat;
 
+import com.alibaba.fastjson.JSON;
+import com.moseeker.common.util.ExceptionResponse;
 import com.moseeker.thrift.gen.companyfollowers.Companyfollower;
 import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerServices;
 import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerQuery;
@@ -167,28 +169,14 @@ public class CompanyfollowersClient extends BaseThriftClient {
 			CompanyfollowerServices.Client client = new CompanyfollowerServices.Client(
 					protocol);
 
-			// start call thrift service;
-			System.out.println(query);
-
 			List<Companyfollower> companyfollowers = client
 					.getCompanyfollowers((CompanyfollowerQuery)query);
-
-			System.out.print(companyfollowers);
-			// end
 
 			transport.close();
 
 			return companyfollowers;
 
-		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TTransportException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

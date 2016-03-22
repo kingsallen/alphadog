@@ -1,7 +1,7 @@
 package com.moseeker.servicemanager.web.controller;
 
-import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -9,51 +9,18 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.HandlerMapping;
 
 import com.alibaba.fastjson.JSON;
-
+import com.moseeker.common.interfaces.RestfulController;
+import com.moseeker.common.util.ExceptionResponse;
+import com.moseeker.common.util.Spring;
 import com.moseeker.thrift.client.BaseThriftClient;
 import com.moseeker.thrift.client.CompanyfollowersClient;
 import com.moseeker.thrift.gen.companyfollowers.Companyfollower;
-import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerServices;
 import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerQuery;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.moseeker.db.userdb.tables.Companyfollowers.COMPANYFOLLOWERS;
-
-import com.moseeker.common.interfaces.RestfulController;
-import com.moseeker.common.interfaces.CommonQuery;
-import com.moseeker.common.util.Spring;
-import com.moseeker.db.userdb.tables.records.CompanyfollowersRecord;
-
-import java.sql.*;
-import java.util.List;
-
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.CuratorFrameworkFactory;
-import org.apache.curator.framework.CuratorTempFramework;
-import org.apache.curator.framework.api.CuratorListener;
-import org.apache.curator.framework.api.CuratorEvent;
-import org.apache.curator.framework.api.CuratorWatcher;
-import org.apache.curator.retry.ExponentialBackoffRetry;
-import org.apache.zookeeper.Watcher;
-
-import org.apache.curator.utils.CloseableUtils;
-import org.apache.thrift.TException;
-import org.apache.thrift.protocol.TBinaryProtocol;
-import org.apache.thrift.protocol.TProtocol;
-import org.apache.thrift.transport.TSocket;
-import org.apache.thrift.transport.TTransport;
-import org.apache.thrift.transport.TTransportException;
-import org.jooq.*;
-import org.jooq.impl.*;
 
 @Controller
 public class CompanyfollowersController implements RestfulController {
@@ -96,9 +63,9 @@ public class CompanyfollowersController implements RestfulController {
 			writer.write(jsonString);
 			writer.flush();
 		} catch (Exception e) {
-			e.printStackTrace();
+			writer.write(JSON.toJSONString(new ExceptionResponse(e.getMessage())));
+			writer.flush();
 		} finally {
-			logger.info("getCompanyfollowers");
 			if (writer != null) {
 				writer.close();
 			}
