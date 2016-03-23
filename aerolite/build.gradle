@@ -1,0 +1,23 @@
+apply plugin: 'java'
+
+sourceCompatibility = 1.8   // 设置 JDK 版本
+sourceSets.main.java.srcDir 'src.main.java'   // 设置 Java 源码所在目录
+
+// 设置 maven 库地址
+repositories { 
+    //mavenLocal()
+    //mavenCentral() // 中央库
+    //mavenRepo urls: "http://maven.oschina.net/content/groups/public/"
+    maven{ url 'http://maven.oschina.net/content/groups/public/'}
+    maven{ url 'http://maven.outofmemory.cn/'}
+}
+
+// 设置依赖
+dependencies {
+    compile "junit:junit:4.5"
+    compile "log4j:log4j:1.2.9"
+    compile "org.apache.httpcomponents:httpcore:4.4.1"
+    compile "org.apache.httpcomponents:httpclient:4.4.1"
+    compile "joda-time:joda-time:2.7"
+    compile "redis.clients:jedis:2.8.0"
+}
