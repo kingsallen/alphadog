@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.servicemanager.web.form.User;
 
 public class TestInterceptor extends HandlerInterceptorAdapter {
 
@@ -22,10 +21,10 @@ public class TestInterceptor extends HandlerInterceptorAdapter {
 			PrintWriter writer = null;
 			try {
 				writer = response.getWriter();
-				User user = new User();
-				user.setId(0);
-				user.setUsername("没有数据");
-				String jsonString = JSON.toJSONString(user);
+				// User user = new User();
+				// user.setId(0);
+				// user.setUsername("没有数据");
+				String jsonString = JSON.toJSONString("user");
 				writer.write(jsonString);
 				writer.flush();
 			} catch (IOException e) {
