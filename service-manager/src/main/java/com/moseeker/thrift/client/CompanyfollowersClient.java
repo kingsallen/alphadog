@@ -21,30 +21,21 @@ package com.moseeker.thrift.client;
 
 // Generated code
 
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
-import org.apache.thrift.TException;
-import org.apache.thrift.transport.TTransport;
-import org.apache.thrift.transport.TSocket;
-import org.apache.thrift.transport.TTransportException;
-import org.apache.thrift.protocol.TBinaryProtocol;
-import org.apache.thrift.protocol.TProtocol;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.data.Stat;
-
-import com.alibaba.fastjson.JSON;
-import com.moseeker.common.util.ExceptionResponse;
-import com.moseeker.thrift.gen.companyfollowers.Companyfollower;
-import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerServices;
-import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerQuery;
-
-import org.apache.curator.utils.CloseableUtils;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.apache.thrift.TException;
+import org.apache.thrift.protocol.TBinaryProtocol;
+import org.apache.thrift.protocol.TProtocol;
+import org.apache.thrift.transport.TSocket;
+import org.apache.thrift.transport.TTransport;
+import org.apache.thrift.transport.TTransportException;
+
+import com.moseeker.thrift.gen.companyfollowers.Companyfollower;
+import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerQuery;
+import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerServices;
 
 
 public class CompanyfollowersClient extends BaseThriftClient {
