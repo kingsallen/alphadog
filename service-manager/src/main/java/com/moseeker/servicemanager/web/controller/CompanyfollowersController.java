@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.interfaces.RestfulController;
-import com.moseeker.common.util.ExceptionResponse;
 import com.moseeker.common.util.Spring;
 import com.moseeker.thrift.client.BaseThriftClient;
 import com.moseeker.thrift.client.CompanyfollowersClient;
@@ -63,8 +62,8 @@ public class CompanyfollowersController implements RestfulController {
 			writer.write(jsonString);
 			writer.flush();
 		} catch (Exception e) {
-			writer.write(JSON.toJSONString(new ExceptionResponse(e.getMessage())));
-			writer.flush();
+			//writer.write(JSON.toJSONString(new ExceptionResponse(e.getMessage())));
+			//writer.flush();
 		} finally {
 			if (writer != null) {
 				writer.close();
