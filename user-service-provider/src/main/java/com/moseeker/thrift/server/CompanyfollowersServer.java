@@ -72,7 +72,7 @@ public class CompanyfollowersServer {
 		}
 	}
 
-	public static void startSimpleServer(Processor processor,
+	private static void startSimpleServer(Processor processor,
 			int port) {
 		try {
 			TServerTransport serverTransport = new TServerSocket(port);
