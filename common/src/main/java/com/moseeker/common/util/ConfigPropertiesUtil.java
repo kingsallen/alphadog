@@ -7,12 +7,13 @@ import java.util.Properties;
 /**
  * 
  * 配置文件读取帮助类。利用getResourceAsStream方法读取默认的配置文件，
- * 将读取的结果交给java.util.Properties解析并存储。
- *  
- * @date Mar 25, 2016
- * @company moseeker
+ * 将读取的结果交给java.util.Properties解析并存储。 
+ * 
+ * <p>Company: MoSeeker</P>  
+ * <p>date: Mar 27, 2016</p>  
+ * <p>Email: wjf2255@gmail.com</p>
  * @author wjf
- * @email wjf2255@gmail.com
+ * @version Beta
  */
 public class ConfigPropertiesUtil {
 
@@ -93,28 +94,28 @@ public class ConfigPropertiesUtil {
 	
 	/**
 	 * 类型转换。提供将对象转成指定的类型的功能
-	 * @param value1 被转换的对象
+	 * @param value 被转换的对象
 	 * @param clazzType 指定一个转成的类型
 	 * @return 返回转换的结果
 	 */
 	@SuppressWarnings("unchecked")
-	private static <T> T convertTo(Object value1, Class<T> clazzType) {
+	private static <T> T convertTo(Object value, Class<T> clazzType) {
 		if (clazzType.isAssignableFrom(String.class)) {
-			return (T) value1.toString();
+			return (T) value.toString();
 		} else if (clazzType.isAssignableFrom(Long.class)) {
-			return (T) new Long(value1.toString());
+			return (T) new Long(value.toString());
 		} else if (clazzType.isAssignableFrom(Byte.class)) {
-			return (T) new Byte(value1.toString());
+			return (T) new Byte(value.toString());
 		} else if (clazzType.isAssignableFrom(Integer.class)) {
-			return (T) new Integer(value1.toString());
+			return (T) new Integer(value.toString());
 		} else if (clazzType.isAssignableFrom(Float.class)) {
-			return (T) new Float(value1.toString());
+			return (T) new Float(value.toString());
 		} else if (clazzType.isAssignableFrom(Float.class)) {
-			return (T) new Double(value1.toString());
+			return (T) new Double(value.toString());
 		} else if (clazzType.isAssignableFrom(Boolean.class)) {
-			return (T) new Boolean(value1.toString());
+			return (T) new Boolean(value.toString());
 		} else {
-			return (T) value1.toString();
+			return (T) value.toString();
 		}
 	}
 }

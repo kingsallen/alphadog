@@ -12,6 +12,15 @@ import org.apache.zookeeper.CreateMode;
 
 import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerServices.Processor;
 
+/**
+ * 
+ * ZooKeeper服务节点注册帮助类
+ *  
+ * @date Mar 26, 2016
+ * @company moseeker
+ * @author wjf
+ * @email wjf2255@gmail.com
+ */
 public class RegisterZKServer {
 
 	private void registerServer(Processor processor, RegisterConf conf) {

@@ -1,6 +1,8 @@
 package com.moseeker.common.util;
 
 
+import static com.moseeker.db.configdb.tables.CacheconfigRediskey.CACHECONFIG_REDISKEY;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 
@@ -9,20 +11,14 @@ import org.jooq.Record;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 
-import static com.moseeker.db.configdb.tables.CacheconfigRediskey.CACHECONFIG_REDISKEY;
-
 public class CacheConfig {
 	private String pattern;
 	private String json_extraparams=null;
 	private int ttl=0;
 
-	private static String userName = "www";
-	private static String password = "moseeker.com";
-	private static String url = "jdbc:mysql://192.168.31.66:3306/";
-
 	protected CacheConfig(int appid, String key_identifier) throws Exception {
-		try (Connection conn = DriverManager.getConnection(url, userName,
-				password)) {
+		try (Connection conn = DriverManager.getConnection(Constant.CACHE_URL, Constant.CACHE_USERNAME,
+				Constant.CACHE_PASSWORD)) {
 			DSLContext create = DSL.using(conn, SQLDialect.MYSQL);
 			Record row = create.select()
 					.from(CACHECONFIG_REDISKEY)
