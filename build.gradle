@@ -6,6 +6,14 @@ apply plugin: 'idea'
 apply plugin : 'jetty'
 apply plugin: 'eclipse-wtp'
 
+repositories { 
+    //mavenLocal()
+    //mavenCentral() // 中央库
+    //mavenRepo urls: "http://maven.oschina.net/content/groups/public/"
+    maven{ url 'http://maven.oschina.net/content/groups/public/'}
+    maven{ url 'http://maven.outofmemory.cn/'}
+}
+
 // 设置 Project Facets
 eclipse {
     wtp {
@@ -18,6 +26,26 @@ eclipse {
             facet name: 'wst.jsdt.web', version: '1.0'
         }
     }
+}
+
+dependencies {
+	compile "org.jooq:jooq:3.7.3"
+	compile "org.jooq:jooq-meta:3.7.3"
+	compile "org.jooq:jooq-codegen:3.7.3"
+	compile "junit:junit:4.5"
+    compile "log4j:log4j:1.2.9"
+    compile "org.apache.httpcomponents:httpcore:4.4.1"
+    compile "org.apache.httpcomponents:httpclient:4.4.1"
+    compile "joda-time:joda-time:2.7"
+    compile "redis.clients:jedis:2.8.0"
+    
+    compile "org.slf4j:slf4j-log4j12:1.7.18"
+    compile "org.springframework:spring-context:4.2.3.RELEASE"
+    compile "org.springframework:spring-webmvc:4.1.6.RELEASE"
+    compile "org.springframework:spring-test:4.1.6.RELEASE"
+    compile 'com.alibaba:fastjson:1.2.8'
+    compile 'org.apache.thrift:libthrift:0.9.3'
+    compile "com.facebook.nifty:nifty-core:0.18.0"
 }
 
 // idea

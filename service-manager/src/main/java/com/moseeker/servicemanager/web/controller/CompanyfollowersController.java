@@ -26,7 +26,7 @@ import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerQuery;
 public class CompanyfollowersController implements RestfulController {
 
 	Logger logger = LoggerFactory.getLogger(CompanyfollowersController.class);
-
+	
 	BaseThriftClient thriftclient = new CompanyfollowersClient();
 	@Override
 	@RequestMapping(value = "/companyfollowers", method = RequestMethod.GET)
