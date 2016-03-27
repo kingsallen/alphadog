@@ -1,56 +1,17 @@
-import org.gradle.plugins.ide.eclipse.model.Facet
-  
-apply plugin: 'java'
-apply plugin: 'war'
-apply plugin: 'idea'
-apply plugin : 'jetty'
-apply plugin: 'eclipse-wtp'
+allprojects {
 
-repositories { 
-    //mavenLocal()
-    //mavenCentral() // 中央库
-    //mavenRepo urls: "http://maven.oschina.net/content/groups/public/"
-    maven{ url 'http://maven.oschina.net/content/groups/public/'}
-    maven{ url 'http://maven.outofmemory.cn/'}
-}
+    repositories {
 
-// 设置 Project Facets
-eclipse {
-    wtp {
-        facet {
-            facet name: 'jst.web', type: Facet.FacetType.fixed
-            facet name: 'wst.jsdt.web', type: Facet.FacetType.fixed
-            facet name: 'jst.java', type: Facet.FacetType.fixed
-            facet name: 'jst.web', version: '3.0'
-            facet name: 'jst.java', version: '1.8'
-            facet name: 'wst.jsdt.web', version: '1.0'
-        }
+        mavenCentral()
+        maven { url 'http://maven.outofmemory.cn/' }
+        maven { url 'http://maven.oschina.net/content/groups/public/' }
+        maven { url 'https://plugins.gradle.org/m2/'}
+        
     }
+
 }
 
-dependencies {
-	compile "org.jooq:jooq:3.7.3"
-	compile "org.jooq:jooq-meta:3.7.3"
-	compile "org.jooq:jooq-codegen:3.7.3"
-	compile "junit:junit:4.5"
-    compile "log4j:log4j:1.2.9"
-    compile "org.apache.httpcomponents:httpcore:4.4.1"
-    compile "org.apache.httpcomponents:httpclient:4.4.1"
-    compile "joda-time:joda-time:2.7"
-    compile "redis.clients:jedis:2.8.0"
-    
-    compile "org.slf4j:slf4j-log4j12:1.7.18"
-    compile "org.springframework:spring-context:4.2.3.RELEASE"
-    compile "org.springframework:spring-webmvc:4.1.6.RELEASE"
-    compile "org.springframework:spring-test:4.1.6.RELEASE"
-    compile 'com.alibaba:fastjson:1.2.8'
-    compile 'org.apache.thrift:libthrift:0.9.3'
-    compile "com.facebook.nifty:nifty-core:0.18.0"
-}
-
-// idea
-idea {
-    project {
-        languageLevel = '1.7'
-    }
+subprojects {
+    apply plugin: 'java'
+    sourceCompatibility = 1.8
 }
