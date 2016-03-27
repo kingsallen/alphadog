@@ -19,20 +19,21 @@ package com.moseeker.thrift.server;
  * under the License.
  */
 
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.CuratorFrameworkFactory;
-import org.apache.curator.retry.ExponentialBackoffRetry;
-import org.apache.thrift.server.TServer;
-import org.apache.thrift.server.TServer.Args;
-import org.apache.thrift.server.TSimpleServer;
-import org.apache.thrift.transport.TServerSocket;
-import org.apache.thrift.transport.TServerTransport;
-import org.apache.zookeeper.CreateMode;
-
+import com.moseeker.common.zk.RegisterZKServer;
 import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerServices;
 import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerServices.Processor;
 import com.moseeker.thrift.service.impl.CompanyfollowerServicesImpl;
 
+/**
+ * 
+ * 服务启动入口
+ *  
+ * <p>Company: MoSeeker</P>  
+ * <p>date: Mar 27, 2016</p>  
+ * <p>Email: wjf2255@gmail.com</p>
+ * @author wjf
+ * @version
+ */
 public class CompanyfollowersServer {
 
 	public static CompanyfollowerServicesImpl handler;
@@ -43,50 +44,11 @@ public class CompanyfollowersServer {
 		try {
 			handler = new CompanyfollowerServicesImpl();
 			processor = new Processor<CompanyfollowerServicesImpl>(handler);
-			
-			
-			CuratorFramework zooclient = CuratorFrameworkFactory
-					.builder()
-					.connectString("127.0.0.1:2181")  
-			        .sessionTimeoutMs(30000)  
-			        .connectionTimeoutMs(30000)  
-			        .canBeReadOnly(false)  
-			        .retryPolicy(new ExponentialBackoffRetry(1000, 290))  
-			        .namespace("services/companyfollowers")  
-			        .defaultData(null)  
-			        .build();  
-			zooclient.start();	
-			
-			//byte[] servers = zooclient.getData().forPath("/servers");
-			zooclient.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath("/servers/127.0.0.1:9090");
-
-
-			new Thread(new Runnable() {
-				public void run() {
-					startSimpleServer(processor, 9090);
-				}
-			}).start();
+			RegisterZKServer registerZKServer = RegisterZKServer.getInstance(processor);
+			registerZKServer.registerServer();
 
 		} catch (Exception x) {
 			x.printStackTrace();
-		}
-	}
-
-	private static void startSimpleServer(Processor processor,
-			int port) {
-		try {
-			TServerTransport serverTransport = new TServerSocket(port);
-			TServer server = new TSimpleServer(
-					new Args(serverTransport).processor(processor));
-
-			// Use this for a multithreaded server
-			// TServer server = new TThreadPoolServer(new
-			// TThreadPoolServer.Args(serverTransport).processor(processor));
-
-			// System.out.println("Starting the simple server...");
-			server.serve();
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 }

@@ -28,6 +28,7 @@ public class ConfigPropertiesUtil {
 		InputStream inputStream = null;
 		try {
 			inputStream = this.getClass().getClassLoader().getResourceAsStream("serviceprovider.properties");
+			System.out.println(this.getClass().getClassLoader().getResource("").getPath());
 			properties = new Properties();
 			properties.load(inputStream);
 		} catch (Exception e) {

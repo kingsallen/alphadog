@@ -3,14 +3,12 @@ package com.moseeker.common.zk;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.apache.thrift.TBaseProcessor;
 import org.apache.thrift.server.TServer;
-import org.apache.thrift.server.TSimpleServer;
 import org.apache.thrift.server.TServer.Args;
+import org.apache.thrift.server.TSimpleServer;
 import org.apache.thrift.transport.TServerSocket;
 import org.apache.thrift.transport.TServerTransport;
-import org.apache.zookeeper.CreateMode;
-
-import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerServices.Processor;
 
 /**
  * 
@@ -23,32 +21,52 @@ import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerServices.Processo
  */
 public class RegisterZKServer {
 
-	private void registerServer(Processor processor, RegisterConf conf) {
+	private volatile static RegisterZKServer instance = null;
+	private RegisterConf conf = null;
+	
+	private RegisterZKServer(TBaseProcessor<?> processor) throws InstantiationException {
+		//registerServer(processor, conf);
+		conf = new RegisterConf(processor);
+	}
+	
+	public static RegisterZKServer getInstance(TBaseProcessor<?> processor) throws InstantiationException {
+		if (instance == null) {
+			synchronized (RegisterZKServer.class) {
+				if (instance == null) {
+					instance = new RegisterZKServer(processor);
+				}
+			}
+		}
+		return instance;
+	}  
+	
+	public void registerServer() {
 		try {
 			CuratorFramework zooclient = CuratorFrameworkFactory
 					.builder()
-					.connectString("127.0.0.1:2181")  
-			        .sessionTimeoutMs(30000)  
-			        .connectionTimeoutMs(30000)  
-			        .canBeReadOnly(false)  
+					.connectString(conf.getConnectionAddress())  
+			        .sessionTimeoutMs(conf.getSessionTimeOut())  
+			        .connectionTimeoutMs(conf.getConnectionTimeOut())  
+			        .canBeReadOnly(conf.isCanBeReadOnly())  
 			        .retryPolicy(new ExponentialBackoffRetry(1000, 290))  
-			        .namespace("services/companyfollowers")  
+			        //.namespace("services/companyfollowers")  
+			        .namespace(conf.getServiceName())
 			        .defaultData(null)  
 			        .build();  
 			zooclient.start();	
 			
 			//byte[] servers = zooclient.getData().forPath("/servers");
-			zooclient.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath("/servers/127.0.0.1:9090");
+			zooclient.create().creatingParentsIfNeeded().withMode(conf.getCreateMode()).forPath(conf.getPrivatePath());
 
 
-			new Thread(()-> startSimpleServer(processor, 9000)).start();
+			new Thread(()-> startSimpleServer(conf.getProcessor(), conf.getServicePort())).start();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	private static void startSimpleServer(Processor processor,
+	private static void startSimpleServer(TBaseProcessor<?> processor,
 			int port) {
 		try {
 			TServerTransport serverTransport = new TServerSocket(port);

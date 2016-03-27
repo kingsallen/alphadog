@@ -15,4 +15,8 @@ public class Constant {
 	public static final String CACHE_URL = "jdbc:mysql://192.168.31.66:3306/";
 	public static final String CACHE_USERNAME = "www";
 	public static final String CACHE_PASSWORD = "moseeker.com";
+	
+	/*zookeeper配置*/
+	public static final int ZOOKEEPER_PORT = 2181;
+	public static final String ZOOKEEPER_ADDRESS = "127.0.0.1";
 }
