@@ -26,7 +26,7 @@ import com.moseeker.thrift.service.impl.CompanyfollowerServicesImpl;
 
 /**
  * 
- * 服务启动入口
+ * 服务启动入口。服务启动依赖所需的配置文件serviceprovider.properties中的配置信息。务必保证配置信息正确
  *  
  * <p>Company: MoSeeker</P>  
  * <p>date: Mar 27, 2016</p>  

@@ -8,6 +8,7 @@ dependencies {
     compile 'junit:junit:4.12'
     compile 'com.alibaba:fastjson:1.2.8' 
     compile 'org.apache.curator:curator-framework:2.10.0'
+    compile 'org.apache.zookeeper:zookeeper:3.4.8'
     providedCompile 'javax.servlet:servlet-api:2.5'
     runtime 'javax.servlet:jstl:1.1.2'
 }

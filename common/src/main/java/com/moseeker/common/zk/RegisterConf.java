@@ -30,6 +30,13 @@ public class RegisterConf {
 	private int servicePort = 9000;
 	private TBaseProcessor<?> processor;
 	
+	/**
+	 * 根据具体服务创建注册配置信息。配置信息会自动查找项目下的serviceprovider.properties文件。该文件为必须项。
+	 * 如果文件不存在或者配置信息有误会导致初始化注册帮助类失败。
+	 * 
+	 * @param processor 具体的服务
+	 * @throws InstantiationException 初始化失败异常
+	 */
 	public RegisterConf(TBaseProcessor<?> processor) throws InstantiationException {
 		if(processor == null) {
 			throw new InstantiationException();
