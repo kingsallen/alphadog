@@ -1,0 +1,40 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "gradle.plugin.org.jruyi.gradle:thrift-gradle-plugin:0.3.1"
+    }
+}
+
+apply plugin: "org.jruyi.thrift"
+
+dependencies {
+    compile 'org.apache.thrift:libthrift:0.9.3'
+}
+
+compileThrift {
+    sourceDir 'src/main/resource'
+    outputDir 'src/main/java'
+    createGenFolder false
+    generator 'java', 'html'
+}
+
+task copyGeneratedFile(type: Copy) {
+    dependsOn 'compileThrift'
+
+    group = 'thrift'
+    description = 'copy thrift generated files to coreponding service-provider-directories'
+
+    from 'src/main/java/'
+    into '../user-service-provider/src/main/java/'
+    //into '../service-manager/src/main/java'
+    logger.info("ends of copy file")
+    
+}
+
+project.description = '''
+    all thrfit IDL definitions.
+'''

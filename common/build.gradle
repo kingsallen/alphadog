@@ -1,18 +1,19 @@
-apply plugin: 'war'
-
 dependencies {
-    compile project(':user-service-provider')
-    compile "org.springframework:spring-context:4.2.3.RELEASE"
-    compile "org.springframework:spring-webmvc:4.1.6.RELEASE"
-    compile 'redis.clients:jedis:2.8.1'
-    compile 'junit:junit:4.12'
-    compile 'com.alibaba:fastjson:1.2.8' 
-    compile 'org.apache.curator:curator-framework:2.10.0'
-    compile 'org.apache.zookeeper:zookeeper:3.4.8'
-    providedCompile 'javax.servlet:servlet-api:2.5'
-    runtime 'javax.servlet:jstl:1.1.2'
+    compile "junit:junit:4.5"
+    compile "log4j:log4j:1.2.9"
+    compile "org.apache.httpcomponents:httpcore:4.4.1"
+    compile "org.apache.httpcomponents:httpclient:4.4.1"
+    compile "joda-time:joda-time:2.7"
+    compile "redis.clients:jedis:2.8.0"
 }
 
 project.description = '''
-project common/utilities.
+    公用
+    1) redis
+        log
+        cache
+        session 
+    2) mail
+    3) sms
+    4) 敏感词校验
 '''
