@@ -38,3 +38,8 @@ jar {
     }
  
 }
+
+project.description = '''
+    1) Spring MVC --- provide restful HTTP API access
+    2) we call it "Client" in this project
+'''

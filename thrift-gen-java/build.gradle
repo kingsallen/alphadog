@@ -34,3 +34,7 @@ task copyGeneratedFile(type: Copy) {
     logger.info("ends of copy file")
     
 }
+
+project.description = '''
+    all thrfit IDL definitions.
+'''

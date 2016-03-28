@@ -1,3 +1,10 @@
+project.description = '''
+the service layer of moseeker. It\'s going to serve all moseeker\'s products.
+    1) a SpringMVC to provide HTTP API
+    2) ZooKeeper as the service manager
+    3) Thrift as the RPC framework
+    4) JOOQ as the data access layer
+'''
 allprojects {
 
     repositories {
