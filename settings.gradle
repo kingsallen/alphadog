@@ -1,1 +1,3 @@
-include 'common', 'service-manager', 'thrift-gen-java', 'user-service-provider', 'aerolite'
+include 'common', 'service-manager', 'thrift', 'service-definition'
+
+include 'user-service-provider'

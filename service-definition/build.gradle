@@ -14,5 +14,5 @@ dependencies {
 }
 
 project.description = '''
-project common/utilities.
+project common/utilities
 '''
