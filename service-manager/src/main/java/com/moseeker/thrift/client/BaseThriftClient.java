@@ -6,7 +6,7 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 
-import com.moseeker.common.interfaces.RestfulController;
+import com.moseeker.servicemanager.common.RestfulController;
 
 public abstract class BaseThriftClient {
 

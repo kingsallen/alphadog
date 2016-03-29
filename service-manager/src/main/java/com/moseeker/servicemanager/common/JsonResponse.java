@@ -1,4 +1,4 @@
-package com.moseeker.common.util;
+package com.moseeker.servicemanager.common;
 
 import com.alibaba.fastjson.JSON;
 

@@ -1,4 +1,4 @@
-package com.moseeker.common.interfaces;
+package com.moseeker.servicemanager.common;
 
 public abstract interface CommonQuery<T> {
 

@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.common.interfaces.RestfulController;
-import com.moseeker.common.util.Spring;
+import com.moseeker.servicemanager.common.RestfulController;
+import com.moseeker.servicemanager.common.Spring;
 import com.moseeker.thrift.client.BaseThriftClient;
 import com.moseeker.thrift.client.CompanyfollowersClient;
 import com.moseeker.thrift.gen.companyfollowers.Companyfollower;

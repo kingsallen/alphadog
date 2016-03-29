@@ -1,9 +1,7 @@
-package com.moseeker.common.util;
+package com.moseeker.servicemanager.common;
 
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.web.servlet.HandlerMapping;
-
-import com.moseeker.common.interfaces.CommonQuery;
 
 public class Spring {
 	public static String getRestfullApiName(HttpServletRequest request){
