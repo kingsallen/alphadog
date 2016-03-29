@@ -1,12 +1,8 @@
 package com.moseeker.common.util;
 
-import javax.servlet.http.HttpServletRequest;
-import org.springframework.web.servlet.HandlerMapping;
-
-import com.moseeker.common.interfaces.CommonQuery;
 
 public class Spring {
-	public static String getRestfullApiName(HttpServletRequest request){
+	/*public static String getRestfullApiName(HttpServletRequest request){
 		  String path = (String) request.getAttribute(
 		            HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
 		  return path;
@@ -74,6 +70,6 @@ public class Spring {
 		return query;
 
 		
-	}
+	}*/
 
 }

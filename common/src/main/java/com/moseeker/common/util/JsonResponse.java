@@ -1,13 +1,12 @@
 package com.moseeker.common.util;
 
-import com.alibaba.fastjson.JSON;
 
 public class JsonResponse {
 	public String message = null;
 	public String data = null;
 	public int status=0;
 
-	public static String success(String data){
+	/*public static String success(String data){
 		
 		JsonResponse response = new JsonResponse();
 		response.setStatus(0);
@@ -39,6 +38,6 @@ public class JsonResponse {
 
 	public void setStatus(int status) {
 		this.status = status;
-	}
+	}*/
 
 }

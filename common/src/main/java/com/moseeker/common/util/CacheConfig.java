@@ -1,8 +1,5 @@
 package com.moseeker.common.util;
 
-
-import static com.moseeker.db.configdb.tables.CacheconfigRediskey.CACHECONFIG_REDISKEY;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 
@@ -10,6 +7,10 @@ import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
+
+import com.moseeker.common.cache.db.configdb.Tables;
+
+
 
 public class CacheConfig {
 	private String pattern;
@@ -21,14 +22,14 @@ public class CacheConfig {
 				Constant.CACHE_PASSWORD)) {
 			DSLContext create = DSL.using(conn, SQLDialect.MYSQL);
 			Record row = create.select()
-					.from(CACHECONFIG_REDISKEY)
-					.where(CACHECONFIG_REDISKEY.PROJECT_APPID.equal(appid))
-					.and(CACHECONFIG_REDISKEY.KEY_IDENTIFIER
+					.from(Tables.CACHECONFIG_REDISKEY)
+					.where(Tables.CACHECONFIG_REDISKEY.PROJECT_APPID.equal(appid))
+					.and(Tables.CACHECONFIG_REDISKEY.KEY_IDENTIFIER
 							.equal(key_identifier)).fetchAny();
 			if ( row != null ){
-				this.pattern = row.getValue(CACHECONFIG_REDISKEY.PATTERN);
-				this.json_extraparams = row.getValue(CACHECONFIG_REDISKEY.JSON_EXTRAPARAMS);
-				this.ttl = row.getValue(CACHECONFIG_REDISKEY.TTL);
+				this.pattern = row.getValue(Tables.CACHECONFIG_REDISKEY.PATTERN);
+				this.json_extraparams = row.getValue(Tables.CACHECONFIG_REDISKEY.JSON_EXTRAPARAMS);
+				this.ttl = row.getValue(Tables.CACHECONFIG_REDISKEY.TTL);
 			}
 
 		} catch (Exception e) {

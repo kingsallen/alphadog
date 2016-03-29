@@ -16,4 +16,4 @@
  * @author wjf
  * @email wjf2255@gmail.com
  */
-package com.moseeker.aerolite.email;
+package com.moseeker.common.email;

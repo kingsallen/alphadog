@@ -1,4 +1,4 @@
-package com.moseeker.common.interfaces;
+package com.moseeker.servicemanager.web.controller;
 
 
 import javax.servlet.http.HttpServletRequest;

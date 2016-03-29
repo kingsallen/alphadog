@@ -1,12 +1,14 @@
 package com.moseeker.common.util;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisCluster;
+
 
 
 public class Redis {  
@@ -18,6 +20,10 @@ public class Redis {
     if (redisCluster == null) {  
         synchronized (Redis.class) {  
         if (redisCluster == null) {  
+        	GenericObjectPoolConfig config = new GenericObjectPoolConfig();
+        	config.setMaxIdle(20);
+            config.setMaxTotal(60);
+            config.setMaxWaitMillis(2000);
         	
     		Set<HostAndPort> jedisClusterNodes = new HashSet<HostAndPort>();
     		//Jedis Cluster will attempt to discover cluster nodes automatically
@@ -25,8 +31,11 @@ public class Redis {
     		jedisClusterNodes.add(new HostAndPort("192.168.31.10", 30001));
     		jedisClusterNodes.add(new HostAndPort("192.168.31.10", 30002));
     		jedisClusterNodes.add(new HostAndPort("192.168.31.10", 30003));
+    		//jedisClusterNodes.add(new HostAndPort("localhost", 7004));
+    		//jedisClusterNodes.add(new HostAndPort("localhost", 7005));
 
-    		redisCluster = new JedisCluster(jedisClusterNodes);
+    		redisCluster = new JedisCluster(jedisClusterNodes, config);
+    		//redisCluster = new JedisCluster(jedisClusterNodes);
         }  
        }  
    }  
@@ -95,56 +104,30 @@ public class Redis {
     	String cacheKey = cfg.getPattern();
     	JedisCluster redisc = Redis.getRedisCluster();   
     	return redisc.rpop(cacheKey);
-    }     
+    }
     
-	public static void main(String[] args) throws IOException {
-		// TODO Auto-generated method stub
-		long start = System.currentTimeMillis();
-
-		//Jedis redis = Redis.getRedis();
-
-		try {
-		//	System.out.println(set(0, "DEFAULT", "123", "newjson"));
-		//	System.out.println(get(0, "DEFAULT", "123"));
-			System.out.println(lpush(2, "LOG","jsonapiresult2"));
-			System.out.println(lpush(2, "LOG","jsonapiresult1"));
-			System.out.println(rpoplpush(2, "LOG", "LOG_INPROGRESS"));
-			
-			
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-//		Jedis redis = new Jedis("192.168.31.10", 6379);	
-		
-//		long init = System.currentTimeMillis();
-//		
-//		for(int i=0; i<1; i++){
-//			
-//			redis.setex(String.valueOf(i), 1000, String.valueOf(i)+"value");
-//			redis.get(String.valueOf(i));
-//		}
-//
-//		//redis.close();
-//		
-//		long setget = System.currentTimeMillis();
-//		
-//		
-//		
-//		
-//		
-//		System.out.println(start);
-//		System.out.print("初始化时间 s ： ");
-//		System.out.println((init-start)/1000.0);
-//		System.out.print("setget 时间 s ： ");
-//		System.out.println((setget-init)/1000.0);
-//		try {
-//			Thread.sleep(1);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-
-	}
-    
+    public static void main(String[] args) {
+    	for(int i=0; i< 20; i++) {
+    		String key = "test"+i;
+    		Runnable run = () -> {
+    			long start = System.currentTimeMillis();
+    	    	JedisCluster redisCluster = getRedisCluster();
+    	    	long afterInit = System.currentTimeMillis();
+    	    	System.out.println(key+":"+(afterInit-start)/1000.0 +" s");
+    	    	redisCluster.set(key, "test_value");
+    	    	redisCluster.get(key);
+    	    	long afterGetAndSet = System.currentTimeMillis();
+    	    	System.out.println(key+":"+(afterGetAndSet-afterInit)/1000.0 +" s");
+    		};
+    		run.run();
+    		
+    		if(i == 10) {
+    			try {
+					Thread.sleep(3000l);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+    		}
+    	}
+    }
 }

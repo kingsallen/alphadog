@@ -1,6 +1,6 @@
 dependencies {
 
-    compile project(":thrift-gen-java")
+    // compile project(":thrift-gen-java")
 
     compile 'org.jooq:jooq:3.7.3'
 
