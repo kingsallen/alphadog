@@ -1,6 +1,18 @@
 apply plugin: 'java'
 apply plugin: 'eclipse-wtp'
 
+repositories {
+    jcenter {
+        url "http://jcenter.bintray.com/"
+    }
+}
+
+repositories {
+    maven  {
+        url "http://maven.oschina.net/content/groups/public/"
+    }
+}
+
 dependencies {
     compile "junit:junit:4.5"
     compile "log4j:log4j:1.2.9"
@@ -11,7 +23,11 @@ dependencies {
     compile "org.jooq:jooq:3.7.3"
     compile "org.jooq:jooq-meta:3.7.3"
     compile "org.jooq:jooq-codegen:3.7.3"
-    runtime 'javax.servlet:jstl:1.1.2'
+    compile "mysql:mysql-connector-java:5.1.6"
+    compile "org.apache.zookeeper:zookeeper:3.4.5"
+    compile 'org.apache.curator:curator-framework:2.10.0'
+    compile 'com.alibaba:fastjson:1.2.8'
+    compile 'org.apache.thrift:libthrift:0.9.3'
 }
 
 project.description = '''

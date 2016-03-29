@@ -4,6 +4,13 @@
 package com.moseeker.db.userdb;
 
 
+import javax.annotation.Generated;
+
+import org.jooq.Identity;
+import org.jooq.UniqueKey;
+import org.jooq.impl.AbstractKeys;
+import org.jooq.types.UInteger;
+
 import com.moseeker.db.userdb.tables.Companyfollowers;
 import com.moseeker.db.userdb.tables.Friendcommentrequests;
 import com.moseeker.db.userdb.tables.Friendcomments;
@@ -30,13 +37,6 @@ import com.moseeker.db.userdb.tables.records.Userfriends_2degreeRecord;
 import com.moseeker.db.userdb.tables.records.UsersettingRecord;
 import com.moseeker.db.userdb.tables.records.UsersummaryRecord;
 import com.moseeker.db.userdb.tables.records.UserthirdbindRecord;
-
-import javax.annotation.Generated;
-
-import org.jooq.Identity;
-import org.jooq.UniqueKey;
-import org.jooq.impl.AbstractKeys;
-import org.jooq.types.UInteger;
 
 
 /**

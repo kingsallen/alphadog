@@ -4,10 +4,6 @@
 package com.moseeker.db.configdb.tables;
 
 
-import com.moseeker.db.configdb.Configdb;
-import com.moseeker.db.configdb.Keys;
-import com.moseeker.db.configdb.tables.records.AdminnotificationEventsRecord;
-
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
@@ -20,6 +16,10 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
+
+import com.moseeker.common.cache.db.configdb.Configdb;
+import com.moseeker.db.configdb.tables.records.AdminnotificationEventsRecord;
+import com.moseeker.db.userdb.Keys;
 
 
 /**

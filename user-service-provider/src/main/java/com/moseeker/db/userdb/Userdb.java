@@ -4,6 +4,15 @@
 package com.moseeker.db.userdb;
 
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.annotation.Generated;
+
+import org.jooq.Table;
+import org.jooq.impl.SchemaImpl;
+
 import com.moseeker.db.userdb.tables.Companyfollowers;
 import com.moseeker.db.userdb.tables.Friendcommentrequests;
 import com.moseeker.db.userdb.tables.Friendcomments;
@@ -18,15 +27,6 @@ import com.moseeker.db.userdb.tables.Userfriends_2degree;
 import com.moseeker.db.userdb.tables.Usersetting;
 import com.moseeker.db.userdb.tables.Usersummary;
 import com.moseeker.db.userdb.tables.Userthirdbind;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.Generated;
-
-import org.jooq.Table;
-import org.jooq.impl.SchemaImpl;
 
 
 /**

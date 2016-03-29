@@ -4,6 +4,8 @@
 package com.moseeker.db.userdb;
 
 
+import javax.annotation.Generated;
+
 import com.moseeker.db.userdb.tables.Companyfollowers;
 import com.moseeker.db.userdb.tables.Friendcommentrequests;
 import com.moseeker.db.userdb.tables.Friendcomments;
@@ -18,8 +20,6 @@ import com.moseeker.db.userdb.tables.Userfriends_2degree;
 import com.moseeker.db.userdb.tables.Usersetting;
 import com.moseeker.db.userdb.tables.Usersummary;
 import com.moseeker.db.userdb.tables.Userthirdbind;
-
-import javax.annotation.Generated;
 
 
 /**

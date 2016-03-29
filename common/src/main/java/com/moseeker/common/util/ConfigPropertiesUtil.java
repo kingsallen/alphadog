@@ -24,17 +24,14 @@ public class ConfigPropertiesUtil {
 	 * 读取配置信息帮助类 默认读取serviceprovider.properties配置文件
 	 * @throws Exception
 	 */
-	private ConfigPropertiesUtil() throws Exception {
+	private ConfigPropertiesUtil() {
+		properties = new Properties();
 		InputStream inputStream = null;
 		try {
-			inputStream = this.getClass().getClassLoader().getResourceAsStream("serviceprovider.properties");
-			System.out.println(this.getClass().getClassLoader().getResource("").getPath());
-			properties = new Properties();
+			inputStream = ConfigPropertiesUtil.class.getClassLoader().getResourceAsStream("serviceprovicer"); 
 			properties.load(inputStream);
 		} catch (Exception e) {
 			//todo 错误信息需要记录到日志中
-			e.printStackTrace();
-			throw new Exception("can not find default properties");
 		} finally {
 			if(inputStream != null) {
 				try {
@@ -51,7 +48,7 @@ public class ConfigPropertiesUtil {
 	 * @param fileName 配置文件的名称
 	 * @throws Exception 如果配置文件不存在，抛出异常
 	 */
-	public static void loadResource(String fileName) throws Exception {
+	public void loadResource(String fileName) throws Exception {
 		InputStream inputStream = null;
 		try {
 			inputStream = ConfigPropertiesUtil.class.getClassLoader().getResourceAsStream(fileName); 
@@ -90,7 +87,10 @@ public class ConfigPropertiesUtil {
 	 */
 	public <T> T get(String key, Class<T> clazzType) {
 		Object object = properties.get(key);
-		return convertTo(object, clazzType);
+		if(object != null) {
+			return convertTo(object, clazzType);
+		}
+		return null;
 	}
 	
 	/**
@@ -100,7 +100,7 @@ public class ConfigPropertiesUtil {
 	 * @return 返回转换的结果
 	 */
 	@SuppressWarnings("unchecked")
-	private static <T> T convertTo(Object value, Class<T> clazzType) {
+	private <T> T convertTo(Object value, Class<T> clazzType) {
 		if (clazzType.isAssignableFrom(String.class)) {
 			return (T) value.toString();
 		} else if (clazzType.isAssignableFrom(Long.class)) {
