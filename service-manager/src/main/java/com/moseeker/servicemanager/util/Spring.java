@@ -4,7 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.servlet.HandlerMapping;
 
-import com.moseeker.common.interfaces.CommonQuery;
+import com.moseeker.servicemanager.common.CommonQuery;
 
 
 public class Spring {
