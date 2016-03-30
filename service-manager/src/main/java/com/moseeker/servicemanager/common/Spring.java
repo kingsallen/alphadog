@@ -10,6 +10,11 @@ public class Spring {
 		  return path;
 	}
 	
+	public static String getRemoteIp(HttpServletRequest request){
+		String remoteIpForwardedbyLbs = request.getHeader("HTTP_X_FORWARDED_FOR");
+		return remoteIpForwardedbyLbs == null ? request.getRemoteAddr() : remoteIpForwardedbyLbs;
+	}
+	
 	public static CommonQuery initCommonQuery(CommonQuery query, HttpServletRequest request) throws Exception{
 		if (request.getParameter("appid") != null) {
 			int appid = Integer.parseInt(request.getParameter("appid"));
