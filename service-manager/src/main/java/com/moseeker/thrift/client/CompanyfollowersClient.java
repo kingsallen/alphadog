@@ -142,9 +142,7 @@ public class CompanyfollowersClient extends BaseThriftClient {
 	}
 
 	@Override
-	public List callThriftServerGet(Object query) {
-		// TODO Auto-generated method stub
-		try {
+	public List callThriftServerGet(Object query) throws Exception {
 
 			String thriftserver = this.getThriftServer();
 			String[] ipport = thriftserver.split(":");
@@ -167,13 +165,6 @@ public class CompanyfollowersClient extends BaseThriftClient {
 
 			return companyfollowers;
 
-		
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return null;
 	}
 
 	@Override

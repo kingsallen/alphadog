@@ -35,7 +35,7 @@ public class CompanyfollowersController implements RestfulController {
 		// TODO Auto-generated method stub
 		PrintWriter writer = null;
 		try {
-
+			writer = response.getWriter();
 			CompanyfollowerQuery query = new CompanyfollowerQuery();
 			// GET方法 通用参数解析并赋值
 			query = (CompanyfollowerQuery) Spring.initCommonQuery(query,
@@ -56,13 +56,12 @@ public class CompanyfollowersController implements RestfulController {
 					query.setCompanyid(companyid);
 				}
 			}
-
-			writer = response.getWriter();
+			
 			List<Companyfollower> companyfollowers = thriftclient.callThriftServerGet(query);
 			String jsonString = JSON.toJSONString(companyfollowers);
 			writer.write(JsonResponse.success(jsonString));
 			writer.flush();
-		} catch (Exception e) {
+		} catch (Exception e) {	
 			writer.write(JsonResponse.fail(e.getMessage()));
 			writer.flush();
 		} finally {

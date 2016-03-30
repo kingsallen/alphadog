@@ -10,13 +10,13 @@ public abstract class BaseThriftClient {
 
 	protected CuratorFramework zooclient;
 
-	public abstract List callThriftServerGet(Object query);
+	public abstract List callThriftServerGet(Object query) throws Exception;
 
-	public abstract int callThriftServerPost(Object query);
+	public abstract int callThriftServerPost(Object query) throws Exception;
 
-	public abstract int callThriftServerPut(Object query);
+	public abstract int callThriftServerPut(Object query) throws Exception;
 
-	public abstract int callThriftServerDelete(Object query);
+	public abstract int callThriftServerDelete(Object query) throws Exception;
 
 	protected abstract String getZooKeeperNamespace();
 
