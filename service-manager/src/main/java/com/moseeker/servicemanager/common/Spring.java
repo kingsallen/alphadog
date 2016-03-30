@@ -1,9 +1,18 @@
 package com.moseeker.servicemanager.common;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.web.servlet.HandlerMapping;
 
+import com.alibaba.fastjson.JSON;
+import com.moseeker.common.cache.RedisClient;
+
 public class Spring {
+	private final static int appid = 0;
+	private final static String logkey = "LOG";
+
 	public static String getRestfullApiName(HttpServletRequest request){
 		  String path = (String) request.getAttribute(
 		            HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
@@ -13,6 +22,19 @@ public class Spring {
 	public static String getRemoteIp(HttpServletRequest request){
 		String remoteIpForwardedbyLbs = request.getHeader("REMOTE_ADDR");// php 和 python tornado  不一致， 需要实际测试。
 		return remoteIpForwardedbyLbs == null ? request.getRemoteAddr() : remoteIpForwardedbyLbs;
+	}
+	
+	public static void logRequestResponse(Map request, String response){
+		Map reqResp = new HashMap();
+		reqResp.put("request", request);
+		reqResp.put("response", response);
+		try {
+			RedisClient.getInstance().lpush(appid, logkey, JSON.toJSONString(reqResp));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 	public static CommonQuery initCommonQuery(CommonQuery query, HttpServletRequest request) throws Exception{

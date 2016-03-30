@@ -34,6 +34,7 @@ public class CompanyfollowersController implements RestfulController {
 	public void get(HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
 		PrintWriter writer = null;
+		String jsonStringResponse = null;
 		try {
 			writer = response.getWriter();
 			CompanyfollowerQuery query = new CompanyfollowerQuery();
@@ -58,13 +59,14 @@ public class CompanyfollowersController implements RestfulController {
 			}
 			
 			List<Companyfollower> companyfollowers = thriftclient.callThriftServerGet(query);
-			String jsonString = JSON.toJSONString(companyfollowers);
-			writer.write(JsonResponse.success(jsonString));
+			jsonStringResponse = JSON.toJSONString(companyfollowers);
+			writer.write(JsonResponse.success(jsonStringResponse));
 			writer.flush();
 		} catch (Exception e) {	
 			writer.write(JsonResponse.fail(e.getMessage()));
 			writer.flush();
 		} finally {
+			Spring.logRequestResponse(request.getParameterMap(), jsonStringResponse);
 			if (writer != null) {
 				writer.close();
 			}
