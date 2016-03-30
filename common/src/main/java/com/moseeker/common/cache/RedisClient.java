@@ -11,6 +11,15 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.common.cache.lru.CacheConfigRedisKey;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 
+/**
+ * 
+ * Redis客户端帮助类 
+ * <p>Company: MoSeeker</P>  
+ * <p>date: Mar 30, 2016</p>  
+ * <p>Email: wjf2255@gmail.com</p>
+ * @author wjf
+ * @version
+ */
 public class RedisClient {
 	private JedisCluster redisCluster;
 	private static volatile RedisClient instance = null;
@@ -51,7 +60,6 @@ public class RedisClient {
 							Integer.class)));
 
 			redisCluster = new JedisCluster(jedisClusterNodes);
-			// redisCluster = new JedisCluster(jedisClusterNodes);
 		}
 		return redisCluster;
 	}

@@ -61,7 +61,7 @@ public class DbManager {
 	 * 查询缓存标识符关键词。至多查找200条记录
 	 * @return List<CacheConfigRedisKey> {@see com.moseeker.common.cache.lru.CacheConfigRedisKey }
 	 */
-	public  static List<CacheConfigRedisKey> readAllConfigFromDB() {
+	public static List<CacheConfigRedisKey> readAllConfigFromDB() {
 		List<CacheConfigRedisKey> redisKeys = new ArrayList<>();
 		try (Connection conn = DriverManager.getConnection(Constant.CACHE_URL, Constant.CACHE_USERNAME,
 				Constant.CACHE_PASSWORD)) {
