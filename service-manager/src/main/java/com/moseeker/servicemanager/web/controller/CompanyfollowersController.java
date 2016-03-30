@@ -66,7 +66,7 @@ public class CompanyfollowersController implements RestfulController {
 			writer.write(JsonResponse.fail(e.getMessage()));
 			writer.flush();
 		} finally {
-			Spring.logRequestResponse(request.getParameterMap(), jsonStringResponse);
+			Spring.logRequestResponse(request, jsonStringResponse);
 			if (writer != null) {
 				writer.close();
 			}
