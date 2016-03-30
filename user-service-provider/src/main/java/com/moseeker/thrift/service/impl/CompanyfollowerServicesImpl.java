@@ -1,23 +1,26 @@
 package com.moseeker.thrift.service.impl;
 
-import org.apache.thrift.TException;
+import static com.moseeker.db.userdb.tables.Companyfollowers.COMPANYFOLLOWERS;
 
-import com.moseeker.thrift.gen.companyfollowers.Companyfollower;
-import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerServices;
-import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerQuery;
-
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
 
-import static com.moseeker.db.userdb.tables.Companyfollowers.COMPANYFOLLOWERS;
-import com.moseeker.db.userdb.tables.records.CompanyfollowersRecord;
+import org.apache.thrift.TException;
+import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.Result;
+import org.jooq.SQLDialect;
+import org.jooq.SelectJoinStep;
+import org.jooq.impl.DSL;
 
-import java.sql.*;
-
-import org.jooq.*;
-import org.jooq.impl.*;
+import com.moseeker.thrift.gen.companyfollowers.Companyfollower;
+import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerQuery;
+import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerServices;
 
 public class CompanyfollowerServicesImpl implements
 CompanyfollowerServices.Iface {

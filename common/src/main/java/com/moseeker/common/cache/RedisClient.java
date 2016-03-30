@@ -54,8 +54,8 @@ public class RedisClient {
 		if (redisCluster == null) {
 			Set<HostAndPort> jedisClusterNodes = new HashSet<HostAndPort>();
 			// Jedis Cluster will attempt to discover cluster nodes
-			String host = propertiesUtils.get("host", String.class);
-			String port = propertiesUtils.get("port", String.class);
+			String host = propertiesUtils.get("cashe_host", String.class);
+			String port = propertiesUtils.get("cashe_port", String.class);
 			if (!StringUtils.isNullOrEmpty(host)
 					&& !StringUtils.isNullOrEmpty(port)) {
 				String[] hostArray = host.split(",");
