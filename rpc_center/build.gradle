@@ -1,7 +1,7 @@
 apply plugin: 'war'
 
 dependencies {
-    compile project(':user-service-provider')
+    // compile project(':user-service-provider')
     compile "org.springframework:spring-context:4.2.3.RELEASE"
     compile "org.springframework:spring-webmvc:4.1.6.RELEASE"
     compile 'redis.clients:jedis:2.8.1'

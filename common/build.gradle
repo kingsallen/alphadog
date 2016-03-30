@@ -28,6 +28,8 @@ dependencies {
     compile 'org.apache.curator:curator-framework:2.10.0'
     compile 'com.alibaba:fastjson:1.2.8'
     compile 'org.apache.thrift:libthrift:0.9.3'
+    compile 'mysql:mysql-connector-java:5.1.6'
+    compile 'com.jolbox:bonecp:0.8.0.RELEASE'
 }
 
 project.description = '''
@@ -40,3 +42,14 @@ project.description = '''
     3) sms
     4) 敏感词校验
 '''
+
+jar {
+    // build one flat jar
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }    
+
+    manifest {
+        attributes 'Main-Class': 'com.moseeker.common.dbconnection.Test'
+    }
+}

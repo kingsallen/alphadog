@@ -1,3 +1,5 @@
+apply plugin: 'idea'
+
 project.description = '''
 the service layer of moseeker. It\'s going to serve all moseeker\'s products.
     1) a SpringMVC to provide HTTP API
@@ -9,10 +11,10 @@ allprojects {
 
     repositories {
 
-        //mavenCentral()
-        maven { url 'http://maven.outofmemory.cn/' }
         maven { url 'http://maven.oschina.net/content/groups/public/' }
-        //maven { url 'https://plugins.gradle.org/m2/'}
+        maven { url 'http://maven.outofmemory.cn/' }
+        maven { url 'https://plugins.gradle.org/m2/'}
+        mavenCentral()
         
     }
 

@@ -12,7 +12,7 @@ dependencies {
 
 }
 
-compileJava.dependsOn(":thrift-gen-java:copyGeneratedFile")
+compileJava.dependsOn(":thrift-jooq:copyGeneratedFile")
 
 jar {
 
