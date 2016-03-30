@@ -19,4 +19,8 @@ public class Constant {
 	/*zookeeper配置*/
 	public static final int ZOOKEEPER_PORT = 2181;
 	public static final String ZOOKEEPER_ADDRESS = "127.0.0.1";
+	
+	/* 敏感词配置*/
+	public static final String SENSITIVE_WORDS = "sensitiveWords";
+	public static final String DASVALIDATE_SENSITIVEWORDS_ILLEGAL = "敏感词校验失败";
 }

@@ -1,21 +1,18 @@
 package com.moseeker.common.dbconnection;
 
-import java.util.Properties;
-
-import com.moseeker.common.util.ConfigPropertiesUtil;
-import org.jooq.*;
-import org.jooq.impl.*;
-
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.sql.Connection;
+import java.sql.SQLException;
+
+import org.jooq.DSLContext;
+import org.jooq.SQLDialect;
+import org.jooq.impl.DSL;
 
 import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPConfig;
+import com.moseeker.common.util.ConfigPropertiesUtil;
 
 public class DatabaseConnectionHelper {
 
-    private static ConfigPropertiesUtil dbPropertiesReader = null;
     private static BoneCP connectionPool = null;
     private static BoneCPConfig config = null;
     private static String url = null;
@@ -26,7 +23,7 @@ public class DatabaseConnectionHelper {
 
     static {
         try {
-            dbPropertiesReader = DBPropertiesReader.getDBPropertiesReader();
+        	ConfigPropertiesUtil dbPropertiesReader = DBPropertiesReader.getDBPropertiesReader();
             url = dbPropertiesReader.get("mycat.url", String.class); // read from .properties file
             userName = dbPropertiesReader.get("mycat.userName", String.class);
             password = dbPropertiesReader.get("mycat.password", String.class);

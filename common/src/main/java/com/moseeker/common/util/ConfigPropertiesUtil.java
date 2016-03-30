@@ -28,7 +28,9 @@ public class ConfigPropertiesUtil {
 		properties = new Properties();
 		InputStream inputStream = null;
 		try {
-			inputStream = ConfigPropertiesUtil.class.getClassLoader().getResourceAsStream("serviceprovider.properties"); 
+			//需要load common项目本地配置文件
+			//load service provider的配置文件
+			inputStream = ConfigPropertiesUtil.class.getClassLoader().getResourceAsStream("serviceprovicer.properties"); 
 			properties.load(inputStream);
 		} catch (Exception e) {
 			//todo 错误信息需要记录到日志中
@@ -55,7 +57,6 @@ public class ConfigPropertiesUtil {
 			properties.load(inputStream);
 		} catch (Exception e) {
 			//todo 错误信息需要记录到日志中
-			e.printStackTrace();
 			throw new Exception("can not find default properties");
 		} finally {
 			if(inputStream != null) {
