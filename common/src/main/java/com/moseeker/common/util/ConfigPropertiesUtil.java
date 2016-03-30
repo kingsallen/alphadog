@@ -28,7 +28,7 @@ public class ConfigPropertiesUtil {
 		properties = new Properties();
 		InputStream inputStream = null;
 		try {
-			inputStream = ConfigPropertiesUtil.class.getClassLoader().getResourceAsStream("serviceprovicer"); 
+			inputStream = ConfigPropertiesUtil.class.getClassLoader().getResourceAsStream("serviceprovider.properties"); 
 			properties.load(inputStream);
 		} catch (Exception e) {
 			//todo 错误信息需要记录到日志中
