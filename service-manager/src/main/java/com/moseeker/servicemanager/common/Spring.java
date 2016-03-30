@@ -11,7 +11,7 @@ public class Spring {
 	}
 	
 	public static String getRemoteIp(HttpServletRequest request){
-		String remoteIpForwardedbyLbs = request.getHeader("HTTP_X_FORWARDED_FOR");
+		String remoteIpForwardedbyLbs = request.getHeader("REMOTE_ADDR");// php 和 python tornado  不一致， 需要实际测试。
 		return remoteIpForwardedbyLbs == null ? request.getRemoteAddr() : remoteIpForwardedbyLbs;
 	}
 	
