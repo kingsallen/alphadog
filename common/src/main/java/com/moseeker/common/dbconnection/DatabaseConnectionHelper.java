@@ -1,5 +1,11 @@
 package com.moseeker.common.dbconnection;
 
+
+import com.moseeker.common.util.ConfigPropertiesUtil;
+import org.jooq.*;
+import org.jooq.impl.*;
+
+import java.sql.SQLException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -29,7 +35,6 @@ public class DatabaseConnectionHelper {
             password = dbPropertiesReader.get("mycat.password", String.class);
             minConnections = dbPropertiesReader.get("mycat.minConnections", Integer.class);
             maxConnections = dbPropertiesReader.get("mycat.maxConnections", Integer.class);
-            System.out.println(url);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -64,28 +69,25 @@ public class DatabaseConnectionHelper {
     }
 
     public static DSLContext getCreate() throws SQLException {
-        long currentTime = System.currentTimeMillis();
         Connection conn = getConnection();
-        System.out.println("connection: " + (System.currentTimeMillis() - currentTime));
         return getCreate(conn);
     }
 
     private static Connection getConnection() throws SQLException {
-        // System.out.println(url);
-        // System.out.println(userName);
-        // System.out.println(password);
         return connectionPool.getConnection();
-        // return DriverManager.getConnection(url, userName, password);
     }
 
 }
 
+
 class DBPropertiesReader {
 
+    private static String myCatConfigPropertiesFileName = "mycatConfig.properties";
+
     public static ConfigPropertiesUtil getDBPropertiesReader() throws Exception {
-        ConfigPropertiesUtil cpu = ConfigPropertiesUtil.getInstance();
-        cpu.loadResource("mycatConfig.properties");
-        return cpu;
+        ConfigPropertiesUtil myCatConfigPropertiesUtil = ConfigPropertiesUtil.getInstance();
+        myCatConfigPropertiesUtil.loadResource(myCatConfigPropertiesFileName);
+        return myCatConfigPropertiesUtil;
     }
 
 }

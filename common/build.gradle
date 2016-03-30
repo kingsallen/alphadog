@@ -9,7 +9,7 @@ repositories {
 }
 
 repositories {
-    maven  {
+    maven {
         url "http://maven.oschina.net/content/groups/public/"
     }
 }
@@ -18,7 +18,6 @@ dependencies {
     compile "junit:junit:4.5"
     compile "log4j:log4j:1.2.9"
     compile "org.apache.httpcomponents:httpcore:4.4.1"
-    compile "org.apache.httpcomponents:httpclient:4.4.1"
     compile "joda-time:joda-time:2.7"
     compile "redis.clients:jedis:2.8.0"
     compile "org.jooq:jooq:3.7.3"
@@ -26,11 +25,11 @@ dependencies {
     compile "org.jooq:jooq-codegen:3.7.3"
     compile "mysql:mysql-connector-java:5.1.6"
     compile "org.apache.zookeeper:zookeeper:3.4.5"
-    compile 'org.apache.curator:curator-framework:2.10.0'
-    compile 'com.alibaba:fastjson:1.2.8'
-    compile 'org.apache.thrift:libthrift:0.9.3'
-    compile 'mysql:mysql-connector-java:5.1.6'
-    compile 'com.jolbox:bonecp:0.8.0.RELEASE'
+    compile "org.apache.curator:curator-framework:2.10.0"
+    compile "com.alibaba:fastjson:1.2.8"
+    compile "org.apache.thrift:libthrift:0.9.3"
+    compile "mysql:mysql-connector-java:5.1.6"
+    compile "com.jolbox:bonecp:0.8.0.RELEASE"
 }
 
 project.description = '''
@@ -48,9 +47,41 @@ jar {
     // build one flat jar
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    }    
+    }
 
     manifest {
-        attributes 'Main-Class': 'com.moseeker.common.dbconnection.Test'
+        attributes 'Main-Class': 'com.moseeker.common.dbconnection.Test';
     }
 }
+
+sourceSets {
+    main {
+        resources {
+            exclude '**/*'
+        }
+    }
+}
+
+
+task copyEnvResources {
+
+    group "environmental configs"
+    description "Use one set of configs in /src/main/resources/\$env, defaults to 'debug'"
+
+    def env = project.getProperties()['env'] ?: 'debug'
+    def envResourcesSrc = "src/main/resources/$env/"
+
+    doLast {
+        copy {
+            from envResourcesSrc
+            into processResources.destinationDir
+        }
+    }
+
+}
+
+jar {
+    dependsOn copyEnvResources
+}
+
+
