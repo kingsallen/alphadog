@@ -46,6 +46,11 @@ public abstract class BaseThriftClient {
 		// .buildTemp();
 
 		List<String> iplist = this.zooclient.getChildren().forPath("/servers");
+		
+		if (iplist.isEmpty()){
+			throw new Exception("no service provider found!");
+		}
+		
 		String thriftserver = iplist.get(0); // 临时用第一个;
 		return thriftserver;
 
