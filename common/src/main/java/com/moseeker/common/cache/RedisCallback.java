@@ -9,7 +9,7 @@ package com.moseeker.common.cache;
  * @author wjf
  * @version
  */
-public interface ReidsCallback {
+public interface RedisCallback {
 
 	public String call();
 }

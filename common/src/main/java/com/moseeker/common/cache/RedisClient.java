@@ -131,7 +131,7 @@ public class RedisClient {
 	}
 
 	public String getWith(int appId, String key_identifier, String str,
-			ReidsCallback callback) throws Exception {
+			RedisCallback callback) throws Exception {
 		String result = "";
 		CacheConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
 		String cacheKey = String.format(redisKey.getPattern(), str);
@@ -162,7 +162,7 @@ public class RedisClient {
 	}
 
 	public String getWith(int appId, String key_identifier, String str1,
-			String str2, ReidsCallback callback) throws Exception {
+			String str2, RedisCallback callback) throws Exception {
 		String result = "";
 		CacheConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
 		String cacheKey = String.format(redisKey.getPattern(), str1, str2);
