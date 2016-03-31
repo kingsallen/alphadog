@@ -1,4 +1,5 @@
 apply plugin: 'idea'
+apply from: 'versions.gradle'
 
 project.description = '''
 the service layer of moseeker. It\'s going to serve all moseeker\'s products.
