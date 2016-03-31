@@ -10,9 +10,6 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.common.cache.RedisClient;
 
 public class Spring {
-	private final static int appid = 0;
-	private final static String logkey = "LOG";
-
 	public static String getRestfullApiName(HttpServletRequest request){
 		  String path = (String) request.getAttribute(
 		            HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
@@ -24,18 +21,6 @@ public class Spring {
 		return remoteIpForwardedbyLbs == null ? request.getRemoteAddr() : remoteIpForwardedbyLbs;
 	}
 	
-	public static void logRequestResponse(HttpServletRequest request, String response){
-		Map reqResp = new HashMap();
-		reqResp.put("request", request.getParameterMap());
-		reqResp.put("response", response);
-		try {
-			RedisClient.getInstance().lpush(appid, logkey, JSON.toJSONString(reqResp));
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
 	
 	public static CommonQuery initCommonQuery(CommonQuery query, HttpServletRequest request) throws Exception{
 		if (request.getParameter("appid") != null) {
