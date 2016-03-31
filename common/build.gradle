@@ -15,21 +15,20 @@ repositories {
 }
 
 dependencies {
-    compile "junit:junit:4.5"
-    compile "log4j:log4j:1.2.9"
-    compile "org.apache.httpcomponents:httpcore:4.4.1"
-    compile "joda-time:joda-time:2.7"
-    compile "redis.clients:jedis:2.8.0"
-    compile "org.jooq:jooq:3.7.3"
-    compile "org.jooq:jooq-meta:3.7.3"
-    compile "org.jooq:jooq-codegen:3.7.3"
-    compile "mysql:mysql-connector-java:5.1.6"
-    compile "org.apache.zookeeper:zookeeper:3.4.5"
-    compile "org.apache.curator:curator-framework:2.10.0"
-    compile "com.alibaba:fastjson:1.2.8"
-    compile "org.apache.thrift:libthrift:0.9.3"
-    compile "mysql:mysql-connector-java:5.1.6"
-    compile "com.jolbox:bonecp:0.8.0.RELEASE"
+    compile deps["junit"]
+    compile deps["log4j"]
+    compile deps["httpcore"]
+    compile deps["joda-time"]
+    compile deps["jedis"]
+    compile deps["jooq"]
+    compile deps["jooq-meta"]
+    compile deps["jooq-codegen"]
+    compile deps["mysql-connector-java"]
+    compile deps["zookeeper"]
+    compile deps["curator-framework"]
+    compile deps["fastjson"]
+    compile deps["libthrift"]
+    compile deps["bonecp"]
 }
 
 project.description = '''

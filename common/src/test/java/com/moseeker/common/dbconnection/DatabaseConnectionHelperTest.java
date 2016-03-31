@@ -18,7 +18,7 @@ public class DatabaseConnectionHelperTest {
             new Thread(() -> {
 
                 try {
-                    DSLContext create = DatabaseConnectionHelper.getCreate();
+                    DSLContext create = DatabaseConnectionHelper.getJooqDSL();
                     Result<Record> result = create.select().from("friendrequests").fetch();
                     System.out.println(result);
                 } catch (Exception e) {

@@ -1,9 +1,6 @@
 package com.moseeker.common.dbconnection;
 
-import com.moseeker.common.dbconnection.DatabaseConnectionHelper;
 import org.jooq.*;
-import org.jooq.impl.*;
-import java.sql.Connection;
 
 public class Test {
 
@@ -14,8 +11,8 @@ public class Test {
             new Thread(() -> {
 
                 try {
-                    DSLContext create = DatabaseConnectionHelper.getCreate();
-                    Result<Record> result = create.select().from("friendrequests").fetch();
+                    DSLContext dsl = DatabaseConnectionHelper.getJooqDSL();
+                    Result<Record> result = dsl.select().from("friendrequests").fetch();
                     System.out.println(result);
                 } catch (Exception e) {
                     e.printStackTrace();

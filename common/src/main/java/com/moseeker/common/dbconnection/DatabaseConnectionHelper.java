@@ -2,12 +2,9 @@ package com.moseeker.common.dbconnection;
 
 
 import com.moseeker.common.util.ConfigPropertiesUtil;
-import org.jooq.*;
-import org.jooq.impl.*;
 
 import java.sql.SQLException;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
@@ -15,7 +12,6 @@ import org.jooq.impl.DSL;
 
 import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPConfig;
-import com.moseeker.common.util.ConfigPropertiesUtil;
 
 public class DatabaseConnectionHelper {
 
@@ -64,13 +60,13 @@ public class DatabaseConnectionHelper {
         }
     }
 
-    private static DSLContext getCreate(Connection conn) throws SQLException {
+    private static DSLContext getJooqDSL(Connection conn) throws SQLException {
         return DSL.using(conn, SQLDialect.MYSQL);
     }
 
-    public static DSLContext getCreate() throws SQLException {
+    public static DSLContext getJooqDSL() throws SQLException {
         Connection conn = getConnection();
-        return getCreate(conn);
+        return getJooqDSL(conn);
     }
 
     private static Connection getConnection() throws SQLException {
