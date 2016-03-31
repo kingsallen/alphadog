@@ -22,6 +22,8 @@
 
 # Logs and databases #
 ######################
+logs/*
+log/*
 *.log
 
 # OS generated files #

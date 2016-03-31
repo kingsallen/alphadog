@@ -1,3 +1,5 @@
 include 'common', 'service-manager', 'thrift-jooq', 'service-definition'
 
 include 'user-service-provider'
+include 'rpc-center'
+

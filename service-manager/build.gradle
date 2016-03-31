@@ -14,6 +14,7 @@ webAppDirName = 'WebContent'    // 设置 WebApp 根目录
 dependencies {
     //compile project(":thrift-gen-java")
     compile project(":common")
+    compile project(":rpc-center")
     compile 'com.alibaba:fastjson:1.2.8' 
     compile 'junit:junit:4.12'
     compile 'org.apache.zookeeper:zookeeper:3.4.8'
