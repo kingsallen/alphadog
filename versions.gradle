@@ -10,7 +10,8 @@ ext {
             "jooq-codegen": "org.jooq:jooq-codegen:3.7.3",
             "mysql-connector-java": "mysql:mysql-connector-java:5.1.6",
             "zookeeper": "org.apache.zookeeper:zookeeper:3.4.5",
-            "curator-framework": "org.apache.curator:curator-framework:2.10.0",
+//            "curator-framework": "org.apache.curator:curator-framework:2.10.0",
+            "curator-recipes": "org.apache.curator:curator-recipes:2.3.0",
             "fastjson": "com.alibaba:fastjson:1.2.8",
             "libthrift": "org.apache.thrift:libthrift:0.9.3",
             "bonecp": "com.jolbox:bonecp:0.8.0.RELEASE"

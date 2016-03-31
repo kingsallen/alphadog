@@ -25,7 +25,7 @@ dependencies {
     compile deps["jooq-codegen"]
     compile deps["mysql-connector-java"]
     compile deps["zookeeper"]
-    compile deps["curator-framework"]
+    compile deps["curator-recipes"]
     compile deps["fastjson"]
     compile deps["libthrift"]
     compile deps["bonecp"]

@@ -1,0 +1,17 @@
+version 'unspecified'
+
+apply plugin: 'java'
+apply plugin: 'idea'
+
+sourceCompatibility = 1.5
+
+repositories {
+    maven { url 'http://maven.oschina.net/content/groups/public/' }
+}
+
+// 设置依赖
+dependencies {
+    compile project(":rpc-center")
+    compile deps["log4j"]
+
+}

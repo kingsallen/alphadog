@@ -12,11 +12,11 @@ public class ClientDemo {
     public static void main(String[] args) {
         RegistryConfig registryConfig = new RegistryConfig();
         registryConfig.setConnectstr("127.0.0.1:4181");
-        registryConfig.setNamespace("moseeker");
+        registryConfig.setNamespace("services");
 
         String iface = Iface.class.getName();
         ClientConfig<Iface> clientConfig = new ClientConfig<Iface>();
-        clientConfig.setService("com.moseeker.user.demo$EchoService");
+        clientConfig.setService("com.moseeker.thrift.service$EchoService");
         clientConfig.setIface(iface);
 
         try {
