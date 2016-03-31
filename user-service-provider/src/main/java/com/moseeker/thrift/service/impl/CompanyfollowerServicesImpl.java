@@ -4,6 +4,7 @@ import static com.moseeker.db.userdb.tables.Companyfollowers.COMPANYFOLLOWERS;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import org.jooq.SQLDialect;
 import org.jooq.SelectJoinStep;
 import org.jooq.impl.DSL;
 
+import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.companyfollowers.Companyfollower;
 import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerQuery;
 import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerServices;
@@ -61,10 +63,8 @@ CompanyfollowerServices.Iface {
 				companyfollowers.add(follower);
 			}
 						
-		}
-		// For the sake of this tutorial, let's keep exception handling simple
-		catch (Exception e) {
-			e.printStackTrace();
+		}catch (SQLException e) {
+			ResponseLogNotification.sendNotification(query.getAppid(), "MYSQL_CONNECT_ERROR", e.getMessage());
 		}
 		return companyfollowers;
 	}

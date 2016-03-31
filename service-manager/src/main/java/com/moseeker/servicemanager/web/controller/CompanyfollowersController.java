@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.servicemanager.common.ResponseLogNotifyalert;
+import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.common.RestfulController;
 import com.moseeker.servicemanager.common.Spring;
 import com.moseeker.thrift.client.BaseThriftClient;
@@ -60,10 +60,10 @@ public class CompanyfollowersController implements RestfulController {
 			
 			List<Companyfollower> companyfollowers = thriftclient.callThriftServerGet(query);
 			jsonStringResponse = JSON.toJSONString(companyfollowers);
-			writer.write(ResponseLogNotifyalert.success(request, jsonStringResponse));
+			writer.write(ResponseLogNotification.success(request, jsonStringResponse));
 			writer.flush();
 		} catch (Exception e) {	
-			writer.write(ResponseLogNotifyalert.fail(request, e.getMessage()));
+			writer.write(ResponseLogNotification.fail(request, e.getMessage()));
 			writer.flush();
 		} finally {
 			if (writer != null) {
