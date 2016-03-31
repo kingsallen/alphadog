@@ -39,6 +39,7 @@ public class ResponseLogNotification {
 
 	private final static int appid = 0;
 	private final static String logkey = "LOG";
+	private final static String eventkey = "RESTFUL_API_ERROR";
 
 	public static String success(HttpServletRequest request, String jsondata) {
 
@@ -58,6 +59,7 @@ public class ResponseLogNotification {
 		response.setMessage(message);
 		String jsonresponse = JSON.toJSONString(response);
 		logRequestResponse(request, jsonresponse);
+		sendNotification(Integer.parseInt(request.getParameter("appid")), eventkey, message);
 		return jsonresponse;
 	}
 
@@ -68,6 +70,7 @@ public class ResponseLogNotification {
 		response.setMessage(message);
 		String jsonresponse = JSON.toJSONString(response);
 		logRequestResponse(request, jsonresponse);
+		sendNotification(appid, eventkey, message);
 		return jsonresponse;
 	}
 
@@ -79,6 +82,7 @@ public class ResponseLogNotification {
 		response.setData(jsondata);
 		String jsonresponse = JSON.toJSONString(response);
 		logRequestResponse(request, jsonresponse);
+		sendNotification(appid, eventkey, message + "," + jsondata);
 		return jsonresponse;
 	}
 
@@ -96,10 +100,6 @@ public class ResponseLogNotification {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	public static void notification() {
-
 	}
 
 	public static void main(String[] args) {
