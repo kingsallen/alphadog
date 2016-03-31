@@ -6,7 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.common.cache.RedisClient;
+import com.moseeker.common.redis.RedisClientFactory;
 
 public class ResponseLogNotifyalert {
 	public String message = null;
@@ -69,7 +69,7 @@ public class ResponseLogNotifyalert {
 		reqResp.put("web_server_ip", "192.22.22.22");
 
 		try {
-			RedisClient.getInstance().lpush(appid, logkey, JSON.toJSONString(reqResp));
+			RedisClientFactory.getInstance().getLog().lpush(appid, logkey, JSON.toJSONString(reqResp));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
