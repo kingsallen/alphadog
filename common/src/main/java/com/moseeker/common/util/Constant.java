@@ -27,4 +27,8 @@ public class Constant {
 	/* 敏感词配置*/
 	public static final String SENSITIVE_WORDS = "sensitiveWords";
 	public static final String DASVALIDATE_SENSITIVEWORDS_ILLEGAL = "敏感词校验失败";
+	
+	/* redis log */
+	// log_redis_host log_redis_port cache_redis_host cache_redis_port session_redis_host session_redis_port
+	// logConfigKeyName logConfigTimeOut logConfigType cacheConfigKeyName cacheConfigTimeOut cacheConfigType sessionConfigKeyName sessionConfigTimeOut sessionConfigType
 }

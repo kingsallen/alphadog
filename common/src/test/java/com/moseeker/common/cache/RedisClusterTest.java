@@ -2,6 +2,8 @@ package com.moseeker.common.cache;
 
 import org.junit.Test;
 
+import com.moseeker.common.redis.cache.CacheClient;
+
 public class RedisClusterTest {
 
 	@Test
@@ -32,7 +34,7 @@ public class RedisClusterTest {
 				}
     		}
     	}*/
-		RedisClient redisClient = RedisClient.getInstance();
+		CacheClient redisClient = CacheClient.getInstance();
 		String key = "DEFAULT";
 		long start = System.currentTimeMillis();
     	String redisValue = "";

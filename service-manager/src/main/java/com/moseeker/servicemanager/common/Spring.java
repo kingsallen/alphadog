@@ -4,10 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.web.servlet.HandlerMapping;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.common.cache.RedisClient;
+import com.moseeker.common.redis.cache.CacheClient;
 
 public class Spring {
 	public static String getRestfullApiName(HttpServletRequest request){
@@ -20,7 +21,6 @@ public class Spring {
 		String remoteIpForwardedbyLbs = request.getHeader("REMOTE_ADDR");// php 和 python tornado  不一致， 需要实际测试。
 		return remoteIpForwardedbyLbs == null ? request.getRemoteAddr() : remoteIpForwardedbyLbs;
 	}
-	
 	
 	public static CommonQuery initCommonQuery(CommonQuery query, HttpServletRequest request) throws Exception{
 		if (request.getParameter("appid") != null) {
