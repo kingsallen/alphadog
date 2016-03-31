@@ -1,9 +1,9 @@
 package com.moseeker.servicemanager.common;
 
-import static com.moseeker.db.userdb.tables.Companyfollowers.COMPANYFOLLOWERS;
 import static com.moseeker.servicemanager.db.configdb.tables.AdminnotificationEvents.ADMINNOTIFICATION_EVENTS;
 import static com.moseeker.servicemanager.db.configdb.tables.AdminnotificationGroupmembers.ADMINNOTIFICATION_GROUPMEMBERS;
 import static com.moseeker.servicemanager.db.configdb.tables.AdminnotificationMembers.ADMINNOTIFICATION_MEMBERS;
+
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,24 +12,13 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.CuratorFrameworkFactory;
-import org.apache.curator.retry.ExponentialBackoffRetry;
-import org.apache.thrift.TException;
-import org.apache.thrift.protocol.TBinaryProtocol;
-import org.apache.thrift.protocol.TProtocol;
-import org.apache.thrift.transport.TSocket;
-import org.apache.thrift.transport.TTransport;
-import org.apache.thrift.transport.TTransportException;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.dbconnection.DatabaseConnectionHelper;
-import com.moseeker.thrift.gen.companyfollowers.Companyfollower;
-import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerServices;
+import com.moseeker.common.redis.RedisClientFactory;
 
 public class ResponseLogNotification {
 	public String message = null;
