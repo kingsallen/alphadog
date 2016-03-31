@@ -2,6 +2,7 @@ package com.moseeker.common.redis;
 
 import com.moseeker.common.redis.cache.CacheClient;
 import com.moseeker.common.redis.log.LogClient;
+import com.moseeker.common.redis.session.SessionClient;
 
 /**
  * 
@@ -24,6 +25,11 @@ public class RedisClientFactory {
 	private LogClient logClient;
 	
 	/**
+	 * Session帮助类
+	 */
+	private SessionClient sessionClient;
+	
+	/**
 	 * 工厂类对象
 	 */
 	private static volatile RedisClientFactory instance;
@@ -34,6 +40,7 @@ public class RedisClientFactory {
 	private  RedisClientFactory () {
 		cacheClient = CacheClient.getInstance();
 		logClient = LogClient.getInstance();
+		sessionClient = SessionClient.getInstance();
 	}
 	
 	/**
@@ -65,5 +72,13 @@ public class RedisClientFactory {
 	 */
 	public RedisClient getLog() {
 		return logClient;
+	}
+	
+	/**
+	 * 获取日志帮助客户端
+	 * @return
+	 */
+	public RedisClient getSession() {
+		return sessionClient;
 	}
 }

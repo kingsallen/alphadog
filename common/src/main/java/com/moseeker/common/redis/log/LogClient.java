@@ -11,6 +11,15 @@ import com.moseeker.common.redis.cache.CacheClient;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
 
+/**
+ * 
+ * log帮助类 
+ * <p>Company: MoSeeker</P>  
+ * <p>date: Mar 31, 2016</p>  
+ * <p>Email: wjf2255@gmail.com</p>
+ * @author wjf
+ * @version
+ */
 public class LogClient extends RedisClient {
 
 	private static volatile LogClient instance = null;
