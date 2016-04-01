@@ -30,7 +30,7 @@ public class ConfigPropertiesUtil {
 		try {
 			//需要load common项目本地配置文件
 			//load service provider的配置文件
-			inputStream = ConfigPropertiesUtil.class.getClassLoader().getResourceAsStream("serviceprovicer.properties"); 
+			inputStream = ConfigPropertiesUtil.class.getClassLoader().getResourceAsStream("common.properties"); 
 			properties.load(inputStream);
 		} catch (Exception e) {
 			//todo 错误信息需要记录到日志中
