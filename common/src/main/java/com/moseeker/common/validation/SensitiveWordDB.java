@@ -1,4 +1,4 @@
-package com.moseeker.common.verification;
+package com.moseeker.common.validation;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 import com.moseeker.common.exception.ParamNullException;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.FormCheck;
-import com.moseeker.common.verification.sensitivewords.SensitiveWordNode;
+import com.moseeker.common.validation.sensitivewords.SensitiveWordNode;
 import com.mysql.jdbc.StringUtils;
 
 /**

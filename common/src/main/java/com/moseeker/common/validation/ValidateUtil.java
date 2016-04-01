@@ -1,4 +1,4 @@
-package com.moseeker.common.verification;
+package com.moseeker.common.validation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,16 +10,16 @@ import org.apache.log4j.Logger;
 import com.moseeker.common.exception.ValidateNotAppointParamException;
 import com.moseeker.common.exception.ValidateNotAppointValidateException;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.verification.rules.DateType;
-import com.moseeker.common.verification.rules.DateTypeValidateRule;
-import com.moseeker.common.verification.rules.DoubleTypeValidateRule;
-import com.moseeker.common.verification.rules.IntTypeValidateRule;
-import com.moseeker.common.verification.rules.RegExpressValidateRule;
-import com.moseeker.common.verification.rules.RequiredOneValidateRule;
-import com.moseeker.common.verification.rules.RequiredStringValidateRule;
-import com.moseeker.common.verification.rules.RequiredValidateRule;
-import com.moseeker.common.verification.rules.SensitiveWordsValidateRule;
-import com.moseeker.common.verification.rules.StringLengthValidateRule;
+import com.moseeker.common.validation.rules.DateType;
+import com.moseeker.common.validation.rules.DateTypeValidateRule;
+import com.moseeker.common.validation.rules.DoubleTypeValidateRule;
+import com.moseeker.common.validation.rules.IntTypeValidateRule;
+import com.moseeker.common.validation.rules.RegExpressValidateRule;
+import com.moseeker.common.validation.rules.RequiredOneValidateRule;
+import com.moseeker.common.validation.rules.RequiredStringValidateRule;
+import com.moseeker.common.validation.rules.RequiredValidateRule;
+import com.moseeker.common.validation.rules.SensitiveWordsValidateRule;
+import com.moseeker.common.validation.rules.StringLengthValidateRule;
 
 /**
  * 

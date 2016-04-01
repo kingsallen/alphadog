@@ -1,11 +1,11 @@
-package com.moseeker.common.verification.rules;
+package com.moseeker.common.validation.rules;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.moseeker.common.exception.ValidateNotAppointParamException;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.verification.ValidateRule;
+import com.moseeker.common.validation.ValidateRule;
 
 /**
  * 

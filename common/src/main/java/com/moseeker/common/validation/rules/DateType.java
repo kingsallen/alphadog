@@ -1,4 +1,4 @@
-package com.moseeker.common.verification.rules;
+package com.moseeker.common.validation.rules;
 /**
  * 
  * @description 日期类型 shortDate表示yyyy-MM-dd longDate表示yyyy-MM-dd HH:mm:ss

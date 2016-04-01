@@ -1,4 +1,4 @@
-package com.moseeker.common.verification.sensitivewords;
+package com.moseeker.common.validation.sensitivewords;
 
 import java.util.ArrayList;
 import java.util.List;

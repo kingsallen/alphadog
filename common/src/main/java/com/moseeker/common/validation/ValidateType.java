@@ -1,4 +1,4 @@
-package com.moseeker.common.verification;
+package com.moseeker.common.validation;
 
 public enum ValidateType {
 

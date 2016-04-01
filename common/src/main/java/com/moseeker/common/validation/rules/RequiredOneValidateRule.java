@@ -1,9 +1,9 @@
-package com.moseeker.common.verification.rules;
+package com.moseeker.common.validation.rules;
 
 import java.util.List;
 
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.verification.ValidateRule;
+import com.moseeker.common.validation.ValidateRule;
 
 public class RequiredOneValidateRule extends ValidateRule {
 

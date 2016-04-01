@@ -1,4 +1,4 @@
-package com.moseeker.common.verification;
+package com.moseeker.common.validation;
 
 import com.moseeker.common.exception.ValidateNotAppointParamException;
 import com.moseeker.common.exception.ValidateNotValidateException;

@@ -1,10 +1,10 @@
-package com.moseeker.common.verification.rules;
+package com.moseeker.common.validation.rules;
 
 import com.moseeker.common.exception.ValidateIllegalParamException;
 import com.moseeker.common.exception.ValidateNotAppointParamException;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.verification.ValidateRule;
+import com.moseeker.common.validation.ValidateRule;
 /**
  * 
  * 判断是否是只保留小数点后面2位数的浮点数值 
