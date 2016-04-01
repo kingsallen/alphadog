@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jooq.DSLContext;
@@ -18,6 +20,7 @@ import org.jooq.Result;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.dbconnection.DatabaseConnectionHelper;
+import com.moseeker.common.email.Email;
 import com.moseeker.common.redis.RedisClientFactory;
 
 public class ResponseLogNotification {
@@ -130,7 +133,22 @@ public class ResponseLogNotification {
 					
 				}
 				if (emailEnabled.equals("1")) {
-					//send (emails, notificationText);
+					System.out.println("start send emails.");		
+					System.out.println(emails);		
+			        try {
+						Email registerSuccessEmail =  new Email();
+						registerSuccessEmail.setSubject("报警通知")
+						                    .setText(notificationText)
+						                    .addRecipients(emails)
+						                    .send();
+						
+					} catch (AddressException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (MessagingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}					
 				}
 				if (smsEnabled.equals("1")) {
 					//send (mobiles, notificationText);
