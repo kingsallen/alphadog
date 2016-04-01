@@ -12,43 +12,65 @@ import org.jooq.impl.DSL;
 
 import com.moseeker.common.redis.RedisConfigRedisKey;
 import com.moseeker.common.redis.cache.db.configdb.Tables;
+import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.Constant;
 
 /**
  * 
- * 数据库管理 
- * <p>Company: MoSeeker</P>  
- * <p>date: Mar 29, 2016</p>  
- * <p>Email: wjf2255@gmail.com</p>
+ * 数据库管理
+ * <p>
+ * Company: MoSeeker
+ * </P>
+ * <p>
+ * date: Mar 29, 2016
+ * </p>
+ * <p>
+ * Email: wjf2255@gmail.com
+ * </p>
+ * 
  * @author wjf
  * @version Beta
  */
 public class DbManager {
-	
-	private DbManager() {}
-	
+
+	private DbManager() {
+	}
+
 	/**
 	 * 根据项目编号和标识符查询缓存编号信息
-	 * @param appId 项目编号
-	 * @param keyIdentifier 标识符
-	 * @return CacheConfigRedisKey {@see com.moseeker.common.cache.lru.CacheConfigRedisKey}
+	 * 
+	 * @param appId
+	 *            项目编号
+	 * @param keyIdentifier
+	 *            标识符
+	 * @return CacheConfigRedisKey {@see
+	 *         com.moseeker.common.cache.lru.CacheConfigRedisKey}
 	 */
-	public static RedisConfigRedisKey readFromDB(int appId, String keyIdentifier, byte configType) {
+	public static RedisConfigRedisKey readFromDB(int appId,
+			String keyIdentifier, byte configType) {
+		ConfigPropertiesUtil configUtil = ConfigPropertiesUtil.getInstance();
 		RedisConfigRedisKey redisKey = new RedisConfigRedisKey();
-		try (Connection conn = DriverManager.getConnection(Constant.CACHE_URL, Constant.CACHE_USERNAME,
-				Constant.CACHE_PASSWORD)) {
+		try (Connection conn = DriverManager.getConnection(
+				configUtil.get("cache_url", String.class),
+				configUtil.get("cache_username", String.class),
+				configUtil.get("cache_password", String.class))) {
 			DSLContext create = DSL.using(conn, SQLDialect.MYSQL);
-			Record row = create.select()
+			Record row = create
+					.select()
 					.from(Tables.CACHECONFIG_REDISKEY)
-					.where(Tables.CACHECONFIG_REDISKEY.PROJECT_APPID.equal(appId))
+					.where(Tables.CACHECONFIG_REDISKEY.PROJECT_APPID
+							.equal(appId))
 					.and(Tables.CACHECONFIG_REDISKEY.TYPE.equal(configType))
 					.and(Tables.CACHECONFIG_REDISKEY.KEY_IDENTIFIER
 							.equal(keyIdentifier)).fetchAny();
-			if ( row != null ){
-				redisKey.setAppId(row.getValue(Tables.CACHECONFIG_REDISKEY.PROJECT_APPID));
-				redisKey.setKeyIdentifier(row.getValue(Tables.CACHECONFIG_REDISKEY.KEY_IDENTIFIER));
+			if (row != null) {
+				redisKey.setAppId(row
+						.getValue(Tables.CACHECONFIG_REDISKEY.PROJECT_APPID));
+				redisKey.setKeyIdentifier(row
+						.getValue(Tables.CACHECONFIG_REDISKEY.KEY_IDENTIFIER));
 				redisKey.setDesc(row.getValue(Tables.CACHECONFIG_REDISKEY.DESC));
-				redisKey.setPattern(row.getValue(Tables.CACHECONFIG_REDISKEY.PATTERN));
+				redisKey.setPattern(row
+						.getValue(Tables.CACHECONFIG_REDISKEY.PATTERN));
 				redisKey.setTtl(row.getValue(Tables.CACHECONFIG_REDISKEY.TTL));
 			}
 
@@ -57,29 +79,42 @@ public class DbManager {
 		}
 		return redisKey;
 	}
-	
+
 	/**
 	 * 查询缓存标识符关键词。至多查找200条记录
-	 * @return List<CacheConfigRedisKey> {@see com.moseeker.common.cache.lru.CacheConfigRedisKey }
+	 * 
+	 * @return List<CacheConfigRedisKey> {@see
+	 *         com.moseeker.common.cache.lru.CacheConfigRedisKey }
 	 */
 	public static List<RedisConfigRedisKey> readAllConfigFromDB(byte configType) {
 		List<RedisConfigRedisKey> redisKeys = new ArrayList<>();
-		try (Connection conn = DriverManager.getConnection(Constant.CACHE_URL, Constant.CACHE_USERNAME,
-				Constant.CACHE_PASSWORD)) {
+		ConfigPropertiesUtil configUtil = ConfigPropertiesUtil.getInstance();
+		try (Connection conn = DriverManager.getConnection(
+				configUtil.get("cache_url", String.class),
+				configUtil.get("cache_username", String.class),
+				configUtil.get("cache_password", String.class))) {
 			DSLContext create = DSL.using(conn, SQLDialect.MYSQL);
 			create.select()
 					.from(Tables.CACHECONFIG_REDISKEY)
 					.where(Tables.CACHECONFIG_REDISKEY.TYPE.equal(configType))
-					.limit(0, 200).fetch()
-					.forEach((row)->{
-						RedisConfigRedisKey redisKey = new RedisConfigRedisKey();
-						redisKey.setAppId(row.getValue(Tables.CACHECONFIG_REDISKEY.PROJECT_APPID));
-						redisKey.setKeyIdentifier(row.getValue(Tables.CACHECONFIG_REDISKEY.KEY_IDENTIFIER));
-						redisKey.setDesc(row.getValue(Tables.CACHECONFIG_REDISKEY.DESC));
-						redisKey.setPattern(row.getValue(Tables.CACHECONFIG_REDISKEY.PATTERN));
-						redisKey.setTtl(row.getValue(Tables.CACHECONFIG_REDISKEY.TTL));
-						redisKeys.add(redisKey);
-					});;
+					.limit(0, 200)
+					.fetch()
+					.forEach(
+							(row) -> {
+								RedisConfigRedisKey redisKey = new RedisConfigRedisKey();
+								redisKey.setAppId(row
+										.getValue(Tables.CACHECONFIG_REDISKEY.PROJECT_APPID));
+								redisKey.setKeyIdentifier(row
+										.getValue(Tables.CACHECONFIG_REDISKEY.KEY_IDENTIFIER));
+								redisKey.setDesc(row
+										.getValue(Tables.CACHECONFIG_REDISKEY.DESC));
+								redisKey.setPattern(row
+										.getValue(Tables.CACHECONFIG_REDISKEY.PATTERN));
+								redisKey.setTtl(row
+										.getValue(Tables.CACHECONFIG_REDISKEY.TTL));
+								redisKeys.add(redisKey);
+							});
+			;
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -87,4 +122,3 @@ public class DbManager {
 		return redisKeys;
 	}
 }
-
