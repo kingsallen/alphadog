@@ -42,7 +42,7 @@ public class RedisClientFactory {
 	 * 获取缓存帮助客户端
 	 * @return CacheClient{@see com.moseeker.common.cache.CacheClient}
 	 */
-	public static RedisClient getCache() {
+	public static RedisClient getCacheClient() {
 		if(cacheClient == null) {
 			cacheClient = CacheClient.getInstance();
 		}
@@ -53,7 +53,7 @@ public class RedisClientFactory {
 	 * 获取日志帮助客户端
 	 * @return
 	 */
-	public RedisClient getLog() {
+	public static RedisClient getLogClient() {
 		if(logClient == null) {
 			logClient = LogClient.getInstance();
 		}
@@ -61,10 +61,10 @@ public class RedisClientFactory {
 	}
 	
 	/**
-	 * 获取日志帮助客户端
+	 * 获取会话帮助客户端
 	 * @return
 	 */
-	public RedisClient getSession() {
+	public static RedisClient getSessionClient() {
 		if(sessionClient == null) {
 			sessionClient = SessionClient.getInstance();
 		}
