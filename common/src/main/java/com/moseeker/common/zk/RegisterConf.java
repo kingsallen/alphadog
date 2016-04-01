@@ -4,7 +4,6 @@ import org.apache.thrift.TBaseProcessor;
 import org.apache.zookeeper.CreateMode;
 
 import com.moseeker.common.util.ConfigPropertiesUtil;
-import com.moseeker.common.util.Constant;
 
 /**
  * 
@@ -17,8 +16,8 @@ import com.moseeker.common.util.Constant;
  */
 public class RegisterConf {
 
-	private int zookeeperPort = Constant.ZOOKEEPER_PORT;			//
-	private String zookeeperAddress = Constant.ZOOKEEPER_ADDRESS;
+	private int zookeeperPort = 2801;			//
+	private String zookeeperAddress = "localhost";
 	private int sessionTimeOut = 3000;
 	private int connectionTimeOut = 3000;
 	private int baseSleepTime = 1000;
