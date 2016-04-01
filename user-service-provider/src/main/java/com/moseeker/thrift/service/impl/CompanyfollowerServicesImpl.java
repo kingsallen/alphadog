@@ -19,11 +19,15 @@ import org.jooq.SQLDialect;
 import org.jooq.SelectJoinStep;
 import org.jooq.impl.DSL;
 
-import com.moseeker.common.util.Notification;
+import com.moseeker.common.redis.RedisCallback;
+import com.moseeker.common.redis.RedisClient;
+import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.companyfollowers.Companyfollower;
 import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerQuery;
 import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerServices;
+
+
 
 public class CompanyfollowerServicesImpl implements
 CompanyfollowerServices.Iface {
@@ -65,7 +69,7 @@ CompanyfollowerServices.Iface {
 			}
 						
 		}catch (SQLException e) {
-			; // Notification.sendNotification(query.getAppid(), "MYSQL_CONNECT_ERROR", e.getMessage());
+			;//ResponseLogNotification.sendNotification(query.getAppid(), "MYSQL_CONNECT_ERROR", e.getMessage());
 		}
 		return companyfollowers;
 	}
@@ -127,5 +131,37 @@ CompanyfollowerServices.Iface {
 		}
 		return delret;
 	}
+
+
+	
+	public static void main(String[] args) {
+		
+		RedisClient client = RedisClientFactory.getCacheClient();
+		String str = client.get(0, "DEFAULT", "user1", new RedisCallback(){
+			@Override
+			public String call() {
+				
+				try (Connection conn = DriverManager.getConnection(url, userName, password)) {
+					DSLContext create = DSL.using(conn, SQLDialect.MYSQL);
+
+					Record ret = create.select().from(COMPANYFOLLOWERS).where(COMPANYFOLLOWERS.USERID.equal(11))
+							.fetchAny();
+					System.out.println("ret result: " + ret);
+					return String.valueOf(ret.getValue(COMPANYFOLLOWERS.ID));
+
+				}
+				// For the sake of this tutorial, let's keep exception handling simple
+				catch (Exception e) {
+					 e.printStackTrace();
+				}
+				return null;
+			}
+		});
+		
+		System.out.print(str);
+	}
+	
+
+	
 
 }

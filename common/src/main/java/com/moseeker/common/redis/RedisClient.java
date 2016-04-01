@@ -30,7 +30,7 @@ public abstract class RedisClient {
 			for (RedisConfigRedisKey redisKey : redisKeys) {
 				String keyword = redisConfigKeyName + "_" + redisKey.getAppId()
 						+ redisKey.getKeyIdentifier();
-				if (redisCluster.exists(keyword)) {
+				if (!redisCluster.exists(keyword)) {
 					redisCluster.setex(keyword, redisConfigTimeOut,
 							JSON.toJSONString(redisKey));
 				}
