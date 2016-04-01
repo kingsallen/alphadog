@@ -19,6 +19,7 @@ import org.jooq.SQLDialect;
 import org.jooq.SelectJoinStep;
 import org.jooq.impl.DSL;
 
+import com.moseeker.common.util.Notification;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.companyfollowers.Companyfollower;
 import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerQuery;
@@ -64,7 +65,7 @@ CompanyfollowerServices.Iface {
 			}
 						
 		}catch (SQLException e) {
-			ResponseLogNotification.sendNotification(query.getAppid(), "MYSQL_CONNECT_ERROR", e.getMessage());
+			; // Notification.sendNotification(query.getAppid(), "MYSQL_CONNECT_ERROR", e.getMessage());
 		}
 		return companyfollowers;
 	}
