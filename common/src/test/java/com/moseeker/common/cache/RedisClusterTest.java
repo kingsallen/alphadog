@@ -34,7 +34,7 @@ public class RedisClusterTest {
 				}
     		}
     	}*/
-		CacheClient redisClient = CacheClient.getInstance();
+		/*CacheClient redisClient = CacheClient.getInstance();
 		String key = "DEFAULT";
 		long start = System.currentTimeMillis();
     	String redisValue = "";
@@ -49,6 +49,6 @@ public class RedisClusterTest {
     	long afterGetAndSet = System.currentTimeMillis();
     	System.out.println("redisKey:"+redisKey);
     	System.out.println("redisValue:"+redisValue);
-    	System.out.println(key+":"+(afterGetAndSet-start)/1000.0 +" s");
+    	System.out.println(key+":"+(afterGetAndSet-start)/1000.0 +" s");*/
 	}
 }

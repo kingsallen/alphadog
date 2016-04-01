@@ -18,51 +18,34 @@ public class RedisClientFactory {
 	/**
 	 * 缓存帮助类
 	 */
-	private CacheClient cacheClient;
+	private static CacheClient cacheClient;
 	/**
 	 * 日志帮助类
 	 */
-	private LogClient logClient;
+	private static LogClient logClient;
 	
 	/**
 	 * Session帮助类
 	 */
-	private SessionClient sessionClient;
-	
-	/**
-	 * 工厂类对象
-	 */
-	private static volatile RedisClientFactory instance;
+	private static SessionClient sessionClient;
 	
 	/**
 	 * Redis工厂创建方法
 	 */
-	private  RedisClientFactory () {
+	public  RedisClientFactory () {
 		cacheClient = CacheClient.getInstance();
 		logClient = LogClient.getInstance();
 		sessionClient = SessionClient.getInstance();
 	}
 	
 	/**
-	 * Redis工厂初始化方法
-	 * @return RedisClientFactory
-	 */
-	public static RedisClientFactory getInstance() {
-		if (instance == null) {
-			synchronized (CacheClient.class) {
-				if (instance == null) {
-					instance = new RedisClientFactory();
-				}
-			}
-		}
-		return instance;
-	}
-	
-	/**
 	 * 获取缓存帮助客户端
 	 * @return CacheClient{@see com.moseeker.common.cache.CacheClient}
 	 */
-	public RedisClient getCache() {
+	public static RedisClient getCache() {
+		if(cacheClient == null) {
+			cacheClient = CacheClient.getInstance();
+		}
 		return cacheClient;
 	}
 	
@@ -71,6 +54,9 @@ public class RedisClientFactory {
 	 * @return
 	 */
 	public RedisClient getLog() {
+		if(logClient == null) {
+			logClient = LogClient.getInstance();
+		}
 		return logClient;
 	}
 	
@@ -79,6 +65,9 @@ public class RedisClientFactory {
 	 * @return
 	 */
 	public RedisClient getSession() {
+		if(sessionClient == null) {
+			sessionClient = SessionClient.getInstance();
+		}
 		return sessionClient;
 	}
 }
