@@ -73,7 +73,7 @@ public class ResponseLogNotification {
 		reqResp.put("web_server_ip", "192.22.22.22");
 
 		try {
-			RedisClientFactory.getInstance().getLog().lpush(appid, logkey, JSON.toJSONString(reqResp));
+			RedisClientFactory.getLogClient().lpush(appid, logkey, JSON.toJSONString(reqResp));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
