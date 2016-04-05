@@ -16,7 +16,24 @@ import javax.mail.Message;
 import java.util.ArrayList;
 import java.util.stream.Collector;
 
-public class Email {
+/**
+ * Created by chendi on 3/31/16.
+ */
+public class EmailDemo {
+
+    public static void main(String[] args) throws MessagingException {
+
+        String registerEmail = "chendi@moseeker.com";
+        Email registerSuccessEmail =  new Email();
+        registerSuccessEmail.setSubject("Congratulations")
+                            .setText("<h1>Welcome to moseeker!</h1>")
+                            .addRecipient(registerEmail)
+                            .send();
+    }
+
+}
+
+class Email {
     private static String senderAddress = null;
     private static String serverDomain = null;
     private static Integer serverPort = null;
