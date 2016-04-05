@@ -9,7 +9,7 @@ import com.moseeker.thrift.service.EchoServiceImpl;
 public class DemoServer {
 
     /** 配置文件路径，配置说明参考 {@link Server#Server(String , Object )} */
-    public static final String CONFIG_FILE_PATH = "classpath:demo/demo-server.properties";
+    public static final String CONFIG_FILE_PATH = "demo/demo-server.properties";
 
     /** 是否保持启动 */
     private static boolean running = true;

@@ -1,39 +1,19 @@
 package com.moseeker.common.email;
 
 import com.moseeker.common.util.ConfigPropertiesUtil;
-
 import java.util.List;
 import java.util.Properties;
+import javax.mail.*;
 import javax.mail.Message.RecipientType;
-import javax.mail.Session;
-import javax.mail.Address;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import javax.mail.Transport;
-import javax.mail.MessagingException;
-import javax.mail.Message;
+import javax.mail.internet.*;
 import java.util.ArrayList;
-import java.util.stream.Collector;
+import com.moseeker.common.email.attachment.Attachment;
 
 /**
  * Created by chendi on 3/31/16.
  */
-public class EmailDemo {
 
-    public static void main(String[] args) throws MessagingException {
-
-        String registerEmail = "chendi@moseeker.com";
-        Email registerSuccessEmail =  new Email();
-        registerSuccessEmail.setSubject("Congratulations")
-                            .setText("<h1>Welcome to moseeker!</h1>")
-                            .addRecipient(registerEmail)
-                            .send();
-    }
-
-}
-
-class Email {
+public class Email {
     private static String senderAddress = null;
     private static String serverDomain = null;
     private static Integer serverPort = null;
@@ -67,13 +47,26 @@ class Email {
         Properties properties = new Properties();
         properties.setProperty("mail.smtp.auth", "true");
         properties.setProperty("mail.transport.protocol", "smtp");
+
         Session session = Session.getDefaultInstance(properties);
-        session.setDebug(true);
+        session.setDebug(true); // debug mode
+
         Message message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(senderAddress));
+        message.setFrom(new InternetAddress(senderAddress)); // header -- from
+
+        Multipart multipart = new MimeMultipart("mixed");
+        message.setContent(multipart);
+
         return message;
     }
 
+    // header -- subject
+    public Email setSubject(String subject) throws MessagingException {
+        this.message.setSubject(subject);
+        return this;
+    }
+
+    // header - recipient
     public Email addRecipient(String recipientEmailAddress) throws AddressException {
         this.recipients.add(new InternetAddress(recipientEmailAddress));
         return this;
@@ -90,13 +83,17 @@ class Email {
         return this;
     }
 
+    // content body -- pure text
     public Email setText(String text) throws MessagingException {
-        this.message.setText(text);
+//        MimeBodyPart m = new MimeBodyPart();
+//        m.setContent(text);
+//        ((Multipart)this.message.getContent()).addBodyPart(m);
         return this;
     }
 
-    public Email setSubject(String subject) throws MessagingException {
-        this.message.setSubject(subject);
+    public Email addAttachment(Attachment attachment) throws Exception {
+        ((Multipart)this.message.getContent()).addBodyPart(attachment.getAttachment());
+        this.message.saveChanges();
         return this;
     }
 
