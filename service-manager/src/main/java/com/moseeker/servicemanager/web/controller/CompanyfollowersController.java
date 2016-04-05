@@ -37,10 +37,8 @@ public class CompanyfollowersController implements RestfulController {
 		String jsonStringResponse = null;
 		try {
 			writer = response.getWriter();
-			CompanyfollowerQuery query = new CompanyfollowerQuery();
 			// GET方法 通用参数解析并赋值
-			query = (CompanyfollowerQuery) Spring.initCommonQuery(query,
-					request);
+			CompanyfollowerQuery query = Spring.initCommonQuery(request, CompanyfollowerQuery.class);
 
 			// 特有参数解析并赋值
 			if (request.getParameter("userid") != null) {

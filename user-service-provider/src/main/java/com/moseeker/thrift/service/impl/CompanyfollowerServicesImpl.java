@@ -22,7 +22,6 @@ import org.jooq.impl.DSL;
 import com.moseeker.common.redis.RedisCallback;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
-import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.companyfollowers.Companyfollower;
 import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerQuery;
 import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerServices;

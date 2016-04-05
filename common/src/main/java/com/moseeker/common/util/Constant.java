@@ -9,11 +9,15 @@ package com.moseeker.common.util;
  * @author wjf
  * @email wjf2255@gmail.com
  */
-public class Constant {
+public final class Constant {
+	
+	private Constant() throws AssertionError {
+		throw new AssertionError();
+	};
 	
 	public static final String DASVALIDATE_SENSITIVEWORDS_ILLEGAL = "敏感词校验失败";
 	
-	/* redis log */
-	// log_redis_host log_redis_port cache_redis_host cache_redis_port session_redis_host session_redis_port
-	// logConfigKeyName logConfigTimeOut logConfigType cacheConfigKeyName cacheConfigTimeOut cacheConfigType sessionConfigKeyName sessionConfigTimeOut sessionConfigType
+	public static final int logConfigType = 3;
+	public static final int cacheConfigType = 1;
+	public static final int sessionConfigType = 2;
 }

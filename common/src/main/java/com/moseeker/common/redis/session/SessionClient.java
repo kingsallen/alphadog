@@ -9,6 +9,7 @@ import redis.clients.jedis.JedisCluster;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.cache.CacheClient;
 import com.moseeker.common.util.ConfigPropertiesUtil;
+import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.StringUtils;
 
 /**
@@ -31,7 +32,7 @@ public class SessionClient extends RedisClient {
 				String.class);
 		redisConfigTimeOut = propertiesUtils.get("sessionConfigTimeOut",
 				Integer.class);
-		redisConfigType = propertiesUtils.get("sessionConfigType", Byte.class);
+		redisConfigType = Constant.sessionConfigType;
 		redisCluster = initRedisCluster();
 		reloadRedisKey();
 	}

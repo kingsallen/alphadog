@@ -16,5 +16,7 @@ ext {
             "libthrift": "org.apache.thrift:libthrift:0.9.3",
             "bonecp": "com.jolbox:bonecp:0.8.0.RELEASE",
             "javamail": "javax.mail:mail:1.5.0-b01"
+	    "servlet-api":'javax.servlet:javax.servlet-api:3.0.1'
+
     ]
 }
