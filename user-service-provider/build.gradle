@@ -2,7 +2,9 @@ apply plugin: 'idea'
   
 dependencies {
 
-    // compile project(":thrift-gen-java")
+//    compile project(":thrift-jooq")
+
+    compile project(":common")
 
     compile 'org.jooq:jooq:3.7.3'
 
@@ -14,7 +16,7 @@ dependencies {
 
 }
 
-compileJava.dependsOn(":thrift-jooq:copyGeneratedFile")
+//compileJava.dependsOn(":thrift-jooq:copyGeneratedFile")
 
 jar {
 
