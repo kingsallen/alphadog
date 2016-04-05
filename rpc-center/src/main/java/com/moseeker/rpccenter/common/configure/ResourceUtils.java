@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.io.InputStream;
 
 import org.apache.commons.lang.ArrayUtils;
 
@@ -78,6 +79,35 @@ public class ResourceUtils {
             locationPattern = "file:" + locationPattern;
             return ResourceUtils.loadResources(locationPattern);
         }
+    }
+
+    /**
+     * 从项目，jar或文件系统中读取指定路径的文件<br />
+     * <p>
+     *
+     * @param locationPattern
+     * <br/>
+     *            0. 路径寻址前缀请参见{@link ResourceConstants}<br />
+     *            1. 使用file，classpath和classpath*做路径开头<br />
+     *            2. classpath寻址项目中的文件<br />
+     *            3. classpath*既寻址项目，也寻址jar包中的文件<br />
+     *            4. file寻址文件系统中的文件<br />
+     *            5. 默认是classpath 6.
+     *            例如：classpath*:log/log4j.xml；file:/home/ydhl/
+     *            abc.sh；classpath:log/log4j.xml
+     * @return 返回配置文件InputStream
+     * @throws IOException
+     * @throws URISyntaxException
+     *             中文路径支持
+     */
+    public static InputStream getResourceAsStream(String locationPattern) throws IOException, URISyntaxException {
+        String location = locationPattern.substring(ResourceConstants.CLASSPATH_URL_PREFIX.getValue().length());
+        if (location.startsWith(ResourceConstants.FOLDER_SEPARATOR.getValue())) {
+            location = location.substring(1);
+        }
+
+        String cleanPath = PathUtils.cleanPath(location);
+        return getDefaultClassLoader().getResourceAsStream(cleanPath);
     }
 
     private static URL[] load1(String locationPattern) throws IOException, URISyntaxException {
