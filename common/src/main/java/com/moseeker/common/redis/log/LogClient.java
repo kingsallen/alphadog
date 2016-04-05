@@ -38,7 +38,7 @@ public class LogClient extends RedisClient {
 
 	public static LogClient getInstance() {
 		if (instance == null) {
-			synchronized (CacheClient.class) {
+			synchronized (LogClient.class) {
 				if (instance == null) {
 					instance = new LogClient();
 				}

@@ -38,7 +38,7 @@ public class SessionClient extends RedisClient {
 
 	public static SessionClient getInstance() {
 		if (instance == null) {
-			synchronized (CacheClient.class) {
+			synchronized (SessionClient.class) {
 				if (instance == null) {
 					instance = new SessionClient();
 				}
