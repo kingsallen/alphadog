@@ -83,14 +83,15 @@ public class Email {
         return this;
     }
 
-    // content body -- pure text
-    public Email setText(String text) throws MessagingException {
-//        MimeBodyPart m = new MimeBodyPart();
-//        m.setContent(text);
-//        ((Multipart)this.message.getContent()).addBodyPart(m);
+    // email content body
+    public Email setBody(String text) throws Exception {
+        MimeBodyPart body = new MimeBodyPart();
+        ((Multipart)this.message.getContent()).addBodyPart(body);
+        body.setText(text, "utf-8", "html");
         return this;
     }
 
+    // email attachment
     public Email addAttachment(Attachment attachment) throws Exception {
         ((Multipart)this.message.getContent()).addBodyPart(attachment.getAttachment());
         this.message.saveChanges();

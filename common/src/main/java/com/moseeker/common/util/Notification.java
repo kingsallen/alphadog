@@ -1,6 +1,5 @@
 package com.moseeker.common.util;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,7 +60,7 @@ public class Notification {
 			        try {
 						Email registerSuccessEmail =  new Email();
 						registerSuccessEmail.setSubject("报警通知")
-						                    .setText(notificationText)
+						                    .setBody(notificationText)
 						                    .addRecipients(emails)
 						                    .send();
 						
