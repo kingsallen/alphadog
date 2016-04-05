@@ -11,6 +11,9 @@ import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+
+import java.io.*;
+
 /**
  * Created by zzh on 16/3/29.
  */
@@ -121,11 +124,10 @@ public class PropertiesConfiguration extends Properties {
     }
 
     private PropertiesConfiguration(String locationPattern) throws IOException, URISyntaxException {
-        String path = "";
         InputStreamReader is = null;
         try {
-            path = PathUtils.getRealPath(locationPattern);
-            is = new InputStreamReader(new FileInputStream(path), "UTF-8");
+            InputStream isr = ResourceUtils.getResourceAsStream(locationPattern);
+            is = new InputStreamReader(isr);
             load(is);
         } finally {
             if (is != null) {

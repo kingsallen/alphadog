@@ -3,7 +3,7 @@ version 'unspecified'
 apply plugin: 'java'
 apply plugin: 'idea'
 
-sourceCompatibility = 1.5
+sourceCompatibility = 1.8
 
 repositories {
     maven { url 'http://maven.oschina.net/content/groups/public/' }

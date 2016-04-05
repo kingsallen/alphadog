@@ -15,18 +15,19 @@ dependencies {
     //compile project(":thrift-gen-java")
     compile project(":common")
     compile project(":rpc-center")
-    compile 'com.alibaba:fastjson:1.2.8' 
-    compile 'junit:junit:4.12'
-    compile 'org.apache.zookeeper:zookeeper:3.4.8'
+    compile deps["fastjson"]
+    compile deps["junit"]
+    compile deps["zookeeper"]
     //compile 'org.apache.curator:curator-framework:2.10.0'
-    compile "org.apache.curator:curator-recipes:2.3.0"
-    compile "org.slf4j:slf4j-log4j12:1.7.18"
-    compile "redis.clients:jedis:2.8.0"
+    compile deps["curator-recipes"]
+    compile deps["log4j"]
+    compile deps["jedis"]
     compile "org.springframework:spring-context:4.2.3.RELEASE"
     compile "org.springframework:spring-webmvc:4.1.6.RELEASE"
+    compile "org.springframework:spring-test:4.1.6.RELEASE"
     compile "com.ryantenney.log4j:redis-appender:1.0.0"
 
-    providedCompile 'javax.servlet:servlet-api:2.5'
+    compile deps["servlet-api"]
     runtime 'javax.servlet:jstl:1.1.2'
 }
 

@@ -1,5 +1,9 @@
 package com.moseeker.common.util;
 
+import static com.moseeker.common.redis.cache.db.configdb.tables.AdminnotificationEvents.ADMINNOTIFICATION_EVENTS;
+import static com.moseeker.common.redis.cache.db.configdb.tables.AdminnotificationGroupmembers.ADMINNOTIFICATION_GROUPMEMBERS;
+import static com.moseeker.common.redis.cache.db.configdb.tables.AdminnotificationMembers.ADMINNOTIFICATION_MEMBERS;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,13 +14,8 @@ import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
 
-import static com.moseeker.common.redis.cache.db.configdb.tables.AdminnotificationEvents.ADMINNOTIFICATION_EVENTS;
-import static com.moseeker.common.redis.cache.db.configdb.tables.AdminnotificationGroupmembers.ADMINNOTIFICATION_GROUPMEMBERS;
-import static com.moseeker.common.redis.cache.db.configdb.tables.AdminnotificationMembers.ADMINNOTIFICATION_MEMBERS;
-
-
 import com.moseeker.common.dbconnection.DatabaseConnectionHelper;
-import com.moseeker.common.email.*;
+import com.moseeker.common.email.Email;
 
 public class Notification {
 

@@ -9,6 +9,7 @@ import redis.clients.jedis.JedisCluster;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.cache.CacheClient;
 import com.moseeker.common.util.ConfigPropertiesUtil;
+import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.StringUtils;
 
 /**
@@ -31,14 +32,14 @@ public class LogClient extends RedisClient {
 				String.class);
 		redisConfigTimeOut = propertiesUtils.get("logConfigTimeOut",
 				Integer.class);
-		redisConfigType = propertiesUtils.get("logConfigType", Byte.class);
+		redisConfigType = Constant.logConfigType;
 		redisCluster = initRedisCluster();
 		reloadRedisKey();
 	}
 
 	public static LogClient getInstance() {
 		if (instance == null) {
-			synchronized (CacheClient.class) {
+			synchronized (LogClient.class) {
 				if (instance == null) {
 					instance = new LogClient();
 				}
