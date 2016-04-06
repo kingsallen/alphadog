@@ -2,41 +2,17 @@ package com.moseeker.common.cache;
 
 import org.junit.Test;
 
-import com.moseeker.common.redis.cache.CacheClient;
+import com.google.common.base.Stopwatch;
+import com.moseeker.common.redis.RedisClient;
+import com.moseeker.common.redis.RedisClientFactory;
 
 public class RedisClusterTest {
 
 	@Test
 	public void connPoolTest() {
-		/*for(int i=0; i< 5; i++) {
-    		String key = "test"+i;
-    		Runnable run = () -> {
-    			long start = System.currentTimeMillis();
-    	    	String redisValue = "";
-				try {
-					String redisKey = Redis.set(1, key, "test", "test value");
-					redisValue = Redis.get(1, "test", redisKey);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-    	    	long afterGetAndSet = System.currentTimeMillis();
-    	    	System.out.println("redisValue:"+redisValue);
-    	    	System.out.println(key+":"+(start-afterGetAndSet)/1000.0 +" s");
-    		};
-    		run.run();
-    		
-    		if(i == 20) {
-    			try {
-					Thread.sleep(3000l);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-    		}
-    	}*/
-		/*CacheClient redisClient = CacheClient.getInstance();
+		RedisClient redisClient = RedisClientFactory.getCacheClient();
 		String key = "DEFAULT";
-		long start = System.currentTimeMillis();
+		Stopwatch stopWatch = Stopwatch.createStarted();
     	String redisValue = "";
     	String redisKey = "";
 		try {
@@ -46,9 +22,9 @@ public class RedisClusterTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	long afterGetAndSet = System.currentTimeMillis();
+		stopWatch.stop();
     	System.out.println("redisKey:"+redisKey);
     	System.out.println("redisValue:"+redisValue);
-    	System.out.println(key+":"+(afterGetAndSet-start)/1000.0 +" s");*/
+    	System.out.println(stopWatch.toString() +" s");
 	}
 }

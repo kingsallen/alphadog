@@ -1,7 +1,9 @@
 package com.moseeker.common.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Properties;
 
 /**
@@ -30,6 +32,11 @@ public class ConfigPropertiesUtil {
 		try {
 			//需要load common项目本地配置文件
 			//load service provider的配置文件
+			File directory = new File("");//参数为空 
+			String courseFile = directory.getCanonicalPath() ; 
+			System.out.println(courseFile); 
+			URL xmlpath = this.getClass().getClassLoader().getResource(".");
+			System.out.println(xmlpath);
 			inputStream = ConfigPropertiesUtil.class.getClassLoader().getResourceAsStream("common.properties"); 
 			properties.load(inputStream);
 		} catch (Exception e) {

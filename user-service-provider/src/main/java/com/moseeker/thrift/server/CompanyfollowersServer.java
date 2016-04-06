@@ -44,8 +44,8 @@ public class CompanyfollowersServer {
 		try {
 			handler = new CompanyfollowerServicesImpl();
 			processor = new Processor<CompanyfollowerServicesImpl>(handler);
-			RegisterZKServer registerZKServer = RegisterZKServer.getInstance(processor);
-			registerZKServer.registerServer();
+			//RegisterZKServer registerZKServer = RegisterZKServer.getInstance(processor);
+			//registerZKServer.registerServer();
 
 		} catch (Exception x) {
 			x.printStackTrace();

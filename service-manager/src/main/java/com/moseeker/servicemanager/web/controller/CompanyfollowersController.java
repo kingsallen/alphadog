@@ -1,6 +1,5 @@
 package com.moseeker.servicemanager.web.controller;
 
-import java.io.PrintWriter;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
-import com.moseeker.servicemanager.common.RestfulController;
 import com.moseeker.servicemanager.common.Spring;
 import com.moseeker.thrift.client.BaseThriftClient;
 import com.moseeker.thrift.client.CompanyfollowersClient;
@@ -23,20 +21,19 @@ import com.moseeker.thrift.gen.companyfollowers.Companyfollower;
 import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerQuery;
 
 @Controller
-public class CompanyfollowersController implements RestfulController {
+public class CompanyfollowersController  {
 
 	Logger logger = LoggerFactory.getLogger(CompanyfollowersController.class);
 	
 	BaseThriftClient thriftclient = new CompanyfollowersClient();
-	@Override
+	
 	@RequestMapping(value = "/companyfollowers", method = RequestMethod.GET)
 	@ResponseBody
-	public void get(HttpServletRequest request, HttpServletResponse response) {
+	public String get(HttpServletRequest request, HttpServletResponse response) {
 		// TODO Auto-generated method stub
-		PrintWriter writer = null;
+		//PrintWriter writer = null;
 		String jsonStringResponse = null;
 		try {
-			writer = response.getWriter();
 			// GET方法 通用参数解析并赋值
 			CompanyfollowerQuery query = Spring.initCommonQuery(request, CompanyfollowerQuery.class);
 
@@ -58,20 +55,15 @@ public class CompanyfollowersController implements RestfulController {
 			
 			List<Companyfollower> companyfollowers = thriftclient.callThriftServerGet(query);
 			jsonStringResponse = JSON.toJSONString(companyfollowers);
-			writer.write(ResponseLogNotification.success(request, jsonStringResponse));
-			writer.flush();
+			
+			ResponseLogNotification.success(request, jsonStringResponse);
 		} catch (Exception e) {	
-			writer.write(ResponseLogNotification.fail(request, e.getMessage()));
-			writer.flush();
+			ResponseLogNotification.fail(request, e.getMessage());
 		} finally {
-			if (writer != null) {
-				writer.close();
-			}
 		}
-
+		return jsonStringResponse;
 	}
 
-	@Override
 	@RequestMapping(value = "/companyfollowers", method = RequestMethod.POST)
 	@ResponseBody
 	public void post(HttpServletRequest request, HttpServletResponse response) {
@@ -79,7 +71,6 @@ public class CompanyfollowersController implements RestfulController {
 
 	}
 
-	@Override
 	@RequestMapping(value = "/companyfollowers", method = RequestMethod.PUT)
 	@ResponseBody
 	public void put(HttpServletRequest request, HttpServletResponse response) {
@@ -87,7 +78,6 @@ public class CompanyfollowersController implements RestfulController {
 
 	}
 
-	@Override
 	@RequestMapping(value = "/companyfollowers", method = RequestMethod.DELETE)
 	@ResponseBody
 	public void delete(HttpServletRequest request, HttpServletResponse response) {

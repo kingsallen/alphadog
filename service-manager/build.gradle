@@ -4,7 +4,7 @@ apply plugin: 'java'
 apply plugin: 'war'
 apply plugin: 'jetty'
 apply plugin: 'idea'
-//apply plugin: 'eclipse-wtp'
+apply plugin: 'eclipse-wtp'
 
 webAppDirName = 'WebContent'    // 设置 WebApp 根目录
   

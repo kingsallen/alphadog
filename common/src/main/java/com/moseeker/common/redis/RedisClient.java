@@ -7,6 +7,7 @@ import redis.clients.jedis.JedisCluster;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.exception.CacheConfigNotExistException;
 import com.moseeker.common.redis.cache.db.DbManager;
+import com.moseeker.common.util.Notification;
 import com.moseeker.common.util.StringUtils;
 
 public abstract class RedisClient {
@@ -60,6 +61,7 @@ public abstract class RedisClient {
 				redisCluster.setex(appIdKeyIdentifier, redisConfigTimeOut,
 						JSON.toJSONString(redisKey));
 			} else {
+				//Notification.sendNotification(appId, "", "未能找到关键词数据库配置信息");
 				throw new CacheConfigNotExistException();
 			}
 		} else {

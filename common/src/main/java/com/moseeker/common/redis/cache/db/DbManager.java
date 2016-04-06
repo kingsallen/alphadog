@@ -80,8 +80,6 @@ public class DbManager {
 	 */
 	public static List<RedisConfigRedisKey> readAllConfigFromDB(byte configType) {
 		List<RedisConfigRedisKey> redisKeys = new ArrayList<>();
-		ConfigPropertiesUtil configUtil = ConfigPropertiesUtil.getInstance();
-
 		DSLContext create;
 		try {
 			create = DatabaseConnectionHelper.getJooqDSL();

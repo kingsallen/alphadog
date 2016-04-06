@@ -1,11 +1,10 @@
 apply plugin: 'idea'
+apply plugin: 'eclipse'
   
 dependencies {
 
-//    compile project(":thrift-jooq")
-
+    // compile project(":thrift-gen-java")
     compile project(":common")
-
     compile 'org.jooq:jooq:3.7.3'
 
     compile 'org.apache.zookeeper:zookeeper:3.4.8'
@@ -13,6 +12,10 @@ dependencies {
     compile "org.apache.curator:curator-recipes:2.3.0"
 
     compile 'junit:junit:4.12'
+    compile deps["libthrift"]
+    compile deps["jooq"]
+    compile deps["jooq-meta"]
+    compile deps["jooq-codegen"]
 
 }
 
