@@ -28,11 +28,11 @@ public class Notification {
         String content = propertiesReader.get("mycat.error.content", String.class);
         List<String> recipients = Arrays.asList(propertiesReader.get("mycat.error.recipients", String.class).split(","));
         try {
-            Email mycatConnectionErrorEmail = new Email();
-            mycatConnectionErrorEmail.setSubject(subject)
-                    .setBody(content + ":\n" + errorMessage)
-                    .addRecipients(recipients)
-                    .send();
+            Email mycatConnectionErrorEmail = new Email.EmailBuilder(recipients)
+                                                                .setSubject(subject)
+                                                                .setContent(content)
+                                                                .build();
+            mycatConnectionErrorEmail.send();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -77,11 +77,11 @@ public class Notification {
                     System.out.println("start send emails.");
                     System.out.println(emails);
                     try {
-                        Email registerSuccessEmail = new Email();
-                        registerSuccessEmail.setSubject("报警通知")
-                                .setBody(notificationText)
-                                .addRecipients(emails)
-                                .send();
+                        Email registerSuccessEmail = new Email.EmailBuilder(emails)
+                                                                .setSubject("报警通知")
+                                                                .setContent(notificationText)
+                                                                .build();
+                        registerSuccessEmail.send();
 
                     } catch (AddressException e) {
                         // TODO Auto-generated catch block

@@ -1,12 +1,14 @@
 package com.moseeker.common.email;
 
 import com.moseeker.common.util.ConfigPropertiesUtil;
+
 import java.util.List;
 import java.util.Properties;
 import javax.mail.*;
 import javax.mail.Message.RecipientType;
 import javax.mail.internet.*;
 import java.util.ArrayList;
+
 import com.moseeker.common.email.attachment.Attachment;
 
 /**
@@ -14,93 +16,20 @@ import com.moseeker.common.email.attachment.Attachment;
  */
 
 public class Email {
-    private static String senderAddress = null;
-    private static String serverDomain = null;
-    private static Integer serverPort = null;
-    private static String userName = null;
-    private static String password = null;
 
-    static {
-        try {
-            ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
-            senderAddress = propertiesReader.get("email.senderAddress", String.class);
-            serverDomain = propertiesReader.get("email.serverDomain", String.class);
-            serverPort = propertiesReader.get("email.serverPort", Integer.class);
-            userName = propertiesReader.get("email.userName", String.class);
-            password = propertiesReader.get("email.password", String.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    private static ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
+    private static final String serverDomain = propertiesReader.get("email.serverDomain", String.class);
+    private static final Integer serverPort = propertiesReader.get("email.serverPort", Integer.class);
+    private static final String userName = propertiesReader.get("email.userName", String.class);
+    private static final String password = propertiesReader.get("email.password", String.class);
 
-    private Message message;
-    private ArrayList<InternetAddress> recipients;
+    private final Message message;
 
-    public Email() throws MessagingException {
-
-        this.message = this.generateMessage();
-        this.recipients = new ArrayList<InternetAddress>();
-
-    }
-
-    private Message generateMessage() throws MessagingException {
-        Properties properties = new Properties();
-        properties.setProperty("mail.smtp.auth", "true");
-        properties.setProperty("mail.transport.protocol", "smtp");
-
-        Session session = Session.getDefaultInstance(properties);
-        session.setDebug(true); // debug mode
-
-        Message message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(senderAddress)); // header -- from
-
-        Multipart multipart = new MimeMultipart("mixed");
-        message.setContent(multipart);
-
-        return message;
-    }
-
-    // header -- subject
-    public Email setSubject(String subject) throws MessagingException {
-        this.message.setSubject(subject);
-        return this;
-    }
-
-    // header - recipient
-    public Email addRecipient(String recipientEmailAddress) throws AddressException {
-        this.recipients.add(new InternetAddress(recipientEmailAddress));
-        return this;
-    }
-
-    public Email addRecipients(List<String> recipientsEmailAddresses) throws AddressException {
-        ArrayList<InternetAddress> recipientsInternetAddresses = new ArrayList<>();
-
-        for(String recipientEmailAddress: recipientsEmailAddresses) {
-            recipientsInternetAddresses.add(new InternetAddress(recipientEmailAddress));
-        }
-
-        this.recipients.addAll(recipientsInternetAddresses);
-        return this;
-    }
-
-    // email content body
-    public Email setBody(String text) throws Exception {
-        MimeBodyPart body = new MimeBodyPart();
-        ((Multipart)this.message.getContent()).addBodyPart(body);
-        body.setText(text, "utf-8", "html");
-        return this;
-    }
-
-    // email attachment
-    public Email addAttachment(Attachment attachment) throws Exception {
-        ((Multipart)this.message.getContent()).addBodyPart(attachment.getAttachment());
-        this.message.saveChanges();
-        return this;
+    public Email(EmailBuilder builder) {
+        this.message = builder.message;
     }
 
     public void send() throws MessagingException {
-        // TODO: validate email settings
-        this.message.setRecipients(RecipientType.TO, this.recipients.toArray(new InternetAddress[this.recipients.size()]));
         Transport transport = this.message.getSession().getTransport();
         try {
             transport.connect(serverDomain, serverPort, userName, password);
@@ -110,17 +39,105 @@ public class Email {
         }
     }
 
+    public static class EmailBuilder {
+
+        static private ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
+        // required
+        private ArrayList<String> recipients = new ArrayList<>();
+
+        // optional
+        private String senderAddress = propertiesReader.get("email.senderAddress", String.class);
+        private String subject = "";
+        private String content = "";
+        private ArrayList<Attachment> attachments = new ArrayList<>();
+
+        private Message message;
+
+        public EmailBuilder(List<String> recipients) throws MessagingException {
+            this.recipients.addAll(recipients);
+        }
+
+        public EmailBuilder(String recipient) throws MessagingException {
+            this.recipients.add(recipient);
+        }
+
+        public EmailBuilder setSender(String sender) {
+            this.senderAddress = sender;
+            return this;
+        }
+
+        public EmailBuilder setSubject(String subject) {
+            this.subject = subject;
+            return this;
+        }
+
+        public EmailBuilder setContent(String content) {
+            this.content = content;
+            return this;
+        }
+
+        public EmailBuilder addRecipient(String recipient) {
+            this.recipients.add(recipient);
+            return this;
+        }
+
+        public EmailBuilder addRecipients(List<String> recipients) {
+            this.recipients.addAll(recipients);
+            return this;
+        }
+
+        public EmailBuilder addAttachment(Attachment attachment) {
+            this.attachments.add(attachment);
+            return this;
+        }
+
+        public Email build() throws Exception {
+
+            this.message = this.initMessage();
+            this.buildHeader().buildContent().buildAttachment();
+            this.message.saveChanges();
+
+            return new Email(this);
+        }
+
+        private EmailBuilder buildHeader() throws Exception {
+            this.message.setFrom(new InternetAddress(this.senderAddress));
+            this.message.setSubject(this.subject);
+            ArrayList<InternetAddress> recipients = new ArrayList<>();
+            for (String recipient : this.recipients) {
+                recipients.add(new InternetAddress(recipient));
+            }
+            this.message.setRecipients(RecipientType.TO, recipients.toArray(new InternetAddress[this.recipients.size()]));
+            return this;
+        }
+
+        private EmailBuilder buildContent() throws Exception {
+            Multipart content = (Multipart) this.message.getContent();
+            MimeBodyPart body = new MimeBodyPart();
+            content.addBodyPart(body);
+            body.setText(this.content, "utf-8", "html");
+            return this;
+        }
+
+        private EmailBuilder buildAttachment() throws Exception {
+            Multipart content = (Multipart) this.message.getContent();
+            for (Attachment attachment : this.attachments) {
+                content.addBodyPart(attachment.getAttachment());
+            }
+            return this;
+        }
+
+        private Message initMessage() throws MessagingException {
+            Properties properties = new Properties();
+            properties.setProperty("mail.smtp.auth", "true");
+            properties.setProperty("mail.transport.protocol", "smtp");
+            Session session = Session.getDefaultInstance(properties);
+            Message message = new MimeMessage(session);
+            Multipart multipart = new MimeMultipart("mixed");
+            message.setContent(multipart);
+            return message;
+        }
+
+    }
+
 }
-
-//class EmailPropertiesReader {
-//
-//    private static String emailConfigPropertiesFileName = "emailConfig.properties";
-//
-//    public static ConfigPropertiesUtil getEmailPropertiesReader() throws Exception {
-//        ConfigPropertiesUtil emailConfigPropertiesUtil = ConfigPropertiesUtil.getInstance();
-//        emailConfigPropertiesUtil.loadResource(emailConfigPropertiesFileName);
-//        return emailConfigPropertiesUtil;
-//    }
-//
-//}
-

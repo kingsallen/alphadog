@@ -14,14 +14,12 @@ public class EmailTest {
     public void sendTest() {
 
         try {
-            Email registerSuccessEmail = new Email();
-            registerSuccessEmail.setSubject("Congratulations")
-                    .setBody("<h1 style='color: red; font-size: 30px;'>Email Test</h1><p>Hello world</p>")
+            Email email = new Email.EmailBuilder("chendi@moseeker.com")
+                    .setSubject("Congratulations")
+                    .setContent("<h1 style='color: red; font-size: 30px;'>Email Test</h1><p>Hello world</p>")
                     .addAttachment(new UrlAttachment("logo.png", "http://static.moseeker.com/official/images/moseeker-logo-phone-b92430087c.png"))
-//                    .addAttachment(new LocalAttachment("logo2.png", "/Users/chendi/Desktop/images/kobe.jpg"))
-                    .addRecipient("chendi@moseeker.com")
-                    .addRecipient("joker_chendi@126.com")
-                    .send();
+                    .build();
+            email.send();
         } catch (Exception e) {
             e.printStackTrace();
         }
