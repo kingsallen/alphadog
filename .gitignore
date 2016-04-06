@@ -25,6 +25,7 @@
 logs/*
 log/*
 *.log
+#service-manager/log/*
 
 # OS generated files #
 ######################
