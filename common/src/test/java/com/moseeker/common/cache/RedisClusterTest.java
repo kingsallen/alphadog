@@ -25,6 +25,6 @@ public class RedisClusterTest {
 		stopWatch.stop();
     	System.out.println("redisKey:"+redisKey);
     	System.out.println("redisValue:"+redisValue);
-    	System.out.println(stopWatch.toString() +" s");
+    	System.out.println(stopWatch.toString());
 	}
 }

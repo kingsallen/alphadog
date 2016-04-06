@@ -7,7 +7,6 @@ import redis.clients.jedis.JedisCluster;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.exception.CacheConfigNotExistException;
 import com.moseeker.common.redis.cache.db.DbManager;
-import com.moseeker.common.util.Notification;
 import com.moseeker.common.util.StringUtils;
 
 public abstract class RedisClient {
