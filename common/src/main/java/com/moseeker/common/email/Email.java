@@ -22,12 +22,12 @@ public class Email {
 
     static {
         try {
-            ConfigPropertiesUtil emailPropertiesReader = EmailPropertiesReader.getEmailPropertiesReader();
-            senderAddress = emailPropertiesReader.get("email.senderAddress", String.class);
-            serverDomain = emailPropertiesReader.get("email.serverDomain", String.class);
-            serverPort = emailPropertiesReader.get("email.serverPort", Integer.class);
-            userName = emailPropertiesReader.get("email.userName", String.class);
-            password = emailPropertiesReader.get("email.password", String.class);
+            ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
+            senderAddress = propertiesReader.get("email.senderAddress", String.class);
+            serverDomain = propertiesReader.get("email.serverDomain", String.class);
+            serverPort = propertiesReader.get("email.serverPort", Integer.class);
+            userName = propertiesReader.get("email.userName", String.class);
+            password = propertiesReader.get("email.password", String.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -112,15 +112,15 @@ public class Email {
 
 }
 
-class EmailPropertiesReader {
-
-    private static String emailConfigPropertiesFileName = "emailConfig.properties";
-
-    public static ConfigPropertiesUtil getEmailPropertiesReader() throws Exception {
-        ConfigPropertiesUtil emailConfigPropertiesUtil = ConfigPropertiesUtil.getInstance();
-        emailConfigPropertiesUtil.loadResource(emailConfigPropertiesFileName);
-        return emailConfigPropertiesUtil;
-    }
-
-}
+//class EmailPropertiesReader {
+//
+//    private static String emailConfigPropertiesFileName = "emailConfig.properties";
+//
+//    public static ConfigPropertiesUtil getEmailPropertiesReader() throws Exception {
+//        ConfigPropertiesUtil emailConfigPropertiesUtil = ConfigPropertiesUtil.getInstance();
+//        emailConfigPropertiesUtil.loadResource(emailConfigPropertiesFileName);
+//        return emailConfigPropertiesUtil;
+//    }
+//
+//}
 

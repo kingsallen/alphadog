@@ -1,89 +1,64 @@
 package com.moseeker.common.dbconnection;
 
-
 import com.moseeker.common.util.ConfigPropertiesUtil;
-
+import com.moseeker.common.util.Notification;
 import java.sql.SQLException;
 import java.sql.Connection;
 
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
-
 import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPConfig;
 
 public class DatabaseConnectionHelper {
 
-    private static BoneCP connectionPool = null;
-    private static BoneCPConfig config = null;
-    private static String url = null;
-    private static String userName = null;
-    private static String password = null;
-    private static Integer minConnections = null;
-    private static Integer maxConnections = null;
+    private static BoneCP connectionPool;
+    private static DatabaseConnectionHelper self;
 
-    static {
+    private BoneCP initConnectionPool() {
+        BoneCP connectionPool = null;
         try {
-        	ConfigPropertiesUtil dbPropertiesReader = DBPropertiesReader.getDBPropertiesReader();
-            url = dbPropertiesReader.get("mycat.url", String.class); // read from .properties file
-            userName = dbPropertiesReader.get("mycat.userName", String.class);
-            password = dbPropertiesReader.get("mycat.password", String.class);
-            minConnections = dbPropertiesReader.get("mycat.minConnections", Integer.class);
-            maxConnections = dbPropertiesReader.get("mycat.maxConnections", Integer.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    static {
-        try {
+            // register jdbc driver
             Class.forName("com.mysql.jdbc.Driver").newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    static {
-        try {
-            config = new BoneCPConfig();
+            // read configs from properties reader
+            ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
+            String url = propertiesReader.get("mycat.url", String.class);
+            String userName = propertiesReader.get("mycat.userName", String.class);
+            String password = propertiesReader.get("mycat.password", String.class);
+            Integer minConnections = propertiesReader.get("mycat.minConnections", Integer.class);
+            Integer maxConnections = propertiesReader.get("mycat.maxConnections", Integer.class);
+            // init connection pool
+            BoneCPConfig config = new BoneCPConfig();
             config.setJdbcUrl(url);
             config.setUsername(userName);
             config.setPassword(password);
             config.setMinConnectionsPerPartition(minConnections);
             config.setMaxConnectionsPerPartition(maxConnections);
-            long currentTime = System.currentTimeMillis();
             connectionPool = new BoneCP(config);
-            System.out.println("first connection: " + (System.currentTimeMillis() - currentTime));
-        } catch (SQLException e) {
+            throw new Exception("connecting to mycat error");
+        } catch (Exception e) {
+            // send notification
             e.printStackTrace();
+            Notification.sendMyCatConnectionError(e.getMessage());
         }
+        return connectionPool;
     }
 
-    private static DSLContext getJooqDSL(Connection conn) throws SQLException {
+    public static DatabaseConnectionHelper getConnection() {
+        if(self == null) {
+            self = new DatabaseConnectionHelper();
+        }
+        return self;
+    }
+
+    private DatabaseConnectionHelper() {
+        connectionPool = initConnectionPool();
+    }
+
+    public DSLContext getJooqDSL() throws SQLException {
+        Connection conn = connectionPool.getConnection();;
         return DSL.using(conn, SQLDialect.MYSQL);
-    }
-
-    public static DSLContext getJooqDSL() throws SQLException {
-        Connection conn = getConnection();
-        return getJooqDSL(conn);
-    }
-
-    private static Connection getConnection() throws SQLException {
-        return connectionPool.getConnection();
-    }
-
-}
-
-
-class DBPropertiesReader {
-
-    private static String myCatConfigPropertiesFileName = "mycatConfig.properties";
-
-    public static ConfigPropertiesUtil getDBPropertiesReader() throws Exception {
-        ConfigPropertiesUtil myCatConfigPropertiesUtil = ConfigPropertiesUtil.getInstance();
-        myCatConfigPropertiesUtil.loadResource(myCatConfigPropertiesFileName);
-        return myCatConfigPropertiesUtil;
     }
 
 }

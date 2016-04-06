@@ -82,7 +82,7 @@ public class DbManager {
 		List<RedisConfigRedisKey> redisKeys = new ArrayList<>();
 		DSLContext create;
 		try {
-			create = DatabaseConnectionHelper.getJooqDSL();
+			create = DatabaseConnectionHelper.getConnection().getJooqDSL();
 
 			create.select().from(Tables.CACHECONFIG_REDISKEY).where(Tables.CACHECONFIG_REDISKEY.TYPE.equal(configType))
 					.fetch().forEach((row) -> {

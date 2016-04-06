@@ -13,19 +13,19 @@ public class DatabaseConnectionHelperTest {
 
     @Test
     public void connPoolTest() {
-        for(int i = 0; i < 5; i++) {
+        for(int i = 0; i < 1; i++) {
 
             new Thread(() -> {
 
                 try {
-                    DSLContext create = DatabaseConnectionHelper.getJooqDSL();
-                    Result<Record> result = create.select().from("friendrequests").fetch();
+                    DatabaseConnectionHelper db = DatabaseConnectionHelper.getConnection();
+                    DSLContext dsl = db.getJooqDSL();
+                    Result<Record> result = dsl.select().from("configDB.adminnotification_events").fetch();
                     System.out.println(result);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }).start();
-
         }
     }
 
