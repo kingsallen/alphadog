@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
  * Created by zzh on 16/3/30.
  */
 @Service
-public class DemoServiceImpl extends BaseService<Iface> {
+public class DemoServiceClient extends BaseService<Iface> {
 
     public static final String DEMO_SERVICE_NAME = "com.moseeker.thrift.service$EchoService";
 
