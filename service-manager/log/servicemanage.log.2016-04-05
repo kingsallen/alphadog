@@ -1,0 +1,1324 @@
+Root WebApplicationContext: initialization started
+Adding [servletConfigInitParams] PropertySource with lowest search precedence
+Adding [servletContextInitParams] PropertySource with lowest search precedence
+Adding [jndiProperties] PropertySource with lowest search precedence
+Adding [systemProperties] PropertySource with lowest search precedence
+Adding [systemEnvironment] PropertySource with lowest search precedence
+Initialized StandardServletEnvironment with PropertySources [servletConfigInitParams,servletContextInitParams,jndiProperties,systemProperties,systemEnvironment]
+Replacing [servletContextInitParams] PropertySource with [servletContextInitParams]
+Refreshing Root WebApplicationContext: startup date [Tue Apr 05 18:53:38 CST 2016]; root of context hierarchy
+Adding [systemProperties] PropertySource with lowest search precedence
+Adding [systemEnvironment] PropertySource with lowest search precedence
+Initialized StandardEnvironment with PropertySources [systemProperties,systemEnvironment]
+Loading XML bean definitions from ServletContext resource [/WEB-INF/controllers.xml]
+Using JAXP provider [org.apache.xerces.jaxp.DocumentBuilderFactoryImpl]
+Loading schema mappings from [META-INF/spring.schemas]
+Loaded schema mappings: {http://www.springframework.org/schema/cache/spring-cache-4.2.xsd=org/springframework/cache/config/spring-cache-4.2.xsd, http://www.springframework.org/schema/aop/spring-aop-4.1.xsd=org/springframework/aop/config/spring-aop-4.1.xsd, http://www.springframework.org/schema/context/spring-context-3.1.xsd=org/springframework/context/config/spring-context-3.1.xsd, http://www.springframework.org/schema/util/spring-util-3.0.xsd=org/springframework/beans/factory/xml/spring-util-3.0.xsd, http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd=org/springframework/web/servlet/config/spring-mvc-4.1.xsd, http://www.springframework.org/schema/tool/spring-tool.xsd=org/springframework/beans/factory/xml/spring-tool-4.2.xsd, http://www.springframework.org/schema/aop/spring-aop-3.2.xsd=org/springframework/aop/config/spring-aop-3.2.xsd, http://www.springframework.org/schema/lang/spring-lang-4.1.xsd=org/springframework/scripting/config/spring-lang-4.1.xsd, http://www.springframework.org/schema/context/spring-context-4.0.xsd=org/springframework/context/config/spring-context-4.0.xsd, http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd=org/springframework/web/servlet/config/spring-mvc-3.2.xsd, http://www.springframework.org/schema/beans/spring-beans-4.2.xsd=org/springframework/beans/factory/xml/spring-beans-4.2.xsd, http://www.springframework.org/schema/tool/spring-tool-4.1.xsd=org/springframework/beans/factory/xml/spring-tool-4.1.xsd, http://www.springframework.org/schema/lang/spring-lang-3.2.xsd=org/springframework/scripting/config/spring-lang-3.2.xsd, http://www.springframework.org/schema/cache/spring-cache-3.2.xsd=org/springframework/cache/config/spring-cache-3.2.xsd, http://www.springframework.org/schema/jee/spring-jee-4.1.xsd=org/springframework/ejb/config/spring-jee-4.1.xsd, http://www.springframework.org/schema/util/spring-util-2.0.xsd=org/springframework/beans/factory/xml/spring-util-2.0.xsd, http://www.springframework.org/schema/task/spring-task-4.2.xsd=org/springframework/scheduling/config/spring-task-4.2.xsd, http://www.springframework.org/schema/tool/spring-tool-3.2.xsd=org/springframework/beans/factory/xml/spring-tool-3.2.xsd, http://www.springframework.org/schema/context/spring-context.xsd=org/springframework/context/config/spring-context-4.2.xsd, http://www.springframework.org/schema/cache/spring-cache-4.1.xsd=org/springframework/cache/config/spring-cache-4.1.xsd, http://www.springframework.org/schema/aop/spring-aop-4.0.xsd=org/springframework/aop/config/spring-aop-4.0.xsd, http://www.springframework.org/schema/jee/spring-jee-3.2.xsd=org/springframework/ejb/config/spring-jee-3.2.xsd, http://www.springframework.org/schema/context/spring-context-3.0.xsd=org/springframework/context/config/spring-context-3.0.xsd, http://www.springframework.org/schema/util/spring-util-2.5.xsd=org/springframework/beans/factory/xml/spring-util-2.5.xsd, http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd=org/springframework/web/servlet/config/spring-mvc-4.0.xsd, http://www.springframework.org/schema/beans/spring-beans-3.2.xsd=org/springframework/beans/factory/xml/spring-beans-3.2.xsd, http://www.springframework.org/schema/aop/spring-aop-3.1.xsd=org/springframework/aop/config/spring-aop-3.1.xsd, http://www.springframework.org/schema/lang/spring-lang-4.0.xsd=org/springframework/scripting/config/spring-lang-4.0.xsd, http://www.springframework.org/schema/mvc/spring-mvc.xsd=org/springframework/web/servlet/config/spring-mvc-4.1.xsd, http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd=org/springframework/web/servlet/config/spring-mvc-3.1.xsd, http://www.springframework.org/schema/beans/spring-beans-4.1.xsd=org/springframework/beans/factory/xml/spring-beans-4.1.xsd, http://www.springframework.org/schema/tool/spring-tool-4.0.xsd=org/springframework/beans/factory/xml/spring-tool-4.0.xsd, http://www.springframework.org/schema/lang/spring-lang-3.1.xsd=org/springframework/scripting/config/spring-lang-3.1.xsd, http://www.springframework.org/schema/cache/spring-cache-3.1.xsd=org/springframework/cache/config/spring-cache-3.1.xsd, http://www.springframework.org/schema/jee/spring-jee-4.0.xsd=org/springframework/ejb/config/spring-jee-4.0.xsd, http://www.springframework.org/schema/task/spring-task-4.1.xsd=org/springframework/scheduling/config/spring-task-4.1.xsd, http://www.springframework.org/schema/tool/spring-tool-3.1.xsd=org/springframework/beans/factory/xml/spring-tool-3.1.xsd, http://www.springframework.org/schema/cache/spring-cache-4.0.xsd=org/springframework/cache/config/spring-cache-4.0.xsd, http://www.springframework.org/schema/jee/spring-jee-3.1.xsd=org/springframework/ejb/config/spring-jee-3.1.xsd, http://www.springframework.org/schema/util/spring-util-4.2.xsd=org/springframework/beans/factory/xml/spring-util-4.2.xsd, http://www.springframework.org/schema/task/spring-task-3.2.xsd=org/springframework/scheduling/config/spring-task-3.2.xsd, http://www.springframework.org/schema/beans/spring-beans-3.1.xsd=org/springframework/beans/factory/xml/spring-beans-3.1.xsd, http://www.springframework.org/schema/util/spring-util.xsd=org/springframework/beans/factory/xml/spring-util-4.2.xsd, http://www.springframework.org/schema/aop/spring-aop-3.0.xsd=org/springframework/aop/config/spring-aop-3.0.xsd, http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd=org/springframework/web/servlet/config/spring-mvc-3.0.xsd, http://www.springframework.org/schema/beans/spring-beans-4.0.xsd=org/springframework/beans/factory/xml/spring-beans-4.0.xsd, http://www.springframework.org/schema/beans/spring-beans.xsd=org/springframework/beans/factory/xml/spring-beans-4.2.xsd, http://www.springframework.org/schema/lang/spring-lang-3.0.xsd=org/springframework/scripting/config/spring-lang-3.0.xsd, http://www.springframework.org/schema/context/spring-context-2.5.xsd=org/springframework/context/config/spring-context-2.5.xsd, http://www.springframework.org/schema/task/spring-task-4.0.xsd=org/springframework/scheduling/config/spring-task-4.0.xsd, http://www.springframework.org/schema/tool/spring-tool-3.0.xsd=org/springframework/beans/factory/xml/spring-tool-3.0.xsd, http://www.springframework.org/schema/aop/spring-aop-2.0.xsd=org/springframework/aop/config/spring-aop-2.0.xsd, http://www.springframework.org/schema/jee/spring-jee-3.0.xsd=org/springframework/ejb/config/spring-jee-3.0.xsd, http://www.springframework.org/schema/util/spring-util-4.1.xsd=org/springframework/beans/factory/xml/spring-util-4.1.xsd, http://www.springframework.org/schema/task/spring-task-3.1.xsd=org/springframework/scheduling/config/spring-task-3.1.xsd, http://www.springframework.org/schema/beans/spring-beans-3.0.xsd=org/springframework/beans/factory/xml/spring-beans-3.0.xsd, http://www.springframework.org/schema/jee/spring-jee.xsd=org/springframework/ejb/config/spring-jee-4.2.xsd, http://www.springframework.org/schema/aop/spring-aop-2.5.xsd=org/springframework/aop/config/spring-aop-2.5.xsd, http://www.springframework.org/schema/lang/spring-lang-2.0.xsd=org/springframework/scripting/config/spring-lang-2.0.xsd, http://www.springframework.org/schema/util/spring-util-3.2.xsd=org/springframework/beans/factory/xml/spring-util-3.2.xsd, http://www.springframework.org/schema/task/spring-task.xsd=org/springframework/scheduling/config/spring-task-4.2.xsd, http://www.springframework.org/schema/tool/spring-tool-2.0.xsd=org/springframework/beans/factory/xml/spring-tool-2.0.xsd, http://www.springframework.org/schema/lang/spring-lang-2.5.xsd=org/springframework/scripting/config/spring-lang-2.5.xsd, http://www.springframework.org/schema/context/spring-context-4.2.xsd=org/springframework/context/config/spring-context-4.2.xsd, http://www.springframework.org/schema/jee/spring-jee-2.0.xsd=org/springframework/ejb/config/spring-jee-2.0.xsd, http://www.springframework.org/schema/tool/spring-tool-2.5.xsd=org/springframework/beans/factory/xml/spring-tool-2.5.xsd, http://www.springframework.org/schema/jee/spring-jee-2.5.xsd=org/springframework/ejb/config/spring-jee-2.5.xsd, http://www.springframework.org/schema/util/spring-util-4.0.xsd=org/springframework/beans/factory/xml/spring-util-4.0.xsd, http://www.springframework.org/schema/task/spring-task-3.0.xsd=org/springframework/scheduling/config/spring-task-3.0.xsd, http://www.springframework.org/schema/aop/spring-aop-4.2.xsd=org/springframework/aop/config/spring-aop-4.2.xsd, http://www.springframework.org/schema/lang/spring-lang.xsd=org/springframework/scripting/config/spring-lang-4.2.xsd, http://www.springframework.org/schema/context/spring-context-3.2.xsd=org/springframework/context/config/spring-context-3.2.xsd, http://www.springframework.org/schema/util/spring-util-3.1.xsd=org/springframework/beans/factory/xml/spring-util-3.1.xsd, http://www.springframework.org/schema/beans/spring-beans-2.0.xsd=org/springframework/beans/factory/xml/spring-beans-2.0.xsd, http://www.springframework.org/schema/cache/spring-cache.xsd=org/springframework/cache/config/spring-cache-4.2.xsd, http://www.springframework.org/schema/lang/spring-lang-4.2.xsd=org/springframework/scripting/config/spring-lang-4.2.xsd, http://www.springframework.org/schema/context/spring-context-4.1.xsd=org/springframework/context/config/spring-context-4.1.xsd, http://www.springframework.org/schema/beans/spring-beans-2.5.xsd=org/springframework/beans/factory/xml/spring-beans-2.5.xsd, http://www.springframework.org/schema/tool/spring-tool-4.2.xsd=org/springframework/beans/factory/xml/spring-tool-4.2.xsd, http://www.springframework.org/schema/jee/spring-jee-4.2.xsd=org/springframework/ejb/config/spring-jee-4.2.xsd, http://www.springframework.org/schema/aop/spring-aop.xsd=org/springframework/aop/config/spring-aop-4.2.xsd}
+Found XML schema [http://www.springframework.org/schema/beans/spring-beans.xsd] in classpath: org/springframework/beans/factory/xml/spring-beans-4.2.xsd
+Found XML schema [http://www.springframework.org/schema/mvc/spring-mvc.xsd] in classpath: org/springframework/web/servlet/config/spring-mvc-4.1.xsd
+Found XML schema [http://www.springframework.org/schema/tool/spring-tool-4.1.xsd] in classpath: org/springframework/beans/factory/xml/spring-tool-4.1.xsd
+Found XML schema [http://www.springframework.org/schema/context/spring-context.xsd] in classpath: org/springframework/context/config/spring-context-4.2.xsd
+Loading bean definitions
+Loaded NamespaceHandler mappings: {http://www.springframework.org/schema/p=org.springframework.beans.factory.xml.SimplePropertyNamespaceHandler, http://www.springframework.org/schema/mvc=org.springframework.web.servlet.config.MvcNamespaceHandler, http://www.springframework.org/schema/util=org.springframework.beans.factory.xml.UtilNamespaceHandler, http://www.springframework.org/schema/jee=org.springframework.ejb.config.JeeNamespaceHandler, http://www.springframework.org/schema/aop=org.springframework.aop.config.AopNamespaceHandler, http://www.springframework.org/schema/cache=org.springframework.cache.config.CacheNamespaceHandler, http://www.springframework.org/schema/c=org.springframework.beans.factory.xml.SimpleConstructorNamespaceHandler, http://www.springframework.org/schema/task=org.springframework.scheduling.config.TaskNamespaceHandler, http://www.springframework.org/schema/lang=org.springframework.scripting.config.LangNamespaceHandler, http://www.springframework.org/schema/context=org.springframework.context.config.ContextNamespaceHandler}
+Adding [systemProperties] PropertySource with lowest search precedence
+Adding [systemEnvironment] PropertySource with lowest search precedence
+Initialized StandardEnvironment with PropertySources [systemProperties,systemEnvironment]
+JSR-330 'javax.inject.Named' annotation found and supported for component scanning
+Looking for matching resources in directory tree [/Users/zzh/Documents/git/moseeker/moseeker-basic-service/service-manager/build/classes/main/com/moseeker/servicemanager/web/controller]
+Searching directory [/Users/zzh/Documents/git/moseeker/moseeker-basic-service/service-manager/build/classes/main/com/moseeker/servicemanager/web/controller] for files matching pattern [/Users/zzh/Documents/git/moseeker/moseeker-basic-service/service-manager/build/classes/main/com/moseeker/servicemanager/web/controller/**/*.class]
+Resolved location pattern [classpath*:com/moseeker/servicemanager/web/controller/**/*.class] to resources [file [/Users/zzh/Documents/git/moseeker/moseeker-basic-service/service-manager/build/classes/main/com/moseeker/servicemanager/web/controller/CompanyfollowersController.class], file [/Users/zzh/Documents/git/moseeker/moseeker-basic-service/service-manager/build/classes/main/com/moseeker/servicemanager/web/controller/DemoController.class], file [/Users/zzh/Documents/git/moseeker/moseeker-basic-service/service-manager/build/classes/main/com/moseeker/servicemanager/web/controller/RestfulController.class]]
+Identified candidate component class: file [/Users/zzh/Documents/git/moseeker/moseeker-basic-service/service-manager/build/classes/main/com/moseeker/servicemanager/web/controller/CompanyfollowersController.class]
+Identified candidate component class: file [/Users/zzh/Documents/git/moseeker/moseeker-basic-service/service-manager/build/classes/main/com/moseeker/servicemanager/web/controller/DemoController.class]
+Adding [systemProperties] PropertySource with lowest search precedence
+Adding [systemEnvironment] PropertySource with lowest search precedence
+Initialized StandardEnvironment with PropertySources [systemProperties,systemEnvironment]
+JSR-330 'javax.inject.Named' annotation found and supported for component scanning
+Looking for matching resources in directory tree [/Users/zzh/Documents/git/moseeker/moseeker-basic-service/service-manager/build/classes/main/com/moseeker/servicemanager/config]
+Searching directory [/Users/zzh/Documents/git/moseeker/moseeker-basic-service/service-manager/build/classes/main/com/moseeker/servicemanager/config] for files matching pattern [/Users/zzh/Documents/git/moseeker/moseeker-basic-service/service-manager/build/classes/main/com/moseeker/servicemanager/config/**/*.class]
+Resolved location pattern [classpath*:com/moseeker/servicemanager/config/**/*.class] to resources [file [/Users/zzh/Documents/git/moseeker/moseeker-basic-service/service-manager/build/classes/main/com/moseeker/servicemanager/config/WebConfig.class]]
+Identified candidate component class: file [/Users/zzh/Documents/git/moseeker/moseeker-basic-service/service-manager/build/classes/main/com/moseeker/servicemanager/config/WebConfig.class]
+Neither XML 'id' nor 'name' specified - using generated bean name [com.moseeker.servicemanager.web.interceptor.TestInterceptor#0]
+Loaded 22 bean definitions from location pattern [/WEB-INF/controllers.xml]
+Bean factory for Root WebApplicationContext: org.springframework.beans.factory.support.DefaultListableBeanFactory@543d2ef3: defining beans [mvcContentNegotiationManager,org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping#0,org.springframework.format.support.FormattingConversionServiceFactoryBean#0,org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter#0,mvcUriComponentsContributor,org.springframework.web.servlet.handler.MappedInterceptor#0,org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver#0,org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver#0,org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver#0,org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping,org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter,org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter,companyfollowersController,demoController,org.springframework.context.annotation.internalConfigurationAnnotationProcessor,org.springframework.context.annotation.internalAutowiredAnnotationProcessor,org.springframework.context.annotation.internalRequiredAnnotationProcessor,org.springframework.context.annotation.internalCommonAnnotationProcessor,org.springframework.context.event.internalEventListenerProcessor,org.springframework.context.event.internalEventListenerFactory,webConfig,org.springframework.web.servlet.handler.MappedInterceptor#1]; root of factory hierarchy
+Registering scope 'request' with implementation [org.springframework.web.context.request.RequestScope@76d1f6ea]
+Registering scope 'session' with implementation [org.springframework.web.context.request.SessionScope@2e19b30]
+Registering scope 'globalSession' with implementation [org.springframework.web.context.request.SessionScope@7b7e4b20]
+Registering scope 'application' with implementation [org.springframework.web.context.support.ServletContextScope@6159fb3c]
+Creating shared instance of singleton bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor'
+Creating instance of bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor'
+Eagerly caching bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor' to allow for resolving potential circular references
+Finished creating instance of bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor'
+Registered bean definition for imported class 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Registering bean definition for @Bean method org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.requestMappingHandlerMapping()
+Registering bean definition for @Bean method org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.mvcContentNegotiationManager()
+Overriding bean definition for bean 'mvcContentNegotiationManager' with a different definition: replacing [Root bean: class [org.springframework.web.accept.ContentNegotiationManagerFactoryBean]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null] with [Root bean: class [null]; scope=; abstract=false; lazyInit=false; autowireMode=3; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration; factoryMethodName=mvcContentNegotiationManager; initMethodName=null; destroyMethodName=(inferred); defined in class path resource [org/springframework/web/servlet/config/annotation/DelegatingWebMvcConfiguration.class]]
+Registering bean definition for @Bean method org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.viewControllerHandlerMapping()
+Registering bean definition for @Bean method org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.beanNameHandlerMapping()
+Registering bean definition for @Bean method org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.resourceHandlerMapping()
+Registering bean definition for @Bean method org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.mvcResourceUrlProvider()
+Registering bean definition for @Bean method org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.defaultServletHandlerMapping()
+Registering bean definition for @Bean method org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.requestMappingHandlerAdapter()
+Registering bean definition for @Bean method org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.mvcConversionService()
+Registering bean definition for @Bean method org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.mvcValidator()
+Registering bean definition for @Bean method org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.mvcPathMatcher()
+Registering bean definition for @Bean method org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.mvcUrlPathHelper()
+Skipping bean definition for [BeanMethod:name=mvcUriComponentsContributor,declaringClass=org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport]: a definition for bean 'mvcUriComponentsContributor' already exists. This top-level bean definition is considered as an override.
+Registering bean definition for @Bean method org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.httpRequestHandlerAdapter()
+Registering bean definition for @Bean method org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.simpleControllerHandlerAdapter()
+Registering bean definition for @Bean method org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.handlerExceptionResolver()
+Registering bean definition for @Bean method org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.mvcViewResolver()
+Successfully enhanced com.moseeker.servicemanager.config.WebConfig; enhanced class name is: com.moseeker.servicemanager.config.WebConfig$$EnhancerBySpringCGLIB$$ac7667bc
+Replacing bean definition 'webConfig' existing class name 'com.moseeker.servicemanager.config.WebConfig' with enhanced class name 'com.moseeker.servicemanager.config.WebConfig$$EnhancerBySpringCGLIB$$ac7667bc'
+Successfully enhanced org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration; enhanced class name is: org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration$$EnhancerBySpringCGLIB$$18f72c87
+Replacing bean definition 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration' existing class name 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration' with enhanced class name 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration$$EnhancerBySpringCGLIB$$18f72c87'
+Creating shared instance of singleton bean 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor'
+Creating instance of bean 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor'
+JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+Eagerly caching bean 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor' to allow for resolving potential circular references
+Finished creating instance of bean 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor'
+Creating shared instance of singleton bean 'org.springframework.context.annotation.internalRequiredAnnotationProcessor'
+Creating instance of bean 'org.springframework.context.annotation.internalRequiredAnnotationProcessor'
+Eagerly caching bean 'org.springframework.context.annotation.internalRequiredAnnotationProcessor' to allow for resolving potential circular references
+Finished creating instance of bean 'org.springframework.context.annotation.internalRequiredAnnotationProcessor'
+Creating shared instance of singleton bean 'org.springframework.context.annotation.internalCommonAnnotationProcessor'
+Creating instance of bean 'org.springframework.context.annotation.internalCommonAnnotationProcessor'
+Eagerly caching bean 'org.springframework.context.annotation.internalCommonAnnotationProcessor' to allow for resolving potential circular references
+Finished creating instance of bean 'org.springframework.context.annotation.internalCommonAnnotationProcessor'
+Creating shared instance of singleton bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor'
+Creating instance of bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor'
+Eagerly caching bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor' to allow for resolving potential circular references
+Finished creating instance of bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor'
+Creating shared instance of singleton bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor.enhancedConfigurationProcessor'
+Creating instance of bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor.enhancedConfigurationProcessor'
+Eagerly caching bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor.enhancedConfigurationProcessor' to allow for resolving potential circular references
+Finished creating instance of bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor.enhancedConfigurationProcessor'
+Unable to locate MessageSource with name 'messageSource': using default [org.springframework.context.support.DelegatingMessageSource@1f12d5e0]
+Unable to locate ApplicationEventMulticaster with name 'applicationEventMulticaster': using default [org.springframework.context.event.SimpleApplicationEventMulticaster@4fef5792]
+Unable to locate ThemeSource with name 'themeSource': using default [org.springframework.ui.context.support.ResourceBundleThemeSource@45abbd24]
+Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@543d2ef3: defining beans [mvcContentNegotiationManager,org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping#0,org.springframework.format.support.FormattingConversionServiceFactoryBean#0,org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter#0,mvcUriComponentsContributor,org.springframework.web.servlet.handler.MappedInterceptor#0,org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver#0,org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver#0,org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver#0,org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping,org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter,org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter,companyfollowersController,demoController,org.springframework.context.annotation.internalConfigurationAnnotationProcessor,org.springframework.context.annotation.internalAutowiredAnnotationProcessor,org.springframework.context.annotation.internalRequiredAnnotationProcessor,org.springframework.context.annotation.internalCommonAnnotationProcessor,org.springframework.context.event.internalEventListenerProcessor,org.springframework.context.event.internalEventListenerFactory,webConfig,org.springframework.web.servlet.handler.MappedInterceptor#1,org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor,org.springframework.context.annotation.ConfigurationClassPostProcessor.enhancedConfigurationProcessor,org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration,requestMappingHandlerMapping,viewControllerHandlerMapping,beanNameHandlerMapping,resourceHandlerMapping,mvcResourceUrlProvider,defaultServletHandlerMapping,requestMappingHandlerAdapter,mvcConversionService,mvcValidator,mvcPathMatcher,mvcUrlPathHelper,httpRequestHandlerAdapter,simpleControllerHandlerAdapter,handlerExceptionResolver,mvcViewResolver]; root of factory hierarchy
+Creating shared instance of singleton bean 'mvcContentNegotiationManager'
+Creating instance of bean 'mvcContentNegotiationManager'
+Creating shared instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Creating instance of bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Registered injected element on class [org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration$$EnhancerBySpringCGLIB$$18f72c87]: AutowiredMethodElement for public void org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.setConfigurers(java.util.List)
+Eagerly caching bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration' to allow for resolving potential circular references
+Processing injected element of bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration': AutowiredMethodElement for public void org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.setConfigurers(java.util.List)
+Creating shared instance of singleton bean 'webConfig'
+Creating instance of bean 'webConfig'
+Eagerly caching bean 'webConfig' to allow for resolving potential circular references
+Finished creating instance of bean 'webConfig'
+Autowiring by type from bean name 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration' to bean named 'webConfig'
+Finished creating instance of bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Eagerly caching bean 'mvcContentNegotiationManager' to allow for resolving potential circular references
+Finished creating instance of bean 'mvcContentNegotiationManager'
+Creating shared instance of singleton bean 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping#0'
+Creating instance of bean 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping#0'
+Eagerly caching bean 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping#0' to allow for resolving potential circular references
+Returning cached instance of singleton bean 'mvcContentNegotiationManager'
+Creating shared instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#0'
+Creating instance of bean 'org.springframework.web.servlet.handler.MappedInterceptor#0'
+Creating instance of bean '(inner bean)#55b45ea1'
+Creating shared instance of singleton bean 'org.springframework.format.support.FormattingConversionServiceFactoryBean#0'
+Creating instance of bean 'org.springframework.format.support.FormattingConversionServiceFactoryBean#0'
+Eagerly caching bean 'org.springframework.format.support.FormattingConversionServiceFactoryBean#0' to allow for resolving potential circular references
+Invoking afterPropertiesSet() on bean with name 'org.springframework.format.support.FormattingConversionServiceFactoryBean#0'
+Finished creating instance of bean 'org.springframework.format.support.FormattingConversionServiceFactoryBean#0'
+Finished creating instance of bean '(inner bean)#55b45ea1'
+No property editor [org.springframework.web.context.request.WebRequestInterceptorEditor] found for type org.springframework.web.context.request.WebRequestInterceptor according to 'Editor' suffix convention
+Eagerly caching bean 'org.springframework.web.servlet.handler.MappedInterceptor#0' to allow for resolving potential circular references
+Finished creating instance of bean 'org.springframework.web.servlet.handler.MappedInterceptor#0'
+Creating shared instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#1'
+Creating instance of bean 'org.springframework.web.servlet.handler.MappedInterceptor#1'
+Creating instance of bean 'com.moseeker.servicemanager.web.interceptor.TestInterceptor#0'
+Finished creating instance of bean 'com.moseeker.servicemanager.web.interceptor.TestInterceptor#0'
+Eagerly caching bean 'org.springframework.web.servlet.handler.MappedInterceptor#1' to allow for resolving potential circular references
+Finished creating instance of bean 'org.springframework.web.servlet.handler.MappedInterceptor#1'
+Invoking afterPropertiesSet() on bean with name 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping#0'
+Looking for request mappings in application context: Root WebApplicationContext: startup date [Tue Apr 05 18:53:38 CST 2016]; root of context hierarchy
+Mapped "{[/companyfollowers],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.moseeker.servicemanager.web.controller.CompanyfollowersController.get(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+Mapped "{[/companyfollowers],methods=[PUT],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.moseeker.servicemanager.web.controller.CompanyfollowersController.put(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+Mapped "{[/companyfollowers],methods=[DELETE],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.moseeker.servicemanager.web.controller.CompanyfollowersController.delete(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+Mapped "{[/companyfollowers],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.moseeker.servicemanager.web.controller.CompanyfollowersController.post(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+Mapped "{[/demo],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.moseeker.servicemanager.web.controller.DemoController.get(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+Finished creating instance of bean 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping#0'
+Returning cached instance of singleton bean 'org.springframework.format.support.FormattingConversionServiceFactoryBean#0'
+Creating shared instance of singleton bean 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter#0'
+Creating instance of bean 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter#0'
+Eagerly caching bean 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter#0' to allow for resolving potential circular references
+Returning cached instance of singleton bean 'mvcContentNegotiationManager'
+Creating instance of bean '(inner bean)#b87ea8b'
+Returning cached instance of singleton bean 'org.springframework.format.support.FormattingConversionServiceFactoryBean#0'
+Finished creating instance of bean '(inner bean)#b87ea8b'
+Creating instance of bean '(inner bean)#66fff42f'
+Finished creating instance of bean '(inner bean)#66fff42f'
+Creating instance of bean '(inner bean)#2555a986'
+Finished creating instance of bean '(inner bean)#2555a986'
+Creating instance of bean '(inner bean)#2ae7c1d'
+Finished creating instance of bean '(inner bean)#2ae7c1d'
+Creating instance of bean '(inner bean)#5535e9'
+Finished creating instance of bean '(inner bean)#5535e9'
+Creating instance of bean '(inner bean)#e3692ca'
+Finished creating instance of bean '(inner bean)#e3692ca'
+Creating instance of bean '(inner bean)#757c685d'
+Finished creating instance of bean '(inner bean)#757c685d'
+Creating instance of bean '(inner bean)#31a024ea'
+Creating instance of bean '(inner bean)#2914a328'
+Invoking afterPropertiesSet() on bean with name '(inner bean)#2914a328'
+Finished creating instance of bean '(inner bean)#2914a328'
+Finished creating instance of bean '(inner bean)#31a024ea'
+Creating instance of bean '(inner bean)#402feb85'
+Finished creating instance of bean '(inner bean)#402feb85'
+Invoking afterPropertiesSet() on bean with name 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter#0'
+Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Tue Apr 05 18:53:38 CST 2016]; root of context hierarchy
+Finished creating instance of bean 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter#0'
+Creating shared instance of singleton bean 'mvcUriComponentsContributor'
+Creating instance of bean 'mvcUriComponentsContributor'
+Eagerly caching bean 'mvcUriComponentsContributor' to allow for resolving potential circular references
+Creating instance of bean '(inner bean)#2a30b0cb'
+Returning cached instance of singleton bean 'mvcContentNegotiationManager'
+Creating instance of bean '(inner bean)#b87ea8b#1'
+Returning cached instance of singleton bean 'org.springframework.format.support.FormattingConversionServiceFactoryBean#0'
+Finished creating instance of bean '(inner bean)#b87ea8b#1'
+Creating instance of bean '(inner bean)#66fff42f#1'
+Finished creating instance of bean '(inner bean)#66fff42f#1'
+Creating instance of bean '(inner bean)#2555a986#1'
+Finished creating instance of bean '(inner bean)#2555a986#1'
+Creating instance of bean '(inner bean)#2ae7c1d#1'
+Finished creating instance of bean '(inner bean)#2ae7c1d#1'
+Creating instance of bean '(inner bean)#5535e9#1'
+Finished creating instance of bean '(inner bean)#5535e9#1'
+Creating instance of bean '(inner bean)#e3692ca#1'
+Finished creating instance of bean '(inner bean)#e3692ca#1'
+Creating instance of bean '(inner bean)#757c685d#1'
+Finished creating instance of bean '(inner bean)#757c685d#1'
+Creating instance of bean '(inner bean)#31a024ea#1'
+Creating instance of bean '(inner bean)#2914a328#1'
+Invoking afterPropertiesSet() on bean with name '(inner bean)#2914a328#1'
+Finished creating instance of bean '(inner bean)#2914a328#1'
+Finished creating instance of bean '(inner bean)#31a024ea#1'
+Creating instance of bean '(inner bean)#402feb85#1'
+Finished creating instance of bean '(inner bean)#402feb85#1'
+Invoking afterPropertiesSet() on bean with name '(inner bean)#2a30b0cb'
+Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Tue Apr 05 18:53:38 CST 2016]; root of context hierarchy
+Returning eagerly cached instance of singleton bean 'mvcUriComponentsContributor' that is not fully initialized yet - a consequence of a circular reference
+Finished creating instance of bean '(inner bean)#2a30b0cb'
+Returning cached instance of singleton bean 'org.springframework.format.support.FormattingConversionServiceFactoryBean#0'
+Invoking afterPropertiesSet() on bean with name 'mvcUriComponentsContributor'
+Finished creating instance of bean 'mvcUriComponentsContributor'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#0'
+Creating shared instance of singleton bean 'org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver#0'
+Creating instance of bean 'org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver#0'
+Eagerly caching bean 'org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver#0' to allow for resolving potential circular references
+Returning cached instance of singleton bean 'mvcContentNegotiationManager'
+Creating instance of bean '(inner bean)#66fff42f#2'
+Finished creating instance of bean '(inner bean)#66fff42f#2'
+Creating instance of bean '(inner bean)#2555a986#2'
+Finished creating instance of bean '(inner bean)#2555a986#2'
+Creating instance of bean '(inner bean)#2ae7c1d#2'
+Finished creating instance of bean '(inner bean)#2ae7c1d#2'
+Creating instance of bean '(inner bean)#5535e9#2'
+Finished creating instance of bean '(inner bean)#5535e9#2'
+Creating instance of bean '(inner bean)#e3692ca#2'
+Finished creating instance of bean '(inner bean)#e3692ca#2'
+Creating instance of bean '(inner bean)#757c685d#2'
+Finished creating instance of bean '(inner bean)#757c685d#2'
+Creating instance of bean '(inner bean)#31a024ea#2'
+Creating instance of bean '(inner bean)#2914a328#2'
+Invoking afterPropertiesSet() on bean with name '(inner bean)#2914a328#2'
+Finished creating instance of bean '(inner bean)#2914a328#2'
+Finished creating instance of bean '(inner bean)#31a024ea#2'
+Creating instance of bean '(inner bean)#cda144a'
+Finished creating instance of bean '(inner bean)#cda144a'
+Invoking afterPropertiesSet() on bean with name 'org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver#0'
+Looking for exception mappings: Root WebApplicationContext: startup date [Tue Apr 05 18:53:38 CST 2016]; root of context hierarchy
+Finished creating instance of bean 'org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver#0'
+Creating shared instance of singleton bean 'org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver#0'
+Creating instance of bean 'org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver#0'
+Eagerly caching bean 'org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver#0' to allow for resolving potential circular references
+Finished creating instance of bean 'org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver#0'
+Creating shared instance of singleton bean 'org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver#0'
+Creating instance of bean 'org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver#0'
+Eagerly caching bean 'org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver#0' to allow for resolving potential circular references
+Finished creating instance of bean 'org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver#0'
+Creating shared instance of singleton bean 'org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping'
+Creating instance of bean 'org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping'
+Eagerly caching bean 'org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping' to allow for resolving potential circular references
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#0'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#1'
+Looking for URL mappings in application context: Root WebApplicationContext: startup date [Tue Apr 05 18:53:38 CST 2016]; root of context hierarchy
+Rejected bean name 'mvcContentNegotiationManager': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping#0': no URL paths identified
+Rejected bean name 'org.springframework.format.support.FormattingConversionServiceFactoryBean#0': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter#0': no URL paths identified
+Rejected bean name 'mvcUriComponentsContributor': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.handler.MappedInterceptor#0': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver#0': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver#0': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver#0': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter': no URL paths identified
+Rejected bean name 'companyfollowersController': no URL paths identified
+Rejected bean name 'demoController': no URL paths identified
+Rejected bean name 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor': no URL paths identified
+Rejected bean name 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor': no URL paths identified
+Rejected bean name 'org.springframework.context.annotation.internalRequiredAnnotationProcessor': no URL paths identified
+Rejected bean name 'org.springframework.context.annotation.internalCommonAnnotationProcessor': no URL paths identified
+Rejected bean name 'org.springframework.context.event.internalEventListenerProcessor': no URL paths identified
+Rejected bean name 'org.springframework.context.event.internalEventListenerFactory': no URL paths identified
+Rejected bean name 'webConfig': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.handler.MappedInterceptor#1': no URL paths identified
+Rejected bean name 'org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor': no URL paths identified
+Rejected bean name 'org.springframework.context.annotation.ConfigurationClassPostProcessor.enhancedConfigurationProcessor': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration': no URL paths identified
+Rejected bean name 'requestMappingHandlerMapping': no URL paths identified
+Rejected bean name 'viewControllerHandlerMapping': no URL paths identified
+Rejected bean name 'beanNameHandlerMapping': no URL paths identified
+Rejected bean name 'resourceHandlerMapping': no URL paths identified
+Rejected bean name 'mvcResourceUrlProvider': no URL paths identified
+Rejected bean name 'defaultServletHandlerMapping': no URL paths identified
+Rejected bean name 'requestMappingHandlerAdapter': no URL paths identified
+Rejected bean name 'mvcConversionService': no URL paths identified
+Rejected bean name 'mvcValidator': no URL paths identified
+Rejected bean name 'mvcPathMatcher': no URL paths identified
+Rejected bean name 'mvcUrlPathHelper': no URL paths identified
+Rejected bean name 'httpRequestHandlerAdapter': no URL paths identified
+Rejected bean name 'simpleControllerHandlerAdapter': no URL paths identified
+Rejected bean name 'handlerExceptionResolver': no URL paths identified
+Rejected bean name 'mvcViewResolver': no URL paths identified
+Rejected bean name 'environment': no URL paths identified
+Rejected bean name 'systemProperties': no URL paths identified
+Rejected bean name 'systemEnvironment': no URL paths identified
+Rejected bean name 'servletContext': no URL paths identified
+Rejected bean name 'contextParameters': no URL paths identified
+Rejected bean name 'contextAttributes': no URL paths identified
+Rejected bean name 'org.springframework.context.annotation.ConfigurationClassPostProcessor.importRegistry': no URL paths identified
+Rejected bean name 'messageSource': no URL paths identified
+Rejected bean name 'applicationEventMulticaster': no URL paths identified
+Finished creating instance of bean 'org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping'
+Creating shared instance of singleton bean 'org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter'
+Creating instance of bean 'org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter'
+Eagerly caching bean 'org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter' to allow for resolving potential circular references
+Finished creating instance of bean 'org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter'
+Creating shared instance of singleton bean 'org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter'
+Creating instance of bean 'org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter'
+Eagerly caching bean 'org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter' to allow for resolving potential circular references
+Finished creating instance of bean 'org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter'
+Creating shared instance of singleton bean 'companyfollowersController'
+Creating instance of bean 'companyfollowersController'
+Eagerly caching bean 'companyfollowersController' to allow for resolving potential circular references
+Finished creating instance of bean 'companyfollowersController'
+Creating shared instance of singleton bean 'demoController'
+Creating instance of bean 'demoController'
+Starting
+Starting
+Starting
+reset
+Client environment:zookeeper.version=3.4.5-1392090, built on 09/30/2012 17:52 GMT
+Client environment:host.name=192.168.4.165
+Client environment:java.version=1.8.0_74
+Client environment:java.vendor=Oracle Corporation
+Client environment:java.home=/Library/Java/JavaVirtualMachines/jdk1.8.0_74.jdk/Contents/Home/jre
+Client environment:java.class.path=/usr/local/Cellar/gradle/2.11/libexec/lib/gradle-launcher-2.11.jar
+Client environment:java.library.path=/Users/zzh/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:.
+Client environment:java.io.tmpdir=/var/folders/dt/7sck1r0n7mgcpymsfs_1fzf80000gn/T/
+Client environment:java.compiler=<NA>
+Client environment:os.name=Mac OS X
+Client environment:os.arch=x86_64
+Client environment:os.version=10.10.5
+Client environment:user.name=zzh
+Client environment:user.home=/Users/zzh
+Client environment:user.dir=/Users/zzh/Documents/git/moseeker/moseeker-basic-service/service-manager
+Initiating client connection, connectString=127.0.0.1:2181 sessionTimeout=3000 watcher=org.apache.curator.ConnectionState@5c7e55a4
+zookeeper.disableAutoWatchReset is false
+Opening socket connection to server localhost/127.0.0.1:2181. Will not attempt to authenticate using SASL (unknown error)
+Socket connection established to localhost/127.0.0.1:2181, initiating session
+Session establishment request sent on localhost/127.0.0.1:2181
+Session establishment complete on server localhost/127.0.0.1:2181, sessionid = 0x153e45a721c000b, negotiated timeout = 4000
+State change: CONNECTED
+There are no ConnectionStateListeners registered.
+Reading reply sessionid:0x153e45a721c000b, packet:: clientPath:null serverPath:null finished:false header:: 1,3  replyHeader:: 1,377957122081,0  request:: '/services,F  response:: s{304942678020,304942678020,1459390929776,1459390929776,0,2,0,0,0,2,304942678032} 
+Reading reply sessionid:0x153e45a721c000b, packet:: clientPath:null serverPath:null finished:false header:: 2,3  replyHeader:: 2,377957122081,-101  request:: '/services/com.moseeker.thrift.service$EchoService/clients/192.168.4.165:0,F  response::  
+Reading reply sessionid:0x153e45a721c000b, packet:: clientPath:null serverPath:null finished:false header:: 3,1  replyHeader:: 3,377957122082,0  request:: '/services/com.moseeker.thrift.service$EchoService/clients/192.168.4.165:0,#7b226966616365223a22636f6d2e6d6f7365656b65722e7468726966742e67656e2e64656d6f2e4563686f53657276696365244966616365222c22696e74657276616c223a3330302c226c6f616462616c616e6365223a22726f756e64222c226d6178416374697665223a313032342c226d617849646c65223a3130302c226d617857616974223a323030302c226d696e49646c65223a302c226d6f6e69746f72223a66616c73652c2270726f746f636f6c223a22746872696674222c227265747279223a312c2273657276696365223a22636f6d2e6d6f7365656b65722e7468726966742e73657276696365244563686f53657276696365222c22746573745768696c6549646c65223a66616c73652c2274696d654265747765656e4576696374696f6e52756e734d696c6c6973223a3138303030302c2274696d656f7574223a333030307d,v{s{31,s{'world,'anyone}}},1  response:: '/services/com.moseeker.thrift.service$EchoService/clients/192.168.4.165:0 
+Reading reply sessionid:0x153e45a721c000b, packet:: clientPath:null serverPath:null finished:false header:: 4,12  replyHeader:: 4,377957122082,0  request:: '/services/com.moseeker.thrift.service$EchoService/servers,F  response:: v{},s{304942678033,304942678033,1459416261179,1459416261179,0,24,0,0,0,0,377957122080} 
+replace [all=[], lives=[], deads=[]] with [all=[], lives=[], deads=[]]
+Eagerly caching bean 'demoController' to allow for resolving potential circular references
+Finished creating instance of bean 'demoController'
+Returning cached instance of singleton bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor'
+Returning cached instance of singleton bean 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor'
+Returning cached instance of singleton bean 'org.springframework.context.annotation.internalRequiredAnnotationProcessor'
+Returning cached instance of singleton bean 'org.springframework.context.annotation.internalCommonAnnotationProcessor'
+Creating shared instance of singleton bean 'org.springframework.context.event.internalEventListenerProcessor'
+Creating instance of bean 'org.springframework.context.event.internalEventListenerProcessor'
+Eagerly caching bean 'org.springframework.context.event.internalEventListenerProcessor' to allow for resolving potential circular references
+Finished creating instance of bean 'org.springframework.context.event.internalEventListenerProcessor'
+Creating shared instance of singleton bean 'org.springframework.context.event.internalEventListenerFactory'
+Creating instance of bean 'org.springframework.context.event.internalEventListenerFactory'
+Eagerly caching bean 'org.springframework.context.event.internalEventListenerFactory' to allow for resolving potential circular references
+Finished creating instance of bean 'org.springframework.context.event.internalEventListenerFactory'
+Returning cached instance of singleton bean 'webConfig'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#1'
+Returning cached instance of singleton bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor'
+Returning cached instance of singleton bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor.enhancedConfigurationProcessor'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Creating shared instance of singleton bean 'requestMappingHandlerMapping'
+Creating instance of bean 'requestMappingHandlerMapping'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Creating shared instance of singleton bean 'mvcConversionService'
+Creating instance of bean 'mvcConversionService'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Eagerly caching bean 'mvcConversionService' to allow for resolving potential circular references
+Finished creating instance of bean 'mvcConversionService'
+Creating shared instance of singleton bean 'mvcResourceUrlProvider'
+Creating instance of bean 'mvcResourceUrlProvider'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Eagerly caching bean 'mvcResourceUrlProvider' to allow for resolving potential circular references
+Finished creating instance of bean 'mvcResourceUrlProvider'
+Returning cached instance of singleton bean 'mvcContentNegotiationManager'
+Eagerly caching bean 'requestMappingHandlerMapping' to allow for resolving potential circular references
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#0'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#1'
+Invoking afterPropertiesSet() on bean with name 'requestMappingHandlerMapping'
+Looking for request mappings in application context: Root WebApplicationContext: startup date [Tue Apr 05 18:53:38 CST 2016]; root of context hierarchy
+Mapped "{[/companyfollowers],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.moseeker.servicemanager.web.controller.CompanyfollowersController.get(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+Mapped "{[/companyfollowers],methods=[PUT],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.moseeker.servicemanager.web.controller.CompanyfollowersController.put(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+Mapped "{[/companyfollowers],methods=[DELETE],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.moseeker.servicemanager.web.controller.CompanyfollowersController.delete(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+Mapped "{[/companyfollowers],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.moseeker.servicemanager.web.controller.CompanyfollowersController.post(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+Mapped "{[/demo],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.moseeker.servicemanager.web.controller.DemoController.get(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+Finished creating instance of bean 'requestMappingHandlerMapping'
+Creating shared instance of singleton bean 'viewControllerHandlerMapping'
+Creating instance of bean 'viewControllerHandlerMapping'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Creating shared instance of singleton bean 'mvcPathMatcher'
+Creating instance of bean 'mvcPathMatcher'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Eagerly caching bean 'mvcPathMatcher' to allow for resolving potential circular references
+Finished creating instance of bean 'mvcPathMatcher'
+Creating shared instance of singleton bean 'mvcUrlPathHelper'
+Creating instance of bean 'mvcUrlPathHelper'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Eagerly caching bean 'mvcUrlPathHelper' to allow for resolving potential circular references
+Finished creating instance of bean 'mvcUrlPathHelper'
+Eagerly caching bean 'viewControllerHandlerMapping' to allow for resolving potential circular references
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#0'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#1'
+Finished creating instance of bean 'viewControllerHandlerMapping'
+Creating shared instance of singleton bean 'beanNameHandlerMapping'
+Creating instance of bean 'beanNameHandlerMapping'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Eagerly caching bean 'beanNameHandlerMapping' to allow for resolving potential circular references
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#0'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#1'
+Looking for URL mappings in application context: Root WebApplicationContext: startup date [Tue Apr 05 18:53:38 CST 2016]; root of context hierarchy
+Rejected bean name 'mvcContentNegotiationManager': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping#0': no URL paths identified
+Rejected bean name 'org.springframework.format.support.FormattingConversionServiceFactoryBean#0': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter#0': no URL paths identified
+Rejected bean name 'mvcUriComponentsContributor': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.handler.MappedInterceptor#0': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver#0': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver#0': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver#0': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter': no URL paths identified
+Rejected bean name 'companyfollowersController': no URL paths identified
+Rejected bean name 'demoController': no URL paths identified
+Rejected bean name 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor': no URL paths identified
+Rejected bean name 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor': no URL paths identified
+Rejected bean name 'org.springframework.context.annotation.internalRequiredAnnotationProcessor': no URL paths identified
+Rejected bean name 'org.springframework.context.annotation.internalCommonAnnotationProcessor': no URL paths identified
+Rejected bean name 'org.springframework.context.event.internalEventListenerProcessor': no URL paths identified
+Rejected bean name 'org.springframework.context.event.internalEventListenerFactory': no URL paths identified
+Rejected bean name 'webConfig': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.handler.MappedInterceptor#1': no URL paths identified
+Rejected bean name 'org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor': no URL paths identified
+Rejected bean name 'org.springframework.context.annotation.ConfigurationClassPostProcessor.enhancedConfigurationProcessor': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration': no URL paths identified
+Rejected bean name 'requestMappingHandlerMapping': no URL paths identified
+Rejected bean name 'viewControllerHandlerMapping': no URL paths identified
+Rejected bean name 'beanNameHandlerMapping': no URL paths identified
+Rejected bean name 'resourceHandlerMapping': no URL paths identified
+Rejected bean name 'mvcResourceUrlProvider': no URL paths identified
+Rejected bean name 'defaultServletHandlerMapping': no URL paths identified
+Rejected bean name 'requestMappingHandlerAdapter': no URL paths identified
+Rejected bean name 'mvcConversionService': no URL paths identified
+Rejected bean name 'mvcValidator': no URL paths identified
+Rejected bean name 'mvcPathMatcher': no URL paths identified
+Rejected bean name 'mvcUrlPathHelper': no URL paths identified
+Rejected bean name 'httpRequestHandlerAdapter': no URL paths identified
+Rejected bean name 'simpleControllerHandlerAdapter': no URL paths identified
+Rejected bean name 'handlerExceptionResolver': no URL paths identified
+Rejected bean name 'mvcViewResolver': no URL paths identified
+Rejected bean name 'environment': no URL paths identified
+Rejected bean name 'systemProperties': no URL paths identified
+Rejected bean name 'systemEnvironment': no URL paths identified
+Rejected bean name 'servletContext': no URL paths identified
+Rejected bean name 'contextParameters': no URL paths identified
+Rejected bean name 'contextAttributes': no URL paths identified
+Rejected bean name 'org.springframework.context.annotation.ConfigurationClassPostProcessor.importRegistry': no URL paths identified
+Rejected bean name 'messageSource': no URL paths identified
+Rejected bean name 'applicationEventMulticaster': no URL paths identified
+Finished creating instance of bean 'beanNameHandlerMapping'
+Creating shared instance of singleton bean 'resourceHandlerMapping'
+Creating instance of bean 'resourceHandlerMapping'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Eagerly caching bean 'resourceHandlerMapping' to allow for resolving potential circular references
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#0'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#1'
+Finished creating instance of bean 'resourceHandlerMapping'
+Returning cached instance of singleton bean 'mvcResourceUrlProvider'
+Creating shared instance of singleton bean 'defaultServletHandlerMapping'
+Creating instance of bean 'defaultServletHandlerMapping'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Eagerly caching bean 'defaultServletHandlerMapping' to allow for resolving potential circular references
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#0'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#1'
+Finished creating instance of bean 'defaultServletHandlerMapping'
+Creating shared instance of singleton bean 'requestMappingHandlerAdapter'
+Creating instance of bean 'requestMappingHandlerAdapter'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Returning cached instance of singleton bean 'mvcContentNegotiationManager'
+Returning cached instance of singleton bean 'mvcConversionService'
+Creating shared instance of singleton bean 'mvcValidator'
+Creating instance of bean 'mvcValidator'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Eagerly caching bean 'mvcValidator' to allow for resolving potential circular references
+Finished creating instance of bean 'mvcValidator'
+Eagerly caching bean 'requestMappingHandlerAdapter' to allow for resolving potential circular references
+Invoking afterPropertiesSet() on bean with name 'requestMappingHandlerAdapter'
+Looking for @ControllerAdvice: Root WebApplicationContext: startup date [Tue Apr 05 18:53:38 CST 2016]; root of context hierarchy
+Finished creating instance of bean 'requestMappingHandlerAdapter'
+Returning cached instance of singleton bean 'mvcConversionService'
+Returning cached instance of singleton bean 'mvcValidator'
+Returning cached instance of singleton bean 'mvcPathMatcher'
+Returning cached instance of singleton bean 'mvcUrlPathHelper'
+Creating shared instance of singleton bean 'httpRequestHandlerAdapter'
+Creating instance of bean 'httpRequestHandlerAdapter'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Eagerly caching bean 'httpRequestHandlerAdapter' to allow for resolving potential circular references
+Finished creating instance of bean 'httpRequestHandlerAdapter'
+Creating shared instance of singleton bean 'simpleControllerHandlerAdapter'
+Creating instance of bean 'simpleControllerHandlerAdapter'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Eagerly caching bean 'simpleControllerHandlerAdapter' to allow for resolving potential circular references
+Finished creating instance of bean 'simpleControllerHandlerAdapter'
+Creating shared instance of singleton bean 'handlerExceptionResolver'
+Creating instance of bean 'handlerExceptionResolver'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Returning cached instance of singleton bean 'mvcContentNegotiationManager'
+Looking for exception mappings: Root WebApplicationContext: startup date [Tue Apr 05 18:53:38 CST 2016]; root of context hierarchy
+Eagerly caching bean 'handlerExceptionResolver' to allow for resolving potential circular references
+Finished creating instance of bean 'handlerExceptionResolver'
+Creating shared instance of singleton bean 'mvcViewResolver'
+Creating instance of bean 'mvcViewResolver'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Returning cached instance of singleton bean 'mvcContentNegotiationManager'
+Eagerly caching bean 'mvcViewResolver' to allow for resolving potential circular references
+Invoking afterPropertiesSet() on bean with name 'mvcViewResolver'
+Finished creating instance of bean 'mvcViewResolver'
+Returning cached instance of singleton bean 'org.springframework.context.event.internalEventListenerFactory'
+Unable to locate LifecycleProcessor with name 'lifecycleProcessor': using default [org.springframework.context.support.DefaultLifecycleProcessor@4468c0ea]
+Returning cached instance of singleton bean 'lifecycleProcessor'
+Returning cached instance of singleton bean 'mvcResourceUrlProvider'
+Looking for resource handler mappings
+No resource handling mappings found
+Searching for key 'spring.liveBeansView.mbeanDomain' in [servletConfigInitParams]
+Searching for key 'spring.liveBeansView.mbeanDomain' in [servletContextInitParams]
+Searching for key 'spring.liveBeansView.mbeanDomain' in [jndiProperties]
+Looking up JNDI object with name [java:comp/env/spring.liveBeansView.mbeanDomain]
+Converted JNDI name [java:comp/env/spring.liveBeansView.mbeanDomain] not found - trying original name [spring.liveBeansView.mbeanDomain]. javax.naming.NameNotFoundException; remaining name 'spring.liveBeansView.mbeanDomain'
+Looking up JNDI object with name [spring.liveBeansView.mbeanDomain]
+JNDI lookup for name [spring.liveBeansView.mbeanDomain] threw NamingException with message: null. Returning null.
+Searching for key 'spring.liveBeansView.mbeanDomain' in [systemProperties]
+Searching for key 'spring.liveBeansView.mbeanDomain' in [systemEnvironment]
+Could not find key 'spring.liveBeansView.mbeanDomain' in any property source. Returning [null]
+Published root WebApplicationContext as ServletContext attribute with name [org.springframework.web.context.WebApplicationContext.ROOT]
+Root WebApplicationContext: initialization completed in 3232 ms
+Adding [servletConfigInitParams] PropertySource with lowest search precedence
+Adding [servletContextInitParams] PropertySource with lowest search precedence
+Adding [jndiProperties] PropertySource with lowest search precedence
+Adding [systemProperties] PropertySource with lowest search precedence
+Adding [systemEnvironment] PropertySource with lowest search precedence
+Initialized StandardServletEnvironment with PropertySources [servletConfigInitParams,servletContextInitParams,jndiProperties,systemProperties,systemEnvironment]
+Initializing filter 'encoding'
+Filter 'encoding' configured successfully
+Initializing servlet 'service manager'
+Adding [servletConfigInitParams] PropertySource with lowest search precedence
+Adding [servletContextInitParams] PropertySource with lowest search precedence
+Adding [jndiProperties] PropertySource with lowest search precedence
+Adding [systemProperties] PropertySource with lowest search precedence
+Adding [systemEnvironment] PropertySource with lowest search precedence
+Initialized StandardServletEnvironment with PropertySources [servletConfigInitParams,servletContextInitParams,jndiProperties,systemProperties,systemEnvironment]
+FrameworkServlet 'service manager': initialization started
+Servlet with name 'service manager' will try to create custom WebApplicationContext context of class 'org.springframework.web.context.support.XmlWebApplicationContext', using parent context [Root WebApplicationContext: startup date [Tue Apr 05 18:53:38 CST 2016]; root of context hierarchy]
+Searching for key 'spring.profiles.active' in [servletConfigInitParams]
+Searching for key 'spring.profiles.active' in [servletContextInitParams]
+Searching for key 'spring.profiles.active' in [jndiProperties]
+Looking up JNDI object with name [java:comp/env/spring.profiles.active]
+Converted JNDI name [java:comp/env/spring.profiles.active] not found - trying original name [spring.profiles.active]. javax.naming.NameNotFoundException; remaining name 'spring.profiles.active'
+Looking up JNDI object with name [spring.profiles.active]
+JNDI lookup for name [spring.profiles.active] threw NamingException with message: null. Returning null.
+Searching for key 'spring.profiles.active' in [systemProperties]
+Searching for key 'spring.profiles.active' in [systemEnvironment]
+Could not find key 'spring.profiles.active' in any property source. Returning [null]
+Searching for key 'spring.profiles.default' in [servletConfigInitParams]
+Searching for key 'spring.profiles.default' in [servletContextInitParams]
+Searching for key 'spring.profiles.default' in [jndiProperties]
+Looking up JNDI object with name [java:comp/env/spring.profiles.default]
+Converted JNDI name [java:comp/env/spring.profiles.default] not found - trying original name [spring.profiles.default]. javax.naming.NameNotFoundException; remaining name 'spring.profiles.default'
+Looking up JNDI object with name [spring.profiles.default]
+JNDI lookup for name [spring.profiles.default] threw NamingException with message: null. Returning null.
+Searching for key 'spring.profiles.default' in [systemProperties]
+Searching for key 'spring.profiles.default' in [systemEnvironment]
+Could not find key 'spring.profiles.default' in any property source. Returning [null]
+Replacing [servletContextInitParams] PropertySource with [servletContextInitParams]
+Replacing [servletConfigInitParams] PropertySource with [servletConfigInitParams]
+Refreshing WebApplicationContext for namespace 'service manager-servlet': startup date [Tue Apr 05 18:53:41 CST 2016]; parent: Root WebApplicationContext
+Adding [systemProperties] PropertySource with lowest search precedence
+Adding [systemEnvironment] PropertySource with lowest search precedence
+Initialized StandardEnvironment with PropertySources [systemProperties,systemEnvironment]
+Loading XML bean definitions from ServletContext resource [/WEB-INF/controllers.xml]
+Using JAXP provider [org.apache.xerces.jaxp.DocumentBuilderFactoryImpl]
+Loading schema mappings from [META-INF/spring.schemas]
+Loaded schema mappings: {http://www.springframework.org/schema/cache/spring-cache-4.2.xsd=org/springframework/cache/config/spring-cache-4.2.xsd, http://www.springframework.org/schema/aop/spring-aop-4.1.xsd=org/springframework/aop/config/spring-aop-4.1.xsd, http://www.springframework.org/schema/context/spring-context-3.1.xsd=org/springframework/context/config/spring-context-3.1.xsd, http://www.springframework.org/schema/util/spring-util-3.0.xsd=org/springframework/beans/factory/xml/spring-util-3.0.xsd, http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd=org/springframework/web/servlet/config/spring-mvc-4.1.xsd, http://www.springframework.org/schema/tool/spring-tool.xsd=org/springframework/beans/factory/xml/spring-tool-4.2.xsd, http://www.springframework.org/schema/aop/spring-aop-3.2.xsd=org/springframework/aop/config/spring-aop-3.2.xsd, http://www.springframework.org/schema/lang/spring-lang-4.1.xsd=org/springframework/scripting/config/spring-lang-4.1.xsd, http://www.springframework.org/schema/context/spring-context-4.0.xsd=org/springframework/context/config/spring-context-4.0.xsd, http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd=org/springframework/web/servlet/config/spring-mvc-3.2.xsd, http://www.springframework.org/schema/beans/spring-beans-4.2.xsd=org/springframework/beans/factory/xml/spring-beans-4.2.xsd, http://www.springframework.org/schema/tool/spring-tool-4.1.xsd=org/springframework/beans/factory/xml/spring-tool-4.1.xsd, http://www.springframework.org/schema/lang/spring-lang-3.2.xsd=org/springframework/scripting/config/spring-lang-3.2.xsd, http://www.springframework.org/schema/cache/spring-cache-3.2.xsd=org/springframework/cache/config/spring-cache-3.2.xsd, http://www.springframework.org/schema/jee/spring-jee-4.1.xsd=org/springframework/ejb/config/spring-jee-4.1.xsd, http://www.springframework.org/schema/util/spring-util-2.0.xsd=org/springframework/beans/factory/xml/spring-util-2.0.xsd, http://www.springframework.org/schema/task/spring-task-4.2.xsd=org/springframework/scheduling/config/spring-task-4.2.xsd, http://www.springframework.org/schema/tool/spring-tool-3.2.xsd=org/springframework/beans/factory/xml/spring-tool-3.2.xsd, http://www.springframework.org/schema/context/spring-context.xsd=org/springframework/context/config/spring-context-4.2.xsd, http://www.springframework.org/schema/cache/spring-cache-4.1.xsd=org/springframework/cache/config/spring-cache-4.1.xsd, http://www.springframework.org/schema/aop/spring-aop-4.0.xsd=org/springframework/aop/config/spring-aop-4.0.xsd, http://www.springframework.org/schema/jee/spring-jee-3.2.xsd=org/springframework/ejb/config/spring-jee-3.2.xsd, http://www.springframework.org/schema/context/spring-context-3.0.xsd=org/springframework/context/config/spring-context-3.0.xsd, http://www.springframework.org/schema/util/spring-util-2.5.xsd=org/springframework/beans/factory/xml/spring-util-2.5.xsd, http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd=org/springframework/web/servlet/config/spring-mvc-4.0.xsd, http://www.springframework.org/schema/beans/spring-beans-3.2.xsd=org/springframework/beans/factory/xml/spring-beans-3.2.xsd, http://www.springframework.org/schema/aop/spring-aop-3.1.xsd=org/springframework/aop/config/spring-aop-3.1.xsd, http://www.springframework.org/schema/lang/spring-lang-4.0.xsd=org/springframework/scripting/config/spring-lang-4.0.xsd, http://www.springframework.org/schema/mvc/spring-mvc.xsd=org/springframework/web/servlet/config/spring-mvc-4.1.xsd, http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd=org/springframework/web/servlet/config/spring-mvc-3.1.xsd, http://www.springframework.org/schema/beans/spring-beans-4.1.xsd=org/springframework/beans/factory/xml/spring-beans-4.1.xsd, http://www.springframework.org/schema/tool/spring-tool-4.0.xsd=org/springframework/beans/factory/xml/spring-tool-4.0.xsd, http://www.springframework.org/schema/lang/spring-lang-3.1.xsd=org/springframework/scripting/config/spring-lang-3.1.xsd, http://www.springframework.org/schema/cache/spring-cache-3.1.xsd=org/springframework/cache/config/spring-cache-3.1.xsd, http://www.springframework.org/schema/jee/spring-jee-4.0.xsd=org/springframework/ejb/config/spring-jee-4.0.xsd, http://www.springframework.org/schema/task/spring-task-4.1.xsd=org/springframework/scheduling/config/spring-task-4.1.xsd, http://www.springframework.org/schema/tool/spring-tool-3.1.xsd=org/springframework/beans/factory/xml/spring-tool-3.1.xsd, http://www.springframework.org/schema/cache/spring-cache-4.0.xsd=org/springframework/cache/config/spring-cache-4.0.xsd, http://www.springframework.org/schema/jee/spring-jee-3.1.xsd=org/springframework/ejb/config/spring-jee-3.1.xsd, http://www.springframework.org/schema/util/spring-util-4.2.xsd=org/springframework/beans/factory/xml/spring-util-4.2.xsd, http://www.springframework.org/schema/task/spring-task-3.2.xsd=org/springframework/scheduling/config/spring-task-3.2.xsd, http://www.springframework.org/schema/beans/spring-beans-3.1.xsd=org/springframework/beans/factory/xml/spring-beans-3.1.xsd, http://www.springframework.org/schema/util/spring-util.xsd=org/springframework/beans/factory/xml/spring-util-4.2.xsd, http://www.springframework.org/schema/aop/spring-aop-3.0.xsd=org/springframework/aop/config/spring-aop-3.0.xsd, http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd=org/springframework/web/servlet/config/spring-mvc-3.0.xsd, http://www.springframework.org/schema/beans/spring-beans-4.0.xsd=org/springframework/beans/factory/xml/spring-beans-4.0.xsd, http://www.springframework.org/schema/beans/spring-beans.xsd=org/springframework/beans/factory/xml/spring-beans-4.2.xsd, http://www.springframework.org/schema/lang/spring-lang-3.0.xsd=org/springframework/scripting/config/spring-lang-3.0.xsd, http://www.springframework.org/schema/context/spring-context-2.5.xsd=org/springframework/context/config/spring-context-2.5.xsd, http://www.springframework.org/schema/task/spring-task-4.0.xsd=org/springframework/scheduling/config/spring-task-4.0.xsd, http://www.springframework.org/schema/tool/spring-tool-3.0.xsd=org/springframework/beans/factory/xml/spring-tool-3.0.xsd, http://www.springframework.org/schema/aop/spring-aop-2.0.xsd=org/springframework/aop/config/spring-aop-2.0.xsd, http://www.springframework.org/schema/jee/spring-jee-3.0.xsd=org/springframework/ejb/config/spring-jee-3.0.xsd, http://www.springframework.org/schema/util/spring-util-4.1.xsd=org/springframework/beans/factory/xml/spring-util-4.1.xsd, http://www.springframework.org/schema/task/spring-task-3.1.xsd=org/springframework/scheduling/config/spring-task-3.1.xsd, http://www.springframework.org/schema/beans/spring-beans-3.0.xsd=org/springframework/beans/factory/xml/spring-beans-3.0.xsd, http://www.springframework.org/schema/jee/spring-jee.xsd=org/springframework/ejb/config/spring-jee-4.2.xsd, http://www.springframework.org/schema/aop/spring-aop-2.5.xsd=org/springframework/aop/config/spring-aop-2.5.xsd, http://www.springframework.org/schema/lang/spring-lang-2.0.xsd=org/springframework/scripting/config/spring-lang-2.0.xsd, http://www.springframework.org/schema/util/spring-util-3.2.xsd=org/springframework/beans/factory/xml/spring-util-3.2.xsd, http://www.springframework.org/schema/task/spring-task.xsd=org/springframework/scheduling/config/spring-task-4.2.xsd, http://www.springframework.org/schema/tool/spring-tool-2.0.xsd=org/springframework/beans/factory/xml/spring-tool-2.0.xsd, http://www.springframework.org/schema/lang/spring-lang-2.5.xsd=org/springframework/scripting/config/spring-lang-2.5.xsd, http://www.springframework.org/schema/context/spring-context-4.2.xsd=org/springframework/context/config/spring-context-4.2.xsd, http://www.springframework.org/schema/jee/spring-jee-2.0.xsd=org/springframework/ejb/config/spring-jee-2.0.xsd, http://www.springframework.org/schema/tool/spring-tool-2.5.xsd=org/springframework/beans/factory/xml/spring-tool-2.5.xsd, http://www.springframework.org/schema/jee/spring-jee-2.5.xsd=org/springframework/ejb/config/spring-jee-2.5.xsd, http://www.springframework.org/schema/util/spring-util-4.0.xsd=org/springframework/beans/factory/xml/spring-util-4.0.xsd, http://www.springframework.org/schema/task/spring-task-3.0.xsd=org/springframework/scheduling/config/spring-task-3.0.xsd, http://www.springframework.org/schema/aop/spring-aop-4.2.xsd=org/springframework/aop/config/spring-aop-4.2.xsd, http://www.springframework.org/schema/lang/spring-lang.xsd=org/springframework/scripting/config/spring-lang-4.2.xsd, http://www.springframework.org/schema/context/spring-context-3.2.xsd=org/springframework/context/config/spring-context-3.2.xsd, http://www.springframework.org/schema/util/spring-util-3.1.xsd=org/springframework/beans/factory/xml/spring-util-3.1.xsd, http://www.springframework.org/schema/beans/spring-beans-2.0.xsd=org/springframework/beans/factory/xml/spring-beans-2.0.xsd, http://www.springframework.org/schema/cache/spring-cache.xsd=org/springframework/cache/config/spring-cache-4.2.xsd, http://www.springframework.org/schema/lang/spring-lang-4.2.xsd=org/springframework/scripting/config/spring-lang-4.2.xsd, http://www.springframework.org/schema/context/spring-context-4.1.xsd=org/springframework/context/config/spring-context-4.1.xsd, http://www.springframework.org/schema/beans/spring-beans-2.5.xsd=org/springframework/beans/factory/xml/spring-beans-2.5.xsd, http://www.springframework.org/schema/tool/spring-tool-4.2.xsd=org/springframework/beans/factory/xml/spring-tool-4.2.xsd, http://www.springframework.org/schema/jee/spring-jee-4.2.xsd=org/springframework/ejb/config/spring-jee-4.2.xsd, http://www.springframework.org/schema/aop/spring-aop.xsd=org/springframework/aop/config/spring-aop-4.2.xsd}
+Found XML schema [http://www.springframework.org/schema/beans/spring-beans.xsd] in classpath: org/springframework/beans/factory/xml/spring-beans-4.2.xsd
+Found XML schema [http://www.springframework.org/schema/mvc/spring-mvc.xsd] in classpath: org/springframework/web/servlet/config/spring-mvc-4.1.xsd
+Found XML schema [http://www.springframework.org/schema/tool/spring-tool-4.1.xsd] in classpath: org/springframework/beans/factory/xml/spring-tool-4.1.xsd
+Found XML schema [http://www.springframework.org/schema/context/spring-context.xsd] in classpath: org/springframework/context/config/spring-context-4.2.xsd
+Loading bean definitions
+Loaded NamespaceHandler mappings: {http://www.springframework.org/schema/p=org.springframework.beans.factory.xml.SimplePropertyNamespaceHandler, http://www.springframework.org/schema/mvc=org.springframework.web.servlet.config.MvcNamespaceHandler, http://www.springframework.org/schema/util=org.springframework.beans.factory.xml.UtilNamespaceHandler, http://www.springframework.org/schema/jee=org.springframework.ejb.config.JeeNamespaceHandler, http://www.springframework.org/schema/aop=org.springframework.aop.config.AopNamespaceHandler, http://www.springframework.org/schema/cache=org.springframework.cache.config.CacheNamespaceHandler, http://www.springframework.org/schema/c=org.springframework.beans.factory.xml.SimpleConstructorNamespaceHandler, http://www.springframework.org/schema/task=org.springframework.scheduling.config.TaskNamespaceHandler, http://www.springframework.org/schema/lang=org.springframework.scripting.config.LangNamespaceHandler, http://www.springframework.org/schema/context=org.springframework.context.config.ContextNamespaceHandler}
+Adding [systemProperties] PropertySource with lowest search precedence
+Adding [systemEnvironment] PropertySource with lowest search precedence
+Initialized StandardEnvironment with PropertySources [systemProperties,systemEnvironment]
+JSR-330 'javax.inject.Named' annotation found and supported for component scanning
+Looking for matching resources in directory tree [/Users/zzh/Documents/git/moseeker/moseeker-basic-service/service-manager/build/classes/main/com/moseeker/servicemanager/web/controller]
+Searching directory [/Users/zzh/Documents/git/moseeker/moseeker-basic-service/service-manager/build/classes/main/com/moseeker/servicemanager/web/controller] for files matching pattern [/Users/zzh/Documents/git/moseeker/moseeker-basic-service/service-manager/build/classes/main/com/moseeker/servicemanager/web/controller/**/*.class]
+Resolved location pattern [classpath*:com/moseeker/servicemanager/web/controller/**/*.class] to resources [file [/Users/zzh/Documents/git/moseeker/moseeker-basic-service/service-manager/build/classes/main/com/moseeker/servicemanager/web/controller/CompanyfollowersController.class], file [/Users/zzh/Documents/git/moseeker/moseeker-basic-service/service-manager/build/classes/main/com/moseeker/servicemanager/web/controller/DemoController.class], file [/Users/zzh/Documents/git/moseeker/moseeker-basic-service/service-manager/build/classes/main/com/moseeker/servicemanager/web/controller/RestfulController.class]]
+Identified candidate component class: file [/Users/zzh/Documents/git/moseeker/moseeker-basic-service/service-manager/build/classes/main/com/moseeker/servicemanager/web/controller/CompanyfollowersController.class]
+Identified candidate component class: file [/Users/zzh/Documents/git/moseeker/moseeker-basic-service/service-manager/build/classes/main/com/moseeker/servicemanager/web/controller/DemoController.class]
+Adding [systemProperties] PropertySource with lowest search precedence
+Adding [systemEnvironment] PropertySource with lowest search precedence
+Initialized StandardEnvironment with PropertySources [systemProperties,systemEnvironment]
+JSR-330 'javax.inject.Named' annotation found and supported for component scanning
+Looking for matching resources in directory tree [/Users/zzh/Documents/git/moseeker/moseeker-basic-service/service-manager/build/classes/main/com/moseeker/servicemanager/config]
+Searching directory [/Users/zzh/Documents/git/moseeker/moseeker-basic-service/service-manager/build/classes/main/com/moseeker/servicemanager/config] for files matching pattern [/Users/zzh/Documents/git/moseeker/moseeker-basic-service/service-manager/build/classes/main/com/moseeker/servicemanager/config/**/*.class]
+Resolved location pattern [classpath*:com/moseeker/servicemanager/config/**/*.class] to resources [file [/Users/zzh/Documents/git/moseeker/moseeker-basic-service/service-manager/build/classes/main/com/moseeker/servicemanager/config/WebConfig.class]]
+Identified candidate component class: file [/Users/zzh/Documents/git/moseeker/moseeker-basic-service/service-manager/build/classes/main/com/moseeker/servicemanager/config/WebConfig.class]
+Neither XML 'id' nor 'name' specified - using generated bean name [com.moseeker.servicemanager.web.interceptor.TestInterceptor#0]
+Loaded 22 bean definitions from location pattern [/WEB-INF/controllers.xml]
+Bean factory for WebApplicationContext for namespace 'service manager-servlet': org.springframework.beans.factory.support.DefaultListableBeanFactory@7771c4e: defining beans [mvcContentNegotiationManager,org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping#0,org.springframework.format.support.FormattingConversionServiceFactoryBean#0,org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter#0,mvcUriComponentsContributor,org.springframework.web.servlet.handler.MappedInterceptor#0,org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver#0,org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver#0,org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver#0,org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping,org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter,org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter,companyfollowersController,demoController,org.springframework.context.annotation.internalConfigurationAnnotationProcessor,org.springframework.context.annotation.internalAutowiredAnnotationProcessor,org.springframework.context.annotation.internalRequiredAnnotationProcessor,org.springframework.context.annotation.internalCommonAnnotationProcessor,org.springframework.context.event.internalEventListenerProcessor,org.springframework.context.event.internalEventListenerFactory,webConfig,org.springframework.web.servlet.handler.MappedInterceptor#1]; parent: org.springframework.beans.factory.support.DefaultListableBeanFactory@543d2ef3
+Registering scope 'request' with implementation [org.springframework.web.context.request.RequestScope@63062eea]
+Registering scope 'session' with implementation [org.springframework.web.context.request.SessionScope@7bad18f5]
+Registering scope 'globalSession' with implementation [org.springframework.web.context.request.SessionScope@4407fea2]
+Registering scope 'application' with implementation [org.springframework.web.context.support.ServletContextScope@64e3bc2]
+Creating shared instance of singleton bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor'
+Creating instance of bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor'
+Eagerly caching bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor' to allow for resolving potential circular references
+Finished creating instance of bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor'
+Registered bean definition for imported class 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Registering bean definition for @Bean method org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.requestMappingHandlerMapping()
+Registering bean definition for @Bean method org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.mvcContentNegotiationManager()
+Overriding bean definition for bean 'mvcContentNegotiationManager' with a different definition: replacing [Root bean: class [org.springframework.web.accept.ContentNegotiationManagerFactoryBean]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null] with [Root bean: class [null]; scope=; abstract=false; lazyInit=false; autowireMode=3; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration; factoryMethodName=mvcContentNegotiationManager; initMethodName=null; destroyMethodName=(inferred); defined in class path resource [org/springframework/web/servlet/config/annotation/DelegatingWebMvcConfiguration.class]]
+Registering bean definition for @Bean method org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.viewControllerHandlerMapping()
+Registering bean definition for @Bean method org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.beanNameHandlerMapping()
+Registering bean definition for @Bean method org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.resourceHandlerMapping()
+Registering bean definition for @Bean method org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.mvcResourceUrlProvider()
+Registering bean definition for @Bean method org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.defaultServletHandlerMapping()
+Registering bean definition for @Bean method org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.requestMappingHandlerAdapter()
+Registering bean definition for @Bean method org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.mvcConversionService()
+Registering bean definition for @Bean method org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.mvcValidator()
+Registering bean definition for @Bean method org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.mvcPathMatcher()
+Registering bean definition for @Bean method org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.mvcUrlPathHelper()
+Skipping bean definition for [BeanMethod:name=mvcUriComponentsContributor,declaringClass=org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport]: a definition for bean 'mvcUriComponentsContributor' already exists. This top-level bean definition is considered as an override.
+Registering bean definition for @Bean method org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.httpRequestHandlerAdapter()
+Registering bean definition for @Bean method org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.simpleControllerHandlerAdapter()
+Registering bean definition for @Bean method org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.handlerExceptionResolver()
+Registering bean definition for @Bean method org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.mvcViewResolver()
+Successfully enhanced com.moseeker.servicemanager.config.WebConfig; enhanced class name is: com.moseeker.servicemanager.config.WebConfig$$EnhancerBySpringCGLIB$$ac7667bc
+Replacing bean definition 'webConfig' existing class name 'com.moseeker.servicemanager.config.WebConfig' with enhanced class name 'com.moseeker.servicemanager.config.WebConfig$$EnhancerBySpringCGLIB$$ac7667bc'
+Successfully enhanced org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration; enhanced class name is: org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration$$EnhancerBySpringCGLIB$$18f72c87
+Replacing bean definition 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration' existing class name 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration' with enhanced class name 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration$$EnhancerBySpringCGLIB$$18f72c87'
+Creating shared instance of singleton bean 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor'
+Creating instance of bean 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor'
+JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+Eagerly caching bean 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor' to allow for resolving potential circular references
+Finished creating instance of bean 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor'
+Creating shared instance of singleton bean 'org.springframework.context.annotation.internalRequiredAnnotationProcessor'
+Creating instance of bean 'org.springframework.context.annotation.internalRequiredAnnotationProcessor'
+Eagerly caching bean 'org.springframework.context.annotation.internalRequiredAnnotationProcessor' to allow for resolving potential circular references
+Finished creating instance of bean 'org.springframework.context.annotation.internalRequiredAnnotationProcessor'
+Creating shared instance of singleton bean 'org.springframework.context.annotation.internalCommonAnnotationProcessor'
+Creating instance of bean 'org.springframework.context.annotation.internalCommonAnnotationProcessor'
+Eagerly caching bean 'org.springframework.context.annotation.internalCommonAnnotationProcessor' to allow for resolving potential circular references
+Finished creating instance of bean 'org.springframework.context.annotation.internalCommonAnnotationProcessor'
+Creating shared instance of singleton bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor'
+Creating instance of bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor'
+Eagerly caching bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor' to allow for resolving potential circular references
+Finished creating instance of bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor'
+Creating shared instance of singleton bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor.enhancedConfigurationProcessor'
+Creating instance of bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor.enhancedConfigurationProcessor'
+Eagerly caching bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor.enhancedConfigurationProcessor' to allow for resolving potential circular references
+Finished creating instance of bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor.enhancedConfigurationProcessor'
+Unable to locate MessageSource with name 'messageSource': using default [org.springframework.context.support.DelegatingMessageSource@619854a3]
+Unable to locate ApplicationEventMulticaster with name 'applicationEventMulticaster': using default [org.springframework.context.event.SimpleApplicationEventMulticaster@46ff1aad]
+Unable to locate ThemeSource with name 'themeSource': using default [org.springframework.ui.context.support.DelegatingThemeSource@4d4600fb]
+Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@7771c4e: defining beans [mvcContentNegotiationManager,org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping#0,org.springframework.format.support.FormattingConversionServiceFactoryBean#0,org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter#0,mvcUriComponentsContributor,org.springframework.web.servlet.handler.MappedInterceptor#0,org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver#0,org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver#0,org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver#0,org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping,org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter,org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter,companyfollowersController,demoController,org.springframework.context.annotation.internalConfigurationAnnotationProcessor,org.springframework.context.annotation.internalAutowiredAnnotationProcessor,org.springframework.context.annotation.internalRequiredAnnotationProcessor,org.springframework.context.annotation.internalCommonAnnotationProcessor,org.springframework.context.event.internalEventListenerProcessor,org.springframework.context.event.internalEventListenerFactory,webConfig,org.springframework.web.servlet.handler.MappedInterceptor#1,org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor,org.springframework.context.annotation.ConfigurationClassPostProcessor.enhancedConfigurationProcessor,org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration,requestMappingHandlerMapping,viewControllerHandlerMapping,beanNameHandlerMapping,resourceHandlerMapping,mvcResourceUrlProvider,defaultServletHandlerMapping,requestMappingHandlerAdapter,mvcConversionService,mvcValidator,mvcPathMatcher,mvcUrlPathHelper,httpRequestHandlerAdapter,simpleControllerHandlerAdapter,handlerExceptionResolver,mvcViewResolver]; parent: org.springframework.beans.factory.support.DefaultListableBeanFactory@543d2ef3
+Creating shared instance of singleton bean 'mvcContentNegotiationManager'
+Creating instance of bean 'mvcContentNegotiationManager'
+Creating shared instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Creating instance of bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Registered injected element on class [org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration$$EnhancerBySpringCGLIB$$18f72c87]: AutowiredMethodElement for public void org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.setConfigurers(java.util.List)
+Eagerly caching bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration' to allow for resolving potential circular references
+Processing injected element of bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration': AutowiredMethodElement for public void org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration.setConfigurers(java.util.List)
+Creating shared instance of singleton bean 'webConfig'
+Creating instance of bean 'webConfig'
+Eagerly caching bean 'webConfig' to allow for resolving potential circular references
+Finished creating instance of bean 'webConfig'
+Autowiring by type from bean name 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration' to bean named 'webConfig'
+Finished creating instance of bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Eagerly caching bean 'mvcContentNegotiationManager' to allow for resolving potential circular references
+Finished creating instance of bean 'mvcContentNegotiationManager'
+Creating shared instance of singleton bean 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping#0'
+Creating instance of bean 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping#0'
+Eagerly caching bean 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping#0' to allow for resolving potential circular references
+Returning cached instance of singleton bean 'mvcContentNegotiationManager'
+Creating shared instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#0'
+Creating instance of bean 'org.springframework.web.servlet.handler.MappedInterceptor#0'
+Creating instance of bean '(inner bean)#4d2950ed'
+Creating shared instance of singleton bean 'org.springframework.format.support.FormattingConversionServiceFactoryBean#0'
+Creating instance of bean 'org.springframework.format.support.FormattingConversionServiceFactoryBean#0'
+Eagerly caching bean 'org.springframework.format.support.FormattingConversionServiceFactoryBean#0' to allow for resolving potential circular references
+Invoking afterPropertiesSet() on bean with name 'org.springframework.format.support.FormattingConversionServiceFactoryBean#0'
+Finished creating instance of bean 'org.springframework.format.support.FormattingConversionServiceFactoryBean#0'
+Finished creating instance of bean '(inner bean)#4d2950ed'
+Eagerly caching bean 'org.springframework.web.servlet.handler.MappedInterceptor#0' to allow for resolving potential circular references
+Finished creating instance of bean 'org.springframework.web.servlet.handler.MappedInterceptor#0'
+Creating shared instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#1'
+Creating instance of bean 'org.springframework.web.servlet.handler.MappedInterceptor#1'
+Creating instance of bean 'com.moseeker.servicemanager.web.interceptor.TestInterceptor#0'
+Finished creating instance of bean 'com.moseeker.servicemanager.web.interceptor.TestInterceptor#0'
+Eagerly caching bean 'org.springframework.web.servlet.handler.MappedInterceptor#1' to allow for resolving potential circular references
+Finished creating instance of bean 'org.springframework.web.servlet.handler.MappedInterceptor#1'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#0'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#1'
+Invoking afterPropertiesSet() on bean with name 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping#0'
+Looking for request mappings in application context: WebApplicationContext for namespace 'service manager-servlet': startup date [Tue Apr 05 18:53:41 CST 2016]; parent: Root WebApplicationContext
+Mapped "{[/companyfollowers],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.moseeker.servicemanager.web.controller.CompanyfollowersController.get(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+Mapped "{[/companyfollowers],methods=[PUT],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.moseeker.servicemanager.web.controller.CompanyfollowersController.put(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+Mapped "{[/companyfollowers],methods=[DELETE],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.moseeker.servicemanager.web.controller.CompanyfollowersController.delete(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+Mapped "{[/companyfollowers],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.moseeker.servicemanager.web.controller.CompanyfollowersController.post(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+Mapped "{[/demo],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.moseeker.servicemanager.web.controller.DemoController.get(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+Finished creating instance of bean 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping#0'
+Returning cached instance of singleton bean 'org.springframework.format.support.FormattingConversionServiceFactoryBean#0'
+Creating shared instance of singleton bean 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter#0'
+Creating instance of bean 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter#0'
+Eagerly caching bean 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter#0' to allow for resolving potential circular references
+Returning cached instance of singleton bean 'mvcContentNegotiationManager'
+Creating instance of bean '(inner bean)#24a7725d'
+Returning cached instance of singleton bean 'org.springframework.format.support.FormattingConversionServiceFactoryBean#0'
+Finished creating instance of bean '(inner bean)#24a7725d'
+Creating instance of bean '(inner bean)#4fcedf83'
+Finished creating instance of bean '(inner bean)#4fcedf83'
+Creating instance of bean '(inner bean)#16c9f7f0'
+Finished creating instance of bean '(inner bean)#16c9f7f0'
+Creating instance of bean '(inner bean)#187df588'
+Finished creating instance of bean '(inner bean)#187df588'
+Creating instance of bean '(inner bean)#7d75940'
+Finished creating instance of bean '(inner bean)#7d75940'
+Creating instance of bean '(inner bean)#6773bab2'
+Finished creating instance of bean '(inner bean)#6773bab2'
+Creating instance of bean '(inner bean)#1055d261'
+Finished creating instance of bean '(inner bean)#1055d261'
+Creating instance of bean '(inner bean)#2d758472'
+Creating instance of bean '(inner bean)#7615666e'
+Invoking afterPropertiesSet() on bean with name '(inner bean)#7615666e'
+Finished creating instance of bean '(inner bean)#7615666e'
+Finished creating instance of bean '(inner bean)#2d758472'
+Creating instance of bean '(inner bean)#6e1d9b32'
+Finished creating instance of bean '(inner bean)#6e1d9b32'
+Invoking afterPropertiesSet() on bean with name 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter#0'
+Looking for @ControllerAdvice: WebApplicationContext for namespace 'service manager-servlet': startup date [Tue Apr 05 18:53:41 CST 2016]; parent: Root WebApplicationContext
+Finished creating instance of bean 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter#0'
+Creating shared instance of singleton bean 'mvcUriComponentsContributor'
+Creating instance of bean 'mvcUriComponentsContributor'
+Eagerly caching bean 'mvcUriComponentsContributor' to allow for resolving potential circular references
+Creating instance of bean '(inner bean)#2db6ba81'
+Returning cached instance of singleton bean 'mvcContentNegotiationManager'
+Creating instance of bean '(inner bean)#24a7725d#1'
+Returning cached instance of singleton bean 'org.springframework.format.support.FormattingConversionServiceFactoryBean#0'
+Finished creating instance of bean '(inner bean)#24a7725d#1'
+Creating instance of bean '(inner bean)#4fcedf83#1'
+Finished creating instance of bean '(inner bean)#4fcedf83#1'
+Creating instance of bean '(inner bean)#16c9f7f0#1'
+Finished creating instance of bean '(inner bean)#16c9f7f0#1'
+Creating instance of bean '(inner bean)#187df588#1'
+Finished creating instance of bean '(inner bean)#187df588#1'
+Creating instance of bean '(inner bean)#7d75940#1'
+Finished creating instance of bean '(inner bean)#7d75940#1'
+Creating instance of bean '(inner bean)#6773bab2#1'
+Finished creating instance of bean '(inner bean)#6773bab2#1'
+Creating instance of bean '(inner bean)#1055d261#1'
+Finished creating instance of bean '(inner bean)#1055d261#1'
+Creating instance of bean '(inner bean)#2d758472#1'
+Creating instance of bean '(inner bean)#7615666e#1'
+Invoking afterPropertiesSet() on bean with name '(inner bean)#7615666e#1'
+Finished creating instance of bean '(inner bean)#7615666e#1'
+Finished creating instance of bean '(inner bean)#2d758472#1'
+Creating instance of bean '(inner bean)#6e1d9b32#1'
+Finished creating instance of bean '(inner bean)#6e1d9b32#1'
+Invoking afterPropertiesSet() on bean with name '(inner bean)#2db6ba81'
+Looking for @ControllerAdvice: WebApplicationContext for namespace 'service manager-servlet': startup date [Tue Apr 05 18:53:41 CST 2016]; parent: Root WebApplicationContext
+Returning eagerly cached instance of singleton bean 'mvcUriComponentsContributor' that is not fully initialized yet - a consequence of a circular reference
+Finished creating instance of bean '(inner bean)#2db6ba81'
+Returning cached instance of singleton bean 'org.springframework.format.support.FormattingConversionServiceFactoryBean#0'
+Invoking afterPropertiesSet() on bean with name 'mvcUriComponentsContributor'
+Finished creating instance of bean 'mvcUriComponentsContributor'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#0'
+Creating shared instance of singleton bean 'org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver#0'
+Creating instance of bean 'org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver#0'
+Eagerly caching bean 'org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver#0' to allow for resolving potential circular references
+Returning cached instance of singleton bean 'mvcContentNegotiationManager'
+Creating instance of bean '(inner bean)#4fcedf83#2'
+Finished creating instance of bean '(inner bean)#4fcedf83#2'
+Creating instance of bean '(inner bean)#16c9f7f0#2'
+Finished creating instance of bean '(inner bean)#16c9f7f0#2'
+Creating instance of bean '(inner bean)#187df588#2'
+Finished creating instance of bean '(inner bean)#187df588#2'
+Creating instance of bean '(inner bean)#7d75940#2'
+Finished creating instance of bean '(inner bean)#7d75940#2'
+Creating instance of bean '(inner bean)#6773bab2#2'
+Finished creating instance of bean '(inner bean)#6773bab2#2'
+Creating instance of bean '(inner bean)#1055d261#2'
+Finished creating instance of bean '(inner bean)#1055d261#2'
+Creating instance of bean '(inner bean)#2d758472#2'
+Creating instance of bean '(inner bean)#7615666e#2'
+Invoking afterPropertiesSet() on bean with name '(inner bean)#7615666e#2'
+Finished creating instance of bean '(inner bean)#7615666e#2'
+Finished creating instance of bean '(inner bean)#2d758472#2'
+Creating instance of bean '(inner bean)#14bd523b'
+Finished creating instance of bean '(inner bean)#14bd523b'
+Invoking afterPropertiesSet() on bean with name 'org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver#0'
+Looking for exception mappings: WebApplicationContext for namespace 'service manager-servlet': startup date [Tue Apr 05 18:53:41 CST 2016]; parent: Root WebApplicationContext
+Finished creating instance of bean 'org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver#0'
+Creating shared instance of singleton bean 'org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver#0'
+Creating instance of bean 'org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver#0'
+Eagerly caching bean 'org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver#0' to allow for resolving potential circular references
+Finished creating instance of bean 'org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver#0'
+Creating shared instance of singleton bean 'org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver#0'
+Creating instance of bean 'org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver#0'
+Eagerly caching bean 'org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver#0' to allow for resolving potential circular references
+Finished creating instance of bean 'org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver#0'
+Creating shared instance of singleton bean 'org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping'
+Creating instance of bean 'org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping'
+Eagerly caching bean 'org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping' to allow for resolving potential circular references
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#0'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#1'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#0'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#1'
+Looking for URL mappings in application context: WebApplicationContext for namespace 'service manager-servlet': startup date [Tue Apr 05 18:53:41 CST 2016]; parent: Root WebApplicationContext
+Rejected bean name 'mvcContentNegotiationManager': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping#0': no URL paths identified
+Rejected bean name 'org.springframework.format.support.FormattingConversionServiceFactoryBean#0': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter#0': no URL paths identified
+Rejected bean name 'mvcUriComponentsContributor': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.handler.MappedInterceptor#0': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver#0': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver#0': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver#0': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter': no URL paths identified
+Rejected bean name 'companyfollowersController': no URL paths identified
+Rejected bean name 'demoController': no URL paths identified
+Rejected bean name 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor': no URL paths identified
+Rejected bean name 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor': no URL paths identified
+Rejected bean name 'org.springframework.context.annotation.internalRequiredAnnotationProcessor': no URL paths identified
+Rejected bean name 'org.springframework.context.annotation.internalCommonAnnotationProcessor': no URL paths identified
+Rejected bean name 'org.springframework.context.event.internalEventListenerProcessor': no URL paths identified
+Rejected bean name 'org.springframework.context.event.internalEventListenerFactory': no URL paths identified
+Rejected bean name 'webConfig': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.handler.MappedInterceptor#1': no URL paths identified
+Rejected bean name 'org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor': no URL paths identified
+Rejected bean name 'org.springframework.context.annotation.ConfigurationClassPostProcessor.enhancedConfigurationProcessor': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration': no URL paths identified
+Rejected bean name 'requestMappingHandlerMapping': no URL paths identified
+Rejected bean name 'viewControllerHandlerMapping': no URL paths identified
+Rejected bean name 'beanNameHandlerMapping': no URL paths identified
+Rejected bean name 'resourceHandlerMapping': no URL paths identified
+Rejected bean name 'mvcResourceUrlProvider': no URL paths identified
+Rejected bean name 'defaultServletHandlerMapping': no URL paths identified
+Rejected bean name 'requestMappingHandlerAdapter': no URL paths identified
+Rejected bean name 'mvcConversionService': no URL paths identified
+Rejected bean name 'mvcValidator': no URL paths identified
+Rejected bean name 'mvcPathMatcher': no URL paths identified
+Rejected bean name 'mvcUrlPathHelper': no URL paths identified
+Rejected bean name 'httpRequestHandlerAdapter': no URL paths identified
+Rejected bean name 'simpleControllerHandlerAdapter': no URL paths identified
+Rejected bean name 'handlerExceptionResolver': no URL paths identified
+Rejected bean name 'mvcViewResolver': no URL paths identified
+Rejected bean name 'environment': no URL paths identified
+Rejected bean name 'systemProperties': no URL paths identified
+Rejected bean name 'systemEnvironment': no URL paths identified
+Rejected bean name 'servletConfig': no URL paths identified
+Rejected bean name 'org.springframework.context.annotation.ConfigurationClassPostProcessor.importRegistry': no URL paths identified
+Rejected bean name 'messageSource': no URL paths identified
+Rejected bean name 'applicationEventMulticaster': no URL paths identified
+Finished creating instance of bean 'org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping'
+Creating shared instance of singleton bean 'org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter'
+Creating instance of bean 'org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter'
+Eagerly caching bean 'org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter' to allow for resolving potential circular references
+Finished creating instance of bean 'org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter'
+Creating shared instance of singleton bean 'org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter'
+Creating instance of bean 'org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter'
+Eagerly caching bean 'org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter' to allow for resolving potential circular references
+Finished creating instance of bean 'org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter'
+Creating shared instance of singleton bean 'companyfollowersController'
+Creating instance of bean 'companyfollowersController'
+Eagerly caching bean 'companyfollowersController' to allow for resolving potential circular references
+Finished creating instance of bean 'companyfollowersController'
+Creating shared instance of singleton bean 'demoController'
+Creating instance of bean 'demoController'
+Starting
+Starting
+Starting
+reset
+Initiating client connection, connectString=127.0.0.1:2181 sessionTimeout=3000 watcher=org.apache.curator.ConnectionState@8ce4320
+Opening socket connection to server localhost/127.0.0.1:2181. Will not attempt to authenticate using SASL (unknown error)
+Socket connection established to localhost/127.0.0.1:2181, initiating session
+Session establishment request sent on localhost/127.0.0.1:2181
+Session establishment complete on server localhost/127.0.0.1:2181, sessionid = 0x153e45a721c000c, negotiated timeout = 4000
+State change: CONNECTED
+There are no ConnectionStateListeners registered.
+Reading reply sessionid:0x153e45a721c000c, packet:: clientPath:null serverPath:null finished:false header:: 1,3  replyHeader:: 1,377957122083,0  request:: '/services,F  response:: s{304942678020,304942678020,1459390929776,1459390929776,0,2,0,0,0,2,304942678032} 
+Reading reply sessionid:0x153e45a721c000c, packet:: clientPath:null serverPath:null finished:false header:: 2,3  replyHeader:: 2,377957122083,0  request:: '/services/com.moseeker.thrift.service$EchoService/clients/192.168.4.165:0,F  response:: s{377957122082,377957122082,1459853621163,1459853621163,0,0,0,95671094217539595,327,0,377957122082} 
+Reading reply sessionid:0x153e45a721c000c, packet:: clientPath:null serverPath:null finished:false header:: 3,12  replyHeader:: 3,377957122083,0  request:: '/services/com.moseeker.thrift.service$EchoService/servers,F  response:: v{},s{304942678033,304942678033,1459416261179,1459416261179,0,24,0,0,0,0,377957122080} 
+replace [all=[], lives=[], deads=[]] with [all=[], lives=[], deads=[]]
+Eagerly caching bean 'demoController' to allow for resolving potential circular references
+Finished creating instance of bean 'demoController'
+Returning cached instance of singleton bean 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor'
+Returning cached instance of singleton bean 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor'
+Returning cached instance of singleton bean 'org.springframework.context.annotation.internalRequiredAnnotationProcessor'
+Returning cached instance of singleton bean 'org.springframework.context.annotation.internalCommonAnnotationProcessor'
+Creating shared instance of singleton bean 'org.springframework.context.event.internalEventListenerProcessor'
+Creating instance of bean 'org.springframework.context.event.internalEventListenerProcessor'
+Eagerly caching bean 'org.springframework.context.event.internalEventListenerProcessor' to allow for resolving potential circular references
+Finished creating instance of bean 'org.springframework.context.event.internalEventListenerProcessor'
+Creating shared instance of singleton bean 'org.springframework.context.event.internalEventListenerFactory'
+Creating instance of bean 'org.springframework.context.event.internalEventListenerFactory'
+Eagerly caching bean 'org.springframework.context.event.internalEventListenerFactory' to allow for resolving potential circular references
+Finished creating instance of bean 'org.springframework.context.event.internalEventListenerFactory'
+Returning cached instance of singleton bean 'webConfig'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#1'
+Returning cached instance of singleton bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor'
+Returning cached instance of singleton bean 'org.springframework.context.annotation.ConfigurationClassPostProcessor.enhancedConfigurationProcessor'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Creating shared instance of singleton bean 'requestMappingHandlerMapping'
+Creating instance of bean 'requestMappingHandlerMapping'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Creating shared instance of singleton bean 'mvcConversionService'
+Creating instance of bean 'mvcConversionService'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Eagerly caching bean 'mvcConversionService' to allow for resolving potential circular references
+Finished creating instance of bean 'mvcConversionService'
+Creating shared instance of singleton bean 'mvcResourceUrlProvider'
+Creating instance of bean 'mvcResourceUrlProvider'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Eagerly caching bean 'mvcResourceUrlProvider' to allow for resolving potential circular references
+Finished creating instance of bean 'mvcResourceUrlProvider'
+Returning cached instance of singleton bean 'mvcContentNegotiationManager'
+Eagerly caching bean 'requestMappingHandlerMapping' to allow for resolving potential circular references
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#0'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#1'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#0'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#1'
+Invoking afterPropertiesSet() on bean with name 'requestMappingHandlerMapping'
+Looking for request mappings in application context: WebApplicationContext for namespace 'service manager-servlet': startup date [Tue Apr 05 18:53:41 CST 2016]; parent: Root WebApplicationContext
+Mapped "{[/companyfollowers],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.moseeker.servicemanager.web.controller.CompanyfollowersController.get(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+Mapped "{[/companyfollowers],methods=[PUT],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.moseeker.servicemanager.web.controller.CompanyfollowersController.put(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+Mapped "{[/companyfollowers],methods=[DELETE],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.moseeker.servicemanager.web.controller.CompanyfollowersController.delete(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+Mapped "{[/companyfollowers],methods=[POST],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.moseeker.servicemanager.web.controller.CompanyfollowersController.post(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+Mapped "{[/demo],methods=[GET],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public void com.moseeker.servicemanager.web.controller.DemoController.get(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+Finished creating instance of bean 'requestMappingHandlerMapping'
+Creating shared instance of singleton bean 'viewControllerHandlerMapping'
+Creating instance of bean 'viewControllerHandlerMapping'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Creating shared instance of singleton bean 'mvcPathMatcher'
+Creating instance of bean 'mvcPathMatcher'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Eagerly caching bean 'mvcPathMatcher' to allow for resolving potential circular references
+Finished creating instance of bean 'mvcPathMatcher'
+Creating shared instance of singleton bean 'mvcUrlPathHelper'
+Creating instance of bean 'mvcUrlPathHelper'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Eagerly caching bean 'mvcUrlPathHelper' to allow for resolving potential circular references
+Finished creating instance of bean 'mvcUrlPathHelper'
+Eagerly caching bean 'viewControllerHandlerMapping' to allow for resolving potential circular references
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#0'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#1'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#0'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#1'
+Finished creating instance of bean 'viewControllerHandlerMapping'
+Creating shared instance of singleton bean 'beanNameHandlerMapping'
+Creating instance of bean 'beanNameHandlerMapping'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Eagerly caching bean 'beanNameHandlerMapping' to allow for resolving potential circular references
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#0'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#1'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#0'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#1'
+Looking for URL mappings in application context: WebApplicationContext for namespace 'service manager-servlet': startup date [Tue Apr 05 18:53:41 CST 2016]; parent: Root WebApplicationContext
+Rejected bean name 'mvcContentNegotiationManager': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping#0': no URL paths identified
+Rejected bean name 'org.springframework.format.support.FormattingConversionServiceFactoryBean#0': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter#0': no URL paths identified
+Rejected bean name 'mvcUriComponentsContributor': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.handler.MappedInterceptor#0': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver#0': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver#0': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver#0': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter': no URL paths identified
+Rejected bean name 'companyfollowersController': no URL paths identified
+Rejected bean name 'demoController': no URL paths identified
+Rejected bean name 'org.springframework.context.annotation.internalConfigurationAnnotationProcessor': no URL paths identified
+Rejected bean name 'org.springframework.context.annotation.internalAutowiredAnnotationProcessor': no URL paths identified
+Rejected bean name 'org.springframework.context.annotation.internalRequiredAnnotationProcessor': no URL paths identified
+Rejected bean name 'org.springframework.context.annotation.internalCommonAnnotationProcessor': no URL paths identified
+Rejected bean name 'org.springframework.context.event.internalEventListenerProcessor': no URL paths identified
+Rejected bean name 'org.springframework.context.event.internalEventListenerFactory': no URL paths identified
+Rejected bean name 'webConfig': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.handler.MappedInterceptor#1': no URL paths identified
+Rejected bean name 'org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor': no URL paths identified
+Rejected bean name 'org.springframework.context.annotation.ConfigurationClassPostProcessor.enhancedConfigurationProcessor': no URL paths identified
+Rejected bean name 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration': no URL paths identified
+Rejected bean name 'requestMappingHandlerMapping': no URL paths identified
+Rejected bean name 'viewControllerHandlerMapping': no URL paths identified
+Rejected bean name 'beanNameHandlerMapping': no URL paths identified
+Rejected bean name 'resourceHandlerMapping': no URL paths identified
+Rejected bean name 'mvcResourceUrlProvider': no URL paths identified
+Rejected bean name 'defaultServletHandlerMapping': no URL paths identified
+Rejected bean name 'requestMappingHandlerAdapter': no URL paths identified
+Rejected bean name 'mvcConversionService': no URL paths identified
+Rejected bean name 'mvcValidator': no URL paths identified
+Rejected bean name 'mvcPathMatcher': no URL paths identified
+Rejected bean name 'mvcUrlPathHelper': no URL paths identified
+Rejected bean name 'httpRequestHandlerAdapter': no URL paths identified
+Rejected bean name 'simpleControllerHandlerAdapter': no URL paths identified
+Rejected bean name 'handlerExceptionResolver': no URL paths identified
+Rejected bean name 'mvcViewResolver': no URL paths identified
+Rejected bean name 'environment': no URL paths identified
+Rejected bean name 'systemProperties': no URL paths identified
+Rejected bean name 'systemEnvironment': no URL paths identified
+Rejected bean name 'servletConfig': no URL paths identified
+Rejected bean name 'org.springframework.context.annotation.ConfigurationClassPostProcessor.importRegistry': no URL paths identified
+Rejected bean name 'messageSource': no URL paths identified
+Rejected bean name 'applicationEventMulticaster': no URL paths identified
+Finished creating instance of bean 'beanNameHandlerMapping'
+Creating shared instance of singleton bean 'resourceHandlerMapping'
+Creating instance of bean 'resourceHandlerMapping'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Eagerly caching bean 'resourceHandlerMapping' to allow for resolving potential circular references
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#0'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#1'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#0'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#1'
+Finished creating instance of bean 'resourceHandlerMapping'
+Returning cached instance of singleton bean 'mvcResourceUrlProvider'
+Creating shared instance of singleton bean 'defaultServletHandlerMapping'
+Creating instance of bean 'defaultServletHandlerMapping'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Eagerly caching bean 'defaultServletHandlerMapping' to allow for resolving potential circular references
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#0'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#1'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#0'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.MappedInterceptor#1'
+Finished creating instance of bean 'defaultServletHandlerMapping'
+Creating shared instance of singleton bean 'requestMappingHandlerAdapter'
+Creating instance of bean 'requestMappingHandlerAdapter'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Returning cached instance of singleton bean 'mvcContentNegotiationManager'
+Returning cached instance of singleton bean 'mvcConversionService'
+Creating shared instance of singleton bean 'mvcValidator'
+Creating instance of bean 'mvcValidator'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Eagerly caching bean 'mvcValidator' to allow for resolving potential circular references
+Finished creating instance of bean 'mvcValidator'
+Eagerly caching bean 'requestMappingHandlerAdapter' to allow for resolving potential circular references
+Invoking afterPropertiesSet() on bean with name 'requestMappingHandlerAdapter'
+Looking for @ControllerAdvice: WebApplicationContext for namespace 'service manager-servlet': startup date [Tue Apr 05 18:53:41 CST 2016]; parent: Root WebApplicationContext
+Finished creating instance of bean 'requestMappingHandlerAdapter'
+Returning cached instance of singleton bean 'mvcConversionService'
+Returning cached instance of singleton bean 'mvcValidator'
+Returning cached instance of singleton bean 'mvcPathMatcher'
+Returning cached instance of singleton bean 'mvcUrlPathHelper'
+Creating shared instance of singleton bean 'httpRequestHandlerAdapter'
+Creating instance of bean 'httpRequestHandlerAdapter'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Eagerly caching bean 'httpRequestHandlerAdapter' to allow for resolving potential circular references
+Finished creating instance of bean 'httpRequestHandlerAdapter'
+Creating shared instance of singleton bean 'simpleControllerHandlerAdapter'
+Creating instance of bean 'simpleControllerHandlerAdapter'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Eagerly caching bean 'simpleControllerHandlerAdapter' to allow for resolving potential circular references
+Finished creating instance of bean 'simpleControllerHandlerAdapter'
+Creating shared instance of singleton bean 'handlerExceptionResolver'
+Creating instance of bean 'handlerExceptionResolver'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Returning cached instance of singleton bean 'mvcContentNegotiationManager'
+Looking for exception mappings: WebApplicationContext for namespace 'service manager-servlet': startup date [Tue Apr 05 18:53:41 CST 2016]; parent: Root WebApplicationContext
+Eagerly caching bean 'handlerExceptionResolver' to allow for resolving potential circular references
+Finished creating instance of bean 'handlerExceptionResolver'
+Creating shared instance of singleton bean 'mvcViewResolver'
+Creating instance of bean 'mvcViewResolver'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration'
+Returning cached instance of singleton bean 'mvcContentNegotiationManager'
+Eagerly caching bean 'mvcViewResolver' to allow for resolving potential circular references
+Invoking afterPropertiesSet() on bean with name 'mvcViewResolver'
+Finished creating instance of bean 'mvcViewResolver'
+Returning cached instance of singleton bean 'org.springframework.context.event.internalEventListenerFactory'
+Unable to locate LifecycleProcessor with name 'lifecycleProcessor': using default [org.springframework.context.support.DefaultLifecycleProcessor@6c25123e]
+Returning cached instance of singleton bean 'lifecycleProcessor'
+Returning cached instance of singleton bean 'mvcResourceUrlProvider'
+Unable to locate MultipartResolver with name 'multipartResolver': no multipart request handling provided
+Creating instance of bean 'org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver'
+Finished creating instance of bean 'org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver'
+Unable to locate LocaleResolver with name 'localeResolver': using default [org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver@6655f3cd]
+Creating instance of bean 'org.springframework.web.servlet.theme.FixedThemeResolver'
+Finished creating instance of bean 'org.springframework.web.servlet.theme.FixedThemeResolver'
+Unable to locate ThemeResolver with name 'themeResolver': using default [org.springframework.web.servlet.theme.FixedThemeResolver@3050d479]
+Returning cached instance of singleton bean 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping#0'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping'
+Returning cached instance of singleton bean 'requestMappingHandlerMapping'
+Returning cached instance of singleton bean 'viewControllerHandlerMapping'
+Returning cached instance of singleton bean 'beanNameHandlerMapping'
+Returning cached instance of singleton bean 'resourceHandlerMapping'
+Returning cached instance of singleton bean 'defaultServletHandlerMapping'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping#0'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping'
+Returning cached instance of singleton bean 'requestMappingHandlerMapping'
+Returning cached instance of singleton bean 'viewControllerHandlerMapping'
+Returning cached instance of singleton bean 'beanNameHandlerMapping'
+Returning cached instance of singleton bean 'resourceHandlerMapping'
+Returning cached instance of singleton bean 'defaultServletHandlerMapping'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter#0'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter'
+Returning cached instance of singleton bean 'requestMappingHandlerAdapter'
+Returning cached instance of singleton bean 'httpRequestHandlerAdapter'
+Returning cached instance of singleton bean 'simpleControllerHandlerAdapter'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter#0'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter'
+Returning cached instance of singleton bean 'requestMappingHandlerAdapter'
+Returning cached instance of singleton bean 'httpRequestHandlerAdapter'
+Returning cached instance of singleton bean 'simpleControllerHandlerAdapter'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver#0'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver#0'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver#0'
+Returning cached instance of singleton bean 'handlerExceptionResolver'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver#0'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver#0'
+Returning cached instance of singleton bean 'org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver#0'
+Returning cached instance of singleton bean 'handlerExceptionResolver'
+Creating instance of bean 'org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator'
+Finished creating instance of bean 'org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator'
+Unable to locate RequestToViewNameTranslator with name 'viewNameTranslator': using default [org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@2979c6ef]
+Returning cached instance of singleton bean 'mvcViewResolver'
+Returning cached instance of singleton bean 'mvcViewResolver'
+Creating instance of bean 'org.springframework.web.servlet.support.SessionFlashMapManager'
+Finished creating instance of bean 'org.springframework.web.servlet.support.SessionFlashMapManager'
+Unable to locate FlashMapManager with name 'flashMapManager': using default [org.springframework.web.servlet.support.SessionFlashMapManager@19c24321]
+Looking for resource handler mappings
+No resource handling mappings found
+Looking for resource handler mappings
+No resource handling mappings found
+Searching for key 'spring.liveBeansView.mbeanDomain' in [servletConfigInitParams]
+Searching for key 'spring.liveBeansView.mbeanDomain' in [servletContextInitParams]
+Searching for key 'spring.liveBeansView.mbeanDomain' in [jndiProperties]
+Looking up JNDI object with name [java:comp/env/spring.liveBeansView.mbeanDomain]
+Converted JNDI name [java:comp/env/spring.liveBeansView.mbeanDomain] not found - trying original name [spring.liveBeansView.mbeanDomain]. javax.naming.NameNotFoundException; remaining name 'spring.liveBeansView.mbeanDomain'
+Looking up JNDI object with name [spring.liveBeansView.mbeanDomain]
+JNDI lookup for name [spring.liveBeansView.mbeanDomain] threw NamingException with message: null. Returning null.
+Searching for key 'spring.liveBeansView.mbeanDomain' in [systemProperties]
+Searching for key 'spring.liveBeansView.mbeanDomain' in [systemEnvironment]
+Could not find key 'spring.liveBeansView.mbeanDomain' in any property source. Returning [null]
+Published WebApplicationContext of servlet 'service manager' as ServletContext attribute with name [org.springframework.web.servlet.FrameworkServlet.CONTEXT.service manager]
+FrameworkServlet 'service manager': initialization completed in 562 ms
+Servlet 'service manager' configured successfully
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 3ms
+Got ping response for sessionid: 0x153e45a721c000b after 1ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 1ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 1ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 2ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 1ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Got ping response for sessionid: 0x153e45a721c000c after 0ms
+Got ping response for sessionid: 0x153e45a721c000b after 0ms
+Closing
+Closing
+Closing
+Closing
+Closing
+Closing
+Closing session: 0x153e45a721c000c
+Closing session: 0x153e45a721c000b
+Closing client for session: 0x153e45a721c000b
+Closing client for session: 0x153e45a721c000c
+Reading reply sessionid:0x153e45a721c000b, packet:: clientPath:null serverPath:null finished:false header:: 5,-11  replyHeader:: 5,377957122084,0  request:: null response:: null
+Disconnecting client for session: 0x153e45a721c000b
+Session: 0x153e45a721c000b closed
+EventThread shut down
+Reading reply sessionid:0x153e45a721c000c, packet:: clientPath:null serverPath:null finished:false header:: 4,-11  replyHeader:: 4,377957122085,0  request:: null response:: null
+Disconnecting client for session: 0x153e45a721c000c
+Session: 0x153e45a721c000c closed
+EventThread shut down
+Closing WebApplicationContext for namespace 'service manager-servlet': startup date [Tue Apr 05 18:53:41 CST 2016]; parent: Root WebApplicationContext
+Returning cached instance of singleton bean 'lifecycleProcessor'
+Destroying singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@7771c4e: defining beans [mvcContentNegotiationManager,org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping#0,org.springframework.format.support.FormattingConversionServiceFactoryBean#0,org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter#0,mvcUriComponentsContributor,org.springframework.web.servlet.handler.MappedInterceptor#0,org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver#0,org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver#0,org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver#0,org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping,org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter,org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter,companyfollowersController,demoController,org.springframework.context.annotation.internalConfigurationAnnotationProcessor,org.springframework.context.annotation.internalAutowiredAnnotationProcessor,org.springframework.context.annotation.internalRequiredAnnotationProcessor,org.springframework.context.annotation.internalCommonAnnotationProcessor,org.springframework.context.event.internalEventListenerProcessor,org.springframework.context.event.internalEventListenerFactory,webConfig,org.springframework.web.servlet.handler.MappedInterceptor#1,org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor,org.springframework.context.annotation.ConfigurationClassPostProcessor.enhancedConfigurationProcessor,org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration,requestMappingHandlerMapping,viewControllerHandlerMapping,beanNameHandlerMapping,resourceHandlerMapping,mvcResourceUrlProvider,defaultServletHandlerMapping,requestMappingHandlerAdapter,mvcConversionService,mvcValidator,mvcPathMatcher,mvcUrlPathHelper,httpRequestHandlerAdapter,simpleControllerHandlerAdapter,handlerExceptionResolver,mvcViewResolver]; parent: org.springframework.beans.factory.support.DefaultListableBeanFactory@543d2ef3
+Retrieved dependent beans for bean '(inner bean)#4fcedf83#2': [org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver#0]
+Retrieved dependent beans for bean '(inner bean)#7615666e#2': [(inner bean)#2d758472#2]
+Retrieved dependent beans for bean '(inner bean)#2db6ba81': [mvcUriComponentsContributor]
+Retrieved dependent beans for bean '(inner bean)#24a7725d#1': [(inner bean)#2db6ba81]
+Retrieved dependent beans for bean '(inner bean)#7615666e#1': [(inner bean)#2d758472#1]
+Retrieved dependent beans for bean '(inner bean)#24a7725d': [org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter#0]
+Retrieved dependent beans for bean '(inner bean)#7615666e': [(inner bean)#2d758472]
+Retrieved dependent beans for bean 'com.moseeker.servicemanager.web.interceptor.TestInterceptor#0': [org.springframework.web.servlet.handler.MappedInterceptor#1]
+Retrieved dependent beans for bean '(inner bean)#4d2950ed': [org.springframework.web.servlet.handler.MappedInterceptor#0]
+Closing Root WebApplicationContext: startup date [Tue Apr 05 18:53:38 CST 2016]; root of context hierarchy
+Returning cached instance of singleton bean 'lifecycleProcessor'
+Destroying singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@543d2ef3: defining beans [mvcContentNegotiationManager,org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping#0,org.springframework.format.support.FormattingConversionServiceFactoryBean#0,org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter#0,mvcUriComponentsContributor,org.springframework.web.servlet.handler.MappedInterceptor#0,org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver#0,org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver#0,org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver#0,org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping,org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter,org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter,companyfollowersController,demoController,org.springframework.context.annotation.internalConfigurationAnnotationProcessor,org.springframework.context.annotation.internalAutowiredAnnotationProcessor,org.springframework.context.annotation.internalRequiredAnnotationProcessor,org.springframework.context.annotation.internalCommonAnnotationProcessor,org.springframework.context.event.internalEventListenerProcessor,org.springframework.context.event.internalEventListenerFactory,webConfig,org.springframework.web.servlet.handler.MappedInterceptor#1,org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor,org.springframework.context.annotation.ConfigurationClassPostProcessor.enhancedConfigurationProcessor,org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration,requestMappingHandlerMapping,viewControllerHandlerMapping,beanNameHandlerMapping,resourceHandlerMapping,mvcResourceUrlProvider,defaultServletHandlerMapping,requestMappingHandlerAdapter,mvcConversionService,mvcValidator,mvcPathMatcher,mvcUrlPathHelper,httpRequestHandlerAdapter,simpleControllerHandlerAdapter,handlerExceptionResolver,mvcViewResolver]; root of factory hierarchy
+Retrieved dependent beans for bean '(inner bean)#66fff42f#2': [org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver#0]
+Retrieved dependent beans for bean '(inner bean)#2914a328#2': [(inner bean)#31a024ea#2]
+Retrieved dependent beans for bean '(inner bean)#2a30b0cb': [mvcUriComponentsContributor]
+Retrieved dependent beans for bean '(inner bean)#b87ea8b#1': [(inner bean)#2a30b0cb]
+Retrieved dependent beans for bean '(inner bean)#2914a328#1': [(inner bean)#31a024ea#1]
+Retrieved dependent beans for bean '(inner bean)#b87ea8b': [org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter#0]
+Retrieved dependent beans for bean '(inner bean)#2914a328': [(inner bean)#31a024ea]
+Retrieved dependent beans for bean 'com.moseeker.servicemanager.web.interceptor.TestInterceptor#0': [org.springframework.web.servlet.handler.MappedInterceptor#1]
+Retrieved dependent beans for bean '(inner bean)#55b45ea1': [org.springframework.web.servlet.handler.MappedInterceptor#0]

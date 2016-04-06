@@ -3,6 +3,7 @@ package com.moseeker.servicemanager.web.controller;
 import java.io.PrintWriter;
 
 import com.moseeker.servicemanager.web.service.DemoServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,7 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class DemoController {
 
-    DemoServiceImpl demoService = new DemoServiceImpl();
+    @Autowired
+    private DemoServiceImpl demoService;
 
     @RequestMapping(value = "/demo", method = RequestMethod.GET)
     @ResponseBody
