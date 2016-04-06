@@ -7,6 +7,8 @@ apply plugin: 'idea'
 apply plugin: 'eclipse-wtp'
 
 webAppDirName = 'WebContent'    // 设置 WebApp 根目录
+
+sourceCompatibility = 1.8
   
 //compileJava.dependsOn(":thrift-gen-java:copyGeneratedFile")
 
@@ -16,7 +18,7 @@ dependencies {
     compile project(":common")
     compile project(":rpc-center")
     compile deps["fastjson"]
-    compile deps["junit"]
+//    compile deps["junit"]
     compile deps["zookeeper"]
     //compile 'org.apache.curator:curator-framework:2.10.0'
     compile deps["curator-recipes"]
@@ -24,11 +26,17 @@ dependencies {
     compile deps["jedis"]
     compile "org.springframework:spring-context:4.2.3.RELEASE"
     compile "org.springframework:spring-webmvc:4.1.6.RELEASE"
-    compile "org.springframework:spring-test:4.1.6.RELEASE"
+//    compile "org.springframework:spring-test:4.1.6.RELEASE"
+
     compile "com.ryantenney.log4j:redis-appender:1.0.0"
 
     compile deps["servlet-api"]
+//    compile deps["commons-logging"]
+
     runtime 'javax.servlet:jstl:1.1.2'
+
+    testCompile "junit:junit:4.5"
+    testCompile "org.springframework:spring-test:4.1.6.RELEASE"
 }
 
 
