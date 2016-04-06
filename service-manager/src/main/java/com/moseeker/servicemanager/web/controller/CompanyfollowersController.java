@@ -58,6 +58,7 @@ public class CompanyfollowersController  {
 			
 			ResponseLogNotification.success(request, jsonStringResponse);
 		} catch (Exception e) {	
+			logger.info("failed", e);
 			ResponseLogNotification.fail(request, e.getMessage());
 		} finally {
 		}

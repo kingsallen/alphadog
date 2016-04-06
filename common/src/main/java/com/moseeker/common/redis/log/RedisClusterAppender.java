@@ -3,6 +3,8 @@ package com.moseeker.common.redis.log;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.AppenderSkeleton;
@@ -22,9 +24,6 @@ import com.moseeker.common.redis.RedisClientFactory;
  */
 public class RedisClusterAppender extends AppenderSkeleton {
 	
-	private int appid = 0;
-	private String key = "LOG";
-
 	// Redis connection and messages buffer
 	private RedisClient redisCluster;
 	private Map<String, String> messages;
@@ -37,14 +36,18 @@ public class RedisClusterAppender extends AppenderSkeleton {
 		}
 		messages = new ConcurrentHashMap<String, String>();
 
-		Entry<String, String> message;
+		new Timer().schedule(new TimerTask() { 
+			public void run() {
+				Entry<String, String> message;
+				for (Iterator<Entry<String, String>> it = messages.entrySet()
+						.iterator(); it.hasNext();) {
+					message = it.next();
+					it.remove();
+					redisCluster.lpush(0, "LOG", message.getKey()+message.getValue());
 
-		for (Iterator<Entry<String, String>> it = messages.entrySet()
-				.iterator(); it.hasNext();) {
-			message = it.next();
-			it.remove();
-			redisCluster.set(appid, key, message.getKey(), message.getValue());
-		}
+				}
+			}
+		}, 500, 500);
 	}
 
 	protected void append(LoggingEvent event) {
@@ -60,21 +63,5 @@ public class RedisClusterAppender extends AppenderSkeleton {
 
 	public boolean requiresLayout() {
 		return true;
-	}
-
-	public int getAppid() {
-		return appid;
-	}
-
-	public void setAppid(int appid) {
-		this.appid = appid;
-	}
-
-	public String getKey() {
-		return key;
-	}
-
-	public void setKey(String key) {
-		this.key = key;
 	}
 }

@@ -19,7 +19,6 @@ package com.moseeker.thrift.server;
  * under the License.
  */
 
-import com.moseeker.common.zk.RegisterZKServer;
 import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerServices;
 import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerServices.Processor;
 import com.moseeker.thrift.service.impl.CompanyfollowerServicesImpl;

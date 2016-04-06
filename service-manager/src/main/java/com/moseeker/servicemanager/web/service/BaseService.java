@@ -1,9 +1,10 @@
 package com.moseeker.servicemanager.web.service;
 
+import org.springframework.stereotype.Service;
+
 import com.moseeker.rpccenter.common.configure.PropertiesConfiguration;
 import com.moseeker.rpccenter.config.ClientConfig;
 import com.moseeker.rpccenter.config.RegistryConfig;
-import org.springframework.stereotype.Service;
 
 /**
  * 获取Thrift服务实例

@@ -1,8 +1,9 @@
 package com.moseeker.servicemanager.web.service;
 
-import com.moseeker.thrift.gen.demo.EchoService.Iface;
 import org.apache.thrift.TException;
 import org.springframework.stereotype.Service;
+
+import com.moseeker.thrift.gen.demo.EchoService.Iface;
 
 /**
  * Created by zzh on 16/3/30.
