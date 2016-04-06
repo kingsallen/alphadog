@@ -20,4 +20,7 @@ public final class Constant {
 	public static final int logConfigType = 3;
 	public static final int cacheConfigType = 1;
 	public static final int sessionConfigType = 2;
+	
+	public static final int REDIS_CONNECT_ERROR_APPID = 0;
+	public static final String REDIS_CONNECT_ERROR_EVENTKEY = "REDIS_CONNECT_ERROR";
 }

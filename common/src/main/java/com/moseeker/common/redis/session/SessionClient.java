@@ -7,9 +7,9 @@ import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisCluster;
 
 import com.moseeker.common.redis.RedisClient;
-import com.moseeker.common.redis.cache.CacheClient;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.Constant;
+import com.moseeker.common.util.Notification;
 import com.moseeker.common.util.StringUtils;
 
 /**
@@ -28,9 +28,9 @@ public class SessionClient extends RedisClient {
 	public SessionClient() {
 		ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil
 				.getInstance();
-		redisConfigKeyName = propertiesUtils.get("sessionConfigKeyName",
+		redisConfigKeyName = propertiesUtils.get("redis.session.host",
 				String.class);
-		redisConfigTimeOut = propertiesUtils.get("sessionConfigTimeOut",
+		redisConfigTimeOut = propertiesUtils.get("redis.session.port",
 				Integer.class);
 		redisConfigType = Constant.sessionConfigType;
 		redisCluster = initRedisCluster();
@@ -55,8 +55,8 @@ public class SessionClient extends RedisClient {
 		if (redisCluster == null) {
 			Set<HostAndPort> jedisClusterNodes = new HashSet<HostAndPort>();
 			// Jedis Cluster will attempt to discover cluster nodes
-			String host = propertiesUtils.get("session_redis_host", String.class);
-			String port = propertiesUtils.get("session_redis_port", String.class);
+			String host = propertiesUtils.get("redis.session.config_key_name", String.class);
+			String port = propertiesUtils.get("redis.session.config_timeout", String.class);
 			if (!StringUtils.isNullOrEmpty(host)
 					&& !StringUtils.isNullOrEmpty(port)) {
 				String[] hostArray = host.split(",");
@@ -67,6 +67,8 @@ public class SessionClient extends RedisClient {
 								Integer.parseInt(portArray[i])));
 					}
 				}
+			} else {
+				Notification.sendLostRedisWarning(host, port);		//报警
 			}
 			redisCluster = new JedisCluster(jedisClusterNodes);
 		}

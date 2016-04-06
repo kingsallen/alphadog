@@ -2,7 +2,6 @@ package com.moseeker.common.redis.cache.db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,12 +9,15 @@ import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.moseeker.common.dbconnection.DatabaseConnectionHelper;
 import com.moseeker.common.redis.RedisConfigRedisKey;
 import com.moseeker.common.redis.cache.db.configdb.Tables;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.Constant;
+import com.moseeker.common.util.Notification;
 
 /**
  * 
@@ -34,6 +36,8 @@ import com.moseeker.common.util.Constant;
  * @version Beta
  */
 public class DbManager {
+	
+	Logger logger = LoggerFactory.getLogger(DbManager.class);
 
 	private DbManager() {
 	}
@@ -51,8 +55,8 @@ public class DbManager {
 	public static RedisConfigRedisKey readFromDB(int appId, String keyIdentifier, byte configType) {
 		ConfigPropertiesUtil configUtil = ConfigPropertiesUtil.getInstance();
 		RedisConfigRedisKey redisKey = new RedisConfigRedisKey();
-		try (Connection conn = DriverManager.getConnection(configUtil.get("cache_url", String.class),
-				configUtil.get("cache_username", String.class), configUtil.get("cache_password", String.class))) {
+		try (Connection conn = DriverManager.getConnection(configUtil.get("mycat.url", String.class),
+				configUtil.get("mycat.userName", String.class), configUtil.get("mycat.password", String.class))) {
 			DSLContext create = DSL.using(conn, SQLDialect.MYSQL);
 			Record row = create.select().from(Tables.CACHECONFIG_REDISKEY)
 					.where(Tables.CACHECONFIG_REDISKEY.PROJECT_APPID.equal(appId))
@@ -67,7 +71,10 @@ public class DbManager {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			LoggerFactory.getLogger(DbManager.class).error("error", e);
+			Notification.sendWarningWithHostName(appId, keyIdentifier, e.getMessage());
+		} finally {
+			//do nothing
 		}
 		return redisKey;
 	}
@@ -95,8 +102,10 @@ public class DbManager {
 						redisKeys.add(redisKey);
 					});
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LoggerFactory.getLogger(DbManager.class).error("error", e);
+			Notification.sendWarningWithHostName(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
+		} finally {
+			//do nothing
 		}
 		return redisKeys;
 	}

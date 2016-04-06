@@ -60,8 +60,8 @@ public class SensitiveWordDB {
 						}
 							
 					} catch (Exception e) {
-						instance.logger.error(e.getMessage());
-						e.printStackTrace();
+						Logger.getLogger(SensitiveWordDB.class).error("error", e);
+						//send a warning 
 					}
 				}
 			}
