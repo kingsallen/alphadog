@@ -80,6 +80,9 @@ public class ServerConfig implements IConfigCheck {
      *             ,RpcException
      */
     public void export(RegistryConfig registryConfig) throws ClassNotFoundException, RpcException {
+
+        this.setService(this.genServiceName());
+
         // 参数检查
         check();
 
@@ -190,6 +193,32 @@ public class ServerConfig implements IConfigCheck {
     private Object getProxy(ClassLoader classLoader, Class<?> interfaces, Object object, ServerNode serverNode) throws ClassNotFoundException {
         DynamicServiceHandler dynamicServiceHandler = new DynamicServiceHandler();
         return dynamicServiceHandler.bind(classLoader, interfaces, object, serverNode);
+    }
+
+    /**
+     * 生成服务名称
+     * <p>
+     *
+     * @return 服务名称
+     * @throws ClassNotFoundException
+     */
+    protected String genServiceName() {
+
+        Class serviceClass = getRef().getClass();
+        Class<?>[] interfaces = serviceClass.getInterfaces();
+        if (interfaces.length == 0) {
+            throw new RpcException("Service class should implements Iface!");
+        }
+
+        for (Class clazz : interfaces) {
+            String cname = clazz.getSimpleName();
+            if (!cname.equals("Iface")) {
+                continue;
+            }
+            return clazz.getEnclosingClass().getName();
+        }
+
+        return null;
     }
 
     @Override

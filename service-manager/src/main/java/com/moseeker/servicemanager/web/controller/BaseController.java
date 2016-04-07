@@ -1,17 +1,15 @@
-package com.moseeker.servicemanager.web.service;
-
-import org.springframework.stereotype.Service;
+package com.moseeker.servicemanager.web.controller;
 
 import com.moseeker.rpccenter.common.configure.PropertiesConfiguration;
 import com.moseeker.rpccenter.config.ClientConfig;
 import com.moseeker.rpccenter.config.RegistryConfig;
+import org.springframework.stereotype.Controller;
 
 /**
- * 获取Thrift服务实例
- * Created by zzh on 16/3/30.
+ * Created by zzh on 16/4/7.
  */
-@Service
-public class BaseService<T> {
+@Controller
+public class BaseController<T> {
 
     public static final String ZOO_CONF_FILE = "classpath:zoo.properties";
 
@@ -19,14 +17,16 @@ public class BaseService<T> {
 
     ClientConfig<T> clientConfig = new ClientConfig<T>();
 
+    private RegistryConfig registryConfig;
+
     private RegistryConfig getRegistryConfig(){
-        RegistryConfig registryConfig = new RegistryConfig();
+        registryConfig = new RegistryConfig();
         registryConfig.setConnectstr(configuration.getProperty("registry.connectstr", ""));
         registryConfig.setNamespace(configuration.getProperty("registry.namespace", ""));
         return registryConfig;
     }
 
-    public T getService(final String serviceName, String ifaceName){
+    public T getService(final String serviceName, final String ifaceName){
         try{
             clientConfig.setService(serviceName);
             clientConfig.setIface(ifaceName);
@@ -35,4 +35,5 @@ public class BaseService<T> {
             return null;
         }
     }
+
 }
