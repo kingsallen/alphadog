@@ -36,7 +36,6 @@ public class DatabaseConnectionHelper {
             config.setMinConnectionsPerPartition(minConnections);
             config.setMaxConnectionsPerPartition(maxConnections);
             connectionPool = new BoneCP(config);
-            throw new Exception("connecting to mycat error");
         } catch (Exception e) {
             // send notification
             e.printStackTrace();
