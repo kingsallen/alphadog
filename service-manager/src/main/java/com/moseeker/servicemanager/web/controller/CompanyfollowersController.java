@@ -56,13 +56,11 @@ public class CompanyfollowersController  {
 			List<Companyfollower> companyfollowers = thriftclient.callThriftServerGet(query);
 			jsonStringResponse = JSON.toJSONString(companyfollowers);
 			
-			ResponseLogNotification.success(request, jsonStringResponse);
+			return ResponseLogNotification.success(request, jsonStringResponse);
 		} catch (Exception e) {	
 			logger.info("failed", e);
-			ResponseLogNotification.fail(request, e.getMessage());
-		} finally {
+			return ResponseLogNotification.fail(request, e.getMessage());
 		}
-		return jsonStringResponse;
 	}
 
 	@RequestMapping(value = "/companyfollowers", method = RequestMethod.POST)

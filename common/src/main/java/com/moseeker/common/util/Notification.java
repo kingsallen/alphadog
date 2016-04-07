@@ -85,10 +85,10 @@ public class Notification {
 
                     } catch (AddressException e) {
                         // TODO Auto-generated catch block
-                        e.printStackTrace();
+                      //  e.printStackTrace();
                     } catch (MessagingException e) {
                         // TODO Auto-generated catch block
-                        e.printStackTrace();
+                      //  e.printStackTrace();
                     }
                 }
                 if (smsEnabled.equals("1")) {
@@ -102,7 +102,7 @@ public class Notification {
 
         } catch (Exception e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+          //  e.printStackTrace();
         }
     }
 

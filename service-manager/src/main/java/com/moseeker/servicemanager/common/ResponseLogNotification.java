@@ -37,7 +37,11 @@ public class ResponseLogNotification {
 		response.setMessage(message);
 		String jsonresponse = JSON.toJSONString(response);
 		logRequestResponse(request, jsonresponse);
-		Notification.sendNotification(Integer.parseInt(request.getParameter("appid")), eventkey, message);
+		int appid = 0;
+		if (request.getParameter("appid") != null){
+			appid = Integer.parseInt(request.getParameter("appid"));
+		}
+		Notification.sendNotification(appid, eventkey, message);
 		return jsonresponse;
 	}
 
@@ -48,6 +52,10 @@ public class ResponseLogNotification {
 		response.setMessage(message);
 		String jsonresponse = JSON.toJSONString(response);
 		logRequestResponse(request, jsonresponse);
+		int appid = 0;
+		if (request.getParameter("appid") != null){
+			appid = Integer.parseInt(request.getParameter("appid"));
+		}
 		Notification.sendNotification(appid, eventkey, message);
 		return jsonresponse;
 	}
@@ -60,7 +68,11 @@ public class ResponseLogNotification {
 		response.setData(jsondata);
 		String jsonresponse = JSON.toJSONString(response);
 		logRequestResponse(request, jsonresponse);
-		Notification.sendNotification(appid, eventkey, message + "," + jsondata);
+		int appid = 0;
+		if (request.getParameter("appid") != null){
+			appid = Integer.parseInt(request.getParameter("appid"));
+		}
+		Notification.sendNotification(appid, eventkey, message + "," + jsondata);		
 		return jsonresponse;
 	}
 
@@ -76,7 +88,7 @@ public class ResponseLogNotification {
 			RedisClientFactory.getLogClient().lpush(appid, logkey, JSON.toJSONString(reqResp));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
 		}
 	}
 
