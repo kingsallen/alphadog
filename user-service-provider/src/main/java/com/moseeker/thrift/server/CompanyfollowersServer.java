@@ -1,5 +1,7 @@
 package com.moseeker.thrift.server;
 
+import com.moseeker.rpccenter.main.Server;
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
@@ -21,6 +23,7 @@ package com.moseeker.thrift.server;
 
 import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerServices;
 import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerServices.Processor;
+import com.moseeker.thrift.service.EchoServiceImpl;
 import com.moseeker.thrift.service.impl.CompanyfollowerServicesImpl;
 
 /**
@@ -34,20 +37,27 @@ import com.moseeker.thrift.service.impl.CompanyfollowerServicesImpl;
  * @version
  */
 public class CompanyfollowersServer {
-
-	public static CompanyfollowerServicesImpl handler;
-
-	public static CompanyfollowerServices.Processor<CompanyfollowerServicesImpl> processor;
+    public static final String CONFIG_FILE_PATH = "classpath:user-server.properties";
 
 	public static void main(String[] args) {
-		try {
-			handler = new CompanyfollowerServicesImpl();
-			processor = new Processor<CompanyfollowerServicesImpl>(handler);
-			//RegisterZKServer registerZKServer = RegisterZKServer.getInstance(processor);
-			//registerZKServer.registerServer();
+		
+        try {
+            Server server = new Server(CONFIG_FILE_PATH, new CompanyfollowerServicesImpl());
+            server.start(); // 启动服务，非阻塞
 
-		} catch (Exception x) {
-			x.printStackTrace();
-		}
+            synchronized (CompanyfollowersServer.class) {
+                while (true) {
+                    try {
+                        System.out.println("release thread pool before");
+                        CompanyfollowersServer.class.wait();
+                        System.out.println("release thread pool after");
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 	}
 }
