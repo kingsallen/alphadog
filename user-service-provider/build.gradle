@@ -5,13 +5,10 @@ dependencies {
 
     // compile project(":thrift-gen-java")
     compile project(":common")
-    compile 'org.jooq:jooq:3.7.3'
 
-    compile 'org.apache.zookeeper:zookeeper:3.4.8'
-
-    compile "org.apache.curator:curator-recipes:2.3.0"
-
-    compile 'junit:junit:4.12'
+    compile deps["zookeeper"]
+    compile deps["curator-recipes"]
+    compile deps["junit"]
     compile deps["libthrift"]
     compile deps["jooq"]
     compile deps["jooq-meta"]

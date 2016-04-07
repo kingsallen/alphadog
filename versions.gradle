@@ -1,6 +1,6 @@
 ext {
     deps = [
-            "junit"               : "junit:junit:4.5",
+            "junit"               : "junit:junit:4.12",
             "log4j"               : "log4j:log4j:1.2.9",
             "httpcore"            : "org.apache.httpcomponents:httpcore:4.4.1",
             "joda-time"           : "joda-time:joda-time:2.7",

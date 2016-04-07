@@ -17,26 +17,22 @@ dependencies {
     //compile project(":thrift-gen-java")
     compile project(":common")
     compile project(":rpc-center")
+
     compile deps["fastjson"]
-//    compile deps["junit"]
     compile deps["zookeeper"]
-    //compile 'org.apache.curator:curator-framework:2.10.0'
     compile deps["curator-recipes"]
     compile deps["log4j"]
     compile deps["jedis"]
+    compile deps["redis-appender"]
+    compile deps["servlet-api"]
+
     compile "org.springframework:spring-context:4.2.3.RELEASE"
     compile "org.springframework:spring-webmvc:4.1.6.RELEASE"
-//    compile "org.springframework:spring-test:4.1.6.RELEASE"
-
-    compile "com.ryantenney.log4j:redis-appender:1.0.0"
-
-    compile deps["servlet-api"]
-//    compile deps["commons-logging"]
 
     runtime 'javax.servlet:jstl:1.1.2'
 
-    testCompile "junit:junit:4.5"
-    testCompile "org.springframework:spring-test:4.1.6.RELEASE"
+    testCompile "junit:junit:4.12"
+    testCompile "org.springframework:spring-test:4.2.5.RELEASE"
 }
 
 
