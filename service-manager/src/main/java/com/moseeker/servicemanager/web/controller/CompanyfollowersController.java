@@ -15,17 +15,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.common.Spring;
-import com.moseeker.thrift.client.BaseThriftClient;
-import com.moseeker.thrift.client.CompanyfollowersClient;
 import com.moseeker.thrift.gen.companyfollowers.Companyfollower;
 import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerQuery;
+import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerServices.Iface;
 
 @Controller
-public class CompanyfollowersController  {
+public class CompanyfollowersController extends BaseController<Iface> {
 
 	Logger logger = LoggerFactory.getLogger(CompanyfollowersController.class);
-	
-	BaseThriftClient thriftclient = new CompanyfollowersClient();
+
+	Iface companyfollowersService = getService(Iface.class.getEnclosingClass().getName(), Iface.class.getName());
 	
 	@RequestMapping(value = "/companyfollowers", method = RequestMethod.GET)
 	@ResponseBody
@@ -53,12 +52,11 @@ public class CompanyfollowersController  {
 				}
 			}
 			
-			List<Companyfollower> companyfollowers = thriftclient.callThriftServerGet(query);
+			List<Companyfollower> companyfollowers = companyfollowersService.getCompanyfollowers(query);
 			jsonStringResponse = JSON.toJSONString(companyfollowers);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
 		} catch (Exception e) {	
-			logger.info("failed", e);
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}
