@@ -25,7 +25,7 @@ public class LogClient extends RedisClient {
 
 	private static volatile LogClient instance = null;
 	
-	public LogClient() {
+	private LogClient() {
 		ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil
 				.getInstance();
 		redisConfigKeyName = propertiesUtils.get("redis.log.config_key_name",

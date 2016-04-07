@@ -32,7 +32,7 @@ public class CacheClient extends RedisClient {
 	
 	private static volatile CacheClient instance = null;
 
-	public CacheClient() {
+	private CacheClient() {
 		ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil
 				.getInstance();
 		redisConfigKeyName = propertiesUtils.get("redis.cache.config_key_name",

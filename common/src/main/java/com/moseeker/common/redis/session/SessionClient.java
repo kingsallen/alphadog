@@ -25,7 +25,7 @@ public class SessionClient extends RedisClient {
 
 	private static volatile SessionClient instance = null;
 	
-	public SessionClient() {
+	private SessionClient() {
 		ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil
 				.getInstance();
 		redisConfigKeyName = propertiesUtils.get("redis.session.host",
