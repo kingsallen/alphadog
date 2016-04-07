@@ -6,7 +6,7 @@ import com.google.common.base.Stopwatch;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
 
-public class RedisClusterTest {
+public class RedisCluster {
 
 	@Test
 	public void connPoolTest() {
