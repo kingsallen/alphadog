@@ -24,4 +24,35 @@ allprojects {
 subprojects {
     apply plugin: 'java'
     sourceCompatibility = 1.8
+
+    sourceSets {
+        main {
+            resources {
+                exclude '**/*'
+            }
+        }
+    }
+
+    task copyEnvResources {
+
+        group "environmental configs"
+        description "Use one set of configs in /src/main/resources/\$env, defaults to 'debug'"
+
+        def env = project.getProperties()['env'] ?: 'debug'
+        def envResourcesSrc = "src/main/resources/$env/"
+
+        doLast {
+            copy {
+                from envResourcesSrc
+                into processResources.destinationDir
+            }
+        }
+
+    }
+
+    jar {
+        dependsOn copyEnvResources
+    }
 }
+
+
