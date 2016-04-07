@@ -15,24 +15,52 @@ dependencies {
     compile 'org.apache.thrift:libthrift:0.9.3'
 }
 
+task cleanGeneratedFile(type: Delete) {
+    delete 'thrift/gen'
+}
+
 compileThrift {
-    sourceDir 'src/main/resource'
-    outputDir 'src/main/java'
+    dependsOn 'cleanGeneratedFile'
+    sourceDir 'thrift'
+    outputDir 'thrift/gen'
     createGenFolder false
     generator 'java', 'html'
 }
 
-task copyGeneratedFile(type: Copy) {
+task copyGeneratedFile {
     dependsOn 'compileThrift'
 
     group = 'thrift'
     description = 'copy thrift generated files to coreponding service-provider-directories'
 
-    from 'src/main/java/'
-    into '../user-service-provider/src/main/java/'
-    //into '../service-manager/src/main/java'
-    logger.info("ends of copy file")
-    
+    def copySpecs = [
+            [thrift: 'companyfollowers', service: 'demo-service-provider']
+    ]
+
+    String commonBase = 'thrift/gen/com/moseeker/thrift/gen/',
+           targetBase = 'src/main/java/com/moseeker/thrift/gen/';
+    def mappings = copySpecs.collect {
+        String from = commonBase + it.thrift
+        String into = '../' + it.service + "/" + targetBase + it.thrift
+        return [from: from, into: into]
+    }
+
+    def mappingsServiceManager = [from: "thrift/gen/", into: "../service-manager/src/main/java/"]
+
+    doLast {
+        copy {
+            mappings.each {
+                from it.from
+                into it.into
+            }
+        }
+
+        copy {
+            from mappingsServiceManager.from
+            into mappingsServiceManager.into
+        }
+        logger.quiet("ends of copy file")
+    }
 }
 
 project.description = '''
