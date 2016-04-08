@@ -75,10 +75,10 @@ public class ServerNodeUtils {
             if (args[0].equals("-port") && port > 10000 && port < 30000){
                 return Integer.valueOf(args[1]);
             }else{
-                throw new RuntimeException();
+                throw new RuntimeException("请输入在10000~30000之间的端口号");
             }
         }else{
-            throw new RuntimeException();
+            throw new RuntimeException("usage : java -jar provider的jar文件 -port 19090");
         }
     }
 

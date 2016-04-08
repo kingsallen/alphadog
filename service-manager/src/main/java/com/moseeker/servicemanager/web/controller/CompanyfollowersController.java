@@ -15,16 +15,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.common.Spring;
+import com.moseeker.servicemanager.util.ServiceUtil;
 import com.moseeker.thrift.gen.companyfollowers.Companyfollower;
 import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerQuery;
-import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerServices.Iface;
+import com.moseeker.thrift.gen.companyfollowers.*;
 
 @Controller
-public class CompanyfollowersController extends BaseController<Iface> {
+public class CompanyfollowersController {
 
 	Logger logger = LoggerFactory.getLogger(CompanyfollowersController.class);
 
-	Iface companyfollowersService = getService(Iface.class.getEnclosingClass().getName(), Iface.class.getName());
+	CompanyfollowerServices.Iface companyfollowersService = ServiceUtil.getService(CompanyfollowerServices.Iface.class);
 	
 	@RequestMapping(value = "/companyfollowers", method = RequestMethod.GET)
 	@ResponseBody

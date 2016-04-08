@@ -1,5 +1,6 @@
 package com.moseeker.thrift.server;
 
+import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.Server;
 
 /*
@@ -37,12 +38,11 @@ import com.moseeker.thrift.service.impl.CompanyfollowerServicesImpl;
  * @version
  */
 public class CompanyfollowersServer {
-    public static final String CONFIG_FILE_PATH = "classpath:user-server.properties";
 
 	public static void main(String[] args) {
 		
         try {
-            Server server = new Server(CONFIG_FILE_PATH, new CompanyfollowerServicesImpl());
+            Server server = new Server(CompanyfollowersServer.class, new CompanyfollowerServicesImpl(), ServerNodeUtils.getPort(args));
             server.start(); // 启动服务，非阻塞
 
             synchronized (CompanyfollowersServer.class) {
