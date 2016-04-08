@@ -2,19 +2,13 @@ package com.moseeker.servicemanager.util;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-import com.moseeker.servicemanager.common.Spring;
+import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerQuery;
 
-public class SprintTest {
+public class ParamUtilTest {
 
 	@Test
 	public void initCommonQueryTest() {
@@ -40,7 +34,7 @@ public class SprintTest {
 		request.setParameter("nocache", nocache);
 		CompanyfollowerQuery query;
 		try {
-			query = Spring.initCommonQuery(request, CompanyfollowerQuery.class);
+			query = ParamUtils.initCommonQuery(request, CompanyfollowerQuery.class);
 
 			assertEquals(query.getAppid(), 1);
 			assertEquals(query.getLimit(), 10);

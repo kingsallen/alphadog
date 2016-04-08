@@ -81,7 +81,7 @@ public class ResponseLogNotification {
 		reqResp.put("appid", request.getParameter("appid"));
 		reqResp.put("request", request.getParameterMap());
 		reqResp.put("response", response);
-		reqResp.put("remote_ip", Spring.getRemoteIp(request));
+		reqResp.put("remote_ip", ParamUtils.getRemoteIp(request));
 		reqResp.put("web_server_ip", "192.22.22.22");
 
 		try {

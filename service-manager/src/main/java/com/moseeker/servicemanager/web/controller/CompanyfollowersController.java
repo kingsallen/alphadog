@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
-import com.moseeker.servicemanager.common.Spring;
 import com.moseeker.servicemanager.util.ServiceUtil;
 import com.moseeker.thrift.gen.companyfollowers.Companyfollower;
 import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerQuery;
-import com.moseeker.thrift.gen.companyfollowers.*;
+import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerServices;
 
 @Controller
 public class CompanyfollowersController {
@@ -35,7 +35,7 @@ public class CompanyfollowersController {
 		String jsonStringResponse = null;
 		try {
 			// GET方法 通用参数解析并赋值
-			CompanyfollowerQuery query = Spring.initCommonQuery(request, CompanyfollowerQuery.class);
+			CompanyfollowerQuery query = ParamUtils.initCommonQuery(request, CompanyfollowerQuery.class);
 
 			// 特有参数解析并赋值
 			if (request.getParameter("userid") != null) {

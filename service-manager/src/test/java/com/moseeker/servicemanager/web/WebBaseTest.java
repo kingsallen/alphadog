@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @ContextConfiguration("classpath:debug/controllers.xml")
 public class WebBaseTest {
 
-    @Autowired
+   @Autowired
     protected WebApplicationContext wac;
 
     protected MockMvc mockMvc;
@@ -34,5 +34,4 @@ public class WebBaseTest {
     public void test(){
 
     }
-
 }
