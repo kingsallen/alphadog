@@ -19,25 +19,25 @@ public class ServerDemo {
      */
     public static void main(String[] args) {
 
-        EchoServiceImpl impl = new EchoServiceImpl();
-
-        try {
-            Server server = new Server(CONFIG_FILE_PATH, impl);
-            server.start(); // 启动服务，非阻塞
-
-            synchronized (ServerDemo.class) {
-                while (running) {
-                    try {
-                        System.out.println("release thread pool before");
-                        ServerDemo.class.wait();
-                        System.out.println("release thread pool after");
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        EchoServiceImpl impl = new EchoServiceImpl();
+//
+//        try {
+//            Server server = new Server(CONFIG_FILE_PATH, impl);
+//            server.start(); // 启动服务，非阻塞
+//
+//            synchronized (ServerDemo.class) {
+//                while (running) {
+//                    try {
+//                        System.out.println("release thread pool before");
+//                        ServerDemo.class.wait();
+//                        System.out.println("release thread pool after");
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 }

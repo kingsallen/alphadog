@@ -3,6 +3,7 @@ package com.moseeker.servicemanager.web.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.moseeker.servicemanager.util.ServiceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -16,13 +17,11 @@ import com.moseeker.thrift.gen.demo.EchoService.Iface;
  * Created by zzh on 16/3/31.
  */
 @Controller
-public class DemoController extends BaseController<Iface> {
+public class DemoController{
 
 	Logger logger = LoggerFactory.getLogger(DemoController.class);
 
-	Iface demoService = getService(Iface.class.getEnclosingClass().getName(), Iface.class.getName());
-
-	public DemoController(){}
+	Iface demoService = ServiceUtil.getService(Iface.class);
 
 	@RequestMapping(value = "/demo", method = RequestMethod.GET)
 	@ResponseBody

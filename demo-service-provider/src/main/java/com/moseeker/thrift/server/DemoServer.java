@@ -1,5 +1,6 @@
 package com.moseeker.thrift.server;
 
+import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.Server;
 import com.moseeker.thrift.service.EchoServiceImpl;
 
@@ -7,9 +8,6 @@ import com.moseeker.thrift.service.EchoServiceImpl;
  * Created by zzh on 16/3/31.
  */
 public class DemoServer {
-
-    /** 配置文件路径，配置说明参考 {@link Server#Server(String , Object )} */
-    public static final String CONFIG_FILE_PATH = "classpath:demo-server.properties";
 
     /** 是否保持启动 */
     private static boolean running = true;
@@ -19,10 +17,9 @@ public class DemoServer {
      */
     public static void main(String[] args) {
 
-        EchoServiceImpl impl = new EchoServiceImpl();
-
         try {
-            Server server = new Server(CONFIG_FILE_PATH, impl);
+            EchoServiceImpl impl = new EchoServiceImpl();
+            Server server = new Server(DemoServer.class, impl, ServerNodeUtils.getPort(args));
             server.start(); // 启动服务，非阻塞
 
             synchronized (DemoServer.class) {
@@ -37,9 +34,10 @@ public class DemoServer {
                 }
             }
         } catch (Exception e) {
+            ServerNodeUtils.providerUsagePrint();
             e.printStackTrace();
+            System.exit(1);
         }
     }
-
 }
 
