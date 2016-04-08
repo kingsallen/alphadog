@@ -5,7 +5,7 @@ dependencies {
 
     // compile project(":thrift-gen-java")
     compile project(":common")
-
+    compile project(":rpc-center")
     compile deps["zookeeper"]
     compile deps["curator-recipes"]
     compile deps["junit"]
