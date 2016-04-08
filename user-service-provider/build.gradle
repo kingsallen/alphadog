@@ -5,11 +5,9 @@ dependencies {
 
     // compile project(":thrift-gen-java")
     compile project(":common")
+    compile project(":rpc-center")
 
-    compile deps["zookeeper"]
-    compile deps["curator-recipes"]
     compile deps["junit"]
-    compile deps["libthrift"]
     compile deps["jooq"]
     compile deps["jooq-meta"]
     compile deps["jooq-codegen"]

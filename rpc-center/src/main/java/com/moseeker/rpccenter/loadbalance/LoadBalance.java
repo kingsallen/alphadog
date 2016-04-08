@@ -18,8 +18,17 @@ public class LoadBalance {
     public static ServerNode nextBackend(DynamicHostSet hostSet){
         Set<ServerNode> serverNodeSet = hostSet.getLives();
         Object[] hostArray = serverNodeSet.toArray();
-        int len = hostArray.length-1;
-        return (ServerNode)hostArray[(int)(Math.random()*(len-1+1))];
+        return (ServerNode)hostArray[genRandomServer(hostArray.length)];
+    }
+
+    /**
+     * 随机分配一个服务地址的数组下标
+     *
+     * @return SeverNode
+     */
+    private static int genRandomServer(int len){
+        java.util.Random random=new java.util.Random();
+        return random.nextInt(len);
     }
 
 }

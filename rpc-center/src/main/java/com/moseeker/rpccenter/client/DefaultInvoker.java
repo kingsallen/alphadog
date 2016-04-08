@@ -57,6 +57,7 @@ public class DefaultInvoker<T> implements Invoker {
         for (int i = 0; i == 0 || i < retry + 1; i++) {
             try {
                 serverNode = LoadBalance.nextBackend(hostSet);
+                LOGGER.info(serverNode.toString());
                 if (serverNode == null) {
                     continue;
                 }
