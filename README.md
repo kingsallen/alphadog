@@ -18,7 +18,7 @@
 
 面向服务的架构:
 
-![基础架构图](http://wiki.moseeker.com/download/15)
+![基础架构图](http://wiki.moseeker.com/download/16)
 
 * zookeeper - 服务治理
 * thrift - RPC调用协议
