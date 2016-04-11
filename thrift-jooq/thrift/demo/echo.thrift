@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace java com.bfd.harpc.test.gen
+namespace java com.moseeker.thrift.gen.echo
 
 service EchoService {
 	string echo(1: string msg);

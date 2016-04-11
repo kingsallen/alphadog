@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.moseeker.thrift.gen.demo.EchoService.Iface;
+import com.moseeker.thrift.gen.echo.EchoService.Iface;
 
 /**
  * Created by zzh on 16/3/31.
