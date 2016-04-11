@@ -43,17 +43,17 @@
 └── oo-service-provider // 具体的service
 └── xx-service-provider // 具体的service
 ```
-##ServiceManager
+## ServiceManager
 
 ServiceManager 项目为基础服务对外提供符合restful风格的http协议接口服务。ServiceManager主要包括两个功能：1.http协议的解析和回复；2.获取和调用RPC服务，并返回结果。
 
-####http协议解析和回复
+#### http协议解析和回复
 
 ServiceManager采用SpringMVC用于解析和处理restful风格的http请求，并返回相应结果。SpringMVC可以很方便的扩展其他功能,比如后续可以非常方便的添加一些黑名单，权限校验等拦截器。
 
 对于查询资源的接口，存在一些通用参数，比如：当前页码，每页显示数量，关键词等。ServiceManager 有一个类ParamUtils，显示调用initParam方法，可以将rquest Parameters中的通用参数存入到定义好的数据结构中。
 
-####RPC服务获取和调用
+#### RPC服务获取和调用
 ServiceManager为了让用户更方便地开发功能，对获取RPC服务做了特别封装。利用thrfit命令生成对应Java文件，并将生成好的类传给ServiceUtil工具，ServiceUtil将会帮助我们找到一个RPC服务。我们调用本地接口，本地接口会调用RPC服务的对应方法，并将执行结果返回给我们。
 
 ## 运行项目
