@@ -22,7 +22,7 @@ public class ServiceUtil {
         return registryConfig;
     }
 
-    public static <clazz> clazz getService(Class clazz){
+    public static <clazz> clazz getService(Class<?> clazz){
         try{
             ClientConfig<clazz> clientConfig = new ClientConfig<clazz>();
             clazz.getSimpleName();
