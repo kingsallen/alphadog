@@ -31,6 +31,7 @@ dependencies {
     compile deps["bonecp"]
     compile deps["javamail"]
     compile deps["servlet-api"]
+    compile deps["cglib"]
 }
 
 project.description = '''

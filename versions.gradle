@@ -17,6 +17,8 @@ ext {
             "bonecp"              : "com.jolbox:bonecp:0.8.0.RELEASE",
             "javamail"            : "javax.mail:mail:1.5.0-b01",
             "servlet-api"         : 'javax.servlet:javax.servlet-api:3.0.1',
-            "redis-appender"      : 'com.ryantenney.log4j:redis-appender:1.0.1'
+            "redis-appender"      : 'com.ryantenney.log4j:redis-appender:1.0.1',
+	    "aspectj"		  : 'org.aspectj:aspectjweaver:1.8.9',
+	    "cglib"		  : 'cglib:cglib:3.1'
     ]
 }
