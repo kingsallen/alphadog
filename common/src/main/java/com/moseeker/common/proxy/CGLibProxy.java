@@ -6,6 +6,15 @@ import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
+/**
+ * 
+ * 基于CGLib工具提供代理 
+ * <p>Company: MoSeeker</P>  
+ * <p>date: Apr 12, 2016</p>  
+ * <p>Email: wjf2255@gmail.com</p>
+ * @author wjf
+ * @version
+ */
 public class CGLibProxy implements MethodInterceptor {
 
 	private Object target;

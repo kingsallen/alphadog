@@ -2,7 +2,7 @@ package com.moseeker.thrift.server;
 
 import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.Server;
-import com.moseeker.thrift.service.impl.CompanyfollowerServicesImpl;
+import com.moseeker.service.impl.CompanyfollowerServicesImpl;
 
 /**
  * 

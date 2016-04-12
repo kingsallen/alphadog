@@ -62,6 +62,29 @@ public class ValidateUtil {
 		}
 		return rv;
 	}
+	
+	/**
+	 * 往验证器中添加一个requiredValidateRule(必要验证器)
+	 * 
+	 * @param paramName
+	 * @param beanToBeValidated
+	 * @param errorMessage
+	 * @param message
+	 * @return DasValidateRule
+	 */
+	public ValidateRule addRequiredValidate(String paramName,
+			Object beanToBeValidated)
+			throws CommonException {
+		RequiredValidateRule rv = null;
+		try {
+			rv = new RequiredValidateRule(paramName, beanToBeValidated);
+			addToRules(rv);
+		} catch (ValidateNotAppointParamException e) {
+			logger.error("faild!", e);
+			throw e;
+		}
+		return rv;
+	}
 
 	/**
 	 * 
