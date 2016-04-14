@@ -51,22 +51,22 @@ public abstract class RedisClient {
 	 */
 	protected RedisConfigRedisKey readRedisKey(int appId, String keyIdentifier)
 			throws CacheConfigNotExistException {
-		RedisConfigRedisKey redisKey = null;
+		RedisConfigRedisKey redisval = null;
 		String appIdKeyIdentifier = redisConfigKeyName+"_"+appId + keyIdentifier;
 		String redisValue = redisCluster.get(appIdKeyIdentifier);
 		if (StringUtils.isNullOrEmpty(redisValue)) {
-			redisKey = DbManager.readFromDB(appId, keyIdentifier, redisConfigType);
-			if (!StringUtils.isNullOrEmpty(redisValue)) {
+			redisval = DbManager.readFromDB(appId, keyIdentifier, redisConfigType);
+			if (redisval != null) {
 				redisCluster.setex(appIdKeyIdentifier, redisConfigTimeOut,
-						JSON.toJSONString(redisKey));
+						JSON.toJSONString(redisval));
 			} else {
 				//Notification.sendNotification(appId, "", "未能找到关键词数据库配置信息");
 				throw new CacheConfigNotExistException();
 			}
 		} else {
-			redisKey = JSON.parseObject(redisValue, RedisConfigRedisKey.class);
+			redisval = JSON.parseObject(redisValue, RedisConfigRedisKey.class);
 		}
-		return redisKey;
+		return redisval;
 	}
 
 	public String set(int appId, String key_identifier, String str, String value)
