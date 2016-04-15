@@ -2,7 +2,6 @@ package com.moseeker.common.email;
 
 import org.junit.Test;
 
-import com.moseeker.common.email.attachment.LocalAttachment;
 import com.moseeker.common.email.attachment.UrlAttachment;
 
 /**

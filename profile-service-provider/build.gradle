@@ -1,0 +1,36 @@
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+  
+dependencies {
+
+    // compile project(":thrift-gen-java")
+    compile project(":common")
+    compile project(":rpc-center")
+
+    compile deps["junit"]
+    compile deps["jooq"]
+    compile deps["jooq-meta"]
+    compile deps["jooq-codegen"]
+
+}
+
+//compileJava.dependsOn(":thrift-jooq:copyGeneratedFile")
+
+jar {
+
+    // build one flat jar
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+
+    manifest {
+        attributes 'Main-Class': 'com.moseeker.thrift.server.CompanyfollowersServer'
+    }
+
+    
+}
+
+project.description = '''
+    1) User Service
+    2) We call them "service-provider" in this project
+'''

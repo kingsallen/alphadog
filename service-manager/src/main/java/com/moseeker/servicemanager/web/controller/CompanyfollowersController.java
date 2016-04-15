@@ -30,7 +30,6 @@ public class CompanyfollowersController {
 	@RequestMapping(value = "/companyfollowers", method = RequestMethod.GET)
 	@ResponseBody
 	public String get(HttpServletRequest request, HttpServletResponse response) {
-		// TODO Auto-generated method stub
 		//PrintWriter writer = null;
 		String jsonStringResponse = null;
 		try {
@@ -44,7 +43,6 @@ public class CompanyfollowersController {
 					query.setUserid(userid);
 				}
 			}
-
 			if (request.getParameter("companyid") != null) {
 				int companyid = Integer.parseInt(request
 						.getParameter("companyid"));

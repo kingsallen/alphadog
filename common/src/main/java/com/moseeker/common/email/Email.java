@@ -1,15 +1,22 @@
 package com.moseeker.common.email;
 
-import com.moseeker.common.util.ConfigPropertiesUtil;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import javax.mail.*;
+
+import javax.mail.Message;
 import javax.mail.Message.RecipientType;
-import javax.mail.internet.*;
-import java.util.ArrayList;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 import com.moseeker.common.email.attachment.Attachment;
+import com.moseeker.common.util.ConfigPropertiesUtil;
 
 /**
  * Created by chendi on 3/31/16.
@@ -24,21 +31,28 @@ public class Email {
     private static final String password = propertiesReader.get("email.password", String.class);
 
     private final Message message;
-
+    
     public Email(EmailBuilder builder) {
         this.message = builder.message;
     }
 
-    public void send() throws MessagingException {
-        Transport transport = this.message.getSession().getTransport();
-        try {
-            transport.connect(serverDomain, serverPort, userName, password);
-            transport.sendMessage(this.message, this.message.getAllRecipients());
-        } finally {
-            transport.close();
-        }
+    public void send() {
+    	
+    	new Thread(() -> {
+    		 try {
+				Transport transport = this.message.getSession().getTransport();
+				    try {
+				        transport.connect(serverDomain, serverPort, userName, password);
+				        transport.sendMessage(this.message, this.message.getAllRecipients());
+				    } finally {
+				        transport.close();
+				    }
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+    	}).start();;
     }
-
+    
     public static class EmailBuilder {
 
         static private ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
