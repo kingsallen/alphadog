@@ -7,11 +7,12 @@ dependencies {
     compile project(":common")
     compile project(":rpc-center")
 
-    compile deps["junit"]
+    testCompile deps["junit"]
     compile deps["jooq"]
     compile deps["jooq-meta"]
     compile deps["jooq-codegen"]
-
+	compile deps["spring-core"]
+    compile deps["spring-context"]
 }
 
 //compileJava.dependsOn(":thrift-jooq:copyGeneratedFile")

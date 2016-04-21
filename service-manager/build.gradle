@@ -26,8 +26,8 @@ dependencies {
     compile deps["redis-appender"]
     compile deps["servlet-api"]
 
-    compile "org.springframework:spring-context:4.2.3.RELEASE"
-    compile "org.springframework:spring-webmvc:4.1.6.RELEASE"
+	compile deps["spring-core"]
+    compile deps["spring-context"]
 
     runtime 'javax.servlet:jstl:1.1.2'
 

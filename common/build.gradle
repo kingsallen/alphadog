@@ -32,6 +32,7 @@ dependencies {
     compile deps["javamail"]
     compile deps["servlet-api"]
     compile deps["cglib"]
+    compile deps["beanutils"]
 }
 
 project.description = '''
