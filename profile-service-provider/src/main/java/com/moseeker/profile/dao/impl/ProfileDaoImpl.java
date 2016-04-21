@@ -3,12 +3,12 @@ package com.moseeker.profile.dao.impl;
 import static com.moseeker.db.profileDB.tables.Profile.PROFILE;
 
 import java.sql.SQLException;
-import java.text.DateFormat;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.TimeZone;
 
 import org.jooq.DSLContext;
 import org.jooq.Field;
@@ -98,11 +98,12 @@ public class ProfileDaoImpl implements ProfileDao<ProfileRecord> {
 		int insertret = 0;
 		if(records != null && records.size() > 0) {
 			DSLContext create = DatabaseConnectionHelper.getConnection().getJooqDSL();
-	
-			DateFormat dateFormatterChina = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);// 格式化输出
-			TimeZone timeZoneChina = TimeZone.getTimeZone("Asia/Shanghai");// 获取时区
-			dateFormatterChina.setTimeZone(timeZoneChina);// 设置系统时区
-		
+			Date date = new Date();
+			Timestamp ts = new Timestamp(date.getTime());
+			for(ProfileRecord record : records) {
+				record.setCreateTime(ts);
+				record.setUpdateTime(ts);
+			}
 			insertret = create.batchInsert(records).execute()[0];
 		}
 		
@@ -114,11 +115,12 @@ public class ProfileDaoImpl implements ProfileDao<ProfileRecord> {
 		int insertret = 0;
 		if(records != null && records.size() > 0) {
 			DSLContext create = DatabaseConnectionHelper.getConnection().getJooqDSL();
-	
-			DateFormat dateFormatterChina = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);// 格式化输出
-			TimeZone timeZoneChina = TimeZone.getTimeZone("Asia/Shanghai");// 获取时区
-			dateFormatterChina.setTimeZone(timeZoneChina);// 设置系统时区
-		
+
+			Date date = new Date();
+			Timestamp ts = new Timestamp(date.getTime());
+			for(ProfileRecord record : records) {
+				record.setUpdateTime(ts);
+			}
 			insertret = create.batchUpdate(records).execute()[0];
 		}
 		
@@ -130,11 +132,6 @@ public class ProfileDaoImpl implements ProfileDao<ProfileRecord> {
 		int insertret = 0;
 		if(records != null && records.size() > 0) {
 			DSLContext create = DatabaseConnectionHelper.getConnection().getJooqDSL();
-	
-			DateFormat dateFormatterChina = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);// 格式化输出
-			TimeZone timeZoneChina = TimeZone.getTimeZone("Asia/Shanghai");// 获取时区
-			dateFormatterChina.setTimeZone(timeZoneChina);// 设置系统时区
-		
 			insertret = create.batchDelete(records).execute()[0];
 		}
 		
@@ -146,11 +143,10 @@ public class ProfileDaoImpl implements ProfileDao<ProfileRecord> {
 		int insertret = 0;
 		if(record != null) {
 			DSLContext create = DatabaseConnectionHelper.getConnection().getJooqDSL();
-	
-			DateFormat dateFormatterChina = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);// 格式化输出
-			TimeZone timeZoneChina = TimeZone.getTimeZone("Asia/Shanghai");// 获取时区
-			dateFormatterChina.setTimeZone(timeZoneChina);// 设置系统时区
-		
+			Date date = new Date();
+			Timestamp ts = new Timestamp(date.getTime());
+			record.setCreateTime(ts);
+			record.setUpdateTime(ts);
 			insertret = create.batchInsert(record).execute()[0];
 		}
 		
@@ -162,10 +158,9 @@ public class ProfileDaoImpl implements ProfileDao<ProfileRecord> {
 		int insertret = 0;
 		if(record != null) {
 			DSLContext create = DatabaseConnectionHelper.getConnection().getJooqDSL();
-	
-			DateFormat dateFormatterChina = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);// 格式化输出
-			TimeZone timeZoneChina = TimeZone.getTimeZone("Asia/Shanghai");// 获取时区
-			dateFormatterChina.setTimeZone(timeZoneChina);// 设置系统时区
+			Date date = new Date();
+			Timestamp ts = new Timestamp(date.getTime());
+			record.setUpdateTime(ts);
 			create.updateQuery(PROFILE).setRecord(record);
 		}
 		
@@ -177,11 +172,6 @@ public class ProfileDaoImpl implements ProfileDao<ProfileRecord> {
 		int insertret = 0;
 		if(record != null) {
 			DSLContext create = DatabaseConnectionHelper.getConnection().getJooqDSL();
-	
-			DateFormat dateFormatterChina = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);// 格式化输出
-			TimeZone timeZoneChina = TimeZone.getTimeZone("Asia/Shanghai");// 获取时区
-			dateFormatterChina.setTimeZone(timeZoneChina);// 设置系统时区
-		
 			insertret = create.batchDelete(record).execute()[0];
 		}
 		
