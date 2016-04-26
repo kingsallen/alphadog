@@ -26,13 +26,14 @@ dependencies {
     compile deps["redis-appender"]
     compile deps["servlet-api"]
 
-	compile deps["spring-core"]
+    compile deps["spring-core"]
     compile deps["spring-context"]
+    compile deps["spring-webmvc"]
 
-    runtime 'javax.servlet:jstl:1.1.2'
+    runtime deps['jstl']
 
-    testCompile "junit:junit:4.12"
-    testCompile "org.springframework:spring-test:4.2.5.RELEASE"
+    testCompile deps["junit"]
+    testCompile deps["spring-test"]
 }
 
 
