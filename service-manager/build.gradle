@@ -29,6 +29,7 @@ dependencies {
     compile deps["spring-core"]
     compile deps["spring-context"]
     compile deps["spring-webmvc"]
+    compile deps["spring-test"]
 
     runtime deps['jstl']
 
@@ -48,6 +49,11 @@ jar {
         attributes 'Main-Class': 'com.moseeker.thrift.client.CompanyfollowersClient'
     }
  
+}
+
+task copyJars(type: Copy) {
+  from configurations.runtime
+  into 'lib' // 目标位置
 }
 
 jettyRun{

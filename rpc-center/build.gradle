@@ -20,3 +20,8 @@ dependencies {
     compile deps["curator-recipes"]
     testCompile deps["junit"]
 }
+
+task copyJars(type: Copy) {
+  from configurations.runtime
+  into 'lib' // 目标位置
+}
