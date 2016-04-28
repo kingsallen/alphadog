@@ -2,17 +2,17 @@ package com.moseeker.profile.dao.impl;
 
 import org.springframework.stereotype.Repository;
 
-import com.moseeker.db.profileDB.tables.Profile;
-import com.moseeker.db.profileDB.tables.records.ProfileRecord;
+import com.moseeker.db.dqv4.tables.ProfileProfile;
+import com.moseeker.db.dqv4.tables.records.ProfileProfileRecord;
 import com.moseeker.profile.dao.BasicDaoImpl;
 import com.moseeker.profile.dao.ProfileDao;
 
 @Repository
-public class ProfileDaoImpl extends BasicDaoImpl<ProfileRecord, Profile> implements ProfileDao<ProfileRecord> {
+public class ProfileDaoImpl extends BasicDaoImpl<ProfileProfileRecord, ProfileProfile> implements ProfileDao<ProfileProfileRecord> {
 
 	@Override
 	protected void initJOOQEntity() {
-		this.tableLike = Profile.PROFILE;
+		this.tableLike = ProfileProfile.PROFILE_PROFILE;
 	}
 
 }

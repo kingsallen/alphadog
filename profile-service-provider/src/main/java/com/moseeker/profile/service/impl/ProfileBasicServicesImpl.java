@@ -8,8 +8,9 @@ import org.jooq.types.UInteger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.db.profileDB.tables.records.ProfileRecord;
-import com.moseeker.profile.dao.ProfileDao;
+import com.moseeker.db.dqv4.tables.records.ProfileBasicRecord;
+import com.moseeker.db.dqv4.tables.records.ProfileProfileRecord;
+import com.moseeker.profile.dao.ProfileBasicDao;
 import com.moseeker.thrift.gen.profile.service.BasicServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.Basic;
 import com.moseeker.thrift.gen.profile.struct.CommonQuery;
@@ -19,7 +20,7 @@ import com.moseeker.thrift.gen.profile.struct.Profile;
 public class ProfileBasicServicesImpl implements Iface {
 
 	@Autowired
-	private ProfileDao<com.moseeker.db.profileDB.tables.records.ProfileRecord> dao;
+	private ProfileBasicDao<ProfileBasicRecord> dao;
 	
 	@Override
 	public List<Basic> getBasics(CommonQuery query, Basic basic)
@@ -69,12 +70,12 @@ public class ProfileBasicServicesImpl implements Iface {
 			throws TException {
 		List<Basic> profiles = new ArrayList<>();
 		try {
-			//com.moseeker.db.profileDB.tables.records.ProfileRecord record = formToDB(profile);
+			//com.moseeker.db.dqv4.tables.records.ProfileProfileRecord record = formToDB(profile);
 			
 			Result<Record> profileDBs = dao.getProfiles(query);
 			if(profileDBs != null && profileDBs.size() > 0) {
 				for (Record r : profileDBs) {
-					Profile profileResult = dbToStruct((com.moseeker.db.profileDB.tables.records.ProfileRecord)r);
+					Profile profileResult = dbToStruct((com.moseeker.db.profileDB.tables.records.ProfileProfileRecord)r);
 					profiles.add(profileResult);
 				}
 			}
@@ -90,7 +91,7 @@ public class ProfileBasicServicesImpl implements Iface {
 	public int postProfiles(List<Profile> profiles) throws TException {
 		int result = 0;
 		try {
-			List<ProfileRecord> records = formToDB(profiles);
+			List<ProfileProfileRecord> records = formToDB(profiles);
 			result = dao.postProfiles(records);
 		} catch (SQLException e) {
 			throw new TException(e.getMessage());
@@ -102,7 +103,7 @@ public class ProfileBasicServicesImpl implements Iface {
 	public int putProfiles(List<Profile> profiles) throws TException {
 		int result = 0;
 		try {
-			List<ProfileRecord> records = formToDB(profiles);
+			List<ProfileProfileRecord> records = formToDB(profiles);
 			result = dao.putProfiles(records);
 		} catch (SQLException e) {
 			throw new TException(e.getMessage());
@@ -114,7 +115,7 @@ public class ProfileBasicServicesImpl implements Iface {
 	public int delProfiles(List<Profile> profiles) throws TException {
 		int result = 0;
 		try {
-			List<ProfileRecord> records = formToDB(profiles);
+			List<ProfileProfileRecord> records = formToDB(profiles);
 			result = dao.delProfiles(records);
 		} catch (SQLException e) {
 			throw new TException(e.getMessage());
@@ -126,7 +127,7 @@ public class ProfileBasicServicesImpl implements Iface {
 	public int postProfile(Profile profile) throws TException {
 		int result = 0;
 		try {
-			ProfileRecord record = formToDB(profile);
+			ProfileProfileRecord record = formToDB(profile);
 			result = dao.postProfile(record);
 		} catch (SQLException e) {
 			throw new TException(e.getMessage());
@@ -138,7 +139,7 @@ public class ProfileBasicServicesImpl implements Iface {
 	public int putProfile(Profile profile) throws TException {
 		int result = 0;
 		try {
-			ProfileRecord record = formToDB(profile);
+			ProfileProfileRecord record = formToDB(profile);
 			result = dao.putProfile(record);
 		} catch (SQLException e) {
 			throw new TException(e.getMessage());
@@ -150,7 +151,7 @@ public class ProfileBasicServicesImpl implements Iface {
 	public int delProfile(Profile profile) throws TException {
 		int result = 0;
 		try {
-			ProfileRecord records = formToDB(profile);
+			ProfileProfileRecord records = formToDB(profile);
 			result = dao.delProfile(records);
 		} catch (SQLException e) {
 			throw new TException(e.getMessage());
@@ -158,7 +159,7 @@ public class ProfileBasicServicesImpl implements Iface {
 		return result;
 	}*/
 	
-	private Profile dbToStruct(com.moseeker.db.profileDB.tables.records.ProfileRecord r) {
+	private Profile dbToStruct(com.moseeker.db.dqv4.tables.records.ProfileProfileRecord r) {
 		Profile profile = null;
 		if(r != null) {
 			profile = new Profile();
@@ -172,8 +173,8 @@ public class ProfileBasicServicesImpl implements Iface {
 		return profile;
 	}
 
-	private ProfileRecord formToDB(Profile profile) {
-		ProfileRecord record = new ProfileRecord();
+	private ProfileProfileRecord formToDB(Profile profile) {
+		ProfileProfileRecord record = new ProfileProfileRecord();
 		record.setId(UInteger.valueOf(profile.getId()));
 		record.setUuid(profile.getUuid());
 		record.setLang((byte)profile.getLang());
@@ -183,13 +184,21 @@ public class ProfileBasicServicesImpl implements Iface {
 		return record;
 	}
 	
-	private List<ProfileRecord> formToDB(List<Profile> profiles) {
-		List<ProfileRecord> records = new ArrayList<>();
+	private List<ProfileProfileRecord> formToDB(List<Profile> profiles) {
+		List<ProfileProfileRecord> records = new ArrayList<>();
 		if(profiles != null && profiles.size() > 0) {
 			for(Profile profile : profiles) {
 				records.add(formToDB(profile));
 			}
 		}
 		return records;
+	}
+
+	public ProfileBasicDao<ProfileBasicRecord> getDao() {
+		return dao;
+	}
+
+	public void setDao(ProfileBasicDao<ProfileBasicRecord> dao) {
+		this.dao = dao;
 	}
 }

@@ -1,8 +1,8 @@
 package com.moseeker.common.util;
 
-import static com.moseeker.db.configdb.tables.ConfigAdminnotificationEvents.CONFIG_ADMINNOTIFICATION_EVENTS;
-import static com.moseeker.db.configdb.tables.ConfigAdminnotificationGroupmembers.CONFIG_ADMINNOTIFICATION_GROUPMEMBERS;
-import static com.moseeker.db.configdb.tables.ConfigAdminnotificationMembers.CONFIG_ADMINNOTIFICATION_MEMBERS;
+import static com.moseeker.db.dqv4.tables.ConfigAdminnotificationEvents.CONFIG_ADMINNOTIFICATION_EVENTS;
+import static com.moseeker.db.dqv4.tables.ConfigAdminnotificationGroupmembers.CONFIG_ADMINNOTIFICATION_GROUPMEMBERS;
+import static com.moseeker.db.dqv4.tables.ConfigAdminnotificationMembers.CONFIG_ADMINNOTIFICATION_MEMBERS;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
