@@ -1,7 +1,9 @@
 package com.moseeker.profile.service.impl;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.thrift.TException;
@@ -139,6 +141,8 @@ public class ProfileServicesImpl implements Iface {
 		record.setSource((byte)profile.getSource());
 		record.setCompleteness((byte)profile.getCompleteness());
 		record.setUserId(profile.getUser_id());
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		record.setCreateTime(timestamp);
 		return record;
 	}
 	
