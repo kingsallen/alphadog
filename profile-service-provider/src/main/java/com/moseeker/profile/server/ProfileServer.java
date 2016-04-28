@@ -1,5 +1,7 @@
 package com.moseeker.profile.server;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.moseeker.profile.service.impl.ProfileServicesImpl;
@@ -24,12 +26,14 @@ import com.moseeker.rpccenter.main.Server;
  * @version Beta
  */
 public class ProfileServer {
-
+	
+	Logger LOGGER = LoggerFactory.getLogger(ProfileServer.class);
+	
 	public static void main(String[] args) {
 
 		try {
+			LoggerFactory.getLogger(ProfileServer.class).info("test");
 			AnnotationConfigApplicationContext acac = initSpring();
-
 			Server server = new Server(ProfileServer.class,
 					acac.getBean(ProfileServicesImpl.class),
 					ServerNodeUtils.getPort(args));
@@ -52,8 +56,9 @@ public class ProfileServer {
 	}
 
 	private static AnnotationConfigApplicationContext initSpring() {
+		LoggerFactory.getLogger(ProfileServer.class).info("test");
 		AnnotationConfigApplicationContext acac = new AnnotationConfigApplicationContext();
-		acac.scan("com.moseeker");
+		acac.scan("com.moseeker.profile");
 		acac.refresh();
 		return acac;
 	}

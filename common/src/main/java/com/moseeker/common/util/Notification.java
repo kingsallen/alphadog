@@ -1,8 +1,8 @@
 package com.moseeker.common.util;
 
-import static com.moseeker.common.redis.cache.db.configdb.tables.AdminnotificationEvents.ADMINNOTIFICATION_EVENTS;
-import static com.moseeker.common.redis.cache.db.configdb.tables.AdminnotificationGroupmembers.ADMINNOTIFICATION_GROUPMEMBERS;
-import static com.moseeker.common.redis.cache.db.configdb.tables.AdminnotificationMembers.ADMINNOTIFICATION_MEMBERS;
+import static com.moseeker.db.configdb.tables.ConfigAdminnotificationEvents.CONFIG_ADMINNOTIFICATION_EVENTS;
+import static com.moseeker.db.configdb.tables.ConfigAdminnotificationGroupmembers.CONFIG_ADMINNOTIFICATION_GROUPMEMBERS;
+import static com.moseeker.db.configdb.tables.ConfigAdminnotificationMembers.CONFIG_ADMINNOTIFICATION_MEMBERS;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -44,31 +44,31 @@ public class Notification {
         DSLContext create;
         try {
             create = DatabaseConnectionHelper.getConnection().getJooqDSL();
-            Record result = create.select().from(ADMINNOTIFICATION_EVENTS)
-                    .where(ADMINNOTIFICATION_EVENTS.EVENT_KEY.equal(event_key)).fetchAny();
+            Record result = create.select().from(CONFIG_ADMINNOTIFICATION_EVENTS)
+                    .where(CONFIG_ADMINNOTIFICATION_EVENTS.EVENT_KEY.equal(event_key)).fetchAny();
             if (result != null) {
-                String emailEnabled = String.valueOf(result.getValue(ADMINNOTIFICATION_EVENTS.ENABLE_NOTIFYBY_EMAIL));
-                String smsEnabled = String.valueOf(result.getValue(ADMINNOTIFICATION_EVENTS.ENABLE_NOTIFYBY_SMS));
+                String emailEnabled = String.valueOf(result.getValue(CONFIG_ADMINNOTIFICATION_EVENTS.ENABLE_NOTIFYBY_EMAIL));
+                String smsEnabled = String.valueOf(result.getValue(CONFIG_ADMINNOTIFICATION_EVENTS.ENABLE_NOTIFYBY_SMS));
                 String wxtemplateEnabled = String
-                        .valueOf(result.getValue(ADMINNOTIFICATION_EVENTS.ENABLE_NOTIFYBY_WECHATTEMPLATEMESSAGE));
-                Integer groupid = result.getValue(ADMINNOTIFICATION_EVENTS.GROUPID);
+                        .valueOf(result.getValue(CONFIG_ADMINNOTIFICATION_EVENTS.ENABLE_NOTIFYBY_WECHATTEMPLATEMESSAGE));
+                Integer groupid = result.getValue(CONFIG_ADMINNOTIFICATION_EVENTS.GROUPID);
 
 
                 Result<Record> members = create.select()
-                        .from(ADMINNOTIFICATION_GROUPMEMBERS.join(ADMINNOTIFICATION_MEMBERS)
-                                .on(ADMINNOTIFICATION_GROUPMEMBERS.MEMBERID.equal(ADMINNOTIFICATION_MEMBERS.ID)))
-                        .where(ADMINNOTIFICATION_GROUPMEMBERS.GROUPID.equal(groupid))
-                        .and(ADMINNOTIFICATION_MEMBERS.STATUS.equal(Byte.parseByte("1")))
+                        .from(CONFIG_ADMINNOTIFICATION_GROUPMEMBERS.join(CONFIG_ADMINNOTIFICATION_MEMBERS)
+                                .on(CONFIG_ADMINNOTIFICATION_GROUPMEMBERS.MEMBERID.equal(CONFIG_ADMINNOTIFICATION_MEMBERS.ID)))
+                        .where(CONFIG_ADMINNOTIFICATION_GROUPMEMBERS.GROUPID.equal(groupid))
+                        .and(CONFIG_ADMINNOTIFICATION_MEMBERS.STATUS.equal(Byte.parseByte("1")))
                         .fetch();
                 List<String> emails = new ArrayList<>();
                 List<String> mobiles = new ArrayList<>();
 
                 for (Record r : members) {
-                    String email = r.getValue(ADMINNOTIFICATION_MEMBERS.EMAIL);
+                    String email = r.getValue(CONFIG_ADMINNOTIFICATION_MEMBERS.EMAIL);
                     emails.add(email);
                     System.out.println(email);
 
-                    String mobile = r.getValue(ADMINNOTIFICATION_MEMBERS.MOBILEPHONE);
+                    String mobile = r.getValue(CONFIG_ADMINNOTIFICATION_MEMBERS.MOBILEPHONE);
                     mobiles.add(mobile);
                     System.out.println(mobile);
 

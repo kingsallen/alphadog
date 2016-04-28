@@ -129,6 +129,9 @@ public abstract class RedisClient {
 			throws CacheConfigNotExistException {
 		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
 		String cacheKey = redisKey.getPattern();
+		if(cacheKey == null) {
+			throw new CacheConfigNotExistException();
+		}
 		return redisCluster.lpush(cacheKey, newvalue);
 	}
 

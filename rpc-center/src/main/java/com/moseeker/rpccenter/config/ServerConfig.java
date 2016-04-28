@@ -3,25 +3,19 @@ package com.moseeker.rpccenter.config;
 import java.lang.reflect.Constructor;
 
 import org.apache.commons.lang.StringUtils;
-
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.thrift.TProcessor;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.annotation.JSONField;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.moseeker.rpccenter.exception.RpcException;
-import com.moseeker.rpccenter.server.IServer;
-import com.moseeker.rpccenter.common.ServerNode;
-import com.moseeker.rpccenter.server.thrift.ThriftServer;
-import com.moseeker.rpccenter.proxy.DynamicServiceHandler;
 import com.moseeker.rpccenter.common.NetUtils;
-
+import com.moseeker.rpccenter.common.ServerNode;
+import com.moseeker.rpccenter.exception.RpcException;
+import com.moseeker.rpccenter.proxy.DynamicServiceHandler;
 import com.moseeker.rpccenter.registry.IRegistry;
 import com.moseeker.rpccenter.registry.ZkServerRegistry;
+import com.moseeker.rpccenter.server.IServer;
+import com.moseeker.rpccenter.server.thrift.ThriftServer;
 
 /**
  * Created by zzh on 16/3/28.
@@ -29,7 +23,7 @@ import com.moseeker.rpccenter.registry.ZkServerRegistry;
 public class ServerConfig implements IConfigCheck {
 
     /** LOGGER */
-    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+    //final Logger LOGGER = LoggerFactory.getLogger(ServerConfig.class);
 
     /** 服务名 */
     private String name;
@@ -110,7 +104,7 @@ public class ServerConfig implements IConfigCheck {
                 // 添加关闭钩子
                 addShutdownHook(registry, server);
             } catch (Exception e) {
-                LOGGER.error(e.getMessage(), e);
+                //LOGGER.error(e.getMessage(), e);
                 server.stop();
             }
         } else {

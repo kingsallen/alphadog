@@ -21,16 +21,16 @@ import com.moseeker.thrift.gen.profile.struct.Profile;
 public class ProfileServicesImpl implements Iface {
 
 	@Autowired
-	private ProfileDao<com.moseeker.db.profileDB.tables.Profile> dao;
+	private ProfileDao<com.moseeker.db.profileDB.tables.records.ProfileRecord> dao;
 	
 	@Override
 	public List<Profile> getProfiles(CommonQuery query, Profile profile)
 			throws TException {
 		List<Profile> profiles = new ArrayList<>();
 		try {
-			com.moseeker.db.profileDB.tables.records.ProfileRecord record = formToDB(profile);
+			//com.moseeker.db.profileDB.tables.records.ProfileRecord record = formToDB(profile);
 			
-			Result<Record> profileDBs = dao.getProfiles(query, record);
+			Result<Record> profileDBs = dao.getProfiles(query);
 			if(profileDBs != null && profileDBs.size() > 0) {
 				for (Record r : profileDBs) {
 					Profile profileResult = dbToStruct((com.moseeker.db.profileDB.tables.records.ProfileRecord)r);
@@ -150,5 +150,14 @@ public class ProfileServicesImpl implements Iface {
 			}
 		}
 		return records;
+	}
+
+	public ProfileDao<com.moseeker.db.profileDB.tables.records.ProfileRecord> getDao() {
+		return dao;
+	}
+
+	public void setDao(
+			ProfileDao<com.moseeker.db.profileDB.tables.records.ProfileRecord> dao) {
+		this.dao = dao;
 	}
 }

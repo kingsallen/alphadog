@@ -9,8 +9,7 @@ import java.util.regex.PatternSyntaxException;
 import org.junit.Test;
 
 import com.moseeker.common.exception.ParamNullException;
-import com.mysql.jdbc.StringUtils;
-
+import com.moseeker.common.util.StringUtils;
 /**
  * 
  * @description 简单的敏感词特殊字符判断

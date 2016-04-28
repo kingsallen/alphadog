@@ -4,8 +4,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.moseeker.rpccenter.common.configure.PropertiesConfiguration;
 import com.moseeker.rpccenter.exception.RpcException;
@@ -16,7 +14,7 @@ import com.moseeker.rpccenter.exception.RpcException;
 class ConfigHelper {
 
     /** LOGGER */
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigHelper.class);
+    //private static final Logger LOGGER = LoggerFactory.getLogger(ConfigHelper.class);
 
     /**
      * 初始化配置对象
@@ -53,7 +51,7 @@ class ConfigHelper {
                         }
                     }
                 } catch (Exception e) {
-                    LOGGER.error("Init config error", e);
+                    //LOGGER.error("Init config error", e);
                     throw new RpcException(RpcException.CONFIG_EXCEPTION, e);
                 }
             }
