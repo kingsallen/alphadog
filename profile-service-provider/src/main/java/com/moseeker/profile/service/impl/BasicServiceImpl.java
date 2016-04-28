@@ -17,7 +17,7 @@ public abstract class BasicServiceImpl<T, K> {
 	// protected transient T,K
 	// 用于同类类型转换(formToDB,dbToStruct)不满足当前方法，做的一个补充。这个trasient类在方法执行前判断是否为空，如果不为空，则使用transient类对象。方法结束时，置为null
 
-	protected BasicDao<T> basicDao;
+	protected BasicDao<T> dao;
 
 	protected abstract void initDao();
 
@@ -25,10 +25,10 @@ public abstract class BasicServiceImpl<T, K> {
 	public List<K> getProfiles(CommonQuery query, K structK) throws TException {
 		List<K> structs = new ArrayList<>();
 		try {
-			if(basicDao != null) {
+			if(dao != null) {
 				initDao();
 			}
-			Result<Record> result = basicDao.getProfiles(query);
+			Result<Record> result = dao.getProfiles(query);
 			if (result != null && result.size() > 0) {
 				for (Record r : result) {
 					K k = dbToStruct((T) r);
@@ -47,10 +47,10 @@ public abstract class BasicServiceImpl<T, K> {
 		int result = 0;
 		try {
 			List<T> records = formToDB(structKs);
-			if(basicDao != null) {
+			if(dao != null) {
 				initDao();
 			}
-			result = basicDao.postProfiles(records);
+			result = dao.postProfiles(records);
 		} catch (SQLException e) {
 			throw new TException(e.getMessage());
 		}
@@ -61,10 +61,10 @@ public abstract class BasicServiceImpl<T, K> {
 		int result = 0;
 		try {
 			List<T> records = formToDB(structKs);
-			if(basicDao != null) {
+			if(dao != null) {
 				initDao();
 			}
-			result = basicDao.putProfiles(records);
+			result = dao.putProfiles(records);
 		} catch (SQLException e) {
 			throw new TException(e.getMessage());
 		}
@@ -75,10 +75,10 @@ public abstract class BasicServiceImpl<T, K> {
 		int result = 0;
 		try {
 			List<T> records = formToDB(structKs);
-			if(basicDao != null) {
+			if(dao != null) {
 				initDao();
 			}
-			result = basicDao.delProfiles(records);
+			result = dao.delProfiles(records);
 		} catch (SQLException e) {
 			throw new TException(e.getMessage());
 		}
@@ -89,10 +89,10 @@ public abstract class BasicServiceImpl<T, K> {
 		int result = 0;
 		try {
 			T record = formToDB(structK);
-			if(basicDao != null) {
+			if(dao != null) {
 				initDao();
 			}
-			result = basicDao.postProfile(record);
+			result = dao.postProfile(record);
 		} catch (SQLException | ParseException e) {
 			throw new TException(e.getMessage());
 		}
@@ -103,10 +103,10 @@ public abstract class BasicServiceImpl<T, K> {
 		int result = 0;
 		try {
 			T record = formToDB(structK);
-			if(basicDao != null) {
+			if(dao != null) {
 				initDao();
 			}
-			result = basicDao.putProfile(record);
+			result = dao.putProfile(record);
 		} catch (SQLException e) {
 			throw new TException(e.getMessage());
 		} catch (ParseException e) {
@@ -119,10 +119,10 @@ public abstract class BasicServiceImpl<T, K> {
 		int result = 0;
 		try {
 			T records = formToDB(structK);
-			if(basicDao != null) {
+			if(dao != null) {
 				initDao();
 			}
-			result = basicDao.delProfile(records);
+			result = dao.delProfile(records);
 		} catch (SQLException e) {
 			throw new TException(e.getMessage());
 		} catch (ParseException e) {

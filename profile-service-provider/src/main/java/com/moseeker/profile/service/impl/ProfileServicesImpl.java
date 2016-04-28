@@ -15,11 +15,11 @@ import com.moseeker.thrift.gen.profile.struct.Profile;
 public class ProfileServicesImpl extends BasicServiceImpl<ProfileProfileRecord, Profile> implements Iface {
 
 	@Autowired
-	private ProfileDao<com.moseeker.db.dqv4.tables.records.ProfileProfileRecord> dao;
+	private ProfileDao<com.moseeker.db.dqv4.tables.records.ProfileProfileRecord> profileDao;
 	
 	@Override
 	protected void initDao() {
-		this.basicDao = dao;
+		this.dao = profileDao;
 	}
 	
 	@Override
@@ -50,13 +50,13 @@ public class ProfileServicesImpl extends BasicServiceImpl<ProfileProfileRecord, 
 		record.setCreateTime(timestamp);
 		return record;
 	}
-	
-	public ProfileDao<com.moseeker.db.dqv4.tables.records.ProfileProfileRecord> getDao() {
-		return dao;
+
+	public ProfileDao<com.moseeker.db.dqv4.tables.records.ProfileProfileRecord> getProfileDao() {
+		return profileDao;
 	}
 
-	public void setDao(
-			ProfileDao<com.moseeker.db.dqv4.tables.records.ProfileProfileRecord> dao) {
-		this.dao = dao;
+	public void setProfileDao(
+			ProfileDao<com.moseeker.db.dqv4.tables.records.ProfileProfileRecord> profileDao) {
+		this.profileDao = profileDao;
 	}
 }

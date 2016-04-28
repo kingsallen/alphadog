@@ -35,7 +35,6 @@ public class ProfileBasicServicesImpl extends BasicServiceImpl<ProfileBasicRecor
 
 	@Override
 	protected void initDao() {
-		this.basicDao = this.dao;
 	}
 
 	@Override
