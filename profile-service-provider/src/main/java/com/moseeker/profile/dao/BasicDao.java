@@ -10,7 +10,9 @@ import com.moseeker.thrift.gen.profile.struct.CommonQuery;
 
 public interface BasicDao<T> {
 
-	Result<Record> getProfiles(CommonQuery query) throws SQLException ;
+	Result<Record> getProfiles(CommonQuery query) throws SQLException;
+	
+	int getProfileCount(CommonQuery query) throws SQLException ;
 
 	int postProfiles(List<T> records) throws SQLException;
 

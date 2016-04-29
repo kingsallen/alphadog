@@ -35,6 +35,14 @@ struct Profile {
     8: Timestamp update_time
 }
 
+struct ProfilePagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<Profile> profiles
+}
+
 struct Attachment { 
     1: i32 id,
     2: i32 profile_id,
@@ -44,6 +52,14 @@ struct Attachment {
     6: string description,
     7: Timestamp create_time,
     8: Timestamp update_time
+}
+
+struct AttachmentPagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<Attachment> attacments
 }
 
 struct Basic { 
@@ -65,6 +81,14 @@ struct Basic {
     17: Timestamp update_time
 }
 
+struct BasicPagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<Basic> basics
+}
+
 struct Education { 
 	1: i32 id,
     2: i32 profile_id,
@@ -82,6 +106,14 @@ struct Education {
     14: Timestamp update_time
 }
 
+struct EducationPagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<Education> educations
+}
+
 struct EducationExt { 
 	1: i32 profile_id,
     2: Timestamp graduation,
@@ -90,6 +122,14 @@ struct EducationExt {
     5: string gpa,
     6: Timestamp create_time,
     7: Timestamp update_time
+}
+
+struct EducationExtPagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<EducationExt> educationExts
 }
 
 struct ProfileExt { 
@@ -101,6 +141,14 @@ struct ProfileExt {
     6: Timestamp update_time
 }
 
+struct ProfileExtPagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<ProfileExt> profileExts
+}
+
 struct ProfileImport { 
 	1: i32 profile_id,
     2: i16 source,
@@ -110,6 +158,14 @@ struct ProfileImport {
     6: string user_name,
     7: Timestamp create_time,
     8: Timestamp update_time
+}
+
+struct ProfileImportPagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<ProfileImport> profileImports
 }
 
 struct Intention { 
@@ -131,6 +187,14 @@ struct Intention {
     16: Timestamp update_time
 }
 
+struct IntentionPagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<Intention> intentions
+}
+
 struct Internship { 
 	1: i32 id,
 	2: i32 profile_id,
@@ -146,6 +210,14 @@ struct Internship {
     12: Timestamp update_time
 }
 
+struct InternshipPagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<Internship> internships
+}
+
 struct Language { 
 	1: i32 id,
 	2: i32 profile_id,
@@ -153,6 +225,14 @@ struct Language {
     4: string level,
     5: Timestamp create_time,
     6: Timestamp update_time
+}
+
+struct LanguagePagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<Language> languages
 }
 
 struct ProjectExp { 
@@ -170,6 +250,14 @@ struct ProjectExp {
     12: Timestamp update_time
 }
 
+struct ProjectExpPagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<ProjectExp> projectExps
+}
+
 struct Reward { 
 	1: i32 id,
 	2: i32 profile_id,
@@ -179,6 +267,14 @@ struct Reward {
 	6: string description,
     7: Timestamp create_time,
     8: Timestamp update_time
+}
+
+struct RewardPagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<Reward> rewards
 }
 
 struct SchoolJob { 
@@ -193,6 +289,14 @@ struct SchoolJob {
     9: Timestamp update_time
 }
 
+struct SchoolJobPagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<SchoolJob> schoolJobs
+}
+
 struct Skill { 
 	1: i32 id,
 	2: i32 profile_id,
@@ -201,6 +305,14 @@ struct Skill {
 	5: i16 month,
     6: Timestamp create_time,
     7: Timestamp update_time
+}
+
+struct SkillPagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<Skill> skills
 }
 
 struct Training { 
@@ -213,6 +325,14 @@ struct Training {
 	7: string description,
     8: Timestamp create_time,
     9: Timestamp update_time
+}
+
+struct TrainingPagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<Training> trainings
 }
 
 struct WorkExp { 
@@ -236,6 +356,14 @@ struct WorkExp {
     18: Timestamp update_time
 }
 
+struct WorkExpPagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<WorkExp> workExps
+}
+
 struct Works { 
 	1: i32 id,
 	2: i32 profile_id,
@@ -244,4 +372,12 @@ struct Works {
 	5: string description,
     6: Timestamp create_time,
     7: Timestamp update_time
+}
+
+struct WorksPagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<Works> works
 }

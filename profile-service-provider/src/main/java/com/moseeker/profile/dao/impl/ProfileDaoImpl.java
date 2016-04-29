@@ -2,8 +2,8 @@ package com.moseeker.profile.dao.impl;
 
 import org.springframework.stereotype.Repository;
 
-import com.moseeker.db.dqv4.tables.ProfileProfile;
-import com.moseeker.db.dqv4.tables.records.ProfileProfileRecord;
+import com.moseeker.db.profileDB.tables.ProfileProfile;
+import com.moseeker.db.profileDB.tables.records.ProfileProfileRecord;
 import com.moseeker.profile.dao.BasicDaoImpl;
 import com.moseeker.profile.dao.ProfileDao;
 

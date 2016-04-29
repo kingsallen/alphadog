@@ -10,7 +10,9 @@ import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Result;
+import org.jooq.SelectField;
 import org.jooq.SelectJoinStep;
+import org.jooq.SelectQuery;
 import org.jooq.SortField;
 import org.jooq.SortOrder;
 import org.jooq.TableLike;
@@ -99,6 +101,27 @@ public abstract class BasicDaoImpl<K extends UpdatableRecordImpl<K>, T extends T
 
 		Result<Record> result = table.fetch();
 		return result;
+	}
+	
+	public int getProfileCount(CommonQuery query) throws SQLException {
+		int totalCount = 0;
+		DSLContext create = DatabaseConnectionHelper.getConnection()
+				.getJooqDSL();
+
+		SelectQuery<?> selectQuery = create.selectQuery();
+		selectQuery.addFrom(tableLike);
+
+		if (query.getEqualFilter() != null && query.getEqualFilter().size() > 0) {
+			Map<String, String> equalFilter = query.getEqualFilter();
+			for(Entry<String, String> entry : equalFilter.entrySet()) {
+				Field field = tableLike.field(entry.getKey());
+				if(field != null) {
+					selectQuery.addConditions(field.equal(convertTo(entry.getValue(), field.getType())));
+				}
+			}
+		}
+		totalCount = create.fetchCount(selectQuery);
+		return totalCount;
 	}
 	
 	public int postProfiles(List<K> records) throws SQLException {

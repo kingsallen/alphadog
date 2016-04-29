@@ -2,28 +2,45 @@ package com.moseeker.profile.service.impl;
 
 import java.sql.Timestamp;
 
+import org.apache.thrift.TException;
 import org.jooq.types.UInteger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.db.dqv4.tables.records.ProfileProfileRecord;
+import com.moseeker.common.util.Pagination;
+import com.moseeker.db.profileDB.tables.records.ProfileProfileRecord;
 import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.thrift.gen.profile.service.ProfileServices.Iface;
+import com.moseeker.thrift.gen.profile.struct.CommonQuery;
 import com.moseeker.thrift.gen.profile.struct.Profile;
+import com.moseeker.thrift.gen.profile.struct.ProfilePagination;
 
 @Service
 public class ProfileServicesImpl extends BasicServiceImpl<ProfileProfileRecord, Profile> implements Iface {
 
 	@Autowired
-	private ProfileDao<com.moseeker.db.dqv4.tables.records.ProfileProfileRecord> profileDao;
+	private ProfileDao<ProfileProfileRecord> profileDao;
 	
 	@Override
 	protected void initDao() {
-		this.dao = profileDao;
+		//this.dao = profileDao;
 	}
 	
 	@Override
-	protected Profile dbToStruct(com.moseeker.db.dqv4.tables.records.ProfileProfileRecord r) {
+	public ProfilePagination getProfilePagination(CommonQuery query,
+			Profile profile) throws TException {
+		Pagination<Profile> pagination = this.getPagination(query, profile);
+		ProfilePagination bp = new ProfilePagination();
+		bp.setPage_number(pagination.getPageNo());
+		bp.setPage_size(pagination.getPageSize());
+		bp.setTotal_page(pagination.getTotalPage());
+		bp.setTotal_row(pagination.getTotalRow());
+		bp.setProfiles(pagination.getResults());
+		return bp;
+	}
+	
+	@Override
+	protected Profile dbToStruct(ProfileProfileRecord r) {
 		Profile profile = null;
 		if(r != null) {
 			profile = new Profile();
@@ -51,12 +68,12 @@ public class ProfileServicesImpl extends BasicServiceImpl<ProfileProfileRecord, 
 		return record;
 	}
 
-	public ProfileDao<com.moseeker.db.dqv4.tables.records.ProfileProfileRecord> getProfileDao() {
+	public ProfileDao<ProfileProfileRecord> getProfileDao() {
 		return profileDao;
 	}
 
 	public void setProfileDao(
-			ProfileDao<com.moseeker.db.dqv4.tables.records.ProfileProfileRecord> profileDao) {
+			ProfileDao<ProfileProfileRecord> profileDao) {
 		this.profileDao = profileDao;
 	}
 }

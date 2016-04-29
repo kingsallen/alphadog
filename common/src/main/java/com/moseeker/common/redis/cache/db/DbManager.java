@@ -12,7 +12,7 @@ import com.moseeker.common.dbconnection.DatabaseConnectionHelper;
 import com.moseeker.common.redis.RedisConfigRedisKey;
 import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.Notification;
-import com.moseeker.db.dqv4.Tables;
+import com.moseeker.db.configdb.Tables;
 
 /**
  * 

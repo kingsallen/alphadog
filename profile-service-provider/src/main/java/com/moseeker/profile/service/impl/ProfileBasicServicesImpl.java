@@ -11,10 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.moseeker.common.util.DateUtils;
-import com.moseeker.db.dqv4.tables.records.ProfileBasicRecord;
+import com.moseeker.common.util.Pagination;
+import com.moseeker.db.profileDB.tables.records.ProfileBasicRecord;
 import com.moseeker.profile.dao.ProfileBasicDao;
 import com.moseeker.thrift.gen.profile.service.BasicServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.Basic;
+import com.moseeker.thrift.gen.profile.struct.BasicPagination;
 import com.moseeker.thrift.gen.profile.struct.CommonQuery;
 
 @Service
@@ -108,5 +110,18 @@ public class ProfileBasicServicesImpl extends BasicServiceImpl<ProfileBasicRecor
 	@Override
 	public int delBasic(Basic basic) throws TException {
 		return this.delProfile(basic);
+	}
+
+	@Override
+	public BasicPagination getBasicPagination(CommonQuery query, Basic basic)
+			throws TException {
+		Pagination<Basic> pagination = this.getPagination(query, basic);
+		BasicPagination bp = new BasicPagination();
+		bp.setPage_number(pagination.getPageNo());
+		bp.setPage_size(pagination.getPageSize());
+		bp.setTotal_page(pagination.getTotalPage());
+		bp.setTotal_row(pagination.getTotalRow());
+		bp.setBasics(pagination.getResults());
+		return bp;
 	}
 }

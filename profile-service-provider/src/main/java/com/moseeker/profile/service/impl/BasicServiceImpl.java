@@ -9,6 +9,7 @@ import org.apache.thrift.TException;
 import org.jooq.Record;
 import org.jooq.Result;
 
+import com.moseeker.common.util.Pagination;
 import com.moseeker.profile.dao.BasicDao;
 import com.moseeker.thrift.gen.profile.struct.CommonQuery;
 
@@ -129,6 +130,36 @@ public abstract class BasicServiceImpl<T, K> {
 			throw new TException(e.getMessage());
 		}
 		return result;
+	}
+	
+	protected int getTotalRow(CommonQuery query, K k) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+	protected Pagination<K> getPagination(CommonQuery query, K k)
+			throws TException {
+		Pagination<K> pagination = new Pagination<>();
+		int totalRow = getTotalRow(query, k);
+		int pageNo = 1;
+		int pageSize = 10;
+		if(query.getPage() > 1) {
+			pageNo = query.getPage();
+		}
+		if(query.getPer_page() > 0) {
+			pageSize = query.getPer_page();
+		}
+		int totalPage = (int) (totalRow / pageSize);
+		if (totalRow % pageSize != 0) {
+			totalPage++;
+		}
+		List<K> result = getProfiles(query, k);
+		pagination.setPageNo(pageNo);
+		pagination.setPageSize(pageSize);
+		pagination.setTotalPage(totalPage);
+		pagination.setTotalRow(totalRow);
+		pagination.setResults(result);
+		return pagination;
 	}
 
 	protected abstract K dbToStruct(T r);

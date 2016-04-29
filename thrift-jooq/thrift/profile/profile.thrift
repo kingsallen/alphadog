@@ -34,6 +34,14 @@ struct Profile {
     8: Timestamp update_time
 }
 
+struct ProfilePagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<Profile> 
+}
+
 struct Attachment { 
     1: i32 id,
     2: i32 profile_id,
@@ -43,6 +51,14 @@ struct Attachment {
     6: string description,
     7: Timestamp create_time,
     8: Timestamp update_time
+}
+
+struct Pagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<Attachment> 
 }
 
 struct Basic { 
@@ -64,6 +80,14 @@ struct Basic {
     17: Timestamp update_time
 }
 
+struct Pagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<Basic> 
+}
+
 struct Education { 
 	1: i32 id,
     2: i32 profile_id,
@@ -81,6 +105,14 @@ struct Education {
     14: Timestamp update_time
 }
 
+struct AttachmentPagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<Education> 
+}
+
 struct EducationExt { 
 	1: i32 profile_id,
     2: Timestamp graduation,
@@ -89,6 +121,14 @@ struct EducationExt {
     5: string gpa,
     6: Timestamp create_time,
     7: Timestamp update_time
+}
+
+struct EducationExtPagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<EducationExt> 
 }
 
 struct ProfileExt { 
@@ -100,6 +140,14 @@ struct ProfileExt {
     6: Timestamp update_time
 }
 
+struct ProfileExtPagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<ProfileExt> 
+}
+
 struct ProfileImport { 
 	1: i32 profile_id,
     2: i16 source,
@@ -109,6 +157,14 @@ struct ProfileImport {
     6: string user_name,
     7: Timestamp create_time,
     8: Timestamp update_time
+}
+
+struct ProfileImportPagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<ProfileImport> 
 }
 
 struct Intention { 
@@ -130,6 +186,14 @@ struct Intention {
     16: Timestamp update_time
 }
 
+struct IntentionPagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<Intention> 
+}
+
 struct Internship { 
 	1: i32 id,
 	2: i32 profile_id,
@@ -145,6 +209,14 @@ struct Internship {
     12: Timestamp update_time
 }
 
+struct InternshipPagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<Internship> 
+}
+
 struct Language { 
 	1: i32 id,
 	2: i32 profile_id,
@@ -152,6 +224,14 @@ struct Language {
     4: string level,
     5: Timestamp create_time,
     6: Timestamp update_time
+}
+
+struct LanguagePagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<Language> 
 }
 
 struct ProjectExp { 
@@ -169,6 +249,14 @@ struct ProjectExp {
     12: Timestamp update_time
 }
 
+struct ProjectExpPagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<ProjectExp> 
+}
+
 struct Reward { 
 	1: i32 id,
 	2: i32 profile_id,
@@ -178,6 +266,14 @@ struct Reward {
 	6: string description,
     7: Timestamp create_time,
     8: Timestamp update_time
+}
+
+struct RewardPagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<Reward> 
 }
 
 struct SchoolJob { 
@@ -192,6 +288,14 @@ struct SchoolJob {
     9: Timestamp update_time
 }
 
+struct SchoolJobPagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<SchoolJob> 
+}
+
 struct Skill { 
 	1: i32 id,
 	2: i32 profile_id,
@@ -200,6 +304,14 @@ struct Skill {
 	5: i16 month,
     6: Timestamp create_time,
     7: Timestamp update_time
+}
+
+struct SkillPagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<Skill> 
 }
 
 struct Training { 
@@ -212,6 +324,14 @@ struct Training {
 	7: string description,
     8: Timestamp create_time,
     9: Timestamp update_time
+}
+
+struct TrainingPagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<Training> 
 }
 
 struct WorkExp { 
@@ -235,6 +355,14 @@ struct WorkExp {
     18: Timestamp update_time
 }
 
+struct WorkExpPagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<WorkExp> 
+}
+
 struct Works { 
 	1: i32 id,
 	2: i32 profile_id,
@@ -245,189 +373,10 @@ struct Works {
     7: Timestamp update_time
 }
 
-service ProfileServices {
-    list<Profile> getProfiles(1:CommonQuery query, 2:Profile profile);
-    i32 postProfiles(1: list<Profile> profiles);
-    i32 putProfiles(1: list<Profile> profiles);
-    i32 delProfiles(1: list<Profile> profiles);
-    
-    i32 postProfile(1: Profile profile);
-    i32 putProfile(1: Profile profile);
-    i32 delProfile(1: Profile profile);
-}
-
-service AttachmentServices {
-    list<Attachment> getAttachments(1:CommonQuery query, 2:Attachment profile);
-    i32 postAttachments(1: list<Attachment> profiles);
-    i32 putAttachments(1: list<Attachment> profiles);
-    i32 delAttachments(1: list<Attachment> profiles);
-    
-    i32 postAttachment(1: Attachment profile);
-    i32 putAttachment(1: Attachment profile);
-    i32 delAttachment(1: Attachment profile);
-}
-
-service BasicServices {
-    list<Basic> getBasics(1:CommonQuery query, 2:Basic basic);
-    i32 postBasics(1: list<Basic> basics);
-    i32 putBasics(1: list<Basic> basics);
-    i32 delBasics(1: list<Basic> basics);
-    
-    i32 postBasic(1: Attachment profile);
-    i32 putBasic(1: Attachment profile);
-    i32 delBasic(1: Attachment profile);
-}
-
-service EducationServices {
-    list<Education> getEducations(1:CommonQuery query, 2:Education education);
-    i32 postEducations(1: list<Education> educations);
-    i32 putEducations(1: list<Education> educations);
-    i32 delEducations(1: list<Education> educations);
-    
-    i32 postEducation(1: Education education);
-    i32 putEducation(1: Education education);
-    i32 delEducation(1: Education education);
-}
-
-service EducationExtServices {
-    list<EducationExt> getEducationExts(1:CommonQuery query, 2:EducationExt educationExt);
-    i32 postEducationExts(1: list<EducationExt> educationExts);
-    i32 putEducationExts(1: list<EducationExt> educationExts);
-    i32 delEducationExts(1: list<EducationExt> educationExts);
-    
-    i32 postEducationExt(1: EducationExt educationExt);
-    i32 putEducationExt(1: EducationExt educationExt);
-    i32 delEducationExt(1: EducationExt educationExt);
-}
-
-service ProfileExtServices {
-    list<ProfileExt> getProfileExts(1:CommonQuery query, 2:ProfileExt profileExt);
-    i32 postProfileExts(1: list<ProfileExt> profileExts);
-    i32 putProfileExts(1: list<ProfileExt> profileExts);
-    i32 delProfileExts(1: list<ProfileExt> profileExts);
-    
-    i32 postProfileExt(1: ProfileExt profileExt);
-    i32 putProfileExt(1: ProfileExt profileExt);
-    i32 delProfileExt(1: ProfileExt profileExt);
-}
-
-service ProfileImportServices {
-    list<ProfileImport> getProfileImports(1:CommonQuery query, 2:ProfileImport profileImport);
-    i32 postProfileImports(1: list<ProfileImport> profileImports);
-    i32 putProfileImports(1: list<ProfileImport> profileImports);
-    i32 delProfileImports(1: list<ProfileImport> profileImports);
-    
-    i32 postProfileImport(1: ProfileImport profileImport);
-    i32 putProfileImport(1: ProfileImport profileImport);
-    i32 delProfileImport(1: ProfileImport profileImport);
-}
-
-service IntentionServices {
-    list<Intention> getIntentions(1:CommonQuery query, 2:Intention intention);
-    i32 postIntentions(1: list<Intention> intentions);
-    i32 putIntentions(1: list<Intention> intentions);
-    i32 delIntentions(1: list<Intention> intentions);
-    
-    i32 postIntention(1: Intention intention);
-    i32 putIntention(1: Intention intention);
-    i32 delIntention(1: Intention intention);
-}
-
-service InternshipServices {
-    list<Internship> getInternships(1:CommonQuery query, 2:Internship internship);
-    i32 postInternships(1: list<Internship> internships);
-    i32 putInternships(1: list<Internship> internships);
-    i32 delInternships(1: list<Internship> internships);
-    
-    i32 postInternship(1: Internship internship);
-    i32 putInternship(1: Internship internship);
-    i32 delInternship(1: Internship internship);
-}
-
-service LanguageServices {
-    list<Language> getLanguages(1:CommonQuery query, 2:Language language);
-    i32 postLanguages(1: list<Language> languages);
-    i32 putLanguages(1: list<Language> languages);
-    i32 delLanguages(1: list<Language> languages);
-    
-    i32 postLanguage(1: Language language);
-    i32 putLanguage(1: Language language);
-    i32 delLanguage(1: Language language);
-}
-
-service ProjectExpServices {
-    list<ProjectExp> getProjectExps(1:CommonQuery query, 2:ProjectExp projectExp);
-    i32 postProjectExps(1: list<ProjectExp> projectExps);
-    i32 putProjectExps(1: list<ProjectExp> projectExps);
-    i32 delProjectExps(1: list<ProjectExp> projectExps);
-    
-    i32 postProjectExp(1: ProjectExp projectExp);
-    i32 putProjectExp(1: ProjectExp projectExp);
-    i32 delProjectExp(1: ProjectExp projectExp);
-}
-
-service RewardServices {
-    list<Reward> getRewards(1:CommonQuery query, 2:Reward reward);
-    i32 postRewards(1: list<Reward> rewards);
-    i32 putRewards(1: list<Reward> rewards);
-    i32 delRewards(1: list<Reward> rewards);
-    
-    i32 postReward(1: Reward reward);
-    i32 putReward(1: Reward reward);
-    i32 delReward(1: Reward reward);
-}
-
-service SchoolJobServices {
-    list<SchoolJob> getSchoolJobs(1:CommonQuery query, 2:SchoolJob schoolJob);
-    i32 postSchoolJobs(1: list<SchoolJob> schoolJobs);
-    i32 putSchoolJobs(1: list<SchoolJob> schoolJobs);
-    i32 delSchoolJobs(1: list<SchoolJob> schoolJobs);
-    
-    i32 postSchoolJob(1: SchoolJob schoolJob);
-    i32 putSchoolJob(1: SchoolJob schoolJob);
-    i32 delSchoolJob(1: SchoolJob schoolJob);
-}
-
-service SkillServices {
-    list<Skill> getSkills(1:CommonQuery query, 2:Skill skill);
-    i32 postSkills(1: list<Skill> skills);
-    i32 putSkills(1: list<Skill> skills);
-    i32 delSkills(1: list<Skill> skills);
-    
-    i32 postSkill(1: Skill skill);
-    i32 putSkill(1: Skill skill);
-    i32 delSkill(1: Skill skill);
-}
-
-service TrainingServices {
-    list<Training> getTrainings(1:CommonQuery query, 2:Training training);
-    i32 postTrainings(1: list<Training> trainings);
-    i32 putTrainings(1: list<Training> trainings);
-    i32 delTrainings(1: list<Training> trainings);
-    
-    i32 postTraining(1: Training training);
-    i32 putTraining(1: Training training);
-    i32 delTraining(1: Training training);
-}
-
-service WorkExpServices {
-    list<WorkExp> getWorkExps(1:CommonQuery query, 2:WorkExp workExp);
-    i32 postWorkExps(1: list<WorkExp> workExps);
-    i32 putWorkExps(1: list<WorkExp> workExps);
-    i32 delWorkExps(1: list<WorkExp> workExps);
-    
-    i32 postWorkExp(1: WorkExp workExp);
-    i32 putWorkExp(1: WorkExp workExp);
-    i32 delWorkExp(1: WorkExp workExp);
-}
-
-service WorksServices {
-    list<Works> getWorkss(1:CommonQuery query, 2:Works works);
-    i32 postWorkss(1: list<Works> works);
-    i32 putWorkss(1: list<Works> works);
-    i32 delWorkss(1: list<Works> works);
-    
-    i32 postWorks(1: Works works);
-    i32 putWorks(1: Works works);
-    i32 delWorks(1: Works works);
+struct WorksPagination {
+	1: i32 total_row,
+	2: i32 total_page,
+	3: i32 page_number,
+	4: i32 page_size,
+	5: list<Works> 
 }
