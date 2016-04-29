@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -117,11 +118,12 @@ public class ProfileBasicServicesImpl extends BasicServiceImpl<ProfileBasicRecor
 			throws TException {
 		Pagination<Basic> pagination = this.getPagination(query, basic);
 		BasicPagination bp = new BasicPagination();
-		bp.setPage_number(pagination.getPageNo());
+		/*bp.setPage_number(pagination.getPageNo());
 		bp.setPage_size(pagination.getPageSize());
 		bp.setTotal_page(pagination.getTotalPage());
 		bp.setTotal_row(pagination.getTotalRow());
-		bp.setBasics(pagination.getResults());
+		bp.setBasics(pagination.getResults());*/
+		BeanUtils.copyProperties(pagination, bp);
 		return bp;
 	}
 }

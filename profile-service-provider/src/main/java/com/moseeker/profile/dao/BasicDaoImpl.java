@@ -10,7 +10,6 @@ import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Result;
-import org.jooq.SelectField;
 import org.jooq.SelectJoinStep;
 import org.jooq.SelectQuery;
 import org.jooq.SortField;
@@ -40,6 +39,7 @@ public abstract class BasicDaoImpl<K extends UpdatableRecordImpl<K>, T extends T
 	
 	protected abstract void initJOOQEntity();
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Result<Record> getProfiles(CommonQuery query)
 			throws SQLException {
 		DSLContext create = DatabaseConnectionHelper.getConnection()
@@ -103,6 +103,7 @@ public abstract class BasicDaoImpl<K extends UpdatableRecordImpl<K>, T extends T
 		return result;
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public int getProfileCount(CommonQuery query) throws SQLException {
 		int totalCount = 0;
 		DSLContext create = DatabaseConnectionHelper.getConnection()

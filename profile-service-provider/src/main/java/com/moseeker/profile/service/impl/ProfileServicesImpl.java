@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 
 import org.apache.thrift.TException;
 import org.jooq.types.UInteger;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,11 +32,12 @@ public class ProfileServicesImpl extends BasicServiceImpl<ProfileProfileRecord, 
 			Profile profile) throws TException {
 		Pagination<Profile> pagination = this.getPagination(query, profile);
 		ProfilePagination bp = new ProfilePagination();
-		bp.setPage_number(pagination.getPageNo());
+		/*bp.setPage_number(pagination.getPageNo());
 		bp.setPage_size(pagination.getPageSize());
 		bp.setTotal_page(pagination.getTotalPage());
 		bp.setTotal_row(pagination.getTotalRow());
-		bp.setProfiles(pagination.getResults());
+		bp.setProfiles(pagination.getResults());*/
+		BeanUtils.copyProperties(pagination, bp);
 		return bp;
 	}
 	
