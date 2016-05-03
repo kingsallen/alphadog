@@ -27,12 +27,11 @@ import com.moseeker.rpccenter.main.Server;
  */
 public class ProfileServer {
 	
-	Logger LOGGER = LoggerFactory.getLogger(ProfileServer.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(ProfileServer.class);
 	
 	public static void main(String[] args) {
 
 		try {
-			LoggerFactory.getLogger(ProfileServer.class).info("test");
 			AnnotationConfigApplicationContext acac = initSpring();
 			Server server = new Server(ProfileServer.class,
 					acac.getBean(ProfileServicesImpl.class),
@@ -42,21 +41,20 @@ public class ProfileServer {
 			synchronized (ProfileServer.class) {
 				while (true) {
 					try {
-						System.out.println("release thread pool before");
 						ProfileServer.class.wait();
-						System.out.println("release thread pool after");
 					} catch (InterruptedException e) {
+						LOGGER.error("error", e);
 						e.printStackTrace();
 					}
 				}
 			}
 		} catch (Exception e) {
+			LOGGER.error("error", e);
 			e.printStackTrace();
 		}
 	}
 
 	private static AnnotationConfigApplicationContext initSpring() {
-		LoggerFactory.getLogger(ProfileServer.class).info("test");
 		AnnotationConfigApplicationContext acac = new AnnotationConfigApplicationContext();
 		acac.scan("com.moseeker.profile");
 		acac.refresh();
