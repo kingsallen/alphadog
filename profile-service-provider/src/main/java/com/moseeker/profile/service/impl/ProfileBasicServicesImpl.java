@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.Pagination;
-import com.moseeker.db.profileDB.tables.records.ProfileBasicRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileBasicRecord;
 import com.moseeker.profile.dao.ProfileBasicDao;
 import com.moseeker.thrift.gen.profile.service.BasicServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.Basic;

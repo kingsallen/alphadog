@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.moseeker.common.util.Pagination;
-import com.moseeker.db.profileDB.tables.records.ProfileProfileRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.thrift.gen.profile.service.ProfileServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.CommonQuery;
