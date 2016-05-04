@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.moseeker.common.util.Pagination;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.thrift.gen.profile.service.ProfileServices.Iface;
@@ -24,7 +25,7 @@ public class ProfileServicesImpl extends BasicServiceImpl<ProfileProfileRecord, 
 	
 	@Override
 	protected void initDao() {
-		//this.dao = profileDao;
+		this.dao = profileDao;
 	}
 	
 	@Override
@@ -59,11 +60,21 @@ public class ProfileServicesImpl extends BasicServiceImpl<ProfileProfileRecord, 
 	@Override
 	protected ProfileProfileRecord formToDB(Profile profile) {
 		ProfileProfileRecord record = new ProfileProfileRecord();
-		record.setId(UInteger.valueOf(profile.getId()));
-		record.setUuid(profile.getUuid());
+		if(profile.getId() != 0) {
+			record.setId(UInteger.valueOf(profile.getId()));
+		}
+		if(!StringUtils.isNullOrEmpty(profile.getUuid())) {
+			record.setUuid(profile.getUuid());
+		} else {
+			record.setUuid("");
+		}
 		record.setLang((byte)profile.getLang());
 		record.setSource((byte)profile.getSource());
-		record.setCompleteness((byte)profile.getCompleteness());
+		if(profile.getCompleteness() == 0) {
+			record.setCompleteness((byte)10);
+		} else {
+			record.setCompleteness((byte)profile.getCompleteness());
+		}
 		record.setUserId(profile.getUser_id());
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		record.setCreateTime(timestamp);

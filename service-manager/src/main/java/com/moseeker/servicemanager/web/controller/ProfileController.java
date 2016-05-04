@@ -1,4 +1,4 @@
-package com.moseeker.servicemanager.web.controller.profile;
+package com.moseeker.servicemanager.web.controller;
 
 import java.util.List;
 
@@ -67,6 +67,22 @@ public class ProfileController {
 		//PrintWriter writer = null;
 		String jsonStringResponse = null;
 		try {
+			Profile profile = ParamUtils.initModelForm(request, Profile.class);
+			int result = profileService.postProfile(profile);
+			jsonStringResponse = JSON.toJSONString(result);
+			
+			return ResponseLogNotification.success(request, jsonStringResponse);
+		} catch (Exception e) {	
+			e.printStackTrace();
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
+
+	@RequestMapping(value = "/profile/profile", method = RequestMethod.PUT)
+	@ResponseBody
+	public String put(HttpServletRequest request, HttpServletResponse response) {
+		String jsonStringResponse = null;
+		try {
 			Profile profile = new Profile();
 			if(!StringUtils.isNullOrEmpty(request.getParameter("id"))) {
 				profile.setId(Integer.parseInt(request.getParameter("id")));
@@ -74,7 +90,10 @@ public class ProfileController {
 			if(!StringUtils.isNullOrEmpty(request.getParameter("user_id"))) {
 				profile.setUser_id(Integer.parseInt(request.getParameter("user_id")));
 			}
-			int result = profileService.postProfile(profile);
+			if(!StringUtils.isNullOrEmpty(request.getParameter("completeness"))) {
+				profile.setCompleteness(10);
+			}
+			int result = profileService.putProfile(profile);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -83,15 +102,27 @@ public class ProfileController {
 		}
 	}
 
-	@RequestMapping(value = "/profile/profile", method = RequestMethod.PUT)
-	@ResponseBody
-	public void put(HttpServletRequest request, HttpServletResponse response) {
-
-	}
-
 	@RequestMapping(value = "/profile/profile", method = RequestMethod.DELETE)
 	@ResponseBody
-	public void delete(HttpServletRequest request, HttpServletResponse response) {
-		
+	public String delete(HttpServletRequest request, HttpServletResponse response) {
+		String jsonStringResponse = null;
+		try {
+			Profile profile = new Profile();
+			if(!StringUtils.isNullOrEmpty(request.getParameter("id"))) {
+				profile.setId(Integer.parseInt(request.getParameter("id")));
+			}
+			if(!StringUtils.isNullOrEmpty(request.getParameter("user_id"))) {
+				profile.setUser_id(Integer.parseInt(request.getParameter("user_id")));
+			}
+			if(!StringUtils.isNullOrEmpty(request.getParameter("completeness"))) {
+				profile.setCompleteness(10);
+			}
+			int result = profileService.delProfile(profile);
+			jsonStringResponse = JSON.toJSONString(result);
+			
+			return ResponseLogNotification.success(request, jsonStringResponse);
+		} catch (Exception e) {	
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
 	}
 }

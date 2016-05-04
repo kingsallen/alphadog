@@ -26,7 +26,7 @@ public abstract class BasicServiceImpl<T, K> {
 	public List<K> getProfiles(CommonQuery query, K structK) throws TException {
 		List<K> structs = new ArrayList<>();
 		try {
-			if(dao != null) {
+			if(dao == null) {
 				initDao();
 			}
 			Result<Record> result = dao.getProfiles(query);
@@ -48,7 +48,7 @@ public abstract class BasicServiceImpl<T, K> {
 		int result = 0;
 		try {
 			List<T> records = formToDB(structKs);
-			if(dao != null) {
+			if(dao == null) {
 				initDao();
 			}
 			result = dao.postProfiles(records);
@@ -62,7 +62,7 @@ public abstract class BasicServiceImpl<T, K> {
 		int result = 0;
 		try {
 			List<T> records = formToDB(structKs);
-			if(dao != null) {
+			if(dao == null) {
 				initDao();
 			}
 			result = dao.putProfiles(records);
@@ -76,7 +76,7 @@ public abstract class BasicServiceImpl<T, K> {
 		int result = 0;
 		try {
 			List<T> records = formToDB(structKs);
-			if(dao != null) {
+			if(dao == null) {
 				initDao();
 			}
 			result = dao.delProfiles(records);
@@ -90,7 +90,7 @@ public abstract class BasicServiceImpl<T, K> {
 		int result = 0;
 		try {
 			T record = formToDB(structK);
-			if(dao != null) {
+			if(dao == null) {
 				initDao();
 			}
 			result = dao.postProfile(record);
@@ -104,7 +104,7 @@ public abstract class BasicServiceImpl<T, K> {
 		int result = 0;
 		try {
 			T record = formToDB(structK);
-			if(dao != null) {
+			if(dao == null) {
 				initDao();
 			}
 			result = dao.putProfile(record);
@@ -120,7 +120,7 @@ public abstract class BasicServiceImpl<T, K> {
 		int result = 0;
 		try {
 			T records = formToDB(structK);
-			if(dao != null) {
+			if(dao == null) {
 				initDao();
 			}
 			result = dao.delProfile(records);

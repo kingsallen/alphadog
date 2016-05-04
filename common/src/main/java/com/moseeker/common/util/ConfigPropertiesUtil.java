@@ -99,36 +99,8 @@ public class ConfigPropertiesUtil {
     public <T> T get(String key, Class<T> clazzType) {
         Object object = properties.get(key);
         if (object != null) {
-            return convertTo(object, clazzType);
+            return BeanUtils.convertTo(object, clazzType);
         }
         return null;
-    }
-
-    /**
-     * 类型转换。提供将对象转成指定的类型的功能
-     *
-     * @param value     被转换的对象
-     * @param clazzType 指定一个转成的类型
-     * @return 返回转换的结果
-     */
-    @SuppressWarnings("unchecked")
-    private <T> T convertTo(Object value, Class<T> clazzType) {
-        if (clazzType.isAssignableFrom(String.class)) {
-            return (T) value.toString();
-        } else if (clazzType.isAssignableFrom(Long.class)) {
-            return (T) new Long(value.toString());
-        } else if (clazzType.isAssignableFrom(Byte.class)) {
-            return (T) new Byte(value.toString());
-        } else if (clazzType.isAssignableFrom(Integer.class)) {
-            return (T) new Integer(value.toString());
-        } else if (clazzType.isAssignableFrom(Float.class)) {
-            return (T) new Float(value.toString());
-        } else if (clazzType.isAssignableFrom(Float.class)) {
-            return (T) new Double(value.toString());
-        } else if (clazzType.isAssignableFrom(Boolean.class)) {
-            return (T) new Boolean(value.toString());
-        } else {
-            return (T) value.toString();
-        }
     }
 }

@@ -36,4 +36,56 @@ public class BeanUtils {
 		
 		return null;
 	}
+	
+	 /**
+     * 类型转换。提供将对象转成指定的类型的功能
+     *
+     * @param value     被转换的对象
+     * @param clazzType 指定一个转成的类型
+     * @return 返回转换的结果
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T convertTo(Object value, Class<T> clazzType) {
+        if (clazzType.isAssignableFrom(String.class)) {
+            return (T) value.toString();
+        } else if (clazzType.isAssignableFrom(Long.class) || clazzType.isAssignableFrom(long.class)) {
+            return (T) value;
+        } else if (clazzType.isAssignableFrom(Byte.class) || clazzType.isAssignableFrom(byte.class)) {
+            return (T) value;
+        } else if (clazzType.isAssignableFrom(Integer.class) || clazzType.isAssignableFrom(int.class)) {
+            return (T) value;
+        } else if (clazzType.isAssignableFrom(Float.class) || clazzType.isAssignableFrom(float.class)) {
+            return (T) value;
+        } else if (clazzType.isAssignableFrom(Boolean.class) || clazzType.isAssignableFrom(boolean.class)) {
+            return (T) value;
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+     * 类型转换。提供将对象转成指定的类型的功能
+     *
+     * @param value     被转换的对象
+     * @param clazzType 指定一个转成的类型
+     * @return 返回转换的结果
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T StringConvertTo(String value, Class<T> clazzType) {
+        if (clazzType.isAssignableFrom(String.class)) {
+            return (T) value;
+        } else if (clazzType.isAssignableFrom(Long.class) || clazzType.isAssignableFrom(long.class)) {
+            return (T) new Long(value);
+        } else if (clazzType.isAssignableFrom(Byte.class) || clazzType.isAssignableFrom(byte.class)) {
+            return (T) new Byte(value);
+        } else if (clazzType.isAssignableFrom(Integer.class) || clazzType.isAssignableFrom(int.class)) {
+            return (T) new Integer(value);
+        } else if (clazzType.isAssignableFrom(Float.class) || clazzType.isAssignableFrom(float.class)) {
+            return (T) new Float(value);
+        } else if (clazzType.isAssignableFrom(Boolean.class) || clazzType.isAssignableFrom(boolean.class)) {
+            return (T) new Boolean(value);
+        } else {
+            return (T) value.toString();
+        }
+    }
 }
