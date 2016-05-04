@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.web.servlet.HandlerMapping;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.moseeker.common.util.BeanUtils;
 
 public class ParamUtils {

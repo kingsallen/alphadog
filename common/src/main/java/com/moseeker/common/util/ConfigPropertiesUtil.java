@@ -99,7 +99,7 @@ public class ConfigPropertiesUtil {
     public <T> T get(String key, Class<T> clazzType) {
         Object object = properties.get(key);
         if (object != null) {
-            return BeanUtils.convertTo(object, clazzType);
+            return BeanUtils.StringConvertTo((String)object, clazzType);
         }
         return null;
     }
