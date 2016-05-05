@@ -69,8 +69,6 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 					&& query.getEqualFilter().size() > 0) {
 				Map<String, String> equalFilter = query.getEqualFilter();
 				for (Entry<String, String> entry : equalFilter.entrySet()) {
-					//TableFieldImpl<R, T> fieldImpl = table.field(entry.getKey());
-					//ProfileProfile.PROFILE_PROFILE.ID.equal(value);
 					Field<?> field = tableLike.field(entry.getKey());
 					if (field != null) {
 						table.where(field.equal(BeanUtils.convertTo(

@@ -116,11 +116,35 @@ public class ParamUtils {
 							boolean.class);
 					method.invoke(t, nocache);
 				}
+				Map<String, String> param = new HashMap<>();
+				@SuppressWarnings("unchecked")
+				Map<String, Object> reqParams = request.getParameterMap();
+				if (reqParams != null) {
+					for (Entry<String, Object> entry : reqParams.entrySet()) {
+						if (!entry.getKey().equals("appid")
+								&& !entry.getKey().equals("limit")
+								&& !entry.getKey().equals("offset")
+								&& !entry.getKey().equals("page")
+								&& !entry.getKey().equals("per_page")
+								&& !entry.getKey().equals("sortby")
+								&& !entry.getKey().equals("order")
+								&& !entry.getKey().equals("fields")
+								&& !entry.getKey().equals("nocache")) {
+							param.put(entry.getKey(),
+									((String[]) entry.getValue())[0]);
+						}
+					}
+				}
+				Method method = t.getClass().getMethod("setEqualFilter",
+						Map.class);
+				method.invoke(t, param);
 			} catch (NoSuchMethodException | SecurityException
 					| IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException e) {
 				// warning 报警 / logging 日志
 				e.printStackTrace();
+			} finally {
+				//do nothing
 			}
 		}
 		return t;
@@ -166,14 +190,17 @@ public class ParamUtils {
 		if (data != null && data.size() > 0) {
 			Field[] fields = clazz.getFields();
 			for (Entry<String, Object> entry : data.entrySet()) {
-				for(int i=0; i<fields.length-1; i++) {
-					if(fields[i].getName().equals(entry.getKey())) {
+				for (int i = 0; i < fields.length - 1; i++) {
+					if (fields[i].getName().equals(entry.getKey())) {
 						String methodName = "set"
-								+ fields[i].getName().substring(0, 1).toUpperCase()
+								+ fields[i].getName().substring(0, 1)
+										.toUpperCase()
 								+ fields[i].getName().substring(1);
-						Method method = clazz.getMethod(methodName, fields[i].getType());
+						Method method = clazz.getMethod(methodName,
+								fields[i].getType());
 						try {
-							method.invoke(t, BeanUtils.convertTo(entry.getValue(), fields[i].getType()));
+							method.invoke(t, BeanUtils.convertTo(
+									entry.getValue(), fields[i].getType()));
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -185,23 +212,25 @@ public class ParamUtils {
 
 		return t;
 	}
-	
+
 	@Test
 	public void testArray() {
-		int[] array = {1,2,3};
+		int[] array = { 1, 2, 3 };
 		Object a = array;
-		if(a instanceof Object[] || a instanceof byte[] || a instanceof char[] || a instanceof int[] || a instanceof long[] || a instanceof float[] || a instanceof double[]) {
+		if (a instanceof Object[] || a instanceof byte[] || a instanceof char[]
+				|| a instanceof int[] || a instanceof long[]
+				|| a instanceof float[] || a instanceof double[]) {
 			System.out.println(true);
 		} else {
 			System.out.println(false);
 		}
 	}
-	
+
 	@Test
 	public void testPrimary() {
 		int b = 1;
 		Object a = b;
-		if(a instanceof Object) {
+		if (a instanceof Object) {
 			System.out.println(true);
 		} else {
 			System.out.println(false);
@@ -212,11 +241,11 @@ public class ParamUtils {
 	private static Map<String, Object> initParamFromRequestParameter(
 			HttpServletRequest request) {
 		Map<String, Object> param = new HashMap<>();
-		
+
 		Map<String, Object> reqParams = request.getParameterMap();
-		if(reqParams != null) {
-			for(Entry<String, Object> entry : reqParams.entrySet()) {
-				param.put(entry.getKey(), ((String[])entry.getValue())[0]);
+		if (reqParams != null) {
+			for (Entry<String, Object> entry : reqParams.entrySet()) {
+				param.put(entry.getKey(), ((String[]) entry.getValue())[0]);
 			}
 		}
 		return param;
@@ -253,11 +282,12 @@ public class ParamUtils {
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> parseJSON2Map(String jsonStr) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		//校验jsonStr格式是否正确
-		if(!jsonStr.startsWith("{") || !jsonStr.endsWith("}")) {
+		// 校验jsonStr格式是否正确
+		if (!jsonStr.startsWith("{") || !jsonStr.endsWith("}")) {
 			return map;
 		}
-		Object object = JSON.parse(jsonStr);;
+		Object object = JSON.parse(jsonStr);
+		;
 		if (object instanceof Map) {
 			map = (Map<String, Object>) object;
 		} else if (object instanceof List) {

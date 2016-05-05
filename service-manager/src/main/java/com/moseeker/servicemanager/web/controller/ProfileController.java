@@ -39,10 +39,6 @@ public class ProfileController {
 			// GET方法 通用参数解析并赋值
 			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
 
-			// 特有参数解析并赋值
-			Map<String, String> equalFilter = new HashMap<>();
-			equalFilter.put("uuid", "18511295953");
-			query.setEqualFilter(equalFilter);
 			Profile profile = new Profile();
 			List<Profile> profiles = profileService.getResources(query, profile);
 			jsonStringResponse = JSON.toJSONString(profiles);
