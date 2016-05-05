@@ -9,9 +9,9 @@ import java.util.List;
  * <p>Email: wjf2255@gmail.com</p>
  * @author wjf
  * @version
- * @param <T>
+ * @param <S>
  */
-public class Pagination<T> {
+public class Pagination<S> {
 	
 	public Pagination() {}
 	
@@ -20,7 +20,7 @@ public class Pagination<T> {
 		this.pageSize = pageSize;
 	}
 	
-	public Pagination(int pageNo, int pageSize, int totalPage, int totalRow, List<T> results) {
+	public Pagination(int pageNo, int pageSize, int totalPage, int totalRow, List<S> results) {
 		this.pageNo = pageNo;
 		this.pageSize = pageSize;
 		this.totalPage = totalPage;
@@ -32,7 +32,7 @@ public class Pagination<T> {
 	private int pageSize;
 	private int totalPage;
 	private int totalRow;
-	private List<T> results;
+	private List<S> results;
 	
 	public int getPageNo() {
 		return pageNo;
@@ -58,10 +58,10 @@ public class Pagination<T> {
 	public void setTotalRow(int totalRow) {
 		this.totalRow = totalRow;
 	}
-	public List<T> getResults() {
+	public List<S> getResults() {
 		return results;
 	}
-	public void setResults(List<T> results) {
+	public void setResults(List<S> results) {
 		this.results = results;
 	}
 }

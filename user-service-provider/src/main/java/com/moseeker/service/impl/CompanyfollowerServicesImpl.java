@@ -10,7 +10,7 @@ import org.apache.thrift.TException;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 
-import com.moseeker.common.dbconnection.DatabaseConnectionHelper;
+import com.moseeker.common.dbutils.DatabaseConnectionHelper;
 import com.moseeker.common.redis.RedisCallback;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;

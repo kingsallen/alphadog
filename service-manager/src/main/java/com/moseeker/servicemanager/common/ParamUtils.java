@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.junit.Test;
 import org.springframework.web.servlet.HandlerMapping;
 
 import com.alibaba.fastjson.JSON;
@@ -184,12 +185,41 @@ public class ParamUtils {
 
 		return t;
 	}
+	
+	@Test
+	public void testArray() {
+		int[] array = {1,2,3};
+		Object a = array;
+		if(a instanceof Object[] || a instanceof byte[] || a instanceof char[] || a instanceof int[] || a instanceof long[] || a instanceof float[] || a instanceof double[]) {
+			System.out.println(true);
+		} else {
+			System.out.println(false);
+		}
+	}
+	
+	@Test
+	public void testPrimary() {
+		int b = 1;
+		Object a = b;
+		if(a instanceof Object) {
+			System.out.println(true);
+		} else {
+			System.out.println(false);
+		}
+	}
 
 	@SuppressWarnings("unchecked")
 	private static Map<String, Object> initParamFromRequestParameter(
 			HttpServletRequest request) {
-		System.out.println(request.getParameter("uuid"));
-		return request.getParameterMap();
+		Map<String, Object> param = new HashMap<>();
+		
+		Map<String, Object> reqParams = request.getParameterMap();
+		if(reqParams != null) {
+			for(Entry<String, Object> entry : reqParams.entrySet()) {
+				param.put(entry.getKey(), ((String[])entry.getValue())[0]);
+			}
+		}
+		return param;
 	}
 
 	/**

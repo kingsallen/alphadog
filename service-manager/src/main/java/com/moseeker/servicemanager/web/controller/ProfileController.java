@@ -52,7 +52,7 @@ public class ProfileController {
 				}
 			}
 			Profile profile = new Profile();
-			List<Profile> profiles = profileService.getProfiles(query, profile);
+			List<Profile> profiles = profileService.getResources(query, profile);
 			jsonStringResponse = JSON.toJSONString(profiles);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -68,7 +68,7 @@ public class ProfileController {
 		String jsonStringResponse = null;
 		try {
 			Profile profile = ParamUtils.initModelForm(request, Profile.class);
-			int result = profileService.postProfile(profile);
+			int result = profileService.postResource(profile);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -93,7 +93,7 @@ public class ProfileController {
 			if(!StringUtils.isNullOrEmpty(request.getParameter("completeness"))) {
 				profile.setCompleteness(10);
 			}
-			int result = profileService.putProfile(profile);
+			int result = profileService.putResource(profile);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -117,7 +117,7 @@ public class ProfileController {
 			if(!StringUtils.isNullOrEmpty(request.getParameter("completeness"))) {
 				profile.setCompleteness(10);
 			}
-			int result = profileService.delProfile(profile);
+			int result = profileService.delResource(profile);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);

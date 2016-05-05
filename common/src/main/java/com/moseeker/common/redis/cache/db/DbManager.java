@@ -8,7 +8,7 @@ import org.jooq.Record;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.moseeker.common.dbconnection.DatabaseConnectionHelper;
+import com.moseeker.common.dbutils.DatabaseConnectionHelper;
 import com.moseeker.common.redis.RedisConfigRedisKey;
 import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.Notification;

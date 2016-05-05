@@ -1,4 +1,4 @@
-package com.moseeker.common.dbconnection;
+package com.moseeker.common.dbutils;
 
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.Notification;

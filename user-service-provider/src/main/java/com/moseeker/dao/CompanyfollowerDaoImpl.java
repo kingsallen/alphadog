@@ -14,7 +14,7 @@ import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.SelectJoinStep;
 
-import com.moseeker.common.dbconnection.DatabaseConnectionHelper;
+import com.moseeker.common.dbutils.DatabaseConnectionHelper;
 import com.moseeker.thrift.gen.companyfollowers.Companyfollower;
 import com.moseeker.thrift.gen.companyfollowers.CompanyfollowerQuery;
 

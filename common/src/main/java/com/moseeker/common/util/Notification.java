@@ -17,7 +17,7 @@ import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
 
-import com.moseeker.common.dbconnection.DatabaseConnectionHelper;
+import com.moseeker.common.dbutils.DatabaseConnectionHelper;
 import com.moseeker.common.email.Email;
 
 public class Notification {
