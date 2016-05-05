@@ -6,7 +6,7 @@ import java.text.ParseException;
 import org.jooq.types.UInteger;
 import org.springframework.stereotype.Repository;
 
-import com.moseeker.common.daoutils.BaseDaoImpl;
+import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.profiledb.tables.ProfileProfile;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;

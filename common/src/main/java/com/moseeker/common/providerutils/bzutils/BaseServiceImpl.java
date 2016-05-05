@@ -1,11 +1,11 @@
-package com.moseeker.common.bzutils;
+package com.moseeker.common.providerutils.bzutils;
 
 import java.util.List;
 
 import org.apache.thrift.TBase;
 import org.apache.thrift.TException;
 
-import com.moseeker.common.daoutils.BaseDao;
+import com.moseeker.common.providerutils.daoutils.BaseDao;
 import com.moseeker.common.util.Pagination;
 import com.moseeker.thrift.gen.profile.struct.CommonQuery;
 

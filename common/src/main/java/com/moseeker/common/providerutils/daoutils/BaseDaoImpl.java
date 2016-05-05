@@ -1,4 +1,4 @@
-package com.moseeker.common.daoutils;
+package com.moseeker.common.providerutils.daoutils;
 
 import java.sql.SQLException;
 import java.text.ParseException;
