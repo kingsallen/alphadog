@@ -1,12 +1,13 @@
 package com.moseeker.profile.dao.impl;
 
-import java.sql.Timestamp;
 import java.text.ParseException;
+import java.util.Date;
 
 import org.jooq.types.UInteger;
 import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
+import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.profiledb.tables.ProfileProfile;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
@@ -32,6 +33,12 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 			profile.setSource(r.getSource());
 			profile.setCompleteness(r.getCompleteness());
 			profile.setUser_id(r.getUserId());
+			if(r.getCreateTime() != null) {
+				profile.setCreate_time(DateUtils.dateToNormalDate(new Date(r.getCreateTime().getTime())));
+			}
+			if(r.getUpdateTime() != null) {
+				profile.setUpdate_time(DateUtils.dateToNormalDate(new Date(r.getUpdateTime().getTime())));
+			}
 		}
 		return profile;
 	}
@@ -56,8 +63,6 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 			record.setCompleteness((byte)profile.getCompleteness());
 		}
 		record.setUserId(profile.getUser_id());
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		record.setCreateTime(timestamp);
 		return record;
 	}
 }

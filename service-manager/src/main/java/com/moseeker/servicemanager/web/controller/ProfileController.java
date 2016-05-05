@@ -1,8 +1,6 @@
 package com.moseeker.servicemanager.web.controller;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -70,16 +68,7 @@ public class ProfileController {
 	public String put(HttpServletRequest request, HttpServletResponse response) {
 		String jsonStringResponse = null;
 		try {
-			Profile profile = new Profile();
-			if(!StringUtils.isNullOrEmpty(request.getParameter("id"))) {
-				profile.setId(Integer.parseInt(request.getParameter("id")));
-			}
-			if(!StringUtils.isNullOrEmpty(request.getParameter("user_id"))) {
-				profile.setUser_id(Integer.parseInt(request.getParameter("user_id")));
-			}
-			if(!StringUtils.isNullOrEmpty(request.getParameter("completeness"))) {
-				profile.setCompleteness(10);
-			}
+			Profile profile = ParamUtils.initModelForm(request, Profile.class);
 			int result = profileService.putResource(profile);
 			jsonStringResponse = JSON.toJSONString(result);
 			
@@ -94,16 +83,7 @@ public class ProfileController {
 	public String delete(HttpServletRequest request, HttpServletResponse response) {
 		String jsonStringResponse = null;
 		try {
-			Profile profile = new Profile();
-			if(!StringUtils.isNullOrEmpty(request.getParameter("id"))) {
-				profile.setId(Integer.parseInt(request.getParameter("id")));
-			}
-			if(!StringUtils.isNullOrEmpty(request.getParameter("user_id"))) {
-				profile.setUser_id(Integer.parseInt(request.getParameter("user_id")));
-			}
-			if(!StringUtils.isNullOrEmpty(request.getParameter("completeness"))) {
-				profile.setCompleteness(10);
-			}
+			Profile profile = ParamUtils.initModelForm(request, Profile.class);
 			int result = profileService.delResource(profile);
 			jsonStringResponse = JSON.toJSONString(result);
 			
