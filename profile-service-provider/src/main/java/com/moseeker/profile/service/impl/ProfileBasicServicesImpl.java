@@ -36,9 +36,9 @@ public class ProfileBasicServicesImpl extends BaseServiceImpl<Basic> implements 
 	}
 
 	@Override
-	public BasicPagination getPagination(CommonQuery query, Basic basic)
+	public BasicPagination getPagination(CommonQuery query)
 			throws TException {
-		Pagination<Basic> pagination = getBasePagination(query, basic);
+		Pagination<Basic> pagination = getBasePagination(query);
 		BasicPagination bp = new BasicPagination();
 		BeanUtils.copyProperties(pagination, bp);
 		return bp;

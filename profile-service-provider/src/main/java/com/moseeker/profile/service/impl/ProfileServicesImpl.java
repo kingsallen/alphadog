@@ -25,9 +25,9 @@ public class ProfileServicesImpl extends BaseServiceImpl<Profile> implements Ifa
 	}
 
 	@Override
-	public ProfilePagination getPagination(CommonQuery query, Profile profile)
+	public ProfilePagination getPagination(CommonQuery query)
 			throws TException {
-		Pagination<Profile> pagination = this.getBasePagination(query, profile);
+		Pagination<Profile> pagination = this.getBasePagination(query);
 		ProfilePagination bp = new ProfilePagination();
 		BeanUtils.copyProperties(pagination, bp);
 		return bp;

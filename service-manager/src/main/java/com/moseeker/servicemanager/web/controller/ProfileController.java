@@ -39,8 +39,7 @@ public class ProfileController {
 			// GET方法 通用参数解析并赋值
 			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
 
-			Profile profile = new Profile();
-			List<Profile> profiles = profileService.getResources(query, profile);
+			List<Profile> profiles = profileService.getResources(query);
 			jsonStringResponse = JSON.toJSONString(profiles);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);

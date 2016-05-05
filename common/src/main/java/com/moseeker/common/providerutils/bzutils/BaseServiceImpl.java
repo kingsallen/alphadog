@@ -28,7 +28,7 @@ public abstract class BaseServiceImpl<S extends TBase> {
 
 	protected abstract void initDao();
 
-	public List<S> getResources(CommonQuery query, S structK) throws TException {
+	public List<S> getResources(CommonQuery query) throws TException {
 		if(dao == null) {
 			initDao();
 		}
@@ -53,7 +53,7 @@ public abstract class BaseServiceImpl<S extends TBase> {
 		return dao.delResources(structs);
 	}
 	
-	public S getResource(CommonQuery query, S structK) throws TException {
+	public S getResource(CommonQuery query) throws TException {
 		if(dao == null) {
 			initDao();
 		}
@@ -81,17 +81,17 @@ public abstract class BaseServiceImpl<S extends TBase> {
 		return dao.delResource(struct);
 	}
 	
-	protected int getTotalRow(CommonQuery query, S struct) throws TException {
+	protected int getTotalRow(CommonQuery query) throws TException {
 		if(dao == null) {
 			initDao();
 		}
 		return dao.getResourceCount(query);
 	}
 	
-	protected Pagination<S> getBasePagination(CommonQuery query, S struct)
+	protected Pagination<S> getBasePagination(CommonQuery query)
 			throws TException {
 		Pagination<S> pagination = new Pagination<>();
-		int totalRow = getTotalRow(query, struct);
+		int totalRow = getTotalRow(query);
 		int pageNo = 1;
 		int pageSize = 10;
 		if(query.getPage() > 1) {
@@ -104,7 +104,7 @@ public abstract class BaseServiceImpl<S extends TBase> {
 		if (totalRow % pageSize != 0) {
 			totalPage++;
 		}
-		List<S> result = getResources(query, struct);
+		List<S> result = getResources(query);
 		pagination.setPageNo(pageNo);
 		pagination.setPageSize(pageSize);
 		pagination.setTotalPage(totalPage);
