@@ -17,6 +17,7 @@ import org.jooq.SelectJoinStep;
 import org.jooq.SelectQuery;
 import org.jooq.SortField;
 import org.jooq.SortOrder;
+import org.jooq.TableField;
 import org.jooq.TableLike;
 import org.jooq.exception.DataAccessException;
 import org.jooq.impl.TableImpl;
@@ -27,26 +28,20 @@ import org.slf4j.LoggerFactory;
 import com.moseeker.common.dbutils.DatabaseConnectionHelper;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.db.profiledb.tables.ProfileProfile;
 import com.moseeker.thrift.gen.profile.struct.CommonQuery;
 
 /**
  * 
- * 基础表的增伤改查操作
- * <p>
- * Company: MoSeeker
- * </P>
- * <p>
- * date: Apr 27, 2016
- * </p>
- * <p>
- * Email: wjf2255@gmail.com
- * </p>
- * 
+ * 实现通用数据操作接口的抽象类 
+ * <p>Company: MoSeeker</P>  
+ * <p>date: May 5, 2016</p>  
+ * <p>Email: wjf2255@gmail.com</p>
  * @author wjf
- * @version
- * @param <R> 
- * @param <T>
- * @param <S>
+ * @version Beta
+ * @param <R> 表示JOOQ表记录的ORM类
+ * @param <T> 表示JOOQ表的ORM类
+ * @param <S> 基于Thrift通信的数据结构
  */
 @SuppressWarnings("rawtypes")
 public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends TableImpl<R>, S extends TBase>
@@ -54,14 +49,16 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
+	/**
+	 * 需要制定JOOQ
+	 */
 	protected TableLike<R> tableLike;
 
 	protected abstract void initJOOQEntity();
 
-	@SuppressWarnings({"unchecked" })
 	public List<S> getResources(CommonQuery query) throws TException {
+		initJOOQEntity();
 		List<S> structs = new ArrayList<>();
-		;
 		try {
 			DSLContext create = DatabaseConnectionHelper.getConnection()
 					.getJooqDSL();
@@ -72,7 +69,9 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 					&& query.getEqualFilter().size() > 0) {
 				Map<String, String> equalFilter = query.getEqualFilter();
 				for (Entry<String, String> entry : equalFilter.entrySet()) {
-					Field field = table.field(entry.getKey());
+					//TableFieldImpl<R, T> fieldImpl = table.field(entry.getKey());
+					//ProfileProfile.PROFILE_PROFILE.ID.equal(value);
+					Field<?> field = tableLike.field(entry.getKey());
 					if (field != null) {
 						table.where(field.equal(BeanUtils.convertTo(
 								entry.getValue(), field.getType())));
@@ -95,13 +94,13 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 					}
 					if (field != null) {
 						switch (so) {
-						case ASC:
-							fields.add(field.asc());
-							break;
-						case DESC:
-							fields.add(field.desc());
-							break;
-						default:
+							case ASC:
+								fields.add(field.asc());
+								break;
+							case DESC:
+								fields.add(field.desc());
+								break;
+							default:
 						}
 					}
 				}
@@ -141,6 +140,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 	
 	@SuppressWarnings({"unchecked" })
 	public int getResourceCount(CommonQuery query) throws TException {
+		initJOOQEntity();
 		int totalCount = 0;
 		try {
 			DSLContext create = DatabaseConnectionHelper.getConnection()
@@ -170,6 +170,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 	}
 
 	public int postResources(List<S> structs) throws TException {
+		initJOOQEntity();
 		int insertret = 0;
 		try {
 			List<R> records = structsToDBs(structs);
@@ -189,6 +190,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 	}
 
 	public int putResources(List<S> structs) throws TException {
+		initJOOQEntity();
 		int insertret = 0;
 		if (structs != null && structs.size() > 0) {
 			List<R> records = structsToDBs(structs);
@@ -208,6 +210,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 	}
 
 	public int delResources(List<S> structs) throws TException {
+		initJOOQEntity();
 		int insertret = 0;
 		if (structs != null && structs.size() > 0) {
 			try {
@@ -228,6 +231,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 	
 	@SuppressWarnings({"unchecked" })
 	public S getResource(CommonQuery query) throws TException {
+		initJOOQEntity();
 		S struct = null;
 		try {
 			DSLContext create = DatabaseConnectionHelper.getConnection()
@@ -293,6 +297,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 	}
 
 	public int postResource(S struct) throws TException {
+		initJOOQEntity();
 		int insertret = 0;
 		if (struct != null) {
 			try {
@@ -312,6 +317,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 	}
 
 	public int putResource(S struct) throws TException {
+		initJOOQEntity();
 		int insertret = 0;
 		if (struct != null) {
 			List<S> structs = new ArrayList<>();
@@ -322,6 +328,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 	}
 
 	public int delResource(S struct) throws TException {
+		initJOOQEntity();
 		int insertret = 0;
 		if (struct != null) {
 			try {

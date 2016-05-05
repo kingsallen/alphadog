@@ -1,6 +1,8 @@
 package com.moseeker.servicemanager.web.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,19 +40,9 @@ public class ProfileController {
 			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
 
 			// 特有参数解析并赋值
-			if (request.getParameter("userid") != null) {
-				int userid = Integer.parseInt(request.getParameter("userid"));
-				if (userid > 0) {
-					query.setUserid(userid);
-				}
-			}
-			if (request.getParameter("companyid") != null) {
-				int companyid = Integer.parseInt(request
-						.getParameter("companyid"));
-				if (companyid > 0) {
-					query.setCompanyid(companyid);
-				}
-			}
+			Map<String, String> equalFilter = new HashMap<>();
+			equalFilter.put("uuid", "18511295953");
+			query.setEqualFilter(equalFilter);
 			Profile profile = new Profile();
 			List<Profile> profiles = profileService.getResources(query, profile);
 			jsonStringResponse = JSON.toJSONString(profiles);
