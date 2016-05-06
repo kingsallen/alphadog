@@ -31,7 +31,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileIntentionRecord extends UpdatableRecordImpl<ProfileIntentionRecord> implements Record16<UInteger, UInteger, String, String, String, Byte, Byte, Byte, Byte, Byte, Byte, Byte, Byte, Byte, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = 156625362;
+	private static final long serialVersionUID = 966748626;
 
 	/**
 	 * Setter for <code>profileDB.profile_intention.id</code>. 主key

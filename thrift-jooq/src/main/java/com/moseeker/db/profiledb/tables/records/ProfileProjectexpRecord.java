@@ -32,7 +32,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileProjectexpRecord extends UpdatableRecordImpl<ProfileProjectexpRecord> implements Record12<UInteger, UInteger, Date, Date, Byte, String, String, String, String, String, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = 1681513611;
+	private static final long serialVersionUID = -352297845;
 
 	/**
 	 * Setter for <code>profileDB.profile_projectexp.id</code>. 主key

@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileLanguage extends TableImpl<ProfileLanguageRecord> {
 
-	private static final long serialVersionUID = 1295544103;
+	private static final long serialVersionUID = -1286412505;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_language</code>

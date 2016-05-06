@@ -31,7 +31,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileLanguageRecord extends UpdatableRecordImpl<ProfileLanguageRecord> implements Record6<UInteger, UInteger, Byte, String, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = 305478738;
+	private static final long serialVersionUID = -1392788398;
 
 	/**
 	 * Setter for <code>profileDB.profile_language.id</code>. 主key

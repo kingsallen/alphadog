@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileProfile extends TableImpl<ProfileProfileRecord> {
 
-	private static final long serialVersionUID = -2034954516;
+	private static final long serialVersionUID = 1167814587;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_profile</code>
@@ -80,6 +80,11 @@ public class ProfileProfile extends TableImpl<ProfileProfileRecord> {
 	 * The column <code>profileDB.profile_profile.user_id</code>. 用户ID
 	 */
 	public final TableField<ProfileProfileRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "用户ID");
+
+	/**
+	 * The column <code>profileDB.profile_profile.disable</code>. 0有效  1 无效
+	 */
+	public final TableField<ProfileProfileRecord, Byte> DISABLE = createField("disable", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "0有效  1 无效");
 
 	/**
 	 * The column <code>profileDB.profile_profile.create_time</code>. 创建时间

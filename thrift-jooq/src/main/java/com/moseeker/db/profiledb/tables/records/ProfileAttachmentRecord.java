@@ -31,7 +31,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileAttachmentRecord extends UpdatableRecordImpl<ProfileAttachmentRecord> implements Record7<UInteger, UInteger, String, String, String, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = -232607356;
+	private static final long serialVersionUID = -1169608316;
 
 	/**
 	 * Setter for <code>profileDB.profile_attachment.id</code>. 主key

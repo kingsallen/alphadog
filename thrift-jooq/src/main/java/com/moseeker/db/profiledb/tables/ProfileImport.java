@@ -35,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileImport extends TableImpl<ProfileImportRecord> {
 
-	private static final long serialVersionUID = -1445494273;
+	private static final long serialVersionUID = 351533567;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_import</code>

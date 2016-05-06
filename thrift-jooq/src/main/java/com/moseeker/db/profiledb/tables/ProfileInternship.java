@@ -37,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileInternship extends TableImpl<ProfileInternshipRecord> {
 
-	private static final long serialVersionUID = -175262975;
+	private static final long serialVersionUID = -1151059199;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_internship</code>
