@@ -2,9 +2,7 @@ package com.moseeker.common.providerutils.daoutils;
 
 import java.util.List;
 
-import org.apache.thrift.TBase;
 import org.apache.thrift.TException;
-
 
 //todo 基础接口里不应该出现jooq相关的类
 import com.moseeker.thrift.gen.profile.struct.CommonQuery;
@@ -19,8 +17,7 @@ import com.moseeker.thrift.gen.profile.struct.CommonQuery;
  * @version Beta
  * @param <S> 基于thrift通信的数据结构
  */
-@SuppressWarnings("rawtypes")
-public interface BaseDao<S extends TBase> {
+public interface BaseDao<S> {
 	
 	S getResource(CommonQuery query) throws TException;
 

@@ -1,13 +1,11 @@
 package com.moseeker.common.providerutils.daoutils;
 
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.thrift.TBase;
 import org.apache.thrift.TException;
 import org.jooq.DSLContext;
 import org.jooq.Field;
@@ -42,8 +40,8 @@ import com.moseeker.thrift.gen.profile.struct.CommonQuery;
  * @param <S> 基于Thrift通信的数据结构
  */
 @SuppressWarnings("rawtypes")
-public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends TableImpl<R>, S extends TBase>
-		implements BaseDao<S> {
+public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extends TableImpl<R>>
+		implements BaseDao<R> {
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -54,9 +52,10 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 
 	protected abstract void initJOOQEntity();
 
-	public List<S> getResources(CommonQuery query) throws TException {
+	@SuppressWarnings("unchecked")
+	public List<R> getResources(CommonQuery query) throws TException {
 		initJOOQEntity();
-		List<S> structs = new ArrayList<>();
+		List<R> records = new ArrayList<>();
 		try {
 			DSLContext create = DatabaseConnectionHelper.getConnection()
 					.getJooqDSL();
@@ -121,9 +120,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 
 			if (result != null && result.size() > 0) {
 				for (Record r : result) {
-					@SuppressWarnings("unchecked")
-					S k = DBToStruct((R) r);
-					structs.add(k);
+					records.add((R)r);
 				}
 			}
 		} catch (DataAccessException | SQLException e) {
@@ -132,7 +129,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 		} finally {
 			//do nothing
 		}
-		return structs;
+		return records;
 	}
 	
 	@SuppressWarnings({"unchecked" })
@@ -166,11 +163,10 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 		return totalCount;
 	}
 
-	public int postResources(List<S> structs) throws TException {
+	public int postResources(List<R> records) throws TException {
 		initJOOQEntity();
 		int insertret = 0;
 		try {
-			List<R> records = structsToDBs(structs);
 			if (records != null && records.size() > 0) {
 				DSLContext create = DatabaseConnectionHelper.getConnection()
 						.getJooqDSL();
@@ -186,11 +182,10 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 		return insertret;
 	}
 
-	public int putResources(List<S> structs) throws TException {
+	public int putResources(List<R> records) throws TException {
 		initJOOQEntity();
 		int insertret = 0;
-		if (structs != null && structs.size() > 0) {
-			List<R> records = structsToDBs(structs);
+		if (records != null && records.size() > 0) {
 			try {
 				DSLContext create = DatabaseConnectionHelper.getConnection()
 						.getJooqDSL();
@@ -206,12 +201,11 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 		return insertret;
 	}
 
-	public int delResources(List<S> structs) throws TException {
+	public int delResources(List<R> records) throws TException {
 		initJOOQEntity();
 		int insertret = 0;
-		if (structs != null && structs.size() > 0) {
+		if (records != null && records.size() > 0) {
 			try {
-				List<R> records = structsToDBs(structs);
 				DSLContext create = DatabaseConnectionHelper.getConnection()
 						.getJooqDSL();
 				insertret = create.batchDelete(records).execute()[0];
@@ -227,9 +221,9 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 	}
 	
 	@SuppressWarnings({"unchecked" })
-	public S getResource(CommonQuery query) throws TException {
+	public R getResource(CommonQuery query) throws TException {
 		initJOOQEntity();
-		S struct = null;
+		R record = null;
 		try {
 			DSLContext create = DatabaseConnectionHelper.getConnection()
 					.getJooqDSL();
@@ -282,7 +276,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 			Result<Record> result = table.fetch();
 
 			if (result != null && result.size() > 0) {
-				struct = DBToStruct((R) result.get(0));
+				record = (R) result.get(0);
 			}
 		} catch (DataAccessException | SQLException e) {
 			logger.error("error", e);
@@ -290,19 +284,18 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 		} finally {
 			//do nothing
 		}
-		return struct;
+		return record;
 	}
 
-	public int postResource(S struct) throws TException {
+	public int postResource(R record) throws TException {
 		initJOOQEntity();
 		int insertret = 0;
-		if (struct != null) {
+		if (record != null) {
 			try {
-				R record = structToDB(struct);
 				DSLContext create = DatabaseConnectionHelper.getConnection()
 						.getJooqDSL();
 				insertret = create.batchInsert(record).execute()[0];
-			} catch (DataAccessException | ParseException | SQLException e) {
+			} catch (DataAccessException | SQLException e) {
 				logger.error("error", e);
 				throw new TException();
 			} finally {
@@ -313,27 +306,26 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 		return insertret;
 	}
 
-	public int putResource(S struct) throws TException {
+	public int putResource(R record) throws TException {
 		initJOOQEntity();
 		int insertret = 0;
-		if (struct != null) {
-			List<S> structs = new ArrayList<>();
-			structs.add(struct);
-			insertret = putResources(structs);
+		if (record != null) {
+			List<R> records = new ArrayList<>();
+			records.add(record);
+			insertret = putResources(records);
 		}
 		return insertret;
 	}
 
-	public int delResource(S struct) throws TException {
+	public int delResource(R record) throws TException {
 		initJOOQEntity();
 		int insertret = 0;
-		if (struct != null) {
+		if (record != null) {
 			try {
-				R record = structToDB(struct);
 				DSLContext create = DatabaseConnectionHelper.getConnection()
 						.getJooqDSL();
 				insertret = create.batchDelete(record).execute()[0];
-			} catch (DataAccessException | ParseException | SQLException e) {
+			} catch (DataAccessException | SQLException e) {
 				logger.error("error", e);
 				throw new TException();
 			} finally {
@@ -342,69 +334,5 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 		}
 
 		return insertret;
-	}
-
-	/**
-	 * 类型转换。提供将对象转成指定的类型的功能
-	 *
-	 * @param value
-	 *            被转换的对象
-	 * @param clazzType
-	 *            指定一个转成的类型
-	 * @return 返回转换的结果
-	 */
-	/*
-	 * @SuppressWarnings("unchecked") protected <L> L convertTo(Object value,
-	 * Class<L> clazzType) { if (clazzType.isAssignableFrom(String.class)) {
-	 * return (L) value.toString(); } else if
-	 * (clazzType.isAssignableFrom(Long.class)) { return (L) new
-	 * Long(value.toString()); } else if
-	 * (clazzType.isAssignableFrom(Byte.class)) { return (L) new
-	 * Byte(value.toString()); } else if
-	 * (clazzType.isAssignableFrom(Integer.class)) { return (L) new
-	 * Integer(value.toString()); } else if
-	 * (clazzType.isAssignableFrom(Float.class)) { return (L) new
-	 * Float(value.toString()); } else if
-	 * (clazzType.isAssignableFrom(Float.class)) { return (L) new
-	 * Double(value.toString()); } else if
-	 * (clazzType.isAssignableFrom(Boolean.class)) { return (L) new
-	 * Boolean(value.toString()); } else { return (L) value.toString(); } }
-	 */
-
-	protected abstract S DBToStruct(R r);
-
-	protected abstract R structToDB(S structK) throws ParseException;
-
-	protected List<R> structsToDBs(List<S> structKs) throws TException {
-		List<R> records = new ArrayList<>();
-		if (structKs != null && structKs.size() > 0) {
-			for (S structK : structKs) {
-				try {
-					records.add(structToDB(structK));
-				} catch (ParseException e) {
-					throw new TException(e.getMessage());
-				}
-			}
-		}
-		return records;
-	}
-
-	protected List<S> DBToStructs(List<R> records) {
-		List<S> structs = new ArrayList<>();
-		if (records != null && records.size() > 0) {
-			for (R record : records) {
-				structs.add(DBToStruct(record));
-			}
-		}
-		return structs;
-	}
-	
-	protected void structToDB(S strcuct, R r) {
-		
-	}
-	
-	
-	protected void DBToStruct(R r, S struct) {
-		
 	}
 }
