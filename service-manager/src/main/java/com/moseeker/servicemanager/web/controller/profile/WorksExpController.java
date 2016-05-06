@@ -1,4 +1,4 @@
-package com.moseeker.servicemanager.web.controller;
+package com.moseeker.servicemanager.web.controller.profile;
 
 import java.util.List;
 
@@ -13,22 +13,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.common.util.StringUtils;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.util.ServiceUtil;
-import com.moseeker.thrift.gen.profile.service.ProfileServices;
+import com.moseeker.thrift.gen.profile.service.WorksServices;
 import com.moseeker.thrift.gen.profile.struct.CommonQuery;
-import com.moseeker.thrift.gen.profile.struct.Profile;
+import com.moseeker.thrift.gen.profile.struct.Works;
 
 @Controller
-public class ProfileController {
+public class WorksExpController {
 
-	Logger logger = LoggerFactory.getLogger(ProfileController.class);
+	Logger logger = LoggerFactory.getLogger(WorksExpController.class);
 
-	ProfileServices.Iface profileService = ServiceUtil.getService(ProfileServices.Iface.class);
+	WorksServices.Iface worksService = ServiceUtil.getService(WorksServices.Iface.class);
 	
-	@RequestMapping(value = "/profile/profile", method = RequestMethod.GET)
+	@RequestMapping(value = "/profile/works", method = RequestMethod.GET)
 	@ResponseBody
 	public String get(HttpServletRequest request, HttpServletResponse response) {
 		//PrintWriter writer = null;
@@ -37,8 +36,8 @@ public class ProfileController {
 			// GET方法 通用参数解析并赋值
 			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
 
-			List<Profile> profiles = profileService.getResources(query);
-			jsonStringResponse = JSON.toJSONString(profiles);
+			List<Works> works = worksService.getResources(query);
+			jsonStringResponse = JSON.toJSONString(works);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
 		} catch (Exception e) {	
@@ -46,14 +45,14 @@ public class ProfileController {
 		}
 	}
 
-	@RequestMapping(value = "/profile/profile", method = RequestMethod.POST)
+	@RequestMapping(value = "/profile/works", method = RequestMethod.POST)
 	@ResponseBody
 	public String post(HttpServletRequest request, HttpServletResponse response) {
 		//PrintWriter writer = null;
 		String jsonStringResponse = null;
 		try {
-			Profile profile = ParamUtils.initModelForm(request, Profile.class);
-			int result = profileService.postResource(profile);
+			Works works = ParamUtils.initModelForm(request, Works.class);
+			int result = worksService.postResource(works);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -63,13 +62,13 @@ public class ProfileController {
 		}
 	}
 
-	@RequestMapping(value = "/profile/profile", method = RequestMethod.PUT)
+	@RequestMapping(value = "/profile/works", method = RequestMethod.PUT)
 	@ResponseBody
 	public String put(HttpServletRequest request, HttpServletResponse response) {
 		String jsonStringResponse = null;
 		try {
-			Profile profile = ParamUtils.initModelForm(request, Profile.class);
-			int result = profileService.putResource(profile);
+			Works works = ParamUtils.initModelForm(request, Works.class);
+			int result = worksService.putResource(works);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -78,13 +77,13 @@ public class ProfileController {
 		}
 	}
 
-	@RequestMapping(value = "/profile/profile", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/profile/works", method = RequestMethod.DELETE)
 	@ResponseBody
 	public String delete(HttpServletRequest request, HttpServletResponse response) {
 		String jsonStringResponse = null;
 		try {
-			Profile profile = ParamUtils.initModelForm(request, Profile.class);
-			int result = profileService.delResource(profile);
+			Works works = ParamUtils.initModelForm(request, Works.class);
+			int result = worksService.delResource(works);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);

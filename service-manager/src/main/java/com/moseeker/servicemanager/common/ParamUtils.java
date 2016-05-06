@@ -150,6 +150,18 @@ public class ParamUtils {
 		}
 		return t;
 	}
+	
+	/**
+	 * 将request请求中的参数，不管是request的body中的参数还是以getParameter方式获取的参数存入到HashMap并染回该HashMap
+	 * @param request request请求
+	 * @return 存储通过request请求传递过来的参数
+	 */
+	public static Map<String, Object> initCommonQuery(HttpServletRequest request) {
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.putAll(initParamFromRequestBody(request));
+		data.putAll(initParamFromRequestParameter(request));
+		return data;
+	}
 
 	/**
 	 * 通用参数解析工具。初始化参数数据结构，并将request parameter中的参数放入到对象中。
@@ -163,21 +175,7 @@ public class ParamUtils {
 	 */
 	public static <T> T initCommonQuery(HttpServletRequest request,
 			Class<T> clazz) throws Exception {
-		T t = null;
-		try {
-			t = clazz.newInstance();
-			initCommonQuery(request, t);
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			throw new Exception(e.getMessage());
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			throw new Exception(e.getMessage());
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			throw new Exception(e.getMessage());
-		}
-
+		T t = clazz.newInstance();
 		return t;
 	}
 
@@ -237,7 +235,7 @@ public class ParamUtils {
 			System.out.println(false);
 		}
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	private static Map<String, Object> initParamFromRequestParameter(
 			HttpServletRequest request) {

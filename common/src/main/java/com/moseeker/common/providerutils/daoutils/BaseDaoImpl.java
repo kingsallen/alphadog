@@ -399,4 +399,13 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 		}
 		return structs;
 	}
+	
+	protected void structToDB(S strcuct, R r) {
+		
+	}
+	
+	
+	protected void DBToStruct(R r, S struct) {
+		
+	}
 }

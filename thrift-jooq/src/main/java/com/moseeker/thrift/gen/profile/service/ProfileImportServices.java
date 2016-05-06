@@ -39,7 +39,7 @@ public class ProfileImportServices {
 
   public interface Iface {
 
-    public List<com.moseeker.thrift.gen.profile.struct.ProfileImport> getResource(com.moseeker.thrift.gen.profile.struct.CommonQuery query) throws org.apache.thrift.TException;
+    public List<com.moseeker.thrift.gen.profile.struct.ProfileImport> getResources(com.moseeker.thrift.gen.profile.struct.CommonQuery query) throws org.apache.thrift.TException;
 
     public com.moseeker.thrift.gen.profile.struct.ProfileImportPagination getPagination(com.moseeker.thrift.gen.profile.struct.CommonQuery query) throws org.apache.thrift.TException;
 
@@ -49,7 +49,7 @@ public class ProfileImportServices {
 
     public int delResources(List<com.moseeker.thrift.gen.profile.struct.ProfileImport> profileImports) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.profile.struct.ProfileImport getResourc(com.moseeker.thrift.gen.profile.struct.CommonQuery query) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.profile.struct.ProfileImport getResource(com.moseeker.thrift.gen.profile.struct.CommonQuery query) throws org.apache.thrift.TException;
 
     public int postResource(com.moseeker.thrift.gen.profile.struct.ProfileImport profileImport) throws org.apache.thrift.TException;
 
@@ -61,7 +61,7 @@ public class ProfileImportServices {
 
   public interface AsyncIface {
 
-    public void getResource(com.moseeker.thrift.gen.profile.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void getResources(com.moseeker.thrift.gen.profile.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
     public void getPagination(com.moseeker.thrift.gen.profile.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
@@ -71,7 +71,7 @@ public class ProfileImportServices {
 
     public void delResources(List<com.moseeker.thrift.gen.profile.struct.ProfileImport> profileImports, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void getResourc(com.moseeker.thrift.gen.profile.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void getResource(com.moseeker.thrift.gen.profile.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
     public void postResource(com.moseeker.thrift.gen.profile.struct.ProfileImport profileImport, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
@@ -101,27 +101,27 @@ public class ProfileImportServices {
       super(iprot, oprot);
     }
 
-    public List<com.moseeker.thrift.gen.profile.struct.ProfileImport> getResource(com.moseeker.thrift.gen.profile.struct.CommonQuery query) throws org.apache.thrift.TException
+    public List<com.moseeker.thrift.gen.profile.struct.ProfileImport> getResources(com.moseeker.thrift.gen.profile.struct.CommonQuery query) throws org.apache.thrift.TException
     {
-      send_getResource(query);
-      return recv_getResource();
+      send_getResources(query);
+      return recv_getResources();
     }
 
-    public void send_getResource(com.moseeker.thrift.gen.profile.struct.CommonQuery query) throws org.apache.thrift.TException
+    public void send_getResources(com.moseeker.thrift.gen.profile.struct.CommonQuery query) throws org.apache.thrift.TException
     {
-      getResource_args args = new getResource_args();
+      getResources_args args = new getResources_args();
       args.setQuery(query);
-      sendBase("getResource", args);
+      sendBase("getResources", args);
     }
 
-    public List<com.moseeker.thrift.gen.profile.struct.ProfileImport> recv_getResource() throws org.apache.thrift.TException
+    public List<com.moseeker.thrift.gen.profile.struct.ProfileImport> recv_getResources() throws org.apache.thrift.TException
     {
-      getResource_result result = new getResource_result();
-      receiveBase(result, "getResource");
+      getResources_result result = new getResources_result();
+      receiveBase(result, "getResources");
       if (result.isSetSuccess()) {
         return result.success;
       }
-      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getResource failed: unknown result");
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getResources failed: unknown result");
     }
 
     public com.moseeker.thrift.gen.profile.struct.ProfileImportPagination getPagination(com.moseeker.thrift.gen.profile.struct.CommonQuery query) throws org.apache.thrift.TException
@@ -216,27 +216,27 @@ public class ProfileImportServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "delResources failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.profile.struct.ProfileImport getResourc(com.moseeker.thrift.gen.profile.struct.CommonQuery query) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.profile.struct.ProfileImport getResource(com.moseeker.thrift.gen.profile.struct.CommonQuery query) throws org.apache.thrift.TException
     {
-      send_getResourc(query);
-      return recv_getResourc();
+      send_getResource(query);
+      return recv_getResource();
     }
 
-    public void send_getResourc(com.moseeker.thrift.gen.profile.struct.CommonQuery query) throws org.apache.thrift.TException
+    public void send_getResource(com.moseeker.thrift.gen.profile.struct.CommonQuery query) throws org.apache.thrift.TException
     {
-      getResourc_args args = new getResourc_args();
+      getResource_args args = new getResource_args();
       args.setQuery(query);
-      sendBase("getResourc", args);
+      sendBase("getResource", args);
     }
 
-    public com.moseeker.thrift.gen.profile.struct.ProfileImport recv_getResourc() throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.profile.struct.ProfileImport recv_getResource() throws org.apache.thrift.TException
     {
-      getResourc_result result = new getResourc_result();
-      receiveBase(result, "getResourc");
+      getResource_result result = new getResource_result();
+      receiveBase(result, "getResource");
       if (result.isSetSuccess()) {
         return result.success;
       }
-      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getResourc failed: unknown result");
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getResource failed: unknown result");
     }
 
     public int postResource(com.moseeker.thrift.gen.profile.struct.ProfileImport profileImport) throws org.apache.thrift.TException
@@ -326,23 +326,23 @@ public class ProfileImportServices {
       super(protocolFactory, clientManager, transport);
     }
 
-    public void getResource(com.moseeker.thrift.gen.profile.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void getResources(com.moseeker.thrift.gen.profile.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      getResource_call method_call = new getResource_call(query, resultHandler, this, ___protocolFactory, ___transport);
+      getResources_call method_call = new getResources_call(query, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
-    public static class getResource_call extends org.apache.thrift.async.TAsyncMethodCall {
+    public static class getResources_call extends org.apache.thrift.async.TAsyncMethodCall {
       private com.moseeker.thrift.gen.profile.struct.CommonQuery query;
-      public getResource_call(com.moseeker.thrift.gen.profile.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public getResources_call(com.moseeker.thrift.gen.profile.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.query = query;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getResource", org.apache.thrift.protocol.TMessageType.CALL, 0));
-        getResource_args args = new getResource_args();
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getResources", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        getResources_args args = new getResources_args();
         args.setQuery(query);
         args.write(prot);
         prot.writeMessageEnd();
@@ -354,7 +354,7 @@ public class ProfileImportServices {
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        return (new Client(prot)).recv_getResource();
+        return (new Client(prot)).recv_getResources();
       }
     }
 
@@ -486,23 +486,23 @@ public class ProfileImportServices {
       }
     }
 
-    public void getResourc(com.moseeker.thrift.gen.profile.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void getResource(com.moseeker.thrift.gen.profile.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      getResourc_call method_call = new getResourc_call(query, resultHandler, this, ___protocolFactory, ___transport);
+      getResource_call method_call = new getResource_call(query, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
-    public static class getResourc_call extends org.apache.thrift.async.TAsyncMethodCall {
+    public static class getResource_call extends org.apache.thrift.async.TAsyncMethodCall {
       private com.moseeker.thrift.gen.profile.struct.CommonQuery query;
-      public getResourc_call(com.moseeker.thrift.gen.profile.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public getResource_call(com.moseeker.thrift.gen.profile.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.query = query;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getResourc", org.apache.thrift.protocol.TMessageType.CALL, 0));
-        getResourc_args args = new getResourc_args();
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getResource", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        getResource_args args = new getResource_args();
         args.setQuery(query);
         args.write(prot);
         prot.writeMessageEnd();
@@ -514,7 +514,7 @@ public class ProfileImportServices {
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        return (new Client(prot)).recv_getResourc();
+        return (new Client(prot)).recv_getResource();
       }
     }
 
@@ -627,34 +627,34 @@ public class ProfileImportServices {
     }
 
     private static <I extends Iface> Map<String,  org.apache.thrift.ProcessFunction<I, ? extends  org.apache.thrift.TBase>> getProcessMap(Map<String,  org.apache.thrift.ProcessFunction<I, ? extends  org.apache.thrift.TBase>> processMap) {
-      processMap.put("getResource", new getResource());
+      processMap.put("getResources", new getResources());
       processMap.put("getPagination", new getPagination());
       processMap.put("postResources", new postResources());
       processMap.put("putResources", new putResources());
       processMap.put("delResources", new delResources());
-      processMap.put("getResourc", new getResourc());
+      processMap.put("getResource", new getResource());
       processMap.put("postResource", new postResource());
       processMap.put("putResource", new putResource());
       processMap.put("delResource", new delResource());
       return processMap;
     }
 
-    public static class getResource<I extends Iface> extends org.apache.thrift.ProcessFunction<I, getResource_args> {
-      public getResource() {
-        super("getResource");
+    public static class getResources<I extends Iface> extends org.apache.thrift.ProcessFunction<I, getResources_args> {
+      public getResources() {
+        super("getResources");
       }
 
-      public getResource_args getEmptyArgsInstance() {
-        return new getResource_args();
+      public getResources_args getEmptyArgsInstance() {
+        return new getResources_args();
       }
 
       protected boolean isOneway() {
         return false;
       }
 
-      public getResource_result getResult(I iface, getResource_args args) throws org.apache.thrift.TException {
-        getResource_result result = new getResource_result();
-        result.success = iface.getResource(args.query);
+      public getResources_result getResult(I iface, getResources_args args) throws org.apache.thrift.TException {
+        getResources_result result = new getResources_result();
+        result.success = iface.getResources(args.query);
         return result;
       }
     }
@@ -742,22 +742,22 @@ public class ProfileImportServices {
       }
     }
 
-    public static class getResourc<I extends Iface> extends org.apache.thrift.ProcessFunction<I, getResourc_args> {
-      public getResourc() {
-        super("getResourc");
+    public static class getResource<I extends Iface> extends org.apache.thrift.ProcessFunction<I, getResource_args> {
+      public getResource() {
+        super("getResource");
       }
 
-      public getResourc_args getEmptyArgsInstance() {
-        return new getResourc_args();
+      public getResource_args getEmptyArgsInstance() {
+        return new getResource_args();
       }
 
       protected boolean isOneway() {
         return false;
       }
 
-      public getResourc_result getResult(I iface, getResourc_args args) throws org.apache.thrift.TException {
-        getResourc_result result = new getResourc_result();
-        result.success = iface.getResourc(args.query);
+      public getResource_result getResult(I iface, getResource_args args) throws org.apache.thrift.TException {
+        getResource_result result = new getResource_result();
+        result.success = iface.getResource(args.query);
         return result;
       }
     }
@@ -838,32 +838,32 @@ public class ProfileImportServices {
     }
 
     private static <I extends AsyncIface> Map<String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase,?>> getProcessMap(Map<String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase, ?>> processMap) {
-      processMap.put("getResource", new getResource());
+      processMap.put("getResources", new getResources());
       processMap.put("getPagination", new getPagination());
       processMap.put("postResources", new postResources());
       processMap.put("putResources", new putResources());
       processMap.put("delResources", new delResources());
-      processMap.put("getResourc", new getResourc());
+      processMap.put("getResource", new getResource());
       processMap.put("postResource", new postResource());
       processMap.put("putResource", new putResource());
       processMap.put("delResource", new delResource());
       return processMap;
     }
 
-    public static class getResource<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getResource_args, List<com.moseeker.thrift.gen.profile.struct.ProfileImport>> {
-      public getResource() {
-        super("getResource");
+    public static class getResources<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getResources_args, List<com.moseeker.thrift.gen.profile.struct.ProfileImport>> {
+      public getResources() {
+        super("getResources");
       }
 
-      public getResource_args getEmptyArgsInstance() {
-        return new getResource_args();
+      public getResources_args getEmptyArgsInstance() {
+        return new getResources_args();
       }
 
       public AsyncMethodCallback<List<com.moseeker.thrift.gen.profile.struct.ProfileImport>> getResultHandler(final AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
         return new AsyncMethodCallback<List<com.moseeker.thrift.gen.profile.struct.ProfileImport>>() { 
           public void onComplete(List<com.moseeker.thrift.gen.profile.struct.ProfileImport> o) {
-            getResource_result result = new getResource_result();
+            getResources_result result = new getResources_result();
             result.success = o;
             try {
               fcall.sendResponse(fb,result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
@@ -876,7 +876,7 @@ public class ProfileImportServices {
           public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TBase msg;
-            getResource_result result = new getResource_result();
+            getResources_result result = new getResources_result();
             {
               msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
               msg = (org.apache.thrift.TBase)new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
@@ -896,8 +896,8 @@ public class ProfileImportServices {
         return false;
       }
 
-      public void start(I iface, getResource_args args, org.apache.thrift.async.AsyncMethodCallback<List<com.moseeker.thrift.gen.profile.struct.ProfileImport>> resultHandler) throws TException {
-        iface.getResource(args.query,resultHandler);
+      public void start(I iface, getResources_args args, org.apache.thrift.async.AsyncMethodCallback<List<com.moseeker.thrift.gen.profile.struct.ProfileImport>> resultHandler) throws TException {
+        iface.getResources(args.query,resultHandler);
       }
     }
 
@@ -1108,20 +1108,20 @@ public class ProfileImportServices {
       }
     }
 
-    public static class getResourc<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getResourc_args, com.moseeker.thrift.gen.profile.struct.ProfileImport> {
-      public getResourc() {
-        super("getResourc");
+    public static class getResource<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getResource_args, com.moseeker.thrift.gen.profile.struct.ProfileImport> {
+      public getResource() {
+        super("getResource");
       }
 
-      public getResourc_args getEmptyArgsInstance() {
-        return new getResourc_args();
+      public getResource_args getEmptyArgsInstance() {
+        return new getResource_args();
       }
 
       public AsyncMethodCallback<com.moseeker.thrift.gen.profile.struct.ProfileImport> getResultHandler(final AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
         return new AsyncMethodCallback<com.moseeker.thrift.gen.profile.struct.ProfileImport>() { 
           public void onComplete(com.moseeker.thrift.gen.profile.struct.ProfileImport o) {
-            getResourc_result result = new getResourc_result();
+            getResource_result result = new getResource_result();
             result.success = o;
             try {
               fcall.sendResponse(fb,result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
@@ -1134,7 +1134,7 @@ public class ProfileImportServices {
           public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TBase msg;
-            getResourc_result result = new getResourc_result();
+            getResource_result result = new getResource_result();
             {
               msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
               msg = (org.apache.thrift.TBase)new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
@@ -1154,8 +1154,8 @@ public class ProfileImportServices {
         return false;
       }
 
-      public void start(I iface, getResourc_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.profile.struct.ProfileImport> resultHandler) throws TException {
-        iface.getResourc(args.query,resultHandler);
+      public void start(I iface, getResource_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.profile.struct.ProfileImport> resultHandler) throws TException {
+        iface.getResource(args.query,resultHandler);
       }
     }
 
@@ -1317,15 +1317,15 @@ public class ProfileImportServices {
 
   }
 
-  public static class getResource_args implements org.apache.thrift.TBase<getResource_args, getResource_args._Fields>, java.io.Serializable, Cloneable, Comparable<getResource_args>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getResource_args");
+  public static class getResources_args implements org.apache.thrift.TBase<getResources_args, getResources_args._Fields>, java.io.Serializable, Cloneable, Comparable<getResources_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getResources_args");
 
     private static final org.apache.thrift.protocol.TField QUERY_FIELD_DESC = new org.apache.thrift.protocol.TField("query", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new getResource_argsStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new getResource_argsTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new getResources_argsStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new getResources_argsTupleSchemeFactory());
     }
 
     public com.moseeker.thrift.gen.profile.struct.CommonQuery query; // required
@@ -1395,13 +1395,13 @@ public class ProfileImportServices {
       tmpMap.put(_Fields.QUERY, new org.apache.thrift.meta_data.FieldMetaData("query", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.profile.struct.CommonQuery.class)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getResource_args.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getResources_args.class, metaDataMap);
     }
 
-    public getResource_args() {
+    public getResources_args() {
     }
 
-    public getResource_args(
+    public getResources_args(
       com.moseeker.thrift.gen.profile.struct.CommonQuery query)
     {
       this();
@@ -1411,14 +1411,14 @@ public class ProfileImportServices {
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public getResource_args(getResource_args other) {
+    public getResources_args(getResources_args other) {
       if (other.isSetQuery()) {
         this.query = new com.moseeker.thrift.gen.profile.struct.CommonQuery(other.query);
       }
     }
 
-    public getResource_args deepCopy() {
-      return new getResource_args(this);
+    public getResources_args deepCopy() {
+      return new getResources_args(this);
     }
 
     @Override
@@ -1430,7 +1430,7 @@ public class ProfileImportServices {
       return this.query;
     }
 
-    public getResource_args setQuery(com.moseeker.thrift.gen.profile.struct.CommonQuery query) {
+    public getResources_args setQuery(com.moseeker.thrift.gen.profile.struct.CommonQuery query) {
       this.query = query;
       return this;
     }
@@ -1489,12 +1489,12 @@ public class ProfileImportServices {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof getResource_args)
-        return this.equals((getResource_args)that);
+      if (that instanceof getResources_args)
+        return this.equals((getResources_args)that);
       return false;
     }
 
-    public boolean equals(getResource_args that) {
+    public boolean equals(getResources_args that) {
       if (that == null)
         return false;
 
@@ -1523,7 +1523,7 @@ public class ProfileImportServices {
     }
 
     @Override
-    public int compareTo(getResource_args other) {
+    public int compareTo(getResources_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
@@ -1557,7 +1557,7 @@ public class ProfileImportServices {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("getResource_args(");
+      StringBuilder sb = new StringBuilder("getResources_args(");
       boolean first = true;
 
       sb.append("query:");
@@ -1595,15 +1595,15 @@ public class ProfileImportServices {
       }
     }
 
-    private static class getResource_argsStandardSchemeFactory implements SchemeFactory {
-      public getResource_argsStandardScheme getScheme() {
-        return new getResource_argsStandardScheme();
+    private static class getResources_argsStandardSchemeFactory implements SchemeFactory {
+      public getResources_argsStandardScheme getScheme() {
+        return new getResources_argsStandardScheme();
       }
     }
 
-    private static class getResource_argsStandardScheme extends StandardScheme<getResource_args> {
+    private static class getResources_argsStandardScheme extends StandardScheme<getResources_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, getResource_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getResources_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -1633,7 +1633,7 @@ public class ProfileImportServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, getResource_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getResources_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -1648,16 +1648,16 @@ public class ProfileImportServices {
 
     }
 
-    private static class getResource_argsTupleSchemeFactory implements SchemeFactory {
-      public getResource_argsTupleScheme getScheme() {
-        return new getResource_argsTupleScheme();
+    private static class getResources_argsTupleSchemeFactory implements SchemeFactory {
+      public getResources_argsTupleScheme getScheme() {
+        return new getResources_argsTupleScheme();
       }
     }
 
-    private static class getResource_argsTupleScheme extends TupleScheme<getResource_args> {
+    private static class getResources_argsTupleScheme extends TupleScheme<getResources_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, getResource_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, getResources_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetQuery()) {
@@ -1670,7 +1670,7 @@ public class ProfileImportServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, getResource_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, getResources_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -1683,15 +1683,15 @@ public class ProfileImportServices {
 
   }
 
-  public static class getResource_result implements org.apache.thrift.TBase<getResource_result, getResource_result._Fields>, java.io.Serializable, Cloneable, Comparable<getResource_result>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getResource_result");
+  public static class getResources_result implements org.apache.thrift.TBase<getResources_result, getResources_result._Fields>, java.io.Serializable, Cloneable, Comparable<getResources_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getResources_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.LIST, (short)0);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new getResource_resultStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new getResource_resultTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new getResources_resultStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new getResources_resultTupleSchemeFactory());
     }
 
     public List<com.moseeker.thrift.gen.profile.struct.ProfileImport> success; // required
@@ -1762,13 +1762,13 @@ public class ProfileImportServices {
           new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
               new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.profile.struct.ProfileImport.class))));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getResource_result.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getResources_result.class, metaDataMap);
     }
 
-    public getResource_result() {
+    public getResources_result() {
     }
 
-    public getResource_result(
+    public getResources_result(
       List<com.moseeker.thrift.gen.profile.struct.ProfileImport> success)
     {
       this();
@@ -1778,7 +1778,7 @@ public class ProfileImportServices {
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public getResource_result(getResource_result other) {
+    public getResources_result(getResources_result other) {
       if (other.isSetSuccess()) {
         List<com.moseeker.thrift.gen.profile.struct.ProfileImport> __this__success = new ArrayList<com.moseeker.thrift.gen.profile.struct.ProfileImport>(other.success.size());
         for (com.moseeker.thrift.gen.profile.struct.ProfileImport other_element : other.success) {
@@ -1788,8 +1788,8 @@ public class ProfileImportServices {
       }
     }
 
-    public getResource_result deepCopy() {
-      return new getResource_result(this);
+    public getResources_result deepCopy() {
+      return new getResources_result(this);
     }
 
     @Override
@@ -1816,7 +1816,7 @@ public class ProfileImportServices {
       return this.success;
     }
 
-    public getResource_result setSuccess(List<com.moseeker.thrift.gen.profile.struct.ProfileImport> success) {
+    public getResources_result setSuccess(List<com.moseeker.thrift.gen.profile.struct.ProfileImport> success) {
       this.success = success;
       return this;
     }
@@ -1875,12 +1875,12 @@ public class ProfileImportServices {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof getResource_result)
-        return this.equals((getResource_result)that);
+      if (that instanceof getResources_result)
+        return this.equals((getResources_result)that);
       return false;
     }
 
-    public boolean equals(getResource_result that) {
+    public boolean equals(getResources_result that) {
       if (that == null)
         return false;
 
@@ -1909,7 +1909,7 @@ public class ProfileImportServices {
     }
 
     @Override
-    public int compareTo(getResource_result other) {
+    public int compareTo(getResources_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
@@ -1943,7 +1943,7 @@ public class ProfileImportServices {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("getResource_result(");
+      StringBuilder sb = new StringBuilder("getResources_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -1978,15 +1978,15 @@ public class ProfileImportServices {
       }
     }
 
-    private static class getResource_resultStandardSchemeFactory implements SchemeFactory {
-      public getResource_resultStandardScheme getScheme() {
-        return new getResource_resultStandardScheme();
+    private static class getResources_resultStandardSchemeFactory implements SchemeFactory {
+      public getResources_resultStandardScheme getScheme() {
+        return new getResources_resultStandardScheme();
       }
     }
 
-    private static class getResource_resultStandardScheme extends StandardScheme<getResource_result> {
+    private static class getResources_resultStandardScheme extends StandardScheme<getResources_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, getResource_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getResources_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -2026,7 +2026,7 @@ public class ProfileImportServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, getResource_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getResources_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -2048,16 +2048,16 @@ public class ProfileImportServices {
 
     }
 
-    private static class getResource_resultTupleSchemeFactory implements SchemeFactory {
-      public getResource_resultTupleScheme getScheme() {
-        return new getResource_resultTupleScheme();
+    private static class getResources_resultTupleSchemeFactory implements SchemeFactory {
+      public getResources_resultTupleScheme getScheme() {
+        return new getResources_resultTupleScheme();
       }
     }
 
-    private static class getResource_resultTupleScheme extends TupleScheme<getResource_result> {
+    private static class getResources_resultTupleScheme extends TupleScheme<getResources_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, getResource_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, getResources_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -2076,7 +2076,7 @@ public class ProfileImportServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, getResource_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, getResources_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -5158,15 +5158,15 @@ public class ProfileImportServices {
 
   }
 
-  public static class getResourc_args implements org.apache.thrift.TBase<getResourc_args, getResourc_args._Fields>, java.io.Serializable, Cloneable, Comparable<getResourc_args>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getResourc_args");
+  public static class getResource_args implements org.apache.thrift.TBase<getResource_args, getResource_args._Fields>, java.io.Serializable, Cloneable, Comparable<getResource_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getResource_args");
 
     private static final org.apache.thrift.protocol.TField QUERY_FIELD_DESC = new org.apache.thrift.protocol.TField("query", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new getResourc_argsStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new getResourc_argsTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new getResource_argsStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new getResource_argsTupleSchemeFactory());
     }
 
     public com.moseeker.thrift.gen.profile.struct.CommonQuery query; // required
@@ -5236,13 +5236,13 @@ public class ProfileImportServices {
       tmpMap.put(_Fields.QUERY, new org.apache.thrift.meta_data.FieldMetaData("query", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.profile.struct.CommonQuery.class)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getResourc_args.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getResource_args.class, metaDataMap);
     }
 
-    public getResourc_args() {
+    public getResource_args() {
     }
 
-    public getResourc_args(
+    public getResource_args(
       com.moseeker.thrift.gen.profile.struct.CommonQuery query)
     {
       this();
@@ -5252,14 +5252,14 @@ public class ProfileImportServices {
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public getResourc_args(getResourc_args other) {
+    public getResource_args(getResource_args other) {
       if (other.isSetQuery()) {
         this.query = new com.moseeker.thrift.gen.profile.struct.CommonQuery(other.query);
       }
     }
 
-    public getResourc_args deepCopy() {
-      return new getResourc_args(this);
+    public getResource_args deepCopy() {
+      return new getResource_args(this);
     }
 
     @Override
@@ -5271,7 +5271,7 @@ public class ProfileImportServices {
       return this.query;
     }
 
-    public getResourc_args setQuery(com.moseeker.thrift.gen.profile.struct.CommonQuery query) {
+    public getResource_args setQuery(com.moseeker.thrift.gen.profile.struct.CommonQuery query) {
       this.query = query;
       return this;
     }
@@ -5330,12 +5330,12 @@ public class ProfileImportServices {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof getResourc_args)
-        return this.equals((getResourc_args)that);
+      if (that instanceof getResource_args)
+        return this.equals((getResource_args)that);
       return false;
     }
 
-    public boolean equals(getResourc_args that) {
+    public boolean equals(getResource_args that) {
       if (that == null)
         return false;
 
@@ -5364,7 +5364,7 @@ public class ProfileImportServices {
     }
 
     @Override
-    public int compareTo(getResourc_args other) {
+    public int compareTo(getResource_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
@@ -5398,7 +5398,7 @@ public class ProfileImportServices {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("getResourc_args(");
+      StringBuilder sb = new StringBuilder("getResource_args(");
       boolean first = true;
 
       sb.append("query:");
@@ -5436,15 +5436,15 @@ public class ProfileImportServices {
       }
     }
 
-    private static class getResourc_argsStandardSchemeFactory implements SchemeFactory {
-      public getResourc_argsStandardScheme getScheme() {
-        return new getResourc_argsStandardScheme();
+    private static class getResource_argsStandardSchemeFactory implements SchemeFactory {
+      public getResource_argsStandardScheme getScheme() {
+        return new getResource_argsStandardScheme();
       }
     }
 
-    private static class getResourc_argsStandardScheme extends StandardScheme<getResourc_args> {
+    private static class getResource_argsStandardScheme extends StandardScheme<getResource_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, getResourc_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getResource_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -5474,7 +5474,7 @@ public class ProfileImportServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, getResourc_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getResource_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -5489,16 +5489,16 @@ public class ProfileImportServices {
 
     }
 
-    private static class getResourc_argsTupleSchemeFactory implements SchemeFactory {
-      public getResourc_argsTupleScheme getScheme() {
-        return new getResourc_argsTupleScheme();
+    private static class getResource_argsTupleSchemeFactory implements SchemeFactory {
+      public getResource_argsTupleScheme getScheme() {
+        return new getResource_argsTupleScheme();
       }
     }
 
-    private static class getResourc_argsTupleScheme extends TupleScheme<getResourc_args> {
+    private static class getResource_argsTupleScheme extends TupleScheme<getResource_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, getResourc_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, getResource_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetQuery()) {
@@ -5511,7 +5511,7 @@ public class ProfileImportServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, getResourc_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, getResource_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -5524,15 +5524,15 @@ public class ProfileImportServices {
 
   }
 
-  public static class getResourc_result implements org.apache.thrift.TBase<getResourc_result, getResourc_result._Fields>, java.io.Serializable, Cloneable, Comparable<getResourc_result>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getResourc_result");
+  public static class getResource_result implements org.apache.thrift.TBase<getResource_result, getResource_result._Fields>, java.io.Serializable, Cloneable, Comparable<getResource_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getResource_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new getResourc_resultStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new getResourc_resultTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new getResource_resultStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new getResource_resultTupleSchemeFactory());
     }
 
     public com.moseeker.thrift.gen.profile.struct.ProfileImport success; // required
@@ -5602,13 +5602,13 @@ public class ProfileImportServices {
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.profile.struct.ProfileImport.class)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getResourc_result.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getResource_result.class, metaDataMap);
     }
 
-    public getResourc_result() {
+    public getResource_result() {
     }
 
-    public getResourc_result(
+    public getResource_result(
       com.moseeker.thrift.gen.profile.struct.ProfileImport success)
     {
       this();
@@ -5618,14 +5618,14 @@ public class ProfileImportServices {
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public getResourc_result(getResourc_result other) {
+    public getResource_result(getResource_result other) {
       if (other.isSetSuccess()) {
         this.success = new com.moseeker.thrift.gen.profile.struct.ProfileImport(other.success);
       }
     }
 
-    public getResourc_result deepCopy() {
-      return new getResourc_result(this);
+    public getResource_result deepCopy() {
+      return new getResource_result(this);
     }
 
     @Override
@@ -5637,7 +5637,7 @@ public class ProfileImportServices {
       return this.success;
     }
 
-    public getResourc_result setSuccess(com.moseeker.thrift.gen.profile.struct.ProfileImport success) {
+    public getResource_result setSuccess(com.moseeker.thrift.gen.profile.struct.ProfileImport success) {
       this.success = success;
       return this;
     }
@@ -5696,12 +5696,12 @@ public class ProfileImportServices {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof getResourc_result)
-        return this.equals((getResourc_result)that);
+      if (that instanceof getResource_result)
+        return this.equals((getResource_result)that);
       return false;
     }
 
-    public boolean equals(getResourc_result that) {
+    public boolean equals(getResource_result that) {
       if (that == null)
         return false;
 
@@ -5730,7 +5730,7 @@ public class ProfileImportServices {
     }
 
     @Override
-    public int compareTo(getResourc_result other) {
+    public int compareTo(getResource_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
@@ -5764,7 +5764,7 @@ public class ProfileImportServices {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("getResourc_result(");
+      StringBuilder sb = new StringBuilder("getResource_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -5802,15 +5802,15 @@ public class ProfileImportServices {
       }
     }
 
-    private static class getResourc_resultStandardSchemeFactory implements SchemeFactory {
-      public getResourc_resultStandardScheme getScheme() {
-        return new getResourc_resultStandardScheme();
+    private static class getResource_resultStandardSchemeFactory implements SchemeFactory {
+      public getResource_resultStandardScheme getScheme() {
+        return new getResource_resultStandardScheme();
       }
     }
 
-    private static class getResourc_resultStandardScheme extends StandardScheme<getResourc_result> {
+    private static class getResource_resultStandardScheme extends StandardScheme<getResource_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, getResourc_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getResource_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -5840,7 +5840,7 @@ public class ProfileImportServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, getResourc_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getResource_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -5855,16 +5855,16 @@ public class ProfileImportServices {
 
     }
 
-    private static class getResourc_resultTupleSchemeFactory implements SchemeFactory {
-      public getResourc_resultTupleScheme getScheme() {
-        return new getResourc_resultTupleScheme();
+    private static class getResource_resultTupleSchemeFactory implements SchemeFactory {
+      public getResource_resultTupleScheme getScheme() {
+        return new getResource_resultTupleScheme();
       }
     }
 
-    private static class getResourc_resultTupleScheme extends TupleScheme<getResourc_result> {
+    private static class getResource_resultTupleScheme extends TupleScheme<getResource_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, getResourc_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, getResource_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -5877,7 +5877,7 @@ public class ProfileImportServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, getResourc_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, getResource_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
