@@ -46,12 +46,11 @@ struct ProfilePagination {
 struct Attachment { 
     1: i32 id,
     2: i32 profile_id,
-    3: i32 name,
-    4: string source, 
-    5: string path,
-    6: string description,
-    7: Timestamp create_time,
-    8: Timestamp update_time
+    3: string name,
+    4: string path,
+    5: string description,
+    6: Timestamp create_time,
+    7: Timestamp update_time
 }
 
 struct AttachmentPagination {

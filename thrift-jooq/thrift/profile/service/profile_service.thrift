@@ -86,13 +86,13 @@ service ProfileExtServices {
 }
 
 service ProfileImportServices {
-    list<profile_struct.ProfileImport> getResource(1:profile_struct.CommonQuery query);
+    list<profile_struct.ProfileImport> getResources(1:profile_struct.CommonQuery query);
     profile_struct.ProfileImportPagination getPagination(1:profile_struct.CommonQuery query);
     i32 postResources(1: list<profile_struct.ProfileImport> profileImports);
     i32 putResources(1: list<profile_struct.ProfileImport> profileImports);
     i32 delResources(1: list<profile_struct.ProfileImport> profileImports);
     
-    profile_struct.ProfileImport getResourc(1:profile_struct.CommonQuery query);
+    profile_struct.ProfileImport getResource(1:profile_struct.CommonQuery query);
     i32 postResource(1: profile_struct.ProfileImport profileImport);
     i32 putResource(1: profile_struct.ProfileImport profileImport);
     i32 delResource(1: profile_struct.ProfileImport profileImport);

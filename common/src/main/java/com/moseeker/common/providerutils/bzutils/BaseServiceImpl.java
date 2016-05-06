@@ -43,6 +43,9 @@ public abstract class BaseServiceImpl<S extends TBase> {
 	}
 
 	public int putResources(List<S> structs) throws TException {
+		if(dao == null) {
+			initDao();
+		}
 		return dao.putResources(structs);
 	}
 
