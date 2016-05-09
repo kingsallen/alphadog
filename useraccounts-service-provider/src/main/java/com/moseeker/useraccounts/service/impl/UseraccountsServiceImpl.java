@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.thrift.TException;
 import org.springframework.stereotype.Service;
 
+import com.moseeker.common.exception.TCodeMessageException;
 import com.moseeker.common.providerutils.daoutils.BaseDao;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
@@ -33,13 +34,32 @@ public class UseraccountsServiceImpl implements Iface {
 			filters.put("unionid", userloginreq.getUnionid());
 		}else{
 			filters.put("username", userloginreq.getMobile());
-			filters.put("password", userloginreq.getPassword());
+		//	filters.put("password", md5(userloginreq.getPassword()));
 		}
-		
+		filters.put("parentid", null); // to exclude merged accounts.
 		query.setLimit(1);
 		query.setEqualFilter(filters);
-		UserUserRecord user = userdao.getResource(query);
-		return null;
+//		UserUserRecord user;
+//		try {
+//			user = userdao.getResource(query);
+//			if (user != null){
+//				// login success
+//				userloginresp resp = new userloginresp();
+//				resp.setUnionid(user.getUnionid());
+//				resp.setUser_id(user.getId().intValue());
+//				resp.setMobile(user.getMobile().toString());
+//				resp.setLast_login_time(user.getLastLoginTime().toString());
+//				return resp;		
+//			}			
+//		} catch (TException e) {
+//			// TODO Auto-generated catch block
+//			throw new TCodeMessageException(2001, "帐号信息不一致");
+//			//throw new TException("帐号信息不一致");
+//		}
+		throw new TCodeMessageException(2001, "帐号信息不一致");
+		// throw new TException("帐号信息不一致");
+		//userloginresp resp = new userloginresp();
+		//return resp;
 	}
 	
 	public static void main(String[] args){
@@ -47,12 +67,13 @@ public class UseraccountsServiceImpl implements Iface {
 		userlogin.setMobile("13818252514");
 		userlogin.setPassword("1234");
 		
-		try {
-			new UseraccountsServiceImpl().postuserlogin(userlogin);
-		} catch (TException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			try {
+				new UseraccountsServiceImpl().postuserlogin(userlogin);
+			} catch (TException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 
 		
 	}

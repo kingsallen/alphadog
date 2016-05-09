@@ -4,9 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.moseeker.profile.service.impl.ProfileServicesImpl;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.Server;
+import com.moseeker.useraccounts.service.impl.UseraccountsServiceImpl;
 
 /**
  * 
@@ -31,7 +31,7 @@ public class UseraccountsServer {
 		try {
 			AnnotationConfigApplicationContext acac = initSpring();
 			Server server = new Server(UseraccountsServer.class,
-					acac.getBean(ProfileServicesImpl.class),
+					acac.getBean(UseraccountsServiceImpl.class),
 					ServerNodeUtils.getPort(args));
 			server.start(); // 启动服务，非阻塞
 
