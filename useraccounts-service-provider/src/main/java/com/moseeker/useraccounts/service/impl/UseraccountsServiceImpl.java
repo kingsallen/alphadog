@@ -2,14 +2,16 @@ package com.moseeker.useraccounts.service.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.thrift.TException;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.common.exception.TCodeMessageException;
+import com.alibaba.fastjson.JSON;
 import com.moseeker.common.providerutils.daoutils.BaseDao;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.CommonQuery;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.userloginreq;
@@ -24,44 +26,7 @@ public class UseraccountsServiceImpl implements Iface {
 	protected BaseDao<UserWxUserRecord> wxuserdao = new WxuserDaoImpl();
 	protected BaseDao<UserUserRecord> userdao = new UserDaoImpl();
 
-	
-	@Override
-	public userloginresp postuserlogin(userloginreq userloginreq) throws TException {
-		// TODO Auto-generated method stub
-		CommonQuery query = new CommonQuery();
-		Map filters = new HashMap();
-		if (userloginreq.getUnionid() != null ){
-			filters.put("unionid", userloginreq.getUnionid());
-		}else{
-			filters.put("username", userloginreq.getMobile());
-		//	filters.put("password", md5(userloginreq.getPassword()));
-		}
-		filters.put("parentid", null); // to exclude merged accounts.
-		query.setLimit(1);
-		query.setEqualFilter(filters);
-//		UserUserRecord user;
-//		try {
-//			user = userdao.getResource(query);
-//			if (user != null){
-//				// login success
-//				userloginresp resp = new userloginresp();
-//				resp.setUnionid(user.getUnionid());
-//				resp.setUser_id(user.getId().intValue());
-//				resp.setMobile(user.getMobile().toString());
-//				resp.setLast_login_time(user.getLastLoginTime().toString());
-//				return resp;		
-//			}			
-//		} catch (TException e) {
-//			// TODO Auto-generated catch block
-//			throw new TCodeMessageException(2001, "帐号信息不一致");
-//			//throw new TException("帐号信息不一致");
-//		}
-		throw new TCodeMessageException(2001, "帐号信息不一致");
-		// throw new TException("帐号信息不一致");
-		//userloginresp resp = new userloginresp();
-		//return resp;
-	}
-	
+
 	public static void main(String[] args){
 		userloginreq userlogin = new userloginreq();
 		userlogin.setMobile("13818252514");
@@ -79,62 +44,115 @@ public class UseraccountsServiceImpl implements Iface {
 	}
 
 	@Override
-	public int postuserlogout(int userid) throws TException {
+	public Response postuserlogin(userloginreq userloginreq) throws TException {
 		// TODO Auto-generated method stub
-		return 0;
+		CommonQuery query = new CommonQuery();
+		Map filters = new HashMap();
+		if (userloginreq.getUnionid() != null ){
+			filters.put("unionid", userloginreq.getUnionid());
+		}else{
+			filters.put("username", userloginreq.getMobile());
+		//	filters.put("password", md5(userloginreq.getPassword()));
+		}
+	//	filters.put("parentid", null); // to exclude merged accounts.
+		query.setLimit(1);
+		query.setEqualFilter(filters);
+		UserUserRecord user = userdao.getResource(query);
+		
+		Response jsonresp = new Response();
+		if (user != null){
+			// login success
+			userloginresp resp = new userloginresp();
+			Map resp2 = new HashMap();
+
+			resp.setUser_id(user.getId().intValue());
+			resp2.put("user_id", user.getId().intValue());
+			resp2.put("union_id", user.getUnionid());
+			resp2.put("mobile", user.getMobile());
+			resp2.put("last_login_time", user.getLastLoginTime());
+			
+			if ( user.getUnionid() != null ){
+				resp.setUnionid(user.getUnionid());
+			}
+			if ( user.getMobile() != null ){
+				resp.setMobile(user.getMobile().toString());
+			}			
+			if(user.getLastLoginTime() != null) {
+				resp.setLast_login_time(user.getLastLoginTime().toString());
+			}
+			
+			jsonresp.setStatus(0);
+			jsonresp.setMessage("ok");
+			jsonresp.setData(JSON.toJSONString(resp2));
+			return jsonresp;		
+		}			
+		
+		jsonresp.setStatus(1);
+		jsonresp.setMessage("username and password do");
+		return jsonresp;
 	}
 
 	@Override
-	public int postsendsignupcode(String mobile) throws TException {
+	public Response postuserlogout(int userid) throws TException {
 		// TODO Auto-generated method stub
-		return 0;
+		return null;
 	}
 
 	@Override
-	public int postusermobilesignup(String mobile, String code, String password) throws TException {
+	public Response postsendsignupcode(String mobile) throws TException {
 		// TODO Auto-generated method stub
-		return 0;
+		return null;
 	}
 
 	@Override
-	public int postuserwxsignup(String unionid) throws TException {
+	public Response postusermobilesignup(String mobile, String code, String password) throws TException {
 		// TODO Auto-generated method stub
-		return 0;
+		return null;
 	}
 
 	@Override
-	public int postuserwxbindmobile(String unionid, String code, String mobile) throws TException {
+	public Response postuserwxsignup(String unionid) throws TException {
 		// TODO Auto-generated method stub
-		return 0;
+		return null;
 	}
 
 	@Override
-	public int postusermobilebindwx(String mobile, String code, String unionid) throws TException {
+	public Response postuserwxbindmobile(String unionid, String code, String mobile) throws TException {
 		// TODO Auto-generated method stub
-		return 0;
+		return null;
 	}
 
 	@Override
-	public int postuserchangepassword(int user_id, String old_password, String password) throws TException {
+	public Response postusermobilebindwx(String mobile, String code, String unionid) throws TException {
 		// TODO Auto-generated method stub
-		return 0;
+		return null;
 	}
 
 	@Override
-	public int postusersendpasswordforgotcode(String mobile) throws TException {
+	public Response postuserchangepassword(int user_id, String old_password, String password) throws TException {
 		// TODO Auto-generated method stub
-		return 0;
+		return null;
 	}
 
 	@Override
-	public int postuserresetpassword(String mobile, String code, String password) throws TException {
+	public Response postusersendpasswordforgotcode(String mobile) throws TException {
 		// TODO Auto-generated method stub
-		return 0;
+		return null;
 	}
 
 	@Override
-	public int postusermergebymobile(String mobile) throws TException {
+	public Response postuserresetpassword(String mobile, String code, String password) throws TException {
 		// TODO Auto-generated method stub
-		return 0;
+		return null;
 	}
+
+	@Override
+	public Response postusermergebymobile(String mobile) throws TException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+	
+
 }
