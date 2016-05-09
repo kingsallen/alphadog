@@ -6,7 +6,7 @@ import java.util.Map;
 import org.apache.thrift.TException;
 import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSON;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.daoutils.BaseDao;
 import com.moseeker.common.sms.SmsSender;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
@@ -80,20 +80,15 @@ public class UseraccountsServiceImpl implements Iface {
 			if(user.getLastLoginTime() != null) {
 				resp.setLast_login_time(user.getLastLoginTime().toString());
 			}
-			
-			jsonresp.setStatus(0);
-			jsonresp.setMessage("ok");
-			jsonresp.setData(JSON.toJSONString(resp2));
-			
+						
 			//user.setLastLoginTime(new Timestamp());
 			userdao.postResource(user);
 	
-			return jsonresp;		
+			return ResponseUtils.success(resp2);		
 		}			
 		
 		jsonresp.setStatus(1);
-		jsonresp.setMessage("username and password do not match!");
-		return jsonresp;
+		return ResponseUtils.fail(1001, "username and password do not match!");
 	}
 
 	@Override
@@ -108,13 +103,9 @@ public class UseraccountsServiceImpl implements Iface {
 		Response jsonresp = new Response();
 
 		if ( SmsSender.sendSMS_signup(mobile) ){
-			jsonresp.setStatus(0);
-			jsonresp.setMessage("ok");
-			return jsonresp;	
+			return ResponseUtils.success(null);	
 		}else{
-			jsonresp.setStatus(1);
-			jsonresp.setMessage("failed");
-			return jsonresp;			
+			return ResponseUtils.fail("failed");
 		}
 	}
 
