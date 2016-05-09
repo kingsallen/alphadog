@@ -2,13 +2,13 @@ package com.moseeker.useraccounts.service.impl;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import org.apache.thrift.TException;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.providerutils.daoutils.BaseDao;
+import com.moseeker.common.sms.SmsSender;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -84,11 +84,15 @@ public class UseraccountsServiceImpl implements Iface {
 			jsonresp.setStatus(0);
 			jsonresp.setMessage("ok");
 			jsonresp.setData(JSON.toJSONString(resp2));
+			
+			//user.setLastLoginTime(new Timestamp());
+			userdao.postResource(user);
+	
 			return jsonresp;		
 		}			
 		
 		jsonresp.setStatus(1);
-		jsonresp.setMessage("username and password do");
+		jsonresp.setMessage("username and password do not match!");
 		return jsonresp;
 	}
 
@@ -101,7 +105,17 @@ public class UseraccountsServiceImpl implements Iface {
 	@Override
 	public Response postsendsignupcode(String mobile) throws TException {
 		// TODO Auto-generated method stub
-		return null;
+		Response jsonresp = new Response();
+
+		if ( SmsSender.sendSMS_signup(mobile) ){
+			jsonresp.setStatus(0);
+			jsonresp.setMessage("ok");
+			return jsonresp;	
+		}else{
+			jsonresp.setStatus(1);
+			jsonresp.setMessage("failed");
+			return jsonresp;			
+		}
 	}
 
 	@Override
