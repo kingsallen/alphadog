@@ -1,17 +1,60 @@
 package com.moseeker.useraccounts.service.impl;
 
-import org.apache.thrift.TException;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.apache.thrift.TException;
+import org.springframework.stereotype.Service;
+
+import com.moseeker.common.providerutils.daoutils.BaseDao;
+import com.moseeker.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.thrift.gen.profile.struct.CommonQuery;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.userloginreq;
 import com.moseeker.thrift.gen.useraccounts.struct.userloginresp;
+import com.moseeker.useraccounts.dao.impl.UserDaoImpl;
+import com.moseeker.useraccounts.dao.impl.WxuserDaoImpl;
 
+@Service
 public class UseraccountsServiceImpl implements Iface {
 
+	
+	protected BaseDao<UserWxUserRecord> wxuserdao = new WxuserDaoImpl();
+	protected BaseDao<UserUserRecord> userdao = new UserDaoImpl();
+
+	
 	@Override
 	public userloginresp postuserlogin(userloginreq userloginreq) throws TException {
 		// TODO Auto-generated method stub
+		CommonQuery query = new CommonQuery();
+		Map filters = new HashMap();
+		if (userloginreq.getUnionid() != null ){
+			filters.put("unionid", userloginreq.getUnionid());
+		}else{
+			filters.put("username", userloginreq.getMobile());
+			filters.put("password", userloginreq.getPassword());
+		}
+		
+		query.setLimit(1);
+		query.setEqualFilter(filters);
+		UserUserRecord user = userdao.getResource(query);
 		return null;
+	}
+	
+	public static void main(String[] args){
+		userloginreq userlogin = new userloginreq();
+		userlogin.setMobile("13818252514");
+		userlogin.setPassword("1234");
+		
+		try {
+			new UseraccountsServiceImpl().postuserlogin(userlogin);
+		} catch (TException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		
 	}
 
 	@Override

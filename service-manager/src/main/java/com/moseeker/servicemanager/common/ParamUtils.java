@@ -156,7 +156,7 @@ public class ParamUtils {
 	 * @param request request请求
 	 * @return 存储通过request请求传递过来的参数
 	 */
-	public static Map<String, Object> initCommonQuery(HttpServletRequest request) {
+	public static Map<String, Object> mergeRequestParameters(HttpServletRequest request) {
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.putAll(initParamFromRequestBody(request));
 		data.putAll(initParamFromRequestParameter(request));
