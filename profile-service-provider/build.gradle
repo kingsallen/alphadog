@@ -11,7 +11,7 @@ dependencies {
     compile deps["jooq"]
     compile deps["jooq-meta"]
     compile deps["jooq-codegen"]
-	compile deps["spring-core"]
+    compile deps["spring-core"]
     compile deps["spring-context"]
 }
 

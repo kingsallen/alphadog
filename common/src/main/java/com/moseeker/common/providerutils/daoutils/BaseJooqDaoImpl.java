@@ -37,7 +37,6 @@ import com.moseeker.thrift.gen.profile.struct.CommonQuery;
  * @version Beta
  * @param <R> 表示JOOQ表记录的ORM类
  * @param <T> 表示JOOQ表的ORM类
- * @param <S> 基于Thrift通信的数据结构
  */
 @SuppressWarnings("rawtypes")
 public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extends TableImpl<R>>
@@ -68,7 +67,7 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 				for (Entry<String, String> entry : equalFilter.entrySet()) {
 					Field<?> field = tableLike.field(entry.getKey());
 					if (field != null) {
-						table.where(field.equal(BeanUtils.convertTo(
+						table.where(field.strictEqual(BeanUtils.convertTo(
 								entry.getValue(), field.getType())));
 					}
 				}
@@ -80,7 +79,7 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 
 				List<SortField<?>> fields = new ArrayList<>(sortBy.length);
 				SortOrder so = SortOrder.ASC;
-				for (int i = 0; i < sortBy.length - 1; i++) {
+				for (int i = 0; i < sortBy.length; i++) {
 					Field<?> field = table.field(sortBy[i]);
 					if (sortBy.length == order.length
 							&& !StringUtils.isNullOrEmpty(order[i])
@@ -148,7 +147,7 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 				for (Entry<String, String> entry : equalFilter.entrySet()) {
 					Field field = tableLike.field(entry.getKey());
 					if (field != null) {
-						selectQuery.addConditions(field.equal(BeanUtils.convertTo(
+						selectQuery.addConditions(field.strictEqual(BeanUtils.convertTo(
 								entry.getValue(), field.getType())));
 					}
 				}
@@ -236,7 +235,7 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 				for (Entry<String, String> entry : equalFilter.entrySet()) {
 					Field field = tableLike.field(entry.getKey());
 					if (field != null) {
-						table.where(field.equal(BeanUtils.convertTo(
+						table.where(field.strictEqual(BeanUtils.convertTo(
 								entry.getValue(), field.getType())));
 					}
 				}
@@ -248,7 +247,7 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 
 				List<SortField<?>> fields = new ArrayList<>(sortBy.length);
 				SortOrder so = SortOrder.ASC;
-				for (int i = 0; i < sortBy.length - 1; i++) {
+				for (int i = 0; i < sortBy.length; i++) {
 					Field<?> field = table.field(sortBy[i]);
 					if (sortBy.length == order.length
 							&& !StringUtils.isNullOrEmpty(order[i])

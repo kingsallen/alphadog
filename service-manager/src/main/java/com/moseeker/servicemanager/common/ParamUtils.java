@@ -189,7 +189,7 @@ public class ParamUtils {
 		if (data != null && data.size() > 0) {
 			Field[] fields = clazz.getFields();
 			for (Entry<String, Object> entry : data.entrySet()) {
-				for (int i = 0; i < fields.length - 1; i++) {
+				for (int i = 0; i < fields.length; i++) {
 					if (fields[i].getName().equals(entry.getKey())) {
 						String methodName = "set"
 								+ fields[i].getName().substring(0, 1)

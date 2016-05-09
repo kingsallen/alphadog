@@ -8,6 +8,12 @@ namespace java com.moseeker.thrift.gen.profile.struct
  */
 typedef string Timestamp;
 
+struct reponse {
+	int status
+	string message
+	string data
+}
+
 struct CommonQuery {
     1: i32 appid,
     2: optional i32 limit=10,
@@ -34,6 +40,7 @@ struct Profile {
     7: Timestamp create_time,
     8: Timestamp update_time
 }
+
 
 struct ProfilePagination {
 	1: i32 total_row,
