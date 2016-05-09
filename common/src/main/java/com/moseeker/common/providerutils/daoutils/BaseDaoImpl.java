@@ -69,7 +69,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 				for (Entry<String, String> entry : equalFilter.entrySet()) {
 					Field<?> field = tableLike.field(entry.getKey());
 					if (field != null) {
-						table.where(field.equal(BeanUtils.convertTo(
+						table.where(field.strictEqual(BeanUtils.convertTo(
 								entry.getValue(), field.getType())));
 					}
 				}
@@ -81,7 +81,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 
 				List<SortField<?>> fields = new ArrayList<>(sortBy.length);
 				SortOrder so = SortOrder.ASC;
-				for (int i = 0; i < sortBy.length - 1; i++) {
+				for (int i = 0; i < sortBy.length; i++) {
 					Field<?> field = table.field(sortBy[i]);
 					if (sortBy.length == order.length
 							&& !StringUtils.isNullOrEmpty(order[i])
@@ -151,7 +151,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 				for (Entry<String, String> entry : equalFilter.entrySet()) {
 					Field field = tableLike.field(entry.getKey());
 					if (field != null) {
-						selectQuery.addConditions(field.equal(BeanUtils.convertTo(
+						selectQuery.addConditions(field.strictEqual(BeanUtils.convertTo(
 								entry.getValue(), field.getType())));
 					}
 				}
@@ -242,7 +242,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 				for (Entry<String, String> entry : equalFilter.entrySet()) {
 					Field field = table.field(entry.getKey());
 					if (field != null) {
-						table.where(field.equal(BeanUtils.convertTo(
+						table.where(field.strictEqual(BeanUtils.convertTo(
 								entry.getValue(), field.getType())));
 					}
 				}
@@ -254,7 +254,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 
 				List<SortField<?>> fields = new ArrayList<>(sortBy.length);
 				SortOrder so = SortOrder.ASC;
-				for (int i = 0; i < sortBy.length - 1; i++) {
+				for (int i = 0; i < sortBy.length; i++) {
 					Field<?> field = table.field(sortBy[i]);
 					if (sortBy.length == order.length
 							&& !StringUtils.isNullOrEmpty(order[i])
@@ -400,9 +400,15 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 	}
 	
 	protected void structToDB(S strcuct, R r) {
-		
+		java.lang.reflect.Field[] fields = strcuct.getClass().getFields();
+		if(fields != null && fields.length > 0) {
+			for(int i=0; i<fields.length;i++) {
+				
+			}
+			/*Method method = clazz.getMethod(methodName,
+					fields[i].getType());*/
+		}
 	}
-	
 	
 	protected void DBToStruct(R r, S struct) {
 		
