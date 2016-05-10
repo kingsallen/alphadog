@@ -1,4 +1,4 @@
-package com.moseeker.common.dbutils.security;
+package com.moseeker.common.util;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
