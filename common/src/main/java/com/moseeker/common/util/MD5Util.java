@@ -23,16 +23,44 @@ public class MD5Util {
 	/**
 	 * 利用JAVA 自带的消息摘要算法生成消息摘要 如果salt 值发生变更，将会导致变更之前的消息摘要验证失败。
 	 * 
-	 * @param msg
+	 * @param plainText
 	 * @return
 	 */
+    public static String md5(String plainText) {  
+        try {  
+            MessageDigest md = MessageDigest.getInstance("MD5");  
+            md.update(plainText.getBytes());  
+            byte b[] = md.digest();  
+  
+            int i;  
+  
+            StringBuffer buf = new StringBuffer("");  
+            for (int offset = 0; offset < b.length; offset++) {  
+                i = b[offset];  
+                if (i < 0)  
+                    i += 256;  
+                if (i < 16)  
+                    buf.append("0");  
+                buf.append(Integer.toHexString(i));  
+            }  
+            //32位加密  
+            return buf.toString();  
+            // 16位的加密  
+            //return buf.toString().substring(8, 24);  
+        } catch (NoSuchAlgorithmException e) {  
+            e.printStackTrace();  
+            return null;  
+        }  
+  
+    } 
+	
 	public String encodePassword(String msg) {
 		MessageDigest md;
 		StringBuilder password = new StringBuilder();
 		try {
 			md = MessageDigest.getInstance("MD5");
 			if (salt != null && !salt.trim().equals("")) {
-				md.update(salt.getBytes());
+				md.update((msg+salt).getBytes());
 			} else {
 				md.update(msg.getBytes());
 			}

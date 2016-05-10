@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -20,6 +22,8 @@ import com.moseeker.useraccounts.dao.impl.WxuserDaoImpl;
 
 @Service
 public class UseraccountsServiceImpl implements Iface {
+
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	
 	protected BaseDao<UserWxUserRecord> wxuserdao = new WxuserDaoImpl();
@@ -77,6 +81,7 @@ public class UseraccountsServiceImpl implements Iface {
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
+			logger.error("postuserlogin error: ", e);
 
 		}			
 		return ResponseUtils.fail(10010, "username and password do not match!");
