@@ -1,9 +1,13 @@
 package com.moseeker.common.util;
 
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import org.apache.thrift.TBase;
 import org.jooq.impl.UpdatableRecordImpl;
+import org.junit.Test;
+
+import com.moseeker.thrift.gen.profile.struct.Basic;
 
 /**
  * 
@@ -25,23 +29,45 @@ import org.jooq.impl.UpdatableRecordImpl;
  */
 public class BeanUtils {
 
-	public static void copyUseMethod(Object dest, Object orig) {
-		try {
-			org.apache.commons.beanutils.BeanUtils.copyProperties(dest, orig);
-		} catch (IllegalAccessException | InvocationTargetException e) {
-			e.printStackTrace();
+	public static void structToDB(TBase dest, UpdatableRecordImpl orig) {
+		Field[] descFields = TBase.class.getFields();
+		Method[] destMethods = TBase.class.getMethods();
+		
+		Field[] origFields = TBase.class.getFields();
+		Method[] origMethods = TBase.class.getMethods();
+		int i=0,j=0;
+		if(descFields != null && descFields.length > 0 && destMethods != null && destMethods.length > 0) {
+			for(i=0; i<descFields.length; i++) {
+				if(!descFields[i].getName().trim().equals("metaDataMap")) {
+					Field field = descFields[i];
+					for(j=0; j<destMethods.length; j++) {
+						String upperFirst = field.getName().substring(0, 1).toUpperCase() + 
+								field.getName().substring(1);
+						String setMethodName = "get" + upperFirst;
+						
+						if(destMethods[i].getName().equals(setMethodName)) {
+							String isSetMethodName = "isSet" + upperFirst;
+						}
+					}
+				}
+			}
 		}
 	}
-
-	public static <T extends TBase<?, ?>> T dbToStruct(
-			UpdatableRecordImpl<?> r, Class<T> clazz) {
-		// r.getClass().
-		return null;
+	
+	public static void structToDB(TBase dest, Class<UpdatableRecordImpl> orig) {
+		Field[] fields = dest.getClass().getFields();
+		for(int i=0; i<fields.length; i++) {
+			
+		}
 	}
-
-	public static TBase<?, ?> dbToStruct(UpdatableRecordImpl<?> r, TBase<?, ?> t) {
-
-		return null;
+	
+	@Test
+	public void test() {
+		Basic basic = new Basic();
+		Field[] fields = Basic.class.getFields();
+		for(int i=0; i<fields.length; i++) {
+			System.out.println(fields[i].getName());
+		}
 	}
 
 	/**

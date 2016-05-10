@@ -1,7 +1,5 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,6 +16,7 @@ import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.util.ServiceUtil;
 import com.moseeker.thrift.gen.profile.service.RewardServices;
 import com.moseeker.thrift.gen.profile.struct.CommonQuery;
+import com.moseeker.thrift.gen.profile.struct.ProviderResult;
 import com.moseeker.thrift.gen.profile.struct.Reward;
 
 @Controller
@@ -36,8 +35,8 @@ public class RewardController {
 			// GET方法 通用参数解析并赋值
 			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
 
-			List<Reward> rewards = rewardService.getResources(query);
-			jsonStringResponse = JSON.toJSONString(rewards);
+			ProviderResult result = rewardService.getResources(query);
+			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
 		} catch (Exception e) {	
@@ -52,7 +51,7 @@ public class RewardController {
 		String jsonStringResponse = null;
 		try {
 			Reward reward = ParamUtils.initModelForm(request, Reward.class);
-			int result = rewardService.postResource(reward);
+			ProviderResult result = rewardService.postResource(reward);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -68,7 +67,7 @@ public class RewardController {
 		String jsonStringResponse = null;
 		try {
 			Reward reward = ParamUtils.initModelForm(request, Reward.class);
-			int result = rewardService.putResource(reward);
+			ProviderResult result = rewardService.putResource(reward);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -83,7 +82,7 @@ public class RewardController {
 		String jsonStringResponse = null;
 		try {
 			Reward reward = ParamUtils.initModelForm(request, Reward.class);
-			int result = rewardService.delResource(reward);
+			ProviderResult result = rewardService.delResource(reward);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);

@@ -1,7 +1,5 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,6 +17,7 @@ import com.moseeker.servicemanager.util.ServiceUtil;
 import com.moseeker.thrift.gen.profile.service.EducationExtServices;
 import com.moseeker.thrift.gen.profile.struct.CommonQuery;
 import com.moseeker.thrift.gen.profile.struct.EducationExt;
+import com.moseeker.thrift.gen.profile.struct.ProviderResult;
 
 @Controller
 public class EducationExtController {
@@ -36,8 +35,8 @@ public class EducationExtController {
 			// GET方法 通用参数解析并赋值
 			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
 
-			List<EducationExt> profiles = educationExtService.getResources(query);
-			jsonStringResponse = JSON.toJSONString(profiles);
+			ProviderResult result = educationExtService.getResources(query);
+			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
 		} catch (Exception e) {	
@@ -52,7 +51,7 @@ public class EducationExtController {
 		String jsonStringResponse = null;
 		try {
 			EducationExt attachment = ParamUtils.initModelForm(request, EducationExt.class);
-			int result = educationExtService.postResource(attachment);
+			ProviderResult result = educationExtService.postResource(attachment);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -68,7 +67,7 @@ public class EducationExtController {
 		String jsonStringResponse = null;
 		try {
 			EducationExt attachment = ParamUtils.initModelForm(request, EducationExt.class);
-			int result = educationExtService.putResource(attachment);
+			ProviderResult result = educationExtService.putResource(attachment);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -83,7 +82,7 @@ public class EducationExtController {
 		String jsonStringResponse = null;
 		try {
 			EducationExt attachment = ParamUtils.initModelForm(request, EducationExt.class);
-			int result = educationExtService.delResource(attachment);
+			ProviderResult result = educationExtService.delResource(attachment);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);

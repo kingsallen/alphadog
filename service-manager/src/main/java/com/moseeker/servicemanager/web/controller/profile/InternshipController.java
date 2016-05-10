@@ -1,7 +1,5 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,6 +17,7 @@ import com.moseeker.servicemanager.util.ServiceUtil;
 import com.moseeker.thrift.gen.profile.service.InternshipServices;
 import com.moseeker.thrift.gen.profile.struct.CommonQuery;
 import com.moseeker.thrift.gen.profile.struct.Internship;
+import com.moseeker.thrift.gen.profile.struct.ProviderResult;
 
 @Controller
 public class InternshipController {
@@ -36,8 +35,8 @@ public class InternshipController {
 			// GET方法 通用参数解析并赋值
 			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
 
-			List<Internship> profiles = internshipService.getResources(query);
-			jsonStringResponse = JSON.toJSONString(profiles);
+			ProviderResult result = internshipService.getResources(query);
+			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
 		} catch (Exception e) {	
@@ -52,7 +51,7 @@ public class InternshipController {
 		String jsonStringResponse = null;
 		try {
 			Internship education = ParamUtils.initModelForm(request, Internship.class);
-			int result = internshipService.postResource(education);
+			ProviderResult result = internshipService.postResource(education);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -68,7 +67,7 @@ public class InternshipController {
 		String jsonStringResponse = null;
 		try {
 			Internship internship = ParamUtils.initModelForm(request, Internship.class);
-			int result = internshipService.putResource(internship);
+			ProviderResult result = internshipService.putResource(internship);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -83,7 +82,7 @@ public class InternshipController {
 		String jsonStringResponse = null;
 		try {
 			Internship internship = ParamUtils.initModelForm(request, Internship.class);
-			int result = internshipService.delResource(internship);
+			ProviderResult result = internshipService.delResource(internship);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);

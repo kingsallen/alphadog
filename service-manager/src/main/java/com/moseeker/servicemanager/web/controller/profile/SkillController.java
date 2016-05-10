@@ -1,7 +1,5 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,6 +16,7 @@ import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.util.ServiceUtil;
 import com.moseeker.thrift.gen.profile.service.SkillServices;
 import com.moseeker.thrift.gen.profile.struct.CommonQuery;
+import com.moseeker.thrift.gen.profile.struct.ProviderResult;
 import com.moseeker.thrift.gen.profile.struct.Skill;
 
 @Controller
@@ -36,8 +35,8 @@ public class SkillController {
 			// GET方法 通用参数解析并赋值
 			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
 
-			List<Skill> skills = skillService.getResources(query);
-			jsonStringResponse = JSON.toJSONString(skills);
+			ProviderResult result = skillService.getResources(query);
+			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
 		} catch (Exception e) {	
@@ -52,7 +51,7 @@ public class SkillController {
 		String jsonStringResponse = null;
 		try {
 			Skill skill = ParamUtils.initModelForm(request, Skill.class);
-			int result = skillService.postResource(skill);
+			ProviderResult result = skillService.postResource(skill);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -68,7 +67,7 @@ public class SkillController {
 		String jsonStringResponse = null;
 		try {
 			Skill skill = ParamUtils.initModelForm(request, Skill.class);
-			int result = skillService.putResource(skill);
+			ProviderResult result = skillService.putResource(skill);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -83,7 +82,7 @@ public class SkillController {
 		String jsonStringResponse = null;
 		try {
 			Skill skill = ParamUtils.initModelForm(request, Skill.class);
-			int result = skillService.delResource(skill);
+			ProviderResult result = skillService.delResource(skill);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);

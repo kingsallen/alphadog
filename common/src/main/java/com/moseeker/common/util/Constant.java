@@ -23,4 +23,10 @@ public final class Constant {
 	
 	public static final int REDIS_CONNECT_ERROR_APPID = 0;
 	public static final String REDIS_CONNECT_ERROR_EVENTKEY = "REDIS_CONNECT_ERROR";
+	
+	public static final String TIPS_SUCCESS = "success";
+
+	public static final String TIPS_ERROR = "error";
+
+	public static final String NONE_JSON = "{}";
 }

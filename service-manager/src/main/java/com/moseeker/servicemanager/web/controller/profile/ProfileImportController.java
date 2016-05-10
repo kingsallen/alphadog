@@ -1,7 +1,5 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,6 +17,7 @@ import com.moseeker.servicemanager.util.ServiceUtil;
 import com.moseeker.thrift.gen.profile.service.ProfileImportServices;
 import com.moseeker.thrift.gen.profile.struct.CommonQuery;
 import com.moseeker.thrift.gen.profile.struct.ProfileImport;
+import com.moseeker.thrift.gen.profile.struct.ProviderResult;
 
 @Controller
 public class ProfileImportController {
@@ -36,8 +35,8 @@ public class ProfileImportController {
 			// GET方法 通用参数解析并赋值
 			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
 
-			List<ProfileImport> profileimports = profileImportService.getResources(query);
-			jsonStringResponse = JSON.toJSONString(profileimports);
+			ProviderResult result = profileImportService.getResources(query);
+			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
 		} catch (Exception e) {	
@@ -52,7 +51,7 @@ public class ProfileImportController {
 		String jsonStringResponse = null;
 		try {
 			ProfileImport profileimport = ParamUtils.initModelForm(request, ProfileImport.class);
-			int result = profileImportService.postResource(profileimport);
+			ProviderResult result = profileImportService.postResource(profileimport);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -68,7 +67,7 @@ public class ProfileImportController {
 		String jsonStringResponse = null;
 		try {
 			ProfileImport profileimport = ParamUtils.initModelForm(request, ProfileImport.class);
-			int result = profileImportService.putResource(profileimport);
+			ProviderResult result = profileImportService.putResource(profileimport);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -83,7 +82,7 @@ public class ProfileImportController {
 		String jsonStringResponse = null;
 		try {
 			ProfileImport profileimport = ParamUtils.initModelForm(request, ProfileImport.class);
-			int result = profileImportService.delResource(profileimport);
+			ProviderResult result = profileImportService.delResource(profileimport);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);

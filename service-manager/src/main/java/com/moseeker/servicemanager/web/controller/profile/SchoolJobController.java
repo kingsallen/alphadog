@@ -1,7 +1,5 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,6 +16,7 @@ import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.util.ServiceUtil;
 import com.moseeker.thrift.gen.profile.service.SchoolJobServices;
 import com.moseeker.thrift.gen.profile.struct.CommonQuery;
+import com.moseeker.thrift.gen.profile.struct.ProviderResult;
 import com.moseeker.thrift.gen.profile.struct.SchoolJob;
 
 @Controller
@@ -36,8 +35,8 @@ public class SchoolJobController {
 			// GET方法 通用参数解析并赋值
 			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
 
-			List<SchoolJob> schoolJob = schoolJobService.getResources(query);
-			jsonStringResponse = JSON.toJSONString(schoolJob);
+			ProviderResult result = schoolJobService.getResources(query);
+			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
 		} catch (Exception e) {	
@@ -52,7 +51,7 @@ public class SchoolJobController {
 		String jsonStringResponse = null;
 		try {
 			SchoolJob schoolJob = ParamUtils.initModelForm(request, SchoolJob.class);
-			int result = schoolJobService.postResource(schoolJob);
+			ProviderResult result = schoolJobService.postResource(schoolJob);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -68,7 +67,7 @@ public class SchoolJobController {
 		String jsonStringResponse = null;
 		try {
 			SchoolJob schoolJob = ParamUtils.initModelForm(request, SchoolJob.class);
-			int result = schoolJobService.putResource(schoolJob);
+			ProviderResult result = schoolJobService.putResource(schoolJob);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -83,7 +82,7 @@ public class SchoolJobController {
 		String jsonStringResponse = null;
 		try {
 			SchoolJob schoolJob = ParamUtils.initModelForm(request, SchoolJob.class);
-			int result = schoolJobService.delResource(schoolJob);
+			ProviderResult result = schoolJobService.delResource(schoolJob);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);

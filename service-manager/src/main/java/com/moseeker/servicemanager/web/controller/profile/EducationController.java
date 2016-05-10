@@ -1,7 +1,5 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,6 +17,7 @@ import com.moseeker.servicemanager.util.ServiceUtil;
 import com.moseeker.thrift.gen.profile.service.EducationServices;
 import com.moseeker.thrift.gen.profile.struct.CommonQuery;
 import com.moseeker.thrift.gen.profile.struct.Education;
+import com.moseeker.thrift.gen.profile.struct.ProviderResult;
 
 @Controller
 public class EducationController {
@@ -36,8 +35,8 @@ public class EducationController {
 			// GET方法 通用参数解析并赋值
 			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
 
-			List<Education> profiles = educationService.getResources(query);
-			jsonStringResponse = JSON.toJSONString(profiles);
+			ProviderResult result = educationService.getResources(query);
+			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
 		} catch (Exception e) {	
@@ -52,7 +51,7 @@ public class EducationController {
 		String jsonStringResponse = null;
 		try {
 			Education education = ParamUtils.initModelForm(request, Education.class);
-			int result = educationService.postResource(education);
+			ProviderResult result = educationService.postResource(education);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -68,7 +67,7 @@ public class EducationController {
 		String jsonStringResponse = null;
 		try {
 			Education education = ParamUtils.initModelForm(request, Education.class);
-			int result = educationService.putResource(education);
+			ProviderResult result = educationService.putResource(education);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -83,7 +82,7 @@ public class EducationController {
 		String jsonStringResponse = null;
 		try {
 			Education education = ParamUtils.initModelForm(request, Education.class);
-			int result = educationService.delResource(education);
+			ProviderResult result = educationService.delResource(education);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);

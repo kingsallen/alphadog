@@ -1,7 +1,5 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,6 +17,7 @@ import com.moseeker.servicemanager.util.ServiceUtil;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
 import com.moseeker.thrift.gen.profile.struct.CommonQuery;
 import com.moseeker.thrift.gen.profile.struct.Profile;
+import com.moseeker.thrift.gen.profile.struct.ProviderResult;
 
 @Controller
 public class ProfileController {
@@ -36,8 +35,8 @@ public class ProfileController {
 			// GET方法 通用参数解析并赋值
 			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
 			
-			List<Profile> profiles = profileService.getResources(query);
-			jsonStringResponse = JSON.toJSONString(profiles);
+			ProviderResult result = profileService.getResources(query);
+			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
 		} catch (Exception e) {	
@@ -52,7 +51,7 @@ public class ProfileController {
 		String jsonStringResponse = null;
 		try {
 			Profile profile = ParamUtils.initModelForm(request, Profile.class);
-			int result = profileService.postResource(profile);
+			ProviderResult result = profileService.postResource(profile);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -68,7 +67,7 @@ public class ProfileController {
 		String jsonStringResponse = null;
 		try {
 			Profile profile = ParamUtils.initModelForm(request, Profile.class);
-			int result = profileService.putResource(profile);
+			ProviderResult result = profileService.putResource(profile);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -83,7 +82,7 @@ public class ProfileController {
 		String jsonStringResponse = null;
 		try {
 			Profile profile = ParamUtils.initModelForm(request, Profile.class);
-			int result = profileService.delResource(profile);
+			ProviderResult result = profileService.delResource(profile);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
