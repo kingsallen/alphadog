@@ -1,7 +1,5 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,6 +17,7 @@ import com.moseeker.servicemanager.util.ServiceUtil;
 import com.moseeker.thrift.gen.profile.service.ProjectExpServices;
 import com.moseeker.thrift.gen.profile.struct.CommonQuery;
 import com.moseeker.thrift.gen.profile.struct.ProjectExp;
+import com.moseeker.thrift.gen.profile.struct.ProviderResult;
 
 @Controller
 public class ProjectExpController {
@@ -36,8 +35,8 @@ public class ProjectExpController {
 			// GET方法 通用参数解析并赋值
 			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
 
-			List<ProjectExp> profileimports = projectExpService.getResources(query);
-			jsonStringResponse = JSON.toJSONString(profileimports);
+			ProviderResult result = projectExpService.getResources(query);
+			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
 		} catch (Exception e) {	
@@ -52,7 +51,7 @@ public class ProjectExpController {
 		String jsonStringResponse = null;
 		try {
 			ProjectExp projectExp = ParamUtils.initModelForm(request, ProjectExp.class);
-			int result = projectExpService.postResource(projectExp);
+			ProviderResult result = projectExpService.postResource(projectExp);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -68,7 +67,7 @@ public class ProjectExpController {
 		String jsonStringResponse = null;
 		try {
 			ProjectExp profileimport = ParamUtils.initModelForm(request, ProjectExp.class);
-			int result = projectExpService.putResource(profileimport);
+			ProviderResult result = projectExpService.putResource(profileimport);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -83,7 +82,7 @@ public class ProjectExpController {
 		String jsonStringResponse = null;
 		try {
 			ProjectExp profileimport = ParamUtils.initModelForm(request, ProjectExp.class);
-			int result = projectExpService.delResource(profileimport);
+			ProviderResult result = projectExpService.delResource(profileimport);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);

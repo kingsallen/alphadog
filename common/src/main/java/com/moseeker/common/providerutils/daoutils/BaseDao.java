@@ -2,8 +2,6 @@ package com.moseeker.common.providerutils.daoutils;
 
 import java.util.List;
 
-import org.apache.thrift.TException;
-
 //todo 基础接口里不应该出现jooq相关的类
 import com.moseeker.thrift.gen.profile.struct.CommonQuery;
 
@@ -19,22 +17,22 @@ import com.moseeker.thrift.gen.profile.struct.CommonQuery;
  */
 public interface BaseDao<S> {
 	
-	S getResource(CommonQuery query) throws TException;
+	S getResource(CommonQuery query) throws Exception;
 
-	List<S> getResources(CommonQuery query) throws TException;
+	List<S> getResources(CommonQuery query) throws Exception;
 	
-	int getResourceCount(CommonQuery query) throws TException ;
+	int getResourceCount(CommonQuery query) throws Exception ;
 
-	int postResources(List<S> structs) throws TException;
+	int postResources(List<S> structs) throws Exception;
 
-	int putResources(List<S> structs) throws TException;
+	int putResources(List<S> structs) throws Exception;
 
-	int delResources(List<S> structs) throws TException;
+	int delResources(List<S> structs) throws Exception;
 
-	int postResource(S struct) throws TException;
+	int postResource(S struct) throws Exception;
 
-	int putResource(S struct) throws TException;
+	int putResource(S struct) throws Exception;
 
-	int delResource(S struct) throws TException;
+	int delResource(S struct) throws Exception;
 
 }

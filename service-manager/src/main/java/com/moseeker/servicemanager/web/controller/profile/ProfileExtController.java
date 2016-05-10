@@ -1,7 +1,5 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,6 +17,7 @@ import com.moseeker.servicemanager.util.ServiceUtil;
 import com.moseeker.thrift.gen.profile.service.ProfileExtServices;
 import com.moseeker.thrift.gen.profile.struct.CommonQuery;
 import com.moseeker.thrift.gen.profile.struct.ProfileExt;
+import com.moseeker.thrift.gen.profile.struct.ProviderResult;
 
 @Controller
 public class ProfileExtController {
@@ -36,8 +35,8 @@ public class ProfileExtController {
 			// GET方法 通用参数解析并赋值
 			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
 
-			List<ProfileExt> profileexts = profileExtService.getResources(query);
-			jsonStringResponse = JSON.toJSONString(profileexts);
+			ProviderResult result = profileExtService.getResources(query);
+			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
 		} catch (Exception e) {	
@@ -52,7 +51,7 @@ public class ProfileExtController {
 		String jsonStringResponse = null;
 		try {
 			ProfileExt profileext = ParamUtils.initModelForm(request, ProfileExt.class);
-			int result = profileExtService.postResource(profileext);
+			ProviderResult result = profileExtService.postResource(profileext);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -68,7 +67,7 @@ public class ProfileExtController {
 		String jsonStringResponse = null;
 		try {
 			ProfileExt profileext = ParamUtils.initModelForm(request, ProfileExt.class);
-			int result = profileExtService.putResource(profileext);
+			ProviderResult result = profileExtService.putResource(profileext);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -83,7 +82,7 @@ public class ProfileExtController {
 		String jsonStringResponse = null;
 		try {
 			ProfileExt profileext = ParamUtils.initModelForm(request, ProfileExt.class);
-			int result = profileExtService.delResource(profileext);
+			ProviderResult result = profileExtService.delResource(profileext);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);

@@ -1,7 +1,5 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,6 +16,7 @@ import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.util.ServiceUtil;
 import com.moseeker.thrift.gen.profile.service.WorkExpServices;
 import com.moseeker.thrift.gen.profile.struct.CommonQuery;
+import com.moseeker.thrift.gen.profile.struct.ProviderResult;
 import com.moseeker.thrift.gen.profile.struct.WorkExp;
 
 @Controller
@@ -36,8 +35,8 @@ public class WorkController {
 			// GET方法 通用参数解析并赋值
 			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
 
-			List<WorkExp> workExps = workExpService.getResources(query);
-			jsonStringResponse = JSON.toJSONString(workExps);
+			ProviderResult result = workExpService.getResources(query);
+			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
 		} catch (Exception e) {	
@@ -52,7 +51,7 @@ public class WorkController {
 		String jsonStringResponse = null;
 		try {
 			WorkExp workexp = ParamUtils.initModelForm(request, WorkExp.class);
-			int result = workExpService.postResource(workexp);
+			ProviderResult result = workExpService.postResource(workexp);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -68,7 +67,7 @@ public class WorkController {
 		String jsonStringResponse = null;
 		try {
 			WorkExp workexp = ParamUtils.initModelForm(request, WorkExp.class);
-			int result = workExpService.putResource(workexp);
+			ProviderResult result = workExpService.putResource(workexp);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -83,7 +82,7 @@ public class WorkController {
 		String jsonStringResponse = null;
 		try {
 			WorkExp workexp = ParamUtils.initModelForm(request, WorkExp.class);
-			int result = workExpService.delResource(workexp);
+			ProviderResult result = workExpService.delResource(workexp);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);

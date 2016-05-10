@@ -1,7 +1,5 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,6 +17,7 @@ import com.moseeker.servicemanager.util.ServiceUtil;
 import com.moseeker.thrift.gen.profile.service.LanguageServices;
 import com.moseeker.thrift.gen.profile.struct.CommonQuery;
 import com.moseeker.thrift.gen.profile.struct.Language;
+import com.moseeker.thrift.gen.profile.struct.ProviderResult;
 
 @Controller
 public class LanguageController {
@@ -36,8 +35,8 @@ public class LanguageController {
 			// GET方法 通用参数解析并赋值
 			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
 
-			List<Language> languages = languageService.getResources(query);
-			jsonStringResponse = JSON.toJSONString(languages);
+			ProviderResult result = languageService.getResources(query);
+			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
 		} catch (Exception e) {	
@@ -52,7 +51,7 @@ public class LanguageController {
 		String jsonStringResponse = null;
 		try {
 			Language language = ParamUtils.initModelForm(request, Language.class);
-			int result = languageService.postResource(language);
+			ProviderResult result = languageService.postResource(language);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -68,7 +67,7 @@ public class LanguageController {
 		String jsonStringResponse = null;
 		try {
 			Language language = ParamUtils.initModelForm(request, Language.class);
-			int result = languageService.putResource(language);
+			ProviderResult result = languageService.putResource(language);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -83,7 +82,7 @@ public class LanguageController {
 		String jsonStringResponse = null;
 		try {
 			Language language = ParamUtils.initModelForm(request, Language.class);
-			int result = languageService.delResource(language);
+			ProviderResult result = languageService.delResource(language);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);

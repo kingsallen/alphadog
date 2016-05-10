@@ -1,7 +1,5 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,6 +17,7 @@ import com.moseeker.servicemanager.util.ServiceUtil;
 import com.moseeker.thrift.gen.profile.service.AttachmentServices;
 import com.moseeker.thrift.gen.profile.struct.Attachment;
 import com.moseeker.thrift.gen.profile.struct.CommonQuery;
+import com.moseeker.thrift.gen.profile.struct.ProviderResult;
 
 @Controller
 public class AttachmentController {
@@ -36,8 +35,8 @@ public class AttachmentController {
 			// GET方法 通用参数解析并赋值
 			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
 
-			List<Attachment> profiles = attachmentService.getResources(query);
-			jsonStringResponse = JSON.toJSONString(profiles);
+			ProviderResult result = attachmentService.getResources(query);
+			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
 		} catch (Exception e) {	
@@ -52,7 +51,7 @@ public class AttachmentController {
 		String jsonStringResponse = null;
 		try {
 			Attachment attachment = ParamUtils.initModelForm(request, Attachment.class);
-			int result = attachmentService.postResource(attachment);
+			ProviderResult result = attachmentService.postResource(attachment);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -68,7 +67,7 @@ public class AttachmentController {
 		String jsonStringResponse = null;
 		try {
 			Attachment attachment = ParamUtils.initModelForm(request, Attachment.class);
-			int result = attachmentService.putResource(attachment);
+			ProviderResult result = attachmentService.putResource(attachment);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -83,7 +82,7 @@ public class AttachmentController {
 		String jsonStringResponse = null;
 		try {
 			Attachment attachment = ParamUtils.initModelForm(request, Attachment.class);
-			int result = attachmentService.delResource(attachment);
+			ProviderResult result = attachmentService.delResource(attachment);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);

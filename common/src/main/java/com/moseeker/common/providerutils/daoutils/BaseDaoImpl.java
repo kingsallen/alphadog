@@ -1,6 +1,5 @@
 package com.moseeker.common.providerutils.daoutils;
 
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.thrift.TBase;
-import org.apache.thrift.TException;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record;
@@ -18,7 +16,6 @@ import org.jooq.SelectQuery;
 import org.jooq.SortField;
 import org.jooq.SortOrder;
 import org.jooq.TableLike;
-import org.jooq.exception.DataAccessException;
 import org.jooq.impl.TableImpl;
 import org.jooq.impl.UpdatableRecordImpl;
 import org.slf4j.Logger;
@@ -54,10 +51,9 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 
 	protected abstract void initJOOQEntity();
 
-	public List<S> getResources(CommonQuery query) throws TException {
+	public List<S> getResources(CommonQuery query) throws Exception {
 		initJOOQEntity();
 		List<S> structs = new ArrayList<>();
-		try {
 			DSLContext create = DatabaseConnectionHelper.getConnection()
 					.getJooqDSL();
 
@@ -126,194 +122,144 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 					structs.add(k);
 				}
 			}
-		} catch (DataAccessException | SQLException e) {
-			logger.error("error", e);
-			throw new TException();
-		} finally {
-			//do nothing
-		}
 		return structs;
 	}
 	
 	@SuppressWarnings({"unchecked" })
-	public int getResourceCount(CommonQuery query) throws TException {
+	public int getResourceCount(CommonQuery query) throws Exception {
 		initJOOQEntity();
 		int totalCount = 0;
-		try {
-			DSLContext create = DatabaseConnectionHelper.getConnection()
-					.getJooqDSL();
+		DSLContext create = DatabaseConnectionHelper.getConnection()
+				.getJooqDSL();
 
-			SelectQuery<?> selectQuery = create.selectQuery();
-			selectQuery.addFrom(tableLike);
+		SelectQuery<?> selectQuery = create.selectQuery();
+		selectQuery.addFrom(tableLike);
 
-			if (query.getEqualFilter() != null && query.getEqualFilter().size() > 0) {
-				Map<String, String> equalFilter = query.getEqualFilter();
-				for (Entry<String, String> entry : equalFilter.entrySet()) {
-					Field field = tableLike.field(entry.getKey());
-					if (field != null) {
-						selectQuery.addConditions(field.strictEqual(BeanUtils.convertTo(
-								entry.getValue(), field.getType())));
-					}
+		if (query.getEqualFilter() != null && query.getEqualFilter().size() > 0) {
+			Map<String, String> equalFilter = query.getEqualFilter();
+			for (Entry<String, String> entry : equalFilter.entrySet()) {
+				Field field = tableLike.field(entry.getKey());
+				if (field != null) {
+					selectQuery.addConditions(field.strictEqual(BeanUtils.convertTo(
+							entry.getValue(), field.getType())));
 				}
 			}
-			totalCount = create.fetchCount(selectQuery);
-		} catch (DataAccessException | SQLException e) {
-			logger.error("error", e);
-			throw new TException();
-		} finally {
-			//do nothing
 		}
+		totalCount = create.fetchCount(selectQuery);
 		return totalCount;
 	}
 
-	public int postResources(List<S> structs) throws TException {
+	public int postResources(List<S> structs) throws Exception {
 		initJOOQEntity();
 		int insertret = 0;
-		try {
+		List<R> records = structsToDBs(structs);
+		if (records != null && records.size() > 0) {
+			DSLContext create = DatabaseConnectionHelper.getConnection()
+					.getJooqDSL();
+			insertret = create.batchInsert(records).execute()[0];
+		}
+		return insertret;
+	}
+
+	public int putResources(List<S> structs) throws Exception {
+		initJOOQEntity();
+		int insertret = 0;
+		if (structs != null && structs.size() > 0) {
 			List<R> records = structsToDBs(structs);
-			if (records != null && records.size() > 0) {
-				DSLContext create = DatabaseConnectionHelper.getConnection()
-						.getJooqDSL();
-				insertret = create.batchInsert(records).execute()[0];
-			}
-		} catch (DataAccessException | SQLException e) {
-			logger.error("error", e);
-			throw new TException();
-		} finally {
-			//do nothing
+			DSLContext create = DatabaseConnectionHelper.getConnection()
+					.getJooqDSL();
+			insertret = create.batchUpdate(records).execute()[0];
 		}
 
 		return insertret;
 	}
 
-	public int putResources(List<S> structs) throws TException {
+	public int delResources(List<S> structs) throws Exception {
 		initJOOQEntity();
 		int insertret = 0;
 		if (structs != null && structs.size() > 0) {
 			List<R> records = structsToDBs(structs);
-			try {
-				DSLContext create = DatabaseConnectionHelper.getConnection()
-						.getJooqDSL();
-				insertret = create.batchUpdate(records).execute()[0];
-			} catch (DataAccessException | SQLException e) {
-				logger.error("error", e);
-				throw new TException();
-			} finally {
-				//do nothing
-			}
+			DSLContext create = DatabaseConnectionHelper.getConnection()
+					.getJooqDSL();
+			insertret = create.batchDelete(records).execute()[0];
 		}
-
-		return insertret;
-	}
-
-	public int delResources(List<S> structs) throws TException {
-		initJOOQEntity();
-		int insertret = 0;
-		if (structs != null && structs.size() > 0) {
-			try {
-				List<R> records = structsToDBs(structs);
-				DSLContext create = DatabaseConnectionHelper.getConnection()
-						.getJooqDSL();
-				insertret = create.batchDelete(records).execute()[0];
-			} catch (DataAccessException | SQLException e) {
-				logger.error("error", e);
-				throw new TException();
-			} finally {
-				//do nothing
-			}
-		}
-
 		return insertret;
 	}
 	
 	@SuppressWarnings({"unchecked" })
-	public S getResource(CommonQuery query) throws TException {
+	public S getResource(CommonQuery query) throws Exception {
 		initJOOQEntity();
 		S struct = null;
-		try {
-			DSLContext create = DatabaseConnectionHelper.getConnection()
-					.getJooqDSL();
+		DSLContext create = DatabaseConnectionHelper.getConnection()
+				.getJooqDSL();
 
-			SelectJoinStep<Record> table = create.select().from(tableLike);
+		SelectJoinStep<Record> table = create.select().from(tableLike);
 
-			if (query.getEqualFilter() != null
-					&& query.getEqualFilter().size() > 0) {
-				Map<String, String> equalFilter = query.getEqualFilter();
-				for (Entry<String, String> entry : equalFilter.entrySet()) {
-					Field field = table.field(entry.getKey());
-					if (field != null) {
-						table.where(field.strictEqual(BeanUtils.convertTo(
-								entry.getValue(), field.getType())));
+		if (query.getEqualFilter() != null
+				&& query.getEqualFilter().size() > 0) {
+			Map<String, String> equalFilter = query.getEqualFilter();
+			for (Entry<String, String> entry : equalFilter.entrySet()) {
+				Field field = table.field(entry.getKey());
+				if (field != null) {
+					table.where(field.strictEqual(BeanUtils.convertTo(
+							entry.getValue(), field.getType())));
+				}
+			}
+		}
+
+		if (!StringUtils.isNullOrEmpty(query.getSortby())) {
+			String[] sortBy = query.getSortby().split(",");
+			String[] order = query.getOrder().split(",");
+
+			List<SortField<?>> fields = new ArrayList<>(sortBy.length);
+			SortOrder so = SortOrder.ASC;
+			for (int i = 0; i < sortBy.length; i++) {
+				Field<?> field = table.field(sortBy[i]);
+				if (sortBy.length == order.length
+						&& !StringUtils.isNullOrEmpty(order[i])
+						&& order[i].toLowerCase().equals("desc")) {
+					so = SortOrder.DESC;
+				}
+				if (field != null) {
+					switch (so) {
+					case ASC:
+						fields.add(field.asc());
+						break;
+					case DESC:
+						fields.add(field.desc());
+						break;
+					default:
 					}
 				}
 			}
+			Field<?>[] fieldArray = null;
+			table.orderBy(fields.toArray(fieldArray));
+		}
 
-			if (!StringUtils.isNullOrEmpty(query.getSortby())) {
-				String[] sortBy = query.getSortby().split(",");
-				String[] order = query.getOrder().split(",");
+		table.limit(1);
 
-				List<SortField<?>> fields = new ArrayList<>(sortBy.length);
-				SortOrder so = SortOrder.ASC;
-				for (int i = 0; i < sortBy.length; i++) {
-					Field<?> field = table.field(sortBy[i]);
-					if (sortBy.length == order.length
-							&& !StringUtils.isNullOrEmpty(order[i])
-							&& order[i].toLowerCase().equals("desc")) {
-						so = SortOrder.DESC;
-					}
-					if (field != null) {
-						switch (so) {
-						case ASC:
-							fields.add(field.asc());
-							break;
-						case DESC:
-							fields.add(field.desc());
-							break;
-						default:
-						}
-					}
-				}
-				Field<?>[] fieldArray = null;
-				table.orderBy(fields.toArray(fieldArray));
-			}
+		Result<Record> result = table.fetch();
 
-			table.limit(1);
-
-			Result<Record> result = table.fetch();
-
-			if (result != null && result.size() > 0) {
-				struct = DBToStruct((R) result.get(0));
-			}
-		} catch (DataAccessException | SQLException e) {
-			logger.error("error", e);
-			throw new TException();
-		} finally {
-			//do nothing
+		if (result != null && result.size() > 0) {
+			struct = DBToStruct((R) result.get(0));
 		}
 		return struct;
 	}
 
-	public int postResource(S struct) throws TException {
+	public int postResource(S struct) throws Exception {
 		initJOOQEntity();
 		int insertret = 0;
 		if (struct != null) {
-			try {
-				R record = structToDB(struct);
-				DSLContext create = DatabaseConnectionHelper.getConnection()
-						.getJooqDSL();
-				insertret = create.batchInsert(record).execute()[0];
-			} catch (DataAccessException | ParseException | SQLException e) {
-				logger.error("error", e);
-				throw new TException();
-			} finally {
-				//do nothing
-			}
+			R record = structToDB(struct);
+			DSLContext create = DatabaseConnectionHelper.getConnection()
+					.getJooqDSL();
+			insertret = create.batchInsert(record).execute()[0];
 		}
 
 		return insertret;
 	}
 
-	public int putResource(S struct) throws TException {
+	public int putResource(S struct) throws Exception {
 		initJOOQEntity();
 		int insertret = 0;
 		if (struct != null) {
@@ -324,21 +270,14 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 		return insertret;
 	}
 
-	public int delResource(S struct) throws TException {
+	public int delResource(S struct) throws Exception {
 		initJOOQEntity();
 		int insertret = 0;
 		if (struct != null) {
-			try {
-				R record = structToDB(struct);
-				DSLContext create = DatabaseConnectionHelper.getConnection()
-						.getJooqDSL();
-				insertret = create.batchDelete(record).execute()[0];
-			} catch (DataAccessException | ParseException | SQLException e) {
-				logger.error("error", e);
-				throw new TException();
-			} finally {
-				//do nothing
-			}
+			R record = structToDB(struct);
+			DSLContext create = DatabaseConnectionHelper.getConnection()
+					.getJooqDSL();
+			insertret = create.batchDelete(record).execute()[0];
 		}
 
 		return insertret;
@@ -375,15 +314,11 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 
 	protected abstract R structToDB(S structK) throws ParseException;
 
-	protected List<R> structsToDBs(List<S> structKs) throws TException {
+	protected List<R> structsToDBs(List<S> structKs) throws Exception {
 		List<R> records = new ArrayList<>();
 		if (structKs != null && structKs.size() > 0) {
 			for (S structK : structKs) {
-				try {
-					records.add(structToDB(structK));
-				} catch (ParseException e) {
-					throw new TException(e.getMessage());
-				}
+				records.add(structToDB(structK));
 			}
 		}
 		return records;

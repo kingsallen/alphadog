@@ -8,10 +8,10 @@ namespace java com.moseeker.thrift.gen.profile.struct
  */
 typedef string Timestamp;
 
-struct reponse {
-	int status
-	string message
-	string data
+struct ProviderResult {
+    1: i32 status,
+    2: string message,
+    3: optional string data
 }
 
 struct CommonQuery {

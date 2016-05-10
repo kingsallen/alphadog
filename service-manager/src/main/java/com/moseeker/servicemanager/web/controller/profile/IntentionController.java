@@ -1,7 +1,5 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,6 +17,7 @@ import com.moseeker.servicemanager.util.ServiceUtil;
 import com.moseeker.thrift.gen.profile.service.IntentionServices;
 import com.moseeker.thrift.gen.profile.struct.CommonQuery;
 import com.moseeker.thrift.gen.profile.struct.Intention;
+import com.moseeker.thrift.gen.profile.struct.ProviderResult;
 
 @Controller
 public class IntentionController {
@@ -36,8 +35,8 @@ public class IntentionController {
 			// GET方法 通用参数解析并赋值
 			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
 
-			List<Intention> profiles = intentionService.getResources(query);
-			jsonStringResponse = JSON.toJSONString(profiles);
+			ProviderResult result = intentionService.getResources(query);
+			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
 		} catch (Exception e) {	
@@ -52,7 +51,7 @@ public class IntentionController {
 		String jsonStringResponse = null;
 		try {
 			Intention education = ParamUtils.initModelForm(request, Intention.class);
-			int result = intentionService.postResource(education);
+			ProviderResult result = intentionService.postResource(education);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -68,7 +67,7 @@ public class IntentionController {
 		String jsonStringResponse = null;
 		try {
 			Intention education = ParamUtils.initModelForm(request, Intention.class);
-			int result = intentionService.putResource(education);
+			ProviderResult result = intentionService.putResource(education);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -83,7 +82,7 @@ public class IntentionController {
 		String jsonStringResponse = null;
 		try {
 			Intention education = ParamUtils.initModelForm(request, Intention.class);
-			int result = intentionService.delResource(education);
+			ProviderResult result = intentionService.delResource(education);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);

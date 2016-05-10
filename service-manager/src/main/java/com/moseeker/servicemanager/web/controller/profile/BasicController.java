@@ -1,7 +1,5 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,6 +17,7 @@ import com.moseeker.servicemanager.util.ServiceUtil;
 import com.moseeker.thrift.gen.profile.service.BasicServices;
 import com.moseeker.thrift.gen.profile.struct.Basic;
 import com.moseeker.thrift.gen.profile.struct.CommonQuery;
+import com.moseeker.thrift.gen.profile.struct.ProviderResult;
 
 @Controller
 public class BasicController {
@@ -36,8 +35,8 @@ public class BasicController {
 			// GET方法 通用参数解析并赋值
 			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
 
-			List<Basic> profiles = basicService.getResources(query);
-			jsonStringResponse = JSON.toJSONString(profiles);
+			ProviderResult result = basicService.getResources(query);
+			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
 		} catch (Exception e) {	
@@ -52,7 +51,7 @@ public class BasicController {
 		String jsonStringResponse = null;
 		try {
 			Basic basic = ParamUtils.initModelForm(request, Basic.class);
-			int result = basicService.postResource(basic);
+			ProviderResult result = basicService.postResource(basic);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -68,7 +67,7 @@ public class BasicController {
 		String jsonStringResponse = null;
 		try {
 			Basic basic = ParamUtils.initModelForm(request, Basic.class);
-			int result = basicService.putResource(basic);
+			ProviderResult result = basicService.putResource(basic);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
@@ -83,7 +82,7 @@ public class BasicController {
 		String jsonStringResponse = null;
 		try {
 			Basic basic = ParamUtils.initModelForm(request, Basic.class);
-			int result = basicService.delResource(basic);
+			ProviderResult result = basicService.delResource(basic);
 			jsonStringResponse = JSON.toJSONString(result);
 			
 			return ResponseLogNotification.success(request, jsonStringResponse);
