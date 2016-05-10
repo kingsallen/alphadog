@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileIntention extends TableImpl<ProfileIntentionRecord> {
 
-	private static final long serialVersionUID = 298527350;
+	private static final long serialVersionUID = 1569038966;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_intention</code>

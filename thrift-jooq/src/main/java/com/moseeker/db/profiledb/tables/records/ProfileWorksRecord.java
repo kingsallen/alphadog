@@ -31,7 +31,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileWorksRecord extends UpdatableRecordImpl<ProfileWorksRecord> implements Record7<UInteger, UInteger, String, String, String, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = -1137980342;
+	private static final long serialVersionUID = 97668170;
 
 	/**
 	 * Setter for <code>profileDB.profile_works.id</code>. 主key

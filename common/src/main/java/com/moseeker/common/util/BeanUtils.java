@@ -1,13 +1,13 @@
 package com.moseeker.common.util;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.apache.thrift.TBase;
 import org.jooq.impl.UpdatableRecordImpl;
-import org.junit.Test;
-
-import com.moseeker.thrift.gen.profile.struct.Basic;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -28,13 +28,35 @@ import com.moseeker.thrift.gen.profile.struct.Basic;
  * @version
  */
 public class BeanUtils {
+	
+	private static Logger logger = LoggerFactory.getLogger(BeanUtils.class);
+	
+	public static void structToDB(@SuppressWarnings("rawtypes") TBase dest, @SuppressWarnings("rawtypes") Class<UpdatableRecordImpl> origClazz) {
+		@SuppressWarnings("rawtypes")
+		UpdatableRecordImpl orig = null;
+		try {
+			orig = origClazz.newInstance();
+		} catch (InstantiationException | IllegalAccessException e) {
+			logger.error("error", e);
+		}
+		structToDB(dest, orig);
+	}
 
-	public static void structToDB(TBase dest, UpdatableRecordImpl orig) {
+	/**
+	 * struct 类和JOOQ类的属性和方法固定，可以预先加载成静态的属性和方法
+	 * @param dest
+	 * @param orig
+	 */
+	public static void structToDB(@SuppressWarnings("rawtypes") TBase dest, @SuppressWarnings("rawtypes") UpdatableRecordImpl orig) {
+		if(dest == null || orig == null) {
+			return;
+		}
 		Field[] descFields = dest.getClass().getFields();
 		Method[] destMethods = dest.getClass().getMethods();
 		
 		Method[] origMethods = orig.getClass().getMethods();
-		int i=0,j=0;
+
+		int i=0,j=0,k=0;
 		if(descFields != null && descFields.length > 0 && destMethods != null && destMethods.length > 0) {
 			for(i=0; i<descFields.length; i++) {
 				if(!descFields[i].getName().trim().equals("metaDataMap")) {
@@ -43,10 +65,23 @@ public class BeanUtils {
 							field.getName().substring(1);
 					String getMethodName = "get" + upperFirst;
 					for(j=0; j<destMethods.length; j++) {
-						if(destMethods[j].getName().equals(getMethodName)) {
-							method isSetMethod = dest.getClass().getMethod("isSet"+upperFirst, null);
-							Object object = 
-							Object object = destMethods[j].invoke(dest, null);
+						try {
+							if(destMethods[j].getName().equals(getMethodName)) {
+								Method isSetMethod = dest.getClass().getMethod("isSet"+upperFirst, new Class[]{});
+								if((Boolean)isSetMethod.invoke(dest, new Object[]{})){
+									String origMethodName = buiderRecordSetMethodName(field.getName());
+									for(k=0; k<origMethods.length;k++) {
+										if(origMethods[k].getName().trim().equals(origMethodName)) {
+											origMethods[k].invoke(orig, destMethods[j].invoke(dest, new Object[]{}));
+										}
+									}
+								}
+							}
+						} catch (NoSuchMethodException | SecurityException | IllegalAccessException
+								| IllegalArgumentException | InvocationTargetException e) {
+							logger.error("error", e);
+						} finally {
+							//do nothing
 						}
 					}
 				}
@@ -54,19 +89,23 @@ public class BeanUtils {
 		}
 	}
 	
-	public static void structToDB(TBase dest, Class<UpdatableRecordImpl> orig) {
-		Field[] fields = dest.getClass().getFields();
-		for(int i=0; i<fields.length; i++) {
-			
-		}
-	}
-	
-	@Test
-	public void test() {
-		Basic basic = new Basic();
-		Field[] fields = Basic.class.getFields();
-		for(int i=0; i<fields.length; i++) {
-			System.out.println(fields[i].getName());
+	private static String buiderRecordSetMethodName(String name) {
+		if(name != null) {
+			StringBuffer sb = new StringBuffer();
+			sb.append("set");
+			String[] splitArray = name.split("_");
+			if(splitArray.length > 1) {
+				for(int i=0; i<splitArray.length; i++) {
+					sb.append(splitArray[i].substring(0, 1).toUpperCase());
+					sb.append(splitArray[i].substring(1));
+				}
+			} else {
+				sb.append(name.substring(0, 1).toUpperCase());
+				sb.append(name.substring(1));
+			}
+			return sb.toString();
+		} else {
+			return null;
 		}
 	}
 

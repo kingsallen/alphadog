@@ -66,6 +66,8 @@ public class DefaultInvoker<T> implements Invoker {
                 return result;
             } catch (InvocationTargetException ite) {// XXX:InvocationTargetException异常发生在method.invoke()中
                 Throwable cause = ite.getCause();
+                
+              //  cause.getMessage()
                 if (cause != null) {
                     if (cause instanceof TTransportException) {
                         exception = cause;
@@ -81,7 +83,7 @@ public class DefaultInvoker<T> implements Invoker {
                         } catch (Exception e) {
                             LOGGER.error(e.getMessage(), e);
                         }
-                        client = null; // 这里是为了防止后续return回pool中
+                      //  client = null; // 这里是为了防止后续return回pool中
                     } else {
                         exception = cause;
                     }

@@ -38,7 +38,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileReward extends TableImpl<ProfileRewardRecord> {
 
-	private static final long serialVersionUID = -426446071;
+	private static final long serialVersionUID = 29981449;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_reward</code>

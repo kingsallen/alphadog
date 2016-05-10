@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileAttachment extends TableImpl<ProfileAttachmentRecord> {
 
-	private static final long serialVersionUID = 631865819;
+	private static final long serialVersionUID = 1296038363;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_attachment</code>

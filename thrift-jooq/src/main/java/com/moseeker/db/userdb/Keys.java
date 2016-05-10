@@ -4,39 +4,30 @@
 package com.moseeker.db.userdb;
 
 
+import com.moseeker.db.userdb.tables.UserEmployee;
+import com.moseeker.db.userdb.tables.UserEmployeePointsRecord;
+import com.moseeker.db.userdb.tables.UserFavPosition;
+import com.moseeker.db.userdb.tables.UserHrAccount;
+import com.moseeker.db.userdb.tables.UserSettings;
+import com.moseeker.db.userdb.tables.UserUser;
+import com.moseeker.db.userdb.tables.UserWxUser;
+import com.moseeker.db.userdb.tables.UserWxViewer;
+import com.moseeker.db.userdb.tables.records.UserEmployeePointsRecordRecord;
+import com.moseeker.db.userdb.tables.records.UserEmployeeRecord;
+import com.moseeker.db.userdb.tables.records.UserFavPositionRecord;
+import com.moseeker.db.userdb.tables.records.UserHrAccountRecord;
+import com.moseeker.db.userdb.tables.records.UserSettingsRecord;
+import com.moseeker.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.db.userdb.tables.records.UserWxViewerRecord;
+
 import javax.annotation.Generated;
 
 import org.jooq.Identity;
 import org.jooq.UniqueKey;
 import org.jooq.impl.AbstractKeys;
 import org.jooq.types.UInteger;
-
-import com.moseeker.db.userdb.tables.Companyfollowers;
-import com.moseeker.db.userdb.tables.Friendcommentrequests;
-import com.moseeker.db.userdb.tables.Friendcomments;
-import com.moseeker.db.userdb.tables.Friendrequests;
-import com.moseeker.db.userdb.tables.SysUser;
-import com.moseeker.db.userdb.tables.SysUserPcresumeMonitor;
-import com.moseeker.db.userdb.tables.SysUserPosition;
-import com.moseeker.db.userdb.tables.User;
-import com.moseeker.db.userdb.tables.Userfriends;
-import com.moseeker.db.userdb.tables.Userfriends_2degree;
-import com.moseeker.db.userdb.tables.Usersetting;
-import com.moseeker.db.userdb.tables.Usersummary;
-import com.moseeker.db.userdb.tables.Userthirdbind;
-import com.moseeker.db.userdb.tables.records.CompanyfollowersRecord;
-import com.moseeker.db.userdb.tables.records.FriendcommentrequestsRecord;
-import com.moseeker.db.userdb.tables.records.FriendcommentsRecord;
-import com.moseeker.db.userdb.tables.records.FriendrequestsRecord;
-import com.moseeker.db.userdb.tables.records.SysUserPcresumeMonitorRecord;
-import com.moseeker.db.userdb.tables.records.SysUserPositionRecord;
-import com.moseeker.db.userdb.tables.records.SysUserRecord;
-import com.moseeker.db.userdb.tables.records.UserRecord;
-import com.moseeker.db.userdb.tables.records.UserfriendsRecord;
-import com.moseeker.db.userdb.tables.records.Userfriends_2degreeRecord;
-import com.moseeker.db.userdb.tables.records.UsersettingRecord;
-import com.moseeker.db.userdb.tables.records.UsersummaryRecord;
-import com.moseeker.db.userdb.tables.records.UserthirdbindRecord;
+import org.jooq.types.ULong;
 
 
 /**
@@ -57,44 +48,30 @@ public class Keys {
 	// IDENTITY definitions
 	// -------------------------------------------------------------------------
 
-	public static final Identity<CompanyfollowersRecord, Integer> IDENTITY_COMPANYFOLLOWERS = Identities0.IDENTITY_COMPANYFOLLOWERS;
-	public static final Identity<FriendcommentrequestsRecord, Long> IDENTITY_FRIENDCOMMENTREQUESTS = Identities0.IDENTITY_FRIENDCOMMENTREQUESTS;
-	public static final Identity<FriendcommentsRecord, Long> IDENTITY_FRIENDCOMMENTS = Identities0.IDENTITY_FRIENDCOMMENTS;
-	public static final Identity<FriendrequestsRecord, Long> IDENTITY_FRIENDREQUESTS = Identities0.IDENTITY_FRIENDREQUESTS;
-	public static final Identity<SysUserRecord, UInteger> IDENTITY_SYS_USER = Identities0.IDENTITY_SYS_USER;
-	public static final Identity<SysUserPcresumeMonitorRecord, Integer> IDENTITY_SYS_USER_PCRESUME_MONITOR = Identities0.IDENTITY_SYS_USER_PCRESUME_MONITOR;
-	public static final Identity<SysUserPositionRecord, UInteger> IDENTITY_SYS_USER_POSITION = Identities0.IDENTITY_SYS_USER_POSITION;
-	public static final Identity<UserRecord, UInteger> IDENTITY_USER = Identities0.IDENTITY_USER;
-	public static final Identity<UserfriendsRecord, Integer> IDENTITY_USERFRIENDS = Identities0.IDENTITY_USERFRIENDS;
-	public static final Identity<Userfriends_2degreeRecord, Integer> IDENTITY_USERFRIENDS_2DEGREE = Identities0.IDENTITY_USERFRIENDS_2DEGREE;
-	public static final Identity<UsersettingRecord, Integer> IDENTITY_USERSETTING = Identities0.IDENTITY_USERSETTING;
-	public static final Identity<UsersummaryRecord, Integer> IDENTITY_USERSUMMARY = Identities0.IDENTITY_USERSUMMARY;
-	public static final Identity<UserthirdbindRecord, Integer> IDENTITY_USERTHIRDBIND = Identities0.IDENTITY_USERTHIRDBIND;
+	public static final Identity<UserEmployeeRecord, Integer> IDENTITY_USER_EMPLOYEE = Identities0.IDENTITY_USER_EMPLOYEE;
+	public static final Identity<UserEmployeePointsRecordRecord, Integer> IDENTITY_USER_EMPLOYEE_POINTS_RECORD = Identities0.IDENTITY_USER_EMPLOYEE_POINTS_RECORD;
+	public static final Identity<UserFavPositionRecord, UInteger> IDENTITY_USER_FAV_POSITION = Identities0.IDENTITY_USER_FAV_POSITION;
+	public static final Identity<UserHrAccountRecord, Integer> IDENTITY_USER_HR_ACCOUNT = Identities0.IDENTITY_USER_HR_ACCOUNT;
+	public static final Identity<UserSettingsRecord, Integer> IDENTITY_USER_SETTINGS = Identities0.IDENTITY_USER_SETTINGS;
+	public static final Identity<UserUserRecord, UInteger> IDENTITY_USER_USER = Identities0.IDENTITY_USER_USER;
+	public static final Identity<UserWxUserRecord, ULong> IDENTITY_USER_WX_USER = Identities0.IDENTITY_USER_WX_USER;
+	public static final Identity<UserWxViewerRecord, UInteger> IDENTITY_USER_WX_VIEWER = Identities0.IDENTITY_USER_WX_VIEWER;
 
 	// -------------------------------------------------------------------------
 	// UNIQUE and PRIMARY KEY definitions
 	// -------------------------------------------------------------------------
 
-	public static final UniqueKey<CompanyfollowersRecord> KEY_COMPANYFOLLOWERS_PRIMARY = UniqueKeys0.KEY_COMPANYFOLLOWERS_PRIMARY;
-	public static final UniqueKey<CompanyfollowersRecord> KEY_COMPANYFOLLOWERS_USERCOMPANY = UniqueKeys0.KEY_COMPANYFOLLOWERS_USERCOMPANY;
-	public static final UniqueKey<FriendcommentrequestsRecord> KEY_FRIENDCOMMENTREQUESTS_PRIMARY = UniqueKeys0.KEY_FRIENDCOMMENTREQUESTS_PRIMARY;
-	public static final UniqueKey<FriendcommentsRecord> KEY_FRIENDCOMMENTS_PRIMARY = UniqueKeys0.KEY_FRIENDCOMMENTS_PRIMARY;
-	public static final UniqueKey<FriendrequestsRecord> KEY_FRIENDREQUESTS_PRIMARY = UniqueKeys0.KEY_FRIENDREQUESTS_PRIMARY;
-	public static final UniqueKey<SysUserRecord> KEY_SYS_USER_PRIMARY = UniqueKeys0.KEY_SYS_USER_PRIMARY;
-	public static final UniqueKey<SysUserRecord> KEY_SYS_USER_UK_SYS_USER_USERNAME = UniqueKeys0.KEY_SYS_USER_UK_SYS_USER_USERNAME;
-	public static final UniqueKey<SysUserPcresumeMonitorRecord> KEY_SYS_USER_PCRESUME_MONITOR_PRIMARY = UniqueKeys0.KEY_SYS_USER_PCRESUME_MONITOR_PRIMARY;
-	public static final UniqueKey<SysUserPositionRecord> KEY_SYS_USER_POSITION_PRIMARY = UniqueKeys0.KEY_SYS_USER_POSITION_PRIMARY;
-	public static final UniqueKey<UserRecord> KEY_USER_PRIMARY = UniqueKeys0.KEY_USER_PRIMARY;
-	public static final UniqueKey<UserRecord> KEY_USER_UK_SYS_USER_USERNAME = UniqueKeys0.KEY_USER_UK_SYS_USER_USERNAME;
-	public static final UniqueKey<UserfriendsRecord> KEY_USERFRIENDS_PRIMARY = UniqueKeys0.KEY_USERFRIENDS_PRIMARY;
-	public static final UniqueKey<UserfriendsRecord> KEY_USERFRIENDS_USER1USER2 = UniqueKeys0.KEY_USERFRIENDS_USER1USER2;
-	public static final UniqueKey<Userfriends_2degreeRecord> KEY_USERFRIENDS_2DEGREE_PRIMARY = UniqueKeys0.KEY_USERFRIENDS_2DEGREE_PRIMARY;
-	public static final UniqueKey<Userfriends_2degreeRecord> KEY_USERFRIENDS_2DEGREE_USER1USER2 = UniqueKeys0.KEY_USERFRIENDS_2DEGREE_USER1USER2;
-	public static final UniqueKey<UsersettingRecord> KEY_USERSETTING_PRIMARY = UniqueKeys0.KEY_USERSETTING_PRIMARY;
-	public static final UniqueKey<UsersettingRecord> KEY_USERSETTING_UID = UniqueKeys0.KEY_USERSETTING_UID;
-	public static final UniqueKey<UsersummaryRecord> KEY_USERSUMMARY_PRIMARY = UniqueKeys0.KEY_USERSUMMARY_PRIMARY;
-	public static final UniqueKey<UsersummaryRecord> KEY_USERSUMMARY_UID = UniqueKeys0.KEY_USERSUMMARY_UID;
-	public static final UniqueKey<UserthirdbindRecord> KEY_USERTHIRDBIND_PRIMARY = UniqueKeys0.KEY_USERTHIRDBIND_PRIMARY;
+	public static final UniqueKey<UserEmployeeRecord> KEY_USER_EMPLOYEE_PRIMARY = UniqueKeys0.KEY_USER_EMPLOYEE_PRIMARY;
+	public static final UniqueKey<UserEmployeePointsRecordRecord> KEY_USER_EMPLOYEE_POINTS_RECORD_PRIMARY = UniqueKeys0.KEY_USER_EMPLOYEE_POINTS_RECORD_PRIMARY;
+	public static final UniqueKey<UserFavPositionRecord> KEY_USER_FAV_POSITION_PRIMARY = UniqueKeys0.KEY_USER_FAV_POSITION_PRIMARY;
+	public static final UniqueKey<UserHrAccountRecord> KEY_USER_HR_ACCOUNT_PRIMARY = UniqueKeys0.KEY_USER_HR_ACCOUNT_PRIMARY;
+	public static final UniqueKey<UserSettingsRecord> KEY_USER_SETTINGS_PRIMARY = UniqueKeys0.KEY_USER_SETTINGS_PRIMARY;
+	public static final UniqueKey<UserSettingsRecord> KEY_USER_SETTINGS_UID = UniqueKeys0.KEY_USER_SETTINGS_UID;
+	public static final UniqueKey<UserUserRecord> KEY_USER_USER_PRIMARY = UniqueKeys0.KEY_USER_USER_PRIMARY;
+	public static final UniqueKey<UserUserRecord> KEY_USER_USER_UK_SYS_USER_USERNAME = UniqueKeys0.KEY_USER_USER_UK_SYS_USER_USERNAME;
+	public static final UniqueKey<UserWxUserRecord> KEY_USER_WX_USER_PRIMARY = UniqueKeys0.KEY_USER_WX_USER_PRIMARY;
+	public static final UniqueKey<UserWxUserRecord> KEY_USER_WX_USER_WECHAT_ID = UniqueKeys0.KEY_USER_WX_USER_WECHAT_ID;
+	public static final UniqueKey<UserWxViewerRecord> KEY_USER_WX_VIEWER_PRIMARY = UniqueKeys0.KEY_USER_WX_VIEWER_PRIMARY;
 
 	// -------------------------------------------------------------------------
 	// FOREIGN KEY definitions
@@ -106,41 +83,27 @@ public class Keys {
 	// -------------------------------------------------------------------------
 
 	private static class Identities0 extends AbstractKeys {
-		public static Identity<CompanyfollowersRecord, Integer> IDENTITY_COMPANYFOLLOWERS = createIdentity(Companyfollowers.COMPANYFOLLOWERS, Companyfollowers.COMPANYFOLLOWERS.ID);
-		public static Identity<FriendcommentrequestsRecord, Long> IDENTITY_FRIENDCOMMENTREQUESTS = createIdentity(Friendcommentrequests.FRIENDCOMMENTREQUESTS, Friendcommentrequests.FRIENDCOMMENTREQUESTS.ID);
-		public static Identity<FriendcommentsRecord, Long> IDENTITY_FRIENDCOMMENTS = createIdentity(Friendcomments.FRIENDCOMMENTS, Friendcomments.FRIENDCOMMENTS.ID);
-		public static Identity<FriendrequestsRecord, Long> IDENTITY_FRIENDREQUESTS = createIdentity(Friendrequests.FRIENDREQUESTS, Friendrequests.FRIENDREQUESTS.ID);
-		public static Identity<SysUserRecord, UInteger> IDENTITY_SYS_USER = createIdentity(SysUser.SYS_USER, SysUser.SYS_USER.ID);
-		public static Identity<SysUserPcresumeMonitorRecord, Integer> IDENTITY_SYS_USER_PCRESUME_MONITOR = createIdentity(SysUserPcresumeMonitor.SYS_USER_PCRESUME_MONITOR, SysUserPcresumeMonitor.SYS_USER_PCRESUME_MONITOR.ID);
-		public static Identity<SysUserPositionRecord, UInteger> IDENTITY_SYS_USER_POSITION = createIdentity(SysUserPosition.SYS_USER_POSITION, SysUserPosition.SYS_USER_POSITION.ID);
-		public static Identity<UserRecord, UInteger> IDENTITY_USER = createIdentity(User.USER, User.USER.ID);
-		public static Identity<UserfriendsRecord, Integer> IDENTITY_USERFRIENDS = createIdentity(Userfriends.USERFRIENDS, Userfriends.USERFRIENDS.ID);
-		public static Identity<Userfriends_2degreeRecord, Integer> IDENTITY_USERFRIENDS_2DEGREE = createIdentity(Userfriends_2degree.USERFRIENDS_2DEGREE, Userfriends_2degree.USERFRIENDS_2DEGREE.ID);
-		public static Identity<UsersettingRecord, Integer> IDENTITY_USERSETTING = createIdentity(Usersetting.USERSETTING, Usersetting.USERSETTING.ID);
-		public static Identity<UsersummaryRecord, Integer> IDENTITY_USERSUMMARY = createIdentity(Usersummary.USERSUMMARY, Usersummary.USERSUMMARY.ID);
-		public static Identity<UserthirdbindRecord, Integer> IDENTITY_USERTHIRDBIND = createIdentity(Userthirdbind.USERTHIRDBIND, Userthirdbind.USERTHIRDBIND.ID);
+		public static Identity<UserEmployeeRecord, Integer> IDENTITY_USER_EMPLOYEE = createIdentity(UserEmployee.USER_EMPLOYEE, UserEmployee.USER_EMPLOYEE.ID);
+		public static Identity<UserEmployeePointsRecordRecord, Integer> IDENTITY_USER_EMPLOYEE_POINTS_RECORD = createIdentity(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD, UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.ID);
+		public static Identity<UserFavPositionRecord, UInteger> IDENTITY_USER_FAV_POSITION = createIdentity(UserFavPosition.USER_FAV_POSITION, UserFavPosition.USER_FAV_POSITION.ID);
+		public static Identity<UserHrAccountRecord, Integer> IDENTITY_USER_HR_ACCOUNT = createIdentity(UserHrAccount.USER_HR_ACCOUNT, UserHrAccount.USER_HR_ACCOUNT.ID);
+		public static Identity<UserSettingsRecord, Integer> IDENTITY_USER_SETTINGS = createIdentity(UserSettings.USER_SETTINGS, UserSettings.USER_SETTINGS.ID);
+		public static Identity<UserUserRecord, UInteger> IDENTITY_USER_USER = createIdentity(UserUser.USER_USER, UserUser.USER_USER.ID);
+		public static Identity<UserWxUserRecord, ULong> IDENTITY_USER_WX_USER = createIdentity(UserWxUser.USER_WX_USER, UserWxUser.USER_WX_USER.ID);
+		public static Identity<UserWxViewerRecord, UInteger> IDENTITY_USER_WX_VIEWER = createIdentity(UserWxViewer.USER_WX_VIEWER, UserWxViewer.USER_WX_VIEWER.ID);
 	}
 
 	private static class UniqueKeys0 extends AbstractKeys {
-		public static final UniqueKey<CompanyfollowersRecord> KEY_COMPANYFOLLOWERS_PRIMARY = createUniqueKey(Companyfollowers.COMPANYFOLLOWERS, Companyfollowers.COMPANYFOLLOWERS.ID);
-		public static final UniqueKey<CompanyfollowersRecord> KEY_COMPANYFOLLOWERS_USERCOMPANY = createUniqueKey(Companyfollowers.COMPANYFOLLOWERS, Companyfollowers.COMPANYFOLLOWERS.USERID, Companyfollowers.COMPANYFOLLOWERS.COMPANYID);
-		public static final UniqueKey<FriendcommentrequestsRecord> KEY_FRIENDCOMMENTREQUESTS_PRIMARY = createUniqueKey(Friendcommentrequests.FRIENDCOMMENTREQUESTS, Friendcommentrequests.FRIENDCOMMENTREQUESTS.ID);
-		public static final UniqueKey<FriendcommentsRecord> KEY_FRIENDCOMMENTS_PRIMARY = createUniqueKey(Friendcomments.FRIENDCOMMENTS, Friendcomments.FRIENDCOMMENTS.ID);
-		public static final UniqueKey<FriendrequestsRecord> KEY_FRIENDREQUESTS_PRIMARY = createUniqueKey(Friendrequests.FRIENDREQUESTS, Friendrequests.FRIENDREQUESTS.ID);
-		public static final UniqueKey<SysUserRecord> KEY_SYS_USER_PRIMARY = createUniqueKey(SysUser.SYS_USER, SysUser.SYS_USER.ID);
-		public static final UniqueKey<SysUserRecord> KEY_SYS_USER_UK_SYS_USER_USERNAME = createUniqueKey(SysUser.SYS_USER, SysUser.SYS_USER.USERNAME);
-		public static final UniqueKey<SysUserPcresumeMonitorRecord> KEY_SYS_USER_PCRESUME_MONITOR_PRIMARY = createUniqueKey(SysUserPcresumeMonitor.SYS_USER_PCRESUME_MONITOR, SysUserPcresumeMonitor.SYS_USER_PCRESUME_MONITOR.ID);
-		public static final UniqueKey<SysUserPositionRecord> KEY_SYS_USER_POSITION_PRIMARY = createUniqueKey(SysUserPosition.SYS_USER_POSITION, SysUserPosition.SYS_USER_POSITION.ID);
-		public static final UniqueKey<UserRecord> KEY_USER_PRIMARY = createUniqueKey(User.USER, User.USER.ID);
-		public static final UniqueKey<UserRecord> KEY_USER_UK_SYS_USER_USERNAME = createUniqueKey(User.USER, User.USER.USERNAME);
-		public static final UniqueKey<UserfriendsRecord> KEY_USERFRIENDS_PRIMARY = createUniqueKey(Userfriends.USERFRIENDS, Userfriends.USERFRIENDS.ID);
-		public static final UniqueKey<UserfriendsRecord> KEY_USERFRIENDS_USER1USER2 = createUniqueKey(Userfriends.USERFRIENDS, Userfriends.USERFRIENDS.USER1, Userfriends.USERFRIENDS.USER2);
-		public static final UniqueKey<Userfriends_2degreeRecord> KEY_USERFRIENDS_2DEGREE_PRIMARY = createUniqueKey(Userfriends_2degree.USERFRIENDS_2DEGREE, Userfriends_2degree.USERFRIENDS_2DEGREE.ID);
-		public static final UniqueKey<Userfriends_2degreeRecord> KEY_USERFRIENDS_2DEGREE_USER1USER2 = createUniqueKey(Userfriends_2degree.USERFRIENDS_2DEGREE, Userfriends_2degree.USERFRIENDS_2DEGREE.USER1, Userfriends_2degree.USERFRIENDS_2DEGREE.USER2);
-		public static final UniqueKey<UsersettingRecord> KEY_USERSETTING_PRIMARY = createUniqueKey(Usersetting.USERSETTING, Usersetting.USERSETTING.ID);
-		public static final UniqueKey<UsersettingRecord> KEY_USERSETTING_UID = createUniqueKey(Usersetting.USERSETTING, Usersetting.USERSETTING.USERID);
-		public static final UniqueKey<UsersummaryRecord> KEY_USERSUMMARY_PRIMARY = createUniqueKey(Usersummary.USERSUMMARY, Usersummary.USERSUMMARY.ID);
-		public static final UniqueKey<UsersummaryRecord> KEY_USERSUMMARY_UID = createUniqueKey(Usersummary.USERSUMMARY, Usersummary.USERSUMMARY.USERID);
-		public static final UniqueKey<UserthirdbindRecord> KEY_USERTHIRDBIND_PRIMARY = createUniqueKey(Userthirdbind.USERTHIRDBIND, Userthirdbind.USERTHIRDBIND.ID);
+		public static final UniqueKey<UserEmployeeRecord> KEY_USER_EMPLOYEE_PRIMARY = createUniqueKey(UserEmployee.USER_EMPLOYEE, UserEmployee.USER_EMPLOYEE.ID);
+		public static final UniqueKey<UserEmployeePointsRecordRecord> KEY_USER_EMPLOYEE_POINTS_RECORD_PRIMARY = createUniqueKey(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD, UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.ID);
+		public static final UniqueKey<UserFavPositionRecord> KEY_USER_FAV_POSITION_PRIMARY = createUniqueKey(UserFavPosition.USER_FAV_POSITION, UserFavPosition.USER_FAV_POSITION.ID);
+		public static final UniqueKey<UserHrAccountRecord> KEY_USER_HR_ACCOUNT_PRIMARY = createUniqueKey(UserHrAccount.USER_HR_ACCOUNT, UserHrAccount.USER_HR_ACCOUNT.ID);
+		public static final UniqueKey<UserSettingsRecord> KEY_USER_SETTINGS_PRIMARY = createUniqueKey(UserSettings.USER_SETTINGS, UserSettings.USER_SETTINGS.ID);
+		public static final UniqueKey<UserSettingsRecord> KEY_USER_SETTINGS_UID = createUniqueKey(UserSettings.USER_SETTINGS, UserSettings.USER_SETTINGS.USER_ID);
+		public static final UniqueKey<UserUserRecord> KEY_USER_USER_PRIMARY = createUniqueKey(UserUser.USER_USER, UserUser.USER_USER.ID);
+		public static final UniqueKey<UserUserRecord> KEY_USER_USER_UK_SYS_USER_USERNAME = createUniqueKey(UserUser.USER_USER, UserUser.USER_USER.USERNAME);
+		public static final UniqueKey<UserWxUserRecord> KEY_USER_WX_USER_PRIMARY = createUniqueKey(UserWxUser.USER_WX_USER, UserWxUser.USER_WX_USER.ID);
+		public static final UniqueKey<UserWxUserRecord> KEY_USER_WX_USER_WECHAT_ID = createUniqueKey(UserWxUser.USER_WX_USER, UserWxUser.USER_WX_USER.WECHAT_ID, UserWxUser.USER_WX_USER.OPENID);
+		public static final UniqueKey<UserWxViewerRecord> KEY_USER_WX_VIEWER_PRIMARY = createUniqueKey(UserWxViewer.USER_WX_VIEWER, UserWxViewer.USER_WX_VIEWER.ID);
 	}
 }

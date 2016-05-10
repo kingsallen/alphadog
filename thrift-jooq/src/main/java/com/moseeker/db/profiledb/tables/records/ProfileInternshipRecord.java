@@ -32,7 +32,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileInternshipRecord extends UpdatableRecordImpl<ProfileInternshipRecord> implements Record12<UInteger, UInteger, Date, Date, Byte, String, String, Byte, Byte, String, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = -1621946127;
+	private static final long serialVersionUID = 1962512625;
 
 	/**
 	 * Setter for <code>profileDB.profile_internship.id</code>. 主key

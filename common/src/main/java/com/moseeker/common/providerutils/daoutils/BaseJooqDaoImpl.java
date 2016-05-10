@@ -233,7 +233,11 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 					&& query.getEqualFilter().size() > 0) {
 				Map<String, String> equalFilter = query.getEqualFilter();
 				for (Entry<String, String> entry : equalFilter.entrySet()) {
+<<<<<<< HEAD
 					Field field = table.field(entry.getKey());
+=======
+					Field field = tableLike.field(entry.getKey());
+>>>>>>> feature/useraccount-service-privider
 					if (field != null) {
 						table.where(field.strictEqual(BeanUtils.convertTo(
 								entry.getValue(), field.getType())));

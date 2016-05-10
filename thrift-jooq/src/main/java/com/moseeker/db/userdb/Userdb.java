@@ -4,6 +4,15 @@
 package com.moseeker.db.userdb;
 
 
+import com.moseeker.db.userdb.tables.UserEmployee;
+import com.moseeker.db.userdb.tables.UserEmployeePointsRecord;
+import com.moseeker.db.userdb.tables.UserFavPosition;
+import com.moseeker.db.userdb.tables.UserHrAccount;
+import com.moseeker.db.userdb.tables.UserSettings;
+import com.moseeker.db.userdb.tables.UserUser;
+import com.moseeker.db.userdb.tables.UserWxUser;
+import com.moseeker.db.userdb.tables.UserWxViewer;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,21 +21,6 @@ import javax.annotation.Generated;
 
 import org.jooq.Table;
 import org.jooq.impl.SchemaImpl;
-
-import com.moseeker.db.userdb.tables.Companyfollowers;
-import com.moseeker.db.userdb.tables.Friendcommentrequests;
-import com.moseeker.db.userdb.tables.Friendcomments;
-import com.moseeker.db.userdb.tables.Friendrequests;
-import com.moseeker.db.userdb.tables.SysUser;
-import com.moseeker.db.userdb.tables.SysUserIntention;
-import com.moseeker.db.userdb.tables.SysUserPcresumeMonitor;
-import com.moseeker.db.userdb.tables.SysUserPosition;
-import com.moseeker.db.userdb.tables.User;
-import com.moseeker.db.userdb.tables.Userfriends;
-import com.moseeker.db.userdb.tables.Userfriends_2degree;
-import com.moseeker.db.userdb.tables.Usersetting;
-import com.moseeker.db.userdb.tables.Usersummary;
-import com.moseeker.db.userdb.tables.Userthirdbind;
 
 
 /**
@@ -42,7 +36,7 @@ import com.moseeker.db.userdb.tables.Userthirdbind;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Userdb extends SchemaImpl {
 
-	private static final long serialVersionUID = 1557641987;
+	private static final long serialVersionUID = 349719332;
 
 	/**
 	 * The reference instance of <code>userDB</code>
@@ -65,19 +59,13 @@ public class Userdb extends SchemaImpl {
 
 	private final List<Table<?>> getTables0() {
 		return Arrays.<Table<?>>asList(
-			Companyfollowers.COMPANYFOLLOWERS,
-			Friendcommentrequests.FRIENDCOMMENTREQUESTS,
-			Friendcomments.FRIENDCOMMENTS,
-			Friendrequests.FRIENDREQUESTS,
-			SysUser.SYS_USER,
-			SysUserIntention.SYS_USER_INTENTION,
-			SysUserPcresumeMonitor.SYS_USER_PCRESUME_MONITOR,
-			SysUserPosition.SYS_USER_POSITION,
-			User.USER,
-			Userfriends.USERFRIENDS,
-			Userfriends_2degree.USERFRIENDS_2DEGREE,
-			Usersetting.USERSETTING,
-			Usersummary.USERSUMMARY,
-			Userthirdbind.USERTHIRDBIND);
+			UserEmployee.USER_EMPLOYEE,
+			UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD,
+			UserFavPosition.USER_FAV_POSITION,
+			UserHrAccount.USER_HR_ACCOUNT,
+			UserSettings.USER_SETTINGS,
+			UserUser.USER_USER,
+			UserWxUser.USER_WX_USER,
+			UserWxViewer.USER_WX_VIEWER);
 	}
 }

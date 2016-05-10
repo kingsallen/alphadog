@@ -33,7 +33,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileRewardRecord extends UpdatableRecordImpl<ProfileRewardRecord> implements Record8<UInteger, UInteger, UByte, Date, String, String, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = 749749797;
+	private static final long serialVersionUID = -1221147099;
 
 	/**
 	 * Setter for <code>profileDB.profile_reward.id</code>. 主key

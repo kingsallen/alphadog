@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileEducationExt extends TableImpl<ProfileEducationExtRecord> {
 
-	private static final long serialVersionUID = -657911067;
+	private static final long serialVersionUID = 1634835173;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_education_ext</code>

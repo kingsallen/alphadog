@@ -4,22 +4,16 @@
 package com.moseeker.db.userdb;
 
 
-import javax.annotation.Generated;
+import com.moseeker.db.userdb.tables.UserEmployee;
+import com.moseeker.db.userdb.tables.UserEmployeePointsRecord;
+import com.moseeker.db.userdb.tables.UserFavPosition;
+import com.moseeker.db.userdb.tables.UserHrAccount;
+import com.moseeker.db.userdb.tables.UserSettings;
+import com.moseeker.db.userdb.tables.UserUser;
+import com.moseeker.db.userdb.tables.UserWxUser;
+import com.moseeker.db.userdb.tables.UserWxViewer;
 
-import com.moseeker.db.userdb.tables.Companyfollowers;
-import com.moseeker.db.userdb.tables.Friendcommentrequests;
-import com.moseeker.db.userdb.tables.Friendcomments;
-import com.moseeker.db.userdb.tables.Friendrequests;
-import com.moseeker.db.userdb.tables.SysUser;
-import com.moseeker.db.userdb.tables.SysUserIntention;
-import com.moseeker.db.userdb.tables.SysUserPcresumeMonitor;
-import com.moseeker.db.userdb.tables.SysUserPosition;
-import com.moseeker.db.userdb.tables.User;
-import com.moseeker.db.userdb.tables.Userfriends;
-import com.moseeker.db.userdb.tables.Userfriends_2degree;
-import com.moseeker.db.userdb.tables.Usersetting;
-import com.moseeker.db.userdb.tables.Usersummary;
-import com.moseeker.db.userdb.tables.Userthirdbind;
+import javax.annotation.Generated;
 
 
 /**
@@ -36,72 +30,42 @@ import com.moseeker.db.userdb.tables.Userthirdbind;
 public class Tables {
 
 	/**
-	 * 企业粉丝表
+	 * The table userDB.user_employee
 	 */
-	public static final Companyfollowers COMPANYFOLLOWERS = com.moseeker.db.userdb.tables.Companyfollowers.COMPANYFOLLOWERS;
+	public static final UserEmployee USER_EMPLOYEE = com.moseeker.db.userdb.tables.UserEmployee.USER_EMPLOYEE;
 
 	/**
-	 * 邀请好友评论表
+	 * The table userDB.user_employee_points_record
 	 */
-	public static final Friendcommentrequests FRIENDCOMMENTREQUESTS = com.moseeker.db.userdb.tables.Friendcommentrequests.FRIENDCOMMENTREQUESTS;
+	public static final UserEmployeePointsRecord USER_EMPLOYEE_POINTS_RECORD = com.moseeker.db.userdb.tables.UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD;
 
 	/**
-	 * 好友评论
+	 * 用户收藏表
 	 */
-	public static final Friendcomments FRIENDCOMMENTS = com.moseeker.db.userdb.tables.Friendcomments.FRIENDCOMMENTS;
+	public static final UserFavPosition USER_FAV_POSITION = com.moseeker.db.userdb.tables.UserFavPosition.USER_FAV_POSITION;
 
 	/**
-	 * 好友请求
+	 * hr账号表
 	 */
-	public static final Friendrequests FRIENDREQUESTS = com.moseeker.db.userdb.tables.Friendrequests.FRIENDREQUESTS;
-
-	/**
-	 * 大岂用户表
-	 */
-	public static final SysUser SYS_USER = com.moseeker.db.userdb.tables.SysUser.SYS_USER;
-
-	/**
-	 * 用户求职意向
-	 */
-	public static final SysUserIntention SYS_USER_INTENTION = com.moseeker.db.userdb.tables.SysUserIntention.SYS_USER_INTENTION;
-
-	/**
-	 * 用户在线简历状态监控表
-	 */
-	public static final SysUserPcresumeMonitor SYS_USER_PCRESUME_MONITOR = com.moseeker.db.userdb.tables.SysUserPcresumeMonitor.SYS_USER_PCRESUME_MONITOR;
-
-	/**
-	 * 用户职位收藏
-	 */
-	public static final SysUserPosition SYS_USER_POSITION = com.moseeker.db.userdb.tables.SysUserPosition.SYS_USER_POSITION;
-
-	/**
-	 * 大岂用户表
-	 */
-	public static final User USER = com.moseeker.db.userdb.tables.User.USER;
-
-	/**
-	 * 一度好友关系表
-	 */
-	public static final Userfriends USERFRIENDS = com.moseeker.db.userdb.tables.Userfriends.USERFRIENDS;
-
-	/**
-	 * 二度好友关系表
-	 */
-	public static final Userfriends_2degree USERFRIENDS_2DEGREE = com.moseeker.db.userdb.tables.Userfriends_2degree.USERFRIENDS_2DEGREE;
+	public static final UserHrAccount USER_HR_ACCOUNT = com.moseeker.db.userdb.tables.UserHrAccount.USER_HR_ACCOUNT;
 
 	/**
 	 * 用户设置表
 	 */
-	public static final Usersetting USERSETTING = com.moseeker.db.userdb.tables.Usersetting.USERSETTING;
+	public static final UserSettings USER_SETTINGS = com.moseeker.db.userdb.tables.UserSettings.USER_SETTINGS;
 
 	/**
-	 * 用户数据汇总表
+	 * 用户表
 	 */
-	public static final Usersummary USERSUMMARY = com.moseeker.db.userdb.tables.Usersummary.USERSUMMARY;
+	public static final UserUser USER_USER = com.moseeker.db.userdb.tables.UserUser.USER_USER;
 
 	/**
-	 * 用户第三方绑定表
+	 * 微信用户表
 	 */
-	public static final Userthirdbind USERTHIRDBIND = com.moseeker.db.userdb.tables.Userthirdbind.USERTHIRDBIND;
+	public static final UserWxUser USER_WX_USER = com.moseeker.db.userdb.tables.UserWxUser.USER_WX_USER;
+
+	/**
+	 * 用户浏览者记录
+	 */
+	public static final UserWxViewer USER_WX_VIEWER = com.moseeker.db.userdb.tables.UserWxViewer.USER_WX_VIEWER;
 }

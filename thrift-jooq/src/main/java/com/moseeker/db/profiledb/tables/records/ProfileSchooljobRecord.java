@@ -32,7 +32,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileSchooljobRecord extends UpdatableRecordImpl<ProfileSchooljobRecord> implements Record9<UInteger, UInteger, Date, Date, Byte, String, String, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = -522159518;
+	private static final long serialVersionUID = -435750302;
 
 	/**
 	 * Setter for <code>profileDB.profile_schooljob.id</code>. 主key
