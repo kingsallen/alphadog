@@ -15,7 +15,6 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.CommonQuery;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.userloginreq;
-import com.moseeker.thrift.gen.useraccounts.struct.userloginresp;
 import com.moseeker.useraccounts.dao.impl.UserDaoImpl;
 import com.moseeker.useraccounts.dao.impl.WxuserDaoImpl;
 
@@ -34,7 +33,7 @@ public class UseraccountsServiceImpl implements Iface {
 		
 			try {
 				new UseraccountsServiceImpl().postuserlogin(userlogin);
-			} catch (TException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -44,7 +43,7 @@ public class UseraccountsServiceImpl implements Iface {
 	}
 
 	@Override
-	public Response postuserlogin(userloginreq userloginreq) throws TException {
+	public Response postuserlogin(userloginreq userloginreq)  throws TException  {
 		// TODO Auto-generated method stub
 		CommonQuery query = new CommonQuery();
 		Map filters = new HashMap();
@@ -55,28 +54,33 @@ public class UseraccountsServiceImpl implements Iface {
 		//	filters.put("password", md5(userloginreq.getPassword()));
 		}
 	//	filters.put("parentid", null); // to exclude merged accounts.
-		query.setLimit(1);
+		//query.setLimit(1);
 		query.setEqualFilter(filters);
-		UserUserRecord user = userdao.getResource(query);
-		
-		Response jsonresp = new Response();
-		if (user != null){
-			// login success
-			Map resp = new HashMap();
-
-			resp.put("user_id", user.getId().intValue());
-			resp.put("union_id", user.getUnionid());
-			resp.put("mobile", user.getMobile());
-			resp.put("last_login_time", user.getLastLoginTime());
+		Response jsonresp;
+		try {
+			UserUserRecord user = userdao.getResource(query);
 			
-			//user.setLastLoginTime(new Timestamp());
-			userdao.postResource(user);
-	
-			return ResponseUtils.success(resp);		
+			jsonresp = new Response();
+			if (user != null){
+				// login success
+				Map resp = new HashMap();
+
+				resp.put("user_id", user.getId().intValue());
+				resp.put("union_id", user.getUnionid());
+				resp.put("mobile", user.getMobile());
+				resp.put("last_login_time", user.getLastLoginTime());
+				
+				//user.setLastLoginTime(new Timestamp());
+				userdao.postResource(user);
+
+				return ResponseUtils.success(resp);		
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+
 		}			
-		
-		jsonresp.setStatus(1);
 		return ResponseUtils.fail(10010, "username and password do not match!");
+		
 	}
 
 	@Override
@@ -144,7 +148,6 @@ public class UseraccountsServiceImpl implements Iface {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 	
 	
 
