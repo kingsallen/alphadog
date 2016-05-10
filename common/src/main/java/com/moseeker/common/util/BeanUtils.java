@@ -30,23 +30,23 @@ import com.moseeker.thrift.gen.profile.struct.Basic;
 public class BeanUtils {
 
 	public static void structToDB(TBase dest, UpdatableRecordImpl orig) {
-		Field[] descFields = TBase.class.getFields();
-		Method[] destMethods = TBase.class.getMethods();
+		Field[] descFields = dest.getClass().getFields();
+		Method[] destMethods = dest.getClass().getMethods();
 		
-		Field[] origFields = TBase.class.getFields();
-		Method[] origMethods = TBase.class.getMethods();
+		Method[] origMethods = orig.getClass().getMethods();
 		int i=0,j=0;
 		if(descFields != null && descFields.length > 0 && destMethods != null && destMethods.length > 0) {
 			for(i=0; i<descFields.length; i++) {
 				if(!descFields[i].getName().trim().equals("metaDataMap")) {
 					Field field = descFields[i];
+					String upperFirst = field.getName().substring(0, 1).toUpperCase() + 
+							field.getName().substring(1);
+					String getMethodName = "get" + upperFirst;
 					for(j=0; j<destMethods.length; j++) {
-						String upperFirst = field.getName().substring(0, 1).toUpperCase() + 
-								field.getName().substring(1);
-						String setMethodName = "get" + upperFirst;
-						
-						if(destMethods[i].getName().equals(setMethodName)) {
-							String isSetMethodName = "isSet" + upperFirst;
+						if(destMethods[j].getName().equals(getMethodName)) {
+							method isSetMethod = dest.getClass().getMethod("isSet"+upperFirst, null);
+							Object object = 
+							Object object = destMethods[j].invoke(dest, null);
 						}
 					}
 				}
