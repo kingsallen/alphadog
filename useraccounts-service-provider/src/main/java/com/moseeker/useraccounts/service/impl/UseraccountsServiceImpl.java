@@ -62,33 +62,21 @@ public class UseraccountsServiceImpl implements Iface {
 		Response jsonresp = new Response();
 		if (user != null){
 			// login success
-			userloginresp resp = new userloginresp();
-			Map resp2 = new HashMap();
+			Map resp = new HashMap();
 
-			resp.setUser_id(user.getId().intValue());
-			resp2.put("user_id", user.getId().intValue());
-			resp2.put("union_id", user.getUnionid());
-			resp2.put("mobile", user.getMobile());
-			resp2.put("last_login_time", user.getLastLoginTime());
+			resp.put("user_id", user.getId().intValue());
+			resp.put("union_id", user.getUnionid());
+			resp.put("mobile", user.getMobile());
+			resp.put("last_login_time", user.getLastLoginTime());
 			
-			if ( user.getUnionid() != null ){
-				resp.setUnionid(user.getUnionid());
-			}
-			if ( user.getMobile() != null ){
-				resp.setMobile(user.getMobile().toString());
-			}			
-			if(user.getLastLoginTime() != null) {
-				resp.setLast_login_time(user.getLastLoginTime().toString());
-			}
-						
 			//user.setLastLoginTime(new Timestamp());
 			userdao.postResource(user);
 	
-			return ResponseUtils.success(resp2);		
+			return ResponseUtils.success(resp);		
 		}			
 		
 		jsonresp.setStatus(1);
-		return ResponseUtils.fail(1001, "username and password do not match!");
+		return ResponseUtils.fail(10010, "username and password do not match!");
 	}
 
 	@Override
