@@ -1,5 +1,7 @@
 package com.moseeker.useraccounts.service.impl;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.daoutils.BaseDao;
 import com.moseeker.common.sms.SmsSender;
+import com.moseeker.common.util.MD5Util;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -23,7 +26,7 @@ import com.moseeker.useraccounts.dao.impl.WxuserDaoImpl;
 @Service
 public class UseraccountsServiceImpl implements Iface {
 
-	Logger logger = LoggerFactory.getLogger(this.getClass());
+	 Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	
 	protected BaseDao<UserWxUserRecord> wxuserdao = new WxuserDaoImpl();
@@ -33,7 +36,9 @@ public class UseraccountsServiceImpl implements Iface {
 	public static void main(String[] args){
 		userloginreq userlogin = new userloginreq();
 		userlogin.setMobile("13818252514");
-		userlogin.setPassword("1234");
+		userlogin.setPassword("123456");
+		
+		// System.out.println(MD5Util.md5("1234"));
 		
 			try {
 				new UseraccountsServiceImpl().postuserlogin(userlogin);
@@ -48,17 +53,16 @@ public class UseraccountsServiceImpl implements Iface {
 
 	@Override
 	public Response postuserlogin(userloginreq userloginreq)  throws TException  {
-		// TODO Auto-generated method stub
+		// TODO to add login log
 		CommonQuery query = new CommonQuery();
 		Map filters = new HashMap();
 		if (userloginreq.getUnionid() != null ){
 			filters.put("unionid", userloginreq.getUnionid());
 		}else{
 			filters.put("username", userloginreq.getMobile());
-		//	filters.put("password", md5(userloginreq.getPassword()));
+			filters.put("password", MD5Util.md5(userloginreq.getPassword()));
 		}
-	//	filters.put("parentid", null); // to exclude merged accounts.
-		//query.setLimit(1);
+
 		query.setEqualFilter(filters);
 		Response jsonresp;
 		try {
@@ -67,6 +71,18 @@ public class UseraccountsServiceImpl implements Iface {
 			jsonresp = new Response();
 			if (user != null){
 				// login success
+				
+				if (user.getParentid() != null){
+					// 当前帐号已经被合并到 parentid.
+					int parentid = user.getParentid().intValue();
+					query = new CommonQuery();
+					filters = new HashMap();
+					filters.put("id", parentid);
+					query.setEqualFilter(filters);
+					user = userdao.getResource(query);
+				}
+				
+				
 				Map resp = new HashMap();
 
 				resp.put("user_id", user.getId().intValue());
@@ -74,9 +90,10 @@ public class UseraccountsServiceImpl implements Iface {
 				resp.put("mobile", user.getMobile());
 				resp.put("last_login_time", user.getLastLoginTime());
 				
-				//user.setLastLoginTime(new Timestamp());
-				userdao.postResource(user);
+				user.setLastLoginTime(new Timestamp(new Date().getTime()));
+				userdao.putResource(user);
 
+				System.out.println(resp);
 				return ResponseUtils.success(resp);		
 			}
 		} catch (Exception e) {
@@ -96,7 +113,7 @@ public class UseraccountsServiceImpl implements Iface {
 
 	@Override
 	public Response postsendsignupcode(String mobile) throws TException {
-		// TODO Auto-generated method stub
+		// TODO ip limit
 		Response jsonresp = new Response();
 
 		if ( SmsSender.sendSMS_signup(mobile) ){
@@ -108,8 +125,22 @@ public class UseraccountsServiceImpl implements Iface {
 
 	@Override
 	public Response postusermobilesignup(String mobile, String code, String password) throws TException {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO validate code.
+		UserUserRecord user = new UserUserRecord();
+		user.setUsername(mobile);
+		user.setMobile(Long.parseLong(mobile));
+		user.setPassword(MD5Util.md5(password));
+		
+		try {
+			int newuserid = userdao.postResource(user);
+			if ( newuserid > 0 ){
+				// ResponseUtils.success(null);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return ResponseUtils.fail("register failed");
 	}
 
 	@Override
@@ -138,8 +169,14 @@ public class UseraccountsServiceImpl implements Iface {
 
 	@Override
 	public Response postusersendpasswordforgotcode(String mobile) throws TException {
-		// TODO Auto-generated method stub
-		return null;
+		// TODO ip limit
+		Response jsonresp = new Response();
+
+		if ( SmsSender.sendSMS_signup(mobile) ){
+			return ResponseUtils.success(null);	
+		}else{
+			return ResponseUtils.fail("failed");
+		}
 	}
 
 	@Override
