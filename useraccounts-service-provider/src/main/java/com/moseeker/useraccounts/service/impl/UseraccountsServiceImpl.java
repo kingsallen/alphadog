@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.daoutils.BaseDao;
+import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.sms.SmsSender;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.db.logdb.tables.records.LogUserloginRecordRecord;
@@ -49,8 +50,8 @@ public class UseraccountsServiceImpl implements Iface {
 		// System.out.println(MD5Util.md5("1234"));
 		
 			try {
-				new UseraccountsServiceImpl().postsendsignupcode("13818252514");
-				// new UseraccountsServiceImpl().postuserlogin(userlogin);
+				//new UseraccountsServiceImpl().postsendsignupcode("13818252514");
+				 new UseraccountsServiceImpl().postusermobilesignup("13818252514","2900","123456");
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -153,6 +154,12 @@ public class UseraccountsServiceImpl implements Iface {
 	@Override
 	public Response postusermobilesignup(String mobile, String code, String password) throws TException {
 		// TODO validate code.
+		if (validateCode(mobile, code, 1)){
+			;
+		}else{
+			ResponseUtils.fail(10011,"mobile signup validation code failed");
+		}
+		
 		UserUserRecord user = new UserUserRecord();
 		user.setUsername(mobile);
 		user.setMobile(Long.parseLong(mobile));
@@ -168,6 +175,33 @@ public class UseraccountsServiceImpl implements Iface {
 			e.printStackTrace();
 		}
 		return ResponseUtils.fail("register failed");
+	}
+	/**
+	 * 返回手机验证码的正确性
+	 * @param mobile  手机号
+	 * @param code    验证码
+	 * @param type 1:注册  2:忘记密码
+	 */
+	private boolean validateCode(String mobile, String code, int type ){
+		String codeinRedis = null;
+		switch(type){
+		case 1:
+			codeinRedis = RedisClientFactory.getCacheClient().get(0, "SMS_SIGNUP", mobile);
+			if (code.equals(codeinRedis)){
+				RedisClientFactory.getCacheClient().del(0, "SMS_SIGNUP", mobile);
+				return true;
+			}
+			break;
+		case 2:
+			codeinRedis = RedisClientFactory.getCacheClient().get(0, "SMS_PWD_FORGOT", mobile);
+			if (code.equals(codeinRedis)){
+				RedisClientFactory.getCacheClient().del(0, "SMS_PWD_FORGOT", mobile);
+				return true;
+			}
+			break;
+		}
+		
+		return false;
 	}
 
 	@Override
