@@ -25,9 +25,9 @@ public class SmsSender {
 				if (taobaoclient == null) {
 					ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil
 							.getInstance();
-					String smsAccesskeyId = propertiesUtils.get("sms.ACCESSKEYID",
+					String smsAccesskeyId = propertiesUtils.get("sms.accesskeyid",
 							String.class);
-					String smsAccesskeySecret = propertiesUtils.get("sms.ACCESSKEYSECRET",
+					String smsAccesskeySecret = propertiesUtils.get("sms.accesskeysecret",
 							String.class);
 					taobaoclient = new DefaultTaobaoClient("http://gw.api.taobao.com/router/rest", smsAccesskeyId, smsAccesskeySecret);
 				}
@@ -88,6 +88,7 @@ public class SmsSender {
 		HashMap<String, String> params = new HashMap<String, String>();
 		String passwordforgotcode = getRandomStr();
 		params.put("code", passwordforgotcode);		
+		RedisClientFactory.getCacheClient().set(0, "SMS_SIGNUP", mobile, passwordforgotcode);		
 		return sendSMS(mobile,"SMS_5755096",params);
 	} 
 	public static void main(String[] args) {

@@ -15,9 +15,9 @@ import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.db.profiledb.tables.records.ProfileBasicRecord;
 import com.moseeker.profile.dao.ProfileBasicDao;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.profile.service.BasicServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.Basic;
-import com.moseeker.thrift.gen.profile.struct.CommonQuery;
 import com.moseeker.thrift.gen.profile.struct.ProviderResult;
 
 @Service

@@ -6,6 +6,7 @@ package com.moseeker.db.logdb;
 
 import com.moseeker.db.logdb.tables.LogEmailSendrecord;
 import com.moseeker.db.logdb.tables.LogSmsRecord;
+import com.moseeker.db.logdb.tables.LogUserloginRecord;
 import com.moseeker.db.logdb.tables.LogWxMenuRecord;
 import com.moseeker.db.logdb.tables.LogWxMessageRecord;
 
@@ -32,7 +33,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Logdb extends SchemaImpl {
 
-	private static final long serialVersionUID = -1370682799;
+	private static final long serialVersionUID = -1875551652;
 
 	/**
 	 * The reference instance of <code>logDB</code>
@@ -57,6 +58,7 @@ public class Logdb extends SchemaImpl {
 		return Arrays.<Table<?>>asList(
 			LogEmailSendrecord.LOG_EMAIL_SENDRECORD,
 			LogSmsRecord.LOG_SMS_RECORD,
+			LogUserloginRecord.LOG_USERLOGIN_RECORD,
 			LogWxMenuRecord.LOG_WX_MENU_RECORD,
 			LogWxMessageRecord.LOG_WX_MESSAGE_RECORD);
 	}

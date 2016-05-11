@@ -6,6 +6,7 @@ package com.moseeker.db.logdb;
 
 import com.moseeker.db.logdb.tables.LogEmailSendrecord;
 import com.moseeker.db.logdb.tables.LogSmsRecord;
+import com.moseeker.db.logdb.tables.LogUserloginRecord;
 import com.moseeker.db.logdb.tables.LogWxMenuRecord;
 import com.moseeker.db.logdb.tables.LogWxMessageRecord;
 
@@ -34,6 +35,11 @@ public class Tables {
 	 * 短信发送记录表
 	 */
 	public static final LogSmsRecord LOG_SMS_RECORD = com.moseeker.db.logdb.tables.LogSmsRecord.LOG_SMS_RECORD;
+
+	/**
+	 * 用户登陆日志
+	 */
+	public static final LogUserloginRecord LOG_USERLOGIN_RECORD = com.moseeker.db.logdb.tables.LogUserloginRecord.LOG_USERLOGIN_RECORD;
 
 	/**
 	 * 微信菜单操作日志表

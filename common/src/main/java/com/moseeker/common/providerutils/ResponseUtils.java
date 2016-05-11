@@ -36,7 +36,7 @@ public class ResponseUtils {
 
 	public static Response fail(int errcode, String message, Map hashmap) {
 		Response response = new Response();
-		response.setStatus(1);
+		response.setStatus(errcode);
 		response.setMessage(message);
 		response.setData(JSON.toJSONString(hashmap));
 		return response;

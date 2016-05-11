@@ -39,9 +39,9 @@ public class RewardServices {
 
   public interface Iface {
 
-    public com.moseeker.thrift.gen.profile.struct.ProviderResult getResources(com.moseeker.thrift.gen.profile.struct.CommonQuery query) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.profile.struct.ProviderResult getResources(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.profile.struct.ProviderResult getPagination(com.moseeker.thrift.gen.profile.struct.CommonQuery query) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.profile.struct.ProviderResult getPagination(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException;
 
     public com.moseeker.thrift.gen.profile.struct.ProviderResult postResources(List<com.moseeker.thrift.gen.profile.struct.Reward> rewards) throws org.apache.thrift.TException;
 
@@ -49,7 +49,7 @@ public class RewardServices {
 
     public com.moseeker.thrift.gen.profile.struct.ProviderResult delResources(List<com.moseeker.thrift.gen.profile.struct.Reward> rewards) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.profile.struct.ProviderResult getResource(com.moseeker.thrift.gen.profile.struct.CommonQuery query) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.profile.struct.ProviderResult getResource(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException;
 
     public com.moseeker.thrift.gen.profile.struct.ProviderResult postResource(com.moseeker.thrift.gen.profile.struct.Reward reward) throws org.apache.thrift.TException;
 
@@ -61,9 +61,9 @@ public class RewardServices {
 
   public interface AsyncIface {
 
-    public void getResources(com.moseeker.thrift.gen.profile.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void getResources(com.moseeker.thrift.gen.common.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void getPagination(com.moseeker.thrift.gen.profile.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void getPagination(com.moseeker.thrift.gen.common.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
     public void postResources(List<com.moseeker.thrift.gen.profile.struct.Reward> rewards, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
@@ -71,7 +71,7 @@ public class RewardServices {
 
     public void delResources(List<com.moseeker.thrift.gen.profile.struct.Reward> rewards, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void getResource(com.moseeker.thrift.gen.profile.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void getResource(com.moseeker.thrift.gen.common.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
     public void postResource(com.moseeker.thrift.gen.profile.struct.Reward reward, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
@@ -101,13 +101,13 @@ public class RewardServices {
       super(iprot, oprot);
     }
 
-    public com.moseeker.thrift.gen.profile.struct.ProviderResult getResources(com.moseeker.thrift.gen.profile.struct.CommonQuery query) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.profile.struct.ProviderResult getResources(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException
     {
       send_getResources(query);
       return recv_getResources();
     }
 
-    public void send_getResources(com.moseeker.thrift.gen.profile.struct.CommonQuery query) throws org.apache.thrift.TException
+    public void send_getResources(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException
     {
       getResources_args args = new getResources_args();
       args.setQuery(query);
@@ -124,13 +124,13 @@ public class RewardServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getResources failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.profile.struct.ProviderResult getPagination(com.moseeker.thrift.gen.profile.struct.CommonQuery query) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.profile.struct.ProviderResult getPagination(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException
     {
       send_getPagination(query);
       return recv_getPagination();
     }
 
-    public void send_getPagination(com.moseeker.thrift.gen.profile.struct.CommonQuery query) throws org.apache.thrift.TException
+    public void send_getPagination(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException
     {
       getPagination_args args = new getPagination_args();
       args.setQuery(query);
@@ -216,13 +216,13 @@ public class RewardServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "delResources failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.profile.struct.ProviderResult getResource(com.moseeker.thrift.gen.profile.struct.CommonQuery query) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.profile.struct.ProviderResult getResource(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException
     {
       send_getResource(query);
       return recv_getResource();
     }
 
-    public void send_getResource(com.moseeker.thrift.gen.profile.struct.CommonQuery query) throws org.apache.thrift.TException
+    public void send_getResource(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException
     {
       getResource_args args = new getResource_args();
       args.setQuery(query);
@@ -326,7 +326,7 @@ public class RewardServices {
       super(protocolFactory, clientManager, transport);
     }
 
-    public void getResources(com.moseeker.thrift.gen.profile.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void getResources(com.moseeker.thrift.gen.common.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       getResources_call method_call = new getResources_call(query, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -334,8 +334,8 @@ public class RewardServices {
     }
 
     public static class getResources_call extends org.apache.thrift.async.TAsyncMethodCall {
-      private com.moseeker.thrift.gen.profile.struct.CommonQuery query;
-      public getResources_call(com.moseeker.thrift.gen.profile.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private com.moseeker.thrift.gen.common.struct.CommonQuery query;
+      public getResources_call(com.moseeker.thrift.gen.common.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.query = query;
       }
@@ -358,7 +358,7 @@ public class RewardServices {
       }
     }
 
-    public void getPagination(com.moseeker.thrift.gen.profile.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void getPagination(com.moseeker.thrift.gen.common.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       getPagination_call method_call = new getPagination_call(query, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -366,8 +366,8 @@ public class RewardServices {
     }
 
     public static class getPagination_call extends org.apache.thrift.async.TAsyncMethodCall {
-      private com.moseeker.thrift.gen.profile.struct.CommonQuery query;
-      public getPagination_call(com.moseeker.thrift.gen.profile.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private com.moseeker.thrift.gen.common.struct.CommonQuery query;
+      public getPagination_call(com.moseeker.thrift.gen.common.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.query = query;
       }
@@ -486,7 +486,7 @@ public class RewardServices {
       }
     }
 
-    public void getResource(com.moseeker.thrift.gen.profile.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void getResource(com.moseeker.thrift.gen.common.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       getResource_call method_call = new getResource_call(query, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -494,8 +494,8 @@ public class RewardServices {
     }
 
     public static class getResource_call extends org.apache.thrift.async.TAsyncMethodCall {
-      private com.moseeker.thrift.gen.profile.struct.CommonQuery query;
-      public getResource_call(com.moseeker.thrift.gen.profile.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private com.moseeker.thrift.gen.common.struct.CommonQuery query;
+      public getResource_call(com.moseeker.thrift.gen.common.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.query = query;
       }
@@ -1316,7 +1316,7 @@ public class RewardServices {
       schemes.put(TupleScheme.class, new getResources_argsTupleSchemeFactory());
     }
 
-    public com.moseeker.thrift.gen.profile.struct.CommonQuery query; // required
+    public com.moseeker.thrift.gen.common.struct.CommonQuery query; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -1381,7 +1381,7 @@ public class RewardServices {
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.QUERY, new org.apache.thrift.meta_data.FieldMetaData("query", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.profile.struct.CommonQuery.class)));
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.CommonQuery.class)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getResources_args.class, metaDataMap);
     }
@@ -1390,7 +1390,7 @@ public class RewardServices {
     }
 
     public getResources_args(
-      com.moseeker.thrift.gen.profile.struct.CommonQuery query)
+      com.moseeker.thrift.gen.common.struct.CommonQuery query)
     {
       this();
       this.query = query;
@@ -1401,7 +1401,7 @@ public class RewardServices {
      */
     public getResources_args(getResources_args other) {
       if (other.isSetQuery()) {
-        this.query = new com.moseeker.thrift.gen.profile.struct.CommonQuery(other.query);
+        this.query = new com.moseeker.thrift.gen.common.struct.CommonQuery(other.query);
       }
     }
 
@@ -1414,11 +1414,11 @@ public class RewardServices {
       this.query = null;
     }
 
-    public com.moseeker.thrift.gen.profile.struct.CommonQuery getQuery() {
+    public com.moseeker.thrift.gen.common.struct.CommonQuery getQuery() {
       return this.query;
     }
 
-    public getResources_args setQuery(com.moseeker.thrift.gen.profile.struct.CommonQuery query) {
+    public getResources_args setQuery(com.moseeker.thrift.gen.common.struct.CommonQuery query) {
       this.query = query;
       return this;
     }
@@ -1444,7 +1444,7 @@ public class RewardServices {
         if (value == null) {
           unsetQuery();
         } else {
-          setQuery((com.moseeker.thrift.gen.profile.struct.CommonQuery)value);
+          setQuery((com.moseeker.thrift.gen.common.struct.CommonQuery)value);
         }
         break;
 
@@ -1603,7 +1603,7 @@ public class RewardServices {
           switch (schemeField.id) {
             case 1: // QUERY
               if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                struct.query = new com.moseeker.thrift.gen.profile.struct.CommonQuery();
+                struct.query = new com.moseeker.thrift.gen.common.struct.CommonQuery();
                 struct.query.read(iprot);
                 struct.setQueryIsSet(true);
               } else { 
@@ -1662,7 +1662,7 @@ public class RewardServices {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
-          struct.query = new com.moseeker.thrift.gen.profile.struct.CommonQuery();
+          struct.query = new com.moseeker.thrift.gen.common.struct.CommonQuery();
           struct.query.read(iprot);
           struct.setQueryIsSet(true);
         }
@@ -2048,7 +2048,7 @@ public class RewardServices {
       schemes.put(TupleScheme.class, new getPagination_argsTupleSchemeFactory());
     }
 
-    public com.moseeker.thrift.gen.profile.struct.CommonQuery query; // required
+    public com.moseeker.thrift.gen.common.struct.CommonQuery query; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -2113,7 +2113,7 @@ public class RewardServices {
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.QUERY, new org.apache.thrift.meta_data.FieldMetaData("query", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.profile.struct.CommonQuery.class)));
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.CommonQuery.class)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getPagination_args.class, metaDataMap);
     }
@@ -2122,7 +2122,7 @@ public class RewardServices {
     }
 
     public getPagination_args(
-      com.moseeker.thrift.gen.profile.struct.CommonQuery query)
+      com.moseeker.thrift.gen.common.struct.CommonQuery query)
     {
       this();
       this.query = query;
@@ -2133,7 +2133,7 @@ public class RewardServices {
      */
     public getPagination_args(getPagination_args other) {
       if (other.isSetQuery()) {
-        this.query = new com.moseeker.thrift.gen.profile.struct.CommonQuery(other.query);
+        this.query = new com.moseeker.thrift.gen.common.struct.CommonQuery(other.query);
       }
     }
 
@@ -2146,11 +2146,11 @@ public class RewardServices {
       this.query = null;
     }
 
-    public com.moseeker.thrift.gen.profile.struct.CommonQuery getQuery() {
+    public com.moseeker.thrift.gen.common.struct.CommonQuery getQuery() {
       return this.query;
     }
 
-    public getPagination_args setQuery(com.moseeker.thrift.gen.profile.struct.CommonQuery query) {
+    public getPagination_args setQuery(com.moseeker.thrift.gen.common.struct.CommonQuery query) {
       this.query = query;
       return this;
     }
@@ -2176,7 +2176,7 @@ public class RewardServices {
         if (value == null) {
           unsetQuery();
         } else {
-          setQuery((com.moseeker.thrift.gen.profile.struct.CommonQuery)value);
+          setQuery((com.moseeker.thrift.gen.common.struct.CommonQuery)value);
         }
         break;
 
@@ -2335,7 +2335,7 @@ public class RewardServices {
           switch (schemeField.id) {
             case 1: // QUERY
               if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                struct.query = new com.moseeker.thrift.gen.profile.struct.CommonQuery();
+                struct.query = new com.moseeker.thrift.gen.common.struct.CommonQuery();
                 struct.query.read(iprot);
                 struct.setQueryIsSet(true);
               } else { 
@@ -2394,7 +2394,7 @@ public class RewardServices {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
-          struct.query = new com.moseeker.thrift.gen.profile.struct.CommonQuery();
+          struct.query = new com.moseeker.thrift.gen.common.struct.CommonQuery();
           struct.query.read(iprot);
           struct.setQueryIsSet(true);
         }
@@ -5123,7 +5123,7 @@ public class RewardServices {
       schemes.put(TupleScheme.class, new getResource_argsTupleSchemeFactory());
     }
 
-    public com.moseeker.thrift.gen.profile.struct.CommonQuery query; // required
+    public com.moseeker.thrift.gen.common.struct.CommonQuery query; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -5188,7 +5188,7 @@ public class RewardServices {
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.QUERY, new org.apache.thrift.meta_data.FieldMetaData("query", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.profile.struct.CommonQuery.class)));
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.CommonQuery.class)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getResource_args.class, metaDataMap);
     }
@@ -5197,7 +5197,7 @@ public class RewardServices {
     }
 
     public getResource_args(
-      com.moseeker.thrift.gen.profile.struct.CommonQuery query)
+      com.moseeker.thrift.gen.common.struct.CommonQuery query)
     {
       this();
       this.query = query;
@@ -5208,7 +5208,7 @@ public class RewardServices {
      */
     public getResource_args(getResource_args other) {
       if (other.isSetQuery()) {
-        this.query = new com.moseeker.thrift.gen.profile.struct.CommonQuery(other.query);
+        this.query = new com.moseeker.thrift.gen.common.struct.CommonQuery(other.query);
       }
     }
 
@@ -5221,11 +5221,11 @@ public class RewardServices {
       this.query = null;
     }
 
-    public com.moseeker.thrift.gen.profile.struct.CommonQuery getQuery() {
+    public com.moseeker.thrift.gen.common.struct.CommonQuery getQuery() {
       return this.query;
     }
 
-    public getResource_args setQuery(com.moseeker.thrift.gen.profile.struct.CommonQuery query) {
+    public getResource_args setQuery(com.moseeker.thrift.gen.common.struct.CommonQuery query) {
       this.query = query;
       return this;
     }
@@ -5251,7 +5251,7 @@ public class RewardServices {
         if (value == null) {
           unsetQuery();
         } else {
-          setQuery((com.moseeker.thrift.gen.profile.struct.CommonQuery)value);
+          setQuery((com.moseeker.thrift.gen.common.struct.CommonQuery)value);
         }
         break;
 
@@ -5410,7 +5410,7 @@ public class RewardServices {
           switch (schemeField.id) {
             case 1: // QUERY
               if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                struct.query = new com.moseeker.thrift.gen.profile.struct.CommonQuery();
+                struct.query = new com.moseeker.thrift.gen.common.struct.CommonQuery();
                 struct.query.read(iprot);
                 struct.setQueryIsSet(true);
               } else { 
@@ -5469,7 +5469,7 @@ public class RewardServices {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
-          struct.query = new com.moseeker.thrift.gen.profile.struct.CommonQuery();
+          struct.query = new com.moseeker.thrift.gen.common.struct.CommonQuery();
           struct.query.read(iprot);
           struct.setQueryIsSet(true);
         }

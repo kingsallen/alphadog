@@ -14,21 +14,6 @@ struct ProviderResult {
     3: optional string data
 }
 
-struct CommonQuery {
-    1: i32 appid,
-    2: optional i32 limit=10,
-    3: optional i32 offset,
-    4: optional i32 page,
-    5: optional i32 per_page,
-    6: optional string sortby,
-    7: optional string order,
-    8: optional string fields,
-    9: optional bool nocache=false
-    10: optional i32 id,
-    11: optional i32 userid,
-    12: optional i32 companyid,
-    13: optional map<string, string> equalFilter
-}
 
 struct Profile { 
     1: i32 id,

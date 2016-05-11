@@ -12,7 +12,7 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.common.providerutils.daoutils.BaseDao;
 import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.Pagination;
-import com.moseeker.thrift.gen.profile.struct.CommonQuery;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.profile.struct.ProviderResult;
 
 /**

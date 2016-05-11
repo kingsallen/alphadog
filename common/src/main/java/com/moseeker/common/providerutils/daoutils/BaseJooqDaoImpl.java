@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.thrift.TException;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record;
@@ -25,7 +24,7 @@ import org.slf4j.LoggerFactory;
 import com.moseeker.common.dbutils.DatabaseConnectionHelper;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.thrift.gen.profile.struct.CommonQuery;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 
 /**
  * 
@@ -52,7 +51,7 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 	protected abstract void initJOOQEntity();
 
 	@SuppressWarnings("unchecked")
-	public List<R> getResources(CommonQuery query) throws TException {
+	public List<R> getResources(CommonQuery query) throws Exception {
 		initJOOQEntity();
 		List<R> records = new ArrayList<>();
 		try {
@@ -103,17 +102,13 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 			}
 
 			/* 分段查找数据库结果集 */
-			int offset = 0;
-			int limit = 0;
-			if (query.getLimit() > 0) {
-				if (query.getOffset() > 0) {
-					offset = query.getOffset();
-				}
-				limit = query.getLimit();
+			int page = 1;
+			int per_page = 0;
+			if (query.getPage() > 0) {
+					page = query.getPage();
 			}
-			if (limit > 0) {
-				table.limit(offset, limit);
-			}
+			per_page = query.getPer_page()>0 ? query.getPer_page() : 10 ;
+			table.limit((page-1)*per_page, per_page);
 
 			Result<Record> result = table.fetch();
 
@@ -124,7 +119,7 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 			}
 		} catch (DataAccessException | SQLException e) {
 			logger.error("error", e);
-			throw new TException();
+			throw new Exception();
 		} finally {
 			//do nothing
 		}
@@ -132,7 +127,7 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 	}
 	
 	@SuppressWarnings({"unchecked" })
-	public int getResourceCount(CommonQuery query) throws TException {
+	public int getResourceCount(CommonQuery query) throws Exception {
 		initJOOQEntity();
 		int totalCount = 0;
 		try {
@@ -155,25 +150,32 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 			totalCount = create.fetchCount(selectQuery);
 		} catch (DataAccessException | SQLException e) {
 			logger.error("error", e);
-			throw new TException();
+			throw new Exception();
 		} finally {
 			//do nothing
 		}
 		return totalCount;
 	}
 
-	public int postResources(List<R> records) throws TException {
+	public int postResources(List<R> records) throws Exception {
 		initJOOQEntity();
 		int insertret = 0;
 		try {
 			if (records != null && records.size() > 0) {
 				DSLContext create = DatabaseConnectionHelper.getConnection()
 						.getJooqDSL();
-				insertret = create.batchInsert(records).execute()[0];
+
+				int[] insertarray = create.batchInsert(records).execute();
+				if (insertarray.length == 0){
+					return 0;
+				}else{
+					insertret = insertarray[0];
+				}				
+				
 			}
 		} catch (DataAccessException | SQLException e) {
 			logger.error("error", e);
-			throw new TException();
+			throw new Exception();
 		} finally {
 			//do nothing
 		}
@@ -181,7 +183,7 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 		return insertret;
 	}
 
-	public int putResources(List<R> records) throws TException {
+	public int putResources(List<R> records) throws Exception {
 		initJOOQEntity();
 		int insertret = 0;
 		if (records != null && records.size() > 0) {
@@ -191,7 +193,7 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 				insertret = create.batchUpdate(records).execute()[0];
 			} catch (DataAccessException | SQLException e) {
 				logger.error("error", e);
-				throw new TException();
+				throw new Exception();
 			} finally {
 				//do nothing
 			}
@@ -200,7 +202,7 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 		return insertret;
 	}
 
-	public int delResources(List<R> records) throws TException {
+	public int delResources(List<R> records) throws Exception {
 		initJOOQEntity();
 		int insertret = 0;
 		if (records != null && records.size() > 0) {
@@ -210,7 +212,7 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 				insertret = create.batchDelete(records).execute()[0];
 			} catch (DataAccessException | SQLException e) {
 				logger.error("error", e);
-				throw new TException();
+				throw new Exception();
 			} finally {
 				//do nothing
 			}
@@ -220,7 +222,7 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 	}
 	
 	@SuppressWarnings({"unchecked" })
-	public R getResource(CommonQuery query) throws TException {
+	public R getResource(CommonQuery query) throws Exception {
 		initJOOQEntity();
 		R record = null;
 		try {
@@ -279,24 +281,30 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 			}
 		} catch (DataAccessException | SQLException e) {
 			logger.error("error", e);
-			throw new TException();
+			throw new Exception();
 		} finally {
 			//do nothing
 		}
 		return record;
 	}
 
-	public int postResource(R record) throws TException {
+	public int postResource(R record) throws Exception {
 		initJOOQEntity();
 		int insertret = 0;
 		if (record != null) {
 			try {
 				DSLContext create = DatabaseConnectionHelper.getConnection()
 						.getJooqDSL();
-				insertret = create.batchInsert(record).execute()[0];
+				int[] insertarray = create.batchInsert(record).execute();
+				if (insertarray.length == 0){
+					return 0;
+				}else{
+					insertret = insertarray[0];
+				}
+				
 			} catch (DataAccessException | SQLException e) {
 				logger.error("error", e);
-				throw new TException();
+				throw new Exception();
 			} finally {
 				//do nothing
 			}
@@ -305,7 +313,7 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 		return insertret;
 	}
 
-	public int putResource(R record) throws TException {
+	public int putResource(R record) throws Exception {
 		initJOOQEntity();
 		int insertret = 0;
 		if (record != null) {
@@ -316,7 +324,7 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 		return insertret;
 	}
 
-	public int delResource(R record) throws TException {
+	public int delResource(R record) throws Exception {
 		initJOOQEntity();
 		int insertret = 0;
 		if (record != null) {
@@ -326,7 +334,7 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 				insertret = create.batchDelete(record).execute()[0];
 			} catch (DataAccessException | SQLException e) {
 				logger.error("error", e);
-				throw new TException();
+				throw new Exception();
 			} finally {
 				//do nothing
 			}

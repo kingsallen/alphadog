@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 import com.moseeker.common.dbutils.DatabaseConnectionHelper;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.thrift.gen.profile.struct.CommonQuery;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 
 /**
  * 
@@ -100,17 +100,13 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 			}
 
 			/* 分段查找数据库结果集 */
-			int offset = 0;
-			int limit = 0;
-			if (query.getLimit() > 0) {
-				if (query.getOffset() > 0) {
-					offset = query.getOffset();
-				}
-				limit = query.getLimit();
+			int page = 1;
+			int per_page = 0;
+			if (query.getPage() > 0) {
+					page = query.getPage();
 			}
-			if (limit > 0) {
-				table.limit(offset, limit);
-			}
+			per_page = query.getPer_page()>0 ? query.getPer_page() : 10 ;
+			table.limit((page-1)*per_page, per_page);
 
 			Result<Record> result = table.fetch();
 
