@@ -14,8 +14,8 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.util.ServiceUtil;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.profile.service.RewardServices;
-import com.moseeker.thrift.gen.profile.struct.CommonQuery;
 import com.moseeker.thrift.gen.profile.struct.ProviderResult;
 import com.moseeker.thrift.gen.profile.struct.Reward;
 

@@ -2,8 +2,7 @@ package com.moseeker.common.providerutils.daoutils;
 
 import java.util.List;
 
-//todo 基础接口里不应该出现jooq相关的类
-import com.moseeker.thrift.gen.profile.struct.CommonQuery;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 
 /**
  * 

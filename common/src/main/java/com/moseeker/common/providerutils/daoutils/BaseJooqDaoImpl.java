@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 import com.moseeker.common.dbutils.DatabaseConnectionHelper;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.thrift.gen.profile.struct.CommonQuery;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 
 /**
  * 

@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 
 import com.moseeker.common.providerutils.bzutils.BaseServiceImpl;
 import com.moseeker.profile.dao.ProfileBasicDao;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.profile.service.BasicServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.Basic;
-import com.moseeker.thrift.gen.profile.struct.CommonQuery;
 import com.moseeker.thrift.gen.profile.struct.ProviderResult;
 
 @Service
