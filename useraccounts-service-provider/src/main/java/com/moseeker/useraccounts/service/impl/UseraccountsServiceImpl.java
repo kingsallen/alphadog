@@ -74,11 +74,9 @@ public class UseraccountsServiceImpl implements Iface {
 		}
 
 		query.setEqualFilter(filters);
-		Response jsonresp;
 		try {
 			UserUserRecord user = userdao.getResource(query);
 
-			jsonresp = new Response();
 			if (user != null) {
 				// login success
 
@@ -142,7 +140,6 @@ public class UseraccountsServiceImpl implements Iface {
 	@Override
 	public Response postsendsignupcode(String mobile) throws TException {
 		// TODO ip limit
-		Response jsonresp = new Response();
 
 		if (SmsSender.sendSMS_signup(mobile)) {
 			return ResponseUtils.success(null);
@@ -160,7 +157,7 @@ public class UseraccountsServiceImpl implements Iface {
 		if (validateCode(mobile, code, 1)) {
 			;
 		} else {
-			ResponseUtils.fail(10011, "mobile signup validation code failed");
+			return ResponseUtils.fail(10011, "mobile signup validation code failed");
 		}
 
 		UserUserRecord user = new UserUserRecord();
@@ -171,7 +168,7 @@ public class UseraccountsServiceImpl implements Iface {
 		try {
 			int newuserid = userdao.postResource(user);
 			if (newuserid > 0) {
-				// ResponseUtils.success(null);
+				 ResponseUtils.success(null); // todo 返回 user id
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -212,38 +209,117 @@ public class UseraccountsServiceImpl implements Iface {
 		return false;
 	}
 
+
 	/**
-	 *  微信扫码注册
+	 * 绑定用户的手机号和unionid， 
+	 * 如果unionid或者手机号均没有， 则post新增， 
+	 * 如果在一条记录里都有，提示已经绑定成功，
+	 * 如果在一条记录里有部分，unionid 或者 mobile，  补全。
+	 * 否则unionid和mobile分别存在2条记录里面， 需要做合并。
 	 */
 	@Override
-	public Response postuserwxsignup(String unionid) throws TException {
-		// TODO Auto-generated method stub
-		return null;
+	public Response postuserwxbindmobile(int appid, String unionid, String code, String mobile) throws TException {
+		// TODO validate code.
+		if (validateCode(mobile, code, 1)) {
+			;
+		} else {
+			return ResponseUtils.fail(10011, "mobile validation code failed");
+		}
+
+			
+		try {
+			CommonQuery query1 = new CommonQuery();
+			Map filters1 = new HashMap();
+			filters1.put("unionid", unionid);
+			query1.setEqualFilter(filters1);
+			UserUserRecord user1 = userdao.getResource(query1);		
+
+			CommonQuery query2 = new CommonQuery();
+			Map filters2 = new HashMap();
+			filters2.put("mobile", mobile);
+			query1.setEqualFilter(filters2);
+			UserUserRecord user2 = userdao.getResource(query2);	
+			
+			if ( (user1 == null ) && ( user2 == null)){
+				// post 
+			}else if ( (user1 != null)&&(user2 != null)&&(user1.getId().intValue() == user2.getId().intValue())){
+				// already bound
+			}else if (( user1 != null) && (user2 == null)){
+				// only unionid
+			}else if (( user1 == null) && (user2 != null)){
+				// only mobile
+			}else{
+				// 2 accounts, one unoinid, one mobile, need to merge.
+				;
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+
+		return ResponseUtils.fail("register failed");
+
 	}
 
-	@Override
-	public Response postuserwxbindmobile(String unionid, String code, String mobile) throws TException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	@Override
-	public Response postusermobilebindwx(String mobile, String code, String unionid) throws TException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	/**
+	 * 
+	 * @param user_id
+	 * @param old_password
+	 * @param password
+	 * @return
+	 * @throws TException
+	 */
 	@Override
 	public Response postuserchangepassword(int user_id, String old_password, String password) throws TException {
-		// TODO Auto-generated method stub
-		return null;
+		CommonQuery query = new CommonQuery();
+		Map filters = new HashMap();
+		filters.put("id", user_id);
+		filters.put("password", MD5Util.md5(old_password));
+		query.setEqualFilter(filters);
+		
+		int result = 0;
+		try {
+			UserUserRecord user = userdao.getResource(query);
+
+			if (user != null) {
+				// login success
+				if (user.getParentid() != null) {
+					// 当前帐号已经被合并到 parentid.
+					int parentid = user.getParentid().intValue();
+					query = new CommonQuery();
+					filters = new HashMap();
+					filters.put("id", parentid);
+					query.setEqualFilter(filters);
+					UserUserRecord userParent = userdao.getResource(query);
+					userParent.setPassword(MD5Util.md5(password));
+					result = userdao.putResource(userParent);
+				}
+				user.setPassword(MD5Util.md5(password));
+				result = userdao.putResource(user);
+				if (result > 0 ){
+					return ResponseUtils.success(null);
+				}
+			}else{
+				ResponseUtils.fail(10012, "failed to change password: old password doesn't match!");
+			}
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			logger.error("postuserchangepassword error: ", e);
+
+		}
+		return ResponseUtils.fail(10013, "update password failed");
+
 	}
 
+	/**
+	 * 发送忘记密码的验证码
+	 */
 	@Override
 	public Response postusersendpasswordforgotcode(String mobile) throws TException {
 		// TODO ip limit
-		Response jsonresp = new Response();
-
 		if (SmsSender.sendSMS_signup(mobile)) {
 			return ResponseUtils.success(null);
 		} else {
@@ -251,16 +327,65 @@ public class UseraccountsServiceImpl implements Iface {
 		}
 	}
 
+	/**
+	 * 忘记密码后重置密码
+	 */
 	@Override
 	public Response postuserresetpassword(String mobile, String code, String password) throws TException {
+
+		if (validateCode(mobile, code, 2)) {
+			;
+		} else {
+			return ResponseUtils.fail(10011, "mobile validation code failed");
+		}		
+		
+		CommonQuery query = new CommonQuery();
+		Map filters = new HashMap();
+		filters.put("mobile", mobile);
+		query.setEqualFilter(filters);
+		
+		int result = 0;
+		try {
+			UserUserRecord user = userdao.getResource(query);
+
+			if (user != null) {
+				// login success
+				if (user.getParentid() != null) {
+					// 当前帐号已经被合并到 parentid.
+					int parentid = user.getParentid().intValue();
+					query = new CommonQuery();
+					filters = new HashMap();
+					filters.put("id", parentid);
+					query.setEqualFilter(filters);
+					UserUserRecord userParent = userdao.getResource(query);
+					userParent.setPassword(MD5Util.md5(password));
+					result = userdao.putResource(userParent);
+				}
+				user.setPassword(MD5Util.md5(password));
+				result = userdao.putResource(user);
+				if (result > 0 ){
+					return ResponseUtils.success(null);
+				}
+			}else{
+				ResponseUtils.fail(10014, "mobile doesn't exist.");
+			}
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			logger.error("postuserresetpassword error: ", e);
+
+		}
+		return ResponseUtils.fail(10013, "update password failed");
+
+
+	}
+
+	@Override
+	public Response postusermergebymobile(int appid, String mobile) throws TException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public Response postusermergebymobile(String mobile) throws TException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 
 }
