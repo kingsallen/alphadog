@@ -1,12 +1,10 @@
 package com.moseeker.profile.dao;
 
-import org.apache.thrift.TBase;
-
 import com.moseeker.common.providerutils.daoutils.BaseDao;
+import com.moseeker.db.profiledb.tables.records.ProfileEducationRecord;
 
 
 
-@SuppressWarnings("rawtypes")
-public interface EducationDao<S extends TBase> extends BaseDao<S> {
+public interface EducationDao extends BaseDao<ProfileEducationRecord> {
 
 }

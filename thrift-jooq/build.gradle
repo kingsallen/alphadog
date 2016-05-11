@@ -3,7 +3,7 @@ project.description = '''
 '''
 
 import javax.xml.bind.JAXB
-import org.jooq.util.GenerationTool
+//import org.jooq.util.GenerationTool
 
 buildscript {
     repositories {
@@ -13,7 +13,6 @@ buildscript {
     }
     dependencies {
         classpath deps['thrift-gradle-plugin']
-        classpath deps['jooq-codegen']
         classpath deps["mysql-connector-java"]
     }
 }
@@ -22,7 +21,6 @@ apply plugin: "org.jruyi.thrift"
 
 dependencies {
     compile deps["libthrift"]
-    compile deps["jooq"]
     compile deps['jaxb-api']
     runtime deps["mysql-connector-java"]
     testCompile deps["junit"]
@@ -34,19 +32,19 @@ def thriftDepsSpecs = [
         [thrift: 'echo', service: 'demo-service-provider']
 ]
 
-task cleanGeneratedFile(type: Delete) {
+/*task cleanGeneratedFile(type: Delete) {
     delete 'thrift/gen'
-}
+}*/
 
-compileThrift {
+/*compileThrift {
     dependsOn 'cleanGeneratedFile'
     sourceDir 'thrift'
     outputDir 'thrift/gen'
     createGenFolder false
     generator 'java', 'html'
-}
+}*/
 
-task copyGeneratedFile {
+/*task copyGeneratedFile {
     dependsOn 'compileThrift'
 
     group = 'thrift'
@@ -76,7 +74,7 @@ task copyGeneratedFile {
         }
         logger.quiet("ends of copy file")
     }
-}
+}*/
 
 // ----------------------------------- thrift end -------------------------------------
 

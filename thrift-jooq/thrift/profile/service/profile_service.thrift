@@ -64,7 +64,7 @@ service EducationExtServices {
     profile_struct.ProviderResult getPagination(1:profile_struct.CommonQuery query);
     profile_struct.ProviderResult postResources(1: list<profile_struct.EducationExt> educationExts);
     profile_struct.ProviderResult putResources(1: list<profile_struct.EducationExt> educationExts);
-    profile_struct.ProviderResult delEducations(1: list<profile_struct.EducationExt> educationExts);
+    profile_struct.ProviderResult delResources(1: list<profile_struct.EducationExt> educationExts);
     
     profile_struct.ProviderResult getResource(1:profile_struct.CommonQuery query);
     profile_struct.ProviderResult postResource(1: profile_struct.EducationExt educationExt);

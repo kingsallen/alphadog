@@ -10,20 +10,19 @@ import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.db.profiledb.tables.ProfileAttachment;
 import com.moseeker.db.profiledb.tables.records.ProfileAttachmentRecord;
-import com.moseeker.profile.dao.ProfileDao;
+import com.moseeker.profile.dao.AttachmentDao;
 import com.moseeker.thrift.gen.profile.struct.Attachment;
 
 @Repository
 public class AttachmentDaoImpl extends
-		BaseDaoImpl<ProfileAttachmentRecord, ProfileAttachment, Attachment> implements
-		ProfileDao<Attachment> {
+		BaseDaoImpl<ProfileAttachmentRecord, ProfileAttachment> implements
+		AttachmentDao {
 
 	@Override
 	protected void initJOOQEntity() {
 		this.tableLike = ProfileAttachment.PROFILE_ATTACHMENT;
 	}
 
-	@Override
 	protected Attachment DBToStruct(ProfileAttachmentRecord r) {
 		Attachment attachment = null;
 		if (r != null) {
@@ -45,7 +44,6 @@ public class AttachmentDaoImpl extends
 		return attachment;
 	}
 
-	@Override
 	protected ProfileAttachmentRecord structToDB(Attachment attachment)
 			throws ParseException {
 		ProfileAttachmentRecord record = new ProfileAttachmentRecord();

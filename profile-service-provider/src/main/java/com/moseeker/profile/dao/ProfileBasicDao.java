@@ -1,11 +1,9 @@
 package com.moseeker.profile.dao;
 
-import org.apache.thrift.TBase;
-
 import com.moseeker.common.providerutils.daoutils.BaseDao;
+import com.moseeker.db.profiledb.tables.records.ProfileBasicRecord;
 
 
-@SuppressWarnings("rawtypes")
-public interface ProfileBasicDao<S extends TBase> extends BaseDao<S> {
+public interface ProfileBasicDao extends BaseDao<ProfileBasicRecord> {
 
 }
