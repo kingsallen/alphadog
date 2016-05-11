@@ -14,15 +14,22 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.daoutils.BaseDao;
 import com.moseeker.common.sms.SmsSender;
 import com.moseeker.common.util.MD5Util;
+import com.moseeker.db.logdb.tables.records.LogUserloginRecordRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.profile.struct.CommonQuery;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.userloginreq;
+import com.moseeker.useraccounts.dao.impl.LogUserLoginDaoImpl;
 import com.moseeker.useraccounts.dao.impl.UserDaoImpl;
 import com.moseeker.useraccounts.dao.impl.WxuserDaoImpl;
 
+/**
+ * 用户登陆， 注册，合并等api的实现
+ * @author yaofeng
+ * @email wangyaofeng@moseeker.com
+ */
 @Service
 public class UseraccountsServiceImpl implements Iface {
 
@@ -31,6 +38,7 @@ public class UseraccountsServiceImpl implements Iface {
 	
 	protected BaseDao<UserWxUserRecord> wxuserdao = new WxuserDaoImpl();
 	protected BaseDao<UserUserRecord> userdao = new UserDaoImpl();
+	protected BaseDao<LogUserloginRecordRecord> loguserlogindao = new LogUserLoginDaoImpl();
 
 
 	public static void main(String[] args){
@@ -41,7 +49,8 @@ public class UseraccountsServiceImpl implements Iface {
 		// System.out.println(MD5Util.md5("1234"));
 		
 			try {
-				new UseraccountsServiceImpl().postuserlogin(userlogin);
+				new UseraccountsServiceImpl().postsendsignupcode("13818252514");
+				// new UseraccountsServiceImpl().postuserlogin(userlogin);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -50,7 +59,10 @@ public class UseraccountsServiceImpl implements Iface {
 
 		
 	}
-
+	
+/**
+ * 用户登陆， 返回用户登陆后的信息。	
+ */
 	@Override
 	public Response postuserlogin(userloginreq userloginreq)  throws TException  {
 		// TODO to add login log
@@ -105,10 +117,25 @@ public class UseraccountsServiceImpl implements Iface {
 		
 	}
 
+	/**
+	 * 记录用户登出时的信息。
+	 * @param userid 
+	 * @return
+	 * @throws TException
+	 */
 	@Override
 	public Response postuserlogout(int userid) throws TException {
-		// TODO Auto-generated method stub
-		return null;
+		LogUserloginRecordRecord logout = new LogUserloginRecordRecord();
+		logout.setUserId(userid);
+		logout.setActiontype(2);
+		try {
+			loguserlogindao.postResource(logout);
+			return ResponseUtils.success(null);		
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			logger.error("postuserlogout error: ", e);
+		}
+		return ResponseUtils.fail("failed to record logout record");	
 	}
 
 	@Override
