@@ -101,16 +101,13 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 			}
 
 			/* 分段查找数据库结果集 */
-			int page = 0;
+			int page = 1;
 			int per_page = 0;
-			if (query.getPage() >= 0) {
+			if (query.getPage() > 0) {
 					page = query.getPage();
 			}
-			per_page = query.getPer_page();
-			
-			if (per_page > 0) {
-				table.limit(page*per_page, per_page);
-			}
+			per_page = query.getPer_page()>0 ? query.getPer_page() : 10 ;
+			table.limit((page-1)*per_page, per_page);
 
 			Result<Record> result = table.fetch();
 
