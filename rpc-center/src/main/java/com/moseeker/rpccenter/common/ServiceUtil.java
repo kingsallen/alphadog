@@ -1,4 +1,4 @@
-package com.moseeker.servicemanager.util;
+package com.moseeker.rpccenter.common;
 
 import com.moseeker.rpccenter.common.configure.PropertiesConfiguration;
 import com.moseeker.rpccenter.config.ClientConfig;
