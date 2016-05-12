@@ -44,13 +44,14 @@ public class UseraccountsServiceImpl implements Iface {
 	public static void main(String[] args) {
 		userloginreq userlogin = new userloginreq();
 		userlogin.setMobile("13818252514");
-		userlogin.setPassword("123456");
+		//userlogin.setPassword("123456");
 
 		// System.out.println(MD5Util.md5("1234"));
 
 		try {
 			// new UseraccountsServiceImpl().postsendsignupcode("13818252514");
-			new UseraccountsServiceImpl().postusermobilesignup("13818252514", "2900", "123456");
+			Response r = new UseraccountsServiceImpl().postuserlogin(userlogin);
+			System.out.print(r);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -113,7 +114,7 @@ public class UseraccountsServiceImpl implements Iface {
 	}
 
 	/**
-	 * 记录用户登出时的信息。
+	 * 记录用户登出时的信息。可能会移到 service-manager 处理。 
 	 * 
 	 * @param userid
 	 * @return
