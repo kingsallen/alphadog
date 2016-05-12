@@ -190,6 +190,7 @@ public class ParamUtils {
 	public static <T> T initCommonQuery(HttpServletRequest request,
 			Class<T> clazz) throws Exception {
 		T t = clazz.newInstance();
+		initCommonQuery(request, t);
 		return t;
 	}
 

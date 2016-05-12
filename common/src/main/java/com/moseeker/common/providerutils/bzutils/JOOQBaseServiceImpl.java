@@ -43,16 +43,18 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		if(dao == null) {
 			initDao();
 		}
-		List<S> result = new ArrayList<>();
 		try {
 			List<R> records = dao.getResources(query);
+			List<S> structs = DBsToStructs(records);
 			pr.setStatus(0);
 			pr.setMessage(Constant.TIPS_SUCCESS);
-			pr.setData(JSON.toJSONString(records));
+			pr.setData(JSON.toJSONString(structs));
+			
 		} catch (Exception e) {
 			logger.error("error", e);
 			pr.setStatus(1);
 			pr.setMessage(e.getMessage());
+			List<R> result = new ArrayList<>();
 			pr.setData(JSON.toJSONString(result));
 		} finally {
 			//do nothing

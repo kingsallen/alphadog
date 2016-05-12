@@ -12,7 +12,7 @@ ext {
             "zookeeper"           : "org.apache.zookeeper:zookeeper:3.4.8",
 //            "curator-framework": "org.apache.curator:curator-framework:2.10.0",
             "curator-recipes"     : "org.apache.curator:curator-recipes:2.3.0",
-            "fastjson"            : "com.alibaba:fastjson:1.2.8",
+            "fastjson"            : "com.alibaba:fastjson:1.2.11",
             "libthrift"           : "org.apache.thrift:libthrift:0.9.3",
             "bonecp"              : "com.jolbox:bonecp:0.8.0.RELEASE",
             "javamail"            : "javax.mail:mail:1.5.0-b01",

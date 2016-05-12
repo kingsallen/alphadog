@@ -244,7 +244,10 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 		if (record != null) {
 			DSLContext create = DatabaseConnectionHelper.getConnection()
 					.getJooqDSL();
-			create.batchInsert(record).execute();
+			create.attach(record);
+			record.insert();
+			//record.refresh();
+			//create.executeInsert(record);
 			if(record.key() != null) {
 				Record key = record.key();
 				int keyValue = BeanUtils.converToInteger(key.get(0));
