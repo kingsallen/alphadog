@@ -54,7 +54,7 @@ public class ResponseLogNotification {
 		reqResp.put("request", request.getParameterMap());
 		reqResp.put("response", response);
 		reqResp.put("remote_ip", ParamUtils.getRemoteIp(request));
-		reqResp.put("web_server_ip", "192.22.22.22");
+		reqResp.put("web_server_ip", ParamUtils.getLocalHostIp());
 
 		try {
 			RedisClientFactory.getLogClient().lpush(appid, logkey, JSON.toJSONString(reqResp));
