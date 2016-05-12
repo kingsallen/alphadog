@@ -133,9 +133,9 @@ public class ParamUtils {
 				}
 				Map<String, String> param = new HashMap<>();
 				@SuppressWarnings("unchecked")
-				Map<String, Object> reqParams = request.getParameterMap();
+				Map<String, String[]> reqParams = request.getParameterMap();
 				if (reqParams != null) {
-					for (Entry<String, Object> entry : reqParams.entrySet()) {
+					for (Entry<String, String[]> entry : reqParams.entrySet()) {
 						if (!entry.getKey().equals("appid")
 								&& !entry.getKey().equals("limit")
 								&& !entry.getKey().equals("offset")
@@ -146,7 +146,7 @@ public class ParamUtils {
 								&& !entry.getKey().equals("fields")
 								&& !entry.getKey().equals("nocache")) {
 							param.put(entry.getKey(),
-									((String[]) entry.getValue())[0]);
+									entry.getValue()[0]);
 						}
 					}
 				}
@@ -261,10 +261,10 @@ public class ParamUtils {
 			HttpServletRequest request) {
 		Map<String, Object> param = new HashMap<>();
 
-		Map<String, Object> reqParams = request.getParameterMap();
+		Map<String, String[]> reqParams = request.getParameterMap();
 		if (reqParams != null) {
-			for (Entry<String, Object> entry : reqParams.entrySet()) {
-				param.put(entry.getKey(), ((String[]) entry.getValue())[0]);
+			for (Entry<String, String[]> entry : reqParams.entrySet()) {
+				param.put(entry.getKey(), entry.getValue()[0]);
 			}
 		}
 		return param;
