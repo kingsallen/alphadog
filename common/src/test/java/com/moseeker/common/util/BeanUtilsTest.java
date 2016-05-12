@@ -28,7 +28,7 @@ public class BeanUtilsTest {
 		System.out.println("update_time:"+(new DateTime(record.getUpdateTime().getTime())).toString("yyyy-MM-dd"));
 	}
 
-	@Test
+
 	public void structToDBTest() {
 		//ProfileProfileRecord record = new ProfileProfileRecord();
 		Profile profile = new Profile();
