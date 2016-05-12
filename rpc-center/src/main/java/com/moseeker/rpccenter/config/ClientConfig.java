@@ -57,7 +57,7 @@ public class ClientConfig<T> implements IConfigCheck{
 
     // 下面的配置项是连接池的基本配置
     /** 超时时间，单位为ms，默认为3s */
-    private int timeout = 3000;
+    private int timeout = 30000;
 
     /** 最大活跃连接数 */
     private int maxActive = 1024;
@@ -69,7 +69,7 @@ public class ClientConfig<T> implements IConfigCheck{
     private int minIdle = 0;
 
     /** 当连接池资源耗尽时，调用者最大阻塞的时间 */
-    private int maxWait = 2000;
+    private int maxWait = 10000;
 
     /** 空闲链接”检测线程，检测的周期，毫秒数，默认位3min，-1表示关闭空闲检测 */
     private int timeBetweenEvictionRunsMillis = 180000;
@@ -118,7 +118,7 @@ public class ClientConfig<T> implements IConfigCheck{
         this.pool = pool;
 
         // 添加ShutdownHook
-        addShutdownHook(registry);
+      //  addShutdownHook(registry);
 
         Invoker invoker = new DefaultInvoker<T>(clientNode, pool, retry, hostSet);
         DynamicClientHandler dynamicClientHandler = new DynamicClientHandler(invoker);

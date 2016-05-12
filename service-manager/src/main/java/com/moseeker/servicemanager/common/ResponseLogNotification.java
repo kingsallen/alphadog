@@ -17,14 +17,14 @@ public class ResponseLogNotification {
 	private final static String eventkey = "RESTFUL_API_ERROR";
 
 	public static String success(HttpServletRequest request, Response response) {
-		String jsonresponse = JSON.toJSONString(response);
+		String jsonresponse = JSON.toJSONString(CleanJsonResponse.convertFrom(response));
 		logRequestResponse(request, jsonresponse);
 		return jsonresponse;
 
 	}
 
 	public static String fail(HttpServletRequest request, Response response) {
-		String jsonresponse = JSON.toJSONString(response);
+		String jsonresponse = JSON.toJSONString(CleanJsonResponse.convertFrom(response));
 		logRequestResponse(request, jsonresponse);
 		int appid = 0;
 		if (request.getParameter("appid") != null){
@@ -38,7 +38,7 @@ public class ResponseLogNotification {
 		Response response = new Response();
 		response.setStatus(1);
 		response.setMessage(message);
-		String jsonresponse = JSON.toJSONString(response);
+		String jsonresponse = JSON.toJSONString(CleanJsonResponse.convertFrom(response));
 		logRequestResponse(request, jsonresponse);
 		int appid = 0;
 		if (request.getParameter("appid") != null){

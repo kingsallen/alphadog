@@ -1,127 +1,21 @@
 project.description = '''
     thrfit IDL definitions & jooq configs
 '''
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
 
-import javax.xml.bind.JAXB
-//import org.jooq.util.GenerationTool
-
-buildscript {
-    repositories {
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
-    dependencies {
-        classpath deps['thrift-gradle-plugin']
-        classpath deps["mysql-connector-java"]
-    }
-}
-
-apply plugin: "org.jruyi.thrift"
+sourceCompatibility = 1.8
 
 dependencies {
     compile deps["libthrift"]
-    compile deps['jaxb-api']
-    runtime deps["mysql-connector-java"]
+    compile  fileTree(dir:'../libs',include:'jooq*.jar')
     testCompile deps["junit"]
 }
 
-// ----------------------------------- thrift start -------------------------------------
-def thriftDepsSpecs = [
-        [thrift: 'companyfollowers', service: 'user-service-provider'],
-        [thrift: 'echo', service: 'demo-service-provider']
-]
-
-/*task cleanGeneratedFile(type: Delete) {
-    delete 'thrift/gen'
-}*/
-
-/*compileThrift {
-    dependsOn 'cleanGeneratedFile'
-    sourceDir 'thrift'
-    outputDir 'thrift/gen'
-    createGenFolder false
-    generator 'java', 'html'
-}*/
-
-/*task copyGeneratedFile {
-    dependsOn 'compileThrift'
-
-    group = 'thrift'
-    description = 'copy thrift generated files to coreponding service-provider-directories'
-
-    String commonBase = 'thrift/gen/com/moseeker/thrift/gen/',
-           targetBase = 'src/main/java/com/moseeker/thrift/gen/';
-    def mappings = thriftDepsSpecs.collect {
-        String from = commonBase + it.thrift
-        String into = '../' + it.service + "/" + targetBase + it.thrift
-        return [from: from, into: into]
-    }
-
-    def mappingsServiceManager = [from: "thrift/gen/", into: "../service-manager/src/main/java/"]
-
-    doLast {
-        mappings.each { mapping ->
-                copy {
-                    from mapping.from
-                    into mapping.into
-                }
-        }
-
-        copy {
-            from mappingsServiceManager.from
-            into mappingsServiceManager.into
-        }
-        logger.quiet("ends of copy file")
-    }
-}*/
-
-// ----------------------------------- thrift end -------------------------------------
-
-// ----------------------------------- jooq start -------------------------------------
-/*
-def writer = new StringWriter()
-def xml = new groovy.xml.MarkupBuilder(writer)
-        .configuration('xmlns': 'http://www.jooq.org/xsd/jooq-codegen-3.6.0.xsd') {
-    jdbc() {
-        driver('com.mysql.jdbc.Driver')
-        url('jdbc:mysql://192.168.31.66:8066/')
-        user('www')
-        password('moseeker')
-    }
-    generator() {
-        database() {
-            name('com.moseeker.db')
-            properties {
-                property() {
-                    key('dialect')
-                    value('MYSQL')
-                }
-                property() {
-                    key('xml-file')
-                    value('jooq/configdb.xml')
-                }
-            }
-        }
-
-        // Watch out for this caveat when using MarkupBuilder with "reserved names"
-        // - https://github.com/jOOQ/jOOQ/issues/4797
-        // - http://stackoverflow.com/a/11389034/521799
-        // - https://groups.google.com/forum/#!topic/jooq-user/wi4S9rRxk4A
-        generate([:]) {
-            pojos true
-            daos true
-        }
-        target() {
-            packageName('com.moseeker.db')
-            directory('jooq/gen')
-        }
+jar {
+    // build one flat jar
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
-
-// Run the code generator
-org.jooq.util.GenerationTool.generate(
-        javax.xml.bind.JAXB.unmarshal(new StringReader(writer.toString()), org.jooq.util.jaxb.Configuration.class)
-)
-*/
-// ----------------------------------- jooq end -------------------------------------
