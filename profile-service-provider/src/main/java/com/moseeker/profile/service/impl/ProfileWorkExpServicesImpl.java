@@ -9,12 +9,9 @@ import org.springframework.stereotype.Service;
 
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.db.profiledb.tables.records.ProfileTrainingRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileWorkexpRecord;
-import com.moseeker.profile.dao.TrainingDao;
 import com.moseeker.profile.dao.WorkExpDao;
 import com.moseeker.thrift.gen.profile.service.WorkExpServices.Iface;
-import com.moseeker.thrift.gen.profile.struct.Training;
 import com.moseeker.thrift.gen.profile.struct.WorkExp;
 
 @Service

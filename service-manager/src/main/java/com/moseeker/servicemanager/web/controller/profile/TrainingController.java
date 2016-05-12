@@ -10,13 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.alibaba.fastjson.JSON;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.util.ServiceUtil;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.TrainingServices;
-import com.moseeker.thrift.gen.profile.struct.ProviderResult;
 import com.moseeker.thrift.gen.profile.struct.Training;
 
 @Controller
@@ -30,15 +29,13 @@ public class TrainingController {
 	@ResponseBody
 	public String get(HttpServletRequest request, HttpServletResponse response) {
 		//PrintWriter writer = null;
-		String jsonStringResponse = null;
 		try {
 			// GET方法 通用参数解析并赋值
 			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
 
-			ProviderResult result = traningService.getResources(query);
-			jsonStringResponse = JSON.toJSONString(result);
+			Response result = traningService.getResources(query);
 			
-			return ResponseLogNotification.success(request, jsonStringResponse);
+			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
@@ -48,13 +45,11 @@ public class TrainingController {
 	@ResponseBody
 	public String post(HttpServletRequest request, HttpServletResponse response) {
 		//PrintWriter writer = null;
-		String jsonStringResponse = null;
 		try {
 			Training training = ParamUtils.initModelForm(request, Training.class);
-			ProviderResult result = traningService.postResource(training);
-			jsonStringResponse = JSON.toJSONString(result);
+			Response result = traningService.postResource(training);
 			
-			return ResponseLogNotification.success(request, jsonStringResponse);
+			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
 			e.printStackTrace();
 			return ResponseLogNotification.fail(request, e.getMessage());
@@ -64,13 +59,11 @@ public class TrainingController {
 	@RequestMapping(value = "/profile/training", method = RequestMethod.PUT)
 	@ResponseBody
 	public String put(HttpServletRequest request, HttpServletResponse response) {
-		String jsonStringResponse = null;
 		try {
 			Training training = ParamUtils.initModelForm(request, Training.class);
-			ProviderResult result = traningService.putResource(training);
-			jsonStringResponse = JSON.toJSONString(result);
+			Response result = traningService.putResource(training);
 			
-			return ResponseLogNotification.success(request, jsonStringResponse);
+			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
@@ -79,13 +72,11 @@ public class TrainingController {
 	@RequestMapping(value = "/profile/training", method = RequestMethod.DELETE)
 	@ResponseBody
 	public String delete(HttpServletRequest request, HttpServletResponse response) {
-		String jsonStringResponse = null;
 		try {
 			Training training = ParamUtils.initModelForm(request, Training.class);
-			ProviderResult result = traningService.delResource(training);
-			jsonStringResponse = JSON.toJSONString(result);
+			Response result = traningService.delResource(training);
 			
-			return ResponseLogNotification.success(request, jsonStringResponse);
+			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}

@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.ParseException;
 
-import org.apache.thrift.TException;
 import org.jooq.types.UInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,10 +14,8 @@ import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.db.profiledb.tables.records.ProfileBasicRecord;
 import com.moseeker.profile.dao.ProfileBasicDao;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.profile.service.BasicServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.Basic;
-import com.moseeker.thrift.gen.profile.struct.ProviderResult;
 
 @Service
 public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, ProfileBasicRecord> implements Iface {
@@ -41,12 +38,6 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 		super.dao = this.dao;
 	}
 
-	@Override
-	public ProviderResult getPagination(CommonQuery query) throws TException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 	@Override
 	protected Basic DBToStruct(ProfileBasicRecord r) {
 		Basic basic = null;

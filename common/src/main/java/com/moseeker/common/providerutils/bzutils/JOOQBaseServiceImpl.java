@@ -15,7 +15,7 @@ import com.moseeker.common.providerutils.daoutils.BaseDao;
 import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.Pagination;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.profile.struct.ProviderResult;
+import com.moseeker.thrift.gen.common.struct.Response;
 
 /**
  * 
@@ -38,8 +38,8 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 
 	protected abstract void initDao();
 
-	public ProviderResult getResources(CommonQuery query) throws TException {
-		ProviderResult pr = new ProviderResult();
+	public Response getResources(CommonQuery query) throws TException {
+		Response pr = new Response();
 		if(dao == null) {
 			initDao();
 		}
@@ -60,8 +60,8 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		return pr;
 	}
 
-	public ProviderResult postResources(List<S> structs) throws TException {
-		ProviderResult pr = new ProviderResult();
+	public Response postResources(List<S> structs) throws TException {
+		Response pr = new Response();
 		if(dao == null) {
 			initDao();
 		}
@@ -84,8 +84,8 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		return pr;
 	}
 
-	public ProviderResult putResources(List<S> structs) throws TException {
-		ProviderResult pr = new ProviderResult();
+	public Response putResources(List<S> structs) throws TException {
+		Response pr = new Response();
 		if(dao == null) {
 			initDao();
 		}
@@ -107,8 +107,8 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		return pr;
 	}
 
-	public ProviderResult delResources(List<S> structs) throws TException {
-		ProviderResult pr = new ProviderResult();
+	public Response delResources(List<S> structs) throws TException {
+		Response pr = new Response();
 		if(dao == null) {
 			initDao();
 		}
@@ -130,8 +130,8 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		return pr;
 	}
 	
-	public ProviderResult getResource(CommonQuery query) throws TException {
-		ProviderResult pr = new ProviderResult();
+	public Response getResource(CommonQuery query) throws TException {
+		Response pr = new Response();
 		if(dao == null) {
 			initDao();
 		}
@@ -152,8 +152,8 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		return pr;
 	}
 
-	public ProviderResult postResource(S struct) throws TException {
-		ProviderResult pr = new ProviderResult();
+	public Response postResource(S struct) throws TException {
+		Response pr = new Response();
 		if(dao == null) {
 			initDao();
 		}
@@ -175,8 +175,8 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		return pr;
 	}
 
-	public ProviderResult putResource(S struct) throws TException {
-		ProviderResult pr = new ProviderResult();
+	public Response putResource(S struct) throws TException {
+		Response pr = new Response();
 		if(dao == null) {
 			initDao();
 		}
@@ -198,8 +198,8 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		return pr;
 	}
 
-	public ProviderResult delResource(S struct) throws TException {
-		ProviderResult pr = new ProviderResult();
+	public Response delResource(S struct) throws TException {
+		Response pr = new Response();
 		if(dao == null) {
 			initDao();
 		}
@@ -221,8 +221,8 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		return pr;
 	}
 	
-	protected ProviderResult getTotalRow(CommonQuery query) throws TException {
-		ProviderResult pr = new ProviderResult();
+	protected Response getTotalRow(CommonQuery query) throws TException {
+		Response pr = new Response();
 		if(dao == null) {
 			initDao();
 		}
@@ -243,8 +243,8 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		return pr;
 	}
 	
-	public ProviderResult getPagination(CommonQuery query) throws TException {
-		ProviderResult pr = new ProviderResult();
+	public Response getPagination(CommonQuery query) throws TException {
+		Response pr = new Response();
 		try {
 			Pagination<R> pagination = new Pagination<>();
 			int totalRow = dao.getResourceCount(query);
