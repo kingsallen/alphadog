@@ -82,12 +82,12 @@ public class WholeProfileServicesImpl implements Iface {
 			} catch (Exception e) {
 				logger.error("//todo", e);
 			}
-			try {
+			/*try {
 				List<ProfileIntentionRecord> intentionRecords = intentionDao.getResources(query);
 				profile.put("intentions", intentionRecords);
 			} catch (Exception e) {
 				logger.error("//todo", e);
-			}
+			}*/
 			try {
 				List<ProfileInternshipRecord> internshipRecords = internshipDao.getResources(query);
 				profile.put("internships", internshipRecords);
