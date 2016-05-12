@@ -26,41 +26,47 @@ public class MD5Util {
 	 * @param plainText
 	 * @return
 	 */
-    public static String md5(String plainText) {  
-        try {  
-            MessageDigest md = MessageDigest.getInstance("MD5");  
-            md.update(plainText.getBytes());  
-            byte b[] = md.digest();  
-  
-            int i;  
-  
-            StringBuffer buf = new StringBuffer("");  
-            for (int offset = 0; offset < b.length; offset++) {  
-                i = b[offset];  
-                if (i < 0)  
-                    i += 256;  
-                if (i < 16)  
-                    buf.append("0");  
-                buf.append(Integer.toHexString(i));  
-            }  
-            //32位加密  
-            return buf.toString();  
-            // 16位的加密  
-            //return buf.toString().substring(8, 24);  
-        } catch (NoSuchAlgorithmException e) {  
-            e.printStackTrace();  
-            return null;  
-        }  
-  
-    } 
-	
+	public static String md5(String plainText) {
+
+		if (plainText == null) {
+			return null;
+		}
+
+		try {
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			md.update(plainText.getBytes());
+			byte b[] = md.digest();
+
+			int i;
+
+			StringBuffer buf = new StringBuffer("");
+			for (int offset = 0; offset < b.length; offset++) {
+				i = b[offset];
+				if (i < 0)
+					i += 256;
+				if (i < 16)
+					buf.append("0");
+				buf.append(Integer.toHexString(i));
+			}
+			// 32位加密
+			return buf.toString();
+			// 16位的加密
+			// return buf.toString().substring(8, 24);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+
+	}
+
 	public String encodePassword(String msg) {
 		MessageDigest md;
 		StringBuilder password = new StringBuilder();
 		try {
 			md = MessageDigest.getInstance("MD5");
 			if (salt != null && !salt.trim().equals("")) {
-				md.update((msg+salt).getBytes());
+				md.update((msg + salt).getBytes());
 			} else {
 				md.update(msg.getBytes());
 			}
@@ -85,8 +91,7 @@ public class MD5Util {
 	 */
 	@Deprecated
 	public boolean verify(String password, String md5) {
-		if (password == null || md5 == null || password.trim().equals("")
-				|| md5.trim().equals("")) {
+		if (password == null || md5 == null || password.trim().equals("") || md5.trim().equals("")) {
 			return false;
 		}
 		if (encodePassword(password).equals(md5)) {
@@ -112,8 +117,7 @@ public class MD5Util {
 			md.update(salt.getBytes());
 			byte[] bytes = md.digest(msg.getBytes());
 			for (int i = 0; i < bytes.length; i++) {
-				sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16)
-						.substring(1));
+				sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
 			}
 		} catch (Exception e) {
 
@@ -161,8 +165,7 @@ public class MD5Util {
 			byte[] salt = getSalt1().getBytes();
 
 			PBEKeySpec spec = new PBEKeySpec(chars, salt, iterations, 64 * 8);
-			SecretKeyFactory skf = SecretKeyFactory
-					.getInstance("PBKDF2WithHmacSHA1");
+			SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
 			byte[] hash = skf.generateSecret(spec).getEncoded();
 
 			return iterations + toHex(salt) + toHex(hash);
