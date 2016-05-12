@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +25,15 @@ public class ParamUtils {
 		String path = (String) request
 				.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
 		return path;
+	}
+	
+	public static String getLocalHostIp(){
+		try {
+			return InetAddress.getLocalHost().getHostAddress();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+		}
+		return "unknow";
 	}
 
 	public static String getRemoteIp(HttpServletRequest request) {
@@ -61,6 +72,7 @@ public class ParamUtils {
 							int.class);
 					method.invoke(t, appId);
 				}
+/*
 				Integer limit = request.getParameter("limit") == null ? null
 						: Integer.parseInt(request.getParameter("limit"));
 				if (limit != null) {
@@ -75,6 +87,7 @@ public class ParamUtils {
 							int.class);
 					method.invoke(t, offset);
 				}
+*/				
 				Integer page = request.getParameter("page") == null ? null
 						: Integer.parseInt(request.getParameter("page"));
 				if (page != null) {
