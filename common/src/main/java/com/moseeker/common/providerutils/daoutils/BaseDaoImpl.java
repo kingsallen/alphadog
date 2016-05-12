@@ -236,16 +236,23 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 		return record;
 	}
 
+	/**
+	 * 添加
+	 */
 	public int postResource(R record) throws Exception {
 		initJOOQEntity();
-		int insertret = 0;
 		if (record != null) {
 			DSLContext create = DatabaseConnectionHelper.getConnection()
 					.getJooqDSL();
-			insertret = create.batchInsert(record).execute()[0];
+			create.batchInsert(record).execute();
+			if(record.key() != null) {
+				Record key = record.key();
+				int keyValue = BeanUtils.converToInteger(key.get(0));
+				return keyValue;
+			}
 		}
 
-		return insertret;
+		return 0;
 	}
 
 	public int putResource(R record) throws Exception {
