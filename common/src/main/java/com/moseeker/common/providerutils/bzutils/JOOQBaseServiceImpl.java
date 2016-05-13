@@ -10,9 +10,8 @@ import org.jooq.impl.UpdatableRecordImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.fastjson.JSON;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.daoutils.BaseDao;
-import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.Pagination;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -39,31 +38,27 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 	protected abstract void initDao();
 
 	public Response getResources(CommonQuery query) throws TException {
-		Response pr = new Response();
 		if(dao == null) {
 			initDao();
 		}
 		try {
 			List<R> records = dao.getResources(query);
 			List<S> structs = DBsToStructs(records);
-			pr.setStatus(0);
-			pr.setMessage(Constant.TIPS_SUCCESS);
-			pr.setData(JSON.toJSONString(structs));
+			
+			if (!structs.isEmpty()){
+				return ResponseUtils.success(structs);
+			}
 			
 		} catch (Exception e) {
-			logger.error("error", e);
-			pr.setStatus(1);
-			pr.setMessage(e.getMessage());
-			List<R> result = new ArrayList<>();
-			pr.setData(JSON.toJSONString(result));
+			logger.error("getResources error", e);
+			ResponseUtils.fail(e.getMessage());
 		} finally {
 			//do nothing
 		}
-		return pr;
+		return ResponseUtils.fail(20010,"empty data!");
 	}
 
 	public Response postResources(List<S> structs) throws TException {
-		Response pr = new Response();
 		if(dao == null) {
 			initDao();
 		}
@@ -71,23 +66,22 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		try {
 			List<R> records = structsToDBs(structs);
 			i = dao.postResources(records);
-			pr.setStatus(0);
-			pr.setMessage(Constant.TIPS_SUCCESS);
-			pr.setData(String.valueOf(i));
+			if ( i > 0 ){
+				return ResponseUtils.success(String.valueOf(i));
+			}
+
 		} catch (Exception e) {
-			logger.error("error", e);
-			pr.setStatus(1);
-			pr.setMessage(e.getMessage());
-			pr.setData(String.valueOf(i));
+			logger.error("postResources error", e);
+			ResponseUtils.fail(e.getMessage());
+
 		} finally {
 			//do nothing
 		}
 		
-		return pr;
+		return ResponseUtils.fail(20011,"post data failed!");
 	}
 
 	public Response putResources(List<S> structs) throws TException {
-		Response pr = new Response();
 		if(dao == null) {
 			initDao();
 		}
@@ -95,22 +89,20 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		try {
 			List<R> records = structsToDBs(structs);
 			i = dao.putResources(records);
-			pr.setStatus(0);
-			pr.setMessage(Constant.TIPS_SUCCESS);
-			pr.setData(String.valueOf(i));
+			if ( i > 0 ){
+				return ResponseUtils.success(String.valueOf(i));
+			}
 		} catch (Exception e) {
-			logger.error("error", e);
-			pr.setStatus(1);
-			pr.setMessage(e.getMessage());
-			pr.setData(String.valueOf(i));
+			logger.error("putResources error", e);
+			ResponseUtils.fail(e.getMessage());
+
 		} finally {
 			//do nothing
 		}
-		return pr;
+		return ResponseUtils.fail(20012,"put data failed!");
 	}
 
 	public Response delResources(List<S> structs) throws TException {
-		Response pr = new Response();
 		if(dao == null) {
 			initDao();
 		}
@@ -118,44 +110,40 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		try {
 			List<R> records = structsToDBs(structs);
 			i = dao.delResources(records);
-			pr.setStatus(0);
-			pr.setMessage(Constant.TIPS_SUCCESS);
-			pr.setData(String.valueOf(i));
+			if ( i > 0 ){
+				return ResponseUtils.success(String.valueOf(i));
+			}
 		} catch (Exception e) {
-			logger.error("error", e);
-			pr.setStatus(1);
-			pr.setMessage(e.getMessage());
-			pr.setData(String.valueOf(i));
+			logger.error("delResources error", e);
+			ResponseUtils.fail(e.getMessage());
+
 		} finally {
 			//do nothing
 		}
-		return pr;
+		return ResponseUtils.fail(20013,"delete data failed!");
 	}
 	
 	public Response getResource(CommonQuery query) throws TException {
-		Response pr = new Response();
 		if(dao == null) {
 			initDao();
 		}
 		R record = null;
 		try {
 			record = dao.getResource(query);
-			pr.setStatus(0);
-			pr.setMessage(Constant.TIPS_SUCCESS);
-			pr.setData(JSON.toJSONString(record));
+			if ( record != null){
+				return ResponseUtils.success(record);
+			}
+
 		} catch (Exception e) {
-			logger.error("error", e);
-			pr.setStatus(1);
-			pr.setMessage(e.getMessage());
-			pr.setData(Constant.NONE_JSON);
+			logger.error("getResource error", e);
+			return ResponseUtils.fail(e.getMessage());
 		} finally {
 			//do nothing
 		}
-		return pr;
+		return ResponseUtils.fail(20010,"empty data!");
 	}
 
 	public Response postResource(S struct) throws TException {
-		Response pr = new Response();
 		if(dao == null) {
 			initDao();
 		}
@@ -163,22 +151,22 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		try {
 			R record = structToDB(struct);
 			i = dao.postResource(record);
-			pr.setStatus(0);
-			pr.setMessage(Constant.TIPS_SUCCESS);
-			pr.setData(String.valueOf(i));
+			
+			if ( i > 0 ){
+				return ResponseUtils.success(String.valueOf(i));
+			}	
+
 		} catch (Exception e) {
-			logger.error("error", e);
-			pr.setStatus(1);
-			pr.setMessage(e.getMessage());
-			pr.setData(String.valueOf(i));
+			logger.error("postResource error", e);
+			return ResponseUtils.fail(e.getMessage());
 		} finally {
 			//do nothing
 		}
-		return pr;
+		
+		return ResponseUtils.fail(20011,"post data failed!");
 	}
 
 	public Response putResource(S struct) throws TException {
-		Response pr = new Response();
 		if(dao == null) {
 			initDao();
 		}
@@ -186,22 +174,20 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		try {
 			R r = structToDB(struct);
 			i = dao.putResource(r);
-			pr.setStatus(0);
-			pr.setMessage(Constant.TIPS_SUCCESS);
-			pr.setData(String.valueOf(i));
+			if ( i > 0 ){
+				return ResponseUtils.success(String.valueOf(i));
+			}
 		} catch (Exception e) {
-			logger.error("error", e);
-			pr.setStatus(1);
-			pr.setMessage(e.getMessage());
-			pr.setData(String.valueOf(i));
+			logger.error("putResource error", e);
+			return ResponseUtils.fail(e.getMessage());
+
 		} finally {
 			//do nothing
 		}
-		return pr;
+		return ResponseUtils.fail(20012,"put data failed!");
 	}
 
 	public Response delResource(S struct) throws TException {
-		Response pr = new Response();
 		if(dao == null) {
 			initDao();
 		}
@@ -209,44 +195,36 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		try {
 			R r = structToDB(struct);
 			i = dao.delResource(r);
-			pr.setStatus(0);
-			pr.setMessage(Constant.TIPS_SUCCESS);
-			pr.setData(String.valueOf(i));
+			if ( i > 0 ){
+				return ResponseUtils.success(String.valueOf(i));
+			}
 		} catch (Exception e) {
-			logger.error("error", e);
-			pr.setStatus(1);
-			pr.setMessage(e.getMessage());
-			pr.setData(String.valueOf(i));
+			logger.error("delResource error", e);
+			return ResponseUtils.fail(e.getMessage());
 		} finally {
 			//do nothing
 		}
-		return pr;
+		return ResponseUtils.fail(20013,"delete data failed!");
 	}
 	
 	protected Response getTotalRow(CommonQuery query) throws TException {
-		Response pr = new Response();
 		if(dao == null) {
 			initDao();
 		}
 		int totalRow = 0;
 		try {
 			totalRow = dao.getResourceCount(query);
-			pr.setStatus(0);
-			pr.setMessage(Constant.TIPS_SUCCESS);
-			pr.setData(String.valueOf(totalRow));
+			return ResponseUtils.success(String.valueOf(totalRow));
 		} catch (Exception e) {
-			logger.error("error", e);
-			pr.setStatus(1);
-			pr.setMessage(e.getMessage());
-			pr.setData(String.valueOf(0));
+			logger.error("getTotalRow error", e);
+			return ResponseUtils.fail(e.getMessage());
+
 		} finally {
 			//do nothing
 		}
-		return pr;
 	}
 	
 	public Response getPagination(CommonQuery query) throws TException {
-		Response pr = new Response();
 		try {
 			Pagination<R> pagination = new Pagination<>();
 			int totalRow = dao.getResourceCount(query);
@@ -263,22 +241,22 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 				totalPage++;
 			}
 			List<R> records = dao.getResources(query);
+			
 			pagination.setPageNo(pageNo);
 			pagination.setPageSize(pageSize);
 			pagination.setTotalPage(totalPage);
 			pagination.setTotalRow(totalRow);
 			pagination.setResults(records);
-			pr.setData(JSON.toJSONString(pagination));
-			pr.setStatus(0);
-			pr.setMessage(Constant.TIPS_SUCCESS);
+			return ResponseUtils.success(String.valueOf(pagination));				
+			
+
 		} catch (Exception e) {
-			pr.setData(Constant.NONE_JSON);
-			pr.setStatus(1);
-			pr.setMessage(e.getMessage());
+			logger.error("getPagination error", e);
+			return ResponseUtils.fail(e.getMessage());
+
 		} finally {
 			//do nothing
 		}
-		return pr;
 	}
 	
 	protected abstract R structToDB(S s) throws ParseException;

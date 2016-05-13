@@ -10,7 +10,7 @@ public class ResponseUtils {
 	public String data = null;
 	public int status = 0;
 
-	public static Response success(Map hashmap) {
+	public static Response success(Object hashmap) {
 
 		Response response = new Response();
 		response.setStatus(0);
