@@ -53,7 +53,7 @@ jar {
 
 task copyJars(type: Copy) {
   from configurations.runtime
-  into 'lib' // 目标位置
+  into 'build/libs' // 目标位置
 }
 
 jettyRun{

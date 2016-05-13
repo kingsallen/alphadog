@@ -40,7 +40,7 @@ subprojects {
         }
     }
 
-    /*task copyEnvResources {
+    task copyEnvResources {
 
         group "environmental configs"
         description "Use one set of configs in /src/main/resources/\$env, defaults to 'debug'"
@@ -55,10 +55,10 @@ subprojects {
             }
         }
 
-    }*/
+    }
 
     jar {
-        //dependsOn copyEnvResources
+        dependsOn copyEnvResources
     }
 }
 

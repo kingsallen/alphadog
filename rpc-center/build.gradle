@@ -23,14 +23,14 @@ dependencies {
 
 task copyJars(type: Copy) {
   from configurations.runtime
-  into 'lib' // 目标位置
+  into 'build/libs' // 目标位置
 }
 
 jar {
 
     // build one flat jar
-    from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    }
+    //from {
+    //    configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    //}
 
 }
