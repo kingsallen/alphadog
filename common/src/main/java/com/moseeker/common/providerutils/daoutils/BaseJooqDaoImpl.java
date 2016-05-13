@@ -295,13 +295,13 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 			try {
 				DSLContext create = DatabaseConnectionHelper.getConnection()
 						.getJooqDSL();
-				int[] insertarray = create.batchInsert(record).execute();
-				if (insertarray.length == 0){
-					return 0;
-				}else{
-					insertret = insertarray[0];
+				create.attach(record);
+				record.insert();
+				if(record.key() != null) {
+					Record key = record.key();
+					int keyValue = BeanUtils.converToInteger(key.get(0));
+					return keyValue;
 				}
-				
 			} catch (DataAccessException | SQLException e) {
 				logger.error("error", e);
 				throw new Exception();
