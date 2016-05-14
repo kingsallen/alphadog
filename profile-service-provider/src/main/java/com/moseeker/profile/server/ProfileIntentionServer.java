@@ -32,7 +32,7 @@ public class ProfileIntentionServer {
 	
 	public static void main(String[] args) {
 
-		try {
+		/*try {
 			AnnotationConfigApplicationContext acac = initSpring();
 			Server server = new Server(ProfileIntentionServicesImpl.class,
 					acac.getBean(ProfileServicesImpl.class),
@@ -52,7 +52,7 @@ public class ProfileIntentionServer {
 		} catch (Exception e) {
 			LOGGER.error("error", e);
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 	private static AnnotationConfigApplicationContext initSpring() {

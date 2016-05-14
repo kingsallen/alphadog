@@ -1,18 +1,14 @@
 package com.moseeker.rpccenter.common.configure;
 
-import java.util.Properties;
-
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
-
-
-import java.io.*;
 
 /**
  * Created by zzh on 16/3/29.

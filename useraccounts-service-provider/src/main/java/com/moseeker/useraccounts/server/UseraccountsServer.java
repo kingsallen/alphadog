@@ -31,8 +31,8 @@ public class UseraccountsServer {
 		try {
 			AnnotationConfigApplicationContext acac = initSpring();
 			Server server = new Server(UseraccountsServer.class,
-					acac.getBean(UseraccountsServiceImpl.class),
-					ServerNodeUtils.getPort(args));
+					ServerNodeUtils.getPort(args),
+					acac.getBean(UseraccountsServiceImpl.class));
 			server.start(); // 启动服务，非阻塞
 
 			synchronized (UseraccountsServer.class) {

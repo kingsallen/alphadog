@@ -69,8 +69,12 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 		if(basic != null) {
 			record = new ProfileBasicRecord();
 			record.setAddress(basic.getAddress());
-			record.setBirth(new java.sql.Date(DateUtils.nomalDateToDate(basic.getBirth()).getTime()));
-			record.setCreateTime(new Timestamp(DateUtils.nomalDateToDate(basic.getCreate_time()).getTime()));
+			if(basic.getBirth() != null) {
+				record.setBirth(new java.sql.Date(DateUtils.nomalDateToDate(basic.getBirth()).getTime()));
+			}
+			if(basic.getCreate_time() != null) {
+				record.setCreateTime(new Timestamp(DateUtils.nomalDateToDate(basic.getCreate_time()).getTime()));
+			}
 			record.setGender((byte)basic.getGender());
 			record.setHeight(BigDecimal.valueOf(basic.getHeight()));
 			record.setIdnumber(basic.getIdnumber());
@@ -80,7 +84,9 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 			record.setQq(basic.getQq());
 			record.setResidence((byte)basic.getResidence());
 			record.setResidencetype((byte)basic.getResidencetype());
-			record.setUpdateTime(new Timestamp(DateUtils.nomalDateToDate(basic.getUpdate_time()).getTime()));
+			if(basic.getUpdate_time() != null) {
+				record.setUpdateTime(new Timestamp(DateUtils.nomalDateToDate(basic.getUpdate_time()).getTime()));
+			}
 			record.setWeight(BigDecimal.valueOf(basic.getWeight()));
 			record.setWeixin(basic.getWeixin());
 		}

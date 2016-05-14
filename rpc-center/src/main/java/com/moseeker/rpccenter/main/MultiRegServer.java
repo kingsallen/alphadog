@@ -1,7 +1,11 @@
 package com.moseeker.rpccenter.main;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.common.configure.PropertiesConfiguration;
+import com.moseeker.rpccenter.config.MuitilRegServerConfig;
 import com.moseeker.rpccenter.config.RegistryConfig;
 import com.moseeker.rpccenter.config.ServerConfig;
 import com.moseeker.rpccenter.exception.RpcException;
@@ -9,7 +13,7 @@ import com.moseeker.rpccenter.exception.RpcException;
 /**
  * Created by zzh on 16/3/29.
  */
-public class Server {
+public class MultiRegServer {
 
     /** 配置文件路径，配置说明参考 */
     public static final String CONFIG_FILE_PATH = "classpath:zookeeper.properties";
@@ -18,7 +22,7 @@ public class Server {
     private final RegistryConfig registryConfig;
 
     /** {@link ServerConfig} */
-    private final ServerConfig serverConfig;
+    private final MuitilRegServerConfig serverConfig;
 
     /**
      * 配置文件路径说明：<br>
@@ -39,7 +43,7 @@ public class Server {
      *            port
      * @throws RpcException
      */
-    public Server(Class clazz, int port, Object impl) throws RpcException {
+    public MultiRegServer(Class clazz, int port, Object... impl) throws RpcException {
         PropertiesConfiguration configuration = PropertiesConfiguration.newInstance(CONFIG_FILE_PATH);
 
         // 初始化registry
@@ -47,10 +51,11 @@ public class Server {
         ConfigHelper.initConfig(registryConfig, "registry.", configuration);
 
         // 初始化server
-        serverConfig = new ServerConfig();
+        serverConfig = new MuitilRegServerConfig();
         serverConfig.setPort(port);
         serverConfig.setName(ServerNodeUtils.getProjectName(clazz));
-        serverConfig.setRef(impl);
+        List<Object> objs = Arrays.asList(impl);
+        serverConfig.setRef(objs);
     }
 
     /**
