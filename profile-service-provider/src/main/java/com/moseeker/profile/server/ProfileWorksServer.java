@@ -31,7 +31,7 @@ public class ProfileWorksServer {
 	
 	public static void main(String[] args) {
 
-		try {
+		/*try {
 			AnnotationConfigApplicationContext acac = initSpring();
 			Server server = new Server(ProfileWorksServer.class,
 					acac.getBean(WholeProfileServicesImpl.class),
@@ -51,7 +51,7 @@ public class ProfileWorksServer {
 		} catch (Exception e) {
 			LOGGER.error("error", e);
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 	private static AnnotationConfigApplicationContext initSpring() {

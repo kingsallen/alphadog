@@ -25,7 +25,7 @@ public class WorksExpController {
 
 	WorksServices.Iface worksService = ServiceUtil.getService(WorksServices.Iface.class);
 	
-	@RequestMapping(value = "/profile/works", method = RequestMethod.GET)
+	@RequestMapping(value = "/profile/worksexp", method = RequestMethod.GET)
 	@ResponseBody
 	public String get(HttpServletRequest request, HttpServletResponse response) {
 		//PrintWriter writer = null;

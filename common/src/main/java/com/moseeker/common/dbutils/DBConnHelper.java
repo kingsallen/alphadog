@@ -13,12 +13,13 @@ import com.jolbox.bonecp.Statistics;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.Notification;
 
-public class DatabaseConnectionHelper {
+public enum DBConnHelper {
 
-    private static BoneCP connectionPool;
-    private static DatabaseConnectionHelper self;
-
-    private BoneCP initConnectionPool() {
+	DBConn;
+	
+	private BoneCP connectionPool;
+	
+	private BoneCP initConnectionPool() {
         BoneCP connectionPool = null;
         try {
             // register jdbc driver
@@ -39,31 +40,25 @@ public class DatabaseConnectionHelper {
             config.setMaxConnectionsPerPartition(maxConnections);
             connectionPool = new BoneCP(config);
         } catch (Exception e) {
-            // send notification
             e.printStackTrace();
             Notification.sendMyCatConnectionError(e.getMessage());
+        } finally {
+        	
         }
         return connectionPool;
     }
-
-    public static DatabaseConnectionHelper getConnection() {
-        if(self == null) {
-            self = new DatabaseConnectionHelper();
-        }
-        return self;
-    }
-
-    private DatabaseConnectionHelper() {
-        connectionPool = initConnectionPool();
-    }
-
-    public DSLContext getJooqDSL() throws SQLException {
-        Connection conn = connectionPool.getConnection();
-        Statistics statictics = connectionPool.getStatistics();
+	
+	public DSLContext getJooqDSL(Connection conn) throws SQLException {
+		Statistics statictics = connectionPool.getStatistics();
         System.out.println("total free:"+statictics.getTotalFree());
         System.out.println("total lease:"+statictics.getTotalLeased());
-        statictics.getTotalLeased();
         return DSL.using(conn, SQLDialect.MYSQL);
     }
-
+	
+	public Connection getConn() throws SQLException {
+		if(connectionPool == null) {
+			connectionPool = initConnectionPool();
+		}
+		return connectionPool.getConnection();
+	}
 }

@@ -4,6 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import com.moseeker.profile.service.impl.ProfileAttachmentServicesImpl;
+import com.moseeker.profile.service.impl.ProfileBasicServicesImpl;
+import com.moseeker.profile.service.impl.ProfileEducationExtServicesImpl;
+import com.moseeker.profile.service.impl.ProfileEducationServicesImpl;
 import com.moseeker.profile.service.impl.ProfileServicesImpl;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.Server;
@@ -34,8 +38,15 @@ public class ProfileServer {
 		try {
 			AnnotationConfigApplicationContext acac = initSpring();
 			Server server = new Server(ProfileServer.class,
+					ServerNodeUtils.getPort(args), 
+					acac.getBean(ProfileServicesImpl.class));
+			/*Server server = new Server(ProfileServer.class,
+					ServerNodeUtils.getPort(args), 
 					acac.getBean(ProfileServicesImpl.class),
-					ServerNodeUtils.getPort(args));
+					acac.getBean(ProfileAttachmentServicesImpl.class),
+					acac.getBean(ProfileBasicServicesImpl.class),
+					acac.getBean(ProfileEducationExtServicesImpl.class),
+					acac.getBean(ProfileEducationServicesImpl.class));*/
 			server.start(); // 启动服务，非阻塞
 
 			synchronized (ProfileServer.class) {
