@@ -5,6 +5,8 @@ import java.lang.reflect.Constructor;
 import org.apache.commons.lang.StringUtils;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.thrift.TProcessor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.annotation.JSONField;
@@ -23,7 +25,7 @@ import com.moseeker.rpccenter.server.thrift.ThriftServer;
 public class ServerConfig implements IConfigCheck {
 
     /** LOGGER */
-    //final Logger LOGGER = LoggerFactory.getLogger(ServerConfig.class);
+    final Logger LOGGER = LoggerFactory.getLogger(ServerConfig.class);
 
     /** 服务名 */
     private String name;
@@ -104,8 +106,9 @@ public class ServerConfig implements IConfigCheck {
                 // 添加关闭钩子
                 addShutdownHook(registry, server);
             } catch (Exception e) {
-                //LOGGER.error(e.getMessage(), e);
-                server.stop();
+                LOGGER.error(e.getMessage(), e);
+                //server.stop();
+            	
             }
         } else {
             server.stop();
