@@ -173,9 +173,6 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 				conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 				insertret = create.batchInsert(records).execute()[0];
-				if(conn != null && !conn.isClosed()) {
-					conn.close();
-				}
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -337,6 +334,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 				create.attach(record);
 				record.update();
+				insertret = 1;
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 				// TODO Auto-generated catch block
@@ -357,7 +355,8 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 			try {
 				conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-				insertret = create.batchDelete(record).execute()[0];
+				create.attach(record);
+				insertret = record.delete();
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			} finally {

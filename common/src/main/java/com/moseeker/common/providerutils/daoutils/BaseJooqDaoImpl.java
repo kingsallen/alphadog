@@ -349,6 +349,7 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 			create.attach(record);
 			record.update();
+			insertret = 1;
 			if(conn != null && !conn.isClosed()) {
 				conn.close();
 			}
@@ -364,7 +365,8 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 			try {
 				conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-				insertret = create.batchDelete(record).execute()[0];
+				create.attach(record);
+				insertret = record.delete();
 			} catch (DataAccessException | SQLException e) {
 				logger.error("error", e);
 				throw new Exception();
