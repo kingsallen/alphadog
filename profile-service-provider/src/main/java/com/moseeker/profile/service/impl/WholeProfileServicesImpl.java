@@ -1,5 +1,6 @@
 package com.moseeker.profile.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.Constant;
 import com.moseeker.db.profiledb.tables.records.ProfileAttachmentRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileBasicRecord;
@@ -44,6 +46,20 @@ import com.moseeker.profile.dao.WorksDao;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices.Iface;
+import com.moseeker.thrift.gen.profile.struct.Attachment;
+import com.moseeker.thrift.gen.profile.struct.Basic;
+import com.moseeker.thrift.gen.profile.struct.Education;
+import com.moseeker.thrift.gen.profile.struct.Intention;
+import com.moseeker.thrift.gen.profile.struct.Internship;
+import com.moseeker.thrift.gen.profile.struct.Language;
+import com.moseeker.thrift.gen.profile.struct.Profile;
+import com.moseeker.thrift.gen.profile.struct.ProfileExt;
+import com.moseeker.thrift.gen.profile.struct.Reward;
+import com.moseeker.thrift.gen.profile.struct.SchoolJob;
+import com.moseeker.thrift.gen.profile.struct.Skill;
+import com.moseeker.thrift.gen.profile.struct.Training;
+import com.moseeker.thrift.gen.profile.struct.WorkExp;
+import com.moseeker.thrift.gen.profile.struct.Works;
 
 @Service
 public class WholeProfileServicesImpl implements Iface {
@@ -65,98 +81,172 @@ public class WholeProfileServicesImpl implements Iface {
 			profileEqualFilter.put("id", String.valueOf(id));
 			profileQuery.setEqualFilter(profileEqualFilter);
 			try {
+				List<Attachment> attachments = new ArrayList<>();
 				List<ProfileAttachmentRecord> attachmentRecords = attachmentDao.getResources(query);
-				profile.put("attachments", attachmentRecords);
+				if(attachmentRecords != null) {
+					attachmentRecords.forEach(attachmentRecord->{
+						attachments.add((Attachment)BeanUtils.DBToStruct(Attachment.class, attachmentRecord));
+					});
+				}
+				profile.put("attachments", attachments);
 			} catch (Exception e) {
 				logger.error("//todo", e);
 			}
 			try {
+				List<Education> educations = new ArrayList<>();
 				List<ProfileEducationRecord> educationRecords = educationDao.getResources(query);
-				profile.put("educations", educationRecords);
+				if(educationRecords != null) {
+					educationRecords.forEach(education -> {
+						educations.add((Education)BeanUtils.DBToStruct(Education.class, education));
+					});
+				}
+				profile.put("educations", educations);
 			} catch (Exception e) {
 				logger.error("//todo", e);
 			}
 			try {
+				List<Intention> intentions = new ArrayList<>();
 				List<ProfileIntentionRecord> intentionRecords = intentionDao.getResources(query);
-				profile.put("intentions", intentionRecords);
+				if(intentionRecords != null) {
+					intentionRecords.forEach(intention -> {
+						intentions.add((Intention)BeanUtils.DBToStruct(Intention.class, intention));
+					});
+				}
+				profile.put("intentions", intentions);
 			} catch (Exception e) {
 				logger.error("//todo", e);
 			}
-			/*try {
-				List<ProfileIntentionRecord> intentionRecords = intentionDao.getResources(query);
-				profile.put("intentions", intentionRecords);
-			} catch (Exception e) {
-				logger.error("//todo", e);
-			}*/
 			try {
+				List<Internship> internships = new ArrayList<>();
 				List<ProfileInternshipRecord> internshipRecords = internshipDao.getResources(query);
-				profile.put("internships", internshipRecords);
+				if(internshipRecords != null) {
+					internshipRecords.forEach(internship -> {
+						internships.add((Internship)BeanUtils.DBToStruct(Internship.class, internship));
+					});
+				}
+				profile.put("internships", internships);
 			} catch (Exception e) {
 				logger.error("//todo", e);
 			}
 			try {
+				List<Language> languages = new ArrayList<>();
 				List<ProfileLanguageRecord> languageRecords = languageDao.getResources(query);
-				profile.put("languages", languageRecords);
+				if(languageRecords != null) {
+					languageRecords.forEach(language -> {
+						languages.add((Language)BeanUtils.DBToStruct(Language.class, language));
+					});
+				}
+				profile.put("languages", languages);
 			} catch (Exception e) {
 				logger.error("//todo", e);
 			}
 			try {
+				Basic basic = null;
 				ProfileBasicRecord profileBasic = profileBasicDao.getResource(query);
-				profile.put("basic", profileBasic);
+				if(profileBasic != null) {
+					basic = (Basic)BeanUtils.DBToStruct(Basic.class, profileBasic);
+				}
+				profile.put("basic", basic);
 			} catch (Exception e) {
 				logger.error("//todo", e);
 			}
 			try {
+				Profile profilestruct = null;
 				ProfileProfileRecord profileProfile = profileDao.getResource(profileQuery);
-				profile.put("profile", profileProfile);
+				if(profileProfile != null) {
+					profilestruct = (Profile)BeanUtils.DBToStruct(Profile.class, profileProfile);
+				}
+				profile.put("profile", profilestruct);
 			} catch (Exception e) {
 				logger.error("//todo", e);
 			}
 			try {
+				ProfileExt profileExt = null;
 				ProfileExtRecord profileExtRecord = profileExtDao.getResource(profileQuery);
-				profile.put("profile_ext", profileExtRecord);
+				if(profileExtRecord != null) {
+					profileExt = (ProfileExt)BeanUtils.DBToStruct(ProfileExt.class, profileExtRecord);
+				}
+				profile.put("profile_ext", profileExt);
 			} catch (Exception e) {
 				logger.error("//todo", e);
 			}
 			try {
-				List<ProfileRewardRecord> rewardRecord = rewardDao.getResources(query);
-				profile.put("rewards", rewardRecord);
+				List<Reward> rewards = new ArrayList<>();
+				List<ProfileRewardRecord> rewardRecords = rewardDao.getResources(query);
+				if(rewardRecords != null) {
+					rewardRecords.forEach(reward -> {
+						rewards.add((Reward)BeanUtils.DBToStruct(Reward.class, reward));
+					});
+				}
+				profile.put("rewards", rewards);
 			} catch (Exception e) {
 				logger.error("//todo", e);
 			}
 			try {
+				List<SchoolJob> schooljobs = new ArrayList<>();
 				List<ProfileSchooljobRecord> schooljobRecords = schoolJobDao.getResources(query);
-				profile.put("schooljobs", schooljobRecords);
+				if(schooljobRecords != null) {
+					schooljobRecords.forEach(schooljob -> {
+						schooljobs.add((SchoolJob)BeanUtils.DBToStruct(SchoolJob.class, schooljob));
+					});
+				}
+				profile.put("schooljobs", schooljobs);
 			} catch (Exception e) {
 				logger.error("//todo", e);
 			}
 			try {
+				List<Skill> skills = new ArrayList<>();
 				List<ProfileSkillRecord> skillRecords = skillDao.getResources(query);
-				profile.put("skills", skillRecords);
+				if(skillRecords != null) {
+					skillRecords.forEach(skill -> {
+						skills.add((Skill)BeanUtils.DBToStruct(Skill.class, skill));
+					});
+				}
+				profile.put("skills", skills);
 			} catch (Exception e) {
 				logger.error("//todo", e);
 			}
 			try {
+				List<Training> trainings = new ArrayList<>();
 				List<ProfileTrainingRecord> trainingRecords = trainingDao.getResources(query);
-				profile.put("trainings", trainingRecords);
+				if(trainingRecords != null) {
+					trainingRecords.forEach(training -> {
+						trainings.add((Training)BeanUtils.DBToStruct(Training.class, training));
+					});
+				}
+				profile.put("trainings", trainings);
 			} catch (Exception e) {
 				logger.error("//todo", e);
 			}
 			try {
+				List<WorkExp> workExps = new ArrayList<>();
 				List<ProfileWorkexpRecord> workexpRecords = workExpDao.getResources(query);
-				profile.put("work_exps", workexpRecords);
+				if(workexpRecords != null) {
+					workexpRecords.forEach(workExp -> {
+						workExps.add((WorkExp)BeanUtils.DBToStruct(WorkExp.class, workExp));
+					});
+				}
+				profile.put("work_exps", workExps);
 			} catch (Exception e) {
 				logger.error("//todo", e);
 			}
 			try {
+				List<Works> works = new ArrayList<>();
 				List<ProfileWorksRecord> worksRecords = worksDao.getResources(query);
-				profile.put("works", worksRecords);
+				if(worksRecords != null) {
+					worksRecords.forEach(work -> {
+						works.add((Works)BeanUtils.DBToStruct(Works.class, work));
+					});
+				}
+				profile.put("works", works);
 			} catch (Exception e) {
 				logger.error("//todo", e);
 			}
 			response.setStatus(0);
 			response.setMessage(Constant.TIPS_SUCCESS);
+			//Gson gson = new Gson();
 			response.setData(JSON.toJSONString(profile));
+			//response.setData(gson.toJson(profile));
 		} catch (Exception e) {
 			logger.error("//todo",e);
 			response.setStatus(0);

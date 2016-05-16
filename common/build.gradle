@@ -38,6 +38,7 @@ dependencies {
     compile deps["servlet-api"]
     compile deps["cglib"]
     compile deps["beanutils"]
+    compile deps["gjson"]
     compile fileTree(dir:'../libs',include:'*.jar')
 
 }

@@ -130,7 +130,7 @@ public class BeanUtils {
 								String origMethodName = buiderRecordMethodName(field.getName(), MethodType.GET);
 								for(k=0; k<origMethods.length;k++) {
 									if(origMethods[k].getName().trim().equals(origMethodName)) {
-										Object object = convertTo(origMethods[k].invoke(dest, new Object[]{}), destMethods[j].getParameterTypes()[0]);
+										Object object = convertTo(origMethods[k].invoke(orig, new Object[]{}), destMethods[j].getParameterTypes()[0]);
 										if(object != null) {
 											destMethods[j].invoke(dest, object);
 										}
