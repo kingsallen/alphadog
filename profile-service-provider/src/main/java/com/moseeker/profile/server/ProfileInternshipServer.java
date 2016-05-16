@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.moseeker.profile.service.impl.ProfileInternshipServicesImpl;
-import com.moseeker.profile.service.impl.ProfileServicesImpl;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.Server;
 
@@ -32,11 +31,11 @@ public class ProfileInternshipServer {
 	
 	public static void main(String[] args) {
 
-		/*try {
+		try {
 			AnnotationConfigApplicationContext acac = initSpring();
-			Server server = new Server(ProfileInternshipServicesImpl.class,
-					acac.getBean(ProfileServicesImpl.class),
-					ServerNodeUtils.getPort(args));
+			Server server = new Server(ProfileInternshipServer.class,
+					ServerNodeUtils.getPort(args),
+					acac.getBean(ProfileInternshipServicesImpl.class));
 			server.start(); // 启动服务，非阻塞
 
 			synchronized (ProfileInternshipServer.class) {
@@ -52,7 +51,7 @@ public class ProfileInternshipServer {
 		} catch (Exception e) {
 			LOGGER.error("error", e);
 			e.printStackTrace();
-		}*/
+		}
 	}
 
 	private static AnnotationConfigApplicationContext initSpring() {

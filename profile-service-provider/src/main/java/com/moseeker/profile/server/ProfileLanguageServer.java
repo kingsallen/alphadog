@@ -31,11 +31,11 @@ public class ProfileLanguageServer {
 	
 	public static void main(String[] args) {
 
-		/*try {
+		try {
 			AnnotationConfigApplicationContext acac = initSpring();
 			Server server = new Server(ProfileLanguageServer.class,
-					acac.getBean(ProfileLanguageServicesImpl.class),
-					ServerNodeUtils.getPort(args));
+					ServerNodeUtils.getPort(args),
+					acac.getBean(ProfileLanguageServicesImpl.class));
 			server.start(); // 启动服务，非阻塞
 
 			synchronized (ProfileLanguageServer.class) {
@@ -51,7 +51,7 @@ public class ProfileLanguageServer {
 		} catch (Exception e) {
 			LOGGER.error("error", e);
 			e.printStackTrace();
-		}*/
+		}
 	}
 
 	private static AnnotationConfigApplicationContext initSpring() {

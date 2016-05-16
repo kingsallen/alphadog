@@ -31,11 +31,11 @@ public class ProfileExtServer {
 	
 	public static void main(String[] args) {
 
-		/*try {
+		try {
 			AnnotationConfigApplicationContext acac = initSpring();
 			Server server = new Server(ProfileExtServer.class,
-					acac.getBean(ProfileExtServicesImpl.class),
-					ServerNodeUtils.getPort(args));
+					ServerNodeUtils.getPort(args),
+					acac.getBean(ProfileExtServicesImpl.class));
 			server.start(); // 启动服务，非阻塞
 
 			synchronized (ProfileExtServer.class) {
@@ -51,7 +51,7 @@ public class ProfileExtServer {
 		} catch (Exception e) {
 			LOGGER.error("error", e);
 			e.printStackTrace();
-		}*/
+		}
 	}
 
 	private static AnnotationConfigApplicationContext initSpring() {

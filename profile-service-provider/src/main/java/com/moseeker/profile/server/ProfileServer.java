@@ -40,13 +40,6 @@ public class ProfileServer {
 			Server server = new Server(ProfileServer.class,
 					ServerNodeUtils.getPort(args), 
 					acac.getBean(ProfileServicesImpl.class));
-			/*Server server = new Server(ProfileServer.class,
-					ServerNodeUtils.getPort(args), 
-					acac.getBean(ProfileServicesImpl.class),
-					acac.getBean(ProfileAttachmentServicesImpl.class),
-					acac.getBean(ProfileBasicServicesImpl.class),
-					acac.getBean(ProfileEducationExtServicesImpl.class),
-					acac.getBean(ProfileEducationServicesImpl.class));*/
 			server.start(); // 启动服务，非阻塞
 
 			synchronized (ProfileServer.class) {

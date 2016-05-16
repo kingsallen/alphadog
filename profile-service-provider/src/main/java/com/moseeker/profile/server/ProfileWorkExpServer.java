@@ -31,11 +31,11 @@ public class ProfileWorkExpServer {
 	
 	public static void main(String[] args) {
 
-		/*try {
+		try {
 			AnnotationConfigApplicationContext acac = initSpring();
 			Server server = new Server(ProfileWorkExpServer.class,
-					acac.getBean(ProfileWorkExpServicesImpl.class),
-					ServerNodeUtils.getPort(args));
+					ServerNodeUtils.getPort(args),
+					acac.getBean(ProfileWorkExpServicesImpl.class));
 			server.start(); // 启动服务，非阻塞
 
 			synchronized (ProfileWorkExpServer.class) {
@@ -51,7 +51,7 @@ public class ProfileWorkExpServer {
 		} catch (Exception e) {
 			LOGGER.error("error", e);
 			e.printStackTrace();
-		}*/
+		}
 	}
 
 	private static AnnotationConfigApplicationContext initSpring() {

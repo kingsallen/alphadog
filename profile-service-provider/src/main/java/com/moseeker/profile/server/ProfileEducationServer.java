@@ -31,11 +31,11 @@ public class ProfileEducationServer {
 	
 	public static void main(String[] args) {
 
-		/*try {
+		try {
 			AnnotationConfigApplicationContext acac = initSpring();
 			Server server = new Server(ProfileEducationServer.class,
-					acac.getBean(ProfileEducationServicesImpl.class),
-					ServerNodeUtils.getPort(args));
+					ServerNodeUtils.getPort(args),
+					acac.getBean(ProfileEducationServicesImpl.class));
 			server.start(); // 启动服务，非阻塞
 
 			synchronized (ProfileEducationServer.class) {
@@ -51,7 +51,7 @@ public class ProfileEducationServer {
 		} catch (Exception e) {
 			LOGGER.error("error", e);
 			e.printStackTrace();
-		}*/
+		}
 	}
 
 	private static AnnotationConfigApplicationContext initSpring() {
