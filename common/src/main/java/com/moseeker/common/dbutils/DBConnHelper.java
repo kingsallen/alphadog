@@ -31,6 +31,7 @@ public enum DBConnHelper {
             String password = propertiesReader.get("mycat.password", String.class);
             Integer minConnections = propertiesReader.get("mycat.minConnections", Integer.class);
             Integer maxConnections = propertiesReader.get("mycat.maxConnections", Integer.class);
+            Integer idleMaxAgeInMinutes = propertiesReader.get("mycat.idleMaxAgeInMinutes", Integer.class);
             // init connection pool
             BoneCPConfig config = new BoneCPConfig();
             config.setJdbcUrl(url);
@@ -38,6 +39,7 @@ public enum DBConnHelper {
             config.setPassword(password);
             config.setMinConnectionsPerPartition(minConnections);
             config.setMaxConnectionsPerPartition(maxConnections);
+            config.setIdleMaxAgeInMinutes(idleMaxAgeInMinutes);
             connectionPool = new BoneCP(config);
         } catch (Exception e) {
             e.printStackTrace();
