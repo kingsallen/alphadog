@@ -1,6 +1,8 @@
 package com.moseeker.profile.service.impl;
 
 import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,11 +40,17 @@ public class ProfileSchoolJobServicesImpl extends JOOQBaseServiceImpl<SchoolJob,
 
 	@Override
 	protected SchoolJob DBToStruct(ProfileSchooljobRecord r) {
-		return (SchoolJob) BeanUtils.DBToStruct(SchoolJob.class, r);
+		Map<String, String> equalRules = new HashMap<>();
+		equalRules.put("start_date", "start");
+		equalRules.put("end_date", "end");
+		return (SchoolJob) BeanUtils.DBToStruct(SchoolJob.class, r, equalRules);
 	}
 
 	@Override
 	protected ProfileSchooljobRecord structToDB(SchoolJob schoolJob) throws ParseException {
-		return (ProfileSchooljobRecord) BeanUtils.structToDB(schoolJob, ProfileSchooljobRecord.class);
+		Map<String, String> equalRules = new HashMap<>();
+		equalRules.put("start_date", "start");
+		equalRules.put("end_date", "end");
+		return (ProfileSchooljobRecord) BeanUtils.structToDB(schoolJob, ProfileSchooljobRecord.class, equalRules);
 	}
 }

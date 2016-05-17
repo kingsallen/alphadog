@@ -1,6 +1,8 @@
 package com.moseeker.profile.service.impl;
 
 import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,11 +41,17 @@ public class ProfileInternshipServicesImpl extends JOOQBaseServiceImpl<Internshi
 
 	@Override
 	protected Internship DBToStruct(ProfileInternshipRecord r) {
-		return (Internship) BeanUtils.DBToStruct(Internship.class, r);
+		Map<String, String> equalRules = new HashMap<>();
+		equalRules.put("start_date", "start");
+		equalRules.put("end_date", "end");
+		return (Internship) BeanUtils.DBToStruct(Internship.class, r, equalRules);
 	}
 
 	@Override
 	protected ProfileInternshipRecord structToDB(Internship internship) throws ParseException {
-		return (ProfileInternshipRecord) BeanUtils.structToDB(internship, ProfileInternshipRecord.class);
+		Map<String, String> equalRules = new HashMap<>();
+		equalRules.put("start_date", "start");
+		equalRules.put("end_date", "end");
+		return (ProfileInternshipRecord) BeanUtils.structToDB(internship, ProfileInternshipRecord.class, equalRules);
 	}
 }

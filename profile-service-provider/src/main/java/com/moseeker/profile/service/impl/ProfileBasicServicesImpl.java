@@ -68,27 +68,54 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 		ProfileBasicRecord record = null;
 		if(basic != null) {
 			record = new ProfileBasicRecord();
-			record.setAddress(basic.getAddress());
-			if(basic.getBirth() != null) {
+			if(basic.isSetAddress()) {
+				record.setAddress(basic.getAddress());
+			}
+			if(basic.isSetBirth() && basic.getBirth() != null) {
 				record.setBirth(new java.sql.Date(DateUtils.nomalDateToDate(basic.getBirth()).getTime()));
 			}
-			if(basic.getCreate_time() != null) {
+			if(basic.isSetCreate_time() && basic.getCreate_time() != null) {
 				record.setCreateTime(new Timestamp(DateUtils.nomalDateToDate(basic.getCreate_time()).getTime()));
 			}
-			record.setGender((byte)basic.getGender());
-			record.setHeight(BigDecimal.valueOf(basic.getHeight()));
-			record.setIdnumber(basic.getIdnumber());
-			record.setMarriage((byte)basic.getMarriage());
-			record.setNationality(basic.getNationality());
-			record.setProfileId(UInteger.valueOf(basic.getProfile_id()));
-			record.setQq(basic.getQq());
-			record.setResidence((byte)basic.getResidence());
-			record.setResidencetype((byte)basic.getResidencetype());
-			if(basic.getUpdate_time() != null) {
+			if(basic.isSetLocation()) {
+				record.setLocation(basic.getLocation());
+			}
+			if(basic.isSetGender()) {
+				record.setGender((byte)basic.getGender());
+			}
+			if(basic.isSetHeight()) {
+				record.setHeight(BigDecimal.valueOf(basic.getHeight()));
+			}
+			if(basic.isSetIdnumber()) {
+				record.setIdnumber(basic.getIdnumber());
+			}
+			if(basic.isSetMarriage()) {
+				record.setMarriage((byte)basic.getMarriage());
+			}
+			if(basic.isSetNationality()) {
+				record.setNationality(basic.getNationality());
+			}
+			if(basic.isSetProfile_id()) {
+				record.setProfileId(UInteger.valueOf(basic.getProfile_id()));
+			}
+			if(basic.isSetQq()) {
+				record.setQq(basic.getQq());
+			}
+			if(basic.isSetResidence()) {
+				record.setResidence((byte)basic.getResidence());
+			}
+			if(basic.isSetResidencetype()) {
+				record.setResidencetype((byte)basic.getResidencetype());
+			}
+			if(basic.isSetUpdate_time() && basic.getUpdate_time() != null) {
 				record.setUpdateTime(new Timestamp(DateUtils.nomalDateToDate(basic.getUpdate_time()).getTime()));
 			}
-			record.setWeight(BigDecimal.valueOf(basic.getWeight()));
-			record.setWeixin(basic.getWeixin());
+			if(basic.isSetWeight()) {
+				record.setWeight(BigDecimal.valueOf(basic.getWeight()));
+			}
+			if(basic.isSetWeight()) {
+				record.setWeixin(basic.getWeixin());
+			}
 		}
 		return record;
 	}

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.DateUtils;
-import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.thrift.gen.profile.service.ProfileServices.Iface;
@@ -72,22 +71,24 @@ public class ProfileServicesImpl extends JOOQBaseServiceImpl<Profile, ProfilePro
 	protected ProfileProfileRecord structToDB(Profile profile)
 			throws ParseException {
 		ProfileProfileRecord record = new ProfileProfileRecord();
-		if (profile.getId() != 0) {
+		if(profile.isSetId()) {
 			record.setId(UInteger.valueOf(profile.getId()));
 		}
-		if (!StringUtils.isNullOrEmpty(profile.getUuid())) {
+		if(profile.isSetUuid()) {
 			record.setUuid(profile.getUuid());
-		} else {
-			record.setUuid("");
 		}
-		record.setLang((byte) profile.getLang());
-		record.setSource((byte) profile.getSource());
-		if (profile.getCompleteness() == 0) {
-			record.setCompleteness((byte) 10);
-		} else {
+		if(profile.isSetLang()) {
+			record.setLang((byte) profile.getLang());
+		}
+		if(profile.isSetSource()) {
+			record.setSource((byte) profile.getSource());
+		}
+		if(profile.isSetCompleteness()) {
 			record.setCompleteness((byte) profile.getCompleteness());
 		}
-		record.setUserId(profile.getUser_id());
+		if(profile.isSetUser_id()) {
+			record.setUserId(profile.getUser_id());
+		}
 		return record;
 	}
 }

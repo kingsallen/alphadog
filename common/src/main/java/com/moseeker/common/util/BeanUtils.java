@@ -3,7 +3,9 @@ package com.moseeker.common.util;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.ParseException;
 import java.util.Date;
+import java.util.Map;
 
 import org.apache.thrift.TBase;
 import org.jooq.impl.UpdatableRecordImpl;
@@ -34,6 +36,18 @@ public class BeanUtils {
 	private static Logger logger = LoggerFactory.getLogger(BeanUtils.class);
 	
 	@SuppressWarnings("rawtypes")
+	public static UpdatableRecordImpl structToDB(TBase dest, Class<? extends UpdatableRecordImpl> origClazz, Map<String, String> equalRules) {
+		UpdatableRecordImpl orig = null;
+		try {
+			orig = origClazz.newInstance();
+		} catch (InstantiationException | IllegalAccessException e) {
+			logger.error("error", e);
+		}
+		structToDB(dest, orig, equalRules);
+		return orig;
+	}
+	
+	@SuppressWarnings("rawtypes")
 	public static UpdatableRecordImpl structToDB(TBase dest, Class<? extends UpdatableRecordImpl> origClazz) {
 		UpdatableRecordImpl orig = null;
 		try {
@@ -41,7 +55,7 @@ public class BeanUtils {
 		} catch (InstantiationException | IllegalAccessException e) {
 			logger.error("error", e);
 		}
-		structToDB(dest, orig);
+		structToDB(dest, orig, null);
 		return orig;
 	}
 
@@ -50,7 +64,7 @@ public class BeanUtils {
 	 * @param dest
 	 * @param orig
 	 */
-	public static void structToDB(@SuppressWarnings("rawtypes") TBase dest, @SuppressWarnings("rawtypes") UpdatableRecordImpl orig) {
+	public static void structToDB(@SuppressWarnings("rawtypes") TBase dest, @SuppressWarnings("rawtypes") UpdatableRecordImpl orig, Map<String, String> equalRules) {
 		if(dest == null || orig == null) {
 			return;
 		}
@@ -72,7 +86,7 @@ public class BeanUtils {
 							if(destMethods[j].getName().equals(getMethodName)) {
 								Method isSetMethod = dest.getClass().getMethod("isSet"+upperFirst, new Class[]{});
 								if((Boolean)isSetMethod.invoke(dest, new Object[]{})){
-									String origMethodName = buiderRecordMethodName(field.getName(), MethodType.SET);
+									String origMethodName = buiderRecordMethodName(field.getName(), MethodType.SET, equalRules);
 									for(k=0; k<origMethods.length;k++) {
 										if(origMethods[k].getName().trim().equals(origMethodName)) {
 											Object object = convertTo(destMethods[j].invoke(dest, new Object[]{}), origMethods[k].getParameterTypes()[0]);
@@ -96,6 +110,18 @@ public class BeanUtils {
 	}
 	
 	@SuppressWarnings("rawtypes")
+	public static TBase DBToStruct(Class<? extends TBase> destClazz, UpdatableRecordImpl orig, Map<String, String> equalRules) {
+		TBase base = null;
+		try {
+			base = destClazz.newInstance();
+		} catch (InstantiationException | IllegalAccessException e) {
+			logger.error("error", e);
+		}
+		DBToStruct(base, orig, equalRules);
+		return base;
+	}
+	
+	@SuppressWarnings("rawtypes")
 	public static TBase DBToStruct(Class<? extends TBase> destClazz, UpdatableRecordImpl orig) {
 		TBase base = null;
 		try {
@@ -103,11 +129,11 @@ public class BeanUtils {
 		} catch (InstantiationException | IllegalAccessException e) {
 			logger.error("error", e);
 		}
-		DBToStruct(base, orig);
+		DBToStruct(base, orig, null);
 		return base;
 	}
 	
-	public static void DBToStruct(@SuppressWarnings("rawtypes") TBase dest, @SuppressWarnings("rawtypes") UpdatableRecordImpl orig) {
+	public static void DBToStruct(@SuppressWarnings("rawtypes") TBase dest, @SuppressWarnings("rawtypes") UpdatableRecordImpl orig, Map<String, String> equalRules) {
 		if(dest == null || orig == null) {
 			return;
 		}
@@ -127,7 +153,7 @@ public class BeanUtils {
 					for(j=0; j<destMethods.length; j++) {
 						try {
 							if(destMethods[j].getName().equals(setMethodName)) {
-								String origMethodName = buiderRecordMethodName(field.getName(), MethodType.GET);
+								String origMethodName = buiderRecordMethodName(field.getName(), MethodType.GET, equalRules);
 								for(k=0; k<origMethods.length;k++) {
 									if(origMethods[k].getName().trim().equals(origMethodName)) {
 										Object object = convertTo(origMethods[k].invoke(orig, new Object[]{}), destMethods[j].getParameterTypes()[0]);
@@ -158,19 +184,24 @@ public class BeanUtils {
 		}
 	}
 	
-	private static String buiderRecordMethodName(String name, MethodType methodType) {
+	private static String buiderRecordMethodName(String name, MethodType methodType, Map<String, String> equalRules) {
 		if(name != null) {
 			StringBuffer sb = new StringBuffer();
 			sb.append(methodType);
-			String[] splitArray = name.split("_");
-			if(splitArray.length > 1) {
-				for(int i=0; i<splitArray.length; i++) {
-					sb.append(splitArray[i].substring(0, 1).toUpperCase());
-					sb.append(splitArray[i].substring(1));
-				}
+			if(equalRules != null && equalRules.containsKey(name)) {
+				sb.append(equalRules.get(name).substring(0, 1).toUpperCase());
+				sb.append(equalRules.get(name).substring(1));
 			} else {
-				sb.append(name.substring(0, 1).toUpperCase());
-				sb.append(name.substring(1));
+				String[] splitArray = name.split("_");
+				if(splitArray.length > 1) {
+					for(int i=0; i<splitArray.length; i++) {
+						sb.append(splitArray[i].substring(0, 1).toUpperCase());
+						sb.append(splitArray[i].substring(1));
+					}
+				} else {
+					sb.append(name.substring(0, 1).toUpperCase());
+					sb.append(name.substring(1));
+				}
 			}
 			return sb.toString();
 		} else {
@@ -322,7 +353,11 @@ public class BeanUtils {
 
 	private static java.sql.Timestamp convertToSQLTimestamp(Object value) {
 		if (value instanceof String) {
-			return java.sql.Timestamp.valueOf((String)value);
+			try {
+				return new java.sql.Timestamp(DateUtils.nomalDateToDate((String)value).getTime());
+			} catch (ParseException e) {
+				return null;
+			}
 		} else if (value instanceof Boolean) {
 			return null;
 		} else if (value instanceof Short) {
@@ -352,7 +387,11 @@ public class BeanUtils {
 
 	private static java.sql.Date convertToSQLDate(Object value) {
 		if (value instanceof String) {
-			return java.sql.Date.valueOf((String)value);
+			try {
+				return new java.sql.Date(DateUtils.nomalDateToDate((String)value).getTime());
+			} catch (ParseException e) {
+				return null;
+			}
 		} else if (value instanceof Boolean) {
 			return null;
 		} else if (value instanceof Short) {

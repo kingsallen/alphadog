@@ -19,7 +19,6 @@ import org.springframework.web.servlet.HandlerMapping;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.thrift.gen.useraccounts.struct.userloginreq;
 
 public class ParamUtils {
 	public static String getRestfullApiName(HttpServletRequest request) {
