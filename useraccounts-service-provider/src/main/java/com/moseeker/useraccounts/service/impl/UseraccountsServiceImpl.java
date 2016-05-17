@@ -15,6 +15,7 @@ import com.moseeker.common.providerutils.daoutils.BaseDao;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.sms.SmsSender;
 import com.moseeker.common.util.MD5Util;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.logdb.tables.records.LogUserloginRecordRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
@@ -150,7 +151,7 @@ public class UseraccountsServiceImpl implements Iface {
 	}
 
 	/**
-	 * 注册手机号用户
+	 * 注册手机号用户。 password 为空时， 需要把密码直接发送给用户。
 	 */
 	@Override
 	public Response postusermobilesignup(String mobile, String code, String password) throws TException {
@@ -160,16 +161,30 @@ public class UseraccountsServiceImpl implements Iface {
 		} else {
 			return ResponseUtils.fail(10011, "mobile signup validation code failed");
 		}
+		
+		boolean hasPassword = true;
+		if ( password == null) {
+			hasPassword = false;
+			password = StringUtils.getRandomString(6);
+			
+		}
 
 		UserUserRecord user = new UserUserRecord();
 		user.setUsername(mobile);
 		user.setMobile(Long.parseLong(mobile));
 		user.setPassword(MD5Util.md5(password));
-
+		
 		try {
 			int newuserid = userdao.postResource(user);
 			if (newuserid > 0) {
-				 ResponseUtils.success(null); // todo 返回 user id
+				 Map hashmap = new HashMap();
+				 hashmap.put("user_id", newuserid);
+				 if (!hasPassword){
+					 //未设置密码， 主动发送给用户。 
+					 SmsSender.sendSMS_signupRandomPassword(mobile, password);
+				 }
+				 return ResponseUtils.success(hashmap); // 返回 user id
+				 
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -177,6 +192,8 @@ public class UseraccountsServiceImpl implements Iface {
 		}
 		return ResponseUtils.fail("register failed");
 	}
+	
+	
 
 	/**
 	 * 返回手机验证码的正确性

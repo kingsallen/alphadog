@@ -91,8 +91,21 @@ public class SmsSender {
 		RedisClientFactory.getCacheClient().set(0, "SMS_SIGNUP", mobile, passwordforgotcode);		
 		return sendSMS(mobile,"SMS_5755096",params);
 	} 
-	public static void main(String[] args) {
-		sendSMS_signup("13818252514");
+	
+
+	/**
+	 *          SMS_5895237
+    感谢您使用仟寻，为方便您再次访问并了解求职进展，我们已为您开通个人账号：账号为${name}，密码为${code}，
+    请及时到个人中心账号设置中修改您的登录密码，保障账号安全。
+	 * @param mobile
+	 * @return
+	 */
+	public static boolean sendSMS_signupRandomPassword(String mobile, String randompassword){
+		HashMap<String, String> params = new HashMap<String, String>();
+		String passwordforgotcode = getRandomStr();
+		params.put("name", mobile);		
+		params.put("code", randompassword);		
+		return sendSMS(mobile,"SMS_5895237",params);
 	}
 	
 	private static String getRandomStr(){
