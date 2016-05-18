@@ -3,6 +3,7 @@ package com.moseeker.useraccounts.service.impl;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.thrift.TException;
@@ -10,19 +11,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.google.common.collect.Lists;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.daoutils.BaseDao;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.sms.SmsSender;
+import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.db.logdb.tables.records.LogUserloginRecordRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.userloginreq;
+import com.moseeker.useraccounts.dao.UserDao;
 import com.moseeker.useraccounts.dao.impl.LogUserLoginDaoImpl;
+import com.moseeker.useraccounts.dao.impl.ProfileDaoImpl;
 import com.moseeker.useraccounts.dao.impl.UserDaoImpl;
 import com.moseeker.useraccounts.dao.impl.WxuserDaoImpl;
 
@@ -38,13 +44,14 @@ public class UseraccountsServiceImpl implements Iface {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	protected BaseDao<UserWxUserRecord> wxuserdao = new WxuserDaoImpl();
-	protected BaseDao<UserUserRecord> userdao = new UserDaoImpl();
+	protected UserDao userdao = new UserDaoImpl();
 	protected BaseDao<LogUserloginRecordRecord> loguserlogindao = new LogUserLoginDaoImpl();
+	protected ProfileDaoImpl profileDao = new ProfileDaoImpl();
 
 	public static void main(String[] args) {
 		userloginreq userlogin = new userloginreq();
 		userlogin.setMobile("13818252514");
-		//userlogin.setPassword("123456");
+		// userlogin.setPassword("123456");
 
 		// System.out.println(MD5Util.md5("1234"));
 
@@ -66,7 +73,7 @@ public class UseraccountsServiceImpl implements Iface {
 	public Response postuserlogin(userloginreq userloginreq) throws TException {
 		// TODO to add login log
 		CommonQuery query = new CommonQuery();
-		Map filters = new HashMap();
+		Map<String, String> filters = new HashMap<>();
 		if (userloginreq.getUnionid() != null) {
 			filters.put("unionid", userloginreq.getUnionid());
 		} else {
@@ -85,13 +92,13 @@ public class UseraccountsServiceImpl implements Iface {
 					// 当前帐号已经被合并到 parentid.
 					int parentid = user.getParentid().intValue();
 					query = new CommonQuery();
-					filters = new HashMap();
-					filters.put("id", parentid);
+					filters = new HashMap<>();
+					filters.put("id", String.valueOf(parentid));
 					query.setEqualFilter(filters);
 					user = userdao.getResource(query);
 				}
 
-				Map resp = new HashMap();
+				Map<String, Object> resp = new HashMap<>();
 
 				resp.put("user_id", user.getId().intValue());
 				resp.put("union_id", user.getUnionid());
@@ -101,7 +108,6 @@ public class UseraccountsServiceImpl implements Iface {
 				user.setLastLoginTime(new Timestamp(new Date().getTime()));
 				userdao.putResource(user);
 
-				System.out.println(resp);
 				return ResponseUtils.success(resp);
 			}
 		} catch (Exception e) {
@@ -114,7 +120,7 @@ public class UseraccountsServiceImpl implements Iface {
 	}
 
 	/**
-	 * 记录用户登出时的信息。可能会移到 service-manager 处理。 
+	 * 记录用户登出时的信息。可能会移到 service-manager 处理。
 	 * 
 	 * @param userid
 	 * @return
@@ -158,7 +164,7 @@ public class UseraccountsServiceImpl implements Iface {
 		if (validateCode(mobile, code, 1)) {
 			;
 		} else {
-			return ResponseUtils.fail(10011, "mobile signup validation code failed");
+			return ResponseUtils.buildFromConstant(Constant.LOGIN_VALIDATION_CODE_UNLEGAL);
 		}
 
 		UserUserRecord user = new UserUserRecord();
@@ -169,7 +175,7 @@ public class UseraccountsServiceImpl implements Iface {
 		try {
 			int newuserid = userdao.postResource(user);
 			if (newuserid > 0) {
-				 ResponseUtils.success(null); // todo 返回 user id
+				ResponseUtils.success(null); // todo 返回 user id
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -210,59 +216,108 @@ public class UseraccountsServiceImpl implements Iface {
 		return false;
 	}
 
-
 	/**
-	 * 绑定用户的手机号和unionid， 
-	 * 如果unionid或者手机号均没有， 则post新增， 
-	 * 如果在一条记录里都有，提示已经绑定成功，
-	 * 如果在一条记录里有部分，unionid 或者 mobile，  补全。
-	 * 否则unionid和mobile分别存在2条记录里面， 需要做合并。
+	 * 绑定用户的手机号和unionid， 如果unionid或者手机号均没有， 则post新增， 如果在一条记录里都有，提示已经绑定成功，
+	 * 如果在一条记录里有部分，unionid 或者 mobile， 补全。 否则unionid和mobile分别存在2条记录里面， 需要做合并。
 	 */
 	@Override
 	public Response postuserwxbindmobile(int appid, String unionid, String code, String mobile) throws TException {
 		// TODO validate code.
-		if (validateCode(mobile, code, 1)) {
-			;
-		} else {
-			return ResponseUtils.fail(10011, "mobile validation code failed");
+		if (!validateCode(mobile, code, 1)) {
+			return ResponseUtils.buildFromConstant(Constant.LOGIN_VALIDATION_CODE_UNLEGAL);
 		}
-
-			
 		try {
 			CommonQuery query1 = new CommonQuery();
-			Map filters1 = new HashMap();
+			Map<String, String> filters1 = new HashMap<>();
 			filters1.put("unionid", unionid);
 			query1.setEqualFilter(filters1);
-			UserUserRecord user1 = userdao.getResource(query1);		
+			UserUserRecord userUnnionid = userdao.getResource(query1);
 
 			CommonQuery query2 = new CommonQuery();
-			Map filters2 = new HashMap();
+			Map<String, String> filters2 = new HashMap<>();
 			filters2.put("mobile", mobile);
 			query1.setEqualFilter(filters2);
-			UserUserRecord user2 = userdao.getResource(query2);	
-			
-			if ( (user1 == null ) && ( user2 == null)){
-				// post 
-			}else if ( (user1 != null)&&(user2 != null)&&(user1.getId().intValue() == user2.getId().intValue())){
-				// already bound
-			}else if (( user1 != null) && (user2 == null)){
-				// only unionid
-			}else if (( user1 == null) && (user2 != null)){
-				// only mobile
-			}else{
+			UserUserRecord userMobile = userdao.getResource(query2);
+
+			if (userUnnionid == null && userMobile == null) {
+				// post
+				return ResponseUtils.buildFromConstant(Constant.USERACCOUNT_BIND_NONEED);
+			} else if (userUnnionid != null && userMobile != null
+					&& userUnnionid.getId().intValue() == userMobile.getId().intValue()) {
+				return ResponseUtils.buildFromConstant(Constant.USERACCOUNT_BIND_NONEED);
+			} else if (userUnnionid != null && userMobile == null) {
+				userUnnionid.setMobile(Long.valueOf(mobile));
+				userdao.putResource(userUnnionid);
+			} else if (userUnnionid == null && userMobile != null) {
+				userMobile.setUnionid(unionid);
+				userdao.putResource(userMobile);
+			} else if (userUnnionid != null && userMobile != null
+					&& userUnnionid.getId().intValue() != userMobile.getId().intValue()) {
 				// 2 accounts, one unoinid, one mobile, need to merge.
-				;
+				new Thread(() -> {
+					combineAccount(userMobile, userUnnionid);
+				}).start();
+			} else {
+				return ResponseUtils.fail("error");
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+			return ResponseUtils.fail("register failed");
+		} finally {
+			// do nothing
 		}
-
-
-		return ResponseUtils.fail("register failed");
+		return ResponseUtils.success("success");
 
 	}
 
+	private void combineAccount(UserUserRecord userMobile, UserUserRecord userUnionid) {
+		try {
+			// unnionid置为子账号
+			userUnionid.setParentid(userMobile.getId().intValue());
+			userdao.putResource(userMobile);
+
+			// 被合并账号的个人profile置为无效
+			ProfileProfileRecord profileRecord = profileDao.getProfileByUserId(userUnionid.getId().intValue());
+			if (profileRecord != null) {
+				profileRecord.setDisable((byte) 0);
+				profileDao.putResource(profileRecord);
+			}
+
+			// 合并业务代码
+			// 合并sys_user_id表数据
+			List<String> sysUserIds = getSystemUserIdTable();
+			userdao.combineAccount(sysUserIds, "sys_user_id", userMobile.getId().intValue(),
+					userUnionid.getId().intValue());
+
+			// 合并user_id表数据
+			List<String> userIds = getUserIdTable();
+			userdao.combineAccount(userIds, "user_id", userMobile.getId().intValue(), userUnionid.getId().intValue());
+
+			// 合并sysuser_id数据
+			List<String> syssUserIds = getSysUserIdTable();
+			userdao.combineAccount(syssUserIds, "sysuser_id", userMobile.getId().intValue(),
+					userUnionid.getId().intValue());
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+	}
+
+	private List<String> getSysUserIdTable() {
+		List<String> tables = Lists.newArrayList("candidate_position_share_record", "hr_wx_hr_chat_list",
+				"user_fav_position", "user_intention", "user_wx_user", "user_wx_viewer");
+		return tables;
+	}
+
+	private List<String> getUserIdTable() {
+		List<String> tables = Lists.newArrayList("profile_profile");
+		return tables;
+	}
+
+	private List<String> getSystemUserIdTable() {
+		List<String> tables = Lists.newArrayList("candidate_company");
+		return tables;
+	}
 
 	/**
 	 * 
@@ -275,11 +330,11 @@ public class UseraccountsServiceImpl implements Iface {
 	@Override
 	public Response postuserchangepassword(int user_id, String old_password, String password) throws TException {
 		CommonQuery query = new CommonQuery();
-		Map filters = new HashMap();
-		filters.put("id", user_id);
+		Map<String, String> filters = new HashMap<>();
+		filters.put("id", String.valueOf(user_id));
 		filters.put("password", MD5Util.md5(old_password));
 		query.setEqualFilter(filters);
-		
+
 		int result = 0;
 		try {
 			UserUserRecord user = userdao.getResource(query);
@@ -290,8 +345,8 @@ public class UseraccountsServiceImpl implements Iface {
 					// 当前帐号已经被合并到 parentid.
 					int parentid = user.getParentid().intValue();
 					query = new CommonQuery();
-					filters = new HashMap();
-					filters.put("id", parentid);
+					filters = new HashMap<>();
+					filters.put("id", String.valueOf(parentid));
 					query.setEqualFilter(filters);
 					UserUserRecord userParent = userdao.getResource(query);
 					userParent.setPassword(MD5Util.md5(password));
@@ -299,19 +354,21 @@ public class UseraccountsServiceImpl implements Iface {
 				}
 				user.setPassword(MD5Util.md5(password));
 				result = userdao.putResource(user);
-				if (result > 0 ){
+				if (result > 0) {
 					return ResponseUtils.success(null);
 				}
-			}else{
-				ResponseUtils.fail(10012, "failed to change password: old password doesn't match!");
+			} else {
+				return ResponseUtils.buildFromConstant(Constant.LOGIN_PASSWORD_UNLEGAL);
 			}
-			
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			logger.error("postuserchangepassword error: ", e);
 
+		} finally {
+			// do nothing
 		}
-		return ResponseUtils.fail(10013, "update password failed");
+		return ResponseUtils.buildFromConstant(Constant.LOGIN_UPDATE_PASSWORD_FAILED);
 
 	}
 
@@ -337,14 +394,14 @@ public class UseraccountsServiceImpl implements Iface {
 		if (validateCode(mobile, code, 2)) {
 			;
 		} else {
-			return ResponseUtils.fail(10011, "mobile validation code failed");
-		}		
-		
+			return ResponseUtils.buildFromConstant(Constant.LOGIN_VALIDATION_CODE_UNLEGAL);
+		}
+
 		CommonQuery query = new CommonQuery();
-		Map filters = new HashMap();
+		Map<String, String> filters = new HashMap<>();
 		filters.put("mobile", mobile);
 		query.setEqualFilter(filters);
-		
+
 		int result = 0;
 		try {
 			UserUserRecord user = userdao.getResource(query);
@@ -355,8 +412,8 @@ public class UseraccountsServiceImpl implements Iface {
 					// 当前帐号已经被合并到 parentid.
 					int parentid = user.getParentid().intValue();
 					query = new CommonQuery();
-					filters = new HashMap();
-					filters.put("id", parentid);
+					filters = new HashMap<>();
+					filters.put("id", String.valueOf(parentid));
 					query.setEqualFilter(filters);
 					UserUserRecord userParent = userdao.getResource(query);
 					userParent.setPassword(MD5Util.md5(password));
@@ -364,20 +421,19 @@ public class UseraccountsServiceImpl implements Iface {
 				}
 				user.setPassword(MD5Util.md5(password));
 				result = userdao.putResource(user);
-				if (result > 0 ){
+				if (result > 0) {
 					return ResponseUtils.success(null);
 				}
-			}else{
-				ResponseUtils.fail(10014, "mobile doesn't exist.");
+			} else {
+				return ResponseUtils.buildFromConstant(Constant.LOGIN_MOBILE_NOTEXIST);
 			}
-			
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			logger.error("postuserresetpassword error: ", e);
 
 		}
-		return ResponseUtils.fail(10013, "update password failed");
-
+		return ResponseUtils.buildFromConstant(Constant.LOGIN_UPDATE_PASSWORD_FAILED);
 
 	}
 
@@ -386,7 +442,5 @@ public class UseraccountsServiceImpl implements Iface {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-
 
 }

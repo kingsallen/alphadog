@@ -18,6 +18,7 @@ public class ResponseLogNotification {
 
 	public static String success(HttpServletRequest request, Response response) {
 		String jsonresponse = JSON.toJSONString(CleanJsonResponse.convertFrom(response));
+		System.out.println(jsonresponse);
 		logRequestResponse(request, jsonresponse);
 		return jsonresponse;
 
@@ -49,7 +50,7 @@ public class ResponseLogNotification {
 	}
 	
 	private static void logRequestResponse(HttpServletRequest request, String response) {
-		Map reqResp = new HashMap();
+		Map<String, Object> reqResp = new HashMap<>();
 		reqResp.put("appid", request.getParameter("appid"));
 		reqResp.put("request", request.getParameterMap());
 		reqResp.put("response", response);

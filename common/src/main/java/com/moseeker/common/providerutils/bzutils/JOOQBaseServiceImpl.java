@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.daoutils.BaseDao;
+import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.Pagination;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -55,7 +56,7 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		} finally {
 			//do nothing
 		}
-		return ResponseUtils.fail(20010,"empty data!");
+		return ResponseUtils.buildFromConstant(Constant.PROGRAM_DATA_EMPTY);
 	}
 
 	public Response postResources(List<S> structs) throws TException {
@@ -78,7 +79,7 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 			//do nothing
 		}
 		
-		return ResponseUtils.fail(20011,"post data failed!");
+		return ResponseUtils.buildFromConstant(Constant.PROGRAM_POST_FAILED);
 	}
 
 	public Response putResources(List<S> structs) throws TException {
@@ -99,7 +100,7 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		} finally {
 			//do nothing
 		}
-		return ResponseUtils.fail(20012,"put data failed!");
+		return ResponseUtils.buildFromConstant(Constant.PROGRAM_PUT_FAILED);
 	}
 
 	public Response delResources(List<S> structs) throws TException {
@@ -120,7 +121,7 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		} finally {
 			//do nothing
 		}
-		return ResponseUtils.fail(20013,"delete data failed!");
+		return ResponseUtils.buildFromConstant(Constant.PROGRAM_DEL_FAILED);
 	}
 	
 	public Response getResource(CommonQuery query) throws TException {
@@ -140,7 +141,7 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		} finally {
 			//do nothing
 		}
-		return ResponseUtils.fail(20010,"empty data!");
+		return ResponseUtils.buildFromConstant(Constant.PROGRAM_DATA_EMPTY);
 	}
 
 	public Response postResource(S struct) throws TException {
@@ -163,7 +164,7 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 			//do nothing
 		}
 		
-		return ResponseUtils.fail(20011,"post data failed!");
+		return ResponseUtils.buildFromConstant(Constant.PROGRAM_POST_FAILED);
 	}
 
 	public Response putResource(S struct) throws TException {
@@ -184,7 +185,7 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		} finally {
 			//do nothing
 		}
-		return ResponseUtils.fail(20012,"put data failed!");
+		return ResponseUtils.buildFromConstant(Constant.PROGRAM_PUT_FAILED);
 	}
 
 	public Response delResource(S struct) throws TException {
@@ -204,7 +205,7 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		} finally {
 			//do nothing
 		}
-		return ResponseUtils.fail(20013,"delete data failed!");
+		return ResponseUtils.buildFromConstant(Constant.PROGRAM_DEL_FAILED);
 	}
 	
 	protected Response getTotalRow(CommonQuery query) throws TException {

@@ -68,7 +68,7 @@ public class UseraccountsController {
 	@ResponseBody
 	public String postusermobilesignup(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			Map reqParams = ParamUtils.mergeRequestParameters(request);
+			Map<String, Object> reqParams = ParamUtils.mergeRequestParameters(request);
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 			String code = BeanUtils.converToString(reqParams.get("code"));
 			String password = BeanUtils.converToString(reqParams.get("password"));
@@ -109,7 +109,7 @@ public class UseraccountsController {
 		try {
 			// GET方法 通用参数解析并赋值
 			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
-			Map reqParams = ParamUtils.mergeRequestParameters(request);
+			Map<String, Object> reqParams = ParamUtils.mergeRequestParameters(request);
 			String unionid = BeanUtils.converToString(reqParams.get("unionid"));
 			String code = BeanUtils.converToString(reqParams.get("code"));
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
@@ -131,8 +131,7 @@ public class UseraccountsController {
 	public String postuserchangepassword(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			// GET方法 通用参数解析并赋值
-			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
-			Map reqParams = ParamUtils.mergeRequestParameters(request);
+			Map<String, Object> reqParams = ParamUtils.mergeRequestParameters(request);
 			int user_id = BeanUtils.converToInteger(reqParams.get("user_id"));
 			String old_password = BeanUtils.converToString(reqParams.get("old_password"));
 			String password = BeanUtils.converToString(reqParams.get("password"));
@@ -171,7 +170,7 @@ public class UseraccountsController {
 	@ResponseBody
 	public String postuserresetpassword(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			Map reqParams = ParamUtils.mergeRequestParameters(request);
+			Map<String, Object> reqParams = ParamUtils.mergeRequestParameters(request);
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 			String code = BeanUtils.converToString(reqParams.get("code"));
 			String password = BeanUtils.converToString(reqParams.get("password"));
@@ -194,7 +193,7 @@ public class UseraccountsController {
 		try {
 			// GET方法 通用参数解析并赋值
 			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
-			Map reqParams = ParamUtils.mergeRequestParameters(request);
+			Map<String, Object> reqParams = ParamUtils.mergeRequestParameters(request);
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 
 			Response result = useraccountsServices.postusermergebymobile(query.getAppid(), mobile);

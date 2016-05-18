@@ -42,7 +42,7 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extends TableImpl<R>>
 		implements BaseDao<R> {
 
-	Logger logger = LoggerFactory.getLogger(this.getClass());
+	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * 需要制定JOOQ
