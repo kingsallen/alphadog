@@ -115,7 +115,7 @@ public class UseraccountsServiceImpl implements Iface {
 			logger.error("postuserlogin error: ", e);
 
 		}
-		return ResponseUtils.fail(10010, "username and password do not match!");
+		return ResponseUtils.buildFromConstant(Constant.LOGIN_ACCOUNT_UNLEGAL);
 
 	}
 
