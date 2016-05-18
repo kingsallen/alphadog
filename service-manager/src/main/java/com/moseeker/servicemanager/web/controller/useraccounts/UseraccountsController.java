@@ -209,4 +209,31 @@ public class UseraccountsController {
 		}
 	}
 	
+/**
+ *  * 检查手机号是否已经注册。data字段中 exist: true 已经存在， exist：false 不存在。	
+ * @param request
+ * @param response
+ * @return
+ */
+	@RequestMapping(value = "/user/ismobileregistered", method = RequestMethod.POST)
+	@ResponseBody
+	public String getismobileregistered(HttpServletRequest request, HttpServletResponse response){
+		try {
+			// GET方法 通用参数解析并赋值
+			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
+			Map reqParams = ParamUtils.mergeRequestParameters(request);
+			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
+
+			Response result = useraccountsServices.getismobileregisted(mobile);
+			if (result.getStatus() == 0){
+				return ResponseLogNotification.success(request, result);
+			}else{
+				return ResponseLogNotification.fail(request, result);
+			}
+			
+		} catch (Exception e) {	
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}		
+	}
+	
 }

@@ -45,7 +45,7 @@ public class UseraccountsServiceImpl implements Iface {
 	public static void main(String[] args) {
 		userloginreq userlogin = new userloginreq();
 		userlogin.setMobile("13818252514");
-		//userlogin.setPassword("123456");
+		// userlogin.setPassword("123456");
 
 		// System.out.println(MD5Util.md5("1234"));
 
@@ -115,7 +115,7 @@ public class UseraccountsServiceImpl implements Iface {
 	}
 
 	/**
-	 * 记录用户登出时的信息。可能会移到 service-manager 处理。 
+	 * 记录用户登出时的信息。可能会移到 service-manager 处理。
 	 * 
 	 * @param userid
 	 * @return
@@ -161,30 +161,30 @@ public class UseraccountsServiceImpl implements Iface {
 		} else {
 			return ResponseUtils.fail(10011, "mobile signup validation code failed");
 		}
-		
+
 		boolean hasPassword = true;
-		if ( password == null) {
+		if (password == null) {
 			hasPassword = false;
 			password = StringUtils.getRandomString(6);
-			
+
 		}
 
 		UserUserRecord user = new UserUserRecord();
 		user.setUsername(mobile);
 		user.setMobile(Long.parseLong(mobile));
 		user.setPassword(MD5Util.md5(password));
-		
+
 		try {
 			int newuserid = userdao.postResource(user);
 			if (newuserid > 0) {
-				 Map hashmap = new HashMap();
-				 hashmap.put("user_id", newuserid);
-				 if (!hasPassword){
-					 //未设置密码， 主动发送给用户。 
-					 SmsSender.sendSMS_signupRandomPassword(mobile, password);
-				 }
-				 return ResponseUtils.success(hashmap); // 返回 user id
-				 
+				Map hashmap = new HashMap();
+				hashmap.put("user_id", newuserid);
+				if (!hasPassword) {
+					// 未设置密码， 主动发送给用户。
+					SmsSender.sendSMS_signupRandomPassword(mobile, password);
+				}
+				return ResponseUtils.success(hashmap); // 返回 user id
+
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -192,8 +192,6 @@ public class UseraccountsServiceImpl implements Iface {
 		}
 		return ResponseUtils.fail("register failed");
 	}
-	
-	
 
 	/**
 	 * 返回手机验证码的正确性
@@ -227,13 +225,9 @@ public class UseraccountsServiceImpl implements Iface {
 		return false;
 	}
 
-
 	/**
-	 * 绑定用户的手机号和unionid， 
-	 * 如果unionid或者手机号均没有， 则post新增， 
-	 * 如果在一条记录里都有，提示已经绑定成功，
-	 * 如果在一条记录里有部分，unionid 或者 mobile，  补全。
-	 * 否则unionid和mobile分别存在2条记录里面， 需要做合并。
+	 * 绑定用户的手机号和unionid， 如果unionid或者手机号均没有， 则post新增， 如果在一条记录里都有，提示已经绑定成功，
+	 * 如果在一条记录里有部分，unionid 或者 mobile， 补全。 否则unionid和mobile分别存在2条记录里面， 需要做合并。
 	 */
 	@Override
 	public Response postuserwxbindmobile(int appid, String unionid, String code, String mobile) throws TException {
@@ -244,29 +238,28 @@ public class UseraccountsServiceImpl implements Iface {
 			return ResponseUtils.fail(10011, "mobile validation code failed");
 		}
 
-			
 		try {
 			CommonQuery query1 = new CommonQuery();
 			Map filters1 = new HashMap();
 			filters1.put("unionid", unionid);
 			query1.setEqualFilter(filters1);
-			UserUserRecord user1 = userdao.getResource(query1);		
+			UserUserRecord user1 = userdao.getResource(query1);
 
 			CommonQuery query2 = new CommonQuery();
 			Map filters2 = new HashMap();
 			filters2.put("mobile", mobile);
 			query1.setEqualFilter(filters2);
-			UserUserRecord user2 = userdao.getResource(query2);	
-			
-			if ( (user1 == null ) && ( user2 == null)){
-				// post 
-			}else if ( (user1 != null)&&(user2 != null)&&(user1.getId().intValue() == user2.getId().intValue())){
+			UserUserRecord user2 = userdao.getResource(query2);
+
+			if ((user1 == null) && (user2 == null)) {
+				// post
+			} else if ((user1 != null) && (user2 != null) && (user1.getId().intValue() == user2.getId().intValue())) {
 				// already bound
-			}else if (( user1 != null) && (user2 == null)){
+			} else if ((user1 != null) && (user2 == null)) {
 				// only unionid
-			}else if (( user1 == null) && (user2 != null)){
+			} else if ((user1 == null) && (user2 != null)) {
 				// only mobile
-			}else{
+			} else {
 				// 2 accounts, one unoinid, one mobile, need to merge.
 				;
 			}
@@ -275,11 +268,9 @@ public class UseraccountsServiceImpl implements Iface {
 			e.printStackTrace();
 		}
 
-
 		return ResponseUtils.fail("register failed");
 
 	}
-
 
 	/**
 	 * 
@@ -296,7 +287,7 @@ public class UseraccountsServiceImpl implements Iface {
 		filters.put("id", user_id);
 		filters.put("password", MD5Util.md5(old_password));
 		query.setEqualFilter(filters);
-		
+
 		int result = 0;
 		try {
 			UserUserRecord user = userdao.getResource(query);
@@ -316,13 +307,13 @@ public class UseraccountsServiceImpl implements Iface {
 				}
 				user.setPassword(MD5Util.md5(password));
 				result = userdao.putResource(user);
-				if (result > 0 ){
+				if (result > 0) {
 					return ResponseUtils.success(null);
 				}
-			}else{
+			} else {
 				ResponseUtils.fail(10012, "failed to change password: old password doesn't match!");
 			}
-			
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			logger.error("postuserchangepassword error: ", e);
@@ -355,13 +346,13 @@ public class UseraccountsServiceImpl implements Iface {
 			;
 		} else {
 			return ResponseUtils.fail(10011, "mobile validation code failed");
-		}		
-		
+		}
+
 		CommonQuery query = new CommonQuery();
 		Map filters = new HashMap();
 		filters.put("mobile", mobile);
 		query.setEqualFilter(filters);
-		
+
 		int result = 0;
 		try {
 			UserUserRecord user = userdao.getResource(query);
@@ -381,20 +372,19 @@ public class UseraccountsServiceImpl implements Iface {
 				}
 				user.setPassword(MD5Util.md5(password));
 				result = userdao.putResource(user);
-				if (result > 0 ){
+				if (result > 0) {
 					return ResponseUtils.success(null);
 				}
-			}else{
+			} else {
 				ResponseUtils.fail(10014, "mobile doesn't exist.");
 			}
-			
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			logger.error("postuserresetpassword error: ", e);
 
 		}
 		return ResponseUtils.fail(10013, "update password failed");
-
 
 	}
 
@@ -403,7 +393,37 @@ public class UseraccountsServiceImpl implements Iface {
 		// TODO Auto-generated method stub
 		return null;
 	}
+/**
+ * 检查手机号是否已经注册。 exist: true 已经存在， exist：false 不存在。
+ * @param mobile
+ * @return
+ * @throws TException
+ */
+	@Override
+	public Response getismobileregisted(String mobile) throws TException {
+		CommonQuery query = new CommonQuery();
+		Map filters = new HashMap();
+		if (mobile.length()>0){
+			filters.put("mobile", mobile);
+			query.setEqualFilter(filters);
+			try {
+				UserUserRecord user = userdao.getResource(query);
+				Map hashmap = new HashMap();
+				if (user == null) {
+					hashmap.put("exist", false);
+				}else{
+					hashmap.put("exist", true);
+				}
+				return ResponseUtils.success(hashmap);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				logger.error("getismobileregisted error: ", e);
 
+			}			
+		}
+		
+		return ResponseUtils.fail(-1 ,"系统繁忙，此时稍候再试");
+		
 
-
+	}
 }
