@@ -83,7 +83,7 @@ public class UseraccountsController {
 		} catch (Exception e) {	
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
-	}	
+	}
 	
 	
 	@RequestMapping(value = "/user/sendsignupcode", method = RequestMethod.POST)
