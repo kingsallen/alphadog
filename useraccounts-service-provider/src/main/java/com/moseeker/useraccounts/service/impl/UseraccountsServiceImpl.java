@@ -141,7 +141,7 @@ public class UseraccountsServiceImpl implements Iface {
 	 */
 	@Override
 	public Response postsendsignupcode(String mobile) throws TException {
-		// TODO ip limit
+		// TODO 未注册用户才能发送。
 
 		if (SmsSender.sendSMS_signup(mobile)) {
 			return ResponseUtils.success(null);
@@ -328,7 +328,7 @@ public class UseraccountsServiceImpl implements Iface {
 	 */
 	@Override
 	public Response postusersendpasswordforgotcode(String mobile) throws TException {
-		// TODO ip limit
+		// TODO 只有已经存在的用户才能发验证码。
 		if (SmsSender.sendSMS_signup(mobile)) {
 			return ResponseUtils.success(null);
 		} else {
