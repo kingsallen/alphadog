@@ -20,6 +20,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
+import org.jooq.types.UByte;
 import org.jooq.types.UInteger;
 
 
@@ -36,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileProfile extends TableImpl<ProfileProfileRecord> {
 
-	private static final long serialVersionUID = 1167814587;
+	private static final long serialVersionUID = 915547772;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_profile</code>
@@ -57,34 +58,34 @@ public class ProfileProfile extends TableImpl<ProfileProfileRecord> {
 	public final TableField<ProfileProfileRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
 
 	/**
-	 * The column <code>profileDB.profile_profile.uuid</code>. profile的uuid标识
+	 * The column <code>profileDB.profile_profile.uuid</code>. profile的uuid标识, 与主键一一对应
 	 */
-	public final TableField<ProfileProfileRecord, String> UUID = createField("uuid", org.jooq.impl.SQLDataType.VARCHAR.length(32).nullable(false).defaulted(true), this, "profile的uuid标识");
+	public final TableField<ProfileProfileRecord, String> UUID = createField("uuid", org.jooq.impl.SQLDataType.VARCHAR.length(32).nullable(false).defaulted(true), this, "profile的uuid标识, 与主键一一对应");
 
 	/**
 	 * The column <code>profileDB.profile_profile.lang</code>. profile语言 1:chinese 2:english
 	 */
-	public final TableField<ProfileProfileRecord, Byte> LANG = createField("lang", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "profile语言 1:chinese 2:english");
+	public final TableField<ProfileProfileRecord, UByte> LANG = createField("lang", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "profile语言 1:chinese 2:english");
 
 	/**
 	 * The column <code>profileDB.profile_profile.source</code>. Profile的创建来源, 1:Moseeker手机 2:PC Profile 3:Email 4:导入
 	 */
-	public final TableField<ProfileProfileRecord, Byte> SOURCE = createField("source", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "Profile的创建来源, 1:Moseeker手机 2:PC Profile 3:Email 4:导入");
+	public final TableField<ProfileProfileRecord, UByte> SOURCE = createField("source", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "Profile的创建来源, 1:Moseeker手机 2:PC Profile 3:Email 4:导入");
 
 	/**
 	 * The column <code>profileDB.profile_profile.completeness</code>. Profile完整度
 	 */
-	public final TableField<ProfileProfileRecord, Byte> COMPLETENESS = createField("completeness", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "Profile完整度");
+	public final TableField<ProfileProfileRecord, UByte> COMPLETENESS = createField("completeness", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "Profile完整度");
 
 	/**
 	 * The column <code>profileDB.profile_profile.user_id</code>. 用户ID
 	 */
-	public final TableField<ProfileProfileRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "用户ID");
+	public final TableField<ProfileProfileRecord, UInteger> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "用户ID");
 
 	/**
-	 * The column <code>profileDB.profile_profile.disable</code>. 0有效  1 无效
+	 * The column <code>profileDB.profile_profile.disable</code>. 是否有效，0：无效 1：有效
 	 */
-	public final TableField<ProfileProfileRecord, Byte> DISABLE = createField("disable", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "0有效  1 无效");
+	public final TableField<ProfileProfileRecord, UByte> DISABLE = createField("disable", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "是否有效，0：无效 1：有效");
 
 	/**
 	 * The column <code>profileDB.profile_profile.create_time</code>. 创建时间

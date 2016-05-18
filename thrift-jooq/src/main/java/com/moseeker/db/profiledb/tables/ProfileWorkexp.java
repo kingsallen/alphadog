@@ -21,6 +21,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
+import org.jooq.types.UByte;
 import org.jooq.types.UInteger;
 
 
@@ -37,7 +38,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileWorkexp extends TableImpl<ProfileWorkexpRecord> {
 
-	private static final long serialVersionUID = 401926410;
+	private static final long serialVersionUID = -82620058;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_workexp</code>
@@ -75,62 +76,102 @@ public class ProfileWorkexp extends TableImpl<ProfileWorkexpRecord> {
 	/**
 	 * The column <code>profileDB.profile_workexp.end_until_now</code>. 是否至今 0：否 1：是
 	 */
-	public final TableField<ProfileWorkexpRecord, Byte> END_UNTIL_NOW = createField("end_until_now", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "是否至今 0：否 1：是");
+	public final TableField<ProfileWorkexpRecord, UByte> END_UNTIL_NOW = createField("end_until_now", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "是否至今 0：否 1：是");
 
 	/**
-	 * The column <code>profileDB.profile_workexp.salary_type</code>. 年薪 0:未选择 1: 6万以下, 2: 6万-8万, 3: 8万-12万, 4: 12万-20万, 5: 20万-30万, 6: 30万以上
+	 * The column <code>profileDB.profile_workexp.salary_type</code>. 薪资类型，0:没选择, 1:年薪, 2:月薪, 3:日薪, 4:时薪
 	 */
-	public final TableField<ProfileWorkexpRecord, Byte> SALARY_TYPE = createField("salary_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "年薪 0:未选择 1: 6万以下, 2: 6万-8万, 3: 8万-12万, 4: 12万-20万, 5: 20万-30万, 6: 30万以上");
+	public final TableField<ProfileWorkexpRecord, UByte> SALARY_TYPE = createField("salary_type", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "薪资类型，0:没选择, 1:年薪, 2:月薪, 3:日薪, 4:时薪");
 
 	/**
-	 * The column <code>profileDB.profile_workexp.salary_code</code>. 年薪 0:未选择 1: 6万以下, 2: 6万-8万, 3: 8万-12万, 4: 12万-20万, 5: 20万-30万, 6: 30万以上
+	 * The column <code>profileDB.profile_workexp.salary_code</code>. 薪资code
 	 */
-	public final TableField<ProfileWorkexpRecord, Byte> SALARY_CODE = createField("salary_code", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "年薪 0:未选择 1: 6万以下, 2: 6万-8万, 3: 8万-12万, 4: 12万-20万, 5: 20万-30万, 6: 30万以上");
+	public final TableField<ProfileWorkexpRecord, UByte> SALARY_CODE = createField("salary_code", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "薪资code");
 
 	/**
 	 * The column <code>profileDB.profile_workexp.industry_code</code>. 行业字典编码
 	 */
-	public final TableField<ProfileWorkexpRecord, Byte> INDUSTRY_CODE = createField("industry_code", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "行业字典编码");
+	public final TableField<ProfileWorkexpRecord, UInteger> INDUSTRY_CODE = createField("industry_code", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "行业字典编码");
 
 	/**
 	 * The column <code>profileDB.profile_workexp.industry_name</code>. 行业名称
 	 */
-	public final TableField<ProfileWorkexpRecord, String> INDUSTRY_NAME = createField("industry_name", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false).defaulted(true), this, "行业名称");
+	public final TableField<ProfileWorkexpRecord, String> INDUSTRY_NAME = createField("industry_name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "行业名称");
 
 	/**
-	 * The column <code>profileDB.profile_workexp.company</code>. 公司名称
+	 * The column <code>profileDB.profile_workexp.company_name</code>. 公司名称
 	 */
-	public final TableField<ProfileWorkexpRecord, String> COMPANY = createField("company", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaulted(true), this, "公司名称");
+	public final TableField<ProfileWorkexpRecord, String> COMPANY_NAME = createField("company_name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "公司名称");
 
 	/**
-	 * The column <code>profileDB.profile_workexp.department</code>. 部门名称
+	 * The column <code>profileDB.profile_workexp.company_scale</code>. 公司规模, 0:没选择, 1:少于15人, 2:15-50人, 3:50-150人, 4:150-500人, 5:500-2000人, 6:2000人以上
 	 */
-	public final TableField<ProfileWorkexpRecord, String> DEPARTMENT = createField("department", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaulted(true), this, "部门名称");
+	public final TableField<ProfileWorkexpRecord, UByte> COMPANY_SCALE = createField("company_scale", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "公司规模, 0:没选择, 1:少于15人, 2:15-50人, 3:50-150人, 4:150-500人, 5:500-2000人, 6:2000人以上");
 
 	/**
-	 * The column <code>profileDB.profile_workexp.position_code</code>. 职位字典编码
+	 * The column <code>profileDB.profile_workexp.company_property</code>. 公司性质, 0：没选择, 1:外商独资, 2:国企, 3:合资, 4:民营公司, 5:事业单位, 6:上市公司, 7:政府机关/非盈利机构, 8:代表处, 9:股份制企业, 10:创业公司, 11:其它
 	 */
-	public final TableField<ProfileWorkexpRecord, Byte> POSITION_CODE = createField("position_code", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "职位字典编码");
+	public final TableField<ProfileWorkexpRecord, UByte> COMPANY_PROPERTY = createField("company_property", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "公司性质, 0：没选择, 1:外商独资, 2:国企, 3:合资, 4:民营公司, 5:事业单位, 6:上市公司, 7:政府机关/非盈利机构, 8:代表处, 9:股份制企业, 10:创业公司, 11:其它");
 
 	/**
-	 * The column <code>profileDB.profile_workexp.position_name</code>. 职位名称
+	 * The column <code>profileDB.profile_workexp.company_introduce</code>. 公司简介
 	 */
-	public final TableField<ProfileWorkexpRecord, String> POSITION_NAME = createField("position_name", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false).defaulted(true), this, "职位名称");
+	public final TableField<ProfileWorkexpRecord, String> COMPANY_INTRODUCE = createField("company_introduce", org.jooq.impl.SQLDataType.VARCHAR.length(1000).nullable(false).defaulted(true), this, "公司简介");
 
 	/**
-	 * The column <code>profileDB.profile_workexp.description</code>. 教育描述
+	 * The column <code>profileDB.profile_workexp.department_name</code>. 部门名称
 	 */
-	public final TableField<ProfileWorkexpRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.VARCHAR.length(1000).nullable(false).defaulted(true), this, "教育描述");
+	public final TableField<ProfileWorkexpRecord, String> DEPARTMENT_NAME = createField("department_name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "部门名称");
 
 	/**
-	 * The column <code>profileDB.profile_workexp.work_type</code>. 工作类型 0:未选择 1:全职 2:兼职 3:合同工
+	 * The column <code>profileDB.profile_workexp.position_code</code>. 职能字典编码
 	 */
-	public final TableField<ProfileWorkexpRecord, Byte> WORK_TYPE = createField("work_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "工作类型 0:未选择 1:全职 2:兼职 3:合同工");
+	public final TableField<ProfileWorkexpRecord, UInteger> POSITION_CODE = createField("position_code", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "职能字典编码");
 
 	/**
-	 * The column <code>profileDB.profile_workexp.scale</code>. 公司规模 0:未选择 1:10人以内?
+	 * The column <code>profileDB.profile_workexp.position_name</code>. 职能字典名称
 	 */
-	public final TableField<ProfileWorkexpRecord, Byte> SCALE = createField("scale", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "公司规模 0:未选择 1:10人以内?");
+	public final TableField<ProfileWorkexpRecord, String> POSITION_NAME = createField("position_name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "职能字典名称");
+
+	/**
+	 * The column <code>profileDB.profile_workexp.description</code>. 工作描述
+	 */
+	public final TableField<ProfileWorkexpRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.VARCHAR.length(1000).nullable(false).defaulted(true), this, "工作描述");
+
+	/**
+	 * The column <code>profileDB.profile_workexp.type</code>. 工作类型 0:没选择 1:全职 2:兼职
+	 */
+	public final TableField<ProfileWorkexpRecord, UByte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "工作类型 0:没选择 1:全职 2:兼职");
+
+	/**
+	 * The column <code>profileDB.profile_workexp.address</code>. 工作地点字典编码
+	 */
+	public final TableField<ProfileWorkexpRecord, UInteger> ADDRESS = createField("address", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "工作地点字典编码");
+
+	/**
+	 * The column <code>profileDB.profile_workexp.report_to</code>. 汇报对象
+	 */
+	public final TableField<ProfileWorkexpRecord, String> REPORT_TO = createField("report_to", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "汇报对象");
+
+	/**
+	 * The column <code>profileDB.profile_workexp.underlings</code>. 下属人数, 0:没有下属
+	 */
+	public final TableField<ProfileWorkexpRecord, UInteger> UNDERLINGS = createField("underlings", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "下属人数, 0:没有下属");
+
+	/**
+	 * The column <code>profileDB.profile_workexp.reference</code>. 证明人
+	 */
+	public final TableField<ProfileWorkexpRecord, String> REFERENCE = createField("reference", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "证明人");
+
+	/**
+	 * The column <code>profileDB.profile_workexp.resign_reason</code>. 离职原因
+	 */
+	public final TableField<ProfileWorkexpRecord, String> RESIGN_REASON = createField("resign_reason", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "离职原因");
+
+	/**
+	 * The column <code>profileDB.profile_workexp.achievement</code>. 主要业绩
+	 */
+	public final TableField<ProfileWorkexpRecord, String> ACHIEVEMENT = createField("achievement", org.jooq.impl.SQLDataType.VARCHAR.length(1000).nullable(false).defaulted(true), this, "主要业绩");
 
 	/**
 	 * The column <code>profileDB.profile_workexp.create_time</code>. 创建时间

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.thrift.TException;
+import org.jooq.types.UByte;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -298,7 +299,7 @@ public class UseraccountsServiceImpl implements Iface {
 			// 被合并账号的个人profile置为无效
 			ProfileProfileRecord profileRecord = profileDao.getProfileByUserId(userUnionid.getId().intValue());
 			if (profileRecord != null) {
-				profileRecord.setDisable((byte) 0);
+				profileRecord.setDisable(UByte.valueOf(Constant.DISABLE));
 				profileDao.putResource(profileRecord);
 			}
 

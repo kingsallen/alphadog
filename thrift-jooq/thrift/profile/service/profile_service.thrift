@@ -16,9 +16,9 @@ service WholeProfileServices {
 service ProfileServices {
     common_struct.Response getResources(1:common_struct.CommonQuery query);
     common_struct.Response getPagination(2:common_struct.CommonQuery query);
-    common_struct.Response postResources(1: list<profile_struct.Profile> profiles);
-    common_struct.Response putResources(1: list<profile_struct.Profile> profiles);
-    common_struct.Response delResources(1: list<profile_struct.Profile> profiles);
+    common_struct.Response postResources(1: list<profile_struct.Profile> resources);
+    common_struct.Response putResources(1: list<profile_struct.Profile> resources);
+    common_struct.Response delResources(1: list<profile_struct.Profile> resources);
     
     common_struct.Response getResource(1:common_struct.CommonQuery query);
     common_struct.Response postResource(1: profile_struct.Profile profile);
@@ -29,14 +29,27 @@ service ProfileServices {
 service AttachmentServices {
     common_struct.Response getResources(1:common_struct.CommonQuery query);
     common_struct.Response getPagination(1:common_struct.CommonQuery query);
-    common_struct.Response postResources(1: list<profile_struct.Attachment> profiles);
-    common_struct.Response putResources(1: list<profile_struct.Attachment> profiles);
-    common_struct.Response delResources(1: list<profile_struct.Attachment> profiles);
+    common_struct.Response postResources(1: list<profile_struct.Attachment> attachments);
+    common_struct.Response putResources(1: list<profile_struct.Attachment> attachments);
+    common_struct.Response delResources(1: list<profile_struct.Attachment> attachments);
     
     common_struct.Response getResource(1:common_struct.CommonQuery query);
-    common_struct.Response postResource(1: profile_struct.Attachment profile);
-    common_struct.Response putResource(1: profile_struct.Attachment profile);
-    common_struct.Response delResource(1: profile_struct.Attachment profile);
+    common_struct.Response postResource(1: profile_struct.Attachment attachment);
+    common_struct.Response putResource(1: profile_struct.Attachment attachment);
+    common_struct.Response delResource(1: profile_struct.Attachment attachment);
+}
+
+service AwardsServices {
+    common_struct.Response getResources(1:common_struct.CommonQuery query);
+    common_struct.Response getPagination(1:common_struct.CommonQuery query);
+    common_struct.Response postResources(1: list<profile_struct.Awards> awards);
+    common_struct.Response putResources(1: list<profile_struct.Awards> awards);
+    common_struct.Response delResources(1: list<profile_struct.Awards> awards);
+    
+    common_struct.Response getResource(1:common_struct.CommonQuery query);
+    common_struct.Response postResource(1: profile_struct.Awards awards);
+    common_struct.Response putResource(1: profile_struct.Awards awards);
+    common_struct.Response delResource(1: profile_struct.Awards awards);
 }
 
 service BasicServices {
@@ -52,6 +65,19 @@ service BasicServices {
     common_struct.Response delResource(1: profile_struct.Basic basic);
 }
 
+service CredentialsServices {
+    common_struct.Response getResources(1:common_struct.CommonQuery query);
+    common_struct.Response getPagination(1:common_struct.CommonQuery query);
+    common_struct.Response postResources(1: list<profile_struct.Credentials> credentials);
+    common_struct.Response putResources(1: list<profile_struct.Credentials> credentials);
+    common_struct.Response delResources(1: list<profile_struct.Credentials> credentials);
+    
+    common_struct.Response getResource(1:common_struct.CommonQuery query);
+    common_struct.Response postResource(1: profile_struct.Credentials credential);
+    common_struct.Response putResource(1: profile_struct.Credentials credential);
+    common_struct.Response delResource(1: profile_struct.Credentials credential);
+}
+
 service EducationServices {
     common_struct.Response getResources(1:common_struct.CommonQuery query);
     common_struct.Response getPagination(1:common_struct.CommonQuery query);
@@ -63,32 +89,6 @@ service EducationServices {
     common_struct.Response postResource(1: profile_struct.Education education);
     common_struct.Response putResource(1: profile_struct.Education education);
     common_struct.Response delResource(1: profile_struct.Education education);
-}
-
-service EducationExtServices {
-    common_struct.Response getResources(1:common_struct.CommonQuery query);
-    common_struct.Response getPagination(1:common_struct.CommonQuery query);
-    common_struct.Response postResources(1: list<profile_struct.EducationExt> educationExts);
-    common_struct.Response putResources(1: list<profile_struct.EducationExt> educationExts);
-    common_struct.Response delResources(1: list<profile_struct.EducationExt> educationExts);
-    
-    common_struct.Response getResource(1:common_struct.CommonQuery query);
-    common_struct.Response postResource(1: profile_struct.EducationExt educationExt);
-    common_struct.Response putResource(1: profile_struct.EducationExt educationExt);
-    common_struct.Response delResource(1: profile_struct.EducationExt educationExt);
-}
-
-service ProfileExtServices {
-    common_struct.Response getResources(1:common_struct.CommonQuery query);
-    common_struct.Response getPagination(1:common_struct.CommonQuery query);
-    common_struct.Response postResources(1: list<profile_struct.ProfileExt> profileExts);
-    common_struct.Response putResources(1: list<profile_struct.ProfileExt> profileExts);
-    common_struct.Response delResources(1: list<profile_struct.ProfileExt> profileExts);
-    
-    common_struct.Response getResource(1:common_struct.CommonQuery query);
-    common_struct.Response postResource(1: profile_struct.ProfileExt profileExt);
-    common_struct.Response putResource(1: profile_struct.ProfileExt profileExt);
-    common_struct.Response delResource(1: profile_struct.ProfileExt profileExt);
 }
 
 service ProfileImportServices {
@@ -117,19 +117,6 @@ service IntentionServices {
     common_struct.Response delResource(1: profile_struct.Intention intention);
 }
 
-service InternshipServices {
-    common_struct.Response getResources(1:common_struct.CommonQuery query);
-    common_struct.Response getPagination(1:common_struct.CommonQuery query);
-    common_struct.Response postResources(1: list<profile_struct.Internship> internships);
-    common_struct.Response putResources(1: list<profile_struct.Internship> internships);
-    common_struct.Response delResources(1: list<profile_struct.Internship> internships);
-    
-    common_struct.Response getResource(1:common_struct.CommonQuery query);
-    common_struct.Response postResource(1: profile_struct.Internship internship);
-    common_struct.Response putResource(1: profile_struct.Internship internship);
-    common_struct.Response delResource(1: profile_struct.Internship internship);
-}
-
 service LanguageServices {
     common_struct.Response getResources(1:common_struct.CommonQuery query);
     common_struct.Response getPagination(1:common_struct.CommonQuery query);
@@ -141,6 +128,19 @@ service LanguageServices {
     common_struct.Response postResource(1: profile_struct.Language language);
     common_struct.Response putResource(1: profile_struct.Language language);
     common_struct.Response delResource(1: profile_struct.Language language);
+}
+
+service CustomizeResumeServices {
+    common_struct.Response getResources(1:common_struct.CommonQuery query);
+    common_struct.Response getPagination(1:common_struct.CommonQuery query);
+    common_struct.Response postResources(1: list<profile_struct.CustomizeResume> Others);
+    common_struct.Response putResources(1: list<profile_struct.CustomizeResume> Others);
+    common_struct.Response delResources(1: list<profile_struct.CustomizeResume> Others);
+    
+    common_struct.Response getResource(1:common_struct.CommonQuery query);
+    common_struct.Response postResource(1: profile_struct.CustomizeResume Other);
+    common_struct.Response putResource(1: profile_struct.CustomizeResume Other);
+    common_struct.Response delResource(1: profile_struct.CustomizeResume Other);
 }
 
 service ProjectExpServices {
@@ -156,32 +156,6 @@ service ProjectExpServices {
     common_struct.Response delResource(1: profile_struct.ProjectExp projectExp);
 }
 
-service RewardServices {
-    common_struct.Response getResources(1:common_struct.CommonQuery query);
-    common_struct.Response getPagination(1:common_struct.CommonQuery query);
-    common_struct.Response postResources(1: list<profile_struct.Reward> rewards);
-    common_struct.Response putResources(1: list<profile_struct.Reward> rewards);
-    common_struct.Response delResources(1: list<profile_struct.Reward> rewards);
-    
-    common_struct.Response getResource(1:common_struct.CommonQuery query);
-    common_struct.Response postResource(1: profile_struct.Reward reward);
-    common_struct.Response putResource(1: profile_struct.Reward reward);
-    common_struct.Response delResource(1: profile_struct.Reward reward);
-}
-
-service SchoolJobServices {
-    common_struct.Response getResources(1:common_struct.CommonQuery query);
-    common_struct.Response getPagination(1:common_struct.CommonQuery query);
-    common_struct.Response postResources(1: list<profile_struct.SchoolJob> schoolJobs);
-    common_struct.Response putResources(1: list<profile_struct.SchoolJob> schoolJobs);
-    common_struct.Response delResources(1: list<profile_struct.SchoolJob> schoolJobs);
-    
-    common_struct.Response getResource(1:common_struct.CommonQuery query);
-    common_struct.Response postResource(1: profile_struct.SchoolJob schoolJob);
-    common_struct.Response putResource(1: profile_struct.SchoolJob schoolJob);
-    common_struct.Response delResource(1: profile_struct.SchoolJob schoolJob);
-}
-
 service SkillServices {
     common_struct.Response getResources(1:common_struct.CommonQuery query);
     common_struct.Response getPagination(1:common_struct.CommonQuery query);
@@ -193,19 +167,6 @@ service SkillServices {
     common_struct.Response postResource(1: profile_struct.Skill skill);
     common_struct.Response putResource(1: profile_struct.Skill skill);
     common_struct.Response delResource(1: profile_struct.Skill skill);
-}
-
-service TrainingServices {
-    common_struct.Response getResources(1:common_struct.CommonQuery query);
-    common_struct.Response getPagination(1:common_struct.CommonQuery query);
-    common_struct.Response postResources(1: list<profile_struct.Training> trainings);
-    common_struct.Response putResources(1: list<profile_struct.Training> trainings);
-    common_struct.Response delResources(1: list<profile_struct.Training> trainings);
-    
-    common_struct.Response getResource(1:common_struct.CommonQuery query);
-    common_struct.Response postResource(1: profile_struct.Training training);
-    common_struct.Response putResource(1: profile_struct.Training training);
-    common_struct.Response delResource(1: profile_struct.Training training);
 }
 
 service WorkExpServices {

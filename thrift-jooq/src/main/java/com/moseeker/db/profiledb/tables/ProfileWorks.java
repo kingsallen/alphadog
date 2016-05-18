@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileWorks extends TableImpl<ProfileWorksRecord> {
 
-	private static final long serialVersionUID = -474957441;
+	private static final long serialVersionUID = -1015322186;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_works</code>
@@ -70,6 +70,11 @@ public class ProfileWorks extends TableImpl<ProfileWorksRecord> {
 	 * The column <code>profileDB.profile_works.url</code>. 作品网址
 	 */
 	public final TableField<ProfileWorksRecord, String> URL = createField("url", org.jooq.impl.SQLDataType.VARCHAR.length(1000).nullable(false).defaulted(true), this, "作品网址");
+
+	/**
+	 * The column <code>profileDB.profile_works.cover</code>. 作品封面
+	 */
+	public final TableField<ProfileWorksRecord, String> COVER = createField("cover", org.jooq.impl.SQLDataType.VARCHAR.length(1000).nullable(false).defaulted(true), this, "作品封面");
 
 	/**
 	 * The column <code>profileDB.profile_works.description</code>. 作品描述

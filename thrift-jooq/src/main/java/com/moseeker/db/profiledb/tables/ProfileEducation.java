@@ -21,6 +21,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
+import org.jooq.types.UByte;
 import org.jooq.types.UInteger;
 
 
@@ -37,7 +38,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileEducation extends TableImpl<ProfileEducationRecord> {
 
-	private static final long serialVersionUID = -1882453330;
+	private static final long serialVersionUID = 565755566;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_education</code>
@@ -75,17 +76,12 @@ public class ProfileEducation extends TableImpl<ProfileEducationRecord> {
 	/**
 	 * The column <code>profileDB.profile_education.end_until_now</code>. 是否至今 0：否 1：是
 	 */
-	public final TableField<ProfileEducationRecord, Byte> END_UNTIL_NOW = createField("end_until_now", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "是否至今 0：否 1：是");
-
-	/**
-	 * The column <code>profileDB.profile_education.degree</code>. 学历 0:未选择 1: 大专以下, 2: 大专, 3: 本科, 4: 硕士, 5: 博士, 6:博士以上
-	 */
-	public final TableField<ProfileEducationRecord, Byte> DEGREE = createField("degree", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "学历 0:未选择 1: 大专以下, 2: 大专, 3: 本科, 4: 硕士, 5: 博士, 6:博士以上");
+	public final TableField<ProfileEducationRecord, UByte> END_UNTIL_NOW = createField("end_until_now", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "是否至今 0：否 1：是");
 
 	/**
 	 * The column <code>profileDB.profile_education.school_code</code>. 学校字典编码
 	 */
-	public final TableField<ProfileEducationRecord, Byte> SCHOOL_CODE = createField("school_code", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "学校字典编码");
+	public final TableField<ProfileEducationRecord, Integer> SCHOOL_CODE = createField("school_code", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "学校字典编码");
 
 	/**
 	 * The column <code>profileDB.profile_education.school_name</code>. 学校名称
@@ -95,7 +91,7 @@ public class ProfileEducation extends TableImpl<ProfileEducationRecord> {
 	/**
 	 * The column <code>profileDB.profile_education.major_code</code>. 专业字典编码
 	 */
-	public final TableField<ProfileEducationRecord, Byte> MAJOR_CODE = createField("major_code", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "专业字典编码");
+	public final TableField<ProfileEducationRecord, String> MAJOR_CODE = createField("major_code", org.jooq.impl.SQLDataType.CHAR.length(6).nullable(false).defaulted(true), this, "专业字典编码");
 
 	/**
 	 * The column <code>profileDB.profile_education.major_name</code>. 专业名称
@@ -103,14 +99,34 @@ public class ProfileEducation extends TableImpl<ProfileEducationRecord> {
 	public final TableField<ProfileEducationRecord, String> MAJOR_NAME = createField("major_name", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false).defaulted(true), this, "专业名称");
 
 	/**
-	 * The column <code>profileDB.profile_education.type</code>. 专业类型 0:未选择 1:文科 2:理科 ？
+	 * The column <code>profileDB.profile_education.degree</code>. 学历 0:未选择 1: 初中及以下, 2:中专, 3:高中, 4: 大专, 5: 本科, 6: 硕士, 7: 博士, 8:博士以上, 9:其他
 	 */
-	public final TableField<ProfileEducationRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "专业类型 0:未选择 1:文科 2:理科 ？");
+	public final TableField<ProfileEducationRecord, UByte> DEGREE = createField("degree", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "学历 0:未选择 1: 初中及以下, 2:中专, 3:高中, 4: 大专, 5: 本科, 6: 硕士, 7: 博士, 8:博士以上, 9:其他");
 
 	/**
 	 * The column <code>profileDB.profile_education.description</code>. 教育描述
 	 */
 	public final TableField<ProfileEducationRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.VARCHAR.length(1000).nullable(false).defaulted(true), this, "教育描述");
+
+	/**
+	 * The column <code>profileDB.profile_education.is_full</code>. 是否全日制 0:否, 1:是
+	 */
+	public final TableField<ProfileEducationRecord, UByte> IS_FULL = createField("is_full", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "是否全日制 0:否, 1:是");
+
+	/**
+	 * The column <code>profileDB.profile_education.is_unified</code>. 是否统招 0:否, 1:是
+	 */
+	public final TableField<ProfileEducationRecord, UByte> IS_UNIFIED = createField("is_unified", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "是否统招 0:否, 1:是");
+
+	/**
+	 * The column <code>profileDB.profile_education.is_study_abroad</code>. 是否海外学习经历 0:否, 1:是
+	 */
+	public final TableField<ProfileEducationRecord, UByte> IS_STUDY_ABROAD = createField("is_study_abroad", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "是否海外学习经历 0:否, 1:是");
+
+	/**
+	 * The column <code>profileDB.profile_education.study_abroad_country</code>. 海外留学国家
+	 */
+	public final TableField<ProfileEducationRecord, String> STUDY_ABROAD_COUNTRY = createField("study_abroad_country", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "海外留学国家");
 
 	/**
 	 * The column <code>profileDB.profile_education.create_time</code>. 创建时间

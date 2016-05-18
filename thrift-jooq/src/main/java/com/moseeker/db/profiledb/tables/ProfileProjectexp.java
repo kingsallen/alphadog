@@ -21,6 +21,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
+import org.jooq.types.UByte;
 import org.jooq.types.UInteger;
 
 
@@ -37,7 +38,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileProjectexp extends TableImpl<ProfileProjectexpRecord> {
 
-	private static final long serialVersionUID = -687642362;
+	private static final long serialVersionUID = 1864792995;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_projectexp</code>
@@ -75,32 +76,67 @@ public class ProfileProjectexp extends TableImpl<ProfileProjectexpRecord> {
 	/**
 	 * The column <code>profileDB.profile_projectexp.end_until_now</code>. 是否至今 0：否 1：是
 	 */
-	public final TableField<ProfileProjectexpRecord, Byte> END_UNTIL_NOW = createField("end_until_now", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "是否至今 0：否 1：是");
-
-	/**
-	 * The column <code>profileDB.profile_projectexp.company</code>. 公司名称
-	 */
-	public final TableField<ProfileProjectexpRecord, String> COMPANY = createField("company", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaulted(true), this, "公司名称");
+	public final TableField<ProfileProjectexpRecord, UByte> END_UNTIL_NOW = createField("end_until_now", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "是否至今 0：否 1：是");
 
 	/**
 	 * The column <code>profileDB.profile_projectexp.name</code>. 项目名称
 	 */
-	public final TableField<ProfileProjectexpRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaulted(true), this, "项目名称");
+	public final TableField<ProfileProjectexpRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "项目名称");
+
+	/**
+	 * The column <code>profileDB.profile_projectexp.company_name</code>. 公司名称
+	 */
+	public final TableField<ProfileProjectexpRecord, String> COMPANY_NAME = createField("company_name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "公司名称");
+
+	/**
+	 * The column <code>profileDB.profile_projectexp.is_it</code>. 是否IT项目, 0:不是 1:是
+	 */
+	public final TableField<ProfileProjectexpRecord, UByte> IS_IT = createField("is_it", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "是否IT项目, 0:不是 1:是");
+
+	/**
+	 * The column <code>profileDB.profile_projectexp.dev_tool</code>. 开发工具
+	 */
+	public final TableField<ProfileProjectexpRecord, String> DEV_TOOL = createField("dev_tool", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaulted(true), this, "开发工具");
+
+	/**
+	 * The column <code>profileDB.profile_projectexp.hardware</code>. 硬件环境
+	 */
+	public final TableField<ProfileProjectexpRecord, String> HARDWARE = createField("hardware", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaulted(true), this, "硬件环境");
+
+	/**
+	 * The column <code>profileDB.profile_projectexp.software</code>. 软件环境
+	 */
+	public final TableField<ProfileProjectexpRecord, String> SOFTWARE = createField("software", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaulted(true), this, "软件环境");
+
+	/**
+	 * The column <code>profileDB.profile_projectexp.url</code>. 项目网址
+	 */
+	public final TableField<ProfileProjectexpRecord, String> URL = createField("url", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaulted(true), this, "项目网址");
+
+	/**
+	 * The column <code>profileDB.profile_projectexp.description</code>. 项目描述
+	 */
+	public final TableField<ProfileProjectexpRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.VARCHAR.length(1000).nullable(false).defaulted(true), this, "项目描述");
 
 	/**
 	 * The column <code>profileDB.profile_projectexp.role</code>. 项目角色
 	 */
-	public final TableField<ProfileProjectexpRecord, String> ROLE = createField("role", org.jooq.impl.SQLDataType.VARCHAR.length(10).nullable(false).defaulted(true), this, "项目角色");
+	public final TableField<ProfileProjectexpRecord, String> ROLE = createField("role", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "项目角色");
 
 	/**
-	 * The column <code>profileDB.profile_projectexp.work_desc</code>. 工作描述
+	 * The column <code>profileDB.profile_projectexp.responsibility</code>. 项目职责
 	 */
-	public final TableField<ProfileProjectexpRecord, String> WORK_DESC = createField("work_desc", org.jooq.impl.SQLDataType.VARCHAR.length(1000).nullable(false).defaulted(true), this, "工作描述");
+	public final TableField<ProfileProjectexpRecord, String> RESPONSIBILITY = createField("responsibility", org.jooq.impl.SQLDataType.VARCHAR.length(1000).nullable(false).defaulted(true), this, "项目职责");
 
 	/**
-	 * The column <code>profileDB.profile_projectexp.project_desc</code>. 项目描述
+	 * The column <code>profileDB.profile_projectexp.achievement</code>. 项目业绩
 	 */
-	public final TableField<ProfileProjectexpRecord, String> PROJECT_DESC = createField("project_desc", org.jooq.impl.SQLDataType.VARCHAR.length(1000).nullable(false).defaulted(true), this, "项目描述");
+	public final TableField<ProfileProjectexpRecord, String> ACHIEVEMENT = createField("achievement", org.jooq.impl.SQLDataType.VARCHAR.length(1000).nullable(false).defaulted(true), this, "项目业绩");
+
+	/**
+	 * The column <code>profileDB.profile_projectexp.member</code>. 项目成员
+	 */
+	public final TableField<ProfileProjectexpRecord, String> MEMBER = createField("member", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "项目成员");
 
 	/**
 	 * The column <code>profileDB.profile_projectexp.create_time</code>. 创建时间

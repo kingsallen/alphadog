@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.jooq.DSLContext;
+import org.jooq.types.UByte;
+import org.jooq.types.UInteger;
 import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.dbutils.DBConnHelper;
@@ -25,9 +27,9 @@ public class ProfileDaoImpl extends BaseJooqDaoImpl<ProfileProfileRecord, Profil
 		try {
 			conn = DBConnHelper.DBConn.getConn();
 			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-			byte disable = 0;
+			UByte disable = UByte.valueOf(0);
 			record = create.selectFrom(ProfileProfile.PROFILE_PROFILE)
-					.where(ProfileProfile.PROFILE_PROFILE.USER_ID.equal(userId))
+					.where(ProfileProfile.PROFILE_PROFILE.USER_ID.equal(UInteger.valueOf(userId)))
 					.and(ProfileProfile.PROFILE_PROFILE.DISABLE.equal(disable))
 					.fetchAny();
 		} catch (SQLException e) {
