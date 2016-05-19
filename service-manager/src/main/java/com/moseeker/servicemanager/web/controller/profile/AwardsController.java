@@ -56,7 +56,7 @@ public class AwardsController {
 		}
 	}
 
-	@RequestMapping(value = "/profile/attachment", method = RequestMethod.PUT)
+	@RequestMapping(value = "/profile/awards", method = RequestMethod.PUT)
 	@ResponseBody
 	public String put(HttpServletRequest request, HttpServletResponse response) {
 		try {
