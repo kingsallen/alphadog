@@ -20,7 +20,7 @@ public class ServerDemo {
         EchoServiceImpl impl = new EchoServiceImpl();
 
         try {
-            Server server = new Server(ServerDemo.class, impl, ServerNodeUtils.getPort(args));
+            Server server = new Server(ServerDemo.class, ServerNodeUtils.getPort(args), impl);
             server.start(); // 启动服务，非阻塞
 
             synchronized (ServerDemo.class) {

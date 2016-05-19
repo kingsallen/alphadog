@@ -5,20 +5,20 @@ package com.moseeker.db.profiledb;
 
 
 import com.moseeker.db.profiledb.tables.ProfileAttachment;
+import com.moseeker.db.profiledb.tables.ProfileAwards;
 import com.moseeker.db.profiledb.tables.ProfileBasic;
+import com.moseeker.db.profiledb.tables.ProfileCredentials;
 import com.moseeker.db.profiledb.tables.ProfileEducation;
-import com.moseeker.db.profiledb.tables.ProfileEducationExt;
-import com.moseeker.db.profiledb.tables.ProfileExt;
 import com.moseeker.db.profiledb.tables.ProfileImport;
 import com.moseeker.db.profiledb.tables.ProfileIntention;
-import com.moseeker.db.profiledb.tables.ProfileInternship;
+import com.moseeker.db.profiledb.tables.ProfileIntentionCity;
+import com.moseeker.db.profiledb.tables.ProfileIntentionIndustry;
+import com.moseeker.db.profiledb.tables.ProfileIntentionPosition;
 import com.moseeker.db.profiledb.tables.ProfileLanguage;
+import com.moseeker.db.profiledb.tables.ProfileOther;
 import com.moseeker.db.profiledb.tables.ProfileProfile;
 import com.moseeker.db.profiledb.tables.ProfileProjectexp;
-import com.moseeker.db.profiledb.tables.ProfileReward;
-import com.moseeker.db.profiledb.tables.ProfileSchooljob;
 import com.moseeker.db.profiledb.tables.ProfileSkill;
-import com.moseeker.db.profiledb.tables.ProfileTraining;
 import com.moseeker.db.profiledb.tables.ProfileWorkexp;
 import com.moseeker.db.profiledb.tables.ProfileWorks;
 
@@ -45,7 +45,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Profiledb extends SchemaImpl {
 
-	private static final long serialVersionUID = 182869210;
+	private static final long serialVersionUID = 513333728;
 
 	/**
 	 * The reference instance of <code>profileDB</code>
@@ -69,20 +69,20 @@ public class Profiledb extends SchemaImpl {
 	private final List<Table<?>> getTables0() {
 		return Arrays.<Table<?>>asList(
 			ProfileAttachment.PROFILE_ATTACHMENT,
+			ProfileAwards.PROFILE_AWARDS,
 			ProfileBasic.PROFILE_BASIC,
+			ProfileCredentials.PROFILE_CREDENTIALS,
 			ProfileEducation.PROFILE_EDUCATION,
-			ProfileEducationExt.PROFILE_EDUCATION_EXT,
-			ProfileExt.PROFILE_EXT,
 			ProfileImport.PROFILE_IMPORT,
 			ProfileIntention.PROFILE_INTENTION,
-			ProfileInternship.PROFILE_INTERNSHIP,
+			ProfileIntentionCity.PROFILE_INTENTION_CITY,
+			ProfileIntentionIndustry.PROFILE_INTENTION_INDUSTRY,
+			ProfileIntentionPosition.PROFILE_INTENTION_POSITION,
 			ProfileLanguage.PROFILE_LANGUAGE,
+			ProfileOther.PROFILE_OTHER,
 			ProfileProfile.PROFILE_PROFILE,
 			ProfileProjectexp.PROFILE_PROJECTEXP,
-			ProfileReward.PROFILE_REWARD,
-			ProfileSchooljob.PROFILE_SCHOOLJOB,
 			ProfileSkill.PROFILE_SKILL,
-			ProfileTraining.PROFILE_TRAINING,
 			ProfileWorkexp.PROFILE_WORKEXP,
 			ProfileWorks.PROFILE_WORKS);
 	}

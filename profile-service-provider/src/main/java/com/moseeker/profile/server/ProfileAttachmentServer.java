@@ -34,8 +34,8 @@ public class ProfileAttachmentServer {
 		try {
 			AnnotationConfigApplicationContext acac = initSpring();
 			Server server = new Server(ProfileAttachmentServer.class,
-					acac.getBean(ProfileAttachmentServicesImpl.class),
-					ServerNodeUtils.getPort(args));
+					ServerNodeUtils.getPort(args),
+					acac.getBean(ProfileAttachmentServicesImpl.class));
 			server.start(); // 启动服务，非阻塞
 
 			synchronized (ProfileAttachmentServer.class) {

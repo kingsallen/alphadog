@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.moseeker.profile.service.impl.ProfileWorksServicesImpl;
+import com.moseeker.profile.service.impl.WholeProfileServicesImpl;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.Server;
 
@@ -34,8 +34,8 @@ public class ProfileWholeProfileServer {
 		try {
 			AnnotationConfigApplicationContext acac = initSpring();
 			Server server = new Server(ProfileWholeProfileServer.class,
-					acac.getBean(ProfileWorksServicesImpl.class),
-					ServerNodeUtils.getPort(args));
+					ServerNodeUtils.getPort(args),
+					acac.getBean(WholeProfileServicesImpl.class));
 			server.start(); // 启动服务，非阻塞
 
 			synchronized (ProfileWholeProfileServer.class) {

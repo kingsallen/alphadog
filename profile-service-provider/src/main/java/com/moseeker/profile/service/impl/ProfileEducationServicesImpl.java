@@ -1,6 +1,8 @@
 package com.moseeker.profile.service.impl;
 
 import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.db.profiledb.tables.records.ProfileAttachmentRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileEducationRecord;
 import com.moseeker.profile.dao.EducationDao;
 import com.moseeker.thrift.gen.profile.service.EducationServices.Iface;
@@ -39,11 +40,17 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 
 	@Override
 	protected Education DBToStruct(ProfileEducationRecord r) {
-		return (Education) BeanUtils.DBToStruct(Education.class, r);
+		Map<String, String> equalRules = new HashMap<>();
+		equalRules.put("start_date", "start");
+		equalRules.put("end_date", "end");
+		return (Education) BeanUtils.DBToStruct(Education.class, r, equalRules);
 	}
 
 	@Override
 	protected ProfileEducationRecord structToDB(Education attachment) throws ParseException {
-		return (ProfileEducationRecord) BeanUtils.structToDB(attachment, ProfileAttachmentRecord.class);
+		Map<String, String> equalRules = new HashMap<>();
+		equalRules.put("start_date", "start");
+		equalRules.put("end_date", "end");
+		return (ProfileEducationRecord) BeanUtils.structToDB(attachment, ProfileEducationRecord.class, equalRules);
 	}
 }

@@ -1,15 +1,17 @@
 package com.moseeker.common.dbutils;
 
-import com.moseeker.common.util.ConfigPropertiesUtil;
-import com.moseeker.common.util.Notification;
-import java.sql.SQLException;
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
+
 import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPConfig;
+import com.jolbox.bonecp.Statistics;
+import com.moseeker.common.util.ConfigPropertiesUtil;
+import com.moseeker.common.util.Notification;
 
 public class DatabaseConnectionHelper {
 
@@ -56,7 +58,11 @@ public class DatabaseConnectionHelper {
     }
 
     public DSLContext getJooqDSL() throws SQLException {
-        Connection conn = connectionPool.getConnection();;
+        Connection conn = connectionPool.getConnection();
+        Statistics statictics = connectionPool.getStatistics();
+        System.out.println("total free:"+statictics.getTotalFree());
+        System.out.println("total lease:"+statictics.getTotalLeased());
+        statictics.getTotalLeased();
         return DSL.using(conn, SQLDialect.MYSQL);
     }
 

@@ -1,5 +1,6 @@
 package com.moseeker.rpccenter.server.thrift;
 
+import org.apache.thrift.TMultiplexedProcessor;
 import org.apache.thrift.TProcessor;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TBinaryProtocol.Factory;
@@ -55,7 +56,7 @@ public class TServerThread extends Thread {
         server = new TThreadPoolServer(args);
 
     }
-
+    
     /**
      * @param tServer
      *            {@link TServer}

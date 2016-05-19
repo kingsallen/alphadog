@@ -20,6 +20,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
+import org.jooq.types.UByte;
 import org.jooq.types.UInteger;
 
 
@@ -36,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileLanguage extends TableImpl<ProfileLanguageRecord> {
 
-	private static final long serialVersionUID = -1286412505;
+	private static final long serialVersionUID = -1054410722;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_language</code>
@@ -62,14 +63,14 @@ public class ProfileLanguage extends TableImpl<ProfileLanguageRecord> {
 	public final TableField<ProfileLanguageRecord, UInteger> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "profile.id");
 
 	/**
-	 * The column <code>profileDB.profile_language.name</code>. 语言字典编码
+	 * The column <code>profileDB.profile_language.name</code>. 语言
 	 */
-	public final TableField<ProfileLanguageRecord, Byte> NAME = createField("name", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "语言字典编码");
+	public final TableField<ProfileLanguageRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "语言");
 
 	/**
-	 * The column <code>profileDB.profile_language.level</code>. 语言能力
+	 * The column <code>profileDB.profile_language.level</code>. 掌握程度 0:未选择 1: 初级（入门）, 2:中级（日常会话）,3:中高级（商务会话）,4:高级（无障碍商务沟通）
 	 */
-	public final TableField<ProfileLanguageRecord, String> LEVEL = createField("level", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaulted(true), this, "语言能力");
+	public final TableField<ProfileLanguageRecord, UByte> LEVEL = createField("level", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "掌握程度 0:未选择 1: 初级（入门）, 2:中级（日常会话）,3:中高级（商务会话）,4:高级（无障碍商务沟通）");
 
 	/**
 	 * The column <code>profileDB.profile_language.create_time</code>. 创建时间

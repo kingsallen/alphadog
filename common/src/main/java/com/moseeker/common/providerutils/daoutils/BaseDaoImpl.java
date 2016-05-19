@@ -1,5 +1,6 @@
 package com.moseeker.common.providerutils.daoutils;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,11 +20,10 @@ import org.jooq.impl.UpdatableRecordImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.moseeker.common.dbutils.DatabaseConnectionHelper;
+import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
-
 /**
  * 
  * 实现通用数据操作接口的抽象类 
@@ -51,11 +51,15 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 
 	@SuppressWarnings("unchecked")
 	public List<R> getResources(CommonQuery query) throws Exception {
-		initJOOQEntity();
-		List<R> records = new ArrayList<>();
-			DSLContext create = DatabaseConnectionHelper.getConnection()
-					.getJooqDSL();
-
+		List<R> records = null;
+		Connection conn = null;
+		try {
+			initJOOQEntity();
+			records = new ArrayList<>();
+			conn = DBConnHelper.DBConn.getConn();
+			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+			/*DSLContext create = DatabaseConnectionHelper.getConnection()
+					.getJooqDSL();*/
 			SelectJoinStep<Record> table = create.select().from(tableLike);
 
 			if (query.getEqualFilter() != null
@@ -115,123 +119,177 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 					records.add((R) r);
 				}
 			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+		} finally {
+			if(conn != null && !conn.isClosed()) {
+				conn.close();
+			}
+		}
 		return records;
 	}
 	
 	@SuppressWarnings({"unchecked" })
 	public int getResourceCount(CommonQuery query) throws Exception {
-		initJOOQEntity();
 		int totalCount = 0;
-		DSLContext create = DatabaseConnectionHelper.getConnection()
-				.getJooqDSL();
+		Connection conn = null;
+		try {
+			initJOOQEntity();
+			conn = DBConnHelper.DBConn.getConn();
+			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 
-		SelectQuery<?> selectQuery = create.selectQuery();
-		selectQuery.addFrom(tableLike);
+			SelectQuery<?> selectQuery = create.selectQuery();
+			selectQuery.addFrom(tableLike);
 
-		if (query.getEqualFilter() != null && query.getEqualFilter().size() > 0) {
-			Map<String, String> equalFilter = query.getEqualFilter();
-			for (Entry<String, String> entry : equalFilter.entrySet()) {
-				Field field = tableLike.field(entry.getKey());
-				if (field != null) {
-					selectQuery.addConditions(field.strictEqual(BeanUtils.convertTo(
-							entry.getValue(), field.getType())));
+			if (query.getEqualFilter() != null && query.getEqualFilter().size() > 0) {
+				Map<String, String> equalFilter = query.getEqualFilter();
+				for (Entry<String, String> entry : equalFilter.entrySet()) {
+					Field field = tableLike.field(entry.getKey());
+					if (field != null) {
+						selectQuery.addConditions(field.strictEqual(BeanUtils.convertTo(
+								entry.getValue(), field.getType())));
+					}
 				}
 			}
+			totalCount = create.fetchCount(selectQuery);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			if(conn != null && !conn.isClosed()) {
+				conn.close();
+			}
 		}
-		totalCount = create.fetchCount(selectQuery);
 		return totalCount;
 	}
 
 	public int postResources(List<R> records) throws Exception {
-		initJOOQEntity();
 		int insertret = 0;
-		if (records != null && records.size() > 0) {
-			DSLContext create = DatabaseConnectionHelper.getConnection()
-					.getJooqDSL();
-			insertret = create.batchInsert(records).execute()[0];
+		Connection conn = null;
+		try {
+			initJOOQEntity();
+			
+			if (records != null && records.size() > 0) {
+				conn = DBConnHelper.DBConn.getConn();
+				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+				insertret = create.batchInsert(records).execute()[0];
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		} finally {
+			if(conn != null && !conn.isClosed()) {
+				conn.close();
+			}
 		}
 		return insertret;
 	}
 
 	public int putResources(List<R> records) throws Exception {
-		initJOOQEntity();
 		int insertret = 0;
-		if (records != null && records.size() > 0) {
-			DSLContext create = DatabaseConnectionHelper.getConnection()
-					.getJooqDSL();
-			insertret = create.batchUpdate(records).execute()[0];
+		Connection conn = null;
+		try {
+			initJOOQEntity();
+			if (records != null && records.size() > 0) {
+				conn = DBConnHelper.DBConn.getConn();
+				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+				insertret = create.batchUpdate(records).execute()[0];
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		} finally {
+			if(conn != null && !conn.isClosed()) {
+				conn.close();
+			}
 		}
 
 		return insertret;
 	}
 
 	public int delResources(List<R> records) throws Exception {
-		initJOOQEntity();
 		int insertret = 0;
-		if (records != null && records.size() > 0) {
-			DSLContext create = DatabaseConnectionHelper.getConnection()
-					.getJooqDSL();
-			insertret = create.batchDelete(records).execute()[0];
+		Connection conn = null;
+		try {
+			initJOOQEntity();
+			if (records != null && records.size() > 0) {
+				conn = DBConnHelper.DBConn.getConn();
+				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+				insertret = create.batchDelete(records).execute()[0];
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			logger.error(e.getMessage(), e);
+		} finally {
+			if(conn != null && !conn.isClosed()) {
+				conn.close();
+			}
 		}
 		return insertret;
 	}
 	
 	@SuppressWarnings({"unchecked" })
 	public R getResource(CommonQuery query) throws Exception {
-		initJOOQEntity();
 		R record = null;
-		DSLContext create = DatabaseConnectionHelper.getConnection()
-				.getJooqDSL();
+		Connection conn = null;
+		try {
+			initJOOQEntity();
+			conn = DBConnHelper.DBConn.getConn();
+			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 
-		SelectJoinStep<Record> table = create.select().from(tableLike);
+			SelectJoinStep<Record> table = create.select().from(tableLike);
 
-		if (query.getEqualFilter() != null
-				&& query.getEqualFilter().size() > 0) {
-			Map<String, String> equalFilter = query.getEqualFilter();
-			for (Entry<String, String> entry : equalFilter.entrySet()) {
-				Field field = tableLike.field(entry.getKey());
-				if (field != null) {
-					table.where(field.strictEqual(BeanUtils.convertTo(
-							entry.getValue(), field.getType())));
-				}
-			}
-		}
-
-		if (!StringUtils.isNullOrEmpty(query.getSortby())) {
-			String[] sortBy = query.getSortby().split(",");
-			String[] order = query.getOrder().split(",");
-
-			List<SortField<?>> fields = new ArrayList<>(sortBy.length);
-			SortOrder so = SortOrder.ASC;
-			for (int i = 0; i < sortBy.length; i++) {
-				Field<?> field = table.field(sortBy[i]);
-				if (sortBy.length == order.length
-						&& !StringUtils.isNullOrEmpty(order[i])
-						&& order[i].toLowerCase().equals("desc")) {
-					so = SortOrder.DESC;
-				}
-				if (field != null) {
-					switch (so) {
-					case ASC:
-						fields.add(field.asc());
-						break;
-					case DESC:
-						fields.add(field.desc());
-						break;
-					default:
+			if (query.getEqualFilter() != null
+					&& query.getEqualFilter().size() > 0) {
+				Map<String, String> equalFilter = query.getEqualFilter();
+				for (Entry<String, String> entry : equalFilter.entrySet()) {
+					Field field = tableLike.field(entry.getKey());
+					if (field != null) {
+						table.where(field.strictEqual(BeanUtils.convertTo(
+								entry.getValue(), field.getType())));
 					}
 				}
 			}
-			Field<?>[] fieldArray = null;
-			table.orderBy(fields.toArray(fieldArray));
-		}
 
-		table.limit(1);
+			if (!StringUtils.isNullOrEmpty(query.getSortby())) {
+				String[] sortBy = query.getSortby().split(",");
+				String[] order = query.getOrder().split(",");
 
-		Result<Record> result = table.fetch();
+				List<SortField<?>> fields = new ArrayList<>(sortBy.length);
+				SortOrder so = SortOrder.ASC;
+				for (int i = 0; i < sortBy.length; i++) {
+					Field<?> field = table.field(sortBy[i]);
+					if (sortBy.length == order.length
+							&& !StringUtils.isNullOrEmpty(order[i])
+							&& order[i].toLowerCase().equals("desc")) {
+						so = SortOrder.DESC;
+					}
+					if (field != null) {
+						switch (so) {
+						case ASC:
+							fields.add(field.asc());
+							break;
+						case DESC:
+							fields.add(field.desc());
+							break;
+						default:
+						}
+					}
+				}
+				Field<?>[] fieldArray = null;
+				table.orderBy(fields.toArray(fieldArray));
+			}
 
-		if (result != null && result.size() > 0) {
-			record = (R) result.get(0);
+			table.limit(1);
+
+			Result<Record> result = table.fetch();
+			if (result != null && result.size() > 0) {
+				record = (R) result.get(0);
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		} finally {
+			if(conn != null && !conn.isClosed()) {
+				conn.close();
+			}
 		}
 		return record;
 	}
@@ -242,19 +300,27 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 	public int postResource(R record) throws Exception {
 		initJOOQEntity();
 		if (record != null) {
-			DSLContext create = DatabaseConnectionHelper.getConnection()
-					.getJooqDSL();
-			create.attach(record);
-			record.insert();
-			//record.refresh();
-			//create.executeInsert(record);
-			if(record.key() != null) {
-				Record key = record.key();
-				int keyValue = BeanUtils.converToInteger(key.get(0));
-				return keyValue;
+			Connection conn = null;
+			try {
+				conn = DBConnHelper.DBConn.getConn();
+				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+				create.attach(record);
+				record.insert();
+				//record.refresh();
+				//create.executeInsert(record);
+				if(record.key() != null) {
+					Record key = record.key();
+					int keyValue = BeanUtils.converToInteger(key.get(0));
+					return keyValue;
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			} finally {
+				if(conn != null && !conn.isClosed()) {
+					conn.close();
+				}
 			}
 		}
-
 		return 0;
 	}
 
@@ -262,9 +328,21 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 		initJOOQEntity();
 		int insertret = 0;
 		if (record != null) {
-			List<R> records = new ArrayList<>();
-			records.add(record);
-			insertret = putResources(records);
+			Connection conn = null;
+			try {
+				conn = DBConnHelper.DBConn.getConn();
+				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+				create.attach(record);
+				record.update();
+				insertret = 1;
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+				// TODO Auto-generated catch block
+			} finally {
+				if(conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+			}
 		}
 		return insertret;
 	}
@@ -273,38 +351,21 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 		initJOOQEntity();
 		int insertret = 0;
 		if (record != null) {
-			DSLContext create = DatabaseConnectionHelper.getConnection()
-					.getJooqDSL();
-			insertret = create.batchDelete(record).execute()[0];
+			Connection conn = null;
+			try {
+				conn = DBConnHelper.DBConn.getConn();
+				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+				create.attach(record);
+				insertret = record.delete();
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			} finally {
+				if(conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+			}
 		}
 
 		return insertret;
 	}
-
-	/**
-	 * 类型转换。提供将对象转成指定的类型的功能
-	 *
-	 * @param value
-	 *            被转换的对象
-	 * @param clazzType
-	 *            指定一个转成的类型
-	 * @return 返回转换的结果
-	 */
-	/*
-	 * @SuppressWarnings("unchecked") protected <L> L convertTo(Object value,
-	 * Class<L> clazzType) { if (clazzType.isAssignableFrom(String.class)) {
-	 * return (L) value.toString(); } else if
-	 * (clazzType.isAssignableFrom(Long.class)) { return (L) new
-	 * Long(value.toString()); } else if
-	 * (clazzType.isAssignableFrom(Byte.class)) { return (L) new
-	 * Byte(value.toString()); } else if
-	 * (clazzType.isAssignableFrom(Integer.class)) { return (L) new
-	 * Integer(value.toString()); } else if
-	 * (clazzType.isAssignableFrom(Float.class)) { return (L) new
-	 * Float(value.toString()); } else if
-	 * (clazzType.isAssignableFrom(Float.class)) { return (L) new
-	 * Double(value.toString()); } else if
-	 * (clazzType.isAssignableFrom(Boolean.class)) { return (L) new
-	 * Boolean(value.toString()); } else { return (L) value.toString(); } }
-	 */
 }

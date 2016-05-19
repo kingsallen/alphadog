@@ -20,6 +20,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
+import org.jooq.types.UByte;
 import org.jooq.types.UInteger;
 
 
@@ -36,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileIntention extends TableImpl<ProfileIntentionRecord> {
 
-	private static final long serialVersionUID = 1569038966;
+	private static final long serialVersionUID = -289029641;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_intention</code>
@@ -62,64 +63,29 @@ public class ProfileIntention extends TableImpl<ProfileIntentionRecord> {
 	public final TableField<ProfileIntentionRecord, UInteger> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "profile.id");
 
 	/**
-	 * The column <code>profileDB.profile_intention.positions</code>. 职位字典编码
+	 * The column <code>profileDB.profile_intention.workstate</code>. 当前是否在职状态, 0:未填写 1: 在职，看看新机会, 2: 在职，急寻新工作, 3:在职，暂无跳槽打算, 4:离职，正在找工作, 5:应届毕业生
 	 */
-	public final TableField<ProfileIntentionRecord, String> POSITIONS = createField("positions", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false).defaulted(true), this, "职位字典编码");
+	public final TableField<ProfileIntentionRecord, UByte> WORKSTATE = createField("workstate", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "当前是否在职状态, 0:未填写 1: 在职，看看新机会, 2: 在职，急寻新工作, 3:在职，暂无跳槽打算, 4:离职，正在找工作, 5:应届毕业生");
 
 	/**
-	 * The column <code>profileDB.profile_intention.industries</code>. 行业字典编码, 1111, 2222, 3333
+	 * The column <code>profileDB.profile_intention.salary_type</code>. 薪资类型，0:没选择, 1:年薪, 2:月薪, 3:日薪, 4:时薪
 	 */
-	public final TableField<ProfileIntentionRecord, String> INDUSTRIES = createField("industries", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false).defaulted(true), this, "行业字典编码, 1111, 2222, 3333");
+	public final TableField<ProfileIntentionRecord, UByte> SALARY_TYPE = createField("salary_type", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "薪资类型，0:没选择, 1:年薪, 2:月薪, 3:日薪, 4:时薪");
 
 	/**
-	 * The column <code>profileDB.profile_intention.work_cities</code>. 工作地点字典编码
+	 * The column <code>profileDB.profile_intention.salary_code</code>. 薪资code
 	 */
-	public final TableField<ProfileIntentionRecord, String> WORK_CITIES = createField("work_cities", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false).defaulted(true), this, "工作地点字典编码");
+	public final TableField<ProfileIntentionRecord, UByte> SALARY_CODE = createField("salary_code", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "薪资code");
 
 	/**
-	 * The column <code>profileDB.profile_intention.workstate</code>. 当前是否在职状态, 0:未选择 1: 在职，看看新机会, 2: 在职，急寻新工作, 3:在职，暂无跳槽打算, 4:离职，正在找工作, 5:应届毕业生
+	 * The column <code>profileDB.profile_intention.tag</code>. 关键词，单个tag最多100个字符，以#隔开
 	 */
-	public final TableField<ProfileIntentionRecord, Byte> WORKSTATE = createField("workstate", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "当前是否在职状态, 0:未选择 1: 在职，看看新机会, 2: 在职，急寻新工作, 3:在职，暂无跳槽打算, 4:离职，正在找工作, 5:应届毕业生");
+	public final TableField<ProfileIntentionRecord, String> TAG = createField("tag", org.jooq.impl.SQLDataType.VARCHAR.length(1010).nullable(false).defaulted(true), this, "关键词，单个tag最多100个字符，以#隔开");
 
 	/**
-	 * The column <code>profileDB.profile_intention.salary_type</code>. 年薪 0:未选择 1: 6万以下, 2: 6万-8万, 3: 8万-12万, 4: 12万-20万, 5: 20万-30万, 6: 30万以上
+	 * The column <code>profileDB.profile_intention.consider_venture_company_opportunities</code>. 是否考虑创业公司机会 0：未填写 1:考虑 2:不考虑
 	 */
-	public final TableField<ProfileIntentionRecord, Byte> SALARY_TYPE = createField("salary_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "年薪 0:未选择 1: 6万以下, 2: 6万-8万, 3: 8万-12万, 4: 12万-20万, 5: 20万-30万, 6: 30万以上");
-
-	/**
-	 * The column <code>profileDB.profile_intention.salary_code</code>. 年薪 0:未选择 1: 6万以下, 2: 6万-8万, 3: 8万-12万, 4: 12万-20万, 5: 20万-30万, 6: 30万以上
-	 */
-	public final TableField<ProfileIntentionRecord, Byte> SALARY_CODE = createField("salary_code", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "年薪 0:未选择 1: 6万以下, 2: 6万-8万, 3: 8万-12万, 4: 12万-20万, 5: 20万-30万, 6: 30万以上");
-
-	/**
-	 * The column <code>profileDB.profile_intention.workdays</code>. 每周到岗天数(实习) 0:未选择 1: 1天/周, 2: 2天/周, 3: 3天/周, 4: 4天/周, 5: 5天/周
-	 */
-	public final TableField<ProfileIntentionRecord, Byte> WORKDAYS = createField("workdays", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "每周到岗天数(实习) 0:未选择 1: 1天/周, 2: 2天/周, 3: 3天/周, 4: 4天/周, 5: 5天/周");
-
-	/**
-	 * The column <code>profileDB.profile_intention.business_trip</code>. 是否接受出差 0:未选择 1: 是, 2: 否
-	 */
-	public final TableField<ProfileIntentionRecord, Byte> BUSINESS_TRIP = createField("business_trip", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "是否接受出差 0:未选择 1: 是, 2: 否");
-
-	/**
-	 * The column <code>profileDB.profile_intention.nightjob</code>. 是否接受夜班 0:未选择 1: 是, 2: 否
-	 */
-	public final TableField<ProfileIntentionRecord, Byte> NIGHTJOB = createField("nightjob", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "是否接受夜班 0:未选择 1: 是, 2: 否");
-
-	/**
-	 * The column <code>profileDB.profile_intention.worktype</code>. 工作类型 0:未选择 1:全职 2:兼职 3:合同工
-	 */
-	public final TableField<ProfileIntentionRecord, Byte> WORKTYPE = createField("worktype", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "工作类型 0:未选择 1:全职 2:兼职 3:合同工");
-
-	/**
-	 * The column <code>profileDB.profile_intention.shift</code>. 期望班次 0:未选择 1: 早, 2: 中, 3: 晚
-	 */
-	public final TableField<ProfileIntentionRecord, Byte> SHIFT = createField("shift", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "期望班次 0:未选择 1: 早, 2: 中, 3: 晚");
-
-	/**
-	 * The column <code>profileDB.profile_intention.icanstart</code>. 到岗时间 0:未选择 1: 随时, 2: 2周, 3: 一个月, 4: 一个月以上
-	 */
-	public final TableField<ProfileIntentionRecord, Byte> ICANSTART = createField("icanstart", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "到岗时间 0:未选择 1: 随时, 2: 2周, 3: 一个月, 4: 一个月以上");
+	public final TableField<ProfileIntentionRecord, Byte> CONSIDER_VENTURE_COMPANY_OPPORTUNITIES = createField("consider_venture_company_opportunities", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "是否考虑创业公司机会 0：未填写 1:考虑 2:不考虑");
 
 	/**
 	 * The column <code>profileDB.profile_intention.create_time</code>. 创建时间

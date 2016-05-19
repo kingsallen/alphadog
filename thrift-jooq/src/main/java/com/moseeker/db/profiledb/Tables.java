@@ -5,20 +5,20 @@ package com.moseeker.db.profiledb;
 
 
 import com.moseeker.db.profiledb.tables.ProfileAttachment;
+import com.moseeker.db.profiledb.tables.ProfileAwards;
 import com.moseeker.db.profiledb.tables.ProfileBasic;
+import com.moseeker.db.profiledb.tables.ProfileCredentials;
 import com.moseeker.db.profiledb.tables.ProfileEducation;
-import com.moseeker.db.profiledb.tables.ProfileEducationExt;
-import com.moseeker.db.profiledb.tables.ProfileExt;
 import com.moseeker.db.profiledb.tables.ProfileImport;
 import com.moseeker.db.profiledb.tables.ProfileIntention;
-import com.moseeker.db.profiledb.tables.ProfileInternship;
+import com.moseeker.db.profiledb.tables.ProfileIntentionCity;
+import com.moseeker.db.profiledb.tables.ProfileIntentionIndustry;
+import com.moseeker.db.profiledb.tables.ProfileIntentionPosition;
 import com.moseeker.db.profiledb.tables.ProfileLanguage;
+import com.moseeker.db.profiledb.tables.ProfileOther;
 import com.moseeker.db.profiledb.tables.ProfileProfile;
 import com.moseeker.db.profiledb.tables.ProfileProjectexp;
-import com.moseeker.db.profiledb.tables.ProfileReward;
-import com.moseeker.db.profiledb.tables.ProfileSchooljob;
 import com.moseeker.db.profiledb.tables.ProfileSkill;
-import com.moseeker.db.profiledb.tables.ProfileTraining;
 import com.moseeker.db.profiledb.tables.ProfileWorkexp;
 import com.moseeker.db.profiledb.tables.ProfileWorks;
 
@@ -44,24 +44,24 @@ public class Tables {
 	public static final ProfileAttachment PROFILE_ATTACHMENT = com.moseeker.db.profiledb.tables.ProfileAttachment.PROFILE_ATTACHMENT;
 
 	/**
+	 * Profile的获得奖项表
+	 */
+	public static final ProfileAwards PROFILE_AWARDS = com.moseeker.db.profiledb.tables.ProfileAwards.PROFILE_AWARDS;
+
+	/**
 	 * 用户profile基础个人信息表
 	 */
 	public static final ProfileBasic PROFILE_BASIC = com.moseeker.db.profiledb.tables.ProfileBasic.PROFILE_BASIC;
 
 	/**
+	 * Profile的证书表
+	 */
+	public static final ProfileCredentials PROFILE_CREDENTIALS = com.moseeker.db.profiledb.tables.ProfileCredentials.PROFILE_CREDENTIALS;
+
+	/**
 	 * Profile的教育经历
 	 */
 	public static final ProfileEducation PROFILE_EDUCATION = com.moseeker.db.profiledb.tables.ProfileEducation.PROFILE_EDUCATION;
-
-	/**
-	 * 用户profile教育相关扩展表
-	 */
-	public static final ProfileEducationExt PROFILE_EDUCATION_EXT = com.moseeker.db.profiledb.tables.ProfileEducationExt.PROFILE_EDUCATION_EXT;
-
-	/**
-	 * 用户profile扩展表
-	 */
-	public static final ProfileExt PROFILE_EXT = com.moseeker.db.profiledb.tables.ProfileExt.PROFILE_EXT;
 
 	/**
 	 * 用户profile导入记录信息
@@ -74,14 +74,29 @@ public class Tables {
 	public static final ProfileIntention PROFILE_INTENTION = com.moseeker.db.profiledb.tables.ProfileIntention.PROFILE_INTENTION;
 
 	/**
-	 * Profile的实习经历
+	 * Profile的求职意向-期望城市关系表
 	 */
-	public static final ProfileInternship PROFILE_INTERNSHIP = com.moseeker.db.profiledb.tables.ProfileInternship.PROFILE_INTERNSHIP;
+	public static final ProfileIntentionCity PROFILE_INTENTION_CITY = com.moseeker.db.profiledb.tables.ProfileIntentionCity.PROFILE_INTENTION_CITY;
+
+	/**
+	 * Profile的求职意向-行业关系表
+	 */
+	public static final ProfileIntentionIndustry PROFILE_INTENTION_INDUSTRY = com.moseeker.db.profiledb.tables.ProfileIntentionIndustry.PROFILE_INTENTION_INDUSTRY;
+
+	/**
+	 * Profile的求职意向-职能关系表
+	 */
+	public static final ProfileIntentionPosition PROFILE_INTENTION_POSITION = com.moseeker.db.profiledb.tables.ProfileIntentionPosition.PROFILE_INTENTION_POSITION;
 
 	/**
 	 * Profile的语言
 	 */
 	public static final ProfileLanguage PROFILE_LANGUAGE = com.moseeker.db.profiledb.tables.ProfileLanguage.PROFILE_LANGUAGE;
+
+	/**
+	 * 用户profile导入记录信息
+	 */
+	public static final ProfileOther PROFILE_OTHER = com.moseeker.db.profiledb.tables.ProfileOther.PROFILE_OTHER;
 
 	/**
 	 * 用户profile表
@@ -94,24 +109,9 @@ public class Tables {
 	public static final ProfileProjectexp PROFILE_PROJECTEXP = com.moseeker.db.profiledb.tables.ProfileProjectexp.PROFILE_PROJECTEXP;
 
 	/**
-	 * Profile的荣誉证书竞赛表
-	 */
-	public static final ProfileReward PROFILE_REWARD = com.moseeker.db.profiledb.tables.ProfileReward.PROFILE_REWARD;
-
-	/**
-	 * Profile的校内职务
-	 */
-	public static final ProfileSchooljob PROFILE_SCHOOLJOB = com.moseeker.db.profiledb.tables.ProfileSchooljob.PROFILE_SCHOOLJOB;
-
-	/**
 	 * Profile的技能
 	 */
 	public static final ProfileSkill PROFILE_SKILL = com.moseeker.db.profiledb.tables.ProfileSkill.PROFILE_SKILL;
-
-	/**
-	 * Profile的培训经历
-	 */
-	public static final ProfileTraining PROFILE_TRAINING = com.moseeker.db.profiledb.tables.ProfileTraining.PROFILE_TRAINING;
 
 	/**
 	 * Profile的工作经历

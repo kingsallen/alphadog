@@ -1,11 +1,10 @@
 package com.moseeker.rpccenter.main;
 
 import com.moseeker.rpccenter.common.ServerNodeUtils;
+import com.moseeker.rpccenter.common.configure.PropertiesConfiguration;
 import com.moseeker.rpccenter.config.RegistryConfig;
 import com.moseeker.rpccenter.config.ServerConfig;
 import com.moseeker.rpccenter.exception.RpcException;
-
-import com.moseeker.rpccenter.common.configure.PropertiesConfiguration;
 
 /**
  * Created by zzh on 16/3/29.
@@ -40,7 +39,7 @@ public class Server {
      *            port
      * @throws RpcException
      */
-    public Server(Class clazz, Object impl, int port) throws RpcException {
+    public Server(Class clazz, int port, Object impl) throws RpcException {
         PropertiesConfiguration configuration = PropertiesConfiguration.newInstance(CONFIG_FILE_PATH);
 
         // 初始化registry

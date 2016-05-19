@@ -27,7 +27,7 @@ public class BasicController {
 	
 	@RequestMapping(value = "/profile/basic", method = RequestMethod.GET)
 	@ResponseBody
-	public String get(HttpServletRequest request, HttpServletResponse response) {
+	public String get(HttpServletRequest request) {
 		//PrintWriter writer = null;
 		try {
 			// GET方法 通用参数解析并赋值

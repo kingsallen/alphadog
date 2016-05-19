@@ -13,6 +13,7 @@ ext {
 //            "curator-framework": "org.apache.curator:curator-framework:2.10.0",
             "curator-recipes"     : "org.apache.curator:curator-recipes:2.3.0",
             "fastjson"            : "com.alibaba:fastjson:1.2.11",
+	    "gjson"		  : "com.google.code.gson:gson:2.6.2",
             "libthrift"           : "org.apache.thrift:libthrift:0.9.3",
             "bonecp"              : "com.jolbox:bonecp:0.8.0.RELEASE",
             "javamail"            : "javax.mail:mail:1.5.0-b01",

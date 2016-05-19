@@ -1,5 +1,6 @@
 package com.moseeker.common.providerutils.daoutils;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.moseeker.common.dbutils.DatabaseConnectionHelper;
+import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -41,7 +42,7 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extends TableImpl<R>>
 		implements BaseDao<R> {
 
-	Logger logger = LoggerFactory.getLogger(this.getClass());
+	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * 需要制定JOOQ
@@ -54,9 +55,10 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 	public List<R> getResources(CommonQuery query) throws Exception {
 		initJOOQEntity();
 		List<R> records = new ArrayList<>();
+		Connection conn = null;
 		try {
-			DSLContext create = DatabaseConnectionHelper.getConnection()
-					.getJooqDSL();
+			conn = DBConnHelper.DBConn.getConn();
+			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 
 			SelectJoinStep<Record> table = create.select().from(tableLike);
 
@@ -121,6 +123,9 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 			logger.error("error", e);
 			throw new Exception();
 		} finally {
+			if(conn != null && !conn.isClosed()) {
+				conn.close();
+			}
 			//do nothing
 		}
 		return records;
@@ -130,9 +135,10 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 	public int getResourceCount(CommonQuery query) throws Exception {
 		initJOOQEntity();
 		int totalCount = 0;
+		Connection conn = null;
 		try {
-			DSLContext create = DatabaseConnectionHelper.getConnection()
-					.getJooqDSL();
+			conn = DBConnHelper.DBConn.getConn();
+			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 
 			SelectQuery<?> selectQuery = create.selectQuery();
 			selectQuery.addFrom(tableLike);
@@ -152,6 +158,9 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 			logger.error("error", e);
 			throw new Exception();
 		} finally {
+			if(conn != null && !conn.isClosed()) {
+				conn.close();
+			}
 			//do nothing
 		}
 		return totalCount;
@@ -160,23 +169,26 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 	public int postResources(List<R> records) throws Exception {
 		initJOOQEntity();
 		int insertret = 0;
+		Connection conn = null;
 		try {
 			if (records != null && records.size() > 0) {
-				DSLContext create = DatabaseConnectionHelper.getConnection()
-						.getJooqDSL();
+				conn = DBConnHelper.DBConn.getConn();
+				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 
 				int[] insertarray = create.batchInsert(records).execute();
 				if (insertarray.length == 0){
 					return 0;
 				}else{
 					insertret = insertarray[0];
-				}				
-				
+				}	
 			}
 		} catch (DataAccessException | SQLException e) {
 			logger.error("error", e);
 			throw new Exception();
 		} finally {
+			if(conn != null && !conn.isClosed()) {
+				conn.close();
+			}
 			//do nothing
 		}
 
@@ -186,15 +198,19 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 	public int putResources(List<R> records) throws Exception {
 		initJOOQEntity();
 		int insertret = 0;
+		Connection conn = null;
 		if (records != null && records.size() > 0) {
 			try {
-				DSLContext create = DatabaseConnectionHelper.getConnection()
-						.getJooqDSL();
+				conn = DBConnHelper.DBConn.getConn();
+				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 				insertret = create.batchUpdate(records).execute()[0];
 			} catch (DataAccessException | SQLException e) {
 				logger.error("error", e);
 				throw new Exception();
 			} finally {
+				if(conn != null && !conn.isClosed()) {
+					conn.close();
+				}
 				//do nothing
 			}
 		}
@@ -206,14 +222,18 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 		initJOOQEntity();
 		int insertret = 0;
 		if (records != null && records.size() > 0) {
+			Connection conn = null;
 			try {
-				DSLContext create = DatabaseConnectionHelper.getConnection()
-						.getJooqDSL();
+				conn = DBConnHelper.DBConn.getConn();
+				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 				insertret = create.batchDelete(records).execute()[0];
 			} catch (DataAccessException | SQLException e) {
 				logger.error("error", e);
 				throw new Exception();
 			} finally {
+				if(conn != null && !conn.isClosed()) {
+					conn.close();
+				}
 				//do nothing
 			}
 		}
@@ -225,9 +245,10 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 	public R getResource(CommonQuery query) throws Exception {
 		initJOOQEntity();
 		R record = null;
+		Connection conn = null;
 		try {
-			DSLContext create = DatabaseConnectionHelper.getConnection()
-					.getJooqDSL();
+			conn = DBConnHelper.DBConn.getConn();
+			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 
 			SelectJoinStep<Record> table = create.select().from(tableLike);
 
@@ -283,6 +304,9 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 			logger.error("error", e);
 			throw new Exception();
 		} finally {
+			if(conn != null && !conn.isClosed()) {
+				conn.close();
+			}
 			//do nothing
 		}
 		return record;
@@ -291,10 +315,11 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 	public int postResource(R record) throws Exception {
 		initJOOQEntity();
 		int insertret = 0;
+		Connection conn = null;
 		if (record != null) {
 			try {
-				DSLContext create = DatabaseConnectionHelper.getConnection()
-						.getJooqDSL();
+				conn = DBConnHelper.DBConn.getConn();
+				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 				create.attach(record);
 				record.insert();
 				if(record.key() != null) {
@@ -306,6 +331,9 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 				logger.error("error", e);
 				throw new Exception();
 			} finally {
+				if(conn != null && !conn.isClosed()) {
+					conn.close();
+				}
 				//do nothing
 			}
 		}
@@ -317,9 +345,14 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 		initJOOQEntity();
 		int insertret = 0;
 		if (record != null) {
-			List<R> records = new ArrayList<>();
-			records.add(record);
-			insertret = putResources(records);
+			Connection conn = DBConnHelper.DBConn.getConn();
+			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+			create.attach(record);
+			record.update();
+			insertret = 1;
+			if(conn != null && !conn.isClosed()) {
+				conn.close();
+			}
 		}
 		return insertret;
 	}
@@ -328,14 +361,19 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 		initJOOQEntity();
 		int insertret = 0;
 		if (record != null) {
+			Connection conn = null;
 			try {
-				DSLContext create = DatabaseConnectionHelper.getConnection()
-						.getJooqDSL();
-				insertret = create.batchDelete(record).execute()[0];
+				conn = DBConnHelper.DBConn.getConn();
+				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+				create.attach(record);
+				insertret = record.delete();
 			} catch (DataAccessException | SQLException e) {
 				logger.error("error", e);
 				throw new Exception();
 			} finally {
+				if(conn != null && !conn.isClosed()) {
+					conn.close();
+				}
 				//do nothing
 			}
 		}

@@ -3,7 +3,9 @@ package com.moseeker.common.util;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.ParseException;
 import java.util.Date;
+import java.util.Map;
 
 import org.apache.thrift.TBase;
 import org.jooq.impl.UpdatableRecordImpl;
@@ -34,6 +36,18 @@ public class BeanUtils {
 	private static Logger logger = LoggerFactory.getLogger(BeanUtils.class);
 	
 	@SuppressWarnings("rawtypes")
+	public static UpdatableRecordImpl structToDB(TBase dest, Class<? extends UpdatableRecordImpl> origClazz, Map<String, String> equalRules) {
+		UpdatableRecordImpl orig = null;
+		try {
+			orig = origClazz.newInstance();
+		} catch (InstantiationException | IllegalAccessException e) {
+			logger.error("error", e);
+		}
+		structToDB(dest, orig, equalRules);
+		return orig;
+	}
+	
+	@SuppressWarnings("rawtypes")
 	public static UpdatableRecordImpl structToDB(TBase dest, Class<? extends UpdatableRecordImpl> origClazz) {
 		UpdatableRecordImpl orig = null;
 		try {
@@ -41,7 +55,7 @@ public class BeanUtils {
 		} catch (InstantiationException | IllegalAccessException e) {
 			logger.error("error", e);
 		}
-		structToDB(dest, orig);
+		structToDB(dest, orig, null);
 		return orig;
 	}
 
@@ -50,7 +64,7 @@ public class BeanUtils {
 	 * @param dest
 	 * @param orig
 	 */
-	public static void structToDB(@SuppressWarnings("rawtypes") TBase dest, @SuppressWarnings("rawtypes") UpdatableRecordImpl orig) {
+	public static void structToDB(@SuppressWarnings("rawtypes") TBase dest, @SuppressWarnings("rawtypes") UpdatableRecordImpl orig, Map<String, String> equalRules) {
 		if(dest == null || orig == null) {
 			return;
 		}
@@ -72,7 +86,7 @@ public class BeanUtils {
 							if(destMethods[j].getName().equals(getMethodName)) {
 								Method isSetMethod = dest.getClass().getMethod("isSet"+upperFirst, new Class[]{});
 								if((Boolean)isSetMethod.invoke(dest, new Object[]{})){
-									String origMethodName = buiderRecordMethodName(field.getName(), MethodType.SET);
+									String origMethodName = buiderRecordMethodName(field.getName(), MethodType.SET, equalRules);
 									for(k=0; k<origMethods.length;k++) {
 										if(origMethods[k].getName().trim().equals(origMethodName)) {
 											Object object = convertTo(destMethods[j].invoke(dest, new Object[]{}), origMethods[k].getParameterTypes()[0]);
@@ -96,6 +110,18 @@ public class BeanUtils {
 	}
 	
 	@SuppressWarnings("rawtypes")
+	public static TBase DBToStruct(Class<? extends TBase> destClazz, UpdatableRecordImpl orig, Map<String, String> equalRules) {
+		TBase base = null;
+		try {
+			base = destClazz.newInstance();
+		} catch (InstantiationException | IllegalAccessException e) {
+			logger.error("error", e);
+		}
+		DBToStruct(base, orig, equalRules);
+		return base;
+	}
+	
+	@SuppressWarnings("rawtypes")
 	public static TBase DBToStruct(Class<? extends TBase> destClazz, UpdatableRecordImpl orig) {
 		TBase base = null;
 		try {
@@ -103,11 +129,11 @@ public class BeanUtils {
 		} catch (InstantiationException | IllegalAccessException e) {
 			logger.error("error", e);
 		}
-		DBToStruct(base, orig);
+		DBToStruct(base, orig, null);
 		return base;
 	}
 	
-	public static void DBToStruct(@SuppressWarnings("rawtypes") TBase dest, @SuppressWarnings("rawtypes") UpdatableRecordImpl orig) {
+	public static void DBToStruct(@SuppressWarnings("rawtypes") TBase dest, @SuppressWarnings("rawtypes") UpdatableRecordImpl orig, Map<String, String> equalRules) {
 		if(dest == null || orig == null) {
 			return;
 		}
@@ -127,10 +153,10 @@ public class BeanUtils {
 					for(j=0; j<destMethods.length; j++) {
 						try {
 							if(destMethods[j].getName().equals(setMethodName)) {
-								String origMethodName = buiderRecordMethodName(field.getName(), MethodType.GET);
+								String origMethodName = buiderRecordMethodName(field.getName(), MethodType.GET, equalRules);
 								for(k=0; k<origMethods.length;k++) {
 									if(origMethods[k].getName().trim().equals(origMethodName)) {
-										Object object = convertTo(origMethods[k].invoke(dest, new Object[]{}), destMethods[j].getParameterTypes()[0]);
+										Object object = convertTo(origMethods[k].invoke(orig, new Object[]{}), destMethods[j].getParameterTypes()[0]);
 										if(object != null) {
 											destMethods[j].invoke(dest, object);
 										}
@@ -158,19 +184,24 @@ public class BeanUtils {
 		}
 	}
 	
-	private static String buiderRecordMethodName(String name, MethodType methodType) {
+	private static String buiderRecordMethodName(String name, MethodType methodType, Map<String, String> equalRules) {
 		if(name != null) {
 			StringBuffer sb = new StringBuffer();
 			sb.append(methodType);
-			String[] splitArray = name.split("_");
-			if(splitArray.length > 1) {
-				for(int i=0; i<splitArray.length; i++) {
-					sb.append(splitArray[i].substring(0, 1).toUpperCase());
-					sb.append(splitArray[i].substring(1));
-				}
+			if(equalRules != null && equalRules.containsKey(name)) {
+				sb.append(equalRules.get(name).substring(0, 1).toUpperCase());
+				sb.append(equalRules.get(name).substring(1));
 			} else {
-				sb.append(name.substring(0, 1).toUpperCase());
-				sb.append(name.substring(1));
+				String[] splitArray = name.split("_");
+				if(splitArray.length > 1) {
+					for(int i=0; i<splitArray.length; i++) {
+						sb.append(splitArray[i].substring(0, 1).toUpperCase());
+						sb.append(splitArray[i].substring(1));
+					}
+				} else {
+					sb.append(name.substring(0, 1).toUpperCase());
+					sb.append(name.substring(1));
+				}
 			}
 			return sb.toString();
 		} else {
@@ -242,6 +273,41 @@ public class BeanUtils {
 			return (T) convertToSQLTimestamp(value);
 		} else if(clazzType.isAssignableFrom(UInteger.class)) {
 			return (T) convertToUInteger(value);
+		} else if(clazzType.isAssignableFrom(Short.class) 
+				|| clazzType.isAssignableFrom(short.class)) {
+			return (T) convertToShort(value);
+		} else {
+			return null;
+		}
+	}
+
+	private static Short convertToShort(Object value) {
+		if (value instanceof String) {
+			try {
+				return Short.valueOf((String)value);
+			} catch (NumberFormatException e) {
+				return 0;
+			}
+		} else if (value instanceof Boolean) {
+			if((Boolean)value) {
+				return 1;
+			} else {
+				return 0;
+			}
+		} else if (value instanceof Integer) {
+			return ((Integer)value).shortValue();
+		} else if (value instanceof Byte) {
+			return ((Byte)value).shortValue();
+		} else if (value instanceof Float) {
+			return ((Float)value).shortValue();
+		} else if (value instanceof Long) {
+			return ((Long)value).shortValue();
+		} else if (value instanceof Double) {
+			return ((Double)value).shortValue();
+		} else if(value instanceof UInteger) {
+			return ((UInteger)value).shortValue();
+		} else if(value instanceof Date) {
+			return Long.valueOf(((Date)value).getTime()).shortValue();
 		} else {
 			return null;
 		}
@@ -260,6 +326,8 @@ public class BeanUtils {
 			} else {
 				return UInteger.valueOf(0);
 			}
+		} else if (value instanceof Short) {
+			return UInteger.valueOf((Short)value);
 		} else if (value instanceof Integer) {
 			return UInteger.valueOf((Integer)value);
 		} else if (value instanceof Byte) {
@@ -285,9 +353,15 @@ public class BeanUtils {
 
 	private static java.sql.Timestamp convertToSQLTimestamp(Object value) {
 		if (value instanceof String) {
-			return java.sql.Timestamp.valueOf((String)value);
+			try {
+				return new java.sql.Timestamp(DateUtils.nomalDateToDate((String)value).getTime());
+			} catch (ParseException e) {
+				return null;
+			}
 		} else if (value instanceof Boolean) {
 			return null;
+		} else if (value instanceof Short) {
+			return new java.sql.Timestamp((Short)value);
 		} else if (value instanceof Integer) {
 			return new java.sql.Timestamp((Integer)value);
 		} else if (value instanceof Byte) {
@@ -313,9 +387,15 @@ public class BeanUtils {
 
 	private static java.sql.Date convertToSQLDate(Object value) {
 		if (value instanceof String) {
-			return java.sql.Date.valueOf((String)value);
+			try {
+				return new java.sql.Date(DateUtils.nomalDateToDate((String)value).getTime());
+			} catch (ParseException e) {
+				return null;
+			}
 		} else if (value instanceof Boolean) {
 			return null;
+		} else if (value instanceof Short) {
+			return new java.sql.Date((Short)value);
 		} else if (value instanceof Integer) {
 			return new java.sql.Date((Integer)value);
 		} else if (value instanceof Byte) {
@@ -348,6 +428,12 @@ public class BeanUtils {
 			}
 		} else if (value instanceof Boolean) {
 			return (Boolean) value;
+		} else if (value instanceof Short) {
+			if ((Short) value > 0) {
+				return Boolean.TRUE;
+			} else {
+				return Boolean.FALSE;
+			}
 		} else if (value instanceof Integer) {
 			if ((Integer) value > 0) {
 				return Boolean.TRUE;
@@ -407,6 +493,8 @@ public class BeanUtils {
 			} else {
 				return Double.valueOf(0);
 			}
+		} else if (value instanceof Short) {
+			return Double.valueOf((Short) value);
 		} else if (value instanceof Integer) {
 			return Double.valueOf((Integer) value);
 		} else if (value instanceof Byte) {
@@ -439,6 +527,8 @@ public class BeanUtils {
 			} else {
 				return Float.valueOf(0);
 			}
+		} else if (value instanceof Short) {
+			return (Float) ((Short) value).floatValue();
 		} else if (value instanceof Integer) {
 			return (Float) ((Integer) value).floatValue();
 		} else if (value instanceof Byte) {
@@ -450,9 +540,9 @@ public class BeanUtils {
 		} else if (value instanceof Double) {
 			return (Float) ((Double) value).floatValue();
 		} else if(value instanceof UInteger) {
-			return ((UInteger) value).floatValue();
+			return (Float) ((UInteger) value).floatValue();
 		} else if(value instanceof Date) {
-			return Float.valueOf(((Date)value).getTime());
+			return (Float) Float.valueOf(((Date)value).getTime());
 		} else {
 			return null;
 		}
@@ -471,6 +561,8 @@ public class BeanUtils {
 			} else {
 				return Integer.valueOf(0);
 			}
+		} else if (value instanceof Short) {
+			return (Integer) ((Short) value).intValue();
 		} else if (value instanceof Integer) {
 			return (Integer) value;
 		} else if (value instanceof Byte) {
@@ -504,16 +596,18 @@ public class BeanUtils {
 				b = 0;
 				return Byte.valueOf(b);
 			}
+		} else if (value instanceof Short) {
+			return (Byte) ((Short) value).byteValue();
 		} else if (value instanceof Integer) {
-			return new Byte(((Integer) value).byteValue());
+			return (Byte) ((Integer) value).byteValue();
 		} else if (value instanceof Float) {
-			return new Byte(((Float) value).byteValue());
+			return (Byte) ((Float) value).byteValue();
 		} else if (value instanceof Long) {
-			return Byte.valueOf(((Long) value).byteValue());
+			return (Byte)((Long) value).byteValue();
 		} else if (value instanceof Double) {
 			return (Byte) ((Double) value).byteValue();
 		} else if(value instanceof UInteger) {
-			return ((UInteger)value).byteValue();
+			return (Byte) ((UInteger)value).byteValue();
 		} else if(value instanceof Date) {
 			return (byte)((Date)value).getTime();
 		} else {
@@ -532,6 +626,8 @@ public class BeanUtils {
 			} else {
 				return Long.valueOf(0);
 			}
+		} else if (value instanceof Short) {
+			return (Long) ((Short) value).longValue();
 		} else if (value instanceof Integer) {
 			return Long.valueOf((Integer) value);
 		} else if (value instanceof Float) {

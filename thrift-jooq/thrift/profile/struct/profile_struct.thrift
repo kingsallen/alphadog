@@ -8,33 +8,6 @@ namespace java com.moseeker.thrift.gen.profile.struct
  */
 typedef string Timestamp;
 
-struct ProviderResult {
-    1: i32 status,
-    2: string message,
-    3: optional string data
-}
-
-
-struct Profile { 
-    1: i32 id,
-    2: string uuid,
-    3: i32 lang,
-    4: i32 source, 
-    5: i32 completeness,
-    6: i32 user_id,
-    7: Timestamp create_time,
-    8: Timestamp update_time
-}
-
-
-struct ProfilePagination {
-	1: i32 total_row,
-	2: i32 total_page,
-	3: i32 page_number,
-	4: i32 page_size,
-	5: list<Profile> profiles
-}
-
 struct Attachment { 
     1: i32 id,
     2: i32 profile_id,
@@ -45,99 +18,78 @@ struct Attachment {
     7: Timestamp update_time
 }
 
-struct AttachmentPagination {
-	1: i32 total_row,
-	2: i32 total_page,
-	3: i32 page_number,
-	4: i32 page_size,
-	5: list<Attachment> attacments
+struct Profile { 
+    1: i32 id,
+    2: string uuid,
+    3: i32 lang,
+    4: i32 source, 
+    5: i32 completeness,
+    6: i32 user_id,
+    7: i16 disable,
+    8: Timestamp create_time,
+    9: Timestamp update_time
+}
+
+struct Awards { 
+    1: i32 id,
+    2: i32 profile_id,
+    3: Timestamp reward_date,
+    4: string name, 
+    5: string award_winning_status,
+    6: string level,
+    7: string description,
+    8: Timestamp create_time,
+    9: Timestamp update_time
 }
 
 struct Basic { 
     1: i32 profile_id,
-    2: Timestamp birth,
+    2: string name,
     3: i16 gender,
-    4: string idnumber, 
-    5: string location,
-    6: string nationality,
-    7: i16 marriage,
-    8: i16 residence,
-    9: string address,
-    10: i16 residencetype,
-    11: double height,
-    12: double weight, 
-    13: string weixin,
-    14: string qq,
-    16: Timestamp create_time,
-    17: Timestamp update_time
+    4: i16 nationality,
+    5: i16 city,
+    6: Timestamp birth,
+    7: string weixin,
+    8: string qq,
+    9: string motto,
+   10: string self_introduction,
+   11: Timestamp create_time,
+   12: Timestamp update_time,
+   13: string nationality_str,
+   14: string city_str
 }
 
-struct BasicPagination {
-	1: i32 total_row,
-	2: i32 total_page,
-	3: i32 page_number,
-	4: i32 page_size,
-	5: list<Basic> basics
+struct Credentials {
+    1: i32 id,
+    2: i32 profile_id,
+    3: string name,
+    4: string organization,
+    5: string code,
+    6: string url,
+    7: Timestamp get_date,
+    8: string score,
+    9: Timestamp create_time,
+   10: Timestamp update_time
 }
 
 struct Education { 
 	1: i32 id,
     2: i32 profile_id,
-    3: Timestamp starDate,
-    4: Timestamp endDate, 
+    3: Timestamp start_date,
+    4: Timestamp end_date, 
     5: i16 end_until_now,
     6: i16 degree,
     7: i16 school_code,
     8: string school_name,
     9: i16 major_code,
     10: string major_name,
-    11: i16 type,
-    12: string description, 
-    13: Timestamp create_time,
-    14: Timestamp update_time
-}
-
-struct EducationPagination {
-	1: i32 total_row,
-	2: i32 total_page,
-	3: i32 page_number,
-	4: i32 page_size,
-	5: list<Education> educations
-}
-
-struct EducationExt { 
-	1: i32 profile_id,
-    2: Timestamp graduation,
-    3: i16 majorrank,
-    4: i16 degree, 
-    5: string gpa,
-    6: Timestamp create_time,
-    7: Timestamp update_time
-}
-
-struct EducationExtPagination {
-	1: i32 total_row,
-	2: i32 total_page,
-	3: i32 page_number,
-	4: i32 page_size,
-	5: list<EducationExt> educationExts
-}
-
-struct ProfileExt { 
-	1: i32 profile_id,
-    2: string homepage,
-    3: string assessment,
-    4: string interest, 
-    5: Timestamp create_time,
-    6: Timestamp update_time
-}
-
-struct ProfileExtPagination {
-	1: i32 total_row,
-	2: i32 total_page,
-	3: i32 page_number,
-	4: i32 page_size,
-	5: list<ProfileExt> profileExts
+    11: string description, 
+    12: i16 is_full,
+    13: i16 is_unified,
+    14: i16 is_study_abroad,
+    15: string study_abroad_country,
+    16: Timestamp create_time,
+    17: Timestamp update_time
 }
 
 struct ProfileImport { 
@@ -151,141 +103,58 @@ struct ProfileImport {
     8: Timestamp update_time
 }
 
-struct ProfileImportPagination {
-	1: i32 total_row,
-	2: i32 total_page,
-	3: i32 page_number,
-	4: i32 page_size,
-	5: list<ProfileImport> profileImports
-}
-
 struct Intention { 
 	1: i32 id,
 	2: i32 profile_id,
-    3: string positions,
-    4: string industries,
-    5: string work_cities, 
-    6: i16 workstate,
-    7: i16 salary_type,
-    8: i16 salary_code,
-    9: i16 workdays,
-    10: i16 business_trip,
-    11: i16 nightjob,
-    12: i16 worktype,
-    13: i16 shift,
-    14: i16 icanstart,
-    15: Timestamp create_time,
-    16: Timestamp update_time
-}
-
-struct IntentionPagination {
-	1: i32 total_row,
-	2: i32 total_page,
-	3: i32 page_number,
-	4: i32 page_size,
-	5: list<Intention> intentions
-}
-
-struct Internship { 
-	1: i32 id,
-	2: i32 profile_id,
-    3: Timestamp startDate,
-    4: Timestamp endDate,
-    5: i16 end_until_now, 
-    6: string company,
-    7: string department,
-    8: i16 position_code,
-    9: i16 position_name,
-    10: string description,
-    11: Timestamp create_time,
-    12: Timestamp update_time
-}
-
-struct InternshipPagination {
-	1: i32 total_row,
-	2: i32 total_page,
-	3: i32 page_number,
-	4: i32 page_size,
-	5: list<Internship> internships
+    3: i16 workstate,
+    4: i16 salary_type,
+    5: i16 salary_code, 
+    6: string tag,
+    7: i16 consider_venture_company_opportunities,
+    8: Timestamp create_time,
+    9: Timestamp update_time,
+   10: string salary_str,
+   11: map<i32, string> industries,
+   12: map<i32, string> positions,
+   13: map<i32, string> cities
 }
 
 struct Language { 
 	1: i32 id,
-	2: i32 profile_id,
-    3: i16 name,
-    4: string level,
+    2: i32 profile_id,
+    3: string name,
+    4: i16 level, 
     5: Timestamp create_time,
     6: Timestamp update_time
 }
 
-struct LanguagePagination {
-	1: i32 total_row,
-	2: i32 total_page,
-	3: i32 page_number,
-	4: i32 page_size,
-	5: list<Language> languages
+struct CustomizeResume { 
+    1: i32 profile_id,
+    2: string other,
+    3: Timestamp create_time,
+    4: Timestamp update_time
 }
 
 struct ProjectExp { 
 	1: i32 id,
 	2: i32 profile_id,
-	3: Timestamp startDate,
-	4: Timestamp endDate,
-	5: i16 end_until_now,
-	6: string company,
-	7: string name,
-	8: string role,
-	9: string work_desc,
-	10:	string project_desc,
-    11: Timestamp create_time,
-    12: Timestamp update_time
-}
-
-struct ProjectExpPagination {
-	1: i32 total_row,
-	2: i32 total_page,
-	3: i32 page_number,
-	4: i32 page_size,
-	5: list<ProjectExp> projectExps
-}
-
-struct Reward { 
-	1: i32 id,
-	2: i32 profile_id,
-	3: i16 type,
-	4: Timestamp reward_date,
-	5: string name,
-	6: string description,
-    7: Timestamp create_time,
-    8: Timestamp update_time
-}
-
-struct RewardPagination {
-	1: i32 total_row,
-	2: i32 total_page,
-	3: i32 page_number,
-	4: i32 page_size,
-	5: list<Reward> rewards
-}
-
-struct SchoolJob { 
-	1: i32 id,
-	2: i32 profile_id,
-	3: Timestamp startDate,
-	4: Timestamp endDate,
-	5: i16 end_until_now,
-	6: string position,
-	7: string description,
-    8: Timestamp create_time,
-    9: Timestamp update_time
-}
-
-struct SchoolJobPagination {
-	1: i32 total_row,
-	2: i32 total_page,
-	3: i32 page_number,
-	4: i32 page_size,
-	5: list<SchoolJob> schoolJobs
+    3: Timestamp start_date,
+    4: Timestamp end_date,
+    5: i16 end_until_now, 
+    6: string name,
+	7: string company_name,
+    8: i16 is_it,
+    9: string dev_tool,
+    10: string hardware, 
+    11: string software, 
+    12: string url,
+    13: string description,
+    14: string role,
+    15: string responsibility, 
+    16: string achievement,
+    17: string member, 
+    18: Timestamp create_time,
+    19: Timestamp update_time
 }
 
 struct Skill { 
@@ -298,61 +167,34 @@ struct Skill {
     7: Timestamp update_time
 }
 
-struct SkillPagination {
-	1: i32 total_row,
-	2: i32 total_page,
-	3: i32 page_number,
-	4: i32 page_size,
-	5: list<Skill> skills
-}
-
-struct Training { 
-	1: i32 id,
-	2: i32 profile_id,
-	3: string name,
-	4: Timestamp start_date,
-	5: Timestamp end_date,
-	6: string orgnization,
-	7: string description,
-    8: Timestamp create_time,
-    9: Timestamp update_time
-}
-
-struct TrainingPagination {
-	1: i32 total_row,
-	2: i32 total_page,
-	3: i32 page_number,
-	4: i32 page_size,
-	5: list<Training> trainings
-}
-
 struct WorkExp { 
 	1: i32 id,
 	2: i32 profile_id,
-	3: Timestamp startDate,
-	4: Timestamp endDate,
+	3: Timestamp start_date,
+	4: Timestamp end_date,
 	5: i16 end_until_now,
 	6: i16 salary_type,
 	7: i16 salary_code,
 	8: i16 industry_code,
 	9: string industry_name,
-	10: string company,
-	11: string department,
-	12: i16 position_code,
-	13: string position_name,
-	14: string description,
-	15: i16 work_type,
-	16: i16 scale,
-    17: Timestamp create_time,
-    18: Timestamp update_time
-}
-
-struct WorkExpPagination {
-	1: i32 total_row,
-	2: i32 total_page,
-	3: i32 page_number,
-	4: i32 page_size,
-	5: list<WorkExp> workExps
+	10: string company_name,
+	11: i16 company_scale,
+	12: i16 company_property,
+	13: string company_introduce,
+	14: string department_name,
+	15: i16 position_code,
+	16: string position_name,
+	17: string description,
+	18: i16 type,
+	19: i16 city,
+	20: string city_str,
+	21: string report_to,
+	22: i32 underlings,
+	23: string reference,
+	24: string resign_reason,
+	25: string achievement,
+    26: Timestamp create_time,
+    27: Timestamp update_time
 }
 
 struct Works { 
@@ -360,15 +202,8 @@ struct Works {
 	2: i32 profile_id,
 	3: string name,
 	4: string url,
-	5: string description,
-    6: Timestamp create_time,
-    7: Timestamp update_time
-}
-
-struct WorksPagination {
-	1: i32 total_row,
-	2: i32 total_page,
-	3: i32 page_number,
-	4: i32 page_size,
-	5: list<Works> works
+	5: string cover,
+	6: string description,
+    7: Timestamp create_time,
+    8: Timestamp update_time
 }

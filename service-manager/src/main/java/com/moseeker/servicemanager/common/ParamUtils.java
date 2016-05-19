@@ -19,7 +19,6 @@ import org.springframework.web.servlet.HandlerMapping;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.thrift.gen.useraccounts.struct.userloginreq;
 
 public class ParamUtils {
 	public static String getRestfullApiName(HttpServletRequest request) {
@@ -212,12 +211,8 @@ public class ParamUtils {
 								+ fields[i].getName().substring(1);
 						Method method = clazz.getMethod(methodName,
 								fields[i].getType());
-						Object val = entry.getValue();
-						Object type = fields[i].getType();
 						Object cval = BeanUtils.convertTo(
 								entry.getValue(), fields[i].getType());
-						userloginreq userloginreqs = new userloginreq();
-						userloginreqs.setMobile((String)val);
 						try {
 							method.invoke(t, cval);
 						} catch (Exception e) {

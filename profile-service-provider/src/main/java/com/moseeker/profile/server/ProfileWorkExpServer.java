@@ -34,8 +34,8 @@ public class ProfileWorkExpServer {
 		try {
 			AnnotationConfigApplicationContext acac = initSpring();
 			Server server = new Server(ProfileWorkExpServer.class,
-					acac.getBean(ProfileWorkExpServicesImpl.class),
-					ServerNodeUtils.getPort(args));
+					ServerNodeUtils.getPort(args),
+					acac.getBean(ProfileWorkExpServicesImpl.class));
 			server.start(); // 启动服务，非阻塞
 
 			synchronized (ProfileWorkExpServer.class) {

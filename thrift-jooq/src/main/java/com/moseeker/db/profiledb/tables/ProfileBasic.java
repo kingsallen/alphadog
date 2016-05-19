@@ -8,7 +8,6 @@ import com.moseeker.db.profiledb.Keys;
 import com.moseeker.db.profiledb.Profiledb;
 import com.moseeker.db.profiledb.tables.records.ProfileBasicRecord;
 
-import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -21,6 +20,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
+import org.jooq.types.UByte;
 import org.jooq.types.UInteger;
 
 
@@ -37,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileBasic extends TableImpl<ProfileBasicRecord> {
 
-	private static final long serialVersionUID = 1671162956;
+	private static final long serialVersionUID = -1213742310;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_basic</code>
@@ -58,69 +58,49 @@ public class ProfileBasic extends TableImpl<ProfileBasicRecord> {
 	public final TableField<ProfileBasicRecord, UInteger> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "profile.id");
 
 	/**
+	 * The column <code>profileDB.profile_basic.name</code>. 姓名
+	 */
+	public final TableField<ProfileBasicRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "姓名");
+
+	/**
+	 * The column <code>profileDB.profile_basic.gender</code>. 性别 0:没选择 1:男, 2: 女
+	 */
+	public final TableField<ProfileBasicRecord, UByte> GENDER = createField("gender", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "性别 0:没选择 1:男, 2: 女");
+
+	/**
+	 * The column <code>profileDB.profile_basic.nationality</code>. 国籍
+	 */
+	public final TableField<ProfileBasicRecord, Integer> NATIONALITY = createField("nationality", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "国籍");
+
+	/**
+	 * The column <code>profileDB.profile_basic.location</code>. 现居住地址, 城市字典
+	 */
+	public final TableField<ProfileBasicRecord, Integer> LOCATION = createField("location", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "现居住地址, 城市字典");
+
+	/**
 	 * The column <code>profileDB.profile_basic.birth</code>. 出生年月 yyyy-mm-dd
 	 */
 	public final TableField<ProfileBasicRecord, Date> BIRTH = createField("birth", org.jooq.impl.SQLDataType.DATE.nullable(false).defaulted(true), this, "出生年月 yyyy-mm-dd");
 
 	/**
-	 * The column <code>profileDB.profile_basic.gender</code>. 性别 0:没选择 1:男, 2: 女
-	 */
-	public final TableField<ProfileBasicRecord, Byte> GENDER = createField("gender", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "性别 0:没选择 1:男, 2: 女");
-
-	/**
-	 * The column <code>profileDB.profile_basic.idnumber</code>. 身份证
-	 */
-	public final TableField<ProfileBasicRecord, String> IDNUMBER = createField("idnumber", org.jooq.impl.SQLDataType.CHAR.length(18).nullable(false).defaulted(true), this, "身份证");
-
-	/**
-	 * The column <code>profileDB.profile_basic.location</code>. 居住地址（现居住地址）
-	 */
-	public final TableField<ProfileBasicRecord, String> LOCATION = createField("location", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaulted(true), this, "居住地址（现居住地址）");
-
-	/**
-	 * The column <code>profileDB.profile_basic.nationality</code>. 国籍
-	 */
-	public final TableField<ProfileBasicRecord, String> NATIONALITY = createField("nationality", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "国籍");
-
-	/**
-	 * The column <code>profileDB.profile_basic.marriage</code>. 婚姻状况 0:未选择 1:未婚, 2:已婚
-	 */
-	public final TableField<ProfileBasicRecord, Byte> MARRIAGE = createField("marriage", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "婚姻状况 0:未选择 1:未婚, 2:已婚");
-
-	/**
-	 * The column <code>profileDB.profile_basic.residence</code>. 户口所在城市字典编码,字典里提供一个其他
-	 */
-	public final TableField<ProfileBasicRecord, Byte> RESIDENCE = createField("residence", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "户口所在城市字典编码,字典里提供一个其他");
-
-	/**
-	 * The column <code>profileDB.profile_basic.address</code>. 户口所在住址
-	 */
-	public final TableField<ProfileBasicRecord, String> ADDRESS = createField("address", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaulted(true), this, "户口所在住址");
-
-	/**
-	 * The column <code>profileDB.profile_basic.residencetype</code>. 户口类型 0: 没选择 1:农业户口 2:非农业户口
-	 */
-	public final TableField<ProfileBasicRecord, Byte> RESIDENCETYPE = createField("residencetype", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "户口类型 0: 没选择 1:农业户口 2:非农业户口");
-
-	/**
-	 * The column <code>profileDB.profile_basic.height</code>. 身高
-	 */
-	public final TableField<ProfileBasicRecord, BigDecimal> HEIGHT = createField("height", org.jooq.impl.SQLDataType.DECIMAL.precision(3, 1).nullable(false).defaulted(true), this, "身高");
-
-	/**
-	 * The column <code>profileDB.profile_basic.weight</code>. 体重
-	 */
-	public final TableField<ProfileBasicRecord, BigDecimal> WEIGHT = createField("weight", org.jooq.impl.SQLDataType.DECIMAL.precision(3, 1).nullable(false).defaulted(true), this, "体重");
-
-	/**
 	 * The column <code>profileDB.profile_basic.weixin</code>. 微信号
 	 */
-	public final TableField<ProfileBasicRecord, String> WEIXIN = createField("weixin", org.jooq.impl.SQLDataType.VARCHAR.length(16).nullable(false).defaulted(true), this, "微信号");
+	public final TableField<ProfileBasicRecord, String> WEIXIN = createField("weixin", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "微信号");
 
 	/**
 	 * The column <code>profileDB.profile_basic.qq</code>. QQ号
 	 */
-	public final TableField<ProfileBasicRecord, String> QQ = createField("qq", org.jooq.impl.SQLDataType.VARCHAR.length(16).nullable(false).defaulted(true), this, "QQ号");
+	public final TableField<ProfileBasicRecord, String> QQ = createField("qq", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "QQ号");
+
+	/**
+	 * The column <code>profileDB.profile_basic.motto</code>. 座右铭
+	 */
+	public final TableField<ProfileBasicRecord, String> MOTTO = createField("motto", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "座右铭");
+
+	/**
+	 * The column <code>profileDB.profile_basic.self_introduction</code>. 自我介绍
+	 */
+	public final TableField<ProfileBasicRecord, String> SELF_INTRODUCTION = createField("self_introduction", org.jooq.impl.SQLDataType.VARCHAR.length(1000).nullable(false).defaulted(true), this, "自我介绍");
 
 	/**
 	 * The column <code>profileDB.profile_basic.create_time</code>. 创建时间
