@@ -148,7 +148,7 @@ public class UseraccountsServiceImpl implements Iface {
 	 */
 	@Override
 	public Response postsendsignupcode(String mobile) throws TException {
-		// TODO ip limit
+		// TODO 未注册用户才能发送。
 
 		if (SmsSender.sendSMS_signup(mobile)) {
 			return ResponseUtils.success(null);
@@ -168,30 +168,30 @@ public class UseraccountsServiceImpl implements Iface {
 		} else {
 			return ResponseUtils.buildFromConstant(Constant.LOGIN_VALIDATION_CODE_UNLEGAL);
 		}
-		
+
 		boolean hasPassword = true;
-		if ( password == null) {
+		if (password == null) {
 			hasPassword = false;
 			password = StringUtils.getRandomString(6);
-			
+
 		}
 
 		UserUserRecord user = new UserUserRecord();
 		user.setUsername(mobile);
 		user.setMobile(Long.parseLong(mobile));
 		user.setPassword(MD5Util.md5(password));
-		
+
 		try {
 			int newuserid = userdao.postResource(user);
 			if (newuserid > 0) {
+				Map<String, Object> hashmap = new HashMap<>();
+				hashmap.put("user_id", newuserid);
+				if (!hasPassword) {
+					// 未设置密码， 主动发送给用户。
+					SmsSender.sendSMS_signupRandomPassword(mobile, password);
+				}
+				return ResponseUtils.success(hashmap); // 返回 user id
 
-				 Map<String, Object> hashmap = new HashMap<>();
-				 hashmap.put("user_id", newuserid);
-				 if (!hasPassword){
-					 //未设置密码， 主动发送给用户。 
-					 SmsSender.sendSMS_signupRandomPassword(mobile, password);
-				 }
-				 return ResponseUtils.success(hashmap); // 返回 user id
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -201,8 +201,6 @@ public class UseraccountsServiceImpl implements Iface {
 		}
 		return ResponseUtils.fail("register failed");
 	}
-	
-	
 
 	/**
 	 * 返回手机验证码的正确性
@@ -338,7 +336,6 @@ public class UseraccountsServiceImpl implements Iface {
 		List<String> tables = Lists.newArrayList("candidate_company");
 		return tables;
 	}
-
 	/**
 	 * 
 	 * @param user_id
@@ -397,8 +394,8 @@ public class UseraccountsServiceImpl implements Iface {
 	 */
 	@Override
 	public Response postusersendpasswordforgotcode(String mobile) throws TException {
-		// TODO ip limit
-		if (SmsSender.sendSMS_signup(mobile)) {
+		// TODO 只有已经存在的用户才能发验证码。
+		if (SmsSender.sendSMS_passwordforgot(mobile)) {
 			return ResponseUtils.success(null);
 		} else {
 			return ResponseUtils.fail("failed");
@@ -406,15 +403,14 @@ public class UseraccountsServiceImpl implements Iface {
 	}
 
 	/**
-	 * 忘记密码后重置密码
+	 * 忘记密码后重置密码,
+	 * @param code 验证码，可选， 填写时必须判断。不填时， 请先调用postvalidatepasswordforgotcode 进行验证。
 	 */
 	@Override
-	public Response postuserresetpassword(String mobile, String code, String password) throws TException {
+	public Response postuserresetpassword(String mobile, String password,  String code) throws TException {
 
-		if (validateCode(mobile, code, 2)) {
-			;
-		} else {
-			return ResponseUtils.buildFromConstant(Constant.LOGIN_VALIDATION_CODE_UNLEGAL);
+		if (code!=null && !validateCode(mobile, code, 2)) {
+			return ResponseUtils.fail(10011, "mobile validation code failed");
 		}
 
 		CommonQuery query = new CommonQuery();
@@ -462,5 +458,44 @@ public class UseraccountsServiceImpl implements Iface {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+/**
+ * 检查手机号是否已经注册。 exist: true 已经存在， exist：false 不存在。
+ * @param mobile
+ * @return
+ * @throws TException
+ */
+	@Override
+	public Response getismobileregisted(String mobile) throws TException {
+		CommonQuery query = new CommonQuery();
+		Map<String, String> filters = new HashMap<>();
+		if (mobile.length()>0){
+			filters.put("mobile", mobile);
+			query.setEqualFilter(filters);
+			try {
+				UserUserRecord user = userdao.getResource(query);
+				Map<String, Boolean> hashmap = new HashMap<>();
+				if (user == null) {
+					hashmap.put("exist", false);
+				}else{
+					hashmap.put("exist", true);
+				}
+				return ResponseUtils.success(hashmap);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				logger.error("getismobileregisted error: ", e);
+			}			
+		}
+		return ResponseUtils.buildFromConstant(Constant.PROGRAM_EXHAUSTED);
+	}
+	/**
+	 * 验证忘记密码的验证码是否正确
+	 */
+	@Override
+	public Response postvalidatepasswordforgotcode(String mobile, String code) throws TException {
+		if ( !validateCode(mobile, code, 2)) {
+			return ResponseUtils.fail(10011, "验证码错误！");
+		}else{
+			return ResponseUtils.success(null);
+		}	
+	}
 }
