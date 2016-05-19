@@ -337,14 +337,13 @@ public class UseraccountsServiceImpl implements Iface {
 	}
 
 	/**
-	 * 忘记密码后重置密码
+	 * 忘记密码后重置密码,
+	 * @param code 验证码，可选， 填写时必须判断。不填时， 请先调用postvalidatepasswordforgotcode 进行验证。
 	 */
 	@Override
-	public Response postuserresetpassword(String mobile, String code, String password) throws TException {
+	public Response postuserresetpassword(String mobile, String password,  String code) throws TException {
 
-		if (validateCode(mobile, code, 2)) {
-			;
-		} else {
+		if (code!=null && !validateCode(mobile, code, 2)) {
 			return ResponseUtils.fail(10011, "mobile validation code failed");
 		}
 
@@ -426,4 +425,15 @@ public class UseraccountsServiceImpl implements Iface {
 		
 
 	}
+/**
+ * 验证忘记密码的验证码是否正确
+ */
+@Override
+public Response postvalidatepasswordforgotcode(String mobile, String code) throws TException {
+	if ( !validateCode(mobile, code, 2)) {
+		return ResponseUtils.fail(10011, "验证码错误！");
+	}else{
+		return ResponseUtils.success(null);
+	}	
+}
 }

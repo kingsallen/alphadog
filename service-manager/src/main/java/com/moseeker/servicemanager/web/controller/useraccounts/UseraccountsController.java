@@ -235,5 +235,30 @@ public class UseraccountsController {
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}		
 	}
+/**
+ * 验证忘记密码的验证码是否正确，status=0 正确。	
+ * @param request
+ * @param response
+ * @return
+ */
+	@RequestMapping(value = "/user/validatepasswordforgotcode", method = RequestMethod.POST)
+	@ResponseBody
+	public String postuservalidatepasswordforgotcode(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Map reqParams = ParamUtils.mergeRequestParameters(request);
+			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
+			String code = BeanUtils.converToString(reqParams.get("code"));
+			
+			Response result = useraccountsServices.postvalidatepasswordforgotcode(mobile, code);
+			if (result.getStatus() == 0){
+				return ResponseLogNotification.success(request, result);
+			}else{
+				return ResponseLogNotification.fail(request, result);
+			}
+			
+		} catch (Exception e) {	
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}	
 	
 }
