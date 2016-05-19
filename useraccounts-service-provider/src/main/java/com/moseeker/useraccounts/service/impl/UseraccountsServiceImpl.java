@@ -329,7 +329,7 @@ public class UseraccountsServiceImpl implements Iface {
 	@Override
 	public Response postusersendpasswordforgotcode(String mobile) throws TException {
 		// TODO 只有已经存在的用户才能发验证码。
-		if (SmsSender.sendSMS_signup(mobile)) {
+		if (SmsSender.sendSMS_passwordforgot(mobile)) {
 			return ResponseUtils.success(null);
 		} else {
 			return ResponseUtils.fail("failed");
