@@ -46,17 +46,17 @@ struct Basic {
     1: i32 profile_id,
     2: string name,
     3: i16 gender,
-    4: i16 nationality,
-    5: i16 city,
-    6: Timestamp birth,
-    7: string weixin,
-    8: string qq,
-    9: string motto,
-   10: string self_introduction,
-   11: Timestamp create_time,
-   12: Timestamp update_time,
-   13: string nationality_str,
-   14: string city_str
+    4: i16 nationality_code,
+    5: string nationality_name,
+    6: i16 city_code,
+    7: i16 city_name,
+    8: Timestamp birth,
+    9: string weixin,
+   10: string qq,
+   11: string motto,
+   12: string self_introduction,
+   13: Timestamp create_time,
+   14: Timestamp update_time
 }
 
 struct Credentials {
