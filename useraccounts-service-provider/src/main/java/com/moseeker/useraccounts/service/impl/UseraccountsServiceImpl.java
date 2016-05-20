@@ -76,6 +76,7 @@ public class UseraccountsServiceImpl implements Iface {
 	public Response postuserlogin(userloginreq userloginreq) throws TException {
 		// TODO to add login log
 		CommonQuery query = new CommonQuery();
+		int parentid = -1;
 		Map<String, String> filters = new HashMap<>();
 		if (userloginreq.getUnionid() != null) {
 			filters.put("unionid", userloginreq.getUnionid());
@@ -87,31 +88,38 @@ public class UseraccountsServiceImpl implements Iface {
 		query.setEqualFilter(filters);
 		try {
 			UserUserRecord user = userdao.getResource(query);
-
 			if (user != null) {
 				// login success
-
+				
 				if (user.getParentid() != null) {
 					// 当前帐号已经被合并到 parentid.
-					int parentid = user.getParentid().intValue();
+					parentid = user.getParentid().intValue();
 					query = new CommonQuery();
 					filters = new HashMap<>();
 					filters.put("id", String.valueOf(parentid));
 					query.setEqualFilter(filters);
 					user = userdao.getResource(query);
 				}
+				
+				if (user != null){
+					Map<String, Object> resp = new HashMap<>();
 
-				Map<String, Object> resp = new HashMap<>();
+					resp.put("user_id", user.getId().intValue());
+					resp.put("union_id", user.getUnionid());
+					resp.put("mobile", user.getMobile());
+					resp.put("last_login_time", user.getLastLoginTime());
 
-				resp.put("user_id", user.getId().intValue());
-				resp.put("union_id", user.getUnionid());
-				resp.put("mobile", user.getMobile());
-				resp.put("last_login_time", user.getLastLoginTime());
+					user.setLastLoginTime(new Timestamp(new Date().getTime()));
+					userdao.putResource(user);
 
-				user.setLastLoginTime(new Timestamp(new Date().getTime()));
-				userdao.putResource(user);
+					return ResponseUtils.success(resp);					
+				}else{
+					// 主 user_id 不存在， 数据异常。
+					logger.error("postuserlogin error: ", parentid);
+					return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);					
+				}
+				
 
-				return ResponseUtils.success(resp);
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -150,7 +158,25 @@ public class UseraccountsServiceImpl implements Iface {
 	@Override
 	public Response postsendsignupcode(String mobile) throws TException {
 		// TODO 未注册用户才能发送。
+		CommonQuery query = new CommonQuery();
+		Map<String, String> filters = new HashMap<>();
+		
+		if (mobile.length()>0){
+			filters.put("mobile", mobile);
+			query.setEqualFilter(filters);
+			try {
+				UserUserRecord user = userdao.getResource(query);
+				if (user != null) {
+					return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_EXIST);
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				logger.error("getismobileregisted error: ", e);
+				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 
+			}			
+		}
+		
 		if (SmsSender.sendSMS_signup(mobile)) {
 			return ResponseUtils.success(null);
 		} else {
@@ -396,6 +422,25 @@ public class UseraccountsServiceImpl implements Iface {
 	@Override
 	public Response postusersendpasswordforgotcode(String mobile) throws TException {
 		// TODO 只有已经存在的用户才能发验证码。
+		CommonQuery query = new CommonQuery();
+		Map<String, String> filters = new HashMap<>();
+		
+		if (mobile.length()>0){
+			filters.put("mobile", mobile);
+			query.setEqualFilter(filters);
+			try {
+				UserUserRecord user = userdao.getResource(query);
+				if (user == null) {
+					return ResponseUtils.fail(ConstantErrorCodeMessage.LOGIN_MOBILE_NOTEXIST);
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				logger.error("getismobileregisted error: ", e);
+				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+
+			}			
+		}
+		
 		if (SmsSender.sendSMS_passwordforgot(mobile)) {
 			return ResponseUtils.success(null);
 		} else {

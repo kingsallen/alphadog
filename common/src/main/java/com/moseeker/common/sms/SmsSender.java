@@ -38,6 +38,10 @@ public class SmsSender {
 
 	public static boolean sendSMS(String mobile, String templateCode, HashMap params){
 		initTaobaoClientInstance();
+		
+		if (mobile==null){
+			return false;
+		}
 
 		AlibabaAliqinFcSmsNumSendRequest req = new AlibabaAliqinFcSmsNumSendRequest();
 		req.setExtend(mobile);
