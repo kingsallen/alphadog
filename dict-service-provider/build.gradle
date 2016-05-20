@@ -1,0 +1,39 @@
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+
+dependencies {
+
+    // compile project(":thrift-gen-java")
+    compile project(":common")
+    compile project(":rpc-center")
+
+    testCompile deps["junit"]
+    compile deps["spring-core"]
+    compile deps["spring-context"]
+    compile deps["jetty-support"]
+}
+
+//compileJava.dependsOn(":thrift-jooq:copyGeneratedFile")
+
+task copyJars(type: Copy) {
+    from configurations.runtime
+    into 'build/libs' // 目标位置
+}
+
+jar {
+
+    // build one flat jar
+    //from {
+    //    configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    //}
+
+    // manifest {
+    //    attributes 'Main-Class': 'com.moseeker.profile.server.ProfileServer'
+    // }
+
+
+}
+
+project.description = '''
+    1) 字典表数据读取服务
+'''

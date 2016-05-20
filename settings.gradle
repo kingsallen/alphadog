@@ -3,4 +3,4 @@ include 'common', 'service-manager', 'thrift-jooq'
 include 'rpc-center'
 include 'profile-service-provider'
 include 'useraccounts-service-provider'
-
+include 'dict-service-provider'
