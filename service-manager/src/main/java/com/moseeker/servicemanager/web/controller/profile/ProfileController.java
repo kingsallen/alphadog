@@ -28,7 +28,7 @@ public class ProfileController {
 		//PrintWriter writer = null;
 		try {
 			// GET方法 通用参数解析并赋值
-			Response result = profileService.getResource(Integer.valueOf(request.getParameter("id")));
+			Response result = profileService.getResource(Integer.valueOf(request.getParameter("id")), Integer.valueOf(request.getParameter("user_id")));
 			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
