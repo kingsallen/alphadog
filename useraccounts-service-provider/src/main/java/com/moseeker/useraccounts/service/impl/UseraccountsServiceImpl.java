@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.google.common.collect.Lists;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.daoutils.BaseDao;
+import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.sms.SmsSender;
 import com.moseeker.common.util.Constant;
@@ -76,6 +77,7 @@ public class UseraccountsServiceImpl implements Iface {
 	public Response postuserlogin(userloginreq userloginreq) throws TException {
 		// TODO to add login log
 		CommonQuery query = new CommonQuery();
+		int parentid = -1;
 		Map<String, String> filters = new HashMap<>();
 		if (userloginreq.getUnionid() != null) {
 			filters.put("unionid", userloginreq.getUnionid());
@@ -87,38 +89,45 @@ public class UseraccountsServiceImpl implements Iface {
 		query.setEqualFilter(filters);
 		try {
 			UserUserRecord user = userdao.getResource(query);
-
 			if (user != null) {
 				// login success
-
+				
 				if (user.getParentid() != null) {
 					// 当前帐号已经被合并到 parentid.
-					int parentid = user.getParentid().intValue();
+					parentid = user.getParentid().intValue();
 					query = new CommonQuery();
 					filters = new HashMap<>();
 					filters.put("id", String.valueOf(parentid));
 					query.setEqualFilter(filters);
 					user = userdao.getResource(query);
 				}
+				
+				if (user != null){
+					Map<String, Object> resp = new HashMap<>();
 
-				Map<String, Object> resp = new HashMap<>();
+					resp.put("user_id", user.getId().intValue());
+					resp.put("union_id", user.getUnionid());
+					resp.put("mobile", user.getMobile());
+					resp.put("last_login_time", user.getLastLoginTime());
 
-				resp.put("user_id", user.getId().intValue());
-				resp.put("union_id", user.getUnionid());
-				resp.put("mobile", user.getMobile());
-				resp.put("last_login_time", user.getLastLoginTime());
+					user.setLastLoginTime(new Timestamp(new Date().getTime()));
+					userdao.putResource(user);
 
-				user.setLastLoginTime(new Timestamp(new Date().getTime()));
-				userdao.putResource(user);
+					return ResponseUtils.success(resp);					
+				}else{
+					// 主 user_id 不存在， 数据异常。
+					logger.error("postuserlogin error: ", parentid);
+					return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);					
+				}
+				
 
-				return ResponseUtils.success(resp);
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			logger.error("postuserlogin error: ", e);
 
 		}
-		return ResponseUtils.fail(ConstantErrorCodeMessage.LOGIN_ACCOUNT_UNLEGAL);
+		return ResponseUtils.fail(ConstantErrorCodeMessage.LOGIN_ACCOUNT_ILLEAGUE);
 
 	}
 
@@ -150,7 +159,25 @@ public class UseraccountsServiceImpl implements Iface {
 	@Override
 	public Response postsendsignupcode(String mobile) throws TException {
 		// TODO 未注册用户才能发送。
+		CommonQuery query = new CommonQuery();
+		Map<String, String> filters = new HashMap<>();
+		
+		if (mobile.length()>0){
+			filters.put("mobile", mobile);
+			query.setEqualFilter(filters);
+			try {
+				UserUserRecord user = userdao.getResource(query);
+				if (user != null) {
+					return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_EXIST);
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				logger.error("getismobileregisted error: ", e);
+				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 
+			}			
+		}
+		
 		if (SmsSender.sendSMS_signup(mobile)) {
 			return ResponseUtils.success(null);
 		} else {
@@ -167,7 +194,7 @@ public class UseraccountsServiceImpl implements Iface {
 		if (validateCode(mobile, code, 1)) {
 			;
 		} else {
-			return ResponseUtils.success(ConstantErrorCodeMessage.LOGIN_VALIDATION_CODE_UNLEGAL);
+			return ResponseUtils.success(ConstantErrorCodeMessage.INVALID_SMS_CODE);
 		}
 
 		boolean hasPassword = true;
@@ -203,37 +230,6 @@ public class UseraccountsServiceImpl implements Iface {
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 	}
 
-	/**
-	 * 返回手机验证码的正确性, true 验证码正确。
-	 * 
-	 * @param mobile
-	 *            手机号
-	 * @param code
-	 *            验证码
-	 * @param type
-	 *            1:注册 2:忘记密码
-	 */
-	private boolean validateCode(String mobile, String code, int type) {
-		String codeinRedis = null;
-		switch (type) {
-		case 1:
-			codeinRedis = RedisClientFactory.getCacheClient().get(0, "SMS_SIGNUP", mobile);
-			if (code.equals(codeinRedis)) {
-				RedisClientFactory.getCacheClient().del(0, "SMS_SIGNUP", mobile);
-				return true;
-			}
-			break;
-		case 2:
-			codeinRedis = RedisClientFactory.getCacheClient().get(0, "SMS_PWD_FORGOT", mobile);
-			if (code.equals(codeinRedis)) {
-				RedisClientFactory.getCacheClient().del(0, "SMS_PWD_FORGOT", mobile);
-				return true;
-			}
-			break;
-		}
-
-		return false;
-	}
 
 	/**
 	 * 绑定用户的手机号和unionid， 如果unionid或者手机号均没有， 则post新增， 如果在一条记录里都有，提示已经绑定成功，
@@ -243,7 +239,7 @@ public class UseraccountsServiceImpl implements Iface {
 	public Response postuserwxbindmobile(int appid, String unionid, String code, String mobile) throws TException {
 		// TODO validate code.
 		if (!StringUtils.isNullOrEmpty(code) && !validateCode(mobile, code, 1)) {
-			return ResponseUtils.fail(ConstantErrorCodeMessage.LOGIN_VALIDATION_CODE_UNLEGAL);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
 		}
 		try {
 			CommonQuery query1 = new CommonQuery();
@@ -337,10 +333,11 @@ public class UseraccountsServiceImpl implements Iface {
 		List<String> tables = Lists.newArrayList("candidate_company");
 		return tables;
 	}
+
 	/**
-	 * 
+	 * 修改现有密码 
 	 * @param user_id
-	 * @param old_password
+	 * @param old_password 
 	 * @param password
 	 * @return
 	 * @throws TException
@@ -396,6 +393,25 @@ public class UseraccountsServiceImpl implements Iface {
 	@Override
 	public Response postusersendpasswordforgotcode(String mobile) throws TException {
 		// TODO 只有已经存在的用户才能发验证码。
+		CommonQuery query = new CommonQuery();
+		Map<String, String> filters = new HashMap<>();
+		
+		if (mobile.length()>0){
+			filters.put("mobile", mobile);
+			query.setEqualFilter(filters);
+			try {
+				UserUserRecord user = userdao.getResource(query);
+				if (user == null) {
+					return ResponseUtils.fail(ConstantErrorCodeMessage.LOGIN_MOBILE_NOTEXIST);
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				logger.error("getismobileregisted error: ", e);
+				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+
+			}			
+		}
+		
 		if (SmsSender.sendSMS_passwordforgot(mobile)) {
 			return ResponseUtils.success(null);
 		} else {
@@ -411,7 +427,7 @@ public class UseraccountsServiceImpl implements Iface {
 	public Response postuserresetpassword(String mobile, String password,  String code) throws TException {
 
 		if (code!=null && !validateCode(mobile, code, 2)) {
-			return ResponseUtils.fail(ConstantErrorCodeMessage.LOGIN_VALIDATION_CODE_UNLEGAL);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
 		}
 
 		CommonQuery query = new CommonQuery();
@@ -488,15 +504,192 @@ public class UseraccountsServiceImpl implements Iface {
 		}
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXHAUSTED);
 	}
+
+/**
+ * 修改手机号时， 先要向当前手机号发送验证码。
+ */
+	@Override
+	public Response postsendchangemobilecode(String oldmobile) throws TException {
+		// TODO 只有已经存在的用户才能发验证码。
+		CommonQuery query = new CommonQuery();
+		Map<String, String> filters = new HashMap<>();
+		
+		if (oldmobile.length()>0){
+			filters.put("mobile", oldmobile);
+			query.setEqualFilter(filters);
+			try {
+				UserUserRecord user = userdao.getResource(query);
+				if (user == null) {
+					return ResponseUtils.fail(ConstantErrorCodeMessage.LOGIN_MOBILE_NOTEXIST);
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				logger.error("postsendchangemobilecode error: ", e);
+				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+
+			}			
+		}
+		
+		if (SmsSender.sendSMS_changemobilecode(oldmobile)) {
+			return ResponseUtils.success(null);
+		} else {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		}
+	}
+
+/**
+ * 修改手机号时， 验证现有手机号的验证码。
+ */
+	@Override
+	public Response postvalidatechangemobilecode(String oldmobile, String code) throws TException {
+		if ( !validateCode(oldmobile, code, 3)) {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
+		}else{
+			return ResponseUtils.success(null);
+		}
+	}
+
+	/**
+	 * 修改手机号时，  向新手机号发送验证码。
+	 */
+	@Override
+	public Response postsendresetmobilecode(String newmobile) throws TException {
+		CommonQuery query = new CommonQuery();
+		Map<String, String> filters = new HashMap<>();
+		
+		if (newmobile.length()>0){
+			filters.put("mobile", newmobile);
+			query.setEqualFilter(filters);
+			try {
+				UserUserRecord user = userdao.getResource(query);
+				if (user != null) {
+					return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_EXIST);
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				logger.error("postsendresetmobilecode error: ", e);
+				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+
+			}			
+		}
+		
+		if (SmsSender.sendSMS_resetmobilecode(newmobile)) {
+			return ResponseUtils.success(null);
+		} else {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		}
+	}
+	/**
+	 * 修改当前用户手机号。
+	 * @param user_id  
+	 * @param newmobile 新手机号
+	 * @param code  新手机号的验证码
+	 */
+	@Override
+	public Response postresetmobile(int user_id, String newmobile, String code) throws TException {
+		if (code!=null && !validateCode(newmobile, code, 2)) {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
+		}
+
+		CommonQuery query = new CommonQuery();
+		Map<String, String> filters = new HashMap<>();
+		filters.put("id", String.valueOf(user_id));
+		query.setEqualFilter(filters);
+
+		int result = 0;
+		try {
+			UserUserRecord user = userdao.getResource(query);
+
+			if (user != null) {
+				// login success
+				if (user.getParentid() != null) {
+					// 当前帐号已经被合并到 parentid.
+					int parentid = user.getParentid().intValue();
+					query = new CommonQuery();
+					filters = new HashMap<>();
+					filters.put("id", String.valueOf(parentid));
+					query.setEqualFilter(filters);
+					UserUserRecord userParent = userdao.getResource(query);
+					userParent.setMobile(Long.parseLong(newmobile));
+					result = userdao.putResource(userParent);
+				}
+				user.setMobile(Long.parseLong(newmobile));
+				result = userdao.putResource(user);
+				if (result > 0) {
+					return ResponseUtils.success(null);
+				}
+			} else {
+				return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_NOTEXIST);
+			}
+
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			logger.error("postuserresetpassword error: ", e);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+
+		}
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+
+		
+		
+	}
+	
 	/**
 	 * 验证忘记密码的验证码是否正确
 	 */
 	@Override
 	public Response postvalidatepasswordforgotcode(String mobile, String code) throws TException {
 		if ( !validateCode(mobile, code, 2)) {
-			return ResponseUtils.fail(ConstantErrorCodeMessage.LOGIN_VALIDATION_CODE_UNLEGAL);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
 		}else{
 			return ResponseUtils.success(null);
 		}	
 	}
+	
+	/**
+	 * 返回手机验证码的正确性, true 验证码正确。
+	 * 
+	 * @param mobile
+	 *            手机号
+	 * @param code
+	 *            验证码
+	 * @param type
+	 *            1:注册 2:忘记密码
+	 */
+	private boolean validateCode(String mobile, String code, int type) {
+		String codeinRedis = null;
+		RedisClient redisclient = RedisClientFactory.getCacheClient();
+		switch (type) {
+		case 1:
+			codeinRedis = redisclient.get(0, "SMS_SIGNUP", mobile);
+			if (code.equals(codeinRedis)) {
+				redisclient.del(0, "SMS_SIGNUP", mobile);
+				return true;
+			}
+			break;
+		case 2:
+			codeinRedis = redisclient.get(0, "SMS_PWD_FORGOT", mobile);
+			if (code.equals(codeinRedis)) {
+				redisclient.del(0, "SMS_PWD_FORGOT", mobile);
+				return true;
+			}
+		case 3:
+			codeinRedis = redisclient.get(0, "SMS_CHANGEMOBILE_CODE", mobile);
+			if (code.equals(codeinRedis)) {
+				redisclient.del(0, "SMS_CHANGEMOBILE_CODE", mobile);
+				return true;
+			}
+		case 4:
+			codeinRedis = redisclient.get(0, "SMS_RESETMOBILE_CODE", mobile);
+			if (code.equals(codeinRedis)) {
+				redisclient.del(0, "SMS_RESETMOBILE_CODE", mobile);
+				return true;
+			}
+			break;
+		}
+
+		return false;
+	}
+	
+	
 }
