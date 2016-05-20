@@ -258,6 +258,110 @@ public class UseraccountsController {
 		} catch (Exception e) {	
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
-	}	
+	}
+	
+	/**
+	 * 修改手机号时， 先要向当前手机号发送验证码。
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+		@RequestMapping(value = "/user/sendchangemobilecode", method = RequestMethod.POST)
+		@ResponseBody
+		public String postsendchangemobilecode(HttpServletRequest request, HttpServletResponse response) {
+			try {
+				Map reqParams = ParamUtils.mergeRequestParameters(request);
+				String mobile = BeanUtils.converToString(reqParams.get("mobile"));
+				
+				Response result = useraccountsServices.postsendchangemobilecode(mobile);
+				if (result.getStatus() == 0){
+					return ResponseLogNotification.success(request, result);
+				}else{
+					return ResponseLogNotification.fail(request, result);
+				}
+				
+			} catch (Exception e) {	
+				return ResponseLogNotification.fail(request, e.getMessage());
+			}
+		}	
+
+		/**
+		 * 修改手机号时， 验证现有手机号的验证码。
+		 * @param request
+		 * @param response
+		 * @return
+		 */
+			@RequestMapping(value = "/user/validatechangemobilecode", method = RequestMethod.POST)
+			@ResponseBody
+			public String postvalidatechangemobilecode(HttpServletRequest request, HttpServletResponse response) {
+				try {
+					Map reqParams = ParamUtils.mergeRequestParameters(request);
+					String mobile = BeanUtils.converToString(reqParams.get("mobile"));
+					String code = BeanUtils.converToString(reqParams.get("code"));
+
+					Response result = useraccountsServices.postvalidatechangemobilecode(mobile,code);
+					if (result.getStatus() == 0){
+						return ResponseLogNotification.success(request, result);
+					}else{
+						return ResponseLogNotification.fail(request, result);
+					}
+					
+				} catch (Exception e) {	
+					return ResponseLogNotification.fail(request, e.getMessage());
+				}
+			}		
+
+			/**
+			 * 修改手机号时， 向新手机号发送验证码。
+			 * @param request
+			 * @param response
+			 * @return
+			 */
+				@RequestMapping(value = "/user/sendresetmobilecode", method = RequestMethod.POST)
+				@ResponseBody
+				public String postsendresetmobilecode(HttpServletRequest request, HttpServletResponse response) {
+					try {
+						Map reqParams = ParamUtils.mergeRequestParameters(request);
+						String mobile = BeanUtils.converToString(reqParams.get("mobile"));
+						
+						Response result = useraccountsServices.postsendresetmobilecode(mobile);
+						if (result.getStatus() == 0){
+							return ResponseLogNotification.success(request, result);
+						}else{
+							return ResponseLogNotification.fail(request, result);
+						}
+						
+					} catch (Exception e) {	
+						return ResponseLogNotification.fail(request, e.getMessage());
+					}
+				}	
+				
+				/**
+				 * 修改当前用户手机号。
+				 * @param request
+				 * @param response
+				 * @return
+				 */
+					@RequestMapping(value = "/user/resetmobile", method = RequestMethod.POST)
+					@ResponseBody
+					public String postresetmobile(HttpServletRequest request, HttpServletResponse response) {
+						try {
+							Map reqParams = ParamUtils.mergeRequestParameters(request);
+							int user_id = BeanUtils.converToInteger(reqParams.get("user_id"));
+							String mobile = BeanUtils.converToString(reqParams.get("mobile"));
+							String code = BeanUtils.converToString(reqParams.get("code"));
+
+							Response result = useraccountsServices.postresetmobile(user_id, mobile, code);
+							if (result.getStatus() == 0){
+								return ResponseLogNotification.success(request, result);
+							}else{
+								return ResponseLogNotification.fail(request, result);
+							}
+							
+						} catch (Exception e) {	
+							return ResponseLogNotification.fail(request, e.getMessage());
+						}
+					}				
+	
 	
 }
