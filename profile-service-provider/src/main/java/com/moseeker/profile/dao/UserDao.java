@@ -9,4 +9,6 @@ public interface UserDao extends BaseDao<UserUserRecord> {
 
 	List<UserUserRecord> getUserByIds(List<Integer> ids);
 
+	UserUserRecord getUserById(int intValue);
+
 }

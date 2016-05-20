@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jooq.DSLContext;
+import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.types.UInteger;
@@ -62,5 +63,33 @@ public class UserDaoImpl extends
 		}
 		
 		return records;
+	}
+
+	@Override
+	public UserUserRecord getUserById(int id) {
+		UserUserRecord record = null;
+		Connection conn = null;
+		try {
+			conn = DBConnHelper.DBConn.getConn();
+			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+			Result<UserUserRecord> result = create.selectFrom(UserUser.USER_USER).where(UserUser.USER_USER.ID.equal(UInteger.valueOf(id))).fetch();
+			if(result != null && result.size() > 0) {
+				record = result.get(0);
+			}
+		} catch (SQLException e) {
+			logger.error(e.getMessage(), e);
+		} finally {
+			try {
+				if(conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				logger.error(e.getMessage(), e);
+			} finally {
+				//do nothing
+			}
+		}
+		
+		return record;
 	}
 }

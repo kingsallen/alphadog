@@ -7,4 +7,6 @@ import com.moseeker.db.profiledb.tables.records.ProfileWorkexpRecord;
 
 public interface WorkExpDao extends BaseDao<ProfileWorkexpRecord> {
 
+	ProfileWorkexpRecord getLastWorkExp(int intValue);
+
 }
