@@ -44,6 +44,5 @@ public final class Constant {
 	public static final String PROGRAM_POST_FAILED = "{'status':20011,'message':'post data failed!'}";
 	public static final String PROGRAM_PUT_FAILED = "{'status':20012,'message':'put data failed!'}";
 	public static final String PROGRAM_DEL_FAILED = "{'status':20013,'message':'del data failed!'}";
-	
 	public static final String PROGRAM_EXHAUSTED = "{'status':-1,'系统繁忙，此时稍候再试!'}";
 }

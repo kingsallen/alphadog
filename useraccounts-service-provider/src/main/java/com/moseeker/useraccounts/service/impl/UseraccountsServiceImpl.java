@@ -18,6 +18,7 @@ import com.moseeker.common.providerutils.daoutils.BaseDao;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.sms.SmsSender;
 import com.moseeker.common.util.Constant;
+import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.logdb.tables.records.LogUserloginRecordRecord;
@@ -117,7 +118,7 @@ public class UseraccountsServiceImpl implements Iface {
 			logger.error("postuserlogin error: ", e);
 
 		}
-		return ResponseUtils.buildFromConstant(Constant.LOGIN_ACCOUNT_UNLEGAL);
+		return ResponseUtils.fail(ConstantErrorCodeMessage.LOGIN_ACCOUNT_UNLEGAL);
 
 	}
 
@@ -140,7 +141,7 @@ public class UseraccountsServiceImpl implements Iface {
 			// TODO Auto-generated catch block
 			logger.error("postuserlogout error: ", e);
 		}
-		return ResponseUtils.fail("failed to record logout record");
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 	}
 
 	/**
@@ -153,7 +154,7 @@ public class UseraccountsServiceImpl implements Iface {
 		if (SmsSender.sendSMS_signup(mobile)) {
 			return ResponseUtils.success(null);
 		} else {
-			return ResponseUtils.fail("failed");
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		}
 	}
 
@@ -166,7 +167,7 @@ public class UseraccountsServiceImpl implements Iface {
 		if (validateCode(mobile, code, 1)) {
 			;
 		} else {
-			return ResponseUtils.buildFromConstant(Constant.LOGIN_VALIDATION_CODE_UNLEGAL);
+			return ResponseUtils.success(ConstantErrorCodeMessage.LOGIN_VALIDATION_CODE_UNLEGAL);
 		}
 
 		boolean hasPassword = true;
@@ -199,11 +200,11 @@ public class UseraccountsServiceImpl implements Iface {
 		} finally {
 			//do nothing
 		}
-		return ResponseUtils.fail("register failed");
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 	}
 
 	/**
-	 * 返回手机验证码的正确性
+	 * 返回手机验证码的正确性, true 验证码正确。
 	 * 
 	 * @param mobile
 	 *            手机号
@@ -242,7 +243,7 @@ public class UseraccountsServiceImpl implements Iface {
 	public Response postuserwxbindmobile(int appid, String unionid, String code, String mobile) throws TException {
 		// TODO validate code.
 		if (!StringUtils.isNullOrEmpty(code) && !validateCode(mobile, code, 1)) {
-			return ResponseUtils.buildFromConstant(Constant.LOGIN_VALIDATION_CODE_UNLEGAL);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.LOGIN_VALIDATION_CODE_UNLEGAL);
 		}
 		try {
 			CommonQuery query1 = new CommonQuery();
@@ -259,10 +260,10 @@ public class UseraccountsServiceImpl implements Iface {
 
 			if (userUnnionid == null && userMobile == null) {
 				// post
-				return ResponseUtils.buildFromConstant(Constant.USERACCOUNT_BIND_NONEED);
+				return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_BIND_NONEED);
 			} else if (userUnnionid != null && userMobile != null
 					&& userUnnionid.getId().intValue() == userMobile.getId().intValue()) {
-				return ResponseUtils.buildFromConstant(Constant.USERACCOUNT_BIND_NONEED);
+				return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_BIND_NONEED);
 			} else if (userUnnionid != null && userMobile == null) {
 				userUnnionid.setMobile(Long.valueOf(mobile));
 				userdao.putResource(userUnnionid);
@@ -276,15 +277,15 @@ public class UseraccountsServiceImpl implements Iface {
 					combineAccount(userMobile, userUnnionid);
 				}).start();
 			} else {
-				return ResponseUtils.fail("error");
+				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			return ResponseUtils.fail("register failed");
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		} finally {
 			// do nothing
 		}
-		return ResponseUtils.success("success");
+		return ResponseUtils.success(null);
 
 	}
 
@@ -375,7 +376,7 @@ public class UseraccountsServiceImpl implements Iface {
 					return ResponseUtils.success(null);
 				}
 			} else {
-				return ResponseUtils.buildFromConstant(Constant.LOGIN_PASSWORD_UNLEGAL);
+				return ResponseUtils.fail(ConstantErrorCodeMessage.LOGIN_PASSWORD_UNLEGAL);
 			}
 
 		} catch (Exception e) {
@@ -385,7 +386,7 @@ public class UseraccountsServiceImpl implements Iface {
 		} finally {
 			// do nothing
 		}
-		return ResponseUtils.buildFromConstant(Constant.LOGIN_UPDATE_PASSWORD_FAILED);
+		return ResponseUtils.fail(ConstantErrorCodeMessage.LOGIN_UPDATE_PASSWORD_FAILED);
 
 	}
 
@@ -398,7 +399,7 @@ public class UseraccountsServiceImpl implements Iface {
 		if (SmsSender.sendSMS_passwordforgot(mobile)) {
 			return ResponseUtils.success(null);
 		} else {
-			return ResponseUtils.fail("failed");
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		}
 	}
 
@@ -410,7 +411,7 @@ public class UseraccountsServiceImpl implements Iface {
 	public Response postuserresetpassword(String mobile, String password,  String code) throws TException {
 
 		if (code!=null && !validateCode(mobile, code, 2)) {
-			return ResponseUtils.fail(10011, "mobile validation code failed");
+			return ResponseUtils.fail(ConstantErrorCodeMessage.LOGIN_VALIDATION_CODE_UNLEGAL);
 		}
 
 		CommonQuery query = new CommonQuery();
@@ -441,7 +442,7 @@ public class UseraccountsServiceImpl implements Iface {
 					return ResponseUtils.success(null);
 				}
 			} else {
-				return ResponseUtils.buildFromConstant(Constant.LOGIN_MOBILE_NOTEXIST);
+				return ResponseUtils.fail(ConstantErrorCodeMessage.LOGIN_MOBILE_NOTEXIST);
 			}
 
 		} catch (Exception e) {
@@ -449,7 +450,7 @@ public class UseraccountsServiceImpl implements Iface {
 			logger.error("postuserresetpassword error: ", e);
 
 		}
-		return ResponseUtils.buildFromConstant(Constant.LOGIN_UPDATE_PASSWORD_FAILED);
+		return ResponseUtils.fail(ConstantErrorCodeMessage.LOGIN_UPDATE_PASSWORD_FAILED);
 
 	}
 
@@ -485,7 +486,7 @@ public class UseraccountsServiceImpl implements Iface {
 				logger.error("getismobileregisted error: ", e);
 			}			
 		}
-		return ResponseUtils.buildFromConstant(Constant.PROGRAM_EXHAUSTED);
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXHAUSTED);
 	}
 	/**
 	 * 验证忘记密码的验证码是否正确
@@ -493,7 +494,7 @@ public class UseraccountsServiceImpl implements Iface {
 	@Override
 	public Response postvalidatepasswordforgotcode(String mobile, String code) throws TException {
 		if ( !validateCode(mobile, code, 2)) {
-			return ResponseUtils.fail(10011, "验证码错误！");
+			return ResponseUtils.fail(ConstantErrorCodeMessage.LOGIN_VALIDATION_CODE_UNLEGAL);
 		}else{
 			return ResponseUtils.success(null);
 		}	
