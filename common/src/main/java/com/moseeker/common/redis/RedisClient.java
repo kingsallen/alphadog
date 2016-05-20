@@ -90,8 +90,8 @@ public abstract class RedisClient {
 		String cacheKey = String.format(redisKey.getPattern(), str);
 		if(redisCluster.exists(cacheKey)) {
 			result =  redisCluster.get(cacheKey);
-//			System.out.println(cacheKey);
-//			System.out.println("FROM CACHE!!!!!!!!");
+			System.out.println(cacheKey);
+			System.out.println("FROM CACHE!!!!!!!!");
 		} else {
 			result = callback.call();
 			redisCluster.setex(cacheKey, redisKey.getTtl(), result);

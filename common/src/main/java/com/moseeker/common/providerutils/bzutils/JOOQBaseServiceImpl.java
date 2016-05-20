@@ -59,6 +59,27 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		return ResponseUtils.buildFromConstant(Constant.PROGRAM_DATA_EMPTY);
 	}
 
+	public List<S> getRawResources(CommonQuery query) throws TException {
+
+		if(dao == null) {
+			initDao();
+		}
+
+		List<S> structs = null;
+
+		try {
+			List<R> records = dao.getResources(query);
+			structs = DBsToStructs(records);
+		} catch (Exception e) {
+			logger.error("getResources error", e);
+			ResponseUtils.fail(e.getMessage());
+		} finally {
+			//do nothing
+		}
+
+		return structs;
+	}
+
 	public Response postResources(List<S> structs) throws TException {
 		if(dao == null) {
 			initDao();
