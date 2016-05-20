@@ -51,7 +51,7 @@ public class CityServicesImpl extends JOOQBaseServiceImpl<City, DictCityRecord> 
             cachedResult = rc.get(query.appid, "DICT_CITY", cachKey, () -> {
                 String r = null;
                 try {
-                    r = JSON.toJSONString(this.getResourcesNoCache(query));
+                    r = JSON.toJSONString(super.getResources(query));
                 } catch (TException e) {
                     // todo
                 }
@@ -65,9 +65,9 @@ public class CityServicesImpl extends JOOQBaseServiceImpl<City, DictCityRecord> 
         return result;
     }
 
-    public Response getResourcesNoCache(CommonQuery query) throws TException {
-        return super.getResources(query);
-    }
+//    public Response getResourcesNoCache(CommonQuery query) throws TException {
+//        return super.getResources(query);
+//    }
 
     @Override
     protected DictCityRecord structToDB(City c) {
