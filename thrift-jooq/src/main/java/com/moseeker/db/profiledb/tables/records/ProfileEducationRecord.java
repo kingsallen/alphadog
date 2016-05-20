@@ -33,7 +33,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileEducationRecord extends UpdatableRecordImpl<ProfileEducationRecord> implements Record17<UInteger, UInteger, Date, Date, UByte, Integer, String, String, String, UByte, String, UByte, UByte, UByte, String, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = -2094147758;
+	private static final long serialVersionUID = -1073903558;
 
 	/**
 	 * Setter for <code>profileDB.profile_education.id</code>. 主key
@@ -190,42 +190,42 @@ public class ProfileEducationRecord extends UpdatableRecordImpl<ProfileEducation
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_education.is_full</code>. 是否全日制 0:否, 1:是
+	 * Setter for <code>profileDB.profile_education.is_full</code>. 是否全日制 0:没填写, 1:是, 2:否
 	 */
 	public void setIsFull(UByte value) {
 		setValue(11, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_education.is_full</code>. 是否全日制 0:否, 1:是
+	 * Getter for <code>profileDB.profile_education.is_full</code>. 是否全日制 0:没填写, 1:是, 2:否
 	 */
 	public UByte getIsFull() {
 		return (UByte) getValue(11);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_education.is_unified</code>. 是否统招 0:否, 1:是
+	 * Setter for <code>profileDB.profile_education.is_unified</code>. 是否统招 0:没填写, 1:是, 2:否
 	 */
 	public void setIsUnified(UByte value) {
 		setValue(12, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_education.is_unified</code>. 是否统招 0:否, 1:是
+	 * Getter for <code>profileDB.profile_education.is_unified</code>. 是否统招 0:没填写, 1:是, 2:否
 	 */
 	public UByte getIsUnified() {
 		return (UByte) getValue(12);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_education.is_study_abroad</code>. 是否海外学习经历 0:否, 1:是
+	 * Setter for <code>profileDB.profile_education.is_study_abroad</code>. 是否海外学习经历 0:没填写, 1:是, 2:否
 	 */
 	public void setIsStudyAbroad(UByte value) {
 		setValue(13, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_education.is_study_abroad</code>. 是否海外学习经历 0:否, 1:是
+	 * Getter for <code>profileDB.profile_education.is_study_abroad</code>. 是否海外学习经历 0:没填写, 1:是, 2:否
 	 */
 	public UByte getIsStudyAbroad() {
 		return (UByte) getValue(13);

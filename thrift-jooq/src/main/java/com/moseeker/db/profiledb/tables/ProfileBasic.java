@@ -37,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileBasic extends TableImpl<ProfileBasicRecord> {
 
-	private static final long serialVersionUID = -1213742310;
+	private static final long serialVersionUID = 1730178601;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_basic</code>
@@ -68,14 +68,24 @@ public class ProfileBasic extends TableImpl<ProfileBasicRecord> {
 	public final TableField<ProfileBasicRecord, UByte> GENDER = createField("gender", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "性别 0:没选择 1:男, 2: 女");
 
 	/**
-	 * The column <code>profileDB.profile_basic.nationality</code>. 国籍
+	 * The column <code>profileDB.profile_basic.nationality_code</code>. 国籍code，国家字典表
 	 */
-	public final TableField<ProfileBasicRecord, Integer> NATIONALITY = createField("nationality", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "国籍");
+	public final TableField<ProfileBasicRecord, Integer> NATIONALITY_CODE = createField("nationality_code", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "国籍code，国家字典表");
 
 	/**
-	 * The column <code>profileDB.profile_basic.location</code>. 现居住地址, 城市字典
+	 * The column <code>profileDB.profile_basic.nationality_name</code>. 国籍名称
 	 */
-	public final TableField<ProfileBasicRecord, Integer> LOCATION = createField("location", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "现居住地址, 城市字典");
+	public final TableField<ProfileBasicRecord, String> NATIONALITY_NAME = createField("nationality_name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "国籍名称");
+
+	/**
+	 * The column <code>profileDB.profile_basic.city_code</code>. 现居住地, 城市字典
+	 */
+	public final TableField<ProfileBasicRecord, Integer> CITY_CODE = createField("city_code", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "现居住地, 城市字典");
+
+	/**
+	 * The column <code>profileDB.profile_basic.city_name</code>. 现居住地, 城市名称
+	 */
+	public final TableField<ProfileBasicRecord, String> CITY_NAME = createField("city_name", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "现居住地, 城市名称");
 
 	/**
 	 * The column <code>profileDB.profile_basic.birth</code>. 出生年月 yyyy-mm-dd

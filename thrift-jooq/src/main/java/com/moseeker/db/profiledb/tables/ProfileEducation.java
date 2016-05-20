@@ -38,7 +38,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileEducation extends TableImpl<ProfileEducationRecord> {
 
-	private static final long serialVersionUID = 565755566;
+	private static final long serialVersionUID = -1769041214;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_education</code>
@@ -109,19 +109,19 @@ public class ProfileEducation extends TableImpl<ProfileEducationRecord> {
 	public final TableField<ProfileEducationRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.VARCHAR.length(1000).nullable(false).defaulted(true), this, "教育描述");
 
 	/**
-	 * The column <code>profileDB.profile_education.is_full</code>. 是否全日制 0:否, 1:是
+	 * The column <code>profileDB.profile_education.is_full</code>. 是否全日制 0:没填写, 1:是, 2:否
 	 */
-	public final TableField<ProfileEducationRecord, UByte> IS_FULL = createField("is_full", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "是否全日制 0:否, 1:是");
+	public final TableField<ProfileEducationRecord, UByte> IS_FULL = createField("is_full", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "是否全日制 0:没填写, 1:是, 2:否");
 
 	/**
-	 * The column <code>profileDB.profile_education.is_unified</code>. 是否统招 0:否, 1:是
+	 * The column <code>profileDB.profile_education.is_unified</code>. 是否统招 0:没填写, 1:是, 2:否
 	 */
-	public final TableField<ProfileEducationRecord, UByte> IS_UNIFIED = createField("is_unified", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "是否统招 0:否, 1:是");
+	public final TableField<ProfileEducationRecord, UByte> IS_UNIFIED = createField("is_unified", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "是否统招 0:没填写, 1:是, 2:否");
 
 	/**
-	 * The column <code>profileDB.profile_education.is_study_abroad</code>. 是否海外学习经历 0:否, 1:是
+	 * The column <code>profileDB.profile_education.is_study_abroad</code>. 是否海外学习经历 0:没填写, 1:是, 2:否
 	 */
-	public final TableField<ProfileEducationRecord, UByte> IS_STUDY_ABROAD = createField("is_study_abroad", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "是否海外学习经历 0:否, 1:是");
+	public final TableField<ProfileEducationRecord, UByte> IS_STUDY_ABROAD = createField("is_study_abroad", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "是否海外学习经历 0:没填写, 1:是, 2:否");
 
 	/**
 	 * The column <code>profileDB.profile_education.study_abroad_country</code>. 海外留学国家

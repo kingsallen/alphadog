@@ -38,7 +38,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileProjectexp extends TableImpl<ProfileProjectexpRecord> {
 
-	private static final long serialVersionUID = 1864792995;
+	private static final long serialVersionUID = 440258131;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_projectexp</code>
@@ -89,9 +89,9 @@ public class ProfileProjectexp extends TableImpl<ProfileProjectexpRecord> {
 	public final TableField<ProfileProjectexpRecord, String> COMPANY_NAME = createField("company_name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "公司名称");
 
 	/**
-	 * The column <code>profileDB.profile_projectexp.is_it</code>. 是否IT项目, 0:不是 1:是
+	 * The column <code>profileDB.profile_projectexp.is_it</code>. 是否IT项目, 0:没填写, 1:是, 2:否
 	 */
-	public final TableField<ProfileProjectexpRecord, UByte> IS_IT = createField("is_it", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "是否IT项目, 0:不是 1:是");
+	public final TableField<ProfileProjectexpRecord, UByte> IS_IT = createField("is_it", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "是否IT项目, 0:没填写, 1:是, 2:否");
 
 	/**
 	 * The column <code>profileDB.profile_projectexp.dev_tool</code>. 开发工具

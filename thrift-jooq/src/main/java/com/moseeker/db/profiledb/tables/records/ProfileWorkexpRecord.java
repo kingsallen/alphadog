@@ -30,7 +30,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileWorkexpRecord extends UpdatableRecordImpl<ProfileWorkexpRecord> {
 
-	private static final long serialVersionUID = 1528669180;
+	private static final long serialVersionUID = -2052905122;
 
 	/**
 	 * Setter for <code>profileDB.profile_workexp.id</code>. 主key
@@ -271,129 +271,143 @@ public class ProfileWorkexpRecord extends UpdatableRecordImpl<ProfileWorkexpReco
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_workexp.type</code>. 工作类型 0:没选择 1:全职 2:兼职
+	 * Setter for <code>profileDB.profile_workexp.type</code>. 工作类型 0:没选择 1:全职 2:兼职 3:实习
 	 */
 	public void setType(UByte value) {
 		setValue(17, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_workexp.type</code>. 工作类型 0:没选择 1:全职 2:兼职
+	 * Getter for <code>profileDB.profile_workexp.type</code>. 工作类型 0:没选择 1:全职 2:兼职 3:实习
 	 */
 	public UByte getType() {
 		return (UByte) getValue(17);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_workexp.address</code>. 工作地点字典编码
+	 * Setter for <code>profileDB.profile_workexp.city_code</code>. 工作地点（城市），字典编码
 	 */
-	public void setAddress(UInteger value) {
+	public void setCityCode(UInteger value) {
 		setValue(18, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_workexp.address</code>. 工作地点字典编码
+	 * Getter for <code>profileDB.profile_workexp.city_code</code>. 工作地点（城市），字典编码
 	 */
-	public UInteger getAddress() {
+	public UInteger getCityCode() {
 		return (UInteger) getValue(18);
+	}
+
+	/**
+	 * Setter for <code>profileDB.profile_workexp.city_name</code>. 工作地点（城市）名称
+	 */
+	public void setCityName(String value) {
+		setValue(19, value);
+	}
+
+	/**
+	 * Getter for <code>profileDB.profile_workexp.city_name</code>. 工作地点（城市）名称
+	 */
+	public String getCityName() {
+		return (String) getValue(19);
 	}
 
 	/**
 	 * Setter for <code>profileDB.profile_workexp.report_to</code>. 汇报对象
 	 */
 	public void setReportTo(String value) {
-		setValue(19, value);
+		setValue(20, value);
 	}
 
 	/**
 	 * Getter for <code>profileDB.profile_workexp.report_to</code>. 汇报对象
 	 */
 	public String getReportTo() {
-		return (String) getValue(19);
+		return (String) getValue(20);
 	}
 
 	/**
 	 * Setter for <code>profileDB.profile_workexp.underlings</code>. 下属人数, 0:没有下属
 	 */
 	public void setUnderlings(UInteger value) {
-		setValue(20, value);
+		setValue(21, value);
 	}
 
 	/**
 	 * Getter for <code>profileDB.profile_workexp.underlings</code>. 下属人数, 0:没有下属
 	 */
 	public UInteger getUnderlings() {
-		return (UInteger) getValue(20);
+		return (UInteger) getValue(21);
 	}
 
 	/**
 	 * Setter for <code>profileDB.profile_workexp.reference</code>. 证明人
 	 */
 	public void setReference(String value) {
-		setValue(21, value);
+		setValue(22, value);
 	}
 
 	/**
 	 * Getter for <code>profileDB.profile_workexp.reference</code>. 证明人
 	 */
 	public String getReference() {
-		return (String) getValue(21);
+		return (String) getValue(22);
 	}
 
 	/**
 	 * Setter for <code>profileDB.profile_workexp.resign_reason</code>. 离职原因
 	 */
 	public void setResignReason(String value) {
-		setValue(22, value);
+		setValue(23, value);
 	}
 
 	/**
 	 * Getter for <code>profileDB.profile_workexp.resign_reason</code>. 离职原因
 	 */
 	public String getResignReason() {
-		return (String) getValue(22);
+		return (String) getValue(23);
 	}
 
 	/**
 	 * Setter for <code>profileDB.profile_workexp.achievement</code>. 主要业绩
 	 */
 	public void setAchievement(String value) {
-		setValue(23, value);
+		setValue(24, value);
 	}
 
 	/**
 	 * Getter for <code>profileDB.profile_workexp.achievement</code>. 主要业绩
 	 */
 	public String getAchievement() {
-		return (String) getValue(23);
+		return (String) getValue(24);
 	}
 
 	/**
 	 * Setter for <code>profileDB.profile_workexp.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
-		setValue(24, value);
+		setValue(25, value);
 	}
 
 	/**
 	 * Getter for <code>profileDB.profile_workexp.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
-		return (Timestamp) getValue(24);
+		return (Timestamp) getValue(25);
 	}
 
 	/**
 	 * Setter for <code>profileDB.profile_workexp.update_time</code>. 更新时间
 	 */
 	public void setUpdateTime(Timestamp value) {
-		setValue(25, value);
+		setValue(26, value);
 	}
 
 	/**
 	 * Getter for <code>profileDB.profile_workexp.update_time</code>. 更新时间
 	 */
 	public Timestamp getUpdateTime() {
-		return (Timestamp) getValue(25);
+		return (Timestamp) getValue(26);
 	}
 
 	// -------------------------------------------------------------------------
@@ -422,7 +436,7 @@ public class ProfileWorkexpRecord extends UpdatableRecordImpl<ProfileWorkexpReco
 	/**
 	 * Create a detached, initialised ProfileWorkexpRecord
 	 */
-	public ProfileWorkexpRecord(UInteger id, UInteger profileId, Date start, Date end, UByte endUntilNow, UByte salaryType, UByte salaryCode, UInteger industryCode, String industryName, String companyName, UByte companyScale, UByte companyProperty, String companyIntroduce, String departmentName, UInteger positionCode, String positionName, String description, UByte type, UInteger address, String reportTo, UInteger underlings, String reference, String resignReason, String achievement, Timestamp createTime, Timestamp updateTime) {
+	public ProfileWorkexpRecord(UInteger id, UInteger profileId, Date start, Date end, UByte endUntilNow, UByte salaryType, UByte salaryCode, UInteger industryCode, String industryName, String companyName, UByte companyScale, UByte companyProperty, String companyIntroduce, String departmentName, UInteger positionCode, String positionName, String description, UByte type, UInteger cityCode, String cityName, String reportTo, UInteger underlings, String reference, String resignReason, String achievement, Timestamp createTime, Timestamp updateTime) {
 		super(ProfileWorkexp.PROFILE_WORKEXP);
 
 		setValue(0, id);
@@ -443,13 +457,14 @@ public class ProfileWorkexpRecord extends UpdatableRecordImpl<ProfileWorkexpReco
 		setValue(15, positionName);
 		setValue(16, description);
 		setValue(17, type);
-		setValue(18, address);
-		setValue(19, reportTo);
-		setValue(20, underlings);
-		setValue(21, reference);
-		setValue(22, resignReason);
-		setValue(23, achievement);
-		setValue(24, createTime);
-		setValue(25, updateTime);
+		setValue(18, cityCode);
+		setValue(19, cityName);
+		setValue(20, reportTo);
+		setValue(21, underlings);
+		setValue(22, reference);
+		setValue(23, resignReason);
+		setValue(24, achievement);
+		setValue(25, createTime);
+		setValue(26, updateTime);
 	}
 }

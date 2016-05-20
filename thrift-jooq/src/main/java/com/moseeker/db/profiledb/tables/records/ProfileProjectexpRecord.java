@@ -33,7 +33,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileProjectexpRecord extends UpdatableRecordImpl<ProfileProjectexpRecord> implements Record19<UInteger, UInteger, Date, Date, UByte, String, String, UByte, String, String, String, String, String, String, String, String, String, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = -1319271284;
+	private static final long serialVersionUID = 1305048578;
 
 	/**
 	 * Setter for <code>profileDB.profile_projectexp.id</code>. 主key
@@ -134,14 +134,14 @@ public class ProfileProjectexpRecord extends UpdatableRecordImpl<ProfileProjecte
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_projectexp.is_it</code>. 是否IT项目, 0:不是 1:是
+	 * Setter for <code>profileDB.profile_projectexp.is_it</code>. 是否IT项目, 0:没填写, 1:是, 2:否
 	 */
 	public void setIsIt(UByte value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_projectexp.is_it</code>. 是否IT项目, 0:不是 1:是
+	 * Getter for <code>profileDB.profile_projectexp.is_it</code>. 是否IT项目, 0:没填写, 1:是, 2:否
 	 */
 	public UByte getIsIt() {
 		return (UByte) getValue(7);

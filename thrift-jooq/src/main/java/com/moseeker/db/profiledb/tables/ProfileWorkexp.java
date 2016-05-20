@@ -38,7 +38,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileWorkexp extends TableImpl<ProfileWorkexpRecord> {
 
-	private static final long serialVersionUID = -82620058;
+	private static final long serialVersionUID = 57212370;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_workexp</code>
@@ -139,14 +139,19 @@ public class ProfileWorkexp extends TableImpl<ProfileWorkexpRecord> {
 	public final TableField<ProfileWorkexpRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.VARCHAR.length(1000).nullable(false).defaulted(true), this, "工作描述");
 
 	/**
-	 * The column <code>profileDB.profile_workexp.type</code>. 工作类型 0:没选择 1:全职 2:兼职
+	 * The column <code>profileDB.profile_workexp.type</code>. 工作类型 0:没选择 1:全职 2:兼职 3:实习
 	 */
-	public final TableField<ProfileWorkexpRecord, UByte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "工作类型 0:没选择 1:全职 2:兼职");
+	public final TableField<ProfileWorkexpRecord, UByte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "工作类型 0:没选择 1:全职 2:兼职 3:实习");
 
 	/**
-	 * The column <code>profileDB.profile_workexp.address</code>. 工作地点字典编码
+	 * The column <code>profileDB.profile_workexp.city_code</code>. 工作地点（城市），字典编码
 	 */
-	public final TableField<ProfileWorkexpRecord, UInteger> ADDRESS = createField("address", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "工作地点字典编码");
+	public final TableField<ProfileWorkexpRecord, UInteger> CITY_CODE = createField("city_code", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "工作地点（城市），字典编码");
+
+	/**
+	 * The column <code>profileDB.profile_workexp.city_name</code>. 工作地点（城市）名称
+	 */
+	public final TableField<ProfileWorkexpRecord, String> CITY_NAME = createField("city_name", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "工作地点（城市）名称");
 
 	/**
 	 * The column <code>profileDB.profile_workexp.report_to</code>. 汇报对象
