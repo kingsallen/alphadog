@@ -79,17 +79,18 @@ struct Education {
     4: Timestamp end_date, 
     5: i16 end_until_now,
     6: i16 degree,
-    7: i16 school_code,
-    8: string school_name,
-    9: string major_code,
-    10: string major_name,
-    11: string description, 
-    12: i16 is_full,
-    13: i16 is_unified,
-    14: i16 is_study_abroad,
-    15: string study_abroad_country,
-    16: Timestamp create_time,
-    17: Timestamp update_time
+    7: i16 college_code,
+    8: string college_name,
+    9: string college_logo,
+    10: string major_code,
+    11: string major_name,
+    12: string description, 
+    13: i16 is_full,
+    14: i16 is_unified,
+    15: i16 is_study_abroad,
+    16: string study_abroad_country,
+    17: Timestamp create_time,
+    18: Timestamp update_time
 }
 
 struct ProfileImport { 

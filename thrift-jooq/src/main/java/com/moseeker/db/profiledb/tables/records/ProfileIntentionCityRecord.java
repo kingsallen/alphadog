@@ -4,15 +4,16 @@
 package com.moseeker.db.profiledb.tables.records;
 
 
+import com.moseeker.db.profiledb.tables.ProfileIntentionCity;
+
 import javax.annotation.Generated;
 
 import org.jooq.Field;
+import org.jooq.Record1;
 import org.jooq.Record3;
 import org.jooq.Row3;
 import org.jooq.impl.UpdatableRecordImpl;
 import org.jooq.types.UInteger;
-
-import com.moseeker.db.profiledb.tables.ProfileIntentionCity;
 
 
 /**
@@ -28,7 +29,7 @@ import com.moseeker.db.profiledb.tables.ProfileIntentionCity;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileIntentionCityRecord extends UpdatableRecordImpl<ProfileIntentionCityRecord> implements Record3<UInteger, UInteger, String> {
 
-	private static final long serialVersionUID = -40097800;
+	private static final long serialVersionUID = -859689619;
 
 	/**
 	 * Setter for <code>profileDB.profile_intention_city.profile_intention_id</code>. profile_intention.id
@@ -70,6 +71,18 @@ public class ProfileIntentionCityRecord extends UpdatableRecordImpl<ProfileInten
 	 */
 	public String getCityName() {
 		return (String) getValue(2);
+	}
+
+	// -------------------------------------------------------------------------
+	// Primary key information
+	// -------------------------------------------------------------------------
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Record1<UInteger> key() {
+		return (Record1) super.key();
 	}
 
 	// -------------------------------------------------------------------------

@@ -15,7 +15,6 @@ import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
 import com.moseeker.db.profiledb.tables.ProfileIntentionPosition;
 import com.moseeker.db.profiledb.tables.records.ProfileIntentionPositionRecord;
-import com.moseeker.db.userdb.tables.UserUser;
 import com.moseeker.profile.dao.IntentionPositionDao;
 
 @Repository
@@ -41,9 +40,9 @@ public class IntentionPositionDaoImpl extends
 			if(cityCodes != null && cityCodes.size() > 0) {
 				for(int i=0; i<cityCodes.size(); i++) {
 					if(i == 0) {
-						selectCondition = select.where(UserUser.USER_USER.ID.equal(UInteger.valueOf(cityCodes.get(i))));
+						selectCondition = select.where(ProfileIntentionPosition.PROFILE_INTENTION_POSITION.POSITION_CODE.equal(UInteger.valueOf(cityCodes.get(i))));
 					} else {
-						selectCondition.or(UserUser.USER_USER.ID.equal(UInteger.valueOf(cityCodes.get(i))));
+						selectCondition.or(ProfileIntentionPosition.PROFILE_INTENTION_POSITION.POSITION_CODE.equal(UInteger.valueOf(cityCodes.get(i))));
 					}
 				}
 			}

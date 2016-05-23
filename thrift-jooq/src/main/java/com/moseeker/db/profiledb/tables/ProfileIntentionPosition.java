@@ -4,14 +4,19 @@
 package com.moseeker.db.profiledb.tables;
 
 
+import com.moseeker.db.profiledb.Keys;
 import com.moseeker.db.profiledb.Profiledb;
 import com.moseeker.db.profiledb.tables.records.ProfileIntentionPositionRecord;
+
+import java.util.Arrays;
+import java.util.List;
 
 import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.Table;
 import org.jooq.TableField;
+import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
 import org.jooq.types.UInteger;
 
@@ -29,7 +34,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileIntentionPosition extends TableImpl<ProfileIntentionPositionRecord> {
 
-	private static final long serialVersionUID = -1165285839;
+	private static final long serialVersionUID = 464310664;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_intention_position</code>
@@ -79,6 +84,22 @@ public class ProfileIntentionPosition extends TableImpl<ProfileIntentionPosition
 
 	private ProfileIntentionPosition(String alias, Table<ProfileIntentionPositionRecord> aliased, Field<?>[] parameters) {
 		super(alias, Profiledb.PROFILEDB, aliased, parameters, "Profile的求职意向-职能关系表");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public UniqueKey<ProfileIntentionPositionRecord> getPrimaryKey() {
+		return Keys.KEY_PROFILE_INTENTION_POSITION_PRIMARY;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<UniqueKey<ProfileIntentionPositionRecord>> getKeys() {
+		return Arrays.<UniqueKey<ProfileIntentionPositionRecord>>asList(Keys.KEY_PROFILE_INTENTION_POSITION_PRIMARY);
 	}
 
 	/**

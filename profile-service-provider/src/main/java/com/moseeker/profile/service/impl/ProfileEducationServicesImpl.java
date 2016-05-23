@@ -82,8 +82,8 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 				List<String> majorCodes = new ArrayList<>();
 				educations.forEach(education -> {
 					//cityCodes.add(basic.getCity());
-					if(education.getSchool_code() > 0 && StringUtils.isNullOrEmpty(education.getSchool_name())) {
-						collegeCodes.add((int)education.getSchool_code());
+					if(education.getCollege_code() > 0 && StringUtils.isNullOrEmpty(education.getCollege_name())) {
+						collegeCodes.add((int)education.getCollege_code());
 					}
 					if(!StringUtils.isNullOrEmpty(education.getMajor_code()) && StringUtils.isNullOrEmpty(education.getMajor_name())) {
 						majorCodes.add(education.getMajor_code());
@@ -94,8 +94,8 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 				if(colleges != null && colleges.size() > 0) {
 					for(Education education : educations) {
 						for(DictCollegeRecord college : colleges) {
-							if(education.getSchool_code() == college.getCode().intValue()) {
-								education.setSchool_name(college.getName());
+							if(education.getCollege_code() == college.getCode().intValue()) {
+								education.getCollege_name().equals(college.getName());
 								break;
 							}
 						}

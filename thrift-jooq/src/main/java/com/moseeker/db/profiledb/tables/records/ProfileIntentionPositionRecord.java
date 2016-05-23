@@ -4,15 +4,16 @@
 package com.moseeker.db.profiledb.tables.records;
 
 
+import com.moseeker.db.profiledb.tables.ProfileIntentionPosition;
+
 import javax.annotation.Generated;
 
 import org.jooq.Field;
+import org.jooq.Record1;
 import org.jooq.Record3;
 import org.jooq.Row3;
 import org.jooq.impl.UpdatableRecordImpl;
 import org.jooq.types.UInteger;
-
-import com.moseeker.db.profiledb.tables.ProfileIntentionPosition;
 
 
 /**
@@ -28,7 +29,7 @@ import com.moseeker.db.profiledb.tables.ProfileIntentionPosition;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileIntentionPositionRecord extends UpdatableRecordImpl<ProfileIntentionPositionRecord> implements Record3<UInteger, UInteger, String> {
 
-	private static final long serialVersionUID = -605052517;
+	private static final long serialVersionUID = 541795788;
 
 	/**
 	 * Setter for <code>profileDB.profile_intention_position.profile_intention_id</code>. profile_intention.id
@@ -70,6 +71,18 @@ public class ProfileIntentionPositionRecord extends UpdatableRecordImpl<ProfileI
 	 */
 	public String getPositionName() {
 		return (String) getValue(2);
+	}
+
+	// -------------------------------------------------------------------------
+	// Primary key information
+	// -------------------------------------------------------------------------
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Record1<UInteger> key() {
+		return (Record1) super.key();
 	}
 
 	// -------------------------------------------------------------------------

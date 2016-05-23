@@ -12,9 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.Constant;
+import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.db.dictdb.tables.records.DictCountryRecord;
+import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileAwardsRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileBasicRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileCredentialsRecord;
@@ -32,6 +36,7 @@ import com.moseeker.db.profiledb.tables.records.ProfileWorksRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.profile.dao.AttachmentDao;
 import com.moseeker.profile.dao.AwardsDao;
+import com.moseeker.profile.dao.CompanyDao;
 import com.moseeker.profile.dao.CountryDao;
 import com.moseeker.profile.dao.CredentialsDao;
 import com.moseeker.profile.dao.EducationDao;
@@ -104,17 +109,21 @@ public class WholeProfileServicesImpl implements Iface {
 				
 				List<Map<String, Object>> intentions = buildsIntentions(profileRecord, query);
 				profile.put("intentions", intentions);
+				response.setStatus(0);
+				response.setMessage(Constant.TIPS_SUCCESS);
+				//Gson gson = new Gson();
+				response.setData(JSON.toJSONString(profile));
+				//response.setData(gson.toJson(profile));
+			} else {
+				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 			}
-			response.setStatus(0);
-			response.setMessage(Constant.TIPS_SUCCESS);
-			//Gson gson = new Gson();
-			response.setData(JSON.toJSONString(profile));
-			//response.setData(gson.toJson(profile));
 		} catch (Exception e) {
-			logger.error("//todo",e);
+			logger.error(e.getMessage(),e);
 			response.setStatus(0);
 			response.setMessage(Constant.TIPS_ERROR);
 			response.setData(Constant.NONE_JSON);
+		} finally {
+			//do nothing
 		}
 		return response;
 	}
@@ -326,8 +335,8 @@ public class WholeProfileServicesImpl implements Iface {
 				records.forEach(record -> {
 					Map<String, Object> map = new HashMap<String, Object>();
 					map.put("id", record.getId());
-					map.put("school_name", record.getSchoolName());
-					map.put("school_code", record.getSchoolCode());
+					map.put("school_name", record.getCollegeName());
+					map.put("school_code", record.getCollegeCode());
 					map.put("major_name", record.getMajorName());
 					map.put("major_code", record.getMajorCode());
 					map.put("degree", record.getDegree());
@@ -358,7 +367,8 @@ public class WholeProfileServicesImpl implements Iface {
 				records.forEach(record -> {
 					Map<String, Object> map = new HashMap<String, Object>();
 					map.put("id", record.getId().intValue());
-					map.put("company_name", record.getCompanyName());
+					record.getCompanyId();
+					map.put("company_name", record);
 					map.put("position_name", record.getPositionName());
 					map.put("position_code", record.getPositionCode());
 					map.put("department_name", record.getDepartmentName());
@@ -387,17 +397,26 @@ public class WholeProfileServicesImpl implements Iface {
 		try {
 			ProfileBasicRecord basicRecord = profileBasicDao.getResource(query);
 			UserUserRecord userRecord = userDao.getUserById(profileRecord.getUserId().intValue());
-			ProfileWorkexpRecord lastWorkExp = workExpDao.getLastWorkExp(profileRecord.getUserId().intValue());
+			ProfileWorkexpRecord lastWorkExp = workExpDao.getLastWorkExp(profileRecord.getId().intValue());
+			HrCompanyRecord company = null;
+			if(lastWorkExp != null) {
+				QueryUtil queryUtils = new QueryUtil();
+				queryUtils.addEqualFilter("id", lastWorkExp.getCompanyId().toString());
+				company = companyDao.getResource(queryUtils);
+			}
+			
 			if(userRecord != null) {
 				map.put("headimg", userRecord.getHeadimg());
 				map.put("mobile", userRecord.getMobile());
 				map.put("email", userRecord.getEmail());
 			}
 			if(lastWorkExp != null) {
-				map.put("company_name", lastWorkExp.getCompanyName());
+				if(company != null) {
+					map.put("company_name", company.getName());
+					map.put("company_scale", company.getScale());
+				}
 				map.put("industry_name", lastWorkExp.getIndustryName());
 				map.put("industry_code", lastWorkExp.getIndustryCode());
-				map.put("company_scale", lastWorkExp.getCompanyScale());
 				map.put("location_code", lastWorkExp.getCityCode());
 				map.put("position_name", lastWorkExp.getPositionName());
 				map.put("city_name", lastWorkExp.getCityName());
@@ -431,6 +450,9 @@ public class WholeProfileServicesImpl implements Iface {
 	
 	@Autowired
 	private IntentionCityDao intentionCityDao;
+	
+	@Autowired
+	private CompanyDao companyDao;
 	
 	@Autowired
 	private IntentionPositionDao intentionPositionDao;
@@ -633,5 +655,13 @@ public class WholeProfileServicesImpl implements Iface {
 
 	public void setIntentionIndustryDao(IntentionIndustryDao intentionIndustryDao) {
 		this.intentionIndustryDao = intentionIndustryDao;
+	}
+
+	public CompanyDao getCompanyDao() {
+		return companyDao;
+	}
+
+	public void setCompanyDao(CompanyDao companyDao) {
+		this.companyDao = companyDao;
 	}
 }
