@@ -92,7 +92,7 @@ public class BeanUtils {
 									String origMethodName = buiderRecordMethodName(field.getName(), MethodType.SET, equalRules);
 									for(k=0; k<origMethods.length;k++) {
 										if(origMethods[k].getName().trim().equals(origMethodName)) {
-											Object object = convertTo(destMethods[j].invoke(dest, new Object[]{}), origMethods[k].getParameterTypes()[0]);
+ 											Object object = convertTo(destMethods[j].invoke(dest, new Object[]{}), origMethods[k].getParameterTypes()[0]);
 											if(object != null) {
 												origMethods[k].invoke(orig, object);
 											}
@@ -399,6 +399,8 @@ public class BeanUtils {
 			return (UByte)value;
 		} else if (value instanceof UShort) {
 			return UByte.valueOf(((UShort)value).shortValue());
+		} else if (value instanceof Short) {
+			return UByte.valueOf(((Short)value).shortValue());
 		} else {
 			return null;
 		}
