@@ -56,6 +56,7 @@ public class DefaultInvoker<T> implements Invoker {
 
         for (int i = 0; i == 0 || i < retry + 1; i++) {
             try {
+                System.out.println("hostSet getAll size : " + hostSet.getAll().size());
                 serverNode = LoadBalance.nextBackend(hostSet);
                 LOGGER.info(serverNode.toString());
                 if (serverNode == null) {
@@ -70,6 +71,10 @@ public class DefaultInvoker<T> implements Invoker {
               //  cause.getMessage()
                 if (cause != null) {
                     if (cause instanceof TTransportException) {
+
+                        // 超时
+                        hostSet.addDeadInstance(serverNode); // 加入dead集合中
+
                         exception = cause;
                         try {
                             // XXX:这里直接清空pool,否则会出现连接慢恢复的现象
@@ -83,7 +88,7 @@ public class DefaultInvoker<T> implements Invoker {
                         } catch (Exception e) {
                             LOGGER.error(e.getMessage(), e);
                         }
-                      //  client = null; // 这里是为了防止后续return回pool中
+                        client = null; // 这里是为了防止后续return回pool中
                     } else {
                         exception = cause;
                     }
