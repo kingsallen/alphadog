@@ -36,7 +36,7 @@ public class CityController {
             Response result = cityServices.getResources(query);
             //jsonStringResponse = JSON.toJSONString(result);
 
-            return ResponseLogNotification.success(request, result);
+            return ResponseLogNotification.successWithParse(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
