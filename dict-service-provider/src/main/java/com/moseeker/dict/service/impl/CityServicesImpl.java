@@ -1,30 +1,28 @@
 package com.moseeker.dict.service.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.moseeker.common.exception.CacheConfigNotExistException;
-import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.redis.RedisCallback;
-import com.moseeker.common.redis.RedisClient;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dict.service.CityServices;
-import org.apache.thrift.TException;
-import org.jooq.util.derby.sys.Sys;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import com.moseeker.db.dictdb.tables.DictCity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.apache.thrift.TException;
+import com.alibaba.fastjson.JSON;
 
+import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.redis.RedisClientFactory;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dict.struct.City;
 import com.moseeker.thrift.gen.dict.service.CityServices.Iface;
 import com.moseeker.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.dict.dao.CityDao;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
-
-import java.util.HashMap;
-import java.util.List;
 
 
 @Service
@@ -64,7 +62,7 @@ public class CityServicesImpl extends JOOQBaseServiceImpl<City, DictCityRecord> 
                 return r;
             });
             result = JSON.parseObject(cachedResult, Response.class);
-        } catch (CacheConfigNotExistException e) {
+        } catch (Exception e) {
             logger.error(String.format("CacheConfigNotExistException, tempting key: %s"), cachKey);
             List<City> r = super.getRawResources(query);
             HashMap transformed = transformData(r);
@@ -75,12 +73,11 @@ public class CityServicesImpl extends JOOQBaseServiceImpl<City, DictCityRecord> 
     }
 
     private HashMap transformData(List<City> s) {
-        HashMap hm = new HashMap();
-        hm.put("86", new HashMap());
-        for (City city : s) {
-            CityUtils.put(hm, city);
-        }
+
+        DictCityHashMap dictCity = new DictCityHashMap(s);
+        HashMap hm = dictCity.getHashMap();
         return hm;
+
     }
 
     @Override
@@ -93,30 +90,73 @@ public class CityServicesImpl extends JOOQBaseServiceImpl<City, DictCityRecord> 
     }
 }
 
-class CityUtils {
+class DictCityHashMap {
 
     static final int PROVINCE = 1;
     static final int CITY = 2;
     static final int DISTRICT = 3;
+    static final String[][] groups = {{"A", "G"}, {"H", "K"}, {"L", "S"}, {"T", "Z"}};
+    private HashMap hm;
+
+    public DictCityHashMap(List<City> s) {
+        hm = new HashMap();
+        HashMap provinces = new HashMap();
+        for(String[] group: groups) {
+            String concatGroup = concatGroup(group);
+            provinces.put(concatGroup, new ArrayList());
+        }
+        hm.put("86", provinces);
+        for (City city : s) {
+            DictCityHashMap.put(hm, city);
+        }
+    }
+
+    public HashMap getHashMap(){
+        return this.hm;
+    }
+
+    static String concatGroup(String[] group) {
+        return (group[0] + "-" + group[1]).toUpperCase();
+    }
 
     static void put(HashMap hm, City city) {
         switch (city.level) {
             case PROVINCE: // province
-                CityUtils.putProvince(hm, city);
+                DictCityHashMap.putProvince(hm, city);
                 break;
             case CITY: // city
-                CityUtils.putCity(hm, city);
+                DictCityHashMap.putCity(hm, city);
                 break;
             case DISTRICT: // district
-                CityUtils.putDistrict(hm, city);
+                DictCityHashMap.putDistrict(hm, city);
                 break;
         }
+    }
+
+    static String getGroup(String letter) {
+        String g = null;
+        for(String[] group: groups) {
+            if(letter.compareToIgnoreCase(group[0]) >= 0 && letter.compareToIgnoreCase(group[1]) <= 0) {
+                g = concatGroup(group);
+                break;
+            }
+        }
+        return g;
     }
 
     static void putProvince(HashMap hm, City city) {
         if (!hm.containsKey("" + city.code)) {
             hm.put("" + city.code, new HashMap());
         }
+        // 按首字母分区的
+        String initialLetter = city.ename.substring(0, 1).toUpperCase();
+        System.out.println(initialLetter);
+        String group = getGroup(initialLetter);
+        List goupedProvinces = (List)((HashMap)hm.get("86")).get(group);
+        HashMap province = new HashMap();
+        province.put("code", city.code+"");
+        province.put("address", city.name);
+        goupedProvinces.add(province);
     }
 
     static void putCity(HashMap hm, City city) {
@@ -143,7 +183,3 @@ class CityUtils {
     }
 
 }
-
-
-
-
