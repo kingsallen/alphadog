@@ -4,6 +4,8 @@ import java.text.MessageFormat;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.imps.CuratorFrameworkState;
+import org.apache.curator.framework.state.ConnectionState;
+import org.apache.curator.framework.state.ConnectionStateListener;
 import org.apache.zookeeper.CreateMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,9 +45,40 @@ public class ZkServerRegistry implements IRegistry{
 
         if (zookeeper.getState() == CuratorFrameworkState.LATENT) {
             zookeeper.start();
+            zookeeper.newNamespaceAwareEnsurePath(zkPath);
         }
 
+        addListener(config);
         build(config);
+    }
+
+    /**
+     * 添加监听器，防止网络异常或者zookeeper挂掉的情况
+     * <p>
+     *
+     * @param config
+     *            配置信息
+     */
+    private void addListener(final String config) {
+        zookeeper.getConnectionStateListenable().addListener(new ConnectionStateListener() {
+            @Override
+            public void stateChanged(CuratorFramework curatorFramework, ConnectionState connectionState) {
+                if (connectionState == ConnectionState.LOST) {// session过期的情况
+                    while (true) {
+                        try {
+                            if (curatorFramework.getZookeeperClient().blockUntilConnectedOrTimedOut()) {
+                                if (build(config)) {
+                                    break;
+                                }
+                            }
+                        } catch (Exception e) {
+                            LOGGER.error(e.getMessage(), e);
+                            break;
+                        }
+                    }
+                }
+            }
+        });
     }
 
     /**
