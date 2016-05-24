@@ -34,9 +34,10 @@ public class SearchengineController {
 	@ResponseBody
 	public String postuserlogin(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			userloginreq userloginreqs = ParamUtils.initModelForm(request, userloginreq.class);
-			
-			Response result = searchengineServices.query("java", null);
+			Map<String, Object> reqParams = ParamUtils.mergeRequestParameters(request);
+			String keywords = BeanUtils.converToString(reqParams.get("keywords"));
+			System.out.println(keywords);
+			Response result = searchengineServices.query(keywords, null);
 			if (result.getStatus() == 0){
 				return ResponseLogNotification.success(request, result);
 			}else{
@@ -47,4 +48,6 @@ public class SearchengineController {
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}
+
+
 }
