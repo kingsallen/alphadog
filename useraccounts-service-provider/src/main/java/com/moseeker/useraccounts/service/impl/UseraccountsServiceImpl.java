@@ -29,7 +29,8 @@ import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Iface;
-import com.moseeker.thrift.gen.useraccounts.struct.userloginreq;
+import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
+import com.moseeker.thrift.gen.useraccounts.struct.Usersetting;
 import com.moseeker.useraccounts.dao.UserDao;
 import com.moseeker.useraccounts.dao.impl.LogUserLoginDaoImpl;
 import com.moseeker.useraccounts.dao.impl.ProfileDaoImpl;
@@ -53,7 +54,7 @@ public class UseraccountsServiceImpl implements Iface {
 	protected ProfileDaoImpl profileDao = new ProfileDaoImpl();
 
 	public static void main(String[] args) {
-		userloginreq userlogin = new userloginreq();
+		Userloginreq userlogin = new Userloginreq();
 		userlogin.setMobile("13818252514");
 		// userlogin.setPassword("123456");
 
@@ -74,7 +75,7 @@ public class UseraccountsServiceImpl implements Iface {
 	 * 用户登陆， 返回用户登陆后的信息。
 	 */
 	@Override
-	public Response postuserlogin(userloginreq userloginreq) throws TException {
+	public Response postuserlogin(Userloginreq userloginreq) throws TException {
 		// TODO to add login log
 		CommonQuery query = new CommonQuery();
 		int parentid = -1;
@@ -689,7 +690,6 @@ public class UseraccountsServiceImpl implements Iface {
 		}
 
 		return false;
-	}
-	
+	}	
 	
 }

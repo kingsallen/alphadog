@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserSettings extends TableImpl<UserSettingsRecord> {
 
-	private static final long serialVersionUID = 1602752680;
+	private static final long serialVersionUID = -955406161;
 
 	/**
 	 * The reference instance of <code>userDB.user_settings</code>
@@ -65,9 +65,9 @@ public class UserSettings extends TableImpl<UserSettingsRecord> {
 	public final TableField<UserSettingsRecord, String> BANNER_URL = createField("banner_url", org.jooq.impl.SQLDataType.VARCHAR.length(256), this, "profile banner 的qiniu 相对url");
 
 	/**
-	 * The column <code>userDB.user_settings.motto</code>. 个性签名
+	 * The column <code>userDB.user_settings.privacy_policy</code>. 0 公开   10  仅对hr公开   20 完全保密
 	 */
-	public final TableField<UserSettingsRecord, String> MOTTO = createField("motto", org.jooq.impl.SQLDataType.VARCHAR.length(128), this, "个性签名");
+	public final TableField<UserSettingsRecord, Byte> PRIVACY_POLICY = createField("privacy_policy", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "0 公开   10  仅对hr公开   20 完全保密");
 
 	/**
 	 * Create a <code>userDB.user_settings</code> table reference

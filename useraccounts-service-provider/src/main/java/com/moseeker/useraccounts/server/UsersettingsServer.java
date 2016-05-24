@@ -5,9 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.moseeker.rpccenter.common.ServerNodeUtils;
-import com.moseeker.rpccenter.main.MultiRegServer;
 import com.moseeker.rpccenter.main.Server;
-import com.moseeker.useraccounts.service.impl.UseraccountsServiceImpl;
+import com.moseeker.useraccounts.service.impl.UsersettingsServicesImpl;
 
 /**
  * 
@@ -23,24 +22,24 @@ import com.moseeker.useraccounts.service.impl.UseraccountsServiceImpl;
  * @author yaofeng
  * @version Beta
  */
-public class UseraccountsServer {
+public class UsersettingsServer {
 	
-	private static Logger LOGGER = LoggerFactory.getLogger(UseraccountsServer.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(UsersettingsServer.class);
 	
 	public static void main(String[] args) {
 
 		try {
 			AnnotationConfigApplicationContext acac = initSpring();
-			Server server = new Server(UseraccountsServer.class,
+			Server server = new Server(UsersettingsServer.class,
 					ServerNodeUtils.getPort(args),
-					acac.getBean(UseraccountsServiceImpl.class));
+					acac.getBean(UsersettingsServicesImpl.class));
 			
 			server.start(); // 启动服务，非阻塞
 
-			synchronized (UseraccountsServer.class) {
+			synchronized (UsersettingsServer.class) {
 				while (true) {
 					try {
-						UseraccountsServer.class.wait();
+						UsersettingsServer.class.wait();
 					} catch (InterruptedException e) {
 						LOGGER.error("error", e);
 					}
