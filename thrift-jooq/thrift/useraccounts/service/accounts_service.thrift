@@ -23,7 +23,7 @@ service UseraccountsServices {
     common_struct.Response postresetmobile(1: i32 user_id, 2: string newmobile, 3:string code);
 }
 
-service UsersettingServices { 
+service UsersettingServices {
     common_struct.Response getResource(1:common_struct.CommonQuery query);
     common_struct.Response putResource(1: useraccounts_struct.Usersetting usersetting);
 }

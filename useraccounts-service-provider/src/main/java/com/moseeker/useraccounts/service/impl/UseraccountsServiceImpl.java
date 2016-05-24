@@ -30,6 +30,7 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
+import com.moseeker.thrift.gen.useraccounts.struct.Usersetting;
 import com.moseeker.useraccounts.dao.UserDao;
 import com.moseeker.useraccounts.dao.impl.LogUserLoginDaoImpl;
 import com.moseeker.useraccounts.dao.impl.ProfileDaoImpl;
@@ -689,7 +690,6 @@ public class UseraccountsServiceImpl implements Iface {
 		}
 
 		return false;
-	}
-	
+	}	
 	
 }

@@ -20,7 +20,9 @@ import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
+import com.moseeker.thrift.gen.useraccounts.service.UsersettingServices;
 import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
+import com.moseeker.thrift.gen.useraccounts.struct.Usersetting;
 
 @Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
@@ -29,6 +31,7 @@ public class UseraccountsController {
 	Logger logger = LoggerFactory.getLogger(UseraccountsController.class);
 
 	UseraccountsServices.Iface useraccountsServices = ServiceUtil.getService(UseraccountsServices.Iface.class);
+	UsersettingServices.Iface usersettingServices =  ServiceUtil.getService(UsersettingServices.Iface.class);
 	
 	@RequestMapping(value = "/user/login", method = RequestMethod.POST)
 	@ResponseBody
@@ -365,5 +368,28 @@ public class UseraccountsController {
 						}
 					}				
 	
-	
+
+					
+					/**
+					 * 查询当前用户设置。
+					 * @param request
+					 * @param response
+					 * @return
+					 */
+						@RequestMapping(value = "/user/settings", method = RequestMethod.GET)
+						@ResponseBody
+						public String getusersettings(HttpServletRequest request, HttpServletResponse response) {
+							try {
+								CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
+								Response result = usersettingServices.getResource(query);
+								if (result.getStatus() == 0){
+									return ResponseLogNotification.success(request, result);
+								}else{
+									return ResponseLogNotification.fail(request, result);
+								}
+								
+							} catch (Exception e) {	
+								return ResponseLogNotification.fail(request, e.getMessage());
+							}
+						}							
 }
