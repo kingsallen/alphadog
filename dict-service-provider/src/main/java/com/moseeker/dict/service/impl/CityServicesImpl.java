@@ -49,8 +49,12 @@ public class CityServicesImpl extends JOOQBaseServiceImpl<City, DictCityRecord> 
         String cachKey = genCachKey(query);
         String cachedResult = null;
         Response result = null;
+        String patternString = "DICT_CITY";
+        int appid = 0; // query.appid
         try {
-            cachedResult = rc.get(query.appid, "DICT_CITY", cachKey, () -> {
+            // 缓存表project_appid字段为0可视为对一切app_id开放
+            // 此处请求将appid设置为0, 城市字典表允许来自一切的app_id缓存
+            cachedResult = rc.get(appid, patternString, cachKey, () -> {
                 String r = null;
                 try {
                     List<City> cities = super.getRawResources(query);
@@ -63,7 +67,7 @@ public class CityServicesImpl extends JOOQBaseServiceImpl<City, DictCityRecord> 
             });
             result = JSON.parseObject(cachedResult, Response.class);
         } catch (Exception e) {
-            logger.error(String.format("CacheConfigNotExistException, tempting key: %s"), cachKey);
+            logger.error("CacheConfigNotExistException, appid: %d, cachkey: %s, pattern_string: %s", appid, cachKey, patternString);
             List<City> r = super.getRawResources(query);
             HashMap transformed = transformData(r);
             result = ResponseUtils.success(transformed);
