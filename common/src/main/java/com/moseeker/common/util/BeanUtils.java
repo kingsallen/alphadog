@@ -38,6 +38,11 @@ public class BeanUtils {
 	
 	private static Logger logger = LoggerFactory.getLogger(BeanUtils.class);
 	
+	public static void main(String[] args) {
+		String str = "110108";
+		System.out.println(Short.valueOf(str));
+	}
+	
 	@SuppressWarnings("rawtypes")
 	public static UpdatableRecordImpl structToDB(TBase dest, Class<? extends UpdatableRecordImpl> origClazz, Map<String, String> equalRules) {
 		UpdatableRecordImpl orig = null;
@@ -491,7 +496,7 @@ public class BeanUtils {
 	private static java.sql.Timestamp convertToSQLTimestamp(Object value) {
 		if (value instanceof String) {
 			try {
-				return new java.sql.Timestamp(DateUtils.nomalDateToDate((String)value).getTime());
+				return new java.sql.Timestamp(DateUtils.shortTimeToDate((String)value).getTime());
 			} catch (ParseException e) {
 				return null;
 			}
@@ -845,6 +850,8 @@ public class BeanUtils {
 	public static String converToString(Object value) {
 		if (value instanceof String) {
 			return (String) value;
+		} else if(value instanceof java.sql.Timestamp) {
+			return DateUtils.dateToShortTime(((java.sql.Timestamp)value));
 		} else if(value instanceof Date) {
 			return DateUtils.dateToNormalDate(((Date)value));
 		} else if (value != null) {

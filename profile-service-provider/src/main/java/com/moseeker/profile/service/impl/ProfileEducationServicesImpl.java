@@ -113,7 +113,7 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 						}
 					}
 				}
-				//return ResponseUtils.success(records);
+				return ResponseUtils.success(educations);
 			}
 		} catch (Exception e) {
 			logger.error("getResources error", e);
@@ -126,8 +126,27 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 
 	@Override
 	public Response getResource(CommonQuery query) throws TException {
-		
-		return super.getResource(query);
+		try {
+			ProfileEducationRecord educationRecord = dao.getResource(query);
+			if(educationRecord != null) {
+				Education education = DBToStruct(educationRecord);
+				DictCollegeRecord college = collegeDao.getCollegeByID(educationRecord.getCollegeCode().intValue());
+				if(college != null) {
+					education.setCollege_name(college.getName());
+				}
+				DictMajorRecord major = majorDao.getMajorByID(educationRecord.getMajorCode());
+				if(major != null) {
+					education.setMajor_name(major.getName());
+				}
+				return ResponseUtils.success(educationRecord);
+			}
+		} catch (Exception e) {
+			logger.error("getResources error", e);
+			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		} finally {
+			//do nothing
+		}
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 	}
 
 	@Override

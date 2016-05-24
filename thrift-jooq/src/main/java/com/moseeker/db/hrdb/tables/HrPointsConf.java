@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrPointsConf extends TableImpl<HrPointsConfRecord> {
 
-	private static final long serialVersionUID = -936728572;
+	private static final long serialVersionUID = 2066325865;
 
 	/**
 	 * The reference instance of <code>hrDB.hr_points_conf</code>
@@ -87,6 +87,11 @@ public class HrPointsConf extends TableImpl<HrPointsConfRecord> {
 	public final TableField<HrPointsConfRecord, Byte> ORDER_NUM = createField("order_num", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "优先级");
 
 	/**
+	 * The column <code>hrDB.hr_points_conf._update_time</code>.
+	 */
+	public final TableField<HrPointsConfRecord, Timestamp> _UPDATE_TIME = createField("_update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
+
+	/**
 	 * The column <code>hrDB.hr_points_conf.tag</code>.
 	 */
 	public final TableField<HrPointsConfRecord, String> TAG = createField("tag", org.jooq.impl.SQLDataType.VARCHAR.length(30), this, "");
@@ -125,11 +130,6 @@ public class HrPointsConf extends TableImpl<HrPointsConfRecord> {
 	 * The column <code>hrDB.hr_points_conf.template_id</code>. 申请状态模板ID，hr_award_config_template.id
 	 */
 	public final TableField<HrPointsConfRecord, UInteger> TEMPLATE_ID = createField("template_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "申请状态模板ID，hr_award_config_template.id");
-
-	/**
-	 * The column <code>hrDB.hr_points_conf.update_time</code>.
-	 */
-	public final TableField<HrPointsConfRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
 
 	/**
 	 * Create a <code>hrDB.hr_points_conf</code> table reference

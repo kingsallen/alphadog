@@ -57,7 +57,7 @@ public class ClientConfig<T> implements IConfigCheck{
 
     // 下面的配置项是连接池的基本配置
     /** 超时时间，单位为ms，默认为3s */
-    private int timeout = 30000;
+    private int timeout = 300000;
 
     /** 最大活跃连接数 */
     private int maxActive = 1024;

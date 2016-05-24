@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrEmployeeCertConf extends TableImpl<HrEmployeeCertConfRecord> {
 
-	private static final long serialVersionUID = 315163653;
+	private static final long serialVersionUID = -632410977;
 
 	/**
 	 * The reference instance of <code>hrDB.hr_employee_cert_conf</code>
@@ -56,9 +56,9 @@ public class HrEmployeeCertConf extends TableImpl<HrEmployeeCertConfRecord> {
 	public final TableField<HrEmployeeCertConfRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
 	/**
-	 * The column <code>hrDB.hr_employee_cert_conf.company_id</code>. 所属部门
+	 * The column <code>hrDB.hr_employee_cert_conf.company_id</code>. 所属公司 hr_company.id
 	 */
-	public final TableField<HrEmployeeCertConfRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "所属部门");
+	public final TableField<HrEmployeeCertConfRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "所属公司 hr_company.id");
 
 	/**
 	 * The column <code>hrDB.hr_employee_cert_conf.is_strict</code>. 是否严格0：严格，1：不严格
@@ -69,6 +69,16 @@ public class HrEmployeeCertConf extends TableImpl<HrEmployeeCertConfRecord> {
 	 * The column <code>hrDB.hr_employee_cert_conf.email_suffix</code>. 邮箱后缀
 	 */
 	public final TableField<HrEmployeeCertConfRecord, String> EMAIL_SUFFIX = createField("email_suffix", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "邮箱后缀");
+
+	/**
+	 * The column <code>hrDB.hr_employee_cert_conf.create_time</code>. 创建时间
+	 */
+	public final TableField<HrEmployeeCertConfRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "创建时间");
+
+	/**
+	 * The column <code>hrDB.hr_employee_cert_conf.update_time</code>. 修改时间
+	 */
+	public final TableField<HrEmployeeCertConfRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "修改时间");
 
 	/**
 	 * The column <code>hrDB.hr_employee_cert_conf.disable</code>. 是否启用 0：启用1：禁用
@@ -99,16 +109,6 @@ public class HrEmployeeCertConf extends TableImpl<HrEmployeeCertConfRecord> {
 	 * The column <code>hrDB.hr_employee_cert_conf.custom</code>. 配置的自定义认证名称
 	 */
 	public final TableField<HrEmployeeCertConfRecord, String> CUSTOM = createField("custom", org.jooq.impl.SQLDataType.VARCHAR.length(10).nullable(false).defaulted(true), this, "配置的自定义认证名称");
-
-	/**
-	 * The column <code>hrDB.hr_employee_cert_conf.create_time</code>. 创建时间
-	 */
-	public final TableField<HrEmployeeCertConfRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "创建时间");
-
-	/**
-	 * The column <code>hrDB.hr_employee_cert_conf.update_time</code>. 修改时间
-	 */
-	public final TableField<HrEmployeeCertConfRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "修改时间");
 
 	/**
 	 * Create a <code>hrDB.hr_employee_cert_conf</code> table reference

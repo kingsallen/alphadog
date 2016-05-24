@@ -40,9 +40,9 @@ public class IntentionPositionDaoImpl extends
 			if(cityCodes != null && cityCodes.size() > 0) {
 				for(int i=0; i<cityCodes.size(); i++) {
 					if(i == 0) {
-						selectCondition = select.where(ProfileIntentionPosition.PROFILE_INTENTION_POSITION.POSITION_CODE.equal(UInteger.valueOf(cityCodes.get(i))));
+						selectCondition = select.where(ProfileIntentionPosition.PROFILE_INTENTION_POSITION.PROFILE_INTENTION_ID.equal(UInteger.valueOf(cityCodes.get(i))));
 					} else {
-						selectCondition.or(ProfileIntentionPosition.PROFILE_INTENTION_POSITION.POSITION_CODE.equal(UInteger.valueOf(cityCodes.get(i))));
+						selectCondition.or(ProfileIntentionPosition.PROFILE_INTENTION_POSITION.PROFILE_INTENTION_ID.equal(UInteger.valueOf(cityCodes.get(i))));
 					}
 				}
 			}

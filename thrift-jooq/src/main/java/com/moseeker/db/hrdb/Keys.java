@@ -5,6 +5,7 @@ package com.moseeker.db.hrdb;
 
 
 import com.moseeker.db.hrdb.tables.HrAppCvConf;
+import com.moseeker.db.hrdb.tables.HrChildCompany;
 import com.moseeker.db.hrdb.tables.HrCompany;
 import com.moseeker.db.hrdb.tables.HrCompanyConf;
 import com.moseeker.db.hrdb.tables.HrEmployeeCertConf;
@@ -16,6 +17,7 @@ import com.moseeker.db.hrdb.tables.HrHbScratchCard;
 import com.moseeker.db.hrdb.tables.HrHbSendRecord;
 import com.moseeker.db.hrdb.tables.HrHtml5Statistics;
 import com.moseeker.db.hrdb.tables.HrHtml5UniqueStatistics;
+import com.moseeker.db.hrdb.tables.HrImporterMonitor;
 import com.moseeker.db.hrdb.tables.HrOperationRecord;
 import com.moseeker.db.hrdb.tables.HrPointsConf;
 import com.moseeker.db.hrdb.tables.HrRecruitStatistics;
@@ -37,6 +39,7 @@ import com.moseeker.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.db.hrdb.tables.HrWxWechat;
 import com.moseeker.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
 import com.moseeker.db.hrdb.tables.records.HrAppCvConfRecord;
+import com.moseeker.db.hrdb.tables.records.HrChildCompanyRecord;
 import com.moseeker.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.db.hrdb.tables.records.HrEmployeeCertConfRecord;
@@ -48,6 +51,7 @@ import com.moseeker.db.hrdb.tables.records.HrHbScratchCardRecord;
 import com.moseeker.db.hrdb.tables.records.HrHbSendRecordRecord;
 import com.moseeker.db.hrdb.tables.records.HrHtml5StatisticsRecord;
 import com.moseeker.db.hrdb.tables.records.HrHtml5UniqueStatisticsRecord;
+import com.moseeker.db.hrdb.tables.records.HrImporterMonitorRecord;
 import com.moseeker.db.hrdb.tables.records.HrOperationRecordRecord;
 import com.moseeker.db.hrdb.tables.records.HrPointsConfRecord;
 import com.moseeker.db.hrdb.tables.records.HrRecruitStatisticsRecord;
@@ -96,7 +100,8 @@ public class Keys {
 	// IDENTITY definitions
 	// -------------------------------------------------------------------------
 
-	public static final Identity<HrAppCvConfRecord, UInteger> IDENTITY_HR_APP_CV_CONF = Identities0.IDENTITY_HR_APP_CV_CONF;
+	public static final Identity<HrAppCvConfRecord, Integer> IDENTITY_HR_APP_CV_CONF = Identities0.IDENTITY_HR_APP_CV_CONF;
+	public static final Identity<HrChildCompanyRecord, Integer> IDENTITY_HR_CHILD_COMPANY = Identities0.IDENTITY_HR_CHILD_COMPANY;
 	public static final Identity<HrCompanyRecord, UInteger> IDENTITY_HR_COMPANY = Identities0.IDENTITY_HR_COMPANY;
 	public static final Identity<HrEmployeeCertConfRecord, Integer> IDENTITY_HR_EMPLOYEE_CERT_CONF = Identities0.IDENTITY_HR_EMPLOYEE_CERT_CONF;
 	public static final Identity<HrFeedbackRecord, UInteger> IDENTITY_HR_FEEDBACK = Identities0.IDENTITY_HR_FEEDBACK;
@@ -107,6 +112,7 @@ public class Keys {
 	public static final Identity<HrHbSendRecordRecord, Integer> IDENTITY_HR_HB_SEND_RECORD = Identities0.IDENTITY_HR_HB_SEND_RECORD;
 	public static final Identity<HrHtml5StatisticsRecord, Integer> IDENTITY_HR_HTML5_STATISTICS = Identities0.IDENTITY_HR_HTML5_STATISTICS;
 	public static final Identity<HrHtml5UniqueStatisticsRecord, Integer> IDENTITY_HR_HTML5_UNIQUE_STATISTICS = Identities0.IDENTITY_HR_HTML5_UNIQUE_STATISTICS;
+	public static final Identity<HrImporterMonitorRecord, Integer> IDENTITY_HR_IMPORTER_MONITOR = Identities0.IDENTITY_HR_IMPORTER_MONITOR;
 	public static final Identity<HrOperationRecordRecord, Integer> IDENTITY_HR_OPERATION_RECORD = Identities0.IDENTITY_HR_OPERATION_RECORD;
 	public static final Identity<HrPointsConfRecord, Integer> IDENTITY_HR_POINTS_CONF = Identities0.IDENTITY_HR_POINTS_CONF;
 	public static final Identity<HrRecruitStatisticsRecord, Integer> IDENTITY_HR_RECRUIT_STATISTICS = Identities0.IDENTITY_HR_RECRUIT_STATISTICS;
@@ -133,6 +139,7 @@ public class Keys {
 	// -------------------------------------------------------------------------
 
 	public static final UniqueKey<HrAppCvConfRecord> KEY_HR_APP_CV_CONF_PRIMARY = UniqueKeys0.KEY_HR_APP_CV_CONF_PRIMARY;
+	public static final UniqueKey<HrChildCompanyRecord> KEY_HR_CHILD_COMPANY_PRIMARY = UniqueKeys0.KEY_HR_CHILD_COMPANY_PRIMARY;
 	public static final UniqueKey<HrCompanyRecord> KEY_HR_COMPANY_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_PRIMARY;
 	public static final UniqueKey<HrCompanyConfRecord> KEY_HR_COMPANY_CONF_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_CONF_PRIMARY;
 	public static final UniqueKey<HrEmployeeCertConfRecord> KEY_HR_EMPLOYEE_CERT_CONF_PRIMARY = UniqueKeys0.KEY_HR_EMPLOYEE_CERT_CONF_PRIMARY;
@@ -144,6 +151,7 @@ public class Keys {
 	public static final UniqueKey<HrHbSendRecordRecord> KEY_HR_HB_SEND_RECORD_PRIMARY = UniqueKeys0.KEY_HR_HB_SEND_RECORD_PRIMARY;
 	public static final UniqueKey<HrHtml5StatisticsRecord> KEY_HR_HTML5_STATISTICS_PRIMARY = UniqueKeys0.KEY_HR_HTML5_STATISTICS_PRIMARY;
 	public static final UniqueKey<HrHtml5UniqueStatisticsRecord> KEY_HR_HTML5_UNIQUE_STATISTICS_PRIMARY = UniqueKeys0.KEY_HR_HTML5_UNIQUE_STATISTICS_PRIMARY;
+	public static final UniqueKey<HrImporterMonitorRecord> KEY_HR_IMPORTER_MONITOR_PRIMARY = UniqueKeys0.KEY_HR_IMPORTER_MONITOR_PRIMARY;
 	public static final UniqueKey<HrOperationRecordRecord> KEY_HR_OPERATION_RECORD_PRIMARY = UniqueKeys0.KEY_HR_OPERATION_RECORD_PRIMARY;
 	public static final UniqueKey<HrPointsConfRecord> KEY_HR_POINTS_CONF_PRIMARY = UniqueKeys0.KEY_HR_POINTS_CONF_PRIMARY;
 	public static final UniqueKey<HrPointsConfRecord> KEY_HR_POINTS_CONF_STATUS_NAME = UniqueKeys0.KEY_HR_POINTS_CONF_STATUS_NAME;
@@ -176,7 +184,8 @@ public class Keys {
 	// -------------------------------------------------------------------------
 
 	private static class Identities0 extends AbstractKeys {
-		public static Identity<HrAppCvConfRecord, UInteger> IDENTITY_HR_APP_CV_CONF = createIdentity(HrAppCvConf.HR_APP_CV_CONF, HrAppCvConf.HR_APP_CV_CONF.ID);
+		public static Identity<HrAppCvConfRecord, Integer> IDENTITY_HR_APP_CV_CONF = createIdentity(HrAppCvConf.HR_APP_CV_CONF, HrAppCvConf.HR_APP_CV_CONF.ID);
+		public static Identity<HrChildCompanyRecord, Integer> IDENTITY_HR_CHILD_COMPANY = createIdentity(HrChildCompany.HR_CHILD_COMPANY, HrChildCompany.HR_CHILD_COMPANY.ID);
 		public static Identity<HrCompanyRecord, UInteger> IDENTITY_HR_COMPANY = createIdentity(HrCompany.HR_COMPANY, HrCompany.HR_COMPANY.ID);
 		public static Identity<HrEmployeeCertConfRecord, Integer> IDENTITY_HR_EMPLOYEE_CERT_CONF = createIdentity(HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF, HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF.ID);
 		public static Identity<HrFeedbackRecord, UInteger> IDENTITY_HR_FEEDBACK = createIdentity(HrFeedback.HR_FEEDBACK, HrFeedback.HR_FEEDBACK.ID);
@@ -187,6 +196,7 @@ public class Keys {
 		public static Identity<HrHbSendRecordRecord, Integer> IDENTITY_HR_HB_SEND_RECORD = createIdentity(HrHbSendRecord.HR_HB_SEND_RECORD, HrHbSendRecord.HR_HB_SEND_RECORD.ID);
 		public static Identity<HrHtml5StatisticsRecord, Integer> IDENTITY_HR_HTML5_STATISTICS = createIdentity(HrHtml5Statistics.HR_HTML5_STATISTICS, HrHtml5Statistics.HR_HTML5_STATISTICS.ID);
 		public static Identity<HrHtml5UniqueStatisticsRecord, Integer> IDENTITY_HR_HTML5_UNIQUE_STATISTICS = createIdentity(HrHtml5UniqueStatistics.HR_HTML5_UNIQUE_STATISTICS, HrHtml5UniqueStatistics.HR_HTML5_UNIQUE_STATISTICS.ID);
+		public static Identity<HrImporterMonitorRecord, Integer> IDENTITY_HR_IMPORTER_MONITOR = createIdentity(HrImporterMonitor.HR_IMPORTER_MONITOR, HrImporterMonitor.HR_IMPORTER_MONITOR.ID);
 		public static Identity<HrOperationRecordRecord, Integer> IDENTITY_HR_OPERATION_RECORD = createIdentity(HrOperationRecord.HR_OPERATION_RECORD, HrOperationRecord.HR_OPERATION_RECORD.ID);
 		public static Identity<HrPointsConfRecord, Integer> IDENTITY_HR_POINTS_CONF = createIdentity(HrPointsConf.HR_POINTS_CONF, HrPointsConf.HR_POINTS_CONF.ID);
 		public static Identity<HrRecruitStatisticsRecord, Integer> IDENTITY_HR_RECRUIT_STATISTICS = createIdentity(HrRecruitStatistics.HR_RECRUIT_STATISTICS, HrRecruitStatistics.HR_RECRUIT_STATISTICS.ID);
@@ -211,6 +221,7 @@ public class Keys {
 
 	private static class UniqueKeys0 extends AbstractKeys {
 		public static final UniqueKey<HrAppCvConfRecord> KEY_HR_APP_CV_CONF_PRIMARY = createUniqueKey(HrAppCvConf.HR_APP_CV_CONF, HrAppCvConf.HR_APP_CV_CONF.ID);
+		public static final UniqueKey<HrChildCompanyRecord> KEY_HR_CHILD_COMPANY_PRIMARY = createUniqueKey(HrChildCompany.HR_CHILD_COMPANY, HrChildCompany.HR_CHILD_COMPANY.ID);
 		public static final UniqueKey<HrCompanyRecord> KEY_HR_COMPANY_PRIMARY = createUniqueKey(HrCompany.HR_COMPANY, HrCompany.HR_COMPANY.ID);
 		public static final UniqueKey<HrCompanyConfRecord> KEY_HR_COMPANY_CONF_PRIMARY = createUniqueKey(HrCompanyConf.HR_COMPANY_CONF, HrCompanyConf.HR_COMPANY_CONF.COMPANY_ID);
 		public static final UniqueKey<HrEmployeeCertConfRecord> KEY_HR_EMPLOYEE_CERT_CONF_PRIMARY = createUniqueKey(HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF, HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF.ID);
@@ -222,6 +233,7 @@ public class Keys {
 		public static final UniqueKey<HrHbSendRecordRecord> KEY_HR_HB_SEND_RECORD_PRIMARY = createUniqueKey(HrHbSendRecord.HR_HB_SEND_RECORD, HrHbSendRecord.HR_HB_SEND_RECORD.ID);
 		public static final UniqueKey<HrHtml5StatisticsRecord> KEY_HR_HTML5_STATISTICS_PRIMARY = createUniqueKey(HrHtml5Statistics.HR_HTML5_STATISTICS, HrHtml5Statistics.HR_HTML5_STATISTICS.ID);
 		public static final UniqueKey<HrHtml5UniqueStatisticsRecord> KEY_HR_HTML5_UNIQUE_STATISTICS_PRIMARY = createUniqueKey(HrHtml5UniqueStatistics.HR_HTML5_UNIQUE_STATISTICS, HrHtml5UniqueStatistics.HR_HTML5_UNIQUE_STATISTICS.ID);
+		public static final UniqueKey<HrImporterMonitorRecord> KEY_HR_IMPORTER_MONITOR_PRIMARY = createUniqueKey(HrImporterMonitor.HR_IMPORTER_MONITOR, HrImporterMonitor.HR_IMPORTER_MONITOR.ID);
 		public static final UniqueKey<HrOperationRecordRecord> KEY_HR_OPERATION_RECORD_PRIMARY = createUniqueKey(HrOperationRecord.HR_OPERATION_RECORD, HrOperationRecord.HR_OPERATION_RECORD.ID);
 		public static final UniqueKey<HrPointsConfRecord> KEY_HR_POINTS_CONF_PRIMARY = createUniqueKey(HrPointsConf.HR_POINTS_CONF, HrPointsConf.HR_POINTS_CONF.ID);
 		public static final UniqueKey<HrPointsConfRecord> KEY_HR_POINTS_CONF_STATUS_NAME = createUniqueKey(HrPointsConf.HR_POINTS_CONF, HrPointsConf.HR_POINTS_CONF.COMPANY_ID, HrPointsConf.HR_POINTS_CONF.STATUS_NAME);

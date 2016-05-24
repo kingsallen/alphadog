@@ -129,10 +129,44 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 		ProfileIntentionRecord record = null;
 		try {
 			record = structToDB(struct);
+			ProfileIntentionRecord repeatIntention = null;
+			if(struct.isSetProfile_id()) {
+				QueryUtil query = new QueryUtil();
+				query.setPage(1);
+				query.setPer_page(1);
+				query.addEqualFilter("profile_id", String.valueOf(struct.getProfile_id()));
+				repeatIntention = dao.getResource(query);
+			}
+			if(repeatIntention != null) {
+				return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_REPEAT_DATA);
+			}
+			int intentionId = dao.postResource(record);
+			if(intentionId > 0) {
+				updateIntentionCity(struct, intentionId);
+				updateIntentionIndustry(struct, intentionId);
+				updateIntentionPosition(struct, intentionId);
+				ResponseUtils.success(String.valueOf(intentionId));
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		} finally {
+			// do nothing
+		}
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+	}
+	
+	@Override
+	public Response putResource(Intention struct) throws TException {
+		ProfileIntentionRecord record = null;
+		try {
+			record = structToDB(struct);
 			int intentionId = dao.putResource(record);
-			updateIntentionCity(struct, intentionId);
-			updateIntentionIndustry(struct, intentionId);
-			updateIntentionPosition(struct, intentionId);
+			if(intentionId > 0) {
+				updateIntentionCity(struct, record.getId().intValue());
+				updateIntentionIndustry(struct, record.getId().intValue());
+				updateIntentionPosition(struct, record.getId().intValue());
+			}
 			ResponseUtils.success(String.valueOf(intentionId));
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -140,7 +174,37 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 		} finally {
 			// do nothing
 		}
-		return super.postResource(struct);
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+	}
+
+	@Override
+	public Response delResource(Intention struct) throws TException {
+		ProfileIntentionRecord record = null;
+		try {
+			record = structToDB(struct);
+			int intentionId = dao.delResource(record);
+			ProfileIntentionCityRecord intentionCityRecord = new ProfileIntentionCityRecord();
+			intentionCityRecord.setProfileIntentionId(UInteger.valueOf(struct.getId()));
+			intentionCityDao.delResource(intentionCityRecord);
+			ProfileIntentionPositionRecord intentionPositionRecord = new ProfileIntentionPositionRecord();
+			intentionPositionRecord.setProfileIntentionId(UInteger.valueOf(struct.getId()));
+			intentionPositionDao.delResource(intentionPositionRecord);
+			ProfileIntentionIndustryRecord intentionIndustryRecord = new ProfileIntentionIndustryRecord();
+			intentionIndustryRecord.setProfileIntentionId(UInteger.valueOf(struct.getId()));
+			intentionIndustryDao.delResource(intentionIndustryRecord);
+			ResponseUtils.success(String.valueOf(intentionId));
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		} finally {
+			// do nothing
+		}
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+	}
+
+	@Override
+	public Response getResource(CommonQuery query) throws TException {
+		return super.getResource(query);
 	}
 
 	private void updateIntentionPosition(Intention struct, int intentionId) throws Exception {
@@ -186,6 +250,7 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 							ProfileIntentionPositionRecord tobeAddPositionRecord = new ProfileIntentionPositionRecord();
 							tobeAddPositionRecord.setPositionCode(legalRecord.getCode());
 							tobeAddPositionRecord.setPositionName(legalRecord.getName());
+							tobeAddPositionRecord.setProfileIntentionId(UInteger.valueOf(intentionId));
 							toBeAddList.add(tobeAddPositionRecord);
 						}
 					} else {
@@ -194,6 +259,7 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 							ProfileIntentionPositionRecord tobeAddPositionRecord = new ProfileIntentionPositionRecord();
 							tobeAddPositionRecord.setPositionCode(UInteger.valueOf(0));
 							tobeAddPositionRecord.setPositionName(entry.getValue());
+							tobeAddPositionRecord.setProfileIntentionId(UInteger.valueOf(intentionId));
 							toBeAddList.add(tobeAddPositionRecord);
 						}
 					}
@@ -251,6 +317,7 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 							ProfileIntentionIndustryRecord tobeAddIndustryRecord = new ProfileIntentionIndustryRecord();
 							tobeAddIndustryRecord.setIndustryCode(legalRecord.getCode());
 							tobeAddIndustryRecord.setIndustryName(legalRecord.getName());
+							tobeAddIndustryRecord.setProfileIntentionId(UInteger.valueOf(intentionId));
 							toBeAddList.add(tobeAddIndustryRecord);
 						}
 					} else {
@@ -259,6 +326,7 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 							ProfileIntentionIndustryRecord tobeAddIndustryRecord = new ProfileIntentionIndustryRecord();
 							tobeAddIndustryRecord.setIndustryCode(UInteger.valueOf(0));
 							tobeAddIndustryRecord.setIndustryName(entry.getValue());
+							tobeAddIndustryRecord.setProfileIntentionId(UInteger.valueOf(intentionId));
 							toBeAddList.add(tobeAddIndustryRecord);
 						}
 					}
@@ -284,7 +352,6 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 			QueryUtil cityQuery = new QueryUtil();
 			cityQuery.setPage(1);
 			cityQuery.setPer_page(Integer.MAX_VALUE);
-			cityQuery.addEqualFilter("is_using", "1");
 			List<DictCityRecord> cityRecordList = dictCityDao.getResources(cityQuery);
 
 			QueryUtil selectedCityQuery = new QueryUtil();
@@ -323,6 +390,7 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 							ProfileIntentionCityRecord tobeAddCityRecord = new ProfileIntentionCityRecord();
 							tobeAddCityRecord.setCityCode(legalRecord.getCode());
 							tobeAddCityRecord.setCityName(legalRecord.getName());
+							tobeAddCityRecord.setProfileIntentionId(UInteger.valueOf(intentionId));
 							toBeAddList.add(tobeAddCityRecord);
 						}
 					} else {
@@ -331,6 +399,7 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 							ProfileIntentionCityRecord tobeAddCityRecord = new ProfileIntentionCityRecord();
 							tobeAddCityRecord.setCityCode(UInteger.valueOf(0));
 							tobeAddCityRecord.setCityName(entry.getValue());
+							tobeAddCityRecord.setProfileIntentionId(UInteger.valueOf(intentionId));
 							toBeAddList.add(tobeAddCityRecord);
 						}
 					}
@@ -381,23 +450,6 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 			return true;
 		}
 		return false;
-	}
-
-	@Override
-	public Response putResource(Intention struct) throws TException {
-		// TODO Auto-generated method stub
-		return super.putResource(struct);
-	}
-
-	@Override
-	public Response delResource(Intention struct) throws TException {
-		// TODO Auto-generated method stub
-		return super.delResource(struct);
-	}
-
-	@Override
-	public Response getResource(CommonQuery query) throws TException {
-		return super.getResource(query);
 	}
 
 	public IntentionDao getDao() {

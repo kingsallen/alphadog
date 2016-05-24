@@ -35,6 +35,15 @@ public class ProfileDaoImpl extends BaseJooqDaoImpl<ProfileProfileRecord, Profil
 		} catch (SQLException e) {
 			logger.error(e.getMessage(), e);
 		} finally {
+			try {
+				if(conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				logger.error(e.getMessage(), e);
+			} finally {
+				//do nothing
+			}
 			//do nothing
 		}
 		return record;

@@ -35,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
 
-	private static final long serialVersionUID = 1477096876;
+	private static final long serialVersionUID = 1601410935;
 
 	/**
 	 * The reference instance of <code>hrDB.hr_company_conf</code>
@@ -56,11 +56,6 @@ public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
 	public final TableField<HrCompanyConfRecord, UInteger> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
 
 	/**
-	 * The column <code>hrDB.hr_company_conf.topic_id</code>. hr_topic id
-	 */
-	public final TableField<HrCompanyConfRecord, Integer> TOPIC_ID = createField("topic_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "hr_topic id");
-
-	/**
 	 * The column <code>hrDB.hr_company_conf.theme_id</code>. sys_theme id
 	 */
 	public final TableField<HrCompanyConfRecord, Integer> THEME_ID = createField("theme_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "sys_theme id");
@@ -74,11 +69,6 @@ public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
 	 * The column <code>hrDB.hr_company_conf.app_reply</code>. 申请提交成功回复信息
 	 */
 	public final TableField<HrCompanyConfRecord, String> APP_REPLY = createField("app_reply", org.jooq.impl.SQLDataType.VARCHAR.length(999).nullable(false).defaulted(true), this, "申请提交成功回复信息");
-
-	/**
-	 * The column <code>hrDB.hr_company_conf.email_resume_conf</code>. 0:允许使用email简历进行投递；1:不允许使用email简历投递
-	 */
-	public final TableField<HrCompanyConfRecord, Byte> EMAIL_RESUME_CONF = createField("email_resume_conf", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "0:允许使用email简历进行投递；1:不允许使用email简历投递");
 
 	/**
 	 * The column <code>hrDB.hr_company_conf.create_time</code>. 创建时间

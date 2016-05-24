@@ -14,6 +14,7 @@ import java.util.List;
 import javax.annotation.Generated;
 
 import org.jooq.Field;
+import org.jooq.Identity;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
@@ -34,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileIntentionCity extends TableImpl<ProfileIntentionCityRecord> {
 
-	private static final long serialVersionUID = 931971180;
+	private static final long serialVersionUID = -1998743015;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_intention_city</code>
@@ -48,6 +49,11 @@ public class ProfileIntentionCity extends TableImpl<ProfileIntentionCityRecord> 
 	public Class<ProfileIntentionCityRecord> getRecordType() {
 		return ProfileIntentionCityRecord.class;
 	}
+
+	/**
+	 * The column <code>profileDB.profile_intention_city.id</code>. 主key
+	 */
+	public final TableField<ProfileIntentionCityRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
 
 	/**
 	 * The column <code>profileDB.profile_intention_city.profile_intention_id</code>. profile_intention.id
@@ -84,6 +90,14 @@ public class ProfileIntentionCity extends TableImpl<ProfileIntentionCityRecord> 
 
 	private ProfileIntentionCity(String alias, Table<ProfileIntentionCityRecord> aliased, Field<?>[] parameters) {
 		super(alias, Profiledb.PROFILEDB, aliased, parameters, "Profile的求职意向-期望城市关系表");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Identity<ProfileIntentionCityRecord, UInteger> getIdentity() {
+		return Keys.IDENTITY_PROFILE_INTENTION_CITY;
 	}
 
 	/**
