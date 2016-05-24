@@ -18,11 +18,15 @@ public class ResponseLogNotification {
 
 	public static String success(HttpServletRequest request, Response response) {
 		String jsonresponse = JSON.toJSONString(CleanJsonResponse.convertFrom(response));
-		System.out.println(jsonresponse);
 		logRequestResponse(request, jsonresponse);
 		return jsonresponse;
-
 	}
+
+    public static String successWithParse(HttpServletRequest request, Response response) {
+        String jsonresponse = JSON.toJSONString(CleanJsonResponseWithParse.convertFrom(response));
+		logRequestResponse(request, jsonresponse);
+		return jsonresponse;
+    }
 
 	public static String fail(HttpServletRequest request, Response response) {
 		String jsonresponse = JSON.toJSONString(CleanJsonResponse.convertFrom(response));
