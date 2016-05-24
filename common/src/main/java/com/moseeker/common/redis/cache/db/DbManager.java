@@ -48,7 +48,7 @@ public class DbManager {
 	 *         {@see com.moseeker.common.cache.lru.CacheConfigRedisKey}
 	 */
 	public static RedisConfigRedisKey readFromDB(int appId, String keyIdentifier, byte configType) {
-		RedisConfigRedisKey redisKey = new RedisConfigRedisKey();
+		RedisConfigRedisKey redisKey = null;
 		try {
 			DSLContext create = DatabaseConnectionHelper.getConnection().getJooqDSL();
 			Record row = create.select().from(Tables.CONFIG_CACHECONFIG_REDISKEY)
@@ -56,6 +56,7 @@ public class DbManager {
 					.and(Tables.CONFIG_CACHECONFIG_REDISKEY.TYPE.equal(configType))
 					.and(Tables.CONFIG_CACHECONFIG_REDISKEY.KEY_IDENTIFIER.equal(keyIdentifier)).fetchAny();
 			if (row != null) {
+				redisKey = new RedisConfigRedisKey();
 				redisKey.setAppId(row.getValue(Tables.CONFIG_CACHECONFIG_REDISKEY.PROJECT_APPID));
 				redisKey.setKeyIdentifier(row.getValue(Tables.CONFIG_CACHECONFIG_REDISKEY.KEY_IDENTIFIER));
 				redisKey.setDesc(row.getValue(Tables.CONFIG_CACHECONFIG_REDISKEY.DESC));
