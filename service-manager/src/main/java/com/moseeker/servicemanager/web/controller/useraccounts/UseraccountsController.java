@@ -20,7 +20,7 @@ import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
-import com.moseeker.thrift.gen.useraccounts.struct.userloginreq;
+import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
 
 @Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
@@ -34,7 +34,7 @@ public class UseraccountsController {
 	@ResponseBody
 	public String postuserlogin(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			userloginreq userloginreqs = ParamUtils.initModelForm(request, userloginreq.class);
+			Userloginreq userloginreqs = ParamUtils.initModelForm(request, Userloginreq.class);
 			
 			Response result = useraccountsServices.postuserlogin(userloginreqs);
 			if (result.getStatus() == 0){
