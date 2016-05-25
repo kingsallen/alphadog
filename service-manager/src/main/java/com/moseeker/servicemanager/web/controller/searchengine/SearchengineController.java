@@ -36,9 +36,34 @@ public class SearchengineController {
 		try {
 			Map<String, Object> reqParams = ParamUtils.mergeRequestParameters(request);
 			String keywords = BeanUtils.converToString(reqParams.get("keywords"));
-			String filter = BeanUtils.converToString(reqParams.get("filter"));
+			String cities = BeanUtils.converToString(reqParams.get("cities"));
+			String industries = BeanUtils.converToString(reqParams.get("industries"));
+			String occupations = BeanUtils.converToString(reqParams.get("occupations"));
+			String scale = BeanUtils.converToString(reqParams.get("scale"));
+			String employment_type = BeanUtils.converToString(reqParams.get("employment_type"));
+			String candidate_source = BeanUtils.converToString(reqParams.get("candidate_source"));
+			String experience = BeanUtils.converToString(reqParams.get("experience"));
+			String degree = BeanUtils.converToString(reqParams.get("degree"));
+			String salary = BeanUtils.converToString(reqParams.get("salary"));
+			String company_id = BeanUtils.converToString(reqParams.get("company_id"));
+			int page_from = BeanUtils.converToInteger(reqParams.get("page_from"));
+			int page_size = BeanUtils.converToInteger(reqParams.get("page_size"));
+
 			System.out.println(keywords);
-			Response result = searchengineServices.query(keywords, filter);
+			Response result = searchengineServices.query(
+							keywords,
+							cities,
+							industries,
+							occupations,
+							scale,
+							employment_type,
+							candidate_source,
+							experience,
+							degree,
+							salary,
+							company_id,
+							page_from,
+							page_size);
 			if (result.getStatus() == 0){
 				return ResponseLogNotification.success(request, result);
 			}else{
