@@ -5,11 +5,13 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.index.IndexResponse;
-import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.index.query.QueryBuilders.*;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import java.net.InetAddress;
+import java.util.HashMap;
+import java.util.Map;
 import java.lang.Exception;
 import com.alibaba.fastjson.JSON;
 
@@ -24,7 +26,6 @@ import com.moseeker.thrift.gen.searchengine.service.SearchengineServices.Iface;
 
 @Service
 public class SearchengineServiceImpl implements Iface {
-    private Client client;
     @Override
     public Response query(String keywords, String filter) throws TException {
 
@@ -59,10 +60,22 @@ public class SearchengineServiceImpl implements Iface {
                   keywords = "android";
                 }
                 System.out.println(keywords);
+
+          
+                QueryBuilder keyquery = QueryBuilders.simpleQueryStringQuery(keywords);
+                
+                QueryBuilder query = QueryBuilders.boolQuery()
+                		.must(keyquery);
+                if (filter!=null){
+                	QueryBuilder locationfilter = QueryBuilders.termQuery("province", filter);
+                	((BoolQueryBuilder) query).must(locationfilter); 
+                }
+                
+
                 response = client
                                         .prepareSearch("index")
                                         .setTypes("fulltext")
-                                        .setQuery(QueryBuilders.matchQuery("title", keywords))
+                                        .setQuery(query)
                                         .setFrom(0).setSize(60)
                                         .execute()
                                         .actionGet();
@@ -74,16 +87,20 @@ public class SearchengineServiceImpl implements Iface {
             //         .actionGet();
 
             //System.out.println(response.toString());
-
+                
         }
         catch( Exception e){
             System.out.println(e.toString());
         }
         System.out.println(JSON.toJSONString(response.toString()));
+
+        Map<String,String> res = new HashMap<String, String>();
+        res.put("searchres",response.toString());
+
         // System.out.println(getEncoding(response.toString()));
         // TODO Auto-generated method stub
         // return ResponseUtils.success(response.toString());
-         return ResponseUtils.success(keywords);
+         return ResponseUtils.success(res);
         
         //  ResponseUtils.fail
     }

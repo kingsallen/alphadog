@@ -30,14 +30,15 @@ public class SearchengineController {
 
 	SearchengineServices.Iface searchengineServices = ServiceUtil.getService(SearchengineServices.Iface.class);
 	
-	@RequestMapping(value = "/search/position", method = RequestMethod.GET)
+	@RequestMapping(value = "/search/position", method = RequestMethod.GET, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public String postuserlogin(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			Map<String, Object> reqParams = ParamUtils.mergeRequestParameters(request);
 			String keywords = BeanUtils.converToString(reqParams.get("keywords"));
+			String filter = BeanUtils.converToString(reqParams.get("filter"));
 			System.out.println(keywords);
-			Response result = searchengineServices.query(keywords, null);
+			Response result = searchengineServices.query(keywords, filter);
 			if (result.getStatus() == 0){
 				return ResponseLogNotification.success(request, result);
 			}else{
