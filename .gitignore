@@ -73,3 +73,9 @@ atlassian-ide-plugin.xml
 .nbattrs
 *.log.*
 /WebContent
+
+# debug properties
+common/src/main/resources/*.properties
+rpc-center/src/main/resources/*.properties
+service-manager/src/main/resources/*.properties
+
