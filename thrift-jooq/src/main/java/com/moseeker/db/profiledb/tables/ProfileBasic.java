@@ -37,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileBasic extends TableImpl<ProfileBasicRecord> {
 
-	private static final long serialVersionUID = 1730178601;
+	private static final long serialVersionUID = -625824987;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_basic</code>
@@ -90,7 +90,7 @@ public class ProfileBasic extends TableImpl<ProfileBasicRecord> {
 	/**
 	 * The column <code>profileDB.profile_basic.birth</code>. 出生年月 yyyy-mm-dd
 	 */
-	public final TableField<ProfileBasicRecord, Date> BIRTH = createField("birth", org.jooq.impl.SQLDataType.DATE.nullable(false).defaulted(true), this, "出生年月 yyyy-mm-dd");
+	public final TableField<ProfileBasicRecord, Date> BIRTH = createField("birth", org.jooq.impl.SQLDataType.DATE, this, "出生年月 yyyy-mm-dd");
 
 	/**
 	 * The column <code>profileDB.profile_basic.weixin</code>. 微信号

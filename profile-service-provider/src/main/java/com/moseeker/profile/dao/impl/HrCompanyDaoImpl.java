@@ -14,40 +14,40 @@ import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
-import com.moseeker.db.dictdb.tables.DictCity;
-import com.moseeker.db.dictdb.tables.records.DictCityRecord;
-import com.moseeker.profile.dao.CityDao;
+import com.moseeker.db.hrdb.tables.HrCompany;
+import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
+import com.moseeker.profile.dao.CompanyDao;
 
 @Repository
-public class CityDaoImpl extends
-		BaseDaoImpl<DictCityRecord, DictCity> implements
-		CityDao {
+public class HrCompanyDaoImpl extends
+		BaseDaoImpl<HrCompanyRecord, HrCompany> implements
+		CompanyDao {
 
 	@Override
 	protected void initJOOQEntity() {
-		this.tableLike = DictCity.DICT_CITY;
+		this.tableLike = HrCompany.HR_COMPANY;
 	}
 
 	@Override
-	public List<DictCityRecord> getCitiesByCodes(List<Integer> cityCodes) {
-		
-		List<DictCityRecord> records = new ArrayList<>();
+	public List<HrCompanyRecord> getCompaniesByIds(List<Integer> companyIds) {
+		List<HrCompanyRecord> records = new ArrayList<>();
 		Connection conn = null;
 		try {
-			if(cityCodes != null && cityCodes.size() > 0) {
+			if(companyIds != null && companyIds.size() > 0) {
 				conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-				SelectWhereStep<DictCityRecord> select = create.selectFrom(DictCity.DICT_CITY);
-				SelectConditionStep<DictCityRecord> selectCondition = null;
-				for(int i=0; i<cityCodes.size(); i++) {
+				SelectWhereStep<HrCompanyRecord> select = create.selectFrom(HrCompany.HR_COMPANY);
+				SelectConditionStep<HrCompanyRecord> selectCondition = null;
+				for(int i=0; i<companyIds.size(); i++) {
 					if(i == 0) {
-						selectCondition = select.where(DictCity.DICT_CITY.CODE.equal(UInteger.valueOf(cityCodes.get(i))));
+						selectCondition = select.where(HrCompany.HR_COMPANY.ID.equal(UInteger.valueOf(companyIds.get(i))));
 					} else {
-						selectCondition.or(DictCity.DICT_CITY.CODE.equal(UInteger.valueOf(cityCodes.get(i))));
+						selectCondition.or(HrCompany.HR_COMPANY.ID.equal(UInteger.valueOf(companyIds.get(i))));
 					}
 				}
 				records = selectCondition.fetch();
 			}
+			
 		} catch (SQLException e) {
 			logger.error(e.getMessage(), e);
 		} finally {
@@ -61,20 +61,19 @@ public class CityDaoImpl extends
 				//do nothing
 			}
 		}
-		
 		return records;
 	}
 
 	@Override
-	public DictCityRecord getCityByCode(int city_code) {
-		DictCityRecord record = null;
+	public HrCompanyRecord getCompanyById(int companyId) {
+		HrCompanyRecord record = null;
 		Connection conn = null;
 		try {
-			if(city_code > 0) {
+			if(companyId > 0) {
 				conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-				Result<DictCityRecord> result = create.selectFrom(DictCity.DICT_CITY)
-						.where(DictCity.DICT_CITY.CODE.equal(UInteger.valueOf(city_code)))
+				Result<HrCompanyRecord> result = create.selectFrom(HrCompany.HR_COMPANY)
+						.where(HrCompany.HR_COMPANY.ID.equal(UInteger.valueOf(companyId)))
 						.limit(1).fetch();
 				if(result != null && result.size() > 0) {
 					record = result.get(0);

@@ -15,15 +15,15 @@ import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.profile.service.WorkExpServices;
-import com.moseeker.thrift.gen.profile.struct.WorkExp;
+import com.moseeker.thrift.gen.profile.service.WorksServices;
+import com.moseeker.thrift.gen.profile.struct.Works;
 
 @Controller
 public class WorkController {
 
 	Logger logger = LoggerFactory.getLogger(WorkController.class);
 
-	WorkExpServices.Iface workExpService = ServiceUtil.getService(WorkExpServices.Iface.class);
+	WorksServices.Iface worksService = ServiceUtil.getService(WorksServices.Iface.class);
 	
 	@RequestMapping(value = "/profile/works", method = RequestMethod.GET)
 	@ResponseBody
@@ -33,7 +33,7 @@ public class WorkController {
 			// GET方法 通用参数解析并赋值
 			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
 
-			Response result = workExpService.getResources(query);
+			Response result = worksService.getResources(query);
 			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
@@ -41,13 +41,13 @@ public class WorkController {
 		}
 	}
 
-	@RequestMapping(value = "/profile/workexp", method = RequestMethod.POST)
+	@RequestMapping(value = "/profile/works", method = RequestMethod.POST)
 	@ResponseBody
 	public String post(HttpServletRequest request, HttpServletResponse response) {
 		//PrintWriter writer = null;
 		try {
-			WorkExp workexp = ParamUtils.initModelForm(request, WorkExp.class);
-			Response result = workExpService.postResource(workexp);
+			Works works = ParamUtils.initModelForm(request, Works.class);
+			Response result = worksService.postResource(works);
 			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
@@ -56,12 +56,12 @@ public class WorkController {
 		}
 	}
 
-	@RequestMapping(value = "/profile/workexp", method = RequestMethod.PUT)
+	@RequestMapping(value = "/profile/works", method = RequestMethod.PUT)
 	@ResponseBody
 	public String put(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			WorkExp workexp = ParamUtils.initModelForm(request, WorkExp.class);
-			Response result = workExpService.putResource(workexp);
+			Works works = ParamUtils.initModelForm(request, Works.class);
+			Response result = worksService.putResource(works);
 			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
@@ -69,12 +69,12 @@ public class WorkController {
 		}
 	}
 
-	@RequestMapping(value = "/profile/workexp", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/profile/works", method = RequestMethod.DELETE)
 	@ResponseBody
 	public String delete(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			WorkExp workexp = ParamUtils.initModelForm(request, WorkExp.class);
-			Response result = workExpService.delResource(workexp);
+			Works works = ParamUtils.initModelForm(request, Works.class);
+			Response result = worksService.delResource(works);
 			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	

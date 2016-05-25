@@ -16,10 +16,13 @@ public final class ConstantErrorCodeMessage {
 	public static final String LOGIN_PASSWORD_UNLEGAL = "{'status':10012,'message':'修改密码失败：原密码错误!'}";
 	public static final String LOGIN_UPDATE_PASSWORD_FAILED = "{'status':10013,'message':'修改密码失败！'}";
 	public static final String LOGIN_MOBILE_NOTEXIST = "{'status':10014,'message':'手机号不存在！'}";
-	public static final String USERACCOUNT_BIND_NONEED = "{'status':10015,'message':'手机号已经注册'}";
+	public static final String USERACCOUNT_BIND_NONEED = "{'status':10015,'message':'手机号已经注册'}";;
 	public static final String USERACCOUNT_EXIST = "{'status':10016,'message':'帐号已存在!'}";
 	public static final String USERACCOUNT_NOTEXIST = "{'status':10017,'message':'帐号不存在!'}";
 	
+	public static final String PROFILE_REPEAT_DATA = "{'status':30010,'message':'重复数据!'}";
 	
-
+	public static final String PROFILE_DICT_CITY_NOTEXIST = "{'status':31010,'message':'城市字典不存在!'}";
+	public static final String PROFILE_DICT_POSITION_NOTEXIST = "{'status':31010,'message':'职位职能字典不存在!'}";
+	public static final String PROFILE_DICT_INDUSTRY_NOTEXIST = "{'status':31010,'message':'行业字典不存在!'}";
 }

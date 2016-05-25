@@ -68,6 +68,7 @@ public class Keys {
 	public static final Identity<BlogPostsRecord, UInteger> IDENTITY_BLOG_POSTS = Identities0.IDENTITY_BLOG_POSTS;
 	public static final Identity<BlogPosts2Record, UInteger> IDENTITY_BLOG_POSTS2 = Identities0.IDENTITY_BLOG_POSTS2;
 	public static final Identity<ConfigAtsSourceRecord, Integer> IDENTITY_CONFIG_ATS_SOURCE = Identities0.IDENTITY_CONFIG_ATS_SOURCE;
+	public static final Identity<ConfigCacheconfigRediskeyRecord, Integer> IDENTITY_CONFIG_CACHECONFIG_REDISKEY = Identities0.IDENTITY_CONFIG_CACHECONFIG_REDISKEY;
 	public static final Identity<ConfigPositionKenexaRecord, Integer> IDENTITY_CONFIG_POSITION_KENEXA = Identities0.IDENTITY_CONFIG_POSITION_KENEXA;
 	public static final Identity<ConfigSysAdministratorRecord, UInteger> IDENTITY_CONFIG_SYS_ADMINISTRATOR = Identities0.IDENTITY_CONFIG_SYS_ADMINISTRATOR;
 	public static final Identity<ConfigSysAppTemplateRecord, Integer> IDENTITY_CONFIG_SYS_APP_TEMPLATE = Identities0.IDENTITY_CONFIG_SYS_APP_TEMPLATE;
@@ -121,6 +122,7 @@ public class Keys {
 		public static Identity<BlogPostsRecord, UInteger> IDENTITY_BLOG_POSTS = createIdentity(BlogPosts.BLOG_POSTS, BlogPosts.BLOG_POSTS.ID);
 		public static Identity<BlogPosts2Record, UInteger> IDENTITY_BLOG_POSTS2 = createIdentity(BlogPosts2.BLOG_POSTS2, BlogPosts2.BLOG_POSTS2.ID);
 		public static Identity<ConfigAtsSourceRecord, Integer> IDENTITY_CONFIG_ATS_SOURCE = createIdentity(ConfigAtsSource.CONFIG_ATS_SOURCE, ConfigAtsSource.CONFIG_ATS_SOURCE.ID);
+		public static Identity<ConfigCacheconfigRediskeyRecord, Integer> IDENTITY_CONFIG_CACHECONFIG_REDISKEY = createIdentity(ConfigCacheconfigRediskey.CONFIG_CACHECONFIG_REDISKEY, ConfigCacheconfigRediskey.CONFIG_CACHECONFIG_REDISKEY.ID);
 		public static Identity<ConfigPositionKenexaRecord, Integer> IDENTITY_CONFIG_POSITION_KENEXA = createIdentity(ConfigPositionKenexa.CONFIG_POSITION_KENEXA, ConfigPositionKenexa.CONFIG_POSITION_KENEXA.ID);
 		public static Identity<ConfigSysAdministratorRecord, UInteger> IDENTITY_CONFIG_SYS_ADMINISTRATOR = createIdentity(ConfigSysAdministrator.CONFIG_SYS_ADMINISTRATOR, ConfigSysAdministrator.CONFIG_SYS_ADMINISTRATOR.ID);
 		public static Identity<ConfigSysAppTemplateRecord, Integer> IDENTITY_CONFIG_SYS_APP_TEMPLATE = createIdentity(ConfigSysAppTemplate.CONFIG_SYS_APP_TEMPLATE, ConfigSysAppTemplate.CONFIG_SYS_APP_TEMPLATE.ID);

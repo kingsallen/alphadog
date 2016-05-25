@@ -4,14 +4,20 @@
 package com.moseeker.db.profiledb.tables;
 
 
+import com.moseeker.db.profiledb.Keys;
 import com.moseeker.db.profiledb.Profiledb;
 import com.moseeker.db.profiledb.tables.records.ProfileIntentionIndustryRecord;
+
+import java.util.Arrays;
+import java.util.List;
 
 import javax.annotation.Generated;
 
 import org.jooq.Field;
+import org.jooq.Identity;
 import org.jooq.Table;
 import org.jooq.TableField;
+import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
 import org.jooq.types.UInteger;
 
@@ -29,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileIntentionIndustry extends TableImpl<ProfileIntentionIndustryRecord> {
 
-	private static final long serialVersionUID = 210282402;
+	private static final long serialVersionUID = -8944167;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_intention_industry</code>
@@ -43,6 +49,11 @@ public class ProfileIntentionIndustry extends TableImpl<ProfileIntentionIndustry
 	public Class<ProfileIntentionIndustryRecord> getRecordType() {
 		return ProfileIntentionIndustryRecord.class;
 	}
+
+	/**
+	 * The column <code>profileDB.profile_intention_industry.id</code>. 主key
+	 */
+	public final TableField<ProfileIntentionIndustryRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
 
 	/**
 	 * The column <code>profileDB.profile_intention_industry.profile_intention_id</code>. profile_intention.id
@@ -79,6 +90,30 @@ public class ProfileIntentionIndustry extends TableImpl<ProfileIntentionIndustry
 
 	private ProfileIntentionIndustry(String alias, Table<ProfileIntentionIndustryRecord> aliased, Field<?>[] parameters) {
 		super(alias, Profiledb.PROFILEDB, aliased, parameters, "Profile的求职意向-行业关系表");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Identity<ProfileIntentionIndustryRecord, UInteger> getIdentity() {
+		return Keys.IDENTITY_PROFILE_INTENTION_INDUSTRY;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public UniqueKey<ProfileIntentionIndustryRecord> getPrimaryKey() {
+		return Keys.KEY_PROFILE_INTENTION_INDUSTRY_PRIMARY;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<UniqueKey<ProfileIntentionIndustryRecord>> getKeys() {
+		return Arrays.<UniqueKey<ProfileIntentionIndustryRecord>>asList(Keys.KEY_PROFILE_INTENTION_INDUSTRY_PRIMARY);
 	}
 
 	/**

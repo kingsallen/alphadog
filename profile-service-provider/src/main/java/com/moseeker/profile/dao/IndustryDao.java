@@ -9,4 +9,6 @@ public interface IndustryDao extends BaseDao<DictIndustryRecord> {
 
 	List<DictIndustryRecord> getIndustriesByCodes(List<Integer> industryCodes);
 
+	DictIndustryRecord getIndustryByCode(int intValue);
+
 }

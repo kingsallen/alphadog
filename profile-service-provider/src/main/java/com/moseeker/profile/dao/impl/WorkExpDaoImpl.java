@@ -10,8 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
-import com.moseeker.db.dictdb.tables.DictCity;
-import com.moseeker.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.db.profiledb.tables.ProfileWorkexp;
 import com.moseeker.db.profiledb.tables.records.ProfileWorkexpRecord;
 import com.moseeker.profile.dao.WorkExpDao;

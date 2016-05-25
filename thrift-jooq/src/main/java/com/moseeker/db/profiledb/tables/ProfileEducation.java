@@ -38,7 +38,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileEducation extends TableImpl<ProfileEducationRecord> {
 
-	private static final long serialVersionUID = -1769041214;
+	private static final long serialVersionUID = 1196807883;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_education</code>
@@ -79,14 +79,19 @@ public class ProfileEducation extends TableImpl<ProfileEducationRecord> {
 	public final TableField<ProfileEducationRecord, UByte> END_UNTIL_NOW = createField("end_until_now", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "是否至今 0：否 1：是");
 
 	/**
-	 * The column <code>profileDB.profile_education.school_code</code>. 学校字典编码
+	 * The column <code>profileDB.profile_education.college_code</code>. 院校字典编码
 	 */
-	public final TableField<ProfileEducationRecord, Integer> SCHOOL_CODE = createField("school_code", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "学校字典编码");
+	public final TableField<ProfileEducationRecord, Integer> COLLEGE_CODE = createField("college_code", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "院校字典编码");
 
 	/**
-	 * The column <code>profileDB.profile_education.school_name</code>. 学校名称
+	 * The column <code>profileDB.profile_education.college_name</code>. 院校名称
 	 */
-	public final TableField<ProfileEducationRecord, String> SCHOOL_NAME = createField("school_name", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false).defaulted(true), this, "学校名称");
+	public final TableField<ProfileEducationRecord, String> COLLEGE_NAME = createField("college_name", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false).defaulted(true), this, "院校名称");
+
+	/**
+	 * The column <code>profileDB.profile_education.college_logo</code>. 院校LOGO, 用户上传
+	 */
+	public final TableField<ProfileEducationRecord, String> COLLEGE_LOGO = createField("college_logo", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false).defaulted(true), this, "院校LOGO, 用户上传");
 
 	/**
 	 * The column <code>profileDB.profile_education.major_code</code>. 专业字典编码

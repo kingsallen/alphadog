@@ -12,9 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.Constant;
+import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.db.dictdb.tables.records.DictCountryRecord;
+import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileAwardsRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileBasicRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileCredentialsRecord;
@@ -32,6 +36,7 @@ import com.moseeker.db.profiledb.tables.records.ProfileWorksRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.profile.dao.AttachmentDao;
 import com.moseeker.profile.dao.AwardsDao;
+import com.moseeker.profile.dao.CompanyDao;
 import com.moseeker.profile.dao.CountryDao;
 import com.moseeker.profile.dao.CredentialsDao;
 import com.moseeker.profile.dao.EducationDao;
@@ -104,17 +109,21 @@ public class WholeProfileServicesImpl implements Iface {
 				
 				List<Map<String, Object>> intentions = buildsIntentions(profileRecord, query);
 				profile.put("intentions", intentions);
+				response.setStatus(0);
+				response.setMessage(Constant.TIPS_SUCCESS);
+				//Gson gson = new Gson();
+				response.setData(JSON.toJSONString(profile));
+				//response.setData(gson.toJson(profile));
+			} else {
+				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 			}
-			response.setStatus(0);
-			response.setMessage(Constant.TIPS_SUCCESS);
-			//Gson gson = new Gson();
-			response.setData(JSON.toJSONString(profile));
-			//response.setData(gson.toJson(profile));
 		} catch (Exception e) {
-			logger.error("//todo",e);
+			logger.error(e.getMessage(),e);
 			response.setStatus(0);
 			response.setMessage(Constant.TIPS_ERROR);
 			response.setData(Constant.NONE_JSON);
+		} finally {
+			//do nothing
 		}
 		return response;
 	}
@@ -127,11 +136,11 @@ public class WholeProfileServicesImpl implements Iface {
 				List<Integer> intentionIds = new ArrayList<>();
 				records.forEach(record -> {
 					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("id", record.getId());
-					map.put("worktype", record.getWorktype());
-					map.put("workstate", record.getWorkstate());
-					map.put("salary_type", record.getSalaryType());
-					map.put("salary_code", record.getSalaryCode());
+					map.put("id", record.getId().intValue());
+					map.put("worktype", record.getWorktype().intValue());
+					map.put("workstate", record.getWorkstate().intValue());
+					map.put("salary_type", record.getSalaryType().intValue());
+					map.put("salary_code", record.getSalaryCode().intValue());
 					intentionIds.add(record.getId().intValue());
 					list.add(map);
 				});
@@ -143,7 +152,7 @@ public class WholeProfileServicesImpl implements Iface {
 						List<Map<String, Object>> cities = new ArrayList<>();
 						cityRecords.forEach(cityRecord -> {
 							Map<String, Object> cityMap = new HashMap<>();
-							cityMap.put("city_code", cityRecord.getCityCode());
+							cityMap.put("city_code", cityRecord.getCityCode().intValue());
 							cityMap.put("city_name", cityRecord.getCityName());
 							cities.add(cityMap);
 						});
@@ -153,7 +162,7 @@ public class WholeProfileServicesImpl implements Iface {
 						List<Map<String, Object>> industries = new ArrayList<>();
 						industryRecords.forEach(record -> {
 							Map<String, Object> industryMap = new HashMap<>();
-							industryMap.put("industry_code", record.getIndustryCode());
+							industryMap.put("industry_code", record.getIndustryCode().intValue());
 							industryMap.put("industry_name", record.getIndustryName());
 							industries.add(industryMap);
 						});
@@ -164,7 +173,7 @@ public class WholeProfileServicesImpl implements Iface {
 						positionRecords.forEach(record -> {
 							Map<String, Object> positionMap = new HashMap<>();
 							positionMap.put("position_name", record.getPositionName());
-							positionMap.put("position_code", record.getPositionCode());
+							positionMap.put("position_code", record.getPositionCode().intValue());
 							positions.add(positionMap);
 						});
 						map.put("positions", positions);
@@ -186,7 +195,7 @@ public class WholeProfileServicesImpl implements Iface {
 			if(records != null && records.size() > 0) {
 				records.forEach(record -> {
 					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("id", record.getId());
+					map.put("id", record.getId().intValue());
 					map.put("name", record.getName());
 					map.put("cover", record.getCover());
 					map.put("url", record.getUrl());
@@ -209,7 +218,7 @@ public class WholeProfileServicesImpl implements Iface {
 			if(records != null && records.size() > 0) {
 				records.forEach(record -> {
 					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("id", record.getId());
+					map.put("id", record.getId().intValue());
 					map.put("name", record.getName());
 					if(record.getRewardDate() != null) {
 						map.put("reward_date", DateUtils.dateToNormalDate(record.getRewardDate()));
@@ -232,7 +241,7 @@ public class WholeProfileServicesImpl implements Iface {
 			if(records != null && records.size() > 0) {
 				records.forEach(record -> {
 					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("id", record.getId());
+					map.put("id", record.getId().intValue());
 					map.put("name", record.getName());
 					list.add(map);
 				});
@@ -252,9 +261,9 @@ public class WholeProfileServicesImpl implements Iface {
 			if(records != null && records.size() > 0) {
 				records.forEach(record -> {
 					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("id", record.getId());
+					map.put("id", record.getId().intValue());
 					map.put("name", record.getName());
-					map.put("level", record.getLevel());
+					map.put("level", record.getLevel().intValue());
 					list.add(map);
 				});
 			}
@@ -273,9 +282,9 @@ public class WholeProfileServicesImpl implements Iface {
 			if(records != null && records.size() > 0) {
 				records.forEach(record -> {
 					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("id", record.getId());
+					map.put("id", record.getId().intValue());
 					map.put("name", record.getName());
-					map.put("level", record.getLevel());
+					map.put("level", record.getLevel().intValue());
 					list.add(map);
 				});
 			}
@@ -294,7 +303,7 @@ public class WholeProfileServicesImpl implements Iface {
 			if(records != null && records.size() > 0) {
 				records.forEach(record -> {
 					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("id", record.getId());
+					map.put("id", record.getId().intValue());
 					map.put("name", record.getName());
 					map.put("company_name", record.getCompanyName());
 					if(record.getStart() != null) {
@@ -303,7 +312,7 @@ public class WholeProfileServicesImpl implements Iface {
 					if(record.getEnd() != null) {
 						map.put("end_date", DateUtils.dateToNormalDate(record.getEnd()));
 					}
-					map.put("end_until_now", record.getEndUntilNow());
+					map.put("end_until_now", record.getEndUntilNow().intValue());
 					map.put("description", record.getDescription());
 					map.put("member", record.getMember());
 					map.put("role", record.getRole());
@@ -325,19 +334,19 @@ public class WholeProfileServicesImpl implements Iface {
 			if(records != null && records.size() > 0) {
 				records.forEach(record -> {
 					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("id", record.getId());
-					map.put("school_name", record.getSchoolName());
-					map.put("school_code", record.getSchoolCode());
+					map.put("id", record.getId().intValue());
+					map.put("school_name", record.getCollegeName());
+					map.put("school_code", record.getCollegeCode());
 					map.put("major_name", record.getMajorName());
 					map.put("major_code", record.getMajorCode());
-					map.put("degree", record.getDegree());
+					map.put("degree", record.getDegree().intValue());
 					if(record.getStart() != null) {
 						map.put("start_date", DateUtils.dateToNormalDate(record.getStart()));
 					}
 					if(record.getEnd() != null) {
 						map.put("end_date", DateUtils.dateToNormalDate(record.getEnd()));
 					}
-					map.put("end_until_now", record.getEndUntilNow());
+					map.put("end_until_now", record.getEndUntilNow().intValue());
 					map.put("description", record.getDescription());
 					list.add(map);
 				});
@@ -355,12 +364,26 @@ public class WholeProfileServicesImpl implements Iface {
 		try {
 			List<ProfileWorkexpRecord> records = workExpDao.getResources(query);
 			if(records != null && records.size() > 0) {
+				List<Integer> companyIds = new ArrayList<>();
+				records.forEach(record -> {
+					companyIds.add(record.getCompanyId().intValue());
+				});
+				List<HrCompanyRecord> companyRecords = companyDao.getCompaniesByIds(companyIds);
 				records.forEach(record -> {
 					Map<String, Object> map = new HashMap<String, Object>();
 					map.put("id", record.getId().intValue());
-					map.put("company_name", record.getCompanyName());
+					if(companyRecords != null && companyRecords.size() > 0) {
+						for(HrCompanyRecord company : companyRecords) {
+							if(record.getCompanyId().intValue() == company.getId().intValue()) {
+								map.put("company_name", company.getName());
+								map.put("company_logo", company.getLogo());
+								map.put("company_id", company.getId().intValue());
+								break;
+							}
+						}
+					}
 					map.put("position_name", record.getPositionName());
-					map.put("position_code", record.getPositionCode());
+					map.put("position_code", record.getPositionCode().intValue());
 					map.put("department_name", record.getDepartmentName());
 					//map.put("logo", record.getlo)
 					if(record.getStart() != null) {
@@ -369,7 +392,7 @@ public class WholeProfileServicesImpl implements Iface {
 					if(record.getEnd() != null) {
 						map.put("end_date", DateUtils.dateToNormalDate(record.getEnd()));
 					}
-					map.put("end_until_now", record.getEndUntilNow());
+					map.put("end_until_now", record.getEndUntilNow().intValue());
 					map.put("description", record.getDescription());
 					list.add(map);
 				});
@@ -387,27 +410,36 @@ public class WholeProfileServicesImpl implements Iface {
 		try {
 			ProfileBasicRecord basicRecord = profileBasicDao.getResource(query);
 			UserUserRecord userRecord = userDao.getUserById(profileRecord.getUserId().intValue());
-			ProfileWorkexpRecord lastWorkExp = workExpDao.getLastWorkExp(profileRecord.getUserId().intValue());
+			ProfileWorkexpRecord lastWorkExp = workExpDao.getLastWorkExp(profileRecord.getId().intValue());
+			HrCompanyRecord company = null;
+			if(lastWorkExp != null) {
+				QueryUtil queryUtils = new QueryUtil();
+				queryUtils.addEqualFilter("id", lastWorkExp.getCompanyId().toString());
+				company = companyDao.getResource(queryUtils);
+			}
+			
 			if(userRecord != null) {
 				map.put("headimg", userRecord.getHeadimg());
 				map.put("mobile", userRecord.getMobile());
 				map.put("email", userRecord.getEmail());
 			}
 			if(lastWorkExp != null) {
-				map.put("company_name", lastWorkExp.getCompanyName());
+				if(company != null) {
+					map.put("company_id", company.getId().intValue());
+					map.put("company_name", company.getName());
+					map.put("company_scale", company.getScale());
+				}
 				map.put("industry_name", lastWorkExp.getIndustryName());
-				map.put("industry_code", lastWorkExp.getIndustryCode());
-				map.put("company_scale", lastWorkExp.getCompanyScale());
-				map.put("location_code", lastWorkExp.getCityCode());
+				map.put("industry_code", lastWorkExp.getIndustryCode().intValue());
 				map.put("position_name", lastWorkExp.getPositionName());
 				map.put("city_name", lastWorkExp.getCityName());
-				map.put("city_code", lastWorkExp.getCityCode());
+				map.put("city_code", lastWorkExp.getCityCode().intValue());
 			}
 			if(basicRecord != null) {
 				map.put("username", basicRecord.getName());
 				map.put("gender", basicRecord.getGender().intValue());
 				map.put("nationality_name", basicRecord.getNationalityName());
-				map.put("nationality_code", basicRecord.getNationalityCode());
+				map.put("nationality_code", basicRecord.getNationalityCode().intValue());
 				DictCountryRecord countryRecord = countryDao.getCountryByID(basicRecord.getNationalityCode());
 				if(countryRecord != null) {
 					map.put("icon_class", countryRecord.getIconClass());
@@ -420,6 +452,7 @@ public class WholeProfileServicesImpl implements Iface {
 				
 				map.put("qq", basicRecord.getQq());
 				map.put("weixin", basicRecord.getWeixin());
+				map.put("profile_id", basicRecord.getProfileId().intValue());
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -431,6 +464,9 @@ public class WholeProfileServicesImpl implements Iface {
 	
 	@Autowired
 	private IntentionCityDao intentionCityDao;
+	
+	@Autowired
+	private CompanyDao companyDao;
 	
 	@Autowired
 	private IntentionPositionDao intentionPositionDao;
@@ -633,5 +669,13 @@ public class WholeProfileServicesImpl implements Iface {
 
 	public void setIntentionIndustryDao(IntentionIndustryDao intentionIndustryDao) {
 		this.intentionIndustryDao = intentionIndustryDao;
+	}
+
+	public CompanyDao getCompanyDao() {
+		return companyDao;
+	}
+
+	public void setCompanyDao(CompanyDao companyDao) {
+		this.companyDao = companyDao;
 	}
 }

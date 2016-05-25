@@ -15,6 +15,7 @@ import java.util.List;
 import javax.annotation.Generated;
 
 import org.jooq.Field;
+import org.jooq.Identity;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
@@ -34,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigCacheconfigRediskey extends TableImpl<ConfigCacheconfigRediskeyRecord> {
 
-	private static final long serialVersionUID = -1233534234;
+	private static final long serialVersionUID = -963523771;
 
 	/**
 	 * The reference instance of <code>configDB.config_cacheconfig_rediskey</code>
@@ -114,6 +115,14 @@ public class ConfigCacheconfigRediskey extends TableImpl<ConfigCacheconfigRedisk
 
 	private ConfigCacheconfigRediskey(String alias, Table<ConfigCacheconfigRediskeyRecord> aliased, Field<?>[] parameters) {
 		super(alias, Configdb.CONFIGDB, aliased, parameters, "redis缓存配置表");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Identity<ConfigCacheconfigRediskeyRecord, Integer> getIdentity() {
+		return Keys.IDENTITY_CONFIG_CACHECONFIG_REDISKEY;
 	}
 
 	/**

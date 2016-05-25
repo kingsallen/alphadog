@@ -82,8 +82,8 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 				List<String> majorCodes = new ArrayList<>();
 				educations.forEach(education -> {
 					//cityCodes.add(basic.getCity());
-					if(education.getSchool_code() > 0 && StringUtils.isNullOrEmpty(education.getSchool_name())) {
-						collegeCodes.add((int)education.getSchool_code());
+					if(education.getCollege_code() > 0 && StringUtils.isNullOrEmpty(education.getCollege_name())) {
+						collegeCodes.add((int)education.getCollege_code());
 					}
 					if(!StringUtils.isNullOrEmpty(education.getMajor_code()) && StringUtils.isNullOrEmpty(education.getMajor_name())) {
 						majorCodes.add(education.getMajor_code());
@@ -94,8 +94,8 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 				if(colleges != null && colleges.size() > 0) {
 					for(Education education : educations) {
 						for(DictCollegeRecord college : colleges) {
-							if(education.getSchool_code() == college.getCode().intValue()) {
-								education.setSchool_name(college.getName());
+							if(education.getCollege_code() == college.getCode().intValue()) {
+								education.getCollege_name().equals(college.getName());
 								break;
 							}
 						}
@@ -113,7 +113,7 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 						}
 					}
 				}
-				//return ResponseUtils.success(records);
+				return ResponseUtils.success(educations);
 			}
 		} catch (Exception e) {
 			logger.error("getResources error", e);
@@ -126,8 +126,27 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 
 	@Override
 	public Response getResource(CommonQuery query) throws TException {
-		
-		return super.getResource(query);
+		try {
+			ProfileEducationRecord educationRecord = dao.getResource(query);
+			if(educationRecord != null) {
+				Education education = DBToStruct(educationRecord);
+				DictCollegeRecord college = collegeDao.getCollegeByID(educationRecord.getCollegeCode().intValue());
+				if(college != null) {
+					education.setCollege_name(college.getName());
+				}
+				DictMajorRecord major = majorDao.getMajorByID(educationRecord.getMajorCode());
+				if(major != null) {
+					education.setMajor_name(major.getName());
+				}
+				return ResponseUtils.success(educationRecord);
+			}
+		} catch (Exception e) {
+			logger.error("getResources error", e);
+			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		} finally {
+			//do nothing
+		}
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 	}
 
 	@Override
