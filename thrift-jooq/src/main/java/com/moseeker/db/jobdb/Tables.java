@@ -12,6 +12,7 @@ import com.moseeker.db.jobdb.tables.JobPositionCity;
 import com.moseeker.db.jobdb.tables.JobPositionShareTplConf;
 import com.moseeker.db.jobdb.tables.JobPositionTopic;
 import com.moseeker.db.jobdb.tables.JobResumeBasic;
+import com.moseeker.db.jobdb.tables.JobResumeOther;
 
 import javax.annotation.Generated;
 
@@ -68,4 +69,9 @@ public class Tables {
 	 * 申请简历简述表
 	 */
 	public static final JobResumeBasic JOB_RESUME_BASIC = com.moseeker.db.jobdb.tables.JobResumeBasic.JOB_RESUME_BASIC;
+
+	/**
+	 * 自定义简历副本记录表
+	 */
+	public static final JobResumeOther JOB_RESUME_OTHER = com.moseeker.db.jobdb.tables.JobResumeOther.JOB_RESUME_OTHER;
 }
