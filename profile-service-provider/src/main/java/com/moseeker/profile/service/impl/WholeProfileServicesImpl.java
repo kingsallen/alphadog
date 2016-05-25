@@ -19,15 +19,18 @@ import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.db.dictdb.tables.records.DictCountryRecord;
 import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileAttachmentRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileAwardsRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileBasicRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileCredentialsRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileEducationRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileImportRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileIntentionCityRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileIntentionIndustryRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileIntentionPositionRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileIntentionRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileLanguageRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileOtherRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProjectexpRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileSkillRecord;
@@ -39,6 +42,7 @@ import com.moseeker.profile.dao.AwardsDao;
 import com.moseeker.profile.dao.CompanyDao;
 import com.moseeker.profile.dao.CountryDao;
 import com.moseeker.profile.dao.CredentialsDao;
+import com.moseeker.profile.dao.CustomizeResumeDao;
 import com.moseeker.profile.dao.EducationDao;
 import com.moseeker.profile.dao.IntentionCityDao;
 import com.moseeker.profile.dao.IntentionDao;
@@ -109,6 +113,15 @@ public class WholeProfileServicesImpl implements Iface {
 				
 				List<Map<String, Object>> intentions = buildsIntentions(profileRecord, query);
 				profile.put("intentions", intentions);
+				
+				List<Map<String, Object>> attachments = buildAttachments(profileRecord, query);
+				profile.put("attachments", attachments);
+				
+				List<Map<String, Object>> imports = buildImports(profileRecord, query);
+				profile.put("imports", imports);
+				
+				List<Map<String, Object>> others = buildOthers(profileRecord, query);
+				profile.put("others", others);
 				response.setStatus(0);
 				response.setMessage(Constant.TIPS_SUCCESS);
 				//Gson gson = new Gson();
@@ -128,6 +141,78 @@ public class WholeProfileServicesImpl implements Iface {
 		return response;
 	}
 	
+	private List<Map<String, Object>> buildOthers(ProfileProfileRecord profileRecord, CommonQuery query) {
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		try {
+			List<ProfileOtherRecord> records = customizeResumeDao.getResources(query);
+			if(records != null && records.size() > 0) {
+				records.forEach(record -> {
+					Map<String, Object> map = new HashMap<String, Object>();
+					map.put("profile_id", record.getProfileId().intValue());
+					map.put("other", record.getOther());
+					map.put("create_time", DateUtils.dateToShortTime(record.getCreateTime()));
+					map.put("update_time", DateUtils.dateToShortTime(record.getUpdateTime()));
+					list.add(map);
+				});
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		} finally {
+			//do nothing
+		}
+		return list;
+	}
+
+	private List<Map<String, Object>> buildImports(ProfileProfileRecord profileRecord, CommonQuery query) {
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		try {
+			List<ProfileImportRecord> records = profileImportDao.getResources(query);
+			if(records != null && records.size() > 0) {
+				records.forEach(record -> {
+					Map<String, Object> map = new HashMap<String, Object>();
+					map.put("profile_id", record.getProfileId().intValue());
+					map.put("source", record.getSource().intValue());
+					map.put("last_update_time", DateUtils.dateToShortTime(record.getLastUpdateTime()));
+					map.put("account_id", record.getAccountId());
+					map.put("resume_id", record.getResumeId());
+					map.put("user_name", record.getUserName());
+					map.put("create_time", DateUtils.dateToShortTime(record.getCreateTime()));
+					map.put("update_time", DateUtils.dateToShortTime(record.getUpdateTime()));
+					list.add(map);
+				});
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		} finally {
+			//do nothing
+		}
+		return list;
+	}
+
+	private List<Map<String, Object>> buildAttachments(ProfileProfileRecord profileRecord, CommonQuery query) {
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		try {
+			List<ProfileAttachmentRecord> records = attachmentDao.getResources(query);
+			if(records != null && records.size() > 0) {
+				records.forEach(record -> {
+					Map<String, Object> map = new HashMap<String, Object>();
+					map.put("id", record.getId().intValue());
+					map.put("profile_id", record.getProfileId().intValue());
+					map.put("name", record.getName());
+					map.put("path", record.getPath());
+					map.put("create_time", DateUtils.dateToShortTime(record.getCreateTime()));
+					map.put("update_time", DateUtils.dateToShortTime(record.getUpdateTime()));
+					list.add(map);
+				});
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		} finally {
+			//do nothing
+		}
+		return list;
+	}
+
 	private List<Map<String, Object>> buildsIntentions(ProfileProfileRecord profileRecord, CommonQuery query) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
@@ -436,6 +521,7 @@ public class WholeProfileServicesImpl implements Iface {
 				map.put("city_code", lastWorkExp.getCityCode().intValue());
 			}
 			if(basicRecord != null) {
+				map.put("completeness", profileRecord.getCompleteness());
 				map.put("username", basicRecord.getName());
 				map.put("gender", basicRecord.getGender().intValue());
 				map.put("nationality_name", basicRecord.getNationalityName());
@@ -461,6 +547,9 @@ public class WholeProfileServicesImpl implements Iface {
 		}
 		return map;
 	}
+	
+	@Autowired
+	private CustomizeResumeDao customizeResumeDao;
 	
 	@Autowired
 	private IntentionCityDao intentionCityDao;
@@ -677,5 +766,13 @@ public class WholeProfileServicesImpl implements Iface {
 
 	public void setCompanyDao(CompanyDao companyDao) {
 		this.companyDao = companyDao;
+	}
+
+	public CustomizeResumeDao getCustomizeResumeDao() {
+		return customizeResumeDao;
+	}
+
+	public void setCustomizeResumeDao(CustomizeResumeDao customizeResumeDao) {
+		this.customizeResumeDao = customizeResumeDao;
 	}
 }

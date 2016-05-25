@@ -23,7 +23,7 @@ public class ProfileController {
 
 	WholeProfileServices.Iface profileService = ServiceUtil.getService(WholeProfileServices.Iface.class);
 	
-	@RequestMapping(value = "/profile", method = RequestMethod.GET)
+	@RequestMapping(value = "/profile", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
 	@ResponseBody
 	public String get(HttpServletRequest request, HttpServletResponse response) {
 		//PrintWriter writer = null;
