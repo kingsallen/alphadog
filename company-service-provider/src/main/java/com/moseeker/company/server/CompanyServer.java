@@ -40,7 +40,7 @@ public class CompanyServer {
 			synchronized (CompanyServer.class) {
 				while (true) {
 					try {
-						UsersettingsServer.class.wait();
+						CompanyServer.class.wait();
 					} catch (InterruptedException e) {
 						LOGGER.error("error", e);
 					}
@@ -53,7 +53,7 @@ public class CompanyServer {
 
 	private static AnnotationConfigApplicationContext initSpring() {
 		AnnotationConfigApplicationContext acac = new AnnotationConfigApplicationContext();
-		acac.scan("com.moseeker.useraccounts");
+		acac.scan("com.moseeker.company");
 		acac.refresh();
 		return acac;
 	}
