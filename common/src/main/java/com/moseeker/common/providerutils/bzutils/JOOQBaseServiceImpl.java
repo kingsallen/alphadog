@@ -152,8 +152,9 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		R record = null;
 		try {
 			record = dao.getResource(query);
+			S s = DBToStruct(record);
 			if ( record != null){
-				return ResponseUtils.success(record);
+				return ResponseUtils.success(s);
 			}
 
 		} catch (Exception e) {
