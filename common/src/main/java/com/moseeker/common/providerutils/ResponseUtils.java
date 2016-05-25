@@ -10,51 +10,38 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
 
 public class ResponseUtils {
-	public String message = null;
-	public String data = null;
-	public int status = 0;
-	
-	public static Response buildFromConstant(String constantMessage) throws ParamNullException {
+
+	public static Response success(Object hashmap) {
+
 		Response response = new Response();
-		if(StringUtils.isNullOrEmpty(constantMessage)) {
+		response.setStatus(0);
+		response.setMessage("success");
+		response.setData(JSON.toJSONString(hashmap));
+		return response;
+
+	}
+	
+	public static Response fail(String constantErrorCodeMessage) throws ParamNullException {
+		Response response = new Response();
+		if(StringUtils.isNullOrEmpty(constantErrorCodeMessage)) {
 			throw new ParamNullException();
 		}
-		JSONObject jsonObject = JSONObject.parseObject(constantMessage);
+		JSONObject jsonObject = JSONObject.parseObject(constantErrorCodeMessage);
 		response.setData(Constant.NONE_JSON);
 		response.setStatus(jsonObject.getIntValue("status"));
 		response.setMessage(jsonObject.getString("message"));
 		return response;
 	}
 
-	public static Response success(Object hashmap) {
-
+	public static Response fail(String constantErrorCodeMessage, Map<String, Object> hashmap) {		
 		Response response = new Response();
-		response.setStatus(0);
-		response.setMessage("ok");
+		if(StringUtils.isNullOrEmpty(constantErrorCodeMessage)) {
+			throw new ParamNullException();
+		}
+		JSONObject jsonObject = JSONObject.parseObject(constantErrorCodeMessage);
 		response.setData(JSON.toJSONString(hashmap));
-		return response;
-
-	}
-
-	public static Response fail(String message) {
-		Response response = new Response();
-		response.setStatus(1);
-		response.setMessage(message);
-		return response;
-	}
-
-	public static Response fail(int errcode, String message) {
-		Response response = new Response();
-		response.setStatus(errcode);
-		response.setMessage(message);
-		return response;
-	}
-
-	public static Response fail(int errcode, String message, Map<String, Object> hashmap) {
-		Response response = new Response();
-		response.setStatus(errcode);
-		response.setMessage(message);
-		response.setData(JSON.toJSONString(hashmap));
+		response.setStatus(jsonObject.getIntValue("status"));
+		response.setMessage(jsonObject.getString("message"));
 		return response;
 	}
 }

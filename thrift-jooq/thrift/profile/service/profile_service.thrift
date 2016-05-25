@@ -10,7 +10,7 @@ namespace java com.moseeker.thrift.gen.profile.service
  */
  
 service WholeProfileServices {
-    common_struct.Response getResource(1:i32 id);
+    common_struct.Response getResource(1:i32 userId, 2:i32 profileId);
 }
 
 service ProfileServices {

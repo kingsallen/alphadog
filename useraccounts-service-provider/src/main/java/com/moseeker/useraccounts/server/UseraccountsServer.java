@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.moseeker.rpccenter.common.ServerNodeUtils;
+import com.moseeker.rpccenter.main.MultiRegServer;
 import com.moseeker.rpccenter.main.Server;
 import com.moseeker.useraccounts.service.impl.UseraccountsServiceImpl;
 
@@ -33,6 +34,7 @@ public class UseraccountsServer {
 			Server server = new Server(UseraccountsServer.class,
 					ServerNodeUtils.getPort(args),
 					acac.getBean(UseraccountsServiceImpl.class));
+			
 			server.start(); // 启动服务，非阻塞
 
 			synchronized (UseraccountsServer.class) {
@@ -41,13 +43,11 @@ public class UseraccountsServer {
 						UseraccountsServer.class.wait();
 					} catch (InterruptedException e) {
 						LOGGER.error("error", e);
-						e.printStackTrace();
 					}
 				}
 			}
 		} catch (Exception e) {
 			LOGGER.error("error", e);
-			e.printStackTrace();
 		}
 	}
 

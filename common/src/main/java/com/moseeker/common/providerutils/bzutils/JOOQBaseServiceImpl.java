@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.daoutils.BaseDao;
-import com.moseeker.common.util.Constant;
+import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.common.util.Pagination;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -52,11 +52,11 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 			
 		} catch (Exception e) {
 			logger.error("getResources error", e);
-			ResponseUtils.fail(e.getMessage());
+			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		} finally {
 			//do nothing
 		}
-		return ResponseUtils.buildFromConstant(Constant.PROGRAM_DATA_EMPTY);
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 	}
 
 	public List<S> getRawResources(CommonQuery query) throws TException {
@@ -94,13 +94,13 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 
 		} catch (Exception e) {
 			logger.error("postResources error", e);
-			ResponseUtils.fail(e.getMessage());
+			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 
 		} finally {
 			//do nothing
 		}
 		
-		return ResponseUtils.buildFromConstant(Constant.PROGRAM_POST_FAILED);
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
 	}
 
 	public Response putResources(List<S> structs) throws TException {
@@ -116,12 +116,12 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 			}
 		} catch (Exception e) {
 			logger.error("putResources error", e);
-			ResponseUtils.fail(e.getMessage());
+			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 
 		} finally {
 			//do nothing
 		}
-		return ResponseUtils.buildFromConstant(Constant.PROGRAM_PUT_FAILED);
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
 	}
 
 	public Response delResources(List<S> structs) throws TException {
@@ -137,12 +137,12 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 			}
 		} catch (Exception e) {
 			logger.error("delResources error", e);
-			ResponseUtils.fail(e.getMessage());
+			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 
 		} finally {
 			//do nothing
 		}
-		return ResponseUtils.buildFromConstant(Constant.PROGRAM_DEL_FAILED);
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
 	}
 	
 	public Response getResource(CommonQuery query) throws TException {
@@ -152,17 +152,18 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		R record = null;
 		try {
 			record = dao.getResource(query);
+			S s = DBToStruct(record);
 			if ( record != null){
-				return ResponseUtils.success(record);
+				return ResponseUtils.success(s);
 			}
 
 		} catch (Exception e) {
 			logger.error("getResource error", e);
-			return ResponseUtils.fail(e.getMessage());
+			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		} finally {
 			//do nothing
 		}
-		return ResponseUtils.buildFromConstant(Constant.PROGRAM_DATA_EMPTY);
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 	}
 
 	public Response postResource(S struct) throws TException {
@@ -180,12 +181,12 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 
 		} catch (Exception e) {
 			logger.error("postResource error", e);
-			return ResponseUtils.fail(e.getMessage());
+			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		} finally {
 			//do nothing
 		}
 		
-		return ResponseUtils.buildFromConstant(Constant.PROGRAM_POST_FAILED);
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
 	}
 
 	public Response putResource(S struct) throws TException {
@@ -201,12 +202,12 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 			}
 		} catch (Exception e) {
 			logger.error("putResource error", e);
-			return ResponseUtils.fail(e.getMessage());
+			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 
 		} finally {
 			//do nothing
 		}
-		return ResponseUtils.buildFromConstant(Constant.PROGRAM_PUT_FAILED);
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
 	}
 
 	public Response delResource(S struct) throws TException {
@@ -222,11 +223,11 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 			}
 		} catch (Exception e) {
 			logger.error("delResource error", e);
-			return ResponseUtils.fail(e.getMessage());
+			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		} finally {
 			//do nothing
 		}
-		return ResponseUtils.buildFromConstant(Constant.PROGRAM_DEL_FAILED);
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
 	}
 	
 	protected Response getTotalRow(CommonQuery query) throws TException {
@@ -239,7 +240,7 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 			return ResponseUtils.success(String.valueOf(totalRow));
 		} catch (Exception e) {
 			logger.error("getTotalRow error", e);
-			return ResponseUtils.fail(e.getMessage());
+			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 
 		} finally {
 			//do nothing
@@ -274,7 +275,7 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 
 		} catch (Exception e) {
 			logger.error("getPagination error", e);
-			return ResponseUtils.fail(e.getMessage());
+			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 
 		} finally {
 			//do nothing

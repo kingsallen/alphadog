@@ -38,7 +38,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileWorkexp extends TableImpl<ProfileWorkexpRecord> {
 
-	private static final long serialVersionUID = -82620058;
+	private static final long serialVersionUID = 394894468;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_workexp</code>
@@ -99,24 +99,9 @@ public class ProfileWorkexp extends TableImpl<ProfileWorkexpRecord> {
 	public final TableField<ProfileWorkexpRecord, String> INDUSTRY_NAME = createField("industry_name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "行业名称");
 
 	/**
-	 * The column <code>profileDB.profile_workexp.company_name</code>. 公司名称
+	 * The column <code>profileDB.profile_workexp.company_id</code>. 公司ID, hr_company.id
 	 */
-	public final TableField<ProfileWorkexpRecord, String> COMPANY_NAME = createField("company_name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "公司名称");
-
-	/**
-	 * The column <code>profileDB.profile_workexp.company_scale</code>. 公司规模, 0:没选择, 1:少于15人, 2:15-50人, 3:50-150人, 4:150-500人, 5:500-2000人, 6:2000人以上
-	 */
-	public final TableField<ProfileWorkexpRecord, UByte> COMPANY_SCALE = createField("company_scale", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "公司规模, 0:没选择, 1:少于15人, 2:15-50人, 3:50-150人, 4:150-500人, 5:500-2000人, 6:2000人以上");
-
-	/**
-	 * The column <code>profileDB.profile_workexp.company_property</code>. 公司性质, 0：没选择, 1:外商独资, 2:国企, 3:合资, 4:民营公司, 5:事业单位, 6:上市公司, 7:政府机关/非盈利机构, 8:代表处, 9:股份制企业, 10:创业公司, 11:其它
-	 */
-	public final TableField<ProfileWorkexpRecord, UByte> COMPANY_PROPERTY = createField("company_property", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "公司性质, 0：没选择, 1:外商独资, 2:国企, 3:合资, 4:民营公司, 5:事业单位, 6:上市公司, 7:政府机关/非盈利机构, 8:代表处, 9:股份制企业, 10:创业公司, 11:其它");
-
-	/**
-	 * The column <code>profileDB.profile_workexp.company_introduce</code>. 公司简介
-	 */
-	public final TableField<ProfileWorkexpRecord, String> COMPANY_INTRODUCE = createField("company_introduce", org.jooq.impl.SQLDataType.VARCHAR.length(1000).nullable(false).defaulted(true), this, "公司简介");
+	public final TableField<ProfileWorkexpRecord, UInteger> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "公司ID, hr_company.id");
 
 	/**
 	 * The column <code>profileDB.profile_workexp.department_name</code>. 部门名称
@@ -139,14 +124,19 @@ public class ProfileWorkexp extends TableImpl<ProfileWorkexpRecord> {
 	public final TableField<ProfileWorkexpRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.VARCHAR.length(1000).nullable(false).defaulted(true), this, "工作描述");
 
 	/**
-	 * The column <code>profileDB.profile_workexp.type</code>. 工作类型 0:没选择 1:全职 2:兼职
+	 * The column <code>profileDB.profile_workexp.type</code>. 工作类型 0:没选择 1:全职 2:兼职 3:实习
 	 */
-	public final TableField<ProfileWorkexpRecord, UByte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "工作类型 0:没选择 1:全职 2:兼职");
+	public final TableField<ProfileWorkexpRecord, UByte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "工作类型 0:没选择 1:全职 2:兼职 3:实习");
 
 	/**
-	 * The column <code>profileDB.profile_workexp.address</code>. 工作地点字典编码
+	 * The column <code>profileDB.profile_workexp.city_code</code>. 工作地点（城市），字典编码
 	 */
-	public final TableField<ProfileWorkexpRecord, UInteger> ADDRESS = createField("address", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "工作地点字典编码");
+	public final TableField<ProfileWorkexpRecord, UInteger> CITY_CODE = createField("city_code", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "工作地点（城市），字典编码");
+
+	/**
+	 * The column <code>profileDB.profile_workexp.city_name</code>. 工作地点（城市）名称
+	 */
+	public final TableField<ProfileWorkexpRecord, String> CITY_NAME = createField("city_name", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "工作地点（城市）名称");
 
 	/**
 	 * The column <code>profileDB.profile_workexp.report_to</code>. 汇报对象

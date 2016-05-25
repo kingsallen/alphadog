@@ -5,6 +5,7 @@ package com.moseeker.db.hrdb;
 
 
 import com.moseeker.db.hrdb.tables.HrAppCvConf;
+import com.moseeker.db.hrdb.tables.HrChildCompany;
 import com.moseeker.db.hrdb.tables.HrCompany;
 import com.moseeker.db.hrdb.tables.HrCompanyConf;
 import com.moseeker.db.hrdb.tables.HrEmployeeCertConf;
@@ -16,6 +17,7 @@ import com.moseeker.db.hrdb.tables.HrHbScratchCard;
 import com.moseeker.db.hrdb.tables.HrHbSendRecord;
 import com.moseeker.db.hrdb.tables.HrHtml5Statistics;
 import com.moseeker.db.hrdb.tables.HrHtml5UniqueStatistics;
+import com.moseeker.db.hrdb.tables.HrImporterMonitor;
 import com.moseeker.db.hrdb.tables.HrOperationRecord;
 import com.moseeker.db.hrdb.tables.HrPointsConf;
 import com.moseeker.db.hrdb.tables.HrRecruitStatistics;
@@ -54,9 +56,14 @@ import javax.annotation.Generated;
 public class Tables {
 
 	/**
-	 * 雇主申请简历校验配置表
+	 * 企业申请简历校验配置
 	 */
 	public static final HrAppCvConf HR_APP_CV_CONF = com.moseeker.db.hrdb.tables.HrAppCvConf.HR_APP_CV_CONF;
+
+	/**
+	 * 子公司表
+	 */
+	public static final HrChildCompany HR_CHILD_COMPANY = com.moseeker.db.hrdb.tables.HrChildCompany.HR_CHILD_COMPANY;
 
 	/**
 	 * 公司表
@@ -112,6 +119,11 @@ public class Tables {
 	 * 专题传播统计去重信息表
 	 */
 	public static final HrHtml5UniqueStatistics HR_HTML5_UNIQUE_STATISTICS = com.moseeker.db.hrdb.tables.HrHtml5UniqueStatistics.HR_HTML5_UNIQUE_STATISTICS;
+
+	/**
+	 * 企业用户导入数据异步处理监控操作表
+	 */
+	public static final HrImporterMonitor HR_IMPORTER_MONITOR = com.moseeker.db.hrdb.tables.HrImporterMonitor.HR_IMPORTER_MONITOR;
 
 	/**
 	 * hr申请状态操作记录

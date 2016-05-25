@@ -47,6 +47,8 @@ public class IntentionController {
 		//PrintWriter writer = null;
 		try {
 			Intention education = ParamUtils.initModelForm(request, Intention.class);
+			ParamUtils.buildIntention(request, education);
+			
 			Response result = intentionService.postResource(education);
 			
 			return ResponseLogNotification.success(request, result);
@@ -61,6 +63,7 @@ public class IntentionController {
 	public String put(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			Intention education = ParamUtils.initModelForm(request, Intention.class);
+			ParamUtils.buildIntention(request, education);
 			Response result = intentionService.putResource(education);
 			
 			return ResponseLogNotification.success(request, result);
@@ -74,6 +77,7 @@ public class IntentionController {
 	public String delete(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			Intention education = ParamUtils.initModelForm(request, Intention.class);
+			ParamUtils.buildIntention(request, education);
 			Response result = intentionService.delResource(education);
 			
 			return ResponseLogNotification.success(request, result);
