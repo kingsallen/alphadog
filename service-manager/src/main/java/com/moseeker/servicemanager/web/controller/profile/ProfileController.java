@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.common.ServiceUtil;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -28,7 +29,15 @@ public class ProfileController {
 		//PrintWriter writer = null;
 		try {
 			// GET方法 通用参数解析并赋值
-			Response result = profileService.getResource(Integer.valueOf(request.getParameter("id")));
+			int id = 0;
+			int userId = 0;
+			if(!StringUtils.isNullOrEmpty(request.getParameter("id"))) {
+				id = Integer.valueOf(request.getParameter("id"));
+			}
+			if(!StringUtils.isNullOrEmpty(request.getParameter("user_id"))) {
+				userId = Integer.valueOf(request.getParameter("user_id"));
+			}
+			Response result = profileService.getResource(userId, id);
 			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	

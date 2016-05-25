@@ -9,11 +9,9 @@ import org.springframework.stereotype.Service;
 
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.db.profiledb.tables.records.ProfileAwardsRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileCredentialsRecord;
 import com.moseeker.profile.dao.CredentialsDao;
 import com.moseeker.thrift.gen.profile.service.CredentialsServices.Iface;
-import com.moseeker.thrift.gen.profile.struct.Awards;
 import com.moseeker.thrift.gen.profile.struct.Credentials;
 
 @Service

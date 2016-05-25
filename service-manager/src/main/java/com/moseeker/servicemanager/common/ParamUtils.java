@@ -19,6 +19,7 @@ import org.springframework.web.servlet.HandlerMapping;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.util.BeanUtils;
+import com.moseeker.thrift.gen.profile.struct.Intention;
 
 public class ParamUtils {
 	public static String getRestfullApiName(HttpServletRequest request) {
@@ -310,5 +311,72 @@ public class ParamUtils {
 			map.put(object.toString(), object);
 		}
 		return map;
+	}
+
+	public static void buildIntention(HttpServletRequest request, Intention intention) {
+		Map<Integer, Integer> industryCode = new HashMap<>();
+		Map<Integer, String> industryName= new HashMap<>();
+		
+		Map<Integer, Integer> positionCode = new HashMap<>();
+		Map<Integer, String> positionName= new HashMap<>();
+		
+		Map<Integer, Integer> cityCode = new HashMap<>();
+		Map<Integer, String> cityName= new HashMap<>();
+		@SuppressWarnings("unchecked")
+		Map<String, String[]> reqParams = request.getParameterMap();
+		if (reqParams != null) {
+			for (Entry<String, String[]> entry : reqParams.entrySet()) {
+				if(entry.getKey().startsWith("industries[")) {
+					if(entry.getKey().contains("industry_code")) {
+						industryCode.put(Integer.valueOf(entry.getKey().charAt(11)), Integer.valueOf(entry.getValue()[0]));
+					}
+					if(entry.getKey().contains("industry_name")) {
+						industryName.put(Integer.valueOf(entry.getKey().charAt(11)), entry.getValue()[0]);
+					}
+				}
+				
+				if(entry.getKey().startsWith("cities[")) {
+					if(entry.getKey().contains("city_code")) {
+						cityCode.put(Integer.valueOf(entry.getKey().charAt(7)), Integer.valueOf(entry.getValue()[0]));
+					}
+					if(entry.getKey().contains("city_name")) {
+						cityName.put(Integer.valueOf(entry.getKey().charAt(7)), entry.getValue()[0]);
+					}
+				}
+				
+				if(entry.getKey().startsWith("positions[")) {
+					if(entry.getKey().contains("position_code")) {
+						positionCode.put(Integer.valueOf(entry.getKey().charAt(10)), Integer.valueOf(entry.getValue()[0]));
+					}
+					if(entry.getKey().contains("position_name")) {
+						positionName.put(Integer.valueOf(entry.getKey().charAt(10)), entry.getValue()[0]);
+					}
+				}
+			}
+		}
+		if(industryCode.size() > 0 && industryCode.size() == industryName.size()) {
+			for(Entry<Integer, Integer> entry : industryCode.entrySet()) {
+				if(intention.getIndustries() == null) {
+					intention.setIndustries(new HashMap<Integer, String>());
+				}
+				intention.getIndustries().put(entry.getValue().intValue(), industryName.get(entry.getKey().intValue()));
+			}
+		}
+		if(positionCode.size() > 0 && positionCode.size() == positionName.size()) {
+			for(Entry<Integer, Integer> entry : positionCode.entrySet()) {
+				if(intention.positions == null) {
+					intention.setPositions(new HashMap<Integer, String>());
+				}
+				intention.getPositions().put(entry.getValue().intValue(), positionName.get(entry.getKey().intValue()));
+			}
+		}
+		if(cityCode.size() > 0 && cityCode.size() == cityName.size()) {
+			for(Entry<Integer, Integer> entry : cityCode.entrySet()) {
+				if(intention.cities == null) {
+					intention.setCities(new HashMap<Integer, String>());
+				}
+				intention.getCities().put(entry.getValue().intValue(), cityName.get(entry.getKey().intValue()));
+			}
+		}
 	}
 }

@@ -38,6 +38,10 @@ public class SmsSender {
 
 	public static boolean sendSMS(String mobile, String templateCode, HashMap params){
 		initTaobaoClientInstance();
+		
+		if (mobile==null){
+			return false;
+		}
 
 		AlibabaAliqinFcSmsNumSendRequest req = new AlibabaAliqinFcSmsNumSendRequest();
 		req.setExtend(mobile);
@@ -107,6 +111,34 @@ public class SmsSender {
 		params.put("code", randompassword);		
 		return sendSMS(mobile,"SMS_5895237",params);
 	}
+	
+	/**
+	 *      SMS_5755096  修改手机号时， 向现有手机号发送验证码。
+	 *      您的验证码是：${code}。请不要把验证码泄露给其他人。	
+	 * @param mobile
+	 * @return
+	 */
+	public static boolean sendSMS_changemobilecode(String mobile){
+		HashMap<String, String> params = new HashMap<String, String>();
+		String code = getRandomStr();
+		params.put("code", code);	
+		RedisClientFactory.getCacheClient().set(0, "SMS_CHANGEMOBILE_CODE", mobile, code);
+		return sendSMS(mobile,"SMS_5755096",params);
+	} 	
+	
+	/**
+	 *      SMS_5755096  重置手机号时， 向新手机号发送验证码。
+	 *      您的验证码是：${code}。请不要把验证码泄露给其他人。	
+	 * @param mobile
+	 * @return
+	 */
+	public static boolean sendSMS_resetmobilecode(String mobile){
+		HashMap<String, String> params = new HashMap<String, String>();
+		String code = getRandomStr();
+		params.put("code", code);	
+		RedisClientFactory.getCacheClient().set(0, "SMS_RESETMOBILE_CODE", mobile, code);
+		return sendSMS(mobile,"SMS_5755096",params);
+	} 		
 	
 	private static String getRandomStr(){
 		return String.valueOf((int) (Math.random()*9000+1000));

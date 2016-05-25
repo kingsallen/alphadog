@@ -14,6 +14,7 @@ import java.util.List;
 import javax.annotation.Generated;
 
 import org.jooq.Field;
+import org.jooq.Identity;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
@@ -34,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileIntentionIndustry extends TableImpl<ProfileIntentionIndustryRecord> {
 
-	private static final long serialVersionUID = 1894771433;
+	private static final long serialVersionUID = -8944167;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_intention_industry</code>
@@ -50,14 +51,24 @@ public class ProfileIntentionIndustry extends TableImpl<ProfileIntentionIndustry
 	}
 
 	/**
-	 * The column <code>profileDB.profile_intention_industry.profile_intention_id</code>. 主key
+	 * The column <code>profileDB.profile_intention_industry.id</code>. 主key
 	 */
-	public final TableField<ProfileIntentionIndustryRecord, UInteger> PROFILE_INTENTION_ID = createField("profile_intention_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
+	public final TableField<ProfileIntentionIndustryRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
 
 	/**
-	 * The column <code>profileDB.profile_intention_industry.industry</code>. 行业字典编码
+	 * The column <code>profileDB.profile_intention_industry.profile_intention_id</code>. profile_intention.id
 	 */
-	public final TableField<ProfileIntentionIndustryRecord, UInteger> INDUSTRY = createField("industry", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "行业字典编码");
+	public final TableField<ProfileIntentionIndustryRecord, UInteger> PROFILE_INTENTION_ID = createField("profile_intention_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "profile_intention.id");
+
+	/**
+	 * The column <code>profileDB.profile_intention_industry.industry_code</code>. 行业字典编码
+	 */
+	public final TableField<ProfileIntentionIndustryRecord, UInteger> INDUSTRY_CODE = createField("industry_code", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "行业字典编码");
+
+	/**
+	 * The column <code>profileDB.profile_intention_industry.industry_name</code>. 行业名称
+	 */
+	public final TableField<ProfileIntentionIndustryRecord, String> INDUSTRY_NAME = createField("industry_name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "行业名称");
 
 	/**
 	 * Create a <code>profileDB.profile_intention_industry</code> table reference
@@ -79,6 +90,14 @@ public class ProfileIntentionIndustry extends TableImpl<ProfileIntentionIndustry
 
 	private ProfileIntentionIndustry(String alias, Table<ProfileIntentionIndustryRecord> aliased, Field<?>[] parameters) {
 		super(alias, Profiledb.PROFILEDB, aliased, parameters, "Profile的求职意向-行业关系表");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Identity<ProfileIntentionIndustryRecord, UInteger> getIdentity() {
+		return Keys.IDENTITY_PROFILE_INTENTION_INDUSTRY;
 	}
 
 	/**

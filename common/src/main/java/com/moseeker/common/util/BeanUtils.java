@@ -9,7 +9,10 @@ import java.util.Map;
 
 import org.apache.thrift.TBase;
 import org.jooq.impl.UpdatableRecordImpl;
+import org.jooq.types.UByte;
 import org.jooq.types.UInteger;
+import org.jooq.types.ULong;
+import org.jooq.types.UShort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +37,11 @@ import org.slf4j.LoggerFactory;
 public class BeanUtils {
 	
 	private static Logger logger = LoggerFactory.getLogger(BeanUtils.class);
+	
+	public static void main(String[] args) {
+		String str = "110108";
+		System.out.println(Short.valueOf(str));
+	}
 	
 	@SuppressWarnings("rawtypes")
 	public static UpdatableRecordImpl structToDB(TBase dest, Class<? extends UpdatableRecordImpl> origClazz, Map<String, String> equalRules) {
@@ -89,7 +97,7 @@ public class BeanUtils {
 									String origMethodName = buiderRecordMethodName(field.getName(), MethodType.SET, equalRules);
 									for(k=0; k<origMethods.length;k++) {
 										if(origMethods[k].getName().trim().equals(origMethodName)) {
-											Object object = convertTo(destMethods[j].invoke(dest, new Object[]{}), origMethods[k].getParameterTypes()[0]);
+ 											Object object = convertTo(destMethods[j].invoke(dest, new Object[]{}), origMethods[k].getParameterTypes()[0]);
 											if(object != null) {
 												origMethods[k].invoke(orig, object);
 											}
@@ -276,6 +284,128 @@ public class BeanUtils {
 		} else if(clazzType.isAssignableFrom(Short.class) 
 				|| clazzType.isAssignableFrom(short.class)) {
 			return (T) convertToShort(value);
+		} else if (clazzType.isAssignableFrom(UByte.class)) {
+			return (T) converToUByte(value);
+		} else if (clazzType.isAssignableFrom(UShort.class)) {
+			return (T) converToUShort(value);
+		} else if (clazzType.isAssignableFrom(ULong.class)) {
+			return (T) converToULong(value);
+		}else {
+			return null;
+		}
+	}
+
+	private static ULong converToULong(Object value) {
+		if (value instanceof String) {
+			try {
+				return ULong.valueOf((String)value);
+			} catch (NumberFormatException e) {
+				return ULong.valueOf(0);
+			}
+		} else if (value instanceof Boolean) {
+			if((Boolean)value) {
+				return ULong.valueOf(1);
+			} else {
+				return ULong.valueOf(0);
+			}
+		} else if (value instanceof Integer) {
+			return ULong.valueOf((Integer)value);
+		} else if (value instanceof Byte) {
+			return ULong.valueOf((Byte)value);
+		} else if (value instanceof Float) {
+			return ULong.valueOf(((Float)value).intValue());
+		} else if (value instanceof Long) {
+			return ULong.valueOf(((Long)value).shortValue());
+		} else if (value instanceof Double) {
+			return ULong.valueOf(((Double)value).shortValue());
+		} else if(value instanceof UInteger) {
+			return ULong.valueOf(((UInteger)value).intValue());
+		} else if(value instanceof Date) {
+			return ULong.valueOf((short)((Date)value).getTime());
+		} else if (value instanceof UShort) {
+			return ULong.valueOf(((UShort)value).longValue());
+		} else if (value instanceof UByte) {
+			return ULong.valueOf(((UByte)value).shortValue());
+		} else if (value instanceof ULong) {
+			return (ULong)value;
+		} else {
+			return null;
+		}
+	}
+
+	private static UShort converToUShort(Object value) {
+		if (value instanceof String) {
+			try {
+				return UShort.valueOf((String)value);
+			} catch (NumberFormatException e) {
+				return UShort.valueOf(0);
+			}
+		} else if (value instanceof Boolean) {
+			if((Boolean)value) {
+				return UShort.valueOf(1);
+			} else {
+				return UShort.valueOf(0);
+			}
+		} else if (value instanceof Integer) {
+			return UShort.valueOf((Integer)value);
+		} else if (value instanceof Byte) {
+			return UShort.valueOf((Byte)value);
+		} else if (value instanceof Float) {
+			return UShort.valueOf(((Float)value).intValue());
+		} else if (value instanceof Long) {
+			return UShort.valueOf(((Long)value).shortValue());
+		} else if (value instanceof ULong) {
+			return UShort.valueOf(((ULong)value).shortValue());
+		} else if (value instanceof Double) {
+			return UShort.valueOf(((Double)value).shortValue());
+		} else if(value instanceof UInteger) {
+			return UShort.valueOf(((UInteger)value).intValue());
+		} else if(value instanceof Date) {
+			return UShort.valueOf((short)((Date)value).getTime());
+		} else if (value instanceof UShort) {
+			return (UShort)value;
+		} else if (value instanceof UByte) {
+			return UShort.valueOf(((UByte)value).shortValue());
+		} else {
+			return null;
+		}
+	}
+
+	private static UByte converToUByte(Object value) {
+		if (value instanceof String) {
+			try {
+				return UByte.valueOf((String)value);
+			} catch (NumberFormatException e) {
+				return UByte.valueOf(0);
+			}
+		} else if (value instanceof Boolean) {
+			if((Boolean)value) {
+				return UByte.valueOf(1);
+			} else {
+				return UByte.valueOf(0);
+			}
+		} else if (value instanceof Integer) {
+			return UByte.valueOf((Integer)value);
+		} else if (value instanceof Byte) {
+			return UByte.valueOf((Byte)value);
+		} else if (value instanceof Float) {
+			return UByte.valueOf(((Float)value).intValue());
+		} else if (value instanceof Long) {
+			return UByte.valueOf((Long)value);
+		} else if (value instanceof ULong) {
+			return UByte.valueOf(((ULong)value).shortValue());
+		} else if (value instanceof Double) {
+			return UByte.valueOf(((Double)value).longValue());
+		} else if(value instanceof UInteger) {
+			return UByte.valueOf(((UInteger)value).intValue());
+		} else if(value instanceof Date) {
+			return UByte.valueOf(((Date)value).getTime());
+		} else if (value instanceof UByte) {
+			return (UByte)value;
+		} else if (value instanceof UShort) {
+			return UByte.valueOf(((UShort)value).shortValue());
+		} else if (value instanceof Short) {
+			return UByte.valueOf(((Short)value).shortValue());
 		} else {
 			return null;
 		}
@@ -302,12 +432,18 @@ public class BeanUtils {
 			return ((Float)value).shortValue();
 		} else if (value instanceof Long) {
 			return ((Long)value).shortValue();
-		} else if (value instanceof Double) {
+		} else if (value instanceof ULong) {
+			return ((ULong)value).shortValue();
+		}  else if (value instanceof Double) {
 			return ((Double)value).shortValue();
 		} else if(value instanceof UInteger) {
 			return ((UInteger)value).shortValue();
 		} else if(value instanceof Date) {
 			return Long.valueOf(((Date)value).getTime()).shortValue();
+		} else if (value instanceof UByte) {
+			return ((UByte)value).shortValue();
+		} else if (value instanceof UShort) {
+			return ((UShort)value).shortValue();
 		} else {
 			return null;
 		}
@@ -336,6 +472,8 @@ public class BeanUtils {
 			return UInteger.valueOf(((Float)value).longValue());
 		} else if (value instanceof Long) {
 			return UInteger.valueOf((Long)value);
+		} else if (value instanceof ULong) {
+			return UInteger.valueOf(((ULong)value).intValue());
 		} else if (value instanceof Double) {
 			return UInteger.valueOf(((Double)value).longValue());
 		} else if(value instanceof UInteger) {
@@ -346,6 +484,10 @@ public class BeanUtils {
 			return UInteger.valueOf(((java.sql.Date)value).getTime());
 		} else if(value instanceof Date) {
 			return UInteger.valueOf(((Date)value).getTime());
+		} else if (value instanceof UByte) {
+			return UInteger.valueOf(((UByte)value).intValue());
+		} else if (value instanceof UShort) {
+			return UInteger.valueOf(((UShort)value).intValue());
 		} else {
 			return null;
 		}
@@ -354,12 +496,14 @@ public class BeanUtils {
 	private static java.sql.Timestamp convertToSQLTimestamp(Object value) {
 		if (value instanceof String) {
 			try {
-				return new java.sql.Timestamp(DateUtils.nomalDateToDate((String)value).getTime());
+				return new java.sql.Timestamp(DateUtils.shortTimeToDate((String)value).getTime());
 			} catch (ParseException e) {
 				return null;
 			}
 		} else if (value instanceof Boolean) {
 			return null;
+		} else if (value instanceof UShort) {
+			return new java.sql.Timestamp(((UShort)value).intValue());
 		} else if (value instanceof Short) {
 			return new java.sql.Timestamp((Short)value);
 		} else if (value instanceof Integer) {
@@ -370,6 +514,8 @@ public class BeanUtils {
 			return new java.sql.Timestamp(((Float)value).longValue());
 		} else if (value instanceof Long) {
 			return new java.sql.Timestamp((Long)value);
+		} else if (value instanceof ULong) {
+			return new java.sql.Timestamp(((ULong)value).longValue());
 		} else if (value instanceof Double) {
 			return new java.sql.Timestamp(((Double)value).longValue());
 		} else if(value instanceof UInteger) {
@@ -380,6 +526,8 @@ public class BeanUtils {
 			return new java.sql.Timestamp(((java.sql.Date)value).getTime());
 		} else if(value instanceof Date) {
 			return new java.sql.Timestamp(((Date)value).getTime());
+		} else if (value instanceof UByte) {
+			return new java.sql.Timestamp(((UByte)value).intValue());
 		} else {
 			return null;
 		}
@@ -394,6 +542,8 @@ public class BeanUtils {
 			}
 		} else if (value instanceof Boolean) {
 			return null;
+		} else if (value instanceof UShort) {
+			return new java.sql.Date(((UShort)value).intValue());
 		} else if (value instanceof Short) {
 			return new java.sql.Date((Short)value);
 		} else if (value instanceof Integer) {
@@ -414,6 +564,10 @@ public class BeanUtils {
 			return new java.sql.Date(((java.sql.Timestamp)value).getTime());
 		} else if(value instanceof Date) {
 			return new java.sql.Date(((Date)value).getTime());
+		} else if (value instanceof UByte) {
+			return new java.sql.Date(((UByte)value).intValue());
+		} else if (value instanceof ULong) {
+			return new java.sql.Date(((ULong)value).longValue());
 		} else {
 			return null;
 		}
@@ -430,6 +584,12 @@ public class BeanUtils {
 			return (Boolean) value;
 		} else if (value instanceof Short) {
 			if ((Short) value > 0) {
+				return Boolean.TRUE;
+			} else {
+				return Boolean.FALSE;
+			}
+		} else if (value instanceof UShort) {
+			if (((UShort) value).shortValue() > 0) {
 				return Boolean.TRUE;
 			} else {
 				return Boolean.FALSE;
@@ -470,6 +630,18 @@ public class BeanUtils {
 			} else {
 				return Boolean.FALSE;
 			}
+		} else if (value instanceof UByte) {
+			if(((UByte) value).byteValue() > 0) {
+				return Boolean.TRUE;
+			} else {
+				return Boolean.FALSE;
+			}
+		} else if (value instanceof ULong) {
+			if(((ULong) value).longValue() > 0) {
+				return Boolean.TRUE;
+			} else {
+				return Boolean.FALSE;
+			}
 		} else {
 			//sql.date sql.timestamp date timestamp
 			if(value != null) {
@@ -495,6 +667,8 @@ public class BeanUtils {
 			}
 		} else if (value instanceof Short) {
 			return Double.valueOf((Short) value);
+		} else if (value instanceof UShort) {
+			return ((UShort) value).doubleValue();
 		} else if (value instanceof Integer) {
 			return Double.valueOf((Integer) value);
 		} else if (value instanceof Byte) {
@@ -509,6 +683,10 @@ public class BeanUtils {
 			return ((UInteger) value).doubleValue();
 		} else if(value instanceof Date) {
 			return Double.valueOf(((Date)value).getTime());
+		} else if (value instanceof UByte) {
+			return ((UByte)value).doubleValue();
+		} else if (value instanceof ULong) {
+			return ((ULong)value).doubleValue();
 		} else {
 			return null;
 		}
@@ -529,6 +707,8 @@ public class BeanUtils {
 			}
 		} else if (value instanceof Short) {
 			return (Float) ((Short) value).floatValue();
+		} else if (value instanceof UShort) {
+			return ((UShort) value).floatValue();
 		} else if (value instanceof Integer) {
 			return (Float) ((Integer) value).floatValue();
 		} else if (value instanceof Byte) {
@@ -543,6 +723,10 @@ public class BeanUtils {
 			return (Float) ((UInteger) value).floatValue();
 		} else if(value instanceof Date) {
 			return (Float) Float.valueOf(((Date)value).getTime());
+		} else if (value instanceof UByte) {
+			return ((UByte)value).floatValue();
+		} else if (value instanceof ULong) {
+			return ((ULong)value).floatValue();
 		} else {
 			return null;
 		}
@@ -563,6 +747,8 @@ public class BeanUtils {
 			}
 		} else if (value instanceof Short) {
 			return (Integer) ((Short) value).intValue();
+		} else if (value instanceof UShort) {
+			return ((UShort) value).intValue();
 		} else if (value instanceof Integer) {
 			return (Integer) value;
 		} else if (value instanceof Byte) {
@@ -577,6 +763,10 @@ public class BeanUtils {
 			return ((UInteger)value).intValue();
 		} else if(value instanceof Date) {
 			return (int)((Date)value).getTime();
+		} else if (value instanceof UByte) {
+			return ((UByte)value).intValue();
+		} else if (value instanceof ULong) {
+			return ((ULong)value).intValue();
 		} else {
 			return null;
 		}
@@ -598,6 +788,8 @@ public class BeanUtils {
 			}
 		} else if (value instanceof Short) {
 			return (Byte) ((Short) value).byteValue();
+		} else if (value instanceof UShort) {
+			return ((UShort) value).byteValue();
 		} else if (value instanceof Integer) {
 			return (Byte) ((Integer) value).byteValue();
 		} else if (value instanceof Float) {
@@ -610,6 +802,10 @@ public class BeanUtils {
 			return (Byte) ((UInteger)value).byteValue();
 		} else if(value instanceof Date) {
 			return (byte)((Date)value).getTime();
+		} else if (value instanceof UByte) {
+			return ((UByte)value).byteValue();
+		} else if (value instanceof ULong) {
+			return ((ULong)value).byteValue();
 		} else {
 			return null;
 		}
@@ -628,6 +824,8 @@ public class BeanUtils {
 			}
 		} else if (value instanceof Short) {
 			return (Long) ((Short) value).longValue();
+		} else if (value instanceof UShort) {
+			return ((UShort) value).longValue();
 		} else if (value instanceof Integer) {
 			return Long.valueOf((Integer) value);
 		} else if (value instanceof Float) {
@@ -640,7 +838,11 @@ public class BeanUtils {
 			return ((UInteger)value).longValue();
 		} else if(value instanceof Date) {
 			return ((Date)value).getTime();
-		} else {
+		} else if (value instanceof UByte) {
+			return ((UByte)value).longValue();
+		} else if (value instanceof ULong) {
+			return ((ULong)value).longValue();
+		}  else {
 			return null;
 		}
 	}
@@ -648,6 +850,8 @@ public class BeanUtils {
 	public static String converToString(Object value) {
 		if (value instanceof String) {
 			return (String) value;
+		} else if(value instanceof java.sql.Timestamp) {
+			return DateUtils.dateToShortTime(((java.sql.Timestamp)value));
 		} else if(value instanceof Date) {
 			return DateUtils.dateToNormalDate(((Date)value));
 		} else if (value != null) {

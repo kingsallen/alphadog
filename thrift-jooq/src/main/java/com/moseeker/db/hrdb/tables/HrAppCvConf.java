@@ -20,11 +20,10 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
- * 雇主申请简历校验配置表
+ * 企业申请简历校验配置
  */
 @Generated(
 	value = {
@@ -36,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrAppCvConf extends TableImpl<HrAppCvConfRecord> {
 
-	private static final long serialVersionUID = 1540955509;
+	private static final long serialVersionUID = -542301183;
 
 	/**
 	 * The reference instance of <code>hrDB.hr_app_cv_conf</code>
@@ -54,7 +53,7 @@ public class HrAppCvConf extends TableImpl<HrAppCvConfRecord> {
 	/**
 	 * The column <code>hrDB.hr_app_cv_conf.id</code>.
 	 */
-	public final TableField<HrAppCvConfRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
+	public final TableField<HrAppCvConfRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
 	/**
 	 * The column <code>hrDB.hr_app_cv_conf.name</code>. 属性含义
@@ -64,32 +63,7 @@ public class HrAppCvConf extends TableImpl<HrAppCvConfRecord> {
 	/**
 	 * The column <code>hrDB.hr_app_cv_conf.priority</code>. 排序字段
 	 */
-	public final TableField<HrAppCvConfRecord, UInteger> PRIORITY = createField("priority", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "排序字段");
-
-	/**
-	 * The column <code>hrDB.hr_app_cv_conf.disable</code>. 是否禁用 0：可用1：不可用
-	 */
-	public final TableField<HrAppCvConfRecord, UInteger> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "是否禁用 0：可用1：不可用");
-
-	/**
-	 * The column <code>hrDB.hr_app_cv_conf.company_id</code>. 所属部门。如果是私有属性，则存在所属公司部门编号；如果不是则为0 company.id
-	 */
-	public final TableField<HrAppCvConfRecord, UInteger> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "所属部门。如果是私有属性，则存在所属公司部门编号；如果不是则为0 company.id");
-
-	/**
-	 * The column <code>hrDB.hr_app_cv_conf.hraccount_id</code>. 账号编号 hr_account.id
-	 */
-	public final TableField<HrAppCvConfRecord, UInteger> HRACCOUNT_ID = createField("hraccount_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "账号编号 hr_account.id");
-
-	/**
-	 * The column <code>hrDB.hr_app_cv_conf.required</code>. 是否必填项 0：必填项 1：选填项
-	 */
-	public final TableField<HrAppCvConfRecord, UInteger> REQUIRED = createField("required", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "是否必填项 0：必填项 1：选填项");
-
-	/**
-	 * The column <code>hrDB.hr_app_cv_conf.field_value</code>. 微信端页面标签默认值
-	 */
-	public final TableField<HrAppCvConfRecord, String> FIELD_VALUE = createField("field_value", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "微信端页面标签默认值");
+	public final TableField<HrAppCvConfRecord, Integer> PRIORITY = createField("priority", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "排序字段");
 
 	/**
 	 * The column <code>hrDB.hr_app_cv_conf.create_time</code>.
@@ -100,6 +74,31 @@ public class HrAppCvConf extends TableImpl<HrAppCvConfRecord> {
 	 * The column <code>hrDB.hr_app_cv_conf.update_time</code>.
 	 */
 	public final TableField<HrAppCvConfRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
+
+	/**
+	 * The column <code>hrDB.hr_app_cv_conf.disable</code>. 是否禁用 0：可用1：不可用
+	 */
+	public final TableField<HrAppCvConfRecord, Integer> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "是否禁用 0：可用1：不可用");
+
+	/**
+	 * The column <code>hrDB.hr_app_cv_conf.company_id</code>. 所属部门。如果是私有属性，则存在所属公司部门编号；如果不是则为0 hr_company.id
+	 */
+	public final TableField<HrAppCvConfRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "所属部门。如果是私有属性，则存在所属公司部门编号；如果不是则为0 hr_company.id");
+
+	/**
+	 * The column <code>hrDB.hr_app_cv_conf.hraccount_id</code>. 账号编号 hr_account.id
+	 */
+	public final TableField<HrAppCvConfRecord, Integer> HRACCOUNT_ID = createField("hraccount_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "账号编号 hr_account.id");
+
+	/**
+	 * The column <code>hrDB.hr_app_cv_conf.required</code>. 是否必填项 0：必填项 1：选填项
+	 */
+	public final TableField<HrAppCvConfRecord, Integer> REQUIRED = createField("required", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "是否必填项 0：必填项 1：选填项");
+
+	/**
+	 * The column <code>hrDB.hr_app_cv_conf.field_value</code>. 微信端页面标签默认值
+	 */
+	public final TableField<HrAppCvConfRecord, String> FIELD_VALUE = createField("field_value", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "微信端页面标签默认值");
 
 	/**
 	 * Create a <code>hrDB.hr_app_cv_conf</code> table reference
@@ -120,14 +119,14 @@ public class HrAppCvConf extends TableImpl<HrAppCvConfRecord> {
 	}
 
 	private HrAppCvConf(String alias, Table<HrAppCvConfRecord> aliased, Field<?>[] parameters) {
-		super(alias, Hrdb.HRDB, aliased, parameters, "雇主申请简历校验配置表");
+		super(alias, Hrdb.HRDB, aliased, parameters, "企业申请简历校验配置");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Identity<HrAppCvConfRecord, UInteger> getIdentity() {
+	public Identity<HrAppCvConfRecord, Integer> getIdentity() {
 		return Keys.IDENTITY_HR_APP_CV_CONF;
 	}
 

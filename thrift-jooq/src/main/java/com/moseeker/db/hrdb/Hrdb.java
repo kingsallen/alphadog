@@ -5,6 +5,7 @@ package com.moseeker.db.hrdb;
 
 
 import com.moseeker.db.hrdb.tables.HrAppCvConf;
+import com.moseeker.db.hrdb.tables.HrChildCompany;
 import com.moseeker.db.hrdb.tables.HrCompany;
 import com.moseeker.db.hrdb.tables.HrCompanyConf;
 import com.moseeker.db.hrdb.tables.HrEmployeeCertConf;
@@ -16,6 +17,7 @@ import com.moseeker.db.hrdb.tables.HrHbScratchCard;
 import com.moseeker.db.hrdb.tables.HrHbSendRecord;
 import com.moseeker.db.hrdb.tables.HrHtml5Statistics;
 import com.moseeker.db.hrdb.tables.HrHtml5UniqueStatistics;
+import com.moseeker.db.hrdb.tables.HrImporterMonitor;
 import com.moseeker.db.hrdb.tables.HrOperationRecord;
 import com.moseeker.db.hrdb.tables.HrPointsConf;
 import com.moseeker.db.hrdb.tables.HrRecruitStatistics;
@@ -60,7 +62,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-	private static final long serialVersionUID = 2119270623;
+	private static final long serialVersionUID = -553169790;
 
 	/**
 	 * The reference instance of <code>hrDB</code>
@@ -84,6 +86,7 @@ public class Hrdb extends SchemaImpl {
 	private final List<Table<?>> getTables0() {
 		return Arrays.<Table<?>>asList(
 			HrAppCvConf.HR_APP_CV_CONF,
+			HrChildCompany.HR_CHILD_COMPANY,
 			HrCompany.HR_COMPANY,
 			HrCompanyConf.HR_COMPANY_CONF,
 			HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF,
@@ -95,6 +98,7 @@ public class Hrdb extends SchemaImpl {
 			HrHbSendRecord.HR_HB_SEND_RECORD,
 			HrHtml5Statistics.HR_HTML5_STATISTICS,
 			HrHtml5UniqueStatistics.HR_HTML5_UNIQUE_STATISTICS,
+			HrImporterMonitor.HR_IMPORTER_MONITOR,
 			HrOperationRecord.HR_OPERATION_RECORD,
 			HrPointsConf.HR_POINTS_CONF,
 			HrRecruitStatistics.HR_RECRUIT_STATISTICS,

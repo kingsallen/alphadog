@@ -70,6 +70,9 @@ public class Keys {
 	public static final Identity<ProfileCredentialsRecord, UInteger> IDENTITY_PROFILE_CREDENTIALS = Identities0.IDENTITY_PROFILE_CREDENTIALS;
 	public static final Identity<ProfileEducationRecord, UInteger> IDENTITY_PROFILE_EDUCATION = Identities0.IDENTITY_PROFILE_EDUCATION;
 	public static final Identity<ProfileIntentionRecord, UInteger> IDENTITY_PROFILE_INTENTION = Identities0.IDENTITY_PROFILE_INTENTION;
+	public static final Identity<ProfileIntentionCityRecord, UInteger> IDENTITY_PROFILE_INTENTION_CITY = Identities0.IDENTITY_PROFILE_INTENTION_CITY;
+	public static final Identity<ProfileIntentionIndustryRecord, UInteger> IDENTITY_PROFILE_INTENTION_INDUSTRY = Identities0.IDENTITY_PROFILE_INTENTION_INDUSTRY;
+	public static final Identity<ProfileIntentionPositionRecord, UInteger> IDENTITY_PROFILE_INTENTION_POSITION = Identities0.IDENTITY_PROFILE_INTENTION_POSITION;
 	public static final Identity<ProfileLanguageRecord, UInteger> IDENTITY_PROFILE_LANGUAGE = Identities0.IDENTITY_PROFILE_LANGUAGE;
 	public static final Identity<ProfileProfileRecord, UInteger> IDENTITY_PROFILE_PROFILE = Identities0.IDENTITY_PROFILE_PROFILE;
 	public static final Identity<ProfileProjectexpRecord, UInteger> IDENTITY_PROFILE_PROJECTEXP = Identities0.IDENTITY_PROFILE_PROJECTEXP;
@@ -88,6 +91,7 @@ public class Keys {
 	public static final UniqueKey<ProfileEducationRecord> KEY_PROFILE_EDUCATION_PRIMARY = UniqueKeys0.KEY_PROFILE_EDUCATION_PRIMARY;
 	public static final UniqueKey<ProfileImportRecord> KEY_PROFILE_IMPORT_PRIMARY = UniqueKeys0.KEY_PROFILE_IMPORT_PRIMARY;
 	public static final UniqueKey<ProfileIntentionRecord> KEY_PROFILE_INTENTION_PRIMARY = UniqueKeys0.KEY_PROFILE_INTENTION_PRIMARY;
+	public static final UniqueKey<ProfileIntentionRecord> KEY_PROFILE_INTENTION_UK_PROFILE_ID = UniqueKeys0.KEY_PROFILE_INTENTION_UK_PROFILE_ID;
 	public static final UniqueKey<ProfileIntentionCityRecord> KEY_PROFILE_INTENTION_CITY_PRIMARY = UniqueKeys0.KEY_PROFILE_INTENTION_CITY_PRIMARY;
 	public static final UniqueKey<ProfileIntentionIndustryRecord> KEY_PROFILE_INTENTION_INDUSTRY_PRIMARY = UniqueKeys0.KEY_PROFILE_INTENTION_INDUSTRY_PRIMARY;
 	public static final UniqueKey<ProfileIntentionPositionRecord> KEY_PROFILE_INTENTION_POSITION_PRIMARY = UniqueKeys0.KEY_PROFILE_INTENTION_POSITION_PRIMARY;
@@ -114,6 +118,9 @@ public class Keys {
 		public static Identity<ProfileCredentialsRecord, UInteger> IDENTITY_PROFILE_CREDENTIALS = createIdentity(ProfileCredentials.PROFILE_CREDENTIALS, ProfileCredentials.PROFILE_CREDENTIALS.ID);
 		public static Identity<ProfileEducationRecord, UInteger> IDENTITY_PROFILE_EDUCATION = createIdentity(ProfileEducation.PROFILE_EDUCATION, ProfileEducation.PROFILE_EDUCATION.ID);
 		public static Identity<ProfileIntentionRecord, UInteger> IDENTITY_PROFILE_INTENTION = createIdentity(ProfileIntention.PROFILE_INTENTION, ProfileIntention.PROFILE_INTENTION.ID);
+		public static Identity<ProfileIntentionCityRecord, UInteger> IDENTITY_PROFILE_INTENTION_CITY = createIdentity(ProfileIntentionCity.PROFILE_INTENTION_CITY, ProfileIntentionCity.PROFILE_INTENTION_CITY.ID);
+		public static Identity<ProfileIntentionIndustryRecord, UInteger> IDENTITY_PROFILE_INTENTION_INDUSTRY = createIdentity(ProfileIntentionIndustry.PROFILE_INTENTION_INDUSTRY, ProfileIntentionIndustry.PROFILE_INTENTION_INDUSTRY.ID);
+		public static Identity<ProfileIntentionPositionRecord, UInteger> IDENTITY_PROFILE_INTENTION_POSITION = createIdentity(ProfileIntentionPosition.PROFILE_INTENTION_POSITION, ProfileIntentionPosition.PROFILE_INTENTION_POSITION.ID);
 		public static Identity<ProfileLanguageRecord, UInteger> IDENTITY_PROFILE_LANGUAGE = createIdentity(ProfileLanguage.PROFILE_LANGUAGE, ProfileLanguage.PROFILE_LANGUAGE.ID);
 		public static Identity<ProfileProfileRecord, UInteger> IDENTITY_PROFILE_PROFILE = createIdentity(ProfileProfile.PROFILE_PROFILE, ProfileProfile.PROFILE_PROFILE.ID);
 		public static Identity<ProfileProjectexpRecord, UInteger> IDENTITY_PROFILE_PROJECTEXP = createIdentity(ProfileProjectexp.PROFILE_PROJECTEXP, ProfileProjectexp.PROFILE_PROJECTEXP.ID);
@@ -130,9 +137,10 @@ public class Keys {
 		public static final UniqueKey<ProfileEducationRecord> KEY_PROFILE_EDUCATION_PRIMARY = createUniqueKey(ProfileEducation.PROFILE_EDUCATION, ProfileEducation.PROFILE_EDUCATION.ID);
 		public static final UniqueKey<ProfileImportRecord> KEY_PROFILE_IMPORT_PRIMARY = createUniqueKey(ProfileImport.PROFILE_IMPORT, ProfileImport.PROFILE_IMPORT.PROFILE_ID);
 		public static final UniqueKey<ProfileIntentionRecord> KEY_PROFILE_INTENTION_PRIMARY = createUniqueKey(ProfileIntention.PROFILE_INTENTION, ProfileIntention.PROFILE_INTENTION.ID);
-		public static final UniqueKey<ProfileIntentionCityRecord> KEY_PROFILE_INTENTION_CITY_PRIMARY = createUniqueKey(ProfileIntentionCity.PROFILE_INTENTION_CITY, ProfileIntentionCity.PROFILE_INTENTION_CITY.PROFILE_INTENTION_ID);
-		public static final UniqueKey<ProfileIntentionIndustryRecord> KEY_PROFILE_INTENTION_INDUSTRY_PRIMARY = createUniqueKey(ProfileIntentionIndustry.PROFILE_INTENTION_INDUSTRY, ProfileIntentionIndustry.PROFILE_INTENTION_INDUSTRY.PROFILE_INTENTION_ID);
-		public static final UniqueKey<ProfileIntentionPositionRecord> KEY_PROFILE_INTENTION_POSITION_PRIMARY = createUniqueKey(ProfileIntentionPosition.PROFILE_INTENTION_POSITION, ProfileIntentionPosition.PROFILE_INTENTION_POSITION.PROFILE_INTENTION_ID);
+		public static final UniqueKey<ProfileIntentionRecord> KEY_PROFILE_INTENTION_UK_PROFILE_ID = createUniqueKey(ProfileIntention.PROFILE_INTENTION, ProfileIntention.PROFILE_INTENTION.PROFILE_ID);
+		public static final UniqueKey<ProfileIntentionCityRecord> KEY_PROFILE_INTENTION_CITY_PRIMARY = createUniqueKey(ProfileIntentionCity.PROFILE_INTENTION_CITY, ProfileIntentionCity.PROFILE_INTENTION_CITY.ID);
+		public static final UniqueKey<ProfileIntentionIndustryRecord> KEY_PROFILE_INTENTION_INDUSTRY_PRIMARY = createUniqueKey(ProfileIntentionIndustry.PROFILE_INTENTION_INDUSTRY, ProfileIntentionIndustry.PROFILE_INTENTION_INDUSTRY.ID);
+		public static final UniqueKey<ProfileIntentionPositionRecord> KEY_PROFILE_INTENTION_POSITION_PRIMARY = createUniqueKey(ProfileIntentionPosition.PROFILE_INTENTION_POSITION, ProfileIntentionPosition.PROFILE_INTENTION_POSITION.ID);
 		public static final UniqueKey<ProfileLanguageRecord> KEY_PROFILE_LANGUAGE_PRIMARY = createUniqueKey(ProfileLanguage.PROFILE_LANGUAGE, ProfileLanguage.PROFILE_LANGUAGE.ID);
 		public static final UniqueKey<ProfileOtherRecord> KEY_PROFILE_OTHER_PRIMARY = createUniqueKey(ProfileOther.PROFILE_OTHER, ProfileOther.PROFILE_OTHER.PROFILE_ID);
 		public static final UniqueKey<ProfileProfileRecord> KEY_PROFILE_PROFILE_PRIMARY = createUniqueKey(ProfileProfile.PROFILE_PROFILE, ProfileProfile.PROFILE_PROFILE.ID);

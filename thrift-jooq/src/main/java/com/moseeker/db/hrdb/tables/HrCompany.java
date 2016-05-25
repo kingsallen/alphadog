@@ -37,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompany extends TableImpl<HrCompanyRecord> {
 
-	private static final long serialVersionUID = 732254562;
+	private static final long serialVersionUID = 1366264211;
 
 	/**
 	 * The reference instance of <code>hrDB.hr_company</code>
@@ -128,6 +128,11 @@ public class HrCompany extends TableImpl<HrCompanyRecord> {
 	public final TableField<HrCompanyRecord, Integer> HRACCOUNT_ID = createField("hraccount_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "公司联系人, hr_account.id");
 
 	/**
+	 * The column <code>hrDB.hr_company.disable</code>. 0:无效 1:有效
+	 */
+	public final TableField<HrCompanyRecord, Byte> DISABLE = createField("disable", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "0:无效 1:有效");
+
+	/**
 	 * The column <code>hrDB.hr_company.create_time</code>. 创建时间
 	 */
 	public final TableField<HrCompanyRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "创建时间");
@@ -136,6 +141,11 @@ public class HrCompany extends TableImpl<HrCompanyRecord> {
 	 * The column <code>hrDB.hr_company.update_time</code>. 更新时间
 	 */
 	public final TableField<HrCompanyRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "更新时间");
+
+	/**
+	 * The column <code>hrDB.hr_company.source</code>. 添加来源 {"0":"hr系统", "9":"profile添加"}
+	 */
+	public final TableField<HrCompanyRecord, UByte> SOURCE = createField("source", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "添加来源 {\"0\":\"hr系统\", \"9\":\"profile添加\"}");
 
 	/**
 	 * Create a <code>hrDB.hr_company</code> table reference

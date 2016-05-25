@@ -37,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileIntention extends TableImpl<ProfileIntentionRecord> {
 
-	private static final long serialVersionUID = -289029641;
+	private static final long serialVersionUID = -1678606482;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_intention</code>
@@ -61,6 +61,11 @@ public class ProfileIntention extends TableImpl<ProfileIntentionRecord> {
 	 * The column <code>profileDB.profile_intention.profile_id</code>. profile.id
 	 */
 	public final TableField<ProfileIntentionRecord, UInteger> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "profile.id");
+
+	/**
+	 * The column <code>profileDB.profile_intention.worktype</code>. 工作类型, {"0":"没选择", "1":"全职", "2":"兼职", "3":"实习"}
+	 */
+	public final TableField<ProfileIntentionRecord, UByte> WORKTYPE = createField("worktype", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "工作类型, {\"0\":\"没选择\", \"1\":\"全职\", \"2\":\"兼职\", \"3\":\"实习\"}");
 
 	/**
 	 * The column <code>profileDB.profile_intention.workstate</code>. 当前是否在职状态, 0:未填写 1: 在职，看看新机会, 2: 在职，急寻新工作, 3:在职，暂无跳槽打算, 4:离职，正在找工作, 5:应届毕业生
@@ -140,7 +145,7 @@ public class ProfileIntention extends TableImpl<ProfileIntentionRecord> {
 	 */
 	@Override
 	public List<UniqueKey<ProfileIntentionRecord>> getKeys() {
-		return Arrays.<UniqueKey<ProfileIntentionRecord>>asList(Keys.KEY_PROFILE_INTENTION_PRIMARY);
+		return Arrays.<UniqueKey<ProfileIntentionRecord>>asList(Keys.KEY_PROFILE_INTENTION_PRIMARY, Keys.KEY_PROFILE_INTENTION_UK_PROFILE_ID);
 	}
 
 	/**
