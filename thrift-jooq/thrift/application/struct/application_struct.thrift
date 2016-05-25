@@ -2,7 +2,11 @@ namespace java com.moseeker.thrift.gen.application.struct
 
 typedef string Timestamp;
 
-struct Application {
+/*
+* 申请记录实体
+*
+*/
+struct JobApplication {
      1: i64 id,                     // 申请ID
      2: i64 wechat_id,              // 公众号ID
      3: i64 position_id,            // 职位ID
@@ -24,4 +28,15 @@ struct Application {
     19: Timestamp _create_time,     // 表记录创建时间
     20: Timestamp update_time,      // 最新更新时间
     21: i32 proxy                   // 是否是代理投递	0：正常数据，1：代理假投递
+}
+
+/*
+* 自定义简历 申请副本实体
+*
+*/
+struct JobResumeOther {
+    1: i64 app_id,                  // 申请ID
+    2: string other,                // 自定义字段json数据
+    3: Timestamp create_time,       // 表记录创建时间
+    4: Timestamp update_time        // 最新更新时间
 }

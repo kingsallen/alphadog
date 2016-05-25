@@ -3,6 +3,9 @@ include "../../common/struct/common_struct.thrift"
 
 namespace java com.moseeker.thrift.gen.application.service
 
-service ApplicationServices {
-    common_struct.Response postResource(1: application_struct.Application application);
+service JobApplicationServices {
+
+    common_struct.Response postApplication(1: application_struct.JobApplication application);
+
+    common_struct.Response postJobResumeOther(1: application_struct.JobResumeOther jobResumeOther);
 }

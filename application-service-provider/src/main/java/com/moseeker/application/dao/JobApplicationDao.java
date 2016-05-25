@@ -6,5 +6,5 @@ import com.moseeker.db.jobdb.tables.records.JobApplicationRecord;
 /**
  * Created by zzh on 16/5/24.
  */
-public interface ApplicationDao extends BaseDao<JobApplicationRecord>{
+public interface JobApplicationDao extends BaseDao<JobApplicationRecord>{
 }
