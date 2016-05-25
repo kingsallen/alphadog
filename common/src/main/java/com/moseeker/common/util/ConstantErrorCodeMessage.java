@@ -21,6 +21,7 @@ public final class ConstantErrorCodeMessage {
     public static final String USERACCOUNT_BIND_NONEED = "{'status':10015,'message':'手机号已经注册'}";;
     public static final String USERACCOUNT_EXIST = "{'status':10016,'message':'帐号已存在!'}";
     public static final String USERACCOUNT_NOTEXIST = "{'status':10017,'message':'帐号不存在!'}";
+    public static final String USER_FAV_POSITION_FAILED = "{'status':10018,'message':'获取我感兴趣失败!'}";
 
     // 职位服务ERRCODE说明定义 2字头
 
