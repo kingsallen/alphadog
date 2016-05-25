@@ -37,7 +37,7 @@ public class DefaultCatalog extends CatalogImpl {
     /**
      * The schema <code>jobDB</code>.
      */
-    public final Jobdb JOBDB = com.moseeker.db.jobdb.Jobdb.JOBDB;
+    public final Jobdb JOBDB = Jobdb.JOBDB;
 
     /**
      * No further instances allowed
