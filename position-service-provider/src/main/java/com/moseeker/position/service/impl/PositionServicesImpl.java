@@ -33,11 +33,6 @@ public class PositionServicesImpl extends JOOQBaseServiceImpl<Position, JobPosit
     }
 
     @Override
-    public Response getResource(CommonQuery query) throws TException {
-        return new Response();
-    }
-
-    @Override
     protected JobPositionRecord structToDB(Position p) {
         return (JobPositionRecord) BeanUtils.structToDB(p, JobPositionRecord.class);
     }

@@ -41,64 +41,51 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
   private static final org.apache.thrift.protocol.TField ID_FIELD_DESC = new org.apache.thrift.protocol.TField("id", org.apache.thrift.protocol.TType.I32, (short)1);
   private static final org.apache.thrift.protocol.TField JOBNUMBER_FIELD_DESC = new org.apache.thrift.protocol.TField("jobnumber", org.apache.thrift.protocol.TType.STRING, (short)2);
   private static final org.apache.thrift.protocol.TField COMPANY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("company_id", org.apache.thrift.protocol.TType.I32, (short)3);
-  private static final org.apache.thrift.protocol.TField PROVINCE_FIELD_DESC = new org.apache.thrift.protocol.TField("province", org.apache.thrift.protocol.TType.STRING, (short)4);
-  private static final org.apache.thrift.protocol.TField CITY_FIELD_DESC = new org.apache.thrift.protocol.TField("city", org.apache.thrift.protocol.TType.STRING, (short)5);
-  private static final org.apache.thrift.protocol.TField DEPARTMENT_FIELD_DESC = new org.apache.thrift.protocol.TField("department", org.apache.thrift.protocol.TType.STRING, (short)6);
-  private static final org.apache.thrift.protocol.TField L_JOBID_FIELD_DESC = new org.apache.thrift.protocol.TField("l_jobid", org.apache.thrift.protocol.TType.I32, (short)7);
-  private static final org.apache.thrift.protocol.TField PUBLISH_DATE_FIELD_DESC = new org.apache.thrift.protocol.TField("publish_date", org.apache.thrift.protocol.TType.STRING, (short)8);
-  private static final org.apache.thrift.protocol.TField STOP_DATE_FIELD_DESC = new org.apache.thrift.protocol.TField("stop_date", org.apache.thrift.protocol.TType.STRING, (short)9);
-  private static final org.apache.thrift.protocol.TField ACCOUNTABILITIES_FIELD_DESC = new org.apache.thrift.protocol.TField("accountabilities", org.apache.thrift.protocol.TType.STRING, (short)10);
-  private static final org.apache.thrift.protocol.TField EXPERIENCE_FIELD_DESC = new org.apache.thrift.protocol.TField("experience", org.apache.thrift.protocol.TType.STRING, (short)11);
-  private static final org.apache.thrift.protocol.TField REQUIREMENT_FIELD_DESC = new org.apache.thrift.protocol.TField("requirement", org.apache.thrift.protocol.TType.STRING, (short)12);
-  private static final org.apache.thrift.protocol.TField SALARY_FIELD_DESC = new org.apache.thrift.protocol.TField("salary", org.apache.thrift.protocol.TType.STRING, (short)13);
-  private static final org.apache.thrift.protocol.TField LANGUAGE_FIELD_DESC = new org.apache.thrift.protocol.TField("language", org.apache.thrift.protocol.TType.STRING, (short)14);
-  private static final org.apache.thrift.protocol.TField JOB_GRADE_FIELD_DESC = new org.apache.thrift.protocol.TField("job_grade", org.apache.thrift.protocol.TType.I32, (short)15);
-  private static final org.apache.thrift.protocol.TField STATUS_FIELD_DESC = new org.apache.thrift.protocol.TField("status", org.apache.thrift.protocol.TType.I32, (short)16);
-  private static final org.apache.thrift.protocol.TField VISITNUM_FIELD_DESC = new org.apache.thrift.protocol.TField("visitnum", org.apache.thrift.protocol.TType.I32, (short)17);
-  private static final org.apache.thrift.protocol.TField LASTVISIT_FIELD_DESC = new org.apache.thrift.protocol.TField("lastvisit", org.apache.thrift.protocol.TType.STRING, (short)18);
-  private static final org.apache.thrift.protocol.TField SOURCE_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("source_id", org.apache.thrift.protocol.TType.I32, (short)19);
-  private static final org.apache.thrift.protocol.TField UPDATE_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("update_time", org.apache.thrift.protocol.TType.STRING, (short)20);
-  private static final org.apache.thrift.protocol.TField BUSINESS_GROUP_FIELD_DESC = new org.apache.thrift.protocol.TField("business_group", org.apache.thrift.protocol.TType.STRING, (short)21);
-  private static final org.apache.thrift.protocol.TField EMPLOYMENT_TYPE_FIELD_DESC = new org.apache.thrift.protocol.TField("employment_type", org.apache.thrift.protocol.TType.BYTE, (short)22);
-  private static final org.apache.thrift.protocol.TField HR_EMAIL_FIELD_DESC = new org.apache.thrift.protocol.TField("hr_email", org.apache.thrift.protocol.TType.STRING, (short)23);
-  private static final org.apache.thrift.protocol.TField BENEFITS_FIELD_DESC = new org.apache.thrift.protocol.TField("benefits", org.apache.thrift.protocol.TType.STRING, (short)24);
-  private static final org.apache.thrift.protocol.TField DEGREE_FIELD_DESC = new org.apache.thrift.protocol.TField("degree", org.apache.thrift.protocol.TType.I32, (short)25);
-  private static final org.apache.thrift.protocol.TField FEATURE_FIELD_DESC = new org.apache.thrift.protocol.TField("feature", org.apache.thrift.protocol.TType.STRING, (short)26);
-  private static final org.apache.thrift.protocol.TField EMAIL_NOTICE_FIELD_DESC = new org.apache.thrift.protocol.TField("email_notice", org.apache.thrift.protocol.TType.BYTE, (short)27);
-  private static final org.apache.thrift.protocol.TField CANDIDATE_SOURCE_FIELD_DESC = new org.apache.thrift.protocol.TField("candidate_source", org.apache.thrift.protocol.TType.BYTE, (short)28);
-  private static final org.apache.thrift.protocol.TField OCCUPATION_FIELD_DESC = new org.apache.thrift.protocol.TField("occupation", org.apache.thrift.protocol.TType.STRING, (short)29);
-  private static final org.apache.thrift.protocol.TField IS_RECOM_FIELD_DESC = new org.apache.thrift.protocol.TField("is_recom", org.apache.thrift.protocol.TType.BYTE, (short)30);
-  private static final org.apache.thrift.protocol.TField INDUSTRY_FIELD_DESC = new org.apache.thrift.protocol.TField("industry", org.apache.thrift.protocol.TType.STRING, (short)31);
-  private static final org.apache.thrift.protocol.TField HONGBAO_CONFIG_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("hongbao_config_id", org.apache.thrift.protocol.TType.I32, (short)32);
-  private static final org.apache.thrift.protocol.TField HONGBAO_CONFIG_RECOM_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("hongbao_config_recom_id", org.apache.thrift.protocol.TType.I32, (short)33);
-  private static final org.apache.thrift.protocol.TField HONGBAO_CONFIG_APP_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("hongbao_config_app_id", org.apache.thrift.protocol.TType.I32, (short)34);
-  private static final org.apache.thrift.protocol.TField EMAIL_RESUME_CONF_FIELD_DESC = new org.apache.thrift.protocol.TField("email_resume_conf", org.apache.thrift.protocol.TType.BYTE, (short)35);
-  private static final org.apache.thrift.protocol.TField L__POSTING_TARGET_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("l_PostingTargetId", org.apache.thrift.protocol.TType.I32, (short)36);
-  private static final org.apache.thrift.protocol.TField PRIORITY_FIELD_DESC = new org.apache.thrift.protocol.TField("priority", org.apache.thrift.protocol.TType.I32, (short)37);
-  private static final org.apache.thrift.protocol.TField SHARE_TPL_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("share_tpl_id", org.apache.thrift.protocol.TType.I32, (short)38);
-  private static final org.apache.thrift.protocol.TField DISTRICT_FIELD_DESC = new org.apache.thrift.protocol.TField("district", org.apache.thrift.protocol.TType.STRING, (short)39);
-  private static final org.apache.thrift.protocol.TField COUNT_FIELD_DESC = new org.apache.thrift.protocol.TField("count", org.apache.thrift.protocol.TType.I32, (short)40);
-  private static final org.apache.thrift.protocol.TField SALARY_TOP_FIELD_DESC = new org.apache.thrift.protocol.TField("salary_top", org.apache.thrift.protocol.TType.I32, (short)41);
-  private static final org.apache.thrift.protocol.TField SALARY_BOTTOM_FIELD_DESC = new org.apache.thrift.protocol.TField("salary_bottom", org.apache.thrift.protocol.TType.I32, (short)42);
-  private static final org.apache.thrift.protocol.TField EXPERIENCE_ABOVE_FIELD_DESC = new org.apache.thrift.protocol.TField("experience_above", org.apache.thrift.protocol.TType.BYTE, (short)43);
-  private static final org.apache.thrift.protocol.TField DEGREE_ABOVE_FIELD_DESC = new org.apache.thrift.protocol.TField("degree_above", org.apache.thrift.protocol.TType.BYTE, (short)44);
-  private static final org.apache.thrift.protocol.TField MANAGEMENT_EXPERIENCE_FIELD_DESC = new org.apache.thrift.protocol.TField("management_experience", org.apache.thrift.protocol.TType.BYTE, (short)45);
-  private static final org.apache.thrift.protocol.TField GENDER_FIELD_DESC = new org.apache.thrift.protocol.TField("gender", org.apache.thrift.protocol.TType.BYTE, (short)46);
-  private static final org.apache.thrift.protocol.TField PUBLISHER_FIELD_DESC = new org.apache.thrift.protocol.TField("publisher", org.apache.thrift.protocol.TType.I32, (short)47);
-  private static final org.apache.thrift.protocol.TField APP_CV_CONFIG_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("app_cv_config_id", org.apache.thrift.protocol.TType.I32, (short)48);
-  private static final org.apache.thrift.protocol.TField SOURCE_FIELD_DESC = new org.apache.thrift.protocol.TField("source", org.apache.thrift.protocol.TType.I32, (short)49);
-  private static final org.apache.thrift.protocol.TField HB_STATUS_FIELD_DESC = new org.apache.thrift.protocol.TField("hb_status", org.apache.thrift.protocol.TType.BYTE, (short)50);
-  private static final org.apache.thrift.protocol.TField CHILD_COMPANY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("child_company_id", org.apache.thrift.protocol.TType.I32, (short)51);
-  private static final org.apache.thrift.protocol.TField AGE_FIELD_DESC = new org.apache.thrift.protocol.TField("age", org.apache.thrift.protocol.TType.I32, (short)52);
-  private static final org.apache.thrift.protocol.TField MAJOR_REQUIRED_FIELD_DESC = new org.apache.thrift.protocol.TField("major_required", org.apache.thrift.protocol.TType.STRING, (short)53);
-  private static final org.apache.thrift.protocol.TField WORK_ADDRESS_FIELD_DESC = new org.apache.thrift.protocol.TField("work_address", org.apache.thrift.protocol.TType.STRING, (short)54);
-  private static final org.apache.thrift.protocol.TField KEYWORD_FIELD_DESC = new org.apache.thrift.protocol.TField("keyword", org.apache.thrift.protocol.TType.STRING, (short)55);
-  private static final org.apache.thrift.protocol.TField REPORTING_TO_FIELD_DESC = new org.apache.thrift.protocol.TField("reporting_to", org.apache.thrift.protocol.TType.STRING, (short)56);
-  private static final org.apache.thrift.protocol.TField IS_HIRING_FIELD_DESC = new org.apache.thrift.protocol.TField("is_hiring", org.apache.thrift.protocol.TType.I32, (short)57);
-  private static final org.apache.thrift.protocol.TField UNDERLINGS_FIELD_DESC = new org.apache.thrift.protocol.TField("underlings", org.apache.thrift.protocol.TType.I32, (short)58);
-  private static final org.apache.thrift.protocol.TField LANGUAGE_REQUIRED_FIELD_DESC = new org.apache.thrift.protocol.TField("language_required", org.apache.thrift.protocol.TType.BYTE, (short)59);
-  private static final org.apache.thrift.protocol.TField TARGET_INDUSTRY_FIELD_DESC = new org.apache.thrift.protocol.TField("target_industry", org.apache.thrift.protocol.TType.I32, (short)60);
-  private static final org.apache.thrift.protocol.TField CURRENT_STATUS_FIELD_DESC = new org.apache.thrift.protocol.TField("current_status", org.apache.thrift.protocol.TType.I32, (short)61);
+  private static final org.apache.thrift.protocol.TField CITY_FIELD_DESC = new org.apache.thrift.protocol.TField("city", org.apache.thrift.protocol.TType.STRING, (short)4);
+  private static final org.apache.thrift.protocol.TField DEPARTMENT_FIELD_DESC = new org.apache.thrift.protocol.TField("department", org.apache.thrift.protocol.TType.STRING, (short)5);
+  private static final org.apache.thrift.protocol.TField L_JOBID_FIELD_DESC = new org.apache.thrift.protocol.TField("l_jobid", org.apache.thrift.protocol.TType.I32, (short)6);
+  private static final org.apache.thrift.protocol.TField PUBLISH_DATE_FIELD_DESC = new org.apache.thrift.protocol.TField("publish_date", org.apache.thrift.protocol.TType.STRING, (short)7);
+  private static final org.apache.thrift.protocol.TField STOP_DATE_FIELD_DESC = new org.apache.thrift.protocol.TField("stop_date", org.apache.thrift.protocol.TType.STRING, (short)8);
+  private static final org.apache.thrift.protocol.TField ACCOUNTABILITIES_FIELD_DESC = new org.apache.thrift.protocol.TField("accountabilities", org.apache.thrift.protocol.TType.STRING, (short)9);
+  private static final org.apache.thrift.protocol.TField EXPERIENCE_FIELD_DESC = new org.apache.thrift.protocol.TField("experience", org.apache.thrift.protocol.TType.STRING, (short)10);
+  private static final org.apache.thrift.protocol.TField REQUIREMENT_FIELD_DESC = new org.apache.thrift.protocol.TField("requirement", org.apache.thrift.protocol.TType.STRING, (short)11);
+  private static final org.apache.thrift.protocol.TField LANGUAGE_FIELD_DESC = new org.apache.thrift.protocol.TField("language", org.apache.thrift.protocol.TType.STRING, (short)12);
+  private static final org.apache.thrift.protocol.TField STATUS_FIELD_DESC = new org.apache.thrift.protocol.TField("status", org.apache.thrift.protocol.TType.I32, (short)13);
+  private static final org.apache.thrift.protocol.TField VISITNUM_FIELD_DESC = new org.apache.thrift.protocol.TField("visitnum", org.apache.thrift.protocol.TType.I32, (short)14);
+  private static final org.apache.thrift.protocol.TField SOURCE_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("source_id", org.apache.thrift.protocol.TType.I32, (short)15);
+  private static final org.apache.thrift.protocol.TField UPDATE_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("update_time", org.apache.thrift.protocol.TType.STRING, (short)16);
+  private static final org.apache.thrift.protocol.TField EMPLOYMENT_TYPE_FIELD_DESC = new org.apache.thrift.protocol.TField("employment_type", org.apache.thrift.protocol.TType.BYTE, (short)17);
+  private static final org.apache.thrift.protocol.TField HR_EMAIL_FIELD_DESC = new org.apache.thrift.protocol.TField("hr_email", org.apache.thrift.protocol.TType.STRING, (short)18);
+  private static final org.apache.thrift.protocol.TField DEGREE_FIELD_DESC = new org.apache.thrift.protocol.TField("degree", org.apache.thrift.protocol.TType.I32, (short)19);
+  private static final org.apache.thrift.protocol.TField FEATURE_FIELD_DESC = new org.apache.thrift.protocol.TField("feature", org.apache.thrift.protocol.TType.STRING, (short)20);
+  private static final org.apache.thrift.protocol.TField CANDIDATE_SOURCE_FIELD_DESC = new org.apache.thrift.protocol.TField("candidate_source", org.apache.thrift.protocol.TType.BYTE, (short)21);
+  private static final org.apache.thrift.protocol.TField OCCUPATION_FIELD_DESC = new org.apache.thrift.protocol.TField("occupation", org.apache.thrift.protocol.TType.STRING, (short)22);
+  private static final org.apache.thrift.protocol.TField INDUSTRY_FIELD_DESC = new org.apache.thrift.protocol.TField("industry", org.apache.thrift.protocol.TType.STRING, (short)23);
+  private static final org.apache.thrift.protocol.TField EMAIL_RESUME_CONF_FIELD_DESC = new org.apache.thrift.protocol.TField("email_resume_conf", org.apache.thrift.protocol.TType.BYTE, (short)24);
+  private static final org.apache.thrift.protocol.TField L__POSTING_TARGET_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("l_PostingTargetId", org.apache.thrift.protocol.TType.I32, (short)25);
+  private static final org.apache.thrift.protocol.TField PRIORITY_FIELD_DESC = new org.apache.thrift.protocol.TField("priority", org.apache.thrift.protocol.TType.I32, (short)26);
+  private static final org.apache.thrift.protocol.TField SHARE_TPL_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("share_tpl_id", org.apache.thrift.protocol.TType.I32, (short)27);
+  private static final org.apache.thrift.protocol.TField COUNT_FIELD_DESC = new org.apache.thrift.protocol.TField("count", org.apache.thrift.protocol.TType.I32, (short)28);
+  private static final org.apache.thrift.protocol.TField SALARY_TOP_FIELD_DESC = new org.apache.thrift.protocol.TField("salary_top", org.apache.thrift.protocol.TType.I32, (short)29);
+  private static final org.apache.thrift.protocol.TField SALARY_BOTTOM_FIELD_DESC = new org.apache.thrift.protocol.TField("salary_bottom", org.apache.thrift.protocol.TType.I32, (short)30);
+  private static final org.apache.thrift.protocol.TField EXPERIENCE_ABOVE_FIELD_DESC = new org.apache.thrift.protocol.TField("experience_above", org.apache.thrift.protocol.TType.BYTE, (short)31);
+  private static final org.apache.thrift.protocol.TField DEGREE_ABOVE_FIELD_DESC = new org.apache.thrift.protocol.TField("degree_above", org.apache.thrift.protocol.TType.BYTE, (short)32);
+  private static final org.apache.thrift.protocol.TField MANAGEMENT_EXPERIENCE_FIELD_DESC = new org.apache.thrift.protocol.TField("management_experience", org.apache.thrift.protocol.TType.BYTE, (short)33);
+  private static final org.apache.thrift.protocol.TField GENDER_FIELD_DESC = new org.apache.thrift.protocol.TField("gender", org.apache.thrift.protocol.TType.BYTE, (short)34);
+  private static final org.apache.thrift.protocol.TField PUBLISHER_FIELD_DESC = new org.apache.thrift.protocol.TField("publisher", org.apache.thrift.protocol.TType.I32, (short)35);
+  private static final org.apache.thrift.protocol.TField APP_CV_CONFIG_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("app_cv_config_id", org.apache.thrift.protocol.TType.I32, (short)36);
+  private static final org.apache.thrift.protocol.TField SOURCE_FIELD_DESC = new org.apache.thrift.protocol.TField("source", org.apache.thrift.protocol.TType.I32, (short)37);
+  private static final org.apache.thrift.protocol.TField HB_STATUS_FIELD_DESC = new org.apache.thrift.protocol.TField("hb_status", org.apache.thrift.protocol.TType.BYTE, (short)38);
+  private static final org.apache.thrift.protocol.TField AGE_FIELD_DESC = new org.apache.thrift.protocol.TField("age", org.apache.thrift.protocol.TType.I32, (short)39);
+  private static final org.apache.thrift.protocol.TField MAJOR_REQUIRED_FIELD_DESC = new org.apache.thrift.protocol.TField("major_required", org.apache.thrift.protocol.TType.STRING, (short)40);
+  private static final org.apache.thrift.protocol.TField WORK_ADDRESS_FIELD_DESC = new org.apache.thrift.protocol.TField("work_address", org.apache.thrift.protocol.TType.STRING, (short)41);
+  private static final org.apache.thrift.protocol.TField KEYWORD_FIELD_DESC = new org.apache.thrift.protocol.TField("keyword", org.apache.thrift.protocol.TType.STRING, (short)42);
+  private static final org.apache.thrift.protocol.TField REPORTING_TO_FIELD_DESC = new org.apache.thrift.protocol.TField("reporting_to", org.apache.thrift.protocol.TType.STRING, (short)43);
+  private static final org.apache.thrift.protocol.TField IS_HIRING_FIELD_DESC = new org.apache.thrift.protocol.TField("is_hiring", org.apache.thrift.protocol.TType.I32, (short)44);
+  private static final org.apache.thrift.protocol.TField UNDERLINGS_FIELD_DESC = new org.apache.thrift.protocol.TField("underlings", org.apache.thrift.protocol.TType.I32, (short)45);
+  private static final org.apache.thrift.protocol.TField LANGUAGE_REQUIRED_FIELD_DESC = new org.apache.thrift.protocol.TField("language_required", org.apache.thrift.protocol.TType.BYTE, (short)46);
+  private static final org.apache.thrift.protocol.TField TARGET_INDUSTRY_FIELD_DESC = new org.apache.thrift.protocol.TField("target_industry", org.apache.thrift.protocol.TType.I32, (short)47);
+  private static final org.apache.thrift.protocol.TField CURRENT_STATUS_FIELD_DESC = new org.apache.thrift.protocol.TField("current_status", org.apache.thrift.protocol.TType.I32, (short)48);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -109,7 +96,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
   public int id; // required
   public String jobnumber; // required
   public int company_id; // required
-  public String province; // required
   public String city; // required
   public String department; // required
   public int l_jobid; // required
@@ -118,33 +104,22 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
   public String accountabilities; // required
   public String experience; // required
   public String requirement; // required
-  public String salary; // required
   public String language; // required
-  public int job_grade; // required
   public int status; // required
   public int visitnum; // required
-  public String lastvisit; // required
   public int source_id; // required
   public String update_time; // required
-  public String business_group; // required
   public byte employment_type; // required
   public String hr_email; // required
-  public String benefits; // required
   public int degree; // required
   public String feature; // required
-  public byte email_notice; // required
   public byte candidate_source; // required
   public String occupation; // required
-  public byte is_recom; // required
   public String industry; // required
-  public int hongbao_config_id; // required
-  public int hongbao_config_recom_id; // required
-  public int hongbao_config_app_id; // required
   public byte email_resume_conf; // required
   public int l_PostingTargetId; // required
   public int priority; // required
   public int share_tpl_id; // required
-  public String district; // required
   public int count; // required
   public int salary_top; // required
   public int salary_bottom; // required
@@ -156,7 +131,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
   public int app_cv_config_id; // required
   public int source; // required
   public byte hb_status; // required
-  public int child_company_id; // required
   public int age; // required
   public String major_required; // required
   public String work_address; // required
@@ -173,64 +147,51 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     ID((short)1, "id"),
     JOBNUMBER((short)2, "jobnumber"),
     COMPANY_ID((short)3, "company_id"),
-    PROVINCE((short)4, "province"),
-    CITY((short)5, "city"),
-    DEPARTMENT((short)6, "department"),
-    L_JOBID((short)7, "l_jobid"),
-    PUBLISH_DATE((short)8, "publish_date"),
-    STOP_DATE((short)9, "stop_date"),
-    ACCOUNTABILITIES((short)10, "accountabilities"),
-    EXPERIENCE((short)11, "experience"),
-    REQUIREMENT((short)12, "requirement"),
-    SALARY((short)13, "salary"),
-    LANGUAGE((short)14, "language"),
-    JOB_GRADE((short)15, "job_grade"),
-    STATUS((short)16, "status"),
-    VISITNUM((short)17, "visitnum"),
-    LASTVISIT((short)18, "lastvisit"),
-    SOURCE_ID((short)19, "source_id"),
-    UPDATE_TIME((short)20, "update_time"),
-    BUSINESS_GROUP((short)21, "business_group"),
-    EMPLOYMENT_TYPE((short)22, "employment_type"),
-    HR_EMAIL((short)23, "hr_email"),
-    BENEFITS((short)24, "benefits"),
-    DEGREE((short)25, "degree"),
-    FEATURE((short)26, "feature"),
-    EMAIL_NOTICE((short)27, "email_notice"),
-    CANDIDATE_SOURCE((short)28, "candidate_source"),
-    OCCUPATION((short)29, "occupation"),
-    IS_RECOM((short)30, "is_recom"),
-    INDUSTRY((short)31, "industry"),
-    HONGBAO_CONFIG_ID((short)32, "hongbao_config_id"),
-    HONGBAO_CONFIG_RECOM_ID((short)33, "hongbao_config_recom_id"),
-    HONGBAO_CONFIG_APP_ID((short)34, "hongbao_config_app_id"),
-    EMAIL_RESUME_CONF((short)35, "email_resume_conf"),
-    L__POSTING_TARGET_ID((short)36, "l_PostingTargetId"),
-    PRIORITY((short)37, "priority"),
-    SHARE_TPL_ID((short)38, "share_tpl_id"),
-    DISTRICT((short)39, "district"),
-    COUNT((short)40, "count"),
-    SALARY_TOP((short)41, "salary_top"),
-    SALARY_BOTTOM((short)42, "salary_bottom"),
-    EXPERIENCE_ABOVE((short)43, "experience_above"),
-    DEGREE_ABOVE((short)44, "degree_above"),
-    MANAGEMENT_EXPERIENCE((short)45, "management_experience"),
-    GENDER((short)46, "gender"),
-    PUBLISHER((short)47, "publisher"),
-    APP_CV_CONFIG_ID((short)48, "app_cv_config_id"),
-    SOURCE((short)49, "source"),
-    HB_STATUS((short)50, "hb_status"),
-    CHILD_COMPANY_ID((short)51, "child_company_id"),
-    AGE((short)52, "age"),
-    MAJOR_REQUIRED((short)53, "major_required"),
-    WORK_ADDRESS((short)54, "work_address"),
-    KEYWORD((short)55, "keyword"),
-    REPORTING_TO((short)56, "reporting_to"),
-    IS_HIRING((short)57, "is_hiring"),
-    UNDERLINGS((short)58, "underlings"),
-    LANGUAGE_REQUIRED((short)59, "language_required"),
-    TARGET_INDUSTRY((short)60, "target_industry"),
-    CURRENT_STATUS((short)61, "current_status");
+    CITY((short)4, "city"),
+    DEPARTMENT((short)5, "department"),
+    L_JOBID((short)6, "l_jobid"),
+    PUBLISH_DATE((short)7, "publish_date"),
+    STOP_DATE((short)8, "stop_date"),
+    ACCOUNTABILITIES((short)9, "accountabilities"),
+    EXPERIENCE((short)10, "experience"),
+    REQUIREMENT((short)11, "requirement"),
+    LANGUAGE((short)12, "language"),
+    STATUS((short)13, "status"),
+    VISITNUM((short)14, "visitnum"),
+    SOURCE_ID((short)15, "source_id"),
+    UPDATE_TIME((short)16, "update_time"),
+    EMPLOYMENT_TYPE((short)17, "employment_type"),
+    HR_EMAIL((short)18, "hr_email"),
+    DEGREE((short)19, "degree"),
+    FEATURE((short)20, "feature"),
+    CANDIDATE_SOURCE((short)21, "candidate_source"),
+    OCCUPATION((short)22, "occupation"),
+    INDUSTRY((short)23, "industry"),
+    EMAIL_RESUME_CONF((short)24, "email_resume_conf"),
+    L__POSTING_TARGET_ID((short)25, "l_PostingTargetId"),
+    PRIORITY((short)26, "priority"),
+    SHARE_TPL_ID((short)27, "share_tpl_id"),
+    COUNT((short)28, "count"),
+    SALARY_TOP((short)29, "salary_top"),
+    SALARY_BOTTOM((short)30, "salary_bottom"),
+    EXPERIENCE_ABOVE((short)31, "experience_above"),
+    DEGREE_ABOVE((short)32, "degree_above"),
+    MANAGEMENT_EXPERIENCE((short)33, "management_experience"),
+    GENDER((short)34, "gender"),
+    PUBLISHER((short)35, "publisher"),
+    APP_CV_CONFIG_ID((short)36, "app_cv_config_id"),
+    SOURCE((short)37, "source"),
+    HB_STATUS((short)38, "hb_status"),
+    AGE((short)39, "age"),
+    MAJOR_REQUIRED((short)40, "major_required"),
+    WORK_ADDRESS((short)41, "work_address"),
+    KEYWORD((short)42, "keyword"),
+    REPORTING_TO((short)43, "reporting_to"),
+    IS_HIRING((short)44, "is_hiring"),
+    UNDERLINGS((short)45, "underlings"),
+    LANGUAGE_REQUIRED((short)46, "language_required"),
+    TARGET_INDUSTRY((short)47, "target_industry"),
+    CURRENT_STATUS((short)48, "current_status");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -251,121 +212,95 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
           return JOBNUMBER;
         case 3: // COMPANY_ID
           return COMPANY_ID;
-        case 4: // PROVINCE
-          return PROVINCE;
-        case 5: // CITY
+        case 4: // CITY
           return CITY;
-        case 6: // DEPARTMENT
+        case 5: // DEPARTMENT
           return DEPARTMENT;
-        case 7: // L_JOBID
+        case 6: // L_JOBID
           return L_JOBID;
-        case 8: // PUBLISH_DATE
+        case 7: // PUBLISH_DATE
           return PUBLISH_DATE;
-        case 9: // STOP_DATE
+        case 8: // STOP_DATE
           return STOP_DATE;
-        case 10: // ACCOUNTABILITIES
+        case 9: // ACCOUNTABILITIES
           return ACCOUNTABILITIES;
-        case 11: // EXPERIENCE
+        case 10: // EXPERIENCE
           return EXPERIENCE;
-        case 12: // REQUIREMENT
+        case 11: // REQUIREMENT
           return REQUIREMENT;
-        case 13: // SALARY
-          return SALARY;
-        case 14: // LANGUAGE
+        case 12: // LANGUAGE
           return LANGUAGE;
-        case 15: // JOB_GRADE
-          return JOB_GRADE;
-        case 16: // STATUS
+        case 13: // STATUS
           return STATUS;
-        case 17: // VISITNUM
+        case 14: // VISITNUM
           return VISITNUM;
-        case 18: // LASTVISIT
-          return LASTVISIT;
-        case 19: // SOURCE_ID
+        case 15: // SOURCE_ID
           return SOURCE_ID;
-        case 20: // UPDATE_TIME
+        case 16: // UPDATE_TIME
           return UPDATE_TIME;
-        case 21: // BUSINESS_GROUP
-          return BUSINESS_GROUP;
-        case 22: // EMPLOYMENT_TYPE
+        case 17: // EMPLOYMENT_TYPE
           return EMPLOYMENT_TYPE;
-        case 23: // HR_EMAIL
+        case 18: // HR_EMAIL
           return HR_EMAIL;
-        case 24: // BENEFITS
-          return BENEFITS;
-        case 25: // DEGREE
+        case 19: // DEGREE
           return DEGREE;
-        case 26: // FEATURE
+        case 20: // FEATURE
           return FEATURE;
-        case 27: // EMAIL_NOTICE
-          return EMAIL_NOTICE;
-        case 28: // CANDIDATE_SOURCE
+        case 21: // CANDIDATE_SOURCE
           return CANDIDATE_SOURCE;
-        case 29: // OCCUPATION
+        case 22: // OCCUPATION
           return OCCUPATION;
-        case 30: // IS_RECOM
-          return IS_RECOM;
-        case 31: // INDUSTRY
+        case 23: // INDUSTRY
           return INDUSTRY;
-        case 32: // HONGBAO_CONFIG_ID
-          return HONGBAO_CONFIG_ID;
-        case 33: // HONGBAO_CONFIG_RECOM_ID
-          return HONGBAO_CONFIG_RECOM_ID;
-        case 34: // HONGBAO_CONFIG_APP_ID
-          return HONGBAO_CONFIG_APP_ID;
-        case 35: // EMAIL_RESUME_CONF
+        case 24: // EMAIL_RESUME_CONF
           return EMAIL_RESUME_CONF;
-        case 36: // L__POSTING_TARGET_ID
+        case 25: // L__POSTING_TARGET_ID
           return L__POSTING_TARGET_ID;
-        case 37: // PRIORITY
+        case 26: // PRIORITY
           return PRIORITY;
-        case 38: // SHARE_TPL_ID
+        case 27: // SHARE_TPL_ID
           return SHARE_TPL_ID;
-        case 39: // DISTRICT
-          return DISTRICT;
-        case 40: // COUNT
+        case 28: // COUNT
           return COUNT;
-        case 41: // SALARY_TOP
+        case 29: // SALARY_TOP
           return SALARY_TOP;
-        case 42: // SALARY_BOTTOM
+        case 30: // SALARY_BOTTOM
           return SALARY_BOTTOM;
-        case 43: // EXPERIENCE_ABOVE
+        case 31: // EXPERIENCE_ABOVE
           return EXPERIENCE_ABOVE;
-        case 44: // DEGREE_ABOVE
+        case 32: // DEGREE_ABOVE
           return DEGREE_ABOVE;
-        case 45: // MANAGEMENT_EXPERIENCE
+        case 33: // MANAGEMENT_EXPERIENCE
           return MANAGEMENT_EXPERIENCE;
-        case 46: // GENDER
+        case 34: // GENDER
           return GENDER;
-        case 47: // PUBLISHER
+        case 35: // PUBLISHER
           return PUBLISHER;
-        case 48: // APP_CV_CONFIG_ID
+        case 36: // APP_CV_CONFIG_ID
           return APP_CV_CONFIG_ID;
-        case 49: // SOURCE
+        case 37: // SOURCE
           return SOURCE;
-        case 50: // HB_STATUS
+        case 38: // HB_STATUS
           return HB_STATUS;
-        case 51: // CHILD_COMPANY_ID
-          return CHILD_COMPANY_ID;
-        case 52: // AGE
+        case 39: // AGE
           return AGE;
-        case 53: // MAJOR_REQUIRED
+        case 40: // MAJOR_REQUIRED
           return MAJOR_REQUIRED;
-        case 54: // WORK_ADDRESS
+        case 41: // WORK_ADDRESS
           return WORK_ADDRESS;
-        case 55: // KEYWORD
+        case 42: // KEYWORD
           return KEYWORD;
-        case 56: // REPORTING_TO
+        case 43: // REPORTING_TO
           return REPORTING_TO;
-        case 57: // IS_HIRING
+        case 44: // IS_HIRING
           return IS_HIRING;
-        case 58: // UNDERLINGS
+        case 45: // UNDERLINGS
           return UNDERLINGS;
-        case 59: // LANGUAGE_REQUIRED
+        case 46: // LANGUAGE_REQUIRED
           return LANGUAGE_REQUIRED;
-        case 60: // TARGET_INDUSTRY
+        case 47: // TARGET_INDUSTRY
           return TARGET_INDUSTRY;
-        case 61: // CURRENT_STATUS
+        case 48: // CURRENT_STATUS
           return CURRENT_STATUS;
         default:
           return null;
@@ -410,41 +345,34 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
   private static final int __ID_ISSET_ID = 0;
   private static final int __COMPANY_ID_ISSET_ID = 1;
   private static final int __L_JOBID_ISSET_ID = 2;
-  private static final int __JOB_GRADE_ISSET_ID = 3;
-  private static final int __STATUS_ISSET_ID = 4;
-  private static final int __VISITNUM_ISSET_ID = 5;
-  private static final int __SOURCE_ID_ISSET_ID = 6;
-  private static final int __EMPLOYMENT_TYPE_ISSET_ID = 7;
-  private static final int __DEGREE_ISSET_ID = 8;
-  private static final int __EMAIL_NOTICE_ISSET_ID = 9;
-  private static final int __CANDIDATE_SOURCE_ISSET_ID = 10;
-  private static final int __IS_RECOM_ISSET_ID = 11;
-  private static final int __HONGBAO_CONFIG_ID_ISSET_ID = 12;
-  private static final int __HONGBAO_CONFIG_RECOM_ID_ISSET_ID = 13;
-  private static final int __HONGBAO_CONFIG_APP_ID_ISSET_ID = 14;
-  private static final int __EMAIL_RESUME_CONF_ISSET_ID = 15;
-  private static final int __L_POSTINGTARGETID_ISSET_ID = 16;
-  private static final int __PRIORITY_ISSET_ID = 17;
-  private static final int __SHARE_TPL_ID_ISSET_ID = 18;
-  private static final int __COUNT_ISSET_ID = 19;
-  private static final int __SALARY_TOP_ISSET_ID = 20;
-  private static final int __SALARY_BOTTOM_ISSET_ID = 21;
-  private static final int __EXPERIENCE_ABOVE_ISSET_ID = 22;
-  private static final int __DEGREE_ABOVE_ISSET_ID = 23;
-  private static final int __MANAGEMENT_EXPERIENCE_ISSET_ID = 24;
-  private static final int __GENDER_ISSET_ID = 25;
-  private static final int __PUBLISHER_ISSET_ID = 26;
-  private static final int __APP_CV_CONFIG_ID_ISSET_ID = 27;
-  private static final int __SOURCE_ISSET_ID = 28;
-  private static final int __HB_STATUS_ISSET_ID = 29;
-  private static final int __CHILD_COMPANY_ID_ISSET_ID = 30;
-  private static final int __AGE_ISSET_ID = 31;
-  private static final int __IS_HIRING_ISSET_ID = 32;
-  private static final int __UNDERLINGS_ISSET_ID = 33;
-  private static final int __LANGUAGE_REQUIRED_ISSET_ID = 34;
-  private static final int __TARGET_INDUSTRY_ISSET_ID = 35;
-  private static final int __CURRENT_STATUS_ISSET_ID = 36;
-  private long __isset_bitfield = 0;
+  private static final int __STATUS_ISSET_ID = 3;
+  private static final int __VISITNUM_ISSET_ID = 4;
+  private static final int __SOURCE_ID_ISSET_ID = 5;
+  private static final int __EMPLOYMENT_TYPE_ISSET_ID = 6;
+  private static final int __DEGREE_ISSET_ID = 7;
+  private static final int __CANDIDATE_SOURCE_ISSET_ID = 8;
+  private static final int __EMAIL_RESUME_CONF_ISSET_ID = 9;
+  private static final int __L_POSTINGTARGETID_ISSET_ID = 10;
+  private static final int __PRIORITY_ISSET_ID = 11;
+  private static final int __SHARE_TPL_ID_ISSET_ID = 12;
+  private static final int __COUNT_ISSET_ID = 13;
+  private static final int __SALARY_TOP_ISSET_ID = 14;
+  private static final int __SALARY_BOTTOM_ISSET_ID = 15;
+  private static final int __EXPERIENCE_ABOVE_ISSET_ID = 16;
+  private static final int __DEGREE_ABOVE_ISSET_ID = 17;
+  private static final int __MANAGEMENT_EXPERIENCE_ISSET_ID = 18;
+  private static final int __GENDER_ISSET_ID = 19;
+  private static final int __PUBLISHER_ISSET_ID = 20;
+  private static final int __APP_CV_CONFIG_ID_ISSET_ID = 21;
+  private static final int __SOURCE_ISSET_ID = 22;
+  private static final int __HB_STATUS_ISSET_ID = 23;
+  private static final int __AGE_ISSET_ID = 24;
+  private static final int __IS_HIRING_ISSET_ID = 25;
+  private static final int __UNDERLINGS_ISSET_ID = 26;
+  private static final int __LANGUAGE_REQUIRED_ISSET_ID = 27;
+  private static final int __TARGET_INDUSTRY_ISSET_ID = 28;
+  private static final int __CURRENT_STATUS_ISSET_ID = 29;
+  private int __isset_bitfield = 0;
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -454,8 +382,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.PROVINCE, new org.apache.thrift.meta_data.FieldMetaData("province", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.CITY, new org.apache.thrift.meta_data.FieldMetaData("city", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.DEPARTMENT, new org.apache.thrift.meta_data.FieldMetaData("department", org.apache.thrift.TFieldRequirementType.DEFAULT, 
@@ -472,50 +398,30 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.REQUIREMENT, new org.apache.thrift.meta_data.FieldMetaData("requirement", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.SALARY, new org.apache.thrift.meta_data.FieldMetaData("salary", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.LANGUAGE, new org.apache.thrift.meta_data.FieldMetaData("language", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.JOB_GRADE, new org.apache.thrift.meta_data.FieldMetaData("job_grade", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.STATUS, new org.apache.thrift.meta_data.FieldMetaData("status", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.VISITNUM, new org.apache.thrift.meta_data.FieldMetaData("visitnum", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.LASTVISIT, new org.apache.thrift.meta_data.FieldMetaData("lastvisit", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.SOURCE_ID, new org.apache.thrift.meta_data.FieldMetaData("source_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.UPDATE_TIME, new org.apache.thrift.meta_data.FieldMetaData("update_time", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.BUSINESS_GROUP, new org.apache.thrift.meta_data.FieldMetaData("business_group", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.EMPLOYMENT_TYPE, new org.apache.thrift.meta_data.FieldMetaData("employment_type", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BYTE)));
     tmpMap.put(_Fields.HR_EMAIL, new org.apache.thrift.meta_data.FieldMetaData("hr_email", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.BENEFITS, new org.apache.thrift.meta_data.FieldMetaData("benefits", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.DEGREE, new org.apache.thrift.meta_data.FieldMetaData("degree", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.FEATURE, new org.apache.thrift.meta_data.FieldMetaData("feature", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.EMAIL_NOTICE, new org.apache.thrift.meta_data.FieldMetaData("email_notice", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BYTE)));
     tmpMap.put(_Fields.CANDIDATE_SOURCE, new org.apache.thrift.meta_data.FieldMetaData("candidate_source", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BYTE)));
     tmpMap.put(_Fields.OCCUPATION, new org.apache.thrift.meta_data.FieldMetaData("occupation", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.IS_RECOM, new org.apache.thrift.meta_data.FieldMetaData("is_recom", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BYTE)));
     tmpMap.put(_Fields.INDUSTRY, new org.apache.thrift.meta_data.FieldMetaData("industry", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.HONGBAO_CONFIG_ID, new org.apache.thrift.meta_data.FieldMetaData("hongbao_config_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.HONGBAO_CONFIG_RECOM_ID, new org.apache.thrift.meta_data.FieldMetaData("hongbao_config_recom_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.HONGBAO_CONFIG_APP_ID, new org.apache.thrift.meta_data.FieldMetaData("hongbao_config_app_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.EMAIL_RESUME_CONF, new org.apache.thrift.meta_data.FieldMetaData("email_resume_conf", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BYTE)));
     tmpMap.put(_Fields.L__POSTING_TARGET_ID, new org.apache.thrift.meta_data.FieldMetaData("l_PostingTargetId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
@@ -524,8 +430,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.SHARE_TPL_ID, new org.apache.thrift.meta_data.FieldMetaData("share_tpl_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.DISTRICT, new org.apache.thrift.meta_data.FieldMetaData("district", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.COUNT, new org.apache.thrift.meta_data.FieldMetaData("count", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.SALARY_TOP, new org.apache.thrift.meta_data.FieldMetaData("salary_top", org.apache.thrift.TFieldRequirementType.DEFAULT, 
@@ -548,8 +452,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.HB_STATUS, new org.apache.thrift.meta_data.FieldMetaData("hb_status", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BYTE)));
-    tmpMap.put(_Fields.CHILD_COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("child_company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.AGE, new org.apache.thrift.meta_data.FieldMetaData("age", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.MAJOR_REQUIRED, new org.apache.thrift.meta_data.FieldMetaData("major_required", org.apache.thrift.TFieldRequirementType.DEFAULT, 
@@ -581,7 +483,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     int id,
     String jobnumber,
     int company_id,
-    String province,
     String city,
     String department,
     int l_jobid,
@@ -590,33 +491,22 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     String accountabilities,
     String experience,
     String requirement,
-    String salary,
     String language,
-    int job_grade,
     int status,
     int visitnum,
-    String lastvisit,
     int source_id,
     String update_time,
-    String business_group,
     byte employment_type,
     String hr_email,
-    String benefits,
     int degree,
     String feature,
-    byte email_notice,
     byte candidate_source,
     String occupation,
-    byte is_recom,
     String industry,
-    int hongbao_config_id,
-    int hongbao_config_recom_id,
-    int hongbao_config_app_id,
     byte email_resume_conf,
     int l_PostingTargetId,
     int priority,
     int share_tpl_id,
-    String district,
     int count,
     int salary_top,
     int salary_bottom,
@@ -628,7 +518,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     int app_cv_config_id,
     int source,
     byte hb_status,
-    int child_company_id,
     int age,
     String major_required,
     String work_address,
@@ -646,7 +535,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     this.jobnumber = jobnumber;
     this.company_id = company_id;
     setCompany_idIsSet(true);
-    this.province = province;
     this.city = city;
     this.department = department;
     this.l_jobid = l_jobid;
@@ -656,40 +544,24 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     this.accountabilities = accountabilities;
     this.experience = experience;
     this.requirement = requirement;
-    this.salary = salary;
     this.language = language;
-    this.job_grade = job_grade;
-    setJob_gradeIsSet(true);
     this.status = status;
     setStatusIsSet(true);
     this.visitnum = visitnum;
     setVisitnumIsSet(true);
-    this.lastvisit = lastvisit;
     this.source_id = source_id;
     setSource_idIsSet(true);
     this.update_time = update_time;
-    this.business_group = business_group;
     this.employment_type = employment_type;
     setEmployment_typeIsSet(true);
     this.hr_email = hr_email;
-    this.benefits = benefits;
     this.degree = degree;
     setDegreeIsSet(true);
     this.feature = feature;
-    this.email_notice = email_notice;
-    setEmail_noticeIsSet(true);
     this.candidate_source = candidate_source;
     setCandidate_sourceIsSet(true);
     this.occupation = occupation;
-    this.is_recom = is_recom;
-    setIs_recomIsSet(true);
     this.industry = industry;
-    this.hongbao_config_id = hongbao_config_id;
-    setHongbao_config_idIsSet(true);
-    this.hongbao_config_recom_id = hongbao_config_recom_id;
-    setHongbao_config_recom_idIsSet(true);
-    this.hongbao_config_app_id = hongbao_config_app_id;
-    setHongbao_config_app_idIsSet(true);
     this.email_resume_conf = email_resume_conf;
     setEmail_resume_confIsSet(true);
     this.l_PostingTargetId = l_PostingTargetId;
@@ -698,7 +570,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     setPriorityIsSet(true);
     this.share_tpl_id = share_tpl_id;
     setShare_tpl_idIsSet(true);
-    this.district = district;
     this.count = count;
     setCountIsSet(true);
     this.salary_top = salary_top;
@@ -721,8 +592,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     setSourceIsSet(true);
     this.hb_status = hb_status;
     setHb_statusIsSet(true);
-    this.child_company_id = child_company_id;
-    setChild_company_idIsSet(true);
     this.age = age;
     setAgeIsSet(true);
     this.major_required = major_required;
@@ -751,9 +620,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
       this.jobnumber = other.jobnumber;
     }
     this.company_id = other.company_id;
-    if (other.isSetProvince()) {
-      this.province = other.province;
-    }
     if (other.isSetCity()) {
       this.city = other.city;
     }
@@ -776,55 +642,34 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     if (other.isSetRequirement()) {
       this.requirement = other.requirement;
     }
-    if (other.isSetSalary()) {
-      this.salary = other.salary;
-    }
     if (other.isSetLanguage()) {
       this.language = other.language;
     }
-    this.job_grade = other.job_grade;
     this.status = other.status;
     this.visitnum = other.visitnum;
-    if (other.isSetLastvisit()) {
-      this.lastvisit = other.lastvisit;
-    }
     this.source_id = other.source_id;
     if (other.isSetUpdate_time()) {
       this.update_time = other.update_time;
-    }
-    if (other.isSetBusiness_group()) {
-      this.business_group = other.business_group;
     }
     this.employment_type = other.employment_type;
     if (other.isSetHr_email()) {
       this.hr_email = other.hr_email;
     }
-    if (other.isSetBenefits()) {
-      this.benefits = other.benefits;
-    }
     this.degree = other.degree;
     if (other.isSetFeature()) {
       this.feature = other.feature;
     }
-    this.email_notice = other.email_notice;
     this.candidate_source = other.candidate_source;
     if (other.isSetOccupation()) {
       this.occupation = other.occupation;
     }
-    this.is_recom = other.is_recom;
     if (other.isSetIndustry()) {
       this.industry = other.industry;
     }
-    this.hongbao_config_id = other.hongbao_config_id;
-    this.hongbao_config_recom_id = other.hongbao_config_recom_id;
-    this.hongbao_config_app_id = other.hongbao_config_app_id;
     this.email_resume_conf = other.email_resume_conf;
     this.l_PostingTargetId = other.l_PostingTargetId;
     this.priority = other.priority;
     this.share_tpl_id = other.share_tpl_id;
-    if (other.isSetDistrict()) {
-      this.district = other.district;
-    }
     this.count = other.count;
     this.salary_top = other.salary_top;
     this.salary_bottom = other.salary_bottom;
@@ -836,7 +681,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     this.app_cv_config_id = other.app_cv_config_id;
     this.source = other.source;
     this.hb_status = other.hb_status;
-    this.child_company_id = other.child_company_id;
     this.age = other.age;
     if (other.isSetMajor_required()) {
       this.major_required = other.major_required;
@@ -868,7 +712,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     this.jobnumber = null;
     setCompany_idIsSet(false);
     this.company_id = 0;
-    this.province = null;
     this.city = null;
     this.department = null;
     setL_jobidIsSet(false);
@@ -878,40 +721,24 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     this.accountabilities = null;
     this.experience = null;
     this.requirement = null;
-    this.salary = null;
     this.language = null;
-    setJob_gradeIsSet(false);
-    this.job_grade = 0;
     setStatusIsSet(false);
     this.status = 0;
     setVisitnumIsSet(false);
     this.visitnum = 0;
-    this.lastvisit = null;
     setSource_idIsSet(false);
     this.source_id = 0;
     this.update_time = null;
-    this.business_group = null;
     setEmployment_typeIsSet(false);
     this.employment_type = 0;
     this.hr_email = null;
-    this.benefits = null;
     setDegreeIsSet(false);
     this.degree = 0;
     this.feature = null;
-    setEmail_noticeIsSet(false);
-    this.email_notice = 0;
     setCandidate_sourceIsSet(false);
     this.candidate_source = 0;
     this.occupation = null;
-    setIs_recomIsSet(false);
-    this.is_recom = 0;
     this.industry = null;
-    setHongbao_config_idIsSet(false);
-    this.hongbao_config_id = 0;
-    setHongbao_config_recom_idIsSet(false);
-    this.hongbao_config_recom_id = 0;
-    setHongbao_config_app_idIsSet(false);
-    this.hongbao_config_app_id = 0;
     setEmail_resume_confIsSet(false);
     this.email_resume_conf = 0;
     setL_PostingTargetIdIsSet(false);
@@ -920,7 +747,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     this.priority = 0;
     setShare_tpl_idIsSet(false);
     this.share_tpl_id = 0;
-    this.district = null;
     setCountIsSet(false);
     this.count = 0;
     setSalary_topIsSet(false);
@@ -943,8 +769,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     this.source = 0;
     setHb_statusIsSet(false);
     this.hb_status = 0;
-    setChild_company_idIsSet(false);
-    this.child_company_id = 0;
     setAgeIsSet(false);
     this.age = 0;
     this.major_required = null;
@@ -1031,30 +855,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
 
   public void setCompany_idIsSet(boolean value) {
     __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __COMPANY_ID_ISSET_ID, value);
-  }
-
-  public String getProvince() {
-    return this.province;
-  }
-
-  public Position setProvince(String province) {
-    this.province = province;
-    return this;
-  }
-
-  public void unsetProvince() {
-    this.province = null;
-  }
-
-  /** Returns true if field province is set (has been assigned a value) and false otherwise */
-  public boolean isSetProvince() {
-    return this.province != null;
-  }
-
-  public void setProvinceIsSet(boolean value) {
-    if (!value) {
-      this.province = null;
-    }
   }
 
   public String getCity() {
@@ -1248,30 +1048,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     }
   }
 
-  public String getSalary() {
-    return this.salary;
-  }
-
-  public Position setSalary(String salary) {
-    this.salary = salary;
-    return this;
-  }
-
-  public void unsetSalary() {
-    this.salary = null;
-  }
-
-  /** Returns true if field salary is set (has been assigned a value) and false otherwise */
-  public boolean isSetSalary() {
-    return this.salary != null;
-  }
-
-  public void setSalaryIsSet(boolean value) {
-    if (!value) {
-      this.salary = null;
-    }
-  }
-
   public String getLanguage() {
     return this.language;
   }
@@ -1294,29 +1070,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     if (!value) {
       this.language = null;
     }
-  }
-
-  public int getJob_grade() {
-    return this.job_grade;
-  }
-
-  public Position setJob_grade(int job_grade) {
-    this.job_grade = job_grade;
-    setJob_gradeIsSet(true);
-    return this;
-  }
-
-  public void unsetJob_grade() {
-    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __JOB_GRADE_ISSET_ID);
-  }
-
-  /** Returns true if field job_grade is set (has been assigned a value) and false otherwise */
-  public boolean isSetJob_grade() {
-    return EncodingUtils.testBit(__isset_bitfield, __JOB_GRADE_ISSET_ID);
-  }
-
-  public void setJob_gradeIsSet(boolean value) {
-    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __JOB_GRADE_ISSET_ID, value);
   }
 
   public int getStatus() {
@@ -1365,30 +1118,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __VISITNUM_ISSET_ID, value);
   }
 
-  public String getLastvisit() {
-    return this.lastvisit;
-  }
-
-  public Position setLastvisit(String lastvisit) {
-    this.lastvisit = lastvisit;
-    return this;
-  }
-
-  public void unsetLastvisit() {
-    this.lastvisit = null;
-  }
-
-  /** Returns true if field lastvisit is set (has been assigned a value) and false otherwise */
-  public boolean isSetLastvisit() {
-    return this.lastvisit != null;
-  }
-
-  public void setLastvisitIsSet(boolean value) {
-    if (!value) {
-      this.lastvisit = null;
-    }
-  }
-
   public int getSource_id() {
     return this.source_id;
   }
@@ -1433,30 +1162,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
   public void setUpdate_timeIsSet(boolean value) {
     if (!value) {
       this.update_time = null;
-    }
-  }
-
-  public String getBusiness_group() {
-    return this.business_group;
-  }
-
-  public Position setBusiness_group(String business_group) {
-    this.business_group = business_group;
-    return this;
-  }
-
-  public void unsetBusiness_group() {
-    this.business_group = null;
-  }
-
-  /** Returns true if field business_group is set (has been assigned a value) and false otherwise */
-  public boolean isSetBusiness_group() {
-    return this.business_group != null;
-  }
-
-  public void setBusiness_groupIsSet(boolean value) {
-    if (!value) {
-      this.business_group = null;
     }
   }
 
@@ -1507,30 +1212,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     }
   }
 
-  public String getBenefits() {
-    return this.benefits;
-  }
-
-  public Position setBenefits(String benefits) {
-    this.benefits = benefits;
-    return this;
-  }
-
-  public void unsetBenefits() {
-    this.benefits = null;
-  }
-
-  /** Returns true if field benefits is set (has been assigned a value) and false otherwise */
-  public boolean isSetBenefits() {
-    return this.benefits != null;
-  }
-
-  public void setBenefitsIsSet(boolean value) {
-    if (!value) {
-      this.benefits = null;
-    }
-  }
-
   public int getDegree() {
     return this.degree;
   }
@@ -1576,29 +1257,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     if (!value) {
       this.feature = null;
     }
-  }
-
-  public byte getEmail_notice() {
-    return this.email_notice;
-  }
-
-  public Position setEmail_notice(byte email_notice) {
-    this.email_notice = email_notice;
-    setEmail_noticeIsSet(true);
-    return this;
-  }
-
-  public void unsetEmail_notice() {
-    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __EMAIL_NOTICE_ISSET_ID);
-  }
-
-  /** Returns true if field email_notice is set (has been assigned a value) and false otherwise */
-  public boolean isSetEmail_notice() {
-    return EncodingUtils.testBit(__isset_bitfield, __EMAIL_NOTICE_ISSET_ID);
-  }
-
-  public void setEmail_noticeIsSet(boolean value) {
-    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __EMAIL_NOTICE_ISSET_ID, value);
   }
 
   public byte getCandidate_source() {
@@ -1648,29 +1306,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     }
   }
 
-  public byte getIs_recom() {
-    return this.is_recom;
-  }
-
-  public Position setIs_recom(byte is_recom) {
-    this.is_recom = is_recom;
-    setIs_recomIsSet(true);
-    return this;
-  }
-
-  public void unsetIs_recom() {
-    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __IS_RECOM_ISSET_ID);
-  }
-
-  /** Returns true if field is_recom is set (has been assigned a value) and false otherwise */
-  public boolean isSetIs_recom() {
-    return EncodingUtils.testBit(__isset_bitfield, __IS_RECOM_ISSET_ID);
-  }
-
-  public void setIs_recomIsSet(boolean value) {
-    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __IS_RECOM_ISSET_ID, value);
-  }
-
   public String getIndustry() {
     return this.industry;
   }
@@ -1693,75 +1328,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     if (!value) {
       this.industry = null;
     }
-  }
-
-  public int getHongbao_config_id() {
-    return this.hongbao_config_id;
-  }
-
-  public Position setHongbao_config_id(int hongbao_config_id) {
-    this.hongbao_config_id = hongbao_config_id;
-    setHongbao_config_idIsSet(true);
-    return this;
-  }
-
-  public void unsetHongbao_config_id() {
-    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __HONGBAO_CONFIG_ID_ISSET_ID);
-  }
-
-  /** Returns true if field hongbao_config_id is set (has been assigned a value) and false otherwise */
-  public boolean isSetHongbao_config_id() {
-    return EncodingUtils.testBit(__isset_bitfield, __HONGBAO_CONFIG_ID_ISSET_ID);
-  }
-
-  public void setHongbao_config_idIsSet(boolean value) {
-    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __HONGBAO_CONFIG_ID_ISSET_ID, value);
-  }
-
-  public int getHongbao_config_recom_id() {
-    return this.hongbao_config_recom_id;
-  }
-
-  public Position setHongbao_config_recom_id(int hongbao_config_recom_id) {
-    this.hongbao_config_recom_id = hongbao_config_recom_id;
-    setHongbao_config_recom_idIsSet(true);
-    return this;
-  }
-
-  public void unsetHongbao_config_recom_id() {
-    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __HONGBAO_CONFIG_RECOM_ID_ISSET_ID);
-  }
-
-  /** Returns true if field hongbao_config_recom_id is set (has been assigned a value) and false otherwise */
-  public boolean isSetHongbao_config_recom_id() {
-    return EncodingUtils.testBit(__isset_bitfield, __HONGBAO_CONFIG_RECOM_ID_ISSET_ID);
-  }
-
-  public void setHongbao_config_recom_idIsSet(boolean value) {
-    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __HONGBAO_CONFIG_RECOM_ID_ISSET_ID, value);
-  }
-
-  public int getHongbao_config_app_id() {
-    return this.hongbao_config_app_id;
-  }
-
-  public Position setHongbao_config_app_id(int hongbao_config_app_id) {
-    this.hongbao_config_app_id = hongbao_config_app_id;
-    setHongbao_config_app_idIsSet(true);
-    return this;
-  }
-
-  public void unsetHongbao_config_app_id() {
-    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __HONGBAO_CONFIG_APP_ID_ISSET_ID);
-  }
-
-  /** Returns true if field hongbao_config_app_id is set (has been assigned a value) and false otherwise */
-  public boolean isSetHongbao_config_app_id() {
-    return EncodingUtils.testBit(__isset_bitfield, __HONGBAO_CONFIG_APP_ID_ISSET_ID);
-  }
-
-  public void setHongbao_config_app_idIsSet(boolean value) {
-    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __HONGBAO_CONFIG_APP_ID_ISSET_ID, value);
   }
 
   public byte getEmail_resume_conf() {
@@ -1854,30 +1420,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
 
   public void setShare_tpl_idIsSet(boolean value) {
     __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __SHARE_TPL_ID_ISSET_ID, value);
-  }
-
-  public String getDistrict() {
-    return this.district;
-  }
-
-  public Position setDistrict(String district) {
-    this.district = district;
-    return this;
-  }
-
-  public void unsetDistrict() {
-    this.district = null;
-  }
-
-  /** Returns true if field district is set (has been assigned a value) and false otherwise */
-  public boolean isSetDistrict() {
-    return this.district != null;
-  }
-
-  public void setDistrictIsSet(boolean value) {
-    if (!value) {
-      this.district = null;
-    }
   }
 
   public int getCount() {
@@ -2131,29 +1673,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
 
   public void setHb_statusIsSet(boolean value) {
     __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __HB_STATUS_ISSET_ID, value);
-  }
-
-  public int getChild_company_id() {
-    return this.child_company_id;
-  }
-
-  public Position setChild_company_id(int child_company_id) {
-    this.child_company_id = child_company_id;
-    setChild_company_idIsSet(true);
-    return this;
-  }
-
-  public void unsetChild_company_id() {
-    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __CHILD_COMPANY_ID_ISSET_ID);
-  }
-
-  /** Returns true if field child_company_id is set (has been assigned a value) and false otherwise */
-  public boolean isSetChild_company_id() {
-    return EncodingUtils.testBit(__isset_bitfield, __CHILD_COMPANY_ID_ISSET_ID);
-  }
-
-  public void setChild_company_idIsSet(boolean value) {
-    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __CHILD_COMPANY_ID_ISSET_ID, value);
   }
 
   public int getAge() {
@@ -2416,14 +1935,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
       }
       break;
 
-    case PROVINCE:
-      if (value == null) {
-        unsetProvince();
-      } else {
-        setProvince((String)value);
-      }
-      break;
-
     case CITY:
       if (value == null) {
         unsetCity();
@@ -2488,27 +1999,11 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
       }
       break;
 
-    case SALARY:
-      if (value == null) {
-        unsetSalary();
-      } else {
-        setSalary((String)value);
-      }
-      break;
-
     case LANGUAGE:
       if (value == null) {
         unsetLanguage();
       } else {
         setLanguage((String)value);
-      }
-      break;
-
-    case JOB_GRADE:
-      if (value == null) {
-        unsetJob_grade();
-      } else {
-        setJob_grade((Integer)value);
       }
       break;
 
@@ -2528,14 +2023,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
       }
       break;
 
-    case LASTVISIT:
-      if (value == null) {
-        unsetLastvisit();
-      } else {
-        setLastvisit((String)value);
-      }
-      break;
-
     case SOURCE_ID:
       if (value == null) {
         unsetSource_id();
@@ -2549,14 +2036,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
         unsetUpdate_time();
       } else {
         setUpdate_time((String)value);
-      }
-      break;
-
-    case BUSINESS_GROUP:
-      if (value == null) {
-        unsetBusiness_group();
-      } else {
-        setBusiness_group((String)value);
       }
       break;
 
@@ -2576,14 +2055,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
       }
       break;
 
-    case BENEFITS:
-      if (value == null) {
-        unsetBenefits();
-      } else {
-        setBenefits((String)value);
-      }
-      break;
-
     case DEGREE:
       if (value == null) {
         unsetDegree();
@@ -2597,14 +2068,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
         unsetFeature();
       } else {
         setFeature((String)value);
-      }
-      break;
-
-    case EMAIL_NOTICE:
-      if (value == null) {
-        unsetEmail_notice();
-      } else {
-        setEmail_notice((Byte)value);
       }
       break;
 
@@ -2624,43 +2087,11 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
       }
       break;
 
-    case IS_RECOM:
-      if (value == null) {
-        unsetIs_recom();
-      } else {
-        setIs_recom((Byte)value);
-      }
-      break;
-
     case INDUSTRY:
       if (value == null) {
         unsetIndustry();
       } else {
         setIndustry((String)value);
-      }
-      break;
-
-    case HONGBAO_CONFIG_ID:
-      if (value == null) {
-        unsetHongbao_config_id();
-      } else {
-        setHongbao_config_id((Integer)value);
-      }
-      break;
-
-    case HONGBAO_CONFIG_RECOM_ID:
-      if (value == null) {
-        unsetHongbao_config_recom_id();
-      } else {
-        setHongbao_config_recom_id((Integer)value);
-      }
-      break;
-
-    case HONGBAO_CONFIG_APP_ID:
-      if (value == null) {
-        unsetHongbao_config_app_id();
-      } else {
-        setHongbao_config_app_id((Integer)value);
       }
       break;
 
@@ -2693,14 +2124,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
         unsetShare_tpl_id();
       } else {
         setShare_tpl_id((Integer)value);
-      }
-      break;
-
-    case DISTRICT:
-      if (value == null) {
-        unsetDistrict();
-      } else {
-        setDistrict((String)value);
       }
       break;
 
@@ -2789,14 +2212,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
         unsetHb_status();
       } else {
         setHb_status((Byte)value);
-      }
-      break;
-
-    case CHILD_COMPANY_ID:
-      if (value == null) {
-        unsetChild_company_id();
-      } else {
-        setChild_company_id((Integer)value);
       }
       break;
 
@@ -2894,9 +2309,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     case COMPANY_ID:
       return getCompany_id();
 
-    case PROVINCE:
-      return getProvince();
-
     case CITY:
       return getCity();
 
@@ -2921,14 +2333,8 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     case REQUIREMENT:
       return getRequirement();
 
-    case SALARY:
-      return getSalary();
-
     case LANGUAGE:
       return getLanguage();
-
-    case JOB_GRADE:
-      return getJob_grade();
 
     case STATUS:
       return getStatus();
@@ -2936,17 +2342,11 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     case VISITNUM:
       return getVisitnum();
 
-    case LASTVISIT:
-      return getLastvisit();
-
     case SOURCE_ID:
       return getSource_id();
 
     case UPDATE_TIME:
       return getUpdate_time();
-
-    case BUSINESS_GROUP:
-      return getBusiness_group();
 
     case EMPLOYMENT_TYPE:
       return getEmployment_type();
@@ -2954,17 +2354,11 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     case HR_EMAIL:
       return getHr_email();
 
-    case BENEFITS:
-      return getBenefits();
-
     case DEGREE:
       return getDegree();
 
     case FEATURE:
       return getFeature();
-
-    case EMAIL_NOTICE:
-      return getEmail_notice();
 
     case CANDIDATE_SOURCE:
       return getCandidate_source();
@@ -2972,20 +2366,8 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     case OCCUPATION:
       return getOccupation();
 
-    case IS_RECOM:
-      return getIs_recom();
-
     case INDUSTRY:
       return getIndustry();
-
-    case HONGBAO_CONFIG_ID:
-      return getHongbao_config_id();
-
-    case HONGBAO_CONFIG_RECOM_ID:
-      return getHongbao_config_recom_id();
-
-    case HONGBAO_CONFIG_APP_ID:
-      return getHongbao_config_app_id();
 
     case EMAIL_RESUME_CONF:
       return getEmail_resume_conf();
@@ -2998,9 +2380,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
 
     case SHARE_TPL_ID:
       return getShare_tpl_id();
-
-    case DISTRICT:
-      return getDistrict();
 
     case COUNT:
       return getCount();
@@ -3034,9 +2413,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
 
     case HB_STATUS:
       return getHb_status();
-
-    case CHILD_COMPANY_ID:
-      return getChild_company_id();
 
     case AGE:
       return getAge();
@@ -3085,8 +2461,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
       return isSetJobnumber();
     case COMPANY_ID:
       return isSetCompany_id();
-    case PROVINCE:
-      return isSetProvince();
     case CITY:
       return isSetCity();
     case DEPARTMENT:
@@ -3103,50 +2477,30 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
       return isSetExperience();
     case REQUIREMENT:
       return isSetRequirement();
-    case SALARY:
-      return isSetSalary();
     case LANGUAGE:
       return isSetLanguage();
-    case JOB_GRADE:
-      return isSetJob_grade();
     case STATUS:
       return isSetStatus();
     case VISITNUM:
       return isSetVisitnum();
-    case LASTVISIT:
-      return isSetLastvisit();
     case SOURCE_ID:
       return isSetSource_id();
     case UPDATE_TIME:
       return isSetUpdate_time();
-    case BUSINESS_GROUP:
-      return isSetBusiness_group();
     case EMPLOYMENT_TYPE:
       return isSetEmployment_type();
     case HR_EMAIL:
       return isSetHr_email();
-    case BENEFITS:
-      return isSetBenefits();
     case DEGREE:
       return isSetDegree();
     case FEATURE:
       return isSetFeature();
-    case EMAIL_NOTICE:
-      return isSetEmail_notice();
     case CANDIDATE_SOURCE:
       return isSetCandidate_source();
     case OCCUPATION:
       return isSetOccupation();
-    case IS_RECOM:
-      return isSetIs_recom();
     case INDUSTRY:
       return isSetIndustry();
-    case HONGBAO_CONFIG_ID:
-      return isSetHongbao_config_id();
-    case HONGBAO_CONFIG_RECOM_ID:
-      return isSetHongbao_config_recom_id();
-    case HONGBAO_CONFIG_APP_ID:
-      return isSetHongbao_config_app_id();
     case EMAIL_RESUME_CONF:
       return isSetEmail_resume_conf();
     case L__POSTING_TARGET_ID:
@@ -3155,8 +2509,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
       return isSetPriority();
     case SHARE_TPL_ID:
       return isSetShare_tpl_id();
-    case DISTRICT:
-      return isSetDistrict();
     case COUNT:
       return isSetCount();
     case SALARY_TOP:
@@ -3179,8 +2531,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
       return isSetSource();
     case HB_STATUS:
       return isSetHb_status();
-    case CHILD_COMPANY_ID:
-      return isSetChild_company_id();
     case AGE:
       return isSetAge();
     case MAJOR_REQUIRED:
@@ -3242,15 +2592,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
       if (!(this_present_company_id && that_present_company_id))
         return false;
       if (this.company_id != that.company_id)
-        return false;
-    }
-
-    boolean this_present_province = true && this.isSetProvince();
-    boolean that_present_province = true && that.isSetProvince();
-    if (this_present_province || that_present_province) {
-      if (!(this_present_province && that_present_province))
-        return false;
-      if (!this.province.equals(that.province))
         return false;
     }
 
@@ -3326,30 +2667,12 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
         return false;
     }
 
-    boolean this_present_salary = true && this.isSetSalary();
-    boolean that_present_salary = true && that.isSetSalary();
-    if (this_present_salary || that_present_salary) {
-      if (!(this_present_salary && that_present_salary))
-        return false;
-      if (!this.salary.equals(that.salary))
-        return false;
-    }
-
     boolean this_present_language = true && this.isSetLanguage();
     boolean that_present_language = true && that.isSetLanguage();
     if (this_present_language || that_present_language) {
       if (!(this_present_language && that_present_language))
         return false;
       if (!this.language.equals(that.language))
-        return false;
-    }
-
-    boolean this_present_job_grade = true;
-    boolean that_present_job_grade = true;
-    if (this_present_job_grade || that_present_job_grade) {
-      if (!(this_present_job_grade && that_present_job_grade))
-        return false;
-      if (this.job_grade != that.job_grade)
         return false;
     }
 
@@ -3371,15 +2694,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
         return false;
     }
 
-    boolean this_present_lastvisit = true && this.isSetLastvisit();
-    boolean that_present_lastvisit = true && that.isSetLastvisit();
-    if (this_present_lastvisit || that_present_lastvisit) {
-      if (!(this_present_lastvisit && that_present_lastvisit))
-        return false;
-      if (!this.lastvisit.equals(that.lastvisit))
-        return false;
-    }
-
     boolean this_present_source_id = true;
     boolean that_present_source_id = true;
     if (this_present_source_id || that_present_source_id) {
@@ -3395,15 +2709,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
       if (!(this_present_update_time && that_present_update_time))
         return false;
       if (!this.update_time.equals(that.update_time))
-        return false;
-    }
-
-    boolean this_present_business_group = true && this.isSetBusiness_group();
-    boolean that_present_business_group = true && that.isSetBusiness_group();
-    if (this_present_business_group || that_present_business_group) {
-      if (!(this_present_business_group && that_present_business_group))
-        return false;
-      if (!this.business_group.equals(that.business_group))
         return false;
     }
 
@@ -3425,15 +2730,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
         return false;
     }
 
-    boolean this_present_benefits = true && this.isSetBenefits();
-    boolean that_present_benefits = true && that.isSetBenefits();
-    if (this_present_benefits || that_present_benefits) {
-      if (!(this_present_benefits && that_present_benefits))
-        return false;
-      if (!this.benefits.equals(that.benefits))
-        return false;
-    }
-
     boolean this_present_degree = true;
     boolean that_present_degree = true;
     if (this_present_degree || that_present_degree) {
@@ -3449,15 +2745,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
       if (!(this_present_feature && that_present_feature))
         return false;
       if (!this.feature.equals(that.feature))
-        return false;
-    }
-
-    boolean this_present_email_notice = true;
-    boolean that_present_email_notice = true;
-    if (this_present_email_notice || that_present_email_notice) {
-      if (!(this_present_email_notice && that_present_email_notice))
-        return false;
-      if (this.email_notice != that.email_notice)
         return false;
     }
 
@@ -3479,48 +2766,12 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
         return false;
     }
 
-    boolean this_present_is_recom = true;
-    boolean that_present_is_recom = true;
-    if (this_present_is_recom || that_present_is_recom) {
-      if (!(this_present_is_recom && that_present_is_recom))
-        return false;
-      if (this.is_recom != that.is_recom)
-        return false;
-    }
-
     boolean this_present_industry = true && this.isSetIndustry();
     boolean that_present_industry = true && that.isSetIndustry();
     if (this_present_industry || that_present_industry) {
       if (!(this_present_industry && that_present_industry))
         return false;
       if (!this.industry.equals(that.industry))
-        return false;
-    }
-
-    boolean this_present_hongbao_config_id = true;
-    boolean that_present_hongbao_config_id = true;
-    if (this_present_hongbao_config_id || that_present_hongbao_config_id) {
-      if (!(this_present_hongbao_config_id && that_present_hongbao_config_id))
-        return false;
-      if (this.hongbao_config_id != that.hongbao_config_id)
-        return false;
-    }
-
-    boolean this_present_hongbao_config_recom_id = true;
-    boolean that_present_hongbao_config_recom_id = true;
-    if (this_present_hongbao_config_recom_id || that_present_hongbao_config_recom_id) {
-      if (!(this_present_hongbao_config_recom_id && that_present_hongbao_config_recom_id))
-        return false;
-      if (this.hongbao_config_recom_id != that.hongbao_config_recom_id)
-        return false;
-    }
-
-    boolean this_present_hongbao_config_app_id = true;
-    boolean that_present_hongbao_config_app_id = true;
-    if (this_present_hongbao_config_app_id || that_present_hongbao_config_app_id) {
-      if (!(this_present_hongbao_config_app_id && that_present_hongbao_config_app_id))
-        return false;
-      if (this.hongbao_config_app_id != that.hongbao_config_app_id)
         return false;
     }
 
@@ -3557,15 +2808,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
       if (!(this_present_share_tpl_id && that_present_share_tpl_id))
         return false;
       if (this.share_tpl_id != that.share_tpl_id)
-        return false;
-    }
-
-    boolean this_present_district = true && this.isSetDistrict();
-    boolean that_present_district = true && that.isSetDistrict();
-    if (this_present_district || that_present_district) {
-      if (!(this_present_district && that_present_district))
-        return false;
-      if (!this.district.equals(that.district))
         return false;
     }
 
@@ -3665,15 +2907,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
       if (!(this_present_hb_status && that_present_hb_status))
         return false;
       if (this.hb_status != that.hb_status)
-        return false;
-    }
-
-    boolean this_present_child_company_id = true;
-    boolean that_present_child_company_id = true;
-    if (this_present_child_company_id || that_present_child_company_id) {
-      if (!(this_present_child_company_id && that_present_child_company_id))
-        return false;
-      if (this.child_company_id != that.child_company_id)
         return false;
     }
 
@@ -3789,11 +3022,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     if (present_company_id)
       list.add(company_id);
 
-    boolean present_province = true && (isSetProvince());
-    list.add(present_province);
-    if (present_province)
-      list.add(province);
-
     boolean present_city = true && (isSetCity());
     list.add(present_city);
     if (present_city)
@@ -3834,20 +3062,10 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     if (present_requirement)
       list.add(requirement);
 
-    boolean present_salary = true && (isSetSalary());
-    list.add(present_salary);
-    if (present_salary)
-      list.add(salary);
-
     boolean present_language = true && (isSetLanguage());
     list.add(present_language);
     if (present_language)
       list.add(language);
-
-    boolean present_job_grade = true;
-    list.add(present_job_grade);
-    if (present_job_grade)
-      list.add(job_grade);
 
     boolean present_status = true;
     list.add(present_status);
@@ -3859,11 +3077,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     if (present_visitnum)
       list.add(visitnum);
 
-    boolean present_lastvisit = true && (isSetLastvisit());
-    list.add(present_lastvisit);
-    if (present_lastvisit)
-      list.add(lastvisit);
-
     boolean present_source_id = true;
     list.add(present_source_id);
     if (present_source_id)
@@ -3873,11 +3086,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     list.add(present_update_time);
     if (present_update_time)
       list.add(update_time);
-
-    boolean present_business_group = true && (isSetBusiness_group());
-    list.add(present_business_group);
-    if (present_business_group)
-      list.add(business_group);
 
     boolean present_employment_type = true;
     list.add(present_employment_type);
@@ -3889,11 +3097,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     if (present_hr_email)
       list.add(hr_email);
 
-    boolean present_benefits = true && (isSetBenefits());
-    list.add(present_benefits);
-    if (present_benefits)
-      list.add(benefits);
-
     boolean present_degree = true;
     list.add(present_degree);
     if (present_degree)
@@ -3903,11 +3106,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     list.add(present_feature);
     if (present_feature)
       list.add(feature);
-
-    boolean present_email_notice = true;
-    list.add(present_email_notice);
-    if (present_email_notice)
-      list.add(email_notice);
 
     boolean present_candidate_source = true;
     list.add(present_candidate_source);
@@ -3919,30 +3117,10 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     if (present_occupation)
       list.add(occupation);
 
-    boolean present_is_recom = true;
-    list.add(present_is_recom);
-    if (present_is_recom)
-      list.add(is_recom);
-
     boolean present_industry = true && (isSetIndustry());
     list.add(present_industry);
     if (present_industry)
       list.add(industry);
-
-    boolean present_hongbao_config_id = true;
-    list.add(present_hongbao_config_id);
-    if (present_hongbao_config_id)
-      list.add(hongbao_config_id);
-
-    boolean present_hongbao_config_recom_id = true;
-    list.add(present_hongbao_config_recom_id);
-    if (present_hongbao_config_recom_id)
-      list.add(hongbao_config_recom_id);
-
-    boolean present_hongbao_config_app_id = true;
-    list.add(present_hongbao_config_app_id);
-    if (present_hongbao_config_app_id)
-      list.add(hongbao_config_app_id);
 
     boolean present_email_resume_conf = true;
     list.add(present_email_resume_conf);
@@ -3963,11 +3141,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     list.add(present_share_tpl_id);
     if (present_share_tpl_id)
       list.add(share_tpl_id);
-
-    boolean present_district = true && (isSetDistrict());
-    list.add(present_district);
-    if (present_district)
-      list.add(district);
 
     boolean present_count = true;
     list.add(present_count);
@@ -4023,11 +3196,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     list.add(present_hb_status);
     if (present_hb_status)
       list.add(hb_status);
-
-    boolean present_child_company_id = true;
-    list.add(present_child_company_id);
-    if (present_child_company_id)
-      list.add(child_company_id);
 
     boolean present_age = true;
     list.add(present_age);
@@ -4120,16 +3288,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetProvince()).compareTo(other.isSetProvince());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetProvince()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.province, other.province);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
     lastComparison = Boolean.valueOf(isSetCity()).compareTo(other.isSetCity());
     if (lastComparison != 0) {
       return lastComparison;
@@ -4210,32 +3368,12 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetSalary()).compareTo(other.isSetSalary());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetSalary()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.salary, other.salary);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
     lastComparison = Boolean.valueOf(isSetLanguage()).compareTo(other.isSetLanguage());
     if (lastComparison != 0) {
       return lastComparison;
     }
     if (isSetLanguage()) {
       lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.language, other.language);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
-    lastComparison = Boolean.valueOf(isSetJob_grade()).compareTo(other.isSetJob_grade());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetJob_grade()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.job_grade, other.job_grade);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -4260,16 +3398,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetLastvisit()).compareTo(other.isSetLastvisit());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetLastvisit()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.lastvisit, other.lastvisit);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
     lastComparison = Boolean.valueOf(isSetSource_id()).compareTo(other.isSetSource_id());
     if (lastComparison != 0) {
       return lastComparison;
@@ -4286,16 +3414,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     }
     if (isSetUpdate_time()) {
       lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.update_time, other.update_time);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
-    lastComparison = Boolean.valueOf(isSetBusiness_group()).compareTo(other.isSetBusiness_group());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetBusiness_group()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.business_group, other.business_group);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -4320,16 +3438,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetBenefits()).compareTo(other.isSetBenefits());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetBenefits()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.benefits, other.benefits);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
     lastComparison = Boolean.valueOf(isSetDegree()).compareTo(other.isSetDegree());
     if (lastComparison != 0) {
       return lastComparison;
@@ -4346,16 +3454,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     }
     if (isSetFeature()) {
       lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.feature, other.feature);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
-    lastComparison = Boolean.valueOf(isSetEmail_notice()).compareTo(other.isSetEmail_notice());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetEmail_notice()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.email_notice, other.email_notice);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -4380,52 +3478,12 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetIs_recom()).compareTo(other.isSetIs_recom());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetIs_recom()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.is_recom, other.is_recom);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
     lastComparison = Boolean.valueOf(isSetIndustry()).compareTo(other.isSetIndustry());
     if (lastComparison != 0) {
       return lastComparison;
     }
     if (isSetIndustry()) {
       lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.industry, other.industry);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
-    lastComparison = Boolean.valueOf(isSetHongbao_config_id()).compareTo(other.isSetHongbao_config_id());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetHongbao_config_id()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.hongbao_config_id, other.hongbao_config_id);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
-    lastComparison = Boolean.valueOf(isSetHongbao_config_recom_id()).compareTo(other.isSetHongbao_config_recom_id());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetHongbao_config_recom_id()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.hongbao_config_recom_id, other.hongbao_config_recom_id);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
-    lastComparison = Boolean.valueOf(isSetHongbao_config_app_id()).compareTo(other.isSetHongbao_config_app_id());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetHongbao_config_app_id()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.hongbao_config_app_id, other.hongbao_config_app_id);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -4466,16 +3524,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     }
     if (isSetShare_tpl_id()) {
       lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.share_tpl_id, other.share_tpl_id);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
-    lastComparison = Boolean.valueOf(isSetDistrict()).compareTo(other.isSetDistrict());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetDistrict()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.district, other.district);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -4586,16 +3634,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     }
     if (isSetHb_status()) {
       lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.hb_status, other.hb_status);
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-    }
-    lastComparison = Boolean.valueOf(isSetChild_company_id()).compareTo(other.isSetChild_company_id());
-    if (lastComparison != 0) {
-      return lastComparison;
-    }
-    if (isSetChild_company_id()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.child_company_id, other.child_company_id);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -4736,14 +3774,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     sb.append(this.company_id);
     first = false;
     if (!first) sb.append(", ");
-    sb.append("province:");
-    if (this.province == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.province);
-    }
-    first = false;
-    if (!first) sb.append(", ");
     sb.append("city:");
     if (this.city == null) {
       sb.append("null");
@@ -4804,14 +3834,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     }
     first = false;
     if (!first) sb.append(", ");
-    sb.append("salary:");
-    if (this.salary == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.salary);
-    }
-    first = false;
-    if (!first) sb.append(", ");
     sb.append("language:");
     if (this.language == null) {
       sb.append("null");
@@ -4820,24 +3842,12 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     }
     first = false;
     if (!first) sb.append(", ");
-    sb.append("job_grade:");
-    sb.append(this.job_grade);
-    first = false;
-    if (!first) sb.append(", ");
     sb.append("status:");
     sb.append(this.status);
     first = false;
     if (!first) sb.append(", ");
     sb.append("visitnum:");
     sb.append(this.visitnum);
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("lastvisit:");
-    if (this.lastvisit == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.lastvisit);
-    }
     first = false;
     if (!first) sb.append(", ");
     sb.append("source_id:");
@@ -4849,14 +3859,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
       sb.append("null");
     } else {
       sb.append(this.update_time);
-    }
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("business_group:");
-    if (this.business_group == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.business_group);
     }
     first = false;
     if (!first) sb.append(", ");
@@ -4872,14 +3874,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     }
     first = false;
     if (!first) sb.append(", ");
-    sb.append("benefits:");
-    if (this.benefits == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.benefits);
-    }
-    first = false;
-    if (!first) sb.append(", ");
     sb.append("degree:");
     sb.append(this.degree);
     first = false;
@@ -4890,10 +3884,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     } else {
       sb.append(this.feature);
     }
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("email_notice:");
-    sb.append(this.email_notice);
     first = false;
     if (!first) sb.append(", ");
     sb.append("candidate_source:");
@@ -4908,28 +3898,12 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     }
     first = false;
     if (!first) sb.append(", ");
-    sb.append("is_recom:");
-    sb.append(this.is_recom);
-    first = false;
-    if (!first) sb.append(", ");
     sb.append("industry:");
     if (this.industry == null) {
       sb.append("null");
     } else {
       sb.append(this.industry);
     }
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("hongbao_config_id:");
-    sb.append(this.hongbao_config_id);
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("hongbao_config_recom_id:");
-    sb.append(this.hongbao_config_recom_id);
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("hongbao_config_app_id:");
-    sb.append(this.hongbao_config_app_id);
     first = false;
     if (!first) sb.append(", ");
     sb.append("email_resume_conf:");
@@ -4946,14 +3920,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     if (!first) sb.append(", ");
     sb.append("share_tpl_id:");
     sb.append(this.share_tpl_id);
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("district:");
-    if (this.district == null) {
-      sb.append("null");
-    } else {
-      sb.append(this.district);
-    }
     first = false;
     if (!first) sb.append(", ");
     sb.append("count:");
@@ -4998,10 +3964,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     if (!first) sb.append(", ");
     sb.append("hb_status:");
     sb.append(this.hb_status);
-    first = false;
-    if (!first) sb.append(", ");
-    sb.append("child_company_id:");
-    sb.append(this.child_company_id);
     first = false;
     if (!first) sb.append(", ");
     sb.append("age:");
@@ -5128,15 +4090,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 4: // PROVINCE
-            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.province = iprot.readString();
-              struct.setProvinceIsSet(true);
-            } else { 
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-            }
-            break;
-          case 5: // CITY
+          case 4: // CITY
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.city = iprot.readString();
               struct.setCityIsSet(true);
@@ -5144,7 +4098,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 6: // DEPARTMENT
+          case 5: // DEPARTMENT
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.department = iprot.readString();
               struct.setDepartmentIsSet(true);
@@ -5152,7 +4106,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 7: // L_JOBID
+          case 6: // L_JOBID
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.l_jobid = iprot.readI32();
               struct.setL_jobidIsSet(true);
@@ -5160,7 +4114,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 8: // PUBLISH_DATE
+          case 7: // PUBLISH_DATE
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.publish_date = iprot.readString();
               struct.setPublish_dateIsSet(true);
@@ -5168,7 +4122,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 9: // STOP_DATE
+          case 8: // STOP_DATE
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.stop_date = iprot.readString();
               struct.setStop_dateIsSet(true);
@@ -5176,7 +4130,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 10: // ACCOUNTABILITIES
+          case 9: // ACCOUNTABILITIES
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.accountabilities = iprot.readString();
               struct.setAccountabilitiesIsSet(true);
@@ -5184,7 +4138,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 11: // EXPERIENCE
+          case 10: // EXPERIENCE
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.experience = iprot.readString();
               struct.setExperienceIsSet(true);
@@ -5192,7 +4146,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 12: // REQUIREMENT
+          case 11: // REQUIREMENT
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.requirement = iprot.readString();
               struct.setRequirementIsSet(true);
@@ -5200,15 +4154,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 13: // SALARY
-            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.salary = iprot.readString();
-              struct.setSalaryIsSet(true);
-            } else { 
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-            }
-            break;
-          case 14: // LANGUAGE
+          case 12: // LANGUAGE
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.language = iprot.readString();
               struct.setLanguageIsSet(true);
@@ -5216,15 +4162,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 15: // JOB_GRADE
-            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.job_grade = iprot.readI32();
-              struct.setJob_gradeIsSet(true);
-            } else { 
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-            }
-            break;
-          case 16: // STATUS
+          case 13: // STATUS
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.status = iprot.readI32();
               struct.setStatusIsSet(true);
@@ -5232,7 +4170,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 17: // VISITNUM
+          case 14: // VISITNUM
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.visitnum = iprot.readI32();
               struct.setVisitnumIsSet(true);
@@ -5240,15 +4178,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 18: // LASTVISIT
-            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.lastvisit = iprot.readString();
-              struct.setLastvisitIsSet(true);
-            } else { 
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-            }
-            break;
-          case 19: // SOURCE_ID
+          case 15: // SOURCE_ID
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.source_id = iprot.readI32();
               struct.setSource_idIsSet(true);
@@ -5256,7 +4186,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 20: // UPDATE_TIME
+          case 16: // UPDATE_TIME
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.update_time = iprot.readString();
               struct.setUpdate_timeIsSet(true);
@@ -5264,15 +4194,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 21: // BUSINESS_GROUP
-            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.business_group = iprot.readString();
-              struct.setBusiness_groupIsSet(true);
-            } else { 
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-            }
-            break;
-          case 22: // EMPLOYMENT_TYPE
+          case 17: // EMPLOYMENT_TYPE
             if (schemeField.type == org.apache.thrift.protocol.TType.BYTE) {
               struct.employment_type = iprot.readByte();
               struct.setEmployment_typeIsSet(true);
@@ -5280,7 +4202,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 23: // HR_EMAIL
+          case 18: // HR_EMAIL
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.hr_email = iprot.readString();
               struct.setHr_emailIsSet(true);
@@ -5288,15 +4210,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 24: // BENEFITS
-            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.benefits = iprot.readString();
-              struct.setBenefitsIsSet(true);
-            } else { 
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-            }
-            break;
-          case 25: // DEGREE
+          case 19: // DEGREE
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.degree = iprot.readI32();
               struct.setDegreeIsSet(true);
@@ -5304,7 +4218,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 26: // FEATURE
+          case 20: // FEATURE
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.feature = iprot.readString();
               struct.setFeatureIsSet(true);
@@ -5312,15 +4226,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 27: // EMAIL_NOTICE
-            if (schemeField.type == org.apache.thrift.protocol.TType.BYTE) {
-              struct.email_notice = iprot.readByte();
-              struct.setEmail_noticeIsSet(true);
-            } else { 
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-            }
-            break;
-          case 28: // CANDIDATE_SOURCE
+          case 21: // CANDIDATE_SOURCE
             if (schemeField.type == org.apache.thrift.protocol.TType.BYTE) {
               struct.candidate_source = iprot.readByte();
               struct.setCandidate_sourceIsSet(true);
@@ -5328,7 +4234,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 29: // OCCUPATION
+          case 22: // OCCUPATION
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.occupation = iprot.readString();
               struct.setOccupationIsSet(true);
@@ -5336,15 +4242,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 30: // IS_RECOM
-            if (schemeField.type == org.apache.thrift.protocol.TType.BYTE) {
-              struct.is_recom = iprot.readByte();
-              struct.setIs_recomIsSet(true);
-            } else { 
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-            }
-            break;
-          case 31: // INDUSTRY
+          case 23: // INDUSTRY
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.industry = iprot.readString();
               struct.setIndustryIsSet(true);
@@ -5352,31 +4250,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 32: // HONGBAO_CONFIG_ID
-            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.hongbao_config_id = iprot.readI32();
-              struct.setHongbao_config_idIsSet(true);
-            } else { 
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-            }
-            break;
-          case 33: // HONGBAO_CONFIG_RECOM_ID
-            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.hongbao_config_recom_id = iprot.readI32();
-              struct.setHongbao_config_recom_idIsSet(true);
-            } else { 
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-            }
-            break;
-          case 34: // HONGBAO_CONFIG_APP_ID
-            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.hongbao_config_app_id = iprot.readI32();
-              struct.setHongbao_config_app_idIsSet(true);
-            } else { 
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-            }
-            break;
-          case 35: // EMAIL_RESUME_CONF
+          case 24: // EMAIL_RESUME_CONF
             if (schemeField.type == org.apache.thrift.protocol.TType.BYTE) {
               struct.email_resume_conf = iprot.readByte();
               struct.setEmail_resume_confIsSet(true);
@@ -5384,7 +4258,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 36: // L__POSTING_TARGET_ID
+          case 25: // L__POSTING_TARGET_ID
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.l_PostingTargetId = iprot.readI32();
               struct.setL_PostingTargetIdIsSet(true);
@@ -5392,7 +4266,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 37: // PRIORITY
+          case 26: // PRIORITY
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.priority = iprot.readI32();
               struct.setPriorityIsSet(true);
@@ -5400,7 +4274,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 38: // SHARE_TPL_ID
+          case 27: // SHARE_TPL_ID
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.share_tpl_id = iprot.readI32();
               struct.setShare_tpl_idIsSet(true);
@@ -5408,15 +4282,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 39: // DISTRICT
-            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.district = iprot.readString();
-              struct.setDistrictIsSet(true);
-            } else { 
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-            }
-            break;
-          case 40: // COUNT
+          case 28: // COUNT
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.count = iprot.readI32();
               struct.setCountIsSet(true);
@@ -5424,7 +4290,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 41: // SALARY_TOP
+          case 29: // SALARY_TOP
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.salary_top = iprot.readI32();
               struct.setSalary_topIsSet(true);
@@ -5432,7 +4298,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 42: // SALARY_BOTTOM
+          case 30: // SALARY_BOTTOM
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.salary_bottom = iprot.readI32();
               struct.setSalary_bottomIsSet(true);
@@ -5440,7 +4306,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 43: // EXPERIENCE_ABOVE
+          case 31: // EXPERIENCE_ABOVE
             if (schemeField.type == org.apache.thrift.protocol.TType.BYTE) {
               struct.experience_above = iprot.readByte();
               struct.setExperience_aboveIsSet(true);
@@ -5448,7 +4314,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 44: // DEGREE_ABOVE
+          case 32: // DEGREE_ABOVE
             if (schemeField.type == org.apache.thrift.protocol.TType.BYTE) {
               struct.degree_above = iprot.readByte();
               struct.setDegree_aboveIsSet(true);
@@ -5456,7 +4322,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 45: // MANAGEMENT_EXPERIENCE
+          case 33: // MANAGEMENT_EXPERIENCE
             if (schemeField.type == org.apache.thrift.protocol.TType.BYTE) {
               struct.management_experience = iprot.readByte();
               struct.setManagement_experienceIsSet(true);
@@ -5464,7 +4330,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 46: // GENDER
+          case 34: // GENDER
             if (schemeField.type == org.apache.thrift.protocol.TType.BYTE) {
               struct.gender = iprot.readByte();
               struct.setGenderIsSet(true);
@@ -5472,7 +4338,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 47: // PUBLISHER
+          case 35: // PUBLISHER
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.publisher = iprot.readI32();
               struct.setPublisherIsSet(true);
@@ -5480,7 +4346,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 48: // APP_CV_CONFIG_ID
+          case 36: // APP_CV_CONFIG_ID
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.app_cv_config_id = iprot.readI32();
               struct.setApp_cv_config_idIsSet(true);
@@ -5488,7 +4354,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 49: // SOURCE
+          case 37: // SOURCE
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.source = iprot.readI32();
               struct.setSourceIsSet(true);
@@ -5496,7 +4362,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 50: // HB_STATUS
+          case 38: // HB_STATUS
             if (schemeField.type == org.apache.thrift.protocol.TType.BYTE) {
               struct.hb_status = iprot.readByte();
               struct.setHb_statusIsSet(true);
@@ -5504,15 +4370,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 51: // CHILD_COMPANY_ID
-            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.child_company_id = iprot.readI32();
-              struct.setChild_company_idIsSet(true);
-            } else { 
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-            }
-            break;
-          case 52: // AGE
+          case 39: // AGE
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.age = iprot.readI32();
               struct.setAgeIsSet(true);
@@ -5520,7 +4378,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 53: // MAJOR_REQUIRED
+          case 40: // MAJOR_REQUIRED
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.major_required = iprot.readString();
               struct.setMajor_requiredIsSet(true);
@@ -5528,7 +4386,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 54: // WORK_ADDRESS
+          case 41: // WORK_ADDRESS
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.work_address = iprot.readString();
               struct.setWork_addressIsSet(true);
@@ -5536,7 +4394,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 55: // KEYWORD
+          case 42: // KEYWORD
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.keyword = iprot.readString();
               struct.setKeywordIsSet(true);
@@ -5544,7 +4402,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 56: // REPORTING_TO
+          case 43: // REPORTING_TO
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.reporting_to = iprot.readString();
               struct.setReporting_toIsSet(true);
@@ -5552,7 +4410,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 57: // IS_HIRING
+          case 44: // IS_HIRING
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.is_hiring = iprot.readI32();
               struct.setIs_hiringIsSet(true);
@@ -5560,7 +4418,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 58: // UNDERLINGS
+          case 45: // UNDERLINGS
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.underlings = iprot.readI32();
               struct.setUnderlingsIsSet(true);
@@ -5568,7 +4426,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 59: // LANGUAGE_REQUIRED
+          case 46: // LANGUAGE_REQUIRED
             if (schemeField.type == org.apache.thrift.protocol.TType.BYTE) {
               struct.language_required = iprot.readByte();
               struct.setLanguage_requiredIsSet(true);
@@ -5576,7 +4434,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 60: // TARGET_INDUSTRY
+          case 47: // TARGET_INDUSTRY
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.target_industry = iprot.readI32();
               struct.setTarget_industryIsSet(true);
@@ -5584,7 +4442,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 61: // CURRENT_STATUS
+          case 48: // CURRENT_STATUS
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.current_status = iprot.readI32();
               struct.setCurrent_statusIsSet(true);
@@ -5618,11 +4476,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
       oprot.writeFieldBegin(COMPANY_ID_FIELD_DESC);
       oprot.writeI32(struct.company_id);
       oprot.writeFieldEnd();
-      if (struct.province != null) {
-        oprot.writeFieldBegin(PROVINCE_FIELD_DESC);
-        oprot.writeString(struct.province);
-        oprot.writeFieldEnd();
-      }
       if (struct.city != null) {
         oprot.writeFieldBegin(CITY_FIELD_DESC);
         oprot.writeString(struct.city);
@@ -5661,41 +4514,23 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
         oprot.writeString(struct.requirement);
         oprot.writeFieldEnd();
       }
-      if (struct.salary != null) {
-        oprot.writeFieldBegin(SALARY_FIELD_DESC);
-        oprot.writeString(struct.salary);
-        oprot.writeFieldEnd();
-      }
       if (struct.language != null) {
         oprot.writeFieldBegin(LANGUAGE_FIELD_DESC);
         oprot.writeString(struct.language);
         oprot.writeFieldEnd();
       }
-      oprot.writeFieldBegin(JOB_GRADE_FIELD_DESC);
-      oprot.writeI32(struct.job_grade);
-      oprot.writeFieldEnd();
       oprot.writeFieldBegin(STATUS_FIELD_DESC);
       oprot.writeI32(struct.status);
       oprot.writeFieldEnd();
       oprot.writeFieldBegin(VISITNUM_FIELD_DESC);
       oprot.writeI32(struct.visitnum);
       oprot.writeFieldEnd();
-      if (struct.lastvisit != null) {
-        oprot.writeFieldBegin(LASTVISIT_FIELD_DESC);
-        oprot.writeString(struct.lastvisit);
-        oprot.writeFieldEnd();
-      }
       oprot.writeFieldBegin(SOURCE_ID_FIELD_DESC);
       oprot.writeI32(struct.source_id);
       oprot.writeFieldEnd();
       if (struct.update_time != null) {
         oprot.writeFieldBegin(UPDATE_TIME_FIELD_DESC);
         oprot.writeString(struct.update_time);
-        oprot.writeFieldEnd();
-      }
-      if (struct.business_group != null) {
-        oprot.writeFieldBegin(BUSINESS_GROUP_FIELD_DESC);
-        oprot.writeString(struct.business_group);
         oprot.writeFieldEnd();
       }
       oprot.writeFieldBegin(EMPLOYMENT_TYPE_FIELD_DESC);
@@ -5706,11 +4541,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
         oprot.writeString(struct.hr_email);
         oprot.writeFieldEnd();
       }
-      if (struct.benefits != null) {
-        oprot.writeFieldBegin(BENEFITS_FIELD_DESC);
-        oprot.writeString(struct.benefits);
-        oprot.writeFieldEnd();
-      }
       oprot.writeFieldBegin(DEGREE_FIELD_DESC);
       oprot.writeI32(struct.degree);
       oprot.writeFieldEnd();
@@ -5719,9 +4549,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
         oprot.writeString(struct.feature);
         oprot.writeFieldEnd();
       }
-      oprot.writeFieldBegin(EMAIL_NOTICE_FIELD_DESC);
-      oprot.writeByte(struct.email_notice);
-      oprot.writeFieldEnd();
       oprot.writeFieldBegin(CANDIDATE_SOURCE_FIELD_DESC);
       oprot.writeByte(struct.candidate_source);
       oprot.writeFieldEnd();
@@ -5730,23 +4557,11 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
         oprot.writeString(struct.occupation);
         oprot.writeFieldEnd();
       }
-      oprot.writeFieldBegin(IS_RECOM_FIELD_DESC);
-      oprot.writeByte(struct.is_recom);
-      oprot.writeFieldEnd();
       if (struct.industry != null) {
         oprot.writeFieldBegin(INDUSTRY_FIELD_DESC);
         oprot.writeString(struct.industry);
         oprot.writeFieldEnd();
       }
-      oprot.writeFieldBegin(HONGBAO_CONFIG_ID_FIELD_DESC);
-      oprot.writeI32(struct.hongbao_config_id);
-      oprot.writeFieldEnd();
-      oprot.writeFieldBegin(HONGBAO_CONFIG_RECOM_ID_FIELD_DESC);
-      oprot.writeI32(struct.hongbao_config_recom_id);
-      oprot.writeFieldEnd();
-      oprot.writeFieldBegin(HONGBAO_CONFIG_APP_ID_FIELD_DESC);
-      oprot.writeI32(struct.hongbao_config_app_id);
-      oprot.writeFieldEnd();
       oprot.writeFieldBegin(EMAIL_RESUME_CONF_FIELD_DESC);
       oprot.writeByte(struct.email_resume_conf);
       oprot.writeFieldEnd();
@@ -5759,11 +4574,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
       oprot.writeFieldBegin(SHARE_TPL_ID_FIELD_DESC);
       oprot.writeI32(struct.share_tpl_id);
       oprot.writeFieldEnd();
-      if (struct.district != null) {
-        oprot.writeFieldBegin(DISTRICT_FIELD_DESC);
-        oprot.writeString(struct.district);
-        oprot.writeFieldEnd();
-      }
       oprot.writeFieldBegin(COUNT_FIELD_DESC);
       oprot.writeI32(struct.count);
       oprot.writeFieldEnd();
@@ -5796,9 +4606,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
       oprot.writeFieldEnd();
       oprot.writeFieldBegin(HB_STATUS_FIELD_DESC);
       oprot.writeByte(struct.hb_status);
-      oprot.writeFieldEnd();
-      oprot.writeFieldBegin(CHILD_COMPANY_ID_FIELD_DESC);
-      oprot.writeI32(struct.child_company_id);
       oprot.writeFieldEnd();
       oprot.writeFieldBegin(AGE_FIELD_DESC);
       oprot.writeI32(struct.age);
@@ -5865,181 +4672,142 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
       if (struct.isSetCompany_id()) {
         optionals.set(2);
       }
-      if (struct.isSetProvince()) {
+      if (struct.isSetCity()) {
         optionals.set(3);
       }
-      if (struct.isSetCity()) {
+      if (struct.isSetDepartment()) {
         optionals.set(4);
       }
-      if (struct.isSetDepartment()) {
+      if (struct.isSetL_jobid()) {
         optionals.set(5);
       }
-      if (struct.isSetL_jobid()) {
+      if (struct.isSetPublish_date()) {
         optionals.set(6);
       }
-      if (struct.isSetPublish_date()) {
+      if (struct.isSetStop_date()) {
         optionals.set(7);
       }
-      if (struct.isSetStop_date()) {
+      if (struct.isSetAccountabilities()) {
         optionals.set(8);
       }
-      if (struct.isSetAccountabilities()) {
+      if (struct.isSetExperience()) {
         optionals.set(9);
       }
-      if (struct.isSetExperience()) {
+      if (struct.isSetRequirement()) {
         optionals.set(10);
       }
-      if (struct.isSetRequirement()) {
+      if (struct.isSetLanguage()) {
         optionals.set(11);
       }
-      if (struct.isSetSalary()) {
+      if (struct.isSetStatus()) {
         optionals.set(12);
       }
-      if (struct.isSetLanguage()) {
+      if (struct.isSetVisitnum()) {
         optionals.set(13);
       }
-      if (struct.isSetJob_grade()) {
+      if (struct.isSetSource_id()) {
         optionals.set(14);
       }
-      if (struct.isSetStatus()) {
+      if (struct.isSetUpdate_time()) {
         optionals.set(15);
       }
-      if (struct.isSetVisitnum()) {
+      if (struct.isSetEmployment_type()) {
         optionals.set(16);
       }
-      if (struct.isSetLastvisit()) {
+      if (struct.isSetHr_email()) {
         optionals.set(17);
       }
-      if (struct.isSetSource_id()) {
+      if (struct.isSetDegree()) {
         optionals.set(18);
       }
-      if (struct.isSetUpdate_time()) {
+      if (struct.isSetFeature()) {
         optionals.set(19);
       }
-      if (struct.isSetBusiness_group()) {
+      if (struct.isSetCandidate_source()) {
         optionals.set(20);
       }
-      if (struct.isSetEmployment_type()) {
+      if (struct.isSetOccupation()) {
         optionals.set(21);
       }
-      if (struct.isSetHr_email()) {
+      if (struct.isSetIndustry()) {
         optionals.set(22);
       }
-      if (struct.isSetBenefits()) {
+      if (struct.isSetEmail_resume_conf()) {
         optionals.set(23);
       }
-      if (struct.isSetDegree()) {
+      if (struct.isSetL_PostingTargetId()) {
         optionals.set(24);
       }
-      if (struct.isSetFeature()) {
+      if (struct.isSetPriority()) {
         optionals.set(25);
       }
-      if (struct.isSetEmail_notice()) {
+      if (struct.isSetShare_tpl_id()) {
         optionals.set(26);
       }
-      if (struct.isSetCandidate_source()) {
+      if (struct.isSetCount()) {
         optionals.set(27);
       }
-      if (struct.isSetOccupation()) {
+      if (struct.isSetSalary_top()) {
         optionals.set(28);
       }
-      if (struct.isSetIs_recom()) {
+      if (struct.isSetSalary_bottom()) {
         optionals.set(29);
       }
-      if (struct.isSetIndustry()) {
+      if (struct.isSetExperience_above()) {
         optionals.set(30);
       }
-      if (struct.isSetHongbao_config_id()) {
+      if (struct.isSetDegree_above()) {
         optionals.set(31);
       }
-      if (struct.isSetHongbao_config_recom_id()) {
+      if (struct.isSetManagement_experience()) {
         optionals.set(32);
       }
-      if (struct.isSetHongbao_config_app_id()) {
+      if (struct.isSetGender()) {
         optionals.set(33);
       }
-      if (struct.isSetEmail_resume_conf()) {
+      if (struct.isSetPublisher()) {
         optionals.set(34);
       }
-      if (struct.isSetL_PostingTargetId()) {
+      if (struct.isSetApp_cv_config_id()) {
         optionals.set(35);
       }
-      if (struct.isSetPriority()) {
+      if (struct.isSetSource()) {
         optionals.set(36);
       }
-      if (struct.isSetShare_tpl_id()) {
+      if (struct.isSetHb_status()) {
         optionals.set(37);
       }
-      if (struct.isSetDistrict()) {
+      if (struct.isSetAge()) {
         optionals.set(38);
       }
-      if (struct.isSetCount()) {
+      if (struct.isSetMajor_required()) {
         optionals.set(39);
       }
-      if (struct.isSetSalary_top()) {
+      if (struct.isSetWork_address()) {
         optionals.set(40);
       }
-      if (struct.isSetSalary_bottom()) {
+      if (struct.isSetKeyword()) {
         optionals.set(41);
       }
-      if (struct.isSetExperience_above()) {
+      if (struct.isSetReporting_to()) {
         optionals.set(42);
       }
-      if (struct.isSetDegree_above()) {
+      if (struct.isSetIs_hiring()) {
         optionals.set(43);
       }
-      if (struct.isSetManagement_experience()) {
+      if (struct.isSetUnderlings()) {
         optionals.set(44);
       }
-      if (struct.isSetGender()) {
+      if (struct.isSetLanguage_required()) {
         optionals.set(45);
       }
-      if (struct.isSetPublisher()) {
+      if (struct.isSetTarget_industry()) {
         optionals.set(46);
       }
-      if (struct.isSetApp_cv_config_id()) {
+      if (struct.isSetCurrent_status()) {
         optionals.set(47);
       }
-      if (struct.isSetSource()) {
-        optionals.set(48);
-      }
-      if (struct.isSetHb_status()) {
-        optionals.set(49);
-      }
-      if (struct.isSetChild_company_id()) {
-        optionals.set(50);
-      }
-      if (struct.isSetAge()) {
-        optionals.set(51);
-      }
-      if (struct.isSetMajor_required()) {
-        optionals.set(52);
-      }
-      if (struct.isSetWork_address()) {
-        optionals.set(53);
-      }
-      if (struct.isSetKeyword()) {
-        optionals.set(54);
-      }
-      if (struct.isSetReporting_to()) {
-        optionals.set(55);
-      }
-      if (struct.isSetIs_hiring()) {
-        optionals.set(56);
-      }
-      if (struct.isSetUnderlings()) {
-        optionals.set(57);
-      }
-      if (struct.isSetLanguage_required()) {
-        optionals.set(58);
-      }
-      if (struct.isSetTarget_industry()) {
-        optionals.set(59);
-      }
-      if (struct.isSetCurrent_status()) {
-        optionals.set(60);
-      }
-      oprot.writeBitSet(optionals, 61);
+      oprot.writeBitSet(optionals, 48);
       if (struct.isSetId()) {
         oprot.writeI32(struct.id);
       }
@@ -6048,9 +4816,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
       }
       if (struct.isSetCompany_id()) {
         oprot.writeI32(struct.company_id);
-      }
-      if (struct.isSetProvince()) {
-        oprot.writeString(struct.province);
       }
       if (struct.isSetCity()) {
         oprot.writeString(struct.city);
@@ -6076,14 +4841,8 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
       if (struct.isSetRequirement()) {
         oprot.writeString(struct.requirement);
       }
-      if (struct.isSetSalary()) {
-        oprot.writeString(struct.salary);
-      }
       if (struct.isSetLanguage()) {
         oprot.writeString(struct.language);
-      }
-      if (struct.isSetJob_grade()) {
-        oprot.writeI32(struct.job_grade);
       }
       if (struct.isSetStatus()) {
         oprot.writeI32(struct.status);
@@ -6091,17 +4850,11 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
       if (struct.isSetVisitnum()) {
         oprot.writeI32(struct.visitnum);
       }
-      if (struct.isSetLastvisit()) {
-        oprot.writeString(struct.lastvisit);
-      }
       if (struct.isSetSource_id()) {
         oprot.writeI32(struct.source_id);
       }
       if (struct.isSetUpdate_time()) {
         oprot.writeString(struct.update_time);
-      }
-      if (struct.isSetBusiness_group()) {
-        oprot.writeString(struct.business_group);
       }
       if (struct.isSetEmployment_type()) {
         oprot.writeByte(struct.employment_type);
@@ -6109,17 +4862,11 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
       if (struct.isSetHr_email()) {
         oprot.writeString(struct.hr_email);
       }
-      if (struct.isSetBenefits()) {
-        oprot.writeString(struct.benefits);
-      }
       if (struct.isSetDegree()) {
         oprot.writeI32(struct.degree);
       }
       if (struct.isSetFeature()) {
         oprot.writeString(struct.feature);
-      }
-      if (struct.isSetEmail_notice()) {
-        oprot.writeByte(struct.email_notice);
       }
       if (struct.isSetCandidate_source()) {
         oprot.writeByte(struct.candidate_source);
@@ -6127,20 +4874,8 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
       if (struct.isSetOccupation()) {
         oprot.writeString(struct.occupation);
       }
-      if (struct.isSetIs_recom()) {
-        oprot.writeByte(struct.is_recom);
-      }
       if (struct.isSetIndustry()) {
         oprot.writeString(struct.industry);
-      }
-      if (struct.isSetHongbao_config_id()) {
-        oprot.writeI32(struct.hongbao_config_id);
-      }
-      if (struct.isSetHongbao_config_recom_id()) {
-        oprot.writeI32(struct.hongbao_config_recom_id);
-      }
-      if (struct.isSetHongbao_config_app_id()) {
-        oprot.writeI32(struct.hongbao_config_app_id);
       }
       if (struct.isSetEmail_resume_conf()) {
         oprot.writeByte(struct.email_resume_conf);
@@ -6153,9 +4888,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
       }
       if (struct.isSetShare_tpl_id()) {
         oprot.writeI32(struct.share_tpl_id);
-      }
-      if (struct.isSetDistrict()) {
-        oprot.writeString(struct.district);
       }
       if (struct.isSetCount()) {
         oprot.writeI32(struct.count);
@@ -6189,9 +4921,6 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
       }
       if (struct.isSetHb_status()) {
         oprot.writeByte(struct.hb_status);
-      }
-      if (struct.isSetChild_company_id()) {
-        oprot.writeI32(struct.child_company_id);
       }
       if (struct.isSetAge()) {
         oprot.writeI32(struct.age);
@@ -6228,7 +4957,7 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
     @Override
     public void read(org.apache.thrift.protocol.TProtocol prot, Position struct) throws TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
-      BitSet incoming = iprot.readBitSet(61);
+      BitSet incoming = iprot.readBitSet(48);
       if (incoming.get(0)) {
         struct.id = iprot.readI32();
         struct.setIdIsSet(true);
@@ -6242,234 +4971,182 @@ public class Position implements org.apache.thrift.TBase<Position, Position._Fie
         struct.setCompany_idIsSet(true);
       }
       if (incoming.get(3)) {
-        struct.province = iprot.readString();
-        struct.setProvinceIsSet(true);
-      }
-      if (incoming.get(4)) {
         struct.city = iprot.readString();
         struct.setCityIsSet(true);
       }
-      if (incoming.get(5)) {
+      if (incoming.get(4)) {
         struct.department = iprot.readString();
         struct.setDepartmentIsSet(true);
       }
-      if (incoming.get(6)) {
+      if (incoming.get(5)) {
         struct.l_jobid = iprot.readI32();
         struct.setL_jobidIsSet(true);
       }
-      if (incoming.get(7)) {
+      if (incoming.get(6)) {
         struct.publish_date = iprot.readString();
         struct.setPublish_dateIsSet(true);
       }
-      if (incoming.get(8)) {
+      if (incoming.get(7)) {
         struct.stop_date = iprot.readString();
         struct.setStop_dateIsSet(true);
       }
-      if (incoming.get(9)) {
+      if (incoming.get(8)) {
         struct.accountabilities = iprot.readString();
         struct.setAccountabilitiesIsSet(true);
       }
-      if (incoming.get(10)) {
+      if (incoming.get(9)) {
         struct.experience = iprot.readString();
         struct.setExperienceIsSet(true);
       }
-      if (incoming.get(11)) {
+      if (incoming.get(10)) {
         struct.requirement = iprot.readString();
         struct.setRequirementIsSet(true);
       }
-      if (incoming.get(12)) {
-        struct.salary = iprot.readString();
-        struct.setSalaryIsSet(true);
-      }
-      if (incoming.get(13)) {
+      if (incoming.get(11)) {
         struct.language = iprot.readString();
         struct.setLanguageIsSet(true);
       }
-      if (incoming.get(14)) {
-        struct.job_grade = iprot.readI32();
-        struct.setJob_gradeIsSet(true);
-      }
-      if (incoming.get(15)) {
+      if (incoming.get(12)) {
         struct.status = iprot.readI32();
         struct.setStatusIsSet(true);
       }
-      if (incoming.get(16)) {
+      if (incoming.get(13)) {
         struct.visitnum = iprot.readI32();
         struct.setVisitnumIsSet(true);
       }
-      if (incoming.get(17)) {
-        struct.lastvisit = iprot.readString();
-        struct.setLastvisitIsSet(true);
-      }
-      if (incoming.get(18)) {
+      if (incoming.get(14)) {
         struct.source_id = iprot.readI32();
         struct.setSource_idIsSet(true);
       }
-      if (incoming.get(19)) {
+      if (incoming.get(15)) {
         struct.update_time = iprot.readString();
         struct.setUpdate_timeIsSet(true);
       }
-      if (incoming.get(20)) {
-        struct.business_group = iprot.readString();
-        struct.setBusiness_groupIsSet(true);
-      }
-      if (incoming.get(21)) {
+      if (incoming.get(16)) {
         struct.employment_type = iprot.readByte();
         struct.setEmployment_typeIsSet(true);
       }
-      if (incoming.get(22)) {
+      if (incoming.get(17)) {
         struct.hr_email = iprot.readString();
         struct.setHr_emailIsSet(true);
       }
-      if (incoming.get(23)) {
-        struct.benefits = iprot.readString();
-        struct.setBenefitsIsSet(true);
-      }
-      if (incoming.get(24)) {
+      if (incoming.get(18)) {
         struct.degree = iprot.readI32();
         struct.setDegreeIsSet(true);
       }
-      if (incoming.get(25)) {
+      if (incoming.get(19)) {
         struct.feature = iprot.readString();
         struct.setFeatureIsSet(true);
       }
-      if (incoming.get(26)) {
-        struct.email_notice = iprot.readByte();
-        struct.setEmail_noticeIsSet(true);
-      }
-      if (incoming.get(27)) {
+      if (incoming.get(20)) {
         struct.candidate_source = iprot.readByte();
         struct.setCandidate_sourceIsSet(true);
       }
-      if (incoming.get(28)) {
+      if (incoming.get(21)) {
         struct.occupation = iprot.readString();
         struct.setOccupationIsSet(true);
       }
-      if (incoming.get(29)) {
-        struct.is_recom = iprot.readByte();
-        struct.setIs_recomIsSet(true);
-      }
-      if (incoming.get(30)) {
+      if (incoming.get(22)) {
         struct.industry = iprot.readString();
         struct.setIndustryIsSet(true);
       }
-      if (incoming.get(31)) {
-        struct.hongbao_config_id = iprot.readI32();
-        struct.setHongbao_config_idIsSet(true);
-      }
-      if (incoming.get(32)) {
-        struct.hongbao_config_recom_id = iprot.readI32();
-        struct.setHongbao_config_recom_idIsSet(true);
-      }
-      if (incoming.get(33)) {
-        struct.hongbao_config_app_id = iprot.readI32();
-        struct.setHongbao_config_app_idIsSet(true);
-      }
-      if (incoming.get(34)) {
+      if (incoming.get(23)) {
         struct.email_resume_conf = iprot.readByte();
         struct.setEmail_resume_confIsSet(true);
       }
-      if (incoming.get(35)) {
+      if (incoming.get(24)) {
         struct.l_PostingTargetId = iprot.readI32();
         struct.setL_PostingTargetIdIsSet(true);
       }
-      if (incoming.get(36)) {
+      if (incoming.get(25)) {
         struct.priority = iprot.readI32();
         struct.setPriorityIsSet(true);
       }
-      if (incoming.get(37)) {
+      if (incoming.get(26)) {
         struct.share_tpl_id = iprot.readI32();
         struct.setShare_tpl_idIsSet(true);
       }
-      if (incoming.get(38)) {
-        struct.district = iprot.readString();
-        struct.setDistrictIsSet(true);
-      }
-      if (incoming.get(39)) {
+      if (incoming.get(27)) {
         struct.count = iprot.readI32();
         struct.setCountIsSet(true);
       }
-      if (incoming.get(40)) {
+      if (incoming.get(28)) {
         struct.salary_top = iprot.readI32();
         struct.setSalary_topIsSet(true);
       }
-      if (incoming.get(41)) {
+      if (incoming.get(29)) {
         struct.salary_bottom = iprot.readI32();
         struct.setSalary_bottomIsSet(true);
       }
-      if (incoming.get(42)) {
+      if (incoming.get(30)) {
         struct.experience_above = iprot.readByte();
         struct.setExperience_aboveIsSet(true);
       }
-      if (incoming.get(43)) {
+      if (incoming.get(31)) {
         struct.degree_above = iprot.readByte();
         struct.setDegree_aboveIsSet(true);
       }
-      if (incoming.get(44)) {
+      if (incoming.get(32)) {
         struct.management_experience = iprot.readByte();
         struct.setManagement_experienceIsSet(true);
       }
-      if (incoming.get(45)) {
+      if (incoming.get(33)) {
         struct.gender = iprot.readByte();
         struct.setGenderIsSet(true);
       }
-      if (incoming.get(46)) {
+      if (incoming.get(34)) {
         struct.publisher = iprot.readI32();
         struct.setPublisherIsSet(true);
       }
-      if (incoming.get(47)) {
+      if (incoming.get(35)) {
         struct.app_cv_config_id = iprot.readI32();
         struct.setApp_cv_config_idIsSet(true);
       }
-      if (incoming.get(48)) {
+      if (incoming.get(36)) {
         struct.source = iprot.readI32();
         struct.setSourceIsSet(true);
       }
-      if (incoming.get(49)) {
+      if (incoming.get(37)) {
         struct.hb_status = iprot.readByte();
         struct.setHb_statusIsSet(true);
       }
-      if (incoming.get(50)) {
-        struct.child_company_id = iprot.readI32();
-        struct.setChild_company_idIsSet(true);
-      }
-      if (incoming.get(51)) {
+      if (incoming.get(38)) {
         struct.age = iprot.readI32();
         struct.setAgeIsSet(true);
       }
-      if (incoming.get(52)) {
+      if (incoming.get(39)) {
         struct.major_required = iprot.readString();
         struct.setMajor_requiredIsSet(true);
       }
-      if (incoming.get(53)) {
+      if (incoming.get(40)) {
         struct.work_address = iprot.readString();
         struct.setWork_addressIsSet(true);
       }
-      if (incoming.get(54)) {
+      if (incoming.get(41)) {
         struct.keyword = iprot.readString();
         struct.setKeywordIsSet(true);
       }
-      if (incoming.get(55)) {
+      if (incoming.get(42)) {
         struct.reporting_to = iprot.readString();
         struct.setReporting_toIsSet(true);
       }
-      if (incoming.get(56)) {
+      if (incoming.get(43)) {
         struct.is_hiring = iprot.readI32();
         struct.setIs_hiringIsSet(true);
       }
-      if (incoming.get(57)) {
+      if (incoming.get(44)) {
         struct.underlings = iprot.readI32();
         struct.setUnderlingsIsSet(true);
       }
-      if (incoming.get(58)) {
+      if (incoming.get(45)) {
         struct.language_required = iprot.readByte();
         struct.setLanguage_requiredIsSet(true);
       }
-      if (incoming.get(59)) {
+      if (incoming.get(46)) {
         struct.target_industry = iprot.readI32();
         struct.setTarget_industryIsSet(true);
       }
-      if (incoming.get(60)) {
+      if (incoming.get(47)) {
         struct.current_status = iprot.readI32();
         struct.setCurrent_statusIsSet(true);
       }
