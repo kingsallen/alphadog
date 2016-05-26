@@ -4,5 +4,5 @@ include 'rpc-center'
 include 'profile-service-provider'
 include 'useraccounts-service-provider'
 include 'dict-service-provider'
-include 'application-service-provider'
-
+include 'position-service-provider'
+include 'company-service-provider'
