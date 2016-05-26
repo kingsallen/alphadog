@@ -16,10 +16,13 @@ public class ServiceUtil {
     private static RegistryConfig registryConfig;
 
     private static RegistryConfig getRegistryConfig(){
-        registryConfig = new RegistryConfig();
-        registryConfig.setConnectstr(configuration.getProperty("registry.connectstr", ""));
-        registryConfig.setNamespace(configuration.getProperty("registry.namespace", ""));
-        return registryConfig;
+    	if (registryConfig == null){
+            registryConfig = new RegistryConfig();
+            registryConfig.setConnectstr(configuration.getProperty("registry.connectstr", ""));
+            registryConfig.setNamespace(configuration.getProperty("registry.namespace", ""));
+    		
+    	}
+    	return registryConfig;
     }
 
     public static <clazz> clazz getService(Class<?> clazz){
