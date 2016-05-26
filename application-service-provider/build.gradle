@@ -1,0 +1,48 @@
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+
+dependencies {
+
+    // compile project(":thrift-gen-java")
+    compile project(":common")
+    compile project(":rpc-center")
+
+    testCompile deps["junit"]
+    compile deps["spring-core"]
+    compile deps["spring-context"]
+    compile deps["jetty-support"]
+}
+
+//compileJava.dependsOn(":thrift-jooq:copyGeneratedFile")
+
+task copyJars(type: Copy) {
+    from configurations.runtime
+    into 'build/libs' // 目标位置
+}
+
+//task "create-proj" << {
+//    sourceSets*.java.srcDirs*.each {
+//        it.mkdirs()
+//    }
+//    sourceSets*.resources.srcDirs*.each {
+//        it.mkdirs()
+//    }
+//}
+
+jar {
+
+    // build one flat jar
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+
+    manifest {
+        attributes 'Main-Class': 'com.moseeker.application.server.ApplicationServer'
+    }
+
+
+}
+
+project.description = '''
+    1) 职位申请服务
+'''

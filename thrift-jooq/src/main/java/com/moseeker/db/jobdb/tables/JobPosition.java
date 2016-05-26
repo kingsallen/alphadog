@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPosition extends TableImpl<JobPositionRecord> {
 
-	private static final long serialVersionUID = 1854574213;
+	private static final long serialVersionUID = 1697055575;
 
 	/**
 	 * The reference instance of <code>jobDB.job_position</code>
@@ -94,7 +94,7 @@ public class JobPosition extends TableImpl<JobPositionRecord> {
 	/**
 	 * The column <code>jobDB.job_position.publish_date</code>. Default: now, set by js
 	 */
-	public final TableField<JobPositionRecord, Timestamp> PUBLISH_DATE = createField("publish_date", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "Default: now, set by js");
+	public final TableField<JobPositionRecord, Timestamp> PUBLISH_DATE = createField("publish_date", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "Default: now, set by js");
 
 	/**
 	 * The column <code>jobDB.job_position.stop_date</code>. 截止日期
@@ -144,7 +144,7 @@ public class JobPosition extends TableImpl<JobPositionRecord> {
 	/**
 	 * The column <code>jobDB.job_position.lastvisit</code>. openid of last visiter
 	 */
-	public final TableField<JobPositionRecord, String> LASTVISIT = createField("lastvisit", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false), this, "openid of last visiter");
+	public final TableField<JobPositionRecord, String> LASTVISIT = createField("lastvisit", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "openid of last visiter");
 
 	/**
 	 * The column <code>jobDB.job_position.source_id</code>. 职位来源 0：Moseeker
@@ -162,9 +162,9 @@ public class JobPosition extends TableImpl<JobPositionRecord> {
 	public final TableField<JobPositionRecord, String> BUSINESS_GROUP = createField("business_group", org.jooq.impl.SQLDataType.VARCHAR.length(32).nullable(false).defaulted(true), this, "事业群");
 
 	/**
-	 * The column <code>jobDB.job_position.employment_type</code>. 0:全职，1：兼职：2：合同工
+	 * The column <code>jobDB.job_position.employment_type</code>. 0:全职，1：兼职：2：合同工 3:实习 9:其他
 	 */
-	public final TableField<JobPositionRecord, Byte> EMPLOYMENT_TYPE = createField("employment_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "0:全职，1：兼职：2：合同工");
+	public final TableField<JobPositionRecord, Byte> EMPLOYMENT_TYPE = createField("employment_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "0:全职，1：兼职：2：合同工 3:实习 9:其他");
 
 	/**
 	 * The column <code>jobDB.job_position.hr_email</code>. HR联系人邮箱，申请通知
@@ -299,12 +299,67 @@ public class JobPosition extends TableImpl<JobPositionRecord> {
 	/**
 	 * The column <code>jobDB.job_position.source</code>. 0:手动创建, 1:导入, 9:ATS导入
 	 */
-	public final TableField<JobPositionRecord, Byte> SOURCE = createField("source", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "0:手动创建, 1:导入, 9:ATS导入");
+	public final TableField<JobPositionRecord, Short> SOURCE = createField("source", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaulted(true), this, "0:手动创建, 1:导入, 9:ATS导入");
 
 	/**
 	 * The column <code>jobDB.job_position.hb_status</code>. 是否正参加活动：0=未参加  1=正参加点击红包活动  2=正参加被申请红包活动  3=正参加1+2红包活动
 	 */
 	public final TableField<JobPositionRecord, Byte> HB_STATUS = createField("hb_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "是否正参加活动：0=未参加  1=正参加点击红包活动  2=正参加被申请红包活动  3=正参加1+2红包活动");
+
+	/**
+	 * The column <code>jobDB.job_position.child_company_id</code>. hr_child_company.id
+	 */
+	public final TableField<JobPositionRecord, Integer> CHILD_COMPANY_ID = createField("child_company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "hr_child_company.id");
+
+	/**
+	 * The column <code>jobDB.job_position.age</code>. 年龄要求, 0：无要求
+	 */
+	public final TableField<JobPositionRecord, Byte> AGE = createField("age", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "年龄要求, 0：无要求");
+
+	/**
+	 * The column <code>jobDB.job_position.major_required</code>. 专业要求
+	 */
+	public final TableField<JobPositionRecord, String> MAJOR_REQUIRED = createField("major_required", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaulted(true), this, "专业要求");
+
+	/**
+	 * The column <code>jobDB.job_position.work_address</code>. 上班地址
+	 */
+	public final TableField<JobPositionRecord, String> WORK_ADDRESS = createField("work_address", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaulted(true), this, "上班地址");
+
+	/**
+	 * The column <code>jobDB.job_position.keyword</code>. 职位关键词
+	 */
+	public final TableField<JobPositionRecord, String> KEYWORD = createField("keyword", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaulted(true), this, "职位关键词");
+
+	/**
+	 * The column <code>jobDB.job_position.reporting_to</code>. 汇报对象
+	 */
+	public final TableField<JobPositionRecord, String> REPORTING_TO = createField("reporting_to", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "汇报对象");
+
+	/**
+	 * The column <code>jobDB.job_position.is_hiring</code>. 是否急招, 1:是 0:否
+	 */
+	public final TableField<JobPositionRecord, Byte> IS_HIRING = createField("is_hiring", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "是否急招, 1:是 0:否");
+
+	/**
+	 * The column <code>jobDB.job_position.underlings</code>. 下属人数， 0:没有下属
+	 */
+	public final TableField<JobPositionRecord, Byte> UNDERLINGS = createField("underlings", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "下属人数， 0:没有下属");
+
+	/**
+	 * The column <code>jobDB.job_position.language_required</code>. 语言要求，1:是 0:否
+	 */
+	public final TableField<JobPositionRecord, Byte> LANGUAGE_REQUIRED = createField("language_required", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "语言要求，1:是 0:否");
+
+	/**
+	 * The column <code>jobDB.job_position.target_industry</code>. 期望人选所在行业
+	 */
+	public final TableField<JobPositionRecord, Byte> TARGET_INDUSTRY = createField("target_industry", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "期望人选所在行业");
+
+	/**
+	 * The column <code>jobDB.job_position.current_status</code>. 0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭
+	 */
+	public final TableField<JobPositionRecord, Byte> CURRENT_STATUS = createField("current_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭");
 
 	/**
 	 * Create a <code>jobDB.job_position</code> table reference

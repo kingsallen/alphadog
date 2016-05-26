@@ -61,7 +61,8 @@ public class CityServicesImpl extends JOOQBaseServiceImpl<City, DictCityRecord> 
                     HashMap transformed = transformData(cities);
                     r = JSON.toJSONString(ResponseUtils.success(transformed));
                 } catch (TException e) {
-                    // todo
+                    logger.error("getResources error", e);
+                    ResponseUtils.fail(e.getMessage());
                 }
                 return r;
             });

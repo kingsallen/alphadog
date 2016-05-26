@@ -10,12 +10,14 @@ import com.moseeker.db.jobdb.tables.JobApplicationStatusBeisen;
 import com.moseeker.db.jobdb.tables.JobPosition;
 import com.moseeker.db.jobdb.tables.JobPositionShareTplConf;
 import com.moseeker.db.jobdb.tables.JobResumeBasic;
+import com.moseeker.db.jobdb.tables.JobResumeOther;
 import com.moseeker.db.jobdb.tables.records.JobApplicationConfRecord;
 import com.moseeker.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.db.jobdb.tables.records.JobApplicationStatusBeisenRecord;
 import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.db.jobdb.tables.records.JobPositionShareTplConfRecord;
 import com.moseeker.db.jobdb.tables.records.JobResumeBasicRecord;
+import com.moseeker.db.jobdb.tables.records.JobResumeOtherRecord;
 
 import javax.annotation.Generated;
 
@@ -60,6 +62,7 @@ public class Keys {
 	public static final UniqueKey<JobPositionRecord> KEY_JOB_POSITION_PRIMARY = UniqueKeys0.KEY_JOB_POSITION_PRIMARY;
 	public static final UniqueKey<JobPositionShareTplConfRecord> KEY_JOB_POSITION_SHARE_TPL_CONF_PRIMARY = UniqueKeys0.KEY_JOB_POSITION_SHARE_TPL_CONF_PRIMARY;
 	public static final UniqueKey<JobResumeBasicRecord> KEY_JOB_RESUME_BASIC_PRIMARY = UniqueKeys0.KEY_JOB_RESUME_BASIC_PRIMARY;
+	public static final UniqueKey<JobResumeOtherRecord> KEY_JOB_RESUME_OTHER_PRIMARY = UniqueKeys0.KEY_JOB_RESUME_OTHER_PRIMARY;
 
 	// -------------------------------------------------------------------------
 	// FOREIGN KEY definitions
@@ -86,5 +89,6 @@ public class Keys {
 		public static final UniqueKey<JobPositionRecord> KEY_JOB_POSITION_PRIMARY = createUniqueKey(JobPosition.JOB_POSITION, JobPosition.JOB_POSITION.ID);
 		public static final UniqueKey<JobPositionShareTplConfRecord> KEY_JOB_POSITION_SHARE_TPL_CONF_PRIMARY = createUniqueKey(JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF, JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF.ID);
 		public static final UniqueKey<JobResumeBasicRecord> KEY_JOB_RESUME_BASIC_PRIMARY = createUniqueKey(JobResumeBasic.JOB_RESUME_BASIC, JobResumeBasic.JOB_RESUME_BASIC.ID);
+		public static final UniqueKey<JobResumeOtherRecord> KEY_JOB_RESUME_OTHER_PRIMARY = createUniqueKey(JobResumeOther.JOB_RESUME_OTHER, JobResumeOther.JOB_RESUME_OTHER.APP_ID);
 	}
 }
