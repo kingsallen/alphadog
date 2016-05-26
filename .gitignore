@@ -73,3 +73,5 @@ atlassian-ide-plugin.xml
 .nbattrs
 *.log.*
 /WebContent
+
+# exceptions

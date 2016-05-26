@@ -6,6 +6,7 @@ package com.moseeker.db.dictdb;
 
 import com.moseeker.db.dictdb.tables.DictCity;
 import com.moseeker.db.dictdb.tables.DictCollege;
+import com.moseeker.db.dictdb.tables.DictConstant;
 import com.moseeker.db.dictdb.tables.DictCountry;
 import com.moseeker.db.dictdb.tables.DictIndustry;
 import com.moseeker.db.dictdb.tables.DictIndustryType;
@@ -37,6 +38,11 @@ public class Tables {
 	 * 学校字典表
 	 */
 	public static final DictCollege DICT_COLLEGE = com.moseeker.db.dictdb.tables.DictCollege.DICT_COLLEGE;
+
+	/**
+	 * 常量字典表
+	 */
+	public static final DictConstant DICT_CONSTANT = com.moseeker.db.dictdb.tables.DictConstant.DICT_CONSTANT;
 
 	/**
 	 * 国家字典表

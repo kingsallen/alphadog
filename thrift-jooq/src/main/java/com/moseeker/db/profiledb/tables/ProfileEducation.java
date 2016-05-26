@@ -38,7 +38,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileEducation extends TableImpl<ProfileEducationRecord> {
 
-	private static final long serialVersionUID = 1196807883;
+	private static final long serialVersionUID = 1326439501;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_education</code>
@@ -66,12 +66,12 @@ public class ProfileEducation extends TableImpl<ProfileEducationRecord> {
 	/**
 	 * The column <code>profileDB.profile_education.start</code>. 起止时间-起 yyyy-mm-dd
 	 */
-	public final TableField<ProfileEducationRecord, Date> START = createField("start", org.jooq.impl.SQLDataType.DATE.nullable(false), this, "起止时间-起 yyyy-mm-dd");
+	public final TableField<ProfileEducationRecord, Date> START = createField("start", org.jooq.impl.SQLDataType.DATE, this, "起止时间-起 yyyy-mm-dd");
 
 	/**
 	 * The column <code>profileDB.profile_education.end</code>. 起止时间-止 yyyy-mm-dd
 	 */
-	public final TableField<ProfileEducationRecord, Date> END = createField("end", org.jooq.impl.SQLDataType.DATE.nullable(false), this, "起止时间-止 yyyy-mm-dd");
+	public final TableField<ProfileEducationRecord, Date> END = createField("end", org.jooq.impl.SQLDataType.DATE, this, "起止时间-止 yyyy-mm-dd");
 
 	/**
 	 * The column <code>profileDB.profile_education.end_until_now</code>. 是否至今 0：否 1：是
