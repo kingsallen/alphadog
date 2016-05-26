@@ -15,7 +15,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  */
 public class DictConstantServer {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(CityServer.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(DictConstantServer.class);
 
     public static void main(String[] args) {
 

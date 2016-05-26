@@ -21,7 +21,7 @@ public class DictConstantServiceImplTest {
 
         String iface = DictConstanService.Iface.class.getName();
         ClientConfig<DictConstanService.Iface> clientConfig = new ClientConfig<DictConstanService.Iface>();
-        clientConfig.setService("com.moseeker.thrift.gen.application.service.JobApplicationServices");
+        clientConfig.setService("com.moseeker.thrift.gen.dict.service.DictConstanService");
         clientConfig.setIface(iface);
 
         DictConstanService.Iface dictConstanService = null;
