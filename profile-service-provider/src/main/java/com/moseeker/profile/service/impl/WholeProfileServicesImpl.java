@@ -17,6 +17,7 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.common.util.DateUtils;
+import com.moseeker.db.dictdb.tables.records.DictCollegeRecord;
 import com.moseeker.db.dictdb.tables.records.DictCountryRecord;
 import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileAttachmentRecord;
@@ -40,6 +41,7 @@ import com.moseeker.db.userdb.tables.records.UserSettingsRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.profile.dao.AttachmentDao;
 import com.moseeker.profile.dao.AwardsDao;
+import com.moseeker.profile.dao.CollegeDao;
 import com.moseeker.profile.dao.CompanyDao;
 import com.moseeker.profile.dao.CountryDao;
 import com.moseeker.profile.dao.CredentialsDao;
@@ -418,13 +420,32 @@ public class WholeProfileServicesImpl implements Iface {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
 			List<ProfileEducationRecord> records = educationDao.getResources(query);
+			
 			if(records != null && records.size() > 0) {
+				List<Integer> collegeCodes = new ArrayList<>();
+				records.forEach(record -> {
+					collegeCodes.add(record.getCollegeCode());
+				});
+				List<DictCollegeRecord> collegeRecords = collegeDao.getCollegesByIDs(collegeCodes);
 				records.forEach(record -> {
 					Map<String, Object> map = new HashMap<String, Object>();
 					map.put("education_id", record.getId().intValue());
 					map.put("college_name", record.getCollegeName());
 					map.put("college_code", record.getCollegeCode());
-					map.put("college_logo", record.getCollegeLogo());
+					/* 如果college_code合法，有限选择字典里的图片 */
+					boolean existCollegeCode = false;
+					if(record.getCollegeCode() != null && record.getCollegeCode().intValue() > 0 && collegeRecords.size() > 0) {
+						for(DictCollegeRecord collegeRecord: collegeRecords) {
+							if(collegeRecord.getCode().intValue() == record.getCollegeCode().intValue()) {
+								existCollegeCode = true;
+								map.put("college_logo", collegeRecord.getLogo());
+							}
+						}
+					}
+					if(!existCollegeCode) {
+						map.put("college_logo", record.getCollegeLogo());
+					}
+					
 					map.put("major_name", record.getMajorName());
 					map.put("major_code", record.getMajorCode());
 					map.put("degree", record.getDegree().intValue());
@@ -530,7 +551,7 @@ public class WholeProfileServicesImpl implements Iface {
 				map.put("city_code", lastWorkExp.getCityCode().intValue());
 			}
 			if(basicRecord != null) {
-				map.put("completeness", profileRecord.getCompleteness());
+				map.put("completeness", profileRecord.getCompleteness().intValue());
 				map.put("username", basicRecord.getName());
 				map.put("gender", basicRecord.getGender().intValue());
 				map.put("nationality_name", basicRecord.getNationalityName());
@@ -577,6 +598,9 @@ public class WholeProfileServicesImpl implements Iface {
 	
 	@Autowired
 	private AwardsDao awardsDao;
+	
+	@Autowired
+	private CollegeDao collegeDao;
 	
 	@Autowired
 	private CredentialsDao credentialsDao;
@@ -794,5 +818,13 @@ public class WholeProfileServicesImpl implements Iface {
 
 	public void setUserSettingsDao(UserSettingsDao userSettingsDao) {
 		this.userSettingsDao = userSettingsDao;
+	}
+
+	public CollegeDao getCollegeDao() {
+		return collegeDao;
+	}
+
+	public void setCollegeDao(CollegeDao collegeDao) {
+		this.collegeDao = collegeDao;
 	}
 }
