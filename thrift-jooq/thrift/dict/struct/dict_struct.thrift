@@ -9,7 +9,7 @@ struct City {
     6: byte is_using // 正在使用 0:没在用 1:在使用
 }
 
-struct Colleage {
+struct College {
     1: i32 code,
     2: string name,  //
     3: i32 province, // 所在地
