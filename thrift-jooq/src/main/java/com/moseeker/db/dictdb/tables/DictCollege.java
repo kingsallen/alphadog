@@ -34,7 +34,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictCollege extends TableImpl<DictCollegeRecord> {
 
-	private static final long serialVersionUID = -909072154;
+	private static final long serialVersionUID = -189033180;
 
 	/**
 	 * The reference instance of <code>dictDB.dict_college</code>
@@ -60,9 +60,14 @@ public class DictCollege extends TableImpl<DictCollegeRecord> {
 	public final TableField<DictCollegeRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaulted(true), this, "字典name");
 
 	/**
-	 * The column <code>dictDB.dict_college.province</code>. 院校所在地
+	 * The column <code>dictDB.dict_college.province</code>.
 	 */
-	public final TableField<DictCollegeRecord, Integer> PROVINCE = createField("province", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "院校所在地");
+	public final TableField<DictCollegeRecord, UInteger> PROVINCE = createField("province", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "");
+
+	/**
+	 * The column <code>dictDB.dict_college.logo</code>. 院校logo
+	 */
+	public final TableField<DictCollegeRecord, String> LOGO = createField("logo", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false).defaulted(true), this, "院校logo");
 
 	/**
 	 * Create a <code>dictDB.dict_college</code> table reference

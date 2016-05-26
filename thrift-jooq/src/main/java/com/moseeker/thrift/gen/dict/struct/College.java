@@ -38,10 +38,10 @@ import org.slf4j.LoggerFactory;
 public class College implements org.apache.thrift.TBase<College, College._Fields>, java.io.Serializable, Cloneable, Comparable<College> {
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("College");
 
-  private static final org.apache.thrift.protocol.TField CODE_FIELD_DESC = new org.apache.thrift.protocol.TField("code", org.apache.thrift.protocol.TType.I32, (short)1);
-  private static final org.apache.thrift.protocol.TField NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("name", org.apache.thrift.protocol.TType.STRING, (short)2);
-  private static final org.apache.thrift.protocol.TField PROVINCE_FIELD_DESC = new org.apache.thrift.protocol.TField("province", org.apache.thrift.protocol.TType.I32, (short)3);
-  private static final org.apache.thrift.protocol.TField LOGO_FIELD_DESC = new org.apache.thrift.protocol.TField("logo", org.apache.thrift.protocol.TType.STRING, (short)4);
+  private static final org.apache.thrift.protocol.TField COLLEGE_CODE_FIELD_DESC = new org.apache.thrift.protocol.TField("college_code", org.apache.thrift.protocol.TType.I32, (short)1);
+  private static final org.apache.thrift.protocol.TField COLLGE_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("collge_name", org.apache.thrift.protocol.TType.STRING, (short)2);
+  private static final org.apache.thrift.protocol.TField PROVINCE_CODE_FIELD_DESC = new org.apache.thrift.protocol.TField("province_code", org.apache.thrift.protocol.TType.I32, (short)3);
+  private static final org.apache.thrift.protocol.TField PROVINCE_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("province_name", org.apache.thrift.protocol.TType.STRING, (short)4);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -49,17 +49,17 @@ public class College implements org.apache.thrift.TBase<College, College._Fields
     schemes.put(TupleScheme.class, new CollegeTupleSchemeFactory());
   }
 
-  public int code; // required
-  public String name; // required
-  public int province; // required
-  public String logo; // required
+  public int college_code; // required
+  public String collge_name; // required
+  public int province_code; // required
+  public String province_name; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-    CODE((short)1, "code"),
-    NAME((short)2, "name"),
-    PROVINCE((short)3, "province"),
-    LOGO((short)4, "logo");
+    COLLEGE_CODE((short)1, "college_code"),
+    COLLGE_NAME((short)2, "collge_name"),
+    PROVINCE_CODE((short)3, "province_code"),
+    PROVINCE_NAME((short)4, "province_name");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -74,14 +74,14 @@ public class College implements org.apache.thrift.TBase<College, College._Fields
      */
     public static _Fields findByThriftId(int fieldId) {
       switch(fieldId) {
-        case 1: // CODE
-          return CODE;
-        case 2: // NAME
-          return NAME;
-        case 3: // PROVINCE
-          return PROVINCE;
-        case 4: // LOGO
-          return LOGO;
+        case 1: // COLLEGE_CODE
+          return COLLEGE_CODE;
+        case 2: // COLLGE_NAME
+          return COLLGE_NAME;
+        case 3: // PROVINCE_CODE
+          return PROVINCE_CODE;
+        case 4: // PROVINCE_NAME
+          return PROVINCE_NAME;
         default:
           return null;
       }
@@ -122,19 +122,19 @@ public class College implements org.apache.thrift.TBase<College, College._Fields
   }
 
   // isset id assignments
-  private static final int __CODE_ISSET_ID = 0;
-  private static final int __PROVINCE_ISSET_ID = 1;
+  private static final int __COLLEGE_CODE_ISSET_ID = 0;
+  private static final int __PROVINCE_CODE_ISSET_ID = 1;
   private byte __isset_bitfield = 0;
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-    tmpMap.put(_Fields.CODE, new org.apache.thrift.meta_data.FieldMetaData("code", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.COLLEGE_CODE, new org.apache.thrift.meta_data.FieldMetaData("college_code", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.NAME, new org.apache.thrift.meta_data.FieldMetaData("name", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.COLLGE_NAME, new org.apache.thrift.meta_data.FieldMetaData("collge_name", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.PROVINCE, new org.apache.thrift.meta_data.FieldMetaData("province", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.PROVINCE_CODE, new org.apache.thrift.meta_data.FieldMetaData("province_code", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.LOGO, new org.apache.thrift.meta_data.FieldMetaData("logo", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.PROVINCE_NAME, new org.apache.thrift.meta_data.FieldMetaData("province_name", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(College.class, metaDataMap);
@@ -144,18 +144,18 @@ public class College implements org.apache.thrift.TBase<College, College._Fields
   }
 
   public College(
-    int code,
-    String name,
-    int province,
-    String logo)
+    int college_code,
+    String collge_name,
+    int province_code,
+    String province_name)
   {
     this();
-    this.code = code;
-    setCodeIsSet(true);
-    this.name = name;
-    this.province = province;
-    setProvinceIsSet(true);
-    this.logo = logo;
+    this.college_code = college_code;
+    setCollege_codeIsSet(true);
+    this.collge_name = collge_name;
+    this.province_code = province_code;
+    setProvince_codeIsSet(true);
+    this.province_name = province_name;
   }
 
   /**
@@ -163,13 +163,13 @@ public class College implements org.apache.thrift.TBase<College, College._Fields
    */
   public College(College other) {
     __isset_bitfield = other.__isset_bitfield;
-    this.code = other.code;
-    if (other.isSetName()) {
-      this.name = other.name;
+    this.college_code = other.college_code;
+    if (other.isSetCollge_name()) {
+      this.collge_name = other.collge_name;
     }
-    this.province = other.province;
-    if (other.isSetLogo()) {
-      this.logo = other.logo;
+    this.province_code = other.province_code;
+    if (other.isSetProvince_name()) {
+      this.province_name = other.province_name;
     }
   }
 
@@ -179,139 +179,139 @@ public class College implements org.apache.thrift.TBase<College, College._Fields
 
   @Override
   public void clear() {
-    setCodeIsSet(false);
-    this.code = 0;
-    this.name = null;
-    setProvinceIsSet(false);
-    this.province = 0;
-    this.logo = null;
+    setCollege_codeIsSet(false);
+    this.college_code = 0;
+    this.collge_name = null;
+    setProvince_codeIsSet(false);
+    this.province_code = 0;
+    this.province_name = null;
   }
 
-  public int getCode() {
-    return this.code;
+  public int getCollege_code() {
+    return this.college_code;
   }
 
-  public College setCode(int code) {
-    this.code = code;
-    setCodeIsSet(true);
+  public College setCollege_code(int college_code) {
+    this.college_code = college_code;
+    setCollege_codeIsSet(true);
     return this;
   }
 
-  public void unsetCode() {
-    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __CODE_ISSET_ID);
+  public void unsetCollege_code() {
+    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __COLLEGE_CODE_ISSET_ID);
   }
 
-  /** Returns true if field code is set (has been assigned a value) and false otherwise */
-  public boolean isSetCode() {
-    return EncodingUtils.testBit(__isset_bitfield, __CODE_ISSET_ID);
+  /** Returns true if field college_code is set (has been assigned a value) and false otherwise */
+  public boolean isSetCollege_code() {
+    return EncodingUtils.testBit(__isset_bitfield, __COLLEGE_CODE_ISSET_ID);
   }
 
-  public void setCodeIsSet(boolean value) {
-    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __CODE_ISSET_ID, value);
+  public void setCollege_codeIsSet(boolean value) {
+    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __COLLEGE_CODE_ISSET_ID, value);
   }
 
-  public String getName() {
-    return this.name;
+  public String getCollge_name() {
+    return this.collge_name;
   }
 
-  public College setName(String name) {
-    this.name = name;
+  public College setCollge_name(String collge_name) {
+    this.collge_name = collge_name;
     return this;
   }
 
-  public void unsetName() {
-    this.name = null;
+  public void unsetCollge_name() {
+    this.collge_name = null;
   }
 
-  /** Returns true if field name is set (has been assigned a value) and false otherwise */
-  public boolean isSetName() {
-    return this.name != null;
+  /** Returns true if field collge_name is set (has been assigned a value) and false otherwise */
+  public boolean isSetCollge_name() {
+    return this.collge_name != null;
   }
 
-  public void setNameIsSet(boolean value) {
+  public void setCollge_nameIsSet(boolean value) {
     if (!value) {
-      this.name = null;
+      this.collge_name = null;
     }
   }
 
-  public int getProvince() {
-    return this.province;
+  public int getProvince_code() {
+    return this.province_code;
   }
 
-  public College setProvince(int province) {
-    this.province = province;
-    setProvinceIsSet(true);
+  public College setProvince_code(int province_code) {
+    this.province_code = province_code;
+    setProvince_codeIsSet(true);
     return this;
   }
 
-  public void unsetProvince() {
-    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __PROVINCE_ISSET_ID);
+  public void unsetProvince_code() {
+    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __PROVINCE_CODE_ISSET_ID);
   }
 
-  /** Returns true if field province is set (has been assigned a value) and false otherwise */
-  public boolean isSetProvince() {
-    return EncodingUtils.testBit(__isset_bitfield, __PROVINCE_ISSET_ID);
+  /** Returns true if field province_code is set (has been assigned a value) and false otherwise */
+  public boolean isSetProvince_code() {
+    return EncodingUtils.testBit(__isset_bitfield, __PROVINCE_CODE_ISSET_ID);
   }
 
-  public void setProvinceIsSet(boolean value) {
-    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __PROVINCE_ISSET_ID, value);
+  public void setProvince_codeIsSet(boolean value) {
+    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __PROVINCE_CODE_ISSET_ID, value);
   }
 
-  public String getLogo() {
-    return this.logo;
+  public String getProvince_name() {
+    return this.province_name;
   }
 
-  public College setLogo(String logo) {
-    this.logo = logo;
+  public College setProvince_name(String province_name) {
+    this.province_name = province_name;
     return this;
   }
 
-  public void unsetLogo() {
-    this.logo = null;
+  public void unsetProvince_name() {
+    this.province_name = null;
   }
 
-  /** Returns true if field logo is set (has been assigned a value) and false otherwise */
-  public boolean isSetLogo() {
-    return this.logo != null;
+  /** Returns true if field province_name is set (has been assigned a value) and false otherwise */
+  public boolean isSetProvince_name() {
+    return this.province_name != null;
   }
 
-  public void setLogoIsSet(boolean value) {
+  public void setProvince_nameIsSet(boolean value) {
     if (!value) {
-      this.logo = null;
+      this.province_name = null;
     }
   }
 
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
-    case CODE:
+    case COLLEGE_CODE:
       if (value == null) {
-        unsetCode();
+        unsetCollege_code();
       } else {
-        setCode((Integer)value);
+        setCollege_code((Integer)value);
       }
       break;
 
-    case NAME:
+    case COLLGE_NAME:
       if (value == null) {
-        unsetName();
+        unsetCollge_name();
       } else {
-        setName((String)value);
+        setCollge_name((String)value);
       }
       break;
 
-    case PROVINCE:
+    case PROVINCE_CODE:
       if (value == null) {
-        unsetProvince();
+        unsetProvince_code();
       } else {
-        setProvince((Integer)value);
+        setProvince_code((Integer)value);
       }
       break;
 
-    case LOGO:
+    case PROVINCE_NAME:
       if (value == null) {
-        unsetLogo();
+        unsetProvince_name();
       } else {
-        setLogo((String)value);
+        setProvince_name((String)value);
       }
       break;
 
@@ -320,17 +320,17 @@ public class College implements org.apache.thrift.TBase<College, College._Fields
 
   public Object getFieldValue(_Fields field) {
     switch (field) {
-    case CODE:
-      return getCode();
+    case COLLEGE_CODE:
+      return getCollege_code();
 
-    case NAME:
-      return getName();
+    case COLLGE_NAME:
+      return getCollge_name();
 
-    case PROVINCE:
-      return getProvince();
+    case PROVINCE_CODE:
+      return getProvince_code();
 
-    case LOGO:
-      return getLogo();
+    case PROVINCE_NAME:
+      return getProvince_name();
 
     }
     throw new IllegalStateException();
@@ -343,14 +343,14 @@ public class College implements org.apache.thrift.TBase<College, College._Fields
     }
 
     switch (field) {
-    case CODE:
-      return isSetCode();
-    case NAME:
-      return isSetName();
-    case PROVINCE:
-      return isSetProvince();
-    case LOGO:
-      return isSetLogo();
+    case COLLEGE_CODE:
+      return isSetCollege_code();
+    case COLLGE_NAME:
+      return isSetCollge_name();
+    case PROVINCE_CODE:
+      return isSetProvince_code();
+    case PROVINCE_NAME:
+      return isSetProvince_name();
     }
     throw new IllegalStateException();
   }
@@ -368,39 +368,39 @@ public class College implements org.apache.thrift.TBase<College, College._Fields
     if (that == null)
       return false;
 
-    boolean this_present_code = true;
-    boolean that_present_code = true;
-    if (this_present_code || that_present_code) {
-      if (!(this_present_code && that_present_code))
+    boolean this_present_college_code = true;
+    boolean that_present_college_code = true;
+    if (this_present_college_code || that_present_college_code) {
+      if (!(this_present_college_code && that_present_college_code))
         return false;
-      if (this.code != that.code)
-        return false;
-    }
-
-    boolean this_present_name = true && this.isSetName();
-    boolean that_present_name = true && that.isSetName();
-    if (this_present_name || that_present_name) {
-      if (!(this_present_name && that_present_name))
-        return false;
-      if (!this.name.equals(that.name))
+      if (this.college_code != that.college_code)
         return false;
     }
 
-    boolean this_present_province = true;
-    boolean that_present_province = true;
-    if (this_present_province || that_present_province) {
-      if (!(this_present_province && that_present_province))
+    boolean this_present_collge_name = true && this.isSetCollge_name();
+    boolean that_present_collge_name = true && that.isSetCollge_name();
+    if (this_present_collge_name || that_present_collge_name) {
+      if (!(this_present_collge_name && that_present_collge_name))
         return false;
-      if (this.province != that.province)
+      if (!this.collge_name.equals(that.collge_name))
         return false;
     }
 
-    boolean this_present_logo = true && this.isSetLogo();
-    boolean that_present_logo = true && that.isSetLogo();
-    if (this_present_logo || that_present_logo) {
-      if (!(this_present_logo && that_present_logo))
+    boolean this_present_province_code = true;
+    boolean that_present_province_code = true;
+    if (this_present_province_code || that_present_province_code) {
+      if (!(this_present_province_code && that_present_province_code))
         return false;
-      if (!this.logo.equals(that.logo))
+      if (this.province_code != that.province_code)
+        return false;
+    }
+
+    boolean this_present_province_name = true && this.isSetProvince_name();
+    boolean that_present_province_name = true && that.isSetProvince_name();
+    if (this_present_province_name || that_present_province_name) {
+      if (!(this_present_province_name && that_present_province_name))
+        return false;
+      if (!this.province_name.equals(that.province_name))
         return false;
     }
 
@@ -411,25 +411,25 @@ public class College implements org.apache.thrift.TBase<College, College._Fields
   public int hashCode() {
     List<Object> list = new ArrayList<Object>();
 
-    boolean present_code = true;
-    list.add(present_code);
-    if (present_code)
-      list.add(code);
+    boolean present_college_code = true;
+    list.add(present_college_code);
+    if (present_college_code)
+      list.add(college_code);
 
-    boolean present_name = true && (isSetName());
-    list.add(present_name);
-    if (present_name)
-      list.add(name);
+    boolean present_collge_name = true && (isSetCollge_name());
+    list.add(present_collge_name);
+    if (present_collge_name)
+      list.add(collge_name);
 
-    boolean present_province = true;
-    list.add(present_province);
-    if (present_province)
-      list.add(province);
+    boolean present_province_code = true;
+    list.add(present_province_code);
+    if (present_province_code)
+      list.add(province_code);
 
-    boolean present_logo = true && (isSetLogo());
-    list.add(present_logo);
-    if (present_logo)
-      list.add(logo);
+    boolean present_province_name = true && (isSetProvince_name());
+    list.add(present_province_name);
+    if (present_province_name)
+      list.add(province_name);
 
     return list.hashCode();
   }
@@ -442,42 +442,42 @@ public class College implements org.apache.thrift.TBase<College, College._Fields
 
     int lastComparison = 0;
 
-    lastComparison = Boolean.valueOf(isSetCode()).compareTo(other.isSetCode());
+    lastComparison = Boolean.valueOf(isSetCollege_code()).compareTo(other.isSetCollege_code());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetCode()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.code, other.code);
+    if (isSetCollege_code()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.college_code, other.college_code);
       if (lastComparison != 0) {
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetName()).compareTo(other.isSetName());
+    lastComparison = Boolean.valueOf(isSetCollge_name()).compareTo(other.isSetCollge_name());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetName()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.name, other.name);
+    if (isSetCollge_name()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.collge_name, other.collge_name);
       if (lastComparison != 0) {
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetProvince()).compareTo(other.isSetProvince());
+    lastComparison = Boolean.valueOf(isSetProvince_code()).compareTo(other.isSetProvince_code());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetProvince()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.province, other.province);
+    if (isSetProvince_code()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.province_code, other.province_code);
       if (lastComparison != 0) {
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetLogo()).compareTo(other.isSetLogo());
+    lastComparison = Boolean.valueOf(isSetProvince_name()).compareTo(other.isSetProvince_name());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetLogo()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.logo, other.logo);
+    if (isSetProvince_name()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.province_name, other.province_name);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -502,27 +502,27 @@ public class College implements org.apache.thrift.TBase<College, College._Fields
     StringBuilder sb = new StringBuilder("College(");
     boolean first = true;
 
-    sb.append("code:");
-    sb.append(this.code);
+    sb.append("college_code:");
+    sb.append(this.college_code);
     first = false;
     if (!first) sb.append(", ");
-    sb.append("name:");
-    if (this.name == null) {
+    sb.append("collge_name:");
+    if (this.collge_name == null) {
       sb.append("null");
     } else {
-      sb.append(this.name);
+      sb.append(this.collge_name);
     }
     first = false;
     if (!first) sb.append(", ");
-    sb.append("province:");
-    sb.append(this.province);
+    sb.append("province_code:");
+    sb.append(this.province_code);
     first = false;
     if (!first) sb.append(", ");
-    sb.append("logo:");
-    if (this.logo == null) {
+    sb.append("province_name:");
+    if (this.province_name == null) {
       sb.append("null");
     } else {
-      sb.append(this.logo);
+      sb.append(this.province_name);
     }
     first = false;
     sb.append(")");
@@ -570,34 +570,34 @@ public class College implements org.apache.thrift.TBase<College, College._Fields
           break;
         }
         switch (schemeField.id) {
-          case 1: // CODE
+          case 1: // COLLEGE_CODE
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.code = iprot.readI32();
-              struct.setCodeIsSet(true);
+              struct.college_code = iprot.readI32();
+              struct.setCollege_codeIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 2: // NAME
+          case 2: // COLLGE_NAME
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.name = iprot.readString();
-              struct.setNameIsSet(true);
+              struct.collge_name = iprot.readString();
+              struct.setCollge_nameIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 3: // PROVINCE
+          case 3: // PROVINCE_CODE
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.province = iprot.readI32();
-              struct.setProvinceIsSet(true);
+              struct.province_code = iprot.readI32();
+              struct.setProvince_codeIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 4: // LOGO
+          case 4: // PROVINCE_NAME
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.logo = iprot.readString();
-              struct.setLogoIsSet(true);
+              struct.province_name = iprot.readString();
+              struct.setProvince_nameIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -617,20 +617,20 @@ public class College implements org.apache.thrift.TBase<College, College._Fields
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
-      oprot.writeFieldBegin(CODE_FIELD_DESC);
-      oprot.writeI32(struct.code);
+      oprot.writeFieldBegin(COLLEGE_CODE_FIELD_DESC);
+      oprot.writeI32(struct.college_code);
       oprot.writeFieldEnd();
-      if (struct.name != null) {
-        oprot.writeFieldBegin(NAME_FIELD_DESC);
-        oprot.writeString(struct.name);
+      if (struct.collge_name != null) {
+        oprot.writeFieldBegin(COLLGE_NAME_FIELD_DESC);
+        oprot.writeString(struct.collge_name);
         oprot.writeFieldEnd();
       }
-      oprot.writeFieldBegin(PROVINCE_FIELD_DESC);
-      oprot.writeI32(struct.province);
+      oprot.writeFieldBegin(PROVINCE_CODE_FIELD_DESC);
+      oprot.writeI32(struct.province_code);
       oprot.writeFieldEnd();
-      if (struct.logo != null) {
-        oprot.writeFieldBegin(LOGO_FIELD_DESC);
-        oprot.writeString(struct.logo);
+      if (struct.province_name != null) {
+        oprot.writeFieldBegin(PROVINCE_NAME_FIELD_DESC);
+        oprot.writeString(struct.province_name);
         oprot.writeFieldEnd();
       }
       oprot.writeFieldStop();
@@ -651,30 +651,30 @@ public class College implements org.apache.thrift.TBase<College, College._Fields
     public void write(org.apache.thrift.protocol.TProtocol prot, College struct) throws TException {
       TTupleProtocol oprot = (TTupleProtocol) prot;
       BitSet optionals = new BitSet();
-      if (struct.isSetCode()) {
+      if (struct.isSetCollege_code()) {
         optionals.set(0);
       }
-      if (struct.isSetName()) {
+      if (struct.isSetCollge_name()) {
         optionals.set(1);
       }
-      if (struct.isSetProvince()) {
+      if (struct.isSetProvince_code()) {
         optionals.set(2);
       }
-      if (struct.isSetLogo()) {
+      if (struct.isSetProvince_name()) {
         optionals.set(3);
       }
       oprot.writeBitSet(optionals, 4);
-      if (struct.isSetCode()) {
-        oprot.writeI32(struct.code);
+      if (struct.isSetCollege_code()) {
+        oprot.writeI32(struct.college_code);
       }
-      if (struct.isSetName()) {
-        oprot.writeString(struct.name);
+      if (struct.isSetCollge_name()) {
+        oprot.writeString(struct.collge_name);
       }
-      if (struct.isSetProvince()) {
-        oprot.writeI32(struct.province);
+      if (struct.isSetProvince_code()) {
+        oprot.writeI32(struct.province_code);
       }
-      if (struct.isSetLogo()) {
-        oprot.writeString(struct.logo);
+      if (struct.isSetProvince_name()) {
+        oprot.writeString(struct.province_name);
       }
     }
 
@@ -683,20 +683,20 @@ public class College implements org.apache.thrift.TBase<College, College._Fields
       TTupleProtocol iprot = (TTupleProtocol) prot;
       BitSet incoming = iprot.readBitSet(4);
       if (incoming.get(0)) {
-        struct.code = iprot.readI32();
-        struct.setCodeIsSet(true);
+        struct.college_code = iprot.readI32();
+        struct.setCollege_codeIsSet(true);
       }
       if (incoming.get(1)) {
-        struct.name = iprot.readString();
-        struct.setNameIsSet(true);
+        struct.collge_name = iprot.readString();
+        struct.setCollge_nameIsSet(true);
       }
       if (incoming.get(2)) {
-        struct.province = iprot.readI32();
-        struct.setProvinceIsSet(true);
+        struct.province_code = iprot.readI32();
+        struct.setProvince_codeIsSet(true);
       }
       if (incoming.get(3)) {
-        struct.logo = iprot.readString();
-        struct.setLogoIsSet(true);
+        struct.province_name = iprot.readString();
+        struct.setProvince_nameIsSet(true);
       }
     }
   }

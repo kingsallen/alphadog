@@ -10,8 +10,8 @@ struct City {
 }
 
 struct College {
-    1: i32 code,
-    2: string name,  //
-    3: i32 province, // 所在地
-    4: string logo
+    1: i32 college_code,
+    2: string collge_name,  //
+    3: i32 province_code, // 所在地 code
+    4: string province_name // 所在地 名称
 }

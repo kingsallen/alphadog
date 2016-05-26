@@ -14,88 +14,127 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dict.service.CollegeServices.Iface;
 import com.moseeker.thrift.gen.dict.struct.City;
 import com.moseeker.thrift.gen.dict.struct.College;
+import org.apache.http.annotation.Obsolete;
 import org.apache.thrift.TException;
+import org.jooq.Record;
+import org.jooq.types.UInteger;
+import org.jooq.util.derby.sys.Sys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.List;
-
+import java.util.*;
 
 @Service
-public class CollegeServicesImpl extends JOOQBaseServiceImpl<College, DictCollegeRecord> implements Iface {
+public class CollegeServicesImpl implements Iface {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     protected CollegeDao dao;
 
-    @Override
-    protected void initDao() {
-        super.dao = this.dao;
+    protected College DBToStruct(Record r) {
+        College c = new College();
+        c.setCollege_code(((UInteger)r.getValue("college_code")).intValue());
+        c.setCollge_name((String)r.getValue("college_name"));
+        c.setProvince_code(((UInteger)r.getValue("province_code")).intValue());
+        c.setProvince_name((String)r.getValue("province_name"));
+        return c;
     }
 
-    @Override
-    protected College DBToStruct(DictCollegeRecord r) {
-        return (College) BeanUtils.DBToStruct(College.class, r);
+    protected List<College> DBsToStructs(List<Record> records) {
+        List structs = new ArrayList<>();
+        if(records != null && records.size() > 0) {
+            for(Record r : records) {
+                structs.add(DBToStruct(r));
+            }
+        }
+        return structs;
     }
 
-    @Override
-    protected DictCollegeRecord structToDB(College c) {
-        return (DictCollegeRecord) BeanUtils.structToDB(c, DictCollegeRecord.class);
-    }
-
-    /*
     @Override
     public Response getResources(CommonQuery query) throws TException {
+
         RedisClient rc = RedisClientFactory.getCacheClient();
         String cachKey = genCachKey(query);
         String cachedResult = null;
         Response result = null;
-        String patternString = "DICT_CITY";
+        String patternString = "DICT_COLLEGE";
         int appid = 0; // query.appid
         try {
-            // 缓存表project_appid字段为0可视为对一切app_id开放
-            // 此处请求将appid设置为0, 城市字典表允许来自一切的app_id缓存
+
             cachedResult = rc.get(appid, patternString, cachKey, () -> {
                 String r = null;
                 try {
-                    List<City> cities = super.getRawResources(query);
-                    HashMap transformed = transformData(cities);
+                    List joinedResult = this.dao.getJoinedResults(query);
+                    List<College> structs = DBsToStructs(joinedResult);
+                    Collection transformed = transformData(structs);
                     r = JSON.toJSONString(ResponseUtils.success(transformed));
-                } catch (TException e) {
+                } catch (Exception e) {
                     logger.error("getResources error", e);
                     ResponseUtils.fail(e.getMessage());
                 }
                 return r;
             });
             result = JSON.parseObject(cachedResult, Response.class);
-        } catch (Exception e) {
-            logger.error("CacheConfigNotExistException, appid: %d, cachkey: %s, pattern_string: %s", appid, cachKey, patternString);
-            List<City> r = super.getRawResources(query);
-            HashMap transformed = transformData(r);
-            result = ResponseUtils.success(transformed);
+
+        } catch(Exception e) {
+            e.printStackTrace();
+            List joinedResult = this.dao.getJoinedResults(query);
+            List<College> structs = DBsToStructs(joinedResult);
+            result = ResponseUtils.success(transformData(structs));
         }
 
         return result;
+
     }
 
-    private HashMap transformData(List<College> s) {
-
+    private Collection transformData(List<College> s) {
         DictCollegeHashMap dictCollege = new DictCollegeHashMap(s);
-        HashMap hm = dictCollege.getHashMap();
+        Collection hm = dictCollege.getList();
         return hm;
-
     }
 
     private String genCachKey(CommonQuery query) {
         return "all";
     }
 
-    */
+}
 
+class DictCollegeHashMap {
 
+    private HashMap hm;
+
+    public DictCollegeHashMap(List<College> colleges) {
+        hm = new HashMap();
+        for(College college: colleges) {
+            System.out.println(college);
+            put(hm, college);
+        }
+    }
+
+    public HashMap getHashMap(){
+        return this.hm;
+    }
+
+    public Collection getList() {
+        return this.hm.values();
+    }
+
+    static void put(HashMap hm, College c) {
+        int provinceCode = c.getProvince_code();
+        if(!hm.containsKey(provinceCode)) {
+            Map m = new HashMap();
+            m.put("code", c.getProvince_code());
+            m.put("name", c.getProvince_name());
+            m.put("children", new ArrayList());
+            hm.put(provinceCode, m);
+        }
+        List collegesInProvince = (List)(((Map)(hm.get(provinceCode))).get("children"));
+        Map collegeInfo = new HashMap();
+        collegeInfo.put("code", c.getCollege_code());
+        collegeInfo.put("name", c.getCollge_name());
+        collegesInProvince.add(collegeInfo);
+    }
 }
 

@@ -32,29 +32,31 @@ public class CollegeDaoImpl extends BaseDaoImpl<DictCollegeRecord, DictCollege> 
     }
 
     @SuppressWarnings("unchecked")
-    public List<DictCollegeRecord> getResources(CommonQuery query) throws Exception {
-        List<DictCollegeRecord> records = null;
-        Connection conn = null;
-        try {
-            // needs to join table
+    public List getJoinedResults(CommonQuery query) {
+        List<Record> records = null;
+        try (Connection conn = DBConnHelper.DBConn.getConn())
+        {
+            // needs to
             initJOOQEntity();
-            records = new ArrayList<>();
-            conn = DBConnHelper.DBConn.getConn();
+            records = new ArrayList<Record>();
             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-            SelectJoinStep<Record> table = create.select().from(tableLike);
-            Result<Record> result = table.fetch();
+            Result<? extends Record> result = create
+                    .select(DictCollege.DICT_COLLEGE.CODE.as("college_code"),
+                            DictCollege.DICT_COLLEGE.NAME.as("college_name"),
+                            DictCity.DICT_CITY.CODE.as("province_code"),
+                            DictCity.DICT_CITY.NAME.as("province_name"))
+                    .from(DictCollege.DICT_COLLEGE)
+                    .join(DictCity.DICT_CITY)
+                    .on(DictCollege.DICT_COLLEGE.PROVINCE.equal(DictCity.DICT_CITY.CODE))
+                    .fetch();
 
             if (result != null && result.size() > 0) {
                 for (Record r : result) {
-                    records.add((DictCollegeRecord) r);
+                    records.add(r);
                 }
             }
         } catch (Exception e) {
-            logger.error(e.getMessage(),e);
-        } finally {
-            if(conn != null && !conn.isClosed()) {
-                conn.close();
-            }
+            logger.error(e.getMessage(), e);
         }
         return records;
     }
