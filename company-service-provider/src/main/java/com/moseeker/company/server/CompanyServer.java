@@ -7,7 +7,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import com.moseeker.company.service.impl.CompanyServicesImpl;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.Server;
-import com.moseeker.useraccounts.server.UsersettingsServer;
 
 /**
  * 
