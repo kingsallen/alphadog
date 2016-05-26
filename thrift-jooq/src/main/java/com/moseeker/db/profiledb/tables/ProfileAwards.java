@@ -37,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileAwards extends TableImpl<ProfileAwardsRecord> {
 
-	private static final long serialVersionUID = 1107494070;
+	private static final long serialVersionUID = 941539957;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_awards</code>
@@ -65,7 +65,7 @@ public class ProfileAwards extends TableImpl<ProfileAwardsRecord> {
 	/**
 	 * The column <code>profileDB.profile_awards.reward_date</code>. 获奖日期 yyyy-mm-dd
 	 */
-	public final TableField<ProfileAwardsRecord, Date> REWARD_DATE = createField("reward_date", org.jooq.impl.SQLDataType.DATE.nullable(false), this, "获奖日期 yyyy-mm-dd");
+	public final TableField<ProfileAwardsRecord, Date> REWARD_DATE = createField("reward_date", org.jooq.impl.SQLDataType.DATE, this, "获奖日期 yyyy-mm-dd");
 
 	/**
 	 * The column <code>profileDB.profile_awards.name</code>. 获得奖项名称
