@@ -31,9 +31,21 @@ public class DictConstantServiceImplTest {
 
             List<Integer> parentCodeList = new ArrayList<Integer>();
             parentCodeList.add(3101);
+            parentCodeList.add(3102);
             Response getDictConstantJsonByParentCode = dictConstanService.getDictConstantJsonByParentCode(parentCodeList);
 
             System.out.println(getDictConstantJsonByParentCode);
+
+            Response getDictConstantJsonByParentCode1 = dictConstanService.getDictConstantJsonByParentCode(null);
+
+            System.out.println(getDictConstantJsonByParentCode1);
+
+            List<Integer> parentCodeList2 = new ArrayList<Integer>();
+            parentCodeList2.add(3101);
+
+            Response getDictConstantJsonByParentCode2 = dictConstanService.getDictConstantJsonByParentCode(parentCodeList2);
+
+            System.out.println(getDictConstantJsonByParentCode2);
 
         } catch (Exception e) {
             e.printStackTrace();

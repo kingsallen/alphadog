@@ -1,6 +1,7 @@
 package com.moseeker.dict.service.impl;
 
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.dict.dao.DictConstantDao;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dict.service.DictConstanService;
@@ -22,14 +23,18 @@ public class DictConstantServiceImpl implements DictConstanService.Iface {
     @Autowired
     public DictConstantDao dictConstantDao;
 
+    /**
+     * 取得常量字典json数据
+     * <p>
+     *
+     * */
     @Override
     public Response getDictConstantJsonByParentCode(List<Integer> parentCodeList) throws TException {
         try{
             String dictConstantJson = dictConstantDao.getDictConstantJsonByParentCode(parentCodeList);
-            ResponseUtils.success(dictConstantJson);
+            return ResponseUtils.success(dictConstantJson);
         }catch (Exception e){
-
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
-        return null;
     }
 }
