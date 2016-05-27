@@ -8,6 +8,6 @@ import com.moseeker.db.userdb.tables.records.UserFavPositionRecord;
  */
 public interface UserFavoritePositionDao extends BaseDao<UserFavPositionRecord> {
 
-    public int getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId) throws Exception;
+    public int getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId, byte favorite) throws Exception;
 
 }

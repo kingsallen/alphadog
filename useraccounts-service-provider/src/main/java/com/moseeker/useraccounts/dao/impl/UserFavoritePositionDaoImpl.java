@@ -35,9 +35,10 @@ public class UserFavoritePositionDaoImpl extends BaseJooqDaoImpl<UserFavPosition
      *  判断用户是否我感兴趣
      *  <p>
      *
+     *  @param favorite 0:收藏, 1:取消收藏, 2:感兴趣
      */
     @Override
-    public int getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId) throws Exception{
+    public int getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId, byte favorite) throws Exception{
 
         Connection conn = null;
         Integer count = 0;
@@ -48,7 +49,8 @@ public class UserFavoritePositionDaoImpl extends BaseJooqDaoImpl<UserFavPosition
             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 
             Condition condition = UserFavPosition.USER_FAV_POSITION.SYSUSER_ID.equal(userId).
-                    and(UserFavPosition.USER_FAV_POSITION.POSITION_ID.equal(positionId));
+                    and(UserFavPosition.USER_FAV_POSITION.POSITION_ID.equal(positionId)).
+                    and(UserFavPosition.USER_FAV_POSITION.FAVORITE.equal(favorite));
 
             Record record = create.selectCount().from(tableLike).where(condition).fetchOne();
             count = (Integer)record.getValue(0);

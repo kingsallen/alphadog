@@ -640,12 +640,19 @@ public class UseraccountsServiceImpl implements Iface {
      * 获取我感兴趣
      * <p>
      *
+     * @param userId 用户ID
+     * @param positionId 职位ID
+     * //@param favorite 0:收藏, 1:取消收藏, 2:感兴趣
      *
+     * @return data : {true //感兴趣} {false //不感兴趣}
+     *
+     * TODO : 不知道以后职位收藏啥逻辑, 赞不支持
      */
     @Override
     public Response getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId) throws TException {
         try {
-            Integer count = userFavoritePositionDao.getUserFavPositionCountByUserIdAndPositionId(userId, positionId);
+            byte favorite = 2;
+            Integer count = userFavoritePositionDao.getUserFavPositionCountByUserIdAndPositionId(userId, positionId, favorite);
             return ResponseUtils.success(count > 0?true:false);
         }catch (Exception e){
             return ResponseUtils.success(ConstantErrorCodeMessage.USER_FAV_POSITION_FAILED);
