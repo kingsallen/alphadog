@@ -39,17 +39,17 @@ public class CompanyServices {
 
   public interface Iface {
 
-    public com.moseeker.thrift.gen.common.struct.Response getResource(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws TException;
+    public com.moseeker.thrift.gen.common.struct.Response getResource(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response getResources(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws TException;
+    public com.moseeker.thrift.gen.common.struct.Response getResources(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException;
 
   }
 
   public interface AsyncIface {
 
-    public void getResource(com.moseeker.thrift.gen.common.struct.CommonQuery query, AsyncMethodCallback resultHandler) throws TException;
+    public void getResource(com.moseeker.thrift.gen.common.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void getResources(com.moseeker.thrift.gen.common.struct.CommonQuery query, AsyncMethodCallback resultHandler) throws TException;
+    public void getResources(com.moseeker.thrift.gen.common.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -73,20 +73,20 @@ public class CompanyServices {
       super(iprot, oprot);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response getResource(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws TException
+    public com.moseeker.thrift.gen.common.struct.Response getResource(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException
     {
       send_getResource(query);
       return recv_getResource();
     }
 
-    public void send_getResource(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws TException
+    public void send_getResource(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException
     {
       getResource_args args = new getResource_args();
       args.setQuery(query);
       sendBase("getResource", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_getResource() throws TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_getResource() throws org.apache.thrift.TException
     {
       getResource_result result = new getResource_result();
       receiveBase(result, "getResource");
@@ -96,20 +96,20 @@ public class CompanyServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getResource failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response getResources(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws TException
+    public com.moseeker.thrift.gen.common.struct.Response getResources(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException
     {
       send_getResources(query);
       return recv_getResources();
     }
 
-    public void send_getResources(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws TException
+    public void send_getResources(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException
     {
       getResources_args args = new getResources_args();
       args.setQuery(query);
       sendBase("getResources", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_getResources() throws TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_getResources() throws org.apache.thrift.TException
     {
       getResources_result result = new getResources_result();
       receiveBase(result, "getResources");
@@ -137,7 +137,7 @@ public class CompanyServices {
       super(protocolFactory, clientManager, transport);
     }
 
-    public void getResource(com.moseeker.thrift.gen.common.struct.CommonQuery query, AsyncMethodCallback resultHandler) throws TException {
+    public void getResource(com.moseeker.thrift.gen.common.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       getResource_call method_call = new getResource_call(query, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -146,12 +146,12 @@ public class CompanyServices {
 
     public static class getResource_call extends org.apache.thrift.async.TAsyncMethodCall {
       private com.moseeker.thrift.gen.common.struct.CommonQuery query;
-      public getResource_call(com.moseeker.thrift.gen.common.struct.CommonQuery query, AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
+      public getResource_call(com.moseeker.thrift.gen.common.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.query = query;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getResource", org.apache.thrift.protocol.TMessageType.CALL, 0));
         getResource_args args = new getResource_args();
         args.setQuery(query);
@@ -159,8 +159,8 @@ public class CompanyServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws TException {
-        if (getState() != State.RESPONSE_READ) {
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
@@ -169,7 +169,7 @@ public class CompanyServices {
       }
     }
 
-    public void getResources(com.moseeker.thrift.gen.common.struct.CommonQuery query, AsyncMethodCallback resultHandler) throws TException {
+    public void getResources(com.moseeker.thrift.gen.common.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       getResources_call method_call = new getResources_call(query, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -178,12 +178,12 @@ public class CompanyServices {
 
     public static class getResources_call extends org.apache.thrift.async.TAsyncMethodCall {
       private com.moseeker.thrift.gen.common.struct.CommonQuery query;
-      public getResources_call(com.moseeker.thrift.gen.common.struct.CommonQuery query, AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
+      public getResources_call(com.moseeker.thrift.gen.common.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.query = query;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getResources", org.apache.thrift.protocol.TMessageType.CALL, 0));
         getResources_args args = new getResources_args();
         args.setQuery(query);
@@ -191,8 +191,8 @@ public class CompanyServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws TException {
-        if (getState() != State.RESPONSE_READ) {
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
@@ -232,7 +232,7 @@ public class CompanyServices {
         return false;
       }
 
-      public getResource_result getResult(I iface, getResource_args args) throws TException {
+      public getResource_result getResult(I iface, getResource_args args) throws org.apache.thrift.TException {
         getResource_result result = new getResource_result();
         result.success = iface.getResource(args.query);
         return result;
@@ -252,7 +252,7 @@ public class CompanyServices {
         return false;
       }
 
-      public getResources_result getResult(I iface, getResources_args args) throws TException {
+      public getResources_result getResult(I iface, getResources_args args) throws org.apache.thrift.TException {
         getResources_result result = new getResources_result();
         result.success = iface.getResources(args.query);
         return result;
@@ -323,7 +323,7 @@ public class CompanyServices {
         return false;
       }
 
-      public void start(I iface, getResource_args args, AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
+      public void start(I iface, getResource_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
         iface.getResource(args.query,resultHandler);
       }
     }
@@ -374,7 +374,7 @@ public class CompanyServices {
         return false;
       }
 
-      public void start(I iface, getResources_args args, AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
+      public void start(I iface, getResources_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
         iface.getResources(args.query,resultHandler);
       }
     }
@@ -611,11 +611,11 @@ public class CompanyServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -635,7 +635,7 @@ public class CompanyServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
       if (query != null) {
@@ -646,7 +646,7 @@ public class CompanyServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -654,7 +654,7 @@ public class CompanyServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -667,7 +667,7 @@ public class CompanyServices {
 
     private static class getResource_argsStandardScheme extends StandardScheme<getResource_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, getResource_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getResource_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -697,7 +697,7 @@ public class CompanyServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, getResource_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getResource_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -721,7 +721,7 @@ public class CompanyServices {
     private static class getResource_argsTupleScheme extends TupleScheme<getResource_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, getResource_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, getResource_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetQuery()) {
@@ -734,7 +734,7 @@ public class CompanyServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, getResource_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, getResource_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -977,11 +977,11 @@ public class CompanyServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -1001,7 +1001,7 @@ public class CompanyServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
       if (success != null) {
@@ -1012,7 +1012,7 @@ public class CompanyServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -1020,7 +1020,7 @@ public class CompanyServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -1033,7 +1033,7 @@ public class CompanyServices {
 
     private static class getResource_resultStandardScheme extends StandardScheme<getResource_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, getResource_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getResource_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -1063,7 +1063,7 @@ public class CompanyServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, getResource_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getResource_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -1087,7 +1087,7 @@ public class CompanyServices {
     private static class getResource_resultTupleScheme extends TupleScheme<getResource_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, getResource_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, getResource_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -1100,7 +1100,7 @@ public class CompanyServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, getResource_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, getResource_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -1343,11 +1343,11 @@ public class CompanyServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -1367,7 +1367,7 @@ public class CompanyServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
       if (query != null) {
@@ -1378,7 +1378,7 @@ public class CompanyServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -1386,7 +1386,7 @@ public class CompanyServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -1399,7 +1399,7 @@ public class CompanyServices {
 
     private static class getResources_argsStandardScheme extends StandardScheme<getResources_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, getResources_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getResources_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -1429,7 +1429,7 @@ public class CompanyServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, getResources_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getResources_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -1453,7 +1453,7 @@ public class CompanyServices {
     private static class getResources_argsTupleScheme extends TupleScheme<getResources_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, getResources_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, getResources_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetQuery()) {
@@ -1466,7 +1466,7 @@ public class CompanyServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, getResources_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, getResources_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -1709,11 +1709,11 @@ public class CompanyServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -1733,7 +1733,7 @@ public class CompanyServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
       if (success != null) {
@@ -1744,7 +1744,7 @@ public class CompanyServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -1752,7 +1752,7 @@ public class CompanyServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -1765,7 +1765,7 @@ public class CompanyServices {
 
     private static class getResources_resultStandardScheme extends StandardScheme<getResources_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, getResources_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getResources_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -1795,7 +1795,7 @@ public class CompanyServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, getResources_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getResources_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -1819,7 +1819,7 @@ public class CompanyServices {
     private static class getResources_resultTupleScheme extends TupleScheme<getResources_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, getResources_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, getResources_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -1832,7 +1832,7 @@ public class CompanyServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, getResources_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, getResources_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {

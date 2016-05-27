@@ -36,7 +36,7 @@ public class CompanyController {
 	public String getcompany(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
-			Response result = companyServices.getResource(query);
+			Response result = companyServices.getResources(query);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {
