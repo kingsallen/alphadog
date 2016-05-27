@@ -7,10 +7,8 @@ import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.sms.SmsSender;
 import com.moseeker.common.util.*;
-import com.moseeker.db.jobdb.tables.records.JobResumeOtherRecord;
 import com.moseeker.db.logdb.tables.records.LogUserloginRecordRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
-import com.moseeker.db.userdb.tables.UserFavPosition;
 import com.moseeker.db.userdb.tables.records.UserFavPositionRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
@@ -659,6 +657,14 @@ public class UseraccountsServiceImpl implements Iface {
         }
     }
 
+    /**
+     * 标记我感兴趣/职位收藏/取消职位收藏
+     * <p>
+     *
+     * @param userFavoritePosition 用户职位关系实体
+     * @return 关系表主键Id
+     * @exception TException
+     * */
     @Override
     public Response postUserFavoritePosition(UserFavoritePosition userFavoritePosition) throws TException {
         try {
@@ -684,7 +690,7 @@ public class UseraccountsServiceImpl implements Iface {
         } finally {
             //do nothing
         }
-        return ResponseUtils.fail("postUserFavoritePosition failed");
+        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
     }
 
     /**
