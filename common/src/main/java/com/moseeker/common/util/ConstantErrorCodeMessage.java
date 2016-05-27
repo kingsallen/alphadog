@@ -7,7 +7,7 @@ public final class ConstantErrorCodeMessage {
     public static final String PROGRAM_EXCEPTION = "{'status':99999 ,'发生异常，此时稍候再试!'}";
 
     public static final String PROGRAM_DATA_EMPTY = "{'status':90010,'message':'请求数据为空！'}";
-    public static final String PROGRAM_VALIDATE_REQUIRED = "{'status':90011,'message':'参数{0}是必填项！'}";
+    public static final String PROGRAM_VALIDATE_REQUIRED = "{'status':90014,'message':'参数{0}是必填项！'}";
     public static final String PROGRAM_POST_FAILED = "{'status':90011,'message':'添加失败！'}";
     public static final String PROGRAM_PUT_FAILED = "{'status':90012,'message':'保存失败!'}";
     public static final String PROGRAM_DEL_FAILED = "{'status':90013,'message':'删除失败!'}";
@@ -27,9 +27,9 @@ public final class ConstantErrorCodeMessage {
 
     // PROFILE服务ERRCODE说明定义 3字头
     public static final String PROFILE_REPEAT_DATA = "{'status':30010,'message':'重复数据!'}";
-    public static final String PROFILE_DICT_CITY_NOTEXIST = "{'status':31010,'message':'城市字典不存在!'}";
-    public static final String PROFILE_DICT_POSITION_NOTEXIST = "{'status':31010,'message':'职位职能字典不存在!'}";
-    public static final String PROFILE_DICT_INDUSTRY_NOTEXIST = "{'status':31010,'message':'行业字典不存在!'}";
+    public static final String PROFILE_DICT_CITY_NOTEXIST = "{'status':31011,'message':'城市字典不存在!'}";
+    public static final String PROFILE_DICT_POSITION_NOTEXIST = "{'status':31012,'message':'职位职能字典不存在!'}";
+    public static final String PROFILE_DICT_INDUSTRY_NOTEXIST = "{'status':31013,'message':'行业字典不存在!'}";
 
     // 申请服务ERRCODE说明定义 4字头
     public static final String APPLICATION_VALIDATE_IS_NULL = "{'status':41001,'message':'申请对象为空'}";
