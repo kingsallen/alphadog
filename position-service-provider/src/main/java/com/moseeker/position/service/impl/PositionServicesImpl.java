@@ -1,5 +1,6 @@
 package com.moseeker.position.service.impl;
 
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.position.dao.PositionDao;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -13,6 +14,8 @@ import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.service.PositionServices.Iface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class PositionServicesImpl extends JOOQBaseServiceImpl<Position, JobPositionRecord> implements Iface {
@@ -35,6 +38,15 @@ public class PositionServicesImpl extends JOOQBaseServiceImpl<Position, JobPosit
     @Override
     protected JobPositionRecord structToDB(Position p) {
         return (JobPositionRecord) BeanUtils.structToDB(p, JobPositionRecord.class);
+    }
+
+    @Override
+    public Response getRecommendedPositions(int pid) {
+
+        List<JobPositionRecord> recommendPositons = this.dao.getRecommendedPositions(pid);
+
+        return ResponseUtils.success(DBsToStructs(recommendPositons));
+
     }
 
 }
