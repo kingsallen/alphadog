@@ -17,7 +17,7 @@ public class ResponseLogNotification {
 	private final static String eventkey = "RESTFUL_API_ERROR";
 
 	public static String success(HttpServletRequest request, Response response) {
-		String jsonresponse = JSON.toJSONString(CleanJsonResponse.convertFrom(response));
+		String jsonresponse = JSON.toJSONString(CleanJsonResponseWithParse.convertFrom(response));
 		logRequestResponse(request, jsonresponse);
 		return jsonresponse;
 	}
@@ -72,5 +72,4 @@ public class ResponseLogNotification {
 	public static void main(String[] args) {
 		Notification.sendNotification(0, "MYSQL_CONNECT_ERROR", "mysql ip : 123.44.44.44");
 	}
-
 }

@@ -74,8 +74,12 @@ atlassian-ide-plugin.xml
 *.log.*
 /WebContent
 
+<<<<<<< HEAD
+# exceptions
+=======
 # debug properties
 common/src/main/resources/*.properties
 rpc-center/src/main/resources/*.properties
 service-manager/src/main/resources/*.properties
 
+>>>>>>> develop

@@ -38,7 +38,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileWorkexp extends TableImpl<ProfileWorkexpRecord> {
 
-	private static final long serialVersionUID = 394894468;
+	private static final long serialVersionUID = 465467270;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_workexp</code>
@@ -66,12 +66,12 @@ public class ProfileWorkexp extends TableImpl<ProfileWorkexpRecord> {
 	/**
 	 * The column <code>profileDB.profile_workexp.start</code>. 起止时间-起 yyyy-mm-dd
 	 */
-	public final TableField<ProfileWorkexpRecord, Date> START = createField("start", org.jooq.impl.SQLDataType.DATE.nullable(false), this, "起止时间-起 yyyy-mm-dd");
+	public final TableField<ProfileWorkexpRecord, Date> START = createField("start", org.jooq.impl.SQLDataType.DATE, this, "起止时间-起 yyyy-mm-dd");
 
 	/**
 	 * The column <code>profileDB.profile_workexp.end</code>. 起止时间-止 yyyy-mm-dd
 	 */
-	public final TableField<ProfileWorkexpRecord, Date> END = createField("end", org.jooq.impl.SQLDataType.DATE.nullable(false), this, "起止时间-止 yyyy-mm-dd");
+	public final TableField<ProfileWorkexpRecord, Date> END = createField("end", org.jooq.impl.SQLDataType.DATE, this, "起止时间-止 yyyy-mm-dd");
 
 	/**
 	 * The column <code>profileDB.profile_workexp.end_until_now</code>. 是否至今 0：否 1：是

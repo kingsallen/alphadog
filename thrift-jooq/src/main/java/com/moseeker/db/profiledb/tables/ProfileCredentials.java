@@ -37,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileCredentials extends TableImpl<ProfileCredentialsRecord> {
 
-	private static final long serialVersionUID = -1685347435;
+	private static final long serialVersionUID = 1807690038;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_credentials</code>
@@ -85,7 +85,7 @@ public class ProfileCredentials extends TableImpl<ProfileCredentialsRecord> {
 	/**
 	 * The column <code>profileDB.profile_credentials.get_date</code>. 获得时间
 	 */
-	public final TableField<ProfileCredentialsRecord, Date> GET_DATE = createField("get_date", org.jooq.impl.SQLDataType.DATE.nullable(false), this, "获得时间");
+	public final TableField<ProfileCredentialsRecord, Date> GET_DATE = createField("get_date", org.jooq.impl.SQLDataType.DATE, this, "获得时间");
 
 	/**
 	 * The column <code>profileDB.profile_credentials.score</code>. 成绩

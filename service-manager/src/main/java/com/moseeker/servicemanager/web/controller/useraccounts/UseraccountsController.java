@@ -428,7 +428,7 @@ public class UseraccountsController {
     * @param response
     * @return
     */
-    @RequestMapping(value = "/user/favorite", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/favorite/position", method = RequestMethod.GET)
     @ResponseBody
     public String getUserFavPositionCountByUserIdAndPositionId(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -453,7 +453,7 @@ public class UseraccountsController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/user/favorite", method = RequestMethod.POST)
+    @RequestMapping(value = "/user/favorite/position", method = RequestMethod.POST)
     @ResponseBody
     public String postUserFavoritePosition(HttpServletRequest request, HttpServletResponse response) {
         try {
