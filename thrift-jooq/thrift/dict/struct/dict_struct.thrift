@@ -8,3 +8,10 @@ struct City {
     5: string ename, // 英文名称
     6: byte is_using // 正在使用 0:没在用 1:在使用
 }
+
+struct College {
+    1: i32 college_code,
+    2: string collge_name,  //
+    3: i32 province_code, // 所在地 code
+    4: string province_name // 所在地 名称
+}
