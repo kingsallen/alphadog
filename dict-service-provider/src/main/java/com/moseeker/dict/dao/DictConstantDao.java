@@ -2,8 +2,10 @@ package com.moseeker.dict.dao;
 
 import com.moseeker.common.providerutils.daoutils.BaseDao;
 import com.moseeker.db.dictdb.tables.records.DictConstantRecord;
+import com.moseeker.dict.pojo.DictConstantPojo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 获取常量字典
@@ -13,6 +15,6 @@ import java.util.List;
  */
 public interface DictConstantDao extends BaseDao<DictConstantRecord> {
 
-    public String getDictConstantJsonByParentCode(List<Integer> parentCodeList) throws Exception;
+    public Map<Integer, List<DictConstantPojo>> getDictConstantJsonByParentCode(List<Integer> parentCodeList) throws Exception;
 
 }

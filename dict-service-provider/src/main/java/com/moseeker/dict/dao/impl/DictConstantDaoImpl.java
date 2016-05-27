@@ -1,6 +1,5 @@
 package com.moseeker.dict.dao.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
 import com.moseeker.db.dictdb.tables.DictConstant;
@@ -35,8 +34,8 @@ public class DictConstantDaoImpl extends BaseDaoImpl<DictConstantRecord, DictCon
      * @return
      * @throws Exception
      */
-    public String getDictConstantJsonByParentCode(List<Integer> parentCodeList) throws Exception{
-        String jsonDictConstant = "";
+    public Map<Integer, List<DictConstantPojo>> getDictConstantJsonByParentCode(List<Integer> parentCodeList) throws Exception{
+
         Connection conn = null;
         Condition condition = null;
         Map<Integer, List<DictConstantPojo>> map = new HashMap<Integer, List<DictConstantPojo>>();
@@ -73,16 +72,14 @@ public class DictConstantDaoImpl extends BaseDaoImpl<DictConstantRecord, DictCon
                     map.put(parentCode, dictConstantPOJOList1);
                 }
             }
-            jsonDictConstant = JSON.toJSONString(map);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            jsonDictConstant = "{}";
         } finally {
             if(conn != null && !conn.isClosed()) {
                 conn.close();
             }
         }
-        return jsonDictConstant;
+        return map;
     }
 
 }
