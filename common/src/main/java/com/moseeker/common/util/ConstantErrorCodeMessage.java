@@ -3,8 +3,8 @@ package com.moseeker.common.util;
 public final class ConstantErrorCodeMessage {
 
     // 系统共通ERRCODE说明定义 9字头
-    public static final String PROGRAM_EXHAUSTED = "{'status':-1,'系统繁忙，此时稍候再试!'}";
-    public static final String PROGRAM_EXCEPTION = "{'status':99999 ,'发生异常，此时稍候再试!'}";
+    public static final String PROGRAM_EXHAUSTED = "{'status':-1,'系统繁忙，请稍候再试!'}";
+    public static final String PROGRAM_EXCEPTION = "{'status':99999 ,'发生异常，请稍候再试!'}";
 
     public static final String PROGRAM_DATA_EMPTY = "{'status':90010,'message':'请求数据为空！'}";
     public static final String PROGRAM_VALIDATE_REQUIRED = "{'status':90014,'message':'参数{0}是必填项！'}";
