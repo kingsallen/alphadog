@@ -8,6 +8,7 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import com.moseeker.thrift.gen.useraccounts.service.UsersettingServices;
+import com.moseeker.thrift.gen.useraccounts.struct.User;
 import com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition;
 import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
 import com.moseeker.thrift.gen.useraccounts.struct.Usersetting;
@@ -71,12 +72,15 @@ public class UseraccountsController {
    @ResponseBody
    public String postusermobilesignup(HttpServletRequest request, HttpServletResponse response) {
       try {
-         Map<String, Object> reqParams = ParamUtils.mergeRequestParameters(request);
-         String mobile = BeanUtils.converToString(reqParams.get("mobile"));
-         String code = BeanUtils.converToString(reqParams.get("code"));
-         String password = BeanUtils.converToString(reqParams.get("password"));
 
-         Response result = useraccountsServices.postusermobilesignup(mobile, code, password);
+         // 验证码
+         String code = request.getParameter("code");
+
+         // 获取user实体对象
+         User user = ParamUtils.initModelForm(request, User.class);
+
+         Response result = useraccountsServices.postusermobilesignup(user, code);
+
          if (result.getStatus() == 0) {
             return ResponseLogNotification.success(request, result);
          } else {
@@ -457,7 +461,7 @@ public class UseraccountsController {
     @ResponseBody
     public String postUserFavoritePosition(HttpServletRequest request, HttpServletResponse response) {
         try {
-            // 获取application实体对象
+            // 获取用户职位实体实体对象
             UserFavoritePosition userFavoritePosition = ParamUtils.initModelForm(request, UserFavoritePosition.class);
 
             Response result = useraccountsServices.postUserFavoritePosition(userFavoritePosition);

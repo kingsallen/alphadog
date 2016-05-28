@@ -7,6 +7,7 @@ import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.sms.SmsSender;
 import com.moseeker.common.util.*;
+import com.moseeker.db.jobdb.tables.records.JobResumeOtherRecord;
 import com.moseeker.db.logdb.tables.records.LogUserloginRecordRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.db.userdb.tables.records.UserFavPositionRecord;
@@ -15,6 +16,7 @@ import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Iface;
+import com.moseeker.thrift.gen.useraccounts.struct.User;
 import com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition;
 import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
 import com.moseeker.useraccounts.dao.UserDao;
@@ -54,24 +56,6 @@ public class UseraccountsServiceImpl implements Iface {
 
     @Autowired
     protected UserFavoritePositionDao userFavoritePositionDao;
-
-    public static void main(String[] args) {
-        Userloginreq userlogin = new Userloginreq();
-        userlogin.setMobile("13818252514");
-        // userlogin.setPassword("123456");
-
-        // System.out.println(MD5Util.md5("1234"));
-
-        try {
-            // new UseraccountsServiceImpl().postsendsignupcode("13818252514");
-            Response r = new UseraccountsServiceImpl().postuserlogin(userlogin);
-            System.out.print(r);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-    }
 
     /**
      * 用户登陆， 返回用户登陆后的信息。
@@ -189,40 +173,53 @@ public class UseraccountsServiceImpl implements Iface {
     }
 
     /**
-     * 注册手机号用户。 password 为空时， 需要把密码直接发送给用户。
+     * 注册手机号用户。
+     *       password 为空时， 需要把密码直接发送给用户。
+     * <p>
+     *
+     * @param user 用户实体
+     * @param code 验证码
+     * @return 新添加用户ID
+     *
+     * @exception TException
+     *
      */
     @Override
-    public Response postusermobilesignup(String mobile, String code, String password) throws TException {
+    public Response postusermobilesignup(User user, String code) throws TException {
+
+        // 空指针校验
+        if(user == null){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        }
+
         // TODO validate code.
-        if (validateCode(mobile, code, 1)) {
+        if (validateCode(String.valueOf(user.mobile), code, 1)) {
             ;
         } else {
             return ResponseUtils.success(ConstantErrorCodeMessage.INVALID_SMS_CODE);
         }
 
         boolean hasPassword = true;
-        if (password == null) {
+        // 没有密码生成6位随机密码, TODO 需要md5加密
+        if (user.password == null) {
             hasPassword = false;
-            password = StringUtils.getRandomString(6);
-
+            user.password = StringUtils.getRandomString(6);
         }
 
-        UserUserRecord user = new UserUserRecord();
-        user.setUsername(mobile);
-        user.setMobile(Long.parseLong(mobile));
-        user.setPassword(MD5Util.md5(password));
+        // 用户记录转换
+        UserUserRecord userUserRecord = (UserUserRecord)BeanUtils.structToDB(user, UserUserRecord.class);
 
         try {
-            int newuserid = userdao.postResource(user);
+            // 添加用户
+            int newuserid = userdao.postResource(userUserRecord);
             if (newuserid > 0) {
                 Map<String, Object> hashmap = new HashMap<>();
                 hashmap.put("user_id", newuserid);
                 if (!hasPassword) {
                     // 未设置密码， 主动发送给用户。
-                    SmsSender.sendSMS_signupRandomPassword(mobile, password);
+                    SmsSender.sendSMS_signupRandomPassword(String.valueOf(user.mobile), user.password);
                 }
                 return ResponseUtils.success(hashmap); // 返回 user id
-
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -478,12 +475,13 @@ public class UseraccountsServiceImpl implements Iface {
         // TODO Auto-generated method stub
         return null;
     }
-/**
- * 检查手机号是否已经注册。 exist: true 已经存在， exist：false 不存在。
- * @param mobile
- * @return
- * @throws TException
- */
+
+    /**
+     * 检查手机号是否已经注册。 exist: true 已经存在， exist：false 不存在。
+     * @param mobile
+     * @return
+     * @throws TException
+     */
     @Override
     public Response getismobileregisted(String mobile) throws TException {
         CommonQuery query = new CommonQuery();
@@ -508,9 +506,10 @@ public class UseraccountsServiceImpl implements Iface {
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXHAUSTED);
     }
 
-/**
- * 修改手机号时， 先要向当前手机号发送验证码。
- */
+    /**
+     * 修改手机号时， 先要向当前手机号发送验证码。
+     *
+     */
     @Override
     public Response postsendchangemobilecode(String oldmobile) throws TException {
         // TODO 只有已经存在的用户才能发验证码。
@@ -540,9 +539,10 @@ public class UseraccountsServiceImpl implements Iface {
         }
     }
 
-/**
- * 修改手机号时， 验证现有手机号的验证码。
- */
+    /**
+     * 修改手机号时， 验证现有手机号的验证码。
+     *
+     */
     @Override
     public Response postvalidatechangemobilecode(String oldmobile, String code) throws TException {
         if ( !validateCode(oldmobile, code, 3)) {
@@ -554,6 +554,7 @@ public class UseraccountsServiceImpl implements Iface {
 
     /**
      * 修改手机号时，  向新手机号发送验证码。
+     *
      */
     @Override
     public Response postsendresetmobilecode(String newmobile) throws TException {
@@ -582,6 +583,7 @@ public class UseraccountsServiceImpl implements Iface {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
     }
+
     /**
      * 修改当前用户手机号。
      * @param user_id  

@@ -4,6 +4,7 @@ import com.moseeker.rpccenter.config.ClientConfig;
 import com.moseeker.rpccenter.config.RegistryConfig;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
+import com.moseeker.thrift.gen.useraccounts.struct.User;
 import com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition;
 
 /**
@@ -44,6 +45,11 @@ public class UseraccountsServiceImplTest {
 
             System.out.println(response2);
 
+            // 用户注册
+            String code = "1234";
+            Response userResponse = useraccountsServices.postusermobilesignup(getUser(), code);
+            System.out.println(userResponse);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -55,4 +61,13 @@ public class UseraccountsServiceImplTest {
         userFavoritePosition.setPosition_id(1);
         return userFavoritePosition;
     }
+
+    public static User getUser(){
+        User user = new User();
+        user.setMobile(18610245972L);
+        user.setPassword("123456");
+        user.setSource((byte) 9);
+        return user;
+    }
+
 }
