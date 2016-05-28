@@ -10,7 +10,10 @@ service UseraccountsServices {
     common_struct.Response postuserlogin(1: useraccounts_struct.Userloginreq userloginreq);
     common_struct.Response postuserlogout(1: i32 userid);
     common_struct.Response postsendsignupcode(1: string mobile);
-    common_struct.Response postusermobilesignup(1: string mobile, 2: string code, 3: string password);
+    // 用户注册
+    //common_struct.Response postusermobilesignup(1: string mobile, 2: string code, 3: string password);
+    common_struct.Response postusermobilesignup(1: useraccounts_struct.User user, 2: string code);
+
     common_struct.Response postuserwxbindmobile(1: i32 appid, 2: string unionid, 3: string code,4: string mobile);
     common_struct.Response postuserchangepassword(1: i32 user_id, 2: string old_password,  3: string password);
     common_struct.Response postusersendpasswordforgotcode(1: string mobile);
@@ -22,8 +25,11 @@ service UseraccountsServices {
     common_struct.Response postsendresetmobilecode(1:string newmobile);
     common_struct.Response postresetmobile(1: i32 user_id, 2: string newmobile, 3:string code);
 
-    common_struct.Response getUserFavPositionCountByUserIdAndPositionId(1: i32 userId, 2: i32 positionId, 3:byte favorite);
+    // 用户是否对该职位已经感兴趣
+    common_struct.Response getUserFavPositionCountByUserIdAndPositionId(1: i32 userId, 2: i32 positionId);
+    // 用户感兴趣账职位
     common_struct.Response postUserFavoritePosition(1: useraccounts_struct.UserFavoritePosition userFavoritePosition);
+
 }
 
 service UsersettingServices {

@@ -39,77 +39,77 @@ public class UseraccountsServices {
 
   public interface Iface {
 
-    public com.moseeker.thrift.gen.common.struct.Response getismobileregisted(String mobile) throws TException;
+    public com.moseeker.thrift.gen.common.struct.Response getismobileregisted(String mobile) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postuserlogin(com.moseeker.thrift.gen.useraccounts.struct.Userloginreq userloginreq) throws TException;
+    public com.moseeker.thrift.gen.common.struct.Response postuserlogin(com.moseeker.thrift.gen.useraccounts.struct.Userloginreq userloginreq) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postuserlogout(int userid) throws TException;
+    public com.moseeker.thrift.gen.common.struct.Response postuserlogout(int userid) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postsendsignupcode(String mobile) throws TException;
+    public com.moseeker.thrift.gen.common.struct.Response postsendsignupcode(String mobile) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postusermobilesignup(com.moseeker.thrift.gen.useraccounts.struct.User user, String code) throws TException;
+    public com.moseeker.thrift.gen.common.struct.Response postusermobilesignup(com.moseeker.thrift.gen.useraccounts.struct.User user, String code) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postuserwxbindmobile(int appid, String unionid, String code, String mobile) throws TException;
+    public com.moseeker.thrift.gen.common.struct.Response postuserwxbindmobile(int appid, String unionid, String code, String mobile) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postuserchangepassword(int user_id, String old_password, String password) throws TException;
+    public com.moseeker.thrift.gen.common.struct.Response postuserchangepassword(int user_id, String old_password, String password) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postusersendpasswordforgotcode(String mobile) throws TException;
+    public com.moseeker.thrift.gen.common.struct.Response postusersendpasswordforgotcode(String mobile) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postvalidatepasswordforgotcode(String mobile, String code) throws TException;
+    public com.moseeker.thrift.gen.common.struct.Response postvalidatepasswordforgotcode(String mobile, String code) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postuserresetpassword(String mobile, String code, String password) throws TException;
+    public com.moseeker.thrift.gen.common.struct.Response postuserresetpassword(String mobile, String code, String password) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postusermergebymobile(int appid, String mobile) throws TException;
+    public com.moseeker.thrift.gen.common.struct.Response postusermergebymobile(int appid, String mobile) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postsendchangemobilecode(String oldmobile) throws TException;
+    public com.moseeker.thrift.gen.common.struct.Response postsendchangemobilecode(String oldmobile) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postvalidatechangemobilecode(String oldmobile, String code) throws TException;
+    public com.moseeker.thrift.gen.common.struct.Response postvalidatechangemobilecode(String oldmobile, String code) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postsendresetmobilecode(String newmobile) throws TException;
+    public com.moseeker.thrift.gen.common.struct.Response postsendresetmobilecode(String newmobile) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postresetmobile(int user_id, String newmobile, String code) throws TException;
+    public com.moseeker.thrift.gen.common.struct.Response postresetmobile(int user_id, String newmobile, String code) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId) throws TException;
+    public com.moseeker.thrift.gen.common.struct.Response getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postUserFavoritePosition(com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition userFavoritePosition) throws TException;
+    public com.moseeker.thrift.gen.common.struct.Response postUserFavoritePosition(com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition userFavoritePosition) throws org.apache.thrift.TException;
 
   }
 
   public interface AsyncIface {
 
-    public void getismobileregisted(String mobile, AsyncMethodCallback resultHandler) throws TException;
+    public void getismobileregisted(String mobile, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void postuserlogin(com.moseeker.thrift.gen.useraccounts.struct.Userloginreq userloginreq, AsyncMethodCallback resultHandler) throws TException;
+    public void postuserlogin(com.moseeker.thrift.gen.useraccounts.struct.Userloginreq userloginreq, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void postuserlogout(int userid, AsyncMethodCallback resultHandler) throws TException;
+    public void postuserlogout(int userid, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void postsendsignupcode(String mobile, AsyncMethodCallback resultHandler) throws TException;
+    public void postsendsignupcode(String mobile, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void postusermobilesignup(com.moseeker.thrift.gen.useraccounts.struct.User user, String code, AsyncMethodCallback resultHandler) throws TException;
+    public void postusermobilesignup(com.moseeker.thrift.gen.useraccounts.struct.User user, String code, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void postuserwxbindmobile(int appid, String unionid, String code, String mobile, AsyncMethodCallback resultHandler) throws TException;
+    public void postuserwxbindmobile(int appid, String unionid, String code, String mobile, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void postuserchangepassword(int user_id, String old_password, String password, AsyncMethodCallback resultHandler) throws TException;
+    public void postuserchangepassword(int user_id, String old_password, String password, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void postusersendpasswordforgotcode(String mobile, AsyncMethodCallback resultHandler) throws TException;
+    public void postusersendpasswordforgotcode(String mobile, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void postvalidatepasswordforgotcode(String mobile, String code, AsyncMethodCallback resultHandler) throws TException;
+    public void postvalidatepasswordforgotcode(String mobile, String code, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void postuserresetpassword(String mobile, String code, String password, AsyncMethodCallback resultHandler) throws TException;
+    public void postuserresetpassword(String mobile, String code, String password, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void postusermergebymobile(int appid, String mobile, AsyncMethodCallback resultHandler) throws TException;
+    public void postusermergebymobile(int appid, String mobile, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void postsendchangemobilecode(String oldmobile, AsyncMethodCallback resultHandler) throws TException;
+    public void postsendchangemobilecode(String oldmobile, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void postvalidatechangemobilecode(String oldmobile, String code, AsyncMethodCallback resultHandler) throws TException;
+    public void postvalidatechangemobilecode(String oldmobile, String code, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void postsendresetmobilecode(String newmobile, AsyncMethodCallback resultHandler) throws TException;
+    public void postsendresetmobilecode(String newmobile, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void postresetmobile(int user_id, String newmobile, String code, AsyncMethodCallback resultHandler) throws TException;
+    public void postresetmobile(int user_id, String newmobile, String code, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId, AsyncMethodCallback resultHandler) throws TException;
+    public void getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void postUserFavoritePosition(com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition userFavoritePosition, AsyncMethodCallback resultHandler) throws TException;
+    public void postUserFavoritePosition(com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition userFavoritePosition, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -133,20 +133,20 @@ public class UseraccountsServices {
       super(iprot, oprot);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response getismobileregisted(String mobile) throws TException
+    public com.moseeker.thrift.gen.common.struct.Response getismobileregisted(String mobile) throws org.apache.thrift.TException
     {
       send_getismobileregisted(mobile);
       return recv_getismobileregisted();
     }
 
-    public void send_getismobileregisted(String mobile) throws TException
+    public void send_getismobileregisted(String mobile) throws org.apache.thrift.TException
     {
       getismobileregisted_args args = new getismobileregisted_args();
       args.setMobile(mobile);
       sendBase("getismobileregisted", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_getismobileregisted() throws TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_getismobileregisted() throws org.apache.thrift.TException
     {
       getismobileregisted_result result = new getismobileregisted_result();
       receiveBase(result, "getismobileregisted");
@@ -156,20 +156,20 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getismobileregisted failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postuserlogin(com.moseeker.thrift.gen.useraccounts.struct.Userloginreq userloginreq) throws TException
+    public com.moseeker.thrift.gen.common.struct.Response postuserlogin(com.moseeker.thrift.gen.useraccounts.struct.Userloginreq userloginreq) throws org.apache.thrift.TException
     {
       send_postuserlogin(userloginreq);
       return recv_postuserlogin();
     }
 
-    public void send_postuserlogin(com.moseeker.thrift.gen.useraccounts.struct.Userloginreq userloginreq) throws TException
+    public void send_postuserlogin(com.moseeker.thrift.gen.useraccounts.struct.Userloginreq userloginreq) throws org.apache.thrift.TException
     {
       postuserlogin_args args = new postuserlogin_args();
       args.setUserloginreq(userloginreq);
       sendBase("postuserlogin", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_postuserlogin() throws TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_postuserlogin() throws org.apache.thrift.TException
     {
       postuserlogin_result result = new postuserlogin_result();
       receiveBase(result, "postuserlogin");
@@ -179,20 +179,20 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postuserlogin failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postuserlogout(int userid) throws TException
+    public com.moseeker.thrift.gen.common.struct.Response postuserlogout(int userid) throws org.apache.thrift.TException
     {
       send_postuserlogout(userid);
       return recv_postuserlogout();
     }
 
-    public void send_postuserlogout(int userid) throws TException
+    public void send_postuserlogout(int userid) throws org.apache.thrift.TException
     {
       postuserlogout_args args = new postuserlogout_args();
       args.setUserid(userid);
       sendBase("postuserlogout", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_postuserlogout() throws TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_postuserlogout() throws org.apache.thrift.TException
     {
       postuserlogout_result result = new postuserlogout_result();
       receiveBase(result, "postuserlogout");
@@ -202,20 +202,20 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postuserlogout failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postsendsignupcode(String mobile) throws TException
+    public com.moseeker.thrift.gen.common.struct.Response postsendsignupcode(String mobile) throws org.apache.thrift.TException
     {
       send_postsendsignupcode(mobile);
       return recv_postsendsignupcode();
     }
 
-    public void send_postsendsignupcode(String mobile) throws TException
+    public void send_postsendsignupcode(String mobile) throws org.apache.thrift.TException
     {
       postsendsignupcode_args args = new postsendsignupcode_args();
       args.setMobile(mobile);
       sendBase("postsendsignupcode", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_postsendsignupcode() throws TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_postsendsignupcode() throws org.apache.thrift.TException
     {
       postsendsignupcode_result result = new postsendsignupcode_result();
       receiveBase(result, "postsendsignupcode");
@@ -225,13 +225,13 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postsendsignupcode failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postusermobilesignup(com.moseeker.thrift.gen.useraccounts.struct.User user, String code) throws TException
+    public com.moseeker.thrift.gen.common.struct.Response postusermobilesignup(com.moseeker.thrift.gen.useraccounts.struct.User user, String code) throws org.apache.thrift.TException
     {
       send_postusermobilesignup(user, code);
       return recv_postusermobilesignup();
     }
 
-    public void send_postusermobilesignup(com.moseeker.thrift.gen.useraccounts.struct.User user, String code) throws TException
+    public void send_postusermobilesignup(com.moseeker.thrift.gen.useraccounts.struct.User user, String code) throws org.apache.thrift.TException
     {
       postusermobilesignup_args args = new postusermobilesignup_args();
       args.setUser(user);
@@ -239,7 +239,7 @@ public class UseraccountsServices {
       sendBase("postusermobilesignup", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_postusermobilesignup() throws TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_postusermobilesignup() throws org.apache.thrift.TException
     {
       postusermobilesignup_result result = new postusermobilesignup_result();
       receiveBase(result, "postusermobilesignup");
@@ -249,13 +249,13 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postusermobilesignup failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postuserwxbindmobile(int appid, String unionid, String code, String mobile) throws TException
+    public com.moseeker.thrift.gen.common.struct.Response postuserwxbindmobile(int appid, String unionid, String code, String mobile) throws org.apache.thrift.TException
     {
       send_postuserwxbindmobile(appid, unionid, code, mobile);
       return recv_postuserwxbindmobile();
     }
 
-    public void send_postuserwxbindmobile(int appid, String unionid, String code, String mobile) throws TException
+    public void send_postuserwxbindmobile(int appid, String unionid, String code, String mobile) throws org.apache.thrift.TException
     {
       postuserwxbindmobile_args args = new postuserwxbindmobile_args();
       args.setAppid(appid);
@@ -265,7 +265,7 @@ public class UseraccountsServices {
       sendBase("postuserwxbindmobile", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_postuserwxbindmobile() throws TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_postuserwxbindmobile() throws org.apache.thrift.TException
     {
       postuserwxbindmobile_result result = new postuserwxbindmobile_result();
       receiveBase(result, "postuserwxbindmobile");
@@ -275,13 +275,13 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postuserwxbindmobile failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postuserchangepassword(int user_id, String old_password, String password) throws TException
+    public com.moseeker.thrift.gen.common.struct.Response postuserchangepassword(int user_id, String old_password, String password) throws org.apache.thrift.TException
     {
       send_postuserchangepassword(user_id, old_password, password);
       return recv_postuserchangepassword();
     }
 
-    public void send_postuserchangepassword(int user_id, String old_password, String password) throws TException
+    public void send_postuserchangepassword(int user_id, String old_password, String password) throws org.apache.thrift.TException
     {
       postuserchangepassword_args args = new postuserchangepassword_args();
       args.setUser_id(user_id);
@@ -290,7 +290,7 @@ public class UseraccountsServices {
       sendBase("postuserchangepassword", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_postuserchangepassword() throws TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_postuserchangepassword() throws org.apache.thrift.TException
     {
       postuserchangepassword_result result = new postuserchangepassword_result();
       receiveBase(result, "postuserchangepassword");
@@ -300,20 +300,20 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postuserchangepassword failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postusersendpasswordforgotcode(String mobile) throws TException
+    public com.moseeker.thrift.gen.common.struct.Response postusersendpasswordforgotcode(String mobile) throws org.apache.thrift.TException
     {
       send_postusersendpasswordforgotcode(mobile);
       return recv_postusersendpasswordforgotcode();
     }
 
-    public void send_postusersendpasswordforgotcode(String mobile) throws TException
+    public void send_postusersendpasswordforgotcode(String mobile) throws org.apache.thrift.TException
     {
       postusersendpasswordforgotcode_args args = new postusersendpasswordforgotcode_args();
       args.setMobile(mobile);
       sendBase("postusersendpasswordforgotcode", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_postusersendpasswordforgotcode() throws TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_postusersendpasswordforgotcode() throws org.apache.thrift.TException
     {
       postusersendpasswordforgotcode_result result = new postusersendpasswordforgotcode_result();
       receiveBase(result, "postusersendpasswordforgotcode");
@@ -323,13 +323,13 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postusersendpasswordforgotcode failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postvalidatepasswordforgotcode(String mobile, String code) throws TException
+    public com.moseeker.thrift.gen.common.struct.Response postvalidatepasswordforgotcode(String mobile, String code) throws org.apache.thrift.TException
     {
       send_postvalidatepasswordforgotcode(mobile, code);
       return recv_postvalidatepasswordforgotcode();
     }
 
-    public void send_postvalidatepasswordforgotcode(String mobile, String code) throws TException
+    public void send_postvalidatepasswordforgotcode(String mobile, String code) throws org.apache.thrift.TException
     {
       postvalidatepasswordforgotcode_args args = new postvalidatepasswordforgotcode_args();
       args.setMobile(mobile);
@@ -337,7 +337,7 @@ public class UseraccountsServices {
       sendBase("postvalidatepasswordforgotcode", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_postvalidatepasswordforgotcode() throws TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_postvalidatepasswordforgotcode() throws org.apache.thrift.TException
     {
       postvalidatepasswordforgotcode_result result = new postvalidatepasswordforgotcode_result();
       receiveBase(result, "postvalidatepasswordforgotcode");
@@ -347,13 +347,13 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postvalidatepasswordforgotcode failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postuserresetpassword(String mobile, String code, String password) throws TException
+    public com.moseeker.thrift.gen.common.struct.Response postuserresetpassword(String mobile, String code, String password) throws org.apache.thrift.TException
     {
       send_postuserresetpassword(mobile, code, password);
       return recv_postuserresetpassword();
     }
 
-    public void send_postuserresetpassword(String mobile, String code, String password) throws TException
+    public void send_postuserresetpassword(String mobile, String code, String password) throws org.apache.thrift.TException
     {
       postuserresetpassword_args args = new postuserresetpassword_args();
       args.setMobile(mobile);
@@ -362,7 +362,7 @@ public class UseraccountsServices {
       sendBase("postuserresetpassword", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_postuserresetpassword() throws TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_postuserresetpassword() throws org.apache.thrift.TException
     {
       postuserresetpassword_result result = new postuserresetpassword_result();
       receiveBase(result, "postuserresetpassword");
@@ -372,13 +372,13 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postuserresetpassword failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postusermergebymobile(int appid, String mobile) throws TException
+    public com.moseeker.thrift.gen.common.struct.Response postusermergebymobile(int appid, String mobile) throws org.apache.thrift.TException
     {
       send_postusermergebymobile(appid, mobile);
       return recv_postusermergebymobile();
     }
 
-    public void send_postusermergebymobile(int appid, String mobile) throws TException
+    public void send_postusermergebymobile(int appid, String mobile) throws org.apache.thrift.TException
     {
       postusermergebymobile_args args = new postusermergebymobile_args();
       args.setAppid(appid);
@@ -386,7 +386,7 @@ public class UseraccountsServices {
       sendBase("postusermergebymobile", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_postusermergebymobile() throws TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_postusermergebymobile() throws org.apache.thrift.TException
     {
       postusermergebymobile_result result = new postusermergebymobile_result();
       receiveBase(result, "postusermergebymobile");
@@ -396,20 +396,20 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postusermergebymobile failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postsendchangemobilecode(String oldmobile) throws TException
+    public com.moseeker.thrift.gen.common.struct.Response postsendchangemobilecode(String oldmobile) throws org.apache.thrift.TException
     {
       send_postsendchangemobilecode(oldmobile);
       return recv_postsendchangemobilecode();
     }
 
-    public void send_postsendchangemobilecode(String oldmobile) throws TException
+    public void send_postsendchangemobilecode(String oldmobile) throws org.apache.thrift.TException
     {
       postsendchangemobilecode_args args = new postsendchangemobilecode_args();
       args.setOldmobile(oldmobile);
       sendBase("postsendchangemobilecode", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_postsendchangemobilecode() throws TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_postsendchangemobilecode() throws org.apache.thrift.TException
     {
       postsendchangemobilecode_result result = new postsendchangemobilecode_result();
       receiveBase(result, "postsendchangemobilecode");
@@ -419,13 +419,13 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postsendchangemobilecode failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postvalidatechangemobilecode(String oldmobile, String code) throws TException
+    public com.moseeker.thrift.gen.common.struct.Response postvalidatechangemobilecode(String oldmobile, String code) throws org.apache.thrift.TException
     {
       send_postvalidatechangemobilecode(oldmobile, code);
       return recv_postvalidatechangemobilecode();
     }
 
-    public void send_postvalidatechangemobilecode(String oldmobile, String code) throws TException
+    public void send_postvalidatechangemobilecode(String oldmobile, String code) throws org.apache.thrift.TException
     {
       postvalidatechangemobilecode_args args = new postvalidatechangemobilecode_args();
       args.setOldmobile(oldmobile);
@@ -433,7 +433,7 @@ public class UseraccountsServices {
       sendBase("postvalidatechangemobilecode", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_postvalidatechangemobilecode() throws TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_postvalidatechangemobilecode() throws org.apache.thrift.TException
     {
       postvalidatechangemobilecode_result result = new postvalidatechangemobilecode_result();
       receiveBase(result, "postvalidatechangemobilecode");
@@ -443,20 +443,20 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postvalidatechangemobilecode failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postsendresetmobilecode(String newmobile) throws TException
+    public com.moseeker.thrift.gen.common.struct.Response postsendresetmobilecode(String newmobile) throws org.apache.thrift.TException
     {
       send_postsendresetmobilecode(newmobile);
       return recv_postsendresetmobilecode();
     }
 
-    public void send_postsendresetmobilecode(String newmobile) throws TException
+    public void send_postsendresetmobilecode(String newmobile) throws org.apache.thrift.TException
     {
       postsendresetmobilecode_args args = new postsendresetmobilecode_args();
       args.setNewmobile(newmobile);
       sendBase("postsendresetmobilecode", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_postsendresetmobilecode() throws TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_postsendresetmobilecode() throws org.apache.thrift.TException
     {
       postsendresetmobilecode_result result = new postsendresetmobilecode_result();
       receiveBase(result, "postsendresetmobilecode");
@@ -466,13 +466,13 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postsendresetmobilecode failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postresetmobile(int user_id, String newmobile, String code) throws TException
+    public com.moseeker.thrift.gen.common.struct.Response postresetmobile(int user_id, String newmobile, String code) throws org.apache.thrift.TException
     {
       send_postresetmobile(user_id, newmobile, code);
       return recv_postresetmobile();
     }
 
-    public void send_postresetmobile(int user_id, String newmobile, String code) throws TException
+    public void send_postresetmobile(int user_id, String newmobile, String code) throws org.apache.thrift.TException
     {
       postresetmobile_args args = new postresetmobile_args();
       args.setUser_id(user_id);
@@ -481,7 +481,7 @@ public class UseraccountsServices {
       sendBase("postresetmobile", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_postresetmobile() throws TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_postresetmobile() throws org.apache.thrift.TException
     {
       postresetmobile_result result = new postresetmobile_result();
       receiveBase(result, "postresetmobile");
@@ -491,13 +491,13 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postresetmobile failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId) throws TException
+    public com.moseeker.thrift.gen.common.struct.Response getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId) throws org.apache.thrift.TException
     {
       send_getUserFavPositionCountByUserIdAndPositionId(userId, positionId);
       return recv_getUserFavPositionCountByUserIdAndPositionId();
     }
 
-    public void send_getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId) throws TException
+    public void send_getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId) throws org.apache.thrift.TException
     {
       getUserFavPositionCountByUserIdAndPositionId_args args = new getUserFavPositionCountByUserIdAndPositionId_args();
       args.setUserId(userId);
@@ -505,7 +505,7 @@ public class UseraccountsServices {
       sendBase("getUserFavPositionCountByUserIdAndPositionId", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_getUserFavPositionCountByUserIdAndPositionId() throws TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_getUserFavPositionCountByUserIdAndPositionId() throws org.apache.thrift.TException
     {
       getUserFavPositionCountByUserIdAndPositionId_result result = new getUserFavPositionCountByUserIdAndPositionId_result();
       receiveBase(result, "getUserFavPositionCountByUserIdAndPositionId");
@@ -515,20 +515,20 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getUserFavPositionCountByUserIdAndPositionId failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postUserFavoritePosition(com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition userFavoritePosition) throws TException
+    public com.moseeker.thrift.gen.common.struct.Response postUserFavoritePosition(com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition userFavoritePosition) throws org.apache.thrift.TException
     {
       send_postUserFavoritePosition(userFavoritePosition);
       return recv_postUserFavoritePosition();
     }
 
-    public void send_postUserFavoritePosition(com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition userFavoritePosition) throws TException
+    public void send_postUserFavoritePosition(com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition userFavoritePosition) throws org.apache.thrift.TException
     {
       postUserFavoritePosition_args args = new postUserFavoritePosition_args();
       args.setUserFavoritePosition(userFavoritePosition);
       sendBase("postUserFavoritePosition", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_postUserFavoritePosition() throws TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_postUserFavoritePosition() throws org.apache.thrift.TException
     {
       postUserFavoritePosition_result result = new postUserFavoritePosition_result();
       receiveBase(result, "postUserFavoritePosition");
@@ -556,7 +556,7 @@ public class UseraccountsServices {
       super(protocolFactory, clientManager, transport);
     }
 
-    public void getismobileregisted(String mobile, AsyncMethodCallback resultHandler) throws TException {
+    public void getismobileregisted(String mobile, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       getismobileregisted_call method_call = new getismobileregisted_call(mobile, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -565,12 +565,12 @@ public class UseraccountsServices {
 
     public static class getismobileregisted_call extends org.apache.thrift.async.TAsyncMethodCall {
       private String mobile;
-      public getismobileregisted_call(String mobile, AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
+      public getismobileregisted_call(String mobile, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.mobile = mobile;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getismobileregisted", org.apache.thrift.protocol.TMessageType.CALL, 0));
         getismobileregisted_args args = new getismobileregisted_args();
         args.setMobile(mobile);
@@ -578,8 +578,8 @@ public class UseraccountsServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws TException {
-        if (getState() != State.RESPONSE_READ) {
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
@@ -588,7 +588,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void postuserlogin(com.moseeker.thrift.gen.useraccounts.struct.Userloginreq userloginreq, AsyncMethodCallback resultHandler) throws TException {
+    public void postuserlogin(com.moseeker.thrift.gen.useraccounts.struct.Userloginreq userloginreq, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       postuserlogin_call method_call = new postuserlogin_call(userloginreq, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -597,12 +597,12 @@ public class UseraccountsServices {
 
     public static class postuserlogin_call extends org.apache.thrift.async.TAsyncMethodCall {
       private com.moseeker.thrift.gen.useraccounts.struct.Userloginreq userloginreq;
-      public postuserlogin_call(com.moseeker.thrift.gen.useraccounts.struct.Userloginreq userloginreq, AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
+      public postuserlogin_call(com.moseeker.thrift.gen.useraccounts.struct.Userloginreq userloginreq, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.userloginreq = userloginreq;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("postuserlogin", org.apache.thrift.protocol.TMessageType.CALL, 0));
         postuserlogin_args args = new postuserlogin_args();
         args.setUserloginreq(userloginreq);
@@ -610,8 +610,8 @@ public class UseraccountsServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws TException {
-        if (getState() != State.RESPONSE_READ) {
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
@@ -620,7 +620,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void postuserlogout(int userid, AsyncMethodCallback resultHandler) throws TException {
+    public void postuserlogout(int userid, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       postuserlogout_call method_call = new postuserlogout_call(userid, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -629,12 +629,12 @@ public class UseraccountsServices {
 
     public static class postuserlogout_call extends org.apache.thrift.async.TAsyncMethodCall {
       private int userid;
-      public postuserlogout_call(int userid, AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
+      public postuserlogout_call(int userid, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.userid = userid;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("postuserlogout", org.apache.thrift.protocol.TMessageType.CALL, 0));
         postuserlogout_args args = new postuserlogout_args();
         args.setUserid(userid);
@@ -642,8 +642,8 @@ public class UseraccountsServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws TException {
-        if (getState() != State.RESPONSE_READ) {
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
@@ -652,7 +652,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void postsendsignupcode(String mobile, AsyncMethodCallback resultHandler) throws TException {
+    public void postsendsignupcode(String mobile, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       postsendsignupcode_call method_call = new postsendsignupcode_call(mobile, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -661,12 +661,12 @@ public class UseraccountsServices {
 
     public static class postsendsignupcode_call extends org.apache.thrift.async.TAsyncMethodCall {
       private String mobile;
-      public postsendsignupcode_call(String mobile, AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
+      public postsendsignupcode_call(String mobile, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.mobile = mobile;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("postsendsignupcode", org.apache.thrift.protocol.TMessageType.CALL, 0));
         postsendsignupcode_args args = new postsendsignupcode_args();
         args.setMobile(mobile);
@@ -674,8 +674,8 @@ public class UseraccountsServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws TException {
-        if (getState() != State.RESPONSE_READ) {
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
@@ -684,7 +684,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void postusermobilesignup(com.moseeker.thrift.gen.useraccounts.struct.User user, String code, AsyncMethodCallback resultHandler) throws TException {
+    public void postusermobilesignup(com.moseeker.thrift.gen.useraccounts.struct.User user, String code, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       postusermobilesignup_call method_call = new postusermobilesignup_call(user, code, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -694,13 +694,13 @@ public class UseraccountsServices {
     public static class postusermobilesignup_call extends org.apache.thrift.async.TAsyncMethodCall {
       private com.moseeker.thrift.gen.useraccounts.struct.User user;
       private String code;
-      public postusermobilesignup_call(com.moseeker.thrift.gen.useraccounts.struct.User user, String code, AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
+      public postusermobilesignup_call(com.moseeker.thrift.gen.useraccounts.struct.User user, String code, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.user = user;
         this.code = code;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("postusermobilesignup", org.apache.thrift.protocol.TMessageType.CALL, 0));
         postusermobilesignup_args args = new postusermobilesignup_args();
         args.setUser(user);
@@ -709,8 +709,8 @@ public class UseraccountsServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws TException {
-        if (getState() != State.RESPONSE_READ) {
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
@@ -719,7 +719,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void postuserwxbindmobile(int appid, String unionid, String code, String mobile, AsyncMethodCallback resultHandler) throws TException {
+    public void postuserwxbindmobile(int appid, String unionid, String code, String mobile, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       postuserwxbindmobile_call method_call = new postuserwxbindmobile_call(appid, unionid, code, mobile, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -731,7 +731,7 @@ public class UseraccountsServices {
       private String unionid;
       private String code;
       private String mobile;
-      public postuserwxbindmobile_call(int appid, String unionid, String code, String mobile, AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
+      public postuserwxbindmobile_call(int appid, String unionid, String code, String mobile, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.appid = appid;
         this.unionid = unionid;
@@ -739,7 +739,7 @@ public class UseraccountsServices {
         this.mobile = mobile;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("postuserwxbindmobile", org.apache.thrift.protocol.TMessageType.CALL, 0));
         postuserwxbindmobile_args args = new postuserwxbindmobile_args();
         args.setAppid(appid);
@@ -750,8 +750,8 @@ public class UseraccountsServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws TException {
-        if (getState() != State.RESPONSE_READ) {
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
@@ -760,7 +760,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void postuserchangepassword(int user_id, String old_password, String password, AsyncMethodCallback resultHandler) throws TException {
+    public void postuserchangepassword(int user_id, String old_password, String password, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       postuserchangepassword_call method_call = new postuserchangepassword_call(user_id, old_password, password, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -771,14 +771,14 @@ public class UseraccountsServices {
       private int user_id;
       private String old_password;
       private String password;
-      public postuserchangepassword_call(int user_id, String old_password, String password, AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
+      public postuserchangepassword_call(int user_id, String old_password, String password, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.user_id = user_id;
         this.old_password = old_password;
         this.password = password;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("postuserchangepassword", org.apache.thrift.protocol.TMessageType.CALL, 0));
         postuserchangepassword_args args = new postuserchangepassword_args();
         args.setUser_id(user_id);
@@ -788,8 +788,8 @@ public class UseraccountsServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws TException {
-        if (getState() != State.RESPONSE_READ) {
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
@@ -798,7 +798,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void postusersendpasswordforgotcode(String mobile, AsyncMethodCallback resultHandler) throws TException {
+    public void postusersendpasswordforgotcode(String mobile, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       postusersendpasswordforgotcode_call method_call = new postusersendpasswordforgotcode_call(mobile, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -807,12 +807,12 @@ public class UseraccountsServices {
 
     public static class postusersendpasswordforgotcode_call extends org.apache.thrift.async.TAsyncMethodCall {
       private String mobile;
-      public postusersendpasswordforgotcode_call(String mobile, AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
+      public postusersendpasswordforgotcode_call(String mobile, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.mobile = mobile;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("postusersendpasswordforgotcode", org.apache.thrift.protocol.TMessageType.CALL, 0));
         postusersendpasswordforgotcode_args args = new postusersendpasswordforgotcode_args();
         args.setMobile(mobile);
@@ -820,8 +820,8 @@ public class UseraccountsServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws TException {
-        if (getState() != State.RESPONSE_READ) {
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
@@ -830,7 +830,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void postvalidatepasswordforgotcode(String mobile, String code, AsyncMethodCallback resultHandler) throws TException {
+    public void postvalidatepasswordforgotcode(String mobile, String code, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       postvalidatepasswordforgotcode_call method_call = new postvalidatepasswordforgotcode_call(mobile, code, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -840,13 +840,13 @@ public class UseraccountsServices {
     public static class postvalidatepasswordforgotcode_call extends org.apache.thrift.async.TAsyncMethodCall {
       private String mobile;
       private String code;
-      public postvalidatepasswordforgotcode_call(String mobile, String code, AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
+      public postvalidatepasswordforgotcode_call(String mobile, String code, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.mobile = mobile;
         this.code = code;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("postvalidatepasswordforgotcode", org.apache.thrift.protocol.TMessageType.CALL, 0));
         postvalidatepasswordforgotcode_args args = new postvalidatepasswordforgotcode_args();
         args.setMobile(mobile);
@@ -855,8 +855,8 @@ public class UseraccountsServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws TException {
-        if (getState() != State.RESPONSE_READ) {
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
@@ -865,7 +865,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void postuserresetpassword(String mobile, String code, String password, AsyncMethodCallback resultHandler) throws TException {
+    public void postuserresetpassword(String mobile, String code, String password, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       postuserresetpassword_call method_call = new postuserresetpassword_call(mobile, code, password, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -876,14 +876,14 @@ public class UseraccountsServices {
       private String mobile;
       private String code;
       private String password;
-      public postuserresetpassword_call(String mobile, String code, String password, AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
+      public postuserresetpassword_call(String mobile, String code, String password, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.mobile = mobile;
         this.code = code;
         this.password = password;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("postuserresetpassword", org.apache.thrift.protocol.TMessageType.CALL, 0));
         postuserresetpassword_args args = new postuserresetpassword_args();
         args.setMobile(mobile);
@@ -893,8 +893,8 @@ public class UseraccountsServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws TException {
-        if (getState() != State.RESPONSE_READ) {
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
@@ -903,7 +903,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void postusermergebymobile(int appid, String mobile, AsyncMethodCallback resultHandler) throws TException {
+    public void postusermergebymobile(int appid, String mobile, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       postusermergebymobile_call method_call = new postusermergebymobile_call(appid, mobile, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -913,13 +913,13 @@ public class UseraccountsServices {
     public static class postusermergebymobile_call extends org.apache.thrift.async.TAsyncMethodCall {
       private int appid;
       private String mobile;
-      public postusermergebymobile_call(int appid, String mobile, AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
+      public postusermergebymobile_call(int appid, String mobile, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.appid = appid;
         this.mobile = mobile;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("postusermergebymobile", org.apache.thrift.protocol.TMessageType.CALL, 0));
         postusermergebymobile_args args = new postusermergebymobile_args();
         args.setAppid(appid);
@@ -928,8 +928,8 @@ public class UseraccountsServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws TException {
-        if (getState() != State.RESPONSE_READ) {
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
@@ -938,7 +938,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void postsendchangemobilecode(String oldmobile, AsyncMethodCallback resultHandler) throws TException {
+    public void postsendchangemobilecode(String oldmobile, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       postsendchangemobilecode_call method_call = new postsendchangemobilecode_call(oldmobile, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -947,12 +947,12 @@ public class UseraccountsServices {
 
     public static class postsendchangemobilecode_call extends org.apache.thrift.async.TAsyncMethodCall {
       private String oldmobile;
-      public postsendchangemobilecode_call(String oldmobile, AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
+      public postsendchangemobilecode_call(String oldmobile, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.oldmobile = oldmobile;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("postsendchangemobilecode", org.apache.thrift.protocol.TMessageType.CALL, 0));
         postsendchangemobilecode_args args = new postsendchangemobilecode_args();
         args.setOldmobile(oldmobile);
@@ -960,8 +960,8 @@ public class UseraccountsServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws TException {
-        if (getState() != State.RESPONSE_READ) {
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
@@ -970,7 +970,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void postvalidatechangemobilecode(String oldmobile, String code, AsyncMethodCallback resultHandler) throws TException {
+    public void postvalidatechangemobilecode(String oldmobile, String code, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       postvalidatechangemobilecode_call method_call = new postvalidatechangemobilecode_call(oldmobile, code, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -980,13 +980,13 @@ public class UseraccountsServices {
     public static class postvalidatechangemobilecode_call extends org.apache.thrift.async.TAsyncMethodCall {
       private String oldmobile;
       private String code;
-      public postvalidatechangemobilecode_call(String oldmobile, String code, AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
+      public postvalidatechangemobilecode_call(String oldmobile, String code, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.oldmobile = oldmobile;
         this.code = code;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("postvalidatechangemobilecode", org.apache.thrift.protocol.TMessageType.CALL, 0));
         postvalidatechangemobilecode_args args = new postvalidatechangemobilecode_args();
         args.setOldmobile(oldmobile);
@@ -995,8 +995,8 @@ public class UseraccountsServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws TException {
-        if (getState() != State.RESPONSE_READ) {
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
@@ -1005,7 +1005,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void postsendresetmobilecode(String newmobile, AsyncMethodCallback resultHandler) throws TException {
+    public void postsendresetmobilecode(String newmobile, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       postsendresetmobilecode_call method_call = new postsendresetmobilecode_call(newmobile, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -1014,12 +1014,12 @@ public class UseraccountsServices {
 
     public static class postsendresetmobilecode_call extends org.apache.thrift.async.TAsyncMethodCall {
       private String newmobile;
-      public postsendresetmobilecode_call(String newmobile, AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
+      public postsendresetmobilecode_call(String newmobile, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.newmobile = newmobile;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("postsendresetmobilecode", org.apache.thrift.protocol.TMessageType.CALL, 0));
         postsendresetmobilecode_args args = new postsendresetmobilecode_args();
         args.setNewmobile(newmobile);
@@ -1027,8 +1027,8 @@ public class UseraccountsServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws TException {
-        if (getState() != State.RESPONSE_READ) {
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
@@ -1037,7 +1037,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void postresetmobile(int user_id, String newmobile, String code, AsyncMethodCallback resultHandler) throws TException {
+    public void postresetmobile(int user_id, String newmobile, String code, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       postresetmobile_call method_call = new postresetmobile_call(user_id, newmobile, code, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -1048,14 +1048,14 @@ public class UseraccountsServices {
       private int user_id;
       private String newmobile;
       private String code;
-      public postresetmobile_call(int user_id, String newmobile, String code, AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
+      public postresetmobile_call(int user_id, String newmobile, String code, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.user_id = user_id;
         this.newmobile = newmobile;
         this.code = code;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("postresetmobile", org.apache.thrift.protocol.TMessageType.CALL, 0));
         postresetmobile_args args = new postresetmobile_args();
         args.setUser_id(user_id);
@@ -1065,8 +1065,8 @@ public class UseraccountsServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws TException {
-        if (getState() != State.RESPONSE_READ) {
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
@@ -1075,7 +1075,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId, AsyncMethodCallback resultHandler) throws TException {
+    public void getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       getUserFavPositionCountByUserIdAndPositionId_call method_call = new getUserFavPositionCountByUserIdAndPositionId_call(userId, positionId, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -1085,13 +1085,13 @@ public class UseraccountsServices {
     public static class getUserFavPositionCountByUserIdAndPositionId_call extends org.apache.thrift.async.TAsyncMethodCall {
       private int userId;
       private int positionId;
-      public getUserFavPositionCountByUserIdAndPositionId_call(int userId, int positionId, AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
+      public getUserFavPositionCountByUserIdAndPositionId_call(int userId, int positionId, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.userId = userId;
         this.positionId = positionId;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getUserFavPositionCountByUserIdAndPositionId", org.apache.thrift.protocol.TMessageType.CALL, 0));
         getUserFavPositionCountByUserIdAndPositionId_args args = new getUserFavPositionCountByUserIdAndPositionId_args();
         args.setUserId(userId);
@@ -1100,8 +1100,8 @@ public class UseraccountsServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws TException {
-        if (getState() != State.RESPONSE_READ) {
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
@@ -1110,7 +1110,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void postUserFavoritePosition(com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition userFavoritePosition, AsyncMethodCallback resultHandler) throws TException {
+    public void postUserFavoritePosition(com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition userFavoritePosition, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       postUserFavoritePosition_call method_call = new postUserFavoritePosition_call(userFavoritePosition, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -1119,12 +1119,12 @@ public class UseraccountsServices {
 
     public static class postUserFavoritePosition_call extends org.apache.thrift.async.TAsyncMethodCall {
       private com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition userFavoritePosition;
-      public postUserFavoritePosition_call(com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition userFavoritePosition, AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
+      public postUserFavoritePosition_call(com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition userFavoritePosition, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.userFavoritePosition = userFavoritePosition;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("postUserFavoritePosition", org.apache.thrift.protocol.TMessageType.CALL, 0));
         postUserFavoritePosition_args args = new postUserFavoritePosition_args();
         args.setUserFavoritePosition(userFavoritePosition);
@@ -1132,8 +1132,8 @@ public class UseraccountsServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws TException {
-        if (getState() != State.RESPONSE_READ) {
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
@@ -1188,7 +1188,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public getismobileregisted_result getResult(I iface, getismobileregisted_args args) throws TException {
+      public getismobileregisted_result getResult(I iface, getismobileregisted_args args) throws org.apache.thrift.TException {
         getismobileregisted_result result = new getismobileregisted_result();
         result.success = iface.getismobileregisted(args.mobile);
         return result;
@@ -1208,7 +1208,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public postuserlogin_result getResult(I iface, postuserlogin_args args) throws TException {
+      public postuserlogin_result getResult(I iface, postuserlogin_args args) throws org.apache.thrift.TException {
         postuserlogin_result result = new postuserlogin_result();
         result.success = iface.postuserlogin(args.userloginreq);
         return result;
@@ -1228,7 +1228,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public postuserlogout_result getResult(I iface, postuserlogout_args args) throws TException {
+      public postuserlogout_result getResult(I iface, postuserlogout_args args) throws org.apache.thrift.TException {
         postuserlogout_result result = new postuserlogout_result();
         result.success = iface.postuserlogout(args.userid);
         return result;
@@ -1248,7 +1248,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public postsendsignupcode_result getResult(I iface, postsendsignupcode_args args) throws TException {
+      public postsendsignupcode_result getResult(I iface, postsendsignupcode_args args) throws org.apache.thrift.TException {
         postsendsignupcode_result result = new postsendsignupcode_result();
         result.success = iface.postsendsignupcode(args.mobile);
         return result;
@@ -1268,7 +1268,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public postusermobilesignup_result getResult(I iface, postusermobilesignup_args args) throws TException {
+      public postusermobilesignup_result getResult(I iface, postusermobilesignup_args args) throws org.apache.thrift.TException {
         postusermobilesignup_result result = new postusermobilesignup_result();
         result.success = iface.postusermobilesignup(args.user, args.code);
         return result;
@@ -1288,7 +1288,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public postuserwxbindmobile_result getResult(I iface, postuserwxbindmobile_args args) throws TException {
+      public postuserwxbindmobile_result getResult(I iface, postuserwxbindmobile_args args) throws org.apache.thrift.TException {
         postuserwxbindmobile_result result = new postuserwxbindmobile_result();
         result.success = iface.postuserwxbindmobile(args.appid, args.unionid, args.code, args.mobile);
         return result;
@@ -1308,7 +1308,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public postuserchangepassword_result getResult(I iface, postuserchangepassword_args args) throws TException {
+      public postuserchangepassword_result getResult(I iface, postuserchangepassword_args args) throws org.apache.thrift.TException {
         postuserchangepassword_result result = new postuserchangepassword_result();
         result.success = iface.postuserchangepassword(args.user_id, args.old_password, args.password);
         return result;
@@ -1328,7 +1328,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public postusersendpasswordforgotcode_result getResult(I iface, postusersendpasswordforgotcode_args args) throws TException {
+      public postusersendpasswordforgotcode_result getResult(I iface, postusersendpasswordforgotcode_args args) throws org.apache.thrift.TException {
         postusersendpasswordforgotcode_result result = new postusersendpasswordforgotcode_result();
         result.success = iface.postusersendpasswordforgotcode(args.mobile);
         return result;
@@ -1348,7 +1348,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public postvalidatepasswordforgotcode_result getResult(I iface, postvalidatepasswordforgotcode_args args) throws TException {
+      public postvalidatepasswordforgotcode_result getResult(I iface, postvalidatepasswordforgotcode_args args) throws org.apache.thrift.TException {
         postvalidatepasswordforgotcode_result result = new postvalidatepasswordforgotcode_result();
         result.success = iface.postvalidatepasswordforgotcode(args.mobile, args.code);
         return result;
@@ -1368,7 +1368,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public postuserresetpassword_result getResult(I iface, postuserresetpassword_args args) throws TException {
+      public postuserresetpassword_result getResult(I iface, postuserresetpassword_args args) throws org.apache.thrift.TException {
         postuserresetpassword_result result = new postuserresetpassword_result();
         result.success = iface.postuserresetpassword(args.mobile, args.code, args.password);
         return result;
@@ -1388,7 +1388,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public postusermergebymobile_result getResult(I iface, postusermergebymobile_args args) throws TException {
+      public postusermergebymobile_result getResult(I iface, postusermergebymobile_args args) throws org.apache.thrift.TException {
         postusermergebymobile_result result = new postusermergebymobile_result();
         result.success = iface.postusermergebymobile(args.appid, args.mobile);
         return result;
@@ -1408,7 +1408,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public postsendchangemobilecode_result getResult(I iface, postsendchangemobilecode_args args) throws TException {
+      public postsendchangemobilecode_result getResult(I iface, postsendchangemobilecode_args args) throws org.apache.thrift.TException {
         postsendchangemobilecode_result result = new postsendchangemobilecode_result();
         result.success = iface.postsendchangemobilecode(args.oldmobile);
         return result;
@@ -1428,7 +1428,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public postvalidatechangemobilecode_result getResult(I iface, postvalidatechangemobilecode_args args) throws TException {
+      public postvalidatechangemobilecode_result getResult(I iface, postvalidatechangemobilecode_args args) throws org.apache.thrift.TException {
         postvalidatechangemobilecode_result result = new postvalidatechangemobilecode_result();
         result.success = iface.postvalidatechangemobilecode(args.oldmobile, args.code);
         return result;
@@ -1448,7 +1448,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public postsendresetmobilecode_result getResult(I iface, postsendresetmobilecode_args args) throws TException {
+      public postsendresetmobilecode_result getResult(I iface, postsendresetmobilecode_args args) throws org.apache.thrift.TException {
         postsendresetmobilecode_result result = new postsendresetmobilecode_result();
         result.success = iface.postsendresetmobilecode(args.newmobile);
         return result;
@@ -1468,7 +1468,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public postresetmobile_result getResult(I iface, postresetmobile_args args) throws TException {
+      public postresetmobile_result getResult(I iface, postresetmobile_args args) throws org.apache.thrift.TException {
         postresetmobile_result result = new postresetmobile_result();
         result.success = iface.postresetmobile(args.user_id, args.newmobile, args.code);
         return result;
@@ -1488,7 +1488,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public getUserFavPositionCountByUserIdAndPositionId_result getResult(I iface, getUserFavPositionCountByUserIdAndPositionId_args args) throws TException {
+      public getUserFavPositionCountByUserIdAndPositionId_result getResult(I iface, getUserFavPositionCountByUserIdAndPositionId_args args) throws org.apache.thrift.TException {
         getUserFavPositionCountByUserIdAndPositionId_result result = new getUserFavPositionCountByUserIdAndPositionId_result();
         result.success = iface.getUserFavPositionCountByUserIdAndPositionId(args.userId, args.positionId);
         return result;
@@ -1508,7 +1508,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public postUserFavoritePosition_result getResult(I iface, postUserFavoritePosition_args args) throws TException {
+      public postUserFavoritePosition_result getResult(I iface, postUserFavoritePosition_args args) throws org.apache.thrift.TException {
         postUserFavoritePosition_result result = new postUserFavoritePosition_result();
         result.success = iface.postUserFavoritePosition(args.userFavoritePosition);
         return result;
@@ -1594,7 +1594,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public void start(I iface, getismobileregisted_args args, AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
+      public void start(I iface, getismobileregisted_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
         iface.getismobileregisted(args.mobile,resultHandler);
       }
     }
@@ -1645,7 +1645,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public void start(I iface, postuserlogin_args args, AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
+      public void start(I iface, postuserlogin_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
         iface.postuserlogin(args.userloginreq,resultHandler);
       }
     }
@@ -1696,7 +1696,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public void start(I iface, postuserlogout_args args, AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
+      public void start(I iface, postuserlogout_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
         iface.postuserlogout(args.userid,resultHandler);
       }
     }
@@ -1747,7 +1747,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public void start(I iface, postsendsignupcode_args args, AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
+      public void start(I iface, postsendsignupcode_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
         iface.postsendsignupcode(args.mobile,resultHandler);
       }
     }
@@ -1798,7 +1798,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public void start(I iface, postusermobilesignup_args args, AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
+      public void start(I iface, postusermobilesignup_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
         iface.postusermobilesignup(args.user, args.code,resultHandler);
       }
     }
@@ -1849,7 +1849,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public void start(I iface, postuserwxbindmobile_args args, AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
+      public void start(I iface, postuserwxbindmobile_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
         iface.postuserwxbindmobile(args.appid, args.unionid, args.code, args.mobile,resultHandler);
       }
     }
@@ -1900,7 +1900,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public void start(I iface, postuserchangepassword_args args, AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
+      public void start(I iface, postuserchangepassword_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
         iface.postuserchangepassword(args.user_id, args.old_password, args.password,resultHandler);
       }
     }
@@ -1951,7 +1951,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public void start(I iface, postusersendpasswordforgotcode_args args, AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
+      public void start(I iface, postusersendpasswordforgotcode_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
         iface.postusersendpasswordforgotcode(args.mobile,resultHandler);
       }
     }
@@ -2002,7 +2002,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public void start(I iface, postvalidatepasswordforgotcode_args args, AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
+      public void start(I iface, postvalidatepasswordforgotcode_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
         iface.postvalidatepasswordforgotcode(args.mobile, args.code,resultHandler);
       }
     }
@@ -2053,7 +2053,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public void start(I iface, postuserresetpassword_args args, AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
+      public void start(I iface, postuserresetpassword_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
         iface.postuserresetpassword(args.mobile, args.code, args.password,resultHandler);
       }
     }
@@ -2104,7 +2104,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public void start(I iface, postusermergebymobile_args args, AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
+      public void start(I iface, postusermergebymobile_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
         iface.postusermergebymobile(args.appid, args.mobile,resultHandler);
       }
     }
@@ -2155,7 +2155,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public void start(I iface, postsendchangemobilecode_args args, AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
+      public void start(I iface, postsendchangemobilecode_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
         iface.postsendchangemobilecode(args.oldmobile,resultHandler);
       }
     }
@@ -2206,7 +2206,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public void start(I iface, postvalidatechangemobilecode_args args, AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
+      public void start(I iface, postvalidatechangemobilecode_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
         iface.postvalidatechangemobilecode(args.oldmobile, args.code,resultHandler);
       }
     }
@@ -2257,7 +2257,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public void start(I iface, postsendresetmobilecode_args args, AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
+      public void start(I iface, postsendresetmobilecode_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
         iface.postsendresetmobilecode(args.newmobile,resultHandler);
       }
     }
@@ -2308,7 +2308,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public void start(I iface, postresetmobile_args args, AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
+      public void start(I iface, postresetmobile_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
         iface.postresetmobile(args.user_id, args.newmobile, args.code,resultHandler);
       }
     }
@@ -2359,7 +2359,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public void start(I iface, getUserFavPositionCountByUserIdAndPositionId_args args, AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
+      public void start(I iface, getUserFavPositionCountByUserIdAndPositionId_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
         iface.getUserFavPositionCountByUserIdAndPositionId(args.userId, args.positionId,resultHandler);
       }
     }
@@ -2410,7 +2410,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public void start(I iface, postUserFavoritePosition_args args, AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
+      public void start(I iface, postUserFavoritePosition_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
         iface.postUserFavoritePosition(args.userFavoritePosition,resultHandler);
       }
     }
@@ -2647,11 +2647,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -2671,7 +2671,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -2679,7 +2679,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -2687,7 +2687,7 @@ public class UseraccountsServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -2700,7 +2700,7 @@ public class UseraccountsServices {
 
     private static class getismobileregisted_argsStandardScheme extends StandardScheme<getismobileregisted_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, getismobileregisted_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getismobileregisted_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -2729,7 +2729,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, getismobileregisted_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getismobileregisted_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -2753,7 +2753,7 @@ public class UseraccountsServices {
     private static class getismobileregisted_argsTupleScheme extends TupleScheme<getismobileregisted_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, getismobileregisted_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, getismobileregisted_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetMobile()) {
@@ -2766,7 +2766,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, getismobileregisted_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, getismobileregisted_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -3008,11 +3008,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -3032,7 +3032,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
       if (success != null) {
@@ -3043,7 +3043,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -3051,7 +3051,7 @@ public class UseraccountsServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -3064,7 +3064,7 @@ public class UseraccountsServices {
 
     private static class getismobileregisted_resultStandardScheme extends StandardScheme<getismobileregisted_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, getismobileregisted_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getismobileregisted_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -3094,7 +3094,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, getismobileregisted_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getismobileregisted_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -3118,7 +3118,7 @@ public class UseraccountsServices {
     private static class getismobileregisted_resultTupleScheme extends TupleScheme<getismobileregisted_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, getismobileregisted_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, getismobileregisted_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -3131,7 +3131,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, getismobileregisted_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, getismobileregisted_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -3374,11 +3374,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -3398,7 +3398,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
       if (userloginreq != null) {
@@ -3409,7 +3409,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -3417,7 +3417,7 @@ public class UseraccountsServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -3430,7 +3430,7 @@ public class UseraccountsServices {
 
     private static class postuserlogin_argsStandardScheme extends StandardScheme<postuserlogin_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postuserlogin_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postuserlogin_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -3460,7 +3460,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postuserlogin_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postuserlogin_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -3484,7 +3484,7 @@ public class UseraccountsServices {
     private static class postuserlogin_argsTupleScheme extends TupleScheme<postuserlogin_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postuserlogin_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postuserlogin_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetUserloginreq()) {
@@ -3497,7 +3497,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postuserlogin_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postuserlogin_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -3740,11 +3740,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -3764,7 +3764,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
       if (success != null) {
@@ -3775,7 +3775,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -3783,7 +3783,7 @@ public class UseraccountsServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -3796,7 +3796,7 @@ public class UseraccountsServices {
 
     private static class postuserlogin_resultStandardScheme extends StandardScheme<postuserlogin_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postuserlogin_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postuserlogin_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -3826,7 +3826,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postuserlogin_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postuserlogin_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -3850,7 +3850,7 @@ public class UseraccountsServices {
     private static class postuserlogin_resultTupleScheme extends TupleScheme<postuserlogin_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postuserlogin_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postuserlogin_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -3863,7 +3863,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postuserlogin_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postuserlogin_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -4108,11 +4108,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -4128,7 +4128,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -4136,7 +4136,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -4146,7 +4146,7 @@ public class UseraccountsServices {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -4159,7 +4159,7 @@ public class UseraccountsServices {
 
     private static class postuserlogout_argsStandardScheme extends StandardScheme<postuserlogout_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postuserlogout_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postuserlogout_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -4188,7 +4188,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postuserlogout_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postuserlogout_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -4210,7 +4210,7 @@ public class UseraccountsServices {
     private static class postuserlogout_argsTupleScheme extends TupleScheme<postuserlogout_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postuserlogout_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postuserlogout_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetUserid()) {
@@ -4223,7 +4223,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postuserlogout_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postuserlogout_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -4465,11 +4465,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -4489,7 +4489,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
       if (success != null) {
@@ -4500,7 +4500,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -4508,7 +4508,7 @@ public class UseraccountsServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -4521,7 +4521,7 @@ public class UseraccountsServices {
 
     private static class postuserlogout_resultStandardScheme extends StandardScheme<postuserlogout_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postuserlogout_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postuserlogout_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -4551,7 +4551,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postuserlogout_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postuserlogout_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -4575,7 +4575,7 @@ public class UseraccountsServices {
     private static class postuserlogout_resultTupleScheme extends TupleScheme<postuserlogout_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postuserlogout_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postuserlogout_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -4588,7 +4588,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postuserlogout_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postuserlogout_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -4831,11 +4831,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -4855,7 +4855,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -4863,7 +4863,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -4871,7 +4871,7 @@ public class UseraccountsServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -4884,7 +4884,7 @@ public class UseraccountsServices {
 
     private static class postsendsignupcode_argsStandardScheme extends StandardScheme<postsendsignupcode_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postsendsignupcode_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postsendsignupcode_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -4913,7 +4913,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postsendsignupcode_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postsendsignupcode_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -4937,7 +4937,7 @@ public class UseraccountsServices {
     private static class postsendsignupcode_argsTupleScheme extends TupleScheme<postsendsignupcode_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postsendsignupcode_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postsendsignupcode_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetMobile()) {
@@ -4950,7 +4950,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postsendsignupcode_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postsendsignupcode_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -5192,11 +5192,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -5216,7 +5216,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
       if (success != null) {
@@ -5227,7 +5227,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -5235,7 +5235,7 @@ public class UseraccountsServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -5248,7 +5248,7 @@ public class UseraccountsServices {
 
     private static class postsendsignupcode_resultStandardScheme extends StandardScheme<postsendsignupcode_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postsendsignupcode_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postsendsignupcode_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -5278,7 +5278,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postsendsignupcode_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postsendsignupcode_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -5302,7 +5302,7 @@ public class UseraccountsServices {
     private static class postsendsignupcode_resultTupleScheme extends TupleScheme<postsendsignupcode_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postsendsignupcode_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postsendsignupcode_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -5315,7 +5315,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postsendsignupcode_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postsendsignupcode_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -5632,11 +5632,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -5664,7 +5664,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
       if (user != null) {
@@ -5675,7 +5675,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -5683,7 +5683,7 @@ public class UseraccountsServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -5696,7 +5696,7 @@ public class UseraccountsServices {
 
     private static class postusermobilesignup_argsStandardScheme extends StandardScheme<postusermobilesignup_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postusermobilesignup_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postusermobilesignup_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -5734,7 +5734,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postusermobilesignup_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postusermobilesignup_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -5763,7 +5763,7 @@ public class UseraccountsServices {
     private static class postusermobilesignup_argsTupleScheme extends TupleScheme<postusermobilesignup_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postusermobilesignup_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postusermobilesignup_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetUser()) {
@@ -5782,7 +5782,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postusermobilesignup_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postusermobilesignup_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
@@ -6029,11 +6029,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -6053,7 +6053,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
       if (success != null) {
@@ -6064,7 +6064,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -6072,7 +6072,7 @@ public class UseraccountsServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -6085,7 +6085,7 @@ public class UseraccountsServices {
 
     private static class postusermobilesignup_resultStandardScheme extends StandardScheme<postusermobilesignup_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postusermobilesignup_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postusermobilesignup_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -6115,7 +6115,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postusermobilesignup_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postusermobilesignup_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -6139,7 +6139,7 @@ public class UseraccountsServices {
     private static class postusermobilesignup_resultTupleScheme extends TupleScheme<postusermobilesignup_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postusermobilesignup_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postusermobilesignup_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -6152,7 +6152,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postusermobilesignup_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postusermobilesignup_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -6619,11 +6619,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -6663,7 +6663,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -6671,7 +6671,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -6681,7 +6681,7 @@ public class UseraccountsServices {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -6694,7 +6694,7 @@ public class UseraccountsServices {
 
     private static class postuserwxbindmobile_argsStandardScheme extends StandardScheme<postuserwxbindmobile_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postuserwxbindmobile_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postuserwxbindmobile_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -6747,7 +6747,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postuserwxbindmobile_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postuserwxbindmobile_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -6784,7 +6784,7 @@ public class UseraccountsServices {
     private static class postuserwxbindmobile_argsTupleScheme extends TupleScheme<postuserwxbindmobile_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postuserwxbindmobile_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postuserwxbindmobile_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetAppid()) {
@@ -6815,7 +6815,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postuserwxbindmobile_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postuserwxbindmobile_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(4);
         if (incoming.get(0)) {
@@ -7069,11 +7069,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -7093,7 +7093,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
       if (success != null) {
@@ -7104,7 +7104,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -7112,7 +7112,7 @@ public class UseraccountsServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -7125,7 +7125,7 @@ public class UseraccountsServices {
 
     private static class postuserwxbindmobile_resultStandardScheme extends StandardScheme<postuserwxbindmobile_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postuserwxbindmobile_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postuserwxbindmobile_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -7155,7 +7155,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postuserwxbindmobile_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postuserwxbindmobile_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -7179,7 +7179,7 @@ public class UseraccountsServices {
     private static class postuserwxbindmobile_resultTupleScheme extends TupleScheme<postuserwxbindmobile_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postuserwxbindmobile_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postuserwxbindmobile_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -7192,7 +7192,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postuserwxbindmobile_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postuserwxbindmobile_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -7585,11 +7585,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -7621,7 +7621,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -7629,7 +7629,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -7639,7 +7639,7 @@ public class UseraccountsServices {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -7652,7 +7652,7 @@ public class UseraccountsServices {
 
     private static class postuserchangepassword_argsStandardScheme extends StandardScheme<postuserchangepassword_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postuserchangepassword_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postuserchangepassword_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -7697,7 +7697,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postuserchangepassword_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postuserchangepassword_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -7729,7 +7729,7 @@ public class UseraccountsServices {
     private static class postuserchangepassword_argsTupleScheme extends TupleScheme<postuserchangepassword_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postuserchangepassword_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postuserchangepassword_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetUser_id()) {
@@ -7754,7 +7754,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postuserchangepassword_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postuserchangepassword_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
@@ -8004,11 +8004,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -8028,7 +8028,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
       if (success != null) {
@@ -8039,7 +8039,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -8047,7 +8047,7 @@ public class UseraccountsServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -8060,7 +8060,7 @@ public class UseraccountsServices {
 
     private static class postuserchangepassword_resultStandardScheme extends StandardScheme<postuserchangepassword_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postuserchangepassword_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postuserchangepassword_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -8090,7 +8090,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postuserchangepassword_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postuserchangepassword_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -8114,7 +8114,7 @@ public class UseraccountsServices {
     private static class postuserchangepassword_resultTupleScheme extends TupleScheme<postuserchangepassword_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postuserchangepassword_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postuserchangepassword_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -8127,7 +8127,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postuserchangepassword_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postuserchangepassword_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -8370,11 +8370,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -8394,7 +8394,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -8402,7 +8402,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -8410,7 +8410,7 @@ public class UseraccountsServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -8423,7 +8423,7 @@ public class UseraccountsServices {
 
     private static class postusersendpasswordforgotcode_argsStandardScheme extends StandardScheme<postusersendpasswordforgotcode_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postusersendpasswordforgotcode_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postusersendpasswordforgotcode_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -8452,7 +8452,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postusersendpasswordforgotcode_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postusersendpasswordforgotcode_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -8476,7 +8476,7 @@ public class UseraccountsServices {
     private static class postusersendpasswordforgotcode_argsTupleScheme extends TupleScheme<postusersendpasswordforgotcode_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postusersendpasswordforgotcode_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postusersendpasswordforgotcode_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetMobile()) {
@@ -8489,7 +8489,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postusersendpasswordforgotcode_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postusersendpasswordforgotcode_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -8731,11 +8731,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -8755,7 +8755,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
       if (success != null) {
@@ -8766,7 +8766,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -8774,7 +8774,7 @@ public class UseraccountsServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -8787,7 +8787,7 @@ public class UseraccountsServices {
 
     private static class postusersendpasswordforgotcode_resultStandardScheme extends StandardScheme<postusersendpasswordforgotcode_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postusersendpasswordforgotcode_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postusersendpasswordforgotcode_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -8817,7 +8817,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postusersendpasswordforgotcode_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postusersendpasswordforgotcode_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -8841,7 +8841,7 @@ public class UseraccountsServices {
     private static class postusersendpasswordforgotcode_resultTupleScheme extends TupleScheme<postusersendpasswordforgotcode_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postusersendpasswordforgotcode_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postusersendpasswordforgotcode_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -8854,7 +8854,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postusersendpasswordforgotcode_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postusersendpasswordforgotcode_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -9171,11 +9171,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -9203,7 +9203,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -9211,7 +9211,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -9219,7 +9219,7 @@ public class UseraccountsServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -9232,7 +9232,7 @@ public class UseraccountsServices {
 
     private static class postvalidatepasswordforgotcode_argsStandardScheme extends StandardScheme<postvalidatepasswordforgotcode_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postvalidatepasswordforgotcode_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postvalidatepasswordforgotcode_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -9269,7 +9269,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postvalidatepasswordforgotcode_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postvalidatepasswordforgotcode_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -9298,7 +9298,7 @@ public class UseraccountsServices {
     private static class postvalidatepasswordforgotcode_argsTupleScheme extends TupleScheme<postvalidatepasswordforgotcode_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postvalidatepasswordforgotcode_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postvalidatepasswordforgotcode_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetMobile()) {
@@ -9317,7 +9317,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postvalidatepasswordforgotcode_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postvalidatepasswordforgotcode_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
@@ -9563,11 +9563,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -9587,7 +9587,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
       if (success != null) {
@@ -9598,7 +9598,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -9606,7 +9606,7 @@ public class UseraccountsServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -9619,7 +9619,7 @@ public class UseraccountsServices {
 
     private static class postvalidatepasswordforgotcode_resultStandardScheme extends StandardScheme<postvalidatepasswordforgotcode_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postvalidatepasswordforgotcode_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postvalidatepasswordforgotcode_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -9649,7 +9649,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postvalidatepasswordforgotcode_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postvalidatepasswordforgotcode_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -9673,7 +9673,7 @@ public class UseraccountsServices {
     private static class postvalidatepasswordforgotcode_resultTupleScheme extends TupleScheme<postvalidatepasswordforgotcode_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postvalidatepasswordforgotcode_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postvalidatepasswordforgotcode_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -9686,7 +9686,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postvalidatepasswordforgotcode_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postvalidatepasswordforgotcode_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -10077,11 +10077,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -10117,7 +10117,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -10125,7 +10125,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -10133,7 +10133,7 @@ public class UseraccountsServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -10146,7 +10146,7 @@ public class UseraccountsServices {
 
     private static class postuserresetpassword_argsStandardScheme extends StandardScheme<postuserresetpassword_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postuserresetpassword_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postuserresetpassword_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -10191,7 +10191,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postuserresetpassword_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postuserresetpassword_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -10225,7 +10225,7 @@ public class UseraccountsServices {
     private static class postuserresetpassword_argsTupleScheme extends TupleScheme<postuserresetpassword_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postuserresetpassword_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postuserresetpassword_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetMobile()) {
@@ -10250,7 +10250,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postuserresetpassword_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postuserresetpassword_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
@@ -10500,11 +10500,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -10524,7 +10524,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
       if (success != null) {
@@ -10535,7 +10535,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -10543,7 +10543,7 @@ public class UseraccountsServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -10556,7 +10556,7 @@ public class UseraccountsServices {
 
     private static class postuserresetpassword_resultStandardScheme extends StandardScheme<postuserresetpassword_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postuserresetpassword_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postuserresetpassword_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -10586,7 +10586,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postuserresetpassword_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postuserresetpassword_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -10610,7 +10610,7 @@ public class UseraccountsServices {
     private static class postuserresetpassword_resultTupleScheme extends TupleScheme<postuserresetpassword_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postuserresetpassword_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postuserresetpassword_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -10623,7 +10623,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postuserresetpassword_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postuserresetpassword_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -10942,11 +10942,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -10970,7 +10970,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -10978,7 +10978,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -10988,7 +10988,7 @@ public class UseraccountsServices {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -11001,7 +11001,7 @@ public class UseraccountsServices {
 
     private static class postusermergebymobile_argsStandardScheme extends StandardScheme<postusermergebymobile_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postusermergebymobile_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postusermergebymobile_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -11038,7 +11038,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postusermergebymobile_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postusermergebymobile_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -11065,7 +11065,7 @@ public class UseraccountsServices {
     private static class postusermergebymobile_argsTupleScheme extends TupleScheme<postusermergebymobile_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postusermergebymobile_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postusermergebymobile_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetAppid()) {
@@ -11084,7 +11084,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postusermergebymobile_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postusermergebymobile_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
@@ -11330,11 +11330,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -11354,7 +11354,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
       if (success != null) {
@@ -11365,7 +11365,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -11373,7 +11373,7 @@ public class UseraccountsServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -11386,7 +11386,7 @@ public class UseraccountsServices {
 
     private static class postusermergebymobile_resultStandardScheme extends StandardScheme<postusermergebymobile_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postusermergebymobile_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postusermergebymobile_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -11416,7 +11416,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postusermergebymobile_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postusermergebymobile_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -11440,7 +11440,7 @@ public class UseraccountsServices {
     private static class postusermergebymobile_resultTupleScheme extends TupleScheme<postusermergebymobile_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postusermergebymobile_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postusermergebymobile_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -11453,7 +11453,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postusermergebymobile_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postusermergebymobile_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -11696,11 +11696,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -11720,7 +11720,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -11728,7 +11728,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -11736,7 +11736,7 @@ public class UseraccountsServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -11749,7 +11749,7 @@ public class UseraccountsServices {
 
     private static class postsendchangemobilecode_argsStandardScheme extends StandardScheme<postsendchangemobilecode_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postsendchangemobilecode_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postsendchangemobilecode_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -11778,7 +11778,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postsendchangemobilecode_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postsendchangemobilecode_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -11802,7 +11802,7 @@ public class UseraccountsServices {
     private static class postsendchangemobilecode_argsTupleScheme extends TupleScheme<postsendchangemobilecode_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postsendchangemobilecode_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postsendchangemobilecode_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetOldmobile()) {
@@ -11815,7 +11815,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postsendchangemobilecode_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postsendchangemobilecode_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -12057,11 +12057,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -12081,7 +12081,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
       if (success != null) {
@@ -12092,7 +12092,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -12100,7 +12100,7 @@ public class UseraccountsServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -12113,7 +12113,7 @@ public class UseraccountsServices {
 
     private static class postsendchangemobilecode_resultStandardScheme extends StandardScheme<postsendchangemobilecode_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postsendchangemobilecode_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postsendchangemobilecode_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -12143,7 +12143,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postsendchangemobilecode_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postsendchangemobilecode_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -12167,7 +12167,7 @@ public class UseraccountsServices {
     private static class postsendchangemobilecode_resultTupleScheme extends TupleScheme<postsendchangemobilecode_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postsendchangemobilecode_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postsendchangemobilecode_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -12180,7 +12180,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postsendchangemobilecode_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postsendchangemobilecode_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -12497,11 +12497,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -12529,7 +12529,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -12537,7 +12537,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -12545,7 +12545,7 @@ public class UseraccountsServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -12558,7 +12558,7 @@ public class UseraccountsServices {
 
     private static class postvalidatechangemobilecode_argsStandardScheme extends StandardScheme<postvalidatechangemobilecode_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postvalidatechangemobilecode_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postvalidatechangemobilecode_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -12595,7 +12595,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postvalidatechangemobilecode_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postvalidatechangemobilecode_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -12624,7 +12624,7 @@ public class UseraccountsServices {
     private static class postvalidatechangemobilecode_argsTupleScheme extends TupleScheme<postvalidatechangemobilecode_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postvalidatechangemobilecode_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postvalidatechangemobilecode_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetOldmobile()) {
@@ -12643,7 +12643,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postvalidatechangemobilecode_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postvalidatechangemobilecode_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
@@ -12889,11 +12889,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -12913,7 +12913,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
       if (success != null) {
@@ -12924,7 +12924,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -12932,7 +12932,7 @@ public class UseraccountsServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -12945,7 +12945,7 @@ public class UseraccountsServices {
 
     private static class postvalidatechangemobilecode_resultStandardScheme extends StandardScheme<postvalidatechangemobilecode_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postvalidatechangemobilecode_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postvalidatechangemobilecode_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -12975,7 +12975,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postvalidatechangemobilecode_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postvalidatechangemobilecode_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -12999,7 +12999,7 @@ public class UseraccountsServices {
     private static class postvalidatechangemobilecode_resultTupleScheme extends TupleScheme<postvalidatechangemobilecode_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postvalidatechangemobilecode_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postvalidatechangemobilecode_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -13012,7 +13012,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postvalidatechangemobilecode_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postvalidatechangemobilecode_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -13255,11 +13255,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -13279,7 +13279,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -13287,7 +13287,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -13295,7 +13295,7 @@ public class UseraccountsServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -13308,7 +13308,7 @@ public class UseraccountsServices {
 
     private static class postsendresetmobilecode_argsStandardScheme extends StandardScheme<postsendresetmobilecode_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postsendresetmobilecode_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postsendresetmobilecode_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -13337,7 +13337,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postsendresetmobilecode_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postsendresetmobilecode_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -13361,7 +13361,7 @@ public class UseraccountsServices {
     private static class postsendresetmobilecode_argsTupleScheme extends TupleScheme<postsendresetmobilecode_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postsendresetmobilecode_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postsendresetmobilecode_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetNewmobile()) {
@@ -13374,7 +13374,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postsendresetmobilecode_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postsendresetmobilecode_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -13616,11 +13616,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -13640,7 +13640,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
       if (success != null) {
@@ -13651,7 +13651,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -13659,7 +13659,7 @@ public class UseraccountsServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -13672,7 +13672,7 @@ public class UseraccountsServices {
 
     private static class postsendresetmobilecode_resultStandardScheme extends StandardScheme<postsendresetmobilecode_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postsendresetmobilecode_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postsendresetmobilecode_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -13702,7 +13702,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postsendresetmobilecode_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postsendresetmobilecode_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -13726,7 +13726,7 @@ public class UseraccountsServices {
     private static class postsendresetmobilecode_resultTupleScheme extends TupleScheme<postsendresetmobilecode_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postsendresetmobilecode_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postsendresetmobilecode_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -13739,7 +13739,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postsendresetmobilecode_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postsendresetmobilecode_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -14132,11 +14132,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -14168,7 +14168,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -14176,7 +14176,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -14186,7 +14186,7 @@ public class UseraccountsServices {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -14199,7 +14199,7 @@ public class UseraccountsServices {
 
     private static class postresetmobile_argsStandardScheme extends StandardScheme<postresetmobile_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postresetmobile_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postresetmobile_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -14244,7 +14244,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postresetmobile_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postresetmobile_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -14276,7 +14276,7 @@ public class UseraccountsServices {
     private static class postresetmobile_argsTupleScheme extends TupleScheme<postresetmobile_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postresetmobile_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postresetmobile_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetUser_id()) {
@@ -14301,7 +14301,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postresetmobile_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postresetmobile_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
@@ -14551,11 +14551,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -14575,7 +14575,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
       if (success != null) {
@@ -14586,7 +14586,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -14594,7 +14594,7 @@ public class UseraccountsServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -14607,7 +14607,7 @@ public class UseraccountsServices {
 
     private static class postresetmobile_resultStandardScheme extends StandardScheme<postresetmobile_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postresetmobile_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postresetmobile_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -14637,7 +14637,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postresetmobile_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postresetmobile_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -14661,7 +14661,7 @@ public class UseraccountsServices {
     private static class postresetmobile_resultTupleScheme extends TupleScheme<postresetmobile_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postresetmobile_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postresetmobile_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -14674,7 +14674,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postresetmobile_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postresetmobile_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -14993,11 +14993,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -15017,7 +15017,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -15025,7 +15025,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -15035,7 +15035,7 @@ public class UseraccountsServices {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -15048,7 +15048,7 @@ public class UseraccountsServices {
 
     private static class getUserFavPositionCountByUserIdAndPositionId_argsStandardScheme extends StandardScheme<getUserFavPositionCountByUserIdAndPositionId_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, getUserFavPositionCountByUserIdAndPositionId_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getUserFavPositionCountByUserIdAndPositionId_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -15085,7 +15085,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, getUserFavPositionCountByUserIdAndPositionId_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getUserFavPositionCountByUserIdAndPositionId_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -15110,7 +15110,7 @@ public class UseraccountsServices {
     private static class getUserFavPositionCountByUserIdAndPositionId_argsTupleScheme extends TupleScheme<getUserFavPositionCountByUserIdAndPositionId_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, getUserFavPositionCountByUserIdAndPositionId_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, getUserFavPositionCountByUserIdAndPositionId_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetUserId()) {
@@ -15129,7 +15129,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, getUserFavPositionCountByUserIdAndPositionId_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, getUserFavPositionCountByUserIdAndPositionId_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
@@ -15375,11 +15375,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -15399,7 +15399,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
       if (success != null) {
@@ -15410,7 +15410,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -15418,7 +15418,7 @@ public class UseraccountsServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -15431,7 +15431,7 @@ public class UseraccountsServices {
 
     private static class getUserFavPositionCountByUserIdAndPositionId_resultStandardScheme extends StandardScheme<getUserFavPositionCountByUserIdAndPositionId_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, getUserFavPositionCountByUserIdAndPositionId_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getUserFavPositionCountByUserIdAndPositionId_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -15461,7 +15461,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, getUserFavPositionCountByUserIdAndPositionId_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getUserFavPositionCountByUserIdAndPositionId_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -15485,7 +15485,7 @@ public class UseraccountsServices {
     private static class getUserFavPositionCountByUserIdAndPositionId_resultTupleScheme extends TupleScheme<getUserFavPositionCountByUserIdAndPositionId_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, getUserFavPositionCountByUserIdAndPositionId_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, getUserFavPositionCountByUserIdAndPositionId_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -15498,7 +15498,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, getUserFavPositionCountByUserIdAndPositionId_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, getUserFavPositionCountByUserIdAndPositionId_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -15741,11 +15741,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -15765,7 +15765,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
       if (userFavoritePosition != null) {
@@ -15776,7 +15776,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -15784,7 +15784,7 @@ public class UseraccountsServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -15797,7 +15797,7 @@ public class UseraccountsServices {
 
     private static class postUserFavoritePosition_argsStandardScheme extends StandardScheme<postUserFavoritePosition_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postUserFavoritePosition_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postUserFavoritePosition_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -15827,7 +15827,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postUserFavoritePosition_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postUserFavoritePosition_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -15851,7 +15851,7 @@ public class UseraccountsServices {
     private static class postUserFavoritePosition_argsTupleScheme extends TupleScheme<postUserFavoritePosition_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postUserFavoritePosition_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postUserFavoritePosition_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetUserFavoritePosition()) {
@@ -15864,7 +15864,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postUserFavoritePosition_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postUserFavoritePosition_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -16107,11 +16107,11 @@ public class UseraccountsServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -16131,7 +16131,7 @@ public class UseraccountsServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
       if (success != null) {
@@ -16142,7 +16142,7 @@ public class UseraccountsServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -16150,7 +16150,7 @@ public class UseraccountsServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -16163,7 +16163,7 @@ public class UseraccountsServices {
 
     private static class postUserFavoritePosition_resultStandardScheme extends StandardScheme<postUserFavoritePosition_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postUserFavoritePosition_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postUserFavoritePosition_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -16193,7 +16193,7 @@ public class UseraccountsServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postUserFavoritePosition_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postUserFavoritePosition_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -16217,7 +16217,7 @@ public class UseraccountsServices {
     private static class postUserFavoritePosition_resultTupleScheme extends TupleScheme<postUserFavoritePosition_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postUserFavoritePosition_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postUserFavoritePosition_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -16230,7 +16230,7 @@ public class UseraccountsServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postUserFavoritePosition_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postUserFavoritePosition_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
