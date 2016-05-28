@@ -107,6 +107,6 @@ public class DefaultInvoker<T> implements Invoker {
                 }
             }
         }
-        throw new RpcException("Invoke error!", exception);
+        throw new RpcException("服务超时，请稍候再试!", exception);
     }
 }
