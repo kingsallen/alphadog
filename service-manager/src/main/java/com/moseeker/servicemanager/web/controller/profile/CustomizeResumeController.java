@@ -25,7 +25,7 @@ public class CustomizeResumeController {
 
 	CustomizeResumeServices.Iface awardService = ServiceUtil.getService(CustomizeResumeServices.Iface.class);
 	
-	@RequestMapping(value = "/profile/customizeresume", method = RequestMethod.GET)
+	@RequestMapping(value = "/profile/other", method = RequestMethod.GET)
 	@ResponseBody
 	public String get(HttpServletRequest request, HttpServletResponse response) {
 		//PrintWriter writer = null;
@@ -42,7 +42,7 @@ public class CustomizeResumeController {
 		}
 	}
 
-	@RequestMapping(value = "/profile/customizeresume", method = RequestMethod.POST)
+	@RequestMapping(value = "/profile/other", method = RequestMethod.POST)
 	@ResponseBody
 	public String post(HttpServletRequest request, HttpServletResponse response) {
 		//PrintWriter writer = null;
@@ -56,7 +56,7 @@ public class CustomizeResumeController {
 		}
 	}
 
-	@RequestMapping(value = "/profile/customizeresume", method = RequestMethod.PUT)
+	@RequestMapping(value = "/profile/other", method = RequestMethod.PUT)
 	@ResponseBody
 	public String put(HttpServletRequest request, HttpServletResponse response) {
 		try {
@@ -68,7 +68,7 @@ public class CustomizeResumeController {
 		}
 	}
 
-	@RequestMapping(value = "/profile/customizeresume", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/profile/other", method = RequestMethod.DELETE)
 	@ResponseBody
 	public String delete(HttpServletRequest request, HttpServletResponse response) {
 		try {

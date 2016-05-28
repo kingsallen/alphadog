@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.thrift.TBase;
 import org.jooq.impl.UpdatableRecordImpl;
@@ -15,6 +16,8 @@ import org.jooq.types.ULong;
 import org.jooq.types.UShort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 
 /**
  * 
@@ -39,8 +42,11 @@ public class BeanUtils {
 	private static Logger logger = LoggerFactory.getLogger(BeanUtils.class);
 	
 	public static void main(String[] args) {
-		String str = "110108";
-		System.out.println(Short.valueOf(str));
+		Class<ProfileProfileRecord> clazz = ProfileProfileRecord.class;
+		Field[] fields = clazz.getFields();
+		for(int i=0; i<fields.length; i++) {
+			System.out.println(fields[i].getName());
+		}
 	}
 	
 	@SuppressWarnings("rawtypes")
@@ -181,6 +187,23 @@ public class BeanUtils {
 				}
 			}
 		}
+	}
+	
+	public static <T> T MapToRecord(Map<String, Object> map, Class<T> clazz) {
+		T t = null;
+		if(map != null) {
+			try {
+				t = clazz.newInstance();
+				for(Entry<String, Object> entry : map.entrySet()) {
+					
+				}
+			} catch (InstantiationException | IllegalAccessException e) {
+				logger.error(e.getMessage(), e);
+			} finally {
+				//do nothing
+			}
+		}
+		return t;
 	}
 	
 	private enum MethodType {
