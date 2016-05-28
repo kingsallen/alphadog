@@ -18,7 +18,7 @@ struct Usersetting {
 }
 
 /*
-  用户信息表
+  用户实体
 */
 struct User {
      1: i64        id              ,    // 主key
@@ -38,11 +38,13 @@ struct User {
     15: string     token           ,    // 用户校验token
     16: string     name            ,    // 姓名或微信昵称
     17: string     headimg         ,    // 头像
-    18: i64        national_code_id,    // 国际电话区号ID
+    18: i64        country_id      ,    // 国家字典表ID, dict_country.id
     19: i64        wechat_id       ,    // 注册用户来自于哪个公众号, 0:默认为来自浏览器的用户
     20: string     unionid         ,    // 存储仟寻服务号的unionid
     21: byte       source          ,    // 来源：0:手机注册, 1:聚合号一键登录, 2:企业号一键登录, 7:PC(正常添加), 8:PC(我要投递), 9: PC(我感兴趣)
-    22: i64        parentid             // 合并到了新用户的id
+    22: string     company         ,    // 点击我感兴趣时填写的公司
+    23: string     position        ,    // 点击我感兴趣时填写的职位
+    24: i64        parentid             // 合并到了新用户的id
 }
 
 /*
