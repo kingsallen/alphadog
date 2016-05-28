@@ -60,4 +60,24 @@ public class JobApplicationController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    /**
+     * 判断该用户是否申请过该职位
+     * <p>
+     *
+     * */
+    @RequestMapping(value = "/application/check", method = RequestMethod.GET)
+    @ResponseBody
+    public String getApplicationByUserIdAndPositionId(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            long positionId = Long.valueOf(request.getParameter("position_id"));
+            long userId = Long.valueOf(request.getParameter("user_id"));
+
+            // 创建申请记录
+            Response result = applicationService.getApplicationByUserIdAndPositionId(userId, positionId);
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }

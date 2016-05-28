@@ -117,8 +117,12 @@ public class JobApplicataionServicesImpl implements Iface {
     @Override
     public Response getApplicationByUserIdAndPositionId(long userId, long positionId) throws TException {
         try {
-            Integer count = jobApplicationDao.getApplicationByUserIdAndPositionId(userId, positionId);
-            return ResponseUtils.success(count > 0?true:false);
+            if(userId > 0 && positionId > 0){
+                Integer count = jobApplicationDao.getApplicationByUserIdAndPositionId(userId, positionId);
+                return ResponseUtils.success(count > 0?true:false);
+            }else{
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "user_id|position_id"));
+            }
         } catch (Exception e) {
             // TODO Auto-generated catch block
             logger.error("postJobResumeOther JobResumeOther error: ", e);
@@ -182,5 +186,4 @@ public class JobApplicataionServicesImpl implements Iface {
         }
         return response;
     }
-
 }
