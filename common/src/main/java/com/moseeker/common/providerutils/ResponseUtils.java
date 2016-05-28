@@ -20,6 +20,15 @@ public class ResponseUtils {
 		return response;
 
 	}
+
+	public static Response successWithoutStringify(String hashmap) {
+		Response response = new Response();
+		response.setStatus(0);
+		response.setMessage("success");
+		response.setData(hashmap);
+		return response;
+	}
+
 	
 	public static Response fail(String constantErrorCodeMessage) throws ParamNullException {
 		Response response = new Response();
