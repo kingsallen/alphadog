@@ -178,4 +178,24 @@ public class Basic {
 	public void setProfile_id(int profile_id) {
 		this.profile_id = profile_id;
 	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + profile_id;
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Basic other = (Basic) obj;
+		if (profile_id != other.profile_id)
+			return false;
+		return true;
+	}
 }

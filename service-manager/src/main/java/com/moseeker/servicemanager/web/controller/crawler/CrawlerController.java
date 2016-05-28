@@ -31,13 +31,18 @@ public class CrawlerController {
 			String userName = request.getParameter("username");
 			String password = request.getParameter("password");
 			String type = request.getParameter("type");
+			String userId = request.getParameter("user_id");
+			String appid = request.getParameter("appid");
 			ValidateUtil vu = new ValidateUtil();
 			vu.addRequiredStringValidate("用户账号", userName, null, null);
 			vu.addRequiredStringValidate("密码", password, null, null);
 			vu.addIntTypeValidate("导入方式", type, null, null, 1, 5);
+			vu.addIntTypeValidate("用户编号", userId, null, null, 1, Integer.MAX_VALUE);
+			vu.addIntTypeValidate("项目编号", appid, null, null, 1, Integer.MAX_VALUE);
 			String result = vu.toString();
 			if(StringUtils.isNullOrEmpty(result)) {
-				crawlerUtils.fetchFirstResume(userName, password, Integer.valueOf(type));
+				crawlerUtils.fetchFirstResume(userName, password, Integer.valueOf(type), Integer.valueOf(userId));
+				
 			} else {
 				return ResponseLogNotification.fail(request, result);
 			}
