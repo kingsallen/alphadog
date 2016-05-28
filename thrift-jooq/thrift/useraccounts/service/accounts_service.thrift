@@ -6,6 +6,10 @@ include "../../common/struct/common_struct.thrift"
 namespace java com.moseeker.thrift.gen.useraccounts.service
 
 service UseraccountsServices {
+
+    // 用户用户数据
+    common_struct.Response getUserById(1: i64 userId);
+
     common_struct.Response getismobileregisted(1: string mobile);
     common_struct.Response postuserlogin(1: useraccounts_struct.Userloginreq userloginreq);
     common_struct.Response postuserlogout(1: i32 userid);

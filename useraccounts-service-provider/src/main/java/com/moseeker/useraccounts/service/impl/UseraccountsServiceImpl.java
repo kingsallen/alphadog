@@ -7,7 +7,6 @@ import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.sms.SmsSender;
 import com.moseeker.common.util.*;
-import com.moseeker.db.jobdb.tables.records.JobResumeOtherRecord;
 import com.moseeker.db.logdb.tables.records.LogUserloginRecordRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.db.userdb.tables.records.UserFavPositionRecord;
@@ -21,10 +20,7 @@ import com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition;
 import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
 import com.moseeker.useraccounts.dao.UserDao;
 import com.moseeker.useraccounts.dao.UserFavoritePositionDao;
-import com.moseeker.useraccounts.dao.impl.LogUserLoginDaoImpl;
 import com.moseeker.useraccounts.dao.impl.ProfileDaoImpl;
-import com.moseeker.useraccounts.dao.impl.UserDaoImpl;
-import com.moseeker.useraccounts.dao.impl.WxuserDaoImpl;
 import org.apache.thrift.TException;
 import org.jooq.types.UByte;
 import org.slf4j.Logger;
@@ -49,10 +45,17 @@ public class UseraccountsServiceImpl implements Iface {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    protected BaseDao<UserWxUserRecord> wxuserdao = new WxuserDaoImpl();
-    protected UserDao userdao = new UserDaoImpl();
-    protected BaseDao<LogUserloginRecordRecord> loguserlogindao = new LogUserLoginDaoImpl();
-    protected ProfileDaoImpl profileDao = new ProfileDaoImpl();
+    @Autowired
+    protected BaseDao<UserWxUserRecord> wxuserdao;
+
+    @Autowired
+    protected UserDao userdao;
+
+    @Autowired
+    protected BaseDao<LogUserloginRecordRecord> loguserlogindao;
+
+    @Autowired
+    protected ProfileDaoImpl profileDao;
 
     @Autowired
     protected UserFavoritePositionDao userFavoritePositionDao;
@@ -477,6 +480,27 @@ public class UseraccountsServiceImpl implements Iface {
     }
 
     /**
+     * 获取用户数据
+     *
+     * @param userId 用户ID
+     *
+     * */
+    @Override
+    public Response getUserById(long userId) throws TException {
+        try{
+            if(userId > 0){
+                return ResponseUtils.success(userdao.getUserById(userId));
+            }else{
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+            }
+        }catch (Exception e){
+            // TODO Auto-generated catch block
+            logger.error("getUserById error: ", e);
+        }
+        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+    }
+
+    /**
      * 检查手机号是否已经注册。 exist: true 已经存在， exist：false 不存在。
      * @param mobile
      * @return
@@ -768,6 +792,6 @@ public class UseraccountsServiceImpl implements Iface {
         }
 
         return false;
-    }    
+    }
     
 }

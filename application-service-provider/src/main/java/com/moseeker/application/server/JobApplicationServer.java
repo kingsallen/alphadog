@@ -37,7 +37,6 @@ public class JobApplicationServer {
             }
         } catch (Exception e) {
             LOGGER.error("error", e);
-            e.printStackTrace();
         }
 
     }

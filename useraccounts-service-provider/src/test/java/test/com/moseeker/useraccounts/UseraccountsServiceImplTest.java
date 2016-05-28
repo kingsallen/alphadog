@@ -50,6 +50,10 @@ public class UseraccountsServiceImplTest {
             Response userResponse = useraccountsServices.postusermobilesignup(getUser(), code);
             System.out.println(userResponse);
 
+            // 获取用户
+            Response userResponse1 = useraccountsServices.getUserById(1);
+            System.out.println(userResponse1);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

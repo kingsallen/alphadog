@@ -39,21 +39,21 @@ public class JobApplicationServices {
 
   public interface Iface {
 
-    public com.moseeker.thrift.gen.common.struct.Response postApplication(com.moseeker.thrift.gen.application.struct.JobApplication application) throws TException;
+    public com.moseeker.thrift.gen.common.struct.Response postApplication(com.moseeker.thrift.gen.application.struct.JobApplication application) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postJobResumeOther(com.moseeker.thrift.gen.application.struct.JobResumeOther jobResumeOther) throws TException;
+    public com.moseeker.thrift.gen.common.struct.Response postJobResumeOther(com.moseeker.thrift.gen.application.struct.JobResumeOther jobResumeOther) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response getApplicationByUserIdAndPositionId(long userId, long positionId) throws TException;
+    public com.moseeker.thrift.gen.common.struct.Response getApplicationByUserIdAndPositionId(long userId, long positionId) throws org.apache.thrift.TException;
 
   }
 
   public interface AsyncIface {
 
-    public void postApplication(com.moseeker.thrift.gen.application.struct.JobApplication application, AsyncMethodCallback resultHandler) throws TException;
+    public void postApplication(com.moseeker.thrift.gen.application.struct.JobApplication application, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void postJobResumeOther(com.moseeker.thrift.gen.application.struct.JobResumeOther jobResumeOther, AsyncMethodCallback resultHandler) throws TException;
+    public void postJobResumeOther(com.moseeker.thrift.gen.application.struct.JobResumeOther jobResumeOther, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void getApplicationByUserIdAndPositionId(long userId, long positionId, AsyncMethodCallback resultHandler) throws TException;
+    public void getApplicationByUserIdAndPositionId(long userId, long positionId, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -77,20 +77,20 @@ public class JobApplicationServices {
       super(iprot, oprot);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postApplication(com.moseeker.thrift.gen.application.struct.JobApplication application) throws TException
+    public com.moseeker.thrift.gen.common.struct.Response postApplication(com.moseeker.thrift.gen.application.struct.JobApplication application) throws org.apache.thrift.TException
     {
       send_postApplication(application);
       return recv_postApplication();
     }
 
-    public void send_postApplication(com.moseeker.thrift.gen.application.struct.JobApplication application) throws TException
+    public void send_postApplication(com.moseeker.thrift.gen.application.struct.JobApplication application) throws org.apache.thrift.TException
     {
       postApplication_args args = new postApplication_args();
       args.setApplication(application);
       sendBase("postApplication", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_postApplication() throws TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_postApplication() throws org.apache.thrift.TException
     {
       postApplication_result result = new postApplication_result();
       receiveBase(result, "postApplication");
@@ -100,20 +100,20 @@ public class JobApplicationServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postApplication failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postJobResumeOther(com.moseeker.thrift.gen.application.struct.JobResumeOther jobResumeOther) throws TException
+    public com.moseeker.thrift.gen.common.struct.Response postJobResumeOther(com.moseeker.thrift.gen.application.struct.JobResumeOther jobResumeOther) throws org.apache.thrift.TException
     {
       send_postJobResumeOther(jobResumeOther);
       return recv_postJobResumeOther();
     }
 
-    public void send_postJobResumeOther(com.moseeker.thrift.gen.application.struct.JobResumeOther jobResumeOther) throws TException
+    public void send_postJobResumeOther(com.moseeker.thrift.gen.application.struct.JobResumeOther jobResumeOther) throws org.apache.thrift.TException
     {
       postJobResumeOther_args args = new postJobResumeOther_args();
       args.setJobResumeOther(jobResumeOther);
       sendBase("postJobResumeOther", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_postJobResumeOther() throws TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_postJobResumeOther() throws org.apache.thrift.TException
     {
       postJobResumeOther_result result = new postJobResumeOther_result();
       receiveBase(result, "postJobResumeOther");
@@ -123,13 +123,13 @@ public class JobApplicationServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postJobResumeOther failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response getApplicationByUserIdAndPositionId(long userId, long positionId) throws TException
+    public com.moseeker.thrift.gen.common.struct.Response getApplicationByUserIdAndPositionId(long userId, long positionId) throws org.apache.thrift.TException
     {
       send_getApplicationByUserIdAndPositionId(userId, positionId);
       return recv_getApplicationByUserIdAndPositionId();
     }
 
-    public void send_getApplicationByUserIdAndPositionId(long userId, long positionId) throws TException
+    public void send_getApplicationByUserIdAndPositionId(long userId, long positionId) throws org.apache.thrift.TException
     {
       getApplicationByUserIdAndPositionId_args args = new getApplicationByUserIdAndPositionId_args();
       args.setUserId(userId);
@@ -137,7 +137,7 @@ public class JobApplicationServices {
       sendBase("getApplicationByUserIdAndPositionId", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_getApplicationByUserIdAndPositionId() throws TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_getApplicationByUserIdAndPositionId() throws org.apache.thrift.TException
     {
       getApplicationByUserIdAndPositionId_result result = new getApplicationByUserIdAndPositionId_result();
       receiveBase(result, "getApplicationByUserIdAndPositionId");
@@ -165,7 +165,7 @@ public class JobApplicationServices {
       super(protocolFactory, clientManager, transport);
     }
 
-    public void postApplication(com.moseeker.thrift.gen.application.struct.JobApplication application, AsyncMethodCallback resultHandler) throws TException {
+    public void postApplication(com.moseeker.thrift.gen.application.struct.JobApplication application, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       postApplication_call method_call = new postApplication_call(application, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -174,12 +174,12 @@ public class JobApplicationServices {
 
     public static class postApplication_call extends org.apache.thrift.async.TAsyncMethodCall {
       private com.moseeker.thrift.gen.application.struct.JobApplication application;
-      public postApplication_call(com.moseeker.thrift.gen.application.struct.JobApplication application, AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
+      public postApplication_call(com.moseeker.thrift.gen.application.struct.JobApplication application, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.application = application;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("postApplication", org.apache.thrift.protocol.TMessageType.CALL, 0));
         postApplication_args args = new postApplication_args();
         args.setApplication(application);
@@ -187,8 +187,8 @@ public class JobApplicationServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws TException {
-        if (getState() != State.RESPONSE_READ) {
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
@@ -197,7 +197,7 @@ public class JobApplicationServices {
       }
     }
 
-    public void postJobResumeOther(com.moseeker.thrift.gen.application.struct.JobResumeOther jobResumeOther, AsyncMethodCallback resultHandler) throws TException {
+    public void postJobResumeOther(com.moseeker.thrift.gen.application.struct.JobResumeOther jobResumeOther, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       postJobResumeOther_call method_call = new postJobResumeOther_call(jobResumeOther, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -206,12 +206,12 @@ public class JobApplicationServices {
 
     public static class postJobResumeOther_call extends org.apache.thrift.async.TAsyncMethodCall {
       private com.moseeker.thrift.gen.application.struct.JobResumeOther jobResumeOther;
-      public postJobResumeOther_call(com.moseeker.thrift.gen.application.struct.JobResumeOther jobResumeOther, AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
+      public postJobResumeOther_call(com.moseeker.thrift.gen.application.struct.JobResumeOther jobResumeOther, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.jobResumeOther = jobResumeOther;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("postJobResumeOther", org.apache.thrift.protocol.TMessageType.CALL, 0));
         postJobResumeOther_args args = new postJobResumeOther_args();
         args.setJobResumeOther(jobResumeOther);
@@ -219,8 +219,8 @@ public class JobApplicationServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws TException {
-        if (getState() != State.RESPONSE_READ) {
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
@@ -229,7 +229,7 @@ public class JobApplicationServices {
       }
     }
 
-    public void getApplicationByUserIdAndPositionId(long userId, long positionId, AsyncMethodCallback resultHandler) throws TException {
+    public void getApplicationByUserIdAndPositionId(long userId, long positionId, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       getApplicationByUserIdAndPositionId_call method_call = new getApplicationByUserIdAndPositionId_call(userId, positionId, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -239,13 +239,13 @@ public class JobApplicationServices {
     public static class getApplicationByUserIdAndPositionId_call extends org.apache.thrift.async.TAsyncMethodCall {
       private long userId;
       private long positionId;
-      public getApplicationByUserIdAndPositionId_call(long userId, long positionId, AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws TException {
+      public getApplicationByUserIdAndPositionId_call(long userId, long positionId, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.userId = userId;
         this.positionId = positionId;
       }
 
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws TException {
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getApplicationByUserIdAndPositionId", org.apache.thrift.protocol.TMessageType.CALL, 0));
         getApplicationByUserIdAndPositionId_args args = new getApplicationByUserIdAndPositionId_args();
         args.setUserId(userId);
@@ -254,8 +254,8 @@ public class JobApplicationServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws TException {
-        if (getState() != State.RESPONSE_READ) {
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
@@ -296,7 +296,7 @@ public class JobApplicationServices {
         return false;
       }
 
-      public postApplication_result getResult(I iface, postApplication_args args) throws TException {
+      public postApplication_result getResult(I iface, postApplication_args args) throws org.apache.thrift.TException {
         postApplication_result result = new postApplication_result();
         result.success = iface.postApplication(args.application);
         return result;
@@ -316,7 +316,7 @@ public class JobApplicationServices {
         return false;
       }
 
-      public postJobResumeOther_result getResult(I iface, postJobResumeOther_args args) throws TException {
+      public postJobResumeOther_result getResult(I iface, postJobResumeOther_args args) throws org.apache.thrift.TException {
         postJobResumeOther_result result = new postJobResumeOther_result();
         result.success = iface.postJobResumeOther(args.jobResumeOther);
         return result;
@@ -336,7 +336,7 @@ public class JobApplicationServices {
         return false;
       }
 
-      public getApplicationByUserIdAndPositionId_result getResult(I iface, getApplicationByUserIdAndPositionId_args args) throws TException {
+      public getApplicationByUserIdAndPositionId_result getResult(I iface, getApplicationByUserIdAndPositionId_args args) throws org.apache.thrift.TException {
         getApplicationByUserIdAndPositionId_result result = new getApplicationByUserIdAndPositionId_result();
         result.success = iface.getApplicationByUserIdAndPositionId(args.userId, args.positionId);
         return result;
@@ -408,7 +408,7 @@ public class JobApplicationServices {
         return false;
       }
 
-      public void start(I iface, postApplication_args args, AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
+      public void start(I iface, postApplication_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
         iface.postApplication(args.application,resultHandler);
       }
     }
@@ -459,7 +459,7 @@ public class JobApplicationServices {
         return false;
       }
 
-      public void start(I iface, postJobResumeOther_args args, AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
+      public void start(I iface, postJobResumeOther_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
         iface.postJobResumeOther(args.jobResumeOther,resultHandler);
       }
     }
@@ -510,7 +510,7 @@ public class JobApplicationServices {
         return false;
       }
 
-      public void start(I iface, getApplicationByUserIdAndPositionId_args args, AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
+      public void start(I iface, getApplicationByUserIdAndPositionId_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
         iface.getApplicationByUserIdAndPositionId(args.userId, args.positionId,resultHandler);
       }
     }
@@ -747,11 +747,11 @@ public class JobApplicationServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -771,7 +771,7 @@ public class JobApplicationServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
       if (application != null) {
@@ -782,7 +782,7 @@ public class JobApplicationServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -790,7 +790,7 @@ public class JobApplicationServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -803,7 +803,7 @@ public class JobApplicationServices {
 
     private static class postApplication_argsStandardScheme extends StandardScheme<postApplication_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postApplication_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postApplication_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -833,7 +833,7 @@ public class JobApplicationServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postApplication_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postApplication_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -857,7 +857,7 @@ public class JobApplicationServices {
     private static class postApplication_argsTupleScheme extends TupleScheme<postApplication_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postApplication_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postApplication_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetApplication()) {
@@ -870,7 +870,7 @@ public class JobApplicationServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postApplication_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postApplication_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -1113,11 +1113,11 @@ public class JobApplicationServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -1137,7 +1137,7 @@ public class JobApplicationServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
       if (success != null) {
@@ -1148,7 +1148,7 @@ public class JobApplicationServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -1156,7 +1156,7 @@ public class JobApplicationServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -1169,7 +1169,7 @@ public class JobApplicationServices {
 
     private static class postApplication_resultStandardScheme extends StandardScheme<postApplication_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postApplication_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postApplication_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -1199,7 +1199,7 @@ public class JobApplicationServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postApplication_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postApplication_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -1223,7 +1223,7 @@ public class JobApplicationServices {
     private static class postApplication_resultTupleScheme extends TupleScheme<postApplication_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postApplication_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postApplication_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -1236,7 +1236,7 @@ public class JobApplicationServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postApplication_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postApplication_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -1479,11 +1479,11 @@ public class JobApplicationServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -1503,7 +1503,7 @@ public class JobApplicationServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
       if (jobResumeOther != null) {
@@ -1514,7 +1514,7 @@ public class JobApplicationServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -1522,7 +1522,7 @@ public class JobApplicationServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -1535,7 +1535,7 @@ public class JobApplicationServices {
 
     private static class postJobResumeOther_argsStandardScheme extends StandardScheme<postJobResumeOther_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postJobResumeOther_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postJobResumeOther_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -1565,7 +1565,7 @@ public class JobApplicationServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postJobResumeOther_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postJobResumeOther_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -1589,7 +1589,7 @@ public class JobApplicationServices {
     private static class postJobResumeOther_argsTupleScheme extends TupleScheme<postJobResumeOther_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postJobResumeOther_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postJobResumeOther_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetJobResumeOther()) {
@@ -1602,7 +1602,7 @@ public class JobApplicationServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postJobResumeOther_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postJobResumeOther_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -1845,11 +1845,11 @@ public class JobApplicationServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -1869,7 +1869,7 @@ public class JobApplicationServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
       if (success != null) {
@@ -1880,7 +1880,7 @@ public class JobApplicationServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -1888,7 +1888,7 @@ public class JobApplicationServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -1901,7 +1901,7 @@ public class JobApplicationServices {
 
     private static class postJobResumeOther_resultStandardScheme extends StandardScheme<postJobResumeOther_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postJobResumeOther_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postJobResumeOther_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -1931,7 +1931,7 @@ public class JobApplicationServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postJobResumeOther_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postJobResumeOther_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -1955,7 +1955,7 @@ public class JobApplicationServices {
     private static class postJobResumeOther_resultTupleScheme extends TupleScheme<postJobResumeOther_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postJobResumeOther_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, postJobResumeOther_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -1968,7 +1968,7 @@ public class JobApplicationServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postJobResumeOther_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, postJobResumeOther_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -2287,11 +2287,11 @@ public class JobApplicationServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
     }
 
@@ -2311,7 +2311,7 @@ public class JobApplicationServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
     }
@@ -2319,7 +2319,7 @@ public class JobApplicationServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -2329,7 +2329,7 @@ public class JobApplicationServices {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -2342,7 +2342,7 @@ public class JobApplicationServices {
 
     private static class getApplicationByUserIdAndPositionId_argsStandardScheme extends StandardScheme<getApplicationByUserIdAndPositionId_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, getApplicationByUserIdAndPositionId_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getApplicationByUserIdAndPositionId_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -2379,7 +2379,7 @@ public class JobApplicationServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, getApplicationByUserIdAndPositionId_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getApplicationByUserIdAndPositionId_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -2404,7 +2404,7 @@ public class JobApplicationServices {
     private static class getApplicationByUserIdAndPositionId_argsTupleScheme extends TupleScheme<getApplicationByUserIdAndPositionId_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, getApplicationByUserIdAndPositionId_args struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, getApplicationByUserIdAndPositionId_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetUserId()) {
@@ -2423,7 +2423,7 @@ public class JobApplicationServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, getApplicationByUserIdAndPositionId_args struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, getApplicationByUserIdAndPositionId_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
@@ -2669,11 +2669,11 @@ public class JobApplicationServices {
       return _Fields.findByThriftId(fieldId);
     }
 
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws TException {
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
       schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
     }
 
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws TException {
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
       }
 
@@ -2693,7 +2693,7 @@ public class JobApplicationServices {
       return sb.toString();
     }
 
-    public void validate() throws TException {
+    public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
       if (success != null) {
@@ -2704,7 +2704,7 @@ public class JobApplicationServices {
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
       try {
         write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -2712,7 +2712,7 @@ public class JobApplicationServices {
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (TException te) {
+      } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
       }
     }
@@ -2725,7 +2725,7 @@ public class JobApplicationServices {
 
     private static class getApplicationByUserIdAndPositionId_resultStandardScheme extends StandardScheme<getApplicationByUserIdAndPositionId_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, getApplicationByUserIdAndPositionId_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getApplicationByUserIdAndPositionId_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -2755,7 +2755,7 @@ public class JobApplicationServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, getApplicationByUserIdAndPositionId_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getApplicationByUserIdAndPositionId_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -2779,7 +2779,7 @@ public class JobApplicationServices {
     private static class getApplicationByUserIdAndPositionId_resultTupleScheme extends TupleScheme<getApplicationByUserIdAndPositionId_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, getApplicationByUserIdAndPositionId_result struct) throws TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, getApplicationByUserIdAndPositionId_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -2792,7 +2792,7 @@ public class JobApplicationServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, getApplicationByUserIdAndPositionId_result struct) throws TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, getApplicationByUserIdAndPositionId_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {

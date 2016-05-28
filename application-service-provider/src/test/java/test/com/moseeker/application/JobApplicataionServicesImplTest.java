@@ -8,6 +8,8 @@ import com.moseeker.thrift.gen.application.struct.JobResumeOther;
 import com.moseeker.thrift.gen.common.struct.Response;
 
 /**
+ * 申请客户端 测试类
+ *
  * Created by zzh on 16/5/24.
  */
 public class JobApplicataionServicesImplTest {
@@ -28,13 +30,24 @@ public class JobApplicataionServicesImplTest {
         try {
             applicationService = clientConfig.createProxy(registryConfig);
 
+            // 添加申请
             Response getJobApplication = applicationService.postApplication(getJobApplication());
 
             System.out.println(getJobApplication);
 
+            // 添加申请副本
             Response getJobResumeOther = applicationService.postJobResumeOther(getJobResumeOther());
 
             System.out.println(getJobResumeOther);
+
+            // 是否申请过该职位
+            Response getApplicationByUserIdAndPositionId = applicationService.getApplicationByUserIdAndPositionId(2447, 123);
+
+            System.out.println(getApplicationByUserIdAndPositionId);
+
+            Response getApplicationByUserIdAndPositionId1 = applicationService.getApplicationByUserIdAndPositionId(214, 123);
+
+            System.out.println(getApplicationByUserIdAndPositionId1);
 
         } catch (Exception e) {
             e.printStackTrace();

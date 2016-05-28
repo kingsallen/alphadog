@@ -102,7 +102,30 @@ public class JobApplicataionServicesImpl implements Iface {
         } finally {
             //do nothing
         }
-        return ResponseUtils.fail("postJobResumeOther failed");
+        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+    }
+
+    /**
+     * 判断当前用户是否申请了该职位
+     *
+     * @param userId 用户ID
+     * @param positionId 职位ID
+     *
+     * @return true : 申请, false: 没申请过
+     *
+     * */
+    @Override
+    public Response getApplicationByUserIdAndPositionId(long userId, long positionId) throws TException {
+        try {
+            Integer count = jobApplicationDao.getApplicationByUserIdAndPositionId(userId, positionId);
+            return ResponseUtils.success(count > 0?true:false);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            logger.error("postJobResumeOther JobResumeOther error: ", e);
+        } finally {
+            //do nothing
+        }
+        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
     }
 
     /**
