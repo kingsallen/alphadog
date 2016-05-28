@@ -8,13 +8,13 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.dbutils.DBConnHelper;
-import com.moseeker.common.providerutils.daoutils.BaseJooqDaoImpl;
+import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
 import com.moseeker.db.userdb.tables.UserUser;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.useraccounts.dao.UserDao;
 
 @Repository
-public class UserDaoImpl extends BaseJooqDaoImpl<UserUserRecord, UserUser> implements UserDao {
+public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implements UserDao {
 
 	@Override
 	protected void initJOOQEntity() {
