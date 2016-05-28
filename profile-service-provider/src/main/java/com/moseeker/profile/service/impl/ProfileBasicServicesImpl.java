@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.thrift.TException;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -137,7 +138,16 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 	@Override
 	protected ProfileBasicRecord structToDB(Basic basic)
 			throws ParseException {
-		return (ProfileBasicRecord)BeanUtils.structToDB(basic, ProfileBasicRecord.class);
+		ProfileBasicRecord record = (ProfileBasicRecord)BeanUtils.structToDB(basic, ProfileBasicRecord.class);
+		logger.debug("debug", "profile_id:"+record.getProfileId().intValue());
+		System.out.println("profile_id:"+record.getProfileId().intValue());
+		logger.debug("debug", "weixin:"+record.getWeixin());
+		System.out.println("weixin:"+record.getWeixin());
+		if(record.getUpdateTime() != null) {
+			logger.debug("debug", "update_time:"+(new DateTime(record.getUpdateTime().getTime())).toString("yyyy-MM-dd HH:mm:ss"));
+			System.out.println("update_time:"+(new DateTime(record.getUpdateTime().getTime())).toString("yyyy-MM-dd HH:mm:ss"));
+		}
+		return record;
 	}
 	
 	public ProfileBasicDao getDao() {

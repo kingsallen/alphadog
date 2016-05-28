@@ -348,8 +348,7 @@ public abstract class BaseJooqDaoImpl<R extends UpdatableRecordImpl<R>, T extend
 			Connection conn = DBConnHelper.DBConn.getConn();
 			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 			create.attach(record);
-			record.update();
-			insertret = 1;
+			insertret = record.update();
 			if(conn != null && !conn.isClosed()) {
 				conn.close();
 			}
