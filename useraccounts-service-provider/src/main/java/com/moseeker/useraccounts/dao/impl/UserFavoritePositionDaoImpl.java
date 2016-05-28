@@ -1,7 +1,7 @@
 package com.moseeker.useraccounts.dao.impl;
 
 import com.moseeker.common.dbutils.DBConnHelper;
-import com.moseeker.common.providerutils.daoutils.BaseJooqDaoImpl;
+import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
 import com.moseeker.db.userdb.tables.UserFavPosition;
 import com.moseeker.db.userdb.tables.records.UserFavPositionRecord;
 import com.moseeker.useraccounts.dao.UserFavoritePositionDao;
@@ -22,7 +22,7 @@ import java.sql.SQLException;
  * Created by zzh on 16/5/25.
  */
 @Repository
-public class UserFavoritePositionDaoImpl extends BaseJooqDaoImpl<UserFavPositionRecord, UserFavPosition> implements UserFavoritePositionDao {
+public class UserFavoritePositionDaoImpl extends BaseDaoImpl<UserFavPositionRecord, UserFavPosition> implements UserFavoritePositionDao {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 

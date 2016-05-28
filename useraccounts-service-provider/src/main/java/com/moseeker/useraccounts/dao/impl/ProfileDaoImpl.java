@@ -9,12 +9,12 @@ import org.jooq.types.UInteger;
 import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.dbutils.DBConnHelper;
-import com.moseeker.common.providerutils.daoutils.BaseJooqDaoImpl;
+import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
 import com.moseeker.db.profiledb.tables.ProfileProfile;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 
 @Repository
-public class ProfileDaoImpl extends BaseJooqDaoImpl<ProfileProfileRecord, ProfileProfile> {
+public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile> {
 
 	@Override
 	protected void initJOOQEntity() {
