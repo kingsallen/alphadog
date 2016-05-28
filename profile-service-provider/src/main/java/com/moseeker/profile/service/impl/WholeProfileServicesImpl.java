@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.thrift.TException;
 import org.jooq.types.UByte;
@@ -155,7 +156,11 @@ public class WholeProfileServicesImpl implements Iface {
 			Map<String, Object> resume = JSON.parseObject(profile);
 			
 			Map<String, Object> profileDB = (Map<String, Object>)resume.get("profile");
-			ProfileProfileRecord record = new ProfileProfileRecord();
+			if(profileDB != null) {
+				ProfileProfileRecord record = new ProfileProfileRecord();
+				record.setUuid(UUID.randomUUID().toString());
+				//record.setLang(value);
+			}
 			
 			//ProfileProfileRecord
 			Map<String, Object> basic = (Map<String, Object>)resume.get("basic");
