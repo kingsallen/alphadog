@@ -22,7 +22,7 @@ service UseraccountsServices {
     common_struct.Response postsendresetmobilecode(1:string newmobile);
     common_struct.Response postresetmobile(1: i32 user_id, 2: string newmobile, 3:string code);
 
-    common_struct.Response getUserFavPositionCountByUserIdAndPositionId(1: i32 userId, 2: i32 positionId, 3:byte favorite);
+    common_struct.Response getUserFavPositionCountByUserIdAndPositionId(1: i32 userId, 2: i32 positionId);
     common_struct.Response postUserFavoritePosition(1: useraccounts_struct.UserFavoritePosition userFavoritePosition);
 }
 

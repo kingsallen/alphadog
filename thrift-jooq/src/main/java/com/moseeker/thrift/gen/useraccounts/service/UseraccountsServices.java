@@ -69,7 +69,7 @@ public class UseraccountsServices {
 
     public com.moseeker.thrift.gen.common.struct.Response postresetmobile(int user_id, String newmobile, String code) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId, byte favorite) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId) throws org.apache.thrift.TException;
 
     public com.moseeker.thrift.gen.common.struct.Response postUserFavoritePosition(com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition userFavoritePosition) throws org.apache.thrift.TException;
 
@@ -107,7 +107,7 @@ public class UseraccountsServices {
 
     public void postresetmobile(int user_id, String newmobile, String code, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId, byte favorite, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
     public void postUserFavoritePosition(com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition userFavoritePosition, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
@@ -492,18 +492,17 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postresetmobile failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId, byte favorite) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId) throws org.apache.thrift.TException
     {
-      send_getUserFavPositionCountByUserIdAndPositionId(userId, positionId, favorite);
+      send_getUserFavPositionCountByUserIdAndPositionId(userId, positionId);
       return recv_getUserFavPositionCountByUserIdAndPositionId();
     }
 
-    public void send_getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId, byte favorite) throws org.apache.thrift.TException
+    public void send_getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId) throws org.apache.thrift.TException
     {
       getUserFavPositionCountByUserIdAndPositionId_args args = new getUserFavPositionCountByUserIdAndPositionId_args();
       args.setUserId(userId);
       args.setPositionId(positionId);
-      args.setFavorite(favorite);
       sendBase("getUserFavPositionCountByUserIdAndPositionId", args);
     }
 
@@ -1080,9 +1079,9 @@ public class UseraccountsServices {
       }
     }
 
-    public void getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId, byte favorite, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      getUserFavPositionCountByUserIdAndPositionId_call method_call = new getUserFavPositionCountByUserIdAndPositionId_call(userId, positionId, favorite, resultHandler, this, ___protocolFactory, ___transport);
+      getUserFavPositionCountByUserIdAndPositionId_call method_call = new getUserFavPositionCountByUserIdAndPositionId_call(userId, positionId, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
@@ -1090,12 +1089,10 @@ public class UseraccountsServices {
     public static class getUserFavPositionCountByUserIdAndPositionId_call extends org.apache.thrift.async.TAsyncMethodCall {
       private int userId;
       private int positionId;
-      private byte favorite;
-      public getUserFavPositionCountByUserIdAndPositionId_call(int userId, int positionId, byte favorite, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public getUserFavPositionCountByUserIdAndPositionId_call(int userId, int positionId, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.userId = userId;
         this.positionId = positionId;
-        this.favorite = favorite;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
@@ -1103,7 +1100,6 @@ public class UseraccountsServices {
         getUserFavPositionCountByUserIdAndPositionId_args args = new getUserFavPositionCountByUserIdAndPositionId_args();
         args.setUserId(userId);
         args.setPositionId(positionId);
-        args.setFavorite(favorite);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -1498,7 +1494,7 @@ public class UseraccountsServices {
 
       public getUserFavPositionCountByUserIdAndPositionId_result getResult(I iface, getUserFavPositionCountByUserIdAndPositionId_args args) throws org.apache.thrift.TException {
         getUserFavPositionCountByUserIdAndPositionId_result result = new getUserFavPositionCountByUserIdAndPositionId_result();
-        result.success = iface.getUserFavPositionCountByUserIdAndPositionId(args.userId, args.positionId, args.favorite);
+        result.success = iface.getUserFavPositionCountByUserIdAndPositionId(args.userId, args.positionId);
         return result;
       }
     }
@@ -2368,7 +2364,7 @@ public class UseraccountsServices {
       }
 
       public void start(I iface, getUserFavPositionCountByUserIdAndPositionId_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
-        iface.getUserFavPositionCountByUserIdAndPositionId(args.userId, args.positionId, args.favorite,resultHandler);
+        iface.getUserFavPositionCountByUserIdAndPositionId(args.userId, args.positionId,resultHandler);
       }
     }
 
@@ -14800,7 +14796,6 @@ public class UseraccountsServices {
 
     private static final org.apache.thrift.protocol.TField USER_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("userId", org.apache.thrift.protocol.TType.I32, (short)1);
     private static final org.apache.thrift.protocol.TField POSITION_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("positionId", org.apache.thrift.protocol.TType.I32, (short)2);
-    private static final org.apache.thrift.protocol.TField FAVORITE_FIELD_DESC = new org.apache.thrift.protocol.TField("favorite", org.apache.thrift.protocol.TType.BYTE, (short)3);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -14810,13 +14805,11 @@ public class UseraccountsServices {
 
     public int userId; // required
     public int positionId; // required
-    public byte favorite; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       USER_ID((short)1, "userId"),
-      POSITION_ID((short)2, "positionId"),
-      FAVORITE((short)3, "favorite");
+      POSITION_ID((short)2, "positionId");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -14835,8 +14828,6 @@ public class UseraccountsServices {
             return USER_ID;
           case 2: // POSITION_ID
             return POSITION_ID;
-          case 3: // FAVORITE
-            return FAVORITE;
           default:
             return null;
         }
@@ -14879,7 +14870,6 @@ public class UseraccountsServices {
     // isset id assignments
     private static final int __USERID_ISSET_ID = 0;
     private static final int __POSITIONID_ISSET_ID = 1;
-    private static final int __FAVORITE_ISSET_ID = 2;
     private byte __isset_bitfield = 0;
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
@@ -14888,8 +14878,6 @@ public class UseraccountsServices {
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       tmpMap.put(_Fields.POSITION_ID, new org.apache.thrift.meta_data.FieldMetaData("positionId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.FAVORITE, new org.apache.thrift.meta_data.FieldMetaData("favorite", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BYTE)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getUserFavPositionCountByUserIdAndPositionId_args.class, metaDataMap);
     }
@@ -14899,16 +14887,13 @@ public class UseraccountsServices {
 
     public getUserFavPositionCountByUserIdAndPositionId_args(
       int userId,
-      int positionId,
-      byte favorite)
+      int positionId)
     {
       this();
       this.userId = userId;
       setUserIdIsSet(true);
       this.positionId = positionId;
       setPositionIdIsSet(true);
-      this.favorite = favorite;
-      setFavoriteIsSet(true);
     }
 
     /**
@@ -14918,7 +14903,6 @@ public class UseraccountsServices {
       __isset_bitfield = other.__isset_bitfield;
       this.userId = other.userId;
       this.positionId = other.positionId;
-      this.favorite = other.favorite;
     }
 
     public getUserFavPositionCountByUserIdAndPositionId_args deepCopy() {
@@ -14931,8 +14915,6 @@ public class UseraccountsServices {
       this.userId = 0;
       setPositionIdIsSet(false);
       this.positionId = 0;
-      setFavoriteIsSet(false);
-      this.favorite = 0;
     }
 
     public int getUserId() {
@@ -14981,29 +14963,6 @@ public class UseraccountsServices {
       __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __POSITIONID_ISSET_ID, value);
     }
 
-    public byte getFavorite() {
-      return this.favorite;
-    }
-
-    public getUserFavPositionCountByUserIdAndPositionId_args setFavorite(byte favorite) {
-      this.favorite = favorite;
-      setFavoriteIsSet(true);
-      return this;
-    }
-
-    public void unsetFavorite() {
-      __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __FAVORITE_ISSET_ID);
-    }
-
-    /** Returns true if field favorite is set (has been assigned a value) and false otherwise */
-    public boolean isSetFavorite() {
-      return EncodingUtils.testBit(__isset_bitfield, __FAVORITE_ISSET_ID);
-    }
-
-    public void setFavoriteIsSet(boolean value) {
-      __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __FAVORITE_ISSET_ID, value);
-    }
-
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case USER_ID:
@@ -15022,14 +14981,6 @@ public class UseraccountsServices {
         }
         break;
 
-      case FAVORITE:
-        if (value == null) {
-          unsetFavorite();
-        } else {
-          setFavorite((Byte)value);
-        }
-        break;
-
       }
     }
 
@@ -15040,9 +14991,6 @@ public class UseraccountsServices {
 
       case POSITION_ID:
         return Integer.valueOf(getPositionId());
-
-      case FAVORITE:
-        return Byte.valueOf(getFavorite());
 
       }
       throw new IllegalStateException();
@@ -15059,8 +15007,6 @@ public class UseraccountsServices {
         return isSetUserId();
       case POSITION_ID:
         return isSetPositionId();
-      case FAVORITE:
-        return isSetFavorite();
       }
       throw new IllegalStateException();
     }
@@ -15096,15 +15042,6 @@ public class UseraccountsServices {
           return false;
       }
 
-      boolean this_present_favorite = true;
-      boolean that_present_favorite = true;
-      if (this_present_favorite || that_present_favorite) {
-        if (!(this_present_favorite && that_present_favorite))
-          return false;
-        if (this.favorite != that.favorite)
-          return false;
-      }
-
       return true;
     }
 
@@ -15121,11 +15058,6 @@ public class UseraccountsServices {
       list.add(present_positionId);
       if (present_positionId)
         list.add(positionId);
-
-      boolean present_favorite = true;
-      list.add(present_favorite);
-      if (present_favorite)
-        list.add(favorite);
 
       return list.hashCode();
     }
@@ -15158,16 +15090,6 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetFavorite()).compareTo(other.isSetFavorite());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetFavorite()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.favorite, other.favorite);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
       return 0;
     }
 
@@ -15194,10 +15116,6 @@ public class UseraccountsServices {
       if (!first) sb.append(", ");
       sb.append("positionId:");
       sb.append(this.positionId);
-      first = false;
-      if (!first) sb.append(", ");
-      sb.append("favorite:");
-      sb.append(this.favorite);
       first = false;
       sb.append(")");
       return sb.toString();
@@ -15260,14 +15178,6 @@ public class UseraccountsServices {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
-            case 3: // FAVORITE
-              if (schemeField.type == org.apache.thrift.protocol.TType.BYTE) {
-                struct.favorite = iprot.readByte();
-                struct.setFavoriteIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -15288,9 +15198,6 @@ public class UseraccountsServices {
         oprot.writeFieldEnd();
         oprot.writeFieldBegin(POSITION_ID_FIELD_DESC);
         oprot.writeI32(struct.positionId);
-        oprot.writeFieldEnd();
-        oprot.writeFieldBegin(FAVORITE_FIELD_DESC);
-        oprot.writeByte(struct.favorite);
         oprot.writeFieldEnd();
         oprot.writeFieldStop();
         oprot.writeStructEnd();
@@ -15316,25 +15223,19 @@ public class UseraccountsServices {
         if (struct.isSetPositionId()) {
           optionals.set(1);
         }
-        if (struct.isSetFavorite()) {
-          optionals.set(2);
-        }
-        oprot.writeBitSet(optionals, 3);
+        oprot.writeBitSet(optionals, 2);
         if (struct.isSetUserId()) {
           oprot.writeI32(struct.userId);
         }
         if (struct.isSetPositionId()) {
           oprot.writeI32(struct.positionId);
         }
-        if (struct.isSetFavorite()) {
-          oprot.writeByte(struct.favorite);
-        }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, getUserFavPositionCountByUserIdAndPositionId_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(3);
+        BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
           struct.userId = iprot.readI32();
           struct.setUserIdIsSet(true);
@@ -15342,10 +15243,6 @@ public class UseraccountsServices {
         if (incoming.get(1)) {
           struct.positionId = iprot.readI32();
           struct.setPositionIdIsSet(true);
-        }
-        if (incoming.get(2)) {
-          struct.favorite = iprot.readByte();
-          struct.setFavoriteIsSet(true);
         }
       }
     }
