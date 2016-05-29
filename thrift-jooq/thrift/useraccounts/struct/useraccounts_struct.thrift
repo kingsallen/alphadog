@@ -7,7 +7,8 @@ typedef string Timestamp;
 struct Userloginreq { 
     1: optional string unionid,
     2: optional string mobile,
-    3: optional string password
+    3: optional string password,
+    4: optional string code
 }
 
 struct Usersetting { 
