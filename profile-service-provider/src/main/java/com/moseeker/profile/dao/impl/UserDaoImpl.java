@@ -19,9 +19,7 @@ import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.profile.dao.UserDao;
 
 @Repository
-public class UserDaoImpl extends
-		BaseDaoImpl<UserUserRecord, UserUser> implements
-		UserDao {
+public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implements UserDao {
 
 	@Override
 	protected void initJOOQEntity() {
@@ -30,7 +28,7 @@ public class UserDaoImpl extends
 
 	@Override
 	public List<UserUserRecord> getUserByIds(List<Integer> cityCodes) {
-		
+
 		List<UserUserRecord> records = new ArrayList<>();
 		Connection conn = null;
 		try {
@@ -38,9 +36,9 @@ public class UserDaoImpl extends
 			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 			SelectWhereStep<UserUserRecord> select = create.selectFrom(UserUser.USER_USER);
 			SelectConditionStep<UserUserRecord> selectCondition = null;
-			if(cityCodes != null && cityCodes.size() > 0) {
-				for(int i=0; i<cityCodes.size(); i++) {
-					if(i == 0) {
+			if (cityCodes != null && cityCodes.size() > 0) {
+				for (int i = 0; i < cityCodes.size(); i++) {
+					if (i == 0) {
 						selectCondition = select.where(UserUser.USER_USER.ID.equal(UInteger.valueOf(cityCodes.get(i))));
 					} else {
 						selectCondition.or(UserUser.USER_USER.ID.equal(UInteger.valueOf(cityCodes.get(i))));
@@ -52,16 +50,16 @@ public class UserDaoImpl extends
 			logger.error(e.getMessage(), e);
 		} finally {
 			try {
-				if(conn != null && !conn.isClosed()) {
+				if (conn != null && !conn.isClosed()) {
 					conn.close();
 				}
 			} catch (SQLException e) {
 				logger.error(e.getMessage(), e);
 			} finally {
-				//do nothing
+				// do nothing
 			}
 		}
-		
+
 		return records;
 	}
 
@@ -72,24 +70,26 @@ public class UserDaoImpl extends
 		try {
 			conn = DBConnHelper.DBConn.getConn();
 			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-			Result<UserUserRecord> result = create.selectFrom(UserUser.USER_USER).where(UserUser.USER_USER.ID.equal(UInteger.valueOf(id))).fetch();
-			if(result != null && result.size() > 0) {
+			Result<UserUserRecord> result = create.selectFrom(UserUser.USER_USER)
+					.where(UserUser.USER_USER.ID.equal(UInteger.valueOf(id)))
+					.and(UserUser.USER_USER.IS_DISABLE.equal((byte) 0)).fetch();
+			if (result != null && result.size() > 0) {
 				record = result.get(0);
 			}
 		} catch (SQLException e) {
 			logger.error(e.getMessage(), e);
 		} finally {
 			try {
-				if(conn != null && !conn.isClosed()) {
+				if (conn != null && !conn.isClosed()) {
 					conn.close();
 				}
 			} catch (SQLException e) {
 				logger.error(e.getMessage(), e);
 			} finally {
-				//do nothing
+				// do nothing
 			}
 		}
-		
+
 		return record;
 	}
 }

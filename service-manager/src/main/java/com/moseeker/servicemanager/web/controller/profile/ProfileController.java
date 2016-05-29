@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.common.ServiceUtil;
+import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
@@ -38,6 +39,22 @@ public class ProfileController {
 				userId = Integer.valueOf(request.getParameter("user_id"));
 			}
 			Response result = profileService.getResource(userId, id);
+			
+			return ResponseLogNotification.success(request, result);
+		} catch (Exception e) {	
+			logger.error(e.getMessage(), e);
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
+	
+	@RequestMapping(value = "/profile", method = RequestMethod.POST)
+	@ResponseBody
+	public String post(HttpServletRequest request, HttpServletResponse response) {
+		//PrintWriter writer = null;
+		try {
+			
+			ImportCVForm form = ParamUtils.initModelForm(request, ImportCVForm.class);
+			Response result = profileService.importCV(form.getProfile(), form.getUser_id());
 			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	

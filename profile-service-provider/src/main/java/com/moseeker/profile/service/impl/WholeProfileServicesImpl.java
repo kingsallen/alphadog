@@ -1,14 +1,13 @@
 package com.moseeker.profile.service.impl;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.thrift.TException;
 import org.jooq.types.UByte;
-import org.jooq.types.UInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +64,8 @@ import com.moseeker.profile.dao.UserDao;
 import com.moseeker.profile.dao.UserSettingsDao;
 import com.moseeker.profile.dao.WorkExpDao;
 import com.moseeker.profile.dao.WorksDao;
+import com.moseeker.profile.dao.impl.IntentionRecord;
+import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices.Iface;
@@ -73,6 +74,7 @@ import com.moseeker.thrift.gen.profile.service.WholeProfileServices.Iface;
 public class WholeProfileServicesImpl implements Iface {
 
 	Logger logger = LoggerFactory.getLogger(WholeProfileServicesImpl.class);
+	ProfileUtils profileUtils = new ProfileUtils();
 
 	@Override
 	public Response getResource(int userId, int profileId) throws TException {
@@ -122,18 +124,19 @@ public class WholeProfileServicesImpl implements Iface {
 				List<Map<String, Object>> intentions = buildsIntentions(profileRecord, query);
 				profile.put("intentions", intentions);
 
-				List<Map<String, Object>> attachments = buildAttachments(profileRecord, query);
+				List<ProfileAttachmentRecord> attachmentRecords = attachmentDao.getResources(query);
+				List<Map<String, Object>> attachments = profileUtils.buildAttachments(profileRecord, attachmentRecords);
 				profile.put("attachments", attachments);
 
-				List<Map<String, Object>> imports = buildImports(profileRecord, query);
+				List<ProfileImportRecord> importRecords = profileImportDao.getResources(query);
+				List<Map<String, Object>> imports = profileUtils.buildImports(profileRecord, importRecords);
 				profile.put("imports", imports);
 
-				List<Map<String, Object>> others = buildOthers(profileRecord, query);
+				List<ProfileOtherRecord> otherRecords = customizeResumeDao.getResources(query);
+				List<Map<String, Object>> others = profileUtils.buildOthers(profileRecord, otherRecords);
+				
 				profile.put("others", others);
-				response.setStatus(0);
-				response.setMessage(Constant.TIPS_SUCCESS);
-				// Gson gson = new Gson();
-				response.setData(JSON.toJSONString(profile));
+				return ResponseUtils.success(profile);
 				// response.setData(gson.toJson(profile));
 			} else {
 				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
@@ -148,136 +151,124 @@ public class WholeProfileServicesImpl implements Iface {
 		}
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 	}
-	
+
+	@SuppressWarnings("unchecked")
 	@Override
 	public Response postResource(String profile) throws TException {
-		if(!StringUtils.isNullOrEmpty(profile)) {
+		if (!StringUtils.isNullOrEmpty(profile)) {
 			Map<String, Object> resume = JSON.parseObject(profile);
 			
-			Map<String, Object> profileDB = (Map<String, Object>)resume.get("profile");
-			ProfileProfileRecord record = new ProfileProfileRecord();
-			
-			//ProfileProfileRecord
-			Map<String, Object> basic = (Map<String, Object>)resume.get("basic");
-		} 
+			ProfileProfileRecord profileRecord = profileUtils.mapToProfileRecord((Map<String, Object>) resume.get("profile"));
+			if (profileRecord != null) {
+				profileRecord.setUuid(UUID.randomUUID().toString());
+				ProfileProfileRecord repeatProfileRecord = profileDao.getProfileByIdOrUserId(profileRecord.getUserId().intValue(), 0);
+				if(repeatProfileRecord != null) {
+					return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ALLREADY_EXIST);
+				}
+				UserUserRecord userRecord = userDao.getUserById(profileRecord.getUserId().intValue());
+				if (userRecord == null) {
+					return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_USER_NOTEXIST);
+				}
+				ProfileBasicRecord basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"));
+				List<ProfileAttachmentRecord> attachmentRecords = profileUtils.mapToAttachmentRecords(
+						(List<Map<String, Object>>) resume.get("attachments"));
+				List<ProfileAwardsRecord> awardsRecords = profileUtils.mapToAwardsRecords(
+						(List<Map<String, Object>>) resume.get("awards"));
+				List<ProfileCredentialsRecord> credentialsRecords = profileUtils.mapToCredentialsRecords(
+						(List<Map<String, Object>>) resume.get("credentials"));
+				List<ProfileEducationRecord> educationRecords = profileUtils.mapToEducationRecords(
+						(List<Map<String, Object>>) resume.get("educations"));
+				ProfileImportRecord importRecords = profileUtils.mapToImportRecord((Map<String, Object>) resume.get("import"),
+						userRecord.getUsername());
+				List<IntentionRecord> intentionRecords = profileUtils.mapToIntentionRecord(
+						(List<Map<String, Object>>) resume.get("intentions"));
+				List<ProfileLanguageRecord> languages = profileUtils.mapToLanguageRecord(
+						(List<Map<String, Object>>) resume.get("languages"));
+				ProfileOtherRecord otherRecord = profileUtils.mapToOtherRecord((Map<String, Object>) resume.get("other"));
+				List<ProfileProjectexpRecord> projectExps = profileUtils.mapToProjectExpsRecords(
+						(List<Map<String, Object>>) resume.get("projectexps"));
+				List<ProfileSkillRecord> skillRecords = profileUtils.mapToSkillRecords(
+						(List<Map<String, Object>>) resume.get("skills"));
+				List<ProfileWorkexpRecord> workexpRecords = profileUtils.mapToWorkexpRecords(
+						(List<Map<String, Object>>) resume.get("workexps"));
+				List<ProfileWorksRecord> worksRecords = profileUtils.mapToWorksRecords(
+						(List<Map<String, Object>>) resume.get("works"));
+
+				int id = profileDao.saveProfile(profileRecord, basicRecord, attachmentRecords, awardsRecords,
+						credentialsRecords, educationRecords, importRecords, intentionRecords, languages, otherRecord,
+						projectExps, skillRecords, workexpRecords, worksRecords);
+				return ResponseUtils.successWithoutStringify(String.valueOf(id));
+			}
+		}
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 	}
 	
-	private int saveProfile(Map<String, Object> profile) {
-		int profileId = 0;
-		if(profile != null && profile.get("user_id") != null) {
-			ProfileProfileRecord record = new ProfileProfileRecord();
-			record.setUuid((String)profile.get("uuid"));
-			record.setLang(UByte.valueOf((Integer)profile.get("lang")));
-			record.setSource(UByte.valueOf((Integer)profile.get("source")));
-			record.setCompleteness(UByte.valueOf((Integer)profile.get("completeness")));
-			record.setUserId(UInteger.valueOf((Integer)profile.get("user_id")));
-			record.setDisable(UByte.valueOf((Integer)profile.get("disable")));
-			record.setCreateTime(new Timestamp(System.currentTimeMillis()));
-			try {
-				profileId = profileDao.postResource(record);
-			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
-			} finally {
-				//do nothing
-			}
+	@SuppressWarnings("unchecked")
+	@Override
+	public Response importCV(String profile, int userId) throws TException {
+		
+		Map<String, Object> resume = JSON.parseObject(profile);
+		ProfileProfileRecord profileRecord = profileUtils.mapToProfileRecord((Map<String, Object>) resume.get("profile"));
+		if(profileRecord == null) {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ILLEGAL);
 		}
-		return profileId;
-	}
-	
-	private int saveBasic(Map<String, Object> basic, int profileId) {
-		int basicId = 0;
-		if(basic != null && (profileId > 0 || basic.get("profile_id") != null)) {
-			if(profileId == 0) {
-				profileId = (Integer)basic.get("profile_id");
-				ProfileBasicRecord record = new ProfileBasicRecord();
-				record.setProfileId(UInteger.valueOf(profileId));
-				if(basic.get("name") != null) {
-					record.setName((String)basic.get("name"));
-				}
-				if(basic.get("gender") != null) {
-					record.setGender(UByte.valueOf((Integer)basic.get("gender")));
-				}
-			}
+		UserUserRecord userRecord = userDao.getUserById(profileRecord.getUserId().intValue());
+		if(userRecord == null) {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_USER_NOTEXIST);
 		}
-		return basicId;
-	}
-	
-	private int[] saveAttachments(List<Map<String, Object>> attachments) {
-		int[] attachmentId = null;
-		return attachmentId;
-	}
-
-	private List<Map<String, Object>> buildOthers(ProfileProfileRecord profileRecord, CommonQuery query) {
-		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		try {
-			List<ProfileOtherRecord> records = customizeResumeDao.getResources(query);
-			if (records != null && records.size() > 0) {
-				records.forEach(record -> {
-					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("profile_id", record.getProfileId().intValue());
-					map.put("other", record.getOther());
-					map.put("create_time", DateUtils.dateToShortTime(record.getCreateTime()));
-					map.put("update_time", DateUtils.dateToShortTime(record.getUpdateTime()));
-					list.add(map);
-				});
+		
+		ProfileProfileRecord oldProfile = profileDao.getProfileByIdOrUserId(userId, 0);
+		
+		profileRecord.setUuid(UUID.randomUUID().toString());
+		profileRecord.setUserId(userRecord.getId());
+		profileRecord.setSource(UByte.valueOf(Constant.PROFILE_SOURCE_IMPORT));
+		profileRecord.setDisable(UByte.valueOf(Constant.ENABLE));
+		
+		ProfileBasicRecord basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"));
+		List<ProfileAttachmentRecord> attachmentRecords = profileUtils.mapToAttachmentRecords(
+				(List<Map<String, Object>>) resume.get("attachments"));
+		List<ProfileAwardsRecord> awardsRecords = profileUtils.mapToAwardsRecords(
+				(List<Map<String, Object>>) resume.get("awards"));
+		List<ProfileCredentialsRecord> credentialsRecords = profileUtils.mapToCredentialsRecords(
+				(List<Map<String, Object>>) resume.get("credentials"));
+		List<ProfileEducationRecord> educationRecords = profileUtils.mapToEducationRecords(
+				(List<Map<String, Object>>) resume.get("educations"));
+		ProfileImportRecord importRecords = profileUtils.mapToImportRecord((Map<String, Object>) resume.get("import"),
+				userRecord.getUsername());
+		List<IntentionRecord> intentionRecords = profileUtils.mapToIntentionRecord(
+				(List<Map<String, Object>>) resume.get("intentions"));
+		List<ProfileLanguageRecord> languages = profileUtils.mapToLanguageRecord(
+				(List<Map<String, Object>>) resume.get("languages"));
+		ProfileOtherRecord otherRecord = profileUtils.mapToOtherRecord((Map<String, Object>) resume.get("other"));
+		List<ProfileProjectexpRecord> projectExps = profileUtils.mapToProjectExpsRecords(
+				(List<Map<String, Object>>) resume.get("projectexps"));
+		List<ProfileSkillRecord> skillRecords = profileUtils.mapToSkillRecords(
+				(List<Map<String, Object>>) resume.get("skills"));
+		List<ProfileWorkexpRecord> workexpRecords = profileUtils.mapToWorkexpRecords(
+				(List<Map<String, Object>>) resume.get("workexps"));
+		List<ProfileWorksRecord> worksRecords = profileUtils.mapToWorksRecords(
+				(List<Map<String, Object>>) resume.get("works"));
+		int id = profileDao.saveProfile(profileRecord, basicRecord, attachmentRecords, awardsRecords,
+				credentialsRecords, educationRecords, importRecords, intentionRecords, languages, otherRecord,
+				projectExps, skillRecords, workexpRecords, worksRecords);
+		if(id > 0) {
+			if(oldProfile != null) {
+				clearProfile(oldProfile.getId().intValue());
 			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		} finally {
-			// do nothing
+			return ResponseUtils.success(id);
+		} else {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
 		}
-		return list;
 	}
 
-	private List<Map<String, Object>> buildImports(ProfileProfileRecord profileRecord, CommonQuery query) {
-		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		try {
-			List<ProfileImportRecord> records = profileImportDao.getResources(query);
-			if (records != null && records.size() > 0) {
-				records.forEach(record -> {
-					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("profile_id", record.getProfileId().intValue());
-					map.put("source", record.getSource().intValue());
-					map.put("last_update_time", DateUtils.dateToShortTime(record.getLastUpdateTime()));
-					map.put("account_id", record.getAccountId());
-					map.put("resume_id", record.getResumeId());
-					map.put("user_name", record.getUserName());
-					map.put("create_time", DateUtils.dateToShortTime(record.getCreateTime()));
-					map.put("update_time", DateUtils.dateToShortTime(record.getUpdateTime()));
-					list.add(map);
-				});
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		} finally {
-			// do nothing
-		}
-		return list;
+	private int clearProfile(int profileId) {
+		return profileDao.deleteProfile(profileId);
 	}
 
-	private List<Map<String, Object>> buildAttachments(ProfileProfileRecord profileRecord, CommonQuery query) {
-		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		try {
-			List<ProfileAttachmentRecord> records = attachmentDao.getResources(query);
-			if (records != null && records.size() > 0) {
-				records.forEach(record -> {
-					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("id", record.getId().intValue());
-					map.put("profile_id", record.getProfileId().intValue());
-					map.put("name", record.getName());
-					map.put("path", record.getPath());
-					map.put("create_time", DateUtils.dateToShortTime(record.getCreateTime()));
-					map.put("update_time", DateUtils.dateToShortTime(record.getUpdateTime()));
-					list.add(map);
-				});
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		} finally {
-			// do nothing
-		}
-		return list;
+	@Override
+	public Response verifyRequires(int userId, int profileId) throws TException {
+		
+		return null;
 	}
 
 	private List<Map<String, Object>> buildsIntentions(ProfileProfileRecord profileRecord, CommonQuery query) {
@@ -294,7 +285,8 @@ public class WholeProfileServicesImpl implements Iface {
 					map.put("salary_type", record.getSalaryType().intValue());
 					map.put("salary_code", record.getSalaryCode().intValue());
 					map.put("tag", record.getTag());
-					map.put("consider_venture_company_opportunities", record.getConsiderVentureCompanyOpportunities().intValue());
+					map.put("consider_venture_company_opportunities",
+							record.getConsiderVentureCompanyOpportunities().intValue());
 					intentionIds.add(record.getId().intValue());
 					list.add(map);
 				});
@@ -402,14 +394,14 @@ public class WholeProfileServicesImpl implements Iface {
 					map.put("organization", record.getOrganization());
 					map.put("code", record.getCode());
 					map.put("url", record.getUrl());
-					if (record.getGetDate()!= null) {
+					if (record.getGetDate() != null) {
 						map.put("get_date", DateUtils.dateToNormalDate(record.getGetDate()));
 					}
 					map.put("score", record.getScore());
-					if(record.getCreateTime() != null) {
+					if (record.getCreateTime() != null) {
 						map.put("create_time", DateUtils.dateToShortTime(record.getCreateTime()));
 					}
-					if(record.getUpdateTime() != null) {
+					if (record.getUpdateTime() != null) {
 						map.put("update_time", DateUtils.dateToShortTime(record.getUpdateTime()));
 					}
 					list.add(map);
@@ -660,7 +652,7 @@ public class WholeProfileServicesImpl implements Iface {
 		}
 		return map;
 	}
-
+	
 	@Autowired
 	private CustomizeResumeDao customizeResumeDao;
 
