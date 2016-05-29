@@ -18,10 +18,11 @@ import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.User;
 import com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition;
 import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
+import com.moseeker.useraccounts.dao.ProfileDao;
 import com.moseeker.useraccounts.dao.UserDao;
 import com.moseeker.useraccounts.dao.UserFavoritePositionDao;
-import com.moseeker.useraccounts.dao.impl.ProfileDaoImpl;
 import org.apache.thrift.TException;
+import org.jooq.api.annotation.Transition;
 import org.jooq.types.UByte;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +56,7 @@ public class UseraccountsServiceImpl implements Iface {
     protected BaseDao<LogUserloginRecordRecord> loguserlogindao;
 
     @Autowired
-    protected ProfileDaoImpl profileDao;
+    protected ProfileDao profileDao;
 
     @Autowired
     protected UserFavoritePositionDao userFavoritePositionDao;
@@ -190,6 +191,9 @@ public class UseraccountsServiceImpl implements Iface {
     @Override
     public Response postusermobilesignup(User user, String code) throws TException {
 
+        boolean hasPassword = true;  // 判断是否需要生成密码
+        String plainPassword = "892304";   // 没有密码用户的初始密码, 随机数替换
+
         // 空指针校验
         if(user == null){
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
@@ -202,14 +206,11 @@ public class UseraccountsServiceImpl implements Iface {
             return ResponseUtils.success(ConstantErrorCodeMessage.INVALID_SMS_CODE);
         }
 
-        boolean hasPassword = true;
-        String plainpassword = "892304";
-        // 没有密码生成6位随机密码, TODO 需要md5加密
+        // 没有密码生成6位随机密码
         if (user.password == null) {
             hasPassword = false;
-            plainpassword = StringUtils.getRandomString(6); 
-            user.password = MD5Util.md5(plainpassword); 
-            
+            plainPassword = StringUtils.getRandomString(6);
+            user.password = MD5Util.md5(plainPassword);
         }
 
         // 用户记录转换
@@ -217,19 +218,24 @@ public class UseraccountsServiceImpl implements Iface {
 
         try {
             // 添加用户
-            int newuserid = userdao.postResource(userUserRecord);
-            if (newuserid > 0) {
-                Map<String, Object> hashmap = new HashMap<>();
-                hashmap.put("user_id", newuserid);
+            int newCreateUserId = userdao.postResource(userUserRecord);
+            if (newCreateUserId > 0) {
+
+                // 未设置密码, 主动短信通知用户
                 if (!hasPassword) {
-                    // 未设置密码， 主动发送给用户。
-                    SmsSender.sendSMS_signupRandomPassword(String.valueOf(user.mobile), plainpassword);
+                    SmsSender.sendSMS_signupRandomPassword(String.valueOf(user.mobile), plainPassword);
                 }
-                return ResponseUtils.success(hashmap); // 返回 user id
+
+                return ResponseUtils.success(new HashMap<String, Object>(){
+                    {
+                        put("user_id", newCreateUserId);
+                    }
+                }); // 返回 user id
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block
             logger.error("postusermobilesignup error: ", e);
+
         } finally {
             //do nothing
         }

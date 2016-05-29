@@ -10,38 +10,53 @@ package com.moseeker.common.util;
  * @email wjf2255@gmail.com
  */
 public final class Constant {
-	
-	private Constant() throws AssertionError {
-		throw new AssertionError();
-	};
+    
+    private Constant() throws AssertionError {
+        throw new AssertionError();
+    };
 
-	// 系统appid 常量定义
-	public static final int APPID_ALPHADOG = 0;     // 基础服务本身
-	public static final int APPID_C = 1;            // c端
-	public static final int APPID_QX = 2;           // weixin端(聚合号)
-	public static final int APPID_PLATFORM = 3;     // weixin端（企业号）
-	public static final int APPID_HR = 4;           // hr
-	public static final int APPID_ATS = 20;         // ats
-	public static final int APPID_SYSPLAT = 21;     // sysplat
-	public static final int APPID_CRONJOB = 22;     // cronjob
-	public static final int APPID_ANALYTICS = 101;  // 统计
+    // 系统appid 常量定义
+    public static final int APPID_ALPHADOG = 0;     // 基础服务本身
+    public static final int APPID_C = 1;            // c端
+    public static final int APPID_QX = 2;           // weixin端(聚合号)
+    public static final int APPID_PLATFORM = 3;     // weixin端（企业号）
+    public static final int APPID_HR = 4;           // hr
+    public static final int APPID_ATS = 20;         // ats
+    public static final int APPID_SYSPLAT = 21;     // sysplat
+    public static final int APPID_CRONJOB = 22;     // cronjob
+    public static final int APPID_ANALYTICS = 101;  // 统计
 
-	public static final String DASVALIDATE_SENSITIVEWORDS_ILLEGAL = "敏感词校验失败";
-	
-	public static final int logConfigType = 3;
-	public static final int cacheConfigType = 1;
-	public static final int sessionConfigType = 2;
-	
-	public static final int ENABLE = 1;
-	public static final int DISABLE = 0;
-	
-	public static final int REDIS_CONNECT_ERROR_APPID = 0;
-	public static final String REDIS_CONNECT_ERROR_EVENTKEY = "REDIS_CONNECT_ERROR";
-	
-	public static final String TIPS_SUCCESS = "success";
+    // 招聘进度全状态(对应config_sys_points_conf_tpl中ID)
+    public static final int RECRUIT_STATUS_APPLY            = 1 ;      // 被推荐人投递简历
+    public static final int RECRUIT_STATUS_INTERVIEW        = 2 ;      // HR已经安排面试
+    public static final int RECRUIT_STATUS_HIRED            = 3 ;      // 入职
+    public static final int RECRUIT_STATUS_REJECT           = 4 ;      // 拒绝
+    public static final int RECRUIT_STATUS_INTERVIEWPENDING = 5 ;      // MMGR面试后表示先等待
+    public static final int RECRUIT_STATUS_CVCHECKED        = 6 ;      // 简历被HR查看/简历被下载
+    public static final int RECRUIT_STATUS_RECOMCLICK       = 7 ;      // 转发职位被点击
+    public static final int RECRUIT_STATUS_CVFORWARDED      = 8 ;      // HR将简历转给MGR评审
+    public static final int RECRUIT_STATUS_CVPENDING        = 9 ;      // MMGR评审后表示先等待
+    public static final int RECRUIT_STATUS_CVPASSED         = 10;      // 简历评审合格
+    public static final int RECRUIT_STATUS_OFFERACCEPTED    = 11;      // 接受录取通知
+    public static final int RECRUIT_STATUS_OFFERED          = 12;      // 面试通过
+    public static final int RECRUIT_STATUS_FULL_RECOM_INFO  = 13;      // 完善被推荐人信息
 
-	public static final String TIPS_ERROR = "error";
+    public static final String DASVALIDATE_SENSITIVEWORDS_ILLEGAL = "敏感词校验失败";
+    
+    public static final int logConfigType = 3;
+    public static final int cacheConfigType = 1;
+    public static final int sessionConfigType = 2;
+    
+    public static final int ENABLE = 1;
+    public static final int DISABLE = 0;
+    
+    public static final int REDIS_CONNECT_ERROR_APPID = 0;
+    public static final String REDIS_CONNECT_ERROR_EVENTKEY = "REDIS_CONNECT_ERROR";
+    
+    public static final String TIPS_SUCCESS = "success";
 
-	public static final String NONE_JSON = "{}";
-	
+    public static final String TIPS_ERROR = "error";
+
+    public static final String NONE_JSON = "{}";
+    
 }

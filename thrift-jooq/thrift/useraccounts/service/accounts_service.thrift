@@ -10,6 +10,9 @@ service UseraccountsServices {
     // 用户用户数据
     common_struct.Response getUserById(1: i64 userId);
 
+    // 更新用户数据
+    common_struct.Response updateUser(1: useraccounts_struct.User user);
+
     common_struct.Response getismobileregisted(1: string mobile);
     common_struct.Response postuserlogin(1: useraccounts_struct.Userloginreq userloginreq);
     common_struct.Response postuserlogout(1: i32 userid);

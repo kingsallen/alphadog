@@ -61,6 +61,9 @@ public class JobApplicataionServicesImpl implements Iface {
                 return response;
             }
 
+            // 初始化申请状态
+            jobApplication.setApp_tpl_id(Constant.RECRUIT_STATUS_APPLY);
+
             // 添加申请
             JobApplicationRecord jobApplicationRecord = (JobApplicationRecord)BeanUtils.structToDB(jobApplication,
                     JobApplicationRecord.class);
