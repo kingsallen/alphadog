@@ -60,6 +60,10 @@ public class UseraccountsServiceImplTest {
             Response userResponse3 = useraccountsServices.getUserById(7);
             System.out.println(userResponse3);
 
+            // 更新用户
+            Response userResponse4 = useraccountsServices.updateUser(getUpdateUser1(7));
+            System.out.println(userResponse4);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -90,6 +94,13 @@ public class UseraccountsServiceImplTest {
         user.setName("zhaozhognhua");
         user.setCompany("company");
         user.setPosition("position");
+        return user;
+    }
+
+    public static User getUpdateUser1(int id){
+        User user = new User();
+        user.setId(id);
+        user.setPassword("123456789");
         return user;
     }
 

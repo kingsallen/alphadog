@@ -221,11 +221,11 @@ public class UseraccountsServiceImpl implements Iface {
         }
 
 //        // TODO validate code.
-//        if (validateCode(String.valueOf(user.mobile), code, 1)) {
-//            ;
-//        } else {
-//            return ResponseUtils.success(ConstantErrorCodeMessage.INVALID_SMS_CODE);
-//        }
+        if (validateCode(String.valueOf(user.mobile), code, 1)) {
+            ;
+        } else {
+            return ResponseUtils.success(ConstantErrorCodeMessage.INVALID_SMS_CODE);
+        }
 
         // 没有密码生成6位随机密码
         if (user.password == null) {
