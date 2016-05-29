@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.junit.Test;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.common.util.Constant;
 import com.moseeker.servicemanager.common.UrlUtil;
 
 public class CrawlerUtils {
@@ -35,9 +36,10 @@ public class CrawlerUtils {
 		Map<String, Object> resume = resumes.get(0);
 		Map<String, Object> profile = new HashMap<>();
 		profile.put("uuid", UUID.randomUUID());
-		profile.put("source", 4);
+		profile.put("source", Constant.PROFILE_SOURCE_IMPORT);
 		profile.put("user_id", userId);
-		profile.put("disable", 1);
+		profile.put("disable", Constant.ENABLE);
+		resume.put("profile", profile);
 		return JSON.toJSONString(resume);
 	}
 

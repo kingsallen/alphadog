@@ -33,4 +33,8 @@ public final class Constant {
 
 	public static final String NONE_JSON = "{}";
 	
+	public static final int PROFILE_SOURCE_MOSEEKER_MOBILE = 1; //moseeker 手机
+	public static final int PROFILE_SOURCE_PROFILE = 2; //PC PROFILE
+	public static final int PROFILE_SOURCE_EMAIL = 3; //EMAIL
+	public static final int PROFILE_SOURCE_IMPORT = 4; //EMAIL
 }
