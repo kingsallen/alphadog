@@ -1,5 +1,6 @@
 package com.moseeker.application.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.application.dao.JobApplicationDao;
 import com.moseeker.application.dao.JobResumeOtherDao;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -115,13 +116,15 @@ public class JobApplicataionServicesImpl implements Iface {
      *
      * */
     @Override
-    public Response getApplicationByUserIdAndPositionId(long userId, long positionId) throws TException {
+    public Response getApplicationByUserIdAndPositionId(long userId, long positionId, long companyId) throws TException {
         try {
-            if(userId > 0 && positionId > 0){
+            Response response = validateGetApplicationByUserIdAndPositionId(userId, positionId, companyId);
+            if(response.status == 0){
                 Integer count = jobApplicationDao.getApplicationByUserIdAndPositionId(userId, positionId);
                 return ResponseUtils.success(count > 0?true:false);
             }else{
-                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "user_id|position_id"));
+                response.setData(JSON.toJSONString(false));
+                return response;
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -130,6 +133,32 @@ public class JobApplicataionServicesImpl implements Iface {
             //do nothing
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+    }
+
+    /**
+     * 必填项校验 - 判断当前用户是否申请了该职位
+     * <p>
+     *
+     * @param userId 用户ID
+     * @param positionId 职位ID
+     * @param companyId 公司ID
+     *
+     * @return
+     */
+    private Response validateGetApplicationByUserIdAndPositionId(long userId, long positionId, long companyId){
+
+        Response response = new Response(0, "ok");
+
+        if(userId == 0){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "user_id"));
+        }
+        if(companyId == 0){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "company_id"));
+        }
+        if(positionId == 0){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "position_id"));
+        }
+        return response;
     }
 
     /**
