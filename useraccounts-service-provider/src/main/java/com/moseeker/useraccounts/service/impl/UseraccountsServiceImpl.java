@@ -274,7 +274,7 @@ public class UseraccountsServiceImpl implements Iface {
             Map<String, String> filters1 = new HashMap<>();
             filters1.put("unionid", unionid);
             query1.setEqualFilter(filters1);
-            UserUserRecord userUnnionid = userdao.getResource(query1);
+            UserUserRecord userUnionid = userdao.getResource(query1);
 
             CommonQuery query2 = new CommonQuery();
             Map<String, String> filters2 = new HashMap<>();
@@ -282,34 +282,44 @@ public class UseraccountsServiceImpl implements Iface {
             query1.setEqualFilter(filters2);
             UserUserRecord userMobile = userdao.getResource(query2);
 
-            if (userUnnionid == null && userMobile == null) {
+            if (userUnionid == null && userMobile == null) {
                 // post
                 return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_BIND_NONEED);
-            } else if (userUnnionid != null && userMobile != null
-                    && userUnnionid.getId().intValue() == userMobile.getId().intValue()) {
+            } else if (userUnionid != null && userMobile != null
+                    && userUnionid.getId().intValue() == userMobile.getId().intValue()) {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_BIND_NONEED);
-            } else if (userUnnionid != null && userMobile == null) {
-                userUnnionid.setMobile(Long.valueOf(mobile));
-                userdao.putResource(userUnnionid);
-            } else if (userUnnionid == null && userMobile != null) {
+            } else if (userUnionid != null && userMobile == null) {
+                userUnionid.setMobile(Long.valueOf(mobile));
+                if (userdao.putResource(userUnionid) > 0){
+                	return ResponseUtils.success(userUnionid);
+                }else{
+                    return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+                }
+            } else if (userUnionid == null && userMobile != null) {
                 userMobile.setUnionid(unionid);
-                userdao.putResource(userMobile);
-            } else if (userUnnionid != null && userMobile != null
-                    && userUnnionid.getId().intValue() != userMobile.getId().intValue()) {
+                if (userdao.putResource(userMobile)>0){
+                	return ResponseUtils.success(userMobile);
+                }else{
+                    return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+                }
+            } else if (userUnionid != null && userMobile != null
+                    && userUnionid.getId().intValue() != userMobile.getId().intValue()) {
                 // 2 accounts, one unoinid, one mobile, need to merge.
                 new Thread(() -> {
-                    combineAccount(userMobile, userUnnionid);
+                    combineAccount(userMobile, userUnionid);
                 }).start();
+                //来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录, 7:PC(正常添加) 8:PC(我要投递) 9: PC(我感兴趣)
+            	return ResponseUtils.success(userMobile);
             } else {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+            
         } finally {
             // do nothing
         }
-        return ResponseUtils.success(null);
+        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 
     }
 
