@@ -203,10 +203,13 @@ public class UseraccountsServiceImpl implements Iface {
         }
 
         boolean hasPassword = true;
+        String plainpassword = "892304";
         // 没有密码生成6位随机密码, TODO 需要md5加密
         if (user.password == null) {
             hasPassword = false;
-            user.password = StringUtils.getRandomString(6);
+            plainpassword = StringUtils.getRandomString(6); 
+            user.password = MD5Util.md5(plainpassword); 
+            
         }
 
         // 用户记录转换
@@ -220,7 +223,7 @@ public class UseraccountsServiceImpl implements Iface {
                 hashmap.put("user_id", newuserid);
                 if (!hasPassword) {
                     // 未设置密码， 主动发送给用户。
-                    SmsSender.sendSMS_signupRandomPassword(String.valueOf(user.mobile), user.password);
+                    SmsSender.sendSMS_signupRandomPassword(String.valueOf(user.mobile), plainpassword);
                 }
                 return ResponseUtils.success(hashmap); // 返回 user id
             }
