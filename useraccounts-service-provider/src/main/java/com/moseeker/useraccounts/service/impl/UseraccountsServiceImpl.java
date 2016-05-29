@@ -22,7 +22,6 @@ import com.moseeker.useraccounts.dao.ProfileDao;
 import com.moseeker.useraccounts.dao.UserDao;
 import com.moseeker.useraccounts.dao.UserFavoritePositionDao;
 import org.apache.thrift.TException;
-import org.jooq.api.annotation.Transition;
 import org.jooq.types.UByte;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +33,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 /**
  * 用户登陆， 注册，合并等api的实现
@@ -68,8 +68,22 @@ public class UseraccountsServiceImpl implements Iface {
     public Response postuserlogin(Userloginreq userloginreq) throws TException {
         // TODO to add login log
         CommonQuery query = new CommonQuery();
-        int parentid = -1;
+        int parentid = 0;
         Map<String, String> filters = new HashMap<>();
+        
+        String code = userloginreq.getCode();
+        if ( code != null ){
+        	// 存在验证码,就是手机号+验证码登陆.
+        	String mobile = userloginreq.getMobile();
+            if (validateCode(mobile, code, 1)) {
+                filters.put("username", mobile);
+                ;
+            } else {
+                return ResponseUtils.success(ConstantErrorCodeMessage.INVALID_SMS_CODE);
+            }        	
+        }
+        
+        
         if (userloginreq.getUnionid() != null) {
             filters.put("unionid", userloginreq.getUnionid());
         } else {
@@ -102,6 +116,8 @@ public class UseraccountsServiceImpl implements Iface {
                     resp.put("last_login_time", user.getLastLoginTime());
 
                     user.setLastLoginTime(new Timestamp(new Date().getTime()));
+                    user.setLoginCount(user.getLoginCount()+1);
+                    
                     userdao.putResource(user);
 
                     return ResponseUtils.success(resp);                    
@@ -152,9 +168,10 @@ public class UseraccountsServiceImpl implements Iface {
         // TODO 未注册用户才能发送。
         CommonQuery query = new CommonQuery();
         Map<String, String> filters = new HashMap<>();
-        
+
+        /*  以下代码限制未注册用户才能发送。 由于存在 mobile+code的登陆方式, 老用户也可以发送验证码.
         if (mobile.length()>0){
-            filters.put("mobile", mobile);
+        	filters.put("mobile", mobile);
             query.setEqualFilter(filters);
             try {
                 UserUserRecord user = userdao.getResource(query);
@@ -167,6 +184,11 @@ public class UseraccountsServiceImpl implements Iface {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 
             }            
+        }
+        */
+        
+        if (mobile.length()<10){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
         
         if (SmsSender.sendSMS_signup(mobile)) {
@@ -199,12 +221,12 @@ public class UseraccountsServiceImpl implements Iface {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
 
-        // TODO validate code.
-        if (validateCode(String.valueOf(user.mobile), code, 1)) {
-            ;
-        } else {
-            return ResponseUtils.success(ConstantErrorCodeMessage.INVALID_SMS_CODE);
-        }
+//        // TODO validate code.
+//        if (validateCode(String.valueOf(user.mobile), code, 1)) {
+//            ;
+//        } else {
+//            return ResponseUtils.success(ConstantErrorCodeMessage.INVALID_SMS_CODE);
+//        }
 
         // 没有密码生成6位随机密码
         if (user.password == null) {
@@ -213,12 +235,9 @@ public class UseraccountsServiceImpl implements Iface {
             user.password = MD5Util.md5(plainPassword);
         }
 
-        // 用户记录转换
-        UserUserRecord userUserRecord = (UserUserRecord)BeanUtils.structToDB(user, UserUserRecord.class);
-
         try {
             // 添加用户
-            int newCreateUserId = userdao.postResource(userUserRecord);
+            int newCreateUserId = userdao.createUser(user);
             if (newCreateUserId > 0) {
 
                 // 未设置密码, 主动短信通知用户
@@ -258,7 +277,7 @@ public class UseraccountsServiceImpl implements Iface {
             Map<String, String> filters1 = new HashMap<>();
             filters1.put("unionid", unionid);
             query1.setEqualFilter(filters1);
-            UserUserRecord userUnnionid = userdao.getResource(query1);
+            UserUserRecord userUnionid = userdao.getResource(query1);
 
             CommonQuery query2 = new CommonQuery();
             Map<String, String> filters2 = new HashMap<>();
@@ -266,49 +285,81 @@ public class UseraccountsServiceImpl implements Iface {
             query1.setEqualFilter(filters2);
             UserUserRecord userMobile = userdao.getResource(query2);
 
-            if (userUnnionid == null && userMobile == null) {
+            if (userUnionid == null && userMobile == null) {
                 // post
                 return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_BIND_NONEED);
-            } else if (userUnnionid != null && userMobile != null
-                    && userUnnionid.getId().intValue() == userMobile.getId().intValue()) {
+            } else if (userUnionid != null && userMobile != null
+                    && userUnionid.getId().intValue() == userMobile.getId().intValue()) {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_BIND_NONEED);
-            } else if (userUnnionid != null && userMobile == null) {
-                userUnnionid.setMobile(Long.valueOf(mobile));
-                userdao.putResource(userUnnionid);
-            } else if (userUnnionid == null && userMobile != null) {
+            } else if (userUnionid != null && userMobile == null) {
+                userUnionid.setMobile(Long.valueOf(mobile));
+                if (userdao.putResource(userUnionid) > 0){
+                	return ResponseUtils.success(userUnionid);
+                }else{
+                    return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+                }
+            } else if (userUnionid == null && userMobile != null) {
                 userMobile.setUnionid(unionid);
-                userdao.putResource(userMobile);
-            } else if (userUnnionid != null && userMobile != null
-                    && userUnnionid.getId().intValue() != userMobile.getId().intValue()) {
+                if (userdao.putResource(userMobile)>0){
+                	return ResponseUtils.success(userMobile);
+                }else{
+                    return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+                }
+            } else if (userUnionid != null && userMobile != null
+                    && userUnionid.getId().intValue() != userMobile.getId().intValue()) {
                 // 2 accounts, one unoinid, one mobile, need to merge.
                 new Thread(() -> {
-                    combineAccount(userMobile, userUnnionid);
+                    combineAccount(appid, userMobile, userUnionid);
                 }).start();
+                //来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录, 7:PC(正常添加) 8:PC(我要投递) 9: PC(我感兴趣)
+            	return ResponseUtils.success(userMobile);
             } else {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+            
         } finally {
             // do nothing
         }
-        return ResponseUtils.success(null);
+        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 
     }
 
-    private void combineAccount(UserUserRecord userMobile, UserUserRecord userUnionid) {
+    private void combineAccount(int appid,UserUserRecord userMobile, UserUserRecord userUnionid) {
         try {
             // unnionid置为子账号
-            userUnionid.setParentid(userMobile.getId().intValue());
-            userdao.putResource(userMobile);
-
-            // 被合并账号的个人profile置为无效
-            ProfileProfileRecord profileRecord = profileDao.getProfileByUserId(userUnionid.getId().intValue());
-            if (profileRecord != null) {
-                profileRecord.setDisable(UByte.valueOf(Constant.DISABLE));
-                profileDao.putResource(profileRecord);
+            userUnionid.setParentid(userMobile.getId());
+            if(userdao.putResource(userUnionid)>0){
+            	// profile合并成功
+            }else{
+            	// 合并失败, log.
             }
+
+            // weixin端(聚合号),weixin端（企业号） 发起, 保留微信端 profile; 否则保留pc端(无需处理).
+            switch(appid){
+            	case Constant.APPID_QX :
+            	case Constant.APPID_PLATFORM :
+                    ProfileProfileRecord userMobileProfileRecord = profileDao.getProfileByUserId(userMobile.getId().intValue());
+                    // pc 端profile 设置为无效
+                    if (userMobileProfileRecord != null) {
+                        userMobileProfileRecord.setDisable(UByte.valueOf(Constant.DISABLE));
+                        profileDao.putResource(userMobileProfileRecord);
+                    }
+                    
+                    // 微信端profile转移到pc用户下.
+                    ProfileProfileRecord userUnionProfileRecord = profileDao.getProfileByUserId(userUnionid.getId().intValue());
+                    if (userUnionProfileRecord != null ){
+                    	userUnionProfileRecord.setUserId(userMobile.getId());
+                    	profileDao.putResource(userUnionProfileRecord);
+                    }
+                    
+                    break;
+            	case Constant.APPID_C:
+            	default:
+            		break;
+            }
+
 
             // 合并业务代码
             // 合并sys_user_id表数据
@@ -331,8 +382,8 @@ public class UseraccountsServiceImpl implements Iface {
     }
 
     private List<String> getSysUserIdTable() {
-        List<String> tables = Lists.newArrayList("candidate_position_share_record", "hr_wx_hr_chat_list",
-                "user_fav_position", "user_intention", "user_wx_user", "user_wx_viewer");
+        List<String> tables = Lists.newArrayList("candidateDB.candidate_position_share_record", "hrDB.hr_wx_hr_chat_list",
+                "userDB.user_fav_position", "userDB.user_intention", "userDB.user_wx_user", "userDB.user_wx_viewer");
         return tables;
     }
 
@@ -505,6 +556,29 @@ public class UseraccountsServiceImpl implements Iface {
         }catch (Exception e){
             // TODO Auto-generated catch block
             logger.error("getUserById error: ", e);
+        }
+        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+    }
+
+    /**
+     * 更新用户数据
+     *
+     * @param user 用户实体
+     *
+     * */
+    @Override
+    public Response updateUser(User user) throws TException {
+        try{
+            if(user != null && user.getId() > 0){
+                // 用户记录转换
+                UserUserRecord userUserRecord = (UserUserRecord) BeanUtils.structToDB(user, UserUserRecord.class);
+                userdao.putResource(userUserRecord);
+            }else{
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+            }
+        }catch (Exception e){
+            logger.error("updateUser error: ", e);
+
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
     }

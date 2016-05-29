@@ -1,5 +1,7 @@
 package test.com.moseeker.useraccounts;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.rpccenter.config.ClientConfig;
 import com.moseeker.rpccenter.config.RegistryConfig;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -50,9 +52,13 @@ public class UseraccountsServiceImplTest {
             Response userResponse = useraccountsServices.postusermobilesignup(getUser(), code);
             System.out.println(userResponse);
 
+            // 更新用户
+            Response userResponse2 = useraccountsServices.updateUser(getUpdateUser(7));
+            System.out.println(userResponse2);
+
             // 获取用户
-            Response userResponse1 = useraccountsServices.getUserById(1);
-            System.out.println(userResponse1);
+            Response userResponse3 = useraccountsServices.getUserById(7);
+            System.out.println(userResponse3);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -68,9 +74,22 @@ public class UseraccountsServiceImplTest {
 
     public static User getUser(){
         User user = new User();
-        user.setMobile(18610245972L);
+        user.setMobile(18610245973L);
+        user.setUsername("18610245973");
         user.setPassword("123456");
         user.setSource((byte) 9);
+        return user;
+    }
+
+    public static User getUpdateUser(int id){
+        User user = new User();
+        user.setId(id);
+        user.setPassword("123456111111");
+        user.setSource((byte) 8);
+        user.setEmail("intasect@126.com");
+        user.setName("zhaozhognhua");
+        user.setCompany("company");
+        user.setPosition("position");
         return user;
     }
 

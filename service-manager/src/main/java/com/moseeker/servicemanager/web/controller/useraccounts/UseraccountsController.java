@@ -51,6 +51,23 @@ public class UseraccountsController {
       }
    }
 
+   /**
+    * 更新用户数据
+    * <p>
+    *
+    * */
+   @RequestMapping(value = "/user", method = RequestMethod.PUT)
+   @ResponseBody
+   public String updateUser(HttpServletRequest request, HttpServletResponse response) {
+      try {
+         User user = ParamUtils.initModelForm(request, User.class);
+         Response result = useraccountsServices.updateUser(user);
+         return ResponseLogNotification.success(request, result);
+      } catch (Exception e) {
+         return ResponseLogNotification.fail(request, e.getMessage());
+      }
+   }
+
    @RequestMapping(value = "/user/login", method = RequestMethod.POST)
    @ResponseBody
    public String postuserlogin(HttpServletRequest request, HttpServletResponse response) {

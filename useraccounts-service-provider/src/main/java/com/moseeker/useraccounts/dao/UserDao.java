@@ -13,5 +13,9 @@ import java.util.List;
 public interface UserDao extends BaseDao<UserUserRecord> {
 
     public void combineAccount(List<String> tables, String column, int orig, int dest) throws Exception;
+
     public User getUserById(long userId) throws Exception;
+
+    public int createUser(com.moseeker.thrift.gen.useraccounts.struct.User user) throws Exception;
+
 }

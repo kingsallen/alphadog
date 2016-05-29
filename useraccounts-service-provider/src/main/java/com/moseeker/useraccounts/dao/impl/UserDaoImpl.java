@@ -11,7 +11,6 @@ import com.moseeker.useraccounts.pojo.User;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.types.UInteger;
-import org.jooq.util.derby.sys.Sys;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -58,7 +57,9 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
     }
 
     /**
-     * 添加用户数据
+     * 创建用户
+     *
+     * @param user 用户的thrift struct 实体
      *
      * */
     public int createUser(com.moseeker.thrift.gen.useraccounts.struct.User user) throws Exception{
@@ -70,22 +71,31 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
             // 用户记录转换
             UserUserRecord userUserRecord = (UserUserRecord) BeanUtils.structToDB(user, UserUserRecord.class);
 
-            create.transaction(configuration -> {
+//            create.transaction(cofiguratioon -> {
+//
+//                // 添加用户数据
+//                create.attach(userUserRecord);
+//                userUserRecord.insert();
+//
+//                // 根据用户数据初始化用户配置表
+//                create.insertInto(UserSettings.USER_SETTINGS, UserSettings.USER_SETTINGS.USER_ID)
+//                        .values(userUserRecord.getId())
+//                        .execute();
+//
+//            });
 
-                // 添加用户数据
-                create.attach(userUserRecord);
-                userUserRecord.insert();
-                UInteger i = userUserRecord.getId();
+            // TODO 事务不好使, 需要研究一下
 
-                System.out.println(i);
+            // 添加用户数据
+            create.attach(userUserRecord);
+            userUserRecord.insert();
 
-                // 根据用户数据初始化用户配置表
-                create.insertInto(UserSettings.USER_SETTINGS, UserSettings.USER_SETTINGS.USER_ID)
-                        .values(userUserRecord.getId(), UInteger.valueOf(1))
-                        .execute();
+            // 根据用户数据初始化用户配置表
+            create.insertInto(UserSettings.USER_SETTINGS, UserSettings.USER_SETTINGS.USER_ID)
+                    .values(userUserRecord.getId())
+                    .execute();
 
-
-            });
+            return userUserRecord.getId().intValue();
         }catch (Exception e){
             logger.error(e.getMessage(), e);
 
@@ -106,12 +116,12 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
      * */
     @Override
     public User getUserById(long userId) throws Exception{
-        Connection conn = null;
         Condition condition = null;
         User user = null;
         try{
             conn = DBConnHelper.DBConn.getConn();
             create = DBConnHelper.DBConn.getJooqDSL(conn);
+
             condition = UserUser.USER_USER.ID.equal(UInteger.valueOf(userId));
 
             user = create.select().from(UserUser.USER_USER).where(condition).fetchOne().into(User.class);
