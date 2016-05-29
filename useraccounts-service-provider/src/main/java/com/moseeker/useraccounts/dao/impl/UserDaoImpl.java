@@ -2,6 +2,8 @@ package com.moseeker.useraccounts.dao.impl;
 
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
+import com.moseeker.common.util.BeanUtils;
+import com.moseeker.db.userdb.tables.UserSettings;
 import com.moseeker.db.userdb.tables.UserUser;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.useraccounts.dao.UserDao;
@@ -24,6 +26,10 @@ import java.util.List;
 @Repository
 public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implements UserDao {
 
+    private Connection conn = null;
+
+    private DSLContext create = null;
+
     @Override
     protected void initJOOQEntity() {
         this.tableLike = UserUser.USER_USER;
@@ -31,7 +37,6 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
 
     @Override
     public void combineAccount(List<String> tables, String column, int orig, int dest) throws Exception {
-        Connection conn = null;
         try {
             conn = DBConnHelper.DBConn.getConn();
             for(String table : tables) {
@@ -50,6 +55,58 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
         }
         
     }
+
+    /**
+     * 创建用户
+     *
+     * @param user 用户的thrift struct 实体
+     *
+     * */
+    public int createUser(com.moseeker.thrift.gen.useraccounts.struct.User user) throws Exception{
+
+        try{
+            conn = DBConnHelper.DBConn.getConn();
+            create = DBConnHelper.DBConn.getJooqDSL(conn);
+
+            // 用户记录转换
+            UserUserRecord userUserRecord = (UserUserRecord) BeanUtils.structToDB(user, UserUserRecord.class);
+
+//            create.transaction(cofiguratioon -> {
+//
+//                // 添加用户数据
+//                create.attach(userUserRecord);
+//                userUserRecord.insert();
+//
+//                // 根据用户数据初始化用户配置表
+//                create.insertInto(UserSettings.USER_SETTINGS, UserSettings.USER_SETTINGS.USER_ID)
+//                        .values(userUserRecord.getId())
+//                        .execute();
+//
+//            });
+
+            // TODO 事务不好使, 需要研究一下
+
+            // 添加用户数据
+            create.attach(userUserRecord);
+            userUserRecord.insert();
+
+            // 根据用户数据初始化用户配置表
+            create.insertInto(UserSettings.USER_SETTINGS, UserSettings.USER_SETTINGS.USER_ID)
+                    .values(userUserRecord.getId())
+                    .execute();
+
+            return userUserRecord.getId().intValue();
+        }catch (Exception e){
+            logger.error(e.getMessage(), e);
+
+        } finally {
+            if(conn != null && !conn.isClosed()) {
+                conn.isClosed();
+            }
+        }
+        return 0;
+    }
+
     /**
      * 获取用户数据
      * <p>
@@ -59,12 +116,12 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
      * */
     @Override
     public User getUserById(long userId) throws Exception{
-        Connection conn = null;
         Condition condition = null;
         User user = null;
         try{
             conn = DBConnHelper.DBConn.getConn();
-            DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+            create = DBConnHelper.DBConn.getJooqDSL(conn);
+
             condition = UserUser.USER_USER.ID.equal(UInteger.valueOf(userId));
 
             user = create.select().from(UserUser.USER_USER).where(condition).fetchOne().into(User.class);

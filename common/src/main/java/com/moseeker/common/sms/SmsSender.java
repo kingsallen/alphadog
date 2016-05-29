@@ -92,7 +92,7 @@ public class SmsSender {
 		HashMap<String, String> params = new HashMap<String, String>();
 		String passwordforgotcode = getRandomStr();
 		params.put("code", passwordforgotcode);		
-		RedisClientFactory.getCacheClient().set(0, "SMS_SIGNUP", mobile, passwordforgotcode);		
+		RedisClientFactory.getCacheClient().set(0, "SMS_PWD_FORGOT", mobile, passwordforgotcode);		
 		return sendSMS(mobile,"SMS_5755096",params);
 	} 
 	

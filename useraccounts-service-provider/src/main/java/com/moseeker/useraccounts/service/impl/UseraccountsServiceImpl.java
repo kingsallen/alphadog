@@ -1,29 +1,12 @@
 package com.moseeker.useraccounts.service.impl;
 
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.thrift.TException;
-import org.jooq.types.UByte;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.google.common.collect.Lists;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.daoutils.BaseDao;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.sms.SmsSender;
-import com.moseeker.common.util.BeanUtils;
-import com.moseeker.common.util.Constant;
-import com.moseeker.common.util.ConstantErrorCodeMessage;
-import com.moseeker.common.util.MD5Util;
-import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.*;
 import com.moseeker.db.logdb.tables.records.LogUserloginRecordRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.db.userdb.tables.records.UserFavPositionRecord;
@@ -35,9 +18,22 @@ import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.User;
 import com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition;
 import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
+import com.moseeker.useraccounts.dao.ProfileDao;
 import com.moseeker.useraccounts.dao.UserDao;
 import com.moseeker.useraccounts.dao.UserFavoritePositionDao;
-import com.moseeker.useraccounts.dao.impl.ProfileDaoImpl;
+import org.apache.thrift.TException;
+import org.jooq.types.UByte;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 /**
  * 用户登陆， 注册，合并等api的实现
@@ -60,7 +56,7 @@ public class UseraccountsServiceImpl implements Iface {
     protected BaseDao<LogUserloginRecordRecord> loguserlogindao;
 
     @Autowired
-    protected ProfileDaoImpl profileDao;
+    protected ProfileDao profileDao;
 
     @Autowired
     protected UserFavoritePositionDao userFavoritePositionDao;
@@ -100,10 +96,9 @@ public class UseraccountsServiceImpl implements Iface {
             UserUserRecord user = userdao.getResource(query);
             if (user != null) {
                 // login success
-                
-                if (user.getParentid() != null) {
+                parentid = user.getParentid().intValue();
+                if (parentid > 0) {
                     // 当前帐号已经被合并到 parentid.
-                    parentid = user.getParentid().intValue();
                     query = new CommonQuery();
                     filters = new HashMap<>();
                     filters.put("id", String.valueOf(parentid));
@@ -217,46 +212,48 @@ public class UseraccountsServiceImpl implements Iface {
     @Override
     public Response postusermobilesignup(User user, String code) throws TException {
 
+        boolean hasPassword = true;  // 判断是否需要生成密码
+        String plainPassword = "892304";   // 没有密码用户的初始密码, 随机数替换
+
         // 空指针校验
         if(user == null){
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
 
-        // TODO validate code.
+//        // TODO validate code.
         if (validateCode(String.valueOf(user.mobile), code, 1)) {
             ;
         } else {
             return ResponseUtils.success(ConstantErrorCodeMessage.INVALID_SMS_CODE);
         }
 
-        boolean hasPassword = true;
-        String plainpassword = "892304";
-        // 没有密码生成6位随机密码, TODO 需要md5加密
+        // 没有密码生成6位随机密码
         if (user.password == null) {
             hasPassword = false;
-            plainpassword = StringUtils.getRandomString(6); 
-            user.password = MD5Util.md5(plainpassword); 
-            
+            plainPassword = StringUtils.getRandomString(6);
+            user.password = MD5Util.md5(plainPassword);
         }
-
-        // 用户记录转换
-        UserUserRecord userUserRecord = (UserUserRecord)BeanUtils.structToDB(user, UserUserRecord.class);
 
         try {
             // 添加用户
-            int newuserid = userdao.postResource(userUserRecord);
-            if (newuserid > 0) {
-                Map<String, Object> hashmap = new HashMap<>();
-                hashmap.put("user_id", newuserid);
+            int newCreateUserId = userdao.createUser(user);
+            if (newCreateUserId > 0) {
+
+                // 未设置密码, 主动短信通知用户
                 if (!hasPassword) {
-                    // 未设置密码， 主动发送给用户。
-                    SmsSender.sendSMS_signupRandomPassword(String.valueOf(user.mobile), plainpassword);
+                    SmsSender.sendSMS_signupRandomPassword(String.valueOf(user.mobile), plainPassword);
                 }
-                return ResponseUtils.success(hashmap); // 返回 user id
+
+                return ResponseUtils.success(new HashMap<String, Object>(){
+                    {
+                        put("user_id", newCreateUserId);
+                    }
+                }); // 返回 user id
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block
             logger.error("postusermobilesignup error: ", e);
+
         } finally {
             //do nothing
         }
@@ -421,9 +418,9 @@ public class UseraccountsServiceImpl implements Iface {
 
             if (user != null) {
                 // login success
-                if (user.getParentid() != null) {
+                int parentid = user.getParentid().intValue();
+                if ( parentid > 0 ) {
                     // 当前帐号已经被合并到 parentid.
-                    int parentid = user.getParentid().intValue();
                     query = new CommonQuery();
                     filters = new HashMap<>();
                     filters.put("id", String.valueOf(parentid));
@@ -506,9 +503,9 @@ public class UseraccountsServiceImpl implements Iface {
 
             if (user != null) {
                 // login success
-                if (user.getParentid() != null) {
+                int parentid = user.getParentid().intValue();
+                if ( parentid > 0 ) {
                     // 当前帐号已经被合并到 parentid.
-                    int parentid = user.getParentid().intValue();
                     query = new CommonQuery();
                     filters = new HashMap<>();
                     filters.put("id", String.valueOf(parentid));
@@ -558,6 +555,29 @@ public class UseraccountsServiceImpl implements Iface {
         }catch (Exception e){
             // TODO Auto-generated catch block
             logger.error("getUserById error: ", e);
+        }
+        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+    }
+
+    /**
+     * 更新用户数据
+     *
+     * @param user 用户实体
+     *
+     * */
+    @Override
+    public Response updateUser(User user) throws TException {
+        try{
+            if(user != null && user.getId() > 0){
+                // 用户记录转换
+                UserUserRecord userUserRecord = (UserUserRecord) BeanUtils.structToDB(user, UserUserRecord.class);
+                userdao.putResource(userUserRecord);
+            }else{
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+            }
+        }catch (Exception e){
+            logger.error("updateUser error: ", e);
+
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
     }
@@ -693,9 +713,9 @@ public class UseraccountsServiceImpl implements Iface {
 
             if (user != null) {
                 // login success
-                if (user.getParentid() != null) {
+                int parentid = user.getParentid().intValue();
+                if ( parentid > 0 ) {
                     // 当前帐号已经被合并到 parentid.
-                    int parentid = user.getParentid().intValue();
                     query = new CommonQuery();
                     filters = new HashMap<>();
                     filters.put("id", String.valueOf(parentid));
