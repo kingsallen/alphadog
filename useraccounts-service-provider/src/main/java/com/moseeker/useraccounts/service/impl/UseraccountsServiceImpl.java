@@ -67,8 +67,22 @@ public class UseraccountsServiceImpl implements Iface {
     public Response postuserlogin(Userloginreq userloginreq) throws TException {
         // TODO to add login log
         CommonQuery query = new CommonQuery();
-        int parentid = -1;
+        int parentid = 0;
         Map<String, String> filters = new HashMap<>();
+        
+        String code = userloginreq.getCode();
+        if ( code != null ){
+        	// 存在验证码,就是手机号+验证码登陆.
+        	String mobile = userloginreq.getMobile();
+            if (validateCode(mobile, code, 1)) {
+                filters.put("username", mobile);
+                ;
+            } else {
+                return ResponseUtils.success(ConstantErrorCodeMessage.INVALID_SMS_CODE);
+            }        	
+        }
+        
+        
         if (userloginreq.getUnionid() != null) {
             filters.put("unionid", userloginreq.getUnionid());
         } else {
@@ -101,6 +115,8 @@ public class UseraccountsServiceImpl implements Iface {
                     resp.put("last_login_time", user.getLastLoginTime());
 
                     user.setLastLoginTime(new Timestamp(new Date().getTime()));
+                    user.setLoginCount(user.getLoginCount()+1);
+                    
                     userdao.putResource(user);
 
                     return ResponseUtils.success(resp);                    
@@ -151,9 +167,10 @@ public class UseraccountsServiceImpl implements Iface {
         // TODO 未注册用户才能发送。
         CommonQuery query = new CommonQuery();
         Map<String, String> filters = new HashMap<>();
-        
+
+        /*  以下代码限制未注册用户才能发送。 由于存在 mobile+code的登陆方式, 老用户也可以发送验证码.
         if (mobile.length()>0){
-            filters.put("mobile", mobile);
+        	filters.put("mobile", mobile);
             query.setEqualFilter(filters);
             try {
                 UserUserRecord user = userdao.getResource(query);
@@ -166,6 +183,11 @@ public class UseraccountsServiceImpl implements Iface {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 
             }            
+        }
+        */
+        
+        if (mobile.length()<10){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
         
         if (SmsSender.sendSMS_signup(mobile)) {

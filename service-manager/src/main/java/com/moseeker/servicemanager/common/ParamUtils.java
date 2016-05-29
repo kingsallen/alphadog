@@ -65,7 +65,7 @@ public class ParamUtils {
 						: Integer.parseInt(request.getParameter("appid"));
 
 				if (appId == null) {
-					throw new Exception(" failed to get appid.");
+					throw new Exception("请设置 appid!");
 				}
 
 				if (appId != null) {
@@ -201,6 +201,11 @@ public class ParamUtils {
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.putAll(initParamFromRequestBody(request));
 		data.putAll(initParamFromRequestParameter(request));
+		
+		if (data.get("appid") == null){
+			throw new Exception("请设置 appid!");
+		}
+		
 		if (data != null && data.size() > 0) {
 			Field[] fields = clazz.getFields();
 			for (Entry<String, Object> entry : data.entrySet()) {
