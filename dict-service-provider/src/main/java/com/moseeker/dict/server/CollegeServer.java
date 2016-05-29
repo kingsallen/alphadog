@@ -29,9 +29,8 @@ public class CollegeServer {
                 while (true) {
                     try {
                         CollegeServer.class.wait();
-                    } catch (InterruptedException e) {
-                        LOGGER.error("error", e);
-                        e.printStackTrace();
+                    } catch (Exception e) {
+                        LOGGER.error(" service provider CollegeServer error", e);
                     }
                 }
             }

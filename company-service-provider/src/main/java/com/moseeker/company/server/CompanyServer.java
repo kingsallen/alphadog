@@ -40,9 +40,9 @@ public class CompanyServer {
 				while (true) {
 					try {
 						CompanyServer.class.wait();
-					} catch (InterruptedException e) {
-						LOGGER.error("error", e);
-					}
+                    } catch (Exception e) {
+                        LOGGER.error(" service provider CompanyServer error", e);
+                    }
 				}
 			}
 		} catch (Exception e) {

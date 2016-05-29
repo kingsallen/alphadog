@@ -39,8 +39,8 @@ public class UseraccountsServer {
                 while (true) {
                     try {
                         UseraccountsServer.class.wait();
-                    } catch (InterruptedException e) {
-                        LOGGER.error("error", e);
+                    } catch (Exception e) {
+                        LOGGER.error(" service provider UseraccountsServer error", e);
                     }
                 }
             }

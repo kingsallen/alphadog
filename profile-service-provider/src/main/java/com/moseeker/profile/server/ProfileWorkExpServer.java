@@ -42,10 +42,9 @@ public class ProfileWorkExpServer {
 				while (true) {
 					try {
 						ProfileWorkExpServer.class.wait();
-					} catch (InterruptedException e) {
-						LOGGER.error("error", e);
-						e.printStackTrace();
-					}
+                    } catch (Exception e) {
+                        LOGGER.error(" service provider ProfileWorkExpServer error", e);
+                    }
 				}
 			}
 		} catch (Exception e) {

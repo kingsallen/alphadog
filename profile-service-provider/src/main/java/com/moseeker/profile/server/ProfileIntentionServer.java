@@ -42,10 +42,9 @@ public class ProfileIntentionServer {
 				while (true) {
 					try {
 						ProfileIntentionServer.class.wait();
-					} catch (InterruptedException e) {
-						LOGGER.error("error", e);
-						e.printStackTrace();
-					}
+                    } catch (Exception e) {
+                        LOGGER.error(" service provider ProfileIntentionServer error", e);
+                    }
 				}
 			}
 		} catch (Exception e) {
