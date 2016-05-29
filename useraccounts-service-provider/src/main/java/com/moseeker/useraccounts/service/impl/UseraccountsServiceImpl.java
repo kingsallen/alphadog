@@ -306,7 +306,7 @@ public class UseraccountsServiceImpl implements Iface {
                     && userUnionid.getId().intValue() != userMobile.getId().intValue()) {
                 // 2 accounts, one unoinid, one mobile, need to merge.
                 new Thread(() -> {
-                    combineAccount(userMobile, userUnionid);
+                    combineAccount(appid, userMobile, userUnionid);
                 }).start();
                 //来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录, 7:PC(正常添加) 8:PC(我要投递) 9: PC(我感兴趣)
             	return ResponseUtils.success(userMobile);
@@ -323,18 +323,40 @@ public class UseraccountsServiceImpl implements Iface {
 
     }
 
-    private void combineAccount(UserUserRecord userMobile, UserUserRecord userUnionid) {
+    private void combineAccount(int appid,UserUserRecord userMobile, UserUserRecord userUnionid) {
         try {
             // unnionid置为子账号
             userUnionid.setParentid(userMobile.getId().intValue());
-            userdao.putResource(userMobile);
-
-            // 被合并账号的个人profile置为无效
-            ProfileProfileRecord profileRecord = profileDao.getProfileByUserId(userUnionid.getId().intValue());
-            if (profileRecord != null) {
-                profileRecord.setDisable(UByte.valueOf(Constant.DISABLE));
-                profileDao.putResource(profileRecord);
+            if(userdao.putResource(userUnionid)>0){
+            	// profile合并成功
+            }else{
+            	// 合并失败, log.
             }
+
+            // weixin端(聚合号),weixin端（企业号） 发起, 保留微信端 profile; 否则保留pc端(无需处理).
+            switch(appid){
+            	case Constant.APPID_QX :
+            	case Constant.APPID_PLATFORM :
+                    ProfileProfileRecord userMobileProfileRecord = profileDao.getProfileByUserId(userMobile.getId().intValue());
+                    // pc 端profile 设置为无效
+                    if (userMobileProfileRecord != null) {
+                        userMobileProfileRecord.setDisable(UByte.valueOf(Constant.DISABLE));
+                        profileDao.putResource(userMobileProfileRecord);
+                    }
+                    
+                    // 微信端profile转移到pc用户下.
+                    ProfileProfileRecord userUnionProfileRecord = profileDao.getProfileByUserId(userUnionid.getId().intValue());
+                    if (userUnionProfileRecord != null ){
+                    	userUnionProfileRecord.setUserId(userMobile.getId());
+                    	profileDao.putResource(userUnionProfileRecord);
+                    }
+                    
+                    break;
+            	case Constant.APPID_C:
+            	default:
+            		break;
+            }
+
 
             // 合并业务代码
             // 合并sys_user_id表数据
