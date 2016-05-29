@@ -32,5 +32,5 @@ public final class ConstantErrorCodeMessage {
     public static final String PROFILE_DICT_INDUSTRY_NOTEXIST = "{'status':31013,'message':'行业字典不存在!'}";
 
     // 申请服务ERRCODE说明定义 4字头
-    public static final String APPLICATION_VALIDATE_IS_NULL = "{'status':41001,'message':'申请对象为空'}";
+    public static final String APPLICATION_VALIDATE_COUNT_CHECK = "{'status':41001,'message':'超出申请次数限制!'}";
 }

@@ -41,11 +41,11 @@ public class JobApplicataionServicesImplTest {
             System.out.println(getJobResumeOther);
 
             // 是否申请过该职位
-            Response getApplicationByUserIdAndPositionId = applicationService.getApplicationByUserIdAndPositionId(2447, 123);
+            Response getApplicationByUserIdAndPositionId = applicationService.getApplicationByUserIdAndPositionId(2447, 123, 1);
 
             System.out.println(getApplicationByUserIdAndPositionId);
 
-            Response getApplicationByUserIdAndPositionId1 = applicationService.getApplicationByUserIdAndPositionId(214, 123);
+            Response getApplicationByUserIdAndPositionId1 = applicationService.getApplicationByUserIdAndPositionId(214, 123, 2);
 
             System.out.println(getApplicationByUserIdAndPositionId1);
 
