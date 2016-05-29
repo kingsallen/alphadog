@@ -379,8 +379,8 @@ public class UseraccountsServiceImpl implements Iface {
     }
 
     private List<String> getSysUserIdTable() {
-        List<String> tables = Lists.newArrayList("candidate_position_share_record", "hr_wx_hr_chat_list",
-                "user_fav_position", "user_intention", "user_wx_user", "user_wx_viewer");
+        List<String> tables = Lists.newArrayList("candidateDB.candidate_position_share_record", "hrDB.hr_wx_hr_chat_list",
+                "userDB.user_fav_position", "userDB.user_intention", "userDB.user_wx_user", "userDB.user_wx_viewer");
         return tables;
     }
 
