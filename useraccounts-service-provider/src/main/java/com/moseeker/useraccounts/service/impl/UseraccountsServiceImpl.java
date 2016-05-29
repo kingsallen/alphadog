@@ -96,10 +96,9 @@ public class UseraccountsServiceImpl implements Iface {
             UserUserRecord user = userdao.getResource(query);
             if (user != null) {
                 // login success
-                
-                if (user.getParentid() != null) {
+                parentid = user.getParentid().intValue();
+                if (parentid > 0) {
                     // 当前帐号已经被合并到 parentid.
-                    parentid = user.getParentid().intValue();
                     query = new CommonQuery();
                     filters = new HashMap<>();
                     filters.put("id", String.valueOf(parentid));
@@ -419,9 +418,9 @@ public class UseraccountsServiceImpl implements Iface {
 
             if (user != null) {
                 // login success
-                if (user.getParentid() != null) {
+                int parentid = user.getParentid().intValue();
+                if ( parentid > 0 ) {
                     // 当前帐号已经被合并到 parentid.
-                    int parentid = user.getParentid().intValue();
                     query = new CommonQuery();
                     filters = new HashMap<>();
                     filters.put("id", String.valueOf(parentid));
@@ -504,9 +503,9 @@ public class UseraccountsServiceImpl implements Iface {
 
             if (user != null) {
                 // login success
-                if (user.getParentid() != null) {
+                int parentid = user.getParentid().intValue();
+                if ( parentid > 0 ) {
                     // 当前帐号已经被合并到 parentid.
-                    int parentid = user.getParentid().intValue();
                     query = new CommonQuery();
                     filters = new HashMap<>();
                     filters.put("id", String.valueOf(parentid));
@@ -714,9 +713,9 @@ public class UseraccountsServiceImpl implements Iface {
 
             if (user != null) {
                 // login success
-                if (user.getParentid() != null) {
+                int parentid = user.getParentid().intValue();
+                if ( parentid > 0 ) {
                     // 当前帐号已经被合并到 parentid.
-                    int parentid = user.getParentid().intValue();
                     query = new CommonQuery();
                     filters = new HashMap<>();
                     filters.put("id", String.valueOf(parentid));
