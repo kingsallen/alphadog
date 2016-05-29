@@ -56,7 +56,7 @@ public class DefaultInvoker<T> implements Invoker {
 
         for (int i = 0; i == 0 || i < retry + 1; i++) {
             try {
-                System.out.println("hostSet getAll size : " + hostSet.getAll().size());
+                LOGGER.info("hostSet getAll size : " + hostSet.getAll().size());
                 serverNode = LoadBalance.nextBackend(hostSet);
                 LOGGER.info(serverNode.toString());
                 if (serverNode == null) {
@@ -107,6 +107,6 @@ public class DefaultInvoker<T> implements Invoker {
                 }
             }
         }
-        throw new RpcException("Invoke error!", exception);
+        throw new RpcException("服务超时，请稍候再试!", exception);
     }
 }

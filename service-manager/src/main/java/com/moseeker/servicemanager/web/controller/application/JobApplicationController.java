@@ -31,6 +31,11 @@ public class JobApplicationController {
 
     JobApplicationServices.Iface applicationService = ServiceUtil.getService(JobApplicationServices.Iface.class);
 
+    /**
+     * 用户申请
+     * <p>
+     *
+     * */
     @RequestMapping(value = "/application", method = RequestMethod.POST)
     @ResponseBody
     public String post(HttpServletRequest request, HttpServletResponse response) {
@@ -46,6 +51,11 @@ public class JobApplicationController {
         }
     }
 
+    /**
+     * 申请副本添加
+     * <p>
+     *
+     * */
     @RequestMapping(value = "/application/other", method = RequestMethod.POST)
     @ResponseBody
     public String postJobResumeOther(HttpServletRequest request, HttpServletResponse response) {
@@ -55,6 +65,27 @@ public class JobApplicationController {
 
             // 创建申请记录
             Response result = applicationService.postJobResumeOther(jobResumeOther);
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 用户申请职位申请校验
+     * <p>
+     *
+     * */
+    @RequestMapping(value = "/application/check", method = RequestMethod.GET)
+    @ResponseBody
+    public String getApplicationByUserIdAndPositionId(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            long positionId = Long.valueOf(request.getParameter("position_id"));
+            long userId = Long.valueOf(request.getParameter("user_id"));
+            long companyId = Long.valueOf(request.getParameter("company_id"));
+
+            // 创建申请记录
+            Response result = applicationService.getApplicationByUserIdAndPositionId(userId, positionId, companyId);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());

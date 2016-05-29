@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -32,6 +33,23 @@ public class UseraccountsController {
 
    UseraccountsServices.Iface useraccountsServices = ServiceUtil.getService(UseraccountsServices.Iface.class);
    UsersettingServices.Iface usersettingServices = ServiceUtil.getService(UsersettingServices.Iface.class);
+
+   /**
+    * 获取用户数据
+    *
+    * // @param user_id 用户ID
+    *
+    * */
+   @RequestMapping(value = "/user/{user_id}", method = RequestMethod.GET)
+   @ResponseBody
+   public String getUser(@PathVariable("user_id") long userId, HttpServletRequest request, HttpServletResponse response) {
+      try {
+          Response result = useraccountsServices.getUserById(userId);
+          return ResponseLogNotification.success(request, result);
+      } catch (Exception e) {
+          return ResponseLogNotification.fail(request, e.getMessage());
+      }
+   }
 
    @RequestMapping(value = "/user/login", method = RequestMethod.POST)
    @ResponseBody

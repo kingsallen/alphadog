@@ -14,7 +14,18 @@ public final class Constant {
 	private Constant() throws AssertionError {
 		throw new AssertionError();
 	};
-	
+
+	// 系统appid 常量定义
+	public static final int APPID_ALPHADOG = 0;     // 基础服务本身
+	public static final int APPID_C = 1;            // c端
+	public static final int APPID_QX = 2;           // weixin端(聚合号)
+	public static final int APPID_PLATFORM = 3;     // weixin端（企业号）
+	public static final int APPID_HR = 4;           // hr
+	public static final int APPID_ATS = 20;         // ats
+	public static final int APPID_SYSPLAT = 21;     // sysplat
+	public static final int APPID_CRONJOB = 22;     // cronjob
+	public static final int APPID_ANALYTICS = 101;  // 统计
+
 	public static final String DASVALIDATE_SENSITIVEWORDS_ILLEGAL = "敏感词校验失败";
 	
 	public static final int logConfigType = 3;

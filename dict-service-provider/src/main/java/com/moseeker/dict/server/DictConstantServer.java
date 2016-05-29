@@ -32,9 +32,8 @@ public class DictConstantServer {
                 while (true) {
                     try {
                         DictConstantServer.class.wait();
-                    } catch (InterruptedException e) {
-                        LOGGER.error("error", e);
-                        e.printStackTrace();
+                    } catch (Exception e) {
+                        LOGGER.error(" service provider DictConstantServer error", e);
                     }
                 }
             }

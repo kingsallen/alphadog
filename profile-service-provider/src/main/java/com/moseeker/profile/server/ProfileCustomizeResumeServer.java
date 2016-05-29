@@ -42,10 +42,9 @@ public class ProfileCustomizeResumeServer {
 				while (true) {
 					try {
 						ProfileCustomizeResumeServer.class.wait();
-					} catch (InterruptedException e) {
-						LOGGER.error("error", e);
-						e.printStackTrace();
-					}
+                    } catch (Exception e) {
+                        LOGGER.error(" service provider ProfileCustomizeResumeServer error", e);
+                    }
 				}
 			}
 		} catch (Exception e) {

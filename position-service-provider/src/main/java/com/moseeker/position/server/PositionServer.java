@@ -26,9 +26,8 @@ public class PositionServer {
                 while (true) {
                     try {
                         PositionServer.class.wait();
-                    } catch (InterruptedException e) {
-                        LOGGER.error("error", e);
-                        e.printStackTrace();
+                    } catch (Exception e) {
+                        LOGGER.error(" service provider PositionServer error", e);
                     }
                 }
             }

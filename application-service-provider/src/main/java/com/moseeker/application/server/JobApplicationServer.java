@@ -29,15 +29,13 @@ public class JobApplicationServer {
                 while (true) {
                     try {
                         JobApplicationServer.class.wait();
-                    } catch (InterruptedException e) {
-                        LOGGER.error("error", e);
-                        e.printStackTrace();
+                    } catch (Exception e) {
+                        LOGGER.error(" service provider JobApplicationServer error", e);
                     }
                 }
             }
         } catch (Exception e) {
             LOGGER.error("error", e);
-            e.printStackTrace();
         }
 
     }
