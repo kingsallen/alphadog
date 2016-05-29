@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.common.ServiceUtil;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -30,15 +29,9 @@ public class ProfileController {
 		//PrintWriter writer = null;
 		try {
 			// GET方法 通用参数解析并赋值
-			int id = 0;
-			int userId = 0;
-			if(!StringUtils.isNullOrEmpty(request.getParameter("id"))) {
-				id = Integer.valueOf(request.getParameter("id"));
-			}
-			if(!StringUtils.isNullOrEmpty(request.getParameter("user_id"))) {
-				userId = Integer.valueOf(request.getParameter("user_id"));
-			}
-			Response result = profileService.getResource(userId, id);
+			String user_id = request.getParameter("user_id");
+			ImportCVForm form = ParamUtils.initModelForm(request, ImportCVForm.class);
+			Response result = profileService.getResource(form.getUser_id(), form.getId());
 			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
