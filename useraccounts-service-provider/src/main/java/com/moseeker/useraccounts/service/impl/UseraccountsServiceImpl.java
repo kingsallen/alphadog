@@ -1,12 +1,29 @@
 package com.moseeker.useraccounts.service.impl;
 
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.thrift.TException;
+import org.jooq.types.UByte;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.google.common.collect.Lists;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.daoutils.BaseDao;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.sms.SmsSender;
-import com.moseeker.common.util.*;
+import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.Constant;
+import com.moseeker.common.util.ConstantErrorCodeMessage;
+import com.moseeker.common.util.MD5Util;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.logdb.tables.records.LogUserloginRecordRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.db.userdb.tables.records.UserFavPositionRecord;
@@ -21,18 +38,6 @@ import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
 import com.moseeker.useraccounts.dao.UserDao;
 import com.moseeker.useraccounts.dao.UserFavoritePositionDao;
 import com.moseeker.useraccounts.dao.impl.ProfileDaoImpl;
-import org.apache.thrift.TException;
-import org.jooq.types.UByte;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 用户登陆， 注册，合并等api的实现
@@ -326,7 +331,7 @@ public class UseraccountsServiceImpl implements Iface {
     private void combineAccount(int appid,UserUserRecord userMobile, UserUserRecord userUnionid) {
         try {
             // unnionid置为子账号
-            userUnionid.setParentid(userMobile.getId().intValue());
+            userUnionid.setParentid(userMobile.getId());
             if(userdao.putResource(userUnionid)>0){
             	// profile合并成功
             }else{

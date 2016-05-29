@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import org.jooq.DSLContext;
 import org.jooq.Result;
+import org.jooq.types.UInteger;
 import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.dbutils.DBConnHelper;
@@ -32,7 +33,7 @@ public class UserSettingsDaoImpl extends
 				conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 				Result<UserSettingsRecord> result = create.selectFrom(UserSettings.USER_SETTINGS)
-						.where(UserSettings.USER_SETTINGS.USER_ID.equal(userId))
+						.where(UserSettings.USER_SETTINGS.USER_ID.equal(UInteger.valueOf(userId)))
 						.limit(1).fetch();
 				if(result != null && result.size() > 0) {
 					record = result.get(0);

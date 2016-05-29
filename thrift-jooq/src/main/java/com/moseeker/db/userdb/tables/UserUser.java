@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserUser extends TableImpl<UserUserRecord> {
 
-	private static final long serialVersionUID = 263382273;
+	private static final long serialVersionUID = -464182863;
 
 	/**
 	 * The reference instance of <code>userDB.user_user</code>
@@ -152,14 +152,24 @@ public class UserUser extends TableImpl<UserUserRecord> {
 	public final TableField<UserUserRecord, String> UNIONID = createField("unionid", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaulted(true), this, "存储仟寻服务号的unionid");
 
 	/**
-	 * The column <code>userDB.user_user.source</code>. 来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录
+	 * The column <code>userDB.user_user.source</code>. 来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录, 7:PC(正常添加) 8:PC(我要投递) 9: PC(我感兴趣)
 	 */
-	public final TableField<UserUserRecord, Byte> SOURCE = createField("source", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录");
+	public final TableField<UserUserRecord, Byte> SOURCE = createField("source", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录, 7:PC(正常添加) 8:PC(我要投递) 9: PC(我感兴趣)");
+
+	/**
+	 * The column <code>userDB.user_user.company</code>. 点击我感兴趣时填写的公司
+	 */
+	public final TableField<UserUserRecord, String> COMPANY = createField("company", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "点击我感兴趣时填写的公司");
+
+	/**
+	 * The column <code>userDB.user_user.position</code>. 点击我感兴趣时填写的职位
+	 */
+	public final TableField<UserUserRecord, String> POSITION = createField("position", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "点击我感兴趣时填写的职位");
 
 	/**
 	 * The column <code>userDB.user_user.parentid</code>. 合并到了新用户的id
 	 */
-	public final TableField<UserUserRecord, Integer> PARENTID = createField("parentid", org.jooq.impl.SQLDataType.INTEGER, this, "合并到了新用户的id");
+	public final TableField<UserUserRecord, UInteger> PARENTID = createField("parentid", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "合并到了新用户的id");
 
 	/**
 	 * Create a <code>userDB.user_user</code> table reference
@@ -204,7 +214,7 @@ public class UserUser extends TableImpl<UserUserRecord> {
 	 */
 	@Override
 	public List<UniqueKey<UserUserRecord>> getKeys() {
-		return Arrays.<UniqueKey<UserUserRecord>>asList(Keys.KEY_USER_USER_PRIMARY, Keys.KEY_USER_USER_UK_SYS_USER_USERNAME);
+		return Arrays.<UniqueKey<UserUserRecord>>asList(Keys.KEY_USER_USER_PRIMARY, Keys.KEY_USER_USER_UK_USER_USERNAME);
 	}
 
 	/**
