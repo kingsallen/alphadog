@@ -12,7 +12,7 @@ namespace java com.moseeker.thrift.gen.profile.service
 service WholeProfileServices {
     common_struct.Response getResource(1:i32 userId, 2:i32 profileId);
     common_struct.Response postResource(1:string profile);
-    common_struct.Response importCV(1:string profile, 2:i32 userId);
+    common_struct.Response importCV(1:string profile);
     common_struct.Response verifyRequires(1:i32 userId, 2:i32 profileId);
 }
 

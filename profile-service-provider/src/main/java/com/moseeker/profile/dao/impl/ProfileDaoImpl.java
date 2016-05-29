@@ -1,7 +1,9 @@
 package com.moseeker.profile.dao.impl;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -218,5 +220,68 @@ public class ProfileDaoImpl extends
 			}
 		}
 		return profileId;
+	}
+
+	@Override
+	public int deleteProfile(int profileId) {
+		int result = 0;
+		if(profileId > 0) {
+			Connection conn = null;
+			try {
+				conn = DBConnHelper.DBConn.getConn();
+				conn.setAutoCommit(false);
+				Statement stmt = conn.createStatement();
+				stmt.executeUpdate("delete from profileDB.profile_attachment where profile_id = "+profileId);
+				stmt.executeUpdate("delete from profileDB.profile_awards where profile_id = "+profileId);
+				stmt.executeUpdate("delete from profileDB.profile_basic where profile_id = "+profileId);
+				stmt.executeUpdate("delete from profileDB.profile_credentials where profile_id = "+profileId);
+				stmt.executeUpdate("delete from profileDB.profile_education where profile_id = "+profileId);
+				stmt.executeUpdate("delete from profileDB.profile_import where profile_id = "+profileId);
+				stmt.executeUpdate("delete from profileDB.profile_import where profile_id = "+profileId);
+				
+				StringBuffer sb = new StringBuffer("(");
+				ResultSet resultSet = stmt.executeQuery("select id from profile_intention where profile_id = "+profileId);
+				while(resultSet.next()) {
+					sb.append(resultSet.getLong("id")+",");
+				}
+				if(sb.length() > 1) {
+					sb.deleteCharAt(sb.length()-1);
+					sb.append(")");
+					stmt.executeUpdate("delete from profileDB.profile_intention_city where profile_intention_id in "+sb.toString());
+					stmt.executeUpdate("delete from profileDB.profile_intention_position where profile_intention_id in "+sb.toString());
+					stmt.executeUpdate("delete from profileDB.profile_intention_industry where profile_intention_id in "+sb.toString());
+				}
+				stmt.executeUpdate("delete from profileDB.profile_intention where profile_id = "+profileId);
+				stmt.executeUpdate("delete from profileDB.profile_language where profile_id = "+profileId);
+				stmt.executeUpdate("delete from profileDB.profile_other where profile_id = "+profileId);
+				stmt.executeUpdate("delete from profileDB.profile_projectexp where profile_id = "+profileId);
+				stmt.executeUpdate("delete from profileDB.profile_skill where profile_id = "+profileId);
+				stmt.executeUpdate("delete from profileDB.profile_workexp where profile_id = "+profileId);
+				stmt.executeUpdate("delete from profileDB.profile_works where profile_id = "+profileId);
+				result = stmt.executeUpdate("delete from profileDB.profile_profile where id = "+profileId);
+				conn.commit();
+				conn.close();
+			} catch (SQLException e) {
+				logger.error(e.getMessage(), e);
+				try {
+					if(conn != null && !conn.isClosed()) {
+						conn.rollback();
+					}
+				} catch (SQLException e1) {
+					logger.error(e.getMessage(), e);
+				}
+			} finally {
+				try {
+					if(conn != null && !conn.isClosed()) {
+						conn.close();
+					}
+				} catch (SQLException e) {
+					logger.error(e.getMessage(), e);
+				} finally {
+					//do nothing
+				}
+			}
+		}
+		return result;
 	}
 }

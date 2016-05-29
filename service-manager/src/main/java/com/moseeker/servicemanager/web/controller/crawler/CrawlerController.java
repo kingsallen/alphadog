@@ -12,8 +12,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
+import com.moseeker.rpccenter.common.ServiceUtil;
+import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.servicemanager.web.controller.profile.ImportCVForm;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 
 @Controller
 public class CrawlerController {
@@ -21,33 +25,33 @@ public class CrawlerController {
 	Logger logger = LoggerFactory.getLogger(CrawlerController.class);
 
 	CrawlerUtils crawlerUtils = new CrawlerUtils();
+	WholeProfileServices.Iface profileService = ServiceUtil.getService(WholeProfileServices.Iface.class);
 	
-	@RequestMapping(value = "/crawler", method = RequestMethod.GET)
+	@RequestMapping(value = "/crawler", method = RequestMethod.POST)
 	@ResponseBody
 	public String get(HttpServletRequest request, HttpServletResponse response) {
 		//PrintWriter writer = null;
 		try {
+			ImportCVForm form = ParamUtils.initModelForm(request, ImportCVForm.class);
 			// GET方法 通用参数解析并赋值
-			String userName = request.getParameter("username");
-			String password = request.getParameter("password");
-			String type = request.getParameter("type");
-			String userId = request.getParameter("user_id");
-			String appid = request.getParameter("appid");
 			ValidateUtil vu = new ValidateUtil();
-			vu.addRequiredStringValidate("用户账号", userName, null, null);
-			vu.addRequiredStringValidate("密码", password, null, null);
-			vu.addIntTypeValidate("导入方式", type, null, null, 1, 5);
-			vu.addIntTypeValidate("用户编号", userId, null, null, 1, Integer.MAX_VALUE);
-			vu.addIntTypeValidate("项目编号", appid, null, null, 1, Integer.MAX_VALUE);
+			vu.addIntTypeValidate("导入方式", form.getType(), null, null, 1, 5);
+			vu.addIntTypeValidate("用户编号", form.getUser_id(), null, null, 1, Integer.MAX_VALUE);
+			vu.addIntTypeValidate("项目编号", form.getAppid(), null, null, 1, 100);
+			if(form.getType() == 4) {
+				vu.addRequiredStringValidate("token", form.getToken(), null, null);
+			} else {
+				vu.addRequiredStringValidate("账号", form.getUser_name(), null, null);
+				vu.addRequiredStringValidate("密码", form.getPassword(), null, null);
+			}
 			String result = vu.toString();
 			if(StringUtils.isNullOrEmpty(result)) {
-				crawlerUtils.fetchFirstResume(userName, password, Integer.valueOf(type), Integer.valueOf(userId));
-				
+				String profile = crawlerUtils.fetchFirstResume(form.getUser_name(), form.getPassword(), form.getToken(), form.getType());
+				Response res = profileService.importCV(profile, form.getUser_id());
+				return ResponseLogNotification.success(request, res);
 			} else {
 				return ResponseLogNotification.fail(request, result);
 			}
-			
-			return ResponseLogNotification.success(request, new Response());
 		} catch (Exception e) {	
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}

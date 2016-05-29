@@ -136,10 +136,7 @@ public class WholeProfileServicesImpl implements Iface {
 				List<Map<String, Object>> others = profileUtils.buildOthers(profileRecord, otherRecords);
 				
 				profile.put("others", others);
-				response.setStatus(0);
-				response.setMessage(Constant.TIPS_SUCCESS);
-				// Gson gson = new Gson();
-				response.setData(JSON.toJSONString(profile));
+				return ResponseUtils.success(profile);
 				// response.setData(gson.toJson(profile));
 			} else {
 				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
@@ -163,6 +160,7 @@ public class WholeProfileServicesImpl implements Iface {
 			
 			ProfileProfileRecord profileRecord = profileUtils.mapToProfileRecord((Map<String, Object>) resume.get("profile"));
 			if (profileRecord != null) {
+				profileRecord.setUuid(UUID.randomUUID().toString());
 				ProfileProfileRecord repeatProfileRecord = profileDao.getProfileByIdOrUserId(profileRecord.getUserId().intValue(), 0);
 				if(repeatProfileRecord != null) {
 					return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ALLREADY_EXIST);
@@ -208,17 +206,24 @@ public class WholeProfileServicesImpl implements Iface {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Response importCV(String profile, int userId) throws TException {
-		UserUserRecord userRecord = userDao.getUserById(userId);
+		
+		Map<String, Object> resume = JSON.parseObject(profile);
+		ProfileProfileRecord profileRecord = profileUtils.mapToProfileRecord((Map<String, Object>) resume.get("profile"));
+		if(profileRecord == null) {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ILLEGAL);
+		}
+		UserUserRecord userRecord = userDao.getUserById(profileRecord.getUserId().intValue());
 		if(userRecord == null) {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_USER_NOTEXIST);
 		}
-		ProfileProfileRecord profileRecord = new ProfileProfileRecord();
+		
+		ProfileProfileRecord oldProfile = profileDao.getProfileByIdOrUserId(userId, 0);
+		
 		profileRecord.setUuid(UUID.randomUUID().toString());
 		profileRecord.setUserId(userRecord.getId());
 		profileRecord.setSource(UByte.valueOf(Constant.PROFILE_SOURCE_IMPORT));
 		profileRecord.setDisable(UByte.valueOf(Constant.ENABLE));
 		
-		Map<String, Object> resume = JSON.parseObject(profile);
 		ProfileBasicRecord basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"));
 		List<ProfileAttachmentRecord> attachmentRecords = profileUtils.mapToAttachmentRecords(
 				(List<Map<String, Object>>) resume.get("attachments"));
@@ -247,18 +252,17 @@ public class WholeProfileServicesImpl implements Iface {
 				credentialsRecords, educationRecords, importRecords, intentionRecords, languages, otherRecord,
 				projectExps, skillRecords, workexpRecords, worksRecords);
 		if(id > 0) {
-			clearProfile();
+			if(oldProfile != null) {
+				clearProfile(oldProfile.getId().intValue());
+			}
 			return ResponseUtils.success(id);
 		} else {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
 		}
 	}
-	
-	
 
-	private void clearProfile() {
-		// TODO Auto-generated method stub
-		
+	private int clearProfile(int profileId) {
+		return profileDao.deleteProfile(profileId);
 	}
 
 	@Override

@@ -32,4 +32,6 @@ public interface ProfileDao extends BaseDao<ProfileProfileRecord> {
 			List<ProfileProjectexpRecord> projectExps, List<ProfileSkillRecord> skillRecords,
 			List<ProfileWorkexpRecord> workexpRecords, List<ProfileWorksRecord> worksRecords);
 
+	int deleteProfile(int profileId);
+
 }
