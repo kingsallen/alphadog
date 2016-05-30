@@ -110,7 +110,7 @@ public class UseraccountsServiceImpl implements Iface {
                     Map<String, Object> resp = new HashMap<>();
 
                     resp.put("user_id", user.getId().intValue());
-                    resp.put("union_id", user.getUnionid());
+                    resp.put("unionid", user.getUnionid());
                     resp.put("mobile", user.getMobile());
                     resp.put("last_login_time", user.getLastLoginTime());
 
