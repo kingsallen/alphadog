@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import org.apache.thrift.TException;
 import org.jooq.types.UByte;
+import org.jooq.types.UInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.dictdb.tables.records.DictCollegeRecord;
 import com.moseeker.db.dictdb.tables.records.DictCountryRecord;
 import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
+import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileAttachmentRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileAwardsRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileBasicRecord;
@@ -54,6 +56,7 @@ import com.moseeker.profile.dao.IntentionCityDao;
 import com.moseeker.profile.dao.IntentionDao;
 import com.moseeker.profile.dao.IntentionIndustryDao;
 import com.moseeker.profile.dao.IntentionPositionDao;
+import com.moseeker.profile.dao.JobPositionDao;
 import com.moseeker.profile.dao.LanguageDao;
 import com.moseeker.profile.dao.ProfileBasicDao;
 import com.moseeker.profile.dao.ProfileDao;
@@ -154,22 +157,28 @@ public class WholeProfileServicesImpl implements Iface {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Response postResource(String profile) throws TException {
+	public Response postResource(String profile, int userId) throws TException {
 		if (!StringUtils.isNullOrEmpty(profile)) {
 			Map<String, Object> resume = JSON.parseObject(profile);
 			
 			ProfileProfileRecord profileRecord = profileUtils.mapToProfileRecord((Map<String, Object>) resume.get("profile"));
 			if (profileRecord != null) {
-				profileRecord.setUuid(UUID.randomUUID().toString());
-				ProfileProfileRecord repeatProfileRecord = profileDao.getProfileByIdOrUserId(profileRecord.getUserId().intValue(), 0);
-				if(repeatProfileRecord != null) {
-					return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ALLREADY_EXIST);
+				if(userId > 0) {
+					profileRecord.setUserId(UInteger.valueOf(userId));
 				}
+				profileRecord.setUuid(UUID.randomUUID().toString());
 				UserUserRecord userRecord = userDao.getUserById(profileRecord.getUserId().intValue());
 				if (userRecord == null) {
 					return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_USER_NOTEXIST);
 				}
+				ProfileProfileRecord repeatProfileRecord = profileDao.getProfileByIdOrUserId(profileRecord.getUserId().intValue(), 0);
+				if(repeatProfileRecord != null) {
+					return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ALLREADY_EXIST);
+				}
 				ProfileBasicRecord basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"));
+				if(StringUtils.isNullOrEmpty(basicRecord.getName())) {
+					basicRecord.setName(userRecord.getName());
+				}
 				List<ProfileAttachmentRecord> attachmentRecords = profileUtils.mapToAttachmentRecords(
 						(List<Map<String, Object>>) resume.get("attachments"));
 				List<ProfileAwardsRecord> awardsRecords = profileUtils.mapToAwardsRecords(
@@ -178,6 +187,7 @@ public class WholeProfileServicesImpl implements Iface {
 						(List<Map<String, Object>>) resume.get("credentials"));
 				List<ProfileEducationRecord> educationRecords = profileUtils.mapToEducationRecords(
 						(List<Map<String, Object>>) resume.get("educations"));
+				
 				ProfileImportRecord importRecords = profileUtils.mapToImportRecord((Map<String, Object>) resume.get("import"),
 						userRecord.getUsername());
 				List<IntentionRecord> intentionRecords = profileUtils.mapToIntentionRecord(
@@ -266,9 +276,20 @@ public class WholeProfileServicesImpl implements Iface {
 	}
 
 	@Override
-	public Response verifyRequires(int userId, int profileId) throws TException {
-		
-		return null;
+	public Response verifyRequires(int userId, int positionId) throws TException {
+		UserUserRecord userRecord = userDao.getUserById(userId);
+		JobPositionRecord positionRecord = jobPositionDao.getPositionById(positionId);
+		if(userRecord == null) {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_USER_NOTEXIST);
+		}
+		if(positionRecord == null) {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_POSITION_NOTEXIST);
+		}
+		if(positionRecord.getAppCvConfigId() != null && positionRecord.getAppCvConfigId().intValue() > 0) {
+			return ResponseUtils.success(true);
+		} else {
+			return ResponseUtils.success(false);
+		}
 	}
 
 	private List<Map<String, Object>> buildsIntentions(ProfileProfileRecord profileRecord, CommonQuery query) {
@@ -655,6 +676,9 @@ public class WholeProfileServicesImpl implements Iface {
 	
 	@Autowired
 	private CustomizeResumeDao customizeResumeDao;
+	
+	@Autowired
+	private JobPositionDao jobPositionDao;
 
 	@Autowired
 	private UserSettingsDao userSettingsDao;
@@ -901,5 +925,13 @@ public class WholeProfileServicesImpl implements Iface {
 
 	public void setCollegeDao(CollegeDao collegeDao) {
 		this.collegeDao = collegeDao;
+	}
+
+	public JobPositionDao getJobPositionDao() {
+		return jobPositionDao;
+	}
+
+	public void setJobPositionDao(JobPositionDao jobPositionDao) {
+		this.jobPositionDao = jobPositionDao;
 	}
 }

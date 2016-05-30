@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.moseeker.rpccenter.common.ServiceUtil;
@@ -43,16 +44,18 @@ public class BasicController {
 
 	@RequestMapping(value = "/profile/basic", method = RequestMethod.POST)
 	@ResponseBody
-	public String post(HttpServletRequest request, HttpServletResponse response) {
+	public String post(@RequestParam("value1") String valueOne) {
 		//PrintWriter writer = null;
 		try {
-			Basic basic = ParamUtils.initModelForm(request, Basic.class);
-			Response result = basicService.postResource(basic);
+			//Basic basic = ParamUtils.initModelForm(request, Basic.class);
+			//Response result = basicService.postResource(basic);
 			
-			return ResponseLogNotification.success(request, result);
+			//return ResponseLogNotification.success(request, result);
+			return "{}";
 		} catch (Exception e) {	
 			e.printStackTrace();
-			return ResponseLogNotification.fail(request, e.getMessage());
+			//return ResponseLogNotification.fail(request, e.getMessage());
+			return "{}";
 		}
 	}
 

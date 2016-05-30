@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.common.ServiceUtil;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -30,15 +31,8 @@ public class ProfileController {
 		//PrintWriter writer = null;
 		try {
 			// GET方法 通用参数解析并赋值
-			int id = 0;
-			int userId = 0;
-			if(!StringUtils.isNullOrEmpty(request.getParameter("id"))) {
-				id = Integer.valueOf(request.getParameter("id"));
-			}
-			if(!StringUtils.isNullOrEmpty(request.getParameter("user_id"))) {
-				userId = Integer.valueOf(request.getParameter("user_id"));
-			}
-			Response result = profileService.getResource(userId, id);
+			ImportCVForm form = ParamUtils.initModelForm(request, ImportCVForm.class);
+			Response result = profileService.getResource(form.getUser_id(), form.getId());
 			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
@@ -54,9 +48,34 @@ public class ProfileController {
 		try {
 			
 			ImportCVForm form = ParamUtils.initModelForm(request, ImportCVForm.class);
-			Response result = profileService.importCV(form.getProfile(), form.getUser_id());
+			Response result = profileService.postResource(form.getProfile(), form.getUser_id());
 			
 			return ResponseLogNotification.success(request, result);
+		} catch (Exception e) {	
+			logger.error(e.getMessage(), e);
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
+	
+	@RequestMapping(value = "/profile/verifyRequires", method = RequestMethod.GET)
+	@ResponseBody
+	public String verifyRequires(HttpServletRequest request, HttpServletResponse response) {
+		//PrintWriter writer = null;
+		try {
+			
+			//ImportCVForm form = ParamUtils.initModelForm(request, ImportCVForm.class);
+			String userId = request.getParameter("user_id");
+			String positionId = request.getParameter("positionId");
+			ValidateUtil vu = new ValidateUtil();
+			vu.addIntTypeValidate("用户编号", userId, null, null, 1, Integer.MAX_VALUE);
+			vu.addIntTypeValidate("职位编号", positionId, null, null, 1, Integer.MAX_VALUE);
+			String message = vu.validate();
+			if(!StringUtils.isNullOrEmpty(message)) {
+				Response result = profileService.verifyRequires(Integer.valueOf(userId), Integer.valueOf(positionId));
+				return ResponseLogNotification.success(request, result);
+			} else {
+				return ResponseLogNotification.fail(request, message);
+			}
 		} catch (Exception e) {	
 			logger.error(e.getMessage(), e);
 			return ResponseLogNotification.fail(request, e.getMessage());

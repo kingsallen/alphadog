@@ -207,7 +207,7 @@ public class ParamUtils {
 		}
 		
 		if (data != null && data.size() > 0) {
-			Field[] fields = clazz.getFields();
+			Field[] fields = clazz.getDeclaredFields();
 			for (Entry<String, Object> entry : data.entrySet()) {
 				for (int i = 0; i < fields.length; i++) {
 					if (fields[i].getName().equals(entry.getKey())) {

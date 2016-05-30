@@ -9,6 +9,7 @@ public class ImportCVForm {
 	private int user_id;
 	private String profile;
 	private int appid;
+	private int id;
 	
 	public int getType() {
 		return type;
@@ -51,5 +52,11 @@ public class ImportCVForm {
 	}
 	public void setAppid(int appid) {
 		this.appid = appid;
+	}
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
 	}
 }
