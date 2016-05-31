@@ -1,5 +1,7 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -51,11 +53,9 @@ public class BasicController {
 			Response result = basicService.postResource(basic);
 			
 			return ResponseLogNotification.success(request, result);
-			//return "{}";
 		} catch (Exception e) {	
 			e.printStackTrace();
-			//return ResponseLogNotification.fail(request, e.getMessage());
-			return "{}";
+			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}
 
@@ -72,17 +72,19 @@ public class BasicController {
 		}
 	}
 
-	@RequestMapping(value = "/profile/basic", method = RequestMethod.DELETE)
-	public void delete(HttpServletRequest request, HttpServletResponse response) {
+	@RequestMapping(value = "/profile/basic/{id}", method = RequestMethod.DELETE)
+	@ResponseBody
+	public String delete(@PathVariable Integer id, HttpServletRequest request, HttpServletResponse response) {
 		try {
 			//System.out.println(id);
+			Map<String, String[]> params = request.getParameterMap();
 			String profile_id = request.getParameter("profile_id");
 			Basic basic = ParamUtils.initModelForm(request, Basic.class);
 			Response result = basicService.delResource(basic);
 			
-			//return ResponseLogNotification.success(request, result);
+			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
-			//return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}
 }
