@@ -56,29 +56,4 @@ public class ProfileController {
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}
-	
-	@RequestMapping(value = "/profile/verifyRequires", method = RequestMethod.GET)
-	@ResponseBody
-	public String verifyRequires(HttpServletRequest request, HttpServletResponse response) {
-		//PrintWriter writer = null;
-		try {
-			
-			//ImportCVForm form = ParamUtils.initModelForm(request, ImportCVForm.class);
-			String userId = request.getParameter("user_id");
-			String positionId = request.getParameter("positionId");
-			ValidateUtil vu = new ValidateUtil();
-			vu.addIntTypeValidate("用户编号", userId, null, null, 1, Integer.MAX_VALUE);
-			vu.addIntTypeValidate("职位编号", positionId, null, null, 1, Integer.MAX_VALUE);
-			String message = vu.validate();
-			if(!StringUtils.isNullOrEmpty(message)) {
-				Response result = profileService.verifyRequires(Integer.valueOf(userId), Integer.valueOf(positionId));
-				return ResponseLogNotification.success(request, result);
-			} else {
-				return ResponseLogNotification.fail(request, message);
-			}
-		} catch (Exception e) {	
-			logger.error(e.getMessage(), e);
-			return ResponseLogNotification.fail(request, e.getMessage());
-		}
-	}
 }

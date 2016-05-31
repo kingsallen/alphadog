@@ -1,25 +1,28 @@
 package com.moseeker.position.service.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.ValueFilter;
-import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.BeanUtils;
-import com.moseeker.position.dao.PositionDao;
-import com.moseeker.position.pojo.RecommendedPositonPojo;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.Response;
+import java.util.List;
+
 import org.apache.thrift.TException;
-import org.jooq.Record;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
-import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
-import com.moseeker.thrift.gen.position.struct.Position;
-import com.moseeker.thrift.gen.position.service.PositionServices.Iface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.ValueFilter;
+import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
+import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.ConstantErrorCodeMessage;
+import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.position.dao.JobPositionDao;
+import com.moseeker.position.dao.PositionDao;
+import com.moseeker.position.dao.UserDao;
+import com.moseeker.position.pojo.RecommendedPositonPojo;
+import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.position.service.PositionServices.Iface;
+import com.moseeker.thrift.gen.position.struct.Position;
 
 @Service
 public class PositionServicesImpl extends JOOQBaseServiceImpl<Position, JobPositionRecord> implements Iface {
@@ -28,6 +31,12 @@ public class PositionServicesImpl extends JOOQBaseServiceImpl<Position, JobPosit
 
     @Autowired
     protected PositionDao dao;
+    
+    @Autowired
+    protected UserDao userDao;
+    
+    @Autowired
+    protected JobPositionDao jobPositionDao;
 
     @Override
     protected void initDao() {
@@ -60,4 +69,45 @@ public class PositionServicesImpl extends JOOQBaseServiceImpl<Position, JobPosit
         }));
 
     }
+
+	@Override
+	public Response verifyCustomize(int userId, int positionId) throws TException {
+		UserUserRecord userRecord = userDao.getUserById(userId);
+		JobPositionRecord positionRecord = jobPositionDao.getPositionById(positionId);
+		if(userRecord == null) {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_USER_NOTEXIST);
+		}
+		if(positionRecord == null) {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_POSITION_NOTEXIST);
+		}
+		if(positionRecord.getAppCvConfigId() != null && positionRecord.getAppCvConfigId().intValue() > 0) {
+			return ResponseUtils.success(true);
+		} else {
+			return ResponseUtils.success(false);
+		}
+	}
+
+	public PositionDao getDao() {
+		return dao;
+	}
+
+	public void setDao(PositionDao dao) {
+		this.dao = dao;
+	}
+
+	public UserDao getUserDao() {
+		return userDao;
+	}
+
+	public void setUserDao(UserDao userDao) {
+		this.userDao = userDao;
+	}
+
+	public JobPositionDao getJobPositionDao() {
+		return jobPositionDao;
+	}
+
+	public void setJobPositionDao(JobPositionDao jobPositionDao) {
+		this.jobPositionDao = jobPositionDao;
+	}
 }
