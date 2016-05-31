@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # application-service-provider
 java -classpath application-service-provider.jar com.moseeker.application.server.JobApplicationServer -port 19400 &
 
