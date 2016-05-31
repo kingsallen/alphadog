@@ -81,7 +81,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 				List<SortField<?>> fields = new ArrayList<>(sortBy.length);
 				SortOrder so = SortOrder.ASC;
 				for (int i = 0; i < sortBy.length; i++) {
-					Field<?> field = table.field(sortBy[i]);
+					Field<?> field = tableLike.field(sortBy[i]);
 					if (sortBy.length == order.length
 							&& !StringUtils.isNullOrEmpty(order[i])
 							&& order[i].toLowerCase().equals("desc")) {
@@ -99,8 +99,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 						}
 					}
 				}
-				Field<?>[] fieldArray = null;
-				table.orderBy(fields.toArray(fieldArray));
+				table.orderBy(fields);
 			}
 
 			/* 分段查找数据库结果集 */

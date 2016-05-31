@@ -61,7 +61,6 @@ public class AttachmentController {
 	public String put(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			Attachment attachment = ParamUtils.initModelForm(request, Attachment.class);
-			boolean a = attachment.isSetProfile_id();
 			Response result = attachmentService.putResource(attachment);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
