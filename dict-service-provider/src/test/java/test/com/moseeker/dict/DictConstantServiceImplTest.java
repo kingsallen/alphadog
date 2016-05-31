@@ -1,4 +1,4 @@
-package test.com.moseeker.dict;
+package com.moseeker.dict;
 
 import com.moseeker.rpccenter.config.ClientConfig;
 import com.moseeker.rpccenter.config.RegistryConfig;
