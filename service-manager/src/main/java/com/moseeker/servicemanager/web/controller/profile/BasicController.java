@@ -72,13 +72,11 @@ public class BasicController {
 		}
 	}
 
-	@RequestMapping(value = "/profile/basic/{id}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/profile/basic/", method = RequestMethod.DELETE)
 	@ResponseBody
-	public String delete(@PathVariable Integer id, HttpServletRequest request, HttpServletResponse response) {
+	public String delete(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			//System.out.println(id);
-			Map<String, String[]> params = request.getParameterMap();
-			String profile_id = request.getParameter("profile_id");
 			Basic basic = ParamUtils.initModelForm(request, Basic.class);
 			Response result = basicService.delResource(basic);
 			
