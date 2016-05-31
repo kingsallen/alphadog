@@ -1,5 +1,7 @@
 package com.moseeker.servicemanager.web.controller.position;
 
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.common.ServiceUtil;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -38,4 +40,28 @@ public class PositionController {
         }
     }
 
+    @RequestMapping(value = "/positions/verifyCustomize", method = RequestMethod.GET)
+	@ResponseBody
+	public String verifyRequires(HttpServletRequest request, HttpServletResponse response) {
+		//PrintWriter writer = null;
+		try {
+			
+			//ImportCVForm form = ParamUtils.initModelForm(request, ImportCVForm.class);
+			String userId = request.getParameter("user_id");
+			String positionId = request.getParameter("positionId");
+			ValidateUtil vu = new ValidateUtil();
+			vu.addIntTypeValidate("用户编号", userId, null, null, 1, Integer.MAX_VALUE);
+			vu.addIntTypeValidate("职位编号", positionId, null, null, 1, Integer.MAX_VALUE);
+			String message = vu.validate();
+			if(!StringUtils.isNullOrEmpty(message)) {
+				Response result = positonServices.verifyCustomize(Integer.valueOf(userId), Integer.valueOf(positionId));
+				return ResponseLogNotification.success(request, result);
+			} else {
+				return ResponseLogNotification.fail(request, message);
+			}
+		} catch (Exception e) {	
+			logger.error(e.getMessage(), e);
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
 }

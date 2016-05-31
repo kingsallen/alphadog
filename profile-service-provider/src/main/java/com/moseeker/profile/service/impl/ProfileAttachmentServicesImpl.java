@@ -42,6 +42,8 @@ public class ProfileAttachmentServicesImpl extends JOOQBaseServiceImpl<Attachmen
 
 	@Override
 	protected ProfileAttachmentRecord structToDB(Attachment attachment) throws ParseException {
+		boolean a = attachment.isSetProfile_id();
+		boolean path = attachment.isSetPath();
 		return (ProfileAttachmentRecord)BeanUtils.structToDB(attachment, ProfileAttachmentRecord.class);
 	}
 }

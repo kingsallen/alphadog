@@ -65,7 +65,7 @@ public class ResponseLogNotification {
 			RedisClientFactory.getLogClient().lpush(appid, logkey, JSON.toJSONString(reqResp));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			// e.printStackTrace();
+			 e.printStackTrace();
 		}
 	}
 

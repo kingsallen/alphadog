@@ -46,6 +46,7 @@ subprojects {
         description "Use one set of configs in /src/main/resources/\$env, defaults to 'debug'"
 
         def env = project.getProperties()['env'] ?: 'debug'
+        logger.quiet(env)
         def envResourcesSrc = "src/main/resources/$env/"
 
         doLast {
