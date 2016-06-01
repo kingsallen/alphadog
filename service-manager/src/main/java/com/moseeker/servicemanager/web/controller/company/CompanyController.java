@@ -47,4 +47,20 @@ public class CompanyController {
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}
+
+	@RequestMapping(value = "/company/all", method = RequestMethod.GET)
+	@ResponseBody
+	public String getAllCompany(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
+			Response result = companyServices.getAllCompanies(query);
+			if (result.getStatus() == 0) {
+				return ResponseLogNotification.success(request, result);
+			} else {
+				return ResponseLogNotification.fail(request, result);
+			}
+		} catch (Exception e) {
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
 }
