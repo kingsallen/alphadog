@@ -224,7 +224,7 @@ public class UseraccountsServiceImpl implements Iface {
         if (validateCode(String.valueOf(user.mobile), code, 1)) {
             ;
         } else {
-            return ResponseUtils.success(ConstantErrorCodeMessage.INVALID_SMS_CODE);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
         }
 
         // 没有密码生成6位随机密码
