@@ -72,21 +72,6 @@ public class ViewResumeImport extends TableImpl<ViewResumeImportRecord> {
 	public final TableField<ViewResumeImportRecord, BigInteger> _0 = createField("0", org.jooq.impl.SQLDataType.DECIMAL_INTEGER.precision(23), this, "");
 
 	/**
-	 * The column <code>analytics.view_resume_import.-3</code>.
-	 */
-	public final TableField<ViewResumeImportRecord, BigInteger> _3 = createField("-3", org.jooq.impl.SQLDataType.DECIMAL_INTEGER.precision(23), this, "");
-
-	/**
-	 * The column <code>analytics.view_resume_import.-2</code>.
-	 */
-	public final TableField<ViewResumeImportRecord, BigInteger> _2 = createField("-2", org.jooq.impl.SQLDataType.DECIMAL_INTEGER.precision(23), this, "");
-
-	/**
-	 * The column <code>analytics.view_resume_import.-1</code>.
-	 */
-	public final TableField<ViewResumeImportRecord, BigInteger> _1 = createField("-1", org.jooq.impl.SQLDataType.DECIMAL_INTEGER.precision(23), this, "");
-
-	/**
 	 * The column <code>analytics.view_resume_import.1</code>.
 	 */
 	public final TableField<ViewResumeImportRecord, BigInteger> _1 = createField("1", org.jooq.impl.SQLDataType.DECIMAL_INTEGER.precision(23), this, "");

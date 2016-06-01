@@ -240,7 +240,7 @@ public class ProfileUtils {
 				record.setLang(UByte.valueOf((Integer) profile.get("lang")));
 			}
 			if (profile.get("source") != null) {
-				record.setSource(UByte.valueOf((Integer) profile.get("source")));
+				record.setSource(UInteger.valueOf((Integer) profile.get("source")));
 			}
 			if (profile.get("completeness") != null) {
 				record.setCompleteness(UByte.valueOf((Integer) profile.get("completeness")));

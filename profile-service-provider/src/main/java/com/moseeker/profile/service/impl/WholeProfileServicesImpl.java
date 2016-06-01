@@ -231,7 +231,7 @@ public class WholeProfileServicesImpl implements Iface {
 		
 		profileRecord.setUuid(UUID.randomUUID().toString());
 		profileRecord.setUserId(userRecord.getId());
-		profileRecord.setSource(UByte.valueOf(Constant.PROFILE_SOURCE_IMPORT));
+		profileRecord.setSource(UInteger.valueOf(Constant.PROFILE_SOURCE_IMPORT));
 		profileRecord.setDisable(UByte.valueOf(Constant.ENABLE));
 		
 		ProfileBasicRecord basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"));
