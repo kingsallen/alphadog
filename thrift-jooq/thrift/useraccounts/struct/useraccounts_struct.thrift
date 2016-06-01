@@ -52,14 +52,40 @@ struct User {
   我感兴趣/职位收藏关系表
 */
 struct UserFavoritePosition {
-    1:i64 id         ,       // ID
-    2:i32 sysuser_id ,       // 用户ID
-    3:i32 position_id,       // 职位ID
-    4:byte favorite  ,       // 0:收藏, 1:取消收藏, 2:感兴趣
-    5:string mobile  ,       // 感兴趣的手机号
-    6:i64 wxuser_id  ,       // wx_user.id
-    7:i32 recom_id   ,       // 推荐者 fk:wx_user.id
-    8:Timestamp create_time, //
-    9:Timestamp update_time  //
+    1:i64       id              ,       // ID
+    2:i32       sysuser_id      ,       // 用户ID
+    3:i32       position_id     ,       // 职位ID
+    4:byte      favorite        ,       // 0:收藏, 1:取消收藏, 2:感兴趣
+    5:string    mobile          ,       // 感兴趣的手机号
+    6:i64       wxuser_id       ,       // wx_user.id
+    7:i32       recom_id        ,       // 推荐者 fk:wx_user.id
+    8:Timestamp create_time     ,       //
+    9:Timestamp update_time             //
 }
+
+/*
+HR用户实体
+*/
+struct UserHrAccount{
+     1:i64               id              , //
+     2:i64               company_id      , // company.id
+     3:string            mobile          , // 手机号码
+     4:string            email           , // 邮箱
+     5:i64               wxuser_id       , // 绑定的微信账号
+     6:string            password        , // 登录密码
+     7:string            username        , // 企业联系人
+     8:byte              account_type    , // 0 超级账号；1：子账号; 2：普通账号
+     9:byte              activation      , // 账号是否激活，1：激活；0：未激活
+    10:byte              disable         , // 1：可用账号；0禁用账号 ） 遵循数据库整体的设计习惯，1表示可用，0表示不可用
+    11:Timestamp         register_time   , // 注册时间
+    12:string            register_ip     , // 注册时的IP地址
+    13:Timestamp         last_login_time , // 最后的登录时间
+    14:string            last_login_ip   , // 最后一次登录的IP
+    15:i32               login_count     , // 登录次数
+    16:i32               source          , // 来源1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号)
+    17:string            download_token  , // 下载行业报告校验码
+    18:Timestamp         create_time     , // 创建时间
+    19:Timestamp         update_time       // 修改时间
+}
+
 

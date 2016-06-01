@@ -5,6 +5,9 @@ include "../../common/struct/common_struct.thrift"
 
 namespace java com.moseeker.thrift.gen.useraccounts.service
 
+/**
+* 用户服务
+**/
 service UseraccountsServices {
 
     // 用户用户数据
@@ -39,7 +42,18 @@ service UseraccountsServices {
 
 }
 
+/**
+* 用户配置服务
+**/
 service UsersettingServices {
     common_struct.Response getResource(1:common_struct.CommonQuery query);
     common_struct.Response putResource(1: useraccounts_struct.Usersetting usersetting);
+}
+
+/**
+* HR账户服务
+**/
+service UserHrAccountService {
+    common_struct.Response postResource(1: useraccounts_struct.UserHrAccount userHrAccount);
+    common_struct.Response putResource(1: useraccounts_struct.UserHrAccount userHrAccount);
 }
