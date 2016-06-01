@@ -232,6 +232,8 @@ public class UseraccountsServiceImpl implements Iface {
             hasPassword = false;
             plainPassword = StringUtils.getRandomString(6);
             user.password = MD5Util.md5(plainPassword);
+        }else{
+        	user.password = MD5Util.md5(user.password);
         }
 
         try {
