@@ -54,6 +54,10 @@ service UsersettingServices {
 * HR账户服务
 **/
 service UserHrAccountService {
-    common_struct.Response postResource(1: useraccounts_struct.UserHrAccount userHrAccount);
+
+    // 发送手机验证码
+    common_struct.Response sendMobileVerifiyCode(1: string mobile, 2: string code,  3: i32 source);
+    common_struct.Response postResource(1: useraccounts_struct.UserHrAccount userHrAccount, 2: string code);
     common_struct.Response putResource(1: useraccounts_struct.UserHrAccount userHrAccount);
+
 }

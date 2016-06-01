@@ -38,6 +38,9 @@ public class JobApplicataionServicesImpl implements Iface {
     // 申请次数限制 3次
     private static final int APPLICATION_COUNT_LIMIT = 3;
 
+    // 申请次数redis key
+    private static final String REDIS_KEY_APPLICATION_COUNT_CHECK = "APPLICATION_COUNT_CHECK";
+
     private RedisClient redisClient = RedisClientFactory.getCacheClient();
 
     @Autowired
@@ -99,7 +102,7 @@ public class JobApplicataionServicesImpl implements Iface {
 
         Integer count = 1;
 
-        String applicationCountCheck = redisClient.get(Constant.APPID_ALPHADOG, "APPLICATION_COUNT_CHECK",
+        String applicationCountCheck = redisClient.get(Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
                 String.valueOf(jobApplication.company_id), String.valueOf(jobApplication.position_id));
 
         // 获取当前申请次数 +1
@@ -109,7 +112,7 @@ public class JobApplicataionServicesImpl implements Iface {
         }
 
         // 设置申请次数
-        redisClient.set(Constant.APPID_ALPHADOG, "APPLICATION_COUNT_CHECK",
+        redisClient.set(Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
                 String.valueOf(jobApplication.company_id), String.valueOf(jobApplication.position_id),
                 String.valueOf(count));
     }
@@ -200,7 +203,7 @@ public class JobApplicataionServicesImpl implements Iface {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "position_id"));
         }
 
-        String applicationCountCheck = redisClient.get(Constant.APPID_ALPHADOG, "APPLICATION_COUNT_CHECK",
+        String applicationCountCheck = redisClient.get(Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
                 String.valueOf(companyId), String.valueOf(positionId));
 
         // 超出申请次数限制, 每月每家公司一个人只能申请3次
