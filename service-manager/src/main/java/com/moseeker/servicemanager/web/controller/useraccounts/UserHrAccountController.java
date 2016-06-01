@@ -35,6 +35,8 @@ public class UserHrAccountController {
      * 注册HR发送验证码
      *
      * */
+    @RequestMapping(value = "/hraccount/sendsignupcode", method = RequestMethod.POST)
+    @ResponseBody
     public String sendMobileVerifiyCode(HttpServletRequest request, HttpServletResponse response) {
         try {
             // 获取HR用户实体对象
