@@ -169,11 +169,16 @@ public class ParamUtils {
 	 * 将request请求中的参数，不管是request的body中的参数还是以getParameter方式获取的参数存入到HashMap并染回该HashMap
 	 * @param request request请求
 	 * @return 存储通过request请求传递过来的参数
+	 * @throws Exception 
 	 */
-	public static Map<String, Object> mergeRequestParameters(HttpServletRequest request) {
+	public static Map<String, Object> mergeRequestParameters(HttpServletRequest request) throws Exception {
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.putAll(initParamFromRequestBody(request));
 		data.putAll(initParamFromRequestParameter(request));
+		
+		if (data.get("appid") == null){
+			throw new Exception("请设置 appid!");
+		}		
 		return data;
 	}
 

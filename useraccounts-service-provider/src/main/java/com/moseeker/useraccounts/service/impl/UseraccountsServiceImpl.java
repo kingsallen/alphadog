@@ -224,7 +224,7 @@ public class UseraccountsServiceImpl implements Iface {
         if (validateCode(String.valueOf(user.mobile), code, 1)) {
             ;
         } else {
-            return ResponseUtils.success(ConstantErrorCodeMessage.INVALID_SMS_CODE);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
         }
 
         // 没有密码生成6位随机密码
@@ -232,6 +232,8 @@ public class UseraccountsServiceImpl implements Iface {
             hasPassword = false;
             plainPassword = StringUtils.getRandomString(6);
             user.password = MD5Util.md5(plainPassword);
+        }else{
+        	user.password = MD5Util.md5(user.password);
         }
 
         try {
@@ -257,7 +259,7 @@ public class UseraccountsServiceImpl implements Iface {
         } finally {
             //do nothing
         }
-        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_EXIST);
     }
 
 

@@ -128,8 +128,9 @@ public class ClientConfig<T> implements IConfigCheck{
         GenericKeyedObjectPool<ServerNode, T> pool = bulidClientPool(classLoader, objectClass);
         DynamicHostSet hostSet = registry.findAllService();
 
-        HeartBeatManager<T> heartBeatManager = new HeartBeatManager<T>(hostSet, heartbeat, heartbeatTimeout, heartbeatTimes, heartbeatInterval, pool);
-        heartBeatManager.startHeatbeatTimer();
+       // 临时取消心跳, 尝试解决 zookeeper 断开连接问题. 
+       // HeartBeatManager<T> heartBeatManager = new HeartBeatManager<T>(hostSet, heartbeat, heartbeatTimeout, heartbeatTimes, heartbeatInterval, pool);
+       // heartBeatManager.startHeatbeatTimer();
 
         this.registry = registry;
         this.pool = pool;
