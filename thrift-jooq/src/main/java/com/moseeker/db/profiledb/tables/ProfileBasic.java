@@ -37,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileBasic extends TableImpl<ProfileBasicRecord> {
 
-	private static final long serialVersionUID = -625824987;
+	private static final long serialVersionUID = -409045955;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_basic</code>
@@ -60,7 +60,7 @@ public class ProfileBasic extends TableImpl<ProfileBasicRecord> {
 	/**
 	 * The column <code>profileDB.profile_basic.name</code>. 姓名
 	 */
-	public final TableField<ProfileBasicRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "姓名");
+	public final TableField<ProfileBasicRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "姓名");
 
 	/**
 	 * The column <code>profileDB.profile_basic.gender</code>. 性别 0:没选择 1:男, 2: 女

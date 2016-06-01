@@ -17,7 +17,7 @@ import org.jooq.types.UInteger;
 
 
 /**
- * 国家字典表
+ * 城市字典表
  */
 @Generated(
 	value = {
@@ -29,7 +29,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictCountryRecord extends UpdatableRecordImpl<DictCountryRecord> implements Record7<UInteger, String, String, String, String, String, String> {
 
-	private static final long serialVersionUID = 2014711770;
+	private static final long serialVersionUID = -826074571;
 
 	/**
 	 * Setter for <code>dictDB.dict_country.id</code>. 主key

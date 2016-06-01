@@ -18,6 +18,7 @@ import com.moseeker.db.configdb.tables.ConfigSysAppTemplate;
 import com.moseeker.db.configdb.tables.ConfigSysCvTpl;
 import com.moseeker.db.configdb.tables.ConfigSysH5StyleTpl;
 import com.moseeker.db.configdb.tables.ConfigSysPointsConfTpl;
+import com.moseeker.db.configdb.tables.ConfigSysTemplateMessageColumnConfig;
 import com.moseeker.db.configdb.tables.ConfigSysTemplateMessageLibrary;
 import com.moseeker.db.configdb.tables.ConfigSysTemplateType;
 import com.moseeker.db.configdb.tables.ConfigSysTheme;
@@ -35,6 +36,7 @@ import com.moseeker.db.configdb.tables.records.ConfigSysAppTemplateRecord;
 import com.moseeker.db.configdb.tables.records.ConfigSysCvTplRecord;
 import com.moseeker.db.configdb.tables.records.ConfigSysH5StyleTplRecord;
 import com.moseeker.db.configdb.tables.records.ConfigSysPointsConfTplRecord;
+import com.moseeker.db.configdb.tables.records.ConfigSysTemplateMessageColumnConfigRecord;
 import com.moseeker.db.configdb.tables.records.ConfigSysTemplateMessageLibraryRecord;
 import com.moseeker.db.configdb.tables.records.ConfigSysTemplateTypeRecord;
 import com.moseeker.db.configdb.tables.records.ConfigSysThemeRecord;
@@ -75,6 +77,7 @@ public class Keys {
 	public static final Identity<ConfigSysCvTplRecord, Integer> IDENTITY_CONFIG_SYS_CV_TPL = Identities0.IDENTITY_CONFIG_SYS_CV_TPL;
 	public static final Identity<ConfigSysH5StyleTplRecord, Integer> IDENTITY_CONFIG_SYS_H5_STYLE_TPL = Identities0.IDENTITY_CONFIG_SYS_H5_STYLE_TPL;
 	public static final Identity<ConfigSysPointsConfTplRecord, Integer> IDENTITY_CONFIG_SYS_POINTS_CONF_TPL = Identities0.IDENTITY_CONFIG_SYS_POINTS_CONF_TPL;
+	public static final Identity<ConfigSysTemplateMessageColumnConfigRecord, UInteger> IDENTITY_CONFIG_SYS_TEMPLATE_MESSAGE_COLUMN_CONFIG = Identities0.IDENTITY_CONFIG_SYS_TEMPLATE_MESSAGE_COLUMN_CONFIG;
 	public static final Identity<ConfigSysTemplateMessageLibraryRecord, UInteger> IDENTITY_CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY = Identities0.IDENTITY_CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY;
 	public static final Identity<ConfigSysTemplateTypeRecord, Integer> IDENTITY_CONFIG_SYS_TEMPLATE_TYPE = Identities0.IDENTITY_CONFIG_SYS_TEMPLATE_TYPE;
 	public static final Identity<ConfigSysThemeRecord, Integer> IDENTITY_CONFIG_SYS_THEME = Identities0.IDENTITY_CONFIG_SYS_THEME;
@@ -105,6 +108,7 @@ public class Keys {
 	public static final UniqueKey<ConfigSysCvTplRecord> KEY_CONFIG_SYS_CV_TPL_PRIMARY = UniqueKeys0.KEY_CONFIG_SYS_CV_TPL_PRIMARY;
 	public static final UniqueKey<ConfigSysH5StyleTplRecord> KEY_CONFIG_SYS_H5_STYLE_TPL_PRIMARY = UniqueKeys0.KEY_CONFIG_SYS_H5_STYLE_TPL_PRIMARY;
 	public static final UniqueKey<ConfigSysPointsConfTplRecord> KEY_CONFIG_SYS_POINTS_CONF_TPL_PRIMARY = UniqueKeys0.KEY_CONFIG_SYS_POINTS_CONF_TPL_PRIMARY;
+	public static final UniqueKey<ConfigSysTemplateMessageColumnConfigRecord> KEY_CONFIG_SYS_TEMPLATE_MESSAGE_COLUMN_CONFIG_PRIMARY = UniqueKeys0.KEY_CONFIG_SYS_TEMPLATE_MESSAGE_COLUMN_CONFIG_PRIMARY;
 	public static final UniqueKey<ConfigSysTemplateMessageLibraryRecord> KEY_CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY_PRIMARY = UniqueKeys0.KEY_CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY_PRIMARY;
 	public static final UniqueKey<ConfigSysTemplateTypeRecord> KEY_CONFIG_SYS_TEMPLATE_TYPE_PRIMARY = UniqueKeys0.KEY_CONFIG_SYS_TEMPLATE_TYPE_PRIMARY;
 	public static final UniqueKey<ConfigSysThemeRecord> KEY_CONFIG_SYS_THEME_PRIMARY = UniqueKeys0.KEY_CONFIG_SYS_THEME_PRIMARY;
@@ -129,6 +133,7 @@ public class Keys {
 		public static Identity<ConfigSysCvTplRecord, Integer> IDENTITY_CONFIG_SYS_CV_TPL = createIdentity(ConfigSysCvTpl.CONFIG_SYS_CV_TPL, ConfigSysCvTpl.CONFIG_SYS_CV_TPL.ID);
 		public static Identity<ConfigSysH5StyleTplRecord, Integer> IDENTITY_CONFIG_SYS_H5_STYLE_TPL = createIdentity(ConfigSysH5StyleTpl.CONFIG_SYS_H5_STYLE_TPL, ConfigSysH5StyleTpl.CONFIG_SYS_H5_STYLE_TPL.ID);
 		public static Identity<ConfigSysPointsConfTplRecord, Integer> IDENTITY_CONFIG_SYS_POINTS_CONF_TPL = createIdentity(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL, ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.ID);
+		public static Identity<ConfigSysTemplateMessageColumnConfigRecord, UInteger> IDENTITY_CONFIG_SYS_TEMPLATE_MESSAGE_COLUMN_CONFIG = createIdentity(ConfigSysTemplateMessageColumnConfig.CONFIG_SYS_TEMPLATE_MESSAGE_COLUMN_CONFIG, ConfigSysTemplateMessageColumnConfig.CONFIG_SYS_TEMPLATE_MESSAGE_COLUMN_CONFIG.ID);
 		public static Identity<ConfigSysTemplateMessageLibraryRecord, UInteger> IDENTITY_CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY = createIdentity(ConfigSysTemplateMessageLibrary.CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY, ConfigSysTemplateMessageLibrary.CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY.ID);
 		public static Identity<ConfigSysTemplateTypeRecord, Integer> IDENTITY_CONFIG_SYS_TEMPLATE_TYPE = createIdentity(ConfigSysTemplateType.CONFIG_SYS_TEMPLATE_TYPE, ConfigSysTemplateType.CONFIG_SYS_TEMPLATE_TYPE.ID);
 		public static Identity<ConfigSysThemeRecord, Integer> IDENTITY_CONFIG_SYS_THEME = createIdentity(ConfigSysTheme.CONFIG_SYS_THEME, ConfigSysTheme.CONFIG_SYS_THEME.ID);
@@ -157,6 +162,7 @@ public class Keys {
 		public static final UniqueKey<ConfigSysCvTplRecord> KEY_CONFIG_SYS_CV_TPL_PRIMARY = createUniqueKey(ConfigSysCvTpl.CONFIG_SYS_CV_TPL, ConfigSysCvTpl.CONFIG_SYS_CV_TPL.ID);
 		public static final UniqueKey<ConfigSysH5StyleTplRecord> KEY_CONFIG_SYS_H5_STYLE_TPL_PRIMARY = createUniqueKey(ConfigSysH5StyleTpl.CONFIG_SYS_H5_STYLE_TPL, ConfigSysH5StyleTpl.CONFIG_SYS_H5_STYLE_TPL.ID);
 		public static final UniqueKey<ConfigSysPointsConfTplRecord> KEY_CONFIG_SYS_POINTS_CONF_TPL_PRIMARY = createUniqueKey(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL, ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.ID);
+		public static final UniqueKey<ConfigSysTemplateMessageColumnConfigRecord> KEY_CONFIG_SYS_TEMPLATE_MESSAGE_COLUMN_CONFIG_PRIMARY = createUniqueKey(ConfigSysTemplateMessageColumnConfig.CONFIG_SYS_TEMPLATE_MESSAGE_COLUMN_CONFIG, ConfigSysTemplateMessageColumnConfig.CONFIG_SYS_TEMPLATE_MESSAGE_COLUMN_CONFIG.ID);
 		public static final UniqueKey<ConfigSysTemplateMessageLibraryRecord> KEY_CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY_PRIMARY = createUniqueKey(ConfigSysTemplateMessageLibrary.CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY, ConfigSysTemplateMessageLibrary.CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY.ID);
 		public static final UniqueKey<ConfigSysTemplateTypeRecord> KEY_CONFIG_SYS_TEMPLATE_TYPE_PRIMARY = createUniqueKey(ConfigSysTemplateType.CONFIG_SYS_TEMPLATE_TYPE, ConfigSysTemplateType.CONFIG_SYS_TEMPLATE_TYPE.ID);
 		public static final UniqueKey<ConfigSysThemeRecord> KEY_CONFIG_SYS_THEME_PRIMARY = createUniqueKey(ConfigSysTheme.CONFIG_SYS_THEME, ConfigSysTheme.CONFIG_SYS_THEME.ID);

@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidatePosition extends TableImpl<CandidatePositionRecord> {
 
-	private static final long serialVersionUID = 733188881;
+	private static final long serialVersionUID = 875395158;
 
 	/**
 	 * The reference instance of <code>candidateDB.candidate_position</code>
@@ -70,14 +70,19 @@ public class CandidatePosition extends TableImpl<CandidatePositionRecord> {
 	public final TableField<CandidatePositionRecord, Byte> IS_INTERESTED = createField("is_interested", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "是否感兴趣");
 
 	/**
-	 * The column <code>candidateDB.candidate_position.candidate_department_id</code>. hr_candidate_department.id
+	 * The column <code>candidateDB.candidate_position.candidate_company_id</code>. candidate_company.id
 	 */
-	public final TableField<CandidatePositionRecord, Integer> CANDIDATE_DEPARTMENT_ID = createField("candidate_department_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "hr_candidate_department.id");
+	public final TableField<CandidatePositionRecord, Integer> CANDIDATE_COMPANY_ID = createField("candidate_company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "candidate_company.id");
 
 	/**
 	 * The column <code>candidateDB.candidate_position.view_number</code>. 查看次数
 	 */
 	public final TableField<CandidatePositionRecord, Integer> VIEW_NUMBER = createField("view_number", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "查看次数");
+
+	/**
+	 * The column <code>candidateDB.candidate_position.shared_from_employee</code>.
+	 */
+	public final TableField<CandidatePositionRecord, Byte> SHARED_FROM_EMPLOYEE = createField("shared_from_employee", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "");
 
 	/**
 	 * Create a <code>candidateDB.candidate_position</code> table reference

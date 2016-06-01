@@ -73,245 +73,245 @@ public class Tables {
 	/**
 	 * The table analytics.jd_resume_similarity
 	 */
-	public static final JdResumeSimilarity JD_RESUME_SIMILARITY = JdResumeSimilarity.JD_RESUME_SIMILARITY;
+	public static final JdResumeSimilarity JD_RESUME_SIMILARITY = com.moseeker.db.analytics.tables.JdResumeSimilarity.JD_RESUME_SIMILARITY;
 
 	/**
 	 * The table analytics.recommended_resumes
 	 */
-	public static final RecommendedResumes RECOMMENDED_RESUMES = RecommendedResumes.RECOMMENDED_RESUMES;
+	public static final RecommendedResumes RECOMMENDED_RESUMES = com.moseeker.db.analytics.tables.RecommendedResumes.RECOMMENDED_RESUMES;
 
 	/**
 	 * The table analytics.stm_abapply_pid
 	 */
-	public static final StmAbapplyPid STM_ABAPPLY_PID = StmAbapplyPid.STM_ABAPPLY_PID;
+	public static final StmAbapplyPid STM_ABAPPLY_PID = com.moseeker.db.analytics.tables.StmAbapplyPid.STM_ABAPPLY_PID;
 
 	/**
 	 * The table analytics.stm_button_pid
 	 */
-	public static final StmButtonPid STM_BUTTON_PID = StmButtonPid.STM_BUTTON_PID;
+	public static final StmButtonPid STM_BUTTON_PID = com.moseeker.db.analytics.tables.StmButtonPid.STM_BUTTON_PID;
 
 	/**
 	 * 请求事件元数据表
 	 */
-	public static final StmEvent STM_EVENT = StmEvent.STM_EVENT;
+	public static final StmEvent STM_EVENT = com.moseeker.db.analytics.tables.StmEvent.STM_EVENT;
 
 	/**
 	 * 请求事件元数据表
 	 */
-	public static final StmEvent_0113 STM_EVENT_0113 = StmEvent_0113.STM_EVENT_0113;
+	public static final StmEvent_0113 STM_EVENT_0113 = com.moseeker.db.analytics.tables.StmEvent_0113.STM_EVENT_0113;
 
 	/**
 	 * 请求事件元数据表
 	 */
-	public static final StmEvent_01_02 STM_EVENT_01_02 = StmEvent_01_02.STM_EVENT_01_02;
+	public static final StmEvent_01_02 STM_EVENT_01_02 = com.moseeker.db.analytics.tables.StmEvent_01_02.STM_EVENT_01_02;
 
 	/**
 	 * 请求事件元数据表
 	 */
-	public static final StmEvent_02_03 STM_EVENT_02_03 = StmEvent_02_03.STM_EVENT_02_03;
+	public static final StmEvent_02_03 STM_EVENT_02_03 = com.moseeker.db.analytics.tables.StmEvent_02_03.STM_EVENT_02_03;
 
 	/**
 	 * 请求事件元数据表
 	 */
-	public static final StmEvent_03_04 STM_EVENT_03_04 = StmEvent_03_04.STM_EVENT_03_04;
+	public static final StmEvent_03_04 STM_EVENT_03_04 = com.moseeker.db.analytics.tables.StmEvent_03_04.STM_EVENT_03_04;
 
 	/**
 	 * 请求事件元数据表
 	 */
-	public static final StmEvent_04_05 STM_EVENT_04_05 = StmEvent_04_05.STM_EVENT_04_05;
+	public static final StmEvent_04_05 STM_EVENT_04_05 = com.moseeker.db.analytics.tables.StmEvent_04_05.STM_EVENT_04_05;
 
 	/**
 	 * 请求事件元数据表
 	 */
-	public static final StmEvent_05_06 STM_EVENT_05_06 = StmEvent_05_06.STM_EVENT_05_06;
+	public static final StmEvent_05_06 STM_EVENT_05_06 = com.moseeker.db.analytics.tables.StmEvent_05_06.STM_EVENT_05_06;
 
 	/**
 	 * 请求事件元数据表
 	 */
-	public static final StmEvent_06_07 STM_EVENT_06_07 = StmEvent_06_07.STM_EVENT_06_07;
+	public static final StmEvent_06_07 STM_EVENT_06_07 = com.moseeker.db.analytics.tables.StmEvent_06_07.STM_EVENT_06_07;
 
 	/**
 	 * 请求事件元数据表
 	 */
-	public static final StmEvent_07_08 STM_EVENT_07_08 = StmEvent_07_08.STM_EVENT_07_08;
+	public static final StmEvent_07_08 STM_EVENT_07_08 = com.moseeker.db.analytics.tables.StmEvent_07_08.STM_EVENT_07_08;
 
 	/**
 	 * 请求事件元数据表
 	 */
-	public static final StmEvent_11_01 STM_EVENT_11_01 = StmEvent_11_01.STM_EVENT_11_01;
+	public static final StmEvent_11_01 STM_EVENT_11_01 = com.moseeker.db.analytics.tables.StmEvent_11_01.STM_EVENT_11_01;
 
 	/**
 	 * 请求事件类型表
 	 */
-	public static final StmEventType STM_EVENT_TYPE = StmEventType.STM_EVENT_TYPE;
+	public static final StmEventType STM_EVENT_TYPE = com.moseeker.db.analytics.tables.StmEventType.STM_EVENT_TYPE;
 
 	/**
 	 * The table analytics.stm_groupv_pid
 	 */
-	public static final StmGroupvPid STM_GROUPV_PID = StmGroupvPid.STM_GROUPV_PID;
+	public static final StmGroupvPid STM_GROUPV_PID = com.moseeker.db.analytics.tables.StmGroupvPid.STM_GROUPV_PID;
 
 	/**
 	 * 请求事件元数据表
 	 */
-	public static final StmHrEvent STM_HR_EVENT = StmHrEvent.STM_HR_EVENT;
+	public static final StmHrEvent STM_HR_EVENT = com.moseeker.db.analytics.tables.StmHrEvent.STM_HR_EVENT;
 
 	/**
 	 * The table analytics.stm_leave_phone_pid
 	 */
-	public static final StmLeavePhonePid STM_LEAVE_PHONE_PID = StmLeavePhonePid.STM_LEAVE_PHONE_PID;
+	public static final StmLeavePhonePid STM_LEAVE_PHONE_PID = com.moseeker.db.analytics.tables.StmLeavePhonePid.STM_LEAVE_PHONE_PID;
 
 	/**
 	 * 请求事件元数据表
 	 */
-	public static final StmPcEvent STM_PC_EVENT = StmPcEvent.STM_PC_EVENT;
+	public static final StmPcEvent STM_PC_EVENT = com.moseeker.db.analytics.tables.StmPcEvent.STM_PC_EVENT;
 
 	/**
 	 * The table analytics.stm_position
 	 */
-	public static final StmPosition STM_POSITION = StmPosition.STM_POSITION;
+	public static final StmPosition STM_POSITION = com.moseeker.db.analytics.tables.StmPosition.STM_POSITION;
 
 	/**
 	 * The table analytics.stm_pv_pid
 	 */
-	public static final StmPvPid STM_PV_PID = StmPvPid.STM_PV_PID;
+	public static final StmPvPid STM_PV_PID = com.moseeker.db.analytics.tables.StmPvPid.STM_PV_PID;
 
 	/**
 	 * The table analytics.stm_recom
 	 */
-	public static final StmRecom STM_RECOM = StmRecom.STM_RECOM;
+	public static final StmRecom STM_RECOM = com.moseeker.db.analytics.tables.StmRecom.STM_RECOM;
 
 	/**
 	 * The table analytics.stm_recom_abgroup
 	 */
-	public static final StmRecomAbgroup STM_RECOM_ABGROUP = StmRecomAbgroup.STM_RECOM_ABGROUP;
+	public static final StmRecomAbgroup STM_RECOM_ABGROUP = com.moseeker.db.analytics.tables.StmRecomAbgroup.STM_RECOM_ABGROUP;
 
 	/**
 	 * 请求类型表
 	 */
-	public static final StmReqType STM_REQ_TYPE = StmReqType.STM_REQ_TYPE;
+	public static final StmReqType STM_REQ_TYPE = com.moseeker.db.analytics.tables.StmReqType.STM_REQ_TYPE;
 
 	/**
 	 * 返回类型表
 	 */
-	public static final StmResType STM_RES_TYPE = StmResType.STM_RES_TYPE;
+	public static final StmResType STM_RES_TYPE = com.moseeker.db.analytics.tables.StmResType.STM_RES_TYPE;
 
 	/**
 	 * The table analytics.stm_rouah
 	 */
-	public static final StmRouah STM_ROUAH = StmRouah.STM_ROUAH;
+	public static final StmRouah STM_ROUAH = com.moseeker.db.analytics.tables.StmRouah.STM_ROUAH;
 
 	/**
 	 * The table analytics.stm_wxouah
 	 */
-	public static final StmWxouah STM_WXOUAH = StmWxouah.STM_WXOUAH;
+	public static final StmWxouah STM_WXOUAH = com.moseeker.db.analytics.tables.StmWxouah.STM_WXOUAH;
 
 	/**
 	 * 记录推荐结果的点击信息
 	 */
-	public static final StApplication ST_APPLICATION = StApplication.ST_APPLICATION;
+	public static final StApplication ST_APPLICATION = com.moseeker.db.analytics.tables.StApplication.ST_APPLICATION;
 
 	/**
 	 * 用于统计C端用户登录
 	 */
-	public static final StDquserLogin ST_DQUSER_LOGIN = StDquserLogin.ST_DQUSER_LOGIN;
+	public static final StDquserLogin ST_DQUSER_LOGIN = com.moseeker.db.analytics.tables.StDquserLogin.ST_DQUSER_LOGIN;
 
 	/**
 	 * 用于统计雇主登录
 	 */
-	public static final StHrLogin ST_HR_LOGIN = StHrLogin.ST_HR_LOGIN;
+	public static final StHrLogin ST_HR_LOGIN = com.moseeker.db.analytics.tables.StHrLogin.ST_HR_LOGIN;
 
 	/**
 	 * 记录留点击我感兴趣用户信息
 	 */
-	public static final StInterest ST_INTEREST = StInterest.ST_INTEREST;
+	public static final StInterest ST_INTEREST = com.moseeker.db.analytics.tables.StInterest.ST_INTEREST;
 
 	/**
 	 * The table analytics.st_job_similarity
 	 */
-	public static final StJobSimilarity ST_JOB_SIMILARITY = StJobSimilarity.ST_JOB_SIMILARITY;
+	public static final StJobSimilarity ST_JOB_SIMILARITY = com.moseeker.db.analytics.tables.StJobSimilarity.ST_JOB_SIMILARITY;
 
 	/**
 	 * 记录joblist点击信息
 	 */
-	public static final StList ST_LIST = StList.ST_LIST;
+	public static final StList ST_LIST = com.moseeker.db.analytics.tables.StList.ST_LIST;
 
 	/**
 	 * The table analytics.st_load_resume
 	 */
-	public static final StLoadResume ST_LOAD_RESUME = StLoadResume.ST_LOAD_RESUME;
+	public static final StLoadResume ST_LOAD_RESUME = com.moseeker.db.analytics.tables.StLoadResume.ST_LOAD_RESUME;
 
 	/**
 	 * The table analytics.st_load_resume_raw
 	 */
-	public static final StLoadResumeRaw ST_LOAD_RESUME_RAW = StLoadResumeRaw.ST_LOAD_RESUME_RAW;
+	public static final StLoadResumeRaw ST_LOAD_RESUME_RAW = com.moseeker.db.analytics.tables.StLoadResumeRaw.ST_LOAD_RESUME_RAW;
 
 	/**
 	 * The table analytics.st_official_puv
 	 */
-	public static final StOfficialPuv ST_OFFICIAL_PUV = StOfficialPuv.ST_OFFICIAL_PUV;
+	public static final StOfficialPuv ST_OFFICIAL_PUV = com.moseeker.db.analytics.tables.StOfficialPuv.ST_OFFICIAL_PUV;
 
 	/**
 	 * 记录留手机用户信息
 	 */
-	public static final StPhone ST_PHONE = StPhone.ST_PHONE;
+	public static final StPhone ST_PHONE = com.moseeker.db.analytics.tables.StPhone.ST_PHONE;
 
 	/**
 	 * The table analytics.st_position_puv
 	 */
-	public static final StPositionPuv ST_POSITION_PUV = StPositionPuv.ST_POSITION_PUV;
+	public static final StPositionPuv ST_POSITION_PUV = com.moseeker.db.analytics.tables.StPositionPuv.ST_POSITION_PUV;
 
 	/**
 	 * 记录推荐结果的点击信息
 	 */
-	public static final StTj ST_TJ = StTj.ST_TJ;
+	public static final StTj ST_TJ = com.moseeker.db.analytics.tables.StTj.ST_TJ;
 
 	/**
 	 * 记录推荐结果的点击信息
 	 */
-	public static final StTjApplication ST_TJ_APPLICATION = StTjApplication.ST_TJ_APPLICATION;
+	public static final StTjApplication ST_TJ_APPLICATION = com.moseeker.db.analytics.tables.StTjApplication.ST_TJ_APPLICATION;
 
 	/**
 	 * The table analytics.sys_user
 	 */
-	public static final SysUser SYS_USER = SysUser.SYS_USER;
+	public static final SysUser SYS_USER = com.moseeker.db.analytics.tables.SysUser.SYS_USER;
 
 	/**
 	 * VIEW
 	 */
-	public static final ViewResumeImport VIEW_RESUME_IMPORT = ViewResumeImport.VIEW_RESUME_IMPORT;
+	public static final ViewResumeImport VIEW_RESUME_IMPORT = com.moseeker.db.analytics.tables.ViewResumeImport.VIEW_RESUME_IMPORT;
 
 	/**
 	 * The table analytics.web_admin
 	 */
-	public static final WebAdmin WEB_ADMIN = WebAdmin.WEB_ADMIN;
+	public static final WebAdmin WEB_ADMIN = com.moseeker.db.analytics.tables.WebAdmin.WEB_ADMIN;
 
 	/**
 	 * The table analytics.web_hrf_core
 	 */
-	public static final WebHrfCore WEB_HRF_CORE = WebHrfCore.WEB_HRF_CORE;
+	public static final WebHrfCore WEB_HRF_CORE = com.moseeker.db.analytics.tables.WebHrfCore.WEB_HRF_CORE;
 
 	/**
 	 * The table analytics.web_hrp_core
 	 */
-	public static final WebHrpCore WEB_HRP_CORE = WebHrpCore.WEB_HRP_CORE;
+	public static final WebHrpCore WEB_HRP_CORE = com.moseeker.db.analytics.tables.WebHrpCore.WEB_HRP_CORE;
 
 	/**
 	 * The table analytics.web_im
 	 */
-	public static final WebIm WEB_IM = WebIm.WEB_IM;
+	public static final WebIm WEB_IM = com.moseeker.db.analytics.tables.WebIm.WEB_IM;
 
 	/**
 	 * 每日浏览申请统计表
 	 */
-	public static final WebPlaDaily WEB_PLA_DAILY = WebPlaDaily.WEB_PLA_DAILY;
+	public static final WebPlaDaily WEB_PLA_DAILY = com.moseeker.db.analytics.tables.WebPlaDaily.WEB_PLA_DAILY;
 
 	/**
 	 * 转发效果统计表
 	 */
-	public static final WebPositionShare WEB_POSITION_SHARE = WebPositionShare.WEB_POSITION_SHARE;
+	public static final WebPositionShare WEB_POSITION_SHARE = com.moseeker.db.analytics.tables.WebPositionShare.WEB_POSITION_SHARE;
 
 	/**
 	 * The table analytics.web_user_resume
 	 */
-	public static final WebUserResume WEB_USER_RESUME = WebUserResume.WEB_USER_RESUME;
+	public static final WebUserResume WEB_USER_RESUME = com.moseeker.db.analytics.tables.WebUserResume.WEB_USER_RESUME;
 }

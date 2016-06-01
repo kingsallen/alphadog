@@ -4,16 +4,15 @@
 package com.moseeker.db.dictdb.tables.records;
 
 
-import com.moseeker.db.dictdb.tables.DictCollege;
-
 import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.Record4;
 import org.jooq.Row4;
-import org.jooq.impl.TableRecordImpl;
 import org.jooq.impl.UpdatableRecordImpl;
 import org.jooq.types.UInteger;
+
+import com.moseeker.db.dictdb.tables.DictCollege;
 
 
 /**
@@ -29,7 +28,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictCollegeRecord extends UpdatableRecordImpl<DictCollegeRecord> implements Record4<UInteger, String, UInteger, String> {
 
-	private static final long serialVersionUID = 1369039614;
+	private static final long serialVersionUID = -472453410;
 
 	/**
 	 * Setter for <code>dictDB.dict_college.code</code>. 字典code
@@ -60,14 +59,14 @@ public class DictCollegeRecord extends UpdatableRecordImpl<DictCollegeRecord> im
 	}
 
 	/**
-	 * Setter for <code>dictDB.dict_college.province</code>.
+	 * Setter for <code>dictDB.dict_college.province</code>. 院校所在地
 	 */
 	public void setProvince(UInteger value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_college.province</code>.
+	 * Getter for <code>dictDB.dict_college.province</code>. 院校所在地
 	 */
 	public UInteger getProvince() {
 		return (UInteger) getValue(2);

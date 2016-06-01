@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigAtsSourceRecord extends UpdatableRecordImpl<ConfigAtsSourceRecord> implements Record12<Integer, String, Integer, String, String, String, String, String, String, Integer, String, String> {
 
-	private static final long serialVersionUID = -1205143604;
+	private static final long serialVersionUID = -826631095;
 
 	/**
 	 * Setter for <code>configDB.config_ats_source.id</code>.
@@ -157,16 +157,16 @@ public class ConfigAtsSourceRecord extends UpdatableRecordImpl<ConfigAtsSourceRe
 	}
 
 	/**
-	 * Setter for <code>configDB.config_ats_source.department_id</code>.
+	 * Setter for <code>configDB.config_ats_source.company_id</code>. hr_company.id
 	 */
-	public void setDepartmentId(Integer value) {
+	public void setCompanyId(Integer value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_ats_source.department_id</code>.
+	 * Getter for <code>configDB.config_ats_source.company_id</code>. hr_company.id
 	 */
-	public Integer getDepartmentId() {
+	public Integer getCompanyId() {
 		return (Integer) getValue(9);
 	}
 
@@ -307,7 +307,7 @@ public class ConfigAtsSourceRecord extends UpdatableRecordImpl<ConfigAtsSourceRe
 	 */
 	@Override
 	public Field<Integer> field10() {
-		return ConfigAtsSource.CONFIG_ATS_SOURCE.DEPARTMENT_ID;
+		return ConfigAtsSource.CONFIG_ATS_SOURCE.COMPANY_ID;
 	}
 
 	/**
@@ -403,7 +403,7 @@ public class ConfigAtsSourceRecord extends UpdatableRecordImpl<ConfigAtsSourceRe
 	 */
 	@Override
 	public Integer value10() {
-		return getDepartmentId();
+		return getCompanyId();
 	}
 
 	/**
@@ -508,7 +508,7 @@ public class ConfigAtsSourceRecord extends UpdatableRecordImpl<ConfigAtsSourceRe
 	 */
 	@Override
 	public ConfigAtsSourceRecord value10(Integer value) {
-		setDepartmentId(value);
+		setCompanyId(value);
 		return this;
 	}
 
@@ -564,7 +564,7 @@ public class ConfigAtsSourceRecord extends UpdatableRecordImpl<ConfigAtsSourceRe
 	/**
 	 * Create a detached, initialised ConfigAtsSourceRecord
 	 */
-	public ConfigAtsSourceRecord(Integer id, String name, Integer type, String url, String fullname, String ftpAddress, String username, String password, String apikey, Integer departmentId, String kenexaId, String kenexaCridential) {
+	public ConfigAtsSourceRecord(Integer id, String name, Integer type, String url, String fullname, String ftpAddress, String username, String password, String apikey, Integer companyId, String kenexaId, String kenexaCridential) {
 		super(ConfigAtsSource.CONFIG_ATS_SOURCE);
 
 		setValue(0, id);
@@ -576,7 +576,7 @@ public class ConfigAtsSourceRecord extends UpdatableRecordImpl<ConfigAtsSourceRe
 		setValue(6, username);
 		setValue(7, password);
 		setValue(8, apikey);
-		setValue(9, departmentId);
+		setValue(9, companyId);
 		setValue(10, kenexaId);
 		setValue(11, kenexaCridential);
 	}

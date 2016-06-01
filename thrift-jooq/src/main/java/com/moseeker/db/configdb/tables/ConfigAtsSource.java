@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigAtsSource extends TableImpl<ConfigAtsSourceRecord> {
 
-	private static final long serialVersionUID = 1427549091;
+	private static final long serialVersionUID = -869915206;
 
 	/**
 	 * The reference instance of <code>configDB.config_ats_source</code>
@@ -95,9 +95,9 @@ public class ConfigAtsSource extends TableImpl<ConfigAtsSourceRecord> {
 	public final TableField<ConfigAtsSourceRecord, String> APIKEY = createField("apikey", org.jooq.impl.SQLDataType.VARCHAR.length(100).defaulted(true), this, "ATS API KEY");
 
 	/**
-	 * The column <code>configDB.config_ats_source.department_id</code>.
+	 * The column <code>configDB.config_ats_source.company_id</code>. hr_company.id
 	 */
-	public final TableField<ConfigAtsSourceRecord, Integer> DEPARTMENT_ID = createField("department_id", org.jooq.impl.SQLDataType.INTEGER.defaulted(true), this, "");
+	public final TableField<ConfigAtsSourceRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.defaulted(true), this, "hr_company.id");
 
 	/**
 	 * The column <code>configDB.config_ats_source.kenexa_id</code>. kenexa的sender id

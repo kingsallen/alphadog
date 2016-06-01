@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysCvTpl extends TableImpl<ConfigSysCvTplRecord> {
 
-	private static final long serialVersionUID = -1683073655;
+	private static final long serialVersionUID = -585829712;
 
 	/**
 	 * The reference instance of <code>configDB.config_sys_cv_tpl</code>
@@ -101,9 +101,9 @@ public class ConfigSysCvTpl extends TableImpl<ConfigSysCvTplRecord> {
 	public final TableField<ConfigSysCvTplRecord, Integer> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "是否禁用 0：可用1：不可用");
 
 	/**
-	 * The column <code>configDB.config_sys_cv_tpl.department_id</code>. 所属部门。如果是私有属性，则存在所属公司部门编号；如果不是则为0
+	 * The column <code>configDB.config_sys_cv_tpl.company_id</code>. 所属公司。如果是私有属性，则存在所属公司部门编号；如果不是则为0
 	 */
-	public final TableField<ConfigSysCvTplRecord, Integer> DEPARTMENT_ID = createField("department_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "所属部门。如果是私有属性，则存在所属公司部门编号；如果不是则为0");
+	public final TableField<ConfigSysCvTplRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "所属公司。如果是私有属性，则存在所属公司部门编号；如果不是则为0");
 
 	/**
 	 * The column <code>configDB.config_sys_cv_tpl.required</code>. 是否必填项 0：必填项 1：选填项

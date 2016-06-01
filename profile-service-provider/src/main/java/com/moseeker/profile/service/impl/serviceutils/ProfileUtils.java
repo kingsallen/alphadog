@@ -164,7 +164,9 @@ public class ProfileUtils {
 		ProfileImportRecord record = null;
 		if (importMap != null) {
 			record = BeanUtils.MapToRecord(importMap, ProfileImportRecord.class);
-			record.setUserName(userName);
+			if(record != null) {
+				record.setUserName(userName);
+			}
 			return record;
 		}
 		return record;
@@ -240,7 +242,7 @@ public class ProfileUtils {
 				record.setLang(UByte.valueOf((Integer) profile.get("lang")));
 			}
 			if (profile.get("source") != null) {
-				record.setSource(UByte.valueOf((Integer) profile.get("source")));
+				record.setSource(UInteger.valueOf((Integer) profile.get("source")));
 			}
 			if (profile.get("completeness") != null) {
 				record.setCompleteness(UByte.valueOf((Integer) profile.get("completeness")));

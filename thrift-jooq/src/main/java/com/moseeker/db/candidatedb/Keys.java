@@ -4,18 +4,32 @@
 package com.moseeker.db.candidatedb;
 
 
-import com.moseeker.db.candidatedb.tables.CandidateDepartment;
+import com.moseeker.db.candidatedb.tables.CandidateCompany;
 import com.moseeker.db.candidatedb.tables.CandidatePosition;
 import com.moseeker.db.candidatedb.tables.CandidatePositionShareRecord;
 import com.moseeker.db.candidatedb.tables.CandidateRecomRecord;
 import com.moseeker.db.candidatedb.tables.CandidateRemark;
 import com.moseeker.db.candidatedb.tables.CandidateSuggestPosition;
-import com.moseeker.db.candidatedb.tables.records.CandidateDepartmentRecord;
+import com.moseeker.db.candidatedb.tables.JobApplication;
+import com.moseeker.db.candidatedb.tables.JobApplicationConf;
+import com.moseeker.db.candidatedb.tables.JobApplicationStatusBeisen;
+import com.moseeker.db.candidatedb.tables.JobPosition;
+import com.moseeker.db.candidatedb.tables.JobPositionShareTplConf;
+import com.moseeker.db.candidatedb.tables.JobResumeBasic;
+import com.moseeker.db.candidatedb.tables.JobResumeOther;
+import com.moseeker.db.candidatedb.tables.records.CandidateCompanyRecord;
 import com.moseeker.db.candidatedb.tables.records.CandidatePositionRecord;
 import com.moseeker.db.candidatedb.tables.records.CandidatePositionShareRecordRecord;
 import com.moseeker.db.candidatedb.tables.records.CandidateRecomRecordRecord;
 import com.moseeker.db.candidatedb.tables.records.CandidateRemarkRecord;
 import com.moseeker.db.candidatedb.tables.records.CandidateSuggestPositionRecord;
+import com.moseeker.db.candidatedb.tables.records.JobApplicationConfRecord;
+import com.moseeker.db.candidatedb.tables.records.JobApplicationRecord;
+import com.moseeker.db.candidatedb.tables.records.JobApplicationStatusBeisenRecord;
+import com.moseeker.db.candidatedb.tables.records.JobPositionRecord;
+import com.moseeker.db.candidatedb.tables.records.JobPositionShareTplConfRecord;
+import com.moseeker.db.candidatedb.tables.records.JobResumeBasicRecord;
+import com.moseeker.db.candidatedb.tables.records.JobResumeOtherRecord;
 
 import javax.annotation.Generated;
 
@@ -43,22 +57,35 @@ public class Keys {
 	// IDENTITY definitions
 	// -------------------------------------------------------------------------
 
-	public static final Identity<CandidateDepartmentRecord, Integer> IDENTITY_CANDIDATE_DEPARTMENT = Identities0.IDENTITY_CANDIDATE_DEPARTMENT;
+	public static final Identity<CandidateCompanyRecord, Integer> IDENTITY_CANDIDATE_COMPANY = Identities0.IDENTITY_CANDIDATE_COMPANY;
 	public static final Identity<CandidatePositionShareRecordRecord, Integer> IDENTITY_CANDIDATE_POSITION_SHARE_RECORD = Identities0.IDENTITY_CANDIDATE_POSITION_SHARE_RECORD;
 	public static final Identity<CandidateRecomRecordRecord, UInteger> IDENTITY_CANDIDATE_RECOM_RECORD = Identities0.IDENTITY_CANDIDATE_RECOM_RECORD;
 	public static final Identity<CandidateRemarkRecord, UInteger> IDENTITY_CANDIDATE_REMARK = Identities0.IDENTITY_CANDIDATE_REMARK;
 	public static final Identity<CandidateSuggestPositionRecord, UInteger> IDENTITY_CANDIDATE_SUGGEST_POSITION = Identities0.IDENTITY_CANDIDATE_SUGGEST_POSITION;
+	public static final Identity<JobApplicationRecord, UInteger> IDENTITY_JOB_APPLICATION = Identities0.IDENTITY_JOB_APPLICATION;
+	public static final Identity<JobApplicationConfRecord, Integer> IDENTITY_JOB_APPLICATION_CONF = Identities0.IDENTITY_JOB_APPLICATION_CONF;
+	public static final Identity<JobApplicationStatusBeisenRecord, Integer> IDENTITY_JOB_APPLICATION_STATUS_BEISEN = Identities0.IDENTITY_JOB_APPLICATION_STATUS_BEISEN;
+	public static final Identity<JobPositionRecord, Integer> IDENTITY_JOB_POSITION = Identities0.IDENTITY_JOB_POSITION;
+	public static final Identity<JobPositionShareTplConfRecord, Integer> IDENTITY_JOB_POSITION_SHARE_TPL_CONF = Identities0.IDENTITY_JOB_POSITION_SHARE_TPL_CONF;
+	public static final Identity<JobResumeBasicRecord, Integer> IDENTITY_JOB_RESUME_BASIC = Identities0.IDENTITY_JOB_RESUME_BASIC;
 
 	// -------------------------------------------------------------------------
 	// UNIQUE and PRIMARY KEY definitions
 	// -------------------------------------------------------------------------
 
-	public static final UniqueKey<CandidateDepartmentRecord> KEY_CANDIDATE_DEPARTMENT_PRIMARY = UniqueKeys0.KEY_CANDIDATE_DEPARTMENT_PRIMARY;
+	public static final UniqueKey<CandidateCompanyRecord> KEY_CANDIDATE_COMPANY_PRIMARY = UniqueKeys0.KEY_CANDIDATE_COMPANY_PRIMARY;
 	public static final UniqueKey<CandidatePositionRecord> KEY_CANDIDATE_POSITION_PRIMARY = UniqueKeys0.KEY_CANDIDATE_POSITION_PRIMARY;
 	public static final UniqueKey<CandidatePositionShareRecordRecord> KEY_CANDIDATE_POSITION_SHARE_RECORD_PRIMARY = UniqueKeys0.KEY_CANDIDATE_POSITION_SHARE_RECORD_PRIMARY;
 	public static final UniqueKey<CandidateRecomRecordRecord> KEY_CANDIDATE_RECOM_RECORD_PRIMARY = UniqueKeys0.KEY_CANDIDATE_RECOM_RECORD_PRIMARY;
 	public static final UniqueKey<CandidateRemarkRecord> KEY_CANDIDATE_REMARK_PRIMARY = UniqueKeys0.KEY_CANDIDATE_REMARK_PRIMARY;
 	public static final UniqueKey<CandidateSuggestPositionRecord> KEY_CANDIDATE_SUGGEST_POSITION_PRIMARY = UniqueKeys0.KEY_CANDIDATE_SUGGEST_POSITION_PRIMARY;
+	public static final UniqueKey<JobApplicationRecord> KEY_JOB_APPLICATION_PRIMARY = UniqueKeys0.KEY_JOB_APPLICATION_PRIMARY;
+	public static final UniqueKey<JobApplicationConfRecord> KEY_JOB_APPLICATION_CONF_PRIMARY = UniqueKeys0.KEY_JOB_APPLICATION_CONF_PRIMARY;
+	public static final UniqueKey<JobApplicationStatusBeisenRecord> KEY_JOB_APPLICATION_STATUS_BEISEN_PRIMARY = UniqueKeys0.KEY_JOB_APPLICATION_STATUS_BEISEN_PRIMARY;
+	public static final UniqueKey<JobPositionRecord> KEY_JOB_POSITION_PRIMARY = UniqueKeys0.KEY_JOB_POSITION_PRIMARY;
+	public static final UniqueKey<JobPositionShareTplConfRecord> KEY_JOB_POSITION_SHARE_TPL_CONF_PRIMARY = UniqueKeys0.KEY_JOB_POSITION_SHARE_TPL_CONF_PRIMARY;
+	public static final UniqueKey<JobResumeBasicRecord> KEY_JOB_RESUME_BASIC_PRIMARY = UniqueKeys0.KEY_JOB_RESUME_BASIC_PRIMARY;
+	public static final UniqueKey<JobResumeOtherRecord> KEY_JOB_RESUME_OTHER_PRIMARY = UniqueKeys0.KEY_JOB_RESUME_OTHER_PRIMARY;
 
 	// -------------------------------------------------------------------------
 	// FOREIGN KEY definitions
@@ -70,19 +97,32 @@ public class Keys {
 	// -------------------------------------------------------------------------
 
 	private static class Identities0 extends AbstractKeys {
-		public static Identity<CandidateDepartmentRecord, Integer> IDENTITY_CANDIDATE_DEPARTMENT = createIdentity(CandidateDepartment.CANDIDATE_DEPARTMENT, CandidateDepartment.CANDIDATE_DEPARTMENT.ID);
+		public static Identity<CandidateCompanyRecord, Integer> IDENTITY_CANDIDATE_COMPANY = createIdentity(CandidateCompany.CANDIDATE_COMPANY, CandidateCompany.CANDIDATE_COMPANY.ID);
 		public static Identity<CandidatePositionShareRecordRecord, Integer> IDENTITY_CANDIDATE_POSITION_SHARE_RECORD = createIdentity(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD, CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.ID);
 		public static Identity<CandidateRecomRecordRecord, UInteger> IDENTITY_CANDIDATE_RECOM_RECORD = createIdentity(CandidateRecomRecord.CANDIDATE_RECOM_RECORD, CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID);
 		public static Identity<CandidateRemarkRecord, UInteger> IDENTITY_CANDIDATE_REMARK = createIdentity(CandidateRemark.CANDIDATE_REMARK, CandidateRemark.CANDIDATE_REMARK.ID);
 		public static Identity<CandidateSuggestPositionRecord, UInteger> IDENTITY_CANDIDATE_SUGGEST_POSITION = createIdentity(CandidateSuggestPosition.CANDIDATE_SUGGEST_POSITION, CandidateSuggestPosition.CANDIDATE_SUGGEST_POSITION.ID);
+		public static Identity<JobApplicationRecord, UInteger> IDENTITY_JOB_APPLICATION = createIdentity(JobApplication.JOB_APPLICATION, JobApplication.JOB_APPLICATION.ID);
+		public static Identity<JobApplicationConfRecord, Integer> IDENTITY_JOB_APPLICATION_CONF = createIdentity(JobApplicationConf.JOB_APPLICATION_CONF, JobApplicationConf.JOB_APPLICATION_CONF.ID);
+		public static Identity<JobApplicationStatusBeisenRecord, Integer> IDENTITY_JOB_APPLICATION_STATUS_BEISEN = createIdentity(JobApplicationStatusBeisen.JOB_APPLICATION_STATUS_BEISEN, JobApplicationStatusBeisen.JOB_APPLICATION_STATUS_BEISEN.ID);
+		public static Identity<JobPositionRecord, Integer> IDENTITY_JOB_POSITION = createIdentity(JobPosition.JOB_POSITION, JobPosition.JOB_POSITION.ID);
+		public static Identity<JobPositionShareTplConfRecord, Integer> IDENTITY_JOB_POSITION_SHARE_TPL_CONF = createIdentity(JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF, JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF.ID);
+		public static Identity<JobResumeBasicRecord, Integer> IDENTITY_JOB_RESUME_BASIC = createIdentity(JobResumeBasic.JOB_RESUME_BASIC, JobResumeBasic.JOB_RESUME_BASIC.ID);
 	}
 
 	private static class UniqueKeys0 extends AbstractKeys {
-		public static final UniqueKey<CandidateDepartmentRecord> KEY_CANDIDATE_DEPARTMENT_PRIMARY = createUniqueKey(CandidateDepartment.CANDIDATE_DEPARTMENT, CandidateDepartment.CANDIDATE_DEPARTMENT.ID);
+		public static final UniqueKey<CandidateCompanyRecord> KEY_CANDIDATE_COMPANY_PRIMARY = createUniqueKey(CandidateCompany.CANDIDATE_COMPANY, CandidateCompany.CANDIDATE_COMPANY.ID);
 		public static final UniqueKey<CandidatePositionRecord> KEY_CANDIDATE_POSITION_PRIMARY = createUniqueKey(CandidatePosition.CANDIDATE_POSITION, CandidatePosition.CANDIDATE_POSITION.WXUSER_ID, CandidatePosition.CANDIDATE_POSITION.POSITION_ID);
 		public static final UniqueKey<CandidatePositionShareRecordRecord> KEY_CANDIDATE_POSITION_SHARE_RECORD_PRIMARY = createUniqueKey(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD, CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.ID);
 		public static final UniqueKey<CandidateRecomRecordRecord> KEY_CANDIDATE_RECOM_RECORD_PRIMARY = createUniqueKey(CandidateRecomRecord.CANDIDATE_RECOM_RECORD, CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID);
 		public static final UniqueKey<CandidateRemarkRecord> KEY_CANDIDATE_REMARK_PRIMARY = createUniqueKey(CandidateRemark.CANDIDATE_REMARK, CandidateRemark.CANDIDATE_REMARK.ID);
 		public static final UniqueKey<CandidateSuggestPositionRecord> KEY_CANDIDATE_SUGGEST_POSITION_PRIMARY = createUniqueKey(CandidateSuggestPosition.CANDIDATE_SUGGEST_POSITION, CandidateSuggestPosition.CANDIDATE_SUGGEST_POSITION.ID);
+		public static final UniqueKey<JobApplicationRecord> KEY_JOB_APPLICATION_PRIMARY = createUniqueKey(JobApplication.JOB_APPLICATION, JobApplication.JOB_APPLICATION.ID);
+		public static final UniqueKey<JobApplicationConfRecord> KEY_JOB_APPLICATION_CONF_PRIMARY = createUniqueKey(JobApplicationConf.JOB_APPLICATION_CONF, JobApplicationConf.JOB_APPLICATION_CONF.ID);
+		public static final UniqueKey<JobApplicationStatusBeisenRecord> KEY_JOB_APPLICATION_STATUS_BEISEN_PRIMARY = createUniqueKey(JobApplicationStatusBeisen.JOB_APPLICATION_STATUS_BEISEN, JobApplicationStatusBeisen.JOB_APPLICATION_STATUS_BEISEN.ID);
+		public static final UniqueKey<JobPositionRecord> KEY_JOB_POSITION_PRIMARY = createUniqueKey(JobPosition.JOB_POSITION, JobPosition.JOB_POSITION.ID);
+		public static final UniqueKey<JobPositionShareTplConfRecord> KEY_JOB_POSITION_SHARE_TPL_CONF_PRIMARY = createUniqueKey(JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF, JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF.ID);
+		public static final UniqueKey<JobResumeBasicRecord> KEY_JOB_RESUME_BASIC_PRIMARY = createUniqueKey(JobResumeBasic.JOB_RESUME_BASIC, JobResumeBasic.JOB_RESUME_BASIC.ID);
+		public static final UniqueKey<JobResumeOtherRecord> KEY_JOB_RESUME_OTHER_PRIMARY = createUniqueKey(JobResumeOther.JOB_RESUME_OTHER, JobResumeOther.JOB_RESUME_OTHER.APP_ID);
 	}
 }

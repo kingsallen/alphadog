@@ -24,7 +24,7 @@ import org.jooq.types.UInteger;
 
 
 /**
- * 用户收藏表
+ * 用户职位收藏
  */
 @Generated(
 	value = {
@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserFavPosition extends TableImpl<UserFavPositionRecord> {
 
-	private static final long serialVersionUID = 1513804107;
+	private static final long serialVersionUID = -580274407;
 
 	/**
 	 * The reference instance of <code>userDB.user_fav_position</code>
@@ -50,11 +50,6 @@ public class UserFavPosition extends TableImpl<UserFavPositionRecord> {
 	public Class<UserFavPositionRecord> getRecordType() {
 		return UserFavPositionRecord.class;
 	}
-
-	/**
-	 * The column <code>userDB.user_fav_position.id</code>. ID
-	 */
-	public final TableField<UserFavPositionRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "ID");
 
 	/**
 	 * The column <code>userDB.user_fav_position.sysuser_id</code>. 用户ID
@@ -72,9 +67,24 @@ public class UserFavPosition extends TableImpl<UserFavPositionRecord> {
 	public final TableField<UserFavPositionRecord, Byte> FAVORITE = createField("favorite", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "0:收藏, 1:取消收藏, 2:感兴趣");
 
 	/**
+	 * The column <code>userDB.user_fav_position.create_time</code>.
+	 */
+	public final TableField<UserFavPositionRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
+
+	/**
+	 * The column <code>userDB.user_fav_position.update_time</code>.
+	 */
+	public final TableField<UserFavPositionRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
+
+	/**
 	 * The column <code>userDB.user_fav_position.mobile</code>. 感兴趣的手机号
 	 */
 	public final TableField<UserFavPositionRecord, String> MOBILE = createField("mobile", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false).defaulted(true), this, "感兴趣的手机号");
+
+	/**
+	 * The column <code>userDB.user_fav_position.id</code>. ID
+	 */
+	public final TableField<UserFavPositionRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "ID");
 
 	/**
 	 * The column <code>userDB.user_fav_position.wxuser_id</code>. wx_user.id
@@ -85,16 +95,6 @@ public class UserFavPosition extends TableImpl<UserFavPositionRecord> {
 	 * The column <code>userDB.user_fav_position.recom_id</code>. 推荐者 fk:wx_user.id
 	 */
 	public final TableField<UserFavPositionRecord, Integer> RECOM_ID = createField("recom_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "推荐者 fk:wx_user.id");
-
-	/**
-	 * The column <code>userDB.user_fav_position.create_time</code>.
-	 */
-	public final TableField<UserFavPositionRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
-
-	/**
-	 * The column <code>userDB.user_fav_position.update_time</code>.
-	 */
-	public final TableField<UserFavPositionRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
 
 	/**
 	 * Create a <code>userDB.user_fav_position</code> table reference
@@ -115,7 +115,7 @@ public class UserFavPosition extends TableImpl<UserFavPositionRecord> {
 	}
 
 	private UserFavPosition(String alias, Table<UserFavPositionRecord> aliased, Field<?>[] parameters) {
-		super(alias, Userdb.USERDB, aliased, parameters, "用户收藏表");
+		super(alias, Userdb.USERDB, aliased, parameters, "用户职位收藏");
 	}
 
 	/**

@@ -37,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserEmployee extends TableImpl<UserEmployeeRecord> {
 
-	private static final long serialVersionUID = 941795653;
+	private static final long serialVersionUID = -1276670;
 
 	/**
 	 * The reference instance of <code>userDB.user_employee</code>
@@ -198,9 +198,9 @@ public class UserEmployee extends TableImpl<UserEmployeeRecord> {
 	public final TableField<UserEmployeeRecord, String> EMAIL = createField("email", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "email");
 
 	/**
-	 * The column <code>userDB.user_employee.activation</code>. 绑定时是否激活，0：激活1：未激活
+	 * The column <code>userDB.user_employee.activation</code>. 员工认证，0：认证成功 1：未认证 2：认证失败 
 	 */
-	public final TableField<UserEmployeeRecord, Byte> ACTIVATION = createField("activation", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "绑定时是否激活，0：激活1：未激活");
+	public final TableField<UserEmployeeRecord, Byte> ACTIVATION = createField("activation", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "员工认证，0：认证成功 1：未认证 2：认证失败 ");
 
 	/**
 	 * The column <code>userDB.user_employee.activation_code</code>. 激活码
@@ -276,6 +276,31 @@ public class UserEmployee extends TableImpl<UserEmployeeRecord> {
 	 * The column <code>userDB.user_employee.is_rp_sent</code>. 是否拿过员工认证红包 0: 没有 1:有
 	 */
 	public final TableField<UserEmployeeRecord, Byte> IS_RP_SENT = createField("is_rp_sent", org.jooq.impl.SQLDataType.TINYINT.defaulted(true), this, "是否拿过员工认证红包 0: 没有 1:有");
+
+	/**
+	 * The column <code>userDB.user_employee.sysuser_id</code>. sysuser.id, 用户ID
+	 */
+	public final TableField<UserEmployeeRecord, Integer> SYSUSER_ID = createField("sysuser_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "sysuser.id, 用户ID");
+
+	/**
+	 * The column <code>userDB.user_employee.position_id</code>. hr_employee_position.id, 职能ID
+	 */
+	public final TableField<UserEmployeeRecord, Integer> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "hr_employee_position.id, 职能ID");
+
+	/**
+	 * The column <code>userDB.user_employee.section_id</code>. hr_employee_section.id, 部门ID
+	 */
+	public final TableField<UserEmployeeRecord, Integer> SECTION_ID = createField("section_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "hr_employee_section.id, 部门ID");
+
+	/**
+	 * The column <code>userDB.user_employee.email_isvalid</code>. 是否认证了1：是, 0：否
+	 */
+	public final TableField<UserEmployeeRecord, Byte> EMAIL_ISVALID = createField("email_isvalid", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "是否认证了1：是, 0：否");
+
+	/**
+	 * The column <code>userDB.user_employee.auth_method</code>. 员工认证途径 0:使用邮箱认证 1:使用自定义认证 2:使用问答认证
+	 */
+	public final TableField<UserEmployeeRecord, Byte> AUTH_METHOD = createField("auth_method", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "员工认证途径 0:使用邮箱认证 1:使用自定义认证 2:使用问答认证");
 
 	/**
 	 * Create a <code>userDB.user_employee</code> table reference
