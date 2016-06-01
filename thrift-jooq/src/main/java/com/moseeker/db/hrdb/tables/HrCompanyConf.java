@@ -35,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
 
-	private static final long serialVersionUID = 1601410935;
+	private static final long serialVersionUID = 225111686;
 
 	/**
 	 * The reference instance of <code>hrDB.hr_company_conf</code>
@@ -79,6 +79,26 @@ public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
 	 * The column <code>hrDB.hr_company_conf.update_time</code>. 更新时间
 	 */
 	public final TableField<HrCompanyConfRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "更新时间");
+
+	/**
+	 * The column <code>hrDB.hr_company_conf.employee_binding</code>. 员工认证自定义文案
+	 */
+	public final TableField<HrCompanyConfRecord, String> EMPLOYEE_BINDING = createField("employee_binding", org.jooq.impl.SQLDataType.VARCHAR.length(999).nullable(false).defaulted(true), this, "员工认证自定义文案");
+
+	/**
+	 * The column <code>hrDB.hr_company_conf.recommend_presentee</code>. 推荐候选人自定义文案
+	 */
+	public final TableField<HrCompanyConfRecord, String> RECOMMEND_PRESENTEE = createField("recommend_presentee", org.jooq.impl.SQLDataType.VARCHAR.length(999).nullable(false).defaulted(true), this, "推荐候选人自定义文案");
+
+	/**
+	 * The column <code>hrDB.hr_company_conf.recommend_success</code>. 推荐成功自定义文案
+	 */
+	public final TableField<HrCompanyConfRecord, String> RECOMMEND_SUCCESS = createField("recommend_success", org.jooq.impl.SQLDataType.VARCHAR.length(999).nullable(false).defaulted(true), this, "推荐成功自定义文案");
+
+	/**
+	 * The column <code>hrDB.hr_company_conf.forward_message</code>. 转发职位自定义文案
+	 */
+	public final TableField<HrCompanyConfRecord, String> FORWARD_MESSAGE = createField("forward_message", org.jooq.impl.SQLDataType.VARCHAR.length(999).nullable(false).defaulted(true), this, "转发职位自定义文案");
 
 	/**
 	 * Create a <code>hrDB.hr_company_conf</code> table reference

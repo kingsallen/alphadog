@@ -4,10 +4,12 @@
 package com.moseeker.db.userdb;
 
 
+import com.moseeker.db.userdb.tables.CandidateVJobPositionRecom;
 import com.moseeker.db.userdb.tables.UserEmployee;
 import com.moseeker.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.db.userdb.tables.UserFavPosition;
 import com.moseeker.db.userdb.tables.UserHrAccount;
+import com.moseeker.db.userdb.tables.UserIntention;
 import com.moseeker.db.userdb.tables.UserSettings;
 import com.moseeker.db.userdb.tables.UserUser;
 import com.moseeker.db.userdb.tables.UserWxUser;
@@ -30,17 +32,22 @@ import javax.annotation.Generated;
 public class Tables {
 
 	/**
+	 * VIEW
+	 */
+	public static final CandidateVJobPositionRecom CANDIDATE_V_JOB_POSITION_RECOM = com.moseeker.db.userdb.tables.CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM;
+
+	/**
 	 * The table userDB.user_employee
 	 */
 	public static final UserEmployee USER_EMPLOYEE = com.moseeker.db.userdb.tables.UserEmployee.USER_EMPLOYEE;
 
 	/**
-	 * The table userDB.user_employee_points_record
+	 * 员工积分记录表
 	 */
 	public static final UserEmployeePointsRecord USER_EMPLOYEE_POINTS_RECORD = com.moseeker.db.userdb.tables.UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD;
 
 	/**
-	 * 用户收藏表
+	 * 用户职位收藏
 	 */
 	public static final UserFavPosition USER_FAV_POSITION = com.moseeker.db.userdb.tables.UserFavPosition.USER_FAV_POSITION;
 
@@ -48,6 +55,11 @@ public class Tables {
 	 * hr账号表
 	 */
 	public static final UserHrAccount USER_HR_ACCOUNT = com.moseeker.db.userdb.tables.UserHrAccount.USER_HR_ACCOUNT;
+
+	/**
+	 * 用户求职意向
+	 */
+	public static final UserIntention USER_INTENTION = com.moseeker.db.userdb.tables.UserIntention.USER_INTENTION;
 
 	/**
 	 * 用户设置表

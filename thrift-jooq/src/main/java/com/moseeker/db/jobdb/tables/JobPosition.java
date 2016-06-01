@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPosition extends TableImpl<JobPositionRecord> {
 
-	private static final long serialVersionUID = 1697055575;
+	private static final long serialVersionUID = 1845594682;
 
 	/**
 	 * The reference instance of <code>jobDB.job_position</code>
@@ -360,6 +360,11 @@ public class JobPosition extends TableImpl<JobPositionRecord> {
 	 * The column <code>jobDB.job_position.current_status</code>. 0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭
 	 */
 	public final TableField<JobPositionRecord, Byte> CURRENT_STATUS = createField("current_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭");
+
+	/**
+	 * The column <code>jobDB.job_position.position_code</code>. 职能字典code, dict_position.code
+	 */
+	public final TableField<JobPositionRecord, UInteger> POSITION_CODE = createField("position_code", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "职能字典code, dict_position.code");
 
 	/**
 	 * Create a <code>jobDB.job_position</code> table reference

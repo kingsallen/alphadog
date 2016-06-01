@@ -7,8 +7,11 @@ package com.moseeker.db.hrdb;
 import com.moseeker.db.hrdb.tables.HrAppCvConf;
 import com.moseeker.db.hrdb.tables.HrChildCompany;
 import com.moseeker.db.hrdb.tables.HrCompany;
+import com.moseeker.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.db.hrdb.tables.HrCompanyConf;
 import com.moseeker.db.hrdb.tables.HrEmployeeCertConf;
+import com.moseeker.db.hrdb.tables.HrEmployeePosition;
+import com.moseeker.db.hrdb.tables.HrEmployeeSection;
 import com.moseeker.db.hrdb.tables.HrFeedback;
 import com.moseeker.db.hrdb.tables.HrHbConfig;
 import com.moseeker.db.hrdb.tables.HrHbItems;
@@ -38,6 +41,7 @@ import com.moseeker.db.hrdb.tables.HrWxRule;
 import com.moseeker.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.db.hrdb.tables.HrWxWechat;
 import com.moseeker.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
+import com.moseeker.db.hrdb.tables.SysWechatAppConf;
 
 import javax.annotation.Generated;
 
@@ -71,6 +75,11 @@ public class Tables {
 	public static final HrCompany HR_COMPANY = com.moseeker.db.hrdb.tables.HrCompany.HR_COMPANY;
 
 	/**
+	 * 账号公司关联记录
+	 */
+	public static final HrCompanyAccount HR_COMPANY_ACCOUNT = com.moseeker.db.hrdb.tables.HrCompanyAccount.HR_COMPANY_ACCOUNT;
+
+	/**
 	 * 公司级别的配置信息表
 	 */
 	public static final HrCompanyConf HR_COMPANY_CONF = com.moseeker.db.hrdb.tables.HrCompanyConf.HR_COMPANY_CONF;
@@ -79,6 +88,16 @@ public class Tables {
 	 * 部门员工配置表
 	 */
 	public static final HrEmployeeCertConf HR_EMPLOYEE_CERT_CONF = com.moseeker.db.hrdb.tables.HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF;
+
+	/**
+	 * 员工职能表
+	 */
+	public static final HrEmployeePosition HR_EMPLOYEE_POSITION = com.moseeker.db.hrdb.tables.HrEmployeePosition.HR_EMPLOYEE_POSITION;
+
+	/**
+	 * 员工部门表
+	 */
+	public static final HrEmployeeSection HR_EMPLOYEE_SECTION = com.moseeker.db.hrdb.tables.HrEmployeeSection.HR_EMPLOYEE_SECTION;
 
 	/**
 	 * HR反馈表
@@ -224,4 +243,9 @@ public class Tables {
 	 * 微信消息通知同步状态
 	 */
 	public static final HrWxWechatNoticeSyncStatus HR_WX_WECHAT_NOTICE_SYNC_STATUS = com.moseeker.db.hrdb.tables.HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS;
+
+	/**
+	 * The table hrDB.sys_wechat_app_conf
+	 */
+	public static final SysWechatAppConf SYS_WECHAT_APP_CONF = com.moseeker.db.hrdb.tables.SysWechatAppConf.SYS_WECHAT_APP_CONF;
 }

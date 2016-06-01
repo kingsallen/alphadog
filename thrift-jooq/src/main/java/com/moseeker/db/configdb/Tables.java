@@ -18,6 +18,7 @@ import com.moseeker.db.configdb.tables.ConfigSysAppTemplate;
 import com.moseeker.db.configdb.tables.ConfigSysCvTpl;
 import com.moseeker.db.configdb.tables.ConfigSysH5StyleTpl;
 import com.moseeker.db.configdb.tables.ConfigSysPointsConfTpl;
+import com.moseeker.db.configdb.tables.ConfigSysTemplateMessageColumnConfig;
 import com.moseeker.db.configdb.tables.ConfigSysTemplateMessageLibrary;
 import com.moseeker.db.configdb.tables.ConfigSysTemplateType;
 import com.moseeker.db.configdb.tables.ConfigSysTheme;
@@ -107,6 +108,11 @@ public class Tables {
 	 * 积分配置模板表
 	 */
 	public static final ConfigSysPointsConfTpl CONFIG_SYS_POINTS_CONF_TPL = com.moseeker.db.configdb.tables.ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL;
+
+	/**
+	 * 模板消息字段配置
+	 */
+	public static final ConfigSysTemplateMessageColumnConfig CONFIG_SYS_TEMPLATE_MESSAGE_COLUMN_CONFIG = com.moseeker.db.configdb.tables.ConfigSysTemplateMessageColumnConfig.CONFIG_SYS_TEMPLATE_MESSAGE_COLUMN_CONFIG;
 
 	/**
 	 * 模板消息库

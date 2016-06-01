@@ -29,7 +29,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> {
 
-	private static final long serialVersionUID = 1755201669;
+	private static final long serialVersionUID = 263189060;
 
 	/**
 	 * Setter for <code>userDB.user_employee.id</code>.
@@ -438,14 +438,14 @@ public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> 
 	}
 
 	/**
-	 * Setter for <code>userDB.user_employee.activation</code>. 绑定时是否激活，0：激活1：未激活
+	 * Setter for <code>userDB.user_employee.activation</code>. 员工认证，0：认证成功 1：未认证 2：认证失败 
 	 */
 	public void setActivation(Byte value) {
 		setValue(29, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_employee.activation</code>. 绑定时是否激活，0：激活1：未激活
+	 * Getter for <code>userDB.user_employee.activation</code>. 员工认证，0：认证成功 1：未认证 2：认证失败 
 	 */
 	public Byte getActivation() {
 		return (Byte) getValue(29);
@@ -661,6 +661,76 @@ public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> 
 		return (Byte) getValue(44);
 	}
 
+	/**
+	 * Setter for <code>userDB.user_employee.sysuser_id</code>. sysuser.id, 用户ID
+	 */
+	public void setSysuserId(Integer value) {
+		setValue(45, value);
+	}
+
+	/**
+	 * Getter for <code>userDB.user_employee.sysuser_id</code>. sysuser.id, 用户ID
+	 */
+	public Integer getSysuserId() {
+		return (Integer) getValue(45);
+	}
+
+	/**
+	 * Setter for <code>userDB.user_employee.position_id</code>. hr_employee_position.id, 职能ID
+	 */
+	public void setPositionId(Integer value) {
+		setValue(46, value);
+	}
+
+	/**
+	 * Getter for <code>userDB.user_employee.position_id</code>. hr_employee_position.id, 职能ID
+	 */
+	public Integer getPositionId() {
+		return (Integer) getValue(46);
+	}
+
+	/**
+	 * Setter for <code>userDB.user_employee.section_id</code>. hr_employee_section.id, 部门ID
+	 */
+	public void setSectionId(Integer value) {
+		setValue(47, value);
+	}
+
+	/**
+	 * Getter for <code>userDB.user_employee.section_id</code>. hr_employee_section.id, 部门ID
+	 */
+	public Integer getSectionId() {
+		return (Integer) getValue(47);
+	}
+
+	/**
+	 * Setter for <code>userDB.user_employee.email_isvalid</code>. 是否认证了1：是, 0：否
+	 */
+	public void setEmailIsvalid(Byte value) {
+		setValue(48, value);
+	}
+
+	/**
+	 * Getter for <code>userDB.user_employee.email_isvalid</code>. 是否认证了1：是, 0：否
+	 */
+	public Byte getEmailIsvalid() {
+		return (Byte) getValue(48);
+	}
+
+	/**
+	 * Setter for <code>userDB.user_employee.auth_method</code>. 员工认证途径 0:使用邮箱认证 1:使用自定义认证 2:使用问答认证
+	 */
+	public void setAuthMethod(Byte value) {
+		setValue(49, value);
+	}
+
+	/**
+	 * Getter for <code>userDB.user_employee.auth_method</code>. 员工认证途径 0:使用邮箱认证 1:使用自定义认证 2:使用问答认证
+	 */
+	public Byte getAuthMethod() {
+		return (Byte) getValue(49);
+	}
+
 	// -------------------------------------------------------------------------
 	// Primary key information
 	// -------------------------------------------------------------------------
@@ -687,7 +757,7 @@ public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> 
 	/**
 	 * Create a detached, initialised UserEmployeeRecord
 	 */
-	public UserEmployeeRecord(Integer id, String employeeid, Integer companyId, Integer roleId, Integer wxuserId, Byte sex, String ename, String efname, String cname, String cfname, String password, Byte isAdmin, Integer status, String companybody, String departmentname, String groupname, String position, Date employdate, String managername, String city, Date birthday, Date retiredate, String education, String address, String idcard, String mobile, Integer award, Timestamp bindingTime, String email, Byte activation, String activationCode, Byte disable, Timestamp createTime, Timestamp updateTime, Byte authLevel, Timestamp registerTime, String registerIp, Timestamp lastLoginTime, String lastLoginIp, Long loginCount, Byte source, String downloadToken, UInteger hrWxuserId, String customField, Byte isRpSent) {
+	public UserEmployeeRecord(Integer id, String employeeid, Integer companyId, Integer roleId, Integer wxuserId, Byte sex, String ename, String efname, String cname, String cfname, String password, Byte isAdmin, Integer status, String companybody, String departmentname, String groupname, String position, Date employdate, String managername, String city, Date birthday, Date retiredate, String education, String address, String idcard, String mobile, Integer award, Timestamp bindingTime, String email, Byte activation, String activationCode, Byte disable, Timestamp createTime, Timestamp updateTime, Byte authLevel, Timestamp registerTime, String registerIp, Timestamp lastLoginTime, String lastLoginIp, Long loginCount, Byte source, String downloadToken, UInteger hrWxuserId, String customField, Byte isRpSent, Integer sysuserId, Integer positionId, Integer sectionId, Byte emailIsvalid, Byte authMethod) {
 		super(UserEmployee.USER_EMPLOYEE);
 
 		setValue(0, id);
@@ -735,5 +805,10 @@ public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> 
 		setValue(42, hrWxuserId);
 		setValue(43, customField);
 		setValue(44, isRpSent);
+		setValue(45, sysuserId);
+		setValue(46, positionId);
+		setValue(47, sectionId);
+		setValue(48, emailIsvalid);
+		setValue(49, authMethod);
 	}
 }

@@ -23,7 +23,7 @@ import org.jooq.types.UInteger;
 
 
 /**
- * 国家字典表
+ * 城市字典表
  */
 @Generated(
 	value = {
@@ -35,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictCountry extends TableImpl<DictCountryRecord> {
 
-	private static final long serialVersionUID = -1285205533;
+	private static final long serialVersionUID = 248005785;
 
 	/**
 	 * The reference instance of <code>dictDB.dict_country</code>
@@ -104,7 +104,7 @@ public class DictCountry extends TableImpl<DictCountryRecord> {
 	}
 
 	private DictCountry(String alias, Table<DictCountryRecord> aliased, Field<?>[] parameters) {
-		super(alias, Dictdb.DICTDB, aliased, parameters, "国家字典表");
+		super(alias, Dictdb.DICTDB, aliased, parameters, "城市字典表");
 	}
 
 	/**

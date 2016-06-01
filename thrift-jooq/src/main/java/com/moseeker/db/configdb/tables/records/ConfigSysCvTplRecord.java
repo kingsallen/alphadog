@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysCvTplRecord extends UpdatableRecordImpl<ConfigSysCvTplRecord> implements Record14<Integer, String, String, Integer, String, Integer, Integer, Timestamp, Timestamp, Integer, Integer, Integer, String, String> {
 
-	private static final long serialVersionUID = 1689684534;
+	private static final long serialVersionUID = 654954425;
 
 	/**
 	 * Setter for <code>configDB.config_sys_cv_tpl.id</code>.
@@ -173,16 +173,16 @@ public class ConfigSysCvTplRecord extends UpdatableRecordImpl<ConfigSysCvTplReco
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_cv_tpl.department_id</code>. 所属部门。如果是私有属性，则存在所属公司部门编号；如果不是则为0
+	 * Setter for <code>configDB.config_sys_cv_tpl.company_id</code>. 所属公司。如果是私有属性，则存在所属公司部门编号；如果不是则为0
 	 */
-	public void setDepartmentId(Integer value) {
+	public void setCompanyId(Integer value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_cv_tpl.department_id</code>. 所属部门。如果是私有属性，则存在所属公司部门编号；如果不是则为0
+	 * Getter for <code>configDB.config_sys_cv_tpl.company_id</code>. 所属公司。如果是私有属性，则存在所属公司部门编号；如果不是则为0
 	 */
-	public Integer getDepartmentId() {
+	public Integer getCompanyId() {
 		return (Integer) getValue(10);
 	}
 
@@ -345,7 +345,7 @@ public class ConfigSysCvTplRecord extends UpdatableRecordImpl<ConfigSysCvTplReco
 	 */
 	@Override
 	public Field<Integer> field11() {
-		return ConfigSysCvTpl.CONFIG_SYS_CV_TPL.DEPARTMENT_ID;
+		return ConfigSysCvTpl.CONFIG_SYS_CV_TPL.COMPANY_ID;
 	}
 
 	/**
@@ -457,7 +457,7 @@ public class ConfigSysCvTplRecord extends UpdatableRecordImpl<ConfigSysCvTplReco
 	 */
 	@Override
 	public Integer value11() {
-		return getDepartmentId();
+		return getCompanyId();
 	}
 
 	/**
@@ -579,7 +579,7 @@ public class ConfigSysCvTplRecord extends UpdatableRecordImpl<ConfigSysCvTplReco
 	 */
 	@Override
 	public ConfigSysCvTplRecord value11(Integer value) {
-		setDepartmentId(value);
+		setCompanyId(value);
 		return this;
 	}
 
@@ -646,7 +646,7 @@ public class ConfigSysCvTplRecord extends UpdatableRecordImpl<ConfigSysCvTplReco
 	/**
 	 * Create a detached, initialised ConfigSysCvTplRecord
 	 */
-	public ConfigSysCvTplRecord(Integer id, String fieldName, String fieldTitle, Integer fieldType, String fieldValue, Integer priority, Integer isBasic, Timestamp createTime, Timestamp updateTime, Integer disable, Integer departmentId, Integer required, String fieldDescription, String map) {
+	public ConfigSysCvTplRecord(Integer id, String fieldName, String fieldTitle, Integer fieldType, String fieldValue, Integer priority, Integer isBasic, Timestamp createTime, Timestamp updateTime, Integer disable, Integer companyId, Integer required, String fieldDescription, String map) {
 		super(ConfigSysCvTpl.CONFIG_SYS_CV_TPL);
 
 		setValue(0, id);
@@ -659,7 +659,7 @@ public class ConfigSysCvTplRecord extends UpdatableRecordImpl<ConfigSysCvTplReco
 		setValue(7, createTime);
 		setValue(8, updateTime);
 		setValue(9, disable);
-		setValue(10, departmentId);
+		setValue(10, companyId);
 		setValue(11, required);
 		setValue(12, fieldDescription);
 		setValue(13, map);

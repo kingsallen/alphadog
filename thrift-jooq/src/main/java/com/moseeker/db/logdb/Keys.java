@@ -5,15 +5,17 @@ package com.moseeker.db.logdb;
 
 
 import com.moseeker.db.logdb.tables.LogEmailSendrecord;
-import com.moseeker.db.logdb.tables.LogSmsRecord;
+import com.moseeker.db.logdb.tables.LogSmsSendrecord;
 import com.moseeker.db.logdb.tables.LogUserloginRecord;
 import com.moseeker.db.logdb.tables.LogWxMenuRecord;
 import com.moseeker.db.logdb.tables.LogWxMessageRecord;
+import com.moseeker.db.logdb.tables.LogWxTemplateMessageSendrecord;
 import com.moseeker.db.logdb.tables.records.LogEmailSendrecordRecord;
-import com.moseeker.db.logdb.tables.records.LogSmsRecordRecord;
+import com.moseeker.db.logdb.tables.records.LogSmsSendrecordRecord;
 import com.moseeker.db.logdb.tables.records.LogUserloginRecordRecord;
 import com.moseeker.db.logdb.tables.records.LogWxMenuRecordRecord;
 import com.moseeker.db.logdb.tables.records.LogWxMessageRecordRecord;
+import com.moseeker.db.logdb.tables.records.LogWxTemplateMessageSendrecordRecord;
 
 import javax.annotation.Generated;
 
@@ -42,20 +44,22 @@ public class Keys {
 	// -------------------------------------------------------------------------
 
 	public static final Identity<LogEmailSendrecordRecord, UInteger> IDENTITY_LOG_EMAIL_SENDRECORD = Identities0.IDENTITY_LOG_EMAIL_SENDRECORD;
-	public static final Identity<LogSmsRecordRecord, UInteger> IDENTITY_LOG_SMS_RECORD = Identities0.IDENTITY_LOG_SMS_RECORD;
+	public static final Identity<LogSmsSendrecordRecord, UInteger> IDENTITY_LOG_SMS_SENDRECORD = Identities0.IDENTITY_LOG_SMS_SENDRECORD;
 	public static final Identity<LogUserloginRecordRecord, UInteger> IDENTITY_LOG_USERLOGIN_RECORD = Identities0.IDENTITY_LOG_USERLOGIN_RECORD;
 	public static final Identity<LogWxMenuRecordRecord, UInteger> IDENTITY_LOG_WX_MENU_RECORD = Identities0.IDENTITY_LOG_WX_MENU_RECORD;
 	public static final Identity<LogWxMessageRecordRecord, UInteger> IDENTITY_LOG_WX_MESSAGE_RECORD = Identities0.IDENTITY_LOG_WX_MESSAGE_RECORD;
+	public static final Identity<LogWxTemplateMessageSendrecordRecord, UInteger> IDENTITY_LOG_WX_TEMPLATE_MESSAGE_SENDRECORD = Identities0.IDENTITY_LOG_WX_TEMPLATE_MESSAGE_SENDRECORD;
 
 	// -------------------------------------------------------------------------
 	// UNIQUE and PRIMARY KEY definitions
 	// -------------------------------------------------------------------------
 
 	public static final UniqueKey<LogEmailSendrecordRecord> KEY_LOG_EMAIL_SENDRECORD_PRIMARY = UniqueKeys0.KEY_LOG_EMAIL_SENDRECORD_PRIMARY;
-	public static final UniqueKey<LogSmsRecordRecord> KEY_LOG_SMS_RECORD_PRIMARY = UniqueKeys0.KEY_LOG_SMS_RECORD_PRIMARY;
+	public static final UniqueKey<LogSmsSendrecordRecord> KEY_LOG_SMS_SENDRECORD_PRIMARY = UniqueKeys0.KEY_LOG_SMS_SENDRECORD_PRIMARY;
 	public static final UniqueKey<LogUserloginRecordRecord> KEY_LOG_USERLOGIN_RECORD_PRIMARY = UniqueKeys0.KEY_LOG_USERLOGIN_RECORD_PRIMARY;
 	public static final UniqueKey<LogWxMenuRecordRecord> KEY_LOG_WX_MENU_RECORD_PRIMARY = UniqueKeys0.KEY_LOG_WX_MENU_RECORD_PRIMARY;
 	public static final UniqueKey<LogWxMessageRecordRecord> KEY_LOG_WX_MESSAGE_RECORD_PRIMARY = UniqueKeys0.KEY_LOG_WX_MESSAGE_RECORD_PRIMARY;
+	public static final UniqueKey<LogWxTemplateMessageSendrecordRecord> KEY_LOG_WX_TEMPLATE_MESSAGE_SENDRECORD_PRIMARY = UniqueKeys0.KEY_LOG_WX_TEMPLATE_MESSAGE_SENDRECORD_PRIMARY;
 
 	// -------------------------------------------------------------------------
 	// FOREIGN KEY definitions
@@ -68,17 +72,19 @@ public class Keys {
 
 	private static class Identities0 extends AbstractKeys {
 		public static Identity<LogEmailSendrecordRecord, UInteger> IDENTITY_LOG_EMAIL_SENDRECORD = createIdentity(LogEmailSendrecord.LOG_EMAIL_SENDRECORD, LogEmailSendrecord.LOG_EMAIL_SENDRECORD.ID);
-		public static Identity<LogSmsRecordRecord, UInteger> IDENTITY_LOG_SMS_RECORD = createIdentity(LogSmsRecord.LOG_SMS_RECORD, LogSmsRecord.LOG_SMS_RECORD.ID);
+		public static Identity<LogSmsSendrecordRecord, UInteger> IDENTITY_LOG_SMS_SENDRECORD = createIdentity(LogSmsSendrecord.LOG_SMS_SENDRECORD, LogSmsSendrecord.LOG_SMS_SENDRECORD.ID);
 		public static Identity<LogUserloginRecordRecord, UInteger> IDENTITY_LOG_USERLOGIN_RECORD = createIdentity(LogUserloginRecord.LOG_USERLOGIN_RECORD, LogUserloginRecord.LOG_USERLOGIN_RECORD.ID);
 		public static Identity<LogWxMenuRecordRecord, UInteger> IDENTITY_LOG_WX_MENU_RECORD = createIdentity(LogWxMenuRecord.LOG_WX_MENU_RECORD, LogWxMenuRecord.LOG_WX_MENU_RECORD.ID);
 		public static Identity<LogWxMessageRecordRecord, UInteger> IDENTITY_LOG_WX_MESSAGE_RECORD = createIdentity(LogWxMessageRecord.LOG_WX_MESSAGE_RECORD, LogWxMessageRecord.LOG_WX_MESSAGE_RECORD.ID);
+		public static Identity<LogWxTemplateMessageSendrecordRecord, UInteger> IDENTITY_LOG_WX_TEMPLATE_MESSAGE_SENDRECORD = createIdentity(LogWxTemplateMessageSendrecord.LOG_WX_TEMPLATE_MESSAGE_SENDRECORD, LogWxTemplateMessageSendrecord.LOG_WX_TEMPLATE_MESSAGE_SENDRECORD.ID);
 	}
 
 	private static class UniqueKeys0 extends AbstractKeys {
 		public static final UniqueKey<LogEmailSendrecordRecord> KEY_LOG_EMAIL_SENDRECORD_PRIMARY = createUniqueKey(LogEmailSendrecord.LOG_EMAIL_SENDRECORD, LogEmailSendrecord.LOG_EMAIL_SENDRECORD.ID);
-		public static final UniqueKey<LogSmsRecordRecord> KEY_LOG_SMS_RECORD_PRIMARY = createUniqueKey(LogSmsRecord.LOG_SMS_RECORD, LogSmsRecord.LOG_SMS_RECORD.ID);
+		public static final UniqueKey<LogSmsSendrecordRecord> KEY_LOG_SMS_SENDRECORD_PRIMARY = createUniqueKey(LogSmsSendrecord.LOG_SMS_SENDRECORD, LogSmsSendrecord.LOG_SMS_SENDRECORD.ID);
 		public static final UniqueKey<LogUserloginRecordRecord> KEY_LOG_USERLOGIN_RECORD_PRIMARY = createUniqueKey(LogUserloginRecord.LOG_USERLOGIN_RECORD, LogUserloginRecord.LOG_USERLOGIN_RECORD.ID);
 		public static final UniqueKey<LogWxMenuRecordRecord> KEY_LOG_WX_MENU_RECORD_PRIMARY = createUniqueKey(LogWxMenuRecord.LOG_WX_MENU_RECORD, LogWxMenuRecord.LOG_WX_MENU_RECORD.ID);
 		public static final UniqueKey<LogWxMessageRecordRecord> KEY_LOG_WX_MESSAGE_RECORD_PRIMARY = createUniqueKey(LogWxMessageRecord.LOG_WX_MESSAGE_RECORD, LogWxMessageRecord.LOG_WX_MESSAGE_RECORD.ID);
+		public static final UniqueKey<LogWxTemplateMessageSendrecordRecord> KEY_LOG_WX_TEMPLATE_MESSAGE_SENDRECORD_PRIMARY = createUniqueKey(LogWxTemplateMessageSendrecord.LOG_WX_TEMPLATE_MESSAGE_SENDRECORD, LogWxTemplateMessageSendrecord.LOG_WX_TEMPLATE_MESSAGE_SENDRECORD.ID);
 	}
 }

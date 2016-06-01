@@ -32,40 +32,40 @@ public class Tables {
 	/**
 	 * 城市字典表
 	 */
-	public static final DictCity DICT_CITY = DictCity.DICT_CITY;
+	public static final DictCity DICT_CITY = com.moseeker.db.dictdb.tables.DictCity.DICT_CITY;
 
 	/**
 	 * 学校字典表
 	 */
-	public static final DictCollege DICT_COLLEGE = DictCollege.DICT_COLLEGE;
+	public static final DictCollege DICT_COLLEGE = com.moseeker.db.dictdb.tables.DictCollege.DICT_COLLEGE;
 
 	/**
 	 * 常量字典表
 	 */
-	public static final DictConstant DICT_CONSTANT = DictConstant.DICT_CONSTANT;
+	public static final DictConstant DICT_CONSTANT = com.moseeker.db.dictdb.tables.DictConstant.DICT_CONSTANT;
 
 	/**
-	 * 国家字典表
+	 * 城市字典表
 	 */
-	public static final DictCountry DICT_COUNTRY = DictCountry.DICT_COUNTRY;
+	public static final DictCountry DICT_COUNTRY = com.moseeker.db.dictdb.tables.DictCountry.DICT_COUNTRY;
 
 	/**
 	 * 行业二级分类字典表
 	 */
-	public static final DictIndustry DICT_INDUSTRY = DictIndustry.DICT_INDUSTRY;
+	public static final DictIndustry DICT_INDUSTRY = com.moseeker.db.dictdb.tables.DictIndustry.DICT_INDUSTRY;
 
 	/**
 	 * 行业一级分类字典表
 	 */
-	public static final DictIndustryType DICT_INDUSTRY_TYPE = DictIndustryType.DICT_INDUSTRY_TYPE;
+	public static final DictIndustryType DICT_INDUSTRY_TYPE = com.moseeker.db.dictdb.tables.DictIndustryType.DICT_INDUSTRY_TYPE;
 
 	/**
 	 * 专业字典表
 	 */
-	public static final DictMajor DICT_MAJOR = DictMajor.DICT_MAJOR;
+	public static final DictMajor DICT_MAJOR = com.moseeker.db.dictdb.tables.DictMajor.DICT_MAJOR;
 
 	/**
 	 * 职能分类字典表
 	 */
-	public static final DictPosition DICT_POSITION = DictPosition.DICT_POSITION;
+	public static final DictPosition DICT_POSITION = com.moseeker.db.dictdb.tables.DictPosition.DICT_POSITION;
 }

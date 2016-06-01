@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserUser extends TableImpl<UserUserRecord> {
 
-	private static final long serialVersionUID = -464182863;
+	private static final long serialVersionUID = 1231258089;
 
 	/**
 	 * The reference instance of <code>userDB.user_user</code>
@@ -152,9 +152,9 @@ public class UserUser extends TableImpl<UserUserRecord> {
 	public final TableField<UserUserRecord, String> UNIONID = createField("unionid", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaulted(true), this, "存储仟寻服务号的unionid");
 
 	/**
-	 * The column <code>userDB.user_user.source</code>. 来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录, 7:PC(正常添加) 8:PC(我要投递) 9: PC(我感兴趣)
+	 * The column <code>userDB.user_user.source</code>. 来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录
 	 */
-	public final TableField<UserUserRecord, Byte> SOURCE = createField("source", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录, 7:PC(正常添加) 8:PC(我要投递) 9: PC(我感兴趣)");
+	public final TableField<UserUserRecord, Byte> SOURCE = createField("source", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录");
 
 	/**
 	 * The column <code>userDB.user_user.company</code>. 点击我感兴趣时填写的公司

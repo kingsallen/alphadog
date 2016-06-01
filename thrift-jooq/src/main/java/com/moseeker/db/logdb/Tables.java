@@ -5,10 +5,11 @@ package com.moseeker.db.logdb;
 
 
 import com.moseeker.db.logdb.tables.LogEmailSendrecord;
-import com.moseeker.db.logdb.tables.LogSmsRecord;
+import com.moseeker.db.logdb.tables.LogSmsSendrecord;
 import com.moseeker.db.logdb.tables.LogUserloginRecord;
 import com.moseeker.db.logdb.tables.LogWxMenuRecord;
 import com.moseeker.db.logdb.tables.LogWxMessageRecord;
+import com.moseeker.db.logdb.tables.LogWxTemplateMessageSendrecord;
 
 import javax.annotation.Generated;
 
@@ -34,7 +35,7 @@ public class Tables {
 	/**
 	 * 短信发送记录表
 	 */
-	public static final LogSmsRecord LOG_SMS_RECORD = com.moseeker.db.logdb.tables.LogSmsRecord.LOG_SMS_RECORD;
+	public static final LogSmsSendrecord LOG_SMS_SENDRECORD = com.moseeker.db.logdb.tables.LogSmsSendrecord.LOG_SMS_SENDRECORD;
 
 	/**
 	 * 用户登陆日志
@@ -50,4 +51,9 @@ public class Tables {
 	 * 模板消息发送结果记录表
 	 */
 	public static final LogWxMessageRecord LOG_WX_MESSAGE_RECORD = com.moseeker.db.logdb.tables.LogWxMessageRecord.LOG_WX_MESSAGE_RECORD;
+
+	/**
+	 * 模板消息发送结果记录
+	 */
+	public static final LogWxTemplateMessageSendrecord LOG_WX_TEMPLATE_MESSAGE_SENDRECORD = com.moseeker.db.logdb.tables.LogWxTemplateMessageSendrecord.LOG_WX_TEMPLATE_MESSAGE_SENDRECORD;
 }

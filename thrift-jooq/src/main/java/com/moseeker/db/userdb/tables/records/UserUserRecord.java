@@ -28,7 +28,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
 
-	private static final long serialVersionUID = 1501352323;
+	private static final long serialVersionUID = -2075462207;
 
 	/**
 	 * Setter for <code>userDB.user_user.id</code>. 主key
@@ -311,14 +311,14 @@ public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
 	}
 
 	/**
-	 * Setter for <code>userDB.user_user.source</code>. 来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录, 7:PC(正常添加) 8:PC(我要投递) 9: PC(我感兴趣)
+	 * Setter for <code>userDB.user_user.source</code>. 来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录
 	 */
 	public void setSource(Byte value) {
 		setValue(20, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_user.source</code>. 来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录, 7:PC(正常添加) 8:PC(我要投递) 9: PC(我感兴趣)
+	 * Getter for <code>userDB.user_user.source</code>. 来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录
 	 */
 	public Byte getSource() {
 		return (Byte) getValue(20);
