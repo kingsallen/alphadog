@@ -32,6 +32,25 @@ public class UserHrAccountController {
     UserHrAccountService.Iface userHrAccountService = ServiceUtil.getService(UserHrAccountService.Iface.class);
 
     /**
+     * 注册HR发送验证码
+     *
+     * */
+    public String sendMobileVerifiyCode(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            // 获取HR用户实体对象
+            String mobile = request.getParameter("mobile");
+            String code = request.getParameter("code");
+            int source = Integer.valueOf(request.getParameter("source"));
+
+            Response result = userHrAccountService.sendMobileVerifiyCode(mobile, code, source);
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+
+    /**
      * 添加HR账号
      * <p>
      *
@@ -43,10 +62,13 @@ public class UserHrAccountController {
     @ResponseBody
     public String postUserHrAccount(HttpServletRequest request, HttpServletResponse response) {
         try {
+            // 验证码
+            String code = request.getParameter("code");
+
             // 获取HR用户实体对象
             UserHrAccount userHrAccount = ParamUtils.initModelForm(request, UserHrAccount.class);
 
-            Response result = userHrAccountService.postResource(userHrAccount);
+            Response result = userHrAccountService.postResource(userHrAccount, code);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());

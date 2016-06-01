@@ -23,6 +23,8 @@ public final class ConstantErrorCodeMessage {
     public static final String USERACCOUNT_NOTEXIST = "{'status':10017,'message':'帐号不存在!'}";
     public static final String USER_FAV_POSITION_FAILED = "{'status':10018,'message':'获取我感兴趣失败!'}";
 
+    public static final String HR_ACCOUNT_SIGNUP_VALIDATE_SOURCE = "{'status':12001,'message':'source >=1 && <=5!'}";
+
     // 职位服务ERRCODE说明定义 2字头
 
     // PROFILE服务ERRCODE说明定义 3字头
