@@ -5,8 +5,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,6 +19,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.BasicServices;
 import com.moseeker.thrift.gen.profile.struct.Basic;
 
+@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
 public class BasicController {
 
@@ -51,11 +52,9 @@ public class BasicController {
 			Response result = basicService.postResource(basic);
 			
 			return ResponseLogNotification.success(request, result);
-			//return "{}";
 		} catch (Exception e) {	
 			e.printStackTrace();
-			//return ResponseLogNotification.fail(request, e.getMessage());
-			return "{}";
+			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}
 
@@ -72,17 +71,17 @@ public class BasicController {
 		}
 	}
 
-	@RequestMapping(value = "/profile/basic", method = RequestMethod.DELETE)
-	public void delete(HttpServletRequest request, HttpServletResponse response) {
+	@RequestMapping(value = "/profile/basic/", method = RequestMethod.DELETE)
+	@ResponseBody
+	public String delete(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			//System.out.println(id);
-			String profile_id = request.getParameter("profile_id");
 			Basic basic = ParamUtils.initModelForm(request, Basic.class);
 			Response result = basicService.delResource(basic);
 			
-			//return ResponseLogNotification.success(request, result);
+			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
-			//return ResponseLogNotification.fail(request, e.getMessage());
+			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}
 }

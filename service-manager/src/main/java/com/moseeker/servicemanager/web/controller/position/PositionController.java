@@ -48,7 +48,7 @@ public class PositionController {
 			
 			//ImportCVForm form = ParamUtils.initModelForm(request, ImportCVForm.class);
 			String userId = request.getParameter("user_id");
-			String positionId = request.getParameter("positionId");
+			String positionId = request.getParameter("position_id");
 			ValidateUtil vu = new ValidateUtil();
 			vu.addIntTypeValidate("用户编号", userId, null, null, 1, Integer.MAX_VALUE);
 			vu.addIntTypeValidate("职位编号", positionId, null, null, 1, Integer.MAX_VALUE);

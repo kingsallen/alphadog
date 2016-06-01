@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record;
@@ -68,8 +69,23 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 				for (Entry<String, String> entry : equalFilter.entrySet()) {
 					Field<?> field = tableLike.field(entry.getKey());
 					if (field != null) {
-						table.where(field.strictEqual(BeanUtils.convertTo(
-								entry.getValue(), field.getType())));
+						if(entry.getValue().startsWith("[") && entry.getValue().endsWith("]")) {
+							String[] arrayValue = entry.getValue().substring(1, entry.getValue().length()-1).split(",");
+							Condition condition = null;
+							for(String value : arrayValue) {
+								if(condition == null) {
+									condition = field.strictEqual(BeanUtils.convertTo(
+											value, field.getType()));
+								} else {
+									condition = condition.or(field.strictEqual(BeanUtils.convertTo(
+											value, field.getType())));
+								}
+							}
+							table.where(condition);
+						} else {
+							table.where(field.strictEqual(BeanUtils.convertTo(
+									entry.getValue(), field.getType())));
+						}
 					}
 				}
 			}
@@ -81,7 +97,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 				List<SortField<?>> fields = new ArrayList<>(sortBy.length);
 				SortOrder so = SortOrder.ASC;
 				for (int i = 0; i < sortBy.length; i++) {
-					Field<?> field = table.field(sortBy[i]);
+					Field<?> field = tableLike.field(sortBy[i]);
 					if (sortBy.length == order.length
 							&& !StringUtils.isNullOrEmpty(order[i])
 							&& order[i].toLowerCase().equals("desc")) {
@@ -99,8 +115,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 						}
 					}
 				}
-				Field<?>[] fieldArray = null;
-				table.orderBy(fields.toArray(fieldArray));
+				table.orderBy(fields);
 			}
 
 			/* 分段查找数据库结果集 */

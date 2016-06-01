@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,6 +19,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.AttachmentServices;
 import com.moseeker.thrift.gen.profile.struct.Attachment;
 
+@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
 public class AttachmentController {
 
@@ -61,7 +63,6 @@ public class AttachmentController {
 	public String put(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			Attachment attachment = ParamUtils.initModelForm(request, Attachment.class);
-			boolean a = attachment.isSetProfile_id();
 			Response result = attachmentService.putResource(attachment);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
