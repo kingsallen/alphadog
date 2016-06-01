@@ -3,6 +3,7 @@ package test.com.moseeker.rpccenter.server;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.Server;
 import test.com.moseeker.rpccenter.demo.EchoServiceImpl;
+import com.moseeker.rpccenter.common.ServerNodeUtils;
 
 /**
  * Created by zzh on 16/3/29.
@@ -20,7 +21,11 @@ public class ServerDemo {
         EchoServiceImpl impl = new EchoServiceImpl();
 
         try {
-            Server server = new Server(ServerDemo.class, impl, ServerNodeUtils.getPort(args));
+
+            Server server = new Server(ServerDemo.class,
+                    ServerNodeUtils.getPort(args),
+                    impl);
+
             server.start(); // 启动服务，非阻塞
 
             synchronized (ServerDemo.class) {

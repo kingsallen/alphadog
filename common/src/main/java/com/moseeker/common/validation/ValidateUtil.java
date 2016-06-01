@@ -5,7 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.ValidateNotAppointParamException;
@@ -32,9 +33,9 @@ import com.moseeker.common.validation.rules.StringLengthValidateRule;
  */
 public class ValidateUtil {
 
-	Logger logger = Logger.getLogger(ValidateUtil.class);
+	Logger logger = LoggerFactory.getLogger(ValidateUtil.class);
 
-	private Map<String, List<ValidateRule>> rules = new HashMap<String, List<ValidateRule>>();
+	private Map<String, List<ValidateRule>> rules = new HashMap<>();
 
 	/**
 	 * 往验证器中添加一个requiredValidateRule(必要验证器)

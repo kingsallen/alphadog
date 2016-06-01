@@ -45,9 +45,9 @@ public class TServiceClientPoolFactory<T> extends BaseKeyedPoolableObjectFactory
         // 生成client对象
         if (key != null) {
             TSocket tsocket = new TSocket(key.getIp(), key.getPort(), timeout);
+            tsocket.open();
             TProtocol protocol = new TBinaryProtocol(tsocket);
             TServiceClient client = clientFactory.getClient(protocol);
-            tsocket.open();
             return (T) client;
         }
         LOGGER.error("Not find a vilid server!");

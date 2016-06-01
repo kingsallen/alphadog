@@ -1,208 +1,287 @@
 package com.moseeker.profile.dao.impl;
 
-import static com.moseeker.db.profileDB.tables.Profile.PROFILE;
-
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.jooq.DSLContext;
-import org.jooq.Field;
-import org.jooq.Record;
 import org.jooq.Result;
-import org.jooq.SelectJoinStep;
-import org.jooq.SortField;
-import org.jooq.SortOrder;
-import org.springframework.stereotype.Component;
+import org.jooq.impl.DSL;
+import org.jooq.types.UByte;
+import org.jooq.types.UInteger;
+import org.springframework.stereotype.Repository;
 
-import com.moseeker.common.dbconnection.DatabaseConnectionHelper;
-import com.moseeker.common.util.StringUtils;
-import com.moseeker.db.profileDB.tables.records.ProfileRecord;
+import com.moseeker.common.dbutils.DBConnHelper;
+import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
+import com.moseeker.db.profiledb.tables.ProfileProfile;
+import com.moseeker.db.profiledb.tables.records.ProfileAttachmentRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileAwardsRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileBasicRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileCredentialsRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileEducationRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileImportRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileLanguageRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileOtherRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileProjectexpRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileSkillRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileWorkexpRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileWorksRecord;
 import com.moseeker.profile.dao.ProfileDao;
-import com.moseeker.thrift.gen.profile.struct.CommonQuery;
 
-@Component
-public class ProfileDaoImpl implements ProfileDao<ProfileRecord> {
+@Repository
+public class ProfileDaoImpl extends
+		BaseDaoImpl<ProfileProfileRecord, ProfileProfile> implements
+		ProfileDao {
 
 	@Override
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public Result<Record> getProfiles(CommonQuery query, ProfileRecord record)
-			throws SQLException {
-		DSLContext create = DatabaseConnectionHelper.getConnection()
-				.getJooqDSL();
+	protected void initJOOQEntity() {
+		this.tableLike = ProfileProfile.PROFILE_PROFILE;
+	}
 
-		SelectJoinStep<Record> table = create.select().from(PROFILE);
-
-		if (query.getEqualFilter() != null && query.getEqualFilter().size() > 0) {
-			Map<String, String> equalFilter = query.getEqualFilter();
-			for(Entry<String, String> entry : equalFilter.entrySet()) {
-				Field field = table.field(entry.getKey());
-				if(field != null) {
-					table.where(field.equal(convertTo(entry.getValue(), field.getType())));
+	@Override
+	public ProfileProfileRecord getProfileByIdOrUserId(int userId, int profileId) {
+		ProfileProfileRecord record = null;
+		Connection conn = null;
+		try {
+			if(userId > 0 || profileId > 0) {
+				conn = DBConnHelper.DBConn.getConn();
+				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+				Result<ProfileProfileRecord> result = create.selectFrom(ProfileProfile.PROFILE_PROFILE)
+						.where((ProfileProfile.PROFILE_PROFILE.ID.equal(UInteger.valueOf(profileId)))
+						.or(ProfileProfile.PROFILE_PROFILE.USER_ID.equal(UInteger.valueOf(userId))))
+						.and(ProfileProfile.PROFILE_PROFILE.DISABLE.equal(UByte.valueOf(1)))
+						.limit(1).fetch();
+				if(result != null && result.size() > 0) {
+					record = result.get(0);
 				}
 			}
-		}
-		
-		if (!StringUtils.isNullOrEmpty(query.getSortby())) {
-			String[] sortBy = query.getSortby().split(",");
-			String[] order = query.getOrder().split(",");
-			
-			List<SortField<?>> fields = new ArrayList<>(sortBy.length);
-			SortOrder so = SortOrder.ASC;
-			for (int i = 0; i < sortBy.length - 1; i++) {
-				Field<?> field = table.field(sortBy[i]);
-				if (sortBy.length == order.length
-						&& !StringUtils.isNullOrEmpty(order[i])
-						&& order[i].toLowerCase().equals("desc")) {
-					so = SortOrder.DESC;
+		} catch (SQLException e) {
+			logger.error(e.getMessage(), e);
+		} finally {
+			try {
+				if(conn != null && !conn.isClosed()) {
+					conn.close();
 				}
-				if (field != null) {
-					switch (so) {
-					case ASC:
-						fields.add(field.asc());
-						break;
-					case DESC:
-						fields.add(field.desc());
-						break;
-					default:
+			} catch (SQLException e) {
+				logger.error(e.getMessage(), e);
+			} finally {
+				//do nothing
+			}
+		}
+		return record;
+	}
+
+	@Override
+	public int saveProfile(ProfileProfileRecord profileRecord, ProfileBasicRecord basicRecord,
+			List<ProfileAttachmentRecord> attachmentRecords, List<ProfileAwardsRecord> awardsRecords,
+			List<ProfileCredentialsRecord> credentialsRecords, List<ProfileEducationRecord> educationRecords,
+			ProfileImportRecord importRecord, List<IntentionRecord> intentionRecords,
+			List<ProfileLanguageRecord> languages, ProfileOtherRecord otherRecord,
+			List<ProfileProjectexpRecord> projectExps, List<ProfileSkillRecord> skillRecords,
+			List<ProfileWorkexpRecord> workexpRecords, List<ProfileWorksRecord> worksRecords) {
+		int profileId = 0;
+		Connection conn = null;
+		try {
+			conn = DBConnHelper.DBConn.getConn();
+			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+			if(profileRecord != null) {
+				create.transaction(configuration -> {
+					Timestamp now = new Timestamp(System.currentTimeMillis());
+					profileRecord.setCreateTime(now);
+					DSL.using(configuration).attach(profileRecord);
+					profileRecord.insert();
+					if(basicRecord != null) {
+						basicRecord.setProfileId(profileRecord.getId());
+						basicRecord.setCreateTime(now);
+						DSL.using(configuration).attach(basicRecord);
+						basicRecord.insert();
 					}
+					if(attachmentRecords != null && attachmentRecords.size() > 0) {
+						attachmentRecords.forEach(attachmentRecord -> {
+							attachmentRecord.setProfileId(profileRecord.getId());
+							attachmentRecord.setCreateTime(now);
+						});
+						DSL.using(configuration).batchInsert(attachmentRecords);
+					}
+					if(awardsRecords != null && awardsRecords.size() > 0) {
+						awardsRecords.forEach(awardsRecord -> {
+							awardsRecord.setProfileId(profileRecord.getId());
+							awardsRecord.setCreateTime(now);
+						});
+						DSL.using(configuration).batchInsert(awardsRecords);
+					}
+					if(credentialsRecords != null && credentialsRecords.size() > 0) {
+						credentialsRecords.forEach(credentialsRecord -> {
+							credentialsRecord.setProfileId(profileRecord.getId());
+							credentialsRecord.setCreateTime(now);
+						});
+						DSL.using(configuration).batchInsert(credentialsRecords);
+					}
+					if(educationRecords != null && educationRecords.size() > 0) {
+						educationRecords.forEach(educationRecord -> {
+							educationRecord.setProfileId(profileRecord.getId());
+							educationRecord.setCreateTime(now);
+						});
+						DSL.using(configuration).batchInsert(educationRecords);
+					}
+					if(importRecord != null && importRecord.size() > 0) {
+						DSL.using(configuration).attach(importRecord);
+						importRecord.setCreateTime(now);
+						importRecord.insert();
+					}
+					if(intentionRecords != null && intentionRecords.size() > 0) {
+						intentionRecords.forEach(intentionRecord -> {
+							intentionRecord.setProfileId(profileRecord.getId());
+							intentionRecord.setCreateTime(now);
+							DSL.using(configuration).attach(intentionRecord);
+							intentionRecord.insert();
+							if(intentionRecord.getCities().size() > 0) {
+								intentionRecord.getCities().forEach(city -> {
+									city.setProfileIntentionId(intentionRecord.getId());
+									DSL.using(configuration).attach(city);
+									city.insert();
+								});
+							}
+							if(intentionRecord.getPositions().size() > 0) {
+								intentionRecord.getPositions().forEach(position -> {
+									position.setProfileIntentionId(intentionRecord.getId());
+									DSL.using(configuration).attach(position);
+									position.insert();
+								});
+							}
+							if(intentionRecord.getIndustries().size() > 0) {
+								intentionRecord.getIndustries().forEach(industry -> {
+									industry.setProfileIntentionId(intentionRecord.getId());
+									DSL.using(configuration).attach(industry);
+									industry.insert();
+								});
+							}
+						});
+					}
+					if(languages != null && languages.size() > 0) {
+						languages.forEach(language -> {
+							language.setProfileId(profileRecord.getId());
+							language.setCreateTime(now);
+						});
+						DSL.using(configuration).batchInsert(languages);
+					}
+					if(otherRecord != null) {
+						DSL.using(configuration).attach(otherRecord);
+						otherRecord.setCreateTime(now);
+						otherRecord.insert();
+					}
+					if(projectExps != null && projectExps.size() > 0) {
+						projectExps.forEach(projectExp -> {
+							projectExp.setProfileId(profileRecord.getId());
+							projectExp.setCreateTime(now);
+						});
+						DSL.using(configuration).batchInsert(projectExps);
+					}
+					if(skillRecords != null && skillRecords.size() > 0) {
+						skillRecords.forEach(skill -> {
+							skill.setProfileId(profileRecord.getId());
+							skill.setCreateTime(now);
+						});
+						DSL.using(configuration).batchInsert(skillRecords);
+					}
+					if(workexpRecords != null && workexpRecords.size() > 0) {
+						workexpRecords.forEach(workexp -> {
+							workexp.setProfileId(profileRecord.getId());
+							workexp.setCreateTime(now);
+						});
+						DSL.using(configuration).batchInsert(workexpRecords);
+					}
+					
+					if(worksRecords != null && worksRecords.size() > 0) {
+						worksRecords.forEach(worksRecord -> {
+							worksRecord.setProfileId(profileRecord.getId());
+							worksRecord.setCreateTime(now);
+						});
+						DSL.using(configuration).batchInsert(worksRecords);
+					}
+				});
+				profileId = profileRecord.getId().intValue();
+			}
+		} catch (SQLException e) {
+			logger.error(e.getMessage(), e);
+		} finally {
+			try {
+				if(conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				logger.error(e.getMessage(), e);
+			} finally {
+				//do nothing
+			}
+		}
+		return profileId;
+	}
+
+	@Override
+	public int deleteProfile(int profileId) {
+		int result = 0;
+		if(profileId > 0) {
+			Connection conn = null;
+			try {
+				conn = DBConnHelper.DBConn.getConn();
+				conn.setAutoCommit(false);
+				Statement stmt = conn.createStatement();
+				stmt.executeUpdate("delete from profileDB.profile_attachment where profile_id = "+profileId);
+				stmt.executeUpdate("delete from profileDB.profile_awards where profile_id = "+profileId);
+				stmt.executeUpdate("delete from profileDB.profile_basic where profile_id = "+profileId);
+				stmt.executeUpdate("delete from profileDB.profile_credentials where profile_id = "+profileId);
+				stmt.executeUpdate("delete from profileDB.profile_education where profile_id = "+profileId);
+				stmt.executeUpdate("delete from profileDB.profile_import where profile_id = "+profileId);
+				stmt.executeUpdate("delete from profileDB.profile_import where profile_id = "+profileId);
+				
+				StringBuffer sb = new StringBuffer("(");
+				ResultSet resultSet = stmt.executeQuery("select id from profile_intention where profile_id = "+profileId);
+				while(resultSet.next()) {
+					sb.append(resultSet.getLong("id")+",");
+				}
+				if(sb.length() > 1) {
+					sb.deleteCharAt(sb.length()-1);
+					sb.append(")");
+					stmt.executeUpdate("delete from profileDB.profile_intention_city where profile_intention_id in "+sb.toString());
+					stmt.executeUpdate("delete from profileDB.profile_intention_position where profile_intention_id in "+sb.toString());
+					stmt.executeUpdate("delete from profileDB.profile_intention_industry where profile_intention_id in "+sb.toString());
+				}
+				stmt.executeUpdate("delete from profileDB.profile_intention where profile_id = "+profileId);
+				stmt.executeUpdate("delete from profileDB.profile_language where profile_id = "+profileId);
+				stmt.executeUpdate("delete from profileDB.profile_other where profile_id = "+profileId);
+				stmt.executeUpdate("delete from profileDB.profile_projectexp where profile_id = "+profileId);
+				stmt.executeUpdate("delete from profileDB.profile_skill where profile_id = "+profileId);
+				stmt.executeUpdate("delete from profileDB.profile_workexp where profile_id = "+profileId);
+				stmt.executeUpdate("delete from profileDB.profile_works where profile_id = "+profileId);
+				result = stmt.executeUpdate("delete from profileDB.profile_profile where id = "+profileId);
+				conn.commit();
+				conn.close();
+			} catch (SQLException e) {
+				logger.error(e.getMessage(), e);
+				try {
+					if(conn != null && !conn.isClosed()) {
+						conn.rollback();
+					}
+				} catch (SQLException e1) {
+					logger.error(e.getMessage(), e);
+				}
+			} finally {
+				try {
+					if(conn != null && !conn.isClosed()) {
+						conn.close();
+					}
+				} catch (SQLException e) {
+					logger.error(e.getMessage(), e);
+				} finally {
+					//do nothing
 				}
 			}
-			Field<?>[] fieldArray = null;
-			table.orderBy(fields.toArray(fieldArray));
 		}
-
-		/* 分段查找数据库结果集 */
-		int offset = 0;
-		int limit = 0;
-		if (query.getLimit() > 0) {
-			if (query.getOffset() > 0) {
-				offset = query.getOffset();
-			}
-			limit = query.getLimit();
-		}
-		if (limit > 0) {
-			table.limit(offset, limit);
-		}
-
-		Result<Record> result = table.fetch();
 		return result;
 	}
-
-	@Override
-	public int postProfiles(List<ProfileRecord> records) throws SQLException {
-		int insertret = 0;
-		if(records != null && records.size() > 0) {
-			DSLContext create = DatabaseConnectionHelper.getConnection().getJooqDSL();
-			Date date = new Date();
-			Timestamp ts = new Timestamp(date.getTime());
-			for(ProfileRecord record : records) {
-				record.setCreateTime(ts);
-				record.setUpdateTime(ts);
-			}
-			insertret = create.batchInsert(records).execute()[0];
-		}
-		
-		return insertret;
-	}
-	
-	@Override
-	public int putProfiles(List<ProfileRecord> records) throws SQLException {
-		int insertret = 0;
-		if(records != null && records.size() > 0) {
-			DSLContext create = DatabaseConnectionHelper.getConnection().getJooqDSL();
-
-			Date date = new Date();
-			Timestamp ts = new Timestamp(date.getTime());
-			for(ProfileRecord record : records) {
-				record.setUpdateTime(ts);
-			}
-			insertret = create.batchUpdate(records).execute()[0];
-		}
-		
-		return insertret;
-	}
-	
-	@Override
-	public int delProfiles(List<ProfileRecord> records) throws SQLException {
-		int insertret = 0;
-		if(records != null && records.size() > 0) {
-			DSLContext create = DatabaseConnectionHelper.getConnection().getJooqDSL();
-			insertret = create.batchDelete(records).execute()[0];
-		}
-		
-		return insertret;
-	}
-	
-	@Override
-	public int postProfile(ProfileRecord record) throws SQLException {
-		int insertret = 0;
-		if(record != null) {
-			DSLContext create = DatabaseConnectionHelper.getConnection().getJooqDSL();
-			Date date = new Date();
-			Timestamp ts = new Timestamp(date.getTime());
-			record.setCreateTime(ts);
-			record.setUpdateTime(ts);
-			insertret = create.batchInsert(record).execute()[0];
-		}
-		
-		return insertret;
-	}
-	
-	@Override
-	public int putProfile(ProfileRecord record) throws SQLException {
-		int insertret = 0;
-		if(record != null) {
-			DSLContext create = DatabaseConnectionHelper.getConnection().getJooqDSL();
-			Date date = new Date();
-			Timestamp ts = new Timestamp(date.getTime());
-			record.setUpdateTime(ts);
-			create.updateQuery(PROFILE).setRecord(record);
-		}
-		
-		return insertret;
-	}
-
-	@Override
-	public int delProfile(ProfileRecord record) throws SQLException {
-		int insertret = 0;
-		if(record != null) {
-			DSLContext create = DatabaseConnectionHelper.getConnection().getJooqDSL();
-			insertret = create.batchDelete(record).execute()[0];
-		}
-		
-		return insertret;
-	}
-	
-	/**
-     * 类型转换。提供将对象转成指定的类型的功能
-     *
-     * @param value     被转换的对象
-     * @param clazzType 指定一个转成的类型
-     * @return 返回转换的结果
-     */
-    @SuppressWarnings("unchecked")
-    private <T> T convertTo(Object value, Class<T> clazzType) {
-        if (clazzType.isAssignableFrom(String.class)) {
-            return (T) value.toString();
-        } else if (clazzType.isAssignableFrom(Long.class)) {
-            return (T) new Long(value.toString());
-        } else if (clazzType.isAssignableFrom(Byte.class)) {
-            return (T) new Byte(value.toString());
-        } else if (clazzType.isAssignableFrom(Integer.class)) {
-            return (T) new Integer(value.toString());
-        } else if (clazzType.isAssignableFrom(Float.class)) {
-            return (T) new Float(value.toString());
-        } else if (clazzType.isAssignableFrom(Float.class)) {
-            return (T) new Double(value.toString());
-        } else if (clazzType.isAssignableFrom(Boolean.class)) {
-            return (T) new Boolean(value.toString());
-        } else {
-            return (T) value.toString();
-        }
-    }
 }

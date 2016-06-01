@@ -1,23 +1,18 @@
 package com.moseeker.common.redis.cache.db;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jooq.DSLContext;
 import org.jooq.Record;
-import org.jooq.SQLDialect;
-import org.jooq.impl.DSL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.moseeker.common.dbconnection.DatabaseConnectionHelper;
+import com.moseeker.common.dbutils.DatabaseConnectionHelper;
 import com.moseeker.common.redis.RedisConfigRedisKey;
-import com.moseeker.common.redis.cache.db.configdb.Tables;
-import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.Notification;
+import com.moseeker.db.configdb.Tables;
 
 /**
  * 
@@ -53,21 +48,20 @@ public class DbManager {
 	 *         {@see com.moseeker.common.cache.lru.CacheConfigRedisKey}
 	 */
 	public static RedisConfigRedisKey readFromDB(int appId, String keyIdentifier, byte configType) {
-		ConfigPropertiesUtil configUtil = ConfigPropertiesUtil.getInstance();
-		RedisConfigRedisKey redisKey = new RedisConfigRedisKey();
-		try (Connection conn = DriverManager.getConnection(configUtil.get("mycat.url", String.class),
-				configUtil.get("mycat.userName", String.class), configUtil.get("mycat.password", String.class))) {
-			DSLContext create = DSL.using(conn, SQLDialect.MYSQL);
-			Record row = create.select().from(Tables.CACHECONFIG_REDISKEY)
-					.where(Tables.CACHECONFIG_REDISKEY.PROJECT_APPID.equal(appId))
-					.and(Tables.CACHECONFIG_REDISKEY.TYPE.equal(configType))
-					.and(Tables.CACHECONFIG_REDISKEY.KEY_IDENTIFIER.equal(keyIdentifier)).fetchAny();
+		RedisConfigRedisKey redisKey = null;
+		try {
+			DSLContext create = DatabaseConnectionHelper.getConnection().getJooqDSL();
+			Record row = create.select().from(Tables.CONFIG_CACHECONFIG_REDISKEY)
+					.where(Tables.CONFIG_CACHECONFIG_REDISKEY.PROJECT_APPID.equal(appId))
+					.and(Tables.CONFIG_CACHECONFIG_REDISKEY.TYPE.equal(configType))
+					.and(Tables.CONFIG_CACHECONFIG_REDISKEY.KEY_IDENTIFIER.equal(keyIdentifier)).fetchAny();
 			if (row != null) {
-				redisKey.setAppId(row.getValue(Tables.CACHECONFIG_REDISKEY.PROJECT_APPID));
-				redisKey.setKeyIdentifier(row.getValue(Tables.CACHECONFIG_REDISKEY.KEY_IDENTIFIER));
-				redisKey.setDesc(row.getValue(Tables.CACHECONFIG_REDISKEY.DESC));
-				redisKey.setPattern(row.getValue(Tables.CACHECONFIG_REDISKEY.PATTERN));
-				redisKey.setTtl(row.getValue(Tables.CACHECONFIG_REDISKEY.TTL));
+				redisKey = new RedisConfigRedisKey();
+				redisKey.setAppId(row.getValue(Tables.CONFIG_CACHECONFIG_REDISKEY.PROJECT_APPID));
+				redisKey.setKeyIdentifier(row.getValue(Tables.CONFIG_CACHECONFIG_REDISKEY.KEY_IDENTIFIER));
+				redisKey.setDesc(row.getValue(Tables.CONFIG_CACHECONFIG_REDISKEY.DESC));
+				redisKey.setPattern(row.getValue(Tables.CONFIG_CACHECONFIG_REDISKEY.PATTERN));
+				redisKey.setTtl(row.getValue(Tables.CONFIG_CACHECONFIG_REDISKEY.TTL));
 			}
 
 		} catch (Exception e) {
@@ -90,15 +84,15 @@ public class DbManager {
 		DSLContext create;
 		try {
 			create = DatabaseConnectionHelper.getConnection().getJooqDSL();
-
-			create.select().from(Tables.CACHECONFIG_REDISKEY).where(Tables.CACHECONFIG_REDISKEY.TYPE.equal(configType))
+			System.out.println(create.select().from(Tables.CONFIG_CACHECONFIG_REDISKEY).where(Tables.CONFIG_CACHECONFIG_REDISKEY.TYPE.equal(configType)).toString());
+			create.select().from(Tables.CONFIG_CACHECONFIG_REDISKEY).where(Tables.CONFIG_CACHECONFIG_REDISKEY.TYPE.equal(configType))
 					.fetch().forEach((row) -> {
 						RedisConfigRedisKey redisKey = new RedisConfigRedisKey();
-						redisKey.setAppId(row.getValue(Tables.CACHECONFIG_REDISKEY.PROJECT_APPID));
-						redisKey.setKeyIdentifier(row.getValue(Tables.CACHECONFIG_REDISKEY.KEY_IDENTIFIER));
-						redisKey.setDesc(row.getValue(Tables.CACHECONFIG_REDISKEY.DESC));
-						redisKey.setPattern(row.getValue(Tables.CACHECONFIG_REDISKEY.PATTERN));
-						redisKey.setTtl(row.getValue(Tables.CACHECONFIG_REDISKEY.TTL));
+						redisKey.setAppId(row.getValue(Tables.CONFIG_CACHECONFIG_REDISKEY.PROJECT_APPID));
+						redisKey.setKeyIdentifier(row.getValue(Tables.CONFIG_CACHECONFIG_REDISKEY.KEY_IDENTIFIER));
+						redisKey.setDesc(row.getValue(Tables.CONFIG_CACHECONFIG_REDISKEY.DESC));
+						redisKey.setPattern(row.getValue(Tables.CONFIG_CACHECONFIG_REDISKEY.PATTERN));
+						redisKey.setTtl(row.getValue(Tables.CONFIG_CACHECONFIG_REDISKEY.TTL));
 						redisKeys.add(redisKey);
 					});
 		} catch (Exception e) {

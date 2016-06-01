@@ -9,7 +9,8 @@ package com.moseeker.common.redis;
  * @author wjf
  * @version
  */
-public interface RedisCallback {
 
-	public String call();
+@FunctionalInterface
+public interface RedisCallback {
+	String call();
 }

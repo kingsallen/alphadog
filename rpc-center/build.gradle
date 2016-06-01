@@ -6,9 +6,6 @@ apply plugin: 'eclipse'
 
 sourceCompatibility = 1.8
 
-repositories {
-    maven { url 'http://maven.oschina.net/content/groups/public/' }
-}
 
 dependencies {
     compile deps["libthrift"]
@@ -23,5 +20,14 @@ dependencies {
 
 task copyJars(type: Copy) {
   from configurations.runtime
-  into 'lib' // 目标位置
+  into 'build/libs' // 目标位置
+}
+
+jar {
+
+    // build one flat jar
+    //from {
+    //    configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    //}
+
 }

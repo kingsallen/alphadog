@@ -10,13 +10,14 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.moseeker.common.exception.ParamNullException;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.FormCheck;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.sensitivewords.SensitiveWordNode;
-import com.mysql.jdbc.StringUtils;
 
 /**
  * 
@@ -28,7 +29,7 @@ import com.mysql.jdbc.StringUtils;
  */
 public class SensitiveWordDB {
 	
-	Logger logger = Logger.getLogger(SensitiveWordDB.class);
+	Logger logger = LoggerFactory.getLogger(SensitiveWordDB.class);
 
 	private SensitiveWordNode rootNode = new SensitiveWordNode(); //根节点
 
@@ -60,7 +61,7 @@ public class SensitiveWordDB {
 						}
 							
 					} catch (Exception e) {
-						Logger.getLogger(SensitiveWordDB.class).error("error", e);
+						LoggerFactory.getLogger(SensitiveWordDB.class).error("error", e);
 						//send a warning 
 					}
 				}

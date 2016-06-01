@@ -9,16 +9,13 @@ import java.util.Enumeration;
 import java.util.Random;
 import java.util.regex.Pattern;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Created by zzh on 16/3/28.
  */
 public class NetUtils {
 
     /** LOGGER */
-    private static final Logger LOGGER = LoggerFactory.getLogger(NetUtils.class);
+    //private static final Logger LOGGER = LoggerFactory.getLogger(NetUtils.class);
 
     /** 本机回送地址 */
     public static final String LOCALHOST = "127.0.0.1";
@@ -241,7 +238,7 @@ public class NetUtils {
                 return localAddress;
             }
         } catch (Throwable e) {
-            LOGGER.warn("Failed to retriving ip address, " + e.getMessage(), e);
+            //LOGGER.warn("Failed to retriving ip address, " + e.getMessage(), e);
         }
         try {
             Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
@@ -258,19 +255,19 @@ public class NetUtils {
                                         return address;
                                     }
                                 } catch (Throwable e) {
-                                    LOGGER.warn("Failed to retriving ip address, " + e.getMessage(), e);
+                                    //LOGGER.warn("Failed to retriving ip address, " + e.getMessage(), e);
                                 }
                             }
                         }
                     } catch (Throwable e) {
-                        LOGGER.warn("Failed to retriving ip address, " + e.getMessage(), e);
+                        //LOGGER.warn("Failed to retriving ip address, " + e.getMessage(), e);
                     }
                 }
             }
         } catch (Throwable e) {
-            LOGGER.warn("Failed to retriving ip address, " + e.getMessage(), e);
+            //LOGGER.warn("Failed to retriving ip address, " + e.getMessage(), e);
         }
-        LOGGER.error("Could not get local host ip address, will use 127.0.0.1 instead.");
+        //LOGGER.error("Could not get local host ip address, will use 127.0.0.1 instead.");
         return localAddress;
     }
 }

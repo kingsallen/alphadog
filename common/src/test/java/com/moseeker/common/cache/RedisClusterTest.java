@@ -8,7 +8,7 @@ import com.moseeker.common.redis.RedisClientFactory;
 
 public class RedisClusterTest {
 
-	@Test
+	/*@Test
 	public void connPoolTest() {
 		RedisClient redisClient = RedisClientFactory.getCacheClient();
 		String key = "DEFAULT";
@@ -26,5 +26,5 @@ public class RedisClusterTest {
     	System.out.println("redisKey:"+redisKey);
     	System.out.println("redisValue:"+redisValue);
     	System.out.println(stopWatch.toString());
-	}
+	}*/
 }

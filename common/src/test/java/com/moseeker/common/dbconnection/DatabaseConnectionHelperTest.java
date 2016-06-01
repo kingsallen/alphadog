@@ -9,6 +9,8 @@ import org.jooq.Record;
 import org.jooq.Result;
 import org.junit.Test;
 
+import com.moseeker.common.dbutils.DatabaseConnectionHelper;
+
 public class DatabaseConnectionHelperTest {
 
     @Test

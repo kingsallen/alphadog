@@ -1,28 +1,37 @@
 package com.moseeker.profile.dao;
 
-import java.sql.SQLException;
 import java.util.List;
 
-import org.jooq.Record;
-import org.jooq.Result;
+import com.moseeker.common.providerutils.daoutils.BaseDao;
+import com.moseeker.db.profiledb.tables.records.ProfileAttachmentRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileAwardsRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileBasicRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileCredentialsRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileEducationRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileImportRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileLanguageRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileOtherRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileProjectexpRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileSkillRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileWorkexpRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileWorksRecord;
+import com.moseeker.profile.dao.impl.IntentionRecord;
 
-import com.moseeker.db.profileDB.tables.records.ProfileRecord;
-import com.moseeker.thrift.gen.profile.struct.CommonQuery;
 
-public interface ProfileDao<T> {
 
-	Result<Record> getProfiles(CommonQuery query, ProfileRecord record) throws SQLException ;
+public interface ProfileDao extends BaseDao<ProfileProfileRecord> {
 
-	int postProfiles(List<ProfileRecord> records) throws SQLException;
+	ProfileProfileRecord getProfileByIdOrUserId(int userId, int profileId);
 
-	int putProfiles(List<ProfileRecord> records) throws SQLException;
+	int saveProfile(ProfileProfileRecord profileRecord, ProfileBasicRecord basicRecord,
+			List<ProfileAttachmentRecord> attachmentRecords, List<ProfileAwardsRecord> awardsRecords,
+			List<ProfileCredentialsRecord> credentialsRecords, List<ProfileEducationRecord> educationRecords,
+			ProfileImportRecord importRecords, List<IntentionRecord> intentionRecords,
+			List<ProfileLanguageRecord> languages, ProfileOtherRecord otherRecord,
+			List<ProfileProjectexpRecord> projectExps, List<ProfileSkillRecord> skillRecords,
+			List<ProfileWorkexpRecord> workexpRecords, List<ProfileWorksRecord> worksRecords);
 
-	int delProfiles(List<ProfileRecord> records) throws SQLException;
-
-	int postProfile(ProfileRecord record) throws SQLException;
-
-	int putProfile(ProfileRecord record) throws SQLException;
-
-	int delProfile(ProfileRecord records) throws SQLException;
+	int deleteProfile(int profileId);
 
 }

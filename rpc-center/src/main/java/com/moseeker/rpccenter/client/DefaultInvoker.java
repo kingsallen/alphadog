@@ -56,6 +56,7 @@ public class DefaultInvoker<T> implements Invoker {
 
         for (int i = 0; i == 0 || i < retry + 1; i++) {
             try {
+                LOGGER.info("hostSet getAll size : " + hostSet.getAll().size());
                 serverNode = LoadBalance.nextBackend(hostSet);
                 LOGGER.info(serverNode.toString());
                 if (serverNode == null) {
@@ -66,8 +67,14 @@ public class DefaultInvoker<T> implements Invoker {
                 return result;
             } catch (InvocationTargetException ite) {// XXX:InvocationTargetException异常发生在method.invoke()中
                 Throwable cause = ite.getCause();
+                
+              //  cause.getMessage()
                 if (cause != null) {
                     if (cause instanceof TTransportException) {
+
+                        // 超时
+                        hostSet.addDeadInstance(serverNode); // 加入dead集合中
+
                         exception = cause;
                         try {
                             // XXX:这里直接清空pool,否则会出现连接慢恢复的现象
@@ -100,6 +107,6 @@ public class DefaultInvoker<T> implements Invoker {
                 }
             }
         }
-        throw new RpcException("Invoke error!", exception);
+        throw new RpcException("服务超时，请稍候再试!", exception);
     }
 }

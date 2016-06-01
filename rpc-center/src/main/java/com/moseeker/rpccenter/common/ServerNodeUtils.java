@@ -70,6 +70,12 @@ public class ServerNodeUtils {
      * @return 端口号
      */
     public static int getPort(String[] args) throws Exception{
+    	if(args != null) {
+    		for(int i=0; i<args.length; i++) {
+    			System.out.println(args[i]);
+    			//throw new RuntimeException(args[i]);
+    		}
+    	}
         if ( args.length > 1 ){
             Integer port = Integer.valueOf(args[1]);
             if (args[0].equals("-port") && port > 10000 && port < 30000){

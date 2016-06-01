@@ -129,6 +129,9 @@ public abstract class RedisClient {
 			throws CacheConfigNotExistException {
 		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
 		String cacheKey = redisKey.getPattern();
+		if(cacheKey == null) {
+			throw new CacheConfigNotExistException();
+		}
 		return redisCluster.lpush(cacheKey, newvalue);
 	}
 
@@ -146,4 +149,14 @@ public abstract class RedisClient {
 		String cacheKey = redisKey.getPattern();
 		return redisCluster.rpop(cacheKey);
 	}
+	
+	public Long  del(int appId, String key_identifier, String str)
+			throws CacheConfigNotExistException {
+		Long result = (long) 0;
+		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
+		String cacheKey = String.format(redisKey.getPattern(), str);
+		if(redisCluster.exists(cacheKey)) {
+			result =  redisCluster.del(cacheKey);
+		}
+		return result;	}	
 }

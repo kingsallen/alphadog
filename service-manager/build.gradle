@@ -14,7 +14,7 @@ sourceCompatibility = 1.8
 
 // 设置依赖
 dependencies {
-    //compile project(":thrift-gen-java")
+    compile project(":thrift-jooq")
     compile project(":common")
     compile project(":rpc-center")
 
@@ -53,7 +53,7 @@ jar {
 
 task copyJars(type: Copy) {
   from configurations.runtime
-  into 'lib' // 目标位置
+  into 'build/libs' // 目标位置
 }
 
 jettyRun{

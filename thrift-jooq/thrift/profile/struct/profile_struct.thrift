@@ -8,20 +8,14 @@ namespace java com.moseeker.thrift.gen.profile.struct
  */
 typedef string Timestamp;
 
-struct CommonQuery {
-    1: i32 appid,
-    2: optional i32 limit=10,
-    3: optional i32 offset,
-    4: optional i32 page,
-    5: optional i32 per_page,
-    6: optional string sortby,
-    7: optional string order,
-    8: optional string fields,
-    9: optional bool nocache=false
-    10: optional i32 id,
-    11: optional i32 userid,
-    12: optional i32 companyid,
-    13: optional map<string, string> equalFilter
+struct Attachment { 
+    1: i32 id,
+    2: i32 profile_id,
+    3: string name,
+    4: string path,
+    5: string description,
+    6: Timestamp create_time,
+    7: Timestamp update_time
 }
 
 struct Profile { 
@@ -31,74 +25,72 @@ struct Profile {
     4: i32 source, 
     5: i32 completeness,
     6: i32 user_id,
-    7: Timestamp create_time,
-    8: Timestamp update_time
+    7: i16 disable,
+    8: Timestamp create_time,
+    9: Timestamp update_time
 }
 
-struct Attachment { 
+struct Awards { 
     1: i32 id,
     2: i32 profile_id,
-    3: i32 name,
-    4: string source, 
-    5: string path,
-    6: string description,
-    7: Timestamp create_time,
-    8: Timestamp update_time
+    3: Timestamp reward_date,
+    4: string name, 
+    5: string award_winning_status,
+    6: string level,
+    7: string description,
+    8: Timestamp create_time,
+    9: Timestamp update_time
 }
 
 struct Basic { 
     1: i32 profile_id,
-    2: Timestamp birth,
+    2: string name,
     3: i16 gender,
-    4: string idnumber, 
-    5: string location,
-    6: string nationality,
-    7: i16 marriage,
-    8: i16 residence,
-    9: string address,
-    10: i16 residencetype,
-    11: double height,
-    12: double weight, 
-    13: string weixin,
-    14: string qq,
-    16: Timestamp create_time,
-    17: Timestamp update_time
+    4: i32 nationality_code,
+    5: string nationality_name,
+    6: i32 city_code,
+    7: string city_name,
+    8: Timestamp birth,
+    9: string weixin,
+   10: string qq,
+   11: string motto,
+   12: string self_introduction,
+   13: Timestamp create_time,
+   14: Timestamp update_time
+}
+
+struct Credentials {
+    1: i32 id,
+    2: i32 profile_id,
+    3: string name,
+    4: string organization,
+    5: string code,
+    6: string url,
+    7: Timestamp get_date,
+    8: string score,
+    9: Timestamp create_time,
+   10: Timestamp update_time
 }
 
 struct Education { 
 	1: i32 id,
     2: i32 profile_id,
-    3: Timestamp starDate,
-    4: Timestamp endDate, 
+    3: Timestamp start_date,
+    4: Timestamp end_date, 
     5: i16 end_until_now,
-    6: i16 degree,
-    7: i16 school_code,
-    8: string school_name,
-    9: i16 major_code,
-    10: string major_name,
-    11: i16 type,
+    6: i32 degree,
+    7: i32 college_code,
+    8: string college_name,
+    9: string college_logo,
+    10: string major_code,
+    11: string major_name,
     12: string description, 
-    13: Timestamp create_time,
-    14: Timestamp update_time
-}
-
-struct EducationExt { 
-	1: i32 profile_id,
-    2: Timestamp graduation,
-    3: i16 majorrank,
-    4: i16 degree, 
-    5: string gpa,
-    6: Timestamp create_time,
-    7: Timestamp update_time
-}
-
-struct ProfileExt { 
-	1: i32 profile_id,
-    2: string homepage,
-    3: string assessment,
-    4: string interest, 
-    5: Timestamp create_time,
-    6: Timestamp update_time
+    13: i16 is_full,
+    14: i16 is_unified,
+    15: i16 is_study_abroad,
+    16: string study_abroad_country,
+    17: Timestamp create_time,
+    18: Timestamp update_time
 }
 
 struct ProfileImport { 
@@ -115,82 +107,56 @@ struct ProfileImport {
 struct Intention { 
 	1: i32 id,
 	2: i32 profile_id,
-    3: string positions,
-    4: string industries,
-    5: string work_cities, 
-    6: i16 workstate,
-    7: i16 salary_type,
-    8: i16 salary_code,
-    9: i16 workdays,
-    10: i16 business_trip,
-    11: i16 nightjob,
-    12: i16 worktype,
-    13: i16 shift,
-    14: i16 icanstart,
-    15: Timestamp create_time,
-    16: Timestamp update_time
-}
-
-struct Internship { 
-	1: i32 id,
-	2: i32 profile_id,
-    3: Timestamp startDate,
-    4: Timestamp endDate,
-    5: i16 end_until_now, 
-    6: string company,
-    7: string department,
-    8: i16 position_code,
-    9: i16 position_name,
-    10: string description,
-    11: Timestamp create_time,
-    12: Timestamp update_time
+    3: i32 workstate,
+    4: i16 salary_type,
+    5: i32 salary_code, 
+    6: string tag,
+    7: i16 consider_venture_company_opportunities,
+    8: Timestamp create_time,
+    9: Timestamp update_time,
+   10: i16 worktype,
+   11: string salary_str,
+   12: map<i32, string> industries,
+   13: map<i32, string> positions,
+   14: map<i32, string> cities
 }
 
 struct Language { 
 	1: i32 id,
-	2: i32 profile_id,
-    3: i16 name,
-    4: string level,
+    2: i32 profile_id,
+    3: string name,
+    4: i16 level, 
     5: Timestamp create_time,
     6: Timestamp update_time
+}
+
+struct CustomizeResume { 
+    1: i32 profile_id,
+    2: string other,
+    3: Timestamp create_time,
+    4: Timestamp update_time
 }
 
 struct ProjectExp { 
 	1: i32 id,
 	2: i32 profile_id,
-	3: Timestamp startDate,
-	4: Timestamp endDate,
-	5: i16 end_until_now,
-	6: string company,
-	7: string name,
-	8: string role,
-	9: string work_desc,
-	10:	string project_desc,
-    11: Timestamp create_time,
-    12: Timestamp update_time
-}
-
-struct Reward { 
-	1: i32 id,
-	2: i32 profile_id,
-	3: i16 type,
-	4: Timestamp reward_date,
-	5: string name,
-	6: string description,
-    7: Timestamp create_time,
-    8: Timestamp update_time
-}
-
-struct SchoolJob { 
-	1: i32 id,
-	2: i32 profile_id,
-	3: Timestamp startDate,
-	4: Timestamp endDate,
-	5: i16 end_until_now,
-	6: string position,
-	7: string description,
-    8: Timestamp create_time,
-    9: Timestamp update_time
+    3: Timestamp start_date,
+    4: Timestamp end_date,
+    5: i16 end_until_now, 
+    6: string name,
+	7: string company_name,
+    8: i16 is_it,
+    9: string dev_tool,
+    10: string hardware, 
+    11: string software, 
+    12: string url,
+    13: string description,
+    14: string role,
+    15: string responsibility, 
+    16: string achievement,
+    17: string member, 
+    18: Timestamp create_time,
+    19: Timestamp update_time
 }
 
 struct Skill { 
@@ -203,37 +169,34 @@ struct Skill {
     7: Timestamp update_time
 }
 
-struct Training { 
-	1: i32 id,
-	2: i32 profile_id,
-	3: string name,
-	4: Timestamp start_date,
-	5: Timestamp end_date,
-	6: string orgnization,
-	7: string description,
-    8: Timestamp create_time,
-    9: Timestamp update_time
-}
-
 struct WorkExp { 
 	1: i32 id,
 	2: i32 profile_id,
-	3: Timestamp startDate,
-	4: Timestamp endDate,
+	3: Timestamp start_date,
+	4: Timestamp end_date,
 	5: i16 end_until_now,
 	6: i16 salary_type,
-	7: i16 salary_code,
-	8: i16 industry_code,
+	7: i32 salary_code,
+	8: i32 industry_code,
 	9: string industry_name,
-	10: string company,
-	11: string department,
-	12: i16 position_code,
+	10: i32 company_id,
+	11: string department_name,
+	12: i32 position_code,
 	13: string position_name,
 	14: string description,
-	15: i16 work_type,
-	16: i16 scale,
-    17: Timestamp create_time,
-    18: Timestamp update_time
+	15: i16 type,
+	16: i32 city_code,
+	17: string city_name,
+	18: string report_to,
+	19: i32 underlings,
+	20: string reference,
+	21: string resign_reason,
+	22: string achievement,
+    23: Timestamp create_time,
+    24: Timestamp update_time,
+    25: string company_name,
+    26: string company_logo,
+    27: i16 source
 }
 
 struct Works { 
@@ -241,7 +204,8 @@ struct Works {
 	2: i32 profile_id,
 	3: string name,
 	4: string url,
-	5: string description,
-    6: Timestamp create_time,
-    7: Timestamp update_time
+	5: string cover,
+	6: string description,
+    7: Timestamp create_time,
+    8: Timestamp update_time
 }
