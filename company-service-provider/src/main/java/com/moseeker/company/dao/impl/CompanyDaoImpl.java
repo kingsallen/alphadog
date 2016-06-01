@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
 import com.moseeker.company.dao.CompanyDao;
 import com.moseeker.db.hrdb.tables.HrCompany;
-import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;;
+import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
