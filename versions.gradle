@@ -1,0 +1,38 @@
+ext {
+    deps = [
+            "junit"               : "junit:junit:4.12",
+            "log4j"               : "log4j:log4j:1.2.9",
+            "httpcore"            : "org.apache.httpcomponents:httpcore:4.4.1",
+            "joda-time"           : "joda-time:joda-time:2.7",
+            "jedis"               : "redis.clients:jedis:2.8.0",
+            //"jooq"                : "org.jooq:jooq:3.7.3",
+            //"jooq-meta"           : "org.jooq:jooq-meta:3.7.3",
+            //"jooq-codegen"        : "org.jooq:jooq-codegen:3.7.3",
+            "mysql-connector-java": "mysql:mysql-connector-java:5.1.6",
+            "zookeeper"           : "org.apache.zookeeper:zookeeper:3.4.8",
+//            "curator-framework": "org.apache.curator:curator-framework:2.10.0",
+            "curator-recipes"     : "org.apache.curator:curator-recipes:2.3.0",
+            "fastjson"            : "com.alibaba:fastjson:1.2.11",
+	    "gjson"		  : "com.google.code.gson:gson:2.6.2",
+            "libthrift"           : "org.apache.thrift:libthrift:0.9.3",
+            "bonecp"              : "com.jolbox:bonecp:0.8.0.RELEASE",
+            "javamail"            : "javax.mail:mail:1.5.0-b01",
+            "servlet-api"         : 'javax.servlet:javax.servlet-api:3.0.1',
+            "redis-appender"      : 'com.ryantenney.log4j:redis-appender:1.0.1',
+	    "aspectj"		  : 'org.aspectj:aspectjweaver:1.8.9',
+	    "cglib"		  : 'cglib:cglib:3.1',
+	    "spring-core"	  : 'org.springframework:spring-core:4.2.3.RELEASE',
+	    "spring-context"	  : 'org.springframework:spring-context:4.2.3.RELEASE',
+	    "spring-test"	  : 'org.springframework:spring-test:4.2.3.RELEASE',
+	    "spring-webmvc"	  : 'org.springframework:spring-webmvc:4.2.3.RELEASE',
+	    "beanutils"           : 'commons-beanutils:commons-beanutils:1.8.3',
+	    "commons-lang"        : 'commons-lang:commons-lang:2.6',
+	    "commons-pool"	  : 'commons-pool:commons-pool:1.6',
+	    "guava"		  : 'com.google.guava:guava:15.0',
+	    "jstl"		  : 'javax.servlet:jstl:1.1.2',
+	    "jaxb-api"		  : 'javax.xml.bind:jaxb-api:2.2.12',
+	    "thrift-gradle-plugin": 'gradle.plugin.org.jruyi.gradle:thrift-gradle-plugin:0.3.1',
+	    "jetty-support": 'org.eclipse.jetty:jetty-maven-plugin:9.3.0.M2'
+
+    ]
+}

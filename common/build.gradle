@@ -1,0 +1,53 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'eclipse-wtp'
+
+task copyJars(type: Copy) {
+  from configurations.runtime
+  into 'build/libs' // 目标位置
+}
+
+
+dependencies {
+    compile project(":thrift-jooq")
+    compile deps["junit"]
+    compile deps["log4j"]
+    compile deps["httpcore"]
+    compile deps["joda-time"]
+    compile deps["jedis"]
+    compile deps["mysql-connector-java"]
+    compile deps["zookeeper"]
+    compile deps["curator-recipes"]
+    compile deps["fastjson"]
+    compile deps["libthrift"]
+    compile deps["bonecp"]
+    compile deps["javamail"]
+    compile deps["servlet-api"]
+    compile deps["cglib"]
+    compile deps["beanutils"]
+    compile deps["gjson"]
+    compile fileTree(dir:'../libs',include:'*.jar')
+
+}
+
+project.description = '''
+    公用
+    1) redis
+        log
+        cache
+        session 
+    2) mail
+    3) sms
+    4) 敏感词校验
+'''
+
+jar {
+    // build one flat jar
+   // from {
+    //    configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    //}
+}
+
+
+
+

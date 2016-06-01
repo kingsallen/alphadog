@@ -1,65 +1,70 @@
 import org.gradle.plugins.ide.eclipse.model.Facet
-  
+
 apply plugin: 'java'
 apply plugin: 'war'
-apply plugin: 'eclipse-wtp'  
-sourceCompatibility = 1.8   // 设置 JDK 版本
+apply plugin: 'jetty'
+apply plugin: 'idea'
+apply plugin: 'eclipse-wtp'
+
 webAppDirName = 'WebContent'    // 设置 WebApp 根目录
-sourceSets {
-  main {
-    java {
-      srcDir 'src/java'
-    }
 
-    resources {
-      srcDir 'src/resources'
-    }
-  }
-  test {
-    java {
-      srcDir 'src/java'
-    }
+sourceCompatibility = 1.8
+  
+//compileJava.dependsOn(":thrift-gen-java:copyGeneratedFile")
 
-    resources {
-      srcDir 'src/resources'
-    }
-  }
-}
-  
-// 设置 maven 库地址
-repositories { 
-    //mavenLocal()
-    //mavenCentral() // 中央库
-    //mavenRepo urls: "http://maven.oschina.net/content/groups/public/"
-    maven{ url 'http://maven.oschina.net/content/groups/public/'}
-    maven{ url 'http://maven.outofmemory.cn/'}
-}
-  
 // 设置依赖
 dependencies {
-    compile "junit:junit:4.5"
-    compile "joda-time:joda-time:2.7"
-    compile "org.slf4j:slf4j-log4j12:1.7.18"
-    compile "redis.clients:jedis:2.8.0"
-    compile "org.springframework:spring-context:4.2.3.RELEASE"
-    compile "org.springframework:spring-webmvc:4.1.6.RELEASE"
-    compile "org.springframework:spring-test:4.1.6.RELEASE"
-    compile 'com.alibaba:fastjson:1.2.8'
-    //添加druid包
-    providedCompile 'javax.servlet:servlet-api:2.5'
-    runtime 'javax.servlet:jstl:1.1.2'
+    compile project(":thrift-jooq")
+    compile project(":common")
+    compile project(":rpc-center")
+
+    compile deps["fastjson"]
+    compile deps["zookeeper"]
+    compile deps["curator-recipes"]
+    compile deps["log4j"]
+    compile deps["jedis"]
+    compile deps["redis-appender"]
+    compile deps["servlet-api"]
+
+    compile deps["spring-core"]
+    compile deps["spring-context"]
+    compile deps["spring-webmvc"]
+    compile deps["spring-test"]
+
+    runtime deps['jstl']
+
+    testCompile deps["junit"]
+    testCompile deps["spring-test"]
 }
-  
-// 设置 Project Facets
-eclipse {
-    wtp {
-        facet {
-            facet name: 'jst.web', type: Facet.FacetType.fixed
-            facet name: 'wst.jsdt.web', type: Facet.FacetType.fixed
-            facet name: 'jst.java', type: Facet.FacetType.fixed
-            facet name: 'jst.web', version: '3.0'
-            facet name: 'jst.java', version: '1.8'
-            facet name: 'wst.jsdt.web', version: '1.0'
-        }
+
+
+jar {
+
+    // build one flat jar
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     }
+
+    manifest {
+        attributes 'Main-Class': 'com.moseeker.thrift.client.CompanyfollowersClient'
+    }
+ 
 }
+
+task copyJars(type: Copy) {
+  from configurations.runtime
+  into 'build/libs' // 目标位置
+}
+
+jettyRun{
+    webAppSourceDirectory file("$projectDir/WebContent")
+    httpPort 8080
+    contextPath project.name
+    scanIntervalSeconds 0
+    reload "automatic"
+}
+
+project.description = '''
+    1) Spring MVC --- provide restful HTTP API access
+    2) we call it "Client" in this project
+'''

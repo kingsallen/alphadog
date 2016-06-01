@@ -1,56 +1,66 @@
-import org.gradle.plugins.ide.eclipse.model.Facet
-  
-apply plugin: 'java'
-apply plugin: 'war'
 apply plugin: 'idea'
-apply plugin : 'jetty'
-apply plugin: 'eclipse-wtp'
+apply from: 'versions.gradle'
 
-repositories { 
-    //mavenLocal()
-    //mavenCentral() // 中央库
-    //mavenRepo urls: "http://maven.oschina.net/content/groups/public/"
-    maven{ url 'http://maven.oschina.net/content/groups/public/'}
-    maven{ url 'http://maven.outofmemory.cn/'}
+project.description = '''
+the service layer of moseeker. It\'s going to serve all moseeker\'s products.
+    1) a SpringMVC to provide HTTP API
+    2) ZooKeeper as the service manager
+    3) Thrift as the RPC framework
+    4) JOOQ as the data access layer
+'''
+allprojects {
+
+    repositories {
+
+        mavenCentral()
+        maven { url 'http://maven.oschina.net/content/groups/public/' }
+        maven { url 'http://maven.outofmemory.cn/' }
+        maven { url 'https://plugins.gradle.org/m2/'}
+
+    }
+
 }
 
-// 设置 Project Facets
-eclipse {
-    wtp {
-        facet {
-            facet name: 'jst.web', type: Facet.FacetType.fixed
-            facet name: 'wst.jsdt.web', type: Facet.FacetType.fixed
-            facet name: 'jst.java', type: Facet.FacetType.fixed
-            facet name: 'jst.web', version: '3.0'
-            facet name: 'jst.java', version: '1.8'
-            facet name: 'wst.jsdt.web', version: '1.0'
+apply plugin: 'java'
+
+task copyJars(type: Copy) {
+  from configurations.runtime
+  into 'lib' // 目标位置
+}
+
+subprojects {
+    apply plugin: 'java'
+    sourceCompatibility = 1.8
+
+    sourceSets {
+        main {
+            resources {
+                exclude '**/*'
+            }
         }
     }
-}
 
-dependencies {
-	compile "org.jooq:jooq:3.7.3"
-	compile "org.jooq:jooq-meta:3.7.3"
-	compile "org.jooq:jooq-codegen:3.7.3"
-	compile "junit:junit:4.5"
-    compile "log4j:log4j:1.2.9"
-    compile "org.apache.httpcomponents:httpcore:4.4.1"
-    compile "org.apache.httpcomponents:httpclient:4.4.1"
-    compile "joda-time:joda-time:2.7"
-    compile "redis.clients:jedis:2.8.0"
-    
-    compile "org.slf4j:slf4j-log4j12:1.7.18"
-    compile "org.springframework:spring-context:4.2.3.RELEASE"
-    compile "org.springframework:spring-webmvc:4.1.6.RELEASE"
-    compile "org.springframework:spring-test:4.1.6.RELEASE"
-    compile 'com.alibaba:fastjson:1.2.8'
-    compile 'org.apache.thrift:libthrift:0.9.3'
-    compile "com.facebook.nifty:nifty-core:0.18.0"
-}
+    task copyEnvResources {
 
-// idea
-idea {
-    project {
-        languageLevel = '1.7'
+        group "environmental configs"
+        description "Use one set of configs in /src/main/resources/\$env, defaults to 'debug'"
+
+        def env = project.getProperties()['env'] ?: 'debug'
+        logger.quiet(env)
+        def envResourcesSrc = "src/main/resources/$env/"
+
+        doLast {
+            copy {
+                from envResourcesSrc
+                into processResources.destinationDir
+            }
+        }
+
+    }
+
+    jar {
+        dependsOn copyEnvResources
     }
 }
+
+

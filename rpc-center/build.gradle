@@ -1,0 +1,33 @@
+version 'unspecified'
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+
+sourceCompatibility = 1.8
+
+
+dependencies {
+    compile deps["libthrift"]
+    compile deps["guava"]
+    compile deps["fastjson"]
+    compile deps["commons-lang"]
+    compile deps["commons-pool"]
+    compile deps["zookeeper"]
+    compile deps["curator-recipes"]
+    testCompile deps["junit"]
+}
+
+task copyJars(type: Copy) {
+  from configurations.runtime
+  into 'build/libs' // 目标位置
+}
+
+jar {
+
+    // build one flat jar
+    //from {
+    //    configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    //}
+
+}

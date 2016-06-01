@@ -1,4 +1,10 @@
-rootProject.name = 'moseeker-basic-service'
+include 'application-service-provider'
+include 'common'
+include 'company-service-provider'
+include 'dict-service-provider'
+include 'position-service-provider'
+include 'profile-service-provider'
+include 'rpc-center'
 include 'service-manager'
-include 'user-thrift-service'
-
+include 'thrift-jooq'
+include 'useraccounts-service-provider'

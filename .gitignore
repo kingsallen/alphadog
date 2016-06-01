@@ -22,7 +22,11 @@
 
 # Logs and databases #
 ######################
+logs/*
+log/*
 *.log
+service-manager/log/*
+demo-service-provider/log/*
 
 # OS generated files #
 ######################
@@ -67,3 +71,15 @@ atlassian-ide-plugin.xml
 
 # NetBeans specific files/directories
 .nbattrs
+*.log.*
+/WebContent
+
+<<<<<<< HEAD
+# exceptions
+=======
+# debug properties
+common/src/main/resources/*.properties
+rpc-center/src/main/resources/*.properties
+service-manager/src/main/resources/*.properties
+
+>>>>>>> develop
