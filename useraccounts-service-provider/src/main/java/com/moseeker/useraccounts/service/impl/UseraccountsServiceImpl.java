@@ -259,7 +259,7 @@ public class UseraccountsServiceImpl implements Iface {
         } finally {
             //do nothing
         }
-        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_EXIST);
     }
 
 
