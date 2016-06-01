@@ -653,6 +653,7 @@ public class WholeProfileServicesImpl implements Iface {
 				map.put("city_code", lastWorkExp.getCityCode().intValue());
 			}
 			if (basicRecord != null) {
+				map.put("update_time", DateUtils.dateToShortTime(profileRecord.getUpdateTime()));
 				map.put("completeness", profileRecord.getCompleteness().intValue());
 				map.put("name", basicRecord.getName());
 				map.put("gender", basicRecord.getGender().intValue());
