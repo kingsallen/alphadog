@@ -40,6 +40,22 @@ public final class Constant {
     public static final int RECRUIT_STATUS_OFFERACCEPTED    = 11;      // 接受录取通知
     public static final int RECRUIT_STATUS_OFFERED          = 12;      // 面试通过
     public static final int RECRUIT_STATUS_FULL_RECOM_INFO  = 13;      // 完善被推荐人信息
+    
+    // profile来源
+    public static final int PROFILE_SOURCE_WEIXIN_COMPANY_NOMAL            	= 1 ;      // 微信企业端(正常),
+    public static final int PROFILE_SOURCE_WEIXIN_COMPANY_DILIVER        	= 2 ;      // 微信企业端(我要投递)
+    public static final int PROFILE_SOURCE_WEIXIN_COMPANY_INTERESTED        = 3 ;      // 微信企业端(我感兴趣), 
+    public static final int PROFILE_SOURCE_WEIXIN_TEGETHER_NOMAL           	= 4 ;      // 微信聚合端(正常),
+    public static final int PROFILE_SOURCE_WEIXIN_TEGETHER_DILIVER			= 5 ;      // 微信聚合端(我要投递),
+    public static final int PROFILE_SOURCE_WEIXIN_TEGETHER_INTERESTED       = 6 ;      // 微信聚合端(我感兴趣), 
+    public static final int PROFILE_SOURCE_WEIXIN_COMPANY_EMAIL      		= 100 ;    // 微信企业端Email申请
+    public static final int PROFILE_SOURCE_WEIXIN_TEGETHER_EMAIL     		= 101;     // 微信聚合端Email申请
+    public static final int PROFILE_SOURCE_WEIXIN_COMPANY_IMPORT        	= 150;     // 微信企业端导入
+    public static final int PROFILE_SOURCE_WEIXIN_TEGETHER_IMPORT         	= 151;     // 微信聚合端导入
+    public static final int PROFILE_SOURCE_PC_IMPORT    					= 152;     // PC导入
+    public static final int PROFILE_SOURCE_PC_CREATE          				= 200;     // PC(正常添加)
+    public static final int PROFILE_SOURCE_PC_DILIVER  						= 201;     // PC(我要投递)
+    public static final int PROFILE_SOURCE_PC_INTERESTED  					= 202;     // PC(我感兴趣)
 
     public static final String DASVALIDATE_SENSITIVEWORDS_ILLEGAL = "敏感词校验失败";
     

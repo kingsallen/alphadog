@@ -78,6 +78,12 @@ public class WholeProfileServicesImpl implements Iface {
 
 	Logger logger = LoggerFactory.getLogger(WholeProfileServicesImpl.class);
 	ProfileUtils profileUtils = new ProfileUtils();
+	
+	@Override
+	public Response getResources(String userId, String profileId) throws TException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	@Override
 	public Response getResource(int userId, int profileId) throws TException {
