@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrEmployeeCertConf extends TableImpl<HrEmployeeCertConfRecord> {
 
-	private static final long serialVersionUID = -632410977;
+	private static final long serialVersionUID = 61005473;
 
 	/**
 	 * The reference instance of <code>hrDB.hr_employee_cert_conf</code>
@@ -109,6 +109,16 @@ public class HrEmployeeCertConf extends TableImpl<HrEmployeeCertConfRecord> {
 	 * The column <code>hrDB.hr_employee_cert_conf.custom</code>. 配置的自定义认证名称
 	 */
 	public final TableField<HrEmployeeCertConfRecord, String> CUSTOM = createField("custom", org.jooq.impl.SQLDataType.VARCHAR.length(10).nullable(false).defaulted(true), this, "配置的自定义认证名称");
+
+	/**
+	 * The column <code>hrDB.hr_employee_cert_conf.questions</code>. 问答列表(json)
+	 */
+	public final TableField<HrEmployeeCertConfRecord, String> QUESTIONS = createField("questions", org.jooq.impl.SQLDataType.VARCHAR.length(1000).nullable(false).defaulted(true), this, "问答列表(json)");
+
+	/**
+	 * The column <code>hrDB.hr_employee_cert_conf.custom_hint</code>. 自定义认证提示
+	 */
+	public final TableField<HrEmployeeCertConfRecord, String> CUSTOM_HINT = createField("custom_hint", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "自定义认证提示");
 
 	/**
 	 * Create a <code>hrDB.hr_employee_cert_conf</code> table reference

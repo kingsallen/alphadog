@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.thrift.TException;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,23 +31,6 @@ import com.moseeker.thrift.gen.profile.struct.Basic;
 public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, ProfileBasicRecord> implements Iface {
 	
 	Logger logger = LoggerFactory.getLogger(ProfileBasicServicesImpl.class);
-	
-	@Autowired
-	private ProfileBasicDao dao;
-	
-	@Autowired
-	private CityDao cityDao;
-	
-	@Autowired
-	private CountryDao countryDao;
-	
-	@Autowired
-	private UserDao userDao;
-	
-	@Override
-	protected void initDao() {
-		super.dao = this.dao;
-	}
 	
 	@Override
 	public Response getResources(CommonQuery query) throws TException {
@@ -131,6 +113,16 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 	}
 
 	@Override
+	public Response postResource(Basic struct) throws TException {
+		return super.postResource(struct);
+	}
+
+	@Override
+	public Response putResource(Basic struct) throws TException {
+		return super.putResource(struct);
+	}
+
+	@Override
 	protected Basic DBToStruct(ProfileBasicRecord r) {
 		return (Basic)BeanUtils.DBToStruct(Basic.class, r);
 	}
@@ -139,15 +131,24 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 	protected ProfileBasicRecord structToDB(Basic basic)
 			throws ParseException {
 		ProfileBasicRecord record = (ProfileBasicRecord)BeanUtils.structToDB(basic, ProfileBasicRecord.class);
-		logger.debug("debug", "profile_id:"+record.getProfileId().intValue());
-		System.out.println("profile_id:"+record.getProfileId().intValue());
-		logger.debug("debug", "weixin:"+record.getWeixin());
-		System.out.println("weixin:"+record.getWeixin());
-		if(record.getUpdateTime() != null) {
-			logger.debug("debug", "update_time:"+(new DateTime(record.getUpdateTime().getTime())).toString("yyyy-MM-dd HH:mm:ss"));
-			System.out.println("update_time:"+(new DateTime(record.getUpdateTime().getTime())).toString("yyyy-MM-dd HH:mm:ss"));
-		}
 		return record;
+	}
+	
+	@Autowired
+	private ProfileBasicDao dao;
+	
+	@Autowired
+	private CityDao cityDao;
+	
+	@Autowired
+	private CountryDao countryDao;
+	
+	@Autowired
+	private UserDao userDao;
+	
+	@Override
+	protected void initDao() {
+		super.dao = this.dao;
 	}
 	
 	public ProfileBasicDao getDao() {
