@@ -54,7 +54,7 @@ public class UserHrAccountServiceImpl implements Iface {
             }
 
             // 发送HR注册的验证码
-            ResponseUtils.success(SmsSender.sendHrMobileVertfyCode(mobile, REDIS_KEY_HR_SMS_SIGNUP, source));
+            return ResponseUtils.success(SmsSender.sendHrMobileVertfyCode(mobile, REDIS_KEY_HR_SMS_SIGNUP, source));
 
         } catch (Exception e) {
             // TODO Auto-generated catch block

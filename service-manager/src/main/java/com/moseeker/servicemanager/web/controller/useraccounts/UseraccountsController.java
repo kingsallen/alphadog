@@ -215,7 +215,7 @@ public class UseraccountsController {
          String code = BeanUtils.converToString(reqParams.get("code"));
          String password = BeanUtils.converToString(reqParams.get("password"));
 
-         Response result = useraccountsServices.postuserresetpassword(mobile, code, password);
+         Response result = useraccountsServices.postuserresetpassword(mobile, password, code);
          if (result.getStatus() == 0) {
             return ResponseLogNotification.success(request, result);
          } else {
