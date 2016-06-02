@@ -199,7 +199,7 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 					return 	ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_NOTEXIST);
 				}
 			} else {
-				if(StringUtils.isNullOrEmpty(struct.getCompany_name())) {
+				if(!StringUtils.isNullOrEmpty(struct.getCompany_name())) {
 					HrCompanyRecord newCompany = new HrCompanyRecord();
 					newCompany.setName(struct.getCompany_name());
 					if(StringUtils.isNullOrEmpty(struct.getCompany_logo())) {

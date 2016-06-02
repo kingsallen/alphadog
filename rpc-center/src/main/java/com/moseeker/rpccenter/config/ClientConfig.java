@@ -54,7 +54,7 @@ public class ClientConfig<T> implements IConfigCheck{
     private String loadbalance = "random";
 
     /** thrift connect 超时时间，单位为ms，默认为3s */
-    private int timeout = 30000;
+    private int timeout = 100000;
 
     // 下面的配置项是连接池的基本配置
     /** 最大活跃连接数 */
@@ -128,8 +128,9 @@ public class ClientConfig<T> implements IConfigCheck{
         GenericKeyedObjectPool<ServerNode, T> pool = bulidClientPool(classLoader, objectClass);
         DynamicHostSet hostSet = registry.findAllService();
 
-        HeartBeatManager<T> heartBeatManager = new HeartBeatManager<T>(hostSet, heartbeat, heartbeatTimeout, heartbeatTimes, heartbeatInterval, pool);
-        heartBeatManager.startHeatbeatTimer();
+       // 临时取消心跳, 尝试解决 zookeeper 断开连接问题. 
+       // HeartBeatManager<T> heartBeatManager = new HeartBeatManager<T>(hostSet, heartbeat, heartbeatTimeout, heartbeatTimes, heartbeatInterval, pool);
+       // heartBeatManager.startHeatbeatTimer();
 
         this.registry = registry;
         this.pool = pool;

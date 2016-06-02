@@ -164,7 +164,9 @@ public class ProfileUtils {
 		ProfileImportRecord record = null;
 		if (importMap != null) {
 			record = BeanUtils.MapToRecord(importMap, ProfileImportRecord.class);
-			record.setUserName(userName);
+			if(record != null) {
+				record.setUserName(userName);
+			}
 			return record;
 		}
 		return record;

@@ -30,6 +30,7 @@ dependencies {
     compile deps["spring-context"]
     compile deps["spring-webmvc"]
     compile deps["spring-test"]
+    compile deps["httpclient"]
 
     runtime deps['jstl']
 

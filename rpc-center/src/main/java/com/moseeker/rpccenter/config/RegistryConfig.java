@@ -21,10 +21,10 @@ public class RegistryConfig implements IConfigCheck{
     private String connectstr;
 
     /** 会话超时时间 */
-    private int timeout = 3000;
+    private int timeout = 35000;
 
     /** 重试次数，默认重试为1次 */
-    private int retry = 1;
+    private int retry = 2;
 
     /** 共享一个zk链接，默认为true */
     private boolean singleton = true;

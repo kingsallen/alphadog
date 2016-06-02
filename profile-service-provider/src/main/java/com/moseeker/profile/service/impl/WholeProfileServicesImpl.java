@@ -78,6 +78,12 @@ public class WholeProfileServicesImpl implements Iface {
 
 	Logger logger = LoggerFactory.getLogger(WholeProfileServicesImpl.class);
 	ProfileUtils profileUtils = new ProfileUtils();
+	
+	@Override
+	public Response getResources(String userId, String profileId) throws TException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	@Override
 	public Response getResource(int userId, int profileId) throws TException {
@@ -162,53 +168,54 @@ public class WholeProfileServicesImpl implements Iface {
 			Map<String, Object> resume = JSON.parseObject(profile);
 			
 			ProfileProfileRecord profileRecord = profileUtils.mapToProfileRecord((Map<String, Object>) resume.get("profile"));
-			if (profileRecord != null) {
-				if(userId > 0) {
-					profileRecord.setUserId(UInteger.valueOf(userId));
-				}
-				profileRecord.setUuid(UUID.randomUUID().toString());
-				UserUserRecord userRecord = userDao.getUserById(profileRecord.getUserId().intValue());
-				if (userRecord == null) {
-					return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_USER_NOTEXIST);
-				}
-				ProfileProfileRecord repeatProfileRecord = profileDao.getProfileByIdOrUserId(profileRecord.getUserId().intValue(), 0);
-				if(repeatProfileRecord != null) {
-					return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ALLREADY_EXIST);
-				}
-				ProfileBasicRecord basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"));
-				if(StringUtils.isNullOrEmpty(basicRecord.getName())) {
-					basicRecord.setName(userRecord.getName());
-				}
-				List<ProfileAttachmentRecord> attachmentRecords = profileUtils.mapToAttachmentRecords(
-						(List<Map<String, Object>>) resume.get("attachments"));
-				List<ProfileAwardsRecord> awardsRecords = profileUtils.mapToAwardsRecords(
-						(List<Map<String, Object>>) resume.get("awards"));
-				List<ProfileCredentialsRecord> credentialsRecords = profileUtils.mapToCredentialsRecords(
-						(List<Map<String, Object>>) resume.get("credentials"));
-				List<ProfileEducationRecord> educationRecords = profileUtils.mapToEducationRecords(
-						(List<Map<String, Object>>) resume.get("educations"));
-				
-				ProfileImportRecord importRecords = profileUtils.mapToImportRecord((Map<String, Object>) resume.get("import"),
-						userRecord.getUsername());
-				List<IntentionRecord> intentionRecords = profileUtils.mapToIntentionRecord(
-						(List<Map<String, Object>>) resume.get("intentions"));
-				List<ProfileLanguageRecord> languages = profileUtils.mapToLanguageRecord(
-						(List<Map<String, Object>>) resume.get("languages"));
-				ProfileOtherRecord otherRecord = profileUtils.mapToOtherRecord((Map<String, Object>) resume.get("other"));
-				List<ProfileProjectexpRecord> projectExps = profileUtils.mapToProjectExpsRecords(
-						(List<Map<String, Object>>) resume.get("projectexps"));
-				List<ProfileSkillRecord> skillRecords = profileUtils.mapToSkillRecords(
-						(List<Map<String, Object>>) resume.get("skills"));
-				List<ProfileWorkexpRecord> workexpRecords = profileUtils.mapToWorkexpRecords(
-						(List<Map<String, Object>>) resume.get("workexps"));
-				List<ProfileWorksRecord> worksRecords = profileUtils.mapToWorksRecords(
-						(List<Map<String, Object>>) resume.get("works"));
-
-				int id = profileDao.saveProfile(profileRecord, basicRecord, attachmentRecords, awardsRecords,
-						credentialsRecords, educationRecords, importRecords, intentionRecords, languages, otherRecord,
-						projectExps, skillRecords, workexpRecords, worksRecords);
-				return ResponseUtils.successWithoutStringify(String.valueOf(id));
+			UserUserRecord userRecord = userDao.getUserById(userId);
+			if(profileRecord == null) {
+				profileRecord = new ProfileProfileRecord();
 			}
+			if (userRecord == null) {
+				return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_USER_NOTEXIST);
+			}
+			profileRecord.setUuid(UUID.randomUUID().toString());
+			profileRecord.setUserId(userRecord.getId());
+			profileRecord.setDisable(UByte.valueOf(Constant.ENABLE));
+			
+			ProfileProfileRecord repeatProfileRecord = profileDao.getProfileByIdOrUserId(profileRecord.getUserId().intValue(), 0);
+			if(repeatProfileRecord != null) {
+				return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ALLREADY_EXIST);
+			}
+			ProfileBasicRecord basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"));
+			if(basicRecord != null && StringUtils.isNullOrEmpty(basicRecord.getName())) {
+				basicRecord.setName(userRecord.getName());
+			}
+			List<ProfileAttachmentRecord> attachmentRecords = profileUtils.mapToAttachmentRecords(
+					(List<Map<String, Object>>) resume.get("attachments"));
+			List<ProfileAwardsRecord> awardsRecords = profileUtils.mapToAwardsRecords(
+					(List<Map<String, Object>>) resume.get("awards"));
+			List<ProfileCredentialsRecord> credentialsRecords = profileUtils.mapToCredentialsRecords(
+					(List<Map<String, Object>>) resume.get("credentials"));
+			List<ProfileEducationRecord> educationRecords = profileUtils.mapToEducationRecords(
+					(List<Map<String, Object>>) resume.get("educations"));
+			
+			ProfileImportRecord importRecords = profileUtils.mapToImportRecord((Map<String, Object>) resume.get("import"),
+					userRecord.getUsername());
+			List<IntentionRecord> intentionRecords = profileUtils.mapToIntentionRecord(
+					(List<Map<String, Object>>) resume.get("intentions"));
+			List<ProfileLanguageRecord> languages = profileUtils.mapToLanguageRecord(
+					(List<Map<String, Object>>) resume.get("languages"));
+			ProfileOtherRecord otherRecord = profileUtils.mapToOtherRecord((Map<String, Object>) resume.get("other"));
+			List<ProfileProjectexpRecord> projectExps = profileUtils.mapToProjectExpsRecords(
+					(List<Map<String, Object>>) resume.get("projectexps"));
+			List<ProfileSkillRecord> skillRecords = profileUtils.mapToSkillRecords(
+					(List<Map<String, Object>>) resume.get("skills"));
+			List<ProfileWorkexpRecord> workexpRecords = profileUtils.mapToWorkexpRecords(
+					(List<Map<String, Object>>) resume.get("workexps"));
+			List<ProfileWorksRecord> worksRecords = profileUtils.mapToWorksRecords(
+					(List<Map<String, Object>>) resume.get("works"));
+
+			int id = profileDao.saveProfile(profileRecord, basicRecord, attachmentRecords, awardsRecords,
+					credentialsRecords, educationRecords, importRecords, intentionRecords, languages, otherRecord,
+					projectExps, skillRecords, workexpRecords, worksRecords);
+			return ResponseUtils.successWithoutStringify(String.valueOf(id));
 		}
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 	}
@@ -647,6 +654,7 @@ public class WholeProfileServicesImpl implements Iface {
 				map.put("city_code", lastWorkExp.getCityCode().intValue());
 			}
 			if (basicRecord != null) {
+				map.put("update_time", DateUtils.dateToShortTime(profileRecord.getUpdateTime()));
 				map.put("completeness", profileRecord.getCompleteness().intValue());
 				map.put("name", basicRecord.getName());
 				map.put("gender", basicRecord.getGender().intValue());

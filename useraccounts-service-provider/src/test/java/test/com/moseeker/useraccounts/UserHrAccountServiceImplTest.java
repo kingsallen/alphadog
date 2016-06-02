@@ -30,7 +30,8 @@ public class UserHrAccountServiceImplTest {
             userHrAccountService = clientConfig.createProxy(registryConfig);
 
             // 添加我感兴趣
-            Response postResource = userHrAccountService.postResource(getUserHrAccount());
+            String code = "1234";
+            Response postResource = userHrAccountService.postResource(getUserHrAccount(), code);
 
             System.out.println(postResource);
 
@@ -46,7 +47,8 @@ public class UserHrAccountServiceImplTest {
      * */
     private static UserHrAccount getUserHrAccount(){
         UserHrAccount userHrAccount = new UserHrAccount();
-//        userHrAccount.setMobile("18610245972");
+        userHrAccount.setMobile("18610245972");
+        userHrAccount.setSource(2);
         return userHrAccount;
     }
 
