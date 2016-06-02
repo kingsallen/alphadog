@@ -136,7 +136,8 @@ public class ClientConfig<T> implements IConfigCheck{
         this.pool = pool;
 
         // 添加ShutdownHook
-        addShutdownHook(registry, heartBeatManager);
+        //addShutdownHook(registry, heartBeatManager);
+        addShutdownHook(registry);
 
         Invoker invoker = new DefaultInvoker<T>(clientNode, pool, retry, hostSet);
         DynamicClientHandler dynamicClientHandler = new DynamicClientHandler(invoker);
@@ -227,6 +228,29 @@ public class ClientConfig<T> implements IConfigCheck{
         return JSON.toJSONString(this);
     }
 
+    
+    /**
+     * 添加关闭钩子 -  无心跳
+     * <p>
+     *
+     * @param registry
+     */
+    protected void addShutdownHook(final IRegistry registry) {
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (registry != null) {
+                    registry.unregister();
+                }
+
+                if (pool != null) {
+                    pool.clear();
+                }
+            }
+        }));
+    }
+
+    
     /**
      * 添加关闭钩子
      * <p>
