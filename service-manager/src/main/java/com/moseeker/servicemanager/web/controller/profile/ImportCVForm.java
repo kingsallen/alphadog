@@ -13,6 +13,7 @@ public class ImportCVForm {
 	private int lang;
 	private int appid;
 	private int id;
+	private String uuid;
 	
 	public int getType() {
 		return type;
@@ -79,5 +80,11 @@ public class ImportCVForm {
 	}
 	public void setLang(int lang) {
 		this.lang = lang;
+	}
+	public String getUuid() {
+		return uuid;
+	}
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 }

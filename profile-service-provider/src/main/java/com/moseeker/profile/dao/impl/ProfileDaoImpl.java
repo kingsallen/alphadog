@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.List;
 
+import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Result;
 import org.jooq.types.UByte;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.profiledb.tables.ProfileProfile;
 import com.moseeker.db.profiledb.tables.records.ProfileAttachmentRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileAwardsRecord;
@@ -42,20 +44,42 @@ public class ProfileDaoImpl extends
 	}
 
 	@Override
-	public ProfileProfileRecord getProfileByIdOrUserId(int userId, int profileId) {
+	public ProfileProfileRecord getProfileByIdOrUserIdOrUUID(int userId, int profileId, String uuid) {
 		ProfileProfileRecord record = null;
 		Connection conn = null;
 		try {
-			if(userId > 0 || profileId > 0) {
+			if(userId > 0 || profileId > 0 || !StringUtils.isNullOrEmpty(uuid)) {
 				conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-				Result<ProfileProfileRecord> result = create.selectFrom(ProfileProfile.PROFILE_PROFILE)
-						.where((ProfileProfile.PROFILE_PROFILE.ID.equal(UInteger.valueOf(profileId)))
-						.or(ProfileProfile.PROFILE_PROFILE.USER_ID.equal(UInteger.valueOf(userId))))
-						.and(ProfileProfile.PROFILE_PROFILE.DISABLE.equal(UByte.valueOf(1)))
-						.limit(1).fetch();
-				if(result != null && result.size() > 0) {
-					record = result.get(0);
+				Condition condition = null;
+				if(userId > 0) {
+					if(condition == null) {
+						condition = ProfileProfile.PROFILE_PROFILE.USER_ID.equal(UInteger.valueOf(userId));
+					}
+				}
+				if(profileId > 0) {
+					if(condition == null) {
+						condition = ProfileProfile.PROFILE_PROFILE.ID.equal(UInteger.valueOf(profileId));
+					} else {
+						condition = condition.or(ProfileProfile.PROFILE_PROFILE.ID.equal(UInteger.valueOf(profileId)));
+					}
+				}
+				if(!StringUtils.isNullOrEmpty(uuid)) {
+					if(condition == null) {
+						condition = ProfileProfile.PROFILE_PROFILE.UUID.equal(uuid);
+					} else {
+						condition = condition.or(ProfileProfile.PROFILE_PROFILE.UUID.equal(uuid));
+					}
+				}
+				
+				if(condition != null) {
+					Result<ProfileProfileRecord> result = create.selectFrom(ProfileProfile.PROFILE_PROFILE)
+							.where(condition)
+							.and(ProfileProfile.PROFILE_PROFILE.DISABLE.equal(UByte.valueOf(1)))
+							.limit(1).fetch();
+					if(result != null && result.size() > 0) {
+						record = result.get(0);
+					}
 				}
 			}
 		} catch (SQLException e) {

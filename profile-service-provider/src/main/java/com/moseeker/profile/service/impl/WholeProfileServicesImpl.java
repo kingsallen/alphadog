@@ -78,20 +78,14 @@ public class WholeProfileServicesImpl implements Iface {
 
 	Logger logger = LoggerFactory.getLogger(WholeProfileServicesImpl.class);
 	ProfileUtils profileUtils = new ProfileUtils();
-	
-	@Override
-	public Response getResources(String userId, String profileId) throws TException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
-	public Response getResource(int userId, int profileId) throws TException {
+	public Response getResource(int userId, int profileId, String uuid) throws TException {
 		Response response = new Response();
 		try {
 			HashMap<String, Object> profile = new HashMap<String, Object>();
 
-			ProfileProfileRecord profileRecord = profileDao.getProfileByIdOrUserId(userId, profileId);
+			ProfileProfileRecord profileRecord = profileDao.getProfileByIdOrUserIdOrUUID(userId, profileId, uuid);
 			if (profileRecord != null) {
 				CommonQuery query = new CommonQuery();
 				HashMap<String, String> equalFilter = new HashMap<String, String>();
@@ -179,7 +173,7 @@ public class WholeProfileServicesImpl implements Iface {
 			profileRecord.setUserId(userRecord.getId());
 			profileRecord.setDisable(UByte.valueOf(Constant.ENABLE));
 			
-			ProfileProfileRecord repeatProfileRecord = profileDao.getProfileByIdOrUserId(profileRecord.getUserId().intValue(), 0);
+			ProfileProfileRecord repeatProfileRecord = profileDao.getProfileByIdOrUserIdOrUUID(profileRecord.getUserId().intValue(), 0, null);
 			if(repeatProfileRecord != null) {
 				return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ALLREADY_EXIST);
 			}
@@ -234,7 +228,7 @@ public class WholeProfileServicesImpl implements Iface {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_USER_NOTEXIST);
 		}
 		
-		ProfileProfileRecord oldProfile = profileDao.getProfileByIdOrUserId(userId, 0);
+		ProfileProfileRecord oldProfile = profileDao.getProfileByIdOrUserIdOrUUID(userId, 0, null);
 		
 		profileRecord.setUuid(UUID.randomUUID().toString());
 		profileRecord.setUserId(userRecord.getId());
@@ -656,6 +650,7 @@ public class WholeProfileServicesImpl implements Iface {
 			if (basicRecord != null) {
 				map.put("update_time", DateUtils.dateToShortTime(profileRecord.getUpdateTime()));
 				map.put("completeness", profileRecord.getCompleteness().intValue());
+				map.put("uuid", profileRecord.getUuid());
 				map.put("name", basicRecord.getName());
 				map.put("gender", basicRecord.getGender().intValue());
 				map.put("nationality_name", basicRecord.getNationalityName());

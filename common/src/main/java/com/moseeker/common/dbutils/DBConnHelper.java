@@ -9,7 +9,6 @@ import org.jooq.impl.DSL;
 
 import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPConfig;
-import com.jolbox.bonecp.Statistics;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.Notification;
 
@@ -51,9 +50,6 @@ public enum DBConnHelper {
     }
 	
 	public DSLContext getJooqDSL(Connection conn) throws SQLException {
-		Statistics statictics = connectionPool.getStatistics();
-        System.out.println("total free:"+statictics.getTotalFree());
-        System.out.println("total lease:"+statictics.getTotalLeased());
         return DSL.using(conn, SQLDialect.MYSQL);
     }
 	

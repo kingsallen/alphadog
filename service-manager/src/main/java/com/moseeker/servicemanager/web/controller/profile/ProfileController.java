@@ -32,7 +32,7 @@ public class ProfileController {
 		try {
 			// GET方法 通用参数解析并赋值
 			ImportCVForm form = ParamUtils.initModelForm(request, ImportCVForm.class);
-			Response result = profileService.getResource(form.getUser_id(), form.getId());
+			Response result = profileService.getResource(form.getUser_id(), form.getId(), form.getUuid());
 			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
