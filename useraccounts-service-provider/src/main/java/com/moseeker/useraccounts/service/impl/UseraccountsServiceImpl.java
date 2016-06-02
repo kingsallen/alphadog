@@ -1,12 +1,30 @@
 package com.moseeker.useraccounts.service.impl;
 
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.thrift.TException;
+import org.jooq.types.UByte;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.google.common.collect.Lists;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.daoutils.BaseDao;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.sms.SmsSender;
-import com.moseeker.common.util.*;
+import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.Constant;
+import com.moseeker.common.util.ConstantErrorCodeMessage;
+import com.moseeker.common.util.DateUtils;
+import com.moseeker.common.util.MD5Util;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.logdb.tables.records.LogUserloginRecordRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.db.userdb.tables.records.UserFavPositionRecord;
@@ -21,18 +39,6 @@ import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
 import com.moseeker.useraccounts.dao.ProfileDao;
 import com.moseeker.useraccounts.dao.UserDao;
 import com.moseeker.useraccounts.dao.UserFavoritePositionDao;
-import org.apache.thrift.TException;
-import org.jooq.types.UByte;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -283,7 +289,7 @@ public class UseraccountsServiceImpl implements Iface {
             CommonQuery query2 = new CommonQuery();
             Map<String, String> filters2 = new HashMap<>();
             filters2.put("mobile", mobile);
-            query1.setEqualFilter(filters2);
+            query2.setEqualFilter(filters2);
             UserUserRecord userMobile = userdao.getResource(query2);
 
             if (userUnionid == null && userMobile == null) {
@@ -313,7 +319,51 @@ public class UseraccountsServiceImpl implements Iface {
                     combineAccount(appid, userMobile, userUnionid);
                 }).start();
                 //来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录, 7:PC(正常添加) 8:PC(我要投递) 9: PC(我感兴趣)
-            	return ResponseUtils.success(userMobile);
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put("id", userMobile.getId().intValue());
+                map.put("username", userMobile.getUsername());
+                if(userMobile.getIsDisable() != null) {
+                	map.put("is_disable", userMobile.getIsDisable().intValue());
+                }
+                if(userMobile.getRank() != null) {
+                	map.put("rank", userMobile.getRank());
+                }
+                if(userMobile.getRegisterTime() != null) {
+                	map.put("register_time", DateUtils.dateToShortTime(userMobile.getRegisterTime()));
+                }
+                map.put("register_ip", userMobile.getRegisterIp());
+                if(userMobile.getLastLoginTime() != null) {
+                	map.put("last_login_time", DateUtils.dateToShortTime(userMobile.getLastLoginTime()));
+                }
+                map.put("last_login_ip", userMobile.getLastLoginIp());
+                if(userMobile.getLoginCount() != null) {
+                	map.put("login_count", userMobile.getLoginCount().intValue());
+                }
+                if(userMobile.getMobile() != null) {
+                	map.put("mobile", userMobile.getMobile().longValue());
+                }
+                map.put("email", userMobile.getEmail());
+                if(userMobile.getActivation() != null) {
+                	map.put("activation", userMobile.getActivation().intValue());
+                }
+                map.put("activation_code", userMobile.getActivationCode());
+                map.put("token", userMobile.getToken());
+                map.put("name", userMobile.getName());
+                map.put("headimg", userMobile.getHeadimg());
+                if(userMobile.getNationalCodeId() != null) {
+                	map.put("national_code_id", userMobile.getNationalCodeId().intValue());
+                }
+                if(userMobile.getWechatId() != null) {
+                	map.put("wechat_id", userMobile.getWechatId().intValue());
+                }
+                map.put("unionid", userMobile.getUnionid());
+                if(userMobile.getSource() != null) {
+                	map.put("source", userMobile.getSource().intValue());
+                }
+                map.put("company", userMobile.getCompany());
+                map.put("position", userMobile.getPosition());
+                map.put("parentid", userMobile.getParentid().intValue());
+            	return ResponseUtils.success(map);
             } else {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
             }
@@ -360,42 +410,13 @@ public class UseraccountsServiceImpl implements Iface {
             	default:
             		break;
             }
-
-
             // 合并业务代码
-            // 合并sys_user_id表数据
-            List<String> sysUserIds = getSystemUserIdTable();
-            userdao.combineAccount(sysUserIds, "sys_user_id", userMobile.getId().intValue(),
-                    userUnionid.getId().intValue());
-
-            // 合并user_id表数据
-            List<String> userIds = getUserIdTable();
-            userdao.combineAccount(userIds, "user_id", userMobile.getId().intValue(), userUnionid.getId().intValue());
-
-            // 合并sysuser_id数据
-            List<String> syssUserIds = getSysUserIdTable();
-            userdao.combineAccount(syssUserIds, "sysuser_id", userMobile.getId().intValue(),
+            userdao.combineAccount(userMobile.getId().intValue(),
                     userUnionid.getId().intValue());
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-    }
-
-    private List<String> getSysUserIdTable() {
-        List<String> tables = Lists.newArrayList("candidateDB.candidate_position_share_record", "hrDB.hr_wx_hr_chat_list",
-                "userDB.user_fav_position", "userDB.user_intention", "userDB.user_wx_user", "userDB.user_wx_viewer");
-        return tables;
-    }
-
-    private List<String> getUserIdTable() {
-        List<String> tables = Lists.newArrayList("profile_profile");
-        return tables;
-    }
-
-    private List<String> getSystemUserIdTable() {
-        List<String> tables = Lists.newArrayList("candidate_company");
-        return tables;
     }
 
     /**
