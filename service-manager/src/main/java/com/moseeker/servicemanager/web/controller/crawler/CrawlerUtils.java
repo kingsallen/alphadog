@@ -48,41 +48,44 @@ public class CrawlerUtils {
 	@SuppressWarnings("unchecked")
 	private String cleanning(String result, int lang, int source, int completeness, int appid, int user_id) {
 		Map<String, Object> messagBean = (Map<String, Object>) JSON.parse(result);
-		List<Map<String, Object>> resumes = (List<Map<String, Object>>) messagBean.get("resumes");
-		Map<String, Object> resume = resumes.get(0);
-		if (resume.get("profile") != null) {
-			Map<String, Object> profile = (Map<String, Object>) resume.get("profile");
-			if (lang != 0) {
-				profile.put("lang", lang);
-			}
-			if (source != 0) {
-				profile.put("source", source);
+		if(messagBean.get("status") != null && (Integer)messagBean.get("status") == 0) {
+			List<Map<String, Object>> resumes = (List<Map<String, Object>>) messagBean.get("resumes");
+			Map<String, Object> resume = resumes.get(0);
+			if (resume.get("profile") != null) {
+				Map<String, Object> profile = (Map<String, Object>) resume.get("profile");
+				if (lang != 0) {
+					profile.put("lang", lang);
+				}
+				if (source != 0) {
+					profile.put("source", source);
+				} else {
+					if(appid == 0) {
+						profile.put("source", Constant.APPID_ALPHADOG);
+					}
+				}
+				if (completeness != 0) {
+					profile.put("completeness", completeness);
+				}
+				if(user_id > 0) {
+					profile.put("user_id", user_id);
+				}
 			} else {
+				Map<String, Object> profile = new HashMap<>();
+				profile.put("lang", lang);
 				if(appid == 0) {
 					profile.put("source", Constant.APPID_ALPHADOG);
+				} else {
+					profile.put("source", source);
 				}
-			}
-			if (completeness != 0) {
 				profile.put("completeness", completeness);
-			}
-			if(user_id > 0) {
+				profile.put("user_id", completeness);
+				resume.put("profile", profile);
 				profile.put("user_id", user_id);
+				resume.put("profile", profile);
 			}
-		} else {
-			Map<String, Object> profile = new HashMap<>();
-			profile.put("lang", lang);
-			if(appid == 0) {
-				profile.put("source", Constant.APPID_ALPHADOG);
-			} else {
-				profile.put("source", source);
-			}
-			profile.put("completeness", completeness);
-			profile.put("user_id", completeness);
-			resume.put("profile", profile);
-			profile.put("user_id", user_id);
-			resume.put("profile", profile);
+			return JSON.toJSONString(resume);
 		}
-		return JSON.toJSONString(resume);
+		return null;
 	}
 
 	private String fetchResume(String params, String url) {

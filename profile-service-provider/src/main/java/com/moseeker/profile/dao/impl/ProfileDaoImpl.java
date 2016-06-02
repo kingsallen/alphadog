@@ -131,6 +131,7 @@ public class ProfileDaoImpl extends
 				if(importRecord != null && importRecord.size() > 0) {
 					create.attach(importRecord);
 					importRecord.setCreateTime(now);
+					importRecord.setProfileId(profileRecord.getId());
 					importRecord.insert();
 				}
 				if(intentionRecords != null && intentionRecords.size() > 0) {

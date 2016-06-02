@@ -54,7 +54,7 @@ public class ClientConfig<T> implements IConfigCheck{
     private String loadbalance = "random";
 
     /** thrift connect 超时时间，单位为ms，默认为3s */
-    private int timeout = 30000;
+    private int timeout = 100000;
 
     // 下面的配置项是连接池的基本配置
     /** 最大活跃连接数 */
