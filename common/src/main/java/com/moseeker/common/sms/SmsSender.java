@@ -1,21 +1,24 @@
 package com.moseeker.common.sms;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.moseeker.common.util.Constant;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.ConfigPropertiesUtil;
+import com.moseeker.common.util.Constant;
 import com.taobao.api.ApiException;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
 import com.taobao.api.request.AlibabaAliqinFcSmsNumSendRequest;
 import com.taobao.api.response.AlibabaAliqinFcSmsNumSendResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+
+/**
+ * 短信发送客户端
+ * <p>
+ *
+ * */
 public class SmsSender {
 
     private static TaobaoClient taobaoclient;
@@ -38,6 +41,14 @@ public class SmsSender {
         return taobaoclient;
     }    
 
+    /**
+     * 发送短信
+     *
+     * @param mobile 手机号
+     * @param templateCode 模板code
+     * @param params 需要的变量map
+     *
+     * */
     public static boolean sendSMS(String mobile, String templateCode, HashMap params){
         initTaobaoClientInstance();
         
@@ -157,7 +168,9 @@ public class SmsSender {
         HashMap<String, String> params = new HashMap<String, String>();
         String code = getRandomStr();
         params.put("code", code);
-        RedisClientFactory.getCacheClient().set(0, redisKey, Constant.HR_ACCOUNT_SIGNUP_SOURCE_ARRAY[source-1], mobile, code);
+        RedisClientFactory.getCacheClient().set(Constant.APPID_ALPHADOG, redisKey,
+                Constant.HR_ACCOUNT_SIGNUP_SOURCE_ARRAY[source-1], mobile, code);
+
         return sendSMS(mobile, "SMS_5755096", params);
     }
 
