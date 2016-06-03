@@ -31,7 +31,7 @@ import org.jooq.types.ULong;
 
 
 /**
- * A class modelling foreign key relationships between tables of the <code>userDB</code> 
+ * A class modelling foreign key relationships between tables of the <code>userdb</code> 
  * schema
  */
 @Generated(

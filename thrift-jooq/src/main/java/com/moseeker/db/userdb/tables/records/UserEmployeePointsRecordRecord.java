@@ -30,157 +30,157 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserEmployeePointsRecordRecord extends UpdatableRecordImpl<UserEmployeePointsRecordRecord> implements Record11<Integer, Long, String, Integer, Timestamp, Long, Long, Timestamp, Long, Long, Long> {
 
-	private static final long serialVersionUID = 608585373;
+	private static final long serialVersionUID = -1442816355;
 
 	/**
-	 * Setter for <code>userDB.user_employee_points_record.id</code>.
+	 * Setter for <code>userdb.user_employee_points_record.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_employee_points_record.id</code>.
+	 * Getter for <code>userdb.user_employee_points_record.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_employee_points_record.employee_id</code>. sys_employee.id
+	 * Setter for <code>userdb.user_employee_points_record.employee_id</code>. sys_employee.id
 	 */
 	public void setEmployeeId(Long value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_employee_points_record.employee_id</code>. sys_employee.id
+	 * Getter for <code>userdb.user_employee_points_record.employee_id</code>. sys_employee.id
 	 */
 	public Long getEmployeeId() {
 		return (Long) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_employee_points_record.reason</code>. 积分变更说明
+	 * Setter for <code>userdb.user_employee_points_record.reason</code>. 积分变更说明
 	 */
 	public void setReason(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_employee_points_record.reason</code>. 积分变更说明
+	 * Getter for <code>userdb.user_employee_points_record.reason</code>. 积分变更说明
 	 */
 	public String getReason() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_employee_points_record.award</code>. could use positive number to add rewards to user or nagetive number to minus
+	 * Setter for <code>userdb.user_employee_points_record.award</code>. could use positive number to add rewards to user or nagetive number to minus
 	 */
 	public void setAward(Integer value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_employee_points_record.award</code>. could use positive number to add rewards to user or nagetive number to minus
+	 * Getter for <code>userdb.user_employee_points_record.award</code>. could use positive number to add rewards to user or nagetive number to minus
 	 */
 	public Integer getAward() {
 		return (Integer) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_employee_points_record._create_time</code>. time stamp when record created
+	 * Setter for <code>userdb.user_employee_points_record._create_time</code>. time stamp when record created
 	 */
 	public void set_CreateTime(Timestamp value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_employee_points_record._create_time</code>. time stamp when record created
+	 * Getter for <code>userdb.user_employee_points_record._create_time</code>. time stamp when record created
 	 */
 	public Timestamp get_CreateTime() {
 		return (Timestamp) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_employee_points_record.application_id</code>. job_application.id
+	 * Setter for <code>userdb.user_employee_points_record.application_id</code>. job_application.id
 	 */
 	public void setApplicationId(Long value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_employee_points_record.application_id</code>. job_application.id
+	 * Getter for <code>userdb.user_employee_points_record.application_id</code>. job_application.id
 	 */
 	public Long getApplicationId() {
 		return (Long) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_employee_points_record.recom_wxuser</code>. wx_group_user.id
+	 * Setter for <code>userdb.user_employee_points_record.recom_wxuser</code>. wx_group_user.id
 	 */
 	public void setRecomWxuser(Long value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_employee_points_record.recom_wxuser</code>. wx_group_user.id
+	 * Getter for <code>userdb.user_employee_points_record.recom_wxuser</code>. wx_group_user.id
 	 */
 	public Long getRecomWxuser() {
 		return (Long) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_employee_points_record.update_time</code>. 修改时间
+	 * Setter for <code>userdb.user_employee_points_record.update_time</code>. 修改时间
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_employee_points_record.update_time</code>. 修改时间
+	 * Getter for <code>userdb.user_employee_points_record.update_time</code>. 修改时间
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_employee_points_record.position_id</code>. hr_position.id
+	 * Setter for <code>userdb.user_employee_points_record.position_id</code>. hr_position.id
 	 */
 	public void setPositionId(Long value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_employee_points_record.position_id</code>. hr_position.id
+	 * Getter for <code>userdb.user_employee_points_record.position_id</code>. hr_position.id
 	 */
 	public Long getPositionId() {
 		return (Long) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_employee_points_record.berecom_wxuser_id</code>. 被推荐人wx_group_user.id
+	 * Setter for <code>userdb.user_employee_points_record.berecom_wxuser_id</code>. 被推荐人wx_group_user.id
 	 */
 	public void setBerecomWxuserId(Long value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_employee_points_record.berecom_wxuser_id</code>. 被推荐人wx_group_user.id
+	 * Getter for <code>userdb.user_employee_points_record.berecom_wxuser_id</code>. 被推荐人wx_group_user.id
 	 */
 	public Long getBerecomWxuserId() {
 		return (Long) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_employee_points_record.award_config_id</code>. 积分记录来源hr_award_config.id
+	 * Setter for <code>userdb.user_employee_points_record.award_config_id</code>. 积分记录来源hr_award_config.id
 	 */
 	public void setAwardConfigId(Long value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_employee_points_record.award_config_id</code>. 积分记录来源hr_award_config.id
+	 * Getter for <code>userdb.user_employee_points_record.award_config_id</code>. 积分记录来源hr_award_config.id
 	 */
 	public Long getAwardConfigId() {
 		return (Long) getValue(10);

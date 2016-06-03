@@ -26,7 +26,7 @@ import javax.annotation.Generated;
 
 
 /**
- * Convenience access to all tables in profileDB
+ * Convenience access to all tables in profiledb
  */
 @Generated(
 	value = {

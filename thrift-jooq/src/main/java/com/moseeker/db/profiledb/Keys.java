@@ -48,7 +48,7 @@ import org.jooq.types.UInteger;
 
 
 /**
- * A class modelling foreign key relationships between tables of the <code>profileDB</code> 
+ * A class modelling foreign key relationships between tables of the <code>profiledb</code> 
  * schema
  */
 @Generated(

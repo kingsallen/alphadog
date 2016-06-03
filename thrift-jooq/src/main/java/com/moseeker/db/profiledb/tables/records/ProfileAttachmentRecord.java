@@ -31,101 +31,101 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileAttachmentRecord extends UpdatableRecordImpl<ProfileAttachmentRecord> implements Record7<UInteger, UInteger, String, String, String, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = -1169608316;
+	private static final long serialVersionUID = -1816381052;
 
 	/**
-	 * Setter for <code>profileDB.profile_attachment.id</code>. 主key
+	 * Setter for <code>profiledb.profile_attachment.id</code>. 主key
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_attachment.id</code>. 主key
+	 * Getter for <code>profiledb.profile_attachment.id</code>. 主key
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_attachment.profile_id</code>. profile.id
+	 * Setter for <code>profiledb.profile_attachment.profile_id</code>. profile.id
 	 */
 	public void setProfileId(UInteger value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_attachment.profile_id</code>. profile.id
+	 * Getter for <code>profiledb.profile_attachment.profile_id</code>. profile.id
 	 */
 	public UInteger getProfileId() {
 		return (UInteger) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_attachment.name</code>. 附件名称
+	 * Setter for <code>profiledb.profile_attachment.name</code>. 附件名称
 	 */
 	public void setName(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_attachment.name</code>. 附件名称
+	 * Getter for <code>profiledb.profile_attachment.name</code>. 附件名称
 	 */
 	public String getName() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_attachment.path</code>. 附件存储路径
+	 * Setter for <code>profiledb.profile_attachment.path</code>. 附件存储路径
 	 */
 	public void setPath(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_attachment.path</code>. 附件存储路径
+	 * Getter for <code>profiledb.profile_attachment.path</code>. 附件存储路径
 	 */
 	public String getPath() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_attachment.description</code>. 附件描述
+	 * Setter for <code>profiledb.profile_attachment.description</code>. 附件描述
 	 */
 	public void setDescription(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_attachment.description</code>. 附件描述
+	 * Getter for <code>profiledb.profile_attachment.description</code>. 附件描述
 	 */
 	public String getDescription() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_attachment.create_time</code>. 创建时间
+	 * Setter for <code>profiledb.profile_attachment.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_attachment.create_time</code>. 创建时间
+	 * Getter for <code>profiledb.profile_attachment.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_attachment.update_time</code>. 更新时间
+	 * Setter for <code>profiledb.profile_attachment.update_time</code>. 更新时间
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_attachment.update_time</code>. 更新时间
+	 * Getter for <code>profiledb.profile_attachment.update_time</code>. 更新时间
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(6);

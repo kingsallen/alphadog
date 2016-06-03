@@ -33,10 +33,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyAccount extends TableImpl<HrCompanyAccountRecord> {
 
-	private static final long serialVersionUID = 1456824779;
+	private static final long serialVersionUID = -1064610357;
 
 	/**
-	 * The reference instance of <code>hrDB.hr_company_account</code>
+	 * The reference instance of <code>hrdb.hr_company_account</code>
 	 */
 	public static final HrCompanyAccount HR_COMPANY_ACCOUNT = new HrCompanyAccount();
 
@@ -49,24 +49,24 @@ public class HrCompanyAccount extends TableImpl<HrCompanyAccountRecord> {
 	}
 
 	/**
-	 * The column <code>hrDB.hr_company_account.company_id</code>. hr_company.id
+	 * The column <code>hrdb.hr_company_account.company_id</code>. hr_company.id
 	 */
 	public final TableField<HrCompanyAccountRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "hr_company.id");
 
 	/**
-	 * The column <code>hrDB.hr_company_account.account_id</code>. user_hr_account.id
+	 * The column <code>hrdb.hr_company_account.account_id</code>. user_hr_account.id
 	 */
 	public final TableField<HrCompanyAccountRecord, Integer> ACCOUNT_ID = createField("account_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "user_hr_account.id");
 
 	/**
-	 * Create a <code>hrDB.hr_company_account</code> table reference
+	 * Create a <code>hrdb.hr_company_account</code> table reference
 	 */
 	public HrCompanyAccount() {
 		this("hr_company_account", null);
 	}
 
 	/**
-	 * Create an aliased <code>hrDB.hr_company_account</code> table reference
+	 * Create an aliased <code>hrdb.hr_company_account</code> table reference
 	 */
 	public HrCompanyAccount(String alias) {
 		this(alias, HR_COMPANY_ACCOUNT);

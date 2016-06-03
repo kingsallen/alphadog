@@ -30,73 +30,73 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysTemplateTypeRecord extends UpdatableRecordImpl<ConfigSysTemplateTypeRecord> implements Record5<Integer, String, Timestamp, Timestamp, Byte> {
 
-	private static final long serialVersionUID = 1342297296;
+	private static final long serialVersionUID = -1464052528;
 
 	/**
-	 * Setter for <code>configDB.config_sys_template_type.id</code>.
+	 * Setter for <code>configdb.config_sys_template_type.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_template_type.id</code>.
+	 * Getter for <code>configdb.config_sys_template_type.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_template_type.name</code>. 类型名称
+	 * Setter for <code>configdb.config_sys_template_type.name</code>. 类型名称
 	 */
 	public void setName(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_template_type.name</code>. 类型名称
+	 * Getter for <code>configdb.config_sys_template_type.name</code>. 类型名称
 	 */
 	public String getName() {
 		return (String) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_template_type.create_time</code>. 创建时间
+	 * Setter for <code>configdb.config_sys_template_type.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_template_type.create_time</code>. 创建时间
+	 * Getter for <code>configdb.config_sys_template_type.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_template_type.update_time</code>. 修改时间
+	 * Setter for <code>configdb.config_sys_template_type.update_time</code>. 修改时间
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_template_type.update_time</code>. 修改时间
+	 * Getter for <code>configdb.config_sys_template_type.update_time</code>. 修改时间
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_template_type.status</code>. 是否有效 0：有效1：无效
+	 * Setter for <code>configdb.config_sys_template_type.status</code>. 是否有效 0：有效1：无效
 	 */
 	public void setStatus(Byte value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_template_type.status</code>. 是否有效 0：有效1：无效
+	 * Getter for <code>configdb.config_sys_template_type.status</code>. 是否有效 0：有效1：无效
 	 */
 	public Byte getStatus() {
 		return (Byte) getValue(4);

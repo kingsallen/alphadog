@@ -18,7 +18,7 @@ import javax.annotation.Generated;
 
 
 /**
- * Convenience access to all tables in jobDB
+ * Convenience access to all tables in jobdb
  */
 @Generated(
 	value = {
@@ -31,7 +31,7 @@ import javax.annotation.Generated;
 public class Tables {
 
 	/**
-	 * The table jobDB.job_application
+	 * The table jobdb.job_application
 	 */
 	public static final JobApplication JOB_APPLICATION = com.moseeker.db.jobdb.tables.JobApplication.JOB_APPLICATION;
 
@@ -46,12 +46,12 @@ public class Tables {
 	public static final JobApplicationStatusBeisen JOB_APPLICATION_STATUS_BEISEN = com.moseeker.db.jobdb.tables.JobApplicationStatusBeisen.JOB_APPLICATION_STATUS_BEISEN;
 
 	/**
-	 * The table jobDB.job_position
+	 * The table jobdb.job_position
 	 */
 	public static final JobPosition JOB_POSITION = com.moseeker.db.jobdb.tables.JobPosition.JOB_POSITION;
 
 	/**
-	 * The table jobDB.job_position_city
+	 * The table jobdb.job_position_city
 	 */
 	public static final JobPositionCity JOB_POSITION_CITY = com.moseeker.db.jobdb.tables.JobPositionCity.JOB_POSITION_CITY;
 

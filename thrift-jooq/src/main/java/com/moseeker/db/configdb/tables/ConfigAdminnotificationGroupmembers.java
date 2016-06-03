@@ -34,10 +34,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigAdminnotificationGroupmembers extends TableImpl<ConfigAdminnotificationGroupmembersRecord> {
 
-	private static final long serialVersionUID = 1152267342;
+	private static final long serialVersionUID = 1506033742;
 
 	/**
-	 * The reference instance of <code>configDB.config_adminnotification_groupmembers</code>
+	 * The reference instance of <code>configdb.config_adminnotification_groupmembers</code>
 	 */
 	public static final ConfigAdminnotificationGroupmembers CONFIG_ADMINNOTIFICATION_GROUPMEMBERS = new ConfigAdminnotificationGroupmembers();
 
@@ -50,34 +50,34 @@ public class ConfigAdminnotificationGroupmembers extends TableImpl<ConfigAdminno
 	}
 
 	/**
-	 * The column <code>configDB.config_adminnotification_groupmembers.id</code>.
+	 * The column <code>configdb.config_adminnotification_groupmembers.id</code>.
 	 */
 	public final TableField<ConfigAdminnotificationGroupmembersRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
 	/**
-	 * The column <code>configDB.config_adminnotification_groupmembers.groupid</code>. 群组id
+	 * The column <code>configdb.config_adminnotification_groupmembers.groupid</code>. 群组id
 	 */
 	public final TableField<ConfigAdminnotificationGroupmembersRecord, Integer> GROUPID = createField("groupid", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "群组id");
 
 	/**
-	 * The column <code>configDB.config_adminnotification_groupmembers.memberid</code>. 联系人id
+	 * The column <code>configdb.config_adminnotification_groupmembers.memberid</code>. 联系人id
 	 */
 	public final TableField<ConfigAdminnotificationGroupmembersRecord, Integer> MEMBERID = createField("memberid", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "联系人id");
 
 	/**
-	 * The column <code>configDB.config_adminnotification_groupmembers.create_time</code>.
+	 * The column <code>configdb.config_adminnotification_groupmembers.create_time</code>.
 	 */
 	public final TableField<ConfigAdminnotificationGroupmembersRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * Create a <code>configDB.config_adminnotification_groupmembers</code> table reference
+	 * Create a <code>configdb.config_adminnotification_groupmembers</code> table reference
 	 */
 	public ConfigAdminnotificationGroupmembers() {
 		this("config_adminnotification_groupmembers", null);
 	}
 
 	/**
-	 * Create an aliased <code>configDB.config_adminnotification_groupmembers</code> table reference
+	 * Create an aliased <code>configdb.config_adminnotification_groupmembers</code> table reference
 	 */
 	public ConfigAdminnotificationGroupmembers(String alias) {
 		this(alias, CONFIG_ADMINNOTIFICATION_GROUPMEMBERS);

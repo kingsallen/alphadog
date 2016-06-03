@@ -27,115 +27,115 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SysWechatAppConfRecord extends TableRecordImpl<SysWechatAppConfRecord> implements Record8<Integer, Integer, Integer, Byte, Byte, Byte, String, String> {
 
-	private static final long serialVersionUID = 541543608;
+	private static final long serialVersionUID = -752534344;
 
 	/**
-	 * Setter for <code>hrDB.sys_wechat_app_conf.id</code>.
+	 * Setter for <code>hrdb.sys_wechat_app_conf.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.sys_wechat_app_conf.id</code>.
+	 * Getter for <code>hrdb.sys_wechat_app_conf.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.sys_wechat_app_conf.wechat_id</code>. 公众号ID
+	 * Setter for <code>hrdb.sys_wechat_app_conf.wechat_id</code>. 公众号ID
 	 */
 	public void setWechatId(Integer value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.sys_wechat_app_conf.wechat_id</code>. 公众号ID
+	 * Getter for <code>hrdb.sys_wechat_app_conf.wechat_id</code>. 公众号ID
 	 */
 	public Integer getWechatId() {
 		return (Integer) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>hrDB.sys_wechat_app_conf.app_tpl_id</code>. 申请字段ID
+	 * Setter for <code>hrdb.sys_wechat_app_conf.app_tpl_id</code>. 申请字段ID
 	 */
 	public void setAppTplId(Integer value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.sys_wechat_app_conf.app_tpl_id</code>. 申请字段ID
+	 * Getter for <code>hrdb.sys_wechat_app_conf.app_tpl_id</code>. 申请字段ID
 	 */
 	public Integer getAppTplId() {
 		return (Integer) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>hrDB.sys_wechat_app_conf.display</code>. 是否显示0：是，1：否
+	 * Setter for <code>hrdb.sys_wechat_app_conf.display</code>. 是否显示0：是，1：否
 	 */
 	public void setDisplay(Byte value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.sys_wechat_app_conf.display</code>. 是否显示0：是，1：否
+	 * Getter for <code>hrdb.sys_wechat_app_conf.display</code>. 是否显示0：是，1：否
 	 */
 	public Byte getDisplay() {
 		return (Byte) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>hrDB.sys_wechat_app_conf.required</code>. 是否必填0：是，1：否
+	 * Setter for <code>hrdb.sys_wechat_app_conf.required</code>. 是否必填0：是，1：否
 	 */
 	public void setRequired(Byte value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.sys_wechat_app_conf.required</code>. 是否必填0：是，1：否
+	 * Getter for <code>hrdb.sys_wechat_app_conf.required</code>. 是否必填0：是，1：否
 	 */
 	public Byte getRequired() {
 		return (Byte) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>hrDB.sys_wechat_app_conf.priority</code>. 排序
+	 * Setter for <code>hrdb.sys_wechat_app_conf.priority</code>. 排序
 	 */
 	public void setPriority(Byte value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.sys_wechat_app_conf.priority</code>. 排序
+	 * Getter for <code>hrdb.sys_wechat_app_conf.priority</code>. 排序
 	 */
 	public Byte getPriority() {
 		return (Byte) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>hrDB.sys_wechat_app_conf.chname</code>. 申请字段显示名称
+	 * Setter for <code>hrdb.sys_wechat_app_conf.chname</code>. 申请字段显示名称
 	 */
 	public void setChname(String value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.sys_wechat_app_conf.chname</code>. 申请字段显示名称
+	 * Getter for <code>hrdb.sys_wechat_app_conf.chname</code>. 申请字段显示名称
 	 */
 	public String getChname() {
 		return (String) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>hrDB.sys_wechat_app_conf.entitle</code>. 字段英文名称
+	 * Setter for <code>hrdb.sys_wechat_app_conf.entitle</code>. 字段英文名称
 	 */
 	public void setEntitle(String value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.sys_wechat_app_conf.entitle</code>. 字段英文名称
+	 * Getter for <code>hrdb.sys_wechat_app_conf.entitle</code>. 字段英文名称
 	 */
 	public String getEntitle() {
 		return (String) getValue(7);

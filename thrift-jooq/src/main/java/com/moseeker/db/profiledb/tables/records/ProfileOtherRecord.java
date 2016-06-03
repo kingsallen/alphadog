@@ -31,59 +31,59 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileOtherRecord extends UpdatableRecordImpl<ProfileOtherRecord> implements Record4<UInteger, String, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = 1137554684;
+	private static final long serialVersionUID = 1940733180;
 
 	/**
-	 * Setter for <code>profileDB.profile_other.profile_id</code>. profile.id
+	 * Setter for <code>profiledb.profile_other.profile_id</code>. profile.id
 	 */
 	public void setProfileId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_other.profile_id</code>. profile.id
+	 * Getter for <code>profiledb.profile_other.profile_id</code>. profile.id
 	 */
 	public UInteger getProfileId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_other.other</code>. profile默认不显示字段
+	 * Setter for <code>profiledb.profile_other.other</code>. profile默认不显示字段
 	 */
 	public void setOther(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_other.other</code>. profile默认不显示字段
+	 * Getter for <code>profiledb.profile_other.other</code>. profile默认不显示字段
 	 */
 	public String getOther() {
 		return (String) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_other.create_time</code>. 创建时间
+	 * Setter for <code>profiledb.profile_other.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_other.create_time</code>. 创建时间
+	 * Getter for <code>profiledb.profile_other.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_other.update_time</code>. 更新时间
+	 * Setter for <code>profiledb.profile_other.update_time</code>. 更新时间
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_other.update_time</code>. 更新时间
+	 * Getter for <code>profiledb.profile_other.update_time</code>. 更新时间
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(3);

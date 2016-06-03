@@ -31,87 +31,87 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogEmailSendrecordRecord extends UpdatableRecordImpl<LogEmailSendrecordRecord> implements Record6<UInteger, Byte, Byte, String, String, Timestamp> {
 
-	private static final long serialVersionUID = 1295294486;
+	private static final long serialVersionUID = -1723983850;
 
 	/**
-	 * Setter for <code>logDB.log_email_sendrecord.id</code>.
+	 * Setter for <code>logdb.log_email_sendrecord.id</code>.
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_email_sendrecord.id</code>.
+	 * Getter for <code>logdb.log_email_sendrecord.id</code>.
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_email_sendrecord.type</code>. 邮件类型
+	 * Setter for <code>logdb.log_email_sendrecord.type</code>. 邮件类型
 	 */
 	public void setType(Byte value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_email_sendrecord.type</code>. 邮件类型
+	 * Getter for <code>logdb.log_email_sendrecord.type</code>. 邮件类型
 	 */
 	public Byte getType() {
 		return (Byte) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_email_sendrecord.sys</code>. 来自系统，0:未知 1:platform 2:qx 3:hr 4:官网 9:script
+	 * Setter for <code>logdb.log_email_sendrecord.sys</code>. 来自系统，0:未知 1:platform 2:qx 3:hr 4:官网 9:script
 	 */
 	public void setSys(Byte value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_email_sendrecord.sys</code>. 来自系统，0:未知 1:platform 2:qx 3:hr 4:官网 9:script
+	 * Getter for <code>logdb.log_email_sendrecord.sys</code>. 来自系统，0:未知 1:platform 2:qx 3:hr 4:官网 9:script
 	 */
 	public Byte getSys() {
 		return (Byte) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_email_sendrecord.email</code>. 邮箱地址
+	 * Setter for <code>logdb.log_email_sendrecord.email</code>. 邮箱地址
 	 */
 	public void setEmail(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_email_sendrecord.email</code>. 邮箱地址
+	 * Getter for <code>logdb.log_email_sendrecord.email</code>. 邮箱地址
 	 */
 	public String getEmail() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_email_sendrecord.content</code>. 邮件变量部分内容以json方式
+	 * Setter for <code>logdb.log_email_sendrecord.content</code>. 邮件变量部分内容以json方式
 	 */
 	public void setContent(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_email_sendrecord.content</code>. 邮件变量部分内容以json方式
+	 * Getter for <code>logdb.log_email_sendrecord.content</code>. 邮件变量部分内容以json方式
 	 */
 	public String getContent() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_email_sendrecord.create_time</code>.
+	 * Setter for <code>logdb.log_email_sendrecord.create_time</code>.
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_email_sendrecord.create_time</code>.
+	 * Getter for <code>logdb.log_email_sendrecord.create_time</code>.
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(5);

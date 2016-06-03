@@ -28,325 +28,325 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationRecord> {
 
-	private static final long serialVersionUID = 187863433;
+	private static final long serialVersionUID = -1626070647;
 
 	/**
-	 * Setter for <code>candidateDB.job_application.id</code>.
+	 * Setter for <code>candidatedb.job_application.id</code>.
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application.id</code>.
+	 * Getter for <code>candidatedb.job_application.id</code>.
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application.wechat_id</code>. sys_wechat.id, 公众号ID
+	 * Setter for <code>candidatedb.job_application.wechat_id</code>. sys_wechat.id, 公众号ID
 	 */
 	public void setWechatId(UInteger value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application.wechat_id</code>. sys_wechat.id, 公众号ID
+	 * Getter for <code>candidatedb.job_application.wechat_id</code>. sys_wechat.id, 公众号ID
 	 */
 	public UInteger getWechatId() {
 		return (UInteger) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application.position_id</code>. hr_position.id, 职位ID
+	 * Setter for <code>candidatedb.job_application.position_id</code>. hr_position.id, 职位ID
 	 */
 	public void setPositionId(UInteger value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application.position_id</code>. hr_position.id, 职位ID
+	 * Getter for <code>candidatedb.job_application.position_id</code>. hr_position.id, 职位ID
 	 */
 	public UInteger getPositionId() {
 		return (UInteger) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application.recommender_id</code>. wx_group_user.id, 微信ID
+	 * Setter for <code>candidatedb.job_application.recommender_id</code>. wx_group_user.id, 微信ID
 	 */
 	public void setRecommenderId(UInteger value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application.recommender_id</code>. wx_group_user.id, 微信ID
+	 * Getter for <code>candidatedb.job_application.recommender_id</code>. wx_group_user.id, 微信ID
 	 */
 	public UInteger getRecommenderId() {
 		return (UInteger) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application.submit_time</code>. 申请提交时间
+	 * Setter for <code>candidatedb.job_application.submit_time</code>. 申请提交时间
 	 */
 	public void setSubmitTime(Timestamp value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application.submit_time</code>. 申请提交时间
+	 * Getter for <code>candidatedb.job_application.submit_time</code>. 申请提交时间
 	 */
 	public Timestamp getSubmitTime() {
 		return (Timestamp) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application.status_id</code>. hr_award_config.id, 申请状态ID
+	 * Setter for <code>candidatedb.job_application.status_id</code>. hr_award_config.id, 申请状态ID
 	 */
 	public void setStatusId(UInteger value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application.status_id</code>. hr_award_config.id, 申请状态ID
+	 * Getter for <code>candidatedb.job_application.status_id</code>. hr_award_config.id, 申请状态ID
 	 */
 	public UInteger getStatusId() {
 		return (UInteger) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application.l_application_id</code>. ATS的申请ID
+	 * Setter for <code>candidatedb.job_application.l_application_id</code>. ATS的申请ID
 	 */
 	public void setLApplicationId(UInteger value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application.l_application_id</code>. ATS的申请ID
+	 * Getter for <code>candidatedb.job_application.l_application_id</code>. ATS的申请ID
 	 */
 	public UInteger getLApplicationId() {
 		return (UInteger) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application.reward</code>. 当前申请的积分记录
+	 * Setter for <code>candidatedb.job_application.reward</code>. 当前申请的积分记录
 	 */
 	public void setReward(UInteger value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application.reward</code>. 当前申请的积分记录
+	 * Getter for <code>candidatedb.job_application.reward</code>. 当前申请的积分记录
 	 */
 	public UInteger getReward() {
 		return (UInteger) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application.source_id</code>. job_source.id, 对应的ATS ID
+	 * Setter for <code>candidatedb.job_application.source_id</code>. job_source.id, 对应的ATS ID
 	 */
 	public void setSourceId(UInteger value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application.source_id</code>. job_source.id, 对应的ATS ID
+	 * Getter for <code>candidatedb.job_application.source_id</code>. job_source.id, 对应的ATS ID
 	 */
 	public UInteger getSourceId() {
 		return (UInteger) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application._create_time</code>. time stamp when record created
+	 * Setter for <code>candidatedb.job_application._create_time</code>. time stamp when record created
 	 */
 	public void set_CreateTime(Timestamp value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application._create_time</code>. time stamp when record created
+	 * Getter for <code>candidatedb.job_application._create_time</code>. time stamp when record created
 	 */
 	public Timestamp get_CreateTime() {
 		return (Timestamp) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application.applier_id</code>. sys_user.id, 用户ID
+	 * Setter for <code>candidatedb.job_application.applier_id</code>. sys_user.id, 用户ID
 	 */
 	public void setApplierId(UInteger value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application.applier_id</code>. sys_user.id, 用户ID
+	 * Getter for <code>candidatedb.job_application.applier_id</code>. sys_user.id, 用户ID
 	 */
 	public UInteger getApplierId() {
 		return (UInteger) getValue(10);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application.interview_id</code>. app_interview.id, 面试ID
+	 * Setter for <code>candidatedb.job_application.interview_id</code>. app_interview.id, 面试ID
 	 */
 	public void setInterviewId(UInteger value) {
 		setValue(11, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application.interview_id</code>. app_interview.id, 面试ID
+	 * Getter for <code>candidatedb.job_application.interview_id</code>. app_interview.id, 面试ID
 	 */
 	public UInteger getInterviewId() {
 		return (UInteger) getValue(11);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application.resume_id</code>. mongodb collection application[id]
+	 * Setter for <code>candidatedb.job_application.resume_id</code>. mongodb collection application[id]
 	 */
 	public void setResumeId(String value) {
 		setValue(12, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application.resume_id</code>. mongodb collection application[id]
+	 * Getter for <code>candidatedb.job_application.resume_id</code>. mongodb collection application[id]
 	 */
 	public String getResumeId() {
 		return (String) getValue(12);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application.ats_status</code>. 0:unuse, 1:waiting, 2:failed, 3:success, 4:position expire, 5:resume unqualified
+	 * Setter for <code>candidatedb.job_application.ats_status</code>. 0:unuse, 1:waiting, 2:failed, 3:success, 4:position expire, 5:resume unqualified
 	 */
 	public void setAtsStatus(Integer value) {
 		setValue(13, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application.ats_status</code>. 0:unuse, 1:waiting, 2:failed, 3:success, 4:position expire, 5:resume unqualified
+	 * Getter for <code>candidatedb.job_application.ats_status</code>. 0:unuse, 1:waiting, 2:failed, 3:success, 4:position expire, 5:resume unqualified
 	 */
 	public Integer getAtsStatus() {
 		return (Integer) getValue(13);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application.applier_name</code>. 姓名或微信昵称
+	 * Setter for <code>candidatedb.job_application.applier_name</code>. 姓名或微信昵称
 	 */
 	public void setApplierName(String value) {
 		setValue(14, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application.applier_name</code>. 姓名或微信昵称
+	 * Getter for <code>candidatedb.job_application.applier_name</code>. 姓名或微信昵称
 	 */
 	public String getApplierName() {
 		return (String) getValue(14);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application.disable</code>. 是否有效，0：有效，1：无效
+	 * Setter for <code>candidatedb.job_application.disable</code>. 是否有效，0：有效，1：无效
 	 */
 	public void setDisable(Integer value) {
 		setValue(15, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application.disable</code>. 是否有效，0：有效，1：无效
+	 * Getter for <code>candidatedb.job_application.disable</code>. 是否有效，0：有效，1：无效
 	 */
 	public Integer getDisable() {
 		return (Integer) getValue(15);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application.routine</code>. 判断申请来自客户公众号还是聚合平台
+	 * Setter for <code>candidatedb.job_application.routine</code>. 判断申请来自客户公众号还是聚合平台
 	 */
 	public void setRoutine(Integer value) {
 		setValue(16, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application.routine</code>. 判断申请来自客户公众号还是聚合平台
+	 * Getter for <code>candidatedb.job_application.routine</code>. 判断申请来自客户公众号还是聚合平台
 	 */
 	public Integer getRoutine() {
 		return (Integer) getValue(16);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application.is_viewed</code>. 该申请是否被浏览，0：已浏览，1：未浏览
+	 * Setter for <code>candidatedb.job_application.is_viewed</code>. 该申请是否被浏览，0：已浏览，1：未浏览
 	 */
 	public void setIsViewed(Byte value) {
 		setValue(17, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application.is_viewed</code>. 该申请是否被浏览，0：已浏览，1：未浏览
+	 * Getter for <code>candidatedb.job_application.is_viewed</code>. 该申请是否被浏览，0：已浏览，1：未浏览
 	 */
 	public Byte getIsViewed() {
 		return (Byte) getValue(17);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application.not_suitable</code>. 是否不合适，0：合适，1：不合适
+	 * Setter for <code>candidatedb.job_application.not_suitable</code>. 是否不合适，0：合适，1：不合适
 	 */
 	public void setNotSuitable(Byte value) {
 		setValue(18, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application.not_suitable</code>. 是否不合适，0：合适，1：不合适
+	 * Getter for <code>candidatedb.job_application.not_suitable</code>. 是否不合适，0：合适，1：不合适
 	 */
 	public Byte getNotSuitable() {
 		return (Byte) getValue(18);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application.company_id</code>. company.id，公司表ID
+	 * Setter for <code>candidatedb.job_application.company_id</code>. company.id，公司表ID
 	 */
 	public void setCompanyId(UInteger value) {
 		setValue(19, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application.company_id</code>. company.id，公司表ID
+	 * Getter for <code>candidatedb.job_application.company_id</code>. company.id，公司表ID
 	 */
 	public UInteger getCompanyId() {
 		return (UInteger) getValue(19);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application.update_time</code>.
+	 * Setter for <code>candidatedb.job_application.update_time</code>.
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(20, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application.update_time</code>.
+	 * Getter for <code>candidatedb.job_application.update_time</code>.
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(20);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application.app_tpl_id</code>. 申请状态,hr_award_config_template.id
+	 * Setter for <code>candidatedb.job_application.app_tpl_id</code>. 申请状态,hr_award_config_template.id
 	 */
 	public void setAppTplId(UInteger value) {
 		setValue(21, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application.app_tpl_id</code>. 申请状态,hr_award_config_template.id
+	 * Getter for <code>candidatedb.job_application.app_tpl_id</code>. 申请状态,hr_award_config_template.id
 	 */
 	public UInteger getAppTplId() {
 		return (UInteger) getValue(21);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application.proxy</code>. 是否是代理投递 0：正常数据，1：代理假投递
+	 * Setter for <code>candidatedb.job_application.proxy</code>. 是否是代理投递 0：正常数据，1：代理假投递
 	 */
 	public void setProxy(Byte value) {
 		setValue(22, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application.proxy</code>. 是否是代理投递 0：正常数据，1：代理假投递
+	 * Getter for <code>candidatedb.job_application.proxy</code>. 是否是代理投递 0：正常数据，1：代理假投递
 	 */
 	public Byte getProxy() {
 		return (Byte) getValue(22);

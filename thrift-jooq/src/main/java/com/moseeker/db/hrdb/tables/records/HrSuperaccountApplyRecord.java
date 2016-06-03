@@ -30,157 +30,157 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSuperaccountApplyRecord extends UpdatableRecordImpl<HrSuperaccountApplyRecord> implements Record11<Integer, Integer, byte[], Timestamp, Timestamp, Integer, Integer, String, String, Timestamp, Integer> {
 
-	private static final long serialVersionUID = -848912705;
+	private static final long serialVersionUID = 31923903;
 
 	/**
-	 * Setter for <code>hrDB.hr_superaccount_apply.id</code>.
+	 * Setter for <code>hrdb.hr_superaccount_apply.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_superaccount_apply.id</code>.
+	 * Getter for <code>hrdb.hr_superaccount_apply.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_superaccount_apply.company_id</code>. hr_company.id
+	 * Setter for <code>hrdb.hr_superaccount_apply.company_id</code>. hr_company.id
 	 */
 	public void setCompanyId(Integer value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_superaccount_apply.company_id</code>. hr_company.id
+	 * Getter for <code>hrdb.hr_superaccount_apply.company_id</code>. hr_company.id
 	 */
 	public Integer getCompanyId() {
 		return (Integer) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_superaccount_apply.licence</code>. 营业执照
+	 * Setter for <code>hrdb.hr_superaccount_apply.licence</code>. 营业执照
 	 */
 	public void setLicence(byte[] value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_superaccount_apply.licence</code>. 营业执照
+	 * Getter for <code>hrdb.hr_superaccount_apply.licence</code>. 营业执照
 	 */
 	public byte[] getLicence() {
 		return (byte[]) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_superaccount_apply.create_time</code>. 创建时间
+	 * Setter for <code>hrdb.hr_superaccount_apply.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_superaccount_apply.create_time</code>. 创建时间
+	 * Getter for <code>hrdb.hr_superaccount_apply.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_superaccount_apply.update_time</code>. 修改时间
+	 * Setter for <code>hrdb.hr_superaccount_apply.update_time</code>. 修改时间
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_superaccount_apply.update_time</code>. 修改时间
+	 * Getter for <code>hrdb.hr_superaccount_apply.update_time</code>. 修改时间
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_superaccount_apply.operate</code>. config_sys_administrator.id
+	 * Setter for <code>hrdb.hr_superaccount_apply.operate</code>. config_sys_administrator.id
 	 */
 	public void setOperate(Integer value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_superaccount_apply.operate</code>. config_sys_administrator.id
+	 * Getter for <code>hrdb.hr_superaccount_apply.operate</code>. config_sys_administrator.id
 	 */
 	public Integer getOperate() {
 		return (Integer) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_superaccount_apply.status</code>. 申请状态 0表示已经通过，1表示未处理，2表示未通过
+	 * Setter for <code>hrdb.hr_superaccount_apply.status</code>. 申请状态 0表示已经通过，1表示未处理，2表示未通过
 	 */
 	public void setStatus(Integer value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_superaccount_apply.status</code>. 申请状态 0表示已经通过，1表示未处理，2表示未通过
+	 * Getter for <code>hrdb.hr_superaccount_apply.status</code>. 申请状态 0表示已经通过，1表示未处理，2表示未通过
 	 */
 	public Integer getStatus() {
 		return (Integer) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_superaccount_apply.message</code>. 审核留言
+	 * Setter for <code>hrdb.hr_superaccount_apply.message</code>. 审核留言
 	 */
 	public void setMessage(String value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_superaccount_apply.message</code>. 审核留言
+	 * Getter for <code>hrdb.hr_superaccount_apply.message</code>. 审核留言
 	 */
 	public String getMessage() {
 		return (String) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_superaccount_apply.child_company_id</code>. 合并的其他公司的编号：[1,2,3]
+	 * Setter for <code>hrdb.hr_superaccount_apply.child_company_id</code>. 合并的其他公司的编号：[1,2,3]
 	 */
 	public void setChildCompanyId(String value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_superaccount_apply.child_company_id</code>. 合并的其他公司的编号：[1,2,3]
+	 * Getter for <code>hrdb.hr_superaccount_apply.child_company_id</code>. 合并的其他公司的编号：[1,2,3]
 	 */
 	public String getChildCompanyId() {
 		return (String) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_superaccount_apply.migrate_time</code>. 迁移时间
+	 * Setter for <code>hrdb.hr_superaccount_apply.migrate_time</code>. 迁移时间
 	 */
 	public void setMigrateTime(Timestamp value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_superaccount_apply.migrate_time</code>. 迁移时间
+	 * Getter for <code>hrdb.hr_superaccount_apply.migrate_time</code>. 迁移时间
 	 */
 	public Timestamp getMigrateTime() {
 		return (Timestamp) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_superaccount_apply.account_limit</code>. 子账号数量限制
+	 * Setter for <code>hrdb.hr_superaccount_apply.account_limit</code>. 子账号数量限制
 	 */
 	public void setAccountLimit(Integer value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_superaccount_apply.account_limit</code>. 子账号数量限制
+	 * Getter for <code>hrdb.hr_superaccount_apply.account_limit</code>. 子账号数量限制
 	 */
 	public Integer getAccountLimit() {
 		return (Integer) getValue(10);

@@ -35,10 +35,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileIntentionPosition extends TableImpl<ProfileIntentionPositionRecord> {
 
-	private static final long serialVersionUID = -489329589;
+	private static final long serialVersionUID = 1270835275;
 
 	/**
-	 * The reference instance of <code>profileDB.profile_intention_position</code>
+	 * The reference instance of <code>profiledb.profile_intention_position</code>
 	 */
 	public static final ProfileIntentionPosition PROFILE_INTENTION_POSITION = new ProfileIntentionPosition();
 
@@ -51,34 +51,34 @@ public class ProfileIntentionPosition extends TableImpl<ProfileIntentionPosition
 	}
 
 	/**
-	 * The column <code>profileDB.profile_intention_position.id</code>. 主key
+	 * The column <code>profiledb.profile_intention_position.id</code>. 主key
 	 */
 	public final TableField<ProfileIntentionPositionRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
 
 	/**
-	 * The column <code>profileDB.profile_intention_position.profile_intention_id</code>. profile_intention.id
+	 * The column <code>profiledb.profile_intention_position.profile_intention_id</code>. profile_intention.id
 	 */
 	public final TableField<ProfileIntentionPositionRecord, UInteger> PROFILE_INTENTION_ID = createField("profile_intention_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "profile_intention.id");
 
 	/**
-	 * The column <code>profileDB.profile_intention_position.position_code</code>. 职能字典编码
+	 * The column <code>profiledb.profile_intention_position.position_code</code>. 职能字典编码
 	 */
 	public final TableField<ProfileIntentionPositionRecord, UInteger> POSITION_CODE = createField("position_code", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "职能字典编码");
 
 	/**
-	 * The column <code>profileDB.profile_intention_position.position_name</code>. 职能名称
+	 * The column <code>profiledb.profile_intention_position.position_name</code>. 职能名称
 	 */
 	public final TableField<ProfileIntentionPositionRecord, String> POSITION_NAME = createField("position_name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "职能名称");
 
 	/**
-	 * Create a <code>profileDB.profile_intention_position</code> table reference
+	 * Create a <code>profiledb.profile_intention_position</code> table reference
 	 */
 	public ProfileIntentionPosition() {
 		this("profile_intention_position", null);
 	}
 
 	/**
-	 * Create an aliased <code>profileDB.profile_intention_position</code> table reference
+	 * Create an aliased <code>profiledb.profile_intention_position</code> table reference
 	 */
 	public ProfileIntentionPosition(String alias) {
 		this(alias, PROFILE_INTENTION_POSITION);

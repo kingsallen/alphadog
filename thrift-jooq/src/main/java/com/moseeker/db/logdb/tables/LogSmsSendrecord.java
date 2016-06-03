@@ -36,10 +36,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogSmsSendrecord extends TableImpl<LogSmsSendrecordRecord> {
 
-	private static final long serialVersionUID = -1386018352;
+	private static final long serialVersionUID = 1308333520;
 
 	/**
-	 * The reference instance of <code>logDB.log_sms_sendrecord</code>
+	 * The reference instance of <code>logdb.log_sms_sendrecord</code>
 	 */
 	public static final LogSmsSendrecord LOG_SMS_SENDRECORD = new LogSmsSendrecord();
 
@@ -52,44 +52,44 @@ public class LogSmsSendrecord extends TableImpl<LogSmsSendrecordRecord> {
 	}
 
 	/**
-	 * The column <code>logDB.log_sms_sendrecord.id</code>.
+	 * The column <code>logdb.log_sms_sendrecord.id</code>.
 	 */
 	public final TableField<LogSmsSendrecordRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
 
 	/**
-	 * The column <code>logDB.log_sms_sendrecord.sys</code>. 来自系统，0:未知 1:platform 2:qx 3:hr 4:官网 9:script
+	 * The column <code>logdb.log_sms_sendrecord.sys</code>. 来自系统，0:未知 1:platform 2:qx 3:hr 4:官网 9:script
 	 */
 	public final TableField<LogSmsSendrecordRecord, Byte> SYS = createField("sys", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "来自系统，0:未知 1:platform 2:qx 3:hr 4:官网 9:script");
 
 	/**
-	 * The column <code>logDB.log_sms_sendrecord.mobile</code>.
+	 * The column <code>logdb.log_sms_sendrecord.mobile</code>.
 	 */
 	public final TableField<LogSmsSendrecordRecord, Long> MOBILE = createField("mobile", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>logDB.log_sms_sendrecord.msg</code>. 发送内容
+	 * The column <code>logdb.log_sms_sendrecord.msg</code>. 发送内容
 	 */
 	public final TableField<LogSmsSendrecordRecord, String> MSG = createField("msg", org.jooq.impl.SQLDataType.CLOB, this, "发送内容");
 
 	/**
-	 * The column <code>logDB.log_sms_sendrecord.ip</code>. IP
+	 * The column <code>logdb.log_sms_sendrecord.ip</code>. IP
 	 */
 	public final TableField<LogSmsSendrecordRecord, String> IP = createField("ip", org.jooq.impl.SQLDataType.VARCHAR.length(50), this, "IP");
 
 	/**
-	 * The column <code>logDB.log_sms_sendrecord.create_time</code>.
+	 * The column <code>logdb.log_sms_sendrecord.create_time</code>.
 	 */
 	public final TableField<LogSmsSendrecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * Create a <code>logDB.log_sms_sendrecord</code> table reference
+	 * Create a <code>logdb.log_sms_sendrecord</code> table reference
 	 */
 	public LogSmsSendrecord() {
 		this("log_sms_sendrecord", null);
 	}
 
 	/**
-	 * Create an aliased <code>logDB.log_sms_sendrecord</code> table reference
+	 * Create an aliased <code>logdb.log_sms_sendrecord</code> table reference
 	 */
 	public LogSmsSendrecord(String alias) {
 		this(alias, LOG_SMS_SENDRECORD);

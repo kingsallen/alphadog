@@ -34,10 +34,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrEmployeeSection extends TableImpl<HrEmployeeSectionRecord> {
 
-	private static final long serialVersionUID = -1135303225;
+	private static final long serialVersionUID = -246407737;
 
 	/**
-	 * The reference instance of <code>hrDB.hr_employee_section</code>
+	 * The reference instance of <code>hrdb.hr_employee_section</code>
 	 */
 	public static final HrEmployeeSection HR_EMPLOYEE_SECTION = new HrEmployeeSection();
 
@@ -50,39 +50,39 @@ public class HrEmployeeSection extends TableImpl<HrEmployeeSectionRecord> {
 	}
 
 	/**
-	 * The column <code>hrDB.hr_employee_section.id</code>.
+	 * The column <code>hrdb.hr_employee_section.id</code>.
 	 */
 	public final TableField<HrEmployeeSectionRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
 	/**
-	 * The column <code>hrDB.hr_employee_section.company_id</code>. sys_company.id, 部门ID
+	 * The column <code>hrdb.hr_employee_section.company_id</code>. sys_company.id, 部门ID
 	 */
 	public final TableField<HrEmployeeSectionRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "sys_company.id, 部门ID");
 
 	/**
-	 * The column <code>hrDB.hr_employee_section.name</code>. 部门名称
+	 * The column <code>hrdb.hr_employee_section.name</code>. 部门名称
 	 */
 	public final TableField<HrEmployeeSectionRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false), this, "部门名称");
 
 	/**
-	 * The column <code>hrDB.hr_employee_section.priority</code>. 排序优先级
+	 * The column <code>hrdb.hr_employee_section.priority</code>. 排序优先级
 	 */
 	public final TableField<HrEmployeeSectionRecord, Integer> PRIORITY = createField("priority", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "排序优先级");
 
 	/**
-	 * The column <code>hrDB.hr_employee_section.status</code>. 1:有效, 0:无效
+	 * The column <code>hrdb.hr_employee_section.status</code>. 1:有效, 0:无效
 	 */
 	public final TableField<HrEmployeeSectionRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "1:有效, 0:无效");
 
 	/**
-	 * Create a <code>hrDB.hr_employee_section</code> table reference
+	 * Create a <code>hrdb.hr_employee_section</code> table reference
 	 */
 	public HrEmployeeSection() {
 		this("hr_employee_section", null);
 	}
 
 	/**
-	 * Create an aliased <code>hrDB.hr_employee_section</code> table reference
+	 * Create an aliased <code>hrdb.hr_employee_section</code> table reference
 	 */
 	public HrEmployeeSection(String alias) {
 		this(alias, HR_EMPLOYEE_SECTION);

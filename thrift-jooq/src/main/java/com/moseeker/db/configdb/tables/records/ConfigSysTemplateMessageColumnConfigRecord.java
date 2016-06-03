@@ -29,101 +29,101 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysTemplateMessageColumnConfigRecord extends UpdatableRecordImpl<ConfigSysTemplateMessageColumnConfigRecord> implements Record7<UInteger, String, String, String, UInteger, UInteger, String> {
 
-	private static final long serialVersionUID = 1573707207;
+	private static final long serialVersionUID = 204430791;
 
 	/**
-	 * Setter for <code>configDB.config_sys_template_message_column_config.id</code>. 主key
+	 * Setter for <code>configdb.config_sys_template_message_column_config.id</code>. 主key
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_template_message_column_config.id</code>. 主key
+	 * Getter for <code>configdb.config_sys_template_message_column_config.id</code>. 主key
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_template_message_column_config.template_id</code>. 模板ID
+	 * Setter for <code>configdb.config_sys_template_message_column_config.template_id</code>. 模板ID
 	 */
 	public void setTemplateId(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_template_message_column_config.template_id</code>. 模板ID
+	 * Getter for <code>configdb.config_sys_template_message_column_config.template_id</code>. 模板ID
 	 */
 	public String getTemplateId() {
 		return (String) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_template_message_column_config.enname</code>. 字段英文名
+	 * Setter for <code>configdb.config_sys_template_message_column_config.enname</code>. 字段英文名
 	 */
 	public void setEnname(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_template_message_column_config.enname</code>. 字段英文名
+	 * Getter for <code>configdb.config_sys_template_message_column_config.enname</code>. 字段英文名
 	 */
 	public String getEnname() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_template_message_column_config.chname</code>. 字段中文名
+	 * Setter for <code>configdb.config_sys_template_message_column_config.chname</code>. 字段中文名
 	 */
 	public void setChname(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_template_message_column_config.chname</code>. 字段中文名
+	 * Getter for <code>configdb.config_sys_template_message_column_config.chname</code>. 字段中文名
 	 */
 	public String getChname() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_template_message_column_config.display</code>. 是否显示
+	 * Setter for <code>configdb.config_sys_template_message_column_config.display</code>. 是否显示
 	 */
 	public void setDisplay(UInteger value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_template_message_column_config.display</code>. 是否显示
+	 * Getter for <code>configdb.config_sys_template_message_column_config.display</code>. 是否显示
 	 */
 	public UInteger getDisplay() {
 		return (UInteger) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_template_message_column_config.priority</code>. 排序
+	 * Setter for <code>configdb.config_sys_template_message_column_config.priority</code>. 排序
 	 */
 	public void setPriority(UInteger value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_template_message_column_config.priority</code>. 排序
+	 * Getter for <code>configdb.config_sys_template_message_column_config.priority</code>. 排序
 	 */
 	public UInteger getPriority() {
 		return (UInteger) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_template_message_column_config._default</code>. default value
+	 * Setter for <code>configdb.config_sys_template_message_column_config._default</code>. default value
 	 */
 	public void set_Default(String value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_template_message_column_config._default</code>. default value
+	 * Getter for <code>configdb.config_sys_template_message_column_config._default</code>. default value
 	 */
 	public String get_Default() {
 		return (String) getValue(6);

@@ -28,87 +28,87 @@ import com.moseeker.db.dictdb.tables.DictCity;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictCityRecord extends UpdatableRecordImpl<DictCityRecord> implements Record6<UInteger, String, Byte, Byte, String, Byte> {
 
-	private static final long serialVersionUID = -1584355082;
+	private static final long serialVersionUID = -369352458;
 
 	/**
-	 * Setter for <code>dictDB.dict_city.code</code>. 字典code
+	 * Setter for <code>dictdb.dict_city.code</code>. 字典code
 	 */
 	public void setCode(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_city.code</code>. 字典code
+	 * Getter for <code>dictdb.dict_city.code</code>. 字典code
 	 */
 	public UInteger getCode() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>dictDB.dict_city.name</code>. 字典name
+	 * Setter for <code>dictdb.dict_city.name</code>. 字典name
 	 */
 	public void setName(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_city.name</code>. 字典name
+	 * Getter for <code>dictdb.dict_city.name</code>. 字典name
 	 */
 	public String getName() {
 		return (String) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>dictDB.dict_city.level</code>. 字典level
+	 * Setter for <code>dictdb.dict_city.level</code>. 字典level
 	 */
 	public void setLevel(Byte value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_city.level</code>. 字典level
+	 * Getter for <code>dictdb.dict_city.level</code>. 字典level
 	 */
 	public Byte getLevel() {
 		return (Byte) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>dictDB.dict_city.hot_city</code>. 热门城市 0:否 1：是
+	 * Setter for <code>dictdb.dict_city.hot_city</code>. 热门城市 0:否 1：是
 	 */
 	public void setHotCity(Byte value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_city.hot_city</code>. 热门城市 0:否 1：是
+	 * Getter for <code>dictdb.dict_city.hot_city</code>. 热门城市 0:否 1：是
 	 */
 	public Byte getHotCity() {
 		return (Byte) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>dictDB.dict_city.ename</code>. 英文名称
+	 * Setter for <code>dictdb.dict_city.ename</code>. 英文名称
 	 */
 	public void setEname(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_city.ename</code>. 英文名称
+	 * Getter for <code>dictdb.dict_city.ename</code>. 英文名称
 	 */
 	public String getEname() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>dictDB.dict_city.is_using</code>. 正在使用 0:没在用 1:在使用
+	 * Setter for <code>dictdb.dict_city.is_using</code>. 正在使用 0:没在用 1:在使用
 	 */
 	public void setIsUsing(Byte value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_city.is_using</code>. 正在使用 0:没在用 1:在使用
+	 * Getter for <code>dictdb.dict_city.is_using</code>. 正在使用 0:没在用 1:在使用
 	 */
 	public Byte getIsUsing() {
 		return (Byte) getValue(5);

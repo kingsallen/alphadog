@@ -36,10 +36,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateRecomRecord extends TableImpl<CandidateRecomRecordRecord> {
 
-	private static final long serialVersionUID = 872846892;
+	private static final long serialVersionUID = 2122024492;
 
 	/**
-	 * The reference instance of <code>candidateDB.candidate_recom_record</code>
+	 * The reference instance of <code>candidatedb.candidate_recom_record</code>
 	 */
 	public static final CandidateRecomRecord CANDIDATE_RECOM_RECORD = new CandidateRecomRecord();
 
@@ -52,99 +52,99 @@ public class CandidateRecomRecord extends TableImpl<CandidateRecomRecordRecord> 
 	}
 
 	/**
-	 * The column <code>candidateDB.candidate_recom_record.id</code>. 主key
+	 * The column <code>candidatedb.candidate_recom_record.id</code>. 主key
 	 */
 	public final TableField<CandidateRecomRecordRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
 
 	/**
-	 * The column <code>candidateDB.candidate_recom_record.position_id</code>. 推荐的职位ID, hr_position.id
+	 * The column <code>candidatedb.candidate_recom_record.position_id</code>. 推荐的职位ID, hr_position.id
 	 */
 	public final TableField<CandidateRecomRecordRecord, Integer> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "推荐的职位ID, hr_position.id");
 
 	/**
-	 * The column <code>candidateDB.candidate_recom_record.app_id</code>. job_application.id, 被推荐者申请ID
+	 * The column <code>candidatedb.candidate_recom_record.app_id</code>. job_application.id, 被推荐者申请ID
 	 */
 	public final TableField<CandidateRecomRecordRecord, Integer> APP_ID = createField("app_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "job_application.id, 被推荐者申请ID");
 
 	/**
-	 * The column <code>candidateDB.candidate_recom_record.presentee_id</code>. wx_group_user.id, 被推荐者的微信ID
+	 * The column <code>candidatedb.candidate_recom_record.presentee_id</code>. wx_group_user.id, 被推荐者的微信ID
 	 */
 	public final TableField<CandidateRecomRecordRecord, Integer> PRESENTEE_ID = createField("presentee_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "wx_group_user.id, 被推荐者的微信ID");
 
 	/**
-	 * The column <code>candidateDB.candidate_recom_record.click_time</code>. 职位点击时间
+	 * The column <code>candidatedb.candidate_recom_record.click_time</code>. 职位点击时间
 	 */
 	public final TableField<CandidateRecomRecordRecord, Timestamp> CLICK_TIME = createField("click_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "职位点击时间");
 
 	/**
-	 * The column <code>candidateDB.candidate_recom_record.depth</code>. 第几层关系
+	 * The column <code>candidatedb.candidate_recom_record.depth</code>. 第几层关系
 	 */
 	public final TableField<CandidateRecomRecordRecord, Integer> DEPTH = createField("depth", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "第几层关系");
 
 	/**
-	 * The column <code>candidateDB.candidate_recom_record.recom_id_2</code>. wx_group_user.id, 第2度人脉推荐人微信ID，用来标记谁的朋友
+	 * The column <code>candidatedb.candidate_recom_record.recom_id_2</code>. wx_group_user.id, 第2度人脉推荐人微信ID，用来标记谁的朋友
 	 */
 	public final TableField<CandidateRecomRecordRecord, Integer> RECOM_ID_2 = createField("recom_id_2", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "wx_group_user.id, 第2度人脉推荐人微信ID，用来标记谁的朋友");
 
 	/**
-	 * The column <code>candidateDB.candidate_recom_record.recom_id</code>. wx_group_user.id, 推荐者的微信ID
+	 * The column <code>candidatedb.candidate_recom_record.recom_id</code>. wx_group_user.id, 推荐者的微信ID
 	 */
 	public final TableField<CandidateRecomRecordRecord, Integer> RECOM_ID = createField("recom_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "wx_group_user.id, 推荐者的微信ID");
 
 	/**
-	 * The column <code>candidateDB.candidate_recom_record.realname</code>. 被推荐人真实姓名
+	 * The column <code>candidatedb.candidate_recom_record.realname</code>. 被推荐人真实姓名
 	 */
 	public final TableField<CandidateRecomRecordRecord, String> REALNAME = createField("realname", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "被推荐人真实姓名");
 
 	/**
-	 * The column <code>candidateDB.candidate_recom_record.company</code>. 被推荐者目前就职公司
+	 * The column <code>candidatedb.candidate_recom_record.company</code>. 被推荐者目前就职公司
 	 */
 	public final TableField<CandidateRecomRecordRecord, String> COMPANY = createField("company", org.jooq.impl.SQLDataType.VARCHAR.length(200).nullable(false).defaulted(true), this, "被推荐者目前就职公司");
 
 	/**
-	 * The column <code>candidateDB.candidate_recom_record.position</code>. 被推荐者的职位
+	 * The column <code>candidatedb.candidate_recom_record.position</code>. 被推荐者的职位
 	 */
 	public final TableField<CandidateRecomRecordRecord, String> POSITION = createField("position", org.jooq.impl.SQLDataType.VARCHAR.length(200).nullable(false).defaulted(true), this, "被推荐者的职位");
 
 	/**
-	 * The column <code>candidateDB.candidate_recom_record.recom_reason</code>. 推荐理由, 逗号分隔
+	 * The column <code>candidatedb.candidate_recom_record.recom_reason</code>. 推荐理由, 逗号分隔
 	 */
 	public final TableField<CandidateRecomRecordRecord, String> RECOM_REASON = createField("recom_reason", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaulted(true), this, "推荐理由, 逗号分隔");
 
 	/**
-	 * The column <code>candidateDB.candidate_recom_record.recom_time</code>. 推荐时间
+	 * The column <code>candidatedb.candidate_recom_record.recom_time</code>. 推荐时间
 	 */
 	public final TableField<CandidateRecomRecordRecord, Timestamp> RECOM_TIME = createField("recom_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "推荐时间");
 
 	/**
-	 * The column <code>candidateDB.candidate_recom_record.is_recom</code>. 推荐状态，0：推荐过，1：未推荐
+	 * The column <code>candidatedb.candidate_recom_record.is_recom</code>. 推荐状态，0：推荐过，1：未推荐
 	 */
 	public final TableField<CandidateRecomRecordRecord, Integer> IS_RECOM = createField("is_recom", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "推荐状态，0：推荐过，1：未推荐");
 
 	/**
-	 * The column <code>candidateDB.candidate_recom_record.create_time</code>. 创建时间
+	 * The column <code>candidatedb.candidate_recom_record.create_time</code>. 创建时间
 	 */
 	public final TableField<CandidateRecomRecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "创建时间");
 
 	/**
-	 * The column <code>candidateDB.candidate_recom_record.update_time</code>. 更新时间
+	 * The column <code>candidatedb.candidate_recom_record.update_time</code>. 更新时间
 	 */
 	public final TableField<CandidateRecomRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "更新时间");
 
 	/**
-	 * The column <code>candidateDB.candidate_recom_record.mobile</code>. 被推荐者的手机号
+	 * The column <code>candidatedb.candidate_recom_record.mobile</code>. 被推荐者的手机号
 	 */
 	public final TableField<CandidateRecomRecordRecord, String> MOBILE = createField("mobile", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false).defaulted(true), this, "被推荐者的手机号");
 
 	/**
-	 * Create a <code>candidateDB.candidate_recom_record</code> table reference
+	 * Create a <code>candidatedb.candidate_recom_record</code> table reference
 	 */
 	public CandidateRecomRecord() {
 		this("candidate_recom_record", null);
 	}
 
 	/**
-	 * Create an aliased <code>candidateDB.candidate_recom_record</code> table reference
+	 * Create an aliased <code>candidatedb.candidate_recom_record</code> table reference
 	 */
 	public CandidateRecomRecord(String alias) {
 		this(alias, CANDIDATE_RECOM_RECORD);

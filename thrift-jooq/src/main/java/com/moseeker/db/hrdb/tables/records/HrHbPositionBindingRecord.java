@@ -31,115 +31,115 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrHbPositionBindingRecord extends UpdatableRecordImpl<HrHbPositionBindingRecord> implements Record8<Integer, Integer, Integer, Byte, BigDecimal, Integer, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = -639952804;
+	private static final long serialVersionUID = -1901105060;
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_position_binding.id</code>.
+	 * Setter for <code>hrdb.hr_hb_position_binding.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_position_binding.id</code>.
+	 * Getter for <code>hrdb.hr_hb_position_binding.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_position_binding.hb_config_id</code>. hr_hb_config.id
+	 * Setter for <code>hrdb.hr_hb_position_binding.hb_config_id</code>. hr_hb_config.id
 	 */
 	public void setHbConfigId(Integer value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_position_binding.hb_config_id</code>. hr_hb_config.id
+	 * Getter for <code>hrdb.hr_hb_position_binding.hb_config_id</code>. hr_hb_config.id
 	 */
 	public Integer getHbConfigId() {
 		return (Integer) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_position_binding.position_id</code>. hr_position.id
+	 * Setter for <code>hrdb.hr_hb_position_binding.position_id</code>. hr_position.id
 	 */
 	public void setPositionId(Integer value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_position_binding.position_id</code>. hr_position.id
+	 * Getter for <code>hrdb.hr_hb_position_binding.position_id</code>. hr_position.id
 	 */
 	public Integer getPositionId() {
 		return (Integer) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_position_binding.trigger_way</code>. 领取条件：1=职位被转发 2=职位被申请
+	 * Setter for <code>hrdb.hr_hb_position_binding.trigger_way</code>. 领取条件：1=职位被转发 2=职位被申请
 	 */
 	public void setTriggerWay(Byte value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_position_binding.trigger_way</code>. 领取条件：1=职位被转发 2=职位被申请
+	 * Getter for <code>hrdb.hr_hb_position_binding.trigger_way</code>. 领取条件：1=职位被转发 2=职位被申请
 	 */
 	public Byte getTriggerWay() {
 		return (Byte) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_position_binding.total_amount</code>. 总金额
+	 * Setter for <code>hrdb.hr_hb_position_binding.total_amount</code>. 总金额
 	 */
 	public void setTotalAmount(BigDecimal value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_position_binding.total_amount</code>. 总金额
+	 * Getter for <code>hrdb.hr_hb_position_binding.total_amount</code>. 总金额
 	 */
 	public BigDecimal getTotalAmount() {
 		return (BigDecimal) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_position_binding.total_num</code>. 红包总数
+	 * Setter for <code>hrdb.hr_hb_position_binding.total_num</code>. 红包总数
 	 */
 	public void setTotalNum(Integer value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_position_binding.total_num</code>. 红包总数
+	 * Getter for <code>hrdb.hr_hb_position_binding.total_num</code>. 红包总数
 	 */
 	public Integer getTotalNum() {
 		return (Integer) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_position_binding.create_time</code>. 创建时间
+	 * Setter for <code>hrdb.hr_hb_position_binding.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_position_binding.create_time</code>. 创建时间
+	 * Getter for <code>hrdb.hr_hb_position_binding.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_position_binding.update_time</code>. 更新时间
+	 * Setter for <code>hrdb.hr_hb_position_binding.update_time</code>. 更新时间
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_position_binding.update_time</code>. 更新时间
+	 * Getter for <code>hrdb.hr_hb_position_binding.update_time</code>. 更新时间
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(7);

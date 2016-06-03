@@ -30,59 +30,59 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserSettingsRecord extends UpdatableRecordImpl<UserSettingsRecord> implements Record4<UInteger, UInteger, String, UByte> {
 
-	private static final long serialVersionUID = -1794277747;
+	private static final long serialVersionUID = 598869645;
 
 	/**
-	 * Setter for <code>userDB.user_settings.id</code>. 主key
+	 * Setter for <code>userdb.user_settings.id</code>. 主key
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_settings.id</code>. 主key
+	 * Getter for <code>userdb.user_settings.id</code>. 主key
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_settings.user_id</code>. user_user.id, 用户id
+	 * Setter for <code>userdb.user_settings.user_id</code>. user_user.id, 用户id
 	 */
 	public void setUserId(UInteger value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_settings.user_id</code>. user_user.id, 用户id
+	 * Getter for <code>userdb.user_settings.user_id</code>. user_user.id, 用户id
 	 */
 	public UInteger getUserId() {
 		return (UInteger) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_settings.banner_url</code>. profile banner 的qiniu 相对url
+	 * Setter for <code>userdb.user_settings.banner_url</code>. profile banner 的qiniu 相对url
 	 */
 	public void setBannerUrl(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_settings.banner_url</code>. profile banner 的qiniu 相对url
+	 * Getter for <code>userdb.user_settings.banner_url</code>. profile banner 的qiniu 相对url
 	 */
 	public String getBannerUrl() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_settings.privacy_policy</code>. 0:公开, 10:仅对hr公开, 20:完全保密
+	 * Setter for <code>userdb.user_settings.privacy_policy</code>. 0:公开, 10:仅对hr公开, 20:完全保密
 	 */
 	public void setPrivacyPolicy(UByte value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_settings.privacy_policy</code>. 0:公开, 10:仅对hr公开, 20:完全保密
+	 * Getter for <code>userdb.user_settings.privacy_policy</code>. 0:公开, 10:仅对hr公开, 20:完全保密
 	 */
 	public UByte getPrivacyPolicy() {
 		return (UByte) getValue(3);

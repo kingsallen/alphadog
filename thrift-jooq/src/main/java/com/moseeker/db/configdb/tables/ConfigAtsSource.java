@@ -34,10 +34,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigAtsSource extends TableImpl<ConfigAtsSourceRecord> {
 
-	private static final long serialVersionUID = -869915206;
+	private static final long serialVersionUID = -1590646342;
 
 	/**
-	 * The reference instance of <code>configDB.config_ats_source</code>
+	 * The reference instance of <code>configdb.config_ats_source</code>
 	 */
 	public static final ConfigAtsSource CONFIG_ATS_SOURCE = new ConfigAtsSource();
 
@@ -50,74 +50,74 @@ public class ConfigAtsSource extends TableImpl<ConfigAtsSourceRecord> {
 	}
 
 	/**
-	 * The column <code>configDB.config_ats_source.id</code>.
+	 * The column <code>configdb.config_ats_source.id</code>.
 	 */
 	public final TableField<ConfigAtsSourceRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
 	/**
-	 * The column <code>configDB.config_ats_source.name</code>. Name
+	 * The column <code>configdb.config_ats_source.name</code>. Name
 	 */
 	public final TableField<ConfigAtsSourceRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(30).nullable(false).defaulted(true), this, "Name");
 
 	/**
-	 * The column <code>configDB.config_ats_source.type</code>. 1:WSDL
+	 * The column <code>configdb.config_ats_source.type</code>. 1:WSDL
 	 */
 	public final TableField<ConfigAtsSourceRecord, Integer> TYPE = createField("type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "1:WSDL");
 
 	/**
-	 * The column <code>configDB.config_ats_source.url</code>. net url for webservice or other method
+	 * The column <code>configdb.config_ats_source.url</code>. net url for webservice or other method
 	 */
 	public final TableField<ConfigAtsSourceRecord, String> URL = createField("url", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false).defaulted(true), this, "net url for webservice or other method");
 
 	/**
-	 * The column <code>configDB.config_ats_source.fullname</code>.
+	 * The column <code>configdb.config_ats_source.fullname</code>.
 	 */
 	public final TableField<ConfigAtsSourceRecord, String> FULLNAME = createField("fullname", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false), this, "");
 
 	/**
-	 * The column <code>configDB.config_ats_source.ftp_address</code>. 存放ftp文件
+	 * The column <code>configdb.config_ats_source.ftp_address</code>. 存放ftp文件
 	 */
 	public final TableField<ConfigAtsSourceRecord, String> FTP_ADDRESS = createField("ftp_address", org.jooq.impl.SQLDataType.VARCHAR.length(80).nullable(false), this, "存放ftp文件");
 
 	/**
-	 * The column <code>configDB.config_ats_source.username</code>. ATS 用户名
+	 * The column <code>configdb.config_ats_source.username</code>. ATS 用户名
 	 */
 	public final TableField<ConfigAtsSourceRecord, String> USERNAME = createField("username", org.jooq.impl.SQLDataType.VARCHAR.length(50).defaulted(true), this, "ATS 用户名");
 
 	/**
-	 * The column <code>configDB.config_ats_source.password</code>. ATS 密码
+	 * The column <code>configdb.config_ats_source.password</code>. ATS 密码
 	 */
 	public final TableField<ConfigAtsSourceRecord, String> PASSWORD = createField("password", org.jooq.impl.SQLDataType.VARCHAR.length(50).defaulted(true), this, "ATS 密码");
 
 	/**
-	 * The column <code>configDB.config_ats_source.apikey</code>. ATS API KEY
+	 * The column <code>configdb.config_ats_source.apikey</code>. ATS API KEY
 	 */
 	public final TableField<ConfigAtsSourceRecord, String> APIKEY = createField("apikey", org.jooq.impl.SQLDataType.VARCHAR.length(100).defaulted(true), this, "ATS API KEY");
 
 	/**
-	 * The column <code>configDB.config_ats_source.company_id</code>. hr_company.id
+	 * The column <code>configdb.config_ats_source.company_id</code>. hr_company.id
 	 */
 	public final TableField<ConfigAtsSourceRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.defaulted(true), this, "hr_company.id");
 
 	/**
-	 * The column <code>configDB.config_ats_source.kenexa_id</code>. kenexa的sender id
+	 * The column <code>configdb.config_ats_source.kenexa_id</code>. kenexa的sender id
 	 */
 	public final TableField<ConfigAtsSourceRecord, String> KENEXA_ID = createField("kenexa_id", org.jooq.impl.SQLDataType.VARCHAR.length(32).defaulted(true), this, "kenexa的sender id");
 
 	/**
-	 * The column <code>configDB.config_ats_source.kenexa_cridential</code>. kenexa的sender cridential
+	 * The column <code>configdb.config_ats_source.kenexa_cridential</code>. kenexa的sender cridential
 	 */
 	public final TableField<ConfigAtsSourceRecord, String> KENEXA_CRIDENTIAL = createField("kenexa_cridential", org.jooq.impl.SQLDataType.VARCHAR.length(32).defaulted(true), this, "kenexa的sender cridential");
 
 	/**
-	 * Create a <code>configDB.config_ats_source</code> table reference
+	 * Create a <code>configdb.config_ats_source</code> table reference
 	 */
 	public ConfigAtsSource() {
 		this("config_ats_source", null);
 	}
 
 	/**
-	 * Create an aliased <code>configDB.config_ats_source</code> table reference
+	 * Create an aliased <code>configdb.config_ats_source</code> table reference
 	 */
 	public ConfigAtsSource(String alias) {
 		this(alias, CONFIG_ATS_SOURCE);

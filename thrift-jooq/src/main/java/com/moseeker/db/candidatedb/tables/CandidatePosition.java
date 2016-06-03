@@ -34,10 +34,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidatePosition extends TableImpl<CandidatePositionRecord> {
 
-	private static final long serialVersionUID = 875395158;
+	private static final long serialVersionUID = -778211242;
 
 	/**
-	 * The reference instance of <code>candidateDB.candidate_position</code>
+	 * The reference instance of <code>candidatedb.candidate_position</code>
 	 */
 	public static final CandidatePosition CANDIDATE_POSITION = new CandidatePosition();
 
@@ -50,49 +50,49 @@ public class CandidatePosition extends TableImpl<CandidatePositionRecord> {
 	}
 
 	/**
-	 * The column <code>candidateDB.candidate_position.position_id</code>. hr_position.id
+	 * The column <code>candidatedb.candidate_position.position_id</code>. hr_position.id
 	 */
 	public final TableField<CandidatePositionRecord, Integer> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "hr_position.id");
 
 	/**
-	 * The column <code>candidateDB.candidate_position.update_time</code>. 修改时间
+	 * The column <code>candidatedb.candidate_position.update_time</code>. 修改时间
 	 */
 	public final TableField<CandidatePositionRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "修改时间");
 
 	/**
-	 * The column <code>candidateDB.candidate_position.wxuser_id</code>. wx_group_user.id
+	 * The column <code>candidatedb.candidate_position.wxuser_id</code>. wx_group_user.id
 	 */
 	public final TableField<CandidatePositionRecord, Integer> WXUSER_ID = createField("wxuser_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "wx_group_user.id");
 
 	/**
-	 * The column <code>candidateDB.candidate_position.is_interested</code>. 是否感兴趣
+	 * The column <code>candidatedb.candidate_position.is_interested</code>. 是否感兴趣
 	 */
 	public final TableField<CandidatePositionRecord, Byte> IS_INTERESTED = createField("is_interested", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "是否感兴趣");
 
 	/**
-	 * The column <code>candidateDB.candidate_position.candidate_company_id</code>. candidate_company.id
+	 * The column <code>candidatedb.candidate_position.candidate_company_id</code>. candidate_company.id
 	 */
 	public final TableField<CandidatePositionRecord, Integer> CANDIDATE_COMPANY_ID = createField("candidate_company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "candidate_company.id");
 
 	/**
-	 * The column <code>candidateDB.candidate_position.view_number</code>. 查看次数
+	 * The column <code>candidatedb.candidate_position.view_number</code>. 查看次数
 	 */
 	public final TableField<CandidatePositionRecord, Integer> VIEW_NUMBER = createField("view_number", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "查看次数");
 
 	/**
-	 * The column <code>candidateDB.candidate_position.shared_from_employee</code>.
+	 * The column <code>candidatedb.candidate_position.shared_from_employee</code>.
 	 */
 	public final TableField<CandidatePositionRecord, Byte> SHARED_FROM_EMPLOYEE = createField("shared_from_employee", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * Create a <code>candidateDB.candidate_position</code> table reference
+	 * Create a <code>candidatedb.candidate_position</code> table reference
 	 */
 	public CandidatePosition() {
 		this("candidate_position", null);
 	}
 
 	/**
-	 * Create an aliased <code>candidateDB.candidate_position</code> table reference
+	 * Create an aliased <code>candidatedb.candidate_position</code> table reference
 	 */
 	public CandidatePosition(String alias) {
 		this(alias, CANDIDATE_POSITION);

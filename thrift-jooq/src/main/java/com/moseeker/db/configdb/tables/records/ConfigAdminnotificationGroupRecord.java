@@ -30,45 +30,45 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigAdminnotificationGroupRecord extends UpdatableRecordImpl<ConfigAdminnotificationGroupRecord> implements Record3<Integer, String, Timestamp> {
 
-	private static final long serialVersionUID = 1642936184;
+	private static final long serialVersionUID = -106510472;
 
 	/**
-	 * Setter for <code>configDB.config_adminnotification_group.id</code>.
+	 * Setter for <code>configdb.config_adminnotification_group.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_adminnotification_group.id</code>.
+	 * Getter for <code>configdb.config_adminnotification_group.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_adminnotification_group.name</code>. 群组名称
+	 * Setter for <code>configdb.config_adminnotification_group.name</code>. 群组名称
 	 */
 	public void setName(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_adminnotification_group.name</code>. 群组名称
+	 * Getter for <code>configdb.config_adminnotification_group.name</code>. 群组名称
 	 */
 	public String getName() {
 		return (String) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_adminnotification_group.create_time</code>.
+	 * Setter for <code>configdb.config_adminnotification_group.create_time</code>.
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_adminnotification_group.create_time</code>.
+	 * Getter for <code>configdb.config_adminnotification_group.create_time</code>.
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(2);

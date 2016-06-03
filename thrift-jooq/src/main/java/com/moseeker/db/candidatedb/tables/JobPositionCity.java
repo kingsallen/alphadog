@@ -28,10 +28,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionCity extends TableImpl<JobPositionCityRecord> {
 
-	private static final long serialVersionUID = 2124598670;
+	private static final long serialVersionUID = -827762290;
 
 	/**
-	 * The reference instance of <code>candidateDB.job_position_city</code>
+	 * The reference instance of <code>candidatedb.job_position_city</code>
 	 */
 	public static final JobPositionCity JOB_POSITION_CITY = new JobPositionCity();
 
@@ -44,24 +44,24 @@ public class JobPositionCity extends TableImpl<JobPositionCityRecord> {
 	}
 
 	/**
-	 * The column <code>candidateDB.job_position_city.pid</code>. 职位id
+	 * The column <code>candidatedb.job_position_city.pid</code>. 职位id
 	 */
 	public final TableField<JobPositionCityRecord, Integer> PID = createField("pid", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "职位id");
 
 	/**
-	 * The column <code>candidateDB.job_position_city.code</code>. 城市code
+	 * The column <code>candidatedb.job_position_city.code</code>. 城市code
 	 */
 	public final TableField<JobPositionCityRecord, Integer> CODE = createField("code", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "城市code");
 
 	/**
-	 * Create a <code>candidateDB.job_position_city</code> table reference
+	 * Create a <code>candidatedb.job_position_city</code> table reference
 	 */
 	public JobPositionCity() {
 		this("job_position_city", null);
 	}
 
 	/**
-	 * Create an aliased <code>candidateDB.job_position_city</code> table reference
+	 * Create an aliased <code>candidatedb.job_position_city</code> table reference
 	 */
 	public JobPositionCity(String alias) {
 		this(alias, JOB_POSITION_CITY);

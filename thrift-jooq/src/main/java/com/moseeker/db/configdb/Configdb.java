@@ -46,10 +46,10 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Configdb extends SchemaImpl {
 
-	private static final long serialVersionUID = 1707503274;
+	private static final long serialVersionUID = -63770966;
 
 	/**
-	 * The reference instance of <code>configDB</code>
+	 * The reference instance of <code>configdb</code>
 	 */
 	public static final Configdb CONFIGDB = new Configdb();
 
@@ -57,7 +57,7 @@ public class Configdb extends SchemaImpl {
 	 * No further instances allowed
 	 */
 	private Configdb() {
-		super("configDB");
+		super("configdb");
 	}
 
 	@Override

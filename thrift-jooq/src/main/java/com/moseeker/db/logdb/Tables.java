@@ -15,7 +15,7 @@ import javax.annotation.Generated;
 
 
 /**
- * Convenience access to all tables in logDB
+ * Convenience access to all tables in logdb
  */
 @Generated(
 	value = {

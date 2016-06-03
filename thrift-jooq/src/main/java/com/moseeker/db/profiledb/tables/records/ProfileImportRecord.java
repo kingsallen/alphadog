@@ -32,115 +32,115 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileImportRecord extends UpdatableRecordImpl<ProfileImportRecord> implements Record8<UInteger, UByte, Timestamp, String, String, String, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = -5722874;
+	private static final long serialVersionUID = 253144326;
 
 	/**
-	 * Setter for <code>profileDB.profile_import.profile_id</code>. profile.id
+	 * Setter for <code>profiledb.profile_import.profile_id</code>. profile.id
 	 */
 	public void setProfileId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_import.profile_id</code>. profile.id
+	 * Getter for <code>profiledb.profile_import.profile_id</code>. profile.id
 	 */
 	public UInteger getProfileId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_import.source</code>. 来源, 0:无法识别 1:51Job 2:Liepin 3:zhilian 4:linkedin
+	 * Setter for <code>profiledb.profile_import.source</code>. 来源, 0:无法识别 1:51Job 2:Liepin 3:zhilian 4:linkedin
 	 */
 	public void setSource(UByte value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_import.source</code>. 来源, 0:无法识别 1:51Job 2:Liepin 3:zhilian 4:linkedin
+	 * Getter for <code>profiledb.profile_import.source</code>. 来源, 0:无法识别 1:51Job 2:Liepin 3:zhilian 4:linkedin
 	 */
 	public UByte getSource() {
 		return (UByte) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_import.last_update_time</code>. 导入简历的最后修改时间
+	 * Setter for <code>profiledb.profile_import.last_update_time</code>. 导入简历的最后修改时间
 	 */
 	public void setLastUpdateTime(Timestamp value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_import.last_update_time</code>. 导入简历的最后修改时间
+	 * Getter for <code>profiledb.profile_import.last_update_time</code>. 导入简历的最后修改时间
 	 */
 	public Timestamp getLastUpdateTime() {
 		return (Timestamp) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_import.account_id</code>. 他系统的用户ID
+	 * Setter for <code>profiledb.profile_import.account_id</code>. 他系统的用户ID
 	 */
 	public void setAccountId(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_import.account_id</code>. 他系统的用户ID
+	 * Getter for <code>profiledb.profile_import.account_id</code>. 他系统的用户ID
 	 */
 	public String getAccountId() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_import.resume_id</code>. 他系统的简历ID
+	 * Setter for <code>profiledb.profile_import.resume_id</code>. 他系统的简历ID
 	 */
 	public void setResumeId(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_import.resume_id</code>. 他系统的简历ID
+	 * Getter for <code>profiledb.profile_import.resume_id</code>. 他系统的简历ID
 	 */
 	public String getResumeId() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_import.user_name</code>. 他系统的登陆用户名
+	 * Setter for <code>profiledb.profile_import.user_name</code>. 他系统的登陆用户名
 	 */
 	public void setUserName(String value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_import.user_name</code>. 他系统的登陆用户名
+	 * Getter for <code>profiledb.profile_import.user_name</code>. 他系统的登陆用户名
 	 */
 	public String getUserName() {
 		return (String) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_import.create_time</code>. 创建时间
+	 * Setter for <code>profiledb.profile_import.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_import.create_time</code>. 创建时间
+	 * Getter for <code>profiledb.profile_import.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_import.update_time</code>. 更新时间
+	 * Setter for <code>profiledb.profile_import.update_time</code>. 更新时间
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_import.update_time</code>. 更新时间
+	 * Getter for <code>profiledb.profile_import.update_time</code>. 更新时间
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(7);

@@ -33,199 +33,199 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileBasicRecord extends UpdatableRecordImpl<ProfileBasicRecord> implements Record14<UInteger, String, UByte, Integer, String, Integer, String, Date, String, String, String, String, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = 961757146;
+	private static final long serialVersionUID = 387631066;
 
 	/**
-	 * Setter for <code>profileDB.profile_basic.profile_id</code>. profile.id
+	 * Setter for <code>profiledb.profile_basic.profile_id</code>. profile.id
 	 */
 	public void setProfileId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_basic.profile_id</code>. profile.id
+	 * Getter for <code>profiledb.profile_basic.profile_id</code>. profile.id
 	 */
 	public UInteger getProfileId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_basic.name</code>. 姓名
+	 * Setter for <code>profiledb.profile_basic.name</code>. 姓名
 	 */
 	public void setName(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_basic.name</code>. 姓名
+	 * Getter for <code>profiledb.profile_basic.name</code>. 姓名
 	 */
 	public String getName() {
 		return (String) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_basic.gender</code>. 性别 0:没选择 1:男, 2: 女
+	 * Setter for <code>profiledb.profile_basic.gender</code>. 性别 0:没选择 1:男, 2: 女
 	 */
 	public void setGender(UByte value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_basic.gender</code>. 性别 0:没选择 1:男, 2: 女
+	 * Getter for <code>profiledb.profile_basic.gender</code>. 性别 0:没选择 1:男, 2: 女
 	 */
 	public UByte getGender() {
 		return (UByte) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_basic.nationality_code</code>. 国籍code，国家字典表
+	 * Setter for <code>profiledb.profile_basic.nationality_code</code>. 国籍code，国家字典表
 	 */
 	public void setNationalityCode(Integer value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_basic.nationality_code</code>. 国籍code，国家字典表
+	 * Getter for <code>profiledb.profile_basic.nationality_code</code>. 国籍code，国家字典表
 	 */
 	public Integer getNationalityCode() {
 		return (Integer) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_basic.nationality_name</code>. 国籍名称
+	 * Setter for <code>profiledb.profile_basic.nationality_name</code>. 国籍名称
 	 */
 	public void setNationalityName(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_basic.nationality_name</code>. 国籍名称
+	 * Getter for <code>profiledb.profile_basic.nationality_name</code>. 国籍名称
 	 */
 	public String getNationalityName() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_basic.city_code</code>. 现居住地, 城市字典
+	 * Setter for <code>profiledb.profile_basic.city_code</code>. 现居住地, 城市字典
 	 */
 	public void setCityCode(Integer value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_basic.city_code</code>. 现居住地, 城市字典
+	 * Getter for <code>profiledb.profile_basic.city_code</code>. 现居住地, 城市字典
 	 */
 	public Integer getCityCode() {
 		return (Integer) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_basic.city_name</code>. 现居住地, 城市名称
+	 * Setter for <code>profiledb.profile_basic.city_name</code>. 现居住地, 城市名称
 	 */
 	public void setCityName(String value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_basic.city_name</code>. 现居住地, 城市名称
+	 * Getter for <code>profiledb.profile_basic.city_name</code>. 现居住地, 城市名称
 	 */
 	public String getCityName() {
 		return (String) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_basic.birth</code>. 出生年月 yyyy-mm-dd
+	 * Setter for <code>profiledb.profile_basic.birth</code>. 出生年月 yyyy-mm-dd
 	 */
 	public void setBirth(Date value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_basic.birth</code>. 出生年月 yyyy-mm-dd
+	 * Getter for <code>profiledb.profile_basic.birth</code>. 出生年月 yyyy-mm-dd
 	 */
 	public Date getBirth() {
 		return (Date) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_basic.weixin</code>. 微信号
+	 * Setter for <code>profiledb.profile_basic.weixin</code>. 微信号
 	 */
 	public void setWeixin(String value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_basic.weixin</code>. 微信号
+	 * Getter for <code>profiledb.profile_basic.weixin</code>. 微信号
 	 */
 	public String getWeixin() {
 		return (String) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_basic.qq</code>. QQ号
+	 * Setter for <code>profiledb.profile_basic.qq</code>. QQ号
 	 */
 	public void setQq(String value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_basic.qq</code>. QQ号
+	 * Getter for <code>profiledb.profile_basic.qq</code>. QQ号
 	 */
 	public String getQq() {
 		return (String) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_basic.motto</code>. 座右铭
+	 * Setter for <code>profiledb.profile_basic.motto</code>. 座右铭
 	 */
 	public void setMotto(String value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_basic.motto</code>. 座右铭
+	 * Getter for <code>profiledb.profile_basic.motto</code>. 座右铭
 	 */
 	public String getMotto() {
 		return (String) getValue(10);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_basic.self_introduction</code>. 自我介绍
+	 * Setter for <code>profiledb.profile_basic.self_introduction</code>. 自我介绍
 	 */
 	public void setSelfIntroduction(String value) {
 		setValue(11, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_basic.self_introduction</code>. 自我介绍
+	 * Getter for <code>profiledb.profile_basic.self_introduction</code>. 自我介绍
 	 */
 	public String getSelfIntroduction() {
 		return (String) getValue(11);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_basic.create_time</code>. 创建时间
+	 * Setter for <code>profiledb.profile_basic.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(12, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_basic.create_time</code>. 创建时间
+	 * Getter for <code>profiledb.profile_basic.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(12);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_basic.update_time</code>. 更新时间
+	 * Setter for <code>profiledb.profile_basic.update_time</code>. 更新时间
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(13, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_basic.update_time</code>. 更新时间
+	 * Getter for <code>profiledb.profile_basic.update_time</code>. 更新时间
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(13);

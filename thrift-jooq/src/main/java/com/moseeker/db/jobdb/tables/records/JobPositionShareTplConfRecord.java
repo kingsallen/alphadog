@@ -28,115 +28,115 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionShareTplConfRecord extends UpdatableRecordImpl<JobPositionShareTplConfRecord> implements Record8<Integer, Short, String, String, String, Byte, String, Byte> {
 
-	private static final long serialVersionUID = -1050307850;
+	private static final long serialVersionUID = -1587406090;
 
 	/**
-	 * Setter for <code>jobDB.job_position_share_tpl_conf.id</code>. PK
+	 * Setter for <code>jobdb.job_position_share_tpl_conf.id</code>. PK
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>jobDB.job_position_share_tpl_conf.id</code>. PK
+	 * Getter for <code>jobdb.job_position_share_tpl_conf.id</code>. PK
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>jobDB.job_position_share_tpl_conf.type</code>. 模板分类 1：雇主分享模板 2：员工分享模板
+	 * Setter for <code>jobdb.job_position_share_tpl_conf.type</code>. 模板分类 1：雇主分享模板 2：员工分享模板
 	 */
 	public void setType(Short value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>jobDB.job_position_share_tpl_conf.type</code>. 模板分类 1：雇主分享模板 2：员工分享模板
+	 * Getter for <code>jobdb.job_position_share_tpl_conf.type</code>. 模板分类 1：雇主分享模板 2：员工分享模板
 	 */
 	public Short getType() {
 		return (Short) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>jobDB.job_position_share_tpl_conf.name</code>. 模板名称
+	 * Setter for <code>jobdb.job_position_share_tpl_conf.name</code>. 模板名称
 	 */
 	public void setName(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>jobDB.job_position_share_tpl_conf.name</code>. 模板名称
+	 * Getter for <code>jobdb.job_position_share_tpl_conf.name</code>. 模板名称
 	 */
 	public String getName() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>jobDB.job_position_share_tpl_conf.title</code>. 分享标题
+	 * Setter for <code>jobdb.job_position_share_tpl_conf.title</code>. 分享标题
 	 */
 	public void setTitle(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>jobDB.job_position_share_tpl_conf.title</code>. 分享标题
+	 * Getter for <code>jobdb.job_position_share_tpl_conf.title</code>. 分享标题
 	 */
 	public String getTitle() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>jobDB.job_position_share_tpl_conf.description</code>. 分享简介
+	 * Setter for <code>jobdb.job_position_share_tpl_conf.description</code>. 分享简介
 	 */
 	public void setDescription(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>jobDB.job_position_share_tpl_conf.description</code>. 分享简介
+	 * Getter for <code>jobdb.job_position_share_tpl_conf.description</code>. 分享简介
 	 */
 	public String getDescription() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>jobDB.job_position_share_tpl_conf.disable</code>. 是否禁用0：可用， 1：禁用
+	 * Setter for <code>jobdb.job_position_share_tpl_conf.disable</code>. 是否禁用0：可用， 1：禁用
 	 */
 	public void setDisable(Byte value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>jobDB.job_position_share_tpl_conf.disable</code>. 是否禁用0：可用， 1：禁用
+	 * Getter for <code>jobdb.job_position_share_tpl_conf.disable</code>. 是否禁用0：可用， 1：禁用
 	 */
 	public Byte getDisable() {
 		return (Byte) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>jobDB.job_position_share_tpl_conf.remark</code>. 备注
+	 * Setter for <code>jobdb.job_position_share_tpl_conf.remark</code>. 备注
 	 */
 	public void setRemark(String value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>jobDB.job_position_share_tpl_conf.remark</code>. 备注
+	 * Getter for <code>jobdb.job_position_share_tpl_conf.remark</code>. 备注
 	 */
 	public String getRemark() {
 		return (String) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>jobDB.job_position_share_tpl_conf.priority</code>. 优先级
+	 * Setter for <code>jobdb.job_position_share_tpl_conf.priority</code>. 优先级
 	 */
 	public void setPriority(Byte value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>jobDB.job_position_share_tpl_conf.priority</code>. 优先级
+	 * Getter for <code>jobdb.job_position_share_tpl_conf.priority</code>. 优先级
 	 */
 	public Byte getPriority() {
 		return (Byte) getValue(7);

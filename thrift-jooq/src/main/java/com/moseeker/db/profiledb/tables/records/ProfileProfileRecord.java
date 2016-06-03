@@ -32,129 +32,129 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileProfileRecord extends UpdatableRecordImpl<ProfileProfileRecord> implements Record9<UInteger, String, UByte, UInteger, UByte, UInteger, UByte, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = 649046825;
+	private static final long serialVersionUID = 72698665;
 
 	/**
-	 * Setter for <code>profileDB.profile_profile.id</code>. 主key
+	 * Setter for <code>profiledb.profile_profile.id</code>. 主key
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_profile.id</code>. 主key
+	 * Getter for <code>profiledb.profile_profile.id</code>. 主key
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_profile.uuid</code>. profile的uuid标识, 与主键一一对应
+	 * Setter for <code>profiledb.profile_profile.uuid</code>. profile的uuid标识, 与主键一一对应
 	 */
 	public void setUuid(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_profile.uuid</code>. profile的uuid标识, 与主键一一对应
+	 * Getter for <code>profiledb.profile_profile.uuid</code>. profile的uuid标识, 与主键一一对应
 	 */
 	public String getUuid() {
 		return (String) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_profile.lang</code>. profile语言 1:chinese 2:english
+	 * Setter for <code>profiledb.profile_profile.lang</code>. profile语言 1:chinese 2:english
 	 */
 	public void setLang(UByte value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_profile.lang</code>. profile语言 1:chinese 2:english
+	 * Getter for <code>profiledb.profile_profile.lang</code>. profile语言 1:chinese 2:english
 	 */
 	public UByte getLang() {
 		return (UByte) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_profile.source</code>. Profile的创建来源, 1:微信企业端(正常), 2:微信企业端(我要投递), 3:微信企业端(我感兴趣), 4:微信聚合端(正常), 5:微信聚合端(我要投递), 6:微信聚合端(我感兴趣), 100:微信企业端Email申请, 101:微信聚合端Email申请, 150:微信企业端导入, 151:微信聚合端导入, 152:PC导入, 200:PC(正常添加) 201:PC(我要投递) 202: PC(我感兴趣)
+	 * Setter for <code>profiledb.profile_profile.source</code>. Profile的创建来源, 1:微信企业端(正常), 2:微信企业端(我要投递), 3:微信企业端(我感兴趣), 4:微信聚合端(正常), 5:微信聚合端(我要投递), 6:微信聚合端(我感兴趣), 100:微信企业端Email申请, 101:微信聚合端Email申请, 150:微信企业端导入, 151:微信聚合端导入, 152:PC导入, 200:PC(正常添加) 201:PC(我要投递) 202: PC(我感兴趣)
 	 */
 	public void setSource(UInteger value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_profile.source</code>. Profile的创建来源, 1:微信企业端(正常), 2:微信企业端(我要投递), 3:微信企业端(我感兴趣), 4:微信聚合端(正常), 5:微信聚合端(我要投递), 6:微信聚合端(我感兴趣), 100:微信企业端Email申请, 101:微信聚合端Email申请, 150:微信企业端导入, 151:微信聚合端导入, 152:PC导入, 200:PC(正常添加) 201:PC(我要投递) 202: PC(我感兴趣)
+	 * Getter for <code>profiledb.profile_profile.source</code>. Profile的创建来源, 1:微信企业端(正常), 2:微信企业端(我要投递), 3:微信企业端(我感兴趣), 4:微信聚合端(正常), 5:微信聚合端(我要投递), 6:微信聚合端(我感兴趣), 100:微信企业端Email申请, 101:微信聚合端Email申请, 150:微信企业端导入, 151:微信聚合端导入, 152:PC导入, 200:PC(正常添加) 201:PC(我要投递) 202: PC(我感兴趣)
 	 */
 	public UInteger getSource() {
 		return (UInteger) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_profile.completeness</code>. Profile完整度
+	 * Setter for <code>profiledb.profile_profile.completeness</code>. Profile完整度
 	 */
 	public void setCompleteness(UByte value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_profile.completeness</code>. Profile完整度
+	 * Getter for <code>profiledb.profile_profile.completeness</code>. Profile完整度
 	 */
 	public UByte getCompleteness() {
 		return (UByte) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_profile.user_id</code>. 用户ID
+	 * Setter for <code>profiledb.profile_profile.user_id</code>. 用户ID
 	 */
 	public void setUserId(UInteger value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_profile.user_id</code>. 用户ID
+	 * Getter for <code>profiledb.profile_profile.user_id</code>. 用户ID
 	 */
 	public UInteger getUserId() {
 		return (UInteger) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_profile.disable</code>. 是否有效，0：无效 1：有效
+	 * Setter for <code>profiledb.profile_profile.disable</code>. 是否有效，0：无效 1：有效
 	 */
 	public void setDisable(UByte value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_profile.disable</code>. 是否有效，0：无效 1：有效
+	 * Getter for <code>profiledb.profile_profile.disable</code>. 是否有效，0：无效 1：有效
 	 */
 	public UByte getDisable() {
 		return (UByte) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_profile.create_time</code>. 创建时间
+	 * Setter for <code>profiledb.profile_profile.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_profile.create_time</code>. 创建时间
+	 * Getter for <code>profiledb.profile_profile.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_profile.update_time</code>. 更新时间
+	 * Setter for <code>profiledb.profile_profile.update_time</code>. 更新时间
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_profile.update_time</code>. 更新时间
+	 * Getter for <code>profiledb.profile_profile.update_time</code>. 更新时间
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(8);

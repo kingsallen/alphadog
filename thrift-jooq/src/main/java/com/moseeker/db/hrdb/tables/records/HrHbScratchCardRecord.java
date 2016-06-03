@@ -31,143 +31,143 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrHbScratchCardRecord extends UpdatableRecordImpl<HrHbScratchCardRecord> implements Record10<Integer, Integer, String, Integer, BigDecimal, Integer, String, Timestamp, Integer, Byte> {
 
-	private static final long serialVersionUID = -1358520720;
+	private static final long serialVersionUID = 1940233840;
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_scratch_card.id</code>.
+	 * Setter for <code>hrdb.hr_hb_scratch_card.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_scratch_card.id</code>.
+	 * Getter for <code>hrdb.hr_hb_scratch_card.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_scratch_card.wechat_id</code>.
+	 * Setter for <code>hrdb.hr_hb_scratch_card.wechat_id</code>.
 	 */
 	public void setWechatId(Integer value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_scratch_card.wechat_id</code>.
+	 * Getter for <code>hrdb.hr_hb_scratch_card.wechat_id</code>.
 	 */
 	public Integer getWechatId() {
 		return (Integer) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_scratch_card.cardno</code>. 随机字符串
+	 * Setter for <code>hrdb.hr_hb_scratch_card.cardno</code>. 随机字符串
 	 */
 	public void setCardno(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_scratch_card.cardno</code>. 随机字符串
+	 * Getter for <code>hrdb.hr_hb_scratch_card.cardno</code>. 随机字符串
 	 */
 	public String getCardno() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_scratch_card.status</code>. 状态: 0：未拆开 1：已拆开
+	 * Setter for <code>hrdb.hr_hb_scratch_card.status</code>. 状态: 0：未拆开 1：已拆开
 	 */
 	public void setStatus(Integer value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_scratch_card.status</code>. 状态: 0：未拆开 1：已拆开
+	 * Getter for <code>hrdb.hr_hb_scratch_card.status</code>. 状态: 0：未拆开 1：已拆开
 	 */
 	public Integer getStatus() {
 		return (Integer) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_scratch_card.amount</code>. 红包金额： 0.00 表示不发红包
+	 * Setter for <code>hrdb.hr_hb_scratch_card.amount</code>. 红包金额： 0.00 表示不发红包
 	 */
 	public void setAmount(BigDecimal value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_scratch_card.amount</code>. 红包金额： 0.00 表示不发红包
+	 * Getter for <code>hrdb.hr_hb_scratch_card.amount</code>. 红包金额： 0.00 表示不发红包
 	 */
 	public BigDecimal getAmount() {
 		return (BigDecimal) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_scratch_card.hb_config_id</code>.
+	 * Setter for <code>hrdb.hr_hb_scratch_card.hb_config_id</code>.
 	 */
 	public void setHbConfigId(Integer value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_scratch_card.hb_config_id</code>.
+	 * Getter for <code>hrdb.hr_hb_scratch_card.hb_config_id</code>.
 	 */
 	public Integer getHbConfigId() {
 		return (Integer) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_scratch_card.bagging_openid</code>. 聚合号的 openid
+	 * Setter for <code>hrdb.hr_hb_scratch_card.bagging_openid</code>. 聚合号的 openid
 	 */
 	public void setBaggingOpenid(String value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_scratch_card.bagging_openid</code>. 聚合号的 openid
+	 * Getter for <code>hrdb.hr_hb_scratch_card.bagging_openid</code>. 聚合号的 openid
 	 */
 	public String getBaggingOpenid() {
 		return (String) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_scratch_card.create_time</code>.
+	 * Setter for <code>hrdb.hr_hb_scratch_card.create_time</code>.
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_scratch_card.create_time</code>.
+	 * Getter for <code>hrdb.hr_hb_scratch_card.create_time</code>.
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_scratch_card.hb_item_id</code>.
+	 * Setter for <code>hrdb.hr_hb_scratch_card.hb_item_id</code>.
 	 */
 	public void setHbItemId(Integer value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_scratch_card.hb_item_id</code>.
+	 * Getter for <code>hrdb.hr_hb_scratch_card.hb_item_id</code>.
 	 */
 	public Integer getHbItemId() {
 		return (Integer) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_scratch_card.tips</code>. 是否是小费 0:不是，1:是
+	 * Setter for <code>hrdb.hr_hb_scratch_card.tips</code>. 是否是小费 0:不是，1:是
 	 */
 	public void setTips(Byte value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_scratch_card.tips</code>. 是否是小费 0:不是，1:是
+	 * Getter for <code>hrdb.hr_hb_scratch_card.tips</code>. 是否是小费 0:不是，1:是
 	 */
 	public Byte getTips() {
 		return (Byte) getValue(9);

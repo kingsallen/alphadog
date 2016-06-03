@@ -31,129 +31,129 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserFavPositionRecord extends UpdatableRecordImpl<UserFavPositionRecord> implements Record9<Integer, Integer, Byte, Timestamp, Timestamp, String, UInteger, UInteger, Integer> {
 
-	private static final long serialVersionUID = 795493955;
+	private static final long serialVersionUID = -2078099901;
 
 	/**
-	 * Setter for <code>userDB.user_fav_position.sysuser_id</code>. 用户ID
+	 * Setter for <code>userdb.user_fav_position.sysuser_id</code>. 用户ID
 	 */
 	public void setSysuserId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_fav_position.sysuser_id</code>. 用户ID
+	 * Getter for <code>userdb.user_fav_position.sysuser_id</code>. 用户ID
 	 */
 	public Integer getSysuserId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_fav_position.position_id</code>. 职位ID
+	 * Setter for <code>userdb.user_fav_position.position_id</code>. 职位ID
 	 */
 	public void setPositionId(Integer value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_fav_position.position_id</code>. 职位ID
+	 * Getter for <code>userdb.user_fav_position.position_id</code>. 职位ID
 	 */
 	public Integer getPositionId() {
 		return (Integer) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_fav_position.favorite</code>. 0:收藏, 1:取消收藏, 2:感兴趣
+	 * Setter for <code>userdb.user_fav_position.favorite</code>. 0:收藏, 1:取消收藏, 2:感兴趣
 	 */
 	public void setFavorite(Byte value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_fav_position.favorite</code>. 0:收藏, 1:取消收藏, 2:感兴趣
+	 * Getter for <code>userdb.user_fav_position.favorite</code>. 0:收藏, 1:取消收藏, 2:感兴趣
 	 */
 	public Byte getFavorite() {
 		return (Byte) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_fav_position.create_time</code>.
+	 * Setter for <code>userdb.user_fav_position.create_time</code>.
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_fav_position.create_time</code>.
+	 * Getter for <code>userdb.user_fav_position.create_time</code>.
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_fav_position.update_time</code>.
+	 * Setter for <code>userdb.user_fav_position.update_time</code>.
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_fav_position.update_time</code>.
+	 * Getter for <code>userdb.user_fav_position.update_time</code>.
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_fav_position.mobile</code>. 感兴趣的手机号
+	 * Setter for <code>userdb.user_fav_position.mobile</code>. 感兴趣的手机号
 	 */
 	public void setMobile(String value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_fav_position.mobile</code>. 感兴趣的手机号
+	 * Getter for <code>userdb.user_fav_position.mobile</code>. 感兴趣的手机号
 	 */
 	public String getMobile() {
 		return (String) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_fav_position.id</code>. ID
+	 * Setter for <code>userdb.user_fav_position.id</code>. ID
 	 */
 	public void setId(UInteger value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_fav_position.id</code>. ID
+	 * Getter for <code>userdb.user_fav_position.id</code>. ID
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_fav_position.wxuser_id</code>. wx_user.id
+	 * Setter for <code>userdb.user_fav_position.wxuser_id</code>. wx_user.id
 	 */
 	public void setWxuserId(UInteger value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_fav_position.wxuser_id</code>. wx_user.id
+	 * Getter for <code>userdb.user_fav_position.wxuser_id</code>. wx_user.id
 	 */
 	public UInteger getWxuserId() {
 		return (UInteger) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_fav_position.recom_id</code>. 推荐者 fk:wx_user.id
+	 * Setter for <code>userdb.user_fav_position.recom_id</code>. 推荐者 fk:wx_user.id
 	 */
 	public void setRecomId(Integer value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_fav_position.recom_id</code>. 推荐者 fk:wx_user.id
+	 * Getter for <code>userdb.user_fav_position.recom_id</code>. 推荐者 fk:wx_user.id
 	 */
 	public Integer getRecomId() {
 		return (Integer) getValue(8);

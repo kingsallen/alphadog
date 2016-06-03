@@ -35,10 +35,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrRuleStatistics extends TableImpl<HrRuleStatisticsRecord> {
 
-	private static final long serialVersionUID = 1945101324;
+	private static final long serialVersionUID = -1806273524;
 
 	/**
-	 * The reference instance of <code>hrDB.hr_rule_statistics</code>
+	 * The reference instance of <code>hrdb.hr_rule_statistics</code>
 	 */
 	public static final HrRuleStatistics HR_RULE_STATISTICS = new HrRuleStatistics();
 
@@ -51,49 +51,49 @@ public class HrRuleStatistics extends TableImpl<HrRuleStatisticsRecord> {
 	}
 
 	/**
-	 * The column <code>hrDB.hr_rule_statistics.id</code>. primary key
+	 * The column <code>hrdb.hr_rule_statistics.id</code>. primary key
 	 */
 	public final TableField<HrRuleStatisticsRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "primary key");
 
 	/**
-	 * The column <code>hrDB.hr_rule_statistics.wxrule_id</code>. wx_rule.id
+	 * The column <code>hrdb.hr_rule_statistics.wxrule_id</code>. wx_rule.id
 	 */
 	public final TableField<HrRuleStatisticsRecord, Integer> WXRULE_ID = createField("wxrule_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "wx_rule.id");
 
 	/**
-	 * The column <code>hrDB.hr_rule_statistics.menu_name</code>. 菜单名称
+	 * The column <code>hrdb.hr_rule_statistics.menu_name</code>. 菜单名称
 	 */
 	public final TableField<HrRuleStatisticsRecord, String> MENU_NAME = createField("menu_name", org.jooq.impl.SQLDataType.VARCHAR.length(999), this, "菜单名称");
 
 	/**
-	 * The column <code>hrDB.hr_rule_statistics.type</code>. 0: wx_rule, 1: menu
+	 * The column <code>hrdb.hr_rule_statistics.type</code>. 0: wx_rule, 1: menu
 	 */
 	public final TableField<HrRuleStatisticsRecord, Integer> TYPE = createField("type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "0: wx_rule, 1: menu");
 
 	/**
-	 * The column <code>hrDB.hr_rule_statistics.company_id</code>. company.id
+	 * The column <code>hrdb.hr_rule_statistics.company_id</code>. company.id
 	 */
 	public final TableField<HrRuleStatisticsRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "company.id");
 
 	/**
-	 * The column <code>hrDB.hr_rule_statistics.view_num_pv</code>. 浏览人数
+	 * The column <code>hrdb.hr_rule_statistics.view_num_pv</code>. 浏览人数
 	 */
 	public final TableField<HrRuleStatisticsRecord, Integer> VIEW_NUM_PV = createField("view_num_pv", org.jooq.impl.SQLDataType.INTEGER.defaulted(true), this, "浏览人数");
 
 	/**
-	 * The column <code>hrDB.hr_rule_statistics.create_date</code>. 创建日期
+	 * The column <code>hrdb.hr_rule_statistics.create_date</code>. 创建日期
 	 */
 	public final TableField<HrRuleStatisticsRecord, Date> CREATE_DATE = createField("create_date", org.jooq.impl.SQLDataType.DATE.nullable(false), this, "创建日期");
 
 	/**
-	 * Create a <code>hrDB.hr_rule_statistics</code> table reference
+	 * Create a <code>hrdb.hr_rule_statistics</code> table reference
 	 */
 	public HrRuleStatistics() {
 		this("hr_rule_statistics", null);
 	}
 
 	/**
-	 * Create an aliased <code>hrDB.hr_rule_statistics</code> table reference
+	 * Create an aliased <code>hrdb.hr_rule_statistics</code> table reference
 	 */
 	public HrRuleStatistics(String alias) {
 		this(alias, HR_RULE_STATISTICS);

@@ -28,31 +28,31 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyAccountRecord extends UpdatableRecordImpl<HrCompanyAccountRecord> implements Record2<Integer, Integer> {
 
-	private static final long serialVersionUID = -1319464558;
+	private static final long serialVersionUID = -227341934;
 
 	/**
-	 * Setter for <code>hrDB.hr_company_account.company_id</code>. hr_company.id
+	 * Setter for <code>hrdb.hr_company_account.company_id</code>. hr_company.id
 	 */
 	public void setCompanyId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_company_account.company_id</code>. hr_company.id
+	 * Getter for <code>hrdb.hr_company_account.company_id</code>. hr_company.id
 	 */
 	public Integer getCompanyId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_company_account.account_id</code>. user_hr_account.id
+	 * Setter for <code>hrdb.hr_company_account.account_id</code>. user_hr_account.id
 	 */
 	public void setAccountId(Integer value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_company_account.account_id</code>. user_hr_account.id
+	 * Getter for <code>hrdb.hr_company_account.account_id</code>. user_hr_account.id
 	 */
 	public Integer getAccountId() {
 		return (Integer) getValue(1);

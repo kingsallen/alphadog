@@ -36,10 +36,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileAttachment extends TableImpl<ProfileAttachmentRecord> {
 
-	private static final long serialVersionUID = 1296038363;
+	private static final long serialVersionUID = 1992356315;
 
 	/**
-	 * The reference instance of <code>profileDB.profile_attachment</code>
+	 * The reference instance of <code>profiledb.profile_attachment</code>
 	 */
 	public static final ProfileAttachment PROFILE_ATTACHMENT = new ProfileAttachment();
 
@@ -52,49 +52,49 @@ public class ProfileAttachment extends TableImpl<ProfileAttachmentRecord> {
 	}
 
 	/**
-	 * The column <code>profileDB.profile_attachment.id</code>. 主key
+	 * The column <code>profiledb.profile_attachment.id</code>. 主key
 	 */
 	public final TableField<ProfileAttachmentRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
 
 	/**
-	 * The column <code>profileDB.profile_attachment.profile_id</code>. profile.id
+	 * The column <code>profiledb.profile_attachment.profile_id</code>. profile.id
 	 */
 	public final TableField<ProfileAttachmentRecord, UInteger> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "profile.id");
 
 	/**
-	 * The column <code>profileDB.profile_attachment.name</code>. 附件名称
+	 * The column <code>profiledb.profile_attachment.name</code>. 附件名称
 	 */
 	public final TableField<ProfileAttachmentRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false).defaulted(true), this, "附件名称");
 
 	/**
-	 * The column <code>profileDB.profile_attachment.path</code>. 附件存储路径
+	 * The column <code>profiledb.profile_attachment.path</code>. 附件存储路径
 	 */
 	public final TableField<ProfileAttachmentRecord, String> PATH = createField("path", org.jooq.impl.SQLDataType.VARCHAR.length(1000).nullable(false).defaulted(true), this, "附件存储路径");
 
 	/**
-	 * The column <code>profileDB.profile_attachment.description</code>. 附件描述
+	 * The column <code>profiledb.profile_attachment.description</code>. 附件描述
 	 */
 	public final TableField<ProfileAttachmentRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.VARCHAR.length(1000).nullable(false).defaulted(true), this, "附件描述");
 
 	/**
-	 * The column <code>profileDB.profile_attachment.create_time</code>. 创建时间
+	 * The column <code>profiledb.profile_attachment.create_time</code>. 创建时间
 	 */
 	public final TableField<ProfileAttachmentRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "创建时间");
 
 	/**
-	 * The column <code>profileDB.profile_attachment.update_time</code>. 更新时间
+	 * The column <code>profiledb.profile_attachment.update_time</code>. 更新时间
 	 */
 	public final TableField<ProfileAttachmentRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "更新时间");
 
 	/**
-	 * Create a <code>profileDB.profile_attachment</code> table reference
+	 * Create a <code>profiledb.profile_attachment</code> table reference
 	 */
 	public ProfileAttachment() {
 		this("profile_attachment", null);
 	}
 
 	/**
-	 * Create an aliased <code>profileDB.profile_attachment</code> table reference
+	 * Create an aliased <code>profiledb.profile_attachment</code> table reference
 	 */
 	public ProfileAttachment(String alias) {
 		this(alias, PROFILE_ATTACHMENT);

@@ -27,7 +27,7 @@ import javax.annotation.Generated;
 
 
 /**
- * Convenience access to all tables in configDB
+ * Convenience access to all tables in configdb
  */
 @Generated(
 	value = {
@@ -40,12 +40,12 @@ import javax.annotation.Generated;
 public class Tables {
 
 	/**
-	 * The table configDB.blog_posts
+	 * The table configdb.blog_posts
 	 */
 	public static final BlogPosts BLOG_POSTS = com.moseeker.db.configdb.tables.BlogPosts.BLOG_POSTS;
 
 	/**
-	 * The table configDB.blog_posts2
+	 * The table configdb.blog_posts2
 	 */
 	public static final BlogPosts2 BLOG_POSTS2 = com.moseeker.db.configdb.tables.BlogPosts2.BLOG_POSTS2;
 
@@ -70,7 +70,7 @@ public class Tables {
 	public static final ConfigAdminnotificationMembers CONFIG_ADMINNOTIFICATION_MEMBERS = com.moseeker.db.configdb.tables.ConfigAdminnotificationMembers.CONFIG_ADMINNOTIFICATION_MEMBERS;
 
 	/**
-	 * The table configDB.config_ats_source
+	 * The table configdb.config_ats_source
 	 */
 	public static final ConfigAtsSource CONFIG_ATS_SOURCE = com.moseeker.db.configdb.tables.ConfigAtsSource.CONFIG_ATS_SOURCE;
 

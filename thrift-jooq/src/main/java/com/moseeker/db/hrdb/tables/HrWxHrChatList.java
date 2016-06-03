@@ -36,10 +36,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxHrChatList extends TableImpl<HrWxHrChatListRecord> {
 
-	private static final long serialVersionUID = 1968128703;
+	private static final long serialVersionUID = -1291769153;
 
 	/**
-	 * The reference instance of <code>hrDB.hr_wx_hr_chat_list</code>
+	 * The reference instance of <code>hrdb.hr_wx_hr_chat_list</code>
 	 */
 	public static final HrWxHrChatList HR_WX_HR_CHAT_LIST = new HrWxHrChatList();
 
@@ -52,49 +52,49 @@ public class HrWxHrChatList extends TableImpl<HrWxHrChatListRecord> {
 	}
 
 	/**
-	 * The column <code>hrDB.hr_wx_hr_chat_list.id</code>. ID
+	 * The column <code>hrdb.hr_wx_hr_chat_list.id</code>. ID
 	 */
 	public final TableField<HrWxHrChatListRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "ID");
 
 	/**
-	 * The column <code>hrDB.hr_wx_hr_chat_list.sysuser_id</code>. sysuser.id
+	 * The column <code>hrdb.hr_wx_hr_chat_list.sysuser_id</code>. sysuser.id
 	 */
 	public final TableField<HrWxHrChatListRecord, Integer> SYSUSER_ID = createField("sysuser_id", org.jooq.impl.SQLDataType.INTEGER.defaulted(true), this, "sysuser.id");
 
 	/**
-	 * The column <code>hrDB.hr_wx_hr_chat_list.hraccount_id</code>. hr_account.id
+	 * The column <code>hrdb.hr_wx_hr_chat_list.hraccount_id</code>. hr_account.id
 	 */
 	public final TableField<HrWxHrChatListRecord, Integer> HRACCOUNT_ID = createField("hraccount_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "hr_account.id");
 
 	/**
-	 * The column <code>hrDB.hr_wx_hr_chat_list.status</code>. 状态，0：有效，1：无效
+	 * The column <code>hrdb.hr_wx_hr_chat_list.status</code>. 状态，0：有效，1：无效
 	 */
 	public final TableField<HrWxHrChatListRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.defaulted(true), this, "状态，0：有效，1：无效");
 
 	/**
-	 * The column <code>hrDB.hr_wx_hr_chat_list.create_time</code>. 创建时间
+	 * The column <code>hrdb.hr_wx_hr_chat_list.create_time</code>. 创建时间
 	 */
 	public final TableField<HrWxHrChatListRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "创建时间");
 
 	/**
-	 * The column <code>hrDB.hr_wx_hr_chat_list.wx_chat_time</code>. sysuser最近一次聊天时间
+	 * The column <code>hrdb.hr_wx_hr_chat_list.wx_chat_time</code>. sysuser最近一次聊天时间
 	 */
 	public final TableField<HrWxHrChatListRecord, Timestamp> WX_CHAT_TIME = createField("wx_chat_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "sysuser最近一次聊天时间");
 
 	/**
-	 * The column <code>hrDB.hr_wx_hr_chat_list.hr_chat_time</code>. HR最近一次聊天时间
+	 * The column <code>hrdb.hr_wx_hr_chat_list.hr_chat_time</code>. HR最近一次聊天时间
 	 */
 	public final TableField<HrWxHrChatListRecord, Timestamp> HR_CHAT_TIME = createField("hr_chat_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "HR最近一次聊天时间");
 
 	/**
-	 * Create a <code>hrDB.hr_wx_hr_chat_list</code> table reference
+	 * Create a <code>hrdb.hr_wx_hr_chat_list</code> table reference
 	 */
 	public HrWxHrChatList() {
 		this("hr_wx_hr_chat_list", null);
 	}
 
 	/**
-	 * Create an aliased <code>hrDB.hr_wx_hr_chat_list</code> table reference
+	 * Create an aliased <code>hrdb.hr_wx_hr_chat_list</code> table reference
 	 */
 	public HrWxHrChatList(String alias) {
 		this(alias, HR_WX_HR_CHAT_LIST);

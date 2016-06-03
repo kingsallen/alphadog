@@ -35,10 +35,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateCompany extends TableImpl<CandidateCompanyRecord> {
 
-	private static final long serialVersionUID = 767677846;
+	private static final long serialVersionUID = 1234853270;
 
 	/**
-	 * The reference instance of <code>candidateDB.candidate_company</code>
+	 * The reference instance of <code>candidatedb.candidate_company</code>
 	 */
 	public static final CandidateCompany CANDIDATE_COMPANY = new CandidateCompany();
 
@@ -51,79 +51,79 @@ public class CandidateCompany extends TableImpl<CandidateCompanyRecord> {
 	}
 
 	/**
-	 * The column <code>candidateDB.candidate_company.id</code>.
+	 * The column <code>candidatedb.candidate_company.id</code>.
 	 */
 	public final TableField<CandidateCompanyRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
 	/**
-	 * The column <code>candidateDB.candidate_company.company_id</code>. hr_company.id
+	 * The column <code>candidatedb.candidate_company.company_id</code>. hr_company.id
 	 */
 	public final TableField<CandidateCompanyRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "hr_company.id");
 
 	/**
-	 * The column <code>candidateDB.candidate_company.update_time</code>. 修改时间
+	 * The column <code>candidatedb.candidate_company.update_time</code>. 修改时间
 	 */
 	public final TableField<CandidateCompanyRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "修改时间");
 
 	/**
-	 * The column <code>candidateDB.candidate_company.wxuser_id</code>. wx_group_user.id
+	 * The column <code>candidatedb.candidate_company.wxuser_id</code>. wx_group_user.id
 	 */
 	public final TableField<CandidateCompanyRecord, Integer> WXUSER_ID = createField("wxuser_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "wx_group_user.id");
 
 	/**
-	 * The column <code>candidateDB.candidate_company.status</code>. 候选人状态，0：删除，1：正常状态
+	 * The column <code>candidatedb.candidate_company.status</code>. 候选人状态，0：删除，1：正常状态
 	 */
 	public final TableField<CandidateCompanyRecord, Integer> STATUS = createField("status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "候选人状态，0：删除，1：正常状态");
 
 	/**
-	 * The column <code>candidateDB.candidate_company.is_recommend</code>. 是否推荐 false:未推荐，true:推荐
+	 * The column <code>candidatedb.candidate_company.is_recommend</code>. 是否推荐 false:未推荐，true:推荐
 	 */
 	public final TableField<CandidateCompanyRecord, Byte> IS_RECOMMEND = createField("is_recommend", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "是否推荐 false:未推荐，true:推荐");
 
 	/**
-	 * The column <code>candidateDB.candidate_company.name</code>. sys_user.name 姓名或微信昵称
+	 * The column <code>candidatedb.candidate_company.name</code>. sys_user.name 姓名或微信昵称
 	 */
 	public final TableField<CandidateCompanyRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "sys_user.name 姓名或微信昵称");
 
 	/**
-	 * The column <code>candidateDB.candidate_company.email</code>. sys_user.email 邮箱
+	 * The column <code>candidatedb.candidate_company.email</code>. sys_user.email 邮箱
 	 */
 	public final TableField<CandidateCompanyRecord, String> EMAIL = createField("email", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "sys_user.email 邮箱");
 
 	/**
-	 * The column <code>candidateDB.candidate_company.mobile</code>. sys_user.mobile 电话
+	 * The column <code>candidatedb.candidate_company.mobile</code>. sys_user.mobile 电话
 	 */
 	public final TableField<CandidateCompanyRecord, String> MOBILE = createField("mobile", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false).defaulted(true), this, "sys_user.mobile 电话");
 
 	/**
-	 * The column <code>candidateDB.candidate_company.nickname</code>. wx_group_user.nickname 用户昵称
+	 * The column <code>candidatedb.candidate_company.nickname</code>. wx_group_user.nickname 用户昵称
 	 */
 	public final TableField<CandidateCompanyRecord, String> NICKNAME = createField("nickname", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "wx_group_user.nickname 用户昵称");
 
 	/**
-	 * The column <code>candidateDB.candidate_company.headimgurl</code>. wx_group_user.headimgurl 用户头像
+	 * The column <code>candidatedb.candidate_company.headimgurl</code>. wx_group_user.headimgurl 用户头像
 	 */
 	public final TableField<CandidateCompanyRecord, String> HEADIMGURL = createField("headimgurl", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaulted(true), this, "wx_group_user.headimgurl 用户头像");
 
 	/**
-	 * The column <code>candidateDB.candidate_company.sys_user_id</code>. sys_user.id
+	 * The column <code>candidatedb.candidate_company.sys_user_id</code>. sys_user.id
 	 */
 	public final TableField<CandidateCompanyRecord, Integer> SYS_USER_ID = createField("sys_user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "sys_user.id");
 
 	/**
-	 * The column <code>candidateDB.candidate_company.click_from</code>. 来自, 0:未知, 朋友圈(timeline ) 1, 微信群(groupmessage) 2, 个人消息(singlemessage)
+	 * The column <code>candidatedb.candidate_company.click_from</code>. 来自, 0:未知, 朋友圈(timeline ) 1, 微信群(groupmessage) 2, 个人消息(singlemessage)
 	 */
 	public final TableField<CandidateCompanyRecord, Integer> CLICK_FROM = createField("click_from", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "来自, 0:未知, 朋友圈(timeline ) 1, 微信群(groupmessage) 2, 个人消息(singlemessage)");
 
 	/**
-	 * Create a <code>candidateDB.candidate_company</code> table reference
+	 * Create a <code>candidatedb.candidate_company</code> table reference
 	 */
 	public CandidateCompany() {
 		this("candidate_company", null);
 	}
 
 	/**
-	 * Create an aliased <code>candidateDB.candidate_company</code> table reference
+	 * Create an aliased <code>candidatedb.candidate_company</code> table reference
 	 */
 	public CandidateCompany(String alias) {
 		this(alias, CANDIDATE_COMPANY);

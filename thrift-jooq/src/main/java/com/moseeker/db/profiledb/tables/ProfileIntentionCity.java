@@ -35,10 +35,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileIntentionCity extends TableImpl<ProfileIntentionCityRecord> {
 
-	private static final long serialVersionUID = -1998743015;
+	private static final long serialVersionUID = -220848615;
 
 	/**
-	 * The reference instance of <code>profileDB.profile_intention_city</code>
+	 * The reference instance of <code>profiledb.profile_intention_city</code>
 	 */
 	public static final ProfileIntentionCity PROFILE_INTENTION_CITY = new ProfileIntentionCity();
 
@@ -51,34 +51,34 @@ public class ProfileIntentionCity extends TableImpl<ProfileIntentionCityRecord> 
 	}
 
 	/**
-	 * The column <code>profileDB.profile_intention_city.id</code>. 主key
+	 * The column <code>profiledb.profile_intention_city.id</code>. 主key
 	 */
 	public final TableField<ProfileIntentionCityRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
 
 	/**
-	 * The column <code>profileDB.profile_intention_city.profile_intention_id</code>. profile_intention.id
+	 * The column <code>profiledb.profile_intention_city.profile_intention_id</code>. profile_intention.id
 	 */
 	public final TableField<ProfileIntentionCityRecord, UInteger> PROFILE_INTENTION_ID = createField("profile_intention_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "profile_intention.id");
 
 	/**
-	 * The column <code>profileDB.profile_intention_city.city_code</code>. 期望城市字典编码
+	 * The column <code>profiledb.profile_intention_city.city_code</code>. 期望城市字典编码
 	 */
 	public final TableField<ProfileIntentionCityRecord, UInteger> CITY_CODE = createField("city_code", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "期望城市字典编码");
 
 	/**
-	 * The column <code>profileDB.profile_intention_city.city_name</code>. 期望城市名称
+	 * The column <code>profiledb.profile_intention_city.city_name</code>. 期望城市名称
 	 */
 	public final TableField<ProfileIntentionCityRecord, String> CITY_NAME = createField("city_name", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "期望城市名称");
 
 	/**
-	 * Create a <code>profileDB.profile_intention_city</code> table reference
+	 * Create a <code>profiledb.profile_intention_city</code> table reference
 	 */
 	public ProfileIntentionCity() {
 		this("profile_intention_city", null);
 	}
 
 	/**
-	 * Create an aliased <code>profileDB.profile_intention_city</code> table reference
+	 * Create an aliased <code>profiledb.profile_intention_city</code> table reference
 	 */
 	public ProfileIntentionCity(String alias) {
 		this(alias, PROFILE_INTENTION_CITY);

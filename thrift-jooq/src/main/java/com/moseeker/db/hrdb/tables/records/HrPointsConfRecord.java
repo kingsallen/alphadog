@@ -31,227 +31,227 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrPointsConfRecord extends UpdatableRecordImpl<HrPointsConfRecord> implements Record16<Integer, Integer, String, Long, String, Byte, Byte, Timestamp, String, Byte, String, String, Byte, String, String, UInteger> {
 
-	private static final long serialVersionUID = -2080111194;
+	private static final long serialVersionUID = 984343974;
 
 	/**
-	 * Setter for <code>hrDB.hr_points_conf.id</code>.
+	 * Setter for <code>hrdb.hr_points_conf.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_points_conf.id</code>.
+	 * Getter for <code>hrdb.hr_points_conf.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_points_conf.company_id</code>.
+	 * Setter for <code>hrdb.hr_points_conf.company_id</code>.
 	 */
 	public void setCompanyId(Integer value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_points_conf.company_id</code>.
+	 * Getter for <code>hrdb.hr_points_conf.company_id</code>.
 	 */
 	public Integer getCompanyId() {
 		return (Integer) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_points_conf.status_name</code>. name of status defined, if using ATS, please set it the same as ATS
+	 * Setter for <code>hrdb.hr_points_conf.status_name</code>. name of status defined, if using ATS, please set it the same as ATS
 	 */
 	public void setStatusName(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_points_conf.status_name</code>. name of status defined, if using ATS, please set it the same as ATS
+	 * Getter for <code>hrdb.hr_points_conf.status_name</code>. name of status defined, if using ATS, please set it the same as ATS
 	 */
 	public String getStatusName() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_points_conf.reward</code>. 积分数量
+	 * Setter for <code>hrdb.hr_points_conf.reward</code>. 积分数量
 	 */
 	public void setReward(Long value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_points_conf.reward</code>. 积分数量
+	 * Getter for <code>hrdb.hr_points_conf.reward</code>. 积分数量
 	 */
 	public Long getReward() {
 		return (Long) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_points_conf.description</code>.
+	 * Setter for <code>hrdb.hr_points_conf.description</code>.
 	 */
 	public void setDescription(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_points_conf.description</code>.
+	 * Getter for <code>hrdb.hr_points_conf.description</code>.
 	 */
 	public String getDescription() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_points_conf.is_using</code>. 是否启用0：启用1：禁用
+	 * Setter for <code>hrdb.hr_points_conf.is_using</code>. 是否启用0：启用1：禁用
 	 */
 	public void setIsUsing(Byte value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_points_conf.is_using</code>. 是否启用0：启用1：禁用
+	 * Getter for <code>hrdb.hr_points_conf.is_using</code>. 是否启用0：启用1：禁用
 	 */
 	public Byte getIsUsing() {
 		return (Byte) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_points_conf.order_num</code>. 优先级
+	 * Setter for <code>hrdb.hr_points_conf.order_num</code>. 优先级
 	 */
 	public void setOrderNum(Byte value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_points_conf.order_num</code>. 优先级
+	 * Getter for <code>hrdb.hr_points_conf.order_num</code>. 优先级
 	 */
 	public Byte getOrderNum() {
 		return (Byte) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_points_conf._update_time</code>.
+	 * Setter for <code>hrdb.hr_points_conf._update_time</code>.
 	 */
 	public void set_UpdateTime(Timestamp value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_points_conf._update_time</code>.
+	 * Getter for <code>hrdb.hr_points_conf._update_time</code>.
 	 */
 	public Timestamp get_UpdateTime() {
 		return (Timestamp) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_points_conf.tag</code>.
+	 * Setter for <code>hrdb.hr_points_conf.tag</code>.
 	 */
 	public void setTag(String value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_points_conf.tag</code>.
+	 * Getter for <code>hrdb.hr_points_conf.tag</code>.
 	 */
 	public String getTag() {
 		return (String) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_points_conf.is_applier_send</code>. 申请者是否发送消息模板0:发送1:不发送
+	 * Setter for <code>hrdb.hr_points_conf.is_applier_send</code>. 申请者是否发送消息模板0:发送1:不发送
 	 */
 	public void setIsApplierSend(Byte value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_points_conf.is_applier_send</code>. 申请者是否发送消息模板0:发送1:不发送
+	 * Getter for <code>hrdb.hr_points_conf.is_applier_send</code>. 申请者是否发送消息模板0:发送1:不发送
 	 */
 	public Byte getIsApplierSend() {
 		return (Byte) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_points_conf.applier_first</code>. 申请状态模板发送问候语
+	 * Setter for <code>hrdb.hr_points_conf.applier_first</code>. 申请状态模板发送问候语
 	 */
 	public void setApplierFirst(String value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_points_conf.applier_first</code>. 申请状态模板发送问候语
+	 * Getter for <code>hrdb.hr_points_conf.applier_first</code>. 申请状态模板发送问候语
 	 */
 	public String getApplierFirst() {
 		return (String) getValue(10);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_points_conf.applier_remark</code>. 申请状态模板发送结束语
+	 * Setter for <code>hrdb.hr_points_conf.applier_remark</code>. 申请状态模板发送结束语
 	 */
 	public void setApplierRemark(String value) {
 		setValue(11, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_points_conf.applier_remark</code>. 申请状态模板发送结束语
+	 * Getter for <code>hrdb.hr_points_conf.applier_remark</code>. 申请状态模板发送结束语
 	 */
 	public String getApplierRemark() {
 		return (String) getValue(11);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_points_conf.is_recom_send</code>. 推荐者是否发送消息模板0:发送1:不发送
+	 * Setter for <code>hrdb.hr_points_conf.is_recom_send</code>. 推荐者是否发送消息模板0:发送1:不发送
 	 */
 	public void setIsRecomSend(Byte value) {
 		setValue(12, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_points_conf.is_recom_send</code>. 推荐者是否发送消息模板0:发送1:不发送
+	 * Getter for <code>hrdb.hr_points_conf.is_recom_send</code>. 推荐者是否发送消息模板0:发送1:不发送
 	 */
 	public Byte getIsRecomSend() {
 		return (Byte) getValue(12);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_points_conf.recom_first</code>. 推荐者申请状态模板发送问候语
+	 * Setter for <code>hrdb.hr_points_conf.recom_first</code>. 推荐者申请状态模板发送问候语
 	 */
 	public void setRecomFirst(String value) {
 		setValue(13, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_points_conf.recom_first</code>. 推荐者申请状态模板发送问候语
+	 * Getter for <code>hrdb.hr_points_conf.recom_first</code>. 推荐者申请状态模板发送问候语
 	 */
 	public String getRecomFirst() {
 		return (String) getValue(13);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_points_conf.recom_remark</code>. 推荐者申请状态模板发送结束语
+	 * Setter for <code>hrdb.hr_points_conf.recom_remark</code>. 推荐者申请状态模板发送结束语
 	 */
 	public void setRecomRemark(String value) {
 		setValue(14, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_points_conf.recom_remark</code>. 推荐者申请状态模板发送结束语
+	 * Getter for <code>hrdb.hr_points_conf.recom_remark</code>. 推荐者申请状态模板发送结束语
 	 */
 	public String getRecomRemark() {
 		return (String) getValue(14);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_points_conf.template_id</code>. 申请状态模板ID，hr_award_config_template.id
+	 * Setter for <code>hrdb.hr_points_conf.template_id</code>. 申请状态模板ID，hr_award_config_template.id
 	 */
 	public void setTemplateId(UInteger value) {
 		setValue(15, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_points_conf.template_id</code>. 申请状态模板ID，hr_award_config_template.id
+	 * Getter for <code>hrdb.hr_points_conf.template_id</code>. 申请状态模板ID，hr_award_config_template.id
 	 */
 	public UInteger getTemplateId() {
 		return (UInteger) getValue(15);

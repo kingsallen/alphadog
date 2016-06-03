@@ -36,10 +36,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserUser extends TableImpl<UserUserRecord> {
 
-	private static final long serialVersionUID = 1231258089;
+	private static final long serialVersionUID = 2099019241;
 
 	/**
-	 * The reference instance of <code>userDB.user_user</code>
+	 * The reference instance of <code>userdb.user_user</code>
 	 */
 	public static final UserUser USER_USER = new UserUser();
 
@@ -52,134 +52,134 @@ public class UserUser extends TableImpl<UserUserRecord> {
 	}
 
 	/**
-	 * The column <code>userDB.user_user.id</code>. 主key
+	 * The column <code>userdb.user_user.id</code>. 主key
 	 */
 	public final TableField<UserUserRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
 
 	/**
-	 * The column <code>userDB.user_user.username</code>. 用户名，比如手机号、邮箱等
+	 * The column <code>userdb.user_user.username</code>. 用户名，比如手机号、邮箱等
 	 */
 	public final TableField<UserUserRecord, String> USERNAME = createField("username", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false), this, "用户名，比如手机号、邮箱等");
 
 	/**
-	 * The column <code>userDB.user_user.password</code>. 密码
+	 * The column <code>userdb.user_user.password</code>. 密码
 	 */
 	public final TableField<UserUserRecord, String> PASSWORD = createField("password", org.jooq.impl.SQLDataType.VARCHAR.length(40).nullable(false), this, "密码");
 
 	/**
-	 * The column <code>userDB.user_user.is_disable</code>. 是否禁用，0：可用，1：禁用
+	 * The column <code>userdb.user_user.is_disable</code>. 是否禁用，0：可用，1：禁用
 	 */
 	public final TableField<UserUserRecord, Byte> IS_DISABLE = createField("is_disable", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "是否禁用，0：可用，1：禁用");
 
 	/**
-	 * The column <code>userDB.user_user.rank</code>. 用户等级
+	 * The column <code>userdb.user_user.rank</code>. 用户等级
 	 */
 	public final TableField<UserUserRecord, Integer> RANK = createField("rank", org.jooq.impl.SQLDataType.INTEGER, this, "用户等级");
 
 	/**
-	 * The column <code>userDB.user_user.register_time</code>. 注册时间
+	 * The column <code>userdb.user_user.register_time</code>. 注册时间
 	 */
 	public final TableField<UserUserRecord, Timestamp> REGISTER_TIME = createField("register_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "注册时间");
 
 	/**
-	 * The column <code>userDB.user_user.register_ip</code>. 注册IP
+	 * The column <code>userdb.user_user.register_ip</code>. 注册IP
 	 */
 	public final TableField<UserUserRecord, String> REGISTER_IP = createField("register_ip", org.jooq.impl.SQLDataType.VARCHAR.length(50), this, "注册IP");
 
 	/**
-	 * The column <code>userDB.user_user.last_login_time</code>. 最近登录时间
+	 * The column <code>userdb.user_user.last_login_time</code>. 最近登录时间
 	 */
 	public final TableField<UserUserRecord, Timestamp> LAST_LOGIN_TIME = createField("last_login_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "最近登录时间");
 
 	/**
-	 * The column <code>userDB.user_user.last_login_ip</code>. 最近登录IP
+	 * The column <code>userdb.user_user.last_login_ip</code>. 最近登录IP
 	 */
 	public final TableField<UserUserRecord, String> LAST_LOGIN_IP = createField("last_login_ip", org.jooq.impl.SQLDataType.VARCHAR.length(50), this, "最近登录IP");
 
 	/**
-	 * The column <code>userDB.user_user.login_count</code>. 登录次数
+	 * The column <code>userdb.user_user.login_count</code>. 登录次数
 	 */
 	public final TableField<UserUserRecord, Integer> LOGIN_COUNT = createField("login_count", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "登录次数");
 
 	/**
-	 * The column <code>userDB.user_user.mobile</code>. user pass mobile registe
+	 * The column <code>userdb.user_user.mobile</code>. user pass mobile registe
 	 */
 	public final TableField<UserUserRecord, Long> MOBILE = createField("mobile", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaulted(true), this, "user pass mobile registe");
 
 	/**
-	 * The column <code>userDB.user_user.email</code>. user pass email registe
+	 * The column <code>userdb.user_user.email</code>. user pass email registe
 	 */
 	public final TableField<UserUserRecord, String> EMAIL = createField("email", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "user pass email registe");
 
 	/**
-	 * The column <code>userDB.user_user.activation</code>. is not activation 0:no 1:yes
+	 * The column <code>userdb.user_user.activation</code>. is not activation 0:no 1:yes
 	 */
 	public final TableField<UserUserRecord, Byte> ACTIVATION = createField("activation", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "is not activation 0:no 1:yes");
 
 	/**
-	 * The column <code>userDB.user_user.activation_code</code>. activation code
+	 * The column <code>userdb.user_user.activation_code</code>. activation code
 	 */
 	public final TableField<UserUserRecord, String> ACTIVATION_CODE = createField("activation_code", org.jooq.impl.SQLDataType.VARCHAR.length(32).nullable(false).defaulted(true), this, "activation code");
 
 	/**
-	 * The column <code>userDB.user_user.token</code>.
+	 * The column <code>userdb.user_user.token</code>.
 	 */
 	public final TableField<UserUserRecord, String> TOKEN = createField("token", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>userDB.user_user.name</code>. 姓名或微信昵称
+	 * The column <code>userdb.user_user.name</code>. 姓名或微信昵称
 	 */
 	public final TableField<UserUserRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "姓名或微信昵称");
 
 	/**
-	 * The column <code>userDB.user_user.headimg</code>. 头像
+	 * The column <code>userdb.user_user.headimg</code>. 头像
 	 */
 	public final TableField<UserUserRecord, String> HEADIMG = createField("headimg", org.jooq.impl.SQLDataType.CLOB, this, "头像");
 
 	/**
-	 * The column <code>userDB.user_user.national_code_id</code>. 国际电话区号ID
+	 * The column <code>userdb.user_user.national_code_id</code>. 国际电话区号ID
 	 */
 	public final TableField<UserUserRecord, Integer> NATIONAL_CODE_ID = createField("national_code_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "国际电话区号ID");
 
 	/**
-	 * The column <code>userDB.user_user.wechat_id</code>. 注册用户来自于哪个公众号, 0:默认为来自浏览器的用户
+	 * The column <code>userdb.user_user.wechat_id</code>. 注册用户来自于哪个公众号, 0:默认为来自浏览器的用户
 	 */
 	public final TableField<UserUserRecord, Integer> WECHAT_ID = createField("wechat_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "注册用户来自于哪个公众号, 0:默认为来自浏览器的用户");
 
 	/**
-	 * The column <code>userDB.user_user.unionid</code>. 存储仟寻服务号的unionid
+	 * The column <code>userdb.user_user.unionid</code>. 存储仟寻服务号的unionid
 	 */
 	public final TableField<UserUserRecord, String> UNIONID = createField("unionid", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaulted(true), this, "存储仟寻服务号的unionid");
 
 	/**
-	 * The column <code>userDB.user_user.source</code>. 来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录
+	 * The column <code>userdb.user_user.source</code>. 来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录
 	 */
 	public final TableField<UserUserRecord, Byte> SOURCE = createField("source", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录");
 
 	/**
-	 * The column <code>userDB.user_user.company</code>. 点击我感兴趣时填写的公司
+	 * The column <code>userdb.user_user.company</code>. 点击我感兴趣时填写的公司
 	 */
 	public final TableField<UserUserRecord, String> COMPANY = createField("company", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "点击我感兴趣时填写的公司");
 
 	/**
-	 * The column <code>userDB.user_user.position</code>. 点击我感兴趣时填写的职位
+	 * The column <code>userdb.user_user.position</code>. 点击我感兴趣时填写的职位
 	 */
 	public final TableField<UserUserRecord, String> POSITION = createField("position", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "点击我感兴趣时填写的职位");
 
 	/**
-	 * The column <code>userDB.user_user.parentid</code>. 合并到了新用户的id
+	 * The column <code>userdb.user_user.parentid</code>. 合并到了新用户的id
 	 */
 	public final TableField<UserUserRecord, UInteger> PARENTID = createField("parentid", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "合并到了新用户的id");
 
 	/**
-	 * Create a <code>userDB.user_user</code> table reference
+	 * Create a <code>userdb.user_user</code> table reference
 	 */
 	public UserUser() {
 		this("user_user", null);
 	}
 
 	/**
-	 * Create an aliased <code>userDB.user_user</code> table reference
+	 * Create an aliased <code>userdb.user_user</code> table reference
 	 */
 	public UserUser(String alias) {
 		this(alias, USER_USER);

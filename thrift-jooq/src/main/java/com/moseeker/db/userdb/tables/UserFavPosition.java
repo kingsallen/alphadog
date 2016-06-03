@@ -36,10 +36,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserFavPosition extends TableImpl<UserFavPositionRecord> {
 
-	private static final long serialVersionUID = -580274407;
+	private static final long serialVersionUID = -1909737703;
 
 	/**
-	 * The reference instance of <code>userDB.user_fav_position</code>
+	 * The reference instance of <code>userdb.user_fav_position</code>
 	 */
 	public static final UserFavPosition USER_FAV_POSITION = new UserFavPosition();
 
@@ -52,59 +52,59 @@ public class UserFavPosition extends TableImpl<UserFavPositionRecord> {
 	}
 
 	/**
-	 * The column <code>userDB.user_fav_position.sysuser_id</code>. 用户ID
+	 * The column <code>userdb.user_fav_position.sysuser_id</code>. 用户ID
 	 */
 	public final TableField<UserFavPositionRecord, Integer> SYSUSER_ID = createField("sysuser_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "用户ID");
 
 	/**
-	 * The column <code>userDB.user_fav_position.position_id</code>. 职位ID
+	 * The column <code>userdb.user_fav_position.position_id</code>. 职位ID
 	 */
 	public final TableField<UserFavPositionRecord, Integer> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "职位ID");
 
 	/**
-	 * The column <code>userDB.user_fav_position.favorite</code>. 0:收藏, 1:取消收藏, 2:感兴趣
+	 * The column <code>userdb.user_fav_position.favorite</code>. 0:收藏, 1:取消收藏, 2:感兴趣
 	 */
 	public final TableField<UserFavPositionRecord, Byte> FAVORITE = createField("favorite", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "0:收藏, 1:取消收藏, 2:感兴趣");
 
 	/**
-	 * The column <code>userDB.user_fav_position.create_time</code>.
+	 * The column <code>userdb.user_fav_position.create_time</code>.
 	 */
 	public final TableField<UserFavPositionRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>userDB.user_fav_position.update_time</code>.
+	 * The column <code>userdb.user_fav_position.update_time</code>.
 	 */
 	public final TableField<UserFavPositionRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>userDB.user_fav_position.mobile</code>. 感兴趣的手机号
+	 * The column <code>userdb.user_fav_position.mobile</code>. 感兴趣的手机号
 	 */
 	public final TableField<UserFavPositionRecord, String> MOBILE = createField("mobile", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false).defaulted(true), this, "感兴趣的手机号");
 
 	/**
-	 * The column <code>userDB.user_fav_position.id</code>. ID
+	 * The column <code>userdb.user_fav_position.id</code>. ID
 	 */
 	public final TableField<UserFavPositionRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "ID");
 
 	/**
-	 * The column <code>userDB.user_fav_position.wxuser_id</code>. wx_user.id
+	 * The column <code>userdb.user_fav_position.wxuser_id</code>. wx_user.id
 	 */
 	public final TableField<UserFavPositionRecord, UInteger> WXUSER_ID = createField("wxuser_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "wx_user.id");
 
 	/**
-	 * The column <code>userDB.user_fav_position.recom_id</code>. 推荐者 fk:wx_user.id
+	 * The column <code>userdb.user_fav_position.recom_id</code>. 推荐者 fk:wx_user.id
 	 */
 	public final TableField<UserFavPositionRecord, Integer> RECOM_ID = createField("recom_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "推荐者 fk:wx_user.id");
 
 	/**
-	 * Create a <code>userDB.user_fav_position</code> table reference
+	 * Create a <code>userdb.user_fav_position</code> table reference
 	 */
 	public UserFavPosition() {
 		this("user_fav_position", null);
 	}
 
 	/**
-	 * Create an aliased <code>userDB.user_fav_position</code> table reference
+	 * Create an aliased <code>userdb.user_fav_position</code> table reference
 	 */
 	public UserFavPosition(String alias) {
 		this(alias, USER_FAV_POSITION);

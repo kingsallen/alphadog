@@ -30,101 +30,101 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrOperationRecordRecord extends UpdatableRecordImpl<HrOperationRecordRecord> implements Record7<Integer, Long, Long, Long, Long, Timestamp, Integer> {
 
-	private static final long serialVersionUID = -1583393813;
+	private static final long serialVersionUID = -858174485;
 
 	/**
-	 * Setter for <code>hrDB.hr_operation_record.id</code>.
+	 * Setter for <code>hrdb.hr_operation_record.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_operation_record.id</code>.
+	 * Getter for <code>hrdb.hr_operation_record.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_operation_record.admin_id</code>. hr_account.id
+	 * Setter for <code>hrdb.hr_operation_record.admin_id</code>. hr_account.id
 	 */
 	public void setAdminId(Long value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_operation_record.admin_id</code>. hr_account.id
+	 * Getter for <code>hrdb.hr_operation_record.admin_id</code>. hr_account.id
 	 */
 	public Long getAdminId() {
 		return (Long) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_operation_record.company_id</code>. company.id
+	 * Setter for <code>hrdb.hr_operation_record.company_id</code>. company.id
 	 */
 	public void setCompanyId(Long value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_operation_record.company_id</code>. company.id
+	 * Getter for <code>hrdb.hr_operation_record.company_id</code>. company.id
 	 */
 	public Long getCompanyId() {
 		return (Long) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_operation_record.app_id</code>. job_application.id
+	 * Setter for <code>hrdb.hr_operation_record.app_id</code>. job_application.id
 	 */
 	public void setAppId(Long value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_operation_record.app_id</code>. job_application.id
+	 * Getter for <code>hrdb.hr_operation_record.app_id</code>. job_application.id
 	 */
 	public Long getAppId() {
 		return (Long) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_operation_record.status_id</code>. hr_award_config.id
+	 * Setter for <code>hrdb.hr_operation_record.status_id</code>. hr_award_config.id
 	 */
 	public void setStatusId(Long value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_operation_record.status_id</code>. hr_award_config.id
+	 * Getter for <code>hrdb.hr_operation_record.status_id</code>. hr_award_config.id
 	 */
 	public Long getStatusId() {
 		return (Long) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_operation_record.opt_time</code>. 操作时间
+	 * Setter for <code>hrdb.hr_operation_record.opt_time</code>. 操作时间
 	 */
 	public void setOptTime(Timestamp value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_operation_record.opt_time</code>. 操作时间
+	 * Getter for <code>hrdb.hr_operation_record.opt_time</code>. 操作时间
 	 */
 	public Timestamp getOptTime() {
 		return (Timestamp) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_operation_record.operate_tpl_id</code>. hr_award_config_template.id
+	 * Setter for <code>hrdb.hr_operation_record.operate_tpl_id</code>. hr_award_config_template.id
 	 */
 	public void setOperateTplId(Integer value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_operation_record.operate_tpl_id</code>. hr_award_config_template.id
+	 * Getter for <code>hrdb.hr_operation_record.operate_tpl_id</code>. hr_award_config_template.id
 	 */
 	public Integer getOperateTplId() {
 		return (Integer) getValue(6);

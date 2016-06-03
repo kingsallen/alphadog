@@ -29,59 +29,59 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserIntentionRecord extends TableRecordImpl<UserIntentionRecord> implements Record4<Integer, String, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = -1110846545;
+	private static final long serialVersionUID = 801104815;
 
 	/**
-	 * Setter for <code>userDB.user_intention.sysuser_id</code>. 用户ID
+	 * Setter for <code>userdb.user_intention.sysuser_id</code>. 用户ID
 	 */
 	public void setSysuserId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_intention.sysuser_id</code>. 用户ID
+	 * Getter for <code>userdb.user_intention.sysuser_id</code>. 用户ID
 	 */
 	public Integer getSysuserId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_intention.intention</code>. 求职意向
+	 * Setter for <code>userdb.user_intention.intention</code>. 求职意向
 	 */
 	public void setIntention(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_intention.intention</code>. 求职意向
+	 * Getter for <code>userdb.user_intention.intention</code>. 求职意向
 	 */
 	public String getIntention() {
 		return (String) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_intention.create_time</code>.
+	 * Setter for <code>userdb.user_intention.create_time</code>.
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_intention.create_time</code>.
+	 * Getter for <code>userdb.user_intention.create_time</code>.
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_intention.update_time</code>.
+	 * Setter for <code>userdb.user_intention.update_time</code>.
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_intention.update_time</code>.
+	 * Getter for <code>userdb.user_intention.update_time</code>.
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(3);

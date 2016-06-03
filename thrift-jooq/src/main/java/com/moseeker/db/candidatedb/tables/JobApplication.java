@@ -36,10 +36,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobApplication extends TableImpl<JobApplicationRecord> {
 
-	private static final long serialVersionUID = 1576433979;
+	private static final long serialVersionUID = 558561595;
 
 	/**
-	 * The reference instance of <code>candidateDB.job_application</code>
+	 * The reference instance of <code>candidatedb.job_application</code>
 	 */
 	public static final JobApplication JOB_APPLICATION = new JobApplication();
 
@@ -52,129 +52,129 @@ public class JobApplication extends TableImpl<JobApplicationRecord> {
 	}
 
 	/**
-	 * The column <code>candidateDB.job_application.id</code>.
+	 * The column <code>candidatedb.job_application.id</code>.
 	 */
 	public final TableField<JobApplicationRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
 
 	/**
-	 * The column <code>candidateDB.job_application.wechat_id</code>. sys_wechat.id, 公众号ID
+	 * The column <code>candidatedb.job_application.wechat_id</code>. sys_wechat.id, 公众号ID
 	 */
 	public final TableField<JobApplicationRecord, UInteger> WECHAT_ID = createField("wechat_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "sys_wechat.id, 公众号ID");
 
 	/**
-	 * The column <code>candidateDB.job_application.position_id</code>. hr_position.id, 职位ID
+	 * The column <code>candidatedb.job_application.position_id</code>. hr_position.id, 职位ID
 	 */
 	public final TableField<JobApplicationRecord, UInteger> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "hr_position.id, 职位ID");
 
 	/**
-	 * The column <code>candidateDB.job_application.recommender_id</code>. wx_group_user.id, 微信ID
+	 * The column <code>candidatedb.job_application.recommender_id</code>. wx_group_user.id, 微信ID
 	 */
 	public final TableField<JobApplicationRecord, UInteger> RECOMMENDER_ID = createField("recommender_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "wx_group_user.id, 微信ID");
 
 	/**
-	 * The column <code>candidateDB.job_application.submit_time</code>. 申请提交时间
+	 * The column <code>candidatedb.job_application.submit_time</code>. 申请提交时间
 	 */
 	public final TableField<JobApplicationRecord, Timestamp> SUBMIT_TIME = createField("submit_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "申请提交时间");
 
 	/**
-	 * The column <code>candidateDB.job_application.status_id</code>. hr_award_config.id, 申请状态ID
+	 * The column <code>candidatedb.job_application.status_id</code>. hr_award_config.id, 申请状态ID
 	 */
 	public final TableField<JobApplicationRecord, UInteger> STATUS_ID = createField("status_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "hr_award_config.id, 申请状态ID");
 
 	/**
-	 * The column <code>candidateDB.job_application.l_application_id</code>. ATS的申请ID
+	 * The column <code>candidatedb.job_application.l_application_id</code>. ATS的申请ID
 	 */
 	public final TableField<JobApplicationRecord, UInteger> L_APPLICATION_ID = createField("l_application_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "ATS的申请ID");
 
 	/**
-	 * The column <code>candidateDB.job_application.reward</code>. 当前申请的积分记录
+	 * The column <code>candidatedb.job_application.reward</code>. 当前申请的积分记录
 	 */
 	public final TableField<JobApplicationRecord, UInteger> REWARD = createField("reward", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "当前申请的积分记录");
 
 	/**
-	 * The column <code>candidateDB.job_application.source_id</code>. job_source.id, 对应的ATS ID
+	 * The column <code>candidatedb.job_application.source_id</code>. job_source.id, 对应的ATS ID
 	 */
 	public final TableField<JobApplicationRecord, UInteger> SOURCE_ID = createField("source_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "job_source.id, 对应的ATS ID");
 
 	/**
-	 * The column <code>candidateDB.job_application._create_time</code>. time stamp when record created
+	 * The column <code>candidatedb.job_application._create_time</code>. time stamp when record created
 	 */
 	public final TableField<JobApplicationRecord, Timestamp> _CREATE_TIME = createField("_create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "time stamp when record created");
 
 	/**
-	 * The column <code>candidateDB.job_application.applier_id</code>. sys_user.id, 用户ID
+	 * The column <code>candidatedb.job_application.applier_id</code>. sys_user.id, 用户ID
 	 */
 	public final TableField<JobApplicationRecord, UInteger> APPLIER_ID = createField("applier_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "sys_user.id, 用户ID");
 
 	/**
-	 * The column <code>candidateDB.job_application.interview_id</code>. app_interview.id, 面试ID
+	 * The column <code>candidatedb.job_application.interview_id</code>. app_interview.id, 面试ID
 	 */
 	public final TableField<JobApplicationRecord, UInteger> INTERVIEW_ID = createField("interview_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.defaulted(true), this, "app_interview.id, 面试ID");
 
 	/**
-	 * The column <code>candidateDB.job_application.resume_id</code>. mongodb collection application[id]
+	 * The column <code>candidatedb.job_application.resume_id</code>. mongodb collection application[id]
 	 */
 	public final TableField<JobApplicationRecord, String> RESUME_ID = createField("resume_id", org.jooq.impl.SQLDataType.VARCHAR.length(24).nullable(false).defaulted(true), this, "mongodb collection application[id]");
 
 	/**
-	 * The column <code>candidateDB.job_application.ats_status</code>. 0:unuse, 1:waiting, 2:failed, 3:success, 4:position expire, 5:resume unqualified
+	 * The column <code>candidatedb.job_application.ats_status</code>. 0:unuse, 1:waiting, 2:failed, 3:success, 4:position expire, 5:resume unqualified
 	 */
 	public final TableField<JobApplicationRecord, Integer> ATS_STATUS = createField("ats_status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "0:unuse, 1:waiting, 2:failed, 3:success, 4:position expire, 5:resume unqualified");
 
 	/**
-	 * The column <code>candidateDB.job_application.applier_name</code>. 姓名或微信昵称
+	 * The column <code>candidatedb.job_application.applier_name</code>. 姓名或微信昵称
 	 */
 	public final TableField<JobApplicationRecord, String> APPLIER_NAME = createField("applier_name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "姓名或微信昵称");
 
 	/**
-	 * The column <code>candidateDB.job_application.disable</code>. 是否有效，0：有效，1：无效
+	 * The column <code>candidatedb.job_application.disable</code>. 是否有效，0：有效，1：无效
 	 */
 	public final TableField<JobApplicationRecord, Integer> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "是否有效，0：有效，1：无效");
 
 	/**
-	 * The column <code>candidateDB.job_application.routine</code>. 判断申请来自客户公众号还是聚合平台
+	 * The column <code>candidatedb.job_application.routine</code>. 判断申请来自客户公众号还是聚合平台
 	 */
 	public final TableField<JobApplicationRecord, Integer> ROUTINE = createField("routine", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "判断申请来自客户公众号还是聚合平台");
 
 	/**
-	 * The column <code>candidateDB.job_application.is_viewed</code>. 该申请是否被浏览，0：已浏览，1：未浏览
+	 * The column <code>candidatedb.job_application.is_viewed</code>. 该申请是否被浏览，0：已浏览，1：未浏览
 	 */
 	public final TableField<JobApplicationRecord, Byte> IS_VIEWED = createField("is_viewed", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "该申请是否被浏览，0：已浏览，1：未浏览");
 
 	/**
-	 * The column <code>candidateDB.job_application.not_suitable</code>. 是否不合适，0：合适，1：不合适
+	 * The column <code>candidatedb.job_application.not_suitable</code>. 是否不合适，0：合适，1：不合适
 	 */
 	public final TableField<JobApplicationRecord, Byte> NOT_SUITABLE = createField("not_suitable", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "是否不合适，0：合适，1：不合适");
 
 	/**
-	 * The column <code>candidateDB.job_application.company_id</code>. company.id，公司表ID
+	 * The column <code>candidatedb.job_application.company_id</code>. company.id，公司表ID
 	 */
 	public final TableField<JobApplicationRecord, UInteger> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "company.id，公司表ID");
 
 	/**
-	 * The column <code>candidateDB.job_application.update_time</code>.
+	 * The column <code>candidatedb.job_application.update_time</code>.
 	 */
 	public final TableField<JobApplicationRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>candidateDB.job_application.app_tpl_id</code>. 申请状态,hr_award_config_template.id
+	 * The column <code>candidatedb.job_application.app_tpl_id</code>. 申请状态,hr_award_config_template.id
 	 */
 	public final TableField<JobApplicationRecord, UInteger> APP_TPL_ID = createField("app_tpl_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "申请状态,hr_award_config_template.id");
 
 	/**
-	 * The column <code>candidateDB.job_application.proxy</code>. 是否是代理投递 0：正常数据，1：代理假投递
+	 * The column <code>candidatedb.job_application.proxy</code>. 是否是代理投递 0：正常数据，1：代理假投递
 	 */
 	public final TableField<JobApplicationRecord, Byte> PROXY = createField("proxy", org.jooq.impl.SQLDataType.TINYINT.defaulted(true), this, "是否是代理投递 0：正常数据，1：代理假投递");
 
 	/**
-	 * Create a <code>candidateDB.job_application</code> table reference
+	 * Create a <code>candidatedb.job_application</code> table reference
 	 */
 	public JobApplication() {
 		this("job_application", null);
 	}
 
 	/**
-	 * Create an aliased <code>candidateDB.job_application</code> table reference
+	 * Create an aliased <code>candidatedb.job_application</code> table reference
 	 */
 	public JobApplication(String alias) {
 		this(alias, JOB_APPLICATION);

@@ -30,283 +30,283 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobResumeBasicRecord extends UpdatableRecordImpl<JobResumeBasicRecord> implements Record20<Integer, Integer, Integer, String, String, String, String, Byte, String, String, Timestamp, Timestamp, String, String, Timestamp, Timestamp, Long, Byte, Short, Byte> {
 
-	private static final long serialVersionUID = -38082953;
+	private static final long serialVersionUID = 1431823991;
 
 	/**
-	 * Setter for <code>jobDB.job_resume_basic.id</code>. ID
+	 * Setter for <code>jobdb.job_resume_basic.id</code>. ID
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>jobDB.job_resume_basic.id</code>. ID
+	 * Getter for <code>jobdb.job_resume_basic.id</code>. ID
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>jobDB.job_resume_basic.app_id</code>. 申请ID
+	 * Setter for <code>jobdb.job_resume_basic.app_id</code>. 申请ID
 	 */
 	public void setAppId(Integer value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>jobDB.job_resume_basic.app_id</code>. 申请ID
+	 * Getter for <code>jobdb.job_resume_basic.app_id</code>. 申请ID
 	 */
 	public Integer getAppId() {
 		return (Integer) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>jobDB.job_resume_basic.position_id</code>. 职位ID
+	 * Setter for <code>jobdb.job_resume_basic.position_id</code>. 职位ID
 	 */
 	public void setPositionId(Integer value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>jobDB.job_resume_basic.position_id</code>. 职位ID
+	 * Getter for <code>jobdb.job_resume_basic.position_id</code>. 职位ID
 	 */
 	public Integer getPositionId() {
 		return (Integer) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>jobDB.job_resume_basic.firstname</code>. 姓
+	 * Setter for <code>jobdb.job_resume_basic.firstname</code>. 姓
 	 */
 	public void setFirstname(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>jobDB.job_resume_basic.firstname</code>. 姓
+	 * Getter for <code>jobdb.job_resume_basic.firstname</code>. 姓
 	 */
 	public String getFirstname() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>jobDB.job_resume_basic.lastname</code>. 名
+	 * Setter for <code>jobdb.job_resume_basic.lastname</code>. 名
 	 */
 	public void setLastname(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>jobDB.job_resume_basic.lastname</code>. 名
+	 * Getter for <code>jobdb.job_resume_basic.lastname</code>. 名
 	 */
 	public String getLastname() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>jobDB.job_resume_basic.address</code>. 居住地
+	 * Setter for <code>jobdb.job_resume_basic.address</code>. 居住地
 	 */
 	public void setAddress(String value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>jobDB.job_resume_basic.address</code>. 居住地
+	 * Getter for <code>jobdb.job_resume_basic.address</code>. 居住地
 	 */
 	public String getAddress() {
 		return (String) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>jobDB.job_resume_basic.age</code>. 年龄
+	 * Setter for <code>jobdb.job_resume_basic.age</code>. 年龄
 	 */
 	public void setAge(String value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>jobDB.job_resume_basic.age</code>. 年龄
+	 * Getter for <code>jobdb.job_resume_basic.age</code>. 年龄
 	 */
 	public String getAge() {
 		return (String) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>jobDB.job_resume_basic.work_exp_years</code>. 工作年限
+	 * Setter for <code>jobdb.job_resume_basic.work_exp_years</code>. 工作年限
 	 */
 	public void setWorkExpYears(Byte value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>jobDB.job_resume_basic.work_exp_years</code>. 工作年限
+	 * Getter for <code>jobdb.job_resume_basic.work_exp_years</code>. 工作年限
 	 */
 	public Byte getWorkExpYears() {
 		return (Byte) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>jobDB.job_resume_basic.job_position</code>. 工作经历-职位
+	 * Setter for <code>jobdb.job_resume_basic.job_position</code>. 工作经历-职位
 	 */
 	public void setJobPosition(String value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>jobDB.job_resume_basic.job_position</code>. 工作经历-职位
+	 * Getter for <code>jobdb.job_resume_basic.job_position</code>. 工作经历-职位
 	 */
 	public String getJobPosition() {
 		return (String) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>jobDB.job_resume_basic.job_company</code>. 工作经历-公司
+	 * Setter for <code>jobdb.job_resume_basic.job_company</code>. 工作经历-公司
 	 */
 	public void setJobCompany(String value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>jobDB.job_resume_basic.job_company</code>. 工作经历-公司
+	 * Getter for <code>jobdb.job_resume_basic.job_company</code>. 工作经历-公司
 	 */
 	public String getJobCompany() {
 		return (String) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>jobDB.job_resume_basic.job_start</code>. 工作经历-开始时间
+	 * Setter for <code>jobdb.job_resume_basic.job_start</code>. 工作经历-开始时间
 	 */
 	public void setJobStart(Timestamp value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>jobDB.job_resume_basic.job_start</code>. 工作经历-开始时间
+	 * Getter for <code>jobdb.job_resume_basic.job_start</code>. 工作经历-开始时间
 	 */
 	public Timestamp getJobStart() {
 		return (Timestamp) getValue(10);
 	}
 
 	/**
-	 * Setter for <code>jobDB.job_resume_basic.job_end</code>. 工作经历-结束时间
+	 * Setter for <code>jobdb.job_resume_basic.job_end</code>. 工作经历-结束时间
 	 */
 	public void setJobEnd(Timestamp value) {
 		setValue(11, value);
 	}
 
 	/**
-	 * Getter for <code>jobDB.job_resume_basic.job_end</code>. 工作经历-结束时间
+	 * Getter for <code>jobdb.job_resume_basic.job_end</code>. 工作经历-结束时间
 	 */
 	public Timestamp getJobEnd() {
 		return (Timestamp) getValue(11);
 	}
 
 	/**
-	 * Setter for <code>jobDB.job_resume_basic.edu_grade</code>. 教育经历-学历
+	 * Setter for <code>jobdb.job_resume_basic.edu_grade</code>. 教育经历-学历
 	 */
 	public void setEduGrade(String value) {
 		setValue(12, value);
 	}
 
 	/**
-	 * Getter for <code>jobDB.job_resume_basic.edu_grade</code>. 教育经历-学历
+	 * Getter for <code>jobdb.job_resume_basic.edu_grade</code>. 教育经历-学历
 	 */
 	public String getEduGrade() {
 		return (String) getValue(12);
 	}
 
 	/**
-	 * Setter for <code>jobDB.job_resume_basic.edu_school</code>. 教育经历-学校
+	 * Setter for <code>jobdb.job_resume_basic.edu_school</code>. 教育经历-学校
 	 */
 	public void setEduSchool(String value) {
 		setValue(13, value);
 	}
 
 	/**
-	 * Getter for <code>jobDB.job_resume_basic.edu_school</code>. 教育经历-学校
+	 * Getter for <code>jobdb.job_resume_basic.edu_school</code>. 教育经历-学校
 	 */
 	public String getEduSchool() {
 		return (String) getValue(13);
 	}
 
 	/**
-	 * Setter for <code>jobDB.job_resume_basic.edu_start</code>. 教育经历-开始时间
+	 * Setter for <code>jobdb.job_resume_basic.edu_start</code>. 教育经历-开始时间
 	 */
 	public void setEduStart(Timestamp value) {
 		setValue(14, value);
 	}
 
 	/**
-	 * Getter for <code>jobDB.job_resume_basic.edu_start</code>. 教育经历-开始时间
+	 * Getter for <code>jobdb.job_resume_basic.edu_start</code>. 教育经历-开始时间
 	 */
 	public Timestamp getEduStart() {
 		return (Timestamp) getValue(14);
 	}
 
 	/**
-	 * Setter for <code>jobDB.job_resume_basic.edu_end</code>. 教育经历-结束时间
+	 * Setter for <code>jobdb.job_resume_basic.edu_end</code>. 教育经历-结束时间
 	 */
 	public void setEduEnd(Timestamp value) {
 		setValue(15, value);
 	}
 
 	/**
-	 * Getter for <code>jobDB.job_resume_basic.edu_end</code>. 教育经历-结束时间
+	 * Getter for <code>jobdb.job_resume_basic.edu_end</code>. 教育经历-结束时间
 	 */
 	public Timestamp getEduEnd() {
 		return (Timestamp) getValue(15);
 	}
 
 	/**
-	 * Setter for <code>jobDB.job_resume_basic.view_count</code>. 浏览次数
+	 * Setter for <code>jobdb.job_resume_basic.view_count</code>. 浏览次数
 	 */
 	public void setViewCount(Long value) {
 		setValue(16, value);
 	}
 
 	/**
-	 * Getter for <code>jobDB.job_resume_basic.view_count</code>. 浏览次数
+	 * Getter for <code>jobdb.job_resume_basic.view_count</code>. 浏览次数
 	 */
 	public Long getViewCount() {
 		return (Long) getValue(16);
 	}
 
 	/**
-	 * Setter for <code>jobDB.job_resume_basic.resume_type</code>. 简历类型 0：仟寻简历，1：附件简历
+	 * Setter for <code>jobdb.job_resume_basic.resume_type</code>. 简历类型 0：仟寻简历，1：附件简历
 	 */
 	public void setResumeType(Byte value) {
 		setValue(17, value);
 	}
 
 	/**
-	 * Getter for <code>jobDB.job_resume_basic.resume_type</code>. 简历类型 0：仟寻简历，1：附件简历
+	 * Getter for <code>jobdb.job_resume_basic.resume_type</code>. 简历类型 0：仟寻简历，1：附件简历
 	 */
 	public Byte getResumeType() {
 		return (Byte) getValue(17);
 	}
 
 	/**
-	 * Setter for <code>jobDB.job_resume_basic.cv_type</code>. 简历类型 0：PC简历，1：仟寻手机填写的简历，2：前程无忧 3：猎聘 4：智联 5:linkedin 13：email简历
+	 * Setter for <code>jobdb.job_resume_basic.cv_type</code>. 简历类型 0：PC简历，1：仟寻手机填写的简历，2：前程无忧 3：猎聘 4：智联 5:linkedin 13：email简历
 	 */
 	public void setCvType(Short value) {
 		setValue(18, value);
 	}
 
 	/**
-	 * Getter for <code>jobDB.job_resume_basic.cv_type</code>. 简历类型 0：PC简历，1：仟寻手机填写的简历，2：前程无忧 3：猎聘 4：智联 5:linkedin 13：email简历
+	 * Getter for <code>jobdb.job_resume_basic.cv_type</code>. 简历类型 0：PC简历，1：仟寻手机填写的简历，2：前程无忧 3：猎聘 4：智联 5:linkedin 13：email简历
 	 */
 	public Short getCvType() {
 		return (Short) getValue(18);
 	}
 
 	/**
-	 * Setter for <code>jobDB.job_resume_basic.email_resume_status</code>. 简历状态,（0，有效；1,未收到回复邮件；2，文件格式不支持；3，附件超过10M；9，提取邮件失败）
+	 * Setter for <code>jobdb.job_resume_basic.email_resume_status</code>. 简历状态,（0，有效；1,未收到回复邮件；2，文件格式不支持；3，附件超过10M；9，提取邮件失败）
 	 */
 	public void setEmailResumeStatus(Byte value) {
 		setValue(19, value);
 	}
 
 	/**
-	 * Getter for <code>jobDB.job_resume_basic.email_resume_status</code>. 简历状态,（0，有效；1,未收到回复邮件；2，文件格式不支持；3，附件超过10M；9，提取邮件失败）
+	 * Getter for <code>jobdb.job_resume_basic.email_resume_status</code>. 简历状态,（0，有效；1,未收到回复邮件；2，文件格式不支持；3，附件超过10M；9，提取邮件失败）
 	 */
 	public Byte getEmailResumeStatus() {
 		return (Byte) getValue(19);

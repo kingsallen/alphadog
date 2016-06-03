@@ -30,199 +30,199 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrEmployeeCertConfRecord extends UpdatableRecordImpl<HrEmployeeCertConfRecord> implements Record14<Integer, Integer, Byte, String, Timestamp, Timestamp, Byte, Byte, Integer, Byte, String, String, String, String> {
 
-	private static final long serialVersionUID = 260613956;
+	private static final long serialVersionUID = 558339908;
 
 	/**
-	 * Setter for <code>hrDB.hr_employee_cert_conf.id</code>.
+	 * Setter for <code>hrdb.hr_employee_cert_conf.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_employee_cert_conf.id</code>.
+	 * Getter for <code>hrdb.hr_employee_cert_conf.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_employee_cert_conf.company_id</code>. 所属公司 hr_company.id
+	 * Setter for <code>hrdb.hr_employee_cert_conf.company_id</code>. 所属公司 hr_company.id
 	 */
 	public void setCompanyId(Integer value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_employee_cert_conf.company_id</code>. 所属公司 hr_company.id
+	 * Getter for <code>hrdb.hr_employee_cert_conf.company_id</code>. 所属公司 hr_company.id
 	 */
 	public Integer getCompanyId() {
 		return (Integer) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_employee_cert_conf.is_strict</code>. 是否严格0：严格，1：不严格
+	 * Setter for <code>hrdb.hr_employee_cert_conf.is_strict</code>. 是否严格0：严格，1：不严格
 	 */
 	public void setIsStrict(Byte value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_employee_cert_conf.is_strict</code>. 是否严格0：严格，1：不严格
+	 * Getter for <code>hrdb.hr_employee_cert_conf.is_strict</code>. 是否严格0：严格，1：不严格
 	 */
 	public Byte getIsStrict() {
 		return (Byte) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_employee_cert_conf.email_suffix</code>. 邮箱后缀
+	 * Setter for <code>hrdb.hr_employee_cert_conf.email_suffix</code>. 邮箱后缀
 	 */
 	public void setEmailSuffix(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_employee_cert_conf.email_suffix</code>. 邮箱后缀
+	 * Getter for <code>hrdb.hr_employee_cert_conf.email_suffix</code>. 邮箱后缀
 	 */
 	public String getEmailSuffix() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_employee_cert_conf.create_time</code>. 创建时间
+	 * Setter for <code>hrdb.hr_employee_cert_conf.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_employee_cert_conf.create_time</code>. 创建时间
+	 * Getter for <code>hrdb.hr_employee_cert_conf.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_employee_cert_conf.update_time</code>. 修改时间
+	 * Setter for <code>hrdb.hr_employee_cert_conf.update_time</code>. 修改时间
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_employee_cert_conf.update_time</code>. 修改时间
+	 * Getter for <code>hrdb.hr_employee_cert_conf.update_time</code>. 修改时间
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_employee_cert_conf.disable</code>. 是否启用 0：启用1：禁用
+	 * Setter for <code>hrdb.hr_employee_cert_conf.disable</code>. 是否启用 0：启用1：禁用
 	 */
 	public void setDisable(Byte value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_employee_cert_conf.disable</code>. 是否启用 0：启用1：禁用
+	 * Getter for <code>hrdb.hr_employee_cert_conf.disable</code>. 是否启用 0：启用1：禁用
 	 */
 	public Byte getDisable() {
 		return (Byte) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_employee_cert_conf.bd_add_group</code>. 用户绑定时需要加入员工组Flag, 0:需要添加到员工组 1:不需要添加到员工组
+	 * Setter for <code>hrdb.hr_employee_cert_conf.bd_add_group</code>. 用户绑定时需要加入员工组Flag, 0:需要添加到员工组 1:不需要添加到员工组
 	 */
 	public void setBdAddGroup(Byte value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_employee_cert_conf.bd_add_group</code>. 用户绑定时需要加入员工组Flag, 0:需要添加到员工组 1:不需要添加到员工组
+	 * Getter for <code>hrdb.hr_employee_cert_conf.bd_add_group</code>. 用户绑定时需要加入员工组Flag, 0:需要添加到员工组 1:不需要添加到员工组
 	 */
 	public Byte getBdAddGroup() {
 		return (Byte) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_employee_cert_conf.bd_use_group_id</code>. 用户绑定时需要加入员工组的分组编号
+	 * Setter for <code>hrdb.hr_employee_cert_conf.bd_use_group_id</code>. 用户绑定时需要加入员工组的分组编号
 	 */
 	public void setBdUseGroupId(Integer value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_employee_cert_conf.bd_use_group_id</code>. 用户绑定时需要加入员工组的分组编号
+	 * Getter for <code>hrdb.hr_employee_cert_conf.bd_use_group_id</code>. 用户绑定时需要加入员工组的分组编号
 	 */
 	public Integer getBdUseGroupId() {
 		return (Integer) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_employee_cert_conf.auth_mode</code>. 认证方式，0:不启用员工认证, 1:邮箱认证, 2:自定义认证, 3:姓名手机号认证, 4:邮箱自定义两种认证
+	 * Setter for <code>hrdb.hr_employee_cert_conf.auth_mode</code>. 认证方式，0:不启用员工认证, 1:邮箱认证, 2:自定义认证, 3:姓名手机号认证, 4:邮箱自定义两种认证
 	 */
 	public void setAuthMode(Byte value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_employee_cert_conf.auth_mode</code>. 认证方式，0:不启用员工认证, 1:邮箱认证, 2:自定义认证, 3:姓名手机号认证, 4:邮箱自定义两种认证
+	 * Getter for <code>hrdb.hr_employee_cert_conf.auth_mode</code>. 认证方式，0:不启用员工认证, 1:邮箱认证, 2:自定义认证, 3:姓名手机号认证, 4:邮箱自定义两种认证
 	 */
 	public Byte getAuthMode() {
 		return (Byte) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_employee_cert_conf.auth_code</code>. 认证码（6到20位， 字母和数字组成，区分大小写）  默认为空
+	 * Setter for <code>hrdb.hr_employee_cert_conf.auth_code</code>. 认证码（6到20位， 字母和数字组成，区分大小写）  默认为空
 	 */
 	public void setAuthCode(String value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_employee_cert_conf.auth_code</code>. 认证码（6到20位， 字母和数字组成，区分大小写）  默认为空
+	 * Getter for <code>hrdb.hr_employee_cert_conf.auth_code</code>. 认证码（6到20位， 字母和数字组成，区分大小写）  默认为空
 	 */
 	public String getAuthCode() {
 		return (String) getValue(10);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_employee_cert_conf.custom</code>. 配置的自定义认证名称
+	 * Setter for <code>hrdb.hr_employee_cert_conf.custom</code>. 配置的自定义认证名称
 	 */
 	public void setCustom(String value) {
 		setValue(11, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_employee_cert_conf.custom</code>. 配置的自定义认证名称
+	 * Getter for <code>hrdb.hr_employee_cert_conf.custom</code>. 配置的自定义认证名称
 	 */
 	public String getCustom() {
 		return (String) getValue(11);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_employee_cert_conf.questions</code>. 问答列表(json)
+	 * Setter for <code>hrdb.hr_employee_cert_conf.questions</code>. 问答列表(json)
 	 */
 	public void setQuestions(String value) {
 		setValue(12, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_employee_cert_conf.questions</code>. 问答列表(json)
+	 * Getter for <code>hrdb.hr_employee_cert_conf.questions</code>. 问答列表(json)
 	 */
 	public String getQuestions() {
 		return (String) getValue(12);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_employee_cert_conf.custom_hint</code>. 自定义认证提示
+	 * Setter for <code>hrdb.hr_employee_cert_conf.custom_hint</code>. 自定义认证提示
 	 */
 	public void setCustomHint(String value) {
 		setValue(13, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_employee_cert_conf.custom_hint</code>. 自定义认证提示
+	 * Getter for <code>hrdb.hr_employee_cert_conf.custom_hint</code>. 自定义认证提示
 	 */
 	public String getCustomHint() {
 		return (String) getValue(13);

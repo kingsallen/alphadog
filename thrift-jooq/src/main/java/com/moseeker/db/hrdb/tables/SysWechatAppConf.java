@@ -28,10 +28,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SysWechatAppConf extends TableImpl<SysWechatAppConfRecord> {
 
-	private static final long serialVersionUID = 1711000697;
+	private static final long serialVersionUID = -1245325191;
 
 	/**
-	 * The reference instance of <code>hrDB.sys_wechat_app_conf</code>
+	 * The reference instance of <code>hrdb.sys_wechat_app_conf</code>
 	 */
 	public static final SysWechatAppConf SYS_WECHAT_APP_CONF = new SysWechatAppConf();
 
@@ -44,54 +44,54 @@ public class SysWechatAppConf extends TableImpl<SysWechatAppConfRecord> {
 	}
 
 	/**
-	 * The column <code>hrDB.sys_wechat_app_conf.id</code>.
+	 * The column <code>hrdb.sys_wechat_app_conf.id</code>.
 	 */
 	public final TableField<SysWechatAppConfRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>hrDB.sys_wechat_app_conf.wechat_id</code>. 公众号ID
+	 * The column <code>hrdb.sys_wechat_app_conf.wechat_id</code>. 公众号ID
 	 */
 	public final TableField<SysWechatAppConfRecord, Integer> WECHAT_ID = createField("wechat_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "公众号ID");
 
 	/**
-	 * The column <code>hrDB.sys_wechat_app_conf.app_tpl_id</code>. 申请字段ID
+	 * The column <code>hrdb.sys_wechat_app_conf.app_tpl_id</code>. 申请字段ID
 	 */
 	public final TableField<SysWechatAppConfRecord, Integer> APP_TPL_ID = createField("app_tpl_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "申请字段ID");
 
 	/**
-	 * The column <code>hrDB.sys_wechat_app_conf.display</code>. 是否显示0：是，1：否
+	 * The column <code>hrdb.sys_wechat_app_conf.display</code>. 是否显示0：是，1：否
 	 */
 	public final TableField<SysWechatAppConfRecord, Byte> DISPLAY = createField("display", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "是否显示0：是，1：否");
 
 	/**
-	 * The column <code>hrDB.sys_wechat_app_conf.required</code>. 是否必填0：是，1：否
+	 * The column <code>hrdb.sys_wechat_app_conf.required</code>. 是否必填0：是，1：否
 	 */
 	public final TableField<SysWechatAppConfRecord, Byte> REQUIRED = createField("required", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "是否必填0：是，1：否");
 
 	/**
-	 * The column <code>hrDB.sys_wechat_app_conf.priority</code>. 排序
+	 * The column <code>hrdb.sys_wechat_app_conf.priority</code>. 排序
 	 */
 	public final TableField<SysWechatAppConfRecord, Byte> PRIORITY = createField("priority", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "排序");
 
 	/**
-	 * The column <code>hrDB.sys_wechat_app_conf.chname</code>. 申请字段显示名称
+	 * The column <code>hrdb.sys_wechat_app_conf.chname</code>. 申请字段显示名称
 	 */
 	public final TableField<SysWechatAppConfRecord, String> CHNAME = createField("chname", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false).defaulted(true), this, "申请字段显示名称");
 
 	/**
-	 * The column <code>hrDB.sys_wechat_app_conf.entitle</code>. 字段英文名称
+	 * The column <code>hrdb.sys_wechat_app_conf.entitle</code>. 字段英文名称
 	 */
 	public final TableField<SysWechatAppConfRecord, String> ENTITLE = createField("entitle", org.jooq.impl.SQLDataType.VARCHAR.length(30).nullable(false).defaulted(true), this, "字段英文名称");
 
 	/**
-	 * Create a <code>hrDB.sys_wechat_app_conf</code> table reference
+	 * Create a <code>hrdb.sys_wechat_app_conf</code> table reference
 	 */
 	public SysWechatAppConf() {
 		this("sys_wechat_app_conf", null);
 	}
 
 	/**
-	 * Create an aliased <code>hrDB.sys_wechat_app_conf</code> table reference
+	 * Create an aliased <code>hrdb.sys_wechat_app_conf</code> table reference
 	 */
 	public SysWechatAppConf(String alias) {
 		this(alias, SYS_WECHAT_APP_CONF);

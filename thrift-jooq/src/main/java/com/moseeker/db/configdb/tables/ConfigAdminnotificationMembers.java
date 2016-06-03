@@ -34,10 +34,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigAdminnotificationMembers extends TableImpl<ConfigAdminnotificationMembersRecord> {
 
-	private static final long serialVersionUID = 1995301032;
+	private static final long serialVersionUID = -1374689112;
 
 	/**
-	 * The reference instance of <code>configDB.config_adminnotification_members</code>
+	 * The reference instance of <code>configdb.config_adminnotification_members</code>
 	 */
 	public static final ConfigAdminnotificationMembers CONFIG_ADMINNOTIFICATION_MEMBERS = new ConfigAdminnotificationMembers();
 
@@ -50,49 +50,49 @@ public class ConfigAdminnotificationMembers extends TableImpl<ConfigAdminnotific
 	}
 
 	/**
-	 * The column <code>configDB.config_adminnotification_members.id</code>.
+	 * The column <code>configdb.config_adminnotification_members.id</code>.
 	 */
 	public final TableField<ConfigAdminnotificationMembersRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
 	/**
-	 * The column <code>configDB.config_adminnotification_members.name</code>. 姓名
+	 * The column <code>configdb.config_adminnotification_members.name</code>. 姓名
 	 */
 	public final TableField<ConfigAdminnotificationMembersRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(32).nullable(false), this, "姓名");
 
 	/**
-	 * The column <code>configDB.config_adminnotification_members.mobilephone</code>. 接收通知的手机
+	 * The column <code>configdb.config_adminnotification_members.mobilephone</code>. 接收通知的手机
 	 */
 	public final TableField<ConfigAdminnotificationMembersRecord, String> MOBILEPHONE = createField("mobilephone", org.jooq.impl.SQLDataType.VARCHAR.length(15), this, "接收通知的手机");
 
 	/**
-	 * The column <code>configDB.config_adminnotification_members.wechatopenid</code>. 接收通知的微信openid
+	 * The column <code>configdb.config_adminnotification_members.wechatopenid</code>. 接收通知的微信openid
 	 */
 	public final TableField<ConfigAdminnotificationMembersRecord, String> WECHATOPENID = createField("wechatopenid", org.jooq.impl.SQLDataType.VARCHAR.length(64), this, "接收通知的微信openid");
 
 	/**
-	 * The column <code>configDB.config_adminnotification_members.email</code>. 接收通知的email
+	 * The column <code>configdb.config_adminnotification_members.email</code>. 接收通知的email
 	 */
 	public final TableField<ConfigAdminnotificationMembersRecord, String> EMAIL = createField("email", org.jooq.impl.SQLDataType.VARCHAR.length(64), this, "接收通知的email");
 
 	/**
-	 * The column <code>configDB.config_adminnotification_members.status</code>. 1 有效 0 无效
+	 * The column <code>configdb.config_adminnotification_members.status</code>. 1 有效 0 无效
 	 */
 	public final TableField<ConfigAdminnotificationMembersRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "1 有效 0 无效");
 
 	/**
-	 * The column <code>configDB.config_adminnotification_members.create_time</code>.
+	 * The column <code>configdb.config_adminnotification_members.create_time</code>.
 	 */
 	public final TableField<ConfigAdminnotificationMembersRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * Create a <code>configDB.config_adminnotification_members</code> table reference
+	 * Create a <code>configdb.config_adminnotification_members</code> table reference
 	 */
 	public ConfigAdminnotificationMembers() {
 		this("config_adminnotification_members", null);
 	}
 
 	/**
-	 * Create an aliased <code>configDB.config_adminnotification_members</code> table reference
+	 * Create an aliased <code>configdb.config_adminnotification_members</code> table reference
 	 */
 	public ConfigAdminnotificationMembers(String alias) {
 		this(alias, CONFIG_ADMINNOTIFICATION_MEMBERS);

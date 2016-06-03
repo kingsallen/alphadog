@@ -35,10 +35,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysTemplateMessageColumnConfig extends TableImpl<ConfigSysTemplateMessageColumnConfigRecord> {
 
-	private static final long serialVersionUID = 1445635366;
+	private static final long serialVersionUID = 1381569830;
 
 	/**
-	 * The reference instance of <code>configDB.config_sys_template_message_column_config</code>
+	 * The reference instance of <code>configdb.config_sys_template_message_column_config</code>
 	 */
 	public static final ConfigSysTemplateMessageColumnConfig CONFIG_SYS_TEMPLATE_MESSAGE_COLUMN_CONFIG = new ConfigSysTemplateMessageColumnConfig();
 
@@ -51,49 +51,49 @@ public class ConfigSysTemplateMessageColumnConfig extends TableImpl<ConfigSysTem
 	}
 
 	/**
-	 * The column <code>configDB.config_sys_template_message_column_config.id</code>. 主key
+	 * The column <code>configdb.config_sys_template_message_column_config.id</code>. 主key
 	 */
 	public final TableField<ConfigSysTemplateMessageColumnConfigRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
 
 	/**
-	 * The column <code>configDB.config_sys_template_message_column_config.template_id</code>. 模板ID
+	 * The column <code>configdb.config_sys_template_message_column_config.template_id</code>. 模板ID
 	 */
 	public final TableField<ConfigSysTemplateMessageColumnConfigRecord, String> TEMPLATE_ID = createField("template_id", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "模板ID");
 
 	/**
-	 * The column <code>configDB.config_sys_template_message_column_config.enname</code>. 字段英文名
+	 * The column <code>configdb.config_sys_template_message_column_config.enname</code>. 字段英文名
 	 */
 	public final TableField<ConfigSysTemplateMessageColumnConfigRecord, String> ENNAME = createField("enname", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false), this, "字段英文名");
 
 	/**
-	 * The column <code>configDB.config_sys_template_message_column_config.chname</code>. 字段中文名
+	 * The column <code>configdb.config_sys_template_message_column_config.chname</code>. 字段中文名
 	 */
 	public final TableField<ConfigSysTemplateMessageColumnConfigRecord, String> CHNAME = createField("chname", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false), this, "字段中文名");
 
 	/**
-	 * The column <code>configDB.config_sys_template_message_column_config.display</code>. 是否显示
+	 * The column <code>configdb.config_sys_template_message_column_config.display</code>. 是否显示
 	 */
 	public final TableField<ConfigSysTemplateMessageColumnConfigRecord, UInteger> DISPLAY = createField("display", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "是否显示");
 
 	/**
-	 * The column <code>configDB.config_sys_template_message_column_config.priority</code>. 排序
+	 * The column <code>configdb.config_sys_template_message_column_config.priority</code>. 排序
 	 */
 	public final TableField<ConfigSysTemplateMessageColumnConfigRecord, UInteger> PRIORITY = createField("priority", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "排序");
 
 	/**
-	 * The column <code>configDB.config_sys_template_message_column_config._default</code>. default value
+	 * The column <code>configdb.config_sys_template_message_column_config._default</code>. default value
 	 */
 	public final TableField<ConfigSysTemplateMessageColumnConfigRecord, String> _DEFAULT = createField("_default", org.jooq.impl.SQLDataType.VARCHAR.length(200).nullable(false).defaulted(true), this, "default value");
 
 	/**
-	 * Create a <code>configDB.config_sys_template_message_column_config</code> table reference
+	 * Create a <code>configdb.config_sys_template_message_column_config</code> table reference
 	 */
 	public ConfigSysTemplateMessageColumnConfig() {
 		this("config_sys_template_message_column_config", null);
 	}
 
 	/**
-	 * Create an aliased <code>configDB.config_sys_template_message_column_config</code> table reference
+	 * Create an aliased <code>configdb.config_sys_template_message_column_config</code> table reference
 	 */
 	public ConfigSysTemplateMessageColumnConfig(String alias) {
 		this(alias, CONFIG_SYS_TEMPLATE_MESSAGE_COLUMN_CONFIG);

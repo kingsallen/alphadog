@@ -32,269 +32,269 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyRecord extends UpdatableRecordImpl<HrCompanyRecord> implements Record19<UInteger, UByte, String, String, String, String, UByte, String, String, String, String, String, String, UInteger, Integer, Byte, Timestamp, Timestamp, UByte> {
 
-	private static final long serialVersionUID = -1859618477;
+	private static final long serialVersionUID = -1119483565;
 
 	/**
-	 * Setter for <code>hrDB.hr_company.id</code>.
+	 * Setter for <code>hrdb.hr_company.id</code>.
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_company.id</code>.
+	 * Getter for <code>hrdb.hr_company.id</code>.
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_company.type</code>. 公司区分(其它:2,免费用户:1,企业用户:0)
+	 * Setter for <code>hrdb.hr_company.type</code>. 公司区分(其它:2,免费用户:1,企业用户:0)
 	 */
 	public void setType(UByte value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_company.type</code>. 公司区分(其它:2,免费用户:1,企业用户:0)
+	 * Getter for <code>hrdb.hr_company.type</code>. 公司区分(其它:2,免费用户:1,企业用户:0)
 	 */
 	public UByte getType() {
 		return (UByte) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_company.name</code>. 公司注册名称
+	 * Setter for <code>hrdb.hr_company.name</code>. 公司注册名称
 	 */
 	public void setName(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_company.name</code>. 公司注册名称
+	 * Getter for <code>hrdb.hr_company.name</code>. 公司注册名称
 	 */
 	public String getName() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_company.introduction</code>. 公司介绍
+	 * Setter for <code>hrdb.hr_company.introduction</code>. 公司介绍
 	 */
 	public void setIntroduction(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_company.introduction</code>. 公司介绍
+	 * Getter for <code>hrdb.hr_company.introduction</code>. 公司介绍
 	 */
 	public String getIntroduction() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_company.scale</code>. 公司规模
+	 * Setter for <code>hrdb.hr_company.scale</code>. 公司规模
 	 */
 	public void setScale(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_company.scale</code>. 公司规模
+	 * Getter for <code>hrdb.hr_company.scale</code>. 公司规模
 	 */
 	public String getScale() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_company.address</code>. 公司地址
+	 * Setter for <code>hrdb.hr_company.address</code>. 公司地址
 	 */
 	public void setAddress(String value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_company.address</code>. 公司地址
+	 * Getter for <code>hrdb.hr_company.address</code>. 公司地址
 	 */
 	public String getAddress() {
 		return (String) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_company.property</code>. 公司性质 0:没选择 1:国有 2:三资 3:集体 4:私有
+	 * Setter for <code>hrdb.hr_company.property</code>. 公司性质 0:没选择 1:国有 2:三资 3:集体 4:私有
 	 */
 	public void setProperty(UByte value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_company.property</code>. 公司性质 0:没选择 1:国有 2:三资 3:集体 4:私有
+	 * Getter for <code>hrdb.hr_company.property</code>. 公司性质 0:没选择 1:国有 2:三资 3:集体 4:私有
 	 */
 	public UByte getProperty() {
 		return (UByte) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_company.industry</code>. 所属行业
+	 * Setter for <code>hrdb.hr_company.industry</code>. 所属行业
 	 */
 	public void setIndustry(String value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_company.industry</code>. 所属行业
+	 * Getter for <code>hrdb.hr_company.industry</code>. 所属行业
 	 */
 	public String getIndustry() {
 		return (String) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_company.homepage</code>. 公司主页
+	 * Setter for <code>hrdb.hr_company.homepage</code>. 公司主页
 	 */
 	public void setHomepage(String value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_company.homepage</code>. 公司主页
+	 * Getter for <code>hrdb.hr_company.homepage</code>. 公司主页
 	 */
 	public String getHomepage() {
 		return (String) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_company.logo</code>. 公司logo的网络cdn地址
+	 * Setter for <code>hrdb.hr_company.logo</code>. 公司logo的网络cdn地址
 	 */
 	public void setLogo(String value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_company.logo</code>. 公司logo的网络cdn地址
+	 * Getter for <code>hrdb.hr_company.logo</code>. 公司logo的网络cdn地址
 	 */
 	public String getLogo() {
 		return (String) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_company.abbreviation</code>. 公司简称
+	 * Setter for <code>hrdb.hr_company.abbreviation</code>. 公司简称
 	 */
 	public void setAbbreviation(String value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_company.abbreviation</code>. 公司简称
+	 * Getter for <code>hrdb.hr_company.abbreviation</code>. 公司简称
 	 */
 	public String getAbbreviation() {
 		return (String) getValue(10);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_company.impression</code>. json格式的企业印象
+	 * Setter for <code>hrdb.hr_company.impression</code>. json格式的企业印象
 	 */
 	public void setImpression(String value) {
 		setValue(11, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_company.impression</code>. json格式的企业印象
+	 * Getter for <code>hrdb.hr_company.impression</code>. json格式的企业印象
 	 */
 	public String getImpression() {
 		return (String) getValue(11);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_company.banner</code>. json格式的企业banner
+	 * Setter for <code>hrdb.hr_company.banner</code>. json格式的企业banner
 	 */
 	public void setBanner(String value) {
 		setValue(12, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_company.banner</code>. json格式的企业banner
+	 * Getter for <code>hrdb.hr_company.banner</code>. json格式的企业banner
 	 */
 	public String getBanner() {
 		return (String) getValue(12);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_company.parent_id</code>. 上级公司
+	 * Setter for <code>hrdb.hr_company.parent_id</code>. 上级公司
 	 */
 	public void setParentId(UInteger value) {
 		setValue(13, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_company.parent_id</code>. 上级公司
+	 * Getter for <code>hrdb.hr_company.parent_id</code>. 上级公司
 	 */
 	public UInteger getParentId() {
 		return (UInteger) getValue(13);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_company.hraccount_id</code>. 公司联系人, hr_account.id
+	 * Setter for <code>hrdb.hr_company.hraccount_id</code>. 公司联系人, hr_account.id
 	 */
 	public void setHraccountId(Integer value) {
 		setValue(14, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_company.hraccount_id</code>. 公司联系人, hr_account.id
+	 * Getter for <code>hrdb.hr_company.hraccount_id</code>. 公司联系人, hr_account.id
 	 */
 	public Integer getHraccountId() {
 		return (Integer) getValue(14);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_company.disable</code>. 0:无效 1:有效
+	 * Setter for <code>hrdb.hr_company.disable</code>. 0:无效 1:有效
 	 */
 	public void setDisable(Byte value) {
 		setValue(15, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_company.disable</code>. 0:无效 1:有效
+	 * Getter for <code>hrdb.hr_company.disable</code>. 0:无效 1:有效
 	 */
 	public Byte getDisable() {
 		return (Byte) getValue(15);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_company.create_time</code>. 创建时间
+	 * Setter for <code>hrdb.hr_company.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(16, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_company.create_time</code>. 创建时间
+	 * Getter for <code>hrdb.hr_company.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(16);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_company.update_time</code>. 更新时间
+	 * Setter for <code>hrdb.hr_company.update_time</code>. 更新时间
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(17, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_company.update_time</code>. 更新时间
+	 * Getter for <code>hrdb.hr_company.update_time</code>. 更新时间
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(17);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_company.source</code>. 添加来源 {"0":"hr系统", "9":"profile添加"}
+	 * Setter for <code>hrdb.hr_company.source</code>. 添加来源 {"0":"hr系统", "9":"profile添加"}
 	 */
 	public void setSource(UByte value) {
 		setValue(18, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_company.source</code>. 添加来源 {"0":"hr系统", "9":"profile添加"}
+	 * Getter for <code>hrdb.hr_company.source</code>. 添加来源 {"0":"hr系统", "9":"profile添加"}
 	 */
 	public UByte getSource() {
 		return (UByte) getValue(18);

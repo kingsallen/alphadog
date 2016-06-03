@@ -30,10 +30,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateVJobPositionRecom extends TableImpl<CandidateVJobPositionRecomRecord> {
 
-	private static final long serialVersionUID = -2098989435;
+	private static final long serialVersionUID = -1109229947;
 
 	/**
-	 * The reference instance of <code>candidateDB.candidate_v_job_position_recom</code>
+	 * The reference instance of <code>candidatedb.candidate_v_job_position_recom</code>
 	 */
 	public static final CandidateVJobPositionRecom CANDIDATE_V_JOB_POSITION_RECOM = new CandidateVJobPositionRecom();
 
@@ -46,39 +46,39 @@ public class CandidateVJobPositionRecom extends TableImpl<CandidateVJobPositionR
 	}
 
 	/**
-	 * The column <code>candidateDB.candidate_v_job_position_recom.position_id</code>. position.id 分享职位ID
+	 * The column <code>candidatedb.candidate_v_job_position_recom.position_id</code>. position.id 分享职位ID
 	 */
 	public final TableField<CandidateVJobPositionRecomRecord, Long> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaulted(true), this, "position.id 分享职位ID");
 
 	/**
-	 * The column <code>candidateDB.candidate_v_job_position_recom.recom_id</code>. wx_group_user.id 分享用户微信ID
+	 * The column <code>candidatedb.candidate_v_job_position_recom.recom_id</code>. wx_group_user.id 分享用户微信ID
 	 */
 	public final TableField<CandidateVJobPositionRecomRecord, Long> RECOM_ID = createField("recom_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaulted(true), this, "wx_group_user.id 分享用户微信ID");
 
 	/**
-	 * The column <code>candidateDB.candidate_v_job_position_recom.presentee_id</code>. 被动求职者,浏览者的微信ID，wx_group_user.id
+	 * The column <code>candidatedb.candidate_v_job_position_recom.presentee_id</code>. 被动求职者,浏览者的微信ID，wx_group_user.id
 	 */
 	public final TableField<CandidateVJobPositionRecomRecord, Long> PRESENTEE_ID = createField("presentee_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaulted(true), this, "被动求职者,浏览者的微信ID，wx_group_user.id");
 
 	/**
-	 * The column <code>candidateDB.candidate_v_job_position_recom.create_time</code>. 创建时间
+	 * The column <code>candidatedb.candidate_v_job_position_recom.create_time</code>. 创建时间
 	 */
 	public final TableField<CandidateVJobPositionRecomRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "创建时间");
 
 	/**
-	 * The column <code>candidateDB.candidate_v_job_position_recom.nickname</code>. 用户昵称
+	 * The column <code>candidatedb.candidate_v_job_position_recom.nickname</code>. 用户昵称
 	 */
 	public final TableField<CandidateVJobPositionRecomRecord, String> NICKNAME = createField("nickname", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "用户昵称");
 
 	/**
-	 * Create a <code>candidateDB.candidate_v_job_position_recom</code> table reference
+	 * Create a <code>candidatedb.candidate_v_job_position_recom</code> table reference
 	 */
 	public CandidateVJobPositionRecom() {
 		this("candidate_v_job_position_recom", null);
 	}
 
 	/**
-	 * Create an aliased <code>candidateDB.candidate_v_job_position_recom</code> table reference
+	 * Create an aliased <code>candidatedb.candidate_v_job_position_recom</code> table reference
 	 */
 	public CandidateVJobPositionRecom(String alias) {
 		this(alias, CANDIDATE_V_JOB_POSITION_RECOM);

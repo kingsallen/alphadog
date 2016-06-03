@@ -31,171 +31,171 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobApplicationStatusBeisenRecord extends UpdatableRecordImpl<JobApplicationStatusBeisenRecord> implements Record12<Integer, UInteger, Long, String, String, String, Integer, String, Integer, String, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = 1862896606;
+	private static final long serialVersionUID = 588028894;
 
 	/**
-	 * Setter for <code>candidateDB.job_application_status_beisen.id</code>.
+	 * Setter for <code>candidatedb.job_application_status_beisen.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application_status_beisen.id</code>.
+	 * Getter for <code>candidatedb.job_application_status_beisen.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application_status_beisen.company_id</code>. company.id, 部门ID
+	 * Setter for <code>candidatedb.job_application_status_beisen.company_id</code>. company.id, 部门ID
 	 */
 	public void setCompanyId(UInteger value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application_status_beisen.company_id</code>. company.id, 部门ID
+	 * Getter for <code>candidatedb.job_application_status_beisen.company_id</code>. company.id, 部门ID
 	 */
 	public UInteger getCompanyId() {
 		return (UInteger) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application_status_beisen.applier_mobile</code>. 关注吉利微信公众账号的申请人的手机号
+	 * Setter for <code>candidatedb.job_application_status_beisen.applier_mobile</code>. 关注吉利微信公众账号的申请人的手机号
 	 */
 	public void setApplierMobile(Long value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application_status_beisen.applier_mobile</code>. 关注吉利微信公众账号的申请人的手机号
+	 * Getter for <code>candidatedb.job_application_status_beisen.applier_mobile</code>. 关注吉利微信公众账号的申请人的手机号
 	 */
 	public Long getApplierMobile() {
 		return (Long) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application_status_beisen.applier_name</code>. 申请人真实姓名
+	 * Setter for <code>candidatedb.job_application_status_beisen.applier_name</code>. 申请人真实姓名
 	 */
 	public void setApplierName(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application_status_beisen.applier_name</code>. 申请人真实姓名
+	 * Getter for <code>candidatedb.job_application_status_beisen.applier_name</code>. 申请人真实姓名
 	 */
 	public String getApplierName() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application_status_beisen.jobnumber</code>. 对应beisen投递状态中JobName中的code, 并非对应hr_position中jobnumber
+	 * Setter for <code>candidatedb.job_application_status_beisen.jobnumber</code>. 对应beisen投递状态中JobName中的code, 并非对应hr_position中jobnumber
 	 */
 	public void setJobnumber(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application_status_beisen.jobnumber</code>. 对应beisen投递状态中JobName中的code, 并非对应hr_position中jobnumber
+	 * Getter for <code>candidatedb.job_application_status_beisen.jobnumber</code>. 对应beisen投递状态中JobName中的code, 并非对应hr_position中jobnumber
 	 */
 	public String getJobnumber() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application_status_beisen.jobtitle</code>. 对应beisen投递状态中Jobname中的value，对应hr_position中title
+	 * Setter for <code>candidatedb.job_application_status_beisen.jobtitle</code>. 对应beisen投递状态中Jobname中的value，对应hr_position中title
 	 */
 	public void setJobtitle(String value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application_status_beisen.jobtitle</code>. 对应beisen投递状态中Jobname中的value，对应hr_position中title
+	 * Getter for <code>candidatedb.job_application_status_beisen.jobtitle</code>. 对应beisen投递状态中Jobname中的value，对应hr_position中title
 	 */
 	public String getJobtitle() {
 		return (String) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application_status_beisen.phasecode</code>. 对应beisen投递状态中PhaseCode中的code
+	 * Setter for <code>candidatedb.job_application_status_beisen.phasecode</code>. 对应beisen投递状态中PhaseCode中的code
 	 */
 	public void setPhasecode(Integer value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application_status_beisen.phasecode</code>. 对应beisen投递状态中PhaseCode中的code
+	 * Getter for <code>candidatedb.job_application_status_beisen.phasecode</code>. 对应beisen投递状态中PhaseCode中的code
 	 */
 	public Integer getPhasecode() {
 		return (Integer) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application_status_beisen.phasename</code>. 对应beisen投递状态中PhaseName中的value
+	 * Setter for <code>candidatedb.job_application_status_beisen.phasename</code>. 对应beisen投递状态中PhaseName中的value
 	 */
 	public void setPhasename(String value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application_status_beisen.phasename</code>. 对应beisen投递状态中PhaseName中的value
+	 * Getter for <code>candidatedb.job_application_status_beisen.phasename</code>. 对应beisen投递状态中PhaseName中的value
 	 */
 	public String getPhasename() {
 		return (String) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application_status_beisen.statuscode</code>. 对应beisen投递状态中StatusCode中的code
+	 * Setter for <code>candidatedb.job_application_status_beisen.statuscode</code>. 对应beisen投递状态中StatusCode中的code
 	 */
 	public void setStatuscode(Integer value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application_status_beisen.statuscode</code>. 对应beisen投递状态中StatusCode中的code
+	 * Getter for <code>candidatedb.job_application_status_beisen.statuscode</code>. 对应beisen投递状态中StatusCode中的code
 	 */
 	public Integer getStatuscode() {
 		return (Integer) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application_status_beisen.statusname</code>. 对应beisen投递状态中StatusName中的value
+	 * Setter for <code>candidatedb.job_application_status_beisen.statusname</code>. 对应beisen投递状态中StatusName中的value
 	 */
 	public void setStatusname(String value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application_status_beisen.statusname</code>. 对应beisen投递状态中StatusName中的value
+	 * Getter for <code>candidatedb.job_application_status_beisen.statusname</code>. 对应beisen投递状态中StatusName中的value
 	 */
 	public String getStatusname() {
 		return (String) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application_status_beisen.create_time</code>.
+	 * Setter for <code>candidatedb.job_application_status_beisen.create_time</code>.
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application_status_beisen.create_time</code>.
+	 * Getter for <code>candidatedb.job_application_status_beisen.create_time</code>.
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(10);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_application_status_beisen.update_time</code>.
+	 * Setter for <code>candidatedb.job_application_status_beisen.update_time</code>.
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(11, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_application_status_beisen.update_time</code>.
+	 * Getter for <code>candidatedb.job_application_status_beisen.update_time</code>.
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(11);

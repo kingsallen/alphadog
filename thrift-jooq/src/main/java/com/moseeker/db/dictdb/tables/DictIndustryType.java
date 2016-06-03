@@ -34,10 +34,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictIndustryType extends TableImpl<DictIndustryTypeRecord> {
 
-	private static final long serialVersionUID = -1155169738;
+	private static final long serialVersionUID = -1211984330;
 
 	/**
-	 * The reference instance of <code>dictDB.dict_industry_type</code>
+	 * The reference instance of <code>dictdb.dict_industry_type</code>
 	 */
 	public static final DictIndustryType DICT_INDUSTRY_TYPE = new DictIndustryType();
 
@@ -50,24 +50,24 @@ public class DictIndustryType extends TableImpl<DictIndustryTypeRecord> {
 	}
 
 	/**
-	 * The column <code>dictDB.dict_industry_type.code</code>. 字典code
+	 * The column <code>dictdb.dict_industry_type.code</code>. 字典code
 	 */
 	public final TableField<DictIndustryTypeRecord, UInteger> CODE = createField("code", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "字典code");
 
 	/**
-	 * The column <code>dictDB.dict_industry_type.name</code>. 字典name
+	 * The column <code>dictdb.dict_industry_type.name</code>. 字典name
 	 */
 	public final TableField<DictIndustryTypeRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaulted(true), this, "字典name");
 
 	/**
-	 * Create a <code>dictDB.dict_industry_type</code> table reference
+	 * Create a <code>dictdb.dict_industry_type</code> table reference
 	 */
 	public DictIndustryType() {
 		this("dict_industry_type", null);
 	}
 
 	/**
-	 * Create an aliased <code>dictDB.dict_industry_type</code> table reference
+	 * Create an aliased <code>dictdb.dict_industry_type</code> table reference
 	 */
 	public DictIndustryType(String alias) {
 		this(alias, DICT_INDUSTRY_TYPE);

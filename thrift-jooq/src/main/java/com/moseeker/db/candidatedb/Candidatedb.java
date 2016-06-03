@@ -44,10 +44,10 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Candidatedb extends SchemaImpl {
 
-	private static final long serialVersionUID = -675712953;
+	private static final long serialVersionUID = 833120327;
 
 	/**
-	 * The reference instance of <code>candidateDB</code>
+	 * The reference instance of <code>candidatedb</code>
 	 */
 	public static final Candidatedb CANDIDATEDB = new Candidatedb();
 
@@ -55,7 +55,7 @@ public class Candidatedb extends SchemaImpl {
 	 * No further instances allowed
 	 */
 	private Candidatedb() {
-		super("candidateDB");
+		super("candidatedb");
 	}
 
 	@Override

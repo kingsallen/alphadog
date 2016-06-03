@@ -28,171 +28,171 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigAtsSourceRecord extends UpdatableRecordImpl<ConfigAtsSourceRecord> implements Record12<Integer, String, Integer, String, String, String, String, String, String, Integer, String, String> {
 
-	private static final long serialVersionUID = -826631095;
+	private static final long serialVersionUID = 409670729;
 
 	/**
-	 * Setter for <code>configDB.config_ats_source.id</code>.
+	 * Setter for <code>configdb.config_ats_source.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_ats_source.id</code>.
+	 * Getter for <code>configdb.config_ats_source.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_ats_source.name</code>. Name
+	 * Setter for <code>configdb.config_ats_source.name</code>. Name
 	 */
 	public void setName(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_ats_source.name</code>. Name
+	 * Getter for <code>configdb.config_ats_source.name</code>. Name
 	 */
 	public String getName() {
 		return (String) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_ats_source.type</code>. 1:WSDL
+	 * Setter for <code>configdb.config_ats_source.type</code>. 1:WSDL
 	 */
 	public void setType(Integer value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_ats_source.type</code>. 1:WSDL
+	 * Getter for <code>configdb.config_ats_source.type</code>. 1:WSDL
 	 */
 	public Integer getType() {
 		return (Integer) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_ats_source.url</code>. net url for webservice or other method
+	 * Setter for <code>configdb.config_ats_source.url</code>. net url for webservice or other method
 	 */
 	public void setUrl(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_ats_source.url</code>. net url for webservice or other method
+	 * Getter for <code>configdb.config_ats_source.url</code>. net url for webservice or other method
 	 */
 	public String getUrl() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_ats_source.fullname</code>.
+	 * Setter for <code>configdb.config_ats_source.fullname</code>.
 	 */
 	public void setFullname(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_ats_source.fullname</code>.
+	 * Getter for <code>configdb.config_ats_source.fullname</code>.
 	 */
 	public String getFullname() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_ats_source.ftp_address</code>. 存放ftp文件
+	 * Setter for <code>configdb.config_ats_source.ftp_address</code>. 存放ftp文件
 	 */
 	public void setFtpAddress(String value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_ats_source.ftp_address</code>. 存放ftp文件
+	 * Getter for <code>configdb.config_ats_source.ftp_address</code>. 存放ftp文件
 	 */
 	public String getFtpAddress() {
 		return (String) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_ats_source.username</code>. ATS 用户名
+	 * Setter for <code>configdb.config_ats_source.username</code>. ATS 用户名
 	 */
 	public void setUsername(String value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_ats_source.username</code>. ATS 用户名
+	 * Getter for <code>configdb.config_ats_source.username</code>. ATS 用户名
 	 */
 	public String getUsername() {
 		return (String) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_ats_source.password</code>. ATS 密码
+	 * Setter for <code>configdb.config_ats_source.password</code>. ATS 密码
 	 */
 	public void setPassword(String value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_ats_source.password</code>. ATS 密码
+	 * Getter for <code>configdb.config_ats_source.password</code>. ATS 密码
 	 */
 	public String getPassword() {
 		return (String) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_ats_source.apikey</code>. ATS API KEY
+	 * Setter for <code>configdb.config_ats_source.apikey</code>. ATS API KEY
 	 */
 	public void setApikey(String value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_ats_source.apikey</code>. ATS API KEY
+	 * Getter for <code>configdb.config_ats_source.apikey</code>. ATS API KEY
 	 */
 	public String getApikey() {
 		return (String) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_ats_source.company_id</code>. hr_company.id
+	 * Setter for <code>configdb.config_ats_source.company_id</code>. hr_company.id
 	 */
 	public void setCompanyId(Integer value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_ats_source.company_id</code>. hr_company.id
+	 * Getter for <code>configdb.config_ats_source.company_id</code>. hr_company.id
 	 */
 	public Integer getCompanyId() {
 		return (Integer) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_ats_source.kenexa_id</code>. kenexa的sender id
+	 * Setter for <code>configdb.config_ats_source.kenexa_id</code>. kenexa的sender id
 	 */
 	public void setKenexaId(String value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_ats_source.kenexa_id</code>. kenexa的sender id
+	 * Getter for <code>configdb.config_ats_source.kenexa_id</code>. kenexa的sender id
 	 */
 	public String getKenexaId() {
 		return (String) getValue(10);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_ats_source.kenexa_cridential</code>. kenexa的sender cridential
+	 * Setter for <code>configdb.config_ats_source.kenexa_cridential</code>. kenexa的sender cridential
 	 */
 	public void setKenexaCridential(String value) {
 		setValue(11, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_ats_source.kenexa_cridential</code>. kenexa的sender cridential
+	 * Getter for <code>configdb.config_ats_source.kenexa_cridential</code>. kenexa的sender cridential
 	 */
 	public String getKenexaCridential() {
 		return (String) getValue(11);
