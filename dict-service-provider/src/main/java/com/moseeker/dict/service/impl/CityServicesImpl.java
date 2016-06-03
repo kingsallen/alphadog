@@ -15,6 +15,7 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -62,7 +63,7 @@ public class CityServicesImpl extends JOOQBaseServiceImpl<City, DictCityRecord> 
                     r = JSON.toJSONString(ResponseUtils.success(transformed));
                 } catch (TException e) {
                     logger.error("getResources error", e);
-                    ResponseUtils.fail(e.getMessage());
+                    ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
                 }
                 return r;
             });

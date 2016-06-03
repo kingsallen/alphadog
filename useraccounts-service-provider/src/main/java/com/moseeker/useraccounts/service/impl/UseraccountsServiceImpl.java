@@ -83,7 +83,7 @@ public class UseraccountsServiceImpl implements Iface {
                 filters.put("username", mobile);
                 ;
             } else {
-                return ResponseUtils.success(ConstantErrorCodeMessage.INVALID_SMS_CODE);
+                return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
             }        	
         }
         
@@ -682,7 +682,11 @@ public class UseraccountsServiceImpl implements Iface {
             if(user != null && user.getId() > 0){
                 // 用户记录转换
                 UserUserRecord userUserRecord = (UserUserRecord) BeanUtils.structToDB(user, UserUserRecord.class);
-                userdao.putResource(userUserRecord);
+                if (userdao.putResource(userUserRecord)>0){
+                	return ResponseUtils.success(null);
+                }else{
+                	return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+                }
             }else{
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
             }
@@ -872,7 +876,7 @@ public class UseraccountsServiceImpl implements Iface {
             Integer count = userFavoritePositionDao.getUserFavPositionCountByUserIdAndPositionId(userId, positionId, favorite);
             return ResponseUtils.success(count > 0?true:false);
         }catch (Exception e){
-            return ResponseUtils.success(ConstantErrorCodeMessage.USER_FAV_POSITION_FAILED);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.USER_FAV_POSITION_FAILED);
         }
     }
 

@@ -72,7 +72,7 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 			structs = DBsToStructs(records);
 		} catch (Exception e) {
 			logger.error("getResources error", e);
-			ResponseUtils.fail(e.getMessage());
+			ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		} finally {
 			//do nothing
 		}
