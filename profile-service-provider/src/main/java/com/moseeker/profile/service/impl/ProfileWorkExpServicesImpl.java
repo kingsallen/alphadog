@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
@@ -200,15 +201,22 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 				}
 			} else {
 				if(!StringUtils.isNullOrEmpty(struct.getCompany_name())) {
-					HrCompanyRecord newCompany = new HrCompanyRecord();
-					newCompany.setName(struct.getCompany_name());
-					if(StringUtils.isNullOrEmpty(struct.getCompany_logo())) {
-						newCompany.setLogo(struct.getCompany_logo());
+					QueryUtil qu = new QueryUtil();
+					qu.addEqualFilter("name", struct.getCompany_name());
+					HrCompanyRecord company = companyDao.getResource(qu);
+					if(company != null) {
+						struct.setCompany_id(company.getId().intValue());
+					} else {
+						HrCompanyRecord newCompany = new HrCompanyRecord();
+						newCompany.setName(struct.getCompany_name());
+						if(StringUtils.isNullOrEmpty(struct.getCompany_logo())) {
+							newCompany.setLogo(struct.getCompany_logo());
+						}
+						newCompany.setType(UByte.valueOf(1));
+						newCompany.setSource(UByte.valueOf(9));
+						int companyId = companyDao.postResource(newCompany);
+						struct.setCompany_id(companyId);
 					}
-					newCompany.setType(UByte.valueOf(1));
-					newCompany.setSource(UByte.valueOf(9));
-					int companyId = companyDao.postResource(newCompany);
-					struct.setCompany_id(companyId);
 				}
 			}
 			
