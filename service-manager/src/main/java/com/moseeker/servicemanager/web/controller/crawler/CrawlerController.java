@@ -48,18 +48,20 @@ public class CrawlerController {
 			}
 			String result = vu.validate();
 			if(StringUtils.isNullOrEmpty(result)) {
-				String profile = crawlerUtils.fetchFirstResume(form.getUsername(), form.getPassword(), form.getToken(), form.getType(), form.getLang(), form.getSource(), form.getCompleteness(), form.getAppid(), form.getUser_id());
-				if(profile != null) {
-					Response res = profileService.importCV(profile, form.getUser_id());
+				Response res = crawlerUtils.fetchFirstResume(form.getUsername(), form.getPassword(), form.getToken(), form.getType(), form.getLang(), form.getSource(), form.getCompleteness(), form.getAppid(), form.getUser_id());
+				if(res != null && res.getStatus() == 0) {
+					res = profileService.importCV(res.getData(), form.getUser_id());
 					return ResponseLogNotification.success(request, res);
 				} else {
-					return ResponseLogNotification.fail(request, "导入失败!");
+					return ResponseLogNotification.fail(request, res);
 				}
 			} else {
 				return ResponseLogNotification.fail(request, result);
 			}
 		} catch (Exception e) {	
 			return ResponseLogNotification.fail(request, e.getMessage());
+		} finally {
+			//do nothing
 		}
 	}
 }

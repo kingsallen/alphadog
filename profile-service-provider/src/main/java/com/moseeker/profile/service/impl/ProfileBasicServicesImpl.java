@@ -114,7 +114,21 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 
 	@Override
 	public Response postResource(Basic struct) throws TException {
-		return super.postResource(struct);
+		try {
+			ProfileBasicRecord record = structToDB(struct);
+			if(record.getCityCode() != null && record.getCityCode().intValue() > 0) {
+				DictCityRecord city = cityDao.getCityByCode(record.getCityCode().intValue());
+				if(city != null) {
+					record.setCityName(city.getName());
+				}
+			}
+		} catch (ParseException e) {
+			logger.error(e.getMessage(), e);
+		} finally {
+			//do nothing
+		}
+		
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 	}
 
 	@Override
