@@ -7,6 +7,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.dict.dao.CityDao;
 import com.moseeker.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.db.dictdb.tables.DictCity;
+import com.moseeker.dict.pojo.CityPojo;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import org.jooq.*;
 import org.slf4j.Logger;
@@ -28,32 +29,16 @@ public class CityDaoImpl extends BaseDaoImpl<DictCityRecord, DictCity> implement
         this.tableLike = DictCity.DICT_CITY;
     }
 
-    @SuppressWarnings("unchecked")
-    public List<DictCityRecord> getResources(CommonQuery query) throws Exception {
-        List<DictCityRecord> records = null;
-        Connection conn = null;
-        try {
-            initJOOQEntity();
-            records = new ArrayList<>();
-            conn = DBConnHelper.DBConn.getConn();
-            DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-            SelectJoinStep<Record> table = create.select().from(tableLike);
-
-            Result<Record> result = table.fetch();
-
-            if (result != null && result.size() > 0) {
-                for (Record r : result) {
-                    records.add((DictCityRecord) r);
-                }
-            }
+    public List<CityPojo> getCities() {
+        initJOOQEntity();
+        List<CityPojo> cities = null;
+        try(Connection conn = DBConnHelper.DBConn.getConn()) {
+            DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn) ;
+            cities = create.select().from(tableLike).fetchInto(CityPojo.class);
         } catch (Exception e) {
-            logger.error(e.getMessage(),e);
-        } finally {
-            if(conn != null && !conn.isClosed()) {
-                conn.close();
-            }
+            logger.error(e.getMessage(), e);
         }
-        return records;
+        return cities;
     }
 
 }
