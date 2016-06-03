@@ -588,7 +588,7 @@ public class UseraccountsServiceImpl implements Iface {
         if (SmsSender.sendSMS_passwordforgot(mobile)) {
             return ResponseUtils.success(null);
         } else {
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
         }
     }
 
