@@ -34,8 +34,12 @@ public final class ConstantErrorCodeMessage {
     public static final String PROFILE_DICT_INDUSTRY_NOTEXIST = "{'status':31013,'message':'行业字典不存在!'}";
     public static final String PROFILE_USER_NOTEXIST = "{'status':31014,'message':'用户信息不正确!'}";
     public static final String PROFILE_ALLREADY_EXIST= "{'status':31015,'message':'个人profile已存在!'}";
-    public static final String PROFILE_ILLEGAL= "{'status':31015,'message':'profile数据不正确!'}";
-    public static final String PROFILE_POSITION_NOTEXIST = "{'status':31014,'message':'职位信息不正确!'}";
+    public static final String PROFILE_ILLEGAL= "{'status':31016,'message':'profile数据不正确!'}";
+    public static final String PROFILE_POSITION_NOTEXIST = "{'status':31017,'message':'职位信息不正确!'}";
+    public static final String PROFILE_DICT_NATIONALITY_NOTEXIST = "{'status':31018,'message':'国家字典不存在!'}";
+    public static final String PROFILE_DATA_NULL = "{'status':31019,'message':'数据不存在!'}";
+    public static final String PROFILE_DICT_COLLEGE_NOTEXIST = "{'status':31020,'message':'院校字典不存在!'}";
+    public static final String PROFILE_DICT_MAJOR_NOTEXIST = "{'status':31021,'message':'专业字典不存在!'}";
     
     public static final String CRAWLER_USER_NOPERMITION = "{'status':32001,'message':'账号密码错误!'}";
     public static final String CRAWLER_IMPORT_FAILED = "{'status':32002,'message':'导入失败!'}";
