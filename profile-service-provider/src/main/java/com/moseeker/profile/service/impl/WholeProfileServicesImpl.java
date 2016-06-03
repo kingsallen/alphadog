@@ -209,7 +209,9 @@ public class WholeProfileServicesImpl implements Iface {
 			int id = profileDao.saveProfile(profileRecord, basicRecord, attachmentRecords, awardsRecords,
 					credentialsRecords, educationRecords, importRecords, intentionRecords, languages, otherRecord,
 					projectExps, skillRecords, workexpRecords, worksRecords);
-			return ResponseUtils.successWithoutStringify(String.valueOf(id));
+			if(id > 0) {
+				return ResponseUtils.success(String.valueOf(id));
+			}
 		}
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 	}
