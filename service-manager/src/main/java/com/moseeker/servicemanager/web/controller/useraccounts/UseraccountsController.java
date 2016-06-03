@@ -149,13 +149,13 @@ public class UseraccountsController {
    public String postuserwxbindmobile(HttpServletRequest request, HttpServletResponse response) {
       try {
          // GET方法 通用参数解析并赋值
-         CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
          Map<String, Object> reqParams = ParamUtils.mergeRequestParameters(request);
          String unionid = BeanUtils.converToString(reqParams.get("unionid"));
          String code = BeanUtils.converToString(reqParams.get("code"));
          String mobile = BeanUtils.converToString(reqParams.get("mobile"));
+         Integer appid = BeanUtils.converToInteger(reqParams.get("appid"));
 
-         Response result = useraccountsServices.postuserwxbindmobile(query.getAppid(), unionid, code, mobile);
+         Response result = useraccountsServices.postuserwxbindmobile(appid, unionid, code, mobile);
          if (result.getStatus() == 0) {
             return ResponseLogNotification.success(request, result);
          } else {
@@ -232,11 +232,11 @@ public class UseraccountsController {
    public String postusermergebymobile(HttpServletRequest request, HttpServletResponse response) {
       try {
          // GET方法 通用参数解析并赋值
-         CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
          Map<String, Object> reqParams = ParamUtils.mergeRequestParameters(request);
          String mobile = BeanUtils.converToString(reqParams.get("mobile"));
+         Integer appid = BeanUtils.converToInteger(reqParams.get("appid"));
 
-         Response result = useraccountsServices.postusermergebymobile(query.getAppid(), mobile);
+         Response result = useraccountsServices.postusermergebymobile(appid, mobile);
          if (result.getStatus() == 0) {
             return ResponseLogNotification.success(request, result);
          } else {

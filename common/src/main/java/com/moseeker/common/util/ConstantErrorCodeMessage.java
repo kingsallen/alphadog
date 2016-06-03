@@ -36,6 +36,8 @@ public final class ConstantErrorCodeMessage {
     public static final String PROFILE_ALLREADY_EXIST= "{'status':31015,'message':'个人profile已存在!'}";
     public static final String PROFILE_ILLEGAL= "{'status':31015,'message':'profile数据不正确!'}";
     public static final String PROFILE_POSITION_NOTEXIST = "{'status':31014,'message':'职位信息不正确!'}";
+    
+    public static final String CRAWLER_USER_NOPERMITION = "{'status':32001,'message':'zha改好!'}";
 
     // 申请服务ERRCODE说明定义 4字头
     public static final String APPLICATION_VALIDATE_COUNT_CHECK = "{'status':41001,'message':'超出申请次数限制!'}";
