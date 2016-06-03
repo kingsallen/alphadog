@@ -3,7 +3,6 @@ package com.moseeker.useraccounts.service.impl;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.thrift.TException;
@@ -13,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.google.common.collect.Lists;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.daoutils.BaseDao;
 import com.moseeker.common.redis.RedisClient;
@@ -301,14 +299,102 @@ public class UseraccountsServiceImpl implements Iface {
             } else if (userUnionid != null && userMobile == null) {
                 userUnionid.setMobile(Long.valueOf(mobile));
                 if (userdao.putResource(userUnionid) > 0){
-                	return ResponseUtils.success(userUnionid);
+                	 Map<String, Object> map = new HashMap<String, Object>();
+                     map.put("id", userUnionid.getId().intValue());
+                     map.put("username", userUnionid.getUsername());
+                     if(userUnionid.getIsDisable() != null) {
+                     	map.put("is_disable", userUnionid.getIsDisable().intValue());
+                     }
+                     if(userUnionid.getRank() != null) {
+                     	map.put("rank", userUnionid.getRank());
+                     }
+                     if(userUnionid.getRegisterTime() != null) {
+                     	map.put("register_time", DateUtils.dateToShortTime(userUnionid.getRegisterTime()));
+                     }
+                     map.put("register_ip", userUnionid.getRegisterIp());
+                     if(userUnionid.getLastLoginTime() != null) {
+                     	map.put("last_login_time", DateUtils.dateToShortTime(userUnionid.getLastLoginTime()));
+                     }
+                     map.put("last_login_ip", userUnionid.getLastLoginIp());
+                     if(userUnionid.getLoginCount() != null) {
+                     	map.put("login_count", userUnionid.getLoginCount().intValue());
+                     }
+                     if(userUnionid.getMobile() != null) {
+                     	map.put("mobile", userUnionid.getMobile().longValue());
+                     }
+                     map.put("email", userUnionid.getEmail());
+                     if(userUnionid.getActivation() != null) {
+                     	map.put("activation", userUnionid.getActivation().intValue());
+                     }
+                     map.put("activation_code", userUnionid.getActivationCode());
+                     map.put("token", userUnionid.getToken());
+                     map.put("name", userUnionid.getName());
+                     map.put("headimg", userUnionid.getHeadimg());
+                     if(userUnionid.getNationalCodeId() != null) {
+                     	map.put("national_code_id", userUnionid.getNationalCodeId().intValue());
+                     }
+                     if(userUnionid.getWechatId() != null) {
+                     	map.put("wechat_id", userUnionid.getWechatId().intValue());
+                     }
+                     map.put("unionid", userUnionid.getUnionid());
+                     if(userUnionid.getSource() != null) {
+                     	map.put("source", userUnionid.getSource().intValue());
+                     }
+                     map.put("company", userUnionid.getCompany());
+                     map.put("position", userUnionid.getPosition());
+                     map.put("parentid", userUnionid.getParentid().intValue());
+                	return ResponseUtils.success(map);
                 }else{
                     return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
                 }
             } else if (userUnionid == null && userMobile != null) {
                 userMobile.setUnionid(unionid);
                 if (userdao.putResource(userMobile)>0){
-                	return ResponseUtils.success(userMobile);
+                	Map<String, Object> map = new HashMap<String, Object>();
+                    map.put("id", userMobile.getId().intValue());
+                    map.put("username", userMobile.getUsername());
+                    if(userMobile.getIsDisable() != null) {
+                    	map.put("is_disable", userMobile.getIsDisable().intValue());
+                    }
+                    if(userMobile.getRank() != null) {
+                    	map.put("rank", userMobile.getRank());
+                    }
+                    if(userMobile.getRegisterTime() != null) {
+                    	map.put("register_time", DateUtils.dateToShortTime(userMobile.getRegisterTime()));
+                    }
+                    map.put("register_ip", userMobile.getRegisterIp());
+                    if(userMobile.getLastLoginTime() != null) {
+                    	map.put("last_login_time", DateUtils.dateToShortTime(userMobile.getLastLoginTime()));
+                    }
+                    map.put("last_login_ip", userMobile.getLastLoginIp());
+                    if(userMobile.getLoginCount() != null) {
+                    	map.put("login_count", userMobile.getLoginCount().intValue());
+                    }
+                    if(userMobile.getMobile() != null) {
+                    	map.put("mobile", userMobile.getMobile().longValue());
+                    }
+                    map.put("email", userMobile.getEmail());
+                    if(userMobile.getActivation() != null) {
+                    	map.put("activation", userMobile.getActivation().intValue());
+                    }
+                    map.put("activation_code", userMobile.getActivationCode());
+                    map.put("token", userMobile.getToken());
+                    map.put("name", userMobile.getName());
+                    map.put("headimg", userMobile.getHeadimg());
+                    if(userMobile.getNationalCodeId() != null) {
+                    	map.put("national_code_id", userMobile.getNationalCodeId().intValue());
+                    }
+                    if(userMobile.getWechatId() != null) {
+                    	map.put("wechat_id", userMobile.getWechatId().intValue());
+                    }
+                    map.put("unionid", userMobile.getUnionid());
+                    if(userMobile.getSource() != null) {
+                    	map.put("source", userMobile.getSource().intValue());
+                    }
+                    map.put("company", userMobile.getCompany());
+                    map.put("position", userMobile.getPosition());
+                    map.put("parentid", userMobile.getParentid().intValue());
+                	return ResponseUtils.success(map);
                 }else{
                     return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
                 }

@@ -84,6 +84,8 @@ public class CrawlerUtils {
 				resume.put("profile", profile);
 			}
 			return JSON.toJSONString(resume);
+		} else if(messagBean.get("status") != null && (Integer)messagBean.get("status") == 1) {
+			//throw new 
 		}
 		return null;
 	}
