@@ -30,7 +30,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileWorkexpRecord extends UpdatableRecordImpl<ProfileWorkexpRecord> {
 
-	private static final long serialVersionUID = -1407447131;
+	private static final long serialVersionUID = 1273958045;
 
 	/**
 	 * Setter for <code>profileDB.profile_workexp.id</code>. 主key
@@ -368,6 +368,20 @@ public class ProfileWorkexpRecord extends UpdatableRecordImpl<ProfileWorkexpReco
 		return (Timestamp) getValue(23);
 	}
 
+	/**
+	 * Setter for <code>profileDB.profile_workexp.job</code>. 所处职位
+	 */
+	public void setJob(String value) {
+		setValue(24, value);
+	}
+
+	/**
+	 * Getter for <code>profileDB.profile_workexp.job</code>. 所处职位
+	 */
+	public String getJob() {
+		return (String) getValue(24);
+	}
+
 	// -------------------------------------------------------------------------
 	// Primary key information
 	// -------------------------------------------------------------------------
@@ -394,7 +408,7 @@ public class ProfileWorkexpRecord extends UpdatableRecordImpl<ProfileWorkexpReco
 	/**
 	 * Create a detached, initialised ProfileWorkexpRecord
 	 */
-	public ProfileWorkexpRecord(UInteger id, UInteger profileId, Date start, Date end, UByte endUntilNow, UByte salaryType, UByte salaryCode, UInteger industryCode, String industryName, UInteger companyId, String departmentName, UInteger positionCode, String positionName, String description, UByte type, UInteger cityCode, String cityName, String reportTo, UInteger underlings, String reference, String resignReason, String achievement, Timestamp createTime, Timestamp updateTime) {
+	public ProfileWorkexpRecord(UInteger id, UInteger profileId, Date start, Date end, UByte endUntilNow, UByte salaryType, UByte salaryCode, UInteger industryCode, String industryName, UInteger companyId, String departmentName, UInteger positionCode, String positionName, String description, UByte type, UInteger cityCode, String cityName, String reportTo, UInteger underlings, String reference, String resignReason, String achievement, Timestamp createTime, Timestamp updateTime, String job) {
 		super(ProfileWorkexp.PROFILE_WORKEXP);
 
 		setValue(0, id);
@@ -421,5 +435,6 @@ public class ProfileWorkexpRecord extends UpdatableRecordImpl<ProfileWorkexpReco
 		setValue(21, achievement);
 		setValue(22, createTime);
 		setValue(23, updateTime);
+		setValue(24, job);
 	}
 }

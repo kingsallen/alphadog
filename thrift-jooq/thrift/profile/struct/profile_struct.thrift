@@ -196,7 +196,8 @@ struct WorkExp {
     24: Timestamp update_time,
     25: string company_name,
     26: string company_logo,
-    27: i16 source
+    27: i16 source,
+    28: string job
 }
 
 struct Works { 

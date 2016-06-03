@@ -590,6 +590,7 @@ public class WholeProfileServicesImpl implements Iface {
 					map.put("position_name", record.getPositionName());
 					map.put("position_code", record.getPositionCode().intValue());
 					map.put("department_name", record.getDepartmentName());
+					map.put("job", record.getJob());
 					// map.put("logo", record.getlo)
 					if (record.getStart() != null) {
 						map.put("start_date", DateUtils.dateToNormalDate(record.getStart()));

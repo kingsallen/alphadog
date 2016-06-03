@@ -38,7 +38,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileWorkexp extends TableImpl<ProfileWorkexpRecord> {
 
-	private static final long serialVersionUID = 465467270;
+	private static final long serialVersionUID = 10155207;
 
 	/**
 	 * The reference instance of <code>profileDB.profile_workexp</code>
@@ -172,6 +172,11 @@ public class ProfileWorkexp extends TableImpl<ProfileWorkexpRecord> {
 	 * The column <code>profileDB.profile_workexp.update_time</code>. 更新时间
 	 */
 	public final TableField<ProfileWorkexpRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "更新时间");
+
+	/**
+	 * The column <code>profileDB.profile_workexp.job</code>. 所处职位
+	 */
+	public final TableField<ProfileWorkexpRecord, String> JOB = createField("job", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "所处职位");
 
 	/**
 	 * Create a <code>profileDB.profile_workexp</code> table reference
