@@ -120,17 +120,17 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 				DictCityRecord city = cityDao.getCityByCode(struct.getCity_code());
 				if(city != null) {
 					struct.setCity_name(city.getName());
+				} else {
+					return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_CITY_NOTEXIST);
 				}
-			} else {
-				return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_CITY_NOTEXIST);
 			}
 			if(struct.getNationality_code() > 0) {
 				DictCountryRecord country = countryDao.getCountryByID(struct.getNationality_code());
 				if(country != null) {
 					struct.setNationality_name(country.getName());
+				} else {
+					return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_NATIONALITY_NOTEXIST);
 				}
-			} else {
-				return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_NATIONALITY_NOTEXIST);
 			}
 			QueryUtil qu = new QueryUtil();
 			qu.addEqualFilter("profile_id", String.valueOf(struct.getProfile_id()));
@@ -160,17 +160,17 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 				DictCityRecord city = cityDao.getCityByCode(struct.getCity_code());
 				if(city != null) {
 					struct.setCity_name(city.getName());
+				} else {
+					return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_CITY_NOTEXIST);
 				}
-			} else {
-				return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_CITY_NOTEXIST);
 			}
 			if(struct.getNationality_code() > 0) {
 				DictCountryRecord country = countryDao.getCountryByID(struct.getNationality_code());
 				if(country != null) {
 					struct.setNationality_name(country.getName());
+				} else {
+					return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_NATIONALITY_NOTEXIST);
 				}
-			} else {
-				return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_NATIONALITY_NOTEXIST);
 			}
 			QueryUtil qu = new QueryUtil();
 			qu.addEqualFilter("profile_id", String.valueOf(struct.getProfile_id()));

@@ -156,17 +156,17 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 				DictCollegeRecord college = collegeDao.getCollegeByID(education.getCollege_code());
 				if(college != null) {
 					education.setCollege_name(college.getName());
+				} else {
+					return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_COLLEGE_NOTEXIST);
 				}
-			} else {
-				return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_COLLEGE_NOTEXIST);
 			}
 			if(!StringUtils.isNullOrEmpty(education.getMajor_code())) {
 				DictMajorRecord major = majorDao.getMajorByID(education.getMajor_code());
 				if(major != null) {
 					education.setMajor_name(major.getName());
+				} else {
+					return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_MAJOR_NOTEXIST);
 				}
-			} else {
-				return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_MAJOR_NOTEXIST);
 			}
 			ProfileEducationRecord record = structToDB(education);
 			int id = dao.postResource(record);
@@ -188,17 +188,17 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 			DictCollegeRecord college = collegeDao.getCollegeByID(education.getCollege_code());
 			if(college != null) {
 				education.setCollege_name(college.getName());
+			} else {
+				return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_COLLEGE_NOTEXIST);
 			}
-		} else {
-			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_COLLEGE_NOTEXIST);
 		}
 		if(!StringUtils.isNullOrEmpty(education.getMajor_code())) {
 			DictMajorRecord major = majorDao.getMajorByID(education.getMajor_code());
 			if(major != null) {
 				education.setMajor_name(major.getName());
+			} else {
+				return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_MAJOR_NOTEXIST);
 			}
-		} else {
-			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_MAJOR_NOTEXIST);
 		}
 		return super.putResource(education);
 	}
