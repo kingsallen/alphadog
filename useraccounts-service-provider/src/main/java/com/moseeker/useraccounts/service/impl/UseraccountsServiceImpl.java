@@ -268,8 +268,10 @@ public class UseraccountsServiceImpl implements Iface {
 
 
     /**
-     * 绑定用户的手机号和unionid， 如果unionid或者手机号均没有， 则post新增， 如果在一条记录里都有，提示已经绑定成功，
+     * 绑定用户的手机号和unionid， 如果在一条记录里都有，提示已经绑定成功，
      * 如果在一条记录里有部分，unionid 或者 mobile， 补全。 否则unionid和mobile分别存在2条记录里面， 需要做合并。
+     * 如果unionid或者手机号均没有， 应该在之前先注册.
+     * code验证码可选.
      */
     @Override
     public Response postuserwxbindmobile(int appid, String unionid, String code, String mobile) throws TException {
@@ -291,7 +293,7 @@ public class UseraccountsServiceImpl implements Iface {
             UserUserRecord userMobile = userdao.getResource(query2);
 
             if (userUnionid == null && userMobile == null) {
-                // post
+                // post,  都为空的情况, 需要事先调用 user_
                 return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_BIND_NONEED);
             } else if (userUnionid != null && userMobile != null
                     && userUnionid.getId().intValue() == userMobile.getId().intValue()) {
