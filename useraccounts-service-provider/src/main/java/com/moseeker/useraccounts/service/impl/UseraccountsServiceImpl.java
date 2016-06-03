@@ -83,7 +83,7 @@ public class UseraccountsServiceImpl implements Iface {
                 filters.put("username", mobile);
                 ;
             } else {
-                return ResponseUtils.success(ConstantErrorCodeMessage.INVALID_SMS_CODE);
+                return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
             }        	
         }
         
@@ -876,7 +876,7 @@ public class UseraccountsServiceImpl implements Iface {
             Integer count = userFavoritePositionDao.getUserFavPositionCountByUserIdAndPositionId(userId, positionId, favorite);
             return ResponseUtils.success(count > 0?true:false);
         }catch (Exception e){
-            return ResponseUtils.success(ConstantErrorCodeMessage.USER_FAV_POSITION_FAILED);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.USER_FAV_POSITION_FAILED);
         }
     }
 
