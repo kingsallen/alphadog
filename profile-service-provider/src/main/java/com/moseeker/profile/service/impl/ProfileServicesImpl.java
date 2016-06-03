@@ -1,7 +1,9 @@
 package com.moseeker.profile.service.impl;
 
 import java.text.ParseException;
+import java.util.UUID;
 
+import org.apache.thrift.TException;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,6 +12,7 @@ import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.profile.dao.ProfileDao;
+import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.ProfileServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.Education;
 import com.moseeker.thrift.gen.profile.struct.Profile;
@@ -33,6 +36,12 @@ public class ProfileServicesImpl extends JOOQBaseServiceImpl<Profile, ProfilePro
 		this.dao = dao;
 	}
 	
+	@Override
+	public Response postResource(Profile struct) throws TException {
+		struct.setUuid(UUID.randomUUID().toString());
+		return super.postResource(struct);
+	}
+
 	@Test
 	public void structTest() {
 		Education education = new Education();
