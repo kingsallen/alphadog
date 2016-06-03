@@ -53,10 +53,16 @@ public class SearchengineServiceImpl implements Iface {
             QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
 
             if (keywords != null) {
-                QueryBuilder keyquery = QueryBuilders.simpleQueryStringQuery(keywords);
-                query = QueryBuilders.boolQuery().must(keyquery);
+                String[] keyword_list = keywords.split(" ");
+                QueryBuilder keyand = QueryBuilders.boolQuery();
+                for (int i = 0; i < keyword_list.length; i++) {
+                    String keyword = keyword_list[i];
+                    QueryBuilder keyfilter = QueryBuilders.simpleQueryStringQuery(keyword);
+                    ((BoolQueryBuilder) keyand).should(keyfilter);
+                }
+                ((BoolQueryBuilder) query).must(keyand);
             }
-
+            
             if (cities != null) {
                 String[] city_list = cities.split(",");
                 QueryBuilder cityor = QueryBuilders.boolQuery();
@@ -68,7 +74,7 @@ public class SearchengineServiceImpl implements Iface {
                 }
                 ((BoolQueryBuilder) query).must(cityor);
             }
-
+            
             if (industries != null) {
                 String[] industry_list = industries.split(",");
                 QueryBuilder industryor = QueryBuilders.boolQuery();
