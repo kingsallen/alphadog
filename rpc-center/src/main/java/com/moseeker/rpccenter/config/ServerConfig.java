@@ -102,7 +102,7 @@ public class ServerConfig implements IConfigCheck {
             try {
                 // 服务注册
                 registry.register(genConfigJson());
-
+               
                 // 添加关闭钩子
                 addShutdownHook(registry, server);
                 return ;
