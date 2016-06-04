@@ -1,9 +1,10 @@
 package com.moseeker.rpccenter.server.thrift;
 
-import org.apache.thrift.TMultiplexedProcessor;
 import org.apache.thrift.TProcessor;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TBinaryProtocol.Factory;
+import org.apache.thrift.protocol.TCompactProtocol;
+import org.apache.thrift.protocol.TProtocolFactory;
 import org.apache.thrift.server.TServer;
 import org.apache.thrift.server.TThreadPoolServer;
 import org.apache.thrift.server.TThreadPoolServer.Args;
@@ -45,15 +46,35 @@ public class TServerThread extends Thread {
             throw new RpcException(RpcException.NETWORK_EXCEPTION, e);
         }
 
-        Factory portFactory = new TBinaryProtocol.Factory(true, true);
-
+        TProtocolFactory proFactory = new TCompactProtocol.Factory(); 
+        
         Args args = new Args(serverTransport);
         args.processor(processor);
-        args.protocolFactory(portFactory);
+        args.protocolFactory(proFactory);
         args.maxWorkerThreads(maxWorkerThreads);
         args.minWorkerThreads(minWorkerThreads);
 
         server = new TThreadPoolServer(args);
+//    	TNonblockingServerSocket tnbSocketTransport;
+//		try {
+//			tnbSocketTransport = new TNonblockingServerSocket(12345);
+//
+//		} catch (TTransportException e) {
+//			// TODO Auto-generated catch block
+//			throw new RpcException(RpcException.NETWORK_EXCEPTION, e);
+//		}
+//
+//		TNonblockingServer.Args tnbArgs = new TNonblockingServer.Args(tnbSocketTransport);
+//		tnbArgs.processor(processor);
+//		tnbArgs.transportFactory(new TFramedTransport.Factory());
+//		tnbArgs.protocolFactory(new TCompactProtocol.Factory());
+//
+//		// 使用非阻塞式IO，服务端和客户端需要指定TFramedTransport数据传输的方式
+//		server = new TNonblockingServer(tnbArgs);
+//		server.serve();  	 
+    	
+    	
+    	
 
     }
     

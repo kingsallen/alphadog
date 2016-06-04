@@ -3,7 +3,7 @@ package com.moseeker.rpccenter.pool;
 import org.apache.commons.pool.BaseKeyedPoolableObjectFactory;
 import org.apache.thrift.TServiceClient;
 import org.apache.thrift.TServiceClientFactory;
-import org.apache.thrift.protocol.TBinaryProtocol;
+import org.apache.thrift.protocol.TCompactProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
@@ -46,7 +46,7 @@ public class TServiceClientPoolFactory<T> extends BaseKeyedPoolableObjectFactory
         if (key != null) {
             TSocket tsocket = new TSocket(key.getIp(), key.getPort(), timeout);
             tsocket.open();
-            TProtocol protocol = new TBinaryProtocol(tsocket);
+            TProtocol protocol = new TCompactProtocol(tsocket);
             TServiceClient client = clientFactory.getClient(protocol);
             return (T) client;
         }

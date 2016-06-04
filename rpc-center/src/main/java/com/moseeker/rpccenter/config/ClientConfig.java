@@ -73,7 +73,7 @@ public class ClientConfig<T> implements IConfigCheck{
     private int timeBetweenEvictionRunsMillis = 180000;
 
     /** 空闲时是否进行连接有效性验证，如果验证失败则移除，默认为false */
-    private boolean testWhileIdle = false;
+    private boolean testWhileIdle = true;
 
     // 下面的配置项是heartbeat的基本配置
     /** 心跳频率，毫秒。默认10s。 */
@@ -129,15 +129,15 @@ public class ClientConfig<T> implements IConfigCheck{
         DynamicHostSet hostSet = registry.findAllService();
 
        // 临时取消心跳, 尝试解决 zookeeper 断开连接问题. 
-       // HeartBeatManager<T> heartBeatManager = new HeartBeatManager<T>(hostSet, heartbeat, heartbeatTimeout, heartbeatTimes, heartbeatInterval, pool);
-       // heartBeatManager.startHeatbeatTimer();
+        HeartBeatManager<T> heartBeatManager = new HeartBeatManager<T>(hostSet, heartbeat, heartbeatTimeout, heartbeatTimes, heartbeatInterval, pool);
+        heartBeatManager.startHeatbeatTimer();
 
         this.registry = registry;
         this.pool = pool;
 
         // 添加ShutdownHook
-        //addShutdownHook(registry, heartBeatManager);
-        addShutdownHook(registry);
+        addShutdownHook(registry, heartBeatManager);
+        //addShutdownHook(registry);
 
         Invoker invoker = new DefaultInvoker<T>(clientNode, pool, retry, hostSet);
         DynamicClientHandler dynamicClientHandler = new DynamicClientHandler(invoker);
