@@ -207,7 +207,7 @@ public class UseraccountsServiceImpl implements Iface {
      * <p>
      *
      * @param user 用户实体
-     * @param code 验证码
+     * @param code 验证码 , 可选, 有的时候必须验证.
      * @return 新添加用户ID
      *
      * @exception TException
@@ -224,10 +224,7 @@ public class UseraccountsServiceImpl implements Iface {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
 
-//        // TODO validate code.
-        if (validateCode(String.valueOf(user.mobile), code, 1)) {
-            ;
-        } else {
+        if (!StringUtils.isNullOrEmpty(code) && !validateCode(String.valueOf(user.mobile), code, 1)) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
         }
 
