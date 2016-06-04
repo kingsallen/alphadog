@@ -40,10 +40,13 @@ public class UseraccountsController {
     * // @param user_id 用户ID
     *
     * */
-   @RequestMapping(value = "/user/{user_id}", method = RequestMethod.GET)
+   @RequestMapping(value = "/user", method = RequestMethod.GET)
    @ResponseBody
-   public String getUser(@PathVariable("user_id") long userId, HttpServletRequest request, HttpServletResponse response) {
+   public String getUser(HttpServletRequest request, HttpServletResponse response) {
       try {
+    	  Map<String, Object> param = ParamUtils.mergeRequestParameters(request);
+    	  Integer userId = (Integer)param.get("user_id");
+    	  
           Response result = useraccountsServices.getUserById(userId);
           return ResponseLogNotification.success(request, result);
       } catch (Exception e) {
