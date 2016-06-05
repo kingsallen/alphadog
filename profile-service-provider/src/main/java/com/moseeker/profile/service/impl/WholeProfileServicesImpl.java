@@ -1,6 +1,7 @@
 package com.moseeker.profile.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.dictdb.tables.records.DictCollegeRecord;
+import com.moseeker.db.dictdb.tables.records.DictConstantRecord;
 import com.moseeker.db.dictdb.tables.records.DictCountryRecord;
 import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
@@ -48,6 +50,7 @@ import com.moseeker.profile.dao.AttachmentDao;
 import com.moseeker.profile.dao.AwardsDao;
 import com.moseeker.profile.dao.CollegeDao;
 import com.moseeker.profile.dao.CompanyDao;
+import com.moseeker.profile.dao.ConstantDao;
 import com.moseeker.profile.dao.CountryDao;
 import com.moseeker.profile.dao.CredentialsDao;
 import com.moseeker.profile.dao.CustomizeResumeDao;
@@ -97,10 +100,12 @@ public class WholeProfileServicesImpl implements Iface {
 				profileEqualFilter.put("id", String.valueOf(profileRecord.getId()));
 				profileQuery.setEqualFilter(profileEqualFilter);
 				
+				List<DictConstantRecord> constantRecords = constantDao.getCitiesByParentCodes(Arrays.asList(3109, 2103, 3102, 2105, 3120, 3115, 3114));
+				
 				Map<String, Object> profileprofile = buildProfile(profileRecord, query);
 				profile.put("profile", profileprofile);
 
-				Map<String, Object> basic = buildBasic(profileRecord, query);
+				Map<String, Object> basic = buildBasic(profileRecord, query, constantRecords);
 				profile.put("basic", basic);
 
 				List<Map<String, Object>> workexps = buildWorkexps(profileRecord, query);
@@ -127,7 +132,7 @@ public class WholeProfileServicesImpl implements Iface {
 				List<Map<String, Object>> works = buildsWorks(profileRecord, query);
 				profile.put("works", works);
 
-				List<Map<String, Object>> intentions = buildsIntentions(profileRecord, query);
+				List<Map<String, Object>> intentions = buildsIntentions(profileRecord, query, constantRecords);
 				profile.put("intentions", intentions);
 
 				List<ProfileAttachmentRecord> attachmentRecords = attachmentDao.getResources(query);
@@ -298,7 +303,7 @@ public class WholeProfileServicesImpl implements Iface {
 		}
 	}
 
-	private List<Map<String, Object>> buildsIntentions(ProfileProfileRecord profileRecord, CommonQuery query) {
+	private List<Map<String, Object>> buildsIntentions(ProfileProfileRecord profileRecord, CommonQuery query, List<DictConstantRecord> constantRecords) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
 			List<ProfileIntentionRecord> records = intentionDao.getResources(query);
@@ -308,9 +313,33 @@ public class WholeProfileServicesImpl implements Iface {
 					Map<String, Object> map = new HashMap<String, Object>();
 					map.put("id", record.getId().intValue());
 					map.put("worktype", record.getWorktype().intValue());
+					for(DictConstantRecord constantRecord : constantRecords) {
+						if(constantRecord.getParentCode().intValue() == 2103 && constantRecord.getCode().intValue() == record.getWorktype().intValue()) {
+							map.put("worktype_name", constantRecord.getName());
+							break;
+						}
+					}
 					map.put("workstate", record.getWorkstate().intValue());
+					for(DictConstantRecord constantRecord : constantRecords) {
+						if(constantRecord.getParentCode().intValue() == 3102 && constantRecord.getCode().intValue() == record.getWorkstate().intValue()) {
+							map.put("workstate_name", constantRecord.getName());
+							break;
+						}
+					}
 					map.put("salary_type", record.getSalaryType().intValue());
+					for(DictConstantRecord constantRecord : constantRecords) {
+						if(constantRecord.getParentCode().intValue() == 2105 && constantRecord.getCode().intValue() == record.getSalaryType().intValue()) {
+							map.put("salary_type_name", constantRecord.getName());
+							break;
+						}
+					}
 					map.put("salary_code", record.getSalaryCode().intValue());
+					for(DictConstantRecord constantRecord : constantRecords) {
+						if(constantRecord.getParentCode().intValue() == 3114 && constantRecord.getCode().intValue() == record.getSalaryCode().intValue()) {
+							map.put("salary_code_name", constantRecord.getName());
+							break;
+						}
+					}
 					map.put("tag", record.getTag());
 					map.put("consider_venture_company_opportunities",
 							record.getConsiderVentureCompanyOpportunities().intValue());
@@ -616,7 +645,7 @@ public class WholeProfileServicesImpl implements Iface {
 		return list;
 	}
 
-	private Map<String, Object> buildBasic(ProfileProfileRecord profileRecord, CommonQuery query) {
+	private Map<String, Object> buildBasic(ProfileProfileRecord profileRecord, CommonQuery query, List<DictConstantRecord> constantRecords) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			ProfileBasicRecord basicRecord = profileBasicDao.getResource(query);
@@ -658,7 +687,15 @@ public class WholeProfileServicesImpl implements Iface {
 				map.put("completeness", profileRecord.getCompleteness().intValue());
 				map.put("uuid", profileRecord.getUuid());
 				map.put("name", basicRecord.getName());
-				map.put("gender", basicRecord.getGender().intValue());
+				if(basicRecord.getGender() != null) {
+					map.put("gender", basicRecord.getGender().intValue());
+					for(DictConstantRecord constantRecord : constantRecords) {
+						if(constantRecord.getParentCode().intValue() == 3109 && constantRecord.getCode().intValue() == basicRecord.getGender().intValue()) {
+							map.put("gender_name", constantRecord.getName());
+							break;
+						}
+					}
+				}
 				map.put("nationality_name", basicRecord.getNationalityName());
 				map.put("nationality_code", basicRecord.getNationalityCode().intValue());
 				DictCountryRecord countryRecord = countryDao.getCountryByID(basicRecord.getNationalityCode());
@@ -709,6 +746,9 @@ public class WholeProfileServicesImpl implements Iface {
 		}
 		return map;
 	}
+	
+	@Autowired
+	private ConstantDao constantDao;
 	
 	@Autowired
 	private CustomizeResumeDao customizeResumeDao;
@@ -969,5 +1009,13 @@ public class WholeProfileServicesImpl implements Iface {
 
 	public void setJobPositionDao(JobPositionDao jobPositionDao) {
 		this.jobPositionDao = jobPositionDao;
+	}
+
+	public ConstantDao getConstantDao() {
+		return constantDao;
+	}
+
+	public void setConstantDao(ConstantDao constantDao) {
+		this.constantDao = constantDao;
 	}
 }
