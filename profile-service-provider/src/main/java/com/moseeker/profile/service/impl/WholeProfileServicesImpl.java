@@ -96,6 +96,9 @@ public class WholeProfileServicesImpl implements Iface {
 				HashMap<String, String> profileEqualFilter = new HashMap<String, String>();
 				profileEqualFilter.put("id", String.valueOf(profileRecord.getId()));
 				profileQuery.setEqualFilter(profileEqualFilter);
+				
+				Map<String, Object> profileprofile = buildProfile(profileRecord, query);
+				profile.put("profile", profileprofile);
 
 				Map<String, Object> basic = buildBasic(profileRecord, query);
 				profile.put("basic", basic);
@@ -676,6 +679,33 @@ public class WholeProfileServicesImpl implements Iface {
 			logger.error(e.getMessage(), e);
 		} finally {
 
+		}
+		return map;
+	}
+	
+	private Map<String, Object> buildProfile(ProfileProfileRecord profileRecord, CommonQuery query) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("id", profileRecord.getId().intValue());
+		if(profileRecord.getUuid() != null) {
+			map.put("uuid", profileRecord.getUuid());
+		}
+		if(profileRecord.getLang() != null) {
+			map.put("lang", profileRecord.getLang().intValue());
+		}
+		if(profileRecord.getSource() != null) {
+			map.put("source", profileRecord.getLang().intValue());
+		}
+		if(profileRecord.getCompleteness() != null) {
+			map.put("completeness", profileRecord.getCompleteness().intValue());
+		}
+		if(profileRecord.getUserId() != null) {
+			map.put("user_id", profileRecord.getUserId().intValue());
+		}
+		if(profileRecord.getCreateTime() != null) {
+			map.put("create_time", DateUtils.dateToShortTime(profileRecord.getCreateTime()));
+		}
+		if(profileRecord.getUpdateTime() != null) {
+			map.put("update_time", DateUtils.dateToShortTime(profileRecord.getUpdateTime()));
 		}
 		return map;
 	}
