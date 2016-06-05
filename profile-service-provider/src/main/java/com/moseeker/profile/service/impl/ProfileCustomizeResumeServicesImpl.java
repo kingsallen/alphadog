@@ -13,7 +13,6 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.ConstantErrorCodeMessage;
-import com.moseeker.db.profiledb.tables.records.ProfileImportRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileOtherRecord;
 import com.moseeker.profile.dao.CustomizeResumeDao;
 import com.moseeker.thrift.gen.common.struct.Response;

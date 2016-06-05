@@ -237,6 +237,67 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
 	}
 
+	@Override
+	public Response putResource(WorkExp struct) throws TException {
+		try {
+			if(struct.getCity_code() > 0) {
+				DictCityRecord cityRecord = cityDao.getCityByCode(struct.getCity_code());
+				if(cityRecord != null) {
+					struct.setCity_name(cityRecord.getName());
+				} else {
+					return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_CITY_NOTEXIST);
+				}
+			}
+			if(struct.getPosition_code() > 0) {
+				DictPositionRecord positionRecord = positionDao.getPositionByCode(struct.getPosition_code());
+				if(positionRecord != null) {
+					struct.setPosition_name(positionRecord.getName());
+				} else {
+					return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_POSITION_NOTEXIST);
+				}
+			}
+			if(struct.getIndustry_code() > 0) {
+				DictIndustryRecord industryRecord = industryDao.getIndustryByCode(struct.getIndustry_code());
+				if(industryRecord != null) {
+					struct.setIndustry_name(industryRecord.getName());
+				} else {
+					return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_INDUSTRY_NOTEXIST);
+				}
+			}
+			if(struct.getCompany_id() > 0) {
+				HrCompanyRecord company = companyDao.getCompanyById(struct.getCompany_id());
+				if(company == null) {
+					return 	ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_NOTEXIST);
+				}
+			} else {
+				if(!StringUtils.isNullOrEmpty(struct.getCompany_name())) {
+					QueryUtil qu = new QueryUtil();
+					qu.addEqualFilter("name", struct.getCompany_name());
+					HrCompanyRecord company = companyDao.getResource(qu);
+					if(company != null) {
+						struct.setCompany_id(company.getId().intValue());
+					} else {
+						HrCompanyRecord newCompany = new HrCompanyRecord();
+						newCompany.setName(struct.getCompany_name());
+						if(StringUtils.isNullOrEmpty(struct.getCompany_logo())) {
+							newCompany.setLogo(struct.getCompany_logo());
+						}
+						newCompany.setType(UByte.valueOf(1));
+						newCompany.setSource(UByte.valueOf(9));
+						int companyId = companyDao.postResource(newCompany);
+						struct.setCompany_id(companyId);
+					}
+				}
+			}
+			return super.putResource(struct);
+		} catch (Exception e) {
+			logger.error("postResource error", e);
+			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		} finally {
+			//do nothing
+		}
+	}
+
 	public WorkExpDao getDao() {
 		return dao;
 	}
