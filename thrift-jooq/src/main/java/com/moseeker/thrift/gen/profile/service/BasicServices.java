@@ -265,6 +265,19 @@ public class BasicServices {
     public com.moseeker.thrift.gen.common.struct.Response putResource(com.moseeker.thrift.gen.profile.struct.Basic basic) throws org.apache.thrift.TException
     {
       send_putResource(basic);
+      boolean issetGender = basic.isSetGender();
+		boolean birth = basic.isSetBirth();
+		boolean cityName = basic.isSetCity_name();
+		boolean create_time = basic.isSetCreate_time();
+		boolean city_code = basic.isSetCity_code();
+		boolean motto = basic.isSetMotto();
+		boolean profile_id = basic.isSetProfile_id();
+		System.out.println("BasicServices.issetGender:"+issetGender);
+		System.out.println("BasicServices.birth:"+birth);
+		System.out.println("BasicServices.cityName:"+cityName);
+		System.out.println("BasicServices.create_time:"+create_time);
+		System.out.println("BasicServices.city_code:"+city_code);
+		System.out.println("BasicServices.motto:"+motto);
       return recv_putResource();
     }
 
@@ -793,6 +806,13 @@ public class BasicServices {
       }
 
       public putResource_result getResult(I iface, putResource_args args) throws org.apache.thrift.TException {
+    	  boolean issetGender = args.getBasic().isSetGender();
+			boolean birth = args.getBasic().isSetBirth();
+			boolean cityName = args.getBasic().isSetCity_name();
+			boolean create_time = args.getBasic().isSetCreate_time();
+			boolean city_code = args.getBasic().isSetCity_code();
+			boolean motto = args.getBasic().isSetMotto();
+			boolean profile_id = args.getBasic().isSetProfile_id();
         putResource_result result = new putResource_result();
         result.success = iface.putResource(args.basic);
         return result;
