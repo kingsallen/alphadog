@@ -33,7 +33,7 @@ public class UseraccountsServer {
                     ServerNodeUtils.getPort(args),
                     acac.getBean(UseraccountsServiceImpl.class));
             
-            server.start(); // 启动服务，非阻塞
+            server.start(); // 阻塞式IO + 多线程处理
 
             synchronized (UseraccountsServer.class) {
                 while (true) {
