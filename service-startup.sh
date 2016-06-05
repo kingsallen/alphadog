@@ -103,6 +103,7 @@ sleep 10
 
 java -classpath profile-service-provider.jar com.moseeker.profile.server.ProfileCustomizeResumeServer -port 19115 &
 
+sleep 10
 # useraccounts-service-provider
 java -classpath useraccounts-service-provider.jar com.moseeker.useraccounts.server.UseraccountsServer -port 19000 &
 
