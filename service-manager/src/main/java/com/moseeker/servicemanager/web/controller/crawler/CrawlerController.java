@@ -20,7 +20,7 @@ import com.moseeker.servicemanager.web.controller.profile.ImportCVForm;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 
-@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
+//@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
 public class CrawlerController {
 

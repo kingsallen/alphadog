@@ -19,7 +19,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.BasicServices;
 import com.moseeker.thrift.gen.profile.struct.Basic;
 
-@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
+//@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
 public class BasicController {
 
