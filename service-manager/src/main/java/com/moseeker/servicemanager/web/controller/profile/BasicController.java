@@ -63,16 +63,6 @@ public class BasicController {
 	public String put(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			Basic basic = ParamUtils.initModelForm(request, Basic.class);
-			boolean issetGender = basic.isSetGender();
-			boolean birth = basic.isSetBirth();
-			boolean cityName = basic.isSetCity_name();
-			boolean create_time = basic.isSetCreate_time();
-			boolean city_code = basic.isSetCity_code();
-			boolean motto = basic.isSetMotto();
-			boolean profile_id = basic.isSetProfile_id();
-			basic.setGenderIsSet(false);
-			int gender = basic.getGender();
-			int nationality_code = basic.getNationality_code();
 			Response result = basicService.putResource(basic);
 			
 			return ResponseLogNotification.success(request, result);
