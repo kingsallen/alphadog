@@ -46,8 +46,9 @@ service UseraccountsServices {
 * 用户配置服务
 **/
 service UsersettingServices {
-    common_struct.Response getResource(1:common_struct.CommonQuery query);
+    common_struct.Response getResource(1: common_struct.CommonQuery query);
     common_struct.Response putResource(1: useraccounts_struct.Usersetting usersetting);
+    common_struct.Response postResource(1: useraccounts_struct.Usersetting usersetting);
 }
 
 /**

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.thrift.TException;
 import org.jooq.types.UByte;
+import org.jooq.types.UInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.logdb.tables.records.LogUserloginRecordRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.db.userdb.tables.records.UserFavPositionRecord;
+import com.moseeker.db.userdb.tables.records.UserSettingsRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -37,6 +39,7 @@ import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
 import com.moseeker.useraccounts.dao.ProfileDao;
 import com.moseeker.useraccounts.dao.UserDao;
 import com.moseeker.useraccounts.dao.UserFavoritePositionDao;
+import com.moseeker.useraccounts.dao.UsersettingDao;
 
 
 /**
@@ -61,6 +64,9 @@ public class UseraccountsServiceImpl implements Iface {
 
     @Autowired
     protected ProfileDao profileDao;
+    
+    @Autowired
+    protected UsersettingDao userSettingDao;    
 
     @Autowired
     protected UserFavoritePositionDao userFavoritePositionDao;
@@ -246,6 +252,12 @@ public class UseraccountsServiceImpl implements Iface {
                 if (!hasPassword) {
                     SmsSender.sendSMS_signupRandomPassword(String.valueOf(user.mobile), plainPassword);
                 }
+                
+                // 初始化 user_setting 表.
+                UserSettingsRecord userSettingsRecord = new UserSettingsRecord();
+                userSettingsRecord.setUserId(UInteger.valueOf(newCreateUserId));
+                userSettingsRecord.setPrivacyPolicy(UByte.valueOf(0));
+                userSettingDao.postResource(userSettingsRecord);
 
                 return ResponseUtils.success(new HashMap<String, Object>(){
                     {
