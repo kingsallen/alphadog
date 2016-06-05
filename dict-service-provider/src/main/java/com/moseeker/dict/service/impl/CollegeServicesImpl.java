@@ -109,7 +109,6 @@ class DictCollegeHashMap {
     public DictCollegeHashMap(List<College> colleges) {
         hm = new HashMap();
         for(College college: colleges) {
-            System.out.println(college);
             put(hm, college);
         }
     }
