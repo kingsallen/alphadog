@@ -103,7 +103,7 @@ public class JobApplicataionServicesImpl implements Iface {
         Integer count = 1;
 
         String applicationCountCheck = redisClient.get(Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
-                String.valueOf(jobApplication.company_id), String.valueOf(jobApplication.position_id));
+                String.valueOf(jobApplication.applier_id), String.valueOf(jobApplication.company_id));
 
         // 获取当前申请次数 +1
 
@@ -113,7 +113,7 @@ public class JobApplicataionServicesImpl implements Iface {
 
         // 设置申请次数
         redisClient.set(Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
-                String.valueOf(jobApplication.company_id), String.valueOf(jobApplication.position_id),
+                String.valueOf(jobApplication.applier_id), String.valueOf(jobApplication.company_id),
                 String.valueOf(count));
     }
 
