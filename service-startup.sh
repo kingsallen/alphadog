@@ -59,9 +59,6 @@ java -classpath profile-service-provider.jar com.moseeker.profile.server.Profile
 
 sleep 10
 
-java -classpath profile-service-provider.jar com.moseeker.profile.server.ProfileCustomizeResumeServer -port 19105 &
-
-sleep 10
 
 java -classpath profile-service-provider.jar com.moseeker.profile.server.ProfileEducationServer -port 19106 &
 
