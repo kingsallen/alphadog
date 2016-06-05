@@ -3,10 +3,16 @@ package com.moseeker.rpccenter.registry;
 import java.text.MessageFormat;
 
 import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.api.CuratorEvent;
+import org.apache.curator.framework.api.CuratorEventType;
+import org.apache.curator.framework.api.CuratorListener;
 import org.apache.curator.framework.imps.CuratorFrameworkState;
 import org.apache.curator.framework.state.ConnectionState;
 import org.apache.curator.framework.state.ConnectionStateListener;
 import org.apache.zookeeper.CreateMode;
+import org.apache.zookeeper.Shell;
+import org.apache.zookeeper.WatchedEvent;
+import org.apache.zookeeper.Watcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +54,7 @@ public class ZkServerRegistry implements IRegistry{
             zookeeper.newNamespaceAwareEnsurePath(zkPath);
         }
 
-        addListener(config);
+//        addListener(config);
         build(config);
     }
 
@@ -59,7 +65,7 @@ public class ZkServerRegistry implements IRegistry{
      * @param config
      *            配置信息
      */
-    private void addListener(final String config) {
+    private void addListener(final String config, final String path) throws Exception {
         zookeeper.getConnectionStateListenable().addListener(new ConnectionStateListener() {
             @Override
             public void stateChanged(CuratorFramework curatorFramework, ConnectionState connectionState) {
@@ -79,6 +85,26 @@ public class ZkServerRegistry implements IRegistry{
                 }
             }
         });
+        zookeeper.getCuratorListenable().addListener(new CuratorListener() {
+            @Override
+            public void eventReceived(CuratorFramework client, CuratorEvent event){
+                if(event.getWatchedEvent().getType() == Watcher.Event.EventType.NodeDeleted) {
+                    while (true) {
+                        try {
+                            if (zookeeper.getZookeeperClient().blockUntilConnectedOrTimedOut()) {
+                                if (build(config)) {
+                                    break;
+                                }
+                            }
+                        } catch (Exception e) {
+                            LOGGER.error(e.getMessage(), e);
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+        zookeeper.getData().watched().forPath(path);
     }
 
     /**
@@ -99,7 +125,8 @@ public class ZkServerRegistry implements IRegistry{
         pathBuilder.append(Constants.ZK_SEPARATOR_DEFAULT).append(Constants.ZK_NAMESPACE_SERVERS).append(Constants.ZK_SEPARATOR_DEFAULT).append(address);
         try {
             if (zookeeper.checkExists().forPath(pathBuilder.toString()) == null) {
-                zookeeper.create().withMode(CreateMode.PERSISTENT).forPath(pathBuilder.toString(), config.getBytes(Constants.UTF8));
+                zookeeper.create().withMode(CreateMode.EPHEMERAL).forPath(pathBuilder.toString(), config.getBytes(Constants.UTF8));
+                addListener(config, pathBuilder.toString());
                 return true;
             }
         } catch (Exception e) {
