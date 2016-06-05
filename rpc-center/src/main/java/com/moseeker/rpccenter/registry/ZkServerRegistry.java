@@ -99,7 +99,7 @@ public class ZkServerRegistry implements IRegistry{
         pathBuilder.append(Constants.ZK_SEPARATOR_DEFAULT).append(Constants.ZK_NAMESPACE_SERVERS).append(Constants.ZK_SEPARATOR_DEFAULT).append(address);
         try {
             if (zookeeper.checkExists().forPath(pathBuilder.toString()) == null) {
-                zookeeper.create().withMode(CreateMode.EPHEMERAL).forPath(pathBuilder.toString(), config.getBytes(Constants.UTF8));
+                zookeeper.create().withMode(CreateMode.PERSISTENT).forPath(pathBuilder.toString(), config.getBytes(Constants.UTF8));
                 return true;
             }
         } catch (Exception e) {
