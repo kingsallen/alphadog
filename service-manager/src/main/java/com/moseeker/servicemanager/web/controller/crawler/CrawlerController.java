@@ -1,5 +1,7 @@
 package com.moseeker.servicemanager.web.controller.crawler;
 
+import java.net.ConnectException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -58,6 +60,8 @@ public class CrawlerController {
 			} else {
 				return ResponseLogNotification.fail(request, result);
 			}
+		} catch (ConnectException e) {	
+			return ResponseLogNotification.fail(request, "服务超时");
 		} catch (Exception e) {	
 			return ResponseLogNotification.fail(request, e.getMessage());
 		} finally {

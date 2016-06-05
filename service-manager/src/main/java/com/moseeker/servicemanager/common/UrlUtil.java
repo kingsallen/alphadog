@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.ConnectException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLDecoder;
@@ -62,7 +63,7 @@ public class UrlUtil {
         return result;
     }
 
-	public static String sendPost(String url, String param) {
+	public static String sendPost(String url, String param) throws ConnectException {
 		PrintWriter out = null;
         BufferedReader in = null;
         String result = "";
@@ -96,8 +97,7 @@ public class UrlUtil {
                 result += line;
             }
         } catch (Exception e) {
-            System.out.println("发送 POST 请求出现异常！"+e);
-            e.printStackTrace();
+        	throw new ConnectException();
         }
         //使用finally块来关闭输出流、输入流
         finally{
@@ -118,13 +118,16 @@ public class UrlUtil {
 	
 	@Test
 	public void testURL() {
-		String result1 = sendPost("http://www.baidu.com","username=chiwah.keen@gmail.com&password=loveisagirl123");
-		System.out.println("result:"+result1);
-		String result = sendPost("http://crawl.bj.moseeker.com:9999/resume/zhaopin.html","username=chiwah.keen@gmail.com&password=loveisagirl123");
-		System.out.println("result:"+result);
 		try {
+			String result1 = sendPost("http://www.baidu.com","username=chiwah.keen@gmail.com&password=loveisagirl123");
+			System.out.println("result:"+result1);
+			String result = sendPost("http://crawl.bj.moseeker.com:9999/resume/zhaopin.html","username=chiwah.keen@gmail.com&password=loveisagirl123");
+			System.out.println("result:"+result);
 			System.out.println("result:"+URLDecoder.decode(result,"UTF-8"));
 		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ConnectException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

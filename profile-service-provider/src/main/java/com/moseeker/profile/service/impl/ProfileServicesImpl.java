@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.Constant;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -39,6 +40,9 @@ public class ProfileServicesImpl extends JOOQBaseServiceImpl<Profile, ProfilePro
 	@Override
 	public Response postResource(Profile struct) throws TException {
 		struct.setUuid(UUID.randomUUID().toString());
+		if(!struct.isSetDisable()) {
+			struct.setDisable((short)Constant.ENABLE);
+		}
 		return super.postResource(struct);
 	}
 

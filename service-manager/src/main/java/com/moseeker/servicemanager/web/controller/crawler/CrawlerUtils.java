@@ -1,5 +1,6 @@
 package com.moseeker.servicemanager.web.controller.crawler;
 
+import java.net.ConnectException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,7 @@ public class CrawlerUtils {
 	public static String ZHILIAN = "http://crawl.bj.moseeker.com:9999/resume/zhaopin";
 
 	public Response fetchFirstResume(String userName, String password, String token, int type, int lang, int source,
-			int completeness, int appid, int user_id) {
+			int completeness, int appid, int user_id) throws ConnectException {
 		String result = null;
 		Map<String, String> param = new HashMap<>();
 		switch (type) {
@@ -138,7 +139,7 @@ public class CrawlerUtils {
 		return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_PARAM_ILLEGAL);
 	}
 
-	private String fetchResume(String params, String url) {
+	private String fetchResume(String params, String url) throws ConnectException {
 		return UrlUtil.sendPost(url, params);
 	}
 
