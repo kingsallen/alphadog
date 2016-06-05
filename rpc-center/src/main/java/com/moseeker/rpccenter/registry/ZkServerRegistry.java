@@ -3,10 +3,15 @@ package com.moseeker.rpccenter.registry;
 import java.text.MessageFormat;
 
 import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.api.CuratorEvent;
+import org.apache.curator.framework.api.CuratorListener;
 import org.apache.curator.framework.imps.CuratorFrameworkState;
 import org.apache.curator.framework.state.ConnectionState;
 import org.apache.curator.framework.state.ConnectionStateListener;
 import org.apache.zookeeper.CreateMode;
+import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.WatchedEvent;
+import org.apache.zookeeper.Watcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,21 +22,31 @@ import com.moseeker.rpccenter.loadbalance.common.DynamicHostSet;
 /**
  * Created by zzh on 16/3/28.
  */
-public class ZkServerRegistry implements IRegistry{
+public class ZkServerRegistry implements IRegistry {
 
-    /** LOGGER */
+    /**
+     * LOGGER
+     */
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
-    /** {@link CuratorFramework} */
+    /**
+     * {@link CuratorFramework}
+     */
     private final CuratorFramework zookeeper;
 
-    /** 服务zookeeper目录 */
+    /**
+     * 服务zookeeper目录
+     */
     private final String zkPath;
 
-    /** 服务地址 */
+    /**
+     * 服务地址
+     */
     private final String address;
 
-    /** 授权 */
+    /**
+     * 授权
+     */
     private final String auth;
 
     public ZkServerRegistry(CuratorFramework zookeeper, String zkPath, String address, String auth) {
@@ -48,18 +63,35 @@ public class ZkServerRegistry implements IRegistry{
             zookeeper.newNamespaceAwareEnsurePath(zkPath);
         }
 
-        addListener(config);
         build(config);
+        //DEBUG: simulateSessionTimeout();
+    }
+
+    private void simulateSessionTimeout() {
+        try {
+            Thread.sleep(10 * 1000);
+            ZooKeeper zk = new ZooKeeper("127.0.0.1:2181",
+                    zookeeper.getZookeeperClient().getZooKeeper().getSessionTimeout(),
+                    event -> System.out.println("wowowowo" + event),
+                    zookeeper.getZookeeperClient().getZooKeeper().getSessionId(),
+                    zookeeper.getZookeeperClient().getZooKeeper().getSessionPasswd()
+            );
+            zk.close();
+        } catch (Exception e) {
+            // do nothing
+            e.printStackTrace();
+        }
+
+
     }
 
     /**
      * 添加监听器，防止网络异常或者zookeeper挂掉的情况
      * <p>
      *
-     * @param config
-     *            配置信息
+     * @param config 配置信息
      */
-    private void addListener(final String config) {
+    private void addListener(final String config, final String path) throws Exception {
         zookeeper.getConnectionStateListenable().addListener(new ConnectionStateListener() {
             @Override
             public void stateChanged(CuratorFramework curatorFramework, ConnectionState connectionState) {
@@ -79,16 +111,36 @@ public class ZkServerRegistry implements IRegistry{
                 }
             }
         });
+        zookeeper.getCuratorListenable().addListener(new CuratorListener() {
+            @Override
+            public void eventReceived(CuratorFramework client, CuratorEvent event) {
+                WatchedEvent watchedEvent = event.getWatchedEvent();
+                if (watchedEvent != null && watchedEvent.getType() == Watcher.Event.EventType.NodeDeleted) {
+                    while (true) {
+                        try {
+                            if (zookeeper.getZookeeperClient().blockUntilConnectedOrTimedOut()) {
+                                if (build(config)) {
+                                    break;
+                                }
+                            }
+                        } catch (Exception e) {
+                            LOGGER.error(e.getMessage(), e);
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+        zookeeper.getData().watched().forPath(path);
     }
 
     /**
      * 构建节点
      * <p>
      *
-     * @param config
-     *            配置信息
-     * @throw RpcException
+     * @param config 配置信息
      * @return 是否创建
+     * @throw RpcException
      */
     private boolean build(String config) throws RpcException {
         // 创建父节点
@@ -99,7 +151,8 @@ public class ZkServerRegistry implements IRegistry{
         pathBuilder.append(Constants.ZK_SEPARATOR_DEFAULT).append(Constants.ZK_NAMESPACE_SERVERS).append(Constants.ZK_SEPARATOR_DEFAULT).append(address);
         try {
             if (zookeeper.checkExists().forPath(pathBuilder.toString()) == null) {
-                zookeeper.create().withMode(CreateMode.PERSISTENT).forPath(pathBuilder.toString(), config.getBytes(Constants.UTF8));
+                zookeeper.create().withMode(CreateMode.EPHEMERAL).forPath(pathBuilder.toString(), config.getBytes(Constants.UTF8));
+                addListener(config, pathBuilder.toString());
                 return true;
             }
         } catch (Exception e) {
@@ -133,7 +186,7 @@ public class ZkServerRegistry implements IRegistry{
         zookeeper.close();
     }
 
-    public DynamicHostSet findAllService(){
+    public DynamicHostSet findAllService() {
         return null;
     }
 
