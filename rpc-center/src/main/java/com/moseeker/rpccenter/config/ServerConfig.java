@@ -102,20 +102,18 @@ public class ServerConfig implements IConfigCheck {
             try {
                 // 服务注册
                 registry.register(genConfigJson());
-               
                 // 添加关闭钩子
-                addShutdownHook(registry, server);
-                return ;
+                 addShutdownHook(registry, server);
+                 return;
             } catch (Exception e) {
                 LOGGER.error(e.getMessage(), e);
                 server.stop(); // 防止注册不上,还在运行.
-            	
             }
         } else {
             server.stop();
         }
-        
-        throw new RpcException("failed to register server");
+
+        System.exit(0);
     }
 
     /**
