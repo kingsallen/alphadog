@@ -104,3 +104,7 @@ sleep 10
 
 java -classpath useraccounts-service-provider.jar com.moseeker.useraccounts.server.UsersettingsServer -port 19001 &
 
+sleep 10
+
+java -classpath useraccounts-service-provider.jar  com.moseeker.useraccounts.server.UserHrAccountServer -port  19003 &
+
