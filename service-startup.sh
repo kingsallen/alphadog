@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+
+# kill all
+
+ps -ef | grep service-provider | awk '{print $2}' | xargs kill -9
+
+
 # application-service-provider
 java -classpath application-service-provider.jar com.moseeker.application.server.JobApplicationServer -port 19400 &
 
