@@ -46,7 +46,12 @@ public class UseraccountsController {
    public String getUser(HttpServletRequest request, HttpServletResponse response) {
       try {
     	  Map<String, Object> param = ParamUtils.mergeRequestParameters(request);
-    	  Integer userId = (Integer)param.get("user_id");
+    	  int userId = 0;
+    	  if(param.get("user_id") != null && param.get("user_id") instanceof String) {
+    		  userId = Integer.valueOf((String)param.get("user_id"));
+    	  } else if(param.get("user_id") != null && param.get("user_id") instanceof Integer){
+    		  userId = (Integer)param.get("user_id");
+    	  }
     	  
           Response result = useraccountsServices.getUserById(userId);
           return ResponseLogNotification.success(request, result);
