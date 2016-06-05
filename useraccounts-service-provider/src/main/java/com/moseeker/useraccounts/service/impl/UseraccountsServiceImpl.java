@@ -253,11 +253,11 @@ public class UseraccountsServiceImpl implements Iface {
                     SmsSender.sendSMS_signupRandomPassword(String.valueOf(user.mobile), plainPassword);
                 }
                 
-                // 初始化 user_setting 表.
-                UserSettingsRecord userSettingsRecord = new UserSettingsRecord();
-                userSettingsRecord.setUserId(UInteger.valueOf(newCreateUserId));
-                userSettingsRecord.setPrivacyPolicy(UByte.valueOf(0));
-                userSettingDao.postResource(userSettingsRecord);
+//                // 初始化 user_setting 表.
+//                UserSettingsRecord userSettingsRecord = new UserSettingsRecord();
+//                userSettingsRecord.setUserId(UInteger.valueOf(newCreateUserId));
+//                userSettingsRecord.setPrivacyPolicy(UByte.valueOf(0));
+//                userSettingDao.postResource(userSettingsRecord);
 
                 return ResponseUtils.success(new HashMap<String, Object>(){
                     {
