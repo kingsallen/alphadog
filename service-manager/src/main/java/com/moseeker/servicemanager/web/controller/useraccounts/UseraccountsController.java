@@ -438,6 +438,30 @@ public class UseraccountsController {
    }
 
    /**
+    * 添加用户设置。
+    *
+    * @param request
+    * @param response
+    * @return
+    */
+   @RequestMapping(value = "/user/settings", method = RequestMethod.POST)
+   @ResponseBody
+   public String postusersettings(HttpServletRequest request, HttpServletResponse response) {
+      try {
+          Usersetting usersetting = ParamUtils.initModelForm(request, Usersetting.class);
+          Response result = usersettingServices.postResource(usersetting);
+          if (result.getStatus() == 0) {
+             return ResponseLogNotification.success(request, result);
+          } else {
+             return ResponseLogNotification.fail(request, result);
+          }
+
+      } catch (Exception e) {
+         return ResponseLogNotification.fail(request, e.getMessage());
+      }
+   }
+   
+   /**
     * 修改当前用户设置。
     *
     * @param request
