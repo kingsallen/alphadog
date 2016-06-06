@@ -27,7 +27,7 @@ public class SearchengineServiceImpl implements Iface {
     @Override
     public Response query(String keywords, String cities, String industries, String occupations, String scale,
             String employment_type, String candidate_source, String experience, String degree, String salary,
-            String company_id, int page_from, int page_size) throws TException {
+            String company_id, int page_from, int page_size,String child_company_id) throws TException {
         if (page_from == 0) {
             page_from = 0;
         }
@@ -132,6 +132,11 @@ public class SearchengineServiceImpl implements Iface {
                 ((BoolQueryBuilder) query).must(salaryfilter);
             }
 
+            if (child_company_id != null) {
+                QueryBuilder child_company_filter = QueryBuilders.termQuery("child_company_id", child_company_id);
+                ((BoolQueryBuilder) query).must(child_company_filter);
+            }
+            
             response = client.prepareSearch("index").setTypes("fulltext").setQuery(query).setFrom(page_from)
                     .setSize(page_size).execute().actionGet();
 
