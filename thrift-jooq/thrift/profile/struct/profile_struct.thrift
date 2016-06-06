@@ -116,9 +116,9 @@ struct Intention {
     9: optional Timestamp update_time,
    10: optional i16 worktype,
    11: optional string salary_str,
-   12: optional map<i32, string> industries,
-   13: optional map<i32, string> positions,
-   14: optional map<i32, string> cities
+   12: optional map<string, i32> industries,
+   13: optional map<string, i32> positions,
+   14: optional map<string, i32> cities
 }
 
 struct Language { 
