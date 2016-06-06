@@ -100,7 +100,7 @@ public class WholeProfileServicesImpl implements Iface {
 				profileEqualFilter.put("id", String.valueOf(profileRecord.getId()));
 				profileQuery.setEqualFilter(profileEqualFilter);
 				
-				List<DictConstantRecord> constantRecords = constantDao.getCitiesByParentCodes(Arrays.asList(3109, 2103, 3102, 2105, 3120, 3115, 3114));
+				List<DictConstantRecord> constantRecords = constantDao.getCitiesByParentCodes(Arrays.asList(3109, 2103, 3102, 2105, 3120, 3115, 3114, 3120));
 				
 				Map<String, Object> profileprofile = buildProfile(profileRecord, query);
 				profile.put("profile", profileprofile);
@@ -343,6 +343,12 @@ public class WholeProfileServicesImpl implements Iface {
 					map.put("tag", record.getTag());
 					map.put("consider_venture_company_opportunities",
 							record.getConsiderVentureCompanyOpportunities().intValue());
+					for(DictConstantRecord constantRecord : constantRecords) {
+						if(constantRecord.getParentCode().intValue() == 3120 && constantRecord.getCode().intValue() == record.getSalaryCode().intValue()) {
+							map.put("consider_venture_company_opportunities_name", constantRecord.getName());
+							break;
+						}
+					}
 					intentionIds.add(record.getId().intValue());
 					list.add(map);
 				});
