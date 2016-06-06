@@ -1,7 +1,7 @@
 package com.moseeker.common.util;
 
 public final class ConstantErrorCodeMessage {
-
+	
     // 系统共通ERRCODE说明定义 9字头
     public static final String PROGRAM_EXHAUSTED = "{'status':-1,'message':'系统繁忙，请稍候再试!'}";
     public static final String PROGRAM_EXCEPTION = "{'status':99999 ,'message':'发生异常，请稍候再试!'}";
