@@ -4,18 +4,20 @@ import java.text.ParseException;
 import java.util.UUID;
 
 import org.apache.thrift.TException;
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.Constant;
+import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
+import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.profile.dao.ProfileDao;
+import com.moseeker.profile.dao.UserDao;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.ProfileServices.Iface;
-import com.moseeker.thrift.gen.profile.struct.Education;
 import com.moseeker.thrift.gen.profile.struct.Profile;
 
 @Service
@@ -23,6 +25,9 @@ public class ProfileServicesImpl extends JOOQBaseServiceImpl<Profile, ProfilePro
 
 	@Autowired
 	protected ProfileDao dao;
+	
+	@Autowired
+	protected UserDao userDao;
 	
 	@Override
 	protected void initDao() {
@@ -43,16 +48,15 @@ public class ProfileServicesImpl extends JOOQBaseServiceImpl<Profile, ProfilePro
 		if(!struct.isSetDisable()) {
 			struct.setDisable((short)Constant.ENABLE);
 		}
-		return super.postResource(struct);
-	}
-
-	@Test
-	public void structTest() {
-		Education education = new Education();
-		java.lang.reflect.Field[] fields = education.getClass().getFields();
-		for(int i=0; i< fields.length; i++) {
-			System.out.println(fields[i].getName());
+		if(struct.getUser_id() > 0) {
+			UserUserRecord user = userDao.getUserById(struct.getUser_id());
+			if(user == null) {
+				return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_USER_NOTEXIST);
+			}
+		} else {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_USER_NOTEXIST);
 		}
+		return super.postResource(struct);
 	}
 
 	@Override
@@ -64,5 +68,13 @@ public class ProfileServicesImpl extends JOOQBaseServiceImpl<Profile, ProfilePro
 	protected ProfileProfileRecord structToDB(Profile profile)
 			throws ParseException {
 		return (ProfileProfileRecord)BeanUtils.structToDB(profile, ProfileProfileRecord.class);
+	}
+
+	public UserDao getUserDao() {
+		return userDao;
+	}
+
+	public void setUserDao(UserDao userDao) {
+		this.userDao = userDao;
 	}
 }
