@@ -145,7 +145,7 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 				updateIntentionCity(struct, intentionId);
 				updateIntentionIndustry(struct, intentionId);
 				updateIntentionPosition(struct, intentionId);
-				ResponseUtils.success(String.valueOf(intentionId));
+				return ResponseUtils.success(String.valueOf(intentionId));
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
