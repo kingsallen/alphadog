@@ -153,7 +153,7 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 		} finally {
 			// do nothing
 		}
-		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
 	}
 	
 	@Override
@@ -166,7 +166,7 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 				updateIntentionCity(struct, record.getId().intValue());
 				updateIntentionIndustry(struct, record.getId().intValue());
 				updateIntentionPosition(struct, record.getId().intValue());
-				ResponseUtils.success(String.valueOf(intentionId));
+				return ResponseUtils.success(String.valueOf(intentionId));
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -174,7 +174,7 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 		} finally {
 			// do nothing
 		}
-		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
 	}
 
 	@Override
@@ -193,7 +193,7 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 				ProfileIntentionIndustryRecord intentionIndustryRecord = new ProfileIntentionIndustryRecord();
 				intentionIndustryRecord.setProfileIntentionId(UInteger.valueOf(struct.getId()));
 				intentionIndustryDao.delResource(intentionIndustryRecord);
-				ResponseUtils.success(String.valueOf(intentionId));
+				return ResponseUtils.success(String.valueOf(intentionId));
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
