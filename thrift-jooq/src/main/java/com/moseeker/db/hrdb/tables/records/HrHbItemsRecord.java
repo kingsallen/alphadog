@@ -31,157 +31,157 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrHbItemsRecord extends UpdatableRecordImpl<HrHbItemsRecord> implements Record11<Integer, Integer, Integer, Integer, BigDecimal, Byte, Integer, Timestamp, Timestamp, Timestamp, Integer> {
 
-	private static final long serialVersionUID = -179986438;
+	private static final long serialVersionUID = -1191143430;
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_items.id</code>.
+	 * Setter for <code>hrdb.hr_hb_items.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_items.id</code>.
+	 * Getter for <code>hrdb.hr_hb_items.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_items.hb_config_id</code>. hr_hb_config.id
+	 * Setter for <code>hrdb.hr_hb_items.hb_config_id</code>. hr_hb_config.id
 	 */
 	public void setHbConfigId(Integer value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_items.hb_config_id</code>. hr_hb_config.id
+	 * Getter for <code>hrdb.hr_hb_items.hb_config_id</code>. hr_hb_config.id
 	 */
 	public Integer getHbConfigId() {
 		return (Integer) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_items.binding_id</code>. position_hb_binding.id
+	 * Setter for <code>hrdb.hr_hb_items.binding_id</code>. position_hb_binding.id
 	 */
 	public void setBindingId(Integer value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_items.binding_id</code>. position_hb_binding.id
+	 * Getter for <code>hrdb.hr_hb_items.binding_id</code>. position_hb_binding.id
 	 */
 	public Integer getBindingId() {
 		return (Integer) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_items.index</code>. 这条数据是第几个红包 0 < x <= 总红包数
+	 * Setter for <code>hrdb.hr_hb_items.index</code>. 这条数据是第几个红包 0 < x <= 总红包数
 	 */
 	public void setIndex(Integer value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_items.index</code>. 这条数据是第几个红包 0 < x <= 总红包数
+	 * Getter for <code>hrdb.hr_hb_items.index</code>. 这条数据是第几个红包 0 < x <= 总红包数
 	 */
 	public Integer getIndex() {
 		return (Integer) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_items.amount</code>. 红包金额
+	 * Setter for <code>hrdb.hr_hb_items.amount</code>. 红包金额
 	 */
 	public void setAmount(BigDecimal value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_items.amount</code>. 红包金额
+	 * Getter for <code>hrdb.hr_hb_items.amount</code>. 红包金额
 	 */
 	public BigDecimal getAmount() {
 		return (BigDecimal) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_items.status</code>. 0:还未送出，1:已经送出
+	 * Setter for <code>hrdb.hr_hb_items.status</code>. 0:还未送出，1:已经送出
 	 */
 	public void setStatus(Byte value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_items.status</code>. 0:还未送出，1:已经送出
+	 * Getter for <code>hrdb.hr_hb_items.status</code>. 0:还未送出，1:已经送出
 	 */
 	public Byte getStatus() {
 		return (Byte) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_items.wxuser_id</code>. 获取红包的用户
+	 * Setter for <code>hrdb.hr_hb_items.wxuser_id</code>. 获取红包的用户
 	 */
 	public void setWxuserId(Integer value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_items.wxuser_id</code>. 获取红包的用户
+	 * Getter for <code>hrdb.hr_hb_items.wxuser_id</code>. 获取红包的用户
 	 */
 	public Integer getWxuserId() {
 		return (Integer) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_items.open_time</code>. 红包打开时间
+	 * Setter for <code>hrdb.hr_hb_items.open_time</code>. 红包打开时间
 	 */
 	public void setOpenTime(Timestamp value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_items.open_time</code>. 红包打开时间
+	 * Getter for <code>hrdb.hr_hb_items.open_time</code>. 红包打开时间
 	 */
 	public Timestamp getOpenTime() {
 		return (Timestamp) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_items.create_time</code>. 创建时间
+	 * Setter for <code>hrdb.hr_hb_items.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_items.create_time</code>. 创建时间
+	 * Getter for <code>hrdb.hr_hb_items.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_items.update_time</code>. 更新时间
+	 * Setter for <code>hrdb.hr_hb_items.update_time</code>. 更新时间
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_items.update_time</code>. 更新时间
+	 * Getter for <code>hrdb.hr_hb_items.update_time</code>. 更新时间
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_items.trigger_wxuser_id</code>. 触发发送红包行为时的当前用户, 即 JD 页点击者或职位申请者 wx_group_user.id
+	 * Setter for <code>hrdb.hr_hb_items.trigger_wxuser_id</code>. 触发发送红包行为时的当前用户, 即 JD 页点击者或职位申请者 wx_group_user.id
 	 */
 	public void setTriggerWxuserId(Integer value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_items.trigger_wxuser_id</code>. 触发发送红包行为时的当前用户, 即 JD 页点击者或职位申请者 wx_group_user.id
+	 * Getter for <code>hrdb.hr_hb_items.trigger_wxuser_id</code>. 触发发送红包行为时的当前用户, 即 JD 页点击者或职位申请者 wx_group_user.id
 	 */
 	public Integer getTriggerWxuserId() {
 		return (Integer) getValue(10);

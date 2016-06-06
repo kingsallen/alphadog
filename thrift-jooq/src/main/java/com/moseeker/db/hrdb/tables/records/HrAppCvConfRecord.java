@@ -30,143 +30,143 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrAppCvConfRecord extends UpdatableRecordImpl<HrAppCvConfRecord> implements Record10<Integer, String, Integer, Timestamp, Timestamp, Integer, Integer, Integer, Integer, String> {
 
-	private static final long serialVersionUID = -1759116238;
+	private static final long serialVersionUID = 849972274;
 
 	/**
-	 * Setter for <code>hrDB.hr_app_cv_conf.id</code>.
+	 * Setter for <code>hrdb.hr_app_cv_conf.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_app_cv_conf.id</code>.
+	 * Getter for <code>hrdb.hr_app_cv_conf.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_app_cv_conf.name</code>. 属性含义
+	 * Setter for <code>hrdb.hr_app_cv_conf.name</code>. 属性含义
 	 */
 	public void setName(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_app_cv_conf.name</code>. 属性含义
+	 * Getter for <code>hrdb.hr_app_cv_conf.name</code>. 属性含义
 	 */
 	public String getName() {
 		return (String) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_app_cv_conf.priority</code>. 排序字段
+	 * Setter for <code>hrdb.hr_app_cv_conf.priority</code>. 排序字段
 	 */
 	public void setPriority(Integer value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_app_cv_conf.priority</code>. 排序字段
+	 * Getter for <code>hrdb.hr_app_cv_conf.priority</code>. 排序字段
 	 */
 	public Integer getPriority() {
 		return (Integer) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_app_cv_conf.create_time</code>.
+	 * Setter for <code>hrdb.hr_app_cv_conf.create_time</code>.
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_app_cv_conf.create_time</code>.
+	 * Getter for <code>hrdb.hr_app_cv_conf.create_time</code>.
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_app_cv_conf.update_time</code>.
+	 * Setter for <code>hrdb.hr_app_cv_conf.update_time</code>.
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_app_cv_conf.update_time</code>.
+	 * Getter for <code>hrdb.hr_app_cv_conf.update_time</code>.
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_app_cv_conf.disable</code>. 是否禁用 0：可用1：不可用
+	 * Setter for <code>hrdb.hr_app_cv_conf.disable</code>. 是否禁用 0：可用1：不可用
 	 */
 	public void setDisable(Integer value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_app_cv_conf.disable</code>. 是否禁用 0：可用1：不可用
+	 * Getter for <code>hrdb.hr_app_cv_conf.disable</code>. 是否禁用 0：可用1：不可用
 	 */
 	public Integer getDisable() {
 		return (Integer) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_app_cv_conf.company_id</code>. 所属部门。如果是私有属性，则存在所属公司部门编号；如果不是则为0 hr_company.id
+	 * Setter for <code>hrdb.hr_app_cv_conf.company_id</code>. 所属部门。如果是私有属性，则存在所属公司部门编号；如果不是则为0 hr_company.id
 	 */
 	public void setCompanyId(Integer value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_app_cv_conf.company_id</code>. 所属部门。如果是私有属性，则存在所属公司部门编号；如果不是则为0 hr_company.id
+	 * Getter for <code>hrdb.hr_app_cv_conf.company_id</code>. 所属部门。如果是私有属性，则存在所属公司部门编号；如果不是则为0 hr_company.id
 	 */
 	public Integer getCompanyId() {
 		return (Integer) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_app_cv_conf.hraccount_id</code>. 账号编号 hr_account.id
+	 * Setter for <code>hrdb.hr_app_cv_conf.hraccount_id</code>. 账号编号 hr_account.id
 	 */
 	public void setHraccountId(Integer value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_app_cv_conf.hraccount_id</code>. 账号编号 hr_account.id
+	 * Getter for <code>hrdb.hr_app_cv_conf.hraccount_id</code>. 账号编号 hr_account.id
 	 */
 	public Integer getHraccountId() {
 		return (Integer) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_app_cv_conf.required</code>. 是否必填项 0：必填项 1：选填项
+	 * Setter for <code>hrdb.hr_app_cv_conf.required</code>. 是否必填项 0：必填项 1：选填项
 	 */
 	public void setRequired(Integer value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_app_cv_conf.required</code>. 是否必填项 0：必填项 1：选填项
+	 * Getter for <code>hrdb.hr_app_cv_conf.required</code>. 是否必填项 0：必填项 1：选填项
 	 */
 	public Integer getRequired() {
 		return (Integer) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_app_cv_conf.field_value</code>. 微信端页面标签默认值
+	 * Setter for <code>hrdb.hr_app_cv_conf.field_value</code>. 微信端页面标签默认值
 	 */
 	public void setFieldValue(String value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_app_cv_conf.field_value</code>. 微信端页面标签默认值
+	 * Getter for <code>hrdb.hr_app_cv_conf.field_value</code>. 微信端页面标签默认值
 	 */
 	public String getFieldValue() {
 		return (String) getValue(9);

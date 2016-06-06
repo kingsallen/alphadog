@@ -89,7 +89,7 @@ import org.jooq.types.UInteger;
 
 
 /**
- * A class modelling foreign key relationships between tables of the <code>hrDB</code> 
+ * A class modelling foreign key relationships between tables of the <code>hrdb</code> 
  * schema
  */
 @Generated(

@@ -31,87 +31,87 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogSmsSendrecordRecord extends UpdatableRecordImpl<LogSmsSendrecordRecord> implements Record6<UInteger, Byte, Long, String, String, Timestamp> {
 
-	private static final long serialVersionUID = 1530603655;
+	private static final long serialVersionUID = 292991111;
 
 	/**
-	 * Setter for <code>logDB.log_sms_sendrecord.id</code>.
+	 * Setter for <code>logdb.log_sms_sendrecord.id</code>.
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_sms_sendrecord.id</code>.
+	 * Getter for <code>logdb.log_sms_sendrecord.id</code>.
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_sms_sendrecord.sys</code>. 来自系统，0:未知 1:platform 2:qx 3:hr 4:官网 9:script
+	 * Setter for <code>logdb.log_sms_sendrecord.sys</code>. 来自系统，0:未知 1:platform 2:qx 3:hr 4:官网 9:script
 	 */
 	public void setSys(Byte value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_sms_sendrecord.sys</code>. 来自系统，0:未知 1:platform 2:qx 3:hr 4:官网 9:script
+	 * Getter for <code>logdb.log_sms_sendrecord.sys</code>. 来自系统，0:未知 1:platform 2:qx 3:hr 4:官网 9:script
 	 */
 	public Byte getSys() {
 		return (Byte) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_sms_sendrecord.mobile</code>.
+	 * Setter for <code>logdb.log_sms_sendrecord.mobile</code>.
 	 */
 	public void setMobile(Long value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_sms_sendrecord.mobile</code>.
+	 * Getter for <code>logdb.log_sms_sendrecord.mobile</code>.
 	 */
 	public Long getMobile() {
 		return (Long) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_sms_sendrecord.msg</code>. 发送内容
+	 * Setter for <code>logdb.log_sms_sendrecord.msg</code>. 发送内容
 	 */
 	public void setMsg(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_sms_sendrecord.msg</code>. 发送内容
+	 * Getter for <code>logdb.log_sms_sendrecord.msg</code>. 发送内容
 	 */
 	public String getMsg() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_sms_sendrecord.ip</code>. IP
+	 * Setter for <code>logdb.log_sms_sendrecord.ip</code>. IP
 	 */
 	public void setIp(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_sms_sendrecord.ip</code>. IP
+	 * Getter for <code>logdb.log_sms_sendrecord.ip</code>. IP
 	 */
 	public String getIp() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_sms_sendrecord.create_time</code>.
+	 * Setter for <code>logdb.log_sms_sendrecord.create_time</code>.
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_sms_sendrecord.create_time</code>.
+	 * Getter for <code>logdb.log_sms_sendrecord.create_time</code>.
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(5);

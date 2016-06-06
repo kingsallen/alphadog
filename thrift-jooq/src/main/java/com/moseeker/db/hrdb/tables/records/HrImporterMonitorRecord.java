@@ -30,157 +30,157 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrImporterMonitorRecord extends UpdatableRecordImpl<HrImporterMonitorRecord> implements Record11<Integer, Integer, Integer, Byte, String, Short, String, Timestamp, Timestamp, String, Byte> {
 
-	private static final long serialVersionUID = 1445766048;
+	private static final long serialVersionUID = -327732320;
 
 	/**
-	 * Setter for <code>hrDB.hr_importer_monitor.id</code>.
+	 * Setter for <code>hrdb.hr_importer_monitor.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_importer_monitor.id</code>.
+	 * Getter for <code>hrdb.hr_importer_monitor.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_importer_monitor.company_id</code>. 公司ID，hr_company.id
+	 * Setter for <code>hrdb.hr_importer_monitor.company_id</code>. 公司ID，hr_company.id
 	 */
 	public void setCompanyId(Integer value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_importer_monitor.company_id</code>. 公司ID，hr_company.id
+	 * Getter for <code>hrdb.hr_importer_monitor.company_id</code>. 公司ID，hr_company.id
 	 */
 	public Integer getCompanyId() {
 		return (Integer) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_importer_monitor.hraccount_id</code>. hr_account.id 账号编号
+	 * Setter for <code>hrdb.hr_importer_monitor.hraccount_id</code>. hr_account.id 账号编号
 	 */
 	public void setHraccountId(Integer value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_importer_monitor.hraccount_id</code>. hr_account.id 账号编号
+	 * Getter for <code>hrdb.hr_importer_monitor.hraccount_id</code>. hr_account.id 账号编号
 	 */
 	public Integer getHraccountId() {
 		return (Integer) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_importer_monitor.type</code>. 要导入的表：0：user_employee 1: job_position 2:hr_company
+	 * Setter for <code>hrdb.hr_importer_monitor.type</code>. 要导入的表：0：user_employee 1: job_position 2:hr_company
 	 */
 	public void setType(Byte value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_importer_monitor.type</code>. 要导入的表：0：user_employee 1: job_position 2:hr_company
+	 * Getter for <code>hrdb.hr_importer_monitor.type</code>. 要导入的表：0：user_employee 1: job_position 2:hr_company
 	 */
 	public Byte getType() {
 		return (Byte) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_importer_monitor.file</code>. 导入文件的绝对路径
+	 * Setter for <code>hrdb.hr_importer_monitor.file</code>. 导入文件的绝对路径
 	 */
 	public void setFile(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_importer_monitor.file</code>. 导入文件的绝对路径
+	 * Getter for <code>hrdb.hr_importer_monitor.file</code>. 导入文件的绝对路径
 	 */
 	public String getFile() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_importer_monitor.status</code>. 0：待处理 1：处理失败 2：处理成功
+	 * Setter for <code>hrdb.hr_importer_monitor.status</code>. 0：待处理 1：处理失败 2：处理成功
 	 */
 	public void setStatus(Short value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_importer_monitor.status</code>. 0：待处理 1：处理失败 2：处理成功
+	 * Getter for <code>hrdb.hr_importer_monitor.status</code>. 0：待处理 1：处理失败 2：处理成功
 	 */
 	public Short getStatus() {
 		return (Short) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_importer_monitor.message</code>. 操作提示信息
+	 * Setter for <code>hrdb.hr_importer_monitor.message</code>. 操作提示信息
 	 */
 	public void setMessage(String value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_importer_monitor.message</code>. 操作提示信息
+	 * Getter for <code>hrdb.hr_importer_monitor.message</code>. 操作提示信息
 	 */
 	public String getMessage() {
 		return (String) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_importer_monitor.create_time</code>.
+	 * Setter for <code>hrdb.hr_importer_monitor.create_time</code>.
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_importer_monitor.create_time</code>.
+	 * Getter for <code>hrdb.hr_importer_monitor.create_time</code>.
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_importer_monitor.update_time</code>.
+	 * Setter for <code>hrdb.hr_importer_monitor.update_time</code>.
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_importer_monitor.update_time</code>.
+	 * Getter for <code>hrdb.hr_importer_monitor.update_time</code>.
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_importer_monitor.name</code>. 导入的文件名
+	 * Setter for <code>hrdb.hr_importer_monitor.name</code>. 导入的文件名
 	 */
 	public void setName(String value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_importer_monitor.name</code>. 导入的文件名
+	 * Getter for <code>hrdb.hr_importer_monitor.name</code>. 导入的文件名
 	 */
 	public String getName() {
 		return (String) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_importer_monitor.sys</code>. 1:mp, 2:hr
+	 * Setter for <code>hrdb.hr_importer_monitor.sys</code>. 1:mp, 2:hr
 	 */
 	public void setSys(Byte value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_importer_monitor.sys</code>. 1:mp, 2:hr
+	 * Getter for <code>hrdb.hr_importer_monitor.sys</code>. 1:mp, 2:hr
 	 */
 	public Byte getSys() {
 		return (Byte) getValue(10);

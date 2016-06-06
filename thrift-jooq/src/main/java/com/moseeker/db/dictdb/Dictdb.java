@@ -36,10 +36,10 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dictdb extends SchemaImpl {
 
-	private static final long serialVersionUID = -1946660513;
+	private static final long serialVersionUID = -1513041569;
 
 	/**
-	 * The reference instance of <code>dictDB</code>
+	 * The reference instance of <code>dictdb</code>
 	 */
 	public static final Dictdb DICTDB = new Dictdb();
 
@@ -47,7 +47,7 @@ public class Dictdb extends SchemaImpl {
 	 * No further instances allowed
 	 */
 	private Dictdb() {
-		super("dictDB");
+		super("dictdb");
 	}
 
 	@Override

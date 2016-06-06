@@ -37,10 +37,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileCredentials extends TableImpl<ProfileCredentialsRecord> {
 
-	private static final long serialVersionUID = 1807690038;
+	private static final long serialVersionUID = 1839926582;
 
 	/**
-	 * The reference instance of <code>profileDB.profile_credentials</code>
+	 * The reference instance of <code>profiledb.profile_credentials</code>
 	 */
 	public static final ProfileCredentials PROFILE_CREDENTIALS = new ProfileCredentials();
 
@@ -53,64 +53,64 @@ public class ProfileCredentials extends TableImpl<ProfileCredentialsRecord> {
 	}
 
 	/**
-	 * The column <code>profileDB.profile_credentials.id</code>. 主key
+	 * The column <code>profiledb.profile_credentials.id</code>. 主key
 	 */
 	public final TableField<ProfileCredentialsRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
 
 	/**
-	 * The column <code>profileDB.profile_credentials.profile_id</code>. profile.id
+	 * The column <code>profiledb.profile_credentials.profile_id</code>. profile.id
 	 */
 	public final TableField<ProfileCredentialsRecord, UInteger> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "profile.id");
 
 	/**
-	 * The column <code>profileDB.profile_credentials.name</code>. 证书名称
+	 * The column <code>profiledb.profile_credentials.name</code>. 证书名称
 	 */
 	public final TableField<ProfileCredentialsRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false).defaulted(true), this, "证书名称");
 
 	/**
-	 * The column <code>profileDB.profile_credentials.organization</code>. 证书机构
+	 * The column <code>profiledb.profile_credentials.organization</code>. 证书机构
 	 */
 	public final TableField<ProfileCredentialsRecord, String> ORGANIZATION = createField("organization", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false).defaulted(true), this, "证书机构");
 
 	/**
-	 * The column <code>profileDB.profile_credentials.code</code>. 证书编码
+	 * The column <code>profiledb.profile_credentials.code</code>. 证书编码
 	 */
 	public final TableField<ProfileCredentialsRecord, String> CODE = createField("code", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false).defaulted(true), this, "证书编码");
 
 	/**
-	 * The column <code>profileDB.profile_credentials.url</code>. 认证链接
+	 * The column <code>profiledb.profile_credentials.url</code>. 认证链接
 	 */
 	public final TableField<ProfileCredentialsRecord, String> URL = createField("url", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false).defaulted(true), this, "认证链接");
 
 	/**
-	 * The column <code>profileDB.profile_credentials.get_date</code>. 获得时间
+	 * The column <code>profiledb.profile_credentials.get_date</code>. 获得时间
 	 */
 	public final TableField<ProfileCredentialsRecord, Date> GET_DATE = createField("get_date", org.jooq.impl.SQLDataType.DATE, this, "获得时间");
 
 	/**
-	 * The column <code>profileDB.profile_credentials.score</code>. 成绩
+	 * The column <code>profiledb.profile_credentials.score</code>. 成绩
 	 */
 	public final TableField<ProfileCredentialsRecord, String> SCORE = createField("score", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "成绩");
 
 	/**
-	 * The column <code>profileDB.profile_credentials.create_time</code>. 创建时间
+	 * The column <code>profiledb.profile_credentials.create_time</code>. 创建时间
 	 */
 	public final TableField<ProfileCredentialsRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "创建时间");
 
 	/**
-	 * The column <code>profileDB.profile_credentials.update_time</code>. 更新时间
+	 * The column <code>profiledb.profile_credentials.update_time</code>. 更新时间
 	 */
 	public final TableField<ProfileCredentialsRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "更新时间");
 
 	/**
-	 * Create a <code>profileDB.profile_credentials</code> table reference
+	 * Create a <code>profiledb.profile_credentials</code> table reference
 	 */
 	public ProfileCredentials() {
 		this("profile_credentials", null);
 	}
 
 	/**
-	 * Create an aliased <code>profileDB.profile_credentials</code> table reference
+	 * Create an aliased <code>profiledb.profile_credentials</code> table reference
 	 */
 	public ProfileCredentials(String alias) {
 		this(alias, PROFILE_CREDENTIALS);

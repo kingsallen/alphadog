@@ -29,45 +29,45 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxBasicReplyRecord extends UpdatableRecordImpl<HrWxBasicReplyRecord> implements Record3<UInteger, UInteger, String> {
 
-	private static final long serialVersionUID = 959993833;
+	private static final long serialVersionUID = -343812119;
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_basic_reply.id</code>.
+	 * Setter for <code>hrdb.hr_wx_basic_reply.id</code>.
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_basic_reply.id</code>.
+	 * Getter for <code>hrdb.hr_wx_basic_reply.id</code>.
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_basic_reply.rid</code>.
+	 * Setter for <code>hrdb.hr_wx_basic_reply.rid</code>.
 	 */
 	public void setRid(UInteger value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_basic_reply.rid</code>.
+	 * Getter for <code>hrdb.hr_wx_basic_reply.rid</code>.
 	 */
 	public UInteger getRid() {
 		return (UInteger) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_basic_reply.content</code>. 文本回复内容
+	 * Setter for <code>hrdb.hr_wx_basic_reply.content</code>. 文本回复内容
 	 */
 	public void setContent(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_basic_reply.content</code>. 文本回复内容
+	 * Getter for <code>hrdb.hr_wx_basic_reply.content</code>. 文本回复内容
 	 */
 	public String getContent() {
 		return (String) getValue(2);

@@ -1,22 +1,28 @@
 package com.moseeker.useraccounts.dao.impl;
 
-import com.moseeker.common.dbutils.DBConnHelper;
-import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
-import com.moseeker.common.util.BeanUtils;
-import com.moseeker.db.userdb.tables.UserSettings;
-import com.moseeker.db.userdb.tables.UserUser;
-import com.moseeker.db.userdb.tables.records.UserUserRecord;
-import com.moseeker.useraccounts.dao.UserDao;
-import com.moseeker.useraccounts.pojo.User;
+import java.sql.Connection;
+import java.sql.SQLException;
+
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.types.UInteger;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.List;
+import com.moseeker.common.dbutils.DBConnHelper;
+import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
+import com.moseeker.common.util.BeanUtils;
+import com.moseeker.db.candidatedb.tables.CandidateCompany;
+import com.moseeker.db.candidatedb.tables.CandidatePositionShareRecord;
+import com.moseeker.db.hrdb.tables.HrWxHrChatList;
+import com.moseeker.db.userdb.tables.UserFavPosition;
+import com.moseeker.db.userdb.tables.UserIntention;
+import com.moseeker.db.userdb.tables.UserSettings;
+import com.moseeker.db.userdb.tables.UserUser;
+import com.moseeker.db.userdb.tables.UserWxUser;
+import com.moseeker.db.userdb.tables.UserWxViewer;
+import com.moseeker.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.useraccounts.dao.UserDao;
+import com.moseeker.useraccounts.pojo.User;
 
 /**
  * 用户数据接口
@@ -36,16 +42,38 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
     }
 
     @Override
-    public void combineAccount(List<String> tables, String column, int orig, int dest) throws Exception {
+    public void combineAccount(int orig, int dest) throws Exception {
         try {
             conn = DBConnHelper.DBConn.getConn();
-            for(String table : tables) {
-                PreparedStatement pstmt = conn.prepareStatement(COMBINE_ACCOUNT.replace("{table}", table).replace("{column}", column));
-                pstmt.setInt(0, orig);
-                pstmt.setInt(1, dest);
-                pstmt.executeUpdate();
-                pstmt.close();
-            }
+            create = DBConnHelper.DBConn.getJooqDSL(conn);
+            create.update(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD)
+            .set(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.SYSUSER_ID, Long.valueOf(orig))
+            .where(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.SYSUSER_ID.equal(Long.valueOf(dest)))
+            .execute();
+            create.update(HrWxHrChatList.HR_WX_HR_CHAT_LIST)
+            .set(HrWxHrChatList.HR_WX_HR_CHAT_LIST.SYSUSER_ID, orig)
+            .where(HrWxHrChatList.HR_WX_HR_CHAT_LIST.SYSUSER_ID.equal(dest))
+            .execute();
+            create.update(UserFavPosition.USER_FAV_POSITION)
+            .set(UserFavPosition.USER_FAV_POSITION.SYSUSER_ID, orig)
+            .where(UserFavPosition.USER_FAV_POSITION.SYSUSER_ID.equal(dest))
+            .execute();
+            create.update(UserIntention.USER_INTENTION)
+            .set(UserIntention.USER_INTENTION.SYSUSER_ID, orig)
+            .where(UserIntention.USER_INTENTION.SYSUSER_ID.equal(dest))
+            .execute();
+            create.update(UserWxUser.USER_WX_USER)
+            .set(UserWxUser.USER_WX_USER.SYSUSER_ID, orig)
+            .where(UserWxUser.USER_WX_USER.SYSUSER_ID.equal(dest))
+            .execute();
+            create.update(UserWxViewer.USER_WX_VIEWER)
+            .set(UserWxViewer.USER_WX_VIEWER.SYSUSER_ID, orig)
+            .where(UserWxViewer.USER_WX_VIEWER.SYSUSER_ID.equal(dest))
+            .execute();
+            create.update(CandidateCompany.CANDIDATE_COMPANY)
+            .set(CandidateCompany.CANDIDATE_COMPANY.SYS_USER_ID, orig)
+            .where(CandidateCompany.CANDIDATE_COMPANY.SYS_USER_ID.equal(dest))
+            .execute();
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
         } finally {

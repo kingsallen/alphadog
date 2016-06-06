@@ -37,10 +37,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileSkill extends TableImpl<ProfileSkillRecord> {
 
-	private static final long serialVersionUID = -307689760;
+	private static final long serialVersionUID = -1783300384;
 
 	/**
-	 * The reference instance of <code>profileDB.profile_skill</code>
+	 * The reference instance of <code>profiledb.profile_skill</code>
 	 */
 	public static final ProfileSkill PROFILE_SKILL = new ProfileSkill();
 
@@ -53,49 +53,49 @@ public class ProfileSkill extends TableImpl<ProfileSkillRecord> {
 	}
 
 	/**
-	 * The column <code>profileDB.profile_skill.id</code>. 主key
+	 * The column <code>profiledb.profile_skill.id</code>. 主key
 	 */
 	public final TableField<ProfileSkillRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
 
 	/**
-	 * The column <code>profileDB.profile_skill.profile_id</code>. profile.id
+	 * The column <code>profiledb.profile_skill.profile_id</code>. profile.id
 	 */
 	public final TableField<ProfileSkillRecord, UInteger> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "profile.id");
 
 	/**
-	 * The column <code>profileDB.profile_skill.name</code>. 技能名称
+	 * The column <code>profiledb.profile_skill.name</code>. 技能名称
 	 */
 	public final TableField<ProfileSkillRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaulted(true), this, "技能名称");
 
 	/**
-	 * The column <code>profileDB.profile_skill.level</code>. 掌握程度 0:未填写 1:了解, 2:掌握 3:熟练 4:精通
+	 * The column <code>profiledb.profile_skill.level</code>. 掌握程度 0:未填写 1:了解, 2:掌握 3:熟练 4:精通
 	 */
 	public final TableField<ProfileSkillRecord, UByte> LEVEL = createField("level", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "掌握程度 0:未填写 1:了解, 2:掌握 3:熟练 4:精通");
 
 	/**
-	 * The column <code>profileDB.profile_skill.month</code>. 使用 单位(月)
+	 * The column <code>profiledb.profile_skill.month</code>. 使用 单位(月)
 	 */
 	public final TableField<ProfileSkillRecord, UInteger> MONTH = createField("month", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "使用 单位(月)");
 
 	/**
-	 * The column <code>profileDB.profile_skill.create_time</code>. 创建时间
+	 * The column <code>profiledb.profile_skill.create_time</code>. 创建时间
 	 */
 	public final TableField<ProfileSkillRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "创建时间");
 
 	/**
-	 * The column <code>profileDB.profile_skill.update_time</code>. 更新时间
+	 * The column <code>profiledb.profile_skill.update_time</code>. 更新时间
 	 */
 	public final TableField<ProfileSkillRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "更新时间");
 
 	/**
-	 * Create a <code>profileDB.profile_skill</code> table reference
+	 * Create a <code>profiledb.profile_skill</code> table reference
 	 */
 	public ProfileSkill() {
 		this("profile_skill", null);
 	}
 
 	/**
-	 * Create an aliased <code>profileDB.profile_skill</code> table reference
+	 * Create an aliased <code>profiledb.profile_skill</code> table reference
 	 */
 	public ProfileSkill(String alias) {
 		this(alias, PROFILE_SKILL);

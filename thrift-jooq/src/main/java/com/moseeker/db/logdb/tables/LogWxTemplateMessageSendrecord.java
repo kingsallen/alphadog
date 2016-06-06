@@ -36,10 +36,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogWxTemplateMessageSendrecord extends TableImpl<LogWxTemplateMessageSendrecordRecord> {
 
-	private static final long serialVersionUID = -1359980685;
+	private static final long serialVersionUID = -1813090445;
 
 	/**
-	 * The reference instance of <code>logDB.log_wx_template_message_sendrecord</code>
+	 * The reference instance of <code>logdb.log_wx_template_message_sendrecord</code>
 	 */
 	public static final LogWxTemplateMessageSendrecord LOG_WX_TEMPLATE_MESSAGE_SENDRECORD = new LogWxTemplateMessageSendrecord();
 
@@ -52,89 +52,89 @@ public class LogWxTemplateMessageSendrecord extends TableImpl<LogWxTemplateMessa
 	}
 
 	/**
-	 * The column <code>logDB.log_wx_template_message_sendrecord.id</code>. 主key
+	 * The column <code>logdb.log_wx_template_message_sendrecord.id</code>. 主key
 	 */
 	public final TableField<LogWxTemplateMessageSendrecordRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
 
 	/**
-	 * The column <code>logDB.log_wx_template_message_sendrecord.template_id</code>. 我的模板ID
+	 * The column <code>logdb.log_wx_template_message_sendrecord.template_id</code>. 我的模板ID
 	 */
 	public final TableField<LogWxTemplateMessageSendrecordRecord, UInteger> TEMPLATE_ID = createField("template_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "我的模板ID");
 
 	/**
-	 * The column <code>logDB.log_wx_template_message_sendrecord.wechat_id</code>. 所属公众号
+	 * The column <code>logdb.log_wx_template_message_sendrecord.wechat_id</code>. 所属公众号
 	 */
 	public final TableField<LogWxTemplateMessageSendrecordRecord, UInteger> WECHAT_ID = createField("wechat_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "所属公众号");
 
 	/**
-	 * The column <code>logDB.log_wx_template_message_sendrecord.msgid</code>. 发送消息ID
+	 * The column <code>logdb.log_wx_template_message_sendrecord.msgid</code>. 发送消息ID
 	 */
 	public final TableField<LogWxTemplateMessageSendrecordRecord, Long> MSGID = createField("msgid", org.jooq.impl.SQLDataType.BIGINT.defaulted(true), this, "发送消息ID");
 
 	/**
-	 * The column <code>logDB.log_wx_template_message_sendrecord.open_id</code>. 微信用户OPENID
+	 * The column <code>logdb.log_wx_template_message_sendrecord.open_id</code>. 微信用户OPENID
 	 */
 	public final TableField<LogWxTemplateMessageSendrecordRecord, String> OPEN_ID = createField("open_id", org.jooq.impl.SQLDataType.VARCHAR.length(30).nullable(false), this, "微信用户OPENID");
 
 	/**
-	 * The column <code>logDB.log_wx_template_message_sendrecord.url</code>. link
+	 * The column <code>logdb.log_wx_template_message_sendrecord.url</code>. link
 	 */
 	public final TableField<LogWxTemplateMessageSendrecordRecord, String> URL = createField("url", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false), this, "link");
 
 	/**
-	 * The column <code>logDB.log_wx_template_message_sendrecord.topcolor</code>. 信息顶部颜色
+	 * The column <code>logdb.log_wx_template_message_sendrecord.topcolor</code>. 信息顶部颜色
 	 */
 	public final TableField<LogWxTemplateMessageSendrecordRecord, String> TOPCOLOR = createField("topcolor", org.jooq.impl.SQLDataType.VARCHAR.length(10).nullable(false), this, "信息顶部颜色");
 
 	/**
-	 * The column <code>logDB.log_wx_template_message_sendrecord.jsondata</code>. 发送的json数据
+	 * The column <code>logdb.log_wx_template_message_sendrecord.jsondata</code>. 发送的json数据
 	 */
 	public final TableField<LogWxTemplateMessageSendrecordRecord, String> JSONDATA = createField("jsondata", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "发送的json数据");
 
 	/**
-	 * The column <code>logDB.log_wx_template_message_sendrecord.errcode</code>. 返回结果值
+	 * The column <code>logdb.log_wx_template_message_sendrecord.errcode</code>. 返回结果值
 	 */
 	public final TableField<LogWxTemplateMessageSendrecordRecord, UInteger> ERRCODE = createField("errcode", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "返回结果值");
 
 	/**
-	 * The column <code>logDB.log_wx_template_message_sendrecord.errmsg</code>. 返回提示信息
+	 * The column <code>logdb.log_wx_template_message_sendrecord.errmsg</code>. 返回提示信息
 	 */
 	public final TableField<LogWxTemplateMessageSendrecordRecord, String> ERRMSG = createField("errmsg", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "返回提示信息");
 
 	/**
-	 * The column <code>logDB.log_wx_template_message_sendrecord.sendtime</code>. 发送时间
+	 * The column <code>logdb.log_wx_template_message_sendrecord.sendtime</code>. 发送时间
 	 */
 	public final TableField<LogWxTemplateMessageSendrecordRecord, Timestamp> SENDTIME = createField("sendtime", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "发送时间");
 
 	/**
-	 * The column <code>logDB.log_wx_template_message_sendrecord.updatetime</code>. 反馈状态时间
+	 * The column <code>logdb.log_wx_template_message_sendrecord.updatetime</code>. 反馈状态时间
 	 */
 	public final TableField<LogWxTemplateMessageSendrecordRecord, Timestamp> UPDATETIME = createField("updatetime", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "反馈状态时间");
 
 	/**
-	 * The column <code>logDB.log_wx_template_message_sendrecord.sendstatus</code>. 发送状态
+	 * The column <code>logdb.log_wx_template_message_sendrecord.sendstatus</code>. 发送状态
 	 */
 	public final TableField<LogWxTemplateMessageSendrecordRecord, String> SENDSTATUS = createField("sendstatus", org.jooq.impl.SQLDataType.VARCHAR.length(100), this, "发送状态");
 
 	/**
-	 * The column <code>logDB.log_wx_template_message_sendrecord.sendtype</code>. 发送类型 0:微信 1:邮件 2:短信
+	 * The column <code>logdb.log_wx_template_message_sendrecord.sendtype</code>. 发送类型 0:微信 1:邮件 2:短信
 	 */
 	public final TableField<LogWxTemplateMessageSendrecordRecord, Integer> SENDTYPE = createField("sendtype", org.jooq.impl.SQLDataType.INTEGER.defaulted(true), this, "发送类型 0:微信 1:邮件 2:短信");
 
 	/**
-	 * The column <code>logDB.log_wx_template_message_sendrecord.access_token</code>. 发送时的access_token
+	 * The column <code>logdb.log_wx_template_message_sendrecord.access_token</code>. 发送时的access_token
 	 */
 	public final TableField<LogWxTemplateMessageSendrecordRecord, String> ACCESS_TOKEN = createField("access_token", org.jooq.impl.SQLDataType.VARCHAR.length(600).nullable(false).defaulted(true), this, "发送时的access_token");
 
 	/**
-	 * Create a <code>logDB.log_wx_template_message_sendrecord</code> table reference
+	 * Create a <code>logdb.log_wx_template_message_sendrecord</code> table reference
 	 */
 	public LogWxTemplateMessageSendrecord() {
 		this("log_wx_template_message_sendrecord", null);
 	}
 
 	/**
-	 * Create an aliased <code>logDB.log_wx_template_message_sendrecord</code> table reference
+	 * Create an aliased <code>logdb.log_wx_template_message_sendrecord</code> table reference
 	 */
 	public LogWxTemplateMessageSendrecord(String alias) {
 		this(alias, LOG_WX_TEMPLATE_MESSAGE_SENDRECORD);

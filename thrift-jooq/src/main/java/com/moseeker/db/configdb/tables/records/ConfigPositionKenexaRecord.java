@@ -30,115 +30,115 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigPositionKenexaRecord extends UpdatableRecordImpl<ConfigPositionKenexaRecord> implements Record8<Integer, Integer, String, String, Integer, Timestamp, Timestamp, Integer> {
 
-	private static final long serialVersionUID = 144053600;
+	private static final long serialVersionUID = -294224544;
 
 	/**
-	 * Setter for <code>configDB.config_position_kenexa.id</code>.
+	 * Setter for <code>configdb.config_position_kenexa.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_position_kenexa.id</code>.
+	 * Getter for <code>configdb.config_position_kenexa.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_position_kenexa.source_id</code>. ATS来源ID
+	 * Setter for <code>configdb.config_position_kenexa.source_id</code>. ATS来源ID
 	 */
 	public void setSourceId(Integer value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_position_kenexa.source_id</code>. ATS来源ID
+	 * Getter for <code>configdb.config_position_kenexa.source_id</code>. ATS来源ID
 	 */
 	public Integer getSourceId() {
 		return (Integer) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_position_kenexa.position_column</code>. 职位表字段名,  _ 暂未设置
+	 * Setter for <code>configdb.config_position_kenexa.position_column</code>. 职位表字段名,  _ 暂未设置
 	 */
 	public void setPositionColumn(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_position_kenexa.position_column</code>. 职位表字段名,  _ 暂未设置
+	 * Getter for <code>configdb.config_position_kenexa.position_column</code>. 职位表字段名,  _ 暂未设置
 	 */
 	public String getPositionColumn() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_position_kenexa.kenexa_job_id</code>. kenexa对应的JOB字段ID
+	 * Setter for <code>configdb.config_position_kenexa.kenexa_job_id</code>. kenexa对应的JOB字段ID
 	 */
 	public void setKenexaJobId(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_position_kenexa.kenexa_job_id</code>. kenexa对应的JOB字段ID
+	 * Getter for <code>configdb.config_position_kenexa.kenexa_job_id</code>. kenexa对应的JOB字段ID
 	 */
 	public String getKenexaJobId() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_position_kenexa.disable</code>. 是否有效，0：有效，1：无效
+	 * Setter for <code>configdb.config_position_kenexa.disable</code>. 是否有效，0：有效，1：无效
 	 */
 	public void setDisable(Integer value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_position_kenexa.disable</code>. 是否有效，0：有效，1：无效
+	 * Getter for <code>configdb.config_position_kenexa.disable</code>. 是否有效，0：有效，1：无效
 	 */
 	public Integer getDisable() {
 		return (Integer) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_position_kenexa.create_time</code>. 创建时间
+	 * Setter for <code>configdb.config_position_kenexa.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_position_kenexa.create_time</code>. 创建时间
+	 * Getter for <code>configdb.config_position_kenexa.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_position_kenexa.update_time</code>. 修改时间
+	 * Setter for <code>configdb.config_position_kenexa.update_time</code>. 修改时间
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_position_kenexa.update_time</code>. 修改时间
+	 * Getter for <code>configdb.config_position_kenexa.update_time</code>. 修改时间
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_position_kenexa.app_tpl_id</code>. 模板Id
+	 * Setter for <code>configdb.config_position_kenexa.app_tpl_id</code>. 模板Id
 	 */
 	public void setAppTplId(Integer value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_position_kenexa.app_tpl_id</code>. 模板Id
+	 * Getter for <code>configdb.config_position_kenexa.app_tpl_id</code>. 模板Id
 	 */
 	public Integer getAppTplId() {
 		return (Integer) getValue(7);

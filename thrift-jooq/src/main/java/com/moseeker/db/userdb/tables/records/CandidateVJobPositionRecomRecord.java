@@ -29,73 +29,73 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateVJobPositionRecomRecord extends TableRecordImpl<CandidateVJobPositionRecomRecord> implements Record5<Long, Long, Long, Timestamp, String> {
 
-	private static final long serialVersionUID = 617711330;
+	private static final long serialVersionUID = 1310193378;
 
 	/**
-	 * Setter for <code>userDB.candidate_v_job_position_recom.position_id</code>. position.id 分享职位ID
+	 * Setter for <code>userdb.candidate_v_job_position_recom.position_id</code>. position.id 分享职位ID
 	 */
 	public void setPositionId(Long value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.candidate_v_job_position_recom.position_id</code>. position.id 分享职位ID
+	 * Getter for <code>userdb.candidate_v_job_position_recom.position_id</code>. position.id 分享职位ID
 	 */
 	public Long getPositionId() {
 		return (Long) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>userDB.candidate_v_job_position_recom.recom_id</code>. wx_group_user.id 分享用户微信ID
+	 * Setter for <code>userdb.candidate_v_job_position_recom.recom_id</code>. wx_group_user.id 分享用户微信ID
 	 */
 	public void setRecomId(Long value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.candidate_v_job_position_recom.recom_id</code>. wx_group_user.id 分享用户微信ID
+	 * Getter for <code>userdb.candidate_v_job_position_recom.recom_id</code>. wx_group_user.id 分享用户微信ID
 	 */
 	public Long getRecomId() {
 		return (Long) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>userDB.candidate_v_job_position_recom.presentee_id</code>. 被动求职者,浏览者的微信ID，wx_group_user.id
+	 * Setter for <code>userdb.candidate_v_job_position_recom.presentee_id</code>. 被动求职者,浏览者的微信ID，wx_group_user.id
 	 */
 	public void setPresenteeId(Long value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.candidate_v_job_position_recom.presentee_id</code>. 被动求职者,浏览者的微信ID，wx_group_user.id
+	 * Getter for <code>userdb.candidate_v_job_position_recom.presentee_id</code>. 被动求职者,浏览者的微信ID，wx_group_user.id
 	 */
 	public Long getPresenteeId() {
 		return (Long) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>userDB.candidate_v_job_position_recom.create_time</code>. 创建时间
+	 * Setter for <code>userdb.candidate_v_job_position_recom.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.candidate_v_job_position_recom.create_time</code>. 创建时间
+	 * Getter for <code>userdb.candidate_v_job_position_recom.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>userDB.candidate_v_job_position_recom.nickname</code>. 用户昵称
+	 * Setter for <code>userdb.candidate_v_job_position_recom.nickname</code>. 用户昵称
 	 */
 	public void setNickname(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.candidate_v_job_position_recom.nickname</code>. 用户昵称
+	 * Getter for <code>userdb.candidate_v_job_position_recom.nickname</code>. 用户昵称
 	 */
 	public String getNickname() {
 		return (String) getValue(4);

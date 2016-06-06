@@ -30,129 +30,129 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigCacheconfigRediskeyRecord extends UpdatableRecordImpl<ConfigCacheconfigRediskeyRecord> implements Record9<Integer, Integer, String, Byte, String, String, Integer, String, Timestamp> {
 
-	private static final long serialVersionUID = -882041726;
+	private static final long serialVersionUID = 1133616258;
 
 	/**
-	 * Setter for <code>configDB.config_cacheconfig_rediskey.id</code>.
+	 * Setter for <code>configdb.config_cacheconfig_rediskey.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_cacheconfig_rediskey.id</code>.
+	 * Getter for <code>configdb.config_cacheconfig_rediskey.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_cacheconfig_rediskey.project_appid</code>. 项目id 0 基础服务
+	 * Setter for <code>configdb.config_cacheconfig_rediskey.project_appid</code>. 项目id 0 基础服务
 	 */
 	public void setProjectAppid(Integer value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_cacheconfig_rediskey.project_appid</code>. 项目id 0 基础服务
+	 * Getter for <code>configdb.config_cacheconfig_rediskey.project_appid</code>. 项目id 0 基础服务
 	 */
 	public Integer getProjectAppid() {
 		return (Integer) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_cacheconfig_rediskey.key_identifier</code>. 标识符， 大写英文字母
+	 * Setter for <code>configdb.config_cacheconfig_rediskey.key_identifier</code>. 标识符， 大写英文字母
 	 */
 	public void setKeyIdentifier(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_cacheconfig_rediskey.key_identifier</code>. 标识符， 大写英文字母
+	 * Getter for <code>configdb.config_cacheconfig_rediskey.key_identifier</code>. 标识符， 大写英文字母
 	 */
 	public String getKeyIdentifier() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_cacheconfig_rediskey.type</code>. 缓存类型 1 data  2. session 3 log
+	 * Setter for <code>configdb.config_cacheconfig_rediskey.type</code>. 缓存类型 1 data  2. session 3 log
 	 */
 	public void setType(Byte value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_cacheconfig_rediskey.type</code>. 缓存类型 1 data  2. session 3 log
+	 * Getter for <code>configdb.config_cacheconfig_rediskey.type</code>. 缓存类型 1 data  2. session 3 log
 	 */
 	public Byte getType() {
 		return (Byte) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_cacheconfig_rediskey.pattern</code>. 格式， 形如 ip_limit_%s
+	 * Setter for <code>configdb.config_cacheconfig_rediskey.pattern</code>. 格式， 形如 ip_limit_%s
 	 */
 	public void setPattern(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_cacheconfig_rediskey.pattern</code>. 格式， 形如 ip_limit_%s
+	 * Getter for <code>configdb.config_cacheconfig_rediskey.pattern</code>. 格式， 形如 ip_limit_%s
 	 */
 	public String getPattern() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_cacheconfig_rediskey.json_extraparams</code>. 额外参数， 如{'maxPerHour':100}
+	 * Setter for <code>configdb.config_cacheconfig_rediskey.json_extraparams</code>. 额外参数， 如{'maxPerHour':100}
 	 */
 	public void setJsonExtraparams(String value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_cacheconfig_rediskey.json_extraparams</code>. 额外参数， 如{'maxPerHour':100}
+	 * Getter for <code>configdb.config_cacheconfig_rediskey.json_extraparams</code>. 额外参数， 如{'maxPerHour':100}
 	 */
 	public String getJsonExtraparams() {
 		return (String) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_cacheconfig_rediskey.ttl</code>. 生存时间， 单位秒
+	 * Setter for <code>configdb.config_cacheconfig_rediskey.ttl</code>. 生存时间， 单位秒
 	 */
 	public void setTtl(Integer value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_cacheconfig_rediskey.ttl</code>. 生存时间， 单位秒
+	 * Getter for <code>configdb.config_cacheconfig_rediskey.ttl</code>. 生存时间， 单位秒
 	 */
 	public Integer getTtl() {
 		return (Integer) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_cacheconfig_rediskey.desc</code>. 备注， 包含json_extraparams的解释
+	 * Setter for <code>configdb.config_cacheconfig_rediskey.desc</code>. 备注， 包含json_extraparams的解释
 	 */
 	public void setDesc(String value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_cacheconfig_rediskey.desc</code>. 备注， 包含json_extraparams的解释
+	 * Getter for <code>configdb.config_cacheconfig_rediskey.desc</code>. 备注， 包含json_extraparams的解释
 	 */
 	public String getDesc() {
 		return (String) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_cacheconfig_rediskey.create_time</code>.
+	 * Setter for <code>configdb.config_cacheconfig_rediskey.create_time</code>.
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_cacheconfig_rediskey.create_time</code>.
+	 * Getter for <code>configdb.config_cacheconfig_rediskey.create_time</code>.
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(8);

@@ -28,73 +28,73 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrEmployeePositionRecord extends UpdatableRecordImpl<HrEmployeePositionRecord> implements Record5<Integer, Integer, String, Integer, Byte> {
 
-	private static final long serialVersionUID = -2061734416;
+	private static final long serialVersionUID = 11363824;
 
 	/**
-	 * Setter for <code>hrDB.hr_employee_position.id</code>.
+	 * Setter for <code>hrdb.hr_employee_position.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_employee_position.id</code>.
+	 * Getter for <code>hrdb.hr_employee_position.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_employee_position.company_id</code>. sys_company.id, 部门ID
+	 * Setter for <code>hrdb.hr_employee_position.company_id</code>. sys_company.id, 部门ID
 	 */
 	public void setCompanyId(Integer value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_employee_position.company_id</code>. sys_company.id, 部门ID
+	 * Getter for <code>hrdb.hr_employee_position.company_id</code>. sys_company.id, 部门ID
 	 */
 	public Integer getCompanyId() {
 		return (Integer) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_employee_position.name</code>. 职能名称
+	 * Setter for <code>hrdb.hr_employee_position.name</code>. 职能名称
 	 */
 	public void setName(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_employee_position.name</code>. 职能名称
+	 * Getter for <code>hrdb.hr_employee_position.name</code>. 职能名称
 	 */
 	public String getName() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_employee_position.priority</code>. 排序优先级
+	 * Setter for <code>hrdb.hr_employee_position.priority</code>. 排序优先级
 	 */
 	public void setPriority(Integer value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_employee_position.priority</code>. 排序优先级
+	 * Getter for <code>hrdb.hr_employee_position.priority</code>. 排序优先级
 	 */
 	public Integer getPriority() {
 		return (Integer) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_employee_position.status</code>. 1:有效, 0:无效
+	 * Setter for <code>hrdb.hr_employee_position.status</code>. 1:有效, 0:无效
 	 */
 	public void setStatus(Byte value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_employee_position.status</code>. 1:有效, 0:无效
+	 * Getter for <code>hrdb.hr_employee_position.status</code>. 1:有效, 0:无效
 	 */
 	public Byte getStatus() {
 		return (Byte) getValue(4);

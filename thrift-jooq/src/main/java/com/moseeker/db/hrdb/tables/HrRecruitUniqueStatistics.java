@@ -35,10 +35,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrRecruitUniqueStatistics extends TableImpl<HrRecruitUniqueStatisticsRecord> {
 
-	private static final long serialVersionUID = -2068645327;
+	private static final long serialVersionUID = 2088630833;
 
 	/**
-	 * The reference instance of <code>hrDB.hr_recruit_unique_statistics</code>
+	 * The reference instance of <code>hrdb.hr_recruit_unique_statistics</code>
 	 */
 	public static final HrRecruitUniqueStatistics HR_RECRUIT_UNIQUE_STATISTICS = new HrRecruitUniqueStatistics();
 
@@ -51,79 +51,79 @@ public class HrRecruitUniqueStatistics extends TableImpl<HrRecruitUniqueStatisti
 	}
 
 	/**
-	 * The column <code>hrDB.hr_recruit_unique_statistics.id</code>. primary key
+	 * The column <code>hrdb.hr_recruit_unique_statistics.id</code>. primary key
 	 */
 	public final TableField<HrRecruitUniqueStatisticsRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "primary key");
 
 	/**
-	 * The column <code>hrDB.hr_recruit_unique_statistics.position_id</code>. hr_position.id
+	 * The column <code>hrdb.hr_recruit_unique_statistics.position_id</code>. hr_position.id
 	 */
 	public final TableField<HrRecruitUniqueStatisticsRecord, Integer> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "hr_position.id");
 
 	/**
-	 * The column <code>hrDB.hr_recruit_unique_statistics.company_id</code>. company.id
+	 * The column <code>hrdb.hr_recruit_unique_statistics.company_id</code>. company.id
 	 */
 	public final TableField<HrRecruitUniqueStatisticsRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "company.id");
 
 	/**
-	 * The column <code>hrDB.hr_recruit_unique_statistics.jd_uv</code>. JD 页浏览人数
+	 * The column <code>hrdb.hr_recruit_unique_statistics.jd_uv</code>. JD 页浏览人数
 	 */
 	public final TableField<HrRecruitUniqueStatisticsRecord, Integer> JD_UV = createField("jd_uv", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "JD 页浏览人数");
 
 	/**
-	 * The column <code>hrDB.hr_recruit_unique_statistics.recom_jd_uv</code>. JD 页推荐浏览人数
+	 * The column <code>hrdb.hr_recruit_unique_statistics.recom_jd_uv</code>. JD 页推荐浏览人数
 	 */
 	public final TableField<HrRecruitUniqueStatisticsRecord, Integer> RECOM_JD_UV = createField("recom_jd_uv", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "JD 页推荐浏览人数");
 
 	/**
-	 * The column <code>hrDB.hr_recruit_unique_statistics.fav_num</code>. 感兴趣的人数
+	 * The column <code>hrdb.hr_recruit_unique_statistics.fav_num</code>. 感兴趣的人数
 	 */
 	public final TableField<HrRecruitUniqueStatisticsRecord, Integer> FAV_NUM = createField("fav_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "感兴趣的人数");
 
 	/**
-	 * The column <code>hrDB.hr_recruit_unique_statistics.recom_fav_num</code>. 推荐感兴趣的人数
+	 * The column <code>hrdb.hr_recruit_unique_statistics.recom_fav_num</code>. 推荐感兴趣的人数
 	 */
 	public final TableField<HrRecruitUniqueStatisticsRecord, Integer> RECOM_FAV_NUM = createField("recom_fav_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "推荐感兴趣的人数");
 
 	/**
-	 * The column <code>hrDB.hr_recruit_unique_statistics.mobile_num</code>. 留手机的人数
+	 * The column <code>hrdb.hr_recruit_unique_statistics.mobile_num</code>. 留手机的人数
 	 */
 	public final TableField<HrRecruitUniqueStatisticsRecord, Integer> MOBILE_NUM = createField("mobile_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "留手机的人数");
 
 	/**
-	 * The column <code>hrDB.hr_recruit_unique_statistics.recom_mobile_num</code>. 推荐感兴趣留手机的人数
+	 * The column <code>hrdb.hr_recruit_unique_statistics.recom_mobile_num</code>. 推荐感兴趣留手机的人数
 	 */
 	public final TableField<HrRecruitUniqueStatisticsRecord, Integer> RECOM_MOBILE_NUM = createField("recom_mobile_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "推荐感兴趣留手机的人数");
 
 	/**
-	 * The column <code>hrDB.hr_recruit_unique_statistics.apply_num</code>. 投递人数
+	 * The column <code>hrdb.hr_recruit_unique_statistics.apply_num</code>. 投递人数
 	 */
 	public final TableField<HrRecruitUniqueStatisticsRecord, Integer> APPLY_NUM = createField("apply_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "投递人数");
 
 	/**
-	 * The column <code>hrDB.hr_recruit_unique_statistics.recom_apply_num</code>. 推荐投递人数
+	 * The column <code>hrdb.hr_recruit_unique_statistics.recom_apply_num</code>. 推荐投递人数
 	 */
 	public final TableField<HrRecruitUniqueStatisticsRecord, Integer> RECOM_APPLY_NUM = createField("recom_apply_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "推荐投递人数");
 
 	/**
-	 * The column <code>hrDB.hr_recruit_unique_statistics.create_date</code>. 创建日期
+	 * The column <code>hrdb.hr_recruit_unique_statistics.create_date</code>. 创建日期
 	 */
 	public final TableField<HrRecruitUniqueStatisticsRecord, Date> CREATE_DATE = createField("create_date", org.jooq.impl.SQLDataType.DATE.nullable(false), this, "创建日期");
 
 	/**
-	 * The column <code>hrDB.hr_recruit_unique_statistics.info_type</code>. 0: 日数据，1：周数据，2：月数据
+	 * The column <code>hrdb.hr_recruit_unique_statistics.info_type</code>. 0: 日数据，1：周数据，2：月数据
 	 */
 	public final TableField<HrRecruitUniqueStatisticsRecord, Integer> INFO_TYPE = createField("info_type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "0: 日数据，1：周数据，2：月数据");
 
 	/**
-	 * Create a <code>hrDB.hr_recruit_unique_statistics</code> table reference
+	 * Create a <code>hrdb.hr_recruit_unique_statistics</code> table reference
 	 */
 	public HrRecruitUniqueStatistics() {
 		this("hr_recruit_unique_statistics", null);
 	}
 
 	/**
-	 * Create an aliased <code>hrDB.hr_recruit_unique_statistics</code> table reference
+	 * Create an aliased <code>hrdb.hr_recruit_unique_statistics</code> table reference
 	 */
 	public HrRecruitUniqueStatistics(String alias) {
 		this(alias, HR_RECRUIT_UNIQUE_STATISTICS);

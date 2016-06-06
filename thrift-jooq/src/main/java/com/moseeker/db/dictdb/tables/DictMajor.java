@@ -33,10 +33,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictMajor extends TableImpl<DictMajorRecord> {
 
-	private static final long serialVersionUID = 1838428628;
+	private static final long serialVersionUID = -1048827436;
 
 	/**
-	 * The reference instance of <code>dictDB.dict_major</code>
+	 * The reference instance of <code>dictdb.dict_major</code>
 	 */
 	public static final DictMajor DICT_MAJOR = new DictMajor();
 
@@ -49,29 +49,29 @@ public class DictMajor extends TableImpl<DictMajorRecord> {
 	}
 
 	/**
-	 * The column <code>dictDB.dict_major.code</code>. 字典code
+	 * The column <code>dictdb.dict_major.code</code>. 字典code
 	 */
 	public final TableField<DictMajorRecord, String> CODE = createField("code", org.jooq.impl.SQLDataType.CHAR.length(6).nullable(false).defaulted(true), this, "字典code");
 
 	/**
-	 * The column <code>dictDB.dict_major.name</code>. 字典name
+	 * The column <code>dictdb.dict_major.name</code>. 字典name
 	 */
 	public final TableField<DictMajorRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaulted(true), this, "字典name");
 
 	/**
-	 * The column <code>dictDB.dict_major.level</code>. 字典level
+	 * The column <code>dictdb.dict_major.level</code>. 字典level
 	 */
 	public final TableField<DictMajorRecord, Byte> LEVEL = createField("level", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "字典level");
 
 	/**
-	 * Create a <code>dictDB.dict_major</code> table reference
+	 * Create a <code>dictdb.dict_major</code> table reference
 	 */
 	public DictMajor() {
 		this("dict_major", null);
 	}
 
 	/**
-	 * Create an aliased <code>dictDB.dict_major</code> table reference
+	 * Create an aliased <code>dictdb.dict_major</code> table reference
 	 */
 	public DictMajor(String alias) {
 		this(alias, DICT_MAJOR);

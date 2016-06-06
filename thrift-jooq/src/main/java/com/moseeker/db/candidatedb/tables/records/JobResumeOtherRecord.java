@@ -31,59 +31,59 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobResumeOtherRecord extends UpdatableRecordImpl<JobResumeOtherRecord> implements Record4<UInteger, String, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = 1706862497;
+	private static final long serialVersionUID = 170305441;
 
 	/**
-	 * Setter for <code>candidateDB.job_resume_other.app_id</code>. job_application.id
+	 * Setter for <code>candidatedb.job_resume_other.app_id</code>. job_application.id
 	 */
 	public void setAppId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_resume_other.app_id</code>. job_application.id
+	 * Getter for <code>candidatedb.job_resume_other.app_id</code>. job_application.id
 	 */
 	public UInteger getAppId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_resume_other.other</code>. 自定义字段
+	 * Setter for <code>candidatedb.job_resume_other.other</code>. 自定义字段
 	 */
 	public void setOther(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_resume_other.other</code>. 自定义字段
+	 * Getter for <code>candidatedb.job_resume_other.other</code>. 自定义字段
 	 */
 	public String getOther() {
 		return (String) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_resume_other.create_time</code>. 创建时间
+	 * Setter for <code>candidatedb.job_resume_other.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_resume_other.create_time</code>. 创建时间
+	 * Getter for <code>candidatedb.job_resume_other.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_resume_other.update_time</code>. 更新时间
+	 * Setter for <code>candidatedb.job_resume_other.update_time</code>. 更新时间
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_resume_other.update_time</code>. 更新时间
+	 * Getter for <code>candidatedb.job_resume_other.update_time</code>. 更新时间
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(3);

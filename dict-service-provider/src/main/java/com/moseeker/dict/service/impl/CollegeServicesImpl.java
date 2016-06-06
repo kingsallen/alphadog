@@ -6,6 +6,7 @@ import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.db.dictdb.tables.records.DictCollegeRecord;
 import com.moseeker.dict.dao.CityDao;
 import com.moseeker.dict.dao.CollegeDao;
@@ -72,7 +73,7 @@ public class CollegeServicesImpl implements Iface {
                     r = JSON.toJSONString(ResponseUtils.success(transformed));
                 } catch (Exception e) {
                     logger.error("getResources error", e);
-                    ResponseUtils.fail(e.getMessage());
+                    ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
                 }
                 return r;
             });
@@ -108,7 +109,6 @@ class DictCollegeHashMap {
     public DictCollegeHashMap(List<College> colleges) {
         hm = new HashMap();
         for(College college: colleges) {
-            System.out.println(college);
             put(hm, college);
         }
     }

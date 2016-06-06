@@ -30,101 +30,101 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidatePositionRecord extends UpdatableRecordImpl<CandidatePositionRecord> implements Record7<Integer, Timestamp, Integer, Byte, Integer, Integer, Byte> {
 
-	private static final long serialVersionUID = -1743380863;
+	private static final long serialVersionUID = -912478591;
 
 	/**
-	 * Setter for <code>candidateDB.candidate_position.position_id</code>. hr_position.id
+	 * Setter for <code>candidatedb.candidate_position.position_id</code>. hr_position.id
 	 */
 	public void setPositionId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_position.position_id</code>. hr_position.id
+	 * Getter for <code>candidatedb.candidate_position.position_id</code>. hr_position.id
 	 */
 	public Integer getPositionId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_position.update_time</code>. 修改时间
+	 * Setter for <code>candidatedb.candidate_position.update_time</code>. 修改时间
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_position.update_time</code>. 修改时间
+	 * Getter for <code>candidatedb.candidate_position.update_time</code>. 修改时间
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_position.wxuser_id</code>. wx_group_user.id
+	 * Setter for <code>candidatedb.candidate_position.wxuser_id</code>. wx_group_user.id
 	 */
 	public void setWxuserId(Integer value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_position.wxuser_id</code>. wx_group_user.id
+	 * Getter for <code>candidatedb.candidate_position.wxuser_id</code>. wx_group_user.id
 	 */
 	public Integer getWxuserId() {
 		return (Integer) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_position.is_interested</code>. 是否感兴趣
+	 * Setter for <code>candidatedb.candidate_position.is_interested</code>. 是否感兴趣
 	 */
 	public void setIsInterested(Byte value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_position.is_interested</code>. 是否感兴趣
+	 * Getter for <code>candidatedb.candidate_position.is_interested</code>. 是否感兴趣
 	 */
 	public Byte getIsInterested() {
 		return (Byte) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_position.candidate_company_id</code>. candidate_company.id
+	 * Setter for <code>candidatedb.candidate_position.candidate_company_id</code>. candidate_company.id
 	 */
 	public void setCandidateCompanyId(Integer value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_position.candidate_company_id</code>. candidate_company.id
+	 * Getter for <code>candidatedb.candidate_position.candidate_company_id</code>. candidate_company.id
 	 */
 	public Integer getCandidateCompanyId() {
 		return (Integer) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_position.view_number</code>. 查看次数
+	 * Setter for <code>candidatedb.candidate_position.view_number</code>. 查看次数
 	 */
 	public void setViewNumber(Integer value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_position.view_number</code>. 查看次数
+	 * Getter for <code>candidatedb.candidate_position.view_number</code>. 查看次数
 	 */
 	public Integer getViewNumber() {
 		return (Integer) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_position.shared_from_employee</code>.
+	 * Setter for <code>candidatedb.candidate_position.shared_from_employee</code>.
 	 */
 	public void setSharedFromEmployee(Byte value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_position.shared_from_employee</code>.
+	 * Getter for <code>candidatedb.candidate_position.shared_from_employee</code>.
 	 */
 	public Byte getSharedFromEmployee() {
 		return (Byte) getValue(6);

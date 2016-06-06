@@ -30,227 +30,227 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrChildCompanyRecord extends UpdatableRecordImpl<HrChildCompanyRecord> implements Record16<Integer, String, String, UByte, String, String, String, String, String, String, Byte, String, String, UInteger, String, UInteger> {
 
-	private static final long serialVersionUID = -1161582817;
+	private static final long serialVersionUID = 2146015007;
 
 	/**
-	 * Setter for <code>hrDB.hr_child_company.id</code>.
+	 * Setter for <code>hrdb.hr_child_company.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_child_company.id</code>.
+	 * Getter for <code>hrdb.hr_child_company.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_child_company.name</code>.
+	 * Setter for <code>hrdb.hr_child_company.name</code>.
 	 */
 	public void setName(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_child_company.name</code>.
+	 * Getter for <code>hrdb.hr_child_company.name</code>.
 	 */
 	public String getName() {
 		return (String) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_child_company.ename</code>.
+	 * Setter for <code>hrdb.hr_child_company.ename</code>.
 	 */
 	public void setEname(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_child_company.ename</code>.
+	 * Getter for <code>hrdb.hr_child_company.ename</code>.
 	 */
 	public String getEname() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_child_company.status</code>. 0:onuse 1:unused
+	 * Setter for <code>hrdb.hr_child_company.status</code>. 0:onuse 1:unused
 	 */
 	public void setStatus(UByte value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_child_company.status</code>. 0:onuse 1:unused
+	 * Getter for <code>hrdb.hr_child_company.status</code>. 0:onuse 1:unused
 	 */
 	public UByte getStatus() {
 		return (UByte) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_child_company.CEO</code>. CEO
+	 * Setter for <code>hrdb.hr_child_company.CEO</code>. CEO
 	 */
 	public void setCeo(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_child_company.CEO</code>. CEO
+	 * Getter for <code>hrdb.hr_child_company.CEO</code>. CEO
 	 */
 	public String getCeo() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_child_company.introduction</code>. introduction
+	 * Setter for <code>hrdb.hr_child_company.introduction</code>. introduction
 	 */
 	public void setIntroduction(String value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_child_company.introduction</code>. introduction
+	 * Getter for <code>hrdb.hr_child_company.introduction</code>. introduction
 	 */
 	public String getIntroduction() {
 		return (String) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_child_company.scale</code>. people number of the company
+	 * Setter for <code>hrdb.hr_child_company.scale</code>. people number of the company
 	 */
 	public void setScale(String value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_child_company.scale</code>. people number of the company
+	 * Getter for <code>hrdb.hr_child_company.scale</code>. people number of the company
 	 */
 	public String getScale() {
 		return (String) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_child_company.province</code>. province
+	 * Setter for <code>hrdb.hr_child_company.province</code>. province
 	 */
 	public void setProvince(String value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_child_company.province</code>. province
+	 * Getter for <code>hrdb.hr_child_company.province</code>. province
 	 */
 	public String getProvince() {
 		return (String) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_child_company.city</code>. city
+	 * Setter for <code>hrdb.hr_child_company.city</code>. city
 	 */
 	public void setCity(String value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_child_company.city</code>. city
+	 * Getter for <code>hrdb.hr_child_company.city</code>. city
 	 */
 	public String getCity() {
 		return (String) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_child_company.address</code>. address
+	 * Setter for <code>hrdb.hr_child_company.address</code>. address
 	 */
 	public void setAddress(String value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_child_company.address</code>. address
+	 * Getter for <code>hrdb.hr_child_company.address</code>. address
 	 */
 	public String getAddress() {
 		return (String) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_child_company.property</code>. 0:国有1:三资2:集体3:私有
+	 * Setter for <code>hrdb.hr_child_company.property</code>. 0:国有1:三资2:集体3:私有
 	 */
 	public void setProperty(Byte value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_child_company.property</code>. 0:国有1:三资2:集体3:私有
+	 * Getter for <code>hrdb.hr_child_company.property</code>. 0:国有1:三资2:集体3:私有
 	 */
 	public Byte getProperty() {
 		return (Byte) getValue(10);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_child_company.business</code>. business
+	 * Setter for <code>hrdb.hr_child_company.business</code>. business
 	 */
 	public void setBusiness(String value) {
 		setValue(11, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_child_company.business</code>. business
+	 * Getter for <code>hrdb.hr_child_company.business</code>. business
 	 */
 	public String getBusiness() {
 		return (String) getValue(11);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_child_company.establish_time</code>. 公司成立时间
+	 * Setter for <code>hrdb.hr_child_company.establish_time</code>. 公司成立时间
 	 */
 	public void setEstablishTime(String value) {
 		setValue(12, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_child_company.establish_time</code>. 公司成立时间
+	 * Getter for <code>hrdb.hr_child_company.establish_time</code>. 公司成立时间
 	 */
 	public String getEstablishTime() {
 		return (String) getValue(12);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_child_company.parent_id</code>. 上级公司
+	 * Setter for <code>hrdb.hr_child_company.parent_id</code>. 上级公司
 	 */
 	public void setParentId(UInteger value) {
 		setValue(13, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_child_company.parent_id</code>. 上级公司
+	 * Getter for <code>hrdb.hr_child_company.parent_id</code>. 上级公司
 	 */
 	public UInteger getParentId() {
 		return (UInteger) getValue(13);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_child_company.homepage</code>. company home page
+	 * Setter for <code>hrdb.hr_child_company.homepage</code>. company home page
 	 */
 	public void setHomepage(String value) {
 		setValue(14, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_child_company.homepage</code>. company home page
+	 * Getter for <code>hrdb.hr_child_company.homepage</code>. company home page
 	 */
 	public String getHomepage() {
 		return (String) getValue(14);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_child_company.company_id</code>. hr_company.id
+	 * Setter for <code>hrdb.hr_child_company.company_id</code>. hr_company.id
 	 */
 	public void setCompanyId(UInteger value) {
 		setValue(15, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_child_company.company_id</code>. hr_company.id
+	 * Getter for <code>hrdb.hr_child_company.company_id</code>. hr_company.id
 	 */
 	public UInteger getCompanyId() {
 		return (UInteger) getValue(15);

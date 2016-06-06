@@ -28,59 +28,59 @@ import com.moseeker.db.dictdb.tables.DictCollege;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictCollegeRecord extends UpdatableRecordImpl<DictCollegeRecord> implements Record4<UInteger, String, UInteger, String> {
 
-	private static final long serialVersionUID = -472453410;
+	private static final long serialVersionUID = -1776453922;
 
 	/**
-	 * Setter for <code>dictDB.dict_college.code</code>. 字典code
+	 * Setter for <code>dictdb.dict_college.code</code>. 字典code
 	 */
 	public void setCode(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_college.code</code>. 字典code
+	 * Getter for <code>dictdb.dict_college.code</code>. 字典code
 	 */
 	public UInteger getCode() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>dictDB.dict_college.name</code>. 字典name
+	 * Setter for <code>dictdb.dict_college.name</code>. 字典name
 	 */
 	public void setName(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_college.name</code>. 字典name
+	 * Getter for <code>dictdb.dict_college.name</code>. 字典name
 	 */
 	public String getName() {
 		return (String) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>dictDB.dict_college.province</code>. 院校所在地
+	 * Setter for <code>dictdb.dict_college.province</code>. 院校所在地
 	 */
 	public void setProvince(UInteger value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_college.province</code>. 院校所在地
+	 * Getter for <code>dictdb.dict_college.province</code>. 院校所在地
 	 */
 	public UInteger getProvince() {
 		return (UInteger) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>dictDB.dict_college.logo</code>. 院校logo
+	 * Setter for <code>dictdb.dict_college.logo</code>. 院校logo
 	 */
 	public void setLogo(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_college.logo</code>. 院校logo
+	 * Getter for <code>dictdb.dict_college.logo</code>. 院校logo
 	 */
 	public String getLogo() {
 		return (String) getValue(3);

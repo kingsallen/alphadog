@@ -29,10 +29,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionTopic extends TableImpl<JobPositionTopicRecord> {
 
-	private static final long serialVersionUID = -1401675070;
+	private static final long serialVersionUID = 857351874;
 
 	/**
-	 * The reference instance of <code>candidateDB.job_position_topic</code>
+	 * The reference instance of <code>candidatedb.job_position_topic</code>
 	 */
 	public static final JobPositionTopic JOB_POSITION_TOPIC = new JobPositionTopic();
 
@@ -45,24 +45,24 @@ public class JobPositionTopic extends TableImpl<JobPositionTopicRecord> {
 	}
 
 	/**
-	 * The column <code>candidateDB.job_position_topic.position_id</code>. hr_position.id, 职位ID
+	 * The column <code>candidatedb.job_position_topic.position_id</code>. hr_position.id, 职位ID
 	 */
 	public final TableField<JobPositionTopicRecord, UInteger> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "hr_position.id, 职位ID");
 
 	/**
-	 * The column <code>candidateDB.job_position_topic.topic_id</code>. hr_topic.id, 主题ID
+	 * The column <code>candidatedb.job_position_topic.topic_id</code>. hr_topic.id, 主题ID
 	 */
 	public final TableField<JobPositionTopicRecord, UInteger> TOPIC_ID = createField("topic_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "hr_topic.id, 主题ID");
 
 	/**
-	 * Create a <code>candidateDB.job_position_topic</code> table reference
+	 * Create a <code>candidatedb.job_position_topic</code> table reference
 	 */
 	public JobPositionTopic() {
 		this("job_position_topic", null);
 	}
 
 	/**
-	 * Create an aliased <code>candidateDB.job_position_topic</code> table reference
+	 * Create an aliased <code>candidatedb.job_position_topic</code> table reference
 	 */
 	public JobPositionTopic(String alias) {
 		this(alias, JOB_POSITION_TOPIC);

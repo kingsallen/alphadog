@@ -40,7 +40,7 @@ import org.jooq.types.UInteger;
 
 
 /**
- * A class modelling foreign key relationships between tables of the <code>candidateDB</code> 
+ * A class modelling foreign key relationships between tables of the <code>candidatedb</code> 
  * schema
  */
 @Generated(

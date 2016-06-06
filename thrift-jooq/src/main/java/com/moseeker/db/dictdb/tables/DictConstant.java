@@ -36,10 +36,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictConstant extends TableImpl<DictConstantRecord> {
 
-	private static final long serialVersionUID = -83866158;
+	private static final long serialVersionUID = 742317522;
 
 	/**
-	 * The reference instance of <code>dictDB.dict_constant</code>
+	 * The reference instance of <code>dictdb.dict_constant</code>
 	 */
 	public static final DictConstant DICT_CONSTANT = new DictConstant();
 
@@ -52,49 +52,49 @@ public class DictConstant extends TableImpl<DictConstantRecord> {
 	}
 
 	/**
-	 * The column <code>dictDB.dict_constant.id</code>. 主key
+	 * The column <code>dictdb.dict_constant.id</code>. 主key
 	 */
 	public final TableField<DictConstantRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
 
 	/**
-	 * The column <code>dictDB.dict_constant.code</code>. 字典code
+	 * The column <code>dictdb.dict_constant.code</code>. 字典code
 	 */
 	public final TableField<DictConstantRecord, Integer> CODE = createField("code", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "字典code");
 
 	/**
-	 * The column <code>dictDB.dict_constant.name</code>. 字典name
+	 * The column <code>dictdb.dict_constant.name</code>. 字典name
 	 */
 	public final TableField<DictConstantRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaulted(true), this, "字典name");
 
 	/**
-	 * The column <code>dictDB.dict_constant.priority</code>. 优先级
+	 * The column <code>dictdb.dict_constant.priority</code>. 优先级
 	 */
 	public final TableField<DictConstantRecord, Byte> PRIORITY = createField("priority", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "优先级");
 
 	/**
-	 * The column <code>dictDB.dict_constant.parent_code</code>. 父级字典code
+	 * The column <code>dictdb.dict_constant.parent_code</code>. 父级字典code
 	 */
 	public final TableField<DictConstantRecord, Integer> PARENT_CODE = createField("parent_code", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "父级字典code");
 
 	/**
-	 * The column <code>dictDB.dict_constant.create_time</code>.
+	 * The column <code>dictdb.dict_constant.create_time</code>.
 	 */
 	public final TableField<DictConstantRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>dictDB.dict_constant.update_time</code>.
+	 * The column <code>dictdb.dict_constant.update_time</code>.
 	 */
 	public final TableField<DictConstantRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * Create a <code>dictDB.dict_constant</code> table reference
+	 * Create a <code>dictdb.dict_constant</code> table reference
 	 */
 	public DictConstant() {
 		this("dict_constant", null);
 	}
 
 	/**
-	 * Create an aliased <code>dictDB.dict_constant</code> table reference
+	 * Create an aliased <code>dictdb.dict_constant</code> table reference
 	 */
 	public DictConstant(String alias) {
 		this(alias, DICT_CONSTANT);

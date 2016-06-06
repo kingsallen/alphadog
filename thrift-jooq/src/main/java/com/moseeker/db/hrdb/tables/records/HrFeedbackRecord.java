@@ -31,115 +31,115 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrFeedbackRecord extends UpdatableRecordImpl<HrFeedbackRecord> implements Record8<UInteger, Integer, String, String, String, String, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = 1031932923;
+	private static final long serialVersionUID = -211485701;
 
 	/**
-	 * Setter for <code>hrDB.hr_feedback.id</code>. ID
+	 * Setter for <code>hrdb.hr_feedback.id</code>. ID
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_feedback.id</code>. ID
+	 * Getter for <code>hrdb.hr_feedback.id</code>. ID
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_feedback.hraccount_id</code>. hr_account.id 账号编号
+	 * Setter for <code>hrdb.hr_feedback.hraccount_id</code>. hr_account.id 账号编号
 	 */
 	public void setHraccountId(Integer value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_feedback.hraccount_id</code>. hr_account.id 账号编号
+	 * Getter for <code>hrdb.hr_feedback.hraccount_id</code>. hr_account.id 账号编号
 	 */
 	public Integer getHraccountId() {
 		return (Integer) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_feedback.name</code>. 姓名
+	 * Setter for <code>hrdb.hr_feedback.name</code>. 姓名
 	 */
 	public void setName(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_feedback.name</code>. 姓名
+	 * Getter for <code>hrdb.hr_feedback.name</code>. 姓名
 	 */
 	public String getName() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_feedback.email</code>. 邮箱
+	 * Setter for <code>hrdb.hr_feedback.email</code>. 邮箱
 	 */
 	public void setEmail(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_feedback.email</code>. 邮箱
+	 * Getter for <code>hrdb.hr_feedback.email</code>. 邮箱
 	 */
 	public String getEmail() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_feedback.images</code>. 反馈图片
+	 * Setter for <code>hrdb.hr_feedback.images</code>. 反馈图片
 	 */
 	public void setImages(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_feedback.images</code>. 反馈图片
+	 * Getter for <code>hrdb.hr_feedback.images</code>. 反馈图片
 	 */
 	public String getImages() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_feedback.content</code>. 反馈内容
+	 * Setter for <code>hrdb.hr_feedback.content</code>. 反馈内容
 	 */
 	public void setContent(String value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_feedback.content</code>. 反馈内容
+	 * Getter for <code>hrdb.hr_feedback.content</code>. 反馈内容
 	 */
 	public String getContent() {
 		return (String) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_feedback.create_time</code>.
+	 * Setter for <code>hrdb.hr_feedback.create_time</code>.
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_feedback.create_time</code>.
+	 * Getter for <code>hrdb.hr_feedback.create_time</code>.
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_feedback.update_time</code>.
+	 * Setter for <code>hrdb.hr_feedback.update_time</code>.
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_feedback.update_time</code>.
+	 * Getter for <code>hrdb.hr_feedback.update_time</code>.
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(7);

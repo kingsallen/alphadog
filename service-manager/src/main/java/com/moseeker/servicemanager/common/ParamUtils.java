@@ -60,76 +60,47 @@ public class ParamUtils {
 			throws Exception {
 		if (t != null) {
 			try {
+				Map<String, Object> data = new HashMap<String, Object>();
+				data.putAll(initParamFromRequestBody(request));
+				data.putAll(initParamFromRequestParameter(request));
 				
-				Integer appId = request.getParameter("appid") == null ? null
-						: Integer.parseInt(request.getParameter("appid"));
-
-				if (appId == null) {
+				if (data.get("appid") == null) {
 					throw new Exception("请设置 appid!");
 				}
 
-				if (appId != null) {
-					Method method = t.getClass().getMethod("setAppid",
-							int.class);
-					method.invoke(t, appId);
-				}
-/*
-				Integer limit = request.getParameter("limit") == null ? null
-						: Integer.parseInt(request.getParameter("limit"));
-				if (limit != null) {
-					Method method = t.getClass().getMethod("setLimit",
-							int.class);
-					method.invoke(t, limit);
-				}
-				Integer offset = request.getParameter("offset") == null ? null
-						: Integer.parseInt(request.getParameter("offset"));
-				if (offset != null) {
-					Method method = t.getClass().getMethod("setOffset",
-							int.class);
-					method.invoke(t, offset);
-				}
-*/				
-				Integer page = request.getParameter("page") == null ? null
-						: Integer.parseInt(request.getParameter("page"));
-				if (page != null) {
+				Method method1 = t.getClass().getMethod("setAppid",
+						int.class);
+				method1.invoke(t, BeanUtils.converToInteger(data.get("appid")));
+				if (data.get("page") != null) {
 					Method method = t.getClass()
 							.getMethod("setPage", int.class);
-					method.invoke(t, page);
+					method.invoke(t, BeanUtils.converToInteger(data.get("page")));
 				}
-				Integer perPage = request.getParameter("per_page") == null ? null
-						: Integer.parseInt(request.getParameter("per_page"));
-				if (perPage != null) {
+				if (data.get("per_page") != null) {
 					Method method = t.getClass().getMethod("setPer_page",
 							int.class);
-					method.invoke(t, perPage);
+					method.invoke(t, BeanUtils.converToInteger(data.get("per_page")));
 				}
-				String sortby = request.getParameter("sortby") == null ? null
-						: request.getParameter("sortby");
-				if (sortby != null) {
+				if (data.get("sortby") != null) {
 					Method method = t.getClass().getMethod("setSortby",
 							String.class);
-					method.invoke(t, sortby);
+					method.invoke(t, BeanUtils.converToString(data.get("sortby")));
 				}
-				String order = request.getParameter("order") == null ? null
-						: request.getParameter("order");
-				if (order != null) {
+				if (data.get("order") != null) {
 					Method method = t.getClass().getMethod("setOrder",
 							String.class);
-					method.invoke(t, order);
+					method.invoke(t, BeanUtils.converToString(data.get("order")));
 				}
-				String fields = request.getParameter("fields") == null ? null
-						: request.getParameter("fields");
-				if (fields != null) {
+				
+				if (data.get("fields") != null) {
 					Method method = t.getClass().getMethod("setFields",
 							String.class);
-					method.invoke(t, fields);
+					method.invoke(t, BeanUtils.converToString(data.get("fields")));
 				}
-				Boolean nocache = request.getParameter("nocache") == null ? null
-						: Boolean.parseBoolean(request.getParameter("nocache"));
-				if (nocache != null) {
+				if (data.get("nocache") != null) {
 					Method method = t.getClass().getMethod("setNocache",
-							boolean.class);
-					method.invoke(t, nocache);
+							String.class);
+					method.invoke(t, BeanUtils.convertToBoolean(data.get("nocache")));
 				}
 				Map<String, String> param = new HashMap<>();
 				@SuppressWarnings("unchecked")
@@ -137,8 +108,6 @@ public class ParamUtils {
 				if (reqParams != null) {
 					for (Entry<String, String[]> entry : reqParams.entrySet()) {
 						if (!entry.getKey().equals("appid")
-								&& !entry.getKey().equals("limit")
-								&& !entry.getKey().equals("offset")
 								&& !entry.getKey().equals("page")
 								&& !entry.getKey().equals("per_page")
 								&& !entry.getKey().equals("sortby")
@@ -169,11 +138,16 @@ public class ParamUtils {
 	 * 将request请求中的参数，不管是request的body中的参数还是以getParameter方式获取的参数存入到HashMap并染回该HashMap
 	 * @param request request请求
 	 * @return 存储通过request请求传递过来的参数
+	 * @throws Exception 
 	 */
-	public static Map<String, Object> mergeRequestParameters(HttpServletRequest request) {
+	public static Map<String, Object> mergeRequestParameters(HttpServletRequest request) throws Exception {
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.putAll(initParamFromRequestBody(request));
 		data.putAll(initParamFromRequestParameter(request));
+		
+		if (data.get("appid") == null){
+			throw new Exception("请设置 appid!");
+		}		
 		return data;
 	}
 

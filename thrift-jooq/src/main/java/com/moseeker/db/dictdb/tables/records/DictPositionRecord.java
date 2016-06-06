@@ -28,59 +28,59 @@ import com.moseeker.db.dictdb.tables.DictPosition;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictPositionRecord extends UpdatableRecordImpl<DictPositionRecord> implements Record4<UInteger, String, UInteger, Byte> {
 
-	private static final long serialVersionUID = -493567411;
+	private static final long serialVersionUID = -1300643251;
 
 	/**
-	 * Setter for <code>dictDB.dict_position.code</code>. 字典code
+	 * Setter for <code>dictdb.dict_position.code</code>. 字典code
 	 */
 	public void setCode(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_position.code</code>. 字典code
+	 * Getter for <code>dictdb.dict_position.code</code>. 字典code
 	 */
 	public UInteger getCode() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>dictDB.dict_position.name</code>. 字典name
+	 * Setter for <code>dictdb.dict_position.name</code>. 字典name
 	 */
 	public void setName(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_position.name</code>. 字典name
+	 * Getter for <code>dictdb.dict_position.name</code>. 字典name
 	 */
 	public String getName() {
 		return (String) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>dictDB.dict_position.parent</code>. 父编码
+	 * Setter for <code>dictdb.dict_position.parent</code>. 父编码
 	 */
 	public void setParent(UInteger value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_position.parent</code>. 父编码
+	 * Getter for <code>dictdb.dict_position.parent</code>. 父编码
 	 */
 	public UInteger getParent() {
 		return (UInteger) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>dictDB.dict_position.level</code>. 字典level
+	 * Setter for <code>dictdb.dict_position.level</code>. 字典level
 	 */
 	public void setLevel(Byte value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_position.level</code>. 字典level
+	 * Getter for <code>dictdb.dict_position.level</code>. 字典level
 	 */
 	public Byte getLevel() {
 		return (Byte) getValue(3);

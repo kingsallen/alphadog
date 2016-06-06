@@ -30,10 +30,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserIntention extends TableImpl<UserIntentionRecord> {
 
-	private static final long serialVersionUID = -1754631570;
+	private static final long serialVersionUID = 756375150;
 
 	/**
-	 * The reference instance of <code>userDB.user_intention</code>
+	 * The reference instance of <code>userdb.user_intention</code>
 	 */
 	public static final UserIntention USER_INTENTION = new UserIntention();
 
@@ -46,34 +46,34 @@ public class UserIntention extends TableImpl<UserIntentionRecord> {
 	}
 
 	/**
-	 * The column <code>userDB.user_intention.sysuser_id</code>. 用户ID
+	 * The column <code>userdb.user_intention.sysuser_id</code>. 用户ID
 	 */
 	public final TableField<UserIntentionRecord, Integer> SYSUSER_ID = createField("sysuser_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "用户ID");
 
 	/**
-	 * The column <code>userDB.user_intention.intention</code>. 求职意向
+	 * The column <code>userdb.user_intention.intention</code>. 求职意向
 	 */
 	public final TableField<UserIntentionRecord, String> INTENTION = createField("intention", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false).defaulted(true), this, "求职意向");
 
 	/**
-	 * The column <code>userDB.user_intention.create_time</code>.
+	 * The column <code>userdb.user_intention.create_time</code>.
 	 */
 	public final TableField<UserIntentionRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>userDB.user_intention.update_time</code>.
+	 * The column <code>userdb.user_intention.update_time</code>.
 	 */
 	public final TableField<UserIntentionRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * Create a <code>userDB.user_intention</code> table reference
+	 * Create a <code>userdb.user_intention</code> table reference
 	 */
 	public UserIntention() {
 		this("user_intention", null);
 	}
 
 	/**
-	 * Create an aliased <code>userDB.user_intention</code> table reference
+	 * Create an aliased <code>userdb.user_intention</code> table reference
 	 */
 	public UserIntention(String alias) {
 		this(alias, USER_INTENTION);

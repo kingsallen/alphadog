@@ -30,185 +30,185 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateCompanyRecord extends UpdatableRecordImpl<CandidateCompanyRecord> implements Record13<Integer, Integer, Timestamp, Integer, Integer, Byte, String, String, String, String, String, Integer, Integer> {
 
-	private static final long serialVersionUID = 1270674625;
+	private static final long serialVersionUID = -527080255;
 
 	/**
-	 * Setter for <code>candidateDB.candidate_company.id</code>.
+	 * Setter for <code>candidatedb.candidate_company.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_company.id</code>.
+	 * Getter for <code>candidatedb.candidate_company.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_company.company_id</code>. hr_company.id
+	 * Setter for <code>candidatedb.candidate_company.company_id</code>. hr_company.id
 	 */
 	public void setCompanyId(Integer value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_company.company_id</code>. hr_company.id
+	 * Getter for <code>candidatedb.candidate_company.company_id</code>. hr_company.id
 	 */
 	public Integer getCompanyId() {
 		return (Integer) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_company.update_time</code>. 修改时间
+	 * Setter for <code>candidatedb.candidate_company.update_time</code>. 修改时间
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_company.update_time</code>. 修改时间
+	 * Getter for <code>candidatedb.candidate_company.update_time</code>. 修改时间
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_company.wxuser_id</code>. wx_group_user.id
+	 * Setter for <code>candidatedb.candidate_company.wxuser_id</code>. wx_group_user.id
 	 */
 	public void setWxuserId(Integer value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_company.wxuser_id</code>. wx_group_user.id
+	 * Getter for <code>candidatedb.candidate_company.wxuser_id</code>. wx_group_user.id
 	 */
 	public Integer getWxuserId() {
 		return (Integer) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_company.status</code>. 候选人状态，0：删除，1：正常状态
+	 * Setter for <code>candidatedb.candidate_company.status</code>. 候选人状态，0：删除，1：正常状态
 	 */
 	public void setStatus(Integer value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_company.status</code>. 候选人状态，0：删除，1：正常状态
+	 * Getter for <code>candidatedb.candidate_company.status</code>. 候选人状态，0：删除，1：正常状态
 	 */
 	public Integer getStatus() {
 		return (Integer) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_company.is_recommend</code>. 是否推荐 false:未推荐，true:推荐
+	 * Setter for <code>candidatedb.candidate_company.is_recommend</code>. 是否推荐 false:未推荐，true:推荐
 	 */
 	public void setIsRecommend(Byte value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_company.is_recommend</code>. 是否推荐 false:未推荐，true:推荐
+	 * Getter for <code>candidatedb.candidate_company.is_recommend</code>. 是否推荐 false:未推荐，true:推荐
 	 */
 	public Byte getIsRecommend() {
 		return (Byte) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_company.name</code>. sys_user.name 姓名或微信昵称
+	 * Setter for <code>candidatedb.candidate_company.name</code>. sys_user.name 姓名或微信昵称
 	 */
 	public void setName(String value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_company.name</code>. sys_user.name 姓名或微信昵称
+	 * Getter for <code>candidatedb.candidate_company.name</code>. sys_user.name 姓名或微信昵称
 	 */
 	public String getName() {
 		return (String) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_company.email</code>. sys_user.email 邮箱
+	 * Setter for <code>candidatedb.candidate_company.email</code>. sys_user.email 邮箱
 	 */
 	public void setEmail(String value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_company.email</code>. sys_user.email 邮箱
+	 * Getter for <code>candidatedb.candidate_company.email</code>. sys_user.email 邮箱
 	 */
 	public String getEmail() {
 		return (String) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_company.mobile</code>. sys_user.mobile 电话
+	 * Setter for <code>candidatedb.candidate_company.mobile</code>. sys_user.mobile 电话
 	 */
 	public void setMobile(String value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_company.mobile</code>. sys_user.mobile 电话
+	 * Getter for <code>candidatedb.candidate_company.mobile</code>. sys_user.mobile 电话
 	 */
 	public String getMobile() {
 		return (String) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_company.nickname</code>. wx_group_user.nickname 用户昵称
+	 * Setter for <code>candidatedb.candidate_company.nickname</code>. wx_group_user.nickname 用户昵称
 	 */
 	public void setNickname(String value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_company.nickname</code>. wx_group_user.nickname 用户昵称
+	 * Getter for <code>candidatedb.candidate_company.nickname</code>. wx_group_user.nickname 用户昵称
 	 */
 	public String getNickname() {
 		return (String) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_company.headimgurl</code>. wx_group_user.headimgurl 用户头像
+	 * Setter for <code>candidatedb.candidate_company.headimgurl</code>. wx_group_user.headimgurl 用户头像
 	 */
 	public void setHeadimgurl(String value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_company.headimgurl</code>. wx_group_user.headimgurl 用户头像
+	 * Getter for <code>candidatedb.candidate_company.headimgurl</code>. wx_group_user.headimgurl 用户头像
 	 */
 	public String getHeadimgurl() {
 		return (String) getValue(10);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_company.sys_user_id</code>. sys_user.id
+	 * Setter for <code>candidatedb.candidate_company.sys_user_id</code>. sys_user.id
 	 */
 	public void setSysUserId(Integer value) {
 		setValue(11, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_company.sys_user_id</code>. sys_user.id
+	 * Getter for <code>candidatedb.candidate_company.sys_user_id</code>. sys_user.id
 	 */
 	public Integer getSysUserId() {
 		return (Integer) getValue(11);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_company.click_from</code>. 来自, 0:未知, 朋友圈(timeline ) 1, 微信群(groupmessage) 2, 个人消息(singlemessage)
+	 * Setter for <code>candidatedb.candidate_company.click_from</code>. 来自, 0:未知, 朋友圈(timeline ) 1, 微信群(groupmessage) 2, 个人消息(singlemessage)
 	 */
 	public void setClickFrom(Integer value) {
 		setValue(12, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_company.click_from</code>. 来自, 0:未知, 朋友圈(timeline ) 1, 微信群(groupmessage) 2, 个人消息(singlemessage)
+	 * Getter for <code>candidatedb.candidate_company.click_from</code>. 来自, 0:未知, 朋友圈(timeline ) 1, 微信群(groupmessage) 2, 个人消息(singlemessage)
 	 */
 	public Integer getClickFrom() {
 		return (Integer) getValue(12);

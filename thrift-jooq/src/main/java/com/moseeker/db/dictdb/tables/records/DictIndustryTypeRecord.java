@@ -28,31 +28,31 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictIndustryTypeRecord extends TableRecordImpl<DictIndustryTypeRecord> implements Record2<UInteger, String> {
 
-	private static final long serialVersionUID = -315467903;
+	private static final long serialVersionUID = -777627775;
 
 	/**
-	 * Setter for <code>dictDB.dict_industry_type.code</code>. 字典code
+	 * Setter for <code>dictdb.dict_industry_type.code</code>. 字典code
 	 */
 	public void setCode(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_industry_type.code</code>. 字典code
+	 * Getter for <code>dictdb.dict_industry_type.code</code>. 字典code
 	 */
 	public UInteger getCode() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>dictDB.dict_industry_type.name</code>. 字典name
+	 * Setter for <code>dictdb.dict_industry_type.name</code>. 字典name
 	 */
 	public void setName(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_industry_type.name</code>. 字典name
+	 * Getter for <code>dictdb.dict_industry_type.name</code>. 字典name
 	 */
 	public String getName() {
 		return (String) getValue(1);

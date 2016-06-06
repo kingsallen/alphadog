@@ -29,59 +29,59 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileIntentionCityRecord extends UpdatableRecordImpl<ProfileIntentionCityRecord> implements Record4<UInteger, UInteger, UInteger, String> {
 
-	private static final long serialVersionUID = -1638240233;
+	private static final long serialVersionUID = -658477033;
 
 	/**
-	 * Setter for <code>profileDB.profile_intention_city.id</code>. 主key
+	 * Setter for <code>profiledb.profile_intention_city.id</code>. 主key
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_intention_city.id</code>. 主key
+	 * Getter for <code>profiledb.profile_intention_city.id</code>. 主key
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_intention_city.profile_intention_id</code>. profile_intention.id
+	 * Setter for <code>profiledb.profile_intention_city.profile_intention_id</code>. profile_intention.id
 	 */
 	public void setProfileIntentionId(UInteger value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_intention_city.profile_intention_id</code>. profile_intention.id
+	 * Getter for <code>profiledb.profile_intention_city.profile_intention_id</code>. profile_intention.id
 	 */
 	public UInteger getProfileIntentionId() {
 		return (UInteger) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_intention_city.city_code</code>. 期望城市字典编码
+	 * Setter for <code>profiledb.profile_intention_city.city_code</code>. 期望城市字典编码
 	 */
 	public void setCityCode(UInteger value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_intention_city.city_code</code>. 期望城市字典编码
+	 * Getter for <code>profiledb.profile_intention_city.city_code</code>. 期望城市字典编码
 	 */
 	public UInteger getCityCode() {
 		return (UInteger) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_intention_city.city_name</code>. 期望城市名称
+	 * Setter for <code>profiledb.profile_intention_city.city_name</code>. 期望城市名称
 	 */
 	public void setCityName(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_intention_city.city_name</code>. 期望城市名称
+	 * Getter for <code>profiledb.profile_intention_city.city_name</code>. 期望城市名称
 	 */
 	public String getCityName() {
 		return (String) getValue(3);

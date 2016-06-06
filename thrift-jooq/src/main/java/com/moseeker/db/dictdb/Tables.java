@@ -17,7 +17,7 @@ import javax.annotation.Generated;
 
 
 /**
- * Convenience access to all tables in dictDB
+ * Convenience access to all tables in dictdb
  */
 @Generated(
 	value = {

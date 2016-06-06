@@ -30,101 +30,101 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigAdminnotificationMembersRecord extends UpdatableRecordImpl<ConfigAdminnotificationMembersRecord> implements Record7<Integer, String, String, String, String, Byte, Timestamp> {
 
-	private static final long serialVersionUID = 1387861603;
+	private static final long serialVersionUID = -351003037;
 
 	/**
-	 * Setter for <code>configDB.config_adminnotification_members.id</code>.
+	 * Setter for <code>configdb.config_adminnotification_members.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_adminnotification_members.id</code>.
+	 * Getter for <code>configdb.config_adminnotification_members.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_adminnotification_members.name</code>. 姓名
+	 * Setter for <code>configdb.config_adminnotification_members.name</code>. 姓名
 	 */
 	public void setName(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_adminnotification_members.name</code>. 姓名
+	 * Getter for <code>configdb.config_adminnotification_members.name</code>. 姓名
 	 */
 	public String getName() {
 		return (String) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_adminnotification_members.mobilephone</code>. 接收通知的手机
+	 * Setter for <code>configdb.config_adminnotification_members.mobilephone</code>. 接收通知的手机
 	 */
 	public void setMobilephone(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_adminnotification_members.mobilephone</code>. 接收通知的手机
+	 * Getter for <code>configdb.config_adminnotification_members.mobilephone</code>. 接收通知的手机
 	 */
 	public String getMobilephone() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_adminnotification_members.wechatopenid</code>. 接收通知的微信openid
+	 * Setter for <code>configdb.config_adminnotification_members.wechatopenid</code>. 接收通知的微信openid
 	 */
 	public void setWechatopenid(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_adminnotification_members.wechatopenid</code>. 接收通知的微信openid
+	 * Getter for <code>configdb.config_adminnotification_members.wechatopenid</code>. 接收通知的微信openid
 	 */
 	public String getWechatopenid() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_adminnotification_members.email</code>. 接收通知的email
+	 * Setter for <code>configdb.config_adminnotification_members.email</code>. 接收通知的email
 	 */
 	public void setEmail(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_adminnotification_members.email</code>. 接收通知的email
+	 * Getter for <code>configdb.config_adminnotification_members.email</code>. 接收通知的email
 	 */
 	public String getEmail() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_adminnotification_members.status</code>. 1 有效 0 无效
+	 * Setter for <code>configdb.config_adminnotification_members.status</code>. 1 有效 0 无效
 	 */
 	public void setStatus(Byte value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_adminnotification_members.status</code>. 1 有效 0 无效
+	 * Getter for <code>configdb.config_adminnotification_members.status</code>. 1 有效 0 无效
 	 */
 	public Byte getStatus() {
 		return (Byte) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_adminnotification_members.create_time</code>.
+	 * Setter for <code>configdb.config_adminnotification_members.create_time</code>.
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_adminnotification_members.create_time</code>.
+	 * Getter for <code>configdb.config_adminnotification_members.create_time</code>.
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(6);

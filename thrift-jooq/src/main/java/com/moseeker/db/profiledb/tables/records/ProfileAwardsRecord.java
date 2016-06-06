@@ -32,129 +32,129 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileAwardsRecord extends UpdatableRecordImpl<ProfileAwardsRecord> implements Record9<UInteger, UInteger, Date, String, String, String, String, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = -1220729630;
+	private static final long serialVersionUID = -1054397214;
 
 	/**
-	 * Setter for <code>profileDB.profile_awards.id</code>. 主key
+	 * Setter for <code>profiledb.profile_awards.id</code>. 主key
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_awards.id</code>. 主key
+	 * Getter for <code>profiledb.profile_awards.id</code>. 主key
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_awards.profile_id</code>. profile.id
+	 * Setter for <code>profiledb.profile_awards.profile_id</code>. profile.id
 	 */
 	public void setProfileId(UInteger value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_awards.profile_id</code>. profile.id
+	 * Getter for <code>profiledb.profile_awards.profile_id</code>. profile.id
 	 */
 	public UInteger getProfileId() {
 		return (UInteger) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_awards.reward_date</code>. 获奖日期 yyyy-mm-dd
+	 * Setter for <code>profiledb.profile_awards.reward_date</code>. 获奖日期 yyyy-mm-dd
 	 */
 	public void setRewardDate(Date value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_awards.reward_date</code>. 获奖日期 yyyy-mm-dd
+	 * Getter for <code>profiledb.profile_awards.reward_date</code>. 获奖日期 yyyy-mm-dd
 	 */
 	public Date getRewardDate() {
 		return (Date) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_awards.name</code>. 获得奖项名称
+	 * Setter for <code>profiledb.profile_awards.name</code>. 获得奖项名称
 	 */
 	public void setName(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_awards.name</code>. 获得奖项名称
+	 * Getter for <code>profiledb.profile_awards.name</code>. 获得奖项名称
 	 */
 	public String getName() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_awards.award_winning_status</code>. 获奖身份
+	 * Setter for <code>profiledb.profile_awards.award_winning_status</code>. 获奖身份
 	 */
 	public void setAwardWinningStatus(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_awards.award_winning_status</code>. 获奖身份
+	 * Getter for <code>profiledb.profile_awards.award_winning_status</code>. 获奖身份
 	 */
 	public String getAwardWinningStatus() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_awards.level</code>. 级别
+	 * Setter for <code>profiledb.profile_awards.level</code>. 级别
 	 */
 	public void setLevel(String value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_awards.level</code>. 级别
+	 * Getter for <code>profiledb.profile_awards.level</code>. 级别
 	 */
 	public String getLevel() {
 		return (String) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_awards.description</code>. 描述
+	 * Setter for <code>profiledb.profile_awards.description</code>. 描述
 	 */
 	public void setDescription(String value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_awards.description</code>. 描述
+	 * Getter for <code>profiledb.profile_awards.description</code>. 描述
 	 */
 	public String getDescription() {
 		return (String) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_awards.create_time</code>. 创建时间
+	 * Setter for <code>profiledb.profile_awards.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_awards.create_time</code>. 创建时间
+	 * Getter for <code>profiledb.profile_awards.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_awards.update_time</code>. 更新时间
+	 * Setter for <code>profiledb.profile_awards.update_time</code>. 更新时间
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_awards.update_time</code>. 更新时间
+	 * Getter for <code>profiledb.profile_awards.update_time</code>. 更新时间
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(8);

@@ -34,10 +34,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictPosition extends TableImpl<DictPositionRecord> {
 
-	private static final long serialVersionUID = 757841140;
+	private static final long serialVersionUID = -1810908940;
 
 	/**
-	 * The reference instance of <code>dictDB.dict_position</code>
+	 * The reference instance of <code>dictdb.dict_position</code>
 	 */
 	public static final DictPosition DICT_POSITION = new DictPosition();
 
@@ -50,34 +50,34 @@ public class DictPosition extends TableImpl<DictPositionRecord> {
 	}
 
 	/**
-	 * The column <code>dictDB.dict_position.code</code>. 字典code
+	 * The column <code>dictdb.dict_position.code</code>. 字典code
 	 */
 	public final TableField<DictPositionRecord, UInteger> CODE = createField("code", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "字典code");
 
 	/**
-	 * The column <code>dictDB.dict_position.name</code>. 字典name
+	 * The column <code>dictdb.dict_position.name</code>. 字典name
 	 */
 	public final TableField<DictPositionRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaulted(true), this, "字典name");
 
 	/**
-	 * The column <code>dictDB.dict_position.parent</code>. 父编码
+	 * The column <code>dictdb.dict_position.parent</code>. 父编码
 	 */
 	public final TableField<DictPositionRecord, UInteger> PARENT = createField("parent", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "父编码");
 
 	/**
-	 * The column <code>dictDB.dict_position.level</code>. 字典level
+	 * The column <code>dictdb.dict_position.level</code>. 字典level
 	 */
 	public final TableField<DictPositionRecord, Byte> LEVEL = createField("level", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "字典level");
 
 	/**
-	 * Create a <code>dictDB.dict_position</code> table reference
+	 * Create a <code>dictdb.dict_position</code> table reference
 	 */
 	public DictPosition() {
 		this("dict_position", null);
 	}
 
 	/**
-	 * Create an aliased <code>dictDB.dict_position</code> table reference
+	 * Create an aliased <code>dictdb.dict_position</code> table reference
 	 */
 	public DictPosition(String alias) {
 		this(alias, DICT_POSITION);

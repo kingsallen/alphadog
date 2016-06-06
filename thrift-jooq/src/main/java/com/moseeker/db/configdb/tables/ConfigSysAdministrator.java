@@ -36,10 +36,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysAdministrator extends TableImpl<ConfigSysAdministratorRecord> {
 
-	private static final long serialVersionUID = -1009987558;
+	private static final long serialVersionUID = -1565863910;
 
 	/**
-	 * The reference instance of <code>configDB.config_sys_administrator</code>
+	 * The reference instance of <code>configdb.config_sys_administrator</code>
 	 */
 	public static final ConfigSysAdministrator CONFIG_SYS_ADMINISTRATOR = new ConfigSysAdministrator();
 
@@ -52,59 +52,59 @@ public class ConfigSysAdministrator extends TableImpl<ConfigSysAdministratorReco
 	}
 
 	/**
-	 * The column <code>configDB.config_sys_administrator.id</code>.
+	 * The column <code>configdb.config_sys_administrator.id</code>.
 	 */
 	public final TableField<ConfigSysAdministratorRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
 
 	/**
-	 * The column <code>configDB.config_sys_administrator.name</code>.
+	 * The column <code>configdb.config_sys_administrator.name</code>.
 	 */
 	public final TableField<ConfigSysAdministratorRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>configDB.config_sys_administrator.email</code>.
+	 * The column <code>configdb.config_sys_administrator.email</code>.
 	 */
 	public final TableField<ConfigSysAdministratorRecord, String> EMAIL = createField("email", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>configDB.config_sys_administrator.mobile</code>.
+	 * The column <code>configdb.config_sys_administrator.mobile</code>.
 	 */
 	public final TableField<ConfigSysAdministratorRecord, String> MOBILE = createField("mobile", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>configDB.config_sys_administrator.password</code>.
+	 * The column <code>configdb.config_sys_administrator.password</code>.
 	 */
 	public final TableField<ConfigSysAdministratorRecord, String> PASSWORD = createField("password", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false), this, "");
 
 	/**
-	 * The column <code>configDB.config_sys_administrator.is_disable</code>. 是否禁用，0：可用；1：禁用
+	 * The column <code>configdb.config_sys_administrator.is_disable</code>. 是否禁用，0：可用；1：禁用
 	 */
 	public final TableField<ConfigSysAdministratorRecord, Integer> IS_DISABLE = createField("is_disable", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "是否禁用，0：可用；1：禁用");
 
 	/**
-	 * The column <code>configDB.config_sys_administrator.login_count</code>. 登录次数
+	 * The column <code>configdb.config_sys_administrator.login_count</code>. 登录次数
 	 */
 	public final TableField<ConfigSysAdministratorRecord, Integer> LOGIN_COUNT = createField("login_count", org.jooq.impl.SQLDataType.INTEGER.defaulted(true), this, "登录次数");
 
 	/**
-	 * The column <code>configDB.config_sys_administrator.last_login_time</code>. 最近登录时间
+	 * The column <code>configdb.config_sys_administrator.last_login_time</code>. 最近登录时间
 	 */
 	public final TableField<ConfigSysAdministratorRecord, Timestamp> LAST_LOGIN_TIME = createField("last_login_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaulted(true), this, "最近登录时间");
 
 	/**
-	 * The column <code>configDB.config_sys_administrator.create_time</code>. 创建时间
+	 * The column <code>configdb.config_sys_administrator.create_time</code>. 创建时间
 	 */
 	public final TableField<ConfigSysAdministratorRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "创建时间");
 
 	/**
-	 * Create a <code>configDB.config_sys_administrator</code> table reference
+	 * Create a <code>configdb.config_sys_administrator</code> table reference
 	 */
 	public ConfigSysAdministrator() {
 		this("config_sys_administrator", null);
 	}
 
 	/**
-	 * Create an aliased <code>configDB.config_sys_administrator</code> table reference
+	 * Create an aliased <code>configdb.config_sys_administrator</code> table reference
 	 */
 	public ConfigSysAdministrator(String alias) {
 		this(alias, CONFIG_SYS_ADMINISTRATOR);

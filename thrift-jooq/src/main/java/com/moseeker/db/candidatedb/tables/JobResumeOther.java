@@ -35,10 +35,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobResumeOther extends TableImpl<JobResumeOtherRecord> {
 
-	private static final long serialVersionUID = 1665897413;
+	private static final long serialVersionUID = 1794674629;
 
 	/**
-	 * The reference instance of <code>candidateDB.job_resume_other</code>
+	 * The reference instance of <code>candidatedb.job_resume_other</code>
 	 */
 	public static final JobResumeOther JOB_RESUME_OTHER = new JobResumeOther();
 
@@ -51,34 +51,34 @@ public class JobResumeOther extends TableImpl<JobResumeOtherRecord> {
 	}
 
 	/**
-	 * The column <code>candidateDB.job_resume_other.app_id</code>. job_application.id
+	 * The column <code>candidatedb.job_resume_other.app_id</code>. job_application.id
 	 */
 	public final TableField<JobResumeOtherRecord, UInteger> APP_ID = createField("app_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "job_application.id");
 
 	/**
-	 * The column <code>candidateDB.job_resume_other.other</code>. 自定义字段
+	 * The column <code>candidatedb.job_resume_other.other</code>. 自定义字段
 	 */
 	public final TableField<JobResumeOtherRecord, String> OTHER = createField("other", org.jooq.impl.SQLDataType.CLOB, this, "自定义字段");
 
 	/**
-	 * The column <code>candidateDB.job_resume_other.create_time</code>. 创建时间
+	 * The column <code>candidatedb.job_resume_other.create_time</code>. 创建时间
 	 */
 	public final TableField<JobResumeOtherRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "创建时间");
 
 	/**
-	 * The column <code>candidateDB.job_resume_other.update_time</code>. 更新时间
+	 * The column <code>candidatedb.job_resume_other.update_time</code>. 更新时间
 	 */
 	public final TableField<JobResumeOtherRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "更新时间");
 
 	/**
-	 * Create a <code>candidateDB.job_resume_other</code> table reference
+	 * Create a <code>candidatedb.job_resume_other</code> table reference
 	 */
 	public JobResumeOther() {
 		this("job_resume_other", null);
 	}
 
 	/**
-	 * Create an aliased <code>candidateDB.job_resume_other</code> table reference
+	 * Create an aliased <code>candidatedb.job_resume_other</code> table reference
 	 */
 	public JobResumeOther(String alias) {
 		this(alias, JOB_RESUME_OTHER);

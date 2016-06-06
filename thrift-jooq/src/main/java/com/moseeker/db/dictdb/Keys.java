@@ -30,7 +30,7 @@ import org.jooq.types.UInteger;
 
 
 /**
- * A class modelling foreign key relationships between tables of the <code>dictDB</code> 
+ * A class modelling foreign key relationships between tables of the <code>dictdb</code> 
  * schema
  */
 @Generated(

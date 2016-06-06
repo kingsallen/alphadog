@@ -28,31 +28,31 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionTopicRecord extends TableRecordImpl<JobPositionTopicRecord> implements Record2<UInteger, UInteger> {
 
-	private static final long serialVersionUID = 49601729;
+	private static final long serialVersionUID = 138568897;
 
 	/**
-	 * Setter for <code>candidateDB.job_position_topic.position_id</code>. hr_position.id, 职位ID
+	 * Setter for <code>candidatedb.job_position_topic.position_id</code>. hr_position.id, 职位ID
 	 */
 	public void setPositionId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_position_topic.position_id</code>. hr_position.id, 职位ID
+	 * Getter for <code>candidatedb.job_position_topic.position_id</code>. hr_position.id, 职位ID
 	 */
 	public UInteger getPositionId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.job_position_topic.topic_id</code>. hr_topic.id, 主题ID
+	 * Setter for <code>candidatedb.job_position_topic.topic_id</code>. hr_topic.id, 主题ID
 	 */
 	public void setTopicId(UInteger value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.job_position_topic.topic_id</code>. hr_topic.id, 主题ID
+	 * Getter for <code>candidatedb.job_position_topic.topic_id</code>. hr_topic.id, 主题ID
 	 */
 	public UInteger getTopicId() {
 		return (UInteger) getValue(1);

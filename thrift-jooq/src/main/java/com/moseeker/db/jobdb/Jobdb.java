@@ -37,10 +37,10 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Jobdb extends SchemaImpl {
 
-	private static final long serialVersionUID = -444747176;
+	private static final long serialVersionUID = -36591016;
 
 	/**
-	 * The reference instance of <code>jobDB</code>
+	 * The reference instance of <code>jobdb</code>
 	 */
 	public static final Jobdb JOBDB = new Jobdb();
 
@@ -48,7 +48,7 @@ public class Jobdb extends SchemaImpl {
 	 * No further instances allowed
 	 */
 	private Jobdb() {
-		super("jobDB");
+		super("jobdb");
 	}
 
 	@Override

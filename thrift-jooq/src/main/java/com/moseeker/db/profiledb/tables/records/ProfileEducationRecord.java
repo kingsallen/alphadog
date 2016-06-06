@@ -33,255 +33,255 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileEducationRecord extends UpdatableRecordImpl<ProfileEducationRecord> implements Record18<UInteger, UInteger, Date, Date, UByte, Integer, String, String, String, String, UByte, String, UByte, UByte, UByte, String, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = 545997799;
+	private static final long serialVersionUID = 562250727;
 
 	/**
-	 * Setter for <code>profileDB.profile_education.id</code>. 主key
+	 * Setter for <code>profiledb.profile_education.id</code>. 主key
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_education.id</code>. 主key
+	 * Getter for <code>profiledb.profile_education.id</code>. 主key
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_education.profile_id</code>. profile.id
+	 * Setter for <code>profiledb.profile_education.profile_id</code>. profile.id
 	 */
 	public void setProfileId(UInteger value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_education.profile_id</code>. profile.id
+	 * Getter for <code>profiledb.profile_education.profile_id</code>. profile.id
 	 */
 	public UInteger getProfileId() {
 		return (UInteger) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_education.start</code>. 起止时间-起 yyyy-mm-dd
+	 * Setter for <code>profiledb.profile_education.start</code>. 起止时间-起 yyyy-mm-dd
 	 */
 	public void setStart(Date value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_education.start</code>. 起止时间-起 yyyy-mm-dd
+	 * Getter for <code>profiledb.profile_education.start</code>. 起止时间-起 yyyy-mm-dd
 	 */
 	public Date getStart() {
 		return (Date) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_education.end</code>. 起止时间-止 yyyy-mm-dd
+	 * Setter for <code>profiledb.profile_education.end</code>. 起止时间-止 yyyy-mm-dd
 	 */
 	public void setEnd(Date value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_education.end</code>. 起止时间-止 yyyy-mm-dd
+	 * Getter for <code>profiledb.profile_education.end</code>. 起止时间-止 yyyy-mm-dd
 	 */
 	public Date getEnd() {
 		return (Date) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_education.end_until_now</code>. 是否至今 0：否 1：是
+	 * Setter for <code>profiledb.profile_education.end_until_now</code>. 是否至今 0：否 1：是
 	 */
 	public void setEndUntilNow(UByte value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_education.end_until_now</code>. 是否至今 0：否 1：是
+	 * Getter for <code>profiledb.profile_education.end_until_now</code>. 是否至今 0：否 1：是
 	 */
 	public UByte getEndUntilNow() {
 		return (UByte) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_education.college_code</code>. 院校字典编码
+	 * Setter for <code>profiledb.profile_education.college_code</code>. 院校字典编码
 	 */
 	public void setCollegeCode(Integer value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_education.college_code</code>. 院校字典编码
+	 * Getter for <code>profiledb.profile_education.college_code</code>. 院校字典编码
 	 */
 	public Integer getCollegeCode() {
 		return (Integer) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_education.college_name</code>. 院校名称
+	 * Setter for <code>profiledb.profile_education.college_name</code>. 院校名称
 	 */
 	public void setCollegeName(String value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_education.college_name</code>. 院校名称
+	 * Getter for <code>profiledb.profile_education.college_name</code>. 院校名称
 	 */
 	public String getCollegeName() {
 		return (String) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_education.college_logo</code>. 院校LOGO, 用户上传
+	 * Setter for <code>profiledb.profile_education.college_logo</code>. 院校LOGO, 用户上传
 	 */
 	public void setCollegeLogo(String value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_education.college_logo</code>. 院校LOGO, 用户上传
+	 * Getter for <code>profiledb.profile_education.college_logo</code>. 院校LOGO, 用户上传
 	 */
 	public String getCollegeLogo() {
 		return (String) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_education.major_code</code>. 专业字典编码
+	 * Setter for <code>profiledb.profile_education.major_code</code>. 专业字典编码
 	 */
 	public void setMajorCode(String value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_education.major_code</code>. 专业字典编码
+	 * Getter for <code>profiledb.profile_education.major_code</code>. 专业字典编码
 	 */
 	public String getMajorCode() {
 		return (String) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_education.major_name</code>. 专业名称
+	 * Setter for <code>profiledb.profile_education.major_name</code>. 专业名称
 	 */
 	public void setMajorName(String value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_education.major_name</code>. 专业名称
+	 * Getter for <code>profiledb.profile_education.major_name</code>. 专业名称
 	 */
 	public String getMajorName() {
 		return (String) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_education.degree</code>. 学历 0:未选择 1: 初中及以下, 2:中专, 3:高中, 4: 大专, 5: 本科, 6: 硕士, 7: 博士, 8:博士以上, 9:其他
+	 * Setter for <code>profiledb.profile_education.degree</code>. 学历 0:未选择 1: 初中及以下, 2:中专, 3:高中, 4: 大专, 5: 本科, 6: 硕士, 7: 博士, 8:博士以上, 9:其他
 	 */
 	public void setDegree(UByte value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_education.degree</code>. 学历 0:未选择 1: 初中及以下, 2:中专, 3:高中, 4: 大专, 5: 本科, 6: 硕士, 7: 博士, 8:博士以上, 9:其他
+	 * Getter for <code>profiledb.profile_education.degree</code>. 学历 0:未选择 1: 初中及以下, 2:中专, 3:高中, 4: 大专, 5: 本科, 6: 硕士, 7: 博士, 8:博士以上, 9:其他
 	 */
 	public UByte getDegree() {
 		return (UByte) getValue(10);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_education.description</code>. 教育描述
+	 * Setter for <code>profiledb.profile_education.description</code>. 教育描述
 	 */
 	public void setDescription(String value) {
 		setValue(11, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_education.description</code>. 教育描述
+	 * Getter for <code>profiledb.profile_education.description</code>. 教育描述
 	 */
 	public String getDescription() {
 		return (String) getValue(11);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_education.is_full</code>. 是否全日制 0:没填写, 1:是, 2:否
+	 * Setter for <code>profiledb.profile_education.is_full</code>. 是否全日制 0:没填写, 1:是, 2:否
 	 */
 	public void setIsFull(UByte value) {
 		setValue(12, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_education.is_full</code>. 是否全日制 0:没填写, 1:是, 2:否
+	 * Getter for <code>profiledb.profile_education.is_full</code>. 是否全日制 0:没填写, 1:是, 2:否
 	 */
 	public UByte getIsFull() {
 		return (UByte) getValue(12);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_education.is_unified</code>. 是否统招 0:没填写, 1:是, 2:否
+	 * Setter for <code>profiledb.profile_education.is_unified</code>. 是否统招 0:没填写, 1:是, 2:否
 	 */
 	public void setIsUnified(UByte value) {
 		setValue(13, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_education.is_unified</code>. 是否统招 0:没填写, 1:是, 2:否
+	 * Getter for <code>profiledb.profile_education.is_unified</code>. 是否统招 0:没填写, 1:是, 2:否
 	 */
 	public UByte getIsUnified() {
 		return (UByte) getValue(13);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_education.is_study_abroad</code>. 是否海外学习经历 0:没填写, 1:是, 2:否
+	 * Setter for <code>profiledb.profile_education.is_study_abroad</code>. 是否海外学习经历 0:没填写, 1:是, 2:否
 	 */
 	public void setIsStudyAbroad(UByte value) {
 		setValue(14, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_education.is_study_abroad</code>. 是否海外学习经历 0:没填写, 1:是, 2:否
+	 * Getter for <code>profiledb.profile_education.is_study_abroad</code>. 是否海外学习经历 0:没填写, 1:是, 2:否
 	 */
 	public UByte getIsStudyAbroad() {
 		return (UByte) getValue(14);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_education.study_abroad_country</code>. 海外留学国家
+	 * Setter for <code>profiledb.profile_education.study_abroad_country</code>. 海外留学国家
 	 */
 	public void setStudyAbroadCountry(String value) {
 		setValue(15, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_education.study_abroad_country</code>. 海外留学国家
+	 * Getter for <code>profiledb.profile_education.study_abroad_country</code>. 海外留学国家
 	 */
 	public String getStudyAbroadCountry() {
 		return (String) getValue(15);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_education.create_time</code>. 创建时间
+	 * Setter for <code>profiledb.profile_education.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(16, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_education.create_time</code>. 创建时间
+	 * Getter for <code>profiledb.profile_education.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(16);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_education.update_time</code>. 更新时间
+	 * Setter for <code>profiledb.profile_education.update_time</code>. 更新时间
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(17, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_education.update_time</code>. 更新时间
+	 * Getter for <code>profiledb.profile_education.update_time</code>. 更新时间
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(17);

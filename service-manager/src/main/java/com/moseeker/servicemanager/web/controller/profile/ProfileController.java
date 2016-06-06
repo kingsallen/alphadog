@@ -17,7 +17,7 @@ import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 
-@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
+//@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
 public class ProfileController {
 
@@ -32,7 +32,7 @@ public class ProfileController {
 		try {
 			// GET方法 通用参数解析并赋值
 			ImportCVForm form = ParamUtils.initModelForm(request, ImportCVForm.class);
-			Response result = profileService.getResource(form.getUser_id(), form.getId());
+			Response result = profileService.getResource(form.getUser_id(), form.getId(), form.getUuid());
 			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	

@@ -27,45 +27,45 @@ import com.moseeker.db.dictdb.tables.DictMajor;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictMajorRecord extends UpdatableRecordImpl<DictMajorRecord> implements Record3<String, String, Byte> {
 
-	private static final long serialVersionUID = -1783790990;
+	private static final long serialVersionUID = 664011378;
 
 	/**
-	 * Setter for <code>dictDB.dict_major.code</code>. 字典code
+	 * Setter for <code>dictdb.dict_major.code</code>. 字典code
 	 */
 	public void setCode(String value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_major.code</code>. 字典code
+	 * Getter for <code>dictdb.dict_major.code</code>. 字典code
 	 */
 	public String getCode() {
 		return (String) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>dictDB.dict_major.name</code>. 字典name
+	 * Setter for <code>dictdb.dict_major.name</code>. 字典name
 	 */
 	public void setName(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_major.name</code>. 字典name
+	 * Getter for <code>dictdb.dict_major.name</code>. 字典name
 	 */
 	public String getName() {
 		return (String) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>dictDB.dict_major.level</code>. 字典level
+	 * Setter for <code>dictdb.dict_major.level</code>. 字典level
 	 */
 	public void setLevel(Byte value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_major.level</code>. 字典level
+	 * Getter for <code>dictdb.dict_major.level</code>. 字典level
 	 */
 	public Byte getLevel() {
 		return (Byte) getValue(2);

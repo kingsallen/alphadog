@@ -29,101 +29,101 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictCountryRecord extends UpdatableRecordImpl<DictCountryRecord> implements Record7<UInteger, String, String, String, String, String, String> {
 
-	private static final long serialVersionUID = -826074571;
+	private static final long serialVersionUID = 625056309;
 
 	/**
-	 * Setter for <code>dictDB.dict_country.id</code>. 主key
+	 * Setter for <code>dictdb.dict_country.id</code>. 主key
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_country.id</code>. 主key
+	 * Getter for <code>dictdb.dict_country.id</code>. 主key
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>dictDB.dict_country.name</code>. 国家中文名称
+	 * Setter for <code>dictdb.dict_country.name</code>. 国家中文名称
 	 */
 	public void setName(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_country.name</code>. 国家中文名称
+	 * Getter for <code>dictdb.dict_country.name</code>. 国家中文名称
 	 */
 	public String getName() {
 		return (String) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>dictDB.dict_country.ename</code>. 国家英文名称
+	 * Setter for <code>dictdb.dict_country.ename</code>. 国家英文名称
 	 */
 	public void setEname(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_country.ename</code>. 国家英文名称
+	 * Getter for <code>dictdb.dict_country.ename</code>. 国家英文名称
 	 */
 	public String getEname() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>dictDB.dict_country.iso_code_2</code>. iso_code_2
+	 * Setter for <code>dictdb.dict_country.iso_code_2</code>. iso_code_2
 	 */
 	public void setIsoCode_2(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_country.iso_code_2</code>. iso_code_2
+	 * Getter for <code>dictdb.dict_country.iso_code_2</code>. iso_code_2
 	 */
 	public String getIsoCode_2() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>dictDB.dict_country.iso_code_3</code>. iso_code_3
+	 * Setter for <code>dictdb.dict_country.iso_code_3</code>. iso_code_3
 	 */
 	public void setIsoCode_3(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_country.iso_code_3</code>. iso_code_3
+	 * Getter for <code>dictdb.dict_country.iso_code_3</code>. iso_code_3
 	 */
 	public String getIsoCode_3() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>dictDB.dict_country.code</code>. COUNTRY CODE
+	 * Setter for <code>dictdb.dict_country.code</code>. COUNTRY CODE
 	 */
 	public void setCode(String value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_country.code</code>. COUNTRY CODE
+	 * Getter for <code>dictdb.dict_country.code</code>. COUNTRY CODE
 	 */
 	public String getCode() {
 		return (String) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>dictDB.dict_country.icon_class</code>. 国旗样式
+	 * Setter for <code>dictdb.dict_country.icon_class</code>. 国旗样式
 	 */
 	public void setIconClass(String value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_country.icon_class</code>. 国旗样式
+	 * Getter for <code>dictdb.dict_country.icon_class</code>. 国旗样式
 	 */
 	public String getIconClass() {
 		return (String) getValue(6);

@@ -31,101 +31,101 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictConstantRecord extends UpdatableRecordImpl<DictConstantRecord> implements Record7<UInteger, Integer, String, Byte, Integer, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = 1734388625;
+	private static final long serialVersionUID = -713548911;
 
 	/**
-	 * Setter for <code>dictDB.dict_constant.id</code>. 主key
+	 * Setter for <code>dictdb.dict_constant.id</code>. 主key
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_constant.id</code>. 主key
+	 * Getter for <code>dictdb.dict_constant.id</code>. 主key
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>dictDB.dict_constant.code</code>. 字典code
+	 * Setter for <code>dictdb.dict_constant.code</code>. 字典code
 	 */
 	public void setCode(Integer value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_constant.code</code>. 字典code
+	 * Getter for <code>dictdb.dict_constant.code</code>. 字典code
 	 */
 	public Integer getCode() {
 		return (Integer) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>dictDB.dict_constant.name</code>. 字典name
+	 * Setter for <code>dictdb.dict_constant.name</code>. 字典name
 	 */
 	public void setName(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_constant.name</code>. 字典name
+	 * Getter for <code>dictdb.dict_constant.name</code>. 字典name
 	 */
 	public String getName() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>dictDB.dict_constant.priority</code>. 优先级
+	 * Setter for <code>dictdb.dict_constant.priority</code>. 优先级
 	 */
 	public void setPriority(Byte value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_constant.priority</code>. 优先级
+	 * Getter for <code>dictdb.dict_constant.priority</code>. 优先级
 	 */
 	public Byte getPriority() {
 		return (Byte) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>dictDB.dict_constant.parent_code</code>. 父级字典code
+	 * Setter for <code>dictdb.dict_constant.parent_code</code>. 父级字典code
 	 */
 	public void setParentCode(Integer value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_constant.parent_code</code>. 父级字典code
+	 * Getter for <code>dictdb.dict_constant.parent_code</code>. 父级字典code
 	 */
 	public Integer getParentCode() {
 		return (Integer) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>dictDB.dict_constant.create_time</code>.
+	 * Setter for <code>dictdb.dict_constant.create_time</code>.
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_constant.create_time</code>.
+	 * Getter for <code>dictdb.dict_constant.create_time</code>.
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>dictDB.dict_constant.update_time</code>.
+	 * Setter for <code>dictdb.dict_constant.update_time</code>.
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_constant.update_time</code>.
+	 * Getter for <code>dictdb.dict_constant.update_time</code>.
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(6);

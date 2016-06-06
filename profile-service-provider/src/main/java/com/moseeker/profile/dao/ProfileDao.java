@@ -22,7 +22,7 @@ import com.moseeker.profile.dao.impl.IntentionRecord;
 
 public interface ProfileDao extends BaseDao<ProfileProfileRecord> {
 
-	ProfileProfileRecord getProfileByIdOrUserId(int userId, int profileId);
+	ProfileProfileRecord getProfileByIdOrUserIdOrUUID(int userId, int profileId, String uuid);
 
 	int saveProfile(ProfileProfileRecord profileRecord, ProfileBasicRecord basicRecord,
 			List<ProfileAttachmentRecord> attachmentRecords, List<ProfileAwardsRecord> awardsRecords,

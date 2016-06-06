@@ -1,15 +1,33 @@
 package com.moseeker.useraccounts.service.impl;
 
-import com.google.common.collect.Lists;
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.thrift.TException;
+import org.jooq.types.UByte;
+import org.jooq.types.UInteger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.daoutils.BaseDao;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.sms.SmsSender;
-import com.moseeker.common.util.*;
+import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.Constant;
+import com.moseeker.common.util.ConstantErrorCodeMessage;
+import com.moseeker.common.util.DateUtils;
+import com.moseeker.common.util.MD5Util;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.logdb.tables.records.LogUserloginRecordRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.db.userdb.tables.records.UserFavPositionRecord;
+import com.moseeker.db.userdb.tables.records.UserSettingsRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -21,18 +39,7 @@ import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
 import com.moseeker.useraccounts.dao.ProfileDao;
 import com.moseeker.useraccounts.dao.UserDao;
 import com.moseeker.useraccounts.dao.UserFavoritePositionDao;
-import org.apache.thrift.TException;
-import org.jooq.types.UByte;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.moseeker.useraccounts.dao.UsersettingDao;
 
 
 /**
@@ -57,6 +64,9 @@ public class UseraccountsServiceImpl implements Iface {
 
     @Autowired
     protected ProfileDao profileDao;
+    
+    @Autowired
+    protected UsersettingDao userSettingDao;    
 
     @Autowired
     protected UserFavoritePositionDao userFavoritePositionDao;
@@ -79,7 +89,7 @@ public class UseraccountsServiceImpl implements Iface {
                 filters.put("username", mobile);
                 ;
             } else {
-                return ResponseUtils.success(ConstantErrorCodeMessage.INVALID_SMS_CODE);
+                return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
             }        	
         }
         
@@ -203,7 +213,7 @@ public class UseraccountsServiceImpl implements Iface {
      * <p>
      *
      * @param user 用户实体
-     * @param code 验证码
+     * @param code 验证码 , 可选, 有的时候必须验证.
      * @return 新添加用户ID
      *
      * @exception TException
@@ -220,11 +230,8 @@ public class UseraccountsServiceImpl implements Iface {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
 
-//        // TODO validate code.
-        if (validateCode(String.valueOf(user.mobile), code, 1)) {
-            ;
-        } else {
-            return ResponseUtils.success(ConstantErrorCodeMessage.INVALID_SMS_CODE);
+        if (!StringUtils.isNullOrEmpty(code) && !validateCode(String.valueOf(user.mobile), code, 1)) {
+            return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
         }
 
         // 没有密码生成6位随机密码
@@ -232,6 +239,8 @@ public class UseraccountsServiceImpl implements Iface {
             hasPassword = false;
             plainPassword = StringUtils.getRandomString(6);
             user.password = MD5Util.md5(plainPassword);
+        }else{
+        	user.password = MD5Util.md5(user.password);
         }
 
         try {
@@ -243,6 +252,12 @@ public class UseraccountsServiceImpl implements Iface {
                 if (!hasPassword) {
                     SmsSender.sendSMS_signupRandomPassword(String.valueOf(user.mobile), plainPassword);
                 }
+                
+//                // 初始化 user_setting 表.
+//                UserSettingsRecord userSettingsRecord = new UserSettingsRecord();
+//                userSettingsRecord.setUserId(UInteger.valueOf(newCreateUserId));
+//                userSettingsRecord.setPrivacyPolicy(UByte.valueOf(0));
+//                userSettingDao.postResource(userSettingsRecord);
 
                 return ResponseUtils.success(new HashMap<String, Object>(){
                     {
@@ -257,13 +272,15 @@ public class UseraccountsServiceImpl implements Iface {
         } finally {
             //do nothing
         }
-        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_EXIST);
     }
 
 
     /**
-     * 绑定用户的手机号和unionid， 如果unionid或者手机号均没有， 则post新增， 如果在一条记录里都有，提示已经绑定成功，
+     * 绑定用户的手机号和unionid， 如果在一条记录里都有，提示已经绑定成功，
      * 如果在一条记录里有部分，unionid 或者 mobile， 补全。 否则unionid和mobile分别存在2条记录里面， 需要做合并。
+     * 如果unionid或者手机号均没有， 应该在之前先注册.
+     * code验证码可选.
      */
     @Override
     public Response postuserwxbindmobile(int appid, String unionid, String code, String mobile) throws TException {
@@ -281,11 +298,11 @@ public class UseraccountsServiceImpl implements Iface {
             CommonQuery query2 = new CommonQuery();
             Map<String, String> filters2 = new HashMap<>();
             filters2.put("mobile", mobile);
-            query1.setEqualFilter(filters2);
+            query2.setEqualFilter(filters2);
             UserUserRecord userMobile = userdao.getResource(query2);
 
             if (userUnionid == null && userMobile == null) {
-                // post
+                // post,  都为空的情况, 需要事先调用 user_
                 return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_BIND_NONEED);
             } else if (userUnionid != null && userMobile != null
                     && userUnionid.getId().intValue() == userMobile.getId().intValue()) {
@@ -293,14 +310,102 @@ public class UseraccountsServiceImpl implements Iface {
             } else if (userUnionid != null && userMobile == null) {
                 userUnionid.setMobile(Long.valueOf(mobile));
                 if (userdao.putResource(userUnionid) > 0){
-                	return ResponseUtils.success(userUnionid);
+                	 Map<String, Object> map = new HashMap<String, Object>();
+                     map.put("id", userUnionid.getId().intValue());
+                     map.put("username", userUnionid.getUsername());
+                     if(userUnionid.getIsDisable() != null) {
+                     	map.put("is_disable", userUnionid.getIsDisable().intValue());
+                     }
+                     if(userUnionid.getRank() != null) {
+                     	map.put("rank", userUnionid.getRank());
+                     }
+                     if(userUnionid.getRegisterTime() != null) {
+                     	map.put("register_time", DateUtils.dateToShortTime(userUnionid.getRegisterTime()));
+                     }
+                     map.put("register_ip", userUnionid.getRegisterIp());
+                     if(userUnionid.getLastLoginTime() != null) {
+                     	map.put("last_login_time", DateUtils.dateToShortTime(userUnionid.getLastLoginTime()));
+                     }
+                     map.put("last_login_ip", userUnionid.getLastLoginIp());
+                     if(userUnionid.getLoginCount() != null) {
+                     	map.put("login_count", userUnionid.getLoginCount().intValue());
+                     }
+                     if(userUnionid.getMobile() != null) {
+                     	map.put("mobile", userUnionid.getMobile().longValue());
+                     }
+                     map.put("email", userUnionid.getEmail());
+                     if(userUnionid.getActivation() != null) {
+                     	map.put("activation", userUnionid.getActivation().intValue());
+                     }
+                     map.put("activation_code", userUnionid.getActivationCode());
+                     map.put("token", userUnionid.getToken());
+                     map.put("name", userUnionid.getName());
+                     map.put("headimg", userUnionid.getHeadimg());
+                     if(userUnionid.getNationalCodeId() != null) {
+                     	map.put("national_code_id", userUnionid.getNationalCodeId().intValue());
+                     }
+                     if(userUnionid.getWechatId() != null) {
+                     	map.put("wechat_id", userUnionid.getWechatId().intValue());
+                     }
+                     map.put("unionid", userUnionid.getUnionid());
+                     if(userUnionid.getSource() != null) {
+                     	map.put("source", userUnionid.getSource().intValue());
+                     }
+                     map.put("company", userUnionid.getCompany());
+                     map.put("position", userUnionid.getPosition());
+                     map.put("parentid", userUnionid.getParentid().intValue());
+                	return ResponseUtils.success(map);
                 }else{
                     return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
                 }
             } else if (userUnionid == null && userMobile != null) {
                 userMobile.setUnionid(unionid);
                 if (userdao.putResource(userMobile)>0){
-                	return ResponseUtils.success(userMobile);
+                	Map<String, Object> map = new HashMap<String, Object>();
+                    map.put("id", userMobile.getId().intValue());
+                    map.put("username", userMobile.getUsername());
+                    if(userMobile.getIsDisable() != null) {
+                    	map.put("is_disable", userMobile.getIsDisable().intValue());
+                    }
+                    if(userMobile.getRank() != null) {
+                    	map.put("rank", userMobile.getRank());
+                    }
+                    if(userMobile.getRegisterTime() != null) {
+                    	map.put("register_time", DateUtils.dateToShortTime(userMobile.getRegisterTime()));
+                    }
+                    map.put("register_ip", userMobile.getRegisterIp());
+                    if(userMobile.getLastLoginTime() != null) {
+                    	map.put("last_login_time", DateUtils.dateToShortTime(userMobile.getLastLoginTime()));
+                    }
+                    map.put("last_login_ip", userMobile.getLastLoginIp());
+                    if(userMobile.getLoginCount() != null) {
+                    	map.put("login_count", userMobile.getLoginCount().intValue());
+                    }
+                    if(userMobile.getMobile() != null) {
+                    	map.put("mobile", userMobile.getMobile().longValue());
+                    }
+                    map.put("email", userMobile.getEmail());
+                    if(userMobile.getActivation() != null) {
+                    	map.put("activation", userMobile.getActivation().intValue());
+                    }
+                    map.put("activation_code", userMobile.getActivationCode());
+                    map.put("token", userMobile.getToken());
+                    map.put("name", userMobile.getName());
+                    map.put("headimg", userMobile.getHeadimg());
+                    if(userMobile.getNationalCodeId() != null) {
+                    	map.put("national_code_id", userMobile.getNationalCodeId().intValue());
+                    }
+                    if(userMobile.getWechatId() != null) {
+                    	map.put("wechat_id", userMobile.getWechatId().intValue());
+                    }
+                    map.put("unionid", userMobile.getUnionid());
+                    if(userMobile.getSource() != null) {
+                    	map.put("source", userMobile.getSource().intValue());
+                    }
+                    map.put("company", userMobile.getCompany());
+                    map.put("position", userMobile.getPosition());
+                    map.put("parentid", userMobile.getParentid().intValue());
+                	return ResponseUtils.success(map);
                 }else{
                     return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
                 }
@@ -311,7 +416,51 @@ public class UseraccountsServiceImpl implements Iface {
                     combineAccount(appid, userMobile, userUnionid);
                 }).start();
                 //来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录, 7:PC(正常添加) 8:PC(我要投递) 9: PC(我感兴趣)
-            	return ResponseUtils.success(userMobile);
+                Map<String, Object> map = new HashMap<String, Object>();
+                map.put("id", userMobile.getId().intValue());
+                map.put("username", userMobile.getUsername());
+                if(userMobile.getIsDisable() != null) {
+                	map.put("is_disable", userMobile.getIsDisable().intValue());
+                }
+                if(userMobile.getRank() != null) {
+                	map.put("rank", userMobile.getRank());
+                }
+                if(userMobile.getRegisterTime() != null) {
+                	map.put("register_time", DateUtils.dateToShortTime(userMobile.getRegisterTime()));
+                }
+                map.put("register_ip", userMobile.getRegisterIp());
+                if(userMobile.getLastLoginTime() != null) {
+                	map.put("last_login_time", DateUtils.dateToShortTime(userMobile.getLastLoginTime()));
+                }
+                map.put("last_login_ip", userMobile.getLastLoginIp());
+                if(userMobile.getLoginCount() != null) {
+                	map.put("login_count", userMobile.getLoginCount().intValue());
+                }
+                if(userMobile.getMobile() != null) {
+                	map.put("mobile", userMobile.getMobile().longValue());
+                }
+                map.put("email", userMobile.getEmail());
+                if(userMobile.getActivation() != null) {
+                	map.put("activation", userMobile.getActivation().intValue());
+                }
+                map.put("activation_code", userMobile.getActivationCode());
+                map.put("token", userMobile.getToken());
+                map.put("name", userMobile.getName());
+                map.put("headimg", userMobile.getHeadimg());
+                if(userMobile.getNationalCodeId() != null) {
+                	map.put("national_code_id", userMobile.getNationalCodeId().intValue());
+                }
+                if(userMobile.getWechatId() != null) {
+                	map.put("wechat_id", userMobile.getWechatId().intValue());
+                }
+                map.put("unionid", userMobile.getUnionid());
+                if(userMobile.getSource() != null) {
+                	map.put("source", userMobile.getSource().intValue());
+                }
+                map.put("company", userMobile.getCompany());
+                map.put("position", userMobile.getPosition());
+                map.put("parentid", userMobile.getParentid().intValue());
+            	return ResponseUtils.success(map);
             } else {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
             }
@@ -358,42 +507,13 @@ public class UseraccountsServiceImpl implements Iface {
             	default:
             		break;
             }
-
-
             // 合并业务代码
-            // 合并sys_user_id表数据
-            List<String> sysUserIds = getSystemUserIdTable();
-            userdao.combineAccount(sysUserIds, "sys_user_id", userMobile.getId().intValue(),
-                    userUnionid.getId().intValue());
-
-            // 合并user_id表数据
-            List<String> userIds = getUserIdTable();
-            userdao.combineAccount(userIds, "user_id", userMobile.getId().intValue(), userUnionid.getId().intValue());
-
-            // 合并sysuser_id数据
-            List<String> syssUserIds = getSysUserIdTable();
-            userdao.combineAccount(syssUserIds, "sysuser_id", userMobile.getId().intValue(),
+            userdao.combineAccount(userMobile.getId().intValue(),
                     userUnionid.getId().intValue());
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-    }
-
-    private List<String> getSysUserIdTable() {
-        List<String> tables = Lists.newArrayList("candidateDB.candidate_position_share_record", "hrDB.hr_wx_hr_chat_list",
-                "userDB.user_fav_position", "userDB.user_intention", "userDB.user_wx_user", "userDB.user_wx_viewer");
-        return tables;
-    }
-
-    private List<String> getUserIdTable() {
-        List<String> tables = Lists.newArrayList("profile_profile");
-        return tables;
-    }
-
-    private List<String> getSystemUserIdTable() {
-        List<String> tables = Lists.newArrayList("candidate_company");
-        return tables;
     }
 
     /**
@@ -477,7 +597,7 @@ public class UseraccountsServiceImpl implements Iface {
         if (SmsSender.sendSMS_passwordforgot(mobile)) {
             return ResponseUtils.success(null);
         } else {
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
         }
     }
 
@@ -571,7 +691,11 @@ public class UseraccountsServiceImpl implements Iface {
             if(user != null && user.getId() > 0){
                 // 用户记录转换
                 UserUserRecord userUserRecord = (UserUserRecord) BeanUtils.structToDB(user, UserUserRecord.class);
-                userdao.putResource(userUserRecord);
+                if (userdao.putResource(userUserRecord)>0){
+                	return ResponseUtils.success(null);
+                }else{
+                	return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+                }
             }else{
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
             }
@@ -761,7 +885,7 @@ public class UseraccountsServiceImpl implements Iface {
             Integer count = userFavoritePositionDao.getUserFavPositionCountByUserIdAndPositionId(userId, positionId, favorite);
             return ResponseUtils.success(count > 0?true:false);
         }catch (Exception e){
-            return ResponseUtils.success(ConstantErrorCodeMessage.USER_FAV_POSITION_FAILED);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.USER_FAV_POSITION_FAILED);
         }
     }
 

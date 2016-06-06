@@ -47,7 +47,7 @@ import javax.annotation.Generated;
 
 
 /**
- * Convenience access to all tables in hrDB
+ * Convenience access to all tables in hrdb
  */
 @Generated(
 	value = {
@@ -245,7 +245,7 @@ public class Tables {
 	public static final HrWxWechatNoticeSyncStatus HR_WX_WECHAT_NOTICE_SYNC_STATUS = com.moseeker.db.hrdb.tables.HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS;
 
 	/**
-	 * The table hrDB.sys_wechat_app_conf
+	 * The table hrdb.sys_wechat_app_conf
 	 */
 	public static final SysWechatAppConf SYS_WECHAT_APP_CONF = com.moseeker.db.hrdb.tables.SysWechatAppConf.SYS_WECHAT_APP_CONF;
 }

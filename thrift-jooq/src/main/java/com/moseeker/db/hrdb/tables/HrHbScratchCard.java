@@ -36,10 +36,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrHbScratchCard extends TableImpl<HrHbScratchCardRecord> {
 
-	private static final long serialVersionUID = -1398342490;
+	private static final long serialVersionUID = 1810069670;
 
 	/**
-	 * The reference instance of <code>hrDB.hr_hb_scratch_card</code>
+	 * The reference instance of <code>hrdb.hr_hb_scratch_card</code>
 	 */
 	public static final HrHbScratchCard HR_HB_SCRATCH_CARD = new HrHbScratchCard();
 
@@ -52,64 +52,64 @@ public class HrHbScratchCard extends TableImpl<HrHbScratchCardRecord> {
 	}
 
 	/**
-	 * The column <code>hrDB.hr_hb_scratch_card.id</code>.
+	 * The column <code>hrdb.hr_hb_scratch_card.id</code>.
 	 */
 	public final TableField<HrHbScratchCardRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
 	/**
-	 * The column <code>hrDB.hr_hb_scratch_card.wechat_id</code>.
+	 * The column <code>hrdb.hr_hb_scratch_card.wechat_id</code>.
 	 */
 	public final TableField<HrHbScratchCardRecord, Integer> WECHAT_ID = createField("wechat_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>hrDB.hr_hb_scratch_card.cardno</code>. 随机字符串
+	 * The column <code>hrdb.hr_hb_scratch_card.cardno</code>. 随机字符串
 	 */
 	public final TableField<HrHbScratchCardRecord, String> CARDNO = createField("cardno", org.jooq.impl.SQLDataType.VARCHAR.length(40).nullable(false), this, "随机字符串");
 
 	/**
-	 * The column <code>hrDB.hr_hb_scratch_card.status</code>. 状态: 0：未拆开 1：已拆开
+	 * The column <code>hrdb.hr_hb_scratch_card.status</code>. 状态: 0：未拆开 1：已拆开
 	 */
 	public final TableField<HrHbScratchCardRecord, Integer> STATUS = createField("status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "状态: 0：未拆开 1：已拆开");
 
 	/**
-	 * The column <code>hrDB.hr_hb_scratch_card.amount</code>. 红包金额： 0.00 表示不发红包
+	 * The column <code>hrdb.hr_hb_scratch_card.amount</code>. 红包金额： 0.00 表示不发红包
 	 */
 	public final TableField<HrHbScratchCardRecord, BigDecimal> AMOUNT = createField("amount", org.jooq.impl.SQLDataType.DECIMAL.precision(4, 2).nullable(false).defaulted(true), this, "红包金额： 0.00 表示不发红包");
 
 	/**
-	 * The column <code>hrDB.hr_hb_scratch_card.hb_config_id</code>.
+	 * The column <code>hrdb.hr_hb_scratch_card.hb_config_id</code>.
 	 */
 	public final TableField<HrHbScratchCardRecord, Integer> HB_CONFIG_ID = createField("hb_config_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>hrDB.hr_hb_scratch_card.bagging_openid</code>. 聚合号的 openid
+	 * The column <code>hrdb.hr_hb_scratch_card.bagging_openid</code>. 聚合号的 openid
 	 */
 	public final TableField<HrHbScratchCardRecord, String> BAGGING_OPENID = createField("bagging_openid", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaulted(true), this, "聚合号的 openid");
 
 	/**
-	 * The column <code>hrDB.hr_hb_scratch_card.create_time</code>.
+	 * The column <code>hrdb.hr_hb_scratch_card.create_time</code>.
 	 */
 	public final TableField<HrHbScratchCardRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>hrDB.hr_hb_scratch_card.hb_item_id</code>.
+	 * The column <code>hrdb.hr_hb_scratch_card.hb_item_id</code>.
 	 */
 	public final TableField<HrHbScratchCardRecord, Integer> HB_ITEM_ID = createField("hb_item_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>hrDB.hr_hb_scratch_card.tips</code>. 是否是小费 0:不是，1:是
+	 * The column <code>hrdb.hr_hb_scratch_card.tips</code>. 是否是小费 0:不是，1:是
 	 */
 	public final TableField<HrHbScratchCardRecord, Byte> TIPS = createField("tips", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "是否是小费 0:不是，1:是");
 
 	/**
-	 * Create a <code>hrDB.hr_hb_scratch_card</code> table reference
+	 * Create a <code>hrdb.hr_hb_scratch_card</code> table reference
 	 */
 	public HrHbScratchCard() {
 		this("hr_hb_scratch_card", null);
 	}
 
 	/**
-	 * Create an aliased <code>hrDB.hr_hb_scratch_card</code> table reference
+	 * Create an aliased <code>hrdb.hr_hb_scratch_card</code> table reference
 	 */
 	public HrHbScratchCard(String alias) {
 		this(alias, HR_HB_SCRATCH_CARD);

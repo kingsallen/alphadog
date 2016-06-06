@@ -35,10 +35,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxBasicReply extends TableImpl<HrWxBasicReplyRecord> {
 
-	private static final long serialVersionUID = -1339761164;
+	private static final long serialVersionUID = -562270732;
 
 	/**
-	 * The reference instance of <code>hrDB.hr_wx_basic_reply</code>
+	 * The reference instance of <code>hrdb.hr_wx_basic_reply</code>
 	 */
 	public static final HrWxBasicReply HR_WX_BASIC_REPLY = new HrWxBasicReply();
 
@@ -51,29 +51,29 @@ public class HrWxBasicReply extends TableImpl<HrWxBasicReplyRecord> {
 	}
 
 	/**
-	 * The column <code>hrDB.hr_wx_basic_reply.id</code>.
+	 * The column <code>hrdb.hr_wx_basic_reply.id</code>.
 	 */
 	public final TableField<HrWxBasicReplyRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
 
 	/**
-	 * The column <code>hrDB.hr_wx_basic_reply.rid</code>.
+	 * The column <code>hrdb.hr_wx_basic_reply.rid</code>.
 	 */
 	public final TableField<HrWxBasicReplyRecord, UInteger> RID = createField("rid", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>hrDB.hr_wx_basic_reply.content</code>. 文本回复内容
+	 * The column <code>hrdb.hr_wx_basic_reply.content</code>. 文本回复内容
 	 */
 	public final TableField<HrWxBasicReplyRecord, String> CONTENT = createField("content", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "文本回复内容");
 
 	/**
-	 * Create a <code>hrDB.hr_wx_basic_reply</code> table reference
+	 * Create a <code>hrdb.hr_wx_basic_reply</code> table reference
 	 */
 	public HrWxBasicReply() {
 		this("hr_wx_basic_reply", null);
 	}
 
 	/**
-	 * Create an aliased <code>hrDB.hr_wx_basic_reply</code> table reference
+	 * Create an aliased <code>hrdb.hr_wx_basic_reply</code> table reference
 	 */
 	public HrWxBasicReply(String alias) {
 		this(alias, HR_WX_BASIC_REPLY);

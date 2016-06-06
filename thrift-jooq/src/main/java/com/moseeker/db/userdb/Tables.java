@@ -19,7 +19,7 @@ import javax.annotation.Generated;
 
 
 /**
- * Convenience access to all tables in userDB
+ * Convenience access to all tables in userdb
  */
 @Generated(
 	value = {
@@ -37,7 +37,7 @@ public class Tables {
 	public static final CandidateVJobPositionRecom CANDIDATE_V_JOB_POSITION_RECOM = com.moseeker.db.userdb.tables.CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM;
 
 	/**
-	 * The table userDB.user_employee
+	 * The table userdb.user_employee
 	 */
 	public static final UserEmployee USER_EMPLOYEE = com.moseeker.db.userdb.tables.UserEmployee.USER_EMPLOYEE;
 

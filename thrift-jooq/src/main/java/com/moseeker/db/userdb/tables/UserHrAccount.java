@@ -35,10 +35,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserHrAccount extends TableImpl<UserHrAccountRecord> {
 
-	private static final long serialVersionUID = 899895463;
+	private static final long serialVersionUID = 612749479;
 
 	/**
-	 * The reference instance of <code>userDB.user_hr_account</code>
+	 * The reference instance of <code>userdb.user_hr_account</code>
 	 */
 	public static final UserHrAccount USER_HR_ACCOUNT = new UserHrAccount();
 
@@ -51,109 +51,109 @@ public class UserHrAccount extends TableImpl<UserHrAccountRecord> {
 	}
 
 	/**
-	 * The column <code>userDB.user_hr_account.id</code>.
+	 * The column <code>userdb.user_hr_account.id</code>.
 	 */
 	public final TableField<UserHrAccountRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
 	/**
-	 * The column <code>userDB.user_hr_account.company_id</code>. company.id
+	 * The column <code>userdb.user_hr_account.company_id</code>. company.id
 	 */
 	public final TableField<UserHrAccountRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "company.id");
 
 	/**
-	 * The column <code>userDB.user_hr_account.mobile</code>. 手机号码
+	 * The column <code>userdb.user_hr_account.mobile</code>. 手机号码
 	 */
 	public final TableField<UserHrAccountRecord, String> MOBILE = createField("mobile", org.jooq.impl.SQLDataType.VARCHAR.length(32).nullable(false).defaulted(true), this, "手机号码");
 
 	/**
-	 * The column <code>userDB.user_hr_account.email</code>. 邮箱
+	 * The column <code>userdb.user_hr_account.email</code>. 邮箱
 	 */
 	public final TableField<UserHrAccountRecord, String> EMAIL = createField("email", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "邮箱");
 
 	/**
-	 * The column <code>userDB.user_hr_account.wxuser_id</code>. 绑定的微信账号
+	 * The column <code>userdb.user_hr_account.wxuser_id</code>. 绑定的微信账号
 	 */
 	public final TableField<UserHrAccountRecord, Integer> WXUSER_ID = createField("wxuser_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "绑定的微信账号");
 
 	/**
-	 * The column <code>userDB.user_hr_account.password</code>. 登录密码
+	 * The column <code>userdb.user_hr_account.password</code>. 登录密码
 	 */
 	public final TableField<UserHrAccountRecord, String> PASSWORD = createField("password", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaulted(true), this, "登录密码");
 
 	/**
-	 * The column <code>userDB.user_hr_account.username</code>. 企业联系人
+	 * The column <code>userdb.user_hr_account.username</code>. 企业联系人
 	 */
 	public final TableField<UserHrAccountRecord, String> USERNAME = createField("username", org.jooq.impl.SQLDataType.VARCHAR.length(60).nullable(false).defaulted(true), this, "企业联系人");
 
 	/**
-	 * The column <code>userDB.user_hr_account.account_type</code>. 0 超级账号；1：子账号; 2：普通账号
+	 * The column <code>userdb.user_hr_account.account_type</code>. 0 超级账号；1：子账号; 2：普通账号
 	 */
 	public final TableField<UserHrAccountRecord, Integer> ACCOUNT_TYPE = createField("account_type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "0 超级账号；1：子账号; 2：普通账号");
 
 	/**
-	 * The column <code>userDB.user_hr_account.activation</code>. 账号是否激活，1：激活；0：未激活
+	 * The column <code>userdb.user_hr_account.activation</code>. 账号是否激活，1：激活；0：未激活
 	 */
 	public final TableField<UserHrAccountRecord, Byte> ACTIVATION = createField("activation", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "账号是否激活，1：激活；0：未激活");
 
 	/**
-	 * The column <code>userDB.user_hr_account.disable</code>. 1：可用账号；0禁用账号 ） 遵循数据库整体的设计习惯，1表示可用，0表示不可用
+	 * The column <code>userdb.user_hr_account.disable</code>. 1：可用账号；0禁用账号 ） 遵循数据库整体的设计习惯，1表示可用，0表示不可用
 	 */
 	public final TableField<UserHrAccountRecord, Integer> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "1：可用账号；0禁用账号 ） 遵循数据库整体的设计习惯，1表示可用，0表示不可用");
 
 	/**
-	 * The column <code>userDB.user_hr_account.register_time</code>. 注册时间
+	 * The column <code>userdb.user_hr_account.register_time</code>. 注册时间
 	 */
 	public final TableField<UserHrAccountRecord, Timestamp> REGISTER_TIME = createField("register_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "注册时间");
 
 	/**
-	 * The column <code>userDB.user_hr_account.register_ip</code>. 注册时的IP地址
+	 * The column <code>userdb.user_hr_account.register_ip</code>. 注册时的IP地址
 	 */
 	public final TableField<UserHrAccountRecord, String> REGISTER_IP = createField("register_ip", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "注册时的IP地址");
 
 	/**
-	 * The column <code>userDB.user_hr_account.last_login_time</code>. 最后的登录时间
+	 * The column <code>userdb.user_hr_account.last_login_time</code>. 最后的登录时间
 	 */
 	public final TableField<UserHrAccountRecord, Timestamp> LAST_LOGIN_TIME = createField("last_login_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "最后的登录时间");
 
 	/**
-	 * The column <code>userDB.user_hr_account.last_login_ip</code>. 最后一次登录的IP
+	 * The column <code>userdb.user_hr_account.last_login_ip</code>. 最后一次登录的IP
 	 */
 	public final TableField<UserHrAccountRecord, String> LAST_LOGIN_IP = createField("last_login_ip", org.jooq.impl.SQLDataType.VARCHAR.length(50), this, "最后一次登录的IP");
 
 	/**
-	 * The column <code>userDB.user_hr_account.login_count</code>. 登录次数
+	 * The column <code>userdb.user_hr_account.login_count</code>. 登录次数
 	 */
 	public final TableField<UserHrAccountRecord, Integer> LOGIN_COUNT = createField("login_count", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "登录次数");
 
 	/**
-	 * The column <code>userDB.user_hr_account.source</code>. 来源1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号)
+	 * The column <code>userdb.user_hr_account.source</code>. 来源1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号)
 	 */
 	public final TableField<UserHrAccountRecord, Integer> SOURCE = createField("source", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "来源1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号)");
 
 	/**
-	 * The column <code>userDB.user_hr_account.download_token</code>. 下载行业报告校验码
+	 * The column <code>userdb.user_hr_account.download_token</code>. 下载行业报告校验码
 	 */
 	public final TableField<UserHrAccountRecord, String> DOWNLOAD_TOKEN = createField("download_token", org.jooq.impl.SQLDataType.VARCHAR.length(256), this, "下载行业报告校验码");
 
 	/**
-	 * The column <code>userDB.user_hr_account.create_time</code>. 创建时间
+	 * The column <code>userdb.user_hr_account.create_time</code>. 创建时间
 	 */
 	public final TableField<UserHrAccountRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "创建时间");
 
 	/**
-	 * The column <code>userDB.user_hr_account.update_time</code>. 修改时间
+	 * The column <code>userdb.user_hr_account.update_time</code>. 修改时间
 	 */
 	public final TableField<UserHrAccountRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "修改时间");
 
 	/**
-	 * Create a <code>userDB.user_hr_account</code> table reference
+	 * Create a <code>userdb.user_hr_account</code> table reference
 	 */
 	public UserHrAccount() {
 		this("user_hr_account", null);
 	}
 
 	/**
-	 * Create an aliased <code>userDB.user_hr_account</code> table reference
+	 * Create an aliased <code>userdb.user_hr_account</code> table reference
 	 */
 	public UserHrAccount(String alias) {
 		this(alias, USER_HR_ACCOUNT);

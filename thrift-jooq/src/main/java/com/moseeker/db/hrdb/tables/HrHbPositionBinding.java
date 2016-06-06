@@ -36,10 +36,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrHbPositionBinding extends TableImpl<HrHbPositionBindingRecord> {
 
-	private static final long serialVersionUID = 615203588;
+	private static final long serialVersionUID = 1851215620;
 
 	/**
-	 * The reference instance of <code>hrDB.hr_hb_position_binding</code>
+	 * The reference instance of <code>hrdb.hr_hb_position_binding</code>
 	 */
 	public static final HrHbPositionBinding HR_HB_POSITION_BINDING = new HrHbPositionBinding();
 
@@ -52,54 +52,54 @@ public class HrHbPositionBinding extends TableImpl<HrHbPositionBindingRecord> {
 	}
 
 	/**
-	 * The column <code>hrDB.hr_hb_position_binding.id</code>.
+	 * The column <code>hrdb.hr_hb_position_binding.id</code>.
 	 */
 	public final TableField<HrHbPositionBindingRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
 	/**
-	 * The column <code>hrDB.hr_hb_position_binding.hb_config_id</code>. hr_hb_config.id
+	 * The column <code>hrdb.hr_hb_position_binding.hb_config_id</code>. hr_hb_config.id
 	 */
 	public final TableField<HrHbPositionBindingRecord, Integer> HB_CONFIG_ID = createField("hb_config_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "hr_hb_config.id");
 
 	/**
-	 * The column <code>hrDB.hr_hb_position_binding.position_id</code>. hr_position.id
+	 * The column <code>hrdb.hr_hb_position_binding.position_id</code>. hr_position.id
 	 */
 	public final TableField<HrHbPositionBindingRecord, Integer> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "hr_position.id");
 
 	/**
-	 * The column <code>hrDB.hr_hb_position_binding.trigger_way</code>. 领取条件：1=职位被转发 2=职位被申请
+	 * The column <code>hrdb.hr_hb_position_binding.trigger_way</code>. 领取条件：1=职位被转发 2=职位被申请
 	 */
 	public final TableField<HrHbPositionBindingRecord, Byte> TRIGGER_WAY = createField("trigger_way", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "领取条件：1=职位被转发 2=职位被申请");
 
 	/**
-	 * The column <code>hrDB.hr_hb_position_binding.total_amount</code>. 总金额
+	 * The column <code>hrdb.hr_hb_position_binding.total_amount</code>. 总金额
 	 */
 	public final TableField<HrHbPositionBindingRecord, BigDecimal> TOTAL_AMOUNT = createField("total_amount", org.jooq.impl.SQLDataType.DECIMAL.precision(10, 2).nullable(false).defaulted(true), this, "总金额");
 
 	/**
-	 * The column <code>hrDB.hr_hb_position_binding.total_num</code>. 红包总数
+	 * The column <code>hrdb.hr_hb_position_binding.total_num</code>. 红包总数
 	 */
 	public final TableField<HrHbPositionBindingRecord, Integer> TOTAL_NUM = createField("total_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "红包总数");
 
 	/**
-	 * The column <code>hrDB.hr_hb_position_binding.create_time</code>. 创建时间
+	 * The column <code>hrdb.hr_hb_position_binding.create_time</code>. 创建时间
 	 */
 	public final TableField<HrHbPositionBindingRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "创建时间");
 
 	/**
-	 * The column <code>hrDB.hr_hb_position_binding.update_time</code>. 更新时间
+	 * The column <code>hrdb.hr_hb_position_binding.update_time</code>. 更新时间
 	 */
 	public final TableField<HrHbPositionBindingRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "更新时间");
 
 	/**
-	 * Create a <code>hrDB.hr_hb_position_binding</code> table reference
+	 * Create a <code>hrdb.hr_hb_position_binding</code> table reference
 	 */
 	public HrHbPositionBinding() {
 		this("hr_hb_position_binding", null);
 	}
 
 	/**
-	 * Create an aliased <code>hrDB.hr_hb_position_binding</code> table reference
+	 * Create an aliased <code>hrdb.hr_hb_position_binding</code> table reference
 	 */
 	public HrHbPositionBinding(String alias) {
 		this(alias, HR_HB_POSITION_BINDING);

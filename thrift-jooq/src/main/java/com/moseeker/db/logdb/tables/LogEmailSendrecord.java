@@ -36,10 +36,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogEmailSendrecord extends TableImpl<LogEmailSendrecordRecord> {
 
-	private static final long serialVersionUID = -548001601;
+	private static final long serialVersionUID = 1768858815;
 
 	/**
-	 * The reference instance of <code>logDB.log_email_sendrecord</code>
+	 * The reference instance of <code>logdb.log_email_sendrecord</code>
 	 */
 	public static final LogEmailSendrecord LOG_EMAIL_SENDRECORD = new LogEmailSendrecord();
 
@@ -52,44 +52,44 @@ public class LogEmailSendrecord extends TableImpl<LogEmailSendrecordRecord> {
 	}
 
 	/**
-	 * The column <code>logDB.log_email_sendrecord.id</code>.
+	 * The column <code>logdb.log_email_sendrecord.id</code>.
 	 */
 	public final TableField<LogEmailSendrecordRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
 
 	/**
-	 * The column <code>logDB.log_email_sendrecord.type</code>. 邮件类型
+	 * The column <code>logdb.log_email_sendrecord.type</code>. 邮件类型
 	 */
 	public final TableField<LogEmailSendrecordRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "邮件类型");
 
 	/**
-	 * The column <code>logDB.log_email_sendrecord.sys</code>. 来自系统，0:未知 1:platform 2:qx 3:hr 4:官网 9:script
+	 * The column <code>logdb.log_email_sendrecord.sys</code>. 来自系统，0:未知 1:platform 2:qx 3:hr 4:官网 9:script
 	 */
 	public final TableField<LogEmailSendrecordRecord, Byte> SYS = createField("sys", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "来自系统，0:未知 1:platform 2:qx 3:hr 4:官网 9:script");
 
 	/**
-	 * The column <code>logDB.log_email_sendrecord.email</code>. 邮箱地址
+	 * The column <code>logdb.log_email_sendrecord.email</code>. 邮箱地址
 	 */
 	public final TableField<LogEmailSendrecordRecord, String> EMAIL = createField("email", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "邮箱地址");
 
 	/**
-	 * The column <code>logDB.log_email_sendrecord.content</code>. 邮件变量部分内容以json方式
+	 * The column <code>logdb.log_email_sendrecord.content</code>. 邮件变量部分内容以json方式
 	 */
 	public final TableField<LogEmailSendrecordRecord, String> CONTENT = createField("content", org.jooq.impl.SQLDataType.CLOB, this, "邮件变量部分内容以json方式");
 
 	/**
-	 * The column <code>logDB.log_email_sendrecord.create_time</code>.
+	 * The column <code>logdb.log_email_sendrecord.create_time</code>.
 	 */
 	public final TableField<LogEmailSendrecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * Create a <code>logDB.log_email_sendrecord</code> table reference
+	 * Create a <code>logdb.log_email_sendrecord</code> table reference
 	 */
 	public LogEmailSendrecord() {
 		this("log_email_sendrecord", null);
 	}
 
 	/**
-	 * Create an aliased <code>logDB.log_email_sendrecord</code> table reference
+	 * Create an aliased <code>logdb.log_email_sendrecord</code> table reference
 	 */
 	public LogEmailSendrecord(String alias) {
 		this(alias, LOG_EMAIL_SENDRECORD);

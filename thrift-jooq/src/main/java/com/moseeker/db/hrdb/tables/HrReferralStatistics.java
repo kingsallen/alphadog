@@ -36,10 +36,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrReferralStatistics extends TableImpl<HrReferralStatisticsRecord> {
 
-	private static final long serialVersionUID = -574487073;
+	private static final long serialVersionUID = 2005278175;
 
 	/**
-	 * The reference instance of <code>hrDB.hr_referral_statistics</code>
+	 * The reference instance of <code>hrdb.hr_referral_statistics</code>
 	 */
 	public static final HrReferralStatistics HR_REFERRAL_STATISTICS = new HrReferralStatistics();
 
@@ -52,89 +52,89 @@ public class HrReferralStatistics extends TableImpl<HrReferralStatisticsRecord> 
 	}
 
 	/**
-	 * The column <code>hrDB.hr_referral_statistics.id</code>. primary key
+	 * The column <code>hrdb.hr_referral_statistics.id</code>. primary key
 	 */
 	public final TableField<HrReferralStatisticsRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "primary key");
 
 	/**
-	 * The column <code>hrDB.hr_referral_statistics.position_title</code>. hr_position.title
+	 * The column <code>hrdb.hr_referral_statistics.position_title</code>. hr_position.title
 	 */
 	public final TableField<HrReferralStatisticsRecord, String> POSITION_TITLE = createField("position_title", org.jooq.impl.SQLDataType.VARCHAR.length(999).nullable(false), this, "hr_position.title");
 
 	/**
-	 * The column <code>hrDB.hr_referral_statistics.employee_name</code>. sys_employee.cname
+	 * The column <code>hrdb.hr_referral_statistics.employee_name</code>. sys_employee.cname
 	 */
 	public final TableField<HrReferralStatisticsRecord, String> EMPLOYEE_NAME = createField("employee_name", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false), this, "sys_employee.cname");
 
 	/**
-	 * The column <code>hrDB.hr_referral_statistics.employee_id</code>. 推荐员工 sys.employee.id
+	 * The column <code>hrdb.hr_referral_statistics.employee_id</code>. 推荐员工 sys.employee.id
 	 */
 	public final TableField<HrReferralStatisticsRecord, Integer> EMPLOYEE_ID = createField("employee_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "推荐员工 sys.employee.id");
 
 	/**
-	 * The column <code>hrDB.hr_referral_statistics.company_id</code>. sys_wechat.id
+	 * The column <code>hrdb.hr_referral_statistics.company_id</code>. sys_wechat.id
 	 */
 	public final TableField<HrReferralStatisticsRecord, UInteger> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "sys_wechat.id");
 
 	/**
-	 * The column <code>hrDB.hr_referral_statistics.create_date</code>. 创建时间
+	 * The column <code>hrdb.hr_referral_statistics.create_date</code>. 创建时间
 	 */
 	public final TableField<HrReferralStatisticsRecord, Date> CREATE_DATE = createField("create_date", org.jooq.impl.SQLDataType.DATE.nullable(false), this, "创建时间");
 
 	/**
-	 * The column <code>hrDB.hr_referral_statistics.recom_num</code>. 推荐浏览人次
+	 * The column <code>hrdb.hr_referral_statistics.recom_num</code>. 推荐浏览人次
 	 */
 	public final TableField<HrReferralStatisticsRecord, Integer> RECOM_NUM = createField("recom_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "推荐浏览人次");
 
 	/**
-	 * The column <code>hrDB.hr_referral_statistics.recom_fav_num</code>. 推荐感兴趣人次
+	 * The column <code>hrdb.hr_referral_statistics.recom_fav_num</code>. 推荐感兴趣人次
 	 */
 	public final TableField<HrReferralStatisticsRecord, Integer> RECOM_FAV_NUM = createField("recom_fav_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "推荐感兴趣人次");
 
 	/**
-	 * The column <code>hrDB.hr_referral_statistics.recom_mobile_num</code>. 推荐留手机人次
+	 * The column <code>hrdb.hr_referral_statistics.recom_mobile_num</code>. 推荐留手机人次
 	 */
 	public final TableField<HrReferralStatisticsRecord, Integer> RECOM_MOBILE_NUM = createField("recom_mobile_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "推荐留手机人次");
 
 	/**
-	 * The column <code>hrDB.hr_referral_statistics.recom_apply_num</code>. 推荐投递人次
+	 * The column <code>hrdb.hr_referral_statistics.recom_apply_num</code>. 推荐投递人次
 	 */
 	public final TableField<HrReferralStatisticsRecord, Integer> RECOM_APPLY_NUM = createField("recom_apply_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "推荐投递人次");
 
 	/**
-	 * The column <code>hrDB.hr_referral_statistics.recom_after_review_num</code>. 推荐评审通过人数
+	 * The column <code>hrdb.hr_referral_statistics.recom_after_review_num</code>. 推荐评审通过人数
 	 */
 	public final TableField<HrReferralStatisticsRecord, Integer> RECOM_AFTER_REVIEW_NUM = createField("recom_after_review_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "推荐评审通过人数");
 
 	/**
-	 * The column <code>hrDB.hr_referral_statistics.recom_after_interview_num</code>. 推荐面试通过人数
+	 * The column <code>hrdb.hr_referral_statistics.recom_after_interview_num</code>. 推荐面试通过人数
 	 */
 	public final TableField<HrReferralStatisticsRecord, Integer> RECOM_AFTER_INTERVIEW_NUM = createField("recom_after_interview_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "推荐面试通过人数");
 
 	/**
-	 * The column <code>hrDB.hr_referral_statistics.recom_on_board_num</code>. 推荐入职人数
+	 * The column <code>hrdb.hr_referral_statistics.recom_on_board_num</code>. 推荐入职人数
 	 */
 	public final TableField<HrReferralStatisticsRecord, Integer> RECOM_ON_BOARD_NUM = createField("recom_on_board_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "推荐入职人数");
 
 	/**
-	 * The column <code>hrDB.hr_referral_statistics.info_type</code>. 0: 日数据，1：周数据，2：月数据
+	 * The column <code>hrdb.hr_referral_statistics.info_type</code>. 0: 日数据，1：周数据，2：月数据
 	 */
 	public final TableField<HrReferralStatisticsRecord, Integer> INFO_TYPE = createField("info_type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "0: 日数据，1：周数据，2：月数据");
 
 	/**
-	 * The column <code>hrDB.hr_referral_statistics.publisher</code>.
+	 * The column <code>hrdb.hr_referral_statistics.publisher</code>.
 	 */
 	public final TableField<HrReferralStatisticsRecord, Integer> PUBLISHER = createField("publisher", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * Create a <code>hrDB.hr_referral_statistics</code> table reference
+	 * Create a <code>hrdb.hr_referral_statistics</code> table reference
 	 */
 	public HrReferralStatistics() {
 		this("hr_referral_statistics", null);
 	}
 
 	/**
-	 * Create an aliased <code>hrDB.hr_referral_statistics</code> table reference
+	 * Create an aliased <code>hrdb.hr_referral_statistics</code> table reference
 	 */
 	public HrReferralStatistics(String alias) {
 		this(alias, HR_REFERRAL_STATISTICS);

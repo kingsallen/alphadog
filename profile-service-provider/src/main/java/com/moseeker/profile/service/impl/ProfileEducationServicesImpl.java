@@ -150,6 +150,60 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 	}
 
 	@Override
+	public Response postResource(Education education) throws TException {
+		try {
+			if(education.getCollege_code() > 0) {
+				DictCollegeRecord college = collegeDao.getCollegeByID(education.getCollege_code());
+				if(college != null) {
+					education.setCollege_name(college.getName());
+				} else {
+					return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_COLLEGE_NOTEXIST);
+				}
+			}
+			if(!StringUtils.isNullOrEmpty(education.getMajor_code())) {
+				DictMajorRecord major = majorDao.getMajorByID(education.getMajor_code());
+				if(major != null) {
+					education.setMajor_name(major.getName());
+				} else {
+					return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_MAJOR_NOTEXIST);
+				}
+			}
+			ProfileEducationRecord record = structToDB(education);
+			int id = dao.postResource(record);
+			if(id > 0) {
+				return 	ResponseUtils.success(String.valueOf(id));
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		} finally {
+			//do nothing
+		}
+		return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+	}
+
+	@Override
+	public Response putResource(Education education) throws TException {
+		if(education.getCollege_code() > 0) {
+			DictCollegeRecord college = collegeDao.getCollegeByID(education.getCollege_code());
+			if(college != null) {
+				education.setCollege_name(college.getName());
+			} else {
+				return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_COLLEGE_NOTEXIST);
+			}
+		}
+		if(!StringUtils.isNullOrEmpty(education.getMajor_code())) {
+			DictMajorRecord major = majorDao.getMajorByID(education.getMajor_code());
+			if(major != null) {
+				education.setMajor_name(major.getName());
+			} else {
+				return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_MAJOR_NOTEXIST);
+			}
+		}
+		return super.putResource(education);
+	}
+
+	@Override
 	protected Education DBToStruct(ProfileEducationRecord r) {
 		Map<String, String> equalRules = new HashMap<>();
 		equalRules.put("start_date", "start");

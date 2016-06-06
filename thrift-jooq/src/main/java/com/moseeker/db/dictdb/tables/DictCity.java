@@ -34,10 +34,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictCity extends TableImpl<DictCityRecord> {
 
-	private static final long serialVersionUID = 1793277498;
+	private static final long serialVersionUID = -910278086;
 
 	/**
-	 * The reference instance of <code>dictDB.dict_city</code>
+	 * The reference instance of <code>dictdb.dict_city</code>
 	 */
 	public static final DictCity DICT_CITY = new DictCity();
 
@@ -50,44 +50,44 @@ public class DictCity extends TableImpl<DictCityRecord> {
 	}
 
 	/**
-	 * The column <code>dictDB.dict_city.code</code>. 字典code
+	 * The column <code>dictdb.dict_city.code</code>. 字典code
 	 */
 	public final TableField<DictCityRecord, UInteger> CODE = createField("code", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "字典code");
 
 	/**
-	 * The column <code>dictDB.dict_city.name</code>. 字典name
+	 * The column <code>dictdb.dict_city.name</code>. 字典name
 	 */
 	public final TableField<DictCityRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaulted(true), this, "字典name");
 
 	/**
-	 * The column <code>dictDB.dict_city.level</code>. 字典level
+	 * The column <code>dictdb.dict_city.level</code>. 字典level
 	 */
 	public final TableField<DictCityRecord, Byte> LEVEL = createField("level", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "字典level");
 
 	/**
-	 * The column <code>dictDB.dict_city.hot_city</code>. 热门城市 0:否 1：是
+	 * The column <code>dictdb.dict_city.hot_city</code>. 热门城市 0:否 1：是
 	 */
 	public final TableField<DictCityRecord, Byte> HOT_CITY = createField("hot_city", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "热门城市 0:否 1：是");
 
 	/**
-	 * The column <code>dictDB.dict_city.ename</code>. 英文名称
+	 * The column <code>dictdb.dict_city.ename</code>. 英文名称
 	 */
 	public final TableField<DictCityRecord, String> ENAME = createField("ename", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "英文名称");
 
 	/**
-	 * The column <code>dictDB.dict_city.is_using</code>. 正在使用 0:没在用 1:在使用
+	 * The column <code>dictdb.dict_city.is_using</code>. 正在使用 0:没在用 1:在使用
 	 */
 	public final TableField<DictCityRecord, Byte> IS_USING = createField("is_using", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "正在使用 0:没在用 1:在使用");
 
 	/**
-	 * Create a <code>dictDB.dict_city</code> table reference
+	 * Create a <code>dictdb.dict_city</code> table reference
 	 */
 	public DictCity() {
 		this("dict_city", null);
 	}
 
 	/**
-	 * Create an aliased <code>dictDB.dict_city</code> table reference
+	 * Create an aliased <code>dictdb.dict_city</code> table reference
 	 */
 	public DictCity(String alias) {
 		this(alias, DICT_CITY);

@@ -29,129 +29,129 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxRuleRecord extends UpdatableRecordImpl<HrWxRuleRecord> implements Record9<UInteger, UInteger, UInteger, String, String, UInteger, Byte, UInteger, String> {
 
-	private static final long serialVersionUID = 2019874836;
+	private static final long serialVersionUID = 722163732;
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_rule.id</code>.
+	 * Setter for <code>hrdb.hr_wx_rule.id</code>.
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_rule.id</code>.
+	 * Getter for <code>hrdb.hr_wx_rule.id</code>.
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_rule.wechat_id</code>.
+	 * Setter for <code>hrdb.hr_wx_rule.wechat_id</code>.
 	 */
 	public void setWechatId(UInteger value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_rule.wechat_id</code>.
+	 * Getter for <code>hrdb.hr_wx_rule.wechat_id</code>.
 	 */
 	public UInteger getWechatId() {
 		return (UInteger) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_rule.cid</code>.
+	 * Setter for <code>hrdb.hr_wx_rule.cid</code>.
 	 */
 	public void setCid(UInteger value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_rule.cid</code>.
+	 * Getter for <code>hrdb.hr_wx_rule.cid</code>.
 	 */
 	public UInteger getCid() {
 		return (UInteger) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_rule.name</code>.
+	 * Setter for <code>hrdb.hr_wx_rule.name</code>.
 	 */
 	public void setName(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_rule.name</code>.
+	 * Getter for <code>hrdb.hr_wx_rule.name</code>.
 	 */
 	public String getName() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_rule.module</code>. 模块名称
+	 * Setter for <code>hrdb.hr_wx_rule.module</code>. 模块名称
 	 */
 	public void setModule(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_rule.module</code>. 模块名称
+	 * Getter for <code>hrdb.hr_wx_rule.module</code>. 模块名称
 	 */
 	public String getModule() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_rule.displayorder</code>. 排序
+	 * Setter for <code>hrdb.hr_wx_rule.displayorder</code>. 排序
 	 */
 	public void setDisplayorder(UInteger value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_rule.displayorder</code>. 排序
+	 * Getter for <code>hrdb.hr_wx_rule.displayorder</code>. 排序
 	 */
 	public UInteger getDisplayorder() {
 		return (UInteger) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_rule.status</code>. 规则状态，0禁用，1启用，2置顶
+	 * Setter for <code>hrdb.hr_wx_rule.status</code>. 规则状态，0禁用，1启用，2置顶
 	 */
 	public void setStatus(Byte value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_rule.status</code>. 规则状态，0禁用，1启用，2置顶
+	 * Getter for <code>hrdb.hr_wx_rule.status</code>. 规则状态，0禁用，1启用，2置顶
 	 */
 	public Byte getStatus() {
 		return (Byte) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_rule.access_level</code>. 规则获取权限，0：所有，1：员工
+	 * Setter for <code>hrdb.hr_wx_rule.access_level</code>. 规则获取权限，0：所有，1：员工
 	 */
 	public void setAccessLevel(UInteger value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_rule.access_level</code>. 规则获取权限，0：所有，1：员工
+	 * Getter for <code>hrdb.hr_wx_rule.access_level</code>. 规则获取权限，0：所有，1：员工
 	 */
 	public UInteger getAccessLevel() {
 		return (UInteger) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_rule.keywords</code>. 关键字
+	 * Setter for <code>hrdb.hr_wx_rule.keywords</code>. 关键字
 	 */
 	public void setKeywords(String value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_rule.keywords</code>. 关键字
+	 * Getter for <code>hrdb.hr_wx_rule.keywords</code>. 关键字
 	 */
 	public String getKeywords() {
 		return (String) getValue(8);

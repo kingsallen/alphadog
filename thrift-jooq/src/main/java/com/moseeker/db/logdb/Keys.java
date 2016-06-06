@@ -26,7 +26,7 @@ import org.jooq.types.UInteger;
 
 
 /**
- * A class modelling foreign key relationships between tables of the <code>logDB</code> 
+ * A class modelling foreign key relationships between tables of the <code>logdb</code> 
  * schema
  */
 @Generated(

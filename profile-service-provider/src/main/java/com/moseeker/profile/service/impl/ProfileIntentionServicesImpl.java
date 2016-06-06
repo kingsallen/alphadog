@@ -166,8 +166,8 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 				updateIntentionCity(struct, record.getId().intValue());
 				updateIntentionIndustry(struct, record.getId().intValue());
 				updateIntentionPosition(struct, record.getId().intValue());
+				ResponseUtils.success(String.valueOf(intentionId));
 			}
-			ResponseUtils.success(String.valueOf(intentionId));
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
@@ -183,16 +183,18 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 		try {
 			record = structToDB(struct);
 			int intentionId = dao.delResource(record);
-			ProfileIntentionCityRecord intentionCityRecord = new ProfileIntentionCityRecord();
-			intentionCityRecord.setProfileIntentionId(UInteger.valueOf(struct.getId()));
-			intentionCityDao.delResource(intentionCityRecord);
-			ProfileIntentionPositionRecord intentionPositionRecord = new ProfileIntentionPositionRecord();
-			intentionPositionRecord.setProfileIntentionId(UInteger.valueOf(struct.getId()));
-			intentionPositionDao.delResource(intentionPositionRecord);
-			ProfileIntentionIndustryRecord intentionIndustryRecord = new ProfileIntentionIndustryRecord();
-			intentionIndustryRecord.setProfileIntentionId(UInteger.valueOf(struct.getId()));
-			intentionIndustryDao.delResource(intentionIndustryRecord);
-			ResponseUtils.success(String.valueOf(intentionId));
+			if(intentionId > 0) {
+				ProfileIntentionCityRecord intentionCityRecord = new ProfileIntentionCityRecord();
+				intentionCityRecord.setProfileIntentionId(UInteger.valueOf(struct.getId()));
+				intentionCityDao.delResource(intentionCityRecord);
+				ProfileIntentionPositionRecord intentionPositionRecord = new ProfileIntentionPositionRecord();
+				intentionPositionRecord.setProfileIntentionId(UInteger.valueOf(struct.getId()));
+				intentionPositionDao.delResource(intentionPositionRecord);
+				ProfileIntentionIndustryRecord intentionIndustryRecord = new ProfileIntentionIndustryRecord();
+				intentionIndustryRecord.setProfileIntentionId(UInteger.valueOf(struct.getId()));
+				intentionIndustryDao.delResource(intentionIndustryRecord);
+				ResponseUtils.success(String.valueOf(intentionId));
+			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);

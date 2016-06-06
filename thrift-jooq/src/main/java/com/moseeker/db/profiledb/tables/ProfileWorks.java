@@ -36,10 +36,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileWorks extends TableImpl<ProfileWorksRecord> {
 
-	private static final long serialVersionUID = -1015322186;
+	private static final long serialVersionUID = -725121610;
 
 	/**
-	 * The reference instance of <code>profileDB.profile_works</code>
+	 * The reference instance of <code>profiledb.profile_works</code>
 	 */
 	public static final ProfileWorks PROFILE_WORKS = new ProfileWorks();
 
@@ -52,54 +52,54 @@ public class ProfileWorks extends TableImpl<ProfileWorksRecord> {
 	}
 
 	/**
-	 * The column <code>profileDB.profile_works.id</code>. 主key
+	 * The column <code>profiledb.profile_works.id</code>. 主key
 	 */
 	public final TableField<ProfileWorksRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
 
 	/**
-	 * The column <code>profileDB.profile_works.profile_id</code>. profile.id
+	 * The column <code>profiledb.profile_works.profile_id</code>. profile.id
 	 */
 	public final TableField<ProfileWorksRecord, UInteger> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "profile.id");
 
 	/**
-	 * The column <code>profileDB.profile_works.name</code>. 作品名称
+	 * The column <code>profiledb.profile_works.name</code>. 作品名称
 	 */
 	public final TableField<ProfileWorksRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false).defaulted(true), this, "作品名称");
 
 	/**
-	 * The column <code>profileDB.profile_works.url</code>. 作品网址
+	 * The column <code>profiledb.profile_works.url</code>. 作品网址
 	 */
 	public final TableField<ProfileWorksRecord, String> URL = createField("url", org.jooq.impl.SQLDataType.VARCHAR.length(1000).nullable(false).defaulted(true), this, "作品网址");
 
 	/**
-	 * The column <code>profileDB.profile_works.cover</code>. 作品封面
+	 * The column <code>profiledb.profile_works.cover</code>. 作品封面
 	 */
 	public final TableField<ProfileWorksRecord, String> COVER = createField("cover", org.jooq.impl.SQLDataType.VARCHAR.length(1000).nullable(false).defaulted(true), this, "作品封面");
 
 	/**
-	 * The column <code>profileDB.profile_works.description</code>. 作品描述
+	 * The column <code>profiledb.profile_works.description</code>. 作品描述
 	 */
 	public final TableField<ProfileWorksRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.VARCHAR.length(1000).nullable(false).defaulted(true), this, "作品描述");
 
 	/**
-	 * The column <code>profileDB.profile_works.create_time</code>. 创建时间
+	 * The column <code>profiledb.profile_works.create_time</code>. 创建时间
 	 */
 	public final TableField<ProfileWorksRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "创建时间");
 
 	/**
-	 * The column <code>profileDB.profile_works.update_time</code>. 更新时间
+	 * The column <code>profiledb.profile_works.update_time</code>. 更新时间
 	 */
 	public final TableField<ProfileWorksRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "更新时间");
 
 	/**
-	 * Create a <code>profileDB.profile_works</code> table reference
+	 * Create a <code>profiledb.profile_works</code> table reference
 	 */
 	public ProfileWorks() {
 		this("profile_works", null);
 	}
 
 	/**
-	 * Create an aliased <code>profileDB.profile_works</code> table reference
+	 * Create an aliased <code>profiledb.profile_works</code> table reference
 	 */
 	public ProfileWorks(String alias) {
 		this(alias, PROFILE_WORKS);

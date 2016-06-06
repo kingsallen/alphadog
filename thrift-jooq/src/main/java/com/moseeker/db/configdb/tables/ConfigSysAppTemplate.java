@@ -34,10 +34,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysAppTemplate extends TableImpl<ConfigSysAppTemplateRecord> {
 
-	private static final long serialVersionUID = -179904909;
+	private static final long serialVersionUID = 2110741107;
 
 	/**
-	 * The reference instance of <code>configDB.config_sys_app_template</code>
+	 * The reference instance of <code>configdb.config_sys_app_template</code>
 	 */
 	public static final ConfigSysAppTemplate CONFIG_SYS_APP_TEMPLATE = new ConfigSysAppTemplate();
 
@@ -50,64 +50,64 @@ public class ConfigSysAppTemplate extends TableImpl<ConfigSysAppTemplateRecord> 
 	}
 
 	/**
-	 * The column <code>configDB.config_sys_app_template.id</code>.
+	 * The column <code>configdb.config_sys_app_template.id</code>.
 	 */
 	public final TableField<ConfigSysAppTemplateRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
 	/**
-	 * The column <code>configDB.config_sys_app_template.enname</code>. 申请字段英文名称
+	 * The column <code>configdb.config_sys_app_template.enname</code>. 申请字段英文名称
 	 */
 	public final TableField<ConfigSysAppTemplateRecord, String> ENNAME = createField("enname", org.jooq.impl.SQLDataType.VARCHAR.length(30).nullable(false).defaulted(true), this, "申请字段英文名称");
 
 	/**
-	 * The column <code>configDB.config_sys_app_template.chname</code>. 申请字段中文名称
+	 * The column <code>configdb.config_sys_app_template.chname</code>. 申请字段中文名称
 	 */
 	public final TableField<ConfigSysAppTemplateRecord, String> CHNAME = createField("chname", org.jooq.impl.SQLDataType.VARCHAR.length(30).nullable(false).defaulted(true), this, "申请字段中文名称");
 
 	/**
-	 * The column <code>configDB.config_sys_app_template.priority</code>. 排序
+	 * The column <code>configdb.config_sys_app_template.priority</code>. 排序
 	 */
 	public final TableField<ConfigSysAppTemplateRecord, Byte> PRIORITY = createField("priority", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "排序");
 
 	/**
-	 * The column <code>configDB.config_sys_app_template.display</code>. 是否显示0：是，1：否
+	 * The column <code>configdb.config_sys_app_template.display</code>. 是否显示0：是，1：否
 	 */
 	public final TableField<ConfigSysAppTemplateRecord, Byte> DISPLAY = createField("display", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "是否显示0：是，1：否");
 
 	/**
-	 * The column <code>configDB.config_sys_app_template.required</code>. 是否必填0：是，1：否
+	 * The column <code>configdb.config_sys_app_template.required</code>. 是否必填0：是，1：否
 	 */
 	public final TableField<ConfigSysAppTemplateRecord, Byte> REQUIRED = createField("required", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "是否必填0：是，1：否");
 
 	/**
-	 * The column <code>configDB.config_sys_app_template.type</code>. 模板类型
+	 * The column <code>configdb.config_sys_app_template.type</code>. 模板类型
 	 */
 	public final TableField<ConfigSysAppTemplateRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "模板类型");
 
 	/**
-	 * The column <code>configDB.config_sys_app_template.remark</code>. 备注
+	 * The column <code>configdb.config_sys_app_template.remark</code>. 备注
 	 */
 	public final TableField<ConfigSysAppTemplateRecord, String> REMARK = createField("remark", org.jooq.impl.SQLDataType.VARCHAR.length(256), this, "备注");
 
 	/**
-	 * The column <code>configDB.config_sys_app_template.entitle</code>. 字段英文名称
+	 * The column <code>configdb.config_sys_app_template.entitle</code>. 字段英文名称
 	 */
 	public final TableField<ConfigSysAppTemplateRecord, String> ENTITLE = createField("entitle", org.jooq.impl.SQLDataType.VARCHAR.length(30).nullable(false).defaulted(true), this, "字段英文名称");
 
 	/**
-	 * The column <code>configDB.config_sys_app_template.parent_id</code>. 字段父子关系
+	 * The column <code>configdb.config_sys_app_template.parent_id</code>. 字段父子关系
 	 */
 	public final TableField<ConfigSysAppTemplateRecord, Integer> PARENT_ID = createField("parent_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "字段父子关系");
 
 	/**
-	 * Create a <code>configDB.config_sys_app_template</code> table reference
+	 * Create a <code>configdb.config_sys_app_template</code> table reference
 	 */
 	public ConfigSysAppTemplate() {
 		this("config_sys_app_template", null);
 	}
 
 	/**
-	 * Create an aliased <code>configDB.config_sys_app_template</code> table reference
+	 * Create an aliased <code>configdb.config_sys_app_template</code> table reference
 	 */
 	public ConfigSysAppTemplate(String alias) {
 		this(alias, CONFIG_SYS_APP_TEMPLATE);

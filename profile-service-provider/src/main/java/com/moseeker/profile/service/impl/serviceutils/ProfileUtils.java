@@ -164,7 +164,9 @@ public class ProfileUtils {
 		ProfileImportRecord record = null;
 		if (importMap != null) {
 			record = BeanUtils.MapToRecord(importMap, ProfileImportRecord.class);
-			record.setUserName(userName);
+			if(record != null) {
+				record.setUserName(userName);
+			}
 			return record;
 		}
 		return record;
@@ -264,8 +266,12 @@ public class ProfileUtils {
 					Map<String, Object> map = new HashMap<String, Object>();
 					map.put("profile_id", record.getProfileId().intValue());
 					map.put("other", record.getOther());
-					map.put("create_time", DateUtils.dateToShortTime(record.getCreateTime()));
-					map.put("update_time", DateUtils.dateToShortTime(record.getUpdateTime()));
+					if(record.getCreateTime() != null) {
+						map.put("create_time", DateUtils.dateToShortTime(record.getCreateTime()));
+					}
+					if(record.getUpdateTime() != null) {
+						map.put("update_time", DateUtils.dateToShortTime(record.getUpdateTime()));
+					}
 					list.add(map);
 				});
 			}
@@ -285,12 +291,18 @@ public class ProfileUtils {
 				records.forEach(record -> {
 					Map<String, Object> map = new HashMap<String, Object>();
 					map.put("source", record.getSource().intValue());
-					map.put("last_update_time", DateUtils.dateToShortTime(record.getLastUpdateTime()));
+					if(record.getLastUpdateTime() != null) {
+						map.put("last_update_time", DateUtils.dateToShortTime(record.getLastUpdateTime()));
+					}
 					map.put("account_id", record.getAccountId());
 					map.put("resume_id", record.getResumeId());
 					map.put("user_name", record.getUserName());
-					map.put("create_time", DateUtils.dateToShortTime(record.getCreateTime()));
-					map.put("update_time", DateUtils.dateToShortTime(record.getUpdateTime()));
+					if(record.getCreateTime() != null) {
+						map.put("create_time", DateUtils.dateToShortTime(record.getCreateTime()));
+					}
+					if(record.getUpdateTime() != null) {
+						map.put("update_time", DateUtils.dateToShortTime(record.getUpdateTime()));
+					}
 					list.add(map);
 				});
 			}
@@ -309,11 +321,17 @@ public class ProfileUtils {
 				records.forEach(record -> {
 					Map<String, Object> map = new HashMap<String, Object>();
 					map.put("id", record.getId().intValue());
-					map.put("profile_id", record.getProfileId().intValue());
+					if(record.getProfileId() != null) {
+						map.put("profile_id", record.getProfileId().intValue());
+					}
 					map.put("name", record.getName());
 					map.put("path", record.getPath());
-					map.put("create_time", DateUtils.dateToShortTime(record.getCreateTime()));
-					map.put("update_time", DateUtils.dateToShortTime(record.getUpdateTime()));
+					if(record.getCreateTime() != null) {
+						map.put("create_time", DateUtils.dateToShortTime(record.getCreateTime()));
+					}
+					if(record.getUpdateTime() != null) {
+						map.put("update_time", DateUtils.dateToShortTime(record.getUpdateTime()));
+					}
 					list.add(map);
 				});
 			}

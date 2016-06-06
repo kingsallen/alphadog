@@ -38,10 +38,10 @@ import org.jooq.types.ULong;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserWxUser extends TableImpl<UserWxUserRecord> {
 
-	private static final long serialVersionUID = 1866932886;
+	private static final long serialVersionUID = 218047126;
 
 	/**
-	 * The reference instance of <code>userDB.user_wx_user</code>
+	 * The reference instance of <code>userdb.user_wx_user</code>
 	 */
 	public static final UserWxUser USER_WX_USER = new UserWxUser();
 
@@ -54,119 +54,119 @@ public class UserWxUser extends TableImpl<UserWxUserRecord> {
 	}
 
 	/**
-	 * The column <code>userDB.user_wx_user.id</code>. 主key
+	 * The column <code>userdb.user_wx_user.id</code>. 主key
 	 */
 	public final TableField<UserWxUserRecord, ULong> ID = createField("id", org.jooq.impl.SQLDataType.BIGINTUNSIGNED.nullable(false), this, "主key");
 
 	/**
-	 * The column <code>userDB.user_wx_user.wechat_id</code>. 所属公众号
+	 * The column <code>userdb.user_wx_user.wechat_id</code>. 所属公众号
 	 */
 	public final TableField<UserWxUserRecord, UInteger> WECHAT_ID = createField("wechat_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "所属公众号");
 
 	/**
-	 * The column <code>userDB.user_wx_user.group_id</code>. 分组ID
+	 * The column <code>userdb.user_wx_user.group_id</code>. 分组ID
 	 */
 	public final TableField<UserWxUserRecord, UInteger> GROUP_ID = createField("group_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "分组ID");
 
 	/**
-	 * The column <code>userDB.user_wx_user.sysuser_id</code>.
+	 * The column <code>userdb.user_wx_user.sysuser_id</code>.
 	 */
 	public final TableField<UserWxUserRecord, Integer> SYSUSER_ID = createField("sysuser_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>userDB.user_wx_user.is_subscribe</code>. 是否关注 1:关注 0：没关注
+	 * The column <code>userdb.user_wx_user.is_subscribe</code>. 是否关注 1:关注 0：没关注
 	 */
 	public final TableField<UserWxUserRecord, UByte> IS_SUBSCRIBE = createField("is_subscribe", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "是否关注 1:关注 0：没关注");
 
 	/**
-	 * The column <code>userDB.user_wx_user.openid</code>. 用户标示
+	 * The column <code>userdb.user_wx_user.openid</code>. 用户标示
 	 */
 	public final TableField<UserWxUserRecord, String> OPENID = createField("openid", org.jooq.impl.SQLDataType.VARCHAR.length(28).nullable(false), this, "用户标示");
 
 	/**
-	 * The column <code>userDB.user_wx_user.nickname</code>. 用户昵称
+	 * The column <code>userdb.user_wx_user.nickname</code>. 用户昵称
 	 */
 	public final TableField<UserWxUserRecord, String> NICKNAME = createField("nickname", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "用户昵称");
 
 	/**
-	 * The column <code>userDB.user_wx_user.sex</code>. 用户性别 0:未知 1:男性 2:女性
+	 * The column <code>userdb.user_wx_user.sex</code>. 用户性别 0:未知 1:男性 2:女性
 	 */
 	public final TableField<UserWxUserRecord, Integer> SEX = createField("sex", org.jooq.impl.SQLDataType.INTEGER.defaulted(true), this, "用户性别 0:未知 1:男性 2:女性");
 
 	/**
-	 * The column <code>userDB.user_wx_user.city</code>. 用户所在城市
+	 * The column <code>userdb.user_wx_user.city</code>. 用户所在城市
 	 */
 	public final TableField<UserWxUserRecord, String> CITY = createField("city", org.jooq.impl.SQLDataType.VARCHAR.length(32).defaulted(true), this, "用户所在城市");
 
 	/**
-	 * The column <code>userDB.user_wx_user.country</code>. 用户所在国家
+	 * The column <code>userdb.user_wx_user.country</code>. 用户所在国家
 	 */
 	public final TableField<UserWxUserRecord, String> COUNTRY = createField("country", org.jooq.impl.SQLDataType.VARCHAR.length(32).defaulted(true), this, "用户所在国家");
 
 	/**
-	 * The column <code>userDB.user_wx_user.province</code>. 用户所在省份
+	 * The column <code>userdb.user_wx_user.province</code>. 用户所在省份
 	 */
 	public final TableField<UserWxUserRecord, String> PROVINCE = createField("province", org.jooq.impl.SQLDataType.VARCHAR.length(32).defaulted(true), this, "用户所在省份");
 
 	/**
-	 * The column <code>userDB.user_wx_user.language</code>. 用户语言
+	 * The column <code>userdb.user_wx_user.language</code>. 用户语言
 	 */
 	public final TableField<UserWxUserRecord, String> LANGUAGE = createField("language", org.jooq.impl.SQLDataType.VARCHAR.length(32).nullable(false).defaulted(true), this, "用户语言");
 
 	/**
-	 * The column <code>userDB.user_wx_user.headimgurl</code>. 用户头像
+	 * The column <code>userdb.user_wx_user.headimgurl</code>. 用户头像
 	 */
 	public final TableField<UserWxUserRecord, String> HEADIMGURL = createField("headimgurl", org.jooq.impl.SQLDataType.VARCHAR.length(512).defaulted(true), this, "用户头像");
 
 	/**
-	 * The column <code>userDB.user_wx_user.subscribe_time</code>. 用户关注时间
+	 * The column <code>userdb.user_wx_user.subscribe_time</code>. 用户关注时间
 	 */
 	public final TableField<UserWxUserRecord, Timestamp> SUBSCRIBE_TIME = createField("subscribe_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "用户关注时间");
 
 	/**
-	 * The column <code>userDB.user_wx_user.unsubscibe_time</code>.
+	 * The column <code>userdb.user_wx_user.unsubscibe_time</code>.
 	 */
 	public final TableField<UserWxUserRecord, Timestamp> UNSUBSCIBE_TIME = createField("unsubscibe_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
 
 	/**
-	 * The column <code>userDB.user_wx_user.unionid</code>. UnionID
+	 * The column <code>userdb.user_wx_user.unionid</code>. UnionID
 	 */
 	public final TableField<UserWxUserRecord, String> UNIONID = createField("unionid", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaulted(true), this, "UnionID");
 
 	/**
-	 * The column <code>userDB.user_wx_user.reward</code>. 积分奖励，暂时不用
+	 * The column <code>userdb.user_wx_user.reward</code>. 积分奖励，暂时不用
 	 */
 	public final TableField<UserWxUserRecord, Integer> REWARD = createField("reward", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "积分奖励，暂时不用");
 
 	/**
-	 * The column <code>userDB.user_wx_user.auto_sync_info</code>. 0：需要处理，1：处理过了
+	 * The column <code>userdb.user_wx_user.auto_sync_info</code>. 0：需要处理，1：处理过了
 	 */
 	public final TableField<UserWxUserRecord, Byte> AUTO_SYNC_INFO = createField("auto_sync_info", org.jooq.impl.SQLDataType.TINYINT.defaulted(true), this, "0：需要处理，1：处理过了");
 
 	/**
-	 * The column <code>userDB.user_wx_user.create_time</code>. 创建时间
+	 * The column <code>userdb.user_wx_user.create_time</code>. 创建时间
 	 */
 	public final TableField<UserWxUserRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "创建时间");
 
 	/**
-	 * The column <code>userDB.user_wx_user.update_time</code>.
+	 * The column <code>userdb.user_wx_user.update_time</code>.
 	 */
 	public final TableField<UserWxUserRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>userDB.user_wx_user.source</code>. insert来源 1:SUBSCRIBED 2:UNSUBSCRIBED 3:订阅号调用api的48001 4:oauth 5:update all 6:update short 7:oauth update 8:微信扫码注册 9:upd unionid 10:upd sysuser, 11:ups sysnuser 12：微信端我也要招人注册
+	 * The column <code>userdb.user_wx_user.source</code>. insert来源 1:SUBSCRIBED 2:UNSUBSCRIBED 3:订阅号调用api的48001 4:oauth 5:update all 6:update short 7:oauth update 8:微信扫码注册 9:upd unionid 10:upd sysuser, 11:ups sysnuser 12：微信端我也要招人注册
 	 */
 	public final TableField<UserWxUserRecord, Byte> SOURCE = createField("source", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "insert来源 1:SUBSCRIBED 2:UNSUBSCRIBED 3:订阅号调用api的48001 4:oauth 5:update all 6:update short 7:oauth update 8:微信扫码注册 9:upd unionid 10:upd sysuser, 11:ups sysnuser 12：微信端我也要招人注册");
 
 	/**
-	 * Create a <code>userDB.user_wx_user</code> table reference
+	 * Create a <code>userdb.user_wx_user</code> table reference
 	 */
 	public UserWxUser() {
 		this("user_wx_user", null);
 	}
 
 	/**
-	 * Create an aliased <code>userDB.user_wx_user</code> table reference
+	 * Create an aliased <code>userdb.user_wx_user</code> table reference
 	 */
 	public UserWxUser(String alias) {
 		this(alias, USER_WX_USER);

@@ -35,10 +35,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxNewsReply extends TableImpl<HrWxNewsReplyRecord> {
 
-	private static final long serialVersionUID = -1715960090;
+	private static final long serialVersionUID = -962751770;
 
 	/**
-	 * The reference instance of <code>hrDB.hr_wx_news_reply</code>
+	 * The reference instance of <code>hrdb.hr_wx_news_reply</code>
 	 */
 	public static final HrWxNewsReply HR_WX_NEWS_REPLY = new HrWxNewsReply();
 
@@ -51,54 +51,54 @@ public class HrWxNewsReply extends TableImpl<HrWxNewsReplyRecord> {
 	}
 
 	/**
-	 * The column <code>hrDB.hr_wx_news_reply.id</code>.
+	 * The column <code>hrdb.hr_wx_news_reply.id</code>.
 	 */
 	public final TableField<HrWxNewsReplyRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
 
 	/**
-	 * The column <code>hrDB.hr_wx_news_reply.rid</code>.
+	 * The column <code>hrdb.hr_wx_news_reply.rid</code>.
 	 */
 	public final TableField<HrWxNewsReplyRecord, UInteger> RID = createField("rid", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>hrDB.hr_wx_news_reply.parentid</code>.
+	 * The column <code>hrdb.hr_wx_news_reply.parentid</code>.
 	 */
 	public final TableField<HrWxNewsReplyRecord, UInteger> PARENTID = createField("parentid", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>hrDB.hr_wx_news_reply.title</code>.
+	 * The column <code>hrdb.hr_wx_news_reply.title</code>.
 	 */
 	public final TableField<HrWxNewsReplyRecord, String> TITLE = createField("title", org.jooq.impl.SQLDataType.VARCHAR.length(150).nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>hrDB.hr_wx_news_reply.description</code>.
+	 * The column <code>hrdb.hr_wx_news_reply.description</code>.
 	 */
 	public final TableField<HrWxNewsReplyRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>hrDB.hr_wx_news_reply.thumb</code>.
+	 * The column <code>hrdb.hr_wx_news_reply.thumb</code>.
 	 */
 	public final TableField<HrWxNewsReplyRecord, String> THUMB = createField("thumb", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>hrDB.hr_wx_news_reply.content</code>.
+	 * The column <code>hrdb.hr_wx_news_reply.content</code>.
 	 */
 	public final TableField<HrWxNewsReplyRecord, String> CONTENT = createField("content", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
 	/**
-	 * The column <code>hrDB.hr_wx_news_reply.url</code>.
+	 * The column <code>hrdb.hr_wx_news_reply.url</code>.
 	 */
 	public final TableField<HrWxNewsReplyRecord, String> URL = createField("url", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaulted(true), this, "");
 
 	/**
-	 * Create a <code>hrDB.hr_wx_news_reply</code> table reference
+	 * Create a <code>hrdb.hr_wx_news_reply</code> table reference
 	 */
 	public HrWxNewsReply() {
 		this("hr_wx_news_reply", null);
 	}
 
 	/**
-	 * Create an aliased <code>hrDB.hr_wx_news_reply</code> table reference
+	 * Create an aliased <code>hrdb.hr_wx_news_reply</code> table reference
 	 */
 	public HrWxNewsReply(String alias) {
 		this(alias, HR_WX_NEWS_REPLY);

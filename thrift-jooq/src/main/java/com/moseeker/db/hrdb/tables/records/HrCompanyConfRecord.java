@@ -31,143 +31,143 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord> implements Record10<UInteger, Integer, Integer, String, Timestamp, Timestamp, String, String, String, String> {
 
-	private static final long serialVersionUID = 1824880125;
+	private static final long serialVersionUID = -994112003;
 
 	/**
-	 * Setter for <code>hrDB.hr_company_conf.company_id</code>.
+	 * Setter for <code>hrdb.hr_company_conf.company_id</code>.
 	 */
 	public void setCompanyId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_company_conf.company_id</code>.
+	 * Getter for <code>hrdb.hr_company_conf.company_id</code>.
 	 */
 	public UInteger getCompanyId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_company_conf.theme_id</code>. sys_theme id
+	 * Setter for <code>hrdb.hr_company_conf.theme_id</code>. sys_theme id
 	 */
 	public void setThemeId(Integer value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_company_conf.theme_id</code>. sys_theme id
+	 * Getter for <code>hrdb.hr_company_conf.theme_id</code>. sys_theme id
 	 */
 	public Integer getThemeId() {
 		return (Integer) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_company_conf.hb_throttle</code>. 全局每人每次红包活动可以获得的红包金额上限
+	 * Setter for <code>hrdb.hr_company_conf.hb_throttle</code>. 全局每人每次红包活动可以获得的红包金额上限
 	 */
 	public void setHbThrottle(Integer value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_company_conf.hb_throttle</code>. 全局每人每次红包活动可以获得的红包金额上限
+	 * Getter for <code>hrdb.hr_company_conf.hb_throttle</code>. 全局每人每次红包活动可以获得的红包金额上限
 	 */
 	public Integer getHbThrottle() {
 		return (Integer) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_company_conf.app_reply</code>. 申请提交成功回复信息
+	 * Setter for <code>hrdb.hr_company_conf.app_reply</code>. 申请提交成功回复信息
 	 */
 	public void setAppReply(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_company_conf.app_reply</code>. 申请提交成功回复信息
+	 * Getter for <code>hrdb.hr_company_conf.app_reply</code>. 申请提交成功回复信息
 	 */
 	public String getAppReply() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_company_conf.create_time</code>. 创建时间
+	 * Setter for <code>hrdb.hr_company_conf.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_company_conf.create_time</code>. 创建时间
+	 * Getter for <code>hrdb.hr_company_conf.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_company_conf.update_time</code>. 更新时间
+	 * Setter for <code>hrdb.hr_company_conf.update_time</code>. 更新时间
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_company_conf.update_time</code>. 更新时间
+	 * Getter for <code>hrdb.hr_company_conf.update_time</code>. 更新时间
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_company_conf.employee_binding</code>. 员工认证自定义文案
+	 * Setter for <code>hrdb.hr_company_conf.employee_binding</code>. 员工认证自定义文案
 	 */
 	public void setEmployeeBinding(String value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_company_conf.employee_binding</code>. 员工认证自定义文案
+	 * Getter for <code>hrdb.hr_company_conf.employee_binding</code>. 员工认证自定义文案
 	 */
 	public String getEmployeeBinding() {
 		return (String) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_company_conf.recommend_presentee</code>. 推荐候选人自定义文案
+	 * Setter for <code>hrdb.hr_company_conf.recommend_presentee</code>. 推荐候选人自定义文案
 	 */
 	public void setRecommendPresentee(String value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_company_conf.recommend_presentee</code>. 推荐候选人自定义文案
+	 * Getter for <code>hrdb.hr_company_conf.recommend_presentee</code>. 推荐候选人自定义文案
 	 */
 	public String getRecommendPresentee() {
 		return (String) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_company_conf.recommend_success</code>. 推荐成功自定义文案
+	 * Setter for <code>hrdb.hr_company_conf.recommend_success</code>. 推荐成功自定义文案
 	 */
 	public void setRecommendSuccess(String value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_company_conf.recommend_success</code>. 推荐成功自定义文案
+	 * Getter for <code>hrdb.hr_company_conf.recommend_success</code>. 推荐成功自定义文案
 	 */
 	public String getRecommendSuccess() {
 		return (String) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_company_conf.forward_message</code>. 转发职位自定义文案
+	 * Setter for <code>hrdb.hr_company_conf.forward_message</code>. 转发职位自定义文案
 	 */
 	public void setForwardMessage(String value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_company_conf.forward_message</code>. 转发职位自定义文案
+	 * Getter for <code>hrdb.hr_company_conf.forward_message</code>. 转发职位自定义文案
 	 */
 	public String getForwardMessage() {
 		return (String) getValue(9);

@@ -35,10 +35,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrOperationRecord extends TableImpl<HrOperationRecordRecord> {
 
-	private static final long serialVersionUID = -1755213117;
+	private static final long serialVersionUID = -1756788029;
 
 	/**
-	 * The reference instance of <code>hrDB.hr_operation_record</code>
+	 * The reference instance of <code>hrdb.hr_operation_record</code>
 	 */
 	public static final HrOperationRecord HR_OPERATION_RECORD = new HrOperationRecord();
 
@@ -51,49 +51,49 @@ public class HrOperationRecord extends TableImpl<HrOperationRecordRecord> {
 	}
 
 	/**
-	 * The column <code>hrDB.hr_operation_record.id</code>.
+	 * The column <code>hrdb.hr_operation_record.id</code>.
 	 */
 	public final TableField<HrOperationRecordRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
 	/**
-	 * The column <code>hrDB.hr_operation_record.admin_id</code>. hr_account.id
+	 * The column <code>hrdb.hr_operation_record.admin_id</code>. hr_account.id
 	 */
 	public final TableField<HrOperationRecordRecord, Long> ADMIN_ID = createField("admin_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaulted(true), this, "hr_account.id");
 
 	/**
-	 * The column <code>hrDB.hr_operation_record.company_id</code>. company.id
+	 * The column <code>hrdb.hr_operation_record.company_id</code>. company.id
 	 */
 	public final TableField<HrOperationRecordRecord, Long> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaulted(true), this, "company.id");
 
 	/**
-	 * The column <code>hrDB.hr_operation_record.app_id</code>. job_application.id
+	 * The column <code>hrdb.hr_operation_record.app_id</code>. job_application.id
 	 */
 	public final TableField<HrOperationRecordRecord, Long> APP_ID = createField("app_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaulted(true), this, "job_application.id");
 
 	/**
-	 * The column <code>hrDB.hr_operation_record.status_id</code>. hr_award_config.id
+	 * The column <code>hrdb.hr_operation_record.status_id</code>. hr_award_config.id
 	 */
 	public final TableField<HrOperationRecordRecord, Long> STATUS_ID = createField("status_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaulted(true), this, "hr_award_config.id");
 
 	/**
-	 * The column <code>hrDB.hr_operation_record.opt_time</code>. 操作时间
+	 * The column <code>hrdb.hr_operation_record.opt_time</code>. 操作时间
 	 */
 	public final TableField<HrOperationRecordRecord, Timestamp> OPT_TIME = createField("opt_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "操作时间");
 
 	/**
-	 * The column <code>hrDB.hr_operation_record.operate_tpl_id</code>. hr_award_config_template.id
+	 * The column <code>hrdb.hr_operation_record.operate_tpl_id</code>. hr_award_config_template.id
 	 */
 	public final TableField<HrOperationRecordRecord, Integer> OPERATE_TPL_ID = createField("operate_tpl_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "hr_award_config_template.id");
 
 	/**
-	 * Create a <code>hrDB.hr_operation_record</code> table reference
+	 * Create a <code>hrdb.hr_operation_record</code> table reference
 	 */
 	public HrOperationRecord() {
 		this("hr_operation_record", null);
 	}
 
 	/**
-	 * Create an aliased <code>hrDB.hr_operation_record</code> table reference
+	 * Create an aliased <code>hrdb.hr_operation_record</code> table reference
 	 */
 	public HrOperationRecord(String alias) {
 		this(alias, HR_OPERATION_RECORD);

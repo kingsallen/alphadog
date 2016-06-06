@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
@@ -114,12 +115,81 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 
 	@Override
 	public Response postResource(Basic struct) throws TException {
-		return super.postResource(struct);
+		try {
+			if(struct.getCity_code() > 0) {
+				DictCityRecord city = cityDao.getCityByCode(struct.getCity_code());
+				if(city != null) {
+					struct.setCity_name(city.getName());
+				} else {
+					return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_CITY_NOTEXIST);
+				}
+			}
+			if(struct.getNationality_code() > 0) {
+				DictCountryRecord country = countryDao.getCountryByID(struct.getNationality_code());
+				if(country != null) {
+					struct.setNationality_name(country.getName());
+				} else {
+					return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_NATIONALITY_NOTEXIST);
+				}
+			}
+			QueryUtil qu = new QueryUtil();
+			qu.addEqualFilter("profile_id", String.valueOf(struct.getProfile_id()));
+			ProfileBasicRecord repeat = dao.getResource(qu);
+			if(repeat != null) {
+				return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_REPEAT_DATA);
+			}
+			ProfileBasicRecord record = structToDB(struct);
+			int i = dao.postResource(record);
+			if(i > 0) {
+				return ResponseUtils.success(String.valueOf(i));
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		} finally {
+			//do nothing
+		}
+		
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
 	}
 
 	@Override
 	public Response putResource(Basic struct) throws TException {
-		return super.putResource(struct);
+		try {
+			if(struct.getCity_code() > 0) {
+				DictCityRecord city = cityDao.getCityByCode(struct.getCity_code());
+				if(city != null) {
+					struct.setCity_name(city.getName());
+				} else {
+					return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_CITY_NOTEXIST);
+				}
+			}
+			if(struct.getNationality_code() > 0) {
+				DictCountryRecord country = countryDao.getCountryByID(struct.getNationality_code());
+				if(country != null) {
+					struct.setNationality_name(country.getName());
+				} else {
+					return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_NATIONALITY_NOTEXIST);
+				}
+			}
+			QueryUtil qu = new QueryUtil();
+			qu.addEqualFilter("profile_id", String.valueOf(struct.getProfile_id()));
+			ProfileBasicRecord repeat = dao.getResource(qu);
+			if(repeat == null) {
+				return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DATA_NULL);
+			}
+			ProfileBasicRecord record = structToDB(struct);
+			int i = dao.putResource(record);
+			if(i > 0) {
+				return ResponseUtils.success(String.valueOf(i));
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		} finally {
+			//do nothing
+		}
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
 	}
 
 	@Override
