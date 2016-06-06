@@ -128,15 +128,20 @@ public class SearchengineServiceImpl implements Iface {
             }
 
             if (salary != null) {
-                QueryBuilder salaryfilter = QueryBuilders.termQuery("salary", salary);
-                ((BoolQueryBuilder) query).must(salaryfilter);
+                String[] salary_list = salary.split(',')
+                salary_from = salary_list[0];
+                salary_to = salary_list[1];
+                QueryBuilder salary_bottom_filter = QueryBuilders.rangeQuery("salary_bottom" ).from(salary_from).to(salary_to);
+                QueryBuilder salary_top_filter = QueryBuilders.rangeQuery("salary_top" ).from(salary_from).to(salary_to);
+                ((BoolQueryBuilder) query).must(salary_bottom_filter);
+                ((BoolQueryBuilder) query).must(salary_top_filter);
             }
-
+            
             if (child_company_id != null) {
                 QueryBuilder child_company_filter = QueryBuilders.termQuery("child_company_id", child_company_id);
                 ((BoolQueryBuilder) query).must(child_company_filter);
             }
-            
+
             response = client.prepareSearch("index").setTypes("fulltext").setQuery(query).setFrom(page_from)
                     .setSize(page_size).execute().actionGet();
 
