@@ -53,7 +53,7 @@ public class PositionController {
 			vu.addIntTypeValidate("用户编号", userId, null, null, 1, Integer.MAX_VALUE);
 			vu.addIntTypeValidate("职位编号", positionId, null, null, 1, Integer.MAX_VALUE);
 			String message = vu.validate();
-			if(!StringUtils.isNullOrEmpty(message)) {
+			if(StringUtils.isNullOrEmpty(message)) {
 				Response result = positonServices.verifyCustomize(Integer.valueOf(userId), Integer.valueOf(positionId));
 				return ResponseLogNotification.success(request, result);
 			} else {
