@@ -34,4 +34,6 @@ public interface ProfileDao extends BaseDao<ProfileProfileRecord> {
 
 	int deleteProfile(int profileId);
 
+	List<ProfileProfileRecord> getProfilesByIdOrUserIdOrUUID(int userId, int profileId, String uuid);
+
 }
