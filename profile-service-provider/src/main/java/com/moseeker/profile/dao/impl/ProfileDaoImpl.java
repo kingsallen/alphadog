@@ -97,6 +97,61 @@ public class ProfileDaoImpl extends
 		}
 		return record;
 	}
+	
+	@Override
+	public List<ProfileProfileRecord> getProfilesByIdOrUserIdOrUUID(int userId, int profileId, String uuid) {
+		List<ProfileProfileRecord> records = null;
+		Connection conn = null;
+		try {
+			if(userId > 0 || profileId > 0 || !StringUtils.isNullOrEmpty(uuid)) {
+				conn = DBConnHelper.DBConn.getConn();
+				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+				Condition condition = null;
+				if(userId > 0) {
+					if(condition == null) {
+						condition = ProfileProfile.PROFILE_PROFILE.USER_ID.equal(UInteger.valueOf(userId));
+					}
+				}
+				if(profileId > 0) {
+					if(condition == null) {
+						condition = ProfileProfile.PROFILE_PROFILE.ID.equal(UInteger.valueOf(profileId));
+					} else {
+						condition = condition.or(ProfileProfile.PROFILE_PROFILE.ID.equal(UInteger.valueOf(profileId)));
+					}
+				}
+				if(!StringUtils.isNullOrEmpty(uuid)) {
+					if(condition == null) {
+						condition = ProfileProfile.PROFILE_PROFILE.UUID.equal(uuid);
+					} else {
+						condition = condition.or(ProfileProfile.PROFILE_PROFILE.UUID.equal(uuid));
+					}
+				}
+				
+				if(condition != null) {
+					Result<ProfileProfileRecord> result = create.selectFrom(ProfileProfile.PROFILE_PROFILE)
+							.where(condition)
+							.and(ProfileProfile.PROFILE_PROFILE.DISABLE.equal(UByte.valueOf(1)))
+							.limit(1).fetch();
+					if(result != null && result.size() > 0) {
+						records = result;
+					}
+				}
+			}
+		} catch (SQLException e) {
+			logger.error(e.getMessage(), e);
+		} finally {
+			try {
+				if(conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				logger.error(e.getMessage(), e);
+			} finally {
+				//do nothing
+			}
+		}
+		return records;
+	}
 
 	@Override
 	public int saveProfile(ProfileProfileRecord profileRecord, ProfileBasicRecord basicRecord,
@@ -128,29 +183,33 @@ public class ProfileDaoImpl extends
 					attachmentRecords.forEach(attachmentRecord -> {
 						attachmentRecord.setProfileId(profileRecord.getId());
 						attachmentRecord.setCreateTime(now);
+						create.attach(attachmentRecord);
+						attachmentRecord.insert();
 					});
-					create.batchInsert(attachmentRecords);
 				}
 				if(awardsRecords != null && awardsRecords.size() > 0) {
 					awardsRecords.forEach(awardsRecord -> {
 						awardsRecord.setProfileId(profileRecord.getId());
 						awardsRecord.setCreateTime(now);
+						create.attach(awardsRecord);
+						awardsRecord.insert();
 					});
-					create.batchInsert(awardsRecords);
 				}
 				if(credentialsRecords != null && credentialsRecords.size() > 0) {
 					credentialsRecords.forEach(credentialsRecord -> {
 						credentialsRecord.setProfileId(profileRecord.getId());
 						credentialsRecord.setCreateTime(now);
+						create.attach(credentialsRecord);
+						credentialsRecord.insert();
 					});
-					create.batchInsert(credentialsRecords);
 				}
 				if(educationRecords != null && educationRecords.size() > 0) {
 					educationRecords.forEach(educationRecord -> {
 						educationRecord.setProfileId(profileRecord.getId());
 						educationRecord.setCreateTime(now);
+						create.attach(educationRecord);
+						educationRecord.insert();
 					});
-					create.batchInsert(educationRecords);
 				}
 				if(importRecord != null && importRecord.size() > 0) {
 					create.attach(importRecord);
@@ -191,8 +250,9 @@ public class ProfileDaoImpl extends
 					languages.forEach(language -> {
 						language.setProfileId(profileRecord.getId());
 						language.setCreateTime(now);
+						create.attach(language);
+						language.insert();
 					});
-					create.batchInsert(languages);
 				}
 				if(otherRecord != null) {
 					create.attach(otherRecord);
@@ -203,30 +263,34 @@ public class ProfileDaoImpl extends
 					projectExps.forEach(projectExp -> {
 						projectExp.setProfileId(profileRecord.getId());
 						projectExp.setCreateTime(now);
+						create.attach(projectExp);
+						projectExp.insert();
 					});
-					create.batchInsert(projectExps);
 				}
 				if(skillRecords != null && skillRecords.size() > 0) {
 					skillRecords.forEach(skill -> {
 						skill.setProfileId(profileRecord.getId());
 						skill.setCreateTime(now);
+						create.attach(skill);
+						skill.insert();
 					});
-					create.batchInsert(skillRecords);
 				}
 				if(workexpRecords != null && workexpRecords.size() > 0) {
 					workexpRecords.forEach(workexp -> {
 						workexp.setProfileId(profileRecord.getId());
 						workexp.setCreateTime(now);
+						create.attach(workexp);
+						workexp.insert();
 					});
-					create.batchInsert(workexpRecords);
 				}
 				
 				if(worksRecords != null && worksRecords.size() > 0) {
 					worksRecords.forEach(worksRecord -> {
 						worksRecord.setProfileId(profileRecord.getId());
 						worksRecord.setCreateTime(now);
+						create.attach(worksRecord);
+						worksRecord.insert();
 					});
-					create.batchInsert(worksRecords);
 				}
 				profileId = profileRecord.getId().intValue();
 			}

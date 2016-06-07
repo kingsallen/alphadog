@@ -238,7 +238,7 @@ public class WholeProfileServicesImpl implements Iface {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_USER_NOTEXIST);
 		}
 		
-		ProfileProfileRecord oldProfile = profileDao.getProfileByIdOrUserIdOrUUID(userId, 0, null);
+		List<ProfileProfileRecord> oldProfile = profileDao.getProfilesByIdOrUserIdOrUUID(userId, 0, null);
 		
 		profileRecord.setUuid(UUID.randomUUID().toString());
 		profileRecord.setUserId(userRecord.getId());
@@ -273,8 +273,10 @@ public class WholeProfileServicesImpl implements Iface {
 				credentialsRecords, educationRecords, importRecords, intentionRecords, languages, otherRecord,
 				projectExps, skillRecords, workexpRecords, worksRecords);
 		if(id > 0) {
-			if(oldProfile != null) {
-				clearProfile(oldProfile.getId().intValue());
+			if(oldProfile != null && oldProfile.size() > 0) {
+				for(ProfileProfileRecord record : oldProfile) {
+					clearProfile(record.getId().intValue());
+				}
 			}
 			return ResponseUtils.success(id);
 		} else {
