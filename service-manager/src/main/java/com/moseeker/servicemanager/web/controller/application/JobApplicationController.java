@@ -1,21 +1,22 @@
 package com.moseeker.servicemanager.web.controller.application;
 
-import com.moseeker.rpccenter.common.ServiceUtil;
-import com.moseeker.servicemanager.common.ParamUtils;
-import com.moseeker.servicemanager.common.ResponseLogNotification;
-import com.moseeker.thrift.gen.application.service.JobApplicationServices;
-import com.moseeker.thrift.gen.application.struct.JobApplication;
-import com.moseeker.thrift.gen.application.struct.JobResumeOther;
-import com.moseeker.thrift.gen.common.struct.Response;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.moseeker.rpccenter.common.ServiceUtil;
+import com.moseeker.servicemanager.common.ParamUtils;
+import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.thrift.gen.application.service.JobApplicationServices;
+import com.moseeker.thrift.gen.application.struct.JobApplication;
+import com.moseeker.thrift.gen.application.struct.JobResumeBasic;
+import com.moseeker.thrift.gen.application.struct.JobResumeOther;
+import com.moseeker.thrift.gen.common.struct.Response;
 
 /**
  * 申请服务
@@ -42,9 +43,9 @@ public class JobApplicationController {
         try {
             // 获取application实体对象
             JobApplication jobApplication = ParamUtils.initModelForm(request, JobApplication.class);
-
+            JobResumeBasic jobResumeBasic = ParamUtils.initModelForm(request, JobResumeBasic.class);
             // 创建申请记录
-            Response result = applicationService.postApplication(jobApplication);
+            Response result = applicationService.postApplication(jobApplication, jobResumeBasic);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
