@@ -22,6 +22,7 @@ import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.profile.struct.Intention;
 
 public class ParamUtils {
+	
 	public static String getRestfullApiName(HttpServletRequest request) {
 		String path = (String) request
 				.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
@@ -204,6 +205,40 @@ public class ParamUtils {
 			}
 		}
 
+		return t;
+	}
+	
+	public static <T> T initModelForm(Map<String, Object> data, Class<T> clazz) throws Exception {
+		T t = null;
+		if(data != null && data.size() > 0) {
+			if (data.get("appid") == null){
+				throw new Exception("请设置 appid!");
+			}
+			t = clazz.newInstance();
+			if (data != null && data.size() > 0) {
+				Field[] fields = clazz.getDeclaredFields();
+				for (Entry<String, Object> entry : data.entrySet()) {
+					for (int i = 0; i < fields.length; i++) {
+						if (fields[i].getName().equals(entry.getKey())) {
+							String methodName = "set"
+									+ fields[i].getName().substring(0, 1)
+											.toUpperCase()
+									+ fields[i].getName().substring(1);
+							Method method = clazz.getMethod(methodName,
+									fields[i].getType());
+							Object cval = BeanUtils.convertTo(
+									entry.getValue(), fields[i].getType());
+							try {
+								method.invoke(t, cval);
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					}
+				}
+			}
+		}
 		return t;
 	}
 

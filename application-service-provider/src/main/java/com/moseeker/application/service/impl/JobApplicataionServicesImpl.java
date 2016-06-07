@@ -19,8 +19,8 @@ import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.ConstantErrorCodeMessage;
-import com.moseeker.db.candidatedb.tables.records.JobResumeBasicRecord;
 import com.moseeker.db.jobdb.tables.records.JobApplicationRecord;
+import com.moseeker.db.jobdb.tables.records.JobResumeBasicRecord;
 import com.moseeker.db.jobdb.tables.records.JobResumeOtherRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileBasicRecord;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices.Iface;
@@ -98,6 +98,7 @@ public class JobApplicataionServicesImpl implements Iface {
                 basicRecord.setAppId(jobApplicationId);
                 basicRecord.setPositionId(jobApplicationRecord.getPositionId().intValue());
                 basicRecord.setViewCount(Long.valueOf(viewNumber));
+                jobResumeBasicDao.postResource(basicRecord);
                 //jobResumeBasicDao.postResource(basicRecord);
 
                 return ResponseUtils.success(new HashMap<String, Object>(){

@@ -1,5 +1,7 @@
 package com.moseeker.servicemanager.web.controller.application;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -42,8 +44,15 @@ public class JobApplicationController {
     public String post(HttpServletRequest request, HttpServletResponse response) {
         try {
             // 获取application实体对象
-            JobApplication jobApplication = ParamUtils.initModelForm(request, JobApplication.class);
-            JobResumeBasic jobResumeBasic = ParamUtils.initModelForm(request, JobResumeBasic.class);
+        	Map<String, Object> param = ParamUtils.mergeRequestParameters(request);
+        	JobApplication jobApplication = ParamUtils.initModelForm(param, JobApplication.class);
+            JobResumeBasic jobResumeBasic = ParamUtils.initModelForm(param, JobResumeBasic.class);
+            param = null;
+            if(jobApplication != null) {
+            	 if(jobApplication.isSetPosition_id()) {
+            		 jobResumeBasic.setPosition_id(jobApplication.getPosition_id());
+                 }
+            }
             // 创建申请记录
             Response result = applicationService.postApplication(jobApplication, jobResumeBasic);
             return ResponseLogNotification.success(request, result);
