@@ -18,11 +18,8 @@ import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
 import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.db.configdb.tables.ConfigSysPointsConfTpl;
-import com.moseeker.db.configdb.tables.records.ConfigSysPointsConfTplRecord;
 import com.moseeker.db.hrdb.tables.HrCompany;
 import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
-import com.moseeker.db.hrdb.tables.records.HrPointsConfRecord;
 import com.moseeker.db.profiledb.tables.ProfileProfile;
 import com.moseeker.db.profiledb.tables.records.ProfileAttachmentRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileAwardsRecord;
@@ -361,23 +358,6 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 							create.attach(newCompany);
 							newCompany.insert();
 							workexp.setCompanyId(newCompany.getId());
-							
-							Result<ConfigSysPointsConfTplRecord> tplRecords = create
-									.selectFrom(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL)
-									.where(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.AWARD.greaterThan(0)).fetch();
-							if (tplRecords != null && tplRecords.size() > 0) {
-								tplRecords.forEach(tplRecord -> {
-									HrPointsConfRecord pointsConf = new HrPointsConfRecord();
-									pointsConf.setCompanyId(newCompany.getId().intValue());
-									pointsConf.setStatusName(tplRecord.getStatus());
-									pointsConf.setReward(tplRecord.getAward().longValue());
-									pointsConf.setDescription(tplRecord.getDescription());
-									pointsConf.setTemplateId(UInteger.valueOf(tplRecord.getId()));
-									pointsConf.setTag(tplRecord.getTag().toString());
-									create.attach(pointsConf);
-									pointsConf.insert();
-								});
-							}
 						}
 						create.attach(workexp);
 						workexp.insert();

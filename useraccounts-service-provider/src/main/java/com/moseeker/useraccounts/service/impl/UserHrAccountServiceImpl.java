@@ -1,22 +1,32 @@
 package com.moseeker.useraccounts.service.impl;
 
-import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.redis.RedisClient;
-import com.moseeker.common.redis.RedisClientFactory;
-import com.moseeker.common.sms.SmsSender;
-import com.moseeker.common.util.*;
-import com.moseeker.db.userdb.tables.records.UserHrAccountRecord;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService.Iface;
-import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
-import com.moseeker.useraccounts.dao.UserHrAccountDao;
+import java.util.HashMap;
+
 import org.apache.thrift.TException;
+import org.jooq.types.UByte;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
+import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.redis.RedisClient;
+import com.moseeker.common.redis.RedisClientFactory;
+import com.moseeker.common.sms.SmsSender;
+import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.Constant;
+import com.moseeker.common.util.ConstantErrorCodeMessage;
+import com.moseeker.common.util.MD5Util;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.validation.ValidateUtil;
+import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
+import com.moseeker.db.userdb.tables.records.UserHrAccountRecord;
+import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService.Iface;
+import com.moseeker.thrift.gen.useraccounts.struct.DownloadReport;
+import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
+import com.moseeker.useraccounts.dao.UserHrAccountDao;
 
 /**
  * HR账号服务
@@ -73,35 +83,61 @@ public class UserHrAccountServiceImpl implements Iface {
      *
      * */
     @Override
-    public Response postResource(UserHrAccount userHrAccount, String code) throws TException {
+    public Response postResource(DownloadReport downloadReport) throws TException {
         try {
-            // 必填项验证
-            Response response = validatePostResource(userHrAccount, code);
-            if (response.status > 0){
-                return response;
-            }
+        	ValidateUtil vu = new ValidateUtil();
+        	vu.addRequiredStringValidate("手机号码", downloadReport.getMobile(), null, null);
+        	vu.addRequiredStringValidate("验证码", downloadReport.getCode(), null, null);
+            vu.addRequiredStringValidate("公司名称", downloadReport.getCompany_name(), null, null);
+            String message = vu.validate();
+            if(StringUtils.isNullOrEmpty(message)) {
+            	
+            	 /*String redisCode = redisClient.get(Constant.APPID_ALPHADOG, REDIS_KEY_HR_SMS_SIGNUP,
+                         Constant.HR_ACCOUNT_SIGNUP_SOURCE_ARRAY[downloadReport.getSource()-1], downloadReport.getMobile());
+                 // 验证码无法验证
+                 if(!downloadReport.getCode().equals(redisCode)){
+                     return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
+                 }*/
+            	
+            	 String[] passwordArray = this.genPassword(null);
+            	  // 密码生成及加密, 谨慎使用, 防止密码泄露, 有个漏洞, source不是官网以外的时候, 会生成密码, 无法告知
+                 UserHrAccountRecord userHrAccountRecord = new UserHrAccountRecord();
+                 if(downloadReport.isSetSource()) {
+                 	 userHrAccountRecord.setSource(downloadReport.getSource());
+                 }
+                 userHrAccountRecord.setMobile(downloadReport.getMobile());
+                 userHrAccountRecord.setPassword(passwordArray[1]);
+                 userHrAccountRecord.setAccountType(2);
+                 userHrAccountRecord.setUsername(downloadReport.getMobile());
+                 if(downloadReport.isSetRegister_ip()) {
+                	 userHrAccountRecord.setRegisterIp(downloadReport.getRegister_ip());
+                 }
+                 if(downloadReport.isSetLast_login_ip()) {
+                	 userHrAccountRecord.setLastLoginIp(downloadReport.getLast_login_ip());
+                 }
+                 HrCompanyRecord companyRecord = new HrCompanyRecord();
+                 companyRecord.setType(UByte.valueOf(1));
+                 if(downloadReport.isSetCompany_name()) {
+                	 companyRecord.setName(downloadReport.getName());
+                 }
+                 int result = userHrAccountDao.createHRAccount(userHrAccountRecord, companyRecord);
+                 
+                 if (result > 0 && downloadReport.getSource() == Constant.HR_ACCOUNT_SIGNUP_SOURCE_WWW ) {
+                	 SmsSender.sendHrSmsSignUpForDownloadIndustryReport(downloadReport.getMobile(), passwordArray[0]);
+                 }
+                 if(result > 0) {
+                	 return ResponseUtils.success(new HashMap<String, Object>(){
+     					private static final long serialVersionUID = -496268769759269821L;
 
-            // 密码生成及加密, 谨慎使用, 防止密码泄露, 有个漏洞, source不是官网以外的时候, 会生成密码, 无法告知
-            String[] passwordArray = this.genPassword(userHrAccount.password);
-            userHrAccount.setPassword(passwordArray[1]);
-
-            // 添加HR用户
-            UserHrAccountRecord userHrAccountRecord = (UserHrAccountRecord) BeanUtils.structToDB(userHrAccount,
-                    UserHrAccountRecord.class);
-
-            int userHrAccountId = userHrAccountDao.postResource(userHrAccountRecord);
-            if (userHrAccountId > 0) {
-
-                // 如果是官网通过下载行业报告进来的注册, 短信告诉他初始化密码
-                if(userHrAccount.source == Constant.HR_ACCOUNT_SIGNUP_SOURCE_WWW){
-                    SmsSender.sendHrSmsSignUpForDownloadIndustryReport(userHrAccount.mobile, passwordArray[0]);
-                }
-
-                return ResponseUtils.success(new HashMap<String, Object>(){
-                    {
-                        put("userHrAccountId", userHrAccountId);
-                    }
-                }); // 返回 userFavoritePositionId
+     					{
+                              put("userHrAccountId", result);
+                          }
+                      }); // 返回 userFavoritePositionId
+                 } else {
+                	 return ResponseUtils.success(result);
+                 }
+            } else {
+            	return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", message));
             }
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -241,16 +277,15 @@ public class UserHrAccountServiceImpl implements Iface {
     private String[] genPassword(String passowrd){
         String[] passwordArray = new String[2];
         String plainPassword = "8E69c6";
-        if(passowrd == null || passowrd.equals("")){
+        if(passowrd == null || passowrd.trim().equals("")){
             plainPassword = StringUtils.getRandomString(6);
         }else{
             plainPassword = passowrd;
         }
 
         passwordArray[0] = plainPassword;
-        passwordArray[1] = MD5Util.md5(plainPassword);
+        passwordArray[1] = MD5Util.encryptSHA(MD5Util.md5(plainPassword));
 
         return passwordArray;
     }
-
 }

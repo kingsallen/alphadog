@@ -109,4 +109,10 @@ public final class Constant {
 	public static final int COMPANY_SOURCE_PROFILE = 9; //profile添加
 	public static final int COMPANY_SOURCE_HR = 0; //HR系统
 
+    /** PROFILE 区域 END **/
+	
+	/** PROFILE 区域 START **/
+    public static final int ACCOUNT_TYPE_SUPERACCOUNT 	= 0; 	//超级帐号
+	public static final int ACCOUNT_TYPE_SUBORDINATE 	= 1; 	//子账号
+	public static final int ACCOUNT_TYPE_NORMAL 		= 2; 	//普通帐号
 }

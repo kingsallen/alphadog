@@ -11,6 +11,7 @@ public final class ConstantErrorCodeMessage {
     public static final String PROGRAM_POST_FAILED = "{'status':90011,'message':'添加失败！'}";
     public static final String PROGRAM_PUT_FAILED = "{'status':90012,'message':'保存失败!'}";
     public static final String PROGRAM_DEL_FAILED = "{'status':90013,'message':'删除失败!'}";
+    public static final String VALIDATE_FAILED = "{'errcode':90014, 'message':'{MESSAGE}'}";
 
     // 用户服务ERRCODE说明定义 1字头
     public static final String LOGIN_ACCOUNT_ILLEAGUE = "{'status':10010,'message':'用户名密码不匹配!'}";
@@ -45,7 +46,9 @@ public final class ConstantErrorCodeMessage {
     public static final String CRAWLER_USER_NOPERMITION = "{'status':32001,'message':'账号密码错误!'}";
     public static final String CRAWLER_IMPORT_FAILED = "{'status':32002,'message':'导入失败!'}";
     public static final String CRAWLER_LOGIN_FAILED = "{'status':32003,'message':'登录失败!'}";
-    public static final String CRAWLER_PARAM_ILLEGAL = "{'status':32004,'message':'参数不正确!'}";;
+    public static final String CRAWLER_PARAM_ILLEGAL = "{'status':32004,'message':'参数不正确!'}";
+    
+    public static final String COMPANY_SUPER_REPEART_NAME = "{'status':33001, 'message':'和超级账号重名'}";
 
     // 申请服务ERRCODE说明定义 4字头
     public static final String APPLICATION_VALIDATE_COUNT_CHECK = "{'status':41001,'message':'超出申请次数限制!'}";
