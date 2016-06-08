@@ -70,6 +70,7 @@ import com.moseeker.profile.dao.UserDao;
 import com.moseeker.profile.dao.UserSettingsDao;
 import com.moseeker.profile.dao.WorkExpDao;
 import com.moseeker.profile.dao.WorksDao;
+import com.moseeker.profile.dao.entity.ProfileWorkexpEntity;
 import com.moseeker.profile.dao.impl.IntentionRecord;
 import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -209,7 +210,7 @@ public class WholeProfileServicesImpl implements Iface {
 					(List<Map<String, Object>>) resume.get("projectexps"));
 			List<ProfileSkillRecord> skillRecords = profileUtils.mapToSkillRecords(
 					(List<Map<String, Object>>) resume.get("skills"));
-			List<ProfileWorkexpRecord> workexpRecords = profileUtils.mapToWorkexpRecords(
+			List<ProfileWorkexpEntity> workexpRecords = profileUtils.mapToWorkexpRecords(
 					(List<Map<String, Object>>) resume.get("workexps"));
 			List<ProfileWorksRecord> worksRecords = profileUtils.mapToWorksRecords(
 					(List<Map<String, Object>>) resume.get("works"));
@@ -265,7 +266,7 @@ public class WholeProfileServicesImpl implements Iface {
 				(List<Map<String, Object>>) resume.get("projectexps"));
 		List<ProfileSkillRecord> skillRecords = profileUtils.mapToSkillRecords(
 				(List<Map<String, Object>>) resume.get("skills"));
-		List<ProfileWorkexpRecord> workexpRecords = profileUtils.mapToWorkexpRecords(
+		List<ProfileWorkexpEntity> workexpRecords = profileUtils.mapToWorkexpRecords(
 				(List<Map<String, Object>>) resume.get("workexps"));
 		List<ProfileWorksRecord> worksRecords = profileUtils.mapToWorksRecords(
 				(List<Map<String, Object>>) resume.get("works"));

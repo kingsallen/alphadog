@@ -96,6 +96,17 @@ public final class Constant {
 	public static final int PROFILE_SOURCE_PROFILE = 2; //PC PROFILE
 	public static final int PROFILE_SOURCE_EMAIL = 3; //EMAIL
 	public static final int PROFILE_SOURCE_IMPORT = 4; //导入
+	
+	 /** PROFILE 区域 END **/
+	
+	/** 公司类型 **/
+	public static final int COMPANY_TYPE_FREE = 1; //免费用户
+	public static final int COMPANY_TYPE_OTHER = 2; //其他
+	public static final int COMPANY_TYPE_ENTERPRISE = 0; //企业用户
+	/** 公司类型 **/
+	
+	/** 公司来源 **/
+	public static final int COMPANY_SOURCE_PROFILE = 9; //profile添加
+	public static final int COMPANY_SOURCE_HR = 0; //HR系统
 
-    /** PROFILE 区域 END **/
 }
