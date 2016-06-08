@@ -86,7 +86,7 @@ public class UseraccountsServiceImpl implements Iface {
         	// 存在验证码,就是手机号+验证码登陆.
         	String mobile = userloginreq.getMobile();
             if (validateCode(mobile, code, 1)) {
-                filters.put("username", mobile);
+                filters.put("mobile", mobile);
                 ;
             } else {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
@@ -97,7 +97,7 @@ public class UseraccountsServiceImpl implements Iface {
         if (userloginreq.getUnionid() != null) {
             filters.put("unionid", userloginreq.getUnionid());
         } else {
-            filters.put("username", userloginreq.getMobile());
+            filters.put("mobile", userloginreq.getMobile());
             filters.put("password", MD5Util.md5(userloginreq.getPassword()));
         }
 

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.thrift.TException;
+import org.jooq.types.UInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,7 +79,9 @@ public class JobApplicataionServicesImpl implements Iface {
             // 添加申请
             JobApplicationRecord jobApplicationRecord = (JobApplicationRecord)BeanUtils.structToDB(jobApplication,
                     JobApplicationRecord.class);
-
+            if(jobApplicationRecord.getWechatId() == null) {
+            	jobApplicationRecord.setWechatId(UInteger.valueOf(0));
+            }
             int jobApplicationId = jobApplicationDao.postResource(jobApplicationRecord);
             if (jobApplicationId > 0) {
                 // 添加该人该公司的申请次数
