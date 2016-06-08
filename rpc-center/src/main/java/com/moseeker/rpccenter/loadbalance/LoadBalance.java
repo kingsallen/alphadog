@@ -15,10 +15,13 @@ public class LoadBalance {
      *
      * @return SeverNode
      */
-    public static ServerNode nextBackend(DynamicHostSet hostSet){
+    public static ServerNode nextBackend(DynamicHostSet hostSet) {
         Set<ServerNode> serverNodeSet = hostSet.getLives();
         Object[] hostArray = serverNodeSet.toArray();
-        return (ServerNode)hostArray[genRandomServer(hostArray.length)];
+        if (hostArray.length == 0) {
+            return null;
+        }
+        return (ServerNode) hostArray[genRandomServer(hostArray.length)];
     }
 
     /**
@@ -26,8 +29,8 @@ public class LoadBalance {
      *
      * @return SeverNode
      */
-    private static int genRandomServer(int len){
-        java.util.Random random=new java.util.Random();
+    private static int genRandomServer(int len) {
+        java.util.Random random = new java.util.Random();
         return random.nextInt(len);
     }
 
