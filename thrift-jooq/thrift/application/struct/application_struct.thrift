@@ -33,7 +33,7 @@ struct JobApplication {
 struct JobResumeBasic{
 	
 	 1: optional i64 id,                     // 申请ID
-     2: optional i64 app_id,              	 // 公众号ID
+     2: optional i64 appid,              	 // 公众号ID
      3: optional i64 position_id,            // 职位ID
      4: optional string lastname,            // 姓名
      5: optional i32 age,            		 // 年龄
@@ -49,7 +49,7 @@ struct JobResumeBasic{
     15: optional i32 resume_type,            // 简历类型 0：仟寻简历，1：附件简历
     16: optional i32 cv_type,            	 // 简历类型 0：PC简历，1：仟寻手机填写的简历，2：前程无忧 3：猎聘 4：智联 5:linkedin 13：email简历
     17: optional i32 email_resume_status,    // 简历状态,（0，有效；1,未收到回复邮件；2，文件格式不支持；3，附件超过10M；9，提取邮件失败）
-    18: optional i32 view_count,    		 // 浏览次数
+    18: optional i32 view_count    		 // 浏览次数
 }
 
 /*

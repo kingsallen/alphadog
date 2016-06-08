@@ -561,7 +561,13 @@ public class BeanUtils {
 	private static java.sql.Timestamp convertToSQLTimestamp(Object value) {
 		if (value instanceof String) {
 			try {
-				return new java.sql.Timestamp(DateUtils.shortTimeToDate((String) value).getTime());
+				if(((String)value).length() == 10) {
+					return new java.sql.Timestamp(DateUtils.shortDateToDate((String) value).getTime());
+				} else if(((String)value).length() == 19) {
+					return new java.sql.Timestamp(DateUtils.shortTimeToDate((String) value).getTime());
+				} else {
+					return new java.sql.Timestamp(DateUtils.shortTimeToDate((String) value).getTime());
+				}
 			} catch (ParseException e) {
 				return null;
 			}

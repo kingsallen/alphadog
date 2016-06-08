@@ -82,7 +82,7 @@ public class JobApplicataionServicesImpl implements Iface {
             if(jobApplicationRecord.getWechatId() == null) {
             	jobApplicationRecord.setWechatId(UInteger.valueOf(0));
             }
-            int jobApplicationId = jobApplicationDao.postResource(jobApplicationRecord);
+            int jobApplicationId = jobApplicationDao.saveApplication(jobApplicationRecord);
             if (jobApplicationId > 0) {
                 // 添加该人该公司的申请次数
                 addApplicationCountAtCompany(jobApplication);
@@ -101,6 +101,9 @@ public class JobApplicataionServicesImpl implements Iface {
                 basicRecord.setAppId(jobApplicationId);
                 basicRecord.setPositionId(jobApplicationRecord.getPositionId().intValue());
                 basicRecord.setViewCount(Long.valueOf(viewNumber));
+                if(jobResumeBasic.getAppid() == 1) {
+                	 basicRecord.setFirstname(String.valueOf(jobResumeBasic.getAppid()));
+                }
                 jobResumeBasicDao.postResource(basicRecord);
                 //jobResumeBasicDao.postResource(basicRecord);
 
