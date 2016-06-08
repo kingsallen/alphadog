@@ -1,4 +1,4 @@
-package test.com.moseeker.useraccounts;
+package com.moseeker.useraccounts;
 
 import com.moseeker.rpccenter.config.ClientConfig;
 import com.moseeker.rpccenter.config.RegistryConfig;
@@ -31,9 +31,9 @@ public class UserHrAccountServiceImplTest {
 
             // 添加我感兴趣
             String code = "1234";
-            Response postResource = userHrAccountService.postResource(getUserHrAccount(), code);
+            //Response postResource = userHrAccountService.postResource(getUserHrAccount(), code);
 
-            System.out.println(postResource);
+            //System.out.println(postResource);
 
         } catch (Exception e) {
             e.printStackTrace();

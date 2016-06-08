@@ -26,8 +26,8 @@ import com.moseeker.db.profiledb.tables.records.ProfileOtherRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProjectexpRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileSkillRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileWorkexpRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileWorksRecord;
+import com.moseeker.profile.dao.entity.ProfileWorkexpEntity;
 import com.moseeker.profile.dao.impl.IntentionRecord;
 
 public class ProfileUtils {
@@ -47,11 +47,11 @@ public class ProfileUtils {
 		return worksRecords;
 	}
 
-	public List<ProfileWorkexpRecord> mapToWorkexpRecords(List<Map<String, Object>> workexps) {
-		List<ProfileWorkexpRecord> workexpRecords = new ArrayList<>();
+	public List<ProfileWorkexpEntity> mapToWorkexpRecords(List<Map<String, Object>> workexps) {
+		List<ProfileWorkexpEntity> workexpRecords = new ArrayList<>();
 		if (workexps != null && workexps.size() > 0) {
 			workexps.forEach(workexp -> {
-				ProfileWorkexpRecord record = BeanUtils.MapToRecord(workexp, ProfileWorkexpRecord.class);
+				ProfileWorkexpEntity record = BeanUtils.MapToRecord(workexp, ProfileWorkexpEntity.class);
 				if (record != null) {
 					workexpRecords.add(record);
 				}

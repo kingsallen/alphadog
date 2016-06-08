@@ -17,6 +17,7 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.dictdb.tables.records.DictCityRecord;
@@ -212,8 +213,8 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 						if(StringUtils.isNullOrEmpty(struct.getCompany_logo())) {
 							newCompany.setLogo(struct.getCompany_logo());
 						}
-						newCompany.setType(UByte.valueOf(1));
-						newCompany.setSource(UByte.valueOf(9));
+						newCompany.setType(UByte.valueOf(Constant.COMPANY_TYPE_FREE));
+						newCompany.setSource(UByte.valueOf(Constant.COMPANY_SOURCE_PROFILE));
 						int companyId = companyDao.postResource(newCompany);
 						struct.setCompany_id(companyId);
 					}
