@@ -5,7 +5,6 @@ import java.sql.Connection;
 import org.jooq.DSLContext;
 import org.jooq.Record1;
 import org.jooq.Result;
-import org.jooq.types.UInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -13,11 +12,8 @@ import org.springframework.stereotype.Repository;
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
 import com.moseeker.common.util.Constant;
-import com.moseeker.db.configdb.tables.ConfigSysPointsConfTpl;
-import com.moseeker.db.configdb.tables.records.ConfigSysPointsConfTplRecord;
 import com.moseeker.db.hrdb.tables.HrCompany;
 import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
-import com.moseeker.db.hrdb.tables.records.HrPointsConfRecord;
 import com.moseeker.db.userdb.tables.UserHrAccount;
 import com.moseeker.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.useraccounts.dao.UserHrAccountDao;
@@ -71,23 +67,6 @@ public class UserHrAccountDaoImpl extends BaseDaoImpl<UserHrAccountRecord, UserH
 						companyRecord.insert();
 						userHrAccountRecord.setCompanyId(companyRecord.getId().intValue());
 						userHrAccountRecord.update();
-						
-						Result<ConfigSysPointsConfTplRecord> tplRecords = create
-								.selectFrom(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL)
-								.where(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.AWARD.greaterThan(0)).fetch();
-						if (tplRecords != null && tplRecords.size() > 0) {
-							tplRecords.forEach(tplRecord -> {
-								HrPointsConfRecord pointsConf = new HrPointsConfRecord();
-								pointsConf.setCompanyId(companyRecord.getId().intValue());
-								pointsConf.setStatusName(tplRecord.getStatus());
-								pointsConf.setReward(tplRecord.getAward().longValue());
-								pointsConf.setDescription(tplRecord.getDescription());
-								pointsConf.setTemplateId(UInteger.valueOf(tplRecord.getId()));
-								pointsConf.setTag(tplRecord.getTag().toString());
-								create.attach(pointsConf);
-								pointsConf.insert();
-							});
-						}
 					}
 				}
 			}
