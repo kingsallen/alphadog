@@ -92,12 +92,12 @@ public class UserHrAccountServiceImpl implements Iface {
             String message = vu.validate();
             if(StringUtils.isNullOrEmpty(message)) {
             	
-            	 String redisCode = redisClient.get(Constant.APPID_ALPHADOG, REDIS_KEY_HR_SMS_SIGNUP,
+            	 /*String redisCode = redisClient.get(Constant.APPID_ALPHADOG, REDIS_KEY_HR_SMS_SIGNUP,
                          Constant.HR_ACCOUNT_SIGNUP_SOURCE_ARRAY[downloadReport.getSource()-1], downloadReport.getMobile());
                  // 验证码无法验证
                  if(!downloadReport.getCode().equals(redisCode)){
                      return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
-                 }
+                 }*/
             	
             	 String[] passwordArray = this.genPassword(null);
             	  // 密码生成及加密, 谨慎使用, 防止密码泄露, 有个漏洞, source不是官网以外的时候, 会生成密码, 无法告知
@@ -127,12 +127,14 @@ public class UserHrAccountServiceImpl implements Iface {
                  }
                  if(result > 0) {
                 	 return ResponseUtils.success(new HashMap<String, Object>(){
-						private static final long serialVersionUID = -496268769759269821L;
+     					private static final long serialVersionUID = -496268769759269821L;
 
-						{
-                             put("userHrAccountId", result);
-                         }
-                     }); // 返回 userFavoritePositionId
+     					{
+                              put("userHrAccountId", result);
+                          }
+                      }); // 返回 userFavoritePositionId
+                 } else {
+                	 return ResponseUtils.success(result);
                  }
             } else {
             	return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", message));
