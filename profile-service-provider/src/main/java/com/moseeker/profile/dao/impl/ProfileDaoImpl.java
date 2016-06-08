@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.db.hrdb.tables.HrCompany;
 import com.moseeker.db.profiledb.tables.ProfileProfile;
 import com.moseeker.db.profiledb.tables.records.ProfileAttachmentRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileAwardsRecord;
@@ -279,6 +280,7 @@ public class ProfileDaoImpl extends
 					workexpRecords.forEach(workexp -> {
 						workexp.setProfileId(profileRecord.getId());
 						workexp.setCreateTime(now);
+						//HrCompanyRecord hc = create.selectFrom(HrCompany.HR_COMPANY).where(HrCompany.HR_COMPANY.NAME.equal(workexp.))
 						create.attach(workexp);
 						workexp.insert();
 					});

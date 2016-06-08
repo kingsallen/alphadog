@@ -18,4 +18,6 @@ public interface JobApplicationDao extends BaseDao<JobApplicationRecord>{
     
     public int getViewNumber(long positionId, long userId) throws Exception;
 
+	public int saveApplication(JobApplicationRecord jobApplicationRecord) throws Exception;
+
 }

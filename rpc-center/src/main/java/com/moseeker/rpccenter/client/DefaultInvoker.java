@@ -73,7 +73,7 @@ public class DefaultInvoker<T> implements Invoker {
                     if (cause instanceof TTransportException) {
 
                         // 超时
-                        hostSet.addDeadInstance(serverNode); // 加入dead集合中
+                        // hostSet.addDeadInstance(serverNode); // 加入dead集合中
 
                         exception = cause;
                         try {
