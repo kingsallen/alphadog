@@ -22,6 +22,7 @@ import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.profile.struct.Intention;
 
 public class ParamUtils {
+	
 	public static String getRestfullApiName(HttpServletRequest request) {
 		String path = (String) request
 				.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
@@ -206,6 +207,40 @@ public class ParamUtils {
 
 		return t;
 	}
+	
+	public static <T> T initModelForm(Map<String, Object> data, Class<T> clazz) throws Exception {
+		T t = null;
+		if(data != null && data.size() > 0) {
+			if (data.get("appid") == null){
+				throw new Exception("请设置 appid!");
+			}
+			t = clazz.newInstance();
+			if (data != null && data.size() > 0) {
+				Field[] fields = clazz.getDeclaredFields();
+				for (Entry<String, Object> entry : data.entrySet()) {
+					for (int i = 0; i < fields.length; i++) {
+						if (fields[i].getName().equals(entry.getKey())) {
+							String methodName = "set"
+									+ fields[i].getName().substring(0, 1)
+											.toUpperCase()
+									+ fields[i].getName().substring(1);
+							Method method = clazz.getMethod(methodName,
+									fields[i].getType());
+							Object cval = BeanUtils.convertTo(
+									entry.getValue(), fields[i].getType());
+							try {
+								method.invoke(t, cval);
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					}
+				}
+			}
+		}
+		return t;
+	}
 
 	@Test
 	public void testArray() {
@@ -294,13 +329,13 @@ public class ParamUtils {
 
 	public static void buildIntention(HttpServletRequest request, Intention intention) {
 		Map<Integer, Integer> industryCode = new HashMap<>();
-		Map<Integer, String> industryName= new HashMap<>();
+		Map<String, Integer> industryName= new HashMap<>();
 		
 		Map<Integer, Integer> positionCode = new HashMap<>();
-		Map<Integer, String> positionName= new HashMap<>();
+		Map<String, Integer> positionName= new HashMap<>();
 		
 		Map<Integer, Integer> cityCode = new HashMap<>();
-		Map<Integer, String> cityName= new HashMap<>();
+		Map<String, Integer> cityName= new HashMap<>();
 		@SuppressWarnings("unchecked")
 		Map<String, String[]> reqParams = request.getParameterMap();
 		if (reqParams != null) {
@@ -310,7 +345,7 @@ public class ParamUtils {
 						industryCode.put(Integer.valueOf(entry.getKey().charAt(11)), Integer.valueOf(entry.getValue()[0]));
 					}
 					if(entry.getKey().contains("industry_name")) {
-						industryName.put(Integer.valueOf(entry.getKey().charAt(11)), entry.getValue()[0]);
+						industryName.put(entry.getValue()[0], Integer.valueOf(entry.getKey().charAt(11)));
 					}
 				}
 				
@@ -319,7 +354,7 @@ public class ParamUtils {
 						cityCode.put(Integer.valueOf(entry.getKey().charAt(7)), Integer.valueOf(entry.getValue()[0]));
 					}
 					if(entry.getKey().contains("city_name")) {
-						cityName.put(Integer.valueOf(entry.getKey().charAt(7)), entry.getValue()[0]);
+						cityName.put(entry.getValue()[0], Integer.valueOf(entry.getKey().charAt(7)));
 					}
 				}
 				
@@ -328,33 +363,49 @@ public class ParamUtils {
 						positionCode.put(Integer.valueOf(entry.getKey().charAt(10)), Integer.valueOf(entry.getValue()[0]));
 					}
 					if(entry.getKey().contains("position_name")) {
-						positionName.put(Integer.valueOf(entry.getKey().charAt(10)), entry.getValue()[0]);
+						positionName.put(entry.getValue()[0], Integer.valueOf(entry.getKey().charAt(10)));
 					}
 				}
 			}
 		}
-		if(industryCode.size() > 0 && industryCode.size() == industryName.size()) {
-			for(Entry<Integer, Integer> entry : industryCode.entrySet()) {
+		if(industryName.size() > 0) {
+			for(Entry<String, Integer> entry : industryName.entrySet()) {
 				if(intention.getIndustries() == null) {
-					intention.setIndustries(new HashMap<Integer, String>());
+					intention.setIndustries(new HashMap<String, Integer>());
 				}
-				intention.getIndustries().put(entry.getValue().intValue(), industryName.get(entry.getKey().intValue()));
+				int code = 0;
+				if(industryCode.size() > 0) {
+					if(industryCode.get(entry.getValue()) != null) {
+						code = industryCode.get(entry.getValue());
+					}
+				}
+				intention.getIndustries().put(entry.getKey(), code);
 			}
 		}
-		if(positionCode.size() > 0 && positionCode.size() == positionName.size()) {
-			for(Entry<Integer, Integer> entry : positionCode.entrySet()) {
+		if(positionName.size() > 0) {
+			for(Entry<String, Integer> entry : positionName.entrySet()) {
 				if(intention.positions == null) {
-					intention.setPositions(new HashMap<Integer, String>());
+					intention.setPositions(new HashMap<String, Integer>());
 				}
-				intention.getPositions().put(entry.getValue().intValue(), positionName.get(entry.getKey().intValue()));
+				int code = 0;
+				if(positionCode.size() > 0) {
+					if(positionCode.get(entry.getValue()) != null) {
+						code = positionCode.get(entry.getValue());
+					}
+				}
+				intention.getPositions().put(entry.getKey(), code);
 			}
 		}
-		if(cityCode.size() > 0 && cityCode.size() == cityName.size()) {
-			for(Entry<Integer, Integer> entry : cityCode.entrySet()) {
+		if(cityName.size() > 0) {
+			for(Entry<String, Integer> entry : cityName.entrySet()) {
 				if(intention.cities == null) {
-					intention.setCities(new HashMap<Integer, String>());
+					intention.setCities(new HashMap<String, Integer>());
 				}
-				intention.getCities().put(entry.getValue().intValue(), cityName.get(entry.getKey().intValue()));
+				int code = 0;
+				if(cityCode.get(entry.getValue()) != null) {
+					code = cityCode.get(entry.getValue());
+				}
+				intention.getCities().put(entry.getKey(), code);
 			}
 		}
 	}

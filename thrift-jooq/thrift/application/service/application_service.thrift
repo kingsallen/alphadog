@@ -9,7 +9,7 @@ namespace java com.moseeker.thrift.gen.application.service
 service JobApplicationServices {
 
     // 添加申请
-    common_struct.Response postApplication(1: application_struct.JobApplication application);
+    common_struct.Response postApplication(1: application_struct.JobApplication application, 2: application_struct.JobResumeBasic jobResumeBasic);
 
     // 添加申请副本信息
     common_struct.Response postJobResumeOther(1: application_struct.JobResumeOther jobResumeOther);
