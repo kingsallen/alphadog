@@ -9,12 +9,10 @@ import org.apache.thrift.transport.TTransportException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.moseeker.common.util.Notification;
 import com.moseeker.rpccenter.common.ServerNode;
 import com.moseeker.rpccenter.exception.RpcException;
-import com.moseeker.rpccenter.loadbalance.common.DynamicHostSet;
-
 import com.moseeker.rpccenter.loadbalance.LoadBalance;
+import com.moseeker.rpccenter.loadbalance.common.DynamicHostSet;
 
 /**
  * Created by zzh on 16/3/30.
@@ -84,12 +82,14 @@ public class DefaultInvoker<T> implements Invoker {
                             // 发送socket异常时，证明socket已经失效，需要重新创建
                             if (cause.getCause() != null && cause.getCause() instanceof SocketException) {
                                 pool.clear(serverNode);
-                                Notification.sendThriftConnectionError(serverNode+"  socket已经失效, error:"+ite.getMessage());
+                                //Notification.sendThriftConnectionError(serverNode+"  socket已经失效, error:"+ite.getMessage());
+                                LOGGER.error(serverNode+"  socket已经失效, error:"+ite.getMessage(), ite);
                                 LOGGER.debug("after clear getNumActive:"+pool.getNumActive());
                             } else {
                                 // XXX:其他异常的情况，需要将当前链接置为无效
                                 pool.invalidateObject(serverNode, client);
-                                Notification.sendThriftConnectionError(serverNode+"  链接置为无效, error:"+ite.getMessage());
+                                //Notification.sendThriftConnectionError(serverNode+"  链接置为无效, error:"+ite.getMessage());
+                                LOGGER.error(serverNode+"  链接置为无效, error:"+ite.getMessage(), ite);
                                 LOGGER.debug("after invalidateObject getNumActive:"+pool.getNumActive());
                             }
                         } catch (Exception e) {
