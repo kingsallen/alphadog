@@ -100,7 +100,13 @@ public class JobApplicationDaoImpl extends BaseDaoImpl<JobApplicationRecord, Job
 			logger.error("error", e);
 			throw new Exception(e);
 		} finally {
-			// do nothing
+			try {
+				if (conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return basicRecord;
 	}
@@ -126,7 +132,13 @@ public class JobApplicationDaoImpl extends BaseDaoImpl<JobApplicationRecord, Job
 			logger.error("error", e);
 			throw new Exception(e);
 		} finally {
-			// do nothing
+			try {
+				if (conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return viewNumber;
 	}
@@ -154,7 +166,13 @@ public class JobApplicationDaoImpl extends BaseDaoImpl<JobApplicationRecord, Job
 			logger.error("error", e);
 			throw new Exception(e);
 		} finally {
-			// do nothing
+			try {
+				if (conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return appId;
 	}

@@ -6,6 +6,8 @@ import static com.moseeker.db.configdb.tables.ConfigAdminnotificationMembers.CON
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +19,7 @@ import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
 
-import com.moseeker.common.dbutils.DatabaseConnectionHelper;
+import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.email.Email;
 
 public class Notification {
@@ -42,12 +44,11 @@ public class Notification {
     public static void sendThriftConnectionError(String errorMessage) {
         ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
         String subject = Constant.THRIFT_CONNECTION_LOST;
-        String content = Constant.THRIFT_CONNECTION_LOST;
         List<String> recipients = Arrays.asList(propertiesReader.get("mycat.error.recipients", String.class).split(","));
         try {
             Email mycatConnectionErrorEmail = new Email.EmailBuilder(recipients)
                                                                 .setSubject(subject)
-                                                                .setContent(content)
+                                                                .setContent(errorMessage)
                                                                 .build();
             mycatConnectionErrorEmail.send();
         } catch (Exception e) {
@@ -58,9 +59,10 @@ public class Notification {
 
     public static void sendNotification(int appid, String event_key, String event_details) {
         String notificationText = "项目" + appid + " 发生异常，" + event_details;
-        DSLContext create;
+        Connection conn = null;
         try {
-            create = DatabaseConnectionHelper.getConnection().getJooqDSL();
+        	conn = DBConnHelper.DBConn.getConn();
+			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
             Record result = create.select().from(CONFIG_ADMINNOTIFICATION_EVENTS)
                     .where(CONFIG_ADMINNOTIFICATION_EVENTS.EVENT_KEY.equal(event_key)).fetchAny();
             if (result != null) {
@@ -120,6 +122,14 @@ public class Notification {
         } catch (Exception e) {
             // TODO Auto-generated catch block
           //  e.printStackTrace();
+        } finally {
+        	try {
+				if(conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
         }
     }
 
