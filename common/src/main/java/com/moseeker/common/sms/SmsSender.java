@@ -1,6 +1,7 @@
 package com.moseeker.common.sms;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.common.exception.CacheConfigNotExistException;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.Constant;
@@ -91,7 +92,11 @@ public class SmsSender {
         HashMap<String, String> params = new HashMap<String, String>();
         String signupcode = getRandomStr();
         params.put("code", signupcode);    
-        RedisClientFactory.getCacheClient().set(0, "SMS_SIGNUP", mobile, signupcode);
+        try {
+			RedisClientFactory.getCacheClient().set(0, "SMS_SIGNUP", mobile, signupcode);
+		} catch (CacheConfigNotExistException e) {
+			LOGGER.error(e.getMessage(), e);
+		}
         return sendSMS(mobile,"SMS_5755096",params);
     } 
 
