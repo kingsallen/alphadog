@@ -38,6 +38,23 @@ public class Notification {
         }
 
     }
+    
+    public static void sendThriftConnectionError(String errorMessage) {
+        ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
+        String subject = Constant.THRIFT_CONNECTION_LOST;
+        String content = Constant.THRIFT_CONNECTION_LOST;
+        List<String> recipients = Arrays.asList(propertiesReader.get("mycat.error.recipients", String.class).split(","));
+        try {
+            Email mycatConnectionErrorEmail = new Email.EmailBuilder(recipients)
+                                                                .setSubject(subject)
+                                                                .setContent(content)
+                                                                .build();
+            mycatConnectionErrorEmail.send();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
     public static void sendNotification(int appid, String event_key, String event_details) {
         String notificationText = "项目" + appid + " 发生异常，" + event_details;
