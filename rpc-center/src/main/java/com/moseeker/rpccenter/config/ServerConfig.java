@@ -270,9 +270,11 @@ public class ServerConfig implements IConfigCheck {
             @Override
             public void run() {
                 if (registry != null) {
+                	System.out.println("--------register.unregister-------");
                     registry.unregister();
                 }
                 if (server != null) {
+                	System.out.println("--------server.stop-------");
                     server.stop();
                 }
             }
