@@ -57,10 +57,10 @@ public class ServerConfig implements IConfigCheck {
     private int interval = 5 * 60;
 
     /** 最大工作线程数，默认为{@link Integer#MAX_VALUE} */
-    private int maxWorkerThreads = 10000;
+    private int maxWorkerThreads = 1000;
 
     /** 最小工作线程数 ,默认为10 */
-    private int minWorkerThreads = 10;
+    private int minWorkerThreads = 20;
 
     /** {@link IRegistry} */
     private IRegistry registry;
@@ -270,9 +270,11 @@ public class ServerConfig implements IConfigCheck {
             @Override
             public void run() {
                 if (registry != null) {
+                	System.out.println("--------register.unregister-------");
                     registry.unregister();
                 }
                 if (server != null) {
+                	System.out.println("--------server.stop-------");
                     server.stop();
                 }
             }

@@ -136,7 +136,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 			}
 		} catch (DataAccessException | SQLException e) {
 			logger.error("error", e);
-			throw new Exception();
+			throw new Exception(e);
 		} finally {
 			if(conn != null && !conn.isClosed()) {
 				conn.close();
@@ -171,7 +171,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 			totalCount = create.fetchCount(selectQuery);
 		} catch (DataAccessException | SQLException e) {
 			logger.error("error", e);
-			throw new Exception();
+			throw new Exception(e);
 		} finally {
 			if(conn != null && !conn.isClosed()) {
 				conn.close();
@@ -199,7 +199,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 			}
 		} catch (DataAccessException | SQLException e) {
 			logger.error("error", e);
-			throw new Exception();
+			throw new Exception(e);
 		} finally {
 			if(conn != null && !conn.isClosed()) {
 				conn.close();
@@ -221,7 +221,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 				insertret = create.batchUpdate(records).execute()[0];
 			} catch (DataAccessException | SQLException e) {
 				logger.error("error", e);
-				throw new Exception();
+				throw new Exception(e);
 			} finally {
 				if(conn != null && !conn.isClosed()) {
 					conn.close();
@@ -244,7 +244,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 				insertret = create.batchDelete(records).execute()[0];
 			} catch (DataAccessException | SQLException e) {
 				logger.error("error", e);
-				throw new Exception();
+				throw new Exception(e);
 			} finally {
 				if(conn != null && !conn.isClosed()) {
 					conn.close();
@@ -317,7 +317,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 			}
 		} catch (DataAccessException | SQLException e) {
 			logger.error("error", e);
-			throw new Exception();
+			throw new Exception(e);
 		} finally {
 			if(conn != null && !conn.isClosed()) {
 				conn.close();
@@ -344,7 +344,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 				}
 			} catch (DataAccessException | SQLException e) {
 				logger.error("error", e);
-				throw new Exception();
+				throw new Exception(e);
 			} finally {
 				if(conn != null && !conn.isClosed()) {
 					conn.close();
@@ -359,13 +359,27 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 	public int putResource(R record) throws Exception {
 		initJOOQEntity();
 		int insertret = 0;
-		if (record != null) {
-			Connection conn = DBConnHelper.DBConn.getConn();
-			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-			create.attach(record);
-			insertret = record.update();
-			if(conn != null && !conn.isClosed()) {
-				conn.close();
+		Connection conn = null;
+		try {
+			if (record != null) {
+				conn = DBConnHelper.DBConn.getConn();
+				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+				create.attach(record);
+				insertret = record.update();
+				if(conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+			}
+		} catch (Exception e) {
+			logger.error("error", e);
+			throw new Exception(e);
+		} finally {
+			try {
+				if (conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
 		}
 		return insertret;
@@ -383,6 +397,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 				insertret = record.delete();
 			} catch (DataAccessException | SQLException e) {
 				logger.error("error", e);
+				throw new Exception(e);
 			} finally {
 				if(conn != null && !conn.isClosed()) {
 					conn.close();

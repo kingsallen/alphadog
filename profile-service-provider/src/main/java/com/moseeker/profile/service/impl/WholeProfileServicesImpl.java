@@ -70,6 +70,7 @@ import com.moseeker.profile.dao.UserDao;
 import com.moseeker.profile.dao.UserSettingsDao;
 import com.moseeker.profile.dao.WorkExpDao;
 import com.moseeker.profile.dao.WorksDao;
+import com.moseeker.profile.dao.entity.ProfileWorkexpEntity;
 import com.moseeker.profile.dao.impl.IntentionRecord;
 import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -209,7 +210,7 @@ public class WholeProfileServicesImpl implements Iface {
 					(List<Map<String, Object>>) resume.get("projectexps"));
 			List<ProfileSkillRecord> skillRecords = profileUtils.mapToSkillRecords(
 					(List<Map<String, Object>>) resume.get("skills"));
-			List<ProfileWorkexpRecord> workexpRecords = profileUtils.mapToWorkexpRecords(
+			List<ProfileWorkexpEntity> workexpRecords = profileUtils.mapToWorkexpRecords(
 					(List<Map<String, Object>>) resume.get("workexps"));
 			List<ProfileWorksRecord> worksRecords = profileUtils.mapToWorksRecords(
 					(List<Map<String, Object>>) resume.get("works"));
@@ -238,7 +239,7 @@ public class WholeProfileServicesImpl implements Iface {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_USER_NOTEXIST);
 		}
 		
-		ProfileProfileRecord oldProfile = profileDao.getProfileByIdOrUserIdOrUUID(userId, 0, null);
+		List<ProfileProfileRecord> oldProfile = profileDao.getProfilesByIdOrUserIdOrUUID(userId, 0, null);
 		
 		profileRecord.setUuid(UUID.randomUUID().toString());
 		profileRecord.setUserId(userRecord.getId());
@@ -265,7 +266,7 @@ public class WholeProfileServicesImpl implements Iface {
 				(List<Map<String, Object>>) resume.get("projectexps"));
 		List<ProfileSkillRecord> skillRecords = profileUtils.mapToSkillRecords(
 				(List<Map<String, Object>>) resume.get("skills"));
-		List<ProfileWorkexpRecord> workexpRecords = profileUtils.mapToWorkexpRecords(
+		List<ProfileWorkexpEntity> workexpRecords = profileUtils.mapToWorkexpRecords(
 				(List<Map<String, Object>>) resume.get("workexps"));
 		List<ProfileWorksRecord> worksRecords = profileUtils.mapToWorksRecords(
 				(List<Map<String, Object>>) resume.get("works"));
@@ -273,8 +274,10 @@ public class WholeProfileServicesImpl implements Iface {
 				credentialsRecords, educationRecords, importRecords, intentionRecords, languages, otherRecord,
 				projectExps, skillRecords, workexpRecords, worksRecords);
 		if(id > 0) {
-			if(oldProfile != null) {
-				clearProfile(oldProfile.getId().intValue());
+			if(oldProfile != null && oldProfile.size() > 0) {
+				for(ProfileProfileRecord record : oldProfile) {
+					clearProfile(record.getId().intValue());
+				}
 			}
 			return ResponseUtils.success(id);
 		} else {

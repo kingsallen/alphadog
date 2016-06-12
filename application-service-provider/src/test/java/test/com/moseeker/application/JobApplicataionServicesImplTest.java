@@ -4,6 +4,7 @@ import com.moseeker.rpccenter.config.ClientConfig;
 import com.moseeker.rpccenter.config.RegistryConfig;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
+import com.moseeker.thrift.gen.application.struct.JobResumeBasic;
 import com.moseeker.thrift.gen.application.struct.JobResumeOther;
 import com.moseeker.thrift.gen.common.struct.Response;
 
@@ -31,7 +32,7 @@ public class JobApplicataionServicesImplTest {
             applicationService = clientConfig.createProxy(registryConfig);
 
             // 添加申请
-            Response getJobApplication = applicationService.postApplication(getJobApplication());
+            Response getJobApplication = applicationService.postApplication(getJobApplication(), getJobResumeBasic());
 
             System.out.println(getJobApplication);
 
@@ -54,6 +55,13 @@ public class JobApplicataionServicesImplTest {
         }
     }
 
+    public static JobResumeBasic getJobResumeBasic(){
+    	JobResumeBasic resumeBasic = new JobResumeBasic();
+    	resumeBasic.setAppid(1);
+    	resumeBasic.setPosition_id(1);
+        return resumeBasic;
+    }
+    
     public static JobApplication getJobApplication(){
         JobApplication application = new JobApplication();
         application.setWechat_id(1);

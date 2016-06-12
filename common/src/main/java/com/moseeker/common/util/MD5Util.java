@@ -100,6 +100,18 @@ public class MD5Util {
 			return false;
 		}
 	}
+	
+	/**
+	 * SHA（Secure Hash Algorithm，安全散列算法）是消息摘要算法的一种，被广泛认可的MD5算法的继任者。
+	 * SHA算法家族目前共有SHA-0、SHA-1、SHA-224、SHA-256、SHA-384和SHA-512五种算法，
+	 * 通常将后四种算法并称为SHA-2算法
+	 * 
+	 * @param msg
+	 * @return
+	 */
+	public static String encryptSHA(String msg) {
+		return encryptSHA(msg, null);
+	}
 
 	/**
 	 * SHA（Secure Hash Algorithm，安全散列算法）是消息摘要算法的一种，被广泛认可的MD5算法的继任者。
@@ -109,12 +121,13 @@ public class MD5Util {
 	 * @param msg
 	 * @return
 	 */
-	public String encryptSHA(String msg) {
-		String salt = getSaltSHA1();
+	public static String encryptSHA(String msg, String salt) {
 		StringBuilder sb = new StringBuilder();
 		try {
 			MessageDigest md = MessageDigest.getInstance("SHA-1");
-			md.update(salt.getBytes());
+			if(!StringUtils.isNullOrEmpty(salt)) {
+				md.update(salt.getBytes());
+			}
 			byte[] bytes = md.digest(msg.getBytes());
 			for (int i = 0; i < bytes.length; i++) {
 				sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));

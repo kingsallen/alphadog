@@ -88,4 +88,12 @@ struct UserHrAccount{
     19: optional Timestamp         update_time       // 修改时间
 }
 
-
+struct DownloadReport { 
+   1: string code,									//验证码
+   2: string company_name,							//公司名称
+   3: string mobile,								//手机号码
+   4: string name,							//联系人
+   5: optional i32 source,							//来源
+   6: optional string register_ip,					//注册IP
+   7: optional string last_login_ip					//最后登录IP
+}
