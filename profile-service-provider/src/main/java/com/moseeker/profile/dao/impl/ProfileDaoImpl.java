@@ -345,19 +345,21 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 					workexpRecords.forEach(workexp -> {
 						workexp.setProfileId(profileRecord.getId());
 						workexp.setCreateTime(now);
-						HrCompanyRecord hc = create.selectFrom(HrCompany.HR_COMPANY)
-								.where(HrCompany.HR_COMPANY.NAME.equal(workexp.getCompanyName()))
-								.and(HrCompany.HR_COMPANY.DISABLE.equal((byte) (Constant.ENABLE))).fetchOne();
-						if(hc != null) {
-							workexp.setCompanyId(hc.getId());
-						} else {
-							HrCompanyRecord newCompany = new HrCompanyRecord();
-							newCompany.setName(workexp.getCompanyName());
-							newCompany.setType(UByte.valueOf(Constant.COMPANY_TYPE_FREE));
-							newCompany.setSource(UByte.valueOf(Constant.COMPANY_SOURCE_PROFILE));
-							create.attach(newCompany);
-							newCompany.insert();
-							workexp.setCompanyId(newCompany.getId());
+						if(!StringUtils.isNullOrEmpty(workexp.getCompanyName())) {
+							HrCompanyRecord hc = create.selectFrom(HrCompany.HR_COMPANY)
+									.where(HrCompany.HR_COMPANY.NAME.equal(workexp.getCompanyName()))
+									.and(HrCompany.HR_COMPANY.DISABLE.equal((byte) (Constant.ENABLE))).fetchOne();
+							if(hc != null) {
+								workexp.setCompanyId(hc.getId());
+							} else {
+								HrCompanyRecord newCompany = new HrCompanyRecord();
+								newCompany.setName(workexp.getCompanyName());
+								newCompany.setType(UByte.valueOf(Constant.COMPANY_TYPE_FREE));
+								newCompany.setSource(UByte.valueOf(Constant.COMPANY_SOURCE_PROFILE));
+								create.attach(newCompany);
+								newCompany.insert();
+								workexp.setCompanyId(newCompany.getId());
+							}
 						}
 						create.attach(workexp);
 						workexp.insert();
