@@ -140,7 +140,6 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 			if(conn != null && !conn.isClosed()) {
 				conn.close();
 			}
-			//do nothing
 		}
 		return records;
 	}
@@ -175,7 +174,6 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 			if(conn != null && !conn.isClosed()) {
 				conn.close();
 			}
-			//do nothing
 		}
 		return totalCount;
 	}
@@ -203,7 +201,6 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 			if(conn != null && !conn.isClosed()) {
 				conn.close();
 			}
-			//do nothing
 		}
 
 		return insertret;
@@ -225,7 +222,6 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 				if(conn != null && !conn.isClosed()) {
 					conn.close();
 				}
-				//do nothing
 			}
 		}
 
@@ -248,7 +244,6 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 				if(conn != null && !conn.isClosed()) {
 					conn.close();
 				}
-				//do nothing
 			}
 		}
 
@@ -321,7 +316,6 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 			if(conn != null && !conn.isClosed()) {
 				conn.close();
 			}
-			//do nothing
 		}
 		return record;
 	}
@@ -348,7 +342,6 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 				if(conn != null && !conn.isClosed()) {
 					conn.close();
 				}
-				//do nothing
 			}
 		}
 
@@ -398,7 +391,6 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 				if(conn != null && !conn.isClosed()) {
 					conn.close();
 				}
-				//do nothing
 			}
 		}
 

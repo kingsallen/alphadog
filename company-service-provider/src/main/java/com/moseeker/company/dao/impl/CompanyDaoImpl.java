@@ -94,7 +94,7 @@ public class CompanyDaoImpl extends BaseDaoImpl<HrCompanyRecord, HrCompany> impl
 					records.add((HrCompanyRecord) r);
 				}
 			}
-		} catch (DataAccessException | SQLException e) {
+		} catch (Exception e) {
 			logger.error("error", e);
 			throw new Exception();
 		} finally {

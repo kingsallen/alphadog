@@ -39,7 +39,7 @@ public class UserSettingsDaoImpl extends
 					record = result.get(0);
 				}
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		} finally {
 			try {

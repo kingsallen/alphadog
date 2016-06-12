@@ -123,7 +123,9 @@ public class UseraccountsServiceImpl implements Iface {
                     resp.put("unionid", user.getUnionid());
                     resp.put("mobile", user.getMobile());
                     resp.put("last_login_time", user.getLastLoginTime());
-
+                    resp.put("name", user.getName());
+                    resp.put("headimg", user.getHeadimg());
+                    
                     user.setLastLoginTime(new Timestamp(new Date().getTime()));
                     user.setLoginCount(user.getLoginCount()+1);
                     

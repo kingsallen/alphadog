@@ -74,7 +74,8 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
             .set(CandidateCompany.CANDIDATE_COMPANY.SYS_USER_ID, orig)
             .where(CandidateCompany.CANDIDATE_COMPANY.SYS_USER_ID.equal(dest))
             .execute();
-        } catch (SQLException e) {
+        } catch (Exception e) {
+        	conn.rollback();
             logger.error(e.getMessage(), e);
         } finally {
             if(conn != null && !conn.isClosed()) {
