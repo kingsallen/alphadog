@@ -82,7 +82,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 					}
 				}
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		} finally {
 			try {
@@ -136,7 +136,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 					}
 				}
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		} finally {
 			try {
@@ -195,7 +195,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 				result = stmt.executeUpdate("delete from profiledb.profile_profile where id = " + profileId);
 				conn.commit();
 				conn.setAutoCommit(true);
-			} catch (SQLException e) {
+			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 				try {
 					if (conn != null && !conn.isClosed()) {
@@ -376,7 +376,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 			}
 			conn.commit();
 			conn.setAutoCommit(true);
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			try {
 				if (conn != null && !conn.isClosed()) {

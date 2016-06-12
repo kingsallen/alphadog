@@ -17,7 +17,6 @@ import org.jooq.SelectQuery;
 import org.jooq.SortField;
 import org.jooq.SortOrder;
 import org.jooq.TableLike;
-import org.jooq.exception.DataAccessException;
 import org.jooq.impl.TableImpl;
 import org.jooq.impl.UpdatableRecordImpl;
 import org.slf4j.Logger;
@@ -134,14 +133,13 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 					records.add((R)r);
 				}
 			}
-		} catch (DataAccessException | SQLException e) {
+		} catch (Exception e) {
 			logger.error("error", e);
 			throw new Exception(e);
 		} finally {
 			if(conn != null && !conn.isClosed()) {
 				conn.close();
 			}
-			//do nothing
 		}
 		return records;
 	}
@@ -169,14 +167,13 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 				}
 			}
 			totalCount = create.fetchCount(selectQuery);
-		} catch (DataAccessException | SQLException e) {
+		} catch (Exception e) {
 			logger.error("error", e);
 			throw new Exception(e);
 		} finally {
 			if(conn != null && !conn.isClosed()) {
 				conn.close();
 			}
-			//do nothing
 		}
 		return totalCount;
 	}
@@ -197,14 +194,13 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 					insertret = insertarray[0];
 				}	
 			}
-		} catch (DataAccessException | SQLException e) {
+		} catch (Exception e) {
 			logger.error("error", e);
 			throw new Exception(e);
 		} finally {
 			if(conn != null && !conn.isClosed()) {
 				conn.close();
 			}
-			//do nothing
 		}
 
 		return insertret;
@@ -219,14 +215,13 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 				conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 				insertret = create.batchUpdate(records).execute()[0];
-			} catch (DataAccessException | SQLException e) {
+			} catch (Exception e) {
 				logger.error("error", e);
 				throw new Exception(e);
 			} finally {
 				if(conn != null && !conn.isClosed()) {
 					conn.close();
 				}
-				//do nothing
 			}
 		}
 
@@ -242,14 +237,13 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 				conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 				insertret = create.batchDelete(records).execute()[0];
-			} catch (DataAccessException | SQLException e) {
+			} catch (Exception e) {
 				logger.error("error", e);
 				throw new Exception(e);
 			} finally {
 				if(conn != null && !conn.isClosed()) {
 					conn.close();
 				}
-				//do nothing
 			}
 		}
 
@@ -315,14 +309,13 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 			if (result != null && result.size() > 0) {
 				record = (R) result.get(0);
 			}
-		} catch (DataAccessException | SQLException e) {
+		} catch (Exception e) {
 			logger.error("error", e);
 			throw new Exception(e);
 		} finally {
 			if(conn != null && !conn.isClosed()) {
 				conn.close();
 			}
-			//do nothing
 		}
 		return record;
 	}
@@ -342,14 +335,13 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 					int keyValue = BeanUtils.converToInteger(key.get(0));
 					return keyValue;
 				}
-			} catch (DataAccessException | SQLException e) {
+			} catch (Exception e) {
 				logger.error("error", e);
 				throw new Exception(e);
 			} finally {
 				if(conn != null && !conn.isClosed()) {
 					conn.close();
 				}
-				//do nothing
 			}
 		}
 
@@ -395,14 +387,13 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 				create.attach(record);
 				insertret = record.delete();
-			} catch (DataAccessException | SQLException e) {
+			} catch (Exception e) {
 				logger.error("error", e);
 				throw new Exception(e);
 			} finally {
 				if(conn != null && !conn.isClosed()) {
 					conn.close();
 				}
-				//do nothing
 			}
 		}
 

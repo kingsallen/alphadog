@@ -46,7 +46,7 @@ public class ConstantDaoImpl extends
 				}
 				records = selectCondition.fetch();
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		} finally {
 			try {
@@ -78,7 +78,7 @@ public class ConstantDaoImpl extends
 					record = result.get(0);
 				}
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		} finally {
 			try {

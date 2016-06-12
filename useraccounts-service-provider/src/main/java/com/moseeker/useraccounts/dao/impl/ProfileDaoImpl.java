@@ -32,7 +32,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
                     .where(ProfileProfile.PROFILE_PROFILE.USER_ID.equal(UInteger.valueOf(userId)))
                     .and(ProfileProfile.PROFILE_PROFILE.DISABLE.equal(disable))
                     .fetchAny();
-        } catch (SQLException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
         } finally {
             try {
