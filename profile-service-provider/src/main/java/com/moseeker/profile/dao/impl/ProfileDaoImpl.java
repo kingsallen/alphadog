@@ -18,8 +18,16 @@ import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
 import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.db.dictdb.tables.DictCity;
+import com.moseeker.db.dictdb.tables.DictCollege;
 import com.moseeker.db.dictdb.tables.DictCountry;
+import com.moseeker.db.dictdb.tables.DictIndustry;
+import com.moseeker.db.dictdb.tables.DictPosition;
+import com.moseeker.db.dictdb.tables.records.DictCityRecord;
+import com.moseeker.db.dictdb.tables.records.DictCollegeRecord;
 import com.moseeker.db.dictdb.tables.records.DictCountryRecord;
+import com.moseeker.db.dictdb.tables.records.DictIndustryRecord;
+import com.moseeker.db.dictdb.tables.records.DictPositionRecord;
 import com.moseeker.db.hrdb.tables.HrCompany;
 import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.db.profiledb.tables.ProfileProfile;
@@ -237,6 +245,10 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 			conn = DBConnHelper.DBConn.getConn();
 			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 			conn.setAutoCommit(false);
+			Result<DictCollegeRecord> colleges = create.selectFrom(DictCollege.DICT_COLLEGE).fetch();
+			Result<DictCityRecord> cities = create.selectFrom(DictCity.DICT_CITY).fetch();
+			Result<DictPositionRecord> positions = create.selectFrom(DictPosition.DICT_POSITION).fetch();
+			Result<DictIndustryRecord> industries = create.selectFrom(DictIndustry.DICT_INDUSTRY).fetch();
 			if (profileRecord != null) {
 				Timestamp now = new Timestamp(System.currentTimeMillis());
 				profileRecord.setCreateTime(now);
@@ -247,12 +259,21 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 					basicRecord.setProfileId(profileRecord.getId());
 					basicRecord.setCreateTime(now);
 					create.attach(basicRecord);
-					if(!StringUtils.isNullOrEmpty(basicRecord.getNationalityName())) {
+					if (!StringUtils.isNullOrEmpty(basicRecord.getNationalityName())) {
 						DictCountryRecord countryRecord = create.selectFrom(DictCountry.DICT_COUNTRY)
-								.where(DictCountry.DICT_COUNTRY.NAME.equal(basicRecord.getNationalityName())).fetchOne();
-						basicRecord.setNationalityCode(countryRecord.getId().intValue());
+								.where(DictCountry.DICT_COUNTRY.NAME.equal(basicRecord.getNationalityName())).limit(1)
+								.fetchOne();
+						if (countryRecord != null) {
+							basicRecord.setNationalityCode(countryRecord.getId().intValue());
+						}
 					}
-					
+					if (!StringUtils.isNullOrEmpty(basicRecord.getCityName())) {
+						DictCityRecord cityRecord = create.selectFrom(DictCity.DICT_CITY)
+								.where(DictCity.DICT_CITY.NAME.equal(basicRecord.getCityName())).limit(1).fetchOne();
+						if(cityRecord != null) {
+							basicRecord.setCityCode(cityRecord.getCode().intValue());
+						}
+					}
 					basicRecord.insert();
 				}
 				if (attachmentRecords != null && attachmentRecords.size() > 0) {
@@ -283,6 +304,15 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 					educationRecords.forEach(educationRecord -> {
 						educationRecord.setProfileId(profileRecord.getId());
 						educationRecord.setCreateTime(now);
+						if(!StringUtils.isNullOrEmpty(educationRecord.getCollegeName())) {
+							for(DictCollegeRecord collegeRecord : colleges) {
+								if(educationRecord.getCollegeName().equals(collegeRecord.getName())) {
+									educationRecord.setCollegeCode(collegeRecord.getCode().intValue());
+									educationRecord.setCollegeLogo(collegeRecord.getLogo());
+									break;
+								}
+							}
+						}
 						create.attach(educationRecord);
 						educationRecord.insert();
 					});
@@ -302,6 +332,14 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						if (intentionRecord.getCities().size() > 0) {
 							intentionRecord.getCities().forEach(city -> {
 								city.setProfileIntentionId(intentionRecord.getId());
+								if(!StringUtils.isNullOrEmpty(city.getCityName())) {
+									for(DictCityRecord cityRecord : cities) {
+										if(city.getCityName().equals(cityRecord.getName())) {
+											city.setCityCode(cityRecord.getCode());
+											break;
+										}
+									}
+								}
 								create.attach(city);
 								city.insert();
 							});
@@ -309,6 +347,14 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						if (intentionRecord.getPositions().size() > 0) {
 							intentionRecord.getPositions().forEach(position -> {
 								position.setProfileIntentionId(intentionRecord.getId());
+								if(!StringUtils.isNullOrEmpty(position.getPositionName())) {
+									for(DictPositionRecord positionRecord : positions) {
+										if(positionRecord.getName().equals(position.getPositionName())) {
+											position.setPositionCode(positionRecord.getCode());
+											break;
+										}
+									}
+								}
 								create.attach(position);
 								position.insert();
 							});
@@ -316,6 +362,14 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						if (intentionRecord.getIndustries().size() > 0) {
 							intentionRecord.getIndustries().forEach(industry -> {
 								industry.setProfileIntentionId(intentionRecord.getId());
+								if(!StringUtils.isNullOrEmpty(industry.getIndustryName())) {
+									for(DictIndustryRecord industryRecord : industries) {
+										if(industry.getIndustryName().equals(industryRecord.getName())) {
+											industry.setIndustryCode(industryRecord.getCode());
+											break;
+										}
+									}
+								}
 								create.attach(industry);
 								industry.insert();
 							});
@@ -358,7 +412,8 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						if (!StringUtils.isNullOrEmpty(workexp.getCompanyName())) {
 							HrCompanyRecord hc = create.selectFrom(HrCompany.HR_COMPANY)
 									.where(HrCompany.HR_COMPANY.NAME.equal(workexp.getCompanyName()))
-									.and(HrCompany.HR_COMPANY.DISABLE.equal((byte) (Constant.ENABLE))).fetchOne();
+									.and(HrCompany.HR_COMPANY.DISABLE.equal((byte) (Constant.ENABLE))).limit(1)
+									.fetchOne();
 							if (hc != null) {
 								workexp.setCompanyId(hc.getId());
 							} else {
@@ -371,6 +426,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 								workexp.setCompanyId(newCompany.getId());
 							}
 						}
+						
 						create.attach(workexp);
 						workexp.insert();
 					});
@@ -383,6 +439,10 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						create.attach(worksRecord);
 						worksRecord.insert();
 					});
+				}
+				if(userRecord != null) {
+					create.attach(userRecord);
+					userRecord.update();
 				}
 				profileId = profileRecord.getId().intValue();
 			}
