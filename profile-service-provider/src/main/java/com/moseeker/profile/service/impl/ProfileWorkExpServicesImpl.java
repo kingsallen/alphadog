@@ -199,7 +199,7 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 				HrCompanyRecord company = companyDao.getCompanyById(struct.getCompany_id());
 				if(company == null) {
 					return 	ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_NOTEXIST);
-				}
+				} 
 			} else {
 				if(!StringUtils.isNullOrEmpty(struct.getCompany_name())) {
 					QueryUtil qu = new QueryUtil();
