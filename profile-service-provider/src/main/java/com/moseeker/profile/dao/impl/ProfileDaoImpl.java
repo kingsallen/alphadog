@@ -345,11 +345,12 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 					workexpRecords.forEach(workexp -> {
 						workexp.setProfileId(profileRecord.getId());
 						workexp.setCreateTime(now);
-						if(!StringUtils.isNullOrEmpty(workexp.getCompanyName())) {
+						if (!StringUtils.isNullOrEmpty(workexp.getCompanyName())) {
 							HrCompanyRecord hc = create.selectFrom(HrCompany.HR_COMPANY)
 									.where(HrCompany.HR_COMPANY.NAME.equal(workexp.getCompanyName()))
-									.and(HrCompany.HR_COMPANY.DISABLE.equal((byte) (Constant.ENABLE))).limit(1).fetchOne();
-							if(hc != null) {
+									.and(HrCompany.HR_COMPANY.DISABLE.equal((byte) (Constant.ENABLE))).limit(1)
+									.fetchOne();
+							if (hc != null) {
 								workexp.setCompanyId(hc.getId());
 							} else {
 								HrCompanyRecord newCompany = new HrCompanyRecord();
