@@ -35,10 +35,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysTemplateMessageLibrary extends TableImpl<ConfigSysTemplateMessageLibraryRecord> {
 
-	private static final long serialVersionUID = -1560067526;
+	private static final long serialVersionUID = -857058758;
 
 	/**
-	 * The reference instance of <code>configDB.config_sys_template_message_library</code>
+	 * The reference instance of <code>configdb.config_sys_template_message_library</code>
 	 */
 	public static final ConfigSysTemplateMessageLibrary CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY = new ConfigSysTemplateMessageLibrary();
 
@@ -51,99 +51,99 @@ public class ConfigSysTemplateMessageLibrary extends TableImpl<ConfigSysTemplate
 	}
 
 	/**
-	 * The column <code>configDB.config_sys_template_message_library.id</code>. 主key
+	 * The column <code>configdb.config_sys_template_message_library.id</code>. 主key
 	 */
 	public final TableField<ConfigSysTemplateMessageLibraryRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
 
 	/**
-	 * The column <code>configDB.config_sys_template_message_library.title</code>. 模板标题
+	 * The column <code>configdb.config_sys_template_message_library.title</code>. 模板标题
 	 */
 	public final TableField<ConfigSysTemplateMessageLibraryRecord, String> TITLE = createField("title", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "模板标题");
 
 	/**
-	 * The column <code>configDB.config_sys_template_message_library.primary_industry</code>. 一级行业
+	 * The column <code>configdb.config_sys_template_message_library.primary_industry</code>. 一级行业
 	 */
 	public final TableField<ConfigSysTemplateMessageLibraryRecord, String> PRIMARY_INDUSTRY = createField("primary_industry", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false), this, "一级行业");
 
 	/**
-	 * The column <code>configDB.config_sys_template_message_library.two_industry</code>. 二级行业
+	 * The column <code>configdb.config_sys_template_message_library.two_industry</code>. 二级行业
 	 */
 	public final TableField<ConfigSysTemplateMessageLibraryRecord, String> TWO_INDUSTRY = createField("two_industry", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false), this, "二级行业");
 
 	/**
-	 * The column <code>configDB.config_sys_template_message_library.content</code>. 详细内容
+	 * The column <code>configdb.config_sys_template_message_library.content</code>. 详细内容
 	 */
 	public final TableField<ConfigSysTemplateMessageLibraryRecord, String> CONTENT = createField("content", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "详细内容");
 
 	/**
-	 * The column <code>configDB.config_sys_template_message_library.sample</code>. 内容示例
+	 * The column <code>configdb.config_sys_template_message_library.sample</code>. 内容示例
 	 */
 	public final TableField<ConfigSysTemplateMessageLibraryRecord, String> SAMPLE = createField("sample", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "内容示例");
 
 	/**
-	 * The column <code>configDB.config_sys_template_message_library.display</code>. 是否显示
+	 * The column <code>configdb.config_sys_template_message_library.display</code>. 是否显示
 	 */
 	public final TableField<ConfigSysTemplateMessageLibraryRecord, UInteger> DISPLAY = createField("display", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "是否显示");
 
 	/**
-	 * The column <code>configDB.config_sys_template_message_library.priority</code>. 排序
+	 * The column <code>configdb.config_sys_template_message_library.priority</code>. 排序
 	 */
 	public final TableField<ConfigSysTemplateMessageLibraryRecord, UInteger> PRIORITY = createField("priority", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "排序");
 
 	/**
-	 * The column <code>configDB.config_sys_template_message_library.disable</code>. 是否可用
+	 * The column <code>configdb.config_sys_template_message_library.disable</code>. 是否可用
 	 */
 	public final TableField<ConfigSysTemplateMessageLibraryRecord, UInteger> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "是否可用");
 
 	/**
-	 * The column <code>configDB.config_sys_template_message_library.type</code>. 模板类别 0:微信 1:邮件 2:短信 3:申请模板 4:其他
+	 * The column <code>configdb.config_sys_template_message_library.type</code>. 模板类别 0:微信 1:邮件 2:短信 3:申请模板 4:其他
 	 */
 	public final TableField<ConfigSysTemplateMessageLibraryRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "模板类别 0:微信 1:邮件 2:短信 3:申请模板 4:其他");
 
 	/**
-	 * The column <code>configDB.config_sys_template_message_library.template_id_short</code>. 模板库中模板的编号
+	 * The column <code>configdb.config_sys_template_message_library.template_id_short</code>. 模板库中模板的编号
 	 */
 	public final TableField<ConfigSysTemplateMessageLibraryRecord, String> TEMPLATE_ID_SHORT = createField("template_id_short", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "模板库中模板的编号");
 
 	/**
-	 * The column <code>configDB.config_sys_template_message_library.send_condition</code>. 触发条件
+	 * The column <code>configdb.config_sys_template_message_library.send_condition</code>. 触发条件
 	 */
 	public final TableField<ConfigSysTemplateMessageLibraryRecord, String> SEND_CONDITION = createField("send_condition", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false), this, "触发条件");
 
 	/**
-	 * The column <code>configDB.config_sys_template_message_library.sendtime</code>. 发送时间
+	 * The column <code>configdb.config_sys_template_message_library.sendtime</code>. 发送时间
 	 */
 	public final TableField<ConfigSysTemplateMessageLibraryRecord, String> SENDTIME = createField("sendtime", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false), this, "发送时间");
 
 	/**
-	 * The column <code>configDB.config_sys_template_message_library.sendto</code>. 发送对象
+	 * The column <code>configdb.config_sys_template_message_library.sendto</code>. 发送对象
 	 */
 	public final TableField<ConfigSysTemplateMessageLibraryRecord, String> SENDTO = createField("sendto", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false), this, "发送对象");
 
 	/**
-	 * The column <code>configDB.config_sys_template_message_library.first</code>. 消息模板first文案
+	 * The column <code>configdb.config_sys_template_message_library.first</code>. 消息模板first文案
 	 */
 	public final TableField<ConfigSysTemplateMessageLibraryRecord, String> FIRST = createField("first", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "消息模板first文案");
 
 	/**
-	 * The column <code>configDB.config_sys_template_message_library.remark</code>. 消息模板remark文案
+	 * The column <code>configdb.config_sys_template_message_library.remark</code>. 消息模板remark文案
 	 */
 	public final TableField<ConfigSysTemplateMessageLibraryRecord, String> REMARK = createField("remark", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "消息模板remark文案");
 
 	/**
-	 * The column <code>configDB.config_sys_template_message_library.url</code>. 跳转页面
+	 * The column <code>configdb.config_sys_template_message_library.url</code>. 跳转页面
 	 */
 	public final TableField<ConfigSysTemplateMessageLibraryRecord, String> URL = createField("url", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false), this, "跳转页面");
 
 	/**
-	 * Create a <code>configDB.config_sys_template_message_library</code> table reference
+	 * Create a <code>configdb.config_sys_template_message_library</code> table reference
 	 */
 	public ConfigSysTemplateMessageLibrary() {
 		this("config_sys_template_message_library", null);
 	}
 
 	/**
-	 * Create an aliased <code>configDB.config_sys_template_message_library</code> table reference
+	 * Create an aliased <code>configdb.config_sys_template_message_library</code> table reference
 	 */
 	public ConfigSysTemplateMessageLibrary(String alias) {
 		this(alias, CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY);

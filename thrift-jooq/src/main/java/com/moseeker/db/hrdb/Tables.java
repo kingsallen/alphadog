@@ -5,9 +5,13 @@ package com.moseeker.db.hrdb;
 
 
 import com.moseeker.db.hrdb.tables.HrAppCvConf;
+import com.moseeker.db.hrdb.tables.HrChildCompany;
 import com.moseeker.db.hrdb.tables.HrCompany;
+import com.moseeker.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.db.hrdb.tables.HrCompanyConf;
 import com.moseeker.db.hrdb.tables.HrEmployeeCertConf;
+import com.moseeker.db.hrdb.tables.HrEmployeePosition;
+import com.moseeker.db.hrdb.tables.HrEmployeeSection;
 import com.moseeker.db.hrdb.tables.HrFeedback;
 import com.moseeker.db.hrdb.tables.HrHbConfig;
 import com.moseeker.db.hrdb.tables.HrHbItems;
@@ -16,6 +20,7 @@ import com.moseeker.db.hrdb.tables.HrHbScratchCard;
 import com.moseeker.db.hrdb.tables.HrHbSendRecord;
 import com.moseeker.db.hrdb.tables.HrHtml5Statistics;
 import com.moseeker.db.hrdb.tables.HrHtml5UniqueStatistics;
+import com.moseeker.db.hrdb.tables.HrImporterMonitor;
 import com.moseeker.db.hrdb.tables.HrOperationRecord;
 import com.moseeker.db.hrdb.tables.HrPointsConf;
 import com.moseeker.db.hrdb.tables.HrRecruitStatistics;
@@ -36,12 +41,13 @@ import com.moseeker.db.hrdb.tables.HrWxRule;
 import com.moseeker.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.db.hrdb.tables.HrWxWechat;
 import com.moseeker.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
+import com.moseeker.db.hrdb.tables.SysWechatAppConf;
 
 import javax.annotation.Generated;
 
 
 /**
- * Convenience access to all tables in hrDB
+ * Convenience access to all tables in hrdb
  */
 @Generated(
 	value = {
@@ -54,14 +60,24 @@ import javax.annotation.Generated;
 public class Tables {
 
 	/**
-	 * 雇主申请简历校验配置表
+	 * 企业申请简历校验配置
 	 */
 	public static final HrAppCvConf HR_APP_CV_CONF = com.moseeker.db.hrdb.tables.HrAppCvConf.HR_APP_CV_CONF;
+
+	/**
+	 * 子公司表
+	 */
+	public static final HrChildCompany HR_CHILD_COMPANY = com.moseeker.db.hrdb.tables.HrChildCompany.HR_CHILD_COMPANY;
 
 	/**
 	 * 公司表
 	 */
 	public static final HrCompany HR_COMPANY = com.moseeker.db.hrdb.tables.HrCompany.HR_COMPANY;
+
+	/**
+	 * 账号公司关联记录
+	 */
+	public static final HrCompanyAccount HR_COMPANY_ACCOUNT = com.moseeker.db.hrdb.tables.HrCompanyAccount.HR_COMPANY_ACCOUNT;
 
 	/**
 	 * 公司级别的配置信息表
@@ -72,6 +88,16 @@ public class Tables {
 	 * 部门员工配置表
 	 */
 	public static final HrEmployeeCertConf HR_EMPLOYEE_CERT_CONF = com.moseeker.db.hrdb.tables.HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF;
+
+	/**
+	 * 员工职能表
+	 */
+	public static final HrEmployeePosition HR_EMPLOYEE_POSITION = com.moseeker.db.hrdb.tables.HrEmployeePosition.HR_EMPLOYEE_POSITION;
+
+	/**
+	 * 员工部门表
+	 */
+	public static final HrEmployeeSection HR_EMPLOYEE_SECTION = com.moseeker.db.hrdb.tables.HrEmployeeSection.HR_EMPLOYEE_SECTION;
 
 	/**
 	 * HR反馈表
@@ -112,6 +138,11 @@ public class Tables {
 	 * 专题传播统计去重信息表
 	 */
 	public static final HrHtml5UniqueStatistics HR_HTML5_UNIQUE_STATISTICS = com.moseeker.db.hrdb.tables.HrHtml5UniqueStatistics.HR_HTML5_UNIQUE_STATISTICS;
+
+	/**
+	 * 企业用户导入数据异步处理监控操作表
+	 */
+	public static final HrImporterMonitor HR_IMPORTER_MONITOR = com.moseeker.db.hrdb.tables.HrImporterMonitor.HR_IMPORTER_MONITOR;
 
 	/**
 	 * hr申请状态操作记录
@@ -212,4 +243,9 @@ public class Tables {
 	 * 微信消息通知同步状态
 	 */
 	public static final HrWxWechatNoticeSyncStatus HR_WX_WECHAT_NOTICE_SYNC_STATUS = com.moseeker.db.hrdb.tables.HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS;
+
+	/**
+	 * The table hrdb.sys_wechat_app_conf
+	 */
+	public static final SysWechatAppConf SYS_WECHAT_APP_CONF = com.moseeker.db.hrdb.tables.SysWechatAppConf.SYS_WECHAT_APP_CONF;
 }

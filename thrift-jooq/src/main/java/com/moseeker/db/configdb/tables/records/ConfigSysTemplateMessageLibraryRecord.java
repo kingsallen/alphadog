@@ -29,241 +29,241 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysTemplateMessageLibraryRecord extends UpdatableRecordImpl<ConfigSysTemplateMessageLibraryRecord> implements Record17<UInteger, String, String, String, String, String, UInteger, UInteger, UInteger, Byte, String, String, String, String, String, String, String> {
 
-	private static final long serialVersionUID = 617083315;
+	private static final long serialVersionUID = 596834739;
 
 	/**
-	 * Setter for <code>configDB.config_sys_template_message_library.id</code>. 主key
+	 * Setter for <code>configdb.config_sys_template_message_library.id</code>. 主key
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_template_message_library.id</code>. 主key
+	 * Getter for <code>configdb.config_sys_template_message_library.id</code>. 主key
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_template_message_library.title</code>. 模板标题
+	 * Setter for <code>configdb.config_sys_template_message_library.title</code>. 模板标题
 	 */
 	public void setTitle(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_template_message_library.title</code>. 模板标题
+	 * Getter for <code>configdb.config_sys_template_message_library.title</code>. 模板标题
 	 */
 	public String getTitle() {
 		return (String) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_template_message_library.primary_industry</code>. 一级行业
+	 * Setter for <code>configdb.config_sys_template_message_library.primary_industry</code>. 一级行业
 	 */
 	public void setPrimaryIndustry(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_template_message_library.primary_industry</code>. 一级行业
+	 * Getter for <code>configdb.config_sys_template_message_library.primary_industry</code>. 一级行业
 	 */
 	public String getPrimaryIndustry() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_template_message_library.two_industry</code>. 二级行业
+	 * Setter for <code>configdb.config_sys_template_message_library.two_industry</code>. 二级行业
 	 */
 	public void setTwoIndustry(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_template_message_library.two_industry</code>. 二级行业
+	 * Getter for <code>configdb.config_sys_template_message_library.two_industry</code>. 二级行业
 	 */
 	public String getTwoIndustry() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_template_message_library.content</code>. 详细内容
+	 * Setter for <code>configdb.config_sys_template_message_library.content</code>. 详细内容
 	 */
 	public void setContent(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_template_message_library.content</code>. 详细内容
+	 * Getter for <code>configdb.config_sys_template_message_library.content</code>. 详细内容
 	 */
 	public String getContent() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_template_message_library.sample</code>. 内容示例
+	 * Setter for <code>configdb.config_sys_template_message_library.sample</code>. 内容示例
 	 */
 	public void setSample(String value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_template_message_library.sample</code>. 内容示例
+	 * Getter for <code>configdb.config_sys_template_message_library.sample</code>. 内容示例
 	 */
 	public String getSample() {
 		return (String) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_template_message_library.display</code>. 是否显示
+	 * Setter for <code>configdb.config_sys_template_message_library.display</code>. 是否显示
 	 */
 	public void setDisplay(UInteger value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_template_message_library.display</code>. 是否显示
+	 * Getter for <code>configdb.config_sys_template_message_library.display</code>. 是否显示
 	 */
 	public UInteger getDisplay() {
 		return (UInteger) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_template_message_library.priority</code>. 排序
+	 * Setter for <code>configdb.config_sys_template_message_library.priority</code>. 排序
 	 */
 	public void setPriority(UInteger value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_template_message_library.priority</code>. 排序
+	 * Getter for <code>configdb.config_sys_template_message_library.priority</code>. 排序
 	 */
 	public UInteger getPriority() {
 		return (UInteger) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_template_message_library.disable</code>. 是否可用
+	 * Setter for <code>configdb.config_sys_template_message_library.disable</code>. 是否可用
 	 */
 	public void setDisable(UInteger value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_template_message_library.disable</code>. 是否可用
+	 * Getter for <code>configdb.config_sys_template_message_library.disable</code>. 是否可用
 	 */
 	public UInteger getDisable() {
 		return (UInteger) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_template_message_library.type</code>. 模板类别 0:微信 1:邮件 2:短信 3:申请模板 4:其他
+	 * Setter for <code>configdb.config_sys_template_message_library.type</code>. 模板类别 0:微信 1:邮件 2:短信 3:申请模板 4:其他
 	 */
 	public void setType(Byte value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_template_message_library.type</code>. 模板类别 0:微信 1:邮件 2:短信 3:申请模板 4:其他
+	 * Getter for <code>configdb.config_sys_template_message_library.type</code>. 模板类别 0:微信 1:邮件 2:短信 3:申请模板 4:其他
 	 */
 	public Byte getType() {
 		return (Byte) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_template_message_library.template_id_short</code>. 模板库中模板的编号
+	 * Setter for <code>configdb.config_sys_template_message_library.template_id_short</code>. 模板库中模板的编号
 	 */
 	public void setTemplateIdShort(String value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_template_message_library.template_id_short</code>. 模板库中模板的编号
+	 * Getter for <code>configdb.config_sys_template_message_library.template_id_short</code>. 模板库中模板的编号
 	 */
 	public String getTemplateIdShort() {
 		return (String) getValue(10);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_template_message_library.send_condition</code>. 触发条件
+	 * Setter for <code>configdb.config_sys_template_message_library.send_condition</code>. 触发条件
 	 */
 	public void setSendCondition(String value) {
 		setValue(11, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_template_message_library.send_condition</code>. 触发条件
+	 * Getter for <code>configdb.config_sys_template_message_library.send_condition</code>. 触发条件
 	 */
 	public String getSendCondition() {
 		return (String) getValue(11);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_template_message_library.sendtime</code>. 发送时间
+	 * Setter for <code>configdb.config_sys_template_message_library.sendtime</code>. 发送时间
 	 */
 	public void setSendtime(String value) {
 		setValue(12, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_template_message_library.sendtime</code>. 发送时间
+	 * Getter for <code>configdb.config_sys_template_message_library.sendtime</code>. 发送时间
 	 */
 	public String getSendtime() {
 		return (String) getValue(12);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_template_message_library.sendto</code>. 发送对象
+	 * Setter for <code>configdb.config_sys_template_message_library.sendto</code>. 发送对象
 	 */
 	public void setSendto(String value) {
 		setValue(13, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_template_message_library.sendto</code>. 发送对象
+	 * Getter for <code>configdb.config_sys_template_message_library.sendto</code>. 发送对象
 	 */
 	public String getSendto() {
 		return (String) getValue(13);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_template_message_library.first</code>. 消息模板first文案
+	 * Setter for <code>configdb.config_sys_template_message_library.first</code>. 消息模板first文案
 	 */
 	public void setFirst(String value) {
 		setValue(14, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_template_message_library.first</code>. 消息模板first文案
+	 * Getter for <code>configdb.config_sys_template_message_library.first</code>. 消息模板first文案
 	 */
 	public String getFirst() {
 		return (String) getValue(14);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_template_message_library.remark</code>. 消息模板remark文案
+	 * Setter for <code>configdb.config_sys_template_message_library.remark</code>. 消息模板remark文案
 	 */
 	public void setRemark(String value) {
 		setValue(15, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_template_message_library.remark</code>. 消息模板remark文案
+	 * Getter for <code>configdb.config_sys_template_message_library.remark</code>. 消息模板remark文案
 	 */
 	public String getRemark() {
 		return (String) getValue(15);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_template_message_library.url</code>. 跳转页面
+	 * Setter for <code>configdb.config_sys_template_message_library.url</code>. 跳转页面
 	 */
 	public void setUrl(String value) {
 		setValue(16, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_template_message_library.url</code>. 跳转页面
+	 * Getter for <code>configdb.config_sys_template_message_library.url</code>. 跳转页面
 	 */
 	public String getUrl() {
 		return (String) getValue(16);

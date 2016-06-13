@@ -18,6 +18,7 @@ import com.moseeker.db.configdb.tables.ConfigSysAppTemplate;
 import com.moseeker.db.configdb.tables.ConfigSysCvTpl;
 import com.moseeker.db.configdb.tables.ConfigSysH5StyleTpl;
 import com.moseeker.db.configdb.tables.ConfigSysPointsConfTpl;
+import com.moseeker.db.configdb.tables.ConfigSysTemplateMessageColumnConfig;
 import com.moseeker.db.configdb.tables.ConfigSysTemplateMessageLibrary;
 import com.moseeker.db.configdb.tables.ConfigSysTemplateType;
 import com.moseeker.db.configdb.tables.ConfigSysTheme;
@@ -45,10 +46,10 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Configdb extends SchemaImpl {
 
-	private static final long serialVersionUID = -1395461925;
+	private static final long serialVersionUID = -63770966;
 
 	/**
-	 * The reference instance of <code>configDB</code>
+	 * The reference instance of <code>configdb</code>
 	 */
 	public static final Configdb CONFIGDB = new Configdb();
 
@@ -56,7 +57,7 @@ public class Configdb extends SchemaImpl {
 	 * No further instances allowed
 	 */
 	private Configdb() {
-		super("configDB");
+		super("configdb");
 	}
 
 	@Override
@@ -82,6 +83,7 @@ public class Configdb extends SchemaImpl {
 			ConfigSysCvTpl.CONFIG_SYS_CV_TPL,
 			ConfigSysH5StyleTpl.CONFIG_SYS_H5_STYLE_TPL,
 			ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL,
+			ConfigSysTemplateMessageColumnConfig.CONFIG_SYS_TEMPLATE_MESSAGE_COLUMN_CONFIG,
 			ConfigSysTemplateMessageLibrary.CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY,
 			ConfigSysTemplateType.CONFIG_SYS_TEMPLATE_TYPE,
 			ConfigSysTheme.CONFIG_SYS_THEME);

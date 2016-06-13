@@ -45,10 +45,10 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Profiledb extends SchemaImpl {
 
-	private static final long serialVersionUID = 513333728;
+	private static final long serialVersionUID = -1413619232;
 
 	/**
-	 * The reference instance of <code>profileDB</code>
+	 * The reference instance of <code>profiledb</code>
 	 */
 	public static final Profiledb PROFILEDB = new Profiledb();
 
@@ -56,7 +56,7 @@ public class Profiledb extends SchemaImpl {
 	 * No further instances allowed
 	 */
 	private Profiledb() {
-		super("profileDB");
+		super("profiledb");
 	}
 
 	@Override

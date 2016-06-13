@@ -31,7 +31,7 @@ import org.jooq.types.ULong;
 
 
 /**
- * A class modelling foreign key relationships between tables of the <code>userDB</code> 
+ * A class modelling foreign key relationships between tables of the <code>userdb</code> 
  * schema
  */
 @Generated(
@@ -52,7 +52,7 @@ public class Keys {
 	public static final Identity<UserEmployeePointsRecordRecord, Integer> IDENTITY_USER_EMPLOYEE_POINTS_RECORD = Identities0.IDENTITY_USER_EMPLOYEE_POINTS_RECORD;
 	public static final Identity<UserFavPositionRecord, UInteger> IDENTITY_USER_FAV_POSITION = Identities0.IDENTITY_USER_FAV_POSITION;
 	public static final Identity<UserHrAccountRecord, Integer> IDENTITY_USER_HR_ACCOUNT = Identities0.IDENTITY_USER_HR_ACCOUNT;
-	public static final Identity<UserSettingsRecord, Integer> IDENTITY_USER_SETTINGS = Identities0.IDENTITY_USER_SETTINGS;
+	public static final Identity<UserSettingsRecord, UInteger> IDENTITY_USER_SETTINGS = Identities0.IDENTITY_USER_SETTINGS;
 	public static final Identity<UserUserRecord, UInteger> IDENTITY_USER_USER = Identities0.IDENTITY_USER_USER;
 	public static final Identity<UserWxUserRecord, ULong> IDENTITY_USER_WX_USER = Identities0.IDENTITY_USER_WX_USER;
 	public static final Identity<UserWxViewerRecord, UInteger> IDENTITY_USER_WX_VIEWER = Identities0.IDENTITY_USER_WX_VIEWER;
@@ -68,7 +68,7 @@ public class Keys {
 	public static final UniqueKey<UserSettingsRecord> KEY_USER_SETTINGS_PRIMARY = UniqueKeys0.KEY_USER_SETTINGS_PRIMARY;
 	public static final UniqueKey<UserSettingsRecord> KEY_USER_SETTINGS_UID = UniqueKeys0.KEY_USER_SETTINGS_UID;
 	public static final UniqueKey<UserUserRecord> KEY_USER_USER_PRIMARY = UniqueKeys0.KEY_USER_USER_PRIMARY;
-	public static final UniqueKey<UserUserRecord> KEY_USER_USER_UK_SYS_USER_USERNAME = UniqueKeys0.KEY_USER_USER_UK_SYS_USER_USERNAME;
+	public static final UniqueKey<UserUserRecord> KEY_USER_USER_UK_USER_USERNAME = UniqueKeys0.KEY_USER_USER_UK_USER_USERNAME;
 	public static final UniqueKey<UserWxUserRecord> KEY_USER_WX_USER_PRIMARY = UniqueKeys0.KEY_USER_WX_USER_PRIMARY;
 	public static final UniqueKey<UserWxUserRecord> KEY_USER_WX_USER_WECHAT_ID = UniqueKeys0.KEY_USER_WX_USER_WECHAT_ID;
 	public static final UniqueKey<UserWxViewerRecord> KEY_USER_WX_VIEWER_PRIMARY = UniqueKeys0.KEY_USER_WX_VIEWER_PRIMARY;
@@ -87,7 +87,7 @@ public class Keys {
 		public static Identity<UserEmployeePointsRecordRecord, Integer> IDENTITY_USER_EMPLOYEE_POINTS_RECORD = createIdentity(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD, UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.ID);
 		public static Identity<UserFavPositionRecord, UInteger> IDENTITY_USER_FAV_POSITION = createIdentity(UserFavPosition.USER_FAV_POSITION, UserFavPosition.USER_FAV_POSITION.ID);
 		public static Identity<UserHrAccountRecord, Integer> IDENTITY_USER_HR_ACCOUNT = createIdentity(UserHrAccount.USER_HR_ACCOUNT, UserHrAccount.USER_HR_ACCOUNT.ID);
-		public static Identity<UserSettingsRecord, Integer> IDENTITY_USER_SETTINGS = createIdentity(UserSettings.USER_SETTINGS, UserSettings.USER_SETTINGS.ID);
+		public static Identity<UserSettingsRecord, UInteger> IDENTITY_USER_SETTINGS = createIdentity(UserSettings.USER_SETTINGS, UserSettings.USER_SETTINGS.ID);
 		public static Identity<UserUserRecord, UInteger> IDENTITY_USER_USER = createIdentity(UserUser.USER_USER, UserUser.USER_USER.ID);
 		public static Identity<UserWxUserRecord, ULong> IDENTITY_USER_WX_USER = createIdentity(UserWxUser.USER_WX_USER, UserWxUser.USER_WX_USER.ID);
 		public static Identity<UserWxViewerRecord, UInteger> IDENTITY_USER_WX_VIEWER = createIdentity(UserWxViewer.USER_WX_VIEWER, UserWxViewer.USER_WX_VIEWER.ID);
@@ -101,7 +101,7 @@ public class Keys {
 		public static final UniqueKey<UserSettingsRecord> KEY_USER_SETTINGS_PRIMARY = createUniqueKey(UserSettings.USER_SETTINGS, UserSettings.USER_SETTINGS.ID);
 		public static final UniqueKey<UserSettingsRecord> KEY_USER_SETTINGS_UID = createUniqueKey(UserSettings.USER_SETTINGS, UserSettings.USER_SETTINGS.USER_ID);
 		public static final UniqueKey<UserUserRecord> KEY_USER_USER_PRIMARY = createUniqueKey(UserUser.USER_USER, UserUser.USER_USER.ID);
-		public static final UniqueKey<UserUserRecord> KEY_USER_USER_UK_SYS_USER_USERNAME = createUniqueKey(UserUser.USER_USER, UserUser.USER_USER.USERNAME);
+		public static final UniqueKey<UserUserRecord> KEY_USER_USER_UK_USER_USERNAME = createUniqueKey(UserUser.USER_USER, UserUser.USER_USER.USERNAME);
 		public static final UniqueKey<UserWxUserRecord> KEY_USER_WX_USER_PRIMARY = createUniqueKey(UserWxUser.USER_WX_USER, UserWxUser.USER_WX_USER.ID);
 		public static final UniqueKey<UserWxUserRecord> KEY_USER_WX_USER_WECHAT_ID = createUniqueKey(UserWxUser.USER_WX_USER, UserWxUser.USER_WX_USER.WECHAT_ID, UserWxUser.USER_WX_USER.OPENID);
 		public static final UniqueKey<UserWxViewerRecord> KEY_USER_WX_VIEWER_PRIMARY = createUniqueKey(UserWxViewer.USER_WX_VIEWER, UserWxViewer.USER_WX_VIEWER.ID);

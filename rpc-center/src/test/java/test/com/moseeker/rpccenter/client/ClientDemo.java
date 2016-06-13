@@ -11,25 +11,37 @@ public class ClientDemo {
 
     public static void main(String[] args) {
         RegistryConfig registryConfig = new RegistryConfig();
-        registryConfig.setConnectstr("127.0.0.1:4181");
+        registryConfig.setConnectstr("127.0.0.1:2181");
         registryConfig.setNamespace("services");
 
         String iface = Iface.class.getName();
         ClientConfig<Iface> clientConfig = new ClientConfig<Iface>();
-        clientConfig.setService("com.moseeker.thrift.service$EchoService");
+        clientConfig.setService("test.com.moseeker.rpccenter.gen.EchoService");
         clientConfig.setIface(iface);
+
+        Iface echoService = null;
 
         try {
             // 注意:代理内部已经使用连接池，所以这里只需要创建一个实例，多线程共享；特殊情况下，可以允许创建多个实例，
             // 但严禁每次调用前都创建一个实例。
-            Iface echoService = clientConfig.createProxy(registryConfig);
+            echoService = clientConfig.createProxy(registryConfig);
 
-            for (int i = 0; i < 2; i++) {
-                System.out.println(echoService.echo("   yep!"));
-                Thread.sleep(100);
-            }
+//            for (int i = 4; i > 0; i--) {
+//                System.out.println(echoService.echo(""+i));
+////                Thread.sleep(100);
+//            }
+//            System.out.println(echoService.echo(""+1));
+            System.out.println(echoService.echo(""+4));
         } catch (Exception e) {
             e.printStackTrace();
+            try {
+                System.out.println("sleep 20s, heartbeat 10s! start");
+                Thread.sleep(200000);
+                System.out.println("sleep 20s, heartbeat 10s! end");
+                System.out.println(echoService.echo("" + 1));
+            } catch (Exception e1){
+                e1.printStackTrace();
+            }
         }
     }
 }

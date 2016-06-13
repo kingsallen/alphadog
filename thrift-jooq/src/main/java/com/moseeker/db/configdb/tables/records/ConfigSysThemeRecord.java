@@ -30,143 +30,143 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysThemeRecord extends UpdatableRecordImpl<ConfigSysThemeRecord> implements Record10<Integer, String, String, String, String, Byte, Short, Byte, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = 1895840543;
+	private static final long serialVersionUID = 1818639135;
 
 	/**
-	 * Setter for <code>configDB.config_sys_theme.id</code>.
+	 * Setter for <code>configdb.config_sys_theme.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_theme.id</code>.
+	 * Getter for <code>configdb.config_sys_theme.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_theme.background_color</code>. 背景色
+	 * Setter for <code>configdb.config_sys_theme.background_color</code>. 背景色
 	 */
 	public void setBackgroundColor(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_theme.background_color</code>. 背景色
+	 * Getter for <code>configdb.config_sys_theme.background_color</code>. 背景色
 	 */
 	public String getBackgroundColor() {
 		return (String) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_theme.title_color</code>. 标题
+	 * Setter for <code>configdb.config_sys_theme.title_color</code>. 标题
 	 */
 	public void setTitleColor(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_theme.title_color</code>. 标题
+	 * Getter for <code>configdb.config_sys_theme.title_color</code>. 标题
 	 */
 	public String getTitleColor() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_theme.button_color</code>. 按钮
+	 * Setter for <code>configdb.config_sys_theme.button_color</code>. 按钮
 	 */
 	public void setButtonColor(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_theme.button_color</code>. 按钮
+	 * Getter for <code>configdb.config_sys_theme.button_color</code>. 按钮
 	 */
 	public String getButtonColor() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_theme.other_color</code>. other
+	 * Setter for <code>configdb.config_sys_theme.other_color</code>. other
 	 */
 	public void setOtherColor(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_theme.other_color</code>. other
+	 * Getter for <code>configdb.config_sys_theme.other_color</code>. other
 	 */
 	public String getOtherColor() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_theme.free</code>. 是否免费 0：免费 1：收费，只能在大岂后台操作收费主题
+	 * Setter for <code>configdb.config_sys_theme.free</code>. 是否免费 0：免费 1：收费，只能在大岂后台操作收费主题
 	 */
 	public void setFree(Byte value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_theme.free</code>. 是否免费 0：免费 1：收费，只能在大岂后台操作收费主题
+	 * Getter for <code>configdb.config_sys_theme.free</code>. 是否免费 0：免费 1：收费，只能在大岂后台操作收费主题
 	 */
 	public Byte getFree() {
 		return (Byte) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_theme.prority</code>. 排序优先级
+	 * Setter for <code>configdb.config_sys_theme.prority</code>. 排序优先级
 	 */
 	public void setPrority(Short value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_theme.prority</code>. 排序优先级
+	 * Getter for <code>configdb.config_sys_theme.prority</code>. 排序优先级
 	 */
 	public Short getPrority() {
 		return (Short) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_theme.disable</code>. 是否禁用 0：可用1：不可用
+	 * Setter for <code>configdb.config_sys_theme.disable</code>. 是否禁用 0：可用1：不可用
 	 */
 	public void setDisable(Byte value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_theme.disable</code>. 是否禁用 0：可用1：不可用
+	 * Getter for <code>configdb.config_sys_theme.disable</code>. 是否禁用 0：可用1：不可用
 	 */
 	public Byte getDisable() {
 		return (Byte) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_theme.create_time</code>.
+	 * Setter for <code>configdb.config_sys_theme.create_time</code>.
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_theme.create_time</code>.
+	 * Getter for <code>configdb.config_sys_theme.create_time</code>.
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_theme.update_time</code>.
+	 * Setter for <code>configdb.config_sys_theme.update_time</code>.
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_theme.update_time</code>.
+	 * Getter for <code>configdb.config_sys_theme.update_time</code>.
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(9);

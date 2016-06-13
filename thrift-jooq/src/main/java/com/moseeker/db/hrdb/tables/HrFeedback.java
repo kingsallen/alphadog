@@ -36,10 +36,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrFeedback extends TableImpl<HrFeedbackRecord> {
 
-	private static final long serialVersionUID = -230804639;
+	private static final long serialVersionUID = -1583464607;
 
 	/**
-	 * The reference instance of <code>hrDB.hr_feedback</code>
+	 * The reference instance of <code>hrdb.hr_feedback</code>
 	 */
 	public static final HrFeedback HR_FEEDBACK = new HrFeedback();
 
@@ -52,54 +52,54 @@ public class HrFeedback extends TableImpl<HrFeedbackRecord> {
 	}
 
 	/**
-	 * The column <code>hrDB.hr_feedback.id</code>. ID
+	 * The column <code>hrdb.hr_feedback.id</code>. ID
 	 */
 	public final TableField<HrFeedbackRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "ID");
 
 	/**
-	 * The column <code>hrDB.hr_feedback.hraccount_id</code>. hr_account.id 账号编号
+	 * The column <code>hrdb.hr_feedback.hraccount_id</code>. hr_account.id 账号编号
 	 */
 	public final TableField<HrFeedbackRecord, Integer> HRACCOUNT_ID = createField("hraccount_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "hr_account.id 账号编号");
 
 	/**
-	 * The column <code>hrDB.hr_feedback.name</code>. 姓名
+	 * The column <code>hrdb.hr_feedback.name</code>. 姓名
 	 */
 	public final TableField<HrFeedbackRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "姓名");
 
 	/**
-	 * The column <code>hrDB.hr_feedback.email</code>. 邮箱
+	 * The column <code>hrdb.hr_feedback.email</code>. 邮箱
 	 */
 	public final TableField<HrFeedbackRecord, String> EMAIL = createField("email", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "邮箱");
 
 	/**
-	 * The column <code>hrDB.hr_feedback.images</code>. 反馈图片
+	 * The column <code>hrdb.hr_feedback.images</code>. 反馈图片
 	 */
 	public final TableField<HrFeedbackRecord, String> IMAGES = createField("images", org.jooq.impl.SQLDataType.VARCHAR.length(300).nullable(false).defaulted(true), this, "反馈图片");
 
 	/**
-	 * The column <code>hrDB.hr_feedback.content</code>. 反馈内容
+	 * The column <code>hrdb.hr_feedback.content</code>. 反馈内容
 	 */
 	public final TableField<HrFeedbackRecord, String> CONTENT = createField("content", org.jooq.impl.SQLDataType.VARCHAR.length(5000).nullable(false).defaulted(true), this, "反馈内容");
 
 	/**
-	 * The column <code>hrDB.hr_feedback.create_time</code>.
+	 * The column <code>hrdb.hr_feedback.create_time</code>.
 	 */
 	public final TableField<HrFeedbackRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>hrDB.hr_feedback.update_time</code>.
+	 * The column <code>hrdb.hr_feedback.update_time</code>.
 	 */
 	public final TableField<HrFeedbackRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * Create a <code>hrDB.hr_feedback</code> table reference
+	 * Create a <code>hrdb.hr_feedback</code> table reference
 	 */
 	public HrFeedback() {
 		this("hr_feedback", null);
 	}
 
 	/**
-	 * Create an aliased <code>hrDB.hr_feedback</code> table reference
+	 * Create an aliased <code>hrdb.hr_feedback</code> table reference
 	 */
 	public HrFeedback(String alias) {
 		this(alias, HR_FEEDBACK);

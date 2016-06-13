@@ -31,213 +31,213 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogWxMessageRecordRecord extends UpdatableRecordImpl<LogWxMessageRecordRecord> implements Record15<UInteger, UInteger, UInteger, Long, String, String, String, String, UInteger, String, Timestamp, Timestamp, String, Integer, String> {
 
-	private static final long serialVersionUID = -1402433408;
+	private static final long serialVersionUID = 1321048192;
 
 	/**
-	 * Setter for <code>logDB.log_wx_message_record.id</code>. 主key
+	 * Setter for <code>logdb.log_wx_message_record.id</code>. 主key
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_wx_message_record.id</code>. 主key
+	 * Getter for <code>logdb.log_wx_message_record.id</code>. 主key
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_wx_message_record.template_id</code>. 我的模板ID
+	 * Setter for <code>logdb.log_wx_message_record.template_id</code>. 我的模板ID
 	 */
 	public void setTemplateId(UInteger value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_wx_message_record.template_id</code>. 我的模板ID
+	 * Getter for <code>logdb.log_wx_message_record.template_id</code>. 我的模板ID
 	 */
 	public UInteger getTemplateId() {
 		return (UInteger) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_wx_message_record.wechat_id</code>. 所属公众号
+	 * Setter for <code>logdb.log_wx_message_record.wechat_id</code>. 所属公众号
 	 */
 	public void setWechatId(UInteger value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_wx_message_record.wechat_id</code>. 所属公众号
+	 * Getter for <code>logdb.log_wx_message_record.wechat_id</code>. 所属公众号
 	 */
 	public UInteger getWechatId() {
 		return (UInteger) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_wx_message_record.msgid</code>. 发送消息ID
+	 * Setter for <code>logdb.log_wx_message_record.msgid</code>. 发送消息ID
 	 */
 	public void setMsgid(Long value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_wx_message_record.msgid</code>. 发送消息ID
+	 * Getter for <code>logdb.log_wx_message_record.msgid</code>. 发送消息ID
 	 */
 	public Long getMsgid() {
 		return (Long) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_wx_message_record.open_id</code>. 微信用户OPENID
+	 * Setter for <code>logdb.log_wx_message_record.open_id</code>. 微信用户OPENID
 	 */
 	public void setOpenId(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_wx_message_record.open_id</code>. 微信用户OPENID
+	 * Getter for <code>logdb.log_wx_message_record.open_id</code>. 微信用户OPENID
 	 */
 	public String getOpenId() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_wx_message_record.url</code>. link
+	 * Setter for <code>logdb.log_wx_message_record.url</code>. link
 	 */
 	public void setUrl(String value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_wx_message_record.url</code>. link
+	 * Getter for <code>logdb.log_wx_message_record.url</code>. link
 	 */
 	public String getUrl() {
 		return (String) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_wx_message_record.topcolor</code>. 信息顶部颜色
+	 * Setter for <code>logdb.log_wx_message_record.topcolor</code>. 信息顶部颜色
 	 */
 	public void setTopcolor(String value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_wx_message_record.topcolor</code>. 信息顶部颜色
+	 * Getter for <code>logdb.log_wx_message_record.topcolor</code>. 信息顶部颜色
 	 */
 	public String getTopcolor() {
 		return (String) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_wx_message_record.jsondata</code>. 发送的json数据
+	 * Setter for <code>logdb.log_wx_message_record.jsondata</code>. 发送的json数据
 	 */
 	public void setJsondata(String value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_wx_message_record.jsondata</code>. 发送的json数据
+	 * Getter for <code>logdb.log_wx_message_record.jsondata</code>. 发送的json数据
 	 */
 	public String getJsondata() {
 		return (String) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_wx_message_record.errcode</code>. 返回结果值
+	 * Setter for <code>logdb.log_wx_message_record.errcode</code>. 返回结果值
 	 */
 	public void setErrcode(UInteger value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_wx_message_record.errcode</code>. 返回结果值
+	 * Getter for <code>logdb.log_wx_message_record.errcode</code>. 返回结果值
 	 */
 	public UInteger getErrcode() {
 		return (UInteger) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_wx_message_record.errmsg</code>. 返回提示信息
+	 * Setter for <code>logdb.log_wx_message_record.errmsg</code>. 返回提示信息
 	 */
 	public void setErrmsg(String value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_wx_message_record.errmsg</code>. 返回提示信息
+	 * Getter for <code>logdb.log_wx_message_record.errmsg</code>. 返回提示信息
 	 */
 	public String getErrmsg() {
 		return (String) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_wx_message_record.sendtime</code>. 发送时间
+	 * Setter for <code>logdb.log_wx_message_record.sendtime</code>. 发送时间
 	 */
 	public void setSendtime(Timestamp value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_wx_message_record.sendtime</code>. 发送时间
+	 * Getter for <code>logdb.log_wx_message_record.sendtime</code>. 发送时间
 	 */
 	public Timestamp getSendtime() {
 		return (Timestamp) getValue(10);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_wx_message_record.updatetime</code>. 反馈状态时间
+	 * Setter for <code>logdb.log_wx_message_record.updatetime</code>. 反馈状态时间
 	 */
 	public void setUpdatetime(Timestamp value) {
 		setValue(11, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_wx_message_record.updatetime</code>. 反馈状态时间
+	 * Getter for <code>logdb.log_wx_message_record.updatetime</code>. 反馈状态时间
 	 */
 	public Timestamp getUpdatetime() {
 		return (Timestamp) getValue(11);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_wx_message_record.sendstatus</code>. 发送状态
+	 * Setter for <code>logdb.log_wx_message_record.sendstatus</code>. 发送状态
 	 */
 	public void setSendstatus(String value) {
 		setValue(12, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_wx_message_record.sendstatus</code>. 发送状态
+	 * Getter for <code>logdb.log_wx_message_record.sendstatus</code>. 发送状态
 	 */
 	public String getSendstatus() {
 		return (String) getValue(12);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_wx_message_record.sendtype</code>. 发送类型 0:微信 1:邮件 2:短信
+	 * Setter for <code>logdb.log_wx_message_record.sendtype</code>. 发送类型 0:微信 1:邮件 2:短信
 	 */
 	public void setSendtype(Integer value) {
 		setValue(13, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_wx_message_record.sendtype</code>. 发送类型 0:微信 1:邮件 2:短信
+	 * Getter for <code>logdb.log_wx_message_record.sendtype</code>. 发送类型 0:微信 1:邮件 2:短信
 	 */
 	public Integer getSendtype() {
 		return (Integer) getValue(13);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_wx_message_record.access_token</code>. 发送时的access_token
+	 * Setter for <code>logdb.log_wx_message_record.access_token</code>. 发送时的access_token
 	 */
 	public void setAccessToken(String value) {
 		setValue(14, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_wx_message_record.access_token</code>. 发送时的access_token
+	 * Getter for <code>logdb.log_wx_message_record.access_token</code>. 发送时的access_token
 	 */
 	public String getAccessToken() {
 		return (String) getValue(14);

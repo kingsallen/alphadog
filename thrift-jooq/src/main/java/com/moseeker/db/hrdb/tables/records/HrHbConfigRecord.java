@@ -30,311 +30,311 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrHbConfigRecord extends UpdatableRecordImpl<HrHbConfigRecord> implements Record22<Integer, Byte, Byte, Integer, Timestamp, Timestamp, Integer, Double, Double, Double, Byte, String, String, String, String, String, Byte, Byte, Integer, Timestamp, Timestamp, Integer> {
 
-	private static final long serialVersionUID = 1250698367;
+	private static final long serialVersionUID = 1282509951;
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_config.id</code>.
+	 * Setter for <code>hrdb.hr_hb_config.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_config.id</code>.
+	 * Getter for <code>hrdb.hr_hb_config.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_config.type</code>. 0:员工认证红包，1:推荐评价红包，2:转发被点击红包，3:转发被申请红包
+	 * Setter for <code>hrdb.hr_hb_config.type</code>. 0:员工认证红包，1:推荐评价红包，2:转发被点击红包，3:转发被申请红包
 	 */
 	public void setType(Byte value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_config.type</code>. 0:员工认证红包，1:推荐评价红包，2:转发被点击红包，3:转发被申请红包
+	 * Getter for <code>hrdb.hr_hb_config.type</code>. 0:员工认证红包，1:推荐评价红包，2:转发被点击红包，3:转发被申请红包
 	 */
 	public Byte getType() {
 		return (Byte) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_config.target</code>. 0:员工，1:员工及员工二度，2:粉丝
+	 * Setter for <code>hrdb.hr_hb_config.target</code>. 0:员工，1:员工及员工二度，2:粉丝
 	 */
 	public void setTarget(Byte value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_config.target</code>. 0:员工，1:员工及员工二度，2:粉丝
+	 * Getter for <code>hrdb.hr_hb_config.target</code>. 0:员工，1:员工及员工二度，2:粉丝
 	 */
 	public Byte getTarget() {
 		return (Byte) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_config.company_id</code>. company.id
+	 * Setter for <code>hrdb.hr_hb_config.company_id</code>. company.id
 	 */
 	public void setCompanyId(Integer value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_config.company_id</code>. company.id
+	 * Getter for <code>hrdb.hr_hb_config.company_id</code>. company.id
 	 */
 	public Integer getCompanyId() {
 		return (Integer) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_config.start_time</code>. 红包活动开始时间
+	 * Setter for <code>hrdb.hr_hb_config.start_time</code>. 红包活动开始时间
 	 */
 	public void setStartTime(Timestamp value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_config.start_time</code>. 红包活动开始时间
+	 * Getter for <code>hrdb.hr_hb_config.start_time</code>. 红包活动开始时间
 	 */
 	public Timestamp getStartTime() {
 		return (Timestamp) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_config.end_time</code>. 红包活动结束时间，直到红包用尽：2037-12-31 23:59:59）
+	 * Setter for <code>hrdb.hr_hb_config.end_time</code>. 红包活动结束时间，直到红包用尽：2037-12-31 23:59:59）
 	 */
 	public void setEndTime(Timestamp value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_config.end_time</code>. 红包活动结束时间，直到红包用尽：2037-12-31 23:59:59）
+	 * Getter for <code>hrdb.hr_hb_config.end_time</code>. 红包活动结束时间，直到红包用尽：2037-12-31 23:59:59）
 	 */
 	public Timestamp getEndTime() {
 		return (Timestamp) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_config.total_amount</code>. 总预算
+	 * Setter for <code>hrdb.hr_hb_config.total_amount</code>. 总预算
 	 */
 	public void setTotalAmount(Integer value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_config.total_amount</code>. 总预算
+	 * Getter for <code>hrdb.hr_hb_config.total_amount</code>. 总预算
 	 */
 	public Integer getTotalAmount() {
 		return (Integer) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_config.range_min</code>. 红包最小金额
+	 * Setter for <code>hrdb.hr_hb_config.range_min</code>. 红包最小金额
 	 */
 	public void setRangeMin(Double value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_config.range_min</code>. 红包最小金额
+	 * Getter for <code>hrdb.hr_hb_config.range_min</code>. 红包最小金额
 	 */
 	public Double getRangeMin() {
 		return (Double) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_config.range_max</code>. 红包最大金额
+	 * Setter for <code>hrdb.hr_hb_config.range_max</code>. 红包最大金额
 	 */
 	public void setRangeMax(Double value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_config.range_max</code>. 红包最大金额
+	 * Getter for <code>hrdb.hr_hb_config.range_max</code>. 红包最大金额
 	 */
 	public Double getRangeMax() {
 		return (Double) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_config.probability</code>. 中奖几率: 0 < x <= 100
+	 * Setter for <code>hrdb.hr_hb_config.probability</code>. 中奖几率: 0 < x <= 100
 	 */
 	public void setProbability(Double value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_config.probability</code>. 中奖几率: 0 < x <= 100
+	 * Getter for <code>hrdb.hr_hb_config.probability</code>. 中奖几率: 0 < x <= 100
 	 */
 	public Double getProbability() {
 		return (Double) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_config.d_type</code>. 分布类型 0:平均分布，1:指数分布
+	 * Setter for <code>hrdb.hr_hb_config.d_type</code>. 分布类型 0:平均分布，1:指数分布
 	 */
 	public void setDType(Byte value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_config.d_type</code>. 分布类型 0:平均分布，1:指数分布
+	 * Getter for <code>hrdb.hr_hb_config.d_type</code>. 分布类型 0:平均分布，1:指数分布
 	 */
 	public Byte getDType() {
 		return (Byte) getValue(10);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_config.headline</code>. 抽奖页面标题
+	 * Setter for <code>hrdb.hr_hb_config.headline</code>. 抽奖页面标题
 	 */
 	public void setHeadline(String value) {
 		setValue(11, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_config.headline</code>. 抽奖页面标题
+	 * Getter for <code>hrdb.hr_hb_config.headline</code>. 抽奖页面标题
 	 */
 	public String getHeadline() {
 		return (String) getValue(11);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_config.headline_failure</code>. 抽奖失败页面标题
+	 * Setter for <code>hrdb.hr_hb_config.headline_failure</code>. 抽奖失败页面标题
 	 */
 	public void setHeadlineFailure(String value) {
 		setValue(12, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_config.headline_failure</code>. 抽奖失败页面标题
+	 * Getter for <code>hrdb.hr_hb_config.headline_failure</code>. 抽奖失败页面标题
 	 */
 	public String getHeadlineFailure() {
 		return (String) getValue(12);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_config.share_title</code>. 转发消息标题
+	 * Setter for <code>hrdb.hr_hb_config.share_title</code>. 转发消息标题
 	 */
 	public void setShareTitle(String value) {
 		setValue(13, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_config.share_title</code>. 转发消息标题
+	 * Getter for <code>hrdb.hr_hb_config.share_title</code>. 转发消息标题
 	 */
 	public String getShareTitle() {
 		return (String) getValue(13);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_config.share_desc</code>. 转发消息摘要
+	 * Setter for <code>hrdb.hr_hb_config.share_desc</code>. 转发消息摘要
 	 */
 	public void setShareDesc(String value) {
 		setValue(14, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_config.share_desc</code>. 转发消息摘要
+	 * Getter for <code>hrdb.hr_hb_config.share_desc</code>. 转发消息摘要
 	 */
 	public String getShareDesc() {
 		return (String) getValue(14);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_config.share_img</code>. 转发消息背景图地址
+	 * Setter for <code>hrdb.hr_hb_config.share_img</code>. 转发消息背景图地址
 	 */
 	public void setShareImg(String value) {
 		setValue(15, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_config.share_img</code>. 转发消息背景图地址
+	 * Getter for <code>hrdb.hr_hb_config.share_img</code>. 转发消息背景图地址
 	 */
 	public String getShareImg() {
 		return (String) getValue(15);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_config.status</code>. 0:待审核，1:已审核，2:未开始，3:进行中：4:暂停中，5：已完成， －1: 已删除
+	 * Setter for <code>hrdb.hr_hb_config.status</code>. 0:待审核，1:已审核，2:未开始，3:进行中：4:暂停中，5：已完成， －1: 已删除
 	 */
 	public void setStatus(Byte value) {
 		setValue(16, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_config.status</code>. 0:待审核，1:已审核，2:未开始，3:进行中：4:暂停中，5：已完成， －1: 已删除
+	 * Getter for <code>hrdb.hr_hb_config.status</code>. 0:待审核，1:已审核，2:未开始，3:进行中：4:暂停中，5：已完成， －1: 已删除
 	 */
 	public Byte getStatus() {
 		return (Byte) getValue(16);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_config.checked</code>. 0:未审核，1:审核通过，2:审核不通过
+	 * Setter for <code>hrdb.hr_hb_config.checked</code>. 0:未审核，1:审核通过，2:审核不通过
 	 */
 	public void setChecked(Byte value) {
 		setValue(17, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_config.checked</code>. 0:未审核，1:审核通过，2:审核不通过
+	 * Getter for <code>hrdb.hr_hb_config.checked</code>. 0:未审核，1:审核通过，2:审核不通过
 	 */
 	public Byte getChecked() {
 		return (Byte) getValue(17);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_config.estimated_total</code>. 预估红包总数
+	 * Setter for <code>hrdb.hr_hb_config.estimated_total</code>. 预估红包总数
 	 */
 	public void setEstimatedTotal(Integer value) {
 		setValue(18, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_config.estimated_total</code>. 预估红包总数
+	 * Getter for <code>hrdb.hr_hb_config.estimated_total</code>. 预估红包总数
 	 */
 	public Integer getEstimatedTotal() {
 		return (Integer) getValue(18);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_config.create_time</code>. 创建时间
+	 * Setter for <code>hrdb.hr_hb_config.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(19, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_config.create_time</code>. 创建时间
+	 * Getter for <code>hrdb.hr_hb_config.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(19);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_config.update_time</code>. 更新时间
+	 * Setter for <code>hrdb.hr_hb_config.update_time</code>. 更新时间
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(20, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_config.update_time</code>. 更新时间
+	 * Getter for <code>hrdb.hr_hb_config.update_time</code>. 更新时间
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(20);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_config.actual_total</code>. 实际红包总数
+	 * Setter for <code>hrdb.hr_hb_config.actual_total</code>. 实际红包总数
 	 */
 	public void setActualTotal(Integer value) {
 		setValue(21, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_config.actual_total</code>. 实际红包总数
+	 * Getter for <code>hrdb.hr_hb_config.actual_total</code>. 实际红包总数
 	 */
 	public Integer getActualTotal() {
 		return (Integer) getValue(21);

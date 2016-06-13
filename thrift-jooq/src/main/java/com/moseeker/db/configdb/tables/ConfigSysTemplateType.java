@@ -35,10 +35,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysTemplateType extends TableImpl<ConfigSysTemplateTypeRecord> {
 
-	private static final long serialVersionUID = 226655163;
+	private static final long serialVersionUID = 1112112059;
 
 	/**
-	 * The reference instance of <code>configDB.config_sys_template_type</code>
+	 * The reference instance of <code>configdb.config_sys_template_type</code>
 	 */
 	public static final ConfigSysTemplateType CONFIG_SYS_TEMPLATE_TYPE = new ConfigSysTemplateType();
 
@@ -51,39 +51,39 @@ public class ConfigSysTemplateType extends TableImpl<ConfigSysTemplateTypeRecord
 	}
 
 	/**
-	 * The column <code>configDB.config_sys_template_type.id</code>.
+	 * The column <code>configdb.config_sys_template_type.id</code>.
 	 */
 	public final TableField<ConfigSysTemplateTypeRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
 	/**
-	 * The column <code>configDB.config_sys_template_type.name</code>. 类型名称
+	 * The column <code>configdb.config_sys_template_type.name</code>. 类型名称
 	 */
 	public final TableField<ConfigSysTemplateTypeRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "类型名称");
 
 	/**
-	 * The column <code>configDB.config_sys_template_type.create_time</code>. 创建时间
+	 * The column <code>configdb.config_sys_template_type.create_time</code>. 创建时间
 	 */
 	public final TableField<ConfigSysTemplateTypeRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "创建时间");
 
 	/**
-	 * The column <code>configDB.config_sys_template_type.update_time</code>. 修改时间
+	 * The column <code>configdb.config_sys_template_type.update_time</code>. 修改时间
 	 */
 	public final TableField<ConfigSysTemplateTypeRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "修改时间");
 
 	/**
-	 * The column <code>configDB.config_sys_template_type.status</code>. 是否有效 0：有效1：无效
+	 * The column <code>configdb.config_sys_template_type.status</code>. 是否有效 0：有效1：无效
 	 */
 	public final TableField<ConfigSysTemplateTypeRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "是否有效 0：有效1：无效");
 
 	/**
-	 * Create a <code>configDB.config_sys_template_type</code> table reference
+	 * Create a <code>configdb.config_sys_template_type</code> table reference
 	 */
 	public ConfigSysTemplateType() {
 		this("config_sys_template_type", null);
 	}
 
 	/**
-	 * Create an aliased <code>configDB.config_sys_template_type</code> table reference
+	 * Create an aliased <code>configdb.config_sys_template_type</code> table reference
 	 */
 	public ConfigSysTemplateType(String alias) {
 		this(alias, CONFIG_SYS_TEMPLATE_TYPE);

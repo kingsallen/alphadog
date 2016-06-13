@@ -30,59 +30,59 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigAdminnotificationGroupmembersRecord extends UpdatableRecordImpl<ConfigAdminnotificationGroupmembersRecord> implements Record4<Integer, Integer, Integer, Timestamp> {
 
-	private static final long serialVersionUID = -441485251;
+	private static final long serialVersionUID = 1904576573;
 
 	/**
-	 * Setter for <code>configDB.config_adminnotification_groupmembers.id</code>.
+	 * Setter for <code>configdb.config_adminnotification_groupmembers.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_adminnotification_groupmembers.id</code>.
+	 * Getter for <code>configdb.config_adminnotification_groupmembers.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_adminnotification_groupmembers.groupid</code>. 群组id
+	 * Setter for <code>configdb.config_adminnotification_groupmembers.groupid</code>. 群组id
 	 */
 	public void setGroupid(Integer value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_adminnotification_groupmembers.groupid</code>. 群组id
+	 * Getter for <code>configdb.config_adminnotification_groupmembers.groupid</code>. 群组id
 	 */
 	public Integer getGroupid() {
 		return (Integer) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_adminnotification_groupmembers.memberid</code>. 联系人id
+	 * Setter for <code>configdb.config_adminnotification_groupmembers.memberid</code>. 联系人id
 	 */
 	public void setMemberid(Integer value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_adminnotification_groupmembers.memberid</code>. 联系人id
+	 * Getter for <code>configdb.config_adminnotification_groupmembers.memberid</code>. 联系人id
 	 */
 	public Integer getMemberid() {
 		return (Integer) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_adminnotification_groupmembers.create_time</code>.
+	 * Setter for <code>configdb.config_adminnotification_groupmembers.create_time</code>.
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_adminnotification_groupmembers.create_time</code>.
+	 * Getter for <code>configdb.config_adminnotification_groupmembers.create_time</code>.
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(3);

@@ -30,171 +30,171 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigAdminnotificationEventsRecord extends UpdatableRecordImpl<ConfigAdminnotificationEventsRecord> implements Record12<Integer, String, String, String, String, Integer, Integer, Byte, Byte, Byte, Integer, Timestamp> {
 
-	private static final long serialVersionUID = -1708429214;
+	private static final long serialVersionUID = 1972138082;
 
 	/**
-	 * Setter for <code>configDB.config_adminnotification_events.id</code>.
+	 * Setter for <code>configdb.config_adminnotification_events.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_adminnotification_events.id</code>.
+	 * Getter for <code>configdb.config_adminnotification_events.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_adminnotification_events.project_appid</code>. 项目appid
+	 * Setter for <code>configdb.config_adminnotification_events.project_appid</code>. 项目appid
 	 */
 	public void setProjectAppid(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_adminnotification_events.project_appid</code>. 项目appid
+	 * Getter for <code>configdb.config_adminnotification_events.project_appid</code>. 项目appid
 	 */
 	public String getProjectAppid() {
 		return (String) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_adminnotification_events.event_key</code>. 事件标识符，大写英文
+	 * Setter for <code>configdb.config_adminnotification_events.event_key</code>. 事件标识符，大写英文
 	 */
 	public void setEventKey(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_adminnotification_events.event_key</code>. 事件标识符，大写英文
+	 * Getter for <code>configdb.config_adminnotification_events.event_key</code>. 事件标识符，大写英文
 	 */
 	public String getEventKey() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_adminnotification_events.event_name</code>. 事件名称
+	 * Setter for <code>configdb.config_adminnotification_events.event_name</code>. 事件名称
 	 */
 	public void setEventName(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_adminnotification_events.event_name</code>. 事件名称
+	 * Getter for <code>configdb.config_adminnotification_events.event_name</code>. 事件名称
 	 */
 	public String getEventName() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_adminnotification_events.event_desc</code>. 事件描述
+	 * Setter for <code>configdb.config_adminnotification_events.event_desc</code>. 事件描述
 	 */
 	public void setEventDesc(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_adminnotification_events.event_desc</code>. 事件描述
+	 * Getter for <code>configdb.config_adminnotification_events.event_desc</code>. 事件描述
 	 */
 	public String getEventDesc() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_adminnotification_events.threshold_value</code>. 触发几次后通知
+	 * Setter for <code>configdb.config_adminnotification_events.threshold_value</code>. 触发几次后通知
 	 */
 	public void setThresholdValue(Integer value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_adminnotification_events.threshold_value</code>. 触发几次后通知
+	 * Getter for <code>configdb.config_adminnotification_events.threshold_value</code>. 触发几次后通知
 	 */
 	public Integer getThresholdValue() {
 		return (Integer) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_adminnotification_events.threshold_interval</code>. 单位秒，0表示不限制，  thresholdinterval和thresholdvalue搭配使用，表达 每分钟超过5次 报警。
+	 * Setter for <code>configdb.config_adminnotification_events.threshold_interval</code>. 单位秒，0表示不限制，  thresholdinterval和thresholdvalue搭配使用，表达 每分钟超过5次 报警。
 	 */
 	public void setThresholdInterval(Integer value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_adminnotification_events.threshold_interval</code>. 单位秒，0表示不限制，  thresholdinterval和thresholdvalue搭配使用，表达 每分钟超过5次 报警。
+	 * Getter for <code>configdb.config_adminnotification_events.threshold_interval</code>. 单位秒，0表示不限制，  thresholdinterval和thresholdvalue搭配使用，表达 每分钟超过5次 报警。
 	 */
 	public Integer getThresholdInterval() {
 		return (Integer) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_adminnotification_events.enable_notifyby_email</code>. 是否email通知， 1是 0否
+	 * Setter for <code>configdb.config_adminnotification_events.enable_notifyby_email</code>. 是否email通知， 1是 0否
 	 */
 	public void setEnableNotifybyEmail(Byte value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_adminnotification_events.enable_notifyby_email</code>. 是否email通知， 1是 0否
+	 * Getter for <code>configdb.config_adminnotification_events.enable_notifyby_email</code>. 是否email通知， 1是 0否
 	 */
 	public Byte getEnableNotifybyEmail() {
 		return (Byte) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_adminnotification_events.enable_notifyby_sms</code>. 是否短信通知， 1是 0否
+	 * Setter for <code>configdb.config_adminnotification_events.enable_notifyby_sms</code>. 是否短信通知， 1是 0否
 	 */
 	public void setEnableNotifybySms(Byte value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_adminnotification_events.enable_notifyby_sms</code>. 是否短信通知， 1是 0否
+	 * Getter for <code>configdb.config_adminnotification_events.enable_notifyby_sms</code>. 是否短信通知， 1是 0否
 	 */
 	public Byte getEnableNotifybySms() {
 		return (Byte) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_adminnotification_events.enable_notifyby_wechattemplatemessage</code>. 是否微信模板消息通知， 1是 0否
+	 * Setter for <code>configdb.config_adminnotification_events.enable_notifyby_wechattemplatemessage</code>. 是否微信模板消息通知， 1是 0否
 	 */
 	public void setEnableNotifybyWechattemplatemessage(Byte value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_adminnotification_events.enable_notifyby_wechattemplatemessage</code>. 是否微信模板消息通知， 1是 0否
+	 * Getter for <code>configdb.config_adminnotification_events.enable_notifyby_wechattemplatemessage</code>. 是否微信模板消息通知， 1是 0否
 	 */
 	public Byte getEnableNotifybyWechattemplatemessage() {
 		return (Byte) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_adminnotification_events.groupid</code>. 发送给哪个组
+	 * Setter for <code>configdb.config_adminnotification_events.groupid</code>. 发送给哪个组
 	 */
 	public void setGroupid(Integer value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_adminnotification_events.groupid</code>. 发送给哪个组
+	 * Getter for <code>configdb.config_adminnotification_events.groupid</code>. 发送给哪个组
 	 */
 	public Integer getGroupid() {
 		return (Integer) getValue(10);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_adminnotification_events.create_time</code>.
+	 * Setter for <code>configdb.config_adminnotification_events.create_time</code>.
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(11, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_adminnotification_events.create_time</code>.
+	 * Getter for <code>configdb.config_adminnotification_events.create_time</code>.
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(11);

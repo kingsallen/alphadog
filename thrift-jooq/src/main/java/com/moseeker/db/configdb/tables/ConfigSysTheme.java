@@ -35,10 +35,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysTheme extends TableImpl<ConfigSysThemeRecord> {
 
-	private static final long serialVersionUID = 1286267546;
+	private static final long serialVersionUID = -1090298214;
 
 	/**
-	 * The reference instance of <code>configDB.config_sys_theme</code>
+	 * The reference instance of <code>configdb.config_sys_theme</code>
 	 */
 	public static final ConfigSysTheme CONFIG_SYS_THEME = new ConfigSysTheme();
 
@@ -51,64 +51,64 @@ public class ConfigSysTheme extends TableImpl<ConfigSysThemeRecord> {
 	}
 
 	/**
-	 * The column <code>configDB.config_sys_theme.id</code>.
+	 * The column <code>configdb.config_sys_theme.id</code>.
 	 */
 	public final TableField<ConfigSysThemeRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
 	/**
-	 * The column <code>configDB.config_sys_theme.background_color</code>. 背景色
+	 * The column <code>configdb.config_sys_theme.background_color</code>. 背景色
 	 */
 	public final TableField<ConfigSysThemeRecord, String> BACKGROUND_COLOR = createField("background_color", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false).defaulted(true), this, "背景色");
 
 	/**
-	 * The column <code>configDB.config_sys_theme.title_color</code>. 标题
+	 * The column <code>configdb.config_sys_theme.title_color</code>. 标题
 	 */
 	public final TableField<ConfigSysThemeRecord, String> TITLE_COLOR = createField("title_color", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaulted(true), this, "标题");
 
 	/**
-	 * The column <code>configDB.config_sys_theme.button_color</code>. 按钮
+	 * The column <code>configdb.config_sys_theme.button_color</code>. 按钮
 	 */
 	public final TableField<ConfigSysThemeRecord, String> BUTTON_COLOR = createField("button_color", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaulted(true), this, "按钮");
 
 	/**
-	 * The column <code>configDB.config_sys_theme.other_color</code>. other
+	 * The column <code>configdb.config_sys_theme.other_color</code>. other
 	 */
 	public final TableField<ConfigSysThemeRecord, String> OTHER_COLOR = createField("other_color", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaulted(true), this, "other");
 
 	/**
-	 * The column <code>configDB.config_sys_theme.free</code>. 是否免费 0：免费 1：收费，只能在大岂后台操作收费主题
+	 * The column <code>configdb.config_sys_theme.free</code>. 是否免费 0：免费 1：收费，只能在大岂后台操作收费主题
 	 */
 	public final TableField<ConfigSysThemeRecord, Byte> FREE = createField("free", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "是否免费 0：免费 1：收费，只能在大岂后台操作收费主题");
 
 	/**
-	 * The column <code>configDB.config_sys_theme.prority</code>. 排序优先级
+	 * The column <code>configdb.config_sys_theme.prority</code>. 排序优先级
 	 */
 	public final TableField<ConfigSysThemeRecord, Short> PRORITY = createField("prority", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaulted(true), this, "排序优先级");
 
 	/**
-	 * The column <code>configDB.config_sys_theme.disable</code>. 是否禁用 0：可用1：不可用
+	 * The column <code>configdb.config_sys_theme.disable</code>. 是否禁用 0：可用1：不可用
 	 */
 	public final TableField<ConfigSysThemeRecord, Byte> DISABLE = createField("disable", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "是否禁用 0：可用1：不可用");
 
 	/**
-	 * The column <code>configDB.config_sys_theme.create_time</code>.
+	 * The column <code>configdb.config_sys_theme.create_time</code>.
 	 */
 	public final TableField<ConfigSysThemeRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>configDB.config_sys_theme.update_time</code>.
+	 * The column <code>configdb.config_sys_theme.update_time</code>.
 	 */
 	public final TableField<ConfigSysThemeRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * Create a <code>configDB.config_sys_theme</code> table reference
+	 * Create a <code>configdb.config_sys_theme</code> table reference
 	 */
 	public ConfigSysTheme() {
 		this("config_sys_theme", null);
 	}
 
 	/**
-	 * Create an aliased <code>configDB.config_sys_theme</code> table reference
+	 * Create an aliased <code>configdb.config_sys_theme</code> table reference
 	 */
 	public ConfigSysTheme(String alias) {
 		this(alias, CONFIG_SYS_THEME);

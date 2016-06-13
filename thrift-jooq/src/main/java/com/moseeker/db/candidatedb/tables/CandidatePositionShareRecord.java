@@ -35,10 +35,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidatePositionShareRecord extends TableImpl<CandidatePositionShareRecordRecord> {
 
-	private static final long serialVersionUID = 819465988;
+	private static final long serialVersionUID = -932238588;
 
 	/**
-	 * The reference instance of <code>candidateDB.candidate_position_share_record</code>
+	 * The reference instance of <code>candidatedb.candidate_position_share_record</code>
 	 */
 	public static final CandidatePositionShareRecord CANDIDATE_POSITION_SHARE_RECORD = new CandidatePositionShareRecord();
 
@@ -51,74 +51,74 @@ public class CandidatePositionShareRecord extends TableImpl<CandidatePositionSha
 	}
 
 	/**
-	 * The column <code>candidateDB.candidate_position_share_record.id</code>.
+	 * The column <code>candidatedb.candidate_position_share_record.id</code>.
 	 */
 	public final TableField<CandidatePositionShareRecordRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
 	/**
-	 * The column <code>candidateDB.candidate_position_share_record.wechat_id</code>. 所属公众号
+	 * The column <code>candidatedb.candidate_position_share_record.wechat_id</code>. 所属公众号
 	 */
 	public final TableField<CandidatePositionShareRecordRecord, Long> WECHAT_ID = createField("wechat_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaulted(true), this, "所属公众号");
 
 	/**
-	 * The column <code>candidateDB.candidate_position_share_record.position_id</code>. position.id 分享职位ID
+	 * The column <code>candidatedb.candidate_position_share_record.position_id</code>. position.id 分享职位ID
 	 */
 	public final TableField<CandidatePositionShareRecordRecord, Long> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaulted(true), this, "position.id 分享职位ID");
 
 	/**
-	 * The column <code>candidateDB.candidate_position_share_record.recom_id</code>. wx_group_user.id 分享用户微信ID
+	 * The column <code>candidatedb.candidate_position_share_record.recom_id</code>. wx_group_user.id 分享用户微信ID
 	 */
 	public final TableField<CandidatePositionShareRecordRecord, Long> RECOM_ID = createField("recom_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaulted(true), this, "wx_group_user.id 分享用户微信ID");
 
 	/**
-	 * The column <code>candidateDB.candidate_position_share_record.sysuser_id</code>. sysuser.id 浏览用户sysuser.id
+	 * The column <code>candidatedb.candidate_position_share_record.sysuser_id</code>. sysuser.id 浏览用户sysuser.id
 	 */
 	public final TableField<CandidatePositionShareRecordRecord, Long> SYSUSER_ID = createField("sysuser_id", org.jooq.impl.SQLDataType.BIGINT.defaulted(true), this, "sysuser.id 浏览用户sysuser.id");
 
 	/**
-	 * The column <code>candidateDB.candidate_position_share_record.viewer_id</code>. wx_viewer.id 浏览用户ID
+	 * The column <code>candidatedb.candidate_position_share_record.viewer_id</code>. wx_viewer.id 浏览用户ID
 	 */
 	public final TableField<CandidatePositionShareRecordRecord, String> VIEWER_ID = createField("viewer_id", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaulted(true), this, "wx_viewer.id 浏览用户ID");
 
 	/**
-	 * The column <code>candidateDB.candidate_position_share_record.viewer_ip</code>. 浏览用户IP
+	 * The column <code>candidatedb.candidate_position_share_record.viewer_ip</code>. 浏览用户IP
 	 */
 	public final TableField<CandidatePositionShareRecordRecord, Long> VIEWER_IP = createField("viewer_ip", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaulted(true), this, "浏览用户IP");
 
 	/**
-	 * The column <code>candidateDB.candidate_position_share_record.source</code>. 来源0：企业后台1：聚合平台
+	 * The column <code>candidatedb.candidate_position_share_record.source</code>. 来源0：企业后台1：聚合平台
 	 */
 	public final TableField<CandidatePositionShareRecordRecord, Byte> SOURCE = createField("source", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "来源0：企业后台1：聚合平台");
 
 	/**
-	 * The column <code>candidateDB.candidate_position_share_record.create_time</code>. 创建时间
+	 * The column <code>candidatedb.candidate_position_share_record.create_time</code>. 创建时间
 	 */
 	public final TableField<CandidatePositionShareRecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "创建时间");
 
 	/**
-	 * The column <code>candidateDB.candidate_position_share_record.update_time</code>. 修改时间
+	 * The column <code>candidatedb.candidate_position_share_record.update_time</code>. 修改时间
 	 */
 	public final TableField<CandidatePositionShareRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "修改时间");
 
 	/**
-	 * The column <code>candidateDB.candidate_position_share_record.presentee_id</code>. 被动求职者,浏览者的微信ID，wx_group_user.id
+	 * The column <code>candidatedb.candidate_position_share_record.presentee_id</code>. 被动求职者,浏览者的微信ID，wx_group_user.id
 	 */
 	public final TableField<CandidatePositionShareRecordRecord, Long> PRESENTEE_ID = createField("presentee_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaulted(true), this, "被动求职者,浏览者的微信ID，wx_group_user.id");
 
 	/**
-	 * The column <code>candidateDB.candidate_position_share_record.click_from</code>. 来自, 0:未知, 朋友圈(timeline ) 1, 微信群(groupmessage) 2, 个人消息(singlemessage) 3
+	 * The column <code>candidatedb.candidate_position_share_record.click_from</code>. 来自, 0:未知, 朋友圈(timeline ) 1, 微信群(groupmessage) 2, 个人消息(singlemessage) 3
 	 */
 	public final TableField<CandidatePositionShareRecordRecord, Byte> CLICK_FROM = createField("click_from", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "来自, 0:未知, 朋友圈(timeline ) 1, 微信群(groupmessage) 2, 个人消息(singlemessage) 3");
 
 	/**
-	 * Create a <code>candidateDB.candidate_position_share_record</code> table reference
+	 * Create a <code>candidatedb.candidate_position_share_record</code> table reference
 	 */
 	public CandidatePositionShareRecord() {
 		this("candidate_position_share_record", null);
 	}
 
 	/**
-	 * Create an aliased <code>candidateDB.candidate_position_share_record</code> table reference
+	 * Create an aliased <code>candidatedb.candidate_position_share_record</code> table reference
 	 */
 	public CandidatePositionShareRecord(String alias) {
 		this(alias, CANDIDATE_POSITION_SHARE_RECORD);

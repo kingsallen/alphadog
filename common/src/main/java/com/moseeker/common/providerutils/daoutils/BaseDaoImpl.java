@@ -1,11 +1,13 @@
 package com.moseeker.common.providerutils.daoutils;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record;
@@ -24,6 +26,7 @@ import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
+
 /**
  * 
  * 实现通用数据操作接口的抽象类 
@@ -34,13 +37,12 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
  * @version Beta
  * @param <R> 表示JOOQ表记录的ORM类
  * @param <T> 表示JOOQ表的ORM类
- * @param <S> 基于Thrift通信的数据结构
  */
 @SuppressWarnings("rawtypes")
 public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends TableImpl<R>>
 		implements BaseDao<R> {
 
-	Logger logger = LoggerFactory.getLogger(this.getClass());
+	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * 需要制定JOOQ
@@ -51,15 +53,13 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 
 	@SuppressWarnings("unchecked")
 	public List<R> getResources(CommonQuery query) throws Exception {
-		List<R> records = null;
+		initJOOQEntity();
+		List<R> records = new ArrayList<>();
 		Connection conn = null;
 		try {
-			initJOOQEntity();
-			records = new ArrayList<>();
 			conn = DBConnHelper.DBConn.getConn();
 			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-			/*DSLContext create = DatabaseConnectionHelper.getConnection()
-					.getJooqDSL();*/
+
 			SelectJoinStep<Record> table = create.select().from(tableLike);
 
 			if (query.getEqualFilter() != null
@@ -68,8 +68,23 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 				for (Entry<String, String> entry : equalFilter.entrySet()) {
 					Field<?> field = tableLike.field(entry.getKey());
 					if (field != null) {
-						table.where(field.strictEqual(BeanUtils.convertTo(
-								entry.getValue(), field.getType())));
+						if(entry.getValue().startsWith("[") && entry.getValue().endsWith("]")) {
+							String[] arrayValue = entry.getValue().substring(1, entry.getValue().length()-1).split(",");
+							Condition condition = null;
+							for(String value : arrayValue) {
+								if(condition == null) {
+									condition = field.strictEqual(BeanUtils.convertTo(
+											value, field.getType()));
+								} else {
+									condition = condition.or(field.strictEqual(BeanUtils.convertTo(
+											value, field.getType())));
+								}
+							}
+							table.where(condition);
+						} else {
+							table.where(field.strictEqual(BeanUtils.convertTo(
+									entry.getValue(), field.getType())));
+						}
 					}
 				}
 			}
@@ -81,7 +96,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 				List<SortField<?>> fields = new ArrayList<>(sortBy.length);
 				SortOrder so = SortOrder.ASC;
 				for (int i = 0; i < sortBy.length; i++) {
-					Field<?> field = table.field(sortBy[i]);
+					Field<?> field = tableLike.field(sortBy[i]);
 					if (sortBy.length == order.length
 							&& !StringUtils.isNullOrEmpty(order[i])
 							&& order[i].toLowerCase().equals("desc")) {
@@ -99,8 +114,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 						}
 					}
 				}
-				Field<?>[] fieldArray = null;
-				table.orderBy(fields.toArray(fieldArray));
+				table.orderBy(fields);
 			}
 
 			/* 分段查找数据库结果集 */
@@ -116,11 +130,12 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 
 			if (result != null && result.size() > 0) {
 				for (Record r : result) {
-					records.add((R) r);
+					records.add((R)r);
 				}
 			}
 		} catch (Exception e) {
-			logger.error(e.getMessage(),e);
+			logger.error("error", e);
+			throw new Exception(e);
 		} finally {
 			if(conn != null && !conn.isClosed()) {
 				conn.close();
@@ -131,10 +146,10 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 	
 	@SuppressWarnings({"unchecked" })
 	public int getResourceCount(CommonQuery query) throws Exception {
+		initJOOQEntity();
 		int totalCount = 0;
 		Connection conn = null;
 		try {
-			initJOOQEntity();
 			conn = DBConnHelper.DBConn.getConn();
 			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 
@@ -153,8 +168,8 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 			}
 			totalCount = create.fetchCount(selectQuery);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("error", e);
+			throw new Exception(e);
 		} finally {
 			if(conn != null && !conn.isClosed()) {
 				conn.close();
@@ -164,41 +179,49 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 	}
 
 	public int postResources(List<R> records) throws Exception {
+		initJOOQEntity();
 		int insertret = 0;
 		Connection conn = null;
 		try {
-			initJOOQEntity();
-			
 			if (records != null && records.size() > 0) {
 				conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-				insertret = create.batchInsert(records).execute()[0];
+
+				int[] insertarray = create.batchInsert(records).execute();
+				if (insertarray.length == 0){
+					return 0;
+				}else{
+					insertret = insertarray[0];
+				}	
 			}
 		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
+			logger.error("error", e);
+			throw new Exception(e);
 		} finally {
 			if(conn != null && !conn.isClosed()) {
 				conn.close();
 			}
 		}
+
 		return insertret;
 	}
 
 	public int putResources(List<R> records) throws Exception {
+		initJOOQEntity();
 		int insertret = 0;
 		Connection conn = null;
-		try {
-			initJOOQEntity();
-			if (records != null && records.size() > 0) {
+		if (records != null && records.size() > 0) {
+			try {
 				conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 				insertret = create.batchUpdate(records).execute()[0];
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		} finally {
-			if(conn != null && !conn.isClosed()) {
-				conn.close();
+			} catch (Exception e) {
+				logger.error("error", e);
+				throw new Exception(e);
+			} finally {
+				if(conn != null && !conn.isClosed()) {
+					conn.close();
+				}
 			}
 		}
 
@@ -206,32 +229,33 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 	}
 
 	public int delResources(List<R> records) throws Exception {
+		initJOOQEntity();
 		int insertret = 0;
-		Connection conn = null;
-		try {
-			initJOOQEntity();
-			if (records != null && records.size() > 0) {
+		if (records != null && records.size() > 0) {
+			Connection conn = null;
+			try {
 				conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 				insertret = create.batchDelete(records).execute()[0];
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			logger.error(e.getMessage(), e);
-		} finally {
-			if(conn != null && !conn.isClosed()) {
-				conn.close();
+			} catch (Exception e) {
+				logger.error("error", e);
+				throw new Exception(e);
+			} finally {
+				if(conn != null && !conn.isClosed()) {
+					conn.close();
+				}
 			}
 		}
+
 		return insertret;
 	}
 	
 	@SuppressWarnings({"unchecked" })
 	public R getResource(CommonQuery query) throws Exception {
+		initJOOQEntity();
 		R record = null;
 		Connection conn = null;
 		try {
-			initJOOQEntity();
 			conn = DBConnHelper.DBConn.getConn();
 			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 
@@ -281,11 +305,13 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 			table.limit(1);
 
 			Result<Record> result = table.fetch();
+
 			if (result != null && result.size() > 0) {
 				record = (R) result.get(0);
 			}
 		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
+			logger.error("error", e);
+			throw new Exception(e);
 		} finally {
 			if(conn != null && !conn.isClosed()) {
 				conn.close();
@@ -294,54 +320,58 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 		return record;
 	}
 
-	/**
-	 * 添加
-	 */
 	public int postResource(R record) throws Exception {
 		initJOOQEntity();
+		int insertret = 0;
+		Connection conn = null;
 		if (record != null) {
-			Connection conn = null;
 			try {
 				conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 				create.attach(record);
 				record.insert();
-				//record.refresh();
-				//create.executeInsert(record);
 				if(record.key() != null) {
 					Record key = record.key();
 					int keyValue = BeanUtils.converToInteger(key.get(0));
 					return keyValue;
 				}
 			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
+				logger.error("error", e);
+				throw new Exception(e);
 			} finally {
 				if(conn != null && !conn.isClosed()) {
 					conn.close();
 				}
 			}
 		}
-		return 0;
+
+		return insertret;
 	}
 
 	public int putResource(R record) throws Exception {
 		initJOOQEntity();
 		int insertret = 0;
-		if (record != null) {
-			Connection conn = null;
-			try {
+		Connection conn = null;
+		try {
+			if (record != null) {
 				conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 				create.attach(record);
-				record.update();
-				insertret = 1;
-			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
-				// TODO Auto-generated catch block
-			} finally {
+				insertret = record.update();
 				if(conn != null && !conn.isClosed()) {
 					conn.close();
 				}
+			}
+		} catch (Exception e) {
+			logger.error("error", e);
+			throw new Exception(e);
+		} finally {
+			try {
+				if (conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
 		}
 		return insertret;
@@ -358,7 +388,8 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 				create.attach(record);
 				insertret = record.delete();
 			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
+				logger.error("error", e);
+				throw new Exception(e);
 			} finally {
 				if(conn != null && !conn.isClosed()) {
 					conn.close();

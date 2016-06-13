@@ -37,10 +37,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompany extends TableImpl<HrCompanyRecord> {
 
-	private static final long serialVersionUID = 732254562;
+	private static final long serialVersionUID = 691298707;
 
 	/**
-	 * The reference instance of <code>hrDB.hr_company</code>
+	 * The reference instance of <code>hrdb.hr_company</code>
 	 */
 	public static final HrCompany HR_COMPANY = new HrCompany();
 
@@ -53,99 +53,109 @@ public class HrCompany extends TableImpl<HrCompanyRecord> {
 	}
 
 	/**
-	 * The column <code>hrDB.hr_company.id</code>.
+	 * The column <code>hrdb.hr_company.id</code>.
 	 */
 	public final TableField<HrCompanyRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
 
 	/**
-	 * The column <code>hrDB.hr_company.type</code>. 公司区分(其它:2,免费用户:1,企业用户:0)
+	 * The column <code>hrdb.hr_company.type</code>. 公司区分(其它:2,免费用户:1,企业用户:0)
 	 */
 	public final TableField<HrCompanyRecord, UByte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "公司区分(其它:2,免费用户:1,企业用户:0)");
 
 	/**
-	 * The column <code>hrDB.hr_company.name</code>. 公司注册名称
+	 * The column <code>hrdb.hr_company.name</code>. 公司注册名称
 	 */
 	public final TableField<HrCompanyRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(999).nullable(false).defaulted(true), this, "公司注册名称");
 
 	/**
-	 * The column <code>hrDB.hr_company.introduction</code>. 公司介绍
+	 * The column <code>hrdb.hr_company.introduction</code>. 公司介绍
 	 */
 	public final TableField<HrCompanyRecord, String> INTRODUCTION = createField("introduction", org.jooq.impl.SQLDataType.CLOB, this, "公司介绍");
 
 	/**
-	 * The column <code>hrDB.hr_company.scale</code>. 公司规模
+	 * The column <code>hrdb.hr_company.scale</code>. 公司规模
 	 */
 	public final TableField<HrCompanyRecord, String> SCALE = createField("scale", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false).defaulted(true), this, "公司规模");
 
 	/**
-	 * The column <code>hrDB.hr_company.address</code>. 公司地址
+	 * The column <code>hrdb.hr_company.address</code>. 公司地址
 	 */
 	public final TableField<HrCompanyRecord, String> ADDRESS = createField("address", org.jooq.impl.SQLDataType.VARCHAR.length(999).nullable(false).defaulted(true), this, "公司地址");
 
 	/**
-	 * The column <code>hrDB.hr_company.property</code>. 公司性质 0:没选择 1:国有 2:三资 3:集体 4:私有
+	 * The column <code>hrdb.hr_company.property</code>. 公司性质 0:没选择 1:国有 2:三资 3:集体 4:私有
 	 */
 	public final TableField<HrCompanyRecord, UByte> PROPERTY = createField("property", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.defaulted(true), this, "公司性质 0:没选择 1:国有 2:三资 3:集体 4:私有");
 
 	/**
-	 * The column <code>hrDB.hr_company.industry</code>. 所属行业
+	 * The column <code>hrdb.hr_company.industry</code>. 所属行业
 	 */
 	public final TableField<HrCompanyRecord, String> INDUSTRY = createField("industry", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "所属行业");
 
 	/**
-	 * The column <code>hrDB.hr_company.homepage</code>. 公司主页
+	 * The column <code>hrdb.hr_company.homepage</code>. 公司主页
 	 */
 	public final TableField<HrCompanyRecord, String> HOMEPAGE = createField("homepage", org.jooq.impl.SQLDataType.VARCHAR.length(999).nullable(false).defaulted(true), this, "公司主页");
 
 	/**
-	 * The column <code>hrDB.hr_company.logo</code>. 公司logo的网络cdn地址
+	 * The column <code>hrdb.hr_company.logo</code>. 公司logo的网络cdn地址
 	 */
 	public final TableField<HrCompanyRecord, String> LOGO = createField("logo", org.jooq.impl.SQLDataType.CLOB, this, "公司logo的网络cdn地址");
 
 	/**
-	 * The column <code>hrDB.hr_company.abbreviation</code>. 公司简称
+	 * The column <code>hrdb.hr_company.abbreviation</code>. 公司简称
 	 */
 	public final TableField<HrCompanyRecord, String> ABBREVIATION = createField("abbreviation", org.jooq.impl.SQLDataType.VARCHAR.length(99).nullable(false).defaulted(true), this, "公司简称");
 
 	/**
-	 * The column <code>hrDB.hr_company.impression</code>. json格式的企业印象
+	 * The column <code>hrdb.hr_company.impression</code>. json格式的企业印象
 	 */
 	public final TableField<HrCompanyRecord, String> IMPRESSION = createField("impression", org.jooq.impl.SQLDataType.VARCHAR.length(999).nullable(false).defaulted(true), this, "json格式的企业印象");
 
 	/**
-	 * The column <code>hrDB.hr_company.banner</code>. json格式的企业banner
+	 * The column <code>hrdb.hr_company.banner</code>. json格式的企业banner
 	 */
 	public final TableField<HrCompanyRecord, String> BANNER = createField("banner", org.jooq.impl.SQLDataType.VARCHAR.length(999).nullable(false).defaulted(true), this, "json格式的企业banner");
 
 	/**
-	 * The column <code>hrDB.hr_company.parent_id</code>. 上级公司
+	 * The column <code>hrdb.hr_company.parent_id</code>. 上级公司
 	 */
 	public final TableField<HrCompanyRecord, UInteger> PARENT_ID = createField("parent_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "上级公司");
 
 	/**
-	 * The column <code>hrDB.hr_company.hraccount_id</code>. 公司联系人, hr_account.id
+	 * The column <code>hrdb.hr_company.hraccount_id</code>. 公司联系人, hr_account.id
 	 */
 	public final TableField<HrCompanyRecord, Integer> HRACCOUNT_ID = createField("hraccount_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "公司联系人, hr_account.id");
 
 	/**
-	 * The column <code>hrDB.hr_company.create_time</code>. 创建时间
+	 * The column <code>hrdb.hr_company.disable</code>. 0:无效 1:有效
+	 */
+	public final TableField<HrCompanyRecord, Byte> DISABLE = createField("disable", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "0:无效 1:有效");
+
+	/**
+	 * The column <code>hrdb.hr_company.create_time</code>. 创建时间
 	 */
 	public final TableField<HrCompanyRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "创建时间");
 
 	/**
-	 * The column <code>hrDB.hr_company.update_time</code>. 更新时间
+	 * The column <code>hrdb.hr_company.update_time</code>. 更新时间
 	 */
 	public final TableField<HrCompanyRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "更新时间");
 
 	/**
-	 * Create a <code>hrDB.hr_company</code> table reference
+	 * The column <code>hrdb.hr_company.source</code>. 添加来源 {"0":"hr系统", "9":"profile添加"}
+	 */
+	public final TableField<HrCompanyRecord, UByte> SOURCE = createField("source", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "添加来源 {\"0\":\"hr系统\", \"9\":\"profile添加\"}");
+
+	/**
+	 * Create a <code>hrdb.hr_company</code> table reference
 	 */
 	public HrCompany() {
 		this("hr_company", null);
 	}
 
 	/**
-	 * Create an aliased <code>hrDB.hr_company</code> table reference
+	 * Create an aliased <code>hrdb.hr_company</code> table reference
 	 */
 	public HrCompany(String alias) {
 		this(alias, HR_COMPANY);

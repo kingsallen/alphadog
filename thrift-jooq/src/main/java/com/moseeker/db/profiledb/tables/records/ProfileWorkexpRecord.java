@@ -30,370 +30,356 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileWorkexpRecord extends UpdatableRecordImpl<ProfileWorkexpRecord> {
 
-	private static final long serialVersionUID = 1528669180;
+	private static final long serialVersionUID = 1244866205;
 
 	/**
-	 * Setter for <code>profileDB.profile_workexp.id</code>. 主key
+	 * Setter for <code>profiledb.profile_workexp.id</code>. 主key
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_workexp.id</code>. 主key
+	 * Getter for <code>profiledb.profile_workexp.id</code>. 主key
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_workexp.profile_id</code>. profile.id
+	 * Setter for <code>profiledb.profile_workexp.profile_id</code>. profile.id
 	 */
 	public void setProfileId(UInteger value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_workexp.profile_id</code>. profile.id
+	 * Getter for <code>profiledb.profile_workexp.profile_id</code>. profile.id
 	 */
 	public UInteger getProfileId() {
 		return (UInteger) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_workexp.start</code>. 起止时间-起 yyyy-mm-dd
+	 * Setter for <code>profiledb.profile_workexp.start</code>. 起止时间-起 yyyy-mm-dd
 	 */
 	public void setStart(Date value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_workexp.start</code>. 起止时间-起 yyyy-mm-dd
+	 * Getter for <code>profiledb.profile_workexp.start</code>. 起止时间-起 yyyy-mm-dd
 	 */
 	public Date getStart() {
 		return (Date) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_workexp.end</code>. 起止时间-止 yyyy-mm-dd
+	 * Setter for <code>profiledb.profile_workexp.end</code>. 起止时间-止 yyyy-mm-dd
 	 */
 	public void setEnd(Date value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_workexp.end</code>. 起止时间-止 yyyy-mm-dd
+	 * Getter for <code>profiledb.profile_workexp.end</code>. 起止时间-止 yyyy-mm-dd
 	 */
 	public Date getEnd() {
 		return (Date) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_workexp.end_until_now</code>. 是否至今 0：否 1：是
+	 * Setter for <code>profiledb.profile_workexp.end_until_now</code>. 是否至今 0：否 1：是
 	 */
 	public void setEndUntilNow(UByte value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_workexp.end_until_now</code>. 是否至今 0：否 1：是
+	 * Getter for <code>profiledb.profile_workexp.end_until_now</code>. 是否至今 0：否 1：是
 	 */
 	public UByte getEndUntilNow() {
 		return (UByte) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_workexp.salary_type</code>. 薪资类型，0:没选择, 1:年薪, 2:月薪, 3:日薪, 4:时薪
+	 * Setter for <code>profiledb.profile_workexp.salary_type</code>. 薪资类型，0:没选择, 1:年薪, 2:月薪, 3:日薪, 4:时薪
 	 */
 	public void setSalaryType(UByte value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_workexp.salary_type</code>. 薪资类型，0:没选择, 1:年薪, 2:月薪, 3:日薪, 4:时薪
+	 * Getter for <code>profiledb.profile_workexp.salary_type</code>. 薪资类型，0:没选择, 1:年薪, 2:月薪, 3:日薪, 4:时薪
 	 */
 	public UByte getSalaryType() {
 		return (UByte) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_workexp.salary_code</code>. 薪资code
+	 * Setter for <code>profiledb.profile_workexp.salary_code</code>. 薪资code
 	 */
 	public void setSalaryCode(UByte value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_workexp.salary_code</code>. 薪资code
+	 * Getter for <code>profiledb.profile_workexp.salary_code</code>. 薪资code
 	 */
 	public UByte getSalaryCode() {
 		return (UByte) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_workexp.industry_code</code>. 行业字典编码
+	 * Setter for <code>profiledb.profile_workexp.industry_code</code>. 行业字典编码
 	 */
 	public void setIndustryCode(UInteger value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_workexp.industry_code</code>. 行业字典编码
+	 * Getter for <code>profiledb.profile_workexp.industry_code</code>. 行业字典编码
 	 */
 	public UInteger getIndustryCode() {
 		return (UInteger) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_workexp.industry_name</code>. 行业名称
+	 * Setter for <code>profiledb.profile_workexp.industry_name</code>. 行业名称
 	 */
 	public void setIndustryName(String value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_workexp.industry_name</code>. 行业名称
+	 * Getter for <code>profiledb.profile_workexp.industry_name</code>. 行业名称
 	 */
 	public String getIndustryName() {
 		return (String) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_workexp.company_name</code>. 公司名称
+	 * Setter for <code>profiledb.profile_workexp.company_id</code>. 公司ID, hr_company.id
 	 */
-	public void setCompanyName(String value) {
+	public void setCompanyId(UInteger value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_workexp.company_name</code>. 公司名称
+	 * Getter for <code>profiledb.profile_workexp.company_id</code>. 公司ID, hr_company.id
 	 */
-	public String getCompanyName() {
-		return (String) getValue(9);
+	public UInteger getCompanyId() {
+		return (UInteger) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_workexp.company_scale</code>. 公司规模, 0:没选择, 1:少于15人, 2:15-50人, 3:50-150人, 4:150-500人, 5:500-2000人, 6:2000人以上
+	 * Setter for <code>profiledb.profile_workexp.department_name</code>. 部门名称
 	 */
-	public void setCompanyScale(UByte value) {
+	public void setDepartmentName(String value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_workexp.company_scale</code>. 公司规模, 0:没选择, 1:少于15人, 2:15-50人, 3:50-150人, 4:150-500人, 5:500-2000人, 6:2000人以上
+	 * Getter for <code>profiledb.profile_workexp.department_name</code>. 部门名称
 	 */
-	public UByte getCompanyScale() {
-		return (UByte) getValue(10);
+	public String getDepartmentName() {
+		return (String) getValue(10);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_workexp.company_property</code>. 公司性质, 0：没选择, 1:外商独资, 2:国企, 3:合资, 4:民营公司, 5:事业单位, 6:上市公司, 7:政府机关/非盈利机构, 8:代表处, 9:股份制企业, 10:创业公司, 11:其它
+	 * Setter for <code>profiledb.profile_workexp.position_code</code>. 职能字典编码
 	 */
-	public void setCompanyProperty(UByte value) {
+	public void setPositionCode(UInteger value) {
 		setValue(11, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_workexp.company_property</code>. 公司性质, 0：没选择, 1:外商独资, 2:国企, 3:合资, 4:民营公司, 5:事业单位, 6:上市公司, 7:政府机关/非盈利机构, 8:代表处, 9:股份制企业, 10:创业公司, 11:其它
+	 * Getter for <code>profiledb.profile_workexp.position_code</code>. 职能字典编码
 	 */
-	public UByte getCompanyProperty() {
-		return (UByte) getValue(11);
+	public UInteger getPositionCode() {
+		return (UInteger) getValue(11);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_workexp.company_introduce</code>. 公司简介
+	 * Setter for <code>profiledb.profile_workexp.position_name</code>. 职能字典名称
 	 */
-	public void setCompanyIntroduce(String value) {
+	public void setPositionName(String value) {
 		setValue(12, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_workexp.company_introduce</code>. 公司简介
+	 * Getter for <code>profiledb.profile_workexp.position_name</code>. 职能字典名称
 	 */
-	public String getCompanyIntroduce() {
+	public String getPositionName() {
 		return (String) getValue(12);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_workexp.department_name</code>. 部门名称
+	 * Setter for <code>profiledb.profile_workexp.description</code>. 工作描述
 	 */
-	public void setDepartmentName(String value) {
+	public void setDescription(String value) {
 		setValue(13, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_workexp.department_name</code>. 部门名称
+	 * Getter for <code>profiledb.profile_workexp.description</code>. 工作描述
 	 */
-	public String getDepartmentName() {
+	public String getDescription() {
 		return (String) getValue(13);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_workexp.position_code</code>. 职能字典编码
+	 * Setter for <code>profiledb.profile_workexp.type</code>. 工作类型 0:没选择 1:全职 2:兼职 3:实习
 	 */
-	public void setPositionCode(UInteger value) {
+	public void setType(UByte value) {
 		setValue(14, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_workexp.position_code</code>. 职能字典编码
+	 * Getter for <code>profiledb.profile_workexp.type</code>. 工作类型 0:没选择 1:全职 2:兼职 3:实习
 	 */
-	public UInteger getPositionCode() {
-		return (UInteger) getValue(14);
+	public UByte getType() {
+		return (UByte) getValue(14);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_workexp.position_name</code>. 职能字典名称
+	 * Setter for <code>profiledb.profile_workexp.city_code</code>. 工作地点（城市），字典编码
 	 */
-	public void setPositionName(String value) {
+	public void setCityCode(UInteger value) {
 		setValue(15, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_workexp.position_name</code>. 职能字典名称
+	 * Getter for <code>profiledb.profile_workexp.city_code</code>. 工作地点（城市），字典编码
 	 */
-	public String getPositionName() {
-		return (String) getValue(15);
+	public UInteger getCityCode() {
+		return (UInteger) getValue(15);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_workexp.description</code>. 工作描述
+	 * Setter for <code>profiledb.profile_workexp.city_name</code>. 工作地点（城市）名称
 	 */
-	public void setDescription(String value) {
+	public void setCityName(String value) {
 		setValue(16, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_workexp.description</code>. 工作描述
+	 * Getter for <code>profiledb.profile_workexp.city_name</code>. 工作地点（城市）名称
 	 */
-	public String getDescription() {
+	public String getCityName() {
 		return (String) getValue(16);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_workexp.type</code>. 工作类型 0:没选择 1:全职 2:兼职
+	 * Setter for <code>profiledb.profile_workexp.report_to</code>. 汇报对象
 	 */
-	public void setType(UByte value) {
+	public void setReportTo(String value) {
 		setValue(17, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_workexp.type</code>. 工作类型 0:没选择 1:全职 2:兼职
+	 * Getter for <code>profiledb.profile_workexp.report_to</code>. 汇报对象
 	 */
-	public UByte getType() {
-		return (UByte) getValue(17);
+	public String getReportTo() {
+		return (String) getValue(17);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_workexp.address</code>. 工作地点字典编码
+	 * Setter for <code>profiledb.profile_workexp.underlings</code>. 下属人数, 0:没有下属
 	 */
-	public void setAddress(UInteger value) {
+	public void setUnderlings(UInteger value) {
 		setValue(18, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_workexp.address</code>. 工作地点字典编码
+	 * Getter for <code>profiledb.profile_workexp.underlings</code>. 下属人数, 0:没有下属
 	 */
-	public UInteger getAddress() {
+	public UInteger getUnderlings() {
 		return (UInteger) getValue(18);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_workexp.report_to</code>. 汇报对象
+	 * Setter for <code>profiledb.profile_workexp.reference</code>. 证明人
 	 */
-	public void setReportTo(String value) {
+	public void setReference(String value) {
 		setValue(19, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_workexp.report_to</code>. 汇报对象
+	 * Getter for <code>profiledb.profile_workexp.reference</code>. 证明人
 	 */
-	public String getReportTo() {
+	public String getReference() {
 		return (String) getValue(19);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_workexp.underlings</code>. 下属人数, 0:没有下属
+	 * Setter for <code>profiledb.profile_workexp.resign_reason</code>. 离职原因
 	 */
-	public void setUnderlings(UInteger value) {
+	public void setResignReason(String value) {
 		setValue(20, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_workexp.underlings</code>. 下属人数, 0:没有下属
+	 * Getter for <code>profiledb.profile_workexp.resign_reason</code>. 离职原因
 	 */
-	public UInteger getUnderlings() {
-		return (UInteger) getValue(20);
+	public String getResignReason() {
+		return (String) getValue(20);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_workexp.reference</code>. 证明人
+	 * Setter for <code>profiledb.profile_workexp.achievement</code>. 主要业绩
 	 */
-	public void setReference(String value) {
+	public void setAchievement(String value) {
 		setValue(21, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_workexp.reference</code>. 证明人
+	 * Getter for <code>profiledb.profile_workexp.achievement</code>. 主要业绩
 	 */
-	public String getReference() {
+	public String getAchievement() {
 		return (String) getValue(21);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_workexp.resign_reason</code>. 离职原因
+	 * Setter for <code>profiledb.profile_workexp.create_time</code>. 创建时间
 	 */
-	public void setResignReason(String value) {
+	public void setCreateTime(Timestamp value) {
 		setValue(22, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_workexp.resign_reason</code>. 离职原因
+	 * Getter for <code>profiledb.profile_workexp.create_time</code>. 创建时间
 	 */
-	public String getResignReason() {
-		return (String) getValue(22);
+	public Timestamp getCreateTime() {
+		return (Timestamp) getValue(22);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_workexp.achievement</code>. 主要业绩
+	 * Setter for <code>profiledb.profile_workexp.update_time</code>. 更新时间
 	 */
-	public void setAchievement(String value) {
+	public void setUpdateTime(Timestamp value) {
 		setValue(23, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_workexp.achievement</code>. 主要业绩
+	 * Getter for <code>profiledb.profile_workexp.update_time</code>. 更新时间
 	 */
-	public String getAchievement() {
-		return (String) getValue(23);
+	public Timestamp getUpdateTime() {
+		return (Timestamp) getValue(23);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_workexp.create_time</code>. 创建时间
+	 * Setter for <code>profiledb.profile_workexp.job</code>. 所处职位
 	 */
-	public void setCreateTime(Timestamp value) {
+	public void setJob(String value) {
 		setValue(24, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_workexp.create_time</code>. 创建时间
+	 * Getter for <code>profiledb.profile_workexp.job</code>. 所处职位
 	 */
-	public Timestamp getCreateTime() {
-		return (Timestamp) getValue(24);
-	}
-
-	/**
-	 * Setter for <code>profileDB.profile_workexp.update_time</code>. 更新时间
-	 */
-	public void setUpdateTime(Timestamp value) {
-		setValue(25, value);
-	}
-
-	/**
-	 * Getter for <code>profileDB.profile_workexp.update_time</code>. 更新时间
-	 */
-	public Timestamp getUpdateTime() {
-		return (Timestamp) getValue(25);
+	public String getJob() {
+		return (String) getValue(24);
 	}
 
 	// -------------------------------------------------------------------------
@@ -422,7 +408,7 @@ public class ProfileWorkexpRecord extends UpdatableRecordImpl<ProfileWorkexpReco
 	/**
 	 * Create a detached, initialised ProfileWorkexpRecord
 	 */
-	public ProfileWorkexpRecord(UInteger id, UInteger profileId, Date start, Date end, UByte endUntilNow, UByte salaryType, UByte salaryCode, UInteger industryCode, String industryName, String companyName, UByte companyScale, UByte companyProperty, String companyIntroduce, String departmentName, UInteger positionCode, String positionName, String description, UByte type, UInteger address, String reportTo, UInteger underlings, String reference, String resignReason, String achievement, Timestamp createTime, Timestamp updateTime) {
+	public ProfileWorkexpRecord(UInteger id, UInteger profileId, Date start, Date end, UByte endUntilNow, UByte salaryType, UByte salaryCode, UInteger industryCode, String industryName, UInteger companyId, String departmentName, UInteger positionCode, String positionName, String description, UByte type, UInteger cityCode, String cityName, String reportTo, UInteger underlings, String reference, String resignReason, String achievement, Timestamp createTime, Timestamp updateTime, String job) {
 		super(ProfileWorkexp.PROFILE_WORKEXP);
 
 		setValue(0, id);
@@ -434,22 +420,21 @@ public class ProfileWorkexpRecord extends UpdatableRecordImpl<ProfileWorkexpReco
 		setValue(6, salaryCode);
 		setValue(7, industryCode);
 		setValue(8, industryName);
-		setValue(9, companyName);
-		setValue(10, companyScale);
-		setValue(11, companyProperty);
-		setValue(12, companyIntroduce);
-		setValue(13, departmentName);
-		setValue(14, positionCode);
-		setValue(15, positionName);
-		setValue(16, description);
-		setValue(17, type);
-		setValue(18, address);
-		setValue(19, reportTo);
-		setValue(20, underlings);
-		setValue(21, reference);
-		setValue(22, resignReason);
-		setValue(23, achievement);
-		setValue(24, createTime);
-		setValue(25, updateTime);
+		setValue(9, companyId);
+		setValue(10, departmentName);
+		setValue(11, positionCode);
+		setValue(12, positionName);
+		setValue(13, description);
+		setValue(14, type);
+		setValue(15, cityCode);
+		setValue(16, cityName);
+		setValue(17, reportTo);
+		setValue(18, underlings);
+		setValue(19, reference);
+		setValue(20, resignReason);
+		setValue(21, achievement);
+		setValue(22, createTime);
+		setValue(23, updateTime);
+		setValue(24, job);
 	}
 }

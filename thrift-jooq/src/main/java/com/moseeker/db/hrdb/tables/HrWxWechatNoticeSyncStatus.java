@@ -36,10 +36,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxWechatNoticeSyncStatus extends TableImpl<HrWxWechatNoticeSyncStatusRecord> {
 
-	private static final long serialVersionUID = 787351908;
+	private static final long serialVersionUID = -1103920796;
 
 	/**
-	 * The reference instance of <code>hrDB.hr_wx_wechat_notice_sync_status</code>
+	 * The reference instance of <code>hrdb.hr_wx_wechat_notice_sync_status</code>
 	 */
 	public static final HrWxWechatNoticeSyncStatus HR_WX_WECHAT_NOTICE_SYNC_STATUS = new HrWxWechatNoticeSyncStatus();
 
@@ -52,39 +52,39 @@ public class HrWxWechatNoticeSyncStatus extends TableImpl<HrWxWechatNoticeSyncSt
 	}
 
 	/**
-	 * The column <code>hrDB.hr_wx_wechat_notice_sync_status.id</code>. 主key
+	 * The column <code>hrdb.hr_wx_wechat_notice_sync_status.id</code>. 主key
 	 */
 	public final TableField<HrWxWechatNoticeSyncStatusRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
 
 	/**
-	 * The column <code>hrDB.hr_wx_wechat_notice_sync_status.wechat_id</code>. 所属公众号
+	 * The column <code>hrdb.hr_wx_wechat_notice_sync_status.wechat_id</code>. 所属公众号
 	 */
 	public final TableField<HrWxWechatNoticeSyncStatusRecord, UInteger> WECHAT_ID = createField("wechat_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "所属公众号");
 
 	/**
-	 * The column <code>hrDB.hr_wx_wechat_notice_sync_status.status</code>. 同步状态 0:成功, 1:行业修改失败, 2:模板数量超出上限, 3:接口调用失败
+	 * The column <code>hrdb.hr_wx_wechat_notice_sync_status.status</code>. 同步状态 0:成功, 1:行业修改失败, 2:模板数量超出上限, 3:接口调用失败
 	 */
 	public final TableField<HrWxWechatNoticeSyncStatusRecord, Integer> STATUS = createField("status", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "同步状态 0:成功, 1:行业修改失败, 2:模板数量超出上限, 3:接口调用失败");
 
 	/**
-	 * The column <code>hrDB.hr_wx_wechat_notice_sync_status.count</code>. 同步状态提示应该删除信息的数量
+	 * The column <code>hrdb.hr_wx_wechat_notice_sync_status.count</code>. 同步状态提示应该删除信息的数量
 	 */
 	public final TableField<HrWxWechatNoticeSyncStatusRecord, Integer> COUNT = createField("count", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "同步状态提示应该删除信息的数量");
 
 	/**
-	 * The column <code>hrDB.hr_wx_wechat_notice_sync_status.update_time</code>.
+	 * The column <code>hrdb.hr_wx_wechat_notice_sync_status.update_time</code>.
 	 */
 	public final TableField<HrWxWechatNoticeSyncStatusRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * Create a <code>hrDB.hr_wx_wechat_notice_sync_status</code> table reference
+	 * Create a <code>hrdb.hr_wx_wechat_notice_sync_status</code> table reference
 	 */
 	public HrWxWechatNoticeSyncStatus() {
 		this("hr_wx_wechat_notice_sync_status", null);
 	}
 
 	/**
-	 * Create an aliased <code>hrDB.hr_wx_wechat_notice_sync_status</code> table reference
+	 * Create an aliased <code>hrdb.hr_wx_wechat_notice_sync_status</code> table reference
 	 */
 	public HrWxWechatNoticeSyncStatus(String alias) {
 		this(alias, HR_WX_WECHAT_NOTICE_SYNC_STATUS);

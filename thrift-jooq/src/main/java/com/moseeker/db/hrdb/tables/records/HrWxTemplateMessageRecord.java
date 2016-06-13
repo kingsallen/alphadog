@@ -29,157 +29,157 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxTemplateMessageRecord extends UpdatableRecordImpl<HrWxTemplateMessageRecord> implements Record11<UInteger, Integer, String, UInteger, UInteger, UInteger, UInteger, String, String, String, String> {
 
-	private static final long serialVersionUID = 1713421538;
+	private static final long serialVersionUID = 131419362;
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_template_message.id</code>. 主key
+	 * Setter for <code>hrdb.hr_wx_template_message.id</code>. 主key
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_template_message.id</code>. 主key
+	 * Getter for <code>hrdb.hr_wx_template_message.id</code>. 主key
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_template_message.sys_template_id</code>. 模板ID
+	 * Setter for <code>hrdb.hr_wx_template_message.sys_template_id</code>. 模板ID
 	 */
 	public void setSysTemplateId(Integer value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_template_message.sys_template_id</code>. 模板ID
+	 * Getter for <code>hrdb.hr_wx_template_message.sys_template_id</code>. 模板ID
 	 */
 	public Integer getSysTemplateId() {
 		return (Integer) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_template_message.wx_template_id</code>. 微信模板ID
+	 * Setter for <code>hrdb.hr_wx_template_message.wx_template_id</code>. 微信模板ID
 	 */
 	public void setWxTemplateId(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_template_message.wx_template_id</code>. 微信模板ID
+	 * Getter for <code>hrdb.hr_wx_template_message.wx_template_id</code>. 微信模板ID
 	 */
 	public String getWxTemplateId() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_template_message.display</code>. 是否显示
+	 * Setter for <code>hrdb.hr_wx_template_message.display</code>. 是否显示
 	 */
 	public void setDisplay(UInteger value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_template_message.display</code>. 是否显示
+	 * Getter for <code>hrdb.hr_wx_template_message.display</code>. 是否显示
 	 */
 	public UInteger getDisplay() {
 		return (UInteger) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_template_message.priority</code>. 排序
+	 * Setter for <code>hrdb.hr_wx_template_message.priority</code>. 排序
 	 */
 	public void setPriority(UInteger value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_template_message.priority</code>. 排序
+	 * Getter for <code>hrdb.hr_wx_template_message.priority</code>. 排序
 	 */
 	public UInteger getPriority() {
 		return (UInteger) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_template_message.wechat_id</code>. 所属公众号
+	 * Setter for <code>hrdb.hr_wx_template_message.wechat_id</code>. 所属公众号
 	 */
 	public void setWechatId(UInteger value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_template_message.wechat_id</code>. 所属公众号
+	 * Getter for <code>hrdb.hr_wx_template_message.wechat_id</code>. 所属公众号
 	 */
 	public UInteger getWechatId() {
 		return (UInteger) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_template_message.disable</code>. 是否可用
+	 * Setter for <code>hrdb.hr_wx_template_message.disable</code>. 是否可用
 	 */
 	public void setDisable(UInteger value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_template_message.disable</code>. 是否可用
+	 * Getter for <code>hrdb.hr_wx_template_message.disable</code>. 是否可用
 	 */
 	public UInteger getDisable() {
 		return (UInteger) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_template_message.url</code>. 跳转URL
+	 * Setter for <code>hrdb.hr_wx_template_message.url</code>. 跳转URL
 	 */
 	public void setUrl(String value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_template_message.url</code>. 跳转URL
+	 * Getter for <code>hrdb.hr_wx_template_message.url</code>. 跳转URL
 	 */
 	public String getUrl() {
 		return (String) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_template_message.topcolor</code>. 消息头部颜色
+	 * Setter for <code>hrdb.hr_wx_template_message.topcolor</code>. 消息头部颜色
 	 */
 	public void setTopcolor(String value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_template_message.topcolor</code>. 消息头部颜色
+	 * Getter for <code>hrdb.hr_wx_template_message.topcolor</code>. 消息头部颜色
 	 */
 	public String getTopcolor() {
 		return (String) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_template_message.first</code>. 问候语
+	 * Setter for <code>hrdb.hr_wx_template_message.first</code>. 问候语
 	 */
 	public void setFirst(String value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_template_message.first</code>. 问候语
+	 * Getter for <code>hrdb.hr_wx_template_message.first</code>. 问候语
 	 */
 	public String getFirst() {
 		return (String) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_template_message.remark</code>. 结束语
+	 * Setter for <code>hrdb.hr_wx_template_message.remark</code>. 结束语
 	 */
 	public void setRemark(String value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_template_message.remark</code>. 结束语
+	 * Getter for <code>hrdb.hr_wx_template_message.remark</code>. 结束语
 	 */
 	public String getRemark() {
 		return (String) getValue(10);

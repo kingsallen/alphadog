@@ -5,9 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.api.CuratorEvent;
+import org.apache.curator.framework.api.CuratorListener;
 import org.apache.curator.framework.imps.CuratorFrameworkState;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
+import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
+import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 import org.apache.zookeeper.CreateMode;
+import org.apache.zookeeper.KeeperException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,22 +27,34 @@ import com.moseeker.rpccenter.common.ServerNodeUtils;
  */
 public class ZkClientRegistry implements IRegistry {
 
-    /** LOGGER */
+    /**
+     * LOGGER
+     */
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
-    /** zookeeper配置路径 */
+    /**
+     * zookeeper配置路径
+     */
     private final String configPath;
 
-    /** {@link CuratorFramework} */
+    /**
+     * {@link CuratorFramework}
+     */
     private final CuratorFramework zookeeper;
 
-    /** {@link DynamicHostSet} */
+    /**
+     * {@link DynamicHostSet}
+     */
     private final DynamicHostSet hostSet = new DynamicHostSet();
 
-    /** {@link ServerNode} */
+    /**
+     * {@link ServerNode}
+     */
     private final ServerNode clientNode;
 
-    /** 锁对象 */
+    /**
+     * 锁对象
+     */
     private final Object lock = new Object();
 
     /**
@@ -68,10 +85,9 @@ public class ZkClientRegistry implements IRegistry {
      * 创建clients节点
      * <p>
      *
-     * @param config
-     *            配置信息
-     * @throws RpcException
+     * @param config 配置信息
      * @return 是否创建节点
+     * @throws RpcException
      */
     private boolean buildPathClients(String config) throws RpcException {
         String address = clientNode.genAddress();
@@ -81,7 +97,8 @@ public class ZkClientRegistry implements IRegistry {
         try {
             // 注意：zk重启的过程中，节点可能会存在
             if (zookeeper.checkExists().forPath(pathBuilder.toString()) == null) {
-                zookeeper.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(pathBuilder.toString(), config.getBytes(Constants.UTF8));
+                //addListener(getServersPath());
+                zookeeper.create();
                 return true;
             }
         } catch (Exception e) {
@@ -90,6 +107,17 @@ public class ZkClientRegistry implements IRegistry {
             throw new RpcException(message, e);
         }
         return false;
+    }
+
+    private void addListener(String path) throws Exception {
+        PathChildrenCache pathChildrenCache = new PathChildrenCache(zookeeper, path, false);
+        pathChildrenCache.getListenable().addListener(new PathChildrenCacheListener() {
+            @Override
+            public void childEvent(CuratorFramework client, PathChildrenCacheEvent event) throws Exception {
+                build();
+            }
+        });
+        pathChildrenCache.start();
     }
 
     /**
@@ -102,8 +130,9 @@ public class ZkClientRegistry implements IRegistry {
      */
     private void build() throws RpcException {
         List<String> childrenList = null;
-        String path = configPath + Constants.ZK_SEPARATOR_DEFAULT + Constants.ZK_NAMESPACE_SERVERS;
+        String path = getServersPath();
         try {
+
             childrenList = zookeeper.getChildren().forPath(path);
         } catch (Exception e) {
             String message = MessageFormat.format("Get children node error in the path : {0}", path);
@@ -122,6 +151,11 @@ public class ZkClientRegistry implements IRegistry {
         }
         freshContainer(current);
     }
+
+    private String getServersPath() {
+        return configPath + Constants.ZK_SEPARATOR_DEFAULT + Constants.ZK_NAMESPACE_SERVERS;
+    }
+
 
     /**
      * 刷新容器

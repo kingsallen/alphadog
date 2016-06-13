@@ -31,101 +31,101 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogWxMenuRecordRecord extends UpdatableRecordImpl<LogWxMenuRecordRecord> implements Record7<UInteger, UInteger, String, String, Timestamp, UInteger, String> {
 
-	private static final long serialVersionUID = 1669791894;
+	private static final long serialVersionUID = -1135409002;
 
 	/**
-	 * Setter for <code>logDB.log_wx_menu_record.id</code>.
+	 * Setter for <code>logdb.log_wx_menu_record.id</code>.
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_wx_menu_record.id</code>.
+	 * Getter for <code>logdb.log_wx_menu_record.id</code>.
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_wx_menu_record.wechat_id</code>.
+	 * Setter for <code>logdb.log_wx_menu_record.wechat_id</code>.
 	 */
 	public void setWechatId(UInteger value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_wx_menu_record.wechat_id</code>.
+	 * Getter for <code>logdb.log_wx_menu_record.wechat_id</code>.
 	 */
 	public UInteger getWechatId() {
 		return (UInteger) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_wx_menu_record.name</code>.
+	 * Setter for <code>logdb.log_wx_menu_record.name</code>.
 	 */
 	public void setName(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_wx_menu_record.name</code>.
+	 * Getter for <code>logdb.log_wx_menu_record.name</code>.
 	 */
 	public String getName() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_wx_menu_record.json</code>. 菜单的json数据
+	 * Setter for <code>logdb.log_wx_menu_record.json</code>. 菜单的json数据
 	 */
 	public void setJson(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_wx_menu_record.json</code>. 菜单的json数据
+	 * Getter for <code>logdb.log_wx_menu_record.json</code>. 菜单的json数据
 	 */
 	public String getJson() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_wx_menu_record._create_time</code>.
+	 * Setter for <code>logdb.log_wx_menu_record._create_time</code>.
 	 */
 	public void set_CreateTime(Timestamp value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_wx_menu_record._create_time</code>.
+	 * Getter for <code>logdb.log_wx_menu_record._create_time</code>.
 	 */
 	public Timestamp get_CreateTime() {
 		return (Timestamp) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_wx_menu_record.errcode</code>. 微信调用返回的errcode
+	 * Setter for <code>logdb.log_wx_menu_record.errcode</code>. 微信调用返回的errcode
 	 */
 	public void setErrcode(UInteger value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_wx_menu_record.errcode</code>. 微信调用返回的errcode
+	 * Getter for <code>logdb.log_wx_menu_record.errcode</code>. 微信调用返回的errcode
 	 */
 	public UInteger getErrcode() {
 		return (UInteger) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_wx_menu_record.errmsg</code>. 微信调用返回的errmsg
+	 * Setter for <code>logdb.log_wx_menu_record.errmsg</code>. 微信调用返回的errmsg
 	 */
 	public void setErrmsg(String value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_wx_menu_record.errmsg</code>. 微信调用返回的errmsg
+	 * Getter for <code>logdb.log_wx_menu_record.errmsg</code>. 微信调用返回的errmsg
 	 */
 	public String getErrmsg() {
 		return (String) getValue(6);

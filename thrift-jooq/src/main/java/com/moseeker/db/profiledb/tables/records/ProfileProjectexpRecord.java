@@ -33,269 +33,269 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileProjectexpRecord extends UpdatableRecordImpl<ProfileProjectexpRecord> implements Record19<UInteger, UInteger, Date, Date, UByte, String, String, UByte, String, String, String, String, String, String, String, String, String, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = -1319271284;
+	private static final long serialVersionUID = 1468462594;
 
 	/**
-	 * Setter for <code>profileDB.profile_projectexp.id</code>. 主key
+	 * Setter for <code>profiledb.profile_projectexp.id</code>. 主key
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_projectexp.id</code>. 主key
+	 * Getter for <code>profiledb.profile_projectexp.id</code>. 主key
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_projectexp.profile_id</code>. profile.id
+	 * Setter for <code>profiledb.profile_projectexp.profile_id</code>. profile.id
 	 */
 	public void setProfileId(UInteger value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_projectexp.profile_id</code>. profile.id
+	 * Getter for <code>profiledb.profile_projectexp.profile_id</code>. profile.id
 	 */
 	public UInteger getProfileId() {
 		return (UInteger) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_projectexp.start</code>. 起止时间-起 yyyy-mm-dd
+	 * Setter for <code>profiledb.profile_projectexp.start</code>. 起止时间-起 yyyy-mm-dd
 	 */
 	public void setStart(Date value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_projectexp.start</code>. 起止时间-起 yyyy-mm-dd
+	 * Getter for <code>profiledb.profile_projectexp.start</code>. 起止时间-起 yyyy-mm-dd
 	 */
 	public Date getStart() {
 		return (Date) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_projectexp.end</code>. 起止时间-止 yyyy-mm-dd
+	 * Setter for <code>profiledb.profile_projectexp.end</code>. 起止时间-止 yyyy-mm-dd
 	 */
 	public void setEnd(Date value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_projectexp.end</code>. 起止时间-止 yyyy-mm-dd
+	 * Getter for <code>profiledb.profile_projectexp.end</code>. 起止时间-止 yyyy-mm-dd
 	 */
 	public Date getEnd() {
 		return (Date) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_projectexp.end_until_now</code>. 是否至今 0：否 1：是
+	 * Setter for <code>profiledb.profile_projectexp.end_until_now</code>. 是否至今 0：否 1：是
 	 */
 	public void setEndUntilNow(UByte value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_projectexp.end_until_now</code>. 是否至今 0：否 1：是
+	 * Getter for <code>profiledb.profile_projectexp.end_until_now</code>. 是否至今 0：否 1：是
 	 */
 	public UByte getEndUntilNow() {
 		return (UByte) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_projectexp.name</code>. 项目名称
+	 * Setter for <code>profiledb.profile_projectexp.name</code>. 项目名称
 	 */
 	public void setName(String value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_projectexp.name</code>. 项目名称
+	 * Getter for <code>profiledb.profile_projectexp.name</code>. 项目名称
 	 */
 	public String getName() {
 		return (String) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_projectexp.company_name</code>. 公司名称
+	 * Setter for <code>profiledb.profile_projectexp.company_name</code>. 公司名称
 	 */
 	public void setCompanyName(String value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_projectexp.company_name</code>. 公司名称
+	 * Getter for <code>profiledb.profile_projectexp.company_name</code>. 公司名称
 	 */
 	public String getCompanyName() {
 		return (String) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_projectexp.is_it</code>. 是否IT项目, 0:不是 1:是
+	 * Setter for <code>profiledb.profile_projectexp.is_it</code>. 是否IT项目, 0:没填写, 1:是, 2:否
 	 */
 	public void setIsIt(UByte value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_projectexp.is_it</code>. 是否IT项目, 0:不是 1:是
+	 * Getter for <code>profiledb.profile_projectexp.is_it</code>. 是否IT项目, 0:没填写, 1:是, 2:否
 	 */
 	public UByte getIsIt() {
 		return (UByte) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_projectexp.dev_tool</code>. 开发工具
+	 * Setter for <code>profiledb.profile_projectexp.dev_tool</code>. 开发工具
 	 */
 	public void setDevTool(String value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_projectexp.dev_tool</code>. 开发工具
+	 * Getter for <code>profiledb.profile_projectexp.dev_tool</code>. 开发工具
 	 */
 	public String getDevTool() {
 		return (String) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_projectexp.hardware</code>. 硬件环境
+	 * Setter for <code>profiledb.profile_projectexp.hardware</code>. 硬件环境
 	 */
 	public void setHardware(String value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_projectexp.hardware</code>. 硬件环境
+	 * Getter for <code>profiledb.profile_projectexp.hardware</code>. 硬件环境
 	 */
 	public String getHardware() {
 		return (String) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_projectexp.software</code>. 软件环境
+	 * Setter for <code>profiledb.profile_projectexp.software</code>. 软件环境
 	 */
 	public void setSoftware(String value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_projectexp.software</code>. 软件环境
+	 * Getter for <code>profiledb.profile_projectexp.software</code>. 软件环境
 	 */
 	public String getSoftware() {
 		return (String) getValue(10);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_projectexp.url</code>. 项目网址
+	 * Setter for <code>profiledb.profile_projectexp.url</code>. 项目网址
 	 */
 	public void setUrl(String value) {
 		setValue(11, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_projectexp.url</code>. 项目网址
+	 * Getter for <code>profiledb.profile_projectexp.url</code>. 项目网址
 	 */
 	public String getUrl() {
 		return (String) getValue(11);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_projectexp.description</code>. 项目描述
+	 * Setter for <code>profiledb.profile_projectexp.description</code>. 项目描述
 	 */
 	public void setDescription(String value) {
 		setValue(12, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_projectexp.description</code>. 项目描述
+	 * Getter for <code>profiledb.profile_projectexp.description</code>. 项目描述
 	 */
 	public String getDescription() {
 		return (String) getValue(12);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_projectexp.role</code>. 项目角色
+	 * Setter for <code>profiledb.profile_projectexp.role</code>. 项目角色
 	 */
 	public void setRole(String value) {
 		setValue(13, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_projectexp.role</code>. 项目角色
+	 * Getter for <code>profiledb.profile_projectexp.role</code>. 项目角色
 	 */
 	public String getRole() {
 		return (String) getValue(13);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_projectexp.responsibility</code>. 项目职责
+	 * Setter for <code>profiledb.profile_projectexp.responsibility</code>. 项目职责
 	 */
 	public void setResponsibility(String value) {
 		setValue(14, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_projectexp.responsibility</code>. 项目职责
+	 * Getter for <code>profiledb.profile_projectexp.responsibility</code>. 项目职责
 	 */
 	public String getResponsibility() {
 		return (String) getValue(14);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_projectexp.achievement</code>. 项目业绩
+	 * Setter for <code>profiledb.profile_projectexp.achievement</code>. 项目业绩
 	 */
 	public void setAchievement(String value) {
 		setValue(15, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_projectexp.achievement</code>. 项目业绩
+	 * Getter for <code>profiledb.profile_projectexp.achievement</code>. 项目业绩
 	 */
 	public String getAchievement() {
 		return (String) getValue(15);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_projectexp.member</code>. 项目成员
+	 * Setter for <code>profiledb.profile_projectexp.member</code>. 项目成员
 	 */
 	public void setMember(String value) {
 		setValue(16, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_projectexp.member</code>. 项目成员
+	 * Getter for <code>profiledb.profile_projectexp.member</code>. 项目成员
 	 */
 	public String getMember() {
 		return (String) getValue(16);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_projectexp.create_time</code>. 创建时间
+	 * Setter for <code>profiledb.profile_projectexp.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(17, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_projectexp.create_time</code>. 创建时间
+	 * Getter for <code>profiledb.profile_projectexp.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(17);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_projectexp.update_time</code>. 更新时间
+	 * Setter for <code>profiledb.profile_projectexp.update_time</code>. 更新时间
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(18, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_projectexp.update_time</code>. 更新时间
+	 * Getter for <code>profiledb.profile_projectexp.update_time</code>. 更新时间
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(18);

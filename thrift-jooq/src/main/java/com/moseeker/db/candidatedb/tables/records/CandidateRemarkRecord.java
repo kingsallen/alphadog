@@ -31,255 +31,255 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateRemarkRecord extends UpdatableRecordImpl<CandidateRemarkRecord> implements Record18<UInteger, Integer, Integer, Integer, String, String, String, String, String, String, String, Timestamp, Byte, String, Timestamp, Timestamp, Integer, String> {
 
-	private static final long serialVersionUID = 1020460259;
+	private static final long serialVersionUID = 114818275;
 
 	/**
-	 * Setter for <code>candidateDB.candidate_remark.id</code>.
+	 * Setter for <code>candidatedb.candidate_remark.id</code>.
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_remark.id</code>.
+	 * Getter for <code>candidatedb.candidate_remark.id</code>.
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_remark.hraccount_id</code>. 做候选人标记的账号编号 hr_account.id
+	 * Setter for <code>candidatedb.candidate_remark.hraccount_id</code>. 做候选人标记的账号编号 hr_account.id
 	 */
 	public void setHraccountId(Integer value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_remark.hraccount_id</code>. 做候选人标记的账号编号 hr_account.id
+	 * Getter for <code>candidatedb.candidate_remark.hraccount_id</code>. 做候选人标记的账号编号 hr_account.id
 	 */
 	public Integer getHraccountId() {
 		return (Integer) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_remark.wxuser_id</code>. wx_group_user.id 被推荐者 微信 ID
+	 * Setter for <code>candidatedb.candidate_remark.wxuser_id</code>. wx_group_user.id 被推荐者 微信 ID
 	 */
 	public void setWxuserId(Integer value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_remark.wxuser_id</code>. wx_group_user.id 被推荐者 微信 ID
+	 * Getter for <code>candidatedb.candidate_remark.wxuser_id</code>. wx_group_user.id 被推荐者 微信 ID
 	 */
 	public Integer getWxuserId() {
 		return (Integer) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_remark.gender</code>. 0：未知，1：男，2：女
+	 * Setter for <code>candidatedb.candidate_remark.gender</code>. 0：未知，1：男，2：女
 	 */
 	public void setGender(Integer value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_remark.gender</code>. 0：未知，1：男，2：女
+	 * Getter for <code>candidatedb.candidate_remark.gender</code>. 0：未知，1：男，2：女
 	 */
 	public Integer getGender() {
 		return (Integer) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_remark.age</code>. 年龄
+	 * Setter for <code>candidatedb.candidate_remark.age</code>. 年龄
 	 */
 	public void setAge(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_remark.age</code>. 年龄
+	 * Getter for <code>candidatedb.candidate_remark.age</code>. 年龄
 	 */
 	public String getAge() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_remark.mobile</code>. 联系方式
+	 * Setter for <code>candidatedb.candidate_remark.mobile</code>. 联系方式
 	 */
 	public void setMobile(String value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_remark.mobile</code>. 联系方式
+	 * Getter for <code>candidatedb.candidate_remark.mobile</code>. 联系方式
 	 */
 	public String getMobile() {
 		return (String) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_remark.email</code>. 邮箱
+	 * Setter for <code>candidatedb.candidate_remark.email</code>. 邮箱
 	 */
 	public void setEmail(String value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_remark.email</code>. 邮箱
+	 * Getter for <code>candidatedb.candidate_remark.email</code>. 邮箱
 	 */
 	public String getEmail() {
 		return (String) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_remark.current_company</code>. 现处公司
+	 * Setter for <code>candidatedb.candidate_remark.current_company</code>. 现处公司
 	 */
 	public void setCurrentCompany(String value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_remark.current_company</code>. 现处公司
+	 * Getter for <code>candidatedb.candidate_remark.current_company</code>. 现处公司
 	 */
 	public String getCurrentCompany() {
 		return (String) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_remark.current_position</code>. 职务
+	 * Setter for <code>candidatedb.candidate_remark.current_position</code>. 职务
 	 */
 	public void setCurrentPosition(String value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_remark.current_position</code>. 职务
+	 * Getter for <code>candidatedb.candidate_remark.current_position</code>. 职务
 	 */
 	public String getCurrentPosition() {
 		return (String) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_remark.education</code>. 毕业院校
+	 * Setter for <code>candidatedb.candidate_remark.education</code>. 毕业院校
 	 */
 	public void setEducation(String value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_remark.education</code>. 毕业院校
+	 * Getter for <code>candidatedb.candidate_remark.education</code>. 毕业院校
 	 */
 	public String getEducation() {
 		return (String) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_remark.degree</code>. 学历
+	 * Setter for <code>candidatedb.candidate_remark.degree</code>. 学历
 	 */
 	public void setDegree(String value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_remark.degree</code>. 学历
+	 * Getter for <code>candidatedb.candidate_remark.degree</code>. 学历
 	 */
 	public String getDegree() {
 		return (String) getValue(10);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_remark.graduate_at</code>. 毕业时间
+	 * Setter for <code>candidatedb.candidate_remark.graduate_at</code>. 毕业时间
 	 */
 	public void setGraduateAt(Timestamp value) {
 		setValue(11, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_remark.graduate_at</code>. 毕业时间
+	 * Getter for <code>candidatedb.candidate_remark.graduate_at</code>. 毕业时间
 	 */
 	public Timestamp getGraduateAt() {
 		return (Timestamp) getValue(11);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_remark.is_star</code>. 0: 星标 1: 没有星标
+	 * Setter for <code>candidatedb.candidate_remark.is_star</code>. 0: 星标 1: 没有星标
 	 */
 	public void setIsStar(Byte value) {
 		setValue(12, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_remark.is_star</code>. 0: 星标 1: 没有星标
+	 * Getter for <code>candidatedb.candidate_remark.is_star</code>. 0: 星标 1: 没有星标
 	 */
 	public Byte getIsStar() {
 		return (Byte) getValue(12);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_remark.remark</code>. 备注
+	 * Setter for <code>candidatedb.candidate_remark.remark</code>. 备注
 	 */
 	public void setRemark(String value) {
 		setValue(13, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_remark.remark</code>. 备注
+	 * Getter for <code>candidatedb.candidate_remark.remark</code>. 备注
 	 */
 	public String getRemark() {
 		return (String) getValue(13);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_remark.create_time</code>. 创建时间
+	 * Setter for <code>candidatedb.candidate_remark.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(14, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_remark.create_time</code>. 创建时间
+	 * Getter for <code>candidatedb.candidate_remark.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(14);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_remark.update_time</code>. 修改时间
+	 * Setter for <code>candidatedb.candidate_remark.update_time</code>. 修改时间
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(15, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_remark.update_time</code>. 修改时间
+	 * Getter for <code>candidatedb.candidate_remark.update_time</code>. 修改时间
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(15);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_remark.status</code>. 0: 新数据 1: 正常 2:被忽略
+	 * Setter for <code>candidatedb.candidate_remark.status</code>. 0: 新数据 1: 正常 2:被忽略
 	 */
 	public void setStatus(Integer value) {
 		setValue(16, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_remark.status</code>. 0: 新数据 1: 正常 2:被忽略
+	 * Getter for <code>candidatedb.candidate_remark.status</code>. 0: 新数据 1: 正常 2:被忽略
 	 */
 	public Integer getStatus() {
 		return (Integer) getValue(16);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_remark.name</code>. 候选人姓名
+	 * Setter for <code>candidatedb.candidate_remark.name</code>. 候选人姓名
 	 */
 	public void setName(String value) {
 		setValue(17, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_remark.name</code>. 候选人姓名
+	 * Getter for <code>candidatedb.candidate_remark.name</code>. 候选人姓名
 	 */
 	public String getName() {
 		return (String) getValue(17);

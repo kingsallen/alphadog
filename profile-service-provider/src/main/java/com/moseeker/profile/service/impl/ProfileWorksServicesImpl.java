@@ -12,7 +12,6 @@ import com.moseeker.common.util.BeanUtils;
 import com.moseeker.db.profiledb.tables.records.ProfileWorksRecord;
 import com.moseeker.profile.dao.WorksDao;
 import com.moseeker.thrift.gen.profile.service.WorksServices.Iface;
-import com.moseeker.thrift.gen.profile.struct.WorkExp;
 import com.moseeker.thrift.gen.profile.struct.Works;
 
 @Service
@@ -39,7 +38,7 @@ public class ProfileWorksServicesImpl extends JOOQBaseServiceImpl<Works, Profile
 
 	@Override
 	protected Works DBToStruct(ProfileWorksRecord r) {
-		return (Works) BeanUtils.DBToStruct(WorkExp.class, r);
+		return (Works) BeanUtils.DBToStruct(Works.class, r);
 	}
 
 	@Override

@@ -35,10 +35,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSuperaccountApply extends TableImpl<HrSuperaccountApplyRecord> {
 
-	private static final long serialVersionUID = -784375980;
+	private static final long serialVersionUID = 11505239;
 
 	/**
-	 * The reference instance of <code>hrDB.hr_superaccount_apply</code>
+	 * The reference instance of <code>hrdb.hr_superaccount_apply</code>
 	 */
 	public static final HrSuperaccountApply HR_SUPERACCOUNT_APPLY = new HrSuperaccountApply();
 
@@ -51,64 +51,69 @@ public class HrSuperaccountApply extends TableImpl<HrSuperaccountApplyRecord> {
 	}
 
 	/**
-	 * The column <code>hrDB.hr_superaccount_apply.id</code>.
+	 * The column <code>hrdb.hr_superaccount_apply.id</code>.
 	 */
 	public final TableField<HrSuperaccountApplyRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
 	/**
-	 * The column <code>hrDB.hr_superaccount_apply.company_id</code>. company.id
+	 * The column <code>hrdb.hr_superaccount_apply.company_id</code>. hr_company.id
 	 */
-	public final TableField<HrSuperaccountApplyRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "company.id");
+	public final TableField<HrSuperaccountApplyRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "hr_company.id");
 
 	/**
-	 * The column <code>hrDB.hr_superaccount_apply.licence</code>. 营业执照
+	 * The column <code>hrdb.hr_superaccount_apply.licence</code>. 营业执照
 	 */
 	public final TableField<HrSuperaccountApplyRecord, byte[]> LICENCE = createField("licence", org.jooq.impl.SQLDataType.BLOB, this, "营业执照");
 
 	/**
-	 * The column <code>hrDB.hr_superaccount_apply.operate</code>. sys_auth.id
-	 */
-	public final TableField<HrSuperaccountApplyRecord, Integer> OPERATE = createField("operate", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "sys_auth.id");
-
-	/**
-	 * The column <code>hrDB.hr_superaccount_apply.status</code>. 申请状态 0表示已经通过，1表示未处理，2表示未通过
-	 */
-	public final TableField<HrSuperaccountApplyRecord, Integer> STATUS = createField("status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "申请状态 0表示已经通过，1表示未处理，2表示未通过");
-
-	/**
-	 * The column <code>hrDB.hr_superaccount_apply.message</code>. 审核留言
-	 */
-	public final TableField<HrSuperaccountApplyRecord, String> MESSAGE = createField("message", org.jooq.impl.SQLDataType.VARCHAR.length(500), this, "审核留言");
-
-	/**
-	 * The column <code>hrDB.hr_superaccount_apply.child_company_id</code>. 合并的其他公司的编号：[1,2,3]
-	 */
-	public final TableField<HrSuperaccountApplyRecord, String> CHILD_COMPANY_ID = createField("child_company_id", org.jooq.impl.SQLDataType.VARCHAR.length(1000).nullable(false).defaulted(true), this, "合并的其他公司的编号：[1,2,3]");
-
-	/**
-	 * The column <code>hrDB.hr_superaccount_apply.migrate_time</code>. 迁移时间
-	 */
-	public final TableField<HrSuperaccountApplyRecord, Timestamp> MIGRATE_TIME = createField("migrate_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "迁移时间");
-
-	/**
-	 * The column <code>hrDB.hr_superaccount_apply.create_time</code>. 创建时间
+	 * The column <code>hrdb.hr_superaccount_apply.create_time</code>. 创建时间
 	 */
 	public final TableField<HrSuperaccountApplyRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "创建时间");
 
 	/**
-	 * The column <code>hrDB.hr_superaccount_apply.update_time</code>. 修改时间
+	 * The column <code>hrdb.hr_superaccount_apply.update_time</code>. 修改时间
 	 */
 	public final TableField<HrSuperaccountApplyRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "修改时间");
 
 	/**
-	 * Create a <code>hrDB.hr_superaccount_apply</code> table reference
+	 * The column <code>hrdb.hr_superaccount_apply.operate</code>. config_sys_administrator.id
+	 */
+	public final TableField<HrSuperaccountApplyRecord, Integer> OPERATE = createField("operate", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "config_sys_administrator.id");
+
+	/**
+	 * The column <code>hrdb.hr_superaccount_apply.status</code>. 申请状态 0表示已经通过，1表示未处理，2表示未通过
+	 */
+	public final TableField<HrSuperaccountApplyRecord, Integer> STATUS = createField("status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "申请状态 0表示已经通过，1表示未处理，2表示未通过");
+
+	/**
+	 * The column <code>hrdb.hr_superaccount_apply.message</code>. 审核留言
+	 */
+	public final TableField<HrSuperaccountApplyRecord, String> MESSAGE = createField("message", org.jooq.impl.SQLDataType.VARCHAR.length(500), this, "审核留言");
+
+	/**
+	 * The column <code>hrdb.hr_superaccount_apply.child_company_id</code>. 合并的其他公司的编号：[1,2,3]
+	 */
+	public final TableField<HrSuperaccountApplyRecord, String> CHILD_COMPANY_ID = createField("child_company_id", org.jooq.impl.SQLDataType.VARCHAR.length(1000).nullable(false).defaulted(true), this, "合并的其他公司的编号：[1,2,3]");
+
+	/**
+	 * The column <code>hrdb.hr_superaccount_apply.migrate_time</code>. 迁移时间
+	 */
+	public final TableField<HrSuperaccountApplyRecord, Timestamp> MIGRATE_TIME = createField("migrate_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "迁移时间");
+
+	/**
+	 * The column <code>hrdb.hr_superaccount_apply.account_limit</code>. 子账号数量限制
+	 */
+	public final TableField<HrSuperaccountApplyRecord, Integer> ACCOUNT_LIMIT = createField("account_limit", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "子账号数量限制");
+
+	/**
+	 * Create a <code>hrdb.hr_superaccount_apply</code> table reference
 	 */
 	public HrSuperaccountApply() {
 		this("hr_superaccount_apply", null);
 	}
 
 	/**
-	 * Create an aliased <code>hrDB.hr_superaccount_apply</code> table reference
+	 * Create an aliased <code>hrdb.hr_superaccount_apply</code> table reference
 	 */
 	public HrSuperaccountApply(String alias) {
 		this(alias, HR_SUPERACCOUNT_APPLY);

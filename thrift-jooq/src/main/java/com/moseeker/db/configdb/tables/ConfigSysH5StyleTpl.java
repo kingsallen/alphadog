@@ -35,10 +35,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysH5StyleTpl extends TableImpl<ConfigSysH5StyleTplRecord> {
 
-	private static final long serialVersionUID = 895633016;
+	private static final long serialVersionUID = -56172936;
 
 	/**
-	 * The reference instance of <code>configDB.config_sys_h5_style_tpl</code>
+	 * The reference instance of <code>configdb.config_sys_h5_style_tpl</code>
 	 */
 	public static final ConfigSysH5StyleTpl CONFIG_SYS_H5_STYLE_TPL = new ConfigSysH5StyleTpl();
 
@@ -51,59 +51,59 @@ public class ConfigSysH5StyleTpl extends TableImpl<ConfigSysH5StyleTplRecord> {
 	}
 
 	/**
-	 * The column <code>configDB.config_sys_h5_style_tpl.id</code>.
+	 * The column <code>configdb.config_sys_h5_style_tpl.id</code>.
 	 */
 	public final TableField<ConfigSysH5StyleTplRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
 	/**
-	 * The column <code>configDB.config_sys_h5_style_tpl.name</code>. 模板名称
+	 * The column <code>configdb.config_sys_h5_style_tpl.name</code>. 模板名称
 	 */
 	public final TableField<ConfigSysH5StyleTplRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "模板名称");
 
 	/**
-	 * The column <code>configDB.config_sys_h5_style_tpl.logo</code>. 模板LOGO的相对路径
+	 * The column <code>configdb.config_sys_h5_style_tpl.logo</code>. 模板LOGO的相对路径
 	 */
 	public final TableField<ConfigSysH5StyleTplRecord, String> LOGO = createField("logo", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaulted(true), this, "模板LOGO的相对路径");
 
 	/**
-	 * The column <code>configDB.config_sys_h5_style_tpl.hr_tpl</code>. 模板风格名称，只允许英文，hr预览用
+	 * The column <code>configdb.config_sys_h5_style_tpl.hr_tpl</code>. 模板风格名称，只允许英文，hr预览用
 	 */
 	public final TableField<ConfigSysH5StyleTplRecord, String> HR_TPL = createField("hr_tpl", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "模板风格名称，只允许英文，hr预览用");
 
 	/**
-	 * The column <code>configDB.config_sys_h5_style_tpl.wx_tpl</code>. 模板风格名称，只允许英文，微信端用
+	 * The column <code>configdb.config_sys_h5_style_tpl.wx_tpl</code>. 模板风格名称，只允许英文，微信端用
 	 */
 	public final TableField<ConfigSysH5StyleTplRecord, String> WX_TPL = createField("wx_tpl", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "模板风格名称，只允许英文，微信端用");
 
 	/**
-	 * The column <code>configDB.config_sys_h5_style_tpl.priority</code>. 排序优先级
+	 * The column <code>configdb.config_sys_h5_style_tpl.priority</code>. 排序优先级
 	 */
 	public final TableField<ConfigSysH5StyleTplRecord, Short> PRIORITY = createField("priority", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaulted(true), this, "排序优先级");
 
 	/**
-	 * The column <code>configDB.config_sys_h5_style_tpl.disable</code>. 是否有效  0：有效 1：无效
+	 * The column <code>configdb.config_sys_h5_style_tpl.disable</code>. 是否有效  0：有效 1：无效
 	 */
 	public final TableField<ConfigSysH5StyleTplRecord, Byte> DISABLE = createField("disable", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "是否有效  0：有效 1：无效");
 
 	/**
-	 * The column <code>configDB.config_sys_h5_style_tpl.create_time</code>.
+	 * The column <code>configdb.config_sys_h5_style_tpl.create_time</code>.
 	 */
 	public final TableField<ConfigSysH5StyleTplRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>configDB.config_sys_h5_style_tpl.update_time</code>.
+	 * The column <code>configdb.config_sys_h5_style_tpl.update_time</code>.
 	 */
 	public final TableField<ConfigSysH5StyleTplRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * Create a <code>configDB.config_sys_h5_style_tpl</code> table reference
+	 * Create a <code>configdb.config_sys_h5_style_tpl</code> table reference
 	 */
 	public ConfigSysH5StyleTpl() {
 		this("config_sys_h5_style_tpl", null);
 	}
 
 	/**
-	 * Create an aliased <code>configDB.config_sys_h5_style_tpl</code> table reference
+	 * Create an aliased <code>configdb.config_sys_h5_style_tpl</code> table reference
 	 */
 	public ConfigSysH5StyleTpl(String alias) {
 		this(alias, CONFIG_SYS_H5_STYLE_TPL);

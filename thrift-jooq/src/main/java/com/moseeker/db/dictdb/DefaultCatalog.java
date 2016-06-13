@@ -37,7 +37,7 @@ public class DefaultCatalog extends CatalogImpl {
     /**
      * The schema <code>dictDB</code>.
      */
-    public final Dictdb DICTDB = Dictdb.DICTDB;
+    public final Dictdb DICTDB = com.moseeker.db.dictdb.Dictdb.DICTDB;
 
     /**
      * No further instances allowed

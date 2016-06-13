@@ -30,129 +30,129 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysH5StyleTplRecord extends UpdatableRecordImpl<ConfigSysH5StyleTplRecord> implements Record9<Integer, String, String, String, String, Short, Byte, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = -318226727;
+	private static final long serialVersionUID = -960416039;
 
 	/**
-	 * Setter for <code>configDB.config_sys_h5_style_tpl.id</code>.
+	 * Setter for <code>configdb.config_sys_h5_style_tpl.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_h5_style_tpl.id</code>.
+	 * Getter for <code>configdb.config_sys_h5_style_tpl.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_h5_style_tpl.name</code>. 模板名称
+	 * Setter for <code>configdb.config_sys_h5_style_tpl.name</code>. 模板名称
 	 */
 	public void setName(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_h5_style_tpl.name</code>. 模板名称
+	 * Getter for <code>configdb.config_sys_h5_style_tpl.name</code>. 模板名称
 	 */
 	public String getName() {
 		return (String) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_h5_style_tpl.logo</code>. 模板LOGO的相对路径
+	 * Setter for <code>configdb.config_sys_h5_style_tpl.logo</code>. 模板LOGO的相对路径
 	 */
 	public void setLogo(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_h5_style_tpl.logo</code>. 模板LOGO的相对路径
+	 * Getter for <code>configdb.config_sys_h5_style_tpl.logo</code>. 模板LOGO的相对路径
 	 */
 	public String getLogo() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_h5_style_tpl.hr_tpl</code>. 模板风格名称，只允许英文，hr预览用
+	 * Setter for <code>configdb.config_sys_h5_style_tpl.hr_tpl</code>. 模板风格名称，只允许英文，hr预览用
 	 */
 	public void setHrTpl(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_h5_style_tpl.hr_tpl</code>. 模板风格名称，只允许英文，hr预览用
+	 * Getter for <code>configdb.config_sys_h5_style_tpl.hr_tpl</code>. 模板风格名称，只允许英文，hr预览用
 	 */
 	public String getHrTpl() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_h5_style_tpl.wx_tpl</code>. 模板风格名称，只允许英文，微信端用
+	 * Setter for <code>configdb.config_sys_h5_style_tpl.wx_tpl</code>. 模板风格名称，只允许英文，微信端用
 	 */
 	public void setWxTpl(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_h5_style_tpl.wx_tpl</code>. 模板风格名称，只允许英文，微信端用
+	 * Getter for <code>configdb.config_sys_h5_style_tpl.wx_tpl</code>. 模板风格名称，只允许英文，微信端用
 	 */
 	public String getWxTpl() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_h5_style_tpl.priority</code>. 排序优先级
+	 * Setter for <code>configdb.config_sys_h5_style_tpl.priority</code>. 排序优先级
 	 */
 	public void setPriority(Short value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_h5_style_tpl.priority</code>. 排序优先级
+	 * Getter for <code>configdb.config_sys_h5_style_tpl.priority</code>. 排序优先级
 	 */
 	public Short getPriority() {
 		return (Short) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_h5_style_tpl.disable</code>. 是否有效  0：有效 1：无效
+	 * Setter for <code>configdb.config_sys_h5_style_tpl.disable</code>. 是否有效  0：有效 1：无效
 	 */
 	public void setDisable(Byte value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_h5_style_tpl.disable</code>. 是否有效  0：有效 1：无效
+	 * Getter for <code>configdb.config_sys_h5_style_tpl.disable</code>. 是否有效  0：有效 1：无效
 	 */
 	public Byte getDisable() {
 		return (Byte) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_h5_style_tpl.create_time</code>.
+	 * Setter for <code>configdb.config_sys_h5_style_tpl.create_time</code>.
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_h5_style_tpl.create_time</code>.
+	 * Getter for <code>configdb.config_sys_h5_style_tpl.create_time</code>.
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_h5_style_tpl.update_time</code>.
+	 * Setter for <code>configdb.config_sys_h5_style_tpl.update_time</code>.
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_h5_style_tpl.update_time</code>.
+	 * Getter for <code>configdb.config_sys_h5_style_tpl.update_time</code>.
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(8);

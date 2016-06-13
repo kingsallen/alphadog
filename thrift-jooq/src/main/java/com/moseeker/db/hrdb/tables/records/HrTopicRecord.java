@@ -31,143 +31,143 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrTopicRecord extends UpdatableRecordImpl<HrTopicRecord> implements Record10<Integer, UInteger, String, String, String, UInteger, UInteger, Byte, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = -1757851647;
+	private static final long serialVersionUID = -1517701119;
 
 	/**
-	 * Setter for <code>hrDB.hr_topic.id</code>.
+	 * Setter for <code>hrdb.hr_topic.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_topic.id</code>.
+	 * Getter for <code>hrdb.hr_topic.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_topic.company_id</code>. company.id, 部门ID
+	 * Setter for <code>hrdb.hr_topic.company_id</code>. company.id, 部门ID
 	 */
 	public void setCompanyId(UInteger value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_topic.company_id</code>. company.id, 部门ID
+	 * Getter for <code>hrdb.hr_topic.company_id</code>. company.id, 部门ID
 	 */
 	public UInteger getCompanyId() {
 		return (UInteger) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_topic.share_title</code>. 分享标题
+	 * Setter for <code>hrdb.hr_topic.share_title</code>. 分享标题
 	 */
 	public void setShareTitle(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_topic.share_title</code>. 分享标题
+	 * Getter for <code>hrdb.hr_topic.share_title</code>. 分享标题
 	 */
 	public String getShareTitle() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_topic.share_logo</code>. 分享LOGO的相对路径
+	 * Setter for <code>hrdb.hr_topic.share_logo</code>. 分享LOGO的相对路径
 	 */
 	public void setShareLogo(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_topic.share_logo</code>. 分享LOGO的相对路径
+	 * Getter for <code>hrdb.hr_topic.share_logo</code>. 分享LOGO的相对路径
 	 */
 	public String getShareLogo() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_topic.share_description</code>. 分享描述
+	 * Setter for <code>hrdb.hr_topic.share_description</code>. 分享描述
 	 */
 	public void setShareDescription(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_topic.share_description</code>. 分享描述
+	 * Getter for <code>hrdb.hr_topic.share_description</code>. 分享描述
 	 */
 	public String getShareDescription() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_topic.style_id</code>. wx_group_user.id， 推荐者微信ID
+	 * Setter for <code>hrdb.hr_topic.style_id</code>. wx_group_user.id， 推荐者微信ID
 	 */
 	public void setStyleId(UInteger value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_topic.style_id</code>. wx_group_user.id， 推荐者微信ID
+	 * Getter for <code>hrdb.hr_topic.style_id</code>. wx_group_user.id， 推荐者微信ID
 	 */
 	public UInteger getStyleId() {
 		return (UInteger) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_topic.creator</code>. hr_account.id
+	 * Setter for <code>hrdb.hr_topic.creator</code>. hr_account.id
 	 */
 	public void setCreator(UInteger value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_topic.creator</code>. hr_account.id
+	 * Getter for <code>hrdb.hr_topic.creator</code>. hr_account.id
 	 */
 	public UInteger getCreator() {
 		return (UInteger) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_topic.disable</code>. 是否有效  0：有效 1：无效
+	 * Setter for <code>hrdb.hr_topic.disable</code>. 是否有效  0：有效 1：无效
 	 */
 	public void setDisable(Byte value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_topic.disable</code>. 是否有效  0：有效 1：无效
+	 * Getter for <code>hrdb.hr_topic.disable</code>. 是否有效  0：有效 1：无效
 	 */
 	public Byte getDisable() {
 		return (Byte) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_topic.create_time</code>.
+	 * Setter for <code>hrdb.hr_topic.create_time</code>.
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_topic.create_time</code>.
+	 * Getter for <code>hrdb.hr_topic.create_time</code>.
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_topic.update_time</code>.
+	 * Setter for <code>hrdb.hr_topic.update_time</code>.
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_topic.update_time</code>.
+	 * Getter for <code>hrdb.hr_topic.update_time</code>.
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(9);

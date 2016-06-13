@@ -6,19 +6,17 @@ import org.apache.thrift.TServiceClient;
 import org.apache.thrift.TServiceClientFactory;
 
 import com.alibaba.fastjson.JSON;
-
+import com.moseeker.rpccenter.client.DefaultInvoker;
+import com.moseeker.rpccenter.client.Invoker;
 import com.moseeker.rpccenter.common.NetUtils;
-import com.moseeker.rpccenter.registry.IRegistry;
 import com.moseeker.rpccenter.common.ServerNode;
 import com.moseeker.rpccenter.exception.RpcException;
-
-import com.moseeker.rpccenter.registry.ZkClientRegistry;
-import com.moseeker.rpccenter.client.Invoker;
-import com.moseeker.rpccenter.client.DefaultInvoker;
-import com.moseeker.rpccenter.proxy.DynamicClientHandler;
-
+import com.moseeker.rpccenter.heartbeat.HeartBeatManager;
 import com.moseeker.rpccenter.loadbalance.common.DynamicHostSet;
 import com.moseeker.rpccenter.pool.TServiceClientPoolFactory;
+import com.moseeker.rpccenter.proxy.DynamicClientHandler;
+import com.moseeker.rpccenter.registry.IRegistry;
+import com.moseeker.rpccenter.registry.ZkClientRegistry;
 
 /**
  * Created by zzh on 16/3/30.
@@ -53,12 +51,12 @@ public class ClientConfig<T> implements IConfigCheck{
     private int interval = 5 * 60;
 
     /** 负载均衡策略，默认为round，可选：round和random */
-    private String loadbalance = "round";
+    private String loadbalance = "random";
+
+    /** thrift connect 超时时间，单位为ms，默认为3s */
+    private int timeout = 100000;
 
     // 下面的配置项是连接池的基本配置
-    /** 超时时间，单位为ms，默认为3s */
-    private int timeout = 30000;
-
     /** 最大活跃连接数 */
     private int maxActive = 1024;
 
@@ -75,7 +73,23 @@ public class ClientConfig<T> implements IConfigCheck{
     private int timeBetweenEvictionRunsMillis = 180000;
 
     /** 空闲时是否进行连接有效性验证，如果验证失败则移除，默认为false */
-    private boolean testWhileIdle = false;
+    private boolean testWhileIdle = true;
+
+    // 下面的配置项是heartbeat的基本配置
+    /** 心跳频率，毫秒。默认10s。 */
+    private int heartbeat = 10 * 1000;
+
+    /** 心跳执行的超时时间，单位ms ,默认3s */
+    private int heartbeatTimeout = 3000;
+
+    /** 重试次数，默认3次 */
+    private int heartbeatTimes = 3;
+
+    /** 重试间隔,单位为ms，默认为3s */
+    private int heartbeatInterval = 3000;
+
+    /** {@link HeartBeatManager} */
+    private HeartBeatManager<T> heartBeatManager;
 
     /** {@link IRegistry} */
     private IRegistry registry;
@@ -114,11 +128,16 @@ public class ClientConfig<T> implements IConfigCheck{
         GenericKeyedObjectPool<ServerNode, T> pool = bulidClientPool(classLoader, objectClass);
         DynamicHostSet hostSet = registry.findAllService();
 
+       // 临时取消心跳, 尝试解决 zookeeper 断开连接问题. 
+        /*HeartBeatManager<T> heartBeatManager = new HeartBeatManager<T>(hostSet, heartbeat, heartbeatTimeout, heartbeatTimes, heartbeatInterval, pool);
+        heartBeatManager.startHeatbeatTimer();*/
+
         this.registry = registry;
         this.pool = pool;
 
         // 添加ShutdownHook
-      //  addShutdownHook(registry);
+        //addShutdownHook(registry, heartBeatManager);
+        addShutdownHook(registry);
 
         Invoker invoker = new DefaultInvoker<T>(clientNode, pool, retry, hostSet);
         DynamicClientHandler dynamicClientHandler = new DynamicClientHandler(invoker);
@@ -209,8 +228,9 @@ public class ClientConfig<T> implements IConfigCheck{
         return JSON.toJSONString(this);
     }
 
+    
     /**
-     * 添加关闭钩子
+     * 添加关闭钩子 -  无心跳
      * <p>
      *
      * @param registry
@@ -221,6 +241,31 @@ public class ClientConfig<T> implements IConfigCheck{
             public void run() {
                 if (registry != null) {
                     registry.unregister();
+                }
+
+                if (pool != null) {
+                    pool.clear();
+                }
+            }
+        }));
+    }
+
+    
+    /**
+     * 添加关闭钩子
+     * <p>
+     *
+     * @param registry
+     */
+    protected void addShutdownHook(final IRegistry registry, final HeartBeatManager<T> heartBeatManager) {
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (registry != null) {
+                    registry.unregister();
+                }
+                if (heartBeatManager != null) {
+                    heartBeatManager.stopHeartbeatTimer();
                 }
                 if (pool != null) {
                     pool.clear();

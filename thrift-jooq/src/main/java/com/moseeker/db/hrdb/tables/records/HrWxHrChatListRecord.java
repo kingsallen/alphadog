@@ -31,101 +31,101 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxHrChatListRecord extends UpdatableRecordImpl<HrWxHrChatListRecord> implements Record7<UInteger, Integer, Integer, Byte, Timestamp, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = 1490621194;
+	private static final long serialVersionUID = -955839734;
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_hr_chat_list.id</code>. ID
+	 * Setter for <code>hrdb.hr_wx_hr_chat_list.id</code>. ID
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_hr_chat_list.id</code>. ID
+	 * Getter for <code>hrdb.hr_wx_hr_chat_list.id</code>. ID
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_hr_chat_list.sysuser_id</code>. sysuser.id
+	 * Setter for <code>hrdb.hr_wx_hr_chat_list.sysuser_id</code>. sysuser.id
 	 */
 	public void setSysuserId(Integer value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_hr_chat_list.sysuser_id</code>. sysuser.id
+	 * Getter for <code>hrdb.hr_wx_hr_chat_list.sysuser_id</code>. sysuser.id
 	 */
 	public Integer getSysuserId() {
 		return (Integer) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_hr_chat_list.hraccount_id</code>. hr_account.id
+	 * Setter for <code>hrdb.hr_wx_hr_chat_list.hraccount_id</code>. hr_account.id
 	 */
 	public void setHraccountId(Integer value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_hr_chat_list.hraccount_id</code>. hr_account.id
+	 * Getter for <code>hrdb.hr_wx_hr_chat_list.hraccount_id</code>. hr_account.id
 	 */
 	public Integer getHraccountId() {
 		return (Integer) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_hr_chat_list.status</code>. 状态，0：有效，1：无效
+	 * Setter for <code>hrdb.hr_wx_hr_chat_list.status</code>. 状态，0：有效，1：无效
 	 */
 	public void setStatus(Byte value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_hr_chat_list.status</code>. 状态，0：有效，1：无效
+	 * Getter for <code>hrdb.hr_wx_hr_chat_list.status</code>. 状态，0：有效，1：无效
 	 */
 	public Byte getStatus() {
 		return (Byte) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_hr_chat_list.create_time</code>. 创建时间
+	 * Setter for <code>hrdb.hr_wx_hr_chat_list.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_hr_chat_list.create_time</code>. 创建时间
+	 * Getter for <code>hrdb.hr_wx_hr_chat_list.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_hr_chat_list.wx_chat_time</code>. sysuser最近一次聊天时间
+	 * Setter for <code>hrdb.hr_wx_hr_chat_list.wx_chat_time</code>. sysuser最近一次聊天时间
 	 */
 	public void setWxChatTime(Timestamp value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_hr_chat_list.wx_chat_time</code>. sysuser最近一次聊天时间
+	 * Getter for <code>hrdb.hr_wx_hr_chat_list.wx_chat_time</code>. sysuser最近一次聊天时间
 	 */
 	public Timestamp getWxChatTime() {
 		return (Timestamp) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_hr_chat_list.hr_chat_time</code>. HR最近一次聊天时间
+	 * Setter for <code>hrdb.hr_wx_hr_chat_list.hr_chat_time</code>. HR最近一次聊天时间
 	 */
 	public void setHrChatTime(Timestamp value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_hr_chat_list.hr_chat_time</code>. HR最近一次聊天时间
+	 * Getter for <code>hrdb.hr_wx_hr_chat_list.hr_chat_time</code>. HR最近一次聊天时间
 	 */
 	public Timestamp getHrChatTime() {
 		return (Timestamp) getValue(6);

@@ -31,213 +31,213 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrReferralStatisticsRecord extends UpdatableRecordImpl<HrReferralStatisticsRecord> implements Record15<Integer, String, String, Integer, UInteger, Date, Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer> {
 
-	private static final long serialVersionUID = 169245221;
+	private static final long serialVersionUID = 1556132389;
 
 	/**
-	 * Setter for <code>hrDB.hr_referral_statistics.id</code>. primary key
+	 * Setter for <code>hrdb.hr_referral_statistics.id</code>. primary key
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_referral_statistics.id</code>. primary key
+	 * Getter for <code>hrdb.hr_referral_statistics.id</code>. primary key
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_referral_statistics.position_title</code>. hr_position.title
+	 * Setter for <code>hrdb.hr_referral_statistics.position_title</code>. hr_position.title
 	 */
 	public void setPositionTitle(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_referral_statistics.position_title</code>. hr_position.title
+	 * Getter for <code>hrdb.hr_referral_statistics.position_title</code>. hr_position.title
 	 */
 	public String getPositionTitle() {
 		return (String) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_referral_statistics.employee_name</code>. sys_employee.cname
+	 * Setter for <code>hrdb.hr_referral_statistics.employee_name</code>. sys_employee.cname
 	 */
 	public void setEmployeeName(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_referral_statistics.employee_name</code>. sys_employee.cname
+	 * Getter for <code>hrdb.hr_referral_statistics.employee_name</code>. sys_employee.cname
 	 */
 	public String getEmployeeName() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_referral_statistics.employee_id</code>. 推荐员工 sys.employee.id
+	 * Setter for <code>hrdb.hr_referral_statistics.employee_id</code>. 推荐员工 sys.employee.id
 	 */
 	public void setEmployeeId(Integer value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_referral_statistics.employee_id</code>. 推荐员工 sys.employee.id
+	 * Getter for <code>hrdb.hr_referral_statistics.employee_id</code>. 推荐员工 sys.employee.id
 	 */
 	public Integer getEmployeeId() {
 		return (Integer) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_referral_statistics.company_id</code>. sys_wechat.id
+	 * Setter for <code>hrdb.hr_referral_statistics.company_id</code>. sys_wechat.id
 	 */
 	public void setCompanyId(UInteger value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_referral_statistics.company_id</code>. sys_wechat.id
+	 * Getter for <code>hrdb.hr_referral_statistics.company_id</code>. sys_wechat.id
 	 */
 	public UInteger getCompanyId() {
 		return (UInteger) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_referral_statistics.create_date</code>. 创建时间
+	 * Setter for <code>hrdb.hr_referral_statistics.create_date</code>. 创建时间
 	 */
 	public void setCreateDate(Date value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_referral_statistics.create_date</code>. 创建时间
+	 * Getter for <code>hrdb.hr_referral_statistics.create_date</code>. 创建时间
 	 */
 	public Date getCreateDate() {
 		return (Date) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_referral_statistics.recom_num</code>. 推荐浏览人次
+	 * Setter for <code>hrdb.hr_referral_statistics.recom_num</code>. 推荐浏览人次
 	 */
 	public void setRecomNum(Integer value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_referral_statistics.recom_num</code>. 推荐浏览人次
+	 * Getter for <code>hrdb.hr_referral_statistics.recom_num</code>. 推荐浏览人次
 	 */
 	public Integer getRecomNum() {
 		return (Integer) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_referral_statistics.recom_fav_num</code>. 推荐感兴趣人次
+	 * Setter for <code>hrdb.hr_referral_statistics.recom_fav_num</code>. 推荐感兴趣人次
 	 */
 	public void setRecomFavNum(Integer value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_referral_statistics.recom_fav_num</code>. 推荐感兴趣人次
+	 * Getter for <code>hrdb.hr_referral_statistics.recom_fav_num</code>. 推荐感兴趣人次
 	 */
 	public Integer getRecomFavNum() {
 		return (Integer) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_referral_statistics.recom_mobile_num</code>. 推荐留手机人次
+	 * Setter for <code>hrdb.hr_referral_statistics.recom_mobile_num</code>. 推荐留手机人次
 	 */
 	public void setRecomMobileNum(Integer value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_referral_statistics.recom_mobile_num</code>. 推荐留手机人次
+	 * Getter for <code>hrdb.hr_referral_statistics.recom_mobile_num</code>. 推荐留手机人次
 	 */
 	public Integer getRecomMobileNum() {
 		return (Integer) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_referral_statistics.recom_apply_num</code>. 推荐投递人次
+	 * Setter for <code>hrdb.hr_referral_statistics.recom_apply_num</code>. 推荐投递人次
 	 */
 	public void setRecomApplyNum(Integer value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_referral_statistics.recom_apply_num</code>. 推荐投递人次
+	 * Getter for <code>hrdb.hr_referral_statistics.recom_apply_num</code>. 推荐投递人次
 	 */
 	public Integer getRecomApplyNum() {
 		return (Integer) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_referral_statistics.recom_after_review_num</code>. 推荐评审通过人数
+	 * Setter for <code>hrdb.hr_referral_statistics.recom_after_review_num</code>. 推荐评审通过人数
 	 */
 	public void setRecomAfterReviewNum(Integer value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_referral_statistics.recom_after_review_num</code>. 推荐评审通过人数
+	 * Getter for <code>hrdb.hr_referral_statistics.recom_after_review_num</code>. 推荐评审通过人数
 	 */
 	public Integer getRecomAfterReviewNum() {
 		return (Integer) getValue(10);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_referral_statistics.recom_after_interview_num</code>. 推荐面试通过人数
+	 * Setter for <code>hrdb.hr_referral_statistics.recom_after_interview_num</code>. 推荐面试通过人数
 	 */
 	public void setRecomAfterInterviewNum(Integer value) {
 		setValue(11, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_referral_statistics.recom_after_interview_num</code>. 推荐面试通过人数
+	 * Getter for <code>hrdb.hr_referral_statistics.recom_after_interview_num</code>. 推荐面试通过人数
 	 */
 	public Integer getRecomAfterInterviewNum() {
 		return (Integer) getValue(11);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_referral_statistics.recom_on_board_num</code>. 推荐入职人数
+	 * Setter for <code>hrdb.hr_referral_statistics.recom_on_board_num</code>. 推荐入职人数
 	 */
 	public void setRecomOnBoardNum(Integer value) {
 		setValue(12, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_referral_statistics.recom_on_board_num</code>. 推荐入职人数
+	 * Getter for <code>hrdb.hr_referral_statistics.recom_on_board_num</code>. 推荐入职人数
 	 */
 	public Integer getRecomOnBoardNum() {
 		return (Integer) getValue(12);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_referral_statistics.info_type</code>. 0: 日数据，1：周数据，2：月数据
+	 * Setter for <code>hrdb.hr_referral_statistics.info_type</code>. 0: 日数据，1：周数据，2：月数据
 	 */
 	public void setInfoType(Integer value) {
 		setValue(13, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_referral_statistics.info_type</code>. 0: 日数据，1：周数据，2：月数据
+	 * Getter for <code>hrdb.hr_referral_statistics.info_type</code>. 0: 日数据，1：周数据，2：月数据
 	 */
 	public Integer getInfoType() {
 		return (Integer) getValue(13);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_referral_statistics.publisher</code>.
+	 * Setter for <code>hrdb.hr_referral_statistics.publisher</code>.
 	 */
 	public void setPublisher(Integer value) {
 		setValue(14, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_referral_statistics.publisher</code>.
+	 * Getter for <code>hrdb.hr_referral_statistics.publisher</code>.
 	 */
 	public Integer getPublisher() {
 		return (Integer) getValue(14);

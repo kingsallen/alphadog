@@ -5,10 +5,11 @@ package com.moseeker.db.logdb;
 
 
 import com.moseeker.db.logdb.tables.LogEmailSendrecord;
-import com.moseeker.db.logdb.tables.LogSmsRecord;
+import com.moseeker.db.logdb.tables.LogSmsSendrecord;
 import com.moseeker.db.logdb.tables.LogUserloginRecord;
 import com.moseeker.db.logdb.tables.LogWxMenuRecord;
 import com.moseeker.db.logdb.tables.LogWxMessageRecord;
+import com.moseeker.db.logdb.tables.LogWxTemplateMessageSendrecord;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,10 +34,10 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Logdb extends SchemaImpl {
 
-	private static final long serialVersionUID = -1875551652;
+	private static final long serialVersionUID = 1794587869;
 
 	/**
-	 * The reference instance of <code>logDB</code>
+	 * The reference instance of <code>logdb</code>
 	 */
 	public static final Logdb LOGDB = new Logdb();
 
@@ -44,7 +45,7 @@ public class Logdb extends SchemaImpl {
 	 * No further instances allowed
 	 */
 	private Logdb() {
-		super("logDB");
+		super("logdb");
 	}
 
 	@Override
@@ -57,9 +58,10 @@ public class Logdb extends SchemaImpl {
 	private final List<Table<?>> getTables0() {
 		return Arrays.<Table<?>>asList(
 			LogEmailSendrecord.LOG_EMAIL_SENDRECORD,
-			LogSmsRecord.LOG_SMS_RECORD,
+			LogSmsSendrecord.LOG_SMS_SENDRECORD,
 			LogUserloginRecord.LOG_USERLOGIN_RECORD,
 			LogWxMenuRecord.LOG_WX_MENU_RECORD,
-			LogWxMessageRecord.LOG_WX_MESSAGE_RECORD);
+			LogWxMessageRecord.LOG_WX_MESSAGE_RECORD,
+			LogWxTemplateMessageSendrecord.LOG_WX_TEMPLATE_MESSAGE_SENDRECORD);
 	}
 }

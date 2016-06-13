@@ -29,59 +29,59 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserWxViewerRecord extends UpdatableRecordImpl<UserWxViewerRecord> implements Record4<UInteger, Integer, String, Integer> {
 
-	private static final long serialVersionUID = -581137601;
+	private static final long serialVersionUID = 894567231;
 
 	/**
-	 * Setter for <code>userDB.user_wx_viewer.id</code>. 主key
+	 * Setter for <code>userdb.user_wx_viewer.id</code>. 主key
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_wx_viewer.id</code>. 主key
+	 * Getter for <code>userdb.user_wx_viewer.id</code>. 主key
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_wx_viewer.sysuser_id</code>.
+	 * Setter for <code>userdb.user_wx_viewer.sysuser_id</code>.
 	 */
 	public void setSysuserId(Integer value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_wx_viewer.sysuser_id</code>.
+	 * Getter for <code>userdb.user_wx_viewer.sysuser_id</code>.
 	 */
 	public Integer getSysuserId() {
 		return (Integer) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_wx_viewer.idcode</code>.
+	 * Setter for <code>userdb.user_wx_viewer.idcode</code>.
 	 */
 	public void setIdcode(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_wx_viewer.idcode</code>.
+	 * Getter for <code>userdb.user_wx_viewer.idcode</code>.
 	 */
 	public String getIdcode() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_wx_viewer.client_type</code>.
+	 * Setter for <code>userdb.user_wx_viewer.client_type</code>.
 	 */
 	public void setClientType(Integer value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_wx_viewer.client_type</code>.
+	 * Getter for <code>userdb.user_wx_viewer.client_type</code>.
 	 */
 	public Integer getClientType() {
 		return (Integer) getValue(3);

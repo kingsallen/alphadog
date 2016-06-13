@@ -42,10 +42,9 @@ public class ProfileServer {
 				while (true) {
 					try {
 						ProfileServer.class.wait();
-					} catch (InterruptedException e) {
-						LOGGER.error("error", e);
-						e.printStackTrace();
-					}
+                    } catch (Exception e) {
+                        LOGGER.error(" service provider ProfileServer error", e);
+                    }
 				}
 			}
 		} catch (Exception e) {

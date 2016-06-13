@@ -9,52 +9,64 @@ import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
 
+/**
+ * 处理数据格式转换
+ *
+ */
 public class ResponseUtils {
-	public String message = null;
-	public String data = null;
-	public int status = 0;
-	
-	public static Response buildFromConstant(String constantMessage) throws ParamNullException {
-		Response response = new Response();
-		if(StringUtils.isNullOrEmpty(constantMessage)) {
-			throw new ParamNullException();
-		}
-		JSONObject jsonObject = JSONObject.parseObject(constantMessage);
-		response.setData(Constant.NONE_JSON);
-		response.setStatus(jsonObject.getIntValue("status"));
-		response.setMessage(jsonObject.getString("message"));
-		return response;
-	}
 
-	public static Response success(Object hashmap) {
+    /**
+     * 处理成功响应的数据格式
+     * @param hashmap 需要传入一个HashMap类型, TODO: 对其他对象类型支持
+     * @return
+     */
+    public static Response success(Object hashmap) {
 
-		Response response = new Response();
-		response.setStatus(0);
-		response.setMessage("ok");
-		response.setData(JSON.toJSONString(hashmap));
-		return response;
+        Response response = new Response();
+        response.setStatus(0);
+        response.setMessage("success");
+        response.setData(JSON.toJSONString(hashmap));
+        return response;
 
-	}
+    }
 
-	public static Response fail(String message) {
-		Response response = new Response();
-		response.setStatus(1);
-		response.setMessage(message);
-		return response;
-	}
 
-	public static Response fail(int errcode, String message) {
-		Response response = new Response();
-		response.setStatus(errcode);
-		response.setMessage(message);
-		return response;
-	}
+    public static Response successWithoutStringify(String hashmap) {
+        Response response = new Response();
+        response.setStatus(0);
+        response.setMessage("success");
+        response.setData(hashmap);
+        return response;
+    }
 
-	public static Response fail(int errcode, String message, Map<String, Object> hashmap) {
-		Response response = new Response();
-		response.setStatus(errcode);
-		response.setMessage(message);
-		response.setData(JSON.toJSONString(hashmap));
-		return response;
-	}
+    /**
+     * 处理失败响应的数据格式
+     * @param constantErrorCodeMessage json格式的String字符串"{}", 否则会抛异常
+     *                                 eg: syntax error, pos 1, json : JobApplication failed
+     * @return
+     * @throws ParamNullException
+     */
+    public static Response fail(String constantErrorCodeMessage) throws ParamNullException {
+        Response response = new Response();
+        if(StringUtils.isNullOrEmpty(constantErrorCodeMessage)) {
+            throw new ParamNullException();
+        }
+        JSONObject jsonObject = JSONObject.parseObject(constantErrorCodeMessage);
+        response.setData(Constant.NONE_JSON);
+        response.setStatus(jsonObject.getIntValue("status"));
+        response.setMessage(jsonObject.getString("message"));
+        return response;
+    }
+
+    public static Response fail(String constantErrorCodeMessage, Map<String, Object> hashmap) {
+        Response response = new Response();
+        if(StringUtils.isNullOrEmpty(constantErrorCodeMessage)) {
+            throw new ParamNullException();
+        }
+        JSONObject jsonObject = JSONObject.parseObject(constantErrorCodeMessage);
+        response.setData(JSON.toJSONString(hashmap));
+        response.setStatus(jsonObject.getIntValue("status"));
+        response.setMessage(jsonObject.getString("message"));
+        return response;
+    }
 }

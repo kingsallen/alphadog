@@ -31,101 +31,101 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateSuggestPositionRecord extends UpdatableRecordImpl<CandidateSuggestPositionRecord> implements Record7<UInteger, Integer, Integer, Integer, Timestamp, Timestamp, Integer> {
 
-	private static final long serialVersionUID = 43247337;
+	private static final long serialVersionUID = -742199575;
 
 	/**
-	 * Setter for <code>candidateDB.candidate_suggest_position.id</code>.
+	 * Setter for <code>candidatedb.candidate_suggest_position.id</code>.
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_suggest_position.id</code>.
+	 * Getter for <code>candidatedb.candidate_suggest_position.id</code>.
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_suggest_position.hraccount_id</code>. 做职位推荐的账号编号 hr_account.id
+	 * Setter for <code>candidatedb.candidate_suggest_position.hraccount_id</code>. 做职位推荐的账号编号 hr_account.id
 	 */
 	public void setHraccountId(Integer value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_suggest_position.hraccount_id</code>. 做职位推荐的账号编号 hr_account.id
+	 * Getter for <code>candidatedb.candidate_suggest_position.hraccount_id</code>. 做职位推荐的账号编号 hr_account.id
 	 */
 	public Integer getHraccountId() {
 		return (Integer) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_suggest_position.position_id</code>. hr_position.id
+	 * Setter for <code>candidatedb.candidate_suggest_position.position_id</code>. hr_position.id
 	 */
 	public void setPositionId(Integer value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_suggest_position.position_id</code>. hr_position.id
+	 * Getter for <code>candidatedb.candidate_suggest_position.position_id</code>. hr_position.id
 	 */
 	public Integer getPositionId() {
 		return (Integer) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_suggest_position.wxuser_id</code>. wx_group_user.id
+	 * Setter for <code>candidatedb.candidate_suggest_position.wxuser_id</code>. wx_group_user.id
 	 */
 	public void setWxuserId(Integer value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_suggest_position.wxuser_id</code>. wx_group_user.id
+	 * Getter for <code>candidatedb.candidate_suggest_position.wxuser_id</code>. wx_group_user.id
 	 */
 	public Integer getWxuserId() {
 		return (Integer) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_suggest_position.create_time</code>. 创建时间
+	 * Setter for <code>candidatedb.candidate_suggest_position.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_suggest_position.create_time</code>. 创建时间
+	 * Getter for <code>candidatedb.candidate_suggest_position.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_suggest_position.update_time</code>. 修改时间
+	 * Setter for <code>candidatedb.candidate_suggest_position.update_time</code>. 修改时间
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_suggest_position.update_time</code>. 修改时间
+	 * Getter for <code>candidatedb.candidate_suggest_position.update_time</code>. 修改时间
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_suggest_position.disable</code>. 是否生效 0：生效 1：不生效
+	 * Setter for <code>candidatedb.candidate_suggest_position.disable</code>. 是否生效 0：生效 1：不生效
 	 */
 	public void setDisable(Integer value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_suggest_position.disable</code>. 是否生效 0：生效 1：不生效
+	 * Getter for <code>candidatedb.candidate_suggest_position.disable</code>. 是否生效 0：生效 1：不生效
 	 */
 	public Integer getDisable() {
 		return (Integer) getValue(6);

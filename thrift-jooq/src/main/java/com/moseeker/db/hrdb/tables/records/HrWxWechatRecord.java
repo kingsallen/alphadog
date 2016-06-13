@@ -29,367 +29,367 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxWechatRecord extends UpdatableRecordImpl<HrWxWechatRecord> {
 
-	private static final long serialVersionUID = 621009414;
+	private static final long serialVersionUID = 677820934;
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_wechat.id</code>.
+	 * Setter for <code>hrdb.hr_wx_wechat.id</code>.
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_wechat.id</code>.
+	 * Getter for <code>hrdb.hr_wx_wechat.id</code>.
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_wechat.company_id</code>. 所属公司id, company.id
+	 * Setter for <code>hrdb.hr_wx_wechat.company_id</code>. 所属公司id, company.id
 	 */
 	public void setCompanyId(UInteger value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_wechat.company_id</code>. 所属公司id, company.id
+	 * Getter for <code>hrdb.hr_wx_wechat.company_id</code>. 所属公司id, company.id
 	 */
 	public UInteger getCompanyId() {
 		return (UInteger) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_wechat.type</code>. 公众号类型, 0:订阅号, 1:服务号
+	 * Setter for <code>hrdb.hr_wx_wechat.type</code>. 公众号类型, 0:订阅号, 1:服务号
 	 */
 	public void setType(UByte value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_wechat.type</code>. 公众号类型, 0:订阅号, 1:服务号
+	 * Getter for <code>hrdb.hr_wx_wechat.type</code>. 公众号类型, 0:订阅号, 1:服务号
 	 */
 	public UByte getType() {
 		return (UByte) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_wechat.signature</code>. 公众号ID匿名化
+	 * Setter for <code>hrdb.hr_wx_wechat.signature</code>. 公众号ID匿名化
 	 */
 	public void setSignature(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_wechat.signature</code>. 公众号ID匿名化
+	 * Getter for <code>hrdb.hr_wx_wechat.signature</code>. 公众号ID匿名化
 	 */
 	public String getSignature() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_wechat.name</code>. 名称
+	 * Setter for <code>hrdb.hr_wx_wechat.name</code>. 名称
 	 */
 	public void setName(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_wechat.name</code>. 名称
+	 * Getter for <code>hrdb.hr_wx_wechat.name</code>. 名称
 	 */
 	public String getName() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_wechat.alias</code>. 别名
+	 * Setter for <code>hrdb.hr_wx_wechat.alias</code>. 别名
 	 */
 	public void setAlias(String value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_wechat.alias</code>. 别名
+	 * Getter for <code>hrdb.hr_wx_wechat.alias</code>. 别名
 	 */
 	public String getAlias() {
 		return (String) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_wechat.username</code>. 用户名
+	 * Setter for <code>hrdb.hr_wx_wechat.username</code>. 用户名
 	 */
 	public void setUsername(String value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_wechat.username</code>. 用户名
+	 * Getter for <code>hrdb.hr_wx_wechat.username</code>. 用户名
 	 */
 	public String getUsername() {
 		return (String) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_wechat.password</code>. 密码
+	 * Setter for <code>hrdb.hr_wx_wechat.password</code>. 密码
 	 */
 	public void setPassword(String value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_wechat.password</code>. 密码
+	 * Getter for <code>hrdb.hr_wx_wechat.password</code>. 密码
 	 */
 	public String getPassword() {
 		return (String) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_wechat.token</code>. 开发者token
+	 * Setter for <code>hrdb.hr_wx_wechat.token</code>. 开发者token
 	 */
 	public void setToken(String value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_wechat.token</code>. 开发者token
+	 * Getter for <code>hrdb.hr_wx_wechat.token</code>. 开发者token
 	 */
 	public String getToken() {
 		return (String) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_wechat.appid</code>. 开发者appid
+	 * Setter for <code>hrdb.hr_wx_wechat.appid</code>. 开发者appid
 	 */
 	public void setAppid(String value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_wechat.appid</code>. 开发者appid
+	 * Getter for <code>hrdb.hr_wx_wechat.appid</code>. 开发者appid
 	 */
 	public String getAppid() {
 		return (String) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_wechat.secret</code>. 开发者secret
+	 * Setter for <code>hrdb.hr_wx_wechat.secret</code>. 开发者secret
 	 */
 	public void setSecret(String value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_wechat.secret</code>. 开发者secret
+	 * Getter for <code>hrdb.hr_wx_wechat.secret</code>. 开发者secret
 	 */
 	public String getSecret() {
 		return (String) getValue(10);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_wechat.welcome</code>. welcome message
+	 * Setter for <code>hrdb.hr_wx_wechat.welcome</code>. welcome message
 	 */
 	public void setWelcome(Integer value) {
 		setValue(11, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_wechat.welcome</code>. welcome message
+	 * Getter for <code>hrdb.hr_wx_wechat.welcome</code>. welcome message
 	 */
 	public Integer getWelcome() {
 		return (Integer) getValue(11);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_wechat.default</code>. default message
+	 * Setter for <code>hrdb.hr_wx_wechat.default</code>. default message
 	 */
 	public void setDefault(Integer value) {
 		setValue(12, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_wechat.default</code>. default message
+	 * Getter for <code>hrdb.hr_wx_wechat.default</code>. default message
 	 */
 	public Integer getDefault() {
 		return (Integer) getValue(12);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_wechat.qrcode</code>. 关注公众号的二维码
+	 * Setter for <code>hrdb.hr_wx_wechat.qrcode</code>. 关注公众号的二维码
 	 */
 	public void setQrcode(String value) {
 		setValue(13, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_wechat.qrcode</code>. 关注公众号的二维码
+	 * Getter for <code>hrdb.hr_wx_wechat.qrcode</code>. 关注公众号的二维码
 	 */
 	public String getQrcode() {
 		return (String) getValue(13);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_wechat.passive_seeker</code>. 被动求职者开关，0：开启，1：不开启
+	 * Setter for <code>hrdb.hr_wx_wechat.passive_seeker</code>. 被动求职者开关，0：开启，1：不开启
 	 */
 	public void setPassiveSeeker(Byte value) {
 		setValue(14, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_wechat.passive_seeker</code>. 被动求职者开关，0：开启，1：不开启
+	 * Getter for <code>hrdb.hr_wx_wechat.passive_seeker</code>. 被动求职者开关，0：开启，1：不开启
 	 */
 	public Byte getPassiveSeeker() {
 		return (Byte) getValue(14);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_wechat.third_oauth</code>. 授权大岂第三方平台0：未授权 1：授权了
+	 * Setter for <code>hrdb.hr_wx_wechat.third_oauth</code>. 授权大岂第三方平台0：未授权 1：授权了
 	 */
 	public void setThirdOauth(Byte value) {
 		setValue(15, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_wechat.third_oauth</code>. 授权大岂第三方平台0：未授权 1：授权了
+	 * Getter for <code>hrdb.hr_wx_wechat.third_oauth</code>. 授权大岂第三方平台0：未授权 1：授权了
 	 */
 	public Byte getThirdOauth() {
 		return (Byte) getValue(15);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_wechat.hr_register</code>. 是否启用免费雇主注册，0：不启用，1：启用
+	 * Setter for <code>hrdb.hr_wx_wechat.hr_register</code>. 是否启用免费雇主注册，0：不启用，1：启用
 	 */
 	public void setHrRegister(Byte value) {
 		setValue(16, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_wechat.hr_register</code>. 是否启用免费雇主注册，0：不启用，1：启用
+	 * Getter for <code>hrdb.hr_wx_wechat.hr_register</code>. 是否启用免费雇主注册，0：不启用，1：启用
 	 */
 	public Byte getHrRegister() {
 		return (Byte) getValue(16);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_wechat.access_token_create_time</code>. access_token最新更新时间
+	 * Setter for <code>hrdb.hr_wx_wechat.access_token_create_time</code>. access_token最新更新时间
 	 */
 	public void setAccessTokenCreateTime(Integer value) {
 		setValue(17, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_wechat.access_token_create_time</code>. access_token最新更新时间
+	 * Getter for <code>hrdb.hr_wx_wechat.access_token_create_time</code>. access_token最新更新时间
 	 */
 	public Integer getAccessTokenCreateTime() {
 		return (Integer) getValue(17);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_wechat.access_token_expired</code>. access_token过期时间
+	 * Setter for <code>hrdb.hr_wx_wechat.access_token_expired</code>. access_token过期时间
 	 */
 	public void setAccessTokenExpired(Integer value) {
 		setValue(18, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_wechat.access_token_expired</code>. access_token过期时间
+	 * Getter for <code>hrdb.hr_wx_wechat.access_token_expired</code>. access_token过期时间
 	 */
 	public Integer getAccessTokenExpired() {
 		return (Integer) getValue(18);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_wechat.access_token</code>. access_token
+	 * Setter for <code>hrdb.hr_wx_wechat.access_token</code>. access_token
 	 */
 	public void setAccessToken(String value) {
 		setValue(19, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_wechat.access_token</code>. access_token
+	 * Getter for <code>hrdb.hr_wx_wechat.access_token</code>. access_token
 	 */
 	public String getAccessToken() {
 		return (String) getValue(19);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_wechat.jsapi_ticket</code>. jsapi_ticket
+	 * Setter for <code>hrdb.hr_wx_wechat.jsapi_ticket</code>. jsapi_ticket
 	 */
 	public void setJsapiTicket(String value) {
 		setValue(20, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_wechat.jsapi_ticket</code>. jsapi_ticket
+	 * Getter for <code>hrdb.hr_wx_wechat.jsapi_ticket</code>. jsapi_ticket
 	 */
 	public String getJsapiTicket() {
 		return (String) getValue(20);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_wechat.authorized</code>. 是否授权0：无关，1：授权2：解除授权
+	 * Setter for <code>hrdb.hr_wx_wechat.authorized</code>. 是否授权0：无关，1：授权2：解除授权
 	 */
 	public void setAuthorized(Byte value) {
 		setValue(21, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_wechat.authorized</code>. 是否授权0：无关，1：授权2：解除授权
+	 * Getter for <code>hrdb.hr_wx_wechat.authorized</code>. 是否授权0：无关，1：授权2：解除授权
 	 */
 	public Byte getAuthorized() {
 		return (Byte) getValue(21);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_wechat.unauthorized_time</code>. 解除授权的时间戳
+	 * Setter for <code>hrdb.hr_wx_wechat.unauthorized_time</code>. 解除授权的时间戳
 	 */
 	public void setUnauthorizedTime(Integer value) {
 		setValue(22, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_wechat.unauthorized_time</code>. 解除授权的时间戳
+	 * Getter for <code>hrdb.hr_wx_wechat.unauthorized_time</code>. 解除授权的时间戳
 	 */
 	public Integer getUnauthorizedTime() {
 		return (Integer) getValue(22);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_wechat.authorizer_refresh_token</code>. 第三方授权的刷新token，用来刷access_token
+	 * Setter for <code>hrdb.hr_wx_wechat.authorizer_refresh_token</code>. 第三方授权的刷新token，用来刷access_token
 	 */
 	public void setAuthorizerRefreshToken(String value) {
 		setValue(23, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_wechat.authorizer_refresh_token</code>. 第三方授权的刷新token，用来刷access_token
+	 * Getter for <code>hrdb.hr_wx_wechat.authorizer_refresh_token</code>. 第三方授权的刷新token，用来刷access_token
 	 */
 	public String getAuthorizerRefreshToken() {
 		return (String) getValue(23);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_wechat.create_time</code>. 创建时间
+	 * Setter for <code>hrdb.hr_wx_wechat.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(24, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_wechat.create_time</code>. 创建时间
+	 * Getter for <code>hrdb.hr_wx_wechat.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(24);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_wechat.update_time</code>. 修改时间
+	 * Setter for <code>hrdb.hr_wx_wechat.update_time</code>. 修改时间
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(25, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_wechat.update_time</code>. 修改时间
+	 * Getter for <code>hrdb.hr_wx_wechat.update_time</code>. 修改时间
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(25);
