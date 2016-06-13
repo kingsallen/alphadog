@@ -257,6 +257,9 @@ public class WholeProfileServicesImpl implements Iface {
 		if((userRecord.getMobile() == null || userRecord.getMobile() == 0) && crawlerUser.getMobile() != null) {
 			userRecord.setMobile(crawlerUser.getMobile());
 		}
+		if(StringUtils.isNullOrEmpty(userRecord.getName()) && !StringUtils.isNullOrEmpty(crawlerUser.getName())) {
+			userRecord.setName(crawlerUser.getName());
+		}
 		ProfileBasicRecord basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"));
 		List<ProfileAttachmentRecord> attachmentRecords = profileUtils.mapToAttachmentRecords(
 				(List<Map<String, Object>>) resume.get("attachments"));
