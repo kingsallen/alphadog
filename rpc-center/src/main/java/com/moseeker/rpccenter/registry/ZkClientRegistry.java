@@ -1,26 +1,23 @@
 package com.moseeker.rpccenter.registry;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.moseeker.rpccenter.common.Constants;
+import com.moseeker.rpccenter.common.ServerNode;
+import com.moseeker.rpccenter.common.ServerNodeUtils;
+import com.moseeker.rpccenter.exception.RpcException;
+import com.moseeker.rpccenter.loadbalance.common.DynamicHostSet;
 import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.api.CuratorEvent;
-import org.apache.curator.framework.api.CuratorListener;
 import org.apache.curator.framework.imps.CuratorFrameworkState;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.KeeperException;
+import org.apache.curator.framework.state.ConnectionState;
+import org.apache.curator.framework.state.ConnectionStateListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.moseeker.rpccenter.loadbalance.common.DynamicHostSet;
-import com.moseeker.rpccenter.common.ServerNode;
-import com.moseeker.rpccenter.exception.RpcException;
-import com.moseeker.rpccenter.common.Constants;
-import com.moseeker.rpccenter.common.ServerNodeUtils;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by zzh on 16/3/30.
@@ -76,6 +73,14 @@ public class ZkClientRegistry implements IRegistry {
             zookeeper.start();
         }
 
+        try{
+            // 添加监听器
+            addListener(config, getServersPath());
+        }catch (Exception e){
+            String message = MessageFormat.format("ZkClientRegistry addListener error : {0}", config);
+            throw new RpcException(message, e);
+        }
+
         // 构建zk节点
         buildPathClients(config);
         build();
@@ -97,7 +102,6 @@ public class ZkClientRegistry implements IRegistry {
         try {
             // 注意：zk重启的过程中，节点可能会存在
             if (zookeeper.checkExists().forPath(pathBuilder.toString()) == null) {
-                //addListener(getServersPath());
                 zookeeper.create();
                 return true;
             }
@@ -109,7 +113,18 @@ public class ZkClientRegistry implements IRegistry {
         return false;
     }
 
-    private void addListener(String path) throws Exception {
+    /**
+     * 添加监听器
+     *    1) 监控服务节点的增减
+     *    2) 防止网络异常或者zookeeper挂掉的情况
+     *
+     * @param config 配置信息
+     * @param path 监听服务路径
+     * @throws Exception
+     */
+    private void addListener(final String config, String path) throws Exception {
+
+        // 监控服务节点的增减
         PathChildrenCache pathChildrenCache = new PathChildrenCache(zookeeper, path, false);
         pathChildrenCache.getListenable().addListener(new PathChildrenCacheListener() {
             @Override
@@ -118,6 +133,27 @@ public class ZkClientRegistry implements IRegistry {
             }
         });
         pathChildrenCache.start();
+
+        // 防止网络异常或者zookeeper挂掉的情况
+        zookeeper.getConnectionStateListenable().addListener(new ConnectionStateListener() {
+            @Override
+            public void stateChanged(CuratorFramework curatorFramework, ConnectionState connectionState) {
+                if (connectionState == ConnectionState.LOST) {
+                    while (true) {
+                        try {
+                            if (curatorFramework.getZookeeperClient().blockUntilConnectedOrTimedOut()) {
+                                if (buildPathClients(config)) {
+                                    break;
+                                }
+                            }
+                        } catch (Exception e) {
+                            LOGGER.error(e.getMessage(), e);
+                            break;
+                        }
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -152,10 +188,15 @@ public class ZkClientRegistry implements IRegistry {
         freshContainer(current);
     }
 
+    /**
+     * 获取服务的path
+     * <p>
+     *
+     * @return
+     */
     private String getServersPath() {
         return configPath + Constants.ZK_SEPARATOR_DEFAULT + Constants.ZK_NAMESPACE_SERVERS;
     }
-
 
     /**
      * 刷新容器
