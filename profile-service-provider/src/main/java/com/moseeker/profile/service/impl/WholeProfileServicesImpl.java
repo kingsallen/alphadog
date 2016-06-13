@@ -253,6 +253,10 @@ public class WholeProfileServicesImpl implements Iface {
 		profileRecord.setSource(UInteger.valueOf(Constant.PROFILE_SOURCE_IMPORT));
 		profileRecord.setDisable(UByte.valueOf(Constant.ENABLE));
 		
+		UserUserRecord crawlerUser = profileUtils.mapToUserUserRecord((Map<String, Object>) resume.get("user"));
+		if((userRecord.getMobile() == null || userRecord.getMobile() == 0) && crawlerUser.getMobile() != null) {
+			userRecord.setMobile(crawlerUser.getMobile());
+		}
 		ProfileBasicRecord basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"));
 		List<ProfileAttachmentRecord> attachmentRecords = profileUtils.mapToAttachmentRecords(
 				(List<Map<String, Object>>) resume.get("attachments"));

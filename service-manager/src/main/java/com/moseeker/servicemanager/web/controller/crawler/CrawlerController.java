@@ -56,6 +56,7 @@ public class CrawlerController {
 				} else {
 					return ResponseLogNotification.fail(request, res);
 				}
+				
 			} else {
 				return ResponseLogNotification.fail(request, result);
 			}
