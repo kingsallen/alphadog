@@ -52,7 +52,7 @@ public class UserFavoritePositionDaoImpl extends BaseDaoImpl<UserFavPositionReco
                     and(UserFavPosition.USER_FAV_POSITION.POSITION_ID.equal(positionId)).
                     and(UserFavPosition.USER_FAV_POSITION.FAVORITE.equal(favorite));
 
-            Record record = create.selectCount().from(tableLike).where(condition).fetchOne();
+			Record record = create.selectCount().from(tableLike).where(condition).limit(1).fetchOne();
             count = (Integer)record.getValue(0);
 
         } catch (Exception e) {
