@@ -64,7 +64,8 @@ public class JobApplicationDaoImpl extends BaseDaoImpl<JobApplicationRecord, Job
 			Condition condition = JobApplication.JOB_APPLICATION.APPLIER_ID.equal(UInteger.valueOf(userId))
 					.and(JobApplication.JOB_APPLICATION.POSITION_ID.equal(UInteger.valueOf(positionId)));
 
-			Record record = create.selectCount().from(JobApplication.JOB_APPLICATION).where(condition).fetchOne();
+			Record record = create.selectCount().from(JobApplication.JOB_APPLICATION).where(condition).limit(1)
+					.fetchOne();
 			count = (Integer) record.getValue(0);
 
 		} catch (Exception e) {

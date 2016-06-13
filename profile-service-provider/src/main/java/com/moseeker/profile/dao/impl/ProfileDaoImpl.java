@@ -348,7 +348,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						if(!StringUtils.isNullOrEmpty(workexp.getCompanyName())) {
 							HrCompanyRecord hc = create.selectFrom(HrCompany.HR_COMPANY)
 									.where(HrCompany.HR_COMPANY.NAME.equal(workexp.getCompanyName()))
-									.and(HrCompany.HR_COMPANY.DISABLE.equal((byte) (Constant.ENABLE))).fetchOne();
+									.and(HrCompany.HR_COMPANY.DISABLE.equal((byte) (Constant.ENABLE))).limit(1).fetchOne();
 							if(hc != null) {
 								workexp.setCompanyId(hc.getId());
 							} else {
@@ -360,6 +360,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 								newCompany.insert();
 								workexp.setCompanyId(newCompany.getId());
 							}
+
 						}
 						create.attach(workexp);
 						workexp.insert();
