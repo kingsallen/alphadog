@@ -97,7 +97,7 @@ public class ZkClientRegistry implements IRegistry {
         try {
             // 注意：zk重启的过程中，节点可能会存在
             if (zookeeper.checkExists().forPath(pathBuilder.toString()) == null) {
-                //addListener(getServersPath());
+                addListener(getServersPath());
                 zookeeper.create();
                 return true;
             }

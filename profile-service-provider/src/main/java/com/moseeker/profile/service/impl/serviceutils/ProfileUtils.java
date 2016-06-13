@@ -27,6 +27,7 @@ import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProjectexpRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileSkillRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileWorksRecord;
+import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.profile.dao.entity.ProfileWorkexpEntity;
 import com.moseeker.profile.dao.impl.IntentionRecord;
 
@@ -341,5 +342,14 @@ public class ProfileUtils {
 			// do nothing
 		}
 		return list;
+	}
+
+	public UserUserRecord mapToUserUserRecord(Map<String, Object> map) {
+		UserUserRecord record = null;
+		if (map != null) {
+			record = BeanUtils.MapToRecord(map, UserUserRecord.class);
+			return record;
+		}
+		return record;
 	}
 }
