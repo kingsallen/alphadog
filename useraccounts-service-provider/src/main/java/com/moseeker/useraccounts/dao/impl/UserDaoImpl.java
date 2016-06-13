@@ -154,7 +154,7 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
 
         } finally {
             if(conn != null && !conn.isClosed()) {
-                conn.isClosed();
+                conn.close();
             }
         }
         return 0;
@@ -183,7 +183,7 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
             logger.error(e.getMessage(), e);
         }finally {
             if(conn != null && !conn.isClosed()) {
-                conn.isClosed();
+            	 conn.close();
             }
         }
         return user;
