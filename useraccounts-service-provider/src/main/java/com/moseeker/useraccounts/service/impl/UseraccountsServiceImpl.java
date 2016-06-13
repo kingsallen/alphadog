@@ -95,7 +95,7 @@ public class UseraccountsServiceImpl implements Iface {
             filters.put("unionid", userloginreq.getUnionid());
         } else {
             filters.put("username", userloginreq.getMobile());
-            filters.put("password", MD5Util.md5(userloginreq.getPassword()));
+            filters.put("password", MD5Util.encryptSHA(userloginreq.getPassword()));
         }
 
         query.setEqualFilter(filters);
@@ -243,9 +243,9 @@ public class UseraccountsServiceImpl implements Iface {
         if (user.password == null) {
             hasPassword = false;
             plainPassword = StringUtils.getRandomString(6);
-            user.password = MD5Util.md5(plainPassword);
+            user.password = MD5Util.encryptSHA(plainPassword);
         }else{
-        	user.password = MD5Util.md5(user.password);
+        	user.password = MD5Util.encryptSHA(user.password);
         }
 
         try {
@@ -535,7 +535,7 @@ public class UseraccountsServiceImpl implements Iface {
         CommonQuery query = new CommonQuery();
         Map<String, String> filters = new HashMap<>();
         filters.put("id", String.valueOf(user_id));
-        filters.put("password", MD5Util.md5(old_password));
+        filters.put("password", MD5Util.encryptSHA(old_password));
         query.setEqualFilter(filters);
 
         int result = 0;
@@ -552,10 +552,10 @@ public class UseraccountsServiceImpl implements Iface {
                     filters.put("id", String.valueOf(parentid));
                     query.setEqualFilter(filters);
                     UserUserRecord userParent = userdao.getResource(query);
-                    userParent.setPassword(MD5Util.md5(password));
+                    userParent.setPassword(MD5Util.encryptSHA(password));
                     result = userdao.putResource(userParent);
                 }
-                user.setPassword(MD5Util.md5(password));
+                user.setPassword(MD5Util.encryptSHA(password));
                 result = userdao.putResource(user);
                 if (result > 0) {
                     return ResponseUtils.success(null);
@@ -637,10 +637,10 @@ public class UseraccountsServiceImpl implements Iface {
                     filters.put("id", String.valueOf(parentid));
                     query.setEqualFilter(filters);
                     UserUserRecord userParent = userdao.getResource(query);
-                    userParent.setPassword(MD5Util.md5(password));
+                    userParent.setPassword(MD5Util.encryptSHA(password));
                     result = userdao.putResource(userParent);
                 }
-                user.setPassword(MD5Util.md5(password));
+                user.setPassword(MD5Util.encryptSHA(password));
                 result = userdao.putResource(user);
                 if (result > 0) {
                     return ResponseUtils.success(null);

@@ -163,7 +163,7 @@ public class UserHrAccountServiceImpl implements Iface {
             }
 
             // 密码加密
-            userHrAccount.setPassword(MD5Util.md5(userHrAccount.password));
+            userHrAccount.setPassword(MD5Util.encryptSHA(userHrAccount.password));
 
             // 添加HR用户
             UserHrAccountRecord userHrAccountRecord = (UserHrAccountRecord) BeanUtils.structToDB(userHrAccount,
