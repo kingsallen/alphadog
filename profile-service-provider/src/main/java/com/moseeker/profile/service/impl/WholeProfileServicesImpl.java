@@ -101,9 +101,9 @@ public class WholeProfileServicesImpl implements Iface {
 				profileEqualFilter.put("id", String.valueOf(profileRecord.getId()));
 				profileQuery.setEqualFilter(profileEqualFilter);
 				
-				List<DictConstantRecord> constantRecords = constantDao.getCitiesByParentCodes(Arrays.asList(3109, 2103, 3102, 2105, 3120, 3115, 3114, 3120));
+				List<DictConstantRecord> constantRecords = constantDao.getCitiesByParentCodes(Arrays.asList(3109, 2103, 3102, 2105, 3120, 3115, 3114, 3119, 3120));
 				
-				Map<String, Object> profileprofile = buildProfile(profileRecord, query);
+				Map<String, Object> profileprofile = buildProfile(profileRecord, query, constantRecords);
 				profile.put("profile", profileprofile);
 
 				Map<String, Object> basic = buildBasic(profileRecord, query, constantRecords);
@@ -186,6 +186,13 @@ public class WholeProfileServicesImpl implements Iface {
 			if(repeatProfileRecord != null) {
 				return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ALLREADY_EXIST);
 			}
+			UserUserRecord crawlerUser = profileUtils.mapToUserUserRecord((Map<String, Object>) resume.get("user"));
+			if((userRecord.getMobile() == null || userRecord.getMobile() == 0) && crawlerUser.getMobile() != null) {
+				userRecord.setMobile(crawlerUser.getMobile());
+			}
+			if(crawlerUser != null && !StringUtils.isNullOrEmpty(crawlerUser.getName())) {
+				userRecord.setName(crawlerUser.getName());
+			}
 			ProfileBasicRecord basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"));
 			if(basicRecord != null && StringUtils.isNullOrEmpty(basicRecord.getName())) {
 				basicRecord.setName(userRecord.getName());
@@ -217,7 +224,7 @@ public class WholeProfileServicesImpl implements Iface {
 
 			int id = profileDao.saveProfile(profileRecord, basicRecord, attachmentRecords, awardsRecords,
 					credentialsRecords, educationRecords, importRecords, intentionRecords, languages, otherRecord,
-					projectExps, skillRecords, workexpRecords, worksRecords);
+					projectExps, skillRecords, workexpRecords, worksRecords, userRecord);
 			if(id > 0) {
 				return ResponseUtils.success(String.valueOf(id));
 			}
@@ -238,7 +245,7 @@ public class WholeProfileServicesImpl implements Iface {
 		if(userRecord == null) {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_USER_NOTEXIST);
 		}
-		
+		//ProfileProfileRecord profileRecord = profileUtils.mapToProfileRecord((Map<String, Object>) resume.get("user_user"));
 		List<ProfileProfileRecord> oldProfile = profileDao.getProfilesByIdOrUserIdOrUUID(userId, 0, null);
 		
 		profileRecord.setUuid(UUID.randomUUID().toString());
@@ -272,7 +279,7 @@ public class WholeProfileServicesImpl implements Iface {
 				(List<Map<String, Object>>) resume.get("works"));
 		int id = profileDao.saveProfile(profileRecord, basicRecord, attachmentRecords, awardsRecords,
 				credentialsRecords, educationRecords, importRecords, intentionRecords, languages, otherRecord,
-				projectExps, skillRecords, workexpRecords, worksRecords);
+				projectExps, skillRecords, workexpRecords, worksRecords, userRecord);
 		if(id > 0) {
 			if(oldProfile != null && oldProfile.size() > 0) {
 				for(ProfileProfileRecord record : oldProfile) {
@@ -569,22 +576,19 @@ public class WholeProfileServicesImpl implements Iface {
 					map.put("id", record.getId().intValue());
 					map.put("college_name", record.getCollegeName());
 					map.put("college_code", record.getCollegeCode());
+					map.put("college_logo", record.getCollegeLogo());
 					/* 如果college_code合法，有限选择字典里的图片 */
-					boolean existCollegeCode = false;
 					if (record.getCollegeCode() != null && record.getCollegeCode().intValue() > 0
 							&& collegeRecords.size() > 0) {
 						for (DictCollegeRecord collegeRecord : collegeRecords) {
 							if (collegeRecord.getCode().intValue() == record.getCollegeCode().intValue()
 									&& !StringUtils.isNullOrEmpty(collegeRecord.getLogo())) {
-								existCollegeCode = true;
 								map.put("college_logo", collegeRecord.getLogo());
+								map.put("college_name", collegeRecord.getName());
+								break;
 							}
 						}
 					}
-					if (!existCollegeCode) {
-						map.put("college_logo", record.getCollegeLogo());
-					}
-
 					map.put("major_name", record.getMajorName());
 					map.put("major_code", record.getMajorCode());
 					map.put("degree", record.getDegree().intValue());
@@ -729,7 +733,7 @@ public class WholeProfileServicesImpl implements Iface {
 		return map;
 	}
 	
-	private Map<String, Object> buildProfile(ProfileProfileRecord profileRecord, CommonQuery query) {
+	private Map<String, Object> buildProfile(ProfileProfileRecord profileRecord, CommonQuery query, List<DictConstantRecord> constantRecords) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("id", profileRecord.getId().intValue());
 		if(profileRecord.getUuid() != null) {
@@ -740,6 +744,16 @@ public class WholeProfileServicesImpl implements Iface {
 		}
 		if(profileRecord.getSource() != null) {
 			map.put("source", profileRecord.getLang().intValue());
+			if(constantRecords != null && constantRecords.size() > 0) {
+				for(DictConstantRecord constantRecord : constantRecords) {
+					if(constantRecord.getParentCode().intValue() == 3119) {
+						if(profileRecord.getLang().intValue() == constantRecord.getCode().intValue()) {
+							map.put("source_name", constantRecord.getName());
+							break;
+						}
+					}
+				}
+			}
 		}
 		if(profileRecord.getCompleteness() != null) {
 			map.put("completeness", profileRecord.getCompleteness().intValue());

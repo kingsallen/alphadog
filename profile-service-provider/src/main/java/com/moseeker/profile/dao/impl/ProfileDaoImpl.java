@@ -18,6 +18,8 @@ import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
 import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.db.dictdb.tables.DictCountry;
+import com.moseeker.db.dictdb.tables.records.DictCountryRecord;
 import com.moseeker.db.hrdb.tables.HrCompany;
 import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.db.profiledb.tables.ProfileProfile;
@@ -33,6 +35,7 @@ import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProjectexpRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileSkillRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileWorksRecord;
+import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.profile.dao.entity.ProfileWorkexpEntity;
 
@@ -226,7 +229,8 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 			ProfileImportRecord importRecord, List<IntentionRecord> intentionRecords,
 			List<ProfileLanguageRecord> languages, ProfileOtherRecord otherRecord,
 			List<ProfileProjectexpRecord> projectExps, List<ProfileSkillRecord> skillRecords,
-			List<ProfileWorkexpEntity> workexpRecords, List<ProfileWorksRecord> worksRecords) {
+			List<ProfileWorkexpEntity> workexpRecords, List<ProfileWorksRecord> worksRecords,
+			UserUserRecord userRecord) {
 		int profileId = 0;
 		Connection conn = null;
 		try {
@@ -243,6 +247,12 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 					basicRecord.setProfileId(profileRecord.getId());
 					basicRecord.setCreateTime(now);
 					create.attach(basicRecord);
+					if(!StringUtils.isNullOrEmpty(basicRecord.getNationalityName())) {
+						DictCountryRecord countryRecord = create.selectFrom(DictCountry.DICT_COUNTRY)
+								.where(DictCountry.DICT_COUNTRY.NAME.equal(basicRecord.getNationalityName())).fetchOne();
+						basicRecord.setNationalityCode(countryRecord.getId().intValue());
+					}
+					
 					basicRecord.insert();
 				}
 				if (attachmentRecords != null && attachmentRecords.size() > 0) {
@@ -345,11 +355,11 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 					workexpRecords.forEach(workexp -> {
 						workexp.setProfileId(profileRecord.getId());
 						workexp.setCreateTime(now);
-						if(!StringUtils.isNullOrEmpty(workexp.getCompanyName())) {
+						if (!StringUtils.isNullOrEmpty(workexp.getCompanyName())) {
 							HrCompanyRecord hc = create.selectFrom(HrCompany.HR_COMPANY)
 									.where(HrCompany.HR_COMPANY.NAME.equal(workexp.getCompanyName()))
 									.and(HrCompany.HR_COMPANY.DISABLE.equal((byte) (Constant.ENABLE))).fetchOne();
-							if(hc != null) {
+							if (hc != null) {
 								workexp.setCompanyId(hc.getId());
 							} else {
 								HrCompanyRecord newCompany = new HrCompanyRecord();

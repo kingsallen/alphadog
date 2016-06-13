@@ -15,6 +15,7 @@ import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProjectexpRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileSkillRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileWorksRecord;
+import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.profile.dao.entity.ProfileWorkexpEntity;
 import com.moseeker.profile.dao.impl.IntentionRecord;
 
@@ -30,7 +31,8 @@ public interface ProfileDao extends BaseDao<ProfileProfileRecord> {
 			ProfileImportRecord importRecords, List<IntentionRecord> intentionRecords,
 			List<ProfileLanguageRecord> languages, ProfileOtherRecord otherRecord,
 			List<ProfileProjectexpRecord> projectExps, List<ProfileSkillRecord> skillRecords,
-			List<ProfileWorkexpEntity> workexpRecords, List<ProfileWorksRecord> worksRecords);
+			List<ProfileWorkexpEntity> workexpRecords, List<ProfileWorksRecord> worksRecords,
+			UserUserRecord userRecord);
 
 	int deleteProfile(int profileId);
 
