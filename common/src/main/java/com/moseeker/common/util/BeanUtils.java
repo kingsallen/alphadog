@@ -361,7 +361,7 @@ public class BeanUtils {
 	}
 
 	private static ULong converToULong(Object value) {
-		if (value instanceof String) {
+		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
 				return ULong.valueOf((String) value);
 			} catch (NumberFormatException e) {
@@ -399,7 +399,7 @@ public class BeanUtils {
 	}
 
 	private static UShort converToUShort(Object value) {
-		if (value instanceof String) {
+		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
 				return UShort.valueOf((String) value);
 			} catch (NumberFormatException e) {
@@ -437,7 +437,7 @@ public class BeanUtils {
 	}
 
 	private static UByte converToUByte(Object value) {
-		if (value instanceof String) {
+		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
 				return UByte.valueOf((String) value);
 			} catch (NumberFormatException e) {
@@ -477,7 +477,7 @@ public class BeanUtils {
 	}
 
 	private static Short convertToShort(Object value) {
-		if (value instanceof String) {
+		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
 				return Short.valueOf((String) value);
 			} catch (NumberFormatException e) {
@@ -515,7 +515,7 @@ public class BeanUtils {
 	}
 
 	private static UInteger convertToUInteger(Object value) {
-		if (value instanceof String) {
+		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
 				return UInteger.valueOf((String) value);
 			} catch (NumberFormatException e) {
@@ -559,7 +559,7 @@ public class BeanUtils {
 	}
 
 	private static java.sql.Timestamp convertToSQLTimestamp(Object value) {
-		if (value instanceof String) {
+		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
 				if(((String)value).length() == 10) {
 					return new java.sql.Timestamp(DateUtils.shortDateToDate((String) value).getTime());
@@ -605,7 +605,7 @@ public class BeanUtils {
 	}
 
 	private static java.sql.Date convertToSQLDate(Object value) {
-		if (value instanceof String) {
+		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
 				return new java.sql.Date(DateUtils.nomalDateToDate((String) value).getTime());
 			} catch (ParseException e) {
@@ -645,7 +645,7 @@ public class BeanUtils {
 	}
 
 	public static Boolean convertToBoolean(Object value) {
-		if (value instanceof String) {
+		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
 				return Boolean.valueOf((String) value);
 			} catch (Exception e) {
@@ -724,7 +724,7 @@ public class BeanUtils {
 	}
 
 	public static Double converToDouble(Object value) {
-		if (value instanceof String) {
+		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
 				return Double.valueOf((String) value);
 			} catch (NumberFormatException e) {
@@ -764,7 +764,7 @@ public class BeanUtils {
 	}
 
 	public static Float converToFloat(Object value) {
-		if (value instanceof String) {
+		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
 				return Float.valueOf((String) value);
 			} catch (NumberFormatException e) {
@@ -804,7 +804,7 @@ public class BeanUtils {
 	}
 
 	public static Integer converToInteger(Object value) {
-		if (value instanceof String) {
+		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
 				return Integer.valueOf((String) value);
 			} catch (NumberFormatException e) {
@@ -844,7 +844,7 @@ public class BeanUtils {
 	}
 
 	public static Byte converToByte(Object value) {
-		if (value instanceof String) {
+		if (value instanceof String && !((String) value).trim().equals("")) {
 			return Byte.valueOf((String) value);
 		} else if (value instanceof Byte) {
 			return (Byte) value;
@@ -883,7 +883,7 @@ public class BeanUtils {
 	}
 
 	public static Long converToLong(Object value) {
-		if (value instanceof String) {
+		if (value instanceof String && !((String) value).trim().equals("")) {
 			return Long.valueOf((String) value);
 		} else if (value instanceof Byte) {
 			return Long.valueOf((Byte) value);

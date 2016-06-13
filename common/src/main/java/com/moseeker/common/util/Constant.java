@@ -115,4 +115,7 @@ public final class Constant {
     public static final int ACCOUNT_TYPE_SUPERACCOUNT 	= 0; 	//超级帐号
 	public static final int ACCOUNT_TYPE_SUBORDINATE 	= 1; 	//子账号
 	public static final int ACCOUNT_TYPE_NORMAL 		= 2; 	//普通帐号
+	
+	
+	public static final String THRIFT_CONNECTION_LOST = "thrift 失去连接";
 }

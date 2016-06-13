@@ -86,19 +86,16 @@ public class UseraccountsServiceImpl implements Iface {
         	// 存在验证码,就是手机号+验证码登陆.
         	String mobile = userloginreq.getMobile();
             if (validateCode(mobile, code, 1)) {
-                filters.put("mobile", mobile);
+                filters.put("username", mobile);
                 ;
             } else {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
             }        	
-        }
-        
-        
-        if (userloginreq.getUnionid() != null) {
+        }else if (userloginreq.getUnionid() != null) {
             filters.put("unionid", userloginreq.getUnionid());
         } else {
-            filters.put("mobile", userloginreq.getMobile());
-            filters.put("password", MD5Util.md5(userloginreq.getPassword()));
+            filters.put("username", userloginreq.getMobile());
+            filters.put("password", MD5Util.encryptSHA(userloginreq.getPassword()));
         }
 
         query.setEqualFilter(filters);
@@ -121,9 +118,17 @@ public class UseraccountsServiceImpl implements Iface {
 
                     resp.put("user_id", user.getId().intValue());
                     resp.put("unionid", user.getUnionid());
-                    resp.put("mobile", user.getMobile());
+                    
+                    if (user.getUsername().length()<12){
+                    	resp.put("mobile", user.getUsername());
+                    }else{
+                    	resp.put("mobile", "");
+                    }
+                    
                     resp.put("last_login_time", user.getLastLoginTime());
-
+                    resp.put("name", user.getName());
+                    resp.put("headimg", user.getHeadimg());
+                    
                     user.setLastLoginTime(new Timestamp(new Date().getTime()));
                     user.setLoginCount(user.getLoginCount()+1);
                     
@@ -238,9 +243,9 @@ public class UseraccountsServiceImpl implements Iface {
         if (user.password == null) {
             hasPassword = false;
             plainPassword = StringUtils.getRandomString(6);
-            user.password = MD5Util.md5(plainPassword);
+            user.password = MD5Util.encryptSHA(plainPassword);
         }else{
-        	user.password = MD5Util.md5(user.password);
+        	user.password = MD5Util.encryptSHA(user.password);
         }
 
         try {
@@ -297,7 +302,7 @@ public class UseraccountsServiceImpl implements Iface {
 
             CommonQuery query2 = new CommonQuery();
             Map<String, String> filters2 = new HashMap<>();
-            filters2.put("mobile", mobile);
+            filters2.put("username", mobile);
             query2.setEqualFilter(filters2);
             UserUserRecord userMobile = userdao.getResource(query2);
 
@@ -309,6 +314,7 @@ public class UseraccountsServiceImpl implements Iface {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_BIND_NONEED);
             } else if (userUnionid != null && userMobile == null) {
                 userUnionid.setMobile(Long.valueOf(mobile));
+                userUnionid.setUsername(mobile);
                 if (userdao.putResource(userUnionid) > 0){
                 	 Map<String, Object> map = new HashMap<String, Object>();
                      map.put("id", userUnionid.getId().intValue());
@@ -529,7 +535,7 @@ public class UseraccountsServiceImpl implements Iface {
         CommonQuery query = new CommonQuery();
         Map<String, String> filters = new HashMap<>();
         filters.put("id", String.valueOf(user_id));
-        filters.put("password", MD5Util.md5(old_password));
+        filters.put("password", MD5Util.encryptSHA(old_password));
         query.setEqualFilter(filters);
 
         int result = 0;
@@ -546,10 +552,10 @@ public class UseraccountsServiceImpl implements Iface {
                     filters.put("id", String.valueOf(parentid));
                     query.setEqualFilter(filters);
                     UserUserRecord userParent = userdao.getResource(query);
-                    userParent.setPassword(MD5Util.md5(password));
+                    userParent.setPassword(MD5Util.encryptSHA(password));
                     result = userdao.putResource(userParent);
                 }
-                user.setPassword(MD5Util.md5(password));
+                user.setPassword(MD5Util.encryptSHA(password));
                 result = userdao.putResource(user);
                 if (result > 0) {
                     return ResponseUtils.success(null);
@@ -579,7 +585,7 @@ public class UseraccountsServiceImpl implements Iface {
         Map<String, String> filters = new HashMap<>();
         
         if (mobile.length()>0){
-            filters.put("mobile", mobile);
+            filters.put("username", mobile);
             query.setEqualFilter(filters);
             try {
                 UserUserRecord user = userdao.getResource(query);
@@ -614,7 +620,7 @@ public class UseraccountsServiceImpl implements Iface {
 
         CommonQuery query = new CommonQuery();
         Map<String, String> filters = new HashMap<>();
-        filters.put("mobile", mobile);
+        filters.put("username", mobile);
         query.setEqualFilter(filters);
 
         int result = 0;
@@ -631,10 +637,10 @@ public class UseraccountsServiceImpl implements Iface {
                     filters.put("id", String.valueOf(parentid));
                     query.setEqualFilter(filters);
                     UserUserRecord userParent = userdao.getResource(query);
-                    userParent.setPassword(MD5Util.md5(password));
+                    userParent.setPassword(MD5Util.encryptSHA(password));
                     result = userdao.putResource(userParent);
                 }
-                user.setPassword(MD5Util.md5(password));
+                user.setPassword(MD5Util.encryptSHA(password));
                 result = userdao.putResource(user);
                 if (result > 0) {
                     return ResponseUtils.success(null);
@@ -717,7 +723,7 @@ public class UseraccountsServiceImpl implements Iface {
         CommonQuery query = new CommonQuery();
         Map<String, String> filters = new HashMap<>();
         if (mobile.length()>0){
-            filters.put("mobile", mobile);
+            filters.put("username", mobile);
             query.setEqualFilter(filters);
             try {
                 UserUserRecord user = userdao.getResource(query);
@@ -747,7 +753,7 @@ public class UseraccountsServiceImpl implements Iface {
         Map<String, String> filters = new HashMap<>();
         
         if (oldmobile.length()>0){
-            filters.put("mobile", oldmobile);
+            filters.put("username", oldmobile);
             query.setEqualFilter(filters);
             try {
                 UserUserRecord user = userdao.getResource(query);
@@ -792,7 +798,7 @@ public class UseraccountsServiceImpl implements Iface {
         Map<String, String> filters = new HashMap<>();
         
         if (newmobile.length()>0){
-            filters.put("mobile", newmobile);
+            filters.put("username", newmobile);
             query.setEqualFilter(filters);
             try {
                 UserUserRecord user = userdao.getResource(query);
@@ -846,9 +852,12 @@ public class UseraccountsServiceImpl implements Iface {
                     query.setEqualFilter(filters);
                     UserUserRecord userParent = userdao.getResource(query);
                     userParent.setMobile(Long.parseLong(newmobile));
+                    userParent.setUsername(newmobile);
                     result = userdao.putResource(userParent);
                 }
                 user.setMobile(Long.parseLong(newmobile));
+                user.setUsername(newmobile);
+
                 result = userdao.putResource(user);
                 if (result > 0) {
                     return ResponseUtils.success(null);

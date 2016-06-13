@@ -64,7 +64,8 @@ public class JobApplicationDaoImpl extends BaseDaoImpl<JobApplicationRecord, Job
 			Condition condition = JobApplication.JOB_APPLICATION.APPLIER_ID.equal(UInteger.valueOf(userId))
 					.and(JobApplication.JOB_APPLICATION.POSITION_ID.equal(UInteger.valueOf(positionId)));
 
-			Record record = create.selectCount().from(JobApplication.JOB_APPLICATION).where(condition).fetchOne();
+			Record record = create.selectCount().from(JobApplication.JOB_APPLICATION).where(condition).limit(1)
+					.fetchOne();
 			count = (Integer) record.getValue(0);
 
 		} catch (Exception e) {
@@ -96,11 +97,17 @@ public class JobApplicationDaoImpl extends BaseDaoImpl<JobApplicationRecord, Job
 			if (result != null && result.size() > 0) {
 				basicRecord = (ProfileBasicRecord) result.get(0);
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			logger.error("error", e);
 			throw new Exception(e);
 		} finally {
-			// do nothing
+			try {
+				if (conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return basicRecord;
 	}
@@ -121,12 +128,18 @@ public class JobApplicationDaoImpl extends BaseDaoImpl<JobApplicationRecord, Job
 			if (result != null && result.size() > 0) {
 				viewNumber = result.get(0).value1();
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			conn.rollback();
 			logger.error("error", e);
 			throw new Exception(e);
 		} finally {
-			// do nothing
+			try {
+				if (conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return viewNumber;
 	}
@@ -149,12 +162,18 @@ public class JobApplicationDaoImpl extends BaseDaoImpl<JobApplicationRecord, Job
 				jobApplicationRecord.insert();
 				appId = jobApplicationRecord.getId().intValue();
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			conn.rollback();
 			logger.error("error", e);
 			throw new Exception(e);
 		} finally {
-			// do nothing
+			try {
+				if (conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		return appId;
 	}

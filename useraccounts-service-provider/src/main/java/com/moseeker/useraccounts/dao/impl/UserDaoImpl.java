@@ -1,7 +1,6 @@
 package com.moseeker.useraccounts.dao.impl;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import org.jooq.Condition;
 import org.jooq.DSLContext;
@@ -43,10 +42,8 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
 
     @Override
     public void combineAccount(int orig, int dest) throws Exception {
-        try {
-            conn = DBConnHelper.DBConn.getConn();
-            create = DBConnHelper.DBConn.getJooqDSL(conn);
-            create.update(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD)
+    	try(Connection conn = DBConnHelper.DBConn.getConn(); DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);) {
+    		create.update(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD)
             .set(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.SYSUSER_ID, Long.valueOf(orig))
             .where(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.SYSUSER_ID.equal(Long.valueOf(dest)))
             .execute();
@@ -74,13 +71,41 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
             .set(CandidateCompany.CANDIDATE_COMPANY.SYS_USER_ID, orig)
             .where(CandidateCompany.CANDIDATE_COMPANY.SYS_USER_ID.equal(dest))
             .execute();
-        } catch (SQLException e) {
+    	}  catch (Exception e) {
+        	conn.rollback();
             logger.error(e.getMessage(), e);
-        } finally {
-            if(conn != null && !conn.isClosed()) {
-                conn.isClosed();
-            }
         }
+        /*
+		 * try { conn = DBConnHelper.DBConn.getConn(); create =
+		 * DBConnHelper.DBConn.getJooqDSL(conn);
+		 * create.update(CandidatePositionShareRecord.
+		 * CANDIDATE_POSITION_SHARE_RECORD)
+		 * .set(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.
+		 * SYSUSER_ID, Long.valueOf(orig))
+		 * .where(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.
+		 * SYSUSER_ID.equal(Long.valueOf(dest))) .execute();
+		 * create.update(HrWxHrChatList.HR_WX_HR_CHAT_LIST)
+		 * .set(HrWxHrChatList.HR_WX_HR_CHAT_LIST.SYSUSER_ID, orig)
+		 * .where(HrWxHrChatList.HR_WX_HR_CHAT_LIST.SYSUSER_ID.equal(dest))
+		 * .execute(); create.update(UserFavPosition.USER_FAV_POSITION)
+		 * .set(UserFavPosition.USER_FAV_POSITION.SYSUSER_ID, orig)
+		 * .where(UserFavPosition.USER_FAV_POSITION.SYSUSER_ID.equal(dest))
+		 * .execute(); create.update(UserIntention.USER_INTENTION)
+		 * .set(UserIntention.USER_INTENTION.SYSUSER_ID, orig)
+		 * .where(UserIntention.USER_INTENTION.SYSUSER_ID.equal(dest))
+		 * .execute(); create.update(UserWxUser.USER_WX_USER)
+		 * .set(UserWxUser.USER_WX_USER.SYSUSER_ID, orig)
+		 * .where(UserWxUser.USER_WX_USER.SYSUSER_ID.equal(dest)) .execute();
+		 * create.update(UserWxViewer.USER_WX_VIEWER)
+		 * .set(UserWxViewer.USER_WX_VIEWER.SYSUSER_ID, orig)
+		 * .where(UserWxViewer.USER_WX_VIEWER.SYSUSER_ID.equal(dest))
+		 * .execute(); create.update(CandidateCompany.CANDIDATE_COMPANY)
+		 * .set(CandidateCompany.CANDIDATE_COMPANY.SYS_USER_ID, orig)
+		 * .where(CandidateCompany.CANDIDATE_COMPANY.SYS_USER_ID.equal(dest))
+		 * .execute(); } catch (Exception e) { conn.rollback();
+		 * logger.error(e.getMessage(), e); } finally { if(conn != null &&
+		 * !conn.isClosed()) { conn.close(); } }
+		 */
         
     }
 
@@ -129,7 +154,7 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
 
         } finally {
             if(conn != null && !conn.isClosed()) {
-                conn.isClosed();
+                conn.close();
             }
         }
         return 0;
@@ -152,13 +177,13 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
 
             condition = UserUser.USER_USER.ID.equal(UInteger.valueOf(userId));
 
-            user = create.select().from(UserUser.USER_USER).where(condition).fetchOne().into(User.class);
+			user = create.select().from(UserUser.USER_USER).where(condition).limit(1).fetchOne().into(User.class);
 
         }catch (Exception e){
             logger.error(e.getMessage(), e);
         }finally {
             if(conn != null && !conn.isClosed()) {
-                conn.isClosed();
+            	 conn.close();
             }
         }
         return user;
