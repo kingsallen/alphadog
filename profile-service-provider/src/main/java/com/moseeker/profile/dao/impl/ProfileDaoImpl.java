@@ -141,7 +141,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 				if (condition != null) {
 					Result<ProfileProfileRecord> result = create.selectFrom(ProfileProfile.PROFILE_PROFILE)
 							.where(condition).and(ProfileProfile.PROFILE_PROFILE.DISABLE.equal(UByte.valueOf(1)))
-							.limit(1).fetch();
+							.fetch();
 					if (result != null && result.size() > 0) {
 						records = result;
 					}
@@ -424,6 +424,30 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 								create.attach(newCompany);
 								newCompany.insert();
 								workexp.setCompanyId(newCompany.getId());
+							}
+						}
+						if(!StringUtils.isNullOrEmpty(workexp.getIndustryName())) {
+							for(DictIndustryRecord industryRecord : industries) {
+								if(workexp.getIndustryName().equals(industryRecord.getName())) {
+									workexp.setIndustryCode(industryRecord.getCode());
+									break;
+								}
+							}
+						}
+						if(!StringUtils.isNullOrEmpty(workexp.getCityName())) {
+							for(DictCityRecord cityRecord : cities) {
+								if(workexp.getCityName().equals(cityRecord.getName())) {
+									workexp.setCityCode(cityRecord.getCode());
+									break;
+								}
+							}
+						}
+						if(!StringUtils.isNullOrEmpty(workexp.getPositionName())) {
+							for(DictPositionRecord positionRecord : positions) {
+								if(positionRecord.getName().equals(workexp.getPositionName())) {
+									workexp.setPositionCode(positionRecord.getCode());
+									break;
+								}
 							}
 						}
 						
