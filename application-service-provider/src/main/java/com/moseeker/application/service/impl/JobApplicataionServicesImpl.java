@@ -1,15 +1,5 @@
 package com.moseeker.application.service.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.thrift.TException;
-import org.jooq.types.UInteger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSON;
 import com.moseeker.application.dao.JobApplicationDao;
 import com.moseeker.application.dao.JobResumeBasicDao;
@@ -29,6 +19,15 @@ import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.application.struct.JobResumeBasic;
 import com.moseeker.thrift.gen.application.struct.JobResumeOther;
 import com.moseeker.thrift.gen.common.struct.Response;
+import org.apache.thrift.TException;
+import org.jooq.types.UInteger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 申请服务实现类
@@ -80,7 +79,7 @@ public class JobApplicataionServicesImpl implements Iface {
             JobApplicationRecord jobApplicationRecord = (JobApplicationRecord)BeanUtils.structToDB(jobApplication,
                     JobApplicationRecord.class);
             if(jobApplicationRecord.getWechatId() == null) {
-            	jobApplicationRecord.setWechatId(UInteger.valueOf(0));
+                jobApplicationRecord.setWechatId(UInteger.valueOf(0));
             }
             int jobApplicationId = jobApplicationDao.saveApplication(jobApplicationRecord);
             if (jobApplicationId > 0) {
@@ -91,10 +90,10 @@ public class JobApplicataionServicesImpl implements Iface {
                 JobResumeBasicRecord basicRecord = (JobResumeBasicRecord)BeanUtils.structToDB(jobResumeBasic, JobResumeBasicRecord.class);
                 //查询地址
                 if(jobApplication.getApp_tpl_id() > 0) {
-                	 ProfileBasicRecord bRecord = jobApplicationDao.getBasicByUserId(jobApplication.getApp_tpl_id());
-                	 if(bRecord != null) {
-                		 basicRecord.setAddress(bRecord.getCityName());
-                	 }
+                    ProfileBasicRecord bRecord = jobApplicationDao.getBasicByUserId(jobApplication.getApp_tpl_id());
+                    if(bRecord != null) {
+                        basicRecord.setAddress(bRecord.getCityName());
+                    }
                 }
                 //查询浏览次数
                 int viewNumber = jobApplicationDao.getViewNumber(jobApplication.getPosition_id(), jobApplication.getApplier_id());
@@ -102,7 +101,7 @@ public class JobApplicataionServicesImpl implements Iface {
                 basicRecord.setPositionId(jobApplicationRecord.getPositionId().intValue());
                 basicRecord.setViewCount(Long.valueOf(viewNumber));
                 if(jobResumeBasic.getAppid() == 1) {
-                	 basicRecord.setFirstname(String.valueOf(jobResumeBasic.getAppid()));
+                     basicRecord.setFirstname(String.valueOf(jobResumeBasic.getAppid()));
                 }
                 jobResumeBasicDao.postResource(basicRecord);
                 //jobResumeBasicDao.postResource(basicRecord);
@@ -120,7 +119,7 @@ public class JobApplicataionServicesImpl implements Iface {
         } finally {
             //do nothing
         }
-        return ResponseUtils.fail("JobApplication failed");
+        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
     }
 
     /**
@@ -235,7 +234,7 @@ public class JobApplicataionServicesImpl implements Iface {
         }
 
         String applicationCountCheck = redisClient.get(Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
-                String.valueOf(companyId), String.valueOf(positionId));
+                String.valueOf(userId), String.valueOf(companyId));
 
         // 超出申请次数限制, 每月每家公司一个人只能申请3次
         if(applicationCountCheck != null && Integer.valueOf(applicationCountCheck) >= APPLICATION_COUNT_LIMIT){

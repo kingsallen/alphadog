@@ -46,7 +46,7 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
 				}
 			}
 			records = selectCondition.fetch();
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		} finally {
 			try {
@@ -76,7 +76,7 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
 			if (result != null && result.size() > 0) {
 				record = result.get(0);
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		} finally {
 			try {

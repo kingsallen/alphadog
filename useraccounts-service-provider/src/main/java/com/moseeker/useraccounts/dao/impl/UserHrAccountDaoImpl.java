@@ -124,7 +124,6 @@ public class UserHrAccountDaoImpl extends BaseDaoImpl<UserHrAccountRecord, UserH
 			}
 		}  catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			conn.rollback();
 		} finally {
 			if (conn != null && !conn.isClosed()) {
 				conn.close();

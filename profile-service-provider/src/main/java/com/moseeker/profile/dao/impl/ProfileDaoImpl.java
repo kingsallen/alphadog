@@ -82,7 +82,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 					}
 				}
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		} finally {
 			try {
@@ -136,7 +136,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 					}
 				}
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		} finally {
 			try {
@@ -195,7 +195,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 				result = stmt.executeUpdate("delete from profiledb.profile_profile where id = " + profileId);
 				conn.commit();
 				conn.setAutoCommit(true);
-			} catch (SQLException e) {
+			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 				try {
 					if (conn != null && !conn.isClosed()) {
@@ -347,8 +347,8 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						workexp.setCreateTime(now);
 						HrCompanyRecord hc = create.selectFrom(HrCompany.HR_COMPANY)
 								.where(HrCompany.HR_COMPANY.NAME.equal(workexp.getCompanyName()))
-								.and(HrCompany.HR_COMPANY.DISABLE.equal((byte) (Constant.ENABLE))).fetchOne();
-						if(hc != null) {
+								.and(HrCompany.HR_COMPANY.DISABLE.equal((byte) (Constant.ENABLE))).limit(1).fetchOne();
+						if (hc != null) {
 							workexp.setCompanyId(hc.getId());
 						} else {
 							HrCompanyRecord newCompany = new HrCompanyRecord();
@@ -376,7 +376,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 			}
 			conn.commit();
 			conn.setAutoCommit(true);
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			try {
 				if (conn != null && !conn.isClosed()) {
