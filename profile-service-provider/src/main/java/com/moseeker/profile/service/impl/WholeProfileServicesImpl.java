@@ -688,14 +688,14 @@ public class WholeProfileServicesImpl implements Iface {
 				map.put("industry_name", lastWorkExp.getIndustryName());
 				map.put("industry_code", lastWorkExp.getIndustryCode().intValue());
 				map.put("position_name", lastWorkExp.getPositionName());
-				map.put("city_name", lastWorkExp.getCityName());
-				map.put("city_code", lastWorkExp.getCityCode().intValue());
 			}
 			if (basicRecord != null) {
 				map.put("update_time", DateUtils.dateToShortTime(profileRecord.getUpdateTime()));
 				map.put("completeness", profileRecord.getCompleteness().intValue());
 				map.put("uuid", profileRecord.getUuid());
 				map.put("name", basicRecord.getName());
+				map.put("city_name", basicRecord.getCityName());
+				map.put("city_code", basicRecord.getCityCode().intValue());
 				if(basicRecord.getGender() != null) {
 					map.put("gender", basicRecord.getGender().intValue());
 					for(DictConstantRecord constantRecord : constantRecords) {
