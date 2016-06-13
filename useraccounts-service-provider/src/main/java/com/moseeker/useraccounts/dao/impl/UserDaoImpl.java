@@ -79,7 +79,7 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
             logger.error(e.getMessage(), e);
         } finally {
             if(conn != null && !conn.isClosed()) {
-                conn.isClosed();
+                conn.close();
             }
         }
         
