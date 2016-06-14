@@ -103,14 +103,13 @@ public class ZkClientRegistry implements IRegistry {
             // 注意：zk重启的过程中，节点可能会存在
             if (zookeeper.checkExists().forPath(pathBuilder.toString()) == null) {
                 zookeeper.create();
-                return true;
             }
         } catch (Exception e) {
             String message = MessageFormat.format("Create node error in the path : {0}", pathBuilder.toString());
             LOGGER.error(message, e);
             throw new RpcException(message, e);
         }
-        return false;
+        return true;
     }
 
     /**
@@ -129,6 +128,7 @@ public class ZkClientRegistry implements IRegistry {
         pathChildrenCache.getListenable().addListener(new PathChildrenCacheListener() {
             @Override
             public void childEvent(CuratorFramework client, PathChildrenCacheEvent event) throws Exception {
+                LOGGER.info("ZkClientRegistry childEvent " + path);
                 build();
             }
         });
@@ -143,6 +143,7 @@ public class ZkClientRegistry implements IRegistry {
                         try {
                             if (curatorFramework.getZookeeperClient().blockUntilConnectedOrTimedOut()) {
                                 if (buildPathClients(config)) {
+                                    LOGGER.info("ZkClientRegistry ConnectionState.LOST rebuild provider successful!" + config);
                                     break;
                                 }
                             }
