@@ -78,9 +78,9 @@ public class ZkServerRegistry implements IRegistry {
             throw new RpcException(message, e);
         }
 
-        while (true){
-            simulateSessionTimeout();
-        }
+//        while (true){
+//            simulateSessionTimeout();
+//        }
     }
 
     /**
