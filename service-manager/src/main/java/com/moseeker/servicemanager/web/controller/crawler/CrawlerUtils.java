@@ -105,6 +105,10 @@ public class CrawlerUtils {
 				} else {
 					if (appid == 0) {
 						profile.put("source", Constant.APPID_ALPHADOG);
+					} else if(appid == 1) {
+						profile.put("source", Constant.PROFILE_SOURCE_PC_IMPORT);
+					}  else {
+						profile.put("source", source);
 					}
 				}
 				if (completeness != 0) {
@@ -118,6 +122,8 @@ public class CrawlerUtils {
 				profile.put("lang", lang);
 				if (appid == 0) {
 					profile.put("source", Constant.APPID_ALPHADOG);
+				} else if(appid == 1) {
+					profile.put("source", Constant.PROFILE_SOURCE_PC_IMPORT);
 				} else {
 					profile.put("source", source);
 				}
