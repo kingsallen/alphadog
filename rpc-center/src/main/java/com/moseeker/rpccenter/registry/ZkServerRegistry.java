@@ -45,6 +45,11 @@ public class ZkServerRegistry implements IRegistry {
     private final String address;
 
     /**
+     * 当前服务名称
+     */
+    private String currentProviderNode = "";
+
+    /**
      * 授权
      */
     private final String auth;
@@ -64,9 +69,24 @@ public class ZkServerRegistry implements IRegistry {
         }
 
         build(config);
-        //DEBUG: simulateSessionTimeout();
+
+        try{
+            // 添加监听器
+            addListener(config, currentProviderNode);
+        }catch (Exception e){
+            String message = MessageFormat.format("ZkServerRegistry addListener error : {0}", currentProviderNode);
+            throw new RpcException(message, e);
+        }
+
+//        while (true){
+//            simulateSessionTimeout();
+//        }
     }
 
+    /**
+     * 模拟zookeeper session过期
+     *
+     */
     private void simulateSessionTimeout() {
         try {
             Thread.sleep(10 * 1000);
@@ -81,8 +101,6 @@ public class ZkServerRegistry implements IRegistry {
             // do nothing
             e.printStackTrace();
         }
-
-
     }
 
     /**
@@ -100,6 +118,7 @@ public class ZkServerRegistry implements IRegistry {
                         try {
                             if (curatorFramework.getZookeeperClient().blockUntilConnectedOrTimedOut()) {
                                 if (build(config)) {
+                                    LOGGER.info("ZkServerRegistry ConnectionState.LOST rebuild provider successful!" + config);
                                     break;
                                 }
                             }
@@ -120,6 +139,7 @@ public class ZkServerRegistry implements IRegistry {
                         try {
                             if (zookeeper.getZookeeperClient().blockUntilConnectedOrTimedOut()) {
                                 if (build(config)) {
+                                    LOGGER.info("ZkServerRegistry Watcher.Event.EventType.NodeDeleted rebuild provider successful!" + config);
                                     break;
                                 }
                             }
@@ -151,16 +171,15 @@ public class ZkServerRegistry implements IRegistry {
         pathBuilder.append(Constants.ZK_SEPARATOR_DEFAULT).append(Constants.ZK_NAMESPACE_SERVERS).append(Constants.ZK_SEPARATOR_DEFAULT).append(address);
         try {
             if (zookeeper.checkExists().forPath(pathBuilder.toString()) == null) {
+                this.currentProviderNode = pathBuilder.toString();
                 zookeeper.create().withMode(CreateMode.EPHEMERAL).forPath(pathBuilder.toString(), config.getBytes(Constants.UTF8));
-                addListener(config, pathBuilder.toString());
-                return true;
             }
         } catch (Exception e) {
             String message = MessageFormat.format("Create node error in the path : {0}", pathBuilder.toString());
             LOGGER.error(message, e);
             throw new RpcException(message, e);
         }
-        return false;
+        return true;
     }
 
     /**

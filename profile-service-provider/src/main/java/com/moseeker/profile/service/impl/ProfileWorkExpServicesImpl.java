@@ -210,7 +210,7 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 					} else {
 						HrCompanyRecord newCompany = new HrCompanyRecord();
 						newCompany.setName(struct.getCompany_name());
-						if(StringUtils.isNullOrEmpty(struct.getCompany_logo())) {
+						if(!StringUtils.isNullOrEmpty(struct.getCompany_logo())) {
 							newCompany.setLogo(struct.getCompany_logo());
 						}
 						newCompany.setType(UByte.valueOf(Constant.COMPANY_TYPE_FREE));
@@ -280,7 +280,7 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 					} else {
 						HrCompanyRecord newCompany = new HrCompanyRecord();
 						newCompany.setName(struct.getCompany_name());
-						if(StringUtils.isNullOrEmpty(struct.getCompany_logo())) {
+						if(!StringUtils.isNullOrEmpty(struct.getCompany_logo())) {
 							newCompany.setLogo(struct.getCompany_logo());
 						}
 						newCompany.setType(UByte.valueOf(1));

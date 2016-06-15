@@ -250,7 +250,6 @@ public class WholeProfileServicesImpl implements Iface {
 		
 		profileRecord.setUuid(UUID.randomUUID().toString());
 		profileRecord.setUserId(userRecord.getId());
-		profileRecord.setSource(UInteger.valueOf(Constant.PROFILE_SOURCE_IMPORT));
 		profileRecord.setDisable(UByte.valueOf(Constant.ENABLE));
 		
 		UserUserRecord crawlerUser = profileUtils.mapToUserUserRecord((Map<String, Object>) resume.get("user"));
@@ -694,6 +693,7 @@ public class WholeProfileServicesImpl implements Iface {
 				if (company != null) {
 					map.put("company_id", company.getId().intValue());
 					map.put("company_name", company.getName());
+					map.put("company_logo", company.getLogo());
 					map.put("company_scale", company.getScale());
 				}
 				map.put("industry_name", lastWorkExp.getIndustryName());
