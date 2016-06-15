@@ -104,7 +104,7 @@ public class CrawlerUtils {
 					profile.put("source", source);
 				} else {
 					if (appid == 0) {
-						profile.put("source", Constant.APPID_ALPHADOG);
+						profile.put("source", Constant.PROFILE_SOURCE_UNKNOW);
 					} else if(appid == 1) {
 						profile.put("source", Constant.PROFILE_SOURCE_PC_IMPORT);
 					}  else {
@@ -121,7 +121,7 @@ public class CrawlerUtils {
 				Map<String, Object> profile = new HashMap<>();
 				profile.put("lang", lang);
 				if (appid == 0) {
-					profile.put("source", Constant.APPID_ALPHADOG);
+					profile.put("source", Constant.PROFILE_SOURCE_UNKNOW);
 				} else if(appid == 1) {
 					profile.put("source", Constant.PROFILE_SOURCE_PC_IMPORT);
 				} else {
