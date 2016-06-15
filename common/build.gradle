@@ -2,19 +2,6 @@ apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'eclipse-wtp'
 
-repositories {
-    jcenter {
-        url "http://jcenter.bintray.com/"
-    }
-}
-
-repositories {
-    maven {
-        url "http://maven.oschina.net/content/groups/public/"
-    }
-}
-
-
 task copyJars(type: Copy) {
   from configurations.runtime
   into 'build/libs' // 目标位置

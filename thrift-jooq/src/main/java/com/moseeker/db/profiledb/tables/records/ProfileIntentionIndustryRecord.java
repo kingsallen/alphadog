@@ -29,59 +29,59 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileIntentionIndustryRecord extends UpdatableRecordImpl<ProfileIntentionIndustryRecord> implements Record4<UInteger, UInteger, UInteger, String> {
 
-	private static final long serialVersionUID = 39450247;
+	private static final long serialVersionUID = -1863059833;
 
 	/**
-	 * Setter for <code>profileDB.profile_intention_industry.id</code>. 主key
+	 * Setter for <code>profiledb.profile_intention_industry.id</code>. 主key
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_intention_industry.id</code>. 主key
+	 * Getter for <code>profiledb.profile_intention_industry.id</code>. 主key
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_intention_industry.profile_intention_id</code>. profile_intention.id
+	 * Setter for <code>profiledb.profile_intention_industry.profile_intention_id</code>. profile_intention.id
 	 */
 	public void setProfileIntentionId(UInteger value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_intention_industry.profile_intention_id</code>. profile_intention.id
+	 * Getter for <code>profiledb.profile_intention_industry.profile_intention_id</code>. profile_intention.id
 	 */
 	public UInteger getProfileIntentionId() {
 		return (UInteger) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_intention_industry.industry_code</code>. 行业字典编码
+	 * Setter for <code>profiledb.profile_intention_industry.industry_code</code>. 行业字典编码
 	 */
 	public void setIndustryCode(UInteger value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_intention_industry.industry_code</code>. 行业字典编码
+	 * Getter for <code>profiledb.profile_intention_industry.industry_code</code>. 行业字典编码
 	 */
 	public UInteger getIndustryCode() {
 		return (UInteger) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_intention_industry.industry_name</code>. 行业名称
+	 * Setter for <code>profiledb.profile_intention_industry.industry_name</code>. 行业名称
 	 */
 	public void setIndustryName(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_intention_industry.industry_name</code>. 行业名称
+	 * Getter for <code>profiledb.profile_intention_industry.industry_name</code>. 行业名称
 	 */
 	public String getIndustryName() {
 		return (String) getValue(3);

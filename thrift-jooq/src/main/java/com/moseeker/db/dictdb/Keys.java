@@ -6,6 +6,7 @@ package com.moseeker.db.dictdb;
 
 import com.moseeker.db.dictdb.tables.DictCity;
 import com.moseeker.db.dictdb.tables.DictCollege;
+import com.moseeker.db.dictdb.tables.DictConstant;
 import com.moseeker.db.dictdb.tables.DictCountry;
 import com.moseeker.db.dictdb.tables.DictIndustry;
 import com.moseeker.db.dictdb.tables.DictIndustryType;
@@ -13,6 +14,7 @@ import com.moseeker.db.dictdb.tables.DictMajor;
 import com.moseeker.db.dictdb.tables.DictPosition;
 import com.moseeker.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.db.dictdb.tables.records.DictCollegeRecord;
+import com.moseeker.db.dictdb.tables.records.DictConstantRecord;
 import com.moseeker.db.dictdb.tables.records.DictCountryRecord;
 import com.moseeker.db.dictdb.tables.records.DictIndustryRecord;
 import com.moseeker.db.dictdb.tables.records.DictIndustryTypeRecord;
@@ -28,7 +30,7 @@ import org.jooq.types.UInteger;
 
 
 /**
- * A class modelling foreign key relationships between tables of the <code>dictDB</code> 
+ * A class modelling foreign key relationships between tables of the <code>dictdb</code> 
  * schema
  */
 @Generated(
@@ -45,6 +47,7 @@ public class Keys {
 	// IDENTITY definitions
 	// -------------------------------------------------------------------------
 
+	public static final Identity<DictConstantRecord, UInteger> IDENTITY_DICT_CONSTANT = Identities0.IDENTITY_DICT_CONSTANT;
 	public static final Identity<DictCountryRecord, UInteger> IDENTITY_DICT_COUNTRY = Identities0.IDENTITY_DICT_COUNTRY;
 
 	// -------------------------------------------------------------------------
@@ -53,6 +56,8 @@ public class Keys {
 
 	public static final UniqueKey<DictCityRecord> KEY_DICT_CITY_CODE = UniqueKeys0.KEY_DICT_CITY_CODE;
 	public static final UniqueKey<DictCollegeRecord> KEY_DICT_COLLEGE_CODE = UniqueKeys0.KEY_DICT_COLLEGE_CODE;
+	public static final UniqueKey<DictConstantRecord> KEY_DICT_CONSTANT_PRIMARY = UniqueKeys0.KEY_DICT_CONSTANT_PRIMARY;
+	public static final UniqueKey<DictConstantRecord> KEY_DICT_CONSTANT_DICT_CONSTANT_TYPE_CODE = UniqueKeys0.KEY_DICT_CONSTANT_DICT_CONSTANT_TYPE_CODE;
 	public static final UniqueKey<DictCountryRecord> KEY_DICT_COUNTRY_PRIMARY = UniqueKeys0.KEY_DICT_COUNTRY_PRIMARY;
 	public static final UniqueKey<DictIndustryRecord> KEY_DICT_INDUSTRY_CODE = UniqueKeys0.KEY_DICT_INDUSTRY_CODE;
 	public static final UniqueKey<DictIndustryTypeRecord> KEY_DICT_INDUSTRY_TYPE_CODE = UniqueKeys0.KEY_DICT_INDUSTRY_TYPE_CODE;
@@ -69,12 +74,15 @@ public class Keys {
 	// -------------------------------------------------------------------------
 
 	private static class Identities0 extends AbstractKeys {
+		public static Identity<DictConstantRecord, UInteger> IDENTITY_DICT_CONSTANT = createIdentity(DictConstant.DICT_CONSTANT, DictConstant.DICT_CONSTANT.ID);
 		public static Identity<DictCountryRecord, UInteger> IDENTITY_DICT_COUNTRY = createIdentity(DictCountry.DICT_COUNTRY, DictCountry.DICT_COUNTRY.ID);
 	}
 
 	private static class UniqueKeys0 extends AbstractKeys {
 		public static final UniqueKey<DictCityRecord> KEY_DICT_CITY_CODE = createUniqueKey(DictCity.DICT_CITY, DictCity.DICT_CITY.CODE);
 		public static final UniqueKey<DictCollegeRecord> KEY_DICT_COLLEGE_CODE = createUniqueKey(DictCollege.DICT_COLLEGE, DictCollege.DICT_COLLEGE.CODE);
+		public static final UniqueKey<DictConstantRecord> KEY_DICT_CONSTANT_PRIMARY = createUniqueKey(DictConstant.DICT_CONSTANT, DictConstant.DICT_CONSTANT.ID);
+		public static final UniqueKey<DictConstantRecord> KEY_DICT_CONSTANT_DICT_CONSTANT_TYPE_CODE = createUniqueKey(DictConstant.DICT_CONSTANT, DictConstant.DICT_CONSTANT.PARENT_CODE, DictConstant.DICT_CONSTANT.CODE);
 		public static final UniqueKey<DictCountryRecord> KEY_DICT_COUNTRY_PRIMARY = createUniqueKey(DictCountry.DICT_COUNTRY, DictCountry.DICT_COUNTRY.ID);
 		public static final UniqueKey<DictIndustryRecord> KEY_DICT_INDUSTRY_CODE = createUniqueKey(DictIndustry.DICT_INDUSTRY, DictIndustry.DICT_INDUSTRY.CODE);
 		public static final UniqueKey<DictIndustryTypeRecord> KEY_DICT_INDUSTRY_TYPE_CODE = createUniqueKey(DictIndustryType.DICT_INDUSTRY_TYPE, DictIndustryType.DICT_INDUSTRY_TYPE.CODE);

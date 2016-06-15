@@ -30,115 +30,115 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrRuleUniqueStatisticsRecord extends UpdatableRecordImpl<HrRuleUniqueStatisticsRecord> implements Record8<Integer, Integer, String, Integer, Integer, Integer, Date, Integer> {
 
-	private static final long serialVersionUID = 1151281162;
+	private static final long serialVersionUID = 1337696266;
 
 	/**
-	 * Setter for <code>hrDB.hr_rule_unique_statistics.id</code>. primary key
+	 * Setter for <code>hrdb.hr_rule_unique_statistics.id</code>. primary key
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_rule_unique_statistics.id</code>. primary key
+	 * Getter for <code>hrdb.hr_rule_unique_statistics.id</code>. primary key
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_rule_unique_statistics.wxrule_id</code>. wx_rule.id
+	 * Setter for <code>hrdb.hr_rule_unique_statistics.wxrule_id</code>. wx_rule.id
 	 */
 	public void setWxruleId(Integer value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_rule_unique_statistics.wxrule_id</code>. wx_rule.id
+	 * Getter for <code>hrdb.hr_rule_unique_statistics.wxrule_id</code>. wx_rule.id
 	 */
 	public Integer getWxruleId() {
 		return (Integer) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_rule_unique_statistics.menu_name</code>. 菜单名称
+	 * Setter for <code>hrdb.hr_rule_unique_statistics.menu_name</code>. 菜单名称
 	 */
 	public void setMenuName(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_rule_unique_statistics.menu_name</code>. 菜单名称
+	 * Getter for <code>hrdb.hr_rule_unique_statistics.menu_name</code>. 菜单名称
 	 */
 	public String getMenuName() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_rule_unique_statistics.type</code>. 0: wx_rule, 1: menu
+	 * Setter for <code>hrdb.hr_rule_unique_statistics.type</code>. 0: wx_rule, 1: menu
 	 */
 	public void setType(Integer value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_rule_unique_statistics.type</code>. 0: wx_rule, 1: menu
+	 * Getter for <code>hrdb.hr_rule_unique_statistics.type</code>. 0: wx_rule, 1: menu
 	 */
 	public Integer getType() {
 		return (Integer) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_rule_unique_statistics.company_id</code>. company.id
+	 * Setter for <code>hrdb.hr_rule_unique_statistics.company_id</code>. company.id
 	 */
 	public void setCompanyId(Integer value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_rule_unique_statistics.company_id</code>. company.id
+	 * Getter for <code>hrdb.hr_rule_unique_statistics.company_id</code>. company.id
 	 */
 	public Integer getCompanyId() {
 		return (Integer) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_rule_unique_statistics.view_num_uv</code>. 浏览人数
+	 * Setter for <code>hrdb.hr_rule_unique_statistics.view_num_uv</code>. 浏览人数
 	 */
 	public void setViewNumUv(Integer value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_rule_unique_statistics.view_num_uv</code>. 浏览人数
+	 * Getter for <code>hrdb.hr_rule_unique_statistics.view_num_uv</code>. 浏览人数
 	 */
 	public Integer getViewNumUv() {
 		return (Integer) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_rule_unique_statistics.create_date</code>. 创建日期
+	 * Setter for <code>hrdb.hr_rule_unique_statistics.create_date</code>. 创建日期
 	 */
 	public void setCreateDate(Date value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_rule_unique_statistics.create_date</code>. 创建日期
+	 * Getter for <code>hrdb.hr_rule_unique_statistics.create_date</code>. 创建日期
 	 */
 	public Date getCreateDate() {
 		return (Date) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_rule_unique_statistics.info_type</code>. 0: 日数据，1：周数据，2：月数据
+	 * Setter for <code>hrdb.hr_rule_unique_statistics.info_type</code>. 0: 日数据，1：周数据，2：月数据
 	 */
 	public void setInfoType(Integer value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_rule_unique_statistics.info_type</code>. 0: 日数据，1：周数据，2：月数据
+	 * Getter for <code>hrdb.hr_rule_unique_statistics.info_type</code>. 0: 日数据，1：周数据，2：月数据
 	 */
 	public Integer getInfoType() {
 		return (Integer) getValue(7);

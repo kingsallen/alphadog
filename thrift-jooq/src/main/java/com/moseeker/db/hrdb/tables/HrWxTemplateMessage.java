@@ -35,10 +35,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxTemplateMessage extends TableImpl<HrWxTemplateMessageRecord> {
 
-	private static final long serialVersionUID = 970662317;
+	private static final long serialVersionUID = 1665145261;
 
 	/**
-	 * The reference instance of <code>hrDB.hr_wx_template_message</code>
+	 * The reference instance of <code>hrdb.hr_wx_template_message</code>
 	 */
 	public static final HrWxTemplateMessage HR_WX_TEMPLATE_MESSAGE = new HrWxTemplateMessage();
 
@@ -51,69 +51,69 @@ public class HrWxTemplateMessage extends TableImpl<HrWxTemplateMessageRecord> {
 	}
 
 	/**
-	 * The column <code>hrDB.hr_wx_template_message.id</code>. 主key
+	 * The column <code>hrdb.hr_wx_template_message.id</code>. 主key
 	 */
 	public final TableField<HrWxTemplateMessageRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
 
 	/**
-	 * The column <code>hrDB.hr_wx_template_message.sys_template_id</code>. 模板ID
+	 * The column <code>hrdb.hr_wx_template_message.sys_template_id</code>. 模板ID
 	 */
 	public final TableField<HrWxTemplateMessageRecord, Integer> SYS_TEMPLATE_ID = createField("sys_template_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "模板ID");
 
 	/**
-	 * The column <code>hrDB.hr_wx_template_message.wx_template_id</code>. 微信模板ID
+	 * The column <code>hrdb.hr_wx_template_message.wx_template_id</code>. 微信模板ID
 	 */
 	public final TableField<HrWxTemplateMessageRecord, String> WX_TEMPLATE_ID = createField("wx_template_id", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false), this, "微信模板ID");
 
 	/**
-	 * The column <code>hrDB.hr_wx_template_message.display</code>. 是否显示
+	 * The column <code>hrdb.hr_wx_template_message.display</code>. 是否显示
 	 */
 	public final TableField<HrWxTemplateMessageRecord, UInteger> DISPLAY = createField("display", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "是否显示");
 
 	/**
-	 * The column <code>hrDB.hr_wx_template_message.priority</code>. 排序
+	 * The column <code>hrdb.hr_wx_template_message.priority</code>. 排序
 	 */
 	public final TableField<HrWxTemplateMessageRecord, UInteger> PRIORITY = createField("priority", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "排序");
 
 	/**
-	 * The column <code>hrDB.hr_wx_template_message.wechat_id</code>. 所属公众号
+	 * The column <code>hrdb.hr_wx_template_message.wechat_id</code>. 所属公众号
 	 */
 	public final TableField<HrWxTemplateMessageRecord, UInteger> WECHAT_ID = createField("wechat_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "所属公众号");
 
 	/**
-	 * The column <code>hrDB.hr_wx_template_message.disable</code>. 是否可用
+	 * The column <code>hrdb.hr_wx_template_message.disable</code>. 是否可用
 	 */
 	public final TableField<HrWxTemplateMessageRecord, UInteger> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "是否可用");
 
 	/**
-	 * The column <code>hrDB.hr_wx_template_message.url</code>. 跳转URL
+	 * The column <code>hrdb.hr_wx_template_message.url</code>. 跳转URL
 	 */
 	public final TableField<HrWxTemplateMessageRecord, String> URL = createField("url", org.jooq.impl.SQLDataType.VARCHAR.length(128), this, "跳转URL");
 
 	/**
-	 * The column <code>hrDB.hr_wx_template_message.topcolor</code>. 消息头部颜色
+	 * The column <code>hrdb.hr_wx_template_message.topcolor</code>. 消息头部颜色
 	 */
 	public final TableField<HrWxTemplateMessageRecord, String> TOPCOLOR = createField("topcolor", org.jooq.impl.SQLDataType.VARCHAR.length(10).defaulted(true), this, "消息头部颜色");
 
 	/**
-	 * The column <code>hrDB.hr_wx_template_message.first</code>. 问候语
+	 * The column <code>hrdb.hr_wx_template_message.first</code>. 问候语
 	 */
 	public final TableField<HrWxTemplateMessageRecord, String> FIRST = createField("first", org.jooq.impl.SQLDataType.VARCHAR.length(100), this, "问候语");
 
 	/**
-	 * The column <code>hrDB.hr_wx_template_message.remark</code>. 结束语
+	 * The column <code>hrdb.hr_wx_template_message.remark</code>. 结束语
 	 */
 	public final TableField<HrWxTemplateMessageRecord, String> REMARK = createField("remark", org.jooq.impl.SQLDataType.VARCHAR.length(150), this, "结束语");
 
 	/**
-	 * Create a <code>hrDB.hr_wx_template_message</code> table reference
+	 * Create a <code>hrdb.hr_wx_template_message</code> table reference
 	 */
 	public HrWxTemplateMessage() {
 		this("hr_wx_template_message", null);
 	}
 
 	/**
-	 * Create an aliased <code>hrDB.hr_wx_template_message</code> table reference
+	 * Create an aliased <code>hrdb.hr_wx_template_message</code> table reference
 	 */
 	public HrWxTemplateMessage(String alias) {
 		this(alias, HR_WX_TEMPLATE_MESSAGE);

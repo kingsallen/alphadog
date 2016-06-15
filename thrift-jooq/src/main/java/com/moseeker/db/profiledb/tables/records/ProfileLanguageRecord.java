@@ -32,87 +32,87 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileLanguageRecord extends UpdatableRecordImpl<ProfileLanguageRecord> implements Record6<UInteger, UInteger, String, UByte, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = -276514396;
+	private static final long serialVersionUID = -1702311516;
 
 	/**
-	 * Setter for <code>profileDB.profile_language.id</code>. 主key
+	 * Setter for <code>profiledb.profile_language.id</code>. 主key
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_language.id</code>. 主key
+	 * Getter for <code>profiledb.profile_language.id</code>. 主key
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_language.profile_id</code>. profile.id
+	 * Setter for <code>profiledb.profile_language.profile_id</code>. profile.id
 	 */
 	public void setProfileId(UInteger value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_language.profile_id</code>. profile.id
+	 * Getter for <code>profiledb.profile_language.profile_id</code>. profile.id
 	 */
 	public UInteger getProfileId() {
 		return (UInteger) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_language.name</code>. 语言
+	 * Setter for <code>profiledb.profile_language.name</code>. 语言
 	 */
 	public void setName(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_language.name</code>. 语言
+	 * Getter for <code>profiledb.profile_language.name</code>. 语言
 	 */
 	public String getName() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_language.level</code>. 掌握程度 0:未选择 1: 初级（入门）, 2:中级（日常会话）,3:中高级（商务会话）,4:高级（无障碍商务沟通）
+	 * Setter for <code>profiledb.profile_language.level</code>. 掌握程度 0:未选择 1: 初级（入门）, 2:中级（日常会话）,3:中高级（商务会话）,4:高级（无障碍商务沟通）
 	 */
 	public void setLevel(UByte value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_language.level</code>. 掌握程度 0:未选择 1: 初级（入门）, 2:中级（日常会话）,3:中高级（商务会话）,4:高级（无障碍商务沟通）
+	 * Getter for <code>profiledb.profile_language.level</code>. 掌握程度 0:未选择 1: 初级（入门）, 2:中级（日常会话）,3:中高级（商务会话）,4:高级（无障碍商务沟通）
 	 */
 	public UByte getLevel() {
 		return (UByte) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_language.create_time</code>. 创建时间
+	 * Setter for <code>profiledb.profile_language.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_language.create_time</code>. 创建时间
+	 * Getter for <code>profiledb.profile_language.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_language.update_time</code>. 更新时间
+	 * Setter for <code>profiledb.profile_language.update_time</code>. 更新时间
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_language.update_time</code>. 更新时间
+	 * Getter for <code>profiledb.profile_language.update_time</code>. 更新时间
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(5);

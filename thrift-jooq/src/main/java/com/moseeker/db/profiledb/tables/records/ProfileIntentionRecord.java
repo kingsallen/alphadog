@@ -32,143 +32,143 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileIntentionRecord extends UpdatableRecordImpl<ProfileIntentionRecord> implements Record10<UInteger, UInteger, UByte, UByte, UByte, UByte, String, Byte, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = -94690852;
+	private static final long serialVersionUID = -1577889316;
 
 	/**
-	 * Setter for <code>profileDB.profile_intention.id</code>. 主key
+	 * Setter for <code>profiledb.profile_intention.id</code>. 主key
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_intention.id</code>. 主key
+	 * Getter for <code>profiledb.profile_intention.id</code>. 主key
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_intention.profile_id</code>. profile.id
+	 * Setter for <code>profiledb.profile_intention.profile_id</code>. profile.id
 	 */
 	public void setProfileId(UInteger value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_intention.profile_id</code>. profile.id
+	 * Getter for <code>profiledb.profile_intention.profile_id</code>. profile.id
 	 */
 	public UInteger getProfileId() {
 		return (UInteger) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_intention.worktype</code>. 工作类型, {"0":"没选择", "1":"全职", "2":"兼职", "3":"实习"}
+	 * Setter for <code>profiledb.profile_intention.worktype</code>. 工作类型, {"0":"没选择", "1":"全职", "2":"兼职", "3":"实习"}
 	 */
 	public void setWorktype(UByte value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_intention.worktype</code>. 工作类型, {"0":"没选择", "1":"全职", "2":"兼职", "3":"实习"}
+	 * Getter for <code>profiledb.profile_intention.worktype</code>. 工作类型, {"0":"没选择", "1":"全职", "2":"兼职", "3":"实习"}
 	 */
 	public UByte getWorktype() {
 		return (UByte) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_intention.workstate</code>. 当前是否在职状态, 0:未填写 1: 在职，看看新机会, 2: 在职，急寻新工作, 3:在职，暂无跳槽打算, 4:离职，正在找工作, 5:应届毕业生
+	 * Setter for <code>profiledb.profile_intention.workstate</code>. 当前是否在职状态, 0:未填写 1: 在职，看看新机会, 2: 在职，急寻新工作, 3:在职，暂无跳槽打算, 4:离职，正在找工作, 5:应届毕业生
 	 */
 	public void setWorkstate(UByte value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_intention.workstate</code>. 当前是否在职状态, 0:未填写 1: 在职，看看新机会, 2: 在职，急寻新工作, 3:在职，暂无跳槽打算, 4:离职，正在找工作, 5:应届毕业生
+	 * Getter for <code>profiledb.profile_intention.workstate</code>. 当前是否在职状态, 0:未填写 1: 在职，看看新机会, 2: 在职，急寻新工作, 3:在职，暂无跳槽打算, 4:离职，正在找工作, 5:应届毕业生
 	 */
 	public UByte getWorkstate() {
 		return (UByte) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_intention.salary_type</code>. 薪资类型，0:没选择, 1:年薪, 2:月薪, 3:日薪, 4:时薪
+	 * Setter for <code>profiledb.profile_intention.salary_type</code>. 薪资类型，0:没选择, 1:年薪, 2:月薪, 3:日薪, 4:时薪
 	 */
 	public void setSalaryType(UByte value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_intention.salary_type</code>. 薪资类型，0:没选择, 1:年薪, 2:月薪, 3:日薪, 4:时薪
+	 * Getter for <code>profiledb.profile_intention.salary_type</code>. 薪资类型，0:没选择, 1:年薪, 2:月薪, 3:日薪, 4:时薪
 	 */
 	public UByte getSalaryType() {
 		return (UByte) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_intention.salary_code</code>. 薪资code
+	 * Setter for <code>profiledb.profile_intention.salary_code</code>. 薪资code
 	 */
 	public void setSalaryCode(UByte value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_intention.salary_code</code>. 薪资code
+	 * Getter for <code>profiledb.profile_intention.salary_code</code>. 薪资code
 	 */
 	public UByte getSalaryCode() {
 		return (UByte) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_intention.tag</code>. 关键词，单个tag最多100个字符，以#隔开
+	 * Setter for <code>profiledb.profile_intention.tag</code>. 关键词，单个tag最多100个字符，以#隔开
 	 */
 	public void setTag(String value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_intention.tag</code>. 关键词，单个tag最多100个字符，以#隔开
+	 * Getter for <code>profiledb.profile_intention.tag</code>. 关键词，单个tag最多100个字符，以#隔开
 	 */
 	public String getTag() {
 		return (String) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_intention.consider_venture_company_opportunities</code>. 是否考虑创业公司机会 0：未填写 1:考虑 2:不考虑
+	 * Setter for <code>profiledb.profile_intention.consider_venture_company_opportunities</code>. 是否考虑创业公司机会 0：未填写 1:考虑 2:不考虑
 	 */
 	public void setConsiderVentureCompanyOpportunities(Byte value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_intention.consider_venture_company_opportunities</code>. 是否考虑创业公司机会 0：未填写 1:考虑 2:不考虑
+	 * Getter for <code>profiledb.profile_intention.consider_venture_company_opportunities</code>. 是否考虑创业公司机会 0：未填写 1:考虑 2:不考虑
 	 */
 	public Byte getConsiderVentureCompanyOpportunities() {
 		return (Byte) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_intention.create_time</code>. 创建时间
+	 * Setter for <code>profiledb.profile_intention.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_intention.create_time</code>. 创建时间
+	 * Getter for <code>profiledb.profile_intention.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_intention.update_time</code>. 更新时间
+	 * Setter for <code>profiledb.profile_intention.update_time</code>. 更新时间
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_intention.update_time</code>. 更新时间
+	 * Getter for <code>profiledb.profile_intention.update_time</code>. 更新时间
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(9);

@@ -95,7 +95,8 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 					for(Education education : educations) {
 						for(DictCollegeRecord college : colleges) {
 							if(education.getCollege_code() == college.getCode().intValue()) {
-								education.getCollege_name().equals(college.getName());
+								education.setCollege_name(college.getName());
+								education.setCollege_logo(college.getLogo());
 								break;
 							}
 						}
@@ -133,6 +134,7 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 				DictCollegeRecord college = collegeDao.getCollegeByID(educationRecord.getCollegeCode().intValue());
 				if(college != null) {
 					education.setCollege_name(college.getName());
+					education.setCollege_logo(college.getLogo());
 				}
 				DictMajorRecord major = majorDao.getMajorByID(educationRecord.getMajorCode());
 				if(major != null) {
@@ -147,6 +149,62 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 			//do nothing
 		}
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+	}
+
+	@Override
+	public Response postResource(Education education) throws TException {
+		try {
+			if(education.getCollege_code() > 0) {
+				DictCollegeRecord college = collegeDao.getCollegeByID(education.getCollege_code());
+				if(college != null) {
+					education.setCollege_name(college.getName());
+					education.setCollege_logo(college.getLogo());
+				} else {
+					return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_COLLEGE_NOTEXIST);
+				}
+			}
+			if(!StringUtils.isNullOrEmpty(education.getMajor_code())) {
+				DictMajorRecord major = majorDao.getMajorByID(education.getMajor_code());
+				if(major != null) {
+					education.setMajor_name(major.getName());
+				} else {
+					return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_MAJOR_NOTEXIST);
+				}
+			}
+			ProfileEducationRecord record = structToDB(education);
+			int id = dao.postResource(record);
+			if(id > 0) {
+				return 	ResponseUtils.success(String.valueOf(id));
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		} finally {
+			//do nothing
+		}
+		return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+	}
+
+	@Override
+	public Response putResource(Education education) throws TException {
+		if(education.getCollege_code() > 0) {
+			DictCollegeRecord college = collegeDao.getCollegeByID(education.getCollege_code());
+			if(college != null) {
+				education.setCollege_name(college.getName());
+				education.setCollege_logo(college.getLogo());
+			} else {
+				return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_COLLEGE_NOTEXIST);
+			}
+		}
+		if(!StringUtils.isNullOrEmpty(education.getMajor_code())) {
+			DictMajorRecord major = majorDao.getMajorByID(education.getMajor_code());
+			if(major != null) {
+				education.setMajor_name(major.getName());
+			} else {
+				return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_MAJOR_NOTEXIST);
+			}
+		}
+		return super.putResource(education);
 	}
 
 	@Override

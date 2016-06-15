@@ -29,59 +29,59 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileIntentionPositionRecord extends UpdatableRecordImpl<ProfileIntentionPositionRecord> implements Record4<UInteger, UInteger, UInteger, String> {
 
-	private static final long serialVersionUID = -1679728916;
+	private static final long serialVersionUID = 712728300;
 
 	/**
-	 * Setter for <code>profileDB.profile_intention_position.id</code>. 主key
+	 * Setter for <code>profiledb.profile_intention_position.id</code>. 主key
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_intention_position.id</code>. 主key
+	 * Getter for <code>profiledb.profile_intention_position.id</code>. 主key
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_intention_position.profile_intention_id</code>. profile_intention.id
+	 * Setter for <code>profiledb.profile_intention_position.profile_intention_id</code>. profile_intention.id
 	 */
 	public void setProfileIntentionId(UInteger value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_intention_position.profile_intention_id</code>. profile_intention.id
+	 * Getter for <code>profiledb.profile_intention_position.profile_intention_id</code>. profile_intention.id
 	 */
 	public UInteger getProfileIntentionId() {
 		return (UInteger) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_intention_position.position_code</code>. 职能字典编码
+	 * Setter for <code>profiledb.profile_intention_position.position_code</code>. 职能字典编码
 	 */
 	public void setPositionCode(UInteger value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_intention_position.position_code</code>. 职能字典编码
+	 * Getter for <code>profiledb.profile_intention_position.position_code</code>. 职能字典编码
 	 */
 	public UInteger getPositionCode() {
 		return (UInteger) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_intention_position.position_name</code>. 职能名称
+	 * Setter for <code>profiledb.profile_intention_position.position_name</code>. 职能名称
 	 */
 	public void setPositionName(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_intention_position.position_name</code>. 职能名称
+	 * Getter for <code>profiledb.profile_intention_position.position_name</code>. 职能名称
 	 */
 	public String getPositionName() {
 		return (String) getValue(3);

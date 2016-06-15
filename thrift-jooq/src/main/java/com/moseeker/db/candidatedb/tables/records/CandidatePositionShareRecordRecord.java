@@ -30,171 +30,171 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidatePositionShareRecordRecord extends UpdatableRecordImpl<CandidatePositionShareRecordRecord> implements Record12<Integer, Long, Long, Long, Long, String, Long, Byte, Timestamp, Timestamp, Long, Byte> {
 
-	private static final long serialVersionUID = -380459242;
+	private static final long serialVersionUID = -1517482218;
 
 	/**
-	 * Setter for <code>candidateDB.candidate_position_share_record.id</code>.
+	 * Setter for <code>candidatedb.candidate_position_share_record.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_position_share_record.id</code>.
+	 * Getter for <code>candidatedb.candidate_position_share_record.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_position_share_record.wechat_id</code>. 所属公众号
+	 * Setter for <code>candidatedb.candidate_position_share_record.wechat_id</code>. 所属公众号
 	 */
 	public void setWechatId(Long value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_position_share_record.wechat_id</code>. 所属公众号
+	 * Getter for <code>candidatedb.candidate_position_share_record.wechat_id</code>. 所属公众号
 	 */
 	public Long getWechatId() {
 		return (Long) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_position_share_record.position_id</code>. position.id 分享职位ID
+	 * Setter for <code>candidatedb.candidate_position_share_record.position_id</code>. position.id 分享职位ID
 	 */
 	public void setPositionId(Long value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_position_share_record.position_id</code>. position.id 分享职位ID
+	 * Getter for <code>candidatedb.candidate_position_share_record.position_id</code>. position.id 分享职位ID
 	 */
 	public Long getPositionId() {
 		return (Long) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_position_share_record.recom_id</code>. wx_group_user.id 分享用户微信ID
+	 * Setter for <code>candidatedb.candidate_position_share_record.recom_id</code>. wx_group_user.id 分享用户微信ID
 	 */
 	public void setRecomId(Long value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_position_share_record.recom_id</code>. wx_group_user.id 分享用户微信ID
+	 * Getter for <code>candidatedb.candidate_position_share_record.recom_id</code>. wx_group_user.id 分享用户微信ID
 	 */
 	public Long getRecomId() {
 		return (Long) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_position_share_record.sysuser_id</code>. sysuser.id 浏览用户sysuser.id
+	 * Setter for <code>candidatedb.candidate_position_share_record.sysuser_id</code>. sysuser.id 浏览用户sysuser.id
 	 */
 	public void setSysuserId(Long value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_position_share_record.sysuser_id</code>. sysuser.id 浏览用户sysuser.id
+	 * Getter for <code>candidatedb.candidate_position_share_record.sysuser_id</code>. sysuser.id 浏览用户sysuser.id
 	 */
 	public Long getSysuserId() {
 		return (Long) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_position_share_record.viewer_id</code>. wx_viewer.id 浏览用户ID
+	 * Setter for <code>candidatedb.candidate_position_share_record.viewer_id</code>. wx_viewer.id 浏览用户ID
 	 */
 	public void setViewerId(String value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_position_share_record.viewer_id</code>. wx_viewer.id 浏览用户ID
+	 * Getter for <code>candidatedb.candidate_position_share_record.viewer_id</code>. wx_viewer.id 浏览用户ID
 	 */
 	public String getViewerId() {
 		return (String) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_position_share_record.viewer_ip</code>. 浏览用户IP
+	 * Setter for <code>candidatedb.candidate_position_share_record.viewer_ip</code>. 浏览用户IP
 	 */
 	public void setViewerIp(Long value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_position_share_record.viewer_ip</code>. 浏览用户IP
+	 * Getter for <code>candidatedb.candidate_position_share_record.viewer_ip</code>. 浏览用户IP
 	 */
 	public Long getViewerIp() {
 		return (Long) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_position_share_record.source</code>. 来源0：企业后台1：聚合平台
+	 * Setter for <code>candidatedb.candidate_position_share_record.source</code>. 来源0：企业后台1：聚合平台
 	 */
 	public void setSource(Byte value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_position_share_record.source</code>. 来源0：企业后台1：聚合平台
+	 * Getter for <code>candidatedb.candidate_position_share_record.source</code>. 来源0：企业后台1：聚合平台
 	 */
 	public Byte getSource() {
 		return (Byte) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_position_share_record.create_time</code>. 创建时间
+	 * Setter for <code>candidatedb.candidate_position_share_record.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_position_share_record.create_time</code>. 创建时间
+	 * Getter for <code>candidatedb.candidate_position_share_record.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_position_share_record.update_time</code>. 修改时间
+	 * Setter for <code>candidatedb.candidate_position_share_record.update_time</code>. 修改时间
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_position_share_record.update_time</code>. 修改时间
+	 * Getter for <code>candidatedb.candidate_position_share_record.update_time</code>. 修改时间
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_position_share_record.presentee_id</code>. 被动求职者,浏览者的微信ID，wx_group_user.id
+	 * Setter for <code>candidatedb.candidate_position_share_record.presentee_id</code>. 被动求职者,浏览者的微信ID，wx_group_user.id
 	 */
 	public void setPresenteeId(Long value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_position_share_record.presentee_id</code>. 被动求职者,浏览者的微信ID，wx_group_user.id
+	 * Getter for <code>candidatedb.candidate_position_share_record.presentee_id</code>. 被动求职者,浏览者的微信ID，wx_group_user.id
 	 */
 	public Long getPresenteeId() {
 		return (Long) getValue(10);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_position_share_record.click_from</code>. 来自, 0:未知, 朋友圈(timeline ) 1, 微信群(groupmessage) 2, 个人消息(singlemessage) 3
+	 * Setter for <code>candidatedb.candidate_position_share_record.click_from</code>. 来自, 0:未知, 朋友圈(timeline ) 1, 微信群(groupmessage) 2, 个人消息(singlemessage) 3
 	 */
 	public void setClickFrom(Byte value) {
 		setValue(11, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_position_share_record.click_from</code>. 来自, 0:未知, 朋友圈(timeline ) 1, 微信群(groupmessage) 2, 个人消息(singlemessage) 3
+	 * Getter for <code>candidatedb.candidate_position_share_record.click_from</code>. 来自, 0:未知, 朋友圈(timeline ) 1, 微信群(groupmessage) 2, 个人消息(singlemessage) 3
 	 */
 	public Byte getClickFrom() {
 		return (Byte) getValue(11);

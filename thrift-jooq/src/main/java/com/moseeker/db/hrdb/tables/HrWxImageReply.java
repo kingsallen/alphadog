@@ -36,10 +36,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxImageReply extends TableImpl<HrWxImageReplyRecord> {
 
-	private static final long serialVersionUID = 1541083925;
+	private static final long serialVersionUID = 1789534997;
 
 	/**
-	 * The reference instance of <code>hrDB.hr_wx_image_reply</code>
+	 * The reference instance of <code>hrdb.hr_wx_image_reply</code>
 	 */
 	public static final HrWxImageReply HR_WX_IMAGE_REPLY = new HrWxImageReply();
 
@@ -52,39 +52,39 @@ public class HrWxImageReply extends TableImpl<HrWxImageReplyRecord> {
 	}
 
 	/**
-	 * The column <code>hrDB.hr_wx_image_reply.id</code>.
+	 * The column <code>hrdb.hr_wx_image_reply.id</code>.
 	 */
 	public final TableField<HrWxImageReplyRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
 	/**
-	 * The column <code>hrDB.hr_wx_image_reply.rid</code>. wx_rule.id, 规则ID
+	 * The column <code>hrdb.hr_wx_image_reply.rid</code>. wx_rule.id, 规则ID
 	 */
 	public final TableField<HrWxImageReplyRecord, UInteger> RID = createField("rid", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "wx_rule.id, 规则ID");
 
 	/**
-	 * The column <code>hrDB.hr_wx_image_reply.image</code>. 回复图片的相对路径
+	 * The column <code>hrdb.hr_wx_image_reply.image</code>. 回复图片的相对路径
 	 */
 	public final TableField<HrWxImageReplyRecord, String> IMAGE = createField("image", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaulted(true), this, "回复图片的相对路径");
 
 	/**
-	 * The column <code>hrDB.hr_wx_image_reply.create_time</code>.
+	 * The column <code>hrdb.hr_wx_image_reply.create_time</code>.
 	 */
 	public final TableField<HrWxImageReplyRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>hrDB.hr_wx_image_reply.update_time</code>.
+	 * The column <code>hrdb.hr_wx_image_reply.update_time</code>.
 	 */
 	public final TableField<HrWxImageReplyRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * Create a <code>hrDB.hr_wx_image_reply</code> table reference
+	 * Create a <code>hrdb.hr_wx_image_reply</code> table reference
 	 */
 	public HrWxImageReply() {
 		this("hr_wx_image_reply", null);
 	}
 
 	/**
-	 * Create an aliased <code>hrDB.hr_wx_image_reply</code> table reference
+	 * Create an aliased <code>hrdb.hr_wx_image_reply</code> table reference
 	 */
 	public HrWxImageReply(String alias) {
 		this(alias, HR_WX_IMAGE_REPLY);

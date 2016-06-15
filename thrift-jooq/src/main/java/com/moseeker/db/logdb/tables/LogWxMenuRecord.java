@@ -36,10 +36,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogWxMenuRecord extends TableImpl<LogWxMenuRecordRecord> {
 
-	private static final long serialVersionUID = -1064797332;
+	private static final long serialVersionUID = -989721748;
 
 	/**
-	 * The reference instance of <code>logDB.log_wx_menu_record</code>
+	 * The reference instance of <code>logdb.log_wx_menu_record</code>
 	 */
 	public static final LogWxMenuRecord LOG_WX_MENU_RECORD = new LogWxMenuRecord();
 
@@ -52,49 +52,49 @@ public class LogWxMenuRecord extends TableImpl<LogWxMenuRecordRecord> {
 	}
 
 	/**
-	 * The column <code>logDB.log_wx_menu_record.id</code>.
+	 * The column <code>logdb.log_wx_menu_record.id</code>.
 	 */
 	public final TableField<LogWxMenuRecordRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
 
 	/**
-	 * The column <code>logDB.log_wx_menu_record.wechat_id</code>.
+	 * The column <code>logdb.log_wx_menu_record.wechat_id</code>.
 	 */
 	public final TableField<LogWxMenuRecordRecord, UInteger> WECHAT_ID = createField("wechat_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>logDB.log_wx_menu_record.name</code>.
+	 * The column <code>logdb.log_wx_menu_record.name</code>.
 	 */
 	public final TableField<LogWxMenuRecordRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>logDB.log_wx_menu_record.json</code>. 菜单的json数据
+	 * The column <code>logdb.log_wx_menu_record.json</code>. 菜单的json数据
 	 */
 	public final TableField<LogWxMenuRecordRecord, String> JSON = createField("json", org.jooq.impl.SQLDataType.CLOB, this, "菜单的json数据");
 
 	/**
-	 * The column <code>logDB.log_wx_menu_record._create_time</code>.
+	 * The column <code>logdb.log_wx_menu_record._create_time</code>.
 	 */
 	public final TableField<LogWxMenuRecordRecord, Timestamp> _CREATE_TIME = createField("_create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>logDB.log_wx_menu_record.errcode</code>. 微信调用返回的errcode
+	 * The column <code>logdb.log_wx_menu_record.errcode</code>. 微信调用返回的errcode
 	 */
 	public final TableField<LogWxMenuRecordRecord, UInteger> ERRCODE = createField("errcode", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "微信调用返回的errcode");
 
 	/**
-	 * The column <code>logDB.log_wx_menu_record.errmsg</code>. 微信调用返回的errmsg
+	 * The column <code>logdb.log_wx_menu_record.errmsg</code>. 微信调用返回的errmsg
 	 */
 	public final TableField<LogWxMenuRecordRecord, String> ERRMSG = createField("errmsg", org.jooq.impl.SQLDataType.VARCHAR.length(600).nullable(false).defaulted(true), this, "微信调用返回的errmsg");
 
 	/**
-	 * Create a <code>logDB.log_wx_menu_record</code> table reference
+	 * Create a <code>logdb.log_wx_menu_record</code> table reference
 	 */
 	public LogWxMenuRecord() {
 		this("log_wx_menu_record", null);
 	}
 
 	/**
-	 * Create an aliased <code>logDB.log_wx_menu_record</code> table reference
+	 * Create an aliased <code>logdb.log_wx_menu_record</code> table reference
 	 */
 	public LogWxMenuRecord(String alias) {
 		this(alias, LOG_WX_MENU_RECORD);

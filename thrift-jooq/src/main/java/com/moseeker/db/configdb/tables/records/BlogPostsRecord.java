@@ -31,73 +31,73 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BlogPostsRecord extends UpdatableRecordImpl<BlogPostsRecord> implements Record5<UInteger, String, String, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = 1561105176;
+	private static final long serialVersionUID = -108854504;
 
 	/**
-	 * Setter for <code>configDB.blog_posts.id</code>.
+	 * Setter for <code>configdb.blog_posts.id</code>.
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.blog_posts.id</code>.
+	 * Getter for <code>configdb.blog_posts.id</code>.
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>configDB.blog_posts.title</code>.
+	 * Setter for <code>configdb.blog_posts.title</code>.
 	 */
 	public void setTitle(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.blog_posts.title</code>.
+	 * Getter for <code>configdb.blog_posts.title</code>.
 	 */
 	public String getTitle() {
 		return (String) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>configDB.blog_posts.text</code>.
+	 * Setter for <code>configdb.blog_posts.text</code>.
 	 */
 	public void setText(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.blog_posts.text</code>.
+	 * Getter for <code>configdb.blog_posts.text</code>.
 	 */
 	public String getText() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>configDB.blog_posts.created</code>.
+	 * Setter for <code>configdb.blog_posts.created</code>.
 	 */
 	public void setCreated(Timestamp value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.blog_posts.created</code>.
+	 * Getter for <code>configdb.blog_posts.created</code>.
 	 */
 	public Timestamp getCreated() {
 		return (Timestamp) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>configDB.blog_posts.updated</code>.
+	 * Setter for <code>configdb.blog_posts.updated</code>.
 	 */
 	public void setUpdated(Timestamp value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.blog_posts.updated</code>.
+	 * Getter for <code>configdb.blog_posts.updated</code>.
 	 */
 	public Timestamp getUpdated() {
 		return (Timestamp) getValue(4);

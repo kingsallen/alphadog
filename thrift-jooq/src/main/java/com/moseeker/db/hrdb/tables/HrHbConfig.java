@@ -35,10 +35,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrHbConfig extends TableImpl<HrHbConfigRecord> {
 
-	private static final long serialVersionUID = 877993666;
+	private static final long serialVersionUID = 104927938;
 
 	/**
-	 * The reference instance of <code>hrDB.hr_hb_config</code>
+	 * The reference instance of <code>hrdb.hr_hb_config</code>
 	 */
 	public static final HrHbConfig HR_HB_CONFIG = new HrHbConfig();
 
@@ -51,124 +51,124 @@ public class HrHbConfig extends TableImpl<HrHbConfigRecord> {
 	}
 
 	/**
-	 * The column <code>hrDB.hr_hb_config.id</code>.
+	 * The column <code>hrdb.hr_hb_config.id</code>.
 	 */
 	public final TableField<HrHbConfigRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
 	/**
-	 * The column <code>hrDB.hr_hb_config.type</code>. 0:员工认证红包，1:推荐评价红包，2:转发被点击红包，3:转发被申请红包
+	 * The column <code>hrdb.hr_hb_config.type</code>. 0:员工认证红包，1:推荐评价红包，2:转发被点击红包，3:转发被申请红包
 	 */
 	public final TableField<HrHbConfigRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "0:员工认证红包，1:推荐评价红包，2:转发被点击红包，3:转发被申请红包");
 
 	/**
-	 * The column <code>hrDB.hr_hb_config.target</code>. 0:员工，1:员工及员工二度，2:粉丝
+	 * The column <code>hrdb.hr_hb_config.target</code>. 0:员工，1:员工及员工二度，2:粉丝
 	 */
 	public final TableField<HrHbConfigRecord, Byte> TARGET = createField("target", org.jooq.impl.SQLDataType.TINYINT, this, "0:员工，1:员工及员工二度，2:粉丝");
 
 	/**
-	 * The column <code>hrDB.hr_hb_config.company_id</code>. company.id
+	 * The column <code>hrdb.hr_hb_config.company_id</code>. company.id
 	 */
 	public final TableField<HrHbConfigRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "company.id");
 
 	/**
-	 * The column <code>hrDB.hr_hb_config.start_time</code>. 红包活动开始时间
+	 * The column <code>hrdb.hr_hb_config.start_time</code>. 红包活动开始时间
 	 */
 	public final TableField<HrHbConfigRecord, Timestamp> START_TIME = createField("start_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "红包活动开始时间");
 
 	/**
-	 * The column <code>hrDB.hr_hb_config.end_time</code>. 红包活动结束时间，直到红包用尽：2037-12-31 23:59:59）
+	 * The column <code>hrdb.hr_hb_config.end_time</code>. 红包活动结束时间，直到红包用尽：2037-12-31 23:59:59）
 	 */
 	public final TableField<HrHbConfigRecord, Timestamp> END_TIME = createField("end_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "红包活动结束时间，直到红包用尽：2037-12-31 23:59:59）");
 
 	/**
-	 * The column <code>hrDB.hr_hb_config.total_amount</code>. 总预算
+	 * The column <code>hrdb.hr_hb_config.total_amount</code>. 总预算
 	 */
 	public final TableField<HrHbConfigRecord, Integer> TOTAL_AMOUNT = createField("total_amount", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "总预算");
 
 	/**
-	 * The column <code>hrDB.hr_hb_config.range_min</code>. 红包最小金额
+	 * The column <code>hrdb.hr_hb_config.range_min</code>. 红包最小金额
 	 */
 	public final TableField<HrHbConfigRecord, Double> RANGE_MIN = createField("range_min", org.jooq.impl.SQLDataType.FLOAT.nullable(false).defaulted(true), this, "红包最小金额");
 
 	/**
-	 * The column <code>hrDB.hr_hb_config.range_max</code>. 红包最大金额
+	 * The column <code>hrdb.hr_hb_config.range_max</code>. 红包最大金额
 	 */
 	public final TableField<HrHbConfigRecord, Double> RANGE_MAX = createField("range_max", org.jooq.impl.SQLDataType.FLOAT.nullable(false).defaulted(true), this, "红包最大金额");
 
 	/**
-	 * The column <code>hrDB.hr_hb_config.probability</code>. 中奖几率: 0 < x <= 100
+	 * The column <code>hrdb.hr_hb_config.probability</code>. 中奖几率: 0 < x <= 100
 	 */
 	public final TableField<HrHbConfigRecord, Double> PROBABILITY = createField("probability", org.jooq.impl.SQLDataType.FLOAT.nullable(false).defaulted(true), this, "中奖几率: 0 < x <= 100");
 
 	/**
-	 * The column <code>hrDB.hr_hb_config.d_type</code>. 分布类型 0:平均分布，1:指数分布
+	 * The column <code>hrdb.hr_hb_config.d_type</code>. 分布类型 0:平均分布，1:指数分布
 	 */
 	public final TableField<HrHbConfigRecord, Byte> D_TYPE = createField("d_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "分布类型 0:平均分布，1:指数分布");
 
 	/**
-	 * The column <code>hrDB.hr_hb_config.headline</code>. 抽奖页面标题
+	 * The column <code>hrdb.hr_hb_config.headline</code>. 抽奖页面标题
 	 */
 	public final TableField<HrHbConfigRecord, String> HEADLINE = createField("headline", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaulted(true), this, "抽奖页面标题");
 
 	/**
-	 * The column <code>hrDB.hr_hb_config.headline_failure</code>. 抽奖失败页面标题
+	 * The column <code>hrdb.hr_hb_config.headline_failure</code>. 抽奖失败页面标题
 	 */
 	public final TableField<HrHbConfigRecord, String> HEADLINE_FAILURE = createField("headline_failure", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaulted(true), this, "抽奖失败页面标题");
 
 	/**
-	 * The column <code>hrDB.hr_hb_config.share_title</code>. 转发消息标题
+	 * The column <code>hrdb.hr_hb_config.share_title</code>. 转发消息标题
 	 */
 	public final TableField<HrHbConfigRecord, String> SHARE_TITLE = createField("share_title", org.jooq.impl.SQLDataType.VARCHAR.length(512).defaulted(true), this, "转发消息标题");
 
 	/**
-	 * The column <code>hrDB.hr_hb_config.share_desc</code>. 转发消息摘要
+	 * The column <code>hrdb.hr_hb_config.share_desc</code>. 转发消息摘要
 	 */
 	public final TableField<HrHbConfigRecord, String> SHARE_DESC = createField("share_desc", org.jooq.impl.SQLDataType.VARCHAR.length(512).defaulted(true), this, "转发消息摘要");
 
 	/**
-	 * The column <code>hrDB.hr_hb_config.share_img</code>. 转发消息背景图地址
+	 * The column <code>hrdb.hr_hb_config.share_img</code>. 转发消息背景图地址
 	 */
 	public final TableField<HrHbConfigRecord, String> SHARE_IMG = createField("share_img", org.jooq.impl.SQLDataType.VARCHAR.length(512).defaulted(true), this, "转发消息背景图地址");
 
 	/**
-	 * The column <code>hrDB.hr_hb_config.status</code>. 0:待审核，1:已审核，2:未开始，3:进行中：4:暂停中，5：已完成， －1: 已删除
+	 * The column <code>hrdb.hr_hb_config.status</code>. 0:待审核，1:已审核，2:未开始，3:进行中：4:暂停中，5：已完成， －1: 已删除
 	 */
 	public final TableField<HrHbConfigRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "0:待审核，1:已审核，2:未开始，3:进行中：4:暂停中，5：已完成， －1: 已删除");
 
 	/**
-	 * The column <code>hrDB.hr_hb_config.checked</code>. 0:未审核，1:审核通过，2:审核不通过
+	 * The column <code>hrdb.hr_hb_config.checked</code>. 0:未审核，1:审核通过，2:审核不通过
 	 */
 	public final TableField<HrHbConfigRecord, Byte> CHECKED = createField("checked", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "0:未审核，1:审核通过，2:审核不通过");
 
 	/**
-	 * The column <code>hrDB.hr_hb_config.estimated_total</code>. 预估红包总数
+	 * The column <code>hrdb.hr_hb_config.estimated_total</code>. 预估红包总数
 	 */
 	public final TableField<HrHbConfigRecord, Integer> ESTIMATED_TOTAL = createField("estimated_total", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "预估红包总数");
 
 	/**
-	 * The column <code>hrDB.hr_hb_config.create_time</code>. 创建时间
+	 * The column <code>hrdb.hr_hb_config.create_time</code>. 创建时间
 	 */
 	public final TableField<HrHbConfigRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "创建时间");
 
 	/**
-	 * The column <code>hrDB.hr_hb_config.update_time</code>. 更新时间
+	 * The column <code>hrdb.hr_hb_config.update_time</code>. 更新时间
 	 */
 	public final TableField<HrHbConfigRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "更新时间");
 
 	/**
-	 * The column <code>hrDB.hr_hb_config.actual_total</code>. 实际红包总数
+	 * The column <code>hrdb.hr_hb_config.actual_total</code>. 实际红包总数
 	 */
 	public final TableField<HrHbConfigRecord, Integer> ACTUAL_TOTAL = createField("actual_total", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "实际红包总数");
 
 	/**
-	 * Create a <code>hrDB.hr_hb_config</code> table reference
+	 * Create a <code>hrdb.hr_hb_config</code> table reference
 	 */
 	public HrHbConfig() {
 		this("hr_hb_config", null);
 	}
 
 	/**
-	 * Create an aliased <code>hrDB.hr_hb_config</code> table reference
+	 * Create an aliased <code>hrdb.hr_hb_config</code> table reference
 	 */
 	public HrHbConfig(String alias) {
 		this(alias, HR_HB_CONFIG);

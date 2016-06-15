@@ -35,10 +35,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrHtml5UniqueStatistics extends TableImpl<HrHtml5UniqueStatisticsRecord> {
 
-	private static final long serialVersionUID = 856490813;
+	private static final long serialVersionUID = -928607427;
 
 	/**
-	 * The reference instance of <code>hrDB.hr_html5_unique_statistics</code>
+	 * The reference instance of <code>hrdb.hr_html5_unique_statistics</code>
 	 */
 	public static final HrHtml5UniqueStatistics HR_HTML5_UNIQUE_STATISTICS = new HrHtml5UniqueStatistics();
 
@@ -51,49 +51,49 @@ public class HrHtml5UniqueStatistics extends TableImpl<HrHtml5UniqueStatisticsRe
 	}
 
 	/**
-	 * The column <code>hrDB.hr_html5_unique_statistics.id</code>. primary key
+	 * The column <code>hrdb.hr_html5_unique_statistics.id</code>. primary key
 	 */
 	public final TableField<HrHtml5UniqueStatisticsRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "primary key");
 
 	/**
-	 * The column <code>hrDB.hr_html5_unique_statistics.topic_id</code>. wx_topic.id
+	 * The column <code>hrdb.hr_html5_unique_statistics.topic_id</code>. wx_topic.id
 	 */
 	public final TableField<HrHtml5UniqueStatisticsRecord, Integer> TOPIC_ID = createField("topic_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "wx_topic.id");
 
 	/**
-	 * The column <code>hrDB.hr_html5_unique_statistics.company_id</code>. company.id
+	 * The column <code>hrdb.hr_html5_unique_statistics.company_id</code>. company.id
 	 */
 	public final TableField<HrHtml5UniqueStatisticsRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "company.id");
 
 	/**
-	 * The column <code>hrDB.hr_html5_unique_statistics.view_num_uv</code>. 浏览人数
+	 * The column <code>hrdb.hr_html5_unique_statistics.view_num_uv</code>. 浏览人数
 	 */
 	public final TableField<HrHtml5UniqueStatisticsRecord, Integer> VIEW_NUM_UV = createField("view_num_uv", org.jooq.impl.SQLDataType.INTEGER.defaulted(true), this, "浏览人数");
 
 	/**
-	 * The column <code>hrDB.hr_html5_unique_statistics.recom_view_num_uv</code>. 推荐浏览人数
+	 * The column <code>hrdb.hr_html5_unique_statistics.recom_view_num_uv</code>. 推荐浏览人数
 	 */
 	public final TableField<HrHtml5UniqueStatisticsRecord, Integer> RECOM_VIEW_NUM_UV = createField("recom_view_num_uv", org.jooq.impl.SQLDataType.INTEGER.defaulted(true), this, "推荐浏览人数");
 
 	/**
-	 * The column <code>hrDB.hr_html5_unique_statistics.create_date</code>. 创建日期
+	 * The column <code>hrdb.hr_html5_unique_statistics.create_date</code>. 创建日期
 	 */
 	public final TableField<HrHtml5UniqueStatisticsRecord, Date> CREATE_DATE = createField("create_date", org.jooq.impl.SQLDataType.DATE.nullable(false), this, "创建日期");
 
 	/**
-	 * The column <code>hrDB.hr_html5_unique_statistics.info_type</code>. 0: 日数据，1：周数据，2：月数据
+	 * The column <code>hrdb.hr_html5_unique_statistics.info_type</code>. 0: 日数据，1：周数据，2：月数据
 	 */
 	public final TableField<HrHtml5UniqueStatisticsRecord, Integer> INFO_TYPE = createField("info_type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "0: 日数据，1：周数据，2：月数据");
 
 	/**
-	 * Create a <code>hrDB.hr_html5_unique_statistics</code> table reference
+	 * Create a <code>hrdb.hr_html5_unique_statistics</code> table reference
 	 */
 	public HrHtml5UniqueStatistics() {
 		this("hr_html5_unique_statistics", null);
 	}
 
 	/**
-	 * Create an aliased <code>hrDB.hr_html5_unique_statistics</code> table reference
+	 * Create an aliased <code>hrdb.hr_html5_unique_statistics</code> table reference
 	 */
 	public HrHtml5UniqueStatistics(String alias) {
 		this(alias, HR_HTML5_UNIQUE_STATISTICS);

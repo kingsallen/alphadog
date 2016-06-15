@@ -31,73 +31,73 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogUserloginRecordRecord extends UpdatableRecordImpl<LogUserloginRecordRecord> implements Record5<UInteger, Integer, Integer, String, Timestamp> {
 
-	private static final long serialVersionUID = -1741382749;
+	private static final long serialVersionUID = 1961862051;
 
 	/**
-	 * Setter for <code>logDB.log_userlogin_record.id</code>. 主key
+	 * Setter for <code>logdb.log_userlogin_record.id</code>. 主key
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_userlogin_record.id</code>. 主key
+	 * Getter for <code>logdb.log_userlogin_record.id</code>. 主key
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_userlogin_record.user_id</code>.
+	 * Setter for <code>logdb.log_userlogin_record.user_id</code>.
 	 */
 	public void setUserId(Integer value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_userlogin_record.user_id</code>.
+	 * Getter for <code>logdb.log_userlogin_record.user_id</code>.
 	 */
 	public Integer getUserId() {
 		return (Integer) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_userlogin_record.actiontype</code>. 1 登陆 2 登出
+	 * Setter for <code>logdb.log_userlogin_record.actiontype</code>. 1 登陆 2 登出
 	 */
 	public void setActiontype(Integer value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_userlogin_record.actiontype</code>. 1 登陆 2 登出
+	 * Getter for <code>logdb.log_userlogin_record.actiontype</code>. 1 登陆 2 登出
 	 */
 	public Integer getActiontype() {
 		return (Integer) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_userlogin_record.ip</code>.
+	 * Setter for <code>logdb.log_userlogin_record.ip</code>.
 	 */
 	public void setIp(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_userlogin_record.ip</code>.
+	 * Getter for <code>logdb.log_userlogin_record.ip</code>.
 	 */
 	public String getIp() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>logDB.log_userlogin_record.create_time</code>.
+	 * Setter for <code>logdb.log_userlogin_record.create_time</code>.
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>logDB.log_userlogin_record.create_time</code>.
+	 * Getter for <code>logdb.log_userlogin_record.create_time</code>.
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(4);

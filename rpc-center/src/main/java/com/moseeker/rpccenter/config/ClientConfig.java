@@ -54,7 +54,7 @@ public class ClientConfig<T> implements IConfigCheck{
     private String loadbalance = "random";
 
     /** thrift connect 超时时间，单位为ms，默认为3s */
-    private int timeout = 30000;
+    private int timeout = 100000;
 
     // 下面的配置项是连接池的基本配置
     /** 最大活跃连接数 */
@@ -73,7 +73,7 @@ public class ClientConfig<T> implements IConfigCheck{
     private int timeBetweenEvictionRunsMillis = 180000;
 
     /** 空闲时是否进行连接有效性验证，如果验证失败则移除，默认为false */
-    private boolean testWhileIdle = false;
+    private boolean testWhileIdle = true;
 
     // 下面的配置项是heartbeat的基本配置
     /** 心跳频率，毫秒。默认10s。 */
@@ -128,14 +128,16 @@ public class ClientConfig<T> implements IConfigCheck{
         GenericKeyedObjectPool<ServerNode, T> pool = bulidClientPool(classLoader, objectClass);
         DynamicHostSet hostSet = registry.findAllService();
 
-        HeartBeatManager<T> heartBeatManager = new HeartBeatManager<T>(hostSet, heartbeat, heartbeatTimeout, heartbeatTimes, heartbeatInterval, pool);
-        heartBeatManager.startHeatbeatTimer();
+       // 临时取消心跳, 尝试解决 zookeeper 断开连接问题. 
+        /*HeartBeatManager<T> heartBeatManager = new HeartBeatManager<T>(hostSet, heartbeat, heartbeatTimeout, heartbeatTimes, heartbeatInterval, pool);
+        heartBeatManager.startHeatbeatTimer();*/
 
         this.registry = registry;
         this.pool = pool;
 
         // 添加ShutdownHook
-        addShutdownHook(registry, heartBeatManager);
+        //addShutdownHook(registry, heartBeatManager);
+        addShutdownHook(registry);
 
         Invoker invoker = new DefaultInvoker<T>(clientNode, pool, retry, hostSet);
         DynamicClientHandler dynamicClientHandler = new DynamicClientHandler(invoker);
@@ -226,6 +228,29 @@ public class ClientConfig<T> implements IConfigCheck{
         return JSON.toJSONString(this);
     }
 
+    
+    /**
+     * 添加关闭钩子 -  无心跳
+     * <p>
+     *
+     * @param registry
+     */
+    protected void addShutdownHook(final IRegistry registry) {
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (registry != null) {
+                    registry.unregister();
+                }
+
+                if (pool != null) {
+                    pool.clear();
+                }
+            }
+        }));
+    }
+
+    
     /**
      * 添加关闭钩子
      * <p>

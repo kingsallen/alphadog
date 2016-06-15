@@ -22,6 +22,7 @@ import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.profile.struct.Intention;
 
 public class ParamUtils {
+	
 	public static String getRestfullApiName(HttpServletRequest request) {
 		String path = (String) request
 				.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
@@ -60,76 +61,47 @@ public class ParamUtils {
 			throws Exception {
 		if (t != null) {
 			try {
+				Map<String, Object> data = new HashMap<String, Object>();
+				data.putAll(initParamFromRequestBody(request));
+				data.putAll(initParamFromRequestParameter(request));
 				
-				Integer appId = request.getParameter("appid") == null ? null
-						: Integer.parseInt(request.getParameter("appid"));
-
-				if (appId == null) {
-					throw new Exception(" failed to get appid.");
+				if (data.get("appid") == null) {
+					throw new Exception("请设置 appid!");
 				}
 
-				if (appId != null) {
-					Method method = t.getClass().getMethod("setAppid",
-							int.class);
-					method.invoke(t, appId);
-				}
-/*
-				Integer limit = request.getParameter("limit") == null ? null
-						: Integer.parseInt(request.getParameter("limit"));
-				if (limit != null) {
-					Method method = t.getClass().getMethod("setLimit",
-							int.class);
-					method.invoke(t, limit);
-				}
-				Integer offset = request.getParameter("offset") == null ? null
-						: Integer.parseInt(request.getParameter("offset"));
-				if (offset != null) {
-					Method method = t.getClass().getMethod("setOffset",
-							int.class);
-					method.invoke(t, offset);
-				}
-*/				
-				Integer page = request.getParameter("page") == null ? null
-						: Integer.parseInt(request.getParameter("page"));
-				if (page != null) {
+				Method method1 = t.getClass().getMethod("setAppid",
+						int.class);
+				method1.invoke(t, BeanUtils.converToInteger(data.get("appid")));
+				if (data.get("page") != null) {
 					Method method = t.getClass()
 							.getMethod("setPage", int.class);
-					method.invoke(t, page);
+					method.invoke(t, BeanUtils.converToInteger(data.get("page")));
 				}
-				Integer perPage = request.getParameter("per_page") == null ? null
-						: Integer.parseInt(request.getParameter("per_page"));
-				if (perPage != null) {
+				if (data.get("per_page") != null) {
 					Method method = t.getClass().getMethod("setPer_page",
 							int.class);
-					method.invoke(t, perPage);
+					method.invoke(t, BeanUtils.converToInteger(data.get("per_page")));
 				}
-				String sortby = request.getParameter("sortby") == null ? null
-						: request.getParameter("sortby");
-				if (sortby != null) {
+				if (data.get("sortby") != null) {
 					Method method = t.getClass().getMethod("setSortby",
 							String.class);
-					method.invoke(t, sortby);
+					method.invoke(t, BeanUtils.converToString(data.get("sortby")));
 				}
-				String order = request.getParameter("order") == null ? null
-						: request.getParameter("order");
-				if (order != null) {
+				if (data.get("order") != null) {
 					Method method = t.getClass().getMethod("setOrder",
 							String.class);
-					method.invoke(t, order);
+					method.invoke(t, BeanUtils.converToString(data.get("order")));
 				}
-				String fields = request.getParameter("fields") == null ? null
-						: request.getParameter("fields");
-				if (fields != null) {
+				
+				if (data.get("fields") != null) {
 					Method method = t.getClass().getMethod("setFields",
 							String.class);
-					method.invoke(t, fields);
+					method.invoke(t, BeanUtils.converToString(data.get("fields")));
 				}
-				Boolean nocache = request.getParameter("nocache") == null ? null
-						: Boolean.parseBoolean(request.getParameter("nocache"));
-				if (nocache != null) {
+				if (data.get("nocache") != null) {
 					Method method = t.getClass().getMethod("setNocache",
-							boolean.class);
-					method.invoke(t, nocache);
+							String.class);
+					method.invoke(t, BeanUtils.convertToBoolean(data.get("nocache")));
 				}
 				Map<String, String> param = new HashMap<>();
 				@SuppressWarnings("unchecked")
@@ -137,8 +109,6 @@ public class ParamUtils {
 				if (reqParams != null) {
 					for (Entry<String, String[]> entry : reqParams.entrySet()) {
 						if (!entry.getKey().equals("appid")
-								&& !entry.getKey().equals("limit")
-								&& !entry.getKey().equals("offset")
 								&& !entry.getKey().equals("page")
 								&& !entry.getKey().equals("per_page")
 								&& !entry.getKey().equals("sortby")
@@ -169,11 +139,16 @@ public class ParamUtils {
 	 * 将request请求中的参数，不管是request的body中的参数还是以getParameter方式获取的参数存入到HashMap并染回该HashMap
 	 * @param request request请求
 	 * @return 存储通过request请求传递过来的参数
+	 * @throws Exception 
 	 */
-	public static Map<String, Object> mergeRequestParameters(HttpServletRequest request) {
+	public static Map<String, Object> mergeRequestParameters(HttpServletRequest request) throws Exception {
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.putAll(initParamFromRequestBody(request));
 		data.putAll(initParamFromRequestParameter(request));
+		
+		if (data.get("appid") == null){
+			throw new Exception("请设置 appid!");
+		}		
 		return data;
 	}
 
@@ -201,8 +176,13 @@ public class ParamUtils {
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.putAll(initParamFromRequestBody(request));
 		data.putAll(initParamFromRequestParameter(request));
+		
+		if (data.get("appid") == null){
+			throw new Exception("请设置 appid!");
+		}
+		
 		if (data != null && data.size() > 0) {
-			Field[] fields = clazz.getFields();
+			Field[] fields = clazz.getDeclaredFields();
 			for (Entry<String, Object> entry : data.entrySet()) {
 				for (int i = 0; i < fields.length; i++) {
 					if (fields[i].getName().equals(entry.getKey())) {
@@ -225,6 +205,40 @@ public class ParamUtils {
 			}
 		}
 
+		return t;
+	}
+	
+	public static <T> T initModelForm(Map<String, Object> data, Class<T> clazz) throws Exception {
+		T t = null;
+		if(data != null && data.size() > 0) {
+			if (data.get("appid") == null){
+				throw new Exception("请设置 appid!");
+			}
+			t = clazz.newInstance();
+			if (data != null && data.size() > 0) {
+				Field[] fields = clazz.getDeclaredFields();
+				for (Entry<String, Object> entry : data.entrySet()) {
+					for (int i = 0; i < fields.length; i++) {
+						if (fields[i].getName().equals(entry.getKey())) {
+							String methodName = "set"
+									+ fields[i].getName().substring(0, 1)
+											.toUpperCase()
+									+ fields[i].getName().substring(1);
+							Method method = clazz.getMethod(methodName,
+									fields[i].getType());
+							Object cval = BeanUtils.convertTo(
+									entry.getValue(), fields[i].getType());
+							try {
+								method.invoke(t, cval);
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+					}
+				}
+			}
+		}
 		return t;
 	}
 
@@ -315,13 +329,13 @@ public class ParamUtils {
 
 	public static void buildIntention(HttpServletRequest request, Intention intention) {
 		Map<Integer, Integer> industryCode = new HashMap<>();
-		Map<Integer, String> industryName= new HashMap<>();
+		Map<String, Integer> industryName= new HashMap<>();
 		
 		Map<Integer, Integer> positionCode = new HashMap<>();
-		Map<Integer, String> positionName= new HashMap<>();
+		Map<String, Integer> positionName= new HashMap<>();
 		
 		Map<Integer, Integer> cityCode = new HashMap<>();
-		Map<Integer, String> cityName= new HashMap<>();
+		Map<String, Integer> cityName= new HashMap<>();
 		@SuppressWarnings("unchecked")
 		Map<String, String[]> reqParams = request.getParameterMap();
 		if (reqParams != null) {
@@ -331,7 +345,7 @@ public class ParamUtils {
 						industryCode.put(Integer.valueOf(entry.getKey().charAt(11)), Integer.valueOf(entry.getValue()[0]));
 					}
 					if(entry.getKey().contains("industry_name")) {
-						industryName.put(Integer.valueOf(entry.getKey().charAt(11)), entry.getValue()[0]);
+						industryName.put(entry.getValue()[0], Integer.valueOf(entry.getKey().charAt(11)));
 					}
 				}
 				
@@ -340,7 +354,7 @@ public class ParamUtils {
 						cityCode.put(Integer.valueOf(entry.getKey().charAt(7)), Integer.valueOf(entry.getValue()[0]));
 					}
 					if(entry.getKey().contains("city_name")) {
-						cityName.put(Integer.valueOf(entry.getKey().charAt(7)), entry.getValue()[0]);
+						cityName.put(entry.getValue()[0], Integer.valueOf(entry.getKey().charAt(7)));
 					}
 				}
 				
@@ -349,33 +363,49 @@ public class ParamUtils {
 						positionCode.put(Integer.valueOf(entry.getKey().charAt(10)), Integer.valueOf(entry.getValue()[0]));
 					}
 					if(entry.getKey().contains("position_name")) {
-						positionName.put(Integer.valueOf(entry.getKey().charAt(10)), entry.getValue()[0]);
+						positionName.put(entry.getValue()[0], Integer.valueOf(entry.getKey().charAt(10)));
 					}
 				}
 			}
 		}
-		if(industryCode.size() > 0 && industryCode.size() == industryName.size()) {
-			for(Entry<Integer, Integer> entry : industryCode.entrySet()) {
+		if(industryName.size() > 0) {
+			for(Entry<String, Integer> entry : industryName.entrySet()) {
 				if(intention.getIndustries() == null) {
-					intention.setIndustries(new HashMap<Integer, String>());
+					intention.setIndustries(new HashMap<String, Integer>());
 				}
-				intention.getIndustries().put(entry.getValue().intValue(), industryName.get(entry.getKey().intValue()));
+				int code = 0;
+				if(industryCode.size() > 0) {
+					if(industryCode.get(entry.getValue()) != null) {
+						code = industryCode.get(entry.getValue());
+					}
+				}
+				intention.getIndustries().put(entry.getKey(), code);
 			}
 		}
-		if(positionCode.size() > 0 && positionCode.size() == positionName.size()) {
-			for(Entry<Integer, Integer> entry : positionCode.entrySet()) {
+		if(positionName.size() > 0) {
+			for(Entry<String, Integer> entry : positionName.entrySet()) {
 				if(intention.positions == null) {
-					intention.setPositions(new HashMap<Integer, String>());
+					intention.setPositions(new HashMap<String, Integer>());
 				}
-				intention.getPositions().put(entry.getValue().intValue(), positionName.get(entry.getKey().intValue()));
+				int code = 0;
+				if(positionCode.size() > 0) {
+					if(positionCode.get(entry.getValue()) != null) {
+						code = positionCode.get(entry.getValue());
+					}
+				}
+				intention.getPositions().put(entry.getKey(), code);
 			}
 		}
-		if(cityCode.size() > 0 && cityCode.size() == cityName.size()) {
-			for(Entry<Integer, Integer> entry : cityCode.entrySet()) {
+		if(cityName.size() > 0) {
+			for(Entry<String, Integer> entry : cityName.entrySet()) {
 				if(intention.cities == null) {
-					intention.setCities(new HashMap<Integer, String>());
+					intention.setCities(new HashMap<String, Integer>());
 				}
-				intention.getCities().put(entry.getValue().intValue(), cityName.get(entry.getKey().intValue()));
+				int code = 0;
+				if(cityCode.get(entry.getValue()) != null) {
+					code = cityCode.get(entry.getValue());
+				}
+				intention.getCities().put(entry.getKey(), code);
 			}
 		}
 	}

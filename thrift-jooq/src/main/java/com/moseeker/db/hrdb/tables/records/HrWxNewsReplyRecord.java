@@ -29,115 +29,115 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxNewsReplyRecord extends UpdatableRecordImpl<HrWxNewsReplyRecord> implements Record8<UInteger, UInteger, UInteger, String, String, String, String, String> {
 
-	private static final long serialVersionUID = 1748535078;
+	private static final long serialVersionUID = 1536526118;
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_news_reply.id</code>.
+	 * Setter for <code>hrdb.hr_wx_news_reply.id</code>.
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_news_reply.id</code>.
+	 * Getter for <code>hrdb.hr_wx_news_reply.id</code>.
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_news_reply.rid</code>.
+	 * Setter for <code>hrdb.hr_wx_news_reply.rid</code>.
 	 */
 	public void setRid(UInteger value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_news_reply.rid</code>.
+	 * Getter for <code>hrdb.hr_wx_news_reply.rid</code>.
 	 */
 	public UInteger getRid() {
 		return (UInteger) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_news_reply.parentid</code>.
+	 * Setter for <code>hrdb.hr_wx_news_reply.parentid</code>.
 	 */
 	public void setParentid(UInteger value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_news_reply.parentid</code>.
+	 * Getter for <code>hrdb.hr_wx_news_reply.parentid</code>.
 	 */
 	public UInteger getParentid() {
 		return (UInteger) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_news_reply.title</code>.
+	 * Setter for <code>hrdb.hr_wx_news_reply.title</code>.
 	 */
 	public void setTitle(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_news_reply.title</code>.
+	 * Getter for <code>hrdb.hr_wx_news_reply.title</code>.
 	 */
 	public String getTitle() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_news_reply.description</code>.
+	 * Setter for <code>hrdb.hr_wx_news_reply.description</code>.
 	 */
 	public void setDescription(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_news_reply.description</code>.
+	 * Getter for <code>hrdb.hr_wx_news_reply.description</code>.
 	 */
 	public String getDescription() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_news_reply.thumb</code>.
+	 * Setter for <code>hrdb.hr_wx_news_reply.thumb</code>.
 	 */
 	public void setThumb(String value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_news_reply.thumb</code>.
+	 * Getter for <code>hrdb.hr_wx_news_reply.thumb</code>.
 	 */
 	public String getThumb() {
 		return (String) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_news_reply.content</code>.
+	 * Setter for <code>hrdb.hr_wx_news_reply.content</code>.
 	 */
 	public void setContent(String value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_news_reply.content</code>.
+	 * Getter for <code>hrdb.hr_wx_news_reply.content</code>.
 	 */
 	public String getContent() {
 		return (String) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_news_reply.url</code>.
+	 * Setter for <code>hrdb.hr_wx_news_reply.url</code>.
 	 */
 	public void setUrl(String value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_news_reply.url</code>.
+	 * Getter for <code>hrdb.hr_wx_news_reply.url</code>.
 	 */
 	public String getUrl() {
 		return (String) getValue(7);

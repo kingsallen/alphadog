@@ -14,7 +14,7 @@ ext {
             "curator-recipes"     : "org.apache.curator:curator-recipes:2.3.0",
             "fastjson"            : "com.alibaba:fastjson:1.2.11",
 	    "gjson"		  : "com.google.code.gson:gson:2.6.2",
-            "libthrift"           : "org.apache.thrift:libthrift:0.9.3",
+            "libthrift"           : "org.apache.thrift:libthrift:0.9.2",
             "bonecp"              : "com.jolbox:bonecp:0.8.0.RELEASE",
             "javamail"            : "javax.mail:mail:1.5.0-b01",
             "servlet-api"         : 'javax.servlet:javax.servlet-api:3.0.1',
@@ -32,7 +32,8 @@ ext {
 	    "jstl"		  : 'javax.servlet:jstl:1.1.2',
 	    "jaxb-api"		  : 'javax.xml.bind:jaxb-api:2.2.12',
 	    "thrift-gradle-plugin": 'gradle.plugin.org.jruyi.gradle:thrift-gradle-plugin:0.3.1',
-	    "jetty-support": 'org.eclipse.jetty:jetty-maven-plugin:9.3.0.M2'
+	    "jetty-support": 'org.eclipse.jetty:jetty-maven-plugin:9.3.0.M2',
+	    "httpclient": 'commons-httpclient:commons-httpclient:3.1'
 
     ]
 }

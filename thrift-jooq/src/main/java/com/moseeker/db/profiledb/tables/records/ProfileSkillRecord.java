@@ -32,101 +32,101 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileSkillRecord extends UpdatableRecordImpl<ProfileSkillRecord> implements Record7<UInteger, UInteger, String, UByte, UInteger, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = -1220433885;
+	private static final long serialVersionUID = 520763427;
 
 	/**
-	 * Setter for <code>profileDB.profile_skill.id</code>. 主key
+	 * Setter for <code>profiledb.profile_skill.id</code>. 主key
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_skill.id</code>. 主key
+	 * Getter for <code>profiledb.profile_skill.id</code>. 主key
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_skill.profile_id</code>. profile.id
+	 * Setter for <code>profiledb.profile_skill.profile_id</code>. profile.id
 	 */
 	public void setProfileId(UInteger value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_skill.profile_id</code>. profile.id
+	 * Getter for <code>profiledb.profile_skill.profile_id</code>. profile.id
 	 */
 	public UInteger getProfileId() {
 		return (UInteger) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_skill.name</code>. 技能名称
+	 * Setter for <code>profiledb.profile_skill.name</code>. 技能名称
 	 */
 	public void setName(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_skill.name</code>. 技能名称
+	 * Getter for <code>profiledb.profile_skill.name</code>. 技能名称
 	 */
 	public String getName() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_skill.level</code>. 掌握程度 0:未填写 1:了解, 2:掌握 3:熟练 4:精通
+	 * Setter for <code>profiledb.profile_skill.level</code>. 掌握程度 0:未填写 1:了解, 2:掌握 3:熟练 4:精通
 	 */
 	public void setLevel(UByte value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_skill.level</code>. 掌握程度 0:未填写 1:了解, 2:掌握 3:熟练 4:精通
+	 * Getter for <code>profiledb.profile_skill.level</code>. 掌握程度 0:未填写 1:了解, 2:掌握 3:熟练 4:精通
 	 */
 	public UByte getLevel() {
 		return (UByte) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_skill.month</code>. 使用 单位(月)
+	 * Setter for <code>profiledb.profile_skill.month</code>. 使用 单位(月)
 	 */
 	public void setMonth(UInteger value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_skill.month</code>. 使用 单位(月)
+	 * Getter for <code>profiledb.profile_skill.month</code>. 使用 单位(月)
 	 */
 	public UInteger getMonth() {
 		return (UInteger) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_skill.create_time</code>. 创建时间
+	 * Setter for <code>profiledb.profile_skill.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_skill.create_time</code>. 创建时间
+	 * Getter for <code>profiledb.profile_skill.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_skill.update_time</code>. 更新时间
+	 * Setter for <code>profiledb.profile_skill.update_time</code>. 更新时间
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_skill.update_time</code>. 更新时间
+	 * Getter for <code>profiledb.profile_skill.update_time</code>. 更新时间
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(6);

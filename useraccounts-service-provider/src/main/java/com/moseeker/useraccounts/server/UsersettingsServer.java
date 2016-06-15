@@ -40,9 +40,9 @@ public class UsersettingsServer {
 				while (true) {
 					try {
 						UsersettingsServer.class.wait();
-					} catch (InterruptedException e) {
-						LOGGER.error("error", e);
-					}
+                    } catch (Exception e) {
+                        LOGGER.error(" service provider UsersettingsServer error", e);
+                    }
 				}
 			}
 		} catch (Exception e) {

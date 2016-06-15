@@ -36,10 +36,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class BlogPosts extends TableImpl<BlogPostsRecord> {
 
-	private static final long serialVersionUID = -466127394;
+	private static final long serialVersionUID = 19957214;
 
 	/**
-	 * The reference instance of <code>configDB.blog_posts</code>
+	 * The reference instance of <code>configdb.blog_posts</code>
 	 */
 	public static final BlogPosts BLOG_POSTS = new BlogPosts();
 
@@ -52,39 +52,39 @@ public class BlogPosts extends TableImpl<BlogPostsRecord> {
 	}
 
 	/**
-	 * The column <code>configDB.blog_posts.id</code>.
+	 * The column <code>configdb.blog_posts.id</code>.
 	 */
 	public final TableField<BlogPostsRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
 
 	/**
-	 * The column <code>configDB.blog_posts.title</code>.
+	 * The column <code>configdb.blog_posts.title</code>.
 	 */
 	public final TableField<BlogPostsRecord, String> TITLE = createField("title", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>configDB.blog_posts.text</code>.
+	 * The column <code>configdb.blog_posts.text</code>.
 	 */
 	public final TableField<BlogPostsRecord, String> TEXT = createField("text", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
 	/**
-	 * The column <code>configDB.blog_posts.created</code>.
+	 * The column <code>configdb.blog_posts.created</code>.
 	 */
 	public final TableField<BlogPostsRecord, Timestamp> CREATED = createField("created", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "");
 
 	/**
-	 * The column <code>configDB.blog_posts.updated</code>.
+	 * The column <code>configdb.blog_posts.updated</code>.
 	 */
 	public final TableField<BlogPostsRecord, Timestamp> UPDATED = createField("updated", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "");
 
 	/**
-	 * Create a <code>configDB.blog_posts</code> table reference
+	 * Create a <code>configdb.blog_posts</code> table reference
 	 */
 	public BlogPosts() {
 		this("blog_posts", null);
 	}
 
 	/**
-	 * Create an aliased <code>configDB.blog_posts</code> table reference
+	 * Create an aliased <code>configdb.blog_posts</code> table reference
 	 */
 	public BlogPosts(String alias) {
 		this(alias, BLOG_POSTS);

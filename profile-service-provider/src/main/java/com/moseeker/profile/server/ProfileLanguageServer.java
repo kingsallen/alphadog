@@ -42,10 +42,9 @@ public class ProfileLanguageServer {
 				while (true) {
 					try {
 						ProfileLanguageServer.class.wait();
-					} catch (InterruptedException e) {
-						LOGGER.error("error", e);
-						e.printStackTrace();
-					}
+                    } catch (Exception e) {
+                        LOGGER.error(" service provider ProfileLanguageServer error", e);
+                    }
 				}
 			}
 		} catch (Exception e) {

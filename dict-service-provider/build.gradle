@@ -11,6 +11,7 @@ dependencies {
     compile deps["spring-core"]
     compile deps["spring-context"]
     compile deps["jetty-support"]
+    compile deps["zookeeper"]
 }
 
 //compileJava.dependsOn(":thrift-jooq:copyGeneratedFile")
@@ -26,10 +27,10 @@ jar {
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     }
-
-     manifest {
-        attributes 'Main-Class': 'com.moseeker.dict.server.CityServer'
-     }
+//
+//     manifest {
+//        attributes 'Main-Class': 'com.moseeker.dict.server.DictConstantServer'
+//     }
 
 
 }

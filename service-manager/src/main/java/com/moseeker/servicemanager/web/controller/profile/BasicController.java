@@ -18,6 +18,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.BasicServices;
 import com.moseeker.thrift.gen.profile.struct.Basic;
 
+//@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
 public class BasicController {
 
@@ -43,7 +44,7 @@ public class BasicController {
 
 	@RequestMapping(value = "/profile/basic", method = RequestMethod.POST)
 	@ResponseBody
-	public String post(HttpServletRequest request, HttpServletResponse response) {
+	public String post(HttpServletRequest request) {
 		//PrintWriter writer = null;
 		try {
 			Basic basic = ParamUtils.initModelForm(request, Basic.class);
@@ -69,12 +70,14 @@ public class BasicController {
 		}
 	}
 
-	@RequestMapping(value = "/profile/basic", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/profile/basic/", method = RequestMethod.DELETE)
 	@ResponseBody
 	public String delete(HttpServletRequest request, HttpServletResponse response) {
 		try {
+			//System.out.println(id);
 			Basic basic = ParamUtils.initModelForm(request, Basic.class);
 			Response result = basicService.delResource(basic);
+			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
 			return ResponseLogNotification.fail(request, e.getMessage());

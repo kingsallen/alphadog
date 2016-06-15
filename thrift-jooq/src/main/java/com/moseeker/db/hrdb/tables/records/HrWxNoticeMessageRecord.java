@@ -29,87 +29,87 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxNoticeMessageRecord extends UpdatableRecordImpl<HrWxNoticeMessageRecord> implements Record6<UInteger, UInteger, Integer, String, String, Byte> {
 
-	private static final long serialVersionUID = -606885304;
+	private static final long serialVersionUID = -675567032;
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_notice_message.id</code>. 主key
+	 * Setter for <code>hrdb.hr_wx_notice_message.id</code>. 主key
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_notice_message.id</code>. 主key
+	 * Getter for <code>hrdb.hr_wx_notice_message.id</code>. 主key
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_notice_message.wechat_id</code>. 所属公众号
+	 * Setter for <code>hrdb.hr_wx_notice_message.wechat_id</code>. 所属公众号
 	 */
 	public void setWechatId(UInteger value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_notice_message.wechat_id</code>. 所属公众号
+	 * Getter for <code>hrdb.hr_wx_notice_message.wechat_id</code>. 所属公众号
 	 */
 	public UInteger getWechatId() {
 		return (UInteger) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_notice_message.notice_id</code>. sys_notice_message.id
+	 * Setter for <code>hrdb.hr_wx_notice_message.notice_id</code>. sys_notice_message.id
 	 */
 	public void setNoticeId(Integer value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_notice_message.notice_id</code>. sys_notice_message.id
+	 * Getter for <code>hrdb.hr_wx_notice_message.notice_id</code>. sys_notice_message.id
 	 */
 	public Integer getNoticeId() {
 		return (Integer) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_notice_message.first</code>. 消息模板first文案
+	 * Setter for <code>hrdb.hr_wx_notice_message.first</code>. 消息模板first文案
 	 */
 	public void setFirst(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_notice_message.first</code>. 消息模板first文案
+	 * Getter for <code>hrdb.hr_wx_notice_message.first</code>. 消息模板first文案
 	 */
 	public String getFirst() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_notice_message.remark</code>. 消息模板remark文案
+	 * Setter for <code>hrdb.hr_wx_notice_message.remark</code>. 消息模板remark文案
 	 */
 	public void setRemark(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_notice_message.remark</code>. 消息模板remark文案
+	 * Getter for <code>hrdb.hr_wx_notice_message.remark</code>. 消息模板remark文案
 	 */
 	public String getRemark() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_notice_message.status</code>. 是否开启, 1:开启, 0:关闭
+	 * Setter for <code>hrdb.hr_wx_notice_message.status</code>. 是否开启, 1:开启, 0:关闭
 	 */
 	public void setStatus(Byte value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_notice_message.status</code>. 是否开启, 1:开启, 0:关闭
+	 * Getter for <code>hrdb.hr_wx_notice_message.status</code>. 是否开启, 1:开启, 0:关闭
 	 */
 	public Byte getStatus() {
 		return (Byte) getValue(5);

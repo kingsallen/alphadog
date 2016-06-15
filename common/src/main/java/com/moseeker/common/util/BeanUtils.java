@@ -5,7 +5,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.thrift.TBase;
 import org.jooq.impl.UpdatableRecordImpl;
@@ -15,6 +17,9 @@ import org.jooq.types.ULong;
 import org.jooq.types.UShort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.alibaba.fastjson.JSON;
+import com.moseeker.db.profiledb.tables.records.ProfileBasicRecord;
 
 /**
  * 
@@ -35,16 +40,22 @@ import org.slf4j.LoggerFactory;
  * @version
  */
 public class BeanUtils {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(BeanUtils.class);
-	
+
 	public static void main(String[] args) {
-		String str = "110108";
-		System.out.println(Short.valueOf(str));
+		String profile = "{\"status\": 0, \"resumes\": [{\"skills\": [], \"credentials\": [], \"attachment\": [], \"educations\": [{\"end_until_now\": 0, \"major_name\": \"\u8ba1\u7b97\u673a\u79d1\u5b66\u4e0e\u6280\u672f\", \"start\": \"2010-09\", \"degree_name\": \"3\", \"college_name\": \"\u5929\u6d25\u5de5\u4e1a\u5927\u5b66\", \"end\": \"2014-06\"}], \"basic\": {\"self_introduction\": \"\u6211\u662f\u4e00\u4e2a\u6d3b\u6cfc\u5f00\u6717\u7684\u4eba\uff0c\u7ecf\u8fc7\u8fd9\u4e00\u4e2a\u6708\u7684\u627e\u5de5\u4f5c\u6211\u7ec8\u4e8e\u660e\u767d\u4e86\u81ea\u5df1\u7684\u65b9\u5411\uff0c\u6211\u5e0c\u671b\u80fd\u627e\u5230\u4e00\u4e2a\u5408\u9002\u7684\u5de5\u4f5c\uff0c\u7136\u540e\u77e2\u5fd7\u4e0d\u6e1d\u7684\u575a\u6301\u4e0b\u53bb\u3002\", \"city_name\": \"\u5929\u6d25\", \"workstate\": \"4\", \"nationality_name\": \"\u5929\u6d25\", \"mobile\": \"15822226310\", \"username\": \"\u8e47\u667a\u534e\", \"birth\": \"1990-06\", \"gender\": \"1\", \"email\": \"chiwah.keen@gmail.com\"}, \"awards\": {\"name\": \"\", \"reward_date\": \"\", \"description\": \"\", \"level\": [\"\"]}, \"workexps\": [{\"salary_code\": 2, \"end_until_now\": 0, \"position_name\": \"\u9500\u552e\u4ee3\u8868\", \"description\": \"1\u3001\u6211\u7684\u65e5\u5e38\u5de5\u4f5c\u6709\u53d1\u5e03\u623f\u6e90\uff0c\u8054\u7cfb\u623f\u6e90\uff0c\u8054\u7cfb\u5ba2\u62372\u3001\u6211\u9500\u552e\u7684\u4ea7\u54c1\u662f\u4e8c\u624b\u79df\u8d413\u3001\u6211\u6240\u8d1f\u8d23\u7684\u4ea7\u54c1\u9500\u552e\u533a\u57df\u662f\u5929\u6d25\u5e02\u6cb3\u897f\u533a\u8d8a\u79c0\u8def4\u3001\u6211\u66fe\u53d6\u5f97\u7684\u9500\u552e\u4e1a\u7ee9\u662f\u7a81\u78345000\u5143\", \"start\": \"2012-07\", \"end\": \"2012-09\", \"company_name\": \"\u5929\u6d25\u4e2d\u539f\", \"industry_name\": \"\u623f\u5730\u4ea7/\u5efa\u7b51/\u5efa\u6750/\u5de5\u7a0b\", \"salary_type\": \"2\"}], \"intentions\": {\"salary_code\": \"0\", \"consider_venture_company_opportunities\": 0, \"industries\": [{\"industry_name\": \"I\"}, {\"industry_name\": \"T\"}, {\"industry_name\": \"\u670d\"}, {\"industry_name\": \"\u52a1\"}, {\"industry_name\": \"(\"}, {\"industry_name\": \"\u7cfb\"}, {\"industry_name\": \"\u7edf\"}, {\"industry_name\": \"/\"}, {\"industry_name\": \"\u6570\"}, {\"industry_name\": \"\u636e\"}, {\"industry_name\": \"/\"}, {\"industry_name\": \"\u7ef4\"}, {\"industry_name\": \"\u62a4\"}, {\"industry_name\": \")\"}], \"cities\": [{\"city_name\": \"\u5317\u4eac\"}], \"positions\": [{\"pposition_name\": \"\u9500\u552e\u4e1a\u52a1\u3001IT\u8d28\u91cf\u7ba1\u7406/\u6d4b\u8bd5/\u914d\u7f6e\u7ba1\u7406\"}], \"salary_type\": 2}, \"source\": \"4\", \"othermodifytime\": \"2016-05-27 10:31:45\", \"works\": [], \"import\": {}, \"projectexps\": [], \"languages\": []}]}";
+		Map<String, Object> messagBean = (Map<String, Object>) JSON.parse(profile);
+		List<Map<String, Object>> resumes = (List<Map<String, Object>>) messagBean.get("resumes");
+		Map<String, Object> resume = resumes.get(0);
+		ProfileBasicRecord record = MapToRecord((Map<String, Object>) resume.get("basic"), ProfileBasicRecord.class);
+		System.out.println("self_introduction:" + record.getSelfIntroduction());
+
 	}
-	
+
 	@SuppressWarnings("rawtypes")
-	public static UpdatableRecordImpl structToDB(TBase dest, Class<? extends UpdatableRecordImpl> origClazz, Map<String, String> equalRules) {
+	public static UpdatableRecordImpl structToDB(TBase dest, Class<? extends UpdatableRecordImpl> origClazz,
+			Map<String, String> equalRules) {
 		UpdatableRecordImpl orig = null;
 		try {
 			orig = origClazz.newInstance();
@@ -54,7 +65,7 @@ public class BeanUtils {
 		structToDB(dest, orig, equalRules);
 		return orig;
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	public static UpdatableRecordImpl structToDB(TBase dest, Class<? extends UpdatableRecordImpl> origClazz) {
 		UpdatableRecordImpl orig = null;
@@ -69,56 +80,85 @@ public class BeanUtils {
 
 	/**
 	 * struct 类和JOOQ类的属性和方法固定，可以预先加载成静态的属性和方法
+	 * 
 	 * @param dest
 	 * @param orig
 	 */
-	public static void structToDB(@SuppressWarnings("rawtypes") TBase dest, @SuppressWarnings("rawtypes") UpdatableRecordImpl orig, Map<String, String> equalRules) {
-		if(dest == null || orig == null) {
+	public static void structToDB(@SuppressWarnings("rawtypes") TBase dest,
+			@SuppressWarnings("rawtypes") UpdatableRecordImpl orig, Map<String, String> equalRules) {
+		if (dest == null || orig == null) {
 			return;
 		}
 		Field[] descFields = dest.getClass().getFields();
 		Method[] destMethods = dest.getClass().getMethods();
-		
+
 		Method[] origMethods = orig.getClass().getMethods();
 
-		int i=0,j=0,k=0;
-		if(descFields != null && descFields.length > 0 && destMethods != null && destMethods.length > 0) {
-			for(i=0; i<descFields.length; i++) {
-				if(!descFields[i].getName().trim().equals("metaDataMap")) {
+		int i = 0, j = 0, k = 0;
+		if (descFields != null && descFields.length > 0 && destMethods != null && destMethods.length > 0) {
+			for (i = 0; i < descFields.length; i++) {
+				if (!descFields[i].getName().trim().equals("metaDataMap")) {
 					Field field = descFields[i];
-					String upperFirst = field.getName().substring(0, 1).toUpperCase() + 
-							field.getName().substring(1);
+					String upperFirst = field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
 					String getMethodName = "get" + upperFirst;
-					for(j=0; j<destMethods.length; j++) {
+					for (j = 0; j < destMethods.length; j++) {
 						try {
-							if(destMethods[j].getName().equals(getMethodName)) {
-								Method isSetMethod = dest.getClass().getMethod("isSet"+upperFirst, new Class[]{});
-								if((Boolean)isSetMethod.invoke(dest, new Object[]{})){
-									String origMethodName = buiderRecordMethodName(field.getName(), MethodType.SET, equalRules);
-									for(k=0; k<origMethods.length;k++) {
-										if(origMethods[k].getName().trim().equals(origMethodName)) {
- 											Object object = convertTo(destMethods[j].invoke(dest, new Object[]{}), origMethods[k].getParameterTypes()[0]);
-											if(object != null) {
+							if (destMethods[j].getName().equals(getMethodName)) {
+								/*if (defaultValue(field, destMethods[j], dest)) {
+									continue;
+								}*/
+								Method isSetMethod = dest.getClass().getMethod("isSet" + upperFirst, new Class[] {});
+								if ((Boolean) isSetMethod.invoke(dest, new Object[] {})) {
+									String origMethodName = buiderRecordMethodName(field.getName(), MethodType.SET,
+											equalRules);
+									for (k = 0; k < origMethods.length; k++) {
+										if (origMethods[k].getName().trim().equals(origMethodName)) {
+											Object object = convertTo(destMethods[j].invoke(dest, new Object[] {}),
+													origMethods[k].getParameterTypes()[0]);
+											if (object != null) {
 												origMethods[k].invoke(orig, object);
 											}
+											break;
 										}
 									}
 								}
+								break;
 							}
 						} catch (NoSuchMethodException | SecurityException | IllegalAccessException
 								| IllegalArgumentException | InvocationTargetException e) {
 							logger.error("error", e);
 						} finally {
-							//do nothing
+							// do nothing
 						}
 					}
 				}
 			}
 		}
 	}
-	
+
+	/*private static boolean defaultValue(Field field, Method destMethods, @SuppressWarnings("rawtypes") TBase dest) {
+		if (field.getType().isAssignableFrom(int.class) || field.getType().isAssignableFrom(Integer.class)
+				|| field.getType().isAssignableFrom(short.class) || field.getType().isAssignableFrom(Short.class)
+				|| field.getType().isAssignableFrom(long.class) || field.getType().isAssignableFrom(Long.class)
+				|| field.getType().isAssignableFrom(double.class) || field.getType().isAssignableFrom(Double.class)) {
+			try {
+				Integer object = convertTo(destMethods.invoke(dest, new Object[] {}), Integer.class);
+				if(object != null && object.intValue() == -32768) {
+					return true;
+				} else {
+					return false;
+				}
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				return true;
+			}
+		} else {
+			return false;
+		}
+	}*/
+
 	@SuppressWarnings("rawtypes")
-	public static TBase DBToStruct(Class<? extends TBase> destClazz, UpdatableRecordImpl orig, Map<String, String> equalRules) {
+	public static TBase DBToStruct(Class<? extends TBase> destClazz, UpdatableRecordImpl orig,
+			Map<String, String> equalRules) {
 		TBase base = null;
 		try {
 			base = destClazz.newInstance();
@@ -128,7 +168,7 @@ public class BeanUtils {
 		DBToStruct(base, orig, equalRules);
 		return base;
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	public static TBase DBToStruct(Class<? extends TBase> destClazz, UpdatableRecordImpl orig) {
 		TBase base = null;
@@ -140,69 +180,101 @@ public class BeanUtils {
 		DBToStruct(base, orig, null);
 		return base;
 	}
-	
-	public static void DBToStruct(@SuppressWarnings("rawtypes") TBase dest, @SuppressWarnings("rawtypes") UpdatableRecordImpl orig, Map<String, String> equalRules) {
-		if(dest == null || orig == null) {
+
+	public static void DBToStruct(@SuppressWarnings("rawtypes") TBase dest,
+			@SuppressWarnings("rawtypes") UpdatableRecordImpl orig, Map<String, String> equalRules) {
+		if (dest == null || orig == null) {
 			return;
 		}
 		Field[] descFields = dest.getClass().getFields();
 		Method[] destMethods = dest.getClass().getMethods();
-		
+
 		Method[] origMethods = orig.getClass().getMethods();
 
-		int i=0,j=0,k=0;
-		if(descFields != null && descFields.length > 0 && destMethods != null && destMethods.length > 0) {
-			for(i=0; i<descFields.length; i++) {
-				if(!descFields[i].getName().trim().equals("metaDataMap")) {
+		int i = 0, j = 0, k = 0;
+		if (descFields != null && descFields.length > 0 && destMethods != null && destMethods.length > 0) {
+			for (i = 0; i < descFields.length; i++) {
+				if (!descFields[i].getName().trim().equals("metaDataMap")) {
 					Field field = descFields[i];
-					String upperFirst = field.getName().substring(0, 1).toUpperCase() + 
-							field.getName().substring(1);
+					String upperFirst = field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
 					String setMethodName = "set" + upperFirst;
-					for(j=0; j<destMethods.length; j++) {
+					for (j = 0; j < destMethods.length; j++) {
 						try {
-							if(destMethods[j].getName().equals(setMethodName)) {
-								String origMethodName = buiderRecordMethodName(field.getName(), MethodType.GET, equalRules);
-								for(k=0; k<origMethods.length;k++) {
-									if(origMethods[k].getName().trim().equals(origMethodName)) {
-										Object object = convertTo(origMethods[k].invoke(orig, new Object[]{}), destMethods[j].getParameterTypes()[0]);
-										if(object != null) {
+							if (destMethods[j].getName().equals(setMethodName)) {
+								String origMethodName = buiderRecordMethodName(field.getName(), MethodType.GET,
+										equalRules);
+								for (k = 0; k < origMethods.length; k++) {
+									if (origMethods[k].getName().trim().equals(origMethodName)) {
+										Object object = convertTo(origMethods[k].invoke(orig, new Object[] {}),
+												destMethods[j].getParameterTypes()[0]);
+										if (object != null) {
 											destMethods[j].invoke(dest, object);
 										}
+										break;
 									}
 								}
+								break;
 							}
-						} catch (SecurityException | IllegalAccessException
-								| IllegalArgumentException | InvocationTargetException e) {
+						} catch (SecurityException | IllegalAccessException | IllegalArgumentException
+								| InvocationTargetException e) {
 							logger.error("error", e);
 						} finally {
-							//do nothing
+							// do nothing
 						}
 					}
 				}
 			}
 		}
 	}
-	
+
+	public static <T> T MapToRecord(Map<String, Object> map, Class<T> clazz) {
+		T t = null;
+		Method[] methods = clazz.getMethods();
+		if (map != null && methods != null && methods.length > 0 && map.size() > 0) {
+			try {
+				t = clazz.newInstance();
+				for (Entry<String, Object> entry : map.entrySet()) {
+					String origMethodName = buiderRecordMethodName(entry.getKey(), MethodType.SET, null);
+					for (int i = 0; i < methods.length; i++) {
+						if (methods[i].getName().equals(origMethodName)) {
+							Object obj = convertTo(entry.getValue(), methods[i].getParameterTypes()[0]);
+							if (obj != null) {
+								methods[i].invoke(t, obj);
+								break;
+							}
+						}
+					}
+				}
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+					| InvocationTargetException e) {
+				logger.error(e.getMessage(), e);
+			} finally {
+				// do nothing
+			}
+		}
+		return t;
+	}
+
 	private enum MethodType {
-		GET,SET;
+		GET, SET;
 
 		@Override
 		public String toString() {
 			return this.name().toLowerCase();
 		}
 	}
-	
+
 	private static String buiderRecordMethodName(String name, MethodType methodType, Map<String, String> equalRules) {
-		if(name != null) {
+		if (name != null) {
 			StringBuffer sb = new StringBuffer();
 			sb.append(methodType);
-			if(equalRules != null && equalRules.containsKey(name)) {
+			if (equalRules != null && equalRules.containsKey(name)) {
 				sb.append(equalRules.get(name).substring(0, 1).toUpperCase());
 				sb.append(equalRules.get(name).substring(1));
 			} else {
 				String[] splitArray = name.split("_");
-				if(splitArray.length > 1) {
-					for(int i=0; i<splitArray.length; i++) {
+				if (splitArray.length > 1) {
+					for (int i = 0; i < splitArray.length; i++) {
 						sb.append(splitArray[i].substring(0, 1).toUpperCase());
 						sb.append(splitArray[i].substring(1));
 					}
@@ -252,37 +324,30 @@ public class BeanUtils {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T convertTo(Object value, Class<?> clazzType) {
-		if(value == null || clazzType == null) {
+		if (value == null || clazzType == null) {
 			return null;
 		}
 		if (clazzType.isAssignableFrom(String.class)) {
 			return (T) converToString(value);
-		} else if (clazzType.isAssignableFrom(Long.class)
-				|| clazzType.isAssignableFrom(long.class)) {
+		} else if (clazzType.isAssignableFrom(Long.class) || clazzType.isAssignableFrom(long.class)) {
 			return (T) converToLong(value);
-		} else if (clazzType.isAssignableFrom(Byte.class)
-				|| clazzType.isAssignableFrom(byte.class)) {
+		} else if (clazzType.isAssignableFrom(Byte.class) || clazzType.isAssignableFrom(byte.class)) {
 			return (T) converToByte(value);
-		} else if (clazzType.isAssignableFrom(Integer.class)
-				|| clazzType.isAssignableFrom(int.class)) {
+		} else if (clazzType.isAssignableFrom(Integer.class) || clazzType.isAssignableFrom(int.class)) {
 			return (T) converToInteger(value);
-		} else if (clazzType.isAssignableFrom(Float.class)
-				|| clazzType.isAssignableFrom(float.class)) {
+		} else if (clazzType.isAssignableFrom(Float.class) || clazzType.isAssignableFrom(float.class)) {
 			return (T) converToFloat(value);
-		} else if (clazzType.isAssignableFrom(Double.class)
-				|| clazzType.isAssignableFrom(double.class)) {
+		} else if (clazzType.isAssignableFrom(Double.class) || clazzType.isAssignableFrom(double.class)) {
 			return (T) converToDouble(value);
-		} else if (clazzType.isAssignableFrom(Boolean.class)
-				|| clazzType.isAssignableFrom(boolean.class)) {
+		} else if (clazzType.isAssignableFrom(Boolean.class) || clazzType.isAssignableFrom(boolean.class)) {
 			return (T) convertToBoolean(value);
-		} else if(clazzType.isAssignableFrom(java.sql.Date.class)) {
+		} else if (clazzType.isAssignableFrom(java.sql.Date.class)) {
 			return (T) convertToSQLDate(value);
-		} else if(clazzType.isAssignableFrom(java.sql.Timestamp.class)) {
+		} else if (clazzType.isAssignableFrom(java.sql.Timestamp.class)) {
 			return (T) convertToSQLTimestamp(value);
-		} else if(clazzType.isAssignableFrom(UInteger.class)) {
+		} else if (clazzType.isAssignableFrom(UInteger.class)) {
 			return (T) convertToUInteger(value);
-		} else if(clazzType.isAssignableFrom(Short.class) 
-				|| clazzType.isAssignableFrom(short.class)) {
+		} else if (clazzType.isAssignableFrom(Short.class) || clazzType.isAssignableFrom(short.class)) {
 			return (T) convertToShort(value);
 		} else if (clazzType.isAssignableFrom(UByte.class)) {
 			return (T) converToUByte(value);
@@ -290,291 +355,297 @@ public class BeanUtils {
 			return (T) converToUShort(value);
 		} else if (clazzType.isAssignableFrom(ULong.class)) {
 			return (T) converToULong(value);
-		}else {
+		} else {
 			return null;
 		}
 	}
 
 	private static ULong converToULong(Object value) {
-		if (value instanceof String) {
+		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
-				return ULong.valueOf((String)value);
+				return ULong.valueOf((String) value);
 			} catch (NumberFormatException e) {
 				return ULong.valueOf(0);
 			}
 		} else if (value instanceof Boolean) {
-			if((Boolean)value) {
+			if ((Boolean) value) {
 				return ULong.valueOf(1);
 			} else {
 				return ULong.valueOf(0);
 			}
 		} else if (value instanceof Integer) {
-			return ULong.valueOf((Integer)value);
+			return ULong.valueOf((Integer) value);
 		} else if (value instanceof Byte) {
-			return ULong.valueOf((Byte)value);
+			return ULong.valueOf((Byte) value);
 		} else if (value instanceof Float) {
-			return ULong.valueOf(((Float)value).intValue());
+			return ULong.valueOf(((Float) value).intValue());
 		} else if (value instanceof Long) {
-			return ULong.valueOf(((Long)value).shortValue());
+			return ULong.valueOf(((Long) value).shortValue());
 		} else if (value instanceof Double) {
-			return ULong.valueOf(((Double)value).shortValue());
-		} else if(value instanceof UInteger) {
-			return ULong.valueOf(((UInteger)value).intValue());
-		} else if(value instanceof Date) {
-			return ULong.valueOf((short)((Date)value).getTime());
+			return ULong.valueOf(((Double) value).shortValue());
+		} else if (value instanceof UInteger) {
+			return ULong.valueOf(((UInteger) value).intValue());
+		} else if (value instanceof Date) {
+			return ULong.valueOf((short) ((Date) value).getTime());
 		} else if (value instanceof UShort) {
-			return ULong.valueOf(((UShort)value).longValue());
+			return ULong.valueOf(((UShort) value).longValue());
 		} else if (value instanceof UByte) {
-			return ULong.valueOf(((UByte)value).shortValue());
+			return ULong.valueOf(((UByte) value).shortValue());
 		} else if (value instanceof ULong) {
-			return (ULong)value;
+			return (ULong) value;
 		} else {
 			return null;
 		}
 	}
 
 	private static UShort converToUShort(Object value) {
-		if (value instanceof String) {
+		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
-				return UShort.valueOf((String)value);
+				return UShort.valueOf((String) value);
 			} catch (NumberFormatException e) {
 				return UShort.valueOf(0);
 			}
 		} else if (value instanceof Boolean) {
-			if((Boolean)value) {
+			if ((Boolean) value) {
 				return UShort.valueOf(1);
 			} else {
 				return UShort.valueOf(0);
 			}
 		} else if (value instanceof Integer) {
-			return UShort.valueOf((Integer)value);
+			return UShort.valueOf((Integer) value);
 		} else if (value instanceof Byte) {
-			return UShort.valueOf((Byte)value);
+			return UShort.valueOf((Byte) value);
 		} else if (value instanceof Float) {
-			return UShort.valueOf(((Float)value).intValue());
+			return UShort.valueOf(((Float) value).intValue());
 		} else if (value instanceof Long) {
-			return UShort.valueOf(((Long)value).shortValue());
+			return UShort.valueOf(((Long) value).shortValue());
 		} else if (value instanceof ULong) {
-			return UShort.valueOf(((ULong)value).shortValue());
+			return UShort.valueOf(((ULong) value).shortValue());
 		} else if (value instanceof Double) {
-			return UShort.valueOf(((Double)value).shortValue());
-		} else if(value instanceof UInteger) {
-			return UShort.valueOf(((UInteger)value).intValue());
-		} else if(value instanceof Date) {
-			return UShort.valueOf((short)((Date)value).getTime());
+			return UShort.valueOf(((Double) value).shortValue());
+		} else if (value instanceof UInteger) {
+			return UShort.valueOf(((UInteger) value).intValue());
+		} else if (value instanceof Date) {
+			return UShort.valueOf((short) ((Date) value).getTime());
 		} else if (value instanceof UShort) {
-			return (UShort)value;
+			return (UShort) value;
 		} else if (value instanceof UByte) {
-			return UShort.valueOf(((UByte)value).shortValue());
+			return UShort.valueOf(((UByte) value).shortValue());
 		} else {
 			return null;
 		}
 	}
 
 	private static UByte converToUByte(Object value) {
-		if (value instanceof String) {
+		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
-				return UByte.valueOf((String)value);
+				return UByte.valueOf((String) value);
 			} catch (NumberFormatException e) {
 				return UByte.valueOf(0);
 			}
 		} else if (value instanceof Boolean) {
-			if((Boolean)value) {
+			if ((Boolean) value) {
 				return UByte.valueOf(1);
 			} else {
 				return UByte.valueOf(0);
 			}
 		} else if (value instanceof Integer) {
-			return UByte.valueOf((Integer)value);
+			return UByte.valueOf((Integer) value);
 		} else if (value instanceof Byte) {
-			return UByte.valueOf((Byte)value);
+			return UByte.valueOf((Byte) value);
 		} else if (value instanceof Float) {
-			return UByte.valueOf(((Float)value).intValue());
+			return UByte.valueOf(((Float) value).intValue());
 		} else if (value instanceof Long) {
-			return UByte.valueOf((Long)value);
+			return UByte.valueOf((Long) value);
 		} else if (value instanceof ULong) {
-			return UByte.valueOf(((ULong)value).shortValue());
+			return UByte.valueOf(((ULong) value).shortValue());
 		} else if (value instanceof Double) {
-			return UByte.valueOf(((Double)value).longValue());
-		} else if(value instanceof UInteger) {
-			return UByte.valueOf(((UInteger)value).intValue());
-		} else if(value instanceof Date) {
-			return UByte.valueOf(((Date)value).getTime());
+			return UByte.valueOf(((Double) value).longValue());
+		} else if (value instanceof UInteger) {
+			return UByte.valueOf(((UInteger) value).intValue());
+		} else if (value instanceof Date) {
+			return UByte.valueOf(((Date) value).getTime());
 		} else if (value instanceof UByte) {
-			return (UByte)value;
+			return (UByte) value;
 		} else if (value instanceof UShort) {
-			return UByte.valueOf(((UShort)value).shortValue());
+			return UByte.valueOf(((UShort) value).shortValue());
 		} else if (value instanceof Short) {
-			return UByte.valueOf(((Short)value).shortValue());
+			return UByte.valueOf(((Short) value).shortValue());
 		} else {
 			return null;
 		}
 	}
 
 	private static Short convertToShort(Object value) {
-		if (value instanceof String) {
+		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
-				return Short.valueOf((String)value);
+				return Short.valueOf((String) value);
 			} catch (NumberFormatException e) {
 				return 0;
 			}
 		} else if (value instanceof Boolean) {
-			if((Boolean)value) {
+			if ((Boolean) value) {
 				return 1;
 			} else {
 				return 0;
 			}
 		} else if (value instanceof Integer) {
-			return ((Integer)value).shortValue();
+			return ((Integer) value).shortValue();
 		} else if (value instanceof Byte) {
-			return ((Byte)value).shortValue();
+			return ((Byte) value).shortValue();
 		} else if (value instanceof Float) {
-			return ((Float)value).shortValue();
+			return ((Float) value).shortValue();
 		} else if (value instanceof Long) {
-			return ((Long)value).shortValue();
+			return ((Long) value).shortValue();
 		} else if (value instanceof ULong) {
-			return ((ULong)value).shortValue();
-		}  else if (value instanceof Double) {
-			return ((Double)value).shortValue();
-		} else if(value instanceof UInteger) {
-			return ((UInteger)value).shortValue();
-		} else if(value instanceof Date) {
-			return Long.valueOf(((Date)value).getTime()).shortValue();
+			return ((ULong) value).shortValue();
+		} else if (value instanceof Double) {
+			return ((Double) value).shortValue();
+		} else if (value instanceof UInteger) {
+			return ((UInteger) value).shortValue();
+		} else if (value instanceof Date) {
+			return Long.valueOf(((Date) value).getTime()).shortValue();
 		} else if (value instanceof UByte) {
-			return ((UByte)value).shortValue();
+			return ((UByte) value).shortValue();
 		} else if (value instanceof UShort) {
-			return ((UShort)value).shortValue();
+			return ((UShort) value).shortValue();
 		} else {
 			return null;
 		}
 	}
 
 	private static UInteger convertToUInteger(Object value) {
-		if (value instanceof String) {
+		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
-				return UInteger.valueOf((String)value);
+				return UInteger.valueOf((String) value);
 			} catch (NumberFormatException e) {
 				return UInteger.valueOf(0);
 			}
 		} else if (value instanceof Boolean) {
-			if((Boolean)value) {
+			if ((Boolean) value) {
 				return UInteger.valueOf(1);
 			} else {
 				return UInteger.valueOf(0);
 			}
 		} else if (value instanceof Short) {
-			return UInteger.valueOf((Short)value);
+			return UInteger.valueOf((Short) value);
 		} else if (value instanceof Integer) {
-			return UInteger.valueOf((Integer)value);
+			return UInteger.valueOf((Integer) value);
 		} else if (value instanceof Byte) {
-			return UInteger.valueOf((Byte)value);
+			return UInteger.valueOf((Byte) value);
 		} else if (value instanceof Float) {
-			return UInteger.valueOf(((Float)value).longValue());
+			return UInteger.valueOf(((Float) value).longValue());
 		} else if (value instanceof Long) {
-			return UInteger.valueOf((Long)value);
+			return UInteger.valueOf((Long) value);
 		} else if (value instanceof ULong) {
-			return UInteger.valueOf(((ULong)value).intValue());
+			return UInteger.valueOf(((ULong) value).intValue());
 		} else if (value instanceof Double) {
-			return UInteger.valueOf(((Double)value).longValue());
-		} else if(value instanceof UInteger) {
-			return (UInteger)value;
-		} else if(value instanceof java.sql.Timestamp) {
-			return UInteger.valueOf(((java.sql.Timestamp)value).getTime());
-		} else if(value instanceof java.sql.Date) {
-			return UInteger.valueOf(((java.sql.Date)value).getTime());
-		} else if(value instanceof Date) {
-			return UInteger.valueOf(((Date)value).getTime());
+			return UInteger.valueOf(((Double) value).longValue());
+		} else if (value instanceof UInteger) {
+			return (UInteger) value;
+		} else if (value instanceof java.sql.Timestamp) {
+			return UInteger.valueOf(((java.sql.Timestamp) value).getTime());
+		} else if (value instanceof java.sql.Date) {
+			return UInteger.valueOf(((java.sql.Date) value).getTime());
+		} else if (value instanceof Date) {
+			return UInteger.valueOf(((Date) value).getTime());
 		} else if (value instanceof UByte) {
-			return UInteger.valueOf(((UByte)value).intValue());
+			return UInteger.valueOf(((UByte) value).intValue());
 		} else if (value instanceof UShort) {
-			return UInteger.valueOf(((UShort)value).intValue());
+			return UInteger.valueOf(((UShort) value).intValue());
 		} else {
 			return null;
 		}
 	}
 
 	private static java.sql.Timestamp convertToSQLTimestamp(Object value) {
-		if (value instanceof String) {
+		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
-				return new java.sql.Timestamp(DateUtils.shortTimeToDate((String)value).getTime());
+				if(((String)value).length() == 10) {
+					return new java.sql.Timestamp(DateUtils.shortDateToDate((String) value).getTime());
+				} else if(((String)value).length() == 19) {
+					return new java.sql.Timestamp(DateUtils.shortTimeToDate((String) value).getTime());
+				} else {
+					return new java.sql.Timestamp(DateUtils.shortTimeToDate((String) value).getTime());
+				}
 			} catch (ParseException e) {
 				return null;
 			}
 		} else if (value instanceof Boolean) {
 			return null;
 		} else if (value instanceof UShort) {
-			return new java.sql.Timestamp(((UShort)value).intValue());
+			return new java.sql.Timestamp(((UShort) value).intValue());
 		} else if (value instanceof Short) {
-			return new java.sql.Timestamp((Short)value);
+			return new java.sql.Timestamp((Short) value);
 		} else if (value instanceof Integer) {
-			return new java.sql.Timestamp((Integer)value);
+			return new java.sql.Timestamp((Integer) value);
 		} else if (value instanceof Byte) {
-			return new java.sql.Timestamp((Byte)value);
+			return new java.sql.Timestamp((Byte) value);
 		} else if (value instanceof Float) {
-			return new java.sql.Timestamp(((Float)value).longValue());
+			return new java.sql.Timestamp(((Float) value).longValue());
 		} else if (value instanceof Long) {
-			return new java.sql.Timestamp((Long)value);
+			return new java.sql.Timestamp((Long) value);
 		} else if (value instanceof ULong) {
-			return new java.sql.Timestamp(((ULong)value).longValue());
+			return new java.sql.Timestamp(((ULong) value).longValue());
 		} else if (value instanceof Double) {
-			return new java.sql.Timestamp(((Double)value).longValue());
-		} else if(value instanceof UInteger) {
-			return new java.sql.Timestamp(((UInteger)value).longValue());
-		} else if(value instanceof java.sql.Timestamp) {
-			return (java.sql.Timestamp)value;
-		} else if(value instanceof java.sql.Date) {
-			return new java.sql.Timestamp(((java.sql.Date)value).getTime());
-		} else if(value instanceof Date) {
-			return new java.sql.Timestamp(((Date)value).getTime());
+			return new java.sql.Timestamp(((Double) value).longValue());
+		} else if (value instanceof UInteger) {
+			return new java.sql.Timestamp(((UInteger) value).longValue());
+		} else if (value instanceof java.sql.Timestamp) {
+			return (java.sql.Timestamp) value;
+		} else if (value instanceof java.sql.Date) {
+			return new java.sql.Timestamp(((java.sql.Date) value).getTime());
+		} else if (value instanceof Date) {
+			return new java.sql.Timestamp(((Date) value).getTime());
 		} else if (value instanceof UByte) {
-			return new java.sql.Timestamp(((UByte)value).intValue());
+			return new java.sql.Timestamp(((UByte) value).intValue());
 		} else {
 			return null;
 		}
 	}
 
 	private static java.sql.Date convertToSQLDate(Object value) {
-		if (value instanceof String) {
+		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
-				return new java.sql.Date(DateUtils.nomalDateToDate((String)value).getTime());
+				return new java.sql.Date(DateUtils.nomalDateToDate((String) value).getTime());
 			} catch (ParseException e) {
 				return null;
 			}
 		} else if (value instanceof Boolean) {
 			return null;
 		} else if (value instanceof UShort) {
-			return new java.sql.Date(((UShort)value).intValue());
+			return new java.sql.Date(((UShort) value).intValue());
 		} else if (value instanceof Short) {
-			return new java.sql.Date((Short)value);
+			return new java.sql.Date((Short) value);
 		} else if (value instanceof Integer) {
-			return new java.sql.Date((Integer)value);
+			return new java.sql.Date((Integer) value);
 		} else if (value instanceof Byte) {
-			return new java.sql.Date((Byte)value);
+			return new java.sql.Date((Byte) value);
 		} else if (value instanceof Float) {
-			return new java.sql.Date(((Float)value).longValue());
+			return new java.sql.Date(((Float) value).longValue());
 		} else if (value instanceof Long) {
-			return new java.sql.Date((Long)value);
+			return new java.sql.Date((Long) value);
 		} else if (value instanceof Double) {
-			return new java.sql.Date(((Double)value).longValue());
-		} else if(value instanceof UInteger) {
-			return new java.sql.Date(((UInteger)value).longValue());
-		} else if(value instanceof java.sql.Date) {
-			return (java.sql.Date)value;
-		} else if(value instanceof java.sql.Timestamp) {
-			return new java.sql.Date(((java.sql.Timestamp)value).getTime());
-		} else if(value instanceof Date) {
-			return new java.sql.Date(((Date)value).getTime());
+			return new java.sql.Date(((Double) value).longValue());
+		} else if (value instanceof UInteger) {
+			return new java.sql.Date(((UInteger) value).longValue());
+		} else if (value instanceof java.sql.Date) {
+			return (java.sql.Date) value;
+		} else if (value instanceof java.sql.Timestamp) {
+			return new java.sql.Date(((java.sql.Timestamp) value).getTime());
+		} else if (value instanceof Date) {
+			return new java.sql.Date(((Date) value).getTime());
 		} else if (value instanceof UByte) {
-			return new java.sql.Date(((UByte)value).intValue());
+			return new java.sql.Date(((UByte) value).intValue());
 		} else if (value instanceof ULong) {
-			return new java.sql.Date(((ULong)value).longValue());
+			return new java.sql.Date(((ULong) value).longValue());
 		} else {
 			return null;
 		}
 	}
 
 	public static Boolean convertToBoolean(Object value) {
-		if (value instanceof String) {
+		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
 				return Boolean.valueOf((String) value);
 			} catch (Exception e) {
@@ -624,27 +695,27 @@ public class BeanUtils {
 			} else {
 				return Boolean.FALSE;
 			}
-		} else if(value instanceof UInteger) {
-			if(((UInteger) value).intValue() > 0) {
+		} else if (value instanceof UInteger) {
+			if (((UInteger) value).intValue() > 0) {
 				return Boolean.TRUE;
 			} else {
 				return Boolean.FALSE;
 			}
 		} else if (value instanceof UByte) {
-			if(((UByte) value).byteValue() > 0) {
+			if (((UByte) value).byteValue() > 0) {
 				return Boolean.TRUE;
 			} else {
 				return Boolean.FALSE;
 			}
 		} else if (value instanceof ULong) {
-			if(((ULong) value).longValue() > 0) {
+			if (((ULong) value).longValue() > 0) {
 				return Boolean.TRUE;
 			} else {
 				return Boolean.FALSE;
 			}
 		} else {
-			//sql.date sql.timestamp date timestamp
-			if(value != null) {
+			// sql.date sql.timestamp date timestamp
+			if (value != null) {
 				return Boolean.TRUE;
 			} else {
 				return Boolean.FALSE;
@@ -653,7 +724,7 @@ public class BeanUtils {
 	}
 
 	public static Double converToDouble(Object value) {
-		if (value instanceof String) {
+		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
 				return Double.valueOf((String) value);
 			} catch (NumberFormatException e) {
@@ -679,21 +750,21 @@ public class BeanUtils {
 			return Double.valueOf((Long) value);
 		} else if (value instanceof Double) {
 			return (Double) value;
-		} else if(value instanceof UInteger) {
+		} else if (value instanceof UInteger) {
 			return ((UInteger) value).doubleValue();
-		} else if(value instanceof Date) {
-			return Double.valueOf(((Date)value).getTime());
+		} else if (value instanceof Date) {
+			return Double.valueOf(((Date) value).getTime());
 		} else if (value instanceof UByte) {
-			return ((UByte)value).doubleValue();
+			return ((UByte) value).doubleValue();
 		} else if (value instanceof ULong) {
-			return ((ULong)value).doubleValue();
+			return ((ULong) value).doubleValue();
 		} else {
 			return null;
 		}
 	}
 
 	public static Float converToFloat(Object value) {
-		if (value instanceof String) {
+		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
 				return Float.valueOf((String) value);
 			} catch (NumberFormatException e) {
@@ -719,21 +790,21 @@ public class BeanUtils {
 			return (Float) ((Long) value).floatValue();
 		} else if (value instanceof Double) {
 			return (Float) ((Double) value).floatValue();
-		} else if(value instanceof UInteger) {
+		} else if (value instanceof UInteger) {
 			return (Float) ((UInteger) value).floatValue();
-		} else if(value instanceof Date) {
-			return (Float) Float.valueOf(((Date)value).getTime());
+		} else if (value instanceof Date) {
+			return (Float) Float.valueOf(((Date) value).getTime());
 		} else if (value instanceof UByte) {
-			return ((UByte)value).floatValue();
+			return ((UByte) value).floatValue();
 		} else if (value instanceof ULong) {
-			return ((ULong)value).floatValue();
+			return ((ULong) value).floatValue();
 		} else {
 			return null;
 		}
 	}
 
 	public static Integer converToInteger(Object value) {
-		if (value instanceof String) {
+		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
 				return Integer.valueOf((String) value);
 			} catch (NumberFormatException e) {
@@ -759,21 +830,21 @@ public class BeanUtils {
 			return (Integer) ((Long) value).intValue();
 		} else if (value instanceof Double) {
 			return (Integer) ((Double) value).intValue();
-		} else if(value instanceof UInteger) {
-			return ((UInteger)value).intValue();
-		} else if(value instanceof Date) {
-			return (int)((Date)value).getTime();
+		} else if (value instanceof UInteger) {
+			return ((UInteger) value).intValue();
+		} else if (value instanceof Date) {
+			return (int) ((Date) value).getTime();
 		} else if (value instanceof UByte) {
-			return ((UByte)value).intValue();
+			return ((UByte) value).intValue();
 		} else if (value instanceof ULong) {
-			return ((ULong)value).intValue();
+			return ((ULong) value).intValue();
 		} else {
 			return null;
 		}
 	}
 
 	public static Byte converToByte(Object value) {
-		if (value instanceof String) {
+		if (value instanceof String && !((String) value).trim().equals("")) {
 			return Byte.valueOf((String) value);
 		} else if (value instanceof Byte) {
 			return (Byte) value;
@@ -795,24 +866,24 @@ public class BeanUtils {
 		} else if (value instanceof Float) {
 			return (Byte) ((Float) value).byteValue();
 		} else if (value instanceof Long) {
-			return (Byte)((Long) value).byteValue();
+			return (Byte) ((Long) value).byteValue();
 		} else if (value instanceof Double) {
 			return (Byte) ((Double) value).byteValue();
-		} else if(value instanceof UInteger) {
-			return (Byte) ((UInteger)value).byteValue();
-		} else if(value instanceof Date) {
-			return (byte)((Date)value).getTime();
+		} else if (value instanceof UInteger) {
+			return (Byte) ((UInteger) value).byteValue();
+		} else if (value instanceof Date) {
+			return (byte) ((Date) value).getTime();
 		} else if (value instanceof UByte) {
-			return ((UByte)value).byteValue();
+			return ((UByte) value).byteValue();
 		} else if (value instanceof ULong) {
-			return ((ULong)value).byteValue();
+			return ((ULong) value).byteValue();
 		} else {
 			return null;
 		}
 	}
 
 	public static Long converToLong(Object value) {
-		if (value instanceof String) {
+		if (value instanceof String && !((String) value).trim().equals("")) {
 			return Long.valueOf((String) value);
 		} else if (value instanceof Byte) {
 			return Long.valueOf((Byte) value);
@@ -834,15 +905,15 @@ public class BeanUtils {
 			return (Long) value;
 		} else if (value instanceof Double) {
 			return (Long) ((Double) value).longValue();
-		} else if(value instanceof UInteger) {
-			return ((UInteger)value).longValue();
-		} else if(value instanceof Date) {
-			return ((Date)value).getTime();
+		} else if (value instanceof UInteger) {
+			return ((UInteger) value).longValue();
+		} else if (value instanceof Date) {
+			return ((Date) value).getTime();
 		} else if (value instanceof UByte) {
-			return ((UByte)value).longValue();
+			return ((UByte) value).longValue();
 		} else if (value instanceof ULong) {
-			return ((ULong)value).longValue();
-		}  else {
+			return ((ULong) value).longValue();
+		} else {
 			return null;
 		}
 	}
@@ -850,10 +921,10 @@ public class BeanUtils {
 	public static String converToString(Object value) {
 		if (value instanceof String) {
 			return (String) value;
-		} else if(value instanceof java.sql.Timestamp) {
-			return DateUtils.dateToShortTime(((java.sql.Timestamp)value));
-		} else if(value instanceof Date) {
-			return DateUtils.dateToNormalDate(((Date)value));
+		} else if (value instanceof java.sql.Timestamp) {
+			return DateUtils.dateToShortTime(((java.sql.Timestamp) value));
+		} else if (value instanceof Date) {
+			return DateUtils.dateToNormalDate(((Date) value));
 		} else if (value != null) {
 			return value.toString();
 		} else {

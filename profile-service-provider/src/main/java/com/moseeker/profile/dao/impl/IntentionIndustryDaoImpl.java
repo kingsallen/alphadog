@@ -46,7 +46,7 @@ public class IntentionIndustryDaoImpl extends
 				}
 			}
 			records = selectCondition.fetch();
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		} finally {
 			try {

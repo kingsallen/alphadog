@@ -23,7 +23,7 @@ import org.jooq.types.UInteger;
 
 
 /**
- * 国家字典表
+ * 城市字典表
  */
 @Generated(
 	value = {
@@ -35,10 +35,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictCountry extends TableImpl<DictCountryRecord> {
 
-	private static final long serialVersionUID = -1285205533;
+	private static final long serialVersionUID = 1386106009;
 
 	/**
-	 * The reference instance of <code>dictDB.dict_country</code>
+	 * The reference instance of <code>dictdb.dict_country</code>
 	 */
 	public static final DictCountry DICT_COUNTRY = new DictCountry();
 
@@ -51,49 +51,49 @@ public class DictCountry extends TableImpl<DictCountryRecord> {
 	}
 
 	/**
-	 * The column <code>dictDB.dict_country.id</code>. 主key
+	 * The column <code>dictdb.dict_country.id</code>. 主key
 	 */
 	public final TableField<DictCountryRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
 
 	/**
-	 * The column <code>dictDB.dict_country.name</code>. 国家中文名称
+	 * The column <code>dictdb.dict_country.name</code>. 国家中文名称
 	 */
 	public final TableField<DictCountryRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "国家中文名称");
 
 	/**
-	 * The column <code>dictDB.dict_country.ename</code>. 国家英文名称
+	 * The column <code>dictdb.dict_country.ename</code>. 国家英文名称
 	 */
 	public final TableField<DictCountryRecord, String> ENAME = createField("ename", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "国家英文名称");
 
 	/**
-	 * The column <code>dictDB.dict_country.iso_code_2</code>. iso_code_2
+	 * The column <code>dictdb.dict_country.iso_code_2</code>. iso_code_2
 	 */
 	public final TableField<DictCountryRecord, String> ISO_CODE_2 = createField("iso_code_2", org.jooq.impl.SQLDataType.CHAR.length(2).nullable(false).defaulted(true), this, "iso_code_2");
 
 	/**
-	 * The column <code>dictDB.dict_country.iso_code_3</code>. iso_code_3
+	 * The column <code>dictdb.dict_country.iso_code_3</code>. iso_code_3
 	 */
 	public final TableField<DictCountryRecord, String> ISO_CODE_3 = createField("iso_code_3", org.jooq.impl.SQLDataType.CHAR.length(3).nullable(false).defaulted(true), this, "iso_code_3");
 
 	/**
-	 * The column <code>dictDB.dict_country.code</code>. COUNTRY CODE
+	 * The column <code>dictdb.dict_country.code</code>. COUNTRY CODE
 	 */
 	public final TableField<DictCountryRecord, String> CODE = createField("code", org.jooq.impl.SQLDataType.CHAR.length(11).nullable(false).defaulted(true), this, "COUNTRY CODE");
 
 	/**
-	 * The column <code>dictDB.dict_country.icon_class</code>. 国旗样式
+	 * The column <code>dictdb.dict_country.icon_class</code>. 国旗样式
 	 */
 	public final TableField<DictCountryRecord, String> ICON_CLASS = createField("icon_class", org.jooq.impl.SQLDataType.CHAR.length(3).nullable(false).defaulted(true), this, "国旗样式");
 
 	/**
-	 * Create a <code>dictDB.dict_country</code> table reference
+	 * Create a <code>dictdb.dict_country</code> table reference
 	 */
 	public DictCountry() {
 		this("dict_country", null);
 	}
 
 	/**
-	 * Create an aliased <code>dictDB.dict_country</code> table reference
+	 * Create an aliased <code>dictdb.dict_country</code> table reference
 	 */
 	public DictCountry(String alias) {
 		this(alias, DICT_COUNTRY);
@@ -104,7 +104,7 @@ public class DictCountry extends TableImpl<DictCountryRecord> {
 	}
 
 	private DictCountry(String alias, Table<DictCountryRecord> aliased, Field<?>[] parameters) {
-		super(alias, Dictdb.DICTDB, aliased, parameters, "国家字典表");
+		super(alias, Dictdb.DICTDB, aliased, parameters, "城市字典表");
 	}
 
 	/**

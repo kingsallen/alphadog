@@ -6,9 +6,6 @@ apply plugin: 'eclipse'
 
 sourceCompatibility = 1.8
 
-repositories {
-    maven { url 'http://maven.oschina.net/content/groups/public/' }
-}
 
 dependencies {
     compile deps["libthrift"]

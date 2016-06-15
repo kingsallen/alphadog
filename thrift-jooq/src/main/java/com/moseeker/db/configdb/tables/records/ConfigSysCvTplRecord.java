@@ -30,199 +30,199 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysCvTplRecord extends UpdatableRecordImpl<ConfigSysCvTplRecord> implements Record14<Integer, String, String, Integer, String, Integer, Integer, Timestamp, Timestamp, Integer, Integer, Integer, String, String> {
 
-	private static final long serialVersionUID = 1689684534;
+	private static final long serialVersionUID = 1427308473;
 
 	/**
-	 * Setter for <code>configDB.config_sys_cv_tpl.id</code>.
+	 * Setter for <code>configdb.config_sys_cv_tpl.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_cv_tpl.id</code>.
+	 * Getter for <code>configdb.config_sys_cv_tpl.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_cv_tpl.field_name</code>. 属性含义
+	 * Setter for <code>configdb.config_sys_cv_tpl.field_name</code>. 属性含义
 	 */
 	public void setFieldName(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_cv_tpl.field_name</code>. 属性含义
+	 * Getter for <code>configdb.config_sys_cv_tpl.field_name</code>. 属性含义
 	 */
 	public String getFieldName() {
 		return (String) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_cv_tpl.field_title</code>. 属性标题
+	 * Setter for <code>configdb.config_sys_cv_tpl.field_title</code>. 属性标题
 	 */
 	public void setFieldTitle(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_cv_tpl.field_title</code>. 属性标题
+	 * Getter for <code>configdb.config_sys_cv_tpl.field_title</code>. 属性标题
 	 */
 	public String getFieldTitle() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_cv_tpl.field_type</code>. 属性类型 0:短文本, 1:长文本,  2:多选, 3:单选, 4:长tag, 5tag:, 6:时间, 7img, 8:复合字段-单条, 9:复合字段-多条,10:下拉列表, 11:数字输入框(用于校验)
+	 * Setter for <code>configdb.config_sys_cv_tpl.field_type</code>. 属性类型 0:短文本, 1:长文本,  2:多选, 3:单选, 4:长tag, 5tag:, 6:时间, 7img, 8:复合字段-单条, 9:复合字段-多条,10:下拉列表, 11:数字输入框(用于校验)
 	 */
 	public void setFieldType(Integer value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_cv_tpl.field_type</code>. 属性类型 0:短文本, 1:长文本,  2:多选, 3:单选, 4:长tag, 5tag:, 6:时间, 7img, 8:复合字段-单条, 9:复合字段-多条,10:下拉列表, 11:数字输入框(用于校验)
+	 * Getter for <code>configdb.config_sys_cv_tpl.field_type</code>. 属性类型 0:短文本, 1:长文本,  2:多选, 3:单选, 4:长tag, 5tag:, 6:时间, 7img, 8:复合字段-单条, 9:复合字段-多条,10:下拉列表, 11:数字输入框(用于校验)
 	 */
 	public Integer getFieldType() {
 		return (Integer) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_cv_tpl.field_value</code>. 微信端页面标签默认值
+	 * Setter for <code>configdb.config_sys_cv_tpl.field_value</code>. 微信端页面标签默认值
 	 */
 	public void setFieldValue(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_cv_tpl.field_value</code>. 微信端页面标签默认值
+	 * Getter for <code>configdb.config_sys_cv_tpl.field_value</code>. 微信端页面标签默认值
 	 */
 	public String getFieldValue() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_cv_tpl.priority</code>. 排序字段
+	 * Setter for <code>configdb.config_sys_cv_tpl.priority</code>. 排序字段
 	 */
 	public void setPriority(Integer value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_cv_tpl.priority</code>. 排序字段
+	 * Getter for <code>configdb.config_sys_cv_tpl.priority</code>. 排序字段
 	 */
 	public Integer getPriority() {
 		return (Integer) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_cv_tpl.is_basic</code>. 属性类型 0：常用字段 1：校招常用 2：蓝领常用
+	 * Setter for <code>configdb.config_sys_cv_tpl.is_basic</code>. 属性类型 0：常用字段 1：校招常用 2：蓝领常用
 	 */
 	public void setIsBasic(Integer value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_cv_tpl.is_basic</code>. 属性类型 0：常用字段 1：校招常用 2：蓝领常用
+	 * Getter for <code>configdb.config_sys_cv_tpl.is_basic</code>. 属性类型 0：常用字段 1：校招常用 2：蓝领常用
 	 */
 	public Integer getIsBasic() {
 		return (Integer) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_cv_tpl.create_time</code>.
+	 * Setter for <code>configdb.config_sys_cv_tpl.create_time</code>.
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_cv_tpl.create_time</code>.
+	 * Getter for <code>configdb.config_sys_cv_tpl.create_time</code>.
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_cv_tpl.update_time</code>.
+	 * Setter for <code>configdb.config_sys_cv_tpl.update_time</code>.
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_cv_tpl.update_time</code>.
+	 * Getter for <code>configdb.config_sys_cv_tpl.update_time</code>.
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_cv_tpl.disable</code>. 是否禁用 0：可用1：不可用
+	 * Setter for <code>configdb.config_sys_cv_tpl.disable</code>. 是否禁用 0：可用1：不可用
 	 */
 	public void setDisable(Integer value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_cv_tpl.disable</code>. 是否禁用 0：可用1：不可用
+	 * Getter for <code>configdb.config_sys_cv_tpl.disable</code>. 是否禁用 0：可用1：不可用
 	 */
 	public Integer getDisable() {
 		return (Integer) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_cv_tpl.department_id</code>. 所属部门。如果是私有属性，则存在所属公司部门编号；如果不是则为0
+	 * Setter for <code>configdb.config_sys_cv_tpl.company_id</code>. 所属公司。如果是私有属性，则存在所属公司部门编号；如果不是则为0
 	 */
-	public void setDepartmentId(Integer value) {
+	public void setCompanyId(Integer value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_cv_tpl.department_id</code>. 所属部门。如果是私有属性，则存在所属公司部门编号；如果不是则为0
+	 * Getter for <code>configdb.config_sys_cv_tpl.company_id</code>. 所属公司。如果是私有属性，则存在所属公司部门编号；如果不是则为0
 	 */
-	public Integer getDepartmentId() {
+	public Integer getCompanyId() {
 		return (Integer) getValue(10);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_cv_tpl.required</code>. 是否必填项 0：必填项 1：选填项
+	 * Setter for <code>configdb.config_sys_cv_tpl.required</code>. 是否必填项 0：必填项 1：选填项
 	 */
 	public void setRequired(Integer value) {
 		setValue(11, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_cv_tpl.required</code>. 是否必填项 0：必填项 1：选填项
+	 * Getter for <code>configdb.config_sys_cv_tpl.required</code>. 是否必填项 0：必填项 1：选填项
 	 */
 	public Integer getRequired() {
 		return (Integer) getValue(11);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_cv_tpl.field_description</code>. 雇主平台页面显示值
+	 * Setter for <code>configdb.config_sys_cv_tpl.field_description</code>. 雇主平台页面显示值
 	 */
 	public void setFieldDescription(String value) {
 		setValue(12, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_cv_tpl.field_description</code>. 雇主平台页面显示值
+	 * Getter for <code>configdb.config_sys_cv_tpl.field_description</code>. 雇主平台页面显示值
 	 */
 	public String getFieldDescription() {
 		return (String) getValue(12);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_cv_tpl.map</code>. 与profile的映射关系
+	 * Setter for <code>configdb.config_sys_cv_tpl.map</code>. 与profile的映射关系
 	 */
 	public void setMap(String value) {
 		setValue(13, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_cv_tpl.map</code>. 与profile的映射关系
+	 * Getter for <code>configdb.config_sys_cv_tpl.map</code>. 与profile的映射关系
 	 */
 	public String getMap() {
 		return (String) getValue(13);
@@ -345,7 +345,7 @@ public class ConfigSysCvTplRecord extends UpdatableRecordImpl<ConfigSysCvTplReco
 	 */
 	@Override
 	public Field<Integer> field11() {
-		return ConfigSysCvTpl.CONFIG_SYS_CV_TPL.DEPARTMENT_ID;
+		return ConfigSysCvTpl.CONFIG_SYS_CV_TPL.COMPANY_ID;
 	}
 
 	/**
@@ -457,7 +457,7 @@ public class ConfigSysCvTplRecord extends UpdatableRecordImpl<ConfigSysCvTplReco
 	 */
 	@Override
 	public Integer value11() {
-		return getDepartmentId();
+		return getCompanyId();
 	}
 
 	/**
@@ -579,7 +579,7 @@ public class ConfigSysCvTplRecord extends UpdatableRecordImpl<ConfigSysCvTplReco
 	 */
 	@Override
 	public ConfigSysCvTplRecord value11(Integer value) {
-		setDepartmentId(value);
+		setCompanyId(value);
 		return this;
 	}
 
@@ -646,7 +646,7 @@ public class ConfigSysCvTplRecord extends UpdatableRecordImpl<ConfigSysCvTplReco
 	/**
 	 * Create a detached, initialised ConfigSysCvTplRecord
 	 */
-	public ConfigSysCvTplRecord(Integer id, String fieldName, String fieldTitle, Integer fieldType, String fieldValue, Integer priority, Integer isBasic, Timestamp createTime, Timestamp updateTime, Integer disable, Integer departmentId, Integer required, String fieldDescription, String map) {
+	public ConfigSysCvTplRecord(Integer id, String fieldName, String fieldTitle, Integer fieldType, String fieldValue, Integer priority, Integer isBasic, Timestamp createTime, Timestamp updateTime, Integer disable, Integer companyId, Integer required, String fieldDescription, String map) {
 		super(ConfigSysCvTpl.CONFIG_SYS_CV_TPL);
 
 		setValue(0, id);
@@ -659,7 +659,7 @@ public class ConfigSysCvTplRecord extends UpdatableRecordImpl<ConfigSysCvTplReco
 		setValue(7, createTime);
 		setValue(8, updateTime);
 		setValue(9, disable);
-		setValue(10, departmentId);
+		setValue(10, companyId);
 		setValue(11, required);
 		setValue(12, fieldDescription);
 		setValue(13, map);

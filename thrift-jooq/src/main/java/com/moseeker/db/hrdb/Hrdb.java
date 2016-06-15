@@ -7,8 +7,11 @@ package com.moseeker.db.hrdb;
 import com.moseeker.db.hrdb.tables.HrAppCvConf;
 import com.moseeker.db.hrdb.tables.HrChildCompany;
 import com.moseeker.db.hrdb.tables.HrCompany;
+import com.moseeker.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.db.hrdb.tables.HrCompanyConf;
 import com.moseeker.db.hrdb.tables.HrEmployeeCertConf;
+import com.moseeker.db.hrdb.tables.HrEmployeePosition;
+import com.moseeker.db.hrdb.tables.HrEmployeeSection;
 import com.moseeker.db.hrdb.tables.HrFeedback;
 import com.moseeker.db.hrdb.tables.HrHbConfig;
 import com.moseeker.db.hrdb.tables.HrHbItems;
@@ -38,6 +41,7 @@ import com.moseeker.db.hrdb.tables.HrWxRule;
 import com.moseeker.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.db.hrdb.tables.HrWxWechat;
 import com.moseeker.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
+import com.moseeker.db.hrdb.tables.SysWechatAppConf;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,10 +66,10 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-	private static final long serialVersionUID = -553169790;
+	private static final long serialVersionUID = -1053236739;
 
 	/**
-	 * The reference instance of <code>hrDB</code>
+	 * The reference instance of <code>hrdb</code>
 	 */
 	public static final Hrdb HRDB = new Hrdb();
 
@@ -73,7 +77,7 @@ public class Hrdb extends SchemaImpl {
 	 * No further instances allowed
 	 */
 	private Hrdb() {
-		super("hrDB");
+		super("hrdb");
 	}
 
 	@Override
@@ -88,8 +92,11 @@ public class Hrdb extends SchemaImpl {
 			HrAppCvConf.HR_APP_CV_CONF,
 			HrChildCompany.HR_CHILD_COMPANY,
 			HrCompany.HR_COMPANY,
+			HrCompanyAccount.HR_COMPANY_ACCOUNT,
 			HrCompanyConf.HR_COMPANY_CONF,
 			HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF,
+			HrEmployeePosition.HR_EMPLOYEE_POSITION,
+			HrEmployeeSection.HR_EMPLOYEE_SECTION,
 			HrFeedback.HR_FEEDBACK,
 			HrHbConfig.HR_HB_CONFIG,
 			HrHbItems.HR_HB_ITEMS,
@@ -118,6 +125,7 @@ public class Hrdb extends SchemaImpl {
 			HrWxRule.HR_WX_RULE,
 			HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE,
 			HrWxWechat.HR_WX_WECHAT,
-			HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS);
+			HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS,
+			SysWechatAppConf.SYS_WECHAT_APP_CONF);
 	}
 }

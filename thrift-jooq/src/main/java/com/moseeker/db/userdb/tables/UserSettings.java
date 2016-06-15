@@ -19,6 +19,8 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
+import org.jooq.types.UByte;
+import org.jooq.types.UInteger;
 
 
 /**
@@ -34,10 +36,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserSettings extends TableImpl<UserSettingsRecord> {
 
-	private static final long serialVersionUID = -955406161;
+	private static final long serialVersionUID = -999181848;
 
 	/**
-	 * The reference instance of <code>userDB.user_settings</code>
+	 * The reference instance of <code>userdb.user_settings</code>
 	 */
 	public static final UserSettings USER_SETTINGS = new UserSettings();
 
@@ -50,34 +52,34 @@ public class UserSettings extends TableImpl<UserSettingsRecord> {
 	}
 
 	/**
-	 * The column <code>userDB.user_settings.id</code>.
+	 * The column <code>userdb.user_settings.id</code>. 主key
 	 */
-	public final TableField<UserSettingsRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+	public final TableField<UserSettingsRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
 
 	/**
-	 * The column <code>userDB.user_settings.user_id</code>. 用户id
+	 * The column <code>userdb.user_settings.user_id</code>. user_user.id, 用户id
 	 */
-	public final TableField<UserSettingsRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "用户id");
+	public final TableField<UserSettingsRecord, UInteger> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "user_user.id, 用户id");
 
 	/**
-	 * The column <code>userDB.user_settings.banner_url</code>. profile banner 的qiniu 相对url
+	 * The column <code>userdb.user_settings.banner_url</code>. profile banner 的qiniu 相对url
 	 */
-	public final TableField<UserSettingsRecord, String> BANNER_URL = createField("banner_url", org.jooq.impl.SQLDataType.VARCHAR.length(256), this, "profile banner 的qiniu 相对url");
+	public final TableField<UserSettingsRecord, String> BANNER_URL = createField("banner_url", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false).defaulted(true), this, "profile banner 的qiniu 相对url");
 
 	/**
-	 * The column <code>userDB.user_settings.privacy_policy</code>. 0 公开   10  仅对hr公开   20 完全保密
+	 * The column <code>userdb.user_settings.privacy_policy</code>. 0:公开, 10:仅对hr公开, 20:完全保密
 	 */
-	public final TableField<UserSettingsRecord, Byte> PRIVACY_POLICY = createField("privacy_policy", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "0 公开   10  仅对hr公开   20 完全保密");
+	public final TableField<UserSettingsRecord, UByte> PRIVACY_POLICY = createField("privacy_policy", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "0:公开, 10:仅对hr公开, 20:完全保密");
 
 	/**
-	 * Create a <code>userDB.user_settings</code> table reference
+	 * Create a <code>userdb.user_settings</code> table reference
 	 */
 	public UserSettings() {
 		this("user_settings", null);
 	}
 
 	/**
-	 * Create an aliased <code>userDB.user_settings</code> table reference
+	 * Create an aliased <code>userdb.user_settings</code> table reference
 	 */
 	public UserSettings(String alias) {
 		this(alias, USER_SETTINGS);
@@ -95,7 +97,7 @@ public class UserSettings extends TableImpl<UserSettingsRecord> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Identity<UserSettingsRecord, Integer> getIdentity() {
+	public Identity<UserSettingsRecord, UInteger> getIdentity() {
 		return Keys.IDENTITY_USER_SETTINGS;
 	}
 

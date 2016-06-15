@@ -6,6 +6,7 @@ package com.moseeker.db.dictdb;
 
 import com.moseeker.db.dictdb.tables.DictCity;
 import com.moseeker.db.dictdb.tables.DictCollege;
+import com.moseeker.db.dictdb.tables.DictConstant;
 import com.moseeker.db.dictdb.tables.DictCountry;
 import com.moseeker.db.dictdb.tables.DictIndustry;
 import com.moseeker.db.dictdb.tables.DictIndustryType;
@@ -16,7 +17,7 @@ import javax.annotation.Generated;
 
 
 /**
- * Convenience access to all tables in dictDB
+ * Convenience access to all tables in dictdb
  */
 @Generated(
 	value = {
@@ -39,7 +40,12 @@ public class Tables {
 	public static final DictCollege DICT_COLLEGE = com.moseeker.db.dictdb.tables.DictCollege.DICT_COLLEGE;
 
 	/**
-	 * 国家字典表
+	 * 常量字典表
+	 */
+	public static final DictConstant DICT_CONSTANT = com.moseeker.db.dictdb.tables.DictConstant.DICT_CONSTANT;
+
+	/**
+	 * 城市字典表
 	 */
 	public static final DictCountry DICT_COUNTRY = com.moseeker.db.dictdb.tables.DictCountry.DICT_COUNTRY;
 
