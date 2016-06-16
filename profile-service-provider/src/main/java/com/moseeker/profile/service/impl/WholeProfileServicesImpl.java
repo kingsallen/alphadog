@@ -9,7 +9,6 @@ import java.util.UUID;
 
 import org.apache.thrift.TException;
 import org.jooq.types.UByte;
-import org.jooq.types.UInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -285,13 +284,8 @@ public class WholeProfileServicesImpl implements Iface {
 				(List<Map<String, Object>>) resume.get("works"));
 		int id = profileDao.saveProfile(profileRecord, basicRecord, attachmentRecords, awardsRecords,
 				credentialsRecords, educationRecords, importRecords, intentionRecords, languages, otherRecord,
-				projectExps, skillRecords, workexpRecords, worksRecords, userRecord);
+				projectExps, skillRecords, workexpRecords, worksRecords, userRecord, oldProfile);
 		if(id > 0) {
-			if(oldProfile != null && oldProfile.size() > 0) {
-				for(ProfileProfileRecord record : oldProfile) {
-					clearProfile(record.getId().intValue());
-				}
-			}
 			return ResponseUtils.success(id);
 		} else {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
