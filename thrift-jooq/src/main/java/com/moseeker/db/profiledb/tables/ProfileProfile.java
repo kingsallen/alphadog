@@ -37,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileProfile extends TableImpl<ProfileProfileRecord> {
 
-	private static final long serialVersionUID = 461027023;
+	private static final long serialVersionUID = 1897997691;
 
 	/**
 	 * The reference instance of <code>profiledb.profile_profile</code>
@@ -60,7 +60,7 @@ public class ProfileProfile extends TableImpl<ProfileProfileRecord> {
 	/**
 	 * The column <code>profiledb.profile_profile.uuid</code>. profile的uuid标识, 与主键一一对应
 	 */
-	public final TableField<ProfileProfileRecord, String> UUID = createField("uuid", org.jooq.impl.SQLDataType.VARCHAR.length(32).nullable(false).defaulted(true), this, "profile的uuid标识, 与主键一一对应");
+	public final TableField<ProfileProfileRecord, String> UUID = createField("uuid", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaulted(true), this, "profile的uuid标识, 与主键一一对应");
 
 	/**
 	 * The column <code>profiledb.profile_profile.lang</code>. profile语言 1:chinese 2:english
@@ -140,7 +140,7 @@ public class ProfileProfile extends TableImpl<ProfileProfileRecord> {
 	 */
 	@Override
 	public List<UniqueKey<ProfileProfileRecord>> getKeys() {
-		return Arrays.<UniqueKey<ProfileProfileRecord>>asList(Keys.KEY_PROFILE_PROFILE_PRIMARY);
+		return Arrays.<UniqueKey<ProfileProfileRecord>>asList(Keys.KEY_PROFILE_PROFILE_PRIMARY, Keys.KEY_PROFILE_PROFILE_UK_PROFILE_USERID);
 	}
 
 	/**
