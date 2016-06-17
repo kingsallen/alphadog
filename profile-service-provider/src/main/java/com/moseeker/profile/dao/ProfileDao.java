@@ -38,4 +38,13 @@ public interface ProfileDao extends BaseDao<ProfileProfileRecord> {
 
 	List<ProfileProfileRecord> getProfilesByIdOrUserIdOrUUID(int userId, int profileId, String uuid);
 
+	int saveProfile(ProfileProfileRecord profileRecord, ProfileBasicRecord basicRecord,
+			List<ProfileAttachmentRecord> attachmentRecords, List<ProfileAwardsRecord> awardsRecords,
+			List<ProfileCredentialsRecord> credentialsRecords, List<ProfileEducationRecord> educationRecords,
+			ProfileImportRecord importRecords, List<IntentionRecord> intentionRecords,
+			List<ProfileLanguageRecord> languages, ProfileOtherRecord otherRecord,
+			List<ProfileProjectexpRecord> projectExps, List<ProfileSkillRecord> skillRecords,
+			List<ProfileWorkexpEntity> workexpRecords, List<ProfileWorksRecord> worksRecords, UserUserRecord userRecord,
+			List<ProfileProfileRecord> oldProfile);
+
 }
