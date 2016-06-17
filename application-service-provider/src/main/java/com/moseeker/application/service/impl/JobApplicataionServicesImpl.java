@@ -64,47 +64,29 @@ public class JobApplicataionServicesImpl implements Iface {
      * @throws TException
      */
     @Override
-    public Response postApplication(JobApplication jobApplication, JobResumeBasic jobResumeBasic) throws TException {
+    public Response postApplication(JobApplication jobApplication) throws TException {
         try {
-            // 必填项验证
+            // 申请验证
             Response response = validateJobApplication(jobApplication);
             if (response.status > 0){
                 return response;
             }
 
-            // 初始化申请状态
-            jobApplication.setApp_tpl_id(Constant.RECRUIT_STATUS_APPLY);
+            // 初始化参数
+            initJobApplication(jobApplication);
 
             // 添加申请
             JobApplicationRecord jobApplicationRecord = (JobApplicationRecord)BeanUtils.structToDB(jobApplication,
                     JobApplicationRecord.class);
+
             if(jobApplicationRecord.getWechatId() == null) {
                 jobApplicationRecord.setWechatId(UInteger.valueOf(0));
             }
+
             int jobApplicationId = jobApplicationDao.saveApplication(jobApplicationRecord);
             if (jobApplicationId > 0) {
                 // 添加该人该公司的申请次数
                 addApplicationCountAtCompany(jobApplication);
-                
-                //添加job_resume_basic
-                JobResumeBasicRecord basicRecord = (JobResumeBasicRecord)BeanUtils.structToDB(jobResumeBasic, JobResumeBasicRecord.class);
-                //查询地址
-                if(jobApplication.getApp_tpl_id() > 0) {
-                    ProfileBasicRecord bRecord = jobApplicationDao.getBasicByUserId(jobApplication.getApp_tpl_id());
-                    if(bRecord != null) {
-                        basicRecord.setAddress(bRecord.getCityName());
-                    }
-                }
-                //查询浏览次数
-                int viewNumber = jobApplicationDao.getViewNumber(jobApplication.getPosition_id(), jobApplication.getApplier_id());
-                basicRecord.setAppId(jobApplicationId);
-                basicRecord.setPositionId(jobApplicationRecord.getPositionId().intValue());
-                basicRecord.setViewCount(Long.valueOf(viewNumber));
-                if(jobResumeBasic.getAppid() == 1) {
-                     basicRecord.setFirstname(String.valueOf(jobResumeBasic.getAppid()));
-                }
-                jobResumeBasicDao.postResource(basicRecord);
-                //jobResumeBasicDao.postResource(basicRecord);
 
                 return ResponseUtils.success(new HashMap<String, Object>(){
                         {
@@ -194,8 +176,7 @@ public class JobApplicataionServicesImpl implements Iface {
         try {
             Response response = validateGetApplicationByUserIdAndPositionId(userId, positionId, companyId);
             if(response.status == 0){
-                Integer count = jobApplicationDao.getApplicationByUserIdAndPositionId(userId, positionId);
-                return ResponseUtils.success(count > 0?true:false);
+                return ResponseUtils.success(this.isAppliedPosition(userId, positionId));
             }else{
                 response.setData(JSON.toJSONString(false));
                 return response;
@@ -233,17 +214,6 @@ public class JobApplicataionServicesImpl implements Iface {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "position_id"));
         }
 
-        String applicationCountCheck = redisClient.get(Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
-                String.valueOf(userId), String.valueOf(companyId));
-
-        // 超出申请次数限制, 每月每家公司一个人只能申请3次
-        if(applicationCountCheck != null && Integer.valueOf(applicationCountCheck) >= APPLICATION_COUNT_LIMIT){
-            return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_VALIDATE_COUNT_CHECK);
-        }
-
-        // 业务校验
-        // TODO: 职位可申请校验, 把数据放进来, 当收集数据了, 申请记录显示时, 控制一下数据
-
         return response;
     }
 
@@ -252,9 +222,30 @@ public class JobApplicataionServicesImpl implements Iface {
      * @param jobApplication
      * @return
      */
-    private Response validateJobApplication(JobApplication jobApplication){
-        return validateGetApplicationByUserIdAndPositionId(jobApplication.applier_id,  jobApplication.position_id,
-                jobApplication.company_id);
+    private Response validateJobApplication(JobApplication jobApplication) throws Exception{
+
+        // 必填项校验
+        Response response = validateGetApplicationByUserIdAndPositionId(jobApplication.applier_id,
+                jobApplication.position_id, jobApplication.company_id);
+
+        // 一个用户在一家公司的每月的申请次数校验
+        if(response.status == Constant.OK){
+            boolean checkApplicationCount = this.checkApplicationCountAtCompany(jobApplication.applier_id,
+                    jobApplication.company_id);
+            if(checkApplicationCount){
+                return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_VALIDATE_COUNT_CHECK);
+            }
+        }
+
+        // 判断是否申请过该职位
+        if(response.status == Constant.OK){
+            boolean isApplied = this.isAppliedPosition(jobApplication.applier_id, jobApplication.position_id);
+            if(isApplied){
+                return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_POSITION_DUPLICATE);
+            }
+        }
+
+        return response;
     }
 
     /**
@@ -274,5 +265,55 @@ public class JobApplicataionServicesImpl implements Iface {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "app_id"));
         }
         return response;
+    }
+
+    /**
+     * 创建申请时初始化申请变量
+     * <p>
+     *
+     * @param jobApplication 申请参数
+     */
+    private void initJobApplication(JobApplication jobApplication){
+
+        // 初始化申请状态
+        if(jobApplication.getApp_tpl_id() == 0){
+            jobApplication.setApp_tpl_id(Constant.RECRUIT_STATUS_APPLY);
+        }
+
+    }
+
+    /**
+     * 是否申请过该职位
+     * <p>
+     *
+     * @param userId 用户id
+     * @param positionId 职位id
+     * @return
+     * @throws Exception
+     */
+    private boolean isAppliedPosition(long userId, long positionId) throws Exception{
+        Integer count = jobApplicationDao.getApplicationByUserIdAndPositionId(userId, positionId);
+        return count > 0?true:false;
+    }
+
+    /**
+     * 一个用户在一家公司的每月的申请次数校验
+     *      超出申请次数限制, 每月每家公司一个人只能申请3次
+     * <p>
+     *
+     * @param userId 用户id
+     * @param companyId 公司id
+     * @return
+     */
+    private boolean checkApplicationCountAtCompany(long userId, long companyId){
+
+        String applicationCountCheck = redisClient.get(Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
+                String.valueOf(userId), String.valueOf(companyId));
+
+        // 超出申请次数限制, 每月每家公司一个人只能申请3次
+        if(applicationCountCheck != null && Integer.valueOf(applicationCountCheck) >= APPLICATION_COUNT_LIMIT){
+            return true;
+        }
+        return false;
     }
 }

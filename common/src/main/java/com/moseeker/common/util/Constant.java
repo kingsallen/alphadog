@@ -36,6 +36,9 @@ public final class Constant {
     public static final int ENABLE = 1;
     public static final int DISABLE = 0;
 
+    // status ok状态
+    public static final int OK = 0;
+
     public static final int REDIS_CONNECT_ERROR_APPID = 0;
     public static final String REDIS_CONNECT_ERROR_EVENTKEY = "REDIS_CONNECT_ERROR";
 
