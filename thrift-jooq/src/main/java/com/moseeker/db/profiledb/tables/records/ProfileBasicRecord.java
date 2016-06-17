@@ -33,7 +33,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileBasicRecord extends UpdatableRecordImpl<ProfileBasicRecord> implements Record14<UInteger, String, UByte, Integer, String, Integer, String, Date, String, String, String, String, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = 387631066;
+	private static final long serialVersionUID = -225676496;
 
 	/**
 	 * Setter for <code>profiledb.profile_basic.profile_id</code>. profile.id
@@ -78,14 +78,14 @@ public class ProfileBasicRecord extends UpdatableRecordImpl<ProfileBasicRecord> 
 	}
 
 	/**
-	 * Setter for <code>profiledb.profile_basic.nationality_code</code>. 国籍code，国家字典表
+	 * Setter for <code>profiledb.profile_basic.nationality_code</code>. 国籍code，国家字典表, dict_country.id
 	 */
 	public void setNationalityCode(Integer value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>profiledb.profile_basic.nationality_code</code>. 国籍code，国家字典表
+	 * Getter for <code>profiledb.profile_basic.nationality_code</code>. 国籍code，国家字典表, dict_country.id
 	 */
 	public Integer getNationalityCode() {
 		return (Integer) getValue(3);
