@@ -23,13 +23,15 @@ public class WXUserDaoImpl extends BaseDaoImpl<UserWxUserRecord, UserWxUser> imp
 	@Override
 	public UserWxUserRecord getWXUserByUserId(int userId) throws SQLException {
 		UserWxUserRecord wxuser = null;
-		try (
-				Connection conn = DBConnHelper.DBConn.getConn();
-				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-			) {
-			
-		} catch (SQLException e) {
-			throw e;
+		if(userId > 0) {
+			try (
+					Connection conn = DBConnHelper.DBConn.getConn();
+					DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+				) {
+				wxuser = create.selectFrom(UserWxUser.USER_WX_USER).where(UserWxUser.USER_WX_USER.SYSUSER_ID.equal(userId)).limit(1).fetchOne();
+			} catch (SQLException e) {
+				throw e;
+			}
 		}
 		return wxuser;
 	}

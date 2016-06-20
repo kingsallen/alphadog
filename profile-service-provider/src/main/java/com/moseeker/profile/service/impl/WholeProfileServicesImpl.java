@@ -45,6 +45,7 @@ import com.moseeker.db.profiledb.tables.records.ProfileWorkexpRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileWorksRecord;
 import com.moseeker.db.userdb.tables.records.UserSettingsRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.profile.dao.AttachmentDao;
 import com.moseeker.profile.dao.AwardsDao;
 import com.moseeker.profile.dao.CollegeDao;
@@ -67,6 +68,7 @@ import com.moseeker.profile.dao.ProjectExpDao;
 import com.moseeker.profile.dao.SkillDao;
 import com.moseeker.profile.dao.UserDao;
 import com.moseeker.profile.dao.UserSettingsDao;
+import com.moseeker.profile.dao.WXUserDao;
 import com.moseeker.profile.dao.WorkExpDao;
 import com.moseeker.profile.dao.WorksDao;
 import com.moseeker.profile.dao.entity.ProfileWorkexpEntity;
@@ -298,9 +300,9 @@ public class WholeProfileServicesImpl implements Iface {
 		}
 	}
 
-	private int clearProfile(int profileId) {
+	/*private int clearProfile(int profileId) {
 		return profileDao.deleteProfile(profileId);
-	}
+	}*/
 
 	@Override
 	public Response verifyRequires(int userId, int positionId) throws TException {
@@ -695,9 +697,10 @@ public class WholeProfileServicesImpl implements Iface {
 				if(!StringUtils.isNullOrEmpty(userRecord.getHeadimg())) {
 					map.put("headimg", userRecord.getHeadimg());
 				} else {
-					
-					//UserSettingsRecord settingsRecord = 
-					map.put("headimg", userRecord.getHeadimg());
+					UserWxUserRecord wxuserRecord = wxuserDao.getWXUserByUserId(userRecord.getId().intValue());
+					if(wxuserRecord != null) {
+						map.put("headimg", wxuserRecord.getHeadimgurl());
+					}
 				}
 				map.put("mobile", userRecord.getMobile());
 				map.put("email", userRecord.getEmail());
@@ -791,6 +794,9 @@ public class WholeProfileServicesImpl implements Iface {
 		}
 		return map;
 	}
+	
+	@Autowired
+	private WXUserDao wxuserDao;
 
 	@Autowired
 	private ConstantDao constantDao;
@@ -1062,5 +1068,13 @@ public class WholeProfileServicesImpl implements Iface {
 
 	public void setConstantDao(ConstantDao constantDao) {
 		this.constantDao = constantDao;
+	}
+
+	public WXUserDao getWxuserDao() {
+		return wxuserDao;
+	}
+
+	public void setWxuserDao(WXUserDao wxuserDao) {
+		this.wxuserDao = wxuserDao;
 	}
 }
