@@ -695,6 +695,7 @@ public class WholeProfileServicesImpl implements Iface {
 				if(!StringUtils.isNullOrEmpty(userRecord.getHeadimg())) {
 					map.put("headimg", userRecord.getHeadimg());
 				} else {
+					
 					//UserSettingsRecord settingsRecord = 
 					map.put("headimg", userRecord.getHeadimg());
 				}
