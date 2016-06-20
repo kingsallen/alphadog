@@ -692,12 +692,12 @@ public class WholeProfileServicesImpl implements Iface {
 				map.put("banner_url", userSettingsRecord.getBannerUrl());
 				map.put("privacy_policy", userSettingsRecord.getPrivacyPolicy().intValue());
 			}
-
+			UserWxUserRecord wxuserRecord = null;
 			if (userRecord != null) {
+				wxuserRecord = wxuserDao.getWXUserByUserId(userRecord.getId().intValue());
 				if(!StringUtils.isNullOrEmpty(userRecord.getHeadimg())) {
 					map.put("headimg", userRecord.getHeadimg());
 				} else {
-					UserWxUserRecord wxuserRecord = wxuserDao.getWXUserByUserId(userRecord.getId().intValue());
 					if(wxuserRecord != null) {
 						map.put("headimg", wxuserRecord.getHeadimgurl());
 					}
