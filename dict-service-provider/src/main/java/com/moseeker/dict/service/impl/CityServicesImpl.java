@@ -3,6 +3,7 @@ package com.moseeker.dict.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.exception.CacheConfigNotExistException;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.proxy.Execution;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.dict.dao.CityDao;
@@ -32,25 +33,29 @@ public class CityServicesImpl implements Iface {
     public Response getResources(CommonQuery query) throws TException {
         Response result;
         try {
-            String cachKey = genCachKey(query);
+            String cachKey = "transformed";
             String patternString = "DICT_CITY";
             int appid = 0; // 允许所有app_id的请求缓存
             RedisClient rc = RedisClientFactory.getCacheClient();
             String cachedResult = rc.get(appid, patternString, cachKey, () -> {
-                return JSON.toJSONString(this.getCitiesResponse());
+                return JSON.toJSONString(this.getCitiesResponse(true, 0));
             });
             result = JSON.parseObject(cachedResult, Response.class);
         } catch (CacheConfigNotExistException e) {
             logger.error(e.getMessage(), e);
-            result = this.getCitiesResponse();
+            result = this.getCitiesResponse(true, 0);
         }
         return result;
     }
 
-    public Response getCitiesResponse() {
-        List<CityPojo> cities = this.dao.getCities();
-        HashMap transformed = transformData(cities);
-        return ResponseUtils.success(transformed);
+    public Response getCitiesResponse(boolean transform, int level) {
+        List<CityPojo> cities = this.dao.getCities(level);
+        if (transform) {
+            HashMap transformed = transformData(cities);
+            return ResponseUtils.success(transformed);
+        } else {
+            return ResponseUtils.success(cities);
+        }
     }
 
     private HashMap transformData(List<CityPojo> s) {
@@ -59,8 +64,47 @@ public class CityServicesImpl implements Iface {
         return hm;
     }
 
-    private String genCachKey(CommonQuery query) {
-        return "all"; // 这里没有根据query来计算
+    // --------------------- new api ----------------------------------
+
+    public Response getAllCities(int level) {
+        Response result;
+        try {
+            String cachKey = "raw_level_" + level;
+            String patternString = "DICT_CITY";
+            int appid = 0; // 允许所有app_id的请求缓存
+            RedisClient rc = RedisClientFactory.getCacheClient();
+            String cachedResult = rc.get(appid, patternString, cachKey, () -> {
+                return JSON.toJSONString(this.getCitiesResponse(false, level));
+            });
+            result = JSON.parseObject(cachedResult, Response.class);
+        } catch (CacheConfigNotExistException e) {
+            logger.error(e.getMessage(), e);
+            result = this.getCitiesResponse(false, level);
+        }
+        return result;
+    }
+
+    public Response getCitiesById(int id) throws TException {
+        Response result;
+        try {
+            String cachKey = "raw_id_" + id;
+            String patternString = "DICT_CITY";
+            int appid = 0; // 允许所有app_id的请求缓存
+            RedisClient rc = RedisClientFactory.getCacheClient();
+            String cachedResult = rc.get(appid, patternString, cachKey, () -> {
+                return JSON.toJSONString(this.getCitiesResponseById(id));
+            });
+            result = JSON.parseObject(cachedResult, Response.class);
+        } catch (CacheConfigNotExistException e) {
+            logger.error(e.getMessage(), e);
+            result = this.getCitiesResponseById(id);
+        }
+        return result;
+    }
+
+    public Response getCitiesResponseById(int id) {
+        List<CityPojo> cities = this.dao.getCitiesById(id);
+        return ResponseUtils.success(cities);
     }
 }
 

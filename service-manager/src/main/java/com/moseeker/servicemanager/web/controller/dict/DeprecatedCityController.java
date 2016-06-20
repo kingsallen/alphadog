@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,34 +19,25 @@ import javax.servlet.http.HttpServletResponse;
 
 //@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
-public class CityController {
+public class DeprecatedCityController {
 
     Logger logger = org.slf4j.LoggerFactory.getLogger(CityController.class);
 
     CityServices.Iface cityServices = ServiceUtil.getService(CityServices.Iface.class);
 
-    @RequestMapping(value = "/dict/cities", method = RequestMethod.GET)
+    @RequestMapping(value = "/dict/city", method = RequestMethod.GET)
     @ResponseBody
     public String get(HttpServletRequest request, HttpServletResponse response) {
+        //PrintWriter writer = null;
         try {
-            String parameterLevel = request.getParameter("level");
-            int level = parameterLevel == null ? 0 : Integer.parseInt(parameterLevel);
-            Response result = cityServices.getAllCities(level);
+            // GET方法 通用参数解析并赋值
+            CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
+
+            Response result = cityServices.getResources(query);
+
             return ResponseLogNotification.successWithParse(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
-
-    @RequestMapping(value = "/dict/cities/{id}", method = RequestMethod.GET)
-    @ResponseBody
-    public String getById(@PathVariable("id") long id, HttpServletRequest request, HttpServletResponse response) {
-        try {
-            Response result = cityServices.getCitiesById((int)id);
-            return ResponseLogNotification.successWithParse(request, result);
-        } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
-        }
-    }
-
 }
