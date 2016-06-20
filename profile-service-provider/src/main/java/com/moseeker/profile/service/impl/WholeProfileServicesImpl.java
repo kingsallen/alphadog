@@ -692,12 +692,12 @@ public class WholeProfileServicesImpl implements Iface {
 				map.put("banner_url", userSettingsRecord.getBannerUrl());
 				map.put("privacy_policy", userSettingsRecord.getPrivacyPolicy().intValue());
 			}
-
+			UserWxUserRecord wxuserRecord = null;
 			if (userRecord != null) {
+				wxuserRecord = wxuserDao.getWXUserByUserId(userRecord.getId().intValue());
 				if(!StringUtils.isNullOrEmpty(userRecord.getHeadimg())) {
 					map.put("headimg", userRecord.getHeadimg());
 				} else {
-					UserWxUserRecord wxuserRecord = wxuserDao.getWXUserByUserId(userRecord.getId().intValue());
 					if(wxuserRecord != null) {
 						map.put("headimg", wxuserRecord.getHeadimgurl());
 					}
@@ -720,7 +720,13 @@ public class WholeProfileServicesImpl implements Iface {
 				map.put("update_time", DateUtils.dateToShortTime(profileRecord.getUpdateTime()));
 				map.put("completeness", profileRecord.getCompleteness().intValue());
 				map.put("uuid", profileRecord.getUuid());
-				map.put("name", basicRecord.getName());
+				if(!StringUtils.isNullOrEmpty(basicRecord.getName())) {
+					map.put("name", basicRecord.getName());
+				} else {
+					if(wxuserRecord != null) {
+						map.put("name", wxuserRecord.getNickname());
+					}
+				}
 				map.put("city_name", basicRecord.getCityName());
 				map.put("city_code", basicRecord.getCityCode().intValue());
 				if (basicRecord.getGender() != null) {
