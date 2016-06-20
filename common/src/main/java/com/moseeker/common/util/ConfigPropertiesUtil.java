@@ -1,11 +1,8 @@
 package com.moseeker.common.util;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Properties;
-
-import com.moseeker.rpccenter.common.configure.ResourceUtils;
 
 /**
  * 配置文件读取帮助类。利用getResourceAsStream方法读取默认的配置文件，
@@ -58,8 +55,6 @@ public class ConfigPropertiesUtil {
     public void loadResource(String fileName) throws Exception {
         InputStreamReader inputStreamReader = null;
         try {
-        	String path = ConfigPropertiesUtil.class.getClassLoader().getResource("/").getPath();
-        	InputStream is = ResourceUtils.getResourceAsStream("setting.properties");
             inputStreamReader = new InputStreamReader(ConfigPropertiesUtil.class.getClassLoader().getResourceAsStream(fileName), "UTF-8");
             properties.load(inputStreamReader);
         } catch (Exception e) {
