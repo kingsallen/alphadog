@@ -720,7 +720,13 @@ public class WholeProfileServicesImpl implements Iface {
 				map.put("update_time", DateUtils.dateToShortTime(profileRecord.getUpdateTime()));
 				map.put("completeness", profileRecord.getCompleteness().intValue());
 				map.put("uuid", profileRecord.getUuid());
-				map.put("name", basicRecord.getName());
+				if(!StringUtils.isNullOrEmpty(basicRecord.getName())) {
+					map.put("name", basicRecord.getName());
+				} else {
+					if(userRecord != null) {
+						map.put("name", userRecord.getName());
+					}
+				}
 				map.put("city_name", basicRecord.getCityName());
 				map.put("city_code", basicRecord.getCityCode().intValue());
 				if (basicRecord.getGender() != null) {
