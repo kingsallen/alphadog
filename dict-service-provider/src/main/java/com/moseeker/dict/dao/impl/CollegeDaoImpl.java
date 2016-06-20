@@ -43,6 +43,7 @@ public class CollegeDaoImpl extends BaseDaoImpl<DictCollegeRecord, DictCollege> 
             Result<? extends Record> result = create
                     .select(DictCollege.DICT_COLLEGE.CODE.as("college_code"),
                             DictCollege.DICT_COLLEGE.NAME.as("college_name"),
+                            DictCollege.DICT_COLLEGE.LOGO.as("college_logo"),
                             DictCity.DICT_CITY.CODE.as("province_code"),
                             DictCity.DICT_CITY.NAME.as("province_name"))
                     .from(DictCollege.DICT_COLLEGE)
