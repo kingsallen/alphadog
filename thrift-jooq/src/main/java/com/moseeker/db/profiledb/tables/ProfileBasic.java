@@ -37,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileBasic extends TableImpl<ProfileBasicRecord> {
 
-	private static final long serialVersionUID = -950626243;
+	private static final long serialVersionUID = 1508605923;
 
 	/**
 	 * The reference instance of <code>profiledb.profile_basic</code>
@@ -68,9 +68,9 @@ public class ProfileBasic extends TableImpl<ProfileBasicRecord> {
 	public final TableField<ProfileBasicRecord, UByte> GENDER = createField("gender", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "性别 0:没选择 1:男, 2: 女");
 
 	/**
-	 * The column <code>profiledb.profile_basic.nationality_code</code>. 国籍code，国家字典表
+	 * The column <code>profiledb.profile_basic.nationality_code</code>. 国籍code，国家字典表, dict_country.id
 	 */
-	public final TableField<ProfileBasicRecord, Integer> NATIONALITY_CODE = createField("nationality_code", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "国籍code，国家字典表");
+	public final TableField<ProfileBasicRecord, Integer> NATIONALITY_CODE = createField("nationality_code", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "国籍code，国家字典表, dict_country.id");
 
 	/**
 	 * The column <code>profiledb.profile_basic.nationality_name</code>. 国籍名称

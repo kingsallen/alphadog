@@ -95,7 +95,8 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 					for(Education education : educations) {
 						for(DictCollegeRecord college : colleges) {
 							if(education.getCollege_code() == college.getCode().intValue()) {
-								education.getCollege_name().equals(college.getName());
+								education.setCollege_name(college.getName());
+								education.setCollege_logo(college.getLogo());
 								break;
 							}
 						}
@@ -133,6 +134,7 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 				DictCollegeRecord college = collegeDao.getCollegeByID(educationRecord.getCollegeCode().intValue());
 				if(college != null) {
 					education.setCollege_name(college.getName());
+					education.setCollege_logo(college.getLogo());
 				}
 				DictMajorRecord major = majorDao.getMajorByID(educationRecord.getMajorCode());
 				if(major != null) {
@@ -156,6 +158,7 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 				DictCollegeRecord college = collegeDao.getCollegeByID(education.getCollege_code());
 				if(college != null) {
 					education.setCollege_name(college.getName());
+					education.setCollege_logo(college.getLogo());
 				} else {
 					return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_COLLEGE_NOTEXIST);
 				}
@@ -188,6 +191,7 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 			DictCollegeRecord college = collegeDao.getCollegeByID(education.getCollege_code());
 			if(college != null) {
 				education.setCollege_name(college.getName());
+				education.setCollege_logo(college.getLogo());
 			} else {
 				return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_COLLEGE_NOTEXIST);
 			}
