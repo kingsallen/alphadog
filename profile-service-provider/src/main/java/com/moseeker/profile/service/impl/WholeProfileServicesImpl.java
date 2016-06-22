@@ -685,6 +685,7 @@ public class WholeProfileServicesImpl implements Iface {
 				map.put("headimg", userRecord.getHeadimg());
 				map.put("mobile", userRecord.getMobile());
 				map.put("email", userRecord.getEmail());
+				map.put("name", userRecord.getName());
 			}
 			if (lastWorkExp != null) {
 				if (company != null) {
@@ -701,7 +702,6 @@ public class WholeProfileServicesImpl implements Iface {
 				map.put("update_time", DateUtils.dateToShortTime(profileRecord.getUpdateTime()));
 				map.put("completeness", profileRecord.getCompleteness().intValue());
 				map.put("uuid", profileRecord.getUuid());
-				map.put("name", basicRecord.getName());
 				map.put("city_name", basicRecord.getCityName());
 				map.put("city_code", basicRecord.getCityCode().intValue());
 				if(basicRecord.getGender() != null) {
