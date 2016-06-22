@@ -715,6 +715,7 @@ public class WholeProfileServicesImpl implements Iface {
 				map.put("industry_name", lastWorkExp.getIndustryName());
 				map.put("industry_code", lastWorkExp.getIndustryCode().intValue());
 				map.put("position_name", lastWorkExp.getPositionName());
+				map.put("current_job", lastWorkExp.getJob());
 			}
 			if (basicRecord != null) {
 				map.put("update_time", DateUtils.dateToShortTime(profileRecord.getUpdateTime()));
