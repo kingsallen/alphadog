@@ -38,6 +38,7 @@ public class CollegeServicesImpl implements Iface {
         College c = new College();
         c.setCollege_code(((UInteger)r.getValue("college_code")).intValue());
         c.setCollge_name((String)r.getValue("college_name"));
+        c.setCollge_logo((String)r.getValue("college_logo"));
         c.setProvince_code(((UInteger)r.getValue("province_code")).intValue());
         c.setProvince_name((String)r.getValue("province_name"));
         return c;
@@ -134,6 +135,7 @@ class DictCollegeHashMap {
         Map collegeInfo = new HashMap();
         collegeInfo.put("code", c.getCollege_code());
         collegeInfo.put("name", c.getCollge_name());
+        collegeInfo.put("logo", c.getCollge_logo());
         collegesInProvince.add(collegeInfo);
     }
 }
