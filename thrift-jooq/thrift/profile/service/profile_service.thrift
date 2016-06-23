@@ -27,6 +27,7 @@ service ProfileServices {
     common_struct.Response postResource(1: profile_struct.Profile profile);
     common_struct.Response putResource(1: profile_struct.Profile profile);
     common_struct.Response delResource(1: profile_struct.Profile profile);
+    common_struct.Response getCompleteness(1:i32 user_id, 2: string uuid, 3: i32 profile_id);
 }
 
 service AttachmentServices {
