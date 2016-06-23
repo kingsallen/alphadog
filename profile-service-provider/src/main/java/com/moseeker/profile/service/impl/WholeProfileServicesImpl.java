@@ -194,12 +194,12 @@ public class WholeProfileServicesImpl implements Iface {
 			if ((userRecord.getMobile() == null || userRecord.getMobile() == 0) && crawlerUser.getMobile() != null) {
 				userRecord.setMobile(crawlerUser.getMobile());
 			}
-			if (crawlerUser != null && !StringUtils.isNullOrEmpty(crawlerUser.getName())) {
+			if (StringUtils.isNullOrEmpty(userRecord.getName()) && !StringUtils.isNullOrEmpty(crawlerUser.getName())) {
 				userRecord.setName(crawlerUser.getName());
 			}
 			ProfileBasicRecord basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"));
-			if (basicRecord != null && StringUtils.isNullOrEmpty(basicRecord.getName())) {
-				basicRecord.setName(userRecord.getName());
+			if (StringUtils.isNullOrEmpty(userRecord.getName()) && !StringUtils.isNullOrEmpty(basicRecord.getName())) {
+				userRecord.setName(basicRecord.getName());
 			}
 			List<ProfileAttachmentRecord> attachmentRecords = profileUtils
 					.mapToAttachmentRecords((List<Map<String, Object>>) resume.get("attachments"));
@@ -270,6 +270,9 @@ public class WholeProfileServicesImpl implements Iface {
 			userRecord.setEmail(crawlerUser.getEmail());
 		}
 		ProfileBasicRecord basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"));
+		if (StringUtils.isNullOrEmpty(userRecord.getName()) && !StringUtils.isNullOrEmpty(basicRecord.getName())) {
+			userRecord.setName(basicRecord.getName());
+		}
 		List<ProfileAttachmentRecord> attachmentRecords = profileUtils
 				.mapToAttachmentRecords((List<Map<String, Object>>) resume.get("attachments"));
 		List<ProfileAwardsRecord> awardsRecords = profileUtils
