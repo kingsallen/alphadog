@@ -163,7 +163,7 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 			ProfileBasicRecord record = structToDB(struct);
 			int i = dao.postResource(record);
 			if(i > 0) {
-				if(StringUtils.isNullOrEmpty(struct.getName())) {
+				if(!StringUtils.isNullOrEmpty(struct.getName())) {
 					profileDao.updateRealName(record.getProfileId().intValue(), struct.getName());
 				}
 				return ResponseUtils.success(String.valueOf(i));
