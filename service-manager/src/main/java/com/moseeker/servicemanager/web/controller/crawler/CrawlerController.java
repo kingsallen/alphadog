@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.common.ServiceUtil;
@@ -60,8 +62,8 @@ public class CrawlerController {
 			} else {
 				return ResponseLogNotification.fail(request, result);
 			}
-		} catch (ConnectException e) {	
-			return ResponseLogNotification.fail(request, "服务超时");
+		} catch (ConnectException e) {
+			return ResponseLogNotification.fail(request, ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_SERVICE_TIMEOUT));
 		} catch (Exception e) {	
 			return ResponseLogNotification.fail(request, e.getMessage());
 		} finally {
