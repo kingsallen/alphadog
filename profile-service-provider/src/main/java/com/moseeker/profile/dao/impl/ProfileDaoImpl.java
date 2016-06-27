@@ -664,6 +664,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 				if (otherRecord != null) {
 					create.attach(otherRecord);
 					otherRecord.setCreateTime(now);
+					otherRecord.setProfileId(profileRecord.getId());
 					otherRecord.insert();
 				}
 				if (projectExps != null && projectExps.size() > 0) {

@@ -269,10 +269,14 @@ public class WholeProfileServicesImpl implements Iface {
 		if (StringUtils.isNullOrEmpty(userRecord.getEmail()) && !StringUtils.isNullOrEmpty(crawlerUser.getEmail())) {
 			userRecord.setEmail(crawlerUser.getEmail());
 		}
+		if (StringUtils.isNullOrEmpty(userRecord.getHeadimg()) && !StringUtils.isNullOrEmpty(crawlerUser.getHeadimg())) {
+			userRecord.setHeadimg(crawlerUser.getHeadimg());
+		}
 		ProfileBasicRecord basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"));
 		if (StringUtils.isNullOrEmpty(userRecord.getName()) && !StringUtils.isNullOrEmpty(basicRecord.getName())) {
 			userRecord.setName(basicRecord.getName());
 		}
+		
 		List<ProfileAttachmentRecord> attachmentRecords = profileUtils
 				.mapToAttachmentRecords((List<Map<String, Object>>) resume.get("attachments"));
 		List<ProfileAwardsRecord> awardsRecords = profileUtils

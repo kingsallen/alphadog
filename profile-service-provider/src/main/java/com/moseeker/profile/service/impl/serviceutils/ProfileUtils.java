@@ -54,6 +54,12 @@ public class ProfileUtils {
 			workexps.forEach(workexp -> {
 				ProfileWorkexpEntity record = BeanUtils.MapToRecord(workexp, ProfileWorkexpEntity.class);
 				if (record != null) {
+					if(workexp.get("start_date") != null) {
+						record.setStart(BeanUtils.convertToSQLDate(workexp.get("start_date")));
+					}
+					if(workexp.get("end_date") != null) {
+						record.setEnd(BeanUtils.convertToSQLDate(workexp.get("end_date")));
+					}
 					workexpRecords.add(record);
 				}
 			});
@@ -179,6 +185,12 @@ public class ProfileUtils {
 			educations.forEach(education -> {
 				ProfileEducationRecord record = BeanUtils.MapToRecord(education, ProfileEducationRecord.class);
 				if (record != null) {
+					if(education.get("start_date") != null) {
+						record.setStart(BeanUtils.convertToSQLDate(education.get("start_date")));
+					}
+					if(education.get("end_date") != null) {
+						record.setEnd(BeanUtils.convertToSQLDate(education.get("end_date")));
+					}
 					educationRecords.add(record);
 				}
 			});
