@@ -2,6 +2,9 @@ package com.moseeker.profile.service.impl.serviceutils;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.moseeker.common.exception.ParamIllegalException;
 import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.StringUtils;
@@ -17,13 +20,16 @@ import com.moseeker.db.profiledb.tables.records.ProfileLanguageRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProjectexpRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileSkillRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileWorkexpRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileWorksRecord;
 import com.moseeker.db.userdb.tables.records.UserSettingsRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
 
 public class CompletenessCalculator {
+	
+	Logger logger = LoggerFactory.getLogger(CompletenessCalculator.class);
 
-	public int calculatorUserUser(UserUserRecord userRecord, UserSettingsRecord settingsRecord, UserWxUserRecord wxuser)
+	public int calculateUserUser(UserUserRecord userRecord, UserSettingsRecord settingsRecord, UserWxUserRecord wxuser)
 			throws ParamIllegalException {
 		int completeness = 0;
 		if (userRecord == null) {
@@ -45,10 +51,13 @@ public class CompletenessCalculator {
 		if (!StringUtils.isNullOrEmpty(userRecord.getName())) {
 			completeness += 5;
 		}
+		if(completeness >= Constant.PROFILER_COMPLETENESS_USERUSER_MAXVALUE) {
+			completeness = Constant.PROFILER_COMPLETENESS_USERUSER_MAXVALUE;
+		}
 		return completeness;
 	}
 
-	public int calculatorProfileBasic(ProfileBasicRecord basicRecord) throws ParamIllegalException {
+	public int calculateProfileBasic(ProfileBasicRecord basicRecord) throws ParamIllegalException {
 		int completeness = 0;
 
 		if (basicRecord == null) {
@@ -80,15 +89,34 @@ public class CompletenessCalculator {
 		if (!StringUtils.isNullOrEmpty(basicRecord.getSelfIntroduction())) {
 			completeness += 2;
 		}
+		if(completeness >= Constant.PROFILER_COMPLETENESS_BASIC_MAXVALUE) {
+			completeness = Constant.PROFILER_COMPLETENESS_BASIC_MAXVALUE;
+		}
 		return completeness;
 	}
 	
-	public int calculatorProfileWorkexps(List<ProfileWorkexpRecord> workexpRecord, List<HrCompanyRecord> companies) {
+	public int calculateProfileWorkexps(List<ProfileWorkexpRecord> workexpRecords, List<HrCompanyRecord> companies) {
 		int completeness = 0;
+		if(workexpRecords != null && workexpRecords.size() > 0) {
+			for(ProfileWorkexpRecord workexp : workexpRecords) {
+				if(completeness >= Constant.PROFILER_COMPLETENESS_WORKEXP_MAXVALUE) {
+					completeness = Constant.PROFILER_COMPLETENESS_WORKEXP_MAXVALUE;
+					break;
+				}
+				HrCompanyRecord companyRecord = null;
+				for(HrCompanyRecord company : companies) {
+					if(workexp.getCompanyId() != null && workexp.getCompanyId().intValue() == company.getId().intValue()) {
+						companyRecord = company;
+						break;
+					}
+				}
+				completeness += calculateProfileWorkexp(workexp, companyRecord);
+			}
+		}
 		return completeness;
 	}
 
-	public int calculatorProfileWorkexp(ProfileWorkexpRecord workexpRecord, HrCompanyRecord company)
+	public int calculateProfileWorkexp(ProfileWorkexpRecord workexpRecord, HrCompanyRecord company)
 			throws ParamIllegalException {
 		if (workexpRecord == null) {
 			throw new ParamIllegalException(Constant.EXCEPTION_PROFILEWORKEXP_LOST);
@@ -118,10 +146,27 @@ public class CompletenessCalculator {
 		if (StringUtils.isNotNullOrEmpty(workexpRecord.getDescription())) {
 			completeness += 1;
 		}
+		if(completeness >= Constant.PROFILER_COMPLETENESS_WORKEXP_MAXVALUE) {
+			completeness = Constant.PROFILER_COMPLETENESS_WORKEXP_MAXVALUE;
+		}
 		return completeness;
 	}
+	
+	public int calculateProfileEducations(List<ProfileEducationRecord> records) throws ParamIllegalException {
+		int completeness = 0;
+		if(records != null && records.size() > 0) {
+			for(ProfileEducationRecord record : records) {
+				if(completeness >= Constant.PROFILER_COMPLETENESS_EDUCATION_MAXVALUE) {
+					completeness = Constant.PROFILER_COMPLETENESS_EDUCATION_MAXVALUE;
+					break;
+				}
+				completeness += calculateProfileEducation(record);
+			}
+		}
+		return completeness = 0;
+	}
 
-	public int calculatorProfileEducation(ProfileEducationRecord record) throws ParamIllegalException {
+	public int calculateProfileEducation(ProfileEducationRecord record) throws ParamIllegalException {
 		int completeness = 0;
 		if (record == null) {
 			throw new ParamIllegalException(Constant.EXCEPTION_PROFILEEDUCATION_LOST);
@@ -152,10 +197,31 @@ public class CompletenessCalculator {
 		if (StringUtils.isNotNullOrEmpty(record.getDescription())) {
 			completeness += 1;
 		}
+		if(completeness >= Constant.PROFILER_COMPLETENESS_EDUCATION_MAXVALUE) {
+			completeness = Constant.PROFILER_COMPLETENESS_EDUCATION_MAXVALUE;
+		}
+		return completeness;
+	}
+	
+	public int calculateProjectexps(List<ProfileProjectexpRecord> records) {
+		int completeness = 0;
+		if(records != null && records.size() > 0) {
+			for(ProfileProjectexpRecord record : records) {
+				if(completeness >= Constant.PROFILER_COMPLETENESS_PROJECTEXP_MAXVALUE) {
+					completeness = Constant.PROFILER_COMPLETENESS_PROJECTEXP_MAXVALUE;
+					break;
+				}
+				try {
+					completeness += calculateProjectexp(record);
+				} catch (ParamIllegalException e) {
+					logger.error(e.getMessage(), e);
+				}
+			}
+		}
 		return completeness;
 	}
 
-	public int calculatorProjectexp(ProfileProjectexpRecord record) throws ParamIllegalException {
+	public int calculateProjectexp(ProfileProjectexpRecord record) throws ParamIllegalException {
 		if (record == null) {
 			throw new ParamIllegalException(Constant.EXCEPTION_PROFILEPROJECTEXP_LOST);
 		}
@@ -182,10 +248,31 @@ public class CompletenessCalculator {
 		if (StringUtils.isNotNullOrEmpty(record.getMember())) {
 			completeness += 2;
 		}
+		if(completeness >= Constant.PROFILER_COMPLETENESS_PROJECTEXP_MAXVALUE) {
+			completeness = Constant.PROFILER_COMPLETENESS_PROJECTEXP_MAXVALUE;
+		}
+		return completeness;
+	}
+	
+	public int calculateLanguages(List<ProfileLanguageRecord> records) {
+		int completeness = 0;
+		if(records != null && records.size() > 0) {
+			for(ProfileLanguageRecord record : records) {
+				if(completeness >= Constant.PROFILER_COMPLETENESS_LANGUAGE_MAXVALUE) {
+					completeness = Constant.PROFILER_COMPLETENESS_LANGUAGE_MAXVALUE;
+					break;
+				}
+				try {
+					completeness += calculateLanguage(record);
+				} catch (ParamIllegalException e) {
+					logger.error(e.getMessage(), e);
+				}
+			}
+		}
 		return completeness;
 	}
 
-	public int calculatorLanguage(ProfileLanguageRecord record) {
+	public int calculateLanguage(ProfileLanguageRecord record) {
 		if (record == null) {
 			throw new ParamIllegalException(Constant.EXCEPTION_PROFILELANGUAGE_LOST);
 		}
@@ -197,11 +284,31 @@ public class CompletenessCalculator {
 		if (record.getLevel() != null && record.getLevel().intValue() > 0) {
 			completeness += 1;
 		}
-
+		if(completeness >= Constant.PROFILER_COMPLETENESS_LANGUAGE_MAXVALUE) {
+			completeness = Constant.PROFILER_COMPLETENESS_LANGUAGE_MAXVALUE;
+		}
+		return completeness;
+	}
+	
+	public int calculateSkills(List<ProfileSkillRecord> records) {
+		int completeness = 0;
+		if(records != null && records.size() > 0) {
+			for(ProfileSkillRecord record : records) {
+				if(completeness >= Constant.PROFILER_COMPLETENESS_SKILL_MAXVALUE) {
+					completeness = Constant.PROFILER_COMPLETENESS_SKILL_MAXVALUE;
+					break;
+				}
+				try {
+					completeness += calculateSkill(record);
+				} catch (ParamIllegalException e) {
+					logger.error(e.getMessage(), e);
+				}
+			}
+		}
 		return completeness;
 	}
 
-	public int calculatorSkill(ProfileSkillRecord record) {
+	public int calculateSkill(ProfileSkillRecord record) {
 		if (record == null) {
 			throw new ParamIllegalException(Constant.EXCEPTION_PROFILESKILL_LOST);
 		}
@@ -209,10 +316,31 @@ public class CompletenessCalculator {
 		if (StringUtils.isNotNullOrEmpty(record.getName())) {
 			completeness += 1;
 		}
+		if(completeness >= Constant.PROFILER_COMPLETENESS_SKILL_MAXVALUE) {
+			completeness = Constant.PROFILER_COMPLETENESS_SKILL_MAXVALUE;
+		}
+		return completeness;
+	}
+	
+	public int calculateCredentials(List<ProfileCredentialsRecord> records) {
+		int completeness = 0;
+		if(records != null && records.size() > 0) {
+			for(ProfileCredentialsRecord record : records) {
+				if(completeness >= Constant.PROFILER_COMPLETENESS_CREDENTIAL_MAXVALUE) {
+					completeness = Constant.PROFILER_COMPLETENESS_CREDENTIAL_MAXVALUE;
+					break;
+				}
+				try {
+					completeness += calculateCredential(record);
+				} catch (ParamIllegalException e) {
+					logger.error(e.getMessage(), e);
+				}
+			}
+		}
 		return completeness;
 	}
 
-	public int calculatorCredentials(ProfileCredentialsRecord record) {
+	public int calculateCredential(ProfileCredentialsRecord record) {
 		if (record == null) {
 			throw new ParamIllegalException(Constant.EXCEPTION_PROFILECREDENTIALS_LOST);
 		}
@@ -220,10 +348,31 @@ public class CompletenessCalculator {
 		if (StringUtils.isNotNullOrEmpty(record.getName())) {
 			completeness += 1;
 		}
+		if(completeness >= Constant.PROFILER_COMPLETENESS_CREDENTIAL_MAXVALUE) {
+			completeness = Constant.PROFILER_COMPLETENESS_CREDENTIAL_MAXVALUE;
+		}
+		return completeness;
+	}
+	
+	public int calculateAwards(List<ProfileAwardsRecord> records) {
+		int completeness = 0;
+		if(records != null && records.size() > 0) {
+			for(ProfileAwardsRecord record : records) {
+				if(completeness >= Constant.PROFILER_COMPLETENESS_AWARD_MAXVALUE) {
+					completeness = Constant.PROFILER_COMPLETENESS_AWARD_MAXVALUE;
+					break;
+				}
+				try {
+					completeness += calculateAward(record);
+				} catch (ParamIllegalException e) {
+					logger.error(e.getMessage(), e);
+				}
+			}
+		}
 		return completeness;
 	}
 
-	public int calculatorAwards(ProfileAwardsRecord record) {
+	public int calculateAward(ProfileAwardsRecord record) {
 		if (record == null) {
 			throw new ParamIllegalException(Constant.EXCEPTION_PROFILEAWARDS_LOST);
 		}
@@ -235,11 +384,84 @@ public class CompletenessCalculator {
 		if (record.getRewardDate() != null) {
 			completeness += 1;
 		}
+		if(completeness >= Constant.PROFILER_COMPLETENESS_AWARD_MAXVALUE) {
+			completeness = Constant.PROFILER_COMPLETENESS_AWARD_MAXVALUE;
+		}
+		return completeness;
+	}
+	
+	public int calculateWorks(List<ProfileWorksRecord> records) {
+		int completeness = 0;
+		if(records != null && records.size() > 0) {
+			for(ProfileWorksRecord record : records) {
+				if(completeness >= Constant.PROFILER_COMPLETENESS_WORKS_MAXVALUE) {
+					completeness = Constant.PROFILER_COMPLETENESS_WORKS_MAXVALUE;
+					break;
+				}
+				try {
+					completeness += calculateWork(record);
+				} catch (ParamIllegalException e) {
+					logger.error(e.getMessage(), e);
+				}
+			}
+		}
+		return completeness;
+	}
+	
+	public int calculateWork(ProfileWorksRecord record) {
+		if (record == null) {
+			throw new ParamIllegalException(Constant.EXCEPTION_PROFILEWORKS_LOST);
+		}
+		int completeness = 0;
 
+		if (StringUtils.isNotNullOrEmpty(record.getCover())) {
+			completeness += 1;
+		}
+		if(StringUtils.isNotNullOrEmpty(record.getUrl())) {
+			completeness += 1;
+		}
+		if(StringUtils.isNotNullOrEmpty(record.getDescription())) {
+			completeness += 1;
+		}
+		if(completeness >= Constant.PROFILER_COMPLETENESS_WORKS_MAXVALUE) {
+			completeness = Constant.PROFILER_COMPLETENESS_WORKS_MAXVALUE;
+		}
+		return completeness;
+	}
+	
+	public int calculateIntentions(List<ProfileIntentionRecord> records, List<ProfileIntentionCityRecord> cityRecords, List<ProfileIntentionPositionRecord> positionRecords) {
+		int completeness = 0;
+		if(records != null && records.size() > 0) {
+			for(ProfileIntentionRecord record : records) {
+				if(completeness >= Constant.PROFILER_COMPLETENESS_INTENTION_MAXVALUE) {
+					completeness = Constant.PROFILER_COMPLETENESS_INTENTION_MAXVALUE;
+					break;
+				}
+				ProfileIntentionCityRecord cityRecord = null;
+				ProfileIntentionPositionRecord positionRecord = null;
+				if(cityRecords != null && cityRecords.size() > 0) {
+					for(ProfileIntentionCityRecord city: cityRecords) {
+						if(city.getProfileIntentionId().intValue() == record.getId().intValue()) {
+							cityRecord = city;
+							break;
+						}
+					}
+				}
+				if(positionRecords != null && positionRecords.size() > 0) {
+					for(ProfileIntentionPositionRecord position : positionRecords) {
+						if(position.getProfileIntentionId().intValue() == record.getId().intValue()) {
+							positionRecord = position;
+							break;
+						}
+					}
+				}
+				completeness += calculateIntention(record, cityRecord, positionRecord);
+			}
+		}
 		return completeness;
 	}
 
-	public int calculatorIntention(ProfileIntentionRecord record, ProfileIntentionCityRecord cityRecord,
+	public int calculateIntention(ProfileIntentionRecord record, ProfileIntentionCityRecord cityRecord,
 			ProfileIntentionPositionRecord positionRecord) {
 		if (record == null) {
 			throw new ParamIllegalException(Constant.EXCEPTION_PROFILINTENTION_LOST);

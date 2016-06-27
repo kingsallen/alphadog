@@ -166,6 +166,8 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 				if(!StringUtils.isNullOrEmpty(struct.getName())) {
 					profileDao.updateRealName(record.getProfileId().intValue(), struct.getName());
 				}
+				/* 计算用户基本信息的简历完整度 */
+				completenessImpl.reCalculateUserUser(struct.getProfile_id());
 				return ResponseUtils.success(String.valueOf(i));
 			}
 		} catch (Exception e) {
@@ -209,6 +211,9 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 				if(!StringUtils.isNullOrEmpty(struct.getName())) {
 					profileDao.updateRealName(record.getProfileId().intValue(), struct.getName());
 				}
+				
+				/* 计算用户基本信息的简历完整度 */
+				completenessImpl.reCalculateUserUser(struct.getProfile_id());
 				return ResponseUtils.success(String.valueOf(i));
 			}
 		} catch (Exception e) {
@@ -218,6 +223,58 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 			//do nothing
 		}
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+	}
+
+	@Override
+	public Response postResources(List<Basic> structs) throws TException {
+		Response response = super.postResources(structs);
+		if(structs != null && structs.size() > 0 && response.getStatus() == 0) {
+			for(Basic basic : structs) {
+				if(basic.getProfile_id() > 0) {
+					/* 计算用户基本信息的简历完整度 */
+					completenessImpl.reCalculateUserUser(basic.getProfile_id());
+				}
+			}
+		}
+		return response;
+	}
+
+	@Override
+	public Response putResources(List<Basic> structs) throws TException {
+		Response response = super.putResources(structs);
+		if(structs != null && structs.size() > 0 && response.getStatus() == 0) {
+			for(Basic basic : structs) {
+				if(basic.getProfile_id() > 0) {
+					/* 计算用户基本信息的简历完整度 */
+					completenessImpl.reCalculateUserUser(basic.getProfile_id());
+				}
+			}
+		}
+		return response;
+	}
+
+	@Override
+	public Response delResources(List<Basic> structs) throws TException {
+		Response response = super.delResources(structs);
+		if(structs != null && structs.size() > 0 && response.getStatus() == 0) {
+			for(Basic basic : structs) {
+				if(basic.getProfile_id() > 0) {
+					/* 计算用户基本信息的简历完整度 */
+					completenessImpl.reCalculateUserUser(basic.getProfile_id());
+				}
+			}
+		}
+		return response;
+	}
+
+	@Override
+	public Response delResource(Basic struct) throws TException {
+		Response response = super.delResource(struct);
+		if(response.getStatus() == 0) {
+			/* 计算用户基本信息的简历完整度 */
+			completenessImpl.reCalculateUserUser(struct.getProfile_id());
+		}
+		return response;
 	}
 
 	@Override
@@ -246,6 +303,9 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 	
 	@Autowired
 	private UserDao userDao;
+	
+	@Autowired
+	private ProfileCompletenessImpl completenessImpl;
 	
 	@Override
 	protected void initDao() {
@@ -290,5 +350,13 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 
 	public void setProfileDao(ProfileDao profileDao) {
 		this.profileDao = profileDao;
+	}
+
+	public ProfileCompletenessImpl getCompletenessImpl() {
+		return completenessImpl;
+	}
+
+	public void setCompletenessImpl(ProfileCompletenessImpl completenessImpl) {
+		this.completenessImpl = completenessImpl;
 	}
 }

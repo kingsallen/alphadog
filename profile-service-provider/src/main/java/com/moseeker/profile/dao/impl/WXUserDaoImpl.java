@@ -30,6 +30,7 @@ public class WXUserDaoImpl extends BaseDaoImpl<UserWxUserRecord, UserWxUser> imp
 				) {
 				wxuser = create.selectFrom(UserWxUser.USER_WX_USER).where(UserWxUser.USER_WX_USER.SYSUSER_ID.equal(userId)).limit(1).fetchOne();
 			} catch (SQLException e) {
+				logger.error(e.getMessage(), e);
 				throw e;
 			}
 		}

@@ -54,6 +54,9 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 	
 	@Autowired
 	private CompanyDao companyDao;
+	
+	@Autowired
+	private ProfileCompletenessImpl completenessImpl;
 
 	@Override
 	public Response getResources(CommonQuery query) throws TException {
@@ -225,6 +228,8 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 			i = dao.postResource(record);
 			
 			if ( i > 0 ){
+				/* 计算用户基本信息的简历完整度 */
+				completenessImpl.reCalculateUserUser(struct.getProfile_id());
 				return ResponseUtils.success(String.valueOf(i));
 			}	
 
@@ -290,7 +295,11 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 					}
 				}
 			}
-			return super.putResource(struct);
+			Response response = super.putResource(struct);
+			if(response.getStatus() == 0) {
+				completenessImpl.reCalculateUserUser(struct.getProfile_id());
+			}
+			return response;
 		} catch (Exception e) {
 			logger.error("postResource error", e);
 			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);

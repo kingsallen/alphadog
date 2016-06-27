@@ -129,6 +129,7 @@ public final class Constant {
 	public static final String EXCEPTION_PROFILESKILL_LOST = "计算技能完整度时，技能不能为空";
 	public static final String EXCEPTION_PROFILECREDENTIALS_LOST = "计算证书完整度时，证书不能为空";
 	public static final String EXCEPTION_PROFILEAWARDS_LOST = "计算获得奖项完整度时，获得奖项不能为空";
+	public static final String EXCEPTION_PROFILEWORKS_LOST = "计算作品完整度时，作品不能为空";
 	public static final String EXCEPTION_PROFILINTENTION_LOST = "计算期望职位完整度时，期望职位不能为空";
 	
 	public static final int PROFILER_COMPLETENESS_USERUSER_MAXVALUE = 17; 		//用户信息完成度最大值
@@ -137,4 +138,9 @@ public final class Constant {
 	public static final int PROFILER_COMPLETENESS_EDUCATION_MAXVALUE = 17; 		//教育经历最大值
 	public static final int PROFILER_COMPLETENESS_PROJECTEXP_MAXVALUE = 15; 	//项目经历最大值
 	public static final int PROFILER_COMPLETENESS_LANGUAGE_MAXVALUE = 4; 		//外语技能最大值
+	public static final int PROFILER_COMPLETENESS_SKILL_MAXVALUE = 1; 			//技能最大值
+	public static final int PROFILER_COMPLETENESS_CREDENTIAL_MAXVALUE = 1;		//获得的证书完成度最大值
+	public static final int PROFILER_COMPLETENESS_AWARD_MAXVALUE = 2;			//活得奖项完成度最大值
+	public static final int PROFILER_COMPLETENESS_WORKS_MAXVALUE = 3; 			//作品完成度的最大值
+	public static final int PROFILER_COMPLETENESS_INTENTION_MAXVALUE = 4;		//求职意愿完成度最大值
 }
