@@ -2,7 +2,9 @@ package com.moseeker.profile.service.impl;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.thrift.TException;
 import org.jooq.Record2;
@@ -229,12 +231,16 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 	public Response postResources(List<Basic> structs) throws TException {
 		Response response = super.postResources(structs);
 		if(structs != null && structs.size() > 0 && response.getStatus() == 0) {
+			Set<Integer> profileIds = new HashSet<>();
 			for(Basic basic : structs) {
 				if(basic.getProfile_id() > 0) {
-					/* 计算用户基本信息的简历完整度 */
-					completenessImpl.reCalculateUserUser(basic.getProfile_id());
+					profileIds.add(basic.getProfile_id());
 				}
 			}
+			profileIds.forEach(profileId -> {
+				/* 计算用户基本信息的简历完整度 */
+				completenessImpl.reCalculateUserUser(profileId);
+			});
 		}
 		return response;
 	}
@@ -243,12 +249,16 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 	public Response putResources(List<Basic> structs) throws TException {
 		Response response = super.putResources(structs);
 		if(structs != null && structs.size() > 0 && response.getStatus() == 0) {
+			Set<Integer> profileIds = new HashSet<>();
 			for(Basic basic : structs) {
 				if(basic.getProfile_id() > 0) {
-					/* 计算用户基本信息的简历完整度 */
-					completenessImpl.reCalculateUserUser(basic.getProfile_id());
+					profileIds.add(basic.getProfile_id());
 				}
 			}
+			profileIds.forEach(profileId -> {
+				/* 计算用户基本信息的简历完整度 */
+				completenessImpl.reCalculateUserUser(profileId);
+			});
 		}
 		return response;
 	}
@@ -257,12 +267,16 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 	public Response delResources(List<Basic> structs) throws TException {
 		Response response = super.delResources(structs);
 		if(structs != null && structs.size() > 0 && response.getStatus() == 0) {
+			Set<Integer> profileIds = new HashSet<>();
 			for(Basic basic : structs) {
 				if(basic.getProfile_id() > 0) {
-					/* 计算用户基本信息的简历完整度 */
-					completenessImpl.reCalculateUserUser(basic.getProfile_id());
+					profileIds.add(basic.getProfile_id());
 				}
 			}
+			profileIds.forEach(profileId -> {
+				/* 计算用户基本信息的简历完整度 */
+				completenessImpl.reCalculateUserUser(profileId);
+			});
 		}
 		return response;
 	}

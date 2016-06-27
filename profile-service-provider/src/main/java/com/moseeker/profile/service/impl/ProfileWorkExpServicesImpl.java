@@ -229,7 +229,7 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 			
 			if ( i > 0 ){
 				/* 计算用户基本信息的简历完整度 */
-				completenessImpl.reCalculateUserUser(struct.getProfile_id());
+				completenessImpl.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
 				return ResponseUtils.success(String.valueOf(i));
 			}	
 
@@ -297,7 +297,8 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 			}
 			Response response = super.putResource(struct);
 			if(response.getStatus() == 0) {
-				completenessImpl.reCalculateUserUser(struct.getProfile_id());
+				/* 计算用户基本信息的简历完整度 */
+				completenessImpl.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
 			}
 			return response;
 		} catch (Exception e) {
@@ -306,6 +307,50 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 		} finally {
 			//do nothing
 		}
+	}
+	
+	@Override
+	public Response postResources(List<WorkExp> structs) throws TException {
+		Response response = super.postResources(structs);
+		if(structs != null && structs.size() > 0 && response.getStatus() == 0) {
+			for(WorkExp struct : structs) {
+				/* 计算用户基本信息的简历完整度 */
+				completenessImpl.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
+			}
+		}
+		return response;
+	}
+
+	@Override
+	public Response putResources(List<WorkExp> structs) throws TException {
+		Response response = super.putResources(structs);
+		if(structs != null && structs.size() > 0) {
+			for(WorkExp struct : structs) {
+				/* 计算用户基本信息的简历完整度 */
+				completenessImpl.reCalculateProfileWorkExpUseWorkExpId(struct.getId());
+			}
+		}
+		return response;
+	}
+
+	@Override
+	public Response delResources(List<WorkExp> structs) throws TException {
+		Response response = super.delResources(structs);
+		if(structs != null && structs.size() > 0) {
+			for(WorkExp struct : structs) {
+				/* 计算用户基本信息的简历完整度 */
+				completenessImpl.reCalculateProfileWorkExpUseWorkExpId(struct.getId());
+			}
+		}
+		return response;
+	}
+
+	@Override
+	public Response delResource(WorkExp struct) throws TException {
+		Response response = super.delResource(struct);
+		/* 计算用户基本信息的简历完整度 */
+		completenessImpl.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
+		return response;
 	}
 
 	public WorkExpDao getDao() {

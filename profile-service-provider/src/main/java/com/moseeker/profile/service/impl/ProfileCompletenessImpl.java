@@ -133,6 +133,59 @@ public class ProfileCompletenessImpl {
 			}
 		}
 	}
+	
+	public int reCalculateProfileWorkExp(int profileId) {
+		return reCalculateProfileWorkExp(profileId, 0);
+	}
+	
+	public int reCalculateProfileWorkExpUseWorkExpId(int workExpId) {
+		return reCalculateProfileWorkExp(0, workExpId);
+	}
+	
+	public int reCalculateProfileWorkExp(int profileId, int workExpId) {
+		int result = 0;
+		if(profileId == 0) {
+			QueryUtil qu = new QueryUtil();
+			qu.addEqualFilter("id", String.valueOf(workExpId));
+			try {
+				ProfileWorkexpRecord workExpRecord = workExpDao.getResource(qu);
+				if(workExpRecord.getProfileId() != null) {
+					profileId = workExpRecord.getProfileId().intValue();
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
+		ProfileCompletenessRecord completenessRecord = completenessDao.getCompletenessByProfileId(profileId);
+		if (completenessRecord == null) {
+			reCalculateProfileCompleteness(profileId);
+		} else {
+			
+			QueryUtil qu = new QueryUtil();
+			qu.addEqualFilter("profile_id", String.valueOf(profileId));
+			
+			List<ProfileWorkexpRecord> workExps = null;
+			List<HrCompanyRecord> companies = null;
+			try {
+				workExps = workExpDao.getResources(qu);
+				List<Integer> companyIds = new ArrayList<>();
+				if (workExps != null && workExps.size() > 0) {
+					workExps.forEach(workExp -> {
+						if (workExp.getCompanyId() != null && workExp.getCompanyId().intValue() > 0) {
+							companyIds.add(workExp.getCompanyId().intValue());
+						}
+					});
+				}
+				companies = companyDao.getCompaniesByIds(companyIds);
+				int workExpCompleteness = completenessCalculator.calculateProfileWorkexps(workExps, companies);
+				completenessRecord.setProfileWorkexp(workExpCompleteness);
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+			result = completenessDao.updateCompleteness(completenessRecord);
+		}
+		return result;
+	}
 
 	private int reCalculateProfileCompleteness(int profileId) {
 		int result = 0;
