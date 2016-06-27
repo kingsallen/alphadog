@@ -2,7 +2,7 @@ package com.moseeker.application.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.application.dao.JobApplicationDao;
-import com.moseeker.application.dao.JobResumeBasicDao;
+import com.moseeker.application.dao.JobPositionDao;
 import com.moseeker.application.dao.JobResumeOtherDao;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.redis.RedisClient;
@@ -11,12 +11,10 @@ import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.db.jobdb.tables.records.JobApplicationRecord;
-import com.moseeker.db.jobdb.tables.records.JobResumeBasicRecord;
+import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.db.jobdb.tables.records.JobResumeOtherRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileBasicRecord;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices.Iface;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
-import com.moseeker.thrift.gen.application.struct.JobResumeBasic;
 import com.moseeker.thrift.gen.application.struct.JobResumeOther;
 import com.moseeker.thrift.gen.common.struct.Response;
 import org.apache.thrift.TException;
@@ -43,6 +41,10 @@ public class JobApplicataionServicesImpl implements Iface {
     // 申请次数限制 3次
     private static final int APPLICATION_COUNT_LIMIT = 3;
 
+    // ats投递
+    private static final int IS_MOSEEKER_APPLICATION = 0;
+    private static final int IS_ATS_APPLICATION = 1;
+
     // 申请次数redis key
     private static final String REDIS_KEY_APPLICATION_COUNT_CHECK = "APPLICATION_COUNT_CHECK";
 
@@ -53,9 +55,9 @@ public class JobApplicataionServicesImpl implements Iface {
 
     @Autowired
     private JobResumeOtherDao jobResumeOtherDao;
-    
+
     @Autowired
-    private JobResumeBasicDao jobResumeBasicDao;
+    private JobPositionDao jobPositionDao;
     
     /**
      * 创建申请
@@ -72,8 +74,13 @@ public class JobApplicataionServicesImpl implements Iface {
                 return response;
             }
 
+            // 获取该申请的职位
+            JobPositionRecord jobPositionRecord = jobPositionDao.getPositionById((int)jobApplication.position_id);
+
+            // TODO 职位校验 1.是否存在 2.是否过期
+
             // 初始化参数
-            initJobApplication(jobApplication);
+            initJobApplication(jobApplication, jobPositionRecord);
 
             // 添加申请
             JobApplicationRecord jobApplicationRecord = (JobApplicationRecord)BeanUtils.structToDB(jobApplication,
@@ -272,12 +279,22 @@ public class JobApplicataionServicesImpl implements Iface {
      * <p>
      *
      * @param jobApplication 申请参数
+     * @param jobPositionRecord 职位记录
      */
-    private void initJobApplication(JobApplication jobApplication){
+    private void initJobApplication(JobApplication jobApplication, JobPositionRecord jobPositionRecord){
 
         // 初始化申请状态
         if(jobApplication.getApp_tpl_id() == 0){
             jobApplication.setApp_tpl_id(Constant.RECRUIT_STATUS_APPLY);
+        }
+
+        // ats_status初始化 ats_status初始化:1 是ats职位申请  ats_status初始化:0 仟寻职位申请
+        // TODO 职位表的source_id > 0 只能识别出是ats职位/ 不能识别出该ats是否可用
+        if(jobPositionRecord != null && jobPositionRecord.getSourceId() > 0){
+            jobApplication.setAts_status(IS_ATS_APPLICATION);
+        }else{
+            // 默认仟寻投递
+            jobApplication.setAts_status(IS_MOSEEKER_APPLICATION);
         }
 
     }
@@ -315,5 +332,21 @@ public class JobApplicataionServicesImpl implements Iface {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 清除一个公司一个人申请次数限制的redis key 给sysplat用
+     *
+     * @param userId 用户id
+     * @param companyId 公司id
+     */
+    public Response deleteRedisKeyApplicationCheckCount(long userId, long companyId) throws TException {
+        try {
+            redisClient.del(Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
+                    String.valueOf(userId), String.valueOf(companyId));
+            return new Response(0, "ok");
+        }catch (Exception e){
+            return new Response(1, "failed");
+        }
     }
 }

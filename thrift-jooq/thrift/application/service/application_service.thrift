@@ -17,4 +17,7 @@ service JobApplicationServices {
     // 判断当前用户是否申请了该职位
     common_struct.Response getApplicationByUserIdAndPositionId(1: i64 userId, 2: i64 positionId, 3: i64 companyId);
 
+    // 清除一个公司一个人申请次数限制的redis key 给sysplat专用, 其他系统禁止使用
+    common_struct.Response deleteRedisKeyApplicationCheckCount(1: i64 userId, 2: i64 companyId);
+
 }

@@ -31,44 +31,38 @@ public class JobApplicataionServicesImplTest {
         try {
             applicationService = clientConfig.createProxy(registryConfig);
 
+            // 清除一个公司一个人申请次数限制的redis key 给sysplat用
+            applicationService.deleteRedisKeyApplicationCheckCount(1, 1);
+
             // 添加申请
-            Response getJobApplication = applicationService.postApplication(getJobApplication(), getJobResumeBasic());
+            Response getJobApplication = applicationService.postApplication(getJobApplication());
 
             System.out.println(getJobApplication);
 
-            // 添加申请副本
-            Response getJobResumeOther = applicationService.postJobResumeOther(getJobResumeOther());
-
-            System.out.println(getJobResumeOther);
-
-            // 是否申请过该职位
-            Response getApplicationByUserIdAndPositionId = applicationService.getApplicationByUserIdAndPositionId(2447, 123, 1);
-
-            System.out.println(getApplicationByUserIdAndPositionId);
-
-            Response getApplicationByUserIdAndPositionId1 = applicationService.getApplicationByUserIdAndPositionId(214, 123, 2);
-
-            System.out.println(getApplicationByUserIdAndPositionId1);
+//            // 添加申请副本
+//            Response getJobResumeOther = applicationService.postJobResumeOther(getJobResumeOther());
+//
+//            System.out.println(getJobResumeOther);
+//
+//            // 是否申请过该职位
+//            Response getApplicationByUserIdAndPositionId = applicationService.getApplicationByUserIdAndPositionId(2447, 123, 1);
+//
+//            System.out.println(getApplicationByUserIdAndPositionId);
+//
+//            Response getApplicationByUserIdAndPositionId1 = applicationService.getApplicationByUserIdAndPositionId(214, 123, 2);
+//
+//            System.out.println(getApplicationByUserIdAndPositionId1);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-    public static JobResumeBasic getJobResumeBasic(){
-    	JobResumeBasic resumeBasic = new JobResumeBasic();
-    	resumeBasic.setAppid(1);
-    	resumeBasic.setPosition_id(1);
-        return resumeBasic;
-    }
     
     public static JobApplication getJobApplication(){
         JobApplication application = new JobApplication();
-        application.setWechat_id(1);
-        application.setApp_tpl_id(1);
         application.setApplier_id(1);
         application.setCompany_id(1);
-        application.setPosition_id(1);
+        application.setPosition_id(61140);
         return application;
     }
 
