@@ -1,16 +1,9 @@
 package com.moseeker.position.dao.impl;
 
-import com.moseeker.common.dbutils.DBConnHelper;
-import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
-import com.moseeker.db.analytics.Analytics;
-import com.moseeker.db.analytics.tables.StJobSimilarity;
-import com.moseeker.db.hrdb.tables.HrCompany;
-import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
-import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
-import com.moseeker.db.jobdb.tables.JobPosition;
-import com.moseeker.position.dao.PositionDao;
-import com.moseeker.position.pojo.RecommendedPositonPojo;
-import com.sun.org.apache.regexp.internal.RE;
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Record;
@@ -19,9 +12,14 @@ import org.jooq.types.UByte;
 import org.jooq.types.UInteger;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
+import com.moseeker.common.dbutils.DBConnHelper;
+import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
+import com.moseeker.db.analytics.tables.StJobSimilarity;
+import com.moseeker.db.hrdb.tables.HrCompany;
+import com.moseeker.db.jobdb.tables.JobPosition;
+import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.position.dao.PositionDao;
+import com.moseeker.position.pojo.RecommendedPositonPojo;
 
 /**
  * Created by chendi on 5/25/16.

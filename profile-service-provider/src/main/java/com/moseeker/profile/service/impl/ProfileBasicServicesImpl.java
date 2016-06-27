@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.thrift.TException;
+import org.jooq.Record2;
+import org.jooq.Result;
+import org.jooq.types.UInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,7 @@ import com.moseeker.db.profiledb.tables.records.ProfileBasicRecord;
 import com.moseeker.profile.dao.CityDao;
 import com.moseeker.profile.dao.CountryDao;
 import com.moseeker.profile.dao.ProfileBasicDao;
+import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.profile.dao.UserDao;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -39,6 +43,7 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 			List<ProfileBasicRecord> records = dao.getResources(query);
 			List<Basic> basics = DBsToStructs(records);
 			if(basics != null && basics.size() > 0) {
+				List<Integer> profileIds = new ArrayList<>();
 				List<Integer> cityCodes = new ArrayList<>();
 				List<Integer> contryIds = new ArrayList<>();
 				basics.forEach(basic -> {
@@ -47,7 +52,9 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 						cityCodes.add((int)basic.getCity_code());
 					if(basic.getNationality_code() > 0 && StringUtils.isNullOrEmpty(basic.getNationality_name()))
 						contryIds.add((int)basic.getNationality_code());
+					profileIds.add(basic.getProfile_id());
 				});
+				
 				//城市
 				List<DictCityRecord> cities = cityDao.getCitiesByCodes(cityCodes);
 				if(cities != null && cities.size() > 0) {
@@ -67,6 +74,17 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 						for(DictCountryRecord record : countries) {
 							if(basic.getNationality_code() == record.getId().intValue()) {
 								basic.setNationality_name(record.getName());
+								break;
+							}
+						}
+					}
+				}
+				Result<Record2<UInteger, String>> result = profileDao.findRealName(profileIds);
+				if(result != null && result.size() > 0) {
+					for(Basic basic : basics) {
+						for(Record2<UInteger, String> record2 : result) {
+							if(basic.getProfile_id() == ((UInteger)record2.get(0)).intValue()) {
+								basic.setName((String)record2.get(1));
 								break;
 							}
 						}
@@ -101,6 +119,10 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 					if(country != null) {
 						basic.setNationality_name(country.getName());
 					}
+				}
+				String realName = profileDao.findRealName(basic.getProfile_id());
+				if(StringUtils.isNullOrEmpty(realName)) {
+					basic.setName(realName);
 				}
 				return ResponseUtils.success(basic);
 			}
@@ -141,6 +163,9 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 			ProfileBasicRecord record = structToDB(struct);
 			int i = dao.postResource(record);
 			if(i > 0) {
+				if(!StringUtils.isNullOrEmpty(struct.getName())) {
+					profileDao.updateRealName(record.getProfileId().intValue(), struct.getName());
+				}
 				return ResponseUtils.success(String.valueOf(i));
 			}
 		} catch (Exception e) {
@@ -181,6 +206,9 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 			ProfileBasicRecord record = structToDB(struct);
 			int i = dao.putResource(record);
 			if(i > 0) {
+				if(!StringUtils.isNullOrEmpty(struct.getName())) {
+					profileDao.updateRealName(record.getProfileId().intValue(), struct.getName());
+				}
 				return ResponseUtils.success(String.valueOf(i));
 			}
 		} catch (Exception e) {
@@ -206,6 +234,9 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 	
 	@Autowired
 	private ProfileBasicDao dao;
+	
+	@Autowired
+	private ProfileDao profileDao;
 	
 	@Autowired
 	private CityDao cityDao;
@@ -251,5 +282,13 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 
 	public void setUserDao(UserDao userDao) {
 		this.userDao = userDao;
+	}
+
+	public ProfileDao getProfileDao() {
+		return profileDao;
+	}
+
+	public void setProfileDao(ProfileDao profileDao) {
+		this.profileDao = profileDao;
 	}
 }

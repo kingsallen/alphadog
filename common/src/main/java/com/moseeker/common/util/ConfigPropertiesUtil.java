@@ -1,9 +1,7 @@
 package com.moseeker.common.util;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.Properties;
 
 /**
@@ -33,11 +31,6 @@ public class ConfigPropertiesUtil {
         try {
             //需要load common项目本地配置文件
             //load service provider的配置文件
-            File directory = new File("");//参数为空
-            String courseFile = directory.getCanonicalPath();
-            System.out.println(courseFile);
-            URL xmlpath = this.getClass().getClassLoader().getResource(".");
-            System.out.println(xmlpath);
             inputStreamReader = new InputStreamReader(ConfigPropertiesUtil.class.getClassLoader().getResourceAsStream("common.properties"), "UTF-8");
             properties.load(inputStreamReader);
         } catch (Exception e) {
@@ -66,7 +59,7 @@ public class ConfigPropertiesUtil {
             properties.load(inputStreamReader);
         } catch (Exception e) {
             //todo 错误信息需要记录到日志中
-            throw new Exception("can not find default properties");
+            throw new Exception("can not find properties");
         } finally {
             if (inputStreamReader != null) {
                 try {

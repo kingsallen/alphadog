@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.servicemanager.common.UrlUtil;
@@ -15,34 +16,31 @@ import com.moseeker.thrift.gen.common.struct.Response;
 
 public class CrawlerUtils {
 
-	public static String LINEKEDIN = "http://crawl.bj.moseeker.com:9999/resume/linkedin";
-	public static String LIEPIN = "http://crawl.bj.moseeker.com:9999/resume/liepin";
-	public static String JOB51 = "http://crawl.bj.moseeker.com:9999/resume/51job";
-	public static String ZHILIAN = "http://crawl.bj.moseeker.com:9999/resume/zhaopin";
-
 	public Response fetchFirstResume(String userName, String password, String token, int type, int lang, int source,
-			int completeness, int appid, int user_id) throws ConnectException {
+			int completeness, int appid, int user_id) throws Exception {
 		String result = null;
 		Map<String, String> param = new HashMap<>();
+		ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
+		propertiesUtils.loadResource("setting.properties");
 		switch (type) {
 		case 1:
 			param.put("username", userName);
 			param.put("password", password);
-			result = fetchResume(JSON.toJSONString(param), JOB51);
+			result = fetchResume(JSON.toJSONString(param), propertiesUtils.get("CRAWLER_JOB51", String.class));
 			break;
 		case 2:
 			param.put("username", userName);
 			param.put("password", password);
-			result = fetchResume(JSON.toJSONString(param), LIEPIN);
+			result = fetchResume(JSON.toJSONString(param), propertiesUtils.get("CRAWLER_LIEPIN", String.class));
 			break;
 		case 3:
 			param.put("username", userName);
 			param.put("password", password);
-			result = fetchResume(JSON.toJSONString(param), ZHILIAN);
+			result = fetchResume(JSON.toJSONString(param), propertiesUtils.get("CRAWLER_ZHILIAN", String.class));
 			break;
 		case 4:
 			param.put("token", token);
-			result = fetchResume(JSON.toJSONString(param), LINEKEDIN);
+			result = fetchResume(JSON.toJSONString(param), propertiesUtils.get("CRAWLER_LINEKEDIN", String.class));
 			break;
 		}
 		// result = "{\"status\": 0, \"resumes\": [{\"skills\": [],
@@ -139,8 +137,14 @@ public class CrawlerUtils {
 		} else if (messagBean.get("status") != null && (Integer) messagBean.get("status") == 2) {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_IMPORT_FAILED);
 		} else if (messagBean.get("status") != null
-				&& ((Integer) messagBean.get("status") == 3 || (Integer) messagBean.get("status") == 4)) {
+				&& (Integer) messagBean.get("status") == 3 ) {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_LOGIN_FAILED);
+		} else if (messagBean.get("status") != null
+				&& (Integer) messagBean.get("status") == 4) {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_LOGIN2_FAILED);
+		} else if (messagBean.get("status") != null
+				&& (Integer) messagBean.get("status") == 5) {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_SERVICE_PARAM_ERROR);
 		}
 		return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_PARAM_ILLEGAL);
 	}
