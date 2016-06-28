@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileAwardsRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileBasicRecord;
@@ -109,6 +110,108 @@ public class ProfileCompletenessImpl {
 	
 	@Autowired
 	private CompletenessDao completenessDao;
+	
+	public int getCompleteness(int userId, String uuid, int profileId) {
+		int totalComplementness = 0;
+		ProfileProfileRecord profileRecord = profileDao.getProfileByIdOrUserIdOrUUID(userId, profileId, uuid);
+		if (profileRecord == null) {
+			return 0;
+		}
+		if(profileRecord.getCompleteness().intValue() != 0 && profileRecord.getCompleteness().intValue() != 10) {
+			totalComplementness = profileRecord.getCompleteness().intValue();
+		} else {
+			QueryUtil qu = new QueryUtil();
+			qu.addEqualFilter("profile_id", String.valueOf(profileRecord.getId().intValue()));
+			ProfileCompletenessRecord completenessRecord;
+			try {
+				completenessRecord = completenessDao.getResource(qu);
+				if (completenessRecord != null) {
+					totalComplementness = completenessRecord.getUserUser()
+							+ completenessRecord.getProfileBasic() + completenessRecord.getProfileWorkexp()
+							+ completenessRecord.getProfileEducation() + completenessRecord.getProfileProjectexp()
+							+ completenessRecord.getProfileLanguage() + completenessRecord.getProfileSkill()
+							+ completenessRecord.getProfileCredentials() + completenessRecord.getProfileAwards()
+							+ completenessRecord.getProfileWorks() + completenessRecord.getProfileIntention();
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
+		return totalComplementness;
+	}
+	
+	public int reCalculateProfileBasic(int profileId) {
+		int result = 0;
+		ProfileCompletenessRecord completenessRecord = completenessDao.getCompletenessByProfileId(profileId);
+		if (completenessRecord == null) {
+			reCalculateProfileCompleteness(profileId);
+		} else {
+			
+			QueryUtil qu = new QueryUtil();
+			qu.addEqualFilter("profile_id", String.valueOf(profileId));
+			try {
+				ProfileBasicRecord record = basicDao.getResource(qu);
+				
+				int basicCompleteness = completenessCalculator.calculateProfileBasic(record);
+				if(basicCompleteness != completenessRecord.getProfileBasic()) {
+					completenessRecord.setProfileBasic(basicCompleteness);
+					result = completenessDao.updateCompleteness(completenessRecord);
+				} else {
+					result = 1;
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
+		return result;
+	}
+	
+	public int reCalculateUserUserByUserIdOrMobile(int userId, String mobile) {
+		int result = 0;
+		ProfileProfileRecord profileRecord = null;
+		if(userId == 0 && StringUtils.isNotNullOrEmpty(mobile)) {
+			QueryUtil qu = new QueryUtil();
+			qu.addEqualFilter("username", mobile);
+			try {
+				UserUserRecord userRecord = userDao.getResource(qu);
+				if(userRecord != null) {
+					profileRecord = profileDao.getProfileByIdOrUserIdOrUUID(userRecord.getId().intValue(), 0, null);
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}		
+		} else {
+			profileDao.getProfileByIdOrUserIdOrUUID(userId, 0, null);
+		}
+		if(profileRecord != null) {
+			ProfileCompletenessRecord completenessRecord = completenessDao.getCompletenessByProfileId(profileRecord.getId().intValue());
+			if (completenessRecord == null) {
+				reCalculateProfileCompleteness(profileRecord.getId().intValue());
+			} else {
+				UserUserRecord userRecord = userDao.getUserById(profileRecord.getUserId().intValue());
+				UserWxUserRecord wxuserRecord = null;
+				UserSettingsRecord settingRecord = null;
+				if (userRecord != null) {
+					settingRecord = settingDao.getUserSettingsById(profileRecord.getUserId().intValue());
+					try {
+						wxuserRecord = wxuserDao.getWXUserByUserId(userRecord.getId().intValue());
+					} catch (SQLException e) {
+						logger.error(e.getMessage(), e);
+					}
+					int useruserCompleteness = completenessCalculator.calculateUserUser(userRecord, settingRecord,
+							wxuserRecord);
+
+					if (completenessRecord.getUserUser().intValue() != useruserCompleteness) {
+						completenessRecord.setUserUser(useruserCompleteness);
+						result = completenessDao.updateCompleteness(completenessRecord);
+					} else {
+						result = 1;
+					}
+				}
+			}
+		}
+		return result;
+	}
 
 	public int reCalculateUserUser(int profileId) {
 		int result = 0;

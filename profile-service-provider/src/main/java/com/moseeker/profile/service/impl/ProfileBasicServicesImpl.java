@@ -286,11 +286,11 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 		Response response = super.delResource(struct);
 		if(response.getStatus() == 0) {
 			/* 计算用户基本信息的简历完整度 */
-			completenessImpl.reCalculateUserUser(struct.getProfile_id());
+			completenessImpl.reCalculateProfileBasic(struct.getProfile_id());
 		}
 		return response;
 	}
-
+	
 	@Override
 	protected Basic DBToStruct(ProfileBasicRecord r) {
 		return (Basic)BeanUtils.DBToStruct(Basic.class, r);
@@ -372,5 +372,11 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 
 	public void setCompletenessImpl(ProfileCompletenessImpl completenessImpl) {
 		this.completenessImpl = completenessImpl;
+	}
+
+	@Override
+	public Response reCalculateBasicCompleteness(int userId) throws TException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

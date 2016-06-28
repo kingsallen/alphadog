@@ -15,12 +15,13 @@ import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.ConstantErrorCodeMessage;
-import com.moseeker.db.profiledb.tables.records.ProfileCompletenessRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
+import com.moseeker.db.userdb.tables.records.UserSettingsRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.profile.dao.CompletenessDao;
 import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.profile.dao.UserDao;
+import com.moseeker.profile.dao.UserSettingsDao;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.ProfileServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.Profile;
@@ -38,6 +39,12 @@ public class ProfileServicesImpl extends JOOQBaseServiceImpl<Profile, ProfilePro
 
 	@Autowired
 	protected CompletenessDao completenessDao;
+	
+	@Autowired
+	private UserSettingsDao settingDao;
+	
+	@Autowired
+	private ProfileCompletenessImpl completenessImpl;
 
 	@Override
 	protected void initDao() {
@@ -71,32 +78,34 @@ public class ProfileServicesImpl extends JOOQBaseServiceImpl<Profile, ProfilePro
 
 	@Override
 	public Response getCompleteness(int userId, String uuid, int profileId) throws TException {
-		int totalComplementness = 0;
-		ProfileProfileRecord profileRecord = dao.getProfileByIdOrUserIdOrUUID(userId, profileId, uuid);
-		if (profileRecord == null) {
-			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ILLEGAL);
-		}
-		if(profileRecord.getCompleteness().intValue() != 0 && profileRecord.getCompleteness().intValue() != 10) {
-			totalComplementness = profileRecord.getCompleteness().intValue();
-		} else {
-			QueryUtil qu = new QueryUtil();
-			qu.addEqualFilter("profile_id", String.valueOf(profileRecord.getId().intValue()));
-			ProfileCompletenessRecord completenessRecord;
-			try {
-				completenessRecord = completenessDao.getResource(qu);
-				if (completenessRecord != null) {
-					totalComplementness = completenessRecord.getUserUser() + completenessRecord.getUserSettings()
-							+ completenessRecord.getProfileBasic() + completenessRecord.getProfileWorkexp()
-							+ completenessRecord.getProfileEducation() + completenessRecord.getProfileProjectexp()
-							+ completenessRecord.getProfileLanguage() + completenessRecord.getProfileSkill()
-							+ completenessRecord.getProfileCredentials() + completenessRecord.getProfileAwards()
-							+ completenessRecord.getProfileWorks() + completenessRecord.getProfileIntention();
-				}
-			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
-			}
-		}
+		int totalComplementness = completenessImpl.getCompleteness(userId, uuid, profileId);
 		return ResponseUtils.success(totalComplementness);
+	}
+	
+	@Override
+	public Response reCalculateUserCompleteness(int userId, String mobile) throws TException {
+		completenessImpl.reCalculateUserUserByUserIdOrMobile(userId, mobile);
+		int totalComplementness = completenessImpl.getCompleteness(userId, null, 0);
+		return ResponseUtils.success(totalComplementness);
+	}
+	
+	@Override
+	public Response reCalculateUserCompletenessBySettingId(int id) throws TException {
+		QueryUtil qu = new QueryUtil();
+		qu.addEqualFilter("id", String.valueOf(id));
+		try {
+			UserSettingsRecord record = settingDao.getResource(qu);
+			if(record != null) {
+				completenessImpl.reCalculateUserUserByUserIdOrMobile(record.getUserId().intValue(), null);
+				int totalComplementness = completenessImpl.getCompleteness(record.getUserId().intValue(), null, 0);
+				return ResponseUtils.success(totalComplementness);
+			} else {
+				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+		}
 	}
 
 	@Override
