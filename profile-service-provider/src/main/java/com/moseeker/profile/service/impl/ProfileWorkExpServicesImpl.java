@@ -324,7 +324,7 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 	@Override
 	public Response putResources(List<WorkExp> structs) throws TException {
 		Response response = super.putResources(structs);
-		if(structs != null && structs.size() > 0) {
+		if(response.getStatus() == 0 && structs != null && structs.size() > 0) {
 			for(WorkExp struct : structs) {
 				/* 计算用户基本信息的简历完整度 */
 				completenessImpl.reCalculateProfileWorkExpUseWorkExpId(struct.getId());
@@ -336,7 +336,7 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 	@Override
 	public Response delResources(List<WorkExp> structs) throws TException {
 		Response response = super.delResources(structs);
-		if(structs != null && structs.size() > 0) {
+		if(response.getStatus() == 0 && structs != null && structs.size() > 0) {
 			for(WorkExp struct : structs) {
 				/* 计算用户基本信息的简历完整度 */
 				completenessImpl.reCalculateProfileWorkExpUseWorkExpId(struct.getId());
@@ -348,8 +348,9 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 	@Override
 	public Response delResource(WorkExp struct) throws TException {
 		Response response = super.delResource(struct);
-		/* 计算用户基本信息的简历完整度 */
-		completenessImpl.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
+		if(response.getStatus() == 0) 
+			/* 计算用户基本信息的简历完整度 */
+			completenessImpl.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
 		return response;
 	}
 

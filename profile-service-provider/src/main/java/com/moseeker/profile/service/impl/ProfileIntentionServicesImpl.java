@@ -3,10 +3,12 @@ package com.moseeker.profile.service.impl;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.thrift.TException;
 import org.jooq.types.UInteger;
@@ -67,6 +69,9 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 
 	@Autowired
 	private IntentionPositionDao intentionPositionDao;
+	
+	@Autowired
+	private ProfileCompletenessImpl completenessImpl;
 
 	@Override
 	public Response getResources(CommonQuery query) throws TException {
@@ -199,6 +204,9 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 				updateIntentionCity(struct, intentionId);
 				updateIntentionIndustry(struct, intentionId);
 				updateIntentionPosition(struct, intentionId);
+				
+				/* 计算profile完整度 */
+				completenessImpl.reCalculateProfileIntention(struct.getProfile_id(), intentionId);
 				return ResponseUtils.success(String.valueOf(intentionId));
 			}
 		} catch (Exception e) {
@@ -220,6 +228,9 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 				updateIntentionCity(struct, record.getId().intValue());
 				updateIntentionIndustry(struct, record.getId().intValue());
 				updateIntentionPosition(struct, record.getId().intValue());
+				
+				/* 计算profile完整度 */
+				completenessImpl.reCalculateProfileIntention(struct.getProfile_id(), intentionId);
 				return ResponseUtils.success(String.valueOf(intentionId));
 			}
 		} catch (Exception e) {
@@ -247,6 +258,9 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 				ProfileIntentionIndustryRecord intentionIndustryRecord = new ProfileIntentionIndustryRecord();
 				intentionIndustryRecord.setProfileIntentionId(UInteger.valueOf(struct.getId()));
 				intentionIndustryDao.delResource(intentionIndustryRecord);
+				
+				/* 计算profile完整度 */
+				completenessImpl.reCalculateProfileIntention(struct.getProfile_id(), intentionId);
 				return ResponseUtils.success(String.valueOf(intentionId));
 			}
 		} catch (Exception e) {
@@ -261,6 +275,46 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 	@Override
 	public Response getResource(CommonQuery query) throws TException {
 		return super.getResource(query);
+	}
+
+	@Override
+	public Response postResources(List<Intention> structs) throws TException {
+		Response response = super.postResources(structs);
+		if(response.getStatus() == 0 && structs != null && structs.size() > 0) {
+			 Set<Integer> profileIds = new HashSet<>();
+			 structs.forEach(struct -> {
+				 profileIds.add(struct.getProfile_id());
+			 });
+			 profileIds.forEach(profileId -> {
+				 /* 计算profile完整度 */
+				 completenessImpl.reCalculateProfileIntention(profileId, 0);
+			 });
+		}
+		return response;
+	}
+
+	@Override
+	public Response putResources(List<Intention> structs) throws TException {
+		Response response = super.putResources(structs);
+		if(response.getStatus() == 0 && structs != null && structs.size() > 0) {
+			 structs.forEach(struct -> {
+				 /* 计算profile完整度 */
+				 completenessImpl.reCalculateProfileIntention(struct.getProfile_id(), struct.getId());
+			 });
+		}
+		return response;
+	}
+
+	@Override
+	public Response delResources(List<Intention> structs) throws TException {
+		Response response = super.delResources(structs);
+		if(response.getStatus() == 0 && structs != null && structs.size() > 0) {
+			 structs.forEach(struct -> {
+				 /* 计算profile完整度 */
+				 completenessImpl.reCalculateProfileIntention(struct.getProfile_id(), struct.getId());
+			 });
+		}
+		return response;
 	}
 
 	private void updateIntentionPosition(Intention struct, int intentionId) throws Exception {

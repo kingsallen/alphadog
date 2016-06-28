@@ -3,8 +3,10 @@ package com.moseeker.profile.service.impl;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -42,6 +44,9 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 	
 	@Autowired
 	private MajorDao majorDao;
+	
+	@Autowired
+	private ProfileCompletenessImpl completenessImpl;
 
 	public EducationDao getDao() {
 		return dao;
@@ -174,6 +179,8 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 			ProfileEducationRecord record = structToDB(education);
 			int id = dao.postResource(record);
 			if(id > 0) {
+				/* 计算profile完整度 */
+				completenessImpl.reCalculateProfileEducationByEducationId(record.getId().intValue());
 				return 	ResponseUtils.success(String.valueOf(id));
 			}
 		} catch (Exception e) {
@@ -204,7 +211,64 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 				return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_MAJOR_NOTEXIST);
 			}
 		}
-		return super.putResource(education);
+		Response response = super.putResource(education);
+		if(response.getStatus() == 0) {
+			/* 计算profile完整度 */
+			completenessImpl.reCalculateProfileEducationByEducationId(education.getId());
+		}
+		return response;
+	}
+	
+	@Override
+	public Response postResources(List<Education> structs) throws TException {
+		Response response = super.postResources(structs);
+		if(response.getStatus() == 0) {
+			if(structs != null && structs.size() > 0) {
+				Set<Integer> profileIds = new HashSet<>();
+				structs.forEach(struct -> {
+					if(struct.getProfile_id() > 0) {
+						profileIds.add(struct.getProfile_id());
+					}
+				});
+				profileIds.forEach(profileId -> {
+					/* 计算profile完整度 */
+					completenessImpl.reCalculateProfileEducationByProfileId(profileId);
+				});
+			}
+		}
+		return response;
+	}
+
+	@Override
+	public Response putResources(List<Education> structs) throws TException {
+		Response response = super.putResources(structs);
+		if(response.getStatus() == 0 && structs != null && structs.size() > 0) {
+			structs.forEach(struct -> {
+				/* 计算profile完整度 */
+				completenessImpl.reCalculateProfileEducationByEducationId(struct.getId());
+			});
+		}
+		return response;
+	}
+
+	@Override
+	public Response delResources(List<Education> structs) throws TException {
+		Response response = super.delResources(structs);
+		if(response.getStatus() == 0 && structs != null && structs.size() > 0) {
+			structs.forEach(struct -> {
+				/* 计算profile完整度 */
+				completenessImpl.reCalculateProfileEducationByEducationId(struct.getId());
+			});
+		}
+		return response;
+	}
+
+	@Override
+	public Response delResource(Education struct) throws TException {
+		Response response = super.delResource(struct);
+		if(response.getStatus() == 0)
+			completenessImpl.reCalculateProfileEducationByEducationId(struct.getId());
+		return response;
 	}
 
 	@Override

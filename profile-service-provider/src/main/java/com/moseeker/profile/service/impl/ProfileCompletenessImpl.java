@@ -16,6 +16,7 @@ import com.moseeker.db.profiledb.tables.records.ProfileAwardsRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileBasicRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileCompletenessRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileCredentialsRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileEducationRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileIntentionCityRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileIntentionPositionRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileIntentionRecord;
@@ -32,6 +33,7 @@ import com.moseeker.profile.dao.AwardsDao;
 import com.moseeker.profile.dao.CompanyDao;
 import com.moseeker.profile.dao.CompletenessDao;
 import com.moseeker.profile.dao.CredentialsDao;
+import com.moseeker.profile.dao.EducationDao;
 import com.moseeker.profile.dao.IntentionCityDao;
 import com.moseeker.profile.dao.IntentionDao;
 import com.moseeker.profile.dao.IntentionPositionDao;
@@ -98,14 +100,18 @@ public class ProfileCompletenessImpl {
 
 	@Autowired
 	private IntentionCityDao intentionCityDao;
+	
+	@Autowired
+	private EducationDao educationDao;
 
 	@Autowired
 	private IntentionPositionDao intentionPositionDao;
-
+	
 	@Autowired
 	private CompletenessDao completenessDao;
 
-	public void reCalculateUserUser(int profileId) {
+	public int reCalculateUserUser(int profileId) {
+		int result = 0;
 		ProfileCompletenessRecord completenessRecord = completenessDao.getCompletenessByProfileId(profileId);
 		if (completenessRecord == null) {
 			reCalculateProfileCompleteness(profileId);
@@ -127,11 +133,14 @@ public class ProfileCompletenessImpl {
 
 					if (completenessRecord.getUserUser().intValue() != useruserCompleteness) {
 						completenessRecord.setUserUser(useruserCompleteness);
-						completenessDao.updateCompleteness(completenessRecord);
+						result = completenessDao.updateCompleteness(completenessRecord);
+					} else {
+						result = 1;
 					}
 				}
 			}
 		}
+		return result;
 	}
 	
 	public int reCalculateProfileWorkExp(int profileId) {
@@ -178,11 +187,334 @@ public class ProfileCompletenessImpl {
 				}
 				companies = companyDao.getCompaniesByIds(companyIds);
 				int workExpCompleteness = completenessCalculator.calculateProfileWorkexps(workExps, companies);
-				completenessRecord.setProfileWorkexp(workExpCompleteness);
+				if(workExpCompleteness != completenessRecord.getProfileWorkexp()) {
+					completenessRecord.setProfileWorkexp(workExpCompleteness);
+					result = completenessDao.updateCompleteness(completenessRecord);
+				} else {
+					result = 1;
+				}
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
-			result = completenessDao.updateCompleteness(completenessRecord);
+		}
+		return result;
+	}
+	
+	public void reCalculateProfileEducationByEducationId(int educationId) {
+		reCalculateProfileEducation(0, educationId);
+	}
+	
+	public void reCalculateProfileEducationByProfileId(int profileId) {
+		reCalculateProfileEducation(profileId, 0);
+	}
+	
+	public int reCalculateProfileEducation(int profileId, int educationId) {
+		int result = 0;
+		if(profileId == 0) {
+			QueryUtil qu = new QueryUtil();
+			qu.addEqualFilter("id", String.valueOf(educationId));
+			try {
+				ProfileEducationRecord educationRecord = educationDao.getResource(qu);
+				if(educationRecord.getProfileId() != null) {
+					profileId = educationRecord.getProfileId().intValue();
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
+		
+		ProfileCompletenessRecord completenessRecord = completenessDao.getCompletenessByProfileId(profileId);
+		if (completenessRecord == null) {
+			reCalculateProfileCompleteness(profileId);
+		} else {
+			
+			QueryUtil qu = new QueryUtil();
+			qu.addEqualFilter("profile_id", String.valueOf(profileId));
+			try {
+				List<ProfileEducationRecord> educationRecords = educationDao.getResources(qu);
+				int educationCompleteness = completenessCalculator.calculateProfileEducations(educationRecords);
+				if(educationCompleteness != completenessRecord.getProfileEducation().intValue()) {
+					completenessRecord.setProfileEducation(educationCompleteness);
+					result = completenessDao.updateCompleteness(completenessRecord);
+				} else {
+					result = 1;
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
+		return result;
+	}
+	
+	public int reCalculateProfileProjectExpByProjectExpId(Integer projectExpId) {
+		return reCalculateProfileProjectExp(0, projectExpId);
+	}
+	
+	public int reCalculateProfileProjectExpByProfileId(Integer profileId) {
+		return reCalculateProfileProjectExp(profileId, 0);
+	}
+	
+	public int reCalculateProfileProjectExp(int profileId, int projectExpId) {
+		int result = 0;
+		if(profileId == 0) {
+			QueryUtil qu = new QueryUtil();
+			qu.addEqualFilter("id", String.valueOf(projectExpId));
+			try {
+				ProfileProjectexpRecord projectExpRecord = projectExpDao.getResource(qu);
+				if(projectExpRecord.getProfileId() != null) {
+					profileId = projectExpRecord.getProfileId().intValue();
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
+		
+		ProfileCompletenessRecord completenessRecord = completenessDao.getCompletenessByProfileId(profileId);
+		if (completenessRecord == null) {
+			reCalculateProfileCompleteness(profileId);
+		} else {
+			
+			QueryUtil qu = new QueryUtil();
+			qu.addEqualFilter("profile_id", String.valueOf(profileId));
+			try {
+				List<ProfileProjectexpRecord> ProjectExpRecords = projectExpDao.getResources(qu);
+				int projectExpCompleteness = completenessCalculator.calculateProjectexps(ProjectExpRecords);
+				if(projectExpCompleteness != completenessRecord.getProfileProjectexp().intValue()) {
+					completenessRecord.setProfileProjectexp(projectExpCompleteness);
+					result = completenessDao.updateCompleteness(completenessRecord);
+				} else {
+					result = 1;
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
+		return result;
+	}
+	
+	public int recalculateprofileLanguage(Integer profileId, int languageId) {
+		int result = 0;
+		if(profileId == 0) {
+			QueryUtil qu = new QueryUtil();
+			qu.addEqualFilter("id", String.valueOf(languageId));
+			try {
+				ProfileLanguageRecord languageRecord = languageDao.getResource(qu);
+				if(languageRecord.getProfileId() != null) {
+					profileId = languageRecord.getProfileId().intValue();
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
+		ProfileCompletenessRecord completenessRecord = completenessDao.getCompletenessByProfileId(profileId);
+		if (completenessRecord == null) {
+			reCalculateProfileCompleteness(profileId);
+		} else {
+			
+			QueryUtil qu = new QueryUtil();
+			qu.addEqualFilter("profile_id", String.valueOf(profileId));
+			try {
+				List<ProfileLanguageRecord> languageRecords = languageDao.getResources(qu);
+				int languageCompleteness = completenessCalculator.calculateLanguages(languageRecords);
+				if(languageCompleteness != completenessRecord.getProfileLanguage().intValue()) {
+					completenessRecord.setProfileLanguage(languageCompleteness);
+					result = completenessDao.updateCompleteness(completenessRecord);
+				} else {
+					result = 1;
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
+		return result;
+	}
+	
+	public int reCalculateProfileSkill(Integer profileId, int skillId) {
+		int result = 0;
+		if(profileId == 0) {
+			QueryUtil qu = new QueryUtil();
+			qu.addEqualFilter("id", String.valueOf(skillId));
+			try {
+				ProfileSkillRecord skillRecord = skillDao.getResource(qu);
+				if(skillRecord.getProfileId() != null) {
+					profileId = skillRecord.getProfileId().intValue();
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
+		ProfileCompletenessRecord completenessRecord = completenessDao.getCompletenessByProfileId(profileId);
+		if (completenessRecord == null) {
+			reCalculateProfileCompleteness(profileId);
+		} else {
+			QueryUtil qu = new QueryUtil();
+			qu.addEqualFilter("profile_id", String.valueOf(profileId));
+			try {
+				List<ProfileSkillRecord> skillRecords = skillDao.getResources(qu);
+				int skillCompleteness = completenessCalculator.calculateSkills(skillRecords);
+				if(skillCompleteness != completenessRecord.getProfileSkill().intValue()) {
+					completenessRecord.setProfileSkill(skillCompleteness);
+					result = completenessDao.updateCompleteness(completenessRecord);
+				} else {
+					result = 1;
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
+		return result;
+	}
+	
+	public int recalculateProfileCredential(int profileId, int credentialId) {
+		int result = 0;
+		if(profileId == 0) {
+			QueryUtil qu = new QueryUtil();
+			qu.addEqualFilter("id", String.valueOf(credentialId));
+			try {
+				ProfileCredentialsRecord credentialRecord = credentialsDao.getResource(qu);
+				if(credentialRecord.getProfileId() != null) {
+					profileId = credentialRecord.getProfileId().intValue();
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
+		ProfileCompletenessRecord completenessRecord = completenessDao.getCompletenessByProfileId(profileId);
+		if (completenessRecord == null) {
+			reCalculateProfileCompleteness(profileId);
+		} else {
+			QueryUtil qu = new QueryUtil();
+			qu.addEqualFilter("profile_id", String.valueOf(profileId));
+			try {
+				List<ProfileCredentialsRecord> credentialRecords = credentialsDao.getResources(qu);
+				int credentialCompleteness = completenessCalculator.calculateCredentials(credentialRecords);
+				if(credentialCompleteness != completenessRecord.getProfileCredentials().intValue()) {
+					completenessRecord.setProfileCredentials(credentialCompleteness);
+					result = completenessDao.updateCompleteness(completenessRecord);
+				} else {
+					result = 1;
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
+		return result;
+	}
+	
+	public int reCalculateProfileAward(Integer profileId, int awardId) {
+		int result = 0;
+		if(profileId == 0) {
+			QueryUtil qu = new QueryUtil();
+			qu.addEqualFilter("id", String.valueOf(awardId));
+			try {
+				ProfileAwardsRecord awardRecord = awardsDao.getResource(qu);
+				if(awardRecord.getProfileId() != null) {
+					profileId = awardRecord.getProfileId().intValue();
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
+		ProfileCompletenessRecord completenessRecord = completenessDao.getCompletenessByProfileId(profileId);
+		if (completenessRecord == null) {
+			reCalculateProfileCompleteness(profileId);
+		} else {
+			QueryUtil qu = new QueryUtil();
+			qu.addEqualFilter("profile_id", String.valueOf(profileId));
+			try {
+				List<ProfileAwardsRecord> awardRecords = awardsDao.getResources(qu);
+				int awardCompleteness = completenessCalculator.calculateAwards(awardRecords);
+				if(awardCompleteness != completenessRecord.getProfileAwards().intValue()) {
+					completenessRecord.setProfileAwards(awardCompleteness);
+					result = completenessDao.updateCompleteness(completenessRecord);
+				} else {
+					result = 1;
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
+		return result;
+	}
+	
+	public int reCalculateProfileWorks(Integer profileId, int worksId) {
+		int result = 0;
+		if(profileId == 0) {
+			QueryUtil qu = new QueryUtil();
+			qu.addEqualFilter("id", String.valueOf(worksId));
+			try {
+				ProfileWorksRecord worksRecord = worksDao.getResource(qu);
+				if(worksRecord.getProfileId() != null) {
+					profileId = worksRecord.getProfileId().intValue();
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
+		ProfileCompletenessRecord completenessRecord = completenessDao.getCompletenessByProfileId(profileId);
+		if (completenessRecord == null) {
+			reCalculateProfileCompleteness(profileId);
+		} else {
+			QueryUtil qu = new QueryUtil();
+			qu.addEqualFilter("profile_id", String.valueOf(profileId));
+			try {
+				List<ProfileWorksRecord> worksRecords = worksDao.getResources(qu);
+				int worksCompleteness = completenessCalculator.calculateWorks(worksRecords);
+				if(worksCompleteness != completenessRecord.getProfileWorks().intValue()) {
+					completenessRecord.setProfileWorks(worksCompleteness);
+					result = completenessDao.updateCompleteness(completenessRecord);
+				} else {
+					result = 1;
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
+		return result;
+	}
+	
+	public int reCalculateProfileIntention(int profileId, int intentionId) {
+		int result = 0;
+		if(profileId == 0) {
+			QueryUtil qu = new QueryUtil();
+			qu.addEqualFilter("id", String.valueOf(intentionId));
+			try {
+				ProfileIntentionRecord intentionRecord = intentionDao.getResource(qu);
+				if(intentionRecord.getProfileId() != null) {
+					profileId = intentionRecord.getProfileId().intValue();
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
+		ProfileCompletenessRecord completenessRecord = completenessDao.getCompletenessByProfileId(profileId);
+		if (completenessRecord == null) {
+			reCalculateProfileCompleteness(profileId);
+		} else {
+			QueryUtil qu = new QueryUtil();
+			qu.addEqualFilter("profile_id", String.valueOf(profileId));
+			try {
+				List<ProfileIntentionRecord> intentionRecords = intentionDao.getResources(qu);
+				List<ProfileIntentionCityRecord> cityRecords = null;
+				List<ProfileIntentionPositionRecord> positionRecords = null;
+				if (intentionRecords != null && intentionRecords.size() > 0) {
+					List<Integer> intentionIds = new ArrayList<>();
+					intentionRecords.forEach(intentionRecord -> {
+						intentionIds.add(intentionRecord.getId().intValue());
+					});
+					cityRecords = intentionCityDao.getIntentionCities(intentionIds);
+					positionRecords = intentionPositionDao.getIntentionPositions(intentionIds);
+				}
+				int intentionCompleteness = completenessCalculator.calculateIntentions(intentionRecords, cityRecords, positionRecords);
+				if(intentionCompleteness != completenessRecord.getProfileIntention().intValue()) {
+					completenessRecord.setProfileWorks(intentionCompleteness);
+					result = completenessDao.updateCompleteness(completenessRecord);
+				} else {
+					result = 1;
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
 		}
 		return result;
 	}
