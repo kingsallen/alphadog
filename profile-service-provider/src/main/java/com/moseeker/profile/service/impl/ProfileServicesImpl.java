@@ -22,6 +22,7 @@ import com.moseeker.profile.dao.CompletenessDao;
 import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.profile.dao.UserDao;
 import com.moseeker.profile.dao.UserSettingsDao;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.ProfileServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.Profile;
@@ -39,10 +40,10 @@ public class ProfileServicesImpl extends JOOQBaseServiceImpl<Profile, ProfilePro
 
 	@Autowired
 	protected CompletenessDao completenessDao;
-	
+
 	@Autowired
 	private UserSettingsDao settingDao;
-	
+
 	@Autowired
 	private ProfileCompletenessImpl completenessImpl;
 
@@ -57,6 +58,31 @@ public class ProfileServicesImpl extends JOOQBaseServiceImpl<Profile, ProfilePro
 
 	public void setDao(ProfileDao dao) {
 		this.dao = dao;
+	}
+
+	@Override
+	public Response getResource(CommonQuery query) throws TException {
+		if (dao == null) {
+			initDao();
+		}
+		ProfileProfileRecord record = null;
+		try {
+			record = dao.getResource(query);
+			if (record != null) {
+				Profile s = DBToStruct(record);
+				if (record.getCompleteness().intValue() == 0 || record.getCompleteness().intValue() == 10) {
+					int completeness = completenessImpl.getCompleteness(record.getUserId().intValue(), record.getUuid(),
+							record.getId().intValue());
+					s.setCompleteness(completeness);
+				}
+				return ResponseUtils.success(s);
+			}
+
+		} catch (Exception e) {
+			logger.error("getResource error", e);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		}
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 	}
 
 	@Override
@@ -81,21 +107,21 @@ public class ProfileServicesImpl extends JOOQBaseServiceImpl<Profile, ProfilePro
 		int totalComplementness = completenessImpl.getCompleteness(userId, uuid, profileId);
 		return ResponseUtils.success(totalComplementness);
 	}
-	
+
 	@Override
 	public Response reCalculateUserCompleteness(int userId, String mobile) throws TException {
 		completenessImpl.reCalculateUserUserByUserIdOrMobile(userId, mobile);
 		int totalComplementness = completenessImpl.getCompleteness(userId, null, 0);
 		return ResponseUtils.success(totalComplementness);
 	}
-	
+
 	@Override
 	public Response reCalculateUserCompletenessBySettingId(int id) throws TException {
 		QueryUtil qu = new QueryUtil();
 		qu.addEqualFilter("id", String.valueOf(id));
 		try {
 			UserSettingsRecord record = settingDao.getResource(qu);
-			if(record != null) {
+			if (record != null) {
 				completenessImpl.reCalculateUserUserByUserIdOrMobile(record.getUserId().intValue(), null);
 				int totalComplementness = completenessImpl.getCompleteness(record.getUserId().intValue(), null, 0);
 				return ResponseUtils.success(totalComplementness);

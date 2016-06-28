@@ -92,6 +92,10 @@ public class WholeProfileServicesImpl implements Iface {
 
 			ProfileProfileRecord profileRecord = profileDao.getProfileByIdOrUserIdOrUUID(userId, profileId, uuid);
 			if (profileRecord != null) {
+				if(profileRecord.getCompleteness().intValue() == 0 || profileRecord.getCompleteness().intValue() == 10) {
+					int completeness = completenessImpl.getCompleteness(profileRecord.getUserId().intValue(), profileRecord.getUuid(), profileRecord.getId().intValue());
+					profileRecord.setCompleteness(UByte.valueOf(completeness));
+				}
 				CommonQuery query = new CommonQuery();
 				HashMap<String, String> equalFilter = new HashMap<String, String>();
 				equalFilter.put("profile_id", String.valueOf(profileRecord.getId()));
@@ -225,7 +229,7 @@ public class WholeProfileServicesImpl implements Iface {
 					.mapToWorkexpRecords((List<Map<String, Object>>) resume.get("workexps"));
 			List<ProfileWorksRecord> worksRecords = profileUtils
 					.mapToWorksRecords((List<Map<String, Object>>) resume.get("works"));
-
+			
 			int id = profileDao.saveProfile(profileRecord, basicRecord, attachmentRecords, awardsRecords,
 					credentialsRecords, educationRecords, importRecords, intentionRecords, languages, otherRecord,
 					projectExps, skillRecords, workexpRecords, worksRecords, userRecord);
@@ -296,6 +300,7 @@ public class WholeProfileServicesImpl implements Iface {
 				.mapToWorkexpRecords((List<Map<String, Object>>) resume.get("workexps"));
 		List<ProfileWorksRecord> worksRecords = profileUtils
 				.mapToWorksRecords((List<Map<String, Object>>) resume.get("works"));
+		
 		int id = profileDao.saveProfile(profileRecord, basicRecord, attachmentRecords, awardsRecords,
 				credentialsRecords, educationRecords, importRecords, intentionRecords, languages, otherRecord,
 				projectExps, skillRecords, workexpRecords, worksRecords, userRecord, oldProfile);
@@ -876,6 +881,9 @@ public class WholeProfileServicesImpl implements Iface {
 
 	@Autowired
 	private WorkExpDao workExpDao;
+	
+	@Autowired
+	private ProfileCompletenessImpl completenessImpl;
 
 	public Logger getLogger() {
 		return logger;
@@ -1083,5 +1091,13 @@ public class WholeProfileServicesImpl implements Iface {
 
 	public void setWxuserDao(WXUserDao wxuserDao) {
 		this.wxuserDao = wxuserDao;
+	}
+
+	public ProfileCompletenessImpl getCompletenessImpl() {
+		return completenessImpl;
+	}
+
+	public void setCompletenessImpl(ProfileCompletenessImpl completenessImpl) {
+		this.completenessImpl = completenessImpl;
 	}
 }

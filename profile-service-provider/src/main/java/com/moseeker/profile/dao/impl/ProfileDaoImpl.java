@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jooq.Condition;
@@ -36,22 +37,32 @@ import com.moseeker.db.profiledb.tables.ProfileProfile;
 import com.moseeker.db.profiledb.tables.records.ProfileAttachmentRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileAwardsRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileBasicRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileCompletenessRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileCredentialsRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileEducationRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileImportRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileIntentionCityRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileIntentionPositionRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileLanguageRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileOtherRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProjectexpRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileSkillRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileWorksRecord;
+import com.moseeker.db.userdb.tables.UserSettings;
 import com.moseeker.db.userdb.tables.UserUser;
+import com.moseeker.db.userdb.tables.UserWxUser;
+import com.moseeker.db.userdb.tables.records.UserSettingsRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.profile.dao.entity.ProfileWorkexpEntity;
+import com.moseeker.profile.service.impl.serviceutils.CompletenessCalculator;
 
 @Repository
 public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile> implements ProfileDao {
+	
+	private CompletenessCalculator completenessCalculator = new CompletenessCalculator();
 
 	@Override
 	protected void initJOOQEntity() {
@@ -257,6 +268,9 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 				profileRecord.setCreateTime(now);
 				create.attach(profileRecord);
 				profileRecord.insert();
+				
+				/* 计算profile完整度 */
+				ProfileCompletenessRecord completenessRecord = new ProfileCompletenessRecord();
 
 				if (basicRecord != null) {
 					basicRecord.setProfileId(profileRecord.getId());
@@ -278,6 +292,8 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						}
 					}
 					basicRecord.insert();
+					int basicCompleteness = completenessCalculator.calculateProfileBasic(basicRecord);
+					completenessRecord.setProfileBasic(basicCompleteness);
 				}
 				if (attachmentRecords != null && attachmentRecords.size() > 0) {
 					attachmentRecords.forEach(attachmentRecord -> {
@@ -294,6 +310,8 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						create.attach(awardsRecord);
 						awardsRecord.insert();
 					});
+					int awardCompleteness = completenessCalculator.calculateAwards(awardsRecords);
+					completenessRecord.setProfileAwards(awardCompleteness);
 				}
 				if (credentialsRecords != null && credentialsRecords.size() > 0) {
 					credentialsRecords.forEach(credentialsRecord -> {
@@ -302,6 +320,8 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						create.attach(credentialsRecord);
 						credentialsRecord.insert();
 					});
+					int credentialsCompleteness = completenessCalculator.calculateCredentials(credentialsRecords);
+					completenessRecord.setProfileCredentials(credentialsCompleteness);
 				}
 				if (educationRecords != null && educationRecords.size() > 0) {
 					educationRecords.forEach(educationRecord -> {
@@ -319,6 +339,8 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						create.attach(educationRecord);
 						educationRecord.insert();
 					});
+					int educationCompleteness = completenessCalculator.calculateProfileEducations(educationRecords);
+					completenessRecord.setProfileEducation(educationCompleteness);
 				}
 				if (importRecord != null && importRecord.size() > 0) {
 					create.attach(importRecord);
@@ -327,6 +349,8 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 					importRecord.insert();
 				}
 				if (intentionRecords != null && intentionRecords.size() > 0) {
+					List<ProfileIntentionCityRecord> intentionCityRecords = new ArrayList<>();
+					List<ProfileIntentionPositionRecord> intentionPositionRecords = new ArrayList<>();
 					intentionRecords.forEach(intentionRecord -> {
 						intentionRecord.setProfileId(profileRecord.getId());
 						intentionRecord.setCreateTime(now);
@@ -339,6 +363,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 									for (DictCityRecord cityRecord : cities) {
 										if (city.getCityName().equals(cityRecord.getName())) {
 											city.setCityCode(cityRecord.getCode());
+											intentionCityRecords.add(city);
 											break;
 										}
 									}
@@ -354,6 +379,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 									for (DictPositionRecord positionRecord : positions) {
 										if (positionRecord.getName().equals(position.getPositionName())) {
 											position.setPositionCode(positionRecord.getCode());
+											intentionPositionRecords.add(position);
 											break;
 										}
 									}
@@ -378,6 +404,8 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 							});
 						}
 					});
+					int intentionCompleteness = completenessCalculator.calculateIntentions(intentionRecords, intentionCityRecords, intentionPositionRecords);
+					completenessRecord.setProfileIntention(intentionCompleteness);
 				}
 				if (languages != null && languages.size() > 0) {
 					languages.forEach(language -> {
@@ -386,6 +414,8 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						create.attach(language);
 						language.insert();
 					});
+					int languageCompleteness = completenessCalculator.calculateLanguages(languages);
+					completenessRecord.setProfileLanguage(languageCompleteness);
 				}
 				if (otherRecord != null) {
 					create.attach(otherRecord);
@@ -399,6 +429,8 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						create.attach(projectExp);
 						projectExp.insert();
 					});
+					int projectExpCompleteness = completenessCalculator.calculateProjectexps(projectExps);
+					completenessRecord.setProfileProjectexp(projectExpCompleteness);
 				}
 				if (skillRecords != null && skillRecords.size() > 0) {
 					skillRecords.forEach(skill -> {
@@ -407,8 +439,11 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						create.attach(skill);
 						skill.insert();
 					});
+					int skillCompleteness = completenessCalculator.calculateSkills(skillRecords);
+					completenessRecord.setProfileSkill(skillCompleteness);
 				}
 				if (workexpRecords != null && workexpRecords.size() > 0) {
+					List<HrCompanyRecord> companies = new ArrayList<>();
 					workexpRecords.forEach(workexp -> {
 						workexp.setProfileId(profileRecord.getId());
 						workexp.setCreateTime(now);
@@ -418,6 +453,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 									.and(HrCompany.HR_COMPANY.DISABLE.equal((byte) (Constant.ENABLE))).limit(1)
 									.fetchOne();
 							if (hc != null) {
+								companies.add(hc);
 								workexp.setCompanyId(hc.getId());
 							} else {
 								HrCompanyRecord newCompany = new HrCompanyRecord();
@@ -427,6 +463,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 								create.attach(newCompany);
 								newCompany.insert();
 								workexp.setCompanyId(newCompany.getId());
+								companies.add(newCompany);
 							}
 						}
 						if (!StringUtils.isNullOrEmpty(workexp.getIndustryName())) {
@@ -457,6 +494,8 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						create.attach(workexp);
 						workexp.insert();
 					});
+					int workExpCompleteness = completenessCalculator.calculateProfileWorkexps(workexpRecords, companies);
+					completenessRecord.setProfileWorkexp(workExpCompleteness);
 				}
 
 				if (worksRecords != null && worksRecords.size() > 0) {
@@ -466,11 +505,22 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						create.attach(worksRecord);
 						worksRecord.insert();
 					});
+					int worksCompleteness = completenessCalculator.calculateWorks(worksRecords);
+					completenessRecord.setProfileWorks(worksCompleteness);
 				}
 				if (userRecord != null) {
 					create.attach(userRecord);
 					userRecord.update();
+					
+					/* 计算简历完整度 */
+					completenessRecord.setProfileId(profileRecord.getId());
+					UserWxUserRecord wxuserRecord = create.selectFrom(UserWxUser.USER_WX_USER).where(UserWxUser.USER_WX_USER.SYSUSER_ID.equal(userRecord.getId().intValue())).limit(1).fetchOne();
+					UserSettingsRecord settingRecord = create.selectFrom(UserSettings.USER_SETTINGS).where(UserSettings.USER_SETTINGS.USER_ID.equal(userRecord.getId())).limit(1).fetchOne();
+					int userCompleteness = completenessCalculator.calculateUserUser(userRecord, settingRecord, wxuserRecord);
+					completenessRecord.setUserUser(userCompleteness);
 				}
+				create.attach(completenessRecord);
+				completenessRecord.insert();
 				profileId = profileRecord.getId().intValue();
 			}
 			conn.commit();
@@ -531,6 +581,9 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 				profileRecord.setCreateTime(now);
 				create.attach(profileRecord);
 				profileRecord.insert();
+				
+				/* 计算profile完整度 */
+				ProfileCompletenessRecord completenessRecord = new ProfileCompletenessRecord();
 
 				if (basicRecord != null) {
 					basicRecord.setProfileId(profileRecord.getId());
@@ -552,6 +605,8 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						}
 					}
 					basicRecord.insert();
+					int basicCompleteness = completenessCalculator.calculateProfileBasic(basicRecord);
+					completenessRecord.setProfileBasic(basicCompleteness);
 				}
 				if (attachmentRecords != null && attachmentRecords.size() > 0) {
 					attachmentRecords.forEach(attachmentRecord -> {
@@ -568,6 +623,8 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						create.attach(awardsRecord);
 						awardsRecord.insert();
 					});
+					int awardCompleteness = completenessCalculator.calculateAwards(awardsRecords);
+					completenessRecord.setProfileAwards(awardCompleteness);
 				}
 				if (credentialsRecords != null && credentialsRecords.size() > 0) {
 					credentialsRecords.forEach(credentialsRecord -> {
@@ -576,6 +633,8 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						create.attach(credentialsRecord);
 						credentialsRecord.insert();
 					});
+					int credentialsCompleteness = completenessCalculator.calculateCredentials(credentialsRecords);
+					completenessRecord.setProfileCredentials(credentialsCompleteness);
 				}
 				if (educationRecords != null && educationRecords.size() > 0) {
 					educationRecords.forEach(educationRecord -> {
@@ -593,6 +652,8 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						create.attach(educationRecord);
 						educationRecord.insert();
 					});
+					int educationCompleteness = completenessCalculator.calculateProfileEducations(educationRecords);
+					completenessRecord.setProfileEducation(educationCompleteness);
 				}
 				if (importRecord != null) {
 					create.attach(importRecord);
@@ -601,6 +662,8 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 					importRecord.insert();
 				}
 				if (intentionRecords != null && intentionRecords.size() > 0) {
+					List<ProfileIntentionCityRecord> intentionCityRecords = new ArrayList<>();
+					List<ProfileIntentionPositionRecord> intentionPositionRecords = new ArrayList<>();
 					intentionRecords.forEach(intentionRecord -> {
 						intentionRecord.setProfileId(profileRecord.getId());
 						intentionRecord.setCreateTime(now);
@@ -613,6 +676,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 									for (DictCityRecord cityRecord : cities) {
 										if (city.getCityName().equals(cityRecord.getName())) {
 											city.setCityCode(cityRecord.getCode());
+											intentionCityRecords.add(city);
 											break;
 										}
 									}
@@ -628,6 +692,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 									for (DictPositionRecord positionRecord : positions) {
 										if (positionRecord.getName().equals(position.getPositionName())) {
 											position.setPositionCode(positionRecord.getCode());
+											intentionPositionRecords.add(position);
 											break;
 										}
 									}
@@ -652,6 +717,8 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 							});
 						}
 					});
+					int intentionCompleteness = completenessCalculator.calculateIntentions(intentionRecords, intentionCityRecords, intentionPositionRecords);
+					completenessRecord.setProfileIntention(intentionCompleteness);
 				}
 				if (languages != null && languages.size() > 0) {
 					languages.forEach(language -> {
@@ -660,6 +727,8 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						create.attach(language);
 						language.insert();
 					});
+					int languageCompleteness = completenessCalculator.calculateLanguages(languages);
+					completenessRecord.setProfileLanguage(languageCompleteness);
 				}
 				if (otherRecord != null) {
 					create.attach(otherRecord);
@@ -673,6 +742,8 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						create.attach(projectExp);
 						projectExp.insert();
 					});
+					int projectExpCompleteness = completenessCalculator.calculateProjectexps(projectExps);
+					completenessRecord.setProfileProjectexp(projectExpCompleteness);
 				}
 				if (skillRecords != null && skillRecords.size() > 0) {
 					skillRecords.forEach(skill -> {
@@ -681,6 +752,8 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						create.attach(skill);
 						skill.insert();
 					});
+					int skillCompleteness = completenessCalculator.calculateSkills(skillRecords);
+					completenessRecord.setProfileSkill(skillCompleteness);
 				}
 				if (workexpRecords != null && workexpRecords.size() > 0) {
 					workexpRecords.forEach(workexp -> {

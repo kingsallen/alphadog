@@ -95,7 +95,7 @@ public class CompletenessCalculator {
 		return completeness;
 	}
 	
-	public int calculateProfileWorkexps(List<ProfileWorkexpRecord> workexpRecords, List<HrCompanyRecord> companies) {
+	public int calculateProfileWorkexps(List<? extends ProfileWorkexpRecord> workexpRecords, List<HrCompanyRecord> companies) {
 		int completeness = 0;
 		if(workexpRecords != null && workexpRecords.size() > 0) {
 			for(ProfileWorkexpRecord workexp : workexpRecords) {
@@ -429,7 +429,7 @@ public class CompletenessCalculator {
 		return completeness;
 	}
 	
-	public int calculateIntentions(List<ProfileIntentionRecord> records, List<ProfileIntentionCityRecord> cityRecords, List<ProfileIntentionPositionRecord> positionRecords) {
+	public int calculateIntentions(List<? extends ProfileIntentionRecord> records, List<ProfileIntentionCityRecord> cityRecords, List<ProfileIntentionPositionRecord> positionRecords) {
 		int completeness = 0;
 		if(records != null && records.size() > 0) {
 			for(ProfileIntentionRecord record : records) {

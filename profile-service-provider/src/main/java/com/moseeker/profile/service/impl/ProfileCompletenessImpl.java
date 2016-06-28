@@ -132,6 +132,8 @@ public class ProfileCompletenessImpl {
 							+ completenessRecord.getProfileLanguage() + completenessRecord.getProfileSkill()
 							+ completenessRecord.getProfileCredentials() + completenessRecord.getProfileAwards()
 							+ completenessRecord.getProfileWorks() + completenessRecord.getProfileIntention();
+				} else {
+					totalComplementness = reCalculateProfileCompleteness(profileRecord.getId().intValue());
 				}
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
@@ -166,6 +168,24 @@ public class ProfileCompletenessImpl {
 		return result;
 	}
 	
+	public int calculateUserUserByUserId(int userId, String mobile) {
+		int useruserCompleteness = 0;
+		UserUserRecord userRecord = userDao.getUserById(userId);
+		UserWxUserRecord wxuserRecord = null;
+		UserSettingsRecord settingRecord = null;
+		if (userRecord != null) {
+			settingRecord = settingDao.getUserSettingsById(userId);
+			try {
+				wxuserRecord = wxuserDao.getWXUserByUserId(userId);
+			} catch (SQLException e) {
+				logger.error(e.getMessage(), e);
+			}
+			useruserCompleteness = completenessCalculator.calculateUserUser(userRecord, settingRecord,
+					wxuserRecord);
+		}
+		return useruserCompleteness;
+	}
+	
 	public int reCalculateUserUserByUserIdOrMobile(int userId, String mobile) {
 		int result = 0;
 		ProfileProfileRecord profileRecord = null;
@@ -181,7 +201,7 @@ public class ProfileCompletenessImpl {
 				logger.error(e.getMessage(), e);
 			}		
 		} else {
-			profileDao.getProfileByIdOrUserIdOrUUID(userId, 0, null);
+			profileRecord = profileDao.getProfileByIdOrUserIdOrUUID(userId, 0, null);
 		}
 		if(profileRecord != null) {
 			ProfileCompletenessRecord completenessRecord = completenessDao.getCompletenessByProfileId(profileRecord.getId().intValue());
