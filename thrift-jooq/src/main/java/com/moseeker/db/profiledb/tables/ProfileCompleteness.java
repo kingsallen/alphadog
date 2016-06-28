@@ -35,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileCompleteness extends TableImpl<ProfileCompletenessRecord> {
 
-	private static final long serialVersionUID = 278565502;
+	private static final long serialVersionUID = -548788267;
 
 	/**
 	 * The reference instance of <code>profiledb.profile_completeness</code>
@@ -59,11 +59,6 @@ public class ProfileCompleteness extends TableImpl<ProfileCompletenessRecord> {
 	 * The column <code>profiledb.profile_completeness.user_user</code>. 用户表信息完成度
 	 */
 	public final TableField<ProfileCompletenessRecord, Integer> USER_USER = createField("user_user", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "用户表信息完成度");
-
-	/**
-	 * The column <code>profiledb.profile_completeness.user_settings</code>. 用户配置表完成度
-	 */
-	public final TableField<ProfileCompletenessRecord, Integer> USER_SETTINGS = createField("user_settings", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "用户配置表完成度");
 
 	/**
 	 * The column <code>profiledb.profile_completeness.profile_basic</code>. profile基础信息表完成度
