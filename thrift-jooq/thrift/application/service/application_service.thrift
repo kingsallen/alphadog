@@ -20,4 +20,7 @@ service JobApplicationServices {
     // 清除一个公司一个人申请次数限制的redis key 给sysplat专用, 其他系统禁止使用
     common_struct.Response deleteRedisKeyApplicationCheckCount(1: i64 userId, 2: i64 companyId);
 
+    // 校验超出申请次数限制, 每月每家公司一个人只能申请3次
+    common_struct.Response validateUserApplicationCheckCountAtCompany(1: i64 userId, 2: i64 companyId);
+
 }

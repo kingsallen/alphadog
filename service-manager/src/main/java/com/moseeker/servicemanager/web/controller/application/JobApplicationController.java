@@ -110,4 +110,24 @@ public class JobApplicationController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    /**
+     * 校验超出申请次数限制, 每月每家公司一个人只能申请3次
+     * <p>
+     *
+     * */
+    @RequestMapping(value = "/application/count/check", method = RequestMethod.POST)
+    @ResponseBody
+    public String validateUserApplicationCheckCountAtCompany(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            long userId = Long.valueOf(request.getParameter("user_id"));
+            long companyId = Long.valueOf(request.getParameter("company_id"));
+
+            // 创建申请记录
+            Response result = applicationService.validateUserApplicationCheckCountAtCompany(userId, companyId);
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }

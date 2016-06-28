@@ -198,6 +198,27 @@ public class JobApplicataionServicesImpl implements Iface {
     }
 
     /**
+     * 一个用户在一家公司的每月的申请次数校验
+     *      超出申请次数限制, 每月每家公司一个人只能申请3次
+     * <p>
+     *
+     * @param userId 用户id
+     * @param companyId 公司id
+     * @return
+     */
+    public Response validateUserApplicationCheckCountAtCompany(long userId, long companyId){
+        try {
+            return ResponseUtils.success(this.checkApplicationCountAtCompany(userId, companyId));
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            logger.error("validateUserApplicationCheckCountAtCompany error: ", e);
+        } finally {
+            //do nothing
+        }
+        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+    }
+
+    /**
      * 必填项校验 - 判断当前用户是否申请了该职位
      * <p>
      *

@@ -4,7 +4,6 @@ import com.moseeker.rpccenter.config.ClientConfig;
 import com.moseeker.rpccenter.config.RegistryConfig;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
-import com.moseeker.thrift.gen.application.struct.JobResumeBasic;
 import com.moseeker.thrift.gen.application.struct.JobResumeOther;
 import com.moseeker.thrift.gen.common.struct.Response;
 
@@ -32,12 +31,14 @@ public class JobApplicataionServicesImplTest {
             applicationService = clientConfig.createProxy(registryConfig);
 
             // 清除一个公司一个人申请次数限制的redis key 给sysplat用
-            applicationService.deleteRedisKeyApplicationCheckCount(1, 1);
+//            applicationService.deleteRedisKeyApplicationCheckCount(1, 1);
 
             // 添加申请
             Response getJobApplication = applicationService.postApplication(getJobApplication());
 
             System.out.println(getJobApplication);
+
+            System.out.println(applicationService.validateUserApplicationCheckCountAtCompany(1, 1));
 
 //            // 添加申请副本
 //            Response getJobResumeOther = applicationService.postJobResumeOther(getJobResumeOther());
@@ -62,7 +63,7 @@ public class JobApplicataionServicesImplTest {
         JobApplication application = new JobApplication();
         application.setApplier_id(1);
         application.setCompany_id(1);
-        application.setPosition_id(61140);
+        application.setPosition_id(61143);
         return application;
     }
 
