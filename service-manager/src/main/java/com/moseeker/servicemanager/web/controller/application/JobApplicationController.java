@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 /**
  * 申请服务
@@ -120,8 +121,11 @@ public class JobApplicationController {
     @ResponseBody
     public String validateUserApplicationCheckCountAtCompany(HttpServletRequest request, HttpServletResponse response) {
         try {
-            long userId = Long.valueOf(request.getParameter("user_id"));
-            long companyId = Long.valueOf(request.getParameter("company_id"));
+
+            Map<String, Object> paramMap = ParamUtils.mergeRequestParameters(request);
+
+            long userId = Long.valueOf(paramMap.get("user_id").toString());
+            long companyId = Long.valueOf(paramMap.get("company_id").toString());
 
             // 创建申请记录
             Response result = applicationService.validateUserApplicationCheckCountAtCompany(userId, companyId);
