@@ -116,7 +116,7 @@ public class ProfileCompletenessImpl {
 		int totalComplementness = 0;
 		ProfileProfileRecord profileRecord = profileDao.getProfileByIdOrUserIdOrUUID(userId, profileId, uuid);
 		if (profileRecord == null) {
-			return 0;
+			return calculateUserUserByUserId(userId);
 		}
 		if(profileRecord.getCompleteness().intValue() != 0 && profileRecord.getCompleteness().intValue() != 10) {
 			totalComplementness = profileRecord.getCompleteness().intValue();
@@ -174,7 +174,7 @@ public class ProfileCompletenessImpl {
 		return result;
 	}
 	
-	public int calculateUserUserByUserId(int userId, String mobile) {
+	public int calculateUserUserByUserId(int userId) {
 		int useruserCompleteness = 0;
 		UserUserRecord userRecord = userDao.getUserById(userId);
 		UserWxUserRecord wxuserRecord = null;
