@@ -132,7 +132,7 @@ public final class Constant {
 	public static final String EXCEPTION_PROFILEWORKS_LOST = "计算作品完整度时，作品不能为空";
 	public static final String EXCEPTION_PROFILINTENTION_LOST = "计算期望职位完整度时，期望职位不能为空";
 	
-	public static final int PROFILER_COMPLETENESS_USERUSER_MAXVALUE = 17; 		//用户信息完成度最大值
+	public static final int PROFILER_COMPLETENESS_USERUSER_MAXVALUE = 19; 		//用户信息完成度最大值
 	public static final int PROFILER_COMPLETENESS_BASIC_MAXVALUE = 19; 			//简历基本信息完成度最大值
 	public static final int PROFILER_COMPLETENESS_WORKEXP_MAXVALUE = 15; 		//工作经历最大值
 	public static final int PROFILER_COMPLETENESS_EDUCATION_MAXVALUE = 17; 		//教育经历最大值
