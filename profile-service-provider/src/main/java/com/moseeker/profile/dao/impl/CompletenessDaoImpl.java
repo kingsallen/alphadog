@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import org.jooq.DSLContext;
 import org.jooq.types.UByte;
 import org.jooq.types.UInteger;
+import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
@@ -14,6 +15,7 @@ import com.moseeker.db.profiledb.tables.records.ProfileCompletenessRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.profile.dao.CompletenessDao;
 
+@Repository
 public class CompletenessDaoImpl extends BaseDaoImpl<ProfileCompletenessRecord, ProfileCompleteness>
 		implements CompletenessDao {
 

@@ -394,6 +394,14 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 		this.cityDao = cityDao;
 	}
 
+	public ProfileCompletenessImpl getCompletenessImpl() {
+		return completenessImpl;
+	}
+
+	public void setCompletenessImpl(ProfileCompletenessImpl completenessImpl) {
+		this.completenessImpl = completenessImpl;
+	}
+
 	@Override
 	protected void initDao() {
 		super.dao = this.dao;

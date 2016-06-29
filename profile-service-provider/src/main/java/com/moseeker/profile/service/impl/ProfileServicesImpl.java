@@ -60,6 +60,22 @@ public class ProfileServicesImpl extends JOOQBaseServiceImpl<Profile, ProfilePro
 		this.dao = dao;
 	}
 
+	public UserSettingsDao getSettingDao() {
+		return settingDao;
+	}
+
+	public void setSettingDao(UserSettingsDao settingDao) {
+		this.settingDao = settingDao;
+	}
+
+	public ProfileCompletenessImpl getCompletenessImpl() {
+		return completenessImpl;
+	}
+
+	public void setCompletenessImpl(ProfileCompletenessImpl completenessImpl) {
+		this.completenessImpl = completenessImpl;
+	}
+
 	@Override
 	public Response getResource(CommonQuery query) throws TException {
 		if (dao == null) {

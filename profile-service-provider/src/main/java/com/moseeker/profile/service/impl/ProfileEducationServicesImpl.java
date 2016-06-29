@@ -72,6 +72,14 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 		this.majorDao = majorDao;
 	}
 
+	public ProfileCompletenessImpl getCompletenessImpl() {
+		return completenessImpl;
+	}
+
+	public void setCompletenessImpl(ProfileCompletenessImpl completenessImpl) {
+		this.completenessImpl = completenessImpl;
+	}
+
 	@Override
 	protected void initDao() {
 		super.dao = this.dao;

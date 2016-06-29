@@ -604,6 +604,30 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 		this.dictCityDao = dictCityDao;
 	}
 
+	public IndustryDao getDictIndustryDao() {
+		return dictIndustryDao;
+	}
+
+	public void setDictIndustryDao(IndustryDao dictIndustryDao) {
+		this.dictIndustryDao = dictIndustryDao;
+	}
+
+	public PositionDao getDictPositionDao() {
+		return dictPositionDao;
+	}
+
+	public void setDictPositionDao(PositionDao dictPositionDao) {
+		this.dictPositionDao = dictPositionDao;
+	}
+
+	public ProfileCompletenessImpl getCompletenessImpl() {
+		return completenessImpl;
+	}
+
+	public void setCompletenessImpl(ProfileCompletenessImpl completenessImpl) {
+		this.completenessImpl = completenessImpl;
+	}
+
 	@Override
 	protected Intention DBToStruct(ProfileIntentionRecord r) {
 		return (Intention) BeanUtils.DBToStruct(Intention.class, r);

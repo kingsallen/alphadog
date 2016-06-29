@@ -111,6 +111,14 @@ public class ProfileWorksServicesImpl extends JOOQBaseServiceImpl<Works, Profile
 		this.dao = dao;
 	}
 
+	public ProfileCompletenessImpl getCompletenessImpl() {
+		return completenessImpl;
+	}
+
+	public void setCompletenessImpl(ProfileCompletenessImpl completenessImpl) {
+		this.completenessImpl = completenessImpl;
+	}
+
 	@Override
 	protected void initDao() {
 		super.dao = this.dao;

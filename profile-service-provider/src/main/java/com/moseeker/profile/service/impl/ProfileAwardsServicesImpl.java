@@ -113,6 +113,14 @@ public class ProfileAwardsServicesImpl extends JOOQBaseServiceImpl<Awards, Profi
 		super.dao = this.dao;
 	}
 
+	public ProfileCompletenessImpl getCompletenessImpl() {
+		return completenessImpl;
+	}
+
+	public void setCompletenessImpl(ProfileCompletenessImpl completenessImpl) {
+		this.completenessImpl = completenessImpl;
+	}
+
 	@Override
 	protected Awards DBToStruct(ProfileAwardsRecord r) {
 		return (Awards)BeanUtils.DBToStruct(Awards.class, r);
