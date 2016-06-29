@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobApplication extends TableImpl<JobApplicationRecord> {
 
-	private static final long serialVersionUID = 1217100533;
+	private static final long serialVersionUID = -273194815;
 
 	/**
 	 * The reference instance of <code>jobdb.job_application</code>
@@ -132,9 +132,9 @@ public class JobApplication extends TableImpl<JobApplicationRecord> {
 	public final TableField<JobApplicationRecord, Integer> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "是否有效，0：有效，1：无效");
 
 	/**
-	 * The column <code>jobdb.job_application.routine</code>. 判断申请来自客户公众号还是聚合平台
+	 * The column <code>jobdb.job_application.routine</code>. 申请来源 0:微信企业端 1:微信聚合端 10:pc端
 	 */
-	public final TableField<JobApplicationRecord, Integer> ROUTINE = createField("routine", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "判断申请来自客户公众号还是聚合平台");
+	public final TableField<JobApplicationRecord, Integer> ROUTINE = createField("routine", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "申请来源 0:微信企业端 1:微信聚合端 10:pc端");
 
 	/**
 	 * The column <code>jobdb.job_application.is_viewed</code>. 该申请是否被浏览，0：已浏览，1：未浏览
@@ -165,6 +165,16 @@ public class JobApplication extends TableImpl<JobApplicationRecord> {
 	 * The column <code>jobdb.job_application.proxy</code>. 是否是代理投递 0：正常数据，1：代理假投递
 	 */
 	public final TableField<JobApplicationRecord, Byte> PROXY = createField("proxy", org.jooq.impl.SQLDataType.TINYINT.defaulted(true), this, "是否是代理投递 0：正常数据，1：代理假投递");
+
+	/**
+	 * The column <code>jobdb.job_application.apply_type</code>. 投递区分， 0：profile投递， 1：email投递
+	 */
+	public final TableField<JobApplicationRecord, Integer> APPLY_TYPE = createField("apply_type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "投递区分， 0：profile投递， 1：email投递");
+
+	/**
+	 * The column <code>jobdb.job_application.email_status</code>. 0，有效；1,未收到回复邮件；2，文件格式不支持；3，附件超过10M；9，提取邮件失败
+	 */
+	public final TableField<JobApplicationRecord, Integer> EMAIL_STATUS = createField("email_status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "0，有效；1,未收到回复邮件；2，文件格式不支持；3，附件超过10M；9，提取邮件失败");
 
 	/**
 	 * Create a <code>jobdb.job_application</code> table reference
