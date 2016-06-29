@@ -142,8 +142,8 @@ public class CompletenessCalculator {
 		if (workexpRecord.getStart() != null) {
 			completeness += 2;
 		}
-		if (workexpRecord.getStart() != null && workexpRecord.getEndUntilNow() != null
-				&& workexpRecord.getEndUntilNow().intValue() == 1) {
+		if (workexpRecord.getStart() != null || (workexpRecord.getEndUntilNow() != null
+				&& workexpRecord.getEndUntilNow().intValue() == 1)) {
 			completeness += 2;
 		}
 		if (StringUtils.isNotNullOrEmpty(workexpRecord.getDescription())) {
