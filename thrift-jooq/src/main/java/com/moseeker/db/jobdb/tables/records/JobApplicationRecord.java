@@ -28,7 +28,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationRecord> {
 
-	private static final long serialVersionUID = 1864368177;
+	private static final long serialVersionUID = 929029134;
 
 	/**
 	 * Setter for <code>jobdb.job_application.id</code>.
@@ -255,14 +255,14 @@ public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationReco
 	}
 
 	/**
-	 * Setter for <code>jobdb.job_application.routine</code>. 判断申请来自客户公众号还是聚合平台
+	 * Setter for <code>jobdb.job_application.routine</code>. 申请来源 0:微信企业端 1:微信聚合端 10:pc端
 	 */
 	public void setRoutine(Integer value) {
 		setValue(16, value);
 	}
 
 	/**
-	 * Getter for <code>jobdb.job_application.routine</code>. 判断申请来自客户公众号还是聚合平台
+	 * Getter for <code>jobdb.job_application.routine</code>. 申请来源 0:微信企业端 1:微信聚合端 10:pc端
 	 */
 	public Integer getRoutine() {
 		return (Integer) getValue(16);
@@ -352,6 +352,34 @@ public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationReco
 		return (Byte) getValue(22);
 	}
 
+	/**
+	 * Setter for <code>jobdb.job_application.apply_type</code>. 投递区分， 0：profile投递， 1：email投递
+	 */
+	public void setApplyType(Integer value) {
+		setValue(23, value);
+	}
+
+	/**
+	 * Getter for <code>jobdb.job_application.apply_type</code>. 投递区分， 0：profile投递， 1：email投递
+	 */
+	public Integer getApplyType() {
+		return (Integer) getValue(23);
+	}
+
+	/**
+	 * Setter for <code>jobdb.job_application.email_status</code>. 0，有效；1,未收到回复邮件；2，文件格式不支持；3，附件超过10M；9，提取邮件失败
+	 */
+	public void setEmailStatus(Integer value) {
+		setValue(24, value);
+	}
+
+	/**
+	 * Getter for <code>jobdb.job_application.email_status</code>. 0，有效；1,未收到回复邮件；2，文件格式不支持；3，附件超过10M；9，提取邮件失败
+	 */
+	public Integer getEmailStatus() {
+		return (Integer) getValue(24);
+	}
+
 	// -------------------------------------------------------------------------
 	// Primary key information
 	// -------------------------------------------------------------------------
@@ -378,7 +406,7 @@ public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationReco
 	/**
 	 * Create a detached, initialised JobApplicationRecord
 	 */
-	public JobApplicationRecord(UInteger id, UInteger wechatId, UInteger positionId, UInteger recommenderId, Timestamp submitTime, UInteger statusId, UInteger lApplicationId, UInteger reward, UInteger sourceId, Timestamp _CreateTime, UInteger applierId, UInteger interviewId, String resumeId, Integer atsStatus, String applierName, Integer disable, Integer routine, Byte isViewed, Byte notSuitable, UInteger companyId, Timestamp updateTime, UInteger appTplId, Byte proxy) {
+	public JobApplicationRecord(UInteger id, UInteger wechatId, UInteger positionId, UInteger recommenderId, Timestamp submitTime, UInteger statusId, UInteger lApplicationId, UInteger reward, UInteger sourceId, Timestamp _CreateTime, UInteger applierId, UInteger interviewId, String resumeId, Integer atsStatus, String applierName, Integer disable, Integer routine, Byte isViewed, Byte notSuitable, UInteger companyId, Timestamp updateTime, UInteger appTplId, Byte proxy, Integer applyType, Integer emailStatus) {
 		super(JobApplication.JOB_APPLICATION);
 
 		setValue(0, id);
@@ -404,5 +432,7 @@ public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationReco
 		setValue(20, updateTime);
 		setValue(21, appTplId);
 		setValue(22, proxy);
+		setValue(23, applyType);
+		setValue(24, emailStatus);
 	}
 }
