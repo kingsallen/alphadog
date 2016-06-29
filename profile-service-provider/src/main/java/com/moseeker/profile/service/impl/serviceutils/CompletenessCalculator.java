@@ -42,11 +42,14 @@ public class CompletenessCalculator {
 			completeness += 5;
 		}
 		if (!StringUtils.isNullOrEmpty(userRecord.getHeadimg())) {
-			completeness += 1;
+			completeness += 3;
 		} else {
 			if (wxuser != null && !StringUtils.isNullOrEmpty(wxuser.getHeadimgurl())) {
-				completeness += 1;
+				completeness += 3;
 			}
+		}
+		if(settingsRecord != null && !StringUtils.isNotNullOrEmpty(settingsRecord.getBannerUrl())) {
+			completeness += 1;
 		}
 		if (!StringUtils.isNullOrEmpty(userRecord.getName())) {
 			completeness += 5;
