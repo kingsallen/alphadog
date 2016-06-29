@@ -427,6 +427,7 @@ public class ProfileCompletenessImpl {
 				if(projectExpCompleteness != completenessRecord.getProfileProjectexp().intValue()) {
 					completenessRecord.setProfileProjectexp(projectExpCompleteness);
 					result = completenessDao.updateCompleteness(completenessRecord);
+					reCalculateProfileCompleteness(completenessRecord);
 				} else {
 					result = 1;
 				}
@@ -464,6 +465,7 @@ public class ProfileCompletenessImpl {
 				if(languageCompleteness != completenessRecord.getProfileLanguage().intValue()) {
 					completenessRecord.setProfileLanguage(languageCompleteness);
 					result = completenessDao.updateCompleteness(completenessRecord);
+					reCalculateProfileCompleteness(completenessRecord);
 				} else {
 					result = 1;
 				}
@@ -500,6 +502,7 @@ public class ProfileCompletenessImpl {
 				if(skillCompleteness != completenessRecord.getProfileSkill().intValue()) {
 					completenessRecord.setProfileSkill(skillCompleteness);
 					result = completenessDao.updateCompleteness(completenessRecord);
+					reCalculateProfileCompleteness(completenessRecord);
 				} else {
 					result = 1;
 				}
@@ -536,6 +539,7 @@ public class ProfileCompletenessImpl {
 				if(credentialCompleteness != completenessRecord.getProfileCredentials().intValue()) {
 					completenessRecord.setProfileCredentials(credentialCompleteness);
 					result = completenessDao.updateCompleteness(completenessRecord);
+					reCalculateProfileCompleteness(completenessRecord);
 				} else {
 					result = 1;
 				}
@@ -572,6 +576,7 @@ public class ProfileCompletenessImpl {
 				if(awardCompleteness != completenessRecord.getProfileAwards().intValue()) {
 					completenessRecord.setProfileAwards(awardCompleteness);
 					result = completenessDao.updateCompleteness(completenessRecord);
+					reCalculateProfileCompleteness(completenessRecord);
 				} else {
 					result = 1;
 				}
@@ -608,6 +613,7 @@ public class ProfileCompletenessImpl {
 				if(worksCompleteness != completenessRecord.getProfileWorks().intValue()) {
 					completenessRecord.setProfileWorks(worksCompleteness);
 					result = completenessDao.updateCompleteness(completenessRecord);
+					reCalculateProfileCompleteness(completenessRecord);
 				} else {
 					result = 1;
 				}
@@ -654,6 +660,7 @@ public class ProfileCompletenessImpl {
 				if(intentionCompleteness != completenessRecord.getProfileIntention().intValue()) {
 					completenessRecord.setProfileWorks(intentionCompleteness);
 					result = completenessDao.updateCompleteness(completenessRecord);
+					reCalculateProfileCompleteness(completenessRecord);
 				} else {
 					result = 1;
 				}
