@@ -48,7 +48,7 @@ public class CompletenessCalculator {
 				completeness += 3;
 			}
 		}
-		if(settingsRecord != null && !StringUtils.isNotNullOrEmpty(settingsRecord.getBannerUrl())) {
+		if(settingsRecord != null && StringUtils.isNotNullOrEmpty(settingsRecord.getBannerUrl())) {
 			completeness += 1;
 		}
 		if (!StringUtils.isNullOrEmpty(userRecord.getName())) {
