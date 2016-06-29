@@ -80,10 +80,10 @@ public class CompletenessCalculator {
 		if (basicRecord.getBirth() != null) {
 			completeness += 3;
 		}
-		if (basicRecord.getWeixin() != null) {
+		if (StringUtils.isNotNullOrEmpty(basicRecord.getWeixin())) {
 			completeness += 3;
 		}
-		if (basicRecord.getQq() != null) {
+		if (StringUtils.isNotNullOrEmpty(basicRecord.getQq())) {
 			completeness += 3;
 		}
 		if (!StringUtils.isNullOrEmpty(basicRecord.getSelfIntroduction())) {

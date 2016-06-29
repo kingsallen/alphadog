@@ -133,6 +133,10 @@ public class ProfileCompletenessImpl {
 							+ completenessRecord.getProfileLanguage() + completenessRecord.getProfileSkill()
 							+ completenessRecord.getProfileCredentials() + completenessRecord.getProfileAwards()
 							+ completenessRecord.getProfileWorks() + completenessRecord.getProfileIntention();
+					if(totalComplementness != profileRecord.getCompleteness().intValue()) {
+						profileRecord.setCompleteness(UByte.valueOf(totalComplementness));
+						profileDao.putResource(profileRecord);
+					}
 				} else {
 					totalComplementness = reCalculateProfileCompleteness(profileRecord.getId().intValue());
 				}
