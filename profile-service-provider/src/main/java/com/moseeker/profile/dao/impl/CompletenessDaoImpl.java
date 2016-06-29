@@ -51,7 +51,7 @@ public class CompletenessDaoImpl extends BaseDaoImpl<ProfileCompletenessRecord, 
 
 	@Override
 	public void reCalculateProfileCompleteness(int profileId) {
-		
+
 	}
 
 	@Override
@@ -71,8 +71,9 @@ public class CompletenessDaoImpl extends BaseDaoImpl<ProfileCompletenessRecord, 
 				create.attach(profileRecord);
 
 				int completeness = calculatorTotalCompleteness(completenessRecord);
-				
-				if (completeness != profileRecord.getCompleteness().intValue()) {
+
+				if (profileRecord.getCompleteness() == null
+						|| completeness != profileRecord.getCompleteness().intValue()) {
 					profileRecord.setCompleteness(UByte.valueOf(completeness));
 					profileRecord.update();
 				}
@@ -101,22 +102,17 @@ public class CompletenessDaoImpl extends BaseDaoImpl<ProfileCompletenessRecord, 
 		int completeness = 0;
 		completeness += completenessRecord.getUserUser() == null ? 0 : completenessRecord.getUserUser();
 		completeness += completenessRecord.getProfileBasic() == null ? 0 : completenessRecord.getProfileBasic();
-		completeness += completenessRecord.getProfileWorkexp() == null ? 0
-				: completenessRecord.getProfileWorkexp();
-		completeness += completenessRecord.getProfileEducation() == null ? 0
-				: completenessRecord.getProfileEducation();
+		completeness += completenessRecord.getProfileWorkexp() == null ? 0 : completenessRecord.getProfileWorkexp();
+		completeness += completenessRecord.getProfileEducation() == null ? 0 : completenessRecord.getProfileEducation();
 		completeness += completenessRecord.getProfileProjectexp() == null ? 0
 				: completenessRecord.getProfileProjectexp();
-		completeness += completenessRecord.getProfileLanguage() == null ? 0
-				: completenessRecord.getProfileLanguage();
+		completeness += completenessRecord.getProfileLanguage() == null ? 0 : completenessRecord.getProfileLanguage();
 		completeness += completenessRecord.getProfileSkill() == null ? 0 : completenessRecord.getProfileSkill();
 		completeness += completenessRecord.getProfileCredentials() == null ? 0
 				: completenessRecord.getProfileCredentials();
-		completeness += completenessRecord.getProfileAwards() == null ? 0
-				: completenessRecord.getProfileAwards();
+		completeness += completenessRecord.getProfileAwards() == null ? 0 : completenessRecord.getProfileAwards();
 		completeness += completenessRecord.getProfileWorks() == null ? 0 : completenessRecord.getProfileWorks();
-		completeness += completenessRecord.getProfileIntention() == null ? 0
-				: completenessRecord.getProfileIntention();
+		completeness += completenessRecord.getProfileIntention() == null ? 0 : completenessRecord.getProfileIntention();
 		return completeness;
 	}
 
@@ -130,9 +126,10 @@ public class CompletenessDaoImpl extends BaseDaoImpl<ProfileCompletenessRecord, 
 				conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 				ProfileCompletenessRecord toBeUpdate = create.selectFrom(ProfileCompleteness.PROFILE_COMPLETENESS)
-						.where(ProfileCompleteness.PROFILE_COMPLETENESS.PROFILE_ID.equal(completenessRecord.getProfileId()))
+						.where(ProfileCompleteness.PROFILE_COMPLETENESS.PROFILE_ID
+								.equal(completenessRecord.getProfileId()))
 						.fetchOne();
-				if(toBeUpdate != null) {
+				if (toBeUpdate != null) {
 					toBeUpdate.setUserUser(completenessRecord.getUserUser());
 					toBeUpdate.setProfileBasic(completenessRecord.getProfileBasic());
 					toBeUpdate.setProfileWorkexp(completenessRecord.getProfileWorkexp());

@@ -216,6 +216,7 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 				
 				/* 计算用户基本信息的简历完整度 */
 				completenessImpl.reCalculateUserUser(struct.getProfile_id());
+				completenessImpl.reCalculateProfileBasic(struct.getProfile_id());
 				return ResponseUtils.success(String.valueOf(i));
 			}
 		} catch (Exception e) {
@@ -240,6 +241,7 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 			profileIds.forEach(profileId -> {
 				/* 计算用户基本信息的简历完整度 */
 				completenessImpl.reCalculateUserUser(profileId);
+				completenessImpl.reCalculateProfileBasic(profileId);
 			});
 		}
 		return response;
@@ -258,6 +260,7 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 			profileIds.forEach(profileId -> {
 				/* 计算用户基本信息的简历完整度 */
 				completenessImpl.reCalculateUserUser(profileId);
+				completenessImpl.reCalculateProfileBasic(profileId);
 			});
 		}
 		return response;
@@ -276,6 +279,7 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 			profileIds.forEach(profileId -> {
 				/* 计算用户基本信息的简历完整度 */
 				completenessImpl.reCalculateUserUser(profileId);
+				completenessImpl.reCalculateProfileBasic(profileId);
 			});
 		}
 		return response;
@@ -286,6 +290,7 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 		Response response = super.delResource(struct);
 		if(response.getStatus() == 0) {
 			/* 计算用户基本信息的简历完整度 */
+			completenessImpl.reCalculateUserUser(struct.getProfile_id());
 			completenessImpl.reCalculateProfileBasic(struct.getProfile_id());
 		}
 		return response;

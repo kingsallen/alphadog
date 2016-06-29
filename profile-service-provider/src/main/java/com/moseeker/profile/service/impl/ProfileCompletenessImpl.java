@@ -159,6 +159,7 @@ public class ProfileCompletenessImpl {
 				if(basicCompleteness != completenessRecord.getProfileBasic()) {
 					completenessRecord.setProfileBasic(basicCompleteness);
 					result = completenessDao.updateCompleteness(completenessRecord);
+					reCalculateProfileCompleteness(completenessRecord);
 				} else {
 					result = 1;
 				}
@@ -190,79 +191,89 @@ public class ProfileCompletenessImpl {
 	public int reCalculateUserUserByUserIdOrMobile(int userId, String mobile) {
 		int result = 0;
 		ProfileProfileRecord profileRecord = null;
-		if(userId == 0 && StringUtils.isNotNullOrEmpty(mobile)) {
-			QueryUtil qu = new QueryUtil();
-			qu.addEqualFilter("username", mobile);
-			try {
-				UserUserRecord userRecord = userDao.getResource(qu);
-				if(userRecord != null) {
-					profileRecord = profileDao.getProfileByIdOrUserIdOrUUID(userRecord.getId().intValue(), 0, null);
-				}
-			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
-			}		
-		} else {
-			profileRecord = profileDao.getProfileByIdOrUserIdOrUUID(userId, 0, null);
-		}
-		if(profileRecord != null) {
-			ProfileCompletenessRecord completenessRecord = completenessDao.getCompletenessByProfileId(profileRecord.getId().intValue());
-			if (completenessRecord == null) {
-				reCalculateProfileCompleteness(profileRecord.getId().intValue());
-			} else {
-				UserUserRecord userRecord = userDao.getUserById(profileRecord.getUserId().intValue());
-				UserWxUserRecord wxuserRecord = null;
-				UserSettingsRecord settingRecord = null;
-				if (userRecord != null) {
-					settingRecord = settingDao.getUserSettingsById(profileRecord.getUserId().intValue());
-					try {
-						wxuserRecord = wxuserDao.getWXUserByUserId(userRecord.getId().intValue());
-					} catch (SQLException e) {
-						logger.error(e.getMessage(), e);
+		try {
+			if(userId == 0 && StringUtils.isNotNullOrEmpty(mobile)) {
+				QueryUtil qu = new QueryUtil();
+				qu.addEqualFilter("username", mobile);
+				try {
+					UserUserRecord userRecord = userDao.getResource(qu);
+					if(userRecord != null) {
+						profileRecord = profileDao.getProfileByIdOrUserIdOrUUID(userRecord.getId().intValue(), 0, null);
 					}
-					int useruserCompleteness = completenessCalculator.calculateUserUser(userRecord, settingRecord,
-							wxuserRecord);
+				} catch (Exception e) {
+					logger.error(e.getMessage(), e);
+				}		
+			} else {
+				profileRecord = profileDao.getProfileByIdOrUserIdOrUUID(userId, 0, null);
+			}
+			if(profileRecord != null) {
+				ProfileCompletenessRecord completenessRecord = completenessDao.getCompletenessByProfileId(profileRecord.getId().intValue());
+				if (completenessRecord == null) {
+					reCalculateProfileCompleteness(profileRecord.getId().intValue());
+				} else {
+					UserUserRecord userRecord = userDao.getUserById(profileRecord.getUserId().intValue());
+					UserWxUserRecord wxuserRecord = null;
+					UserSettingsRecord settingRecord = null;
+					if (userRecord != null) {
+						settingRecord = settingDao.getUserSettingsById(profileRecord.getUserId().intValue());
+						try {
+							wxuserRecord = wxuserDao.getWXUserByUserId(userRecord.getId().intValue());
+						} catch (SQLException e) {
+							logger.error(e.getMessage(), e);
+						}
+						int useruserCompleteness = completenessCalculator.calculateUserUser(userRecord, settingRecord,
+								wxuserRecord);
 
-					if (completenessRecord.getUserUser().intValue() != useruserCompleteness) {
-						completenessRecord.setUserUser(useruserCompleteness);
-						result = completenessDao.updateCompleteness(completenessRecord);
-					} else {
-						result = 1;
+						if (completenessRecord.getUserUser().intValue() != useruserCompleteness) {
+							completenessRecord.setUserUser(useruserCompleteness);
+							result = completenessDao.updateCompleteness(completenessRecord);
+							reCalculateProfileCompleteness(completenessRecord);
+						} else {
+							result = 1;
+						}
 					}
 				}
 			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
 		}
 		return result;
 	}
 
 	public int reCalculateUserUser(int profileId) {
 		int result = 0;
-		ProfileCompletenessRecord completenessRecord = completenessDao.getCompletenessByProfileId(profileId);
-		if (completenessRecord == null) {
-			reCalculateProfileCompleteness(profileId);
-		} else {
-			ProfileProfileRecord profileRecord = profileDao.getProfileByIdOrUserIdOrUUID(0, profileId, null);
-			if (profileRecord != null) {
-				UserUserRecord userRecord = userDao.getUserById(profileRecord.getUserId().intValue());
-				UserWxUserRecord wxuserRecord = null;
-				UserSettingsRecord settingRecord = null;
-				if (userRecord != null) {
-					settingRecord = settingDao.getUserSettingsById(profileRecord.getUserId().intValue());
-					try {
-						wxuserRecord = wxuserDao.getWXUserByUserId(userRecord.getId().intValue());
-					} catch (SQLException e) {
-						logger.error(e.getMessage(), e);
-					}
-					int useruserCompleteness = completenessCalculator.calculateUserUser(userRecord, settingRecord,
-							wxuserRecord);
+		try {
+			ProfileCompletenessRecord completenessRecord = completenessDao.getCompletenessByProfileId(profileId);
+			if (completenessRecord == null) {
+				reCalculateProfileCompleteness(profileId);
+			} else {
+				ProfileProfileRecord profileRecord = profileDao.getProfileByIdOrUserIdOrUUID(0, profileId, null);
+				if (profileRecord != null) {
+					UserUserRecord userRecord = userDao.getUserById(profileRecord.getUserId().intValue());
+					UserWxUserRecord wxuserRecord = null;
+					UserSettingsRecord settingRecord = null;
+					if (userRecord != null) {
+						settingRecord = settingDao.getUserSettingsById(profileRecord.getUserId().intValue());
+						try {
+							wxuserRecord = wxuserDao.getWXUserByUserId(userRecord.getId().intValue());
+						} catch (SQLException e) {
+							logger.error(e.getMessage(), e);
+						}
+						int useruserCompleteness = completenessCalculator.calculateUserUser(userRecord, settingRecord,
+								wxuserRecord);
 
-					if (completenessRecord.getUserUser().intValue() != useruserCompleteness) {
-						completenessRecord.setUserUser(useruserCompleteness);
-						result = completenessDao.updateCompleteness(completenessRecord);
-					} else {
-						result = 1;
+						if (completenessRecord.getUserUser().intValue() != useruserCompleteness) {
+							completenessRecord.setUserUser(useruserCompleteness);
+							result = completenessDao.updateCompleteness(completenessRecord);
+							reCalculateProfileCompleteness(completenessRecord);
+						} else {
+							result = 1;
+						}
 					}
 				}
 			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
 		}
 		return result;
 	}
@@ -277,49 +288,54 @@ public class ProfileCompletenessImpl {
 	
 	public int reCalculateProfileWorkExp(int profileId, int workExpId) {
 		int result = 0;
-		if(profileId == 0) {
-			QueryUtil qu = new QueryUtil();
-			qu.addEqualFilter("id", String.valueOf(workExpId));
-			try {
-				ProfileWorkexpRecord workExpRecord = workExpDao.getResource(qu);
-				if(workExpRecord.getProfileId() != null) {
-					profileId = workExpRecord.getProfileId().intValue();
+		try {
+			if(profileId == 0) {
+				QueryUtil qu = new QueryUtil();
+				qu.addEqualFilter("id", String.valueOf(workExpId));
+				try {
+					ProfileWorkexpRecord workExpRecord = workExpDao.getResource(qu);
+					if(workExpRecord.getProfileId() != null) {
+						profileId = workExpRecord.getProfileId().intValue();
+					}
+				} catch (Exception e) {
+					logger.error(e.getMessage(), e);
 				}
-			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
 			}
-		}
-		ProfileCompletenessRecord completenessRecord = completenessDao.getCompletenessByProfileId(profileId);
-		if (completenessRecord == null) {
-			reCalculateProfileCompleteness(profileId);
-		} else {
-			
-			QueryUtil qu = new QueryUtil();
-			qu.addEqualFilter("profile_id", String.valueOf(profileId));
-			
-			List<ProfileWorkexpRecord> workExps = null;
-			List<HrCompanyRecord> companies = null;
-			try {
-				workExps = workExpDao.getResources(qu);
-				List<Integer> companyIds = new ArrayList<>();
-				if (workExps != null && workExps.size() > 0) {
-					workExps.forEach(workExp -> {
-						if (workExp.getCompanyId() != null && workExp.getCompanyId().intValue() > 0) {
-							companyIds.add(workExp.getCompanyId().intValue());
-						}
-					});
+			ProfileCompletenessRecord completenessRecord = completenessDao.getCompletenessByProfileId(profileId);
+			if (completenessRecord == null) {
+				reCalculateProfileCompleteness(profileId);
+			} else {
+				
+				QueryUtil qu = new QueryUtil();
+				qu.addEqualFilter("profile_id", String.valueOf(profileId));
+				
+				List<ProfileWorkexpRecord> workExps = null;
+				List<HrCompanyRecord> companies = null;
+				try {
+					workExps = workExpDao.getResources(qu);
+					List<Integer> companyIds = new ArrayList<>();
+					if (workExps != null && workExps.size() > 0) {
+						workExps.forEach(workExp -> {
+							if (workExp.getCompanyId() != null && workExp.getCompanyId().intValue() > 0) {
+								companyIds.add(workExp.getCompanyId().intValue());
+							}
+						});
+					}
+					companies = companyDao.getCompaniesByIds(companyIds);
+					int workExpCompleteness = completenessCalculator.calculateProfileWorkexps(workExps, companies);
+					if(workExpCompleteness != completenessRecord.getProfileWorkexp()) {
+						completenessRecord.setProfileWorkexp(workExpCompleteness);
+						result = completenessDao.updateCompleteness(completenessRecord);
+						reCalculateProfileCompleteness(completenessRecord);
+					} else {
+						result = 1;
+					}
+				} catch (Exception e) {
+					logger.error(e.getMessage(), e);
 				}
-				companies = companyDao.getCompaniesByIds(companyIds);
-				int workExpCompleteness = completenessCalculator.calculateProfileWorkexps(workExps, companies);
-				if(workExpCompleteness != completenessRecord.getProfileWorkexp()) {
-					completenessRecord.setProfileWorkexp(workExpCompleteness);
-					result = completenessDao.updateCompleteness(completenessRecord);
-				} else {
-					result = 1;
-				}
-			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
 			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
 		}
 		return result;
 	}
@@ -334,38 +350,43 @@ public class ProfileCompletenessImpl {
 	
 	public int reCalculateProfileEducation(int profileId, int educationId) {
 		int result = 0;
-		if(profileId == 0) {
-			QueryUtil qu = new QueryUtil();
-			qu.addEqualFilter("id", String.valueOf(educationId));
-			try {
-				ProfileEducationRecord educationRecord = educationDao.getResource(qu);
-				if(educationRecord.getProfileId() != null) {
-					profileId = educationRecord.getProfileId().intValue();
+		try {
+			if(profileId == 0) {
+				QueryUtil qu = new QueryUtil();
+				qu.addEqualFilter("id", String.valueOf(educationId));
+				try {
+					ProfileEducationRecord educationRecord = educationDao.getResource(qu);
+					if(educationRecord.getProfileId() != null) {
+						profileId = educationRecord.getProfileId().intValue();
+					}
+				} catch (Exception e) {
+					logger.error(e.getMessage(), e);
 				}
-			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
 			}
-		}
-		
-		ProfileCompletenessRecord completenessRecord = completenessDao.getCompletenessByProfileId(profileId);
-		if (completenessRecord == null) {
-			reCalculateProfileCompleteness(profileId);
-		} else {
 			
-			QueryUtil qu = new QueryUtil();
-			qu.addEqualFilter("profile_id", String.valueOf(profileId));
-			try {
-				List<ProfileEducationRecord> educationRecords = educationDao.getResources(qu);
-				int educationCompleteness = completenessCalculator.calculateProfileEducations(educationRecords);
-				if(educationCompleteness != completenessRecord.getProfileEducation().intValue()) {
-					completenessRecord.setProfileEducation(educationCompleteness);
-					result = completenessDao.updateCompleteness(completenessRecord);
-				} else {
-					result = 1;
+			ProfileCompletenessRecord completenessRecord = completenessDao.getCompletenessByProfileId(profileId);
+			if (completenessRecord == null) {
+				reCalculateProfileCompleteness(profileId);
+			} else {
+				
+				QueryUtil qu = new QueryUtil();
+				qu.addEqualFilter("profile_id", String.valueOf(profileId));
+				try {
+					List<ProfileEducationRecord> educationRecords = educationDao.getResources(qu);
+					int educationCompleteness = completenessCalculator.calculateProfileEducations(educationRecords);
+					if(educationCompleteness != completenessRecord.getProfileEducation().intValue()) {
+						completenessRecord.setProfileEducation(educationCompleteness);
+						result = completenessDao.updateCompleteness(completenessRecord);
+						reCalculateProfileCompleteness(completenessRecord);
+					} else {
+						result = 1;
+					}
+				} catch (Exception e) {
+					logger.error(e.getMessage(), e);
 				}
-			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
 			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
 		}
 		return result;
 	}
@@ -792,6 +813,20 @@ public class ProfileCompletenessImpl {
 			}
 		}
 		return completeness;
+	}
+	
+	private void reCalculateProfileCompleteness(ProfileCompletenessRecord completenessRecord) throws Exception {
+		int totalComplementness = completenessRecord.getUserUser()
+				+ completenessRecord.getProfileBasic() + completenessRecord.getProfileWorkexp()
+				+ completenessRecord.getProfileEducation() + completenessRecord.getProfileProjectexp()
+				+ completenessRecord.getProfileLanguage() + completenessRecord.getProfileSkill()
+				+ completenessRecord.getProfileCredentials() + completenessRecord.getProfileAwards()
+				+ completenessRecord.getProfileWorks() + completenessRecord.getProfileIntention();
+		ProfileProfileRecord profileRecord = profileDao.getProfileByIdOrUserIdOrUUID(0, completenessRecord.getProfileId().intValue(), null);
+		if(profileRecord != null) {
+			profileRecord.setCompleteness(UByte.valueOf(totalComplementness));
+			profileDao.putResource(profileRecord);
+		}
 	}
 
 	public UserDao getUserDao() {
