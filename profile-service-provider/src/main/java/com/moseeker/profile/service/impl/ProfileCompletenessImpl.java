@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jooq.types.UByte;
 import org.jooq.types.UInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -643,7 +644,7 @@ public class ProfileCompletenessImpl {
 	}
 
 	private int reCalculateProfileCompleteness(int profileId) {
-		int result = 0;
+		int completeness = 0;
 		ProfileProfileRecord profileRecord = profileDao.getProfileByIdOrUserIdOrUUID(0, profileId, null);
 		if (profileRecord != null) {
 
@@ -666,6 +667,7 @@ public class ProfileCompletenessImpl {
 				int useruserCompleteness = completenessCalculator.calculateUserUser(userRecord, settingRecord,
 						wxuserRecord);
 				completenessRecord.setUserUser(useruserCompleteness);
+				completeness += useruserCompleteness;
 			}
 
 			QueryUtil qu = new QueryUtil();
@@ -676,6 +678,7 @@ public class ProfileCompletenessImpl {
 				basicRecord = basicDao.getResource(qu);
 				int basicCompleteness = completenessCalculator.calculateProfileBasic(basicRecord);
 				completenessRecord.setProfileBasic(basicCompleteness);
+				completeness += basicCompleteness;
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
@@ -695,6 +698,7 @@ public class ProfileCompletenessImpl {
 				companies = companyDao.getCompaniesByIds(companyIds);
 				int workExpCompleteness = completenessCalculator.calculateProfileWorkexps(workExps, companies);
 				completenessRecord.setProfileWorkexp(workExpCompleteness);
+				completeness += workExpCompleteness;
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
@@ -707,6 +711,7 @@ public class ProfileCompletenessImpl {
 			}
 			int projectExpCompleteness = completenessCalculator.calculateProjectexps(projectExps);
 			completenessRecord.setProfileProjectexp(projectExpCompleteness);
+			completeness += projectExpCompleteness;
 
 			List<ProfileLanguageRecord> languageRecords = null;
 			try {
@@ -716,6 +721,7 @@ public class ProfileCompletenessImpl {
 			}
 			int languageCompleteness = completenessCalculator.calculateLanguages(languageRecords);
 			completenessRecord.setProfileLanguage(languageCompleteness);
+			completeness += languageCompleteness;
 
 			List<ProfileSkillRecord> skillRecords = null;
 			try {
@@ -725,6 +731,7 @@ public class ProfileCompletenessImpl {
 			}
 			int skillCompleteness = completenessCalculator.calculateSkills(skillRecords);
 			completenessRecord.setProfileSkill(skillCompleteness);
+			completeness += skillCompleteness;
 
 			List<ProfileCredentialsRecord> credentialsRecords = null;
 			try {
@@ -734,6 +741,7 @@ public class ProfileCompletenessImpl {
 			}
 			int credentialCompleteness = completenessCalculator.calculateCredentials(credentialsRecords);
 			completenessRecord.setProfileCredentials(credentialCompleteness);
+			completeness += credentialCompleteness;
 
 			List<ProfileAwardsRecord> awardRecords = null;
 			try {
@@ -743,6 +751,7 @@ public class ProfileCompletenessImpl {
 			}
 			int awardCompleteness = completenessCalculator.calculateAwards(awardRecords);
 			completenessRecord.setProfileAwards(awardCompleteness);
+			completeness += awardCompleteness;
 
 			List<ProfileWorksRecord> workRecords = null;
 			try {
@@ -752,6 +761,7 @@ public class ProfileCompletenessImpl {
 			}
 			int worksCompleteness = completenessCalculator.calculateWorks(workRecords);
 			completenessRecord.setProfileWorks(worksCompleteness);
+			completeness += worksCompleteness;
 
 			List<ProfileIntentionRecord> intentionRecords = null;
 			try {
@@ -772,9 +782,16 @@ public class ProfileCompletenessImpl {
 			int intentionCompleteness = completenessCalculator.calculateIntentions(intentionRecords, cityRecords,
 					positionRecords);
 			completenessRecord.setProfileIntention(intentionCompleteness);
-			result = completenessDao.saveOrUpdate(completenessRecord);
+			completenessDao.saveOrUpdate(completenessRecord);
+			completeness += intentionCompleteness;
+			profileRecord.setCompleteness(UByte.valueOf(completeness));
+			try {
+				profileDao.putResource(profileRecord);
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
 		}
-		return result;
+		return completeness;
 	}
 
 	public UserDao getUserDao() {
