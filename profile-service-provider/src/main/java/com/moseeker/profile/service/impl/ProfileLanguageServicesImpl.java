@@ -82,6 +82,7 @@ public class ProfileLanguageServicesImpl extends JOOQBaseServiceImpl<Language, P
 
 	@Override
 	public Response delResources(List<Language> structs) throws TException {
+		//dao.fetchProfileIds(structs);
 		Response response = super.delResources(structs);
 		if(response.getStatus() == 0 && structs != null && structs.size() > 0) {
 			structs.forEach(struct -> {
@@ -104,15 +105,16 @@ public class ProfileLanguageServicesImpl extends JOOQBaseServiceImpl<Language, P
 	public Response putResource(Language struct) throws TException {
 		Response response = super.putResource(struct);
 		if(response.getStatus() == 0)
-			completenessImpl.recalculateprofileLanguage(0, struct.getId());
+			completenessImpl.recalculateprofileLanguage(struct.getProfile_id(), struct.getId());
 		return response;
 	}
 
 	@Override
 	public Response delResource(Language struct) throws TException {
+		
 		Response response = super.delResource(struct);
 		if(response.getStatus() == 0)
-			completenessImpl.recalculateprofileLanguage(0, struct.getId());
+			completenessImpl.recalculateprofileLanguage(struct.getProfile_id(), struct.getId());
 		return response;
 	}
 
