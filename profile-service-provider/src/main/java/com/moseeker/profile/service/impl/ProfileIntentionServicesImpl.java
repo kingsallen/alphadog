@@ -247,6 +247,11 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 		ProfileIntentionRecord record = null;
 		try {
 			record = structToDB(struct);
+			
+			QueryUtil qu = new QueryUtil();
+			qu.addEqualFilter("id", String.valueOf(struct.getProfile_id()));
+			ProfileIntentionRecord intentionRecord = dao.getResource(qu);
+			
 			int intentionId = dao.delResource(record);
 			if(intentionId > 0) {
 				ProfileIntentionCityRecord intentionCityRecord = new ProfileIntentionCityRecord();
@@ -260,7 +265,7 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 				intentionIndustryDao.delResource(intentionIndustryRecord);
 				
 				/* 计算profile完整度 */
-				completenessImpl.reCalculateProfileIntention(struct.getProfile_id(), intentionId);
+				completenessImpl.reCalculateProfileIntention(intentionRecord.getProfileId().intValue(), intentionRecord.getId().intValue());
 				return ResponseUtils.success(String.valueOf(intentionId));
 			}
 		} catch (Exception e) {
@@ -307,11 +312,33 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 
 	@Override
 	public Response delResources(List<Intention> structs) throws TException {
+		QueryUtil qu = new QueryUtil();
+		StringBuffer sb = new StringBuffer("[");
+		structs.forEach(struct -> {
+			sb.append(struct.getId());
+			sb.append(",");
+		});
+		sb.deleteCharAt(sb.length()-1);
+		sb.append("]");
+		qu.addEqualFilter("id", sb.toString());
+		
+		List<ProfileIntentionRecord> intentionRecords = null;
+		try {
+			intentionRecords = dao.getResources(qu);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		Set<Integer> profileIds = new HashSet<>();
+		if(intentionRecords != null && intentionRecords.size() > 0) {
+			intentionRecords.forEach(intention -> {
+				profileIds.add(intention.getProfileId().intValue());
+			});
+		}
 		Response response = super.delResources(structs);
-		if(response.getStatus() == 0 && structs != null && structs.size() > 0) {
-			 structs.forEach(struct -> {
+		if(response.getStatus() == 0 && profileIds != null && profileIds.size() > 0) {
+			profileIds.forEach(profileId -> {
 				 /* 计算profile完整度 */
-				 completenessImpl.reCalculateProfileIntention(struct.getProfile_id(), struct.getId());
+				 completenessImpl.reCalculateProfileIntention(profileId, 0);
 			 });
 		}
 		return response;

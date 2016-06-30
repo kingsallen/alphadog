@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.db.profiledb.tables.records.ProfileCredentialsRecord;
@@ -61,11 +62,33 @@ public class ProfileCredentialsServicesImpl extends JOOQBaseServiceImpl<Credenti
 
 	@Override
 	public Response delResources(List<Credentials> structs) throws TException {
+		QueryUtil qu = new QueryUtil();
+		StringBuffer sb = new StringBuffer("[");
+		structs.forEach(struct -> {
+			sb.append(struct.getId());
+			sb.append(",");
+		});
+		sb.deleteCharAt(sb.length()-1);
+		sb.append("]");
+		qu.addEqualFilter("id", sb.toString());
+		
+		List<ProfileCredentialsRecord> credentialRecords = null;
+		try {
+			credentialRecords = dao.getResources(qu);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		Set<Integer> profileIds = new HashSet<>();
+		if(credentialRecords != null && credentialRecords.size() > 0) {
+			credentialRecords.forEach(credential -> {
+				profileIds.add(credential.getProfileId().intValue());
+			});
+		}
 		Response response = super.delResources(structs);
 		/* 计算profile完整度 */
-		if(response.getStatus() == 0 && structs != null && structs.size() > 0) {
-			structs.forEach(struct -> {
-				completenessImpl.recalculateProfileCredential(struct.getProfile_id(), struct.getId());
+		if(response.getStatus() == 0 && profileIds != null && profileIds.size() > 0) {
+			profileIds.forEach(profileId -> {
+				completenessImpl.recalculateProfileCredential(profileId, 0);
 			});
 		}
 		return response;
@@ -93,10 +116,18 @@ public class ProfileCredentialsServicesImpl extends JOOQBaseServiceImpl<Credenti
 
 	@Override
 	public Response delResource(Credentials struct) throws TException {
+		QueryUtil qu = new QueryUtil();
+		qu.addEqualFilter("id", String.valueOf(struct.getId()));
+		ProfileCredentialsRecord credentialRecord = null;
+		try {
+			credentialRecord = dao.getResource(qu);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
 		Response response = super.delResource(struct);
 		/* 计算profile完整度 */
-		if(response.getStatus() == 0 && struct != null) {
-			completenessImpl.recalculateProfileCredential(struct.getProfile_id(), struct.getId());
+		if(response.getStatus() == 0 && credentialRecord != null) {
+			completenessImpl.recalculateProfileCredential(credentialRecord.getProfileId().intValue(), credentialRecord.getId().intValue());
 		}
 		return response;
 	}

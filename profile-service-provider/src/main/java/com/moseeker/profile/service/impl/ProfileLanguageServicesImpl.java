@@ -11,8 +11,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.db.profiledb.tables.records.ProfileLanguageRecord;
 import com.moseeker.profile.dao.LanguageDao;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -83,14 +86,39 @@ public class ProfileLanguageServicesImpl extends JOOQBaseServiceImpl<Language, P
 	@Override
 	public Response delResources(List<Language> structs) throws TException {
 		//dao.fetchProfileIds(structs);
-		Response response = super.delResources(structs);
-		if(response.getStatus() == 0 && structs != null && structs.size() > 0) {
-			structs.forEach(struct -> {
-				//计算profile完整度
-				completenessImpl.recalculateprofileLanguage(struct.getProfile_id(), struct.getId());
-			});
+		if(structs != null && structs.size() > 0) {
+			try {
+				QueryUtil qu = new QueryUtil();
+				StringBuffer sb = new StringBuffer("[");
+				structs.forEach(struct -> {
+					sb.append(struct.getId());
+					sb.append(",");
+				});
+				sb.deleteCharAt(sb.length()-1);
+				sb.append("]");
+				qu.addEqualFilter("id", sb.toString());
+				
+				List<ProfileLanguageRecord> languageRecords = dao.getResources(qu);
+				Set<Integer> profileIds = new HashSet<>();
+				if(languageRecords != null && languageRecords.size() > 0) {
+					languageRecords.forEach(language -> {
+						profileIds.add(language.getProfileId().intValue());
+					});
+				}
+				Response response = super.delResources(structs);
+				if(response.getStatus() == 0 && profileIds != null && profileIds.size() > 0) {
+					profileIds.forEach(profileId -> {
+						//计算profile完整度
+						completenessImpl.recalculateprofileLanguage(profileId, 0);
+					});
+				}
+				return response;
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
 		}
-		return response;
+		
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 	}
 
 	@Override
@@ -111,9 +139,16 @@ public class ProfileLanguageServicesImpl extends JOOQBaseServiceImpl<Language, P
 
 	@Override
 	public Response delResource(Language struct) throws TException {
-		
+		QueryUtil qu = new QueryUtil();
+		qu.addEqualFilter("id", String.valueOf(struct.getId()));
+		ProfileLanguageRecord language = null;
+		try {
+			language = dao.getResource(qu);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
 		Response response = super.delResource(struct);
-		if(response.getStatus() == 0)
+		if(response.getStatus() == 0 && language != null)
 			completenessImpl.recalculateprofileLanguage(struct.getProfile_id(), struct.getId());
 		return response;
 	}

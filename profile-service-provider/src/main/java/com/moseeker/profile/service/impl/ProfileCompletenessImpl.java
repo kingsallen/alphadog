@@ -662,7 +662,7 @@ public class ProfileCompletenessImpl {
 				}
 				int intentionCompleteness = completenessCalculator.calculateIntentions(intentionRecords, cityRecords, positionRecords);
 				if(intentionCompleteness != completenessRecord.getProfileIntention().intValue()) {
-					completenessRecord.setProfileWorks(intentionCompleteness);
+					completenessRecord.setProfileIntention(intentionCompleteness);
 					result = completenessDao.updateCompleteness(completenessRecord);
 					reCalculateProfileCompleteness(completenessRecord);
 				} else {

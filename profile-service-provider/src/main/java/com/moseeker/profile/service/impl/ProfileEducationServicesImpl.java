@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
@@ -38,13 +39,13 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 
 	@Autowired
 	private EducationDao dao;
-	
+
 	@Autowired
 	private CollegeDao collegeDao;
-	
+
 	@Autowired
 	private MajorDao majorDao;
-	
+
 	@Autowired
 	private ProfileCompletenessImpl completenessImpl;
 
@@ -84,30 +85,31 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 	protected void initDao() {
 		super.dao = this.dao;
 	}
-	
+
 	@Override
 	public Response getResources(CommonQuery query) throws TException {
 		try {
 			List<ProfileEducationRecord> educationRecords = dao.getResources(query);
 			List<Education> educations = DBsToStructs(educationRecords);
-			if(educations != null && educations.size() > 0) {
+			if (educations != null && educations.size() > 0) {
 				List<Integer> collegeCodes = new ArrayList<>();
 				List<String> majorCodes = new ArrayList<>();
 				educations.forEach(education -> {
-					//cityCodes.add(basic.getCity());
-					if(education.getCollege_code() > 0 && StringUtils.isNullOrEmpty(education.getCollege_name())) {
-						collegeCodes.add((int)education.getCollege_code());
+					// cityCodes.add(basic.getCity());
+					if (education.getCollege_code() > 0 && StringUtils.isNullOrEmpty(education.getCollege_name())) {
+						collegeCodes.add((int) education.getCollege_code());
 					}
-					if(!StringUtils.isNullOrEmpty(education.getMajor_code()) && StringUtils.isNullOrEmpty(education.getMajor_name())) {
+					if (!StringUtils.isNullOrEmpty(education.getMajor_code())
+							&& StringUtils.isNullOrEmpty(education.getMajor_name())) {
 						majorCodes.add(education.getMajor_code());
 					}
 				});
-				//学校
+				// 学校
 				List<DictCollegeRecord> colleges = collegeDao.getCollegesByIDs(collegeCodes);
-				if(colleges != null && colleges.size() > 0) {
-					for(Education education : educations) {
-						for(DictCollegeRecord college : colleges) {
-							if(education.getCollege_code() == college.getCode().intValue()) {
+				if (colleges != null && colleges.size() > 0) {
+					for (Education education : educations) {
+						for (DictCollegeRecord college : colleges) {
+							if (education.getCollege_code() == college.getCode().intValue()) {
 								education.setCollege_name(college.getName());
 								education.setCollege_logo(college.getLogo());
 								break;
@@ -115,12 +117,12 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 						}
 					}
 				}
-				//专业
+				// 专业
 				List<DictMajorRecord> majors = majorDao.getMajorsByIDs(majorCodes);
-				if(majors != null && majors.size() > 0) {
-					for(Education education : educations) {
-						for(DictMajorRecord major : majors) {
-							if(education.getMajor_code().equals(major.getCode())) {
+				if (majors != null && majors.size() > 0) {
+					for (Education education : educations) {
+						for (DictMajorRecord major : majors) {
+							if (education.getMajor_code().equals(major.getCode())) {
 								education.setMajor_name(major.getName());
 								break;
 							}
@@ -131,9 +133,9 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 			}
 		} catch (Exception e) {
 			logger.error("getResources error", e);
-			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		} finally {
-			//do nothing
+			// do nothing
 		}
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 	}
@@ -142,24 +144,24 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 	public Response getResource(CommonQuery query) throws TException {
 		try {
 			ProfileEducationRecord educationRecord = dao.getResource(query);
-			if(educationRecord != null) {
+			if (educationRecord != null) {
 				Education education = DBToStruct(educationRecord);
 				DictCollegeRecord college = collegeDao.getCollegeByID(educationRecord.getCollegeCode().intValue());
-				if(college != null) {
+				if (college != null) {
 					education.setCollege_name(college.getName());
 					education.setCollege_logo(college.getLogo());
 				}
 				DictMajorRecord major = majorDao.getMajorByID(educationRecord.getMajorCode());
-				if(major != null) {
+				if (major != null) {
 					education.setMajor_name(major.getName());
 				}
 				return ResponseUtils.success(educationRecord);
 			}
 		} catch (Exception e) {
 			logger.error("getResources error", e);
-			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		} finally {
-			//do nothing
+			// do nothing
 		}
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 	}
@@ -167,74 +169,74 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 	@Override
 	public Response postResource(Education education) throws TException {
 		try {
-			if(education.getCollege_code() > 0) {
+			if (education.getCollege_code() > 0) {
 				DictCollegeRecord college = collegeDao.getCollegeByID(education.getCollege_code());
-				if(college != null) {
+				if (college != null) {
 					education.setCollege_name(college.getName());
 					education.setCollege_logo(college.getLogo());
 				} else {
-					return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_COLLEGE_NOTEXIST);
+					return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_COLLEGE_NOTEXIST);
 				}
 			}
-			if(!StringUtils.isNullOrEmpty(education.getMajor_code())) {
+			if (!StringUtils.isNullOrEmpty(education.getMajor_code())) {
 				DictMajorRecord major = majorDao.getMajorByID(education.getMajor_code());
-				if(major != null) {
+				if (major != null) {
 					education.setMajor_name(major.getName());
 				} else {
-					return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_MAJOR_NOTEXIST);
+					return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_MAJOR_NOTEXIST);
 				}
 			}
 			ProfileEducationRecord record = structToDB(education);
 			int id = dao.postResource(record);
-			if(id > 0) {
+			if (id > 0) {
 				/* 计算profile完整度 */
 				completenessImpl.reCalculateProfileEducation(education.getProfile_id(), 0);
-				return 	ResponseUtils.success(String.valueOf(id));
+				return ResponseUtils.success(String.valueOf(id));
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		} finally {
-			//do nothing
+			// do nothing
 		}
-		return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
 	}
 
 	@Override
 	public Response putResource(Education education) throws TException {
-		if(education.getCollege_code() > 0) {
+		if (education.getCollege_code() > 0) {
 			DictCollegeRecord college = collegeDao.getCollegeByID(education.getCollege_code());
-			if(college != null) {
+			if (college != null) {
 				education.setCollege_name(college.getName());
 				education.setCollege_logo(college.getLogo());
 			} else {
-				return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_COLLEGE_NOTEXIST);
+				return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_COLLEGE_NOTEXIST);
 			}
 		}
-		if(!StringUtils.isNullOrEmpty(education.getMajor_code())) {
+		if (!StringUtils.isNullOrEmpty(education.getMajor_code())) {
 			DictMajorRecord major = majorDao.getMajorByID(education.getMajor_code());
-			if(major != null) {
+			if (major != null) {
 				education.setMajor_name(major.getName());
 			} else {
-				return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_MAJOR_NOTEXIST);
+				return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_DICT_MAJOR_NOTEXIST);
 			}
 		}
 		Response response = super.putResource(education);
-		if(response.getStatus() == 0) {
+		if (response.getStatus() == 0) {
 			/* 计算profile完整度 */
 			completenessImpl.reCalculateProfileEducation(education.getProfile_id(), education.getId());
 		}
 		return response;
 	}
-	
+
 	@Override
 	public Response postResources(List<Education> structs) throws TException {
 		Response response = super.postResources(structs);
-		if(response.getStatus() == 0) {
-			if(structs != null && structs.size() > 0) {
+		if (response.getStatus() == 0) {
+			if (structs != null && structs.size() > 0) {
 				Set<Integer> profileIds = new HashSet<>();
 				structs.forEach(struct -> {
-					if(struct.getProfile_id() > 0) {
+					if (struct.getProfile_id() > 0) {
 						profileIds.add(struct.getProfile_id());
 					}
 				});
@@ -250,7 +252,7 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 	@Override
 	public Response putResources(List<Education> structs) throws TException {
 		Response response = super.putResources(structs);
-		if(response.getStatus() == 0 && structs != null && structs.size() > 0) {
+		if (response.getStatus() == 0 && structs != null && structs.size() > 0) {
 			structs.forEach(struct -> {
 				/* 计算profile完整度 */
 				completenessImpl.reCalculateProfileEducation(struct.getProfile_id(), struct.getId());
@@ -261,11 +263,33 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 
 	@Override
 	public Response delResources(List<Education> structs) throws TException {
+		QueryUtil qu = new QueryUtil();
+		StringBuffer sb = new StringBuffer("[");
+		structs.forEach(struct -> {
+			sb.append(struct.getId());
+			sb.append(",");
+		});
+		sb.deleteCharAt(sb.length() - 1);
+		sb.append("]");
+		qu.addEqualFilter("id", sb.toString());
+
+		List<ProfileEducationRecord> educationRecords = null;
+		try {
+			educationRecords = dao.getResources(qu);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		Set<Integer> profileIds = new HashSet<>();
+		if (educationRecords != null && educationRecords.size() > 0) {
+			educationRecords.forEach(education -> {
+				profileIds.add(education.getProfileId().intValue());
+			});
+		}
 		Response response = super.delResources(structs);
-		if(response.getStatus() == 0 && structs != null && structs.size() > 0) {
-			structs.forEach(struct -> {
+		if (response.getStatus() == 0 && profileIds != null && profileIds.size() > 0) {
+			profileIds.forEach(profileId -> {
 				/* 计算profile完整度 */
-				completenessImpl.reCalculateProfileEducation(struct.getProfile_id(), struct.getId());
+				completenessImpl.reCalculateProfileEducation(profileId, profileId);
 			});
 		}
 		return response;
@@ -273,10 +297,19 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 
 	@Override
 	public Response delResource(Education struct) throws TException {
+		QueryUtil qu = new QueryUtil();
+		qu.addEqualFilter("id", String.valueOf(struct.getId()));
+		ProfileEducationRecord education = null;
+		try {
+			education = dao.getResource(qu);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
 		Response response = super.delResource(struct);
-		if(response.getStatus() == 0)
+		if (response.getStatus() == 0 && education != null)
 			/* 计算profile完整度 */
-			completenessImpl.reCalculateProfileEducation(struct.getProfile_id(), struct.getId());
+			completenessImpl.reCalculateProfileEducation(education.getProfileId().intValue(),
+					education.getId().intValue());
 		return response;
 	}
 

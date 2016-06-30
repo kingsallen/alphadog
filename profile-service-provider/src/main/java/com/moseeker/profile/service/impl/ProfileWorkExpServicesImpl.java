@@ -3,8 +3,10 @@ package com.moseeker.profile.service.impl;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.thrift.TException;
 import org.jooq.types.UByte;
@@ -335,12 +337,34 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 
 	@Override
 	public Response delResources(List<WorkExp> structs) throws TException {
+		QueryUtil qu = new QueryUtil();
+		StringBuffer sb = new StringBuffer("[");
+		structs.forEach(struct -> {
+			sb.append(struct.getId());
+			sb.append(",");
+		});
+		sb.deleteCharAt(sb.length() - 1);
+		sb.append("]");
+		qu.addEqualFilter("id", sb.toString());
+
+		List<ProfileWorkexpRecord> workExpRecords = null;
+		try {
+			workExpRecords = dao.getResources(qu);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		Set<Integer> profileIds = new HashSet<>();
+		if (workExpRecords != null && workExpRecords.size() > 0) {
+			workExpRecords.forEach(workExp -> {
+				profileIds.add(workExp.getProfileId().intValue());
+			});
+		}
 		Response response = super.delResources(structs);
-		if(response.getStatus() == 0 && structs != null && structs.size() > 0) {
-			for(WorkExp struct : structs) {
+		if(response.getStatus() == 0 && profileIds != null && profileIds.size() > 0) {
+			profileIds.forEach(profileId -> {
 				/* 计算用户基本信息的简历完整度 */
-				completenessImpl.reCalculateProfileWorkExpUseWorkExpId(struct.getId());
-			}
+				completenessImpl.reCalculateProfileWorkExp(profileId, 0);
+			});
 		}
 		return response;
 	}
