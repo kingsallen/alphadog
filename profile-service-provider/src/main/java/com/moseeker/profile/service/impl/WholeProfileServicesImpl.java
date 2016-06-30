@@ -211,7 +211,7 @@ public class WholeProfileServicesImpl implements Iface {
 					.mapToEducationRecords((List<Map<String, Object>>) resume.get("educations"));
 
 			ProfileImportRecord importRecords = profileUtils
-					.mapToImportRecord((Map<String, Object>) resume.get("import"), userRecord.getUsername());
+					.mapToImportRecord((Map<String, Object>) resume.get("import"));
 			List<IntentionRecord> intentionRecords = profileUtils
 					.mapToIntentionRecord((List<Map<String, Object>>) resume.get("intentions"));
 			List<ProfileLanguageRecord> languages = profileUtils
@@ -285,8 +285,7 @@ public class WholeProfileServicesImpl implements Iface {
 				.mapToCredentialsRecords((List<Map<String, Object>>) resume.get("credentials"));
 		List<ProfileEducationRecord> educationRecords = profileUtils
 				.mapToEducationRecords((List<Map<String, Object>>) resume.get("educations"));
-		ProfileImportRecord importRecords = profileUtils.mapToImportRecord((Map<String, Object>) resume.get("import"),
-				userRecord.getUsername());
+		ProfileImportRecord importRecords = profileUtils.mapToImportRecord((Map<String, Object>) resume.get("import"));
 		List<IntentionRecord> intentionRecords = profileUtils
 				.mapToIntentionRecord((List<Map<String, Object>>) resume.get("intentions"));
 		List<ProfileLanguageRecord> languages = profileUtils
