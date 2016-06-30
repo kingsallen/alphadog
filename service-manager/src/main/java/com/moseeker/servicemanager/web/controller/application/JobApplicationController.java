@@ -1,24 +1,21 @@
 package com.moseeker.servicemanager.web.controller.application;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.moseeker.rpccenter.common.ServiceUtil;
+import com.moseeker.servicemanager.common.ParamUtils;
+import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.thrift.gen.application.service.JobApplicationServices;
+import com.moseeker.thrift.gen.application.struct.JobApplication;
+import com.moseeker.thrift.gen.application.struct.JobResumeOther;
+import com.moseeker.thrift.gen.common.struct.Response;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.moseeker.rpccenter.common.ServiceUtil;
-import com.moseeker.servicemanager.common.ParamUtils;
-import com.moseeker.servicemanager.common.ResponseLogNotification;
-import com.moseeker.thrift.gen.application.service.JobApplicationServices;
-import com.moseeker.thrift.gen.application.struct.JobApplication;
-import com.moseeker.thrift.gen.application.struct.JobResumeBasic;
-import com.moseeker.thrift.gen.application.struct.JobResumeOther;
-import com.moseeker.thrift.gen.common.struct.Response;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 /**
  * 申请服务
@@ -44,17 +41,10 @@ public class JobApplicationController {
     public String post(HttpServletRequest request, HttpServletResponse response) {
         try {
             // 获取application实体对象
-        	Map<String, Object> param = ParamUtils.mergeRequestParameters(request);
-        	JobApplication jobApplication = ParamUtils.initModelForm(param, JobApplication.class);
-            JobResumeBasic jobResumeBasic = ParamUtils.initModelForm(param, JobResumeBasic.class);
-            param = null;
-            if(jobApplication != null) {
-            	 if(jobApplication.isSetPosition_id()) {
-            		 jobResumeBasic.setPosition_id(jobApplication.getPosition_id());
-                 }
-            }
+            JobApplication jobApplication = ParamUtils.initModelForm(request, JobApplication.class);
+
             // 创建申请记录
-            Response result = applicationService.postApplication(jobApplication, jobResumeBasic);
+            Response result = applicationService.postApplication(jobApplication);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -96,6 +86,49 @@ public class JobApplicationController {
 
             // 创建申请记录
             Response result = applicationService.getApplicationByUserIdAndPositionId(userId, positionId, companyId);
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 清除一个公司一个人申请次数限制的redis key 给sysplat用
+     * <p>
+     *
+     * */
+    @RequestMapping(value = "/application/clear", method = RequestMethod.POST)
+    @ResponseBody
+    public String deleteRedisKeyApplicationCheckCount(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            long userId = Long.valueOf(request.getParameter("user_id"));
+            long companyId = Long.valueOf(request.getParameter("company_id"));
+
+            // 创建申请记录
+            Response result = applicationService.deleteRedisKeyApplicationCheckCount(userId, companyId);
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 校验超出申请次数限制, 每月每家公司一个人只能申请3次
+     * <p>
+     *
+     * */
+    @RequestMapping(value = "/application/count/check", method = RequestMethod.POST)
+    @ResponseBody
+    public String validateUserApplicationCheckCountAtCompany(HttpServletRequest request, HttpServletResponse response) {
+        try {
+
+            Map<String, Object> paramMap = ParamUtils.mergeRequestParameters(request);
+
+            long userId = Long.valueOf(paramMap.get("user_id").toString());
+            long companyId = Long.valueOf(paramMap.get("company_id").toString());
+
+            // 创建申请记录
+            Response result = applicationService.validateUserApplicationCheckCountAtCompany(userId, companyId);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());

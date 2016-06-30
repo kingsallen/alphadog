@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobResumeBasic extends TableImpl<JobResumeBasicRecord> {
 
-	private static final long serialVersionUID = 2062161988;
+	private static final long serialVersionUID = -405892926;
 
 	/**
 	 * The reference instance of <code>jobdb.job_resume_basic</code>
@@ -141,9 +141,9 @@ public class JobResumeBasic extends TableImpl<JobResumeBasicRecord> {
 	public final TableField<JobResumeBasicRecord, Byte> RESUME_TYPE = createField("resume_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "简历类型 0：仟寻简历，1：附件简历");
 
 	/**
-	 * The column <code>jobdb.job_resume_basic.cv_type</code>. 简历类型 0：PC简历，1：仟寻手机填写的简历，2：前程无忧 3：猎聘 4：智联 5:linkedin 13：email简历
+	 * The column <code>jobdb.job_resume_basic.cv_type</code>. 来源, 0:无法识别 1:51Job 2:Liepin 3:zhilian 4:linkedin 100:PC简历 101:仟寻手机填写的简历
 	 */
-	public final TableField<JobResumeBasicRecord, Short> CV_TYPE = createField("cv_type", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaulted(true), this, "简历类型 0：PC简历，1：仟寻手机填写的简历，2：前程无忧 3：猎聘 4：智联 5:linkedin 13：email简历");
+	public final TableField<JobResumeBasicRecord, Short> CV_TYPE = createField("cv_type", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaulted(true), this, "来源, 0:无法识别 1:51Job 2:Liepin 3:zhilian 4:linkedin 100:PC简历 101:仟寻手机填写的简历");
 
 	/**
 	 * The column <code>jobdb.job_resume_basic.email_resume_status</code>. 简历状态,（0，有效；1,未收到回复邮件；2，文件格式不支持；3，附件超过10M；9，提取邮件失败）

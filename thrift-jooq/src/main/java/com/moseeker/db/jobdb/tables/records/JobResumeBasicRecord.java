@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobResumeBasicRecord extends UpdatableRecordImpl<JobResumeBasicRecord> implements Record20<Integer, Integer, Integer, String, String, String, String, Byte, String, String, Timestamp, Timestamp, String, String, Timestamp, Timestamp, Long, Byte, Short, Byte> {
 
-	private static final long serialVersionUID = 1431823991;
+	private static final long serialVersionUID = 1550005875;
 
 	/**
 	 * Setter for <code>jobdb.job_resume_basic.id</code>. ID
@@ -285,14 +285,14 @@ public class JobResumeBasicRecord extends UpdatableRecordImpl<JobResumeBasicReco
 	}
 
 	/**
-	 * Setter for <code>jobdb.job_resume_basic.cv_type</code>. 简历类型 0：PC简历，1：仟寻手机填写的简历，2：前程无忧 3：猎聘 4：智联 5:linkedin 13：email简历
+	 * Setter for <code>jobdb.job_resume_basic.cv_type</code>. 来源, 0:无法识别 1:51Job 2:Liepin 3:zhilian 4:linkedin 100:PC简历 101:仟寻手机填写的简历
 	 */
 	public void setCvType(Short value) {
 		setValue(18, value);
 	}
 
 	/**
-	 * Getter for <code>jobdb.job_resume_basic.cv_type</code>. 简历类型 0：PC简历，1：仟寻手机填写的简历，2：前程无忧 3：猎聘 4：智联 5:linkedin 13：email简历
+	 * Getter for <code>jobdb.job_resume_basic.cv_type</code>. 来源, 0:无法识别 1:51Job 2:Liepin 3:zhilian 4:linkedin 100:PC简历 101:仟寻手机填写的简历
 	 */
 	public Short getCvType() {
 		return (Short) getValue(18);
