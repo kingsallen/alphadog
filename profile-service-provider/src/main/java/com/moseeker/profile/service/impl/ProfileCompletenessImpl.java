@@ -298,7 +298,7 @@ public class ProfileCompletenessImpl {
 				qu.addEqualFilter("id", String.valueOf(workExpId));
 				try {
 					ProfileWorkexpRecord workExpRecord = workExpDao.getResource(qu);
-					if(workExpRecord.getProfileId() != null) {
+					if(workExpRecord != null && workExpRecord.getProfileId() != null) {
 						profileId = workExpRecord.getProfileId().intValue();
 					}
 				} catch (Exception e) {
@@ -360,7 +360,7 @@ public class ProfileCompletenessImpl {
 				qu.addEqualFilter("id", String.valueOf(educationId));
 				try {
 					ProfileEducationRecord educationRecord = educationDao.getResource(qu);
-					if(educationRecord.getProfileId() != null) {
+					if(educationRecord != null && educationRecord.getProfileId() != null) {
 						profileId = educationRecord.getProfileId().intValue();
 					}
 				} catch (Exception e) {
@@ -410,7 +410,7 @@ public class ProfileCompletenessImpl {
 			qu.addEqualFilter("id", String.valueOf(projectExpId));
 			try {
 				ProfileProjectexpRecord projectExpRecord = projectExpDao.getResource(qu);
-				if(projectExpRecord.getProfileId() != null) {
+				if(projectExpRecord != null && projectExpRecord.getProfileId() != null) {
 					profileId = projectExpRecord.getProfileId().intValue();
 				}
 			} catch (Exception e) {
@@ -449,7 +449,7 @@ public class ProfileCompletenessImpl {
 			qu.addEqualFilter("id", String.valueOf(languageId));
 			try {
 				ProfileLanguageRecord languageRecord = languageDao.getResource(qu);
-				if(languageRecord.getProfileId() != null) {
+				if(languageRecord != null && languageRecord.getProfileId() != null) {
 					profileId = languageRecord.getProfileId().intValue();
 				}
 			} catch (Exception e) {
@@ -487,7 +487,7 @@ public class ProfileCompletenessImpl {
 			qu.addEqualFilter("id", String.valueOf(skillId));
 			try {
 				ProfileSkillRecord skillRecord = skillDao.getResource(qu);
-				if(skillRecord.getProfileId() != null) {
+				if(skillRecord != null && skillRecord.getProfileId() != null) {
 					profileId = skillRecord.getProfileId().intValue();
 				}
 			} catch (Exception e) {
@@ -524,7 +524,7 @@ public class ProfileCompletenessImpl {
 			qu.addEqualFilter("id", String.valueOf(credentialId));
 			try {
 				ProfileCredentialsRecord credentialRecord = credentialsDao.getResource(qu);
-				if(credentialRecord.getProfileId() != null) {
+				if(credentialRecord != null && credentialRecord.getProfileId() != null) {
 					profileId = credentialRecord.getProfileId().intValue();
 				}
 			} catch (Exception e) {
@@ -561,7 +561,7 @@ public class ProfileCompletenessImpl {
 			qu.addEqualFilter("id", String.valueOf(awardId));
 			try {
 				ProfileAwardsRecord awardRecord = awardsDao.getResource(qu);
-				if(awardRecord.getProfileId() != null) {
+				if(awardRecord != null && awardRecord.getProfileId() != null) {
 					profileId = awardRecord.getProfileId().intValue();
 				}
 			} catch (Exception e) {
@@ -598,7 +598,7 @@ public class ProfileCompletenessImpl {
 			qu.addEqualFilter("id", String.valueOf(worksId));
 			try {
 				ProfileWorksRecord worksRecord = worksDao.getResource(qu);
-				if(worksRecord.getProfileId() != null) {
+				if(worksRecord != null && worksRecord.getProfileId() != null) {
 					profileId = worksRecord.getProfileId().intValue();
 				}
 			} catch (Exception e) {
@@ -635,7 +635,7 @@ public class ProfileCompletenessImpl {
 			qu.addEqualFilter("id", String.valueOf(intentionId));
 			try {
 				ProfileIntentionRecord intentionRecord = intentionDao.getResource(qu);
-				if(intentionRecord.getProfileId() != null) {
+				if(intentionRecord != null && intentionRecord.getProfileId() != null) {
 					profileId = intentionRecord.getProfileId().intValue();
 				}
 			} catch (Exception e) {

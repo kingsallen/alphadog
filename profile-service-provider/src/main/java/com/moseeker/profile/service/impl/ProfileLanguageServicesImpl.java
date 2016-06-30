@@ -86,7 +86,7 @@ public class ProfileLanguageServicesImpl extends JOOQBaseServiceImpl<Language, P
 		if(response.getStatus() == 0 && structs != null && structs.size() > 0) {
 			structs.forEach(struct -> {
 				//计算profile完整度
-				completenessImpl.recalculateprofileLanguage(0, struct.getId());
+				completenessImpl.recalculateprofileLanguage(struct.getProfile_id(), struct.getId());
 			});
 		}
 		return response;
@@ -96,7 +96,7 @@ public class ProfileLanguageServicesImpl extends JOOQBaseServiceImpl<Language, P
 	public Response postResource(Language struct) throws TException {
 		Response response = super.postResource(struct);
 		if(response.getStatus() == 0)
-			completenessImpl.recalculateprofileLanguage(0, struct.getId());
+			completenessImpl.recalculateprofileLanguage(struct.getProfile_id(), struct.getId());
 		return response;
 	}
 

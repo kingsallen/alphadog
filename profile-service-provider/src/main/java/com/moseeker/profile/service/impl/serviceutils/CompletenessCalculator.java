@@ -166,7 +166,7 @@ public class CompletenessCalculator {
 				completeness = calculateProfileEducation(record, completeness);
 			}
 		}
-		return completeness = 0;
+		return completeness;
 	}
 
 	public int calculateProfileEducation(ProfileEducationRecord record, int completeness) throws ParamIllegalException {

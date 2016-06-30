@@ -188,7 +188,7 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 			int id = dao.postResource(record);
 			if(id > 0) {
 				/* 计算profile完整度 */
-				completenessImpl.reCalculateProfileEducationByEducationId(record.getId().intValue());
+				completenessImpl.reCalculateProfileEducation(education.getProfile_id(), 0);
 				return 	ResponseUtils.success(String.valueOf(id));
 			}
 		} catch (Exception e) {
@@ -222,7 +222,7 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 		Response response = super.putResource(education);
 		if(response.getStatus() == 0) {
 			/* 计算profile完整度 */
-			completenessImpl.reCalculateProfileEducationByEducationId(education.getId());
+			completenessImpl.reCalculateProfileEducation(education.getProfile_id(), education.getId());
 		}
 		return response;
 	}
@@ -240,7 +240,7 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 				});
 				profileIds.forEach(profileId -> {
 					/* 计算profile完整度 */
-					completenessImpl.reCalculateProfileEducationByProfileId(profileId);
+					completenessImpl.reCalculateProfileEducation(profileId, 0);
 				});
 			}
 		}
@@ -253,7 +253,7 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 		if(response.getStatus() == 0 && structs != null && structs.size() > 0) {
 			structs.forEach(struct -> {
 				/* 计算profile完整度 */
-				completenessImpl.reCalculateProfileEducationByEducationId(struct.getId());
+				completenessImpl.reCalculateProfileEducation(struct.getProfile_id(), struct.getId());
 			});
 		}
 		return response;
@@ -265,7 +265,7 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 		if(response.getStatus() == 0 && structs != null && structs.size() > 0) {
 			structs.forEach(struct -> {
 				/* 计算profile完整度 */
-				completenessImpl.reCalculateProfileEducationByEducationId(struct.getId());
+				completenessImpl.reCalculateProfileEducation(struct.getProfile_id(), struct.getId());
 			});
 		}
 		return response;
@@ -275,7 +275,8 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 	public Response delResource(Education struct) throws TException {
 		Response response = super.delResource(struct);
 		if(response.getStatus() == 0)
-			completenessImpl.reCalculateProfileEducationByEducationId(struct.getId());
+			/* 计算profile完整度 */
+			completenessImpl.reCalculateProfileEducation(struct.getProfile_id(), struct.getId());
 		return response;
 	}
 
