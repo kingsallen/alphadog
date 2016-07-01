@@ -9,12 +9,18 @@ namespace java com.moseeker.thrift.gen.application.service
 service JobApplicationServices {
 
     // 添加申请
-    common_struct.Response postApplication(1: application_struct.JobApplication application, 2: application_struct.JobResumeBasic jobResumeBasic);
+    common_struct.Response postApplication(1: application_struct.JobApplication application);
 
     // 添加申请副本信息
     common_struct.Response postJobResumeOther(1: application_struct.JobResumeOther jobResumeOther);
 
     // 判断当前用户是否申请了该职位
     common_struct.Response getApplicationByUserIdAndPositionId(1: i64 userId, 2: i64 positionId, 3: i64 companyId);
+
+    // 清除一个公司一个人申请次数限制的redis key 给sysplat专用, 其他系统禁止使用
+    common_struct.Response deleteRedisKeyApplicationCheckCount(1: i64 userId, 2: i64 companyId);
+
+    // 校验超出申请次数限制, 每月每家公司一个人只能申请3次
+    common_struct.Response validateUserApplicationCheckCountAtCompany(1: i64 userId, 2: i64 companyId);
 
 }
