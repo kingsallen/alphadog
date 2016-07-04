@@ -41,7 +41,6 @@ import com.moseeker.db.hrdb.tables.HrWxRule;
 import com.moseeker.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.db.hrdb.tables.HrWxWechat;
 import com.moseeker.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
-import com.moseeker.db.hrdb.tables.SysWechatAppConf;
 
 import javax.annotation.Generated;
 
@@ -243,9 +242,4 @@ public class Tables {
 	 * 微信消息通知同步状态
 	 */
 	public static final HrWxWechatNoticeSyncStatus HR_WX_WECHAT_NOTICE_SYNC_STATUS = com.moseeker.db.hrdb.tables.HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS;
-
-	/**
-	 * The table hrdb.sys_wechat_app_conf
-	 */
-	public static final SysWechatAppConf SYS_WECHAT_APP_CONF = com.moseeker.db.hrdb.tables.SysWechatAppConf.SYS_WECHAT_APP_CONF;
 }

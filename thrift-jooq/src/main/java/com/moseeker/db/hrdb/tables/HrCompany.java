@@ -37,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompany extends TableImpl<HrCompanyRecord> {
 
-	private static final long serialVersionUID = 691298707;
+	private static final long serialVersionUID = 1244744811;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_company</code>
@@ -73,9 +73,9 @@ public class HrCompany extends TableImpl<HrCompanyRecord> {
 	public final TableField<HrCompanyRecord, String> INTRODUCTION = createField("introduction", org.jooq.impl.SQLDataType.CLOB, this, "公司介绍");
 
 	/**
-	 * The column <code>hrdb.hr_company.scale</code>. 公司规模
+	 * The column <code>hrdb.hr_company.scale</code>. 公司规模, dict_constant.parent_code=1102
 	 */
-	public final TableField<HrCompanyRecord, String> SCALE = createField("scale", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false).defaulted(true), this, "公司规模");
+	public final TableField<HrCompanyRecord, UByte> SCALE = createField("scale", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "公司规模, dict_constant.parent_code=1102");
 
 	/**
 	 * The column <code>hrdb.hr_company.address</code>. 公司地址
