@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileAttachmentRecord;
@@ -68,11 +69,23 @@ public class ProfileUtils {
 						Map<String, Object> company = (Map<String, Object>) workexp.get("company");
 						if (company != null) {
 							HrCompanyRecord hrCompany = new HrCompanyRecord();
-							hrCompany.setName(BeanUtils.converToString(company.get("company_name")));
-							hrCompany.setIndustry(BeanUtils.converToString(company.get("company_industry")));
-							hrCompany.setIntroduction(BeanUtils.converToString(company.get("company_introduction")));
-							hrCompany.setScale(BeanUtils.converToString(company.get("company_scale")));
-							hrCompany.setProperty(BeanUtils.converToUByte(company.get("company_property")));
+							if(company.get("company_name") != null) {
+								hrCompany.setName(BeanUtils.converToString(company.get("company_name")));
+							}
+							if(company.get("company_industry") != null) {
+								hrCompany.setIndustry(BeanUtils.converToString(company.get("company_industry")));
+							}
+							if(company.get("company_introduction") != null) {
+								hrCompany.setIntroduction(BeanUtils.converToString(company.get("company_introduction")));
+							}
+							if(company.get("company_scale") != null) {
+								hrCompany.setScale(BeanUtils.converToString(company.get("company_scale")));
+							}
+							if(company.get("company_property") != null) {
+								hrCompany.setProperty(BeanUtils.converToUByte(company.get("company_property")));
+							}
+							hrCompany.setType(UByte.valueOf(Constant.COMPANY_TYPE_FREE));
+							hrCompany.setSource(UByte.valueOf(Constant.COMPANY_SOURCE_PROFILE));
 							record.setCompany(hrCompany);
 						}
 					}

@@ -695,8 +695,6 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 								workexp.setCompanyId(hc.getId());
 							} else {
 								HrCompanyRecord newCompany = workexp.getCompany();
-								newCompany.setType(UByte.valueOf(Constant.COMPANY_TYPE_FREE));
-								newCompany.setSource(UByte.valueOf(Constant.COMPANY_SOURCE_PROFILE));
 								create.attach(newCompany);
 								newCompany.insert();
 								workexp.setCompanyId(newCompany.getId());
