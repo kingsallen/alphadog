@@ -353,14 +353,6 @@ public class WholeProfileServicesImpl implements Iface {
 							break;
 						}
 					}
-					map.put("salary_type", record.getSalaryType().intValue());
-					for (DictConstantRecord constantRecord : constantRecords) {
-						if (constantRecord.getParentCode().intValue() == 2105
-								&& constantRecord.getCode().intValue() == record.getSalaryType().intValue()) {
-							map.put("salary_type_name", constantRecord.getName());
-							break;
-						}
-					}
 					map.put("salary_code", record.getSalaryCode().intValue());
 					for (DictConstantRecord constantRecord : constantRecords) {
 						if (constantRecord.getParentCode().intValue() == 3114

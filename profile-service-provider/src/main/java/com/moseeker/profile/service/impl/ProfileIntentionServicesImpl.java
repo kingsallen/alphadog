@@ -99,11 +99,6 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 						} else {
 							intentionMap.put("workstate", null);
 						}
-						if(intention.getSalaryType() != null) {
-							intentionMap.put("salary_type", intention.getSalaryType().intValue());
-						} else {
-							intentionMap.put("salary_type", null);
-						}
 						if(intention.getSalaryCode() != null) {
 							intentionMap.put("salary_code", intention.getSalaryCode().intValue());
 						} else {

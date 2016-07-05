@@ -7,6 +7,7 @@ package com.moseeker.db.profiledb;
 import com.moseeker.db.profiledb.tables.ProfileAttachment;
 import com.moseeker.db.profiledb.tables.ProfileAwards;
 import com.moseeker.db.profiledb.tables.ProfileBasic;
+import com.moseeker.db.profiledb.tables.ProfileCompleteness;
 import com.moseeker.db.profiledb.tables.ProfileCredentials;
 import com.moseeker.db.profiledb.tables.ProfileEducation;
 import com.moseeker.db.profiledb.tables.ProfileImport;
@@ -52,6 +53,11 @@ public class Tables {
 	 * 用户profile基础个人信息表
 	 */
 	public static final ProfileBasic PROFILE_BASIC = com.moseeker.db.profiledb.tables.ProfileBasic.PROFILE_BASIC;
+
+	/**
+	 * profile各个部分完成度表
+	 */
+	public static final ProfileCompleteness PROFILE_COMPLETENESS = com.moseeker.db.profiledb.tables.ProfileCompleteness.PROFILE_COMPLETENESS;
 
 	/**
 	 * Profile的证书表

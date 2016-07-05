@@ -37,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileIntention extends TableImpl<ProfileIntentionRecord> {
 
-	private static final long serialVersionUID = -2009492626;
+	private static final long serialVersionUID = -1537749672;
 
 	/**
 	 * The reference instance of <code>profiledb.profile_intention</code>
@@ -71,11 +71,6 @@ public class ProfileIntention extends TableImpl<ProfileIntentionRecord> {
 	 * The column <code>profiledb.profile_intention.workstate</code>. 当前是否在职状态, 0:未填写 1: 在职，看看新机会, 2: 在职，急寻新工作, 3:在职，暂无跳槽打算, 4:离职，正在找工作, 5:应届毕业生
 	 */
 	public final TableField<ProfileIntentionRecord, UByte> WORKSTATE = createField("workstate", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "当前是否在职状态, 0:未填写 1: 在职，看看新机会, 2: 在职，急寻新工作, 3:在职，暂无跳槽打算, 4:离职，正在找工作, 5:应届毕业生");
-
-	/**
-	 * The column <code>profiledb.profile_intention.salary_type</code>. 薪资类型，0:没选择, 1:年薪, 2:月薪, 3:日薪, 4:时薪
-	 */
-	public final TableField<ProfileIntentionRecord, UByte> SALARY_TYPE = createField("salary_type", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "薪资类型，0:没选择, 1:年薪, 2:月薪, 3:日薪, 4:时薪");
 
 	/**
 	 * The column <code>profiledb.profile_intention.salary_code</code>. 薪资code
