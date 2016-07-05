@@ -54,21 +54,21 @@ public class DictConstantDaoImpl extends BaseDaoImpl<DictConstantRecord, DictCon
                 for (DictConstantPojo dictConstantPOJO: dictConstantPOJOList1) {
                     condition = DictConstant.DICT_CONSTANT.PARENT_CODE.equal(dictConstantPOJO.getCode());
                     List<DictConstantPojo> dictConstantPOJOList2 = create.select().from(DictConstant.DICT_CONSTANT).
-                            where(condition).fetchInto(DictConstantPojo.class);
+                            where(condition).orderBy(DictConstant.DICT_CONSTANT.PRIORITY.asc()).fetchInto(DictConstantPojo.class);
                     map.put(dictConstantPOJO.getCode(), dictConstantPOJOList2);
                 }
             // 单个parent_code
             }else if(parentCodeList.size() == 1){
                 condition = DictConstant.DICT_CONSTANT.PARENT_CODE.equal(parentCodeList.get(0));
                 List<DictConstantPojo> dictConstantPOJOList1 = create.select().from(DictConstant.DICT_CONSTANT).
-                        where(condition).fetchInto(DictConstantPojo.class);
+                        where(condition).orderBy(DictConstant.DICT_CONSTANT.PRIORITY.asc()).fetchInto(DictConstantPojo.class);
                 map.put(parentCodeList.get(0), dictConstantPOJOList1);
             // 多个parent_code
             }else{
                 for (Integer parentCode: parentCodeList) {
                     condition = DictConstant.DICT_CONSTANT.PARENT_CODE.equal(parentCode);
                     List<DictConstantPojo> dictConstantPOJOList1 = create.select().from(DictConstant.DICT_CONSTANT).
-                            where(condition).fetchInto(DictConstantPojo.class);
+                            where(condition).orderBy(DictConstant.DICT_CONSTANT.PRIORITY.asc()).fetchInto(DictConstantPojo.class);
                     map.put(parentCode, dictConstantPOJOList1);
                 }
             }

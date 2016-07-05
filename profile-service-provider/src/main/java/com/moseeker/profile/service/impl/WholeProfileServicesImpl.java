@@ -194,12 +194,12 @@ public class WholeProfileServicesImpl implements Iface {
 			if ((userRecord.getMobile() == null || userRecord.getMobile() == 0) && crawlerUser.getMobile() != null) {
 				userRecord.setMobile(crawlerUser.getMobile());
 			}
-			if (crawlerUser != null && !StringUtils.isNullOrEmpty(crawlerUser.getName())) {
+			if (StringUtils.isNullOrEmpty(userRecord.getName()) && !StringUtils.isNullOrEmpty(crawlerUser.getName())) {
 				userRecord.setName(crawlerUser.getName());
 			}
 			ProfileBasicRecord basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"));
-			if (basicRecord != null && StringUtils.isNullOrEmpty(basicRecord.getName())) {
-				basicRecord.setName(userRecord.getName());
+			if (StringUtils.isNullOrEmpty(userRecord.getName()) && !StringUtils.isNullOrEmpty(basicRecord.getName())) {
+				userRecord.setName(basicRecord.getName());
 			}
 			List<ProfileAttachmentRecord> attachmentRecords = profileUtils
 					.mapToAttachmentRecords((List<Map<String, Object>>) resume.get("attachments"));
@@ -266,7 +266,13 @@ public class WholeProfileServicesImpl implements Iface {
 		if (StringUtils.isNullOrEmpty(userRecord.getName()) && !StringUtils.isNullOrEmpty(crawlerUser.getName())) {
 			userRecord.setName(crawlerUser.getName());
 		}
+		if (StringUtils.isNullOrEmpty(userRecord.getEmail()) && !StringUtils.isNullOrEmpty(crawlerUser.getEmail())) {
+			userRecord.setEmail(crawlerUser.getEmail());
+		}
 		ProfileBasicRecord basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"));
+		if (StringUtils.isNullOrEmpty(userRecord.getName()) && !StringUtils.isNullOrEmpty(basicRecord.getName())) {
+			userRecord.setName(basicRecord.getName());
+		}
 		List<ProfileAttachmentRecord> attachmentRecords = profileUtils
 				.mapToAttachmentRecords((List<Map<String, Object>>) resume.get("attachments"));
 		List<ProfileAwardsRecord> awardsRecords = profileUtils
@@ -704,6 +710,7 @@ public class WholeProfileServicesImpl implements Iface {
 				}
 				map.put("mobile", userRecord.getMobile());
 				map.put("email", userRecord.getEmail());
+				map.put("name", userRecord.getName());
 			}
 			if (lastWorkExp != null) {
 				if (company != null) {
@@ -715,18 +722,12 @@ public class WholeProfileServicesImpl implements Iface {
 				map.put("industry_name", lastWorkExp.getIndustryName());
 				map.put("industry_code", lastWorkExp.getIndustryCode().intValue());
 				map.put("position_name", lastWorkExp.getPositionName());
+				map.put("current_job", lastWorkExp.getJob());
 			}
 			if (basicRecord != null) {
 				map.put("update_time", DateUtils.dateToShortTime(profileRecord.getUpdateTime()));
 				map.put("completeness", profileRecord.getCompleteness().intValue());
 				map.put("uuid", profileRecord.getUuid());
-				if(!StringUtils.isNullOrEmpty(basicRecord.getName())) {
-					map.put("name", basicRecord.getName());
-				} else {
-					if(userRecord != null) {
-						map.put("name", userRecord.getName());
-					}
-				}
 				map.put("city_name", basicRecord.getCityName());
 				map.put("city_code", basicRecord.getCityCode().intValue());
 				if (basicRecord.getGender() != null) {

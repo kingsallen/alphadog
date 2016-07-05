@@ -1,6 +1,5 @@
 package com.moseeker.servicemanager.web.controller.crawler;
 
-import java.io.File;
 import java.net.ConnectException;
 import java.util.HashMap;
 import java.util.List;
@@ -138,8 +137,14 @@ public class CrawlerUtils {
 		} else if (messagBean.get("status") != null && (Integer) messagBean.get("status") == 2) {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_IMPORT_FAILED);
 		} else if (messagBean.get("status") != null
-				&& ((Integer) messagBean.get("status") == 3 || (Integer) messagBean.get("status") == 4)) {
+				&& (Integer) messagBean.get("status") == 3 ) {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_LOGIN_FAILED);
+		} else if (messagBean.get("status") != null
+				&& (Integer) messagBean.get("status") == 4) {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_LOGIN2_FAILED);
+		} else if (messagBean.get("status") != null
+				&& (Integer) messagBean.get("status") == 5) {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_SERVICE_PARAM_ERROR);
 		}
 		return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_PARAM_ILLEGAL);
 	}
