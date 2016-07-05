@@ -199,6 +199,9 @@ public class ProfileUtils {
 		ProfileImportRecord record = null;
 		if (importMap != null) {
 			record = BeanUtils.MapToRecord(importMap, ProfileImportRecord.class);
+			if(importMap.get("data") != null) {
+				record.setData(JSON.toJSONString(importMap.get("data")));
+			}
 			return record;
 		}
 		return record;
