@@ -103,7 +103,7 @@ public class WholeProfileServicesImpl implements Iface {
 				profileQuery.setEqualFilter(profileEqualFilter);
 
 				List<DictConstantRecord> constantRecords = constantDao
-						.getCitiesByParentCodes(Arrays.asList(3109, 2103, 3102, 2105, 3120, 3115, 3114, 3119, 3120));
+						.getCitiesByParentCodes(Arrays.asList(3109, 3105, 3102, 2105, 3120, 3115, 3114, 3119, 3120));
 
 				Map<String, Object> profileprofile = buildProfile(profileRecord, query, constantRecords);
 				profile.put("profile", profileprofile);
@@ -485,7 +485,7 @@ public class WholeProfileServicesImpl implements Iface {
 					map.put("id", record.getId().intValue());
 					map.put("worktype", record.getWorktype().intValue());
 					for (DictConstantRecord constantRecord : constantRecords) {
-						if (constantRecord.getParentCode().intValue() == 2103
+						if (constantRecord.getParentCode().intValue() == 3105
 								&& constantRecord.getCode().intValue() == record.getWorktype().intValue()) {
 							map.put("worktype_name", constantRecord.getName());
 							break;
