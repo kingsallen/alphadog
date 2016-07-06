@@ -33,7 +33,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileBasicRecord extends UpdatableRecordImpl<ProfileBasicRecord> implements Record14<UInteger, String, UByte, Integer, String, Integer, String, Date, String, String, String, String, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = -225676496;
+	private static final long serialVersionUID = -106601068;
 
 	/**
 	 * Setter for <code>profiledb.profile_basic.profile_id</code>. profile.id
@@ -50,14 +50,14 @@ public class ProfileBasicRecord extends UpdatableRecordImpl<ProfileBasicRecord> 
 	}
 
 	/**
-	 * Setter for <code>profiledb.profile_basic.name</code>. 姓名
+	 * Setter for <code>profiledb.profile_basic.name</code>.
 	 */
 	public void setName(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>profiledb.profile_basic.name</code>. 姓名
+	 * Getter for <code>profiledb.profile_basic.name</code>.
 	 */
 	public String getName() {
 		return (String) getValue(1);
