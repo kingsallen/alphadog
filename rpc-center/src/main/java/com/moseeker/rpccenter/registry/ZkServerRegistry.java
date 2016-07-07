@@ -151,7 +151,8 @@ public class ZkServerRegistry implements IRegistry {
                 }
             }
         });
-        zookeeper.getData().watched().forPath(path);
+        String data = new String(zookeeper.getData().watched().forPath(path), "utf-8");
+        System.out.println(data);
     }
 
     /**
