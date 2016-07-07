@@ -412,16 +412,15 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 					workexpRecords.forEach(workexp -> {
 						workexp.setProfileId(profileRecord.getId());
 						workexp.setCreateTime(now);
-						if (!StringUtils.isNullOrEmpty(workexp.getCompanyName())) {
+						if (workexp.getCompany() != null && !StringUtils.isNullOrEmpty(workexp.getCompany().getName())) {
 							HrCompanyRecord hc = create.selectFrom(HrCompany.HR_COMPANY)
-									.where(HrCompany.HR_COMPANY.NAME.equal(workexp.getCompanyName()))
-									.and(HrCompany.HR_COMPANY.DISABLE.equal((byte) (Constant.ENABLE))).limit(1)
+									.where(HrCompany.HR_COMPANY.NAME.equal(workexp.getCompany().getName()))
+									.limit(1)
 									.fetchOne();
 							if (hc != null) {
 								workexp.setCompanyId(hc.getId());
 							} else {
-								HrCompanyRecord newCompany = new HrCompanyRecord();
-								newCompany.setName(workexp.getCompanyName());
+								HrCompanyRecord newCompany = workexp.getCompany();
 								newCompany.setType(UByte.valueOf(Constant.COMPANY_TYPE_FREE));
 								newCompany.setSource(UByte.valueOf(Constant.COMPANY_SOURCE_PROFILE));
 								create.attach(newCompany);
@@ -664,6 +663,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 				if (otherRecord != null) {
 					create.attach(otherRecord);
 					otherRecord.setCreateTime(now);
+					otherRecord.setProfileId(profileRecord.getId());
 					otherRecord.insert();
 				}
 				if (projectExps != null && projectExps.size() > 0) {
@@ -686,18 +686,15 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 					workexpRecords.forEach(workexp -> {
 						workexp.setProfileId(profileRecord.getId());
 						workexp.setCreateTime(now);
-						if (!StringUtils.isNullOrEmpty(workexp.getCompanyName())) {
+						if (workexp.getCompany() != null && !StringUtils.isNullOrEmpty(workexp.getCompany().getName())) {
 							HrCompanyRecord hc = create.selectFrom(HrCompany.HR_COMPANY)
-									.where(HrCompany.HR_COMPANY.NAME.equal(workexp.getCompanyName()))
-									.and(HrCompany.HR_COMPANY.DISABLE.equal((byte) (Constant.ENABLE))).limit(1)
+									.where(HrCompany.HR_COMPANY.NAME.equal(workexp.getCompany().getName()))
+									.limit(1)
 									.fetchOne();
 							if (hc != null) {
 								workexp.setCompanyId(hc.getId());
 							} else {
-								HrCompanyRecord newCompany = new HrCompanyRecord();
-								newCompany.setName(workexp.getCompanyName());
-								newCompany.setType(UByte.valueOf(Constant.COMPANY_TYPE_FREE));
-								newCompany.setSource(UByte.valueOf(Constant.COMPANY_SOURCE_PROFILE));
+								HrCompanyRecord newCompany = workexp.getCompany();
 								create.attach(newCompany);
 								newCompany.insert();
 								workexp.setCompanyId(newCompany.getId());

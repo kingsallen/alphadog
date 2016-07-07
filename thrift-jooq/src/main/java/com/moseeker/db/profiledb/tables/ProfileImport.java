@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileImport extends TableImpl<ProfileImportRecord> {
 
-	private static final long serialVersionUID = 1858693080;
+	private static final long serialVersionUID = 1022676950;
 
 	/**
 	 * The reference instance of <code>profiledb.profile_import</code>
@@ -90,6 +90,11 @@ public class ProfileImport extends TableImpl<ProfileImportRecord> {
 	 * The column <code>profiledb.profile_import.update_time</code>. 更新时间
 	 */
 	public final TableField<ProfileImportRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "更新时间");
+
+	/**
+	 * The column <code>profiledb.profile_import.data</code>. 导入数据
+	 */
+	public final TableField<ProfileImportRecord, String> DATA = createField("data", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "导入数据");
 
 	/**
 	 * Create a <code>profiledb.profile_import</code> table reference
