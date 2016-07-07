@@ -41,7 +41,6 @@ import com.moseeker.db.hrdb.tables.HrWxRule;
 import com.moseeker.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.db.hrdb.tables.HrWxWechat;
 import com.moseeker.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
-import com.moseeker.db.hrdb.tables.SysWechatAppConf;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,7 +65,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-	private static final long serialVersionUID = -1053236739;
+	private static final long serialVersionUID = -1950646122;
 
 	/**
 	 * The reference instance of <code>hrdb</code>
@@ -125,7 +124,6 @@ public class Hrdb extends SchemaImpl {
 			HrWxRule.HR_WX_RULE,
 			HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE,
 			HrWxWechat.HR_WX_WECHAT,
-			HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS,
-			SysWechatAppConf.SYS_WECHAT_APP_CONF);
+			HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS);
 	}
 }
