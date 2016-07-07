@@ -855,7 +855,7 @@ public class WholeProfileServicesImpl implements Iface {
 					map.put("company_id", company.getId().intValue());
 					map.put("company_name", company.getName());
 					map.put("company_logo", company.getLogo());
-					map.put("company_scale", company.getScale());
+					map.put("company_scale", company.getScale().intValue());
 				}
 				map.put("industry_name", lastWorkExp.getIndustryName());
 				map.put("industry_code", lastWorkExp.getIndustryCode().intValue());
