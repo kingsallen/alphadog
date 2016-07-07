@@ -103,7 +103,7 @@ public class WholeProfileServicesImpl implements Iface {
 				profileQuery.setEqualFilter(profileEqualFilter);
 
 				List<DictConstantRecord> constantRecords = constantDao
-						.getCitiesByParentCodes(Arrays.asList(3109, 2103, 3102, 2105, 3120, 3115, 3114, 3119, 3120));
+						.getCitiesByParentCodes(Arrays.asList(3109, 3105, 3102, 2105, 3120, 3115, 3114, 3119, 3120));
 
 				Map<String, Object> profileprofile = buildProfile(profileRecord, query, constantRecords);
 				profile.put("profile", profileprofile);
@@ -190,41 +190,115 @@ public class WholeProfileServicesImpl implements Iface {
 			if (repeatProfileRecord != null) {
 				return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ALLREADY_EXIST);
 			}
-			UserUserRecord crawlerUser = profileUtils.mapToUserUserRecord((Map<String, Object>) resume.get("user"));
-			if ((userRecord.getMobile() == null || userRecord.getMobile() == 0) && crawlerUser.getMobile() != null) {
+			UserUserRecord crawlerUser = null;
+			try {
+				crawlerUser = profileUtils.mapToUserUserRecord((Map<String, Object>) resume.get("user"));
+			} catch (Exception e1) {
+				logger.error(e1.getMessage(), e1);
+			}
+			if ((userRecord.getMobile() == null || userRecord.getMobile() == 0) && crawlerUser != null && crawlerUser.getMobile() != null) {
 				userRecord.setMobile(crawlerUser.getMobile());
 			}
-			if (StringUtils.isNullOrEmpty(userRecord.getName()) && !StringUtils.isNullOrEmpty(crawlerUser.getName())) {
+			if (StringUtils.isNullOrEmpty(userRecord.getName()) && crawlerUser != null && !StringUtils.isNullOrEmpty(crawlerUser.getName())) {
 				userRecord.setName(crawlerUser.getName());
 			}
-			ProfileBasicRecord basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"));
-			if (StringUtils.isNullOrEmpty(userRecord.getName()) && !StringUtils.isNullOrEmpty(basicRecord.getName())) {
+			if (StringUtils.isNullOrEmpty(userRecord.getHeadimg()) && crawlerUser != null && !StringUtils.isNullOrEmpty(crawlerUser.getHeadimg())) {
+				userRecord.setHeadimg(crawlerUser.getHeadimg());
+			}
+			if (StringUtils.isNullOrEmpty(userRecord.getEmail()) && crawlerUser != null && !StringUtils.isNullOrEmpty(crawlerUser.getEmail())) {
+				userRecord.setEmail(crawlerUser.getEmail());
+			}
+			ProfileBasicRecord basicRecord = null;
+			try {
+				basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"));
+			} catch (Exception e1) {
+				logger.error(e1.getMessage(), e1);
+			}
+			if (StringUtils.isNullOrEmpty(userRecord.getName()) && basicRecord != null && !StringUtils.isNullOrEmpty(basicRecord.getName())) {
 				userRecord.setName(basicRecord.getName());
 			}
-			List<ProfileAttachmentRecord> attachmentRecords = profileUtils
-					.mapToAttachmentRecords((List<Map<String, Object>>) resume.get("attachments"));
-			List<ProfileAwardsRecord> awardsRecords = profileUtils
-					.mapToAwardsRecords((List<Map<String, Object>>) resume.get("awards"));
-			List<ProfileCredentialsRecord> credentialsRecords = profileUtils
-					.mapToCredentialsRecords((List<Map<String, Object>>) resume.get("credentials"));
-			List<ProfileEducationRecord> educationRecords = profileUtils
-					.mapToEducationRecords((List<Map<String, Object>>) resume.get("educations"));
-
-			ProfileImportRecord importRecords = profileUtils
-					.mapToImportRecord((Map<String, Object>) resume.get("import"), userRecord.getUsername());
-			List<IntentionRecord> intentionRecords = profileUtils
-					.mapToIntentionRecord((List<Map<String, Object>>) resume.get("intentions"));
-			List<ProfileLanguageRecord> languages = profileUtils
-					.mapToLanguageRecord((List<Map<String, Object>>) resume.get("languages"));
-			ProfileOtherRecord otherRecord = profileUtils.mapToOtherRecord((Map<String, Object>) resume.get("other"));
-			List<ProfileProjectexpRecord> projectExps = profileUtils
-					.mapToProjectExpsRecords((List<Map<String, Object>>) resume.get("projectexps"));
-			List<ProfileSkillRecord> skillRecords = profileUtils
-					.mapToSkillRecords((List<Map<String, Object>>) resume.get("skills"));
-			List<ProfileWorkexpEntity> workexpRecords = profileUtils
-					.mapToWorkexpRecords((List<Map<String, Object>>) resume.get("workexps"));
-			List<ProfileWorksRecord> worksRecords = profileUtils
-					.mapToWorksRecords((List<Map<String, Object>>) resume.get("works"));
+			List<ProfileAttachmentRecord> attachmentRecords = null;
+			try {
+				attachmentRecords = profileUtils
+						.mapToAttachmentRecords((List<Map<String, Object>>) resume.get("attachments"));
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+			List<ProfileAwardsRecord> awardsRecords = null;
+			try {
+				awardsRecords = profileUtils
+						.mapToAwardsRecords((List<Map<String, Object>>) resume.get("awards"));
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+			List<ProfileCredentialsRecord> credentialsRecords = null;
+			try {
+				credentialsRecords = profileUtils
+						.mapToCredentialsRecords((List<Map<String, Object>>) resume.get("credentials"));
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+			List<ProfileEducationRecord> educationRecords = null;
+			try {
+				educationRecords = profileUtils
+						.mapToEducationRecords((List<Map<String, Object>>) resume.get("educations"));
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+			ProfileImportRecord importRecords = null;
+			try {
+				importRecords = profileUtils.mapToImportRecord((Map<String, Object>) resume.get("import"));
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+			List<IntentionRecord> intentionRecords = null;
+			try {
+				intentionRecords = profileUtils
+						.mapToIntentionRecord((List<Map<String, Object>>) resume.get("intentions"));
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+			List<ProfileLanguageRecord> languages = null;
+			try {
+				languages = profileUtils
+						.mapToLanguageRecord((List<Map<String, Object>>) resume.get("languages"));
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+			ProfileOtherRecord otherRecord = null;
+			try {
+				otherRecord = profileUtils.mapToOtherRecord((Map<String, Object>) resume.get("other"));
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+			List<ProfileProjectexpRecord> projectExps = null;
+			try {
+				projectExps = profileUtils
+						.mapToProjectExpsRecords((List<Map<String, Object>>) resume.get("projectexps"));
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+			List<ProfileSkillRecord> skillRecords = null;
+			try {
+				skillRecords = profileUtils
+						.mapToSkillRecords((List<Map<String, Object>>) resume.get("skills"));
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+			List<ProfileWorkexpEntity> workexpRecords = null;
+			try {
+				workexpRecords = profileUtils
+						.mapToWorkexpRecords((List<Map<String, Object>>) resume.get("workexps"));
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+			List<ProfileWorksRecord> worksRecords = null;
+			try {
+				worksRecords = profileUtils
+						.mapToWorksRecords((List<Map<String, Object>>) resume.get("works"));
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
 
 			int id = profileDao.saveProfile(profileRecord, basicRecord, attachmentRecords, awardsRecords,
 					credentialsRecords, educationRecords, importRecords, intentionRecords, languages, otherRecord,
@@ -259,43 +333,115 @@ public class WholeProfileServicesImpl implements Iface {
 		profileRecord.setUserId(userRecord.getId());
 		profileRecord.setDisable(UByte.valueOf(Constant.ENABLE));
 
-		UserUserRecord crawlerUser = profileUtils.mapToUserUserRecord((Map<String, Object>) resume.get("user"));
-		if ((userRecord.getMobile() == null || userRecord.getMobile() == 0) && crawlerUser.getMobile() != null) {
+		UserUserRecord crawlerUser = null;
+		try {
+			crawlerUser = profileUtils.mapToUserUserRecord((Map<String, Object>) resume.get("user"));
+		} catch (Exception e1) {
+			logger.error(e1.getMessage(), e1);
+		}
+		if ((userRecord.getMobile() == null || userRecord.getMobile() == 0) && crawlerUser != null && crawlerUser.getMobile() != null) {
 			userRecord.setMobile(crawlerUser.getMobile());
 		}
-		if (StringUtils.isNullOrEmpty(userRecord.getName()) && !StringUtils.isNullOrEmpty(crawlerUser.getName())) {
+		if (StringUtils.isNullOrEmpty(userRecord.getName()) && crawlerUser != null && !StringUtils.isNullOrEmpty(crawlerUser.getName())) {
 			userRecord.setName(crawlerUser.getName());
 		}
-		if (StringUtils.isNullOrEmpty(userRecord.getEmail()) && !StringUtils.isNullOrEmpty(crawlerUser.getEmail())) {
+		if (StringUtils.isNullOrEmpty(userRecord.getHeadimg()) && crawlerUser != null && !StringUtils.isNullOrEmpty(crawlerUser.getHeadimg())) {
+			userRecord.setHeadimg(crawlerUser.getHeadimg());
+		}
+		if (StringUtils.isNullOrEmpty(userRecord.getEmail()) && crawlerUser != null && !StringUtils.isNullOrEmpty(crawlerUser.getEmail())) {
 			userRecord.setEmail(crawlerUser.getEmail());
 		}
-		ProfileBasicRecord basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"));
-		if (StringUtils.isNullOrEmpty(userRecord.getName()) && !StringUtils.isNullOrEmpty(basicRecord.getName())) {
+		ProfileBasicRecord basicRecord = null;
+		try {
+			basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"));
+		} catch (Exception e1) {
+			logger.error(e1.getMessage(), e1);
+		}
+		if (StringUtils.isNullOrEmpty(userRecord.getName()) && basicRecord != null && !StringUtils.isNullOrEmpty(basicRecord.getName())) {
 			userRecord.setName(basicRecord.getName());
 		}
-		List<ProfileAttachmentRecord> attachmentRecords = profileUtils
-				.mapToAttachmentRecords((List<Map<String, Object>>) resume.get("attachments"));
-		List<ProfileAwardsRecord> awardsRecords = profileUtils
-				.mapToAwardsRecords((List<Map<String, Object>>) resume.get("awards"));
-		List<ProfileCredentialsRecord> credentialsRecords = profileUtils
-				.mapToCredentialsRecords((List<Map<String, Object>>) resume.get("credentials"));
-		List<ProfileEducationRecord> educationRecords = profileUtils
-				.mapToEducationRecords((List<Map<String, Object>>) resume.get("educations"));
-		ProfileImportRecord importRecords = profileUtils.mapToImportRecord((Map<String, Object>) resume.get("import"),
-				userRecord.getUsername());
-		List<IntentionRecord> intentionRecords = profileUtils
-				.mapToIntentionRecord((List<Map<String, Object>>) resume.get("intentions"));
-		List<ProfileLanguageRecord> languages = profileUtils
-				.mapToLanguageRecord((List<Map<String, Object>>) resume.get("languages"));
-		ProfileOtherRecord otherRecord = profileUtils.mapToOtherRecord((Map<String, Object>) resume.get("other"));
-		List<ProfileProjectexpRecord> projectExps = profileUtils
-				.mapToProjectExpsRecords((List<Map<String, Object>>) resume.get("projectexps"));
-		List<ProfileSkillRecord> skillRecords = profileUtils
-				.mapToSkillRecords((List<Map<String, Object>>) resume.get("skills"));
-		List<ProfileWorkexpEntity> workexpRecords = profileUtils
-				.mapToWorkexpRecords((List<Map<String, Object>>) resume.get("workexps"));
-		List<ProfileWorksRecord> worksRecords = profileUtils
-				.mapToWorksRecords((List<Map<String, Object>>) resume.get("works"));
+		List<ProfileAttachmentRecord> attachmentRecords = null;
+		try {
+			attachmentRecords = profileUtils
+					.mapToAttachmentRecords((List<Map<String, Object>>) resume.get("attachments"));
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		List<ProfileAwardsRecord> awardsRecords = null;
+		try {
+			awardsRecords = profileUtils
+					.mapToAwardsRecords((List<Map<String, Object>>) resume.get("awards"));
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		List<ProfileCredentialsRecord> credentialsRecords = null;
+		try {
+			credentialsRecords = profileUtils
+					.mapToCredentialsRecords((List<Map<String, Object>>) resume.get("credentials"));
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		List<ProfileEducationRecord> educationRecords = null;
+		try {
+			educationRecords = profileUtils
+					.mapToEducationRecords((List<Map<String, Object>>) resume.get("educations"));
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		ProfileImportRecord importRecords = null;
+		try {
+			importRecords = profileUtils.mapToImportRecord((Map<String, Object>) resume.get("import"));
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		List<IntentionRecord> intentionRecords = null;
+		try {
+			intentionRecords = profileUtils
+					.mapToIntentionRecord((List<Map<String, Object>>) resume.get("intentions"));
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		List<ProfileLanguageRecord> languages = null;
+		try {
+			languages = profileUtils
+					.mapToLanguageRecord((List<Map<String, Object>>) resume.get("languages"));
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		ProfileOtherRecord otherRecord = null;
+		try {
+			otherRecord = profileUtils.mapToOtherRecord((Map<String, Object>) resume.get("other"));
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		List<ProfileProjectexpRecord> projectExps = null;
+		try {
+			projectExps = profileUtils
+					.mapToProjectExpsRecords((List<Map<String, Object>>) resume.get("projectexps"));
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		List<ProfileSkillRecord> skillRecords = null;
+		try {
+			skillRecords = profileUtils
+					.mapToSkillRecords((List<Map<String, Object>>) resume.get("skills"));
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		List<ProfileWorkexpEntity> workexpRecords = null;
+		try {
+			workexpRecords = profileUtils
+					.mapToWorkexpRecords((List<Map<String, Object>>) resume.get("workexps"));
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		List<ProfileWorksRecord> worksRecords = null;
+		try {
+			worksRecords = profileUtils
+					.mapToWorksRecords((List<Map<String, Object>>) resume.get("works"));
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
 		int id = profileDao.saveProfile(profileRecord, basicRecord, attachmentRecords, awardsRecords,
 				credentialsRecords, educationRecords, importRecords, intentionRecords, languages, otherRecord,
 				projectExps, skillRecords, workexpRecords, worksRecords, userRecord, oldProfile);
@@ -339,7 +485,7 @@ public class WholeProfileServicesImpl implements Iface {
 					map.put("id", record.getId().intValue());
 					map.put("worktype", record.getWorktype().intValue());
 					for (DictConstantRecord constantRecord : constantRecords) {
-						if (constantRecord.getParentCode().intValue() == 2103
+						if (constantRecord.getParentCode().intValue() == 3105
 								&& constantRecord.getCode().intValue() == record.getWorktype().intValue()) {
 							map.put("worktype_name", constantRecord.getName());
 							break;
