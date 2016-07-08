@@ -79,7 +79,7 @@ public class ProfileUtils {
 								hrCompany.setIntroduction(BeanUtils.converToString(company.get("company_introduction")));
 							}
 							if(company.get("company_scale") != null) {
-								hrCompany.setScale(BeanUtils.converToString(company.get("company_scale")));
+								hrCompany.setScale(BeanUtils.converToUByte(company.get("company_scale")));
 							}
 							if(company.get("company_property") != null) {
 								hrCompany.setProperty(BeanUtils.converToUByte(company.get("company_property")));
