@@ -184,7 +184,7 @@ public class CompletenessCalculator {
 			}
 		}
 		if (!StringUtils.isNotNullOrEmpty(record.getMajorCode())
-				|| !StringUtils.isNotNullOrEmpty(record.getMajorName())) {
+				|| StringUtils.isNotNullOrEmpty(record.getMajorName())) {
 			completeness += 3;
 		}
 		if (record.getDegree() != null && record.getDegree().intValue() > 0) {
