@@ -60,7 +60,7 @@ public class ZkClientRegistry implements IRegistry {
      * @param clientNode
      */
     public ZkClientRegistry(String configPath, CuratorFramework zookeeper, ServerNode clientNode) {
-        super();
+        //super();
         this.configPath = configPath;
         this.zookeeper = zookeeper;
         this.clientNode = clientNode;
