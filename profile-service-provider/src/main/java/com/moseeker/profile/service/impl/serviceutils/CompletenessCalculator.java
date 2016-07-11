@@ -183,7 +183,7 @@ public class CompletenessCalculator {
 				completeness += 1;
 			}
 		}
-		if (!StringUtils.isNotNullOrEmpty(record.getMajorCode())
+		if (StringUtils.isNotNullOrEmpty(record.getMajorCode())
 				|| StringUtils.isNotNullOrEmpty(record.getMajorName())) {
 			completeness += 3;
 		}
