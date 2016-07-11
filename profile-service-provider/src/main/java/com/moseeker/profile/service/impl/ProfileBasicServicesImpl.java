@@ -108,7 +108,7 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 	public Response getResource(CommonQuery query) throws TException {
 		try {
 			ProfileBasicRecord record = dao.getResource(query);
-			if(record == null) {
+			if(record != null) {
 				Basic basic = DBToStruct(record);
 				if(basic.getCity_code() > 0 && StringUtils.isNullOrEmpty(basic.getCity_name())) {
 					DictCityRecord city = cityDao.getCityByCode(basic.getCity_code());

@@ -38,7 +38,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileWorkexp extends TableImpl<ProfileWorkexpRecord> {
 
-	private static final long serialVersionUID = -980656953;
+	private static final long serialVersionUID = 787058973;
 
 	/**
 	 * The reference instance of <code>profiledb.profile_workexp</code>
@@ -77,11 +77,6 @@ public class ProfileWorkexp extends TableImpl<ProfileWorkexpRecord> {
 	 * The column <code>profiledb.profile_workexp.end_until_now</code>. 是否至今 0：否 1：是
 	 */
 	public final TableField<ProfileWorkexpRecord, UByte> END_UNTIL_NOW = createField("end_until_now", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "是否至今 0：否 1：是");
-
-	/**
-	 * The column <code>profiledb.profile_workexp.salary_type</code>. 薪资类型，0:没选择, 1:年薪, 2:月薪, 3:日薪, 4:时薪
-	 */
-	public final TableField<ProfileWorkexpRecord, UByte> SALARY_TYPE = createField("salary_type", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "薪资类型，0:没选择, 1:年薪, 2:月薪, 3:日薪, 4:时薪");
 
 	/**
 	 * The column <code>profiledb.profile_workexp.salary_code</code>. 薪资code

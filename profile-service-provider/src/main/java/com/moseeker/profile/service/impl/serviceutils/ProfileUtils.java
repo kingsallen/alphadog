@@ -10,8 +10,11 @@ import org.jooq.types.UInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.DateUtils;
+import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileAttachmentRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileAwardsRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileBasicRecord;
@@ -30,9 +33,10 @@ import com.moseeker.db.profiledb.tables.records.ProfileWorksRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.profile.dao.entity.ProfileWorkexpEntity;
 import com.moseeker.profile.dao.impl.IntentionRecord;
+import com.mysql.jdbc.StringUtils;
 
 public class ProfileUtils {
-	
+
 	Logger logger = LoggerFactory.getLogger(ProfileUtils.class);
 
 	public List<ProfileWorksRecord> mapToWorksRecords(List<Map<String, Object>> works) {
@@ -54,6 +58,37 @@ public class ProfileUtils {
 			workexps.forEach(workexp -> {
 				ProfileWorkexpEntity record = BeanUtils.MapToRecord(workexp, ProfileWorkexpEntity.class);
 				if (record != null) {
+					if (workexp.get("start_date") != null) {
+						record.setStart(BeanUtils.convertToSQLDate(workexp.get("start_date")));
+					}
+					if (workexp.get("end_date") != null) {
+						record.setEnd(BeanUtils.convertToSQLDate(workexp.get("end_date")));
+					}
+					if (workexp.get("company") != null) {
+						@SuppressWarnings("unchecked")
+						Map<String, Object> company = (Map<String, Object>) workexp.get("company");
+						if (company != null) {
+							HrCompanyRecord hrCompany = new HrCompanyRecord();
+							if(company.get("company_name") != null) {
+								hrCompany.setName(BeanUtils.converToString(company.get("company_name")));
+							}
+							if(company.get("company_industry") != null) {
+								hrCompany.setIndustry(BeanUtils.converToString(company.get("company_industry")));
+							}
+							if(company.get("company_introduction") != null) {
+								hrCompany.setIntroduction(BeanUtils.converToString(company.get("company_introduction")));
+							}
+							if(company.get("company_scale") != null) {
+								hrCompany.setScale(BeanUtils.converToUByte(company.get("company_scale")));
+							}
+							if(company.get("company_property") != null) {
+								hrCompany.setProperty(BeanUtils.converToUByte(company.get("company_property")));
+							}
+							hrCompany.setType(UByte.valueOf(Constant.COMPANY_TYPE_FREE));
+							hrCompany.setSource(UByte.valueOf(Constant.COMPANY_SOURCE_PROFILE));
+							record.setCompany(hrCompany);
+						}
+					}
 					workexpRecords.add(record);
 				}
 			});
@@ -80,6 +115,12 @@ public class ProfileUtils {
 			projectexps.forEach(projectexp -> {
 				ProfileProjectexpRecord record = BeanUtils.MapToRecord(projectexp, ProfileProjectexpRecord.class);
 				if (record != null) {
+					if (projectexp.get("start_date") != null) {
+						record.setStart(BeanUtils.convertToSQLDate(projectexp.get("start_date")));
+					}
+					if (projectexp.get("end_date") != null) {
+						record.setEnd(BeanUtils.convertToSQLDate(projectexp.get("end_date")));
+					}
 					projectExpRecords.add(record);
 				}
 			});
@@ -91,7 +132,7 @@ public class ProfileUtils {
 		ProfileOtherRecord otherRecord = null;
 		if (other != null) {
 			otherRecord = new ProfileOtherRecord();
-			otherRecord.setOther((String) other.get("other"));
+			otherRecord.setOther(JSON.toJSONString(other));
 		}
 		return otherRecord;
 	}
@@ -119,39 +160,45 @@ public class ProfileUtils {
 					if (intention.get("cities") != null) {
 						List<Map<String, Object>> cities = (List<Map<String, Object>>) intention.get("cities");
 						if (cities != null && cities.size() > 0) {
-							cities.forEach(city -> {
+							for (Map<String, Object> city : cities) {
 								ProfileIntentionCityRecord cityRecord = BeanUtils.MapToRecord(city,
 										ProfileIntentionCityRecord.class);
-								if (cityRecord != null) {
+								if (cityRecord != null && ((cityRecord.getCityCode() != null
+										&& cityRecord.getCityCode().intValue() != 0)
+										|| !StringUtils.isNullOrEmpty(cityRecord.getCityName()))) {
 									record.getCities().add(cityRecord);
 								}
-							});
+							}
 						}
 					}
 
 					if (intention.get("positions") != null) {
 						List<Map<String, Object>> positions = (List<Map<String, Object>>) intention.get("positions");
 						if (positions != null && positions.size() > 0) {
-							positions.forEach(position -> {
+							for (Map<String, Object> position : positions) {
 								ProfileIntentionPositionRecord positionRecord = BeanUtils.MapToRecord(position,
 										ProfileIntentionPositionRecord.class);
-								if (positionRecord != null) {
+								if (positionRecord != null && ((positionRecord.getPositionCode() != null
+										&& positionRecord.getPositionCode().intValue() != 0)
+										|| !StringUtils.isNullOrEmpty(positionRecord.getPositionName()))) {
 									record.getPositions().add(positionRecord);
 								}
-							});
+							}
 						}
 					}
 
 					if (intention.get("industries") != null) {
 						List<Map<String, Object>> industries = (List<Map<String, Object>>) intention.get("industries");
 						if (industries != null && industries.size() > 0) {
-							industries.forEach(industry -> {
+							for (Map<String, Object> industry : industries) {
 								ProfileIntentionIndustryRecord industryRecord = BeanUtils.MapToRecord(industry,
 										ProfileIntentionIndustryRecord.class);
-								if (industryRecord != null) {
+								if (industryRecord != null && ((industryRecord.getIndustryCode() != null
+										&& industryRecord.getIndustryCode().intValue() != 0)
+										|| !StringUtils.isNullOrEmpty(industryRecord.getIndustryName()))) {
 									record.getIndustries().add(industryRecord);
 								}
-							});
+							}
 						}
 					}
 					intentionRecords.add(record);
@@ -161,12 +208,12 @@ public class ProfileUtils {
 		return intentionRecords;
 	}
 
-	public ProfileImportRecord mapToImportRecord(Map<String, Object> importMap, String userName) {
+	public ProfileImportRecord mapToImportRecord(Map<String, Object> importMap) {
 		ProfileImportRecord record = null;
 		if (importMap != null) {
 			record = BeanUtils.MapToRecord(importMap, ProfileImportRecord.class);
-			if(record != null) {
-				record.setUserName(userName);
+			if(importMap.get("data") != null) {
+				record.setData(JSON.toJSONString(importMap.get("data")));
 			}
 			return record;
 		}
@@ -179,6 +226,12 @@ public class ProfileUtils {
 			educations.forEach(education -> {
 				ProfileEducationRecord record = BeanUtils.MapToRecord(education, ProfileEducationRecord.class);
 				if (record != null) {
+					if (education.get("start_date") != null) {
+						record.setStart(BeanUtils.convertToSQLDate(education.get("start_date")));
+					}
+					if (education.get("end_date") != null) {
+						record.setEnd(BeanUtils.convertToSQLDate(education.get("end_date")));
+					}
 					educationRecords.add(record);
 				}
 			});
@@ -258,7 +311,7 @@ public class ProfileUtils {
 		}
 		return record;
 	}
-	
+
 	public List<Map<String, Object>> buildOthers(ProfileProfileRecord profileRecord, List<ProfileOtherRecord> records) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
@@ -267,10 +320,10 @@ public class ProfileUtils {
 					Map<String, Object> map = new HashMap<String, Object>();
 					map.put("profile_id", record.getProfileId().intValue());
 					map.put("other", record.getOther());
-					if(record.getCreateTime() != null) {
+					if (record.getCreateTime() != null) {
 						map.put("create_time", DateUtils.dateToShortTime(record.getCreateTime()));
 					}
-					if(record.getUpdateTime() != null) {
+					if (record.getUpdateTime() != null) {
 						map.put("update_time", DateUtils.dateToShortTime(record.getUpdateTime()));
 					}
 					list.add(map);
@@ -292,16 +345,16 @@ public class ProfileUtils {
 				records.forEach(record -> {
 					Map<String, Object> map = new HashMap<String, Object>();
 					map.put("source", record.getSource().intValue());
-					if(record.getLastUpdateTime() != null) {
+					if (record.getLastUpdateTime() != null) {
 						map.put("last_update_time", DateUtils.dateToShortTime(record.getLastUpdateTime()));
 					}
 					map.put("account_id", record.getAccountId());
 					map.put("resume_id", record.getResumeId());
 					map.put("user_name", record.getUserName());
-					if(record.getCreateTime() != null) {
+					if (record.getCreateTime() != null) {
 						map.put("create_time", DateUtils.dateToShortTime(record.getCreateTime()));
 					}
-					if(record.getUpdateTime() != null) {
+					if (record.getUpdateTime() != null) {
 						map.put("update_time", DateUtils.dateToShortTime(record.getUpdateTime()));
 					}
 					list.add(map);
@@ -315,22 +368,23 @@ public class ProfileUtils {
 		return list;
 	}
 
-	public List<Map<String, Object>> buildAttachments(ProfileProfileRecord profileRecord, List<ProfileAttachmentRecord> records) {
+	public List<Map<String, Object>> buildAttachments(ProfileProfileRecord profileRecord,
+			List<ProfileAttachmentRecord> records) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
 			if (records != null && records.size() > 0) {
 				records.forEach(record -> {
 					Map<String, Object> map = new HashMap<String, Object>();
 					map.put("id", record.getId().intValue());
-					if(record.getProfileId() != null) {
+					if (record.getProfileId() != null) {
 						map.put("profile_id", record.getProfileId().intValue());
 					}
 					map.put("name", record.getName());
 					map.put("path", record.getPath());
-					if(record.getCreateTime() != null) {
+					if (record.getCreateTime() != null) {
 						map.put("create_time", DateUtils.dateToShortTime(record.getCreateTime()));
 					}
-					if(record.getUpdateTime() != null) {
+					if (record.getUpdateTime() != null) {
 						map.put("update_time", DateUtils.dateToShortTime(record.getUpdateTime()));
 					}
 					list.add(map);

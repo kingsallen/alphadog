@@ -356,7 +356,7 @@ public class BeanUtils {
 		}
 	}
 
-	private static ULong converToULong(Object value) {
+	public static ULong converToULong(Object value) {
 		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
 				return ULong.valueOf((String) value);
@@ -394,7 +394,7 @@ public class BeanUtils {
 		}
 	}
 
-	private static UShort converToUShort(Object value) {
+	public static UShort converToUShort(Object value) {
 		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
 				return UShort.valueOf((String) value);
@@ -432,7 +432,7 @@ public class BeanUtils {
 		}
 	}
 
-	private static UByte converToUByte(Object value) {
+	public static UByte converToUByte(Object value) {
 		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
 				return UByte.valueOf((String) value);
@@ -472,7 +472,7 @@ public class BeanUtils {
 		}
 	}
 
-	private static Short convertToShort(Object value) {
+	public static Short convertToShort(Object value) {
 		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
 				return Short.valueOf((String) value);
@@ -510,7 +510,7 @@ public class BeanUtils {
 		}
 	}
 
-	private static UInteger convertToUInteger(Object value) {
+	public static UInteger convertToUInteger(Object value) {
 		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
 				return UInteger.valueOf((String) value);
@@ -554,7 +554,7 @@ public class BeanUtils {
 		}
 	}
 
-	private static java.sql.Timestamp convertToSQLTimestamp(Object value) {
+	public static java.sql.Timestamp convertToSQLTimestamp(Object value) {
 		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
 				if(((String)value).length() == 10) {
@@ -600,7 +600,7 @@ public class BeanUtils {
 		}
 	}
 
-	private static java.sql.Date convertToSQLDate(Object value) {
+	public static java.sql.Date convertToSQLDate(Object value) {
 		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
 				return new java.sql.Date(DateUtils.nomalDateToDate((String) value).getTime());

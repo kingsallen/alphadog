@@ -28,7 +28,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class VProfileBasicRecord extends TableRecordImpl<VProfileBasicRecord> implements Record3<UInteger, UInteger, String> {
 
-	private static final long serialVersionUID = 2097996995;
+	private static final long serialVersionUID = -677850437;
 
 	/**
 	 * Setter for <code>profiledb.v_profile_basic.id</code>. 主key
@@ -59,14 +59,22 @@ public class VProfileBasicRecord extends TableRecordImpl<VProfileBasicRecord> im
 	}
 
 	/**
+<<<<<<< HEAD
 	 * Setter for <code>profiledb.v_profile_basic.name</code>. 姓名
+=======
+	 * Setter for <code>profiledb.v_profile_basic.name</code>.
+>>>>>>> master
 	 */
 	public void setName(String value) {
 		setValue(2, value);
 	}
 
 	/**
+<<<<<<< HEAD
 	 * Getter for <code>profiledb.v_profile_basic.name</code>. 姓名
+=======
+	 * Getter for <code>profiledb.v_profile_basic.name</code>.
+>>>>>>> master
 	 */
 	public String getName() {
 		return (String) getValue(2);

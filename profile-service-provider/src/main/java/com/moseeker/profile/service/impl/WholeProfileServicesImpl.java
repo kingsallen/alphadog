@@ -206,6 +206,9 @@ public class WholeProfileServicesImpl implements Iface {
 			if (StringUtils.isNullOrEmpty(userRecord.getName()) && crawlerUser != null && !StringUtils.isNullOrEmpty(crawlerUser.getName())) {
 				userRecord.setName(crawlerUser.getName());
 			}
+			if (StringUtils.isNullOrEmpty(userRecord.getHeadimg()) && crawlerUser != null && !StringUtils.isNullOrEmpty(crawlerUser.getHeadimg())) {
+				userRecord.setHeadimg(crawlerUser.getHeadimg());
+			}
 			if (StringUtils.isNullOrEmpty(userRecord.getEmail()) && crawlerUser != null && !StringUtils.isNullOrEmpty(crawlerUser.getEmail())) {
 				userRecord.setEmail(crawlerUser.getEmail());
 			}
@@ -248,8 +251,7 @@ public class WholeProfileServicesImpl implements Iface {
 			}
 			ProfileImportRecord importRecords = null;
 			try {
-				importRecords = profileUtils.mapToImportRecord((Map<String, Object>) resume.get("import"),
-						userRecord.getUsername());
+				importRecords = profileUtils.mapToImportRecord((Map<String, Object>) resume.get("import"));
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
@@ -301,7 +303,7 @@ public class WholeProfileServicesImpl implements Iface {
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
-			
+
 			int id = profileDao.saveProfile(profileRecord, basicRecord, attachmentRecords, awardsRecords,
 					credentialsRecords, educationRecords, importRecords, intentionRecords, languages, otherRecord,
 					projectExps, skillRecords, workexpRecords, worksRecords, userRecord);
@@ -347,6 +349,9 @@ public class WholeProfileServicesImpl implements Iface {
 		if (StringUtils.isNullOrEmpty(userRecord.getName()) && crawlerUser != null && !StringUtils.isNullOrEmpty(crawlerUser.getName())) {
 			userRecord.setName(crawlerUser.getName());
 		}
+		if (StringUtils.isNullOrEmpty(userRecord.getHeadimg()) && crawlerUser != null && !StringUtils.isNullOrEmpty(crawlerUser.getHeadimg())) {
+			userRecord.setHeadimg(crawlerUser.getHeadimg());
+		}
 		if (StringUtils.isNullOrEmpty(userRecord.getEmail()) && crawlerUser != null && !StringUtils.isNullOrEmpty(crawlerUser.getEmail())) {
 			userRecord.setEmail(crawlerUser.getEmail());
 		}
@@ -389,8 +394,7 @@ public class WholeProfileServicesImpl implements Iface {
 		}
 		ProfileImportRecord importRecords = null;
 		try {
-			importRecords = profileUtils.mapToImportRecord((Map<String, Object>) resume.get("import"),
-					userRecord.getUsername());
+			importRecords = profileUtils.mapToImportRecord((Map<String, Object>) resume.get("import"));
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
@@ -442,7 +446,7 @@ public class WholeProfileServicesImpl implements Iface {
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
-		
+
 		int id = profileDao.saveProfile(profileRecord, basicRecord, attachmentRecords, awardsRecords,
 				credentialsRecords, educationRecords, importRecords, intentionRecords, languages, otherRecord,
 				projectExps, skillRecords, workexpRecords, worksRecords, userRecord, oldProfile);
@@ -497,14 +501,6 @@ public class WholeProfileServicesImpl implements Iface {
 						if (constantRecord.getParentCode().intValue() == 3102
 								&& constantRecord.getCode().intValue() == record.getWorkstate().intValue()) {
 							map.put("workstate_name", constantRecord.getName());
-							break;
-						}
-					}
-					map.put("salary_type", record.getSalaryType().intValue());
-					for (DictConstantRecord constantRecord : constantRecords) {
-						if (constantRecord.getParentCode().intValue() == 2105
-								&& constantRecord.getCode().intValue() == record.getSalaryType().intValue()) {
-							map.put("salary_type_name", constantRecord.getName());
 							break;
 						}
 					}
@@ -864,7 +860,7 @@ public class WholeProfileServicesImpl implements Iface {
 					map.put("company_id", company.getId().intValue());
 					map.put("company_name", company.getName());
 					map.put("company_logo", company.getLogo());
-					map.put("company_scale", company.getScale());
+					map.put("company_scale", company.getScale().intValue());
 				}
 				map.put("industry_name", lastWorkExp.getIndustryName());
 				map.put("industry_code", lastWorkExp.getIndustryCode().intValue());

@@ -29,7 +29,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class VProfileBasic extends TableImpl<VProfileBasicRecord> {
 
-	private static final long serialVersionUID = -557982820;
+	private static final long serialVersionUID = 1253878186;
 
 	/**
 	 * The reference instance of <code>profiledb.v_profile_basic</code>
@@ -55,9 +55,9 @@ public class VProfileBasic extends TableImpl<VProfileBasicRecord> {
 	public final TableField<VProfileBasicRecord, UInteger> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "用户ID");
 
 	/**
-	 * The column <code>profiledb.v_profile_basic.name</code>. 姓名
+	 * The column <code>profiledb.v_profile_basic.name</code>.
 	 */
-	public final TableField<VProfileBasicRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "姓名");
+	public final TableField<VProfileBasicRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "");
 
 	/**
 	 * Create a <code>profiledb.v_profile_basic</code> table reference
