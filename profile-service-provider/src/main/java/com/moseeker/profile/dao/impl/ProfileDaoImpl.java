@@ -9,6 +9,8 @@ import java.util.List;
 
 import org.jooq.Condition;
 import org.jooq.DSLContext;
+import org.jooq.Record1;
+import org.jooq.Record2;
 import org.jooq.Result;
 import org.jooq.types.UByte;
 import org.jooq.types.UInteger;
@@ -43,6 +45,7 @@ import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProjectexpRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileSkillRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileWorksRecord;
+import com.moseeker.db.userdb.tables.UserUser;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.profile.dao.entity.ProfileWorkexpEntity;
@@ -270,7 +273,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 					if (!StringUtils.isNullOrEmpty(basicRecord.getCityName())) {
 						DictCityRecord cityRecord = create.selectFrom(DictCity.DICT_CITY)
 								.where(DictCity.DICT_CITY.NAME.equal(basicRecord.getCityName())).limit(1).fetchOne();
-						if(cityRecord != null) {
+						if (cityRecord != null) {
 							basicRecord.setCityCode(cityRecord.getCode().intValue());
 						}
 					}
@@ -304,9 +307,9 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 					educationRecords.forEach(educationRecord -> {
 						educationRecord.setProfileId(profileRecord.getId());
 						educationRecord.setCreateTime(now);
-						if(!StringUtils.isNullOrEmpty(educationRecord.getCollegeName())) {
-							for(DictCollegeRecord collegeRecord : colleges) {
-								if(educationRecord.getCollegeName().equals(collegeRecord.getName())) {
+						if (!StringUtils.isNullOrEmpty(educationRecord.getCollegeName())) {
+							for (DictCollegeRecord collegeRecord : colleges) {
+								if (educationRecord.getCollegeName().equals(collegeRecord.getName())) {
 									educationRecord.setCollegeCode(collegeRecord.getCode().intValue());
 									educationRecord.setCollegeLogo(collegeRecord.getLogo());
 									break;
@@ -332,9 +335,9 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						if (intentionRecord.getCities().size() > 0) {
 							intentionRecord.getCities().forEach(city -> {
 								city.setProfileIntentionId(intentionRecord.getId());
-								if(!StringUtils.isNullOrEmpty(city.getCityName())) {
-									for(DictCityRecord cityRecord : cities) {
-										if(city.getCityName().equals(cityRecord.getName())) {
+								if (!StringUtils.isNullOrEmpty(city.getCityName())) {
+									for (DictCityRecord cityRecord : cities) {
+										if (city.getCityName().equals(cityRecord.getName())) {
 											city.setCityCode(cityRecord.getCode());
 											break;
 										}
@@ -347,9 +350,9 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						if (intentionRecord.getPositions().size() > 0) {
 							intentionRecord.getPositions().forEach(position -> {
 								position.setProfileIntentionId(intentionRecord.getId());
-								if(!StringUtils.isNullOrEmpty(position.getPositionName())) {
-									for(DictPositionRecord positionRecord : positions) {
-										if(positionRecord.getName().equals(position.getPositionName())) {
+								if (!StringUtils.isNullOrEmpty(position.getPositionName())) {
+									for (DictPositionRecord positionRecord : positions) {
+										if (positionRecord.getName().equals(position.getPositionName())) {
 											position.setPositionCode(positionRecord.getCode());
 											break;
 										}
@@ -362,9 +365,9 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						if (intentionRecord.getIndustries().size() > 0) {
 							intentionRecord.getIndustries().forEach(industry -> {
 								industry.setProfileIntentionId(intentionRecord.getId());
-								if(!StringUtils.isNullOrEmpty(industry.getIndustryName())) {
-									for(DictIndustryRecord industryRecord : industries) {
-										if(industry.getIndustryName().equals(industryRecord.getName())) {
+								if (!StringUtils.isNullOrEmpty(industry.getIndustryName())) {
+									for (DictIndustryRecord industryRecord : industries) {
+										if (industry.getIndustryName().equals(industryRecord.getName())) {
 											industry.setIndustryCode(industryRecord.getCode());
 											break;
 										}
@@ -409,16 +412,15 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 					workexpRecords.forEach(workexp -> {
 						workexp.setProfileId(profileRecord.getId());
 						workexp.setCreateTime(now);
-						if (!StringUtils.isNullOrEmpty(workexp.getCompanyName())) {
+						if (workexp.getCompany() != null && !StringUtils.isNullOrEmpty(workexp.getCompany().getName())) {
 							HrCompanyRecord hc = create.selectFrom(HrCompany.HR_COMPANY)
-									.where(HrCompany.HR_COMPANY.NAME.equal(workexp.getCompanyName()))
-									.and(HrCompany.HR_COMPANY.DISABLE.equal((byte) (Constant.ENABLE))).limit(1)
+									.where(HrCompany.HR_COMPANY.NAME.equal(workexp.getCompany().getName()))
+									.limit(1)
 									.fetchOne();
 							if (hc != null) {
 								workexp.setCompanyId(hc.getId());
 							} else {
-								HrCompanyRecord newCompany = new HrCompanyRecord();
-								newCompany.setName(workexp.getCompanyName());
+								HrCompanyRecord newCompany = workexp.getCompany();
 								newCompany.setType(UByte.valueOf(Constant.COMPANY_TYPE_FREE));
 								newCompany.setSource(UByte.valueOf(Constant.COMPANY_SOURCE_PROFILE));
 								create.attach(newCompany);
@@ -426,31 +428,31 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 								workexp.setCompanyId(newCompany.getId());
 							}
 						}
-						if(!StringUtils.isNullOrEmpty(workexp.getIndustryName())) {
-							for(DictIndustryRecord industryRecord : industries) {
-								if(workexp.getIndustryName().equals(industryRecord.getName())) {
+						if (!StringUtils.isNullOrEmpty(workexp.getIndustryName())) {
+							for (DictIndustryRecord industryRecord : industries) {
+								if (workexp.getIndustryName().equals(industryRecord.getName())) {
 									workexp.setIndustryCode(industryRecord.getCode());
 									break;
 								}
 							}
 						}
-						if(!StringUtils.isNullOrEmpty(workexp.getCityName())) {
-							for(DictCityRecord cityRecord : cities) {
-								if(workexp.getCityName().equals(cityRecord.getName())) {
+						if (!StringUtils.isNullOrEmpty(workexp.getCityName())) {
+							for (DictCityRecord cityRecord : cities) {
+								if (workexp.getCityName().equals(cityRecord.getName())) {
 									workexp.setCityCode(cityRecord.getCode());
 									break;
 								}
 							}
 						}
-						if(!StringUtils.isNullOrEmpty(workexp.getPositionName())) {
-							for(DictPositionRecord positionRecord : positions) {
-								if(positionRecord.getName().equals(workexp.getPositionName())) {
+						if (!StringUtils.isNullOrEmpty(workexp.getPositionName())) {
+							for (DictPositionRecord positionRecord : positions) {
+								if (positionRecord.getName().equals(workexp.getPositionName())) {
 									workexp.setPositionCode(positionRecord.getCode());
 									break;
 								}
 							}
 						}
-						
+
 						create.attach(workexp);
 						workexp.insert();
 					});
@@ -464,7 +466,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						worksRecord.insert();
 					});
 				}
-				if(userRecord != null) {
+				if (userRecord != null) {
 					create.attach(userRecord);
 					userRecord.update();
 				}
@@ -512,13 +514,13 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 			conn = DBConnHelper.DBConn.getConn();
 			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 			conn.setAutoCommit(false);
-			
-			if(oldProfile != null && oldProfile.size() > 0) {
-				for(ProfileProfileRecord record : oldProfile) {
+
+			if (oldProfile != null && oldProfile.size() > 0) {
+				for (ProfileProfileRecord record : oldProfile) {
 					clearProfile(record.getId().intValue(), conn);
 				}
 			}
-			
+
 			Result<DictCollegeRecord> colleges = create.selectFrom(DictCollege.DICT_COLLEGE).fetch();
 			Result<DictCityRecord> cities = create.selectFrom(DictCity.DICT_CITY).fetch();
 			Result<DictPositionRecord> positions = create.selectFrom(DictPosition.DICT_POSITION).fetch();
@@ -544,7 +546,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 					if (!StringUtils.isNullOrEmpty(basicRecord.getCityName())) {
 						DictCityRecord cityRecord = create.selectFrom(DictCity.DICT_CITY)
 								.where(DictCity.DICT_CITY.NAME.equal(basicRecord.getCityName())).limit(1).fetchOne();
-						if(cityRecord != null) {
+						if (cityRecord != null) {
 							basicRecord.setCityCode(cityRecord.getCode().intValue());
 						}
 					}
@@ -578,9 +580,9 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 					educationRecords.forEach(educationRecord -> {
 						educationRecord.setProfileId(profileRecord.getId());
 						educationRecord.setCreateTime(now);
-						if(!StringUtils.isNullOrEmpty(educationRecord.getCollegeName())) {
-							for(DictCollegeRecord collegeRecord : colleges) {
-								if(educationRecord.getCollegeName().equals(collegeRecord.getName())) {
+						if (!StringUtils.isNullOrEmpty(educationRecord.getCollegeName())) {
+							for (DictCollegeRecord collegeRecord : colleges) {
+								if (educationRecord.getCollegeName().equals(collegeRecord.getName())) {
 									educationRecord.setCollegeCode(collegeRecord.getCode().intValue());
 									educationRecord.setCollegeLogo(collegeRecord.getLogo());
 									break;
@@ -606,9 +608,9 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						if (intentionRecord.getCities().size() > 0) {
 							intentionRecord.getCities().forEach(city -> {
 								city.setProfileIntentionId(intentionRecord.getId());
-								if(!StringUtils.isNullOrEmpty(city.getCityName())) {
-									for(DictCityRecord cityRecord : cities) {
-										if(city.getCityName().equals(cityRecord.getName())) {
+								if (!StringUtils.isNullOrEmpty(city.getCityName())) {
+									for (DictCityRecord cityRecord : cities) {
+										if (city.getCityName().equals(cityRecord.getName())) {
 											city.setCityCode(cityRecord.getCode());
 											break;
 										}
@@ -621,9 +623,9 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						if (intentionRecord.getPositions().size() > 0) {
 							intentionRecord.getPositions().forEach(position -> {
 								position.setProfileIntentionId(intentionRecord.getId());
-								if(!StringUtils.isNullOrEmpty(position.getPositionName())) {
-									for(DictPositionRecord positionRecord : positions) {
-										if(positionRecord.getName().equals(position.getPositionName())) {
+								if (!StringUtils.isNullOrEmpty(position.getPositionName())) {
+									for (DictPositionRecord positionRecord : positions) {
+										if (positionRecord.getName().equals(position.getPositionName())) {
 											position.setPositionCode(positionRecord.getCode());
 											break;
 										}
@@ -636,9 +638,9 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						if (intentionRecord.getIndustries().size() > 0) {
 							intentionRecord.getIndustries().forEach(industry -> {
 								industry.setProfileIntentionId(intentionRecord.getId());
-								if(!StringUtils.isNullOrEmpty(industry.getIndustryName())) {
-									for(DictIndustryRecord industryRecord : industries) {
-										if(industry.getIndustryName().equals(industryRecord.getName())) {
+								if (!StringUtils.isNullOrEmpty(industry.getIndustryName())) {
+									for (DictIndustryRecord industryRecord : industries) {
+										if (industry.getIndustryName().equals(industryRecord.getName())) {
 											industry.setIndustryCode(industryRecord.getCode());
 											break;
 										}
@@ -661,6 +663,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 				if (otherRecord != null) {
 					create.attach(otherRecord);
 					otherRecord.setCreateTime(now);
+					otherRecord.setProfileId(profileRecord.getId());
 					otherRecord.insert();
 				}
 				if (projectExps != null && projectExps.size() > 0) {
@@ -683,48 +686,45 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 					workexpRecords.forEach(workexp -> {
 						workexp.setProfileId(profileRecord.getId());
 						workexp.setCreateTime(now);
-						if (!StringUtils.isNullOrEmpty(workexp.getCompanyName())) {
+						if (workexp.getCompany() != null && !StringUtils.isNullOrEmpty(workexp.getCompany().getName())) {
 							HrCompanyRecord hc = create.selectFrom(HrCompany.HR_COMPANY)
-									.where(HrCompany.HR_COMPANY.NAME.equal(workexp.getCompanyName()))
-									.and(HrCompany.HR_COMPANY.DISABLE.equal((byte) (Constant.ENABLE))).limit(1)
+									.where(HrCompany.HR_COMPANY.NAME.equal(workexp.getCompany().getName()))
+									.limit(1)
 									.fetchOne();
 							if (hc != null) {
 								workexp.setCompanyId(hc.getId());
 							} else {
-								HrCompanyRecord newCompany = new HrCompanyRecord();
-								newCompany.setName(workexp.getCompanyName());
-								newCompany.setType(UByte.valueOf(Constant.COMPANY_TYPE_FREE));
-								newCompany.setSource(UByte.valueOf(Constant.COMPANY_SOURCE_PROFILE));
+								HrCompanyRecord newCompany = workexp.getCompany();
 								create.attach(newCompany);
 								newCompany.insert();
 								workexp.setCompanyId(newCompany.getId());
 							}
 						}
-						if(!StringUtils.isNullOrEmpty(workexp.getIndustryName())) {
-							for(DictIndustryRecord industryRecord : industries) {
-								if(workexp.getIndustryName().equals(industryRecord.getName())) {
+						if (!StringUtils.isNullOrEmpty(workexp.getIndustryName())) {
+							for (DictIndustryRecord industryRecord : industries) {
+								if (workexp.getIndustryName().equals(industryRecord.getName())) {
 									workexp.setIndustryCode(industryRecord.getCode());
 									break;
 								}
 							}
 						}
-						if(!StringUtils.isNullOrEmpty(workexp.getCityName())) {
-							for(DictCityRecord cityRecord : cities) {
-								if(workexp.getCityName().equals(cityRecord.getName())) {
+						if (!StringUtils.isNullOrEmpty(workexp.getCityName())) {
+							for (DictCityRecord cityRecord : cities) {
+								if (workexp.getCityName().equals(cityRecord.getName())) {
 									workexp.setCityCode(cityRecord.getCode());
 									break;
 								}
 							}
 						}
-						if(!StringUtils.isNullOrEmpty(workexp.getPositionName())) {
-							for(DictPositionRecord positionRecord : positions) {
-								if(positionRecord.getName().equals(workexp.getPositionName())) {
+						if (!StringUtils.isNullOrEmpty(workexp.getPositionName())) {
+							for (DictPositionRecord positionRecord : positions) {
+								if (positionRecord.getName().equals(workexp.getPositionName())) {
 									workexp.setPositionCode(positionRecord.getCode());
 									break;
 								}
 							}
 						}
-						
+
 						create.attach(workexp);
 						workexp.insert();
 					});
@@ -738,7 +738,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						worksRecord.insert();
 					});
 				}
-				if(userRecord != null) {
+				if (userRecord != null) {
 					create.attach(userRecord);
 					userRecord.update();
 				}
@@ -783,12 +783,12 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 		if (sb.length() > 1) {
 			sb.deleteCharAt(sb.length() - 1);
 			sb.append(")");
-			stmt.executeUpdate("delete from profiledb.profile_intention_city where profile_intention_id in "
-					+ sb.toString());
-			stmt.executeUpdate("delete from profiledb.profile_intention_position where profile_intention_id in "
-					+ sb.toString());
-			stmt.executeUpdate("delete from profiledb.profile_intention_industry where profile_intention_id in "
-					+ sb.toString());
+			stmt.executeUpdate(
+					"delete from profiledb.profile_intention_city where profile_intention_id in " + sb.toString());
+			stmt.executeUpdate(
+					"delete from profiledb.profile_intention_position where profile_intention_id in " + sb.toString());
+			stmt.executeUpdate(
+					"delete from profiledb.profile_intention_industry where profile_intention_id in " + sb.toString());
 		}
 		stmt.executeUpdate("delete from profiledb.profile_attachment where profile_id = " + profileId);
 		stmt.executeUpdate("delete from profiledb.profile_awards where profile_id = " + profileId);
@@ -807,5 +807,68 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 		stmt.executeUpdate("delete from profiledb.profile_works where profile_id = " + profileId);
 		result = stmt.executeUpdate("delete from profiledb.profile_profile where id = " + profileId);
 		return result;
+	}
+
+	@Override
+	public Result<Record2<UInteger, String>> findRealName(List<Integer> profileIds) {
+		Result<Record2<UInteger, String>> result = null;
+		if (profileIds != null && profileIds.size() > 0) {
+			try (Connection conn = DBConnHelper.DBConn.getConn();
+					DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn)) {
+				conn.setAutoCommit(false);
+				Condition condition = null;
+				for (Integer profileId : profileIds) {
+					if (condition != null) {
+						condition = condition.or(ProfileProfile.PROFILE_PROFILE.ID.equal(UInteger.valueOf(profileId)));
+					} else {
+						condition = ProfileProfile.PROFILE_PROFILE.ID.equal(UInteger.valueOf(profileId));
+					}
+				}
+				result = create.select(ProfileProfile.PROFILE_PROFILE.ID, UserUser.USER_USER.NAME)
+						.from(ProfileProfile.PROFILE_PROFILE).join(UserUser.USER_USER)
+						.on(ProfileProfile.PROFILE_PROFILE.USER_ID.equal(UserUser.USER_USER.ID)).where(condition)
+						.fetch();
+				conn.commit();
+				conn.setAutoCommit(true);
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public String findRealName(int profileId) {
+		try (Connection conn = DBConnHelper.DBConn.getConn();
+				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn)) {
+			Condition condition = ProfileProfile.PROFILE_PROFILE.ID.equal(UInteger.valueOf(profileId));
+			Record1<String> username = create.select(UserUser.USER_USER.NAME).from(ProfileProfile.PROFILE_PROFILE)
+					.join(UserUser.USER_USER).on(ProfileProfile.PROFILE_PROFILE.USER_ID.equal(UserUser.USER_USER.ID))
+					.where(condition).limit(1).fetchOne();
+			if (username != null) {
+				return (String) username.get(0);
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return null;
+	}
+
+	@Override
+	public void updateRealName(int profileId, String name) {
+		try (Connection conn = DBConnHelper.DBConn.getConn();
+				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn)) {
+			ProfileProfileRecord record = create.selectFrom(ProfileProfile.PROFILE_PROFILE)
+					.where(ProfileProfile.PROFILE_PROFILE.ID.equal(UInteger.valueOf(profileId))).fetchOne();
+			if (record != null) {
+				UserUserRecord userRecord = new UserUserRecord();
+				userRecord.setId(record.getUserId());
+				create.attach(userRecord);
+				userRecord.setName(name);
+				userRecord.update();
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
 	}
 }

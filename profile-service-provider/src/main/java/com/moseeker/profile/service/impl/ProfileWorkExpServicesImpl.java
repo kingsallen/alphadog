@@ -198,7 +198,7 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 			if(struct.getCompany_id() > 0) {
 				HrCompanyRecord company = companyDao.getCompanyById(struct.getCompany_id());
 				if(company == null) {
-					return 	ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_NOTEXIST);
+					return 	ResponseUtils.fail(ConstantErrorCodeMessage.HRCOMPANY_NOTEXIST);
 				} 
 			} else {
 				if(!StringUtils.isNullOrEmpty(struct.getCompany_name())) {
@@ -268,7 +268,7 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 			if(struct.getCompany_id() > 0) {
 				HrCompanyRecord company = companyDao.getCompanyById(struct.getCompany_id());
 				if(company == null) {
-					return 	ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_NOTEXIST);
+					return 	ResponseUtils.fail(ConstantErrorCodeMessage.HRCOMPANY_NOTEXIST);
 				}
 			} else {
 				if(!StringUtils.isNullOrEmpty(struct.getCompany_name())) {

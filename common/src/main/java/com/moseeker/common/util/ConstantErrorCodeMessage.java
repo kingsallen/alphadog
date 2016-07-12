@@ -24,6 +24,7 @@ public final class ConstantErrorCodeMessage {
     public static final String USERACCOUNT_NOTEXIST = "{'status':10017,'message':'帐号不存在!'}";
     public static final String USER_FAV_POSITION_FAILED = "{'status':10018,'message':'获取我感兴趣失败!'}";
     public static final String USER_SMS_LIMITED = "{'status':10019,'message':'短信发送异常!'}";
+    public static final String HRCOMPANY_NOTEXIST = "{'status':10020,'message':'公司不存在!'}";
 
     public static final String HR_ACCOUNT_SIGNUP_VALIDATE_SOURCE = "{'status':12001,'message':'source >=1 && <=5!'}";
 
@@ -47,9 +48,13 @@ public final class ConstantErrorCodeMessage {
     public static final String CRAWLER_IMPORT_FAILED = "{'status':32002,'message':'导入失败!'}";
     public static final String CRAWLER_LOGIN_FAILED = "{'status':32003,'message':'登录失败!'}";
     public static final String CRAWLER_PARAM_ILLEGAL = "{'status':32004,'message':'参数不正确!'}";
+    public static final String CRAWLER_LOGIN2_FAILED = "{'status':32005,'message':'登录失败!'}";
+    public static final String CRAWLER_SERVICE_TIMEOUT = "{'status':32006,'message':'服务超时!'}";
+    public static final String CRAWLER_SERVICE_PARAM_ERROR = "{'status':32007,'message':'服务超时!'}";
     
     public static final String COMPANY_SUPER_REPEART_NAME = "{'status':33001, 'message':'和超级账号重名'}";
 
     // 申请服务ERRCODE说明定义 4字头
     public static final String APPLICATION_VALIDATE_COUNT_CHECK = "{'status':41001,'message':'超出申请次数限制!'}";
+    public static final String APPLICATION_POSITION_DUPLICATE = "{'status':41002,'message':'该职位已经申请过!'}";
 }

@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,17 +26,24 @@ public class CityController {
 
     CityServices.Iface cityServices = ServiceUtil.getService(CityServices.Iface.class);
 
-    @RequestMapping(value = "/dict/city", method = RequestMethod.GET)
+    @RequestMapping(value = "/dict/cities", method = RequestMethod.GET)
     @ResponseBody
     public String get(HttpServletRequest request, HttpServletResponse response) {
-        //PrintWriter writer = null;
         try {
-            // GET方法 通用参数解析并赋值
-            CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
+            String parameterLevel = request.getParameter("level");
+            int level = parameterLevel == null ? 0 : Integer.parseInt(parameterLevel);
+            Response result = cityServices.getAllCities(level);
+            return ResponseLogNotification.successWithParse(request, result);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 
-            Response result = cityServices.getResources(query);
-            //jsonStringResponse = JSON.toJSONString(result);
-
+    @RequestMapping(value = "/dict/cities/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public String getById(@PathVariable("id") long id, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Response result = cityServices.getCitiesById((int)id);
             return ResponseLogNotification.successWithParse(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
