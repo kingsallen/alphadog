@@ -518,8 +518,23 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 					int userCompleteness = completenessCalculator.calculateUserUser(userRecord, settingRecord, wxuserRecord);
 					completenessRecord.setUserUser(userCompleteness);
 				}
+				
+				int totalComplementness = (completenessRecord.getUserUser() == null ? 0: completenessRecord.getUserUser())
+						+ (completenessRecord.getProfileBasic() == null ? 0:completenessRecord.getProfileBasic())
+						+ (completenessRecord.getProfileWorkexp() == null ? 0 : completenessRecord.getProfileWorkexp())
+						+ (completenessRecord.getProfileEducation() == null ? 0 : completenessRecord.getProfileEducation())
+						+ (completenessRecord.getProfileProjectexp() == null ? 0 : completenessRecord.getProfileProjectexp())
+						+ (completenessRecord.getProfileLanguage() == null ? 0 : completenessRecord.getProfileLanguage()) 
+						+ (completenessRecord.getProfileSkill() == null ? 0 : completenessRecord.getProfileSkill())
+						+ (completenessRecord.getProfileCredentials() == null ? 0 : completenessRecord.getProfileCredentials())
+						+ (completenessRecord.getProfileAwards() == null ? 0 : completenessRecord.getProfileAwards())
+						+ (completenessRecord.getProfileWorks() == null ? 0 : completenessRecord.getProfileWorks())
+						+ (completenessRecord.getProfileIntention() == null ? 0 : completenessRecord.getProfileIntention());
+				
 				create.attach(completenessRecord);
 				completenessRecord.insert();
+				profileRecord.setCompleteness(UByte.valueOf(totalComplementness));
+				profileRecord.update();
 				profileId = profileRecord.getId().intValue();
 			}
 			conn.commit();
