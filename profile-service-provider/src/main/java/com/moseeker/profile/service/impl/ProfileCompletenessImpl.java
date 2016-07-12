@@ -734,7 +734,17 @@ public class ProfileCompletenessImpl {
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
-
+			
+			List<ProfileEducationRecord> educations = null;
+			try {
+				educations = educationDao.getResources(qu);
+				int educationCompleteness = completenessCalculator.calculateProfileEducations(educations);
+				completenessRecord.setProfileEducation(educationCompleteness);
+				completeness += educationCompleteness;
+			} catch (Exception e1) {
+				logger.error(e1.getMessage(), e1);
+			}
+			
 			List<ProfileProjectexpRecord> projectExps = null;
 			try {
 				projectExps = projectExpDao.getResources(qu);
