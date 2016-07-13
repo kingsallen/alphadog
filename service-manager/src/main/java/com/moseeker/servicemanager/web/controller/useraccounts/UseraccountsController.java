@@ -488,7 +488,7 @@ public class UseraccountsController {
          Usersetting usersetting = ParamUtils.initModelForm(request, Usersetting.class);
          Response result = usersettingServices.putResource(usersetting);
          if (result.getStatus() == 0) {
-        	  profileService.reCalculateUserCompletenessBySettingId(usersetting.getUser_id());
+        	  profileService.reCalculateUserCompletenessBySettingId(usersetting.getId());
             return ResponseLogNotification.success(request, result);
          } else {
             return ResponseLogNotification.fail(request, result);
