@@ -99,7 +99,7 @@ public class WholeProfileServicesImpl implements Iface {
 				CommonQuery query = new CommonQuery();
 				HashMap<String, String> equalFilter = new HashMap<String, String>();
 				equalFilter.put("profile_id", String.valueOf(profileRecord.getId()));
-				equalFilter.put("per_page", String.valueOf(Integer.MAX_VALUE));
+				query.setPer_page(Integer.MAX_VALUE);
 				query.setEqualFilter(equalFilter);
 
 				List<DictConstantRecord> constantRecords = constantDao
