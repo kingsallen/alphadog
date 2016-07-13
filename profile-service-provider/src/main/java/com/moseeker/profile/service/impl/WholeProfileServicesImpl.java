@@ -329,7 +329,11 @@ public class WholeProfileServicesImpl implements Iface {
 		// resume.get("user_user"));
 		List<ProfileProfileRecord> oldProfile = profileDao.getProfilesByIdOrUserIdOrUUID(userId, 0, null);
 
-		profileRecord.setUuid(UUID.randomUUID().toString());
+		if(oldProfile !=null && oldProfile.size() > 0 && StringUtils.isNotNullOrEmpty(oldProfile.get(0).getUuid())) {
+			profileRecord.setUuid(oldProfile.get(0).getUuid());
+		} else {
+			profileRecord.setUuid(UUID.randomUUID().toString());
+		}
 		profileRecord.setUserId(userRecord.getId());
 		profileRecord.setDisable(UByte.valueOf(Constant.ENABLE));
 
