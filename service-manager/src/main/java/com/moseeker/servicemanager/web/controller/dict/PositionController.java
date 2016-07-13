@@ -1,10 +1,11 @@
 package com.moseeker.servicemanager.web.controller.dict;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -12,27 +13,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.moseeker.rpccenter.common.ServiceUtil;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dict.service.CityServices;
+import com.moseeker.thrift.gen.dict.service.PositionService;
 
-//@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
-@Controller
-public class DeprecatedCityController {
+public class PositionController {
 
-    Logger logger = org.slf4j.LoggerFactory.getLogger(CityController.class);
-
-    CityServices.Iface cityServices = ServiceUtil.getService(CityServices.Iface.class);
-
-    @RequestMapping(value = "/dict/city", method = RequestMethod.GET)
+	Logger logger = org.slf4j.LoggerFactory.getLogger(PositionController.class);
+	PositionService.Iface sercie = ServiceUtil.getService(PositionService.Iface.class);
+	
+	@RequestMapping(value = "/dict/position", method = RequestMethod.GET)
     @ResponseBody
-    public String get(HttpServletRequest request, HttpServletResponse response) {
-        //PrintWriter writer = null;
+    public String getIndustriesByType(HttpServletRequest request, HttpServletResponse response) {
         try {
             // GET方法 通用参数解析并赋值
-            CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
-
-            Response result = cityServices.getResources(query);
+        	 Map<String,Object> params = ParamUtils.mergeRequestParameters(request);
+            Response result = sercie.getPositionsByCode((Integer)params.get("code"));
 
             return ResponseLogNotification.successWithParse(request, result);
         } catch (Exception e) {
