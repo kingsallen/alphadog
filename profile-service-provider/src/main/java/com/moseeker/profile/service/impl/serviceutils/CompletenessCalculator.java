@@ -183,7 +183,7 @@ public class CompletenessCalculator {
 				completeness += 1;
 			}
 		}
-		if (StringUtils.isNotNullOrEmpty(record.getMajorCode())
+		if ((StringUtils.isNotNullOrEmpty(record.getMajorCode()) && !record.getMajorCode().equals("0"))
 				|| StringUtils.isNotNullOrEmpty(record.getMajorName())) {
 			completeness += 3;
 		}
@@ -228,10 +228,10 @@ public class CompletenessCalculator {
 			throw new ParamIllegalException(Constant.EXCEPTION_PROFILEPROJECTEXP_LOST);
 		}
 		if (record.getStart() != null) {
-			completeness += 2;
+			completeness += 1;
 		}
 		if (record.getEnd() != null || (record.getEndUntilNow() != null && record.getEndUntilNow().intValue() == 1)) {
-			completeness += 2;
+			completeness += 1;
 		}
 		if (StringUtils.isNotNullOrEmpty(record.getName())) {
 			completeness += 3;
