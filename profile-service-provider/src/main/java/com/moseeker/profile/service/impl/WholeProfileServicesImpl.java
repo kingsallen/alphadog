@@ -92,15 +92,15 @@ public class WholeProfileServicesImpl implements Iface {
 
 			ProfileProfileRecord profileRecord = profileDao.getProfileByIdOrUserIdOrUUID(userId, profileId, uuid);
 			if (profileRecord != null) {
+				if(profileRecord.getCompleteness().intValue() == 0 || profileRecord.getCompleteness().intValue() == 10) {
+					int completeness = completenessImpl.getCompleteness(profileRecord.getUserId().intValue(), profileRecord.getUuid(), profileRecord.getId().intValue());
+					profileRecord.setCompleteness(UByte.valueOf(completeness));
+				}
 				CommonQuery query = new CommonQuery();
 				HashMap<String, String> equalFilter = new HashMap<String, String>();
 				equalFilter.put("profile_id", String.valueOf(profileRecord.getId()));
+				query.setPer_page(Integer.MAX_VALUE);
 				query.setEqualFilter(equalFilter);
-
-				CommonQuery profileQuery = new CommonQuery();
-				HashMap<String, String> profileEqualFilter = new HashMap<String, String>();
-				profileEqualFilter.put("id", String.valueOf(profileRecord.getId()));
-				profileQuery.setEqualFilter(profileEqualFilter);
 
 				List<DictConstantRecord> constantRecords = constantDao
 						.getCitiesByParentCodes(Arrays.asList(3109, 3105, 3102, 2105, 3120, 3115, 3114, 3119, 3120));
@@ -329,7 +329,11 @@ public class WholeProfileServicesImpl implements Iface {
 		// resume.get("user_user"));
 		List<ProfileProfileRecord> oldProfile = profileDao.getProfilesByIdOrUserIdOrUUID(userId, 0, null);
 
-		profileRecord.setUuid(UUID.randomUUID().toString());
+		if(oldProfile !=null && oldProfile.size() > 0 && StringUtils.isNotNullOrEmpty(oldProfile.get(0).getUuid())) {
+			profileRecord.setUuid(oldProfile.get(0).getUuid());
+		} else {
+			profileRecord.setUuid(UUID.randomUUID().toString());
+		}
 		profileRecord.setUserId(userRecord.getId());
 		profileRecord.setDisable(UByte.valueOf(Constant.ENABLE));
 
@@ -442,6 +446,7 @@ public class WholeProfileServicesImpl implements Iface {
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
+
 		int id = profileDao.saveProfile(profileRecord, basicRecord, attachmentRecords, awardsRecords,
 				credentialsRecords, educationRecords, importRecords, intentionRecords, languages, otherRecord,
 				projectExps, skillRecords, workexpRecords, worksRecords, userRecord, oldProfile);
@@ -1014,6 +1019,9 @@ public class WholeProfileServicesImpl implements Iface {
 
 	@Autowired
 	private WorkExpDao workExpDao;
+	
+	@Autowired
+	private ProfileCompletenessImpl completenessImpl;
 
 	public Logger getLogger() {
 		return logger;
@@ -1221,5 +1229,13 @@ public class WholeProfileServicesImpl implements Iface {
 
 	public void setWxuserDao(WXUserDao wxuserDao) {
 		this.wxuserDao = wxuserDao;
+	}
+
+	public ProfileCompletenessImpl getCompletenessImpl() {
+		return completenessImpl;
+	}
+
+	public void setCompletenessImpl(ProfileCompletenessImpl completenessImpl) {
+		this.completenessImpl = completenessImpl;
 	}
 }

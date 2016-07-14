@@ -59,14 +59,22 @@ public class VProfileBasicRecord extends TableRecordImpl<VProfileBasicRecord> im
 	}
 
 	/**
+<<<<<<< HEAD
+	 * Setter for <code>profiledb.v_profile_basic.name</code>. 姓名
+=======
 	 * Setter for <code>profiledb.v_profile_basic.name</code>.
+>>>>>>> master
 	 */
 	public void setName(String value) {
 		setValue(2, value);
 	}
 
 	/**
+<<<<<<< HEAD
+	 * Getter for <code>profiledb.v_profile_basic.name</code>. 姓名
+=======
 	 * Getter for <code>profiledb.v_profile_basic.name</code>.
+>>>>>>> master
 	 */
 	public String getName() {
 		return (String) getValue(2);
