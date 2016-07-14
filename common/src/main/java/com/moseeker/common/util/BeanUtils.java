@@ -115,9 +115,7 @@ public class BeanUtils {
 										if (origMethods[k].getName().trim().equals(origMethodName)) {
 											Object object = convertTo(destMethods[j].invoke(dest, new Object[] {}),
 													origMethods[k].getParameterTypes()[0]);
-											if (object != null) {
-												origMethods[k].invoke(orig, object);
-											}
+											origMethods[k].invoke(orig, object);
 											break;
 										}
 									}
@@ -207,9 +205,7 @@ public class BeanUtils {
 									if (origMethods[k].getName().trim().equals(origMethodName)) {
 										Object object = convertTo(origMethods[k].invoke(orig, new Object[] {}),
 												destMethods[j].getParameterTypes()[0]);
-										if (object != null) {
-											destMethods[j].invoke(dest, object);
-										}
+										destMethods[j].invoke(dest, object);
 										break;
 									}
 								}

@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.apache.thrift.TException;
 import org.jooq.types.UByte;
-import org.jooq.types.UInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,6 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.logdb.tables.records.LogUserloginRecordRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.db.userdb.tables.records.UserFavPositionRecord;
-import com.moseeker.db.userdb.tables.records.UserSettingsRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -91,7 +89,7 @@ public class UseraccountsServiceImpl implements Iface {
             } else {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
             }        	
-        }else if (userloginreq.getUnionid() != null) {
+        } else if (userloginreq.getUnionid() != null) {
             filters.put("unionid", userloginreq.getUnionid());
         } else {
             filters.put("username", userloginreq.getMobile());
@@ -697,9 +695,9 @@ public class UseraccountsServiceImpl implements Iface {
             if(user != null && user.getId() > 0){
                 // 用户记录转换
                 UserUserRecord userUserRecord = (UserUserRecord) BeanUtils.structToDB(user, UserUserRecord.class);
-                if (userdao.putResource(userUserRecord)>0){
+                if (userdao.putResource(userUserRecord)>0) {
                 	return ResponseUtils.success(null);
-                }else{
+                } else {
                 	return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
                 }
             }else{

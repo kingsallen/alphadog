@@ -18,6 +18,7 @@ import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.profile.service.ProfileServices;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import com.moseeker.thrift.gen.useraccounts.service.UsersettingServices;
 import com.moseeker.thrift.gen.useraccounts.struct.User;
@@ -33,6 +34,7 @@ public class UseraccountsController {
 
    UseraccountsServices.Iface useraccountsServices = ServiceUtil.getService(UseraccountsServices.Iface.class);
    UsersettingServices.Iface usersettingServices = ServiceUtil.getService(UsersettingServices.Iface.class);
+   ProfileServices.Iface profileService = ServiceUtil.getService(ProfileServices.Iface.class);
 
    /**
     * 获取用户数据
@@ -70,6 +72,10 @@ public class UseraccountsController {
       try {
          User user = ParamUtils.initModelForm(request, User.class);
          Response result = useraccountsServices.updateUser(user);
+         /* 重新计算简历完整度 */
+         if(result.getStatus() == 0 && user.getId() > 0) {
+        	 profileService.reCalculateUserCompleteness((int)user.getId(), null);
+         }
          return ResponseLogNotification.success(request, result);
       } catch (Exception e) {
          return ResponseLogNotification.fail(request, e.getMessage());
@@ -165,6 +171,7 @@ public class UseraccountsController {
 
          Response result = useraccountsServices.postuserwxbindmobile(appid, unionid, code, mobile);
          if (result.getStatus() == 0) {
+        	 profileService.reCalculateUserCompleteness(0, mobile);
             return ResponseLogNotification.success(request, result);
          } else {
             return ResponseLogNotification.fail(request, result);
@@ -455,6 +462,7 @@ public class UseraccountsController {
           Usersetting usersetting = ParamUtils.initModelForm(request, Usersetting.class);
           Response result = usersettingServices.postResource(usersetting);
           if (result.getStatus() == 0) {
+        	  profileService.reCalculateUserCompleteness(usersetting.getUser_id(), null);
              return ResponseLogNotification.success(request, result);
           } else {
              return ResponseLogNotification.fail(request, result);
@@ -480,6 +488,7 @@ public class UseraccountsController {
          Usersetting usersetting = ParamUtils.initModelForm(request, Usersetting.class);
          Response result = usersettingServices.putResource(usersetting);
          if (result.getStatus() == 0) {
+        	  profileService.reCalculateUserCompletenessBySettingId(usersetting.getId());
             return ResponseLogNotification.success(request, result);
          } else {
             return ResponseLogNotification.fail(request, result);
