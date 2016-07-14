@@ -141,7 +141,7 @@ public class CompletenessCalculator {
 		if (workexpRecord.getStart() != null) {
 			completeness += 2;
 		}
-		if (workexpRecord.getStart() != null || (workexpRecord.getEndUntilNow() != null
+		if (workexpRecord.getEnd() != null || (workexpRecord.getEndUntilNow() != null
 				&& workexpRecord.getEndUntilNow().intValue() == 1)) {
 			completeness += 2;
 		}
@@ -328,7 +328,7 @@ public class CompletenessCalculator {
 					break;
 				}
 				try {
-					completeness += calculateCredential(record, completeness);
+					completeness = calculateCredential(record, completeness);
 				} catch (ParamIllegalException e) {
 					logger.error(e.getMessage(), e);
 				}
