@@ -12,4 +12,6 @@ public interface CompanyDao extends BaseDao<HrCompanyRecord> {
 
 	boolean checkRepeatNameWithSuperCompany(String name);
 
+	void transactionTest();
+
 }

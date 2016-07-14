@@ -14,6 +14,7 @@ import org.jooq.Result;
 import org.jooq.SelectJoinStep;
 import org.jooq.SortField;
 import org.jooq.SortOrder;
+import org.jooq.types.UByte;
 import org.jooq.types.UInteger;
 import org.springframework.stereotype.Repository;
 
@@ -25,6 +26,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.company.dao.CompanyDao;
 import com.moseeker.db.hrdb.tables.HrCompany;
 import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.db.userdb.tables.UserHrAccount;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 
@@ -141,5 +143,56 @@ public class CompanyDaoImpl extends BaseDaoImpl<HrCompanyRecord, HrCompany> impl
 		}
 
 		return repeatName;
+	}
+
+	@Override
+	public void transactionTest() {
+		Connection conn = null;
+		try {
+			conn = DBConnHelper.DBConn.getConn();
+			conn.setAutoCommit(false);
+			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+			ProfileProfileRecord profile = new ProfileProfileRecord();
+			profile.setUuid("transaction test");
+			profile.setDisable(UByte.valueOf(0));
+			profile.setUserId(UInteger.valueOf(1));
+			create.attach(profile);
+			profile.insert();
+			
+			ProfileProfileRecord profile2 = new ProfileProfileRecord();
+			profile2.setUuid("transaction testdele1");
+			profile2.setDisable(UByte.valueOf(0));
+			profile2.setUserId(UInteger.valueOf(2));
+			create.attach(profile2);
+			profile2.insert();
+			
+			ProfileProfileRecord profile1 = new ProfileProfileRecord();
+			profile1.setUuid("transaction testdele1");
+			profile1.setDisable(UByte.valueOf(0));
+			profile1.setUserId(UInteger.valueOf(2));
+			create.attach(profile1);
+			profile1.insert();
+			conn.commit();
+			conn.setAutoCommit(true);
+		} catch (Exception e) {
+			e.printStackTrace();
+			try {
+				if(conn != null && !conn.isClosed()) {
+					conn.rollback();
+				}
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		} finally {
+			try {
+				if(conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
 	}
 }

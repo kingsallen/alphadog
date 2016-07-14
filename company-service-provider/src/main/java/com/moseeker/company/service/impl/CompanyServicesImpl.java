@@ -80,6 +80,7 @@ public class CompanyServicesImpl extends JOOQBaseServiceImpl<Hrcompany, HrCompan
 	public Response add(Hrcompany company) throws TException {
 		ValidateUtil vu = new ValidateUtil();
 		vu.addRequiredStringValidate("公司名称", company.getName(), null, null);
+		vu.addRequiredValidate("来源", company.getSource());
 		 String message = vu.validate();
          if(StringUtils.isNullOrEmpty(message)) {
         	boolean repeatName = dao.checkRepeatNameWithSuperCompany(company.getName());
