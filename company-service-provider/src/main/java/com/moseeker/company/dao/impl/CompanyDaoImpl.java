@@ -1,22 +1,32 @@
 package com.moseeker.company.dao.impl;
 
-import com.moseeker.common.dbutils.DBConnHelper;
-import com.moseeker.common.util.BeanUtils;
-import com.moseeker.common.util.StringUtils;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import org.jooq.*;
-import org.jooq.exception.DataAccessException;
-import org.springframework.stereotype.Repository;
-
-import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
-import com.moseeker.company.dao.CompanyDao;
-import com.moseeker.db.hrdb.tables.HrCompany;
-import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import org.jooq.DSLContext;
+import org.jooq.Field;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Result;
+import org.jooq.SelectJoinStep;
+import org.jooq.SortField;
+import org.jooq.SortOrder;
+import org.jooq.types.UInteger;
+import org.springframework.stereotype.Repository;
+
+import com.moseeker.common.dbutils.DBConnHelper;
+import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
+import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.Constant;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.company.dao.CompanyDao;
+import com.moseeker.db.hrdb.tables.HrCompany;
+import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
+import com.moseeker.db.userdb.tables.UserHrAccount;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 
 @Repository
 public class CompanyDaoImpl extends BaseDaoImpl<HrCompanyRecord, HrCompany> implements CompanyDao {
@@ -37,14 +47,12 @@ public class CompanyDaoImpl extends BaseDaoImpl<HrCompanyRecord, HrCompany> impl
 
 			SelectJoinStep<Record> table = create.select().from(tableLike);
 
-			if (query.getEqualFilter() != null
-					&& query.getEqualFilter().size() > 0) {
+			if (query.getEqualFilter() != null && query.getEqualFilter().size() > 0) {
 				Map<String, String> equalFilter = query.getEqualFilter();
 				for (Map.Entry<String, String> entry : equalFilter.entrySet()) {
 					Field<?> field = tableLike.field(entry.getKey());
 					if (field != null) {
-						table.where(field.strictEqual(BeanUtils.convertTo(
-								entry.getValue(), field.getType())));
+						table.where(field.strictEqual(BeanUtils.convertTo(entry.getValue(), field.getType())));
 					}
 				}
 			}
@@ -57,20 +65,19 @@ public class CompanyDaoImpl extends BaseDaoImpl<HrCompanyRecord, HrCompany> impl
 				SortOrder so = SortOrder.ASC;
 				for (int i = 0; i < sortBy.length; i++) {
 					Field<?> field = table.field(sortBy[i]);
-					if (sortBy.length == order.length
-							&& !StringUtils.isNullOrEmpty(order[i])
+					if (sortBy.length == order.length && !StringUtils.isNullOrEmpty(order[i])
 							&& order[i].toLowerCase().equals("desc")) {
 						so = SortOrder.DESC;
 					}
 					if (field != null) {
 						switch (so) {
-							case ASC:
-								fields.add(field.asc());
-								break;
-							case DESC:
-								fields.add(field.desc());
-								break;
-							default:
+						case ASC:
+							fields.add(field.asc());
+							break;
+						case DESC:
+							fields.add(field.desc());
+							break;
+						default:
 						}
 					}
 				}
@@ -78,14 +85,14 @@ public class CompanyDaoImpl extends BaseDaoImpl<HrCompanyRecord, HrCompany> impl
 				table.orderBy(fields.toArray(fieldArray));
 			}
 
-//			/* 分段查找数据库结果集 */
-//			int page = 1;
-//			int per_page = 0;
-//			if (query.getPage() > 0) {
-//				page = query.getPage();
-//			}
-//			per_page = query.getPer_page()>0 ? query.getPer_page() : 10 ;
-//			table.limit((page-1)*per_page, per_page);
+			// /* 分段查找数据库结果集 */
+			// int page = 1;
+			// int per_page = 0;
+			// if (query.getPage() > 0) {
+			// page = query.getPage();
+			// }
+			// per_page = query.getPer_page()>0 ? query.getPer_page() : 10 ;
+			// table.limit((page-1)*per_page, per_page);
 
 			Result<Record> result = table.fetch();
 
@@ -98,11 +105,41 @@ public class CompanyDaoImpl extends BaseDaoImpl<HrCompanyRecord, HrCompany> impl
 			logger.error("error", e);
 			throw new Exception();
 		} finally {
-			if(conn != null && !conn.isClosed()) {
+			if (conn != null && !conn.isClosed()) {
 				conn.close();
 			}
-			//do nothing
+			// do nothing
 		}
 		return records;
+	}
+
+	@Override
+	public boolean checkRepeatNameWithSuperCompany(String name) {
+		boolean repeatName = false;
+		Connection conn = null;
+		try {
+			conn = DBConnHelper.DBConn.getConn();
+			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+			Result<Record1<UInteger>> result = create.select(HrCompany.HR_COMPANY.ID)
+					.from(HrCompany.HR_COMPANY.join(UserHrAccount.USER_HR_ACCOUNT)
+							.on(HrCompany.HR_COMPANY.HRACCOUNT_ID.equal(UserHrAccount.USER_HR_ACCOUNT.ID)))
+					.where(HrCompany.HR_COMPANY.NAME.like(name))
+					.and(UserHrAccount.USER_HR_ACCOUNT.ACCOUNT_TYPE.equal(Constant.ACCOUNT_TYPE_SUPERACCOUNT)).fetch();
+			if (result != null && result.size() > 0) {
+				repeatName = true;
+			}
+		} catch (SQLException e) {
+			logger.error(e.getMessage(), e);
+		} finally {
+			try {
+				if (conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
+
+		return repeatName;
 	}
 }

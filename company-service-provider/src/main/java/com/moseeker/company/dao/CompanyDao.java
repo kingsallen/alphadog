@@ -10,4 +10,6 @@ public interface CompanyDao extends BaseDao<HrCompanyRecord> {
 
     List<HrCompanyRecord> getAllCompanies(CommonQuery query) throws Exception;
 
+	boolean checkRepeatNameWithSuperCompany(String name);
+
 }
