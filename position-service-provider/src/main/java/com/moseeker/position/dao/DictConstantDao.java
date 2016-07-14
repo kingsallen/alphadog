@@ -1,10 +1,9 @@
-package com.moseeker.dict.dao;
+package com.moseeker.position.dao;
 
 import com.moseeker.common.providerutils.daoutils.BaseDao;
 import com.moseeker.db.dictdb.tables.records.DictConstantRecord;
-import com.moseeker.dict.pojo.DictConstantPojo;
+import com.moseeker.position.pojo.DictConstantPojo;
 
-import java.net.Inet4Address;
 import java.util.List;
 import java.util.Map;
 

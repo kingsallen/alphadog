@@ -11,8 +11,12 @@ import com.moseeker.db.jobdb.tables.records.JobApplicationRecord;
  */
 public interface JobApplicationDao extends BaseDao<JobApplicationRecord>{
 
+    public JobApplicationRecord getApplicationById(long applicationId) throws Exception;
+
     public int getApplicationByUserIdAndPositionId(long userId, long positionId) throws Exception;
 
 	public int saveApplication(JobApplicationRecord jobApplicationRecord) throws Exception;
+
+    public int archiveApplicationRecord(JobApplicationRecord jobApplicationRecord) throws Exception;
 
 }
