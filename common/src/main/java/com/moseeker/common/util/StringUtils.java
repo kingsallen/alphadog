@@ -11,6 +11,11 @@ public class StringUtils {
 		return (str == null || str.trim().equals(""));
 	}
 	
+	public static boolean isNotNullOrEmpty(String str) {
+
+		return (str != null && !str.trim().equals(""));
+	}
+	
 	/**
 	 * TODO(判断对象是否为空)
 	 * @param obj
