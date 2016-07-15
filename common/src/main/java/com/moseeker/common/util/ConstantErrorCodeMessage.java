@@ -46,6 +46,8 @@ public final class ConstantErrorCodeMessage {
     
     // Company服务提示信息说明
     public static final String COMPANY_NAME_REPEAT = "{'status':33001,'message':'不允许和拥有超级帐号的公司的公司名称重名!'}";
+    public static final String COMPANY_SCALE_ELLEGAL = "{'status':33002,'message':'公司规模不合法!'}";
+    public static final String COMPANY_PROPERTIY_ELLEGAL = "{'status':33002,'message':'公司属性不合法!'}";
     
     public static final String CRAWLER_USER_NOPERMITION = "{'status':32001,'message':'账号密码错误!'}";
     public static final String CRAWLER_IMPORT_FAILED = "{'status':32002,'message':'导入失败!'}";

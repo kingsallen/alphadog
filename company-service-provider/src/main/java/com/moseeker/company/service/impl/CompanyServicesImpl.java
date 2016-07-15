@@ -89,6 +89,14 @@ public class CompanyServicesImpl extends JOOQBaseServiceImpl<Hrcompany, HrCompan
         	} else {
         		try {
 					HrCompanyRecord record = structToDB(company);
+					boolean scaleIllegal = dao.checkScaleIllegal(record.getScale());
+					if(!scaleIllegal) {
+						return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+					}
+					boolean propertyIllegal = dao.checkPropertyIllegal(record.getScale());
+					if(!propertyIllegal) {
+						return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_PROPERTIY_ELLEGAL);
+					}
 					int companyId = dao.postResource(record);
 					return ResponseUtils.success(String.valueOf(companyId));
 				} catch (Exception e) {

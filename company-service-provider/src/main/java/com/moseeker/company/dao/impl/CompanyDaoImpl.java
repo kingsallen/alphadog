@@ -24,6 +24,8 @@ import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.company.dao.CompanyDao;
+import com.moseeker.db.dictdb.tables.DictConstant;
+import com.moseeker.db.dictdb.tables.records.DictConstantRecord;
 import com.moseeker.db.hrdb.tables.HrCompany;
 import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
@@ -158,14 +160,14 @@ public class CompanyDaoImpl extends BaseDaoImpl<HrCompanyRecord, HrCompany> impl
 			profile.setUserId(UInteger.valueOf(1));
 			create.attach(profile);
 			profile.insert();
-			
+
 			ProfileProfileRecord profile2 = new ProfileProfileRecord();
 			profile2.setUuid("transaction testdele1");
 			profile2.setDisable(UByte.valueOf(0));
 			profile2.setUserId(UInteger.valueOf(2));
 			create.attach(profile2);
 			profile2.insert();
-			
+
 			ProfileProfileRecord profile1 = new ProfileProfileRecord();
 			profile1.setUuid("transaction testdele1");
 			profile1.setDisable(UByte.valueOf(0));
@@ -177,7 +179,7 @@ public class CompanyDaoImpl extends BaseDaoImpl<HrCompanyRecord, HrCompany> impl
 		} catch (Exception e) {
 			e.printStackTrace();
 			try {
-				if(conn != null && !conn.isClosed()) {
+				if (conn != null && !conn.isClosed()) {
 					conn.rollback();
 				}
 			} catch (SQLException e1) {
@@ -186,7 +188,7 @@ public class CompanyDaoImpl extends BaseDaoImpl<HrCompanyRecord, HrCompany> impl
 			}
 		} finally {
 			try {
-				if(conn != null && !conn.isClosed()) {
+				if (conn != null && !conn.isClosed()) {
 					conn.close();
 				}
 			} catch (SQLException e1) {
@@ -194,5 +196,67 @@ public class CompanyDaoImpl extends BaseDaoImpl<HrCompanyRecord, HrCompany> impl
 				e1.printStackTrace();
 			}
 		}
+	}
+
+	@Override
+	public boolean checkScaleIllegal(UByte scale) {
+		boolean scaleIllegal = false;
+		if (scale != null && scale.intValue() > 0) {
+			Connection conn = null;
+			try {
+				conn = DBConnHelper.DBConn.getConn();
+				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+				List<DictConstantRecord> dictScales = create.selectFrom(DictConstant.DICT_CONSTANT)
+						.where(DictConstant.DICT_CONSTANT.PARENT_CODE.equal(Constant.DICT_CONSTANT_COMPANY_SCAL))
+						.and(DictConstant.DICT_CONSTANT.CODE.equal(scale.intValue())).fetch();
+				if(dictScales != null && dictScales.size() > 0) {
+					scaleIllegal = true;
+				}
+			} catch (SQLException e) {
+				logger.error(e.getMessage(), e);
+			} finally {
+				try {
+					if (conn != null && !conn.isClosed()) {
+						conn.close();
+					}
+				} catch (SQLException e) {
+					logger.error(e.getMessage(), e);
+				}
+			}
+		} else {
+			scaleIllegal = true;
+		}
+		return scaleIllegal;
+	}
+
+	@Override
+	public boolean checkPropertyIllegal(UByte property) {
+		boolean scaleIllegal = false;
+		if (property != null && property.intValue() > 0) {
+			Connection conn = null;
+			try {
+				conn = DBConnHelper.DBConn.getConn();
+				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+				List<DictConstantRecord> dictScales = create.selectFrom(DictConstant.DICT_CONSTANT)
+						.where(DictConstant.DICT_CONSTANT.PARENT_CODE.equal(Constant.DICT_CONSTANT_COMPANY_SCAL))
+						.and(DictConstant.DICT_CONSTANT.CODE.equal(property.intValue())).fetch();
+				if(dictScales != null && dictScales.size() > 0) {
+					scaleIllegal = true;
+				}
+			} catch (SQLException e) {
+				logger.error(e.getMessage(), e);
+			} finally {
+				try {
+					if (conn != null && !conn.isClosed()) {
+						conn.close();
+					}
+				} catch (SQLException e) {
+					logger.error(e.getMessage(), e);
+				}
+			}
+		} else {
+			scaleIllegal = true;
+		}
+		return scaleIllegal;
 	}
 }
