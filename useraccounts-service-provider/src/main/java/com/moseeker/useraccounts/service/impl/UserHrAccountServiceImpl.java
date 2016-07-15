@@ -116,7 +116,7 @@ public class UserHrAccountServiceImpl implements Iface {
                  HrCompanyRecord companyRecord = new HrCompanyRecord();
                  companyRecord.setType(UByte.valueOf(1));
                  if(downloadReport.isSetCompany_name()) {
-                	 companyRecord.setName(downloadReport.getName());
+                	 companyRecord.setName(downloadReport.getCompany_name());
                  }
                  int result = userHrAccountDao.createHRAccount(userHrAccountRecord, companyRecord);
                  
