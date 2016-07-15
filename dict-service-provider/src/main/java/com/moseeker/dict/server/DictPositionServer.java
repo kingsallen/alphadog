@@ -20,7 +20,7 @@ public class DictPositionServer {
         AnnotationConfigApplicationContext acac = initSpring();
         try {
             Server server = new Server(
-                    DictPositionServer.class,
+            		DictPositionServer.class,
                     ServerNodeUtils.getPort(args),
                     acac.getBean(PositionServiceImpl.class)
             );

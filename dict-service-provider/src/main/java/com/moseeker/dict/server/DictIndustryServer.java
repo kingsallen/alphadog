@@ -20,7 +20,7 @@ public class DictIndustryServer {
         AnnotationConfigApplicationContext acac = initSpring();
         try {
             Server server = new Server(
-                    DictIndustryServer.class,
+            		DictIndustryServer.class,
                     ServerNodeUtils.getPort(args),
                     acac.getBean(IndusteryServiceImpl.class)
             );

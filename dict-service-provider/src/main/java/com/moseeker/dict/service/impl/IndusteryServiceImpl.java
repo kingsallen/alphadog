@@ -1,6 +1,7 @@
 package com.moseeker.dict.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,8 +33,10 @@ public class IndusteryServiceImpl implements Iface {
 			List<DictIndustryTypeRecord> industryTypes = industryTypeDao.getAll();
 			if(industryTypes != null && industryTypes.size() > 0) {
 				industryTypes.forEach(industryType -> {
-					Map<String, Object> industryMap = industryType.intoMap();
+					Map<String, Object> industryMap = new HashMap<>();
 					industryMap.put("type", 0);
+					industryMap.put("code", industryType.getCode().intValue());
+					industryMap.put("name", industryType.getName());
 					industryMaps.add(industryMap);
 				});
 			}
@@ -41,7 +44,10 @@ public class IndusteryServiceImpl implements Iface {
 			List<DictIndustryRecord> industries = industryDao.getIndustriesByType(code);
 			if(industries != null && industries.size() > 0) {
 				industries.forEach(industry -> {
-					Map<String, Object> industryMap = industry.intoMap();
+					Map<String, Object> industryMap = new HashMap<>();
+					industryMap.put("type", industry.getType().intValue());
+					industryMap.put("code", industry.getCode().intValue());
+					industryMap.put("name", industry.getName());
 					industryMaps.add(industryMap);
 				});
 			}
