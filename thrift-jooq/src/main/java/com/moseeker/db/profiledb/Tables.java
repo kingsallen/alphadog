@@ -22,7 +22,6 @@ import com.moseeker.db.profiledb.tables.ProfileProjectexp;
 import com.moseeker.db.profiledb.tables.ProfileSkill;
 import com.moseeker.db.profiledb.tables.ProfileWorkexp;
 import com.moseeker.db.profiledb.tables.ProfileWorks;
-import com.moseeker.db.profiledb.tables.VProfileBasic;
 
 import javax.annotation.Generated;
 
@@ -129,9 +128,4 @@ public class Tables {
 	 * Profile的个人作品
 	 */
 	public static final ProfileWorks PROFILE_WORKS = com.moseeker.db.profiledb.tables.ProfileWorks.PROFILE_WORKS;
-
-	/**
-	 * VIEW
-	 */
-	public static final VProfileBasic V_PROFILE_BASIC = com.moseeker.db.profiledb.tables.VProfileBasic.V_PROFILE_BASIC;
 }

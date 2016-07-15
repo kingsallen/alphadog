@@ -32,7 +32,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileProfileRecord extends UpdatableRecordImpl<ProfileProfileRecord> implements Record9<UInteger, String, UByte, UInteger, UByte, UInteger, UByte, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = 72698665;
+	private static final long serialVersionUID = -1733703287;
 
 	/**
 	 * Setter for <code>profiledb.profile_profile.id</code>. 主key
@@ -77,14 +77,14 @@ public class ProfileProfileRecord extends UpdatableRecordImpl<ProfileProfileReco
 	}
 
 	/**
-	 * Setter for <code>profiledb.profile_profile.source</code>. Profile的创建来源, 1:微信企业端(正常), 2:微信企业端(我要投递), 3:微信企业端(我感兴趣), 4:微信聚合端(正常), 5:微信聚合端(我要投递), 6:微信聚合端(我感兴趣), 100:微信企业端Email申请, 101:微信聚合端Email申请, 150:微信企业端导入, 151:微信聚合端导入, 152:PC导入, 200:PC(正常添加) 201:PC(我要投递) 202: PC(我感兴趣)
+	 * Setter for <code>profiledb.profile_profile.source</code>. Profile的创建来源, 0:未知, 或者mongo合并来的 1:微信企业端(正常), 2:微信企业端(我要投递), 3:微信企业端(我感兴趣), 4:微信聚合端(正常), 5:微信聚合端(我要投递), 6:微信聚合端(我感兴趣), 100:微信企业端Email申请, 101:微信聚合端Email申请, 150:微信企业端导入, 151:微信聚合端导入, 152:PC导入, 200:PC(正常添加) 201:PC(我要投递) 202: PC(我感兴趣)
 	 */
 	public void setSource(UInteger value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>profiledb.profile_profile.source</code>. Profile的创建来源, 1:微信企业端(正常), 2:微信企业端(我要投递), 3:微信企业端(我感兴趣), 4:微信聚合端(正常), 5:微信聚合端(我要投递), 6:微信聚合端(我感兴趣), 100:微信企业端Email申请, 101:微信聚合端Email申请, 150:微信企业端导入, 151:微信聚合端导入, 152:PC导入, 200:PC(正常添加) 201:PC(我要投递) 202: PC(我感兴趣)
+	 * Getter for <code>profiledb.profile_profile.source</code>. Profile的创建来源, 0:未知, 或者mongo合并来的 1:微信企业端(正常), 2:微信企业端(我要投递), 3:微信企业端(我感兴趣), 4:微信聚合端(正常), 5:微信聚合端(我要投递), 6:微信聚合端(我感兴趣), 100:微信企业端Email申请, 101:微信聚合端Email申请, 150:微信企业端导入, 151:微信聚合端导入, 152:PC导入, 200:PC(正常添加) 201:PC(我要投递) 202: PC(我感兴趣)
 	 */
 	public UInteger getSource() {
 		return (UInteger) getValue(3);
