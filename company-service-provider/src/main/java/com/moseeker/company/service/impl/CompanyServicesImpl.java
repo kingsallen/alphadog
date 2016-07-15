@@ -85,7 +85,7 @@ public class CompanyServicesImpl extends JOOQBaseServiceImpl<Hrcompany, HrCompan
          if(StringUtils.isNullOrEmpty(message)) {
         	boolean repeatName = dao.checkRepeatNameWithSuperCompany(company.getName());
         	if(repeatName) {
-        		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+        		return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_NAME_REPEAT);
         	} else {
         		try {
 					HrCompanyRecord record = structToDB(company);
