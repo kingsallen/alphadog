@@ -11,25 +11,25 @@ import com.moseeker.rpccenter.main.Server;
 /**
  * Created by chendi on 5/19/16.
  */
-public class IndustryServer {
+public class DictIndustryServer {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(IndustryServer.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(DictIndustryServer.class);
 
     public static void main(String[] args) {
 
         AnnotationConfigApplicationContext acac = initSpring();
         try {
             Server server = new Server(
-                    IndustryServer.class,
+                    DictIndustryServer.class,
                     ServerNodeUtils.getPort(args),
                     acac.getBean(IndusteryServiceImpl.class)
             );
             server.start();
 
-            synchronized (IndustryServer.class) {
+            synchronized (DictIndustryServer.class) {
                 while (true) {
                     try {
-                        IndustryServer.class.wait();
+                        DictIndustryServer.class.wait();
                     } catch (Exception e) {
                         LOGGER.error(" service provider CollegeServer error", e);
                     }

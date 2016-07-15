@@ -11,25 +11,25 @@ import com.moseeker.rpccenter.main.Server;
 /**
  * Created by chendi on 5/19/16.
  */
-public class PositionServer {
+public class DictPositionServer {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(PositionServer.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(DictPositionServer.class);
 
     public static void main(String[] args) {
 
         AnnotationConfigApplicationContext acac = initSpring();
         try {
             Server server = new Server(
-                    PositionServer.class,
+                    DictPositionServer.class,
                     ServerNodeUtils.getPort(args),
                     acac.getBean(PositionServiceImpl.class)
             );
             server.start();
 
-            synchronized (PositionServer.class) {
+            synchronized (DictPositionServer.class) {
                 while (true) {
                     try {
-                        PositionServer.class.wait();
+                        DictPositionServer.class.wait();
                     } catch (Exception e) {
                         LOGGER.error(" service provider CollegeServer error", e);
                     }
