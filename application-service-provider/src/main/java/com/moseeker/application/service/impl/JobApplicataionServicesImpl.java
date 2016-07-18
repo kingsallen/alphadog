@@ -39,8 +39,8 @@ public class JobApplicataionServicesImpl implements Iface {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    // 申请次数限制 3次
-    private static final int APPLICATION_COUNT_LIMIT = 3;
+    // 申请次数限制 10次
+    private static final int APPLICATION_COUNT_LIMIT = 10;
 
     // ats投递
     private static final int IS_MOSEEKER_APPLICATION = 0;
