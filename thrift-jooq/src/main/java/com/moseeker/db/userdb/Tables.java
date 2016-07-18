@@ -4,7 +4,6 @@
 package com.moseeker.db.userdb;
 
 
-import com.moseeker.db.userdb.tables.CandidateVJobPositionRecom;
 import com.moseeker.db.userdb.tables.UserEmployee;
 import com.moseeker.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.db.userdb.tables.UserFavPosition;
@@ -12,6 +11,7 @@ import com.moseeker.db.userdb.tables.UserHrAccount;
 import com.moseeker.db.userdb.tables.UserIntention;
 import com.moseeker.db.userdb.tables.UserSettings;
 import com.moseeker.db.userdb.tables.UserUser;
+import com.moseeker.db.userdb.tables.UserUserBak;
 import com.moseeker.db.userdb.tables.UserWxUser;
 import com.moseeker.db.userdb.tables.UserWxViewer;
 
@@ -30,11 +30,6 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
-
-	/**
-	 * VIEW
-	 */
-	public static final CandidateVJobPositionRecom CANDIDATE_V_JOB_POSITION_RECOM = com.moseeker.db.userdb.tables.CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM;
 
 	/**
 	 * The table userdb.user_employee
@@ -70,6 +65,11 @@ public class Tables {
 	 * 用户表
 	 */
 	public static final UserUser USER_USER = com.moseeker.db.userdb.tables.UserUser.USER_USER;
+
+	/**
+	 * 用户表
+	 */
+	public static final UserUserBak USER_USER_BAK = com.moseeker.db.userdb.tables.UserUserBak.USER_USER_BAK;
 
 	/**
 	 * 微信用户表

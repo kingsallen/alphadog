@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserHrAccount extends TableImpl<UserHrAccountRecord> {
 
-	private static final long serialVersionUID = 612749479;
+	private static final long serialVersionUID = -750462002;
 
 	/**
 	 * The reference instance of <code>userdb.user_hr_account</code>
@@ -73,7 +73,7 @@ public class UserHrAccount extends TableImpl<UserHrAccountRecord> {
 	/**
 	 * The column <code>userdb.user_hr_account.wxuser_id</code>. 绑定的微信账号
 	 */
-	public final TableField<UserHrAccountRecord, Integer> WXUSER_ID = createField("wxuser_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "绑定的微信账号");
+	public final TableField<UserHrAccountRecord, Integer> WXUSER_ID = createField("wxuser_id", org.jooq.impl.SQLDataType.INTEGER, this, "绑定的微信账号");
 
 	/**
 	 * The column <code>userdb.user_hr_account.password</code>. 登录密码
@@ -188,7 +188,7 @@ public class UserHrAccount extends TableImpl<UserHrAccountRecord> {
 	 */
 	@Override
 	public List<UniqueKey<UserHrAccountRecord>> getKeys() {
-		return Arrays.<UniqueKey<UserHrAccountRecord>>asList(Keys.KEY_USER_HR_ACCOUNT_PRIMARY);
+		return Arrays.<UniqueKey<UserHrAccountRecord>>asList(Keys.KEY_USER_HR_ACCOUNT_PRIMARY, Keys.KEY_USER_HR_ACCOUNT_WXUSER_ID);
 	}
 
 	/**
