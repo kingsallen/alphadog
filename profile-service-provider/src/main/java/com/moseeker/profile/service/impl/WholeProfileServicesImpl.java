@@ -918,7 +918,7 @@ public class WholeProfileServicesImpl implements Iface {
 			map.put("lang", profileRecord.getLang().intValue());
 		}
 		if (profileRecord.getSource() != null) {
-			map.put("source", profileRecord.getLang().intValue());
+			map.put("source", profileRecord.getSource().intValue());
 			if (constantRecords != null && constantRecords.size() > 0) {
 				for (DictConstantRecord constantRecord : constantRecords) {
 					if (constantRecord.getParentCode().intValue() == 3119) {

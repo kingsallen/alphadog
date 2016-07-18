@@ -37,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompany extends TableImpl<HrCompanyRecord> {
 
-	private static final long serialVersionUID = 1244744811;
+	private static final long serialVersionUID = -951235593;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_company</code>
@@ -143,9 +143,9 @@ public class HrCompany extends TableImpl<HrCompanyRecord> {
 	public final TableField<HrCompanyRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "更新时间");
 
 	/**
-	 * The column <code>hrdb.hr_company.source</code>. 添加来源 {"0":"hr系统", "9":"profile添加"}
+	 * The column <code>hrdb.hr_company.source</code>. 添加来源 {"0":"hr系统", "8":"微信端添加" "9":"profile添加"}
 	 */
-	public final TableField<HrCompanyRecord, UByte> SOURCE = createField("source", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "添加来源 {\"0\":\"hr系统\", \"9\":\"profile添加\"}");
+	public final TableField<HrCompanyRecord, UByte> SOURCE = createField("source", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "添加来源 {\"0\":\"hr系统\", \"8\":\"微信端添加\" \"9\":\"profile添加\"}");
 
 	/**
 	 * Create a <code>hrdb.hr_company</code> table reference

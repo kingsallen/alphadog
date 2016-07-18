@@ -73,7 +73,21 @@ public class CrawlerUtils {
 						profile.put("source", Constant.PROFILE_SOURCE_UNKNOW);
 					} else if(appid == 1) {
 						profile.put("source", Constant.PROFILE_SOURCE_PC_IMPORT);
-					}  else {
+					} else if(appid == 2) {
+						profile.put("source", Constant.PROFILE_SOURCE_WEIXIN_TEGETHER_IMPORT);
+					} else if(appid == 3) {
+						profile.put("source", Constant.PROFILE_SOURCE_WEIXIN_COMPANY_IMPORT);
+					} else if(appid == 4) {
+						profile.put("source", Constant.PROFILE_SOURCE_UNKNOW);
+					} else if(appid == 20) {
+						profile.put("source", Constant.PROFILE_SOURCE_UNKNOW);
+					} else if(appid == 21) {
+						profile.put("source", Constant.PROFILE_SOURCE_UNKNOW);
+					} else if(appid == 22) {
+						profile.put("source", Constant.PROFILE_SOURCE_UNKNOW);
+					} else if(appid == 101) {
+						profile.put("source", Constant.PROFILE_SOURCE_UNKNOW);
+					} else {
 						profile.put("source", source);
 					}
 				}
@@ -90,6 +104,20 @@ public class CrawlerUtils {
 					profile.put("source", Constant.PROFILE_SOURCE_UNKNOW);
 				} else if(appid == 1) {
 					profile.put("source", Constant.PROFILE_SOURCE_PC_IMPORT);
+				} else if(appid == 2) {
+					profile.put("source", Constant.PROFILE_SOURCE_WEIXIN_TEGETHER_IMPORT);
+				} else if(appid == 3) {
+					profile.put("source", Constant.PROFILE_SOURCE_WEIXIN_COMPANY_IMPORT);
+				} else if(appid == 4) {
+					profile.put("source", Constant.PROFILE_SOURCE_UNKNOW);
+				} else if(appid == 20) {
+					profile.put("source", Constant.PROFILE_SOURCE_UNKNOW);
+				} else if(appid == 21) {
+					profile.put("source", Constant.PROFILE_SOURCE_UNKNOW);
+				} else if(appid == 22) {
+					profile.put("source", Constant.PROFILE_SOURCE_UNKNOW);
+				} else if(appid == 101) {
+					profile.put("source", Constant.PROFILE_SOURCE_UNKNOW);
 				} else {
 					profile.put("source", source);
 				}
