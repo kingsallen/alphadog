@@ -22,7 +22,6 @@ import com.moseeker.db.profiledb.tables.ProfileProjectexp;
 import com.moseeker.db.profiledb.tables.ProfileSkill;
 import com.moseeker.db.profiledb.tables.ProfileWorkexp;
 import com.moseeker.db.profiledb.tables.ProfileWorks;
-import com.moseeker.db.profiledb.tables.VProfileBasic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -87,7 +86,6 @@ public class Profiledb extends SchemaImpl {
 			ProfileProjectexp.PROFILE_PROJECTEXP,
 			ProfileSkill.PROFILE_SKILL,
 			ProfileWorkexp.PROFILE_WORKEXP,
-			ProfileWorks.PROFILE_WORKS,
-			VProfileBasic.V_PROFILE_BASIC);
+			ProfileWorks.PROFILE_WORKS);
 	}
 }

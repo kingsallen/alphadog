@@ -37,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileProfile extends TableImpl<ProfileProfileRecord> {
 
-	private static final long serialVersionUID = 1897997691;
+	private static final long serialVersionUID = 125029595;
 
 	/**
 	 * The reference instance of <code>profiledb.profile_profile</code>
@@ -68,9 +68,9 @@ public class ProfileProfile extends TableImpl<ProfileProfileRecord> {
 	public final TableField<ProfileProfileRecord, UByte> LANG = createField("lang", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "profile语言 1:chinese 2:english");
 
 	/**
-	 * The column <code>profiledb.profile_profile.source</code>. Profile的创建来源, 1:微信企业端(正常), 2:微信企业端(我要投递), 3:微信企业端(我感兴趣), 4:微信聚合端(正常), 5:微信聚合端(我要投递), 6:微信聚合端(我感兴趣), 100:微信企业端Email申请, 101:微信聚合端Email申请, 150:微信企业端导入, 151:微信聚合端导入, 152:PC导入, 200:PC(正常添加) 201:PC(我要投递) 202: PC(我感兴趣)
+	 * The column <code>profiledb.profile_profile.source</code>. Profile的创建来源, 0:未知, 或者mongo合并来的 1:微信企业端(正常), 2:微信企业端(我要投递), 3:微信企业端(我感兴趣), 4:微信聚合端(正常), 5:微信聚合端(我要投递), 6:微信聚合端(我感兴趣), 100:微信企业端Email申请, 101:微信聚合端Email申请, 150:微信企业端导入, 151:微信聚合端导入, 152:PC导入, 200:PC(正常添加) 201:PC(我要投递) 202: PC(我感兴趣)
 	 */
-	public final TableField<ProfileProfileRecord, UInteger> SOURCE = createField("source", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "Profile的创建来源, 1:微信企业端(正常), 2:微信企业端(我要投递), 3:微信企业端(我感兴趣), 4:微信聚合端(正常), 5:微信聚合端(我要投递), 6:微信聚合端(我感兴趣), 100:微信企业端Email申请, 101:微信聚合端Email申请, 150:微信企业端导入, 151:微信聚合端导入, 152:PC导入, 200:PC(正常添加) 201:PC(我要投递) 202: PC(我感兴趣)");
+	public final TableField<ProfileProfileRecord, UInteger> SOURCE = createField("source", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "Profile的创建来源, 0:未知, 或者mongo合并来的 1:微信企业端(正常), 2:微信企业端(我要投递), 3:微信企业端(我感兴趣), 4:微信聚合端(正常), 5:微信聚合端(我要投递), 6:微信聚合端(我感兴趣), 100:微信企业端Email申请, 101:微信聚合端Email申请, 150:微信企业端导入, 151:微信聚合端导入, 152:PC导入, 200:PC(正常添加) 201:PC(我要投递) 202: PC(我感兴趣)");
 
 	/**
 	 * The column <code>profiledb.profile_profile.completeness</code>. Profile完整度
