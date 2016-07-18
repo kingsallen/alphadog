@@ -307,7 +307,7 @@ public class JobApplicataionServicesImpl implements Iface {
 
     /**
      * 一个用户在一家公司的每月的申请次数校验
-     *      超出申请次数限制, 每月每家公司一个人只能申请3次
+     *      超出申请次数限制, 每月每家公司一个人只能申请10次
      * <p>
      *
      * @param userId 用户id
@@ -444,7 +444,7 @@ public class JobApplicataionServicesImpl implements Iface {
 
     /**
      * 一个用户在一家公司的每月的申请次数校验
-     *      超出申请次数限制, 每月每家公司一个人只能申请3次
+     *      超出申请次数限制, 每月每家公司一个人只能申请10次
      * <p>
      *
      * @param userId 用户id
@@ -456,7 +456,7 @@ public class JobApplicataionServicesImpl implements Iface {
         String applicationCountCheck = redisClient.get(Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
                 String.valueOf(userId), String.valueOf(companyId));
 
-        // 超出申请次数限制, 每月每家公司一个人只能申请3次
+        // 超出申请次数限制, 每月每家公司一个人只能申请10次
         if(applicationCountCheck != null && Integer.valueOf(applicationCountCheck) >= APPLICATION_COUNT_LIMIT){
             return true;
         }
