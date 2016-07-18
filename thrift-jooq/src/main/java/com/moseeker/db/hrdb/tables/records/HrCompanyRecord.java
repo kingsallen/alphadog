@@ -32,7 +32,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyRecord extends UpdatableRecordImpl<HrCompanyRecord> implements Record19<UInteger, UByte, String, String, UByte, String, UByte, String, String, String, String, String, String, UInteger, Integer, Byte, Timestamp, Timestamp, UByte> {
 
-	private static final long serialVersionUID = -743957657;
+	private static final long serialVersionUID = 1882633981;
 
 	/**
 	 * Setter for <code>hrdb.hr_company.id</code>.
@@ -287,14 +287,14 @@ public class HrCompanyRecord extends UpdatableRecordImpl<HrCompanyRecord> implem
 	}
 
 	/**
-	 * Setter for <code>hrdb.hr_company.source</code>. 添加来源 {"0":"hr系统", "9":"profile添加"}
+	 * Setter for <code>hrdb.hr_company.source</code>. 添加来源 {"0":"hr系统", "8":"微信端添加" "9":"profile添加"}
 	 */
 	public void setSource(UByte value) {
 		setValue(18, value);
 	}
 
 	/**
-	 * Getter for <code>hrdb.hr_company.source</code>. 添加来源 {"0":"hr系统", "9":"profile添加"}
+	 * Getter for <code>hrdb.hr_company.source</code>. 添加来源 {"0":"hr系统", "8":"微信端添加" "9":"profile添加"}
 	 */
 	public UByte getSource() {
 		return (UByte) getValue(18);
