@@ -57,4 +57,5 @@ public final class ConstantErrorCodeMessage {
     // 申请服务ERRCODE说明定义 4字头
     public static final String APPLICATION_VALIDATE_COUNT_CHECK = "{'status':41001,'message':'超出申请次数限制!'}";
     public static final String APPLICATION_POSITION_DUPLICATE = "{'status':41002,'message':'该职位已经申请过!'}";
+    public static final String APPLICATION_ARCHIVE_FAILED = "{'status':41003,'message':'申请归档失败!'}";
 }

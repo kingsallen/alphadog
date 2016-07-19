@@ -2,16 +2,18 @@ package com.moseeker.common.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.joda.time.DateTime;
 
 public class DateUtils {
 	
-	private static final String SHOT_DATE = "yy-MM-dd";
-	private static final String NORMAL_DATE = "yyyy-MM-dd";
-	private static final String SHOT_TIME = "yyyy-MM-dd HH:mm:ss";
-	private static final String LONG_TIME = "yyyy-MM-dd HH:mm:ss sss";
+	public static final String SHOT_DATE = "yy-MM-dd";
+	public static final String NORMAL_DATE = "yyyy-MM-dd";
+	public static final String SHOT_TIME = "yyyy-MM-dd HH:mm:ss";
+	public static final String LONG_TIME = "yyyy-MM-dd HH:mm:ss sss";
+
 	private static final SimpleDateFormat SHOT_DATE_SDF = new SimpleDateFormat(SHOT_DATE);
 	private static final SimpleDateFormat normalDateSDF = new SimpleDateFormat(NORMAL_DATE);
 	private static final SimpleDateFormat shotTimeSDF = new SimpleDateFormat(SHOT_TIME);
@@ -56,5 +58,33 @@ public class DateUtils {
 	public static Date longTimeToDate(String longTime) throws ParseException {
 		Date date = longTimeSDF.parse(longTime);
 		return date;
+	}
+
+	/**
+	 * 得到本月最后一天的日期
+	 *
+	 * @Methods Name getLastDayOfMonth
+	 * @return Date
+	 */
+	public static long getLastDayOfMonth() {
+		Calendar cDay = Calendar.getInstance();
+		cDay.set(Calendar.getInstance().get(Calendar.YEAR),
+				 Calendar.getInstance().get(Calendar.MONTH),
+				 Calendar.getInstance().get(Calendar.DAY_OF_MONTH),
+				 23,
+				 59,
+				 59
+		);
+		cDay.set(Calendar.DAY_OF_MONTH, cDay.getActualMaximum(Calendar.DAY_OF_MONTH));
+		return cDay.getTimeInMillis();
+	}
+
+	/**
+	 * 计算本月剩余秒数, 月末-当前
+	 *
+	 * @return
+     */
+	public static long calcCurrMonthSurplusSeconds(){
+		return (getLastDayOfMonth() - System.currentTimeMillis()) / 1000;
 	}
 }

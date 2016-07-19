@@ -1,28 +1,31 @@
 package com.moseeker.position.service.impl;
 
-import java.util.List;
-
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.ValueFilter;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.ConstantErrorCodeMessage;
+import com.moseeker.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.position.dao.DictConstantDao;
 import com.moseeker.position.dao.JobPositionDao;
 import com.moseeker.position.dao.PositionDao;
 import com.moseeker.position.dao.UserDao;
+import com.moseeker.position.pojo.DictConstantPojo;
+import com.moseeker.position.pojo.JobPositionPojo;
 import com.moseeker.position.pojo.RecommendedPositonPojo;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.position.service.PositionServices.Iface;
 import com.moseeker.thrift.gen.position.struct.Position;
+import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class PositionServicesImpl extends JOOQBaseServiceImpl<Position, JobPositionRecord> implements Iface {
@@ -30,13 +33,16 @@ public class PositionServicesImpl extends JOOQBaseServiceImpl<Position, JobPosit
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    protected PositionDao dao;
+    private PositionDao dao;
     
     @Autowired
-    protected UserDao userDao;
+	private UserDao userDao;
     
     @Autowired
-    protected JobPositionDao jobPositionDao;
+	private JobPositionDao jobPositionDao;
+
+	@Autowired
+	private DictConstantDao dictConstantDao;
 
     @Override
     protected void initDao() {
@@ -53,7 +59,14 @@ public class PositionServicesImpl extends JOOQBaseServiceImpl<Position, JobPosit
         return (JobPositionRecord) BeanUtils.structToDB(p, JobPositionRecord.class);
     }
 
-    @Override
+	/**
+	 * 获取推荐职位
+	 * <p></p>
+	 *
+	 * @param pid
+	 * @return
+     */
+	@Override
     public Response getRecommendedPositions(int pid) {
 
         List<RecommendedPositonPojo> recommendPositons = this.dao.getRecommendedPositions(pid);
@@ -72,42 +85,90 @@ public class PositionServicesImpl extends JOOQBaseServiceImpl<Position, JobPosit
 
 	@Override
 	public Response verifyCustomize(int userId, int positionId) throws TException {
-		UserUserRecord userRecord = userDao.getUserById(userId);
-		JobPositionRecord positionRecord = jobPositionDao.getPositionById(positionId);
-		if(userRecord == null) {
-			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_USER_NOTEXIST);
+		try{
+			UserUserRecord userRecord = userDao.getUserById(userId);
+			JobPositionRecord positionRecord = jobPositionDao.getPositionById(positionId);
+			if(userRecord == null) {
+				return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_USER_NOTEXIST);
+			}
+			if(positionRecord == null) {
+				return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_POSITION_NOTEXIST);
+			}
+			if(positionRecord.getAppCvConfigId() != null && positionRecord.getAppCvConfigId().intValue() > 0) {
+				return ResponseUtils.success(true);
+			} else {
+				return ResponseUtils.success(false);
+			}
+		}catch (Exception e){
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		}
-		if(positionRecord == null) {
-			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_POSITION_NOTEXIST);
+	}
+
+	/**
+	 * 根据职位Id获取当前职位信息
+	 *
+	 * @param positionId
+	 * @return
+	 * @throws TException
+     */
+	@Override
+	public Response getPositionById(int positionId) throws TException {
+
+		try{
+			// 必填项校验
+			if(positionId == 0){
+				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "position_id"));
+			}
+
+			// NullPoint check
+			JobPositionRecord jobPositionRecord = jobPositionDao.getPositionById(positionId);
+			if (jobPositionRecord == null){
+				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+			}
+
+			JobPositionPojo jobPositionPojo = jobPositionDao.getPosition(positionId);
+
+			/** 子公司Id设置 **/
+			if(jobPositionPojo.publisher != 0){
+				HrCompanyAccountRecord hrCompanyAccountRecord = jobPositionDao.getHrCompanyAccountByPublisher(jobPositionPojo.publisher);
+				// 子公司ID>0
+				if (hrCompanyAccountRecord != null && hrCompanyAccountRecord.getCompanyId() > 0){
+					jobPositionPojo.publisher_company_id = hrCompanyAccountRecord.getCompanyId();
+				}
+			}
+
+			/** 常量转换 **/
+			// 性别
+			if(jobPositionPojo.gender > 0){
+				jobPositionPojo.gender_name = getDictConstantJson(2102, jobPositionPojo.gender);
+			}
+
+			// 学历
+			if(jobPositionPojo.degree > 0){
+				jobPositionPojo.degree_name = getDictConstantJson(2101, jobPositionPojo.degree);
+			}
+
+			// 工作性质
+			if(jobPositionPojo.employment_type > 0){
+				jobPositionPojo.employment_type_name = getDictConstantJson(2103, jobPositionPojo.degree);
+			}
+
+			return ResponseUtils.success(jobPositionPojo);
+		}catch (Exception e){
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		}
-		if(positionRecord.getAppCvConfigId() != null && positionRecord.getAppCvConfigId().intValue() > 0) {
-			return ResponseUtils.success(true);
-		} else {
-			return ResponseUtils.success(false);
-		}
 	}
 
-	public PositionDao getDao() {
-		return dao;
-	}
-
-	public void setDao(PositionDao dao) {
-		this.dao = dao;
-	}
-
-	public UserDao getUserDao() {
-		return userDao;
-	}
-
-	public void setUserDao(UserDao userDao) {
-		this.userDao = userDao;
-	}
-
-	public JobPositionDao getJobPositionDao() {
-		return jobPositionDao;
-	}
-
-	public void setJobPositionDao(JobPositionDao jobPositionDao) {
-		this.jobPositionDao = jobPositionDao;
+	/**
+	 * 获取常量字典一条记录
+	 *
+	 * @param parentCode
+	 * @param code
+	 * @return
+	 * @throws Exception
+     */
+	private String getDictConstantJson(Integer parentCode, Integer code) throws Exception{
+		DictConstantPojo dictConstantPojo = dictConstantDao.getDictConstantJson(parentCode, code);
+		return dictConstantPojo != null ? dictConstantPojo.getName() : "";
 	}
 }

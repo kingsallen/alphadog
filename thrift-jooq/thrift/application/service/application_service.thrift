@@ -11,6 +11,12 @@ service JobApplicationServices {
     // 添加申请
     common_struct.Response postApplication(1: application_struct.JobApplication application);
 
+    // 更新申请
+    common_struct.Response putApplication(1: application_struct.JobApplication application);
+
+    // 删除申请
+    common_struct.Response deleteApplication(1: i64 applicationId);
+
     // 添加申请副本信息
     common_struct.Response postJobResumeOther(1: application_struct.JobResumeOther jobResumeOther);
 

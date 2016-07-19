@@ -1,11 +1,11 @@
-package com.moseeker.dict.dao.impl;
+package com.moseeker.position.dao.impl;
 
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
 import com.moseeker.db.dictdb.tables.DictConstant;
 import com.moseeker.db.dictdb.tables.records.DictConstantRecord;
-import com.moseeker.dict.dao.DictConstantDao;
-import com.moseeker.dict.pojo.DictConstantPojo;
+import com.moseeker.position.dao.DictConstantDao;
+import com.moseeker.position.pojo.DictConstantPojo;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Record;
@@ -58,13 +58,13 @@ public class DictConstantDaoImpl extends BaseDaoImpl<DictConstantRecord, DictCon
                             where(condition).orderBy(DictConstant.DICT_CONSTANT.PRIORITY.asc()).fetchInto(DictConstantPojo.class);
                     map.put(dictConstantPOJO.getCode(), dictConstantPOJOList2);
                 }
-            // 单个parent_code
+                // 单个parent_code
             }else if(parentCodeList.size() == 1){
                 condition = DictConstant.DICT_CONSTANT.PARENT_CODE.equal(parentCodeList.get(0));
                 List<DictConstantPojo> dictConstantPOJOList1 = create.select().from(DictConstant.DICT_CONSTANT).
                         where(condition).orderBy(DictConstant.DICT_CONSTANT.PRIORITY.asc()).fetchInto(DictConstantPojo.class);
                 map.put(parentCodeList.get(0), dictConstantPOJOList1);
-            // 多个parent_code
+                // 多个parent_code
             }else{
                 for (Integer parentCode: parentCodeList) {
                     condition = DictConstant.DICT_CONSTANT.PARENT_CODE.equal(parentCode);
