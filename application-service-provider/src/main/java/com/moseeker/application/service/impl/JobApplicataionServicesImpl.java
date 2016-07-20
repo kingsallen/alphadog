@@ -10,6 +10,7 @@ import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.ConstantErrorCodeMessage;
+import com.moseeker.common.util.DateUtils;
 import com.moseeker.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.db.jobdb.tables.records.JobResumeOtherRecord;
@@ -38,8 +39,8 @@ public class JobApplicataionServicesImpl implements Iface {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    // 申请次数限制 3次
-    private static final int APPLICATION_COUNT_LIMIT = 3;
+    // 申请次数限制 10次
+    private static final int APPLICATION_COUNT_LIMIT = 10;
 
     // ats投递
     private static final int IS_MOSEEKER_APPLICATION = 0;
@@ -111,29 +112,136 @@ public class JobApplicataionServicesImpl implements Iface {
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
     }
 
+
+    /**
+     * 更新申请数据
+     *
+     * @param jobApplication 用户实体
+     *
+     * */
+    @Override
+    public Response putApplication(JobApplication jobApplication) throws TException {
+        try {
+
+            // 必填项校验
+            if(jobApplication == null || jobApplication.getId() == 0){
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "id"));
+            }
+
+            // 更新申请
+            JobApplicationRecord jobApplicationRecord = (JobApplicationRecord) BeanUtils.structToDB(jobApplication,
+                    JobApplicationRecord.class);
+
+            int updateStatus = jobApplicationDao.putResource(jobApplicationRecord);
+            if (updateStatus > 0) {
+                return ResponseUtils.success(new HashMap<String, Object>(){
+                    {
+                        put("updateStatus", updateStatus);
+                    }
+                }); // 返回 userFavoritePositionId
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            logger.error("putApplication JobApplicationRecord error: ", e);
+        } finally {
+            //do nothing
+        }
+        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+    }
+
+    /**
+     * 删除申请记录
+     *
+     * @param applicationId 申请Id
+     * @return
+     * @throws TException
+     */
+    @Override
+    public Response deleteApplication(long applicationId) throws TException {
+        try {
+            // 必填项校验
+            if(applicationId == 0){
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "id"));
+            }
+
+            JobApplicationRecord jobApplicationRecord = jobApplicationDao.getApplicationById(applicationId);
+            if(jobApplicationRecord == null){
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+            }
+
+            // 删除的数据归档
+            int status = jobApplicationDao.archiveApplicationRecord(jobApplicationRecord);
+
+            // 归档成功后, 用户在该公司下的申请限制次数 -1
+            if (status > 0){
+
+                // 用户在该公司下的申请限制次数 -1 TODO: throw RedisException, 提示相关信息
+                this.subApplicationCountAtCompany(jobApplicationRecord);
+
+                return ResponseUtils.success(status);
+
+            }else{
+                return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_ARCHIVE_FAILED);
+            }
+        }catch (Exception e) {
+            // TODO Auto-generated catch block
+            logger.error("deleteApplication JobApplicationRecord error: ", e);
+        } finally {
+            //do nothing
+        }
+        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+    }
+
     /**
      * 添加该人该公司的申请次数
      *
      * @param jobApplication
      *
      * */
-    private void addApplicationCountAtCompany(JobApplication jobApplication){
-
-        Integer count = 1;
+    private void addApplicationCountAtCompany(JobApplication jobApplication) {
 
         String applicationCountCheck = redisClient.get(Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
                 String.valueOf(jobApplication.applier_id), String.valueOf(jobApplication.company_id));
 
         // 获取当前申请次数 +1
-
-        if(applicationCountCheck != null && Integer.valueOf(applicationCountCheck) <= APPLICATION_COUNT_LIMIT){
-            count = Integer.valueOf(applicationCountCheck) + 1;
+        if(applicationCountCheck != null){
+            redisClient.incr(Constant.APPID_ALPHADOG,
+                    REDIS_KEY_APPLICATION_COUNT_CHECK,
+                    String.valueOf(jobApplication.applier_id),
+                    String.valueOf(jobApplication.company_id));
+        // 本月第一次申请
+        }else{
+            redisClient.set(Constant.APPID_ALPHADOG,
+                    REDIS_KEY_APPLICATION_COUNT_CHECK,
+                    String.valueOf(jobApplication.applier_id),
+                    String.valueOf(jobApplication.company_id),
+                    "1",
+                    (int)DateUtils.calcCurrMonthSurplusSeconds()
+            );
         }
+    }
 
-        // 设置申请次数
-        redisClient.set(Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
-                String.valueOf(jobApplication.applier_id), String.valueOf(jobApplication.company_id),
-                String.valueOf(count));
+    /**
+     * 该人该公司的申请次数 -1
+     *
+     * @param jobApplication
+     *
+     * */
+    private void subApplicationCountAtCompany(JobApplicationRecord jobApplication){
+
+        String applicationCountCheck = redisClient.get(Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
+                String.valueOf(jobApplication.getApplierId()), String.valueOf(jobApplication.getCompanyId()));
+
+        // 获取当前申请次数 -1
+        if (applicationCountCheck != null
+                && Integer.valueOf(applicationCountCheck) > 0
+                && Integer.valueOf(applicationCountCheck) <= APPLICATION_COUNT_LIMIT) {
+
+            redisClient.decr(Constant.APPID_ALPHADOG,
+                    REDIS_KEY_APPLICATION_COUNT_CHECK,
+                    String.valueOf(jobApplication.getApplierId()),
+                    String.valueOf(jobApplication.getCompanyId()));
+        }
     }
 
     /**
@@ -199,7 +307,7 @@ public class JobApplicataionServicesImpl implements Iface {
 
     /**
      * 一个用户在一家公司的每月的申请次数校验
-     *      超出申请次数限制, 每月每家公司一个人只能申请3次
+     *      超出申请次数限制, 每月每家公司一个人只能申请10次
      * <p>
      *
      * @param userId 用户id
@@ -336,7 +444,7 @@ public class JobApplicataionServicesImpl implements Iface {
 
     /**
      * 一个用户在一家公司的每月的申请次数校验
-     *      超出申请次数限制, 每月每家公司一个人只能申请3次
+     *      超出申请次数限制, 每月每家公司一个人只能申请10次
      * <p>
      *
      * @param userId 用户id
@@ -348,7 +456,7 @@ public class JobApplicataionServicesImpl implements Iface {
         String applicationCountCheck = redisClient.get(Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
                 String.valueOf(userId), String.valueOf(companyId));
 
-        // 超出申请次数限制, 每月每家公司一个人只能申请3次
+        // 超出申请次数限制, 每月每家公司一个人只能申请10次
         if(applicationCountCheck != null && Integer.valueOf(applicationCountCheck) >= APPLICATION_COUNT_LIMIT){
             return true;
         }

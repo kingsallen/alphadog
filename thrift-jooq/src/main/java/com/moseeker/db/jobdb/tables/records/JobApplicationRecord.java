@@ -28,7 +28,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationRecord> {
 
-	private static final long serialVersionUID = 929029134;
+	private static final long serialVersionUID = -1052456867;
 
 	/**
 	 * Setter for <code>jobdb.job_application.id</code>.
@@ -73,14 +73,14 @@ public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationReco
 	}
 
 	/**
-	 * Setter for <code>jobdb.job_application.recommender_id</code>. wx_group_user.id, 微信ID
+	 * Setter for <code>jobdb.job_application.recommender_id</code>. user_wx_user.id, 微信ID
 	 */
 	public void setRecommenderId(UInteger value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>jobdb.job_application.recommender_id</code>. wx_group_user.id, 微信ID
+	 * Getter for <code>jobdb.job_application.recommender_id</code>. user_wx_user.id, 微信ID
 	 */
 	public UInteger getRecommenderId() {
 		return (UInteger) getValue(3);
@@ -380,6 +380,20 @@ public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationReco
 		return (Integer) getValue(24);
 	}
 
+	/**
+	 * Setter for <code>jobdb.job_application.view_count</code>. profile浏览次数
+	 */
+	public void setViewCount(Integer value) {
+		setValue(25, value);
+	}
+
+	/**
+	 * Getter for <code>jobdb.job_application.view_count</code>. profile浏览次数
+	 */
+	public Integer getViewCount() {
+		return (Integer) getValue(25);
+	}
+
 	// -------------------------------------------------------------------------
 	// Primary key information
 	// -------------------------------------------------------------------------
@@ -406,7 +420,7 @@ public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationReco
 	/**
 	 * Create a detached, initialised JobApplicationRecord
 	 */
-	public JobApplicationRecord(UInteger id, UInteger wechatId, UInteger positionId, UInteger recommenderId, Timestamp submitTime, UInteger statusId, UInteger lApplicationId, UInteger reward, UInteger sourceId, Timestamp _CreateTime, UInteger applierId, UInteger interviewId, String resumeId, Integer atsStatus, String applierName, Integer disable, Integer routine, Byte isViewed, Byte notSuitable, UInteger companyId, Timestamp updateTime, UInteger appTplId, Byte proxy, Integer applyType, Integer emailStatus) {
+	public JobApplicationRecord(UInteger id, UInteger wechatId, UInteger positionId, UInteger recommenderId, Timestamp submitTime, UInteger statusId, UInteger lApplicationId, UInteger reward, UInteger sourceId, Timestamp _CreateTime, UInteger applierId, UInteger interviewId, String resumeId, Integer atsStatus, String applierName, Integer disable, Integer routine, Byte isViewed, Byte notSuitable, UInteger companyId, Timestamp updateTime, UInteger appTplId, Byte proxy, Integer applyType, Integer emailStatus, Integer viewCount) {
 		super(JobApplication.JOB_APPLICATION);
 
 		setValue(0, id);
@@ -434,5 +448,6 @@ public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationReco
 		setValue(22, proxy);
 		setValue(23, applyType);
 		setValue(24, emailStatus);
+		setValue(25, viewCount);
 	}
 }

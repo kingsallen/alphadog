@@ -4,6 +4,7 @@ import com.moseeker.common.providerutils.daoutils.BaseDao;
 import com.moseeker.db.dictdb.tables.records.DictConstantRecord;
 import com.moseeker.dict.pojo.DictConstantPojo;
 
+import java.net.Inet4Address;
 import java.util.List;
 import java.util.Map;
 
@@ -16,5 +17,7 @@ import java.util.Map;
 public interface DictConstantDao extends BaseDao<DictConstantRecord> {
 
     public Map<Integer, List<DictConstantPojo>> getDictConstantJsonByParentCode(List<Integer> parentCodeList) throws Exception;
+
+    public DictConstantPojo getDictConstantJson(Integer parentCode, Integer code) throws Exception;
 
 }

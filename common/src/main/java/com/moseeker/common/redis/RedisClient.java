@@ -134,6 +134,13 @@ public abstract class RedisClient {
 		return null;
 	}
 
+	public String set(int appId, String key_identifier, String str1,
+					  String str2, String value, int ttl) throws CacheConfigNotExistException {
+		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
+		String cacheKey = String.format(redisKey.getPattern(), str1, str2);
+		return redisCluster.setex(cacheKey, ttl, value);
+	}
+
 	public String get(int appId, String key_identifier, String str1, String str2)
 			throws CacheConfigNotExistException {
 		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
@@ -232,5 +239,23 @@ public abstract class RedisClient {
 			Notification.sendWarningWithHostName(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}
 		return result;
+	}
+
+	public void incr(int appId, String key_identifier, String str1, String str2)
+			throws CacheConfigNotExistException {
+		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
+		String cacheKey = String.format(redisKey.getPattern(), str1, str2);
+		if(redisCluster.exists(cacheKey)) {
+			redisCluster.incr(cacheKey);
+		}
+	}
+
+	public void decr(int appId, String key_identifier, String str1, String str2)
+			throws CacheConfigNotExistException {
+		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
+		String cacheKey = String.format(redisKey.getPattern(), str1, str2);
+		if(redisCluster.exists(cacheKey)) {
+			redisCluster.decr(cacheKey);
+		}
 	}
 }
