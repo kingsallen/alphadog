@@ -11,7 +11,6 @@ import com.moseeker.db.jobdb.tables.JobPosition;
 import com.moseeker.db.jobdb.tables.JobPositionCity;
 import com.moseeker.db.jobdb.tables.JobPositionShareTplConf;
 import com.moseeker.db.jobdb.tables.JobPositionTopic;
-import com.moseeker.db.jobdb.tables.JobResumeBasic;
 import com.moseeker.db.jobdb.tables.JobResumeOther;
 
 import javax.annotation.Generated;
@@ -64,11 +63,6 @@ public class Tables {
 	 * 职位主题活动关系表
 	 */
 	public static final JobPositionTopic JOB_POSITION_TOPIC = com.moseeker.db.jobdb.tables.JobPositionTopic.JOB_POSITION_TOPIC;
-
-	/**
-	 * 申请简历简述表
-	 */
-	public static final JobResumeBasic JOB_RESUME_BASIC = com.moseeker.db.jobdb.tables.JobResumeBasic.JOB_RESUME_BASIC;
 
 	/**
 	 * 自定义简历副本记录表

@@ -1,16 +1,18 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.moseeker.common.util.BeanUtils;
 import com.moseeker.rpccenter.common.ServiceUtil;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -81,6 +83,30 @@ public class ProfileProfileController {
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
 			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
+	
+	@RequestMapping(value = "/profile/completeness", method = RequestMethod.GET)
+	@ResponseBody
+	public String completeness(HttpServletRequest request, HttpServletResponse response) {
+		//PrintWriter writer = null;
+		try {
+			Map<String,Object> params = ParamUtils.mergeRequestParameters(request);
+			int userId = 0;
+			if(params.get("user_id") != null) {
+				userId = BeanUtils.converToInteger(params.get("user_id"));
+			}
+			int profileId = 0;
+			if(params.get("profile_id") != null) {
+				profileId = BeanUtils.converToInteger(params.get("profile_id"));
+			}
+			Response result = profileService.getCompleteness(userId, (String)params.get("uuid"), profileId);
+			return ResponseLogNotification.success(request, result);
+		} catch (Exception e) {	
+			logger.error(e.getMessage(), e);
+			return ResponseLogNotification.fail(request, e.getMessage());
+		} finally {
+			//do nothing
 		}
 	}
 }

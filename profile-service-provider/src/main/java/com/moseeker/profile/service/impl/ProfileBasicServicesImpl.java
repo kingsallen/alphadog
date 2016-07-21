@@ -2,7 +2,9 @@ package com.moseeker.profile.service.impl;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.thrift.TException;
 import org.jooq.Record2;
@@ -166,6 +168,8 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 				if(!StringUtils.isNullOrEmpty(struct.getName())) {
 					profileDao.updateRealName(record.getProfileId().intValue(), struct.getName());
 				}
+				/* 计算用户基本信息的简历完整度 */
+				completenessImpl.reCalculateUserUser(struct.getProfile_id());
 				return ResponseUtils.success(String.valueOf(i));
 			}
 		} catch (Exception e) {
@@ -209,6 +213,10 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 				if(!StringUtils.isNullOrEmpty(struct.getName())) {
 					profileDao.updateRealName(record.getProfileId().intValue(), struct.getName());
 				}
+				
+				/* 计算用户基本信息的简历完整度 */
+				completenessImpl.reCalculateUserUser(struct.getProfile_id());
+				completenessImpl.reCalculateProfileBasic(struct.getProfile_id());
 				return ResponseUtils.success(String.valueOf(i));
 			}
 		} catch (Exception e) {
@@ -220,6 +228,74 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
 	}
 
+	@Override
+	public Response postResources(List<Basic> structs) throws TException {
+		Response response = super.postResources(structs);
+		if(structs != null && structs.size() > 0 && response.getStatus() == 0) {
+			Set<Integer> profileIds = new HashSet<>();
+			for(Basic basic : structs) {
+				if(basic.getProfile_id() > 0) {
+					profileIds.add(basic.getProfile_id());
+				}
+			}
+			profileIds.forEach(profileId -> {
+				/* 计算用户基本信息的简历完整度 */
+				completenessImpl.reCalculateUserUser(profileId);
+				completenessImpl.reCalculateProfileBasic(profileId);
+			});
+		}
+		return response;
+	}
+
+	@Override
+	public Response putResources(List<Basic> structs) throws TException {
+		Response response = super.putResources(structs);
+		if(structs != null && structs.size() > 0 && response.getStatus() == 0) {
+			Set<Integer> profileIds = new HashSet<>();
+			for(Basic basic : structs) {
+				if(basic.getProfile_id() > 0) {
+					profileIds.add(basic.getProfile_id());
+				}
+			}
+			profileIds.forEach(profileId -> {
+				/* 计算用户基本信息的简历完整度 */
+				completenessImpl.reCalculateUserUser(profileId);
+				completenessImpl.reCalculateProfileBasic(profileId);
+			});
+		}
+		return response;
+	}
+
+	@Override
+	public Response delResources(List<Basic> structs) throws TException {
+		Response response = super.delResources(structs);
+		if(structs != null && structs.size() > 0 && response.getStatus() == 0) {
+			Set<Integer> profileIds = new HashSet<>();
+			for(Basic basic : structs) {
+				if(basic.getProfile_id() > 0) {
+					profileIds.add(basic.getProfile_id());
+				}
+			}
+			profileIds.forEach(profileId -> {
+				/* 计算用户基本信息的简历完整度 */
+				completenessImpl.reCalculateUserUser(profileId);
+				completenessImpl.reCalculateProfileBasic(profileId);
+			});
+		}
+		return response;
+	}
+
+	@Override
+	public Response delResource(Basic struct) throws TException {
+		Response response = super.delResource(struct);
+		if(response.getStatus() == 0) {
+			/* 计算用户基本信息的简历完整度 */
+			completenessImpl.reCalculateUserUser(struct.getProfile_id());
+			completenessImpl.reCalculateProfileBasic(struct.getProfile_id());
+		}
+		return response;
+	}
+	
 	@Override
 	protected Basic DBToStruct(ProfileBasicRecord r) {
 		return (Basic)BeanUtils.DBToStruct(Basic.class, r);
@@ -246,6 +322,9 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 	
 	@Autowired
 	private UserDao userDao;
+	
+	@Autowired
+	private ProfileCompletenessImpl completenessImpl;
 	
 	@Override
 	protected void initDao() {
@@ -290,5 +369,19 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 
 	public void setProfileDao(ProfileDao profileDao) {
 		this.profileDao = profileDao;
+	}
+
+	public ProfileCompletenessImpl getCompletenessImpl() {
+		return completenessImpl;
+	}
+
+	public void setCompletenessImpl(ProfileCompletenessImpl completenessImpl) {
+		this.completenessImpl = completenessImpl;
+	}
+
+	@Override
+	public Response reCalculateBasicCompleteness(int userId) throws TException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

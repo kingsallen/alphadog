@@ -8,6 +8,7 @@ import com.moseeker.dict.dao.DictConstantDao;
 import com.moseeker.dict.pojo.DictConstantPojo;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
+import org.jooq.Record;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -80,6 +81,46 @@ public class DictConstantDaoImpl extends BaseDaoImpl<DictConstantRecord, DictCon
             }
         }
         return map;
+    }
+
+    /**
+     * 根据parentCode和code获取唯一一条常量的描述
+     * <p></p>
+     *
+     * @param parentCode 父类编码
+     * @param code 常量编码
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public DictConstantPojo getDictConstantJson(Integer parentCode, Integer code) throws Exception {
+        Connection conn = null;
+        Condition condition = null;
+
+        try {
+            initJOOQEntity();
+            conn = DBConnHelper.DBConn.getConn();
+            DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+
+            condition = DictConstant.DICT_CONSTANT.PARENT_CODE.equal(parentCode)
+                    .and(DictConstant.DICT_CONSTANT.CODE.equal(code));
+
+            Record record = create.selectCount().from(DictConstant.DICT_CONSTANT).where(condition).fetchOne();
+            int count = (Integer) record.getValue(0);
+            if (count > 0 ){
+                List<DictConstantPojo> dictConstantPOJOList = create.select().from(DictConstant.DICT_CONSTANT).
+                        where(condition).fetchInto(DictConstantPojo.class);
+
+                return dictConstantPOJOList != null && dictConstantPOJOList.size() > 0 ? dictConstantPOJOList.get(0):null;
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+            if(conn != null && !conn.isClosed()) {
+                conn.close();
+            }
+        }
+        return null;
     }
 
 }

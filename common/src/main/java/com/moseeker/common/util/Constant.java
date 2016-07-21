@@ -122,4 +122,28 @@ public final class Constant {
 	
 	
 	public static final String THRIFT_CONNECTION_LOST = "thrift 失去连接";
+	
+	public static final String EXCEPTION_USERRECORD_LOST = "计算用户帐号完整度时，用户帐号信息不能为空";
+	public static final String EXCEPTION_PROFILEBASIC_LOST = "计算用户基本信息完整度时，用户基本信息不能为空";
+	public static final String EXCEPTION_PROFILEWORKEXP_LOST = "计算工作经历完整度时，工作经历不能为空";
+	public static final String EXCEPTION_PROFILEEDUCATION_LOST = "计算教育经历完整度时，教育经历不能为空";
+	public static final String EXCEPTION_PROFILEPROJECTEXP_LOST = "计算项目经历完整度时，项目经历不能为空";
+	public static final String EXCEPTION_PROFILELANGUAGE_LOST = "计算外语完整度时，外语能力不能为空";
+	public static final String EXCEPTION_PROFILESKILL_LOST = "计算技能完整度时，技能不能为空";
+	public static final String EXCEPTION_PROFILECREDENTIALS_LOST = "计算证书完整度时，证书不能为空";
+	public static final String EXCEPTION_PROFILEAWARDS_LOST = "计算获得奖项完整度时，获得奖项不能为空";
+	public static final String EXCEPTION_PROFILEWORKS_LOST = "计算作品完整度时，作品不能为空";
+	public static final String EXCEPTION_PROFILINTENTION_LOST = "计算期望职位完整度时，期望职位不能为空";
+	
+	public static final int PROFILER_COMPLETENESS_USERUSER_MAXVALUE = 19; 		//用户信息完成度最大值
+	public static final int PROFILER_COMPLETENESS_BASIC_MAXVALUE = 19; 			//简历基本信息完成度最大值
+	public static final int PROFILER_COMPLETENESS_WORKEXP_MAXVALUE = 15; 		//工作经历最大值
+	public static final int PROFILER_COMPLETENESS_EDUCATION_MAXVALUE = 17; 		//教育经历最大值
+	public static final int PROFILER_COMPLETENESS_PROJECTEXP_MAXVALUE = 15; 	//项目经历最大值
+	public static final int PROFILER_COMPLETENESS_LANGUAGE_MAXVALUE = 4; 		//外语技能最大值
+	public static final int PROFILER_COMPLETENESS_SKILL_MAXVALUE = 1; 			//技能最大值
+	public static final int PROFILER_COMPLETENESS_CREDENTIAL_MAXVALUE = 1;		//获得的证书完成度最大值
+	public static final int PROFILER_COMPLETENESS_AWARD_MAXVALUE = 2;			//活得奖项完成度最大值
+	public static final int PROFILER_COMPLETENESS_WORKS_MAXVALUE = 3; 			//作品完成度的最大值
+	public static final int PROFILER_COMPLETENESS_INTENTION_MAXVALUE = 4;		//求职意愿完成度最大值
 }

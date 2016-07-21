@@ -11,7 +11,6 @@ import com.moseeker.db.jobdb.tables.JobPosition;
 import com.moseeker.db.jobdb.tables.JobPositionCity;
 import com.moseeker.db.jobdb.tables.JobPositionShareTplConf;
 import com.moseeker.db.jobdb.tables.JobPositionTopic;
-import com.moseeker.db.jobdb.tables.JobResumeBasic;
 import com.moseeker.db.jobdb.tables.JobResumeOther;
 
 import java.util.ArrayList;
@@ -37,7 +36,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Jobdb extends SchemaImpl {
 
-	private static final long serialVersionUID = -36591016;
+	private static final long serialVersionUID = 1456049123;
 
 	/**
 	 * The reference instance of <code>jobdb</code>
@@ -67,7 +66,6 @@ public class Jobdb extends SchemaImpl {
 			JobPositionCity.JOB_POSITION_CITY,
 			JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF,
 			JobPositionTopic.JOB_POSITION_TOPIC,
-			JobResumeBasic.JOB_RESUME_BASIC,
 			JobResumeOther.JOB_RESUME_OTHER);
 	}
 }

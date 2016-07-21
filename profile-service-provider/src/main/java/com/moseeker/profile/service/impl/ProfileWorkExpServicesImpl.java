@@ -3,8 +3,10 @@ package com.moseeker.profile.service.impl;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.thrift.TException;
 import org.jooq.types.UByte;
@@ -54,6 +56,9 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 	
 	@Autowired
 	private CompanyDao companyDao;
+	
+	@Autowired
+	private ProfileCompletenessImpl completenessImpl;
 
 	@Override
 	public Response getResources(CommonQuery query) throws TException {
@@ -225,6 +230,8 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 			i = dao.postResource(record);
 			
 			if ( i > 0 ){
+				/* 计算用户基本信息的简历完整度 */
+				completenessImpl.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
 				return ResponseUtils.success(String.valueOf(i));
 			}	
 
@@ -290,13 +297,85 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 					}
 				}
 			}
-			return super.putResource(struct);
+			Response response = super.putResource(struct);
+			if(response.getStatus() == 0) {
+				/* 计算用户基本信息的简历完整度 */
+				completenessImpl.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
+			}
+			return response;
 		} catch (Exception e) {
 			logger.error("postResource error", e);
 			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		} finally {
 			//do nothing
 		}
+	}
+	
+	@Override
+	public Response postResources(List<WorkExp> structs) throws TException {
+		Response response = super.postResources(structs);
+		if(structs != null && structs.size() > 0 && response.getStatus() == 0) {
+			for(WorkExp struct : structs) {
+				/* 计算用户基本信息的简历完整度 */
+				completenessImpl.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
+			}
+		}
+		return response;
+	}
+
+	@Override
+	public Response putResources(List<WorkExp> structs) throws TException {
+		Response response = super.putResources(structs);
+		if(response.getStatus() == 0 && structs != null && structs.size() > 0) {
+			for(WorkExp struct : structs) {
+				/* 计算用户基本信息的简历完整度 */
+				completenessImpl.reCalculateProfileWorkExpUseWorkExpId(struct.getId());
+			}
+		}
+		return response;
+	}
+
+	@Override
+	public Response delResources(List<WorkExp> structs) throws TException {
+		QueryUtil qu = new QueryUtil();
+		StringBuffer sb = new StringBuffer("[");
+		structs.forEach(struct -> {
+			sb.append(struct.getId());
+			sb.append(",");
+		});
+		sb.deleteCharAt(sb.length() - 1);
+		sb.append("]");
+		qu.addEqualFilter("id", sb.toString());
+
+		List<ProfileWorkexpRecord> workExpRecords = null;
+		try {
+			workExpRecords = dao.getResources(qu);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		Set<Integer> profileIds = new HashSet<>();
+		if (workExpRecords != null && workExpRecords.size() > 0) {
+			workExpRecords.forEach(workExp -> {
+				profileIds.add(workExp.getProfileId().intValue());
+			});
+		}
+		Response response = super.delResources(structs);
+		if(response.getStatus() == 0 && profileIds != null && profileIds.size() > 0) {
+			profileIds.forEach(profileId -> {
+				/* 计算用户基本信息的简历完整度 */
+				completenessImpl.reCalculateProfileWorkExp(profileId, 0);
+			});
+		}
+		return response;
+	}
+
+	@Override
+	public Response delResource(WorkExp struct) throws TException {
+		Response response = super.delResource(struct);
+		if(response.getStatus() == 0) 
+			/* 计算用户基本信息的简历完整度 */
+			completenessImpl.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
+		return response;
 	}
 
 	public WorkExpDao getDao() {
@@ -337,6 +416,14 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 
 	public void setCityDao(CityDao cityDao) {
 		this.cityDao = cityDao;
+	}
+
+	public ProfileCompletenessImpl getCompletenessImpl() {
+		return completenessImpl;
+	}
+
+	public void setCompletenessImpl(ProfileCompletenessImpl completenessImpl) {
+		this.completenessImpl = completenessImpl;
 	}
 
 	@Override
