@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -39,6 +40,17 @@ public class PositionController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+	@RequestMapping(value = "/position/{id}", method = RequestMethod.GET)
+	@ResponseBody
+	public String getPosition(@PathVariable int id, HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Response result = positonServices.getPositionById(id);
+			return ResponseLogNotification.successWithParse(request, result);
+		} catch (Exception e) {
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
 
     @RequestMapping(value = "/positions/verifyCustomize", method = RequestMethod.GET)
 	@ResponseBody

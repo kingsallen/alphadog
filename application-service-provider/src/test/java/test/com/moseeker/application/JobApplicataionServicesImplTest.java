@@ -33,12 +33,12 @@ public class JobApplicataionServicesImplTest {
             // 清除一个公司一个人申请次数限制的redis key 给sysplat用
 //            applicationService.deleteRedisKeyApplicationCheckCount(1, 1);
 
-            // 添加申请
-            Response getJobApplication = applicationService.postApplication(getJobApplication());
-
-            System.out.println(getJobApplication);
-
-            System.out.println(applicationService.validateUserApplicationCheckCountAtCompany(1, 1));
+//            // 添加申请
+//            Response getJobApplication = applicationService.postApplication(getJobApplication());
+//
+//            System.out.println(getJobApplication);
+//
+//            System.out.println(applicationService.validateUserApplicationCheckCountAtCompany(1, 1));
 
 //            // 添加申请副本
 //            Response getJobResumeOther = applicationService.postJobResumeOther(getJobResumeOther());
@@ -53,6 +53,9 @@ public class JobApplicataionServicesImplTest {
 //            Response getApplicationByUserIdAndPositionId1 = applicationService.getApplicationByUserIdAndPositionId(214, 123, 2);
 //
 //            System.out.println(getApplicationByUserIdAndPositionId1);
+//            System.out.println(applicationService.putApplication(putJobApplication()));
+//            System.out.println(applicationService.deleteApplication(44));
+            System.out.println(applicationService.postApplication(getJobApplication()));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -63,7 +66,17 @@ public class JobApplicataionServicesImplTest {
         JobApplication application = new JobApplication();
         application.setApplier_id(1);
         application.setCompany_id(1);
-        application.setPosition_id(61143);
+        application.setPosition_id(71152);
+        return application;
+    }
+
+    public static JobApplication putJobApplication(){
+        JobApplication application = new JobApplication();
+        application.setId(2);
+        application.setApplier_id(1);
+        application.setCompany_id(1);
+        application.setPosition_id(61144);
+        application.setView_count(100);
         return application;
     }
 

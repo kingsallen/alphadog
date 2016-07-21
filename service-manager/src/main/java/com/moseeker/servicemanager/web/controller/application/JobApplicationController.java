@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,7 +26,6 @@ import com.moseeker.thrift.gen.common.struct.Response;
  *
  * Created by zzh on 16/5/24.
  */
-//@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
 public class JobApplicationController {
 
@@ -47,6 +47,43 @@ public class JobApplicationController {
 
             // 创建申请记录
             Response result = applicationService.postApplication(jobApplication);
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 更新用户申请
+     * <p>
+     *
+     * */
+    @RequestMapping(value = "/application", method = RequestMethod.PUT)
+    @ResponseBody
+    public String put(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            // 获取application实体对象
+            JobApplication jobApplication = ParamUtils.initModelForm(request, JobApplication.class);
+
+            // 创建申请记录
+            Response result = applicationService.postApplication(jobApplication);
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 删除用户申请
+     * <p>
+     *
+     * */
+    @RequestMapping(value = "/application/{id}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public String delete(@PathVariable long id, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            // 删除用户申请
+            Response result = applicationService.deleteApplication(id);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());

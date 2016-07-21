@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobApplication extends TableImpl<JobApplicationRecord> {
 
-	private static final long serialVersionUID = -273194815;
+	private static final long serialVersionUID = -2139444642;
 
 	/**
 	 * The reference instance of <code>jobdb.job_application</code>
@@ -67,9 +67,9 @@ public class JobApplication extends TableImpl<JobApplicationRecord> {
 	public final TableField<JobApplicationRecord, UInteger> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "hr_position.id, 职位ID");
 
 	/**
-	 * The column <code>jobdb.job_application.recommender_id</code>. wx_group_user.id, 微信ID
+	 * The column <code>jobdb.job_application.recommender_id</code>. user_wx_user.id, 微信ID
 	 */
-	public final TableField<JobApplicationRecord, UInteger> RECOMMENDER_ID = createField("recommender_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "wx_group_user.id, 微信ID");
+	public final TableField<JobApplicationRecord, UInteger> RECOMMENDER_ID = createField("recommender_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "user_wx_user.id, 微信ID");
 
 	/**
 	 * The column <code>jobdb.job_application.submit_time</code>. 申请提交时间
@@ -175,6 +175,11 @@ public class JobApplication extends TableImpl<JobApplicationRecord> {
 	 * The column <code>jobdb.job_application.email_status</code>. 0，有效；1,未收到回复邮件；2，文件格式不支持；3，附件超过10M；9，提取邮件失败
 	 */
 	public final TableField<JobApplicationRecord, Integer> EMAIL_STATUS = createField("email_status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "0，有效；1,未收到回复邮件；2，文件格式不支持；3，附件超过10M；9，提取邮件失败");
+
+	/**
+	 * The column <code>jobdb.job_application.view_count</code>. profile浏览次数
+	 */
+	public final TableField<JobApplicationRecord, Integer> VIEW_COUNT = createField("view_count", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "profile浏览次数");
 
 	/**
 	 * Create a <code>jobdb.job_application</code> table reference
