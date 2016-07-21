@@ -129,6 +129,7 @@ public class ZkClientRegistry implements IRegistry {
             @Override
             public void childEvent(CuratorFramework client, PathChildrenCacheEvent event) throws Exception {
                 LOGGER.info("ZkClientRegistry childEvent " + path);
+                System.out.println("-----------------childEvent and client rebuild-------------------");
                 build();
             }
         });
@@ -139,6 +140,7 @@ public class ZkClientRegistry implements IRegistry {
             @Override
             public void stateChanged(CuratorFramework curatorFramework, ConnectionState connectionState) {
                 if (connectionState == ConnectionState.LOST) {
+                	System.out.println("-----------------ConnectionState.LOST and client rebuild-------------------");
                     while (true) {
                         try {
                             if (curatorFramework.getZookeeperClient().blockUntilConnectedOrTimedOut()) {

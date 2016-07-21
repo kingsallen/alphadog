@@ -7,6 +7,8 @@ public class Constants {
 
     /** utf-8 */
     public static final String UTF8 = "utf-8";
+    
+    public static final String ZOO_CONF_FILE = "classpath:zookeeper.properties";
 
     /** zookeeper根目录 */
     public static final String ZK_NAMESPACE_ROOT = "services";

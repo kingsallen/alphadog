@@ -135,6 +135,7 @@ public class ZkServerRegistry implements IRegistry {
             public void eventReceived(CuratorFramework client, CuratorEvent event) {
                 WatchedEvent watchedEvent = event.getWatchedEvent();
                 if (watchedEvent != null && watchedEvent.getType() == Watcher.Event.EventType.NodeDeleted) {
+                	System.out.println("-----------------Watcher.Event.EventType.NodeDeleted and service rebuild-------------------");
                     while (true) {
                         try {
                             if (zookeeper.getZookeeperClient().blockUntilConnectedOrTimedOut()) {
