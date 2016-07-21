@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserUser extends TableImpl<UserUserRecord> {
 
-	private static final long serialVersionUID = 2099019241;
+	private static final long serialVersionUID = -1771546303;
 
 	/**
 	 * The reference instance of <code>userdb.user_user</code>
@@ -127,9 +127,9 @@ public class UserUser extends TableImpl<UserUserRecord> {
 	public final TableField<UserUserRecord, String> TOKEN = createField("token", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>userdb.user_user.name</code>. 姓名或微信昵称
+	 * The column <code>userdb.user_user.name</code>. 真实姓名
 	 */
-	public final TableField<UserUserRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "姓名或微信昵称");
+	public final TableField<UserUserRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "真实姓名");
 
 	/**
 	 * The column <code>userdb.user_user.headimg</code>. 头像
@@ -170,6 +170,11 @@ public class UserUser extends TableImpl<UserUserRecord> {
 	 * The column <code>userdb.user_user.parentid</code>. 合并到了新用户的id
 	 */
 	public final TableField<UserUserRecord, UInteger> PARENTID = createField("parentid", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "合并到了新用户的id");
+
+	/**
+	 * The column <code>userdb.user_user.nickname</code>. 用户昵称
+	 */
+	public final TableField<UserUserRecord, String> NICKNAME = createField("nickname", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "用户昵称");
 
 	/**
 	 * Create a <code>userdb.user_user</code> table reference

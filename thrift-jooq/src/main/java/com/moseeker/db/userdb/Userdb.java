@@ -4,6 +4,7 @@
 package com.moseeker.db.userdb;
 
 
+import com.moseeker.db.userdb.tables.CandidateVJobPositionRecom;
 import com.moseeker.db.userdb.tables.UserEmployee;
 import com.moseeker.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.db.userdb.tables.UserFavPosition;
@@ -11,7 +12,6 @@ import com.moseeker.db.userdb.tables.UserHrAccount;
 import com.moseeker.db.userdb.tables.UserIntention;
 import com.moseeker.db.userdb.tables.UserSettings;
 import com.moseeker.db.userdb.tables.UserUser;
-import com.moseeker.db.userdb.tables.UserUserBak;
 import com.moseeker.db.userdb.tables.UserWxUser;
 import com.moseeker.db.userdb.tables.UserWxViewer;
 
@@ -38,7 +38,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Userdb extends SchemaImpl {
 
-	private static final long serialVersionUID = -234848348;
+	private static final long serialVersionUID = 377430147;
 
 	/**
 	 * The reference instance of <code>userdb</code>
@@ -61,6 +61,7 @@ public class Userdb extends SchemaImpl {
 
 	private final List<Table<?>> getTables0() {
 		return Arrays.<Table<?>>asList(
+			CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM,
 			UserEmployee.USER_EMPLOYEE,
 			UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD,
 			UserFavPosition.USER_FAV_POSITION,
@@ -68,7 +69,6 @@ public class Userdb extends SchemaImpl {
 			UserIntention.USER_INTENTION,
 			UserSettings.USER_SETTINGS,
 			UserUser.USER_USER,
-			UserUserBak.USER_USER_BAK,
 			UserWxUser.USER_WX_USER,
 			UserWxViewer.USER_WX_VIEWER);
 	}

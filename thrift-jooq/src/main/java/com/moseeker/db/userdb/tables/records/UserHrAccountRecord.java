@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserHrAccountRecord extends UpdatableRecordImpl<UserHrAccountRecord> implements Record19<Integer, Integer, String, String, Integer, String, String, Integer, Byte, Integer, Timestamp, String, Timestamp, String, Integer, Integer, String, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = -635448183;
+	private static final long serialVersionUID = 512461409;
 
 	/**
 	 * Setter for <code>userdb.user_hr_account.id</code>.
@@ -89,14 +89,14 @@ public class UserHrAccountRecord extends UpdatableRecordImpl<UserHrAccountRecord
 	}
 
 	/**
-	 * Setter for <code>userdb.user_hr_account.wxuser_id</code>. 绑定的微信账号
+	 * Setter for <code>userdb.user_hr_account.wxuser_id</code>. 绑定的微信 账号
 	 */
 	public void setWxuserId(Integer value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>userdb.user_hr_account.wxuser_id</code>. 绑定的微信账号
+	 * Getter for <code>userdb.user_hr_account.wxuser_id</code>. 绑定的微信 账号
 	 */
 	public Integer getWxuserId() {
 		return (Integer) getValue(4);
