@@ -16,7 +16,7 @@ dependencies {
     compile deps["joda-time"]
     compile deps["jedis"]
     compile deps["mysql-connector-java"]
-    compile deps["zookeeper"]
+    //compile deps["zookeeper"]
     compile deps["curator-recipes"]
     compile deps["fastjson"]
     compile deps["libthrift"]

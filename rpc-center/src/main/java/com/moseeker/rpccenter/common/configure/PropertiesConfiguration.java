@@ -262,6 +262,7 @@ public class PropertiesConfiguration extends Properties {
     private static String getKey(String locationPattern) {
         URL url = null;
         try {
+        	
             url = ResourceUtils.loadResource(locationPattern);
             File file = new File(url.getFile());
             return file.getName().substring(0, file.getName().indexOf("."));

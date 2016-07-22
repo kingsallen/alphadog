@@ -3,8 +3,6 @@ apply plugin: 'eclipse'
   
 dependencies {
 
-    compile project(":thrift-jooq")
-    compile project(":common")
     compile project(":rpc-center")
 
     testCompile deps["junit"]

@@ -8,12 +8,13 @@ sourceCompatibility = 1.8
 
 
 dependencies {
+    compile project(":common")
+
     compile deps["libthrift"]
-    compile deps["guava"]
     compile deps["fastjson"]
     compile deps["commons-lang"]
     compile deps["commons-pool"]
-    compile deps["zookeeper"]
+    //compile deps["zookeeper"]
     compile deps["curator-recipes"]
     testCompile deps["junit"]
 }

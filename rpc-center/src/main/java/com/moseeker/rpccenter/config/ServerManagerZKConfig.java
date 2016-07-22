@@ -1,5 +1,8 @@
 package com.moseeker.rpccenter.config;
 
+import java.io.File;
+
+import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.rpccenter.common.Constants;
 import com.moseeker.rpccenter.common.configure.PropertiesConfiguration;
 
@@ -38,9 +41,23 @@ public enum ServerManagerZKConfig {
     private String auth;
     
     private ServerManagerZKConfig() {
-    	PropertiesConfiguration configuration = PropertiesConfiguration.newInstance(Constants.ZOO_CONF_FILE);
-    	setConnectstr(configuration.getProperty("registry.connectstr", ""));
-    	setNamespace(configuration.getProperty("registry.namespace", ""));
+    	String path = System.getProperty("user.dir");  
+        System.out.println("System.getProperty(\"user.dir\") = [" + path + "]");  
+  
+    	String confPath = path.concat(File.separator).concat("src")  
+                .concat(File.separator).concat("main").concat(File.separator) 
+                .concat("resources").concat(File.separator).concat("debug")  
+                .concat(File.separator).concat(Constants.ZOO_CONF_FILE);  
+        System.out.println(confPath);
+        ConfigPropertiesUtil configUtil = ConfigPropertiesUtil.getInstance();
+        try {
+			configUtil.loadAbsoluteResource(confPath);
+			setConnectstr(configUtil.get("registry.connectstr", String.class));
+	    	setNamespace(configUtil.get("registry.namespace", String.class));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
 	public String getConnectstr() {
