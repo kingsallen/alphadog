@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.springframework.web.servlet.HandlerMapping;
 
