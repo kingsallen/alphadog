@@ -1,5 +1,8 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -47,10 +50,21 @@ public class IntentionController {
 	public String post(HttpServletRequest request, HttpServletResponse response) {
 		//PrintWriter writer = null;
 		try {
-			Intention education = ParamUtils.initModelForm(request, Intention.class);
-			ParamUtils.buildIntention(request, education);
-			
-			Response result = intentionService.postResource(education);
+			Intention intention = ParamUtils.initModelForm(request, Intention.class);
+			ParamUtils.buildIntention(request, intention);
+			if(intention != null && intention.getCities() != null) {
+				Map<String ,Integer> city = intention.getCities();
+				for(Entry<String, Integer> entry : city.entrySet()) {
+					logger.debug("city:"+entry.getKey()+" city_code:"+entry.getValue());
+				}
+			}
+			if(intention != null && intention.getCities() != null) {
+				Map<String ,Integer> city = intention.getCities();
+				for(Entry<String, Integer> entry : city.entrySet()) {
+					logger.debug("city:"+entry.getKey()+" city_code:"+entry.getValue());
+				}
+			}
+			Response result = intentionService.postResource(intention);
 			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
@@ -63,9 +77,10 @@ public class IntentionController {
 	@ResponseBody
 	public String put(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			Intention education = ParamUtils.initModelForm(request, Intention.class);
-			ParamUtils.buildIntention(request, education);
-			Response result = intentionService.putResource(education);
+			Intention intention = ParamUtils.initModelForm(request, Intention.class);
+			ParamUtils.buildIntention(request, intention);
+			
+			Response result = intentionService.putResource(intention);
 			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	

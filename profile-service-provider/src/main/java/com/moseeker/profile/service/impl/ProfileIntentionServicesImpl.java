@@ -360,6 +360,7 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 					Iterator<ProfileIntentionPositionRecord> it = selectedPositionRecords.iterator();
 					while(it.hasNext()) {
 						ProfileIntentionPositionRecord selectedPositionRecord = it.next();
+						System.out.println("position_code:"+selectedPositionRecord.getPositionCode().intValue()+" position_name:"+selectedPositionRecord.getPositionName());
 						if (isSameOfPositionRecord(entry, selectedPositionRecord)) {
 							exist = true;
 							it.remove();
@@ -435,6 +436,7 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 					Iterator<ProfileIntentionIndustryRecord> it = selectedIndustryRecords.iterator();
 					while(it.hasNext()) {
 						ProfileIntentionIndustryRecord selectedIndustryRecord = it.next();
+						System.out.println("industry_code:"+selectedIndustryRecord.getIndustryCode().intValue()+" industry_name:"+selectedIndustryRecord.getIndustryName());
 						if (isSameOfIndustryRecord(entry, selectedIndustryRecord)) {
 							exist = true;
 							it.remove();
@@ -516,6 +518,7 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 					Iterator<ProfileIntentionCityRecord> it = selectedCityRecords.iterator();
 					while(it.hasNext()) {
 						ProfileIntentionCityRecord selectedCityRecord = it.next();
+						System.out.println("city_code:"+selectedCityRecord.getCityCode().intValue()+" city_name:"+selectedCityRecord.getCityName());
 						if (isSameOfCityRecord(entry, selectedCityRecord)) {
 							exist = true;
 							it.remove();
