@@ -24,12 +24,12 @@ service DictConstanService {
   行业服务接口
 */
 service IndustryService {
-    common_struct.Response getIndustriesByCode(1:i32 code);
+    common_struct.Response getIndustriesByCode(1: string code);
 }
 
 /*
   职能服务接口
 */
 service PositionService {
-    common_struct.Response getPositionsByCode(1:i32 code);
+   common_struct.Response getPositionsByCode(1:string code);
 }

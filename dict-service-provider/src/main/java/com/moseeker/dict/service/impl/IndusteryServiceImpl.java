@@ -6,9 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.db.dictdb.tables.records.DictIndustryRecord;
 import com.moseeker.db.dictdb.tables.records.DictIndustryTypeRecord;
@@ -19,6 +22,8 @@ import com.moseeker.thrift.gen.dict.service.IndustryService.Iface;
 
 @Service
 public class IndusteryServiceImpl implements Iface {
+	
+	Logger logger = LoggerFactory.getLogger(IndusteryServiceImpl.class);
 
 	@Autowired
 	private IndustryDao industryDao; 
@@ -27,9 +32,38 @@ public class IndusteryServiceImpl implements Iface {
 	private IndustryTypeDao industryTypeDao; 
 	
 	@Override
-	public Response getIndustriesByCode(int code) throws TException {
+	public Response getIndustriesByCode(String code) throws TException {
 		List<Map<String, Object>> industryMaps = new ArrayList<>();
-		if(code == 0) {
+		if(code == null || code.trim().equals("")) {
+			List<DictIndustryTypeRecord> industryTypes = industryTypeDao.getAll();
+			if(industryTypes != null && industryTypes.size() > 0) {
+				industryTypes.forEach(industryType -> {
+					Map<String, Object> industryMap = new HashMap<>();
+					industryMap.put("type", 0);
+					industryMap.put("code", industryType.getCode().intValue());
+					industryMap.put("name", industryType.getName());
+					industryMaps.add(industryMap);
+				});
+			}
+			QueryUtil qu = new QueryUtil();
+			qu.setPer_page(Integer.MAX_VALUE);
+			List<DictIndustryRecord> industries = null;;
+			try {
+				industries = industryDao.getResources(qu);
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+			if(industries != null && industries.size() > 0) {
+				industries.forEach(industry -> {
+					Map<String, Object> industryMap = new HashMap<>();
+					industryMap.put("type", industry.getType().intValue());
+					industryMap.put("code", industry.getCode().intValue());
+					industryMap.put("name", industry.getName());
+					industryMaps.add(industryMap);
+				});
+			}
+			
+		} else if(code.equals("0")) {
 			List<DictIndustryTypeRecord> industryTypes = industryTypeDao.getAll();
 			if(industryTypes != null && industryTypes.size() > 0) {
 				industryTypes.forEach(industryType -> {
@@ -41,7 +75,7 @@ public class IndusteryServiceImpl implements Iface {
 				});
 			}
 		} else {
-			List<DictIndustryRecord> industries = industryDao.getIndustriesByType(code);
+			List<DictIndustryRecord> industries = industryDao.getIndustriesByType(Integer.valueOf(code));
 			if(industries != null && industries.size() > 0) {
 				industries.forEach(industry -> {
 					Map<String, Object> industryMap = new HashMap<>();

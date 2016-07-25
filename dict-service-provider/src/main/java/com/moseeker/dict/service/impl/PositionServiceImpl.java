@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.db.dictdb.tables.records.DictPositionRecord;
 import com.moseeker.dict.dao.PositionDao;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dict.service.PositionService.Iface;
 
@@ -22,9 +23,21 @@ public class PositionServiceImpl implements Iface {
 	private PositionDao positionDao; 
 	
 	@Override
-	public Response getPositionsByCode(int code) throws TException {
+	public Response getPositionsByCode(String code) throws TException {
 		List<Map<String, Object>> industryMaps = new ArrayList<>();
-		List<DictPositionRecord> positions = positionDao.getIndustriesByParentCode(code);
+		List<DictPositionRecord> positions = null;
+		try {
+			if(code == null || code.equals("")) {
+				CommonQuery query = new CommonQuery();
+				query.setPer_page(Integer.MAX_VALUE);
+				positions = positionDao.getResources(query);
+			} else {
+				positions = positionDao.getIndustriesByParentCode(Integer.valueOf(code));
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if(positions != null && positions.size() > 0) {
 			positions.forEach(position -> {
 				Map<String, Object> positionMap = new HashMap<>();
