@@ -50,8 +50,9 @@ public class IntentionController {
 	public String post(HttpServletRequest request, HttpServletResponse response) {
 		//PrintWriter writer = null;
 		try {
-			Intention intention = ParamUtils.initModelForm(request, Intention.class);
-			ParamUtils.buildIntention(request, intention);
+			Map<String, Object> data = ParamUtils.mergeRequestParameters(request);
+			Intention intention = ParamUtils.initModelForm(data, Intention.class);
+			ParamUtils.buildIntention(data, intention);
 			Response result = intentionService.postResource(intention);
 			
 			return ResponseLogNotification.success(request, result);
@@ -65,8 +66,9 @@ public class IntentionController {
 	@ResponseBody
 	public String put(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			Intention intention = ParamUtils.initModelForm(request, Intention.class);
-			ParamUtils.buildIntention(request, intention);
+			Map<String, Object> data = ParamUtils.mergeRequestParameters(request);
+			Intention intention = ParamUtils.initModelForm(data, Intention.class);
+			ParamUtils.buildIntention(data, intention);
 			
 			Response result = intentionService.putResource(intention);
 			
@@ -80,9 +82,10 @@ public class IntentionController {
 	@ResponseBody
 	public String delete(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			Intention education = ParamUtils.initModelForm(request, Intention.class);
-			ParamUtils.buildIntention(request, education);
-			Response result = intentionService.delResource(education);
+			Map<String, Object> data = ParamUtils.mergeRequestParameters(request);
+			Intention intention = ParamUtils.initModelForm(data, Intention.class);
+			ParamUtils.buildIntention(data, intention);
+			Response result = intentionService.delResource(intention);
 			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	

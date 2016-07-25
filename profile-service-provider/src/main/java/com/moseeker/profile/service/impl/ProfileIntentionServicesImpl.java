@@ -465,7 +465,7 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 							ProfileIntentionIndustryRecord tobeAddIndustryRecord = new ProfileIntentionIndustryRecord();
 							DictIndustryRecord legalRecord = null;
 							for(DictIndustryRecord dictIndustryRecord : industryRecordList) {
-								if(dictIndustryRecord.getCode().intValue() == entry.getValue().intValue()) {
+								if(dictIndustryRecord.getName().equals(entry.getKey())) {
 									legalRecord = dictIndustryRecord;
 									break;
 								}
@@ -546,7 +546,7 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 							ProfileIntentionCityRecord tobeAddCityRecord = new ProfileIntentionCityRecord();
 							DictCityRecord legalRecord = null;
 							for(DictCityRecord dictCityRecord : cityRecordList) {
-								if(dictCityRecord.getCode().intValue() == entry.getValue().intValue()) {
+								if(dictCityRecord.getName().equals(entry.getKey())) {
 									legalRecord = dictCityRecord;
 									break;
 								}
