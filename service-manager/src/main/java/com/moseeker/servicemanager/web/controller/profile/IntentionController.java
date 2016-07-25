@@ -52,30 +52,6 @@ public class IntentionController {
 		try {
 			Intention intention = ParamUtils.initModelForm(request, Intention.class);
 			ParamUtils.buildIntention(request, intention);
-			if(intention != null && intention.getCities() != null) {
-				Map<String ,Integer> city = intention.getCities();
-				for(Entry<String, Integer> entry : city.entrySet()) {
-					logger.debug("city:"+entry.getKey()+" city_code:"+entry.getValue());
-				}
-			} else {
-				logger.info("city is null");
-			}
-			if(intention != null && intention.getCities() != null) {
-				Map<String ,Integer> position = intention.getPositions();
-				for(Entry<String, Integer> entry : position.entrySet()) {
-					logger.debug("position_name:"+entry.getKey()+" position_code:"+entry.getValue());
-				}
-			} else {
-				logger.info("position is null");
-			}
-			if(intention != null && intention.getIndustries() != null) {
-				Map<String ,Integer> industry = intention.getIndustries();
-				for(Entry<String, Integer> entry : industry.entrySet()) {
-					logger.debug("industry_name:"+entry.getKey()+" industry_code:"+entry.getValue());
-				}
-			} else {
-				logger.info("industry is null");
-			}
 			Response result = intentionService.postResource(intention);
 			
 			return ResponseLogNotification.success(request, result);
