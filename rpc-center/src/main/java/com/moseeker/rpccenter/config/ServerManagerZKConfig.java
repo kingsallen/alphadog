@@ -4,7 +4,6 @@ import java.io.File;
 
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.rpccenter.common.Constants;
-import com.moseeker.rpccenter.common.configure.PropertiesConfiguration;
 
 /**
  * 

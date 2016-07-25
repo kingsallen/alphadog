@@ -2,7 +2,9 @@ package com.moseeker.rpccenter.listener;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -26,12 +28,15 @@ public class ListenerManager {
 	private PathChildrenCache serviceListener;
 
 	private ServerManagerZKConfig config;
+	
+	private static final ReentrantReadWriteLock lock = new ReentrantReadWriteLock(true);
 
 	public ListenerManager(ServerManagerZKConfig config) {
 		this.config = config;
 	}
 
 	public ZKPath search() {
+		lock.readLock().lock();
 		ZKPath zkPath = new ZKPath(config.getNamespace());
 		CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder();
 		CuratorFramework zookeeper = builder.connectString(config.getConnectstr()).sessionTimeoutMs(config.getTimeout())
@@ -45,6 +50,7 @@ public class ListenerManager {
 				List<ZKPath> childrenPaths = new ArrayList<>();
 				for (String service : services) {
 					ZKPath chirldrenPath = new ZKPath(service);
+					chirldrenPath.setParentNode(zkPath);
 					List<String> chirldrenServices = getChildrenBuilder
 							.forPath(Constants.ZK_SEPARATOR_DEFAULT + service);
 					if (chirldrenServices != null && chirldrenServices.size() > 0) {
@@ -69,6 +75,7 @@ public class ListenerManager {
 									String json = new String(dataBuilder.forPath("/"), "utf8");
 									ThriftData data = JSON.parseObject(json, ThriftData.class);
 									grandChirldrenPath.setData(data);
+									grandChirldrenPath.setParentNode(chirldrenPath);
 									grandChirldrenPaths.add(grandChirldrenPath);
 									grandChirld.close();
 								}
@@ -83,12 +90,15 @@ public class ListenerManager {
 			zookeeper.close();
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			lock.readLock().unlock();
 		}
 
 		return zkPath;
 	}
 
 	public void addListener(ZKPath path) {
+		lock.writeLock().lock();
 		try {
 			if (path != null) {
 				CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder();
@@ -130,11 +140,14 @@ public class ListenerManager {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			lock.writeLock().unlock();
 		}
 	}
 
 	private void addNewNodesListener(ZKPath root) {
 		try {
+			lock.writeLock().lock();
 			GetChildrenBuilder getChildrenBuilder = zookeeper.getChildren();
 			List<String> services = getChildrenBuilder.forPath(Constants.ZK_SEPARATOR_DEFAULT);
 			if (services != null && services.size() > 0) {
@@ -149,17 +162,21 @@ public class ListenerManager {
 					}
 					if (newNode) {
 						ZKPath parentPath = new ZKPath(service);
+						parentPath.setParentNode(root);
 						addListenerToParentPath(parentPath);
 					}
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			lock.writeLock().unlock();
 		}
 	}
 
 	private void addListenerToParentPath(ZKPath parentPath) {
 		try {
+			lock.writeLock().lock();
 			CuratorFramework zookeeper = null;
 			if(parentPath.getZookeeper() == null) {
 				CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder();
@@ -193,10 +210,12 @@ public class ListenerManager {
 								refreshServerNodes(parentPath);
 								break;
 							case CONNECTION_SUSPENDED:
+								removeParentPath(parentPath);
 								break;
 							case CONNECTION_RECONNECTED:
 								break;
 							case CONNECTION_LOST:
+								removeParentPath(parentPath);
 								break;
 							case INITIALIZED:
 								break;
@@ -211,12 +230,45 @@ public class ListenerManager {
 				}
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			lock.writeLock().unlock();
+		}
+	}
+	
+	private void removeParentPath(ZKPath parentPath) {
+		lock.writeLock().lock();
+		try {
+			if(parentPath != null) {
+				if(parentPath.getChirldren() != null) {
+					parentPath.setChirldren(null);
+				}
+				if(parentPath.getChirldrenCache() != null) {
+					parentPath.getChirldrenCache().clear();
+				}
+				if(parentPath.getZookeeper() != null) {
+					parentPath.getZookeeper().close();
+				}
+				if(parentPath.getParentNode() != null) {
+					Iterator<ZKPath> zki = parentPath.getParentNode().getChirldren().iterator();
+					while(zki.hasNext()) {
+						ZKPath samePath = zki.next();
+						if(parentPath.equals(samePath)) {
+							zki.remove();
+							break;
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			lock.writeLock().unlock();
 		}
 	}
 	
 	private void refreshServerNodes(ZKPath parentPath) {
+		lock.writeLock().lock();;
 		if(parentPath != null && parentPath.getZookeeper() != null) {
 			try {
 				GetChildrenBuilder getChildrenBuilder = zookeeper.getChildren();
@@ -240,6 +292,7 @@ public class ListenerManager {
 						String json = new String(dataBuilder.forPath("/"), "utf8");
 						ThriftData data = JSON.parseObject(json, ThriftData.class);
 						grandChirldrenPath.setData(data);
+						grandChirldrenPath.setParentNode(parentPath);
 						grandChirld.close();
 						nodes.add(grandChirldrenPath);
 					}
@@ -251,6 +304,8 @@ public class ListenerManager {
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} finally {
+				lock.writeLock().unlock();
 			}
 		}
 	}
