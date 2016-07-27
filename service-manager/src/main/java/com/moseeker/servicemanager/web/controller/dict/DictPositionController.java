@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.moseeker.rpccenter.common.ServiceUtil;
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -21,7 +21,8 @@ import com.moseeker.thrift.gen.dict.service.PositionService;
 public class DictPositionController {
 
 	Logger logger = org.slf4j.LoggerFactory.getLogger(DictPositionController.class);
-	PositionService.Iface sercie = ServiceUtil.getService(PositionService.Iface.class);
+	PositionService.Iface sercie = ServiceManager.SERVICEMANAGER
+			.getService(PositionService.Iface.class);
 	
 	@RequestMapping(value = "/dict/position", method = RequestMethod.GET)
     @ResponseBody

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.moseeker.rpccenter.common.ServiceUtil;
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -21,7 +21,8 @@ import com.moseeker.thrift.gen.dict.service.IndustryService;
 public class DictIndustryController {
 
 	Logger logger = org.slf4j.LoggerFactory.getLogger(DictIndustryController.class);
-	IndustryService.Iface service = ServiceUtil.getService(IndustryService.Iface.class);
+	IndustryService.Iface service = ServiceManager.SERVICEMANAGER
+			.getService(IndustryService.Iface.class);
 	
 	@RequestMapping(value = "/dict/industry", method = RequestMethod.GET)
     @ResponseBody
