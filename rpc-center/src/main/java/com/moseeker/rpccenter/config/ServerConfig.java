@@ -106,6 +106,7 @@ public class ServerConfig implements IConfigCheck {
                  addShutdownHook(registry, server);
                  return;
             } catch (Exception e) {
+            	e.printStackTrace();
                 LOGGER.error(e.getMessage(), e);
                 server.stop(); // 防止注册不上,还在运行.
             }
@@ -245,6 +246,7 @@ public class ServerConfig implements IConfigCheck {
         if (ip == null) {
             throw new RpcException("Can't find server ip!");
         }
+        this.ip = ip;
         return new ServerNode(ip, getPort());
     }
 

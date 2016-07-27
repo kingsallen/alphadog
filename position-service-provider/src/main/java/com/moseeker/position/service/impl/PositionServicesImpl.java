@@ -84,13 +84,10 @@ public class PositionServicesImpl extends JOOQBaseServiceImpl<Position, JobPosit
     }
 
 	@Override
-	public Response verifyCustomize(int userId, int positionId) throws TException {
+	public Response verifyCustomize(int positionId) throws TException {
 		try{
-			UserUserRecord userRecord = userDao.getUserById(userId);
 			JobPositionRecord positionRecord = jobPositionDao.getPositionById(positionId);
-			if(userRecord == null) {
-				return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_USER_NOTEXIST);
-			}
+
 			if(positionRecord == null) {
 				return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_POSITION_NOTEXIST);
 			}

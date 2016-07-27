@@ -135,6 +135,7 @@ public class ZkServerRegistry implements IRegistry {
             public void eventReceived(CuratorFramework client, CuratorEvent event) {
                 WatchedEvent watchedEvent = event.getWatchedEvent();
                 if (watchedEvent != null && watchedEvent.getType() == Watcher.Event.EventType.NodeDeleted) {
+                	System.out.println("-----------------Watcher.Event.EventType.NodeDeleted and service rebuild-------------------");
                     while (true) {
                         try {
                             if (zookeeper.getZookeeperClient().blockUntilConnectedOrTimedOut()) {
@@ -151,7 +152,8 @@ public class ZkServerRegistry implements IRegistry {
                 }
             }
         });
-        zookeeper.getData().watched().forPath(path);
+        String data = new String(zookeeper.getData().watched().forPath(path), "utf-8");
+        System.out.println(data);
     }
 
     /**
@@ -167,7 +169,7 @@ public class ZkServerRegistry implements IRegistry {
         createParentsNode();
 
         // 创建子节点
-        StringBuilder pathBuilder = new StringBuilder(zkPath);
+        StringBuilder pathBuilder = new StringBuilder(Constants.ZK_SEPARATOR_DEFAULT + zkPath);
         pathBuilder.append(Constants.ZK_SEPARATOR_DEFAULT).append(Constants.ZK_NAMESPACE_SERVERS).append(Constants.ZK_SEPARATOR_DEFAULT).append(address);
         try {
             if (zookeeper.checkExists().forPath(pathBuilder.toString()) == null) {
@@ -189,7 +191,7 @@ public class ZkServerRegistry implements IRegistry {
      * @throws RpcException
      */
     private void createParentsNode() throws RpcException {
-        String parentPath = zkPath + Constants.ZK_SEPARATOR_DEFAULT + Constants.ZK_NAMESPACE_SERVERS;
+        String parentPath = Constants.ZK_SEPARATOR_DEFAULT + zkPath + Constants.ZK_SEPARATOR_DEFAULT + Constants.ZK_NAMESPACE_SERVERS;
         try {
             if (zookeeper.checkExists().forPath(parentPath) == null) {
                 zookeeper.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(parentPath);

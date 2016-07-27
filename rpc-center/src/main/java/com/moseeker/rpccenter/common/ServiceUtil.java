@@ -44,7 +44,7 @@ public class ServiceUtil {
     public static <clazz> clazz getService(Class<?> clazz){
         try{
             ClientConfig<clazz> clientConfig = new ClientConfig<clazz>();
-            clazz.getSimpleName();
+            //clazz.getSimpleName();
             clientConfig.setService(clazz.getEnclosingClass().getName());
             clientConfig.setIface(clazz.getName());
             return clientConfig.createProxy(getRegistryConfig());

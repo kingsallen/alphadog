@@ -11,12 +11,12 @@ task copyJars(type: Copy) {
 dependencies {
     compile project(":thrift-jooq")
     compile deps["junit"]
-    compile deps["log4j"]
+    compile deps["slf4j-log4j12"]
     compile deps["httpcore"]
     compile deps["joda-time"]
     compile deps["jedis"]
     compile deps["mysql-connector-java"]
-    compile deps["zookeeper"]
+    //compile deps["zookeeper"]
     compile deps["curator-recipes"]
     compile deps["fastjson"]
     compile deps["libthrift"]

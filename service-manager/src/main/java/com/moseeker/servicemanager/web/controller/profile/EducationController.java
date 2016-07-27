@@ -5,13 +5,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.moseeker.rpccenter.common.ServiceUtil;
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -25,7 +24,7 @@ public class EducationController {
 
 	Logger logger = LoggerFactory.getLogger(EducationController.class);
 
-	EducationServices.Iface educationService = ServiceUtil.getService(EducationServices.Iface.class);
+	EducationServices.Iface educationService = ServiceManager.SERVICEMANAGER.getService(EducationServices.Iface.class);
 	
 	@RequestMapping(value = "/profile/education", method = RequestMethod.GET)
 	@ResponseBody
