@@ -15,8 +15,14 @@ import com.moseeker.rpccenter.exception.RpcException;
 import com.moseeker.rpccenter.listener.ZKPath;
 
 /**
- * Thrift连接池
- * Created by zzh on 16/3/30.
+ * 
+ * rpc服务调用客户端对象池 
+ * <p>Company: MoSeeker</P>  
+ * <p>date: Jul 27, 2016</p>  
+ * <p>Email: wjf2255@gmail.com</p>
+ * @author wjf
+ * @version
+ * @param <T>
  */
 public class TServicePoolFactory<T> extends BaseKeyedPoolableObjectFactory<ZKPath, T> {
     /** LOGGER */
@@ -29,6 +35,7 @@ public class TServicePoolFactory<T> extends BaseKeyedPoolableObjectFactory<ZKPat
     private final int timeout;
 
     /**
+     * 
      * @param clientFactory
      * @param timeout
      */
@@ -64,33 +71,6 @@ public class TServicePoolFactory<T> extends BaseKeyedPoolableObjectFactory<ZKPat
         tp.close();
     }
 
-    /**
-     * 验证链接有效性 <br/>
-     * 注意：在服务端口异常关闭的情况下，<code>tp.isOpen()</code>
-     * 仍然返回true,所以，正常情况下应该进行socket验证，考虑到服务异常时使用了deadmark算法切换服务，故这里就不需要下面的验证代码了。
-     *
-     * <pre>
-     * <code>
-     *    Socket socket = null;
-     *         try {
-     *             InetSocketAddress socketAddress = new InetSocketAddress(key.getIp(), key.getPort());
-     *             socket = new Socket();
-     *             socket.connect(socketAddress, 1000);
-     *         } catch (IOException e) {
-     *             LOGGER.warn(e.getMessage(), e);
-     *             return false;
-     *         } finally {
-     *             if (socket != null) {
-     *                 try {
-     *                     socket.close();
-     *                 } catch (IOException e) {
-     *                     LOGGER.warn(e.getMessage(), e);
-     *                 }
-     *             }
-     *         }
-     * </code>
-     * </pre>
-     */
     @Override
     public boolean validateObject(ZKPath path, T client) {
         TTransport tp = ((TServiceClient) client).getInputProtocol().getTransport();
