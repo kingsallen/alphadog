@@ -1,9 +1,13 @@
 package com.moseeker.rpccenter.listener;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
+
+import com.alibaba.fastjson.JSON;
 
 public class ZKPath {
 
@@ -90,5 +94,24 @@ public class ZKPath {
 
 	public void setParentNode(ZKPath parentNode) {
 		this.parentNode = parentNode;
+	}
+	
+	public HashMap<String, Object> toHashMap() {
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("name", this.getName());
+		List<HashMap<String, Object>> chirldren = new ArrayList<>();
+		if(this.getChirldren() != null && this.getChirldren().size() > 0) {
+			this.getChirldren().forEach(chirld -> {
+				chirldren.add(chirld.toHashMap());
+			});
+		}
+		map.put("chirldren", chirldren);
+		map.put("data", data);
+		return map;
+	}
+
+	@Override
+	public String toString() {
+		return JSON.toJSONString(toHashMap());
 	}
 }

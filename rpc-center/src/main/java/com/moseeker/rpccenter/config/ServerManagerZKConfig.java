@@ -50,7 +50,9 @@ public enum ServerManagerZKConfig {
         System.out.println(confPath);
         ConfigPropertiesUtil configUtil = ConfigPropertiesUtil.getInstance();
         try {
-			configUtil.loadAbsoluteResource(confPath);
+        	
+        	configUtil.loadResource("zookeeper.properties");
+			//configUtil.loadAbsoluteResource(confPath);
 			setConnectstr(configUtil.get("registry.connectstr", String.class));
 	    	setNamespace(configUtil.get("registry.namespace", String.class));
 		} catch (Exception e) {
