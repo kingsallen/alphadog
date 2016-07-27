@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.moseeker.rpccenter.common.ServiceUtil;
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -24,7 +24,7 @@ public class BasicController {
 
 	Logger logger = LoggerFactory.getLogger(BasicController.class);
 
-	BasicServices.Iface basicService = ServiceUtil.getService(BasicServices.Iface.class);
+	BasicServices.Iface basicService = ServiceManager.SERVICEMANAGER.getService(BasicServices.Iface.class);
 	
 	@RequestMapping(value = "/profile/basic", method = RequestMethod.GET)
 	@ResponseBody

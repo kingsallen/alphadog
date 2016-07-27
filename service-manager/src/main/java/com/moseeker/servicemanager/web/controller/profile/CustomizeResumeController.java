@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.moseeker.rpccenter.common.ServiceUtil;
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -24,7 +24,7 @@ public class CustomizeResumeController {
 
 	Logger logger = LoggerFactory.getLogger(CustomizeResumeController.class);
 
-	CustomizeResumeServices.Iface awardService = ServiceUtil.getService(CustomizeResumeServices.Iface.class);
+	CustomizeResumeServices.Iface awardService = ServiceManager.SERVICEMANAGER.getService(CustomizeResumeServices.Iface.class);
 	
 	@RequestMapping(value = "/profile/other", method = RequestMethod.GET)
 	@ResponseBody

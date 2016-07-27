@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
-import com.moseeker.rpccenter.common.ServiceUtil;
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -25,7 +25,7 @@ public class PositionController {
 
     Logger logger = org.slf4j.LoggerFactory.getLogger(PositionController.class);
 
-    PositionServices.Iface positonServices = ServiceUtil.getService(PositionServices.Iface.class);
+    PositionServices.Iface positonServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
 
     @RequestMapping(value = "/positions", method = RequestMethod.GET)
     @ResponseBody

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.moseeker.rpccenter.common.ServiceUtil;
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -24,21 +24,22 @@ public class AttachmentController {
 
 	Logger logger = LoggerFactory.getLogger(AttachmentController.class);
 
-	AttachmentServices.Iface attachmentService = ServiceUtil.getService(AttachmentServices.Iface.class);
-	
+	AttachmentServices.Iface attachmentService = ServiceManager.SERVICEMANAGER
+			.getService(AttachmentServices.Iface.class);
+
 	@RequestMapping(value = "/profile/attachment", method = RequestMethod.GET)
 	@ResponseBody
 	public String get(HttpServletRequest request, HttpServletResponse response) {
-		//PrintWriter writer = null;
+		// PrintWriter writer = null;
 		try {
 			// GET方法 通用参数解析并赋值
 			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
 
 			Response result = attachmentService.getResources(query);
-			//jsonStringResponse = JSON.toJSONString(result);
-			
+			// jsonStringResponse = JSON.toJSONString(result);
+
 			return ResponseLogNotification.success(request, result);
-		} catch (Exception e) {	
+		} catch (Exception e) {
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}
@@ -46,12 +47,12 @@ public class AttachmentController {
 	@RequestMapping(value = "/profile/attachment", method = RequestMethod.POST)
 	@ResponseBody
 	public String post(HttpServletRequest request, HttpServletResponse response) {
-		//PrintWriter writer = null;
+		// PrintWriter writer = null;
 		try {
 			Attachment attachment = ParamUtils.initModelForm(request, Attachment.class);
 			Response result = attachmentService.postResource(attachment);
 			return ResponseLogNotification.success(request, result);
-		} catch (Exception e) {	
+		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
@@ -64,7 +65,7 @@ public class AttachmentController {
 			Attachment attachment = ParamUtils.initModelForm(request, Attachment.class);
 			Response result = attachmentService.putResource(attachment);
 			return ResponseLogNotification.success(request, result);
-		} catch (Exception e) {	
+		} catch (Exception e) {
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}
@@ -76,7 +77,7 @@ public class AttachmentController {
 			Attachment attachment = ParamUtils.initModelForm(request, Attachment.class);
 			Response result = attachmentService.delResource(attachment);
 			return ResponseLogNotification.success(request, result);
-		} catch (Exception e) {	
+		} catch (Exception e) {
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}

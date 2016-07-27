@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.moseeker.rpccenter.common.ServiceUtil;
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -20,23 +20,23 @@ import com.moseeker.thrift.gen.dict.service.CityServices;
 @Controller
 public class DeprecatedCityController {
 
-    Logger logger = org.slf4j.LoggerFactory.getLogger(CityController.class);
+	Logger logger = org.slf4j.LoggerFactory.getLogger(CityController.class);
 
-    CityServices.Iface cityServices = ServiceUtil.getService(CityServices.Iface.class);
+	CityServices.Iface cityServices = ServiceManager.SERVICEMANAGER.getService(CityServices.Iface.class);
 
-    @RequestMapping(value = "/dict/city", method = RequestMethod.GET)
-    @ResponseBody
-    public String get(HttpServletRequest request, HttpServletResponse response) {
-        //PrintWriter writer = null;
-        try {
-            // GET方法 通用参数解析并赋值
-            CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
+	@RequestMapping(value = "/dict/city", method = RequestMethod.GET)
+	@ResponseBody
+	public String get(HttpServletRequest request, HttpServletResponse response) {
+		// PrintWriter writer = null;
+		try {
+			// GET方法 通用参数解析并赋值
+			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
 
-            Response result = cityServices.getResources(query);
+			Response result = cityServices.getResources(query);
 
-            return ResponseLogNotification.successWithParse(request, result);
-        } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
-        }
-    }
+			return ResponseLogNotification.successWithParse(request, result);
+		} catch (Exception e) {
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
 }

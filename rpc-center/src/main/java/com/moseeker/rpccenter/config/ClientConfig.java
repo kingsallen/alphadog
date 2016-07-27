@@ -119,7 +119,6 @@ public class ClientConfig<T> implements IConfigCheck{
 
         registry.register(genConfigJson());
 
-
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         // 加载Iface接口
         Class<?> objectClass = classLoader.loadClass(iface);

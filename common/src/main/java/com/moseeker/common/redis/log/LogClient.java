@@ -53,24 +53,29 @@ public class LogClient extends RedisClient {
 		ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil
 				.getInstance();
 		if (redisCluster == null) {
-			Set<HostAndPort> jedisClusterNodes = new HashSet<HostAndPort>();
-			// Jedis Cluster will attempt to discover cluster nodes
-			String host = propertiesUtils.get("redis.log.host", String.class);
-			String port = propertiesUtils.get("redis.log.port", String.class);
-			if (!StringUtils.isNullOrEmpty(host)
-					&& !StringUtils.isNullOrEmpty(port)) {
-				String[] hostArray = host.split(",");
-				String[] portArray = port.split(",");
-				if (hostArray.length == portArray.length) {
-					for (int i = 0; i < hostArray.length; i++) {
-						jedisClusterNodes.add(new HostAndPort(hostArray[i],
-								Integer.parseInt(portArray[i])));
+			try {
+				Set<HostAndPort> jedisClusterNodes = new HashSet<HostAndPort>();
+				// Jedis Cluster will attempt to discover cluster nodes
+				String host = propertiesUtils.get("redis.log.host", String.class);
+				String port = propertiesUtils.get("redis.log.port", String.class);
+				if (!StringUtils.isNullOrEmpty(host)
+						&& !StringUtils.isNullOrEmpty(port)) {
+					String[] hostArray = host.split(",");
+					String[] portArray = port.split(",");
+					if (hostArray.length == portArray.length) {
+						for (int i = 0; i < hostArray.length; i++) {
+							jedisClusterNodes.add(new HostAndPort(hostArray[i],
+									Integer.parseInt(portArray[i])));
+						}
 					}
+				} else {
+					Notification.sendLostRedisWarning(host, port);		//报警
 				}
-			} else {
-				Notification.sendLostRedisWarning(host, port);		//报警
+				redisCluster = new JedisCluster(jedisClusterNodes);
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			redisCluster = new JedisCluster(jedisClusterNodes);
 		}
 		return redisCluster;
 	}
