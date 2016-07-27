@@ -10,15 +10,34 @@ import com.moseeker.rpccenter.listener.ZKPath;
 import com.moseeker.rpccenter.pool.TServicePoolFactory;
 import com.moseeker.rpccenter.proxy.DynamicClientHandler;
 
+/**
+ * 
+ * rpc服务客户端工厂 
+ * <p>Company: MoSeeker</P>  
+ * <p>date: Jul 27, 2016</p>  
+ * <p>Email: wjf2255@gmail.com</p>
+ * @author wjf
+ * @version
+ * @param <T>
+ */
 public class IfaceFactory<T> {
 	
-	private ThriftServerConfig config;
-	private GenericKeyedObjectPool<ZKPath, T> pool = null;
+	private ThriftServerConfig config;						//配置信息
+	private GenericKeyedObjectPool<ZKPath, T> pool = null;	//节点对象池
 	
+	/**
+	 * 初始化thrift客户端工厂
+	 * @param config
+	 */
 	public IfaceFactory(ThriftServerConfig config) {
 		this.config = config;
 	}
 	
+	/**
+	 * 创建thrift具体业务的客户端
+	 * @param clazz 指定创建客户端 （thrift service下的 iface接口）
+	 * @return
+	 */
 	public <clazz> clazz createIface(Class<T> clazz) {
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();

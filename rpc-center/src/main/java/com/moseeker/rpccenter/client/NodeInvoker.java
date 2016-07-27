@@ -14,20 +14,43 @@ import com.moseeker.rpccenter.listener.NodeManager;
 import com.moseeker.rpccenter.listener.ZKPath;
 import com.moseeker.rpccenter.loadbalance.NodeLoadBalance;
 
+/**
+ * 
+ * 代理类的具体执行类
+ * <p>Company: MoSeeker</P>  
+ * <p>date: Jul 27, 2016</p>  
+ * <p>Email: wjf2255@gmail.com</p>
+ * @author wjf
+ * @version
+ * @param <T>
+ */
 public class NodeInvoker<T> implements Invoker {
 	
-	private int retry = 3;		//重试次数
-	private GenericKeyedObjectPool<ZKPath, T> pool;
-	private String parentName;
+	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 	
+	private int retry = 3;								//重试次数
+	private GenericKeyedObjectPool<ZKPath, T> pool;		//节点对象池
+	private String parentName;							//二级节点名称(/services(一级节点名称)/com.moseeker.thrift.gen.profile.service.WholeProfileServices(二级节点名称)/servers
+	
+	/**
+	 * 初始化执行类
+	 * @param pool zookeeper可用节点的对象池
+	 * @param parentName 二级节点名称
+	 * @param retry	重试次数
+	 */
 	public NodeInvoker(GenericKeyedObjectPool<ZKPath, T> pool, String parentName, int retry) {
 		this.pool = pool;
 		this.parentName = parentName;
 		this.retry = retry;
 	}
 
-	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
-	
+	/**
+	 * 代理类的逻辑代码
+	 * 先从节点管理中心获取完整的节点数据（树形结构），
+	 * 并根据二级节点路径和利用负载均衡器查找二级节点下的三级节点
+	 * 根据查找到的三级节点，从rpc客户端中获取一个rpc客户端
+	 * 执行具体的调用方法
+	 */
 	@Override
 	public Object invoke(Method method, Object[] args) throws RpcException {
 		T client = null;

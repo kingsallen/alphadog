@@ -4,6 +4,15 @@ import java.util.HashMap;
 
 import com.moseeker.rpccenter.listener.ZKPath;
 
+/**
+ * 
+ * 节点负载均衡管理工具，目前只有循环策略 
+ * <p>Company: MoSeeker</P>  
+ * <p>date: Jul 27, 2016</p>  
+ * <p>Email: wjf2255@gmail.com</p>
+ * @author wjf
+ * @version
+ */
 public enum NodeLoadBalance {
 
 	LoadBalance;

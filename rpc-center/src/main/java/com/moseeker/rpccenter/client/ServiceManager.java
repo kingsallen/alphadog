@@ -4,8 +4,16 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import com.moseeker.rpccenter.config.ThriftServerConfig;
-import com.moseeker.rpccenter.registry.IRegistry;
 
+/**
+ * 
+ * 服务中心的业务管理工具（iface管理工具）
+ * <p>Company: MoSeeker</P>  
+ * <p>date: Jul 27, 2016</p>  
+ * <p>Email: wjf2255@gmail.com</p>
+ * @author wjf
+ * @version
+ */
 public enum ServiceManager {
 	
 	SERVICEMANAGER;
@@ -38,14 +46,10 @@ public enum ServiceManager {
             return null;
         }
     }
-    
     /**
-     * 添加关闭钩子 -  无心跳
-     * <p>
-     *
-     * @param registry
+     * 清空IfaceFactory中rpc客户端对象池的数据
      */
-    protected void addShutdownHook(final IRegistry registry) {
+    protected void addShutdownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
             public void run() {
