@@ -20,8 +20,9 @@ public enum NodeLoadBalance {
 						index.put(name, 0);
 					}
 					int position = index.get(name);
-					System.out.println("loadbalance position:"+position);
 					node = parentPath.getChirldren().get(position);
+					System.out.println("loadbalance position:"+position);
+					System.out.println(node);
 					if(position+1 >= parentPath.getChirldren().size()) {
 						index.put(name, 0);
 					} else {

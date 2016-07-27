@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.moseeker.rpccenter.common.ServiceUtil;
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -23,7 +23,7 @@ public class CompanyController {
 
 	Logger logger = LoggerFactory.getLogger(CompanyController.class);
 
-	CompanyServices.Iface companyServices = ServiceUtil.getService(CompanyServices.Iface.class);
+	CompanyServices.Iface companyServices = ServiceManager.SERVICEMANAGER.getService(CompanyServices.Iface.class);
 
 	@RequestMapping(value = "/company", method = RequestMethod.GET)
 	@ResponseBody

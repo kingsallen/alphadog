@@ -19,7 +19,7 @@ public class IfaceFactory<T> {
 		this.config = config;
 	}
 	
-	public T createIface(Class<T> clazz) {
+	public <clazz> clazz createIface(Class<T> clazz) {
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			if(pool == null) {
