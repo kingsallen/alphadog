@@ -69,6 +69,7 @@ public class NodeInvoker<T> implements Invoker {
             try {
                 node = NodeLoadBalance.LoadBalance.getNextNode(root, parentName);
                 if (node == null) {
+                	//warning
                     continue;
                 }
                 LOGGER.info(node.toString());
@@ -93,12 +94,15 @@ public class NodeInvoker<T> implements Invoker {
                             // 发送socket异常时，证明socket已经失效，需要重新创建
                             if (cause.getCause() != null && cause.getCause() instanceof SocketException) {
                                 pool.clear(node);
+                                NodeManager.NODEMANAGER.removePath(node);
+                                //warning
                                 //Notification.sendThriftConnectionError(serverNode+"  socket已经失效, error:"+ite.getMessage());
                                 LOGGER.error(node+"  socket已经失效, error:"+ite.getMessage(), ite);
                                 LOGGER.debug("after clear getNumActive:"+pool.getNumActive());
                             } else {
                                 // XXX:其他异常的情况，需要将当前链接置为无效
-                                pool.invalidateObject(node, client);
+                                //pool.invalidateObject(node, client);
+                            	//warning
                                 //Notification.sendThriftConnectionError(serverNode+"  链接置为无效, error:"+ite.getMessage());
                                 LOGGER.error(node+"  链接置为无效, error:"+ite.getMessage(), ite);
                                 LOGGER.debug("after invalidateObject getNumActive:"+pool.getNumActive());

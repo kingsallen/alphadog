@@ -2,6 +2,9 @@ package com.moseeker.rpccenter.loadbalance;
 
 import java.util.HashMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.moseeker.rpccenter.listener.ZKPath;
 
 /**
@@ -17,6 +20,7 @@ public enum NodeLoadBalance {
 
 	LoadBalance;
 
+	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private HashMap<String, Integer> index = new HashMap<>();
 
 	public ZKPath getNextNode(ZKPath root, String name) {
@@ -30,8 +34,8 @@ public enum NodeLoadBalance {
 					}
 					int position = index.get(name);
 					node = parentPath.getChirldren().get(position);
-					System.out.println("loadbalance position:"+position);
-					System.out.println(node);
+					logger.info("loadbalance position:"+position);
+					logger.info(node.toString());
 					if(position+1 >= parentPath.getChirldren().size()) {
 						index.put(name, 0);
 					} else {
@@ -39,6 +43,8 @@ public enum NodeLoadBalance {
 					}
 				}
 			}
+		} else {
+			//warning
 		}
 		return node;
 	}

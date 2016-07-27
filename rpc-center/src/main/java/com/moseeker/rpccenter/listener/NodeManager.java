@@ -64,6 +64,20 @@ public enum NodeManager {
 	}
 	
 	/**
+	 * 删除二级节点
+	 * @param path 二级节点
+	 */
+	public void removePath(ZKPath path) {
+		if(path != null && this.path != null && this.path.getChirldren() != null) {
+			for(ZKPath parentPath : this.path.getChirldren()) {
+				if(path.equals(parentPath)) {
+					removeParentPath(path);
+				}
+			}
+		}
+	}
+	
+	/**
 	 * 清空数据
 	 */
 	public void clear() {
@@ -436,8 +450,8 @@ public enum NodeManager {
 	}
 	
 	/**
-	 * 删除一级子节点
-	 * @param parentPath 一级子节点
+	 * 删除二级节点
+	 * @param parentPath 二级子节点
 	 */
 	private void removeParentPath(ZKPath parentPath) {
 		lock.writeLock().lock();
