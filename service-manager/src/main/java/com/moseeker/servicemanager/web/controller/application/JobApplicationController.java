@@ -66,7 +66,7 @@ public class JobApplicationController {
             JobApplication jobApplication = ParamUtils.initModelForm(request, JobApplication.class);
 
             // 创建申请记录
-            Response result = applicationService.postApplication(jobApplication);
+            Response result = applicationService.putApplication(jobApplication);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
