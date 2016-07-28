@@ -35,6 +35,7 @@ public enum NodeLoadBalance {
 					int position = index.get(name);
 					if(position >= parentPath.getChirldren().size()) {
 						position = 0;
+						index.put(name, 0);
 					}
 					node = parentPath.getChirldren().get(position);
 					logger.info("loadbalance position:"+position);
