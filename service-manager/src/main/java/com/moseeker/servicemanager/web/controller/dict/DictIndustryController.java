@@ -30,7 +30,7 @@ public class DictIndustryController {
         try {
             // GET方法 通用参数解析并赋值
         	 Map<String,Object> params = ParamUtils.mergeRequestParameters(request);
-            Response result = service.getIndustriesByCode((String)params.get("code"));
+            Response result = service.getIndustriesByCode((String)params.get("parent"));
 
             return ResponseLogNotification.successWithParse(request, result);
         } catch (Exception e) {
