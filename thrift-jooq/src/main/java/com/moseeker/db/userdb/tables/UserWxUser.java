@@ -38,7 +38,7 @@ import org.jooq.types.ULong;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserWxUser extends TableImpl<UserWxUserRecord> {
 
-	private static final long serialVersionUID = 218047126;
+	private static final long serialVersionUID = 2017614142;
 
 	/**
 	 * The reference instance of <code>userdb.user_wx_user</code>
@@ -69,9 +69,9 @@ public class UserWxUser extends TableImpl<UserWxUserRecord> {
 	public final TableField<UserWxUserRecord, UInteger> GROUP_ID = createField("group_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "分组ID");
 
 	/**
-	 * The column <code>userdb.user_wx_user.sysuser_id</code>.
+	 * The column <code>userdb.user_wx_user.sysuser_id</code>. user_user.id, C端用户ID
 	 */
-	public final TableField<UserWxUserRecord, Integer> SYSUSER_ID = createField("sysuser_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "");
+	public final TableField<UserWxUserRecord, Integer> SYSUSER_ID = createField("sysuser_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "user_user.id, C端用户ID");
 
 	/**
 	 * The column <code>userdb.user_wx_user.is_subscribe</code>. 是否关注 1:关注 0：没关注
