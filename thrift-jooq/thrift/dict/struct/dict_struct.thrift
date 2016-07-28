@@ -36,3 +36,12 @@ struct DictConstant {
     5: optional Timestamp create_time,   // 表记录创建时间
     6: optional Timestamp update_time    // 最新更新时间
 }
+
+/*
+  行业
+*/
+struct IndustryConstant {
+    1: optional i32 code,                // 常量code
+    2: optional string name,             // 常量名称
+    3: optional i32 type		 // 字典分类
+}

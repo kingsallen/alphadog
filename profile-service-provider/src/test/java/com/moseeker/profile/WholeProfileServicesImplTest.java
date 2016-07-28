@@ -1,4 +1,4 @@
-package test.com.moseeker.profile;
+package com.moseeker.profile;
 
 import com.moseeker.rpccenter.config.ClientConfig;
 import com.moseeker.rpccenter.config.RegistryConfig;

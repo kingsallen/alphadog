@@ -1,20 +1,21 @@
 package com.moseeker.servicemanager.web.controller.dict;
 
-import com.moseeker.rpccenter.common.ServiceUtil;
-import com.moseeker.servicemanager.common.ResponseLogNotification;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dict.service.DictConstanService;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
+import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dict.service.DictConstanService;
 
 /**
  * 字典常量服务
@@ -22,31 +23,31 @@ import java.util.List;
  *
  * Created by zzh on 16/5/27.
  */
-//@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
+// @Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
 public class DictConstantController {
 
-    Logger logger = org.slf4j.LoggerFactory.getLogger(CityController.class);
+	Logger logger = org.slf4j.LoggerFactory.getLogger(CityController.class);
 
-    DictConstanService.Iface dictConstanService = ServiceUtil.getService(DictConstanService.Iface.class);
+	DictConstanService.Iface dictConstanService = ServiceManager.SERVICEMANAGER
+			.getService(DictConstanService.Iface.class);
 
-    @RequestMapping(value = "/dict/constant", method = RequestMethod.GET)
-    @ResponseBody
-    public String get(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            List<Integer> parentCodeList = null;
-            String[] parentCodes = request.getParameterValues("parent_code");
-            if(parentCodes != null){
-                parentCodeList = new ArrayList<Integer>();
-                for (String parentCode: parentCodes
-                     ) {
-                    parentCodeList.add(Integer.valueOf(parentCode));
-                }
-            }
-            Response result = dictConstanService.getDictConstantJsonByParentCode(parentCodeList);
-            return ResponseLogNotification.successWithParse(request, result);
-        } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
-        }
-    }
+	@RequestMapping(value = "/dict/constant", method = RequestMethod.GET)
+	@ResponseBody
+	public String get(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			List<Integer> parentCodeList = null;
+			String[] parentCodes = request.getParameterValues("parent_code");
+			if (parentCodes != null) {
+				parentCodeList = new ArrayList<Integer>();
+				for (String parentCode : parentCodes) {
+					parentCodeList.add(Integer.valueOf(parentCode));
+				}
+			}
+			Response result = dictConstanService.getDictConstantJsonByParentCode(parentCodeList);
+			return ResponseLogNotification.successWithParse(request, result);
+		} catch (Exception e) {
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
 }
