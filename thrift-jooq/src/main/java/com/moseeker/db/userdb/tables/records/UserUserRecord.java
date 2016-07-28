@@ -28,7 +28,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
 
-	private static final long serialVersionUID = 625538497;
+	private static final long serialVersionUID = -1133505425;
 
 	/**
 	 * Setter for <code>userdb.user_user.id</code>. 主key
@@ -241,14 +241,14 @@ public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
 	}
 
 	/**
-	 * Setter for <code>userdb.user_user.name</code>. 姓名或微信昵称
+	 * Setter for <code>userdb.user_user.name</code>. 真实姓名
 	 */
 	public void setName(String value) {
 		setValue(15, value);
 	}
 
 	/**
-	 * Getter for <code>userdb.user_user.name</code>. 姓名或微信昵称
+	 * Getter for <code>userdb.user_user.name</code>. 真实姓名
 	 */
 	public String getName() {
 		return (String) getValue(15);
@@ -366,6 +366,20 @@ public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
 		return (UInteger) getValue(23);
 	}
 
+	/**
+	 * Setter for <code>userdb.user_user.nickname</code>. 用户昵称
+	 */
+	public void setNickname(String value) {
+		setValue(24, value);
+	}
+
+	/**
+	 * Getter for <code>userdb.user_user.nickname</code>. 用户昵称
+	 */
+	public String getNickname() {
+		return (String) getValue(24);
+	}
+
 	// -------------------------------------------------------------------------
 	// Primary key information
 	// -------------------------------------------------------------------------
@@ -392,7 +406,7 @@ public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
 	/**
 	 * Create a detached, initialised UserUserRecord
 	 */
-	public UserUserRecord(UInteger id, String username, String password, Byte isDisable, Integer rank, Timestamp registerTime, String registerIp, Timestamp lastLoginTime, String lastLoginIp, Integer loginCount, Long mobile, String email, Byte activation, String activationCode, String token, String name, String headimg, Integer nationalCodeId, Integer wechatId, String unionid, Byte source, String company, String position, UInteger parentid) {
+	public UserUserRecord(UInteger id, String username, String password, Byte isDisable, Integer rank, Timestamp registerTime, String registerIp, Timestamp lastLoginTime, String lastLoginIp, Integer loginCount, Long mobile, String email, Byte activation, String activationCode, String token, String name, String headimg, Integer nationalCodeId, Integer wechatId, String unionid, Byte source, String company, String position, UInteger parentid, String nickname) {
 		super(UserUser.USER_USER);
 
 		setValue(0, id);
@@ -419,5 +433,6 @@ public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
 		setValue(21, company);
 		setValue(22, position);
 		setValue(23, parentid);
+		setValue(24, nickname);
 	}
 }

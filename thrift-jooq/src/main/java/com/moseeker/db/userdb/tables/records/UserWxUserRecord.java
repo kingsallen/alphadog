@@ -33,7 +33,7 @@ import org.jooq.types.ULong;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserWxUserRecord extends UpdatableRecordImpl<UserWxUserRecord> implements Record21<ULong, UInteger, UInteger, Integer, UByte, String, String, Integer, String, String, String, String, String, Timestamp, Timestamp, String, Integer, Byte, Timestamp, Timestamp, Byte> {
 
-	private static final long serialVersionUID = 1090489419;
+	private static final long serialVersionUID = 648367985;
 
 	/**
 	 * Setter for <code>userdb.user_wx_user.id</code>. 主key
@@ -78,14 +78,14 @@ public class UserWxUserRecord extends UpdatableRecordImpl<UserWxUserRecord> impl
 	}
 
 	/**
-	 * Setter for <code>userdb.user_wx_user.sysuser_id</code>.
+	 * Setter for <code>userdb.user_wx_user.sysuser_id</code>. user_user.id, C端用户ID
 	 */
 	public void setSysuserId(Integer value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>userdb.user_wx_user.sysuser_id</code>.
+	 * Getter for <code>userdb.user_wx_user.sysuser_id</code>. user_user.id, C端用户ID
 	 */
 	public Integer getSysuserId() {
 		return (Integer) getValue(3);
