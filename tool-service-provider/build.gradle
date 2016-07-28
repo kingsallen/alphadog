@@ -5,7 +5,7 @@ dependencies {
 
     compile project(":common")
     compile project(":rpc-center")
-
+    compile deps["spring-context"]
     testCompile deps["junit"]
 }
 
