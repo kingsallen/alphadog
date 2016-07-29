@@ -8,11 +8,17 @@ import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.Server;
 
 /**
- * Created by zzh on 16/5/24.
+ * 
+ * 通用功能服务
+ * <p>Company: MoSeeker</P>  
+ * <p>date: Jul 29, 2016</p>  
+ * <p>Email: wjf2255@gmail.com</p>
+ * @author wjf
+ * @version
  */
-public class ToolServer {
+public class FunctionServer {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(ToolServer.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(FunctionServer.class);
 
     public static void main(String[] args) {
 
@@ -23,10 +29,10 @@ public class ToolServer {
 					acac.getBean(ProfileAttachmentServicesImpl.class));
 			server.start();*/ // 启动服务，非阻塞
 
-			synchronized (ToolServer.class) {
+			synchronized (FunctionServer.class) {
 				while (true) {
 					try {
-						ToolServer.class.wait();
+						FunctionServer.class.wait();
                     } catch (Exception e) {
                         LOGGER.error(" service provider ProfileAttachmentServer error", e);
                     }
@@ -40,7 +46,7 @@ public class ToolServer {
     
     private static AnnotationConfigApplicationContext initSpring() {
 		AnnotationConfigApplicationContext acac = new AnnotationConfigApplicationContext();
-		acac.scan("com.moseeker.profile");
+		acac.scan("com.moseeker.function");
 		acac.refresh();
 		return acac;
 	}

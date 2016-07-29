@@ -43,13 +43,13 @@ public class FunctionServices {
    */
   public interface Iface {
 
-    public com.moseeker.thrift.gen.common.struct.Response getResource(List<String> contents) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response verifySensitiveWords(List<String> contents) throws org.apache.thrift.TException;
 
   }
 
   public interface AsyncIface {
 
-    public void getResource(List<String> contents, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void verifySensitiveWords(List<String> contents, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -73,27 +73,27 @@ public class FunctionServices {
       super(iprot, oprot);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response getResource(List<String> contents) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response verifySensitiveWords(List<String> contents) throws org.apache.thrift.TException
     {
-      send_getResource(contents);
-      return recv_getResource();
+      send_verifySensitiveWords(contents);
+      return recv_verifySensitiveWords();
     }
 
-    public void send_getResource(List<String> contents) throws org.apache.thrift.TException
+    public void send_verifySensitiveWords(List<String> contents) throws org.apache.thrift.TException
     {
-      getResource_args args = new getResource_args();
+      verifySensitiveWords_args args = new verifySensitiveWords_args();
       args.setContents(contents);
-      sendBase("getResource", args);
+      sendBase("verifySensitiveWords", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_getResource() throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response recv_verifySensitiveWords() throws org.apache.thrift.TException
     {
-      getResource_result result = new getResource_result();
-      receiveBase(result, "getResource");
+      verifySensitiveWords_result result = new verifySensitiveWords_result();
+      receiveBase(result, "verifySensitiveWords");
       if (result.isSetSuccess()) {
         return result.success;
       }
-      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getResource failed: unknown result");
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "verifySensitiveWords failed: unknown result");
     }
 
   }
@@ -114,23 +114,23 @@ public class FunctionServices {
       super(protocolFactory, clientManager, transport);
     }
 
-    public void getResource(List<String> contents, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void verifySensitiveWords(List<String> contents, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      getResource_call method_call = new getResource_call(contents, resultHandler, this, ___protocolFactory, ___transport);
+      verifySensitiveWords_call method_call = new verifySensitiveWords_call(contents, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
-    public static class getResource_call extends org.apache.thrift.async.TAsyncMethodCall {
+    public static class verifySensitiveWords_call extends org.apache.thrift.async.TAsyncMethodCall {
       private List<String> contents;
-      public getResource_call(List<String> contents, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public verifySensitiveWords_call(List<String> contents, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.contents = contents;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getResource", org.apache.thrift.protocol.TMessageType.CALL, 0));
-        getResource_args args = new getResource_args();
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("verifySensitiveWords", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        verifySensitiveWords_args args = new verifySensitiveWords_args();
         args.setContents(contents);
         args.write(prot);
         prot.writeMessageEnd();
@@ -142,7 +142,7 @@ public class FunctionServices {
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        return (new Client(prot)).recv_getResource();
+        return (new Client(prot)).recv_verifySensitiveWords();
       }
     }
 
@@ -159,26 +159,26 @@ public class FunctionServices {
     }
 
     private static <I extends Iface> Map<String,  org.apache.thrift.ProcessFunction<I, ? extends  org.apache.thrift.TBase>> getProcessMap(Map<String,  org.apache.thrift.ProcessFunction<I, ? extends  org.apache.thrift.TBase>> processMap) {
-      processMap.put("getResource", new getResource());
+      processMap.put("verifySensitiveWords", new verifySensitiveWords());
       return processMap;
     }
 
-    public static class getResource<I extends Iface> extends org.apache.thrift.ProcessFunction<I, getResource_args> {
-      public getResource() {
-        super("getResource");
+    public static class verifySensitiveWords<I extends Iface> extends org.apache.thrift.ProcessFunction<I, verifySensitiveWords_args> {
+      public verifySensitiveWords() {
+        super("verifySensitiveWords");
       }
 
-      public getResource_args getEmptyArgsInstance() {
-        return new getResource_args();
+      public verifySensitiveWords_args getEmptyArgsInstance() {
+        return new verifySensitiveWords_args();
       }
 
       protected boolean isOneway() {
         return false;
       }
 
-      public getResource_result getResult(I iface, getResource_args args) throws org.apache.thrift.TException {
-        getResource_result result = new getResource_result();
-        result.success = iface.getResource(args.contents);
+      public verifySensitiveWords_result getResult(I iface, verifySensitiveWords_args args) throws org.apache.thrift.TException {
+        verifySensitiveWords_result result = new verifySensitiveWords_result();
+        result.success = iface.verifySensitiveWords(args.contents);
         return result;
       }
     }
@@ -196,24 +196,24 @@ public class FunctionServices {
     }
 
     private static <I extends AsyncIface> Map<String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase,?>> getProcessMap(Map<String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase, ?>> processMap) {
-      processMap.put("getResource", new getResource());
+      processMap.put("verifySensitiveWords", new verifySensitiveWords());
       return processMap;
     }
 
-    public static class getResource<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getResource_args, com.moseeker.thrift.gen.common.struct.Response> {
-      public getResource() {
-        super("getResource");
+    public static class verifySensitiveWords<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, verifySensitiveWords_args, com.moseeker.thrift.gen.common.struct.Response> {
+      public verifySensitiveWords() {
+        super("verifySensitiveWords");
       }
 
-      public getResource_args getEmptyArgsInstance() {
-        return new getResource_args();
+      public verifySensitiveWords_args getEmptyArgsInstance() {
+        return new verifySensitiveWords_args();
       }
 
       public AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
         return new AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
           public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
-            getResource_result result = new getResource_result();
+            verifySensitiveWords_result result = new verifySensitiveWords_result();
             result.success = o;
             try {
               fcall.sendResponse(fb,result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
@@ -226,7 +226,7 @@ public class FunctionServices {
           public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TBase msg;
-            getResource_result result = new getResource_result();
+            verifySensitiveWords_result result = new verifySensitiveWords_result();
             {
               msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
               msg = (org.apache.thrift.TBase)new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
@@ -246,22 +246,22 @@ public class FunctionServices {
         return false;
       }
 
-      public void start(I iface, getResource_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
-        iface.getResource(args.contents,resultHandler);
+      public void start(I iface, verifySensitiveWords_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
+        iface.verifySensitiveWords(args.contents,resultHandler);
       }
     }
 
   }
 
-  public static class getResource_args implements org.apache.thrift.TBase<getResource_args, getResource_args._Fields>, java.io.Serializable, Cloneable, Comparable<getResource_args>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getResource_args");
+  public static class verifySensitiveWords_args implements org.apache.thrift.TBase<verifySensitiveWords_args, verifySensitiveWords_args._Fields>, java.io.Serializable, Cloneable, Comparable<verifySensitiveWords_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("verifySensitiveWords_args");
 
     private static final org.apache.thrift.protocol.TField CONTENTS_FIELD_DESC = new org.apache.thrift.protocol.TField("contents", org.apache.thrift.protocol.TType.LIST, (short)1);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new getResource_argsStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new getResource_argsTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new verifySensitiveWords_argsStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new verifySensitiveWords_argsTupleSchemeFactory());
     }
 
     public List<String> contents; // required
@@ -332,13 +332,13 @@ public class FunctionServices {
           new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
               new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING))));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getResource_args.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(verifySensitiveWords_args.class, metaDataMap);
     }
 
-    public getResource_args() {
+    public verifySensitiveWords_args() {
     }
 
-    public getResource_args(
+    public verifySensitiveWords_args(
       List<String> contents)
     {
       this();
@@ -348,15 +348,15 @@ public class FunctionServices {
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public getResource_args(getResource_args other) {
+    public verifySensitiveWords_args(verifySensitiveWords_args other) {
       if (other.isSetContents()) {
         List<String> __this__contents = new ArrayList<String>(other.contents);
         this.contents = __this__contents;
       }
     }
 
-    public getResource_args deepCopy() {
-      return new getResource_args(this);
+    public verifySensitiveWords_args deepCopy() {
+      return new verifySensitiveWords_args(this);
     }
 
     @Override
@@ -383,7 +383,7 @@ public class FunctionServices {
       return this.contents;
     }
 
-    public getResource_args setContents(List<String> contents) {
+    public verifySensitiveWords_args setContents(List<String> contents) {
       this.contents = contents;
       return this;
     }
@@ -442,12 +442,12 @@ public class FunctionServices {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof getResource_args)
-        return this.equals((getResource_args)that);
+      if (that instanceof verifySensitiveWords_args)
+        return this.equals((verifySensitiveWords_args)that);
       return false;
     }
 
-    public boolean equals(getResource_args that) {
+    public boolean equals(verifySensitiveWords_args that) {
       if (that == null)
         return false;
 
@@ -476,7 +476,7 @@ public class FunctionServices {
     }
 
     @Override
-    public int compareTo(getResource_args other) {
+    public int compareTo(verifySensitiveWords_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
@@ -510,7 +510,7 @@ public class FunctionServices {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("getResource_args(");
+      StringBuilder sb = new StringBuilder("verifySensitiveWords_args(");
       boolean first = true;
 
       sb.append("contents:");
@@ -545,15 +545,15 @@ public class FunctionServices {
       }
     }
 
-    private static class getResource_argsStandardSchemeFactory implements SchemeFactory {
-      public getResource_argsStandardScheme getScheme() {
-        return new getResource_argsStandardScheme();
+    private static class verifySensitiveWords_argsStandardSchemeFactory implements SchemeFactory {
+      public verifySensitiveWords_argsStandardScheme getScheme() {
+        return new verifySensitiveWords_argsStandardScheme();
       }
     }
 
-    private static class getResource_argsStandardScheme extends StandardScheme<getResource_args> {
+    private static class verifySensitiveWords_argsStandardScheme extends StandardScheme<verifySensitiveWords_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, getResource_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, verifySensitiveWords_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -592,7 +592,7 @@ public class FunctionServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, getResource_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, verifySensitiveWords_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -614,16 +614,16 @@ public class FunctionServices {
 
     }
 
-    private static class getResource_argsTupleSchemeFactory implements SchemeFactory {
-      public getResource_argsTupleScheme getScheme() {
-        return new getResource_argsTupleScheme();
+    private static class verifySensitiveWords_argsTupleSchemeFactory implements SchemeFactory {
+      public verifySensitiveWords_argsTupleScheme getScheme() {
+        return new verifySensitiveWords_argsTupleScheme();
       }
     }
 
-    private static class getResource_argsTupleScheme extends TupleScheme<getResource_args> {
+    private static class verifySensitiveWords_argsTupleScheme extends TupleScheme<verifySensitiveWords_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, getResource_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, verifySensitiveWords_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetContents()) {
@@ -642,7 +642,7 @@ public class FunctionServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, getResource_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, verifySensitiveWords_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -663,15 +663,15 @@ public class FunctionServices {
 
   }
 
-  public static class getResource_result implements org.apache.thrift.TBase<getResource_result, getResource_result._Fields>, java.io.Serializable, Cloneable, Comparable<getResource_result>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getResource_result");
+  public static class verifySensitiveWords_result implements org.apache.thrift.TBase<verifySensitiveWords_result, verifySensitiveWords_result._Fields>, java.io.Serializable, Cloneable, Comparable<verifySensitiveWords_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("verifySensitiveWords_result");
 
     private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new getResource_resultStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new getResource_resultTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new verifySensitiveWords_resultStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new verifySensitiveWords_resultTupleSchemeFactory());
     }
 
     public com.moseeker.thrift.gen.common.struct.Response success; // required
@@ -741,13 +741,13 @@ public class FunctionServices {
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getResource_result.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(verifySensitiveWords_result.class, metaDataMap);
     }
 
-    public getResource_result() {
+    public verifySensitiveWords_result() {
     }
 
-    public getResource_result(
+    public verifySensitiveWords_result(
       com.moseeker.thrift.gen.common.struct.Response success)
     {
       this();
@@ -757,14 +757,14 @@ public class FunctionServices {
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public getResource_result(getResource_result other) {
+    public verifySensitiveWords_result(verifySensitiveWords_result other) {
       if (other.isSetSuccess()) {
         this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
       }
     }
 
-    public getResource_result deepCopy() {
-      return new getResource_result(this);
+    public verifySensitiveWords_result deepCopy() {
+      return new verifySensitiveWords_result(this);
     }
 
     @Override
@@ -776,7 +776,7 @@ public class FunctionServices {
       return this.success;
     }
 
-    public getResource_result setSuccess(com.moseeker.thrift.gen.common.struct.Response success) {
+    public verifySensitiveWords_result setSuccess(com.moseeker.thrift.gen.common.struct.Response success) {
       this.success = success;
       return this;
     }
@@ -835,12 +835,12 @@ public class FunctionServices {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof getResource_result)
-        return this.equals((getResource_result)that);
+      if (that instanceof verifySensitiveWords_result)
+        return this.equals((verifySensitiveWords_result)that);
       return false;
     }
 
-    public boolean equals(getResource_result that) {
+    public boolean equals(verifySensitiveWords_result that) {
       if (that == null)
         return false;
 
@@ -869,7 +869,7 @@ public class FunctionServices {
     }
 
     @Override
-    public int compareTo(getResource_result other) {
+    public int compareTo(verifySensitiveWords_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
@@ -903,7 +903,7 @@ public class FunctionServices {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("getResource_result(");
+      StringBuilder sb = new StringBuilder("verifySensitiveWords_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -941,15 +941,15 @@ public class FunctionServices {
       }
     }
 
-    private static class getResource_resultStandardSchemeFactory implements SchemeFactory {
-      public getResource_resultStandardScheme getScheme() {
-        return new getResource_resultStandardScheme();
+    private static class verifySensitiveWords_resultStandardSchemeFactory implements SchemeFactory {
+      public verifySensitiveWords_resultStandardScheme getScheme() {
+        return new verifySensitiveWords_resultStandardScheme();
       }
     }
 
-    private static class getResource_resultStandardScheme extends StandardScheme<getResource_result> {
+    private static class verifySensitiveWords_resultStandardScheme extends StandardScheme<verifySensitiveWords_result> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, getResource_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, verifySensitiveWords_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -979,7 +979,7 @@ public class FunctionServices {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, getResource_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, verifySensitiveWords_result struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
@@ -994,16 +994,16 @@ public class FunctionServices {
 
     }
 
-    private static class getResource_resultTupleSchemeFactory implements SchemeFactory {
-      public getResource_resultTupleScheme getScheme() {
-        return new getResource_resultTupleScheme();
+    private static class verifySensitiveWords_resultTupleSchemeFactory implements SchemeFactory {
+      public verifySensitiveWords_resultTupleScheme getScheme() {
+        return new verifySensitiveWords_resultTupleScheme();
       }
     }
 
-    private static class getResource_resultTupleScheme extends TupleScheme<getResource_result> {
+    private static class verifySensitiveWords_resultTupleScheme extends TupleScheme<verifySensitiveWords_result> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, getResource_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, verifySensitiveWords_result struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
         if (struct.isSetSuccess()) {
@@ -1016,7 +1016,7 @@ public class FunctionServices {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, getResource_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, verifySensitiveWords_result struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {

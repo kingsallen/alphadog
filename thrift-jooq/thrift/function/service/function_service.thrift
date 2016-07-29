@@ -9,6 +9,6 @@ namespace java com.moseeker.thrift.gen.function.service
  */
  
 service FunctionServices {
-    common_struct.Response getResource(1:list<string> contents);
+    common_struct.Response verifySensitiveWords(1:list<string> contents);
 }
 
