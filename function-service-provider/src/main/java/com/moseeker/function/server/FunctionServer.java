@@ -1,9 +1,10 @@
-package com.moseeker.application.server;
+package com.moseeker.function.server;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import com.moseeker.function.thrift.service.FunctionService;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.Server;
 
@@ -19,15 +20,15 @@ import com.moseeker.rpccenter.main.Server;
 public class FunctionServer {
 
     private static Logger LOGGER = LoggerFactory.getLogger(FunctionServer.class);
-
+    
     public static void main(String[] args) {
 
         try {
         	AnnotationConfigApplicationContext acac = initSpring();
-			/*Server server = new Server(ToolServer.class,
+			Server server = new Server(FunctionServer.class,
 					ServerNodeUtils.getPort(args),
-					acac.getBean(ProfileAttachmentServicesImpl.class));
-			server.start();*/ // 启动服务，非阻塞
+					acac.getBean(FunctionService.class));
+			server.start(); // 启动服务，非阻塞
 
 			synchronized (FunctionServer.class) {
 				while (true) {
