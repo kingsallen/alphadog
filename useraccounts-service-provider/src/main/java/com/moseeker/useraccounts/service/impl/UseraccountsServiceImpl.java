@@ -553,6 +553,11 @@ public class UseraccountsServiceImpl implements Iface {
     	if(StringUtils.isNullOrEmpty(userMobile.getPosition()) && StringUtils.isNotNullOrEmpty(userUnionid.getPosition())) {
     		userMobile.setPosition(userUnionid.getPosition());
     	}
+    	try {
+			userdao.putResource(userMobile);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
 	}
 
 	/**
