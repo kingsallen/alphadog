@@ -31,7 +31,7 @@ public class FunctionController {
 		// PrintWriter writer = null;
 		try {
 			// GET方法 通用参数解析并赋值
-			SensitiveWord sensitive = ParamUtils.initCommonQuery(request, SensitiveWord.class);
+			SensitiveWord sensitive = ParamUtils.initModelForm(request, SensitiveWord.class);
 
 			Response result = functionService.verifySensitiveWords(sensitive.getContents());
 

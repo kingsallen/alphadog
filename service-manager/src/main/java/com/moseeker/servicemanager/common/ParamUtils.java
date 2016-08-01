@@ -14,7 +14,6 @@ import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.springframework.web.servlet.HandlerMapping;
 
@@ -105,7 +104,6 @@ public class ParamUtils {
 					method.invoke(t, BeanUtils.convertToBoolean(data.get("nocache")));
 				}
 				Map<String, String> param = new HashMap<>();
-				@SuppressWarnings("unchecked")
 				Map<String, String[]> reqParams = request.getParameterMap();
 				if (reqParams != null) {
 					for (Entry<String, String[]> entry : reqParams.entrySet()) {
@@ -267,7 +265,6 @@ public class ParamUtils {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	private static Map<String, Object> initParamFromRequestParameter(
 			HttpServletRequest request) {
 		Map<String, Object> param = new HashMap<>();
@@ -275,7 +272,7 @@ public class ParamUtils {
 		Map<String, String[]> reqParams = request.getParameterMap();
 		if (reqParams != null) {
 			for (Entry<String, String[]> entry : reqParams.entrySet()) {
-				param.put(entry.getKey(), entry.getValue()[0]);
+				param.put(entry.getKey(), entry.getValue());
 			}
 		}
 		return param;
@@ -418,7 +415,6 @@ public class ParamUtils {
 		
 		Map<Integer, Integer> cityCode = new HashMap<>();
 		Map<String, Integer> cityName= new HashMap<>();
-		@SuppressWarnings("unchecked")
 		Map<String, String[]> reqParams = request.getParameterMap();
 		if (reqParams != null) {
 			for (Entry<String, String[]> entry : reqParams.entrySet()) {
