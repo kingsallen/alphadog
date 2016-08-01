@@ -178,8 +178,8 @@ public class UseraccountsServiceImpl implements Iface {
     @Override
     public Response postsendsignupcode(String mobile) throws TException {
         // TODO 未注册用户才能发送。
-        CommonQuery query = new CommonQuery();
-        Map<String, String> filters = new HashMap<>();
+        /*CommonQuery query = new CommonQuery();
+        Map<String, String> filters = new HashMap<>();*/
 
         /*  以下代码限制未注册用户才能发送。 由于存在 mobile+code的登陆方式, 老用户也可以发送验证码.
         if (mobile.length()>0){
@@ -263,7 +263,10 @@ public class UseraccountsServiceImpl implements Iface {
 //                userSettingDao.postResource(userSettingsRecord);
 
                 return ResponseUtils.success(new HashMap<String, Object>(){
-                    {
+
+					private static final long serialVersionUID = -5518436764754085050L;
+
+					{
                         put("user_id", newCreateUserId);
                     }
                 }); // 返回 user id
@@ -483,6 +486,7 @@ public class UseraccountsServiceImpl implements Iface {
             // unnionid置为子账号
             userUnionid.setParentid(userMobile.getId());
             if(userdao.putResource(userUnionid)>0){
+            	consummateUserAccount(userMobile, userUnionid);
             	// profile合并成功
             }else{
             	// 合并失败, log.
@@ -501,7 +505,7 @@ public class UseraccountsServiceImpl implements Iface {
                     
                     // 微信端profile转移到pc用户下.
                     ProfileProfileRecord userUnionProfileRecord = profileDao.getProfileByUserId(userUnionid.getId().intValue());
-                    if (userUnionProfileRecord != null ){
+                    if (userUnionProfileRecord != null ) {
                     	userUnionProfileRecord.setUserId(userMobile.getId());
                     	profileDao.putResource(userUnionProfileRecord);
                     }
@@ -512,6 +516,7 @@ public class UseraccountsServiceImpl implements Iface {
             		break;
             }
             // 合并业务代码
+            // 最后通过消息队列交给独立的服务处理
             userdao.combineAccount(userMobile.getId().intValue(),
                     userUnionid.getId().intValue());
 
@@ -520,7 +525,37 @@ public class UseraccountsServiceImpl implements Iface {
         }
     }
 
-    /**
+    private void consummateUserAccount(UserUserRecord userMobile, UserUserRecord userUnionid) {
+    	if(StringUtils.isNullOrEmpty(userMobile.getName()) && StringUtils.isNotNullOrEmpty(userUnionid.getName())) {
+    		userMobile.setName(userUnionid.getName());
+    	}
+    	if(StringUtils.isNullOrEmpty(userMobile.getNickname()) && StringUtils.isNotNullOrEmpty(userUnionid.getNickname())) {
+    		userMobile.setNickname(userUnionid.getNickname());
+    	}
+    	if((userUnionid.getRank() != null && userMobile.getRank() == null) || (userUnionid.getRank() != null && userMobile.getRank() != null && userUnionid.getRank()>userMobile.getRank())) {
+    		userMobile.setRank(userUnionid.getRank());
+    	}
+    	if(userUnionid.getMobile() != null && userUnionid.getMobile() > 0 && (userMobile.getMobile() == null || userMobile.getMobile() == 0)) {
+    		userMobile.setMobile(userUnionid.getMobile());
+    	}
+    	if(StringUtils.isNullOrEmpty(userMobile.getEmail()) && StringUtils.isNotNullOrEmpty(userUnionid.getEmail())) {
+    		userMobile.setEmail(userUnionid.getEmail());
+    	}
+    	if(StringUtils.isNullOrEmpty(userMobile.getHeadimg()) && StringUtils.isNotNullOrEmpty(userUnionid.getHeadimg())) {
+    		userMobile.setHeadimg(userUnionid.getHeadimg());
+    	}
+    	if(userUnionid.getNationalCodeId() != null && userUnionid.getNationalCodeId() != 1 && (userMobile.getNationalCodeId() == null || userMobile.getNationalCodeId() == 1)) {
+    		userMobile.setMobile(userUnionid.getMobile());
+    	}
+    	if(StringUtils.isNullOrEmpty(userMobile.getCompany()) && StringUtils.isNotNullOrEmpty(userUnionid.getCompany())) {
+    		userMobile.setCompany(userUnionid.getCompany());
+    	}
+    	if(StringUtils.isNullOrEmpty(userMobile.getPosition()) && StringUtils.isNotNullOrEmpty(userUnionid.getPosition())) {
+    		userMobile.setPosition(userUnionid.getPosition());
+    	}
+	}
+
+	/**
      * 修改现有密码 
      * @param user_id
      * @param old_password 
