@@ -191,7 +191,7 @@ public class ZkServerRegistry implements IRegistry {
      * @throws RpcException
      */
     private void createParentsNode() throws RpcException {
-        String parentPath = Constants.ZK_SEPARATOR_DEFAULT + zkPath + Constants.ZK_SEPARATOR_DEFAULT + Constants.ZK_NAMESPACE_SERVERS;
+        String parentPath = "/"+zkPath + Constants.ZK_SEPARATOR_DEFAULT + Constants.ZK_NAMESPACE_SERVERS;
         try {
             if (zookeeper.checkExists().forPath(parentPath) == null) {
                 zookeeper.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(parentPath);

@@ -1,4 +1,4 @@
-package test.com.moseeker.profile;
+package com.moseeker.profile;
 
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.rpccenter.config.ClientConfig;

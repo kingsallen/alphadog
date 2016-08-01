@@ -388,7 +388,16 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 						//如果没有key的情况下，只有name有值才有意义
 						if(!StringUtils.isNullOrEmpty(entry.getKey())) {
 							ProfileIntentionPositionRecord tobeAddPositionRecord = new ProfileIntentionPositionRecord();
-							tobeAddPositionRecord.setPositionCode(UInteger.valueOf(0));
+							DictPositionRecord legalRecord = null;
+							for(DictPositionRecord dictPositionRecord : positionRecordList) {
+								if(dictPositionRecord.getName().equals(entry.getKey().trim())) {
+									legalRecord = dictPositionRecord;
+									break;
+								}
+							}
+							if(legalRecord != null) {
+								tobeAddPositionRecord.setPositionCode(legalRecord.getCode());
+							}
 							tobeAddPositionRecord.setPositionName(entry.getKey());
 							tobeAddPositionRecord.setProfileIntentionId(UInteger.valueOf(intentionId));
 							toBeAddList.add(tobeAddPositionRecord);
@@ -454,7 +463,16 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 						//如果没有key的情况下，只有name有值才有意义
 						if(!StringUtils.isNullOrEmpty(entry.getKey())) {
 							ProfileIntentionIndustryRecord tobeAddIndustryRecord = new ProfileIntentionIndustryRecord();
-							tobeAddIndustryRecord.setIndustryCode(UInteger.valueOf(0));
+							DictIndustryRecord legalRecord = null;
+							for(DictIndustryRecord dictIndustryRecord : industryRecordList) {
+								if(dictIndustryRecord.getName().equals(entry.getKey())) {
+									legalRecord = dictIndustryRecord;
+									break;
+								}
+							}
+							if(legalRecord != null) {
+								tobeAddIndustryRecord.setIndustryCode(legalRecord.getCode());
+							}
 							tobeAddIndustryRecord.setIndustryName(entry.getKey());
 							tobeAddIndustryRecord.setProfileIntentionId(UInteger.valueOf(intentionId));
 							toBeAddList.add(tobeAddIndustryRecord);
@@ -526,7 +544,16 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 						//如果没有key的情况下，只有name有值才有意义
 						if(!StringUtils.isNullOrEmpty(entry.getKey())) {
 							ProfileIntentionCityRecord tobeAddCityRecord = new ProfileIntentionCityRecord();
-							tobeAddCityRecord.setCityCode(UInteger.valueOf(0));
+							DictCityRecord legalRecord = null;
+							for(DictCityRecord dictCityRecord : cityRecordList) {
+								if(dictCityRecord.getName().equals(entry.getKey())) {
+									legalRecord = dictCityRecord;
+									break;
+								}
+							}
+							if(legalRecord != null) {
+								tobeAddCityRecord.setCityCode(legalRecord.getCode());
+							}
 							tobeAddCityRecord.setCityName(entry.getKey());
 							tobeAddCityRecord.setProfileIntentionId(UInteger.valueOf(intentionId));
 							toBeAddList.add(tobeAddCityRecord);

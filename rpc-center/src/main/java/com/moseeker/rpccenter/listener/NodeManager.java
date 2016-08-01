@@ -22,7 +22,10 @@ import com.moseeker.rpccenter.config.ServerManagerZKConfig;
 
 /**
  * 
- * 基础服务节点管理工具
+ * 基础服务节点管理工具。提供节点数据同步，节点管理等功能。
+ * 
+ * 将来可能需要一个容错机制：可能节点监听机制无法生效，需要定时自动抓取节点数据，
+ * 并和监听中的节点数据比较。如果出现差异，需要修复监听中的数据
  * <p>Company: MoSeeker</P>  
  * <p>date: Jul 26, 2016</p>  
  * <p>Email: wjf2255@gmail.com</p>
@@ -60,6 +63,20 @@ public enum NodeManager {
 			return path.toString();
 		} else {
 			return Constant.NONE_JSON;
+		}
+	}
+	
+	/**
+	 * 删除二级节点
+	 * @param path 二级节点
+	 */
+	public void removePath(ZKPath path) {
+		if(path != null && this.path != null && this.path.getChirldren() != null) {
+			for(ZKPath parentPath : this.path.getChirldren()) {
+				if(path.equals(parentPath)) {
+					removeParentPath(path);
+				}
+			}
 		}
 	}
 	
@@ -436,8 +453,8 @@ public enum NodeManager {
 	}
 	
 	/**
-	 * 删除一级子节点
-	 * @param parentPath 一级子节点
+	 * 删除二级节点
+	 * @param parentPath 二级子节点
 	 */
 	private void removeParentPath(ZKPath parentPath) {
 		lock.writeLock().lock();
