@@ -150,6 +150,23 @@ public class ParamUtils {
 		}		
 		return data;
 	}
+	
+	/**
+	 * 将request请求中的参数，不管是request的body中的参数还是以getParameter方式获取的参数存入到HashMap并染回该HashMap
+	 * @param request request请求
+	 * @return 存储通过request请求传递过来的参数
+	 * @throws Exception 
+	 */
+	public static Map<String, Object> mergeRequestParameterList(HttpServletRequest request) throws Exception {
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.putAll(initParamFromRequestBody(request));
+		data.putAll(initParamFromRequestParameterList(request));
+		
+		if (data.get("appid") == null){
+			throw new Exception("请设置 appid!");
+		}		
+		return data;
+	}
 
 	/**
 	 * 通用参数解析工具。初始化参数数据结构，并将request parameter中的参数放入到对象中。
@@ -175,6 +192,45 @@ public class ParamUtils {
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.putAll(initParamFromRequestBody(request));
 		data.putAll(initParamFromRequestParameter(request));
+		
+		if (data.get("appid") == null){
+			throw new Exception("请设置 appid!");
+		}
+		
+		if (data != null && data.size() > 0) {
+			Field[] fields = clazz.getDeclaredFields();
+			for (Entry<String, Object> entry : data.entrySet()) {
+				for (int i = 0; i < fields.length; i++) {
+					if (fields[i].getName().equals(entry.getKey())) {
+						String methodName = "set"
+								+ fields[i].getName().substring(0, 1)
+										.toUpperCase()
+								+ fields[i].getName().substring(1);
+						Method method = clazz.getMethod(methodName,
+								fields[i].getType());
+						Object cval = BeanUtils.convertTo(
+								entry.getValue(), fields[i].getType());
+						try {
+							method.invoke(t, cval);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		}
+
+		return t;
+	}
+	
+	public static <T> T initModelFormForList(HttpServletRequest request, Class<T> clazz)
+			throws Exception {
+		T t = clazz.newInstance();
+
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.putAll(initParamFromRequestBody(request));
+		data.putAll(initParamFromRequestParameterList(request));
 		
 		if (data.get("appid") == null){
 			throw new Exception("请设置 appid!");
@@ -266,6 +322,19 @@ public class ParamUtils {
 	}
 	
 	private static Map<String, Object> initParamFromRequestParameter(
+			HttpServletRequest request) {
+		Map<String, Object> param = new HashMap<>();
+
+		Map<String, String[]> reqParams = request.getParameterMap();
+		if (reqParams != null) {
+			for (Entry<String, String[]> entry : reqParams.entrySet()) {
+				param.put(entry.getKey(), entry.getValue()[0]);
+			}
+		}
+		return param;
+	}
+	
+	private static Map<String, Object> initParamFromRequestParameterList(
 			HttpServletRequest request) {
 		Map<String, Object> param = new HashMap<>();
 
