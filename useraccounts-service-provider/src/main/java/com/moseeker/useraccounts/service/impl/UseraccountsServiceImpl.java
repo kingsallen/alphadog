@@ -557,7 +557,7 @@ public class UseraccountsServiceImpl implements Iface {
     	}
     	/* 完善国家代码 */
     	if(userUnionid.getNationalCodeId() != null && userUnionid.getNationalCodeId() != 1 && (userMobile.getNationalCodeId() == null || userMobile.getNationalCodeId() == 1)) {
-    		userMobile.setMobile(userUnionid.getMobile());
+    		userMobile.setNationalCodeId(userUnionid.getNationalCodeId());
     	}
     	/* 完善感兴趣的公司 */
     	if(StringUtils.isNullOrEmpty(userMobile.getCompany()) && StringUtils.isNotNullOrEmpty(userUnionid.getCompany())) {
