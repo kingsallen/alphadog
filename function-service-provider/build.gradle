@@ -24,12 +24,12 @@ jar {
     }
 
     manifest {
-        attributes 'Main-Class': 'com.moseeker.application.server.ApplicationServer'
+        attributes 'Main-Class': 'com.moseeker.function.server.FunctionServer'
     }
 
 
 }
 
 project.description = '''
-    1) 职位申请服务
+    1) 敏感词校验服务
 '''
