@@ -525,31 +525,45 @@ public class UseraccountsServiceImpl implements Iface {
         }
     }
 
+    /**
+     * 账号合并完善账号信息
+     * @param userMobile 需要完善的账号
+     * @param userUnionid 信息来源
+     */
     private void consummateUserAccount(UserUserRecord userMobile, UserUserRecord userUnionid) {
+    	/* 完善用户名称 */
     	if(StringUtils.isNullOrEmpty(userMobile.getName()) && StringUtils.isNotNullOrEmpty(userUnionid.getName())) {
     		userMobile.setName(userUnionid.getName());
     	}
+    	/* 完善用户昵称 */
     	if(StringUtils.isNullOrEmpty(userMobile.getNickname()) && StringUtils.isNotNullOrEmpty(userUnionid.getNickname())) {
     		userMobile.setNickname(userUnionid.getNickname());
     	}
+    	/* 完善用户级别，预计rank越高，表示用户等级越高。 */
     	if((userUnionid.getRank() != null && userMobile.getRank() == null) || (userUnionid.getRank() != null && userMobile.getRank() != null && userUnionid.getRank()>userMobile.getRank())) {
     		userMobile.setRank(userUnionid.getRank());
     	}
+    	/* 完善用户未验证的手机号码 */
     	if(userUnionid.getMobile() != null && userUnionid.getMobile() > 0 && (userMobile.getMobile() == null || userMobile.getMobile() == 0)) {
     		userMobile.setMobile(userUnionid.getMobile());
     	}
+    	/* 完善用户邮箱 */
     	if(StringUtils.isNullOrEmpty(userMobile.getEmail()) && StringUtils.isNotNullOrEmpty(userUnionid.getEmail())) {
     		userMobile.setEmail(userUnionid.getEmail());
     	}
+    	/* 完善用户头像 */
     	if(StringUtils.isNullOrEmpty(userMobile.getHeadimg()) && StringUtils.isNotNullOrEmpty(userUnionid.getHeadimg())) {
     		userMobile.setHeadimg(userUnionid.getHeadimg());
     	}
+    	/* 完善国家代码 */
     	if(userUnionid.getNationalCodeId() != null && userUnionid.getNationalCodeId() != 1 && (userMobile.getNationalCodeId() == null || userMobile.getNationalCodeId() == 1)) {
     		userMobile.setMobile(userUnionid.getMobile());
     	}
+    	/* 完善感兴趣的公司 */
     	if(StringUtils.isNullOrEmpty(userMobile.getCompany()) && StringUtils.isNotNullOrEmpty(userUnionid.getCompany())) {
     		userMobile.setCompany(userUnionid.getCompany());
     	}
+    	/* 完善感兴趣的职位 */
     	if(StringUtils.isNullOrEmpty(userMobile.getPosition()) && StringUtils.isNotNullOrEmpty(userUnionid.getPosition())) {
     		userMobile.setPosition(userUnionid.getPosition());
     	}
