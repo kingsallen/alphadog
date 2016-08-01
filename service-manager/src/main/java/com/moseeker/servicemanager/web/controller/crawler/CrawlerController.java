@@ -16,7 +16,7 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
-import com.moseeker.rpccenter.common.ServiceUtil;
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.profile.ImportCVForm;
@@ -30,7 +30,8 @@ public class CrawlerController {
 	Logger logger = LoggerFactory.getLogger(CrawlerController.class);
 
 	CrawlerUtils crawlerUtils = new CrawlerUtils();
-	WholeProfileServices.Iface profileService = ServiceUtil.getService(WholeProfileServices.Iface.class);
+	WholeProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER
+			.getService(WholeProfileServices.Iface.class);
 
 	@RequestMapping(value = "/crawler", method = RequestMethod.POST)
 	@ResponseBody

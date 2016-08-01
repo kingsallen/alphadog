@@ -44,6 +44,11 @@ public final class ConstantErrorCodeMessage {
     public static final String PROFILE_DICT_COLLEGE_NOTEXIST = "{'status':31020,'message':'院校字典不存在!'}";
     public static final String PROFILE_DICT_MAJOR_NOTEXIST = "{'status':31021,'message':'专业字典不存在!'}";
     
+    // Company服务提示信息说明
+    public static final String COMPANY_NAME_REPEAT = "{'status':33001,'message':'不允许和拥有超级帐号的公司的公司名称重名!'}";
+    public static final String COMPANY_SCALE_ELLEGAL = "{'status':33002,'message':'公司规模不合法!'}";
+    public static final String COMPANY_PROPERTIY_ELLEGAL = "{'status':33002,'message':'公司属性不合法!'}";
+    
     public static final String CRAWLER_USER_NOPERMITION = "{'status':32001,'message':'账号密码错误!'}";
     public static final String CRAWLER_IMPORT_FAILED = "{'status':32002,'message':'导入失败!'}";
     public static final String CRAWLER_LOGIN_FAILED = "{'status':32003,'message':'登录失败!'}";

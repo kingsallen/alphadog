@@ -27,10 +27,10 @@ public class ZNodeTest {
 		}*/
 		
 		//add znode
-		/*try {
+		try {
 			DataMonitorListenerTest listener = new DataMonitorListenerTest(null);
 			ZKWatcher watch = new ZKWatcher(null, "/zk_test", null, listener);
-			ZooKeeper zk = new ZooKeeper("127.0.0.1:2181", 3000, watch);
+			ZooKeeper zk = new ZooKeeper("192.168.31.10:2181", 3000, watch);
 			StringCallbackTest scb = new StringCallbackTest();
 			String data = "my_data";
 			zk.create("/zk_test", data.getBytes(), Ids.OPEN_ACL_UNSAFE,
@@ -42,8 +42,8 @@ public class ZNodeTest {
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
-		try {
+		}
+		/*try {
 			DataMonitorListenerTest listener = new DataMonitorListenerTest(null);
 			ZKWatcher watch = new ZKWatcher(null, "/services/com.moseeker.thrift.gen.profile.service.AttachmentServices/servers/192.168.31.49:19100", null, listener);
 			ZooKeeper zk = new ZooKeeper("127.0.0.1:2181", 3000, watch);
@@ -61,6 +61,6 @@ public class ZNodeTest {
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 	}
 }

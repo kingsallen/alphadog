@@ -13,6 +13,7 @@ import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.db.profiledb.tables.records.ProfileAttachmentRecord;
 import com.moseeker.profile.dao.AttachmentDao;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.AttachmentServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.Attachment;
@@ -22,6 +23,11 @@ public class ProfileAttachmentServicesImpl extends JOOQBaseServiceImpl<Attachmen
 	
 	Logger logger = LoggerFactory.getLogger(ProfileAttachmentServicesImpl.class);
 	
+	@Override
+	public Response getResources(CommonQuery query) throws TException {
+		return super.getResources(query);
+	}
+
 	@Override
 	public Response postResources(List<Attachment> structs) throws TException {
 		return super.postResources(structs);

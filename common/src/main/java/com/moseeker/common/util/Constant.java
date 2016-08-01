@@ -146,4 +146,7 @@ public final class Constant {
 	public static final int PROFILER_COMPLETENESS_AWARD_MAXVALUE = 2;			//活得奖项完成度最大值
 	public static final int PROFILER_COMPLETENESS_WORKS_MAXVALUE = 3; 			//作品完成度的最大值
 	public static final int PROFILER_COMPLETENESS_INTENTION_MAXVALUE = 4;		//求职意愿完成度最大值
+	
+	public static final int DICT_CONSTANT_COMPANY_SCAL = 1102; 					//公司规模常量表parent_code值
+	public static final int DICT_CONSTANT_COMPANY_PROPERTY = 1103; 				//公司性质常量表parent_code值
 }

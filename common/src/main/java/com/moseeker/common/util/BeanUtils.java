@@ -927,4 +927,18 @@ public class BeanUtils {
 			return null;
 		}
 	}
+	
+	/**
+     * 获取外部内的类名
+     * <p>
+     *
+     * @return 类名
+     */
+    public static String findOutClassName(Class<?> clazz) {
+    	String iface = clazz.getName();
+        if (iface.contains("$")) {
+            return iface.substring(0, iface.indexOf("$"));
+        }
+        return iface;
+    }
 }

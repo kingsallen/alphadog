@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.rpccenter.common.ServiceUtil;
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -27,7 +27,7 @@ public class ProfileProfileController {
 
 	Logger logger = LoggerFactory.getLogger(ProfileProfileController.class);
 
-	ProfileServices.Iface profileService = ServiceUtil.getService(ProfileServices.Iface.class);
+	ProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER.getService(ProfileServices.Iface.class);
 	
 	@RequestMapping(value = "/profile/profile", method = RequestMethod.GET)
 	@ResponseBody
