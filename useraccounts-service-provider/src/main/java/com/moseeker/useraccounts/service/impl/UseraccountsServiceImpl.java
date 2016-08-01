@@ -419,9 +419,7 @@ public class UseraccountsServiceImpl implements Iface {
             } else if (userUnionid != null && userMobile != null
                     && userUnionid.getId().intValue() != userMobile.getId().intValue()) {
                 // 2 accounts, one unoinid, one mobile, need to merge.
-                new Thread(() -> {
-                    combineAccount(appid, userMobile, userUnionid);
-                }).start();
+                combineAccount(appid, userMobile, userUnionid);
                 //来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录, 7:PC(正常添加) 8:PC(我要投递) 9: PC(我感兴趣)
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put("id", userMobile.getId().intValue());
@@ -517,8 +515,14 @@ public class UseraccountsServiceImpl implements Iface {
             }
             // 合并业务代码
             // 最后通过消息队列交给独立的服务处理
-            userdao.combineAccount(userMobile.getId().intValue(),
-                    userUnionid.getId().intValue());
+            new Thread(() -> {
+            	try {
+					userdao.combineAccount(userMobile.getId().intValue(),
+					        userUnionid.getId().intValue());
+				} catch (Exception e) {
+					logger.error(e.getMessage(), e);
+				}
+            }).start();
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
