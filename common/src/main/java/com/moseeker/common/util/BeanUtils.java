@@ -354,7 +354,7 @@ public class BeanUtils {
 		if(value instanceof JSONArray) {
 			Collections.addAll(result, ((JSONArray)value).toArray());
 		} else {
-			String[] params = (String[])value;
+			Object[] params = (Object[])value;
 			Collections.addAll(result, params);
 		}
 		return result;

@@ -37,7 +37,6 @@ public class FunctionController {
 
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
-			e.printStackTrace();
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}
