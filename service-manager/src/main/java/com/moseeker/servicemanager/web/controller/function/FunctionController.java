@@ -25,7 +25,7 @@ public class FunctionController {
 	FunctionServices.Iface functionService = ServiceManager.SERVICEMANAGER
 			.getService(FunctionServices.Iface.class);
 
-	@RequestMapping(value = "/function/sensitiveword", method = RequestMethod.GET)
+	@RequestMapping(value = "/function/sensitiveword", method = RequestMethod.POST)
 	@ResponseBody
 	public String get(HttpServletRequest request, HttpServletResponse response) {
 		// PrintWriter writer = null;
