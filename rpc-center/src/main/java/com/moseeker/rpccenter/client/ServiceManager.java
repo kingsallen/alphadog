@@ -31,7 +31,6 @@ public enum ServiceManager {
      * @return thrift service实例
      */
     @SuppressWarnings("unchecked")
-    @Deprecated
 	public <clazz> clazz getService(Class<clazz> clazz){
         try{
         	IfaceFactory<clazz>  ifaceFactory = null;
