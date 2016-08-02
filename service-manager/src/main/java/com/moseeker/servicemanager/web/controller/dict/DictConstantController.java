@@ -46,7 +46,7 @@ public class DictConstantController {
 				}
 			}
 			Response result = dictConstanService.getDictConstantJsonByParentCode(parentCodeList);
-			return ResponseLogNotification.successWithParse(request, result);
+			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}

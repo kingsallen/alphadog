@@ -35,7 +35,7 @@ public class PositionController {
             CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
             Response result = positonServices.getResources(query);
 
-            return ResponseLogNotification.successWithParse(request, result);
+            return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }

@@ -33,7 +33,7 @@ public class DictCountryController {
     public String get(HttpServletRequest request, HttpServletResponse response) {
         try {
             Response result = dictCountryService.getDictCountry();
-            return ResponseLogNotification.successWithParse(request, result);
+            return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
