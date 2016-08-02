@@ -7,6 +7,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +20,7 @@ import org.junit.Test;
 import org.springframework.web.servlet.HandlerMapping;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.profile.struct.Intention;
 
@@ -227,7 +230,7 @@ public class ParamUtils {
 	public static <T> T initModelFormForList(HttpServletRequest request, Class<T> clazz)
 			throws Exception {
 		T t = clazz.newInstance();
-
+		
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.putAll(initParamFromRequestBody(request));
 		data.putAll(initParamFromRequestParameterList(request));
@@ -386,6 +389,11 @@ public class ParamUtils {
 		;
 		if (object instanceof Map) {
 			map = (Map<String, Object>) object;
+			for(Entry<String, Object> entry : map.entrySet()) {
+				if(entry.getValue() instanceof JSONArray) {
+					entry.setValue(((JSONArray)entry.getValue()).toArray());
+				}
+			}
 		} else if (object instanceof List) {
 			map.put(object.toString(), object);
 		} else {

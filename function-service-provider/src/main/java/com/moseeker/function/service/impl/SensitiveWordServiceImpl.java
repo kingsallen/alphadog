@@ -15,13 +15,15 @@ public class SensitiveWordServiceImpl implements SensitiveWordService {
 	private SensitiveWordDB db = SensitiveWordDB.getSingleton(); // 敏感词过滤
 	
 	@Override
-	public List<Boolean> verifySensitiveWords(List<String> contents) {
-		List<Boolean> result = new ArrayList<>();
+	public List<Integer> verifySensitiveWords(List<String> contents) {
+		List<Integer> result = new ArrayList<>();
 		if(contents !=null && contents.size() > 0) {
 			for(int i=0; i<contents.size(); i++) {
-				boolean legal = false;
+				int legal = 0;
 				if (StringUtils.isNotNullOrEmpty(contents.get(i))) {
-					legal = db.sensitiveExamin(contents.get(i));
+					if(db.sensitiveExamin(contents.get(i))) {
+						legal = 1;
+					}
 				}
 				result.add(legal);
 			}

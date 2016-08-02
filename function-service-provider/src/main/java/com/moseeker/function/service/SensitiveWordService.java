@@ -18,5 +18,5 @@ public interface SensitiveWordService {
 	 * @param contents 被校验文本的数组
 	 * @return 检查结果
 	 */
-	public List<Boolean> verifySensitiveWords(List<String> contents);
+	public List<Integer> verifySensitiveWords(List<String> contents);
 }

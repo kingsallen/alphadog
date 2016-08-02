@@ -20,6 +20,8 @@ import org.jooq.types.UShort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.fastjson.JSONArray;
+
 /**
  * 
  * 利用反射的方式，对于get,set方法去除"get"和"set"剔除后相同,并且数据类型相同，
@@ -348,9 +350,13 @@ public class BeanUtils {
 	}
 
 	private static List<Object> converToList(Object value) {
-		String[] params = (String[])value;
 		List<Object> result = new ArrayList<>();
-		Collections.addAll(result, params);
+		if(value instanceof JSONArray) {
+			Collections.addAll(result, ((JSONArray)value).toArray());
+		} else {
+			String[] params = (String[])value;
+			Collections.addAll(result, params);
+		}
 		return result;
 	}
 

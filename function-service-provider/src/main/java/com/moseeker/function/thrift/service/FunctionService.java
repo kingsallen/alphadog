@@ -30,7 +30,7 @@ public class FunctionService implements Iface {
 	
 	@Override
 	public Response verifySensitiveWords(List<String> contents) throws TException {
-		List<Boolean> result = sensitiveWordService.verifySensitiveWords(contents);
+		List<Integer> result = sensitiveWordService.verifySensitiveWords(contents);
 		return ResponseUtils.success(result);
 	}
 
