@@ -1,5 +1,9 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -10,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -60,4 +65,33 @@ public class ProfileController {
 			//do nothing
 		}
 	}
+	
+	/*
+	 * 批量profile接口
+	 */
+	@RequestMapping(value = "/profiles", method = RequestMethod.POST)
+	@ResponseBody
+	public String getBatchProfiles(HttpServletRequest request, HttpServletResponse response) {
+		//PrintWriter writer = null;
+		try {
+			// GET方法 通用参数解析并赋值
+			String[] userId = null;
+			Map<String, Object> param = ParamUtils.mergeRequestParameters(request);
+			userId = (String[])param.get("user_id");
+			List profileData = new ArrayList();
+			Response result = null;
+			for (String uid :userId) {
+				result = profileService.getResource(Integer.valueOf(uid),0,null);
+				profileData.add(result.getData());
+			}
+			result.setData(JSON.toJSONString(profileData));
+			
+			return ResponseLogNotification.success(request, result);
+		} catch (Exception e) {	
+			logger.error(e.getMessage(), e);
+			return ResponseLogNotification.fail(request, e.getMessage());
+		} finally {
+			//do nothing
+		}
+	}	
 }
