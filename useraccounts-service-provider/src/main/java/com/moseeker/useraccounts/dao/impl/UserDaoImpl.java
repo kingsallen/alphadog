@@ -188,6 +188,4 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
         }
         return user;
     }
-
-    private static final String COMBINE_ACCOUNT = "update {table} set {column} = ? where {column} = ?";
 }

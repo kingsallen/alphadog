@@ -41,6 +41,7 @@ public class ServiceUtil {
      * @param <clazz>
      * @return thrift service实例
      */
+    @Deprecated
     public static <clazz> clazz getService(Class<?> clazz){
         try{
             ClientConfig<clazz> clientConfig = new ClientConfig<clazz>();

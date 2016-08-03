@@ -32,7 +32,7 @@ public class CollegeController {
 			// GET方法 通用参数解析并赋值
 			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
 			Response result = collegeServices.getResources(query);
-			return ResponseLogNotification.successWithParse(request, result);
+			return ResponseLogNotification.success(request, result);
 
 		} catch (Exception e) {
 
