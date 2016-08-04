@@ -7,7 +7,7 @@ import org.apache.thrift.TServiceClientFactory;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.rpccenter.config.ThriftServerConfig;
 import com.moseeker.rpccenter.listener.ZKPath;
-import com.moseeker.rpccenter.pool.TServicePoolFactory;
+import com.moseeker.rpccenter.pool.TMultiServicePoolFactory;
 import com.moseeker.rpccenter.proxy.DynamicClientHandler;
 
 /**
@@ -79,7 +79,7 @@ public class IfaceFactory<T> {
         // 加载Client.Factory类
         Class<TServiceClientFactory<TServiceClient>> fi = (Class<TServiceClientFactory<TServiceClient>>) classLoader.loadClass(findOutClassName(ifaceClass) + "$Client$Factory");
         TServiceClientFactory<TServiceClient> clientFactory = fi.newInstance();
-        TServicePoolFactory<T> clientPool = new TServicePoolFactory<T>(clientFactory, config.getTimeout());
+        TMultiServicePoolFactory<T> clientPool = new TMultiServicePoolFactory<T>(clientFactory, config.getTimeout());
 
         return new GenericKeyedObjectPool<ZKPath, T>(clientPool, poolConfig);
     }

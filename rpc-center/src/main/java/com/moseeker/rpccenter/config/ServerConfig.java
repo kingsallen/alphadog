@@ -61,6 +61,9 @@ public class ServerConfig implements IConfigCheck {
 
     /** 最小工作线程数 ,默认为10 */
     private int minWorkerThreads = 20;
+    
+    /** 混合服务 */
+    private int multiFlag = 0;
 
     /** {@link IRegistry} */
     private IRegistry registry;
@@ -527,5 +530,13 @@ public class ServerConfig implements IConfigCheck {
     public void setMinWorkerThreads(int minWorkerThreads) {
         this.minWorkerThreads = minWorkerThreads;
     }
+
+	public int getMultiFlag() {
+		return multiFlag;
+	}
+
+	public void setMultiFlag(int multiFlag) {
+		this.multiFlag = multiFlag;
+	}
 
 }
