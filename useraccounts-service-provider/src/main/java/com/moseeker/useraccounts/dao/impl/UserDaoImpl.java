@@ -13,6 +13,7 @@ import com.moseeker.common.util.BeanUtils;
 import com.moseeker.db.candidatedb.tables.CandidateCompany;
 import com.moseeker.db.candidatedb.tables.CandidatePositionShareRecord;
 import com.moseeker.db.hrdb.tables.HrWxHrChatList;
+import com.moseeker.db.profiledb.tables.ProfileProfile;
 import com.moseeker.db.userdb.tables.UserFavPosition;
 import com.moseeker.db.userdb.tables.UserIntention;
 import com.moseeker.db.userdb.tables.UserSettings;

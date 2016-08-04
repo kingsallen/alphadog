@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.thrift.TException;
-import org.jooq.types.UByte;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -497,8 +496,7 @@ public class UseraccountsServiceImpl implements Iface {
                     ProfileProfileRecord userMobileProfileRecord = profileDao.getProfileByUserId(userMobile.getId().intValue());
                     // pc 端profile 设置为无效
                     if (userMobileProfileRecord != null) {
-                        userMobileProfileRecord.setDisable(UByte.valueOf(Constant.DISABLE));
-                        profileDao.putResource(userMobileProfileRecord);
+                        profileDao.delResource(userMobileProfileRecord);
                     }
                     
                     // 微信端profile转移到pc用户下.
@@ -570,6 +568,10 @@ public class UseraccountsServiceImpl implements Iface {
     	/* 完善感兴趣的职位 */
     	if(StringUtils.isNullOrEmpty(userMobile.getPosition()) && StringUtils.isNotNullOrEmpty(userUnionid.getPosition())) {
     		userMobile.setPosition(userUnionid.getPosition());
+    	}
+    	/* 完善unionid */
+    	if(StringUtils.isNullOrEmpty(userMobile.getUnionid()) && StringUtils.isNotNullOrEmpty(userUnionid.getUnionid())) {
+    		userMobile.setUnionid(userUnionid.getUnionid());
     	}
     	try {
 			userdao.putResource(userMobile);
