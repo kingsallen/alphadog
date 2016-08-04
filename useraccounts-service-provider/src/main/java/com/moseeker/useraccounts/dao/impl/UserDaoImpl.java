@@ -14,6 +14,7 @@ import com.moseeker.db.candidatedb.tables.CandidateCompany;
 import com.moseeker.db.candidatedb.tables.CandidatePositionShareRecord;
 import com.moseeker.db.hrdb.tables.HrWxHrChatList;
 import com.moseeker.db.jobdb.tables.JobApplication;
+import com.moseeker.db.userdb.tables.UserEmployee;
 import com.moseeker.db.userdb.tables.UserFavPosition;
 import com.moseeker.db.userdb.tables.UserIntention;
 import com.moseeker.db.userdb.tables.UserSettings;
@@ -76,6 +77,10 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
             create.update(JobApplication.JOB_APPLICATION)
             .set(JobApplication.JOB_APPLICATION.APPLIER_ID, UInteger.valueOf(orig))
             .where(JobApplication.JOB_APPLICATION.APPLIER_ID.equal(UInteger.valueOf(dest)))
+            .execute();
+            create.update(UserEmployee.USER_EMPLOYEE)
+            .set(UserEmployee.USER_EMPLOYEE.SYSUSER_ID, orig)
+            .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.equal(dest))
             .execute();
             conn.commit();
             conn.setAutoCommit(true);
