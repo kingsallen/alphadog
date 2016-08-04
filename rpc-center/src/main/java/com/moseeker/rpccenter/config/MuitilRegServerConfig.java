@@ -109,7 +109,7 @@ public class MuitilRegServerConfig implements IConfigCheck {
             		registry.register(genConfigJson());
 
                     // 添加关闭钩子
-                    addShutdownHook(registry, server);
+                    addShutdownHook(registries, server);
             	});
             } catch (Exception e) {
                 //LOGGER.error(e.getMessage(), e);
@@ -278,15 +278,17 @@ public class MuitilRegServerConfig implements IConfigCheck {
      * 添加关闭钩子
      * <p>
      *
-     * @param registry
+     * @param registries2
      * @param server
      */
-    protected void addShutdownHook(final IRegistry registry, final IServer server) {
+    protected void addShutdownHook(final List<IRegistry> registries, final IServer server) {
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
             public void run() {
-                if (registry != null) {
-                    registry.unregister();
+                if (registries != null && registries.size() > 0) {
+                	registries.forEach(registry -> {
+                		registry.unregister();
+                	});
                 }
                 if (server != null) {
                     server.stop();
