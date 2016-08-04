@@ -13,7 +13,7 @@ import com.moseeker.common.util.BeanUtils;
 import com.moseeker.db.candidatedb.tables.CandidateCompany;
 import com.moseeker.db.candidatedb.tables.CandidatePositionShareRecord;
 import com.moseeker.db.hrdb.tables.HrWxHrChatList;
-import com.moseeker.db.profiledb.tables.ProfileProfile;
+import com.moseeker.db.jobdb.tables.JobApplication;
 import com.moseeker.db.userdb.tables.UserFavPosition;
 import com.moseeker.db.userdb.tables.UserIntention;
 import com.moseeker.db.userdb.tables.UserSettings;
@@ -44,6 +44,7 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
     @Override
     public void combineAccount(int orig, int dest) throws Exception {
     	try(Connection conn = DBConnHelper.DBConn.getConn(); DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);) {
+    		conn.setAutoCommit(false);
     		create.update(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD)
             .set(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.SYSUSER_ID, Long.valueOf(orig))
             .where(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.SYSUSER_ID.equal(Long.valueOf(dest)))
@@ -72,6 +73,12 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
             .set(CandidateCompany.CANDIDATE_COMPANY.SYS_USER_ID, orig)
             .where(CandidateCompany.CANDIDATE_COMPANY.SYS_USER_ID.equal(dest))
             .execute();
+            create.update(JobApplication.JOB_APPLICATION)
+            .set(JobApplication.JOB_APPLICATION.APPLIER_ID, UInteger.valueOf(orig))
+            .where(JobApplication.JOB_APPLICATION.APPLIER_ID.equal(UInteger.valueOf(dest)))
+            .execute();
+            conn.commit();
+            conn.setAutoCommit(true);
     	}  catch (Exception e) {
         	conn.rollback();
             logger.error(e.getMessage(), e);

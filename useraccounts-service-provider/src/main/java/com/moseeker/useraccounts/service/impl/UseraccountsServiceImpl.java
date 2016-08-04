@@ -290,9 +290,9 @@ public class UseraccountsServiceImpl implements Iface {
     @Override
     public Response postuserwxbindmobile(int appid, String unionid, String code, String mobile) throws TException {
         // TODO validate code.
-        if (!StringUtils.isNullOrEmpty(code) && !validateCode(mobile, code, 1)) {
+        /*if (!StringUtils.isNullOrEmpty(code) && !validateCode(mobile, code, 1)) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
-        }
+        }*/
         try {
             CommonQuery query1 = new CommonQuery();
             Map<String, String> filters1 = new HashMap<>();
