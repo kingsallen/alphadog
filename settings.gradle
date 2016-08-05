@@ -8,3 +8,5 @@ include 'rpc-center'
 include 'service-manager'
 include 'thrift-jooq'
 include 'useraccounts-service-provider'
+include 'mq-service-provider'
+

@@ -1,5 +1,12 @@
 package com.moseeker.servicemanager.common;
 
+import com.alibaba.fastjson.JSON;
+import com.moseeker.common.util.BeanUtils;
+import com.moseeker.thrift.gen.profile.struct.Intention;
+import org.junit.Test;
+import org.springframework.web.servlet.HandlerMapping;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -11,16 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.log4j.Logger;
-import org.junit.Test;
-import org.springframework.web.servlet.HandlerMapping;
-
-import com.alibaba.fastjson.JSON;
-import com.moseeker.common.util.BeanUtils;
-import com.moseeker.thrift.gen.profile.struct.Intention;
 
 public class ParamUtils {
 	
@@ -181,15 +178,25 @@ public class ParamUtils {
 		if (data.get("appid") == null){
 			throw new Exception("请设置 appid!");
 		}
-		
+
 		if (data != null && data.size() > 0) {
-			Field[] fields = clazz.getDeclaredFields();
+			// thrift 都是自动生成的public类型, 故使用getFields,如果不是public的时候, 请不要使用此方法
+			Field[] fields = clazz.getFields();
+			Map<String, Integer> fieldMap = new HashMap<String, Integer>();
+			for (int f = 0; f < fields.length; f++) {
+				fieldMap.put(fields[f].getName(), f);
+			}
+			Integer i = null;
 			for (Entry<String, Object> entry : data.entrySet()) {
-				for (int i = 0; i < fields.length; i++) {
+				if(fieldMap.containsKey(entry.getKey()))
+					i = fieldMap.get(entry.getKey());
+					if (i == null){
+						continue;
+					}
 					if (fields[i].getName().equals(entry.getKey())) {
 						String methodName = "set"
 								+ fields[i].getName().substring(0, 1)
-										.toUpperCase()
+								.toUpperCase()
 								+ fields[i].getName().substring(1);
 						Method method = clazz.getMethod(methodName,
 								fields[i].getType());
@@ -202,7 +209,6 @@ public class ParamUtils {
 							e.printStackTrace();
 						}
 					}
-				}
 			}
 		}
 
