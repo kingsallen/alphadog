@@ -18,5 +18,5 @@ struct MessageTemplateNoticeStruct {
     3: optional string access_token,
     4: optional string url,
     5: optional i32 wechat_id,
-    6: optional map<string, map<string, MessageTplDataCol>> data
+    6: optional map<string, MessageTplDataCol> data
 }
