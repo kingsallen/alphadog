@@ -78,10 +78,10 @@ public class ServerNodeUtils {
     	}
         if ( args.length > 1 ){
             Integer port = Integer.valueOf(args[1]);
-            if (args[0].equals("-port") && port < 1024){
+            if (args[0].equals("-port")){
                 return Integer.valueOf(args[1]);
             }else{
-                throw new RuntimeException("请输入小于1024的端口号");
+                throw new RuntimeException("请输入端口号");
             }
         }else{
             throw new RuntimeException("usage : java -jar provider的jar文件 -port 19090");
