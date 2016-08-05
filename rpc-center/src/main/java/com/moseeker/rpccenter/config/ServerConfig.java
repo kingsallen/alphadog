@@ -63,7 +63,7 @@ public class ServerConfig implements IConfigCheck {
     private int minWorkerThreads = 20;
     
     /** 混合服务 */
-    private int multiFlag = 0;
+    private int multi = 0;
 
     /** {@link IRegistry} */
     private IRegistry registry;
@@ -531,12 +531,11 @@ public class ServerConfig implements IConfigCheck {
         this.minWorkerThreads = minWorkerThreads;
     }
 
-	public int getMultiFlag() {
-		return multiFlag;
+	public int getMulti() {
+		return multi;
 	}
 
-	public void setMultiFlag(int multiFlag) {
-		this.multiFlag = multiFlag;
+	public void setMulti(int multi) {
+		this.multi = multi;
 	}
-
 }
