@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.thrift.TException;
-import org.jooq.types.UByte;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -178,8 +177,8 @@ public class UseraccountsServiceImpl implements Iface {
     @Override
     public Response postsendsignupcode(String mobile) throws TException {
         // TODO 未注册用户才能发送。
-        CommonQuery query = new CommonQuery();
-        Map<String, String> filters = new HashMap<>();
+        /*CommonQuery query = new CommonQuery();
+        Map<String, String> filters = new HashMap<>();*/
 
         /*  以下代码限制未注册用户才能发送。 由于存在 mobile+code的登陆方式, 老用户也可以发送验证码.
         if (mobile.length()>0){
@@ -263,7 +262,10 @@ public class UseraccountsServiceImpl implements Iface {
 //                userSettingDao.postResource(userSettingsRecord);
 
                 return ResponseUtils.success(new HashMap<String, Object>(){
-                    {
+
+					private static final long serialVersionUID = -5518436764754085050L;
+
+					{
                         put("user_id", newCreateUserId);
                     }
                 }); // 返回 user id
@@ -288,9 +290,9 @@ public class UseraccountsServiceImpl implements Iface {
     @Override
     public Response postuserwxbindmobile(int appid, String unionid, String code, String mobile) throws TException {
         // TODO validate code.
-        if (!StringUtils.isNullOrEmpty(code) && !validateCode(mobile, code, 1)) {
+        /*if (!StringUtils.isNullOrEmpty(code) && !validateCode(mobile, code, 1)) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
-        }
+        }*/
         try {
             CommonQuery query1 = new CommonQuery();
             Map<String, String> filters1 = new HashMap<>();
@@ -416,9 +418,7 @@ public class UseraccountsServiceImpl implements Iface {
             } else if (userUnionid != null && userMobile != null
                     && userUnionid.getId().intValue() != userMobile.getId().intValue()) {
                 // 2 accounts, one unoinid, one mobile, need to merge.
-                new Thread(() -> {
-                    combineAccount(appid, userMobile, userUnionid);
-                }).start();
+                combineAccount(appid, userMobile, userUnionid);
                 //来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录, 7:PC(正常添加) 8:PC(我要投递) 9: PC(我感兴趣)
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put("id", userMobile.getId().intValue());
@@ -483,6 +483,7 @@ public class UseraccountsServiceImpl implements Iface {
             // unnionid置为子账号
             userUnionid.setParentid(userMobile.getId());
             if(userdao.putResource(userUnionid)>0){
+            	consummateUserAccount(userMobile, userUnionid);
             	// profile合并成功
             }else{
             	// 合并失败, log.
@@ -495,13 +496,12 @@ public class UseraccountsServiceImpl implements Iface {
                     ProfileProfileRecord userMobileProfileRecord = profileDao.getProfileByUserId(userMobile.getId().intValue());
                     // pc 端profile 设置为无效
                     if (userMobileProfileRecord != null) {
-                        userMobileProfileRecord.setDisable(UByte.valueOf(Constant.DISABLE));
-                        profileDao.putResource(userMobileProfileRecord);
+                        profileDao.delResource(userMobileProfileRecord);
                     }
                     
                     // 微信端profile转移到pc用户下.
                     ProfileProfileRecord userUnionProfileRecord = profileDao.getProfileByUserId(userUnionid.getId().intValue());
-                    if (userUnionProfileRecord != null ){
+                    if (userUnionProfileRecord != null ) {
                     	userUnionProfileRecord.setUserId(userMobile.getId());
                     	profileDao.putResource(userUnionProfileRecord);
                     }
@@ -512,8 +512,15 @@ public class UseraccountsServiceImpl implements Iface {
             		break;
             }
             // 合并业务代码
-            userdao.combineAccount(userMobile.getId().intValue(),
-                    userUnionid.getId().intValue());
+            // 最后通过消息队列交给独立的服务处理
+            new Thread(() -> {
+            	try {
+					userdao.combineAccount(userMobile.getId().intValue(),
+					        userUnionid.getId().intValue());
+				} catch (Exception e) {
+					logger.error(e.getMessage(), e);
+				}
+            }).start();
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -521,6 +528,59 @@ public class UseraccountsServiceImpl implements Iface {
     }
 
     /**
+     * 账号合并完善账号信息
+     * @param userMobile 需要完善的账号
+     * @param userUnionid 信息来源
+     */
+    private void consummateUserAccount(UserUserRecord userMobile, UserUserRecord userUnionid) {
+    	/* 完善用户名称 */
+    	if(StringUtils.isNullOrEmpty(userMobile.getName()) && StringUtils.isNotNullOrEmpty(userUnionid.getName())) {
+    		userMobile.setName(userUnionid.getName());
+    	}
+    	/* 完善用户昵称 */
+    	if(StringUtils.isNullOrEmpty(userMobile.getNickname()) && StringUtils.isNotNullOrEmpty(userUnionid.getNickname())) {
+    		userMobile.setNickname(userUnionid.getNickname());
+    	}
+    	/* 完善用户级别，预计rank越高，表示用户等级越高。 */
+    	if((userUnionid.getRank() != null && userMobile.getRank() == null) || (userUnionid.getRank() != null && userMobile.getRank() != null && userUnionid.getRank()>userMobile.getRank())) {
+    		userMobile.setRank(userUnionid.getRank());
+    	}
+    	/* 完善用户未验证的手机号码 */
+    	if(userUnionid.getMobile() != null && userUnionid.getMobile() > 0 && (userMobile.getMobile() == null || userMobile.getMobile() == 0)) {
+    		userMobile.setMobile(userUnionid.getMobile());
+    	}
+    	/* 完善用户邮箱 */
+    	if(StringUtils.isNullOrEmpty(userMobile.getEmail()) && StringUtils.isNotNullOrEmpty(userUnionid.getEmail())) {
+    		userMobile.setEmail(userUnionid.getEmail());
+    	}
+    	/* 完善用户头像 */
+    	if(StringUtils.isNullOrEmpty(userMobile.getHeadimg()) && StringUtils.isNotNullOrEmpty(userUnionid.getHeadimg())) {
+    		userMobile.setHeadimg(userUnionid.getHeadimg());
+    	}
+    	/* 完善国家代码 */
+    	if(userUnionid.getNationalCodeId() != null && userUnionid.getNationalCodeId() != 1 && (userMobile.getNationalCodeId() == null || userMobile.getNationalCodeId() == 1)) {
+    		userMobile.setNationalCodeId(userUnionid.getNationalCodeId());
+    	}
+    	/* 完善感兴趣的公司 */
+    	if(StringUtils.isNullOrEmpty(userMobile.getCompany()) && StringUtils.isNotNullOrEmpty(userUnionid.getCompany())) {
+    		userMobile.setCompany(userUnionid.getCompany());
+    	}
+    	/* 完善感兴趣的职位 */
+    	if(StringUtils.isNullOrEmpty(userMobile.getPosition()) && StringUtils.isNotNullOrEmpty(userUnionid.getPosition())) {
+    		userMobile.setPosition(userUnionid.getPosition());
+    	}
+    	/* 完善unionid */
+    	if(StringUtils.isNullOrEmpty(userMobile.getUnionid()) && StringUtils.isNotNullOrEmpty(userUnionid.getUnionid())) {
+    		userMobile.setUnionid(userUnionid.getUnionid());
+    	}
+    	try {
+			userdao.putResource(userMobile);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+	}
+
+	/**
      * 修改现有密码 
      * @param user_id
      * @param old_password 

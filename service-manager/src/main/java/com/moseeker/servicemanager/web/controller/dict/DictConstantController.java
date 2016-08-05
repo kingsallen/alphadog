@@ -27,6 +27,7 @@ import com.moseeker.thrift.gen.dict.service.DictConstanService;
 @Controller
 public class DictConstantController {
 
+
 	Logger logger = org.slf4j.LoggerFactory.getLogger(CityController.class);
 
 	DictConstanService.Iface dictConstanService = ServiceManager.SERVICEMANAGER
@@ -45,7 +46,7 @@ public class DictConstantController {
 				}
 			}
 			Response result = dictConstanService.getDictConstantJsonByParentCode(parentCodeList);
-			return ResponseLogNotification.successWithParse(request, result);
+			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}

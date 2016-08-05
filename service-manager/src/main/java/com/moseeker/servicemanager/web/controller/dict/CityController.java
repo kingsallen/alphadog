@@ -30,7 +30,7 @@ public class CityController {
 			String parameterLevel = request.getParameter("level");
 			int level = parameterLevel == null ? 0 : Integer.parseInt(parameterLevel);
 			Response result = cityServices.getAllCities(level);
-			return ResponseLogNotification.successWithParse(request, result);
+			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
@@ -41,7 +41,7 @@ public class CityController {
 	public String getById(@PathVariable("id") long id, HttpServletRequest request, HttpServletResponse response) {
 		try {
 			Response result = cityServices.getCitiesById((int) id);
-			return ResponseLogNotification.successWithParse(request, result);
+			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}

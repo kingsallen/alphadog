@@ -152,7 +152,9 @@ public class ZkServerRegistry implements IRegistry {
                 }
             }
         });
-        String data = new String(zookeeper.getData().watched().forPath(path), "utf-8");
+        StringBuilder pathBuilder = new StringBuilder(Constants.ZK_SEPARATOR_DEFAULT + zkPath);
+        pathBuilder.append(Constants.ZK_SEPARATOR_DEFAULT).append(Constants.ZK_NAMESPACE_SERVERS).append(Constants.ZK_SEPARATOR_DEFAULT).append(address);
+        String data = new String(zookeeper.getData().watched().forPath(pathBuilder.toString()), "utf-8");
         System.out.println(data);
     }
 
