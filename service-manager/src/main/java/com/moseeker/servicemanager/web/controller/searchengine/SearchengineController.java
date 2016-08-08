@@ -42,12 +42,11 @@ public class SearchengineController {
 			String experience = BeanUtils.converToString(reqParams.get("experience"));
 			String degree = BeanUtils.converToString(reqParams.get("degree"));
 			String salary = BeanUtils.converToString(reqParams.get("salary"));
-			String company_id = BeanUtils.converToString(reqParams.get("company_id"));
+			String company_name = BeanUtils.converToString(reqParams.get("company_name"));
 			int page_from = BeanUtils.converToInteger(reqParams.get("page_from"));
 			int page_size = BeanUtils.converToInteger(reqParams.get("page_size"));
-			Integer  child_company_id =  BeanUtils.converToInteger(reqParams.get("child_company_id"));
-			String child_company_id_str = child_company_id.toString();
-			System.out.println(keywords);
+			String  child_company_name =  BeanUtils.converToString(reqParams.get("child_company_name"));
+			
 			Response result = searchengineServices.query(
 							keywords,
 							cities,
@@ -59,10 +58,10 @@ public class SearchengineController {
 							experience,
 							degree,
 							salary,
-							company_id,
+							company_name,
 							page_from,
 							page_size,
-							child_company_id_str);
+							child_company_name);
 			if (result.getStatus() == 0){
 				return ResponseLogNotification.success(request, result);
 			}else{

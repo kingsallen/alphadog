@@ -27,7 +27,7 @@ public class SearchengineServiceImpl implements Iface {
     @Override
     public Response query(String keywords, String cities, String industries, String occupations, String scale,
             String employment_type, String candidate_source, String experience, String degree, String salary,
-            String company_id, int page_from, int page_size,String child_company_id) throws TException {
+            String company_name, int page_from, int page_size,String child_company_name) throws TException {
         if (page_from == 0) {
             page_from = 0;
         }
@@ -122,23 +122,23 @@ public class SearchengineServiceImpl implements Iface {
                 ((BoolQueryBuilder) query).must(degreefilter);
             }
 
-            if (company_id != null) {
-                QueryBuilder companyfilter = QueryBuilders.termQuery("company_id", company_id);
+            if (company_name != null) {
+                QueryBuilder companyfilter = QueryBuilders.termQuery("company_name", company_name);
                 ((BoolQueryBuilder) query).must(companyfilter);
             }
 
-//            if (salary != null) {
-//                String[] salary_list = salary.split(, ',');
-//                String  salary_from = salary_list[0];
-//                String  salary_to = salary_list[1];
-//                QueryBuilder salary_bottom_filter = QueryBuilders.rangeQuery("salary_bottom" ).from(salary_from).to(salary_to);
-//                QueryBuilder salary_top_filter = QueryBuilders.rangeQuery("salary_top" ).from(salary_from).to(salary_to);
-//                ((BoolQueryBuilder) query).must(salary_bottom_filter);
-//                ((BoolQueryBuilder) query).must(salary_top_filter);
-//            }
+            if (salary != null) {
+                String[] salary_list = salary.split(",");
+                String  salary_from = salary_list[0];
+                String  salary_to = salary_list[1];
+                QueryBuilder salary_bottom_filter = QueryBuilders.rangeQuery("salary_bottom" ).from(salary_from).to(salary_to);
+                QueryBuilder salary_top_filter = QueryBuilders.rangeQuery("salary_top" ).from(salary_from).to(salary_to);
+                ((BoolQueryBuilder) query).must(salary_bottom_filter);
+                ((BoolQueryBuilder) query).must(salary_top_filter);
+            }
             
-            if (child_company_id != null) {
-                QueryBuilder child_company_filter = QueryBuilders.termQuery("child_company_id", child_company_id);
+            if (child_company_name != null) {
+                QueryBuilder child_company_filter = QueryBuilders.termQuery("child_company_name", child_company_name);
                 ((BoolQueryBuilder) query).must(child_company_filter);
             }
             
