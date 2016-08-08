@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +24,7 @@ import com.moseeker.thrift.gen.position.service.PositionServices;
 @Controller
 public class PositionController {
 
-    Logger logger = org.slf4j.LoggerFactory.getLogger(PositionController.class);
+    Logger logger = LoggerFactory.getLogger(PositionController.class);
 
     PositionServices.Iface positonServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
 
