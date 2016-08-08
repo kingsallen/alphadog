@@ -14,24 +14,28 @@ import com.moseeker.common.util.StringUtils;
 
 /**
  * 
- * Session客户端帮助类 
- * <p>Company: MoSeeker</P>  
- * <p>date: Mar 31, 2016</p>  
- * <p>Email: wjf2255@gmail.com</p>
+ * Session客户端帮助类
+ * <p>
+ * Company: MoSeeker
+ * </P>
+ * <p>
+ * date: Mar 31, 2016
+ * </p>
+ * <p>
+ * Email: wjf2255@gmail.com
+ * </p>
+ * 
  * @author wjf
  * @version
  */
 public class SessionClient extends RedisClient {
 
 	private static volatile SessionClient instance = null;
-	
+
 	private SessionClient() {
-		ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil
-				.getInstance();
-		redisConfigKeyName = propertiesUtils.get("redis.session.host",
-				String.class);
-		redisConfigTimeOut = propertiesUtils.get("redis.session.port",
-				Integer.class);
+		ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
+		redisConfigKeyName = propertiesUtils.get("redis.session.host", String.class);
+		redisConfigTimeOut = propertiesUtils.get("redis.session.port", Integer.class);
 		redisConfigType = Constant.sessionConfigType;
 		redisCluster = initRedisCluster();
 		reloadRedisKey();
@@ -50,27 +54,35 @@ public class SessionClient extends RedisClient {
 
 	@Override
 	protected JedisCluster initRedisCluster() {
-		ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil
-				.getInstance();
+		ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
 		if (redisCluster == null) {
-			Set<HostAndPort> jedisClusterNodes = new HashSet<HostAndPort>();
-			// Jedis Cluster will attempt to discover cluster nodes
-			String host = propertiesUtils.get("redis.session.config_key_name", String.class);
-			String port = propertiesUtils.get("redis.session.config_timeout", String.class);
-			if (!StringUtils.isNullOrEmpty(host)
-					&& !StringUtils.isNullOrEmpty(port)) {
-				String[] hostArray = host.split(",");
-				String[] portArray = port.split(",");
-				if (hostArray.length == portArray.length) {
-					for (int i = 0; i < hostArray.length; i++) {
-						jedisClusterNodes.add(new HostAndPort(hostArray[i],
-								Integer.parseInt(portArray[i])));
+			try {
+				Set<HostAndPort> jedisClusterNodes = new HashSet<HostAndPort>();
+				// Jedis Cluster will attempt to discover cluster nodes
+				String host = propertiesUtils.get("redis.session.config_key_name", String.class);
+				String port = propertiesUtils.get("redis.session.config_timeout", String.class);
+				if (!StringUtils.isNullOrEmpty(host) && !StringUtils.isNullOrEmpty(port)) {
+					String[] hostArray = host.split(",");
+					String[] portArray = port.split(",");
+					if (hostArray.length == portArray.length) {
+						for (int i = 0; i < hostArray.length; i++) {
+							jedisClusterNodes.add(new HostAndPort(hostArray[i], Integer.parseInt(portArray[i])));
+						}
 					}
+				} else {
+					Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID,
+							Constant.REDIS_CONNECT_ERROR_EVENTKEY, "Redis集群redis.session.host,redis.session.port尚未配置");
 				}
-			} else {
-				Notification.sendLostRedisWarning(host, port);		//报警
+				redisCluster = new JedisCluster(jedisClusterNodes);
+
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY,
+						e.getMessage());
+
 			}
-			redisCluster = new JedisCluster(jedisClusterNodes);
+
 		}
 		return redisCluster;
 	}
