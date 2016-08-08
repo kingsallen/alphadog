@@ -1,6 +1,7 @@
 package com.moseeker.application.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.application.dao.HrCompanyConfDao;
 import com.moseeker.application.dao.JobApplicationDao;
 import com.moseeker.application.dao.JobPositionDao;
 import com.moseeker.application.dao.JobResumeOtherDao;
@@ -11,6 +12,7 @@ import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.common.util.DateUtils;
+import com.moseeker.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.db.jobdb.tables.records.JobResumeOtherRecord;
@@ -39,8 +41,8 @@ public class JobApplicataionServicesImpl implements Iface {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    // 申请次数限制 10次
-    private static final int APPLICATION_COUNT_LIMIT = 10;
+    // 申请次数限制 3次
+    private static final int APPLICATION_COUNT_LIMIT = 3;
 
     // ats投递
     private static final int IS_MOSEEKER_APPLICATION = 0;
@@ -59,6 +61,9 @@ public class JobApplicataionServicesImpl implements Iface {
 
     @Autowired
     private JobPositionDao jobPositionDao;
+
+    @Autowired
+    private HrCompanyConfDao hrCompanyConfDao;
     
     /**
      * 创建申请
@@ -235,7 +240,7 @@ public class JobApplicataionServicesImpl implements Iface {
         // 获取当前申请次数 -1
         if (applicationCountCheck != null
                 && Integer.valueOf(applicationCountCheck) > 0
-                && Integer.valueOf(applicationCountCheck) <= APPLICATION_COUNT_LIMIT) {
+                && Integer.valueOf(applicationCountCheck) <= this.getApplicationCountLimit(jobApplication.getCompanyId().intValue())) {
 
             redisClient.decr(Constant.APPID_ALPHADOG,
                     REDIS_KEY_APPLICATION_COUNT_CHECK,
@@ -456,8 +461,9 @@ public class JobApplicataionServicesImpl implements Iface {
         String applicationCountCheck = redisClient.get(Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
                 String.valueOf(userId), String.valueOf(companyId));
 
-        // 超出申请次数限制, 每月每家公司一个人只能申请10次
-        if(applicationCountCheck != null && Integer.valueOf(applicationCountCheck) >= APPLICATION_COUNT_LIMIT){
+        // 超出申请次数限制, 每月每家公司一个人只能申请3次
+        if(applicationCountCheck != null && Integer.valueOf(applicationCountCheck) >=
+                this.getApplicationCountLimit((int)companyId)){
             return true;
         }
         return false;
@@ -477,5 +483,22 @@ public class JobApplicataionServicesImpl implements Iface {
         }catch (Exception e){
             return new Response(1, "failed");
         }
+    }
+
+    /**
+     * 获取申请限制次数
+     *     默认3次
+     *     企业有自己的配置,使用企业的配置
+     *
+     * @param companyId 公司ID
+     * @return
+     */
+    private int getApplicationCountLimit(int companyId){
+        int applicaitonCountLimit = APPLICATION_COUNT_LIMIT;
+        HrCompanyConfRecord hrCompanyConfRecord = hrCompanyConfDao.getHrCompanyConfRecordByCompanyId(companyId);
+        if(hrCompanyConfRecord != null && hrCompanyConfRecord.getApplicationCountLimit().shortValue() > 0){
+            applicaitonCountLimit = hrCompanyConfRecord.getApplicationCountLimit().shortValue();
+        }
+        return applicaitonCountLimit;
     }
 }
