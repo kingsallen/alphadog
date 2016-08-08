@@ -50,9 +50,9 @@ public class SearchengineServiceImpl implements Iface {
             TransportClient client = TransportClient.builder().settings(settings).build()
                     .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("123.57.155.239"), 9300));
 
-            if (keywords == null) {
-                keywords = "android";
-            }
+            // if (keywords == null) {
+            //     keywords = "android";
+            // }
             System.out.println(keywords);
 
             QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
@@ -65,10 +65,15 @@ public class SearchengineServiceImpl implements Iface {
                     String keyword = keyword_list[i];
                     QueryBuilder keyfilter = QueryBuilders.simpleQueryStringQuery(keyword);
                     ((BoolQueryBuilder) keyand).should(keyfilter);
+
+
+
                 }
                 ((BoolQueryBuilder) query).must(keyand);
             }
             
+
+
             if (cities != null) {
                 String[] city_list = cities.split(",");
                 QueryBuilder cityor = QueryBuilders.boolQuery();
@@ -76,7 +81,11 @@ public class SearchengineServiceImpl implements Iface {
                     String city = city_list[i];
                     System.out.println(city);
                     QueryBuilder cityfilter = QueryBuilders.termQuery("city", city);
-                    ((BoolQueryBuilder) cityor).should(cityfilter);
+                    QueryBuilder cityboosting =QueryBuilders. boostingQuery()
+                            .positive(cityfilter)
+                            .negative(QueryBuilders.termQuery("title",city)) .negativeBoost(0.5f);
+                            
+                    ((BoolQueryBuilder) cityor).should(cityboosting);
                 }
                 ((BoolQueryBuilder) query).must(cityor);
             }
@@ -171,6 +180,8 @@ public class SearchengineServiceImpl implements Iface {
     @Override
     public Response updateposition(String positionid) throws TException {
         // TODO Auto-generated method stub
+        
+        
         return null;
     }
 
