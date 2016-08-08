@@ -33,7 +33,7 @@ public class RecommendedPositionsController {
             int id = Integer.parseInt(query.getEqualFilter().get("pid"));
             Response result = positonServices.getRecommendedPositions(id);
 
-            return ResponseLogNotification.successWithParse(request, result);
+            return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }

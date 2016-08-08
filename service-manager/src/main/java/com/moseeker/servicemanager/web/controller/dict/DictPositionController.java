@@ -32,7 +32,7 @@ public class DictPositionController {
         	 Map<String,Object> params = ParamUtils.mergeRequestParameters(request);
             Response result = sercie.getPositionsByCode((String)params.get("parent"));
 
-            return ResponseLogNotification.successWithParse(request, result);
+            return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }

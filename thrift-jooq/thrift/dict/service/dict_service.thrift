@@ -14,6 +14,13 @@ service CollegeServices {
 }
 
 /*
+  获取国家字典数据服务
+*/
+service DictCountryService {
+    common_struct.Response getDictCountry();
+}
+
+/*
   获取常量字典json数据服务
 */
 service DictConstanService {

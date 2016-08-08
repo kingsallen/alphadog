@@ -30,17 +30,6 @@ public class ResponseLogNotification {
 
 	}
 
-    public static String successWithParse(HttpServletRequest request, Response response) {
-    	try {
-	    	String jsonresponse = JSON.toJSONString(CleanJsonResponseWithParse.convertFrom(response));
-			logRequestResponse(request, jsonresponse);
-			return jsonresponse;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-		}
-		return ConstantErrorCodeMessage.PROGRAM_EXCEPTION;		
-	    
-    }
 
 	public static String fail(HttpServletRequest request, Response response) {
 		try {

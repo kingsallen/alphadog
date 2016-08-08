@@ -1,9 +1,9 @@
 package com.moseeker.servicemanager.common;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.profile.struct.Intention;
-import org.junit.Test;
 import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
@@ -102,7 +102,6 @@ public class ParamUtils {
 					method.invoke(t, BeanUtils.convertToBoolean(data.get("nocache")));
 				}
 				Map<String, String> param = new HashMap<>();
-				@SuppressWarnings("unchecked")
 				Map<String, String[]> reqParams = request.getParameterMap();
 				if (reqParams != null) {
 					for (Entry<String, String[]> entry : reqParams.entrySet()) {
@@ -149,6 +148,23 @@ public class ParamUtils {
 		}		
 		return data;
 	}
+	
+	/**
+	 * 将request请求中的参数，不管是request的body中的参数还是以getParameter方式获取的参数存入到HashMap并染回该HashMap
+	 * @param request request请求
+	 * @return 存储通过request请求传递过来的参数
+	 * @throws Exception 
+	 */
+	public static Map<String, Object> mergeRequestParameterList(HttpServletRequest request) throws Exception {
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.putAll(initParamFromRequestBody(request));
+		data.putAll(initParamFromRequestParameterList(request));
+		
+		if (data.get("appid") == null){
+			throw new Exception("请设置 appid!");
+		}		
+		return data;
+	}
 
 	/**
 	 * 通用参数解析工具。初始化参数数据结构，并将request parameter中的参数放入到对象中。
@@ -167,69 +183,79 @@ public class ParamUtils {
 		return t;
 	}
 
+	/**
+	 * 将HttpServletRequest参数转化为struct对象
+	 *
+	 * @param request
+	 * @param clazz
+	 * @param <T> struct 对象
+	 * @return
+     * @throws Exception
+     */
 	public static <T> T initModelForm(HttpServletRequest request, Class<T> clazz)
 			throws Exception {
-		T t = clazz.newInstance();
-
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.putAll(initParamFromRequestBody(request));
 		data.putAll(initParamFromRequestParameter(request));
-		
-		if (data.get("appid") == null){
-			throw new Exception("请设置 appid!");
-		}
 
-		if (data != null && data.size() > 0) {
-			// thrift 都是自动生成的public类型, 故使用getFields,如果不是public的时候, 请不要使用此方法
-			Field[] fields = clazz.getFields();
-			Map<String, Integer> fieldMap = new HashMap<String, Integer>();
-			for (int f = 0; f < fields.length; f++) {
-				fieldMap.put(fields[f].getName(), f);
-			}
-			Integer i = null;
-			for (Entry<String, Object> entry : data.entrySet()) {
-				if(fieldMap.containsKey(entry.getKey()))
-					i = fieldMap.get(entry.getKey());
-					if (i == null){
-						continue;
-					}
-					if (fields[i].getName().equals(entry.getKey())) {
-						String methodName = "set"
-								+ fields[i].getName().substring(0, 1)
-								.toUpperCase()
-								+ fields[i].getName().substring(1);
-						Method method = clazz.getMethod(methodName,
-								fields[i].getType());
-						Object cval = BeanUtils.convertTo(
-								entry.getValue(), fields[i].getType());
-						try {
-							method.invoke(t, cval);
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-			}
-		}
-
-		return t;
+		return initModelForm(data, clazz);
 	}
-	
+
+	/**
+	 * 将HttpServletRequest参数(包含list参数类型的)转化为struct对象
+	 *
+	 * @param request
+	 * @param clazz
+	 * @param <T> struct 对象
+	 * @return
+     * @throws Exception
+     */
+	public static <T> T initModelFormForList(HttpServletRequest request, Class<T> clazz)
+			throws Exception {
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.putAll(initParamFromRequestBody(request));
+		data.putAll(initParamFromRequestParameterList(request));
+
+		return initModelForm(data, clazz);
+	}
+
+	/**
+	 * 将参数map转换为thrift struct对象
+	 *
+	 * @param data
+	 * @param clazz
+	 * @param <T> struct 对象
+	 * @return
+     * @throws Exception
+     */
 	public static <T> T initModelForm(Map<String, Object> data, Class<T> clazz) throws Exception {
 		T t = null;
 		if(data != null && data.size() > 0) {
 			if (data.get("appid") == null){
-				throw new Exception("请设置 appid!");
+				throw new Exception("请传参数appid!");
 			}
 			t = clazz.newInstance();
 			if (data != null && data.size() > 0) {
-				Field[] fields = clazz.getDeclaredFields();
+				// thrift 都是自动生成的public类型, 故使用getFields,如果不是public的时候, 请不要使用此方法
+				Field[] fields = clazz.getFields();
+				Map<String, Integer> fieldMap = new HashMap<String, Integer>();
+				for (int f = 0; f < fields.length; f++) {
+					// 过滤掉转换不需要的字段 metaDataMap
+					if(!"metaDataMap".equals(fields[f].getName())) {
+						fieldMap.put(fields[f].getName(), f);
+					}
+				}
+				Integer i = null;
 				for (Entry<String, Object> entry : data.entrySet()) {
-					for (int i = 0; i < fields.length; i++) {
+					if(fieldMap.containsKey(entry.getKey())) {
+						i = fieldMap.get(entry.getKey());
+						if (i == null) {
+							continue;
+						}
 						if (fields[i].getName().equals(entry.getKey())) {
 							String methodName = "set"
 									+ fields[i].getName().substring(0, 1)
-											.toUpperCase()
+									.toUpperCase()
 									+ fields[i].getName().substring(1);
 							Method method = clazz.getMethod(methodName,
 									fields[i].getType());
@@ -249,31 +275,6 @@ public class ParamUtils {
 		return t;
 	}
 
-	@Test
-	public void testArray() {
-		int[] array = { 1, 2, 3 };
-		Object a = array;
-		if (a instanceof Object[] || a instanceof byte[] || a instanceof char[]
-				|| a instanceof int[] || a instanceof long[]
-				|| a instanceof float[] || a instanceof double[]) {
-			System.out.println(true);
-		} else {
-			System.out.println(false);
-		}
-	}
-
-	@Test
-	public void testPrimary() {
-		int b = 1;
-		Object a = b;
-		if (a instanceof Object) {
-			System.out.println(true);
-		} else {
-			System.out.println(false);
-		}
-	}
-	
-	@SuppressWarnings("unchecked")
 	private static Map<String, Object> initParamFromRequestParameter(
 			HttpServletRequest request) {
 		Map<String, Object> param = new HashMap<>();
@@ -282,6 +283,19 @@ public class ParamUtils {
 		if (reqParams != null) {
 			for (Entry<String, String[]> entry : reqParams.entrySet()) {
 				param.put(entry.getKey(), entry.getValue()[0]);
+			}
+		}
+		return param;
+	}
+	
+	private static Map<String, Object> initParamFromRequestParameterList(
+			HttpServletRequest request) {
+		Map<String, Object> param = new HashMap<>();
+
+		Map<String, String[]> reqParams = request.getParameterMap();
+		if (reqParams != null) {
+			for (Entry<String, String[]> entry : reqParams.entrySet()) {
+				param.put(entry.getKey(), entry.getValue());
 			}
 		}
 		return param;
@@ -326,6 +340,11 @@ public class ParamUtils {
 		;
 		if (object instanceof Map) {
 			map = (Map<String, Object>) object;
+			for(Entry<String, Object> entry : map.entrySet()) {
+				if(entry.getValue() instanceof JSONArray) {
+					entry.setValue(((JSONArray)entry.getValue()).toArray());
+				}
+			}
 		} else if (object instanceof List) {
 			map.put(object.toString(), object);
 		} else {
@@ -424,7 +443,6 @@ public class ParamUtils {
 		
 		Map<Integer, Integer> cityCode = new HashMap<>();
 		Map<String, Integer> cityName= new HashMap<>();
-		@SuppressWarnings("unchecked")
 		Map<String, String[]> reqParams = request.getParameterMap();
 		if (reqParams != null) {
 			for (Entry<String, String[]> entry : reqParams.entrySet()) {

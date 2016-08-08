@@ -34,7 +34,7 @@ public class DeprecatedCityController {
 
 			Response result = cityServices.getResources(query);
 
-			return ResponseLogNotification.successWithParse(request, result);
+			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}

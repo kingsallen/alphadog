@@ -35,7 +35,7 @@ public class PositionController {
             CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
             Response result = positonServices.getResources(query);
 
-            return ResponseLogNotification.successWithParse(request, result);
+            return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
@@ -46,7 +46,7 @@ public class PositionController {
 	public String getPosition(@PathVariable int id, HttpServletRequest request, HttpServletResponse response) {
 		try {
 			Response result = positonServices.getPositionById(id);
-			return ResponseLogNotification.successWithParse(request, result);
+			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}

@@ -26,6 +26,21 @@ struct College {
 }
 
 /*
+   国家字典实体
+*/
+struct DictCountry {
+    1: optional i32 id,
+    2: optional string name,
+    3: optional string ename,
+    4: optional string iso_code_2,
+    5: optional string iso_code_3,
+    6: optional string code,
+    7: optional string icon_class,
+    8: optional byte hot_country,
+    9: optional i32 continent_code
+}
+
+/*
   常量字典实体
 */
 struct DictConstant {
