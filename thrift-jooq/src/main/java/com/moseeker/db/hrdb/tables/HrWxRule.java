@@ -35,10 +35,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxRule extends TableImpl<HrWxRuleRecord> {
 
-	private static final long serialVersionUID = -928406190;
+	private static final long serialVersionUID = -483285678;
 
 	/**
-	 * The reference instance of <code>hrDB.hr_wx_rule</code>
+	 * The reference instance of <code>hrdb.hr_wx_rule</code>
 	 */
 	public static final HrWxRule HR_WX_RULE = new HrWxRule();
 
@@ -51,59 +51,59 @@ public class HrWxRule extends TableImpl<HrWxRuleRecord> {
 	}
 
 	/**
-	 * The column <code>hrDB.hr_wx_rule.id</code>.
+	 * The column <code>hrdb.hr_wx_rule.id</code>.
 	 */
 	public final TableField<HrWxRuleRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
 
 	/**
-	 * The column <code>hrDB.hr_wx_rule.wechat_id</code>.
+	 * The column <code>hrdb.hr_wx_rule.wechat_id</code>.
 	 */
 	public final TableField<HrWxRuleRecord, UInteger> WECHAT_ID = createField("wechat_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>hrDB.hr_wx_rule.cid</code>.
+	 * The column <code>hrdb.hr_wx_rule.cid</code>.
 	 */
 	public final TableField<HrWxRuleRecord, UInteger> CID = createField("cid", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>hrDB.hr_wx_rule.name</code>.
+	 * The column <code>hrdb.hr_wx_rule.name</code>.
 	 */
 	public final TableField<HrWxRuleRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(60).nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>hrDB.hr_wx_rule.module</code>. 模块名称
+	 * The column <code>hrdb.hr_wx_rule.module</code>. 模块名称
 	 */
 	public final TableField<HrWxRuleRecord, String> MODULE = createField("module", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "模块名称");
 
 	/**
-	 * The column <code>hrDB.hr_wx_rule.displayorder</code>. 排序
+	 * The column <code>hrdb.hr_wx_rule.displayorder</code>. 排序
 	 */
 	public final TableField<HrWxRuleRecord, UInteger> DISPLAYORDER = createField("displayorder", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "排序");
 
 	/**
-	 * The column <code>hrDB.hr_wx_rule.status</code>. 规则状态，0禁用，1启用，2置顶
+	 * The column <code>hrdb.hr_wx_rule.status</code>. 规则状态，0禁用，1启用，2置顶
 	 */
 	public final TableField<HrWxRuleRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "规则状态，0禁用，1启用，2置顶");
 
 	/**
-	 * The column <code>hrDB.hr_wx_rule.access_level</code>. 规则获取权限，0：所有，1：员工
+	 * The column <code>hrdb.hr_wx_rule.access_level</code>. 规则获取权限，0：所有，1：员工
 	 */
 	public final TableField<HrWxRuleRecord, UInteger> ACCESS_LEVEL = createField("access_level", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "规则获取权限，0：所有，1：员工");
 
 	/**
-	 * The column <code>hrDB.hr_wx_rule.keywords</code>. 关键字
+	 * The column <code>hrdb.hr_wx_rule.keywords</code>. 关键字
 	 */
 	public final TableField<HrWxRuleRecord, String> KEYWORDS = createField("keywords", org.jooq.impl.SQLDataType.VARCHAR.length(3000).nullable(false).defaulted(true), this, "关键字");
 
 	/**
-	 * Create a <code>hrDB.hr_wx_rule</code> table reference
+	 * Create a <code>hrdb.hr_wx_rule</code> table reference
 	 */
 	public HrWxRule() {
 		this("hr_wx_rule", null);
 	}
 
 	/**
-	 * Create an aliased <code>hrDB.hr_wx_rule</code> table reference
+	 * Create an aliased <code>hrdb.hr_wx_rule</code> table reference
 	 */
 	public HrWxRule(String alias) {
 		this(alias, HR_WX_RULE);

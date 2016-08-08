@@ -6,6 +6,7 @@ package com.moseeker.db.dictdb;
 
 import com.moseeker.db.dictdb.tables.DictCity;
 import com.moseeker.db.dictdb.tables.DictCollege;
+import com.moseeker.db.dictdb.tables.DictConstant;
 import com.moseeker.db.dictdb.tables.DictCountry;
 import com.moseeker.db.dictdb.tables.DictIndustry;
 import com.moseeker.db.dictdb.tables.DictIndustryType;
@@ -35,10 +36,10 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dictdb extends SchemaImpl {
 
-	private static final long serialVersionUID = 1938945914;
+	private static final long serialVersionUID = -1513041569;
 
 	/**
-	 * The reference instance of <code>dictDB</code>
+	 * The reference instance of <code>dictdb</code>
 	 */
 	public static final Dictdb DICTDB = new Dictdb();
 
@@ -46,7 +47,7 @@ public class Dictdb extends SchemaImpl {
 	 * No further instances allowed
 	 */
 	private Dictdb() {
-		super("dictDB");
+		super("dictdb");
 	}
 
 	@Override
@@ -60,6 +61,7 @@ public class Dictdb extends SchemaImpl {
 		return Arrays.<Table<?>>asList(
 			DictCity.DICT_CITY,
 			DictCollege.DICT_COLLEGE,
+			DictConstant.DICT_CONSTANT,
 			DictCountry.DICT_COUNTRY,
 			DictIndustry.DICT_INDUSTRY,
 			DictIndustryType.DICT_INDUSTRY_TYPE,

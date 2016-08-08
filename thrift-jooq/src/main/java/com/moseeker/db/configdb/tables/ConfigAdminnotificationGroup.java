@@ -34,10 +34,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigAdminnotificationGroup extends TableImpl<ConfigAdminnotificationGroupRecord> {
 
-	private static final long serialVersionUID = 948876322;
+	private static final long serialVersionUID = 2056995874;
 
 	/**
-	 * The reference instance of <code>configDB.config_adminnotification_group</code>
+	 * The reference instance of <code>configdb.config_adminnotification_group</code>
 	 */
 	public static final ConfigAdminnotificationGroup CONFIG_ADMINNOTIFICATION_GROUP = new ConfigAdminnotificationGroup();
 
@@ -50,29 +50,29 @@ public class ConfigAdminnotificationGroup extends TableImpl<ConfigAdminnotificat
 	}
 
 	/**
-	 * The column <code>configDB.config_adminnotification_group.id</code>.
+	 * The column <code>configdb.config_adminnotification_group.id</code>.
 	 */
 	public final TableField<ConfigAdminnotificationGroupRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
 	/**
-	 * The column <code>configDB.config_adminnotification_group.name</code>. 群组名称
+	 * The column <code>configdb.config_adminnotification_group.name</code>. 群组名称
 	 */
 	public final TableField<ConfigAdminnotificationGroupRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(32).nullable(false), this, "群组名称");
 
 	/**
-	 * The column <code>configDB.config_adminnotification_group.create_time</code>.
+	 * The column <code>configdb.config_adminnotification_group.create_time</code>.
 	 */
 	public final TableField<ConfigAdminnotificationGroupRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * Create a <code>configDB.config_adminnotification_group</code> table reference
+	 * Create a <code>configdb.config_adminnotification_group</code> table reference
 	 */
 	public ConfigAdminnotificationGroup() {
 		this("config_adminnotification_group", null);
 	}
 
 	/**
-	 * Create an aliased <code>configDB.config_adminnotification_group</code> table reference
+	 * Create an aliased <code>configdb.config_adminnotification_group</code> table reference
 	 */
 	public ConfigAdminnotificationGroup(String alias) {
 		this(alias, CONFIG_ADMINNOTIFICATION_GROUP);

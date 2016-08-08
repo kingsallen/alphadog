@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.moseeker.rpccenter.common.ServiceUtil;
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -18,12 +18,13 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.SkillServices;
 import com.moseeker.thrift.gen.profile.struct.Skill;
 
+//@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
 public class SkillController {
 
 	Logger logger = LoggerFactory.getLogger(SkillController.class);
 
-	SkillServices.Iface skillService = ServiceUtil.getService(SkillServices.Iface.class);
+	SkillServices.Iface skillService = ServiceManager.SERVICEMANAGER.getService(SkillServices.Iface.class);
 	
 	@RequestMapping(value = "/profile/skill", method = RequestMethod.GET)
 	@ResponseBody

@@ -1,5 +1,7 @@
 package com.moseeker.common.redis.cache.db;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +10,7 @@ import org.jooq.Record;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.moseeker.common.dbutils.DatabaseConnectionHelper;
+import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.redis.RedisConfigRedisKey;
 import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.Notification;
@@ -49,8 +51,10 @@ public class DbManager {
 	 */
 	public static RedisConfigRedisKey readFromDB(int appId, String keyIdentifier, byte configType) {
 		RedisConfigRedisKey redisKey = null;
+		Connection conn = null;
 		try {
-			DSLContext create = DatabaseConnectionHelper.getConnection().getJooqDSL();
+			conn = DBConnHelper.DBConn.getConn();
+			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 			Record row = create.select().from(Tables.CONFIG_CACHECONFIG_REDISKEY)
 					.where(Tables.CONFIG_CACHECONFIG_REDISKEY.PROJECT_APPID.equal(appId))
 					.and(Tables.CONFIG_CACHECONFIG_REDISKEY.TYPE.equal(configType))
@@ -68,7 +72,13 @@ public class DbManager {
 			LoggerFactory.getLogger(DbManager.class).error("error", e);
 			Notification.sendWarningWithHostName(appId, keyIdentifier, e.getMessage());
 		} finally {
-			//do nothing
+			try {
+				if(conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				LoggerFactory.getLogger(DbManager.class).error(e.getMessage(), e);
+			}
 		}
 		return redisKey;
 	}
@@ -81,10 +91,10 @@ public class DbManager {
 	 */
 	public static List<RedisConfigRedisKey> readAllConfigFromDB(byte configType) {
 		List<RedisConfigRedisKey> redisKeys = new ArrayList<>();
-		DSLContext create;
+		Connection conn = null;
 		try {
-			create = DatabaseConnectionHelper.getConnection().getJooqDSL();
-			System.out.println(create.select().from(Tables.CONFIG_CACHECONFIG_REDISKEY).where(Tables.CONFIG_CACHECONFIG_REDISKEY.TYPE.equal(configType)).toString());
+			conn = DBConnHelper.DBConn.getConn();
+			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 			create.select().from(Tables.CONFIG_CACHECONFIG_REDISKEY).where(Tables.CONFIG_CACHECONFIG_REDISKEY.TYPE.equal(configType))
 					.fetch().forEach((row) -> {
 						RedisConfigRedisKey redisKey = new RedisConfigRedisKey();
@@ -99,7 +109,13 @@ public class DbManager {
 			LoggerFactory.getLogger(DbManager.class).error("error", e);
 			Notification.sendWarningWithHostName(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		} finally {
-			//do nothing
+			try {
+				if(conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				LoggerFactory.getLogger(DbManager.class).error(e.getMessage(), e);
+			}
 		}
 		return redisKeys;
 	}

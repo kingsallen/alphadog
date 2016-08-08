@@ -6,7 +6,6 @@ public class ParamNullException extends CommonException {
 
 	@Override
 	public String getMessage() {
-		// TODO Auto-generated method stub
 		return "参数不能为空！";
 	}
 

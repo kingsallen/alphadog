@@ -30,227 +30,227 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrRecruitStatisticsRecord extends UpdatableRecordImpl<HrRecruitStatisticsRecord> implements Record16<Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer, Date, Integer, Integer, Integer, Integer, Integer, Integer> {
 
-	private static final long serialVersionUID = -1023842008;
+	private static final long serialVersionUID = 838721832;
 
 	/**
-	 * Setter for <code>hrDB.hr_recruit_statistics.id</code>. primary key
+	 * Setter for <code>hrdb.hr_recruit_statistics.id</code>. primary key
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_recruit_statistics.id</code>. primary key
+	 * Getter for <code>hrdb.hr_recruit_statistics.id</code>. primary key
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_recruit_statistics.position_id</code>. hr_position.id
+	 * Setter for <code>hrdb.hr_recruit_statistics.position_id</code>. hr_position.id
 	 */
 	public void setPositionId(Integer value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_recruit_statistics.position_id</code>. hr_position.id
+	 * Getter for <code>hrdb.hr_recruit_statistics.position_id</code>. hr_position.id
 	 */
 	public Integer getPositionId() {
 		return (Integer) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_recruit_statistics.company_id</code>. company.id
+	 * Setter for <code>hrdb.hr_recruit_statistics.company_id</code>. company.id
 	 */
 	public void setCompanyId(Integer value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_recruit_statistics.company_id</code>. company.id
+	 * Getter for <code>hrdb.hr_recruit_statistics.company_id</code>. company.id
 	 */
 	public Integer getCompanyId() {
 		return (Integer) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_recruit_statistics.jd_pv</code>. JD 页浏览次数
+	 * Setter for <code>hrdb.hr_recruit_statistics.jd_pv</code>. JD 页浏览次数
 	 */
 	public void setJdPv(Integer value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_recruit_statistics.jd_pv</code>. JD 页浏览次数
+	 * Getter for <code>hrdb.hr_recruit_statistics.jd_pv</code>. JD 页浏览次数
 	 */
 	public Integer getJdPv() {
 		return (Integer) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_recruit_statistics.recom_jd_pv</code>. JD 页推荐浏览次数
+	 * Setter for <code>hrdb.hr_recruit_statistics.recom_jd_pv</code>. JD 页推荐浏览次数
 	 */
 	public void setRecomJdPv(Integer value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_recruit_statistics.recom_jd_pv</code>. JD 页推荐浏览次数
+	 * Getter for <code>hrdb.hr_recruit_statistics.recom_jd_pv</code>. JD 页推荐浏览次数
 	 */
 	public Integer getRecomJdPv() {
 		return (Integer) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_recruit_statistics.fav_num</code>. 感兴趣的次数
+	 * Setter for <code>hrdb.hr_recruit_statistics.fav_num</code>. 感兴趣的次数
 	 */
 	public void setFavNum(Integer value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_recruit_statistics.fav_num</code>. 感兴趣的次数
+	 * Getter for <code>hrdb.hr_recruit_statistics.fav_num</code>. 感兴趣的次数
 	 */
 	public Integer getFavNum() {
 		return (Integer) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_recruit_statistics.recom_fav_num</code>. 推荐感兴趣的次数
+	 * Setter for <code>hrdb.hr_recruit_statistics.recom_fav_num</code>. 推荐感兴趣的次数
 	 */
 	public void setRecomFavNum(Integer value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_recruit_statistics.recom_fav_num</code>. 推荐感兴趣的次数
+	 * Getter for <code>hrdb.hr_recruit_statistics.recom_fav_num</code>. 推荐感兴趣的次数
 	 */
 	public Integer getRecomFavNum() {
 		return (Integer) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_recruit_statistics.apply_num</code>. 投递次数
+	 * Setter for <code>hrdb.hr_recruit_statistics.apply_num</code>. 投递次数
 	 */
 	public void setApplyNum(Integer value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_recruit_statistics.apply_num</code>. 投递次数
+	 * Getter for <code>hrdb.hr_recruit_statistics.apply_num</code>. 投递次数
 	 */
 	public Integer getApplyNum() {
 		return (Integer) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_recruit_statistics.recom_apply_num</code>. 推荐投递次数
+	 * Setter for <code>hrdb.hr_recruit_statistics.recom_apply_num</code>. 推荐投递次数
 	 */
 	public void setRecomApplyNum(Integer value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_recruit_statistics.recom_apply_num</code>. 推荐投递次数
+	 * Getter for <code>hrdb.hr_recruit_statistics.recom_apply_num</code>. 推荐投递次数
 	 */
 	public Integer getRecomApplyNum() {
 		return (Integer) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_recruit_statistics.create_date</code>. 创建日期
+	 * Setter for <code>hrdb.hr_recruit_statistics.create_date</code>. 创建日期
 	 */
 	public void setCreateDate(Date value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_recruit_statistics.create_date</code>. 创建日期
+	 * Getter for <code>hrdb.hr_recruit_statistics.create_date</code>. 创建日期
 	 */
 	public Date getCreateDate() {
 		return (Date) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_recruit_statistics.after_review_num</code>. 评审通过人数
+	 * Setter for <code>hrdb.hr_recruit_statistics.after_review_num</code>. 评审通过人数
 	 */
 	public void setAfterReviewNum(Integer value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_recruit_statistics.after_review_num</code>. 评审通过人数
+	 * Getter for <code>hrdb.hr_recruit_statistics.after_review_num</code>. 评审通过人数
 	 */
 	public Integer getAfterReviewNum() {
 		return (Integer) getValue(10);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_recruit_statistics.recom_after_review_num</code>. 推荐评审通过人数
+	 * Setter for <code>hrdb.hr_recruit_statistics.recom_after_review_num</code>. 推荐评审通过人数
 	 */
 	public void setRecomAfterReviewNum(Integer value) {
 		setValue(11, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_recruit_statistics.recom_after_review_num</code>. 推荐评审通过人数
+	 * Getter for <code>hrdb.hr_recruit_statistics.recom_after_review_num</code>. 推荐评审通过人数
 	 */
 	public Integer getRecomAfterReviewNum() {
 		return (Integer) getValue(11);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_recruit_statistics.after_interview_num</code>. 面试通过人数
+	 * Setter for <code>hrdb.hr_recruit_statistics.after_interview_num</code>. 面试通过人数
 	 */
 	public void setAfterInterviewNum(Integer value) {
 		setValue(12, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_recruit_statistics.after_interview_num</code>. 面试通过人数
+	 * Getter for <code>hrdb.hr_recruit_statistics.after_interview_num</code>. 面试通过人数
 	 */
 	public Integer getAfterInterviewNum() {
 		return (Integer) getValue(12);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_recruit_statistics.recom_after_interview_num</code>. 推荐面试通过人数
+	 * Setter for <code>hrdb.hr_recruit_statistics.recom_after_interview_num</code>. 推荐面试通过人数
 	 */
 	public void setRecomAfterInterviewNum(Integer value) {
 		setValue(13, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_recruit_statistics.recom_after_interview_num</code>. 推荐面试通过人数
+	 * Getter for <code>hrdb.hr_recruit_statistics.recom_after_interview_num</code>. 推荐面试通过人数
 	 */
 	public Integer getRecomAfterInterviewNum() {
 		return (Integer) getValue(13);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_recruit_statistics.on_board_num</code>. 入职人数
+	 * Setter for <code>hrdb.hr_recruit_statistics.on_board_num</code>. 入职人数
 	 */
 	public void setOnBoardNum(Integer value) {
 		setValue(14, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_recruit_statistics.on_board_num</code>. 入职人数
+	 * Getter for <code>hrdb.hr_recruit_statistics.on_board_num</code>. 入职人数
 	 */
 	public Integer getOnBoardNum() {
 		return (Integer) getValue(14);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_recruit_statistics.recom_on_board_num</code>. 推荐入职人数
+	 * Setter for <code>hrdb.hr_recruit_statistics.recom_on_board_num</code>. 推荐入职人数
 	 */
 	public void setRecomOnBoardNum(Integer value) {
 		setValue(15, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_recruit_statistics.recom_on_board_num</code>. 推荐入职人数
+	 * Getter for <code>hrdb.hr_recruit_statistics.recom_on_board_num</code>. 推荐入职人数
 	 */
 	public Integer getRecomOnBoardNum() {
 		return (Integer) getValue(15);

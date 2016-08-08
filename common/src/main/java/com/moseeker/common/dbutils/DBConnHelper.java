@@ -9,7 +9,6 @@ import org.jooq.impl.DSL;
 
 import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPConfig;
-import com.jolbox.bonecp.Statistics;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.Notification;
 
@@ -32,6 +31,8 @@ public enum DBConnHelper {
             Integer minConnections = propertiesReader.get("mycat.minConnections", Integer.class);
             Integer maxConnections = propertiesReader.get("mycat.maxConnections", Integer.class);
             Integer idleMaxAgeInMinutes = propertiesReader.get("mycat.idleMaxAgeInMinutes", Integer.class);
+            Integer acquireRetryDelayInMs = propertiesReader.get("mycat.acquireRetryDelayInMs", Integer.class);
+            Integer acquireRetryAttempts = propertiesReader.get("mycat.acquireRetryAttempts", Integer.class);
             // init connection pool
             BoneCPConfig config = new BoneCPConfig();
             config.setJdbcUrl(url);
@@ -40,6 +41,8 @@ public enum DBConnHelper {
             config.setMinConnectionsPerPartition(minConnections);
             config.setMaxConnectionsPerPartition(maxConnections);
             config.setIdleMaxAgeInMinutes(idleMaxAgeInMinutes);
+            config.setAcquireRetryDelayInMs(acquireRetryDelayInMs);
+            config.setAcquireRetryAttempts(acquireRetryAttempts);
             connectionPool = new BoneCP(config);
         } catch (Exception e) {
             e.printStackTrace();
@@ -51,9 +54,6 @@ public enum DBConnHelper {
     }
 	
 	public DSLContext getJooqDSL(Connection conn) throws SQLException {
-		Statistics statictics = connectionPool.getStatistics();
-        System.out.println("total free:"+statictics.getTotalFree());
-        System.out.println("total lease:"+statictics.getTotalLeased());
         return DSL.using(conn, SQLDialect.MYSQL);
     }
 	

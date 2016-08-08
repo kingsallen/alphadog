@@ -10,7 +10,10 @@ namespace java com.moseeker.thrift.gen.profile.service
  */
  
 service WholeProfileServices {
-    common_struct.Response getResource(1:i32 userId, 2:i32 profileId);
+    common_struct.Response getResource(1:i32 userId, 2:i32 profileId, 3:string uuid);
+    common_struct.Response postResource(1:string profile, 2:i32 user_id);
+    common_struct.Response importCV(1:string profile, 2:i32 user_id);
+    common_struct.Response verifyRequires(1:i32 userId, 2:i32 positionId);
 }
 
 service ProfileServices {
@@ -24,6 +27,9 @@ service ProfileServices {
     common_struct.Response postResource(1: profile_struct.Profile profile);
     common_struct.Response putResource(1: profile_struct.Profile profile);
     common_struct.Response delResource(1: profile_struct.Profile profile);
+    common_struct.Response getCompleteness(1:i32 user_id, 2: string uuid, 3: i32 profile_id);
+    common_struct.Response reCalculateUserCompleteness(1:i32 userId, 2:string mobile);
+    common_struct.Response reCalculateUserCompletenessBySettingId(1:i32 id);
 }
 
 service AttachmentServices {
@@ -63,6 +69,7 @@ service BasicServices {
     common_struct.Response postResource(1: profile_struct.Basic basic);
     common_struct.Response putResource(1: profile_struct.Basic basic);
     common_struct.Response delResource(1: profile_struct.Basic basic);
+    common_struct.Response reCalculateBasicCompleteness(1: i32 userId);
 }
 
 service CredentialsServices {

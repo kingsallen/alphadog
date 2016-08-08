@@ -4,14 +4,20 @@
 package com.moseeker.db.profiledb.tables;
 
 
+import com.moseeker.db.profiledb.Keys;
 import com.moseeker.db.profiledb.Profiledb;
 import com.moseeker.db.profiledb.tables.records.ProfileIntentionCityRecord;
+
+import java.util.Arrays;
+import java.util.List;
 
 import javax.annotation.Generated;
 
 import org.jooq.Field;
+import org.jooq.Identity;
 import org.jooq.Table;
 import org.jooq.TableField;
+import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
 import org.jooq.types.UInteger;
 
@@ -29,10 +35,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileIntentionCity extends TableImpl<ProfileIntentionCityRecord> {
 
-	private static final long serialVersionUID = 81607751;
+	private static final long serialVersionUID = -220848615;
 
 	/**
-	 * The reference instance of <code>profileDB.profile_intention_city</code>
+	 * The reference instance of <code>profiledb.profile_intention_city</code>
 	 */
 	public static final ProfileIntentionCity PROFILE_INTENTION_CITY = new ProfileIntentionCity();
 
@@ -45,29 +51,34 @@ public class ProfileIntentionCity extends TableImpl<ProfileIntentionCityRecord> 
 	}
 
 	/**
-	 * The column <code>profileDB.profile_intention_city.profile_intention_id</code>. profile_intention.id
+	 * The column <code>profiledb.profile_intention_city.id</code>. 主key
+	 */
+	public final TableField<ProfileIntentionCityRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
+
+	/**
+	 * The column <code>profiledb.profile_intention_city.profile_intention_id</code>. profile_intention.id
 	 */
 	public final TableField<ProfileIntentionCityRecord, UInteger> PROFILE_INTENTION_ID = createField("profile_intention_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "profile_intention.id");
 
 	/**
-	 * The column <code>profileDB.profile_intention_city.city_code</code>. 期望城市字典编码
+	 * The column <code>profiledb.profile_intention_city.city_code</code>. 期望城市字典编码
 	 */
 	public final TableField<ProfileIntentionCityRecord, UInteger> CITY_CODE = createField("city_code", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "期望城市字典编码");
 
 	/**
-	 * The column <code>profileDB.profile_intention_city.city_name</code>. 期望城市名称
+	 * The column <code>profiledb.profile_intention_city.city_name</code>. 期望城市名称
 	 */
 	public final TableField<ProfileIntentionCityRecord, String> CITY_NAME = createField("city_name", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "期望城市名称");
 
 	/**
-	 * Create a <code>profileDB.profile_intention_city</code> table reference
+	 * Create a <code>profiledb.profile_intention_city</code> table reference
 	 */
 	public ProfileIntentionCity() {
 		this("profile_intention_city", null);
 	}
 
 	/**
-	 * Create an aliased <code>profileDB.profile_intention_city</code> table reference
+	 * Create an aliased <code>profiledb.profile_intention_city</code> table reference
 	 */
 	public ProfileIntentionCity(String alias) {
 		this(alias, PROFILE_INTENTION_CITY);
@@ -79,6 +90,30 @@ public class ProfileIntentionCity extends TableImpl<ProfileIntentionCityRecord> 
 
 	private ProfileIntentionCity(String alias, Table<ProfileIntentionCityRecord> aliased, Field<?>[] parameters) {
 		super(alias, Profiledb.PROFILEDB, aliased, parameters, "Profile的求职意向-期望城市关系表");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Identity<ProfileIntentionCityRecord, UInteger> getIdentity() {
+		return Keys.IDENTITY_PROFILE_INTENTION_CITY;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public UniqueKey<ProfileIntentionCityRecord> getPrimaryKey() {
+		return Keys.KEY_PROFILE_INTENTION_CITY_PRIMARY;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<UniqueKey<ProfileIntentionCityRecord>> getKeys() {
+		return Arrays.<UniqueKey<ProfileIntentionCityRecord>>asList(Keys.KEY_PROFILE_INTENTION_CITY_PRIMARY);
 	}
 
 	/**

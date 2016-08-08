@@ -30,213 +30,213 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrHbSendRecordRecord extends UpdatableRecordImpl<HrHbSendRecordRecord> implements Record15<Integer, String, String, String, String, String, String, String, String, String, String, Integer, String, String, Timestamp> {
 
-	private static final long serialVersionUID = 2044419041;
+	private static final long serialVersionUID = 277670881;
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_send_record.id</code>.
+	 * Setter for <code>hrdb.hr_hb_send_record.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_send_record.id</code>.
+	 * Getter for <code>hrdb.hr_hb_send_record.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_send_record.return_code</code>. SUCCESS/FAIL 此字段是通信标识,非交易标识,交易是否成功需要查看result_code来判断
+	 * Setter for <code>hrdb.hr_hb_send_record.return_code</code>. SUCCESS/FAIL 此字段是通信标识,非交易标识,交易是否成功需要查看result_code来判断
 	 */
 	public void setReturnCode(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_send_record.return_code</code>. SUCCESS/FAIL 此字段是通信标识,非交易标识,交易是否成功需要查看result_code来判断
+	 * Getter for <code>hrdb.hr_hb_send_record.return_code</code>. SUCCESS/FAIL 此字段是通信标识,非交易标识,交易是否成功需要查看result_code来判断
 	 */
 	public String getReturnCode() {
 		return (String) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_send_record.return_msg</code>. 返回信息,如非空,为错误原因
+	 * Setter for <code>hrdb.hr_hb_send_record.return_msg</code>. 返回信息,如非空,为错误原因
 	 */
 	public void setReturnMsg(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_send_record.return_msg</code>. 返回信息,如非空,为错误原因
+	 * Getter for <code>hrdb.hr_hb_send_record.return_msg</code>. 返回信息,如非空,为错误原因
 	 */
 	public String getReturnMsg() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_send_record.sign</code>. 生成签名
+	 * Setter for <code>hrdb.hr_hb_send_record.sign</code>. 生成签名
 	 */
 	public void setSign(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_send_record.sign</code>. 生成签名
+	 * Getter for <code>hrdb.hr_hb_send_record.sign</code>. 生成签名
 	 */
 	public String getSign() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_send_record.result_code</code>. SUCCESS/FAIL
+	 * Setter for <code>hrdb.hr_hb_send_record.result_code</code>. SUCCESS/FAIL
 	 */
 	public void setResultCode(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_send_record.result_code</code>. SUCCESS/FAIL
+	 * Getter for <code>hrdb.hr_hb_send_record.result_code</code>. SUCCESS/FAIL
 	 */
 	public String getResultCode() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_send_record.err_code</code>. 错误码信息
+	 * Setter for <code>hrdb.hr_hb_send_record.err_code</code>. 错误码信息
 	 */
 	public void setErrCode(String value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_send_record.err_code</code>. 错误码信息
+	 * Getter for <code>hrdb.hr_hb_send_record.err_code</code>. 错误码信息
 	 */
 	public String getErrCode() {
 		return (String) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_send_record.err_code_des</code>. 结果信息描述
+	 * Setter for <code>hrdb.hr_hb_send_record.err_code_des</code>. 结果信息描述
 	 */
 	public void setErrCodeDes(String value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_send_record.err_code_des</code>. 结果信息描述
+	 * Getter for <code>hrdb.hr_hb_send_record.err_code_des</code>. 结果信息描述
 	 */
 	public String getErrCodeDes() {
 		return (String) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_send_record.mch_billno</code>. 商户订单号
+	 * Setter for <code>hrdb.hr_hb_send_record.mch_billno</code>. 商户订单号
 	 */
 	public void setMchBillno(String value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_send_record.mch_billno</code>. 商户订单号
+	 * Getter for <code>hrdb.hr_hb_send_record.mch_billno</code>. 商户订单号
 	 */
 	public String getMchBillno() {
 		return (String) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_send_record.mch_id</code>. 微信支付分配的商户号
+	 * Setter for <code>hrdb.hr_hb_send_record.mch_id</code>. 微信支付分配的商户号
 	 */
 	public void setMchId(String value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_send_record.mch_id</code>. 微信支付分配的商户号
+	 * Getter for <code>hrdb.hr_hb_send_record.mch_id</code>. 微信支付分配的商户号
 	 */
 	public String getMchId() {
 		return (String) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_send_record.wxappid</code>. 商户appid
+	 * Setter for <code>hrdb.hr_hb_send_record.wxappid</code>. 商户appid
 	 */
 	public void setWxappid(String value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_send_record.wxappid</code>. 商户appid
+	 * Getter for <code>hrdb.hr_hb_send_record.wxappid</code>. 商户appid
 	 */
 	public String getWxappid() {
 		return (String) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_send_record.re_openid</code>. 接受收红包的用户,用户在wxappid下的openid
+	 * Setter for <code>hrdb.hr_hb_send_record.re_openid</code>. 接受收红包的用户,用户在wxappid下的openid
 	 */
 	public void setReOpenid(String value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_send_record.re_openid</code>. 接受收红包的用户,用户在wxappid下的openid
+	 * Getter for <code>hrdb.hr_hb_send_record.re_openid</code>. 接受收红包的用户,用户在wxappid下的openid
 	 */
 	public String getReOpenid() {
 		return (String) getValue(10);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_send_record.total_amount</code>. 付款金额,单位分
+	 * Setter for <code>hrdb.hr_hb_send_record.total_amount</code>. 付款金额,单位分
 	 */
 	public void setTotalAmount(Integer value) {
 		setValue(11, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_send_record.total_amount</code>. 付款金额,单位分
+	 * Getter for <code>hrdb.hr_hb_send_record.total_amount</code>. 付款金额,单位分
 	 */
 	public Integer getTotalAmount() {
 		return (Integer) getValue(11);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_send_record.send_time</code>. 红包发送时间
+	 * Setter for <code>hrdb.hr_hb_send_record.send_time</code>. 红包发送时间
 	 */
 	public void setSendTime(String value) {
 		setValue(12, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_send_record.send_time</code>. 红包发送时间
+	 * Getter for <code>hrdb.hr_hb_send_record.send_time</code>. 红包发送时间
 	 */
 	public String getSendTime() {
 		return (String) getValue(12);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_send_record.send_listid</code>. 红包订单的微信单号
+	 * Setter for <code>hrdb.hr_hb_send_record.send_listid</code>. 红包订单的微信单号
 	 */
 	public void setSendListid(String value) {
 		setValue(13, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_send_record.send_listid</code>. 红包订单的微信单号
+	 * Getter for <code>hrdb.hr_hb_send_record.send_listid</code>. 红包订单的微信单号
 	 */
 	public String getSendListid() {
 		return (String) getValue(13);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_hb_send_record.create_time</code>.
+	 * Setter for <code>hrdb.hr_hb_send_record.create_time</code>.
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(14, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_hb_send_record.create_time</code>.
+	 * Getter for <code>hrdb.hr_hb_send_record.create_time</code>.
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(14);

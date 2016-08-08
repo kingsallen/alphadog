@@ -34,10 +34,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictCollege extends TableImpl<DictCollegeRecord> {
 
-	private static final long serialVersionUID = -909072154;
+	private static final long serialVersionUID = 318995088;
 
 	/**
-	 * The reference instance of <code>dictDB.dict_college</code>
+	 * The reference instance of <code>dictdb.dict_college</code>
 	 */
 	public static final DictCollege DICT_COLLEGE = new DictCollege();
 
@@ -50,29 +50,34 @@ public class DictCollege extends TableImpl<DictCollegeRecord> {
 	}
 
 	/**
-	 * The column <code>dictDB.dict_college.code</code>. 字典code
+	 * The column <code>dictdb.dict_college.code</code>. 字典code
 	 */
 	public final TableField<DictCollegeRecord, UInteger> CODE = createField("code", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "字典code");
 
 	/**
-	 * The column <code>dictDB.dict_college.name</code>. 字典name
+	 * The column <code>dictdb.dict_college.name</code>. 字典name
 	 */
 	public final TableField<DictCollegeRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaulted(true), this, "字典name");
 
 	/**
-	 * The column <code>dictDB.dict_college.province</code>. 院校所在地
+	 * The column <code>dictdb.dict_college.province</code>. 院校所在地
 	 */
-	public final TableField<DictCollegeRecord, Integer> PROVINCE = createField("province", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "院校所在地");
+	public final TableField<DictCollegeRecord, UInteger> PROVINCE = createField("province", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "院校所在地");
 
 	/**
-	 * Create a <code>dictDB.dict_college</code> table reference
+	 * The column <code>dictdb.dict_college.logo</code>. 院校logo
+	 */
+	public final TableField<DictCollegeRecord, String> LOGO = createField("logo", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false).defaulted(true), this, "院校logo");
+
+	/**
+	 * Create a <code>dictdb.dict_college</code> table reference
 	 */
 	public DictCollege() {
 		this("dict_college", null);
 	}
 
 	/**
-	 * Create an aliased <code>dictDB.dict_college</code> table reference
+	 * Create an aliased <code>dictdb.dict_college</code> table reference
 	 */
 	public DictCollege(String alias) {
 		this(alias, DICT_COLLEGE);

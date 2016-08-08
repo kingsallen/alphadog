@@ -29,255 +29,255 @@ import org.jooq.types.UByte;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxModuleRecord extends UpdatableRecordImpl<HrWxModuleRecord> implements Record18<UByte, String, String, String, String, String, String, String, Byte, String, String, Byte, Byte, UByte, String, Byte, String, String> {
 
-	private static final long serialVersionUID = 2047835973;
+	private static final long serialVersionUID = -1095528635;
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_module.id</code>.
+	 * Setter for <code>hrdb.hr_wx_module.id</code>.
 	 */
 	public void setId(UByte value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_module.id</code>.
+	 * Getter for <code>hrdb.hr_wx_module.id</code>.
 	 */
 	public UByte getId() {
 		return (UByte) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_module.name</code>. 标识
+	 * Setter for <code>hrdb.hr_wx_module.name</code>. 标识
 	 */
 	public void setName(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_module.name</code>. 标识
+	 * Getter for <code>hrdb.hr_wx_module.name</code>. 标识
 	 */
 	public String getName() {
 		return (String) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_module.title</code>. 名称
+	 * Setter for <code>hrdb.hr_wx_module.title</code>. 名称
 	 */
 	public void setTitle(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_module.title</code>. 名称
+	 * Getter for <code>hrdb.hr_wx_module.title</code>. 名称
 	 */
 	public String getTitle() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_module.version</code>. 版本
+	 * Setter for <code>hrdb.hr_wx_module.version</code>. 版本
 	 */
 	public void setVersion(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_module.version</code>. 版本
+	 * Getter for <code>hrdb.hr_wx_module.version</code>. 版本
 	 */
 	public String getVersion() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_module.ability</code>. 功能描述
+	 * Setter for <code>hrdb.hr_wx_module.ability</code>. 功能描述
 	 */
 	public void setAbility(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_module.ability</code>. 功能描述
+	 * Getter for <code>hrdb.hr_wx_module.ability</code>. 功能描述
 	 */
 	public String getAbility() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_module.description</code>. 介绍
+	 * Setter for <code>hrdb.hr_wx_module.description</code>. 介绍
 	 */
 	public void setDescription(String value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_module.description</code>. 介绍
+	 * Getter for <code>hrdb.hr_wx_module.description</code>. 介绍
 	 */
 	public String getDescription() {
 		return (String) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_module.author</code>. 作者
+	 * Setter for <code>hrdb.hr_wx_module.author</code>. 作者
 	 */
 	public void setAuthor(String value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_module.author</code>. 作者
+	 * Getter for <code>hrdb.hr_wx_module.author</code>. 作者
 	 */
 	public String getAuthor() {
 		return (String) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_module.url</code>. 发布页面
+	 * Setter for <code>hrdb.hr_wx_module.url</code>. 发布页面
 	 */
 	public void setUrl(String value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_module.url</code>. 发布页面
+	 * Getter for <code>hrdb.hr_wx_module.url</code>. 发布页面
 	 */
 	public String getUrl() {
 		return (String) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_module.settings</code>. 扩展设置项
+	 * Setter for <code>hrdb.hr_wx_module.settings</code>. 扩展设置项
 	 */
 	public void setSettings(Byte value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_module.settings</code>. 扩展设置项
+	 * Getter for <code>hrdb.hr_wx_module.settings</code>. 扩展设置项
 	 */
 	public Byte getSettings() {
 		return (Byte) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_module.subscribes</code>. 订阅的消息类型
+	 * Setter for <code>hrdb.hr_wx_module.subscribes</code>. 订阅的消息类型
 	 */
 	public void setSubscribes(String value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_module.subscribes</code>. 订阅的消息类型
+	 * Getter for <code>hrdb.hr_wx_module.subscribes</code>. 订阅的消息类型
 	 */
 	public String getSubscribes() {
 		return (String) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_module.handles</code>. 能够直接处理的消息类型
+	 * Setter for <code>hrdb.hr_wx_module.handles</code>. 能够直接处理的消息类型
 	 */
 	public void setHandles(String value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_module.handles</code>. 能够直接处理的消息类型
+	 * Getter for <code>hrdb.hr_wx_module.handles</code>. 能够直接处理的消息类型
 	 */
 	public String getHandles() {
 		return (String) getValue(10);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_module.isrulefields</code>. 是否有规则嵌入项
+	 * Setter for <code>hrdb.hr_wx_module.isrulefields</code>. 是否有规则嵌入项
 	 */
 	public void setIsrulefields(Byte value) {
 		setValue(11, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_module.isrulefields</code>. 是否有规则嵌入项
+	 * Getter for <code>hrdb.hr_wx_module.isrulefields</code>. 是否有规则嵌入项
 	 */
 	public Byte getIsrulefields() {
 		return (Byte) getValue(11);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_module.home</code>. 是否微站首页嵌入
+	 * Setter for <code>hrdb.hr_wx_module.home</code>. 是否微站首页嵌入
 	 */
 	public void setHome(Byte value) {
 		setValue(12, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_module.home</code>. 是否微站首页嵌入
+	 * Getter for <code>hrdb.hr_wx_module.home</code>. 是否微站首页嵌入
 	 */
 	public Byte getHome() {
 		return (Byte) getValue(12);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_module.issystem</code>. 是否是系统模块
+	 * Setter for <code>hrdb.hr_wx_module.issystem</code>. 是否是系统模块
 	 */
 	public void setIssystem(UByte value) {
 		setValue(13, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_module.issystem</code>. 是否是系统模块
+	 * Getter for <code>hrdb.hr_wx_module.issystem</code>. 是否是系统模块
 	 */
 	public UByte getIssystem() {
 		return (UByte) getValue(13);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_module.options</code>. 扩展功能导航项
+	 * Setter for <code>hrdb.hr_wx_module.options</code>. 扩展功能导航项
 	 */
 	public void setOptions(String value) {
 		setValue(14, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_module.options</code>. 扩展功能导航项
+	 * Getter for <code>hrdb.hr_wx_module.options</code>. 扩展功能导航项
 	 */
 	public String getOptions() {
 		return (String) getValue(14);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_module.profile</code>. 是否个人中心嵌入
+	 * Setter for <code>hrdb.hr_wx_module.profile</code>. 是否个人中心嵌入
 	 */
 	public void setProfile(Byte value) {
 		setValue(15, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_module.profile</code>. 是否个人中心嵌入
+	 * Getter for <code>hrdb.hr_wx_module.profile</code>. 是否个人中心嵌入
 	 */
 	public Byte getProfile() {
 		return (Byte) getValue(15);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_module.site_menus</code>. 微站功能扩展导航项
+	 * Setter for <code>hrdb.hr_wx_module.site_menus</code>. 微站功能扩展导航项
 	 */
 	public void setSiteMenus(String value) {
 		setValue(16, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_module.site_menus</code>. 微站功能扩展导航项
+	 * Getter for <code>hrdb.hr_wx_module.site_menus</code>. 微站功能扩展导航项
 	 */
 	public String getSiteMenus() {
 		return (String) getValue(16);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_module.platform_menus</code>. 微站功能扩展导航项
+	 * Setter for <code>hrdb.hr_wx_module.platform_menus</code>. 微站功能扩展导航项
 	 */
 	public void setPlatformMenus(String value) {
 		setValue(17, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_module.platform_menus</code>. 微站功能扩展导航项
+	 * Getter for <code>hrdb.hr_wx_module.platform_menus</code>. 微站功能扩展导航项
 	 */
 	public String getPlatformMenus() {
 		return (String) getValue(17);

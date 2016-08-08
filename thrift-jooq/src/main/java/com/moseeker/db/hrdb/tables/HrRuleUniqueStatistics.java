@@ -35,10 +35,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrRuleUniqueStatistics extends TableImpl<HrRuleUniqueStatisticsRecord> {
 
-	private static final long serialVersionUID = -1643023047;
+	private static final long serialVersionUID = 876572985;
 
 	/**
-	 * The reference instance of <code>hrDB.hr_rule_unique_statistics</code>
+	 * The reference instance of <code>hrdb.hr_rule_unique_statistics</code>
 	 */
 	public static final HrRuleUniqueStatistics HR_RULE_UNIQUE_STATISTICS = new HrRuleUniqueStatistics();
 
@@ -51,54 +51,54 @@ public class HrRuleUniqueStatistics extends TableImpl<HrRuleUniqueStatisticsReco
 	}
 
 	/**
-	 * The column <code>hrDB.hr_rule_unique_statistics.id</code>. primary key
+	 * The column <code>hrdb.hr_rule_unique_statistics.id</code>. primary key
 	 */
 	public final TableField<HrRuleUniqueStatisticsRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "primary key");
 
 	/**
-	 * The column <code>hrDB.hr_rule_unique_statistics.wxrule_id</code>. wx_rule.id
+	 * The column <code>hrdb.hr_rule_unique_statistics.wxrule_id</code>. wx_rule.id
 	 */
 	public final TableField<HrRuleUniqueStatisticsRecord, Integer> WXRULE_ID = createField("wxrule_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "wx_rule.id");
 
 	/**
-	 * The column <code>hrDB.hr_rule_unique_statistics.menu_name</code>. 菜单名称
+	 * The column <code>hrdb.hr_rule_unique_statistics.menu_name</code>. 菜单名称
 	 */
 	public final TableField<HrRuleUniqueStatisticsRecord, String> MENU_NAME = createField("menu_name", org.jooq.impl.SQLDataType.VARCHAR.length(999), this, "菜单名称");
 
 	/**
-	 * The column <code>hrDB.hr_rule_unique_statistics.type</code>. 0: wx_rule, 1: menu
+	 * The column <code>hrdb.hr_rule_unique_statistics.type</code>. 0: wx_rule, 1: menu
 	 */
 	public final TableField<HrRuleUniqueStatisticsRecord, Integer> TYPE = createField("type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "0: wx_rule, 1: menu");
 
 	/**
-	 * The column <code>hrDB.hr_rule_unique_statistics.company_id</code>. company.id
+	 * The column <code>hrdb.hr_rule_unique_statistics.company_id</code>. company.id
 	 */
 	public final TableField<HrRuleUniqueStatisticsRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "company.id");
 
 	/**
-	 * The column <code>hrDB.hr_rule_unique_statistics.view_num_uv</code>. 浏览人数
+	 * The column <code>hrdb.hr_rule_unique_statistics.view_num_uv</code>. 浏览人数
 	 */
 	public final TableField<HrRuleUniqueStatisticsRecord, Integer> VIEW_NUM_UV = createField("view_num_uv", org.jooq.impl.SQLDataType.INTEGER.defaulted(true), this, "浏览人数");
 
 	/**
-	 * The column <code>hrDB.hr_rule_unique_statistics.create_date</code>. 创建日期
+	 * The column <code>hrdb.hr_rule_unique_statistics.create_date</code>. 创建日期
 	 */
 	public final TableField<HrRuleUniqueStatisticsRecord, Date> CREATE_DATE = createField("create_date", org.jooq.impl.SQLDataType.DATE.nullable(false), this, "创建日期");
 
 	/**
-	 * The column <code>hrDB.hr_rule_unique_statistics.info_type</code>. 0: 日数据，1：周数据，2：月数据
+	 * The column <code>hrdb.hr_rule_unique_statistics.info_type</code>. 0: 日数据，1：周数据，2：月数据
 	 */
 	public final TableField<HrRuleUniqueStatisticsRecord, Integer> INFO_TYPE = createField("info_type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "0: 日数据，1：周数据，2：月数据");
 
 	/**
-	 * Create a <code>hrDB.hr_rule_unique_statistics</code> table reference
+	 * Create a <code>hrdb.hr_rule_unique_statistics</code> table reference
 	 */
 	public HrRuleUniqueStatistics() {
 		this("hr_rule_unique_statistics", null);
 	}
 
 	/**
-	 * Create an aliased <code>hrDB.hr_rule_unique_statistics</code> table reference
+	 * Create an aliased <code>hrdb.hr_rule_unique_statistics</code> table reference
 	 */
 	public HrRuleUniqueStatistics(String alias) {
 		this(alias, HR_RULE_UNIQUE_STATISTICS);

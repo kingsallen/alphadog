@@ -35,10 +35,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
 
-	private static final long serialVersionUID = 1477096876;
+	private static final long serialVersionUID = 1816357510;
 
 	/**
-	 * The reference instance of <code>hrDB.hr_company_conf</code>
+	 * The reference instance of <code>hrdb.hr_company_conf</code>
 	 */
 	public static final HrCompanyConf HR_COMPANY_CONF = new HrCompanyConf();
 
@@ -51,54 +51,64 @@ public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
 	}
 
 	/**
-	 * The column <code>hrDB.hr_company_conf.company_id</code>.
+	 * The column <code>hrdb.hr_company_conf.company_id</code>.
 	 */
 	public final TableField<HrCompanyConfRecord, UInteger> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
 
 	/**
-	 * The column <code>hrDB.hr_company_conf.topic_id</code>. hr_topic id
-	 */
-	public final TableField<HrCompanyConfRecord, Integer> TOPIC_ID = createField("topic_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "hr_topic id");
-
-	/**
-	 * The column <code>hrDB.hr_company_conf.theme_id</code>. sys_theme id
+	 * The column <code>hrdb.hr_company_conf.theme_id</code>. sys_theme id
 	 */
 	public final TableField<HrCompanyConfRecord, Integer> THEME_ID = createField("theme_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "sys_theme id");
 
 	/**
-	 * The column <code>hrDB.hr_company_conf.hb_throttle</code>. 全局每人每次红包活动可以获得的红包金额上限
+	 * The column <code>hrdb.hr_company_conf.hb_throttle</code>. 全局每人每次红包活动可以获得的红包金额上限
 	 */
 	public final TableField<HrCompanyConfRecord, Integer> HB_THROTTLE = createField("hb_throttle", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "全局每人每次红包活动可以获得的红包金额上限");
 
 	/**
-	 * The column <code>hrDB.hr_company_conf.app_reply</code>. 申请提交成功回复信息
+	 * The column <code>hrdb.hr_company_conf.app_reply</code>. 申请提交成功回复信息
 	 */
 	public final TableField<HrCompanyConfRecord, String> APP_REPLY = createField("app_reply", org.jooq.impl.SQLDataType.VARCHAR.length(999).nullable(false).defaulted(true), this, "申请提交成功回复信息");
 
 	/**
-	 * The column <code>hrDB.hr_company_conf.email_resume_conf</code>. 0:允许使用email简历进行投递；1:不允许使用email简历投递
-	 */
-	public final TableField<HrCompanyConfRecord, Byte> EMAIL_RESUME_CONF = createField("email_resume_conf", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "0:允许使用email简历进行投递；1:不允许使用email简历投递");
-
-	/**
-	 * The column <code>hrDB.hr_company_conf.create_time</code>. 创建时间
+	 * The column <code>hrdb.hr_company_conf.create_time</code>. 创建时间
 	 */
 	public final TableField<HrCompanyConfRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "创建时间");
 
 	/**
-	 * The column <code>hrDB.hr_company_conf.update_time</code>. 更新时间
+	 * The column <code>hrdb.hr_company_conf.update_time</code>. 更新时间
 	 */
 	public final TableField<HrCompanyConfRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "更新时间");
 
 	/**
-	 * Create a <code>hrDB.hr_company_conf</code> table reference
+	 * The column <code>hrdb.hr_company_conf.employee_binding</code>. 员工认证自定义文案
+	 */
+	public final TableField<HrCompanyConfRecord, String> EMPLOYEE_BINDING = createField("employee_binding", org.jooq.impl.SQLDataType.VARCHAR.length(999).nullable(false).defaulted(true), this, "员工认证自定义文案");
+
+	/**
+	 * The column <code>hrdb.hr_company_conf.recommend_presentee</code>. 推荐候选人自定义文案
+	 */
+	public final TableField<HrCompanyConfRecord, String> RECOMMEND_PRESENTEE = createField("recommend_presentee", org.jooq.impl.SQLDataType.VARCHAR.length(999).nullable(false).defaulted(true), this, "推荐候选人自定义文案");
+
+	/**
+	 * The column <code>hrdb.hr_company_conf.recommend_success</code>. 推荐成功自定义文案
+	 */
+	public final TableField<HrCompanyConfRecord, String> RECOMMEND_SUCCESS = createField("recommend_success", org.jooq.impl.SQLDataType.VARCHAR.length(999).nullable(false).defaulted(true), this, "推荐成功自定义文案");
+
+	/**
+	 * The column <code>hrdb.hr_company_conf.forward_message</code>. 转发职位自定义文案
+	 */
+	public final TableField<HrCompanyConfRecord, String> FORWARD_MESSAGE = createField("forward_message", org.jooq.impl.SQLDataType.VARCHAR.length(999).nullable(false).defaulted(true), this, "转发职位自定义文案");
+
+	/**
+	 * Create a <code>hrdb.hr_company_conf</code> table reference
 	 */
 	public HrCompanyConf() {
 		this("hr_company_conf", null);
 	}
 
 	/**
-	 * Create an aliased <code>hrDB.hr_company_conf</code> table reference
+	 * Create an aliased <code>hrdb.hr_company_conf</code> table reference
 	 */
 	public HrCompanyConf(String alias) {
 		this(alias, HR_COMPANY_CONF);

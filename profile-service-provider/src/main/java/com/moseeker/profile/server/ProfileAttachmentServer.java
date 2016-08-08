@@ -42,10 +42,9 @@ public class ProfileAttachmentServer {
 				while (true) {
 					try {
 						ProfileAttachmentServer.class.wait();
-					} catch (InterruptedException e) {
-						LOGGER.error("error", e);
-						e.printStackTrace();
-					}
+                    } catch (Exception e) {
+                        LOGGER.error(" service provider ProfileAttachmentServer error", e);
+                    }
 				}
 			}
 		} catch (Exception e) {

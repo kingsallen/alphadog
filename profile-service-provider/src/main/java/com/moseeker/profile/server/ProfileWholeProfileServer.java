@@ -42,10 +42,9 @@ public class ProfileWholeProfileServer {
 				while (true) {
 					try {
 						ProfileWholeProfileServer.class.wait();
-					} catch (InterruptedException e) {
-						LOGGER.error("error", e);
-						e.printStackTrace();
-					}
+                    } catch (Exception e) {
+                        LOGGER.error(" service provider ProfileWholeProfileServer error", e);
+                    }
 				}
 			}
 		} catch (Exception e) {

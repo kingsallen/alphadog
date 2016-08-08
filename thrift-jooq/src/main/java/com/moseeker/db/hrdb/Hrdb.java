@@ -5,9 +5,13 @@ package com.moseeker.db.hrdb;
 
 
 import com.moseeker.db.hrdb.tables.HrAppCvConf;
+import com.moseeker.db.hrdb.tables.HrChildCompany;
 import com.moseeker.db.hrdb.tables.HrCompany;
+import com.moseeker.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.db.hrdb.tables.HrCompanyConf;
 import com.moseeker.db.hrdb.tables.HrEmployeeCertConf;
+import com.moseeker.db.hrdb.tables.HrEmployeePosition;
+import com.moseeker.db.hrdb.tables.HrEmployeeSection;
 import com.moseeker.db.hrdb.tables.HrFeedback;
 import com.moseeker.db.hrdb.tables.HrHbConfig;
 import com.moseeker.db.hrdb.tables.HrHbItems;
@@ -16,6 +20,7 @@ import com.moseeker.db.hrdb.tables.HrHbScratchCard;
 import com.moseeker.db.hrdb.tables.HrHbSendRecord;
 import com.moseeker.db.hrdb.tables.HrHtml5Statistics;
 import com.moseeker.db.hrdb.tables.HrHtml5UniqueStatistics;
+import com.moseeker.db.hrdb.tables.HrImporterMonitor;
 import com.moseeker.db.hrdb.tables.HrOperationRecord;
 import com.moseeker.db.hrdb.tables.HrPointsConf;
 import com.moseeker.db.hrdb.tables.HrRecruitStatistics;
@@ -60,10 +65,10 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-	private static final long serialVersionUID = 2119270623;
+	private static final long serialVersionUID = -1950646122;
 
 	/**
-	 * The reference instance of <code>hrDB</code>
+	 * The reference instance of <code>hrdb</code>
 	 */
 	public static final Hrdb HRDB = new Hrdb();
 
@@ -71,7 +76,7 @@ public class Hrdb extends SchemaImpl {
 	 * No further instances allowed
 	 */
 	private Hrdb() {
-		super("hrDB");
+		super("hrdb");
 	}
 
 	@Override
@@ -84,9 +89,13 @@ public class Hrdb extends SchemaImpl {
 	private final List<Table<?>> getTables0() {
 		return Arrays.<Table<?>>asList(
 			HrAppCvConf.HR_APP_CV_CONF,
+			HrChildCompany.HR_CHILD_COMPANY,
 			HrCompany.HR_COMPANY,
+			HrCompanyAccount.HR_COMPANY_ACCOUNT,
 			HrCompanyConf.HR_COMPANY_CONF,
 			HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF,
+			HrEmployeePosition.HR_EMPLOYEE_POSITION,
+			HrEmployeeSection.HR_EMPLOYEE_SECTION,
 			HrFeedback.HR_FEEDBACK,
 			HrHbConfig.HR_HB_CONFIG,
 			HrHbItems.HR_HB_ITEMS,
@@ -95,6 +104,7 @@ public class Hrdb extends SchemaImpl {
 			HrHbSendRecord.HR_HB_SEND_RECORD,
 			HrHtml5Statistics.HR_HTML5_STATISTICS,
 			HrHtml5UniqueStatistics.HR_HTML5_UNIQUE_STATISTICS,
+			HrImporterMonitor.HR_IMPORTER_MONITOR,
 			HrOperationRecord.HR_OPERATION_RECORD,
 			HrPointsConf.HR_POINTS_CONF,
 			HrRecruitStatistics.HR_RECRUIT_STATISTICS,

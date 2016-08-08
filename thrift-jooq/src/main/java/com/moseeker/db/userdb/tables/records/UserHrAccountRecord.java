@@ -30,269 +30,269 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserHrAccountRecord extends UpdatableRecordImpl<UserHrAccountRecord> implements Record19<Integer, Integer, String, String, Integer, String, String, Integer, Byte, Integer, Timestamp, String, Timestamp, String, Integer, Integer, String, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = 1123701897;
+	private static final long serialVersionUID = 512461409;
 
 	/**
-	 * Setter for <code>userDB.user_hr_account.id</code>.
+	 * Setter for <code>userdb.user_hr_account.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_hr_account.id</code>.
+	 * Getter for <code>userdb.user_hr_account.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_hr_account.company_id</code>. company.id
+	 * Setter for <code>userdb.user_hr_account.company_id</code>. company.id
 	 */
 	public void setCompanyId(Integer value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_hr_account.company_id</code>. company.id
+	 * Getter for <code>userdb.user_hr_account.company_id</code>. company.id
 	 */
 	public Integer getCompanyId() {
 		return (Integer) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_hr_account.mobile</code>. 手机号码
+	 * Setter for <code>userdb.user_hr_account.mobile</code>. 手机号码
 	 */
 	public void setMobile(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_hr_account.mobile</code>. 手机号码
+	 * Getter for <code>userdb.user_hr_account.mobile</code>. 手机号码
 	 */
 	public String getMobile() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_hr_account.email</code>. 邮箱
+	 * Setter for <code>userdb.user_hr_account.email</code>. 邮箱
 	 */
 	public void setEmail(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_hr_account.email</code>. 邮箱
+	 * Getter for <code>userdb.user_hr_account.email</code>. 邮箱
 	 */
 	public String getEmail() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_hr_account.wxuser_id</code>. 绑定的微信账号
+	 * Setter for <code>userdb.user_hr_account.wxuser_id</code>. 绑定的微信 账号
 	 */
 	public void setWxuserId(Integer value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_hr_account.wxuser_id</code>. 绑定的微信账号
+	 * Getter for <code>userdb.user_hr_account.wxuser_id</code>. 绑定的微信 账号
 	 */
 	public Integer getWxuserId() {
 		return (Integer) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_hr_account.password</code>. 登录密码
+	 * Setter for <code>userdb.user_hr_account.password</code>. 登录密码
 	 */
 	public void setPassword(String value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_hr_account.password</code>. 登录密码
+	 * Getter for <code>userdb.user_hr_account.password</code>. 登录密码
 	 */
 	public String getPassword() {
 		return (String) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_hr_account.username</code>. 企业联系人
+	 * Setter for <code>userdb.user_hr_account.username</code>. 企业联系人
 	 */
 	public void setUsername(String value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_hr_account.username</code>. 企业联系人
+	 * Getter for <code>userdb.user_hr_account.username</code>. 企业联系人
 	 */
 	public String getUsername() {
 		return (String) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_hr_account.account_type</code>. 0 超级账号；1：子账号; 2：普通账号
+	 * Setter for <code>userdb.user_hr_account.account_type</code>. 0 超级账号；1：子账号; 2：普通账号
 	 */
 	public void setAccountType(Integer value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_hr_account.account_type</code>. 0 超级账号；1：子账号; 2：普通账号
+	 * Getter for <code>userdb.user_hr_account.account_type</code>. 0 超级账号；1：子账号; 2：普通账号
 	 */
 	public Integer getAccountType() {
 		return (Integer) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_hr_account.activation</code>. 账号是否激活，1：激活；0：未激活
+	 * Setter for <code>userdb.user_hr_account.activation</code>. 账号是否激活，1：激活；0：未激活
 	 */
 	public void setActivation(Byte value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_hr_account.activation</code>. 账号是否激活，1：激活；0：未激活
+	 * Getter for <code>userdb.user_hr_account.activation</code>. 账号是否激活，1：激活；0：未激活
 	 */
 	public Byte getActivation() {
 		return (Byte) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_hr_account.disable</code>. 1：可用账号；0禁用账号 ） 遵循数据库整体的设计习惯，1表示可用，0表示不可用
+	 * Setter for <code>userdb.user_hr_account.disable</code>. 1：可用账号；0禁用账号 ） 遵循数据库整体的设计习惯，1表示可用，0表示不可用
 	 */
 	public void setDisable(Integer value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_hr_account.disable</code>. 1：可用账号；0禁用账号 ） 遵循数据库整体的设计习惯，1表示可用，0表示不可用
+	 * Getter for <code>userdb.user_hr_account.disable</code>. 1：可用账号；0禁用账号 ） 遵循数据库整体的设计习惯，1表示可用，0表示不可用
 	 */
 	public Integer getDisable() {
 		return (Integer) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_hr_account.register_time</code>. 注册时间
+	 * Setter for <code>userdb.user_hr_account.register_time</code>. 注册时间
 	 */
 	public void setRegisterTime(Timestamp value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_hr_account.register_time</code>. 注册时间
+	 * Getter for <code>userdb.user_hr_account.register_time</code>. 注册时间
 	 */
 	public Timestamp getRegisterTime() {
 		return (Timestamp) getValue(10);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_hr_account.register_ip</code>. 注册时的IP地址
+	 * Setter for <code>userdb.user_hr_account.register_ip</code>. 注册时的IP地址
 	 */
 	public void setRegisterIp(String value) {
 		setValue(11, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_hr_account.register_ip</code>. 注册时的IP地址
+	 * Getter for <code>userdb.user_hr_account.register_ip</code>. 注册时的IP地址
 	 */
 	public String getRegisterIp() {
 		return (String) getValue(11);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_hr_account.last_login_time</code>. 最后的登录时间
+	 * Setter for <code>userdb.user_hr_account.last_login_time</code>. 最后的登录时间
 	 */
 	public void setLastLoginTime(Timestamp value) {
 		setValue(12, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_hr_account.last_login_time</code>. 最后的登录时间
+	 * Getter for <code>userdb.user_hr_account.last_login_time</code>. 最后的登录时间
 	 */
 	public Timestamp getLastLoginTime() {
 		return (Timestamp) getValue(12);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_hr_account.last_login_ip</code>. 最后一次登录的IP
+	 * Setter for <code>userdb.user_hr_account.last_login_ip</code>. 最后一次登录的IP
 	 */
 	public void setLastLoginIp(String value) {
 		setValue(13, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_hr_account.last_login_ip</code>. 最后一次登录的IP
+	 * Getter for <code>userdb.user_hr_account.last_login_ip</code>. 最后一次登录的IP
 	 */
 	public String getLastLoginIp() {
 		return (String) getValue(13);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_hr_account.login_count</code>. 登录次数
+	 * Setter for <code>userdb.user_hr_account.login_count</code>. 登录次数
 	 */
 	public void setLoginCount(Integer value) {
 		setValue(14, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_hr_account.login_count</code>. 登录次数
+	 * Getter for <code>userdb.user_hr_account.login_count</code>. 登录次数
 	 */
 	public Integer getLoginCount() {
 		return (Integer) getValue(14);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_hr_account.source</code>. 来源1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号)
+	 * Setter for <code>userdb.user_hr_account.source</code>. 来源1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号)
 	 */
 	public void setSource(Integer value) {
 		setValue(15, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_hr_account.source</code>. 来源1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号)
+	 * Getter for <code>userdb.user_hr_account.source</code>. 来源1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号)
 	 */
 	public Integer getSource() {
 		return (Integer) getValue(15);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_hr_account.download_token</code>. 下载行业报告校验码
+	 * Setter for <code>userdb.user_hr_account.download_token</code>. 下载行业报告校验码
 	 */
 	public void setDownloadToken(String value) {
 		setValue(16, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_hr_account.download_token</code>. 下载行业报告校验码
+	 * Getter for <code>userdb.user_hr_account.download_token</code>. 下载行业报告校验码
 	 */
 	public String getDownloadToken() {
 		return (String) getValue(16);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_hr_account.create_time</code>. 创建时间
+	 * Setter for <code>userdb.user_hr_account.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(17, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_hr_account.create_time</code>. 创建时间
+	 * Getter for <code>userdb.user_hr_account.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(17);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_hr_account.update_time</code>. 修改时间
+	 * Setter for <code>userdb.user_hr_account.update_time</code>. 修改时间
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(18, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_hr_account.update_time</code>. 修改时间
+	 * Getter for <code>userdb.user_hr_account.update_time</code>. 修改时间
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(18);

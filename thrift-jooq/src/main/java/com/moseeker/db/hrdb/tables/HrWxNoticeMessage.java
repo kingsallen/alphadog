@@ -35,10 +35,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxNoticeMessage extends TableImpl<HrWxNoticeMessageRecord> {
 
-	private static final long serialVersionUID = -2116477703;
+	private static final long serialVersionUID = 1547444473;
 
 	/**
-	 * The reference instance of <code>hrDB.hr_wx_notice_message</code>
+	 * The reference instance of <code>hrdb.hr_wx_notice_message</code>
 	 */
 	public static final HrWxNoticeMessage HR_WX_NOTICE_MESSAGE = new HrWxNoticeMessage();
 
@@ -51,44 +51,44 @@ public class HrWxNoticeMessage extends TableImpl<HrWxNoticeMessageRecord> {
 	}
 
 	/**
-	 * The column <code>hrDB.hr_wx_notice_message.id</code>. 主key
+	 * The column <code>hrdb.hr_wx_notice_message.id</code>. 主key
 	 */
 	public final TableField<HrWxNoticeMessageRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
 
 	/**
-	 * The column <code>hrDB.hr_wx_notice_message.wechat_id</code>. 所属公众号
+	 * The column <code>hrdb.hr_wx_notice_message.wechat_id</code>. 所属公众号
 	 */
 	public final TableField<HrWxNoticeMessageRecord, UInteger> WECHAT_ID = createField("wechat_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "所属公众号");
 
 	/**
-	 * The column <code>hrDB.hr_wx_notice_message.notice_id</code>. sys_notice_message.id
+	 * The column <code>hrdb.hr_wx_notice_message.notice_id</code>. sys_notice_message.id
 	 */
 	public final TableField<HrWxNoticeMessageRecord, Integer> NOTICE_ID = createField("notice_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "sys_notice_message.id");
 
 	/**
-	 * The column <code>hrDB.hr_wx_notice_message.first</code>. 消息模板first文案
+	 * The column <code>hrdb.hr_wx_notice_message.first</code>. 消息模板first文案
 	 */
 	public final TableField<HrWxNoticeMessageRecord, String> FIRST = createField("first", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "消息模板first文案");
 
 	/**
-	 * The column <code>hrDB.hr_wx_notice_message.remark</code>. 消息模板remark文案
+	 * The column <code>hrdb.hr_wx_notice_message.remark</code>. 消息模板remark文案
 	 */
 	public final TableField<HrWxNoticeMessageRecord, String> REMARK = createField("remark", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "消息模板remark文案");
 
 	/**
-	 * The column <code>hrDB.hr_wx_notice_message.status</code>. 是否开启, 1:开启, 0:关闭
+	 * The column <code>hrdb.hr_wx_notice_message.status</code>. 是否开启, 1:开启, 0:关闭
 	 */
 	public final TableField<HrWxNoticeMessageRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "是否开启, 1:开启, 0:关闭");
 
 	/**
-	 * Create a <code>hrDB.hr_wx_notice_message</code> table reference
+	 * Create a <code>hrdb.hr_wx_notice_message</code> table reference
 	 */
 	public HrWxNoticeMessage() {
 		this("hr_wx_notice_message", null);
 	}
 
 	/**
-	 * Create an aliased <code>hrDB.hr_wx_notice_message</code> table reference
+	 * Create an aliased <code>hrdb.hr_wx_notice_message</code> table reference
 	 */
 	public HrWxNoticeMessage(String alias) {
 		this(alias, HR_WX_NOTICE_MESSAGE);

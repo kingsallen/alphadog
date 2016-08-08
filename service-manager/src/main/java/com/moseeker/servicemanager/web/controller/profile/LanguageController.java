@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.moseeker.rpccenter.common.ServiceUtil;
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -18,12 +18,13 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.LanguageServices;
 import com.moseeker.thrift.gen.profile.struct.Language;
 
+//@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
 public class LanguageController {
 
 	Logger logger = LoggerFactory.getLogger(LanguageController.class);
 
-	LanguageServices.Iface languageService = ServiceUtil.getService(LanguageServices.Iface.class);
+	LanguageServices.Iface languageService = ServiceManager.SERVICEMANAGER.getService(LanguageServices.Iface.class);
 	
 	@RequestMapping(value = "/profile/language", method = RequestMethod.GET)
 	@ResponseBody

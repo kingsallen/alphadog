@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.moseeker.rpccenter.common.ServiceUtil;
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -18,12 +18,14 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.CredentialsServices;
 import com.moseeker.thrift.gen.profile.struct.Credentials;
 
+//@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
 public class CredentialsController {
 
 	Logger logger = LoggerFactory.getLogger(CredentialsController.class);
 
-	CredentialsServices.Iface credentialsService = ServiceUtil.getService(CredentialsServices.Iface.class);
+	CredentialsServices.Iface credentialsService = ServiceManager.SERVICEMANAGER
+			.getService(CredentialsServices.Iface.class);
 	
 	@RequestMapping(value = "/profile/credentials", method = RequestMethod.GET)
 	@ResponseBody

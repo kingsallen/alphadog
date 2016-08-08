@@ -36,10 +36,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogUserloginRecord extends TableImpl<LogUserloginRecordRecord> {
 
-	private static final long serialVersionUID = 988436110;
+	private static final long serialVersionUID = -226500978;
 
 	/**
-	 * The reference instance of <code>logDB.log_userlogin_record</code>
+	 * The reference instance of <code>logdb.log_userlogin_record</code>
 	 */
 	public static final LogUserloginRecord LOG_USERLOGIN_RECORD = new LogUserloginRecord();
 
@@ -52,39 +52,39 @@ public class LogUserloginRecord extends TableImpl<LogUserloginRecordRecord> {
 	}
 
 	/**
-	 * The column <code>logDB.log_userlogin_record.id</code>. 主key
+	 * The column <code>logdb.log_userlogin_record.id</code>. 主key
 	 */
 	public final TableField<LogUserloginRecordRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
 
 	/**
-	 * The column <code>logDB.log_userlogin_record.user_id</code>.
+	 * The column <code>logdb.log_userlogin_record.user_id</code>.
 	 */
 	public final TableField<LogUserloginRecordRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
 	/**
-	 * The column <code>logDB.log_userlogin_record.actiontype</code>. 1 登陆 2 登出
+	 * The column <code>logdb.log_userlogin_record.actiontype</code>. 1 登陆 2 登出
 	 */
 	public final TableField<LogUserloginRecordRecord, Integer> ACTIONTYPE = createField("actiontype", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "1 登陆 2 登出");
 
 	/**
-	 * The column <code>logDB.log_userlogin_record.ip</code>.
+	 * The column <code>logdb.log_userlogin_record.ip</code>.
 	 */
 	public final TableField<LogUserloginRecordRecord, String> IP = createField("ip", org.jooq.impl.SQLDataType.VARCHAR.length(20), this, "");
 
 	/**
-	 * The column <code>logDB.log_userlogin_record.create_time</code>.
+	 * The column <code>logdb.log_userlogin_record.create_time</code>.
 	 */
 	public final TableField<LogUserloginRecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * Create a <code>logDB.log_userlogin_record</code> table reference
+	 * Create a <code>logdb.log_userlogin_record</code> table reference
 	 */
 	public LogUserloginRecord() {
 		this("log_userlogin_record", null);
 	}
 
 	/**
-	 * Create an aliased <code>logDB.log_userlogin_record</code> table reference
+	 * Create an aliased <code>logdb.log_userlogin_record</code> table reference
 	 */
 	public LogUserloginRecord(String alias) {
 		this(alias, LOG_USERLOGIN_RECORD);

@@ -31,115 +31,115 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileWorksRecord extends UpdatableRecordImpl<ProfileWorksRecord> implements Record8<UInteger, UInteger, String, String, String, String, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = 1584091802;
+	private static final long serialVersionUID = -1319179622;
 
 	/**
-	 * Setter for <code>profileDB.profile_works.id</code>. 主key
+	 * Setter for <code>profiledb.profile_works.id</code>. 主key
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_works.id</code>. 主key
+	 * Getter for <code>profiledb.profile_works.id</code>. 主key
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_works.profile_id</code>. profile.id
+	 * Setter for <code>profiledb.profile_works.profile_id</code>. profile.id
 	 */
 	public void setProfileId(UInteger value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_works.profile_id</code>. profile.id
+	 * Getter for <code>profiledb.profile_works.profile_id</code>. profile.id
 	 */
 	public UInteger getProfileId() {
 		return (UInteger) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_works.name</code>. 作品名称
+	 * Setter for <code>profiledb.profile_works.name</code>. 作品名称
 	 */
 	public void setName(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_works.name</code>. 作品名称
+	 * Getter for <code>profiledb.profile_works.name</code>. 作品名称
 	 */
 	public String getName() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_works.url</code>. 作品网址
+	 * Setter for <code>profiledb.profile_works.url</code>. 作品网址
 	 */
 	public void setUrl(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_works.url</code>. 作品网址
+	 * Getter for <code>profiledb.profile_works.url</code>. 作品网址
 	 */
 	public String getUrl() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_works.cover</code>. 作品封面
+	 * Setter for <code>profiledb.profile_works.cover</code>. 作品封面
 	 */
 	public void setCover(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_works.cover</code>. 作品封面
+	 * Getter for <code>profiledb.profile_works.cover</code>. 作品封面
 	 */
 	public String getCover() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_works.description</code>. 作品描述
+	 * Setter for <code>profiledb.profile_works.description</code>. 作品描述
 	 */
 	public void setDescription(String value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_works.description</code>. 作品描述
+	 * Getter for <code>profiledb.profile_works.description</code>. 作品描述
 	 */
 	public String getDescription() {
 		return (String) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_works.create_time</code>. 创建时间
+	 * Setter for <code>profiledb.profile_works.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_works.create_time</code>. 创建时间
+	 * Getter for <code>profiledb.profile_works.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_works.update_time</code>. 更新时间
+	 * Setter for <code>profiledb.profile_works.update_time</code>. 更新时间
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_works.update_time</code>. 更新时间
+	 * Getter for <code>profiledb.profile_works.update_time</code>. 更新时间
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(7);

@@ -36,10 +36,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateSuggestPosition extends TableImpl<CandidateSuggestPositionRecord> {
 
-	private static final long serialVersionUID = -2063728874;
+	private static final long serialVersionUID = -1781926122;
 
 	/**
-	 * The reference instance of <code>candidateDB.candidate_suggest_position</code>
+	 * The reference instance of <code>candidatedb.candidate_suggest_position</code>
 	 */
 	public static final CandidateSuggestPosition CANDIDATE_SUGGEST_POSITION = new CandidateSuggestPosition();
 
@@ -52,49 +52,49 @@ public class CandidateSuggestPosition extends TableImpl<CandidateSuggestPosition
 	}
 
 	/**
-	 * The column <code>candidateDB.candidate_suggest_position.id</code>.
+	 * The column <code>candidatedb.candidate_suggest_position.id</code>.
 	 */
 	public final TableField<CandidateSuggestPositionRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
 
 	/**
-	 * The column <code>candidateDB.candidate_suggest_position.hraccount_id</code>. 做职位推荐的账号编号 hr_account.id
+	 * The column <code>candidatedb.candidate_suggest_position.hraccount_id</code>. 做职位推荐的账号编号 hr_account.id
 	 */
 	public final TableField<CandidateSuggestPositionRecord, Integer> HRACCOUNT_ID = createField("hraccount_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "做职位推荐的账号编号 hr_account.id");
 
 	/**
-	 * The column <code>candidateDB.candidate_suggest_position.position_id</code>. hr_position.id
+	 * The column <code>candidatedb.candidate_suggest_position.position_id</code>. hr_position.id
 	 */
 	public final TableField<CandidateSuggestPositionRecord, Integer> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "hr_position.id");
 
 	/**
-	 * The column <code>candidateDB.candidate_suggest_position.wxuser_id</code>. wx_group_user.id
+	 * The column <code>candidatedb.candidate_suggest_position.wxuser_id</code>. wx_group_user.id
 	 */
 	public final TableField<CandidateSuggestPositionRecord, Integer> WXUSER_ID = createField("wxuser_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "wx_group_user.id");
 
 	/**
-	 * The column <code>candidateDB.candidate_suggest_position.create_time</code>. 创建时间
+	 * The column <code>candidatedb.candidate_suggest_position.create_time</code>. 创建时间
 	 */
 	public final TableField<CandidateSuggestPositionRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "创建时间");
 
 	/**
-	 * The column <code>candidateDB.candidate_suggest_position.update_time</code>. 修改时间
+	 * The column <code>candidatedb.candidate_suggest_position.update_time</code>. 修改时间
 	 */
 	public final TableField<CandidateSuggestPositionRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "修改时间");
 
 	/**
-	 * The column <code>candidateDB.candidate_suggest_position.disable</code>. 是否生效 0：生效 1：不生效
+	 * The column <code>candidatedb.candidate_suggest_position.disable</code>. 是否生效 0：生效 1：不生效
 	 */
 	public final TableField<CandidateSuggestPositionRecord, Integer> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "是否生效 0：生效 1：不生效");
 
 	/**
-	 * Create a <code>candidateDB.candidate_suggest_position</code> table reference
+	 * Create a <code>candidatedb.candidate_suggest_position</code> table reference
 	 */
 	public CandidateSuggestPosition() {
 		this("candidate_suggest_position", null);
 	}
 
 	/**
-	 * Create an aliased <code>candidateDB.candidate_suggest_position</code> table reference
+	 * Create an aliased <code>candidatedb.candidate_suggest_position</code> table reference
 	 */
 	public CandidateSuggestPosition(String alias) {
 		this(alias, CANDIDATE_SUGGEST_POSITION);

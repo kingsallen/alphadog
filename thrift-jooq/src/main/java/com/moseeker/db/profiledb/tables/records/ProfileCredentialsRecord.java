@@ -32,143 +32,143 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileCredentialsRecord extends UpdatableRecordImpl<ProfileCredentialsRecord> implements Record10<UInteger, UInteger, String, String, String, String, Date, String, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = -1550024908;
+	private static final long serialVersionUID = -392523980;
 
 	/**
-	 * Setter for <code>profileDB.profile_credentials.id</code>. 主key
+	 * Setter for <code>profiledb.profile_credentials.id</code>. 主key
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_credentials.id</code>. 主key
+	 * Getter for <code>profiledb.profile_credentials.id</code>. 主key
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_credentials.profile_id</code>. profile.id
+	 * Setter for <code>profiledb.profile_credentials.profile_id</code>. profile.id
 	 */
 	public void setProfileId(UInteger value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_credentials.profile_id</code>. profile.id
+	 * Getter for <code>profiledb.profile_credentials.profile_id</code>. profile.id
 	 */
 	public UInteger getProfileId() {
 		return (UInteger) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_credentials.name</code>. 证书名称
+	 * Setter for <code>profiledb.profile_credentials.name</code>. 证书名称
 	 */
 	public void setName(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_credentials.name</code>. 证书名称
+	 * Getter for <code>profiledb.profile_credentials.name</code>. 证书名称
 	 */
 	public String getName() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_credentials.organization</code>. 证书机构
+	 * Setter for <code>profiledb.profile_credentials.organization</code>. 证书机构
 	 */
 	public void setOrganization(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_credentials.organization</code>. 证书机构
+	 * Getter for <code>profiledb.profile_credentials.organization</code>. 证书机构
 	 */
 	public String getOrganization() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_credentials.code</code>. 证书编码
+	 * Setter for <code>profiledb.profile_credentials.code</code>. 证书编码
 	 */
 	public void setCode(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_credentials.code</code>. 证书编码
+	 * Getter for <code>profiledb.profile_credentials.code</code>. 证书编码
 	 */
 	public String getCode() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_credentials.url</code>. 认证链接
+	 * Setter for <code>profiledb.profile_credentials.url</code>. 认证链接
 	 */
 	public void setUrl(String value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_credentials.url</code>. 认证链接
+	 * Getter for <code>profiledb.profile_credentials.url</code>. 认证链接
 	 */
 	public String getUrl() {
 		return (String) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_credentials.get_date</code>. 获得时间
+	 * Setter for <code>profiledb.profile_credentials.get_date</code>. 获得时间
 	 */
 	public void setGetDate(Date value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_credentials.get_date</code>. 获得时间
+	 * Getter for <code>profiledb.profile_credentials.get_date</code>. 获得时间
 	 */
 	public Date getGetDate() {
 		return (Date) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_credentials.score</code>. 成绩
+	 * Setter for <code>profiledb.profile_credentials.score</code>. 成绩
 	 */
 	public void setScore(String value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_credentials.score</code>. 成绩
+	 * Getter for <code>profiledb.profile_credentials.score</code>. 成绩
 	 */
 	public String getScore() {
 		return (String) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_credentials.create_time</code>. 创建时间
+	 * Setter for <code>profiledb.profile_credentials.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_credentials.create_time</code>. 创建时间
+	 * Getter for <code>profiledb.profile_credentials.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>profileDB.profile_credentials.update_time</code>. 更新时间
+	 * Setter for <code>profiledb.profile_credentials.update_time</code>. 更新时间
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>profileDB.profile_credentials.update_time</code>. 更新时间
+	 * Getter for <code>profiledb.profile_credentials.update_time</code>. 更新时间
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(9);

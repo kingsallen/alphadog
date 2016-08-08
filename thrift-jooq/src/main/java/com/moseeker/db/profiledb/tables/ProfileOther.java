@@ -35,10 +35,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileOther extends TableImpl<ProfileOtherRecord> {
 
-	private static final long serialVersionUID = 1322689331;
+	private static final long serialVersionUID = -259188941;
 
 	/**
-	 * The reference instance of <code>profileDB.profile_other</code>
+	 * The reference instance of <code>profiledb.profile_other</code>
 	 */
 	public static final ProfileOther PROFILE_OTHER = new ProfileOther();
 
@@ -51,34 +51,34 @@ public class ProfileOther extends TableImpl<ProfileOtherRecord> {
 	}
 
 	/**
-	 * The column <code>profileDB.profile_other.profile_id</code>. profile.id
+	 * The column <code>profiledb.profile_other.profile_id</code>. profile.id
 	 */
 	public final TableField<ProfileOtherRecord, UInteger> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "profile.id");
 
 	/**
-	 * The column <code>profileDB.profile_other.other</code>. profile默认不显示字段
+	 * The column <code>profiledb.profile_other.other</code>. profile默认不显示字段
 	 */
 	public final TableField<ProfileOtherRecord, String> OTHER = createField("other", org.jooq.impl.SQLDataType.CLOB, this, "profile默认不显示字段");
 
 	/**
-	 * The column <code>profileDB.profile_other.create_time</code>. 创建时间
+	 * The column <code>profiledb.profile_other.create_time</code>. 创建时间
 	 */
 	public final TableField<ProfileOtherRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "创建时间");
 
 	/**
-	 * The column <code>profileDB.profile_other.update_time</code>. 更新时间
+	 * The column <code>profiledb.profile_other.update_time</code>. 更新时间
 	 */
 	public final TableField<ProfileOtherRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "更新时间");
 
 	/**
-	 * Create a <code>profileDB.profile_other</code> table reference
+	 * Create a <code>profiledb.profile_other</code> table reference
 	 */
 	public ProfileOther() {
 		this("profile_other", null);
 	}
 
 	/**
-	 * Create an aliased <code>profileDB.profile_other</code> table reference
+	 * Create an aliased <code>profiledb.profile_other</code> table reference
 	 */
 	public ProfileOther(String alias) {
 		this(alias, PROFILE_OTHER);

@@ -31,241 +31,241 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateRecomRecordRecord extends UpdatableRecordImpl<CandidateRecomRecordRecord> implements Record17<UInteger, Integer, Integer, Integer, Timestamp, Integer, Integer, Integer, String, String, String, String, Timestamp, Integer, Timestamp, Timestamp, String> {
 
-	private static final long serialVersionUID = -1985674793;
+	private static final long serialVersionUID = -378846761;
 
 	/**
-	 * Setter for <code>candidateDB.candidate_recom_record.id</code>. 主key
+	 * Setter for <code>candidatedb.candidate_recom_record.id</code>. 主key
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_recom_record.id</code>. 主key
+	 * Getter for <code>candidatedb.candidate_recom_record.id</code>. 主key
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_recom_record.position_id</code>. 推荐的职位ID, hr_position.id
+	 * Setter for <code>candidatedb.candidate_recom_record.position_id</code>. 推荐的职位ID, hr_position.id
 	 */
 	public void setPositionId(Integer value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_recom_record.position_id</code>. 推荐的职位ID, hr_position.id
+	 * Getter for <code>candidatedb.candidate_recom_record.position_id</code>. 推荐的职位ID, hr_position.id
 	 */
 	public Integer getPositionId() {
 		return (Integer) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_recom_record.app_id</code>. job_application.id, 被推荐者申请ID
+	 * Setter for <code>candidatedb.candidate_recom_record.app_id</code>. job_application.id, 被推荐者申请ID
 	 */
 	public void setAppId(Integer value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_recom_record.app_id</code>. job_application.id, 被推荐者申请ID
+	 * Getter for <code>candidatedb.candidate_recom_record.app_id</code>. job_application.id, 被推荐者申请ID
 	 */
 	public Integer getAppId() {
 		return (Integer) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_recom_record.presentee_id</code>. wx_group_user.id, 被推荐者的微信ID
+	 * Setter for <code>candidatedb.candidate_recom_record.presentee_id</code>. wx_group_user.id, 被推荐者的微信ID
 	 */
 	public void setPresenteeId(Integer value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_recom_record.presentee_id</code>. wx_group_user.id, 被推荐者的微信ID
+	 * Getter for <code>candidatedb.candidate_recom_record.presentee_id</code>. wx_group_user.id, 被推荐者的微信ID
 	 */
 	public Integer getPresenteeId() {
 		return (Integer) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_recom_record.click_time</code>. 职位点击时间
+	 * Setter for <code>candidatedb.candidate_recom_record.click_time</code>. 职位点击时间
 	 */
 	public void setClickTime(Timestamp value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_recom_record.click_time</code>. 职位点击时间
+	 * Getter for <code>candidatedb.candidate_recom_record.click_time</code>. 职位点击时间
 	 */
 	public Timestamp getClickTime() {
 		return (Timestamp) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_recom_record.depth</code>. 第几层关系
+	 * Setter for <code>candidatedb.candidate_recom_record.depth</code>. 第几层关系
 	 */
 	public void setDepth(Integer value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_recom_record.depth</code>. 第几层关系
+	 * Getter for <code>candidatedb.candidate_recom_record.depth</code>. 第几层关系
 	 */
 	public Integer getDepth() {
 		return (Integer) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_recom_record.recom_id_2</code>. wx_group_user.id, 第2度人脉推荐人微信ID，用来标记谁的朋友
+	 * Setter for <code>candidatedb.candidate_recom_record.recom_id_2</code>. wx_group_user.id, 第2度人脉推荐人微信ID，用来标记谁的朋友
 	 */
 	public void setRecomId_2(Integer value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_recom_record.recom_id_2</code>. wx_group_user.id, 第2度人脉推荐人微信ID，用来标记谁的朋友
+	 * Getter for <code>candidatedb.candidate_recom_record.recom_id_2</code>. wx_group_user.id, 第2度人脉推荐人微信ID，用来标记谁的朋友
 	 */
 	public Integer getRecomId_2() {
 		return (Integer) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_recom_record.recom_id</code>. wx_group_user.id, 推荐者的微信ID
+	 * Setter for <code>candidatedb.candidate_recom_record.recom_id</code>. wx_group_user.id, 推荐者的微信ID
 	 */
 	public void setRecomId(Integer value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_recom_record.recom_id</code>. wx_group_user.id, 推荐者的微信ID
+	 * Getter for <code>candidatedb.candidate_recom_record.recom_id</code>. wx_group_user.id, 推荐者的微信ID
 	 */
 	public Integer getRecomId() {
 		return (Integer) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_recom_record.realname</code>. 被推荐人真实姓名
+	 * Setter for <code>candidatedb.candidate_recom_record.realname</code>. 被推荐人真实姓名
 	 */
 	public void setRealname(String value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_recom_record.realname</code>. 被推荐人真实姓名
+	 * Getter for <code>candidatedb.candidate_recom_record.realname</code>. 被推荐人真实姓名
 	 */
 	public String getRealname() {
 		return (String) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_recom_record.company</code>. 被推荐者目前就职公司
+	 * Setter for <code>candidatedb.candidate_recom_record.company</code>. 被推荐者目前就职公司
 	 */
 	public void setCompany(String value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_recom_record.company</code>. 被推荐者目前就职公司
+	 * Getter for <code>candidatedb.candidate_recom_record.company</code>. 被推荐者目前就职公司
 	 */
 	public String getCompany() {
 		return (String) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_recom_record.position</code>. 被推荐者的职位
+	 * Setter for <code>candidatedb.candidate_recom_record.position</code>. 被推荐者的职位
 	 */
 	public void setPosition(String value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_recom_record.position</code>. 被推荐者的职位
+	 * Getter for <code>candidatedb.candidate_recom_record.position</code>. 被推荐者的职位
 	 */
 	public String getPosition() {
 		return (String) getValue(10);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_recom_record.recom_reason</code>. 推荐理由, 逗号分隔
+	 * Setter for <code>candidatedb.candidate_recom_record.recom_reason</code>. 推荐理由, 逗号分隔
 	 */
 	public void setRecomReason(String value) {
 		setValue(11, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_recom_record.recom_reason</code>. 推荐理由, 逗号分隔
+	 * Getter for <code>candidatedb.candidate_recom_record.recom_reason</code>. 推荐理由, 逗号分隔
 	 */
 	public String getRecomReason() {
 		return (String) getValue(11);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_recom_record.recom_time</code>. 推荐时间
+	 * Setter for <code>candidatedb.candidate_recom_record.recom_time</code>. 推荐时间
 	 */
 	public void setRecomTime(Timestamp value) {
 		setValue(12, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_recom_record.recom_time</code>. 推荐时间
+	 * Getter for <code>candidatedb.candidate_recom_record.recom_time</code>. 推荐时间
 	 */
 	public Timestamp getRecomTime() {
 		return (Timestamp) getValue(12);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_recom_record.is_recom</code>. 推荐状态，0：推荐过，1：未推荐
+	 * Setter for <code>candidatedb.candidate_recom_record.is_recom</code>. 推荐状态，0：推荐过，1：未推荐
 	 */
 	public void setIsRecom(Integer value) {
 		setValue(13, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_recom_record.is_recom</code>. 推荐状态，0：推荐过，1：未推荐
+	 * Getter for <code>candidatedb.candidate_recom_record.is_recom</code>. 推荐状态，0：推荐过，1：未推荐
 	 */
 	public Integer getIsRecom() {
 		return (Integer) getValue(13);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_recom_record.create_time</code>. 创建时间
+	 * Setter for <code>candidatedb.candidate_recom_record.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(14, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_recom_record.create_time</code>. 创建时间
+	 * Getter for <code>candidatedb.candidate_recom_record.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(14);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_recom_record.update_time</code>. 更新时间
+	 * Setter for <code>candidatedb.candidate_recom_record.update_time</code>. 更新时间
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(15, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_recom_record.update_time</code>. 更新时间
+	 * Getter for <code>candidatedb.candidate_recom_record.update_time</code>. 更新时间
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(15);
 	}
 
 	/**
-	 * Setter for <code>candidateDB.candidate_recom_record.mobile</code>. 被推荐者的手机号
+	 * Setter for <code>candidatedb.candidate_recom_record.mobile</code>. 被推荐者的手机号
 	 */
 	public void setMobile(String value) {
 		setValue(16, value);
 	}
 
 	/**
-	 * Getter for <code>candidateDB.candidate_recom_record.mobile</code>. 被推荐者的手机号
+	 * Getter for <code>candidatedb.candidate_recom_record.mobile</code>. 被推荐者的手机号
 	 */
 	public String getMobile() {
 		return (String) getValue(16);

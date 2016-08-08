@@ -9,13 +9,13 @@ import com.moseeker.db.jobdb.tables.JobApplicationConf;
 import com.moseeker.db.jobdb.tables.JobApplicationStatusBeisen;
 import com.moseeker.db.jobdb.tables.JobPosition;
 import com.moseeker.db.jobdb.tables.JobPositionShareTplConf;
-import com.moseeker.db.jobdb.tables.JobResumeBasic;
+import com.moseeker.db.jobdb.tables.JobResumeOther;
 import com.moseeker.db.jobdb.tables.records.JobApplicationConfRecord;
 import com.moseeker.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.db.jobdb.tables.records.JobApplicationStatusBeisenRecord;
 import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.db.jobdb.tables.records.JobPositionShareTplConfRecord;
-import com.moseeker.db.jobdb.tables.records.JobResumeBasicRecord;
+import com.moseeker.db.jobdb.tables.records.JobResumeOtherRecord;
 
 import javax.annotation.Generated;
 
@@ -26,7 +26,7 @@ import org.jooq.types.UInteger;
 
 
 /**
- * A class modelling foreign key relationships between tables of the <code>jobDB</code> 
+ * A class modelling foreign key relationships between tables of the <code>jobdb</code> 
  * schema
  */
 @Generated(
@@ -48,7 +48,6 @@ public class Keys {
 	public static final Identity<JobApplicationStatusBeisenRecord, Integer> IDENTITY_JOB_APPLICATION_STATUS_BEISEN = Identities0.IDENTITY_JOB_APPLICATION_STATUS_BEISEN;
 	public static final Identity<JobPositionRecord, Integer> IDENTITY_JOB_POSITION = Identities0.IDENTITY_JOB_POSITION;
 	public static final Identity<JobPositionShareTplConfRecord, Integer> IDENTITY_JOB_POSITION_SHARE_TPL_CONF = Identities0.IDENTITY_JOB_POSITION_SHARE_TPL_CONF;
-	public static final Identity<JobResumeBasicRecord, Integer> IDENTITY_JOB_RESUME_BASIC = Identities0.IDENTITY_JOB_RESUME_BASIC;
 
 	// -------------------------------------------------------------------------
 	// UNIQUE and PRIMARY KEY definitions
@@ -59,7 +58,7 @@ public class Keys {
 	public static final UniqueKey<JobApplicationStatusBeisenRecord> KEY_JOB_APPLICATION_STATUS_BEISEN_PRIMARY = UniqueKeys0.KEY_JOB_APPLICATION_STATUS_BEISEN_PRIMARY;
 	public static final UniqueKey<JobPositionRecord> KEY_JOB_POSITION_PRIMARY = UniqueKeys0.KEY_JOB_POSITION_PRIMARY;
 	public static final UniqueKey<JobPositionShareTplConfRecord> KEY_JOB_POSITION_SHARE_TPL_CONF_PRIMARY = UniqueKeys0.KEY_JOB_POSITION_SHARE_TPL_CONF_PRIMARY;
-	public static final UniqueKey<JobResumeBasicRecord> KEY_JOB_RESUME_BASIC_PRIMARY = UniqueKeys0.KEY_JOB_RESUME_BASIC_PRIMARY;
+	public static final UniqueKey<JobResumeOtherRecord> KEY_JOB_RESUME_OTHER_PRIMARY = UniqueKeys0.KEY_JOB_RESUME_OTHER_PRIMARY;
 
 	// -------------------------------------------------------------------------
 	// FOREIGN KEY definitions
@@ -76,7 +75,6 @@ public class Keys {
 		public static Identity<JobApplicationStatusBeisenRecord, Integer> IDENTITY_JOB_APPLICATION_STATUS_BEISEN = createIdentity(JobApplicationStatusBeisen.JOB_APPLICATION_STATUS_BEISEN, JobApplicationStatusBeisen.JOB_APPLICATION_STATUS_BEISEN.ID);
 		public static Identity<JobPositionRecord, Integer> IDENTITY_JOB_POSITION = createIdentity(JobPosition.JOB_POSITION, JobPosition.JOB_POSITION.ID);
 		public static Identity<JobPositionShareTplConfRecord, Integer> IDENTITY_JOB_POSITION_SHARE_TPL_CONF = createIdentity(JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF, JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF.ID);
-		public static Identity<JobResumeBasicRecord, Integer> IDENTITY_JOB_RESUME_BASIC = createIdentity(JobResumeBasic.JOB_RESUME_BASIC, JobResumeBasic.JOB_RESUME_BASIC.ID);
 	}
 
 	private static class UniqueKeys0 extends AbstractKeys {
@@ -85,6 +83,6 @@ public class Keys {
 		public static final UniqueKey<JobApplicationStatusBeisenRecord> KEY_JOB_APPLICATION_STATUS_BEISEN_PRIMARY = createUniqueKey(JobApplicationStatusBeisen.JOB_APPLICATION_STATUS_BEISEN, JobApplicationStatusBeisen.JOB_APPLICATION_STATUS_BEISEN.ID);
 		public static final UniqueKey<JobPositionRecord> KEY_JOB_POSITION_PRIMARY = createUniqueKey(JobPosition.JOB_POSITION, JobPosition.JOB_POSITION.ID);
 		public static final UniqueKey<JobPositionShareTplConfRecord> KEY_JOB_POSITION_SHARE_TPL_CONF_PRIMARY = createUniqueKey(JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF, JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF.ID);
-		public static final UniqueKey<JobResumeBasicRecord> KEY_JOB_RESUME_BASIC_PRIMARY = createUniqueKey(JobResumeBasic.JOB_RESUME_BASIC, JobResumeBasic.JOB_RESUME_BASIC.ID);
+		public static final UniqueKey<JobResumeOtherRecord> KEY_JOB_RESUME_OTHER_PRIMARY = createUniqueKey(JobResumeOther.JOB_RESUME_OTHER, JobResumeOther.JOB_RESUME_OTHER.APP_ID);
 	}
 }

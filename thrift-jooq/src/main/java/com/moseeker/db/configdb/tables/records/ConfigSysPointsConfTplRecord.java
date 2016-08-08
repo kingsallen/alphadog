@@ -28,157 +28,157 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysPointsConfTplRecord extends UpdatableRecordImpl<ConfigSysPointsConfTplRecord> implements Record11<Integer, String, Integer, String, Integer, Integer, Integer, Byte, Byte, Integer, String> {
 
-	private static final long serialVersionUID = -1976780575;
+	private static final long serialVersionUID = -534816543;
 
 	/**
-	 * Setter for <code>configDB.config_sys_points_conf_tpl.id</code>. 主Key
+	 * Setter for <code>configdb.config_sys_points_conf_tpl.id</code>. 主Key
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_points_conf_tpl.id</code>. 主Key
+	 * Getter for <code>configdb.config_sys_points_conf_tpl.id</code>. 主Key
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_points_conf_tpl.status</code>. 申请状态
+	 * Setter for <code>configdb.config_sys_points_conf_tpl.status</code>. 申请状态
 	 */
 	public void setStatus(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_points_conf_tpl.status</code>. 申请状态
+	 * Getter for <code>configdb.config_sys_points_conf_tpl.status</code>. 申请状态
 	 */
 	public String getStatus() {
 		return (String) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_points_conf_tpl.award</code>. 奖励积分
+	 * Setter for <code>configdb.config_sys_points_conf_tpl.award</code>. 奖励积分
 	 */
 	public void setAward(Integer value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_points_conf_tpl.award</code>. 奖励积分
+	 * Getter for <code>configdb.config_sys_points_conf_tpl.award</code>. 奖励积分
 	 */
 	public Integer getAward() {
 		return (Integer) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_points_conf_tpl.description</code>. 描述
+	 * Setter for <code>configdb.config_sys_points_conf_tpl.description</code>. 描述
 	 */
 	public void setDescription(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_points_conf_tpl.description</code>. 描述
+	 * Getter for <code>configdb.config_sys_points_conf_tpl.description</code>. 描述
 	 */
 	public String getDescription() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_points_conf_tpl.disable</code>. 是否可用
+	 * Setter for <code>configdb.config_sys_points_conf_tpl.disable</code>. 是否可用
 	 */
 	public void setDisable(Integer value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_points_conf_tpl.disable</code>. 是否可用
+	 * Getter for <code>configdb.config_sys_points_conf_tpl.disable</code>. 是否可用
 	 */
 	public Integer getDisable() {
 		return (Integer) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_points_conf_tpl.priority</code>. 排序
+	 * Setter for <code>configdb.config_sys_points_conf_tpl.priority</code>. 排序
 	 */
 	public void setPriority(Integer value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_points_conf_tpl.priority</code>. 排序
+	 * Getter for <code>configdb.config_sys_points_conf_tpl.priority</code>. 排序
 	 */
 	public Integer getPriority() {
 		return (Integer) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_points_conf_tpl.type_id</code>. 多套模板
+	 * Setter for <code>configdb.config_sys_points_conf_tpl.type_id</code>. 多套模板
 	 */
 	public void setTypeId(Integer value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_points_conf_tpl.type_id</code>. 多套模板
+	 * Getter for <code>configdb.config_sys_points_conf_tpl.type_id</code>. 多套模板
 	 */
 	public Integer getTypeId() {
 		return (Integer) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_points_conf_tpl.tag</code>. inteview tag
+	 * Setter for <code>configdb.config_sys_points_conf_tpl.tag</code>. inteview tag
 	 */
 	public void setTag(Byte value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_points_conf_tpl.tag</code>. inteview tag
+	 * Getter for <code>configdb.config_sys_points_conf_tpl.tag</code>. inteview tag
 	 */
 	public Byte getTag() {
 		return (Byte) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_points_conf_tpl.is_init_award</code>. 推荐积分初始化0:需要 1:不需要
+	 * Setter for <code>configdb.config_sys_points_conf_tpl.is_init_award</code>. 推荐积分初始化0:需要 1:不需要
 	 */
 	public void setIsInitAward(Byte value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_points_conf_tpl.is_init_award</code>. 推荐积分初始化0:需要 1:不需要
+	 * Getter for <code>configdb.config_sys_points_conf_tpl.is_init_award</code>. 推荐积分初始化0:需要 1:不需要
 	 */
 	public Byte getIsInitAward() {
 		return (Byte) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_points_conf_tpl.recruit_order</code>. 招聘进度顺序
+	 * Setter for <code>configdb.config_sys_points_conf_tpl.recruit_order</code>. 招聘进度顺序
 	 */
 	public void setRecruitOrder(Integer value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_points_conf_tpl.recruit_order</code>. 招聘进度顺序
+	 * Getter for <code>configdb.config_sys_points_conf_tpl.recruit_order</code>. 招聘进度顺序
 	 */
 	public Integer getRecruitOrder() {
 		return (Integer) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_points_conf_tpl.applier_view</code>. 求职者的文案
+	 * Setter for <code>configdb.config_sys_points_conf_tpl.applier_view</code>. 求职者的文案
 	 */
 	public void setApplierView(String value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_points_conf_tpl.applier_view</code>. 求职者的文案
+	 * Getter for <code>configdb.config_sys_points_conf_tpl.applier_view</code>. 求职者的文案
 	 */
 	public String getApplierView() {
 		return (String) getValue(10);

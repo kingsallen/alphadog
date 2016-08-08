@@ -31,73 +31,73 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxWechatNoticeSyncStatusRecord extends UpdatableRecordImpl<HrWxWechatNoticeSyncStatusRecord> implements Record5<UInteger, UInteger, Integer, Integer, Timestamp> {
 
-	private static final long serialVersionUID = -788905390;
+	private static final long serialVersionUID = 1272203858;
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_wechat_notice_sync_status.id</code>. 主key
+	 * Setter for <code>hrdb.hr_wx_wechat_notice_sync_status.id</code>. 主key
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_wechat_notice_sync_status.id</code>. 主key
+	 * Getter for <code>hrdb.hr_wx_wechat_notice_sync_status.id</code>. 主key
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_wechat_notice_sync_status.wechat_id</code>. 所属公众号
+	 * Setter for <code>hrdb.hr_wx_wechat_notice_sync_status.wechat_id</code>. 所属公众号
 	 */
 	public void setWechatId(UInteger value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_wechat_notice_sync_status.wechat_id</code>. 所属公众号
+	 * Getter for <code>hrdb.hr_wx_wechat_notice_sync_status.wechat_id</code>. 所属公众号
 	 */
 	public UInteger getWechatId() {
 		return (UInteger) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_wechat_notice_sync_status.status</code>. 同步状态 0:成功, 1:行业修改失败, 2:模板数量超出上限, 3:接口调用失败
+	 * Setter for <code>hrdb.hr_wx_wechat_notice_sync_status.status</code>. 同步状态 0:成功, 1:行业修改失败, 2:模板数量超出上限, 3:接口调用失败
 	 */
 	public void setStatus(Integer value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_wechat_notice_sync_status.status</code>. 同步状态 0:成功, 1:行业修改失败, 2:模板数量超出上限, 3:接口调用失败
+	 * Getter for <code>hrdb.hr_wx_wechat_notice_sync_status.status</code>. 同步状态 0:成功, 1:行业修改失败, 2:模板数量超出上限, 3:接口调用失败
 	 */
 	public Integer getStatus() {
 		return (Integer) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_wechat_notice_sync_status.count</code>. 同步状态提示应该删除信息的数量
+	 * Setter for <code>hrdb.hr_wx_wechat_notice_sync_status.count</code>. 同步状态提示应该删除信息的数量
 	 */
 	public void setCount(Integer value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_wechat_notice_sync_status.count</code>. 同步状态提示应该删除信息的数量
+	 * Getter for <code>hrdb.hr_wx_wechat_notice_sync_status.count</code>. 同步状态提示应该删除信息的数量
 	 */
 	public Integer getCount() {
 		return (Integer) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_wechat_notice_sync_status.update_time</code>.
+	 * Setter for <code>hrdb.hr_wx_wechat_notice_sync_status.update_time</code>.
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_wechat_notice_sync_status.update_time</code>.
+	 * Getter for <code>hrdb.hr_wx_wechat_notice_sync_status.update_time</code>.
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(4);

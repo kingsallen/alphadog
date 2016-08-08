@@ -34,10 +34,10 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysPointsConfTpl extends TableImpl<ConfigSysPointsConfTplRecord> {
 
-	private static final long serialVersionUID = -137866160;
+	private static final long serialVersionUID = -1548784560;
 
 	/**
-	 * The reference instance of <code>configDB.config_sys_points_conf_tpl</code>
+	 * The reference instance of <code>configdb.config_sys_points_conf_tpl</code>
 	 */
 	public static final ConfigSysPointsConfTpl CONFIG_SYS_POINTS_CONF_TPL = new ConfigSysPointsConfTpl();
 
@@ -50,69 +50,69 @@ public class ConfigSysPointsConfTpl extends TableImpl<ConfigSysPointsConfTplReco
 	}
 
 	/**
-	 * The column <code>configDB.config_sys_points_conf_tpl.id</code>. 主Key
+	 * The column <code>configdb.config_sys_points_conf_tpl.id</code>. 主Key
 	 */
 	public final TableField<ConfigSysPointsConfTplRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "主Key");
 
 	/**
-	 * The column <code>configDB.config_sys_points_conf_tpl.status</code>. 申请状态
+	 * The column <code>configdb.config_sys_points_conf_tpl.status</code>. 申请状态
 	 */
 	public final TableField<ConfigSysPointsConfTplRecord, String> STATUS = createField("status", org.jooq.impl.SQLDataType.VARCHAR.length(20), this, "申请状态");
 
 	/**
-	 * The column <code>configDB.config_sys_points_conf_tpl.award</code>. 奖励积分
+	 * The column <code>configdb.config_sys_points_conf_tpl.award</code>. 奖励积分
 	 */
 	public final TableField<ConfigSysPointsConfTplRecord, Integer> AWARD = createField("award", org.jooq.impl.SQLDataType.INTEGER.defaulted(true), this, "奖励积分");
 
 	/**
-	 * The column <code>configDB.config_sys_points_conf_tpl.description</code>. 描述
+	 * The column <code>configdb.config_sys_points_conf_tpl.description</code>. 描述
 	 */
 	public final TableField<ConfigSysPointsConfTplRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.VARCHAR.length(256), this, "描述");
 
 	/**
-	 * The column <code>configDB.config_sys_points_conf_tpl.disable</code>. 是否可用
+	 * The column <code>configdb.config_sys_points_conf_tpl.disable</code>. 是否可用
 	 */
 	public final TableField<ConfigSysPointsConfTplRecord, Integer> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGER, this, "是否可用");
 
 	/**
-	 * The column <code>configDB.config_sys_points_conf_tpl.priority</code>. 排序
+	 * The column <code>configdb.config_sys_points_conf_tpl.priority</code>. 排序
 	 */
 	public final TableField<ConfigSysPointsConfTplRecord, Integer> PRIORITY = createField("priority", org.jooq.impl.SQLDataType.INTEGER, this, "排序");
 
 	/**
-	 * The column <code>configDB.config_sys_points_conf_tpl.type_id</code>. 多套模板
+	 * The column <code>configdb.config_sys_points_conf_tpl.type_id</code>. 多套模板
 	 */
 	public final TableField<ConfigSysPointsConfTplRecord, Integer> TYPE_ID = createField("type_id", org.jooq.impl.SQLDataType.INTEGER.defaulted(true), this, "多套模板");
 
 	/**
-	 * The column <code>configDB.config_sys_points_conf_tpl.tag</code>. inteview tag
+	 * The column <code>configdb.config_sys_points_conf_tpl.tag</code>. inteview tag
 	 */
 	public final TableField<ConfigSysPointsConfTplRecord, Byte> TAG = createField("tag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "inteview tag");
 
 	/**
-	 * The column <code>configDB.config_sys_points_conf_tpl.is_init_award</code>. 推荐积分初始化0:需要 1:不需要
+	 * The column <code>configdb.config_sys_points_conf_tpl.is_init_award</code>. 推荐积分初始化0:需要 1:不需要
 	 */
 	public final TableField<ConfigSysPointsConfTplRecord, Byte> IS_INIT_AWARD = createField("is_init_award", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "推荐积分初始化0:需要 1:不需要");
 
 	/**
-	 * The column <code>configDB.config_sys_points_conf_tpl.recruit_order</code>. 招聘进度顺序
+	 * The column <code>configdb.config_sys_points_conf_tpl.recruit_order</code>. 招聘进度顺序
 	 */
 	public final TableField<ConfigSysPointsConfTplRecord, Integer> RECRUIT_ORDER = createField("recruit_order", org.jooq.impl.SQLDataType.INTEGER.defaulted(true), this, "招聘进度顺序");
 
 	/**
-	 * The column <code>configDB.config_sys_points_conf_tpl.applier_view</code>. 求职者的文案
+	 * The column <code>configdb.config_sys_points_conf_tpl.applier_view</code>. 求职者的文案
 	 */
 	public final TableField<ConfigSysPointsConfTplRecord, String> APPLIER_VIEW = createField("applier_view", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaulted(true), this, "求职者的文案");
 
 	/**
-	 * Create a <code>configDB.config_sys_points_conf_tpl</code> table reference
+	 * Create a <code>configdb.config_sys_points_conf_tpl</code> table reference
 	 */
 	public ConfigSysPointsConfTpl() {
 		this("config_sys_points_conf_tpl", null);
 	}
 
 	/**
-	 * Create an aliased <code>configDB.config_sys_points_conf_tpl</code> table reference
+	 * Create an aliased <code>configdb.config_sys_points_conf_tpl</code> table reference
 	 */
 	public ConfigSysPointsConfTpl(String alias) {
 		this(alias, CONFIG_SYS_POINTS_CONF_TPL);

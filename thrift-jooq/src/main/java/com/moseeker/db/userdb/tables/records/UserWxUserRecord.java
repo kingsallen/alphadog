@@ -33,297 +33,297 @@ import org.jooq.types.ULong;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserWxUserRecord extends UpdatableRecordImpl<UserWxUserRecord> implements Record21<ULong, UInteger, UInteger, Integer, UByte, String, String, Integer, String, String, String, String, String, Timestamp, Timestamp, String, Integer, Byte, Timestamp, Timestamp, Byte> {
 
-	private static final long serialVersionUID = -1111190453;
+	private static final long serialVersionUID = 648367985;
 
 	/**
-	 * Setter for <code>userDB.user_wx_user.id</code>. 主key
+	 * Setter for <code>userdb.user_wx_user.id</code>. 主key
 	 */
 	public void setId(ULong value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_wx_user.id</code>. 主key
+	 * Getter for <code>userdb.user_wx_user.id</code>. 主key
 	 */
 	public ULong getId() {
 		return (ULong) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_wx_user.wechat_id</code>. 所属公众号
+	 * Setter for <code>userdb.user_wx_user.wechat_id</code>. 所属公众号
 	 */
 	public void setWechatId(UInteger value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_wx_user.wechat_id</code>. 所属公众号
+	 * Getter for <code>userdb.user_wx_user.wechat_id</code>. 所属公众号
 	 */
 	public UInteger getWechatId() {
 		return (UInteger) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_wx_user.group_id</code>. 分组ID
+	 * Setter for <code>userdb.user_wx_user.group_id</code>. 分组ID
 	 */
 	public void setGroupId(UInteger value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_wx_user.group_id</code>. 分组ID
+	 * Getter for <code>userdb.user_wx_user.group_id</code>. 分组ID
 	 */
 	public UInteger getGroupId() {
 		return (UInteger) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_wx_user.sysuser_id</code>.
+	 * Setter for <code>userdb.user_wx_user.sysuser_id</code>. user_user.id, C端用户ID
 	 */
 	public void setSysuserId(Integer value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_wx_user.sysuser_id</code>.
+	 * Getter for <code>userdb.user_wx_user.sysuser_id</code>. user_user.id, C端用户ID
 	 */
 	public Integer getSysuserId() {
 		return (Integer) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_wx_user.is_subscribe</code>. 是否关注 1:关注 0：没关注
+	 * Setter for <code>userdb.user_wx_user.is_subscribe</code>. 是否关注 1:关注 0：没关注
 	 */
 	public void setIsSubscribe(UByte value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_wx_user.is_subscribe</code>. 是否关注 1:关注 0：没关注
+	 * Getter for <code>userdb.user_wx_user.is_subscribe</code>. 是否关注 1:关注 0：没关注
 	 */
 	public UByte getIsSubscribe() {
 		return (UByte) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_wx_user.openid</code>. 用户标示
+	 * Setter for <code>userdb.user_wx_user.openid</code>. 用户标示
 	 */
 	public void setOpenid(String value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_wx_user.openid</code>. 用户标示
+	 * Getter for <code>userdb.user_wx_user.openid</code>. 用户标示
 	 */
 	public String getOpenid() {
 		return (String) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_wx_user.nickname</code>. 用户昵称
+	 * Setter for <code>userdb.user_wx_user.nickname</code>. 用户昵称
 	 */
 	public void setNickname(String value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_wx_user.nickname</code>. 用户昵称
+	 * Getter for <code>userdb.user_wx_user.nickname</code>. 用户昵称
 	 */
 	public String getNickname() {
 		return (String) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_wx_user.sex</code>. 用户性别 0:未知 1:男性 2:女性
+	 * Setter for <code>userdb.user_wx_user.sex</code>. 用户性别 0:未知 1:男性 2:女性
 	 */
 	public void setSex(Integer value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_wx_user.sex</code>. 用户性别 0:未知 1:男性 2:女性
+	 * Getter for <code>userdb.user_wx_user.sex</code>. 用户性别 0:未知 1:男性 2:女性
 	 */
 	public Integer getSex() {
 		return (Integer) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_wx_user.city</code>. 用户所在城市
+	 * Setter for <code>userdb.user_wx_user.city</code>. 用户所在城市
 	 */
 	public void setCity(String value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_wx_user.city</code>. 用户所在城市
+	 * Getter for <code>userdb.user_wx_user.city</code>. 用户所在城市
 	 */
 	public String getCity() {
 		return (String) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_wx_user.country</code>. 用户所在国家
+	 * Setter for <code>userdb.user_wx_user.country</code>. 用户所在国家
 	 */
 	public void setCountry(String value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_wx_user.country</code>. 用户所在国家
+	 * Getter for <code>userdb.user_wx_user.country</code>. 用户所在国家
 	 */
 	public String getCountry() {
 		return (String) getValue(9);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_wx_user.province</code>. 用户所在省份
+	 * Setter for <code>userdb.user_wx_user.province</code>. 用户所在省份
 	 */
 	public void setProvince(String value) {
 		setValue(10, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_wx_user.province</code>. 用户所在省份
+	 * Getter for <code>userdb.user_wx_user.province</code>. 用户所在省份
 	 */
 	public String getProvince() {
 		return (String) getValue(10);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_wx_user.language</code>. 用户语言
+	 * Setter for <code>userdb.user_wx_user.language</code>. 用户语言
 	 */
 	public void setLanguage(String value) {
 		setValue(11, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_wx_user.language</code>. 用户语言
+	 * Getter for <code>userdb.user_wx_user.language</code>. 用户语言
 	 */
 	public String getLanguage() {
 		return (String) getValue(11);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_wx_user.headimgurl</code>. 用户头像
+	 * Setter for <code>userdb.user_wx_user.headimgurl</code>. 用户头像
 	 */
 	public void setHeadimgurl(String value) {
 		setValue(12, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_wx_user.headimgurl</code>. 用户头像
+	 * Getter for <code>userdb.user_wx_user.headimgurl</code>. 用户头像
 	 */
 	public String getHeadimgurl() {
 		return (String) getValue(12);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_wx_user.subscribe_time</code>. 用户关注时间
+	 * Setter for <code>userdb.user_wx_user.subscribe_time</code>. 用户关注时间
 	 */
 	public void setSubscribeTime(Timestamp value) {
 		setValue(13, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_wx_user.subscribe_time</code>. 用户关注时间
+	 * Getter for <code>userdb.user_wx_user.subscribe_time</code>. 用户关注时间
 	 */
 	public Timestamp getSubscribeTime() {
 		return (Timestamp) getValue(13);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_wx_user.unsubscibe_time</code>.
+	 * Setter for <code>userdb.user_wx_user.unsubscibe_time</code>.
 	 */
 	public void setUnsubscibeTime(Timestamp value) {
 		setValue(14, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_wx_user.unsubscibe_time</code>.
+	 * Getter for <code>userdb.user_wx_user.unsubscibe_time</code>.
 	 */
 	public Timestamp getUnsubscibeTime() {
 		return (Timestamp) getValue(14);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_wx_user.unionid</code>. UnionID
+	 * Setter for <code>userdb.user_wx_user.unionid</code>. UnionID
 	 */
 	public void setUnionid(String value) {
 		setValue(15, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_wx_user.unionid</code>. UnionID
+	 * Getter for <code>userdb.user_wx_user.unionid</code>. UnionID
 	 */
 	public String getUnionid() {
 		return (String) getValue(15);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_wx_user.reward</code>. 积分奖励，暂时不用
+	 * Setter for <code>userdb.user_wx_user.reward</code>. 积分奖励，暂时不用
 	 */
 	public void setReward(Integer value) {
 		setValue(16, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_wx_user.reward</code>. 积分奖励，暂时不用
+	 * Getter for <code>userdb.user_wx_user.reward</code>. 积分奖励，暂时不用
 	 */
 	public Integer getReward() {
 		return (Integer) getValue(16);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_wx_user.auto_sync_info</code>. 0：需要处理，1：处理过了
+	 * Setter for <code>userdb.user_wx_user.auto_sync_info</code>. 0：需要处理，1：处理过了
 	 */
 	public void setAutoSyncInfo(Byte value) {
 		setValue(17, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_wx_user.auto_sync_info</code>. 0：需要处理，1：处理过了
+	 * Getter for <code>userdb.user_wx_user.auto_sync_info</code>. 0：需要处理，1：处理过了
 	 */
 	public Byte getAutoSyncInfo() {
 		return (Byte) getValue(17);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_wx_user.create_time</code>. 创建时间
+	 * Setter for <code>userdb.user_wx_user.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(18, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_wx_user.create_time</code>. 创建时间
+	 * Getter for <code>userdb.user_wx_user.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(18);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_wx_user.update_time</code>.
+	 * Setter for <code>userdb.user_wx_user.update_time</code>.
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(19, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_wx_user.update_time</code>.
+	 * Getter for <code>userdb.user_wx_user.update_time</code>.
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(19);
 	}
 
 	/**
-	 * Setter for <code>userDB.user_wx_user.source</code>. insert来源 1:SUBSCRIBED 2:UNSUBSCRIBED 3:订阅号调用api的48001 4:oauth 5:update all 6:update short 7:oauth update 8:微信扫码注册 9:upd unionid 10:upd sysuser, 11:ups sysnuser 12：微信端我也要招人注册
+	 * Setter for <code>userdb.user_wx_user.source</code>. insert来源 1:SUBSCRIBED 2:UNSUBSCRIBED 3:订阅号调用api的48001 4:oauth 5:update all 6:update short 7:oauth update 8:微信扫码注册 9:upd unionid 10:upd sysuser, 11:ups sysnuser 12：微信端我也要招人注册
 	 */
 	public void setSource(Byte value) {
 		setValue(20, value);
 	}
 
 	/**
-	 * Getter for <code>userDB.user_wx_user.source</code>. insert来源 1:SUBSCRIBED 2:UNSUBSCRIBED 3:订阅号调用api的48001 4:oauth 5:update all 6:update short 7:oauth update 8:微信扫码注册 9:upd unionid 10:upd sysuser, 11:ups sysnuser 12：微信端我也要招人注册
+	 * Getter for <code>userdb.user_wx_user.source</code>. insert来源 1:SUBSCRIBED 2:UNSUBSCRIBED 3:订阅号调用api的48001 4:oauth 5:update all 6:update short 7:oauth update 8:微信扫码注册 9:upd unionid 10:upd sysuser, 11:ups sysnuser 12：微信端我也要招人注册
 	 */
 	public Byte getSource() {
 		return (Byte) getValue(20);

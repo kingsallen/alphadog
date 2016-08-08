@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jooq.DSLContext;
+import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
 import org.jooq.types.UInteger;
@@ -44,9 +45,9 @@ public class IndustryDaoImpl extends
 						selectCondition.or(DictIndustry.DICT_INDUSTRY.CODE.equal(UInteger.valueOf(industryCodes.get(i))));
 					}
 				}
+				records = selectCondition.fetch();
 			}
-			records = selectCondition.fetch();
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		} finally {
 			try {
@@ -61,5 +62,32 @@ public class IndustryDaoImpl extends
 		}
 		
 		return records;
+	}
+
+	@Override
+	public DictIndustryRecord getIndustryByCode(int intValue) {
+		DictIndustryRecord record = null;
+		Connection conn = null;
+		try {
+			conn = DBConnHelper.DBConn.getConn();
+			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+			Result<DictIndustryRecord> result= create.selectFrom(DictIndustry.DICT_INDUSTRY).where(DictIndustry.DICT_INDUSTRY.CODE.equal(UInteger.valueOf(intValue))).limit(1).fetch();
+			if(result != null && result.size() > 0) {
+				record = result.get(0);
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		} finally {
+			try {
+				if(conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				logger.error(e.getMessage(), e);
+			} finally {
+				//do nothing
+			}
+		}
+		return record;
 	}
 }

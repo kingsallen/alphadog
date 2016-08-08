@@ -31,73 +31,73 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxImageReplyRecord extends UpdatableRecordImpl<HrWxImageReplyRecord> implements Record5<Integer, UInteger, String, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = -1121804170;
+	private static final long serialVersionUID = -80500618;
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_image_reply.id</code>.
+	 * Setter for <code>hrdb.hr_wx_image_reply.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_image_reply.id</code>.
+	 * Getter for <code>hrdb.hr_wx_image_reply.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_image_reply.rid</code>. wx_rule.id, 规则ID
+	 * Setter for <code>hrdb.hr_wx_image_reply.rid</code>. wx_rule.id, 规则ID
 	 */
 	public void setRid(UInteger value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_image_reply.rid</code>. wx_rule.id, 规则ID
+	 * Getter for <code>hrdb.hr_wx_image_reply.rid</code>. wx_rule.id, 规则ID
 	 */
 	public UInteger getRid() {
 		return (UInteger) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_image_reply.image</code>. 回复图片的相对路径
+	 * Setter for <code>hrdb.hr_wx_image_reply.image</code>. 回复图片的相对路径
 	 */
 	public void setImage(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_image_reply.image</code>. 回复图片的相对路径
+	 * Getter for <code>hrdb.hr_wx_image_reply.image</code>. 回复图片的相对路径
 	 */
 	public String getImage() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_image_reply.create_time</code>.
+	 * Setter for <code>hrdb.hr_wx_image_reply.create_time</code>.
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_image_reply.create_time</code>.
+	 * Getter for <code>hrdb.hr_wx_image_reply.create_time</code>.
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_wx_image_reply.update_time</code>.
+	 * Setter for <code>hrdb.hr_wx_image_reply.update_time</code>.
 	 */
 	public void setUpdateTime(Timestamp value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_wx_image_reply.update_time</code>.
+	 * Getter for <code>hrdb.hr_wx_image_reply.update_time</code>.
 	 */
 	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(4);

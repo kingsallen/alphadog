@@ -35,10 +35,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserWxViewer extends TableImpl<UserWxViewerRecord> {
 
-	private static final long serialVersionUID = -916546607;
+	private static final long serialVersionUID = 2127996881;
 
 	/**
-	 * The reference instance of <code>userDB.user_wx_viewer</code>
+	 * The reference instance of <code>userdb.user_wx_viewer</code>
 	 */
 	public static final UserWxViewer USER_WX_VIEWER = new UserWxViewer();
 
@@ -51,34 +51,34 @@ public class UserWxViewer extends TableImpl<UserWxViewerRecord> {
 	}
 
 	/**
-	 * The column <code>userDB.user_wx_viewer.id</code>. 主key
+	 * The column <code>userdb.user_wx_viewer.id</code>. 主key
 	 */
 	public final TableField<UserWxViewerRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
 
 	/**
-	 * The column <code>userDB.user_wx_viewer.sysuser_id</code>.
+	 * The column <code>userdb.user_wx_viewer.sysuser_id</code>.
 	 */
 	public final TableField<UserWxViewerRecord, Integer> SYSUSER_ID = createField("sysuser_id", org.jooq.impl.SQLDataType.INTEGER.defaulted(true), this, "");
 
 	/**
-	 * The column <code>userDB.user_wx_viewer.idcode</code>.
+	 * The column <code>userdb.user_wx_viewer.idcode</code>.
 	 */
 	public final TableField<UserWxViewerRecord, String> IDCODE = createField("idcode", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false), this, "");
 
 	/**
-	 * The column <code>userDB.user_wx_viewer.client_type</code>.
+	 * The column <code>userdb.user_wx_viewer.client_type</code>.
 	 */
 	public final TableField<UserWxViewerRecord, Integer> CLIENT_TYPE = createField("client_type", org.jooq.impl.SQLDataType.INTEGER.defaulted(true), this, "");
 
 	/**
-	 * Create a <code>userDB.user_wx_viewer</code> table reference
+	 * Create a <code>userdb.user_wx_viewer</code> table reference
 	 */
 	public UserWxViewer() {
 		this("user_wx_viewer", null);
 	}
 
 	/**
-	 * Create an aliased <code>userDB.user_wx_viewer</code> table reference
+	 * Create an aliased <code>userdb.user_wx_viewer</code> table reference
 	 */
 	public UserWxViewer(String alias) {
 		this(alias, USER_WX_VIEWER);

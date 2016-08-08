@@ -30,6 +30,7 @@ dependencies {
     compile deps["spring-context"]
     compile deps["spring-webmvc"]
     compile deps["spring-test"]
+    compile deps["httpclient"]
 
     runtime deps['jstl']
 
@@ -62,6 +63,10 @@ jettyRun{
     contextPath project.name
     scanIntervalSeconds 0
     reload "automatic"
+}
+
+war {
+    dependsOn copyEnvResources
 }
 
 project.description = '''

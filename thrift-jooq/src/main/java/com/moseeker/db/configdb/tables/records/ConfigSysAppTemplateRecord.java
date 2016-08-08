@@ -28,143 +28,143 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysAppTemplateRecord extends UpdatableRecordImpl<ConfigSysAppTemplateRecord> implements Record10<Integer, String, String, Byte, Byte, Byte, Byte, String, String, Integer> {
 
-	private static final long serialVersionUID = -829965450;
+	private static final long serialVersionUID = -1960526986;
 
 	/**
-	 * Setter for <code>configDB.config_sys_app_template.id</code>.
+	 * Setter for <code>configdb.config_sys_app_template.id</code>.
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_app_template.id</code>.
+	 * Getter for <code>configdb.config_sys_app_template.id</code>.
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_app_template.enname</code>. 申请字段英文名称
+	 * Setter for <code>configdb.config_sys_app_template.enname</code>. 申请字段英文名称
 	 */
 	public void setEnname(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_app_template.enname</code>. 申请字段英文名称
+	 * Getter for <code>configdb.config_sys_app_template.enname</code>. 申请字段英文名称
 	 */
 	public String getEnname() {
 		return (String) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_app_template.chname</code>. 申请字段中文名称
+	 * Setter for <code>configdb.config_sys_app_template.chname</code>. 申请字段中文名称
 	 */
 	public void setChname(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_app_template.chname</code>. 申请字段中文名称
+	 * Getter for <code>configdb.config_sys_app_template.chname</code>. 申请字段中文名称
 	 */
 	public String getChname() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_app_template.priority</code>. 排序
+	 * Setter for <code>configdb.config_sys_app_template.priority</code>. 排序
 	 */
 	public void setPriority(Byte value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_app_template.priority</code>. 排序
+	 * Getter for <code>configdb.config_sys_app_template.priority</code>. 排序
 	 */
 	public Byte getPriority() {
 		return (Byte) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_app_template.display</code>. 是否显示0：是，1：否
+	 * Setter for <code>configdb.config_sys_app_template.display</code>. 是否显示0：是，1：否
 	 */
 	public void setDisplay(Byte value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_app_template.display</code>. 是否显示0：是，1：否
+	 * Getter for <code>configdb.config_sys_app_template.display</code>. 是否显示0：是，1：否
 	 */
 	public Byte getDisplay() {
 		return (Byte) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_app_template.required</code>. 是否必填0：是，1：否
+	 * Setter for <code>configdb.config_sys_app_template.required</code>. 是否必填0：是，1：否
 	 */
 	public void setRequired(Byte value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_app_template.required</code>. 是否必填0：是，1：否
+	 * Getter for <code>configdb.config_sys_app_template.required</code>. 是否必填0：是，1：否
 	 */
 	public Byte getRequired() {
 		return (Byte) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_app_template.type</code>. 模板类型
+	 * Setter for <code>configdb.config_sys_app_template.type</code>. 模板类型
 	 */
 	public void setType(Byte value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_app_template.type</code>. 模板类型
+	 * Getter for <code>configdb.config_sys_app_template.type</code>. 模板类型
 	 */
 	public Byte getType() {
 		return (Byte) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_app_template.remark</code>. 备注
+	 * Setter for <code>configdb.config_sys_app_template.remark</code>. 备注
 	 */
 	public void setRemark(String value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_app_template.remark</code>. 备注
+	 * Getter for <code>configdb.config_sys_app_template.remark</code>. 备注
 	 */
 	public String getRemark() {
 		return (String) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_app_template.entitle</code>. 字段英文名称
+	 * Setter for <code>configdb.config_sys_app_template.entitle</code>. 字段英文名称
 	 */
 	public void setEntitle(String value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_app_template.entitle</code>. 字段英文名称
+	 * Getter for <code>configdb.config_sys_app_template.entitle</code>. 字段英文名称
 	 */
 	public String getEntitle() {
 		return (String) getValue(8);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_app_template.parent_id</code>. 字段父子关系
+	 * Setter for <code>configdb.config_sys_app_template.parent_id</code>. 字段父子关系
 	 */
 	public void setParentId(Integer value) {
 		setValue(9, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_app_template.parent_id</code>. 字段父子关系
+	 * Getter for <code>configdb.config_sys_app_template.parent_id</code>. 字段父子关系
 	 */
 	public Integer getParentId() {
 		return (Integer) getValue(9);

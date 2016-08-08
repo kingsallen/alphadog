@@ -30,87 +30,87 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrHtml5StatisticsRecord extends UpdatableRecordImpl<HrHtml5StatisticsRecord> implements Record6<Integer, Integer, Integer, Integer, Integer, Date> {
 
-	private static final long serialVersionUID = 1491077659;
+	private static final long serialVersionUID = 1953853979;
 
 	/**
-	 * Setter for <code>hrDB.hr_html5_statistics.id</code>. primary key
+	 * Setter for <code>hrdb.hr_html5_statistics.id</code>. primary key
 	 */
 	public void setId(Integer value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_html5_statistics.id</code>. primary key
+	 * Getter for <code>hrdb.hr_html5_statistics.id</code>. primary key
 	 */
 	public Integer getId() {
 		return (Integer) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_html5_statistics.topic_id</code>. wx_topic.id
+	 * Setter for <code>hrdb.hr_html5_statistics.topic_id</code>. wx_topic.id
 	 */
 	public void setTopicId(Integer value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_html5_statistics.topic_id</code>. wx_topic.id
+	 * Getter for <code>hrdb.hr_html5_statistics.topic_id</code>. wx_topic.id
 	 */
 	public Integer getTopicId() {
 		return (Integer) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_html5_statistics.company_id</code>. company.id
+	 * Setter for <code>hrdb.hr_html5_statistics.company_id</code>. company.id
 	 */
 	public void setCompanyId(Integer value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_html5_statistics.company_id</code>. company.id
+	 * Getter for <code>hrdb.hr_html5_statistics.company_id</code>. company.id
 	 */
 	public Integer getCompanyId() {
 		return (Integer) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_html5_statistics.view_num_pv</code>. 浏览次数
+	 * Setter for <code>hrdb.hr_html5_statistics.view_num_pv</code>. 浏览次数
 	 */
 	public void setViewNumPv(Integer value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_html5_statistics.view_num_pv</code>. 浏览次数
+	 * Getter for <code>hrdb.hr_html5_statistics.view_num_pv</code>. 浏览次数
 	 */
 	public Integer getViewNumPv() {
 		return (Integer) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_html5_statistics.recom_view_num_pv</code>. 推荐浏览次数
+	 * Setter for <code>hrdb.hr_html5_statistics.recom_view_num_pv</code>. 推荐浏览次数
 	 */
 	public void setRecomViewNumPv(Integer value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_html5_statistics.recom_view_num_pv</code>. 推荐浏览次数
+	 * Getter for <code>hrdb.hr_html5_statistics.recom_view_num_pv</code>. 推荐浏览次数
 	 */
 	public Integer getRecomViewNumPv() {
 		return (Integer) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>hrDB.hr_html5_statistics.create_date</code>. 创建日期
+	 * Setter for <code>hrdb.hr_html5_statistics.create_date</code>. 创建日期
 	 */
 	public void setCreateDate(Date value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>hrDB.hr_html5_statistics.create_date</code>. 创建日期
+	 * Getter for <code>hrdb.hr_html5_statistics.create_date</code>. 创建日期
 	 */
 	public Date getCreateDate() {
 		return (Date) getValue(5);

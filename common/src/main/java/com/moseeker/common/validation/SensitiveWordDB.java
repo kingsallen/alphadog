@@ -1,8 +1,6 @@
 package com.moseeker.common.validation;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -51,13 +49,12 @@ public class SensitiveWordDB {
 					try {
 						//加载配置文件
 						ConfigPropertiesUtil configUtil = ConfigPropertiesUtil.getInstance();
-						InputStream in = new BufferedInputStream(new FileInputStream(configUtil.get("sensitiveWords", String.class)));
-						props.load(in);
+						InputStreamReader inputStreamReader = new InputStreamReader(ConfigPropertiesUtil.class.getClassLoader().getResourceAsStream(configUtil.get("sensitiveWords", String.class)), "UTF-8");
+						props.load(inputStreamReader);
 						Set keyValue = props.keySet();
 						for (Iterator it = keyValue.iterator(); it.hasNext();)
 						{
-							String sensitiveWord = new String(((String)it.next()).getBytes("ISO-8859-1"),"utf8");
-							instance.addSensitiveWords(sensitiveWord);
+							instance.addSensitiveWords((String)it.next());
 						}
 							
 					} catch (Exception e) {
@@ -78,13 +75,11 @@ public class SensitiveWordDB {
 					instance = new SensitiveWordDB();
 					Properties props = new Properties();
 					try {
-						InputStream in = new BufferedInputStream(new FileInputStream(sensitiveWordsFilePath));
-						props.load(in);
+						InputStreamReader inputStreamReader = new InputStreamReader(ConfigPropertiesUtil.class.getClassLoader().getResourceAsStream(sensitiveWordsFilePath), "UTF-8");
+						props.load(inputStreamReader);
 						Set keyValue = props.keySet();
-						for (Iterator it = keyValue.iterator(); it.hasNext();)
-						{
-							String sensitiveWord = new String(((String)it.next()).getBytes("ISO-8859-1"),"utf8");
-							instance.addSensitiveWords(sensitiveWord);
+						for (Iterator it = keyValue.iterator(); it.hasNext();) {
+							instance.addSensitiveWords((String)it.next());
 						}
 							
 					} catch (Exception e) {

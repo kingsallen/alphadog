@@ -28,45 +28,45 @@ import com.moseeker.db.dictdb.tables.DictIndustry;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictIndustryRecord extends UpdatableRecordImpl<DictIndustryRecord> implements Record3<UInteger, String, UInteger> {
 
-	private static final long serialVersionUID = 518568704;
+	private static final long serialVersionUID = -1270924544;
 
 	/**
-	 * Setter for <code>dictDB.dict_industry.code</code>. 字典code
+	 * Setter for <code>dictdb.dict_industry.code</code>. 字典code
 	 */
 	public void setCode(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_industry.code</code>. 字典code
+	 * Getter for <code>dictdb.dict_industry.code</code>. 字典code
 	 */
 	public UInteger getCode() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>dictDB.dict_industry.name</code>. 字典name
+	 * Setter for <code>dictdb.dict_industry.name</code>. 字典name
 	 */
 	public void setName(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_industry.name</code>. 字典name
+	 * Getter for <code>dictdb.dict_industry.name</code>. 字典name
 	 */
 	public String getName() {
 		return (String) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>dictDB.dict_industry.type</code>. 字典分类code
+	 * Setter for <code>dictdb.dict_industry.type</code>. 字典分类code
 	 */
 	public void setType(UInteger value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>dictDB.dict_industry.type</code>. 字典分类code
+	 * Getter for <code>dictdb.dict_industry.type</code>. 字典分类code
 	 */
 	public UInteger getType() {
 		return (UInteger) getValue(2);

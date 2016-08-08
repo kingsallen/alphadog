@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.moseeker.rpccenter.common.ServiceUtil;
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -18,14 +18,15 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.CustomizeResumeServices;
 import com.moseeker.thrift.gen.profile.struct.CustomizeResume;
 
+//@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
 public class CustomizeResumeController {
 
 	Logger logger = LoggerFactory.getLogger(CustomizeResumeController.class);
 
-	CustomizeResumeServices.Iface awardService = ServiceUtil.getService(CustomizeResumeServices.Iface.class);
+	CustomizeResumeServices.Iface awardService = ServiceManager.SERVICEMANAGER.getService(CustomizeResumeServices.Iface.class);
 	
-	@RequestMapping(value = "/profile/customizeresume", method = RequestMethod.GET)
+	@RequestMapping(value = "/profile/other", method = RequestMethod.GET)
 	@ResponseBody
 	public String get(HttpServletRequest request, HttpServletResponse response) {
 		//PrintWriter writer = null;
@@ -42,7 +43,7 @@ public class CustomizeResumeController {
 		}
 	}
 
-	@RequestMapping(value = "/profile/customizeresume", method = RequestMethod.POST)
+	@RequestMapping(value = "/profile/other", method = RequestMethod.POST)
 	@ResponseBody
 	public String post(HttpServletRequest request, HttpServletResponse response) {
 		//PrintWriter writer = null;
@@ -56,7 +57,7 @@ public class CustomizeResumeController {
 		}
 	}
 
-	@RequestMapping(value = "/profile/customizeresume", method = RequestMethod.PUT)
+	@RequestMapping(value = "/profile/other", method = RequestMethod.PUT)
 	@ResponseBody
 	public String put(HttpServletRequest request, HttpServletResponse response) {
 		try {
@@ -68,7 +69,7 @@ public class CustomizeResumeController {
 		}
 	}
 
-	@RequestMapping(value = "/profile/customizeresume", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/profile/other", method = RequestMethod.DELETE)
 	@ResponseBody
 	public String delete(HttpServletRequest request, HttpServletResponse response) {
 		try {

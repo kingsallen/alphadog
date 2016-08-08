@@ -59,10 +59,6 @@ public class DatabaseConnectionHelper {
 
     public DSLContext getJooqDSL() throws SQLException {
         Connection conn = connectionPool.getConnection();
-        Statistics statictics = connectionPool.getStatistics();
-        System.out.println("total free:"+statictics.getTotalFree());
-        System.out.println("total lease:"+statictics.getTotalLeased());
-        statictics.getTotalLeased();
         return DSL.using(conn, SQLDialect.MYSQL);
     }
 

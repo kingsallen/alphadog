@@ -36,10 +36,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateRemark extends TableImpl<CandidateRemarkRecord> {
 
-	private static final long serialVersionUID = 1806063319;
+	private static final long serialVersionUID = 1862748887;
 
 	/**
-	 * The reference instance of <code>candidateDB.candidate_remark</code>
+	 * The reference instance of <code>candidatedb.candidate_remark</code>
 	 */
 	public static final CandidateRemark CANDIDATE_REMARK = new CandidateRemark();
 
@@ -52,104 +52,104 @@ public class CandidateRemark extends TableImpl<CandidateRemarkRecord> {
 	}
 
 	/**
-	 * The column <code>candidateDB.candidate_remark.id</code>.
+	 * The column <code>candidatedb.candidate_remark.id</code>.
 	 */
 	public final TableField<CandidateRemarkRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
 
 	/**
-	 * The column <code>candidateDB.candidate_remark.hraccount_id</code>. 做候选人标记的账号编号 hr_account.id
+	 * The column <code>candidatedb.candidate_remark.hraccount_id</code>. 做候选人标记的账号编号 hr_account.id
 	 */
 	public final TableField<CandidateRemarkRecord, Integer> HRACCOUNT_ID = createField("hraccount_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "做候选人标记的账号编号 hr_account.id");
 
 	/**
-	 * The column <code>candidateDB.candidate_remark.wxuser_id</code>. wx_group_user.id 被推荐者 微信 ID
+	 * The column <code>candidatedb.candidate_remark.wxuser_id</code>. wx_group_user.id 被推荐者 微信 ID
 	 */
 	public final TableField<CandidateRemarkRecord, Integer> WXUSER_ID = createField("wxuser_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "wx_group_user.id 被推荐者 微信 ID");
 
 	/**
-	 * The column <code>candidateDB.candidate_remark.gender</code>. 0：未知，1：男，2：女
+	 * The column <code>candidatedb.candidate_remark.gender</code>. 0：未知，1：男，2：女
 	 */
 	public final TableField<CandidateRemarkRecord, Integer> GENDER = createField("gender", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "0：未知，1：男，2：女");
 
 	/**
-	 * The column <code>candidateDB.candidate_remark.age</code>. 年龄
+	 * The column <code>candidatedb.candidate_remark.age</code>. 年龄
 	 */
 	public final TableField<CandidateRemarkRecord, String> AGE = createField("age", org.jooq.impl.SQLDataType.VARCHAR.length(10).nullable(false).defaulted(true), this, "年龄");
 
 	/**
-	 * The column <code>candidateDB.candidate_remark.mobile</code>. 联系方式
+	 * The column <code>candidatedb.candidate_remark.mobile</code>. 联系方式
 	 */
 	public final TableField<CandidateRemarkRecord, String> MOBILE = createField("mobile", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false).defaulted(true), this, "联系方式");
 
 	/**
-	 * The column <code>candidateDB.candidate_remark.email</code>. 邮箱
+	 * The column <code>candidatedb.candidate_remark.email</code>. 邮箱
 	 */
 	public final TableField<CandidateRemarkRecord, String> EMAIL = createField("email", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "邮箱");
 
 	/**
-	 * The column <code>candidateDB.candidate_remark.current_company</code>. 现处公司
+	 * The column <code>candidatedb.candidate_remark.current_company</code>. 现处公司
 	 */
 	public final TableField<CandidateRemarkRecord, String> CURRENT_COMPANY = createField("current_company", org.jooq.impl.SQLDataType.VARCHAR.length(200).nullable(false).defaulted(true), this, "现处公司");
 
 	/**
-	 * The column <code>candidateDB.candidate_remark.current_position</code>. 职务
+	 * The column <code>candidatedb.candidate_remark.current_position</code>. 职务
 	 */
 	public final TableField<CandidateRemarkRecord, String> CURRENT_POSITION = createField("current_position", org.jooq.impl.SQLDataType.VARCHAR.length(200).nullable(false).defaulted(true), this, "职务");
 
 	/**
-	 * The column <code>candidateDB.candidate_remark.education</code>. 毕业院校
+	 * The column <code>candidatedb.candidate_remark.education</code>. 毕业院校
 	 */
 	public final TableField<CandidateRemarkRecord, String> EDUCATION = createField("education", org.jooq.impl.SQLDataType.VARCHAR.length(200).nullable(false).defaulted(true), this, "毕业院校");
 
 	/**
-	 * The column <code>candidateDB.candidate_remark.degree</code>. 学历
+	 * The column <code>candidatedb.candidate_remark.degree</code>. 学历
 	 */
 	public final TableField<CandidateRemarkRecord, String> DEGREE = createField("degree", org.jooq.impl.SQLDataType.VARCHAR.length(200).nullable(false).defaulted(true), this, "学历");
 
 	/**
-	 * The column <code>candidateDB.candidate_remark.graduate_at</code>. 毕业时间
+	 * The column <code>candidatedb.candidate_remark.graduate_at</code>. 毕业时间
 	 */
 	public final TableField<CandidateRemarkRecord, Timestamp> GRADUATE_AT = createField("graduate_at", org.jooq.impl.SQLDataType.TIMESTAMP, this, "毕业时间");
 
 	/**
-	 * The column <code>candidateDB.candidate_remark.is_star</code>. 0: 星标 1: 没有星标
+	 * The column <code>candidatedb.candidate_remark.is_star</code>. 0: 星标 1: 没有星标
 	 */
 	public final TableField<CandidateRemarkRecord, Byte> IS_STAR = createField("is_star", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "0: 星标 1: 没有星标");
 
 	/**
-	 * The column <code>candidateDB.candidate_remark.remark</code>. 备注
+	 * The column <code>candidatedb.candidate_remark.remark</code>. 备注
 	 */
 	public final TableField<CandidateRemarkRecord, String> REMARK = createField("remark", org.jooq.impl.SQLDataType.VARCHAR.length(20000).nullable(false).defaulted(true), this, "备注");
 
 	/**
-	 * The column <code>candidateDB.candidate_remark.create_time</code>. 创建时间
+	 * The column <code>candidatedb.candidate_remark.create_time</code>. 创建时间
 	 */
 	public final TableField<CandidateRemarkRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "创建时间");
 
 	/**
-	 * The column <code>candidateDB.candidate_remark.update_time</code>. 修改时间
+	 * The column <code>candidatedb.candidate_remark.update_time</code>. 修改时间
 	 */
 	public final TableField<CandidateRemarkRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "修改时间");
 
 	/**
-	 * The column <code>candidateDB.candidate_remark.status</code>. 0: 新数据 1: 正常 2:被忽略
+	 * The column <code>candidatedb.candidate_remark.status</code>. 0: 新数据 1: 正常 2:被忽略
 	 */
 	public final TableField<CandidateRemarkRecord, Integer> STATUS = createField("status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "0: 新数据 1: 正常 2:被忽略");
 
 	/**
-	 * The column <code>candidateDB.candidate_remark.name</code>. 候选人姓名
+	 * The column <code>candidatedb.candidate_remark.name</code>. 候选人姓名
 	 */
 	public final TableField<CandidateRemarkRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "候选人姓名");
 
 	/**
-	 * Create a <code>candidateDB.candidate_remark</code> table reference
+	 * Create a <code>candidatedb.candidate_remark</code> table reference
 	 */
 	public CandidateRemark() {
 		this("candidate_remark", null);
 	}
 
 	/**
-	 * Create an aliased <code>candidateDB.candidate_remark</code> table reference
+	 * Create an aliased <code>candidatedb.candidate_remark</code> table reference
 	 */
 	public CandidateRemark(String alias) {
 		this(alias, CANDIDATE_REMARK);

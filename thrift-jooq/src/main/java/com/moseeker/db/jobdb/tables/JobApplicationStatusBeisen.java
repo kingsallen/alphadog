@@ -36,10 +36,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobApplicationStatusBeisen extends TableImpl<JobApplicationStatusBeisenRecord> {
 
-	private static final long serialVersionUID = -1545506056;
+	private static final long serialVersionUID = 794298104;
 
 	/**
-	 * The reference instance of <code>jobDB.job_application_status_beisen</code>
+	 * The reference instance of <code>jobdb.job_application_status_beisen</code>
 	 */
 	public static final JobApplicationStatusBeisen JOB_APPLICATION_STATUS_BEISEN = new JobApplicationStatusBeisen();
 
@@ -52,74 +52,74 @@ public class JobApplicationStatusBeisen extends TableImpl<JobApplicationStatusBe
 	}
 
 	/**
-	 * The column <code>jobDB.job_application_status_beisen.id</code>.
+	 * The column <code>jobdb.job_application_status_beisen.id</code>.
 	 */
 	public final TableField<JobApplicationStatusBeisenRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
 	/**
-	 * The column <code>jobDB.job_application_status_beisen.company_id</code>. company.id, 部门ID
+	 * The column <code>jobdb.job_application_status_beisen.company_id</code>. company.id, 部门ID
 	 */
 	public final TableField<JobApplicationStatusBeisenRecord, UInteger> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "company.id, 部门ID");
 
 	/**
-	 * The column <code>jobDB.job_application_status_beisen.applier_mobile</code>. 关注吉利微信公众账号的申请人的手机号
+	 * The column <code>jobdb.job_application_status_beisen.applier_mobile</code>. 关注吉利微信公众账号的申请人的手机号
 	 */
 	public final TableField<JobApplicationStatusBeisenRecord, Long> APPLIER_MOBILE = createField("applier_mobile", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaulted(true), this, "关注吉利微信公众账号的申请人的手机号");
 
 	/**
-	 * The column <code>jobDB.job_application_status_beisen.applier_name</code>. 申请人真实姓名
+	 * The column <code>jobdb.job_application_status_beisen.applier_name</code>. 申请人真实姓名
 	 */
 	public final TableField<JobApplicationStatusBeisenRecord, String> APPLIER_NAME = createField("applier_name", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "申请人真实姓名");
 
 	/**
-	 * The column <code>jobDB.job_application_status_beisen.jobnumber</code>. 对应beisen投递状态中JobName中的code, 并非对应hr_position中jobnumber
+	 * The column <code>jobdb.job_application_status_beisen.jobnumber</code>. 对应beisen投递状态中JobName中的code, 并非对应hr_position中jobnumber
 	 */
 	public final TableField<JobApplicationStatusBeisenRecord, String> JOBNUMBER = createField("jobnumber", org.jooq.impl.SQLDataType.VARCHAR.length(40).nullable(false).defaulted(true), this, "对应beisen投递状态中JobName中的code, 并非对应hr_position中jobnumber");
 
 	/**
-	 * The column <code>jobDB.job_application_status_beisen.jobtitle</code>. 对应beisen投递状态中Jobname中的value，对应hr_position中title
+	 * The column <code>jobdb.job_application_status_beisen.jobtitle</code>. 对应beisen投递状态中Jobname中的value，对应hr_position中title
 	 */
 	public final TableField<JobApplicationStatusBeisenRecord, String> JOBTITLE = createField("jobtitle", org.jooq.impl.SQLDataType.VARCHAR.length(999).nullable(false).defaulted(true), this, "对应beisen投递状态中Jobname中的value，对应hr_position中title");
 
 	/**
-	 * The column <code>jobDB.job_application_status_beisen.phasecode</code>. 对应beisen投递状态中PhaseCode中的code
+	 * The column <code>jobdb.job_application_status_beisen.phasecode</code>. 对应beisen投递状态中PhaseCode中的code
 	 */
 	public final TableField<JobApplicationStatusBeisenRecord, Integer> PHASECODE = createField("phasecode", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "对应beisen投递状态中PhaseCode中的code");
 
 	/**
-	 * The column <code>jobDB.job_application_status_beisen.phasename</code>. 对应beisen投递状态中PhaseName中的value
+	 * The column <code>jobdb.job_application_status_beisen.phasename</code>. 对应beisen投递状态中PhaseName中的value
 	 */
 	public final TableField<JobApplicationStatusBeisenRecord, String> PHASENAME = createField("phasename", org.jooq.impl.SQLDataType.VARCHAR.length(999).nullable(false).defaulted(true), this, "对应beisen投递状态中PhaseName中的value");
 
 	/**
-	 * The column <code>jobDB.job_application_status_beisen.statuscode</code>. 对应beisen投递状态中StatusCode中的code
+	 * The column <code>jobdb.job_application_status_beisen.statuscode</code>. 对应beisen投递状态中StatusCode中的code
 	 */
 	public final TableField<JobApplicationStatusBeisenRecord, Integer> STATUSCODE = createField("statuscode", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "对应beisen投递状态中StatusCode中的code");
 
 	/**
-	 * The column <code>jobDB.job_application_status_beisen.statusname</code>. 对应beisen投递状态中StatusName中的value
+	 * The column <code>jobdb.job_application_status_beisen.statusname</code>. 对应beisen投递状态中StatusName中的value
 	 */
 	public final TableField<JobApplicationStatusBeisenRecord, String> STATUSNAME = createField("statusname", org.jooq.impl.SQLDataType.VARCHAR.length(999).nullable(false).defaulted(true), this, "对应beisen投递状态中StatusName中的value");
 
 	/**
-	 * The column <code>jobDB.job_application_status_beisen.create_time</code>.
+	 * The column <code>jobdb.job_application_status_beisen.create_time</code>.
 	 */
 	public final TableField<JobApplicationStatusBeisenRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * The column <code>jobDB.job_application_status_beisen.update_time</code>.
+	 * The column <code>jobdb.job_application_status_beisen.update_time</code>.
 	 */
 	public final TableField<JobApplicationStatusBeisenRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
 
 	/**
-	 * Create a <code>jobDB.job_application_status_beisen</code> table reference
+	 * Create a <code>jobdb.job_application_status_beisen</code> table reference
 	 */
 	public JobApplicationStatusBeisen() {
 		this("job_application_status_beisen", null);
 	}
 
 	/**
-	 * Create an aliased <code>jobDB.job_application_status_beisen</code> table reference
+	 * Create an aliased <code>jobdb.job_application_status_beisen</code> table reference
 	 */
 	public JobApplicationStatusBeisen(String alias) {
 		this(alias, JOB_APPLICATION_STATUS_BEISEN);

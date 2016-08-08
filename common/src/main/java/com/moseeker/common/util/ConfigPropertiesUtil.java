@@ -1,9 +1,8 @@
 package com.moseeker.common.util;
 
-import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.Properties;
 
 /**
@@ -33,11 +32,6 @@ public class ConfigPropertiesUtil {
         try {
             //需要load common项目本地配置文件
             //load service provider的配置文件
-            File directory = new File("");//参数为空
-            String courseFile = directory.getCanonicalPath();
-            System.out.println(courseFile);
-            URL xmlpath = this.getClass().getClassLoader().getResource(".");
-            System.out.println(xmlpath);
             inputStreamReader = new InputStreamReader(ConfigPropertiesUtil.class.getClassLoader().getResourceAsStream("common.properties"), "UTF-8");
             properties.load(inputStreamReader);
         } catch (Exception e) {
@@ -66,7 +60,32 @@ public class ConfigPropertiesUtil {
             properties.load(inputStreamReader);
         } catch (Exception e) {
             //todo 错误信息需要记录到日志中
-            throw new Exception("can not find default properties");
+            throw new Exception("can not find properties");
+        } finally {
+            if (inputStreamReader != null) {
+                try {
+                    inputStreamReader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    
+    /**
+     * 读取指定名字的配置文件。如果配置文件的key和已存在的key冲突，会覆盖已存在的key的内容。
+     *
+     * @param fileName 配置文件的名称
+     * @throws Exception 如果配置文件不存在，抛出异常
+     */
+    public void loadAbsoluteResource(String absoluteFile) throws Exception {
+        InputStreamReader inputStreamReader = null;
+        try {
+            inputStreamReader = new InputStreamReader(new FileInputStream(absoluteFile), "utf-8");
+            properties.load(inputStreamReader);
+        } catch (Exception e) {
+            //todo 错误信息需要记录到日志中
+            throw new Exception("can not find properties");
         } finally {
             if (inputStreamReader != null) {
                 try {

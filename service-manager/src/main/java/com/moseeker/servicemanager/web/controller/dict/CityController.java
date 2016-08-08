@@ -1,45 +1,50 @@
 package com.moseeker.servicemanager.web.controller.dict;
 
-import com.moseeker.rpccenter.common.ServiceUtil;
-import com.moseeker.servicemanager.common.ParamUtils;
-import com.moseeker.servicemanager.common.ResponseLogNotification;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dict.service.CityServices;
-import org.slf4j.Logger;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.context.annotation.Scope;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dict.service.CityServices;
 
-@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
+//@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
 public class CityController {
 
-    Logger logger = org.slf4j.LoggerFactory.getLogger(CityController.class);
+	Logger logger = org.slf4j.LoggerFactory.getLogger(CityController.class);
 
-    CityServices.Iface cityServices = ServiceUtil.getService(CityServices.Iface.class);
+	CityServices.Iface cityServices = ServiceManager.SERVICEMANAGER.getService(CityServices.Iface.class);
 
-    @RequestMapping(value = "/dict/city", method = RequestMethod.GET)
-    @ResponseBody
-    public String get(HttpServletRequest request, HttpServletResponse response) {
-        //PrintWriter writer = null;
-        try {
-            // GET方法 通用参数解析并赋值
-            CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
+	@RequestMapping(value = "/dict/cities", method = RequestMethod.GET)
+	@ResponseBody
+	public String get(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			String parameterLevel = request.getParameter("level");
+			int level = parameterLevel == null ? 0 : Integer.parseInt(parameterLevel);
+			Response result = cityServices.getAllCities(level);
+			return ResponseLogNotification.success(request, result);
+		} catch (Exception e) {
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
 
-            Response result = cityServices.getResources(query);
-            //jsonStringResponse = JSON.toJSONString(result);
-
-            return ResponseLogNotification.successWithParse(request, result);
-        } catch (Exception e) {
-            return ResponseLogNotification.fail(request, e.getMessage());
-        }
-    }
+	@RequestMapping(value = "/dict/cities/{id}", method = RequestMethod.GET)
+	@ResponseBody
+	public String getById(@PathVariable("id") long id, HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Response result = cityServices.getCitiesById((int) id);
+			return ResponseLogNotification.success(request, result);
+		} catch (Exception e) {
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
 
 }

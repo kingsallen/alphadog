@@ -37,10 +37,10 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileIntention extends TableImpl<ProfileIntentionRecord> {
 
-	private static final long serialVersionUID = -1678606482;
+	private static final long serialVersionUID = -1537749672;
 
 	/**
-	 * The reference instance of <code>profileDB.profile_intention</code>
+	 * The reference instance of <code>profiledb.profile_intention</code>
 	 */
 	public static final ProfileIntention PROFILE_INTENTION = new ProfileIntention();
 
@@ -53,64 +53,59 @@ public class ProfileIntention extends TableImpl<ProfileIntentionRecord> {
 	}
 
 	/**
-	 * The column <code>profileDB.profile_intention.id</code>. 主key
+	 * The column <code>profiledb.profile_intention.id</code>. 主key
 	 */
 	public final TableField<ProfileIntentionRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
 
 	/**
-	 * The column <code>profileDB.profile_intention.profile_id</code>. profile.id
+	 * The column <code>profiledb.profile_intention.profile_id</code>. profile.id
 	 */
 	public final TableField<ProfileIntentionRecord, UInteger> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "profile.id");
 
 	/**
-	 * The column <code>profileDB.profile_intention.worktype</code>. 工作类型, {"0":"没选择", "1":"全职", "2":"兼职", "3":"实习"}
+	 * The column <code>profiledb.profile_intention.worktype</code>. 工作类型, {"0":"没选择", "1":"全职", "2":"兼职", "3":"实习"}
 	 */
 	public final TableField<ProfileIntentionRecord, UByte> WORKTYPE = createField("worktype", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "工作类型, {\"0\":\"没选择\", \"1\":\"全职\", \"2\":\"兼职\", \"3\":\"实习\"}");
 
 	/**
-	 * The column <code>profileDB.profile_intention.workstate</code>. 当前是否在职状态, 0:未填写 1: 在职，看看新机会, 2: 在职，急寻新工作, 3:在职，暂无跳槽打算, 4:离职，正在找工作, 5:应届毕业生
+	 * The column <code>profiledb.profile_intention.workstate</code>. 当前是否在职状态, 0:未填写 1: 在职，看看新机会, 2: 在职，急寻新工作, 3:在职，暂无跳槽打算, 4:离职，正在找工作, 5:应届毕业生
 	 */
 	public final TableField<ProfileIntentionRecord, UByte> WORKSTATE = createField("workstate", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "当前是否在职状态, 0:未填写 1: 在职，看看新机会, 2: 在职，急寻新工作, 3:在职，暂无跳槽打算, 4:离职，正在找工作, 5:应届毕业生");
 
 	/**
-	 * The column <code>profileDB.profile_intention.salary_type</code>. 薪资类型，0:没选择, 1:年薪, 2:月薪, 3:日薪, 4:时薪
-	 */
-	public final TableField<ProfileIntentionRecord, UByte> SALARY_TYPE = createField("salary_type", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "薪资类型，0:没选择, 1:年薪, 2:月薪, 3:日薪, 4:时薪");
-
-	/**
-	 * The column <code>profileDB.profile_intention.salary_code</code>. 薪资code
+	 * The column <code>profiledb.profile_intention.salary_code</code>. 薪资code
 	 */
 	public final TableField<ProfileIntentionRecord, UByte> SALARY_CODE = createField("salary_code", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "薪资code");
 
 	/**
-	 * The column <code>profileDB.profile_intention.tag</code>. 关键词，单个tag最多100个字符，以#隔开
+	 * The column <code>profiledb.profile_intention.tag</code>. 关键词，单个tag最多100个字符，以#隔开
 	 */
 	public final TableField<ProfileIntentionRecord, String> TAG = createField("tag", org.jooq.impl.SQLDataType.VARCHAR.length(1010).nullable(false).defaulted(true), this, "关键词，单个tag最多100个字符，以#隔开");
 
 	/**
-	 * The column <code>profileDB.profile_intention.consider_venture_company_opportunities</code>. 是否考虑创业公司机会 0：未填写 1:考虑 2:不考虑
+	 * The column <code>profiledb.profile_intention.consider_venture_company_opportunities</code>. 是否考虑创业公司机会 0：未填写 1:考虑 2:不考虑
 	 */
 	public final TableField<ProfileIntentionRecord, Byte> CONSIDER_VENTURE_COMPANY_OPPORTUNITIES = createField("consider_venture_company_opportunities", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "是否考虑创业公司机会 0：未填写 1:考虑 2:不考虑");
 
 	/**
-	 * The column <code>profileDB.profile_intention.create_time</code>. 创建时间
+	 * The column <code>profiledb.profile_intention.create_time</code>. 创建时间
 	 */
 	public final TableField<ProfileIntentionRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "创建时间");
 
 	/**
-	 * The column <code>profileDB.profile_intention.update_time</code>. 更新时间
+	 * The column <code>profiledb.profile_intention.update_time</code>. 更新时间
 	 */
 	public final TableField<ProfileIntentionRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "更新时间");
 
 	/**
-	 * Create a <code>profileDB.profile_intention</code> table reference
+	 * Create a <code>profiledb.profile_intention</code> table reference
 	 */
 	public ProfileIntention() {
 		this("profile_intention", null);
 	}
 
 	/**
-	 * Create an aliased <code>profileDB.profile_intention</code> table reference
+	 * Create an aliased <code>profiledb.profile_intention</code> table reference
 	 */
 	public ProfileIntention(String alias) {
 		this(alias, PROFILE_INTENTION);

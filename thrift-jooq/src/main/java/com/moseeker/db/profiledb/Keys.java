@@ -7,10 +7,14 @@ package com.moseeker.db.profiledb;
 import com.moseeker.db.profiledb.tables.ProfileAttachment;
 import com.moseeker.db.profiledb.tables.ProfileAwards;
 import com.moseeker.db.profiledb.tables.ProfileBasic;
+import com.moseeker.db.profiledb.tables.ProfileCompleteness;
 import com.moseeker.db.profiledb.tables.ProfileCredentials;
 import com.moseeker.db.profiledb.tables.ProfileEducation;
 import com.moseeker.db.profiledb.tables.ProfileImport;
 import com.moseeker.db.profiledb.tables.ProfileIntention;
+import com.moseeker.db.profiledb.tables.ProfileIntentionCity;
+import com.moseeker.db.profiledb.tables.ProfileIntentionIndustry;
+import com.moseeker.db.profiledb.tables.ProfileIntentionPosition;
 import com.moseeker.db.profiledb.tables.ProfileLanguage;
 import com.moseeker.db.profiledb.tables.ProfileOther;
 import com.moseeker.db.profiledb.tables.ProfileProfile;
@@ -21,9 +25,13 @@ import com.moseeker.db.profiledb.tables.ProfileWorks;
 import com.moseeker.db.profiledb.tables.records.ProfileAttachmentRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileAwardsRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileBasicRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileCompletenessRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileCredentialsRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileEducationRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileImportRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileIntentionCityRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileIntentionIndustryRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileIntentionPositionRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileIntentionRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileLanguageRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileOtherRecord;
@@ -42,7 +50,7 @@ import org.jooq.types.UInteger;
 
 
 /**
- * A class modelling foreign key relationships between tables of the <code>profileDB</code> 
+ * A class modelling foreign key relationships between tables of the <code>profiledb</code> 
  * schema
  */
 @Generated(
@@ -61,9 +69,13 @@ public class Keys {
 
 	public static final Identity<ProfileAttachmentRecord, UInteger> IDENTITY_PROFILE_ATTACHMENT = Identities0.IDENTITY_PROFILE_ATTACHMENT;
 	public static final Identity<ProfileAwardsRecord, UInteger> IDENTITY_PROFILE_AWARDS = Identities0.IDENTITY_PROFILE_AWARDS;
+	public static final Identity<ProfileCompletenessRecord, UInteger> IDENTITY_PROFILE_COMPLETENESS = Identities0.IDENTITY_PROFILE_COMPLETENESS;
 	public static final Identity<ProfileCredentialsRecord, UInteger> IDENTITY_PROFILE_CREDENTIALS = Identities0.IDENTITY_PROFILE_CREDENTIALS;
 	public static final Identity<ProfileEducationRecord, UInteger> IDENTITY_PROFILE_EDUCATION = Identities0.IDENTITY_PROFILE_EDUCATION;
 	public static final Identity<ProfileIntentionRecord, UInteger> IDENTITY_PROFILE_INTENTION = Identities0.IDENTITY_PROFILE_INTENTION;
+	public static final Identity<ProfileIntentionCityRecord, UInteger> IDENTITY_PROFILE_INTENTION_CITY = Identities0.IDENTITY_PROFILE_INTENTION_CITY;
+	public static final Identity<ProfileIntentionIndustryRecord, UInteger> IDENTITY_PROFILE_INTENTION_INDUSTRY = Identities0.IDENTITY_PROFILE_INTENTION_INDUSTRY;
+	public static final Identity<ProfileIntentionPositionRecord, UInteger> IDENTITY_PROFILE_INTENTION_POSITION = Identities0.IDENTITY_PROFILE_INTENTION_POSITION;
 	public static final Identity<ProfileLanguageRecord, UInteger> IDENTITY_PROFILE_LANGUAGE = Identities0.IDENTITY_PROFILE_LANGUAGE;
 	public static final Identity<ProfileProfileRecord, UInteger> IDENTITY_PROFILE_PROFILE = Identities0.IDENTITY_PROFILE_PROFILE;
 	public static final Identity<ProfileProjectexpRecord, UInteger> IDENTITY_PROFILE_PROJECTEXP = Identities0.IDENTITY_PROFILE_PROJECTEXP;
@@ -78,14 +90,19 @@ public class Keys {
 	public static final UniqueKey<ProfileAttachmentRecord> KEY_PROFILE_ATTACHMENT_PRIMARY = UniqueKeys0.KEY_PROFILE_ATTACHMENT_PRIMARY;
 	public static final UniqueKey<ProfileAwardsRecord> KEY_PROFILE_AWARDS_PRIMARY = UniqueKeys0.KEY_PROFILE_AWARDS_PRIMARY;
 	public static final UniqueKey<ProfileBasicRecord> KEY_PROFILE_BASIC_PRIMARY = UniqueKeys0.KEY_PROFILE_BASIC_PRIMARY;
+	public static final UniqueKey<ProfileCompletenessRecord> KEY_PROFILE_COMPLETENESS_PRIMARY = UniqueKeys0.KEY_PROFILE_COMPLETENESS_PRIMARY;
 	public static final UniqueKey<ProfileCredentialsRecord> KEY_PROFILE_CREDENTIALS_PRIMARY = UniqueKeys0.KEY_PROFILE_CREDENTIALS_PRIMARY;
 	public static final UniqueKey<ProfileEducationRecord> KEY_PROFILE_EDUCATION_PRIMARY = UniqueKeys0.KEY_PROFILE_EDUCATION_PRIMARY;
 	public static final UniqueKey<ProfileImportRecord> KEY_PROFILE_IMPORT_PRIMARY = UniqueKeys0.KEY_PROFILE_IMPORT_PRIMARY;
 	public static final UniqueKey<ProfileIntentionRecord> KEY_PROFILE_INTENTION_PRIMARY = UniqueKeys0.KEY_PROFILE_INTENTION_PRIMARY;
 	public static final UniqueKey<ProfileIntentionRecord> KEY_PROFILE_INTENTION_UK_PROFILE_ID = UniqueKeys0.KEY_PROFILE_INTENTION_UK_PROFILE_ID;
+	public static final UniqueKey<ProfileIntentionCityRecord> KEY_PROFILE_INTENTION_CITY_PRIMARY = UniqueKeys0.KEY_PROFILE_INTENTION_CITY_PRIMARY;
+	public static final UniqueKey<ProfileIntentionIndustryRecord> KEY_PROFILE_INTENTION_INDUSTRY_PRIMARY = UniqueKeys0.KEY_PROFILE_INTENTION_INDUSTRY_PRIMARY;
+	public static final UniqueKey<ProfileIntentionPositionRecord> KEY_PROFILE_INTENTION_POSITION_PRIMARY = UniqueKeys0.KEY_PROFILE_INTENTION_POSITION_PRIMARY;
 	public static final UniqueKey<ProfileLanguageRecord> KEY_PROFILE_LANGUAGE_PRIMARY = UniqueKeys0.KEY_PROFILE_LANGUAGE_PRIMARY;
 	public static final UniqueKey<ProfileOtherRecord> KEY_PROFILE_OTHER_PRIMARY = UniqueKeys0.KEY_PROFILE_OTHER_PRIMARY;
 	public static final UniqueKey<ProfileProfileRecord> KEY_PROFILE_PROFILE_PRIMARY = UniqueKeys0.KEY_PROFILE_PROFILE_PRIMARY;
+	public static final UniqueKey<ProfileProfileRecord> KEY_PROFILE_PROFILE_UK_PROFILE_USERID = UniqueKeys0.KEY_PROFILE_PROFILE_UK_PROFILE_USERID;
 	public static final UniqueKey<ProfileProjectexpRecord> KEY_PROFILE_PROJECTEXP_PRIMARY = UniqueKeys0.KEY_PROFILE_PROJECTEXP_PRIMARY;
 	public static final UniqueKey<ProfileSkillRecord> KEY_PROFILE_SKILL_PRIMARY = UniqueKeys0.KEY_PROFILE_SKILL_PRIMARY;
 	public static final UniqueKey<ProfileWorkexpRecord> KEY_PROFILE_WORKEXP_PRIMARY = UniqueKeys0.KEY_PROFILE_WORKEXP_PRIMARY;
@@ -103,9 +120,13 @@ public class Keys {
 	private static class Identities0 extends AbstractKeys {
 		public static Identity<ProfileAttachmentRecord, UInteger> IDENTITY_PROFILE_ATTACHMENT = createIdentity(ProfileAttachment.PROFILE_ATTACHMENT, ProfileAttachment.PROFILE_ATTACHMENT.ID);
 		public static Identity<ProfileAwardsRecord, UInteger> IDENTITY_PROFILE_AWARDS = createIdentity(ProfileAwards.PROFILE_AWARDS, ProfileAwards.PROFILE_AWARDS.ID);
+		public static Identity<ProfileCompletenessRecord, UInteger> IDENTITY_PROFILE_COMPLETENESS = createIdentity(ProfileCompleteness.PROFILE_COMPLETENESS, ProfileCompleteness.PROFILE_COMPLETENESS.PROFILE_ID);
 		public static Identity<ProfileCredentialsRecord, UInteger> IDENTITY_PROFILE_CREDENTIALS = createIdentity(ProfileCredentials.PROFILE_CREDENTIALS, ProfileCredentials.PROFILE_CREDENTIALS.ID);
 		public static Identity<ProfileEducationRecord, UInteger> IDENTITY_PROFILE_EDUCATION = createIdentity(ProfileEducation.PROFILE_EDUCATION, ProfileEducation.PROFILE_EDUCATION.ID);
 		public static Identity<ProfileIntentionRecord, UInteger> IDENTITY_PROFILE_INTENTION = createIdentity(ProfileIntention.PROFILE_INTENTION, ProfileIntention.PROFILE_INTENTION.ID);
+		public static Identity<ProfileIntentionCityRecord, UInteger> IDENTITY_PROFILE_INTENTION_CITY = createIdentity(ProfileIntentionCity.PROFILE_INTENTION_CITY, ProfileIntentionCity.PROFILE_INTENTION_CITY.ID);
+		public static Identity<ProfileIntentionIndustryRecord, UInteger> IDENTITY_PROFILE_INTENTION_INDUSTRY = createIdentity(ProfileIntentionIndustry.PROFILE_INTENTION_INDUSTRY, ProfileIntentionIndustry.PROFILE_INTENTION_INDUSTRY.ID);
+		public static Identity<ProfileIntentionPositionRecord, UInteger> IDENTITY_PROFILE_INTENTION_POSITION = createIdentity(ProfileIntentionPosition.PROFILE_INTENTION_POSITION, ProfileIntentionPosition.PROFILE_INTENTION_POSITION.ID);
 		public static Identity<ProfileLanguageRecord, UInteger> IDENTITY_PROFILE_LANGUAGE = createIdentity(ProfileLanguage.PROFILE_LANGUAGE, ProfileLanguage.PROFILE_LANGUAGE.ID);
 		public static Identity<ProfileProfileRecord, UInteger> IDENTITY_PROFILE_PROFILE = createIdentity(ProfileProfile.PROFILE_PROFILE, ProfileProfile.PROFILE_PROFILE.ID);
 		public static Identity<ProfileProjectexpRecord, UInteger> IDENTITY_PROFILE_PROJECTEXP = createIdentity(ProfileProjectexp.PROFILE_PROJECTEXP, ProfileProjectexp.PROFILE_PROJECTEXP.ID);
@@ -118,14 +139,19 @@ public class Keys {
 		public static final UniqueKey<ProfileAttachmentRecord> KEY_PROFILE_ATTACHMENT_PRIMARY = createUniqueKey(ProfileAttachment.PROFILE_ATTACHMENT, ProfileAttachment.PROFILE_ATTACHMENT.ID);
 		public static final UniqueKey<ProfileAwardsRecord> KEY_PROFILE_AWARDS_PRIMARY = createUniqueKey(ProfileAwards.PROFILE_AWARDS, ProfileAwards.PROFILE_AWARDS.ID);
 		public static final UniqueKey<ProfileBasicRecord> KEY_PROFILE_BASIC_PRIMARY = createUniqueKey(ProfileBasic.PROFILE_BASIC, ProfileBasic.PROFILE_BASIC.PROFILE_ID);
+		public static final UniqueKey<ProfileCompletenessRecord> KEY_PROFILE_COMPLETENESS_PRIMARY = createUniqueKey(ProfileCompleteness.PROFILE_COMPLETENESS, ProfileCompleteness.PROFILE_COMPLETENESS.PROFILE_ID);
 		public static final UniqueKey<ProfileCredentialsRecord> KEY_PROFILE_CREDENTIALS_PRIMARY = createUniqueKey(ProfileCredentials.PROFILE_CREDENTIALS, ProfileCredentials.PROFILE_CREDENTIALS.ID);
 		public static final UniqueKey<ProfileEducationRecord> KEY_PROFILE_EDUCATION_PRIMARY = createUniqueKey(ProfileEducation.PROFILE_EDUCATION, ProfileEducation.PROFILE_EDUCATION.ID);
 		public static final UniqueKey<ProfileImportRecord> KEY_PROFILE_IMPORT_PRIMARY = createUniqueKey(ProfileImport.PROFILE_IMPORT, ProfileImport.PROFILE_IMPORT.PROFILE_ID);
 		public static final UniqueKey<ProfileIntentionRecord> KEY_PROFILE_INTENTION_PRIMARY = createUniqueKey(ProfileIntention.PROFILE_INTENTION, ProfileIntention.PROFILE_INTENTION.ID);
 		public static final UniqueKey<ProfileIntentionRecord> KEY_PROFILE_INTENTION_UK_PROFILE_ID = createUniqueKey(ProfileIntention.PROFILE_INTENTION, ProfileIntention.PROFILE_INTENTION.PROFILE_ID);
+		public static final UniqueKey<ProfileIntentionCityRecord> KEY_PROFILE_INTENTION_CITY_PRIMARY = createUniqueKey(ProfileIntentionCity.PROFILE_INTENTION_CITY, ProfileIntentionCity.PROFILE_INTENTION_CITY.ID);
+		public static final UniqueKey<ProfileIntentionIndustryRecord> KEY_PROFILE_INTENTION_INDUSTRY_PRIMARY = createUniqueKey(ProfileIntentionIndustry.PROFILE_INTENTION_INDUSTRY, ProfileIntentionIndustry.PROFILE_INTENTION_INDUSTRY.ID);
+		public static final UniqueKey<ProfileIntentionPositionRecord> KEY_PROFILE_INTENTION_POSITION_PRIMARY = createUniqueKey(ProfileIntentionPosition.PROFILE_INTENTION_POSITION, ProfileIntentionPosition.PROFILE_INTENTION_POSITION.ID);
 		public static final UniqueKey<ProfileLanguageRecord> KEY_PROFILE_LANGUAGE_PRIMARY = createUniqueKey(ProfileLanguage.PROFILE_LANGUAGE, ProfileLanguage.PROFILE_LANGUAGE.ID);
 		public static final UniqueKey<ProfileOtherRecord> KEY_PROFILE_OTHER_PRIMARY = createUniqueKey(ProfileOther.PROFILE_OTHER, ProfileOther.PROFILE_OTHER.PROFILE_ID);
 		public static final UniqueKey<ProfileProfileRecord> KEY_PROFILE_PROFILE_PRIMARY = createUniqueKey(ProfileProfile.PROFILE_PROFILE, ProfileProfile.PROFILE_PROFILE.ID);
+		public static final UniqueKey<ProfileProfileRecord> KEY_PROFILE_PROFILE_UK_PROFILE_USERID = createUniqueKey(ProfileProfile.PROFILE_PROFILE, ProfileProfile.PROFILE_PROFILE.USER_ID);
 		public static final UniqueKey<ProfileProjectexpRecord> KEY_PROFILE_PROJECTEXP_PRIMARY = createUniqueKey(ProfileProjectexp.PROFILE_PROJECTEXP, ProfileProjectexp.PROFILE_PROJECTEXP.ID);
 		public static final UniqueKey<ProfileSkillRecord> KEY_PROFILE_SKILL_PRIMARY = createUniqueKey(ProfileSkill.PROFILE_SKILL, ProfileSkill.PROFILE_SKILL.ID);
 		public static final UniqueKey<ProfileWorkexpRecord> KEY_PROFILE_WORKEXP_PRIMARY = createUniqueKey(ProfileWorkexp.PROFILE_WORKEXP, ProfileWorkexp.PROFILE_WORKEXP.ID);

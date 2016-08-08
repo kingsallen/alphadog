@@ -31,129 +31,129 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysAdministratorRecord extends UpdatableRecordImpl<ConfigSysAdministratorRecord> implements Record9<UInteger, String, String, String, String, Integer, Integer, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = 813971488;
+	private static final long serialVersionUID = -1372643296;
 
 	/**
-	 * Setter for <code>configDB.config_sys_administrator.id</code>.
+	 * Setter for <code>configdb.config_sys_administrator.id</code>.
 	 */
 	public void setId(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_administrator.id</code>.
+	 * Getter for <code>configdb.config_sys_administrator.id</code>.
 	 */
 	public UInteger getId() {
 		return (UInteger) getValue(0);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_administrator.name</code>.
+	 * Setter for <code>configdb.config_sys_administrator.name</code>.
 	 */
 	public void setName(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_administrator.name</code>.
+	 * Getter for <code>configdb.config_sys_administrator.name</code>.
 	 */
 	public String getName() {
 		return (String) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_administrator.email</code>.
+	 * Setter for <code>configdb.config_sys_administrator.email</code>.
 	 */
 	public void setEmail(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_administrator.email</code>.
+	 * Getter for <code>configdb.config_sys_administrator.email</code>.
 	 */
 	public String getEmail() {
 		return (String) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_administrator.mobile</code>.
+	 * Setter for <code>configdb.config_sys_administrator.mobile</code>.
 	 */
 	public void setMobile(String value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_administrator.mobile</code>.
+	 * Getter for <code>configdb.config_sys_administrator.mobile</code>.
 	 */
 	public String getMobile() {
 		return (String) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_administrator.password</code>.
+	 * Setter for <code>configdb.config_sys_administrator.password</code>.
 	 */
 	public void setPassword(String value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_administrator.password</code>.
+	 * Getter for <code>configdb.config_sys_administrator.password</code>.
 	 */
 	public String getPassword() {
 		return (String) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_administrator.is_disable</code>. 是否禁用，0：可用；1：禁用
+	 * Setter for <code>configdb.config_sys_administrator.is_disable</code>. 是否禁用，0：可用；1：禁用
 	 */
 	public void setIsDisable(Integer value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_administrator.is_disable</code>. 是否禁用，0：可用；1：禁用
+	 * Getter for <code>configdb.config_sys_administrator.is_disable</code>. 是否禁用，0：可用；1：禁用
 	 */
 	public Integer getIsDisable() {
 		return (Integer) getValue(5);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_administrator.login_count</code>. 登录次数
+	 * Setter for <code>configdb.config_sys_administrator.login_count</code>. 登录次数
 	 */
 	public void setLoginCount(Integer value) {
 		setValue(6, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_administrator.login_count</code>. 登录次数
+	 * Getter for <code>configdb.config_sys_administrator.login_count</code>. 登录次数
 	 */
 	public Integer getLoginCount() {
 		return (Integer) getValue(6);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_administrator.last_login_time</code>. 最近登录时间
+	 * Setter for <code>configdb.config_sys_administrator.last_login_time</code>. 最近登录时间
 	 */
 	public void setLastLoginTime(Timestamp value) {
 		setValue(7, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_administrator.last_login_time</code>. 最近登录时间
+	 * Getter for <code>configdb.config_sys_administrator.last_login_time</code>. 最近登录时间
 	 */
 	public Timestamp getLastLoginTime() {
 		return (Timestamp) getValue(7);
 	}
 
 	/**
-	 * Setter for <code>configDB.config_sys_administrator.create_time</code>. 创建时间
+	 * Setter for <code>configdb.config_sys_administrator.create_time</code>. 创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
 		setValue(8, value);
 	}
 
 	/**
-	 * Getter for <code>configDB.config_sys_administrator.create_time</code>. 创建时间
+	 * Getter for <code>configdb.config_sys_administrator.create_time</code>. 创建时间
 	 */
 	public Timestamp getCreateTime() {
 		return (Timestamp) getValue(8);
