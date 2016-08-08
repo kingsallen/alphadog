@@ -30,6 +30,8 @@ public class SearchengineController {
 	@RequestMapping(value = "/search/position", method = RequestMethod.GET, produces = "application/json;charset=utf-8")
 	@ResponseBody
 	public String postuserlogin(HttpServletRequest request, HttpServletResponse response) {
+	       
+	    
 		try {
 			Map<String, Object> reqParams = ParamUtils.mergeRequestParameters(request);
 			String keywords = BeanUtils.converToString(reqParams.get("keywords"));
@@ -47,6 +49,7 @@ public class SearchengineController {
 			int page_size = BeanUtils.converToInteger(reqParams.get("page_size"));
 			String  child_company_name =  BeanUtils.converToString(reqParams.get("child_company_name"));
 			
+			
 			Response result = searchengineServices.query(
 							keywords,
 							cities,
@@ -62,6 +65,7 @@ public class SearchengineController {
 							page_from,
 							page_size,
 							child_company_name);
+			System.out.println(result.getStatus() );
 			if (result.getStatus() == 0){
 				return ResponseLogNotification.success(request, result);
 			}else{
@@ -69,6 +73,8 @@ public class SearchengineController {
 			}
 			
 		} catch (Exception e) {	
+//		    System.out.println("not even searched" );
+//		    System.out.println(e );
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}

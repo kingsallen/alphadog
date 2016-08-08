@@ -6,11 +6,14 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.QueryBuilders.*;
+import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.lang.Exception;
 import com.alibaba.fastjson.JSON;
@@ -28,6 +31,9 @@ public class SearchengineServiceImpl implements Iface {
     public Response query(String keywords, String cities, String industries, String occupations, String scale,
             String employment_type, String candidate_source, String experience, String degree, String salary,
             String company_name, int page_from, int page_size,String child_company_name) throws TException {
+        
+        List  listOfid = new ArrayList();
+        
         if (page_from == 0) {
             page_from = 0;
         }
@@ -51,7 +57,7 @@ public class SearchengineServiceImpl implements Iface {
 
             QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
             QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
-
+            
             if (keywords != null) {
                 String[] keyword_list = keywords.split(" ");
                 QueryBuilder keyand = QueryBuilders.boolQuery();
@@ -144,15 +150,20 @@ public class SearchengineServiceImpl implements Iface {
             
             response = client.prepareSearch("index").setTypes("fulltext").setQuery(query).setFrom(page_from)
                     .setSize(page_size).execute().actionGet();
+            for (SearchHit hit : response.getHits()) {
+                //Handle the hit...
+                String id = (String) hit.getSource().get("id");
+                listOfid.add(id);
+            }
 
         } catch (Exception e) {
             System.out.println(e.toString());
         }
         // System.out.println(JSON.toJSONString(response.toString()));
 
-        Map<String, String> res = new HashMap<String, String>();
-        res.put("searchres", response.toString());
-
+        Map<String, List> res = new HashMap<String, List>();
+        res.put("jd_id_list",listOfid);
+        
         return ResponseUtils.success(res);
 
     }
