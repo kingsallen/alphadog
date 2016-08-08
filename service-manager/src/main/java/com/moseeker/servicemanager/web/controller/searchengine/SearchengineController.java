@@ -12,14 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.rpccenter.common.ServiceUtil;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
-import com.moseeker.thrift.gen.useraccounts.struct.userloginreq;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 
 
@@ -28,7 +25,7 @@ public class SearchengineController {
 
 	Logger logger = LoggerFactory.getLogger(SearchengineController.class);
 
-	SearchengineServices.Iface searchengineServices = ServiceUtil.getService(SearchengineServices.Iface.class);
+	SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
 	
 	@RequestMapping(value = "/search/position", method = RequestMethod.GET, produces = "application/json;charset=utf-8")
 	@ResponseBody
