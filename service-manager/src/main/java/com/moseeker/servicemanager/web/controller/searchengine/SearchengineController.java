@@ -38,7 +38,9 @@ public class SearchengineController {
             reqParams = ParamUtils.mergeRequestParameters(request);
             Integer id = BeanUtils.converToInteger(reqParams.get("id"));
             Response result = positonServices.getPositionById(id);
-            System.out.println(result);
+            String position = result.data;
+            Response update_result = searchengineServices.updateposition(position);
+           System.out.println(position);
             
         } catch (Exception e) {
             // e.printStackTrace();

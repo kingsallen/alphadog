@@ -180,9 +180,10 @@ public class SearchengineServiceImpl implements Iface {
     @Override
     public Response updateposition(String positionid) throws TException {
         // TODO Auto-generated method stub
+        System.out.println(positionid);
         
         
-        return null;
+        return ResponseUtils.success(positionid);
     }
 
 }
