@@ -129,12 +129,12 @@ public class SearchengineServiceImpl implements Iface {
             }
 
             if (employment_type != null) {
-                QueryBuilder employmentfilter = QueryBuilders.termQuery("employment_type", employment_type);
+                QueryBuilder employmentfilter = QueryBuilders.termQuery("employment_type_name", employment_type);
                 ((BoolQueryBuilder) query).must(employmentfilter);
             }
 
             if (candidate_source != null) {
-                QueryBuilder candidatefilter = QueryBuilders.termQuery("candidate_source", candidate_source);
+                QueryBuilder candidatefilter = QueryBuilders.termQuery("candidate_source_name", candidate_source);
                 ((BoolQueryBuilder) query).must(candidatefilter);
             }
             
@@ -149,7 +149,7 @@ public class SearchengineServiceImpl implements Iface {
             }
 
             if (degree != null) {
-                QueryBuilder degreefilter = QueryBuilders.termQuery("degree", degree);
+                QueryBuilder degreefilter = QueryBuilders.termQuery("degree_name", degree);
                 ((BoolQueryBuilder) query).must(degreefilter);
             }
 
