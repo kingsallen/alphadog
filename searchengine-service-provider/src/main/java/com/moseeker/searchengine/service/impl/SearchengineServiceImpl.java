@@ -4,6 +4,7 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.QueryBuilders.*;
 import org.elasticsearch.search.SearchHit;
@@ -11,6 +12,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +24,7 @@ import org.apache.thrift.TException;
 import org.springframework.stereotype.Service;
 
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices.Iface;
 
@@ -166,7 +169,8 @@ public class SearchengineServiceImpl implements Iface {
             }
 
         } catch (Exception e) {
-            System.out.println(e.toString());
+//            System.out.println(e.toString());
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
         // System.out.println(JSON.toJSONString(response.toString()));
 
@@ -176,14 +180,30 @@ public class SearchengineServiceImpl implements Iface {
         return ResponseUtils.success(res);
 
     }
-
+    
     @Override
-    public Response updateposition(String positionid) throws TException {
+    public Response updateposition(String position,int  id) throws TException {
         // TODO Auto-generated method stub
-        System.out.println(positionid);
+        System.out.println(position);
+        Settings settings = Settings.settingsBuilder().put("cluster.name", "es-bj")
+                // .put("client.transport.sniff", true)
+                .build();
+        String idx = ""+id;
+        TransportClient client = null;
+        try {
+            client = TransportClient.builder().settings(settings).build()
+                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("123.57.155.239"), 9300));
+            IndexResponse response = client.prepareIndex("index", "fulltext",idx)
+                    .setSource(position)
+                    .execute()
+                    .actionGet();
+        } catch (UnknownHostException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        }
         
-        
-        return ResponseUtils.success(positionid);
+        return ResponseUtils.success(position);
     }
 
 }
