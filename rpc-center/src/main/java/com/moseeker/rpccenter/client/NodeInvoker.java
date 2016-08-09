@@ -60,16 +60,19 @@ public class NodeInvoker<T> implements Invoker {
 			root = NodeManager.NODEMANAGER.getRoot();
 		} catch (Exception e1) {
 			e1.printStackTrace();
+			LOGGER.error(e1.getMessage(), e1);
 			throw new RpcException("服务超时，请稍候再试!", e1);
 		} finally {
 			
 		}
         Throwable exception = null;
         ZKPath node = null;
-        for (int i = 0; i == 0 || i < retry + 1; i++) {
+        for (int i = 0; i < retry + 1; i++) {
             try {
                 node = NodeLoadBalance.LoadBalance.getNextNode(root, parentName);
                 if (node == null) {
+                	LOGGER.error("retry:"+(i+1));
+                	LOGGER.error(parentName+"  Can't find node!");
                 	//warning
                     continue;
                 }
