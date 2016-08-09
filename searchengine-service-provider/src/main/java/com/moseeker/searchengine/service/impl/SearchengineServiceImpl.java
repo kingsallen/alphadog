@@ -37,7 +37,7 @@ public class SearchengineServiceImpl implements Iface {
     @Override
     public Response query(String keywords, String cities, String industries, String occupations, String scale,
             String employment_type, String candidate_source, String experience, String degree, String salary,
-            String company_name, int page_from, int page_size,String child_company_name) throws TException {
+            String company_name, int page_from, int page_size,String child_company_name,String department) throws TException {
         
         List  listOfid = new ArrayList();
         
@@ -79,9 +79,6 @@ public class SearchengineServiceImpl implements Iface {
                     String keyword = keyword_list[i];
                     QueryBuilder keyfilter = QueryBuilders.simpleQueryStringQuery(keyword);
                     ((BoolQueryBuilder) keyand).should(keyfilter);
-
-
-
                 }
                 ((BoolQueryBuilder) query).must(keyand);
             }
@@ -140,7 +137,12 @@ public class SearchengineServiceImpl implements Iface {
                 QueryBuilder candidatefilter = QueryBuilders.termQuery("candidate_source", candidate_source);
                 ((BoolQueryBuilder) query).must(candidatefilter);
             }
-
+            
+            if (department != null) {
+                QueryBuilder departmentfilter = QueryBuilders.termQuery("department", department);
+                ((BoolQueryBuilder) query).must(departmentfilter);
+            }
+            
             if (experience != null) {
                 QueryBuilder experiencefilter = QueryBuilders.termQuery("experience", experience);
                 ((BoolQueryBuilder) query).must(experiencefilter);

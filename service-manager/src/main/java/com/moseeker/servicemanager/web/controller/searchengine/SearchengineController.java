@@ -117,10 +117,11 @@ public class SearchengineController {
             int page_from = BeanUtils.converToInteger(reqParams.get("page_from"));
             int page_size = BeanUtils.converToInteger(reqParams.get("page_size"));
             String child_company_name = BeanUtils.converToString(reqParams.get("child_company_name"));
-
+            String department = BeanUtils.converToString(reqParams.get("department"));
+            
             Response result = searchengineServices.query(keywords, cities, industries, occupations, scale,
                     employment_type, candidate_source, experience, degree, salary, company_name, page_from, page_size,
-                    child_company_name);
+                    child_company_name,department);
 //            System.out.println(result.getStatus());
             if (result.getStatus() == 0) {
                 return ResponseLogNotification.success(request, result);

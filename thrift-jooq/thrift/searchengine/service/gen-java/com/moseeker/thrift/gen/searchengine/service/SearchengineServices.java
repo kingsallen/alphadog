@@ -39,7 +39,7 @@ public class SearchengineServices {
 
   public interface Iface {
 
-    public com.moseeker.thrift.gen.common.struct.Response query(String keywords, String cities, String industries, String occupations, String scale, String employment_type, String candidate_source, String experience, String degree, String salary, String company_name, int page_from, int page_size, String child_company_name) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response query(String keywords, String cities, String industries, String occupations, String scale, String employment_type, String candidate_source, String experience, String degree, String salary, String company_name, int page_from, int page_size, String child_company_name, String department) throws org.apache.thrift.TException;
 
     public com.moseeker.thrift.gen.common.struct.Response updateposition(String position, int id) throws org.apache.thrift.TException;
 
@@ -47,7 +47,7 @@ public class SearchengineServices {
 
   public interface AsyncIface {
 
-    public void query(String keywords, String cities, String industries, String occupations, String scale, String employment_type, String candidate_source, String experience, String degree, String salary, String company_name, int page_from, int page_size, String child_company_name, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void query(String keywords, String cities, String industries, String occupations, String scale, String employment_type, String candidate_source, String experience, String degree, String salary, String company_name, int page_from, int page_size, String child_company_name, String department, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
     public void updateposition(String position, int id, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
@@ -73,13 +73,13 @@ public class SearchengineServices {
       super(iprot, oprot);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response query(String keywords, String cities, String industries, String occupations, String scale, String employment_type, String candidate_source, String experience, String degree, String salary, String company_name, int page_from, int page_size, String child_company_name) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response query(String keywords, String cities, String industries, String occupations, String scale, String employment_type, String candidate_source, String experience, String degree, String salary, String company_name, int page_from, int page_size, String child_company_name, String department) throws org.apache.thrift.TException
     {
-      send_query(keywords, cities, industries, occupations, scale, employment_type, candidate_source, experience, degree, salary, company_name, page_from, page_size, child_company_name);
+      send_query(keywords, cities, industries, occupations, scale, employment_type, candidate_source, experience, degree, salary, company_name, page_from, page_size, child_company_name, department);
       return recv_query();
     }
 
-    public void send_query(String keywords, String cities, String industries, String occupations, String scale, String employment_type, String candidate_source, String experience, String degree, String salary, String company_name, int page_from, int page_size, String child_company_name) throws org.apache.thrift.TException
+    public void send_query(String keywords, String cities, String industries, String occupations, String scale, String employment_type, String candidate_source, String experience, String degree, String salary, String company_name, int page_from, int page_size, String child_company_name, String department) throws org.apache.thrift.TException
     {
       query_args args = new query_args();
       args.setKeywords(keywords);
@@ -96,6 +96,7 @@ public class SearchengineServices {
       args.setPage_from(page_from);
       args.setPage_size(page_size);
       args.setChild_company_name(child_company_name);
+      args.setDepartment(department);
       sendBase("query", args);
     }
 
@@ -151,9 +152,9 @@ public class SearchengineServices {
       super(protocolFactory, clientManager, transport);
     }
 
-    public void query(String keywords, String cities, String industries, String occupations, String scale, String employment_type, String candidate_source, String experience, String degree, String salary, String company_name, int page_from, int page_size, String child_company_name, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void query(String keywords, String cities, String industries, String occupations, String scale, String employment_type, String candidate_source, String experience, String degree, String salary, String company_name, int page_from, int page_size, String child_company_name, String department, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      query_call method_call = new query_call(keywords, cities, industries, occupations, scale, employment_type, candidate_source, experience, degree, salary, company_name, page_from, page_size, child_company_name, resultHandler, this, ___protocolFactory, ___transport);
+      query_call method_call = new query_call(keywords, cities, industries, occupations, scale, employment_type, candidate_source, experience, degree, salary, company_name, page_from, page_size, child_company_name, department, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
@@ -173,7 +174,8 @@ public class SearchengineServices {
       private int page_from;
       private int page_size;
       private String child_company_name;
-      public query_call(String keywords, String cities, String industries, String occupations, String scale, String employment_type, String candidate_source, String experience, String degree, String salary, String company_name, int page_from, int page_size, String child_company_name, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private String department;
+      public query_call(String keywords, String cities, String industries, String occupations, String scale, String employment_type, String candidate_source, String experience, String degree, String salary, String company_name, int page_from, int page_size, String child_company_name, String department, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.keywords = keywords;
         this.cities = cities;
@@ -189,6 +191,7 @@ public class SearchengineServices {
         this.page_from = page_from;
         this.page_size = page_size;
         this.child_company_name = child_company_name;
+        this.department = department;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
@@ -208,6 +211,7 @@ public class SearchengineServices {
         args.setPage_from(page_from);
         args.setPage_size(page_size);
         args.setChild_company_name(child_company_name);
+        args.setDepartment(department);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -290,7 +294,7 @@ public class SearchengineServices {
 
       public query_result getResult(I iface, query_args args) throws org.apache.thrift.TException {
         query_result result = new query_result();
-        result.success = iface.query(args.keywords, args.cities, args.industries, args.occupations, args.scale, args.employment_type, args.candidate_source, args.experience, args.degree, args.salary, args.company_name, args.page_from, args.page_size, args.child_company_name);
+        result.success = iface.query(args.keywords, args.cities, args.industries, args.occupations, args.scale, args.employment_type, args.candidate_source, args.experience, args.degree, args.salary, args.company_name, args.page_from, args.page_size, args.child_company_name, args.department);
         return result;
       }
     }
@@ -380,7 +384,7 @@ public class SearchengineServices {
       }
 
       public void start(I iface, query_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws TException {
-        iface.query(args.keywords, args.cities, args.industries, args.occupations, args.scale, args.employment_type, args.candidate_source, args.experience, args.degree, args.salary, args.company_name, args.page_from, args.page_size, args.child_company_name,resultHandler);
+        iface.query(args.keywords, args.cities, args.industries, args.occupations, args.scale, args.employment_type, args.candidate_source, args.experience, args.degree, args.salary, args.company_name, args.page_from, args.page_size, args.child_company_name, args.department,resultHandler);
       }
     }
 
@@ -454,6 +458,7 @@ public class SearchengineServices {
     private static final org.apache.thrift.protocol.TField PAGE_FROM_FIELD_DESC = new org.apache.thrift.protocol.TField("page_from", org.apache.thrift.protocol.TType.I32, (short)12);
     private static final org.apache.thrift.protocol.TField PAGE_SIZE_FIELD_DESC = new org.apache.thrift.protocol.TField("page_size", org.apache.thrift.protocol.TType.I32, (short)13);
     private static final org.apache.thrift.protocol.TField CHILD_COMPANY_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("child_company_name", org.apache.thrift.protocol.TType.STRING, (short)14);
+    private static final org.apache.thrift.protocol.TField DEPARTMENT_FIELD_DESC = new org.apache.thrift.protocol.TField("department", org.apache.thrift.protocol.TType.STRING, (short)15);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
@@ -475,6 +480,7 @@ public class SearchengineServices {
     public int page_from; // required
     public int page_size; // required
     public String child_company_name; // required
+    public String department; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -491,7 +497,8 @@ public class SearchengineServices {
       COMPANY_NAME((short)11, "company_name"),
       PAGE_FROM((short)12, "page_from"),
       PAGE_SIZE((short)13, "page_size"),
-      CHILD_COMPANY_NAME((short)14, "child_company_name");
+      CHILD_COMPANY_NAME((short)14, "child_company_name"),
+      DEPARTMENT((short)15, "department");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -534,6 +541,8 @@ public class SearchengineServices {
             return PAGE_SIZE;
           case 14: // CHILD_COMPANY_NAME
             return CHILD_COMPANY_NAME;
+          case 15: // DEPARTMENT
+            return DEPARTMENT;
           default:
             return null;
         }
@@ -608,6 +617,8 @@ public class SearchengineServices {
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       tmpMap.put(_Fields.CHILD_COMPANY_NAME, new org.apache.thrift.meta_data.FieldMetaData("child_company_name", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+      tmpMap.put(_Fields.DEPARTMENT, new org.apache.thrift.meta_data.FieldMetaData("department", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(query_args.class, metaDataMap);
     }
@@ -629,7 +640,8 @@ public class SearchengineServices {
       String company_name,
       int page_from,
       int page_size,
-      String child_company_name)
+      String child_company_name,
+      String department)
     {
       this();
       this.keywords = keywords;
@@ -648,6 +660,7 @@ public class SearchengineServices {
       this.page_size = page_size;
       setPage_sizeIsSet(true);
       this.child_company_name = child_company_name;
+      this.department = department;
     }
 
     /**
@@ -693,6 +706,9 @@ public class SearchengineServices {
       if (other.isSetChild_company_name()) {
         this.child_company_name = other.child_company_name;
       }
+      if (other.isSetDepartment()) {
+        this.department = other.department;
+      }
     }
 
     public query_args deepCopy() {
@@ -717,6 +733,7 @@ public class SearchengineServices {
       setPage_sizeIsSet(false);
       this.page_size = 0;
       this.child_company_name = null;
+      this.department = null;
     }
 
     public String getKeywords() {
@@ -1053,6 +1070,30 @@ public class SearchengineServices {
       }
     }
 
+    public String getDepartment() {
+      return this.department;
+    }
+
+    public query_args setDepartment(String department) {
+      this.department = department;
+      return this;
+    }
+
+    public void unsetDepartment() {
+      this.department = null;
+    }
+
+    /** Returns true if field department is set (has been assigned a value) and false otherwise */
+    public boolean isSetDepartment() {
+      return this.department != null;
+    }
+
+    public void setDepartmentIsSet(boolean value) {
+      if (!value) {
+        this.department = null;
+      }
+    }
+
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case KEYWORDS:
@@ -1167,6 +1208,14 @@ public class SearchengineServices {
         }
         break;
 
+      case DEPARTMENT:
+        if (value == null) {
+          unsetDepartment();
+        } else {
+          setDepartment((String)value);
+        }
+        break;
+
       }
     }
 
@@ -1214,6 +1263,9 @@ public class SearchengineServices {
       case CHILD_COMPANY_NAME:
         return getChild_company_name();
 
+      case DEPARTMENT:
+        return getDepartment();
+
       }
       throw new IllegalStateException();
     }
@@ -1253,6 +1305,8 @@ public class SearchengineServices {
         return isSetPage_size();
       case CHILD_COMPANY_NAME:
         return isSetChild_company_name();
+      case DEPARTMENT:
+        return isSetDepartment();
       }
       throw new IllegalStateException();
     }
@@ -1396,6 +1450,15 @@ public class SearchengineServices {
           return false;
       }
 
+      boolean this_present_department = true && this.isSetDepartment();
+      boolean that_present_department = true && that.isSetDepartment();
+      if (this_present_department || that_present_department) {
+        if (!(this_present_department && that_present_department))
+          return false;
+        if (!this.department.equals(that.department))
+          return false;
+      }
+
       return true;
     }
 
@@ -1472,6 +1535,11 @@ public class SearchengineServices {
       list.add(present_child_company_name);
       if (present_child_company_name)
         list.add(child_company_name);
+
+      boolean present_department = true && (isSetDepartment());
+      list.add(present_department);
+      if (present_department)
+        list.add(department);
 
       return list.hashCode();
     }
@@ -1624,6 +1692,16 @@ public class SearchengineServices {
           return lastComparison;
         }
       }
+      lastComparison = Boolean.valueOf(isSetDepartment()).compareTo(other.isSetDepartment());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetDepartment()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.department, other.department);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
       return 0;
     }
 
@@ -1745,6 +1823,14 @@ public class SearchengineServices {
         sb.append("null");
       } else {
         sb.append(this.child_company_name);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("department:");
+      if (this.department == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.department);
       }
       first = false;
       sb.append(")");
@@ -1904,6 +1990,14 @@ public class SearchengineServices {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 15: // DEPARTMENT
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.department = iprot.readString();
+                struct.setDepartmentIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -1985,6 +2079,11 @@ public class SearchengineServices {
           oprot.writeString(struct.child_company_name);
           oprot.writeFieldEnd();
         }
+        if (struct.department != null) {
+          oprot.writeFieldBegin(DEPARTMENT_FIELD_DESC);
+          oprot.writeString(struct.department);
+          oprot.writeFieldEnd();
+        }
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
@@ -2045,7 +2144,10 @@ public class SearchengineServices {
         if (struct.isSetChild_company_name()) {
           optionals.set(13);
         }
-        oprot.writeBitSet(optionals, 14);
+        if (struct.isSetDepartment()) {
+          optionals.set(14);
+        }
+        oprot.writeBitSet(optionals, 15);
         if (struct.isSetKeywords()) {
           oprot.writeString(struct.keywords);
         }
@@ -2088,12 +2190,15 @@ public class SearchengineServices {
         if (struct.isSetChild_company_name()) {
           oprot.writeString(struct.child_company_name);
         }
+        if (struct.isSetDepartment()) {
+          oprot.writeString(struct.department);
+        }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, query_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(14);
+        BitSet incoming = iprot.readBitSet(15);
         if (incoming.get(0)) {
           struct.keywords = iprot.readString();
           struct.setKeywordsIsSet(true);
@@ -2149,6 +2254,10 @@ public class SearchengineServices {
         if (incoming.get(13)) {
           struct.child_company_name = iprot.readString();
           struct.setChild_company_nameIsSet(true);
+        }
+        if (incoming.get(14)) {
+          struct.department = iprot.readString();
+          struct.setDepartmentIsSet(true);
         }
       }
     }
