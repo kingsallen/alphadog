@@ -136,7 +136,7 @@ public class PositionServicesImpl extends JOOQBaseServiceImpl<Position, JobPosit
 
 			/** 常量转换 **/
 			// 性别
-			if(jobPositionPojo.gender > 0){
+			if(jobPositionPojo.gender < 2){
 				jobPositionPojo.gender_name = getDictConstantJson(2102, jobPositionPojo.gender);
 			}
 
@@ -146,9 +146,10 @@ public class PositionServicesImpl extends JOOQBaseServiceImpl<Position, JobPosit
 			}
 
 			// 工作性质
-			if(jobPositionPojo.employment_type > 0){
-				jobPositionPojo.employment_type_name = getDictConstantJson(2103, jobPositionPojo.degree);
-			}
+			jobPositionPojo.employment_type_name = getDictConstantJson(2103, jobPositionPojo.employment_type);
+
+			// 招聘类型
+			jobPositionPojo.candidate_name = getDictConstantJson(2104, jobPositionPojo.candidate_source);
 
 			return ResponseUtils.success(jobPositionPojo);
 		}catch (Exception e){

@@ -80,7 +80,9 @@ public class JobPositionPojo {
     // 派生字段 非表中字段
     public int publisher_company_id; //'hr_child_company.id'
     public String publish_date_view = DateUtils.dateToPattern(this.publish_date, DateUtils.SHOT_TIME);
+    public String update_time_view = DateUtils.dateToPattern(this.update_time, DateUtils.SHOT_TIME);
     public String degree_name = "";
     public String employment_type_name = "";
     public String gender_name = "";
+    public String candidate_name = "";
 }
