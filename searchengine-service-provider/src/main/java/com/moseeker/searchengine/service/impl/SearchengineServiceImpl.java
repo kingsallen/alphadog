@@ -8,6 +8,8 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.QueryBuilders.*;
 import org.elasticsearch.search.SearchHit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -24,12 +26,14 @@ import org.apache.thrift.TException;
 import org.springframework.stereotype.Service;
 
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices.Iface;
 
 @Service
 public class SearchengineServiceImpl implements Iface {
+    Logger logger = LoggerFactory.getLogger(this.getClass());
     @Override
     public Response query(String keywords, String cities, String industries, String occupations, String scale,
             String employment_type, String candidate_source, String experience, String degree, String salary,
@@ -44,18 +48,19 @@ public class SearchengineServiceImpl implements Iface {
             page_size = 20;
         }
         SearchResponse response = null;
+        ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
+        String cluster_name = propertiesReader.get("es.cluster.name", String.class);
+        String es_connection = propertiesReader.get("es.connection", String.class);
+        Integer es_port = propertiesReader.get("es.port", Integer.class);
+        
         try {
 
-            Settings settings = Settings.settingsBuilder().put("cluster.name", "es-bj")
-                    // .put("client.transport.sniff", true)
+            Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
                     .build();
 
             TransportClient client = TransportClient.builder().settings(settings).build()
-                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("123.57.155.239"), 9300));
+                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
 
-            // if (keywords == null) {
-            //     keywords = "android";
-            // }
             System.out.println(keywords);
 
             QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
@@ -169,10 +174,9 @@ public class SearchengineServiceImpl implements Iface {
             }
 
         } catch (Exception e) {
-//            System.out.println(e.toString());
+            logger.error("error in search",e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
-        // System.out.println(JSON.toJSONString(response.toString()));
 
         Map<String, List> res = new HashMap<String, List>();
         res.put("jd_id_list",listOfid);
@@ -183,23 +187,23 @@ public class SearchengineServiceImpl implements Iface {
     
     @Override
     public Response updateposition(String position,int  id) throws TException {
-        // TODO Auto-generated method stub
-        System.out.println(position);
-        Settings settings = Settings.settingsBuilder().put("cluster.name", "es-bj")
-                // .put("client.transport.sniff", true)
+        ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
+        String cluster_name = propertiesReader.get("es.cluster.name", String.class);
+        String es_connection = propertiesReader.get("es.connection", String.class);
+        Integer es_port = propertiesReader.get("es.port", Integer.class);
+        Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
                 .build();
         String idx = ""+id;
         TransportClient client = null;
         try {
             client = TransportClient.builder().settings(settings).build()
-                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("123.57.155.239"), 9300));
+                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
             IndexResponse response = client.prepareIndex("index", "fulltext",idx)
                     .setSource(position)
                     .execute()
                     .actionGet();
         } catch (UnknownHostException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error("error in update",e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
         
