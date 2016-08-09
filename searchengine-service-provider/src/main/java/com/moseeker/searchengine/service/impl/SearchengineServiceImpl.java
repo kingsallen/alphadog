@@ -49,6 +49,12 @@ public class SearchengineServiceImpl implements Iface {
         }
         SearchResponse response = null;
         ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
+        try {
+            propertiesReader.loadResource("es.properties");
+        } catch (Exception e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
         String cluster_name = propertiesReader.get("es.cluster.name", String.class);
         String es_connection = propertiesReader.get("es.connection", String.class);
         Integer es_port = propertiesReader.get("es.port", Integer.class);
@@ -188,7 +194,14 @@ public class SearchengineServiceImpl implements Iface {
     @Override
     public Response updateposition(String position,int  id) throws TException {
         ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
+        try {
+            propertiesReader.loadResource("es.properties");
+        } catch (Exception e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
         String cluster_name = propertiesReader.get("es.cluster.name", String.class);
+        System.out.println(cluster_name);
         String es_connection = propertiesReader.get("es.connection", String.class);
         Integer es_port = propertiesReader.get("es.port", Integer.class);
         Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
