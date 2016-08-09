@@ -222,7 +222,7 @@ public class SearchengineServiceImpl implements Iface {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
         
-        return ResponseUtils.success(position);
+        return ResponseUtils.success("");
     }
 
 }
