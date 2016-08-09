@@ -84,5 +84,5 @@ public class JobPositionPojo {
     public String degree_name = "";
     public String employment_type_name = "";
     public String gender_name = "";
-    public String candidate_name = "";
+    public String candidate_source_name = "";
 }

@@ -149,7 +149,7 @@ public class PositionServicesImpl extends JOOQBaseServiceImpl<Position, JobPosit
 			jobPositionPojo.employment_type_name = getDictConstantJson(2103, jobPositionPojo.employment_type);
 
 			// 招聘类型
-			jobPositionPojo.candidate_name = getDictConstantJson(2104, jobPositionPojo.candidate_source);
+			jobPositionPojo.candidate_source_name = getDictConstantJson(2104, jobPositionPojo.candidate_source);
 
 			return ResponseUtils.success(jobPositionPojo);
 		}catch (Exception e){
