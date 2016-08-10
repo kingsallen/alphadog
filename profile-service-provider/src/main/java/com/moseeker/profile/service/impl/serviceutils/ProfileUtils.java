@@ -156,6 +156,9 @@ public class ProfileUtils {
 		if (intentions != null && intentions.size() > 0) {
 			intentions.forEach(intention -> {
 				IntentionRecord record = BeanUtils.MapToRecord(intention, IntentionRecord.class);
+				record.getCities().clear();
+				record.getPositions().clear();
+				record.getIndustries().clear();
 				if (record != null) {
 					if (intention.get("cities") != null) {
 						List<Map<String, Object>> cities = (List<Map<String, Object>>) intention.get("cities");
