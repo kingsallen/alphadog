@@ -85,4 +85,7 @@ public class JobPositionPojo {
     public String employment_type_name = "";
     public String gender_name = "";
     public String candidate_source_name = "";
+
+    // 自定义字段
+    public String custom = "";
 }
