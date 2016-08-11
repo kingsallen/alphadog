@@ -8,6 +8,7 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.QueryBuilders.*;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -37,7 +38,7 @@ public class SearchengineServiceImpl implements Iface {
     @Override
     public Response query(String keywords, String cities, String industries, String occupations, String scale,
             String employment_type, String candidate_source, String experience, String degree, String salary,
-            String company_name, int page_from, int page_size,String child_company_name,String department) throws TException {
+            String company_name, int page_from, int page_size,String child_company_name,String department,boolean order_by_priority) throws TException {
         
         List  listOfid = new ArrayList();
         
@@ -173,8 +174,19 @@ public class SearchengineServiceImpl implements Iface {
                 ((BoolQueryBuilder) query).must(child_company_filter);
             }
             
-            response = client.prepareSearch("index").setTypes("fulltext").setQuery(query).setFrom(page_from)
-                    .setSize(page_size).execute().actionGet();
+            
+            if (order_by_priority){
+                response = client.prepareSearch("index").setTypes("fulltext")
+                        .setQuery(query)
+                        .addSort("priority" , SortOrder.ASC)
+                        .setFrom(page_from)
+                        .setSize(page_size).execute().actionGet();
+            }
+            else{
+                response = client.prepareSearch("index").setTypes("fulltext").setQuery(query).setFrom(page_from)
+                        .setSize(page_size).execute().actionGet();
+            }
+            
             for (SearchHit hit : response.getHits()) {
                 //Handle the hit...
                 String id = (String) hit.getSource().get("id");
