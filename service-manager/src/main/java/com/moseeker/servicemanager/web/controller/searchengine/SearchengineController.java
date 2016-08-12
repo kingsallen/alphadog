@@ -38,7 +38,7 @@ public class SearchengineController {
     CompanyServices.Iface companyServices = ServiceManager.SERVICEMANAGER.
             getService(CompanyServices.Iface.class);
 
-    @RequestMapping(value = "/search/update", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+    @RequestMapping(value = "/search/update", method = RequestMethod.POST)
     
     @ResponseBody
     public String update_position(HttpServletRequest request, HttpServletResponse response) {
@@ -51,13 +51,10 @@ public class SearchengineController {
             Response result = positonServices.getPositionById(id);
             position = result.data;
             Map position_map = (Map) JSON.parse(position);
-//            System.out.println(position_map);
 
             String company_id = BeanUtils.converToString(position_map.get("company_id"));
             String publisher_company_id = BeanUtils.converToString(position_map.get("publisher_company_id"));
-//            System.out.println(company_id);
-//            System.out.println(publisher_company_id);
-            
+
             CommonQuery query = new CommonQuery();
             query.putToEqualFilter("id", company_id);
             Response company_resp = companyServices.getAllCompanies(query);
@@ -81,16 +78,15 @@ public class SearchengineController {
             }
             
             position = JSON.toJSONString(position_map);
-//            System.out.println(position);
+
             
-            
-            // Response update_result =
+
              search_res = searchengineServices.updateposition(position,id);
-            // System.out.println(position);
+
              
         } catch (Exception e) {
-            // e.printStackTrace();
-            System.out.println(e);
+
+           
             return ResponseLogNotification.fail(request, e.getMessage());
         }
         
@@ -100,7 +96,7 @@ public class SearchengineController {
     @RequestMapping(value = "/search/position", method = RequestMethod.GET, produces = "application/json;charset=utf-8")
     @ResponseBody
     public String search_position(HttpServletRequest request, HttpServletResponse response) {
-
+    
         try {
             Map<String, Object> reqParams = ParamUtils.mergeRequestParameters(request);
             String keywords = BeanUtils.converToString(reqParams.get("keywords"));
@@ -123,7 +119,7 @@ public class SearchengineController {
             Response result = searchengineServices.query(keywords, cities, industries, occupations, scale,
                     employment_type, candidate_source, experience, degree, salary, company_name, page_from, page_size,
                     child_company_name,department, order_by_priority);
-//            System.out.println(result.getStatus());
+
             if (result.getStatus() == 0) {
                 return ResponseLogNotification.success(request, result);
             } else {
@@ -131,8 +127,6 @@ public class SearchengineController {
             }
 
         } catch (Exception e) {
-            // System.out.println("not even searched" );
-            // System.out.println(e );
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
