@@ -72,7 +72,7 @@ public class SearchengineServiceImpl implements Iface {
             QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
             QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
             
-            if (keywords != null || !keywords.equals("") ) {
+            if (keywords != null && !keywords.equals("") ) {
                 String[] keyword_list = keywords.split(" ");
                 QueryBuilder keyand = QueryBuilders.boolQuery();
                 for (int i = 0; i < keyword_list.length; i++) {
@@ -85,7 +85,7 @@ public class SearchengineServiceImpl implements Iface {
             
 
 
-            if (cities != null|| !cities.equals("")) {
+            if (cities != null&& !cities.equals("")) {
                 String[] city_list = cities.split(",");
                 QueryBuilder cityor = QueryBuilders.boolQuery();
                 for (int i = 0; i < city_list.length; i++) {
@@ -101,7 +101,7 @@ public class SearchengineServiceImpl implements Iface {
                 ((BoolQueryBuilder) query).must(cityor);
             }
             
-            if (industries != null || !industries.equals("")) {
+            if (industries != null && !industries.equals("")) {
                 String[] industry_list = industries.split(",");
                 QueryBuilder industryor = QueryBuilders.boolQuery();
                 for (int i = 0; i < industry_list.length; i++) {
@@ -112,7 +112,7 @@ public class SearchengineServiceImpl implements Iface {
                 ((BoolQueryBuilder) query).must(industryor);
             }
 
-            if (occupations != null || !occupations.equals("")) {
+            if (occupations != null && !occupations.equals("")) {
                 String[] occupation_list = occupations.split(",");
                 QueryBuilder occupationor = QueryBuilders.boolQuery();
                 for (int i = 0; i < occupation_list.length; i++) {
@@ -123,42 +123,42 @@ public class SearchengineServiceImpl implements Iface {
                 ((BoolQueryBuilder) query).must(occupationor);
             }
 
-            if (scale != null || !scale.equals("")) {
+            if (scale != null && !scale.equals("")) {
                 QueryBuilder scalefilter = QueryBuilders.termQuery("scale", scale);
                 ((BoolQueryBuilder) query).must(scalefilter);
             }
 
-            if (employment_type != null || !employment_type.equals("")) {
+            if (employment_type != null && !employment_type.equals("")) {
                 QueryBuilder employmentfilter = QueryBuilders.termQuery("employment_type_name", employment_type);
                 ((BoolQueryBuilder) query).must(employmentfilter);
             }
 
-            if (candidate_source != null || !candidate_source.equals("")) {
+            if (candidate_source != null && !candidate_source.equals("")) {
                 QueryBuilder candidatefilter = QueryBuilders.termQuery("candidate_source_name", candidate_source);
                 ((BoolQueryBuilder) query).must(candidatefilter);
             }
             
-            if (department != null || !department.equals("")) {
+            if (department != null && !department.equals("")) {
                 QueryBuilder departmentfilter = QueryBuilders.termQuery("department", department);
                 ((BoolQueryBuilder) query).must(departmentfilter);
             }
             
-            if (experience != null || !experience.equals("")) {
+            if (experience != null && !experience.equals("")) {
                 QueryBuilder experiencefilter = QueryBuilders.termQuery("experience", experience);
                 ((BoolQueryBuilder) query).must(experiencefilter);
             }
 
-            if (degree != null || !degree.equals("")) {
+            if (degree != null && !degree.equals("")) {
                 QueryBuilder degreefilter = QueryBuilders.termQuery("degree_name", degree);
                 ((BoolQueryBuilder) query).must(degreefilter);
             }
 
-            if (company_name != null || !company_name.equals("")) {
+            if (company_name != null && !company_name.equals("")) {
                 QueryBuilder companyfilter = QueryBuilders.termQuery("company_name", company_name);
                 ((BoolQueryBuilder) query).must(companyfilter);
             }
-
-            if (salary != null || !salary.equals("")) {
+            
+            if (salary != null && !salary.equals("")) {
                 String[] salary_list = salary.split(",");
                 String  salary_from = salary_list[0];
                 String  salary_to = salary_list[1];
@@ -168,12 +168,12 @@ public class SearchengineServiceImpl implements Iface {
                 ((BoolQueryBuilder) query).must(salary_top_filter);
             }
             
-            if (child_company_name != null || !child_company_name.equals("")) {
+            if (child_company_name != null && !child_company_name.equals("")) {
                 QueryBuilder child_company_filter = QueryBuilders.termQuery("child_company_name", child_company_name);
                 ((BoolQueryBuilder) query).must(child_company_filter);
             }
-            
-            
+
+
             if (order_by_priority){
                 response = client.prepareSearch("index").setTypes("fulltext")
                         .setQuery(query)
