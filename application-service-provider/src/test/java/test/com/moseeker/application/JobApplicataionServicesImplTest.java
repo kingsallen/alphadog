@@ -64,9 +64,10 @@ public class JobApplicataionServicesImplTest {
     
     public static JobApplication getJobApplication(){
         JobApplication application = new JobApplication();
-        application.setApplier_id(1);
+        application.setApplier_id(4);
         application.setCompany_id(2879);
         application.setPosition_id(71154);
+        application.setProxy(1);
         return application;
     }
 
