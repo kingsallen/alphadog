@@ -99,12 +99,7 @@ public class JobApplicataionServicesImpl implements Iface {
             int jobApplicationId = jobApplicationDao.saveApplication(jobApplicationRecord);
             if (jobApplicationId > 0) {
 
-                // proxy 0: 正常投递, 1: 代理投递
-                // 代理投递不能增加用户的申请限制次数
-                if(jobApplicationRecord.getProxy() == 0){
-                    // 添加该人该公司的申请次数
-                    addApplicationCountAtCompany(jobApplication);
-                }
+                addApplicationCountAtCompany(jobApplication);
 
                 return ResponseUtils.success(new HashMap<String, Object>(){
                         {
