@@ -5,7 +5,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jooq.types.UByte;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -55,9 +54,11 @@ public class WorksExpController {
 			Map<String, Object> data = ParamUtils.mergeRequestParameters(request);
 			WorkExp workExp = ParamUtils.initModelForm(data, WorkExp.class);
 			if(workExp.getSource() == 0) {
-				//Integer appid = BeanUtils.converToInteger(data.get("appid");
-				
-				//setSource(workExp, appid);
+				Integer appid = BeanUtils.converToInteger(data.get("appid"));
+				if(appid == null) {
+					appid = 0;
+				}
+				setSource(workExp, appid);
 			}
 			Response result = workExpService.postResource(workExp);
 			
@@ -74,6 +75,13 @@ public class WorksExpController {
 		try {
 			Map<String, Object> data = ParamUtils.mergeRequestParameters(request);
 			WorkExp workExp = ParamUtils.initModelForm(data, WorkExp.class);
+			if(workExp.getSource() == 0) {
+				Integer appid = BeanUtils.converToInteger(data.get("appid"));
+				if(appid == null) {
+					appid = 0;
+				}
+				setSource(workExp, appid);
+			}
 			
 			Response result = workExpService.putResource(workExp);
 			
@@ -98,14 +106,14 @@ public class WorksExpController {
 	
 	private void setSource(WorkExp workExp, int apppid) {
 		switch(apppid) {
-		case Constant.APPID_QX:
-		case Constant.APPID_PLATFORM:
-			workExp.setSource((short)Constant.COMPANY_SOURCE_WX_EDITING);
-			break;
-		case Constant.APPID_C:
-			workExp.setSource((short)Constant.COMPANY_SOURCE_PC_EDITING);
-			break;
-		default:
-	}
+			case Constant.APPID_QX:
+			case Constant.APPID_PLATFORM:
+				workExp.setSource((short)Constant.COMPANY_SOURCE_WX_EDITING);
+				break;
+			case Constant.APPID_C:
+				workExp.setSource((short)Constant.COMPANY_SOURCE_PC_EDITING);
+				break;
+			default:
+		}
 	}
 }
