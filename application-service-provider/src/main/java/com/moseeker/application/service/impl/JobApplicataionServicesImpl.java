@@ -1,10 +1,7 @@
 package com.moseeker.application.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.application.dao.HrCompanyConfDao;
-import com.moseeker.application.dao.JobApplicationDao;
-import com.moseeker.application.dao.JobPositionDao;
-import com.moseeker.application.dao.JobResumeOtherDao;
+import com.moseeker.application.dao.*;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
@@ -13,6 +10,7 @@ import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.db.hrdb.tables.records.HrCompanyConfRecord;
+import com.moseeker.db.hrdb.tables.records.HrOperationRecordRecord;
 import com.moseeker.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.db.jobdb.tables.records.JobResumeOtherRecord;
@@ -64,6 +62,9 @@ public class JobApplicataionServicesImpl implements Iface {
 
     @Autowired
     private HrCompanyConfDao hrCompanyConfDao;
+
+    @Autowired
+    private HrOperationRecordDao hrOperationRecordDao;
     
     /**
      * 创建申请
@@ -100,6 +101,10 @@ public class JobApplicataionServicesImpl implements Iface {
             if (jobApplicationId > 0) {
 
                 addApplicationCountAtCompany(jobApplication);
+
+                // 添加HR操作记录
+                hrOperationRecordDao.postResource(getHrOperationRecordRecord((long)jobApplicationId,
+                        jobApplicationRecord, jobPositionRecord));
 
                 return ResponseUtils.success(new HashMap<String, Object>(){
                         {
@@ -500,5 +505,24 @@ public class JobApplicataionServicesImpl implements Iface {
             applicaitonCountLimit = hrCompanyConfRecord.getApplicationCountLimit().shortValue();
         }
         return applicaitonCountLimit;
+    }
+
+    /**
+     * 生成HR操作记录
+     *
+     * @param appId 当前申请ID
+     * @param jobApplicationRecord 当前申请记录
+     * @param JobPositonrecord 当前申请职位
+     * @return
+     */
+    private HrOperationRecordRecord getHrOperationRecordRecord(long appId,
+                                                               JobApplicationRecord jobApplicationRecord,
+                                                               JobPositionRecord JobPositonrecord){
+        HrOperationRecordRecord hrOperationRecordRecord = new HrOperationRecordRecord();
+        hrOperationRecordRecord.setAdminId(JobPositonrecord.getPublisher().longValue());
+        hrOperationRecordRecord.setCompanyId(jobApplicationRecord.getCompanyId().longValue());
+        hrOperationRecordRecord.setAppId(appId);
+        hrOperationRecordRecord.setOperateTplId(jobApplicationRecord.getAppTplId().intValue());
+        return hrOperationRecordRecord;
     }
 }

@@ -66,7 +66,7 @@ public class JobApplicataionServicesImplTest {
         JobApplication application = new JobApplication();
         application.setApplier_id(1);
         application.setCompany_id(2879);
-        application.setPosition_id(71154);
+        application.setPosition_id(71155);
         return application;
     }
 
