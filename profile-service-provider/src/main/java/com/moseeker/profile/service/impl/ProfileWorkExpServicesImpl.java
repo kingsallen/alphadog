@@ -219,7 +219,7 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 							newCompany.setLogo(struct.getCompany_logo());
 						}
 						newCompany.setType(UByte.valueOf(Constant.COMPANY_TYPE_FREE));
-						newCompany.setSource(UByte.valueOf(Constant.COMPANY_SOURCE_PROFILE));
+						//newCompany.setSource(UByte.valueOf(Constant.COMPANY_SOURCE_PROFILE));
 						int companyId = companyDao.postResource(newCompany);
 						struct.setCompany_id(companyId);
 					}
@@ -290,8 +290,8 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 						if(!StringUtils.isNullOrEmpty(struct.getCompany_logo())) {
 							newCompany.setLogo(struct.getCompany_logo());
 						}
-						newCompany.setType(UByte.valueOf(1));
-						newCompany.setSource(UByte.valueOf(9));
+						newCompany.setType(UByte.valueOf(Constant.COMPANY_TYPE_FREE));
+						//newCompany.setSource(UByte.valueOf(Constant.COMPANY_SOURCE_PROFILE));
 						int companyId = companyDao.postResource(newCompany);
 						struct.setCompany_id(companyId);
 					}
