@@ -110,8 +110,13 @@ public final class Constant {
 	/** 公司类型 **/
 	
 	/** 公司来源 **/
-	public static final int COMPANY_SOURCE_PROFILE = 9; //profile添加
+	//public static final int COMPANY_SOURCE_PROFILE = 9; //profile添加
 	public static final int COMPANY_SOURCE_HR = 0; //HR系统
+	public static final int COMPANY_SOURCE_DOWNLOAD = 1; //官网下载行业报告
+	public static final int COMPANY_SOURCE_PC_EDITING = 7; //PC端添加
+	public static final int COMPANY_SOURCE_WX_EDITING = 8; //微信端添加
+	public static final int COMPANY_SOURCE_PC_IMPORT = 9; //PC端添加
+	public static final int COMPANY_SOURCE_WX_IMPORT = 10; //微信端添加
 
     /** PROFILE 区域 END **/
 	
