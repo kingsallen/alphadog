@@ -27,6 +27,7 @@ import org.apache.thrift.TException;
 import org.springframework.stereotype.Service;
 
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -38,7 +39,7 @@ public class SearchengineServiceImpl implements Iface {
     @Override
     public Response query(String keywords, String cities, String industries, String occupations, String scale,
             String employment_type, String candidate_source, String experience, String degree, String salary,
-            String company_name, int page_from, int page_size,String child_company_name,String department,boolean order_by_priority) throws TException {
+            String company_name, int page_from, int page_size,String child_company_name,String department,boolean order_by_priority,String custom) throws TException {
         
         List  listOfid = new ArrayList();
         
@@ -85,7 +86,7 @@ public class SearchengineServiceImpl implements Iface {
             
 
 
-            if (cities != null&& !cities.equals("")) {
+            if (cities != null && !cities.equals("")) {
                 String[] city_list = cities.split(",");
                 QueryBuilder cityor = QueryBuilders.boolQuery();
                 for (int i = 0; i < city_list.length; i++) {
@@ -157,7 +158,7 @@ public class SearchengineServiceImpl implements Iface {
                 QueryBuilder companyfilter = QueryBuilders.termQuery("company_name", company_name);
                 ((BoolQueryBuilder) query).must(companyfilter);
             }
-            
+
             if (salary != null && !salary.equals("")) {
                 String[] salary_list = salary.split(",");
                 String  salary_from = salary_list[0];
@@ -172,8 +173,12 @@ public class SearchengineServiceImpl implements Iface {
                 QueryBuilder child_company_filter = QueryBuilders.termQuery("child_company_name", child_company_name);
                 ((BoolQueryBuilder) query).must(child_company_filter);
             }
-
-
+            
+            if (custom != null && !custom.equals("")) {
+                QueryBuilder custom_filter = QueryBuilders.termQuery("custom", custom);
+                ((BoolQueryBuilder) query).must(custom_filter);
+            }
+            
             if (order_by_priority){
                 response = client.prepareSearch("index").setTypes("fulltext")
                         .setQuery(query)
@@ -188,7 +193,7 @@ public class SearchengineServiceImpl implements Iface {
             
             for (SearchHit hit : response.getHits()) {
                 //Handle the hit...
-                String id = (String) hit.getSource().get("id");
+                String id = BeanUtils.converToString( hit.getSource().get("id"));
                 listOfid.add(id);
             }
 

@@ -115,11 +115,11 @@ public class SearchengineController {
             String child_company_name = BeanUtils.converToString(reqParams.get("child_company_name"));
             String department = BeanUtils.converToString(reqParams.get("department"));
             boolean order_by_priority = BeanUtils.convertToBoolean(reqParams.get("order_by_priority"));
+            String custom = BeanUtils.converToString(reqParams.get("custom"));
             
             Response result = searchengineServices.query(keywords, cities, industries, occupations, scale,
                     employment_type, candidate_source, experience, degree, salary, company_name, page_from, page_size,
-                    child_company_name,department, order_by_priority);
-
+                    child_company_name,department, order_by_priority, custom);
             if (result.getStatus() == 0) {
                 return ResponseLogNotification.success(request, result);
             } else {
