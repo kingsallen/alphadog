@@ -2,6 +2,7 @@ package com.moseeker.rpccenter.config;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -18,7 +19,7 @@ import com.moseeker.rpccenter.proxy.DynamicServiceHandler;
 import com.moseeker.rpccenter.registry.IRegistry;
 import com.moseeker.rpccenter.registry.ZkServerRegistry;
 import com.moseeker.rpccenter.server.IServer;
-import com.moseeker.rpccenter.server.thrift.ThriftServer;
+import com.moseeker.rpccenter.server.thrift.ThriftMultiServer;
 
 /**
  * Created by zzh on 16/3/28.
@@ -62,6 +63,9 @@ public class MuitilRegServerConfig implements IConfigCheck {
 
     /** 最小工作线程数 ,默认为10 */
     private int minWorkerThreads = 10;
+    
+    /** 混合服务 */
+    private int multiFlag = 1;
 
     /** {@link IRegistry} */
     private List<IRegistry> registries;
@@ -106,10 +110,11 @@ public class MuitilRegServerConfig implements IConfigCheck {
                 
             	this.registries.forEach(registry->{
             		// 服务注册
-            		registry.register(genConfigJson());
+            		String path = ((ZkServerRegistry)registry).getZkPath();
+            		registry.register(genConfigJson(path));
 
                     // 添加关闭钩子
-                    addShutdownHook(registry, server);
+                    addShutdownHook(registries, server);
             	});
             } catch (Exception e) {
                 //LOGGER.error(e.getMessage(), e);
@@ -132,7 +137,7 @@ public class MuitilRegServerConfig implements IConfigCheck {
         IServer server = null;
         if (StringUtils.equalsIgnoreCase(protocol, "thrift")) {
             TProcessor processor = reflectProcessor(serverNode);
-            server = new ThriftServer(processor, serverNode, maxWorkerThreads, minWorkerThreads);
+            server = new ThriftMultiServer(processor, serverNode, maxWorkerThreads, minWorkerThreads);
         } else {
             throw new RpcException(RpcException.CONFIG_EXCEPTION, "Unsupport protocal,please check the params 'protocal'!");
         }
@@ -173,7 +178,7 @@ public class MuitilRegServerConfig implements IConfigCheck {
                         Class<?> pclass = classLoader.loadClass(pname);
                         Constructor constructor = pclass.getConstructor(clazz);
                         processor = (TProcessor) constructor.newInstance(getProxy(classLoader, clazz, obj, serverNode));
-                        multiProcessor.registerProcessor(pname, processor);
+                        multiProcessor.registerProcessor(clazz.getEnclosingClass().getName(), processor);
                     } catch (Exception e) {
                         throw new RpcException("Refact error,please check your thift gen class!", e.getCause());
                     }
@@ -216,13 +221,13 @@ public class MuitilRegServerConfig implements IConfigCheck {
     	List<String> services = new ArrayList<>();
     	if(getRef() != null) {
     		getRef().forEach(obj->{
-    			 Class serviceClass = obj.getClass();
+    			 Class<?> serviceClass = obj.getClass();
     		        Class<?>[] interfaces = serviceClass.getInterfaces();
     		        if (interfaces.length == 0) {
     		            throw new RpcException("Service class should implements Iface!");
     		        }
 
-    		        for (Class clazz : interfaces) {
+    		        for (Class<?> clazz : interfaces) {
     		            String cname = clazz.getSimpleName();
     		            if (!cname.equals("Iface")) {
     		                continue;
@@ -261,6 +266,7 @@ public class MuitilRegServerConfig implements IConfigCheck {
         if (ip == null) {
             throw new RpcException("Can't find server ip!");
         }
+        this.ip = ip;
         return new ServerNode(ip, getPort());
     }
 
@@ -270,23 +276,37 @@ public class MuitilRegServerConfig implements IConfigCheck {
      *
      * @return 配置的json格式
      */
-    protected String genConfigJson() {
-        return JSON.toJSONString(this);
+    protected String genConfigJson(String path) {
+    	HashMap<String, Object> info = new HashMap<>();
+    	info.put("name", this.name);
+    	info.put("owner", this.owner);
+    	info.put("port", this.port);
+    	info.put("protocol", this.protocol);
+    	info.put("weight", this.weight);
+    	info.put("ip", this.ip);
+    	info.put("interval", this.interval);
+    	info.put("maxWorkerThreads", this.maxWorkerThreads);
+    	info.put("minWorkerThreads", this.minWorkerThreads);
+    	info.put("path", path);
+    	info.put("multi", this.multiFlag);
+        return JSON.toJSONString(info);
     }
 
     /**
      * 添加关闭钩子
      * <p>
      *
-     * @param registry
+     * @param registries2
      * @param server
      */
-    protected void addShutdownHook(final IRegistry registry, final IServer server) {
+    protected void addShutdownHook(final List<IRegistry> registries, final IServer server) {
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
             public void run() {
-                if (registry != null) {
-                    registry.unregister();
+                if (registries != null && registries.size() > 0) {
+                	registries.forEach(registry -> {
+                		registry.unregister();
+                	});
                 }
                 if (server != null) {
                     server.stop();

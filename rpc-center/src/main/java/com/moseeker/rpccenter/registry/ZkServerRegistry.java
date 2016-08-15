@@ -153,7 +153,7 @@ public class ZkServerRegistry implements IRegistry {
             }
         });
         StringBuilder pathBuilder = new StringBuilder(Constants.ZK_SEPARATOR_DEFAULT + zkPath);
-        pathBuilder.append(Constants.ZK_SEPARATOR_DEFAULT).append(Constants.ZK_NAMESPACE_SERVERS).append(Constants.ZK_SEPARATOR_DEFAULT).append(address);
+        pathBuilder.append(Constants.ZK_SEPARATOR_DEFAULT).append(Constants.ZK_NAMESPACE_SERVERS).append(Constants.ZK_SEPARATOR_DEFAULT).append(zkPath+":"+address);
         String data = new String(zookeeper.getData().watched().forPath(pathBuilder.toString()), "utf-8");
         System.out.println(data);
     }
@@ -172,7 +172,7 @@ public class ZkServerRegistry implements IRegistry {
 
         // 创建子节点
         StringBuilder pathBuilder = new StringBuilder(Constants.ZK_SEPARATOR_DEFAULT + zkPath);
-        pathBuilder.append(Constants.ZK_SEPARATOR_DEFAULT).append(Constants.ZK_NAMESPACE_SERVERS).append(Constants.ZK_SEPARATOR_DEFAULT).append(address);
+        pathBuilder.append(Constants.ZK_SEPARATOR_DEFAULT).append(Constants.ZK_NAMESPACE_SERVERS).append(Constants.ZK_SEPARATOR_DEFAULT).append(zkPath+":"+address);
         try {
             if (zookeeper.checkExists().forPath(pathBuilder.toString()) == null) {
                 this.currentProviderNode = pathBuilder.toString();
@@ -213,4 +213,7 @@ public class ZkServerRegistry implements IRegistry {
         return null;
     }
 
+	public String getZkPath() {
+		return zkPath;
+	}
 }

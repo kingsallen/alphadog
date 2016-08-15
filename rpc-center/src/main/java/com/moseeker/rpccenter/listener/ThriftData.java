@@ -9,6 +9,9 @@ public class ThriftData {
 	private int minWorkerThreads;
 	private String name;
 	private String IP;
+	private String path;
+	private int multi;
+
 	public String getIP() {
 		return IP;
 	}
@@ -80,5 +83,21 @@ public class ThriftData {
 	@Override
 	public String toString() {
 		return JSON.toJSONString(this);
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	public int getMulti() {
+		return multi;
+	}
+
+	public void setMulti(int multi) {
+		this.multi = multi;
 	}
 }
