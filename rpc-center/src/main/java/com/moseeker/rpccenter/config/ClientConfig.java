@@ -68,6 +68,9 @@ public class ClientConfig<T> implements IConfigCheck{
 
     /** 当连接池资源耗尽时，调用者最大阻塞的时间 */
     private int maxWait = 10000;
+    
+    /** 混合服务 */
+    private int multiFlag = 0;
 
     /** 空闲链接”检测线程，检测的周期，毫秒数，默认位3min，-1表示关闭空闲检测 */
     private int timeBetweenEvictionRunsMillis = 180000;
@@ -629,5 +632,13 @@ public class ClientConfig<T> implements IConfigCheck{
     public void setTestWhileIdle(boolean testWhileIdle) {
         this.testWhileIdle = testWhileIdle;
     }
+
+	public int getMultiFlag() {
+		return multiFlag;
+	}
+
+	public void setMultiFlag(int multiFlag) {
+		this.multiFlag = multiFlag;
+	}
 
 }
