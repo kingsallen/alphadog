@@ -13,10 +13,9 @@ struct MessageTplDataCol {
   消息模板通知数据结构
 */
 struct MessageTemplateNoticeStruct {
-    1: optional string openid,
+    1: optional i32 user_id,
     2: optional i32 sys_template_id,
-    3: optional string access_token,
-    4: optional string url,
-    5: optional i32 wechat_id,
-    6: optional map<string, MessageTplDataCol> data
+    3: optional string url,
+    4: optional i32 company_id,
+    5: optional map<string, MessageTplDataCol> data
 }

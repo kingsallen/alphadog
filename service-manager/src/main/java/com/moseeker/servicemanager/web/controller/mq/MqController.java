@@ -1,18 +1,5 @@
 package com.moseeker.servicemanager.web.controller.mq;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
@@ -21,6 +8,17 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
 import com.moseeker.thrift.gen.mq.struct.MessageTplDataCol;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 消息队列服务
@@ -56,11 +54,10 @@ public class MqController {
         MessageTemplateNoticeStruct messageTemplateNoticeStruct = new MessageTemplateNoticeStruct();
         Map<String, Object> paramMap = ParamUtils.initParamFromRequestBody(request);
         if(paramMap != null){
-            messageTemplateNoticeStruct.setOpenid(paramMap.get("openid").toString());
+            messageTemplateNoticeStruct.setUser_id((int)paramMap.get("user_id"));
             messageTemplateNoticeStruct.setSys_template_id((int)paramMap.get("sys_template_id"));
-            messageTemplateNoticeStruct.setAccess_token(paramMap.get("access_token").toString());
             messageTemplateNoticeStruct.setUrl(paramMap.get("url").toString());
-            messageTemplateNoticeStruct.setWechat_id((int)paramMap.get("wechat_id"));
+            messageTemplateNoticeStruct.setCompany_id((int)paramMap.get("company_id"));
             messageTemplateNoticeStruct.setData(this.getMessagetplData((Map<String, Map<String, JSONObject>>)paramMap.get("data")));
             return messageTemplateNoticeStruct;
         }

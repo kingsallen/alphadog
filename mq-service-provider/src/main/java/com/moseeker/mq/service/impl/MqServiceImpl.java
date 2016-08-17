@@ -67,17 +67,14 @@ public class MqServiceImpl implements MqService.Iface {
     private Response validateMessageTemplateNotice(MessageTemplateNoticeStruct messageTemplateNoticeStruct){
         Response response = new Response(0, "ok");
 
-        if(messageTemplateNoticeStruct.getOpenid() == null || "".equals(messageTemplateNoticeStruct.getOpenid())){
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "openid"));
-        }
-        if(messageTemplateNoticeStruct.getAccess_token() == null || "".equals(messageTemplateNoticeStruct.getAccess_token())){
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "access_token"));
+        if(messageTemplateNoticeStruct.getUser_id() == 0){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "user_id"));
         }
         if(messageTemplateNoticeStruct.getSys_template_id() == 0){
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "sys_template_id"));
         }
-        if(messageTemplateNoticeStruct.getWechat_id() == 0){
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "wechat_id"));
+        if(messageTemplateNoticeStruct.getCompany_id() == 0){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "company_id"));
         }
         if(messageTemplateNoticeStruct.getData() == null || messageTemplateNoticeStruct.getData().isEmpty()){
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "data"));
