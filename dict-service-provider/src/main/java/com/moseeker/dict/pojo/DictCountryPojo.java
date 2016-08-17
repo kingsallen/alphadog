@@ -16,5 +16,6 @@ public class DictCountryPojo {
     public String icon_class;   // '国旗样式',
     public int continent_code;  // '7大洲code, dict_constant.parent_code: 9103',
     public boolean hot_country; // '热门国家 0:否 1：是'
+    public int priority;        // '优先级
 
 }

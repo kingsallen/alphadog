@@ -7,7 +7,7 @@ public final class ConstantErrorCodeMessage {
     public static final String PROGRAM_EXCEPTION = "{'status':99999 ,'message':'发生异常，请稍候再试!'}";
 
     public static final String PROGRAM_DATA_EMPTY = "{'status':90010,'message':'请求数据为空！'}";
-    public static final String PROGRAM_VALIDATE_REQUIRED = "{'status':90014,'message':'参数{0}是必填项！'}";
+    public static final String PROGRAM_VALIDATE_REQUIRED = "{'status':90014,'message':'{0}是必填项！'}";
     public static final String PROGRAM_POST_FAILED = "{'status':90011,'message':'添加失败！'}";
     public static final String PROGRAM_PUT_FAILED = "{'status':90012,'message':'保存失败!'}";
     public static final String PROGRAM_DEL_FAILED = "{'status':90013,'message':'删除失败!'}";
@@ -63,4 +63,7 @@ public final class ConstantErrorCodeMessage {
     public static final String APPLICATION_VALIDATE_COUNT_CHECK = "{'status':41001,'message':'本月您已达到投递次数上限!'}";
     public static final String APPLICATION_POSITION_DUPLICATE = "{'status':41002,'message':'该职位已经申请过!'}";
     public static final String APPLICATION_ARCHIVE_FAILED = "{'status':41003,'message':'申请归档失败!'}";
+    public static final String APPLICATION_POSITION_NOT_EXIST = "{'status':41004,'message':'申请的职位不存在!'}";
+    public static final String APPLICATION_POSITION_STATUS_STOP = "{'status':41005,'message':'申请的职位已下线!'}";
+    public static final String APPLICATION_USER_INVALID = "{'status':41006,'message':'申请人是无法校验的用户!'}";
 }
