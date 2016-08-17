@@ -180,8 +180,11 @@ public class SearchengineServiceImpl implements Iface {
                 String  salary_to = salary_list[1];
                 QueryBuilder salary_bottom_filter = QueryBuilders.rangeQuery("salary_bottom" ).from(salary_from).to(salary_to);
                 QueryBuilder salary_top_filter = QueryBuilders.rangeQuery("salary_top" ).from(salary_from).to(salary_to);
-                ((BoolQueryBuilder) query).should(salary_bottom_filter);
-                ((BoolQueryBuilder) query).should(salary_top_filter);
+                QueryBuilder salaryor = QueryBuilders.boolQuery();
+                
+                ((BoolQueryBuilder) salaryor).should(salary_bottom_filter);
+                ((BoolQueryBuilder) salaryor).should(salary_top_filter);
+                ((BoolQueryBuilder) query).must(salaryor);
             }
             
             if( !StringUtils.isEmpty(child_company_name)){
