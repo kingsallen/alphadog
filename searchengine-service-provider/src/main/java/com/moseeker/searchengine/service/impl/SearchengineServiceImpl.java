@@ -128,52 +128,48 @@ public class SearchengineServiceImpl implements Iface {
             }
 
             if( !StringUtils.isEmpty(scale)){
-                QueryBuilder scalefilter = QueryBuilders.termQuery("scale", scale);
+                QueryBuilder scalefilter = QueryBuilders.matchQuery("scale", scale);
                 ((BoolQueryBuilder) query).must(scalefilter);
             }
             
             if( !StringUtils.isEmpty(employment_type)){
-                QueryBuilder employmentfilter = QueryBuilders.termQuery("employment_type_name", employment_type);
+                QueryBuilder employmentfilter = QueryBuilders.matchQuery("employment_type_name", employment_type);
                 ((BoolQueryBuilder) query).must(employmentfilter);
             }
 
             if ( !StringUtils.isEmpty(candidate_source)) {
-                QueryBuilder candidatefilter = QueryBuilders.termQuery("candidate_source_name", candidate_source);
+                QueryBuilder candidatefilter = QueryBuilders.matchQuery("candidate_source_name", candidate_source);
                 ((BoolQueryBuilder) query).must(candidatefilter);
             }
             
             if ( !StringUtils.isEmpty(department)) {
-                QueryBuilder departmentfilter = QueryBuilders.termQuery("department", department);
+                QueryBuilder departmentfilter = QueryBuilders.matchQuery("department", department);
                 ((BoolQueryBuilder) query).must(departmentfilter);
             }
             
             if( !StringUtils.isEmpty(experience)){
-                QueryBuilder experiencefilter = QueryBuilders.termQuery("experience", experience);
+                QueryBuilder experiencefilter = QueryBuilders.matchQuery("experience", experience);
                 ((BoolQueryBuilder) query).must(experiencefilter);
             }
-
-//            if( !StringUtils.isEmpty(degree)) {
-//                QueryBuilder degreefilter = QueryBuilders.termQuery("degree_name", degree);
-//                ((BoolQueryBuilder) query).must(degreefilter);
-//            }
+            
             
             if (!StringUtils.isEmpty(degree)) {
                 String[] degree_list = degree.split(",");
                 QueryBuilder degreeor = QueryBuilders.boolQuery();
                 for (int i = 0; i < degree_list.length; i++) {
                     String degree_name = degree_list[i];
-                    QueryBuilder degreefilter = QueryBuilders.matchQuery("degree_name", degree_name);
+                    QueryBuilder degreefilter = QueryBuilders.termQuery("degree_name", degree_name);
                     ((BoolQueryBuilder) degreeor).should(degreefilter);
                 }
                 ((BoolQueryBuilder) query).must(degreeor);
             }
             
-
+            
             if( !StringUtils.isEmpty(company_name)){
-                QueryBuilder companyfilter = QueryBuilders.termQuery("company_name", company_name);
+                QueryBuilder companyfilter = QueryBuilders.matchQuery("company_id", company_name);
                 ((BoolQueryBuilder) query).must(companyfilter);
             }
-
+            
             if ( !StringUtils.isEmpty(salary)){
                 String[] salary_list = salary.split(",");
                 String  salary_from = salary_list[0];
@@ -188,16 +184,16 @@ public class SearchengineServiceImpl implements Iface {
             }
             
             if( !StringUtils.isEmpty(child_company_name)){
-                QueryBuilder child_company_filter = QueryBuilders.termQuery("child_company_name", child_company_name);
+                QueryBuilder child_company_filter = QueryBuilders.matchQuery("child_company_id", child_company_name);
                 ((BoolQueryBuilder) query).must(child_company_filter);
             }
             
             if ( !StringUtils.isEmpty(custom)) {
-                QueryBuilder custom_filter = QueryBuilders.termQuery("custom", custom);
+                QueryBuilder custom_filter = QueryBuilders.matchQuery("custom", custom);
                 ((BoolQueryBuilder) query).must(custom_filter);
             }
             
-            QueryBuilder status_filter = QueryBuilders.termQuery("status", 0);
+            QueryBuilder status_filter = QueryBuilders.termQuery("status", "0");
             ((BoolQueryBuilder) query).must(status_filter);
             
             if (order_by_priority){
