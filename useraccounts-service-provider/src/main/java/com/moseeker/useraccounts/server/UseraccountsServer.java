@@ -1,11 +1,14 @@
 package com.moseeker.useraccounts.server;
 
-import com.moseeker.rpccenter.common.ServerNodeUtils;
-import com.moseeker.rpccenter.main.Server;
-import com.moseeker.useraccounts.service.impl.UseraccountsServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import com.moseeker.rpccenter.common.ServerNodeUtils;
+import com.moseeker.rpccenter.main.MultiRegServer;
+import com.moseeker.useraccounts.service.impl.UserHrAccountServiceImpl;
+import com.moseeker.useraccounts.service.impl.UseraccountsServiceImpl;
+import com.moseeker.useraccounts.service.impl.UsersettingsServicesImpl;
 
 /**
  * 
@@ -29,8 +32,10 @@ public class UseraccountsServer {
 
         try {
             AnnotationConfigApplicationContext acac = initSpring();
-            Server server = new Server(UseraccountsServer.class,
+            MultiRegServer server = new MultiRegServer(UseraccountsServer.class,
                     ServerNodeUtils.getPort(args),
+                    acac.getBean(UserHrAccountServiceImpl.class),
+                    acac.getBean(UsersettingsServicesImpl.class),
                     acac.getBean(UseraccountsServiceImpl.class));
             
             server.start(); // 阻塞式IO + 多线程处理

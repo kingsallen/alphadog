@@ -22,7 +22,7 @@ public class JobApplicataionServicesImplTest {
 
         String iface = JobApplicationServices.Iface.class.getName();
         ClientConfig<JobApplicationServices.Iface> clientConfig = new ClientConfig<JobApplicationServices.Iface>();
-        clientConfig.setService("com.moseeker.thrift.gen.application.service.JobApplicationServices");
+        clientConfig.setService("/com.moseeker.thrift.gen.application.service.JobApplicationServices");
         clientConfig.setIface(iface);
 
         JobApplicationServices.Iface applicationService = null;
@@ -65,8 +65,8 @@ public class JobApplicataionServicesImplTest {
     public static JobApplication getJobApplication(){
         JobApplication application = new JobApplication();
         application.setApplier_id(1);
-        application.setCompany_id(1);
-        application.setPosition_id(71152);
+        application.setCompany_id(2879);
+        application.setPosition_id(71154);
         return application;
     }
 

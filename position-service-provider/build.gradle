@@ -26,9 +26,11 @@ jar {
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     }
-     manifest {
-             attributes 'Main-Class': 'com.moseeker.position.server.PositionServer'
-     }
+
+    manifest {
+       attributes 'Main-Class': 'com.moseeker.position.server.PositionServer'
+    }
+
 
 
 }
