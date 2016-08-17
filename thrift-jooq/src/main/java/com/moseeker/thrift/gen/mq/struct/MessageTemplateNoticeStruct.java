@@ -43,6 +43,7 @@ public class MessageTemplateNoticeStruct implements org.apache.thrift.TBase<Mess
   private static final org.apache.thrift.protocol.TField URL_FIELD_DESC = new org.apache.thrift.protocol.TField("url", org.apache.thrift.protocol.TType.STRING, (short)3);
   private static final org.apache.thrift.protocol.TField COMPANY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("company_id", org.apache.thrift.protocol.TType.I32, (short)4);
   private static final org.apache.thrift.protocol.TField DATA_FIELD_DESC = new org.apache.thrift.protocol.TField("data", org.apache.thrift.protocol.TType.MAP, (short)5);
+  private static final org.apache.thrift.protocol.TField ENABLE_QX_RETRY_FIELD_DESC = new org.apache.thrift.protocol.TField("enable_qx_retry", org.apache.thrift.protocol.TType.BYTE, (short)6);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -55,6 +56,7 @@ public class MessageTemplateNoticeStruct implements org.apache.thrift.TBase<Mess
   public String url; // optional
   public int company_id; // optional
   public Map<String,MessageTplDataCol> data; // optional
+  public byte enable_qx_retry; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -62,7 +64,8 @@ public class MessageTemplateNoticeStruct implements org.apache.thrift.TBase<Mess
     SYS_TEMPLATE_ID((short)2, "sys_template_id"),
     URL((short)3, "url"),
     COMPANY_ID((short)4, "company_id"),
-    DATA((short)5, "data");
+    DATA((short)5, "data"),
+    ENABLE_QX_RETRY((short)6, "enable_qx_retry");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -87,6 +90,8 @@ public class MessageTemplateNoticeStruct implements org.apache.thrift.TBase<Mess
           return COMPANY_ID;
         case 5: // DATA
           return DATA;
+        case 6: // ENABLE_QX_RETRY
+          return ENABLE_QX_RETRY;
         default:
           return null;
       }
@@ -130,8 +135,9 @@ public class MessageTemplateNoticeStruct implements org.apache.thrift.TBase<Mess
   private static final int __USER_ID_ISSET_ID = 0;
   private static final int __SYS_TEMPLATE_ID_ISSET_ID = 1;
   private static final int __COMPANY_ID_ISSET_ID = 2;
+  private static final int __ENABLE_QX_RETRY_ISSET_ID = 3;
   private byte __isset_bitfield = 0;
-  private static final _Fields optionals[] = {_Fields.USER_ID,_Fields.SYS_TEMPLATE_ID,_Fields.URL,_Fields.COMPANY_ID,_Fields.DATA};
+  private static final _Fields optionals[] = {_Fields.USER_ID,_Fields.SYS_TEMPLATE_ID,_Fields.URL,_Fields.COMPANY_ID,_Fields.DATA,_Fields.ENABLE_QX_RETRY};
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -147,11 +153,15 @@ public class MessageTemplateNoticeStruct implements org.apache.thrift.TBase<Mess
         new org.apache.thrift.meta_data.MapMetaData(org.apache.thrift.protocol.TType.MAP, 
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING), 
             new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, MessageTplDataCol.class))));
+    tmpMap.put(_Fields.ENABLE_QX_RETRY, new org.apache.thrift.meta_data.FieldMetaData("enable_qx_retry", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BYTE)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(MessageTemplateNoticeStruct.class, metaDataMap);
   }
 
   public MessageTemplateNoticeStruct() {
+    this.enable_qx_retry = (byte)1;
+
   }
 
   /**
@@ -180,6 +190,7 @@ public class MessageTemplateNoticeStruct implements org.apache.thrift.TBase<Mess
       }
       this.data = __this__data;
     }
+    this.enable_qx_retry = other.enable_qx_retry;
   }
 
   public MessageTemplateNoticeStruct deepCopy() {
@@ -196,6 +207,8 @@ public class MessageTemplateNoticeStruct implements org.apache.thrift.TBase<Mess
     setCompany_idIsSet(false);
     this.company_id = 0;
     this.data = null;
+    this.enable_qx_retry = (byte)1;
+
   }
 
   public int getUser_id() {
@@ -326,6 +339,29 @@ public class MessageTemplateNoticeStruct implements org.apache.thrift.TBase<Mess
     }
   }
 
+  public byte getEnable_qx_retry() {
+    return this.enable_qx_retry;
+  }
+
+  public MessageTemplateNoticeStruct setEnable_qx_retry(byte enable_qx_retry) {
+    this.enable_qx_retry = enable_qx_retry;
+    setEnable_qx_retryIsSet(true);
+    return this;
+  }
+
+  public void unsetEnable_qx_retry() {
+    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __ENABLE_QX_RETRY_ISSET_ID);
+  }
+
+  /** Returns true if field enable_qx_retry is set (has been assigned a value) and false otherwise */
+  public boolean isSetEnable_qx_retry() {
+    return EncodingUtils.testBit(__isset_bitfield, __ENABLE_QX_RETRY_ISSET_ID);
+  }
+
+  public void setEnable_qx_retryIsSet(boolean value) {
+    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __ENABLE_QX_RETRY_ISSET_ID, value);
+  }
+
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
     case USER_ID:
@@ -368,6 +404,14 @@ public class MessageTemplateNoticeStruct implements org.apache.thrift.TBase<Mess
       }
       break;
 
+    case ENABLE_QX_RETRY:
+      if (value == null) {
+        unsetEnable_qx_retry();
+      } else {
+        setEnable_qx_retry((Byte)value);
+      }
+      break;
+
     }
   }
 
@@ -387,6 +431,9 @@ public class MessageTemplateNoticeStruct implements org.apache.thrift.TBase<Mess
 
     case DATA:
       return getData();
+
+    case ENABLE_QX_RETRY:
+      return getEnable_qx_retry();
 
     }
     throw new IllegalStateException();
@@ -409,6 +456,8 @@ public class MessageTemplateNoticeStruct implements org.apache.thrift.TBase<Mess
       return isSetCompany_id();
     case DATA:
       return isSetData();
+    case ENABLE_QX_RETRY:
+      return isSetEnable_qx_retry();
     }
     throw new IllegalStateException();
   }
@@ -471,6 +520,15 @@ public class MessageTemplateNoticeStruct implements org.apache.thrift.TBase<Mess
         return false;
     }
 
+    boolean this_present_enable_qx_retry = true && this.isSetEnable_qx_retry();
+    boolean that_present_enable_qx_retry = true && that.isSetEnable_qx_retry();
+    if (this_present_enable_qx_retry || that_present_enable_qx_retry) {
+      if (!(this_present_enable_qx_retry && that_present_enable_qx_retry))
+        return false;
+      if (this.enable_qx_retry != that.enable_qx_retry)
+        return false;
+    }
+
     return true;
   }
 
@@ -502,6 +560,11 @@ public class MessageTemplateNoticeStruct implements org.apache.thrift.TBase<Mess
     list.add(present_data);
     if (present_data)
       list.add(data);
+
+    boolean present_enable_qx_retry = true && (isSetEnable_qx_retry());
+    list.add(present_enable_qx_retry);
+    if (present_enable_qx_retry)
+      list.add(enable_qx_retry);
 
     return list.hashCode();
   }
@@ -564,6 +627,16 @@ public class MessageTemplateNoticeStruct implements org.apache.thrift.TBase<Mess
         return lastComparison;
       }
     }
+    lastComparison = Boolean.valueOf(isSetEnable_qx_retry()).compareTo(other.isSetEnable_qx_retry());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetEnable_qx_retry()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.enable_qx_retry, other.enable_qx_retry);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     return 0;
   }
 
@@ -619,6 +692,12 @@ public class MessageTemplateNoticeStruct implements org.apache.thrift.TBase<Mess
       } else {
         sb.append(this.data);
       }
+      first = false;
+    }
+    if (isSetEnable_qx_retry()) {
+      if (!first) sb.append(", ");
+      sb.append("enable_qx_retry:");
+      sb.append(this.enable_qx_retry);
       first = false;
     }
     sb.append(")");
@@ -719,6 +798,14 @@ public class MessageTemplateNoticeStruct implements org.apache.thrift.TBase<Mess
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
+          case 6: // ENABLE_QX_RETRY
+            if (schemeField.type == org.apache.thrift.protocol.TType.BYTE) {
+              struct.enable_qx_retry = iprot.readByte();
+              struct.setEnable_qx_retryIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
           default:
             org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
         }
@@ -771,6 +858,11 @@ public class MessageTemplateNoticeStruct implements org.apache.thrift.TBase<Mess
           oprot.writeFieldEnd();
         }
       }
+      if (struct.isSetEnable_qx_retry()) {
+        oprot.writeFieldBegin(ENABLE_QX_RETRY_FIELD_DESC);
+        oprot.writeByte(struct.enable_qx_retry);
+        oprot.writeFieldEnd();
+      }
       oprot.writeFieldStop();
       oprot.writeStructEnd();
     }
@@ -804,7 +896,10 @@ public class MessageTemplateNoticeStruct implements org.apache.thrift.TBase<Mess
       if (struct.isSetData()) {
         optionals.set(4);
       }
-      oprot.writeBitSet(optionals, 5);
+      if (struct.isSetEnable_qx_retry()) {
+        optionals.set(5);
+      }
+      oprot.writeBitSet(optionals, 6);
       if (struct.isSetUser_id()) {
         oprot.writeI32(struct.user_id);
       }
@@ -827,12 +922,15 @@ public class MessageTemplateNoticeStruct implements org.apache.thrift.TBase<Mess
           }
         }
       }
+      if (struct.isSetEnable_qx_retry()) {
+        oprot.writeByte(struct.enable_qx_retry);
+      }
     }
 
     @Override
     public void read(org.apache.thrift.protocol.TProtocol prot, MessageTemplateNoticeStruct struct) throws TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
-      BitSet incoming = iprot.readBitSet(5);
+      BitSet incoming = iprot.readBitSet(6);
       if (incoming.get(0)) {
         struct.user_id = iprot.readI32();
         struct.setUser_idIsSet(true);
@@ -864,6 +962,10 @@ public class MessageTemplateNoticeStruct implements org.apache.thrift.TBase<Mess
           }
         }
         struct.setDataIsSet(true);
+      }
+      if (incoming.get(5)) {
+        struct.enable_qx_retry = iprot.readByte();
+        struct.setEnable_qx_retryIsSet(true);
       }
     }
   }

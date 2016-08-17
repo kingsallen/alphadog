@@ -17,5 +17,6 @@ struct MessageTemplateNoticeStruct {
     2: optional i32 sys_template_id,
     3: optional string url,
     4: optional i32 company_id,
-    5: optional map<string, MessageTplDataCol> data
+    5: optional map<string, MessageTplDataCol> data,
+    6: optional byte enable_qx_retry = 1
 }

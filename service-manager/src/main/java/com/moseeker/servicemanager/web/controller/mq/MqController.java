@@ -1,6 +1,7 @@
 package com.moseeker.servicemanager.web.controller.mq;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.IntegerCodec;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -59,6 +60,7 @@ public class MqController {
             messageTemplateNoticeStruct.setUrl(paramMap.get("url").toString());
             messageTemplateNoticeStruct.setCompany_id((int)paramMap.get("company_id"));
             messageTemplateNoticeStruct.setData(this.getMessagetplData((Map<String, Map<String, JSONObject>>)paramMap.get("data")));
+            messageTemplateNoticeStruct.setEnable_qx_retry((byte)(int)paramMap.getOrDefault("enable_qx_retry", 1)); // Integer->int->byte
             return messageTemplateNoticeStruct;
         }
         return null;
