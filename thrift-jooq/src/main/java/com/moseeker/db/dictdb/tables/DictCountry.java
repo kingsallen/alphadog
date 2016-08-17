@@ -35,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictCountry extends TableImpl<DictCountryRecord> {
 
-	private static final long serialVersionUID = -266859116;
+	private static final long serialVersionUID = -1982080523;
 
 	/**
 	 * The reference instance of <code>dictdb.dict_country</code>
@@ -86,14 +86,19 @@ public class DictCountry extends TableImpl<DictCountryRecord> {
 	public final TableField<DictCountryRecord, String> ICON_CLASS = createField("icon_class", org.jooq.impl.SQLDataType.CHAR.length(3).nullable(false).defaulted(true), this, "国旗样式");
 
 	/**
+	 * The column <code>dictdb.dict_country.hot_country</code>. 热门国家 0=否 1=是
+	 */
+	public final TableField<DictCountryRecord, Byte> HOT_COUNTRY = createField("hot_country", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "热门国家 0=否 1=是");
+
+	/**
 	 * The column <code>dictdb.dict_country.continent_code</code>. 7大洲code, dict_constant.parent_code: 9103
 	 */
 	public final TableField<DictCountryRecord, UInteger> CONTINENT_CODE = createField("continent_code", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "7大洲code, dict_constant.parent_code: 9103");
 
 	/**
-	 * The column <code>dictdb.dict_country.hot_country</code>. 热门国家 0:否 1：是
+	 * The column <code>dictdb.dict_country.priority</code>. 优先级
 	 */
-	public final TableField<DictCountryRecord, Byte> HOT_COUNTRY = createField("hot_country", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "热门国家 0:否 1：是");
+	public final TableField<DictCountryRecord, Short> PRIORITY = createField("priority", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaulted(true), this, "优先级");
 
 	/**
 	 * Create a <code>dictdb.dict_country</code> table reference
