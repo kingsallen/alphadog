@@ -41,24 +41,8 @@ public class Notification {
 
     }
     
-    public static void sendThriftConnectionError(String errorMessage) {
-        ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
-        String subject = Constant.THRIFT_CONNECTION_LOST;
-        List<String> recipients = Arrays.asList(propertiesReader.get("mycat.error.recipients", String.class).split(","));
-        try {
-            Email mycatConnectionErrorEmail = new Email.EmailBuilder(recipients)
-                                                                .setSubject(subject)
-                                                                .setContent(errorMessage)
-                                                                .build();
-            mycatConnectionErrorEmail.send();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
     public static void sendNotification(int appid, String event_key, String event_details) {
-        String notificationText = "项目" + appid + " 发生异常，" + event_details;
+        String notificationText = "项目" + appid + " 发生异常，host:" + getHostName() +", 详情:" + event_details;
         Connection conn = null;
         try {
         	conn = DBConnHelper.DBConn.getConn();
@@ -97,7 +81,7 @@ public class Notification {
                     System.out.println(emails);
                     try {
                         Email registerSuccessEmail = new Email.EmailBuilder(emails)
-                                                                .setSubject("报警通知")
+                                                                .setSubject("阿里云监控-基础服务-响应异常-发生告警通知")
                                                                 .setContent(notificationText)
                                                                 .build();
                         registerSuccessEmail.send();
@@ -132,66 +116,6 @@ public class Notification {
 			}
         }
     }
-
-
-    /**
-	 * 发送报警邮件
-	 * @param host redis集群的host
-	 * @param port redis集群的port
-	 */
-	public static void sendLostRedisWarning(String host, String port) {
-		StringBuffer sb = new StringBuffer();
-		String hostName = getHostName();
-		if(!StringUtils.isNullOrEmpty(hostName)) {
-			sb.append("host:");
-			sb.append(hostName);
-			sb.append("--");
-		}
-		sb.append("redis_host:");
-		sb.append(host);
-		sb.append("--");
-		sb.append("redis_port:");
-		sb.append(port);
-		sb.append("--");
-		sb.append("连接不上Redis集群! 可能是redis配置导致！");
-		sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, sb.toString());
-	}
-	
-	/**
-	 * 程序异常时发送报警信息
-	 * @param e 异常类
-	 */
-	public static void sendProgressError(Exception e) {
-		StringBuffer sb = new StringBuffer();
-		String hostName = getHostName();
-		if(!StringUtils.isNullOrEmpty(hostName)) {
-			sb.append("host:");
-			sb.append(hostName);
-			sb.append("--");
-		}
-		ConfigPropertiesUtil configUtil = ConfigPropertiesUtil.getInstance();
-		int appId = configUtil.get("appid", int.class);
-		String eventkEY = configUtil.get("event_key", String.class);
-		sb.append("  ");
-		sb.append(e.getMessage());
-		sendNotification(appId, eventkEY, sb.toString());
-	}
-	
-	/**
-	 * 发送带hostname的报警信息
-	 * @param appid 项目编号
-	 * @param event_key 标识符
-	 * @param event_details 错误信息
-	 */
-	public static void sendWarningWithHostName(int appid, String event_key, String event_details) {
-		StringBuffer sb = new StringBuffer();
-		String hostName = getHostName();
-		sb.append("host:");
-		sb.append(hostName);
-		sb.append("  ");
-		sb.append(event_details);
-		sendNotification(appid, event_key, sb.toString());
-	}
 
 	/**
 	 * 获取当前服务器的hostname

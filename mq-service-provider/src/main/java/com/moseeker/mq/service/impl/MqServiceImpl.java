@@ -24,9 +24,6 @@ public class MqServiceImpl implements MqService.Iface {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    // 消息模板通知 KEY_IDENTIFIER
-    private static final String REDIS_KEY_IDENTIFIER_MQ_MESSAGE_NOTICE_TEMPLATE = "MQ_MESSAGE_NOTICE_TEMPLATE";
-
     private RedisClient redisClient = RedisClientFactory.getCacheClient();
 
     /**
@@ -47,9 +44,11 @@ public class MqServiceImpl implements MqService.Iface {
 
             String json = BeanUtils.convertStructToJSON(messageTemplateNoticeStruct);
 
-            Long res = redisClient.lpush(Constant.APPID_ALPHADOG, REDIS_KEY_IDENTIFIER_MQ_MESSAGE_NOTICE_TEMPLATE, json);
-
-            return ResponseUtils.success(res);
+            Long res = redisClient.lpush(Constant.APPID_ALPHADOG, Constant.REDIS_KEY_IDENTIFIER_MQ_MESSAGE_NOTICE_TEMPLATE, json);
+            if (res != null ){
+            	return ResponseUtils.success(res);
+            }
+            
         } catch (Exception e) {
             // TODO Auto-generated catch block
             logger.error("MqServiceImpl messageTemplateNotice error: ", e);
