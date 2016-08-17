@@ -111,7 +111,7 @@ public class SearchengineServiceImpl implements Iface {
                 for (int i = 0; i < industry_list.length; i++) {
                     String industry = industry_list[i];
                     QueryBuilder industryfilter = QueryBuilders.matchQuery("industry", industry);
-                    ((BoolQueryBuilder) query).should(industryfilter);
+                    ((BoolQueryBuilder) industryor).should(industryfilter);
                 }
                 ((BoolQueryBuilder) query).must(industryor);
             }
@@ -122,7 +122,7 @@ public class SearchengineServiceImpl implements Iface {
                 for (int i = 0; i < occupation_list.length; i++) {
                     String occupation = occupation_list[i];
                     QueryBuilder occupationfilter = QueryBuilders.matchQuery("occupation", occupation);
-                    ((BoolQueryBuilder) query).should(occupationfilter);
+                    ((BoolQueryBuilder) occupationor).should(occupationfilter);
                 }
                 ((BoolQueryBuilder) query).must(occupationor);
             }
@@ -152,10 +152,22 @@ public class SearchengineServiceImpl implements Iface {
                 ((BoolQueryBuilder) query).must(experiencefilter);
             }
 
-            if( !StringUtils.isEmpty(degree)) {
-                QueryBuilder degreefilter = QueryBuilders.termQuery("degree_name", degree);
-                ((BoolQueryBuilder) query).must(degreefilter);
+//            if( !StringUtils.isEmpty(degree)) {
+//                QueryBuilder degreefilter = QueryBuilders.termQuery("degree_name", degree);
+//                ((BoolQueryBuilder) query).must(degreefilter);
+//            }
+            
+            if (!StringUtils.isEmpty(degree)) {
+                String[] degree_list = degree.split(",");
+                QueryBuilder degreeor = QueryBuilders.boolQuery();
+                for (int i = 0; i < degree_list.length; i++) {
+                    String degree_name = degree_list[i];
+                    QueryBuilder degreefilter = QueryBuilders.matchQuery("degree_name", degree_name);
+                    ((BoolQueryBuilder) degreeor).should(degreefilter);
+                }
+                ((BoolQueryBuilder) query).must(degreeor);
             }
+            
 
             if( !StringUtils.isEmpty(company_name)){
                 QueryBuilder companyfilter = QueryBuilders.termQuery("company_name", company_name);
