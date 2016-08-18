@@ -109,17 +109,17 @@ public class SearchengineController {
             String experience = BeanUtils.converToString(reqParams.get("experience"));
             String degree = BeanUtils.converToString(reqParams.get("degree"));
             String salary = BeanUtils.converToString(reqParams.get("salary"));
-            String company_name = BeanUtils.converToString(reqParams.get("company_name"));
+            String company_id = BeanUtils.converToString(reqParams.get("company_id"));
             int page_from = BeanUtils.converToInteger(reqParams.get("page_from"));
             int page_size = BeanUtils.converToInteger(reqParams.get("page_size"));
-            String child_company_name = BeanUtils.converToString(reqParams.get("child_company_name"));
+            String child_company_id = BeanUtils.converToString(reqParams.get("child_company_id"));
             String department = BeanUtils.converToString(reqParams.get("department"));
             boolean order_by_priority = BeanUtils.convertToBoolean(reqParams.get("order_by_priority"));
             String custom = BeanUtils.converToString(reqParams.get("custom"));
             
             Response result = searchengineServices.query(keywords, cities, industries, occupations, scale,
-                    employment_type, candidate_source, experience, degree, salary, company_name, page_from, page_size,
-                    child_company_name,department, order_by_priority, custom);
+                    employment_type, candidate_source, experience, degree, salary, company_id, page_from, page_size,
+                    child_company_id,department, order_by_priority, custom);
             if (result.getStatus() == 0) {
                 return ResponseLogNotification.success(request, result);
             } else {
