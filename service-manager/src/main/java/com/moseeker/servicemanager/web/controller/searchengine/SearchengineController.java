@@ -64,6 +64,12 @@ public class SearchengineController {
             String company_name = (String) company_map.get("name");
             String scale = (String) company_map.get("scale");
             position_map.put("company_name",company_name);
+            String degree_name = (String) company_map.get("degree_name");
+            Integer degree_above = (Integer) company_map.get("degree_above");
+            if(degree_above==1){
+                degree_name = degree_name+"及以上";
+            }
+            position_map.put("degree_name",degree_name);
             position_map.put("scale",scale);
             
             if (!publisher_company_id.equals("0")){
