@@ -95,10 +95,10 @@ public class SearchengineServiceImpl implements Iface {
                 for (int i = 0; i < city_list.length; i++) {
                     String city = city_list[i];
                     System.out.println(city);
-                    QueryBuilder cityfilter = QueryBuilders.termQuery("city", city);
+                    QueryBuilder cityfilter = QueryBuilders.matchPhraseQuery("city", city);
                     QueryBuilder cityboosting =QueryBuilders. boostingQuery()
                             .positive(cityfilter)
-                            .negative(QueryBuilders.termQuery("title",city)) .negativeBoost(0.5f);
+                            .negative(QueryBuilders.matchPhraseQuery("title",city)) .negativeBoost(0.5f);
                             
                     ((BoolQueryBuilder) cityor).should(cityboosting);
                 }
@@ -110,7 +110,7 @@ public class SearchengineServiceImpl implements Iface {
                 QueryBuilder industryor = QueryBuilders.boolQuery();
                 for (int i = 0; i < industry_list.length; i++) {
                     String industry = industry_list[i];
-                    QueryBuilder industryfilter = QueryBuilders.matchQuery("industry", industry);
+                    QueryBuilder industryfilter = QueryBuilders.matchPhraseQuery("industry", industry);
                     ((BoolQueryBuilder) industryor).should(industryfilter);
                 }
                 ((BoolQueryBuilder) query).must(industryor);
@@ -121,34 +121,34 @@ public class SearchengineServiceImpl implements Iface {
                 QueryBuilder occupationor = QueryBuilders.boolQuery();
                 for (int i = 0; i < occupation_list.length; i++) {
                     String occupation = occupation_list[i];
-                    QueryBuilder occupationfilter = QueryBuilders.matchQuery("occupation", occupation);
+                    QueryBuilder occupationfilter = QueryBuilders.matchPhraseQuery("occupation", occupation);
                     ((BoolQueryBuilder) occupationor).should(occupationfilter);
                 }
                 ((BoolQueryBuilder) query).must(occupationor);
             }
 
             if( !StringUtils.isEmpty(scale)){
-                QueryBuilder scalefilter = QueryBuilders.matchQuery("scale", scale);
+                QueryBuilder scalefilter = QueryBuilders.matchPhraseQuery("scale", scale);
                 ((BoolQueryBuilder) query).must(scalefilter);
             }
             
             if( !StringUtils.isEmpty(employment_type)){
-                QueryBuilder employmentfilter = QueryBuilders.matchQuery("employment_type_name", employment_type);
+                QueryBuilder employmentfilter = QueryBuilders.matchPhraseQuery("employment_type_name", employment_type);
                 ((BoolQueryBuilder) query).must(employmentfilter);
             }
 
             if ( !StringUtils.isEmpty(candidate_source)) {
-                QueryBuilder candidatefilter = QueryBuilders.matchQuery("candidate_source_name", candidate_source);
+                QueryBuilder candidatefilter = QueryBuilders.matchPhraseQuery("candidate_source_name", candidate_source);
                 ((BoolQueryBuilder) query).must(candidatefilter);
             }
             
             if ( !StringUtils.isEmpty(department)) {
-                QueryBuilder departmentfilter = QueryBuilders.matchQuery("department", department);
+                QueryBuilder departmentfilter = QueryBuilders.matchPhraseQuery("department", department);
                 ((BoolQueryBuilder) query).must(departmentfilter);
             }
             
             if( !StringUtils.isEmpty(experience)){
-                QueryBuilder experiencefilter = QueryBuilders.matchQuery("experience", experience);
+                QueryBuilder experiencefilter = QueryBuilders.matchPhraseQuery("experience", experience);
                 ((BoolQueryBuilder) query).must(experiencefilter);
             }
             
@@ -158,7 +158,7 @@ public class SearchengineServiceImpl implements Iface {
                 QueryBuilder degreeor = QueryBuilders.boolQuery();
                 for (int i = 0; i < degree_list.length; i++) {
                     String degree_name = degree_list[i];
-                    QueryBuilder degreefilter = QueryBuilders.termQuery("degree_name", degree_name);
+                    QueryBuilder degreefilter = QueryBuilders.matchPhraseQuery("degree_name", degree_name);
                     ((BoolQueryBuilder) degreeor).should(degreefilter);
                 }
                 ((BoolQueryBuilder) query).must(degreeor);
@@ -166,7 +166,7 @@ public class SearchengineServiceImpl implements Iface {
             
             
             if( !StringUtils.isEmpty(company_name)){
-                QueryBuilder companyfilter = QueryBuilders.matchQuery("company_id", company_name);
+                QueryBuilder companyfilter = QueryBuilders.matchPhraseQuery("company_id", company_name);
                 ((BoolQueryBuilder) query).must(companyfilter);
             }
             
@@ -184,16 +184,16 @@ public class SearchengineServiceImpl implements Iface {
             }
             
             if( !StringUtils.isEmpty(child_company_name)){
-                QueryBuilder child_company_filter = QueryBuilders.matchQuery("child_company_id", child_company_name);
+                QueryBuilder child_company_filter = QueryBuilders.matchPhraseQuery("publisher_company_id", child_company_name);
                 ((BoolQueryBuilder) query).must(child_company_filter);
             }
             
             if ( !StringUtils.isEmpty(custom)) {
-                QueryBuilder custom_filter = QueryBuilders.matchQuery("custom", custom);
+                QueryBuilder custom_filter = QueryBuilders.matchPhraseQuery("custom", custom);
                 ((BoolQueryBuilder) query).must(custom_filter);
             }
             
-            QueryBuilder status_filter = QueryBuilders.termQuery("status", "0");
+            QueryBuilder status_filter = QueryBuilders.matchPhraseQuery("status", "0");
             ((BoolQueryBuilder) query).must(status_filter);
             
             if (order_by_priority){
