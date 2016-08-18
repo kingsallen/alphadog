@@ -40,7 +40,6 @@ public class SearchengineController {
 
 //    @RequestMapping(value = "/search/update", method = RequestMethod.GET, produces = "application/json;charset=utf-8")
     @RequestMapping(value = "/search/update", method = RequestMethod.POST)
-    
     @ResponseBody
     public String update_position(HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> reqParams = null;
