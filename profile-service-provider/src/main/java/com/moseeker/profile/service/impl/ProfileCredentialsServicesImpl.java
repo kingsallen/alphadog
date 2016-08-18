@@ -1,6 +1,7 @@
 package com.moseeker.profile.service.impl;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,6 +17,7 @@ import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.db.profiledb.tables.records.ProfileCredentialsRecord;
 import com.moseeker.profile.dao.CredentialsDao;
+import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.CredentialsServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.Credentials;
@@ -27,6 +29,9 @@ public class ProfileCredentialsServicesImpl extends JOOQBaseServiceImpl<Credenti
 
 	@Autowired
 	private CredentialsDao dao;
+	
+	@Autowired
+	private ProfileDao profileDao;
 	
 	@Autowired
 	private ProfileCompletenessImpl completenessImpl;
@@ -41,6 +46,7 @@ public class ProfileCredentialsServicesImpl extends JOOQBaseServiceImpl<Credenti
 				if(struct.getProfile_id() > 0)
 					profileIds.add(struct.getProfile_id());
 			});
+			profileDao.updateUpdateTime(profileIds);
 			profileIds.forEach(profileId -> {
 				completenessImpl.recalculateProfileCredential(profileId, 0);
 			});
@@ -53,6 +59,13 @@ public class ProfileCredentialsServicesImpl extends JOOQBaseServiceImpl<Credenti
 		Response response = super.putResources(structs);
 		/* 计算profile完整度 */
 		if(response.getStatus() == 0 && structs != null && structs.size() > 0) {
+			Set<Integer> profileIds = new HashSet<>();
+			if(structs != null && structs.size() > 0) {
+				structs.forEach(credential -> {
+					profileIds.add(credential.getProfile_id());
+				});
+			}
+			profileDao.updateUpdateTime(profileIds);
 			structs.forEach(struct -> {
 				completenessImpl.recalculateProfileCredential(struct.getProfile_id(), struct.getId());
 			});
@@ -87,6 +100,7 @@ public class ProfileCredentialsServicesImpl extends JOOQBaseServiceImpl<Credenti
 		Response response = super.delResources(structs);
 		/* 计算profile完整度 */
 		if(response.getStatus() == 0 && profileIds != null && profileIds.size() > 0) {
+			profileDao.updateUpdateTime(profileIds);
 			profileIds.forEach(profileId -> {
 				completenessImpl.recalculateProfileCredential(profileId, 0);
 			});
@@ -161,5 +175,19 @@ public class ProfileCredentialsServicesImpl extends JOOQBaseServiceImpl<Credenti
 	@Override
 	protected ProfileCredentialsRecord structToDB(Credentials credentials) throws ParseException {
 		return (ProfileCredentialsRecord)BeanUtils.structToDB(credentials, ProfileCredentialsRecord.class);
+	}
+	
+	public void updateUpdateTime(List<Credentials> credentials) {
+		Set<Integer> credentialIds = new HashSet<>();
+		credentials.forEach(Credential -> {
+			credentialIds.add(Credential.getId());
+		});
+		dao.updateProfileUpdateTime(credentialIds);
+	}
+	
+	public void updateUpdateTime(Credentials credential) {
+		List<Credentials> credentials = new ArrayList<>();
+		credentials.add(credential);
+		updateUpdateTime(credentials);
 	}
 }

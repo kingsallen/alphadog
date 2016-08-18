@@ -1,6 +1,7 @@
 package com.moseeker.profile.service.impl;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,6 +17,7 @@ import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.db.profiledb.tables.records.ProfileAwardsRecord;
 import com.moseeker.profile.dao.AwardsDao;
+import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.AwardsServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.Awards;
@@ -27,6 +29,9 @@ public class ProfileAwardsServicesImpl extends JOOQBaseServiceImpl<Awards, Profi
 
 	@Autowired
 	private AwardsDao dao;
+	
+	@Autowired
+	private ProfileDao profileDao;
 	
 	@Autowired
 	private ProfileCompletenessImpl completenessImpl;
@@ -160,5 +165,23 @@ public class ProfileAwardsServicesImpl extends JOOQBaseServiceImpl<Awards, Profi
 	@Override
 	protected ProfileAwardsRecord structToDB(Awards awards) throws ParseException {
 		return (ProfileAwardsRecord)BeanUtils.structToDB(awards, ProfileAwardsRecord.class);
+	}
+	
+	public void updateUpdateTime(List<Awards> Awards, Response response) {
+		if(response.getStatus() == 0) {
+			HashSet<Integer> awardIds = new HashSet<>();
+			Awards.forEach(award -> {
+				awardIds.add(award.getId());
+			});
+			dao.updateProfileUpdateTime(awardIds);
+		}
+	}
+	
+	public void updateUpdateTime(Awards Award, Response response) {
+		if(response.getStatus() == 0) {
+			List<Awards> awards = new ArrayList<>();
+			awards.add(Award);
+			updateUpdateTime(awards, response);
+		}
 	}
 }

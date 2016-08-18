@@ -1,6 +1,9 @@
 package com.moseeker.profile.service.impl;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -15,6 +18,7 @@ import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.db.profiledb.tables.records.ProfileOtherRecord;
 import com.moseeker.profile.dao.CustomizeResumeDao;
+import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.CustomizeResumeServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.CustomizeResume;
@@ -26,6 +30,9 @@ public class ProfileCustomizeResumeServicesImpl extends JOOQBaseServiceImpl<Cust
 
 	@Autowired
 	private CustomizeResumeDao dao;
+	
+	@Autowired
+	private ProfileDao profileDao;
 
 	public CustomizeResumeDao getDao() {
 		return dao;
@@ -41,6 +48,34 @@ public class ProfileCustomizeResumeServicesImpl extends JOOQBaseServiceImpl<Cust
 	}
 
 	@Override
+	public Response postResources(List<CustomizeResume> structs) throws TException {
+		Response response = super.postResources(structs);
+		updateUpdateTime(structs, response);
+		return response;
+	}
+
+	@Override
+	public Response putResources(List<CustomizeResume> structs) throws TException {
+		Response response = super.putResources(structs);
+		updateUpdateTime(structs, response);
+		return response;
+	}
+
+	@Override
+	public Response delResources(List<CustomizeResume> structs) throws TException {
+		Response response = super.delResources(structs);
+		updateUpdateTime(structs, response);
+		return response;
+	}
+
+	@Override
+	public Response delResource(CustomizeResume struct) throws TException {
+		Response response = super.delResource(struct);
+		updateUpdateTime(struct, response);
+		return response;
+	}
+
+	@Override
 	public Response postResource(CustomizeResume struct) throws TException {
 		try {
 			QueryUtil qu = new QueryUtil();
@@ -51,10 +86,13 @@ public class ProfileCustomizeResumeServicesImpl extends JOOQBaseServiceImpl<Cust
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
+			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		} finally {
 			//do nothing
 		}
-		return super.postResource(struct);
+		Response response = super.postResource(struct);
+		updateUpdateTime(struct, response);
+		return response;
 	}
 
 	@Override
@@ -68,10 +106,13 @@ public class ProfileCustomizeResumeServicesImpl extends JOOQBaseServiceImpl<Cust
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
+			return 	ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		} finally {
 			//do nothing
 		}
-		return super.putResource(struct);
+		Response response = super.putResource(struct);
+		updateUpdateTime(struct, response);
+		return response;
 	}
 
 	@Override
@@ -82,5 +123,23 @@ public class ProfileCustomizeResumeServicesImpl extends JOOQBaseServiceImpl<Cust
 	@Override
 	protected ProfileOtherRecord structToDB(CustomizeResume customizeResume) throws ParseException {
 		return (ProfileOtherRecord)BeanUtils.structToDB(customizeResume, ProfileOtherRecord.class);
+	}
+	
+	public void updateUpdateTime(CustomizeResume customizeResume, Response response) {
+		if(response.getStatus() == 0) {
+			List<CustomizeResume> customizeResumes = new ArrayList<>(1);
+			customizeResumes.add(customizeResume);
+			updateUpdateTime(customizeResumes, response);
+		}
+	}
+	
+	public void updateUpdateTime(List<CustomizeResume> customizeResumes, Response response) {
+		if(response.getStatus() == 0) {
+			HashSet<Integer> profileIds = new HashSet<>();
+			customizeResumes.forEach(customizeResume -> {
+				profileIds.add(customizeResume.getProfile_id());
+			});
+			profileDao.updateUpdateTime(profileIds);
+		}
 	}
 }
