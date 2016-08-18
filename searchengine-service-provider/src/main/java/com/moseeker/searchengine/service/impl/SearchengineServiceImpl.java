@@ -165,10 +165,21 @@ public class SearchengineServiceImpl implements Iface {
             }
             
             
-            if( !StringUtils.isEmpty(company_name)){
-                QueryBuilder companyfilter = QueryBuilders.matchPhraseQuery("company_id", company_name);
-                ((BoolQueryBuilder) query).must(companyfilter);
+//            if( !StringUtils.isEmpty(company_name)){
+//                QueryBuilder companyfilter = QueryBuilders.matchPhraseQuery("company_id", company_name);
+//                ((BoolQueryBuilder) query).must(companyfilter);
+//            }
+            if (!StringUtils.isEmpty(company_name)) {
+                String[] company_list = company_name.split(",");
+                QueryBuilder companyor = QueryBuilders.boolQuery();
+                for (int i = 0; i < company_list.length; i++) {
+                    String company_id = company_list[i];
+                    QueryBuilder companyfilter = QueryBuilders.matchPhraseQuery("company_id", company_id);
+                    ((BoolQueryBuilder) companyor).should(companyfilter);
+                }
+                ((BoolQueryBuilder) query).must(companyor);
             }
+            
             
             if ( !StringUtils.isEmpty(salary)){
                 String[] salary_list = salary.split(",");
