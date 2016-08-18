@@ -38,7 +38,8 @@ public class SearchengineController {
     CompanyServices.Iface companyServices = ServiceManager.SERVICEMANAGER.
             getService(CompanyServices.Iface.class);
 
-    @RequestMapping(value = "/search/update", method = RequestMethod.POST)
+    @RequestMapping(value = "/search/update", method = RequestMethod.GET, produces = "application/json;charset=utf-8")
+//    @RequestMapping(value = "/search/update", method = RequestMethod.POST);
     
     @ResponseBody
     public String update_position(HttpServletRequest request, HttpServletResponse response) {
@@ -51,37 +52,44 @@ public class SearchengineController {
             Response result = positonServices.getPositionById(id);
             position = result.data;
             Map position_map = (Map) JSON.parse(position);
-
+            
             String company_id = BeanUtils.converToString(position_map.get("company_id"));
             String publisher_company_id = BeanUtils.converToString(position_map.get("publisher_company_id"));
-
+            System.out.println(company_id);
             CommonQuery query = new CommonQuery();
             query.putToEqualFilter("id", company_id);
             Response company_resp = companyServices.getAllCompanies(query);
             String company = company_resp.data;
+            System.out.println(company);
             List company_maps = (List) JSON.parse(company);
             Map company_map = (Map) company_maps.get(0);
             String company_name = (String) company_map.get("name");
             String scale = (String) company_map.get("scale");
             position_map.put("company_name",company_name);
-            String degree_name = BeanUtils.converToString(company_map.get("degree_name"));
-            Integer degree_above =BeanUtils.converToInteger(company_map.get("degree_above"));
-            if(degree_above==1){
-                degree_name = degree_name+"及以上";
-            }
-            position_map.put("degree_name",degree_name);
+            System.out.println(company_map.get("degree_name"));
+            System.out.println("=======================");
+            System.out.println("=======================");
+            System.out.println("=======================");
+//            String degree_name = BeanUtils.converToString(company_map.get("degree_name"));
+//            System.out.println(degree_name);
+//            Integer degree_above =BeanUtils.converToInteger(company_map.get("degree_above"));
+//            System.out.println(degree_above);
+//            if(degree_above==1){
+//                degree_name = degree_name+"及以上";
+//            }
+//            position_map.put("degree_name",degree_name);
             position_map.put("scale",scale);
             
-            if (!publisher_company_id.equals("0")){
-                CommonQuery query_child = new CommonQuery();
-                query_child.putToEqualFilter("id", publisher_company_id);
-                Response company_resp_child = companyServices.getAllCompanies(query_child);
-                String company_child = company_resp_child.data;
-                List company_maps_child = (List) JSON.parse(company_child);
-                Map company_map_child = (Map) company_maps_child.get(0);
-                String child_company_name = (String) company_map_child.get("name");
-                position_map.put("child_company_name", child_company_name );
-            }
+//            if (!publisher_company_id.equals("0")){
+//                CommonQuery query_child = new CommonQuery();
+//                query_child.putToEqualFilter("id", publisher_company_id);
+//                Response company_resp_child = companyServices.getAllCompanies(query_child);
+//                String company_child = company_resp_child.data;
+//                List company_maps_child = (List) JSON.parse(company_child);
+//                Map company_map_child = (Map) company_maps_child.get(0);
+//                String child_company_name = (String) company_map_child.get("name");
+//                position_map.put("child_company_name", child_company_name );
+//            }
             
             position = JSON.toJSONString(position_map);
 
