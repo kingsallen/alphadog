@@ -69,14 +69,14 @@ public class SearchengineController {
             System.out.println("=======================");
             System.out.println("=======================");
             System.out.println("=======================");
-//            String degree_name = BeanUtils.converToString(company_map.get("degree_name"));
-//            System.out.println(degree_name);
-//            Integer degree_above =BeanUtils.converToInteger(company_map.get("degree_above"));
-//            System.out.println(degree_above);
-//            if(degree_above==1){
-//                degree_name = degree_name+"及以上";
-//            }
-//            position_map.put("degree_name",degree_name);
+            String degree_name = BeanUtils.converToString(company_map.get("degree_name"));
+            System.out.println(degree_name);
+            Integer degree_above =BeanUtils.converToInteger(company_map.get("degree_above"));
+            System.out.println(degree_above);
+            if(degree_above==1){
+                degree_name = degree_name+"及以上";
+            }
+            position_map.put("degree_name",degree_name);
             position_map.put("scale",scale);
             
 //            if (!publisher_company_id.equals("0")){
