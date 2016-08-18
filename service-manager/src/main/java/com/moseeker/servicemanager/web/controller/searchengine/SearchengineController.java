@@ -53,7 +53,7 @@ public class SearchengineController {
             Map position_map = (Map) JSON.parse(position);
             
             String company_id = BeanUtils.converToString(position_map.get("company_id"));
-            String publisher_company_id = BeanUtils.converToString(position_map.get("publisher_company_id"));
+//            String publisher_company_id = BeanUtils.converToString(position_map.get("publisher_company_id"));
             System.out.println(company_id);
             CommonQuery query = new CommonQuery();
             query.putToEqualFilter("id", company_id);
