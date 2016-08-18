@@ -64,8 +64,8 @@ public class SearchengineController {
             String company_name = (String) company_map.get("name");
             String scale = (String) company_map.get("scale");
             position_map.put("company_name",company_name);
-            String degree_name = (String) company_map.get("degree_name");
-            Integer degree_above = (Integer) company_map.get("degree_above");
+            String degree_name = BeanUtils.converToString(company_map.get("degree_name"));
+            Integer degree_above =BeanUtils.converToInteger(company_map.get("degree_above"));
             if(degree_above==1){
                 degree_name = degree_name+"及以上";
             }
