@@ -8,6 +8,8 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.index.query.QueryBuilders.*;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.sort.SortBuilder;
+import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -214,11 +216,15 @@ public class SearchengineServiceImpl implements Iface {
                 response = client.prepareSearch("index").setTypes("fulltext")
                         .setQuery(query)
                         .addSort("priority" , SortOrder.ASC)
+                        .addSort("update_time" , SortOrder.DESC)
                         .setFrom(page_from)
                         .setSize(page_size).execute().actionGet();
             }
             else{
-                response = client.prepareSearch("index").setTypes("fulltext").setQuery(query).setFrom(page_from)
+                response = client.prepareSearch("index").setTypes("fulltext")
+                        .setQuery(query)
+                        .addSort("update_time" , SortOrder.DESC)
+                        .setFrom(page_from)
                         .setSize(page_size).execute().actionGet();
             }
             

@@ -65,7 +65,7 @@ public class SearchengineController {
             String company_name = (String) company_map.get("name");
             String scale = (String) company_map.get("scale");
             position_map.put("company_name",company_name);
-            System.out.println(company_map.get("degree_name"));
+            System.out.println(position_map.get("degree_name"));
             System.out.println("=======================");
             System.out.println("=======================");
             System.out.println("=======================");
