@@ -15,6 +15,7 @@ import static org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders.
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.apache.commons.lang.StringUtils ;
@@ -84,26 +85,28 @@ public class SearchengineServiceImpl implements Iface {
                 QueryBuilder keyand = QueryBuilders.boolQuery();
                 for (int i = 0; i < keyword_list.length; i++) {
                     String keyword = keyword_list[i];
-//                    BoolQueryBuilder keyor = QueryBuilders.boolQuery();
-//                    QueryBuilder tf =  QueryBuilders.functionScoreQuery().add(QueryBuilders.matchQuery("title", keyword), weightFactorFunction(50));
+                    BoolQueryBuilder keyor = QueryBuilders.boolQuery();
+//                    MatchQueryBuilder tm = QueryBuilders.matchQuery("title", keyword);
+//                    QueryBuilder tf =  QueryBuilders.functionScoreQuery().add(tm, weightFactorFunction(50));
 //                    QueryBuilder cityf =  QueryBuilders.functionScoreQuery().add(QueryBuilders.matchQuery("city", keyword), weightFactorFunction(20));
 //                    QueryBuilder comf =  QueryBuilders.functionScoreQuery().add(QueryBuilders.matchQuery("company_name", keyword), weightFactorFunction(19));
-                    QueryBuilder  fullf = QueryBuilders.queryStringQuery(keyword);
+//                    QueryBuilder  fullf = QueryBuilders.queryStringQuery(keyword);
 //                    QueryBuilder keyfilter =  QueryBuilders.functionScoreQuery().add(fullf, weightFactorFunction(1));
-//                    keyor.should(keyfilter).should(tf).should(cityf).should(comf).should(fullf);
+//                    keyor.should(keyfilter).should(tf).should(cityf).should(comf);
                     
 //                    QueryBuilders.functionScoreQuery().add(keyfilter, weightFactorFunction(10));
-//                            .field("_all",1.0f)
-//                            .field("title",20.0f)
-//                            .field("city",10.0f)
-//                            .field("company_name",5.0f);
-                    ((BoolQueryBuilder) keyand).should(fullf);
+                    QueryBuilder  fullf = QueryBuilders.queryStringQuery(keyword)
+                            .field("_all",1.0f)
+                            .field("title",20.0f)
+                            .field("city",10.0f)
+                            .field("company_name",5.0f);
+                    ((BoolQueryBuilder) keyand).must(fullf);
                 }
                 ((BoolQueryBuilder) query).must(keyand);
             }
             
-
-
+            
+            
             if (!StringUtils.isEmpty(cities)) {
                 String[] city_list = cities.split(",");
                 QueryBuilder cityor = QueryBuilders.boolQuery();
@@ -226,13 +229,14 @@ public class SearchengineServiceImpl implements Iface {
                 response = client.prepareSearch("index").setTypes("fulltext")
                         .setQuery(query)
                         .addSort("priority" , SortOrder.ASC)
-//                        .addSort("update_time" , SortOrder.DESC)
+                        .addSort("_score" , SortOrder.DESC)
                         .setFrom(page_from)
                         .setSize(page_size).execute().actionGet();
             }
             else{
                 response = client.prepareSearch("index").setTypes("fulltext")
                         .setQuery(query)
+                        .addSort("_score" , SortOrder.DESC)
 //                        .addSort("update_time" , SortOrder.DESC)
                         .setFrom(page_from)
                         .setSize(page_size).execute().actionGet();
