@@ -87,6 +87,7 @@ public class SearchengineServiceImpl implements Iface {
                             .field("title",20.5f)
                             .field("city",10.2f)
                             .field("company_name",5.19f);
+                            .field("_all",1.19f);
                     ((BoolQueryBuilder) keyand).should(keyfilter);
                 }
                 ((BoolQueryBuilder) query).must(keyand);
