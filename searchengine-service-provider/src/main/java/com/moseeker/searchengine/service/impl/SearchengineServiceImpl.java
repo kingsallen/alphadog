@@ -84,20 +84,20 @@ public class SearchengineServiceImpl implements Iface {
                 QueryBuilder keyand = QueryBuilders.boolQuery();
                 for (int i = 0; i < keyword_list.length; i++) {
                     String keyword = keyword_list[i];
-                    BoolQueryBuilder keyor = QueryBuilders.boolQuery();
-                    QueryBuilder tf =  QueryBuilders.functionScoreQuery().add(QueryBuilders.matchQuery("title", keyword), weightFactorFunction(50));
-                    QueryBuilder cityf =  QueryBuilders.functionScoreQuery().add(QueryBuilders.matchQuery("city", keyword), weightFactorFunction(20));
-                    QueryBuilder comf =  QueryBuilders.functionScoreQuery().add(QueryBuilders.matchQuery("company_name", keyword), weightFactorFunction(19));
+//                    BoolQueryBuilder keyor = QueryBuilders.boolQuery();
+//                    QueryBuilder tf =  QueryBuilders.functionScoreQuery().add(QueryBuilders.matchQuery("title", keyword), weightFactorFunction(50));
+//                    QueryBuilder cityf =  QueryBuilders.functionScoreQuery().add(QueryBuilders.matchQuery("city", keyword), weightFactorFunction(20));
+//                    QueryBuilder comf =  QueryBuilders.functionScoreQuery().add(QueryBuilders.matchQuery("company_name", keyword), weightFactorFunction(19));
                     QueryBuilder  fullf = QueryBuilders.queryStringQuery(keyword);
-                    QueryBuilder keyfilter =  QueryBuilders.functionScoreQuery().add(fullf, weightFactorFunction(1));
-                    keyor.should(keyfilter).should(tf).should(cityf).should(comf).should(fullf);
+//                    QueryBuilder keyfilter =  QueryBuilders.functionScoreQuery().add(fullf, weightFactorFunction(1));
+//                    keyor.should(keyfilter).should(tf).should(cityf).should(comf).should(fullf);
                     
 //                    QueryBuilders.functionScoreQuery().add(keyfilter, weightFactorFunction(10));
 //                            .field("_all",1.0f)
 //                            .field("title",20.0f)
 //                            .field("city",10.0f)
 //                            .field("company_name",5.0f);
-                    ((BoolQueryBuilder) keyand).should(keyor);
+                    ((BoolQueryBuilder) keyand).should(fullf);
                 }
                 ((BoolQueryBuilder) query).must(keyand);
             }
