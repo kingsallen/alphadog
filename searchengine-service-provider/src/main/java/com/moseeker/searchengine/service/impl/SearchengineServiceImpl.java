@@ -226,14 +226,14 @@ public class SearchengineServiceImpl implements Iface {
                 response = client.prepareSearch("index").setTypes("fulltext")
                         .setQuery(query)
                         .addSort("priority" , SortOrder.ASC)
-                        .addSort("update_time" , SortOrder.DESC)
+//                        .addSort("update_time" , SortOrder.DESC)
                         .setFrom(page_from)
                         .setSize(page_size).execute().actionGet();
             }
             else{
                 response = client.prepareSearch("index").setTypes("fulltext")
                         .setQuery(query)
-                        .addSort("update_time" , SortOrder.DESC)
+//                        .addSort("update_time" , SortOrder.DESC)
                         .setFrom(page_from)
                         .setSize(page_size).execute().actionGet();
             }
