@@ -130,7 +130,7 @@ public class UseraccountsServiceImpl implements Iface {
                     user.setLoginCount(user.getLoginCount()+1);
                     
                     userdao.putResource(user);
-
+                    
                     return ResponseUtils.success(resp);                    
                 }else{
                     // 主 user_id 不存在， 数据异常。
@@ -756,6 +756,9 @@ public class UseraccountsServiceImpl implements Iface {
                 // 用户记录转换
                 UserUserRecord userUserRecord = (UserUserRecord) BeanUtils.structToDB(user, UserUserRecord.class);
                 if (userdao.putResource(userUserRecord)>0) {
+                	if(user.isSetUsername() || user.isSetEmail() || user.isSetName()) {
+                		profileDao.updateUpdateTimeByUserId((int)user.getId());
+                	}
                 	return ResponseUtils.success(null);
                 } else {
                 	return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
