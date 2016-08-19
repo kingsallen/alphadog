@@ -231,6 +231,7 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 			i = dao.postResource(record);
 			
 			if ( i > 0 ){
+				updateUpdateTime(struct);
 				/* 计算用户基本信息的简历完整度 */
 				completenessImpl.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
 				return ResponseUtils.success(String.valueOf(i));
@@ -300,6 +301,7 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 			}
 			Response response = super.putResource(struct);
 			if(response.getStatus() == 0) {
+				updateUpdateTime(struct);
 				/* 计算用户基本信息的简历完整度 */
 				completenessImpl.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
 			}
@@ -317,6 +319,7 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 		Response response = super.postResources(structs);
 		if(structs != null && structs.size() > 0 && response.getStatus() == 0) {
 			for(WorkExp struct : structs) {
+				updateUpdateTime(structs);
 				/* 计算用户基本信息的简历完整度 */
 				completenessImpl.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
 			}
@@ -329,6 +332,7 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 		Response response = super.putResources(structs);
 		if(response.getStatus() == 0 && structs != null && structs.size() > 0) {
 			for(WorkExp struct : structs) {
+				updateUpdateTime(structs);
 				/* 计算用户基本信息的简历完整度 */
 				completenessImpl.reCalculateProfileWorkExpUseWorkExpId(struct.getId());
 			}
@@ -363,6 +367,7 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 		Response response = super.delResources(structs);
 		if(response.getStatus() == 0 && profileIds != null && profileIds.size() > 0) {
 			profileIds.forEach(profileId -> {
+				updateUpdateTime(structs);
 				/* 计算用户基本信息的简历完整度 */
 				completenessImpl.reCalculateProfileWorkExp(profileId, 0);
 			});
@@ -373,9 +378,11 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 	@Override
 	public Response delResource(WorkExp struct) throws TException {
 		Response response = super.delResource(struct);
-		if(response.getStatus() == 0) 
+		if(response.getStatus() == 0) {
+			updateUpdateTime(struct);
 			/* 计算用户基本信息的简历完整度 */
 			completenessImpl.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
+		}
 		return response;
 	}
 
