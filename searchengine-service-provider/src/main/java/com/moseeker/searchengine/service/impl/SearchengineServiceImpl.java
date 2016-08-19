@@ -192,7 +192,6 @@ public class SearchengineServiceImpl implements Iface {
             
             
             if ( !StringUtils.isEmpty(salary)){
-                haskey=true;
                 String[] salary_list = salary.split(",");
                 String  salary_from = salary_list[0];
                 String  salary_to = salary_list[1];
