@@ -202,6 +202,7 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 				
 				/* 计算profile完整度 */
 				completenessImpl.reCalculateProfileIntention(struct.getProfile_id(), intentionId);
+				updateUpdateTime(struct);
 				return ResponseUtils.success(String.valueOf(intentionId));
 			}
 		} catch (Exception e) {
@@ -226,6 +227,7 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 				
 				/* 计算profile完整度 */
 				completenessImpl.reCalculateProfileIntention(struct.getProfile_id(), intentionId);
+				updateUpdateTime(struct);
 				return ResponseUtils.success(String.valueOf(intentionId));
 			}
 		} catch (Exception e) {
@@ -261,6 +263,8 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 				
 				/* 计算profile完整度 */
 				completenessImpl.reCalculateProfileIntention(intentionRecord.getProfileId().intValue(), intentionRecord.getId().intValue());
+				/* 更新profile的更新时间 */
+				updateUpdateTime(struct);
 				return ResponseUtils.success(String.valueOf(intentionId));
 			}
 		} catch (Exception e) {
@@ -285,6 +289,7 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 			 structs.forEach(struct -> {
 				 profileIds.add(struct.getProfile_id());
 			 });
+			 updateUpdateTime(structs);
 			 profileIds.forEach(profileId -> {
 				 /* 计算profile完整度 */
 				 completenessImpl.reCalculateProfileIntention(profileId, 0);
@@ -297,6 +302,7 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 	public Response putResources(List<Intention> structs) throws TException {
 		Response response = super.putResources(structs);
 		if(response.getStatus() == 0 && structs != null && structs.size() > 0) {
+			 updateUpdateTime(structs);
 			 structs.forEach(struct -> {
 				 /* 计算profile完整度 */
 				 completenessImpl.reCalculateProfileIntention(struct.getProfile_id(), struct.getId());
@@ -331,6 +337,7 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 		}
 		Response response = super.delResources(structs);
 		if(response.getStatus() == 0 && profileIds != null && profileIds.size() > 0) {
+			updateUpdateTime(structs);
 			profileIds.forEach(profileId -> {
 				 /* 计算profile完整度 */
 				 completenessImpl.reCalculateProfileIntention(profileId, 0);
@@ -685,5 +692,19 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 	@Override
 	protected ProfileIntentionRecord structToDB(Intention intention) throws ParseException {
 		return (ProfileIntentionRecord) BeanUtils.structToDB(intention, ProfileIntentionRecord.class);
+	}
+	
+	private void updateUpdateTime(List<Intention> intentions) {
+		HashSet<Integer> intentionIds = new HashSet<>();
+		intentions.forEach(intention -> {
+			intentionIds.add(intention.getId());
+		});
+		dao.updateProfileUpdateTime(intentionIds);
+	}
+
+	private void updateUpdateTime(Intention intention) {
+		List<Intention> intentions = new ArrayList<>();
+		intentions.add(intention);
+		updateUpdateTime(intention);
 	}
 }

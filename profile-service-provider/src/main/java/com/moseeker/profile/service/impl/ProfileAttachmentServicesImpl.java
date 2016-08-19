@@ -110,7 +110,7 @@ public class ProfileAttachmentServicesImpl extends JOOQBaseServiceImpl<Attachmen
 		return (ProfileAttachmentRecord)BeanUtils.structToDB(attachment, ProfileAttachmentRecord.class);
 	}
 	
-	public void updateUpdateTime(List<Attachment> attachments, Response response) {
+	private void updateUpdateTime(List<Attachment> attachments, Response response) {
 		if(response.getStatus() == 0) {
 			HashSet<Integer> attachmentIds = new HashSet<>();
 			attachments.forEach(attachment -> {
@@ -120,7 +120,7 @@ public class ProfileAttachmentServicesImpl extends JOOQBaseServiceImpl<Attachmen
 		}
 	}
 	
-	public void updateUpdateTime(Attachment attachment, Response response) {
+	private void updateUpdateTime(Attachment attachment, Response response) {
 		if(response.getStatus() == 0) {
 			List<Attachment> attachments = new ArrayList<>();
 			attachments.add(attachment);

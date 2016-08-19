@@ -125,7 +125,7 @@ public class ProfileCustomizeResumeServicesImpl extends JOOQBaseServiceImpl<Cust
 		return (ProfileOtherRecord)BeanUtils.structToDB(customizeResume, ProfileOtherRecord.class);
 	}
 	
-	public void updateUpdateTime(CustomizeResume customizeResume, Response response) {
+	private void updateUpdateTime(CustomizeResume customizeResume, Response response) {
 		if(response.getStatus() == 0) {
 			List<CustomizeResume> customizeResumes = new ArrayList<>(1);
 			customizeResumes.add(customizeResume);
@@ -133,7 +133,7 @@ public class ProfileCustomizeResumeServicesImpl extends JOOQBaseServiceImpl<Cust
 		}
 	}
 	
-	public void updateUpdateTime(List<CustomizeResume> customizeResumes, Response response) {
+	private void updateUpdateTime(List<CustomizeResume> customizeResumes, Response response) {
 		if(response.getStatus() == 0) {
 			HashSet<Integer> profileIds = new HashSet<>();
 			customizeResumes.forEach(customizeResume -> {

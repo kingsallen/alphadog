@@ -35,6 +35,7 @@ import com.moseeker.profile.dao.WorkExpDao;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.WorkExpServices.Iface;
+import com.moseeker.thrift.gen.profile.struct.Skill;
 import com.moseeker.thrift.gen.profile.struct.WorkExp;
 
 @Service
@@ -445,5 +446,19 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 		equalRules.put("start_date", "start");
 		equalRules.put("end_date", "end");
 		return (ProfileWorkexpRecord) BeanUtils.structToDB(workExp, ProfileWorkexpRecord.class, equalRules);
+	}
+	
+	private void updateUpdateTime(List<WorkExp> workExps) {
+		Set<Integer> workExpIds = new HashSet<>();
+		workExps.forEach(workExp -> {
+			workExpIds.add(workExp.getId());
+		});
+		dao.updateProfileUpdateTime(workExpIds);
+	}
+
+	private void updateUpdateTime(WorkExp workExp) {
+		List<WorkExp> workExps = new ArrayList<>();
+		workExps.add(workExp);
+		updateUpdateTime(workExps);
 	}
 }

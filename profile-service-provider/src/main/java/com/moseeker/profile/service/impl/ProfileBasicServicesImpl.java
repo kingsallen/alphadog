@@ -400,7 +400,7 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 		return null;
 	}
 	
-	public void updateUpdateTime(Basic basic) {
+	private void updateUpdateTime(Basic basic) {
 		HashSet<Integer> profileIds = new HashSet<>();
 		profileIds.add(basic.getProfile_id());
 		profileDao.updateUpdateTime(profileIds);

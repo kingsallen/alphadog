@@ -189,6 +189,9 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 			ProfileEducationRecord record = structToDB(education);
 			int id = dao.postResource(record);
 			if (id > 0) {
+				
+				updateUpdateTime(education);
+				
 				/* 计算profile完整度 */
 				completenessImpl.reCalculateProfileEducation(education.getProfile_id(), 0);
 				return ResponseUtils.success(String.valueOf(id));
@@ -223,6 +226,7 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 		}
 		Response response = super.putResource(education);
 		if (response.getStatus() == 0) {
+			updateUpdateTime(education);
 			/* 计算profile完整度 */
 			completenessImpl.reCalculateProfileEducation(education.getProfile_id(), education.getId());
 		}
@@ -240,6 +244,7 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 						profileIds.add(struct.getProfile_id());
 					}
 				});
+				updateUpdateTime(structs);
 				profileIds.forEach(profileId -> {
 					/* 计算profile完整度 */
 					completenessImpl.reCalculateProfileEducation(profileId, 0);
@@ -253,6 +258,7 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 	public Response putResources(List<Education> structs) throws TException {
 		Response response = super.putResources(structs);
 		if (response.getStatus() == 0 && structs != null && structs.size() > 0) {
+			updateUpdateTime(structs);
 			structs.forEach(struct -> {
 				/* 计算profile完整度 */
 				completenessImpl.reCalculateProfileEducation(struct.getProfile_id(), struct.getId());
@@ -287,6 +293,7 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 		}
 		Response response = super.delResources(structs);
 		if (response.getStatus() == 0 && profileIds != null && profileIds.size() > 0) {
+			updateUpdateTime(structs);
 			profileIds.forEach(profileId -> {
 				/* 计算profile完整度 */
 				completenessImpl.reCalculateProfileEducation(profileId, profileId);
@@ -306,10 +313,14 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 			logger.error(e.getMessage(), e);
 		}
 		Response response = super.delResource(struct);
-		if (response.getStatus() == 0 && education != null)
+		if (response.getStatus() == 0 && education != null) {
+			
+			updateUpdateTime(struct);
+			
 			/* 计算profile完整度 */
 			completenessImpl.reCalculateProfileEducation(education.getProfileId().intValue(),
 					education.getId().intValue());
+		}
 		return response;
 	}
 
@@ -327,5 +338,19 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 		equalRules.put("start_date", "start");
 		equalRules.put("end_date", "end");
 		return (ProfileEducationRecord) BeanUtils.structToDB(attachment, ProfileEducationRecord.class, equalRules);
+	}
+	
+	public void updateUpdateTime(List<Education> educations) {
+		HashSet<Integer> educationIds = new HashSet<>();
+		educations.forEach(education -> {
+			educationIds.add(education.getId());
+		});
+		dao.updateProfileUpdateTime(educationIds);
+	}
+	
+	private void updateUpdateTime(Education education) {
+		List<Education> educations = new ArrayList<>();
+		educations.add(education);
+		updateUpdateTime(educations);
 	}
 }

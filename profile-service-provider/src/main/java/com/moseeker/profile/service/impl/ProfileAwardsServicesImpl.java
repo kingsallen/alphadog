@@ -17,34 +17,31 @@ import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.db.profiledb.tables.records.ProfileAwardsRecord;
 import com.moseeker.profile.dao.AwardsDao;
-import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.AwardsServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.Awards;
 
 @Service
 public class ProfileAwardsServicesImpl extends JOOQBaseServiceImpl<Awards, ProfileAwardsRecord> implements Iface {
-	
+
 	Logger logger = LoggerFactory.getLogger(ProfileAwardsServicesImpl.class);
 
 	@Autowired
 	private AwardsDao dao;
-	
-	@Autowired
-	private ProfileDao profileDao;
-	
+
 	@Autowired
 	private ProfileCompletenessImpl completenessImpl;
-	
+
 	@Override
 	public Response postResources(List<Awards> structs) throws TException {
 		Response response = super.postResources(structs);
 		/* 计算profile完成度 */
-		if(response.getStatus() == 0 && structs != null && structs.size() > 0) {
+		if (response.getStatus() == 0 && structs != null && structs.size() > 0) {
 			Set<Integer> profileIds = new HashSet<>();
 			structs.forEach(struct -> {
 				profileIds.add(struct.getProfile_id());
 			});
+			updateUpdateTime(structs);
 			profileIds.forEach(profileId -> {
 				completenessImpl.reCalculateProfileAward(profileId, 0);
 			});
@@ -56,7 +53,8 @@ public class ProfileAwardsServicesImpl extends JOOQBaseServiceImpl<Awards, Profi
 	public Response putResources(List<Awards> structs) throws TException {
 		Response response = super.putResources(structs);
 		/* 计算profile完成度 */
-		if(response.getStatus() == 0 && structs != null && structs.size() > 0) {
+		if (response.getStatus() == 0 && structs != null && structs.size() > 0) {
+			updateUpdateTime(structs);
 			structs.forEach(struct -> {
 				completenessImpl.reCalculateProfileAward(struct.getProfile_id(), struct.getId());
 			});
@@ -72,10 +70,10 @@ public class ProfileAwardsServicesImpl extends JOOQBaseServiceImpl<Awards, Profi
 			sb.append(struct.getId());
 			sb.append(",");
 		});
-		sb.deleteCharAt(sb.length()-1);
+		sb.deleteCharAt(sb.length() - 1);
 		sb.append("]");
 		qu.addEqualFilter("id", sb.toString());
-		
+
 		List<ProfileAwardsRecord> awardsRecords = null;
 		try {
 			awardsRecords = dao.getResources(qu);
@@ -83,14 +81,15 @@ public class ProfileAwardsServicesImpl extends JOOQBaseServiceImpl<Awards, Profi
 			logger.error(e.getMessage(), e);
 		}
 		Set<Integer> profileIds = new HashSet<>();
-		if(awardsRecords != null && awardsRecords.size() > 0) {
+		if (awardsRecords != null && awardsRecords.size() > 0) {
 			awardsRecords.forEach(award -> {
 				profileIds.add(award.getProfileId().intValue());
 			});
 		}
 		Response response = super.delResources(structs);
 		/* 计算profile完成度 */
-		if(response.getStatus() == 0 && profileIds != null && profileIds.size() > 0) {
+		if (response.getStatus() == 0 && profileIds != null && profileIds.size() > 0) {
+			updateUpdateTime(structs);
 			profileIds.forEach(profileId -> {
 				completenessImpl.reCalculateProfileAward(profileId, 0);
 			});
@@ -102,7 +101,8 @@ public class ProfileAwardsServicesImpl extends JOOQBaseServiceImpl<Awards, Profi
 	public Response postResource(Awards struct) throws TException {
 		Response response = super.postResource(struct);
 		/* 计算profile完成度 */
-		if(response.getStatus() == 0 && struct != null) {
+		if (response.getStatus() == 0 && struct != null) {
+			updateUpdateTime(struct);
 			completenessImpl.reCalculateProfileAward(struct.getProfile_id(), struct.getId());
 		}
 		return response;
@@ -112,7 +112,8 @@ public class ProfileAwardsServicesImpl extends JOOQBaseServiceImpl<Awards, Profi
 	public Response putResource(Awards struct) throws TException {
 		Response response = super.putResource(struct);
 		/* 计算profile完成度 */
-		if(response.getStatus() == 0 && struct != null) {
+		if (response.getStatus() == 0 && struct != null) {
+			updateUpdateTime(struct);
 			completenessImpl.reCalculateProfileAward(struct.getProfile_id(), struct.getId());
 		}
 		return response;
@@ -130,7 +131,8 @@ public class ProfileAwardsServicesImpl extends JOOQBaseServiceImpl<Awards, Profi
 		}
 		Response response = super.delResource(struct);
 		/* 计算profile完成度 */
-		if(response.getStatus() == 0 && award != null) {
+		if (response.getStatus() == 0 && award != null) {
+			updateUpdateTime(struct);
 			completenessImpl.reCalculateProfileAward(award.getProfileId().intValue(), award.getId().intValue());
 		}
 		return response;
@@ -159,29 +161,25 @@ public class ProfileAwardsServicesImpl extends JOOQBaseServiceImpl<Awards, Profi
 
 	@Override
 	protected Awards DBToStruct(ProfileAwardsRecord r) {
-		return (Awards)BeanUtils.DBToStruct(Awards.class, r);
+		return (Awards) BeanUtils.DBToStruct(Awards.class, r);
 	}
 
 	@Override
 	protected ProfileAwardsRecord structToDB(Awards awards) throws ParseException {
-		return (ProfileAwardsRecord)BeanUtils.structToDB(awards, ProfileAwardsRecord.class);
+		return (ProfileAwardsRecord) BeanUtils.structToDB(awards, ProfileAwardsRecord.class);
 	}
-	
-	public void updateUpdateTime(List<Awards> Awards, Response response) {
-		if(response.getStatus() == 0) {
-			HashSet<Integer> awardIds = new HashSet<>();
-			Awards.forEach(award -> {
-				awardIds.add(award.getId());
-			});
-			dao.updateProfileUpdateTime(awardIds);
-		}
+
+	private void updateUpdateTime(List<Awards> awards) {
+		HashSet<Integer> awardIds = new HashSet<>();
+		awards.forEach(award -> {
+			awardIds.add(award.getId());
+		});
+		dao.updateProfileUpdateTime(awardIds);
 	}
-	
-	public void updateUpdateTime(Awards Award, Response response) {
-		if(response.getStatus() == 0) {
-			List<Awards> awards = new ArrayList<>();
-			awards.add(Award);
-			updateUpdateTime(awards, response);
-		}
+
+	private void updateUpdateTime(Awards award) {
+		List<Awards> awards = new ArrayList<>();
+		awards.add(award);
+		updateUpdateTime(awards);
 	}
 }

@@ -1,6 +1,7 @@
 package com.moseeker.profile.service.impl;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -63,6 +64,7 @@ public class ProfileLanguageServicesImpl extends JOOQBaseServiceImpl<Language, P
 			structs.forEach(struct -> {
 				profileIds.add(struct.getProfile_id());
 			});
+			updateUpdateTime(structs);
 			profileIds.forEach(profileId -> {
 				//计算profile完整度
 				completenessImpl.recalculateprofileLanguage(profileId, 0);
@@ -75,6 +77,7 @@ public class ProfileLanguageServicesImpl extends JOOQBaseServiceImpl<Language, P
 	public Response putResources(List<Language> structs) throws TException {
 		Response response = super.putResources(structs);
 		if(response.getStatus() == 0 && structs != null && structs.size() > 0) {
+			updateUpdateTime(structs);
 			structs.forEach(struct -> {
 				//计算profile完整度
 				completenessImpl.recalculateprofileLanguage(0, struct.getId());
@@ -107,6 +110,7 @@ public class ProfileLanguageServicesImpl extends JOOQBaseServiceImpl<Language, P
 				}
 				Response response = super.delResources(structs);
 				if(response.getStatus() == 0 && profileIds != null && profileIds.size() > 0) {
+					updateUpdateTime(structs);
 					profileIds.forEach(profileId -> {
 						//计算profile完整度
 						completenessImpl.recalculateprofileLanguage(profileId, 0);
@@ -124,16 +128,20 @@ public class ProfileLanguageServicesImpl extends JOOQBaseServiceImpl<Language, P
 	@Override
 	public Response postResource(Language struct) throws TException {
 		Response response = super.postResource(struct);
-		if(response.getStatus() == 0)
+		if(response.getStatus() == 0) {
+			updateUpdateTime(struct);
 			completenessImpl.recalculateprofileLanguage(struct.getProfile_id(), struct.getId());
+		}
 		return response;
 	}
 
 	@Override
 	public Response putResource(Language struct) throws TException {
 		Response response = super.putResource(struct);
-		if(response.getStatus() == 0)
+		if(response.getStatus() == 0) {
+			updateUpdateTime(struct);
 			completenessImpl.recalculateprofileLanguage(struct.getProfile_id(), struct.getId());
+		}
 		return response;
 	}
 
@@ -148,8 +156,10 @@ public class ProfileLanguageServicesImpl extends JOOQBaseServiceImpl<Language, P
 			logger.error(e.getMessage(), e);
 		}
 		Response response = super.delResource(struct);
-		if(response.getStatus() == 0 && language != null)
+		if(response.getStatus() == 0 && language != null) {
+			updateUpdateTime(struct);
 			completenessImpl.recalculateprofileLanguage(struct.getProfile_id(), struct.getId());
+		}
 		return response;
 	}
 
@@ -161,5 +171,19 @@ public class ProfileLanguageServicesImpl extends JOOQBaseServiceImpl<Language, P
 	@Override
 	protected ProfileLanguageRecord structToDB(Language language) throws ParseException {
 		return (ProfileLanguageRecord) BeanUtils.structToDB(language, ProfileLanguageRecord.class);
+	}
+	
+	private void updateUpdateTime(List<Language> languages) {
+		Set<Integer> languageIds = new HashSet<>();
+		languages.forEach(language -> {
+			languageIds.add(language.getId());
+		});
+		dao.updateProfileUpdateTime(languageIds);
+	}
+
+	private void updateUpdateTime(Language language) {
+		List<Language> languages = new ArrayList<>();
+		languages.add(language);
+		updateUpdateTime(language);
 	}
 }
