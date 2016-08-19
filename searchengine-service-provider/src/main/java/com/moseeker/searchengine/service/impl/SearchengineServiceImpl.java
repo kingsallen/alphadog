@@ -83,11 +83,11 @@ public class SearchengineServiceImpl implements Iface {
                 QueryBuilder keyand = QueryBuilders.boolQuery();
                 for (int i = 0; i < keyword_list.length; i++) {
                     String keyword = keyword_list[i];
-                    QueryBuilder keyfilter = QueryBuilders.queryStringQuery(keyword)
-                            .field("_all",1.0f)
-                            .field("title",20.0f)
-                            .field("city",10.0f)
-                            .field("company_name",5.0f);
+                    QueryBuilder keyfilter = QueryBuilders.queryStringQuery(keyword);
+//                            .field("_all",1.0f)
+//                            .field("title",20.0f)
+//                            .field("city",10.0f)
+//                            .field("company_name",5.0f);
                     ((BoolQueryBuilder) keyand).should(keyfilter);
                 }
                 ((BoolQueryBuilder) query).must(keyand);
