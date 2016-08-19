@@ -79,22 +79,15 @@ public class SearchengineServiceImpl implements Iface {
             QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
             QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
             
+            boolean haskey = false;
             
             if ( !StringUtils.isEmpty(keywords)) {
+                haskey=true;
                 String[] keyword_list = keywords.split(" ");
                 QueryBuilder keyand = QueryBuilders.boolQuery();
                 for (int i = 0; i < keyword_list.length; i++) {
                     String keyword = keyword_list[i];
                     BoolQueryBuilder keyor = QueryBuilders.boolQuery();
-//                    MatchQueryBuilder tm = QueryBuilders.matchQuery("title", keyword);
-//                    QueryBuilder tf =  QueryBuilders.functionScoreQuery().add(tm, weightFactorFunction(50));
-//                    QueryBuilder cityf =  QueryBuilders.functionScoreQuery().add(QueryBuilders.matchQuery("city", keyword), weightFactorFunction(20));
-//                    QueryBuilder comf =  QueryBuilders.functionScoreQuery().add(QueryBuilders.matchQuery("company_name", keyword), weightFactorFunction(19));
-//                    QueryBuilder  fullf = QueryBuilders.queryStringQuery(keyword);
-//                    QueryBuilder keyfilter =  QueryBuilders.functionScoreQuery().add(fullf, weightFactorFunction(1));
-//                    keyor.should(keyfilter).should(tf).should(cityf).should(comf);
-                    
-//                    QueryBuilders.functionScoreQuery().add(keyfilter, weightFactorFunction(10));
                     QueryBuilder  fullf = QueryBuilders.queryStringQuery(keyword)
                             .field("_all",1.0f)
                             .field("title",20.0f)
@@ -124,6 +117,7 @@ public class SearchengineServiceImpl implements Iface {
             }
             
             if (!StringUtils.isEmpty(industries)) {
+                haskey=true;
                 String[] industry_list = industries.split(",");
                 QueryBuilder industryor = QueryBuilders.boolQuery();
                 for (int i = 0; i < industry_list.length; i++) {
@@ -146,6 +140,7 @@ public class SearchengineServiceImpl implements Iface {
             }
 
             if( !StringUtils.isEmpty(scale)){
+ 
                 QueryBuilder scalefilter = QueryBuilders.matchPhraseQuery("scale", scale);
                 ((BoolQueryBuilder) query).must(scalefilter);
             }
@@ -156,6 +151,7 @@ public class SearchengineServiceImpl implements Iface {
             }
 
             if ( !StringUtils.isEmpty(candidate_source)) {
+  
                 QueryBuilder candidatefilter = QueryBuilders.matchPhraseQuery("candidate_source_name", candidate_source);
                 ((BoolQueryBuilder) query).must(candidatefilter);
             }
@@ -182,11 +178,7 @@ public class SearchengineServiceImpl implements Iface {
                 ((BoolQueryBuilder) query).must(degreeor);
             }
             
-            
-//            if( !StringUtils.isEmpty(company_name)){
-//                QueryBuilder companyfilter = QueryBuilders.matchPhraseQuery("company_id", company_name);
-//                ((BoolQueryBuilder) query).must(companyfilter);
-//            }
+
             if (!StringUtils.isEmpty(company_name)) {
                 String[] company_list = company_name.split(",");
                 QueryBuilder companyor = QueryBuilders.boolQuery();
@@ -200,6 +192,7 @@ public class SearchengineServiceImpl implements Iface {
             
             
             if ( !StringUtils.isEmpty(salary)){
+                haskey=true;
                 String[] salary_list = salary.split(",");
                 String  salary_from = salary_list[0];
                 String  salary_to = salary_list[1];
@@ -218,6 +211,7 @@ public class SearchengineServiceImpl implements Iface {
             }
             
             if ( !StringUtils.isEmpty(custom)) {
+                haskey=true;
                 QueryBuilder custom_filter = QueryBuilders.matchPhraseQuery("custom", custom);
                 ((BoolQueryBuilder) query).must(custom_filter);
             }
@@ -226,19 +220,31 @@ public class SearchengineServiceImpl implements Iface {
             ((BoolQueryBuilder) query).must(status_filter);
             
             if (order_by_priority){
-                response = client.prepareSearch("index").setTypes("fulltext")
-                        .setQuery(query)
-                        .addSort("priority" , SortOrder.ASC)
-                        .addSort("_score" , SortOrder.DESC)
-                        .addSort("update_time" , SortOrder.DESC)
-                        .setFrom(page_from)
-                        .setSize(page_size).execute().actionGet();
+                
+                if(haskey){
+                    response = client.prepareSearch("index").setTypes("fulltext")
+                            .setQuery(query)
+                            .addSort("priority" , SortOrder.ASC)
+                            .addSort("_score" , SortOrder.DESC)
+                            .addSort("update_time" , SortOrder.DESC)
+                            .setFrom(page_from)
+                            .setSize(page_size).execute().actionGet();
+                }
+                else{
+                    response = client.prepareSearch("index").setTypes("fulltext")
+                            .setQuery(query)
+                            .addSort("priority" , SortOrder.ASC)
+                            .addSort("update_time" , SortOrder.DESC)
+                            .setFrom(page_from)
+                            .setSize(page_size).execute().actionGet();
+                }
+                
             }
             else{
                 response = client.prepareSearch("index").setTypes("fulltext")
                         .setQuery(query)
                         .addSort("_score" , SortOrder.DESC)
-                        .addSort("update_time" , SortOrder.DESC)
+//                        .addSort("update_time" , SortOrder.DESC)
                         .setFrom(page_from)
                         .setSize(page_size).execute().actionGet();
             }
