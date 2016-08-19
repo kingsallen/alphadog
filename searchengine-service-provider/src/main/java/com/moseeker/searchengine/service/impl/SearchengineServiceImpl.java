@@ -210,7 +210,6 @@ public class SearchengineServiceImpl implements Iface {
             }
             
             if ( !StringUtils.isEmpty(custom)) {
-                haskey=true;
                 QueryBuilder custom_filter = QueryBuilders.matchPhraseQuery("custom", custom);
                 ((BoolQueryBuilder) query).must(custom_filter);
             }
