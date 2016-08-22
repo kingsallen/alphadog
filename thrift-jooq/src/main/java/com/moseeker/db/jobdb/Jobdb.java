@@ -7,8 +7,10 @@ package com.moseeker.db.jobdb;
 import com.moseeker.db.jobdb.tables.JobApplication;
 import com.moseeker.db.jobdb.tables.JobApplicationConf;
 import com.moseeker.db.jobdb.tables.JobApplicationStatusBeisen;
+import com.moseeker.db.jobdb.tables.JobCustom;
 import com.moseeker.db.jobdb.tables.JobPosition;
 import com.moseeker.db.jobdb.tables.JobPositionCity;
+import com.moseeker.db.jobdb.tables.JobPositionExt;
 import com.moseeker.db.jobdb.tables.JobPositionShareTplConf;
 import com.moseeker.db.jobdb.tables.JobPositionTopic;
 import com.moseeker.db.jobdb.tables.JobResumeOther;
@@ -36,7 +38,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Jobdb extends SchemaImpl {
 
-	private static final long serialVersionUID = 1456049123;
+	private static final long serialVersionUID = 1177618633;
 
 	/**
 	 * The reference instance of <code>jobdb</code>
@@ -62,8 +64,10 @@ public class Jobdb extends SchemaImpl {
 			JobApplication.JOB_APPLICATION,
 			JobApplicationConf.JOB_APPLICATION_CONF,
 			JobApplicationStatusBeisen.JOB_APPLICATION_STATUS_BEISEN,
+			JobCustom.JOB_CUSTOM,
 			JobPosition.JOB_POSITION,
 			JobPositionCity.JOB_POSITION_CITY,
+			JobPositionExt.JOB_POSITION_EXT,
 			JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF,
 			JobPositionTopic.JOB_POSITION_TOPIC,
 			JobResumeOther.JOB_RESUME_OTHER);
