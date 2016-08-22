@@ -5,10 +5,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,39 +13,23 @@ import java.util.Map.Entry;
 import javax.servlet.http.HttpServletRequest;
 
 import org.junit.Test;
-import org.springframework.web.servlet.HandlerMapping;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.profile.struct.Intention;
 
+/**
+ * 
+ * 主要用于生成form表单 
+ * <p>Company: MoSeeker</P>  
+ * <p>date: Aug 22, 2016</p>  
+ * <p>Email: wjf2255@gmail.com</p>
+ * @author wjf
+ * @version
+ */
 public class ParamUtils {
 	
-	public static String getRestfullApiName(HttpServletRequest request) {
-		String path = (String) request
-				.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
-		return path;
-	}
-	
-	public static String getLocalHostIp(){
-		try {
-			return InetAddress.getLocalHost().getHostAddress();
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-		}
-		return "unknow";
-	}
-
-	public static String getRemoteIp(HttpServletRequest request) {
-		String remoteIpForwardedbyLbs = request.getHeader("REMOTE_ADDR");// php
-																			// 和
-																			// python
-																			// tornado不一致，需要实际测试。
-		return remoteIpForwardedbyLbs == null ? request.getRemoteAddr()
-				: remoteIpForwardedbyLbs;
-	}
-
 	/**
 	 * 通用参数解析工具。将request parameter中的参数放入到对象中。
 	 * 
@@ -64,52 +44,10 @@ public class ParamUtils {
 			throws Exception {
 		if (t != null) {
 			try {
-				Map<String, Object> data = new HashMap<String, Object>();
-				data.putAll(initParamFromRequestBody(request));
-				data.putAll(initParamFromRequestParameter(request));
-				
-				if (data.get("appid") == null) {
-					throw new Exception("请设置 appid!");
-				}
-
-				Method method1 = t.getClass().getMethod("setAppid",
-						int.class);
-				method1.invoke(t, BeanUtils.converToInteger(data.get("appid")));
-				if (data.get("page") != null) {
-					Method method = t.getClass()
-							.getMethod("setPage", int.class);
-					method.invoke(t, BeanUtils.converToInteger(data.get("page")));
-				}
-				if (data.get("per_page") != null) {
-					Method method = t.getClass().getMethod("setPer_page",
-							int.class);
-					method.invoke(t, BeanUtils.converToInteger(data.get("per_page")));
-				}
-				if (data.get("sortby") != null) {
-					Method method = t.getClass().getMethod("setSortby",
-							String.class);
-					method.invoke(t, BeanUtils.converToString(data.get("sortby")));
-				}
-				if (data.get("order") != null) {
-					Method method = t.getClass().getMethod("setOrder",
-							String.class);
-					method.invoke(t, BeanUtils.converToString(data.get("order")));
-				}
-				
-				if (data.get("fields") != null) {
-					Method method = t.getClass().getMethod("setFields",
-							String.class);
-					method.invoke(t, BeanUtils.converToString(data.get("fields")));
-				}
-				if (data.get("nocache") != null) {
-					Method method = t.getClass().getMethod("setNocache",
-							String.class);
-					method.invoke(t, BeanUtils.convertToBoolean(data.get("nocache")));
-				}
-				Map<String, String> param = new HashMap<>();
-				Map<String, String[]> reqParams = request.getParameterMap();
-				if (reqParams != null) {
-					for (Entry<String, String[]> entry : reqParams.entrySet()) {
+				Map<String, Object> data = mergeRequestParameters(request);
+				Map<String, Object> param = new HashMap<>();
+				if (data != null) {
+					for (Entry<String, Object> entry : data.entrySet()) {
 						if (!entry.getKey().equals("appid")
 								&& !entry.getKey().equals("page")
 								&& !entry.getKey().equals("per_page")
@@ -117,8 +55,7 @@ public class ParamUtils {
 								&& !entry.getKey().equals("order")
 								&& !entry.getKey().equals("fields")
 								&& !entry.getKey().equals("nocache")) {
-							param.put(entry.getKey(),
-									entry.getValue()[0]);
+							param.put(entry.getKey(), entry.getValue());
 						}
 					}
 				}
@@ -355,7 +292,7 @@ public class ParamUtils {
 	 * 
 	 * @return map 参数键值对
 	 */
-	public static Map<String, Object> initParamFromRequestBody(
+	private static Map<String, Object> initParamFromRequestBody(
 			HttpServletRequest request) {
 
 		StringBuffer jb = new StringBuffer();
