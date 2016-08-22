@@ -4,8 +4,10 @@ import com.moseeker.application.dao.JobApplicationDao;
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
 import com.moseeker.db.historydb.tables.records.HistoryJobApplicationRecord;
+import com.moseeker.db.hrdb.tables.records.HrOperationRecordRecord;
 import com.moseeker.db.jobdb.tables.JobApplication;
 import com.moseeker.db.jobdb.tables.records.JobApplicationRecord;
+import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Record;
@@ -123,16 +125,24 @@ public class JobApplicationDaoImpl extends BaseDaoImpl<JobApplicationRecord, Job
      * @throws Exception
      */
     @Override
-    public int saveApplication(JobApplicationRecord jobApplicationRecord) throws Exception {
+    public int saveApplication(JobApplicationRecord jobApplicationRecord, JobPositionRecord jobPositionRecord) throws Exception {
         int appId = 0;
         Connection conn = null;
         try {
             conn = DBConnHelper.DBConn.getConn();
             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 
+            HrOperationRecordRecord hrOperationRecord = null;
+
             create.attach(jobApplicationRecord);
             jobApplicationRecord.insert();
             appId = jobApplicationRecord.getId().intValue();
+
+            if(appId > 0){
+                hrOperationRecord = getHrOperationRecordRecord(appId, jobApplicationRecord, jobPositionRecord);
+                create.attach(hrOperationRecord);
+                hrOperationRecord.insert();
+            }
             
         } catch (Exception e) {
             conn.rollback();
@@ -226,5 +236,24 @@ public class JobApplicationDaoImpl extends BaseDaoImpl<JobApplicationRecord, Job
             historyJobApplicationRecord.setUpdateTime(jobApplicationRecord.getUpdateTime());
         }
         return historyJobApplicationRecord;
+    }
+
+    /**
+     * 生成HR操作记录
+     *
+     * @param appId 当前申请ID
+     * @param jobApplicationRecord 当前申请记录
+     * @param JobPositonrecord 当前申请职位
+     * @return
+     */
+    private HrOperationRecordRecord getHrOperationRecordRecord(long appId,
+                                                               JobApplicationRecord jobApplicationRecord,
+                                                               JobPositionRecord JobPositonrecord){
+        HrOperationRecordRecord hrOperationRecordRecord = new HrOperationRecordRecord();
+        hrOperationRecordRecord.setAdminId(JobPositonrecord.getPublisher().longValue());
+        hrOperationRecordRecord.setCompanyId(jobApplicationRecord.getCompanyId().longValue());
+        hrOperationRecordRecord.setAppId(appId);
+        hrOperationRecordRecord.setOperateTplId(jobApplicationRecord.getAppTplId().intValue());
+        return hrOperationRecordRecord;
     }
 }
