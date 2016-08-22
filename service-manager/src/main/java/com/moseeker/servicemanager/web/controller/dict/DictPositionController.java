@@ -29,7 +29,7 @@ public class DictPositionController {
     public String getIndustriesByType(HttpServletRequest request, HttpServletResponse response) {
         try {
             // GET方法 通用参数解析并赋值
-        	 Map<String,Object> params = ParamUtils.mergeRequestParameters(request);
+        	 Map<String,Object> params = ParamUtils.parseRequestParam(request);
             Response result = sercie.getPositionsByCode((String)params.get("parent"));
 
             return ResponseLogNotification.success(request, result);

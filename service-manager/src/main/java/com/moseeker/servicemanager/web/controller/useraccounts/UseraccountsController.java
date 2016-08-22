@@ -48,7 +48,7 @@ public class UseraccountsController {
 	@ResponseBody
 	public String getUser(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			Map<String, Object> param = ParamUtils.mergeRequestParameters(request);
+			Map<String, Object> param = ParamUtils.parseRequestParam(request);
 			int userId = 0;
 			if (param.get("user_id") != null && param.get("user_id") instanceof String) {
 				userId = Integer.valueOf((String) param.get("user_id"));
@@ -106,7 +106,7 @@ public class UseraccountsController {
 	@ResponseBody
 	public String postuserlogout(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			Object user_id = ParamUtils.mergeRequestParameters(request).get("user_id");
+			Object user_id = ParamUtils.parseRequestParam(request).get("user_id");
 			Response result = useraccountsServices.postuserlogout(BeanUtils.converToInteger(user_id));
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
@@ -147,7 +147,7 @@ public class UseraccountsController {
 	@ResponseBody
 	public String postsendsignupcode(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			Object mobile = ParamUtils.mergeRequestParameters(request).get("mobile");
+			Object mobile = ParamUtils.parseRequestParam(request).get("mobile");
 			Response result = useraccountsServices.postsendsignupcode(BeanUtils.converToString(mobile));
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
@@ -165,7 +165,7 @@ public class UseraccountsController {
 	public String postuserwxbindmobile(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			// GET方法 通用参数解析并赋值
-			Map<String, Object> reqParams = ParamUtils.mergeRequestParameters(request);
+			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
 			String unionid = BeanUtils.converToString(reqParams.get("unionid"));
 			String code = BeanUtils.converToString(reqParams.get("code"));
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
@@ -189,7 +189,7 @@ public class UseraccountsController {
 	public String postuserchangepassword(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			// GET方法 通用参数解析并赋值
-			Map<String, Object> reqParams = ParamUtils.mergeRequestParameters(request);
+			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
 			int user_id = BeanUtils.converToInteger(reqParams.get("user_id"));
 			String old_password = BeanUtils.converToString(reqParams.get("old_password"));
 			String password = BeanUtils.converToString(reqParams.get("password"));
@@ -210,7 +210,7 @@ public class UseraccountsController {
 	@ResponseBody
 	public String postusersendpasswordforgotcode(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			Object mobile = ParamUtils.mergeRequestParameters(request).get("mobile");
+			Object mobile = ParamUtils.parseRequestParam(request).get("mobile");
 			Response result = useraccountsServices.postusersendpasswordforgotcode(BeanUtils.converToString(mobile));
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
@@ -227,7 +227,7 @@ public class UseraccountsController {
 	@ResponseBody
 	public String postuserresetpassword(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			Map<String, Object> reqParams = ParamUtils.mergeRequestParameters(request);
+			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 			String code = BeanUtils.converToString(reqParams.get("code"));
 			String password = BeanUtils.converToString(reqParams.get("password"));
@@ -249,7 +249,7 @@ public class UseraccountsController {
 	public String postusermergebymobile(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			// GET方法 通用参数解析并赋值
-			Map<String, Object> reqParams = ParamUtils.mergeRequestParameters(request);
+			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 			Integer appid = BeanUtils.converToInteger(reqParams.get("appid"));
 
@@ -277,7 +277,7 @@ public class UseraccountsController {
 	public String getismobileregistered(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			// GET方法 通用参数解析并赋值
-			Map<String, Object> reqParams = ParamUtils.mergeRequestParameters(request);
+			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 
 			Response result = useraccountsServices.getismobileregisted(mobile);
@@ -303,7 +303,7 @@ public class UseraccountsController {
 	@ResponseBody
 	public String postuservalidatepasswordforgotcode(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			Map<String, Object> reqParams = ParamUtils.mergeRequestParameters(request);
+			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 			String code = BeanUtils.converToString(reqParams.get("code"));
 
@@ -330,7 +330,7 @@ public class UseraccountsController {
 	@ResponseBody
 	public String postsendchangemobilecode(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			Map<String, Object> reqParams = ParamUtils.mergeRequestParameters(request);
+			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 
 			Response result = useraccountsServices.postsendchangemobilecode(mobile);
@@ -356,7 +356,7 @@ public class UseraccountsController {
 	@ResponseBody
 	public String postvalidatechangemobilecode(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			Map<String, Object> reqParams = ParamUtils.mergeRequestParameters(request);
+			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 			String code = BeanUtils.converToString(reqParams.get("code"));
 
@@ -383,7 +383,7 @@ public class UseraccountsController {
 	@ResponseBody
 	public String postsendresetmobilecode(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			Map<String, Object> reqParams = ParamUtils.mergeRequestParameters(request);
+			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 
 			Response result = useraccountsServices.postsendresetmobilecode(mobile);
@@ -409,7 +409,7 @@ public class UseraccountsController {
 	@ResponseBody
 	public String postresetmobile(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			Map<String, Object> reqParams = ParamUtils.mergeRequestParameters(request);
+			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
 			int user_id = BeanUtils.converToInteger(reqParams.get("user_id"));
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 			String code = BeanUtils.converToString(reqParams.get("code"));
@@ -515,7 +515,7 @@ public class UseraccountsController {
 			HttpServletResponse response) {
 		try {
 
-			Map<String, Object> reqParams = ParamUtils.mergeRequestParameters(request);
+			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
 
 			int user_id = BeanUtils.converToInteger(reqParams.get("user_id"));
 			int position_id = BeanUtils.converToInteger(reqParams.get("position_id"));

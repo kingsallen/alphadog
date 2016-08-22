@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.servicemanager.web.controller.util.IntentionParamUtil;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.IntentionServices;
@@ -49,9 +50,9 @@ public class IntentionController {
 	public String post(HttpServletRequest request, HttpServletResponse response) {
 		// PrintWriter writer = null;
 		try {
-			Map<String, Object> data = ParamUtils.mergeRequestParameters(request);
+			Map<String, Object> data = ParamUtils.parseRequestParam(request);
 			Intention intention = ParamUtils.initModelForm(data, Intention.class);
-			ParamUtils.buildIntention(data, intention);
+			IntentionParamUtil.buildIntention(data, intention);
 			Response result = intentionService.postResource(intention);
 
 			return ResponseLogNotification.success(request, result);
@@ -65,9 +66,9 @@ public class IntentionController {
 	@ResponseBody
 	public String put(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			Map<String, Object> data = ParamUtils.mergeRequestParameters(request);
+			Map<String, Object> data = ParamUtils.parseRequestParam(request);
 			Intention intention = ParamUtils.initModelForm(data, Intention.class);
-			ParamUtils.buildIntention(data, intention);
+			IntentionParamUtil.buildIntention(data, intention);
 
 			Response result = intentionService.putResource(intention);
 
@@ -81,9 +82,9 @@ public class IntentionController {
 	@ResponseBody
 	public String delete(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			Map<String, Object> data = ParamUtils.mergeRequestParameters(request);
+			Map<String, Object> data = ParamUtils.parseRequestParam(request);
 			Intention intention = ParamUtils.initModelForm(data, Intention.class);
-			ParamUtils.buildIntention(data, intention);
+			IntentionParamUtil.buildIntention(data, intention);
 			Response result = intentionService.delResource(intention);
 
 			return ResponseLogNotification.success(request, result);

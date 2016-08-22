@@ -46,7 +46,7 @@ public class SearchengineController {
         String position = "";
         Response search_res=null;
         try {
-            reqParams = ParamUtils.mergeRequestParameters(request);
+            reqParams = ParamUtils.parseRequestParam(request);
             Integer id = BeanUtils.converToInteger(reqParams.get("id"));
             Response result = positonServices.getPositionById(id);
             position = result.data;
@@ -89,7 +89,7 @@ public class SearchengineController {
     public String search_position(HttpServletRequest request, HttpServletResponse response) {
     
         try {
-            Map<String, Object> reqParams = ParamUtils.mergeRequestParameters(request);
+            Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
             String keywords = BeanUtils.converToString(reqParams.get("keywords"));
             String cities = BeanUtils.converToString(reqParams.get("cities"));
             String industries = BeanUtils.converToString(reqParams.get("industries"));

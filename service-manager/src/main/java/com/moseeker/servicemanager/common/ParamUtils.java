@@ -6,18 +6,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.junit.Test;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.thrift.gen.profile.struct.Intention;
+import com.moseeker.common.util.JsonToMap;
 
 /**
  * 
@@ -31,6 +26,52 @@ import com.moseeker.thrift.gen.profile.struct.Intention;
 public class ParamUtils {
 	
 	/**
+	 * 通用的参数解析方法。将request参数信息解析出来，如果属性名字和参数名称一致，则设法将参数的值赋值给类对象的值。
+	 * @param request HttpServletRequest
+	 * @param clazz 转换类类型
+	 * @return 转换类
+	 * @throws Exception 异常信息
+	 */
+	public static <T> T initModelForm(HttpServletRequest request, Class<T> clazz)
+			throws Exception {
+		Map<String, Object> data = parseRequestParam(request);
+		T t = initModelForm(data, clazz);
+		return t;
+	}
+	
+	/**
+	 * 用于解析常用的查询类。和initModelForm不同的是，会将form表单不存在的属性存入到EqualFilter中
+	 * @param request HttpServletRequest 
+	 * @param clazz 转换类的类型属性
+	 * @return 转换后的类
+	 * @throws Exception 异常
+	 */
+	public static <T> T initCommonQuery(HttpServletRequest request,
+			Class<T> clazz) throws Exception {
+		Map<String, Object> data = parseRequestParam(request);
+		T t = initModelForm(data, clazz);
+		buildEqualParam(data, t);
+		return t;
+	}
+	
+	/**
+	 * 将request请求中的参数，不管是request的body中的参数还是以getParameter方式获取的参数存入到HashMap并染回该HashMap
+	 * @param request request请求
+	 * @return 存储通过request请求传递过来的参数
+	 * @throws Exception 
+	 */
+	public static Map<String, Object> parseRequestParam(HttpServletRequest request) throws Exception {
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.putAll(initParamFromRequestBody(request));
+		data.putAll(initParamFromRequestParameter(request));
+		
+		if (data.get("appid") == null){
+			throw new Exception("请设置 appid!");
+		}		
+		return data;
+	}
+	
+	/**
 	 * 通用参数解析工具。将request parameter中的参数放入到对象中。
 	 * 
 	 * @param request
@@ -40,12 +81,12 @@ public class ParamUtils {
 	 * @return t 参数对象
 	 * @throws Exception
 	 */
-	public static <T> T initCommonQuery(HttpServletRequest request, T t)
+	private static <T> T buildEqualParam(Map<String, Object> data, T t)
 			throws Exception {
 		if (t != null) {
 			try {
-				Map<String, Object> data = mergeRequestParameters(request);
 				Map<String, Object> param = new HashMap<>();
+				
 				if (data != null) {
 					for (Entry<String, Object> entry : data.entrySet()) {
 						if (!entry.getKey().equals("appid")
@@ -59,6 +100,7 @@ public class ParamUtils {
 						}
 					}
 				}
+				
 				Method method = t.getClass().getMethod("setEqualFilter",
 						Map.class);
 				method.invoke(t, param);
@@ -80,23 +122,6 @@ public class ParamUtils {
 	 * @return 存储通过request请求传递过来的参数
 	 * @throws Exception 
 	 */
-	public static Map<String, Object> mergeRequestParameters(HttpServletRequest request) throws Exception {
-		Map<String, Object> data = new HashMap<String, Object>();
-		data.putAll(initParamFromRequestBody(request));
-		data.putAll(initParamFromRequestParameter(request));
-		
-		if (data.get("appid") == null){
-			throw new Exception("请设置 appid!");
-		}		
-		return data;
-	}
-	
-	/**
-	 * 将request请求中的参数，不管是request的body中的参数还是以getParameter方式获取的参数存入到HashMap并染回该HashMap
-	 * @param request request请求
-	 * @return 存储通过request请求传递过来的参数
-	 * @throws Exception 
-	 */
 	public static Map<String, Object> mergeRequestParameterList(HttpServletRequest request) throws Exception {
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.putAll(initParamFromRequestBody(request));
@@ -108,97 +133,13 @@ public class ParamUtils {
 		return data;
 	}
 
-	/**
-	 * 通用参数解析工具。初始化参数数据结构，并将request parameter中的参数放入到对象中。
-	 * 
-	 * @param request
-	 *            request request请求
-	 * @param clazz
-	 *            参数对象
-	 * @return <T> T 参数对象
-	 * @throws Exception
-	 */
-	public static <T> T initCommonQuery(HttpServletRequest request,
-			Class<T> clazz) throws Exception {
-		T t = clazz.newInstance();
-		initCommonQuery(request, t);
-		return t;
-	}
-
-	public static <T> T initModelForm(HttpServletRequest request, Class<T> clazz)
-			throws Exception {
-		T t = clazz.newInstance();
-
-		Map<String, Object> data = new HashMap<String, Object>();
-		data.putAll(initParamFromRequestBody(request));
-		data.putAll(initParamFromRequestParameter(request));
-		
-		if (data.get("appid") == null){
-			throw new Exception("请设置 appid!");
-		}
-		
-		if (data != null && data.size() > 0) {
-			Field[] fields = clazz.getDeclaredFields();
-			for (Entry<String, Object> entry : data.entrySet()) {
-				for (int i = 0; i < fields.length; i++) {
-					if (fields[i].getName().equals(entry.getKey())) {
-						String methodName = "set"
-								+ fields[i].getName().substring(0, 1)
-										.toUpperCase()
-								+ fields[i].getName().substring(1);
-						Method method = clazz.getMethod(methodName,
-								fields[i].getType());
-						Object cval = BeanUtils.convertTo(
-								entry.getValue(), fields[i].getType());
-						try {
-							method.invoke(t, cval);
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-				}
-			}
-		}
-
-		return t;
-	}
-	
 	public static <T> T initModelFormForList(HttpServletRequest request, Class<T> clazz)
 			throws Exception {
-		T t = clazz.newInstance();
-		
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.putAll(initParamFromRequestBody(request));
 		data.putAll(initParamFromRequestParameterList(request));
 		
-		if (data.get("appid") == null){
-			throw new Exception("请设置 appid!");
-		}
-		
-		if (data != null && data.size() > 0) {
-			Field[] fields = clazz.getDeclaredFields();
-			for (Entry<String, Object> entry : data.entrySet()) {
-				for (int i = 0; i < fields.length; i++) {
-					if (fields[i].getName().equals(entry.getKey())) {
-						String methodName = "set"
-								+ fields[i].getName().substring(0, 1)
-										.toUpperCase()
-								+ fields[i].getName().substring(1);
-						Method method = clazz.getMethod(methodName,
-								fields[i].getType());
-						Object cval = BeanUtils.convertTo(
-								entry.getValue(), fields[i].getType());
-						try {
-							method.invoke(t, cval);
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-				}
-			}
-		}
+		T t = initModelForm(data, clazz);
 
 		return t;
 	}
@@ -206,9 +147,6 @@ public class ParamUtils {
 	public static <T> T initModelForm(Map<String, Object> data, Class<T> clazz) throws Exception {
 		T t = null;
 		if(data != null && data.size() > 0) {
-			if (data.get("appid") == null){
-				throw new Exception("请设置 appid!");
-			}
 			t = clazz.newInstance();
 			if (data != null && data.size() > 0) {
 				Field[] fields = clazz.getDeclaredFields();
@@ -237,30 +175,6 @@ public class ParamUtils {
 		return t;
 	}
 
-	@Test
-	public void testArray() {
-		int[] array = { 1, 2, 3 };
-		Object a = array;
-		if (a instanceof Object[] || a instanceof byte[] || a instanceof char[]
-				|| a instanceof int[] || a instanceof long[]
-				|| a instanceof float[] || a instanceof double[]) {
-			System.out.println(true);
-		} else {
-			System.out.println(false);
-		}
-	}
-
-	@Test
-	public void testPrimary() {
-		int b = 1;
-		Object a = b;
-		if (a instanceof Object) {
-			System.out.println(true);
-		} else {
-			System.out.println(false);
-		}
-	}
-	
 	private static Map<String, Object> initParamFromRequestParameter(
 			HttpServletRequest request) {
 		Map<String, Object> param = new HashMap<>();
@@ -304,201 +218,7 @@ public class ParamUtils {
 			}
 		} catch (IOException | IllegalStateException e) {
 		}
-		Map<String, Object> map = parseJSON2Map(jb.toString());
+		Map<String, Object> map = JsonToMap.parseJSON2Map(jb.toString());
 		return map;
-	}
-
-	/**
-	 * json 转 HashMap
-	 * 
-	 * @param jsonStr
-	 *            json
-	 * @return HashMap
-	 */
-	@SuppressWarnings("unchecked")
-	public static Map<String, Object> parseJSON2Map(String jsonStr) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		// 校验jsonStr格式是否正确
-		if (!jsonStr.startsWith("{") || !jsonStr.endsWith("}")) {
-			return map;
-		}
-		Object object = JSON.parse(jsonStr);
-		;
-		if (object instanceof Map) {
-			map = (Map<String, Object>) object;
-			for(Entry<String, Object> entry : map.entrySet()) {
-				if(entry.getValue() instanceof JSONArray) {
-					entry.setValue(((JSONArray)entry.getValue()).toArray());
-				}
-			}
-		} else if (object instanceof List) {
-			map.put(object.toString(), object);
-		} else {
-			map.put(object.toString(), object);
-		}
-		return map;
-	}
-	
-	public static void buildIntention(Map<String, Object> reqParams, Intention intention) {
-		Map<Integer, Integer> industryCode = new HashMap<>();
-		Map<String, Integer> industryName= new HashMap<>();
-		
-		Map<Integer, Integer> positionCode = new HashMap<>();
-		Map<String, Integer> positionName= new HashMap<>();
-		
-		Map<Integer, Integer> cityCode = new HashMap<>();
-		Map<String, Integer> cityName= new HashMap<>();
-		if (reqParams != null) {
-			for (Entry<String, Object> entry : reqParams.entrySet()) {
-				if(entry.getKey().startsWith("industries[")) {
-					if(entry.getKey().contains("industry_code")) {
-						industryCode.put(Integer.valueOf(entry.getKey().charAt(11)), BeanUtils.converToInteger(entry.getValue()));
-					}
-					if(entry.getKey().contains("industry_name")) {
-						industryName.put((String)entry.getValue(), Integer.valueOf(entry.getKey().charAt(11)));
-					}
-				}
-				
-				if(entry.getKey().startsWith("cities[")) {
-					if(entry.getKey().contains("city_code")) {
-						cityCode.put(Integer.valueOf(entry.getKey().charAt(7)), BeanUtils.converToInteger(entry.getValue()));
-					}
-					if(entry.getKey().contains("city_name")) {
-						cityName.put((String)entry.getValue(), Integer.valueOf(entry.getKey().charAt(7)));
-					}
-				}
-				
-				if(entry.getKey().startsWith("positions[")) {
-					if(entry.getKey().contains("position_code")) {
-						positionCode.put(Integer.valueOf(entry.getKey().charAt(10)), BeanUtils.converToInteger(entry.getValue()));
-					}
-					if(entry.getKey().contains("position_name")) {
-						positionName.put((String)entry.getValue(), Integer.valueOf(entry.getKey().charAt(10)));
-					}
-				}
-			}
-		}
-		if(industryName.size() > 0) {
-			for(Entry<String, Integer> entry : industryName.entrySet()) {
-				if(intention.getIndustries() == null) {
-					intention.setIndustries(new HashMap<String, Integer>());
-				}
-				int code = 0;
-				if(industryCode.size() > 0) {
-					if(industryCode.get(entry.getValue()) != null) {
-						code = industryCode.get(entry.getValue());
-					}
-				}
-				intention.getIndustries().put(entry.getKey(), code);
-			}
-		}
-		if(positionName.size() > 0) {
-			for(Entry<String, Integer> entry : positionName.entrySet()) {
-				if(intention.positions == null) {
-					intention.setPositions(new HashMap<String, Integer>());
-				}
-				int code = 0;
-				if(positionCode.size() > 0) {
-					if(positionCode.get(entry.getValue()) != null) {
-						code = positionCode.get(entry.getValue());
-					}
-				}
-				intention.getPositions().put(entry.getKey(), code);
-			}
-		}
-		if(cityName.size() > 0) {
-			for(Entry<String, Integer> entry : cityName.entrySet()) {
-				if(intention.cities == null) {
-					intention.setCities(new HashMap<String, Integer>());
-				}
-				int code = 0;
-				if(cityCode.get(entry.getValue()) != null) {
-					code = cityCode.get(entry.getValue());
-				}
-				intention.getCities().put(entry.getKey(), code);
-			}
-		}
-	}
-
-	public static void buildIntention(HttpServletRequest request, Intention intention) {
-		Map<Integer, Integer> industryCode = new HashMap<>();
-		Map<String, Integer> industryName= new HashMap<>();
-		
-		Map<Integer, Integer> positionCode = new HashMap<>();
-		Map<String, Integer> positionName= new HashMap<>();
-		
-		Map<Integer, Integer> cityCode = new HashMap<>();
-		Map<String, Integer> cityName= new HashMap<>();
-		Map<String, String[]> reqParams = request.getParameterMap();
-		if (reqParams != null) {
-			for (Entry<String, String[]> entry : reqParams.entrySet()) {
-				if(entry.getKey().startsWith("industries[")) {
-					if(entry.getKey().contains("industry_code")) {
-						industryCode.put(Integer.valueOf(entry.getKey().charAt(11)), Integer.valueOf(entry.getValue()[0]));
-					}
-					if(entry.getKey().contains("industry_name")) {
-						industryName.put(entry.getValue()[0], Integer.valueOf(entry.getKey().charAt(11)));
-					}
-				}
-				
-				if(entry.getKey().startsWith("cities[")) {
-					if(entry.getKey().contains("city_code")) {
-						cityCode.put(Integer.valueOf(entry.getKey().charAt(7)), Integer.valueOf(entry.getValue()[0]));
-					}
-					if(entry.getKey().contains("city_name")) {
-						cityName.put(entry.getValue()[0], Integer.valueOf(entry.getKey().charAt(7)));
-					}
-				}
-				
-				if(entry.getKey().startsWith("positions[")) {
-					if(entry.getKey().contains("position_code")) {
-						positionCode.put(Integer.valueOf(entry.getKey().charAt(10)), Integer.valueOf(entry.getValue()[0]));
-					}
-					if(entry.getKey().contains("position_name")) {
-						positionName.put(entry.getValue()[0], Integer.valueOf(entry.getKey().charAt(10)));
-					}
-				}
-			}
-		}
-		if(industryName.size() > 0) {
-			for(Entry<String, Integer> entry : industryName.entrySet()) {
-				if(intention.getIndustries() == null) {
-					intention.setIndustries(new HashMap<String, Integer>());
-				}
-				int code = 0;
-				if(industryCode.size() > 0) {
-					if(industryCode.get(entry.getValue()) != null) {
-						code = industryCode.get(entry.getValue());
-					}
-				}
-				intention.getIndustries().put(entry.getKey(), code);
-			}
-		}
-		if(positionName.size() > 0) {
-			for(Entry<String, Integer> entry : positionName.entrySet()) {
-				if(intention.positions == null) {
-					intention.setPositions(new HashMap<String, Integer>());
-				}
-				int code = 0;
-				if(positionCode.size() > 0) {
-					if(positionCode.get(entry.getValue()) != null) {
-						code = positionCode.get(entry.getValue());
-					}
-				}
-				intention.getPositions().put(entry.getKey(), code);
-			}
-		}
-		if(cityName.size() > 0) {
-			for(Entry<String, Integer> entry : cityName.entrySet()) {
-				if(intention.cities == null) {
-					intention.setCities(new HashMap<String, Integer>());
-				}
-				int code = 0;
-				if(cityCode.get(entry.getValue()) != null) {
-					code = cityCode.get(entry.getValue());
-				}
-				intention.getCities().put(entry.getKey(), code);
-			}
-		}
 	}
 }
