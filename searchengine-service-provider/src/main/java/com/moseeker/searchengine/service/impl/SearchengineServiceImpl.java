@@ -67,14 +67,14 @@ public class SearchengineServiceImpl implements Iface {
         String es_connection = propertiesReader.get("es.connection", String.class);
         Integer es_port = propertiesReader.get("es.port", Integer.class);
         
+        TransportClient client = null;
         try {
 
             Settings settings = Settings.settingsBuilder().put("cluster.name", cluster_name)
                     .build();
 
-            TransportClient client = TransportClient.builder().settings(settings).build()
+            client = TransportClient.builder().settings(settings).build()
                     .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(es_connection), es_port));
-
 
             QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
             QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
@@ -254,6 +254,8 @@ public class SearchengineServiceImpl implements Iface {
         } catch (Exception e) {
             logger.error("error in search",e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        } finally {
+        	client.close();
         }
 
         Map<String, List> res = new HashMap<String, List>();
@@ -290,6 +292,8 @@ public class SearchengineServiceImpl implements Iface {
         } catch (UnknownHostException e) {
             logger.error("error in update",e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        } finally {
+        	client.close();
         }
         
         return ResponseUtils.success("");
