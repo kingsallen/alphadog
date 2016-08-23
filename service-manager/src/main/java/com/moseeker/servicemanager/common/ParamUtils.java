@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -72,14 +74,12 @@ public class ParamUtils {
 	}
 	
 	/**
-	 * 通用参数解析工具。将request parameter中的参数放入到对象中。
+	 * 解析参数中的不在通用查询约定的属性，将其放入通用参数等比较集合中
 	 * 
-	 * @param request
-	 *            request请求
-	 * @param t
-	 *            参数对象
-	 * @return t 参数对象
-	 * @throws Exception
+	 * @param data 参数集合
+	 * @param t 通用查询类
+	 * @return 通用查询类
+	 * @throws Exception 异常
 	 */
 	private static <T> T buildEqualParam(Map<String, Object> data, T t)
 			throws Exception {
@@ -117,32 +117,13 @@ public class ParamUtils {
 	}
 	
 	/**
-	 * 将request请求中的参数，不管是request的body中的参数还是以getParameter方式获取的参数存入到HashMap并染回该HashMap
-	 * @param request request请求
-	 * @return 存储通过request请求传递过来的参数
-	 * @throws Exception 
+	 * 利用放射的方式将类类型初始化，并根据类属性和参数名相同将参数值赋值给属性
+	 * 
+	 * @param data 参数
+	 * @param clazz 类类型
+	 * @return 赋值后的类对象
+	 * @throws Exception 异常
 	 */
-	public static Map<String, Object> mergeRequestParameterList(HttpServletRequest request) throws Exception {
-		Map<String, Object> data = new HashMap<String, Object>();
-		data.putAll(initParamFromRequestBody(request));
-		data.putAll(initParamFromRequestParameterList(request));
-		
-		if (data.get("appid") == null){
-			throw new Exception("请设置 appid!");
-		}		
-		return data;
-	}
-
-	public static <T> T initModelFormForList(HttpServletRequest request, Class<T> clazz)
-			throws Exception {
-		
-		Map<String, Object> data = mergeRequestParameterList(request);
-		
-		T t = initModelForm(data, clazz);
-
-		return t;
-	}
-	
 	public static <T> T initModelForm(Map<String, Object> data, Class<T> clazz) throws Exception {
 		T t = null;
 		if(data != null && data.size() > 0) {
@@ -174,6 +155,11 @@ public class ParamUtils {
 		return t;
 	}
 
+	/**
+	 * 解析x-www-form-urlencoded参数
+	 * @param request 请求
+	 * @return 参数
+	 */
 	private static Map<String, Object> initParamFromRequestParameter(
 			HttpServletRequest request) {
 		Map<String, Object> param = new HashMap<>();
@@ -181,29 +167,26 @@ public class ParamUtils {
 		Map<String, String[]> reqParams = request.getParameterMap();
 		if (reqParams != null) {
 			for (Entry<String, String[]> entry : reqParams.entrySet()) {
-				param.put(entry.getKey(), entry.getValue()[0]);
+				if(entry.getKey() != null && entry.getKey().length() > 1) {
+					List<String> values = new ArrayList<>();
+					for(String value : entry.getValue()) {
+						if(value != null) {
+							values.add(value);
+						}
+					}
+					param.put(entry.getKey(), values);
+				} else {
+					param.put(entry.getKey(), entry.getValue()[0]);
+				}
 			}
 		}
 		return param;
 	}
 	
-	private static Map<String, Object> initParamFromRequestParameterList(
-			HttpServletRequest request) {
-		Map<String, Object> param = new HashMap<>();
-
-		Map<String, String[]> reqParams = request.getParameterMap();
-		if (reqParams != null) {
-			for (Entry<String, String[]> entry : reqParams.entrySet()) {
-				param.put(entry.getKey(), entry.getValue());
-			}
-		}
-		return param;
-	}
-
 	/**
-	 * 获取post中的信息
-	 * 
-	 * @return map 参数键值对
+	 * 获取request.reader都到的参数信息。主要用于解析application/json数据
+	 * @param request 请求
+	 * @return 参数
 	 */
 	private static Map<String, Object> initParamFromRequestBody(
 			HttpServletRequest request) {
