@@ -135,9 +135,8 @@ public class ParamUtils {
 
 	public static <T> T initModelFormForList(HttpServletRequest request, Class<T> clazz)
 			throws Exception {
-		Map<String, Object> data = new HashMap<String, Object>();
-		data.putAll(initParamFromRequestBody(request));
-		data.putAll(initParamFromRequestParameterList(request));
+		
+		Map<String, Object> data = mergeRequestParameterList(request);
 		
 		T t = initModelForm(data, clazz);
 
