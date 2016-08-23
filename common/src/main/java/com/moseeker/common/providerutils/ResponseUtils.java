@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.moseeker.common.exception.ParamNullException;
 import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.StringUtils;
@@ -25,7 +26,8 @@ public class ResponseUtils {
         Response response = new Response();
         response.setStatus(0);
         response.setMessage("success");
-        response.setData(JSON.toJSONString(hashmap));
+        JSON.DEFFAULT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+        response.setData(JSON.toJSONString(hashmap, SerializerFeature.WriteDateUseDateFormat));
         return response;
 
     }
