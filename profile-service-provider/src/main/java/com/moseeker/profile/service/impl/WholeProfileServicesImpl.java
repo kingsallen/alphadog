@@ -32,10 +32,6 @@ import com.moseeker.db.profiledb.tables.records.ProfileBasicRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileCredentialsRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileEducationRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileImportRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileIntentionCityRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileIntentionIndustryRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileIntentionPositionRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileIntentionRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileLanguageRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileOtherRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
@@ -48,6 +44,7 @@ import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.profile.dao.AttachmentDao;
 import com.moseeker.profile.dao.AwardsDao;
+import com.moseeker.profile.dao.CityDao;
 import com.moseeker.profile.dao.CollegeDao;
 import com.moseeker.profile.dao.CompanyDao;
 import com.moseeker.profile.dao.ConstantDao;
@@ -55,12 +52,14 @@ import com.moseeker.profile.dao.CountryDao;
 import com.moseeker.profile.dao.CredentialsDao;
 import com.moseeker.profile.dao.CustomizeResumeDao;
 import com.moseeker.profile.dao.EducationDao;
+import com.moseeker.profile.dao.IndustryDao;
 import com.moseeker.profile.dao.IntentionCityDao;
 import com.moseeker.profile.dao.IntentionDao;
 import com.moseeker.profile.dao.IntentionIndustryDao;
 import com.moseeker.profile.dao.IntentionPositionDao;
 import com.moseeker.profile.dao.JobPositionDao;
 import com.moseeker.profile.dao.LanguageDao;
+import com.moseeker.profile.dao.PositionDao;
 import com.moseeker.profile.dao.ProfileBasicDao;
 import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.profile.dao.ProfileImportDao;
@@ -135,7 +134,7 @@ public class WholeProfileServicesImpl implements Iface {
 				List<Map<String, Object>> works = buildsWorks(profileRecord, query);
 				profile.put("works", works);
 
-				List<Map<String, Object>> intentions = buildsIntentions(profileRecord, query, constantRecords);
+				List<Map<String, Object>> intentions = profileUtils.buildsIntentions(profileRecord, query, constantRecords, intentionDao, intentionCityDao, intentionIndustryDao, intentionPositionDao, dictCityDao, dictIndustryDao, dictPositionDao);
 				profile.put("intentions", intentions);
 
 				List<ProfileAttachmentRecord> attachmentRecords = attachmentDao.getResources(query);
@@ -476,99 +475,6 @@ public class WholeProfileServicesImpl implements Iface {
 		} else {
 			return ResponseUtils.success(false);
 		}
-	}
-
-	private List<Map<String, Object>> buildsIntentions(ProfileProfileRecord profileRecord, CommonQuery query,
-			List<DictConstantRecord> constantRecords) {
-		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-		try {
-			List<ProfileIntentionRecord> records = intentionDao.getResources(query);
-			if (records != null && records.size() > 0) {
-				List<Integer> intentionIds = new ArrayList<>();
-				records.forEach(record -> {
-					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("id", record.getId().intValue());
-					map.put("worktype", record.getWorktype().intValue());
-					for (DictConstantRecord constantRecord : constantRecords) {
-						if (constantRecord.getParentCode().intValue() == 3105
-								&& constantRecord.getCode().intValue() == record.getWorktype().intValue()) {
-							map.put("worktype_name", constantRecord.getName());
-							break;
-						}
-					}
-					map.put("workstate", record.getWorkstate().intValue());
-					for (DictConstantRecord constantRecord : constantRecords) {
-						if (constantRecord.getParentCode().intValue() == 3102
-								&& constantRecord.getCode().intValue() == record.getWorkstate().intValue()) {
-							map.put("workstate_name", constantRecord.getName());
-							break;
-						}
-					}
-					map.put("salary_code", record.getSalaryCode().intValue());
-					for (DictConstantRecord constantRecord : constantRecords) {
-						if (constantRecord.getParentCode().intValue() == 3114
-								&& constantRecord.getCode().intValue() == record.getSalaryCode().intValue()) {
-							map.put("salary_code_name", constantRecord.getName());
-							break;
-						}
-					}
-					map.put("tag", record.getTag());
-					map.put("consider_venture_company_opportunities",
-							record.getConsiderVentureCompanyOpportunities().intValue());
-					for (DictConstantRecord constantRecord : constantRecords) {
-						if (constantRecord.getParentCode().intValue() == 3120
-								&& constantRecord.getCode().intValue() == record.getSalaryCode().intValue()) {
-							map.put("consider_venture_company_opportunities_name", constantRecord.getName());
-							break;
-						}
-					}
-					intentionIds.add(record.getId().intValue());
-					list.add(map);
-				});
-				List<ProfileIntentionCityRecord> cityRecords = intentionCityDao.getIntentionCities(intentionIds);
-				List<ProfileIntentionIndustryRecord> industryRecords = intentionIndustryDao
-						.getIntentionIndustries(intentionIds);
-				List<ProfileIntentionPositionRecord> positionRecords = intentionPositionDao
-						.getIntentionPositions(intentionIds);
-				list.forEach(map -> {
-					if (cityRecords != null) {
-						List<Map<String, Object>> cities = new ArrayList<>();
-						cityRecords.forEach(cityRecord -> {
-							Map<String, Object> cityMap = new HashMap<>();
-							cityMap.put("city_code", cityRecord.getCityCode().intValue());
-							cityMap.put("city_name", cityRecord.getCityName());
-							cities.add(cityMap);
-						});
-						map.put("cities", cities);
-					}
-					if (industryRecords != null) {
-						List<Map<String, Object>> industries = new ArrayList<>();
-						industryRecords.forEach(record -> {
-							Map<String, Object> industryMap = new HashMap<>();
-							industryMap.put("industry_code", record.getIndustryCode().intValue());
-							industryMap.put("industry_name", record.getIndustryName());
-							industries.add(industryMap);
-						});
-						map.put("industries", industries);
-					}
-					if (positionRecords != null) {
-						List<Map<String, Object>> positions = new ArrayList<>();
-						positionRecords.forEach(record -> {
-							Map<String, Object> positionMap = new HashMap<>();
-							positionMap.put("position_name", record.getPositionName());
-							positionMap.put("position_code", record.getPositionCode().intValue());
-							positions.add(positionMap);
-						});
-						map.put("positions", positions);
-					}
-				});
-			}
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		} finally {
-			// do nothing
-		}
-		return list;
 	}
 
 	private List<Map<String, Object>> buildsWorks(ProfileProfileRecord profileRecord, CommonQuery query) {
@@ -946,6 +852,15 @@ public class WholeProfileServicesImpl implements Iface {
 	}
 	
 	@Autowired
+	private IndustryDao dictIndustryDao;
+	
+	@Autowired
+	private PositionDao dictPositionDao;
+	
+	@Autowired
+	private CityDao dictCityDao;
+	
+	@Autowired
 	private WXUserDao wxuserDao;
 
 	@Autowired
@@ -1237,5 +1152,29 @@ public class WholeProfileServicesImpl implements Iface {
 
 	public void setCompletenessImpl(ProfileCompletenessImpl completenessImpl) {
 		this.completenessImpl = completenessImpl;
+	}
+
+	public CityDao getDictCityDao() {
+		return dictCityDao;
+	}
+
+	public void setDictCityDao(CityDao dictCityDao) {
+		this.dictCityDao = dictCityDao;
+	}
+
+	public IndustryDao getDictIndustryDao() {
+		return dictIndustryDao;
+	}
+
+	public void setDictIndustryDao(IndustryDao dictIndustryDao) {
+		this.dictIndustryDao = dictIndustryDao;
+	}
+
+	public PositionDao getDictPositionDao() {
+		return dictPositionDao;
+	}
+
+	public void setDictPositionDao(PositionDao dictPositionDao) {
+		this.dictPositionDao = dictPositionDao;
 	}
 }
