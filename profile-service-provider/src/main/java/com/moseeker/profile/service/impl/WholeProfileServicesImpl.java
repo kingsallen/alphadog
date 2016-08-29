@@ -288,7 +288,7 @@ public class WholeProfileServicesImpl implements Iface {
 			List<ProfileWorkexpEntity> workexpRecords = null;
 			try {
 				workexpRecords = profileUtils
-						.mapToWorkexpRecords((List<Map<String, Object>>) resume.get("workexps"));
+						.mapToWorkexpRecords((List<Map<String, Object>>) resume.get("workexps"), profileRecord.getSource().intValue());
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
@@ -435,7 +435,7 @@ public class WholeProfileServicesImpl implements Iface {
 		List<ProfileWorkexpEntity> workexpRecords = null;
 		try {
 			workexpRecords = profileUtils
-					.mapToWorkexpRecords((List<Map<String, Object>>) resume.get("workexps"));
+					.mapToWorkexpRecords((List<Map<String, Object>>) resume.get("workexps"), profileRecord.getSource().intValue());
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}

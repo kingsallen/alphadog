@@ -75,7 +75,7 @@ public class UserHrAccountServiceImpl implements Iface {
     }
 
     /**
-     * 添加HR记录
+     * 下载行业报告，添加HR记录
      *
      * @param userHrAccount hr用户实体
      * @param code 验证码
@@ -118,6 +118,7 @@ public class UserHrAccountServiceImpl implements Iface {
                  if(downloadReport.isSetCompany_name()) {
                 	 companyRecord.setName(downloadReport.getCompany_name());
                  }
+                 companyRecord.setSource(UByte.valueOf(Constant.COMPANY_SOURCE_DOWNLOAD));	
                  int result = userHrAccountDao.createHRAccount(userHrAccountRecord, companyRecord);
                  
                  if (result > 0 && downloadReport.getSource() == Constant.HR_ACCOUNT_SIGNUP_SOURCE_WWW ) {
@@ -171,7 +172,9 @@ public class UserHrAccountServiceImpl implements Iface {
             int userHrAccountId = userHrAccountDao.putResource(userHrAccountRecord);
             if (userHrAccountId > 0) {
                 return ResponseUtils.success(new HashMap<String, Object>(){
-                    {
+					private static final long serialVersionUID = -5929607838950864392L;
+
+					{
                         put("userHrAccountId", userHrAccountId);
                     }
                 }); // 返回 userFavoritePositionId

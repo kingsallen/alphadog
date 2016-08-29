@@ -19,7 +19,6 @@ import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
-import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.dictdb.tables.DictCity;
 import com.moseeker.db.dictdb.tables.DictCollege;
@@ -457,8 +456,6 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 								workexp.setCompanyId(hc.getId());
 							} else {
 								HrCompanyRecord newCompany = workexp.getCompany();
-								newCompany.setType(UByte.valueOf(Constant.COMPANY_TYPE_FREE));
-								newCompany.setSource(UByte.valueOf(Constant.COMPANY_SOURCE_PROFILE));
 								create.attach(newCompany);
 								newCompany.insert();
 								workexp.setCompanyId(newCompany.getId());
