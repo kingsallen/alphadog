@@ -431,13 +431,12 @@ public class ProfileUtils {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
 			List<ProfileIntentionRecord> records = intentionDao.getResources(query);
-			CommonQuery dictQuery = new CommonQuery();
-			dictQuery.setPer_page(Integer.MAX_VALUE);
-			List<DictCityRecord> dictCities = dictCityDao.getResources(dictQuery);
-			List<DictIndustryRecord> dictIndustries = dictIndustryDao.getResources(dictQuery);
-			List<DictPositionRecord> dictPositions = dictPositionDao.getResources(dictQuery);
-			
 			if (records != null && records.size() > 0) {
+				CommonQuery dictQuery = new CommonQuery();
+				dictQuery.setPer_page(Integer.MAX_VALUE);
+				List<DictCityRecord> dictCities = dictCityDao.getResources(dictQuery);
+				List<DictIndustryRecord> dictIndustries = dictIndustryDao.getResources(dictQuery);
+				List<DictPositionRecord> dictPositions = dictPositionDao.getResources(dictQuery);
 				List<Integer> intentionIds = new ArrayList<>();
 				records.forEach(record -> {
 					Map<String, Object> map = new HashMap<String, Object>();
