@@ -1,5 +1,7 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -10,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.Constant;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -47,7 +51,15 @@ public class WorksExpController {
 	public String post(HttpServletRequest request, HttpServletResponse response) {
 		//PrintWriter writer = null;
 		try {
-			WorkExp workExp = ParamUtils.initModelForm(request, WorkExp.class);
+			Map<String, Object> data = ParamUtils.mergeRequestParameters(request);
+			WorkExp workExp = ParamUtils.initModelForm(data, WorkExp.class);
+			if(workExp.getSource() == 0) {
+				Integer appid = BeanUtils.converToInteger(data.get("appid"));
+				if(appid == null) {
+					appid = 0;
+				}
+				setSource(workExp, appid);
+			}
 			Response result = workExpService.postResource(workExp);
 			
 			return ResponseLogNotification.success(request, result);
@@ -61,7 +73,16 @@ public class WorksExpController {
 	@ResponseBody
 	public String put(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			WorkExp workExp = ParamUtils.initModelForm(request, WorkExp.class);
+			Map<String, Object> data = ParamUtils.mergeRequestParameters(request);
+			WorkExp workExp = ParamUtils.initModelForm(data, WorkExp.class);
+			if(workExp.getSource() == 0) {
+				Integer appid = BeanUtils.converToInteger(data.get("appid"));
+				if(appid == null) {
+					appid = 0;
+				}
+				setSource(workExp, appid);
+			}
+			
 			Response result = workExpService.putResource(workExp);
 			
 			return ResponseLogNotification.success(request, result);
@@ -80,6 +101,19 @@ public class WorksExpController {
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
 			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
+	
+	private void setSource(WorkExp workExp, int apppid) {
+		switch(apppid) {
+			case Constant.APPID_QX:
+			case Constant.APPID_PLATFORM:
+				workExp.setSource((short)Constant.COMPANY_SOURCE_WX_EDITING);
+				break;
+			case Constant.APPID_C:
+				workExp.setSource((short)Constant.COMPANY_SOURCE_PC_EDITING);
+				break;
+			default:
 		}
 	}
 }

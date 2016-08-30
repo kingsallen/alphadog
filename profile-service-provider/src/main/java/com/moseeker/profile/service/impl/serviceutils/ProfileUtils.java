@@ -52,7 +52,7 @@ public class ProfileUtils {
 		return worksRecords;
 	}
 
-	public List<ProfileWorkexpEntity> mapToWorkexpRecords(List<Map<String, Object>> workexps) {
+	public List<ProfileWorkexpEntity> mapToWorkexpRecords(List<Map<String, Object>> workexps, int source) {
 		List<ProfileWorkexpEntity> workexpRecords = new ArrayList<>();
 		if (workexps != null && workexps.size() > 0) {
 			workexps.forEach(workexp -> {
@@ -85,7 +85,16 @@ public class ProfileUtils {
 								hrCompany.setProperty(BeanUtils.converToUByte(company.get("company_property")));
 							}
 							hrCompany.setType(UByte.valueOf(Constant.COMPANY_TYPE_FREE));
-							hrCompany.setSource(UByte.valueOf(Constant.COMPANY_SOURCE_PROFILE));
+							switch(source) {
+								case Constant.PROFILE_SOURCE_WEIXIN_TEGETHER_IMPORT:
+								case Constant.PROFILE_SOURCE_WEIXIN_COMPANY_IMPORT:
+									hrCompany.setSource(UByte.valueOf(Constant.COMPANY_SOURCE_WX_IMPORT));
+									break;
+								case Constant.PROFILE_SOURCE_PC_IMPORT:
+									hrCompany.setSource(UByte.valueOf(Constant.COMPANY_SOURCE_PC_IMPORT));
+									break;
+								default:
+							}
 							record.setCompany(hrCompany);
 						}
 					}
