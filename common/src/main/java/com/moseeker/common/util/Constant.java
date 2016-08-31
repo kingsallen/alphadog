@@ -41,6 +41,8 @@ public final class Constant {
 
     public static final int REDIS_CONNECT_ERROR_APPID = 0;
     public static final String REDIS_CONNECT_ERROR_EVENTKEY = "REDIS_CONNECT_ERROR";
+    // 消息模板通知 KEY_IDENTIFIER
+    public static final String REDIS_KEY_IDENTIFIER_MQ_MESSAGE_NOTICE_TEMPLATE = "MQ_MESSAGE_NOTICE_TEMPLATE";
 
     public static final String TIPS_SUCCESS = "success";
 

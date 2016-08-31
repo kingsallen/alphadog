@@ -70,7 +70,7 @@ public class DbManager {
 
 		} catch (Exception e) {
 			LoggerFactory.getLogger(DbManager.class).error("error", e);
-			Notification.sendWarningWithHostName(appId, keyIdentifier, e.getMessage());
+			Notification.sendNotification(appId, keyIdentifier, e.getMessage());
 		} finally {
 			try {
 				if(conn != null && !conn.isClosed()) {
@@ -107,7 +107,7 @@ public class DbManager {
 					});
 		} catch (Exception e) {
 			LoggerFactory.getLogger(DbManager.class).error("error", e);
-			Notification.sendWarningWithHostName(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
+			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		} finally {
 			try {
 				if(conn != null && !conn.isClosed()) {

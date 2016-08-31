@@ -1,5 +1,12 @@
 package com.moseeker.servicemanager.common;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.moseeker.common.util.BeanUtils;
+import com.moseeker.thrift.gen.profile.struct.Intention;
+import org.springframework.web.servlet.HandlerMapping;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -7,22 +14,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.junit.Test;
-import org.springframework.web.servlet.HandlerMapping;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.moseeker.common.util.BeanUtils;
-import com.moseeker.thrift.gen.profile.struct.Intention;
 
 public class ParamUtils {
 	
@@ -188,99 +183,79 @@ public class ParamUtils {
 		return t;
 	}
 
+	/**
+	 * 将HttpServletRequest参数转化为struct对象
+	 *
+	 * @param request
+	 * @param clazz
+	 * @param <T> struct 对象
+	 * @return
+     * @throws Exception
+     */
 	public static <T> T initModelForm(HttpServletRequest request, Class<T> clazz)
 			throws Exception {
-		T t = clazz.newInstance();
-
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.putAll(initParamFromRequestBody(request));
 		data.putAll(initParamFromRequestParameter(request));
-		
-		if (data.get("appid") == null){
-			throw new Exception("请设置 appid!");
-		}
-		
-		if (data != null && data.size() > 0) {
-			Field[] fields = clazz.getDeclaredFields();
-			for (Entry<String, Object> entry : data.entrySet()) {
-				for (int i = 0; i < fields.length; i++) {
-					if (fields[i].getName().equals(entry.getKey())) {
-						String methodName = "set"
-								+ fields[i].getName().substring(0, 1)
-										.toUpperCase()
-								+ fields[i].getName().substring(1);
-						Method method = clazz.getMethod(methodName,
-								fields[i].getType());
-						Object cval = BeanUtils.convertTo(
-								entry.getValue(), fields[i].getType());
-						try {
-							method.invoke(t, cval);
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-				}
-			}
-		}
 
-		return t;
+		return initModelForm(data, clazz);
 	}
-	
+
+	/**
+	 * 将HttpServletRequest参数(包含list参数类型的)转化为struct对象
+	 *
+	 * @param request
+	 * @param clazz
+	 * @param <T> struct 对象
+	 * @return
+     * @throws Exception
+     */
 	public static <T> T initModelFormForList(HttpServletRequest request, Class<T> clazz)
 			throws Exception {
-		T t = clazz.newInstance();
-		
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.putAll(initParamFromRequestBody(request));
 		data.putAll(initParamFromRequestParameterList(request));
-		
-		if (data.get("appid") == null){
-			throw new Exception("请设置 appid!");
-		}
-		
-		if (data != null && data.size() > 0) {
-			Field[] fields = clazz.getDeclaredFields();
-			for (Entry<String, Object> entry : data.entrySet()) {
-				for (int i = 0; i < fields.length; i++) {
-					if (fields[i].getName().equals(entry.getKey())) {
-						String methodName = "set"
-								+ fields[i].getName().substring(0, 1)
-										.toUpperCase()
-								+ fields[i].getName().substring(1);
-						Method method = clazz.getMethod(methodName,
-								fields[i].getType());
-						Object cval = BeanUtils.convertTo(
-								entry.getValue(), fields[i].getType());
-						try {
-							method.invoke(t, cval);
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-				}
-			}
-		}
 
-		return t;
+		return initModelForm(data, clazz);
 	}
-	
+
+	/**
+	 * 将参数map转换为thrift struct对象
+	 *
+	 * @param data
+	 * @param clazz
+	 * @param <T> struct 对象
+	 * @return
+     * @throws Exception
+     */
 	public static <T> T initModelForm(Map<String, Object> data, Class<T> clazz) throws Exception {
 		T t = null;
 		if(data != null && data.size() > 0) {
 			if (data.get("appid") == null){
-				throw new Exception("请设置 appid!");
+				throw new Exception("请传参数appid!");
 			}
 			t = clazz.newInstance();
 			if (data != null && data.size() > 0) {
-				Field[] fields = clazz.getDeclaredFields();
+				// thrift 都是自动生成的public类型, 故使用getFields,如果不是public的时候, 请不要使用此方法
+				Field[] fields = clazz.getFields();
+				Map<String, Integer> fieldMap = new HashMap<String, Integer>();
+				for (int f = 0; f < fields.length; f++) {
+					// 过滤掉转换不需要的字段 metaDataMap
+					if(!"metaDataMap".equals(fields[f].getName())) {
+						fieldMap.put(fields[f].getName(), f);
+					}
+				}
+				Integer i = null;
 				for (Entry<String, Object> entry : data.entrySet()) {
-					for (int i = 0; i < fields.length; i++) {
+					if(fieldMap.containsKey(entry.getKey())) {
+						i = fieldMap.get(entry.getKey());
+						if (i == null) {
+							continue;
+						}
 						if (fields[i].getName().equals(entry.getKey())) {
 							String methodName = "set"
 									+ fields[i].getName().substring(0, 1)
-											.toUpperCase()
+									.toUpperCase()
 									+ fields[i].getName().substring(1);
 							Method method = clazz.getMethod(methodName,
 									fields[i].getType());
@@ -300,30 +275,6 @@ public class ParamUtils {
 		return t;
 	}
 
-	@Test
-	public void testArray() {
-		int[] array = { 1, 2, 3 };
-		Object a = array;
-		if (a instanceof Object[] || a instanceof byte[] || a instanceof char[]
-				|| a instanceof int[] || a instanceof long[]
-				|| a instanceof float[] || a instanceof double[]) {
-			System.out.println(true);
-		} else {
-			System.out.println(false);
-		}
-	}
-
-	@Test
-	public void testPrimary() {
-		int b = 1;
-		Object a = b;
-		if (a instanceof Object) {
-			System.out.println(true);
-		} else {
-			System.out.println(false);
-		}
-	}
-	
 	private static Map<String, Object> initParamFromRequestParameter(
 			HttpServletRequest request) {
 		Map<String, Object> param = new HashMap<>();
@@ -402,166 +353,4 @@ public class ParamUtils {
 		return map;
 	}
 	
-	public static void buildIntention(Map<String, Object> reqParams, Intention intention) {
-		Map<Integer, Integer> industryCode = new HashMap<>();
-		Map<String, Integer> industryName= new HashMap<>();
-		
-		Map<Integer, Integer> positionCode = new HashMap<>();
-		Map<String, Integer> positionName= new HashMap<>();
-		
-		Map<Integer, Integer> cityCode = new HashMap<>();
-		Map<String, Integer> cityName= new HashMap<>();
-		if (reqParams != null) {
-			for (Entry<String, Object> entry : reqParams.entrySet()) {
-				if(entry.getKey().startsWith("industries[")) {
-					if(entry.getKey().contains("industry_code")) {
-						industryCode.put(Integer.valueOf(entry.getKey().charAt(11)), BeanUtils.converToInteger(entry.getValue()));
-					}
-					if(entry.getKey().contains("industry_name")) {
-						industryName.put((String)entry.getValue(), Integer.valueOf(entry.getKey().charAt(11)));
-					}
-				}
-				
-				if(entry.getKey().startsWith("cities[")) {
-					if(entry.getKey().contains("city_code")) {
-						cityCode.put(Integer.valueOf(entry.getKey().charAt(7)), BeanUtils.converToInteger(entry.getValue()));
-					}
-					if(entry.getKey().contains("city_name")) {
-						cityName.put((String)entry.getValue(), Integer.valueOf(entry.getKey().charAt(7)));
-					}
-				}
-				
-				if(entry.getKey().startsWith("positions[")) {
-					if(entry.getKey().contains("position_code")) {
-						positionCode.put(Integer.valueOf(entry.getKey().charAt(10)), BeanUtils.converToInteger(entry.getValue()));
-					}
-					if(entry.getKey().contains("position_name")) {
-						positionName.put((String)entry.getValue(), Integer.valueOf(entry.getKey().charAt(10)));
-					}
-				}
-			}
-		}
-		if(industryName.size() > 0) {
-			for(Entry<String, Integer> entry : industryName.entrySet()) {
-				if(intention.getIndustries() == null) {
-					intention.setIndustries(new HashMap<String, Integer>());
-				}
-				int code = 0;
-				if(industryCode.size() > 0) {
-					if(industryCode.get(entry.getValue()) != null) {
-						code = industryCode.get(entry.getValue());
-					}
-				}
-				intention.getIndustries().put(entry.getKey(), code);
-			}
-		}
-		if(positionName.size() > 0) {
-			for(Entry<String, Integer> entry : positionName.entrySet()) {
-				if(intention.positions == null) {
-					intention.setPositions(new HashMap<String, Integer>());
-				}
-				int code = 0;
-				if(positionCode.size() > 0) {
-					if(positionCode.get(entry.getValue()) != null) {
-						code = positionCode.get(entry.getValue());
-					}
-				}
-				intention.getPositions().put(entry.getKey(), code);
-			}
-		}
-		if(cityName.size() > 0) {
-			for(Entry<String, Integer> entry : cityName.entrySet()) {
-				if(intention.cities == null) {
-					intention.setCities(new HashMap<String, Integer>());
-				}
-				int code = 0;
-				if(cityCode.get(entry.getValue()) != null) {
-					code = cityCode.get(entry.getValue());
-				}
-				intention.getCities().put(entry.getKey(), code);
-			}
-		}
-	}
-
-	public static void buildIntention(HttpServletRequest request, Intention intention) {
-		Map<Integer, Integer> industryCode = new HashMap<>();
-		Map<String, Integer> industryName= new HashMap<>();
-		
-		Map<Integer, Integer> positionCode = new HashMap<>();
-		Map<String, Integer> positionName= new HashMap<>();
-		
-		Map<Integer, Integer> cityCode = new HashMap<>();
-		Map<String, Integer> cityName= new HashMap<>();
-		Map<String, String[]> reqParams = request.getParameterMap();
-		if (reqParams != null) {
-			for (Entry<String, String[]> entry : reqParams.entrySet()) {
-				if(entry.getKey().startsWith("industries[")) {
-					if(entry.getKey().contains("industry_code")) {
-						industryCode.put(Integer.valueOf(entry.getKey().charAt(11)), Integer.valueOf(entry.getValue()[0]));
-					}
-					if(entry.getKey().contains("industry_name")) {
-						industryName.put(entry.getValue()[0], Integer.valueOf(entry.getKey().charAt(11)));
-					}
-				}
-				
-				if(entry.getKey().startsWith("cities[")) {
-					if(entry.getKey().contains("city_code")) {
-						cityCode.put(Integer.valueOf(entry.getKey().charAt(7)), Integer.valueOf(entry.getValue()[0]));
-					}
-					if(entry.getKey().contains("city_name")) {
-						cityName.put(entry.getValue()[0], Integer.valueOf(entry.getKey().charAt(7)));
-					}
-				}
-				
-				if(entry.getKey().startsWith("positions[")) {
-					if(entry.getKey().contains("position_code")) {
-						positionCode.put(Integer.valueOf(entry.getKey().charAt(10)), Integer.valueOf(entry.getValue()[0]));
-					}
-					if(entry.getKey().contains("position_name")) {
-						positionName.put(entry.getValue()[0], Integer.valueOf(entry.getKey().charAt(10)));
-					}
-				}
-			}
-		}
-		if(industryName.size() > 0) {
-			for(Entry<String, Integer> entry : industryName.entrySet()) {
-				if(intention.getIndustries() == null) {
-					intention.setIndustries(new HashMap<String, Integer>());
-				}
-				int code = 0;
-				if(industryCode.size() > 0) {
-					if(industryCode.get(entry.getValue()) != null) {
-						code = industryCode.get(entry.getValue());
-					}
-				}
-				intention.getIndustries().put(entry.getKey(), code);
-			}
-		}
-		if(positionName.size() > 0) {
-			for(Entry<String, Integer> entry : positionName.entrySet()) {
-				if(intention.positions == null) {
-					intention.setPositions(new HashMap<String, Integer>());
-				}
-				int code = 0;
-				if(positionCode.size() > 0) {
-					if(positionCode.get(entry.getValue()) != null) {
-						code = positionCode.get(entry.getValue());
-					}
-				}
-				intention.getPositions().put(entry.getKey(), code);
-			}
-		}
-		if(cityName.size() > 0) {
-			for(Entry<String, Integer> entry : cityName.entrySet()) {
-				if(intention.cities == null) {
-					intention.setCities(new HashMap<String, Integer>());
-				}
-				int code = 0;
-				if(cityCode.get(entry.getValue()) != null) {
-					code = cityCode.get(entry.getValue());
-				}
-				intention.getCities().put(entry.getKey(), code);
-			}
-		}
-	}
 }
