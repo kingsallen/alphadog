@@ -1,12 +1,5 @@
 package com.moseeker.servicemanager.common;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.moseeker.common.util.BeanUtils;
-import com.moseeker.thrift.gen.profile.struct.Intention;
-import org.springframework.web.servlet.HandlerMapping;
-
-import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -18,6 +11,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.web.servlet.HandlerMapping;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.moseeker.common.util.BeanUtils;
 
 public class ParamUtils {
 	
@@ -237,7 +238,7 @@ public class ParamUtils {
 			t = clazz.newInstance();
 			if (data != null && data.size() > 0) {
 				// thrift 都是自动生成的public类型, 故使用getFields,如果不是public的时候, 请不要使用此方法
-				Field[] fields = clazz.getFields();
+				Field[] fields = clazz.getDeclaredFields();
 				Map<String, Integer> fieldMap = new HashMap<String, Integer>();
 				for (int f = 0; f < fields.length; f++) {
 					// 过滤掉转换不需要的字段 metaDataMap
