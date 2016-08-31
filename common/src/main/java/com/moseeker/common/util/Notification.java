@@ -27,7 +27,7 @@ public class Notification {
     public static void sendMyCatConnectionError(String errorMessage) {
         ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
         String subject = propertiesReader.get("mycat.error.subject", String.class);
-        String content = propertiesReader.get("mycat.error.content", String.class);
+        String content ="数据库连接失败! .   host:" + getHostName() +", 详情:" + propertiesReader.get("mycat.error.content", String.class);
         List<String> recipients = Arrays.asList(propertiesReader.get("mycat.error.recipients", String.class).split(","));
         try {
             Email mycatConnectionErrorEmail = new Email.EmailBuilder(recipients)
