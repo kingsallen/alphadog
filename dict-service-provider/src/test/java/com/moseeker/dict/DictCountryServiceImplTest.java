@@ -17,7 +17,7 @@ public class DictCountryServiceImplTest {
 
         String iface = DictCountryService.Iface.class.getName();
         ClientConfig<DictCountryService.Iface> clientConfig = new ClientConfig<DictCountryService.Iface>();
-        clientConfig.setService("com.moseeker.thrift.gen.dict.service.DictCountryService");
+        clientConfig.setService("/com.moseeker.thrift.gen.dict.service.DictCountryService");
         clientConfig.setIface(iface);
 
         DictCountryService.Iface dictCountryService = null;

@@ -7,12 +7,10 @@ import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.db.hrdb.tables.records.HrCompanyAccountRecord;
+import com.moseeker.db.jobdb.tables.records.JobCustomRecord;
+import com.moseeker.db.jobdb.tables.records.JobPositionExtRecord;
 import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
-import com.moseeker.db.userdb.tables.records.UserUserRecord;
-import com.moseeker.position.dao.DictConstantDao;
-import com.moseeker.position.dao.JobPositionDao;
-import com.moseeker.position.dao.PositionDao;
-import com.moseeker.position.dao.UserDao;
+import com.moseeker.position.dao.*;
 import com.moseeker.position.pojo.DictConstantPojo;
 import com.moseeker.position.pojo.JobPositionPojo;
 import com.moseeker.position.pojo.RecommendedPositonPojo;
@@ -43,6 +41,12 @@ public class PositionServicesImpl extends JOOQBaseServiceImpl<Position, JobPosit
 
 	@Autowired
 	private DictConstantDao dictConstantDao;
+
+	@Autowired
+	private JobCustomDao jobCustomDao;
+
+	@Autowired
+	private JobPositonExtDao jobPositonExtDao;
 
     @Override
     protected void initDao() {
@@ -136,7 +140,7 @@ public class PositionServicesImpl extends JOOQBaseServiceImpl<Position, JobPosit
 
 			/** 常量转换 **/
 			// 性别
-			if(jobPositionPojo.gender > 0){
+			if(jobPositionPojo.gender < 2){
 				jobPositionPojo.gender_name = getDictConstantJson(2102, jobPositionPojo.gender);
 			}
 
@@ -146,8 +150,18 @@ public class PositionServicesImpl extends JOOQBaseServiceImpl<Position, JobPosit
 			}
 
 			// 工作性质
-			if(jobPositionPojo.employment_type > 0){
-				jobPositionPojo.employment_type_name = getDictConstantJson(2103, jobPositionPojo.degree);
+			jobPositionPojo.employment_type_name = getDictConstantJson(2103, jobPositionPojo.employment_type);
+
+			// 招聘类型
+			jobPositionPojo.candidate_source_name = getDictConstantJson(2104, jobPositionPojo.candidate_source);
+
+			// 自定义字段
+			JobPositionExtRecord jobPositionExtRecord = getJobPositionExtRecord(positionId);
+			if(jobPositionExtRecord != null && jobPositionExtRecord.getJobCustomId() > 0){
+				JobCustomRecord jobCustomRecord = jobCustomDao.getJobCustomRecord(jobPositionExtRecord.getJobCustomId());
+				if(jobCustomRecord != null && !"".equals(jobCustomRecord.getName())){
+					jobPositionPojo.custom = jobCustomRecord.getName();
+				}
 			}
 
 			return ResponseUtils.success(jobPositionPojo);
@@ -167,5 +181,9 @@ public class PositionServicesImpl extends JOOQBaseServiceImpl<Position, JobPosit
 	private String getDictConstantJson(Integer parentCode, Integer code) throws Exception{
 		DictConstantPojo dictConstantPojo = dictConstantDao.getDictConstantJson(parentCode, code);
 		return dictConstantPojo != null ? dictConstantPojo.getName() : "";
+	}
+
+	private JobPositionExtRecord getJobPositionExtRecord(int positionId){
+		return jobPositonExtDao.getJobPositonExtRecordByPositionId(positionId);
 	}
 }

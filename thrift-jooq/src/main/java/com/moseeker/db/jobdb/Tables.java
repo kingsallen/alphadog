@@ -7,8 +7,10 @@ package com.moseeker.db.jobdb;
 import com.moseeker.db.jobdb.tables.JobApplication;
 import com.moseeker.db.jobdb.tables.JobApplicationConf;
 import com.moseeker.db.jobdb.tables.JobApplicationStatusBeisen;
+import com.moseeker.db.jobdb.tables.JobCustom;
 import com.moseeker.db.jobdb.tables.JobPosition;
 import com.moseeker.db.jobdb.tables.JobPositionCity;
+import com.moseeker.db.jobdb.tables.JobPositionExt;
 import com.moseeker.db.jobdb.tables.JobPositionShareTplConf;
 import com.moseeker.db.jobdb.tables.JobPositionTopic;
 import com.moseeker.db.jobdb.tables.JobResumeOther;
@@ -45,6 +47,11 @@ public class Tables {
 	public static final JobApplicationStatusBeisen JOB_APPLICATION_STATUS_BEISEN = com.moseeker.db.jobdb.tables.JobApplicationStatusBeisen.JOB_APPLICATION_STATUS_BEISEN;
 
 	/**
+	 * 职位自定义字段配置表
+	 */
+	public static final JobCustom JOB_CUSTOM = com.moseeker.db.jobdb.tables.JobCustom.JOB_CUSTOM;
+
+	/**
 	 * The table jobdb.job_position
 	 */
 	public static final JobPosition JOB_POSITION = com.moseeker.db.jobdb.tables.JobPosition.JOB_POSITION;
@@ -53,6 +60,11 @@ public class Tables {
 	 * The table jobdb.job_position_city
 	 */
 	public static final JobPositionCity JOB_POSITION_CITY = com.moseeker.db.jobdb.tables.JobPositionCity.JOB_POSITION_CITY;
+
+	/**
+	 * 职位信息扩展表
+	 */
+	public static final JobPositionExt JOB_POSITION_EXT = com.moseeker.db.jobdb.tables.JobPositionExt.JOB_POSITION_EXT;
 
 	/**
 	 * 职位分享描述配置模板

@@ -7,12 +7,16 @@ package com.moseeker.db.jobdb;
 import com.moseeker.db.jobdb.tables.JobApplication;
 import com.moseeker.db.jobdb.tables.JobApplicationConf;
 import com.moseeker.db.jobdb.tables.JobApplicationStatusBeisen;
+import com.moseeker.db.jobdb.tables.JobCustom;
 import com.moseeker.db.jobdb.tables.JobPosition;
+import com.moseeker.db.jobdb.tables.JobPositionExt;
 import com.moseeker.db.jobdb.tables.JobPositionShareTplConf;
 import com.moseeker.db.jobdb.tables.JobResumeOther;
 import com.moseeker.db.jobdb.tables.records.JobApplicationConfRecord;
 import com.moseeker.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.db.jobdb.tables.records.JobApplicationStatusBeisenRecord;
+import com.moseeker.db.jobdb.tables.records.JobCustomRecord;
+import com.moseeker.db.jobdb.tables.records.JobPositionExtRecord;
 import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.db.jobdb.tables.records.JobPositionShareTplConfRecord;
 import com.moseeker.db.jobdb.tables.records.JobResumeOtherRecord;
@@ -46,6 +50,7 @@ public class Keys {
 	public static final Identity<JobApplicationRecord, UInteger> IDENTITY_JOB_APPLICATION = Identities0.IDENTITY_JOB_APPLICATION;
 	public static final Identity<JobApplicationConfRecord, Integer> IDENTITY_JOB_APPLICATION_CONF = Identities0.IDENTITY_JOB_APPLICATION_CONF;
 	public static final Identity<JobApplicationStatusBeisenRecord, Integer> IDENTITY_JOB_APPLICATION_STATUS_BEISEN = Identities0.IDENTITY_JOB_APPLICATION_STATUS_BEISEN;
+	public static final Identity<JobCustomRecord, Integer> IDENTITY_JOB_CUSTOM = Identities0.IDENTITY_JOB_CUSTOM;
 	public static final Identity<JobPositionRecord, Integer> IDENTITY_JOB_POSITION = Identities0.IDENTITY_JOB_POSITION;
 	public static final Identity<JobPositionShareTplConfRecord, Integer> IDENTITY_JOB_POSITION_SHARE_TPL_CONF = Identities0.IDENTITY_JOB_POSITION_SHARE_TPL_CONF;
 
@@ -56,7 +61,9 @@ public class Keys {
 	public static final UniqueKey<JobApplicationRecord> KEY_JOB_APPLICATION_PRIMARY = UniqueKeys0.KEY_JOB_APPLICATION_PRIMARY;
 	public static final UniqueKey<JobApplicationConfRecord> KEY_JOB_APPLICATION_CONF_PRIMARY = UniqueKeys0.KEY_JOB_APPLICATION_CONF_PRIMARY;
 	public static final UniqueKey<JobApplicationStatusBeisenRecord> KEY_JOB_APPLICATION_STATUS_BEISEN_PRIMARY = UniqueKeys0.KEY_JOB_APPLICATION_STATUS_BEISEN_PRIMARY;
+	public static final UniqueKey<JobCustomRecord> KEY_JOB_CUSTOM_PRIMARY = UniqueKeys0.KEY_JOB_CUSTOM_PRIMARY;
 	public static final UniqueKey<JobPositionRecord> KEY_JOB_POSITION_PRIMARY = UniqueKeys0.KEY_JOB_POSITION_PRIMARY;
+	public static final UniqueKey<JobPositionExtRecord> KEY_JOB_POSITION_EXT_PRIMARY = UniqueKeys0.KEY_JOB_POSITION_EXT_PRIMARY;
 	public static final UniqueKey<JobPositionShareTplConfRecord> KEY_JOB_POSITION_SHARE_TPL_CONF_PRIMARY = UniqueKeys0.KEY_JOB_POSITION_SHARE_TPL_CONF_PRIMARY;
 	public static final UniqueKey<JobResumeOtherRecord> KEY_JOB_RESUME_OTHER_PRIMARY = UniqueKeys0.KEY_JOB_RESUME_OTHER_PRIMARY;
 
@@ -73,6 +80,7 @@ public class Keys {
 		public static Identity<JobApplicationRecord, UInteger> IDENTITY_JOB_APPLICATION = createIdentity(JobApplication.JOB_APPLICATION, JobApplication.JOB_APPLICATION.ID);
 		public static Identity<JobApplicationConfRecord, Integer> IDENTITY_JOB_APPLICATION_CONF = createIdentity(JobApplicationConf.JOB_APPLICATION_CONF, JobApplicationConf.JOB_APPLICATION_CONF.ID);
 		public static Identity<JobApplicationStatusBeisenRecord, Integer> IDENTITY_JOB_APPLICATION_STATUS_BEISEN = createIdentity(JobApplicationStatusBeisen.JOB_APPLICATION_STATUS_BEISEN, JobApplicationStatusBeisen.JOB_APPLICATION_STATUS_BEISEN.ID);
+		public static Identity<JobCustomRecord, Integer> IDENTITY_JOB_CUSTOM = createIdentity(JobCustom.JOB_CUSTOM, JobCustom.JOB_CUSTOM.ID);
 		public static Identity<JobPositionRecord, Integer> IDENTITY_JOB_POSITION = createIdentity(JobPosition.JOB_POSITION, JobPosition.JOB_POSITION.ID);
 		public static Identity<JobPositionShareTplConfRecord, Integer> IDENTITY_JOB_POSITION_SHARE_TPL_CONF = createIdentity(JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF, JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF.ID);
 	}
@@ -81,7 +89,9 @@ public class Keys {
 		public static final UniqueKey<JobApplicationRecord> KEY_JOB_APPLICATION_PRIMARY = createUniqueKey(JobApplication.JOB_APPLICATION, JobApplication.JOB_APPLICATION.ID);
 		public static final UniqueKey<JobApplicationConfRecord> KEY_JOB_APPLICATION_CONF_PRIMARY = createUniqueKey(JobApplicationConf.JOB_APPLICATION_CONF, JobApplicationConf.JOB_APPLICATION_CONF.ID);
 		public static final UniqueKey<JobApplicationStatusBeisenRecord> KEY_JOB_APPLICATION_STATUS_BEISEN_PRIMARY = createUniqueKey(JobApplicationStatusBeisen.JOB_APPLICATION_STATUS_BEISEN, JobApplicationStatusBeisen.JOB_APPLICATION_STATUS_BEISEN.ID);
+		public static final UniqueKey<JobCustomRecord> KEY_JOB_CUSTOM_PRIMARY = createUniqueKey(JobCustom.JOB_CUSTOM, JobCustom.JOB_CUSTOM.ID);
 		public static final UniqueKey<JobPositionRecord> KEY_JOB_POSITION_PRIMARY = createUniqueKey(JobPosition.JOB_POSITION, JobPosition.JOB_POSITION.ID);
+		public static final UniqueKey<JobPositionExtRecord> KEY_JOB_POSITION_EXT_PRIMARY = createUniqueKey(JobPositionExt.JOB_POSITION_EXT, JobPositionExt.JOB_POSITION_EXT.PID);
 		public static final UniqueKey<JobPositionShareTplConfRecord> KEY_JOB_POSITION_SHARE_TPL_CONF_PRIMARY = createUniqueKey(JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF, JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF.ID);
 		public static final UniqueKey<JobResumeOtherRecord> KEY_JOB_RESUME_OTHER_PRIMARY = createUniqueKey(JobResumeOther.JOB_RESUME_OTHER, JobResumeOther.JOB_RESUME_OTHER.APP_ID);
 	}

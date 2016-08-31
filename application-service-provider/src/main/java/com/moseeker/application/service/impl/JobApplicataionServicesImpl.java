@@ -1,10 +1,7 @@
 package com.moseeker.application.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.application.dao.HrCompanyConfDao;
-import com.moseeker.application.dao.JobApplicationDao;
-import com.moseeker.application.dao.JobPositionDao;
-import com.moseeker.application.dao.JobResumeOtherDao;
+import com.moseeker.application.dao.*;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
@@ -16,6 +13,7 @@ import com.moseeker.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.db.jobdb.tables.records.JobResumeOtherRecord;
+import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices.Iface;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.application.struct.JobResumeOther;
@@ -64,6 +62,12 @@ public class JobApplicataionServicesImpl implements Iface {
 
     @Autowired
     private HrCompanyConfDao hrCompanyConfDao;
+
+    @Autowired
+    private HrOperationRecordDao hrOperationRecordDao;
+
+    @Autowired
+    private UserUserDao userUserDao;
     
     /**
      * 创建申请
@@ -83,7 +87,11 @@ public class JobApplicataionServicesImpl implements Iface {
             // 获取该申请的职位
             JobPositionRecord jobPositionRecord = jobPositionDao.getPositionById((int)jobApplication.position_id);
 
-            // TODO 职位校验 1.是否存在 2.是否过期
+            // 职位有效性验证
+            Response responseJob = validateJobPosition(jobPositionRecord);
+            if (responseJob.status > 0){
+                return responseJob;
+            }
 
             // 初始化参数
             initJobApplication(jobApplication, jobPositionRecord);
@@ -96,7 +104,7 @@ public class JobApplicataionServicesImpl implements Iface {
                 jobApplicationRecord.setWechatId(UInteger.valueOf(0));
             }
 
-            int jobApplicationId = jobApplicationDao.saveApplication(jobApplicationRecord);
+            int jobApplicationId = jobApplicationDao.saveApplication(jobApplicationRecord, jobPositionRecord);
             if (jobApplicationId > 0) {
 
                 // proxy 0: 正常投递, 1: 代理投递, null:默认为0
@@ -374,21 +382,23 @@ public class JobApplicataionServicesImpl implements Iface {
         Response response = validateGetApplicationByUserIdAndPositionId(jobApplication.applier_id,
                 jobApplication.position_id, jobApplication.company_id);
 
-        // 一个用户在一家公司的每月的申请次数校验
         if(response.status == Constant.OK){
+
+            // 一个用户在一家公司的每月的申请次数校验
             boolean checkApplicationCount = this.checkApplicationCountAtCompany(jobApplication.applier_id,
                     jobApplication.company_id);
             if(checkApplicationCount){
                 return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_VALIDATE_COUNT_CHECK);
             }
-        }
 
-        // 判断是否申请过该职位
-        if(response.status == Constant.OK){
+            // 判断是否申请过该职位
             boolean isApplied = this.isAppliedPosition(jobApplication.applier_id, jobApplication.position_id);
             if(isApplied){
                 return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_POSITION_DUPLICATE);
             }
+
+            // 申请人的有效性验证
+            response = validateUserApplicationInfo(jobApplication.applier_id);
         }
 
         return response;
@@ -505,5 +515,58 @@ public class JobApplicataionServicesImpl implements Iface {
             applicaitonCountLimit = hrCompanyConfRecord.getApplicationCountLimit().shortValue();
         }
         return applicaitonCountLimit;
+    }
+
+    /**
+     * 校验职位的有效性
+     *
+     * @param JobPositonrecord 职位记录
+     * @return
+     */
+    private Response validateJobPosition(JobPositionRecord JobPositonrecord){
+
+        Response response = new Response(0, "ok");
+
+        // 职位是否存在
+        if(JobPositonrecord == null){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_POSITION_NOT_EXIST);
+        }
+
+        // 职位是否下线, 0:有效的职位
+        if(JobPositonrecord.getStatus() > 0){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_POSITION_STATUS_STOP);
+        }
+        return response;
+    }
+
+    /**
+     * 校验申请用户信息
+     *
+     * @param userId 用户ID
+     * @return
+     */
+    private Response validateUserApplicationInfo(long userId) throws Exception{
+
+        Response response = new Response(0, "ok");
+
+        UserUserRecord userUserRecord = userUserDao.getUserUserRecord(userId);
+        // 申请人是否存在
+        if(userUserRecord == null){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_USER_INVALID);
+        }
+        // TODO 用户信息 申请必填逻辑, 联调的时候, 将下面的注释打开
+//        // 用户姓名必填项校验
+//        if(userUserRecord.getName() == null || "".equals(userUserRecord.getName())){
+//            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "姓名"));
+//        }
+//        // 用户邮箱必填项校验
+//        if(userUserRecord.getEmail() == null || "".equals(userUserRecord.getEmail())){
+//            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "邮箱"));
+//        }
+//        // 用户手机号必填项校验
+//        if(userUserRecord.getMobile() == null || userUserRecord.getMobile() == 0){
+//            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "手机号"));
+//        }
+        return response;
     }
 }

@@ -1,6 +1,8 @@
 package com.moseeker.servicemanager.web.controller.profile;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.moseeker.common.util.BeanUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -51,7 +54,7 @@ public class IntentionController {
 		try {
 			Map<String, Object> data = ParamUtils.mergeRequestParameters(request);
 			Intention intention = ParamUtils.initModelForm(data, Intention.class);
-			ParamUtils.buildIntention(data, intention);
+			buildIntention(data, intention);
 			Response result = intentionService.postResource(intention);
 
 			return ResponseLogNotification.success(request, result);
@@ -67,7 +70,7 @@ public class IntentionController {
 		try {
 			Map<String, Object> data = ParamUtils.mergeRequestParameters(request);
 			Intention intention = ParamUtils.initModelForm(data, Intention.class);
-			ParamUtils.buildIntention(data, intention);
+			buildIntention(data, intention);
 
 			Response result = intentionService.putResource(intention);
 
@@ -83,7 +86,7 @@ public class IntentionController {
 		try {
 			Map<String, Object> data = ParamUtils.mergeRequestParameters(request);
 			Intention intention = ParamUtils.initModelForm(data, Intention.class);
-			ParamUtils.buildIntention(data, intention);
+			buildIntention(data, intention);
 			Response result = intentionService.delResource(intention);
 
 			return ResponseLogNotification.success(request, result);
@@ -91,4 +94,86 @@ public class IntentionController {
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}
+	
+	private void buildIntention(Map<String, Object> reqParams, Intention intention) {
+		Map<Integer, Integer> industryCode = new HashMap<>();
+		Map<String, Integer> industryName= new HashMap<>();
+		
+		Map<Integer, Integer> positionCode = new HashMap<>();
+		Map<String, Integer> positionName= new HashMap<>();
+		
+		Map<Integer, Integer> cityCode = new HashMap<>();
+		Map<String, Integer> cityName= new HashMap<>();
+		if (reqParams != null) {
+			for (Entry<String, Object> entry : reqParams.entrySet()) {
+				if(entry.getKey().startsWith("industries[")) {
+					if(entry.getKey().contains("industry_code")) {
+						industryCode.put(Integer.valueOf(entry.getKey().charAt(11)), BeanUtils.converToInteger(entry.getValue()));
+					}
+					if(entry.getKey().contains("industry_name")) {
+						industryName.put((String)entry.getValue(), Integer.valueOf(entry.getKey().charAt(11)));
+					}
+				}
+				
+				if(entry.getKey().startsWith("cities[")) {
+					if(entry.getKey().contains("city_code")) {
+						cityCode.put(Integer.valueOf(entry.getKey().charAt(7)), BeanUtils.converToInteger(entry.getValue()));
+					}
+					if(entry.getKey().contains("city_name")) {
+						cityName.put((String)entry.getValue(), Integer.valueOf(entry.getKey().charAt(7)));
+					}
+				}
+				
+				if(entry.getKey().startsWith("positions[")) {
+					if(entry.getKey().contains("position_code")) {
+						positionCode.put(Integer.valueOf(entry.getKey().charAt(10)), BeanUtils.converToInteger(entry.getValue()));
+					}
+					if(entry.getKey().contains("position_name")) {
+						positionName.put((String)entry.getValue(), Integer.valueOf(entry.getKey().charAt(10)));
+					}
+				}
+			}
+		}
+		if(industryName.size() > 0) {
+			for(Entry<String, Integer> entry : industryName.entrySet()) {
+				if(intention.getIndustries() == null) {
+					intention.setIndustries(new HashMap<String, Integer>());
+				}
+				int code = 0;
+				if(industryCode.size() > 0) {
+					if(industryCode.get(entry.getValue()) != null) {
+						code = industryCode.get(entry.getValue());
+					}
+				}
+				intention.getIndustries().put(entry.getKey(), code);
+			}
+		}
+		if(positionName.size() > 0) {
+			for(Entry<String, Integer> entry : positionName.entrySet()) {
+				if(intention.positions == null) {
+					intention.setPositions(new HashMap<String, Integer>());
+				}
+				int code = 0;
+				if(positionCode.size() > 0) {
+					if(positionCode.get(entry.getValue()) != null) {
+						code = positionCode.get(entry.getValue());
+					}
+				}
+				intention.getPositions().put(entry.getKey(), code);
+			}
+		}
+		if(cityName.size() > 0) {
+			for(Entry<String, Integer> entry : cityName.entrySet()) {
+				if(intention.cities == null) {
+					intention.setCities(new HashMap<String, Integer>());
+				}
+				int code = 0;
+				if(cityCode.get(entry.getValue()) != null) {
+					code = cityCode.get(entry.getValue());
+				}
+				intention.getCities().put(entry.getKey(), code);
+			}
+		}
+	}
+
 }

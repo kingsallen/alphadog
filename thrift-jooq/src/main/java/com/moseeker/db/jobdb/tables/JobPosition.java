@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPosition extends TableImpl<JobPositionRecord> {
 
-	private static final long serialVersionUID = 712440378;
+	private static final long serialVersionUID = 906480314;
 
 	/**
 	 * The reference instance of <code>jobdb.job_position</code>
@@ -177,9 +177,9 @@ public class JobPosition extends TableImpl<JobPositionRecord> {
 	public final TableField<JobPositionRecord, String> BENEFITS = createField("benefits", org.jooq.impl.SQLDataType.VARCHAR.length(999).nullable(false).defaulted(true), this, "职位福利");
 
 	/**
-	 * The column <code>jobdb.job_position.degree</code>. 0:无 1:大专 2:本科 3:硕士 4:MBA 5:博士
+	 * The column <code>jobdb.job_position.degree</code>. 0:无 1:大专 2:本科 3:硕士 4:MBA 5:博士 6:中专 7:高中 8: 博士后 9:初中
 	 */
-	public final TableField<JobPositionRecord, Byte> DEGREE = createField("degree", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "0:无 1:大专 2:本科 3:硕士 4:MBA 5:博士");
+	public final TableField<JobPositionRecord, Byte> DEGREE = createField("degree", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "0:无 1:大专 2:本科 3:硕士 4:MBA 5:博士 6:中专 7:高中 8: 博士后 9:初中");
 
 	/**
 	 * The column <code>jobdb.job_position.feature</code>. 职位特色
