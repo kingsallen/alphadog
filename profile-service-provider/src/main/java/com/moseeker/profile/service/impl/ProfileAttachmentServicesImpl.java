@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -34,7 +35,15 @@ public class ProfileAttachmentServicesImpl extends JOOQBaseServiceImpl<Attachmen
 	@Override
 	public Response postResources(List<Attachment> structs) throws TException {
 		Response response = super.postResources(structs);
-		updateUpdateTime(structs, response);
+		if(response != null && response.getStatus() == 0) {
+			Set<Integer> profileIds = new HashSet<>();
+			for(Attachment attachement : structs) {
+				if(attachement.getProfile_id() > 0) {
+					profileIds.add(attachement.getProfile_id());
+				}
+			}
+			profileDao.updateUpdateTime(profileIds);
+		}
 		return response;
 	}
 
@@ -55,7 +64,11 @@ public class ProfileAttachmentServicesImpl extends JOOQBaseServiceImpl<Attachmen
 	@Override
 	public Response postResource(Attachment struct) throws TException {
 		Response response = super.postResource(struct);
-		updateUpdateTime(struct, response);
+		if(response != null && response.getStatus() == 0) {
+			Set<Integer> profileIds = new HashSet<>();
+			profileIds.add(struct.getProfile_id());
+			profileDao.updateUpdateTime(profileIds);
+		}
 		return response;
 	}
 

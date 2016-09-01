@@ -38,11 +38,13 @@ public class AwardsDaoImpl extends
 
 	@Override
 	public int updateProfileUpdateTime(HashSet<Integer> awardIds) {
+		logger.error("-----award updateProfileUpdateTime-------");
 		int status = 0;
 		try (Connection conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn)) {
 
 			Timestamp updateTime = new Timestamp(System.currentTimeMillis());
+			logger.error("-----award updateTime:"+updateTime+"-------");
 			status = create.update(ProfileProfile.PROFILE_PROFILE)
 					.set(ProfileProfile.PROFILE_PROFILE.UPDATE_TIME, updateTime)
 					.where(ProfileProfile.PROFILE_PROFILE.ID

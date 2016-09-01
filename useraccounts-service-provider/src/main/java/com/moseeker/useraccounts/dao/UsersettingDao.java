@@ -9,4 +9,6 @@ public interface UsersettingDao extends BaseDao<UserSettingsRecord> {
 
 	int updateProfileUpdateTime(List<Integer> idArray);
 
+	int updateProfileUpdateTimeByUserId(List<Integer> idArray);
+
 }

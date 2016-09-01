@@ -17,6 +17,7 @@ import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.db.profiledb.tables.records.ProfileCredentialsRecord;
 import com.moseeker.profile.dao.CredentialsDao;
+import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.CredentialsServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.Credentials;
@@ -29,6 +30,9 @@ public class ProfileCredentialsServicesImpl extends JOOQBaseServiceImpl<Credenti
 
 	@Autowired
 	private CredentialsDao dao;
+	
+	@Autowired
+	private ProfileDao profileDao;
 
 	@Autowired
 	private ProfileCompletenessImpl completenessImpl;
@@ -43,7 +47,8 @@ public class ProfileCredentialsServicesImpl extends JOOQBaseServiceImpl<Credenti
 				if (struct.getProfile_id() > 0)
 					profileIds.add(struct.getProfile_id());
 			});
-			updateUpdateTime(structs);
+			profileDao.updateUpdateTime(profileIds);
+			
 			profileIds.forEach(profileId -> {
 				completenessImpl.recalculateProfileCredential(profileId, 0);
 			});
@@ -110,7 +115,10 @@ public class ProfileCredentialsServicesImpl extends JOOQBaseServiceImpl<Credenti
 		Response response = super.postResource(struct);
 		/* 计算profile完整度 */
 		if (response.getStatus() == 0 && struct != null) {
-			updateUpdateTime(struct);
+			Set<Integer> profileIds = new HashSet<>();
+			profileIds.add(struct.getProfile_id());
+			profileDao.updateUpdateTime(profileIds);
+			
 			completenessImpl.recalculateProfileCredential(struct.getProfile_id(), struct.getId());
 		}
 		return response;
@@ -161,6 +169,14 @@ public class ProfileCredentialsServicesImpl extends JOOQBaseServiceImpl<Credenti
 
 	public void setCompletenessImpl(ProfileCompletenessImpl completenessImpl) {
 		this.completenessImpl = completenessImpl;
+	}
+
+	public ProfileDao getProfileDao() {
+		return profileDao;
+	}
+
+	public void setProfileDao(ProfileDao profileDao) {
+		this.profileDao = profileDao;
 	}
 
 	@Override

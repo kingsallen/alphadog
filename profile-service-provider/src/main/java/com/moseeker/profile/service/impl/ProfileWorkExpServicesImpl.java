@@ -31,6 +31,7 @@ import com.moseeker.profile.dao.CityDao;
 import com.moseeker.profile.dao.CompanyDao;
 import com.moseeker.profile.dao.IndustryDao;
 import com.moseeker.profile.dao.PositionDao;
+import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.profile.dao.WorkExpDao;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -56,6 +57,9 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 	
 	@Autowired
 	private CompanyDao companyDao;
+	
+	@Autowired
+	private ProfileDao profileDao;
 	
 	@Autowired
 	private ProfileCompletenessImpl completenessImpl;
@@ -230,7 +234,9 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 			i = dao.postResource(record);
 			
 			if ( i > 0 ){
-				updateUpdateTime(struct);
+				Set<Integer> profileIds = new HashSet<>();
+				profileIds.add(struct.getProfile_id());
+				profileDao.updateUpdateTime(profileIds);
 				/* 计算用户基本信息的简历完整度 */
 				completenessImpl.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
 				return ResponseUtils.success(String.valueOf(i));
@@ -317,11 +323,13 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 	public Response postResources(List<WorkExp> structs) throws TException {
 		Response response = super.postResources(structs);
 		if(structs != null && structs.size() > 0 && response.getStatus() == 0) {
+			Set<Integer> profileIds = new HashSet<>();
 			for(WorkExp struct : structs) {
-				updateUpdateTime(structs);
+				profileIds.add(struct.getProfile_id());
 				/* 计算用户基本信息的简历完整度 */
 				completenessImpl.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
 			}
+			profileDao.updateUpdateTime(profileIds);
 		}
 		return response;
 	}
@@ -423,6 +431,14 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 
 	public void setCityDao(CityDao cityDao) {
 		this.cityDao = cityDao;
+	}
+
+	public ProfileDao getProfileDao() {
+		return profileDao;
+	}
+
+	public void setProfileDao(ProfileDao profileDao) {
+		this.profileDao = profileDao;
 	}
 
 	public ProfileCompletenessImpl getCompletenessImpl() {

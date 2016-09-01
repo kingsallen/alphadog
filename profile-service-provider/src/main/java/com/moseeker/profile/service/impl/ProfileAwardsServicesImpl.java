@@ -17,6 +17,7 @@ import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.db.profiledb.tables.records.ProfileAwardsRecord;
 import com.moseeker.profile.dao.AwardsDao;
+import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.AwardsServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.Awards;
@@ -28,6 +29,9 @@ public class ProfileAwardsServicesImpl extends JOOQBaseServiceImpl<Awards, Profi
 
 	@Autowired
 	private AwardsDao dao;
+	
+	@Autowired
+	private ProfileDao profileDao;
 
 	@Autowired
 	private ProfileCompletenessImpl completenessImpl;
@@ -41,7 +45,7 @@ public class ProfileAwardsServicesImpl extends JOOQBaseServiceImpl<Awards, Profi
 			structs.forEach(struct -> {
 				profileIds.add(struct.getProfile_id());
 			});
-			updateUpdateTime(structs);
+			profileDao.updateUpdateTime(profileIds);
 			profileIds.forEach(profileId -> {
 				completenessImpl.reCalculateProfileAward(profileId, 0);
 			});
@@ -102,7 +106,11 @@ public class ProfileAwardsServicesImpl extends JOOQBaseServiceImpl<Awards, Profi
 		Response response = super.postResource(struct);
 		/* 计算profile完成度 */
 		if (response.getStatus() == 0 && struct != null) {
-			updateUpdateTime(struct);
+			
+			Set<Integer> profileIds = new HashSet<>();
+			profileIds.add(struct.getProfile_id());
+			profileDao.updateUpdateTime(profileIds);
+			
 			completenessImpl.reCalculateProfileAward(struct.getProfile_id(), struct.getId());
 		}
 		return response;
@@ -159,6 +167,14 @@ public class ProfileAwardsServicesImpl extends JOOQBaseServiceImpl<Awards, Profi
 		this.completenessImpl = completenessImpl;
 	}
 
+	public ProfileDao getProfileDao() {
+		return profileDao;
+	}
+
+	public void setProfileDao(ProfileDao profileDao) {
+		this.profileDao = profileDao;
+	}
+
 	@Override
 	protected Awards DBToStruct(ProfileAwardsRecord r) {
 		return (Awards) BeanUtils.DBToStruct(Awards.class, r);
@@ -173,6 +189,8 @@ public class ProfileAwardsServicesImpl extends JOOQBaseServiceImpl<Awards, Profi
 		HashSet<Integer> awardIds = new HashSet<>();
 		awards.forEach(award -> {
 			awardIds.add(award.getId());
+			logger.error("--------");
+			logger.error("-----award.getId():"+award.getId()+"-------");
 		});
 		dao.updateProfileUpdateTime(awardIds);
 	}

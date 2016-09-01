@@ -26,6 +26,7 @@ import com.moseeker.db.profiledb.tables.records.ProfileEducationRecord;
 import com.moseeker.profile.dao.CollegeDao;
 import com.moseeker.profile.dao.EducationDao;
 import com.moseeker.profile.dao.MajorDao;
+import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.EducationServices.Iface;
@@ -45,6 +46,9 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 
 	@Autowired
 	private MajorDao majorDao;
+	
+	@Autowired
+	private ProfileDao profileDao;
 
 	@Autowired
 	private ProfileCompletenessImpl completenessImpl;
@@ -71,6 +75,14 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 
 	public void setMajorDao(MajorDao majorDao) {
 		this.majorDao = majorDao;
+	}
+
+	public ProfileDao getProfileDao() {
+		return profileDao;
+	}
+
+	public void setProfileDao(ProfileDao profileDao) {
+		this.profileDao = profileDao;
 	}
 
 	public ProfileCompletenessImpl getCompletenessImpl() {
@@ -190,7 +202,9 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 			int id = dao.postResource(record);
 			if (id > 0) {
 				
-				updateUpdateTime(education);
+				Set<Integer> profileIds = new HashSet<>();
+				profileIds.add(education.getProfile_id());
+				profileDao.updateUpdateTime(profileIds);
 				
 				/* 计算profile完整度 */
 				completenessImpl.reCalculateProfileEducation(education.getProfile_id(), 0);
@@ -244,7 +258,9 @@ public class ProfileEducationServicesImpl extends JOOQBaseServiceImpl<Education,
 						profileIds.add(struct.getProfile_id());
 					}
 				});
-				updateUpdateTime(structs);
+				
+				profileDao.updateUpdateTime(profileIds);
+				
 				profileIds.forEach(profileId -> {
 					/* 计算profile完整度 */
 					completenessImpl.reCalculateProfileEducation(profileId, 0);

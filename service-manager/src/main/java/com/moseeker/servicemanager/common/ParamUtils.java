@@ -231,7 +231,7 @@ public class ParamUtils {
      */
 	public static <T> T initModelForm(Map<String, Object> data, Class<T> clazz) throws Exception {
 		T t = null;
-		if(data != null && data.size() > 0) {
+		if(data != null) {
 			if (data.get("appid") == null){
 				throw new Exception("请传参数appid!");
 			}

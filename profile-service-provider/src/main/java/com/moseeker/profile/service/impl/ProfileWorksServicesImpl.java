@@ -16,6 +16,7 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.db.profiledb.tables.records.ProfileWorksRecord;
+import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.profile.dao.WorksDao;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.WorksServices.Iface;
@@ -29,6 +30,9 @@ public class ProfileWorksServicesImpl extends JOOQBaseServiceImpl<Works, Profile
 
 	@Autowired
 	private WorksDao dao;
+	
+	@Autowired
+	private ProfileDao profileDao;
 	
 	@Autowired
 	private ProfileCompletenessImpl completenessImpl;
@@ -48,6 +52,7 @@ public class ProfileWorksServicesImpl extends JOOQBaseServiceImpl<Works, Profile
 			profileIds.forEach(profileId -> {
 				completenessImpl.reCalculateProfileWorks(profileId, 0);
 			});
+			profileDao.updateUpdateTime(profileIds);
 		}
 		return response;
 	}
@@ -105,7 +110,9 @@ public class ProfileWorksServicesImpl extends JOOQBaseServiceImpl<Works, Profile
 		Response response = super.postResource(struct);
 		/* 重新计算profile完整度 */
 		if(response.getStatus() == 0 && struct != null) {
-			updateUpdateTime(struct);
+			Set<Integer> profileIds = new HashSet<>();
+			profileIds.add(struct.getProfile_id());
+			profileDao.updateUpdateTime(profileIds);
 			completenessImpl.reCalculateProfileWorks(struct.getProfile_id(), struct.getId());
 		}
 		return response;
@@ -139,6 +146,14 @@ public class ProfileWorksServicesImpl extends JOOQBaseServiceImpl<Works, Profile
 
 	public void setDao(WorksDao dao) {
 		this.dao = dao;
+	}
+
+	public ProfileDao getProfileDao() {
+		return profileDao;
+	}
+
+	public void setProfileDao(ProfileDao profileDao) {
+		this.profileDao = profileDao;
 	}
 
 	public ProfileCompletenessImpl getCompletenessImpl() {

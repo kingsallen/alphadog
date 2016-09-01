@@ -281,7 +281,6 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 		Response response = super.delResources(structs);
 		if(structs != null && structs.size() > 0 && response.getStatus() == 0) {
 			
-			
 			Set<Integer> profileIds = new HashSet<>();
 			for(Basic basic : structs) {
 				if(basic.getProfile_id() > 0) {

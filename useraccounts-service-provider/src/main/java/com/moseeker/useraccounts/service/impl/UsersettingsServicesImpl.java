@@ -41,9 +41,9 @@ public class UsersettingsServicesImpl extends JOOQBaseServiceImpl<Usersetting, U
 		if(response.getStatus() == 0) {
 			List<Integer> idArray = new ArrayList<Integer>();
 			structs.forEach(settings -> {
-				idArray.add(settings.getId());
+				idArray.add(settings.getUser_id());
 			});
-			dao.updateProfileUpdateTime(idArray);
+			dao.updateProfileUpdateTimeByUserId(idArray);
 		}
 		return response;
 	}

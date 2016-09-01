@@ -42,4 +42,22 @@ public class UsersettingDaoImpl extends BaseDaoImpl<UserSettingsRecord, UserSett
 		}
 		return status;
 	}
+
+	@Override
+	public int updateProfileUpdateTimeByUserId(List<Integer> idArray) {
+		int status = 0;
+		try (Connection conn = DBConnHelper.DBConn.getConn();
+				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn)) {
+
+			Timestamp updateTime = new Timestamp(System.currentTimeMillis());
+			status = create.update(ProfileProfile.PROFILE_PROFILE)
+					.set(ProfileProfile.PROFILE_PROFILE.UPDATE_TIME, updateTime)
+					.where(ProfileProfile.PROFILE_PROFILE.USER_ID.in(idArray))
+					.execute();
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return status;
+	}
 }
