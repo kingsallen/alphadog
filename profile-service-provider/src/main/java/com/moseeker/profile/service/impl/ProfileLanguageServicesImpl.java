@@ -184,6 +184,6 @@ public class ProfileLanguageServicesImpl extends JOOQBaseServiceImpl<Language, P
 	private void updateUpdateTime(Language language) {
 		List<Language> languages = new ArrayList<>();
 		languages.add(language);
-		updateUpdateTime(language);
+		updateUpdateTime(languages);
 	}
 }

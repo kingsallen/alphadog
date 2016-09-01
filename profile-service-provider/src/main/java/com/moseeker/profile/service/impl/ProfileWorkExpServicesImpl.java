@@ -35,7 +35,6 @@ import com.moseeker.profile.dao.WorkExpDao;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.WorkExpServices.Iface;
-import com.moseeker.thrift.gen.profile.struct.Skill;
 import com.moseeker.thrift.gen.profile.struct.WorkExp;
 
 @Service

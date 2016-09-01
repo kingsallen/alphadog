@@ -705,6 +705,6 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 	private void updateUpdateTime(Intention intention) {
 		List<Intention> intentions = new ArrayList<>();
 		intentions.add(intention);
-		updateUpdateTime(intention);
+		updateUpdateTime(intentions);
 	}
 }
