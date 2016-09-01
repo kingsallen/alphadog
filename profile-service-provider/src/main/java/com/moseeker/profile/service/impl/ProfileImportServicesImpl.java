@@ -1,6 +1,9 @@
 package com.moseeker.profile.service.impl;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -14,6 +17,7 @@ import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.db.profiledb.tables.records.ProfileImportRecord;
+import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.profile.dao.ProfileImportDao;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.ProfileImportServices.Iface;
@@ -28,6 +32,36 @@ public class ProfileImportServicesImpl extends JOOQBaseServiceImpl<ProfileImport
 	@Autowired
 	private ProfileImportDao dao;
 
+	@Autowired
+	private ProfileDao profileDao;
+
+	@Override
+	public Response postResources(List<ProfileImport> structs) throws TException {
+		Response response = super.postResources(structs);
+		updateUpdateTime(structs, response);
+		return response;
+	}
+
+	@Override
+	public Response putResources(List<ProfileImport> structs) throws TException {
+		Response response = super.putResources(structs);
+		updateUpdateTime(structs, response);
+		return response;
+	}
+
+	@Override
+	public Response delResources(List<ProfileImport> structs) throws TException {
+		Response response = super.delResources(structs);
+		updateUpdateTime(structs, response);
+		return response;
+	}
+
+	@Override
+	public Response delResource(ProfileImport struct) throws TException {
+		Response response = super.delResource(struct);
+		updateUpdateTime(struct, response);
+		return response;
+	}
 
 	@Override
 	public Response postResource(ProfileImport struct) throws TException {
@@ -43,7 +77,9 @@ public class ProfileImportServicesImpl extends JOOQBaseServiceImpl<ProfileImport
 		} finally {
 			//do nothing
 		}
-		return super.postResource(struct);
+		Response response = super.postResource(struct);
+		updateUpdateTime(struct, response);
+		return response;
 	}
 
 	@Override
@@ -60,7 +96,9 @@ public class ProfileImportServicesImpl extends JOOQBaseServiceImpl<ProfileImport
 		} finally {
 			//do nothing
 		}
-		return super.putResource(struct);
+		Response response = super.putResource(struct);
+		updateUpdateTime(struct, response);
+		return response;
 	}
 
 	public ProfileImportDao getDao() {
@@ -84,5 +122,23 @@ public class ProfileImportServicesImpl extends JOOQBaseServiceImpl<ProfileImport
 	@Override
 	protected ProfileImportRecord structToDB(ProfileImport profileImport) throws ParseException {
 		return (ProfileImportRecord) BeanUtils.structToDB(profileImport, ProfileImportRecord.class);
+	}
+	
+	private void updateUpdateTime(ProfileImport profileImport, Response response) {
+		if(response.getStatus() == 0 && profileImport != null) {
+			List<ProfileImport> profileImports = new ArrayList<>();
+			profileImports.add(profileImport);
+			updateUpdateTime(profileImports, response);
+		}
+	}
+	
+	private void updateUpdateTime(List<ProfileImport> profileImports, Response response) {
+		if(response.getStatus() == 0 && profileImports != null && profileImports.size() > 0) {
+			HashSet<Integer> profileIds = new HashSet<>();
+			profileImports.forEach(profileImport -> {
+				profileIds.add(profileImport.getProfile_id());
+			});
+			profileDao.updateUpdateTime(profileIds);
+		}
 	}
 }

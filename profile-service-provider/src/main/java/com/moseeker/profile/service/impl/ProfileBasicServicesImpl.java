@@ -165,6 +165,9 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 			ProfileBasicRecord record = structToDB(struct);
 			int i = dao.postResource(record);
 			if(i > 0) {
+				
+				updateUpdateTime(struct);
+				
 				if(!StringUtils.isNullOrEmpty(struct.getName())) {
 					profileDao.updateRealName(record.getProfileId().intValue(), struct.getName());
 				}
@@ -210,6 +213,9 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 			ProfileBasicRecord record = structToDB(struct);
 			int i = dao.putResource(record);
 			if(i > 0) {
+				
+				updateUpdateTime(struct);
+				
 				if(!StringUtils.isNullOrEmpty(struct.getName())) {
 					profileDao.updateRealName(record.getProfileId().intValue(), struct.getName());
 				}
@@ -232,12 +238,14 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 	public Response postResources(List<Basic> structs) throws TException {
 		Response response = super.postResources(structs);
 		if(structs != null && structs.size() > 0 && response.getStatus() == 0) {
-			Set<Integer> profileIds = new HashSet<>();
+			
+			HashSet<Integer> profileIds = new HashSet<>();
 			for(Basic basic : structs) {
 				if(basic.getProfile_id() > 0) {
 					profileIds.add(basic.getProfile_id());
 				}
 			}
+			profileDao.updateUpdateTime(profileIds);
 			profileIds.forEach(profileId -> {
 				/* 计算用户基本信息的简历完整度 */
 				completenessImpl.reCalculateUserUser(profileId);
@@ -251,12 +259,14 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 	public Response putResources(List<Basic> structs) throws TException {
 		Response response = super.putResources(structs);
 		if(structs != null && structs.size() > 0 && response.getStatus() == 0) {
-			Set<Integer> profileIds = new HashSet<>();
+			
+			HashSet<Integer> profileIds = new HashSet<>();
 			for(Basic basic : structs) {
 				if(basic.getProfile_id() > 0) {
 					profileIds.add(basic.getProfile_id());
 				}
 			}
+			profileDao.updateUpdateTime(profileIds);
 			profileIds.forEach(profileId -> {
 				/* 计算用户基本信息的简历完整度 */
 				completenessImpl.reCalculateUserUser(profileId);
@@ -270,12 +280,14 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 	public Response delResources(List<Basic> structs) throws TException {
 		Response response = super.delResources(structs);
 		if(structs != null && structs.size() > 0 && response.getStatus() == 0) {
+			
 			Set<Integer> profileIds = new HashSet<>();
 			for(Basic basic : structs) {
 				if(basic.getProfile_id() > 0) {
 					profileIds.add(basic.getProfile_id());
 				}
 			}
+			profileDao.updateUpdateTime(profileIds);
 			profileIds.forEach(profileId -> {
 				/* 计算用户基本信息的简历完整度 */
 				completenessImpl.reCalculateUserUser(profileId);
@@ -289,6 +301,9 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 	public Response delResource(Basic struct) throws TException {
 		Response response = super.delResource(struct);
 		if(response.getStatus() == 0) {
+			
+			updateUpdateTime(struct);
+			
 			/* 计算用户基本信息的简历完整度 */
 			completenessImpl.reCalculateUserUser(struct.getProfile_id());
 			completenessImpl.reCalculateProfileBasic(struct.getProfile_id());
@@ -381,7 +396,12 @@ public class ProfileBasicServicesImpl extends JOOQBaseServiceImpl<Basic, Profile
 
 	@Override
 	public Response reCalculateBasicCompleteness(int userId) throws TException {
-		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	private void updateUpdateTime(Basic basic) {
+		HashSet<Integer> profileIds = new HashSet<>();
+		profileIds.add(basic.getProfile_id());
+		profileDao.updateUpdateTime(profileIds);
 	}
 }
