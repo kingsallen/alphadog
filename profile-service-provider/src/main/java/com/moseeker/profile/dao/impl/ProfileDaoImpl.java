@@ -7,6 +7,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.jooq.Condition;
 import org.jooq.DSLContext;
@@ -60,7 +61,7 @@ import com.moseeker.profile.service.impl.serviceutils.CompletenessCalculator;
 
 @Repository
 public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile> implements ProfileDao {
-	
+
 	private CompletenessCalculator completenessCalculator = new CompletenessCalculator();
 
 	@Override
@@ -267,7 +268,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 				profileRecord.setCreateTime(now);
 				create.attach(profileRecord);
 				profileRecord.insert();
-				
+
 				/* 计算profile完整度 */
 				ProfileCompletenessRecord completenessRecord = new ProfileCompletenessRecord();
 
@@ -403,7 +404,8 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 							});
 						}
 					});
-					int intentionCompleteness = completenessCalculator.calculateIntentions(intentionRecords, intentionCityRecords, intentionPositionRecords);
+					int intentionCompleteness = completenessCalculator.calculateIntentions(intentionRecords,
+							intentionCityRecords, intentionPositionRecords);
 					completenessRecord.setProfileIntention(intentionCompleteness);
 				}
 				if (languages != null && languages.size() > 0) {
@@ -446,10 +448,10 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 					workexpRecords.forEach(workexp -> {
 						workexp.setProfileId(profileRecord.getId());
 						workexp.setCreateTime(now);
-						if (workexp.getCompany() != null && !StringUtils.isNullOrEmpty(workexp.getCompany().getName())) {
+						if (workexp.getCompany() != null
+								&& !StringUtils.isNullOrEmpty(workexp.getCompany().getName())) {
 							HrCompanyRecord hc = create.selectFrom(HrCompany.HR_COMPANY)
-									.where(HrCompany.HR_COMPANY.NAME.equal(workexp.getCompany().getName()))
-									.limit(1)
+									.where(HrCompany.HR_COMPANY.NAME.equal(workexp.getCompany().getName())).limit(1)
 									.fetchOne();
 							if (hc != null) {
 								companies.add(hc);
@@ -490,7 +492,8 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						create.attach(workexp);
 						workexp.insert();
 					});
-					int workExpCompleteness = completenessCalculator.calculateProfileWorkexps(workexpRecords, companies);
+					int workExpCompleteness = completenessCalculator.calculateProfileWorkexps(workexpRecords,
+							companies);
 					completenessRecord.setProfileWorkexp(workExpCompleteness);
 				}
 
@@ -507,27 +510,37 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 				if (userRecord != null) {
 					create.attach(userRecord);
 					userRecord.update();
-					
+
 					/* 计算简历完整度 */
 					completenessRecord.setProfileId(profileRecord.getId());
-					UserWxUserRecord wxuserRecord = create.selectFrom(UserWxUser.USER_WX_USER).where(UserWxUser.USER_WX_USER.SYSUSER_ID.equal(userRecord.getId().intValue())).limit(1).fetchOne();
-					UserSettingsRecord settingRecord = create.selectFrom(UserSettings.USER_SETTINGS).where(UserSettings.USER_SETTINGS.USER_ID.equal(userRecord.getId())).limit(1).fetchOne();
-					int userCompleteness = completenessCalculator.calculateUserUser(userRecord, settingRecord, wxuserRecord);
+					UserWxUserRecord wxuserRecord = create.selectFrom(UserWxUser.USER_WX_USER)
+							.where(UserWxUser.USER_WX_USER.SYSUSER_ID.equal(userRecord.getId().intValue())).limit(1)
+							.fetchOne();
+					UserSettingsRecord settingRecord = create.selectFrom(UserSettings.USER_SETTINGS)
+							.where(UserSettings.USER_SETTINGS.USER_ID.equal(userRecord.getId())).limit(1).fetchOne();
+					int userCompleteness = completenessCalculator.calculateUserUser(userRecord, settingRecord,
+							wxuserRecord);
 					completenessRecord.setUserUser(userCompleteness);
 				}
-				
-				int totalComplementness = (completenessRecord.getUserUser() == null ? 0: completenessRecord.getUserUser())
-						+ (completenessRecord.getProfileBasic() == null ? 0:completenessRecord.getProfileBasic())
+
+				int totalComplementness = (completenessRecord.getUserUser() == null ? 0
+						: completenessRecord.getUserUser())
+						+ (completenessRecord.getProfileBasic() == null ? 0 : completenessRecord.getProfileBasic())
 						+ (completenessRecord.getProfileWorkexp() == null ? 0 : completenessRecord.getProfileWorkexp())
-						+ (completenessRecord.getProfileEducation() == null ? 0 : completenessRecord.getProfileEducation())
-						+ (completenessRecord.getProfileProjectexp() == null ? 0 : completenessRecord.getProfileProjectexp())
-						+ (completenessRecord.getProfileLanguage() == null ? 0 : completenessRecord.getProfileLanguage()) 
+						+ (completenessRecord.getProfileEducation() == null ? 0
+								: completenessRecord.getProfileEducation())
+						+ (completenessRecord.getProfileProjectexp() == null ? 0
+								: completenessRecord.getProfileProjectexp())
+						+ (completenessRecord.getProfileLanguage() == null ? 0
+								: completenessRecord.getProfileLanguage())
 						+ (completenessRecord.getProfileSkill() == null ? 0 : completenessRecord.getProfileSkill())
-						+ (completenessRecord.getProfileCredentials() == null ? 0 : completenessRecord.getProfileCredentials())
+						+ (completenessRecord.getProfileCredentials() == null ? 0
+								: completenessRecord.getProfileCredentials())
 						+ (completenessRecord.getProfileAwards() == null ? 0 : completenessRecord.getProfileAwards())
 						+ (completenessRecord.getProfileWorks() == null ? 0 : completenessRecord.getProfileWorks())
-						+ (completenessRecord.getProfileIntention() == null ? 0 : completenessRecord.getProfileIntention());
-				
+						+ (completenessRecord.getProfileIntention() == null ? 0
+								: completenessRecord.getProfileIntention());
+
 				create.attach(completenessRecord);
 				completenessRecord.insert();
 				profileRecord.setCompleteness(UByte.valueOf(totalComplementness));
@@ -592,7 +605,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 				profileRecord.setCreateTime(now);
 				create.attach(profileRecord);
 				profileRecord.insert();
-				
+
 				/* 计算profile完整度 */
 				ProfileCompletenessRecord completenessRecord = new ProfileCompletenessRecord();
 
@@ -728,7 +741,8 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 							});
 						}
 					});
-					int intentionCompleteness = completenessCalculator.calculateIntentions(intentionRecords, intentionCityRecords, intentionPositionRecords);
+					int intentionCompleteness = completenessCalculator.calculateIntentions(intentionRecords,
+							intentionCityRecords, intentionPositionRecords);
 					completenessRecord.setProfileIntention(intentionCompleteness);
 				}
 				if (languages != null && languages.size() > 0) {
@@ -771,10 +785,10 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 					workexpRecords.forEach(workexp -> {
 						workexp.setProfileId(profileRecord.getId());
 						workexp.setCreateTime(now);
-						if (workexp.getCompany() != null && !StringUtils.isNullOrEmpty(workexp.getCompany().getName())) {
+						if (workexp.getCompany() != null
+								&& !StringUtils.isNullOrEmpty(workexp.getCompany().getName())) {
 							HrCompanyRecord hc = create.selectFrom(HrCompany.HR_COMPANY)
-									.where(HrCompany.HR_COMPANY.NAME.equal(workexp.getCompany().getName()))
-									.limit(1)
+									.where(HrCompany.HR_COMPANY.NAME.equal(workexp.getCompany().getName())).limit(1)
 									.fetchOne();
 							if (hc != null) {
 								workexp.setCompanyId(hc.getId());
@@ -955,5 +969,21 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
+	}
+
+	@Override
+	public int updateUpdateTime(Set<Integer> profileIds) {
+		int status = 0;
+		try (Connection conn = DBConnHelper.DBConn.getConn();
+				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn)) {
+
+			Timestamp updateTime = new Timestamp(System.currentTimeMillis());
+			status = create.update(ProfileProfile.PROFILE_PROFILE).set(ProfileProfile.PROFILE_PROFILE.UPDATE_TIME, updateTime)
+					.where(ProfileProfile.PROFILE_PROFILE.ID.in(profileIds)).execute();
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return status;
 	}
 }

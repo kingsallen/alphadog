@@ -1,6 +1,7 @@
 package com.moseeker.profile.service.impl;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,6 +16,7 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.db.profiledb.tables.records.ProfileSkillRecord;
+import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.profile.dao.SkillDao;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.SkillServices.Iface;
@@ -27,6 +29,9 @@ public class ProfileSkillServicesImpl extends JOOQBaseServiceImpl<Skill, Profile
 
 	@Autowired
 	private SkillDao dao;
+	
+	@Autowired
+	private ProfileDao profileDao;
 
 	@Autowired
 	private ProfileCompletenessImpl completenessImpl;
@@ -37,6 +42,14 @@ public class ProfileSkillServicesImpl extends JOOQBaseServiceImpl<Skill, Profile
 
 	public void setDao(SkillDao dao) {
 		this.dao = dao;
+	}
+
+	public ProfileDao getProfileDao() {
+		return profileDao;
+	}
+
+	public void setProfileDao(ProfileDao profileDao) {
+		this.profileDao = profileDao;
 	}
 
 	public ProfileCompletenessImpl getCompletenessImpl() {
@@ -63,6 +76,7 @@ public class ProfileSkillServicesImpl extends JOOQBaseServiceImpl<Skill, Profile
 			profileIds.forEach(profileId -> {
 				completenessImpl.reCalculateProfileSkill(profileId, 0);
 			});
+			profileDao.updateUpdateTime(profileIds);
 		}
 		return response;
 	}
@@ -115,6 +129,9 @@ public class ProfileSkillServicesImpl extends JOOQBaseServiceImpl<Skill, Profile
 	public Response postResource(Skill struct) throws TException {
 		Response response = super.postResource(struct);
 		if (response.getStatus() == 0) {
+			Set<Integer> profileIds = new HashSet<>();
+			profileIds.add(struct.getProfile_id());
+			profileDao.updateUpdateTime(profileIds);
 			completenessImpl.reCalculateProfileSkill(struct.getProfile_id(), struct.getId());
 		}
 		return response;
@@ -124,6 +141,7 @@ public class ProfileSkillServicesImpl extends JOOQBaseServiceImpl<Skill, Profile
 	public Response putResource(Skill struct) throws TException {
 		Response response = super.putResource(struct);
 		if (response.getStatus() == 0) {
+			updateUpdateTime(struct);
 			completenessImpl.reCalculateProfileSkill(struct.getProfile_id(), struct.getId());
 		}
 		return response;
@@ -141,6 +159,7 @@ public class ProfileSkillServicesImpl extends JOOQBaseServiceImpl<Skill, Profile
 		}
 		Response response = super.delResource(struct);
 		if (response.getStatus() == 0 && skillRecord != null) {
+			updateUpdateTime(struct);
 			completenessImpl.reCalculateProfileSkill(skillRecord.getProfileId().intValue(),
 					skillRecord.getId().intValue());
 		}
@@ -155,5 +174,19 @@ public class ProfileSkillServicesImpl extends JOOQBaseServiceImpl<Skill, Profile
 	@Override
 	protected ProfileSkillRecord structToDB(Skill skill) throws ParseException {
 		return (ProfileSkillRecord) BeanUtils.structToDB(skill, ProfileSkillRecord.class);
+	}
+	
+	private void updateUpdateTime(List<Skill> skills) {
+		Set<Integer> skillIds = new HashSet<>();
+		skills.forEach(skill -> {
+			skillIds.add(skill.getId());
+		});
+		dao.updateProfileUpdateTime(skillIds);
+	}
+
+	private void updateUpdateTime(Skill skill) {
+		List<Skill> skills = new ArrayList<>();
+		skills.add(skill);
+		updateUpdateTime(skills);
 	}
 }

@@ -31,6 +31,7 @@ import com.moseeker.profile.dao.CityDao;
 import com.moseeker.profile.dao.CompanyDao;
 import com.moseeker.profile.dao.IndustryDao;
 import com.moseeker.profile.dao.PositionDao;
+import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.profile.dao.WorkExpDao;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -56,6 +57,9 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 	
 	@Autowired
 	private CompanyDao companyDao;
+	
+	@Autowired
+	private ProfileDao profileDao;
 	
 	@Autowired
 	private ProfileCompletenessImpl completenessImpl;
@@ -230,6 +234,9 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 			i = dao.postResource(record);
 			
 			if ( i > 0 ){
+				Set<Integer> profileIds = new HashSet<>();
+				profileIds.add(struct.getProfile_id());
+				profileDao.updateUpdateTime(profileIds);
 				/* 计算用户基本信息的简历完整度 */
 				completenessImpl.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
 				return ResponseUtils.success(String.valueOf(i));
@@ -299,6 +306,7 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 			}
 			Response response = super.putResource(struct);
 			if(response.getStatus() == 0) {
+				updateUpdateTime(struct);
 				/* 计算用户基本信息的简历完整度 */
 				completenessImpl.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
 			}
@@ -315,10 +323,13 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 	public Response postResources(List<WorkExp> structs) throws TException {
 		Response response = super.postResources(structs);
 		if(structs != null && structs.size() > 0 && response.getStatus() == 0) {
+			Set<Integer> profileIds = new HashSet<>();
 			for(WorkExp struct : structs) {
+				profileIds.add(struct.getProfile_id());
 				/* 计算用户基本信息的简历完整度 */
 				completenessImpl.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
 			}
+			profileDao.updateUpdateTime(profileIds);
 		}
 		return response;
 	}
@@ -328,6 +339,7 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 		Response response = super.putResources(structs);
 		if(response.getStatus() == 0 && structs != null && structs.size() > 0) {
 			for(WorkExp struct : structs) {
+				updateUpdateTime(structs);
 				/* 计算用户基本信息的简历完整度 */
 				completenessImpl.reCalculateProfileWorkExpUseWorkExpId(struct.getId());
 			}
@@ -362,6 +374,7 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 		Response response = super.delResources(structs);
 		if(response.getStatus() == 0 && profileIds != null && profileIds.size() > 0) {
 			profileIds.forEach(profileId -> {
+				updateUpdateTime(structs);
 				/* 计算用户基本信息的简历完整度 */
 				completenessImpl.reCalculateProfileWorkExp(profileId, 0);
 			});
@@ -372,9 +385,11 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 	@Override
 	public Response delResource(WorkExp struct) throws TException {
 		Response response = super.delResource(struct);
-		if(response.getStatus() == 0) 
+		if(response.getStatus() == 0) {
+			updateUpdateTime(struct);
 			/* 计算用户基本信息的简历完整度 */
 			completenessImpl.reCalculateProfileWorkExp(struct.getProfile_id(), struct.getId());
+		}
 		return response;
 	}
 
@@ -418,6 +433,14 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 		this.cityDao = cityDao;
 	}
 
+	public ProfileDao getProfileDao() {
+		return profileDao;
+	}
+
+	public void setProfileDao(ProfileDao profileDao) {
+		this.profileDao = profileDao;
+	}
+
 	public ProfileCompletenessImpl getCompletenessImpl() {
 		return completenessImpl;
 	}
@@ -445,5 +468,19 @@ public class ProfileWorkExpServicesImpl extends JOOQBaseServiceImpl<WorkExp, Pro
 		equalRules.put("start_date", "start");
 		equalRules.put("end_date", "end");
 		return (ProfileWorkexpRecord) BeanUtils.structToDB(workExp, ProfileWorkexpRecord.class, equalRules);
+	}
+	
+	private void updateUpdateTime(List<WorkExp> workExps) {
+		Set<Integer> workExpIds = new HashSet<>();
+		workExps.forEach(workExp -> {
+			workExpIds.add(workExp.getId());
+		});
+		dao.updateProfileUpdateTime(workExpIds);
+	}
+
+	private void updateUpdateTime(WorkExp workExp) {
+		List<WorkExp> workExps = new ArrayList<>();
+		workExps.add(workExp);
+		updateUpdateTime(workExps);
 	}
 }

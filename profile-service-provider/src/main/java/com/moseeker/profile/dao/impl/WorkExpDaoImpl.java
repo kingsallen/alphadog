@@ -2,6 +2,8 @@ package com.moseeker.profile.dao.impl;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Set;
 
 import org.jooq.DSLContext;
 import org.jooq.Result;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
+import com.moseeker.db.profiledb.tables.ProfileProfile;
 import com.moseeker.db.profiledb.tables.ProfileWorkexp;
 import com.moseeker.db.profiledb.tables.records.ProfileWorkexpRecord;
 import com.moseeker.profile.dao.WorkExpDao;
@@ -54,5 +57,26 @@ public class WorkExpDaoImpl extends
 			}
 		}
 		return record;
+	}
+
+	@Override
+	public int updateProfileUpdateTime(Set<Integer> workExpIds) {
+		int status = 0;
+		try (Connection conn = DBConnHelper.DBConn.getConn();
+				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn)) {
+
+			Timestamp updateTime = new Timestamp(System.currentTimeMillis());
+			status = create.update(ProfileProfile.PROFILE_PROFILE)
+					.set(ProfileProfile.PROFILE_PROFILE.UPDATE_TIME, updateTime)
+					.where(ProfileProfile.PROFILE_PROFILE.ID
+							.in(create.select(ProfileWorkexp.PROFILE_WORKEXP.PROFILE_ID)
+									.from(ProfileWorkexp.PROFILE_WORKEXP)
+									.where(ProfileWorkexp.PROFILE_WORKEXP.ID.in(workExpIds))))
+					.execute();
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return status;
 	}
 }
