@@ -1,5 +1,7 @@
 package com.moseeker.servicemanager.web.controller.company;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -10,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.Constant;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -65,7 +69,20 @@ public class CompanyController {
 	@ResponseBody
 	public String addCompany(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			Hrcompany company = ParamUtils.initModelForm(request, Hrcompany.class);
+			Map<String, Object> data = ParamUtils.mergeRequestParameters(request);
+			Hrcompany company = ParamUtils.initModelForm(data, Hrcompany.class);
+			if(company.getSource() == 0) {
+				Integer appid = BeanUtils.converToInteger(data.get("appid"));
+				if(appid == null) {
+					appid = 0;
+				}
+				if(appid.intValue() == Constant.APPID_C) {
+					company.setSource(Constant.COMPANY_SOURCE_PC_EDITING);
+				}
+				if(appid.intValue() == Constant.APPID_QX || appid.intValue() == Constant.APPID_PLATFORM) {
+					company.setSource(Constant.COMPANY_SOURCE_PC_EDITING);
+				}
+			}
 			Response result = companyServices.add(company);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);

@@ -14,6 +14,11 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.DateUtils;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.db.dictdb.tables.records.DictCityRecord;
+import com.moseeker.db.dictdb.tables.records.DictConstantRecord;
+import com.moseeker.db.dictdb.tables.records.DictIndustryRecord;
+import com.moseeker.db.dictdb.tables.records.DictPositionRecord;
 import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileAttachmentRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileAwardsRecord;
@@ -24,6 +29,7 @@ import com.moseeker.db.profiledb.tables.records.ProfileImportRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileIntentionCityRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileIntentionIndustryRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileIntentionPositionRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileIntentionRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileLanguageRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileOtherRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
@@ -31,9 +37,16 @@ import com.moseeker.db.profiledb.tables.records.ProfileProjectexpRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileSkillRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileWorksRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.profile.dao.CityDao;
+import com.moseeker.profile.dao.IndustryDao;
+import com.moseeker.profile.dao.IntentionCityDao;
+import com.moseeker.profile.dao.IntentionDao;
+import com.moseeker.profile.dao.IntentionIndustryDao;
+import com.moseeker.profile.dao.IntentionPositionDao;
+import com.moseeker.profile.dao.PositionDao;
 import com.moseeker.profile.dao.entity.ProfileWorkexpEntity;
 import com.moseeker.profile.dao.impl.IntentionRecord;
-import com.mysql.jdbc.StringUtils;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 
 public class ProfileUtils {
 
@@ -52,7 +65,7 @@ public class ProfileUtils {
 		return worksRecords;
 	}
 
-	public List<ProfileWorkexpEntity> mapToWorkexpRecords(List<Map<String, Object>> workexps) {
+	public List<ProfileWorkexpEntity> mapToWorkexpRecords(List<Map<String, Object>> workexps, int source) {
 		List<ProfileWorkexpEntity> workexpRecords = new ArrayList<>();
 		if (workexps != null && workexps.size() > 0) {
 			workexps.forEach(workexp -> {
@@ -69,23 +82,33 @@ public class ProfileUtils {
 						Map<String, Object> company = (Map<String, Object>) workexp.get("company");
 						if (company != null) {
 							HrCompanyRecord hrCompany = new HrCompanyRecord();
-							if(company.get("company_name") != null) {
+							if (company.get("company_name") != null) {
 								hrCompany.setName(BeanUtils.converToString(company.get("company_name")));
 							}
-							if(company.get("company_industry") != null) {
+							if (company.get("company_industry") != null) {
 								hrCompany.setIndustry(BeanUtils.converToString(company.get("company_industry")));
 							}
-							if(company.get("company_introduction") != null) {
-								hrCompany.setIntroduction(BeanUtils.converToString(company.get("company_introduction")));
+							if (company.get("company_introduction") != null) {
+								hrCompany
+										.setIntroduction(BeanUtils.converToString(company.get("company_introduction")));
 							}
-							if(company.get("company_scale") != null) {
+							if (company.get("company_scale") != null) {
 								hrCompany.setScale(BeanUtils.converToUByte(company.get("company_scale")));
 							}
-							if(company.get("company_property") != null) {
+							if (company.get("company_property") != null) {
 								hrCompany.setProperty(BeanUtils.converToUByte(company.get("company_property")));
 							}
 							hrCompany.setType(UByte.valueOf(Constant.COMPANY_TYPE_FREE));
-							hrCompany.setSource(UByte.valueOf(Constant.COMPANY_SOURCE_PROFILE));
+							switch(source) {
+								case Constant.PROFILE_SOURCE_WEIXIN_TEGETHER_IMPORT:
+								case Constant.PROFILE_SOURCE_WEIXIN_COMPANY_IMPORT:
+									hrCompany.setSource(UByte.valueOf(Constant.COMPANY_SOURCE_WX_IMPORT));
+									break;
+								case Constant.PROFILE_SOURCE_PC_IMPORT:
+									hrCompany.setSource(UByte.valueOf(Constant.COMPANY_SOURCE_PC_IMPORT));
+									break;
+								default:
+							}
 							record.setCompany(hrCompany);
 						}
 					}
@@ -215,7 +238,7 @@ public class ProfileUtils {
 		ProfileImportRecord record = null;
 		if (importMap != null) {
 			record = BeanUtils.MapToRecord(importMap, ProfileImportRecord.class);
-			if(importMap.get("data") != null) {
+			if (importMap.get("data") != null) {
 				record.setData(JSON.toJSONString(importMap.get("data")));
 			}
 			return record;
@@ -408,5 +431,132 @@ public class ProfileUtils {
 			return record;
 		}
 		return record;
+	}
+
+	public List<Map<String, Object>> buildsIntentions(ProfileProfileRecord profileRecord, CommonQuery query,
+			List<DictConstantRecord> constantRecords, IntentionDao intentionDao, IntentionCityDao intentionCityDao,
+			IntentionIndustryDao intentionIndustryDao, IntentionPositionDao intentionPositionDao, CityDao dictCityDao,
+			IndustryDao dictIndustryDao, PositionDao dictPositionDao) {
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		try {
+			List<ProfileIntentionRecord> records = intentionDao.getResources(query);
+			if (records != null && records.size() > 0) {
+				CommonQuery dictQuery = new CommonQuery();
+				dictQuery.setPer_page(Integer.MAX_VALUE);
+				List<DictCityRecord> dictCities = dictCityDao.getResources(dictQuery);
+				List<DictIndustryRecord> dictIndustries = dictIndustryDao.getResources(dictQuery);
+				List<DictPositionRecord> dictPositions = dictPositionDao.getResources(dictQuery);
+				List<Integer> intentionIds = new ArrayList<>();
+				records.forEach(record -> {
+					Map<String, Object> map = new HashMap<String, Object>();
+					map.put("id", record.getId().intValue());
+					map.put("worktype", record.getWorktype().intValue());
+					for (DictConstantRecord constantRecord : constantRecords) {
+						if (constantRecord.getParentCode().intValue() == 3105
+								&& constantRecord.getCode().intValue() == record.getWorktype().intValue()) {
+							map.put("worktype_name", constantRecord.getName());
+							break;
+						}
+					}
+					map.put("workstate", record.getWorkstate().intValue());
+					for (DictConstantRecord constantRecord : constantRecords) {
+						if (constantRecord.getParentCode().intValue() == 3102
+								&& constantRecord.getCode().intValue() == record.getWorkstate().intValue()) {
+							map.put("workstate_name", constantRecord.getName());
+							break;
+						}
+					}
+					map.put("salary_code", record.getSalaryCode().intValue());
+					for (DictConstantRecord constantRecord : constantRecords) {
+						if (constantRecord.getParentCode().intValue() == 3114
+								&& constantRecord.getCode().intValue() == record.getSalaryCode().intValue()) {
+							map.put("salary_code_name", constantRecord.getName());
+							break;
+						}
+					}
+					map.put("tag", record.getTag());
+					map.put("consider_venture_company_opportunities",
+							record.getConsiderVentureCompanyOpportunities().intValue());
+					for (DictConstantRecord constantRecord : constantRecords) {
+						if (constantRecord.getParentCode().intValue() == 3120
+								&& constantRecord.getCode().intValue() == record.getSalaryCode().intValue()) {
+							map.put("consider_venture_company_opportunities_name", constantRecord.getName());
+							break;
+						}
+					}
+					intentionIds.add(record.getId().intValue());
+					list.add(map);
+				});
+				List<ProfileIntentionCityRecord> cityRecords = intentionCityDao.getIntentionCities(intentionIds);
+				List<ProfileIntentionIndustryRecord> industryRecords = intentionIndustryDao
+						.getIntentionIndustries(intentionIds);
+				List<ProfileIntentionPositionRecord> positionRecords = intentionPositionDao
+						.getIntentionPositions(intentionIds);
+				list.forEach(map -> {
+					if (cityRecords != null) {
+						List<Map<String, Object>> cities = new ArrayList<>();
+						cityRecords.forEach(cityRecord -> {
+							Map<String, Object> cityMap = new HashMap<>();
+							cityMap.put("city_code", cityRecord.getCityCode().intValue());
+							if(StringUtils.isNullOrEmpty(cityRecord.getCityName())) {
+								for(DictCityRecord dictCity : dictCities) {
+									if(cityRecord.getCityCode().intValue() == dictCity.getCode().intValue()) {
+										cityMap.put("city_name", dictCity.getName());
+										break;
+									}
+								}
+							} else {
+								cityMap.put("city_name", cityRecord.getCityName());
+							}
+							cities.add(cityMap);
+						});
+						map.put("cities", cities);
+					}
+					if (industryRecords != null) {
+						List<Map<String, Object>> industries = new ArrayList<>();
+						industryRecords.forEach(record -> {
+							Map<String, Object> industryMap = new HashMap<>();
+							industryMap.put("industry_code", record.getIndustryCode().intValue());
+							if(StringUtils.isNullOrEmpty(record.getIndustryName())) {
+								for(DictIndustryRecord dictIndustry : dictIndustries) {
+									if(dictIndustry.getCode().intValue() == record.getIndustryCode().intValue()) {
+										industryMap.put("industry_name", dictIndustry.getName());
+										break;
+									}
+								}
+							} else {
+								industryMap.put("industry_name", record.getIndustryName());
+							}
+							industries.add(industryMap);
+						});
+						map.put("industries", industries);
+					}
+					if (positionRecords != null) {
+						List<Map<String, Object>> positions = new ArrayList<>();
+						positionRecords.forEach(record -> {
+							Map<String, Object> positionMap = new HashMap<>();
+							if(StringUtils.isNullOrEmpty(record.getPositionName())) {
+								for(DictPositionRecord dictPosition : dictPositions) {
+									if(dictPosition.getCode().intValue() == record.getPositionCode().intValue()) {
+										positionMap.put("position_name", dictPosition.getName());
+										break;
+									}
+								}
+							} else {
+								positionMap.put("position_name", record.getPositionName());
+							}
+							positionMap.put("position_code", record.getPositionCode().intValue());
+							positions.add(positionMap);
+						});
+						map.put("positions", positions);
+					}
+				});
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		} finally {
+			// do nothing
+		}
+		return list;
 	}
 }

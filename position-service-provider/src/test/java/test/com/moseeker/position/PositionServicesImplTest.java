@@ -19,7 +19,7 @@ public class PositionServicesImplTest {
 
         String iface = PositionServices.Iface.class.getName();
         ClientConfig<PositionServices.Iface> clientConfig = new ClientConfig<PositionServices.Iface>();
-        clientConfig.setService("com.moseeker.thrift.gen.position.service.PositionServices");
+        clientConfig.setService("/com.moseeker.thrift.gen.position.service.PositionServices");
         clientConfig.setIface(iface);
 
         PositionServices.Iface positionServices = null;
@@ -27,8 +27,8 @@ public class PositionServicesImplTest {
         try {
             positionServices = clientConfig.createProxy(registryConfig);
 
-//            System.out.println(positionServices.getPositionById(61106));
-            System.out.println(positionServices.getPositionById(1));
+            System.out.println(positionServices.getPositionById(62875));
+//            System.out.println(positionServices.getPositionById(1));
 
         } catch (Exception e) {
             e.printStackTrace();

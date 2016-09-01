@@ -14,24 +14,28 @@ import com.moseeker.common.util.StringUtils;
 
 /**
  * 
- * log帮助类 
- * <p>Company: MoSeeker</P>  
- * <p>date: Mar 31, 2016</p>  
- * <p>Email: wjf2255@gmail.com</p>
+ * log帮助类
+ * <p>
+ * Company: MoSeeker
+ * </P>
+ * <p>
+ * date: Mar 31, 2016
+ * </p>
+ * <p>
+ * Email: wjf2255@gmail.com
+ * </p>
+ * 
  * @author wjf
  * @version
  */
 public class LogClient extends RedisClient {
 
 	private static volatile LogClient instance = null;
-	
+
 	private LogClient() {
-		ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil
-				.getInstance();
-		redisConfigKeyName = propertiesUtils.get("redis.log.config_key_name",
-				String.class);
-		redisConfigTimeOut = propertiesUtils.get("redis.log.config_timeout",
-				Integer.class);
+		ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
+		redisConfigKeyName = propertiesUtils.get("redis.log.config_key_name", String.class);
+		redisConfigTimeOut = propertiesUtils.get("redis.log.config_timeout", Integer.class);
 		redisConfigType = Constant.logConfigType;
 		redisCluster = initRedisCluster();
 		reloadRedisKey();
@@ -50,31 +54,32 @@ public class LogClient extends RedisClient {
 
 	@Override
 	protected JedisCluster initRedisCluster() {
-		ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil
-				.getInstance();
+		ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
 		if (redisCluster == null) {
 			try {
 				Set<HostAndPort> jedisClusterNodes = new HashSet<HostAndPort>();
 				// Jedis Cluster will attempt to discover cluster nodes
 				String host = propertiesUtils.get("redis.log.host", String.class);
 				String port = propertiesUtils.get("redis.log.port", String.class);
-				if (!StringUtils.isNullOrEmpty(host)
-						&& !StringUtils.isNullOrEmpty(port)) {
+				if (!StringUtils.isNullOrEmpty(host) && !StringUtils.isNullOrEmpty(port)) {
 					String[] hostArray = host.split(",");
 					String[] portArray = port.split(",");
 					if (hostArray.length == portArray.length) {
 						for (int i = 0; i < hostArray.length; i++) {
-							jedisClusterNodes.add(new HostAndPort(hostArray[i],
-									Integer.parseInt(portArray[i])));
+							jedisClusterNodes.add(new HostAndPort(hostArray[i], Integer.parseInt(portArray[i])));
 						}
 					}
 				} else {
-					Notification.sendLostRedisWarning(host, port);		//报警
+					Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID,
+							Constant.REDIS_CONNECT_ERROR_EVENTKEY, "Redis集群redis.log.host,redis.log.port尚未配置");
 				}
 				redisCluster = new JedisCluster(jedisClusterNodes);
-			} catch (NumberFormatException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY,
+						e.getMessage());
+
 			}
 		}
 		return redisCluster;
