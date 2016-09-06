@@ -20,6 +20,8 @@ import com.moseeker.common.util.BeanUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.servicemanager.web.controller.profile.form.OutPutResumeForm;
+import com.moseeker.servicemanager.web.controller.profile.form.OutPutResumeUtil;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 
@@ -31,6 +33,24 @@ public class ProfileController {
 
 	WholeProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER
 			.getService(WholeProfileServices.Iface.class);
+	OutPutResumeUtil outPutResumeService = new OutPutResumeUtil();
+	
+	@RequestMapping(value = "/profile/pdf", method = RequestMethod.GET)
+	@ResponseBody
+	public String outPutResume(HttpServletRequest request, HttpServletResponse response) {
+		// PrintWriter writer = null;
+		try {
+			// GET方法 通用参数解析并赋值
+			OutPutResumeForm form = ParamUtils.initModelForm(request, OutPutResumeForm.class);
+			Response result = outPutResumeService.outPutResume(form);
+			return ResponseLogNotification.success(request, result);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			return ResponseLogNotification.fail(request, e.getMessage());
+		} finally {
+			// do nothing
+		}
+	}
 
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
 	@ResponseBody
