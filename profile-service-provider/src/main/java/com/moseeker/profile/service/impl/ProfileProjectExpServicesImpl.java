@@ -1,6 +1,7 @@
 package com.moseeker.profile.service.impl;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +18,7 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.db.profiledb.tables.records.ProfileProjectexpRecord;
+import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.profile.dao.ProjectExpDao;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.ProjectExpServices.Iface;
@@ -30,6 +32,9 @@ public class ProfileProjectExpServicesImpl extends JOOQBaseServiceImpl<ProjectEx
 
 	@Autowired
 	private ProjectExpDao dao;
+	
+	@Autowired
+	private ProfileDao profileDao;
 
 	@Autowired
 	private ProfileCompletenessImpl completenessImpl;
@@ -40,6 +45,14 @@ public class ProfileProjectExpServicesImpl extends JOOQBaseServiceImpl<ProjectEx
 
 	public void setDao(ProjectExpDao dao) {
 		this.dao = dao;
+	}
+
+	public ProfileDao getProfileDao() {
+		return profileDao;
+	}
+
+	public void setProfileDao(ProfileDao profileDao) {
+		this.profileDao = profileDao;
 	}
 
 	public ProfileCompletenessImpl getCompletenessImpl() {
@@ -63,6 +76,9 @@ public class ProfileProjectExpServicesImpl extends JOOQBaseServiceImpl<ProjectEx
 			structs.forEach(struct -> {
 				profileIds.add(struct.getProfile_id());
 			});
+			
+			profileDao.updateUpdateTime(profileIds);
+			
 			profileIds.forEach(profileId -> {
 				/* 计算profile完成度 */
 				completenessImpl.reCalculateProfileProjectExpByProfileId(profileId);
@@ -75,6 +91,9 @@ public class ProfileProjectExpServicesImpl extends JOOQBaseServiceImpl<ProjectEx
 	public Response putResources(List<ProjectExp> structs) throws TException {
 		Response response = super.putResources(structs);
 		if (response.getStatus() == 0 && structs != null && structs.size() > 0) {
+			
+			updateUpdateTime(structs);
+			
 			structs.forEach(struct -> {
 				/* 计算profile完成度 */
 				completenessImpl.reCalculateProfileProjectExpByProjectExpId(struct.getId());
@@ -109,6 +128,9 @@ public class ProfileProjectExpServicesImpl extends JOOQBaseServiceImpl<ProjectEx
 		}
 		Response response = super.delResources(structs);
 		if (response.getStatus() == 0 && profileIds != null && profileIds.size() > 0) {
+			
+			updateUpdateTime(structs);
+			
 			profileIds.forEach(profileId -> {
 				/* 计算profile完成度 */
 				completenessImpl.reCalculateProfileProjectExp(profileId, 0);
@@ -120,18 +142,24 @@ public class ProfileProjectExpServicesImpl extends JOOQBaseServiceImpl<ProjectEx
 	@Override
 	public Response postResource(ProjectExp struct) throws TException {
 		Response response = super.postResource(struct);
-		if (response.getStatus() == 0)
+		if (response.getStatus() == 0) {
+			Set<Integer> profileIds = new HashSet<>();
+			profileIds.add(struct.getProfile_id());
+			profileDao.updateUpdateTime(profileIds);
 			/* 计算profile完成度 */
 			completenessImpl.reCalculateProfileProjectExpByProfileId(struct.getProfile_id());
+		}
 		return response;
 	}
 
 	@Override
 	public Response putResource(ProjectExp struct) throws TException {
 		Response response = super.putResource(struct);
-		if (response.getStatus() == 0)
+		if (response.getStatus() == 0) {
+			updateUpdateTime(struct);
 			/* 计算profile完成度 */
 			completenessImpl.reCalculateProfileProjectExpByProjectExpId(struct.getId());
+		}
 		return response;
 	}
 
@@ -146,10 +174,12 @@ public class ProfileProjectExpServicesImpl extends JOOQBaseServiceImpl<ProjectEx
 			logger.error(e.getMessage(), e);
 		}
 		Response response = super.delResource(struct);
-		if (response.getStatus() == 0 && projectExpRecord != null)
+		if (response.getStatus() == 0 && projectExpRecord != null) {
+			updateUpdateTime(struct);
 			/* 计算profile完成度 */
 			completenessImpl.reCalculateProfileProjectExp(projectExpRecord.getProfileId().intValue(),
 					projectExpRecord.getId().intValue());
+		}
 		return response;
 	}
 
@@ -167,5 +197,19 @@ public class ProfileProjectExpServicesImpl extends JOOQBaseServiceImpl<ProjectEx
 		equalRules.put("start_date", "start");
 		equalRules.put("end_date", "end");
 		return (ProfileProjectexpRecord) BeanUtils.structToDB(projectExp, ProfileProjectexpRecord.class, equalRules);
+	}
+	
+	private void updateUpdateTime(List<ProjectExp> projectExps) {
+		Set<Integer> projectExpIds = new HashSet<>();
+		projectExps.forEach(projectExp -> {
+			projectExpIds.add(projectExp.getId());
+		});
+		dao.updateProfileUpdateTime(projectExpIds);
+	}
+
+	private void updateUpdateTime(ProjectExp projectExp) {
+		List<ProjectExp> projectExps = new ArrayList<>();
+		projectExps.add(projectExp);
+		updateUpdateTime(projectExps);
 	}
 }

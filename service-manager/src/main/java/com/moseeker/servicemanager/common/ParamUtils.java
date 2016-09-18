@@ -129,13 +129,26 @@ public class ParamUtils {
 		if(data != null && data.size() > 0) {
 			t = clazz.newInstance();
 			if (data != null && data.size() > 0) {
+				// thrift 都是自动生成的public类型, 故使用getFields,如果不是public的时候, 请不要使用此方法
 				Field[] fields = clazz.getDeclaredFields();
+				Map<String, Integer> fieldMap = new HashMap<String, Integer>();
+				for (int f = 0; f < fields.length; f++) {
+					// 过滤掉转换不需要的字段 metaDataMap
+					if(!"metaDataMap".equals(fields[f].getName())) {
+						fieldMap.put(fields[f].getName(), f);
+					}
+				}
+				Integer i = null;
 				for (Entry<String, Object> entry : data.entrySet()) {
-					for (int i = 0; i < fields.length; i++) {
+					if(fieldMap.containsKey(entry.getKey())) {
+						i = fieldMap.get(entry.getKey());
+						if (i == null) {
+							continue;
+						}
 						if (fields[i].getName().equals(entry.getKey())) {
 							String methodName = "set"
 									+ fields[i].getName().substring(0, 1)
-											.toUpperCase()
+									.toUpperCase()
 									+ fields[i].getName().substring(1);
 							Method method = clazz.getMethod(methodName,
 									fields[i].getType());

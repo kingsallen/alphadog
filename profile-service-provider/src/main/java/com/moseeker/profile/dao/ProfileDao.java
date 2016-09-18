@@ -1,6 +1,7 @@
 package com.moseeker.profile.dao;
 
 import java.util.List;
+import java.util.Set;
 
 import org.jooq.Record2;
 import org.jooq.Result;
@@ -56,5 +57,7 @@ public interface ProfileDao extends BaseDao<ProfileProfileRecord> {
 	String findRealName(int profile_id);
 
 	void updateRealName(int profileId, String name);
+
+	int updateUpdateTime(Set<Integer> profileIds);
 
 }

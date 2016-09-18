@@ -5,6 +5,7 @@ public final class ConstantErrorCodeMessage {
     // 系统共通ERRCODE说明定义 9字头
     public static final String PROGRAM_EXHAUSTED = "{'status':-1,'message':'系统繁忙，请稍候再试!'}";
     public static final String PROGRAM_EXCEPTION = "{'status':99999 ,'message':'发生异常，请稍候再试!'}";
+    public static final int PROGRAM_EXCEPTION_STATUS = 99999;
 
     public static final String PROGRAM_DATA_EMPTY = "{'status':90010,'message':'请求数据为空！'}";
     public static final String PROGRAM_VALIDATE_REQUIRED = "{'status':90014,'message':'{0}是必填项！'}";
@@ -25,6 +26,7 @@ public final class ConstantErrorCodeMessage {
     public static final String USER_FAV_POSITION_FAILED = "{'status':10018,'message':'获取我感兴趣失败!'}";
     public static final String USER_SMS_LIMITED = "{'status':10019,'message':'短信发送异常!'}";
     public static final String HRCOMPANY_NOTEXIST = "{'status':10020,'message':'公司不存在!'}";
+    public static final String USERACCOUNT_BIND_REPEATBIND = "{'status':10021,'message':'手机号码已经绑定！'}";
 
     public static final String HR_ACCOUNT_SIGNUP_VALIDATE_SOURCE = "{'status':12001,'message':'source >=1 && <=5!'}";
 
@@ -43,6 +45,7 @@ public final class ConstantErrorCodeMessage {
     public static final String PROFILE_DATA_NULL = "{'status':31019,'message':'数据不存在!'}";
     public static final String PROFILE_DICT_COLLEGE_NOTEXIST = "{'status':31020,'message':'院校字典不存在!'}";
     public static final String PROFILE_DICT_MAJOR_NOTEXIST = "{'status':31021,'message':'专业字典不存在!'}";
+    public static final String PROFILE_OUTPUT_FAILED = "{'status':31022,'message':'导出失败!'}";
     
     // Company服务提示信息说明
     public static final String COMPANY_NAME_REPEAT = "{'status':33001,'message':'不允许和拥有超级帐号的公司的公司名称重名!'}";

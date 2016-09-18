@@ -38,6 +38,7 @@ import com.moseeker.profile.dao.IntentionDao;
 import com.moseeker.profile.dao.IntentionIndustryDao;
 import com.moseeker.profile.dao.IntentionPositionDao;
 import com.moseeker.profile.dao.PositionDao;
+import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.IntentionServices.Iface;
@@ -69,6 +70,9 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 
 	@Autowired
 	private IntentionPositionDao intentionPositionDao;
+	
+	@Autowired
+	private ProfileDao profileDao;
 	
 	@Autowired
 	private ProfileCompletenessImpl completenessImpl;
@@ -202,6 +206,11 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 				
 				/* 计算profile完整度 */
 				completenessImpl.reCalculateProfileIntention(struct.getProfile_id(), intentionId);
+				
+				Set<Integer> profileIds = new HashSet<>();
+				profileIds.add(struct.getProfile_id());
+				profileDao.updateUpdateTime(profileIds);
+				
 				return ResponseUtils.success(String.valueOf(intentionId));
 			}
 		} catch (Exception e) {
@@ -226,6 +235,7 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 				
 				/* 计算profile完整度 */
 				completenessImpl.reCalculateProfileIntention(struct.getProfile_id(), intentionId);
+				updateUpdateTime(struct);
 				return ResponseUtils.success(String.valueOf(intentionId));
 			}
 		} catch (Exception e) {
@@ -261,6 +271,8 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 				
 				/* 计算profile完整度 */
 				completenessImpl.reCalculateProfileIntention(intentionRecord.getProfileId().intValue(), intentionRecord.getId().intValue());
+				/* 更新profile的更新时间 */
+				updateUpdateTime(struct);
 				return ResponseUtils.success(String.valueOf(intentionId));
 			}
 		} catch (Exception e) {
@@ -289,6 +301,7 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 				 /* 计算profile完整度 */
 				 completenessImpl.reCalculateProfileIntention(profileId, 0);
 			 });
+			 profileDao.updateUpdateTime(profileIds);
 		}
 		return response;
 	}
@@ -297,6 +310,7 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 	public Response putResources(List<Intention> structs) throws TException {
 		Response response = super.putResources(structs);
 		if(response.getStatus() == 0 && structs != null && structs.size() > 0) {
+			 updateUpdateTime(structs);
 			 structs.forEach(struct -> {
 				 /* 计算profile完整度 */
 				 completenessImpl.reCalculateProfileIntention(struct.getProfile_id(), struct.getId());
@@ -331,6 +345,7 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 		}
 		Response response = super.delResources(structs);
 		if(response.getStatus() == 0 && profileIds != null && profileIds.size() > 0) {
+			updateUpdateTime(structs);
 			profileIds.forEach(profileId -> {
 				 /* 计算profile完整度 */
 				 completenessImpl.reCalculateProfileIntention(profileId, 0);
@@ -669,6 +684,14 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 		this.dictPositionDao = dictPositionDao;
 	}
 
+	public ProfileDao getProfileDao() {
+		return profileDao;
+	}
+
+	public void setProfileDao(ProfileDao profileDao) {
+		this.profileDao = profileDao;
+	}
+
 	public ProfileCompletenessImpl getCompletenessImpl() {
 		return completenessImpl;
 	}
@@ -685,5 +708,19 @@ public class ProfileIntentionServicesImpl extends JOOQBaseServiceImpl<Intention,
 	@Override
 	protected ProfileIntentionRecord structToDB(Intention intention) throws ParseException {
 		return (ProfileIntentionRecord) BeanUtils.structToDB(intention, ProfileIntentionRecord.class);
+	}
+	
+	private void updateUpdateTime(List<Intention> intentions) {
+		HashSet<Integer> intentionIds = new HashSet<>();
+		intentions.forEach(intention -> {
+			intentionIds.add(intention.getId());
+		});
+		dao.updateProfileUpdateTime(intentionIds);
+	}
+
+	private void updateUpdateTime(Intention intention) {
+		List<Intention> intentions = new ArrayList<>();
+		intentions.add(intention);
+		updateUpdateTime(intentions);
 	}
 }

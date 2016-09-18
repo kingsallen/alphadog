@@ -71,4 +71,15 @@ public class ResponseUtils {
         response.setMessage(jsonObject.getString("message"));
         return response;
     }
+    
+    public static Response fail(int status, String message) throws ParamNullException {
+        Response response = new Response();
+        if(StringUtils.isNullOrEmpty(message)) {
+            throw new ParamNullException();
+        }
+        response.setData(Constant.NONE_JSON);
+        response.setStatus(status);
+        response.setMessage(message);
+        return response;
+    }
 }

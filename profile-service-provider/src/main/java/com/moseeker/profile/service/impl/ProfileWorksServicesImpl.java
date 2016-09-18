@@ -1,6 +1,7 @@
 package com.moseeker.profile.service.impl;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,6 +16,7 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.db.profiledb.tables.records.ProfileWorksRecord;
+import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.profile.dao.WorksDao;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.WorksServices.Iface;
@@ -30,6 +32,9 @@ public class ProfileWorksServicesImpl extends JOOQBaseServiceImpl<Works, Profile
 	private WorksDao dao;
 	
 	@Autowired
+	private ProfileDao profileDao;
+	
+	@Autowired
 	private ProfileCompletenessImpl completenessImpl;
 
 	@Override
@@ -37,6 +42,7 @@ public class ProfileWorksServicesImpl extends JOOQBaseServiceImpl<Works, Profile
 		Response response = super.postResources(structs);
 		/* 重新计算profile完整度 */
 		if(response.getStatus() == 0 && structs != null && structs.size() >0) {
+			updateUpdateTime(structs);
 			Set<Integer> profileIds = new HashSet<>();
 			structs.forEach(struct -> {
 				if(struct.getProfile_id() > 0) {
@@ -46,6 +52,7 @@ public class ProfileWorksServicesImpl extends JOOQBaseServiceImpl<Works, Profile
 			profileIds.forEach(profileId -> {
 				completenessImpl.reCalculateProfileWorks(profileId, 0);
 			});
+			profileDao.updateUpdateTime(profileIds);
 		}
 		return response;
 	}
@@ -55,6 +62,7 @@ public class ProfileWorksServicesImpl extends JOOQBaseServiceImpl<Works, Profile
 		Response response = super.putResources(structs);
 		/* 重新计算profile完整度 */
 		if(response.getStatus() == 0 && structs != null && structs.size() >0) {
+			updateUpdateTime(structs);
 			structs.forEach(struct -> {
 				completenessImpl.reCalculateProfileWorks(struct.getProfile_id(), struct.getId());
 			});
@@ -89,6 +97,7 @@ public class ProfileWorksServicesImpl extends JOOQBaseServiceImpl<Works, Profile
 		Response response = super.delResources(structs);
 		/* 重新计算profile完整度 */
 		if(response.getStatus() == 0 && profileIds != null && profileIds.size() >0) {
+			updateUpdateTime(structs);
 			profileIds.forEach(profileId -> {
 				completenessImpl.reCalculateProfileWorks(profileId, 0);
 			});
@@ -101,6 +110,9 @@ public class ProfileWorksServicesImpl extends JOOQBaseServiceImpl<Works, Profile
 		Response response = super.postResource(struct);
 		/* 重新计算profile完整度 */
 		if(response.getStatus() == 0 && struct != null) {
+			Set<Integer> profileIds = new HashSet<>();
+			profileIds.add(struct.getProfile_id());
+			profileDao.updateUpdateTime(profileIds);
 			completenessImpl.reCalculateProfileWorks(struct.getProfile_id(), struct.getId());
 		}
 		return response;
@@ -111,6 +123,7 @@ public class ProfileWorksServicesImpl extends JOOQBaseServiceImpl<Works, Profile
 		Response response = super.putResource(struct);
 		/* 重新计算profile完整度 */
 		if(response.getStatus() == 0 && struct != null) {
+			updateUpdateTime(struct);
 			completenessImpl.reCalculateProfileWorks(struct.getProfile_id(), struct.getId());
 		}
 		return response;
@@ -121,6 +134,7 @@ public class ProfileWorksServicesImpl extends JOOQBaseServiceImpl<Works, Profile
 		Response response = super.delResource(struct);
 		/* 重新计算profile完整度 */
 		if(response.getStatus() == 0 && struct != null) {
+			updateUpdateTime(struct);
 			completenessImpl.reCalculateProfileWorks(struct.getProfile_id(), struct.getId());
 		}
 		return response;
@@ -132,6 +146,14 @@ public class ProfileWorksServicesImpl extends JOOQBaseServiceImpl<Works, Profile
 
 	public void setDao(WorksDao dao) {
 		this.dao = dao;
+	}
+
+	public ProfileDao getProfileDao() {
+		return profileDao;
+	}
+
+	public void setProfileDao(ProfileDao profileDao) {
+		this.profileDao = profileDao;
 	}
 
 	public ProfileCompletenessImpl getCompletenessImpl() {
@@ -155,5 +177,19 @@ public class ProfileWorksServicesImpl extends JOOQBaseServiceImpl<Works, Profile
 	@Override
 	protected ProfileWorksRecord structToDB(Works works) throws ParseException {
 		return (ProfileWorksRecord) BeanUtils.structToDB(works, ProfileWorksRecord.class);
+	}
+	
+	private void updateUpdateTime(List<Works> works) {
+		Set<Integer> workIds = new HashSet<>();
+		works.forEach(work -> {
+			workIds.add(work.getId());
+		});
+		dao.updateProfileUpdateTime(workIds);
+	}
+
+	private void updateUpdateTime(Works work) {
+		List<Works> works = new ArrayList<>();
+		works.add(work);
+		updateUpdateTime(works);
 	}
 }

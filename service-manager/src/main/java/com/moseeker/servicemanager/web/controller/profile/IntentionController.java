@@ -69,7 +69,6 @@ public class IntentionController {
 			Map<String, Object> data = ParamUtils.parseRequestParam(request);
 			Intention intention = ParamUtils.initModelForm(data, Intention.class);
 			IntentionParamUtil.buildIntention(data, intention);
-
 			Response result = intentionService.putResource(intention);
 
 			return ResponseLogNotification.success(request, result);

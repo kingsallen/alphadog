@@ -45,7 +45,6 @@ public class CompanyServicesImpl extends JOOQBaseServiceImpl<Hrcompany, HrCompan
 
     @Override
     protected HrCompanyRecord structToDB(Hrcompany company) throws ParseException {
-        // TODO Auto-generated method stub
         return (HrCompanyRecord) BeanUtils.structToDB(company, HrCompanyRecord.class);
     }
 
