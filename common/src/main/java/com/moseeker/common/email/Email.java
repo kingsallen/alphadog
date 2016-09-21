@@ -16,6 +16,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 import com.moseeker.common.email.attachment.Attachment;
+import com.moseeker.common.email.config.ServerConfig;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 
 /**
@@ -50,7 +51,7 @@ public class Email {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-    	}).start();;
+    	}).start();
     }
     
     public static class EmailBuilder {
@@ -66,13 +67,20 @@ public class Email {
         private ArrayList<Attachment> attachments = new ArrayList<>();
 
         private Message message;
+        private ServerConfig serverConfig;
 
         public EmailBuilder(List<String> recipients) throws MessagingException {
             this.recipients.addAll(recipients);
+            serverConfig = new ServerConfig(serverDomain, serverPort, userName, password);
         }
 
         public EmailBuilder(String recipient) throws MessagingException {
             this.recipients.add(recipient);
+            serverConfig = new ServerConfig(serverDomain, serverPort, userName, password);
+        }
+        
+        public EmailBuilder(ServerConfig serverConfig) throws MessagingException {
+            this.serverConfig = serverConfig;
         }
 
         public EmailBuilder setSender(String sender) {
@@ -106,11 +114,9 @@ public class Email {
         }
 
         public Email build() throws Exception {
-
             this.message = this.initMessage();
             this.buildHeader().buildContent().buildAttachment();
             this.message.saveChanges();
-
             return new Email(this);
         }
 

@@ -1,9 +1,9 @@
 package com.moseeker.mq.email;
 
-import com.moseeker.mq.email.config.EmailServer;
+import com.moseeker.mq.email.config.EmailServerConfig;
 
 public class EmailSender {
 
-	private EmailServer server;
+	private EmailServerConfig server;
 	
 }
