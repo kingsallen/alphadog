@@ -178,6 +178,21 @@ public class SmsSender {
 
         return sendSMS(mobile, "SMS_5755096", params);
     }
+    
+    public static boolean sendSMS(String mobile, int scene){
+    	String event = null;
+    	switch(scene) {
+    	case 1:event= "SMS_SIGNUP"; break;
+    	case 2:event = "SMS_PWD_FORGOT"; break;
+    	case 3:event = "SMS_CHANGEMOBILE_CODE"; break;
+    	case 4:event = "SMS_RESETMOBILE_CODE"; break;
+    	}
+        HashMap<String, String> params = new HashMap<String, String>();
+        String passwordforgotcode = getRandomStr();
+        params.put("code", passwordforgotcode);        
+        RedisClientFactory.getCacheClient().set(0, event, mobile, passwordforgotcode);        
+        return sendSMS(mobile,"SMS_5755096",params);
+    } 
 
     /**
      * SMS_5855001

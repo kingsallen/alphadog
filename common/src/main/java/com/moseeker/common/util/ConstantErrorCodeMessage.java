@@ -24,7 +24,6 @@ public final class ConstantErrorCodeMessage {
     public static final String USERACCOUNT_EXIST = "{'status':10016,'message':'帐号已存在!'}";
     public static final String USERACCOUNT_NOTEXIST = "{'status':10017,'message':'帐号不存在!'}";
     public static final String USER_FAV_POSITION_FAILED = "{'status':10018,'message':'获取我感兴趣失败!'}";
-    public static final String USER_SMS_LIMITED = "{'status':10019,'message':'短信发送异常!'}";
     public static final String HRCOMPANY_NOTEXIST = "{'status':10020,'message':'公司不存在!'}";
     public static final String USERACCOUNT_BIND_REPEATBIND = "{'status':10021,'message':'手机号码已经绑定！'}";
 
@@ -69,4 +68,7 @@ public final class ConstantErrorCodeMessage {
     public static final String APPLICATION_POSITION_NOT_EXIST = "{'status':41004,'message':'申请的职位不存在!'}";
     public static final String APPLICATION_POSITION_STATUS_STOP = "{'status':41005,'message':'申请的职位已下线!'}";
     public static final String APPLICATION_USER_INVALID = "{'status':41006,'message':'申请人是无法校验的用户!'}";
+    
+    // 工具类错误
+    public static final String USER_SMS_LIMITED = "{'status':80001,'message':'短信发送异常!'}";
 }

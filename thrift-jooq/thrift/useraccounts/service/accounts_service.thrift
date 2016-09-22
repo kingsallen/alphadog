@@ -28,6 +28,9 @@ service UseraccountsServices {
     common_struct.Response postuserchangepassword(1: i32 user_id, 2: string old_password,  3: string password);
     common_struct.Response postusersendpasswordforgotcode(1: string mobile);
     common_struct.Response postvalidatepasswordforgotcode(1: string mobile, 2:string code);
+    common_struct.Response validateVerifyCode(1: string mobile, 2:string code, 3:i32 type);
+    common_struct.Response sendVerifyCode(1: string mobile, 3:i32 type);
+    common_struct.Response checkEmail(1: string email);
     common_struct.Response postuserresetpassword(1: string mobile, 2: string code, 3: string password);
     common_struct.Response postusermergebymobile(1: i32 appid, 2: string mobile);
     common_struct.Response postsendchangemobilecode(1: string oldmobile);

@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.daoutils.BaseDao;
 import com.moseeker.common.redis.RedisClient;
@@ -22,6 +23,7 @@ import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.db.logdb.tables.records.LogUserloginRecordRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.db.userdb.tables.records.UserFavPositionRecord;
@@ -83,7 +85,6 @@ public class UseraccountsServiceImpl implements Iface {
 			String mobile = userloginreq.getMobile();
 			if (validateCode(mobile, code, 1)) {
 				filters.put("username", mobile);
-				;
 			} else {
 				return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
 			}
@@ -1066,35 +1067,85 @@ public class UseraccountsServiceImpl implements Iface {
 		String codeinRedis = null;
 		RedisClient redisclient = RedisClientFactory.getCacheClient();
 		switch (type) {
-		case 1:
-			codeinRedis = redisclient.get(0, "SMS_SIGNUP", mobile);
-			if (code.equals(codeinRedis)) {
-				redisclient.del(0, "SMS_SIGNUP", mobile);
-				return true;
-			}
-			break;
-		case 2:
-			codeinRedis = redisclient.get(0, "SMS_PWD_FORGOT", mobile);
-			if (code.equals(codeinRedis)) {
-				redisclient.del(0, "SMS_PWD_FORGOT", mobile);
-				return true;
-			}
-		case 3:
-			codeinRedis = redisclient.get(0, "SMS_CHANGEMOBILE_CODE", mobile);
-			if (code.equals(codeinRedis)) {
-				redisclient.del(0, "SMS_CHANGEMOBILE_CODE", mobile);
-				return true;
-			}
-		case 4:
-			codeinRedis = redisclient.get(0, "SMS_RESETMOBILE_CODE", mobile);
-			if (code.equals(codeinRedis)) {
-				redisclient.del(0, "SMS_RESETMOBILE_CODE", mobile);
-				return true;
-			}
-			break;
+			case 1:
+				codeinRedis = redisclient.get(0, "SMS_SIGNUP", mobile);
+				if (code.equals(codeinRedis)) {
+					redisclient.del(0, "SMS_SIGNUP", mobile);
+					return true;
+				}
+				break;
+			case 2:
+				codeinRedis = redisclient.get(0, "SMS_PWD_FORGOT", mobile);
+				if (code.equals(codeinRedis)) {
+					redisclient.del(0, "SMS_PWD_FORGOT", mobile);
+					return true;
+				}
+			case 3:
+				codeinRedis = redisclient.get(0, "SMS_CHANGEMOBILE_CODE", mobile);
+				if (code.equals(codeinRedis)) {
+					redisclient.del(0, "SMS_CHANGEMOBILE_CODE", mobile);
+					return true;
+				}
+			case 4:
+				codeinRedis = redisclient.get(0, "SMS_RESETMOBILE_CODE", mobile);
+				if (code.equals(codeinRedis)) {
+					redisclient.del(0, "SMS_RESETMOBILE_CODE", mobile);
+					return true;
+				}
+				break;
+			default :
 		}
+		
 
 		return false;
+	}
+
+	@Override
+	public Response validateVerifyCode(String mobile, String code, int type) throws TException {
+		ValidateUtil vu = new ValidateUtil();
+		vu.addRequiredStringValidate("手机号码", mobile, null, null);
+		vu.addRequiredStringValidate("验证码", code, null, null);
+		String message = vu.validate();
+		if(StringUtils.isNullOrEmpty(message)) {
+			boolean flag = validateCode(mobile, code, 1);
+			if(flag) {
+				return ResponseUtils.success(1);
+			} else {
+				return ResponseUtils.success(0);
+			}
+		} else {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", message));
+		}
+	}
+
+	@Override
+	public Response sendVerifyCode(String mobile, int type) throws TException {
+		boolean result = SmsSender.sendSMS(mobile, type);
+		if(result) {
+			return ResponseUtils.success("success");
+		} else {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
+		}
+	}
+
+	@Override
+	public Response checkEmail(String email) throws TException {
+		QueryUtil qu = new QueryUtil();
+		qu.addEqualFilter("email", email);
+		qu.addEqualFilter("email_verified", "1");
+		try {
+			UserUserRecord record = userdao.getResource(qu);
+			if(record == null) {
+				return ResponseUtils.success(1);
+			} else {
+				return ResponseUtils.success(0);
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+		} finally {
+			
+		}
 	}
 
 }
