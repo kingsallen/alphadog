@@ -182,7 +182,7 @@ public class ParamUtils {
 		Map<String, String[]> reqParams = request.getParameterMap();
 		if (reqParams != null) {
 			for (Entry<String, String[]> entry : reqParams.entrySet()) {
-				if(entry.getKey() != null && entry.getKey().length() > 1) {
+				if(entry.getValue() != null && entry.getValue().length > 1) {
 					List<String> values = new ArrayList<>();
 					for(String value : entry.getValue()) {
 						if(value != null) {
