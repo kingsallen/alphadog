@@ -100,7 +100,7 @@ public class ProfileController {
 			// GET方法 通用参数解析并赋值
 			Map<String, Object> param = ParamUtils.parseRequestParam(request);
 			
-			List<String> userIds = ProfileParamUtil.getProfilesIds(param);
+			List<String> userIds = ProfileParamUtil.getProfilesUserIds(param);
 			List<String> uuids = ProfileParamUtil.getProfilesUUIDs(param);
 			List<String> profileIds = ProfileParamUtil.getProfilesIds(param);
 			if ((userIds != null && userIds.size() > 0) || (uuids != null && uuids.size() > 0)
