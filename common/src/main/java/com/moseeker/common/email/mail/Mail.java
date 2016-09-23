@@ -30,7 +30,7 @@ import com.moseeker.common.util.ConfigPropertiesUtil;
 /**
  * Created by chendi on 3/31/16.
  * 
- * 基于迪迪在3月31号提交的email发送，将一些可配置信息，提出作为参数设置。并为发送邮件添加了一个线程池。
+ * 基于迪迪在3月31号提交的email发送，将一些可配置信息提出作为参数设置，即可以配置指定邮件服务器。并为发送邮件添加了一个线程池。
  * <p>Company: MoSeeker</P>  
  * <p>date: Sep 21, 2016</p>  
  */
@@ -70,7 +70,13 @@ public class Mail {
     	});
     }
     
-    //发送一封邮件
+    /**
+     * 发送一封邮件
+     * @param emailContent 邮件内容
+     * @throws AddressException 邮件地址异常
+     * @throws MessagingException	邮件消息异常
+     * @throws IOException	IO相关的异常
+     */
     public void send(EmailContent emailContent) throws AddressException, MessagingException, IOException {
     	executorService.submit(() -> {
     		try {

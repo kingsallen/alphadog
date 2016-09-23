@@ -201,7 +201,7 @@ public class UseraccountsServiceImpl implements Iface {
 		if (SmsSender.sendSMS_signup(mobile)) {
 			return ResponseUtils.success(null);
 		} else {
-			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
 		}
 	}
 
@@ -853,7 +853,7 @@ public class UseraccountsServiceImpl implements Iface {
 		if (SmsSender.sendSMS_changemobilecode(oldmobile)) {
 			return ResponseUtils.success(null);
 		} else {
-			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
 		}
 	}
 
@@ -898,7 +898,7 @@ public class UseraccountsServiceImpl implements Iface {
 		if (SmsSender.sendSMS_resetmobilecode(newmobile)) {
 			return ResponseUtils.success(null);
 		} else {
-			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
 		}
 	}
 
