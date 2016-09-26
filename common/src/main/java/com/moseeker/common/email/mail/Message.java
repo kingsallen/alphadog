@@ -1,6 +1,8 @@
-package com.moseeker.mq.service.email;
+package com.moseeker.common.email.mail;
 
 import java.util.HashMap;
+
+import com.moseeker.common.email.config.EmailContent;
 
 /**
  * 
@@ -13,16 +15,19 @@ import java.util.HashMap;
  */
 public class Message {
 
-	private HashMap<String, String> params = new HashMap<>();	//替换消息模版的变量参数
+	HashMap<String, String> params = new HashMap<String, String>(); //替换参数
+	private EmailContent emailContent;							//替换消息模版的变量参数
 	private int eventType;										//消息类型
 	private int location;										//触发地点
 	private String template;									//指定的消息模版的位置
+	private int appId;											//调用方项目编号
 	
-	public HashMap<String, String> getParams() {
-		return params;
+	
+	public EmailContent getEmailContent() {
+		return emailContent;
 	}
-	public void setParams(HashMap<String, String> params) {
-		this.params = params;
+	public void setEmailContent(EmailContent emailContent) {
+		this.emailContent = emailContent;
 	}
 	public int getEventType() {
 		return eventType;
@@ -41,5 +46,17 @@ public class Message {
 	}
 	public void setTemplate(String template) {
 		this.template = template;
+	}
+	public int getAppId() {
+		return appId;
+	}
+	public void setAppId(int appId) {
+		this.appId = appId;
+	}
+	public HashMap<String, String> getParams() {
+		return params;
+	}
+	public void setParams(HashMap<String, String> params) {
+		this.params = params;
 	}
 }

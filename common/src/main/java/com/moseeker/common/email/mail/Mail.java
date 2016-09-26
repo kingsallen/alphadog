@@ -20,12 +20,16 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.moseeker.common.email.attachment.Attachment;
 import com.moseeker.common.email.config.EmailContent;
 import com.moseeker.common.email.config.EmailPoolConfig;
 import com.moseeker.common.email.config.EmailSessionConfig;
 import com.moseeker.common.email.config.ServerConfig;
 import com.moseeker.common.util.ConfigPropertiesUtil;
+import com.moseeker.common.util.StringUtils;
 
 /**
  * Created by chendi on 3/31/16.
@@ -36,11 +40,14 @@ import com.moseeker.common.util.ConfigPropertiesUtil;
  */
 public class Mail {
 	
+	private static Logger logger = LoggerFactory.getLogger(Mail.class);
+	
 	private static ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
 	private static final String serverDomain = propertiesReader.get("email.serverDomain", String.class);
     private static final Integer serverPort = propertiesReader.get("email.serverPort", Integer.class);
     private static final String userName = propertiesReader.get("email.userName", String.class);
     private static final String password = propertiesReader.get("email.password", String.class);
+    private static final String sender = propertiesReader.get("email.senderAddress", String.class);
 
     private final Message message;				//邮件
     private ServerConfig serverConfig;			//服务器配置
@@ -63,9 +70,10 @@ public class Mail {
 				        transport.sendMessage(this.message, this.message.getAllRecipients());
 				    } finally {
 				        transport.close();
+				        logger.info("from:"+message.getFrom() +" to:"+message.getAllRecipients()+" topic:"+message.getSubject());
 				    }
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			}
     	});
     }
@@ -89,11 +97,41 @@ public class Mail {
 				        transport.sendMessage(this.message, this.message.getAllRecipients());
 				    } finally {
 				        transport.close();
+				        logger.info("from:"+emailContent.getSender() +" to:"+emailContent.getRecipients()+" topic:"+emailContent.getSubject());
 				    }
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			}
     	});
+    }
+    
+    /**
+     * 发送邮件
+     * @param redisMsg redis内容
+     * @param callback
+     * @throws AddressException
+     * @throws MessagingException
+     * @throws IOException
+     */
+    public void send(String redisMsg, MailCallback callback) throws AddressException, MessagingException, IOException {
+    	//executorService.submit(() -> {
+    		try {
+    			EmailContent emailContent = callback.buildContent(redisMsg);
+    			buildHeader(message, emailContent);
+    		    buildContent(message, emailContent);
+    		    buildAttachment(message, emailContent);
+				Transport transport = this.message.getSession().getTransport();
+				    try {
+				        transport.connect(serverConfig.getHost(), serverConfig.getPort(), serverConfig.getUsername(), serverConfig.getPassword());
+				        transport.sendMessage(this.message, this.message.getAllRecipients());
+				    } finally {
+				        transport.close();
+				        logger.info("from:"+emailContent.getSender() +" to:"+emailContent.getRecipients()+" topic:"+emailContent.getSubject());
+				    }
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
+    	//});
     }
     
     /**
@@ -169,11 +207,30 @@ public class Mail {
          * 创建邮件
          * @param emailContent
          * @return
+         * @throws IOException 
          * @throws Exception
          */
-        public Mail build(EmailContent emailContent) throws Exception {
+        public Mail build(EmailContent emailContent) throws IOException, Exception {
             this.message = this.initMessage();
             this.buildHeader(emailContent).buildContent(emailContent).buildAttachment(emailContent);
+            this.message.saveChanges();
+            if(executorService == null) {
+            	  executorService = new ThreadPoolExecutor(3, 10,
+                          60L, TimeUnit.MILLISECONDS,
+                          new LinkedBlockingQueue<Runnable>());
+            }
+            return new Mail(this);
+        }
+        
+        /**
+         * 创建邮件
+         * @param emailContent
+         * @return
+         * @throws MessagingException 
+         * @throws Exception
+         */
+        public Mail buildMailServer() throws MessagingException {
+            this.message = this.initMessage();
             this.message.saveChanges();
             if(executorService == null) {
             	  executorService = new ThreadPoolExecutor(3, 10,
@@ -187,9 +244,11 @@ public class Mail {
          * 创建邮件标题、发件人、收件人
          * @param emailContent
          * @return
+         * @throws MessagingException 
+         * @throws AddressException 
          * @throws Exception
          */
-        private MailBuilder buildHeader(EmailContent emailContent) throws Exception {
+        private MailBuilder buildHeader(EmailContent emailContent) throws AddressException, MessagingException {
         	Mail.buildHeader(this.message, emailContent);
             return this;
         }
@@ -198,9 +257,11 @@ public class Mail {
          * 创建邮件内容
          * @param emailContent
          * @return
+         * @throws MessagingException 
+         * @throws IOException 
          * @throws Exception
          */
-        private MailBuilder buildContent(EmailContent emailContent) throws Exception {
+        private MailBuilder buildContent(EmailContent emailContent) throws IOException, MessagingException {
             Mail.buildContent(message, emailContent);
             return this;
         }
@@ -246,13 +307,17 @@ public class Mail {
      * @throws MessagingException
      */
     private static void buildHeader(Message message, EmailContent emailContent) throws AddressException, MessagingException {
-    	 message.setFrom(new InternetAddress(emailContent.getSender()));
-         message.setSubject(emailContent.getSubject());
-         ArrayList<InternetAddress> recipients = new ArrayList<>();
-         for (String recipient : emailContent.getRecipients()) {
-             recipients.add(new InternetAddress(recipient));
-         }
-         message.setRecipients(RecipientType.TO, recipients.toArray(new InternetAddress[emailContent.getRecipients().size()]));
+    	if(StringUtils.isNullOrEmpty(emailContent.getSender())) {
+    		message.setFrom(new InternetAddress(sender));
+    	} else {
+    		message.setFrom(new InternetAddress(emailContent.getSender()));
+    	}
+    	message.setSubject(emailContent.getSubject());
+    	ArrayList<InternetAddress> recipients = new ArrayList<>();
+    	for (String recipient : emailContent.getRecipients()) {
+    		recipients.add(new InternetAddress(recipient));
+    	}
+    	message.setRecipients(RecipientType.TO, recipients.toArray(new InternetAddress[emailContent.getRecipients().size()]));
     }
     
     /**

@@ -1,11 +1,5 @@
 package com.moseeker.common.cache;
 
-import org.junit.Test;
-
-import com.google.common.base.Stopwatch;
-import com.moseeker.common.redis.RedisClient;
-import com.moseeker.common.redis.RedisClientFactory;
-
 public class RedisClusterTest {
 
 	/*@Test

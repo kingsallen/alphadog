@@ -20,3 +20,11 @@ struct MessageTemplateNoticeStruct {
     5: optional map<string, MessageTplDataCol> data,
     6: optional byte enable_qx_retry = 1
 }
+
+struct EmailStruct {
+    1: 		i32 user_id,
+    2: 		string email,
+    3: 		string url,
+    4: optional i32 eventType,
+    5: optional string subject
+}
