@@ -94,6 +94,8 @@ public class ConstantlyMail implements MailCallback {
 		EmailSessionConfig sessionConfig = new EmailSessionConfig(true, "smtp");
 		mail = mailBuilder.buildSessionConfig(sessionConfig).buildMailServer();
 		String redisMsg = fetchConstantlyMessage();
+		System.out.println("redisMsg:"+redisMsg);
+		logger.info("redisMsg:"+redisMsg);
 		mail.send(redisMsg, this);
 		if (StringUtils.isNotNullOrEmpty(redisMsg)) {
 			sendMail();
