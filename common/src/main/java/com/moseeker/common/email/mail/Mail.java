@@ -1,6 +1,7 @@
 package com.moseeker.common.email.mail;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -15,6 +16,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.MimeUtility;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,6 +68,7 @@ public class Mail {
 			        logger.info("from:"+message.getFrom() +" to:"+message.getAllRecipients()+" topic:"+message.getSubject());
 			    }
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.error(e.getMessage(), e);
 		}
     }
@@ -184,9 +187,10 @@ public class Mail {
          * @return
          * @throws MessagingException 
          * @throws AddressException 
+         * @throws UnsupportedEncodingException 
          * @throws Exception
          */
-        private MailBuilder buildHeader(EmailContent emailContent) throws AddressException, MessagingException {
+        private MailBuilder buildHeader(EmailContent emailContent) throws AddressException, MessagingException, UnsupportedEncodingException {
         	Mail.buildHeader(this.message, emailContent);
             return this;
         }
@@ -243,12 +247,16 @@ public class Mail {
      * @param emailContent
      * @throws AddressException
      * @throws MessagingException
+     * @throws UnsupportedEncodingException 
      */
-    private static void buildHeader(Message message, EmailContent emailContent) throws AddressException, MessagingException {
+    private static void buildHeader(Message message, EmailContent emailContent) throws AddressException, MessagingException, UnsupportedEncodingException {
     	if(StringUtils.isNullOrEmpty(emailContent.getSender())) {
     		message.setFrom(new InternetAddress(sender));
     	} else {
     		message.setFrom(new InternetAddress(emailContent.getSender()));
+    		//message.setFrom(new InternetAddress("仟寻 <info@moseeker.net>", "仟寻 <info@moseeker.net>"));
+    		//message.setFrom(new InternetAddress(MimeUtility.mimeCharset("仟寻 <info@moseeker.net>")));
+    		//message.setFrom(new InternetAddress(MimeUtility.encodeText("仟寻 <info@moseeker.net>",MimeUtility.mimeCharset("UTF-8"), null)));
     	}
     	if(StringUtils.isNotNullOrEmpty(emailContent.getSubject())) {
     		message.setSubject(emailContent.getSubject());

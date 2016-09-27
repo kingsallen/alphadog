@@ -90,7 +90,7 @@ public class ConstantlyMail implements MailCallback {
 	private String sendMail() throws Exception {
 		String redisMsg = fetchConstantlyMessage();
 		
-		executorService.submit(() -> {
+		//executorService.submit(() -> {
 			try {
 				Message message = JSON.parseObject(redisMsg, Message.class);
 				String html = null;
@@ -119,7 +119,7 @@ public class ConstantlyMail implements MailCallback {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		});
+		//});
 		
 		if (StringUtils.isNotNullOrEmpty(redisMsg)) {
 			sendMail();
