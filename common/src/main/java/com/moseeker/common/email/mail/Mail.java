@@ -31,7 +31,6 @@ import com.moseeker.common.email.config.ServerConfig;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.StringUtils;
-import com.taobao.api.Constants;
 
 /**
  * Created by chendi on 3/31/16.
@@ -64,7 +63,7 @@ public class Mail {
 
     //将构造好的邮件发送到邮件服务器
     public void send() {
-    	//executorService.submit(() -> {
+    	executorService.submit(() -> {
     		 try {
 				Transport transport = this.message.getSession().getTransport();
 				    try {
@@ -77,7 +76,7 @@ public class Mail {
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
-    	//});
+    	});
     }
     
     /**
@@ -88,7 +87,7 @@ public class Mail {
      * @throws IOException	IO相关的异常
      */
     public void send(EmailContent emailContent) throws AddressException, MessagingException, IOException {
-    	//executorService.submit(() -> {
+    	executorService.submit(() -> {
     		try {
     			buildHeader(message, emailContent);
     		    buildContent(message, emailContent);
@@ -104,7 +103,7 @@ public class Mail {
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
-    	//});
+    	});
     }
     
     /**

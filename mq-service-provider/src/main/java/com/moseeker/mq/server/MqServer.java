@@ -1,9 +1,14 @@
 package com.moseeker.mq.server;
 
+import java.io.IOException;
+
+import javax.mail.MessagingException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import com.moseeker.mq.service.email.ConstantlyMail;
 import com.moseeker.mq.thrift.ThriftService;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.Server;
@@ -27,6 +32,14 @@ public class MqServer {
                     acac.getBean(ThriftService.class)
             );
             server.start();
+            
+            ConstantlyMail mailUtil = new ConstantlyMail();
+    		try {
+    			mailUtil.start();
+    		} catch (IOException | MessagingException e) {
+    			// TODO Auto-generated catch block
+    			e.printStackTrace();
+    		}
 
             synchronized (MqServer.class) {
                 while (true) {
