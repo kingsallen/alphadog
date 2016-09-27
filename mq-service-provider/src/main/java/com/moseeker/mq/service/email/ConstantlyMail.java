@@ -2,12 +2,7 @@ package com.moseeker.mq.service.email;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -86,17 +81,28 @@ public class ConstantlyMail implements MailCallback {
 	 * 发送邮件
 	 * @param mail
 	 * @return
-	 * @throws IOException
-	 * @throws MessagingException
+	 * @throws Exception 
 	 */
-	private String sendMail() throws IOException, MessagingException {
+	private String sendMail() throws Exception {
+		String redisMsg = fetchConstantlyMessage();
+		Message message = JSON.parseObject(redisMsg, Message.class);
+		for (Entry<Integer, String> entry : templates.entrySet()) {
+			if (message.getEventType() == entry.getKey().intValue()) {
+				EmailContent content = message.getEmailContent();
+				if (message.getParams() != null) {
+					for (Entry<String, String> param : message.getParams().entrySet()) {
+						entry.setValue(entry.getValue().replaceAll(param.getKey(), param.getValue()));
+					}
+				}
+				content.setContent(entry.getValue());
+			}
+		}
 		MailBuilder mailBuilder = new MailBuilder();
 		EmailSessionConfig sessionConfig = new EmailSessionConfig(true, "smtp");
-		mail = mailBuilder.buildSessionConfig(sessionConfig).buildMailServer();
-		String redisMsg = fetchConstantlyMessage();
+		mail = mailBuilder.buildSessionConfig(sessionConfig).buildEmailContent(message.getEmailContent()).buildMailServer();
 		System.out.println("redisMsg:"+redisMsg);
 		logger.info("redisMsg:"+redisMsg);
-		mail.send(redisMsg, this);
+		mail.send();
 		if (StringUtils.isNotNullOrEmpty(redisMsg)) {
 			sendMail();
 		}

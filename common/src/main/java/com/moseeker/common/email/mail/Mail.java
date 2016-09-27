@@ -203,6 +203,7 @@ public class Mail {
          */
         public MailBuilder buildEmailContent(EmailContent emailContent) throws Exception {
         	buildHeader(emailContent).buildContent(emailContent).buildAttachment(emailContent);
+        	this.message.saveChanges();
             return this;
         }
         
