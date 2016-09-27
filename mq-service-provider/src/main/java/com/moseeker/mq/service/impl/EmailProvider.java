@@ -17,6 +17,7 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
+import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.common.util.StringUtils;
@@ -73,9 +74,10 @@ public class EmailProvider {
 					List<String> recipients = new ArrayList<>();
 					recipients.add(email);
 					mailContent.setRecipients(recipients);
-					mailContent.setSenderName("info@moseeker.net");
-					mailContent.setSenderDisplay("仟寻");
-					mailContent.setSubject("请验证邮箱--仟寻招聘");
+					ConfigPropertiesUtil propertiesUtil = ConfigPropertiesUtil.getInstance();
+					mailContent.setSenderName(propertiesUtil.get("email.verify.sendName", String.class));
+					mailContent.setSenderDisplay(propertiesUtil.get("email.verify.sendDisplay", String.class));
+					mailContent.setSubject(propertiesUtil.get("email.verify.subject", String.class));
 					
 					message.setEmailContent(mailContent);
 					

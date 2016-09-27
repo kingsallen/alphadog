@@ -67,7 +67,6 @@ public class Mail {
 			        logger.info("from:"+message.getFrom() +" to:"+message.getAllRecipients()+" topic:"+message.getSubject());
 			    }
 		} catch (Exception e) {
-			e.printStackTrace();
 			logger.error(e.getMessage(), e);
 		}
     }
@@ -252,10 +251,7 @@ public class Mail {
     	if(StringUtils.isNullOrEmpty(emailContent.getSenderName())) {
     		message.setFrom(new InternetAddress(sender));
     	} else {
-    		//message.setFrom(new InternetAddress(emailContent.getSender()));
     		message.setFrom(new InternetAddress(emailContent.getSenderName(), emailContent.getSenderDisplay()));
-    		//message.setFrom(new InternetAddress(MimeUtility.mimeCharset("仟寻 <info@moseeker.net>")));
-    		//message.setFrom(new InternetAddress(MimeUtility.encodeText("仟寻 <info@moseeker.net>",MimeUtility.mimeCharset("UTF-8"), null)));
     	}
     	if(StringUtils.isNotNullOrEmpty(emailContent.getSubject())) {
     		message.setSubject(emailContent.getSubject());

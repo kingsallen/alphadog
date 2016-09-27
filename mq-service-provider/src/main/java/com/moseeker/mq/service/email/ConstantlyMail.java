@@ -101,19 +101,14 @@ public class ConstantlyMail implements MailCallback {
 						if (message.getParams() != null) {
 							for (Entry<String, String> param : message.getParams().entrySet()) {
 								html = html.replaceAll(param.getKey(), param.getValue());
-								System.out.println(html);
 							}
 						}
 						content.setContent(html);
-						System.out.println(content.getContent());
 					}
 				}
-				System.out.println("content:"+message.getEmailContent().getContent());
 				MailBuilder mailBuilder = new MailBuilder();
 				EmailSessionConfig sessionConfig = new EmailSessionConfig(true, "smtp");
 				Mail mail = mailBuilder.buildSessionConfig(sessionConfig).build(message.getEmailContent());
-				System.out.println("redisMsg:"+redisMsg);
-				System.out.println("content:"+message.getEmailContent().getContent());
 				logger.info("redisMsg:"+redisMsg);
 				mail.send();
 			} catch (Exception e) {
