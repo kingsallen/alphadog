@@ -118,7 +118,6 @@ public class Mail {
          */
         public MailBuilder() throws MessagingException {
         	serverConfig = new ServerConfig(serverDomain, serverPort, userName, password);
-        	
         }
 
         /**
@@ -147,6 +146,9 @@ public class Mail {
          * @throws Exception
          */
         public MailBuilder buildEmailContent(EmailContent emailContent) throws Exception {
+        	if(message == null) {
+        		initMessage();
+        	}
         	buildHeader(emailContent).buildContent(emailContent).buildAttachment(emailContent);
         	this.message.saveChanges();
             return this;
@@ -160,7 +162,9 @@ public class Mail {
          * @throws Exception
          */
         public Mail build(EmailContent emailContent) throws IOException, Exception {
-            this.message = this.initMessage();
+        	if(message == null) {
+        		initMessage();
+        	}
             this.buildHeader(emailContent).buildContent(emailContent).buildAttachment(emailContent);
             this.message.saveChanges();
             return new Mail(this);
@@ -174,7 +178,9 @@ public class Mail {
          * @throws Exception
          */
         public Mail buildMailServer() throws MessagingException {
-            this.message = this.initMessage();
+        	if(message == null) {
+        		initMessage();
+        	}
             this.message.saveChanges();
             return new Mail(this);
         }

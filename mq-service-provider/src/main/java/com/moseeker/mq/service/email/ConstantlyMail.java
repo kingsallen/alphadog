@@ -20,7 +20,6 @@ import com.moseeker.common.email.config.EmailContent;
 import com.moseeker.common.email.config.EmailSessionConfig;
 import com.moseeker.common.email.mail.Mail;
 import com.moseeker.common.email.mail.Mail.MailBuilder;
-import com.moseeker.common.email.mail.MailCallback;
 import com.moseeker.common.email.mail.Message;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
@@ -44,7 +43,7 @@ import com.moseeker.mq.server.MqServer;
  * @author wjf
  * @version
  */
-public class ConstantlyMail implements MailCallback {
+public class ConstantlyMail {
 	
 	private static Logger logger = LoggerFactory.getLogger(MqServer.class);
 
@@ -132,35 +131,13 @@ public class ConstantlyMail implements MailCallback {
 		executorService = new ThreadPoolExecutor(3, 10,
                 60L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<Runnable>());
-		//new Thread(() -> {
+		new Thread(() -> {
 			try {
 				sendMail();
 			} catch (Exception e) {
 				e.printStackTrace();
 				logger.error(e.getMessage(), e);
 			}
-		//}).start();
-	}
-
-	/**
-	 * 根据消息队列中的数据，生成邮件内容
-	 * @param redisMsg 消息队列中的邮件内容
-	 * @return EmailContent 邮件内容
-	 */
-	@Override
-	public EmailContent buildContent(String redisMsg) {
-		Message message = JSON.parseObject(redisMsg, Message.class);
-		for (Entry<Integer, String> entry : templates.entrySet()) {
-			if (message.getEventType() == entry.getKey().intValue()) {
-				EmailContent content = message.getEmailContent();
-				if (message.getParams() != null) {
-					for (Entry<String, String> param : message.getParams().entrySet()) {
-						entry.setValue(entry.getValue().replaceAll(param.getKey(), param.getValue()));
-					}
-				}
-				content.setContent(entry.getValue());
-			}
-		}
-		return message.getEmailContent();
+		}).start();
 	}
 }
