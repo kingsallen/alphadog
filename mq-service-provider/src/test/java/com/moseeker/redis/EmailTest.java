@@ -38,7 +38,8 @@ public class EmailTest {
 			List<String> recipients = new ArrayList<>();
 			recipients.add("wengjianfei@moseeker.com");
 			emailContent.setRecipients(recipients);
-			emailContent.setSender("jzh@moseeker.com");
+			emailContent.setSenderName("jzh@moseeker.com");
+			emailContent.setSenderDisplay("仟寻");
 			emailContent.setSubject("hello world!");
 			emailContent.setSubType("html");
 			Mail mail = mailBuilder.buildSessionConfig(sessionConfig).buildMailServer();

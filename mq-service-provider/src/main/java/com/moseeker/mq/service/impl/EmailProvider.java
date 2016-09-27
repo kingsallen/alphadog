@@ -73,7 +73,8 @@ public class EmailProvider {
 					List<String> recipients = new ArrayList<>();
 					recipients.add(email);
 					mailContent.setRecipients(recipients);
-					mailContent.setSender("仟寻 <info@moseeker.net>");
+					mailContent.setSenderName("info@moseeker.net");
+					mailContent.setSenderDisplay("仟寻");
 					mailContent.setSubject("请验证邮箱--仟寻招聘");
 					
 					message.setEmailContent(mailContent);

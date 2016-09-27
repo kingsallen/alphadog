@@ -15,7 +15,8 @@ import com.moseeker.common.email.attachment.Attachment;
  */
 public class EmailContent {
 
-	private String sender;							//发送者
+	private String senderName;							//发送者邮件
+	private String senderDisplay;					//发送者称呼
 	private List<String> recipients;				//接收者
 	private String content;							//邮件内容
 	private String subject;							//邮件标题
@@ -24,11 +25,18 @@ public class EmailContent {
 	private String charset = "utf-8";				//编码格式
 	private String subType = "html";				//邮件内容格式
 	
-	public String getSender() {
-		return sender;
+	public String getSenderName() {
+		return senderName;
 	}
-	public void setSender(String sender) {
-		this.sender = sender;
+	
+	public void setSenderName(String senderName) {
+		this.senderName = senderName;
+	}
+	public String getSenderDisplay() {
+		return senderDisplay;
+	}
+	public void setSenderDisplay(String senderDisplay) {
+		this.senderDisplay = senderDisplay;
 	}
 	public List<String> getRecipients() {
 		return recipients;

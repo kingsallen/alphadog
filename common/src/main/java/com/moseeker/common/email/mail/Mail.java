@@ -16,7 +16,6 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import javax.mail.internet.MimeUtility;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,7 +91,7 @@ public class Mail {
 			        transport.sendMessage(this.message, this.message.getAllRecipients());
 			    } finally {
 			        transport.close();
-			        logger.info("from:"+emailContent.getSender() +" to:"+emailContent.getRecipients()+" topic:"+emailContent.getSubject());
+			        logger.info("from:"+emailContent.getSenderName() +" to:"+emailContent.getRecipients()+" topic:"+emailContent.getSubject());
 			    }
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -250,11 +249,11 @@ public class Mail {
      * @throws UnsupportedEncodingException 
      */
     private static void buildHeader(Message message, EmailContent emailContent) throws AddressException, MessagingException, UnsupportedEncodingException {
-    	if(StringUtils.isNullOrEmpty(emailContent.getSender())) {
+    	if(StringUtils.isNullOrEmpty(emailContent.getSenderName())) {
     		message.setFrom(new InternetAddress(sender));
     	} else {
-    		message.setFrom(new InternetAddress(emailContent.getSender()));
-    		//message.setFrom(new InternetAddress("仟寻 <info@moseeker.net>", "仟寻 <info@moseeker.net>"));
+    		//message.setFrom(new InternetAddress(emailContent.getSender()));
+    		message.setFrom(new InternetAddress(emailContent.getSenderName(), emailContent.getSenderDisplay()));
     		//message.setFrom(new InternetAddress(MimeUtility.mimeCharset("仟寻 <info@moseeker.net>")));
     		//message.setFrom(new InternetAddress(MimeUtility.encodeText("仟寻 <info@moseeker.net>",MimeUtility.mimeCharset("UTF-8"), null)));
     	}
