@@ -1,6 +1,10 @@
 package com.moseeker.mq.service.email;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -66,9 +70,16 @@ public class ConstantlyMail implements MailCallback {
 	 */
 	private void initConstantlyMail() throws IOException, MessagingException {
 		// 加载模版文件
-		String emailVerify = new String(Files.readAllBytes(Paths.get("email_verifier_template.html")),
-				StandardCharsets.UTF_8);
-		templates.put(Constant.EVENT_TYPE_EMAIL_VERIFIED, emailVerify);
+		//URL fileURL=this.getClass().getResource("/resource/res.txt");
+		InputStreamReader is= new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("email_verifier_template.html"), "UTF-8");    
+       //InputStream is=当前类.class.getResourceAsStream("XX.config");     
+        BufferedReader br = new BufferedReader(is);    
+        StringBuffer sb = new StringBuffer(); 
+        String s = "";
+        while((s=br.readLine())!=null) {
+        	sb.append(s);
+        }
+		templates.put(Constant.EVENT_TYPE_EMAIL_VERIFIED, sb.toString());
 	}
 
 	/**
