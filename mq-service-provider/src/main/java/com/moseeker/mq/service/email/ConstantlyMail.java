@@ -5,6 +5,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import javax.mail.MessagingException;
 
@@ -45,7 +49,7 @@ public class ConstantlyMail implements MailCallback {
 	private static Logger logger = LoggerFactory.getLogger(MqServer.class);
 
 	private HashMap<Integer, String> templates = new HashMap<>(); // 模版信息
-	private Mail mail; // 邮件发送工具
+	private ExecutorService executorService;
 
 	/**
 	 * 从redis业务邮件队列中获取邮件信息
@@ -85,24 +89,38 @@ public class ConstantlyMail implements MailCallback {
 	 */
 	private String sendMail() throws Exception {
 		String redisMsg = fetchConstantlyMessage();
-		Message message = JSON.parseObject(redisMsg, Message.class);
-		for (Entry<Integer, String> entry : templates.entrySet()) {
-			if (message.getEventType() == entry.getKey().intValue()) {
-				EmailContent content = message.getEmailContent();
-				if (message.getParams() != null) {
-					for (Entry<String, String> param : message.getParams().entrySet()) {
-						entry.setValue(entry.getValue().replaceAll(param.getKey(), param.getValue()));
+		
+		executorService.submit(() -> {
+			try {
+				Message message = JSON.parseObject(redisMsg, Message.class);
+				String html = null;
+				for (Entry<Integer, String> entry : templates.entrySet()) {
+					if (message.getEventType() == entry.getKey().intValue()) {
+						html = entry.getValue();
+						EmailContent content = message.getEmailContent();
+						if (message.getParams() != null) {
+							for (Entry<String, String> param : message.getParams().entrySet()) {
+								html = html.replaceAll(param.getKey(), param.getValue());
+								System.out.println(html);
+							}
+						}
+						content.setContent(html);
+						System.out.println(content.getContent());
 					}
 				}
-				content.setContent(entry.getValue());
+				System.out.println("content:"+message.getEmailContent().getContent());
+				MailBuilder mailBuilder = new MailBuilder();
+				EmailSessionConfig sessionConfig = new EmailSessionConfig(true, "smtp");
+				Mail mail = mailBuilder.buildSessionConfig(sessionConfig).build(message.getEmailContent());
+				System.out.println("redisMsg:"+redisMsg);
+				System.out.println("content:"+message.getEmailContent().getContent());
+				logger.info("redisMsg:"+redisMsg);
+				mail.send();
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-		}
-		MailBuilder mailBuilder = new MailBuilder();
-		EmailSessionConfig sessionConfig = new EmailSessionConfig(true, "smtp");
-		mail = mailBuilder.buildSessionConfig(sessionConfig).buildEmailContent(message.getEmailContent()).buildMailServer();
-		System.out.println("redisMsg:"+redisMsg);
-		logger.info("redisMsg:"+redisMsg);
-		mail.send();
+		});
+		
 		if (StringUtils.isNotNullOrEmpty(redisMsg)) {
 			sendMail();
 		}
@@ -116,14 +134,17 @@ public class ConstantlyMail implements MailCallback {
 	 */
 	public void start() throws IOException, MessagingException {
 		initConstantlyMail();
-		new Thread(() -> {
+		executorService = new ThreadPoolExecutor(3, 10,
+                60L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<Runnable>());
+		//new Thread(() -> {
 			try {
 				sendMail();
 			} catch (Exception e) {
 				e.printStackTrace();
 				logger.error(e.getMessage(), e);
 			}
-		}).start();
+		//}).start();
 	}
 
 	/**
