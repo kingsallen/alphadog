@@ -37,8 +37,8 @@ public class MqServer {
     		try {
     			mailUtil.start();
     		} catch (IOException | MessagingException e) {
-    			// TODO Auto-generated catch block
     			e.printStackTrace();
+    			LOGGER.error(e.getMessage(), e);
     		}
 
             synchronized (MqServer.class) {

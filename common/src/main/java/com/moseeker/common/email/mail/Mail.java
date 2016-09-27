@@ -121,6 +121,7 @@ public class Mail {
     			buildHeader(message, emailContent);
     		    buildContent(message, emailContent);
     		    buildAttachment(message, emailContent);
+    		    message.saveChanges();
 				Transport transport = this.message.getSession().getTransport();
 				    try {
 				        transport.connect(serverConfig.getHost(), serverConfig.getPort(), serverConfig.getUsername(), serverConfig.getPassword());
@@ -295,7 +296,7 @@ public class Mail {
             }
             Session session = Session.getDefaultInstance(properties);
             Message message = new MimeMessage(session);
-            Multipart multipart = new MimeMultipart("html");
+            Multipart multipart = new MimeMultipart("mixed");
             message.setContent(multipart);
             return message;
         }
@@ -337,7 +338,7 @@ public class Mail {
     	 Multipart content = (Multipart) message.getContent();
          MimeBodyPart body = new MimeBodyPart();
          content.addBodyPart(body);
-         body.setText(emailContent.getContent(), emailContent.getCharset(), "html");
+         body.setText(emailContent.getContent(), emailContent.getCharset(), emailContent.getSubType());
     }
     
     /**

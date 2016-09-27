@@ -22,7 +22,7 @@ public class EmailContent {
 	private List<Attachment> attachments;			//附件
 	
 	private String charset = "utf-8";				//编码格式
-	private String subType = "text/html";				//邮件内容格式
+	private String subType = "html";				//邮件内容格式
 	
 	public String getSender() {
 		return sender;
