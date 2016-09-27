@@ -66,7 +66,7 @@ public class ConstantlyMail implements MailCallback {
 	 */
 	private void initConstantlyMail() throws IOException, MessagingException {
 		// 加载模版文件
-		String emailVerify = new String(Files.readAllBytes(Paths.get("./bin/email_verifier_template.html")),
+		String emailVerify = new String(Files.readAllBytes(Paths.get("email_verifier_template.html")),
 				StandardCharsets.UTF_8);
 		templates.put(Constant.EVENT_TYPE_EMAIL_VERIFIED, emailVerify);
 	}
@@ -97,13 +97,14 @@ public class ConstantlyMail implements MailCallback {
 	 */
 	public void start() throws IOException, MessagingException {
 		initConstantlyMail();
-		//new Thread(() -> {
+		new Thread(() -> {
 			try {
 				sendMail();
 			} catch (Exception e) {
+				e.printStackTrace();
 				logger.error(e.getMessage(), e);
 			}
-		//}).start();
+		}).start();
 	}
 
 	/**

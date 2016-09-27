@@ -59,9 +59,9 @@ public class EmailProvider {
 					Message message = new Message();
 					message.setAppId(Constant.APPID_ALPHADOG);
 					message.setEventType(Constant.EVENT_TYPE_EMAIL_VERIFIED);
-					message.getParams().put("{username}", username);
-					message.getParams().put("{send_date}", new DateTime().toString("yyyy-MM-dd"));
-					message.getParams().put("{verified_url}", url);
+					message.getParams().put("# username #", username);
+					message.getParams().put("# send_date #", new DateTime().toString("yyyy-MM-dd"));
+					message.getParams().put("# verified_url #", url);
 					
 					EmailContent mailContent = new EmailContent();
 					mailContent.setCharset(StandardCharsets.UTF_8.toString());

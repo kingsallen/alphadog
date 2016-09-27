@@ -22,7 +22,6 @@ public class Message {
 	private String template;									//指定的消息模版的位置
 	private int appId;											//调用方项目编号
 	
-	
 	public EmailContent getEmailContent() {
 		return emailContent;
 	}

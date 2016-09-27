@@ -29,7 +29,9 @@ import com.moseeker.common.email.config.EmailPoolConfig;
 import com.moseeker.common.email.config.EmailSessionConfig;
 import com.moseeker.common.email.config.ServerConfig;
 import com.moseeker.common.util.ConfigPropertiesUtil;
+import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.StringUtils;
+import com.taobao.api.Constants;
 
 /**
  * Created by chendi on 3/31/16.
@@ -62,7 +64,7 @@ public class Mail {
 
     //将构造好的邮件发送到邮件服务器
     public void send() {
-    	executorService.submit(() -> {
+    	//executorService.submit(() -> {
     		 try {
 				Transport transport = this.message.getSession().getTransport();
 				    try {
@@ -75,7 +77,7 @@ public class Mail {
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
-    	});
+    	//});
     }
     
     /**
@@ -86,37 +88,8 @@ public class Mail {
      * @throws IOException	IO相关的异常
      */
     public void send(EmailContent emailContent) throws AddressException, MessagingException, IOException {
-    	executorService.submit(() -> {
-    		try {
-    			buildHeader(message, emailContent);
-    		    buildContent(message, emailContent);
-    		    buildAttachment(message, emailContent);
-				Transport transport = this.message.getSession().getTransport();
-				    try {
-				        transport.connect(serverConfig.getHost(), serverConfig.getPort(), serverConfig.getUsername(), serverConfig.getPassword());
-				        transport.sendMessage(this.message, this.message.getAllRecipients());
-				    } finally {
-				        transport.close();
-				        logger.info("from:"+emailContent.getSender() +" to:"+emailContent.getRecipients()+" topic:"+emailContent.getSubject());
-				    }
-			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
-			}
-    	});
-    }
-    
-    /**
-     * 发送邮件
-     * @param redisMsg redis内容
-     * @param callback
-     * @throws AddressException
-     * @throws MessagingException
-     * @throws IOException
-     */
-    public void send(String redisMsg, MailCallback callback) throws AddressException, MessagingException, IOException {
     	//executorService.submit(() -> {
     		try {
-    			EmailContent emailContent = callback.buildContent(redisMsg);
     			buildHeader(message, emailContent);
     		    buildContent(message, emailContent);
     		    buildAttachment(message, emailContent);
@@ -132,6 +105,36 @@ public class Mail {
 				logger.error(e.getMessage(), e);
 			}
     	//});
+    }
+    
+    /**
+     * 发送邮件
+     * @param redisMsg redis内容
+     * @param callback
+     * @throws AddressException
+     * @throws MessagingException
+     * @throws IOException
+     */
+    public void send(String redisMsg, MailCallback callback) throws AddressException, MessagingException, IOException {
+    	executorService.submit(() -> {
+    		try {
+    			EmailContent emailContent = callback.buildContent(redisMsg);
+    			buildHeader(message, emailContent);
+    		    buildContent(message, emailContent);
+    		    buildAttachment(message, emailContent);
+				Transport transport = this.message.getSession().getTransport();
+				    try {
+				        transport.connect(serverConfig.getHost(), serverConfig.getPort(), serverConfig.getUsername(), serverConfig.getPassword());
+				        transport.sendMessage(this.message, this.message.getAllRecipients());
+				    } finally {
+				        transport.close();
+				        logger.info("from:"+emailContent.getSender() +" to:"+emailContent.getRecipients()+" topic:"+emailContent.getSubject());
+				    }
+			} catch (Exception e) {
+				e.printStackTrace();
+				logger.error(e.getMessage(), e);
+			}
+    	});
     }
     
     /**
@@ -293,7 +296,7 @@ public class Mail {
             }
             Session session = Session.getDefaultInstance(properties);
             Message message = new MimeMessage(session);
-            Multipart multipart = new MimeMultipart("mixed");
+            Multipart multipart = new MimeMultipart("html");
             message.setContent(multipart);
             return message;
         }
@@ -312,7 +315,11 @@ public class Mail {
     	} else {
     		message.setFrom(new InternetAddress(emailContent.getSender()));
     	}
-    	message.setSubject(emailContent.getSubject());
+    	if(StringUtils.isNotNullOrEmpty(emailContent.getSubject())) {
+    		message.setSubject(emailContent.getSubject());
+    	} else {
+    		message.setSubject(Constant.EMAIL_VERIFIED_SUBJECT);
+    	}
     	ArrayList<InternetAddress> recipients = new ArrayList<>();
     	for (String recipient : emailContent.getRecipients()) {
     		recipients.add(new InternetAddress(recipient));
@@ -331,7 +338,7 @@ public class Mail {
     	 Multipart content = (Multipart) message.getContent();
          MimeBodyPart body = new MimeBodyPart();
          content.addBodyPart(body);
-         body.setText(emailContent.getContent(), emailContent.getCharset(), emailContent.getSubType());
+         body.setText(emailContent.getContent(), emailContent.getCharset(), "html");
     }
     
     /**
@@ -342,10 +349,11 @@ public class Mail {
      * @throws MessagingException
      */
     private static void buildAttachment(Message message, EmailContent emailContent) throws IOException, MessagingException {
-    	Multipart content = (Multipart) message.getContent();
-        
-        for (Attachment attachment : emailContent.getAttachments()) {
-            content.addBodyPart(attachment.getAttachment());
+        if(emailContent.getAttachments() != null) {
+        	Multipart content = (Multipart) message.getContent();
+        	for (Attachment attachment : emailContent.getAttachments()) {
+                content.addBodyPart(attachment.getAttachment());
+            }
         }
     }
 }
