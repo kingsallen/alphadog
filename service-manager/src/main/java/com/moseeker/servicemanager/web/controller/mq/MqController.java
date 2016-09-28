@@ -82,8 +82,8 @@ public class MqController {
         Map<String, MessageTplDataCol> data = new HashMap<String, MessageTplDataCol>();
         for(Map.Entry dataEntry : dataMap.entrySet()){
             MessageTplDataCol messageTplDataCol = new MessageTplDataCol();
-            messageTplDataCol.setColor(((JSONObject)dataEntry.getValue()).get("color").toString());
-            messageTplDataCol.setValue(((JSONObject)dataEntry.getValue()).get("value").toString());
+            messageTplDataCol.setColor(((HashMap)dataEntry.getValue()).get("color").toString());
+            messageTplDataCol.setValue(((HashMap)dataEntry.getValue()).get("value").toString());
             data.put(dataEntry.getKey().toString(), messageTplDataCol);
         }
         return data;
