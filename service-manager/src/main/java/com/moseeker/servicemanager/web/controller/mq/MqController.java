@@ -42,6 +42,7 @@ public class MqController {
             Response result = mqService.messageTemplateNotice(this.getMessageTemplateNoticeStruct(request));
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
+        	e.printStackTrace();
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
