@@ -52,20 +52,18 @@ public class MqController {
      *
      * @param request
      * @return
+     * @throws Exception 
      */
-    private MessageTemplateNoticeStruct getMessageTemplateNoticeStruct(HttpServletRequest request){
+    private MessageTemplateNoticeStruct getMessageTemplateNoticeStruct(HttpServletRequest request) throws Exception{
         MessageTemplateNoticeStruct messageTemplateNoticeStruct = new MessageTemplateNoticeStruct();
         Map<String, Object> paramMap = null;
-		try {
-			paramMap = ParamUtils.parseRequestParam(request);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		paramMap = ParamUtils.parseRequestParam(request);
         if(paramMap != null){
             messageTemplateNoticeStruct.setUser_id((int)paramMap.get("user_id"));
             messageTemplateNoticeStruct.setSys_template_id((int)paramMap.get("sys_template_id"));
-            messageTemplateNoticeStruct.setUrl(paramMap.get("url").toString());
+            if(paramMap.get("url") != null) {
+            	messageTemplateNoticeStruct.setUrl(paramMap.get("url").toString());
+            }
             messageTemplateNoticeStruct.setCompany_id((int)paramMap.get("company_id"));
             messageTemplateNoticeStruct.setData(this.getMessagetplData((Map<String, Map<String, JSONObject>>)paramMap.get("data")));
             messageTemplateNoticeStruct.setEnable_qx_retry((byte)(int)paramMap.getOrDefault("enable_qx_retry", 1)); // Integer->int->byte
