@@ -238,7 +238,7 @@ public class Mail {
                 properties.setProperty("mail.transport.protocol", sessionConfig.getProtocol());
             }
             Session session = Session.getDefaultInstance(properties);
-            Message message = new MimeMessage(session);
+            message = new MimeMessage(session);
             Multipart multipart = new MimeMultipart("mixed");
             message.setContent(multipart);
             return message;
@@ -257,6 +257,10 @@ public class Mail {
     	if(StringUtils.isNullOrEmpty(emailContent.getSenderName())) {
     		message.setFrom(new InternetAddress(sender));
     	} else {
+    		if(message == null) {
+    			System.out.println("message is null!");
+    		}
+    		System.out.println("message is null!"+emailContent.getSenderName()+" "+emailContent.getSenderDisplay());
     		message.setFrom(new InternetAddress(emailContent.getSenderName(), emailContent.getSenderDisplay()));
     	}
     	if(StringUtils.isNotNullOrEmpty(emailContent.getSubject())) {
