@@ -350,10 +350,13 @@ public class BeanUtils {
 		}
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private static List<Object> converToList(Object value) {
 		List<Object> result = new ArrayList<>();
 		if(value instanceof JSONArray) {
 			Collections.addAll(result, ((JSONArray)value).toArray());
+		} else if(value instanceof ArrayList) {
+			return (List)value;
 		} else {
 			Object[] params = (Object[])value;
 			Collections.addAll(result, params);

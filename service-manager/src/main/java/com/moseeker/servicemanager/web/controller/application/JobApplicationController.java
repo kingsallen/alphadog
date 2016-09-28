@@ -162,7 +162,7 @@ public class JobApplicationController {
 	public String validateUserApplicationCheckCountAtCompany(HttpServletRequest request, HttpServletResponse response) {
 		try {
 
-			Map<String, Object> paramMap = ParamUtils.mergeRequestParameters(request);
+			Map<String, Object> paramMap = ParamUtils.parseRequestParam(request);
 
 			long userId = Long.valueOf(paramMap.get("user_id").toString());
 			long companyId = Long.valueOf(paramMap.get("company_id").toString());

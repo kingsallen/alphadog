@@ -152,7 +152,7 @@ public class MD5Util {
 	 * 
 	 * @return
 	 */
-	private static String getSaltSHA1() {
+	/*private static String getSaltSHA1() {
 		SecureRandom sr;
 		byte[] salt = new byte[16];
 		try {
@@ -163,7 +163,7 @@ public class MD5Util {
 		}
 
 		return salt.toString();
-	}
+	}*/
 
 	/**
 	 * PBKDF2加密

@@ -51,7 +51,7 @@ public class WorksExpController {
 	public String post(HttpServletRequest request, HttpServletResponse response) {
 		//PrintWriter writer = null;
 		try {
-			Map<String, Object> data = ParamUtils.mergeRequestParameters(request);
+			Map<String, Object> data = ParamUtils.parseRequestParam(request);
 			WorkExp workExp = ParamUtils.initModelForm(data, WorkExp.class);
 			if(workExp.getSource() == 0) {
 				Integer appid = BeanUtils.converToInteger(data.get("appid"));
@@ -73,7 +73,7 @@ public class WorksExpController {
 	@ResponseBody
 	public String put(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			Map<String, Object> data = ParamUtils.mergeRequestParameters(request);
+			Map<String, Object> data = ParamUtils.parseRequestParam(request);
 			WorkExp workExp = ParamUtils.initModelForm(data, WorkExp.class);
 			if(workExp.getSource() == 0) {
 				Integer appid = BeanUtils.converToInteger(data.get("appid"));

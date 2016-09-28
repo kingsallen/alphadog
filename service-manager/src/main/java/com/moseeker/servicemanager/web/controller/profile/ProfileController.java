@@ -20,6 +20,7 @@ import com.moseeker.common.util.BeanUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.servicemanager.web.controller.util.ProfileParamUtil;
 import com.moseeker.servicemanager.web.controller.profile.form.OutPutResumeForm;
 import com.moseeker.servicemanager.web.controller.profile.form.OutPutResumeUtil;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -97,21 +98,22 @@ public class ProfileController {
 		// PrintWriter writer = null;
 		try {
 			// GET方法 通用参数解析并赋值
-			Map<String, Object> param = ParamUtils.mergeRequestParameterList(request);
-			Object[] userIds = (Object[]) param.get("user_id");
-			Object[] uuids = (String[]) param.get("uuid");
-			Object[] profileIds = (Object[]) param.get("profile_id");
-			if ((userIds != null && userIds.length > 0) || (uuids != null && uuids.length > 0)
-					|| (profileIds != null && profileIds.length > 0)) {
+			Map<String, Object> param = ParamUtils.parseRequestParam(request);
+			
+			List<String> userIds = ProfileParamUtil.getProfilesUserIds(param);
+			List<String> uuids = ProfileParamUtil.getProfilesUUIDs(param);
+			List<String> profileIds = ProfileParamUtil.getProfilesIds(param);
+			if ((userIds != null && userIds.size() > 0) || (uuids != null && uuids.size() > 0)
+					|| (profileIds != null && profileIds.size() > 0)) {
 				int count = 0;
 				if(userIds != null) {
-					count = userIds.length;
+					count = userIds.size();
 				}
 				if(uuids != null) {
-					count = Math.max(count, uuids.length);
+					count = Math.max(count, uuids.size());
 				}
 				if(profileIds != null) {
-					count = Math.max(count, profileIds.length);
+					count = Math.max(count, profileIds.size());
 				}
 				if(count > 1000) {
 					count = 1000;
@@ -122,18 +124,18 @@ public class ProfileController {
 					int userId = 0;
 					int profileId = 0;
 					String uuid = null;
-					if(userIds != null && userIds.length-1 >= i) {
-						userId = BeanUtils.converToInteger(userIds[i]);
+					if(userIds != null && userIds.size()-1 >= i) {
+						userId = BeanUtils.converToInteger(userIds.get(i));
 					}
-					if(profileIds != null && profileIds.length-1 >=i) {
+					if(profileIds != null && profileIds.size()-1 >=i) {
 						try {
-							profileId = BeanUtils.converToInteger(profileIds[i]);
+							profileId = BeanUtils.converToInteger(profileIds.get(i));
 						} catch (Exception e) {
 							logger.error(e.getMessage(), e);
 						}
 					}
-					if(uuids != null && uuids.length -1 >= i) {
-						uuid = BeanUtils.converToString(uuids[i]);
+					if(uuids != null && uuids.size() -1 >= i) {
+						uuid = BeanUtils.converToString(uuids.get(i));
 					}
 					result = profileService.getResource(userId, profileId, uuid);
 					if(result != null && result.getStatus() == 0) {

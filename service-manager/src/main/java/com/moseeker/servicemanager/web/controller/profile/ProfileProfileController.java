@@ -91,7 +91,7 @@ public class ProfileProfileController {
 	public String completeness(HttpServletRequest request, HttpServletResponse response) {
 		//PrintWriter writer = null;
 		try {
-			Map<String,Object> params = ParamUtils.mergeRequestParameters(request);
+			Map<String,Object> params = ParamUtils.parseRequestParam(request);
 			int userId = 0;
 			if(params.get("user_id") != null) {
 				userId = BeanUtils.converToInteger(params.get("user_id"));

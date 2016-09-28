@@ -69,7 +69,7 @@ public class CompanyController {
 	@ResponseBody
 	public String addCompany(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			Map<String, Object> data = ParamUtils.mergeRequestParameters(request);
+			Map<String, Object> data = ParamUtils.parseRequestParam(request);
 			Hrcompany company = ParamUtils.initModelForm(data, Hrcompany.class);
 			if(company.getSource() == 0) {
 				Integer appid = BeanUtils.converToInteger(data.get("appid"));
