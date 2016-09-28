@@ -105,6 +105,8 @@ public class ConstantlyMail {
 						content.setContent(html);
 					}
 				}
+				logger.info("redisMsg:"+redisMsg);
+				System.out.println("redisMsg:"+redisMsg);
 				MailBuilder mailBuilder = new MailBuilder();
 				EmailSessionConfig sessionConfig = new EmailSessionConfig(true, "smtp");
 				Mail mail = mailBuilder.buildSessionConfig(sessionConfig).build(message.getEmailContent());
