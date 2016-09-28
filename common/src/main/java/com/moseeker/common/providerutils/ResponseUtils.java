@@ -27,7 +27,8 @@ public class ResponseUtils {
         response.setStatus(0);
         response.setMessage("success");
         //JSON.DEFFAULT_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-        response.setData(JSON.toJSONString(hashmap, SerializerFeature.WriteDateUseDateFormat));
+        //response.setData(JSON.toJSONString(hashmap, SerializerFeature.WriteDateUseDateFormat));
+        response.setData(JSON.toJSONString(hashmap));
         return response;
 
     }
