@@ -75,6 +75,7 @@ public class UseraccountsController {
 		try {
 			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
 			Response result = useraccountsServices.getUsers(query);
+			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
 			return ResponseLogNotification.fail(request, e.getMessage());
