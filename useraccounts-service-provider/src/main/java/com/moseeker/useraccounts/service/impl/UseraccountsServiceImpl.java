@@ -787,7 +787,7 @@ public class UseraccountsServiceImpl implements Iface {
 				});
 			}
 			//record.in
-			return ResponseUtils.success(records);
+			return ResponseUtils.success(users);
 		} catch (Exception e) {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		}
