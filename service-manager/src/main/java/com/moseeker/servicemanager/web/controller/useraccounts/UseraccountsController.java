@@ -62,6 +62,24 @@ public class UseraccountsController {
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}
+	
+	/**
+	 * 获取用户数据
+	 *
+	 * // @param user_id 用户ID
+	 *
+	 */
+	@RequestMapping(value = "/users", method = RequestMethod.GET)
+	@ResponseBody
+	public String getUsers(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
+			Response result = useraccountsServices.getUsers(query);
+			return ResponseLogNotification.success(request, result);
+		} catch (Exception e) {
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
 
 	/**
 	 * 更新用户数据

@@ -12,6 +12,7 @@ service UseraccountsServices {
 
     // 用户用户数据
     common_struct.Response getUserById(1: i64 userId);
+    common_struct.Response getUsers(1: common_struct.CommonQuery query);
 
     // 更新用户数据
     common_struct.Response updateUser(1: useraccounts_struct.User user);

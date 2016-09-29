@@ -3,6 +3,7 @@ package com.moseeker.useraccounts.service.impl;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.thrift.TException;
@@ -68,6 +69,16 @@ public class UseraccountsServiceImpl implements Iface {
 
 	@Autowired
 	protected UserFavoritePositionDao userFavoritePositionDao;
+	
+	@Override
+	public Response getUsers(CommonQuery query) throws TException {
+		try {
+			List<UserUserRecord> records = userdao.getResources(query);
+			return ResponseUtils.success(records);
+		} catch (Exception e) {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		}
+	}
 
 	/**
 	 * 用户登陆， 返回用户登陆后的信息。
@@ -1163,5 +1174,4 @@ public class UseraccountsServiceImpl implements Iface {
 			
 		}
 	}
-
 }
