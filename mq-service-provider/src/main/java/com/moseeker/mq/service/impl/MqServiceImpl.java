@@ -50,6 +50,7 @@ public class MqServiceImpl implements MqService.Iface {
             }
             
         } catch (Exception e) {
+        	e.printStackTrace();
             // TODO Auto-generated catch block
             logger.error("MqServiceImpl messageTemplateNotice error: ", e);
         } finally {
