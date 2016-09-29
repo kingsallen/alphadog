@@ -28,7 +28,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
 
-	private static final long serialVersionUID = -1133505425;
+	private static final long serialVersionUID = 823416812;
 
 	/**
 	 * Setter for <code>userdb.user_user.id</code>. 主key
@@ -380,6 +380,20 @@ public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
 		return (String) getValue(24);
 	}
 
+	/**
+	 * Setter for <code>userdb.user_user.email_verified</code>. 邮箱是认证 2:老数据 1:已认证 0:未认证
+	 */
+	public void setEmailVerified(Byte value) {
+		setValue(25, value);
+	}
+
+	/**
+	 * Getter for <code>userdb.user_user.email_verified</code>. 邮箱是认证 2:老数据 1:已认证 0:未认证
+	 */
+	public Byte getEmailVerified() {
+		return (Byte) getValue(25);
+	}
+
 	// -------------------------------------------------------------------------
 	// Primary key information
 	// -------------------------------------------------------------------------
@@ -406,7 +420,7 @@ public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
 	/**
 	 * Create a detached, initialised UserUserRecord
 	 */
-	public UserUserRecord(UInteger id, String username, String password, Byte isDisable, Integer rank, Timestamp registerTime, String registerIp, Timestamp lastLoginTime, String lastLoginIp, Integer loginCount, Long mobile, String email, Byte activation, String activationCode, String token, String name, String headimg, Integer nationalCodeId, Integer wechatId, String unionid, Byte source, String company, String position, UInteger parentid, String nickname) {
+	public UserUserRecord(UInteger id, String username, String password, Byte isDisable, Integer rank, Timestamp registerTime, String registerIp, Timestamp lastLoginTime, String lastLoginIp, Integer loginCount, Long mobile, String email, Byte activation, String activationCode, String token, String name, String headimg, Integer nationalCodeId, Integer wechatId, String unionid, Byte source, String company, String position, UInteger parentid, String nickname, Byte emailVerified) {
 		super(UserUser.USER_USER);
 
 		setValue(0, id);
@@ -434,5 +448,6 @@ public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
 		setValue(22, position);
 		setValue(23, parentid);
 		setValue(24, nickname);
+		setValue(25, emailVerified);
 	}
 }

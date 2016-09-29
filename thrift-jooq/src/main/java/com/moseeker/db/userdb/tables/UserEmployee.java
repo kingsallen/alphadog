@@ -37,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserEmployee extends TableImpl<UserEmployeeRecord> {
 
-	private static final long serialVersionUID = -284491518;
+	private static final long serialVersionUID = 631563070;
 
 	/**
 	 * The reference instance of <code>userdb.user_employee</code>
@@ -73,9 +73,9 @@ public class UserEmployee extends TableImpl<UserEmployeeRecord> {
 	public final TableField<UserEmployeeRecord, Integer> ROLE_ID = createField("role_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "sys_role.id");
 
 	/**
-	 * The column <code>userdb.user_employee.wxuser_id</code>.
+	 * The column <code>userdb.user_employee.wxuser_id</code>. userdb.user_wx_user.id 微信账号编号
 	 */
-	public final TableField<UserEmployeeRecord, Integer> WXUSER_ID = createField("wxuser_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "");
+	public final TableField<UserEmployeeRecord, Integer> WXUSER_ID = createField("wxuser_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "userdb.user_wx_user.id 微信账号编号");
 
 	/**
 	 * The column <code>userdb.user_employee.sex</code>. 0：未知，1：男，2：女

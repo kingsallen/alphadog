@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserUser extends TableImpl<UserUserRecord> {
 
-	private static final long serialVersionUID = -1771546303;
+	private static final long serialVersionUID = -551666322;
 
 	/**
 	 * The reference instance of <code>userdb.user_user</code>
@@ -59,7 +59,7 @@ public class UserUser extends TableImpl<UserUserRecord> {
 	/**
 	 * The column <code>userdb.user_user.username</code>. 用户名，比如手机号、邮箱等
 	 */
-	public final TableField<UserUserRecord, String> USERNAME = createField("username", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false), this, "用户名，比如手机号、邮箱等");
+	public final TableField<UserUserRecord, String> USERNAME = createField("username", org.jooq.impl.SQLDataType.VARCHAR.length(50), this, "用户名，比如手机号、邮箱等");
 
 	/**
 	 * The column <code>userdb.user_user.password</code>. 密码
@@ -175,6 +175,11 @@ public class UserUser extends TableImpl<UserUserRecord> {
 	 * The column <code>userdb.user_user.nickname</code>. 用户昵称
 	 */
 	public final TableField<UserUserRecord, String> NICKNAME = createField("nickname", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "用户昵称");
+
+	/**
+	 * The column <code>userdb.user_user.email_verified</code>. 邮箱是认证 2:老数据 1:已认证 0:未认证
+	 */
+	public final TableField<UserUserRecord, Byte> EMAIL_VERIFIED = createField("email_verified", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "邮箱是认证 2:老数据 1:已认证 0:未认证");
 
 	/**
 	 * Create a <code>userdb.user_user</code> table reference

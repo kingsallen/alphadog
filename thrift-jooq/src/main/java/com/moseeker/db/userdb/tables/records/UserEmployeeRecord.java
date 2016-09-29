@@ -29,7 +29,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> {
 
-	private static final long serialVersionUID = 727962180;
+	private static final long serialVersionUID = -25284968;
 
 	/**
 	 * Setter for <code>userdb.user_employee.id</code>.
@@ -88,14 +88,14 @@ public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> 
 	}
 
 	/**
-	 * Setter for <code>userdb.user_employee.wxuser_id</code>.
+	 * Setter for <code>userdb.user_employee.wxuser_id</code>. userdb.user_wx_user.id 微信账号编号
 	 */
 	public void setWxuserId(Integer value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>userdb.user_employee.wxuser_id</code>.
+	 * Getter for <code>userdb.user_employee.wxuser_id</code>. userdb.user_wx_user.id 微信账号编号
 	 */
 	public Integer getWxuserId() {
 		return (Integer) getValue(4);
