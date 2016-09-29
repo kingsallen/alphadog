@@ -13,6 +13,7 @@ public final class ConstantErrorCodeMessage {
     public static final String PROGRAM_PUT_FAILED = "{'status':90012,'message':'保存失败!'}";
     public static final String PROGRAM_DEL_FAILED = "{'status':90013,'message':'删除失败!'}";
     public static final String VALIDATE_FAILED = "{'errcode':90014, 'message':'{MESSAGE}'}";
+    public static final String PROGRAM_PARAM_NOTEXIST = "{'status':90015,'message':'参数不正确!'}";
 
     // 用户服务ERRCODE说明定义 1字头
     public static final String LOGIN_ACCOUNT_ILLEAGUE = "{'status':10010,'message':'用户名密码不匹配!'}";
@@ -26,6 +27,7 @@ public final class ConstantErrorCodeMessage {
     public static final String USER_FAV_POSITION_FAILED = "{'status':10018,'message':'获取我感兴趣失败!'}";
     public static final String HRCOMPANY_NOTEXIST = "{'status':10020,'message':'公司不存在!'}";
     public static final String USERACCOUNT_BIND_REPEATBIND = "{'status':10021,'message':'手机号码已经绑定！'}";
+    public static final String USERACCOUNT_PASSWORD_REPEATPASSWORD = "{'status':10022,'message':'新密码和旧密码不能一致！'}";
 
     public static final String HR_ACCOUNT_SIGNUP_VALIDATE_SOURCE = "{'status':12001,'message':'source >=1 && <=5!'}";
 

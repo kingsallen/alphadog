@@ -605,6 +605,11 @@ public class UseraccountsServiceImpl implements Iface {
 	 */
 	@Override
 	public Response postuserchangepassword(int user_id, String old_password, String password) throws TException {
+		
+		
+		if(StringUtils.isNullOrEmpty(password) || StringUtils.isNullOrEmpty(old_password)) {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
+		}
 		CommonQuery query = new CommonQuery();
 		Map<String, String> filters = new HashMap<>();
 		filters.put("id", String.valueOf(user_id));
@@ -692,6 +697,7 @@ public class UseraccountsServiceImpl implements Iface {
 		if (code != null && !validateCode(mobile, code, 2)) {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
 		}
+		
 
 		CommonQuery query = new CommonQuery();
 		Map<String, String> filters = new HashMap<>();
@@ -705,6 +711,7 @@ public class UseraccountsServiceImpl implements Iface {
 			if (user != null) {
 				// login success
 				int parentid = user.getParentid().intValue();
+				String newPassword = MD5Util.encryptSHA(password);
 				if (parentid > 0) {
 					// 当前帐号已经被合并到 parentid.
 					query = new CommonQuery();
@@ -712,10 +719,16 @@ public class UseraccountsServiceImpl implements Iface {
 					filters.put("id", String.valueOf(parentid));
 					query.setEqualFilter(filters);
 					UserUserRecord userParent = userdao.getResource(query);
-					userParent.setPassword(MD5Util.encryptSHA(password));
+					if(newPassword.equals(userParent.getPassword())) {
+						return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_PASSWORD_REPEATPASSWORD);
+					}
+					userParent.setPassword(newPassword);
 					result = userdao.putResource(userParent);
 				}
-				user.setPassword(MD5Util.encryptSHA(password));
+				if(newPassword.equals(user.getPassword())) {
+					return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_PASSWORD_REPEATPASSWORD);
+				}
+				user.setPassword(newPassword);
 				result = userdao.putResource(user);
 				if (result > 0) {
 					return ResponseUtils.success(null);
@@ -772,6 +785,9 @@ public class UseraccountsServiceImpl implements Iface {
 	public Response updateUser(User user) throws TException {
 		try {
 			if (user != null && user.getId() > 0) {
+				if(StringUtils.isNotNullOrEmpty(user.getPassword())) {
+					user.setPassword(MD5Util.encryptSHA(user.getPassword()));
+				}
 				// 用户记录转换
 				UserUserRecord userUserRecord = (UserUserRecord) BeanUtils.structToDB(user, UserUserRecord.class);
 				if (userdao.putResource(userUserRecord) > 0) {
