@@ -1,5 +1,10 @@
 package com.moseeker.mq.service.impl;
 
+import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
@@ -7,12 +12,7 @@ import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
 /**
  * 消息队列服务
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
  * Created by zzh on 16/8/3.
  */
 @Service
-public class MqServiceImpl implements MqService.Iface {
+public class MqServiceImpl {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -33,8 +33,7 @@ public class MqServiceImpl implements MqService.Iface {
      * @return
      * @throws TException
      */
-    @Override
-    public Response messageTemplateNotice(MessageTemplateNoticeStruct messageTemplateNoticeStruct) throws TException {
+    public Response messageTemplateNotice(MessageTemplateNoticeStruct messageTemplateNoticeStruct) {
 
         try {
             Response response = validateMessageTemplateNotice(messageTemplateNoticeStruct);
@@ -50,8 +49,6 @@ public class MqServiceImpl implements MqService.Iface {
             }
             
         } catch (Exception e) {
-        	e.printStackTrace();
-            // TODO Auto-generated catch block
             logger.error("MqServiceImpl messageTemplateNotice error: ", e);
         } finally {
             //do nothing

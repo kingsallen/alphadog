@@ -13,9 +13,9 @@ public class EmailTest {
     public void sendTest() {
 
         try {
-            Email email = new Email.EmailBuilder("chendi@moseeker.com")
+            Email email = new Email.EmailBuilder("wengjianfei@moseeker.com")
                     .setSubject("Congratulations")
-                    .setContent("<h1 style='color: red; font-size: 30px;'>Email Test</h1><p>Hello world</p>")
+                    .setContent("<html><head><title>hello world</title></head><body><h1 style='color: red; font-size: 30px;'>Email Test</h1><p>Hello world</p></body></html>")
                     .addAttachment(new UrlAttachment("logo.png", "http://static.moseeker.com/official/images/moseeker-logo-phone-b92430087c.png"))
                     .build();
             email.send();

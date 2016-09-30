@@ -9,5 +9,7 @@ namespace java com.moseeker.thrift.gen.mq.service
 service MqService {
 
    common_struct.Response messageTemplateNotice(1:mq_struct.MessageTemplateNoticeStruct messageTemplateNoticeStruct);
+   
+   common_struct.Response sendEMail(1: mq_struct.EmailStruct emailStruct);
 
 }

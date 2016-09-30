@@ -50,7 +50,7 @@ public class Email {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-    	}).start();;
+    	}).start();
     }
     
     public static class EmailBuilder {
@@ -74,7 +74,7 @@ public class Email {
         public EmailBuilder(String recipient) throws MessagingException {
             this.recipients.add(recipient);
         }
-
+        
         public EmailBuilder setSender(String sender) {
             this.senderAddress = sender;
             return this;
@@ -106,11 +106,9 @@ public class Email {
         }
 
         public Email build() throws Exception {
-
             this.message = this.initMessage();
             this.buildHeader().buildContent().buildAttachment();
             this.message.saveChanges();
-
             return new Email(this);
         }
 
@@ -151,7 +149,5 @@ public class Email {
             message.setContent(multipart);
             return message;
         }
-
     }
-
 }

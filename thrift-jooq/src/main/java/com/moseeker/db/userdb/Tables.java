@@ -12,6 +12,7 @@ import com.moseeker.db.userdb.tables.UserHrAccount;
 import com.moseeker.db.userdb.tables.UserIntention;
 import com.moseeker.db.userdb.tables.UserSettings;
 import com.moseeker.db.userdb.tables.UserUser;
+import com.moseeker.db.userdb.tables.UserUserTmp;
 import com.moseeker.db.userdb.tables.UserWxUser;
 import com.moseeker.db.userdb.tables.UserWxViewer;
 
@@ -70,6 +71,11 @@ public class Tables {
 	 * 用户表
 	 */
 	public static final UserUser USER_USER = com.moseeker.db.userdb.tables.UserUser.USER_USER;
+
+	/**
+	 * The table userdb.user_user_tmp
+	 */
+	public static final UserUserTmp USER_USER_TMP = com.moseeker.db.userdb.tables.UserUserTmp.USER_USER_TMP;
 
 	/**
 	 * 微信用户表

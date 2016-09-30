@@ -1,8 +1,10 @@
 package com.moseeker.useraccounts.service.impl;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.thrift.TException;
@@ -11,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.daoutils.BaseDao;
 import com.moseeker.common.redis.RedisClient;
@@ -22,6 +25,7 @@ import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.db.logdb.tables.records.LogUserloginRecordRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.db.userdb.tables.records.UserFavPositionRecord;
@@ -66,7 +70,7 @@ public class UseraccountsServiceImpl implements Iface {
 
 	@Autowired
 	protected UserFavoritePositionDao userFavoritePositionDao;
-
+	
 	/**
 	 * 用户登陆， 返回用户登陆后的信息。
 	 */
@@ -83,7 +87,6 @@ public class UseraccountsServiceImpl implements Iface {
 			String mobile = userloginreq.getMobile();
 			if (validateCode(mobile, code, 1)) {
 				filters.put("username", mobile);
-				;
 			} else {
 				return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
 			}
@@ -200,7 +203,7 @@ public class UseraccountsServiceImpl implements Iface {
 		if (SmsSender.sendSMS_signup(mobile)) {
 			return ResponseUtils.success(null);
 		} else {
-			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
 		}
 	}
 
@@ -604,6 +607,11 @@ public class UseraccountsServiceImpl implements Iface {
 	 */
 	@Override
 	public Response postuserchangepassword(int user_id, String old_password, String password) throws TException {
+		
+		
+		if(StringUtils.isNullOrEmpty(password) || StringUtils.isNullOrEmpty(old_password)) {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
+		}
 		CommonQuery query = new CommonQuery();
 		Map<String, String> filters = new HashMap<>();
 		filters.put("id", String.valueOf(user_id));
@@ -691,6 +699,7 @@ public class UseraccountsServiceImpl implements Iface {
 		if (code != null && !validateCode(mobile, code, 2)) {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
 		}
+		
 
 		CommonQuery query = new CommonQuery();
 		Map<String, String> filters = new HashMap<>();
@@ -704,6 +713,7 @@ public class UseraccountsServiceImpl implements Iface {
 			if (user != null) {
 				// login success
 				int parentid = user.getParentid().intValue();
+				String newPassword = MD5Util.encryptSHA(password);
 				if (parentid > 0) {
 					// 当前帐号已经被合并到 parentid.
 					query = new CommonQuery();
@@ -711,10 +721,16 @@ public class UseraccountsServiceImpl implements Iface {
 					filters.put("id", String.valueOf(parentid));
 					query.setEqualFilter(filters);
 					UserUserRecord userParent = userdao.getResource(query);
-					userParent.setPassword(MD5Util.encryptSHA(password));
+					if(newPassword.equals(userParent.getPassword())) {
+						return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_PASSWORD_REPEATPASSWORD);
+					}
+					userParent.setPassword(newPassword);
 					result = userdao.putResource(userParent);
 				}
-				user.setPassword(MD5Util.encryptSHA(password));
+				if(newPassword.equals(user.getPassword())) {
+					return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_PASSWORD_REPEATPASSWORD);
+				}
+				user.setPassword(newPassword);
 				result = userdao.putResource(user);
 				if (result > 0) {
 					return ResponseUtils.success(null);
@@ -759,6 +775,23 @@ public class UseraccountsServiceImpl implements Iface {
 		}
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 	}
+	
+	@Override
+	public Response getUsers(CommonQuery query) throws TException {
+		try {
+			List<User> users = new ArrayList<>();
+			List<UserUserRecord> records = userdao.getResources(query);
+			if(records != null) {
+				records.forEach(record -> {
+					users.add(record.into(User.class));
+				});
+			}
+			//record.in
+			return ResponseUtils.success(users);
+		} catch (Exception e) {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		}
+	}
 
 	/**
 	 * 更新用户数据
@@ -771,6 +804,9 @@ public class UseraccountsServiceImpl implements Iface {
 	public Response updateUser(User user) throws TException {
 		try {
 			if (user != null && user.getId() > 0) {
+				if(StringUtils.isNotNullOrEmpty(user.getPassword())) {
+					user.setPassword(MD5Util.encryptSHA(user.getPassword()));
+				}
 				// 用户记录转换
 				UserUserRecord userUserRecord = (UserUserRecord) BeanUtils.structToDB(user, UserUserRecord.class);
 				if (userdao.putResource(userUserRecord) > 0) {
@@ -852,7 +888,7 @@ public class UseraccountsServiceImpl implements Iface {
 		if (SmsSender.sendSMS_changemobilecode(oldmobile)) {
 			return ResponseUtils.success(null);
 		} else {
-			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
 		}
 	}
 
@@ -897,7 +933,7 @@ public class UseraccountsServiceImpl implements Iface {
 		if (SmsSender.sendSMS_resetmobilecode(newmobile)) {
 			return ResponseUtils.success(null);
 		} else {
-			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
 		}
 	}
 
@@ -1066,35 +1102,84 @@ public class UseraccountsServiceImpl implements Iface {
 		String codeinRedis = null;
 		RedisClient redisclient = RedisClientFactory.getCacheClient();
 		switch (type) {
-		case 1:
-			codeinRedis = redisclient.get(0, "SMS_SIGNUP", mobile);
-			if (code.equals(codeinRedis)) {
-				redisclient.del(0, "SMS_SIGNUP", mobile);
-				return true;
-			}
-			break;
-		case 2:
-			codeinRedis = redisclient.get(0, "SMS_PWD_FORGOT", mobile);
-			if (code.equals(codeinRedis)) {
-				redisclient.del(0, "SMS_PWD_FORGOT", mobile);
-				return true;
-			}
-		case 3:
-			codeinRedis = redisclient.get(0, "SMS_CHANGEMOBILE_CODE", mobile);
-			if (code.equals(codeinRedis)) {
-				redisclient.del(0, "SMS_CHANGEMOBILE_CODE", mobile);
-				return true;
-			}
-		case 4:
-			codeinRedis = redisclient.get(0, "SMS_RESETMOBILE_CODE", mobile);
-			if (code.equals(codeinRedis)) {
-				redisclient.del(0, "SMS_RESETMOBILE_CODE", mobile);
-				return true;
-			}
-			break;
+			case 1:
+				codeinRedis = redisclient.get(0, "SMS_SIGNUP", mobile);
+				if (code.equals(codeinRedis)) {
+					redisclient.del(0, "SMS_SIGNUP", mobile);
+					return true;
+				}
+				break;
+			case 2:
+				codeinRedis = redisclient.get(0, "SMS_PWD_FORGOT", mobile);
+				if (code.equals(codeinRedis)) {
+					redisclient.del(0, "SMS_PWD_FORGOT", mobile);
+					return true;
+				}
+			case 3:
+				codeinRedis = redisclient.get(0, "SMS_CHANGEMOBILE_CODE", mobile);
+				if (code.equals(codeinRedis)) {
+					redisclient.del(0, "SMS_CHANGEMOBILE_CODE", mobile);
+					return true;
+				}
+			case 4:
+				codeinRedis = redisclient.get(0, "SMS_RESETMOBILE_CODE", mobile);
+				if (code.equals(codeinRedis)) {
+					redisclient.del(0, "SMS_RESETMOBILE_CODE", mobile);
+					return true;
+				}
+				break;
+			default :
 		}
+		
 
 		return false;
 	}
 
+	@Override
+	public Response validateVerifyCode(String mobile, String code, int type) throws TException {
+		ValidateUtil vu = new ValidateUtil();
+		vu.addRequiredStringValidate("手机号码", mobile, null, null);
+		vu.addRequiredStringValidate("验证码", code, null, null);
+		String message = vu.validate();
+		if(StringUtils.isNullOrEmpty(message)) {
+			boolean flag = validateCode(mobile, code, 1);
+			if(flag) {
+				return ResponseUtils.success(1);
+			} else {
+				return ResponseUtils.success(0);
+			}
+		} else {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", message));
+		}
+	}
+
+	@Override
+	public Response sendVerifyCode(String mobile, int type) throws TException {
+		boolean result = SmsSender.sendSMS(mobile, type);
+		if(result) {
+			return ResponseUtils.success("success");
+		} else {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
+		}
+	}
+
+	@Override
+	public Response checkEmail(String email) throws TException {
+		QueryUtil qu = new QueryUtil();
+		qu.addEqualFilter("email", email);
+		qu.addEqualFilter("email_verified", "1");
+		try {
+			UserUserRecord record = userdao.getResource(qu);
+			if(record == null) {
+				return ResponseUtils.success(1);
+			} else {
+				return ResponseUtils.success(0);
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+		} finally {
+			
+		}
+	}
 }

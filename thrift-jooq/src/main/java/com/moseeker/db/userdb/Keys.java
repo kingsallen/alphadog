@@ -10,6 +10,7 @@ import com.moseeker.db.userdb.tables.UserFavPosition;
 import com.moseeker.db.userdb.tables.UserHrAccount;
 import com.moseeker.db.userdb.tables.UserSettings;
 import com.moseeker.db.userdb.tables.UserUser;
+import com.moseeker.db.userdb.tables.UserUserTmp;
 import com.moseeker.db.userdb.tables.UserWxUser;
 import com.moseeker.db.userdb.tables.UserWxViewer;
 import com.moseeker.db.userdb.tables.records.UserEmployeePointsRecordRecord;
@@ -18,6 +19,7 @@ import com.moseeker.db.userdb.tables.records.UserFavPositionRecord;
 import com.moseeker.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.db.userdb.tables.records.UserSettingsRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.db.userdb.tables.records.UserUserTmpRecord;
 import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.db.userdb.tables.records.UserWxViewerRecord;
 
@@ -70,6 +72,7 @@ public class Keys {
 	public static final UniqueKey<UserSettingsRecord> KEY_USER_SETTINGS_UID = UniqueKeys0.KEY_USER_SETTINGS_UID;
 	public static final UniqueKey<UserUserRecord> KEY_USER_USER_PRIMARY = UniqueKeys0.KEY_USER_USER_PRIMARY;
 	public static final UniqueKey<UserUserRecord> KEY_USER_USER_UK_USER_USERNAME = UniqueKeys0.KEY_USER_USER_UK_USER_USERNAME;
+	public static final UniqueKey<UserUserTmpRecord> KEY_USER_USER_TMP_PRIMARY = UniqueKeys0.KEY_USER_USER_TMP_PRIMARY;
 	public static final UniqueKey<UserWxUserRecord> KEY_USER_WX_USER_PRIMARY = UniqueKeys0.KEY_USER_WX_USER_PRIMARY;
 	public static final UniqueKey<UserWxUserRecord> KEY_USER_WX_USER_WECHAT_ID = UniqueKeys0.KEY_USER_WX_USER_WECHAT_ID;
 	public static final UniqueKey<UserWxViewerRecord> KEY_USER_WX_VIEWER_PRIMARY = UniqueKeys0.KEY_USER_WX_VIEWER_PRIMARY;
@@ -104,6 +107,7 @@ public class Keys {
 		public static final UniqueKey<UserSettingsRecord> KEY_USER_SETTINGS_UID = createUniqueKey(UserSettings.USER_SETTINGS, UserSettings.USER_SETTINGS.USER_ID);
 		public static final UniqueKey<UserUserRecord> KEY_USER_USER_PRIMARY = createUniqueKey(UserUser.USER_USER, UserUser.USER_USER.ID);
 		public static final UniqueKey<UserUserRecord> KEY_USER_USER_UK_USER_USERNAME = createUniqueKey(UserUser.USER_USER, UserUser.USER_USER.USERNAME);
+		public static final UniqueKey<UserUserTmpRecord> KEY_USER_USER_TMP_PRIMARY = createUniqueKey(UserUserTmp.USER_USER_TMP, UserUserTmp.USER_USER_TMP.ID);
 		public static final UniqueKey<UserWxUserRecord> KEY_USER_WX_USER_PRIMARY = createUniqueKey(UserWxUser.USER_WX_USER, UserWxUser.USER_WX_USER.ID);
 		public static final UniqueKey<UserWxUserRecord> KEY_USER_WX_USER_WECHAT_ID = createUniqueKey(UserWxUser.USER_WX_USER, UserWxUser.USER_WX_USER.WECHAT_ID, UserWxUser.USER_WX_USER.OPENID);
 		public static final UniqueKey<UserWxViewerRecord> KEY_USER_WX_VIEWER_PRIMARY = createUniqueKey(UserWxViewer.USER_WX_VIEWER, UserWxViewer.USER_WX_VIEWER.ID);

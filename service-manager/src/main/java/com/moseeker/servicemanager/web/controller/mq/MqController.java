@@ -19,6 +19,7 @@ import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.mq.service.MqService;
+import com.moseeker.thrift.gen.mq.struct.EmailStruct;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
 import com.moseeker.thrift.gen.mq.struct.MessageTplDataCol;
 
@@ -43,6 +44,20 @@ public class MqController {
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
         	e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    
+    @RequestMapping(value = "/email/sendEMail", method = RequestMethod.POST)
+    @ResponseBody
+    public String sendEMail(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            // 发送消息模板
+        	EmailStruct emailStruct = ParamUtils.initModelForm(request, EmailStruct.class);
+        	
+            Response result = mqService.sendEMail(emailStruct);
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }

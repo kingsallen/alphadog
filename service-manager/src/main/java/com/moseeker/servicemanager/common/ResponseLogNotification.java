@@ -1,11 +1,16 @@
 package com.moseeker.servicemanager.common;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.common.redis.RedisClientFactory;
+import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.common.util.Notification;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -69,19 +74,24 @@ public class ResponseLogNotification {
 	}
 	
 	private static void logRequestResponse(HttpServletRequest request, String response) {
-		/*Map<String, Object> reqResp = new HashMap<>();
-		reqResp.put("appid", request.getParameter("appid"));
-		reqResp.put("request", request.getParameterMap());
-		reqResp.put("response", response);
-		reqResp.put("remote_ip", ParamUtils.getRemoteIp(request));
-		reqResp.put("web_server_ip", ParamUtils.getLocalHostIp());
-
 		try {
-			RedisClientFactory.getLogClient().lpush(appid, logkey, JSON.toJSONString(reqResp));
+			ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
+			propertiesUtils.loadResource("setting.properties");
+			boolean switchLogRedis =  propertiesUtils.get("switch_log_redis", Boolean.class);
+			if(switchLogRedis) {
+				Map<String, Object> reqResp = new HashMap<>();
+				reqResp.put("appid", request.getParameter("appid"));
+				reqResp.put("request", request.getParameterMap());
+				reqResp.put("response", response);
+				reqResp.put("remote_ip", ParamUtils.getRemoteIp(request));
+				reqResp.put("web_server_ip", ParamUtils.getLocalHostIp());
+
+				RedisClientFactory.getLogClient().lpush(appid, logkey, JSON.toJSONString(reqResp));
+			}
 		} catch (Exception e) {
-			logger.error(e.getMessage());
-		}*/
-		logger.info("下线日志记录功能");
+			e.printStackTrace();
+		}
+		//logger.info("下线日志记录功能");
 	}
 
 	public static void main(String[] args) {

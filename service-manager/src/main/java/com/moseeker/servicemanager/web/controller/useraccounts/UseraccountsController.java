@@ -5,7 +5,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.common.util.MD5Util;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -59,6 +57,25 @@ public class UseraccountsController {
 			}
 
 			Response result = useraccountsServices.getUserById(userId);
+			return ResponseLogNotification.success(request, result);
+		} catch (Exception e) {
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
+	
+	/**
+	 * 获取用户数据
+	 *
+	 * // @param user_id 用户ID
+	 *
+	 */
+	@RequestMapping(value = "/users", method = RequestMethod.GET)
+	@ResponseBody
+	public String getUsers(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
+			Response result = useraccountsServices.getUsers(query);
+			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
 			return ResponseLogNotification.fail(request, e.getMessage());
@@ -320,9 +337,97 @@ public class UseraccountsController {
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}
+	
+	/**
+	 * 验证修改邮箱时，检查验证码是否准确
+	 *
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/user/verifyCode", method = RequestMethod.POST)
+	@ResponseBody
+	public String verifyCode(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
+			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
+			String code = BeanUtils.converToString(reqParams.get("code"));
+			Integer type = BeanUtils.converToInteger(reqParams.get("type"));
+			if(type == null) {
+				type = 0;
+			}
+			//
+			Response result = useraccountsServices.validateVerifyCode(mobile, code, type);
+			if (result.getStatus() == 0) {
+				return ResponseLogNotification.success(request, result);
+			} else {
+				return ResponseLogNotification.fail(request, result);
+			}
+
+		} catch (Exception e) {
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
+	
+	/**
+	 * 验证修改邮箱时，检查验证码是否准确
+	 *
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/user/sendCode", method = RequestMethod.POST)
+	@ResponseBody
+	public String sendCode(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
+			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
+			Integer type = BeanUtils.converToInteger(reqParams.get("type"));
+			if(type == null) {
+				type = 0;
+			}
+			//
+			Response result = useraccountsServices.sendVerifyCode(mobile, type);
+			if (result.getStatus() == 0) {
+				return ResponseLogNotification.success(request, result);
+			} else {
+				return ResponseLogNotification.fail(request, result);
+			}
+
+		} catch (Exception e) {
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
+	
+	/**
+	 * 验证当前邮箱是否被绑定
+	 *
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/user/checkEmail", method = RequestMethod.POST)
+	@ResponseBody
+	public String checkEmail(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
+			String email = BeanUtils.converToString(reqParams.get("email"));
+
+			Response result = useraccountsServices.checkEmail(email);
+			if (result.getStatus() == 0) {
+				return ResponseLogNotification.success(request, result);
+			} else {
+				return ResponseLogNotification.fail(request, result);
+			}
+
+		} catch (Exception e) {
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
 
 	/**
 	 * 修改手机号时， 先要向当前手机号发送验证码。
+	 * 个人中心，修改密码和修改邮箱也调用这个接口，发送验证码，并记录到redis中
 	 *
 	 * @param request
 	 * @param response

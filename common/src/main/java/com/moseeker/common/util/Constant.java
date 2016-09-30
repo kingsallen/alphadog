@@ -156,4 +156,11 @@ public final class Constant {
 	
 	public static final int DICT_CONSTANT_COMPANY_SCAL = 1102; 					//公司规模常量表parent_code值
 	public static final int DICT_CONSTANT_COMPANY_PROPERTY = 1103; 				//公司性质常量表parent_code值
+	
+	public static final int EVENT_TYPE_EMAIL_VERIFIED = 1;								//邮件认证邮件模版
+	
+	public static final String MQ_MESSAGE_EMAIL_BIZ = "MQ_MESSAGE_EMAIL_BIZ";	//业务邮件消息队列的key_identifier
+	public static final String EMAIL_VERIFIED_SUBJECT = "邮箱认证";				//业务邮件消息队列的key_identifier
+	
+	public static final String MQ_MESSAGE_EMAIL_WARNING = "MQ_MESSAGE_EMAIL_WARNING";	//报警邮件消息队列的key_identifier
 }

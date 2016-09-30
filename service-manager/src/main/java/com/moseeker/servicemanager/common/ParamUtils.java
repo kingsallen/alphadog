@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -215,5 +217,23 @@ public class ParamUtils {
 		}
 		Map<String, Object> map = JsonToMap.parseJSON2Map(jb.toString());
 		return map;
+	}
+	
+	public static String getLocalHostIp(){
+		try {
+			return InetAddress.getLocalHost().getHostAddress();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+		}
+		return "unknow";
+	}
+	
+	public static String getRemoteIp(HttpServletRequest request) {
+		String remoteIpForwardedbyLbs = request.getHeader("REMOTE_ADDR");// php
+																			// 和
+																			// python
+																			// tornado不一致，需要实际测试。
+		return remoteIpForwardedbyLbs == null ? request.getRemoteAddr()
+				: remoteIpForwardedbyLbs;
 	}
 }

@@ -12,6 +12,7 @@ import com.moseeker.db.userdb.tables.UserHrAccount;
 import com.moseeker.db.userdb.tables.UserIntention;
 import com.moseeker.db.userdb.tables.UserSettings;
 import com.moseeker.db.userdb.tables.UserUser;
+import com.moseeker.db.userdb.tables.UserUserTmp;
 import com.moseeker.db.userdb.tables.UserWxUser;
 import com.moseeker.db.userdb.tables.UserWxViewer;
 
@@ -38,7 +39,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Userdb extends SchemaImpl {
 
-	private static final long serialVersionUID = 377430147;
+	private static final long serialVersionUID = 252701351;
 
 	/**
 	 * The reference instance of <code>userdb</code>
@@ -69,6 +70,7 @@ public class Userdb extends SchemaImpl {
 			UserIntention.USER_INTENTION,
 			UserSettings.USER_SETTINGS,
 			UserUser.USER_USER,
+			UserUserTmp.USER_USER_TMP,
 			UserWxUser.USER_WX_USER,
 			UserWxViewer.USER_WX_VIEWER);
 	}

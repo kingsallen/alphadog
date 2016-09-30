@@ -1,11 +1,17 @@
 package com.moseeker.mq.server;
 
-import com.moseeker.mq.service.impl.MqServiceImpl;
-import com.moseeker.rpccenter.common.ServerNodeUtils;
-import com.moseeker.rpccenter.main.Server;
+import java.io.IOException;
+
+import javax.mail.MessagingException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import com.moseeker.mq.service.email.ConstantlyMail;
+import com.moseeker.mq.thrift.ThriftService;
+import com.moseeker.rpccenter.common.ServerNodeUtils;
+import com.moseeker.rpccenter.main.Server;
 
 /**
  * 消息队列服务
@@ -23,9 +29,17 @@ public class MqServer {
             Server server = new Server(
                     MqServer.class,
                     ServerNodeUtils.getPort(args),
-                    acac.getBean(MqServiceImpl.class)
+                    acac.getBean(ThriftService.class)
             );
             server.start();
+            
+            ConstantlyMail mailUtil = new ConstantlyMail();
+    		try {
+    			mailUtil.start();
+    		} catch (IOException | MessagingException e) {
+    			e.printStackTrace();
+    			LOGGER.error(e.getMessage(), e);
+    		}
 
             synchronized (MqServer.class) {
                 while (true) {
