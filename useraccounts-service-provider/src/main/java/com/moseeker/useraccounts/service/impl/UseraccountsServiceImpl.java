@@ -13,6 +13,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.moseeker.common.constants.AppId;
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.KeyIdentifier;
+import com.moseeker.common.constants.RespnoseUtil;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.daoutils.BaseDao;
@@ -20,12 +27,14 @@ import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.sms.SmsSender;
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.common.util.Constant;
-import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
+import com.moseeker.common.weixin.AccountMng;
+import com.moseeker.common.weixin.QrcodeType;
+import com.moseeker.common.weixin.WeixinTicketBean;
+import com.moseeker.db.hrdb.tables.records.HrWxWechatRecord;
 import com.moseeker.db.logdb.tables.records.LogUserloginRecordRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.db.userdb.tables.records.UserFavPositionRecord;
@@ -41,6 +50,7 @@ import com.moseeker.useraccounts.dao.ProfileDao;
 import com.moseeker.useraccounts.dao.UserDao;
 import com.moseeker.useraccounts.dao.UserFavoritePositionDao;
 import com.moseeker.useraccounts.dao.UsersettingDao;
+import com.moseeker.useraccounts.dao.WechatDao;
 
 /**
  * 用户登陆， 注册，合并等api的实现
@@ -70,6 +80,9 @@ public class UseraccountsServiceImpl implements Iface {
 
 	@Autowired
 	protected UserFavoritePositionDao userFavoritePositionDao;
+	
+	@Autowired
+	protected WechatDao wechatDao;
 	
 	/**
 	 * 用户登陆， 返回用户登陆后的信息。
@@ -1181,5 +1194,137 @@ public class UseraccountsServiceImpl implements Iface {
 		} finally {
 			
 		}
+	}
+
+	/**
+	 * 创建微信二维码
+	 */
+	@Override
+	public Response cerateQrcode(int wechatId, int sceneId, int expireSeconds, int action_name) throws TException {
+		
+		try {
+			QueryUtil qu = new QueryUtil();
+			qu.addEqualFilter("id", String.valueOf(wechatId));
+			HrWxWechatRecord record = wechatDao.getResource(qu);
+			if(record == null) {
+				return RespnoseUtil.USERACCOUNT_WECHAT_NOTEXISTS.toResponse();
+			} else {
+				String accessToken = record.getAccessToken();
+				if(StringUtils.isNotNullOrEmpty(accessToken)) {
+					WeixinTicketBean bean = AccountMng.createTicket(accessToken, expireSeconds, QrcodeType.fromInt(action_name), sceneId, null);
+					if(bean != null) {
+						return RespnoseUtil.SUCCESS.setData(bean).toResponse();
+					} else {
+						return RespnoseUtil.USERACCOUNT_WECHAT_GETQRCODE_FAILED.toResponse();
+					}
+				} else {
+					return RespnoseUtil.USERACCOUNT_WECHAT_ACCESSTOKEN_NOTEXISTS.toResponse();
+				}
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			return RespnoseUtil.PROGRAM_EXCEPTION.setMessage(e.getMessage()).toResponse();
+		} finally {
+			//do nothing
+		}
+	}
+
+	/**
+	 * 利用票据获取二维码数据
+	 */
+	@Override
+	public Response getQrcode(String ticket) throws TException {
+		if(StringUtils.isNullOrEmpty(ticket)) {
+			return RespnoseUtil.USERACCOUNT_WECHAT_TICKET_NOTEXISTS.toResponse();
+		} else {
+			String qrcode = AccountMng.getQrcode(ticket);
+			return RespnoseUtil.SUCCESS.setData(qrcode).toResponse();
+		}
+	}
+
+	/**
+	 * 获取扫码信息
+	 * @param wechatId 公众号信息
+	 * @param sceneId 场景编号
+	 * @return
+	 * @throws TException
+	 */
+	@Override
+	public Response getScanResult(int wechatId, int sceneId) throws TException {
+		RedisClient redisClient = RedisClientFactory.getCacheClient();
+		String result = redisClient.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.WEIXIN_SCANRESULT.toString(), String.valueOf(wechatId), String.valueOf(sceneId));
+		if(StringUtils.isNotNullOrEmpty(result)) {
+			JSONObject json = JSON.parseObject(result);
+			if(json.get("status") != null && (Integer)json.get("status") ==0) {
+				return RespnoseUtil.SUCCESS.toResponse();
+			} else {
+				return RespnoseUtil.USERACCOUNT_WECHAT_SCAN_ERROR.setMessage((String)json.get("message")).toResponse();
+			}
+		} else {
+			return RespnoseUtil.USERACCOUNT_WECHAT_NOTSCAN.toResponse();
+		}
+	}
+
+	/**
+	 * 设置用户扫码信息
+	 * @param wechatId 公众号编号
+	 * @param sceneId 场景编号
+	 * @param value 扫码结果
+	 * @return
+	 * @throws TException
+	 */
+	@Override
+	public Response setScanResult(int wechatId, int sceneId, String value) throws TException {
+		RedisClient redisClient = RedisClientFactory.getCacheClient();
+		redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.WEIXIN_SCANRESULT.toString(), String.valueOf(wechatId), String.valueOf(sceneId), value);
+		return RespnoseUtil.SUCCESS.toResponse();
+	}
+
+	public BaseDao<UserWxUserRecord> getWxuserdao() {
+		return wxuserdao;
+	}
+
+	public void setWxuserdao(BaseDao<UserWxUserRecord> wxuserdao) {
+		this.wxuserdao = wxuserdao;
+	}
+
+	public UserDao getUserdao() {
+		return userdao;
+	}
+
+	public void setUserdao(UserDao userdao) {
+		this.userdao = userdao;
+	}
+
+	public ProfileDao getProfileDao() {
+		return profileDao;
+	}
+
+	public void setProfileDao(ProfileDao profileDao) {
+		this.profileDao = profileDao;
+	}
+
+	public UsersettingDao getUserSettingDao() {
+		return userSettingDao;
+	}
+
+	public void setUserSettingDao(UsersettingDao userSettingDao) {
+		this.userSettingDao = userSettingDao;
+	}
+
+	public UserFavoritePositionDao getUserFavoritePositionDao() {
+		return userFavoritePositionDao;
+	}
+
+	public void setUserFavoritePositionDao(UserFavoritePositionDao userFavoritePositionDao) {
+		this.userFavoritePositionDao = userFavoritePositionDao;
+	}
+
+	public WechatDao getWechatDao() {
+		return wechatDao;
+	}
+
+	public void setWechatDao(WechatDao wechatDao) {
+		this.wechatDao = wechatDao;
 	}
 }

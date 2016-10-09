@@ -3,9 +3,9 @@ package com.moseeker.common.redis.cache;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.util.ConfigPropertiesUtil;
-import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.Notification;
 import com.moseeker.common.util.StringUtils;
 

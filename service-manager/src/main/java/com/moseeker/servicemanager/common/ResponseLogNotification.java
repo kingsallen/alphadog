@@ -9,9 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.ConfigPropertiesUtil;
-import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.common.util.Notification;
 import com.moseeker.thrift.gen.common.struct.Response;
 

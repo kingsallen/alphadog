@@ -18,10 +18,10 @@ import org.jooq.types.UByte;
 import org.jooq.types.UInteger;
 import org.springframework.stereotype.Repository;
 
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.company.dao.CompanyDao;
 import com.moseeker.db.dictdb.tables.DictConstant;

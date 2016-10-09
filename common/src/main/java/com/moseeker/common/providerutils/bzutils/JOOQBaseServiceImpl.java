@@ -10,9 +10,9 @@ import org.jooq.impl.UpdatableRecordImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.daoutils.BaseDao;
-import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.common.util.Pagination;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
