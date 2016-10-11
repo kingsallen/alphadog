@@ -1255,6 +1255,7 @@ public class UseraccountsServiceImpl implements Iface {
 		RedisClient redisClient = RedisClientFactory.getCacheClient();
 		String result = redisClient.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.WEIXIN_SCANRESULT.toString(), String.valueOf(wechatId), String.valueOf(sceneId));
 		if(StringUtils.isNotNullOrEmpty(result)) {
+			redisClient.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.WEIXIN_SCANRESULT.toString(), String.valueOf(wechatId), String.valueOf(sceneId));
 			JSONObject json = JSON.parseObject(result);
 			if(json.get("status") != null && (Integer)json.get("status") ==0) {
 				return RespnoseUtil.SUCCESS.toResponse(json.get("data"));
