@@ -710,10 +710,10 @@ public class UseraccountsController {
 	@RequestMapping(value = "/weixin/qrcode/scanresult", method = RequestMethod.GET)
 	@ResponseBody
 	public String getScanresult(HttpServletRequest request, HttpServletResponse response) {
-		try {
+		try {			
 			Params<String, Object> param = ParamUtils.parseRequestParam(request);
 			int wechatId = param.getInt("wechatid", 0);
-			int sceneId = param.getInt("scene_id", 0);
+			long sceneId = param.getLong("scene_id", 0l);
 			
 			Response result = useraccountsServices.getScanResult(wechatId, sceneId);
 			return ResponseLogNotification.success(request, result);
@@ -734,7 +734,7 @@ public class UseraccountsController {
 		try {
 			Params<String, Object> param = ParamUtils.parseRequestParam(request);
 			int wechatId = param.getInt("wechatid", 0);
-			int sceneId = param.getInt("scene_id", 0);
+			long sceneId = param.getInt("scene_id", 0);
 			String value = param.getString("result", "");
 			
 			Response result = useraccountsServices.setScanResult(wechatId, sceneId, value);

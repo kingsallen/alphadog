@@ -205,11 +205,13 @@ public abstract class RedisClient {
 	public String get(int appId, String key_identifier, String str1, String str2)
 			throws CacheConfigNotExistException {
 		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
-		String cacheKey = String.format(redisKey.getPattern(), str1, str2);
-		try {
-			return redisCluster.get(cacheKey);
-		} catch (Exception e) {
-			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
+		if(redisKey != null) {
+			String cacheKey = String.format(redisKey.getPattern(), str1, str2);
+			try {
+				return redisCluster.get(cacheKey);
+			} catch (Exception e) {
+				Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
+			}
 		}
 		return null;
 	}

@@ -1257,12 +1257,12 @@ public class UseraccountsServiceImpl implements Iface {
 		if(StringUtils.isNotNullOrEmpty(result)) {
 			JSONObject json = JSON.parseObject(result);
 			if(json.get("status") != null && (Integer)json.get("status") ==0) {
-				return RespnoseUtil.SUCCESS.toResponse();
+				return RespnoseUtil.SUCCESS.setData(json.get("data")).toResponse();
 			} else {
-				return RespnoseUtil.USERACCOUNT_WECHAT_SCAN_ERROR.setMessage((String)json.get("message")).toResponse();
+				return RespnoseUtil.USERACCOUNT_WECHAT_SCAN_ERROR.setMessage((String)json.get("message")).setData(json.get("data")).toResponse();
 			}
 		} else {
-			return RespnoseUtil.USERACCOUNT_WECHAT_NOTSCAN.toResponse();
+			return RespnoseUtil.USERACCOUNT_WECHAT_NOTSCAN.setData(2).toResponse();
 		}
 	}
 
