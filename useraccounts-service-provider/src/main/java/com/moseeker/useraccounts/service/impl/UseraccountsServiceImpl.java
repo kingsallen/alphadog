@@ -1200,7 +1200,7 @@ public class UseraccountsServiceImpl implements Iface {
 	 * 创建微信二维码
 	 */
 	@Override
-	public Response cerateQrcode(int wechatId, int sceneId, int expireSeconds, int action_name) throws TException {
+	public Response cerateQrcode(int wechatId, long sceneId, int expireSeconds, int action_name) throws TException {
 		
 		try {
 			QueryUtil qu = new QueryUtil();
@@ -1222,6 +1222,7 @@ public class UseraccountsServiceImpl implements Iface {
 				}
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.error(e.getMessage(), e);
 			return RespnoseUtil.PROGRAM_EXCEPTION.setMessage(e.getMessage()).toResponse();
 		} finally {
@@ -1250,7 +1251,7 @@ public class UseraccountsServiceImpl implements Iface {
 	 * @throws TException
 	 */
 	@Override
-	public Response getScanResult(int wechatId, int sceneId) throws TException {
+	public Response getScanResult(int wechatId, long sceneId) throws TException {
 		RedisClient redisClient = RedisClientFactory.getCacheClient();
 		String result = redisClient.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.WEIXIN_SCANRESULT.toString(), String.valueOf(wechatId), String.valueOf(sceneId));
 		if(StringUtils.isNotNullOrEmpty(result)) {
@@ -1274,7 +1275,7 @@ public class UseraccountsServiceImpl implements Iface {
 	 * @throws TException
 	 */
 	@Override
-	public Response setScanResult(int wechatId, int sceneId, String value) throws TException {
+	public Response setScanResult(int wechatId, long sceneId, String value) throws TException {
 		RedisClient redisClient = RedisClientFactory.getCacheClient();
 		redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.WEIXIN_SCANRESULT.toString(), String.valueOf(wechatId), String.valueOf(sceneId), value);
 		return RespnoseUtil.SUCCESS.toResponse();

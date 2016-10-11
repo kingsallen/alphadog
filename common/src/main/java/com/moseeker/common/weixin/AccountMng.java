@@ -2,6 +2,7 @@ package com.moseeker.common.weixin;
 
 import java.net.ConnectException;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.UrlUtil;
@@ -34,11 +35,14 @@ public class AccountMng {
 	 * @return
 	 * @throws ConnectException 
 	 */
-	public static WeixinTicketBean createTicket(String accessToken, Integer expireSeconds, QrcodeType actionName, Integer sceneId, String sceneStr) throws ConnectException {
+	public static WeixinTicketBean createTicket(String accessToken, Integer expireSeconds, QrcodeType actionName, Long sceneId, String sceneStr) throws ConnectException {
 		WeixinTicketBean bean = null;
 		JSONObject params = initParams(expireSeconds, actionName, sceneId, sceneStr);
-		String result = UrlUtil.sendPost(qucreateUrl+"?"+accessToken, params.toJSONString());
-		bean = JSONObject.parseObject(result, WeixinTicketBean.class);
+		String result = UrlUtil.sendPost(qucreateUrl+"?access_token="+accessToken, params.toJSONString());
+		JSONObject jo = JSON.parseObject(result);
+		if(!jo.containsKey("errcode")) {
+			bean = jo.toJavaObject(WeixinTicketBean.class);
+		}
 		return bean;
 	}
 	
@@ -48,7 +52,7 @@ public class AccountMng {
 	 * @return
 	 */
 	public static String getQrcode(String ticket) {
-		return UrlUtil.sendGet(qrPicUrl, "?ticket="+ticket);
+		return UrlUtil.sendGet(qrPicUrl, "ticket="+ticket);
 	}
 
 	/**
@@ -59,9 +63,9 @@ public class AccountMng {
 	 * @param sceneStr2 场景值
 	 * @return
 	 */
-	private static JSONObject initParams(Integer expireSeconds2, QrcodeType actionName2, Integer sceneId2, String sceneStr2) {
+	private static JSONObject initParams(Integer expireSeconds2, QrcodeType actionName2, Long sceneId2, String sceneStr2) {
 		JSONObject paramJson = new JSONObject();
-		if(expireSeconds2 != null) {
+		if(expireSeconds2 != null && expireSeconds2 > 0) {
 			paramJson.put("expire_seconds", expireSeconds2);
 		} else {
 			paramJson.put("expire_seconds", expireSeconds);

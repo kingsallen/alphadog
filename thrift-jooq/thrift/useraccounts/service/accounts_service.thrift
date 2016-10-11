@@ -45,13 +45,13 @@ service UseraccountsServices {
     common_struct.Response postUserFavoritePosition(1: useraccounts_struct.UserFavoritePosition userFavoritePosition);
     
     //创建微信二维码
-    common_struct.Response cerateQrcode(1: i32 wechatId, 2: i32 sceneId, 3: i32 expireSeconds, 4:i32 action_name);
+    common_struct.Response cerateQrcode(1: i32 wechatId, 2: i64 sceneId, 3: i32 expireSeconds, 4:i32 action_name);
     //获取qrcode
     common_struct.Response getQrcode(1: string ticket);
     //查询二维码是否被用户扫描
-    common_struct.Response getScanResult(1: i32 wechatId, 2: i32 sceneId);
+    common_struct.Response getScanResult(1: i32 wechatId, 2: i64 sceneId);
     //设置二维码是否查看
-    common_struct.Response setScanResult(1: i32 wechatId, 2: i32 sceneId, 3:string value);
+    common_struct.Response setScanResult(1: i32 wechatId, 2: i64 sceneId, 3:string value);
 }
 
 /**

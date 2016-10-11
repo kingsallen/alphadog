@@ -41,7 +41,9 @@ public enum RespnoseUtil {
 		}
 		this.status = (Integer)objects[0];
 		this.message = (String)objects[1];
-		this.data = objects[2];
+		if(objects.length >2) {
+			this.data = objects[2];
+		}
 	}
 	/**
 	 * 转通用操作结果类

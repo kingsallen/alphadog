@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.google.common.primitives.UnsignedInteger;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
@@ -669,7 +670,7 @@ public class UseraccountsController {
 		try {
 			Params<String, Object> param = ParamUtils.parseRequestParam(request);
 			int wechatId = param.getInt("wechatid", 0);
-			int sceneId = param.getInt("scene_id", 0);
+			long sceneId = param.getLong("scene_id", 0l);
 			int expireSeconds = param.getInt("expire_seconds", 0);
 			int actionName = param.getInt("action_name", 0);
 			

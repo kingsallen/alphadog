@@ -41,6 +41,7 @@ public abstract class RedisClient {
 				}
 			}
 		} catch (JedisConnectionException e) {
+			e.printStackTrace();
 			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}
 		return redisKeys;
