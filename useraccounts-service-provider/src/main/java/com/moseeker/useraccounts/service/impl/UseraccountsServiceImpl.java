@@ -1213,7 +1213,7 @@ public class UseraccountsServiceImpl implements Iface {
 				if(StringUtils.isNotNullOrEmpty(accessToken)) {
 					WeixinTicketBean bean = AccountMng.createTicket(accessToken, expireSeconds, QrcodeType.fromInt(action_name), sceneId, null);
 					if(bean != null) {
-						return RespnoseUtil.SUCCESS.setData(bean).toResponse();
+						return RespnoseUtil.SUCCESS.toResponse(bean);
 					} else {
 						return RespnoseUtil.USERACCOUNT_WECHAT_GETQRCODE_FAILED.toResponse();
 					}
@@ -1239,7 +1239,7 @@ public class UseraccountsServiceImpl implements Iface {
 			return RespnoseUtil.USERACCOUNT_WECHAT_TICKET_NOTEXISTS.toResponse();
 		} else {
 			String qrcode = AccountMng.getQrcode(ticket);
-			return RespnoseUtil.SUCCESS.setData(qrcode).toResponse();
+			return RespnoseUtil.SUCCESS.toResponse(qrcode);
 		}
 	}
 
@@ -1257,12 +1257,12 @@ public class UseraccountsServiceImpl implements Iface {
 		if(StringUtils.isNotNullOrEmpty(result)) {
 			JSONObject json = JSON.parseObject(result);
 			if(json.get("status") != null && (Integer)json.get("status") ==0) {
-				return RespnoseUtil.SUCCESS.setData(json.get("data")).toResponse();
+				return RespnoseUtil.SUCCESS.toResponse(json.get("data"));
 			} else {
-				return RespnoseUtil.USERACCOUNT_WECHAT_SCAN_ERROR.setMessage((String)json.get("message")).setData(json.get("data")).toResponse();
+				return RespnoseUtil.USERACCOUNT_WECHAT_SCAN_ERROR.setMessage((String)json.get("message")).toResponse(json.get("data"));
 			}
 		} else {
-			return RespnoseUtil.SUCCESS.setData(2).toResponse();
+			return RespnoseUtil.SUCCESS.toResponse(2);
 		}
 	}
 

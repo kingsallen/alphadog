@@ -18,7 +18,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
  */
 public enum RespnoseUtil {
 
-	USERACCOUNT_WECHAT_NOTEXISTS(10023, "新密码和旧密码不能一致！"),
+	USERACCOUNT_WECHAT_NOTEXISTS(10023, "公众号不存在！"),
 	USERACCOUNT_WECHAT_ACCESSTOKEN_NOTEXISTS(10024, "公共号缺乏access_token！"),
 	USERACCOUNT_WECHAT_GETQRCODE_FAILED(10025, "获取微信二维码失败!"),
 	USERACCOUNT_WECHAT_TICKET_NOTEXISTS(10026, "票据信息不存在!"),
@@ -33,7 +33,6 @@ public enum RespnoseUtil {
 	
 	private int status;			//状态码
 	private String message;		//状态吗对应的消息
-	private Object data;		//返回内容
 	
 	RespnoseUtil(Object...objects ) {
 		if(objects == null || objects[0] == null) {
@@ -41,15 +40,23 @@ public enum RespnoseUtil {
 		}
 		this.status = (Integer)objects[0];
 		this.message = (String)objects[1];
-		if(objects.length >2) {
-			this.data = objects[2];
-		}
 	}
 	/**
 	 * 转通用操作结果类
 	 * @return Response 通用操作结果类 
 	 */
 	public Response toResponse() {
+		Response response = new Response();
+		response.setStatus(status);
+		response.setMessage(message);
+		return response;
+	}
+	
+	/**
+	 * 转通用操作结果类
+	 * @return Response 通用操作结果类 
+	 */
+	public Response toResponse(Object data) {
 		Response response = new Response();
 		response.setStatus(status);
 		response.setMessage(message);
@@ -62,7 +69,6 @@ public enum RespnoseUtil {
 		JSONObject json = new JSONObject();
 		json.put("status", status);
 		json.put("message", message);
-		json.put("data", data);
 		return json.toJSONString();
 	}
 	
@@ -73,15 +79,6 @@ public enum RespnoseUtil {
 	 */
 	public RespnoseUtil fromStatus(int status) {
 		return intToCode.get(status);
-	}
-	
-	/**
-	 * 设置结果
-	 * @param data
-	 */
-	public RespnoseUtil setData(Object data) {
-		this.data = data;
-		return this;
 	}
 	
 	/**
