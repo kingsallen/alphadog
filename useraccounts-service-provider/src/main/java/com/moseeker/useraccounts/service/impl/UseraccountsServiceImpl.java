@@ -1262,7 +1262,7 @@ public class UseraccountsServiceImpl implements Iface {
 				return RespnoseUtil.USERACCOUNT_WECHAT_SCAN_ERROR.setMessage((String)json.get("message")).setData(json.get("data")).toResponse();
 			}
 		} else {
-			return RespnoseUtil.USERACCOUNT_WECHAT_NOTSCAN.setData(2).toResponse();
+			return RespnoseUtil.SUCCESS.setData(2).toResponse();
 		}
 	}
 

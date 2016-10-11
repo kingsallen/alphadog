@@ -691,7 +691,7 @@ public class UseraccountsController {
 		try {
 			Params<String, Object> param = ParamUtils.parseRequestParam(request);
 			int wechatId = param.getInt("wechatid", 0);
-			long sceneId = param.getInt("scene_id", 0);
+			long sceneId = param.getLong("scene_id", 0l);
 			String value = param.getString("result", "");
 			
 			Response result = useraccountsServices.setScanResult(wechatId, sceneId, value);
