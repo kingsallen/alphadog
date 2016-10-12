@@ -1,18 +1,14 @@
-package com.moseeker.servicemanager.common;
+package com.moseeker.common.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLDecoder;
 import java.util.List;
 import java.util.Map;
-
-import org.junit.Test;
 
 public class UrlUtil {
 	
@@ -27,8 +23,6 @@ public class UrlUtil {
             // 设置通用的请求属性
             connection.setRequestProperty("accept", "*/*");
             connection.setRequestProperty("connection", "Keep-Alive");
-            connection.setRequestProperty("user-agent",
-                    "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
             // 建立实际的连接
             connection.setConnectTimeout(30000);
             connection.setReadTimeout(30000);
@@ -74,8 +68,6 @@ public class UrlUtil {
             // 设置通用的请求属性
             conn.setRequestProperty("accept", "*/*");
             conn.setRequestProperty("connection", "Keep-Alive");
-            conn.setRequestProperty("user-agent",
-                    "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
             conn.setRequestProperty("accept", "*/*");
             conn.setRequestProperty("Content-type","application/json"); 
             // 发送POST请求必须设置如下两行
@@ -115,21 +107,4 @@ public class UrlUtil {
         }
         return result;
     }    
-	
-	@Test
-	public void testURL() {
-		try {
-			String result1 = sendPost("http://www.baidu.com","username=chiwah.keen@gmail.com&password=loveisagirl123");
-			System.out.println("result:"+result1);
-			String result = sendPost("http://crawl.bj.moseeker.com:9999/resume/zhaopin.html","username=chiwah.keen@gmail.com&password=loveisagirl123");
-			System.out.println("result:"+result);
-			System.out.println("result:"+URLDecoder.decode(result,"UTF-8"));
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ConnectException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 }

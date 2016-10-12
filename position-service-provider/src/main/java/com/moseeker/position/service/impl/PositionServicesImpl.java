@@ -2,10 +2,10 @@ package com.moseeker.position.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.ValueFilter;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.db.jobdb.tables.records.JobCustomRecord;
 import com.moseeker.db.jobdb.tables.records.JobPositionExtRecord;

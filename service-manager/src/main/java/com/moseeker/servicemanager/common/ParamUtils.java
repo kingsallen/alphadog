@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.JsonToMap;
+import com.moseeker.servicemanager.web.controller.util.Params;
 
 /**
  * 
@@ -64,8 +65,8 @@ public class ParamUtils {
 	 * @return 存储通过request请求传递过来的参数
 	 * @throws Exception 
 	 */
-	public static Map<String, Object> parseRequestParam(HttpServletRequest request) throws Exception {
-		Map<String, Object> data = new HashMap<String, Object>();
+	public static Params<String, Object> parseRequestParam(HttpServletRequest request) throws Exception {
+		Params<String, Object> data = new Params<String, Object>();
 		data.putAll(initParamFromRequestBody(request));
 		data.putAll(initParamFromRequestParameter(request));
 		

@@ -1,6 +1,6 @@
 package com.moseeker.servicemanager.common.exception;
 
-import com.moseeker.common.util.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 
 public class CrawlerParamException extends ServiceManagerException {
 	

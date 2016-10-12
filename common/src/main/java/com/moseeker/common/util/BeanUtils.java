@@ -843,8 +843,9 @@ public class BeanUtils {
 		}
 		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
-				return Integer.valueOf((String) value);
+				return Long.valueOf((String) value).intValue();
 			} catch (NumberFormatException e) {
+				e.printStackTrace();
 				return Integer.valueOf(0);
 			}
 		} else if (value instanceof Boolean) {
