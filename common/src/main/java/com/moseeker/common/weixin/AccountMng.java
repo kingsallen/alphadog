@@ -2,6 +2,9 @@ package com.moseeker.common.weixin;
 
 import java.net.ConnectException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.util.StringUtils;
@@ -17,6 +20,8 @@ import com.moseeker.common.util.UrlUtil;
  * @version
  */
 public class AccountMng {
+	
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	private static String qucreateUrl = "https://api.weixin.qq.com/cgi-bin/qrcode/create"; //微信二维码请求地址
 	private static String qrPicUrl = "https://mp.weixin.qq.com/cgi-bin/showqrcode";
@@ -42,6 +47,8 @@ public class AccountMng {
 		JSONObject jo = JSON.parseObject(result);
 		if(!jo.containsKey("errcode")) {
 			bean = jo.toJavaObject(WeixinTicketBean.class);
+		} else {
+			LoggerFactory.getLogger(AccountMng.class).error(result);
 		}
 		return bean;
 	}
