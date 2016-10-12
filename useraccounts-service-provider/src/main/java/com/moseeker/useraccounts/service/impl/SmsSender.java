@@ -1,29 +1,39 @@
-package com.moseeker.common.sms;
+package com.moseeker.useraccounts.service.impl;
+
+import java.util.HashMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.exception.CacheConfigNotExistException;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.Constant;
+import com.moseeker.db.logdb.tables.records.LogSmsSendrecordRecord;
+import com.moseeker.useraccounts.dao.SMSRecordDao;
 import com.taobao.api.ApiException;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
 import com.taobao.api.request.AlibabaAliqinFcSmsNumSendRequest;
 import com.taobao.api.response.AlibabaAliqinFcSmsNumSendResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
 
 /**
  * 短信发送客户端
  * <p>
  *
  * */
+@Service
 public class SmsSender {
 
     private static TaobaoClient taobaoclient;
     private static Logger LOGGER = LoggerFactory.getLogger(SmsSender.class);
+    
+    @Autowired
+	protected SMSRecordDao smsRecordDao;
 
     public static TaobaoClient initTaobaoClientInstance() {
         if (taobaoclient == null) {
@@ -50,7 +60,7 @@ public class SmsSender {
      * @param params 需要的变量map
      *
      * */
-    public static boolean sendSMS(String mobile, String templateCode, HashMap params){
+    public boolean sendSMS(String mobile, String templateCode, HashMap<String, String> params){
         initTaobaoClientInstance();
         
         if (mobile==null){
@@ -73,7 +83,16 @@ public class SmsSender {
         try {
             rsp = taobaoclient.execute(req);
             if (rsp.getBody().indexOf("success")>-1) {
-            	
+            	LogSmsSendrecordRecord record = new LogSmsSendrecordRecord();
+            	record.setMobile(Long.valueOf(mobile));
+            	record.setSys(Constant.LOG_SMS_SENDRECORD_SYS_ALPHADOG);
+            	JSONObject json = new JSONObject();
+            	json.put("extend", mobile);
+            	json.put("sms_type", "nomal");
+            	json.put("sms_free_sign_name", "仟寻");
+            	json.put("params", params);
+            	record.setMsg(json.toJSONString());
+            	smsRecordDao.postResource(record);
                 return true;
             }
             else{
@@ -81,7 +100,9 @@ public class SmsSender {
             }
         } catch (ApiException e) {
             LOGGER.warn("短信发送失败:" + e.getMessage());
-        }
+        } catch (Exception e) {
+			LOGGER.warn("短信发送失败:" + e.getMessage());
+		}
         return false;    
     }
     /**
@@ -90,7 +111,7 @@ public class SmsSender {
      * @param mobile
      * @return
      */
-    public static boolean sendSMS_signup(String mobile){
+    public boolean sendSMS_signup(String mobile){
         HashMap<String, String> params = new HashMap<String, String>();
         String signupcode = getRandomStr();
         params.put("code", signupcode);    
@@ -108,7 +129,7 @@ public class SmsSender {
      * @param mobile
      * @return
      */
-    public static boolean sendSMS_passwordforgot(String mobile){
+    public boolean sendSMS_passwordforgot(String mobile){
         HashMap<String, String> params = new HashMap<String, String>();
         String passwordforgotcode = getRandomStr();
         params.put("code", passwordforgotcode);        
@@ -124,9 +145,8 @@ public class SmsSender {
      * @param mobile
      * @return
      */
-    public static boolean sendSMS_signupRandomPassword(String mobile, String randompassword){
+    public boolean sendSMS_signupRandomPassword(String mobile, String randompassword){
         HashMap<String, String> params = new HashMap<String, String>();
-        String passwordforgotcode = getRandomStr();
         params.put("name", mobile);        
         params.put("code", randompassword);        
         return sendSMS(mobile,"SMS_5895237",params);
@@ -138,7 +158,7 @@ public class SmsSender {
      * @param mobile
      * @return
      */
-    public static boolean sendSMS_changemobilecode(String mobile){
+    public boolean sendSMS_changemobilecode(String mobile){
         HashMap<String, String> params = new HashMap<String, String>();
         String code = getRandomStr();
         params.put("code", code);    
@@ -152,7 +172,7 @@ public class SmsSender {
      * @param mobile
      * @return
      */
-    public static boolean sendSMS_resetmobilecode(String mobile){
+    public boolean sendSMS_resetmobilecode(String mobile){
         HashMap<String, String> params = new HashMap<String, String>();
         String code = getRandomStr();
         params.put("code", code);    
@@ -171,7 +191,7 @@ public class SmsSender {
      *
      * @return
      */
-    public static boolean sendHrMobileVertfyCode(String mobile, String redisKey, int source){
+    public boolean sendHrMobileVertfyCode(String mobile, String redisKey, int source){
         HashMap<String, String> params = new HashMap<String, String>();
         String code = getRandomStr();
         params.put("code", code);
@@ -181,7 +201,7 @@ public class SmsSender {
         return sendSMS(mobile, "SMS_5755096", params);
     }
     
-    public static boolean sendSMS(String mobile, int scene){
+    public boolean sendSMS(String mobile, int scene){
     	String event = null;
     	switch(scene) {
     	case 1:event= "SMS_SIGNUP"; break;
@@ -202,7 +222,7 @@ public class SmsSender {
      * 请及时登录hr.moseeker.com修改您的登录密码，保障账号安全。
      *
      **/
-    public static boolean sendHrSmsSignUpForDownloadIndustryReport(String mobile, String password){
+    public boolean sendHrSmsSignUpForDownloadIndustryReport(String mobile, String password){
         HashMap<String, String> params = new HashMap<String, String>();
         params.put("name", mobile);
         params.put("code", password);
