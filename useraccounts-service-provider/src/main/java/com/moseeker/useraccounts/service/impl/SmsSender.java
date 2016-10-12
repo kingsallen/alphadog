@@ -90,6 +90,7 @@ public class SmsSender {
             	json.put("extend", mobile);
             	json.put("sms_type", "nomal");
             	json.put("sms_free_sign_name", "仟寻");
+            	json.put("template_code", templateCode);
             	json.put("params", params);
             	record.setMsg(json.toJSONString());
             	smsRecordDao.postResource(record);
