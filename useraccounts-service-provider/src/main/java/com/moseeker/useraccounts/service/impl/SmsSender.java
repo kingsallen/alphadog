@@ -30,7 +30,7 @@ import com.taobao.api.response.AlibabaAliqinFcSmsNumSendResponse;
 public class SmsSender {
 
     private static TaobaoClient taobaoclient;
-    private static Logger LOGGER = LoggerFactory.getLogger(SmsSender.class);
+    private static Logger logger = LoggerFactory.getLogger(SmsSender.class);
     
     @Autowired
 	protected SMSRecordDao smsRecordDao;
@@ -94,15 +94,16 @@ public class SmsSender {
             	json.put("params", params);
             	record.setMsg(json.toJSONString());
             	smsRecordDao.postResource(record);
+            	logger.info(json.toJSONString());
                 return true;
             }
             else{
-                LOGGER.warn("短信发送失败:" + rsp.getBody());
+            	logger.warn("短信发送失败:" + rsp.getBody());
             }
         } catch (ApiException e) {
-            LOGGER.warn("短信发送失败:" + e.getMessage());
+        	logger.warn("短信发送失败:" + e.getMessage());
         } catch (Exception e) {
-			LOGGER.warn("短信发送失败:" + e.getMessage());
+        	logger.warn("短信发送失败:" + e.getMessage());
 		}
         return false;    
     }
@@ -119,7 +120,7 @@ public class SmsSender {
         try {
 			RedisClientFactory.getCacheClient().set(0, "SMS_SIGNUP", mobile, signupcode);
 		} catch (CacheConfigNotExistException e) {
-			LOGGER.error(e.getMessage(), e);
+			logger.error(e.getMessage(), e);
 		}
         return sendSMS(mobile,"SMS_5755096",params);
     } 
