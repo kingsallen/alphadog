@@ -21,7 +21,7 @@ public class AccountMng {
 	private static String qucreateUrl = "https://api.weixin.qq.com/cgi-bin/qrcode/create"; //微信二维码请求地址
 	private static String qrPicUrl = "https://mp.weixin.qq.com/cgi-bin/showqrcode";
 	
-	private static int expireSeconds = 30;   								//该二维码有效时间，以秒为单位。 最大不超过2592000（即30天），此字段如果不填，则默认有效期为30秒。
+	private static int expireSeconds = 7200;   								//该二维码有效时间，以秒为单位。 最大不超过2592000（即30天），此字段如果不填，则默认有效期为30秒。
 	private static QrcodeType actionName = QrcodeType.QR_SCENE;			//二维码类型，QR_SCENE为临时,QR_LIMIT_SCENE为永久,QR_LIMIT_STR_SCENE为永久的字符串参数值
 	private static int sceneId = 0;										//场景值ID，临时二维码时为32位非0整型，永久二维码时最大值为100000（目前参数只支持1--100000）
 	
