@@ -32,10 +32,10 @@ import com.alibaba.fastjson.JSON;
 import org.apache.thrift.TException;
 import org.springframework.stereotype.Service;
 
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
-import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices.Iface;
 

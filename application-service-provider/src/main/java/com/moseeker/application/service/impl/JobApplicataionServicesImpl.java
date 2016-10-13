@@ -2,12 +2,12 @@ package com.moseeker.application.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.application.dao.*;
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.common.util.Constant;
-import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.db.jobdb.tables.records.JobApplicationRecord;

@@ -16,6 +16,7 @@ import com.moseeker.common.util.BeanUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
@@ -650,6 +651,92 @@ public class UseraccountsController {
 			UserFavoritePosition userFavoritePosition = ParamUtils.initModelForm(request, UserFavoritePosition.class);
 
 			Response result = useraccountsServices.postUserFavoritePosition(userFavoritePosition);
+			return ResponseLogNotification.success(request, result);
+		} catch (Exception e) {
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
+	
+	/**
+	 * 查看扫描结果
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/weixin/qrcode/scanresult", method = RequestMethod.GET)
+	@ResponseBody
+	public String getScanresult(HttpServletRequest request, HttpServletResponse response) {
+		try {			
+			Params<String, Object> param = ParamUtils.parseRequestParam(request);
+			int wechatId = param.getInt("wechatid", 0);
+			long sceneId = param.getLong("scene_id", 0l);
+			
+			Response result = useraccountsServices.getScanResult(wechatId, sceneId);
+			return ResponseLogNotification.success(request, result);
+		} catch (Exception e) {
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
+	
+	/**
+	 * 查看扫描结果
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/weixin/qrcode/scanresult", method = RequestMethod.POST)
+	@ResponseBody
+	public String setScanresult(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Params<String, Object> param = ParamUtils.parseRequestParam(request);
+			int wechatId = param.getInt("wechatid", 0);
+			long sceneId = param.getLong("scene_id", 0l);
+			String value = param.getString("result", "");
+			
+			Response result = useraccountsServices.setScanResult(wechatId, sceneId, value);
+			return ResponseLogNotification.success(request, result);
+		} catch (Exception e) {
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
+
+	/**
+	 * 创建微信二维码
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/weixin/qrcode", method = RequestMethod.POST)
+	@ResponseBody
+	public String cerateQrcode(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Params<String, Object> param = ParamUtils.parseRequestParam(request);
+			int wechatId = param.getInt("wechatid", 0);
+			long sceneId = param.getLong("scene_id", 0l);
+			int expireSeconds = param.getInt("expire_seconds", 0);
+			int actionName = param.getInt("action_name", 0);
+			
+			Response result = useraccountsServices.cerateQrcode(wechatId, sceneId, expireSeconds, actionName);
+			return ResponseLogNotification.success(request, result);
+		} catch (Exception e) {
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
+	
+	/**
+	 * 利用ticket获取微信二维码
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/weixin/qrcode", method = RequestMethod.GET)
+	@ResponseBody
+	public String getWeixinQrcode(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Params<String, Object> param = ParamUtils.parseRequestParam(request);
+			String ticket = param.getString("ticket", "");
+			
+			Response result = useraccountsServices.getQrcode(ticket);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
 			return ResponseLogNotification.fail(request, e.getMessage());

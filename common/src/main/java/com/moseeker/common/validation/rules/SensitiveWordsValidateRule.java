@@ -1,7 +1,7 @@
 package com.moseeker.common.validation.rules;
 
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.ValidateNotAppointParamException;
-import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.SensitiveWordDB;
 import com.moseeker.common.validation.ValidateRule;
