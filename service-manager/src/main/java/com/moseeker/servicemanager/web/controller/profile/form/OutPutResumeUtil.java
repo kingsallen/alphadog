@@ -7,10 +7,10 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
-import com.moseeker.common.util.ConstantErrorCodeMessage;
-import com.moseeker.servicemanager.common.UrlUtil;
+import com.moseeker.common.util.UrlUtil;
 import com.moseeker.thrift.gen.common.struct.Response;
 
 public class OutPutResumeUtil {
