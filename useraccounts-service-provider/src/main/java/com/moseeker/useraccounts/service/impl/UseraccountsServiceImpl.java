@@ -25,7 +25,6 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.daoutils.BaseDao;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
-import com.moseeker.common.sms.SmsSender;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.MD5Util;
@@ -80,6 +79,9 @@ public class UseraccountsServiceImpl implements Iface {
 
 	@Autowired
 	protected UserFavoritePositionDao userFavoritePositionDao;
+	
+	@Autowired
+	protected SmsSender smsSender;
 	
 	@Autowired
 	protected WechatDao wechatDao;
@@ -213,7 +215,7 @@ public class UseraccountsServiceImpl implements Iface {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 		}
 
-		if (SmsSender.sendSMS_signup(mobile)) {
+		if (smsSender.sendSMS_signup(mobile)) {
 			return ResponseUtils.success(null);
 		} else {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
@@ -264,7 +266,7 @@ public class UseraccountsServiceImpl implements Iface {
 
 				// 未设置密码, 主动短信通知用户
 				if (!hasPassword) {
-					SmsSender.sendSMS_signupRandomPassword(String.valueOf(user.mobile), plainPassword);
+					smsSender.sendSMS_signupRandomPassword(String.valueOf(user.mobile), plainPassword);
 				}
 
 				// // 初始化 user_setting 表.
@@ -693,7 +695,7 @@ public class UseraccountsServiceImpl implements Iface {
 			}
 		}
 
-		if (SmsSender.sendSMS_passwordforgot(mobile)) {
+		if (smsSender.sendSMS_passwordforgot(mobile)) {
 			return ResponseUtils.success(null);
 		} else {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
@@ -898,7 +900,7 @@ public class UseraccountsServiceImpl implements Iface {
 			}
 		}
 
-		if (SmsSender.sendSMS_changemobilecode(oldmobile)) {
+		if (smsSender.sendSMS_changemobilecode(oldmobile)) {
 			return ResponseUtils.success(null);
 		} else {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
@@ -943,7 +945,7 @@ public class UseraccountsServiceImpl implements Iface {
 			}
 		}
 
-		if (SmsSender.sendSMS_resetmobilecode(newmobile)) {
+		if (smsSender.sendSMS_resetmobilecode(newmobile)) {
 			return ResponseUtils.success(null);
 		} else {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
@@ -1168,7 +1170,7 @@ public class UseraccountsServiceImpl implements Iface {
 
 	@Override
 	public Response sendVerifyCode(String mobile, int type) throws TException {
-		boolean result = SmsSender.sendSMS(mobile, type);
+		boolean result = smsSender.sendSMS(mobile, type);
 		if(result) {
 			return ResponseUtils.success("success");
 		} else {
