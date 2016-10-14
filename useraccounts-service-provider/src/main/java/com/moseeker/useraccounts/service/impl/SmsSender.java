@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CacheConfigNotExistException;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.ConfigPropertiesUtil;
-import com.moseeker.common.util.Constant;
 import com.moseeker.db.logdb.tables.records.LogSmsSendrecordRecord;
 import com.moseeker.useraccounts.dao.SMSRecordDao;
 import com.taobao.api.ApiException;
