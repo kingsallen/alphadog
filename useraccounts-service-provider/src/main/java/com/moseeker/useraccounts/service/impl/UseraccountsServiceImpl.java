@@ -501,6 +501,7 @@ public class UseraccountsServiceImpl implements Iface {
 		try {
 			// unnionid置为子账号
 			userUnionid.setParentid(userMobile.getId());
+			userUnionid.setUnionid("");
 			if (userdao.putResource(userUnionid) > 0) {
 				consummateUserAccount(userMobile, userUnionid);
 				// profile合并成功
