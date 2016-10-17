@@ -507,6 +507,7 @@ public class UseraccountsServiceImpl implements Iface {
 				userMobile.setUnionid(userUnionid.getUnionid());
 			}
 			userUnionid.setUnionid("");
+			logger.info("user_user.unionid:"+userUnionid.getUnionid());
 			if (userdao.putResource(userUnionid) > 0) {
 				consummateUserAccount(userMobile, userUnionid);
 				// profile合并成功
