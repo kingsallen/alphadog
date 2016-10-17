@@ -16,6 +16,9 @@ import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
 import com.moseeker.db.analytics.tables.StJobSimilarity;
 import com.moseeker.db.hrdb.tables.HrCompany;
+import com.moseeker.db.hrdb.tables.HrCompanyAccount;
+import com.moseeker.db.hrdb.tables.records.HrCompanyAccountRecord;
+import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.db.jobdb.tables.JobPosition;
 import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.position.dao.PositionDao;
@@ -59,10 +62,25 @@ public class PositionDaoImpl extends BaseDaoImpl<JobPositionRecord, JobPosition>
             Record positionAndCompanyRecord = positionAndCompanyRecords.get(0);
             int company_id = ((UInteger) positionAndCompanyRecord.getValue("company_id")).intValue();
             int company_type = ((UByte) positionAndCompanyRecord.getValue("type")).intValue(); //公司区分(其它:2,免费用户:1,企业用户:0)
+            boolean child = false;
+            
             // get recom
             Result<? extends Record> recomResults;
             Condition condition = StJobSimilarity.ST_JOB_SIMILARITY.POS_ID.equal(pid);
             if (company_type == 0) {
+            	/* 检查是否是子公司的职位 */
+            	int publisher = (Integer)positionAndCompanyRecord.getValue("publisher");
+                
+                HrCompanyAccountRecord record = create.selectFrom(HrCompanyAccount.HR_COMPANY_ACCOUNT)
+                		.where(HrCompanyAccount.HR_COMPANY_ACCOUNT.ACCOUNT_ID.equal(publisher))
+                		.fetchOne();
+                if(record != null && record.getCompanyId() != null) {
+                	if(company_id != record.getCompanyId()) {
+                		company_id = record.getCompanyId();
+                    	child = true;
+                	}
+                }
+                
                 condition = condition.and(StJobSimilarity.ST_JOB_SIMILARITY.DEPARTMENT_ID.equal(company_id)); // select analytics by pid and did
             }
             recomResults = create.select().from(StJobSimilarity.ST_JOB_SIMILARITY).where(condition).fetch();
@@ -70,6 +88,7 @@ public class PositionDaoImpl extends BaseDaoImpl<JobPositionRecord, JobPosition>
             for (Record recomResult : recomResults) {
                 pids.add(((Integer) recomResult.getValue("recom_id")).intValue());
             }
+            
             /*
             public int pid;
             public String job_title;
@@ -83,16 +102,26 @@ public class PositionDaoImpl extends BaseDaoImpl<JobPositionRecord, JobPosition>
                             JobPosition.JOB_POSITION.ID.as("pid"),
                             JobPosition.JOB_POSITION.TITLE.as("job_title"),
                             JobPosition.JOB_POSITION.COMPANY_ID.as("company_id"),
-                            HrCompany.HR_COMPANY.NAME.as("company_name"),
+                            HrCompany.HR_COMPANY.ABBREVIATION.as("company_name"),
                             HrCompany.HR_COMPANY.LOGO.as("company_logo")
                             )
                             .from(JobPosition.JOB_POSITION)
                             .join(HrCompany.HR_COMPANY).on(HrCompany.HR_COMPANY.ID.equal(JobPosition.JOB_POSITION.COMPANY_ID))
                             .where(JobPosition.JOB_POSITION.ID.in(pids))
                             .fetch().into(RecommendedPositonPojo.class);
-//            for (Record r : recommendedPositionsWithCompanyInfo) {
-//                recommedPositoinsList.add(r);
-//            }
+            /* 子公司职位需要返回子公司的公司简称和公司logo */
+            if(child) {
+            	HrCompanyRecord company = create.selectFrom(HrCompany.HR_COMPANY)
+            			.where(HrCompany.HR_COMPANY.ID.equal(UInteger.valueOf(company_id)))
+            			.fetchOne();
+            	if(company != null) {
+            		recommedPositoinsList.forEach(position -> {
+            			position.setCompany_logo(company.getLogo());
+            			position.setCompany_name(company.getAbbreviation());
+            		});
+            	}
+            }
+
 
         } catch (Exception e) {
             e.printStackTrace();
