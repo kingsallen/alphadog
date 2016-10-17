@@ -381,7 +381,7 @@ public class UseraccountsServiceImpl implements Iface {
 				}
 			} else if (userUnionid == null && userMobile != null) {
 				if(StringUtils.isNotNullOrEmpty(userMobile.getUnionid())) {
-					return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_MOBILE_REPEAT_BIND);
+					return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_BIND_REPEATBIND);
 				}
 				userMobile.setUnionid(unionid);
 				if (userdao.putResource(userMobile) > 0) {
