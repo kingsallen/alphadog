@@ -501,6 +501,11 @@ public class UseraccountsServiceImpl implements Iface {
 		try {
 			// unnionid置为子账号
 			userUnionid.setParentid(userMobile.getId());
+			/* 完善unionid */
+			if (StringUtils.isNullOrEmpty(userMobile.getUnionid())
+					&& StringUtils.isNotNullOrEmpty(userUnionid.getUnionid())) {
+				userMobile.setUnionid(userUnionid.getUnionid());
+			}
 			userUnionid.setUnionid("");
 			if (userdao.putResource(userUnionid) > 0) {
 				consummateUserAccount(userMobile, userUnionid);
@@ -599,11 +604,6 @@ public class UseraccountsServiceImpl implements Iface {
 		if (StringUtils.isNullOrEmpty(userMobile.getPosition())
 				&& StringUtils.isNotNullOrEmpty(userUnionid.getPosition())) {
 			userMobile.setPosition(userUnionid.getPosition());
-		}
-		/* 完善unionid */
-		if (StringUtils.isNullOrEmpty(userMobile.getUnionid())
-				&& StringUtils.isNotNullOrEmpty(userUnionid.getUnionid())) {
-			userMobile.setUnionid(userUnionid.getUnionid());
 		}
 		try {
 			userdao.putResource(userMobile);
