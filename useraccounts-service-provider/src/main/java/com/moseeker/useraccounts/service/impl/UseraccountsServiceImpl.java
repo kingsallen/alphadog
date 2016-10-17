@@ -380,6 +380,9 @@ public class UseraccountsServiceImpl implements Iface {
 					return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
 				}
 			} else if (userUnionid == null && userMobile != null) {
+				if(StringUtils.isNotNullOrEmpty(userMobile.getUnionid())) {
+					return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_MOBILE_REPEAT_BIND);
+				}
 				userMobile.setUnionid(unionid);
 				if (userdao.putResource(userMobile) > 0) {
 					Map<String, Object> map = new HashMap<String, Object>();

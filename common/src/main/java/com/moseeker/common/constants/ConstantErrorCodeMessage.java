@@ -28,6 +28,7 @@ public final class ConstantErrorCodeMessage {
     public static final String HRCOMPANY_NOTEXIST = "{'status':10020,'message':'公司不存在!'}";
     public static final String USERACCOUNT_BIND_REPEATBIND = "{'status':10021,'message':'手机号码已经绑定！'}";
     public static final String USERACCOUNT_PASSWORD_REPEATPASSWORD = "{'status':10022,'message':'新密码和旧密码不能一致！'}";
+    public static final String USERACCOUNT_MOBILE_REPEAT_BIND = "{'status':10023,'message':'手机号已经绑定其他微信号，无法重复绑定！'}";
 
     public static final String HR_ACCOUNT_SIGNUP_VALIDATE_SOURCE = "{'status':12001,'message':'source >=1 && <=5!'}";
 
