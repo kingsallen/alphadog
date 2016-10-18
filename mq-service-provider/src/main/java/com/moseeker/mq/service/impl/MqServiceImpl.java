@@ -40,7 +40,7 @@ public class MqServiceImpl {
             if (response.status > 0){
                 return response;
             }
-
+            
             String json = BeanUtils.convertStructToJSON(messageTemplateNoticeStruct);
 
             Long res = redisClient.lpush(Constant.APPID_ALPHADOG, Constant.REDIS_KEY_IDENTIFIER_MQ_MESSAGE_NOTICE_TEMPLATE, json);
