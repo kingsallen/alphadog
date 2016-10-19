@@ -4,12 +4,14 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+
 import org.jooq.DSLContext;
 import org.jooq.SelectWhereStep;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.db.configdb.tables.ConfigAdminnotificationGroupmembers;
 import com.moseeker.db.configdb.tables.ConfigAdminnotificationMembers;
@@ -17,8 +19,6 @@ import com.moseeker.db.configdb.tables.records.ConfigAdminnotificationEventsReco
 import com.moseeker.db.configdb.tables.records.ConfigAdminnotificationGroupmembersRecord;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.warn.dao.EventDao;
-import com.moseeker.warn.dao.GroupMemberDao;
-import com.moseeker.warn.dao.MemberDao;
 import com.moseeker.warn.dto.Event;
 import com.moseeker.warn.dto.Member;
 
@@ -34,14 +34,8 @@ public class EventConfigService {
 	@Autowired
 	private EventDao dao;
 	
-	@Autowired
-	private MemberDao memberDao;
-	
-	@Autowired
-	private GroupMemberDao groupMemberDao;
-	
 	/**
-	 * 事件信息集合［K=projectAppid:eventKey, V={@link Event}］
+	 * 事件信息集合［K=projectAppid_eventKey, V={@link Event}］
 	 */
 	public static HashMap<String, Event> eventMap = new HashMap<String, Event>();
 	
@@ -66,7 +60,7 @@ public class EventConfigService {
 				} catch (Exception e) {
 					log.error(e.getMessage(), e);
 				}
-				eventMap.put(event.getProjectAppid().concat(":").concat(event.getEventKey()), event);
+				eventMap.put(event.getProjectAppid().concat("_").concat(event.getEventKey()), event);
 			});
 		} catch (Exception e) {
 			log.info("load event error ...");

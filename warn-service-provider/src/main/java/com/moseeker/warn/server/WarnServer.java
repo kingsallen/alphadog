@@ -16,7 +16,6 @@ public class WarnServer {
 			System.out.println(eventKey);
 			System.out.println(event);
 		});
-		while(true);
 	}
 	
 	/**
