@@ -1,5 +1,6 @@
 package com.moseeker.warn.dto;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -160,7 +161,7 @@ public class Event {
 				.format("Event [projectAppid=%s, eventKey=%s, eventName=%s, eventDesc=%s, thresholdValue=%s, thresholdInterval=%s, notifyByEmail=%s, notifyBySms=%s, members=%s]",
 						projectAppid, eventKey, eventName, eventDesc,
 						thresholdValue, thresholdInterval, notifyByEmail,
-						notifyBySms, members);
+						notifyBySms, Arrays.toString(members.toArray()));
 	}
 	
 }

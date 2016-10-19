@@ -1,12 +1,8 @@
 package com.moseeker.warn.server;
 
-import java.util.List;
-
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.moseeker.db.configdb.tables.records.ConfigAdminnotificationEventsRecord;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.warn.dao.EventDao;
+import com.moseeker.warn.service.EventConfigService;
 
 /**
  * @author lucky8987
@@ -15,11 +11,12 @@ import com.moseeker.warn.dao.EventDao;
 public class WarnServer {
 	
 	public static void main(String[] args) throws Exception {
-		AnnotationConfigApplicationContext springContext = initSpring();
-		EventDao eventDao = springContext.getBean(EventDao.class);
-		CommonQuery query = new CommonQuery();
-		List<ConfigAdminnotificationEventsRecord> list = eventDao.getResources(query);
-		list.forEach(record -> System.out.println(record.getValue("event_name")));
+		initSpring();
+		EventConfigService.eventMap.forEach((eventKey, event) -> {
+			System.out.println(eventKey);
+			System.out.println(event);
+		});
+		while(true);
 	}
 	
 	/**

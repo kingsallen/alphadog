@@ -69,4 +69,12 @@ public class Member {
 	public void setStatus(int status) {
 		this.status = status;
 	}
+
+	@Override
+	public String toString() {
+		return String
+				.format("Member [name=%s, mobilephone=%s, wechatopenid=%s, email=%s, status=%s]",
+						name, mobilephone, wechatopenid, email, status);
+	}
+	
 }

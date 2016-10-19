@@ -4,18 +4,23 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.xml.ws.handler.LogicalHandler;
-
+import org.jooq.DSLContext;
+import org.jooq.SelectWhereStep;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.moseeker.common.proxy.Log;
+import com.moseeker.common.dbutils.DBConnHelper;
+import com.moseeker.db.configdb.tables.ConfigAdminnotificationGroupmembers;
+import com.moseeker.db.configdb.tables.ConfigAdminnotificationMembers;
 import com.moseeker.db.configdb.tables.records.ConfigAdminnotificationEventsRecord;
+import com.moseeker.db.configdb.tables.records.ConfigAdminnotificationGroupmembersRecord;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.warn.dao.EventDao;
+import com.moseeker.warn.dao.GroupMemberDao;
+import com.moseeker.warn.dao.MemberDao;
 import com.moseeker.warn.dto.Event;
+import com.moseeker.warn.dto.Member;
 
 /**
  * @author lucky8987
@@ -29,6 +34,15 @@ public class EventConfigService {
 	@Autowired
 	private EventDao dao;
 	
+	@Autowired
+	private MemberDao memberDao;
+	
+	@Autowired
+	private GroupMemberDao groupMemberDao;
+	
+	/**
+	 * 事件信息集合［K=projectAppid:eventKey, V={@link Event}］
+	 */
 	public static HashMap<String, Event> eventMap = new HashMap<String, Event>();
 	
 	/**
@@ -36,6 +50,7 @@ public class EventConfigService {
 	 */
 	@PostConstruct
 	public void init() {
+		eventMap.clear();
 		try {
 			List<ConfigAdminnotificationEventsRecord> resources = dao.getResources(new CommonQuery());
 			resources.forEach(record -> {
@@ -44,8 +59,14 @@ public class EventConfigService {
 						record.getEventDesc(), record.getThresholdValue(), record.getThresholdInterval(), record.getEnableNotifybyEmail() == 1 ? true : false, 
 						record.getEnableNotifybySms() == 1 ? true : false, record.getEnableNotifybyWechattemplatemessage() == 1 ? true : false);
 				// 查询事件通知人员
-				
-				
+				try {
+					DSLContext jooqDSL = DBConnHelper.DBConn.getJooqDSL(DBConnHelper.DBConn.getConn());
+					SelectWhereStep<ConfigAdminnotificationGroupmembersRecord> selectFrom = jooqDSL.selectFrom(ConfigAdminnotificationGroupmembers.CONFIG_ADMINNOTIFICATION_GROUPMEMBERS);
+					event.setMembers(jooqDSL.selectFrom(ConfigAdminnotificationMembers.CONFIG_ADMINNOTIFICATION_MEMBERS).whereExists(selectFrom).fetch().into(Member.class));
+				} catch (Exception e) {
+					log.error(e.getMessage(), e);
+				}
+				eventMap.put(event.getProjectAppid().concat(":").concat(event.getEventKey()), event);
 			});
 		} catch (Exception e) {
 			log.info("load event error ...");
