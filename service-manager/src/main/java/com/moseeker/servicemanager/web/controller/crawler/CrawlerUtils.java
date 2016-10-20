@@ -144,7 +144,7 @@ public class CrawlerUtils {
 	}
 
 	private String fetchResume(String params, String url) throws ConnectException {
-		int timeOut = 2*60*1000;
+		int timeOut = 1*60*1000;
 		return UrlUtil.sendPost(url, params, timeOut, timeOut);
 	}
 }
