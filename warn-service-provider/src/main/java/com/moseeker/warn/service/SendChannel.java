@@ -3,7 +3,7 @@ package com.moseeker.warn.service;
 import java.util.List;
 
 /**
- * @author lucky8987
+ * @author ltf
  * 发送渠道
  */
 public enum SendChannel {

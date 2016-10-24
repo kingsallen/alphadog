@@ -23,7 +23,7 @@ import com.moseeker.warn.dto.Event;
 import com.moseeker.warn.dto.Member;
 
 /**
- * @author lucky8987
+ * @author ltf
  * 事件配置服务
  */
 @Service
@@ -37,7 +37,7 @@ public class EventConfigService {
 	/**
 	 * 事件信息集合［K=projectAppid_eventKey, V={@link Event}］
 	 */
-	public static HashMap<String, Event> eventMap = new HashMap<String, Event>();
+	private HashMap<String, Event> eventMap = new HashMap<String, Event>();
 	
 	/**
 	 * 初始化事件信息
@@ -45,8 +45,9 @@ public class EventConfigService {
 	@PostConstruct
 	public void init() {
 		eventMap.clear();
+		List<ConfigAdminnotificationEventsRecord> resources;
 		try {
-			List<ConfigAdminnotificationEventsRecord> resources = dao.getResources(new CommonQuery());
+			resources = dao.getResources(new CommonQuery());
 			resources.forEach(record -> {
 				// 封装事件信息
 				Event event = new Event(record.getProjectAppid(), record.getEventKey(), record.getEventName(),
@@ -68,4 +69,7 @@ public class EventConfigService {
 		}
 	}
 	
+	public HashMap<String, Event> getEvents(){
+		return eventMap; 
+	}
 }

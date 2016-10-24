@@ -1,7 +1,7 @@
 package com.moseeker.warn.dto;
 
 /**
- * @author lucky8987
+ * @author ltf
  * 人员信息
  */
 public class Member {

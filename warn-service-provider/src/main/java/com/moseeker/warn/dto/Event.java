@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * @author lucky8987
+ * @author ltf
  * 事件信息
  */
 public class Event {

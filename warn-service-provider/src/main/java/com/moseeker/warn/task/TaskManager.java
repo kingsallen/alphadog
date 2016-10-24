@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import com.moseeker.warn.service.EventConfigService;
 
 /**
- * @author lucky8987
+ * @author ltf
  * spring 任务调度管理 <br/>
  * EnableScheduling: 启用task任务调度
  */

@@ -5,14 +5,15 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import com.moseeker.warn.service.EventConfigService;
 
 /**
- * @author lucky8987
+ * @author ltf
  * 
  */
 public class WarnServer {
 	
 	public static void main(String[] args) throws Exception {
-		initSpring();
-		EventConfigService.eventMap.forEach((eventKey, event) -> {
+		AnnotationConfigApplicationContext context = initSpring();
+		EventConfigService bean = context.getBean(EventConfigService.class);
+		bean.getEvents().forEach((eventKey, event) -> {
 			System.out.println(eventKey);
 			System.out.println(event);
 		});
@@ -20,13 +21,12 @@ public class WarnServer {
 	
 	/**
 	 * 加载spring容器
-	 * @return
+	 * @return AnnotationConfigApplicationContext
 	 */
 	public static AnnotationConfigApplicationContext initSpring() {
 		AnnotationConfigApplicationContext annConfig = new AnnotationConfigApplicationContext();
 		annConfig.scan("com.moseeker.warn");
 		annConfig.refresh();
-		annConfig.start();
 		return annConfig;
 	}
 }
