@@ -8,6 +8,8 @@ import java.util.List;
  * 事件信息
  */
 public class Event {
+	
+	private Integer id;
 	/**
 	 * 项目appid
 	 */
@@ -39,19 +41,9 @@ public class Event {
 	private int thresholdInterval;
 	
 	/**
-	 * 邮件通知
+	 * 通知渠道
 	 */
-	private boolean notifyByEmail;
-	
-	/**
-	 * 短信通知
-	 */
-	private boolean notifyBySms;
-	
-	/**
-	 * 微信通知
-	 */
-	private boolean notifyByWechat;
+	private List<String> notifyChannels;
 	
 	/**
 	 * 发送人员
@@ -98,22 +90,6 @@ public class Event {
 		this.thresholdInterval = thresholdInterval;
 	}
 
-	public boolean isNotifyByEmail() {
-		return notifyByEmail;
-	}
-
-	public void setNotifyByEmail(boolean notifyByEmail) {
-		this.notifyByEmail = notifyByEmail;
-	}
-
-	public boolean isNotifyBySms() {
-		return notifyBySms;
-	}
-
-	public void setNotifyBySms(boolean notifyBySms) {
-		this.notifyBySms = notifyBySms;
-	}
-
 	public List<Member> getMembers() {
 		return members;
 	}
@@ -126,42 +102,48 @@ public class Event {
 		return eventKey;
 	}
 
-	public boolean isNotifyByWechat() {
-		return notifyByWechat;
-	}
-
-	public void setNotifyByWechat(boolean notifyByWechat) {
-		this.notifyByWechat = notifyByWechat;
-	}
-
 	public void setEventKey(String eventKey) {
 		this.eventKey = eventKey;
 	}
 	
-	public Event(String projectAppid, String eventKey, String eventName,
-			String eventDesc, int thresholdValue, int thresholdInterval,
-			boolean notifyByEmail, boolean notifyBySms, boolean notifyByWechat) {
+	public List<String> getNotifyChannels() {
+		return notifyChannels;
+	}
+
+	public void setNotifyChannels(List<String> notifyChannels) {
+		this.notifyChannels = notifyChannels;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Event(Integer id, String projectAppid, String eventKey, String eventName,
+			String eventDesc, int thresholdValue, int thresholdInterval) {
 		super();
+		this.id = id;
 		this.projectAppid = projectAppid;
 		this.eventKey = eventKey;
 		this.eventName = eventName;
 		this.eventDesc = eventDesc;
 		this.thresholdValue = thresholdValue;
 		this.thresholdInterval = thresholdInterval;
-		this.notifyByEmail = notifyByEmail;
-		this.notifyBySms = notifyBySms;
-		this.notifyByWechat = notifyByWechat;
 	}
 	
-	public Event() {}
+	public Event() {
+
+	}
 	
 	@Override
 	public String toString() {
 		return String
-				.format("Event [projectAppid=%s, eventKey=%s, eventName=%s, eventDesc=%s, thresholdValue=%s, thresholdInterval=%s, notifyByEmail=%s, notifyBySms=%s, members=%s]",
+				.format("Event [projectAppid=%s, eventKey=%s, eventName=%s, eventDesc=%s, thresholdValue=%s, thresholdInterval=%s, notifyChannels=%s members=%s]",
 						projectAppid, eventKey, eventName, eventDesc,
-						thresholdValue, thresholdInterval, notifyByEmail,
-						notifyBySms, Arrays.toString(members.toArray()));
+						thresholdValue, thresholdInterval, Arrays.toString(notifyChannels.toArray()), Arrays.toString(members.toArray()));
 	}
 	
 }

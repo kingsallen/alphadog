@@ -13,8 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.moseeker.common.dbutils.DBConnHelper;
+import com.moseeker.db.configdb.tables.ConfigAdminnotificationChannel;
 import com.moseeker.db.configdb.tables.ConfigAdminnotificationGroupmembers;
 import com.moseeker.db.configdb.tables.ConfigAdminnotificationMembers;
+import com.moseeker.db.configdb.tables.records.ConfigAdminnotificationChannelRecord;
 import com.moseeker.db.configdb.tables.records.ConfigAdminnotificationEventsRecord;
 import com.moseeker.db.configdb.tables.records.ConfigAdminnotificationGroupmembersRecord;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -50,25 +52,30 @@ public class EventConfigService {
 			resources = dao.getResources(new CommonQuery());
 			resources.forEach(record -> {
 				// 封装事件信息
-				Event event = new Event(record.getProjectAppid(), record.getEventKey(), record.getEventName(),
-						record.getEventDesc(), record.getThresholdValue(), record.getThresholdInterval(), record.getEnableNotifybyEmail() == 1 ? true : false, 
-						record.getEnableNotifybySms() == 1 ? true : false, record.getEnableNotifybyWechattemplatemessage() == 1 ? true : false);
-				// 查询事件通知人员
+				Event event = new Event(record.getId(), record.getProjectAppid(), record.getEventKey(), record.getEventName(),
+						record.getEventDesc(), record.getThresholdValue(), record.getThresholdInterval());
+				DSLContext jooqDSL;
 				try {
-					DSLContext jooqDSL = DBConnHelper.DBConn.getJooqDSL(DBConnHelper.DBConn.getConn());
+					jooqDSL = DBConnHelper.DBConn.getJooqDSL(DBConnHelper.DBConn.getConn());
+					// 查询事件通知人员
 					SelectWhereStep<ConfigAdminnotificationGroupmembersRecord> selectFrom = jooqDSL.selectFrom(ConfigAdminnotificationGroupmembers.CONFIG_ADMINNOTIFICATION_GROUPMEMBERS);
 					event.setMembers(jooqDSL.selectFrom(ConfigAdminnotificationMembers.CONFIG_ADMINNOTIFICATION_MEMBERS).whereExists(selectFrom).fetch().into(Member.class));
+					eventMap.put(event.getProjectAppid().concat("_").concat(event.getEventKey()), event);
+					// 查询通知渠道
+					event.setNotifyChannels(jooqDSL.selectFrom(ConfigAdminnotificationChannel.CONFIG_ADMINNOTIFICATION_CHANNEL).where(ConfigAdminnotificationChannel.CONFIG_ADMINNOTIFICATION_CHANNEL.ENVENT_ID.eq(event.getId())).fetch(ConfigAdminnotificationChannel.CONFIG_ADMINNOTIFICATION_CHANNEL.CHANNEL)); 
 				} catch (Exception e) {
 					log.error(e.getMessage(), e);
 				}
-				eventMap.put(event.getProjectAppid().concat("_").concat(event.getEventKey()), event);
 			});
 		} catch (Exception e) {
-			log.info("load event error ...");
-			log.error(e.getMessage(), e);
+			log.error("load event error ...", e);
 		}
 	}
 	
+	/**
+	 * 获取event列表集合
+	 * @return
+	 */
 	public HashMap<String, Event> getEvents(){
 		return eventMap; 
 	}
