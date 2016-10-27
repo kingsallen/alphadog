@@ -44,7 +44,7 @@ public class MqServer {
     		}
     		
     		//启动消息模版延迟队列的定时搬运搬运任务
-    		Schedule schedule = new Schedule(3,1,TimeUnit.MINUTES);
+    		Schedule schedule = new Schedule(0,1,TimeUnit.MINUTES);
     		schedule.startListeningMessageDelayQueue();
 
             synchronized (MqServer.class) {
