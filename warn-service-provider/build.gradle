@@ -10,9 +10,9 @@ dependencies {
 	compile project (":rpc-center")
 	compile project (":common")
 	compile project (":thrift-jooq")
-	compile 'org.springframework:spring-core:4.2.3.RELEASE'
-	compile 'org.springframework:spring-context:4.2.3.RELEASE'
-	compile 'org.springframework:spring-test:4.2.3.RELEASE'
+        compile deps["spring-core"]
+        compile deps["spring-context"]
+        compile deps["spring-test"]
 	testCompile 'junit:junit:4.12'
 }
 

@@ -6,7 +6,7 @@ import com.moseeker.warn.service.ManageService;
 
 public class ManageTest {
 
-	@Test
+	//@Test
 	public void sendMessageTest() {
 		ManageService service = new ManageService();
 		service.sendMessage();
