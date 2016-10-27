@@ -5,8 +5,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.ParamIllegalException;
-import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileAwardsRecord;

@@ -34,4 +34,5 @@ public class User {
    public  String          position        ;  // 点击我感兴趣时填写的职位
    public  int             parentid        ;  // 合并到了新用户的id
    public  int			   email_verified  ;  // 邮箱是否认证
+   public  String          nickname		   ;  // nickname
 }

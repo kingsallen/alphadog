@@ -158,7 +158,7 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
 
             condition = UserUser.USER_USER.ID.equal(UInteger.valueOf(userId));
 
-			user = create.select().from(UserUser.USER_USER).where(condition).limit(1).fetchOne().into(User.class);
+			user = create.selectFrom(UserUser.USER_USER).where(condition).limit(1).fetchOne().into(User.class);
 
         }catch (Exception e){
             logger.error(e.getMessage(), e);

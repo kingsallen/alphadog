@@ -3,9 +3,9 @@ package com.moseeker.common.redis;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CacheConfigNotExistException;
 import com.moseeker.common.redis.cache.db.DbManager;
-import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.Notification;
 import com.moseeker.common.util.StringUtils;
 
@@ -41,6 +41,7 @@ public abstract class RedisClient {
 				}
 			}
 		} catch (JedisConnectionException e) {
+			e.printStackTrace();
 			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}
 		return redisKeys;
@@ -204,11 +205,13 @@ public abstract class RedisClient {
 	public String get(int appId, String key_identifier, String str1, String str2)
 			throws CacheConfigNotExistException {
 		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
-		String cacheKey = String.format(redisKey.getPattern(), str1, str2);
-		try {
-			return redisCluster.get(cacheKey);
-		} catch (Exception e) {
-			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
+		if(redisKey != null) {
+			String cacheKey = String.format(redisKey.getPattern(), str1, str2);
+			try {
+				return redisCluster.get(cacheKey);
+			} catch (Exception e) {
+				Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
+			}
 		}
 		return null;
 	}

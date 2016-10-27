@@ -16,7 +16,7 @@ import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.data.Stat;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.common.util.Constant;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.rpccenter.common.Constants;
 import com.moseeker.rpccenter.config.ServerManagerZKConfig;
 
