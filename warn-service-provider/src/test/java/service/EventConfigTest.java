@@ -9,7 +9,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import com.moseeker.warn.dto.Event;
 import com.moseeker.warn.service.EventConfigService;
 
-
 public class EventConfigTest {
 	
 	private EventConfigService service;
