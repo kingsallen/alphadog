@@ -82,6 +82,12 @@ public class MqController {
             messageTemplateNoticeStruct.setCompany_id((int)paramMap.get("company_id"));
             messageTemplateNoticeStruct.setData(this.getMessagetplData((Map<String, Map<String, JSONObject>>)paramMap.get("data")));
             messageTemplateNoticeStruct.setEnable_qx_retry((byte)(int)paramMap.getOrDefault("enable_qx_retry", 1)); // Integer->int->byte
+            if(paramMap.get("delay") != null) {
+            	 messageTemplateNoticeStruct.setDelay((Long)paramMap.get("delay"));
+            }
+            if(paramMap.get("validators") != null) {
+            	messageTemplateNoticeStruct.setValidators((String)paramMap.get("validators"));
+            }
             return messageTemplateNoticeStruct;
         }
         return null;

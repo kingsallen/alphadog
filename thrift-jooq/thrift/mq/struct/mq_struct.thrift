@@ -18,7 +18,10 @@ struct MessageTemplateNoticeStruct {
     3: optional string url,
     4: optional i32 company_id,
     5: optional map<string, MessageTplDataCol> data,
-    6: optional byte enable_qx_retry = 1
+    6: optional byte enable_qx_retry = 1,
+    7: optional i64 delay = 0,
+    8: optional string validators,
+    9: optional string id
 }
 
 struct EmailStruct {

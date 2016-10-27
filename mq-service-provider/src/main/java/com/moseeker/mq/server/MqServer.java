@@ -1,6 +1,7 @@
 package com.moseeker.mq.server;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import javax.mail.MessagingException;
 
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.moseeker.mq.service.email.ConstantlyMail;
+import com.moseeker.mq.service.schedule.Schedule;
 import com.moseeker.mq.thrift.ThriftService;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.Server;
@@ -40,6 +42,10 @@ public class MqServer {
     			e.printStackTrace();
     			LOGGER.error(e.getMessage(), e);
     		}
+    		
+    		//启动消息模版延迟队列的定时搬运搬运任务
+    		Schedule schedule = new Schedule(3,1,TimeUnit.MINUTES);
+    		schedule.startListeningMessageDelayQueue();
 
             synchronized (MqServer.class) {
                 while (true) {
