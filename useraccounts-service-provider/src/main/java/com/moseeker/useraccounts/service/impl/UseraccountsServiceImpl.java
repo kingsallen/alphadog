@@ -523,21 +523,31 @@ public class UseraccountsServiceImpl implements Iface {
 			case Constant.APPID_PLATFORM:
 				ProfileProfileRecord userMobileProfileRecord = profileDao
 						.getProfileByUserId(userMobile.getId().intValue());
-				// pc 端profile 设置为无效
-				if (userMobileProfileRecord != null) {
-					profileDao.delResource(userMobileProfileRecord);
-				}
-
 				// 微信端profile转移到pc用户下.
 				ProfileProfileRecord userUnionProfileRecord = profileDao
 						.getProfileByUserId(userUnionid.getId().intValue());
 				if (userUnionProfileRecord != null) {
+					// pc 端profile 设置为无效
+					if (userMobileProfileRecord != null) {
+						profileDao.delResource(userMobileProfileRecord);
+					}
 					userUnionProfileRecord.setUserId(userMobile.getId());
 					profileDao.putResource(userUnionProfileRecord);
 				}
 
 				break;
 			case Constant.APPID_C:
+				ProfileProfileRecord userMobileProfileRecord1 = profileDao
+					.getProfileByUserId(userMobile.getId().intValue());
+				if(userMobileProfileRecord1 == null) {
+					// 微信端profile转移到pc用户下.
+					ProfileProfileRecord userUnionProfileRecord1 = profileDao
+							.getProfileByUserId(userUnionid.getId().intValue());
+					if(userUnionProfileRecord1 != null) {
+						userUnionProfileRecord1.setUserId(userMobile.getId());
+						profileDao.putResource(userUnionProfileRecord1);
+					}
+				}
 			default:
 				break;
 			}

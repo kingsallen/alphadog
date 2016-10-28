@@ -83,7 +83,7 @@ public class MqController {
             messageTemplateNoticeStruct.setData(this.getMessagetplData((Map<String, Map<String, JSONObject>>)paramMap.get("data")));
             messageTemplateNoticeStruct.setEnable_qx_retry((byte)(int)paramMap.getOrDefault("enable_qx_retry", 1)); // Integer->int->byte
             if(paramMap.get("delay") != null) {
-            	 messageTemplateNoticeStruct.setDelay((Integer)paramMap.get("delay")* 1000);
+            	 messageTemplateNoticeStruct.setDelay((Integer)paramMap.get("delay") * 1000);
             }
             if(paramMap.get("validators") != null) {
             	messageTemplateNoticeStruct.setValidators((String)paramMap.get("validators"));

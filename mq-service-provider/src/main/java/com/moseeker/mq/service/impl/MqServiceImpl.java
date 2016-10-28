@@ -51,7 +51,6 @@ public class MqServiceImpl {
 				redisClient.zadd(AppId.APPID_ALPHADOG.getValue(),
 						KeyIdentifier.MQ_MESSAGE_NOTICE_TEMPLATE_DELAY.toString(),
 						messageTemplateNoticeStruct.getDelay()+System.currentTimeMillis(), json);
-				logger.info("添加到延迟队列！");
 				return ResponseUtils.success(null);
 			} else {
 				Long res = redisClient.lpush(Constant.APPID_ALPHADOG,
