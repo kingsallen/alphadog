@@ -109,6 +109,9 @@ public class PositionDaoImpl extends BaseDaoImpl<JobPositionRecord, JobPosition>
 			recommedPositoinsList = create
 					.select(JobPosition.JOB_POSITION.ID.as("pid"), JobPosition.JOB_POSITION.TITLE.as("job_title"),
 							JobPosition.JOB_POSITION.COMPANY_ID.as("company_id"),
+							JobPosition.JOB_POSITION.SALARY_TOP.as("salary_top"),
+							JobPosition.JOB_POSITION.SALARY_BOTTOM.as("salary_bottom"),
+							JobPosition.JOB_POSITION.CITY.as("job_city"),
 							HrCompany.HR_COMPANY.ABBREVIATION.as("company_name"),
 							HrCompany.HR_COMPANY.LOGO.as("company_logo"))
 					.from(JobPosition.JOB_POSITION).join(HrCompany.HR_COMPANY)
