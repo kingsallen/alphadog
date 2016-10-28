@@ -2,6 +2,9 @@ package com.moseeker.mq.service.schedule;
 
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.KeyIdentifier;
@@ -18,12 +21,14 @@ import com.moseeker.common.redis.RedisClientFactory;
  * @version
  */
 public class Porter implements Runnable {
+	
+	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Override
 	public void run() {
 		RedisClient redisClient = RedisClientFactory.getCacheClient();
 		long now = System.currentTimeMillis();
-		Set<String> tasks = redisClient.zrange(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.MQ_MESSAGE_NOTICE_TEMPLATE_DELAY.toString(), 0l, now);
+		Set<String> tasks = redisClient.rangeByScore(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.MQ_MESSAGE_NOTICE_TEMPLATE_DELAY.toString(), 0l, now);
 		if(tasks != null && tasks.size() > 0) {
 			redisClient.zRemRangeByScore(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.MQ_MESSAGE_NOTICE_TEMPLATE_DELAY.toString(), 0l, now);
 			tasks.forEach(task -> {

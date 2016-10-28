@@ -1,6 +1,5 @@
 package com.moseeker.mq.service.impl;
 
-import java.util.Random;
 import java.util.UUID;
 
 import org.apache.thrift.TException;
@@ -51,7 +50,8 @@ public class MqServiceImpl {
 			if (messageTemplateNoticeStruct.getDelay() > 0) {
 				redisClient.zadd(AppId.APPID_ALPHADOG.getValue(),
 						KeyIdentifier.MQ_MESSAGE_NOTICE_TEMPLATE_DELAY.toString(),
-						messageTemplateNoticeStruct.getDelay(), json);
+						messageTemplateNoticeStruct.getDelay()+System.currentTimeMillis(), json);
+				logger.info("添加到延迟队列！");
 				return ResponseUtils.success(null);
 			} else {
 				Long res = redisClient.lpush(Constant.APPID_ALPHADOG,
