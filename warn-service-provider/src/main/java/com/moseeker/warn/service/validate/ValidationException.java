@@ -1,11 +1,8 @@
 package com.moseeker.warn.service.validate;
 
-import java.lang.invoke.VolatileCallSite;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
@@ -46,8 +43,7 @@ public class ValidationException {
 			Event config=map.get(mapkey);
 			if(config!=null){
 				int interval=config.getThresholdInterval();
-				String location="";
-				String key=appid+name+location;
+				String key=appid+name;
 				synchronized(IDENTIFIKEY){
 					String oldtime=redisClient.get(Constant.APPID_ALPHADOG,IDENTIFIKEY, key);
 					if(oldtime==null){
