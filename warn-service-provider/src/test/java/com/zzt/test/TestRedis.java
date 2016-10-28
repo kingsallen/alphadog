@@ -26,12 +26,12 @@ public class TestRedis {
 		}else{
 			System.out.println("no list================");
 		}
-		synchronized (TestRedis.class) {
-			while(true){
-				getList();
-				System.out.println("11111");
-			}
-		}
+//		synchronized (TestRedis.class) {
+//			while(true){
+//				getList();
+//				System.out.println("11111");
+//			}
+//		}
 	}
 	//校验测试
 	@Test
