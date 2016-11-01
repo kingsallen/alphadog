@@ -1,0 +1,23 @@
+package com.moseeker.baseorm.dao;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.moseeker.baseorm.db.hrdb.tables.ThirdPartAccount;
+import com.moseeker.baseorm.db.hrdb.tables.records.ThirdPartAccountRecord;
+import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
+import com.moseeker.db.userdb.tables.UserUser;
+import com.moseeker.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
+
+@Service
+public class ThirdPartAccountDao extends BaseDaoImpl<ThirdPartAccountRecord, ThirdPartAccount> {
+
+	@Override
+	protected void initJOOQEntity() {
+		// TODO Auto-generated method stub
+		this.tableLike=ThirdPartAccount.THIRD_PART_ACCOUNT;
+	}
+
+}
