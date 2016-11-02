@@ -40,12 +40,13 @@ public class WechatController {
 	 * @param response
 	 * @return
 	 */
-	@RequestMapping(value = "/company/{company_id}/wechat/{wechat_id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/company/{company_id}/wechat", method = RequestMethod.GET)
 	@ResponseBody
-	public String getWechat(@PathVariable long company_id, @PathVariable long wechat_id, HttpServletRequest request,
+	public String getWechat(@PathVariable long company_id, HttpServletRequest request,
 			HttpServletResponse response) {
 		try {
-			Response result = companyServices.getWechat(company_id, wechat_id);
+			// todo 以后可能需要支持通用查询
+			Response result = companyServices.getWechat(company_id, 0);
 			if (result.getStatus() == 0) {
 				return ResponseLogNotification.success(request, result);
 			} else {

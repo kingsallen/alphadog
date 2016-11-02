@@ -120,10 +120,11 @@ public class CompanyServicesImpl extends JOOQBaseServiceImpl<Hrcompany, HrCompan
 	 */
 	public Response getWechat(long companyId, long wechatId) {
 		
-		if(companyId == 0 && wechatId == 0) {
+		if(companyId == 0) {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 		}
 		QueryUtil qu = new QueryUtil();
+		qu.addEqualFilter("company_id", String.valueOf(companyId));
 		if(wechatId > 0) {
 			qu.addEqualFilter("id", String.valueOf(wechatId));
 		} else if(companyId > 0) {
