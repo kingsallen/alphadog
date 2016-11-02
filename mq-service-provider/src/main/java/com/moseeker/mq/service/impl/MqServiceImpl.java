@@ -50,7 +50,7 @@ public class MqServiceImpl {
 			if (messageTemplateNoticeStruct.getDelay() > 0) {
 				redisClient.zadd(AppId.APPID_ALPHADOG.getValue(),
 						KeyIdentifier.MQ_MESSAGE_NOTICE_TEMPLATE_DELAY.toString(),
-						messageTemplateNoticeStruct.getDelay()+System.currentTimeMillis(), json);
+						messageTemplateNoticeStruct.getDelay()*1000+System.currentTimeMillis(), json);
 				return ResponseUtils.success(null);
 			} else {
 				Long res = redisClient.lpush(Constant.APPID_ALPHADOG,
