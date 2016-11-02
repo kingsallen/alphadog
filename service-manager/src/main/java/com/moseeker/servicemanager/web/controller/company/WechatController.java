@@ -51,7 +51,6 @@ public class WechatController {
 			} else {
 				return ResponseLogNotification.fail(request, result);
 			}
-
 		} catch (Exception e) {
 			return ResponseLogNotification.fail(request, e.getMessage());
 		} finally {

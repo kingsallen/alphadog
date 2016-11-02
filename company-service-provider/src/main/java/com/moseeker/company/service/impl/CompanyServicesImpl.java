@@ -134,13 +134,12 @@ public class CompanyServicesImpl extends JOOQBaseServiceImpl<Hrcompany, HrCompan
 			if(record == null) {
 				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 			} else {
-				ResponseUtils.success(record);
+				return ResponseUtils.success(record.intoMap());
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		}
-		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXHAUSTED);
 	}
 }
 
