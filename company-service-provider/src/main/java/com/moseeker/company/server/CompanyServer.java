@@ -46,6 +46,7 @@ public class CompanyServer {
 				}
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			LOGGER.error("error", e);
 		}
 	}
