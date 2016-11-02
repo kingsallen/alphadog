@@ -1,29 +1,36 @@
 package com.moseeker.position.service.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.ValueFilter;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
-import com.moseeker.common.util.BeanUtils;
-import com.moseeker.db.hrdb.tables.records.HrCompanyAccountRecord;
-import com.moseeker.db.jobdb.tables.records.JobCustomRecord;
-import com.moseeker.db.jobdb.tables.records.JobPositionExtRecord;
-import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
-import com.moseeker.position.dao.*;
-import com.moseeker.position.pojo.DictConstantPojo;
-import com.moseeker.position.pojo.JobPositionPojo;
-import com.moseeker.position.pojo.RecommendedPositonPojo;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.position.service.PositionServices.Iface;
-import com.moseeker.thrift.gen.position.struct.Position;
+import java.util.List;
+
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.ValueFilter;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
+import com.moseeker.common.util.BeanUtils;
+import com.moseeker.db.dictdb.tables.records.DictCityRecord;
+import com.moseeker.db.hrdb.tables.records.HrCompanyAccountRecord;
+import com.moseeker.db.jobdb.tables.records.JobCustomRecord;
+import com.moseeker.db.jobdb.tables.records.JobPositionExtRecord;
+import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.position.dao.DictConstantDao;
+import com.moseeker.position.dao.JobCustomDao;
+import com.moseeker.position.dao.JobPositionDao;
+import com.moseeker.position.dao.JobPositonExtDao;
+import com.moseeker.position.dao.PositionDao;
+import com.moseeker.position.dao.UserDao;
+import com.moseeker.position.pojo.DictConstantPojo;
+import com.moseeker.position.pojo.JobPositionPojo;
+import com.moseeker.position.pojo.RecommendedPositonPojo;
+import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.position.service.PositionServices.Iface;
+import com.moseeker.thrift.gen.position.struct.Position;
 
 @Service
 public class PositionServicesImpl extends JOOQBaseServiceImpl<Position, JobPositionRecord> implements Iface {
@@ -163,6 +170,17 @@ public class PositionServicesImpl extends JOOQBaseServiceImpl<Position, JobPosit
 					jobPositionPojo.custom = jobCustomRecord.getName();
 				}
 			}
+			
+			//省份
+			List<DictCityRecord> provinces =  dao.getProvincesByPositionID(positionId);
+			if(provinces != null && provinces.size() > 0) {
+				StringBuffer sb = new StringBuffer();
+				provinces.forEach(province -> {
+					sb.append(province.getName()+",");
+				});
+				sb.deleteCharAt(sb.length()-1);
+				jobPositionPojo.province = sb.toString();
+			}
 
 			return ResponseUtils.success(jobPositionPojo);
 		}catch (Exception e){
@@ -175,7 +193,7 @@ public class PositionServicesImpl extends JOOQBaseServiceImpl<Position, JobPosit
 	 *
 	 * @param parentCode
 	 * @param code
-	 * @return
+	 * @return 
 	 * @throws Exception
      */
 	private String getDictConstantJson(Integer parentCode, Integer code) throws Exception{
