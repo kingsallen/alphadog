@@ -75,6 +75,7 @@ public class MqController {
 		paramMap = ParamUtils.parseRequestParam(request);
         if(paramMap != null){
             messageTemplateNoticeStruct.setUser_id((int)paramMap.get("user_id"));
+            messageTemplateNoticeStruct.setType((byte)(int)paramMap.get("type"));
             messageTemplateNoticeStruct.setSys_template_id((int)paramMap.get("sys_template_id"));
             if(paramMap.get("url") != null) {
             	messageTemplateNoticeStruct.setUrl(paramMap.get("url").toString());

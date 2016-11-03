@@ -20,6 +20,8 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.constants.RespnoseUtil;
+import com.moseeker.common.constants.TemplateId;
+import com.moseeker.common.constants.UserType;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.daoutils.BaseDao;
@@ -34,13 +36,17 @@ import com.moseeker.common.weixin.AccountMng;
 import com.moseeker.common.weixin.QrcodeType;
 import com.moseeker.common.weixin.WeixinTicketBean;
 import com.moseeker.db.hrdb.tables.records.HrWxWechatRecord;
+import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.db.logdb.tables.records.LogUserloginRecordRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.db.userdb.tables.records.UserFavPositionRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.mq.service.MqService;
+import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.User;
 import com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition;
@@ -50,6 +56,7 @@ import com.moseeker.useraccounts.dao.UserDao;
 import com.moseeker.useraccounts.dao.UserFavoritePositionDao;
 import com.moseeker.useraccounts.dao.UsersettingDao;
 import com.moseeker.useraccounts.dao.WechatDao;
+import com.moseeker.useraccounts.pojo.MessageTemplate;
 
 /**
  * 用户登陆， 注册，合并等api的实现
@@ -61,6 +68,8 @@ import com.moseeker.useraccounts.dao.WechatDao;
 public class UseraccountsServiceImpl implements Iface {
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+	MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
 
 	@Autowired
 	protected BaseDao<UserWxUserRecord> wxuserdao;
@@ -1075,6 +1084,19 @@ public class UseraccountsServiceImpl implements Iface {
 			if (userFavoritePositionId > 0) {
 				Map<String, Object> hashmap = new HashMap<>();
 				hashmap.put("userFavoritePositionId", userFavoritePositionId);
+//				Thread t = new Thread(() -> {
+//					try {
+//						MessageTemplate messageTemplate = fetchMessageTemplate(userFavoritePosition.getPosition_id(), userFavoritePosition.getSysuser_id());
+//						MessageTemplateNoticeStruct mtns = createMessageTemplate(messageTemplate);
+//						
+//						mqService.messageTemplateNotice(mtns);
+//					} catch (Exception e) {
+//						logger.error(e.getMessage(), e);
+//					}
+//				});
+//				t.start();
+//				MessageTemplateNoticeStruct messageTemplateNoticeStruct = new MessageTemplateNoticeStruct();
+				
 				return ResponseUtils.success(hashmap); // 返回
 														// userFavoritePositionId
 			}
@@ -1085,6 +1107,50 @@ public class UseraccountsServiceImpl implements Iface {
 			// do nothing
 		}
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+	}
+
+	private MessageTemplateNoticeStruct createMessageTemplate(MessageTemplate messageTemplate) {
+		if(messageTemplate != null) {
+			MessageTemplateNoticeStruct message = new MessageTemplateNoticeStruct();
+			StringBuffer content = new StringBuffer();
+			content.append("您发布的“");
+			content.append(messageTemplate.getPositionTitle()+"”");
+			content.append("职位有了一位新候选人，请及时与TA联系。");
+			message.setUser_id(messageTemplate.getHrAccountId());
+			message.setSys_template_id(TemplateId.TEMPLATE_MESSAGE_FAV_HR.getValue());
+			message.setType(UserType.PC.getValueToByte());
+			HashMap<String, Object> data = new HashMap<String, Object>();
+			
+			//message.setData(data);
+			
+		}
+		return null;
+	}
+
+	private MessageTemplate fetchMessageTemplate(int positionId, int userId) {
+		MessageTemplate messageTemplate = null;
+		try {
+			JobPositionRecord position = userFavoritePositionDao.getUserFavPositiond(positionId);
+			com.moseeker.useraccounts.pojo.User user = userdao.getUserById(userId);
+			if(position != null && user != null) {
+				messageTemplate = new MessageTemplate();
+				messageTemplate.setPositionTitle(position.getTitle());
+				messageTemplate.setHrAccountId(position.getPublisher());
+				if(StringUtils.isNotNullOrEmpty(user.name)) {
+					messageTemplate.setName(user.name);
+				} else if(StringUtils.isNotNullOrEmpty(user.nickname)) {
+					messageTemplate.setName(user.nickname);
+				} else {
+					messageTemplate.setName(user.username);
+				}
+				messageTemplate.setContact(String.valueOf(user.mobile));
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		} finally {
+			
+		}
+		return messageTemplate;
 	}
 
 	/**
