@@ -1237,7 +1237,7 @@ public class UseraccountsServiceImpl implements Iface {
 		vu.addRequiredStringValidate("验证码", code, null, null);
 		String message = vu.validate();
 		if(StringUtils.isNullOrEmpty(message)) {
-			boolean flag = validateCode(mobile, code, 1);
+			boolean flag = validateCode(mobile, code, type);
 			if(flag) {
 				return ResponseUtils.success(1);
 			} else {
