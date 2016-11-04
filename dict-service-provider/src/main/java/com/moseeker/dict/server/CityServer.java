@@ -4,12 +4,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.moseeker.dict.service.impl.CityServicesImpl;
-import com.moseeker.dict.service.impl.CollegeServicesImpl;
-import com.moseeker.dict.service.impl.DictConstantServiceImpl;
-import com.moseeker.dict.service.impl.DictCountryServiceImpl;
-import com.moseeker.dict.service.impl.IndusteryServiceImpl;
-import com.moseeker.dict.service.impl.PositionServiceImpl;
+import com.moseeker.dict.thrift.CityServicesImpl;
+import com.moseeker.dict.thrift.CollegeServicesImpl;
+import com.moseeker.dict.thrift.DictConstantServiceImpl;
+import com.moseeker.dict.thrift.DictCountryServiceImpl;
+import com.moseeker.dict.thrift.IndusteryServiceImpl;
+import com.moseeker.dict.thrift.PositionServiceImpl;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.MultiRegServer;
 
@@ -55,6 +55,7 @@ public class CityServer {
     private static AnnotationConfigApplicationContext initSpring() {
         AnnotationConfigApplicationContext acac = new AnnotationConfigApplicationContext();
         acac.scan("com.moseeker.dict");
+        acac.scan("com.moseeker.common.aop.iface");
         acac.refresh();
         return acac;
     }

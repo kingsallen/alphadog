@@ -4,14 +4,16 @@ import java.text.MessageFormat;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.Constant;
 import com.moseeker.warn.dto.Event;
+import com.moseeker.warn.utils.SendChannel;
 
+@Service
 public class ManageService {
 	
 	private Logger log = LoggerFactory.getLogger(getClass());
@@ -43,6 +45,7 @@ public class ManageService {
 				log.error("not found the sendChannel:{0}", channel);
 			}
 		});
+		sendMessage();
 	}
 
 }

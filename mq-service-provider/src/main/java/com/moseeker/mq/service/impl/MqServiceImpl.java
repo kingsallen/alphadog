@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
@@ -20,6 +21,7 @@ import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
  * Created by zzh on 16/8/3.
  */
 @Service
+@CounterIface
 public class MqServiceImpl {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());

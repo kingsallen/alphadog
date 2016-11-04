@@ -6,7 +6,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.Server;
-import com.moseeker.searchengine.service.impl.SearchengineServiceImpl;
+import com.moseeker.searchengine.thrift.SearchengineServiceImpl;
 
 public class SearchengineServer {
 	private static Logger LOGGER = LoggerFactory.getLogger(SearchengineServer.class);
@@ -40,6 +40,7 @@ public class SearchengineServer {
 	private static AnnotationConfigApplicationContext initSpring() {
 		AnnotationConfigApplicationContext acac = new AnnotationConfigApplicationContext();
 		acac.scan("com.moseeker.searchengine");
+		acac.scan("com.moseeker.common.aop.iface");
 		acac.refresh();
 		return acac;
 	}

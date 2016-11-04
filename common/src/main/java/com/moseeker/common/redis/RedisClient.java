@@ -8,6 +8,7 @@ import com.moseeker.common.redis.cache.db.DbManager;
 import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.Notification;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.thrift.gen.warn.service.WarnSetService;
 
 import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.exceptions.JedisConnectionException;
