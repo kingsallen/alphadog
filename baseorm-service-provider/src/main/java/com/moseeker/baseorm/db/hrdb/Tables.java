@@ -29,6 +29,8 @@ import com.moseeker.baseorm.db.hrdb.tables.HrReferralStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrRuleStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrRuleUniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
+import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartAccount;
+import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartPosition;
 import com.moseeker.baseorm.db.hrdb.tables.HrTopic;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxBasicReply;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxHrChat;
@@ -41,8 +43,6 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxRule;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
-import com.moseeker.baseorm.db.hrdb.tables.ThirdPartAccount;
-import com.moseeker.baseorm.db.hrdb.tables.ThirdPartPosition;
 
 import javax.annotation.Generated;
 
@@ -186,6 +186,16 @@ public class Tables {
     public static final HrSuperaccountApply HR_SUPERACCOUNT_APPLY = com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply.HR_SUPERACCOUNT_APPLY;
 
     /**
+     * 第三方渠道帐号
+     */
+    public static final HrThirdPartAccount HR_THIRD_PART_ACCOUNT = com.moseeker.baseorm.db.hrdb.tables.HrThirdPartAccount.HR_THIRD_PART_ACCOUNT;
+
+    /**
+     * 第三方渠道同步的职位
+     */
+    public static final HrThirdPartPosition HR_THIRD_PART_POSITION = com.moseeker.baseorm.db.hrdb.tables.HrThirdPartPosition.HR_THIRD_PART_POSITION;
+
+    /**
      * 雇主主题活动表
      */
     public static final HrTopic HR_TOPIC = com.moseeker.baseorm.db.hrdb.tables.HrTopic.HR_TOPIC;
@@ -244,14 +254,4 @@ public class Tables {
      * 微信消息通知同步状态
      */
     public static final HrWxWechatNoticeSyncStatus HR_WX_WECHAT_NOTICE_SYNC_STATUS = com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS;
-
-    /**
-     * The table <code>hrdb.third_part_account</code>.
-     */
-    public static final ThirdPartAccount THIRD_PART_ACCOUNT = com.moseeker.baseorm.db.hrdb.tables.ThirdPartAccount.THIRD_PART_ACCOUNT;
-
-    /**
-     * The table <code>hrdb.third_part_position</code>.
-     */
-    public static final ThirdPartPosition THIRD_PART_POSITION = com.moseeker.baseorm.db.hrdb.tables.ThirdPartPosition.THIRD_PART_POSITION;
 }

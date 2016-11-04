@@ -30,3 +30,10 @@ struct ThirdPartParamer{
 	6: string member_name,
 	7: i32 channel
 }
+struct ThirdpartToredis{
+	1: optional string params,
+	2:i32 user_id,
+	3:i32 company_id,
+	4:i32 appid,
+	5:optional string positions
+}

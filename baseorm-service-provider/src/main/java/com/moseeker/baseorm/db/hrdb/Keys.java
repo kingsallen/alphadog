@@ -29,6 +29,8 @@ import com.moseeker.baseorm.db.hrdb.tables.HrReferralStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrRuleStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrRuleUniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
+import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartAccount;
+import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartPosition;
 import com.moseeker.baseorm.db.hrdb.tables.HrTopic;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxBasicReply;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxHrChat;
@@ -41,8 +43,6 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxRule;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
-import com.moseeker.baseorm.db.hrdb.tables.ThirdPartAccount;
-import com.moseeker.baseorm.db.hrdb.tables.ThirdPartPosition;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrAppCvConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrChildCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
@@ -68,6 +68,8 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrReferralStatisticsRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrRuleStatisticsRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrRuleUniqueStatisticsRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrSuperaccountApplyRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartAccountRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartPositionRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTopicRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxBasicReplyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxHrChatListRecord;
@@ -80,8 +82,6 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrWxRuleRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxTemplateMessageRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatNoticeSyncStatusRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.ThirdPartAccountRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.ThirdPartPositionRecord;
 
 import javax.annotation.Generated;
 
@@ -133,6 +133,8 @@ public class Keys {
     public static final Identity<HrRuleStatisticsRecord, Integer> IDENTITY_HR_RULE_STATISTICS = Identities0.IDENTITY_HR_RULE_STATISTICS;
     public static final Identity<HrRuleUniqueStatisticsRecord, Integer> IDENTITY_HR_RULE_UNIQUE_STATISTICS = Identities0.IDENTITY_HR_RULE_UNIQUE_STATISTICS;
     public static final Identity<HrSuperaccountApplyRecord, Integer> IDENTITY_HR_SUPERACCOUNT_APPLY = Identities0.IDENTITY_HR_SUPERACCOUNT_APPLY;
+    public static final Identity<HrThirdPartAccountRecord, Integer> IDENTITY_HR_THIRD_PART_ACCOUNT = Identities0.IDENTITY_HR_THIRD_PART_ACCOUNT;
+    public static final Identity<HrThirdPartPositionRecord, UInteger> IDENTITY_HR_THIRD_PART_POSITION = Identities0.IDENTITY_HR_THIRD_PART_POSITION;
     public static final Identity<HrTopicRecord, Integer> IDENTITY_HR_TOPIC = Identities0.IDENTITY_HR_TOPIC;
     public static final Identity<HrWxBasicReplyRecord, UInteger> IDENTITY_HR_WX_BASIC_REPLY = Identities0.IDENTITY_HR_WX_BASIC_REPLY;
     public static final Identity<HrWxHrChatRecord, UInteger> IDENTITY_HR_WX_HR_CHAT = Identities0.IDENTITY_HR_WX_HR_CHAT;
@@ -145,8 +147,6 @@ public class Keys {
     public static final Identity<HrWxTemplateMessageRecord, UInteger> IDENTITY_HR_WX_TEMPLATE_MESSAGE = Identities0.IDENTITY_HR_WX_TEMPLATE_MESSAGE;
     public static final Identity<HrWxWechatRecord, UInteger> IDENTITY_HR_WX_WECHAT = Identities0.IDENTITY_HR_WX_WECHAT;
     public static final Identity<HrWxWechatNoticeSyncStatusRecord, UInteger> IDENTITY_HR_WX_WECHAT_NOTICE_SYNC_STATUS = Identities0.IDENTITY_HR_WX_WECHAT_NOTICE_SYNC_STATUS;
-    public static final Identity<ThirdPartAccountRecord, Integer> IDENTITY_THIRD_PART_ACCOUNT = Identities0.IDENTITY_THIRD_PART_ACCOUNT;
-    public static final Identity<ThirdPartPositionRecord, Integer> IDENTITY_THIRD_PART_POSITION = Identities0.IDENTITY_THIRD_PART_POSITION;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -178,6 +178,8 @@ public class Keys {
     public static final UniqueKey<HrRuleStatisticsRecord> KEY_HR_RULE_STATISTICS_PRIMARY = UniqueKeys0.KEY_HR_RULE_STATISTICS_PRIMARY;
     public static final UniqueKey<HrRuleUniqueStatisticsRecord> KEY_HR_RULE_UNIQUE_STATISTICS_PRIMARY = UniqueKeys0.KEY_HR_RULE_UNIQUE_STATISTICS_PRIMARY;
     public static final UniqueKey<HrSuperaccountApplyRecord> KEY_HR_SUPERACCOUNT_APPLY_PRIMARY = UniqueKeys0.KEY_HR_SUPERACCOUNT_APPLY_PRIMARY;
+    public static final UniqueKey<HrThirdPartAccountRecord> KEY_HR_THIRD_PART_ACCOUNT_PRIMARY = UniqueKeys0.KEY_HR_THIRD_PART_ACCOUNT_PRIMARY;
+    public static final UniqueKey<HrThirdPartPositionRecord> KEY_HR_THIRD_PART_POSITION_PRIMARY = UniqueKeys0.KEY_HR_THIRD_PART_POSITION_PRIMARY;
     public static final UniqueKey<HrTopicRecord> KEY_HR_TOPIC_PRIMARY = UniqueKeys0.KEY_HR_TOPIC_PRIMARY;
     public static final UniqueKey<HrWxBasicReplyRecord> KEY_HR_WX_BASIC_REPLY_PRIMARY = UniqueKeys0.KEY_HR_WX_BASIC_REPLY_PRIMARY;
     public static final UniqueKey<HrWxHrChatRecord> KEY_HR_WX_HR_CHAT_PRIMARY = UniqueKeys0.KEY_HR_WX_HR_CHAT_PRIMARY;
@@ -190,8 +192,6 @@ public class Keys {
     public static final UniqueKey<HrWxTemplateMessageRecord> KEY_HR_WX_TEMPLATE_MESSAGE_PRIMARY = UniqueKeys0.KEY_HR_WX_TEMPLATE_MESSAGE_PRIMARY;
     public static final UniqueKey<HrWxWechatRecord> KEY_HR_WX_WECHAT_PRIMARY = UniqueKeys0.KEY_HR_WX_WECHAT_PRIMARY;
     public static final UniqueKey<HrWxWechatNoticeSyncStatusRecord> KEY_HR_WX_WECHAT_NOTICE_SYNC_STATUS_PRIMARY = UniqueKeys0.KEY_HR_WX_WECHAT_NOTICE_SYNC_STATUS_PRIMARY;
-    public static final UniqueKey<ThirdPartAccountRecord> KEY_THIRD_PART_ACCOUNT_PRIMARY = UniqueKeys0.KEY_THIRD_PART_ACCOUNT_PRIMARY;
-    public static final UniqueKey<ThirdPartPositionRecord> KEY_THIRD_PART_POSITION_PRIMARY = UniqueKeys0.KEY_THIRD_PART_POSITION_PRIMARY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -226,6 +226,8 @@ public class Keys {
         public static Identity<HrRuleStatisticsRecord, Integer> IDENTITY_HR_RULE_STATISTICS = createIdentity(HrRuleStatistics.HR_RULE_STATISTICS, HrRuleStatistics.HR_RULE_STATISTICS.ID);
         public static Identity<HrRuleUniqueStatisticsRecord, Integer> IDENTITY_HR_RULE_UNIQUE_STATISTICS = createIdentity(HrRuleUniqueStatistics.HR_RULE_UNIQUE_STATISTICS, HrRuleUniqueStatistics.HR_RULE_UNIQUE_STATISTICS.ID);
         public static Identity<HrSuperaccountApplyRecord, Integer> IDENTITY_HR_SUPERACCOUNT_APPLY = createIdentity(HrSuperaccountApply.HR_SUPERACCOUNT_APPLY, HrSuperaccountApply.HR_SUPERACCOUNT_APPLY.ID);
+        public static Identity<HrThirdPartAccountRecord, Integer> IDENTITY_HR_THIRD_PART_ACCOUNT = createIdentity(HrThirdPartAccount.HR_THIRD_PART_ACCOUNT, HrThirdPartAccount.HR_THIRD_PART_ACCOUNT.ID);
+        public static Identity<HrThirdPartPositionRecord, UInteger> IDENTITY_HR_THIRD_PART_POSITION = createIdentity(HrThirdPartPosition.HR_THIRD_PART_POSITION, HrThirdPartPosition.HR_THIRD_PART_POSITION.ID);
         public static Identity<HrTopicRecord, Integer> IDENTITY_HR_TOPIC = createIdentity(HrTopic.HR_TOPIC, HrTopic.HR_TOPIC.ID);
         public static Identity<HrWxBasicReplyRecord, UInteger> IDENTITY_HR_WX_BASIC_REPLY = createIdentity(HrWxBasicReply.HR_WX_BASIC_REPLY, HrWxBasicReply.HR_WX_BASIC_REPLY.ID);
         public static Identity<HrWxHrChatRecord, UInteger> IDENTITY_HR_WX_HR_CHAT = createIdentity(HrWxHrChat.HR_WX_HR_CHAT, HrWxHrChat.HR_WX_HR_CHAT.ID);
@@ -238,8 +240,6 @@ public class Keys {
         public static Identity<HrWxTemplateMessageRecord, UInteger> IDENTITY_HR_WX_TEMPLATE_MESSAGE = createIdentity(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE, HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.ID);
         public static Identity<HrWxWechatRecord, UInteger> IDENTITY_HR_WX_WECHAT = createIdentity(HrWxWechat.HR_WX_WECHAT, HrWxWechat.HR_WX_WECHAT.ID);
         public static Identity<HrWxWechatNoticeSyncStatusRecord, UInteger> IDENTITY_HR_WX_WECHAT_NOTICE_SYNC_STATUS = createIdentity(HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS, HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS.ID);
-        public static Identity<ThirdPartAccountRecord, Integer> IDENTITY_THIRD_PART_ACCOUNT = createIdentity(ThirdPartAccount.THIRD_PART_ACCOUNT, ThirdPartAccount.THIRD_PART_ACCOUNT.ID);
-        public static Identity<ThirdPartPositionRecord, Integer> IDENTITY_THIRD_PART_POSITION = createIdentity(ThirdPartPosition.THIRD_PART_POSITION, ThirdPartPosition.THIRD_PART_POSITION.ID);
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
@@ -269,6 +269,8 @@ public class Keys {
         public static final UniqueKey<HrRuleStatisticsRecord> KEY_HR_RULE_STATISTICS_PRIMARY = createUniqueKey(HrRuleStatistics.HR_RULE_STATISTICS, "KEY_hr_rule_statistics_PRIMARY", HrRuleStatistics.HR_RULE_STATISTICS.ID);
         public static final UniqueKey<HrRuleUniqueStatisticsRecord> KEY_HR_RULE_UNIQUE_STATISTICS_PRIMARY = createUniqueKey(HrRuleUniqueStatistics.HR_RULE_UNIQUE_STATISTICS, "KEY_hr_rule_unique_statistics_PRIMARY", HrRuleUniqueStatistics.HR_RULE_UNIQUE_STATISTICS.ID);
         public static final UniqueKey<HrSuperaccountApplyRecord> KEY_HR_SUPERACCOUNT_APPLY_PRIMARY = createUniqueKey(HrSuperaccountApply.HR_SUPERACCOUNT_APPLY, "KEY_hr_superaccount_apply_PRIMARY", HrSuperaccountApply.HR_SUPERACCOUNT_APPLY.ID);
+        public static final UniqueKey<HrThirdPartAccountRecord> KEY_HR_THIRD_PART_ACCOUNT_PRIMARY = createUniqueKey(HrThirdPartAccount.HR_THIRD_PART_ACCOUNT, "KEY_hr_third_part_account_PRIMARY", HrThirdPartAccount.HR_THIRD_PART_ACCOUNT.ID);
+        public static final UniqueKey<HrThirdPartPositionRecord> KEY_HR_THIRD_PART_POSITION_PRIMARY = createUniqueKey(HrThirdPartPosition.HR_THIRD_PART_POSITION, "KEY_hr_third_part_position_PRIMARY", HrThirdPartPosition.HR_THIRD_PART_POSITION.ID);
         public static final UniqueKey<HrTopicRecord> KEY_HR_TOPIC_PRIMARY = createUniqueKey(HrTopic.HR_TOPIC, "KEY_hr_topic_PRIMARY", HrTopic.HR_TOPIC.ID);
         public static final UniqueKey<HrWxBasicReplyRecord> KEY_HR_WX_BASIC_REPLY_PRIMARY = createUniqueKey(HrWxBasicReply.HR_WX_BASIC_REPLY, "KEY_hr_wx_basic_reply_PRIMARY", HrWxBasicReply.HR_WX_BASIC_REPLY.ID);
         public static final UniqueKey<HrWxHrChatRecord> KEY_HR_WX_HR_CHAT_PRIMARY = createUniqueKey(HrWxHrChat.HR_WX_HR_CHAT, "KEY_hr_wx_hr_chat_PRIMARY", HrWxHrChat.HR_WX_HR_CHAT.ID);
@@ -281,7 +283,5 @@ public class Keys {
         public static final UniqueKey<HrWxTemplateMessageRecord> KEY_HR_WX_TEMPLATE_MESSAGE_PRIMARY = createUniqueKey(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE, "KEY_hr_wx_template_message_PRIMARY", HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.ID);
         public static final UniqueKey<HrWxWechatRecord> KEY_HR_WX_WECHAT_PRIMARY = createUniqueKey(HrWxWechat.HR_WX_WECHAT, "KEY_hr_wx_wechat_PRIMARY", HrWxWechat.HR_WX_WECHAT.ID);
         public static final UniqueKey<HrWxWechatNoticeSyncStatusRecord> KEY_HR_WX_WECHAT_NOTICE_SYNC_STATUS_PRIMARY = createUniqueKey(HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS, "KEY_hr_wx_wechat_notice_sync_status_PRIMARY", HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS.ID);
-        public static final UniqueKey<ThirdPartAccountRecord> KEY_THIRD_PART_ACCOUNT_PRIMARY = createUniqueKey(ThirdPartAccount.THIRD_PART_ACCOUNT, "KEY_third_part_account_PRIMARY", ThirdPartAccount.THIRD_PART_ACCOUNT.ID);
-        public static final UniqueKey<ThirdPartPositionRecord> KEY_THIRD_PART_POSITION_PRIMARY = createUniqueKey(ThirdPartPosition.THIRD_PART_POSITION, "KEY_third_part_position_PRIMARY", ThirdPartPosition.THIRD_PART_POSITION.ID);
     }
 }

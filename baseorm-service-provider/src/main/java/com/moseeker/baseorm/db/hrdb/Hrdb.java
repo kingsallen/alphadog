@@ -29,6 +29,8 @@ import com.moseeker.baseorm.db.hrdb.tables.HrReferralStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrRuleStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrRuleUniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
+import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartAccount;
+import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartPosition;
 import com.moseeker.baseorm.db.hrdb.tables.HrTopic;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxBasicReply;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxHrChat;
@@ -41,8 +43,6 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxRule;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
-import com.moseeker.baseorm.db.hrdb.tables.ThirdPartAccount;
-import com.moseeker.baseorm.db.hrdb.tables.ThirdPartPosition;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,7 +68,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -1791318021;
+    private static final long serialVersionUID = -1620492676;
 
     /**
      * The reference instance of <code>hrdb</code>
@@ -201,6 +201,16 @@ public class Hrdb extends SchemaImpl {
     public final HrSuperaccountApply HR_SUPERACCOUNT_APPLY = com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply.HR_SUPERACCOUNT_APPLY;
 
     /**
+     * 第三方渠道帐号
+     */
+    public final HrThirdPartAccount HR_THIRD_PART_ACCOUNT = com.moseeker.baseorm.db.hrdb.tables.HrThirdPartAccount.HR_THIRD_PART_ACCOUNT;
+
+    /**
+     * 第三方渠道同步的职位
+     */
+    public final HrThirdPartPosition HR_THIRD_PART_POSITION = com.moseeker.baseorm.db.hrdb.tables.HrThirdPartPosition.HR_THIRD_PART_POSITION;
+
+    /**
      * 雇主主题活动表
      */
     public final HrTopic HR_TOPIC = com.moseeker.baseorm.db.hrdb.tables.HrTopic.HR_TOPIC;
@@ -261,16 +271,6 @@ public class Hrdb extends SchemaImpl {
     public final HrWxWechatNoticeSyncStatus HR_WX_WECHAT_NOTICE_SYNC_STATUS = com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS;
 
     /**
-     * The table <code>hrdb.third_part_account</code>.
-     */
-    public final ThirdPartAccount THIRD_PART_ACCOUNT = com.moseeker.baseorm.db.hrdb.tables.ThirdPartAccount.THIRD_PART_ACCOUNT;
-
-    /**
-     * The table <code>hrdb.third_part_position</code>.
-     */
-    public final ThirdPartPosition THIRD_PART_POSITION = com.moseeker.baseorm.db.hrdb.tables.ThirdPartPosition.THIRD_PART_POSITION;
-
-    /**
      * No further instances allowed
      */
     private Hrdb() {
@@ -320,6 +320,8 @@ public class Hrdb extends SchemaImpl {
             HrRuleStatistics.HR_RULE_STATISTICS,
             HrRuleUniqueStatistics.HR_RULE_UNIQUE_STATISTICS,
             HrSuperaccountApply.HR_SUPERACCOUNT_APPLY,
+            HrThirdPartAccount.HR_THIRD_PART_ACCOUNT,
+            HrThirdPartPosition.HR_THIRD_PART_POSITION,
             HrTopic.HR_TOPIC,
             HrWxBasicReply.HR_WX_BASIC_REPLY,
             HrWxHrChat.HR_WX_HR_CHAT,
@@ -331,8 +333,6 @@ public class Hrdb extends SchemaImpl {
             HrWxRule.HR_WX_RULE,
             HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE,
             HrWxWechat.HR_WX_WECHAT,
-            HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS,
-            ThirdPartAccount.THIRD_PART_ACCOUNT,
-            ThirdPartPosition.THIRD_PART_POSITION);
+            HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS);
     }
 }
