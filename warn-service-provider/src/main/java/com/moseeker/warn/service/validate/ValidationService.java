@@ -16,11 +16,11 @@ import com.moseeker.warn.service.EventConfigService;
  *
  */
 @Service
-public class ValidationException {
+public class ValidationService {
 	@Autowired
-	private EventConfigService config;
+	private EventConfigService config;										
 	private RedisClient redisClient = RedisClientFactory.getCacheClient();
-	private String IDENTIFIKEY="NEW_WARNING_REDIS_KEY";
+	private String IDENTIFIKEY="NEW_WARNING_REDIS_KEY";                      //队列的IDENTIFIKEY
 	/**
 	 * 
 	 * @param bean
@@ -36,7 +36,7 @@ public class ValidationException {
 	public  void valid(WarnBean bean){
 		try{
 			int flag=0;
-			Map<String,Event> map=config.getEvents();
+			Map<String,Event> map=config.getEvents();//获取预警配置信息
 			String name=bean.getEvent_key();
 			String appid=bean.getProject_appid();
 			String mapkey=appid+"_"+name;
@@ -44,19 +44,19 @@ public class ValidationException {
 			if(config!=null){
 				int interval=config.getThresholdInterval();
 				String key=appid+name;
-				synchronized(IDENTIFIKEY){
+				synchronized(IDENTIFIKEY){//加锁，避免出现并发读取redis
 					String oldtime=redisClient.get(Constant.APPID_ALPHADOG,IDENTIFIKEY, key);
-					if(oldtime==null){
+					if(oldtime==null){//如果不存在该类报警信息，则添加，并且发送邮件
 						redisClient.set(Constant.APPID_ALPHADOG,IDENTIFIKEY, key,System.currentTimeMillis()+"");
 						flag=1;
 					}else{
 						Long retimePeriod=System.currentTimeMillis()-Long.parseLong(oldtime);
-						if(retimePeriod>=interval*1000){
+						if(retimePeriod>=interval*1000){//redis中存储的上次报警时间与这次报警时间之差大于配置时间，则发送邮件，并且更新时间，否则只更新时间即可
 							redisClient.set(Constant.APPID_ALPHADOG,IDENTIFIKEY, key,System.currentTimeMillis()+"");
 							flag=1;
 						}
 					}
-					if(flag==1){
+					if(flag==1){//如果触发成功，则将信息放在队列
 						JSONObject sendResult=new JSONObject();
 						sendResult.put("config", config);
 						sendResult.put("location",bean.getEvent_local() );

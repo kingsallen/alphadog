@@ -6,15 +6,16 @@ import org.springframework.stereotype.Service;
 
 import com.moseeker.thrift.gen.warn.service.WarnSetService.Iface;
 import com.moseeker.thrift.gen.warn.struct.WarnBean;
-import com.moseeker.warn.service.validate.ValidationException;
+import com.moseeker.warn.service.validate.ValidationService;
 @Service
 public class WarnServiceImpl implements Iface{
 @Autowired
-private ValidationException validException;
+private ValidationService validService;
+	//验证预警信息，并且置于redis队列
 	@Override
 	public void sendOperator(WarnBean bean) throws TException {
 		// TODO Auto-generated method stub
-		validException.valid(bean);
+		validService.valid(bean);
 	}
 
 }
