@@ -23,11 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-<<<<<<< HEAD:searchengine-service-provider/src/main/java/com/moseeker/searchengine/service/impl/SearchengineServiceImpl.java
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
-=======
 import com.moseeker.common.annotation.iface.CounterIface;
->>>>>>> feature/lucky8987/counteriface:searchengine-service-provider/src/main/java/com/moseeker/searchengine/service/impl/SearchengineService.java
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
