@@ -10,6 +10,9 @@ public class RecommendedPositonPojo {
     public int company_id;
     public String company_name;
     public String company_logo;
+    private int salary_top;
+    private int salary_bottom;
+    private String job_city;
     
 	public int getPid() {
 		return pid;
@@ -40,5 +43,23 @@ public class RecommendedPositonPojo {
 	}
 	public void setCompany_logo(String company_logo) {
 		this.company_logo = company_logo;
+	}
+	public int getSalary_top() {
+		return salary_top;
+	}
+	public void setSalary_top(int salary_top) {
+		this.salary_top = salary_top;
+	}
+	public int getSalary_bottom() {
+		return salary_bottom;
+	}
+	public void setSalary_bottom(int salary_bottom) {
+		this.salary_bottom = salary_bottom;
+	}
+	public String getJob_city() {
+		return job_city;
+	}
+	public void setJob_city(String job_city) {
+		this.job_city = job_city;
 	}
 }
