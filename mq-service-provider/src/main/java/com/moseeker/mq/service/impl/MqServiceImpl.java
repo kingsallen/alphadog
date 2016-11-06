@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
@@ -20,6 +21,7 @@ import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
  * Created by zzh on 16/8/3.
  */
 @Service
+@CounterIface
 public class MqServiceImpl {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -40,7 +42,7 @@ public class MqServiceImpl {
             if (response.status > 0){
                 return response;
             }
-
+            
             String json = BeanUtils.convertStructToJSON(messageTemplateNoticeStruct);
 
             Long res = redisClient.lpush(Constant.APPID_ALPHADOG, Constant.REDIS_KEY_IDENTIFIER_MQ_MESSAGE_NOTICE_TEMPLATE, json);

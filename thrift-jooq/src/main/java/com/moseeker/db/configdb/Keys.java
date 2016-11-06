@@ -6,6 +6,7 @@ package com.moseeker.db.configdb;
 
 import com.moseeker.db.configdb.tables.BlogPosts;
 import com.moseeker.db.configdb.tables.BlogPosts2;
+import com.moseeker.db.configdb.tables.ConfigAdminnotificationChannel;
 import com.moseeker.db.configdb.tables.ConfigAdminnotificationEvents;
 import com.moseeker.db.configdb.tables.ConfigAdminnotificationGroup;
 import com.moseeker.db.configdb.tables.ConfigAdminnotificationGroupmembers;
@@ -24,6 +25,7 @@ import com.moseeker.db.configdb.tables.ConfigSysTemplateType;
 import com.moseeker.db.configdb.tables.ConfigSysTheme;
 import com.moseeker.db.configdb.tables.records.BlogPosts2Record;
 import com.moseeker.db.configdb.tables.records.BlogPostsRecord;
+import com.moseeker.db.configdb.tables.records.ConfigAdminnotificationChannelRecord;
 import com.moseeker.db.configdb.tables.records.ConfigAdminnotificationEventsRecord;
 import com.moseeker.db.configdb.tables.records.ConfigAdminnotificationGroupRecord;
 import com.moseeker.db.configdb.tables.records.ConfigAdminnotificationGroupmembersRecord;
@@ -81,6 +83,7 @@ public class Keys {
 	public static final Identity<ConfigSysTemplateMessageLibraryRecord, UInteger> IDENTITY_CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY = Identities0.IDENTITY_CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY;
 	public static final Identity<ConfigSysTemplateTypeRecord, Integer> IDENTITY_CONFIG_SYS_TEMPLATE_TYPE = Identities0.IDENTITY_CONFIG_SYS_TEMPLATE_TYPE;
 	public static final Identity<ConfigSysThemeRecord, Integer> IDENTITY_CONFIG_SYS_THEME = Identities0.IDENTITY_CONFIG_SYS_THEME;
+	public static final Identity<ConfigAdminnotificationChannelRecord, Integer> IDENTITY_CONFIG_ADMINNOTIFICATION_CHANNEL = Identities0.IDENTITY_CONFIG_ADMINNOTIFICATION_CHANNEL;
 
 	// -------------------------------------------------------------------------
 	// UNIQUE and PRIMARY KEY definitions
@@ -112,6 +115,7 @@ public class Keys {
 	public static final UniqueKey<ConfigSysTemplateMessageLibraryRecord> KEY_CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY_PRIMARY = UniqueKeys0.KEY_CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY_PRIMARY;
 	public static final UniqueKey<ConfigSysTemplateTypeRecord> KEY_CONFIG_SYS_TEMPLATE_TYPE_PRIMARY = UniqueKeys0.KEY_CONFIG_SYS_TEMPLATE_TYPE_PRIMARY;
 	public static final UniqueKey<ConfigSysThemeRecord> KEY_CONFIG_SYS_THEME_PRIMARY = UniqueKeys0.KEY_CONFIG_SYS_THEME_PRIMARY;
+	public static final UniqueKey<ConfigAdminnotificationChannelRecord> KEY_CONFIG_ADMINNOTIFICATION_CHANNEL_PRIMARY = UniqueKeys0.KEY_CONFIG_ADMINNOTIFICATION_CHANNEL_PRIMARY;
 
 	// -------------------------------------------------------------------------
 	// FOREIGN KEY definitions
@@ -137,6 +141,7 @@ public class Keys {
 		public static Identity<ConfigSysTemplateMessageLibraryRecord, UInteger> IDENTITY_CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY = createIdentity(ConfigSysTemplateMessageLibrary.CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY, ConfigSysTemplateMessageLibrary.CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY.ID);
 		public static Identity<ConfigSysTemplateTypeRecord, Integer> IDENTITY_CONFIG_SYS_TEMPLATE_TYPE = createIdentity(ConfigSysTemplateType.CONFIG_SYS_TEMPLATE_TYPE, ConfigSysTemplateType.CONFIG_SYS_TEMPLATE_TYPE.ID);
 		public static Identity<ConfigSysThemeRecord, Integer> IDENTITY_CONFIG_SYS_THEME = createIdentity(ConfigSysTheme.CONFIG_SYS_THEME, ConfigSysTheme.CONFIG_SYS_THEME.ID);
+        public static Identity<ConfigAdminnotificationChannelRecord, Integer> IDENTITY_CONFIG_ADMINNOTIFICATION_CHANNEL = createIdentity(ConfigAdminnotificationChannel.CONFIG_ADMINNOTIFICATION_CHANNEL, ConfigAdminnotificationChannel.CONFIG_ADMINNOTIFICATION_CHANNEL.ID);
 	}
 
 	private static class UniqueKeys0 extends AbstractKeys {
@@ -166,5 +171,7 @@ public class Keys {
 		public static final UniqueKey<ConfigSysTemplateMessageLibraryRecord> KEY_CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY_PRIMARY = createUniqueKey(ConfigSysTemplateMessageLibrary.CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY, ConfigSysTemplateMessageLibrary.CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY.ID);
 		public static final UniqueKey<ConfigSysTemplateTypeRecord> KEY_CONFIG_SYS_TEMPLATE_TYPE_PRIMARY = createUniqueKey(ConfigSysTemplateType.CONFIG_SYS_TEMPLATE_TYPE, ConfigSysTemplateType.CONFIG_SYS_TEMPLATE_TYPE.ID);
 		public static final UniqueKey<ConfigSysThemeRecord> KEY_CONFIG_SYS_THEME_PRIMARY = createUniqueKey(ConfigSysTheme.CONFIG_SYS_THEME, ConfigSysTheme.CONFIG_SYS_THEME.ID);
+        public static final UniqueKey<ConfigAdminnotificationChannelRecord> KEY_CONFIG_ADMINNOTIFICATION_CHANNEL_PRIMARY = createUniqueKey(ConfigAdminnotificationChannel.CONFIG_ADMINNOTIFICATION_CHANNEL, "KEY_config_adminnotification_channel_PRIMARY", ConfigAdminnotificationChannel.CONFIG_ADMINNOTIFICATION_CHANNEL.ID);
+
 	}
 }
