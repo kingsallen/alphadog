@@ -11,6 +11,7 @@ import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.Constant;
 import com.moseeker.warn.dto.Event;
+import com.moseeker.warn.uitls.SendChannel;
 
 public class ManageService {
 	

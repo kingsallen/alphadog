@@ -1,4 +1,4 @@
-package com.moseeker.warn.service;
+package com.moseeker.warn.uitls;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
