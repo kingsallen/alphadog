@@ -17,6 +17,10 @@ public class CounterInfo {
 	 */
 	private String method;
 	/**
+	 * 参数
+	 */
+	private String args;
+	/**
 	 * 状态 success or fail
 	 */
 	private String status;
@@ -76,6 +80,12 @@ public class CounterInfo {
 		this.className = className;
 		this.method = method;
 		this.startTime = startTime;
+	}
+	public String getArgs() {
+		return args;
+	}
+	public void setArgs(String args) {
+		this.args = args;
 	}
 	public CounterInfo(String className, String method, String status,
 			long time) {
