@@ -1,4 +1,4 @@
-package com.moseeker.position.service.impl;
+package com.moseeker.position.service.fundationbs;
 
 import java.util.List;
 
