@@ -10,7 +10,6 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.function.service.SensitiveWordService;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.function.service.FunctionServices.Iface;
-import com.mysql.jdbc.util.ResultSetUtil;
 
 /**
  * 
