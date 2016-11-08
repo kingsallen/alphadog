@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.moseeker.common.exception.RedisClientException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
@@ -26,6 +27,7 @@ import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.DownloadReport;
 import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
 import com.moseeker.useraccounts.dao.UserHrAccountDao;
+import com.moseeker.useraccounts.service.impl.WarnService;
 
 /**
  * HR账号服务
@@ -138,6 +140,8 @@ public class UserHrAccountServiceImpl implements Iface {
             } else {
             	return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", message));
             }
+        } catch (RedisClientException e){
+        		WarnService.notify(e);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             logger.error("postUserFavoritePosition UserFavPositionRecord error: ", e);
@@ -210,8 +214,16 @@ public class UserHrAccountServiceImpl implements Iface {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "code"));
         }
 
-        String redisCode = redisClient.get(Constant.APPID_ALPHADOG, REDIS_KEY_HR_SMS_SIGNUP,
-                Constant.HR_ACCOUNT_SIGNUP_SOURCE_ARRAY[userHrAccount.source-1], userHrAccount.mobile);
+        String redisCode = null;
+		try {
+			redisCode = redisClient
+					.get(Constant.APPID_ALPHADOG,
+							REDIS_KEY_HR_SMS_SIGNUP,
+							Constant.HR_ACCOUNT_SIGNUP_SOURCE_ARRAY[userHrAccount.source - 1],
+							userHrAccount.mobile);
+		} catch (RedisClientException e) {
+			WarnService.notify(e);
+		}
         // 验证码无法验证
         if(!code.equals(redisCode)){
             return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);

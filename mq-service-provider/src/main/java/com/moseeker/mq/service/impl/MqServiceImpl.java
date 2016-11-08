@@ -6,12 +6,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.exception.RedisClientException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.ConstantErrorCodeMessage;
+import com.moseeker.mq.service.WarnService;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
 
@@ -50,6 +52,8 @@ public class MqServiceImpl {
             	return ResponseUtils.success(res);
             }
             
+        } catch (RedisClientException e) {
+        		WarnService.notify(e);
         } catch (Exception e) {
             logger.error("MqServiceImpl messageTemplateNotice error: ", e);
         } finally {

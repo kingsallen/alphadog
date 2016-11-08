@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.exception.RedisClientException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
@@ -83,9 +84,9 @@ public class UserHrAccountService {
      * */
     public Response postResource(DownloadReport downloadReport) throws TException {
         try {
-        	ValidateUtil vu = new ValidateUtil();
-        	vu.addRequiredStringValidate("手机号码", downloadReport.getMobile(), null, null);
-        	vu.addRequiredStringValidate("验证码", downloadReport.getCode(), null, null);
+        		ValidateUtil vu = new ValidateUtil();
+        		vu.addRequiredStringValidate("手机号码", downloadReport.getMobile(), null, null);
+        		vu.addRequiredStringValidate("验证码", downloadReport.getCode(), null, null);
             vu.addRequiredStringValidate("公司名称", downloadReport.getCompany_name(), null, null);
             String message = vu.validate();
             if(StringUtils.isNullOrEmpty(message)) {
@@ -137,6 +138,8 @@ public class UserHrAccountService {
             } else {
             	return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", message));
             }
+        } catch(RedisClientException e){
+        		WarnService.notify(e);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             logger.error("postUserFavoritePosition UserFavPositionRecord error: ", e);
@@ -208,8 +211,16 @@ public class UserHrAccountService {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "code"));
         }
 
-        String redisCode = redisClient.get(Constant.APPID_ALPHADOG, REDIS_KEY_HR_SMS_SIGNUP,
-                Constant.HR_ACCOUNT_SIGNUP_SOURCE_ARRAY[userHrAccount.source-1], userHrAccount.mobile);
+        String redisCode = null;
+		try {
+			redisCode = redisClient
+					.get(Constant.APPID_ALPHADOG,
+							REDIS_KEY_HR_SMS_SIGNUP,
+							Constant.HR_ACCOUNT_SIGNUP_SOURCE_ARRAY[userHrAccount.source - 1],
+							userHrAccount.mobile);
+		} catch (RedisClientException e) {
+			WarnService.notify(e);
+		}
         // 验证码无法验证
         if(!code.equals(redisCode)){
             return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
