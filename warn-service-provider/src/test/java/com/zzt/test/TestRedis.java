@@ -10,7 +10,7 @@ import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.Constant;
 import com.moseeker.thrift.gen.warn.struct.WarnBean;
 import com.moseeker.warn.service.manager.SendManager;
-import com.moseeker.warn.service.validate.ValidationException;
+import com.moseeker.warn.service.validate.ValidationService;
 
 public class TestRedis {
 	private RedisClient redisClient = RedisClientFactory.getCacheClient();
@@ -43,7 +43,7 @@ public class TestRedis {
 		bean.setEvent_local("ssshk");
 		bean.setProject_appid("1");
 		AnnotationConfigApplicationContext ss=initSpring();
-		ValidationException valids=ss.getBean(ValidationException.class);
+		ValidationService valids=ss.getBean(ValidationService.class);
 		valids.valid(bean);
 //		List<String> list=redisClient.brpop(Constant.APPID_ALPHADOG, "NEW_WARNING_REDIS_KEY");
 //		if(list.size()>0){
