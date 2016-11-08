@@ -40,11 +40,12 @@ public class MemberDao extends BaseDaoImpl<ConfigAdminnotificationMembersRecord,
 	 */
 	public List<Member> getMembers(Integer groupId){
 		List<Member> list = new ArrayList<Member>();
+		byte status = 1;
 		try (Connection conn = DBConnHelper.DBConn.getConn()) {
 			DSLContext jooqDSL = DBConnHelper.DBConn.getJooqDSL(conn);
 			SelectWhereStep<ConfigAdminnotificationGroupmembersRecord> selectFrom = jooqDSL.selectFrom(ConfigAdminnotificationGroupmembers.CONFIG_ADMINNOTIFICATION_GROUPMEMBERS);
 			List<Integer> memberIds = selectFrom.where(ConfigAdminnotificationGroupmembers.CONFIG_ADMINNOTIFICATION_GROUPMEMBERS.GROUPID.eq(groupId)).fetch(ConfigAdminnotificationGroupmembers.CONFIG_ADMINNOTIFICATION_GROUPMEMBERS.MEMBERID);
-			list = jooqDSL.selectFrom(ConfigAdminnotificationMembers.CONFIG_ADMINNOTIFICATION_MEMBERS).where(ConfigAdminnotificationMembers.CONFIG_ADMINNOTIFICATION_MEMBERS.ID.in(memberIds)).fetch().into(Member.class);
+			list = jooqDSL.selectFrom(ConfigAdminnotificationMembers.CONFIG_ADMINNOTIFICATION_MEMBERS).where(ConfigAdminnotificationMembers.CONFIG_ADMINNOTIFICATION_MEMBERS.ID.in(memberIds)).and(ConfigAdminnotificationMembers.CONFIG_ADMINNOTIFICATION_MEMBERS.STATUS.eq(status)).fetch().into(Member.class);
 		} catch (SQLException e) {
 			log.error(e.getMessage(), e);
 		}

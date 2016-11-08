@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.email.config.EmailContent;
 import com.moseeker.common.email.mail.Message;
 import com.moseeker.common.providerutils.QueryUtil;
@@ -27,6 +28,7 @@ import com.moseeker.mq.dao.UserDao;
 import com.moseeker.thrift.gen.common.struct.Response;
 
 @Service
+@CounterIface
 public class EmailProvider {
 	
 	private static Logger logger = LoggerFactory.getLogger(EmailProvider.class);

@@ -10,6 +10,7 @@ import com.moseeker.common.exception.RedisClientException;
 import com.moseeker.common.redis.cache.db.DbManager;
 import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.thrift.gen.warn.service.WarnSetService;
 
 public abstract class RedisClient {
 

@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
@@ -52,6 +53,7 @@ import com.moseeker.profile.dao.WorksDao;
 import com.moseeker.profile.service.impl.serviceutils.CompletenessCalculator;
 
 @Service
+@CounterIface
 public class ProfileCompletenessImpl {
 
 	Logger logger = LoggerFactory.getLogger(ProfileCompletenessImpl.class);

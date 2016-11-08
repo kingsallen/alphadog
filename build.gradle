@@ -17,7 +17,6 @@ allprojects {
         maven { url 'http://maven.oschina.net/content/groups/public/' }
         maven { url 'http://maven.outofmemory.cn/' }
         maven { url 'https://plugins.gradle.org/m2/'}
-
     }
 
 }
