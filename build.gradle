@@ -12,9 +12,8 @@ the service layer of moseeker. It\'s going to serve all moseeker\'s products.
 allprojects {
 
     repositories {
-
-        mavenCentral()
         maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        mavenCentral()
         maven { url 'http://maven.oschina.net/content/groups/public/' }
         maven { url 'http://maven.outofmemory.cn/' }
         maven { url 'https://plugins.gradle.org/m2/'}
