@@ -99,3 +99,16 @@ struct DownloadReport {
    6: optional string register_ip,					//注册IP
    7: optional string last_login_ip					//最后登录IP
 }
+
+/*
+* 帐号绑定
+*/
+struct BindAccountStruct {
+    1: string username,
+    2: string password,
+    3: optional string memberName,
+    4: byte channel,
+    5: i32 appid,
+    6: i32 user_id,
+    7: i32 company_id
+}

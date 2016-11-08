@@ -1,5 +1,7 @@
 package com.moseeker.function.service.choas;
 
+import com.moseeker.common.constants.ChannelType;
+
 /**
  * 
  * 职位同步表单数据 

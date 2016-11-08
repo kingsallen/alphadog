@@ -1,8 +1,8 @@
 package com.moseeker.function.service.impl;
 
+import com.moseeker.common.constants.ChannelType;
+import com.moseeker.common.constants.ThirdPartyAccountPojo;
 import com.moseeker.function.service.ChaosService;
-import com.moseeker.function.service.choas.ChannelType;
-import com.moseeker.function.service.choas.ThirdPartyAccountPojo;
 import com.moseeker.thrift.gen.common.struct.Response;
 
 /**

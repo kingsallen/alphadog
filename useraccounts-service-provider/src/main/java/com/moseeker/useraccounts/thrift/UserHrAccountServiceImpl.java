@@ -23,6 +23,7 @@ import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService.Iface;
+import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.DownloadReport;
 import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
 import com.moseeker.useraccounts.dao.UserHrAccountDao;
@@ -289,4 +290,9 @@ public class UserHrAccountServiceImpl implements Iface {
 
         return passwordArray;
     }
+
+	@Override
+	public Response bind(BindAccountStruct account) throws TException {
+		return null;
+	}
 }
