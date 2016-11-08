@@ -23,6 +23,8 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.function.struct.ThirdPartyAccountPojo;
+import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.DownloadReport;
 import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
 import com.moseeker.useraccounts.dao.UserHrAccountDao;
@@ -244,6 +246,11 @@ public class UserHrAccountService {
         }
         return response;
     }
+    
+    public Response bindThirdAccount(BindAccountStruct account) {
+		
+		return null;
+	}
 
     /**
      * HR账号验证码校验
