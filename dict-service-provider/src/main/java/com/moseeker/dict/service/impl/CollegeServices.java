@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.exception.RedisClientException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
@@ -55,15 +56,14 @@ public class CollegeServices {
 
     @CounterIface
     public Response getResources(CommonQuery query) throws TException {
-
-        RedisClient rc = RedisClientFactory.getCacheClient();
+        RedisClient rc;
         String cachKey = genCachKey(query);
         String cachedResult = null;
         Response result = null;
         String patternString = "DICT_COLLEGE";
         int appid = 0; // query.appid
         try {
-
+        		rc = RedisClientFactory.getCacheClient();
             cachedResult = rc.get(appid, patternString, cachKey, () -> {
                 String r = null;
                 try {
@@ -79,6 +79,11 @@ public class CollegeServices {
             });
             result = JSON.parseObject(cachedResult, Response.class);
 
+        } catch(RedisClientException e){
+        		WarnService.notify(e);
+        		 List joinedResult = this.dao.getJoinedResults(query);
+             List<College> structs = DBsToStructs(joinedResult);
+             result = ResponseUtils.success(transformData(structs));
         } catch(Exception e) {
             e.printStackTrace();
             List joinedResult = this.dao.getJoinedResults(query);
