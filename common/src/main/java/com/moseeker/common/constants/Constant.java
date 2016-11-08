@@ -169,4 +169,7 @@ public final class Constant {
 	public static final String MQ_MESSAGE_EMAIL_WARNING = "MQ_MESSAGE_EMAIL_WARNING";	//报警邮件消息队列的key_identifier
 	
 	public static final byte LOG_SMS_SENDRECORD_SYS_ALPHADOG = 5;
+	
+	public static final int READ_TIME_OUT = 10*1000;
+	public static final int CONNECTION_TIME_OUT = 10*1000;
 }

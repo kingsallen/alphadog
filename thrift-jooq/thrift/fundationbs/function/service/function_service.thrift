@@ -1,6 +1,6 @@
 # file: function_service.thrift
 
-include "../../common/struct/common_struct.thrift"
+include "../../../common/struct/common_struct.thrift"
 namespace java com.moseeker.thrift.gen.function.service
 
 /**

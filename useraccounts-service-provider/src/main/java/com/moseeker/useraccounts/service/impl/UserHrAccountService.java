@@ -247,6 +247,11 @@ public class UserHrAccountService {
         return response;
     }
     
+    /**
+     * 
+     * @param account
+     * @return
+     */
     public Response bindThirdAccount(BindAccountStruct account) {
 		
 		return null;

@@ -1,3 +1,6 @@
+
+namespace java com.moseeker.thrift.gen.thirdpart.struct
+
 typedef string Datetime;
 struct ThirdPartAccount{
 	1: i32 id,
