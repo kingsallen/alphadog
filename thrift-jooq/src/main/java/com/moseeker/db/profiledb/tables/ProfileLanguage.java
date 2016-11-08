@@ -37,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileLanguage extends TableImpl<ProfileLanguageRecord> {
 
-	private static final long serialVersionUID = -925377506;
+	private static final long serialVersionUID = 929548962;
 
 	/**
 	 * The reference instance of <code>profiledb.profile_language</code>
@@ -68,9 +68,9 @@ public class ProfileLanguage extends TableImpl<ProfileLanguageRecord> {
 	public final TableField<ProfileLanguageRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "语言");
 
 	/**
-	 * The column <code>profiledb.profile_language.level</code>. 掌握程度 0:未选择 1: 初级（入门）, 2:中级（日常会话）,3:中高级（商务会话）,4:高级（无障碍商务沟通）
+	 * The column <code>profiledb.profile_language.level</code>. 掌握程度, dict_constant.parent_code:3108
 	 */
-	public final TableField<ProfileLanguageRecord, UByte> LEVEL = createField("level", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "掌握程度 0:未选择 1: 初级（入门）, 2:中级（日常会话）,3:中高级（商务会话）,4:高级（无障碍商务沟通）");
+	public final TableField<ProfileLanguageRecord, UByte> LEVEL = createField("level", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "掌握程度, dict_constant.parent_code:3108");
 
 	/**
 	 * The column <code>profiledb.profile_language.create_time</code>. 创建时间

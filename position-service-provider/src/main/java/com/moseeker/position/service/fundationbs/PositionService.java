@@ -27,6 +27,7 @@ import com.moseeker.position.dao.JobPositonExtDao;
 import com.moseeker.position.dao.PositionDao;
 import com.moseeker.position.pojo.DictConstantPojo;
 import com.moseeker.position.pojo.JobPositionPojo;
+import com.moseeker.position.pojo.PositionForSynchronizationPojo;
 import com.moseeker.position.pojo.RecommendedPositonPojo;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.position.struct.Position;
@@ -199,5 +200,14 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 
 	private JobPositionExtRecord getJobPositionExtRecord(int positionId){
 		return jobPositonExtDao.getJobPositonExtRecordByPositionId(positionId);
+	}
+
+	/**
+	 * 校验同步职位必填信息
+	 * @param position
+	 * @return
+	 */
+	public boolean verifySynchronizePosition(PositionForSynchronizationPojo position) {
+		return false;
 	}
 }

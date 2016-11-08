@@ -36,7 +36,7 @@ public class EmailTest {
 			emailContent.setCharset("utf-8");
 			emailContent.setContent("<html><head><title>hello</title></head><body>hello world</body></html>");
 			List<String> recipients = new ArrayList<>();
-			recipients.add("wengjianfei@moseeker.com");
+			recipients.add("zhangzeteng@moseeker.com");
 			emailContent.setRecipients(recipients);
 			emailContent.setSenderName("jzh@moseeker.com");
 			emailContent.setSenderDisplay("仟寻");

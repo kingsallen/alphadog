@@ -14,6 +14,7 @@ import com.moseeker.warn.service.validate.ValidationException;
 
 public class TestRedis {
 	private RedisClient redisClient = RedisClientFactory.getCacheClient();
+
 	//校验数据是否放在redis队列当中
 	@Test
 	public void getList(){

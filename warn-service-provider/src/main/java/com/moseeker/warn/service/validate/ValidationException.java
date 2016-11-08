@@ -20,7 +20,7 @@ public class ValidationException {
 	@Autowired
 	private EventConfigService config;
 	private RedisClient redisClient = RedisClientFactory.getCacheClient();
-	private String IDENTIFIKEY="NEW_WARNING_REDIS_KEY";
+	private static final String IDENTIFIKEY="NEW_WARNING_REDIS_KEY";
 	/**
 	 * 
 	 * @param bean

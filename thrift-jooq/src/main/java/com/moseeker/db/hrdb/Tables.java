@@ -29,6 +29,8 @@ import com.moseeker.db.hrdb.tables.HrReferralStatistics;
 import com.moseeker.db.hrdb.tables.HrRuleStatistics;
 import com.moseeker.db.hrdb.tables.HrRuleUniqueStatistics;
 import com.moseeker.db.hrdb.tables.HrSuperaccountApply;
+import com.moseeker.db.hrdb.tables.HrThirdPartAccount;
+import com.moseeker.db.hrdb.tables.HrThirdPartPosition;
 import com.moseeker.db.hrdb.tables.HrTopic;
 import com.moseeker.db.hrdb.tables.HrWxBasicReply;
 import com.moseeker.db.hrdb.tables.HrWxHrChat;
@@ -182,6 +184,16 @@ public class Tables {
 	 * 升级超级账号申请表
 	 */
 	public static final HrSuperaccountApply HR_SUPERACCOUNT_APPLY = com.moseeker.db.hrdb.tables.HrSuperaccountApply.HR_SUPERACCOUNT_APPLY;
+
+	/**
+	 * 第三方渠道帐号
+	 */
+	public static final HrThirdPartAccount HR_THIRD_PART_ACCOUNT = com.moseeker.db.hrdb.tables.HrThirdPartAccount.HR_THIRD_PART_ACCOUNT;
+
+	/**
+	 * 第三方渠道同步的职位
+	 */
+	public static final HrThirdPartPosition HR_THIRD_PART_POSITION = com.moseeker.db.hrdb.tables.HrThirdPartPosition.HR_THIRD_PART_POSITION;
 
 	/**
 	 * 雇主主题活动表

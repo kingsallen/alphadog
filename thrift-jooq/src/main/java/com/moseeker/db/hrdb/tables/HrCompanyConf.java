@@ -36,7 +36,7 @@ import org.jooq.types.UShort;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
 
-	private static final long serialVersionUID = 1337278861;
+	private static final long serialVersionUID = -819837288;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_company_conf</code>
@@ -105,6 +105,11 @@ public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
 	 * The column <code>hrdb.hr_company_conf.application_count_limit</code>. 一个人在一个公司下每月申请次数限制
 	 */
 	public final TableField<HrCompanyConfRecord, UShort> APPLICATION_COUNT_LIMIT = createField("application_count_limit", org.jooq.impl.SQLDataType.SMALLINTUNSIGNED.nullable(false).defaulted(true), this, "一个人在一个公司下每月申请次数限制");
+
+	/**
+	 * The column <code>hrdb.hr_company_conf.job_occupation</code>. 自定义字段名称
+	 */
+	public final TableField<HrCompanyConfRecord, String> JOB_OCCUPATION = createField("job_occupation", org.jooq.impl.SQLDataType.VARCHAR.length(30), this, "自定义字段名称");
 
 	/**
 	 * Create a <code>hrdb.hr_company_conf</code> table reference

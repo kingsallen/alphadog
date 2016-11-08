@@ -48,6 +48,10 @@ public final class Constant {
 
     public static final String NONE_JSON = "{}";
     public static final String TIPS_ERROR = "error";
+    //异常队列的key值
+    public static final String EXCEPTION_LIST_KEY="EXCEPTION_LIST_WARN";
+    //统计异常的数值用于报错
+    public static final String EXCEPTION_WARN_NUM="EXCEPTION_WARN_NUM";
 
     /** 系统appid 常量定义 && 共同常量定义 END  **/
 
