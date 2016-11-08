@@ -1,8 +1,10 @@
 package com.moseeker.common.aop.iface;
 
+import java.util.Arrays;
 import java.util.Date;
 
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
@@ -30,9 +32,9 @@ public class CounterIfaceAop {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	/**
-	 * 线程池
+	 * 切入点
 	 */
-//	private static ExecutorService threadPool = new ThreadPoolExecutor(5, 15, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+	private static final String POINCUT="@within(com.moseeker.common.annotation.iface.CounterIface) || @annotation(com.moseeker.common.annotation.iface.CounterIface)";
 	
 	ThreadLocal<CounterInfo> counterLocal = new ThreadLocal<CounterInfo>(){
 		@Override
@@ -42,16 +44,12 @@ public class CounterIfaceAop {
 	};
 	
 	/**
-	 * 切入点
-	 */
-	private static final String POINCUT="@within(com.moseeker.common.annotation.iface.CounterIface) || @annotation(com.moseeker.common.annotation.iface.CounterIface)";
-
-	/**
 	 * enter before
 	 * @param call
 	 */
 	@Before(value=POINCUT)
 	public void doBefore(JoinPoint call) {
+		counterLocal.get().setArgs(Arrays.toString(call.getArgs()));
 		counterLocal.get().setClassName(call.getTarget().getClass().getName());
 		counterLocal.get().setMethod(call.getSignature().getName());
 		counterLocal.get().setStartTime(new Date().getTime());
@@ -61,15 +59,11 @@ public class CounterIfaceAop {
 	 * throws exception
 	 */
 	@AfterThrowing(value=POINCUT)
-	public void throwing(JoinPoint call){
+	public void afterThrowing(JoinPoint call){
 		counterLocal.get().setStatus("fail");
 		counterLocal.get().setEndTime(new Date().getTime());
 		counterLocal.get().setTime(counterLocal.get().getEndTime()-counterLocal.get().getStartTime());
 		log.info("counterInfo:{}", JSONObject.toJSONString(counterLocal.get()));
-//		threadPool.submit(() -> {
-//			RedisClient client = RedisClientFactory.getLogClient();
-//			client.lpush(Constant.APPID_ALPHADOG, "LOG", counterInfo);
-//		});
 	}
 	
 	/**
@@ -81,9 +75,6 @@ public class CounterIfaceAop {
 		counterLocal.get().setEndTime(new Date().getTime());
 		counterLocal.get().setTime(counterLocal.get().getEndTime()-counterLocal.get().getStartTime());
 		log.info("counterInfo:{}", JSONObject.toJSONString(counterLocal.get()));
-//		threadPool.submit(() -> {
-//			RedisClient client = RedisClientFactory.getLogClient();
-//			client.lpush(Constant.APPID_ALPHADOG, "LOG", counterInfo);
-//		});
 	}
+
 }
