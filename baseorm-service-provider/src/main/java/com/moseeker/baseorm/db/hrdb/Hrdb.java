@@ -29,8 +29,8 @@ import com.moseeker.baseorm.db.hrdb.tables.HrReferralStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrRuleStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrRuleUniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
-import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartAccount;
-import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartPosition;
+import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
+import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.baseorm.db.hrdb.tables.HrTopic;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxBasicReply;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxHrChat;
@@ -67,7 +67,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-	private static final long serialVersionUID = 789487324;
+	private static final long serialVersionUID = 1342636598;
 
 	/**
 	 * The reference instance of <code>hrdb</code>
@@ -115,8 +115,8 @@ public class Hrdb extends SchemaImpl {
 			HrRuleStatistics.HR_RULE_STATISTICS,
 			HrRuleUniqueStatistics.HR_RULE_UNIQUE_STATISTICS,
 			HrSuperaccountApply.HR_SUPERACCOUNT_APPLY,
-			HrThirdPartAccount.HR_THIRD_PART_ACCOUNT,
-			HrThirdPartPosition.HR_THIRD_PART_POSITION,
+			HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT,
+			HrThirdPartyPosition.HR_THIRD_PARTY_POSITION,
 			HrTopic.HR_TOPIC,
 			HrWxBasicReply.HR_WX_BASIC_REPLY,
 			HrWxHrChat.HR_WX_HR_CHAT,

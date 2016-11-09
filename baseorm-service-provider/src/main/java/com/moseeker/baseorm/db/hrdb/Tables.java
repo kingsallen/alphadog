@@ -29,8 +29,8 @@ import com.moseeker.baseorm.db.hrdb.tables.HrReferralStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrRuleStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrRuleUniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
-import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartAccount;
-import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartPosition;
+import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
+import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.baseorm.db.hrdb.tables.HrTopic;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxBasicReply;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxHrChat;
@@ -188,12 +188,12 @@ public class Tables {
 	/**
 	 * 第三方渠道帐号
 	 */
-	public static final HrThirdPartAccount HR_THIRD_PART_ACCOUNT = com.moseeker.baseorm.db.hrdb.tables.HrThirdPartAccount.HR_THIRD_PART_ACCOUNT;
+	public static final HrThirdPartyAccount HR_THIRD_PARTY_ACCOUNT = com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT;
 
 	/**
 	 * 第三方渠道同步的职位
 	 */
-	public static final HrThirdPartPosition HR_THIRD_PART_POSITION = com.moseeker.baseorm.db.hrdb.tables.HrThirdPartPosition.HR_THIRD_PART_POSITION;
+	public static final HrThirdPartyPosition HR_THIRD_PARTY_POSITION = com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition.HR_THIRD_PARTY_POSITION;
 
 	/**
 	 * 雇主主题活动表
