@@ -11,6 +11,7 @@ import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.Constant;
 import com.moseeker.warn.dto.Event;
+import com.moseeker.warn.utils.IdentifiKey;
 import com.moseeker.warn.utils.SendChannel;
 
 @Service
@@ -24,7 +25,7 @@ public class ManageService {
 	 */
 	private String fetchConstantlyMessage() {
 		RedisClient redisClient = RedisClientFactory.getCacheClient();
-		return redisClient.brpop(Constant.APPID_ALPHADOG, "NEW_WARNING_REDIS_KEY").get(1);
+		return redisClient.brpop(Constant.APPID_ALPHADOG, IdentifiKey.NEW_WARNING_REDIS_KEY.toString()).get(1);
 	}
 	
 	/**
