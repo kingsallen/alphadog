@@ -1,8 +1,10 @@
 package com.moseeker.baseorm.Thriftservice;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
 
 import org.apache.thrift.TException;
+import org.joda.time.DateTime;
 import org.jooq.types.UInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,6 +102,10 @@ public class HRAccountThriftService implements Iface {
 			record.setSyncTime(now);
 			record.setUsername(account.getUsername());
 			hrThirdPartyAccountDao.postResource(record);
+			HashMap<String, Object> map = new HashMap<>();
+			map.put("remain_num", account.getRemainNum());
+			DateTime dt = new DateTime(now.getTime());
+			map.put("sync_time", dt.toString("yyyy-MM-dd HH:mm:ss"));
 			return ResponseUtils.success(null);
 		} catch (Exception e) {
 			e.printStackTrace();
