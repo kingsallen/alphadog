@@ -15,6 +15,7 @@ import com.moseeker.thrift.gen.warn.service.WarnSetService;
 import com.moseeker.thrift.gen.warn.struct.WarnBean;
 import com.moseeker.warn.server.WarnServer;
 import com.moseeker.warn.service.manager.SendManager;
+import com.moseeker.warn.service.validate.ValidationService;
 import com.moseeker.warn.thrift.WarnThriftService;
 public class TestRedis {
 	private RedisClient redisClient = RedisClientFactory.getCacheClient();
@@ -30,6 +31,12 @@ public class TestRedis {
 		}else{
 			System.out.println("no list================");
 		}
+//		synchronized (TestRedis.class) {
+//			while(true){
+//				getList();
+//				System.out.println("11111");
+//			}
+//		}
 	}
 	//校验测试
 	@Test
@@ -38,7 +45,7 @@ public class TestRedis {
 			AnnotationConfigApplicationContext context = initSpring();
 			String [] args=new String[2];
 			args[0]="-port";
-			args[1]="19201";
+			args[1]="19202";
 			Server server=new Server(WarnServer.class,ServerNodeUtils.getPort(args),context.getBean(WarnThriftService.class));
 			server.start();
 			WarnBean bean=new WarnBean();

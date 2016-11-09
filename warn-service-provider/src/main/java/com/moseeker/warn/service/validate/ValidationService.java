@@ -2,6 +2,7 @@ package com.moseeker.warn.service.validate;
 
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.expression.spel.ast.Identifier;
 import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.redis.RedisClient;
@@ -10,6 +11,7 @@ import com.moseeker.common.util.Constant;
 import com.moseeker.thrift.gen.warn.struct.WarnBean;
 import com.moseeker.warn.dto.Event;
 import com.moseeker.warn.service.EventConfigService;
+import com.moseeker.warn.utils.IdentifiKey;
 /**
  * 验证异常警告，获得结果，判断是否要插入数据库
  * @author zztaiwll
@@ -20,7 +22,8 @@ public class ValidationService {
 	@Autowired
 	private EventConfigService config;										
 	private RedisClient redisClient = RedisClientFactory.getCacheClient();
-	private String IDENTIFIKEY="NEW_WARNING_REDIS_KEY";                      //队列的IDENTIFIKEY
+//	private static final String IDENTIFIKEY="NEW_WARNING_REDIS_KEY";                      //队列的IDENTIFIKEY
+//	private static final String IDENTIFIKEY1="NEW_WARNING_REDIS_VALID";
 	/**
 	 * 
 	 * @param bean
@@ -44,15 +47,15 @@ public class ValidationService {
 			if(config!=null){
 				int interval=config.getThresholdInterval();
 				String key=appid+name;
-				synchronized(IDENTIFIKEY){//加锁，避免出现并发读取redis
-					String oldtime=redisClient.get(Constant.APPID_ALPHADOG,IDENTIFIKEY, key);
+				synchronized(IdentifiKey.NEW_WARNING_REDIS_KEY){//加锁，避免出现并发读取redis
+					String oldtime=redisClient.get(Constant.APPID_ALPHADOG,IdentifiKey.NEW_WARNING_REDIS_VALID.toString(), key);
 					if(oldtime==null){//如果不存在该类报警信息，则添加，并且发送邮件
-						redisClient.set(Constant.APPID_ALPHADOG,IDENTIFIKEY, key,System.currentTimeMillis()+"");
+						redisClient.set(Constant.APPID_ALPHADOG,IdentifiKey.NEW_WARNING_REDIS_VALID.toString(), key,System.currentTimeMillis()+"");
 						flag=1;
 					}else{
 						Long retimePeriod=System.currentTimeMillis()-Long.parseLong(oldtime);
 						if(retimePeriod>=interval*1000){//redis中存储的上次报警时间与这次报警时间之差大于配置时间，则发送邮件，并且更新时间，否则只更新时间即可
-							redisClient.set(Constant.APPID_ALPHADOG,IDENTIFIKEY, key,System.currentTimeMillis()+"");
+							redisClient.set(Constant.APPID_ALPHADOG,IdentifiKey.NEW_WARNING_REDIS_VALID.toString(), key,System.currentTimeMillis()+"");
 							flag=1;
 						}
 					}
@@ -60,7 +63,7 @@ public class ValidationService {
 						JSONObject sendResult=new JSONObject();
 						sendResult.put("config", config);
 						sendResult.put("location",bean.getEvent_local() );
-						redisClient.lpush(Constant.APPID_ALPHADOG, IDENTIFIKEY, sendResult.toString());
+						redisClient.lpush(Constant.APPID_ALPHADOG, IdentifiKey.NEW_WARNING_REDIS_KEY.toString(), sendResult.toString());
 					}
 				}
 			}
