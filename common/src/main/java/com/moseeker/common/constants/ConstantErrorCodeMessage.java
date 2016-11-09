@@ -71,6 +71,11 @@ public final class ConstantErrorCodeMessage {
     public static final String APPLICATION_POSITION_STATUS_STOP = "{'status':41005,'message':'申请的职位已下线!'}";
     public static final String APPLICATION_USER_INVALID = "{'status':41006,'message':'申请人是无法校验的用户!'}";
     
+    //HR帐号
+    public static final String HRACCOUNT_ALREADY_BOUND = "{'status':42001,'message':'帐号已经绑定！'}";
+    public static final String HRACCOUNT_ELLEGLE_DATA = "{'status':42002,'message':'数据格式错误！'}";
+    public static final String HRACCOUNT_BINDING = "{'status':42003,'message':'绑定中！'}";
+    
     // 工具类错误
     public static final String USER_SMS_LIMITED = "{'status':80001,'message':'短信发送异常!'}";
 }

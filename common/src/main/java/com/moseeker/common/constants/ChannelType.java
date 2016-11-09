@@ -19,7 +19,7 @@ import com.moseeker.common.util.ConfigPropertiesUtil;
  */
 public enum ChannelType {
 	
-	JOB51(1, "job"), LIANPIAN(2, ""), ZHILIAN(3, "zhaopin/position/binding"), LINKEDIN(4, "");
+	JOB51(1, "job"), LIANPIAN(2, ""), ZHILIAN(3, "zhaopin"), LINKEDIN(4, "");
 	
 	private Logger logger = LoggerFactory.getLogger(ChannelType.class);
 	

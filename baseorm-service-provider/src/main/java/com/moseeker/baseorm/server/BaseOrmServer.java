@@ -4,13 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import com.moseeker.baseorm.Thriftservice.HRAccountThriftService;
 import com.moseeker.baseorm.Thriftservice.JobPositionThriftService;
 import com.moseeker.baseorm.Thriftservice.ThirdpartAccountThriftService;
-import com.moseeker.baseorm.service.JobPositionService;
-import com.moseeker.baseorm.service.ThirdpartAccountService;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.MultiRegServer;
-import com.moseeker.rpccenter.main.Server;
 /*
  * baseorm-service-provider的启动类
  */
@@ -31,6 +29,7 @@ public class BaseOrmServer {
 	        			BaseOrmServer.class,
 	        			ServerNodeUtils.getPort(args),
 	        			acac.getBean(JobPositionThriftService.class),
+	        			acac.getBean(HRAccountThriftService.class),
 	        			acac.getBean(ThirdpartAccountThriftService.class)
 	        	);
 	            server.start();

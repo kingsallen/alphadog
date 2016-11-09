@@ -4,9 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import com.moseeker.function.thrift.service.ChaosThriftService;
 import com.moseeker.function.thrift.service.FunctionService;
+import com.moseeker.function.thrift.service.HRAccountThriftService;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
-import com.moseeker.rpccenter.main.Server;
+import com.moseeker.rpccenter.main.MultiRegServer;
 
 /**
  * 
@@ -25,9 +27,11 @@ public class FunctionServer {
 
         try {
         	AnnotationConfigApplicationContext acac = initSpring();
-			Server server = new Server(FunctionServer.class,
-					ServerNodeUtils.getPort(args),
-					acac.getBean(FunctionService.class));
+        	MultiRegServer server = new MultiRegServer(FunctionServer.class,
+        			ServerNodeUtils.getPort(args),
+					acac.getBean(FunctionService.class),
+					acac.getBean(ChaosThriftService.class),
+					acac.getBean(HRAccountThriftService.class));
 			server.start(); // 启动服务，非阻塞
 
 			synchronized (FunctionServer.class) {

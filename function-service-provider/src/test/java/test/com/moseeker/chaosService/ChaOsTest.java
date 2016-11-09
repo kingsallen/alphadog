@@ -27,7 +27,7 @@ public class ChaOsTest {
 		param.setUsername("333");
 		AnnotationConfigApplicationContext acc=initSpring();
 		ChaosThriftService service=acc.getBean(ChaosThriftService.class);
-		System.out.println(service.sendParamForChaos(param));
+		//System.out.println(service.sendParamForChaos(param));
 	}
 
 }

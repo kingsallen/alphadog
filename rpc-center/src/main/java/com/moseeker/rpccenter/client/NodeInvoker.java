@@ -67,15 +67,15 @@ public class NodeInvoker<T> implements Invoker {
 		}
         Throwable exception = null;
         ZKPath node = null;
-        for (int i = 0; i < retry + 1; i++) {
+        //for (int i = 0; i < retry + 1; i++) {
             try {
                 node = NodeLoadBalance.LoadBalance.getNextNode(root, parentName);
-                if (node == null) {
+                /*if (node == null) {
                 	LOGGER.error("retry:"+(i+1));
                 	LOGGER.error(parentName+"  Can't find node!");
                 	//warning
                     continue;
-                }
+                }*/
                 LOGGER.info(node.toString());
                 client = pool.borrowObject(node);
                 System.out.println("after borrowObject getNumActive:"+pool.getNumActive());
@@ -137,7 +137,7 @@ public class NodeInvoker<T> implements Invoker {
                     }
                 }
             }
-        }
+        //}
         throw new RpcException("服务超时，请稍候再试!", exception);
 	}
 

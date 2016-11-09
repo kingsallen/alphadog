@@ -1,18 +1,112 @@
 package com.moseeker.baseorm.Thriftservice;
 
+import java.sql.Timestamp;
+
 import org.apache.thrift.TException;
+import org.jooq.types.UInteger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.moseeker.baseorm.dao.HRAccountDao;
+import com.moseeker.baseorm.dao.HRThirdPartyAccountDao;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartAccountRecord;
+import com.moseeker.common.constants.ChannelType;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.orm.service.UserHrAccountDao.Iface;;
+import com.moseeker.thrift.gen.orm.service.UserHrAccountDao.Iface;
+import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;;
 
+/**
+ * 
+ * 提供hr帐号表的单表操作 
+ * <p>Company: MoSeeker</P>  
+ * <p>date: Nov 8, 2016</p>  
+ * <p>Email: wjf2255@gmail.com</p>
+ * @author wjf
+ * @version
+ */
 @Service
 public class HRAccountThriftService implements Iface {
+	
+	private Logger logger = LoggerFactory.getLogger(ChannelType.class);
+	
+	@Autowired
+	private HRAccountDao hraccountDao;
+	
+	@Autowired
+	private HRThirdPartyAccountDao hrThirdPartyAccountDao;
 
 	@Override
 	public Response getAccount(CommonQuery query) throws TException {
-		return null;
+		try {
+			UserHrAccountRecord record = hraccountDao.getResource(query);
+			if(record != null) {
+				return ResponseUtils.success(record.intoMap());
+			} else {
+				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+		} finally {
+			//do nothing
+		}
 	}
 
+	public HRAccountDao getHraccountDao() {
+		return hraccountDao;
+	}
+
+	public void setHraccountDao(HRAccountDao hraccountDao) {
+		this.hraccountDao = hraccountDao;
+	}
+
+	@Override
+	public Response getThirdPartyAccount(CommonQuery query) throws TException {
+		try {
+			HrThirdPartAccountRecord record = hrThirdPartyAccountDao.getResource(query);
+			if(record != null) {
+				return ResponseUtils.success(record.intoMap());
+			} else {
+				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+		} finally {
+			//do nothing
+		}
+	}
+
+	@Override
+	public Response createThirdPartyAccount(BindAccountStruct account) throws TException {
+		
+		try {
+			HrThirdPartAccountRecord record = new HrThirdPartAccountRecord();
+			record.setBinding((short)account.getBinding());
+			record.setChannel((short)account.getChannel());
+			record.setCompanyId(UInteger.valueOf(account.getCompany_id()));
+			Timestamp now = new Timestamp(System.currentTimeMillis());
+			record.setCreateTime(now);
+			record.setMembername(account.getMember_name());
+			record.setPassword(account.getPassword());
+			record.setRemainNum(UInteger.valueOf(account.getRemainNum()));
+			record.setSyncTime(now);
+			record.setUsername(account.getUsername());
+			hrThirdPartyAccountDao.postResource(record);
+			return ResponseUtils.success(null);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		} finally {
+			
+		}
+	}
 }
