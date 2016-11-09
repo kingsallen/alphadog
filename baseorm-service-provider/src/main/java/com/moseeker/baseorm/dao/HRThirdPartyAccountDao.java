@@ -2,8 +2,8 @@ package com.moseeker.baseorm.dao;
 
 import org.springframework.stereotype.Service;
 
-import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartAccount;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartAccountRecord;
+import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
 import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
 /**
  * 
@@ -15,11 +15,11 @@ import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
  * @version
  */
 @Service
-public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartAccountRecord, HrThirdPartAccount> {
+public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecord, HrThirdPartyAccount> {
 
 	@Override
 	protected void initJOOQEntity() {
-		this.tableLike = HrThirdPartAccount.HR_THIRD_PART_ACCOUNT;
+		this.tableLike = HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT;
 	}
 
 }

@@ -2,10 +2,8 @@ package com.moseeker.useraccounts.service.impl;
 
 import org.springframework.stereotype.Service;
 
-import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.function.struct.ThirdPartyAccountPojo;
-import com.moseeker.thrift.gen.thirdpart.service.OrmThirdPartService;
 
 /**
  * 

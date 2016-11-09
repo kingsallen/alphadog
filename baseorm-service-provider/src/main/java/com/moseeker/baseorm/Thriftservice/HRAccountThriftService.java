@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.moseeker.baseorm.dao.HRAccountDao;
 import com.moseeker.baseorm.dao.HRThirdPartyAccountDao;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartAccountRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -72,7 +72,7 @@ public class HRAccountThriftService implements Iface {
 	@Override
 	public Response getThirdPartyAccount(CommonQuery query) throws TException {
 		try {
-			HrThirdPartAccountRecord record = hrThirdPartyAccountDao.getResource(query);
+			HrThirdPartyAccountRecord record = hrThirdPartyAccountDao.getResource(query);
 			if(record != null) {
 				return ResponseUtils.success(record.intoMap());
 			} else {
@@ -90,7 +90,7 @@ public class HRAccountThriftService implements Iface {
 	public Response createThirdPartyAccount(BindAccountStruct account) throws TException {
 		
 		try {
-			HrThirdPartAccountRecord record = new HrThirdPartAccountRecord();
+			HrThirdPartyAccountRecord record = new HrThirdPartyAccountRecord();
 			record.setBinding((short)account.getBinding());
 			record.setChannel((short)account.getChannel());
 			record.setCompanyId(UInteger.valueOf(account.getCompany_id()));

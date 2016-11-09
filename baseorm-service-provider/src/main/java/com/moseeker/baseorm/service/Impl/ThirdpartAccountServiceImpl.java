@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 
 import com.moseeker.baseorm.dao.ThirdPartAccountDao;
 import com.moseeker.baseorm.dao.ThirdPartPositionDao;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartAccountRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartPositionRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyPositionRecord;
 import com.moseeker.baseorm.service.ThirdpartAccountService;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -36,7 +36,7 @@ public class ThirdpartAccountServiceImpl implements ThirdpartAccountService {
 	@Override
 	public Response add_ThirdPartAccount(ThirdPartAccount account){
 		// TODO Auto-generated method stub
-		HrThirdPartAccountRecord record= (HrThirdPartAccountRecord) BeanUtils.structToDB(account, HrThirdPartAccountRecord.class);
+		HrThirdPartyAccountRecord record= (HrThirdPartyAccountRecord) BeanUtils.structToDB(account, HrThirdPartyAccountRecord.class);
 		try{
 			CommonQuery query=new CommonQuery();
 			HashMap map=new HashMap();
@@ -69,7 +69,7 @@ public class ThirdpartAccountServiceImpl implements ThirdpartAccountService {
 	public Response update_ThirdPartAccount(ThirdPartAccount account){
 		// TODO Auto-generated method stub
 		try{
-				HrThirdPartAccountRecord record=getForUpdateAccount(account);
+				HrThirdPartyAccountRecord record=getForUpdateAccount(account);
 				if(record!=null){
 					int result=thirdpartAccount.putResource(record);
 					return ResponseUtils.success(String.valueOf(result));
@@ -89,7 +89,7 @@ public class ThirdpartAccountServiceImpl implements ThirdpartAccountService {
 	 */
 	@Override
 	public Response add_ThirdPartPosition(ThirdPartPosition position){
-		HrThirdPartPositionRecord record=(HrThirdPartPositionRecord) BeanUtils.structToDB(position, HrThirdPartPositionRecord.class);
+		HrThirdPartyPositionRecord record=(HrThirdPartyPositionRecord) BeanUtils.structToDB(position, HrThirdPartyPositionRecord.class);
 		try{
 			CommonQuery query=new CommonQuery();
 			HashMap map=new HashMap();
@@ -119,7 +119,7 @@ public class ThirdpartAccountServiceImpl implements ThirdpartAccountService {
 		// TODO Auto-generated method stub
 		
 		try{
-			HrThirdPartPositionRecord record=getForUpdatePosition(position);
+			HrThirdPartyPositionRecord record=getForUpdatePosition(position);
 			if(record!=null){				
 				int result=thirdPartPosition.putResource(record);
 				return ResponseUtils.success(String.valueOf(result));
@@ -141,9 +141,9 @@ public class ThirdpartAccountServiceImpl implements ThirdpartAccountService {
 		// TODO Auto-generated method stub
 		try{
 			if(positions!=null&&positions.size()>0){
-				List<HrThirdPartPositionRecord> list=new ArrayList<HrThirdPartPositionRecord>();
+				List<HrThirdPartyPositionRecord> list=new ArrayList<HrThirdPartyPositionRecord>();
 				for(ThirdPartPosition position:positions){
-					HrThirdPartPositionRecord record=(HrThirdPartPositionRecord) BeanUtils.structToDB(position, HrThirdPartPositionRecord.class);
+					HrThirdPartyPositionRecord record=(HrThirdPartyPositionRecord) BeanUtils.structToDB(position, HrThirdPartyPositionRecord.class);
 					list.add(record);
 				}
 				int result=thirdPartPosition.postResources(list);
@@ -166,9 +166,9 @@ public class ThirdpartAccountServiceImpl implements ThirdpartAccountService {
 		// TODO Auto-generated method stub
 		try{
 			if(positions!=null&&positions.size()>0){
-				List<HrThirdPartPositionRecord> list=new ArrayList<HrThirdPartPositionRecord>();
+				List<HrThirdPartyPositionRecord> list=new ArrayList<HrThirdPartyPositionRecord>();
 				for(ThirdPartPosition position:positions){
-					HrThirdPartPositionRecord record=getForUpdatePosition(position);
+					HrThirdPartyPositionRecord record=getForUpdatePosition(position);
 					if(record!=null){
 						list.add(record);
 					}					
@@ -197,7 +197,7 @@ public class ThirdpartAccountServiceImpl implements ThirdpartAccountService {
 		map.put("limit", 1);
 		query.setEqualFilter(map);
 		try{
-			HrThirdPartAccountRecord record= thirdpartAccount.getResource(query);
+			HrThirdPartyAccountRecord record= thirdpartAccount.getResource(query);
 			ThirdPartAccount account=(ThirdPartAccount) BeanUtils.DBToStruct(ThirdPartAccount.class, record);
 			if(record!=null){
 				return ResponseUtils.success(account);
@@ -211,17 +211,17 @@ public class ThirdpartAccountServiceImpl implements ThirdpartAccountService {
 		
 	}
 	
-	public HrThirdPartAccountRecord getForUpdateAccount(ThirdPartAccount account){
+	public HrThirdPartyAccountRecord getForUpdateAccount(ThirdPartAccount account){
 		CommonQuery query=new CommonQuery();
 		HashMap map=new HashMap();
 		map.put("company_id", account.getCompany_id());
 		map.put("channel", account.getChannel());
 		query.setEqualFilter(map);
 		try {
-			HrThirdPartAccountRecord flag = thirdpartAccount.getResource(query);
+			HrThirdPartyAccountRecord flag = thirdpartAccount.getResource(query);
 			if(flag!=null){
 				account.setId(flag.getId());
-				HrThirdPartAccountRecord record= (HrThirdPartAccountRecord) BeanUtils.structToDB(account, HrThirdPartAccountRecord.class);
+				HrThirdPartyAccountRecord record= (HrThirdPartyAccountRecord) BeanUtils.structToDB(account, HrThirdPartyAccountRecord.class);
 				return record;
 			}
 		} catch (Exception e) {
@@ -230,17 +230,17 @@ public class ThirdpartAccountServiceImpl implements ThirdpartAccountService {
 		
 		return null;
 	}
-	public HrThirdPartPositionRecord getForUpdatePosition(ThirdPartPosition position){
+	public HrThirdPartyPositionRecord getForUpdatePosition(ThirdPartPosition position){
 		CommonQuery query=new CommonQuery();
 		HashMap map=new HashMap();
 		map.put("position_id", position.getPosition_id());
 		map.put("channel", position.getChannel());
 		query.setEqualFilter(map);
 		try{
-			HrThirdPartPositionRecord  flag=thirdPartPosition.getResource(query);
+			HrThirdPartyPositionRecord  flag=thirdPartPosition.getResource(query);
 			if(flag!=null){
 				position.setId(Integer.parseInt(flag.getId()+""));
-				HrThirdPartPositionRecord record=(HrThirdPartPositionRecord) BeanUtils.structToDB(position, HrThirdPartPositionRecord.class);
+				HrThirdPartyPositionRecord record=(HrThirdPartyPositionRecord) BeanUtils.structToDB(position, HrThirdPartyPositionRecord.class);
 				return record;
 			}
 		}catch(Exception e){
