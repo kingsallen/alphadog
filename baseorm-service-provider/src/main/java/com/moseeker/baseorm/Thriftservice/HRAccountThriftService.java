@@ -106,7 +106,7 @@ public class HRAccountThriftService implements Iface {
 			map.put("remain_num", account.getRemainNum());
 			DateTime dt = new DateTime(now.getTime());
 			map.put("sync_time", dt.toString("yyyy-MM-dd HH:mm:ss"));
-			return ResponseUtils.success(null);
+			return ResponseUtils.success(map);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e.getMessage(), e);
