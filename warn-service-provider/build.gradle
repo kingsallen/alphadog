@@ -11,18 +11,15 @@ dependencies {
 	compile project (":common")
 	compile project (":thrift-jooq")
 	compile deps["spring-core"]
-<<<<<<< HEAD
 	compile deps["spring-context"]
 	testCompile deps["spring-test"]
 	testCompile deps["junit"]
-=======
-    compile deps["spring-context"]
-    compile deps["spring-test"]
+        compile deps["spring-context"]
+        compile deps["spring-test"]
 	//compile 'org.springframework:spring-core:4.2.3.RELEASE'
 	//compile 'org.springframework:spring-context:4.2.3.RELEASE'
 	//compile 'org.springframework:spring-test:4.2.3.RELEASE'
 	testCompile 'junit:junit:4.12'
->>>>>>> feature/baseorm-service-provider
 }
 
 task copyJars(type: Copy) {
