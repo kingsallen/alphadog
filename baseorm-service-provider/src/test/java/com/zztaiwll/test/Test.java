@@ -14,11 +14,10 @@ import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartAccount;
+import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
 import com.moseeker.baseorm.service.JobPositionService;
 import com.moseeker.baseorm.service.ThirdpartAccountService;
 import com.moseeker.baseorm.service.Impl.ThirdpartAccountServiceImpl;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.thirdpart.struct.ThirdPartPosition;
 import com.mysql.jdbc.Connection;
 
@@ -33,10 +32,10 @@ public class Test {
         Class.forName("com.mysql.jdbc.Driver");
         try (Connection conn = (Connection) DriverManager.getConnection(url, userName, password)) {
         	DSLContext create = DSL.using(conn, SQLDialect.MYSQL);
-        	Result<Record> result = create.select().from(HrThirdPartAccount.HR_THIRD_PART_ACCOUNT).fetch();
+        	Result<Record> result = create.select().from(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT).fetch();
         	for (Record r : result) {
-        	    Integer id = r.getValue(HrThirdPartAccount.HR_THIRD_PART_ACCOUNT.ID);
-        	    String firstName = r.getValue(HrThirdPartAccount.HR_THIRD_PART_ACCOUNT.USERNAME);
+        	    Integer id = r.getValue(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID);
+        	    String firstName = r.getValue(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.USERNAME);
         	    //int lastName = r.getValue(HrThirdPartAccount.HR_THIRD_PART_ACCOUNT.CHANNEL);
 
         	    //System.out.println("ID: " + id + " first name: " + firstName + " last name: " + lastName);
