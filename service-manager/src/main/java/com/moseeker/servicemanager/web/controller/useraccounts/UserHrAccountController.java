@@ -84,7 +84,7 @@ public class UserHrAccountController {
 		}
 	}
 	
-	@RequestMapping(value = "/hraccount/bind", method = RequestMethod.POST)
+	@RequestMapping(value = "/hraccount/binding", method = RequestMethod.POST)
 	@ResponseBody
 	public String bindThirdPartyAccount(HttpServletRequest request, HttpServletResponse response) {
 		try {
