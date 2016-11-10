@@ -35,6 +35,7 @@ public class HRAccountService {
 			if(companyId > 0) {
 				QueryUtil qu = new QueryUtil();
 				qu.addEqualFilter("company_id", String.valueOf(companyId));
+				qu.addEqualFilter("channel", String.valueOf(channelType));
 				response = hraccountDao.getThirdPartyAccount(qu);
 			} else {
 				QueryUtil qu = new QueryUtil();
@@ -46,6 +47,7 @@ public class HRAccountService {
 						int companyId1 = hraccount.getInteger("company_id");
 						QueryUtil qu1 = new QueryUtil();
 						qu1.addEqualFilter("company_id", String.valueOf(companyId1));
+						qu1.addEqualFilter("channel", String.valueOf(channelType));
 						response = hraccountDao.getThirdPartyAccount(qu1);
 					} else {
 						//数据异常
