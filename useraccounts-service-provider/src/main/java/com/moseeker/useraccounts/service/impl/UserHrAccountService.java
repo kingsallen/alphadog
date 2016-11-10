@@ -11,10 +11,8 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.redis.RedisClient;
@@ -32,7 +30,6 @@ import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.foundation.hraccount.service.HRAccountFoundationServices;
 import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.DownloadReport;
-import com.moseeker.thrift.gen.useraccounts.struct.NewsletterForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
 import com.moseeker.useraccounts.dao.UserHrAccountDao;
 
@@ -310,20 +307,6 @@ public class UserHrAccountService {
 		} finally {
 			// do nothing
 		}
-	}
-
-	public Response newsletter(NewsletterForm form) {
-		if (form.getAccount_id() > 0) {
-			RedisClient redis = RedisClientFactory.getCacheClient();
-			String value = redis.get(AppId.APPID_ALPHADOG.getValue(),
-					KeyIdentifier.NEWSLETTER_HRACCOUNT_READED.toString(), String.valueOf(form.getAccount_id()), "*");
-			if (value != null) {
-				ResponseUtils.success(value);
-			} else {
-				
-			}
-		}
-		return null;
 	}
 
 	/**

@@ -2,6 +2,7 @@
 
 include "../struct/useraccounts_struct.thrift"
 include "../../common/struct/common_struct.thrift"
+include "../../foundataionbs/wordpress/struct/wordpress_foundation_strcut.thrift"
 
 namespace java com.moseeker.thrift.gen.useraccounts.service
 
@@ -74,4 +75,13 @@ service UserHrAccountService {
     common_struct.Response putResource(1: useraccounts_struct.UserHrAccount userHrAccount);
     
     common_struct.Response bind(1: useraccounts_struct.BindAccountStruct account);
+}
+
+/**
+* 所有用户通用的服务
+**/
+service UserCommonService {
+
+    // 获取新版本内容
+    common_struct.Response newsletter(1: wordpress_foundation_strcut.NewsletterForm form);
 }

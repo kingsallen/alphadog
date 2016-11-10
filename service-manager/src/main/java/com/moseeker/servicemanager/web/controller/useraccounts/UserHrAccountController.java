@@ -99,20 +99,4 @@ public class UserHrAccountController {
 			//do nothing
 		}
 	}
-	
-	@RequestMapping(value = "/user/platform/newsletter", method = RequestMethod.POST)
-	@ResponseBody
-	public String newsletter(HttpServletRequest request, HttpServletResponse response) {
-		try {
-			
-			BindAccountStruct struct = ParamUtils.initModelForm(request, BindAccountStruct.class);
-			
-			//Response result = userHrAccountService.newsletter(struct);
-			return ResponseLogNotification.success(request, null);
-		} catch (Exception e) {
-			return ResponseLogNotification.fail(request, e.getMessage());
-		} finally {
-			//do nothing
-		}
-	}
 }

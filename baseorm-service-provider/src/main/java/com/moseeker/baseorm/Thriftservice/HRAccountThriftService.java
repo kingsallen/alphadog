@@ -115,4 +115,37 @@ public class HRAccountThriftService implements Iface {
 			
 		}
 	}
+
+	@Override
+	public Response upsertThirdPartyAccount(BindAccountStruct account) throws TException {
+		try {
+			HrThirdPartyAccountRecord record = new HrThirdPartyAccountRecord();
+			record.setBinding((short)account.getBinding());
+			record.setChannel((short)account.getChannel());
+			record.setCompanyId(UInteger.valueOf(account.getCompany_id()));
+			Timestamp now = new Timestamp(System.currentTimeMillis());
+			record.setCreateTime(now);
+			record.setMembername(account.getMember_name());
+			record.setPassword(account.getPassword());
+			record.setRemainNum(UInteger.valueOf(account.getRemainNum()));
+			record.setSyncTime(now);
+			record.setBinding((short)1);
+			record.setUsername(account.getUsername());
+			int count = hrThirdPartyAccountDao.upsertResource(record);
+			if(count == 0) {
+				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+			}
+			HashMap<String, Object> map = new HashMap<>();
+			map.put("remain_num", account.getRemainNum());
+			DateTime dt = new DateTime(now.getTime());
+			map.put("sync_time", dt.toString("yyyy-MM-dd HH:mm:ss"));
+			return ResponseUtils.success(map);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		} finally {
+			
+		}
+	}
 }

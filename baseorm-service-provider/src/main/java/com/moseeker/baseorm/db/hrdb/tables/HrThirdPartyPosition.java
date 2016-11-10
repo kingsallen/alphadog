@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> {
 
-	private static final long serialVersionUID = -761416472;
+	private static final long serialVersionUID = 143202898;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_third_party_position</code>
@@ -74,12 +74,12 @@ public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> 
 	/**
 	 * The column <code>hrdb.hr_third_party_position.is_synchronization</code>. 是否同步:0=未同步,1=同步,2=同步中，3=同步失败
 	 */
-	public final TableField<HrThirdPartyPositionRecord, Byte> IS_SYNCHRONIZATION = createField("is_synchronization", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "是否同步:0=未同步,1=同步,2=同步中，3=同步失败");
+	public final TableField<HrThirdPartyPositionRecord, Short> IS_SYNCHRONIZATION = createField("is_synchronization", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaulted(true), this, "是否同步:0=未同步,1=同步,2=同步中，3=同步失败");
 
 	/**
 	 * The column <code>hrdb.hr_third_party_position.is_refresh</code>. 是否刷新:0=未刷新,1=刷新,2=刷新中
 	 */
-	public final TableField<HrThirdPartyPositionRecord, Byte> IS_REFRESH = createField("is_refresh", org.jooq.impl.SQLDataType.TINYINT.defaulted(true), this, "是否刷新:0=未刷新,1=刷新,2=刷新中");
+	public final TableField<HrThirdPartyPositionRecord, Short> IS_REFRESH = createField("is_refresh", org.jooq.impl.SQLDataType.SMALLINT.defaulted(true), this, "是否刷新:0=未刷新,1=刷新,2=刷新中");
 
 	/**
 	 * The column <code>hrdb.hr_third_party_position.sync_time</code>. 职位同步时间

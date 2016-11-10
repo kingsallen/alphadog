@@ -4,8 +4,6 @@ import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.function.service.hraccount.HRAccountService;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.foundation.hraccount.service.HRAccountFoundationServices.Iface;

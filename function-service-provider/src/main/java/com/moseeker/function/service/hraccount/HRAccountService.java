@@ -83,7 +83,7 @@ public class HRAccountService {
 	public Response createThirdPartyAccount(BindAccountStruct account) {
 		
 		try {
-			return hraccountDao.createThirdPartyAccount(account);
+			return hraccountDao.upsertThirdPartyAccount(account);
 		} catch (TException e) {
 			e.printStackTrace();
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);

@@ -115,17 +115,3 @@ struct BindAccountStruct {
     8: i32 remainNum,
     9: i32 binding
 }
-
-struct NewsletterForm {
-    1: i32 appid,
-    2: i32 account_id,
-    3: optional byte plateform_type,
-    4: optional byte return_last_version
-}
-
-struct NewsletterStruct {
-    1: byte show_new_version,
-    2: string version,
-    3: Timestamp update_time,
-    4: list<string> update_list
-}
