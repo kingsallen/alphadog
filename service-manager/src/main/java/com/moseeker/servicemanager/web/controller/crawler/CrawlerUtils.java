@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
-import com.moseeker.common.util.Constant;
-import com.moseeker.common.util.ConstantErrorCodeMessage;
-import com.moseeker.servicemanager.common.UrlUtil;
+import com.moseeker.common.util.UrlUtil;
 import com.moseeker.thrift.gen.common.struct.Response;
 
 public class CrawlerUtils {
@@ -144,6 +144,7 @@ public class CrawlerUtils {
 	}
 
 	private String fetchResume(String params, String url) throws ConnectException {
-		return UrlUtil.sendPost(url, params);
+		int timeOut = 1*60*1000;
+		return UrlUtil.sendPost(url, params, timeOut, timeOut);
 	}
 }

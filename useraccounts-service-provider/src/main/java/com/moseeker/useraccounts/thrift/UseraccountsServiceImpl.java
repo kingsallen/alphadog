@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Iface;
@@ -258,5 +259,27 @@ public class UseraccountsServiceImpl implements Iface {
 	@Override
 	public Response checkEmail(String email) throws TException {
 		return service.checkEmail(email);
+	}
+
+	@Override
+	public Response cerateQrcode(int wechatId, long sceneId, int expireSeconds,
+			int action_name) throws TException {
+		return service.cerateQrcode(wechatId, sceneId, expireSeconds, action_name);
+	}
+
+	@Override
+	public Response getQrcode(String ticket) throws TException {
+		return service.getQrcode(ticket);
+	}
+
+	@Override
+	public Response getScanResult(int wechatId, long sceneId) throws TException {
+		return service.getScanResult(wechatId, sceneId);
+	}
+
+	@Override
+	public Response setScanResult(int wechatId, long sceneId, String value)
+			throws TException {
+		return service.setScanResult(wechatId, sceneId, value);
 	}
 }

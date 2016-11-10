@@ -344,7 +344,6 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 				}
 			}
 		}
-
 		return insertret;
 	}
 

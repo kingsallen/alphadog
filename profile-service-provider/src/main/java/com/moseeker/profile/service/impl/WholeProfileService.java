@@ -16,10 +16,10 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.Constant;
-import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.dictdb.tables.records.DictCollegeRecord;
@@ -825,7 +825,7 @@ public class WholeProfileService {
 			if (constantRecords != null && constantRecords.size() > 0) {
 				for (DictConstantRecord constantRecord : constantRecords) {
 					if (constantRecord.getParentCode().intValue() == 3119) {
-						if (profileRecord.getLang().intValue() == constantRecord.getCode().intValue()) {
+						if (profileRecord.getSource().intValue() == constantRecord.getCode().intValue()) {
 							map.put("source_name", constantRecord.getName());
 							break;
 						}

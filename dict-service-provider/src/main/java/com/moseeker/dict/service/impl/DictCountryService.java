@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.dict.dao.DictCountryDao;
 import com.moseeker.dict.pojo.DictCountryPojo;
 import com.moseeker.thrift.gen.common.struct.Response;

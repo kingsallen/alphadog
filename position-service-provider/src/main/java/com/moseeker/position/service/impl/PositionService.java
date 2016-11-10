@@ -11,10 +11,11 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.ValueFilter;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.common.util.ConstantErrorCodeMessage;
+import com.moseeker.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.db.jobdb.tables.records.JobCustomRecord;
 import com.moseeker.db.jobdb.tables.records.JobPositionExtRecord;
@@ -169,6 +170,17 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 					jobPositionPojo.custom = jobCustomRecord.getName();
 				}
 			}
+			
+			//省份
+			List<DictCityRecord> provinces =  dao.getProvincesByPositionID(positionId);
+			if(provinces != null && provinces.size() > 0) {
+				StringBuffer sb = new StringBuffer();
+				provinces.forEach(province -> {
+					sb.append(province.getName()+",");
+				});
+				sb.deleteCharAt(sb.length()-1);
+				jobPositionPojo.province = sb.toString();
+			}
 
 			return ResponseUtils.success(jobPositionPojo);
 		}catch (Exception e){
@@ -181,7 +193,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 	 *
 	 * @param parentCode
 	 * @param code
-	 * @return
+	 * @return 
 	 * @throws Exception
      */
 	private String getDictConstantJson(Integer parentCode, Integer code) throws Exception{

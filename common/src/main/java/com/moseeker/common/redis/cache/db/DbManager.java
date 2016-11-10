@@ -10,9 +10,9 @@ import org.jooq.Record;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.redis.RedisConfigRedisKey;
-import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.Notification;
 import com.moseeker.db.configdb.Tables;
 

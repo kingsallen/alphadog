@@ -1,17 +1,19 @@
 package com.moseeker.common.redis;
 
 import java.util.List;
+import java.util.Set;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CacheConfigNotExistException;
 import com.moseeker.common.redis.cache.db.DbManager;
-import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.Notification;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.warn.service.WarnSetService;
 
 import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.exceptions.JedisConnectionException;
+import redis.clients.jedis.params.sortedset.ZAddParams;
 
 public abstract class RedisClient {
 
@@ -42,6 +44,7 @@ public abstract class RedisClient {
 				}
 			}
 		} catch (JedisConnectionException e) {
+			e.printStackTrace();
 			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}
 		return redisKeys;
@@ -205,11 +208,13 @@ public abstract class RedisClient {
 	public String get(int appId, String key_identifier, String str1, String str2)
 			throws CacheConfigNotExistException {
 		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
-		String cacheKey = String.format(redisKey.getPattern(), str1, str2);
-		try {
-			return redisCluster.get(cacheKey);
-		} catch (Exception e) {
-			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
+		if(redisKey != null) {
+			String cacheKey = String.format(redisKey.getPattern(), str1, str2);
+			try {
+				return redisCluster.get(cacheKey);
+			} catch (Exception e) {
+				Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
+			}
 		}
 		return null;
 	}
@@ -430,5 +435,101 @@ public abstract class RedisClient {
 		if(redisCluster.exists(cacheKey)) {
 			redisCluster.decr(cacheKey);
 		}
+	}
+	
+	/**
+	 * 添加排序队列
+	 * @param appId 调用方编号
+	 * @param key_identifier 关键词
+	 * @param time 排序字段
+	 * @param str2 内容
+	 * @throws CacheConfigNotExistException
+	 */
+	public void zadd(int appId, String key_identifier, long time, String str2)
+			throws CacheConfigNotExistException {
+		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
+		redisCluster.zadd(redisKey.getPattern(), time, str2);
+	}
+	
+	/**
+	 * 添加排序队列
+	 * @param appId 调用方编号
+	 * @param key_identifier 关键词
+	 * @param time 排序字段
+	 * @param str2 内容
+	 * @param zaddParams 排序字段参数
+	 * @throws CacheConfigNotExistException
+	 */
+	public void zaddWithZaddParams(int appId, String key_identifier, long time, String str2, ZAddParams zaddParams)
+			throws CacheConfigNotExistException {
+		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
+		redisCluster.zadd(redisKey.getPattern(), time, str2, zaddParams);
+	}
+	
+	/**
+	 * 查找排序队列的内容
+	 * @param appId 调用方编号
+	 * @param key_identifier 关键词
+	 * @param min 排序字段起始位置
+	 * @param max 排序字段结束位置
+	 * @return 查找到的排序字段集合
+	 * @throws CacheConfigNotExistException
+	 */
+	public Set<String> zrange(int appId, String key_identifier, Long min, Long max)
+			throws CacheConfigNotExistException {
+		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
+		long start = 0; 
+		long end = -1;
+		if(min != null && min > 0) {
+			start = min;
+		}
+		if(max != null) {
+			end = max;
+		}
+		return redisCluster.zrange(redisKey.getPattern(), start, end);
+	}
+	
+	/**
+	 * 查找排序队列的内容
+	 * @param appId 调用方编号
+	 * @param key_identifier 关键词
+	 * @param min 排序字段起始位置
+	 * @param max 排序字段结束位置
+	 * @return
+	 * @throws CacheConfigNotExistException
+	 */
+	public Set<String> rangeByScore(int appId, String key_identifier, Long min, Long max)
+			throws CacheConfigNotExistException {
+		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
+		long start = 0; 
+		long end = 0;
+		if(min != null && min > 0) {
+			start = min;
+		}
+		if(max != null) {
+			end = max;
+		}
+		return redisCluster.zrangeByScore(redisKey.getPattern(), start, end);
+	}
+	
+	/**
+	 * 删除排序队列任务
+	 * @param appId 调用方编号
+	 * @param key_identifier 关键词
+	 * @param min 排序字段起始位置
+	 * @param max 排序字段结束位置
+	 * @return
+	 */
+	public Long zRemRangeByScore(int appId, String key_identifier, Long min, Long max) {
+		long start = 0; 
+		long end = 0;
+		if(min != null && min > 0) {
+			start = min;
+		}
+		if(max != null) {
+			end = max;
+		}
+		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
+		return redisCluster.zremrangeByScore(redisKey.getPattern(), start, end);
 	}
 }
