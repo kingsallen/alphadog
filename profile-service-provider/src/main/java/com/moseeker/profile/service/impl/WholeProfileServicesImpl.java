@@ -79,7 +79,7 @@ import com.moseeker.thrift.gen.profile.service.WholeProfileServices.Iface;
 
 @Service
 public class WholeProfileServicesImpl implements Iface {
-
+	
 	Logger logger = LoggerFactory.getLogger(WholeProfileServicesImpl.class);
 	ProfileUtils profileUtils = new ProfileUtils();
 
@@ -601,6 +601,9 @@ public class WholeProfileServicesImpl implements Iface {
 	private List<Map<String, Object>> buildProjectexps(ProfileProfileRecord profileRecord, CommonQuery query) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
+			// 按照结束时间倒序
+			query.setSortby("end_until_now,start");
+			query.setOrder("desc,desc");		
 			List<ProfileProjectexpRecord> records = projectExpDao.getResources(query);
 			if (records != null && records.size() > 0) {
 				records.forEach(record -> {
@@ -632,6 +635,9 @@ public class WholeProfileServicesImpl implements Iface {
 	private List<Map<String, Object>> buildEducations(ProfileProfileRecord profileRecord, CommonQuery query) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
+			// 按照结束时间倒序
+			query.setSortby("end_until_now,start");
+			query.setOrder("desc,desc");
 			List<ProfileEducationRecord> records = educationDao.getResources(query);
 
 			if (records != null && records.size() > 0) {
@@ -683,6 +689,9 @@ public class WholeProfileServicesImpl implements Iface {
 	private List<Map<String, Object>> buildWorkexps(ProfileProfileRecord profileRecord, CommonQuery query) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
+			// 按照结束时间倒序
+			query.setSortby("end_until_now,start");
+			query.setOrder("desc,desc");
 			List<ProfileWorkexpRecord> records = workExpDao.getResources(query);
 			if (records != null && records.size() > 0) {
 				List<Integer> companyIds = new ArrayList<>();

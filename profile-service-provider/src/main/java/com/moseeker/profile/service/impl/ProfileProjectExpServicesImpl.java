@@ -20,6 +20,7 @@ import com.moseeker.common.util.BeanUtils;
 import com.moseeker.db.profiledb.tables.records.ProfileProjectexpRecord;
 import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.profile.dao.ProjectExpDao;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.ProjectExpServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.ProjectExp;
@@ -68,6 +69,15 @@ public class ProfileProjectExpServicesImpl extends JOOQBaseServiceImpl<ProjectEx
 		super.dao = this.dao;
 	}
 
+	@Override
+	public Response getResources(CommonQuery query) throws TException {
+		// 按照结束时间倒序
+		query.setSortby("end_until_now,start");
+		query.setOrder("desc,desc");
+		return super.getResource(query);
+	}
+	
+	
 	@Override
 	public Response postResources(List<ProjectExp> structs) throws TException {
 		Response response = super.postResources(structs);
