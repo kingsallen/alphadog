@@ -17,7 +17,7 @@ public class ThirdPartToRedisTest {
 	private RedisClient redisClient = RedisClientFactory.getCacheClient();
 	private static final String ADDREDIS="MQ_THIRDPART_ADDPOSITION";
 	private static final String UPDATEREDIS="MQ_THIRDPART_UPDATEPOSITION";
-	@Test
+	
 	public void addToRedis(){
 		JSONArray jsay=new JSONArray();
 		JSONObject objs=new JSONObject();
@@ -54,7 +54,7 @@ public class ThirdPartToRedisTest {
 		System.out.println(service.addPostitonToRedis(redis));		
 		
 	}
-	@Test
+	
 	public void getaddList(){
 		List<String> list=redisClient.brpop(Constant.APPID_ALPHADOG, ADDREDIS);
 		if(list.size()>0){
@@ -70,7 +70,7 @@ public class ThirdPartToRedisTest {
 		}
 
 	}
-	@Test
+	
 	public void getUpdateList(){
 		List<String> list=redisClient.brpop(Constant.APPID_ALPHADOG, UPDATEREDIS);
 		if(list.size()>0){
