@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.redis.RedisClient;
@@ -30,6 +32,7 @@ import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.foundation.hraccount.service.HRAccountFoundationServices;
 import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.DownloadReport;
+import com.moseeker.thrift.gen.useraccounts.struct.NewsletterForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
 import com.moseeker.useraccounts.dao.UserHrAccountDao;
 
@@ -50,8 +53,11 @@ public class UserHrAccountService {
 	private RedisClient redisClient = RedisClientFactory.getCacheClient();
 
 	ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
-	com.moseeker.thrift.gen.orm.service.UserHrAccountDao.Iface hraccountDao = ServiceManager.SERVICEMANAGER.getService(com.moseeker.thrift.gen.orm.service.UserHrAccountDao.Iface.class);
-	HRAccountFoundationServices.Iface hrAccountService = ServiceManager.SERVICEMANAGER.getService(HRAccountFoundationServices.Iface.class);
+	
+	com.moseeker.thrift.gen.orm.service.UserHrAccountDao.Iface hraccountDao = ServiceManager.SERVICEMANAGER
+			.getService(com.moseeker.thrift.gen.orm.service.UserHrAccountDao.Iface.class);
+	HRAccountFoundationServices.Iface hrAccountService = ServiceManager.SERVICEMANAGER
+			.getService(HRAccountFoundationServices.Iface.class);
 
 	@Autowired
 	private UserHrAccountDao userHrAccountDao;
@@ -270,23 +276,23 @@ public class UserHrAccountService {
 	 */
 	public Response bindThirdAccount(BindAccountStruct account) {
 		try {
-			//判断是否需要进行帐号绑定
-			if(account.getCompany_id() == 0 && account.getUser_id() != 0) {
+			// 判断是否需要进行帐号绑定
+			if (account.getCompany_id() == 0 && account.getUser_id() != 0) {
 				QueryUtil qu = new QueryUtil();
 				qu.addEqualFilter("id", String.valueOf(account.getUser_id()));
 				Response response = hraccountDao.getAccount(qu);
-				if(response.getStatus() == 0) {
+				if (response.getStatus() == 0) {
 					JSONObject json = JSONObject.parseObject(response.getData());
 					account.setCompany_id(json.getIntValue("company_id"));
 				}
 			}
-			Response allowBindResponse = hrAccountService.allowBind(account.getUser_id(), 
-					account.getCompany_id(), account.getChannel());
-			if(allowBindResponse.getStatus() == 0) {
-				//请求chaos，获取点数
+			Response allowBindResponse = hrAccountService.allowBind(account.getUser_id(), account.getCompany_id(),
+					account.getChannel());
+			if (allowBindResponse.getStatus() == 0) {
+				// 请求chaos，获取点数
 				Response response = chaosService.binding(account.getUsername(), account.getPassword(),
 						account.getMember_name(), account.getChannel());
-				if(response.getStatus() == 0) {
+				if (response.getStatus() == 0) {
 					int remainNum = Integer.valueOf(response.getData());
 					account.setRemainNum(remainNum);
 					return hrAccountService.createThirdPartyAccount(account);
@@ -296,14 +302,28 @@ public class UserHrAccountService {
 			} else {
 				return allowBindResponse;
 			}
-			
+
 		} catch (TException e) {
 			e.printStackTrace();
 			logger.error(e.getMessage(), e);
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		} finally {
-			//do nothing
+			// do nothing
 		}
+	}
+
+	public Response newsletter(NewsletterForm form) {
+		if (form.getAccount_id() > 0) {
+			RedisClient redis = RedisClientFactory.getCacheClient();
+			String value = redis.get(AppId.APPID_ALPHADOG.getValue(),
+					KeyIdentifier.NEWSLETTER_HRACCOUNT_READED.toString(), String.valueOf(form.getAccount_id()), "*");
+			if (value != null) {
+				ResponseUtils.success(value);
+			} else {
+				
+			}
+		}
+		return null;
 	}
 
 	/**
