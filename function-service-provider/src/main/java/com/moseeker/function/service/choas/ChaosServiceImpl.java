@@ -33,6 +33,7 @@ public class ChaosServiceImpl {
 			ChannelType chnnelType = ChannelType.instaceFromInteger(channel);
 			String bindURI = chnnelType.getBindURI();
 			String params = ChaosTool.getParams(username, password, memberName, chnnelType);
+			System.out.println("bindURI:"+bindURI);
 			String data = UrlUtil.sendPost(bindURI, params, Constant.CONNECTION_TIME_OUT, Constant.READ_TIME_OUT);
 			//String data = "{\"status\":0,\"message\":\"success\", \"data\":3}";
 			Response response = ChaosTool.createResponse(data);
