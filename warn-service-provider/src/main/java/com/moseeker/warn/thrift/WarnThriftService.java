@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 
 import com.moseeker.thrift.gen.warn.service.WarnSetService.Iface;
 import com.moseeker.thrift.gen.warn.struct.WarnBean;
-import com.moseeker.warn.service.EventConfigService;
-import com.moseeker.warn.service.validate.ValidationService;
+import com.moseeker.warn.service.ValidationService;
+
 @Service
 public class WarnThriftService implements Iface{
 	

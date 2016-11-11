@@ -17,7 +17,7 @@ import com.moseeker.warn.utils.IdentifiKey;
  * @author zztaiwll
  *
  */
-@Service
+@Service("validation")
 public class ValidationService {
 	@Autowired
 	private EventConfigService config;										

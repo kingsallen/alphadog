@@ -1,6 +1,5 @@
 package service;
 
-import org.apache.thrift.TException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +11,6 @@ import com.moseeker.rpccenter.main.Server;
 import com.moseeker.thrift.gen.warn.service.WarnSetService;
 import com.moseeker.thrift.gen.warn.struct.WarnBean;
 import com.moseeker.warn.server.WarnServer;
-import com.moseeker.warn.service.ManageService;
 import com.moseeker.warn.thrift.WarnThriftService;
 
 public class WarnServiceTest {
@@ -34,9 +32,19 @@ public class WarnServiceTest {
 	}
 	
 	@Test
-	public void notifyTest() throws TException{
-		warn.sendOperator(new WarnBean("1", "REDIS_CONNECT_ERROR", "Redis 连接失败", getClass().getName()));
-		annConfig.getBean(ManageService.class).sendMessage();
+	public void notifyTest() throws Exception{
+		int val = 3;
+		while(val > 0){
+			new Thread(() -> {
+				try {
+					warn.sendOperator(new WarnBean("1", "REDIS_CONNECT_ERROR", "Redis 连接失败", getClass().getName()));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}).start();
+			val--;
+		}
+		Thread.currentThread().join(2000);
 	}
 	
 	@After
@@ -45,5 +53,4 @@ public class WarnServiceTest {
 			server.close();
 		}
 	}
-
 }
