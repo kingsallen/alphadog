@@ -41,7 +41,7 @@ public class ManageService {
 			SendChannel sendChannel;
 			try {
 				sendChannel = SendChannel.valueOf(channel.toUpperCase());
-				sendChannel.send(event.getMembers(), MessageFormat.format("出错位置:{0}, 错误描述:{1}", location, event.getEventDesc()));
+				sendChannel.send(event.getMembers(), MessageFormat.format("项目AppId:{0}, 出错位置:{1}, 错误描述:{1}", event.getProjectAppid(), location, event.getEventDesc()));
 			} catch (IllegalArgumentException e) {
 				log.error("not found the sendChannel:{0}", channel);
 			}

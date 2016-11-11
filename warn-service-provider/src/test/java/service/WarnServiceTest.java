@@ -21,12 +21,14 @@ public class WarnServiceTest {
 	
 	private AnnotationConfigApplicationContext annConfig;
 	
+	private Server server;
+	
 	@Before
 	public void doFast() throws ClassNotFoundException, RpcException{
 		annConfig = new AnnotationConfigApplicationContext();
 		annConfig.scan("com.moseeker.warn");
 		annConfig.refresh();
-		Server server = new Server(WarnServer.class, 19200, annConfig.getBean(WarnThriftService.class));
+		server = new Server(WarnServer.class, 19200, annConfig.getBean(WarnThriftService.class));
 		server.start();
 		warn = ServiceManager.SERVICEMANAGER.getService(WarnSetService.Iface.class);
 	}
@@ -39,7 +41,9 @@ public class WarnServiceTest {
 	
 	@After
 	public void doLast(){
-		
+		if (server != null) {
+			server.close();
+		}
 	}
 
 }
