@@ -9,9 +9,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
-import com.moseeker.common.util.Constant;
 import com.moseeker.warn.dto.Event;
 import com.moseeker.warn.service.send.SendFactory;
 import com.moseeker.warn.service.send.impl.EmailSend;

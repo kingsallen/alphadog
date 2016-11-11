@@ -7,9 +7,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
-import com.moseeker.common.util.Constant;
 import com.moseeker.warn.dto.Event;
 import com.moseeker.warn.utils.SendChannel;
 
