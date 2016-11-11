@@ -70,30 +70,12 @@ public class PositionDaoImpl extends BaseDaoImpl<JobPositionRecord, JobPosition>
 			Record positionAndCompanyRecord = positionAndCompanyRecords.get(0);
 			int company_id = ((UInteger) positionAndCompanyRecord.getValue("company_id")).intValue();
 			int company_type = ((UByte) positionAndCompanyRecord.getValue("type")).intValue(); // 公司区分(其它:2,免费用户:1,企业用户:0)
-			boolean child = false;
 
 			// get recom
 			Result<? extends Record> recomResults;
 			Condition condition = StJobSimilarity.ST_JOB_SIMILARITY.POS_ID.equal(pid);
 			if (company_type == 0) {
-				/* 检查是否是子公司的职位 */
-				int publisher = (Integer) positionAndCompanyRecord.getValue("publisher");
-
-				HrCompanyAccountRecord record = create.selectFrom(HrCompanyAccount.HR_COMPANY_ACCOUNT)
-						.where(HrCompanyAccount.HR_COMPANY_ACCOUNT.ACCOUNT_ID.equal(publisher)).fetchOne();
-				if (record != null && record.getCompanyId() != null) {
-					if (company_id != record.getCompanyId()) {
-						company_id = record.getCompanyId();
-						child = true;
-					}
-				}
-
-				condition = condition.and(StJobSimilarity.ST_JOB_SIMILARITY.DEPARTMENT_ID.equal(company_id)); // select
-																												// analytics
-																												// by
-																												// pid
-																												// and
-																												// did
+				condition = condition.and(StJobSimilarity.ST_JOB_SIMILARITY.DEPARTMENT_ID.equal(company_id)); 
 			}
 			recomResults = create.select().from(StJobSimilarity.ST_JOB_SIMILARITY).where(condition).fetch();
 			List<Integer> pids = new ArrayList<>();
@@ -112,23 +94,30 @@ public class PositionDaoImpl extends BaseDaoImpl<JobPositionRecord, JobPosition>
 							JobPosition.JOB_POSITION.SALARY_TOP.as("salary_top"),
 							JobPosition.JOB_POSITION.SALARY_BOTTOM.as("salary_bottom"),
 							JobPosition.JOB_POSITION.CITY.as("job_city"),
+							JobPosition.JOB_POSITION.PUBLISHER.as("publisher"),
 							HrCompany.HR_COMPANY.ABBREVIATION.as("company_name"),
 							HrCompany.HR_COMPANY.LOGO.as("company_logo"))
 					.from(JobPosition.JOB_POSITION).join(HrCompany.HR_COMPANY)
 					.on(HrCompany.HR_COMPANY.ID.equal(JobPosition.JOB_POSITION.COMPANY_ID))
 					.where(JobPosition.JOB_POSITION.ID.in(pids)).fetch().into(RecommendedPositonPojo.class);
 			/* 子公司职位需要返回子公司的公司简称和公司logo */
-			if (child) {
-				HrCompanyRecord company = create.selectFrom(HrCompany.HR_COMPANY)
-						.where(HrCompany.HR_COMPANY.ID.equal(UInteger.valueOf(company_id))).fetchOne();
-				if (company != null) {
-					recommedPositoinsList.forEach(position -> {
-						position.setCompany_logo(company.getLogo());
-						position.setCompany_name(company.getAbbreviation());
-					});
+			recommedPositoinsList.forEach(position -> {
+				/* 检查是否是子公司的职位 */
+				int publisher = position.getPublisher();
+				HrCompanyAccountRecord hrcompanyAccountrecord = create.selectFrom(HrCompanyAccount.HR_COMPANY_ACCOUNT)
+						.where(HrCompanyAccount.HR_COMPANY_ACCOUNT.ACCOUNT_ID.equal(publisher)).fetchOne();
+				if (hrcompanyAccountrecord != null && hrcompanyAccountrecord.getCompanyId() != null) {
+					if (position.getCompany_id() != hrcompanyAccountrecord.getCompanyId()) {
+						HrCompanyRecord subcompany = create.selectFrom(HrCompany.HR_COMPANY)
+								.where(HrCompany.HR_COMPANY.ID.equal(UInteger.valueOf(hrcompanyAccountrecord.getCompanyId()))).fetchOne();							
+						if (subcompany != null){
+							position.setCompany_logo(subcompany.getLogo());
+							position.setCompany_name(subcompany.getAbbreviation());							
+						}
+					}
 				}
-			}
-
+			});
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
