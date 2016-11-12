@@ -97,9 +97,6 @@ public class NodeInvoker<T> implements Invoker {
                             // XXX:这里直接清空pool,否则会出现连接慢恢复的现象
                             // 发送socket异常时，证明socket已经失效，需要重新创建
                             if (cause.getCause() != null && cause.getCause() instanceof SocketException) {
-                                pool.clear(node);
-                                NodeManager.NODEMANAGER.removePath(node);
-                                //warning
                                 //Notification.sendThriftConnectionError(serverNode+"  socket已经失效, error:"+ite.getMessage());
                                 LOGGER.error(node+"  socket已经失效, error:"+ite.getMessage(), ite);
                                 LOGGER.debug("after clear getNumActive:"+pool.getNumActive());
