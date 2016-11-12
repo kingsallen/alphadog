@@ -14,7 +14,6 @@ dependencies {
     	compile deps["spring-context"]
     	compile deps["spring-test"]
     	compile deps["libthrift"]
-	compile deps["druid"]
     	compile  fileTree(dir:'../libs',include:'jooq*.jar')
 	//compile 'org.springframework:spring-core:4.2.3.RELEASE'
 	//compile 'org.springframework:spring-context:4.2.3.RELEASE'
