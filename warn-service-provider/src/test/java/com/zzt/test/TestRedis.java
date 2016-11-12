@@ -5,9 +5,9 @@ import java.util.List;
 import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
-import com.moseeker.common.util.Constant;
 import com.moseeker.thrift.gen.warn.struct.WarnBean;
 import com.moseeker.warn.service.manager.SendManager;
 import com.moseeker.warn.service.validate.ValidationException;
