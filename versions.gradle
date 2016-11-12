@@ -17,6 +17,7 @@ ext {
 	    "gjson"		  : "com.google.code.gson:gson:2.6.2",
             "libthrift"           : "org.apache.thrift:libthrift:0.9.3",
             "bonecp"              : "com.jolbox:bonecp:0.8.0.RELEASE",
+            "druid"              : "com.alibaba:druid:1.0.26",
             "javamail"            : "javax.mail:mail:1.5.0-b01",
             "servlet-api"         : 'javax.servlet:javax.servlet-api:3.0.1',
             "redis-appender"      : 'com.ryantenney.log4j:redis-appender:1.0.1',

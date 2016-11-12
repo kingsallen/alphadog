@@ -1,5 +1,7 @@
 package com.moseeker.useraccounts.service.impl;
 
+import java.util.HashMap;
+
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,25 +52,43 @@ public class UserCommonService {
 				NewsletterData data = JSONObject.parseObject(value, NewsletterData.class);
 				if(data.getShow_new_version() == 1) {
 					data.setShow_new_version((byte)0);
+					redis.set(AppId.APPID_ALPHADOG.getValue(),
+							KeyIdentifier.NEWSLETTER_HRACCOUNT_READED.toString(), String.valueOf(form.getAccount_id()), JSON.toJSONString(data));
 				}
-				redis.set(AppId.APPID_ALPHADOG.getValue(),
-					KeyIdentifier.NEWSLETTER_HRACCOUNT_READED.toString(), String.valueOf(form.getAccount_id()), JSON.toJSONString(data));
-				return ResponseUtils.success(value);
+				return ResponseUtils.success(JSON.parse(value));
 			} else {
 				NewsletterData data = null;
 				try {
 					data = wordpressService.getNewsletter(form);
+					if(data != null) {
+						data.setShow_new_version((byte)0);
+						redis.set(AppId.APPID_ALPHADOG.getValue(),
+								KeyIdentifier.NEWSLETTER_HRACCOUNT_READED.toString(), String.valueOf(form.getAccount_id()), JSON.toJSONString(newsletterToMap(data)));
+						data.setShow_new_version((byte)1);
+					}
 				} catch (TException e) {
 					e.printStackTrace();
 					logger.error(e.getMessage(), e);
+				} finally {
+					//do nothing
 				}
 				if(data != null) {
-					return ResponseUtils.success(data); 
+					return ResponseUtils.success(newsletterToMap(data)); 
 				} else {
-					return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXHAUSTED);
+					return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 				}
 			}
 		}
 		return null;
+	}
+	
+	private HashMap<String, Object> newsletterToMap(NewsletterData data) {
+		HashMap<String, Object> result = new HashMap<String,Object>();
+		result.put("show_new_version", data.getShow_new_version());
+		result.put("url", data.getUrl());
+		result.put("version", data.getVersion());
+		result.put("update_list", data.getUpdate_list());
+		result.put("update_time", data.getUpdate_time());
+		return result;
 	}
 }

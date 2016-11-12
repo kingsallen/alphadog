@@ -7,6 +7,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import com.moseeker.function.thrift.service.ChaosThriftService;
 import com.moseeker.function.thrift.service.FunctionService;
 import com.moseeker.function.thrift.service.HRAccountThriftService;
+import com.moseeker.function.thrift.service.WordpressThriftService;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.MultiRegServer;
 
@@ -31,6 +32,7 @@ public class FunctionServer {
         			ServerNodeUtils.getPort(args),
 					acac.getBean(FunctionService.class),
 					acac.getBean(ChaosThriftService.class),
+					acac.getBean(WordpressThriftService.class),
 					acac.getBean(HRAccountThriftService.class));
 			server.start(); // 启动服务，非阻塞
 
