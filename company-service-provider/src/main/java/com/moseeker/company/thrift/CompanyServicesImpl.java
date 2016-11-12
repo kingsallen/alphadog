@@ -38,6 +38,12 @@ public class CompanyServicesImpl implements Iface {
 	public Response getResources(CommonQuery query) throws TException {
 		return service.getResources(query);
 	}
+
+	@Override
+	public Response getWechat(long companyId, long wechatId) throws TException {
+		// TODO Auto-generated method stub
+		return service.getWechat(companyId, wechatId);
+	}
 	
 }
 

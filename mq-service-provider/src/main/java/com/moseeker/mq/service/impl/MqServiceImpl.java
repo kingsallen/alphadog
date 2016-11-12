@@ -7,14 +7,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
-<<<<<<< HEAD
-import com.moseeker.common.annotation.iface.CounterIface;
-=======
 import com.moseeker.common.constants.KeyIdentifier;
->>>>>>> master
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
@@ -33,15 +30,6 @@ public class MqServiceImpl {
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
-<<<<<<< HEAD
-        try {
-            Response response = validateMessageTemplateNotice(messageTemplateNoticeStruct);
-            if (response.status > 0){
-                return response;
-            }
-            
-            String json = BeanUtils.convertStructToJSON(messageTemplateNoticeStruct);
-=======
 	private RedisClient redisClient = RedisClientFactory.getCacheClient();
 
 	/**
@@ -53,7 +41,6 @@ public class MqServiceImpl {
 	 * @throws TException
 	 */
 	public Response messageTemplateNotice(MessageTemplateNoticeStruct messageTemplateNoticeStruct) {
->>>>>>> master
 
 		try {
 			Response response = validateMessageTemplateNotice(messageTemplateNoticeStruct);
