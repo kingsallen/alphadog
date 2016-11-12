@@ -61,6 +61,7 @@ public class WordpressServiceImpl {
 					}
 					String domain = configUtils.get("wordpress.domain", String.class);
 					data.setUrl(domain + post.getPostName());
+					data.setTitle(post.getPostTitle());
 					PostExt postExt = wordpressDao.getPostExt(relationships.getObjectId());
 					if (postExt != null) {
 						data.setVersion(postExt.getVersion());

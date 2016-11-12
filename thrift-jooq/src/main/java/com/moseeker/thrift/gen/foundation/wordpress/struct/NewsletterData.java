@@ -43,6 +43,7 @@ public class NewsletterData implements org.apache.thrift.TBase<NewsletterData, N
   private static final org.apache.thrift.protocol.TField UPDATE_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("update_time", org.apache.thrift.protocol.TType.STRING, (short)3);
   private static final org.apache.thrift.protocol.TField UPDATE_LIST_FIELD_DESC = new org.apache.thrift.protocol.TField("update_list", org.apache.thrift.protocol.TType.LIST, (short)4);
   private static final org.apache.thrift.protocol.TField URL_FIELD_DESC = new org.apache.thrift.protocol.TField("url", org.apache.thrift.protocol.TType.STRING, (short)5);
+  private static final org.apache.thrift.protocol.TField TITLE_FIELD_DESC = new org.apache.thrift.protocol.TField("title", org.apache.thrift.protocol.TType.STRING, (short)6);
 
   private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
   static {
@@ -55,6 +56,7 @@ public class NewsletterData implements org.apache.thrift.TBase<NewsletterData, N
   public String update_time; // required
   public List<String> update_list; // required
   public String url; // required
+  public String title; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -62,7 +64,8 @@ public class NewsletterData implements org.apache.thrift.TBase<NewsletterData, N
     VERSION((short)2, "version"),
     UPDATE_TIME((short)3, "update_time"),
     UPDATE_LIST((short)4, "update_list"),
-    URL((short)5, "url");
+    URL((short)5, "url"),
+    TITLE((short)6, "title");
 
     private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -87,6 +90,8 @@ public class NewsletterData implements org.apache.thrift.TBase<NewsletterData, N
           return UPDATE_LIST;
         case 5: // URL
           return URL;
+        case 6: // TITLE
+          return TITLE;
         default:
           return null;
       }
@@ -143,6 +148,8 @@ public class NewsletterData implements org.apache.thrift.TBase<NewsletterData, N
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING))));
     tmpMap.put(_Fields.URL, new org.apache.thrift.meta_data.FieldMetaData("url", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.TITLE, new org.apache.thrift.meta_data.FieldMetaData("title", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(NewsletterData.class, metaDataMap);
   }
@@ -155,7 +162,8 @@ public class NewsletterData implements org.apache.thrift.TBase<NewsletterData, N
     String version,
     String update_time,
     List<String> update_list,
-    String url)
+    String url,
+    String title)
   {
     this();
     this.show_new_version = show_new_version;
@@ -164,6 +172,7 @@ public class NewsletterData implements org.apache.thrift.TBase<NewsletterData, N
     this.update_time = update_time;
     this.update_list = update_list;
     this.url = url;
+    this.title = title;
   }
 
   /**
@@ -185,6 +194,9 @@ public class NewsletterData implements org.apache.thrift.TBase<NewsletterData, N
     if (other.isSetUrl()) {
       this.url = other.url;
     }
+    if (other.isSetTitle()) {
+      this.title = other.title;
+    }
   }
 
   public NewsletterData deepCopy() {
@@ -199,6 +211,7 @@ public class NewsletterData implements org.apache.thrift.TBase<NewsletterData, N
     this.update_time = null;
     this.update_list = null;
     this.url = null;
+    this.title = null;
   }
 
   public byte getShow_new_version() {
@@ -335,6 +348,30 @@ public class NewsletterData implements org.apache.thrift.TBase<NewsletterData, N
     }
   }
 
+  public String getTitle() {
+    return this.title;
+  }
+
+  public NewsletterData setTitle(String title) {
+    this.title = title;
+    return this;
+  }
+
+  public void unsetTitle() {
+    this.title = null;
+  }
+
+  /** Returns true if field title is set (has been assigned a value) and false otherwise */
+  public boolean isSetTitle() {
+    return this.title != null;
+  }
+
+  public void setTitleIsSet(boolean value) {
+    if (!value) {
+      this.title = null;
+    }
+  }
+
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
     case SHOW_NEW_VERSION:
@@ -377,6 +414,14 @@ public class NewsletterData implements org.apache.thrift.TBase<NewsletterData, N
       }
       break;
 
+    case TITLE:
+      if (value == null) {
+        unsetTitle();
+      } else {
+        setTitle((String)value);
+      }
+      break;
+
     }
   }
 
@@ -396,6 +441,9 @@ public class NewsletterData implements org.apache.thrift.TBase<NewsletterData, N
 
     case URL:
       return getUrl();
+
+    case TITLE:
+      return getTitle();
 
     }
     throw new IllegalStateException();
@@ -418,6 +466,8 @@ public class NewsletterData implements org.apache.thrift.TBase<NewsletterData, N
       return isSetUpdate_list();
     case URL:
       return isSetUrl();
+    case TITLE:
+      return isSetTitle();
     }
     throw new IllegalStateException();
   }
@@ -480,6 +530,15 @@ public class NewsletterData implements org.apache.thrift.TBase<NewsletterData, N
         return false;
     }
 
+    boolean this_present_title = true && this.isSetTitle();
+    boolean that_present_title = true && that.isSetTitle();
+    if (this_present_title || that_present_title) {
+      if (!(this_present_title && that_present_title))
+        return false;
+      if (!this.title.equals(that.title))
+        return false;
+    }
+
     return true;
   }
 
@@ -511,6 +570,11 @@ public class NewsletterData implements org.apache.thrift.TBase<NewsletterData, N
     list.add(present_url);
     if (present_url)
       list.add(url);
+
+    boolean present_title = true && (isSetTitle());
+    list.add(present_title);
+    if (present_title)
+      list.add(title);
 
     return list.hashCode();
   }
@@ -573,6 +637,16 @@ public class NewsletterData implements org.apache.thrift.TBase<NewsletterData, N
         return lastComparison;
       }
     }
+    lastComparison = Boolean.valueOf(isSetTitle()).compareTo(other.isSetTitle());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetTitle()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.title, other.title);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     return 0;
   }
 
@@ -626,6 +700,14 @@ public class NewsletterData implements org.apache.thrift.TBase<NewsletterData, N
       sb.append("null");
     } else {
       sb.append(this.url);
+    }
+    first = false;
+    if (!first) sb.append(", ");
+    sb.append("title:");
+    if (this.title == null) {
+      sb.append("null");
+    } else {
+      sb.append(this.title);
     }
     first = false;
     sb.append(")");
@@ -723,6 +805,14 @@ public class NewsletterData implements org.apache.thrift.TBase<NewsletterData, N
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
+          case 6: // TITLE
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.title = iprot.readString();
+              struct.setTitleIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
           default:
             org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
         }
@@ -768,6 +858,11 @@ public class NewsletterData implements org.apache.thrift.TBase<NewsletterData, N
         oprot.writeString(struct.url);
         oprot.writeFieldEnd();
       }
+      if (struct.title != null) {
+        oprot.writeFieldBegin(TITLE_FIELD_DESC);
+        oprot.writeString(struct.title);
+        oprot.writeFieldEnd();
+      }
       oprot.writeFieldStop();
       oprot.writeStructEnd();
     }
@@ -801,7 +896,10 @@ public class NewsletterData implements org.apache.thrift.TBase<NewsletterData, N
       if (struct.isSetUrl()) {
         optionals.set(4);
       }
-      oprot.writeBitSet(optionals, 5);
+      if (struct.isSetTitle()) {
+        optionals.set(5);
+      }
+      oprot.writeBitSet(optionals, 6);
       if (struct.isSetShow_new_version()) {
         oprot.writeByte(struct.show_new_version);
       }
@@ -823,12 +921,15 @@ public class NewsletterData implements org.apache.thrift.TBase<NewsletterData, N
       if (struct.isSetUrl()) {
         oprot.writeString(struct.url);
       }
+      if (struct.isSetTitle()) {
+        oprot.writeString(struct.title);
+      }
     }
 
     @Override
     public void read(org.apache.thrift.protocol.TProtocol prot, NewsletterData struct) throws org.apache.thrift.TException {
       TTupleProtocol iprot = (TTupleProtocol) prot;
-      BitSet incoming = iprot.readBitSet(5);
+      BitSet incoming = iprot.readBitSet(6);
       if (incoming.get(0)) {
         struct.show_new_version = iprot.readByte();
         struct.setShow_new_versionIsSet(true);
@@ -857,6 +958,10 @@ public class NewsletterData implements org.apache.thrift.TBase<NewsletterData, N
       if (incoming.get(4)) {
         struct.url = iprot.readString();
         struct.setUrlIsSet(true);
+      }
+      if (incoming.get(5)) {
+        struct.title = iprot.readString();
+        struct.setTitleIsSet(true);
       }
     }
   }

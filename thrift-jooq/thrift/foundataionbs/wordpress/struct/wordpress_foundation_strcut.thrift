@@ -16,5 +16,6 @@ struct NewsletterData {
 	2: string version,
 	3: Datetime update_time,
 	4: list<string> update_list,
-	5: string url
+	5: string url,
+	6: string title
 }

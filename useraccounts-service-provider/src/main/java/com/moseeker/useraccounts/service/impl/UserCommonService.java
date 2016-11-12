@@ -89,6 +89,7 @@ public class UserCommonService {
 		result.put("version", data.getVersion());
 		result.put("update_list", data.getUpdate_list());
 		result.put("update_time", data.getUpdate_time());
+		result.put("title", data.getTitle());
 		return result;
 	}
 }
