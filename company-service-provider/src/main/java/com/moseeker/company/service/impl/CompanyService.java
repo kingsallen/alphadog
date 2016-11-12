@@ -11,13 +11,16 @@ import org.springframework.stereotype.Service;
 
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.company.dao.CompanyDao;
+import com.moseeker.company.dao.WechatDao;
 import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
+import com.moseeker.db.hrdb.tables.records.HrWxWechatRecord;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
@@ -29,6 +32,9 @@ public class CompanyService extends JOOQBaseServiceImpl<Hrcompany, HrCompanyReco
 
     @Autowired
     protected CompanyDao dao;
+    
+    @Autowired
+    protected WechatDao wechatDao;
 
     @Override
     protected void initDao() {
@@ -107,5 +113,35 @@ public class CompanyService extends JOOQBaseServiceImpl<Hrcompany, HrCompanyReco
         	 return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", message));
          }
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+	}
+
+	/**
+	 * 
+	 * @param companyId
+	 * @param wechatId
+	 * @return
+	 */
+	public Response getWechat(long companyId, long wechatId) {
+		
+		if(companyId == 0 && wechatId == 0) {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+		}
+		QueryUtil qu = new QueryUtil();
+		if(wechatId > 0) {
+			qu.addEqualFilter("id", String.valueOf(wechatId));
+		} else if(companyId > 0) {
+			qu.addEqualFilter("company_id", String.valueOf(companyId));
+		}
+		try {
+			HrWxWechatRecord record = wechatDao.getResource(qu);
+			if(record == null) {
+				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+			} else {
+				return ResponseUtils.success(record.intoMap());
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		}
 	}
 }

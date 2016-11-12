@@ -15,6 +15,7 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.DateUtils;
 import com.moseeker.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.db.jobdb.tables.records.JobCustomRecord;
@@ -168,6 +169,10 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 				}
 			}
 			
+			// 修改更新时间
+			jobPositionPojo.publish_date_view = DateUtils.dateToPattern(jobPositionPojo.publish_date, DateUtils.SHOT_TIME);
+			jobPositionPojo.update_time_view = DateUtils.dateToPattern(jobPositionPojo.update_time, DateUtils.SHOT_TIME);
+
 			//省份
 			List<DictCityRecord> provinces =  dao.getProvincesByPositionID(positionId);
 			if(provinces != null && provinces.size() > 0) {

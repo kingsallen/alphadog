@@ -94,9 +94,10 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 				String[] order = query.getOrder().split(",");
 
 				List<SortField<?>> fields = new ArrayList<>(sortBy.length);
-				SortOrder so = SortOrder.ASC;
+				SortOrder so;
 				for (int i = 0; i < sortBy.length; i++) {
 					Field<?> field = tableLike.field(sortBy[i]);
+					so = SortOrder.ASC;
 					if (sortBy.length == order.length
 							&& !StringUtils.isNullOrEmpty(order[i])
 							&& order[i].toLowerCase().equals("desc")) {
