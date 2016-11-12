@@ -23,32 +23,32 @@ import com.moseeker.thrift.gen.orm.struct.WordpressTermRelationships;
 
 @Service
 public class WordpressServiceImpl {
-	
+
 	Logger logger = LoggerFactory.getLogger(WordpressServiceImpl.class);
-	
-	WordpressDao.Iface wordpressDao = ServiceManager.SERVICEMANAGER
-			.getService(WordpressDao.Iface.class);
-	
-	UserHrAccountDao.Iface hraccountDao = ServiceManager.SERVICEMANAGER
-			.getService(UserHrAccountDao.Iface.class);
+
+	WordpressDao.Iface wordpressDao = ServiceManager.SERVICEMANAGER.getService(WordpressDao.Iface.class);
+
+	UserHrAccountDao.Iface hraccountDao = ServiceManager.SERVICEMANAGER.getService(UserHrAccountDao.Iface.class);
 
 	/**
 	 * 查询用户的新版本通知消息
+	 * 
 	 * @param newsletter
 	 * @return
 	 */
 	public NewsletterData getNewsletter(NewsletterForm newsletter) {
 		//
 		try {
-			//todo  缺少其他平台的查询
-			WordpressTermRelationships relationships = wordpressDao.getLastRelationships(Constant.WORDPRESS_NEWSLETTER_VALUE);
-			if(relationships != null) {
+			// todo 缺少其他平台的查询
+			WordpressTermRelationships relationships = wordpressDao
+					.getLastRelationships(Constant.WORDPRESS_NEWSLETTER_VALUE);
+			if (relationships != null) {
 				QueryUtil qu = new QueryUtil();
 				qu.addEqualFilter("ID", String.valueOf(relationships.getObjectId()));
 				WordpressPosts post = wordpressDao.getPost(qu);
-				if(post != null) {
+				if (post != null) {
 					NewsletterData data = new NewsletterData();
-					data.setShow_new_version((byte)1);
+					data.setShow_new_version((byte) 1);
 					data.setUpdate_time(post.getPostDate());
 					List<String> updatList = createUpdateList(post.getPostContent());
 					data.setUpdate_list(updatList);
@@ -60,9 +60,9 @@ public class WordpressServiceImpl {
 						e.printStackTrace();
 					}
 					String domain = configUtils.get("wordpress.domain", String.class);
-					data.setUrl(domain+post.getPostName());
+					data.setUrl(domain + post.getPostName());
 					PostExt postExt = wordpressDao.getPostExt(relationships.getObjectId());
-					if(postExt != null) {
+					if (postExt != null) {
 						data.setVersion(postExt.getVersion());
 					}
 					return data;
@@ -72,35 +72,36 @@ public class WordpressServiceImpl {
 			e.printStackTrace();
 			logger.error(e.getMessage(), e);
 		} finally {
-			//do nothing
+			// do nothing
 		}
 		return null;
 	}
 
 	/**
 	 * 抽取出摘要
+	 * 
 	 * @param postContent
 	 * @return
 	 */
 	private List<String> createUpdateList(String postContent) {
-		if(postContent != null) {
+		if (postContent != null) {
 			int index = postContent.indexOf("<!--more-->");
-			if(index > 0) {
+			if (index > 0) {
 				String summary = postContent.substring(0, index);
 				return createUpdateList(summary);
 			} else {
 				List<String> summaries = new ArrayList<>();
 				String[] summary = postContent.split("\n");
-				if(summary.length > 0) {
-					for(int i=0; i< summary.length; i++) {
+				if (summary.length > 0) {
+					for (int i = 0; i < summary.length; i++) {
 						String s = refineSummary(summary[i]);
-						if(StringUtils.isNotNullOrEmpty(s)) {
+						if (StringUtils.isNotNullOrEmpty(s)) {
 							summaries.add(s);
 						}
 					}
 				} else {
 					String s = refineSummary(summary[0]);
-					if(StringUtils.isNotNullOrEmpty(s)) {
+					if (StringUtils.isNotNullOrEmpty(s)) {
 						summaries.add(s);
 					}
 				}
@@ -112,15 +113,17 @@ public class WordpressServiceImpl {
 
 	/**
 	 * 替换html标签
+	 * 
 	 * @param summary
 	 * @return
 	 */
 	private String refineSummary(String summary) {
-		if(StringUtils.isNotNullOrEmpty(summary)) {
-			return summary.trim().replace("<del>", "").replace("</del>", "").replace("<blockquote>", "").replace("</blockquote>", "").replace("<hr />", "").trim();
+		if (StringUtils.isNotNullOrEmpty(summary)) {
+			return summary.trim().replace("<del>", "").replace("</del>", "").replace("<blockquote>", "")
+					.replace("</blockquote>", "").replace("<hr />", "").replace("<strong>", "").replace("</strong>", "")
+					.trim();
 		}
 		return null;
 	}
 
-	
 }
