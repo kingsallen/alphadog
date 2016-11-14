@@ -53,9 +53,9 @@ public class WordpressDaoThriftService implements Iface{
 				posts.setId(record.getId().intValue());
 				posts.setPostAuthor(record.getPostAuthor().intValue());
 				posts.setPostContent(record.getPostContent());
-				posts.setPostDate(new DateTime(record.getPostDate().getTime()).toString("yyyy-MM-dd"));
+				posts.setPostDate(new DateTime(record.getPostDate().getTime()).toString("yyyy.MM.dd"));
 				posts.setPostExcerpt(record.getPostExcerpt());
-				posts.setPostModified(new DateTime(record.getPostModified().getTime()).toString("yyyy-MM-dd"));
+				posts.setPostModified(new DateTime(record.getPostModified().getTime()).toString("yyyy.MM.dd"));
 				posts.setPostStatus(record.getPostStatus());
 				posts.setPostTitle(record.getPostTitle());
 				posts.setPostName(record.getPostName());
