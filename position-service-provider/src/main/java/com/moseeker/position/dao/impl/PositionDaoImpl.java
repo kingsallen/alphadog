@@ -27,6 +27,8 @@ import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.db.jobdb.tables.JobPosition;
 import com.moseeker.db.jobdb.tables.JobPositionCity;
 import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.db.userdb.tables.UserHrAccount;
+import com.moseeker.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.position.dao.PositionDao;
 import com.moseeker.position.pojo.RecommendedPositonPojo;
 
@@ -75,7 +77,32 @@ public class PositionDaoImpl extends BaseDaoImpl<JobPositionRecord, JobPosition>
 			Result<? extends Record> recomResults;
 			Condition condition = StJobSimilarity.ST_JOB_SIMILARITY.POS_ID.equal(pid);
 			if (company_type == 0) {
-				condition = condition.and(StJobSimilarity.ST_JOB_SIMILARITY.DEPARTMENT_ID.equal(company_id)); 
+				UserHrAccountRecord account = create.selectFrom(UserHrAccount.USER_HR_ACCOUNT).where(UserHrAccount.USER_HR_ACCOUNT.ID.equal(positionAndCompanyRecord.getValue(JobPosition.JOB_POSITION.PUBLISHER))).fetchOne();
+				//如果是子账号，则查询子账号下的推荐职位；如果是主帐号，则查询公司下的所有职位
+				if(account.getAccountType().intValue() == 1) { 
+					/* 检查是否是子公司的职位 */
+					int publisher = (Integer) positionAndCompanyRecord.getValue("publisher");
+
+					HrCompanyAccountRecord record = create.selectFrom(HrCompanyAccount.HR_COMPANY_ACCOUNT)
+							.where(HrCompanyAccount.HR_COMPANY_ACCOUNT.ACCOUNT_ID.equal(publisher)).fetchOne();
+					if (record != null && record.getCompanyId() != null) {
+						if (company_id != record.getCompanyId()) {
+							company_id = record.getCompanyId();
+						}
+					}
+					condition = condition.and(StJobSimilarity.ST_JOB_SIMILARITY.DEPARTMENT_ID.equal(company_id)); 
+				} else {
+					Result<Record1<UInteger>> result = create.select(HrCompany.HR_COMPANY.ID).from(HrCompany.HR_COMPANY).where(HrCompany.HR_COMPANY.PARENT_ID.equal(UInteger.valueOf(company_id))).fetch();
+					List<Integer> departmentIds = new ArrayList<>();
+					if(result != null && result.size() > 0) {
+						result.forEach(record -> {
+							record.get(HrCompany.HR_COMPANY.ID);
+							departmentIds.add(record.get(HrCompany.HR_COMPANY.ID).intValue());
+						});
+					}
+					departmentIds.add(company_id);
+					condition = condition.and(StJobSimilarity.ST_JOB_SIMILARITY.DEPARTMENT_ID.in(departmentIds)); 
+				}
 			}
 			recomResults = create.select().from(StJobSimilarity.ST_JOB_SIMILARITY).where(condition).fetch();
 			List<Integer> pids = new ArrayList<>();
