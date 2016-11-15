@@ -74,7 +74,7 @@ public class ProfileProjectExpServicesImpl extends JOOQBaseServiceImpl<ProjectEx
 		// 按照结束时间倒序
 		query.setSortby("end_until_now,start");
 		query.setOrder("desc,desc");
-		return super.getResource(query);
+		return super.getResources(query);
 	}
 	
 	
