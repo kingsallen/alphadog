@@ -13,7 +13,14 @@ public class RecommendedPositonPojo {
     private int salary_top;
     private int salary_bottom;
     private String job_city;
+    private int publisher;
     
+	public int getPublisher() {
+		return publisher;
+	}
+	public void setPublisher(int publisher) {
+		this.publisher = publisher;
+	}
 	public int getPid() {
 		return pid;
 	}
