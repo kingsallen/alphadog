@@ -4,6 +4,13 @@
 package com.moseeker.baseorm.db.wordpressdb;
 
 
+import javax.annotation.Generated;
+
+import org.jooq.Identity;
+import org.jooq.UniqueKey;
+import org.jooq.impl.AbstractKeys;
+import org.jooq.types.ULong;
+
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressCommentmeta;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressComments;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressLinks;
@@ -28,13 +35,6 @@ import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressTermmetaRecor
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressTermsRecord;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressUsermetaRecord;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressUsersRecord;
-
-import javax.annotation.Generated;
-
-import org.jooq.Identity;
-import org.jooq.UniqueKey;
-import org.jooq.impl.AbstractKeys;
-import org.jooq.types.ULong;
 
 
 /**

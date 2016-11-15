@@ -4,8 +4,6 @@
 package com.moseeker.baseorm.db.hrdb.tables.records;
 
 
-import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
-
 import java.sql.Timestamp;
 
 import javax.annotation.Generated;
@@ -16,6 +14,8 @@ import org.jooq.Record9;
 import org.jooq.Row9;
 import org.jooq.impl.UpdatableRecordImpl;
 import org.jooq.types.UInteger;
+
+import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
 
 
 /**

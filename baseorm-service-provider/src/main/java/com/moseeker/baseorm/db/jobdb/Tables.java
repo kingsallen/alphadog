@@ -4,6 +4,8 @@
 package com.moseeker.baseorm.db.jobdb;
 
 
+import javax.annotation.Generated;
+
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplicationConf;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplicationStatusBeisen;
@@ -16,8 +18,6 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPositionExt;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionTopic;
 import com.moseeker.baseorm.db.jobdb.tables.JobResumeOther;
-
-import javax.annotation.Generated;
 
 
 /**

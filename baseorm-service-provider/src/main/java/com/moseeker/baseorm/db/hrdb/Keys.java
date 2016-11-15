@@ -4,6 +4,14 @@
 package com.moseeker.baseorm.db.hrdb;
 
 
+import javax.annotation.Generated;
+
+import org.jooq.Identity;
+import org.jooq.UniqueKey;
+import org.jooq.impl.AbstractKeys;
+import org.jooq.types.UByte;
+import org.jooq.types.UInteger;
+
 import com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrChildCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
@@ -82,14 +90,6 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrWxRuleRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxTemplateMessageRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatNoticeSyncStatusRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
-
-import javax.annotation.Generated;
-
-import org.jooq.Identity;
-import org.jooq.UniqueKey;
-import org.jooq.impl.AbstractKeys;
-import org.jooq.types.UByte;
-import org.jooq.types.UInteger;
 
 
 /**

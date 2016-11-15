@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -13,6 +15,7 @@ import com.moseeker.common.constants.ThirdPartyAccountPojo;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.UrlUtil;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.foundation.chaos.struct.ThirdPartyAccountStruct;
 
 /**
  * 
@@ -33,7 +36,6 @@ public class ChaosServiceImpl {
 			ChannelType chnnelType = ChannelType.instaceFromInteger(channel);
 			String bindURI = chnnelType.getBindURI();
 			String params = ChaosTool.getParams(username, password, memberName, chnnelType);
-			System.out.println("bindURI:"+bindURI);
 			String data = UrlUtil.sendPost(bindURI, params, Constant.CONNECTION_TIME_OUT, Constant.READ_TIME_OUT);
 			//String data = "{\"status\":0,\"message\":\"success\", \"data\":3}";
 			Response response = ChaosTool.createResponse(data);
@@ -45,11 +47,6 @@ public class ChaosServiceImpl {
 		} finally {
 			//do nothing
 		}
-	}
-
-	public Response fetchRemainNum(ThirdPartyAccountPojo account) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	public Response synchronizePosition(ThirdPartyAccountPojo account, String positionJson) {
@@ -64,6 +61,31 @@ public class ChaosServiceImpl {
 
 	public Response distortPosition(int positionId, ChannelType channel) {
 		return null;
+	}
+
+	public ThirdPartyAccountStruct synchronization(ThirdPartyAccountStruct thirdPartyAccount) {
+		
+		if(thirdPartyAccount != null) {
+			ChannelType chnnelType = ChannelType.instaceFromInteger(thirdPartyAccount.getChannel());
+			String bindURI = chnnelType.getBindURI();
+			String params = ChaosTool.getParams(thirdPartyAccount.getUsername(), thirdPartyAccount.getPassword(), thirdPartyAccount.getMemberName(), chnnelType);
+			try {
+				String data = UrlUtil.sendPost(bindURI, params, Constant.CONNECTION_TIME_OUT, Constant.READ_TIME_OUT);
+				if(data != null) {
+					JSONObject result = JSON.parseObject(data);
+					if(result.getInteger("status") != null && result.getInteger("status") == 0) {
+						thirdPartyAccount.setRemainNum(result.getIntValue("data"));
+					} else {
+						thirdPartyAccount = null;
+					}
+				}
+			} catch (ConnectException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			//String data = "{\"status\":0,\"message\":\"success\", \"data\":3}";
+		}
+		return thirdPartyAccount;
 	}
 
 }

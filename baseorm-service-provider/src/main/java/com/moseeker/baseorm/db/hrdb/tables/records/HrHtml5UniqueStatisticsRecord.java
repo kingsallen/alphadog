@@ -4,8 +4,6 @@
 package com.moseeker.baseorm.db.hrdb.tables.records;
 
 
-import com.moseeker.baseorm.db.hrdb.tables.HrHtml5UniqueStatistics;
-
 import java.sql.Date;
 
 import javax.annotation.Generated;
@@ -15,6 +13,8 @@ import org.jooq.Record1;
 import org.jooq.Record7;
 import org.jooq.Row7;
 import org.jooq.impl.UpdatableRecordImpl;
+
+import com.moseeker.baseorm.db.hrdb.tables.HrHtml5UniqueStatistics;
 
 
 /**

@@ -15,11 +15,11 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.foundation.wordpress.struct.NewsletterData;
 import com.moseeker.thrift.gen.foundation.wordpress.struct.NewsletterForm;
-import com.moseeker.thrift.gen.orm.service.UserHrAccountDao;
-import com.moseeker.thrift.gen.orm.service.WordpressDao;
-import com.moseeker.thrift.gen.orm.struct.PostExt;
-import com.moseeker.thrift.gen.orm.struct.WordpressPosts;
-import com.moseeker.thrift.gen.orm.struct.WordpressTermRelationships;
+import com.moseeker.thrift.gen.dao.service.UserHrAccountDao;
+import com.moseeker.thrift.gen.dao.service.WordpressDao;
+import com.moseeker.thrift.gen.dao.struct.PostExt;
+import com.moseeker.thrift.gen.dao.struct.WordpressPosts;
+import com.moseeker.thrift.gen.dao.struct.WordpressTermRelationships;
 
 @Service
 public class WordpressServiceImpl {

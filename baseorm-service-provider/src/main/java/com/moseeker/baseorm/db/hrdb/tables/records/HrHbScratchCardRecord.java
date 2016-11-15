@@ -4,8 +4,6 @@
 package com.moseeker.baseorm.db.hrdb.tables.records;
 
 
-import com.moseeker.baseorm.db.hrdb.tables.HrHbScratchCard;
-
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
@@ -16,6 +14,8 @@ import org.jooq.Record1;
 import org.jooq.Record10;
 import org.jooq.Row10;
 import org.jooq.impl.UpdatableRecordImpl;
+
+import com.moseeker.baseorm.db.hrdb.tables.HrHbScratchCard;
 
 
 /**

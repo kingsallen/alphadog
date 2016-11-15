@@ -4,8 +4,6 @@
 package com.moseeker.baseorm.db.jobdb.tables.records;
 
 
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf;
-
 import javax.annotation.Generated;
 
 import org.jooq.Field;
@@ -13,6 +11,8 @@ import org.jooq.Record1;
 import org.jooq.Record8;
 import org.jooq.Row8;
 import org.jooq.impl.UpdatableRecordImpl;
+
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf;
 
 
 /**

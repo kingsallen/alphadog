@@ -4,6 +4,13 @@
 package com.moseeker.baseorm.db.profiledb;
 
 
+import javax.annotation.Generated;
+
+import org.jooq.Identity;
+import org.jooq.UniqueKey;
+import org.jooq.impl.AbstractKeys;
+import org.jooq.types.UInteger;
+
 import com.moseeker.baseorm.db.profiledb.tables.ProfileAttachment;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileAwards;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileBasic;
@@ -42,13 +49,6 @@ import com.moseeker.baseorm.db.profiledb.tables.records.ProfileSkillRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileWorkexpRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileWorksRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.SchemaMigrationsRecord;
-
-import javax.annotation.Generated;
-
-import org.jooq.Identity;
-import org.jooq.UniqueKey;
-import org.jooq.impl.AbstractKeys;
-import org.jooq.types.UInteger;
 
 
 /**

@@ -31,9 +31,8 @@ public class HRAccountThriftService implements Iface{
 
 	@Override
 	public Response createThirdPartyAccount(BindAccountStruct account) throws TException {
-		// TODO Auto-generated method stub
 		return accountService.createThirdPartyAccount(account);
 	}
 	
-
+	
 }

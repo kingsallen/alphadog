@@ -48,7 +48,7 @@ public class CompanyServicesImpl implements Iface {
 	@Override
 	public Response synchronizeThirdpartyAccount(int id, byte channel) throws TException {
 		// TODO Auto-generated method stub
-		return null;
+		return service.synchronizeThirdpartyAccount(id, channel);
 	}
 	
 }

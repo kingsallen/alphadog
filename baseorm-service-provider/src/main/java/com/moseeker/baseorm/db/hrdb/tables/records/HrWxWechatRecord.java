@@ -4,8 +4,6 @@
 package com.moseeker.baseorm.db.hrdb.tables.records;
 
 
-import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
-
 import java.sql.Timestamp;
 
 import javax.annotation.Generated;
@@ -14,6 +12,8 @@ import org.jooq.Record1;
 import org.jooq.impl.UpdatableRecordImpl;
 import org.jooq.types.UByte;
 import org.jooq.types.UInteger;
+
+import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 
 
 /**

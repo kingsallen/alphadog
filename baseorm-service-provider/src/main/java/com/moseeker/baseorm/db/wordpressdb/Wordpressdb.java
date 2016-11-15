@@ -4,6 +4,15 @@
 package com.moseeker.baseorm.db.wordpressdb;
 
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.annotation.Generated;
+
+import org.jooq.Table;
+import org.jooq.impl.SchemaImpl;
+
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressCommentmeta;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressComments;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressLinks;
@@ -16,15 +25,6 @@ import com.moseeker.baseorm.db.wordpressdb.tables.WordpressTermmeta;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressTerms;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressUsermeta;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressUsers;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.Generated;
-
-import org.jooq.Table;
-import org.jooq.impl.SchemaImpl;
 
 
 /**

@@ -1,5 +1,5 @@
 
-namespace java com.moseeker.thrift.gen.thirdpart.struct
+namespace java com.moseeker.thrift.gen.foundation.hraccount.struct
 
 typedef string Datetime;
 struct ThirdPartAccount{

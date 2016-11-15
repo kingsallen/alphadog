@@ -4,10 +4,6 @@
 package com.moseeker.baseorm.db.wordpressdb.tables;
 
 
-import com.moseeker.baseorm.db.wordpressdb.Keys;
-import com.moseeker.baseorm.db.wordpressdb.Wordpressdb;
-import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressOptionsRecord;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,6 +16,10 @@ import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
 import org.jooq.types.ULong;
+
+import com.moseeker.baseorm.db.wordpressdb.Keys;
+import com.moseeker.baseorm.db.wordpressdb.Wordpressdb;
+import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressOptionsRecord;
 
 
 /**

@@ -4,10 +4,6 @@
 package com.moseeker.baseorm.db.profiledb.tables;
 
 
-import com.moseeker.baseorm.db.profiledb.Keys;
-import com.moseeker.baseorm.db.profiledb.Profiledb;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionPositionRecord;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,6 +16,10 @@ import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
 import org.jooq.types.UInteger;
+
+import com.moseeker.baseorm.db.profiledb.Keys;
+import com.moseeker.baseorm.db.profiledb.Profiledb;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionPositionRecord;
 
 
 /**

@@ -4,9 +4,6 @@
 package com.moseeker.baseorm.db.jobdb.tables;
 
 
-import com.moseeker.baseorm.db.jobdb.Jobdb;
-import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionTopicRecord;
-
 import javax.annotation.Generated;
 
 import org.jooq.Field;
@@ -14,6 +11,9 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.impl.TableImpl;
 import org.jooq.types.UInteger;
+
+import com.moseeker.baseorm.db.jobdb.Jobdb;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionTopicRecord;
 
 
 /**

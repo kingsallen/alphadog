@@ -4,8 +4,6 @@
 package com.moseeker.baseorm.db.hrdb.tables.records;
 
 
-import com.moseeker.baseorm.db.hrdb.tables.HrReferralStatistics;
-
 import java.sql.Date;
 
 import javax.annotation.Generated;
@@ -16,6 +14,8 @@ import org.jooq.Record15;
 import org.jooq.Row15;
 import org.jooq.impl.UpdatableRecordImpl;
 import org.jooq.types.UInteger;
+
+import com.moseeker.baseorm.db.hrdb.tables.HrReferralStatistics;
 
 
 /**

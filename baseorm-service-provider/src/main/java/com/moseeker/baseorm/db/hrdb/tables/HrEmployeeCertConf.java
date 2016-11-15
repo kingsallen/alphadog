@@ -4,10 +4,6 @@
 package com.moseeker.baseorm.db.hrdb.tables;
 
 
-import com.moseeker.baseorm.db.hrdb.Hrdb;
-import com.moseeker.baseorm.db.hrdb.Keys;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrEmployeeCertConfRecord;
-
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
@@ -20,6 +16,10 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
+
+import com.moseeker.baseorm.db.hrdb.Hrdb;
+import com.moseeker.baseorm.db.hrdb.Keys;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrEmployeeCertConfRecord;
 
 
 /**

@@ -51,8 +51,8 @@ public class UserHrAccountService {
 
 	ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
 	
-	com.moseeker.thrift.gen.orm.service.UserHrAccountDao.Iface hraccountDao = ServiceManager.SERVICEMANAGER
-			.getService(com.moseeker.thrift.gen.orm.service.UserHrAccountDao.Iface.class);
+	com.moseeker.thrift.gen.dao.service.UserHrAccountDao.Iface hraccountDao = ServiceManager.SERVICEMANAGER
+			.getService(com.moseeker.thrift.gen.dao.service.UserHrAccountDao.Iface.class);
 	HRAccountFoundationServices.Iface hrAccountService = ServiceManager.SERVICEMANAGER
 			.getService(HRAccountFoundationServices.Iface.class);
 

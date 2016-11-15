@@ -4,8 +4,6 @@
 package com.moseeker.baseorm.db.wordpressdb.tables.records;
 
 
-import com.moseeker.baseorm.db.wordpressdb.tables.WordpressTerms;
-
 import javax.annotation.Generated;
 
 import org.jooq.Field;
@@ -14,6 +12,8 @@ import org.jooq.Record4;
 import org.jooq.Row4;
 import org.jooq.impl.UpdatableRecordImpl;
 import org.jooq.types.ULong;
+
+import com.moseeker.baseorm.db.wordpressdb.tables.WordpressTerms;
 
 
 /**

@@ -4,8 +4,6 @@
 package com.moseeker.baseorm.db.hrdb.tables.records;
 
 
-import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeSection;
-
 import javax.annotation.Generated;
 
 import org.jooq.Field;
@@ -13,6 +11,8 @@ import org.jooq.Record1;
 import org.jooq.Record5;
 import org.jooq.Row5;
 import org.jooq.impl.UpdatableRecordImpl;
+
+import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeSection;
 
 
 /**

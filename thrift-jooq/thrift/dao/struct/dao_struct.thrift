@@ -1,6 +1,6 @@
 # file: profile.thrift
 
-namespace java com.moseeker.thrift.gen.orm.struct
+namespace java com.moseeker.thrift.gen.dao.struct
 
 /**
  * TODO:list what notation this dateTime represents. eg ISO-8601
@@ -31,4 +31,18 @@ struct PostExt {
     1: i64 objectId,
     2: string version,
     3: string platform
+}
+
+//第三方帐号
+struct ThirdPartAccountData{
+        1: i32 id,
+        2: string name,
+        3: i32 channel,
+        4: string username,
+        5: string password,
+        6: string membername,
+        7: i32 binding,
+        8: i32 company_id,
+        9: i32 remain_num,
+        10: Timestamp sync_time
 }

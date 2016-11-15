@@ -1,4 +1,4 @@
-namespace java com.moseeker.thrift.gen.orm.service
+namespace java com.moseeker.thrift.gen.dao.service
 
 include "../../common/struct/common_struct.thrift"
 include "../../useraccounts/struct/useraccounts_struct.thrift"
@@ -20,4 +20,8 @@ service WordpressDao {
 	dao_struct.WordpressTermRelationships getLastRelationships(1:i64 termTaxonomyId);
 	#查找文章的版本号和平台字段
 	dao_struct.PostExt getPostExt(1:i64 objectId);
+}
+
+service CompanyDao {
+	dao_struct.ThirdPartAccountData getThirdPartyAccount(1:common_struct.CommonQuery query);
 }

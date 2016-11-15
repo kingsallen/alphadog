@@ -18,10 +18,10 @@ import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressPostsRecord;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressTermRelationshipsRecord;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.orm.service.WordpressDao.Iface;
-import com.moseeker.thrift.gen.orm.struct.PostExt;
-import com.moseeker.thrift.gen.orm.struct.WordpressPosts;
-import com.moseeker.thrift.gen.orm.struct.WordpressTermRelationships;
+import com.moseeker.thrift.gen.dao.service.WordpressDao.Iface;
+import com.moseeker.thrift.gen.dao.struct.PostExt;
+import com.moseeker.thrift.gen.dao.struct.WordpressPosts;
+import com.moseeker.thrift.gen.dao.struct.WordpressTermRelationships;
 
 @Service
 public class WordpressDaoThriftService implements Iface{

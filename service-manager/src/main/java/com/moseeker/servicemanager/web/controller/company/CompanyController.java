@@ -98,7 +98,7 @@ public class CompanyController {
 		}
 	}
 	
-	@RequestMapping(value = "/company/{id}/thirdpartyaccount/{channel}/sync", method = RequestMethod.GET)
+	@RequestMapping(value = "/company/{id}/thirdpartyaccount/{channel}/sync", method = RequestMethod.POST)
 	@ResponseBody
 	public String getAllCompany(@PathVariable int id,@PathVariable byte channel, HttpServletRequest request, HttpServletResponse response) {
 		try {

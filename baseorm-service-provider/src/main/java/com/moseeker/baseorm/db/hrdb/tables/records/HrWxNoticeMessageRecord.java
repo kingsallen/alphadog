@@ -4,8 +4,6 @@
 package com.moseeker.baseorm.db.hrdb.tables.records;
 
 
-import com.moseeker.baseorm.db.hrdb.tables.HrWxNoticeMessage;
-
 import javax.annotation.Generated;
 
 import org.jooq.Field;
@@ -14,6 +12,8 @@ import org.jooq.Record6;
 import org.jooq.Row6;
 import org.jooq.impl.UpdatableRecordImpl;
 import org.jooq.types.UInteger;
+
+import com.moseeker.baseorm.db.hrdb.tables.HrWxNoticeMessage;
 
 
 /**

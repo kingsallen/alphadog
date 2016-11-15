@@ -4,10 +4,6 @@
 package com.moseeker.baseorm.db.jobdb.tables;
 
 
-import com.moseeker.baseorm.db.jobdb.Jobdb;
-import com.moseeker.baseorm.db.jobdb.Keys;
-import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionShareTplConfRecord;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,6 +15,10 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
+
+import com.moseeker.baseorm.db.jobdb.Jobdb;
+import com.moseeker.baseorm.db.jobdb.Keys;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionShareTplConfRecord;
 
 
 /**
