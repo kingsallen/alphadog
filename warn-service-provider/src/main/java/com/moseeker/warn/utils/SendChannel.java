@@ -29,7 +29,7 @@ public enum SendChannel {
 	 */
 	EMAIL {
 		@Override
-		public void send(List<Member> recipients, String message) {
+		public void send(final List<Member> recipients, final String message) {
 			threadPool.submit(() -> {
 				EmailContent emailContent = new EmailContent();
 				emailContent.setSubject("预警信息");
@@ -86,7 +86,7 @@ public enum SendChannel {
 	/**
 	 * 线程池 [用于邮件、短信、微信的发送]
 	 */
-	public ExecutorService threadPool = new ThreadPoolExecutor(5, 15, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+	public static ExecutorService threadPool = new ThreadPoolExecutor(5, 15, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 	
 	public Logger getLog(){
 		return LoggerFactory.getLogger(getClass());
