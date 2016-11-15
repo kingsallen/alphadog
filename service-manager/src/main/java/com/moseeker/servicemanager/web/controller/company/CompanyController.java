@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -94,6 +95,18 @@ public class CompanyController {
 			return ResponseLogNotification.fail(request, e.getMessage());
 		} finally {
 			// do nothing
+		}
+	}
+	
+	@RequestMapping(value = "/company/{id}/thirdpartyaccount/{channel}/sync", method = RequestMethod.GET)
+	@ResponseBody
+	public String getAllCompany(@PathVariable int id,@PathVariable byte channel, HttpServletRequest request, HttpServletResponse response) {
+		try {
+			ParamUtils.parseRequestParam(request);
+			Response result = companyServices.synchronizeThirdpartyAccount(id, channel);
+			return ResponseLogNotification.success(request, result);
+		} catch (Exception e) {
+			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}
 }

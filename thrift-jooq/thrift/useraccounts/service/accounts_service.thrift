@@ -73,7 +73,7 @@ service UserHrAccountService {
     common_struct.Response sendMobileVerifiyCode(1: string mobile, 2: string code,  3: i32 source);
     common_struct.Response postResource(1: useraccounts_struct.DownloadReport downloadReport);
     common_struct.Response putResource(1: useraccounts_struct.UserHrAccount userHrAccount);
-    
+    //绑定第三方帐号 
     common_struct.Response bind(1: useraccounts_struct.BindAccountStruct account);
 }
 
