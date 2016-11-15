@@ -10,6 +10,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.daoutils.BaseDao;
@@ -38,6 +39,7 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 
 	protected abstract void initDao();
 
+	@CounterIface
 	public Response getResources(CommonQuery query) throws TException {
 		if(dao == null) {
 			initDao();
@@ -59,6 +61,7 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 	}
 
+	@CounterIface
 	public Response postResources(List<S> structs) throws TException {
 		if(dao == null) {
 			initDao();
@@ -82,6 +85,7 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
 	}
 
+	@CounterIface
 	public Response putResources(List<S> structs) throws TException {
 		if(dao == null) {
 			initDao();
@@ -103,6 +107,7 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
 	}
 
+	@CounterIface
 	public Response delResources(List<S> structs) throws TException {
 		if(dao == null) {
 			initDao();
@@ -124,6 +129,7 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
 	}
 	
+	@CounterIface
 	public Response getResource(CommonQuery query) throws TException {
 		if(dao == null) {
 			initDao();
@@ -145,6 +151,7 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 	}
 
+	@CounterIface
 	public Response postResource(S struct) throws TException {
 		if(dao == null) {
 			initDao();
@@ -168,6 +175,7 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
 	}
 
+	@CounterIface
 	public Response putResource(S struct) throws TException {
 		if(dao == null) {
 			initDao();
@@ -189,6 +197,7 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
 	}
 
+	@CounterIface
 	public Response delResource(S struct) throws TException {
 		if(dao == null) {
 			initDao();
@@ -209,6 +218,7 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
 	}
 	
+	@CounterIface
 	protected Response getTotalRow(CommonQuery query) throws TException {
 		if(dao == null) {
 			initDao();
@@ -226,6 +236,7 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 		}
 	}
 	
+	@CounterIface
 	public Response getPagination(CommonQuery query) throws TException {
 		try {
 			Pagination<R> pagination = new Pagination<>();
