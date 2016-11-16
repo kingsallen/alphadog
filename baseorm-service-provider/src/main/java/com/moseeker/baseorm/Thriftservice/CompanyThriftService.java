@@ -28,11 +28,10 @@ public class CompanyThriftService implements Iface {
 
 	@Override
 	public ThirdPartAccountData getThirdPartyAccount(CommonQuery query) throws TException {
-		ThirdPartAccountData data = null;
+		ThirdPartAccountData data =  new ThirdPartAccountData();
 		try {
 			HrThirdPartyAccountRecord record = thirdPartyAccountDao.getResource(query);
 			if(record != null) {
-				data = new ThirdPartAccountData();
 				data.setId(record.getId());
 				data.setBinding(record.getBinding());
 				data.setChannel(record.getChannel());

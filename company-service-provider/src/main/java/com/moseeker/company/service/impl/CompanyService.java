@@ -174,7 +174,7 @@ public class CompanyService extends JOOQBaseServiceImpl<Hrcompany, HrCompanyReco
 			ThirdPartAccountData data = companyDao.getThirdPartyAccount(qu);
 			//如果是绑定状态，则进行
 			//判断是否已经判定第三方帐号
-			if(data != null && data.getBinding() == BindingStatus.BOUND.getValue()) {
+			if(data.getId() > 0 && data.getBinding() == BindingStatus.BOUND.getValue()) {
 				ThirdPartyAccountStruct thirdPartyAccount = new ThirdPartyAccountStruct();
 				thirdPartyAccount.setChannel((byte)data.getChannel());
 				thirdPartyAccount.setMemberName(data.getMembername());

@@ -101,7 +101,7 @@ public class CompanyController {
 	
 	@RequestMapping(value = "/company/{id}/thirdpartyaccount", method = RequestMethod.GET)
 	@ResponseBody
-	public String getAllCompany(@PathVariable int id, HttpServletRequest request, HttpServletResponse response) {
+	public String synchronizeThirdpartyAccount(@PathVariable int id, HttpServletRequest request, HttpServletResponse response) {
 		try {
 			HashMap<String, Object> map = ParamUtils.parseRequestParam(request);
 			byte channel = 0;
@@ -115,6 +115,7 @@ public class CompanyController {
 			Response result = companyServices.synchronizeThirdpartyAccount(id, channel);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}
