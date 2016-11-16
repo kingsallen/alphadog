@@ -107,7 +107,7 @@ public class CompanyController {
 			byte channel = 0;
 			if(map.get("channel") != null) {
 				try {
-					channel = ((Integer)map.get("channel")).byteValue();
+					channel = Integer.valueOf((String)map.get("channel")).byteValue();
 				} catch (Exception e) {
 					return ResponseLogNotification.fail(request, "渠道参数不正确!");
 				}
