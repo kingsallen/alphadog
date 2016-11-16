@@ -77,14 +77,14 @@ public class ChaosServiceImpl {
 					if(result.getInteger("status") != null && result.getInteger("status") == 0) {
 						thirdPartyAccount.setRemainNum(result.getIntValue("data"));
 					} else {
-						thirdPartyAccount = null;
+						thirdPartyAccount.setStatus(result.getInteger("status"));
 					}
 				}
 			//} catch (Exception e) {
 			} catch (ConnectException e) {
 				e.printStackTrace();
 				logger.error(e.getMessage(), e);
-				thirdPartyAccount = null;
+				thirdPartyAccount.setStatus(-1);
 			} finally {
 				//do nothing
 			}

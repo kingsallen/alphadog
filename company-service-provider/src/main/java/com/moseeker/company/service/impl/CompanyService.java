@@ -182,7 +182,7 @@ public class CompanyService extends JOOQBaseServiceImpl<Hrcompany, HrCompanyReco
 				thirdPartyAccount.setPassword(data.getPassword());
 				//获取剩余点数
 				ThirdPartyAccountStruct synchronizeResult = chaosService.synchronization(thirdPartyAccount);
-				if(synchronizeResult != null) {
+				if(synchronizeResult != null && synchronizeResult.getStatus() == 0) {
 					BindAccountStruct  thirdPartyAccount1 = new BindAccountStruct();
 					thirdPartyAccount1.setBinding(1);
 					thirdPartyAccount1.setChannel(channel);
