@@ -453,7 +453,21 @@ public class WholeProfileService {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
 		}
 	}
-
+	
+	public Response retrieveProfile(String profile) {
+		Map<String, Object> resume = JSON.parseObject(profile);
+		UserUserRecord crawlerUser = profileUtils.mapToUserUserRecord((Map<String, Object>) resume.get("user"));
+		//查询是否存在相同手机号码的C端帐号
+		
+		//查找该帐号是否有profile
+		//如果有profile，进行profile合并
+		
+		//如果不存在profile，进行profile创建
+		
+		//如果不存在C端帐号，创建帐号并创建申请
+		return ResponseUtils.success(null);
+	}
+	
 	/*private int clearProfile(int profileId) {
 		return profileDao.deleteProfile(profileId);
 	}*/

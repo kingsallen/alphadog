@@ -1,0 +1,35 @@
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+
+dependencies {
+
+    compile project(":common")
+    compile project(":rpc-center")
+    compile deps["spring-context"]
+    testCompile deps["junit"]
+}
+
+//compileJava.dependsOn(":thrift-jooq:copyGeneratedFile")
+
+task copyJars(type: Copy) {
+    from configurations.runtime
+    into 'build/libs' // 目标位置
+}
+
+jar {
+
+    // build one flat jar
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+
+    manifest {
+        attributes 'Main-Class': 'com.moseeker.foundations.profile.server.ProfileServer'
+    }
+
+
+}
+
+project.description = '''
+    1) profile服务
+'''
