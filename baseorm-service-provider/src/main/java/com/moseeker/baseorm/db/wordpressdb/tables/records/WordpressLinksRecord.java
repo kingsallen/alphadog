@@ -4,6 +4,8 @@
 package com.moseeker.baseorm.db.wordpressdb.tables.records;
 
 
+import com.moseeker.baseorm.db.wordpressdb.tables.WordpressLinks;
+
 import java.sql.Timestamp;
 
 import javax.annotation.Generated;
@@ -14,8 +16,6 @@ import org.jooq.Record13;
 import org.jooq.Row13;
 import org.jooq.impl.UpdatableRecordImpl;
 import org.jooq.types.ULong;
-
-import com.moseeker.baseorm.db.wordpressdb.tables.WordpressLinks;
 
 
 /**

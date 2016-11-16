@@ -4,15 +4,6 @@
 package com.moseeker.baseorm.db.wordpressdb;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.Generated;
-
-import org.jooq.Table;
-import org.jooq.impl.SchemaImpl;
-
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressCommentmeta;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressComments;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressLinks;
@@ -23,8 +14,18 @@ import com.moseeker.baseorm.db.wordpressdb.tables.WordpressTermRelationships;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressTermTaxonomy;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressTermmeta;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressTerms;
+import com.moseeker.baseorm.db.wordpressdb.tables.WordpressUserPost;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressUsermeta;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressUsers;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.annotation.Generated;
+
+import org.jooq.Table;
+import org.jooq.impl.SchemaImpl;
 
 
 /**
@@ -40,7 +41,7 @@ import com.moseeker.baseorm.db.wordpressdb.tables.WordpressUsers;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Wordpressdb extends SchemaImpl {
 
-	private static final long serialVersionUID = 432663686;
+	private static final long serialVersionUID = 1529142126;
 
 	/**
 	 * The reference instance of <code>wordpressdb</code>
@@ -74,6 +75,7 @@ public class Wordpressdb extends SchemaImpl {
 			WordpressTermRelationships.WORDPRESS_TERM_RELATIONSHIPS,
 			WordpressTermTaxonomy.WORDPRESS_TERM_TAXONOMY,
 			WordpressUsermeta.WORDPRESS_USERMETA,
-			WordpressUsers.WORDPRESS_USERS);
+			WordpressUsers.WORDPRESS_USERS,
+			WordpressUserPost.WORDPRESS_USER_POST);
 	}
 }

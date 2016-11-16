@@ -30,6 +30,8 @@ import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
  */
 @Service
 public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecord, HrThirdPartyAccount> {
+	
+	private static final String UPSERT_SQL = "insert into hrdb.hr_third_party_account(channel, username, password, membername, binding, company_id, remain_num, sync_time) select ?, ?, ?, ?, ?, ?, ?, ? from DUAL where not exists(select id from hrdb.hr_third_party_account where channel = ? and company_id = ?)";
 
 	@Override
 	protected void initJOOQEntity() {
@@ -40,8 +42,7 @@ public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecor
 		int count = 0;
 		try (Connection conn = DBConnHelper.DBConn.getConn();
 				) {
-			String sql = "insert into hrdb.hr_third_party_account(channel, username, password, membername, binding, company_id, remain_num, sync_time) select ?, ?, ?, ?, ?, ?, ?, ? from DUAL where not exists(select id from hrdb.hr_third_party_account where channel = ? and company_id = ?)";
-			PreparedStatement pstmt = conn.prepareStatement(sql);
+			PreparedStatement pstmt = conn.prepareStatement(UPSERT_SQL);
 			pstmt.setShort(1, record.getChannel());
 			pstmt.setString(2, record.getUsername());
 			pstmt.setString(3, record.getPassword());

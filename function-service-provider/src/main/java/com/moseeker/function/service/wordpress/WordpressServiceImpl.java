@@ -8,18 +8,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.common.constants.Constant;
-import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.foundation.wordpress.struct.NewsletterData;
-import com.moseeker.thrift.gen.foundation.wordpress.struct.NewsletterForm;
 import com.moseeker.thrift.gen.dao.service.UserHrAccountDao;
 import com.moseeker.thrift.gen.dao.service.WordpressDao;
 import com.moseeker.thrift.gen.dao.struct.PostExt;
 import com.moseeker.thrift.gen.dao.struct.WordpressPosts;
-import com.moseeker.thrift.gen.dao.struct.WordpressTermRelationships;
+import com.moseeker.thrift.gen.foundation.wordpress.struct.NewsletterData;
+import com.moseeker.thrift.gen.foundation.wordpress.struct.NewsletterForm;
 
 @Service
 public class WordpressServiceImpl {
@@ -40,34 +37,38 @@ public class WordpressServiceImpl {
 		//
 		try {
 			// todo 缺少其他平台的查询
-			WordpressTermRelationships relationships = wordpressDao
-					.getLastRelationships(Constant.WORDPRESS_NEWSLETTER_VALUE);
-			if (relationships != null) {
-				QueryUtil qu = new QueryUtil();
-				qu.addEqualFilter("ID", String.valueOf(relationships.getObjectId()));
-				WordpressPosts post = wordpressDao.getPost(qu);
-				if (post != null) {
-					NewsletterData data = new NewsletterData();
+			/*WordpressTermRelationships relationships = wordpressDao
+					.getLastRelationships(Constant.WORDPRESS_NEWSLETTER_VALUE);*/
+			WordpressPosts post = wordpressDao.getReleaseVersionPost();
+			if (post != null && post.getId() > 0) {
+				NewsletterData data = new NewsletterData();
+				long readedPostId = wordpressDao.getReadedPostId(newsletter.getAccount_id());
+				//如果用户之前读的文章的编号小于最新文章编号，则表示用户未读过新版本
+				if(readedPostId < post.getId()) {
 					data.setShow_new_version((byte) 1);
-					data.setUpdate_time(post.getPostDate());
-					List<String> updatList = createUpdateList(post.getPostContent());
-					data.setUpdate_list(updatList);
-					ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
-					try {
-						configUtils.loadResource("chaos.properties");
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					String domain = configUtils.get("wordpress.domain", String.class);
-					data.setUrl(domain + post.getPostName());
-					data.setTitle(post.getPostTitle());
-					PostExt postExt = wordpressDao.getPostExt(relationships.getObjectId());
-					if (postExt != null) {
-						data.setVersion(postExt.getVersion());
-					}
-					return data;
+					//更新用户浏览过的版本更新文章
+					wordpressDao.upsertUserPost(newsletter.getAccount_id(), post.getId());
+				} else {
+					data.setShow_new_version((byte) 0);
 				}
+				data.setUpdate_time(post.getPostDate());
+				List<String> updatList = createUpdateList(post.getPostContent());
+				data.setUpdate_list(updatList);
+				ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
+				try {
+					configUtils.loadResource("chaos.properties");
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				String domain = configUtils.get("wordpress.domain", String.class);
+				data.setUrl(domain + post.getPostName());
+				data.setTitle(post.getPostTitle());
+				PostExt postExt = wordpressDao.getPostExt(post.getId());
+				if (postExt != null && postExt.getObjectId() > 0) {
+					data.setVersion(postExt.getVersion());
+				}
+				return data;
 			}
 		} catch (TException e) {
 			e.printStackTrace();

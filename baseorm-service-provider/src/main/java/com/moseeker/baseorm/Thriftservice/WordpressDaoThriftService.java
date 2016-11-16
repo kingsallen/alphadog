@@ -13,11 +13,17 @@ import org.springframework.stereotype.Service;
 import com.moseeker.baseorm.dao.wordpress.WordpressPostmetaDao;
 import com.moseeker.baseorm.dao.wordpress.WordpressPostsDao;
 import com.moseeker.baseorm.dao.wordpress.WordpressTermRelationshipDao;
+import com.moseeker.baseorm.dao.wordpress.WordpressUserPostDao;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressPostmetaRecord;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressPostsRecord;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressTermRelationshipsRecord;
+import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressUserPostRecord;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.WordpressDao.Iface;
 import com.moseeker.thrift.gen.dao.struct.PostExt;
 import com.moseeker.thrift.gen.dao.struct.WordpressPosts;
@@ -28,8 +34,6 @@ public class WordpressDaoThriftService implements Iface{
 	
 	Logger logger = LoggerFactory.getLogger(WordpressDaoThriftService.class);
 	
-	public static int count = 0;
-
 	@Autowired
 	private WordpressPostsDao wordpressPostsDao;
 	
@@ -39,18 +43,20 @@ public class WordpressDaoThriftService implements Iface{
 	@Autowired
 	private WordpressPostmetaDao wordpressPostmetaDao;
 	
+	@Autowired
+	private WordpressUserPostDao wordpressUserPostDao;
+	
 	/**
 	 * 通用查询方法查询文章信息
 	 */
 	@Override
 	public WordpressPosts getPost(CommonQuery query) throws TException {
-		count ++;
-		WordpressPosts posts = null;
+		WordpressPosts posts = new WordpressPosts();
 		try {
 			WordpressPostsRecord record = wordpressPostsDao.getResource(query);
 			if(record != null) {
 				posts = new WordpressPosts();
-				posts.setId(record.getId().intValue());
+				posts.setId(record.getId().longValue());
 				posts.setPostAuthor(record.getPostAuthor().intValue());
 				posts.setPostContent(record.getPostContent());
 				posts.setPostDate(new DateTime(record.getPostDate().getTime()).toString("yyyy.MM.dd"));
@@ -66,7 +72,6 @@ public class WordpressDaoThriftService implements Iface{
 		} finally {
 			
 		}
-		System.out.println("method count:"+count);
 		return posts;
 	}
 
@@ -76,9 +81,29 @@ public class WordpressDaoThriftService implements Iface{
 	@Override
 	public WordpressTermRelationships getRelationships(long objectId, long termTaxonomyId) throws TException {
 		
-		WordpressTermRelationships relationship = null;
+		WordpressTermRelationships relationship = new WordpressTermRelationships();
+		QueryUtil qu = new QueryUtil();
+		if(objectId > 0) {
+			qu.addEqualFilter("object_id", String.valueOf(objectId));
+		}
+		if(termTaxonomyId > 0) {
+			qu.addEqualFilter("term_taxonomy_id", String.valueOf(termTaxonomyId));
+		}
+		try {
+			WordpressTermRelationshipsRecord record = wordpressTermRelationshipDao.getResource(qu);
+			if(record != null) {
+				relationship.setObjectId(record.getObjectId().longValue());
+				relationship.setTermTaxonomyId(record.getTermTaxonomyId().longValue());
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+		} finally {
+			//do nothing
+		}
 		
-		return null;
+		return relationship;
 	}
 
 	/**
@@ -98,7 +123,10 @@ public class WordpressDaoThriftService implements Iface{
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			
+		} finally {
+			//do nothing
 		}
 		return relationshipData;
 	}
@@ -108,14 +136,14 @@ public class WordpressDaoThriftService implements Iface{
 	 */
 	@Override
 	public PostExt getPostExt(long objectId) throws TException {
-		count ++;
+		PostExt postExt = new PostExt();
 		try {
 			List<String> keys = new ArrayList<>();
 			keys.add(Constant.WORDPRESS_POST_CUSTOMFIELD_VERSION);
 			keys.add(Constant.WORDPRESS_POST_CUSTOMFIELD_PLATFORM);
 			List<WordpressPostmetaRecord> records = wordpressPostmetaDao.getPostExt(objectId, keys);
 			if(records != null) {
-				PostExt postExt = new PostExt();
+				postExt.setObjectId(objectId);
 				records.forEach(record -> {
 					if(record.getMetaKey() != null && record.getMetaKey().equals(Constant.WORDPRESS_POST_CUSTOMFIELD_VERSION)) {
 						postExt.setVersion(record.getMetaValue());
@@ -130,8 +158,81 @@ public class WordpressDaoThriftService implements Iface{
 			logger.error(e.getMessage(), e);
 			e.printStackTrace();
 		}
-		System.out.println("method count:"+count);
-		return null;
+		return postExt;
+	}
+	
+	/**
+	 * 获取最新的处于发布状态的版本更新文章
+	 * @return
+	 * @throws TException
+	 */
+	@Override
+	public WordpressPosts getReleaseVersionPost() throws TException {
+		WordpressPosts posts = new WordpressPosts();
+		try {
+			WordpressPostsRecord record = wordpressPostsDao.getReleaseVersionPost();
+			if(record != null) {
+				posts = new WordpressPosts();
+				posts.setId(record.getId().longValue());
+				posts.setPostAuthor(record.getPostAuthor().intValue());
+				posts.setPostContent(record.getPostContent());
+				posts.setPostDate(new DateTime(record.getPostDate().getTime()).toString("yyyy.MM.dd"));
+				posts.setPostExcerpt(record.getPostExcerpt());
+				posts.setPostModified(new DateTime(record.getPostModified().getTime()).toString("yyyy.MM.dd"));
+				posts.setPostStatus(record.getPostStatus());
+				posts.setPostTitle(record.getPostTitle());
+				posts.setPostName(record.getPostName());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(),e);
+		} finally {
+			
+		}
+		return posts;
+	}
+
+	/**
+	 * 查询用户访问的版本更新的记录
+	 * @param userId
+	 * @return
+	 * @throws TException
+	 */
+	@Override
+	public long getReadedPostId(int userId) throws TException {
+		long postId = 0;
+		QueryUtil qu = new QueryUtil();
+		qu.addEqualFilter("user_id", String.valueOf(userId));
+		try {
+			WordpressUserPostRecord record = wordpressUserPostDao.getResource(qu);
+			if(record != null) {
+				postId = record.getObjectId().longValue();
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+		} finally {
+			//do nothing
+		}
+		return postId;
+	}
+	
+	/**
+	 * 更新用户浏览新版本信息的内容
+	 * @param userId
+	 * @param postId
+	 * @return
+	 * @throws TException
+	 */
+	@Override
+	public Response upsertUserPost(int userId, long postId) throws TException {
+		int count = wordpressUserPostDao.upsertUserPost(userId, postId);
+		if(count > 0) {
+			return ResponseUtils.success(count);
+		} else {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+		}
 	}
 
 	public WordpressPostsDao getWordpressPostsDao() {
