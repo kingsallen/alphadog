@@ -1,9 +1,11 @@
 package com.moseeker.company.service.impl;
 
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.thrift.TException;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -192,6 +194,9 @@ public class CompanyService extends JOOQBaseServiceImpl<Hrcompany, HrCompanyReco
 					//更新第三方帐号信息
 					Response response = hraccountDao.upsertThirdPartyAccount(thirdPartyAccount1);
 					if(response.getStatus() == 0) {
+						HashMap<String, Object> result = new HashMap<>();
+						result.put("remain_num", synchronizeResult.getRemainNum());
+						result.put("sync_time", (new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
 						return ResultMessage.SUCCESS.toResponse();
 					} else {
 						return ResultMessage.THIRD_PARTY_ACCOUNT_SYNC_FAILED.toResponse();
