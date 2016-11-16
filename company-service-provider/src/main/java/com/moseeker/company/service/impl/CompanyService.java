@@ -197,7 +197,7 @@ public class CompanyService extends JOOQBaseServiceImpl<Hrcompany, HrCompanyReco
 						HashMap<String, Object> result = new HashMap<>();
 						result.put("remain_num", synchronizeResult.getRemainNum());
 						result.put("sync_time", (new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
-						return ResultMessage.SUCCESS.toResponse();
+						return ResultMessage.SUCCESS.toResponse(result);
 					} else {
 						return ResultMessage.THIRD_PARTY_ACCOUNT_SYNC_FAILED.toResponse();
 					}
