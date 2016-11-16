@@ -16,20 +16,21 @@ import com.moseeker.thrift.gen.common.struct.Response;
  * @author wjf
  * @version
  */
-public enum ErrorMessage {
+public enum ResultMessage {
 
 	THIRD_PARTY_ACCOUNT_UNBOUND(34001, "未绑定第三方帐号！"),
+	THIRD_PARTY_ACCOUNT_SYNC_FAILED(34002, "获取点数失败！"),
 	
 	SUCCESS(0, "success"),
 	PROGRAM_EXCEPTION(99999, "程序异常，请稍后再试！"),
 	PROGRAM_EXHAUSTED(-1, "系统繁忙，请稍候再试!");
 	
-	private static final HashMap<Integer, ErrorMessage> intToCode = new HashMap<>();  //code池
+	private static final HashMap<Integer, ResultMessage> intToCode = new HashMap<>();  //code池
 	
 	private int status;			//状态码
 	private String message;		//状态吗对应的消息
 	
-	ErrorMessage(Object...objects ) {
+	ResultMessage(Object...objects ) {
 		if(objects == null || objects[0] == null) {
 			throw new InitConstantMessageException();
 		}
@@ -72,7 +73,7 @@ public enum ErrorMessage {
 	 * @param status 状态码
 	 * @return 消息
 	 */
-	public ErrorMessage fromStatus(int status) {
+	public ResultMessage fromStatus(int status) {
 		return intToCode.get(status);
 	}
 	
@@ -81,13 +82,13 @@ public enum ErrorMessage {
 	 * @param message
 	 * @return
 	 */
-	public ErrorMessage setMessage(String message) {
+	public ResultMessage setMessage(String message) {
 		this.message = message;
 		return this;
 	}
 	
 	static {
-		for(ErrorMessage code : values()) {
+		for(ResultMessage code : values()) {
 			//校验是否存在错误的消息状态码
 			if(intToCode.containsKey(code.getStatus())) {
 				throw new AssertionError("重复的消息状态码！");

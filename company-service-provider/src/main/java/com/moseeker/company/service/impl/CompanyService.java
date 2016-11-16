@@ -18,7 +18,7 @@ import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.company.constant.BindingStatus;
-import com.moseeker.company.constant.ErrorMessage;
+import com.moseeker.company.constant.ResultMessage;
 import com.moseeker.company.dao.CompanyDao;
 import com.moseeker.company.dao.WechatDao;
 import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
@@ -28,6 +28,9 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
+import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
+import com.moseeker.thrift.gen.foundation.chaos.struct.ThirdPartyAccountStruct;
+import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
 
 @Service
 public class CompanyService extends JOOQBaseServiceImpl<Hrcompany, HrCompanyRecord> {
@@ -35,7 +38,10 @@ public class CompanyService extends JOOQBaseServiceImpl<Hrcompany, HrCompanyReco
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	com.moseeker.thrift.gen.dao.service.CompanyDao.Iface companyDao = ServiceManager.SERVICEMANAGER.getService(com.moseeker.thrift.gen.dao.service.CompanyDao.Iface.class);
-
+	ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
+	com.moseeker.thrift.gen.dao.service.UserHrAccountDao.Iface hraccountDao = ServiceManager.SERVICEMANAGER
+			.getService(com.moseeker.thrift.gen.dao.service.UserHrAccountDao.Iface.class);
+	
     @Autowired
     protected CompanyDao dao;
     
@@ -167,19 +173,41 @@ public class CompanyService extends JOOQBaseServiceImpl<Hrcompany, HrCompanyReco
 			//如果是绑定状态，则进行
 			//判断是否已经判定第三方帐号
 			if(data != null && data.getBinding() == BindingStatus.BOUND.getValue()) {
-				
+				ThirdPartyAccountStruct thirdPartyAccount = new ThirdPartyAccountStruct();
+				thirdPartyAccount.setChannel((byte)data.getChannel());
+				thirdPartyAccount.setMemberName(data.getMembername());
+				thirdPartyAccount.setUsername(data.getUsername());
+				thirdPartyAccount.setPassword(data.getPassword());
+				//获取剩余点数
+				ThirdPartyAccountStruct synchronizeResult = chaosService.synchronization(thirdPartyAccount);
+				if(synchronizeResult != null) {
+					BindAccountStruct  thirdPartyAccount1 = new BindAccountStruct();
+					thirdPartyAccount1.setBinding(1);
+					thirdPartyAccount1.setChannel(channel);
+					thirdPartyAccount1.setCompany_id(id);
+					thirdPartyAccount1.setMember_name(data.getMembername());
+					thirdPartyAccount1.setPassword(data.getPassword());
+					thirdPartyAccount1.setUsername(data.getUsername());
+					thirdPartyAccount1.setRemainNum(synchronizeResult.getRemainNum());
+					//更新第三方帐号信息
+					Response response = hraccountDao.upsertThirdPartyAccount(thirdPartyAccount1);
+					if(response.getStatus() == 0) {
+						return ResultMessage.SUCCESS.toResponse();
+					} else {
+						return ResultMessage.THIRD_PARTY_ACCOUNT_SYNC_FAILED.toResponse();
+					}
+				} else {
+					return ResultMessage.THIRD_PARTY_ACCOUNT_SYNC_FAILED.toResponse();
+				}
 			} else {
-				return ErrorMessage.THIRD_PARTY_ACCOUNT_UNBOUND.toResponse();
+				return ResultMessage.THIRD_PARTY_ACCOUNT_UNBOUND.toResponse();
 			}
 		} catch (TException e) {
 			e.printStackTrace();
 			logger.error(e.getMessage(), e);
-			return ErrorMessage.PROGRAM_EXCEPTION.toResponse();
+			return ResultMessage.PROGRAM_EXCEPTION.toResponse();
 		} finally {
 			//do nothing
 		}
-		//获取剩余点数
-		//更新第三方帐号信息
-		return null;
 	}
 }

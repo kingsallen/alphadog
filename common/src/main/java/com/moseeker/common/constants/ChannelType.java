@@ -70,6 +70,15 @@ public enum ChannelType {
 	}
 	
 	/**
+	 * 返回该渠道的绑定请求地址
+	 * @param domain chaos域名
+	 * @return
+	 */
+	public String getRemain() {
+		return domain+"/"+name+"/"+REMAIN_NUM;
+	}
+	
+	/**
 	 * 返回该渠道的可发布职位数的请求地址
 	 * @param domain chaos域名
 	 * @return

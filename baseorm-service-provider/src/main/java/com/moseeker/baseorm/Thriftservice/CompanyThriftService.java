@@ -38,7 +38,7 @@ public class CompanyThriftService implements Iface {
 				data.setChannel(record.getChannel());
 				data.setCompany_id(record.getCompanyId().intValue());
 				data.setMembername(record.getMembername());
-				data.setName(record.getUsername());
+				data.setUsername(record.getUsername());
 				data.setPassword(record.getPassword());
 				data.setRemain_num(record.getRemainNum().intValue());
 				data.setSync_time(new DateTime(record.getSyncTime()).toString("yyyy-MM-dd"));

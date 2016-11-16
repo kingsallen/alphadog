@@ -53,6 +53,7 @@ public class UserHrAccountService {
 	
 	com.moseeker.thrift.gen.dao.service.UserHrAccountDao.Iface hraccountDao = ServiceManager.SERVICEMANAGER
 			.getService(com.moseeker.thrift.gen.dao.service.UserHrAccountDao.Iface.class);
+	
 	HRAccountFoundationServices.Iface hrAccountService = ServiceManager.SERVICEMANAGER
 			.getService(HRAccountFoundationServices.Iface.class);
 

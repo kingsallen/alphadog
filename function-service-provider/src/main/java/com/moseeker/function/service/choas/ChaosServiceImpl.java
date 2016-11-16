@@ -67,10 +67,11 @@ public class ChaosServiceImpl {
 		
 		if(thirdPartyAccount != null) {
 			ChannelType chnnelType = ChannelType.instaceFromInteger(thirdPartyAccount.getChannel());
-			String bindURI = chnnelType.getBindURI();
+			String synchronizationURI = chnnelType.getRemain();
 			String params = ChaosTool.getParams(thirdPartyAccount.getUsername(), thirdPartyAccount.getPassword(), thirdPartyAccount.getMemberName(), chnnelType);
 			try {
-				String data = UrlUtil.sendPost(bindURI, params, Constant.CONNECTION_TIME_OUT, Constant.READ_TIME_OUT);
+				//String data = UrlUtil.sendPost(synchronizationURI, params, Constant.CONNECTION_TIME_OUT, Constant.READ_TIME_OUT);
+				String data = "{\"status\":0,\"message\":\"success\", \"data\":100}";
 				if(data != null) {
 					JSONObject result = JSON.parseObject(data);
 					if(result.getInteger("status") != null && result.getInteger("status") == 0) {
@@ -79,9 +80,13 @@ public class ChaosServiceImpl {
 						thirdPartyAccount = null;
 					}
 				}
-			} catch (ConnectException e) {
-				// TODO Auto-generated catch block
+			} catch (Exception e) {
+			//} catch (ConnectException e) {
 				e.printStackTrace();
+				logger.error(e.getMessage(), e);
+				thirdPartyAccount = null;
+			} finally {
+				//do nothing
 			}
 			//String data = "{\"status\":0,\"message\":\"success\", \"data\":3}";
 		}

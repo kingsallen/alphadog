@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import com.moseeker.baseorm.Thriftservice.CompanyThriftService;
 import com.moseeker.baseorm.Thriftservice.HRAccountThriftService;
 import com.moseeker.baseorm.Thriftservice.JobPositionThriftService;
 import com.moseeker.baseorm.Thriftservice.ThirdpartAccountThriftService;
@@ -32,6 +33,7 @@ public class BaseOrmServer {
 	        			acac.getBean(JobPositionThriftService.class),
 	        			acac.getBean(HRAccountThriftService.class),
 	        			acac.getBean(WordpressDaoThriftService.class),
+	        			acac.getBean(CompanyThriftService.class),
 	        			acac.getBean(ThirdpartAccountThriftService.class)
 	        	);
 	            server.start();
