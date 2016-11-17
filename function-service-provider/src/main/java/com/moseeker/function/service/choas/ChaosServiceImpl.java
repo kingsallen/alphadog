@@ -36,12 +36,12 @@ public class ChaosServiceImpl {
 			ChannelType chnnelType = ChannelType.instaceFromInteger(channel);
 			String bindURI = chnnelType.getBindURI();
 			String params = ChaosTool.getParams(username, password, memberName, chnnelType);
-			//String data = UrlUtil.sendPost(bindURI, params, Constant.CONNECTION_TIME_OUT, Constant.READ_TIME_OUT);
-			String data = "{\"status\":0,\"message\":\"success\", \"data\":3}";
+			String data = UrlUtil.sendPost(bindURI, params, Constant.CONNECTION_TIME_OUT, Constant.READ_TIME_OUT);
+			//String data = "{\"status\":0,\"message\":\"success\", \"data\":3}";
 			Response response = ChaosTool.createResponse(data);
 			return response;
-		} catch (Exception e) {
-		//} catch (ConnectException e) {
+		//} catch (Exception e) {
+		} catch (ConnectException e) {
 			e.printStackTrace();
 			logger.error(e.getMessage(), e);
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
@@ -71,8 +71,8 @@ public class ChaosServiceImpl {
 			String synchronizationURI = chnnelType.getRemain();
 			String params = ChaosTool.getParams(thirdPartyAccount.getUsername(), thirdPartyAccount.getPassword(), thirdPartyAccount.getMemberName(), chnnelType);
 			try {
-				//String data = UrlUtil.sendPost(synchronizationURI, params, Constant.CONNECTION_TIME_OUT, Constant.READ_TIME_OUT);
-				String data = "{\"status\":0,\"message\":\"success\", \"data\":100}";
+				String data = UrlUtil.sendPost(synchronizationURI, params, Constant.CONNECTION_TIME_OUT, Constant.READ_TIME_OUT);
+				//String data = "{\"status\":0,\"message\":\"success\", \"data\":100}";
 				if(data != null) {
 					JSONObject result = JSON.parseObject(data);
 					if(result.getInteger("status") != null && result.getInteger("status") == 0) {
@@ -81,8 +81,8 @@ public class ChaosServiceImpl {
 						thirdPartyAccount.setStatus(result.getInteger("status"));
 					}
 				}
-			} catch (Exception e) {
-			//} catch (ConnectException e) {
+			//} catch (Exception e) {
+			} catch (ConnectException e) {
 				e.printStackTrace();
 				logger.error(e.getMessage(), e);
 				thirdPartyAccount.setStatus(-1);

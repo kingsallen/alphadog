@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.moseeker.function.service.hraccount.HRAccountService;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.foundation.hraccount.service.HRAccountFoundationServices.Iface;
+import com.moseeker.thrift.gen.foundation.passport.service.HRAccountFoundationServices.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
 
 /**
