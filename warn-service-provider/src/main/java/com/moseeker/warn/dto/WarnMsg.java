@@ -1,5 +1,7 @@
 package com.moseeker.warn.dto;
 
+import java.awt.print.Printable;
+
 /**
  * @author ltf
  * 预警消息体
@@ -22,6 +24,12 @@ public class WarnMsg {
 	 * 描述
 	 */
 	private String desc;
+	
+	/**
+	 * 环境
+	 */
+	private String environment;
+	
 	public String getAppid() {
 		return appid;
 	}
@@ -46,7 +54,12 @@ public class WarnMsg {
 	public void setDesc(String desc) {
 		this.desc = desc;
 	}
-	
+	public String getEnvironment() {
+		return environment;
+	}
+	public void setEnvironment(String environment) {
+		this.environment = environment;
+	}
 	public WarnMsg(String appid, String location, String eventKey, String desc) {
 		super();
 		this.appid = appid;
@@ -61,7 +74,7 @@ public class WarnMsg {
 	
 	@Override
 	public String toString() {
-		return String.format("项目id=%s, 出错位置=%s, 事件类型=%s, 错误描述=%s", appid,
+		return String.format("当前环境=%s, 项目id=%s, 出错位置=%s, 事件类型=%s, 错误描述=%s", environment, appid,
 				location, eventKey, desc);
 	}
 	

@@ -35,12 +35,13 @@ public class ManageService {
 	 * 发送信息
 	 */
 	public void sendMessage(Event event, WarnMsg msg) {
+		msg.setEnvironment(environment);
 		// 匹配通知渠道
 		event.getNotifyChannels().forEach(channel -> {
 			SendChannel sendChannel;
 			try {
 				sendChannel = SendChannel.valueOf(channel.toUpperCase());
-				sendChannel.send(event.getMembers(), msg == null ? "信息出错" : "当前环境:".concat(environment).concat(msg.toString()));
+				sendChannel.send(event.getMembers(), msg.toString());
 			} catch (IllegalArgumentException e) {
 				log.error("not found the sendChannel:{0}", channel);
 			}
