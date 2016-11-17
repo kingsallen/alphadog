@@ -2,6 +2,7 @@ namespace java com.moseeker.thrift.gen.dao.service
 
 include "../../common/struct/common_struct.thrift"
 include "../../useraccounts/struct/useraccounts_struct.thrift"
+include "../../position/struct/position_struct.thrift"
 include "../struct/dao_struct.thrift"
 
 service UserHrAccountDao {
@@ -31,4 +32,14 @@ service WordpressDao {
 
 service CompanyDao {
 	dao_struct.ThirdPartAccountData getThirdPartyAccount(1:common_struct.CommonQuery query);
+}
+
+service UserDao {
+	useraccounts_struct.User getUser(1:common_struct.CommonQuery query);
+	//保存用户	
+	useraccounts_struct.User saveUser(1:useraccounts_struct.User user);
+}
+
+service PositionDao {
+	position_struct.Position getPosition(1:common_struct.CommonQuery query);
 }

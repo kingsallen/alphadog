@@ -4,7 +4,7 @@
 <jdbc>
 <driver>com.mysql.jdbc.Driver</driver>
 <url>jdbc:mysql://192.168.31.66:3306/userdb</url>
-<user>www</user>
+<user>wyf</user>
 <password>moseeker.com</password>
 </jdbc>
 <generator>
@@ -32,7 +32,7 @@ Excludes match before includes -->
 </database>
 <target>
 <!-- The destination package of your generated classes (within the destination directory) -->
-<packageName>com.moseeker.dao.passport.jooq</packageName>
+<packageName>com.moseeker.baseorm.db</packageName>
 <!-- The destination directory of your generated classes -->
 <directory>/tmp/</directory>
 </target>

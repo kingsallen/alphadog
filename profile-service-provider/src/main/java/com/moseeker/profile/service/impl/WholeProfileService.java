@@ -20,6 +20,7 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.dictdb.tables.records.DictCollegeRecord;
@@ -453,10 +454,30 @@ public class WholeProfileService {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
 		}
 	}
+	//创建简历
+	public Response createProfile(String profile) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	//晚上简历
+	public Response improveProfile(String profile) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
-	public Response retrieveProfile(String profile) {
+	public Response retrieveProfile(int positionId, String profile) {
+		/*if(positionId == 0) {
+			
+		}
 		Map<String, Object> resume = JSON.parseObject(profile);
 		UserUserRecord crawlerUser = profileUtils.mapToUserUserRecord((Map<String, Object>) resume.get("user"));
+		Map<String, Object> map = (Map<String, Object>) resume.get("user");
+		UserUserRecord record = null;
+		if (map != null) {
+			record = BeanUtils.MapToRecord(map, UserUserRecord.class);
+			return record;
+		}*/
 		//查询是否存在相同手机号码的C端帐号
 		
 		//查找该帐号是否有profile

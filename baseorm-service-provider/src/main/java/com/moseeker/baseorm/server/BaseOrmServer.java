@@ -7,7 +7,9 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import com.moseeker.baseorm.Thriftservice.CompanyThriftService;
 import com.moseeker.baseorm.Thriftservice.HRAccountThriftService;
 import com.moseeker.baseorm.Thriftservice.JobPositionThriftService;
+import com.moseeker.baseorm.Thriftservice.PositionDaoThriftService;
 import com.moseeker.baseorm.Thriftservice.ThirdpartAccountThriftService;
+import com.moseeker.baseorm.Thriftservice.UserDaoThriftService;
 import com.moseeker.baseorm.Thriftservice.WordpressDaoThriftService;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.MultiRegServer;
@@ -34,6 +36,8 @@ public class BaseOrmServer {
 	        			acac.getBean(HRAccountThriftService.class),
 	        			acac.getBean(WordpressDaoThriftService.class),
 	        			acac.getBean(CompanyThriftService.class),
+	        			acac.getBean(PositionDaoThriftService.class),
+	        			acac.getBean(UserDaoThriftService.class),
 	        			acac.getBean(ThirdpartAccountThriftService.class)
 	        	);
 	            server.start();

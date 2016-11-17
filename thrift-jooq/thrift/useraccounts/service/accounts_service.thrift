@@ -53,6 +53,13 @@ service UseraccountsServices {
     common_struct.Response getScanResult(1: i32 wechatId, 2: i64 sceneId);
     //设置二维码是否查看
     common_struct.Response setScanResult(1: i32 wechatId, 2: i64 sceneId, 3:string value);
+	
+    //根据手机号码获取用户数据
+    useraccounts_struct.User ifExistUser(1: string mobile);
+    //简历回收的自动生成帐号
+    i32 createRetrieveProfileUser(1: useraccounts_struct.User user);
+    //查询用户是否存在简历
+    bool ifExistProfile(1:string mobile);
 }
 
 /**

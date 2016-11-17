@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Iface;
@@ -282,5 +283,23 @@ public class UseraccountsServiceImpl implements Iface {
 	public Response setScanResult(int wechatId, long sceneId, String value) throws TException {
 		// TODO Auto-generated method stub
 		return service.setScanResult(wechatId, sceneId, value);
+	}
+
+	@Override
+	public User ifExistUser(String mobile) throws TException {
+		// TODO Auto-generated method stub
+		return service.ifExistUser(mobile);
+	}
+
+	@Override
+	public int createRetrieveProfileUser(User user) throws TException {
+		// TODO Auto-generated method stub
+		return service.createRetrieveProfileUser(user);
+	}
+
+	@Override
+	public boolean ifExistProfile(String mobile) throws TException {
+		// TODO Auto-generated method stub
+		return service.ifExistProfile(mobile);
 	}
 }
