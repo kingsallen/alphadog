@@ -1,5 +1,6 @@
 package com.moseeker.apps.service;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.thrift.TException;
@@ -90,7 +91,9 @@ public class ProfileBS {
 				
 				//更新用户数据
 				map.put("id", user.getId());
-				((Map<String, Object>)resume.get("profile")).put("user_id", user.getId());
+				HashMap<String, Object> profileProfile = new HashMap<String, Object>();
+				profileProfile.put("user_id", user.getId());
+				resume.put("profile", profileProfile);
 				
 				//如果有profile，进行profile合并
 				if(useraccountsServices.ifExistProfile(mobile)) {
@@ -126,7 +129,11 @@ public class ProfileBS {
 				//创建profile
 				if(userId > 0) {
 					map.put("id", user.getId());
-					((Map<String, Object>)resume.get("profile")).put("user_id", userId);
+					
+					HashMap<String, Object> profileProfile = new HashMap<String, Object>();
+					profileProfile.put("user_id", user.getId());
+					resume.put("profile", profileProfile);
+					
 					Response response = wholeProfileService.createProfile(JSON.toJSONString(resume));
 					//创建申请
 					if(response.getStatus() == 0) {
