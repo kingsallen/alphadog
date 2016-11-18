@@ -11,4 +11,6 @@ public interface EducationDao extends BaseDao<ProfileEducationRecord> {
 
 	int updateProfileUpdateTime(HashSet<Integer> educationIds);
 
+	int delEducationsByProfileId(int profileId);
+
 }

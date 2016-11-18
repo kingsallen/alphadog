@@ -25,7 +25,9 @@ public class UserDaoThriftService implements Iface {
 		User user = new User();
 		try {
 			UserUserRecord record = userDao.getResource(query);
-			user = record.into(User.class);
+			if(record != null) {
+				user = record.into(User.class);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e.getMessage(), e);

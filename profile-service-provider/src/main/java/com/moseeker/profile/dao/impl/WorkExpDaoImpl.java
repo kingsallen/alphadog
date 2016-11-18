@@ -79,4 +79,21 @@ public class WorkExpDaoImpl extends
 		}
 		return status;
 	}
+
+	@Override
+	public int delWorkExpsByProfileId(int profileId) {
+		int count = 0;
+		try (Connection conn = DBConnHelper.DBConn.getConn();
+				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn)) {
+			count = create.delete(ProfileWorkexp.PROFILE_WORKEXP)
+					.where(ProfileWorkexp.PROFILE_WORKEXP.PROFILE_ID.equal(UInteger.valueOf(profileId)))
+					.execute();
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		} finally {
+			// do nothing
+		}
+		return count;
+	}
 }

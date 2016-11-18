@@ -11,4 +11,6 @@ public interface ProjectExpDao extends BaseDao<ProfileProjectexpRecord> {
 
 	int updateProfileUpdateTime(Set<Integer> projectExpIds);
 
+	int delProjectExpByProfileId(int profileId);
+
 }

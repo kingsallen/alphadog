@@ -42,13 +42,11 @@ public class WholeProfileServicesImpl implements Iface {
 
 	@Override
 	public Response createProfile(String profile) throws TException {
-		// TODO Auto-generated method stub
 		return service.createProfile(profile);
 	}
 
 	@Override
 	public Response improveProfile(String profile) throws TException {
-		// TODO Auto-generated method stub
 		return service.improveProfile(profile);
 	}
 

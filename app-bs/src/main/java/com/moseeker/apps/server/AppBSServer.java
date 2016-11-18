@@ -4,9 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import com.moseeker.apps.thrift.service.ProfileBSThriftService;
+import com.moseeker.rpccenter.common.ServerNodeUtils;
+import com.moseeker.rpccenter.main.MultiRegServer;
+
 /**
  * 
- * 通用功能服务
+ * 应用层服务
  * <p>Company: MoSeeker</P>  
  * <p>date: Jul 29, 2016</p>  
  * <p>Email: wjf2255@gmail.com</p>
@@ -21,14 +25,11 @@ public class AppBSServer {
 
         try {
         	AnnotationConfigApplicationContext acac = initSpring();
-        	/*MultiRegServer server = new MultiRegServer(FunctionServer.class,
+        	MultiRegServer server = new MultiRegServer(AppBSServer.class,
         			ServerNodeUtils.getPort(args),
-					acac.getBean(FunctionService.class),
-					acac.getBean(ChaosThriftService.class),
-					acac.getBean(WordpressThriftService.class),
-					acac.getBean(HRAccountThriftService.class));
+					acac.getBean(ProfileBSThriftService.class));
 			server.start(); // 启动服务，非阻塞
-*/
+
 			synchronized (AppBSServer.class) {
 				while (true) {
 					try {
@@ -39,6 +40,7 @@ public class AppBSServer {
 				}
 			}
         } catch (Exception e) {
+        	e.printStackTrace();
             LOGGER.error("error", e);
         }
 

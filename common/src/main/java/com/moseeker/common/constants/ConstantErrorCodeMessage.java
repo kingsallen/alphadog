@@ -47,6 +47,7 @@ public final class ConstantErrorCodeMessage {
     public static final String PROFILE_DICT_COLLEGE_NOTEXIST = "{'status':31020,'message':'院校字典不存在!'}";
     public static final String PROFILE_DICT_MAJOR_NOTEXIST = "{'status':31021,'message':'专业字典不存在!'}";
     public static final String PROFILE_OUTPUT_FAILED = "{'status':31022,'message':'导出失败!'}";
+    public static final String PROFILE_ALLREADY_NOT_EXIST= "{'status':31023,'message':'个人profile不存在!'}";
     
     // Company服务提示信息说明
     public static final String COMPANY_NAME_REPEAT = "{'status':33001,'message':'不允许和拥有超级帐号的公司的公司名称重名!'}";

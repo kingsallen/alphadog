@@ -20,9 +20,11 @@ import com.moseeker.common.util.BeanUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
-import com.moseeker.servicemanager.web.controller.util.ProfileParamUtil;
 import com.moseeker.servicemanager.web.controller.profile.form.OutPutResumeForm;
 import com.moseeker.servicemanager.web.controller.profile.form.OutPutResumeUtil;
+import com.moseeker.servicemanager.web.controller.util.Params;
+import com.moseeker.servicemanager.web.controller.util.ProfileParamUtil;
+import com.moseeker.thrift.gen.apps.profilebs.service.ProfileBS;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 
@@ -35,7 +37,9 @@ public class ProfileController {
 	WholeProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER
 			.getService(WholeProfileServices.Iface.class);
 	OutPutResumeUtil outPutResumeService = new OutPutResumeUtil();
-	
+
+	ProfileBS.Iface profileBSService = ServiceManager.SERVICEMANAGER.getService(ProfileBS.Iface.class);
+
 	@RequestMapping(value = "/profile/pdf", method = RequestMethod.GET)
 	@ResponseBody
 	public String outPutResume(HttpServletRequest request, HttpServletResponse response) {
@@ -99,54 +103,76 @@ public class ProfileController {
 		try {
 			// GET方法 通用参数解析并赋值
 			Map<String, Object> param = ParamUtils.parseRequestParam(request);
-			
+
 			List<String> userIds = ProfileParamUtil.getProfilesUserIds(param);
 			List<String> uuids = ProfileParamUtil.getProfilesUUIDs(param);
 			List<String> profileIds = ProfileParamUtil.getProfilesIds(param);
 			if ((userIds != null && userIds.size() > 0) || (uuids != null && uuids.size() > 0)
 					|| (profileIds != null && profileIds.size() > 0)) {
 				int count = 0;
-				if(userIds != null) {
+				if (userIds != null) {
 					count = userIds.size();
 				}
-				if(uuids != null) {
+				if (uuids != null) {
 					count = Math.max(count, uuids.size());
 				}
-				if(profileIds != null) {
+				if (profileIds != null) {
 					count = Math.max(count, profileIds.size());
 				}
-				if(count > 1000) {
+				if (count > 1000) {
 					count = 1000;
 				}
 				List<Object> profileData = new ArrayList<>();
 				Response result = null;
-				for(int i=0; i<count; i++) {
+				for (int i = 0; i < count; i++) {
 					int userId = 0;
 					int profileId = 0;
 					String uuid = null;
-					if(userIds != null && userIds.size()-1 >= i) {
+					if (userIds != null && userIds.size() - 1 >= i) {
 						userId = BeanUtils.converToInteger(userIds.get(i));
 					}
-					if(profileIds != null && profileIds.size()-1 >=i) {
+					if (profileIds != null && profileIds.size() - 1 >= i) {
 						try {
 							profileId = BeanUtils.converToInteger(profileIds.get(i));
 						} catch (Exception e) {
 							logger.error(e.getMessage(), e);
 						}
 					}
-					if(uuids != null && uuids.size() -1 >= i) {
+					if (uuids != null && uuids.size() - 1 >= i) {
 						uuid = BeanUtils.converToString(uuids.get(i));
 					}
 					result = profileService.getResource(userId, profileId, uuid);
-					if(result != null && result.getStatus() == 0) {
+					if (result != null && result.getStatus() == 0) {
 						profileData.add(JSON.parse(result.getData()));
 					}
 				}
-				Response res =  ResponseUtils.success(profileData);
+				Response res = ResponseUtils.success(profileData);
 				return ResponseLogNotification.success(request, res);
 			}
 			return ResponseLogNotification.fail(request, "参数错误");
 		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			return ResponseLogNotification.fail(request, e.getMessage());
+		} finally {
+			// do nothing
+		}
+	}
+
+	@RequestMapping(value = "/profile/retrieve", method = RequestMethod.POST)
+	@ResponseBody
+	public String retrieveProfile(HttpServletRequest request, HttpServletResponse response) {
+		// PrintWriter writer = null;
+		try {
+
+			Params<String, Object> form = ParamUtils.parseRequestParam(request);
+			Response result = profileBSService.retrieveProfile(
+					form.getInt("position_id"), 
+					form.getInt("channel"),
+					JSON.toJSONString(form.get("profile")));
+
+			return ResponseLogNotification.success(request, result);
+		} catch (Exception e) {
+			e.printStackTrace();
 			logger.error(e.getMessage(), e);
 			return ResponseLogNotification.fail(request, e.getMessage());
 		} finally {
