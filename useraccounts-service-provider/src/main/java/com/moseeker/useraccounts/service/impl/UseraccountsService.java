@@ -1363,7 +1363,7 @@ public class UseraccountsService {
 		if(user.getMobile() == 0) {
 			return 0;
 		}
-		user.setUsername("");
+		user.setUsername(String.valueOf(user.getMobile()));
 		user.setPassword("");
 		user.setSource((byte)UserSource.RETRIEVE_PROFILE.getValue());
 		try {

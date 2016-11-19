@@ -65,7 +65,7 @@ public class ProfilePojo {
 		}
 		profileRecord.setDisable(UByte.valueOf(Constant.ENABLE));
 		profileRecord.setUuid(UUID.randomUUID().toString());
-		if(resume.get("channel") != null && profileRecord.getSource().intValue() == 0) {
+		if(resume.get("channel") != null && (profileRecord.getSource() == null || profileRecord.getSource().intValue() == 0)) {
 			int channel = (Integer)resume.get("channel");
 			ChannelType channelType = ChannelType.instaceFromInteger(channel);
 			profileRecord.setOrigin(channelType.getOrigin(profileRecord.getOrigin()));

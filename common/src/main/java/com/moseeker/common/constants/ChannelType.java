@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.moseeker.common.util.ConfigPropertiesUtil;
+import com.moseeker.common.util.StringUtils;
 
 /**
  * 
@@ -23,14 +24,18 @@ public enum ChannelType {
 		@Override
 		public String getOrigin(String origin) {
 			String result;
-			if(origin.length() >= 16) {
-				if(origin.charAt(origin.length()-16) == '0') {
-					result = String.valueOf(Long.valueOf(origin)+1000000000000000l);
-				} else {
-					result = origin;
-				}
+			if(StringUtils.isNullOrEmpty(origin)) {
+				result = String.valueOf(1000000000000000l);
 			} else {
-				result = String.valueOf(Long.valueOf(origin)+1000000000000000l);
+				if(origin.length() >= 16) {
+					if(origin.charAt(origin.length()-16) == '0') {
+						result = String.valueOf(Long.valueOf(origin)+1000000000000000l);
+					} else {
+						result = origin;
+					}
+				} else {
+					result = String.valueOf(Long.valueOf(origin)+1000000000000000l);
+				}
 			}
 			return result;
 		}
@@ -43,14 +48,18 @@ public enum ChannelType {
 		@Override
 		public String getOrigin(String origin) {
 			String result;
-			if(origin.length() >= 16) {
-				if(origin.charAt(origin.length()-16) == '0') {
-					result = String.valueOf(Long.valueOf(origin)+10000000000000000l);
-				} else {
-					result = origin;
-				}
+			if(StringUtils.isNullOrEmpty(origin)) {
+				result = String.valueOf(10000000000000000l);
 			} else {
-				result = String.valueOf(Long.valueOf(origin)+10000000000000000l);
+				if(origin.length() >= 16) {
+					if(origin.charAt(origin.length()-16) == '0') {
+						result = String.valueOf(Long.valueOf(origin)+10000000000000000l);
+					} else {
+						result = origin;
+					}
+				} else {
+					result = String.valueOf(Long.valueOf(origin)+10000000000000000l);
+				}
 			}
 			return result;
 		}

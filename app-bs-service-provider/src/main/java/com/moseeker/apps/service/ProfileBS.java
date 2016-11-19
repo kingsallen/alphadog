@@ -128,10 +128,10 @@ public class ProfileBS {
 				int userId = useraccountsServices.createRetrieveProfileUser(user1);
 				//创建profile
 				if(userId > 0) {
-					map.put("id", user.getId());
+					map.put("id", userId);
 					
 					HashMap<String, Object> profileProfile = new HashMap<String, Object>();
-					profileProfile.put("user_id", user.getId());
+					profileProfile.put("user_id", userId);
 					resume.put("profile", profileProfile);
 					
 					Response response = wholeProfileService.createProfile(JSON.toJSONString(resume));
@@ -140,7 +140,7 @@ public class ProfileBS {
 						JobApplication application = new JobApplication();
 						application.setPosition_id(positionId);
 						application.setApplier_id(userId);
-						Response getApplyResult = applicationService.getApplicationByUserIdAndPositionId(user.getId(), positionId, position.getCompany_id());
+						Response getApplyResult = applicationService.getApplicationByUserIdAndPositionId(userId, positionId, position.getCompany_id());
 						if(getApplyResult.getStatus() == 0 && !Boolean.valueOf(getApplyResult.getData())) {
 							applicationService.postApplication(application);
 						}
