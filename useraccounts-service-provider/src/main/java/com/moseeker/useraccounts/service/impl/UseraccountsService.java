@@ -1379,6 +1379,25 @@ public class UseraccountsService {
 	}
 
 	public boolean ifExistProfile(String mobile) {
+		QueryUtil qu = new QueryUtil();
+		qu.addEqualFilter("username", mobile);
+		try {
+			User user = userDao.getUser(qu);
+			if(user != null && user.getId() > 0) {
+				ProfileProfileRecord record = profileDao.getProfileByUserId((int)user.getId());
+				if(record != null) {
+					return true;
+				}
+			}
+		} catch (TException e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+		} finally {
+			//do nothing
+		}
 		return false;
 	}
 
