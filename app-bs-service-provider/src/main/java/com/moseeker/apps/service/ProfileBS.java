@@ -93,6 +93,7 @@ public class ProfileBS {
 				map.put("id", user.getId());
 				HashMap<String, Object> profileProfile = new HashMap<String, Object>();
 				profileProfile.put("user_id", user.getId());
+				profileProfile.put("source", 0);
 				resume.put("profile", profileProfile);
 				
 				//如果有profile，进行profile合并

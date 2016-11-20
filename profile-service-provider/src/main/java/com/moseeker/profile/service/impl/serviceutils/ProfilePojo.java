@@ -181,8 +181,12 @@ public class ProfilePojo {
 		//解析工作经验
 		List<ProfileWorkexpEntity> workexpRecords = null;
 		try {
+			int source = 0;
+			if(profileRecord.getSource() != null) {
+				source = profileRecord.getSource().intValue();
+			}
 			workexpRecords = profileUtils
-					.mapToWorkexpRecords((List<Map<String, Object>>) resume.get("workexps"), profileRecord.getSource().intValue());
+					.mapToWorkexpRecords((List<Map<String, Object>>) resume.get("workexps"), source);
 			pojo.setWorkexpRecords(workexpRecords);
 		} catch (Exception e) {
 			LoggerFactory.getLogger(ProfilePojo.class).error(e.getMessage(), e);
