@@ -48,6 +48,9 @@ public class UserDaoThriftService implements Iface {
 
 	@Override
 	public User saveUser(User user) throws TException {
+		if(user.getPassword() == null) {
+			user.setPassword("");
+		}
 		return userDao.saveUser(user);
 	}
 }
