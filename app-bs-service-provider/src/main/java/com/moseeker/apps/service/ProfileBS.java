@@ -141,6 +141,7 @@ public class ProfileBS {
 						JobApplication application = new JobApplication();
 						application.setPosition_id(positionId);
 						application.setApplier_id(userId);
+						application.setCompany_id(position.getCompany_id());
 						Response getApplyResult = applicationService.getApplicationByUserIdAndPositionId(userId, positionId, position.getCompany_id());
 						if(getApplyResult.getStatus() == 0 && !Boolean.valueOf(getApplyResult.getData())) {
 							applicationService.postApplication(application);
