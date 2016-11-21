@@ -19,6 +19,7 @@ import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
+import com.moseeker.thrift.gen.profile.struct.Profile;
 
 //@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
@@ -44,46 +45,46 @@ public class ProfileProfileController {
 		}
 	}
 
-//	@RequestMapping(value = "/profile/profile", method = RequestMethod.POST)
-//	@ResponseBody
-//	public String post(HttpServletRequest request, HttpServletResponse response) {
-//		//PrintWriter writer = null;
-//		try {
-//			Profile profile = ParamUtils.initModelForm(request, Profile.class);
-//			Response result = profileService.postResource(profile);
-//			
-//			return ResponseLogNotification.success(request, result);
-//		} catch (Exception e) {	
-//			e.printStackTrace();
-//			return ResponseLogNotification.fail(request, e.getMessage());
-//		}
-//	}
-//
-//	@RequestMapping(value = "/profile/profile", method = RequestMethod.PUT)
-//	@ResponseBody
-//	public String put(HttpServletRequest request, HttpServletResponse response) {
-//		try {
-//			Profile profile = ParamUtils.initModelForm(request, Profile.class);
-//			Response result = profileService.putResource(profile);
-//			
-//			return ResponseLogNotification.success(request, result);
-//		} catch (Exception e) {	
-//			return ResponseLogNotification.fail(request, e.getMessage());
-//		}
-//	}
-//
-//	@RequestMapping(value = "/profile/profile", method = RequestMethod.DELETE)
-//	@ResponseBody
-//	public String delete(HttpServletRequest request, HttpServletResponse response) {
-//		try {
-//			Profile profile = ParamUtils.initModelForm(request, Profile.class);
-//			Response result = profileService.delResource(profile);
-//			
-//			return ResponseLogNotification.success(request, result);
-//		} catch (Exception e) {	
-//			return ResponseLogNotification.fail(request, e.getMessage());
-//		}
-//	}
+	@RequestMapping(value = "/profile/profile", method = RequestMethod.POST)
+	@ResponseBody
+	public String post(HttpServletRequest request, HttpServletResponse response) {
+		//PrintWriter writer = null;
+		try {
+			Profile profile = ParamUtils.initModelForm(request, Profile.class);
+			Response result = profileService.postResource(profile);
+			
+			return ResponseLogNotification.success(request, result);
+		} catch (Exception e) {	
+			e.printStackTrace();
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
+
+	@RequestMapping(value = "/profile/profile", method = RequestMethod.PUT)
+	@ResponseBody
+	public String put(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Profile profile = ParamUtils.initModelForm(request, Profile.class);
+			Response result = profileService.putResource(profile);
+			
+			return ResponseLogNotification.success(request, result);
+		} catch (Exception e) {	
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
+
+	@RequestMapping(value = "/profile/profile", method = RequestMethod.DELETE)
+	@ResponseBody
+	public String delete(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Profile profile = ParamUtils.initModelForm(request, Profile.class);
+			Response result = profileService.delResource(profile);
+			
+			return ResponseLogNotification.success(request, result);
+		} catch (Exception e) {	
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
 	
 	@RequestMapping(value = "/profile/completeness", method = RequestMethod.GET)
 	@ResponseBody

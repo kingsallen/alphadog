@@ -743,11 +743,6 @@ public class WholeProfileService {
 		}
 	}
 
-	/*
-	 * private int clearProfile(int profileId) { return
-	 * profileDao.deleteProfile(profileId); }
-	 */
-
 	public Response verifyRequires(int userId, int positionId) throws TException {
 		UserUserRecord userRecord = userDao.getUserById(userId);
 		JobPositionRecord positionRecord = jobPositionDao.getPositionById(positionId);
