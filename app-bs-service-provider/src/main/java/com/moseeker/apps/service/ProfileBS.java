@@ -84,11 +84,7 @@ public class ProfileBS {
 			User user = userDao.getUser(findRetrieveUserQU);
 			if(user.getId() > 0) {
 				//查找该帐号是否有profile
-				JobApplication application = new JobApplication();
-				application.setPosition_id(positionId);
-				application.setApplier_id(user.getId());
-				application.setCompany_id(position.getCompany_id());
-				
+				JobApplication application = initApplication((int)user.getId(), positionId, position.getCompany_id());
 				//更新用户数据
 				map.put("id", user.getId());
 				HashMap<String, Object> profileProfile = new HashMap<String, Object>();
@@ -138,10 +134,7 @@ public class ProfileBS {
 					Response response = wholeProfileService.createProfile(JSON.toJSONString(resume));
 					//创建申请
 					if(response.getStatus() == 0) {
-						JobApplication application = new JobApplication();
-						application.setPosition_id(positionId);
-						application.setApplier_id(userId);
-						application.setCompany_id(position.getCompany_id());
+						JobApplication application = initApplication(userId, positionId, position.getCompany_id());
 						Response getApplyResult = applicationService.getApplicationByUserIdAndPositionId(userId, positionId, position.getCompany_id());
 						if(getApplyResult.getStatus() == 0 && !Boolean.valueOf(getApplyResult.getData())) {
 							applicationService.postApplication(application);
@@ -159,6 +152,14 @@ public class ProfileBS {
 			//do nothing
 		}
 		return ResponseUtils.success(null);
+	}
+	
+	private JobApplication initApplication(int applierId, int positionId, int companyId) {
+		JobApplication application = new JobApplication();
+		application.setPosition_id(positionId);
+		application.setApplier_id(applierId);
+		application.setCompany_id(companyId);
+		return application;
 	}
 	
 }
