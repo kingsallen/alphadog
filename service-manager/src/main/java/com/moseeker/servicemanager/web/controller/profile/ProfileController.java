@@ -99,6 +99,7 @@ public class ProfileController {
 	@RequestMapping(value = "/profiles", method = RequestMethod.POST)
 	@ResponseBody
 	public String getBatchProfiles(HttpServletRequest request, HttpServletResponse response) {
+		System.out.println("----------getBatchProfiles-----------");
 		// PrintWriter writer = null;
 		try {
 			// GET方法 通用参数解析并赋值
@@ -119,8 +120,8 @@ public class ProfileController {
 				if (profileIds != null) {
 					count = Math.max(count, profileIds.size());
 				}
-				if (count > 1000) {
-					count = 1000;
+				if(count > 5000) {
+					return ResponseLogNotification.fail(request, "profile数量过大，拒绝查询！");
 				}
 				List<Object> profileData = new ArrayList<>();
 				Response result = null;
