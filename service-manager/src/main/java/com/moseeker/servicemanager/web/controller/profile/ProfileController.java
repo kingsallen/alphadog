@@ -139,13 +139,14 @@ public class ProfileController {
 						uuid = BeanUtils.converToString(uuids.get(i));
 					}
 					result = profileService.getResource(userId, profileId, uuid);
+					logger.info("count:"+count);
+					logger.info("data:"+JSON.parse(result.getData()));
 					if(result != null && result.getStatus() == 0) {
-						System.out.println("count:");
-						System.out.println("data:"+JSON.parse(result.getData()));
 						profileData.add(JSON.parse(result.getData()));
 					}
 				}
 				Response res =  ResponseUtils.success(profileData);
+				Thread.sleep(400);
 				return ResponseLogNotification.success(request, res);
 			}
 			return ResponseLogNotification.fail(request, "参数错误");
