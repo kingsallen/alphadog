@@ -13,12 +13,12 @@ public class JobCustomFieldsTest {
 	
 	@Test
 	public void getCustomFields() throws Exception{
-		PositionServices.Iface positonServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
-		HashMap<String,Object> map=new HashMap<String,Object>();
-		map.put("company_id", 1);
-		String param=JSONObject.toJSONString(map);
-		Response result=positonServices.CustomField(param);
-		System.out.println(result);
+//		PositionServices.Iface positonServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
+//		HashMap<String,Object> map=new HashMap<String,Object>();
+//		map.put("company_id", 1);
+//		String param=JSONObject.toJSONString(map);
+//		Response result=positonServices.CustomField(param);
+//		System.out.println(result);
 	}
 
 }

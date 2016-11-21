@@ -12,14 +12,14 @@ import com.moseeker.thrift.gen.dict.service.DictOccupationService;
 public class DictOccupationTest {
 	@Test
 	public void getOccupation() throws Exception{
-		DictOccupationService.Iface dictOccupationService = ServiceManager.SERVICEMANAGER
-				.getService(DictOccupationService.Iface.class);
-		Map<String,Object> map=new HashMap<String,Object>();
-		map.put("single_layer", true);
-		map.put("channel", 1);
-		map.put("level", 1);
-		String param=JSONObject.toJSONString(map);
-		Response result=dictOccupationService.getDictOccupation(param);
-		System.out.println(result);
+//		DictOccupationService.Iface dictOccupationService = ServiceManager.SERVICEMANAGER
+//				.getService(DictOccupationService.Iface.class);
+//		Map<String,Object> map=new HashMap<String,Object>();
+//		map.put("single_layer", true);
+//		map.put("channel", 1);
+//		map.put("level", 1);
+//		String param=JSONObject.toJSONString(map);
+//		Response result=dictOccupationService.getDictOccupation(param);
+//		System.out.println(result);
 	}
 }
