@@ -146,7 +146,6 @@ public class ProfileController {
 					}
 				}
 				Response res =  ResponseUtils.success(profileData);
-				Thread.sleep(400);
 				return ResponseLogNotification.success(request, res);
 			}
 			return ResponseLogNotification.fail(request, "参数错误");
