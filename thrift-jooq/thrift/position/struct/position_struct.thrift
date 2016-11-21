@@ -59,3 +59,10 @@ struct Position {
     48: optional i32 target_industry,
     49: optional i32 current_status
 }
+/*
+	第三方自定义职能
+*/
+struct JobOccupationCustom{
+  1: optional i32 id ,
+  2: optional string name
+}

@@ -60,3 +60,12 @@ struct IndustryConstant {
     2: optional string name,             // 常量名称
     3: optional i32 type		 // 字典分类
 }
+struct DictOccupation{
+	1:optional i32 id,
+	2:optional i32 parientid,
+	3:optional string name,
+	4:optional i32 status,
+	5:optional Timestamp createTime,
+	6:optional list<DictOccupation> child,
+	7:optional i32 level
+}

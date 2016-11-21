@@ -1,8 +1,12 @@
 package com.moseeker.servicemanager.web.controller.position;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.jooq.tools.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -18,6 +22,7 @@ import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.position.service.PositionDao;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 
 //@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
@@ -27,7 +32,7 @@ public class PositionController {
     Logger logger = LoggerFactory.getLogger(PositionController.class);
 
     PositionServices.Iface positonServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
-
+    PositionDao.Iface positionDao =ServiceManager.SERVICEMANAGER.getService(PositionDao.Iface.class);
     @RequestMapping(value = "/positions", method = RequestMethod.GET)
     @ResponseBody
     public String get(HttpServletRequest request, HttpServletResponse response) {
@@ -71,6 +76,38 @@ public class PositionController {
 			} else {
 				return ResponseLogNotification.fail(request, message);
 			}
+		} catch (Exception e) {	
+			logger.error(e.getMessage(), e);
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
+    
+    @RequestMapping(value = "/thirdparty/customfield", method = RequestMethod.GET)
+	@ResponseBody
+	public String customField(HttpServletRequest request, HttpServletResponse response) {
+		//PrintWriter writer = null;
+		try {
+			Map<String,Object> map=ParamUtils.parseRequestParam(request);
+			Response result=positonServices.CustomField(JSONObject.toJSONString(map));
+			return ResponseLogNotification.success(request, result);
+		} catch (Exception e) {	
+			logger.error(e.getMessage(), e);
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
+    @RequestMapping(value = "/thirdparty/joboccupation", method = RequestMethod.GET)
+	@ResponseBody
+	public String occupation(HttpServletRequest request, HttpServletResponse response) {
+		//PrintWriter writer = null;
+		try {
+			Map<String,Object> map=ParamUtils.parseRequestParam(request);
+			String company_id= (String) map.get("company_id");
+			CommonQuery query=new CommonQuery();
+			HashMap<String,String> param=new HashMap<String,String>();
+			param.put("company_id", company_id+"");
+			query.setEqualFilter(param);
+			Response result=positionDao.getJobOccupations(query);
+			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
 			logger.error(e.getMessage(), e);
 			return ResponseLogNotification.fail(request, e.getMessage());
