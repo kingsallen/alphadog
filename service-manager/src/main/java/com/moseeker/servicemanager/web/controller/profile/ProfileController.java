@@ -95,6 +95,7 @@ public class ProfileController {
 	@RequestMapping(value = "/profiles", method = RequestMethod.POST)
 	@ResponseBody
 	public String getBatchProfiles(HttpServletRequest request, HttpServletResponse response) {
+		System.out.println("----------getBatchProfiles-----------");
 		// PrintWriter writer = null;
 		try {
 			// GET方法 通用参数解析并赋值
@@ -139,6 +140,8 @@ public class ProfileController {
 					}
 					result = profileService.getResource(userId, profileId, uuid);
 					if(result != null && result.getStatus() == 0) {
+						System.out.println("count:");
+						System.out.println("data:"+JSON.parse(result.getData()));
 						profileData.add(JSON.parse(result.getData()));
 					}
 				}
