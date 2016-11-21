@@ -115,8 +115,8 @@ public class ProfileController {
 				if(profileIds != null) {
 					count = Math.max(count, profileIds.size());
 				}
-				if(count > 1000) {
-					count = 1000;
+				if(count > 5000) {
+					return ResponseLogNotification.fail(request, "profile数量过大，拒绝查询！");
 				}
 				List<Object> profileData = new ArrayList<>();
 				Response result = null;
