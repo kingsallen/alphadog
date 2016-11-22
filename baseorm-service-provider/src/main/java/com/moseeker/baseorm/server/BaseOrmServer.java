@@ -5,9 +5,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.moseeker.baseorm.Thriftservice.CompanyThriftService;
+import com.moseeker.baseorm.Thriftservice.DictDaoThriftService;
 import com.moseeker.baseorm.Thriftservice.HRAccountThriftService;
-import com.moseeker.baseorm.Thriftservice.JobPositionThriftService;
 import com.moseeker.baseorm.Thriftservice.PositionDaoThriftService;
+import com.moseeker.baseorm.Thriftservice.PositionThriftService;
 import com.moseeker.baseorm.Thriftservice.ThirdpartAccountThriftService;
 import com.moseeker.baseorm.Thriftservice.UserDaoThriftService;
 import com.moseeker.baseorm.Thriftservice.WordpressDaoThriftService;
@@ -32,13 +33,14 @@ public class BaseOrmServer {
 	        	MultiRegServer server  = new MultiRegServer(
 	        			BaseOrmServer.class,
 	        			ServerNodeUtils.getPort(args),
-	        			acac.getBean(JobPositionThriftService.class),
 	        			acac.getBean(HRAccountThriftService.class),
 	        			acac.getBean(WordpressDaoThriftService.class),
 	        			acac.getBean(CompanyThriftService.class),
 	        			acac.getBean(PositionDaoThriftService.class),
 	        			acac.getBean(UserDaoThriftService.class),
-	        			acac.getBean(ThirdpartAccountThriftService.class)
+	        			acac.getBean(ThirdpartAccountThriftService.class),
+	        			acac.getBean(DictDaoThriftService.class),
+	        			acac.getBean(PositionThriftService.class)
 	        	);
 	            server.start();
 
