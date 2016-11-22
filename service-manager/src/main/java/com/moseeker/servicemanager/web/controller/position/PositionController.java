@@ -76,4 +76,6 @@ public class PositionController {
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}
+    
+    
 }
