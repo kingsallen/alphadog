@@ -98,7 +98,6 @@ public class PositionController {
     @RequestMapping(value = "/thirdparty/joboccupation", method = RequestMethod.GET)
 	@ResponseBody
 	public String occupation(HttpServletRequest request, HttpServletResponse response) {
-		//PrintWriter writer = null;
 		try {
 			Map<String,Object> map=ParamUtils.parseRequestParam(request);
 			String company_id= (String) map.get("company_id");

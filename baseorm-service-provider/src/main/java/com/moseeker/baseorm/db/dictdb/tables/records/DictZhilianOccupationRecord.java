@@ -32,33 +32,33 @@ import org.jooq.types.UShort;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictZhilianOccupationRecord extends UpdatableRecordImpl<DictZhilianOccupationRecord> implements Record6<UInteger, UInteger, String, UShort, UShort, Timestamp> {
 
-    private static final long serialVersionUID = 2063137842;
+    private static final long serialVersionUID = -1376415070;
 
     /**
-     * Setter for <code>dictdb.dict_zhilian_occupation.id</code>. 职能id
+     * Setter for <code>dictdb.dict_zhilian_occupation.code</code>. 职能id
      */
-    public void setId(UInteger value) {
+    public void setCode(UInteger value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>dictdb.dict_zhilian_occupation.id</code>. 职能id
+     * Getter for <code>dictdb.dict_zhilian_occupation.code</code>. 职能id
      */
-    public UInteger getId() {
+    public UInteger getCode() {
         return (UInteger) get(0);
     }
 
     /**
-     * Setter for <code>dictdb.dict_zhilian_occupation.parientId</code>. 父Id，上一级职能的ID
+     * Setter for <code>dictdb.dict_zhilian_occupation.parent_Id</code>. 父Id，上一级职能的ID
      */
-    public void setParientid(UInteger value) {
+    public void setParentId(UInteger value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>dictdb.dict_zhilian_occupation.parientId</code>. 父Id，上一级职能的ID
+     * Getter for <code>dictdb.dict_zhilian_occupation.parent_Id</code>. 父Id，上一级职能的ID
      */
-    public UInteger getParientid() {
+    public UInteger getParentId() {
         return (UInteger) get(1);
     }
 
@@ -155,7 +155,7 @@ public class DictZhilianOccupationRecord extends UpdatableRecordImpl<DictZhilian
      */
     @Override
     public Field<UInteger> field1() {
-        return DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION.ID;
+        return DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION.CODE;
     }
 
     /**
@@ -163,7 +163,7 @@ public class DictZhilianOccupationRecord extends UpdatableRecordImpl<DictZhilian
      */
     @Override
     public Field<UInteger> field2() {
-        return DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION.PARIENTID;
+        return DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION.PARENT_ID;
     }
 
     /**
@@ -203,7 +203,7 @@ public class DictZhilianOccupationRecord extends UpdatableRecordImpl<DictZhilian
      */
     @Override
     public UInteger value1() {
-        return getId();
+        return getCode();
     }
 
     /**
@@ -211,7 +211,7 @@ public class DictZhilianOccupationRecord extends UpdatableRecordImpl<DictZhilian
      */
     @Override
     public UInteger value2() {
-        return getParientid();
+        return getParentId();
     }
 
     /**
@@ -251,7 +251,7 @@ public class DictZhilianOccupationRecord extends UpdatableRecordImpl<DictZhilian
      */
     @Override
     public DictZhilianOccupationRecord value1(UInteger value) {
-        setId(value);
+        setCode(value);
         return this;
     }
 
@@ -260,7 +260,7 @@ public class DictZhilianOccupationRecord extends UpdatableRecordImpl<DictZhilian
      */
     @Override
     public DictZhilianOccupationRecord value2(UInteger value) {
-        setParientid(value);
+        setParentId(value);
         return this;
     }
 
@@ -328,11 +328,11 @@ public class DictZhilianOccupationRecord extends UpdatableRecordImpl<DictZhilian
     /**
      * Create a detached, initialised DictZhilianOccupationRecord
      */
-    public DictZhilianOccupationRecord(UInteger id, UInteger parientid, String name, UShort level, UShort status, Timestamp createtime) {
+    public DictZhilianOccupationRecord(UInteger code, UInteger parentId, String name, UShort level, UShort status, Timestamp createtime) {
         super(DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION);
 
-        set(0, id);
-        set(1, parientid);
+        set(0, code);
+        set(1, parentId);
         set(2, name);
         set(3, level);
         set(4, status);

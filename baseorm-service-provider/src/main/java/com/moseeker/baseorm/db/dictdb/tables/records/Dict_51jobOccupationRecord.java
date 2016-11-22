@@ -32,33 +32,33 @@ import org.jooq.types.UShort;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dict_51jobOccupationRecord extends UpdatableRecordImpl<Dict_51jobOccupationRecord> implements Record6<UInteger, UInteger, String, UShort, UShort, Timestamp> {
 
-    private static final long serialVersionUID = 1237212602;
+    private static final long serialVersionUID = 1894672858;
 
     /**
-     * Setter for <code>dictdb.dict_51job_occupation.id</code>. 职能id
+     * Setter for <code>dictdb.dict_51job_occupation.code</code>. 职能id
      */
-    public void setId(UInteger value) {
+    public void setCode(UInteger value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>dictdb.dict_51job_occupation.id</code>. 职能id
+     * Getter for <code>dictdb.dict_51job_occupation.code</code>. 职能id
      */
-    public UInteger getId() {
+    public UInteger getCode() {
         return (UInteger) get(0);
     }
 
     /**
-     * Setter for <code>dictdb.dict_51job_occupation.parientId</code>. 父Id，上一级职能的ID
+     * Setter for <code>dictdb.dict_51job_occupation.parent_Id</code>. 父Id，上一级职能的ID
      */
-    public void setParientid(UInteger value) {
+    public void setParentId(UInteger value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>dictdb.dict_51job_occupation.parientId</code>. 父Id，上一级职能的ID
+     * Getter for <code>dictdb.dict_51job_occupation.parent_Id</code>. 父Id，上一级职能的ID
      */
-    public UInteger getParientid() {
+    public UInteger getParentId() {
         return (UInteger) get(1);
     }
 
@@ -155,7 +155,7 @@ public class Dict_51jobOccupationRecord extends UpdatableRecordImpl<Dict_51jobOc
      */
     @Override
     public Field<UInteger> field1() {
-        return Dict_51jobOccupation.DICT_51JOB_OCCUPATION.ID;
+        return Dict_51jobOccupation.DICT_51JOB_OCCUPATION.CODE;
     }
 
     /**
@@ -163,7 +163,7 @@ public class Dict_51jobOccupationRecord extends UpdatableRecordImpl<Dict_51jobOc
      */
     @Override
     public Field<UInteger> field2() {
-        return Dict_51jobOccupation.DICT_51JOB_OCCUPATION.PARIENTID;
+        return Dict_51jobOccupation.DICT_51JOB_OCCUPATION.PARENT_ID;
     }
 
     /**
@@ -203,7 +203,7 @@ public class Dict_51jobOccupationRecord extends UpdatableRecordImpl<Dict_51jobOc
      */
     @Override
     public UInteger value1() {
-        return getId();
+        return getCode();
     }
 
     /**
@@ -211,7 +211,7 @@ public class Dict_51jobOccupationRecord extends UpdatableRecordImpl<Dict_51jobOc
      */
     @Override
     public UInteger value2() {
-        return getParientid();
+        return getParentId();
     }
 
     /**
@@ -251,7 +251,7 @@ public class Dict_51jobOccupationRecord extends UpdatableRecordImpl<Dict_51jobOc
      */
     @Override
     public Dict_51jobOccupationRecord value1(UInteger value) {
-        setId(value);
+        setCode(value);
         return this;
     }
 
@@ -260,7 +260,7 @@ public class Dict_51jobOccupationRecord extends UpdatableRecordImpl<Dict_51jobOc
      */
     @Override
     public Dict_51jobOccupationRecord value2(UInteger value) {
-        setParientid(value);
+        setParentId(value);
         return this;
     }
 
@@ -328,11 +328,11 @@ public class Dict_51jobOccupationRecord extends UpdatableRecordImpl<Dict_51jobOc
     /**
      * Create a detached, initialised Dict_51jobOccupationRecord
      */
-    public Dict_51jobOccupationRecord(UInteger id, UInteger parientid, String name, UShort level, UShort status, Timestamp createtime) {
+    public Dict_51jobOccupationRecord(UInteger code, UInteger parentId, String name, UShort level, UShort status, Timestamp createtime) {
         super(Dict_51jobOccupation.DICT_51JOB_OCCUPATION);
 
-        set(0, id);
-        set(1, parientid);
+        set(0, code);
+        set(1, parentId);
         set(2, name);
         set(3, level);
         set(4, status);

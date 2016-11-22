@@ -38,7 +38,7 @@ import org.jooq.types.UShort;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dict_51jobOccupation extends TableImpl<Dict_51jobOccupationRecord> {
 
-    private static final long serialVersionUID = 1784972386;
+    private static final long serialVersionUID = -288731670;
 
     /**
      * The reference instance of <code>dictdb.dict_51job_occupation</code>
@@ -54,14 +54,14 @@ public class Dict_51jobOccupation extends TableImpl<Dict_51jobOccupationRecord> 
     }
 
     /**
-     * The column <code>dictdb.dict_51job_occupation.id</code>. 职能id
+     * The column <code>dictdb.dict_51job_occupation.code</code>. 职能id
      */
-    public final TableField<Dict_51jobOccupationRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "职能id");
+    public final TableField<Dict_51jobOccupationRecord, UInteger> CODE = createField("code", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "职能id");
 
     /**
-     * The column <code>dictdb.dict_51job_occupation.parientId</code>. 父Id，上一级职能的ID
+     * The column <code>dictdb.dict_51job_occupation.parent_Id</code>. 父Id，上一级职能的ID
      */
-    public final TableField<Dict_51jobOccupationRecord, UInteger> PARIENTID = createField("parientId", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGERUNSIGNED)), this, "父Id，上一级职能的ID");
+    public final TableField<Dict_51jobOccupationRecord, UInteger> PARENT_ID = createField("parent_Id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGERUNSIGNED)), this, "父Id，上一级职能的ID");
 
     /**
      * The column <code>dictdb.dict_51job_occupation.name</code>. 职能名称

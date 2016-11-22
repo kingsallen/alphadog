@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.dict.enums.ConstantEnum;
@@ -38,15 +40,15 @@ public class DictOccupationService {
 		try{
 			if(single_layer){
 				Integer level=obj.getInteger("level") ;
-				Integer id=obj.getInteger("id");
-				Integer parientId=obj.getInteger("parientId");
+				Integer id=obj.getInteger("code");
+				Integer parentId=obj.getInteger("parent_id");
 				CommonQuery query=new CommonQuery();
 				HashMap<String,String> map=new HashMap<String,String>();
 				if(id!=null){
-					map.put("id", String.valueOf(id));
+					map.put("code", String.valueOf(id));
 				}
-				if(parientId!=null){
-					map.put("parientId",String.valueOf(parientId));
+				if(parentId!=null){
+					map.put("parent_id",String.valueOf(parentId));
 				}
 				if(level!=null){
 					map.put("level", String.valueOf(level));
@@ -55,7 +57,7 @@ public class DictOccupationService {
 				if(channel==1){
 					return dictOccupationDao.getOccupation51(query);
 				}else if(channel==2){
-					return dictOccupationDao.getOccupationsZPin();
+					return dictOccupationDao.getOccupationZPin(query);
 				}
 			}else{
 				if(channel==1){
@@ -66,7 +68,9 @@ public class DictOccupationService {
 						return res;
 					}else{
 						Response res=dictOccupationDao.getOccupations51();
-						redisClient.set(Constant.APPID_ALPHADOG,ConstantEnum.JOB_OCCUPATION_KEY.toString(),key,JSONObject.toJSONString(res));
+						if(res.getStatus()==0&&!StringUtils.isEmpty(res.getData())&&!"[]".equals(res.getData())){
+							redisClient.set(Constant.APPID_ALPHADOG,ConstantEnum.JOB_OCCUPATION_KEY.toString(),key,JSONObject.toJSONString(res));
+						}
 						return res;
 					}
 				}else if(channel==2){
@@ -77,7 +81,9 @@ public class DictOccupationService {
 						return res;
 					}else{
 						Response res=dictOccupationDao.getOccupationsZPin();
-						redisClient.set(Constant.APPID_ALPHADOG,ConstantEnum.JOB_OCCUPATION_KEY.toString(),key ,JSONObject.toJSONString(res));
+						if(res.getStatus()==0&&!StringUtils.isEmpty(res.getData())&&!"[]".equals(res.getData())){
+							redisClient.set(Constant.APPID_ALPHADOG,ConstantEnum.JOB_OCCUPATION_KEY.toString(),key ,JSONObject.toJSONString(res));
+						}
 						return res;
 					}
 				}
@@ -86,7 +92,7 @@ public class DictOccupationService {
 				e.printStackTrace();
 				logger.error(e.getMessage());
 			}
-			return null;
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 	}
 	
 }

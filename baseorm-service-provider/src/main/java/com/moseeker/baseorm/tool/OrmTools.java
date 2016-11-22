@@ -6,6 +6,9 @@ import java.util.List;
 
 import org.apache.thrift.TBase;
 import org.jooq.impl.UpdatableRecordImpl;
+import org.jooq.tools.json.JSONObject;
+
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.util.BaseDaoImpl;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -34,34 +37,33 @@ public class OrmTools {
 			if(list!=null&&list.size()>0){
 				for(int i=0;i<list.size();i++){
 					DictOccupation occu=(DictOccupation) BeanUtils.DBToStruct(DictOccupation.class,list.get(i) );
-					int id=occu.getId();
+					int id=occu.getCode();
 					HashMap<String,String> map1=new HashMap<String,String>();
-					map1.put("parientId", id+"");
+					map1.put("parent_id", id+"");
 					query.setEqualFilter(map1);
 					List<? extends UpdatableRecordImpl<?>> list1=dao.getResources(query);
 					List<DictOccupation> result1=new ArrayList<DictOccupation>();
 					if(list1!=null&&list1.size()>0){
 						for(int j=0;j<list1.size();j++){
 							DictOccupation occ1=(DictOccupation) BeanUtils.DBToStruct(DictOccupation.class,list1.get(j) );
-							int id1=occ1.getId();
+							int id1=occ1.getCode();
 							HashMap<String,String> map2=new HashMap<String,String>();
-							map2.put("parientId", id1+"");
+							map2.put("parent_id", id1+"");
 							query.setEqualFilter(map2);
 							List<? extends UpdatableRecordImpl<?>> list2=dao.getResources(query);
 							List<DictOccupation> result2=new ArrayList<DictOccupation>();
 							if(list2!=null&&list2.size()>0){
 								for(int z=0;z<list2.size();z++){
 									DictOccupation occ2=(DictOccupation) BeanUtils.DBToStruct(DictOccupation.class,list2.get(z) );
-									occ2.setChild(null);
+									occ2.setChildren(null);
 									result2.add(occ2);
-									System.out.println(occ2);
 								}
-								occ1.setChild(result2);
+								occ1.setChildren(result2);
 								result1.add(occ1);
 							}
 						}
 					}
-					occu.setChild(result1);
+					occu.setChildren(result1);
 					result.add(occu);
 				}
 			}
@@ -81,9 +83,8 @@ public class OrmTools {
 			if(list!=null&&list.size()>0){
 				for(int z=0;z<list.size();z++){
 					DictOccupation occ2=(DictOccupation) BeanUtils.DBToStruct(DictOccupation.class,list.get(z) );
-					occ2.setChild(null);
+					occ2.setChildren(null);
 					result.add(occ2);
-					System.out.println(occ2);
 				}
 			}
 			
@@ -103,7 +104,6 @@ public class OrmTools {
 				for(int z=0;z<list.size();z++){
 					bean= BeanUtils.DBToStruct(bean.getClass(),list.get(z) );
 					result.add(bean);
-					System.out.println(bean);
 				}
 			}
 			return ResponseUtils.success(result);
