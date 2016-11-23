@@ -341,8 +341,6 @@ public class WholeProfileService {
 		}
 		ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
 		
-		logger.info("profile importCV profilePojo:"+JSON.toJSONString(profilePojo));
-		
 		int id = profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
 				profilePojo.getAttachmentRecords(), profilePojo.getAwardsRecords(), profilePojo.getCredentialsRecords(),
 				profilePojo.getEducationRecords(), profilePojo.getImportRecords(), profilePojo.getIntentionRecords(),
