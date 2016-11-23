@@ -1381,10 +1381,18 @@ public class UseraccountsService {
 		qu.addEqualFilter("username", mobile);
 		try {
 			User user = userDao.getUser(qu);
+			if(user == null) {
+				QueryUtil autoCreate = new QueryUtil();
+				autoCreate.addEqualFilter("mobile", mobile);
+				autoCreate.addEqualFilter("source", String.valueOf(UserSource.RETRIEVE_PROFILE.getValue()));
+				user = userDao.getUser(autoCreate);
+			}
 			if(user != null && user.getId() > 0) {
 				ProfileProfileRecord record = profileDao.getProfileByUserId((int)user.getId());
 				if(record != null) {
 					return true;
+				} else {
+					
 				}
 			}
 		} catch (TException e) {
