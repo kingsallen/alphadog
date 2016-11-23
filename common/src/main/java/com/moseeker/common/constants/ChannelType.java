@@ -3,10 +3,6 @@ package com.moseeker.common.constants;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
 
 /**
@@ -51,8 +47,8 @@ public enum ChannelType {
 			if(StringUtils.isNullOrEmpty(origin)) {
 				result = String.valueOf(10000000000000000l);
 			} else {
-				if(origin.length() >= 16) {
-					if(origin.charAt(origin.length()-16) == '0') {
+				if(origin.length() >= 17) {
+					if(origin.charAt(origin.length()-17) == '0') {
 						result = String.valueOf(Long.valueOf(origin)+10000000000000000l);
 					} else {
 						result = origin;
@@ -71,25 +67,13 @@ public enum ChannelType {
 		}
 	};
 	
-	private Logger logger = LoggerFactory.getLogger(ChannelType.class);
-	
 	private ChannelType(int value, String name) {
-		try {
-			ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
-			configUtils.loadResource("chaos.properties");
-			this.domain = configUtils.get("choas.domain", String.class);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		} finally {
-			//do nothing
-		}
 		this.value = value;
 		this.name = name;
 	}
 	
 	private int value = 0;				//渠道值
 	private String name = null;			//渠道名称
-	private String domain = null;		//chaos域名
 	
 	public abstract String getOrigin(String origin);
 	
@@ -114,10 +98,11 @@ public enum ChannelType {
 	
 	/**
 	 * 返回该渠道的绑定请求地址
+	 * @param domain 
 	 * @param domain chaos域名
 	 * @return
 	 */
-	public String getBindURI() {
+	public String getBindURI(String domain) {
 		return domain+"/"+name+"/"+BINDING;
 	}
 	
@@ -126,7 +111,7 @@ public enum ChannelType {
 	 * @param domain chaos域名
 	 * @return
 	 */
-	public String getRemain() {
+	public String getRemain(String domain) {
 		return domain+"/"+name+"/"+REMAIN_NUM;
 	}
 	
@@ -135,7 +120,7 @@ public enum ChannelType {
 	 * @param domain chaos域名
 	 * @return
 	 */
-	public String getRemainURI() {
+	public String getRemainURI(String domain) {
 		return domain+"/"+name+"/"+REMAIN_NUM;
 	}
 }

@@ -26,6 +26,8 @@ import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.service.CompanyDao;
+import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.foundation.passport.service.HRAccountFoundationServices;
 import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
@@ -56,6 +58,8 @@ public class UserHrAccountService {
 	
 	HRAccountFoundationServices.Iface hrAccountService = ServiceManager.SERVICEMANAGER
 			.getService(HRAccountFoundationServices.Iface.class);
+	
+	CompanyDao.Iface companyDao = ServiceManager.SERVICEMANAGER.getService(CompanyDao.Iface.class);
 
 	@Autowired
 	private UserHrAccountDao userHrAccountDao;
@@ -309,7 +313,7 @@ public class UserHrAccountService {
 			// do nothing
 		}
 	}
-
+	
 	/**
 	 * HR账号验证码校验
 	 * <p>

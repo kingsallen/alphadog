@@ -2,6 +2,7 @@
 
 include "../../../common/struct/common_struct.thrift"
 include "../struct/chaos_struct.thrift"
+include "../../../position/struct/position_struct.thrift"
 namespace java com.moseeker.thrift.gen.foundation.chaos.service
 
 /**
@@ -14,5 +15,7 @@ service ChaosServices {
     common_struct.Response binding(1:string username, 2:string password, 3:string member_name, 4:byte channel); 
     //同步可发布职位数
     chaos_struct.ThirdPartyAccountStruct synchronization(1:chaos_struct.ThirdPartyAccountStruct thirdPartyAccount); 
+    //同步职位
+    common_struct.Response synchronizePosition(1:list<position_struct.ThirdPartyPositionForSynchronization> positions); 
 }
 

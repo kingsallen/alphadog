@@ -20,6 +20,8 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.thrift.gen.apps.positionbs.service.PositionBS;
+import com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPositionForm;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.position.service.PositionDao;
@@ -33,6 +35,8 @@ public class PositionController {
 
     PositionServices.Iface positonServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
     PositionDao.Iface positionDao =ServiceManager.SERVICEMANAGER.getService(PositionDao.Iface.class);
+    PositionBS.Iface positionBS =ServiceManager.SERVICEMANAGER.getService(PositionBS.Iface.class);
+    
     @RequestMapping(value = "/positions", method = RequestMethod.GET)
     @ResponseBody
     public String get(HttpServletRequest request, HttpServletResponse response) {
@@ -95,6 +99,7 @@ public class PositionController {
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}
+    
     @RequestMapping(value = "/thirdparty/joboccupation", method = RequestMethod.GET)
 	@ResponseBody
 	public String occupation(HttpServletRequest request, HttpServletResponse response) {
@@ -106,6 +111,19 @@ public class PositionController {
 			param.put("company_id", company_id+"");
 			query.setEqualFilter(param);
 			Response result=positionDao.getJobOccupations(query);
+			return ResponseLogNotification.success(request, result);
+		} catch (Exception e) {	
+			logger.error(e.getMessage(), e);
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
+    
+    @RequestMapping(value = "/position/{id}/synchronization", method = RequestMethod.GET)
+	@ResponseBody
+	public String synchronizePosition(@PathVariable int id, HttpServletRequest request, HttpServletResponse response) {
+		try {
+			ThridPartyPositionForm form = ParamUtils.initModelForm(request, ThridPartyPositionForm.class);
+			Response result = positionBS.synchronizePositionToThirdPartyPlatform(form);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
 			logger.error(e.getMessage(), e);

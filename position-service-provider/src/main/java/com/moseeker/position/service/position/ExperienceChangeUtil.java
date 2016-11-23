@@ -10,7 +10,7 @@ import com.moseeker.position.service.position.zhilian.ZhilianExperience;
  */
 public class ExperienceChangeUtil {
 
-	public Job51Experience getJob51Experience(Integer experience) {
+	public static Job51Experience getJob51Experience(Integer experience) {
 		Job51Experience job51Experience = Job51Experience.None;
 		if(experience == null || experience < 0) {
 			return job51Experience;
@@ -31,7 +31,7 @@ public class ExperienceChangeUtil {
 		return job51Experience;
 	}
 	
-	public ZhilianExperience getZhilianExperience(Integer experience) {
+	public static ZhilianExperience getZhilianExperience(Integer experience) {
 		
 		ZhilianExperience zhilianExperience = ZhilianExperience.None;
 		if(experience == null || experience < 0) {

@@ -3,6 +3,7 @@ package com.moseeker.baseorm.dao.hr;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,9 @@ import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 
 /**
  * 
@@ -69,7 +73,26 @@ public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecor
 			e.printStackTrace();
 			logger.error(e.getMessage(), e);
 			
+		} finally {
+			//do nothing
 		}
 		return count;
+	}
+
+	public List<HrThirdPartyAccountRecord> getThirdPartyBindingAccounts(CommonQuery query) {
+		try {
+			return this.getResources(query);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+		} finally {
+			//do nothing
+		}
+		return null;
+	}
+
+	public Response saveThirdPartyPosition(ThirdPartyPositionData position) {
+		return null;
 	}
 }

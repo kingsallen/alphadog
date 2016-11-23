@@ -46,3 +46,17 @@ struct ThirdPartAccountData{
         9: i32 remain_num,
         10: Timestamp sync_time
 }
+//第三方渠道职位
+struct ThirdPartyPositionData {
+	1: i32 id,
+	2: i32 position_id,
+	3: string third_part_position_id,
+	4: byte channel,
+	5: byte is_synchronization,
+	6: byte is_refresh,
+	7: string sync_time,
+	8: string refresh_time,
+	9: string update_time,
+	10: string occupation,
+	11: string address
+}

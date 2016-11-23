@@ -32,6 +32,11 @@ service WordpressDao {
 
 service CompanyDao {
 	dao_struct.ThirdPartAccountData getThirdPartyAccount(1:common_struct.CommonQuery query);
+	list<dao_struct.ThirdPartAccountData> getThirdPartyBindingAccounts(1:common_struct.CommonQuery query);
+	//获取第三方渠道职位
+	list<dao_struct.ThirdPartyPositionData> getThirdPartyPositions(1:common_struct.CommonQuery query);
+	//添加或者修改第三方渠道职位
+	common_struct.Response upsertThirdPartyPositions(1: list<dao_struct.ThirdPartyPositionData> positions);
 }
 
 service UserDao {

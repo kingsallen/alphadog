@@ -10,8 +10,8 @@ import com.moseeker.position.service.position.zhilian.ZhilianDegree;
  *
  */
 public class DegreeChangeUtil {
-
-	public Job51Degree getJob51EmployeeType(Degree degree) {
+	
+	public static Job51Degree getJob51Degree(Degree degree) {
 		Job51Degree job51Degree = Job51Degree.None;
 		switch(degree) {
 		case None: break;
@@ -27,7 +27,7 @@ public class DegreeChangeUtil {
 		return job51Degree;
 	}
 	
-	public ZhilianDegree getZhilianEmployeeType(Degree degree) {
+	public static ZhilianDegree getZhilianDegree(Degree degree) {
 		
 		ZhilianDegree zhilianDegree = ZhilianDegree.NotRequired;
 		switch(degree) {

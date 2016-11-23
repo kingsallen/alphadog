@@ -18,6 +18,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
  */
 public enum ResultMessage {
 
+	THIRD_PARTY_ACCOUNT_NOT_BIND(10003, "没有同步的权限!"),
 	PROGRAM_PARAM_NOTEXIST(90015, "参数不正确!"),
 	SUCCESS(0, "success"),
 	PROGRAM_EXCEPTION(99999, "程序异常，请稍后再试！"),

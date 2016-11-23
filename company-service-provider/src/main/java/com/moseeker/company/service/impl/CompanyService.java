@@ -215,4 +215,38 @@ public class CompanyService extends JOOQBaseServiceImpl<Hrcompany, HrCompanyReco
 			//do nothing
 		}
 	}
+
+	/**
+	 * 判断是否有权限发布职位
+	 * @param companyId 公司编号
+	 * @param channel 渠道号
+	 * @return
+	 */
+	public Response ifSynchronizePosition(int companyId, int channel) {
+		Response response = ResultMessage.PROGRAM_EXHAUSTED.toResponse();
+		QueryUtil qu = new QueryUtil();
+		qu.addEqualFilter("company_id", String.valueOf(companyId));
+		qu.addEqualFilter("channel", String.valueOf(channel));
+		try {
+			ThirdPartAccountData data = companyDao.getThirdPartyAccount(qu);
+			if(data.getId() == 0 || data.getBinding() != 1) {
+				response = ResultMessage.THIRD_PARTY_ACCOUNT_UNBOUND.toResponse();
+			}
+			if(data.getRemain_num() == 0) {
+				response = ResultMessage.THIRD_PARTY_ACCOUNT_HAVE_NO_REMAIN_NUM.toResponse();
+			}
+			if(data.getId() > 0 && data.binding == 1 && data.getRemain_num() > 0) {
+				response = ResultMessage.SUCCESS.toResponse();
+			} else {
+				response = ResultMessage.THIRD_PARTY_ACCOUNT_UNBOUND.toResponse();
+			}
+		} catch (TException e) {
+			e.printStackTrace();
+			response = ResultMessage.PROGRAM_EXHAUSTED.toResponse();
+			logger.error(e.getMessage(), e);
+		} finally {
+			//do nothing
+		}
+		return response;
+	}
 }
