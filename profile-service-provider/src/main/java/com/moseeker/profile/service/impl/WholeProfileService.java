@@ -341,6 +341,8 @@ public class WholeProfileService {
 		}
 		ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
 		
+		logger.info("profile importCV profilePojo:"+JSON.toJSONString(profilePojo));
+		
 		int id = profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
 				profilePojo.getAttachmentRecords(), profilePojo.getAwardsRecords(), profilePojo.getCredentialsRecords(),
 				profilePojo.getEducationRecords(), profilePojo.getImportRecords(), profilePojo.getIntentionRecords(),
@@ -348,6 +350,7 @@ public class WholeProfileService {
 				profilePojo.getSkillRecords(), profilePojo.getWorkexpRecords(), profilePojo.getWorksRecords(),
 				userRecord, oldProfile);
 		if (id > 0) {
+			logger.info("importCV 添加成功");
 			return ResponseUtils.success(id);
 		} else {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);

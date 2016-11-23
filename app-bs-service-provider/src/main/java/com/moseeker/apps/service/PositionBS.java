@@ -64,8 +64,6 @@ public class PositionBS {
 				//是否可以同步职位
 				List<ThridPartyPosition> positionFroms = new ArrayList<>(); //可同步的职位
 				
-				
-				
 				QueryUtil ThirdPartyBindingAccounts = new QueryUtil();
 				qu.addEqualFilter("company_id", String.valueOf(positionStruct.getCompany_id()));
 				List<ThirdPartAccountData> thirdPartyAccounts = CompanyDao.getThirdPartyBindingAccounts(ThirdPartyBindingAccounts);
