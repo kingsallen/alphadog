@@ -3,6 +3,7 @@ namespace java com.moseeker.thrift.gen.dao.service
 include "../../common/struct/common_struct.thrift"
 include "../../useraccounts/struct/useraccounts_struct.thrift"
 include "../../position/struct/position_struct.thrift"
+include "../../dict/struct/dict_struct.thrift"
 include "../struct/dao_struct.thrift"
 
 service UserHrAccountDao {
@@ -37,6 +38,7 @@ service CompanyDao {
 	list<dao_struct.ThirdPartyPositionData> getThirdPartyPositions(1:common_struct.CommonQuery query);
 	//添加或者修改第三方渠道职位
 	common_struct.Response upsertThirdPartyPositions(1: list<dao_struct.ThirdPartyPositionData> positions);
+	common_struct.Response updatePartyAccountByCompanyIdChannel(1: dao_struct.ThirdPartAccountData account);
 }
 
 service UserDao {
@@ -47,4 +49,11 @@ service UserDao {
 
 service PositionDao {
 	position_struct.Position getPosition(1:common_struct.CommonQuery query);
+	i32 updatePosition(1:position_struct.Position position);
+	position_struct.Position getPositionWithCityCode(1:common_struct.CommonQuery query);
+	common_struct.Response getPositionThirdPartyPositions(1:common_struct.CommonQuery query);
+}
+
+service DictDao {
+        dict_struct.CityMap getDictMap(1:common_struct.CommonQuery query);
 }

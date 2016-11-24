@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> {
 
-	private static final long serialVersionUID = -458115436;
+	private static final long serialVersionUID = 1248253907;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_third_party_position</code>
@@ -74,17 +74,17 @@ public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> 
 	/**
 	 * The column <code>hrdb.hr_third_party_position.is_synchronization</code>. 是否同步:0=未同步,1=同步,2=同步中，3=同步失败
 	 */
-	public final TableField<HrThirdPartyPositionRecord, Byte> IS_SYNCHRONIZATION = createField("is_synchronization", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "是否同步:0=未同步,1=同步,2=同步中，3=同步失败");
+	public final TableField<HrThirdPartyPositionRecord, Short> IS_SYNCHRONIZATION = createField("is_synchronization", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaulted(true), this, "是否同步:0=未同步,1=同步,2=同步中，3=同步失败");
 
 	/**
 	 * The column <code>hrdb.hr_third_party_position.is_refresh</code>. 是否刷新:0=未刷新,1=刷新,2=刷新中
 	 */
-	public final TableField<HrThirdPartyPositionRecord, Byte> IS_REFRESH = createField("is_refresh", org.jooq.impl.SQLDataType.TINYINT.defaulted(true), this, "是否刷新:0=未刷新,1=刷新,2=刷新中");
+	public final TableField<HrThirdPartyPositionRecord, Short> IS_REFRESH = createField("is_refresh", org.jooq.impl.SQLDataType.SMALLINT.defaulted(true), this, "是否刷新:0=未刷新,1=刷新,2=刷新中");
 
 	/**
 	 * The column <code>hrdb.hr_third_party_position.sync_time</code>. 职位同步时间
 	 */
-	public final TableField<HrThirdPartyPositionRecord, Timestamp> SYNC_TIME = createField("sync_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "职位同步时间");
+	public final TableField<HrThirdPartyPositionRecord, Timestamp> SYNC_TIME = createField("sync_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "职位同步时间");
 
 	/**
 	 * The column <code>hrdb.hr_third_party_position.refresh_time</code>. 职位刷新时间
@@ -95,6 +95,21 @@ public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> 
 	 * The column <code>hrdb.hr_third_party_position.update_time</code>. 数据更新时间
 	 */
 	public final TableField<HrThirdPartyPositionRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "数据更新时间");
+
+	/**
+	 * The column <code>hrdb.hr_third_party_position.occupation</code>. 同步时选中的第三方职位职能
+	 */
+	public final TableField<HrThirdPartyPositionRecord, String> OCCUPATION = createField("occupation", org.jooq.impl.SQLDataType.VARCHAR.length(20), this, "同步时选中的第三方职位职能");
+
+	/**
+	 * The column <code>hrdb.hr_third_party_position.address</code>. 职位的详细地址
+	 */
+	public final TableField<HrThirdPartyPositionRecord, String> ADDRESS = createField("address", org.jooq.impl.SQLDataType.VARCHAR.length(100), this, "职位的详细地址");
+
+	/**
+	 * The column <code>hrdb.hr_third_party_position.sync_fail_reason</code>. 失败原因
+	 */
+	public final TableField<HrThirdPartyPositionRecord, String> SYNC_FAIL_REASON = createField("sync_fail_reason", org.jooq.impl.SQLDataType.VARCHAR.length(60), this, "失败原因");
 
 	/**
 	 * Create a <code>hrdb.hr_third_party_position</code> table reference

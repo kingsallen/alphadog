@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.moseeker.baseorm.Thriftservice.CompanyThriftService;
+import com.moseeker.baseorm.Thriftservice.DictDaoMapThriftService;
 import com.moseeker.baseorm.Thriftservice.DictDaoThriftService;
 import com.moseeker.baseorm.Thriftservice.HRAccountThriftService;
 import com.moseeker.baseorm.Thriftservice.PositionDaoThriftService;
@@ -40,6 +41,7 @@ public class BaseOrmServer {
 	        			acac.getBean(UserDaoThriftService.class),
 	        			acac.getBean(ThirdpartAccountThriftService.class),
 	        			acac.getBean(DictDaoThriftService.class),
+	        			acac.getBean(DictDaoMapThriftService.class),
 	        			acac.getBean(PositionThriftService.class)
 	        	);
 	            server.start();

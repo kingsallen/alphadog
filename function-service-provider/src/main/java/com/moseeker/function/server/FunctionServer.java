@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import com.moseeker.function.service.choas.PositionSyncListener;
 import com.moseeker.function.thrift.service.ChaosThriftService;
 import com.moseeker.function.thrift.service.FunctionService;
 import com.moseeker.function.thrift.service.HRAccountThriftService;
@@ -35,6 +36,10 @@ public class FunctionServer {
 					acac.getBean(WordpressThriftService.class),
 					acac.getBean(HRAccountThriftService.class));
 			server.start(); // 启动服务，非阻塞
+			
+			//开启监听同步完成任务
+			PositionSyncListener listener = new PositionSyncListener();
+			listener.startTask();
 
 			synchronized (FunctionServer.class) {
 				while (true) {

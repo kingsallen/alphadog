@@ -5,6 +5,7 @@ package com.moseeker.db.dictdb;
 
 
 import com.moseeker.db.dictdb.tables.DictCity;
+import com.moseeker.db.dictdb.tables.DictCityMap;
 import com.moseeker.db.dictdb.tables.DictCollege;
 import com.moseeker.db.dictdb.tables.DictConstant;
 import com.moseeker.db.dictdb.tables.DictCountry;
@@ -12,6 +13,8 @@ import com.moseeker.db.dictdb.tables.DictIndustry;
 import com.moseeker.db.dictdb.tables.DictIndustryType;
 import com.moseeker.db.dictdb.tables.DictMajor;
 import com.moseeker.db.dictdb.tables.DictPosition;
+import com.moseeker.db.dictdb.tables.DictZhilianOccupation;
+import com.moseeker.db.dictdb.tables.Dict_51jobOccupation;
 
 import javax.annotation.Generated;
 
@@ -30,9 +33,19 @@ import javax.annotation.Generated;
 public class Tables {
 
 	/**
+	 * The table dictdb.dict_51job_occupation
+	 */
+	public static final Dict_51jobOccupation DICT_51JOB_OCCUPATION = com.moseeker.db.dictdb.tables.Dict_51jobOccupation.DICT_51JOB_OCCUPATION;
+
+	/**
 	 * 城市字典表
 	 */
 	public static final DictCity DICT_CITY = com.moseeker.db.dictdb.tables.DictCity.DICT_CITY;
+
+	/**
+	 * The table dictdb.dict_city_map
+	 */
+	public static final DictCityMap DICT_CITY_MAP = com.moseeker.db.dictdb.tables.DictCityMap.DICT_CITY_MAP;
 
 	/**
 	 * 学校字典表
@@ -68,4 +81,9 @@ public class Tables {
 	 * 职能分类字典表
 	 */
 	public static final DictPosition DICT_POSITION = com.moseeker.db.dictdb.tables.DictPosition.DICT_POSITION;
+
+	/**
+	 * The table dictdb.dict_zhilian_occupation
+	 */
+	public static final DictZhilianOccupation DICT_ZHILIAN_OCCUPATION = com.moseeker.db.dictdb.tables.DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION;
 }

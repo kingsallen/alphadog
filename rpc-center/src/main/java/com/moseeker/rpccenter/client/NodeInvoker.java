@@ -122,6 +122,7 @@ public class NodeInvoker<T> implements Invoker {
                 } else {
                     exception = ite;
                 }
+                ite.printStackTrace();
                 LOGGER.error(ite.getMessage(), ite);
             } catch (Throwable e) {
             	e.printStackTrace();

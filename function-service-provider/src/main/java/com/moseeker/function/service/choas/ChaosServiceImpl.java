@@ -134,8 +134,25 @@ public class ChaosServiceImpl {
 	public Response synchronizePosition(List<ThirdPartyPositionForSynchronization> positions) {
 		
 		try {
-			RedisClientFactory.getCacheClient().lpush(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_QUEUE.toString(), JSON.toJSONString(positions));
-			return ResponseUtils.success(null);
+			if(positions != null && positions.size() > 0) {
+				String email = "";
+				try {
+					ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
+					configUtils.loadResource("chaos.properties");
+					email = configUtils.get("choas.email", String.class);
+				} catch (Exception e) {
+					logger.error(e.getMessage(), e);
+				} finally {
+					//do nothing
+				}
+				for(ThirdPartyPositionForSynchronization position : positions) {
+					position.setEmail("cv_"+position.getPosition_id()+email);
+				}
+				RedisClientFactory.getCacheClient().lpush(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_QUEUE.toString(), JSON.toJSONString(positions));
+				return ResponseUtils.success(null);
+			} else {
+				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
+			}
 		} catch (CacheConfigNotExistException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

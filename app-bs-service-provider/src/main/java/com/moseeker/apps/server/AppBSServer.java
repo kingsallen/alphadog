@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import com.moseeker.apps.thrift.service.PositionBSThriftService;
 import com.moseeker.apps.thrift.service.ProfileBSThriftService;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.MultiRegServer;
@@ -27,6 +28,7 @@ public class AppBSServer {
         	AnnotationConfigApplicationContext acac = initSpring();
         	MultiRegServer server = new MultiRegServer(AppBSServer.class,
         			ServerNodeUtils.getPort(args),
+        			acac.getBean(PositionBSThriftService.class),
 					acac.getBean(ProfileBSThriftService.class));
 			server.start(); // 启动服务，非阻塞
 

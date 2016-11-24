@@ -35,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictCountry extends TableImpl<DictCountryRecord> {
 
-	private static final long serialVersionUID = -1982080523;
+	private static final long serialVersionUID = -1073041324;
 
 	/**
 	 * The reference instance of <code>dictdb.dict_country</code>
@@ -94,11 +94,6 @@ public class DictCountry extends TableImpl<DictCountryRecord> {
 	 * The column <code>dictdb.dict_country.continent_code</code>. 7大洲code, dict_constant.parent_code: 9103
 	 */
 	public final TableField<DictCountryRecord, UInteger> CONTINENT_CODE = createField("continent_code", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "7大洲code, dict_constant.parent_code: 9103");
-
-	/**
-	 * The column <code>dictdb.dict_country.priority</code>. 优先级
-	 */
-	public final TableField<DictCountryRecord, Short> PRIORITY = createField("priority", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaulted(true), this, "优先级");
 
 	/**
 	 * Create a <code>dictdb.dict_country</code> table reference

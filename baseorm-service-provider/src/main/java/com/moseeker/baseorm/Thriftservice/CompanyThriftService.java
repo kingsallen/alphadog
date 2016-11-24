@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import com.moseeker.baseorm.dao.hr.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hr.HRThirdPartyPositionDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.CompanyDao.Iface;
@@ -61,6 +63,7 @@ public class CompanyThriftService implements Iface {
 				records.forEach(r -> {
 					ThirdPartAccountData data = new ThirdPartAccountData();
 					copy(data, r);
+					datas.add(data);
 				});
 			}
 		} catch (Exception e) {
@@ -86,6 +89,15 @@ public class CompanyThriftService implements Iface {
 	public Response upsertThirdPartyPositions(List<ThirdPartyPositionData> positions) throws TException {
 		
 		return thirdPartyPositionDao.upsertThirdPartyPositions(positions);
+	}
+	
+	@Override
+	public Response updatePartyAccountByCompanyIdChannel(ThirdPartAccountData account) throws TException {
+		int count = thirdPartyAccountDao.updatePartyAccountByCompanyIdChannel(account);
+		if(count > 0) {
+			return ResponseUtils.success(null);
+		}
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
 	}
 
 	private void copy(ThirdPartAccountData data, HrThirdPartyAccountRecord record) {

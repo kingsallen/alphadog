@@ -1391,8 +1391,6 @@ public class UseraccountsService {
 				ProfileProfileRecord record = profileDao.getProfileByUserId((int)user.getId());
 				if(record != null) {
 					return true;
-				} else {
-					
 				}
 			}
 		} catch (TException e) {

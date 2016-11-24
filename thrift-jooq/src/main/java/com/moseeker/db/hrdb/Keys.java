@@ -179,6 +179,7 @@ public class Keys {
 	public static final UniqueKey<HrRuleUniqueStatisticsRecord> KEY_HR_RULE_UNIQUE_STATISTICS_PRIMARY = UniqueKeys0.KEY_HR_RULE_UNIQUE_STATISTICS_PRIMARY;
 	public static final UniqueKey<HrSuperaccountApplyRecord> KEY_HR_SUPERACCOUNT_APPLY_PRIMARY = UniqueKeys0.KEY_HR_SUPERACCOUNT_APPLY_PRIMARY;
 	public static final UniqueKey<HrThirdPartyAccountRecord> KEY_HR_THIRD_PARTY_ACCOUNT_PRIMARY = UniqueKeys0.KEY_HR_THIRD_PARTY_ACCOUNT_PRIMARY;
+	public static final UniqueKey<HrThirdPartyAccountRecord> KEY_HR_THIRD_PARTY_ACCOUNT_IDX_CHANNEL_COMPYID = UniqueKeys0.KEY_HR_THIRD_PARTY_ACCOUNT_IDX_CHANNEL_COMPYID;
 	public static final UniqueKey<HrThirdPartyPositionRecord> KEY_HR_THIRD_PARTY_POSITION_PRIMARY = UniqueKeys0.KEY_HR_THIRD_PARTY_POSITION_PRIMARY;
 	public static final UniqueKey<HrTopicRecord> KEY_HR_TOPIC_PRIMARY = UniqueKeys0.KEY_HR_TOPIC_PRIMARY;
 	public static final UniqueKey<HrWxBasicReplyRecord> KEY_HR_WX_BASIC_REPLY_PRIMARY = UniqueKeys0.KEY_HR_WX_BASIC_REPLY_PRIMARY;
@@ -270,6 +271,7 @@ public class Keys {
 		public static final UniqueKey<HrRuleUniqueStatisticsRecord> KEY_HR_RULE_UNIQUE_STATISTICS_PRIMARY = createUniqueKey(HrRuleUniqueStatistics.HR_RULE_UNIQUE_STATISTICS, HrRuleUniqueStatistics.HR_RULE_UNIQUE_STATISTICS.ID);
 		public static final UniqueKey<HrSuperaccountApplyRecord> KEY_HR_SUPERACCOUNT_APPLY_PRIMARY = createUniqueKey(HrSuperaccountApply.HR_SUPERACCOUNT_APPLY, HrSuperaccountApply.HR_SUPERACCOUNT_APPLY.ID);
 		public static final UniqueKey<HrThirdPartyAccountRecord> KEY_HR_THIRD_PARTY_ACCOUNT_PRIMARY = createUniqueKey(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT, HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID);
+		public static final UniqueKey<HrThirdPartyAccountRecord> KEY_HR_THIRD_PARTY_ACCOUNT_IDX_CHANNEL_COMPYID = createUniqueKey(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT, HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL, HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.COMPANY_ID);
 		public static final UniqueKey<HrThirdPartyPositionRecord> KEY_HR_THIRD_PARTY_POSITION_PRIMARY = createUniqueKey(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION, HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.ID);
 		public static final UniqueKey<HrTopicRecord> KEY_HR_TOPIC_PRIMARY = createUniqueKey(HrTopic.HR_TOPIC, HrTopic.HR_TOPIC.ID);
 		public static final UniqueKey<HrWxBasicReplyRecord> KEY_HR_WX_BASIC_REPLY_PRIMARY = createUniqueKey(HrWxBasicReply.HR_WX_BASIC_REPLY, HrWxBasicReply.HR_WX_BASIC_REPLY.ID);
