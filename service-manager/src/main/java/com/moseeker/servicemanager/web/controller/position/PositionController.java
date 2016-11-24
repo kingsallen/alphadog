@@ -164,7 +164,7 @@ public class PositionController {
 		}
 	}
     
-    @RequestMapping(value = "/thirdpartyposition", method = RequestMethod.GET)
+    @RequestMapping(value = "/thirdparty/position", method = RequestMethod.GET)
 	@ResponseBody
 	public String thirdpartyposition(HttpServletRequest request, HttpServletResponse response) {
 		try {
