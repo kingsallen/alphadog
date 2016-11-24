@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.service.position.qianxun.Degree;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition;
@@ -39,7 +40,9 @@ public class PositionChangeUtil {
 		setDegree(positionDB.getDegree(), form.getChannel(), position);
 		Integer experience = null;
 		try {
-			experience = Integer.valueOf(positionDB.getExperience());
+			if(StringUtils.isNotNullOrEmpty(positionDB.getExperience())) {
+				experience = Integer.valueOf(positionDB.getExperience().trim());
+			}
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 			LoggerFactory.getLogger(PositionChangeUtil.class).error(e.getMessage(), e);
@@ -61,7 +64,12 @@ public class PositionChangeUtil {
 		}
 		//转职位
 		if(positionDB.getCities() != null && positionDB.getCities().size() > 0) {
-			position.setPub_place_code(String.valueOf(changeCity(positionDB.getCities().get(0), form.getChannel())));
+			try {
+				position.setPub_place_code(String.valueOf(changeCity(positionDB.getCities().get(0), form.getChannel())));
+			} catch (Exception e) {
+				position.setPub_place_code("");
+				e.printStackTrace();
+			}
 		} else {
 			position.setPub_place_code("");
 		}
