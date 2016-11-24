@@ -37,7 +37,7 @@ import org.jooq.types.UShort;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dict_51jobOccupation extends TableImpl<Dict_51jobOccupationRecord> {
 
-	private static final long serialVersionUID = 261699955;
+	private static final long serialVersionUID = 740862387;
 
 	/**
 	 * The reference instance of <code>dictdb.dict_51job_occupation</code>
@@ -58,9 +58,9 @@ public class Dict_51jobOccupation extends TableImpl<Dict_51jobOccupationRecord> 
 	public final TableField<Dict_51jobOccupationRecord, Integer> CODE = createField("code", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "职能id");
 
 	/**
-	 * The column <code>dictdb.dict_51job_occupation.parent_Id</code>. 父Id，上一级职能的ID
+	 * The column <code>dictdb.dict_51job_occupation.parent_id</code>. 父Id，上一级职能的ID
 	 */
-	public final TableField<Dict_51jobOccupationRecord, UInteger> PARENT_ID = createField("parent_Id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "父Id，上一级职能的ID");
+	public final TableField<Dict_51jobOccupationRecord, UInteger> PARENT_ID = createField("parent_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "父Id，上一级职能的ID");
 
 	/**
 	 * The column <code>dictdb.dict_51job_occupation.name</code>. 职能名称

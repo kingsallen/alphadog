@@ -32,7 +32,7 @@ import org.jooq.types.UShort;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dict_51jobOccupationRecord extends UpdatableRecordImpl<Dict_51jobOccupationRecord> implements Record7<Integer, UInteger, String, Integer, UShort, UShort, Timestamp> {
 
-	private static final long serialVersionUID = 1526745078;
+	private static final long serialVersionUID = 1172881334;
 
 	/**
 	 * Setter for <code>dictdb.dict_51job_occupation.code</code>. 职能id
@@ -49,14 +49,14 @@ public class Dict_51jobOccupationRecord extends UpdatableRecordImpl<Dict_51jobOc
 	}
 
 	/**
-	 * Setter for <code>dictdb.dict_51job_occupation.parent_Id</code>. 父Id，上一级职能的ID
+	 * Setter for <code>dictdb.dict_51job_occupation.parent_id</code>. 父Id，上一级职能的ID
 	 */
 	public void setParentId(UInteger value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>dictdb.dict_51job_occupation.parent_Id</code>. 父Id，上一级职能的ID
+	 * Getter for <code>dictdb.dict_51job_occupation.parent_id</code>. 父Id，上一级职能的ID
 	 */
 	public UInteger getParentId() {
 		return (UInteger) getValue(1);

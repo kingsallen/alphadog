@@ -37,7 +37,7 @@ import org.jooq.types.UShort;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictZhilianOccupation extends TableImpl<DictZhilianOccupationRecord> {
 
-	private static final long serialVersionUID = -2062229079;
+	private static final long serialVersionUID = -250122839;
 
 	/**
 	 * The reference instance of <code>dictdb.dict_zhilian_occupation</code>
@@ -58,9 +58,9 @@ public class DictZhilianOccupation extends TableImpl<DictZhilianOccupationRecord
 	public final TableField<DictZhilianOccupationRecord, Integer> CODE = createField("code", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "职能id");
 
 	/**
-	 * The column <code>dictdb.dict_zhilian_occupation.parent_Id</code>. 父Id，上一级职能的ID
+	 * The column <code>dictdb.dict_zhilian_occupation.parent_id</code>. 父Id，上一级职能的ID
 	 */
-	public final TableField<DictZhilianOccupationRecord, UInteger> PARENT_ID = createField("parent_Id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "父Id，上一级职能的ID");
+	public final TableField<DictZhilianOccupationRecord, UInteger> PARENT_ID = createField("parent_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "父Id，上一级职能的ID");
 
 	/**
 	 * The column <code>dictdb.dict_zhilian_occupation.name</code>. 职能名称
