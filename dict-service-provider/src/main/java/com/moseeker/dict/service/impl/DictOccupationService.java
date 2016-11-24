@@ -43,6 +43,7 @@ public class DictOccupationService {
 				Integer id=obj.getInteger("code");
 				Integer parentId=obj.getInteger("parent_id");
 				CommonQuery query=new CommonQuery();
+				query.setPer_page(Integer.MAX_VALUE);
 				HashMap<String,String> map=new HashMap<String,String>();
 				if(id!=null){
 					map.put("code", String.valueOf(id));

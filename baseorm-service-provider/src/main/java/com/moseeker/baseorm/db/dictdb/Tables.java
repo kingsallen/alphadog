@@ -4,6 +4,8 @@
 package com.moseeker.baseorm.db.dictdb;
 
 
+import javax.annotation.Generated;
+
 import com.moseeker.baseorm.db.dictdb.tables.DictCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictCityMap;
 import com.moseeker.baseorm.db.dictdb.tables.DictCollege;
@@ -15,8 +17,6 @@ import com.moseeker.baseorm.db.dictdb.tables.DictMajor;
 import com.moseeker.baseorm.db.dictdb.tables.DictPosition;
 import com.moseeker.baseorm.db.dictdb.tables.DictZhilianOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.Dict_51jobOccupation;
-
-import javax.annotation.Generated;
 
 
 /**
