@@ -559,4 +559,32 @@ public class ProfileUtils {
 		}
 		return list;
 	}
+
+	/**
+	 * 更新用户信息
+	 * @param userRecord 数据持久化的用户信息
+	 * @param basicRecord 解析出来的简历基本信息
+	 * @param crawlerUser 解析出来的用户信息
+	 */
+	public void updateUser(UserUserRecord userRecord, ProfileBasicRecord basicRecord, UserUserRecord crawlerUser) {
+		if(userRecord != null && crawlerUser != null) {
+			if ((userRecord.getMobile() == null || userRecord.getMobile() == 0) && crawlerUser != null && crawlerUser.getMobile() != null) {
+				userRecord.setMobile(crawlerUser.getMobile());
+			}
+			if (StringUtils.isNullOrEmpty(userRecord.getName()) && crawlerUser != null && !StringUtils.isNullOrEmpty(crawlerUser.getName())) {
+				userRecord.setName(crawlerUser.getName());
+			}
+			if (StringUtils.isNullOrEmpty(userRecord.getHeadimg()) && crawlerUser != null && !StringUtils.isNullOrEmpty(crawlerUser.getHeadimg())) {
+				userRecord.setHeadimg(crawlerUser.getHeadimg());
+			}
+			if (StringUtils.isNullOrEmpty(userRecord.getEmail()) && crawlerUser != null && !StringUtils.isNullOrEmpty(crawlerUser.getEmail())) {
+				userRecord.setEmail(crawlerUser.getEmail());
+			}
+		}
+		if(userRecord != null && basicRecord != null) {
+			if (StringUtils.isNullOrEmpty(userRecord.getName()) && basicRecord != null && !StringUtils.isNullOrEmpty(basicRecord.getName())) {
+				userRecord.setName(basicRecord.getName());
+			}
+		}
+	}
 }

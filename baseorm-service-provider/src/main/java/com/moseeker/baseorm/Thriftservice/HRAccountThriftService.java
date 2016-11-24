@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.moseeker.baseorm.dao.HRAccountDao;
-import com.moseeker.baseorm.dao.HRThirdPartyAccountDao;
+import com.moseeker.baseorm.dao.hr.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -20,7 +20,7 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.orm.service.UserHrAccountDao.Iface;
+import com.moseeker.thrift.gen.dao.service.UserHrAccountDao.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;;
 
 /**

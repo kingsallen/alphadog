@@ -4,6 +4,15 @@
 package com.moseeker.baseorm.db.jobdb;
 
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.annotation.Generated;
+
+import org.jooq.Table;
+import org.jooq.impl.SchemaImpl;
+
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplicationConf;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplicationStatusBeisen;
@@ -16,15 +25,6 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPositionExt;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionTopic;
 import com.moseeker.baseorm.db.jobdb.tables.JobResumeOther;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.Generated;
-
-import org.jooq.Table;
-import org.jooq.impl.SchemaImpl;
 
 
 /**

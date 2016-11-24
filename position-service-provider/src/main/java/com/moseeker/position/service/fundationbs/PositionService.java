@@ -1,5 +1,6 @@
 package com.moseeker.position.service.fundationbs;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.thrift.TException;
@@ -10,8 +11,8 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.ValueFilter;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
@@ -30,8 +31,11 @@ import com.moseeker.position.pojo.DictConstantPojo;
 import com.moseeker.position.pojo.JobPositionPojo;
 import com.moseeker.position.pojo.PositionForSynchronizationPojo;
 import com.moseeker.position.pojo.RecommendedPositonPojo;
+import com.moseeker.position.service.position.PositionChangeUtil;
+import com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.position.struct.Position;
+import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
 
 @Service
 public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRecord> {
@@ -214,5 +218,23 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 	 */
 	public boolean verifySynchronizePosition(PositionForSynchronizationPojo position) {
 		return false;
+	}
+
+	/**
+	 * 转成第三方渠道职位
+	 * @param forms
+	 * @param position
+	 * @return
+	 */
+	public List<ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(List<ThridPartyPosition> forms,
+			Position position) {
+		List<ThirdPartyPositionForSynchronization> positions = new ArrayList<>();
+		if(forms != null && forms.size() > 0 && position != null && position.getId() > 0) {
+			forms.forEach(form -> {
+				ThirdPartyPositionForSynchronization p = PositionChangeUtil.changeToThirdPartyPosition(form, position);
+				positions.add(p);
+			});
+		}
+		return positions;
 	}
 }

@@ -4,6 +4,13 @@
 package com.moseeker.baseorm.db.jobdb;
 
 
+import javax.annotation.Generated;
+
+import org.jooq.Identity;
+import org.jooq.UniqueKey;
+import org.jooq.impl.AbstractKeys;
+import org.jooq.types.UInteger;
+
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplicationConf;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplicationStatusBeisen;
@@ -24,13 +31,6 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionExtRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionShareTplConfRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobResumeOtherRecord;
-
-import javax.annotation.Generated;
-
-import org.jooq.Identity;
-import org.jooq.UniqueKey;
-import org.jooq.impl.AbstractKeys;
-import org.jooq.types.UInteger;
 
 
 /**

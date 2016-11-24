@@ -1,5 +1,6 @@
 package com.moseeker.servicemanager.web.controller.company;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -98,14 +99,23 @@ public class CompanyController {
 		}
 	}
 	
-	@RequestMapping(value = "/company/{id}/thirdpartyaccount/{channel}/sync", method = RequestMethod.GET)
+	@RequestMapping(value = "/company/{id}/thirdpartyaccount", method = RequestMethod.GET)
 	@ResponseBody
-	public String getAllCompany(@PathVariable int id,@PathVariable byte channel, HttpServletRequest request, HttpServletResponse response) {
+	public String synchronizeThirdpartyAccount(@PathVariable int id, HttpServletRequest request, HttpServletResponse response) {
 		try {
-			ParamUtils.parseRequestParam(request);
+			HashMap<String, Object> map = ParamUtils.parseRequestParam(request);
+			byte channel = 0;
+			if(map.get("channel") != null) {
+				try {
+					channel = Integer.valueOf((String)map.get("channel")).byteValue();
+				} catch (Exception e) {
+					return ResponseLogNotification.fail(request, "渠道参数不正确!");
+				}
+			}
 			Response result = companyServices.synchronizeThirdpartyAccount(id, channel);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}

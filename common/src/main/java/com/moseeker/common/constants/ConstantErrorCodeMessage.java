@@ -47,6 +47,7 @@ public final class ConstantErrorCodeMessage {
     public static final String PROFILE_DICT_COLLEGE_NOTEXIST = "{'status':31020,'message':'院校字典不存在!'}";
     public static final String PROFILE_DICT_MAJOR_NOTEXIST = "{'status':31021,'message':'专业字典不存在!'}";
     public static final String PROFILE_OUTPUT_FAILED = "{'status':31022,'message':'导出失败!'}";
+    public static final String PROFILE_ALLREADY_NOT_EXIST= "{'status':31023,'message':'个人profile不存在!'}";
     
     // Company服务提示信息说明
     public static final String COMPANY_NAME_REPEAT = "{'status':33001,'message':'不允许和拥有超级帐号的公司的公司名称重名!'}";
@@ -75,6 +76,8 @@ public final class ConstantErrorCodeMessage {
     public static final String HRACCOUNT_ALREADY_BOUND = "{'status':42001,'message':'帐号已经绑定！'}";
     public static final String HRACCOUNT_ELLEGLE_DATA = "{'status':42002,'message':'数据格式错误！'}";
     public static final String HRACCOUNT_BINDING = "{'status':42003,'message':'绑定中！'}";
+    
+    public static final String THIRD_PARTY_POSITION_UPSERT_FAILED = "{'status':42004,'message':'添加或者修改操作失败！'}";
     
     // 工具类错误
     public static final String USER_SMS_LIMITED = "{'status':80001,'message':'短信发送异常!'}";

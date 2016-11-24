@@ -14,6 +14,7 @@ import com.moseeker.baseorm.db.wordpressdb.tables.WordpressTermRelationships;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressTermTaxonomy;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressTermmeta;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressTerms;
+import com.moseeker.baseorm.db.wordpressdb.tables.WordpressUserPost;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressUsermeta;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressUsers;
 
@@ -92,4 +93,9 @@ public class Tables {
 	 * The table wordpressdb.wordpress_users
 	 */
 	public static final WordpressUsers WORDPRESS_USERS = com.moseeker.baseorm.db.wordpressdb.tables.WordpressUsers.WORDPRESS_USERS;
+
+	/**
+	 * 用户查看新版本
+	 */
+	public static final WordpressUserPost WORDPRESS_USER_POST = com.moseeker.baseorm.db.wordpressdb.tables.WordpressUserPost.WORDPRESS_USER_POST;
 }

@@ -22,6 +22,7 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.constants.RespnoseUtil;
 import com.moseeker.common.constants.TemplateId;
+import com.moseeker.common.constants.UserSource;
 import com.moseeker.common.constants.UserType;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -71,6 +72,9 @@ public class UseraccountsService {
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
+	
+	com.moseeker.thrift.gen.dao.service.UserDao.Iface userDao = ServiceManager.SERVICEMANAGER
+			.getService(com.moseeker.thrift.gen.dao.service.UserDao.Iface.class);
 
 	@Autowired
 	protected BaseDao<UserWxUserRecord> wxuserdao;
@@ -1336,6 +1340,71 @@ public class UseraccountsService {
 		RedisClient redisClient = RedisClientFactory.getCacheClient();
 		redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.WEIXIN_SCANRESULT.toString(), String.valueOf(wechatId), String.valueOf(sceneId), value);
 		return RespnoseUtil.SUCCESS.toResponse();
+	}
+	
+	public User ifExistUser(String mobile) {
+		User user = new User();
+		QueryUtil qu = new QueryUtil();
+		qu.addEqualFilter("mobile", mobile);
+		qu.addEqualFilter("source", String.valueOf(UserSource.RETRIEVE_PROFILE.getValue()));
+		try {
+			user = userDao.getUser(qu);
+		} catch (TException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+		} finally {
+			//do nothing
+		}
+		return user;
+	}
+
+	public int createRetrieveProfileUser(User user) {
+		if(user.getMobile() == 0) {
+			return 0;
+		}
+		user.setSource((byte)UserSource.RETRIEVE_PROFILE.getValue());
+		try {
+			user = userDao.saveUser(user);
+		} catch (TException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+		} finally {
+			//do nothing
+		}
+		return (int)user.getId();
+	}
+
+	public boolean ifExistProfile(String mobile) {
+		QueryUtil qu = new QueryUtil();
+		qu.addEqualFilter("username", mobile);
+		try {
+			User user = userDao.getUser(qu);
+			if(user == null) {
+				QueryUtil autoCreate = new QueryUtil();
+				autoCreate.addEqualFilter("mobile", mobile);
+				autoCreate.addEqualFilter("source", String.valueOf(UserSource.RETRIEVE_PROFILE.getValue()));
+				user = userDao.getUser(autoCreate);
+			}
+			if(user != null && user.getId() > 0) {
+				ProfileProfileRecord record = profileDao.getProfileByUserId((int)user.getId());
+				if(record != null) {
+					return true;
+				} else {
+					
+				}
+			}
+		} catch (TException e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+		} finally {
+			//do nothing
+		}
+		return false;
 	}
 
 	public BaseDao<UserWxUserRecord> getWxuserdao() {

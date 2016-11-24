@@ -14,6 +14,10 @@ service WholeProfileServices {
     common_struct.Response postResource(1:string profile, 2:i32 user_id);
     common_struct.Response importCV(1:string profile, 2:i32 user_id);
     common_struct.Response verifyRequires(1:i32 userId, 2:i32 positionId);
+    //创建简历
+    common_struct.Response createProfile(1:string profile);
+    //更新简历
+    common_struct.Response improveProfile(1:string profile);
 }
 
 service ProfileServices {

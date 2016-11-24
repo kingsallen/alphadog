@@ -11,4 +11,6 @@ public interface CredentialsDao extends BaseDao<ProfileCredentialsRecord> {
 
 	int updateProfileUpdateTime(Set<Integer> credentialIds);
 
+	int delCredentialsByProfileId(int profileId);
+
 }

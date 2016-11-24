@@ -44,6 +44,7 @@ public class ResponseLogNotification {
 			if (request.getParameter("appid") != null){
 				appid = Integer.parseInt(request.getParameter("appid"));
 			}
+			logger.info(JSON.toJSONString(response));
 			Notification.sendNotification(appid, eventkey, response.getMessage());
 			return jsonresponse;
 		} catch (Exception e) {
@@ -64,6 +65,7 @@ public class ResponseLogNotification {
 			if (request.getParameter("appid") != null){
 				appid = Integer.parseInt(request.getParameter("appid"));
 			}
+			logger.info(JSON.toJSONString(response));
 			Notification.sendNotification(appid, eventkey, response.getMessage());
 			return jsonresponse;
 		} catch (Exception e) {

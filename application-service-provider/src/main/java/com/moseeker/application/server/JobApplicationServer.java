@@ -40,6 +40,7 @@ public class JobApplicationServer {
                 }
             }
         } catch (Exception e) {
+        	e.printStackTrace();
             LOGGER.error("error", e);
         }
 

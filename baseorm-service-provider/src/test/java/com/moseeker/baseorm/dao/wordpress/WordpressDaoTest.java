@@ -2,6 +2,8 @@ package com.moseeker.baseorm.dao.wordpress;
 
 import org.junit.Test;
 
+import com.moseeker.baseorm.dao.wordpress.WordpressPostsDao;
+import com.moseeker.baseorm.dao.wordpress.WordpressTermRelationshipDao;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressPostsRecord;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressTermRelationshipsRecord;
 import com.moseeker.common.providerutils.QueryUtil;

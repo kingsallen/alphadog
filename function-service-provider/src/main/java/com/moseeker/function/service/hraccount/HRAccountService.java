@@ -12,7 +12,7 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.orm.service.UserHrAccountDao;
+import com.moseeker.thrift.gen.dao.service.UserHrAccountDao;
 import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
 
 @Service

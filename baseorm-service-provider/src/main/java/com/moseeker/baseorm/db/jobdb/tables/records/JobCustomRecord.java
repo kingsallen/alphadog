@@ -4,8 +4,6 @@
 package com.moseeker.baseorm.db.jobdb.tables.records;
 
 
-import com.moseeker.baseorm.db.jobdb.tables.JobCustom;
-
 import java.sql.Timestamp;
 
 import javax.annotation.Generated;
@@ -15,6 +13,8 @@ import org.jooq.Record1;
 import org.jooq.Record7;
 import org.jooq.Row7;
 import org.jooq.impl.UpdatableRecordImpl;
+
+import com.moseeker.baseorm.db.jobdb.tables.JobCustom;
 
 
 /**

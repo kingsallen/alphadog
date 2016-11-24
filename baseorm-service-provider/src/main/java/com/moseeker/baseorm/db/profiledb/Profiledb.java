@@ -4,6 +4,15 @@
 package com.moseeker.baseorm.db.profiledb;
 
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.annotation.Generated;
+
+import org.jooq.Table;
+import org.jooq.impl.SchemaImpl;
+
 import com.moseeker.baseorm.db.profiledb.tables.ProfileAttachment;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileAwards;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileBasic;
@@ -23,15 +32,6 @@ import com.moseeker.baseorm.db.profiledb.tables.ProfileSkill;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileWorkexp;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileWorks;
 import com.moseeker.baseorm.db.profiledb.tables.SchemaMigrations;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.Generated;
-
-import org.jooq.Table;
-import org.jooq.impl.SchemaImpl;
 
 
 /**

@@ -14,6 +14,7 @@ import com.moseeker.baseorm.db.wordpressdb.tables.WordpressTermRelationships;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressTermTaxonomy;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressTermmeta;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressTerms;
+import com.moseeker.baseorm.db.wordpressdb.tables.WordpressUserPost;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressUsermeta;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressUsers;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressCommentmetaRecord;
@@ -26,6 +27,7 @@ import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressTermRelations
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressTermTaxonomyRecord;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressTermmetaRecord;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressTermsRecord;
+import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressUserPostRecord;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressUsermetaRecord;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressUsersRecord;
 
@@ -85,6 +87,7 @@ public class Keys {
 	public static final UniqueKey<WordpressTermTaxonomyRecord> KEY_WORDPRESS_TERM_TAXONOMY_TERM_ID_TAXONOMY = UniqueKeys0.KEY_WORDPRESS_TERM_TAXONOMY_TERM_ID_TAXONOMY;
 	public static final UniqueKey<WordpressUsermetaRecord> KEY_WORDPRESS_USERMETA_PRIMARY = UniqueKeys0.KEY_WORDPRESS_USERMETA_PRIMARY;
 	public static final UniqueKey<WordpressUsersRecord> KEY_WORDPRESS_USERS_PRIMARY = UniqueKeys0.KEY_WORDPRESS_USERS_PRIMARY;
+	public static final UniqueKey<WordpressUserPostRecord> KEY_WORDPRESS_USER_POST_PRIMARY = UniqueKeys0.KEY_WORDPRESS_USER_POST_PRIMARY;
 
 	// -------------------------------------------------------------------------
 	// FOREIGN KEY definitions
@@ -124,5 +127,6 @@ public class Keys {
 		public static final UniqueKey<WordpressTermTaxonomyRecord> KEY_WORDPRESS_TERM_TAXONOMY_TERM_ID_TAXONOMY = createUniqueKey(WordpressTermTaxonomy.WORDPRESS_TERM_TAXONOMY, WordpressTermTaxonomy.WORDPRESS_TERM_TAXONOMY.TERM_ID, WordpressTermTaxonomy.WORDPRESS_TERM_TAXONOMY.TAXONOMY);
 		public static final UniqueKey<WordpressUsermetaRecord> KEY_WORDPRESS_USERMETA_PRIMARY = createUniqueKey(WordpressUsermeta.WORDPRESS_USERMETA, WordpressUsermeta.WORDPRESS_USERMETA.UMETA_ID);
 		public static final UniqueKey<WordpressUsersRecord> KEY_WORDPRESS_USERS_PRIMARY = createUniqueKey(WordpressUsers.WORDPRESS_USERS, WordpressUsers.WORDPRESS_USERS.ID);
+		public static final UniqueKey<WordpressUserPostRecord> KEY_WORDPRESS_USER_POST_PRIMARY = createUniqueKey(WordpressUserPost.WORDPRESS_USER_POST, WordpressUserPost.WORDPRESS_USER_POST.USER_ID, WordpressUserPost.WORDPRESS_USER_POST.OBJECT_ID);
 	}
 }

@@ -10,10 +10,10 @@ import org.apache.thrift.transport.TTransport;
 import org.junit.Test;
 
 import com.moseeker.common.providerutils.QueryUtil;
-import com.moseeker.thrift.gen.orm.service.WordpressDao.Client;
-import com.moseeker.thrift.gen.orm.service.WordpressDao.Client.Factory;
-import com.moseeker.thrift.gen.orm.struct.WordpressPosts;
-import com.moseeker.thrift.gen.orm.struct.WordpressTermRelationships;
+import com.moseeker.thrift.gen.dao.service.WordpressDao.Client;
+import com.moseeker.thrift.gen.dao.service.WordpressDao.Client.Factory;
+import com.moseeker.thrift.gen.dao.struct.WordpressPosts;
+import com.moseeker.thrift.gen.dao.struct.WordpressTermRelationships;
 
 public class WordpressRPCTest {
 

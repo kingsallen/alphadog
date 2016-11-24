@@ -1,5 +1,6 @@
 include "../struct/position_struct.thrift"
 include "../../common/struct/common_struct.thrift"
+include "../../apps/struct/appbs_struct.thrift"
 
 namespace java com.moseeker.thrift.gen.position.service
 /*
@@ -13,6 +14,8 @@ service PositionServices {
     common_struct.Response getPositionById(1:i32 positionId);  
     //获取公司两种自定义的字段
     common_struct.Response CustomField(1:string param);    
+    //转成第三方同步职位数据    
+    list<position_struct.ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(1:list<appbs_struct.ThridPartyPosition> form, 2:position_struct.Position position);
 }
 /*
 	查询第三方自定义职能

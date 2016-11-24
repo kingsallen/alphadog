@@ -36,7 +36,7 @@ import org.jooq.types.ULong;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordpressPosts extends TableImpl<WordpressPostsRecord> {
 
-	private static final long serialVersionUID = 661311919;
+	private static final long serialVersionUID = 1840913583;
 
 	/**
 	 * The reference instance of <code>wordpressdb.wordpress_posts</code>
@@ -64,12 +64,12 @@ public class WordpressPosts extends TableImpl<WordpressPostsRecord> {
 	/**
 	 * The column <code>wordpressdb.wordpress_posts.post_date</code>.
 	 */
-	public final TableField<WordpressPostsRecord, Timestamp> POST_DATE = createField("post_date", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
+	public final TableField<WordpressPostsRecord, Timestamp> POST_DATE = createField("post_date", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
 
 	/**
 	 * The column <code>wordpressdb.wordpress_posts.post_date_gmt</code>.
 	 */
-	public final TableField<WordpressPostsRecord, Timestamp> POST_DATE_GMT = createField("post_date_gmt", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
+	public final TableField<WordpressPostsRecord, Timestamp> POST_DATE_GMT = createField("post_date_gmt", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
 
 	/**
 	 * The column <code>wordpressdb.wordpress_posts.post_content</code>.
@@ -124,12 +124,12 @@ public class WordpressPosts extends TableImpl<WordpressPostsRecord> {
 	/**
 	 * The column <code>wordpressdb.wordpress_posts.post_modified</code>.
 	 */
-	public final TableField<WordpressPostsRecord, Timestamp> POST_MODIFIED = createField("post_modified", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
+	public final TableField<WordpressPostsRecord, Timestamp> POST_MODIFIED = createField("post_modified", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
 
 	/**
 	 * The column <code>wordpressdb.wordpress_posts.post_modified_gmt</code>.
 	 */
-	public final TableField<WordpressPostsRecord, Timestamp> POST_MODIFIED_GMT = createField("post_modified_gmt", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "");
+	public final TableField<WordpressPostsRecord, Timestamp> POST_MODIFIED_GMT = createField("post_modified_gmt", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
 
 	/**
 	 * The column <code>wordpressdb.wordpress_posts.post_content_filtered</code>.
