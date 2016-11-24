@@ -35,10 +35,10 @@ public class DictOccupationService {
 	 */
 	public Response queryOccupation(String param){
 		JSONObject obj=JSONObject.parseObject(param);
-		boolean single_layer=obj.getBooleanValue("single_layer");
+		int single_layer=obj.getIntValue("single_layer");
 		int channel=obj.getIntValue("channel");
 		try{
-			if(single_layer){
+			if(single_layer==1){
 				Integer level=obj.getInteger("level") ;
 				Integer id=obj.getInteger("code");
 				Integer parentId=obj.getInteger("parent_id");
@@ -74,7 +74,7 @@ public class DictOccupationService {
 						}
 						return res;
 					}
-				}else if(channel==2){
+				}else if(channel==3){
 					String key="zPinList";
 					String result=redisClient.get(Constant.APPID_ALPHADOG,ConstantEnum.JOB_OCCUPATION_KEY.toString(),key);
 					if(!StringUtils.isEmpty(result)){
