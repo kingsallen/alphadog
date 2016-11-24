@@ -78,18 +78,27 @@ public class PositionBS {
 				List<ThirdPartAccountData> thirdPartyAccounts = CompanyDao.getThirdPartyBindingAccounts(ThirdPartyBindingAccounts);
 				if(thirdPartyAccounts != null && thirdPartyAccounts.size() > 0) {
 					for(ThridPartyPosition p : position.getChannels()) {
-						boolean exist = false;
 						for(ThirdPartAccountData account : thirdPartyAccounts) {
 							if(account.getId() > 0 && account.binding == 1 && account.getRemain_num() > 0) {
 								if(p.getChannel() == account.getChannel()) {
-									exist = true;
 									positionFroms.add(p);
+								}
+							}
+						}
+					}
+					
+					for(ThridPartyPosition pp : position.getChannels()) {
+						boolean exist = true;
+						if(positionFroms.size() > 0) {
+							for(ThridPartyPosition ppp : positionFroms) {
+								if(pp.getChannel() == ppp.getChannel()) {
+									exist = false;
 								}
 							}
 						}
 						if(exist) {
 							PositionSyncResultPojo result = new PositionSyncResultPojo();
-							result.setChannel(p.getChannel());
+							result.setChannel(pp.getChannel());
 							result.setSync_fail_reason("未绑定或者没有可发布职位点数!");
 							results.add(result);
 						}
