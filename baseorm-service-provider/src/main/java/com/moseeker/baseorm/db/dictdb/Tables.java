@@ -5,6 +5,7 @@ package com.moseeker.baseorm.db.dictdb;
 
 
 import com.moseeker.baseorm.db.dictdb.tables.DictCity;
+import com.moseeker.baseorm.db.dictdb.tables.DictCityMap;
 import com.moseeker.baseorm.db.dictdb.tables.DictCollege;
 import com.moseeker.baseorm.db.dictdb.tables.DictConstant;
 import com.moseeker.baseorm.db.dictdb.tables.DictCountry;
@@ -40,6 +41,11 @@ public class Tables {
      * 城市字典表
      */
     public static final DictCity DICT_CITY = com.moseeker.baseorm.db.dictdb.tables.DictCity.DICT_CITY;
+
+    /**
+     * The table <code>dictdb.dict_city_map</code>.
+     */
+    public static final DictCityMap DICT_CITY_MAP = com.moseeker.baseorm.db.dictdb.tables.DictCityMap.DICT_CITY_MAP;
 
     /**
      * 学校字典表

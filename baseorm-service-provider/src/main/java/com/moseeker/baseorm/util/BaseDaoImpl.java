@@ -59,9 +59,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 		try {
 			conn = DBConnHelper.DBConn.getConn();
 			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-
 			SelectJoinStep<Record> table = create.select().from(tableLike);
-
 			if (query.getEqualFilter() != null
 					&& query.getEqualFilter().size() > 0) {
 				Map<String, String> equalFilter = query.getEqualFilter();

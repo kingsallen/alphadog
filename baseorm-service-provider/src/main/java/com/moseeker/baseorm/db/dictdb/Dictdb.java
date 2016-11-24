@@ -5,6 +5,7 @@ package com.moseeker.baseorm.db.dictdb;
 
 
 import com.moseeker.baseorm.db.dictdb.tables.DictCity;
+import com.moseeker.baseorm.db.dictdb.tables.DictCityMap;
 import com.moseeker.baseorm.db.dictdb.tables.DictCollege;
 import com.moseeker.baseorm.db.dictdb.tables.DictConstant;
 import com.moseeker.baseorm.db.dictdb.tables.DictCountry;
@@ -39,7 +40,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dictdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -1992811729;
+    private static final long serialVersionUID = -868319392;
 
     /**
      * The reference instance of <code>dictdb</code>
@@ -55,6 +56,11 @@ public class Dictdb extends SchemaImpl {
      * 城市字典表
      */
     public final DictCity DICT_CITY = com.moseeker.baseorm.db.dictdb.tables.DictCity.DICT_CITY;
+
+    /**
+     * The table <code>dictdb.dict_city_map</code>.
+     */
+    public final DictCityMap DICT_CITY_MAP = com.moseeker.baseorm.db.dictdb.tables.DictCityMap.DICT_CITY_MAP;
 
     /**
      * 学校字典表
@@ -123,6 +129,7 @@ public class Dictdb extends SchemaImpl {
         return Arrays.<Table<?>>asList(
             Dict_51jobOccupation.DICT_51JOB_OCCUPATION,
             DictCity.DICT_CITY,
+            DictCityMap.DICT_CITY_MAP,
             DictCollege.DICT_COLLEGE,
             DictConstant.DICT_CONSTANT,
             DictCountry.DICT_COUNTRY,

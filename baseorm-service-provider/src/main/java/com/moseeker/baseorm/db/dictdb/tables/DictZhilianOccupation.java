@@ -38,7 +38,7 @@ import org.jooq.types.UShort;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictZhilianOccupation extends TableImpl<DictZhilianOccupationRecord> {
 
-    private static final long serialVersionUID = -635698747;
+    private static final long serialVersionUID = -161756477;
 
     /**
      * The reference instance of <code>dictdb.dict_zhilian_occupation</code>
@@ -56,17 +56,22 @@ public class DictZhilianOccupation extends TableImpl<DictZhilianOccupationRecord
     /**
      * The column <code>dictdb.dict_zhilian_occupation.code</code>. 职能id
      */
-    public final TableField<DictZhilianOccupationRecord, UInteger> CODE = createField("code", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "职能id");
+    public final TableField<DictZhilianOccupationRecord, Integer> CODE = createField("code", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "职能id");
 
     /**
-     * The column <code>dictdb.dict_zhilian_occupation.parent_Id</code>. 父Id，上一级职能的ID
+     * The column <code>dictdb.dict_zhilian_occupation.parent_id</code>. 父Id，上一级职能的ID
      */
-    public final TableField<DictZhilianOccupationRecord, UInteger> PARENT_ID = createField("parent_Id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGERUNSIGNED)), this, "父Id，上一级职能的ID");
+    public final TableField<DictZhilianOccupationRecord, UInteger> PARENT_ID = createField("parent_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGERUNSIGNED)), this, "父Id，上一级职能的ID");
 
     /**
      * The column <code>dictdb.dict_zhilian_occupation.name</code>. 职能名称
      */
     public final TableField<DictZhilianOccupationRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "职能名称");
+
+    /**
+     * The column <code>dictdb.dict_zhilian_occupation.code_other</code>.
+     */
+    public final TableField<DictZhilianOccupationRecord, Integer> CODE_OTHER = createField("code_other", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>dictdb.dict_zhilian_occupation.level</code>. 职能级别 1是一级2是
@@ -117,7 +122,7 @@ public class DictZhilianOccupation extends TableImpl<DictZhilianOccupationRecord
      * {@inheritDoc}
      */
     @Override
-    public Identity<DictZhilianOccupationRecord, UInteger> getIdentity() {
+    public Identity<DictZhilianOccupationRecord, Integer> getIdentity() {
         return Keys.IDENTITY_DICT_ZHILIAN_OCCUPATION;
     }
 

@@ -15,21 +15,22 @@ import com.moseeker.thrift.gen.dict.service.DictOccupationDao;
  * time:2016-11-21
  */
 public class DictOccupationTest {
-//	private DictDaoServiceImpl service;
-//	private PositionServiceImpl position;
-//	public void init() {
-//		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-//		context.scan("com.moseeker.baseorm");
-//		context.refresh();
-//		service = context.getBean(DictDaoServiceImpl.class);
-//		position= context.getBean(PositionServiceImpl.class);
-//	}
-//	//测试获取所有，直接调用接口
-//	@Test
-//	public void testGetAllOccupation(){
-//		init();
-//		Response result=service.occupations51();
-//	}
+	private DictDaoServiceImpl service;
+	private PositionServiceImpl position;
+	public void init() {
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+		context.scan("com.moseeker.baseorm");
+		context.refresh();
+		service = context.getBean(DictDaoServiceImpl.class);
+		position= context.getBean(PositionServiceImpl.class);
+	}
+	//测试获取所有，直接调用接口
+	@Test
+	public void testGetAllOccupation(){
+		init();
+		Response result=service.occupations51();
+		
+	}
 //  //获取occupation，通过Iface
 //	@Test
 //	public void getOccupation() throws Exception{

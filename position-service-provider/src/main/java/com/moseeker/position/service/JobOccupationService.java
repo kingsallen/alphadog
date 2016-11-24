@@ -34,6 +34,7 @@ public class JobOccupationService {
 		HashMap<String,String> map=new HashMap<String,String>();
 		map.put("company_id", company_id+"");
 		query.setEqualFilter(map);
+		query.setPer_page(Integer.MAX_VALUE);
 		try{
 			Response result1=positionDao.getJobCustoms(query);
 			List<? extends TBase> list1=ConvertUtils.convert(JobOccupationCustom.class, result1);

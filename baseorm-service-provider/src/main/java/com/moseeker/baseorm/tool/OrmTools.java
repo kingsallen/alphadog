@@ -31,6 +31,7 @@ public class OrmTools {
 		HashMap<String,String> map=new HashMap<String,String>();
 		map.put("level", "1");
 		query.setEqualFilter(map);
+		query.setPer_page(100);
 		try{
 			List<? extends UpdatableRecordImpl<?>> list=dao.getResources(query);
 			List<DictOccupation> result=new ArrayList<DictOccupation>();
@@ -38,19 +39,23 @@ public class OrmTools {
 				for(int i=0;i<list.size();i++){
 					DictOccupation occu=(DictOccupation) BeanUtils.DBToStruct(DictOccupation.class,list.get(i) );
 					int id=occu.getCode();
+					CommonQuery query1=new CommonQuery();
 					HashMap<String,String> map1=new HashMap<String,String>();
 					map1.put("parent_id", id+"");
-					query.setEqualFilter(map1);
-					List<? extends UpdatableRecordImpl<?>> list1=dao.getResources(query);
+					query1.setEqualFilter(map1);
+					query1.setPer_page(100);
+					List<? extends UpdatableRecordImpl<?>> list1=dao.getResources(query1);
 					List<DictOccupation> result1=new ArrayList<DictOccupation>();
 					if(list1!=null&&list1.size()>0){
 						for(int j=0;j<list1.size();j++){
 							DictOccupation occ1=(DictOccupation) BeanUtils.DBToStruct(DictOccupation.class,list1.get(j) );
 							int id1=occ1.getCode();
+							CommonQuery query2=new CommonQuery();
 							HashMap<String,String> map2=new HashMap<String,String>();
 							map2.put("parent_id", id1+"");
-							query.setEqualFilter(map2);
-							List<? extends UpdatableRecordImpl<?>> list2=dao.getResources(query);
+							query2.setEqualFilter(map2);
+							query2.setPer_page(100);
+							List<? extends UpdatableRecordImpl<?>> list2=dao.getResources(query2);
 							List<DictOccupation> result2=new ArrayList<DictOccupation>();
 							if(list2!=null&&list2.size()>0){
 								for(int z=0;z<list2.size();z++){

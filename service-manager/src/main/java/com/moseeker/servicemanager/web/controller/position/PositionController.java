@@ -105,6 +105,7 @@ public class PositionController {
 			HashMap<String,String> param=new HashMap<String,String>();
 			param.put("company_id", company_id+"");
 			query.setEqualFilter(param);
+			query.setPer_page(Integer.MAX_VALUE);
 			Response result=positionDao.getJobOccupations(query);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	

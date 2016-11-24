@@ -38,7 +38,7 @@ import org.jooq.types.UShort;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dict_51jobOccupation extends TableImpl<Dict_51jobOccupationRecord> {
 
-    private static final long serialVersionUID = -288731670;
+    private static final long serialVersionUID = -863664117;
 
     /**
      * The reference instance of <code>dictdb.dict_51job_occupation</code>
@@ -56,17 +56,22 @@ public class Dict_51jobOccupation extends TableImpl<Dict_51jobOccupationRecord> 
     /**
      * The column <code>dictdb.dict_51job_occupation.code</code>. 职能id
      */
-    public final TableField<Dict_51jobOccupationRecord, UInteger> CODE = createField("code", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "职能id");
+    public final TableField<Dict_51jobOccupationRecord, Integer> CODE = createField("code", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "职能id");
 
     /**
-     * The column <code>dictdb.dict_51job_occupation.parent_Id</code>. 父Id，上一级职能的ID
+     * The column <code>dictdb.dict_51job_occupation.parent_id</code>. 父Id，上一级职能的ID
      */
-    public final TableField<Dict_51jobOccupationRecord, UInteger> PARENT_ID = createField("parent_Id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGERUNSIGNED)), this, "父Id，上一级职能的ID");
+    public final TableField<Dict_51jobOccupationRecord, UInteger> PARENT_ID = createField("parent_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGERUNSIGNED)), this, "父Id，上一级职能的ID");
 
     /**
      * The column <code>dictdb.dict_51job_occupation.name</code>. 职能名称
      */
     public final TableField<Dict_51jobOccupationRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "职能名称");
+
+    /**
+     * The column <code>dictdb.dict_51job_occupation.code_other</code>.
+     */
+    public final TableField<Dict_51jobOccupationRecord, Integer> CODE_OTHER = createField("code_other", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * The column <code>dictdb.dict_51job_occupation.level</code>. 职能级别 1是一级2是
@@ -117,7 +122,7 @@ public class Dict_51jobOccupation extends TableImpl<Dict_51jobOccupationRecord> 
      * {@inheritDoc}
      */
     @Override
-    public Identity<Dict_51jobOccupationRecord, UInteger> getIdentity() {
+    public Identity<Dict_51jobOccupationRecord, Integer> getIdentity() {
         return Keys.IDENTITY_DICT_51JOB_OCCUPATION;
     }
 
