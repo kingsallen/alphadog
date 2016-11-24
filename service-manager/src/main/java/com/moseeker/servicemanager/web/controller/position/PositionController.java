@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -149,8 +150,11 @@ public class PositionController {
 				});
 			}
 			form.setChannels(cs);
-			
+			logger.info("-----------synchronizePosition------------");
+			logger.info("params:"+JSON.toJSONString(form));
 			Response result = positionBS.synchronizePositionToThirdPartyPlatform(form);
+			logger.info("result:"+JSON.toJSONString(result));
+			logger.info("-----------synchronizePosition end------------");
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
 			e.printStackTrace();

@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.apps.constants.ResultMessage;
 import com.moseeker.apps.service.position.PositionSyncResultPojo;
 import com.moseeker.common.constants.PositionSync;
@@ -64,6 +65,7 @@ public class PositionBS {
 		qu.addEqualFilter("id", String.valueOf(position.getPosition_id()));
 		try {
 			com.moseeker.thrift.gen.position.struct.Position positionStruct = positionDao.getPositionWithCityCode(qu);
+			logger.info("position:"+JSON.toJSONString(positionStruct));
 			//如果职位数据存在，并且是在招职位
 			if(positionStruct.getId() > 0 && positionStruct.getStatus() == 0) {
 				//返回结果
@@ -111,7 +113,7 @@ public class PositionBS {
 					});*/
 					
 				}
-				
+				logger.info("positionFroms:"+JSON.toJSONString(positionFroms));
 				if(positionFroms.size() > 0) {
 					//转成第三方渠道职位
 					List<ThirdPartyPositionForSynchronization> positions = positionServices.changeToThirdPartyPosition(positionFroms, positionStruct);
@@ -134,6 +136,7 @@ public class PositionBS {
 						});
 					}
 					Response synchronizeResult = chaosService.synchronizePosition(positions);
+					logger.info("synchronizeResult:"+JSON.toJSONString(synchronizeResult));
 					if(synchronizeResult.getStatus() == 0) {
 						
 						List<ThirdPartyPositionData> pds = new ArrayList<>();
