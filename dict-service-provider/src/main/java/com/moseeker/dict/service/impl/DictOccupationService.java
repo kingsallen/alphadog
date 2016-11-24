@@ -57,7 +57,7 @@ public class DictOccupationService {
 				query.setEqualFilter(map);
 				if(channel==1){
 					return dictOccupationDao.getOccupation51(query);
-				}else if(channel==2){
+				}else if(channel==3){
 					return dictOccupationDao.getOccupationZPin(query);
 				}
 			}else{
