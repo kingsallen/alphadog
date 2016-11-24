@@ -1,14 +1,12 @@
 package com.moseeker.baseorm.tool;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.thrift.TBase;
 import org.jooq.impl.UpdatableRecordImpl;
-import org.jooq.tools.json.JSONObject;
 
-import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.util.BaseDaoImpl;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -27,12 +25,37 @@ public class OrmTools {
 	 * 按照内部是三层嵌套的方式的list集合的response
 	 */
 	public  static Response getAll(BaseDaoImpl<?,?> dao){
-		CommonQuery query=new CommonQuery();
+		List<DictOccupation> result=new ArrayList<DictOccupation>();
+		try {
+			CommonQuery query=new CommonQuery();
+			query.setPer_page(Integer.MAX_VALUE);
+			List<DictOccupation> allData = new ArrayList<>();
+			List<? extends UpdatableRecordImpl<?>> list = dao.getResources(query);
+			if(list != null && list.size() > 0) {
+				list.forEach(r -> {
+					DictOccupation occu = (DictOccupation) BeanUtils.DBToStruct(DictOccupation.class, r);
+					allData.add(occu);
+				});
+			}
+			if(allData.size() > 0) {
+				result = arrangeOccupation(allData);
+			}
+			return ResponseUtils.success(result);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		} finally {
+			//do nothing
+		}
+		
+		/*CommonQuery query=new CommonQuery();
 		HashMap<String,String> map=new HashMap<String,String>();
 		map.put("level", "1");
 		query.setEqualFilter(map);
 		query.setPer_page(100);
 		try{
+			
 			List<? extends UpdatableRecordImpl<?>> list=dao.getResources(query);
 			List<DictOccupation> result=new ArrayList<DictOccupation>();
 			if(list!=null&&list.size()>0){
@@ -76,7 +99,59 @@ public class OrmTools {
 		}catch(Exception e){
 			e.printStackTrace();
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		}*/
+	}
+	private static List<DictOccupation> arrangeOccupation(List<DictOccupation> allData) {
+		List<DictOccupation> result = arrangeFirstLevel(allData);
+		arrangeSecondLevel(result, allData);
+		return result;
+	}
+	private static void arrangeSecondLevel(List<DictOccupation> results, List<DictOccupation> allData) {
+		results.forEach(result -> {
+			Iterator<DictOccupation> id = allData.iterator();
+			while(id.hasNext()) {
+				DictOccupation d = id.next();
+				if(d.getParent_id() == result.getCode()) {
+					if(result.getChildren() == null) {
+						List<DictOccupation> children = new ArrayList<>();
+						result.setChildren(children);
+					}
+					result.getChildren().add(d);
+					id.remove();
+				}
+			}
+		});
+		
+		results.forEach(result -> {
+			if(result.getChildren() != null && result.getChildren().size() > 0) {
+				result.getChildren().forEach(r -> {
+					Iterator<DictOccupation> id = allData.iterator();
+					while(id.hasNext()) {
+						DictOccupation d = id.next();
+						if(d.getParent_id() == r.getCode()) {
+							if(r.getChildren() == null) {
+								List<DictOccupation> children = new ArrayList<>();
+								r.setChildren(children);
+							}
+							r.getChildren().add(d);
+							id.remove();
+						}
+					}
+				});
+			}
+		});
+	}
+	private static List<DictOccupation> arrangeFirstLevel(List<DictOccupation> allData) {
+		List<DictOccupation> result = new ArrayList<>();
+		Iterator<DictOccupation> id = allData.iterator();
+		while(id.hasNext()) {
+			DictOccupation d = id.next();
+			if(d.getParent_id() == 0) {
+				result.add(d);
+				id.remove();
+			}
 		}
+		return result;
 	}
 	/*
 	 * 返回内部是单层的occupation集合的response，因为有child元素，所以没用公共方法，只能特殊处理
