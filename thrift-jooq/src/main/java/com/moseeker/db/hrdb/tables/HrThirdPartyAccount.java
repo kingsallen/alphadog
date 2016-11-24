@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
 
-	private static final long serialVersionUID = 1544774035;
+	private static final long serialVersionUID = -1410222288;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_third_party_account</code>
@@ -149,7 +149,7 @@ public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
 	 */
 	@Override
 	public List<UniqueKey<HrThirdPartyAccountRecord>> getKeys() {
-		return Arrays.<UniqueKey<HrThirdPartyAccountRecord>>asList(Keys.KEY_HR_THIRD_PARTY_ACCOUNT_PRIMARY);
+		return Arrays.<UniqueKey<HrThirdPartyAccountRecord>>asList(Keys.KEY_HR_THIRD_PARTY_ACCOUNT_PRIMARY, Keys.KEY_HR_THIRD_PARTY_ACCOUNT_IDX_CHANNEL_COMPYID);
 	}
 
 	/**

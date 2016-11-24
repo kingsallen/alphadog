@@ -1,6 +1,8 @@
 package com.moseeker.servicemanager.web.controller.position;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,12 +17,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.apps.positionbs.service.PositionBS;
+import com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPositionForm;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -36,6 +40,8 @@ public class PositionController {
     PositionServices.Iface positonServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
     PositionDao.Iface positionDao =ServiceManager.SERVICEMANAGER.getService(PositionDao.Iface.class);
     PositionBS.Iface positionBS =ServiceManager.SERVICEMANAGER.getService(PositionBS.Iface.class);
+    
+    com.moseeker.thrift.gen.dao.service.PositionDao.Iface positionDao1 = ServiceManager.SERVICEMANAGER.getService(com.moseeker.thrift.gen.dao.service.PositionDao.Iface.class);
     
     @RequestMapping(value = "/positions", method = RequestMethod.GET)
     @ResponseBody
@@ -119,12 +125,51 @@ public class PositionController {
 		}
 	}
     
-    @RequestMapping(value = "/position/{id}/synchronization", method = RequestMethod.GET)
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value = "/position/sync", method = RequestMethod.POST)
 	@ResponseBody
-	public String synchronizePosition(@PathVariable int id, HttpServletRequest request, HttpServletResponse response) {
+	public String synchronizePosition(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			ThridPartyPositionForm form = ParamUtils.initModelForm(request, ThridPartyPositionForm.class);
+			ThridPartyPositionForm form = new ThridPartyPositionForm();
+			HashMap<String, Object> data = ParamUtils.parseRequestParam(request);
+			form.setAppid((Integer)data.get("appid"));
+			form.setPosition_id((Integer)data.get("position_id"));
+			List<ThridPartyPosition> cs = new ArrayList<>();
+			List<HashMap<String, Object>> channels = (List<HashMap<String, Object>>)data.get("channels");
+			if(channels != null) {
+				channels.forEach(channel -> {
+					try {
+						ThridPartyPosition c = ParamUtils.initModelForm(channel, ThridPartyPosition.class);
+						cs.add(c);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						logger.error(e.getMessage(), e);
+					} finally {
+						//do nothing
+					}
+				});
+			}
+			form.setChannels(cs);
+			logger.info("-----------synchronizePosition------------");
+			logger.info("params:"+JSON.toJSONString(form));
 			Response result = positionBS.synchronizePositionToThirdPartyPlatform(form);
+			logger.info("result:"+JSON.toJSONString(result));
+			logger.info("-----------synchronizePosition end------------");
+			return ResponseLogNotification.success(request, result);
+		} catch (Exception e) {	
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
+    
+    @RequestMapping(value = "/thirdparty/position", method = RequestMethod.GET)
+	@ResponseBody
+	public String thirdpartyposition(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			CommonQuery qu = ParamUtils.initCommonQuery(request, CommonQuery.class);
+			Response result = positionDao1.getPositionThirdPartyPositions(qu);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
 			logger.error(e.getMessage(), e);

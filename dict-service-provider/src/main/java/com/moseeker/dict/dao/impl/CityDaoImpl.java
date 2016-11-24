@@ -1,27 +1,21 @@
 package com.moseeker.dict.dao.impl;
 
-import com.moseeker.common.dbutils.DBConnHelper;
-import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
-import com.moseeker.common.util.BeanUtils;
-import com.moseeker.common.util.StringUtils;
-import com.moseeker.dict.dao.CityDao;
-import com.moseeker.db.dictdb.tables.records.DictCityRecord;
-import com.moseeker.db.dictdb.tables.DictCity;
-import com.moseeker.dict.pojo.CityPojo;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import org.jooq.*;
+import java.sql.Connection;
+import java.util.List;
+
 import org.jooq.Condition;
+import org.jooq.DSLContext;
 import org.jooq.types.UInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.env.SystemEnvironmentPropertySource;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.locks.*;
+import com.moseeker.common.dbutils.DBConnHelper;
+import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
+import com.moseeker.db.dictdb.tables.DictCity;
+import com.moseeker.db.dictdb.tables.records.DictCityRecord;
+import com.moseeker.dict.dao.CityDao;
+import com.moseeker.dict.pojo.CityPojo;
 
 @Repository
 public class CityDaoImpl extends BaseDaoImpl<DictCityRecord, DictCity> implements CityDao {

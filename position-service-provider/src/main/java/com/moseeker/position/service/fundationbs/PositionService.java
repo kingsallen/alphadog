@@ -33,6 +33,7 @@ import com.moseeker.position.pojo.PositionForSynchronizationPojo;
 import com.moseeker.position.pojo.RecommendedPositonPojo;
 import com.moseeker.position.service.position.PositionChangeUtil;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
@@ -56,7 +57,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 
 	@Autowired
 	private JobPositonExtDao jobPositonExtDao;
-
+	
     @Override
     protected void initDao() {
         super.dao = this.dao;

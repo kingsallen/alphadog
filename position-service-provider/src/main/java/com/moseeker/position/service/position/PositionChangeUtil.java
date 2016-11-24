@@ -1,11 +1,17 @@
 package com.moseeker.position.service.position;
 
+import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.LoggerFactory;
 
 import com.moseeker.common.constants.ChannelType;
+import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.service.position.qianxun.Degree;
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition;
+import com.moseeker.thrift.gen.dao.service.DictDao;
+import com.moseeker.thrift.gen.dict.struct.CityMap;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
 
@@ -15,7 +21,9 @@ import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizat
  *
  */
 public class PositionChangeUtil {
-
+	
+	private static DictDao.Iface dictDao = ServiceManager.SERVICEMANAGER.getService(DictDao.Iface.class);
+	
 	/**
 	 * 将仟寻职位转成第卅方职位
 	 * @param form
@@ -32,7 +40,9 @@ public class PositionChangeUtil {
 		setDegree(positionDB.getDegree(), form.getChannel(), position);
 		Integer experience = null;
 		try {
-			experience = Integer.valueOf(positionDB.getExperience());
+			if(StringUtils.isNotNullOrEmpty(positionDB.getExperience())) {
+				experience = Integer.valueOf(positionDB.getExperience().trim());
+			}
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 			LoggerFactory.getLogger(PositionChangeUtil.class).error(e.getMessage(), e);
@@ -51,6 +61,17 @@ public class PositionChangeUtil {
 			DateTime dt = new DateTime();
 			DateTime dayAfter60 = dt.plusDays(60);
 			position.setStop_date(dayAfter60.toString("yyyy-MM-dd"));
+		}
+		//转职位
+		if(positionDB.getCities() != null && positionDB.getCities().size() > 0) {
+			try {
+				position.setPub_place_code(String.valueOf(changeCity(positionDB.getCities().get(0), form.getChannel())));
+			} catch (Exception e) {
+				position.setPub_place_code("");
+				e.printStackTrace();
+			}
+		} else {
+			position.setPub_place_code("");
 		}
 		return position;
 	}
@@ -84,5 +105,23 @@ public class PositionChangeUtil {
 		case ZHILIAN : position.setExperience_code(ExperienceChangeUtil.getZhilianExperience(experience).getValue());break;
 		default:position.setExperience("");
 		}
+	}
+	
+	private static int changeCity(int cityCode, int channel) {
+		QueryUtil qu = new QueryUtil();
+		qu.addEqualFilter("code", String.valueOf(cityCode));
+		qu.addEqualFilter("channel", String.valueOf(channel));
+		try {
+			CityMap cityMap = dictDao.getDictMap(qu);
+			if(cityMap != null) {
+				return cityMap.getCode_other();
+			}
+		} catch (TException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			//do nothing
+		}
+		return 0;
 	}
 }

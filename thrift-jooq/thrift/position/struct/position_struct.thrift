@@ -57,7 +57,8 @@ struct Position {
     46: optional i32 underlings,
     47: optional byte language_required,
     48: optional i32 target_industry,
-    49: optional i32 current_status
+    49: optional i32 current_status,
+    50: optional list<i32> cities
 }
 /*
 	第三方自定义职能

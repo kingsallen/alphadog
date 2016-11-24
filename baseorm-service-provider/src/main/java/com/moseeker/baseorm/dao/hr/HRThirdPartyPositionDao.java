@@ -42,7 +42,7 @@ import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 @Service
 public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRecord, HrThirdPartyPosition> {
 
-	private static final String UPSERT_SQL = "insert into hrdb.hr_third_party_position(position_id, third_part_position_id, is_synchronization, is_refresh, sync_time, refresh_time, update_time, occupation, address) select ?, ?, ?, ?, ?, ?, ?, ?, ? from DUAL where not exists(select id from hrdb.hr_third_party_position where channel = ? and position_id = ?)";
+	private static final String UPSERT_SQL = "insert into hrdb.hr_third_party_position(position_id, third_part_position_id, is_synchronization, is_refresh, sync_time, refresh_time, update_time, occupation, address, channel) select ?, ?, ?, ?, ?, ?, ?, ?, ?, ? from DUAL where not exists(select id from hrdb.hr_third_party_position where channel = ? and position_id = ?)";
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -99,7 +99,7 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 					try {
 						int count = 0;
 						PreparedStatement pstmt = conn.prepareStatement(UPSERT_SQL);
-						pstmt.setInt(1, position.getId());
+						pstmt.setInt(1, position.getPosition_id());
 						pstmt.setString(2, position.getThird_part_position_id());
 						pstmt.setObject(3, position.getIs_synchronization());
 						pstmt.setObject(4, position.getIs_refresh());
@@ -120,6 +120,9 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 						}
 						pstmt.setString(8, position.getOccupation());
 						pstmt.setString(9, position.getAddress());
+						pstmt.setObject(10, position.getChannel());
+						pstmt.setObject(11, position.getChannel());
+						pstmt.setInt(12, position.getPosition_id());
 						count = pstmt.executeUpdate();
 						if (count == 0) {
 							HrThirdPartyPositionRecord dbrecord = create
