@@ -319,7 +319,9 @@ public class WholeProfileService {
 	@SuppressWarnings("unchecked")
 	public Response importCV(String profile, int userId) throws TException {
 
+		logger.info("importCV profile:"+profile);
 		Map<String, Object> resume = JSON.parseObject(profile);
+		logger.info("resume:"+resume);
 		ProfileProfileRecord profileRecord = profileUtils
 				.mapToProfileRecord((Map<String, Object>) resume.get("profile"));
 		if (profileRecord == null) {
@@ -329,12 +331,14 @@ public class WholeProfileService {
 		if (userRecord == null) {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_USER_NOTEXIST);
 		}
+		logger.info("importCV user_id:"+userRecord.getId().intValue());
 		// ProfileProfileRecord profileRecord =
 		// profileUtils.mapToProfileRecord((Map<String, Object>)
 		// resume.get("user_user"));
 		List<ProfileProfileRecord> oldProfile = profileDao.getProfilesByIdOrUserIdOrUUID(userId, 0, null);
 
 		if (oldProfile != null && oldProfile.size() > 0 && StringUtils.isNotNullOrEmpty(oldProfile.get(0).getUuid())) {
+			logger.info("importCV oldProfile:"+oldProfile.get(0).getId().intValue());
 			profileRecord.setUuid(oldProfile.get(0).getUuid());
 		} else {
 			profileRecord.setUuid(UUID.randomUUID().toString());
