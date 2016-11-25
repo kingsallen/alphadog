@@ -13,6 +13,7 @@ import org.jooq.DSLContext;
 import org.jooq.types.UInteger;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyPositionRecord;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -93,6 +94,7 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 
 	public Response upsertThirdPartyPositions(List<ThirdPartyPositionData> positions) {
 		if (positions != null && positions.size() > 0) {
+			logger.info("companyDao upsertThirdPartyPositions"+JSON.toJSONString(positions));
 			try (Connection conn = DBConnHelper.DBConn.getConn();
 					DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);) {
 				positions.forEach(position -> {
@@ -125,6 +127,7 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 						pstmt.setInt(12, position.getPosition_id());
 						count = pstmt.executeUpdate();
 						if (count == 0) {
+							logger.info("companyDao upsertThirdPartyPositions exist");
 							HrThirdPartyPositionRecord dbrecord = create
 									.selectFrom(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION)
 									.where(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID
@@ -150,7 +153,14 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 									dbrecord.setUpdateTime(new Timestamp(sdf.parse(position.getUpdate_time()).getTime()));
 								}
 								count = dbrecord.update();
+								if(count > 0) {
+									logger.info("companyDao upsertThirdPartyPositions update success");
+								} else {
+									logger.info("companyDao upsertThirdPartyPositions update failed");
+								}
 							}
+						} else {
+							logger.info("companyDao upsertThirdPartyPositions add success");
 						}
 					} catch (Exception e) {
 						// TODO Auto-generated catch block

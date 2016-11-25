@@ -3,6 +3,10 @@ package com.moseeker.baseorm.dao.hr;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.jooq.DSLContext;
@@ -116,16 +120,24 @@ public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecor
 					.and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.equal((short) account.getChannel()))
 					.fetchOne();
 			if(record != null) {
+				Date date = sdf.parse(account.getSync_time());
+				record.setSyncTime(new Timestamp(date.getTime()));
 				record.setRemainNum(UInteger.valueOf(account.getRemain_num()));
+				count = record.update();
 			}
-			count = record.update();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			logger.error(e.getMessage(), e);
 
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} finally {
 			// do nothing
 		}
 		return count;
 	}
+	
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 }

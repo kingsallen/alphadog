@@ -168,6 +168,7 @@ public class PositionBS {
 							pds.add(data);
 						});
 						//回写数据到第三方职位表表
+						logger.info("write back to thirdpartyposition:"+JSON.toJSONString(pds));
 						CompanyDao.upsertThirdPartyPositions(pds);
 						
 						ThirdPartyPositionForSynchronization p = positions.get(positions.size()-1);
@@ -185,6 +186,7 @@ public class PositionBS {
 							needWriteBackToPositin =  true;
 						}
 						if(needWriteBackToPositin) {
+							logger.info("needWriteBackToPositin :"+JSON.toJSONString(positionStruct));
 							positionDao.updatePosition(positionStruct);
 						}
 						response = ResultMessage.SUCCESS.toResponse(results);

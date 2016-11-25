@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.constants.AppId;
@@ -12,6 +14,7 @@ import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
+import com.moseeker.function.server.FunctionServer;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.dao.service.CompanyDao;
 import com.moseeker.thrift.gen.dao.service.PositionDao;
@@ -26,6 +29,8 @@ import com.moseeker.thrift.gen.position.struct.Position;
  */
 public class PositionSyncListener {
 	
+	private static Logger logger = LoggerFactory.getLogger(PositionSyncListener.class);
+	
 	CompanyDao.Iface companyDao = ServiceManager.SERVICEMANAGER
 			.getService(CompanyDao.Iface.class);
 	PositionDao.Iface positionDao = ServiceManager.SERVICEMANAGER
@@ -38,9 +43,18 @@ public class PositionSyncListener {
 	}
 	
 	private void task() {
-		String sync = fetchCompledPosition();
-		PositionForSyncResultPojo pojo = JSONObject.parseObject(sync, PositionForSyncResultPojo.class);
-		writeBack(pojo);
+		try {
+			String sync = fetchCompledPosition();
+			logger.info("completed queue :"+sync);
+			PositionForSyncResultPojo pojo = JSONObject.parseObject(sync, PositionForSyncResultPojo.class);
+			
+			writeBack(pojo);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+		} finally {
+			//do nothing
+		}
 		task();
 	}
 
@@ -72,16 +86,22 @@ public class PositionSyncListener {
 		try {
 			QueryUtil qu = new QueryUtil();
 			qu.addEqualFilter("id", pojo.getPosition_id());
+			logger.info("completed queue search position:"+pojo.getPosition_id());
 			Position p = positionDao.getPosition(qu);
 			if(p != null && p.getId() > 0) {
-				ThirdPartAccountData d = new ThirdPartAccountData();
-				d.setCompany_id(p.getCompany_id());
-				d.setRemain_num(pojo.getRemain_number());
-				d.setChannel(Integer.valueOf(pojo.getChannel().trim()));
-				d.setSync_time(pojo.getSync_time());
-				//positionDao.updatePosition(p);
+				logger.info("completed queue position existî");
+				logger.info("completed queue update thirdpartyposition to synchronized");
 				companyDao.upsertThirdPartyPositions(datas);
-				companyDao.updatePartyAccountByCompanyIdChannel(d);
+				if(pojo.getStatus() == 0) {
+					ThirdPartAccountData d = new ThirdPartAccountData();
+					d.setCompany_id(p.getCompany_id());
+					d.setRemain_num(pojo.getRemain_number());
+					d.setChannel(Integer.valueOf(pojo.getChannel().trim()));
+					d.setSync_time(pojo.getSync_time());
+					//positionDao.updatePosition(p);
+					logger.info("completed queue update thirdpartyposition to synchronized");
+					companyDao.updatePartyAccountByCompanyIdChannel(d);
+				}
 			}
 		} catch (TException e) {
 			e.printStackTrace();
