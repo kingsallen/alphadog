@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.constants.AppId;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.providerutils.QueryUtil;
@@ -79,7 +80,11 @@ public class PositionSyncListener {
 			data.setIs_synchronization((byte)PositionSync.bound.getValue());
 		} else {
 			data.setIs_synchronization((byte)PositionSync.failed.getValue());
-			data.setSync_fail_reason(pojo.getMessage());
+			if(pojo.getStatus() == 2) {
+				data.setSync_fail_reason(Constant.POSITION_SYNCHRONIZATION_FAILED);
+			} else {
+				data.setSync_fail_reason(pojo.getMessage());
+			}
 		}
 		datas.add(data);
 		

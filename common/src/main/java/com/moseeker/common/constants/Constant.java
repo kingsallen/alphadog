@@ -178,4 +178,6 @@ public final class Constant {
 	public static final String WORDPRESS_POST_CUSTOMFIELD_PLATFORM = "platform";
 	
 	public static final int WORDPRESS_NEWSLETTER_VALUE 		= 2; 	//博客类别编号为2定义为版本更新
+	
+	public static final String POSITION_SYNCHRONIZATION_FAILED = "同步失败！";
 }
