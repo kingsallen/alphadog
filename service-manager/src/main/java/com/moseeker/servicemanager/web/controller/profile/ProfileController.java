@@ -120,6 +120,8 @@ public class ProfileController {
 					return ResponseLogNotification.fail(request, "profile数量过大，拒绝查询！");
 				}
 				List<Object> profileData = new ArrayList<>();
+				logger.info("-----------------------------------");
+				logger.info("count:"+count);
 				Response result = null;
 				for(int i=0; i<count; i++) {
 					int userId = 0;
@@ -139,7 +141,7 @@ public class ProfileController {
 						uuid = BeanUtils.converToString(uuids.get(i));
 					}
 					result = profileService.getResource(userId, profileId, uuid);
-					logger.info("count:"+i);
+					logger.info("current:"+i);
 					logger.info("data:"+JSON.parse(result.getData()));
 					if(result != null && result.getStatus() == 0) {
 						profileData.add(JSON.parse(result.getData()));
