@@ -26,10 +26,15 @@ public class DictOccupationTest {
 	}
 	//测试获取所有，直接调用接口
 	@Test
-	public void testGetAllOccupation(){
+	public void test(){
 		init();
-		Response result=service.occupations51();
-		
+		CommonQuery query=new CommonQuery();
+		HashMap<String,String> map=new HashMap<String,String>();
+		map.put("level", "1");
+		map.put("status", "1");
+		query.setEqualFilter(map);
+		Response result=service.occupationZPin(query);
+		System.out.println(result);
 	}
 //  //获取occupation，通过Iface
 //	@Test

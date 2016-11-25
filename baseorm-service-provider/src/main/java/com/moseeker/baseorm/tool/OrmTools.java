@@ -32,7 +32,10 @@ public class OrmTools {
 		List<Map<String, Object>> result=new ArrayList<>();
 		try {
 			CommonQuery query=new CommonQuery();
+			HashMap<String,String> map1=new HashMap<String,String>();
+			map1.put("status", "1");
 			query.setPer_page(Integer.MAX_VALUE);
+			query.setEqualFilter(map1);
 			List<Map<String, Object>> allData = new ArrayList<>();
 			List<? extends UpdatableRecordImpl<?>> list = dao.getResources(query);
 			if(list != null && list.size() > 0) {
@@ -167,23 +170,23 @@ public class OrmTools {
 	/*
 	 * 返回内部是单层的occupation集合的response，因为有child元素，所以没用公共方法，只能特殊处理
 	 */
-	public static Response getSingle_layerOccupation(BaseDaoImpl<?,?> dao,CommonQuery query){
-		try{
-			List<? extends UpdatableRecordImpl<?>> list=dao.getResources(query);
-			List<DictOccupation> result=new ArrayList<DictOccupation>();
-			if(list!=null&&list.size()>0){
-				for(int z=0;z<list.size();z++){
-					DictOccupation occ2=(DictOccupation) BeanUtils.DBToStruct(DictOccupation.class,list.get(z) );
-					occ2.setChildren(null);
-					result.add(occ2);
-				}
-			}
-			
-			return ResponseUtils.success(result);
-		}catch(Exception e){
-			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-		}
-	}
+//	public static Response getSingle_layerOccupation(BaseDaoImpl<?,?> dao,CommonQuery query){
+//		try{
+//			List<? extends UpdatableRecordImpl<?>> list=dao.getResources(query);
+//			List<DictOccupation> result=new ArrayList<DictOccupation>();
+//			if(list!=null&&list.size()>0){
+//				for(int z=0;z<list.size();z++){
+//					DictOccupation occ2=(DictOccupation) BeanUtils.DBToStruct(DictOccupation.class,list.get(z) );
+//					occ2.setChildren(null);
+//					result.add(occ2);
+//				}
+//			}
+//			
+//			return ResponseUtils.success(result);
+//		}catch(Exception e){
+//			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+//		}
+//	}
 	/*
 	 * 按照内部是数据的list集合的方式返回response
 	 */
@@ -199,6 +202,29 @@ public class OrmTools {
 			}
 			return ResponseUtils.success(result);
 		}catch(Exception e){
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		}
+	}
+	
+	public static Response getSingle(BaseDaoImpl<?,?> dao,CommonQuery query){
+		List<Map<String, Object>> allData = new ArrayList<>();
+		try{
+			List<? extends UpdatableRecordImpl<?>> list = dao.getResources(query);
+			if(list != null && list.size() > 0) {
+				list.forEach(r -> {
+					Map<String, Object> map = new HashMap<String, Object>();
+					map.put("code", ((Integer)r.get("code")).intValue());
+					map.put("parent_id", ((UInteger)r.get("parent_Id")).intValue());
+					map.put("name", (String)r.get("name"));
+					map.put("code_other", ((Integer)r.get("code_other")).intValue());
+					map.put("level", ((UShort)r.get("level")).intValue());
+					map.put("status", ((UShort)r.get("status")).intValue());
+					allData.add(map);
+				});
+			}
+			return ResponseUtils.success(allData);
+		}catch(Exception e){
+			e.printStackTrace();	
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		}
 	}
