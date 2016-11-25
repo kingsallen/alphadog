@@ -33,6 +33,7 @@ public class JobOccupationService {
 		CommonQuery query=new CommonQuery();
 		HashMap<String,String> map=new HashMap<String,String>();
 		map.put("company_id", company_id+"");
+		map.put("status", "1");
 		query.setEqualFilter(map);
 		query.setPer_page(Integer.MAX_VALUE);
 		try{

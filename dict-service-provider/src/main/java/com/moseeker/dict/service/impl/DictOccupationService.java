@@ -45,6 +45,7 @@ public class DictOccupationService {
 				CommonQuery query=new CommonQuery();
 				query.setPer_page(Integer.MAX_VALUE);
 				HashMap<String,String> map=new HashMap<String,String>();
+				map.put("status", "1");
 				if(id!=null){
 					map.put("code", String.valueOf(id));
 				}
