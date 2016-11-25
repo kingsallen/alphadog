@@ -59,7 +59,6 @@ public class UserHrAccountDaoImpl extends BaseDaoImpl<UserHrAccountRecord, UserH
 				create.attach(userHrAccountRecord);
 				int insertResult = userHrAccountRecord.insert();
 				if (insertResult > 0) {
-					result = userHrAccountRecord.getId().intValue();
 					Result<Record1<Integer>> verifyCompanyNameResult = create.selectCount().from(HrCompany.HR_COMPANY)
 							.join(UserHrAccount.USER_HR_ACCOUNT)
 							.on(HrCompany.HR_COMPANY.HRACCOUNT_ID.equal(UserHrAccount.USER_HR_ACCOUNT.ID))
@@ -92,6 +91,7 @@ public class UserHrAccountDaoImpl extends BaseDaoImpl<UserHrAccountRecord, UserH
 							}
 							create.batchInsert(list).execute();
 						}
+						result = userHrAccountRecord.getId().intValue();;
 					}
 				}
 			}
