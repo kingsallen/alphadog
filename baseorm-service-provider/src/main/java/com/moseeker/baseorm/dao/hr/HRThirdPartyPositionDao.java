@@ -20,6 +20,7 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
@@ -151,6 +152,9 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 								}
 								if (position.getUpdate_time() != null) {
 									dbrecord.setUpdateTime(new Timestamp(sdf.parse(position.getUpdate_time()).getTime()));
+								}
+								if(StringUtils.isNotNullOrEmpty(position.getSync_fail_reason())) {
+									dbrecord.setSyncFailReason(position.getSync_fail_reason());
 								}
 								count = dbrecord.update();
 								if(count > 0) {
