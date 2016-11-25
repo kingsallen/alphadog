@@ -38,9 +38,27 @@ public class PositionChangeUtil {
 		ThirdPartyPositionForSynchronization position = new ThirdPartyPositionForSynchronization();
 		position.setChannel(form.getChannel());
 		position.setTitle(positionDB.getTitle());
+		
+		ChannelType channelType = ChannelType.instaceFromInteger(form.getChannel());
+		switch(channelType) {
+		case JOB51 : 
+			DecimalFormat df = new DecimalFormat("0000");
+			position.setCategory_main_code(df.format(form.getOccupation_level1()));
+			position.setCategory_sub_code(df.format(form.getOccupation_level2()));
+			break;
+		case ZHILIAN : 
+			DecimalFormat df1 = new DecimalFormat("000");
+			position.setCategory_main_code(df1.format(form.getOccupation_level1()));
+			position.setCategory_sub_code(df1.format(form.getOccupation_level2()));
+			break;
+			default :
+				position.setCategory_main_code(form.getOccupation_level1());
+				position.setCategory_sub_code(form.getOccupation_level2());
+		}
+		
 		position.setCategory_main_code(form.getOccupation_level1());
-		position.setCategory_sub_code(form.getOccupation_level2());
 		position.setQuantity(String.valueOf(form.getCount()));
+		
 		setDegree(positionDB.getDegree(), form.getChannel(), position);
 		Integer experience = null;
 		try {
@@ -72,11 +90,8 @@ public class PositionChangeUtil {
 		//转职位
 		if(positionDB.getCities() != null && positionDB.getCities().size() > 0) {
 			try {
-				int otherCode = changeCity(positionDB.getCities().get(0), form.getChannel());
-				DecimalFormat df=new DecimalFormat("000");
-				String otherCodeStr = df.format(otherCode);
-				LoggerFactory.getLogger(PositionChangeUtil.class).info("otherCodeStr:"+otherCodeStr);
-				position.setPub_place_code(otherCodeStr);
+				String otherCode = changeCity(positionDB.getCities().get(0), form.getChannel());
+				position.setPub_place_code(otherCode);
 			} catch (Exception e) {
 				position.setPub_place_code("");
 				e.printStackTrace();
@@ -129,14 +144,25 @@ public class PositionChangeUtil {
 		}
 	}
 	
-	private static int changeCity(int cityCode, int channel) {
+	private static String changeCity(int cityCode, int channel) {
+		String cityCodeStr = "";
+		DecimalFormat df= null;
+		ChannelType channelType = ChannelType.instaceFromInteger(channel);
+		switch(channelType) {
+		case JOB51 : df = new DecimalFormat("000000");break;
+		case ZHILIAN : df = new DecimalFormat("000");break;
+		default :
+		}
+		
 		QueryUtil qu = new QueryUtil();
 		qu.addEqualFilter("code", String.valueOf(cityCode));
 		qu.addEqualFilter("channel", String.valueOf(channel));
 		try {
 			CityMap cityMap = dictDao.getDictMap(qu);
 			if(cityMap != null) {
-				return cityMap.getCode_other();
+				int cityCodeOther = cityMap.getCode_other();
+				cityCodeStr = df.format(cityCodeOther);
+				LoggerFactory.getLogger(PositionChangeUtil.class).info("otherCodeStr:"+cityCodeStr);
 			}
 		} catch (TException e) {
 			// TODO Auto-generated catch block
@@ -144,6 +170,6 @@ public class PositionChangeUtil {
 		} finally {
 			//do nothing
 		}
-		return 0;
+		return cityCodeStr;
 	}
 }
