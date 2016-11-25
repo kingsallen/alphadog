@@ -115,7 +115,9 @@ public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecor
 							.equal(UInteger.valueOf(account.getCompany_id())))
 					.and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.equal((short) account.getChannel()))
 					.fetchOne();
-			record.setRemainNum(UInteger.valueOf(account.getRemain_num()));
+			if(record != null) {
+				record.setRemainNum(UInteger.valueOf(account.getRemain_num()));
+			}
 			count = record.update();
 		} catch (SQLException e) {
 			e.printStackTrace();
