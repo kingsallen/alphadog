@@ -147,8 +147,10 @@ public class ChaosServiceImpl {
 				}
 				for(ThirdPartyPositionForSynchronizationWithAccount position : positions) {
 					position.getPosition_info().setEmail("cv_"+position.getPosition_id()+email);
+					String positionJson = JSON.toJSONString(position);
+					logger.info("synchronize position:"+positionJson);
+					RedisClientFactory.getCacheClient().lpush(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_QUEUE.toString(), positionJson);
 				}
-				RedisClientFactory.getCacheClient().lpush(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_QUEUE.toString(), JSON.toJSONString(positions));
 				return ResponseUtils.success(null);
 			} else {
 				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
