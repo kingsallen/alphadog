@@ -139,7 +139,7 @@ public class ProfileController {
 						uuid = BeanUtils.converToString(uuids.get(i));
 					}
 					result = profileService.getResource(userId, profileId, uuid);
-					logger.info("count:"+count);
+					logger.info("count:"+i);
 					logger.info("data:"+JSON.parse(result.getData()));
 					if(result != null && result.getStatus() == 0) {
 						profileData.add(JSON.parse(result.getData()));
