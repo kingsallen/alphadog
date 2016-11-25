@@ -50,8 +50,8 @@ public class PositionChangeUtil {
 			//do nothing
 		}
 		setExperience(experience, form.getChannel(), position);
-		position.setSalary_high(String.valueOf(form.getSalary_top()));
-		position.setSalary_low(String.valueOf(form.getSalary_bottom()));
+		position.setSalary_high(String.valueOf(form.getSalary_top()*1000));
+		position.setSalary_low(String.valueOf(form.getSalary_bottom()*1000));
 		position.setDescription(positionDB.getAccountabilities());
 		position.setPosition_id(positionDB.getId());
 		position.setWork_place(form.getAddress());
