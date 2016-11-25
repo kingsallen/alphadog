@@ -30,10 +30,9 @@ public class DictDaoServiceImpl implements DictDaoService{
 		return OrmTools.getAll(dictZpinDao);
 	}
 	public Response occupation51(CommonQuery query){
-		return OrmTools.getSingle_layerOccupation(dict51Dao,query);
+		return OrmTools.getSingle(dict51Dao,query);
 	}
 	public Response occupationZPin(CommonQuery query){
-		
-		return OrmTools.getSingle_layerOccupation(dictZpinDao,query);
+		return OrmTools.getSingle(dictZpinDao,query);
 	}
 }
