@@ -129,6 +129,7 @@ public class OrmTools {
 						List<Map<String, Object>> children = new ArrayList<>();
 						result.put("children", children);
 					}
+					d.put("parent_id_code", result.get("code_other"));
 					((List<Map<String, Object>>)result.get("children")).add(d);
 					id.remove();
 				}
@@ -146,6 +147,7 @@ public class OrmTools {
 								List<Map<String, Object>> children = new ArrayList<>();
 								r.put("children", children);
 							}
+							d.put("parent_id_code", result.get("code_other"));
 							((List<Map<String, Object>>)r.get("children")).add(d);
 							id.remove();
 						}
