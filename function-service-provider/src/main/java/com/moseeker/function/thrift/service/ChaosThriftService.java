@@ -11,6 +11,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices.Iface;
 import com.moseeker.thrift.gen.foundation.chaos.struct.ThirdPartyAccountStruct;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
+import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
 
 /**
  * 
@@ -38,7 +39,8 @@ public class ChaosThriftService implements Iface{
 	}
 
 	@Override
-	public Response synchronizePosition(List<ThirdPartyPositionForSynchronization> positions) throws TException {
+	public Response synchronizePosition(List<ThirdPartyPositionForSynchronizationWithAccount> positions)
+			throws TException {
 		return chaosService.synchronizePosition(positions);
 	}
 }

@@ -127,7 +127,7 @@ public class PositionBS {
 					//转成第三方渠道职位
 					List<ThirdPartyPositionForSynchronization> positions = positionServices.changeToThirdPartyPosition(positionFroms, positionStruct);
 					//提交到chaos处理
-					List<ThirdPartyPositionForSynchronizationWithAccount> PositionsForSynchronization = new ArrayList<>();
+					List<ThirdPartyPositionForSynchronizationWithAccount> PositionsForSynchronizations = new ArrayList<>();
 					if(positions != null && positions.size() > 0) {
 						positions.forEach(pos -> {
 							ThirdPartyPositionForSynchronizationWithAccount p = new ThirdPartyPositionForSynchronizationWithAccount();
@@ -139,12 +139,12 @@ public class PositionBS {
 									p.setUser_name(account.getUsername());
 									p.setPosition_id(String.valueOf(pos.getPosition_id()));
 									p.setMember_name(account.getMembername());
-									PositionsForSynchronization.add(p);
+									PositionsForSynchronizations.add(p);
 								}
 							});
 						});
 					}
-					Response synchronizeResult = chaosService.synchronizePosition(positions);
+					Response synchronizeResult = chaosService.synchronizePosition(PositionsForSynchronizations);
 					logger.info("synchronizeResult:"+JSON.toJSONString(synchronizeResult));
 					if(synchronizeResult.getStatus() == 0) {
 						

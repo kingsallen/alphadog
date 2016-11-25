@@ -22,7 +22,7 @@ import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.UrlUtil;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.foundation.chaos.struct.ThirdPartyAccountStruct;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
+import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
 
 /**
  * 
@@ -131,7 +131,7 @@ public class ChaosServiceImpl {
 	 * @param positions
 	 * @return
 	 */
-	public Response synchronizePosition(List<ThirdPartyPositionForSynchronization> positions) {
+	public Response synchronizePosition(List<ThirdPartyPositionForSynchronizationWithAccount> positions) {
 		
 		try {
 			if(positions != null && positions.size() > 0) {
@@ -145,10 +145,12 @@ public class ChaosServiceImpl {
 				} finally {
 					//do nothing
 				}
-				for(ThirdPartyPositionForSynchronization position : positions) {
-					position.setEmail("cv_"+position.getPosition_id()+email);
+				for(ThirdPartyPositionForSynchronizationWithAccount position : positions) {
+					position.getPosition_info().setEmail("cv_"+position.getPosition_id()+email);
+					String positionJson = JSON.toJSONString(position);
+					logger.info("synchronize position:"+positionJson);
+					RedisClientFactory.getCacheClient().lpush(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_QUEUE.toString(), positionJson);
 				}
-				RedisClientFactory.getCacheClient().lpush(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_QUEUE.toString(), JSON.toJSONString(positions));
 				return ResponseUtils.success(null);
 			} else {
 				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);

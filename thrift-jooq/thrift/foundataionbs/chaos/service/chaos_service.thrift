@@ -16,6 +16,6 @@ service ChaosServices {
     //同步可发布职位数
     chaos_struct.ThirdPartyAccountStruct synchronization(1:chaos_struct.ThirdPartyAccountStruct thirdPartyAccount); 
     //同步职位
-    common_struct.Response synchronizePosition(1:list<position_struct.ThirdPartyPositionForSynchronization> positions); 
+    common_struct.Response synchronizePosition(1:list<position_struct.ThirdPartyPositionForSynchronizationWithAccount> positions); 
 }
 
