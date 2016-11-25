@@ -2,20 +2,20 @@ package com.moseeker.position.service.position.job51;
 
 public enum Job51WorkType {
 
-	fullTime("全职", 0), partTime("兼职", 1), none("", -1);
+	fullTime("全职", "0"), partTime("兼职", "1"), none("", "");
 	
-	private Job51WorkType(String name, int value) {
+	private Job51WorkType(String name, String value) {
 		this.name = name;
 		this.value = value;
 	}
 	private String name;
-	private int value;
+	private String value;
 	
 	public String getName() {
 		return this.name;
 	}
 	
-	public int getValue() {
+	public String getValue() {
 		return this.value;
 	}
 }

@@ -2,7 +2,7 @@ package com.moseeker.position.service.position.zhilian;
 
 public enum ZhilianWorkType {
 
-	fullTime("全职", 0), partTime("兼职", 1), practice("实习", 2), none("", -1);
+	fullTime("全职", 2), partTime("兼职", 1), practice("实习", 4), campus("校园", 5), none("", -1);
 	
 	private ZhilianWorkType(String name, int value) {
 		this.name = name;
@@ -19,3 +19,4 @@ public enum ZhilianWorkType {
 		return this.value;
 	}
 }
+	
