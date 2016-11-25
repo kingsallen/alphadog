@@ -8,6 +8,7 @@ import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.service.position.qianxun.Degree;
+import com.moseeker.position.service.position.qianxun.WorkType;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition;
 import com.moseeker.thrift.gen.dao.service.DictDao;
@@ -50,11 +51,14 @@ public class PositionChangeUtil {
 			//do nothing
 		}
 		setExperience(experience, form.getChannel(), position);
+		
 		position.setSalary_high(String.valueOf(form.getSalary_top()*1000));
 		position.setSalary_low(String.valueOf(form.getSalary_bottom()*1000));
 		position.setDescription(positionDB.getAccountabilities());
 		position.setPosition_id(positionDB.getId());
 		position.setWork_place(form.getAddress());
+		positionDB.getEmployment_type();
+		setEmployeeType(positionDB.getEmployment_type(), form.getChannel(),  position);
 		if(positionDB.getStop_date() != null) {
 			position.setStop_date(positionDB.getStop_date());
 		} else {
@@ -76,6 +80,16 @@ public class PositionChangeUtil {
 		return position;
 	}
 	
+	private static void setEmployeeType(byte employment_type, int channel, ThirdPartyPositionForSynchronization position) {
+		WorkType workType = WorkType.instanceFromInt(employment_type);
+		ChannelType channelType = ChannelType.instaceFromInteger(channel);
+		switch(channelType) {
+		case JOB51: position.setType_code(String.valueOf(WordTypeChangeUtil.getJob51EmployeeType(workType).getValue())); break;
+		case ZHILIAN: position.setType_code(String.valueOf(WordTypeChangeUtil.getZhilianEmployeeType(workType).getValue()));break;
+		default : position.setType_code("");
+		}
+	}
+
 	/**
 	 * 转学位
 	 * @param degreeInt

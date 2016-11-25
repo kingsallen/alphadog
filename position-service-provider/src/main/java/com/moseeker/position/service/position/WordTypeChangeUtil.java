@@ -11,7 +11,7 @@ import com.moseeker.position.service.position.zhilian.ZhilianWorkType;
  */
 public class WordTypeChangeUtil {
 
-	public Job51WorkType getJob51EmployeeType(WorkType wordType) {
+	public static Job51WorkType getJob51EmployeeType(WorkType wordType) {
 		Job51WorkType job51WorkType = Job51WorkType.none;
 		switch(wordType) {
 		case fullTime: job51WorkType = Job51WorkType.fullTime; break;
@@ -21,7 +21,7 @@ public class WordTypeChangeUtil {
 		return job51WorkType;
 	}
 	
-	public ZhilianWorkType getZhilianEmployeeType(WorkType wordType) {
+	public static ZhilianWorkType getZhilianEmployeeType(WorkType wordType) {
 		
 		ZhilianWorkType zhilianWorkType = ZhilianWorkType.none;
 		switch(wordType) {
