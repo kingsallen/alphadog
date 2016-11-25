@@ -1,5 +1,7 @@
 package com.moseeker.position.service.position;
 
+import java.text.DecimalFormat;
+
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.LoggerFactory;
@@ -69,7 +71,9 @@ public class PositionChangeUtil {
 		//转职位
 		if(positionDB.getCities() != null && positionDB.getCities().size() > 0) {
 			try {
-				position.setPub_place_code(String.valueOf(changeCity(positionDB.getCities().get(0), form.getChannel())));
+				int otherCode = changeCity(positionDB.getCities().get(0), form.getChannel());
+				DecimalFormat df=new DecimalFormat("000");
+				position.setPub_place_code(df.format(otherCode));
 			} catch (Exception e) {
 				position.setPub_place_code("");
 				e.printStackTrace();

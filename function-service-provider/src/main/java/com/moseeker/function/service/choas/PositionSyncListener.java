@@ -65,7 +65,7 @@ public class PositionSyncListener {
 	 */
 	private String fetchCompledPosition() {
 		RedisClient redisClient = RedisClientFactory.getCacheClient();
-		return redisClient.brpop(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_COMPLATED_QUEUE.toString()).get(1);
+		return redisClient.brpop(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_COMPLETED_QUEUE.toString()).get(1);
 	}
 	/**
 	 * 回写数据
