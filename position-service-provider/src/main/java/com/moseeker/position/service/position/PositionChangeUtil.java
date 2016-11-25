@@ -34,6 +34,7 @@ public class PositionChangeUtil {
 	 * @return
 	 */
 	public static ThirdPartyPositionForSynchronization changeToThirdPartyPosition(ThridPartyPosition form, Position positionDB) {
+		LoggerFactory.getLogger(PositionChangeUtil.class).info("---------------------");
 		ThirdPartyPositionForSynchronization position = new ThirdPartyPositionForSynchronization();
 		position.setChannel(form.getChannel());
 		position.setTitle(positionDB.getTitle());
@@ -73,10 +74,13 @@ public class PositionChangeUtil {
 			try {
 				int otherCode = changeCity(positionDB.getCities().get(0), form.getChannel());
 				DecimalFormat df=new DecimalFormat("000");
-				position.setPub_place_code(df.format(otherCode));
+				String otherCodeStr = df.format(otherCode);
+				LoggerFactory.getLogger(PositionChangeUtil.class).info("otherCodeStr:"+otherCodeStr);
+				position.setPub_place_code(otherCodeStr);
 			} catch (Exception e) {
 				position.setPub_place_code("");
 				e.printStackTrace();
+				LoggerFactory.getLogger(PositionChangeUtil.class).error(e.getMessage(), e);
 			}
 		} else {
 			position.setPub_place_code("");
