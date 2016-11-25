@@ -65,6 +65,7 @@ public class PositionSyncListener {
 			data.setIs_synchronization((byte)PositionSync.bound.getValue());
 		} else {
 			data.setIs_synchronization((byte)PositionSync.failed.getValue());
+			data.setSync_fail_reason(pojo.getMessage());
 		}
 		datas.add(data);
 		
@@ -72,11 +73,16 @@ public class PositionSyncListener {
 			QueryUtil qu = new QueryUtil();
 			qu.addEqualFilter("id", pojo.getPosition_id());
 			Position p = positionDao.getPosition(qu);
-			ThirdPartAccountData d = new ThirdPartAccountData();
-			d.setId(p.getCompany_id());
-			d.setRemain_num(pojo.getRemain_number());
-			positionDao.updatePosition(p);
-			companyDao.upsertThirdPartyPositions(datas);
+			if(p != null && p.getId() > 0) {
+				ThirdPartAccountData d = new ThirdPartAccountData();
+				d.setCompany_id(p.getCompany_id());
+				d.setRemain_num(pojo.getRemain_number());
+				d.setChannel(Integer.valueOf(pojo.getChannel().trim()));
+				d.setSync_time(pojo.getSync_time());
+				//positionDao.updatePosition(p);
+				companyDao.upsertThirdPartyPositions(datas);
+				companyDao.updatePartyAccountByCompanyIdChannel(d);
+			}
 		} catch (TException e) {
 			e.printStackTrace();
 		} finally {

@@ -58,5 +58,6 @@ struct ThirdPartyPositionData {
 	8: string refresh_time,
 	9: string update_time,
 	10: string occupation,
-	11: string address
+	11: string address,
+	12: string sync_fail_reason
 }

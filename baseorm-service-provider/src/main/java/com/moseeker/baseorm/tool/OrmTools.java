@@ -1,11 +1,15 @@
 package com.moseeker.baseorm.tool;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.thrift.TBase;
 import org.jooq.impl.UpdatableRecordImpl;
+import org.jooq.types.UInteger;
+import org.jooq.types.UShort;
 
 import com.moseeker.baseorm.util.BaseDaoImpl;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -25,16 +29,22 @@ public class OrmTools {
 	 * 按照内部是三层嵌套的方式的list集合的response
 	 */
 	public  static Response getAll(BaseDaoImpl<?,?> dao){
-		List<DictOccupation> result=new ArrayList<DictOccupation>();
+		List<Map<String, Object>> result=new ArrayList<>();
 		try {
 			CommonQuery query=new CommonQuery();
 			query.setPer_page(Integer.MAX_VALUE);
-			List<DictOccupation> allData = new ArrayList<>();
+			List<Map<String, Object>> allData = new ArrayList<>();
 			List<? extends UpdatableRecordImpl<?>> list = dao.getResources(query);
 			if(list != null && list.size() > 0) {
 				list.forEach(r -> {
-					DictOccupation occu = (DictOccupation) BeanUtils.DBToStruct(DictOccupation.class, r);
-					allData.add(occu);
+					Map<String, Object> map = new HashMap<String, Object>();
+					map.put("code", ((Integer)r.get("code")).intValue());
+					map.put("parent_id", ((UInteger)r.get("parent_Id")).intValue());
+					map.put("name", (String)r.get("name"));
+					map.put("code_other", ((Integer)r.get("code_other")).intValue());
+					map.put("level", ((UShort)r.get("level")).intValue());
+					map.put("status", ((UShort)r.get("status")).intValue());
+					allData.add(map);
 				});
 			}
 			if(allData.size() > 0) {
@@ -101,39 +111,40 @@ public class OrmTools {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		}*/
 	}
-	private static List<DictOccupation> arrangeOccupation(List<DictOccupation> allData) {
-		List<DictOccupation> result = arrangeFirstLevel(allData);
+	private static List<Map<String, Object>> arrangeOccupation(List<Map<String, Object>> allData) {
+		List<Map<String, Object>> result = arrangeFirstLevel(allData);
 		arrangeSecondLevel(result, allData);
 		return result;
 	}
-	private static void arrangeSecondLevel(List<DictOccupation> results, List<DictOccupation> allData) {
+	@SuppressWarnings("unchecked")
+	private static void arrangeSecondLevel(List<Map<String, Object>> results, List<Map<String, Object>> allData) {
 		results.forEach(result -> {
-			Iterator<DictOccupation> id = allData.iterator();
+			Iterator<Map<String, Object>> id = allData.iterator();
 			while(id.hasNext()) {
-				DictOccupation d = id.next();
-				if(d.getParent_id() == result.getCode()) {
-					if(result.getChildren() == null) {
-						List<DictOccupation> children = new ArrayList<>();
-						result.setChildren(children);
+				Map<String, Object> d = id.next();
+				if(((Integer)d.get("parent_id")).intValue() == ((Integer)result.get("code")).intValue()) {
+					if(result.get("children") == null) {
+						List<Map<String, Object>> children = new ArrayList<>();
+						result.put("children", children);
 					}
-					result.getChildren().add(d);
+					((List<Map<String, Object>>)result.get("children")).add(d);
 					id.remove();
 				}
 			}
 		});
 		
 		results.forEach(result -> {
-			if(result.getChildren() != null && result.getChildren().size() > 0) {
-				result.getChildren().forEach(r -> {
-					Iterator<DictOccupation> id = allData.iterator();
+			if(result.get("children") != null && ((List<Map<String, Object>>)result.get("children")).size() > 0) {
+				((List<Map<String, Object>>)result.get("children")).forEach(r -> {
+					Iterator<Map<String, Object>> id = allData.iterator();
 					while(id.hasNext()) {
-						DictOccupation d = id.next();
-						if(d.getParent_id() == r.getCode()) {
-							if(r.getChildren() == null) {
-								List<DictOccupation> children = new ArrayList<>();
-								r.setChildren(children);
+						Map<String, Object> d = id.next();
+						if(((Integer)d.get("parent_id")).intValue() == ((Integer)r.get("code")).intValue()) {
+							if(r.get("children") == null) {
+								List<Map<String, Object>> children = new ArrayList<>();
+								r.put("children", children);
 							}
-							r.getChildren().add(d);
+							((List<Map<String, Object>>)r.get("children")).add(d);
 							id.remove();
 						}
 					}
@@ -141,12 +152,12 @@ public class OrmTools {
 			}
 		});
 	}
-	private static List<DictOccupation> arrangeFirstLevel(List<DictOccupation> allData) {
-		List<DictOccupation> result = new ArrayList<>();
-		Iterator<DictOccupation> id = allData.iterator();
+	private static List<Map<String, Object>> arrangeFirstLevel(List<Map<String, Object>> allData) {
+		List<Map<String, Object>> result = new ArrayList<>();
+		Iterator<Map<String, Object>> id = allData.iterator();
 		while(id.hasNext()) {
-			DictOccupation d = id.next();
-			if(d.getParent_id() == 0) {
+			Map<String, Object> d = id.next();
+			if(d.get("parent_id") != null && ((Integer)d.get("parent_id")).intValue() == 0) {
 				result.add(d);
 				id.remove();
 			}
