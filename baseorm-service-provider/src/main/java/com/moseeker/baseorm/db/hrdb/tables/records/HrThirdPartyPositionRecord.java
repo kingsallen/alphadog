@@ -31,7 +31,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdPartyPositionRecord> implements Record12<Integer, UInteger, String, Short, Short, Short, Timestamp, Timestamp, Timestamp, String, String, String> {
 
-	private static final long serialVersionUID = -745256623;
+	private static final long serialVersionUID = 2143092765;
 
 	/**
 	 * Setter for <code>hrdb.hr_third_party_position.id</code>.
@@ -160,30 +160,30 @@ public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdParty
 	}
 
 	/**
+	 * Setter for <code>hrdb.hr_third_party_position.address</code>. 详细地址
+	 */
+	public void setAddress(String value) {
+		setValue(9, value);
+	}
+
+	/**
+	 * Getter for <code>hrdb.hr_third_party_position.address</code>. 详细地址
+	 */
+	public String getAddress() {
+		return (String) getValue(9);
+	}
+
+	/**
 	 * Setter for <code>hrdb.hr_third_party_position.occupation</code>. 同步时选中的第三方职位职能
 	 */
 	public void setOccupation(String value) {
-		setValue(9, value);
+		setValue(10, value);
 	}
 
 	/**
 	 * Getter for <code>hrdb.hr_third_party_position.occupation</code>. 同步时选中的第三方职位职能
 	 */
 	public String getOccupation() {
-		return (String) getValue(9);
-	}
-
-	/**
-	 * Setter for <code>hrdb.hr_third_party_position.address</code>. 职位的详细地址
-	 */
-	public void setAddress(String value) {
-		setValue(10, value);
-	}
-
-	/**
-	 * Getter for <code>hrdb.hr_third_party_position.address</code>. 职位的详细地址
-	 */
-	public String getAddress() {
 		return (String) getValue(10);
 	}
 
@@ -310,7 +310,7 @@ public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdParty
 	 */
 	@Override
 	public Field<String> field10() {
-		return HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.OCCUPATION;
+		return HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.ADDRESS;
 	}
 
 	/**
@@ -318,7 +318,7 @@ public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdParty
 	 */
 	@Override
 	public Field<String> field11() {
-		return HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.ADDRESS;
+		return HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.OCCUPATION;
 	}
 
 	/**
@@ -406,7 +406,7 @@ public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdParty
 	 */
 	@Override
 	public String value10() {
-		return getOccupation();
+		return getAddress();
 	}
 
 	/**
@@ -414,7 +414,7 @@ public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdParty
 	 */
 	@Override
 	public String value11() {
-		return getAddress();
+		return getOccupation();
 	}
 
 	/**
@@ -511,7 +511,7 @@ public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdParty
 	 */
 	@Override
 	public HrThirdPartyPositionRecord value10(String value) {
-		setOccupation(value);
+		setAddress(value);
 		return this;
 	}
 
@@ -520,7 +520,7 @@ public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdParty
 	 */
 	@Override
 	public HrThirdPartyPositionRecord value11(String value) {
-		setAddress(value);
+		setOccupation(value);
 		return this;
 	}
 
@@ -567,7 +567,7 @@ public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdParty
 	/**
 	 * Create a detached, initialised HrThirdPartyPositionRecord
 	 */
-	public HrThirdPartyPositionRecord(Integer id, UInteger positionId, String thirdPartPositionId, Short channel, Short isSynchronization, Short isRefresh, Timestamp syncTime, Timestamp refreshTime, Timestamp updateTime, String occupation, String address, String syncFailReason) {
+	public HrThirdPartyPositionRecord(Integer id, UInteger positionId, String thirdPartPositionId, Short channel, Short isSynchronization, Short isRefresh, Timestamp syncTime, Timestamp refreshTime, Timestamp updateTime, String address, String occupation, String syncFailReason) {
 		super(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION);
 
 		setValue(0, id);
@@ -579,8 +579,8 @@ public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdParty
 		setValue(6, syncTime);
 		setValue(7, refreshTime);
 		setValue(8, updateTime);
-		setValue(9, occupation);
-		setValue(10, address);
+		setValue(9, address);
+		setValue(10, occupation);
 		setValue(11, syncFailReason);
 	}
 }
