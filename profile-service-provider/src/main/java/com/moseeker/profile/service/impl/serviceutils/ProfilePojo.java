@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.jooq.types.UByte;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -293,5 +294,11 @@ public class ProfilePojo {
 	}
 	public void setWorksRecords(List<ProfileWorksRecord> worksRecords) {
 		this.worksRecords = worksRecords;
+	}
+	
+	@Test
+	public void test() {
+		String stri = "THIRD_PARTY_POSITION_SYNCHRONIZATION_COMPLATED_QUEUE{SYNCHRONIZATION}";
+		System.out.println(stri.length());
 	}
 }

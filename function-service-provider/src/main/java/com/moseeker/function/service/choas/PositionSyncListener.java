@@ -75,8 +75,11 @@ public class PositionSyncListener {
 			ThirdPartAccountData d = new ThirdPartAccountData();
 			d.setId(p.getCompany_id());
 			d.setRemain_num(pojo.getRemain_number());
+			d.setChannel(Integer.valueOf(pojo.getChannel().trim()));
+			d.setSync_time(pojo.getSync_time());
 			positionDao.updatePosition(p);
 			companyDao.upsertThirdPartyPositions(datas);
+			companyDao.updatePartyAccountByCompanyIdChannel(d);
 		} catch (TException e) {
 			e.printStackTrace();
 		} finally {
