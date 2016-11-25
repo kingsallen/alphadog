@@ -162,6 +162,7 @@ public class OrmTools {
 		while(id.hasNext()) {
 			Map<String, Object> d = id.next();
 			if(d.get("parent_id") != null && ((Integer)d.get("parent_id")).intValue() == 0) {
+				d.put("parent_id_code", 0);
 				result.add(d);
 				id.remove();
 			}
