@@ -100,9 +100,9 @@ public class PositionChangeUtil {
 		Degree degree = Degree.instanceFromCode(String.valueOf(degreeInt));
 		ChannelType channelType = ChannelType.instaceFromInteger(channel);
 		switch(channelType) {
-		case JOB51: position.setDegree(DegreeChangeUtil.getJob51Degree(degree).getValue());break;
-		case ZHILIAN : position.setDegree(DegreeChangeUtil.getZhilianDegree(degree).getValue());break;
-		default:position.setDegree("");
+		case JOB51: position.setDegree_code(DegreeChangeUtil.getJob51Degree(degree).getValue());break;
+		case ZHILIAN : position.setDegree_code(DegreeChangeUtil.getZhilianDegree(degree).getValue());break;
+		default:position.setDegree_code("");
 		}
 	}
 	
