@@ -40,16 +40,20 @@ public class PositionChangeUtil {
 		position.setTitle(positionDB.getTitle());
 		
 		ChannelType channelType = ChannelType.instaceFromInteger(form.getChannel());
+		System.out.println("--form.getOccupation_level1():"+form.getOccupation_level1());
+		System.out.println("--form.getOccupation_level2():"+form.getOccupation_level2());
 		switch(channelType) {
 		case JOB51 : 
 			DecimalFormat df = new DecimalFormat("0000");
-			position.setCategory_main_code(df.format(form.getOccupation_level1()));
-			position.setCategory_sub_code(df.format(form.getOccupation_level2()));
+			System.out.println("--form.getOccupation_level1():"+form.getOccupation_level1());
+			System.out.println("--form.getOccupation_level2():"+form.getOccupation_level2());
+			position.setCategory_main_code(df.format(Integer.valueOf(form.getOccupation_level1())));
+			position.setCategory_sub_code(df.format(Integer.valueOf(form.getOccupation_level2())));
 			break;
 		case ZHILIAN : 
 			DecimalFormat df1 = new DecimalFormat("000");
-			position.setCategory_main_code(df1.format(form.getOccupation_level1()));
-			position.setCategory_sub_code(df1.format(form.getOccupation_level2()));
+			position.setCategory_main_code(df1.format(Integer.valueOf(form.getOccupation_level1())));
+			position.setCategory_sub_code(df1.format(Integer.valueOf(form.getOccupation_level2())));
 			break;
 			default :
 				position.setCategory_main_code(form.getOccupation_level1());
