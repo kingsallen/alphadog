@@ -79,7 +79,7 @@ public class PositionChangeUtil {
 		
 		position.setSalary_high(String.valueOf(form.getSalary_top()*1000));
 		position.setSalary_low(String.valueOf(form.getSalary_bottom()*1000));
-		position.setDescription(positionDB.getAccountabilities());
+		position.setDescription(positionDB.getAccountabilities()+positionDB.getRequirement());
 		position.setPosition_id(positionDB.getId());
 		position.setWork_place(form.getAddress());
 		positionDB.getEmployment_type();
