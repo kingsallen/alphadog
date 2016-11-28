@@ -40,30 +40,13 @@ public class PositionChangeUtil {
 		position.setTitle(positionDB.getTitle());
 		
 		ChannelType channelType = ChannelType.instaceFromInteger(form.getChannel());
-		System.out.println("--form.getOccupation_level1():"+form.getOccupation_level1());
-		System.out.println("--form.getOccupation_level2():"+form.getOccupation_level2());
-		switch(channelType) {
-		case JOB51 : 
-			DecimalFormat df = new DecimalFormat("0000");
-			System.out.println("--form.getOccupation_level1():"+form.getOccupation_level1());
-			System.out.println("--form.getOccupation_level2():"+form.getOccupation_level2());
-			position.setCategory_main_code(df.format(Integer.valueOf(form.getOccupation_level1())));
-			position.setCategory_sub_code(df.format(Integer.valueOf(form.getOccupation_level2())));
-			break;
-		case ZHILIAN : 
-			DecimalFormat df1 = new DecimalFormat("000");
-			position.setCategory_main_code(df1.format(Integer.valueOf(form.getOccupation_level1())));
-			position.setCategory_sub_code(df1.format(Integer.valueOf(form.getOccupation_level2())));
-			break;
-			default :
-				position.setCategory_main_code(form.getOccupation_level1());
-				position.setCategory_sub_code(form.getOccupation_level2());
-		}
 		
-		position.setCategory_main_code(form.getOccupation_level1());
-		position.setQuantity(String.valueOf(form.getCount()));
+		setCategoryMainCode(form.getOccupation_level1(), channelType, position);
+		setCategorySubCode(form.getOccupation_level2(), channelType, position);
 		
-		setDegree(positionDB.getDegree(), form.getChannel(), position);
+		setQuantity(form.getCount(), positionDB.getCount(), position);
+		
+		setDegree(positionDB.getDegree(), channelType, position);
 		Integer experience = null;
 		try {
 			if(StringUtils.isNotNullOrEmpty(positionDB.getExperience())) {
@@ -75,10 +58,11 @@ public class PositionChangeUtil {
 		} finally {
 			//do nothing
 		}
-		setExperience(experience, form.getChannel(), position);
 		
-		position.setSalary_high(String.valueOf(form.getSalary_top()*1000));
-		position.setSalary_low(String.valueOf(form.getSalary_bottom()*1000));
+		setExperience(experience, channelType, position);
+		
+		setSalaryTop(form.getSalary_top(), positionDB.getSalary_top(), position);
+		setSalaryBottom(form.getSalary_bottom(), positionDB.getSalary_bottom(), position);
 		position.setDescription(positionDB.getAccountabilities()+positionDB.getRequirement());
 		position.setPosition_id(positionDB.getId());
 		position.setWork_place(form.getAddress());
@@ -107,6 +91,77 @@ public class PositionChangeUtil {
 		return position;
 	}
 	
+	private static void setSalaryBottom(int salaryBottom, int salaryBottomDB,
+			ThirdPartyPositionForSynchronization position) {
+		if(salaryBottom > 0) {
+			position.setSalary_low(String.valueOf(salaryBottom*1000));
+		} else {
+			position.setSalary_low(String.valueOf(salaryBottomDB*1000));
+		}
+	}
+
+	private static void setSalaryTop(int salary_top, int salaryTopDB, ThirdPartyPositionForSynchronization position) {
+		if(salary_top > 0) {
+			position.setSalary_high(String.valueOf(salary_top*1000));
+		} else {
+			position.setSalary_high(String.valueOf(salaryTopDB*1000));
+		}
+	}
+
+	private static void setQuantity(int count, int countFromDB, ThirdPartyPositionForSynchronization position) {
+		if(count > 0) {
+			position.setQuantity(String.valueOf(count));
+		} else {
+			position.setQuantity(String.valueOf(countFromDB));
+		}
+	}
+
+	private static void setCategorySubCode(String categorySubCode, ChannelType channelType,
+			ThirdPartyPositionForSynchronization position) {
+		System.out.println("--form.getOccupation_level2():"+categorySubCode);
+		if(StringUtils.isNotNullOrEmpty(categorySubCode)) {
+			switch(channelType) {
+			case JOB51 : 
+				DecimalFormat df = new DecimalFormat("0000");
+				if(StringUtils.isNotNullOrEmpty(categorySubCode)) {
+					position.setCategory_main_code(df.format(Integer.valueOf(categorySubCode)));
+				}
+				break;
+			case ZHILIAN : 
+				DecimalFormat df1 = new DecimalFormat("000");
+				if(StringUtils.isNotNullOrEmpty(categorySubCode)) {
+					position.setCategory_main_code(df1.format(Integer.valueOf(categorySubCode)));
+				}
+				break;
+				default :
+					position.setCategory_main_code(categorySubCode);
+			}
+		}
+	}
+
+	private static void setCategoryMainCode(String categoryMainCode, ChannelType channelType,
+			ThirdPartyPositionForSynchronization position) {
+		System.out.println("--form.getOccupation_level1():"+categoryMainCode);
+		if(StringUtils.isNotNullOrEmpty(categoryMainCode)) {
+			switch(channelType) {
+			case JOB51 : 
+				DecimalFormat df = new DecimalFormat("0000");
+				if(StringUtils.isNotNullOrEmpty(categoryMainCode)) {
+					position.setCategory_main_code(df.format(Integer.valueOf(categoryMainCode)));
+				}
+				break;
+			case ZHILIAN : 
+				DecimalFormat df1 = new DecimalFormat("000");
+				if(StringUtils.isNotNullOrEmpty(categoryMainCode)) {
+					position.setCategory_main_code(df1.format(Integer.valueOf(categoryMainCode)));
+				}
+				break;
+				default :
+					position.setCategory_main_code(categoryMainCode);
+			}
+		}
+	}
+
 	private static void setEmployeeType(byte employment_type, int channel, ThirdPartyPositionForSynchronization position) {
 		WorkType workType = WorkType.instanceFromInt(employment_type);
 		ChannelType channelType = ChannelType.instaceFromInteger(channel);
@@ -120,12 +175,11 @@ public class PositionChangeUtil {
 	/**
 	 * 转学位
 	 * @param degreeInt
-	 * @param channel
+	 * @param channelType
 	 * @param position
 	 */
-	private static void setDegree(int degreeInt, int channel, ThirdPartyPositionForSynchronization position) {
+	private static void setDegree(int degreeInt, ChannelType channelType, ThirdPartyPositionForSynchronization position) {
 		Degree degree = Degree.instanceFromCode(String.valueOf(degreeInt));
-		ChannelType channelType = ChannelType.instaceFromInteger(channel);
 		switch(channelType) {
 		case JOB51: position.setDegree_code(DegreeChangeUtil.getJob51Degree(degree).getValue());break;
 		case ZHILIAN : position.setDegree_code(DegreeChangeUtil.getZhilianDegree(degree).getValue());break;
@@ -136,11 +190,10 @@ public class PositionChangeUtil {
 	/**
 	 * 转工作经验
 	 * @param experience
-	 * @param channel
+	 * @param channelType2
 	 * @param position
 	 */
-	private static void setExperience(Integer experience, int channel, ThirdPartyPositionForSynchronization position) {
-		ChannelType channelType = ChannelType.instaceFromInteger(channel);
+	private static void setExperience(Integer experience, ChannelType channelType, ThirdPartyPositionForSynchronization position) {
 		switch(channelType) {
 		case JOB51: position.setExperience_code(ExperienceChangeUtil.getJob51Experience(experience).getValue());break;
 		case ZHILIAN : position.setExperience_code(ExperienceChangeUtil.getZhilianExperience(experience).getValue());break;
@@ -169,7 +222,6 @@ public class PositionChangeUtil {
 				LoggerFactory.getLogger(PositionChangeUtil.class).info("otherCodeStr:"+cityCodeStr);
 			}
 		} catch (TException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			//do nothing

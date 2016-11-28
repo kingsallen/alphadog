@@ -1,8 +1,5 @@
 package com.moseeker.function.service.choas;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +8,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.KeyIdentifier;
-import com.moseeker.common.constants.PositionSync;
+import com.moseeker.common.constants.PositionRefreshType;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
@@ -23,13 +20,13 @@ import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.position.struct.Position;
 
 /**
- * 监听同步完成队列
+ * 监听刷新完成队列
  * @author wjf
  *
  */
-public class PositionSyncListener {
+public class PositionRefreshListener {
 	
-	private static Logger logger = LoggerFactory.getLogger(PositionSyncListener.class);
+	private static Logger logger = LoggerFactory.getLogger(PositionRefreshListener.class);
 	
 	CompanyDao.Iface companyDao = ServiceManager.SERVICEMANAGER
 			.getService(CompanyDao.Iface.class);
@@ -64,30 +61,27 @@ public class PositionSyncListener {
 	 */
 	private String fetchCompledPosition() {
 		RedisClient redisClient = RedisClientFactory.getCacheClient();
-		return redisClient.brpop(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_COMPLETED_QUEUE.toString()).get(1);
+		return redisClient.brpop(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH_COMPLETED_QUEUE.toString()).get(1);
 	}
 	/**
 	 * 回写数据
 	 * @param pojo
 	 */
 	private void writeBack(PositionForSyncResultPojo pojo) {
-		List<ThirdPartyPositionData> datas = new ArrayList<>();
 		ThirdPartyPositionData data = new ThirdPartyPositionData();
 		data.setChannel(Byte.valueOf(pojo.getChannel()));
 		data.setPosition_id(Integer.valueOf(pojo.getPosition_id()));
 		if(pojo.getStatus() == 0) {
-			data.setIs_synchronization((byte)PositionSync.bound.getValue());
-			data.setSync_time(pojo.getSync_time());
+			data.setIs_refresh((byte)PositionRefreshType.refreshed.getValue());
+			data.setRefresh_time(pojo.getSync_time());
 		} else {
-			data.setIs_synchronization((byte)PositionSync.failed.getValue());
+			data.setIs_refresh((byte)PositionRefreshType.failed.getValue());
 			if(pojo.getStatus() == 2) {
 				data.setSync_fail_reason(Constant.POSITION_SYNCHRONIZATION_FAILED);
 			} else {
 				data.setSync_fail_reason(pojo.getMessage());
 			}
 		}
-		datas.add(data);
-		
 		try {
 			QueryUtil qu = new QueryUtil();
 			qu.addEqualFilter("id", pojo.getPosition_id());
@@ -96,7 +90,7 @@ public class PositionSyncListener {
 			if(p != null && p.getId() > 0) {
 				logger.info("completed queue position existî");
 				logger.info("completed queue update thirdpartyposition to synchronized");
-				companyDao.upsertThirdPartyPositions(datas);
+				positionDao.upsertThirdPartyPositions(data);
 				if(pojo.getStatus() == 0) {
 					ThirdPartAccountData d = new ThirdPartAccountData();
 					d.setCompany_id(p.getCompany_id());

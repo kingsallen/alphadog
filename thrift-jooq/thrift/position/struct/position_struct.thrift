@@ -91,7 +91,8 @@ struct ThirdPartyPositionForSynchronization {
     17: string email,
     18: string stop_date,
     19: i32 channel,
-    20: string type_code
+    20: string type_code,
+    21: string job_id
 }
 
 /*

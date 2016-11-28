@@ -16,6 +16,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.position.service.PositionServices.Iface;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
+import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
 
 @Service
 public class PositionServicesImpl implements Iface {
@@ -75,5 +76,16 @@ public class PositionServicesImpl implements Iface {
 	public List<ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(List<ThridPartyPosition> forms,
 			Position position) throws TException {
 		return service.changeToThirdPartyPosition(forms, position);
+	}
+
+	@Override
+	public boolean ifAllowRefresh(int positionId, int channel) throws TException {
+		return service.ifAllowRefresh(positionId, channel);
+	}
+
+	@Override
+	public ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(int positionId, int channel)
+			throws TException {
+		return service.createRefreshPosition(positionId, channel);
 	}
 }

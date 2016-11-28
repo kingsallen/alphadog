@@ -19,6 +19,7 @@ import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.PositionDao.Iface;
+import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.position.struct.Position;
 
 @Service
@@ -104,5 +105,16 @@ public class PositionDaoThriftService implements Iface {
 			}
 		}
 		return count;
+	}
+
+	@Override
+	public ThirdPartyPositionData getThirdPartyPosition(int positionId, int channel) throws TException {
+		return thirdpartyPositionDao.getThirdPartyPosition(positionId, channel);
+	}
+
+	@Override
+	public int upsertThirdPartyPositions(ThirdPartyPositionData position) throws TException {
+		
+		return thirdpartyPositionDao.upsertThirdPartyPosition(position);
 	}
 }

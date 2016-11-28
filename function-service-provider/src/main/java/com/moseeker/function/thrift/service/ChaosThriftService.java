@@ -43,4 +43,10 @@ public class ChaosThriftService implements Iface{
 			throws TException {
 		return chaosService.synchronizePosition(positions);
 	}
+
+	@Override
+	public Response refreshPosition(ThirdPartyPositionForSynchronizationWithAccount position) throws TException {
+		// TODO Auto-generated method stub
+		return chaosService.refreshPosition(position);
+	}
 }

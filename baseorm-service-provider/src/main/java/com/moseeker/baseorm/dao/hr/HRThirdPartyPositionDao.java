@@ -20,6 +20,7 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
+import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -95,7 +96,7 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 
 	public Response upsertThirdPartyPositions(List<ThirdPartyPositionData> positions) {
 		if (positions != null && positions.size() > 0) {
-			logger.info("companyDao upsertThirdPartyPositions"+JSON.toJSONString(positions));
+			logger.info("companyDao upsertThirdPartyPositions" + JSON.toJSONString(positions));
 			try (Connection conn = DBConnHelper.DBConn.getConn();
 					DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);) {
 				positions.forEach(position -> {
@@ -136,7 +137,7 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 									.and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL
 											.equal(Short.valueOf(position.getChannel())))
 									.fetchOne();
-							if(dbrecord != null) {
+							if (dbrecord != null) {
 								dbrecord.setAddress(position.getAddress());
 								dbrecord.setPositionId(UInteger.valueOf(position.getPosition_id()));
 								dbrecord.setThirdPartPositionId(position.getThird_part_position_id());
@@ -148,16 +149,18 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 									dbrecord.setSyncTime(new Timestamp(sdf.parse(position.getSync_time()).getTime()));
 								}
 								if (position.getRefresh_time() != null) {
-									dbrecord.setRefreshTime(new Timestamp(sdf.parse(position.getRefresh_time()).getTime()));
+									dbrecord.setRefreshTime(
+											new Timestamp(sdf.parse(position.getRefresh_time()).getTime()));
 								}
 								if (position.getUpdate_time() != null) {
-									dbrecord.setUpdateTime(new Timestamp(sdf.parse(position.getUpdate_time()).getTime()));
+									dbrecord.setUpdateTime(
+											new Timestamp(sdf.parse(position.getUpdate_time()).getTime()));
 								}
-								if(StringUtils.isNotNullOrEmpty(position.getSync_fail_reason())) {
+								if (StringUtils.isNotNullOrEmpty(position.getSync_fail_reason())) {
 									dbrecord.setSyncFailReason(position.getSync_fail_reason());
 								}
 								count = dbrecord.update();
-								if(count > 0) {
+								if (count > 0) {
 									logger.info("companyDao upsertThirdPartyPositions update success");
 								} else {
 									logger.info("companyDao upsertThirdPartyPositions update failed");
@@ -183,5 +186,76 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 		} else {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
 		}
+	}
+
+	/**
+	 * 获取第三方职位数据
+	 * 
+	 * @param positionId
+	 *            职位编号
+	 * @param channel
+	 *            渠道号
+	 * @return
+	 */
+	public ThirdPartyPositionData getThirdPartyPosition(int positionId, int channel) {
+		ThirdPartyPositionData position = new ThirdPartyPositionData();
+		if (positionId > 0 && channel > 0) {
+			try (Connection conn = DBConnHelper.DBConn.getConn();
+					DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);) {
+
+				HrThirdPartyPositionRecord record = create.selectFrom(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION)
+						.where(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID
+								.eq(UInteger.valueOf(positionId)))
+						.and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL.eq((short) channel)).fetchOne();
+				if (record != null) {
+					record.into(position);
+					position.setUpdate_time(sdf.format(record.getUpdateTime()));
+					position.setSync_time(sdf.format(record.getSyncTime()));
+					position.setRefresh_time(sdf.format(record.getRefreshTime()));
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
+				logger.error(e.getMessage(), e);
+			} finally {
+				// do nothing
+			}
+		}
+		return position;
+	}
+
+	/**
+	 * 如果第三方职位数据存在，则修改，否则添加
+	 * 
+	 * @param position
+	 * @return
+	 */
+	public int upsertThirdPartyPosition(ThirdPartyPositionData position) {
+		int count = 0;
+		try (Connection conn = DBConnHelper.DBConn.getConn();
+				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);) {
+
+			HrThirdPartyPositionRecord record = create.selectFrom(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION)
+					.where(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID
+							.eq(UInteger.valueOf(position.getPosition_id())))
+					.and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL.eq((short) position.getChannel()))
+					.fetchOne();
+			if (record != null) {
+				BeanUtils.structToDB(position, record, null);
+				count = record.update();
+			} else {
+				HrThirdPartyPositionRecord record1 = (HrThirdPartyPositionRecord) BeanUtils.structToDB(position,
+						HrThirdPartyPositionRecord.class, null);
+				create.attach(record1);
+				count = record1.insert();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+		} finally {
+			// do nothing
+		}
+		return count;
 	}
 }

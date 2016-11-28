@@ -17,5 +17,7 @@ service ChaosServices {
     chaos_struct.ThirdPartyAccountStruct synchronization(1:chaos_struct.ThirdPartyAccountStruct thirdPartyAccount); 
     //同步职位
     common_struct.Response synchronizePosition(1:list<position_struct.ThirdPartyPositionForSynchronizationWithAccount> positions); 
+    //刷新职位
+    common_struct.Response refreshPosition(1:position_struct.ThirdPartyPositionForSynchronizationWithAccount position); 
 }
 

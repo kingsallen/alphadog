@@ -19,11 +19,16 @@ import com.moseeker.thrift.gen.common.struct.Response;
 public enum ResultMessage {
 
 	THIRD_PARTY_ACCOUNT_NOT_BIND(10003, "没有同步的权限!"),
+	THIRD_PARTY_POSITION_NOT_SYNC(10004, "没有刷新的权限!"),
+	POSITION_NOT_ALLOW_REFRESH(100005, "职位不允许刷新!"),
+	
+	
 	PROGRAM_PARAM_NOTEXIST(90015, "参数不正确!"),
 	SUCCESS(0, "success"),
 	PROGRAM_EXCEPTION(99999, "程序异常，请稍后再试！"),
 	PROGRAM_EXHAUSTED(-1, "系统繁忙，请稍候再试!"),
 	POSITION_NOT_EXIST(100002, "职位数据不存在!");
+	
 	
 	private static final HashMap<Integer, ResultMessage> intToCode = new HashMap<>();  //code池
 	
