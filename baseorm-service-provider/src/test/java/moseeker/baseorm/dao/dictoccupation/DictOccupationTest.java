@@ -33,7 +33,7 @@ public class DictOccupationTest {
 		map.put("level", "1");
 		map.put("status", "1");
 		query.setEqualFilter(map);
-		Response result=service.occupationZPin(query);
+		Response result=service.occupationsZPin();
 		System.out.println(result);
 	}
 //  //获取occupation，通过Iface
