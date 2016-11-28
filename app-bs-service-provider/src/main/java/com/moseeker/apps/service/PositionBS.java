@@ -209,8 +209,14 @@ public class PositionBS {
 		return response;
 	}
 
+	/**
+	 * 刷新职位
+	 * @param positionId 职位编号
+	 * @param channel 渠道编号
+	 * @return
+	 */
 	public Response refreshPosition(int positionId, int channel) {
-		Response response = null;
+		Response response = ResultMessage.PROGRAM_EXHAUSTED.toResponse();
 		try {
 			boolean permission = positionServices.ifAllowRefresh(positionId, channel);
 			if (permission) {
@@ -218,34 +224,11 @@ public class PositionBS {
 						.createRefreshPosition(positionId, channel);
 				if(refreshPosition.getPosition_info() != null && StringUtils.isNotNullOrEmpty(refreshPosition.getUser_name())) {
 					response = chaosService.refreshPosition(refreshPosition);
+				} else {
+					response = ResultMessage.PROGRAM_PARAM_NOTEXIST.toResponse();
 				}
 			} else {
 				response = ResultMessage.POSITION_NOT_ALLOW_REFRESH.toResponse();
-			}
-			// 是否绑定第三方帐号
-			Response permissionResult = new Response(); // todo 需要检查是否有权限同步职位
-			if (permissionResult.getStatus() == 0) {
-				// 职位数据是否存在
-				QueryUtil qu = new QueryUtil();
-				qu.addEqualFilter("id", String.valueOf(positionId));
-				com.moseeker.thrift.gen.position.struct.Position positionStruct = positionDao
-						.getPositionWithCityCode(qu);
-				if (positionStruct.getId() > 0) {
-
-					QueryUtil findThirdPartyPosition = new QueryUtil();
-					findThirdPartyPosition.addEqualFilter("position_id", String.valueOf(positionId));
-					findThirdPartyPosition.addEqualFilter("channel", String.valueOf(channel));
-					ThirdPartyPositionData thirdPartyPosition = positionDao.getThirdPartyPosition(positionId, channel);
-					if (thirdPartyPosition.getId() > 0 && thirdPartyPosition.getIs_synchronization() == 1) {
-						// 提交到刷新队列
-						ThirdPartyPositionForSynchronizationWithAccount refreshPosition = new ThirdPartyPositionForSynchronizationWithAccount();
-					} else {
-						response = ResultMessage.THIRD_PARTY_POSITION_NOT_SYNC.toResponse();
-					}
-
-				} else {
-					response = ResultMessage.POSITION_NOT_EXIST.toResponse();
-				}
 			}
 		} catch (TException e) {
 			e.printStackTrace();

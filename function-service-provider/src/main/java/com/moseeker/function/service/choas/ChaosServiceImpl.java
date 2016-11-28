@@ -161,11 +161,11 @@ public class ChaosServiceImpl {
 	}
 
 	public Response refreshPosition(ThirdPartyPositionForSynchronizationWithAccount position) {
+		ThirdPartyPositionData p = new ThirdPartyPositionData();
 		try {
 			String positionJson = JSON.toJSONString(position);
 			RedisClient redisClient = RedisClientFactory.getCacheClient();
 			redisClient.lpush(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH_QUEUE.toString(), positionJson);
-			ThirdPartyPositionData p = new ThirdPartyPositionData();
 			p.setChannel(Byte.valueOf(position.getChannel()));
 			p.setPosition_id(Integer.valueOf(position.getPosition_id()));
 			p.setIs_refresh((byte)PositionRefreshType.refreshing.getValue());
@@ -185,6 +185,6 @@ public class ChaosServiceImpl {
 			//do nothing
 		}
 		
-		return ResponseUtils.success(null);
+		return ResponseUtils.success(p);
 	}
 }

@@ -22,6 +22,14 @@ public class PositionBSThriftService implements Iface {
 	public Response synchronizePositionToThirdPartyPlatform(ThridPartyPositionForm position) throws TException {
 		return positionBS.synchronizePositionToThirdPartyPlatform(position);
 	}
+	
+	/**
+	 * 刷新职位
+	 */
+	@Override
+	public Response refreshPositionToThirdPartyPlatform(int positionId, int channel) throws TException {
+		return positionBS.refreshPosition(positionId, channel);
+	}
 
 	public PositionBS getPositionBS() {
 		return positionBS;
@@ -30,6 +38,4 @@ public class PositionBSThriftService implements Iface {
 	public void setPositionBS(PositionBS positionBS) {
 		this.positionBS = positionBS;
 	}
-
-	
 }

@@ -18,11 +18,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.apps.positionbs.service.PositionBS;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPositionForm;
@@ -171,6 +173,59 @@ public class PositionController {
 			CommonQuery qu = ParamUtils.initCommonQuery(request, CommonQuery.class);
 			Response result = positionDao1.getPositionThirdPartyPositions(qu);
 			return ResponseLogNotification.success(request, result);
+		} catch (Exception e) {	
+			logger.error(e.getMessage(), e);
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
+    
+    /**
+     * {
+    "appid":1,
+    "positions":[
+        "position_id":1,
+        "channels":[1,2,3,4]
+    ]
+}
+     * @param request
+     * @param response
+     * @return
+     */
+    
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value = "/position/refresh", method = RequestMethod.POST)
+	@ResponseBody
+	public String refreshPosition(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Params<String, Object> params = ParamUtils.parseRequestParam(request);
+			List<Map<String, Object>> positions = (List<Map<String, Object>>)params.get("positions");
+			HashMap<Integer, Integer> param = new HashMap<>();
+			if(positions != null && positions.size() > 0) {
+				positions.forEach(position -> {
+					int positionId = (Integer)position.get("position_id");
+					List<Integer> channels = (List<Integer>)position.get("channels");
+					if(channels != null && channels.size() > 0) {
+						channels.forEach(channel -> {
+							param.put(positionId, channel);
+						});
+					}
+				});
+			}
+			List<Object> refreshResult = new ArrayList<>();
+			if(param.size() > 0) {
+				param.forEach((positionId, channel) -> {
+					try {
+						Response refreshPositionResponse = positionBS.refreshPositionToThirdPartyPlatform(positionId, channel);
+						refreshResult.add(JSON.parse(refreshPositionResponse.getData()));
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						logger.error(e.getMessage(), e);
+					}
+				});
+			}
+			Response res = ResponseUtils.success(refreshResult);
+			return ResponseLogNotification.success(request, res);
 		} catch (Exception e) {	
 			logger.error(e.getMessage(), e);
 			return ResponseLogNotification.fail(request, e.getMessage());

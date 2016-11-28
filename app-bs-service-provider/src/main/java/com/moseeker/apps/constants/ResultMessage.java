@@ -22,7 +22,6 @@ public enum ResultMessage {
 	THIRD_PARTY_POSITION_NOT_SYNC(10004, "没有刷新的权限!"),
 	POSITION_NOT_ALLOW_REFRESH(100005, "职位不允许刷新!"),
 	
-	
 	PROGRAM_PARAM_NOTEXIST(90015, "参数不正确!"),
 	SUCCESS(0, "success"),
 	PROGRAM_EXCEPTION(99999, "程序异常，请稍后再试！"),
