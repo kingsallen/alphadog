@@ -272,24 +272,35 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 	public boolean ifAllowRefresh(int positionId, int channel) {
 		boolean permission = false;
 		try {
+			logger.info("ifAllowRefresh");
 			QueryUtil findPositionById = new QueryUtil();
 			findPositionById.addEqualFilter("id", String.valueOf(positionId));
+			logger.info("search position");
 			Position position = positionDaoService.getPosition(findPositionById);
+			logger.info("position:"+JSON.toJSONString(position));
 			if (position.getId() > 0) {
 				QueryUtil findThirdPartyAccount = new QueryUtil();
 				findThirdPartyAccount.addEqualFilter("company_id", String.valueOf(position.getCompany_id()));
 				findThirdPartyAccount.addEqualFilter("channel", String.valueOf(channel));
+				
+				logger.info("search company");
 				ThirdPartAccountData account = CompanyDao.getThirdPartyAccount(findThirdPartyAccount);
+				logger.info("company:"+JSON.toJSONString(account));
 
 				QueryUtil findThirdPartyPosition = new QueryUtil();
 				findThirdPartyPosition.addEqualFilter("position_id", String.valueOf(positionId));
 				findThirdPartyPosition.addEqualFilter("channel", String.valueOf(channel));
+				
+				logger.info("search thirdparyposition");
 				ThirdPartyPositionData p = positionDaoService.getThirdPartyPosition(positionId, channel);
+				logger.info("thirdparyposition"+JSON.toJSONString(p));
 				if (account != null && account.getBinding() == AccountSync.bound.getValue() && p.getId() > 0
 						&& p.getIs_synchronization() == PositionSync.bound.getValue()) {
+					logger.info("data allow");
 					String str = RedisClientFactory.getCacheClient().get(AppId.APPID_ALPHADOG.getValue(),
 							KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(positionId));
 					if(StringUtils.isNullOrEmpty(str)) {
+						logger.info("cache allow");
 						permission = true;
 					}
 				}
