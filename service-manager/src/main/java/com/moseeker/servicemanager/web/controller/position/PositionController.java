@@ -170,6 +170,7 @@ public class PositionController {
 		try {
 			logger.info("/position/refresh");
 			List<HashMap<Integer, Integer>> paramList = PositionParamUtils.parseRefreshParam(request);
+			logger.info("/position/refresh paramList.size:"+paramList.size());
 			List<Object> refreshResult = new ArrayList<>();
 			if(paramList.size() > 0) {
 				paramList.forEach(map -> {

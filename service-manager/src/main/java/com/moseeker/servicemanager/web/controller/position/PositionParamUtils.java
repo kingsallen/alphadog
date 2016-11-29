@@ -57,7 +57,7 @@ public class PositionParamUtils extends ParamUtils {
 		List<HashMap<Integer, Integer>> paramList = new ArrayList<>();
 		try {
 			Params<String, Object> params = parseRequestParam(request);
-			List<Map<String, Object>> positions = (List<Map<String, Object>>)params.get("positions");
+			List<Map<String, Object>> positions = (List<Map<String, Object>>)params.get("params");
 			if(positions != null && positions.size() > 0) {
 				positions.forEach(position -> {
 					int positionId = (Integer)position.get("position_id");
