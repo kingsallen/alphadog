@@ -198,6 +198,11 @@ public class PositionBS {
 		return response;
 	}
 
+	/**
+	 * 对使用公司地址的职位设置公司地址
+	 * @param channels 渠道职位
+	 * @param companyId 公司编号
+	 */
 	private void setCompanyAddress(List<ThridPartyPosition> channels, int companyId) {
 		boolean useCompanyAddress = false;
 		for(ThridPartyPosition channel : channels) {
