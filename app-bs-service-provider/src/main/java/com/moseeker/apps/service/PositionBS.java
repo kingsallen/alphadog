@@ -13,9 +13,13 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.apps.constants.ResultMessage;
 import com.moseeker.apps.service.position.PositionSyncResultPojo;
+import com.moseeker.common.constants.AppId;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.constants.PositionRefreshType;
 import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.common.redis.RedisClient;
+import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition;
@@ -268,6 +272,12 @@ public class PositionBS {
 					response = ResultMessage.SUCCESS.toResponse(result);
 				} else {
 					response = ResultMessage.PROGRAM_PARAM_NOTEXIST.toResponse(result);
+				}
+				DateTime dt = new DateTime();
+				int second = dt.getSecondOfDay();
+				if(second < 60*60*24) {
+					RedisClient redisClient = RedisClientFactory.getCacheClient();
+					redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(positionId), null, "1", 60*60*24-second);
 				}
 			} else {
 				result.put("is_refresh", PositionRefreshType.failed.getValue());

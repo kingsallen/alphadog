@@ -171,12 +171,6 @@ public class ChaosServiceImpl {
 			p.setIs_refresh((byte)PositionRefreshType.refreshing.getValue());
 			p.setRefresh_time((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
 			positionDao.upsertThirdPartyPositions(p);
-			
-			DateTime dt = new DateTime();
-			int second = dt.getSecondOfDay();
-			if(second < 60*60*24) {
-				redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(position.getPosition_id()), null, "1", 60*60*24-second);
-			}
 		} catch (TException e) {
 			e.printStackTrace();
 			logger.error(e.getMessage(), e);
