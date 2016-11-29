@@ -306,11 +306,12 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 
 	/**
 	 * 创建刷新职位数据
-	 * @param positionId
-	 * @param channel
+	 * @param positionId 职位编号
+	 * @param channel 渠道编号
 	 * @return
 	 */
 	public ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(int positionId, int channel) {
+		
 		ThirdPartyPositionForSynchronizationWithAccount account = new ThirdPartyPositionForSynchronizationWithAccount();
 		try {
 			ThridPartyPosition form = new ThridPartyPosition();

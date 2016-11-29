@@ -25,9 +25,7 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
-import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.apps.positionbs.service.PositionBS;
-import com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPositionForm;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -128,32 +126,11 @@ public class PositionController {
 		}
 	}
     
-    @SuppressWarnings("unchecked")
 	@RequestMapping(value = "/position/sync", method = RequestMethod.POST)
 	@ResponseBody
 	public String synchronizePosition(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			ThridPartyPositionForm form = new ThridPartyPositionForm();
-			HashMap<String, Object> data = ParamUtils.parseRequestParam(request);
-			form.setAppid((Integer)data.get("appid"));
-			form.setPosition_id((Integer)data.get("position_id"));
-			List<ThridPartyPosition> cs = new ArrayList<>();
-			List<HashMap<String, Object>> channels = (List<HashMap<String, Object>>)data.get("channels");
-			if(channels != null) {
-				channels.forEach(channel -> {
-					try {
-						ThridPartyPosition c = ParamUtils.initModelForm(channel, ThridPartyPosition.class);
-						cs.add(c);
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						logger.error(e.getMessage(), e);
-					} finally {
-						//do nothing
-					}
-				});
-			}
-			form.setChannels(cs);
+			ThridPartyPositionForm form = PositionParamUtils.parseSyncParam(request);
 			logger.info("-----------synchronizePosition------------");
 			logger.info("params:"+JSON.toJSONString(form));
 			Response result = positionBS.synchronizePositionToThirdPartyPlatform(form);
@@ -181,45 +158,26 @@ public class PositionController {
 	}
     
     /**
-     * {
-    "appid":1,
-    "positions":[
-        "position_id":1,
-        "channels":[1,2,3,4]
-    ]
-}
+     * 职位刷新
+     * 
      * @param request
      * @param response
      * @return
      */
-    
-    @SuppressWarnings("unchecked")
 	@RequestMapping(value = "/position/refresh", method = RequestMethod.POST)
 	@ResponseBody
 	public String refreshPosition(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			Params<String, Object> params = ParamUtils.parseRequestParam(request);
-			List<Map<String, Object>> positions = (List<Map<String, Object>>)params.get("positions");
-			List<HashMap<Integer, Integer>> paramList = new ArrayList<>();
-			if(positions != null && positions.size() > 0) {
-				positions.forEach(position -> {
-					int positionId = (Integer)position.get("position_id");
-					List<Integer> channels = (List<Integer>)position.get("channels");
-					if(channels != null && channels.size() > 0) {
-						channels.forEach(channel -> {
-							HashMap<Integer, Integer> param = new HashMap<>();
-							param.put(positionId, channel);
-							paramList.add(param);
-						});
-					}
-				});
-			}
+			logger.info("/position/refresh");
+			List<HashMap<Integer, Integer>> paramList = PositionParamUtils.parseRefreshParam(request);
 			List<Object> refreshResult = new ArrayList<>();
 			if(paramList.size() > 0) {
 				paramList.forEach(map -> {
 					map.forEach((positionId, channel) -> {
 						try {
+							logger.info("positionId:"+positionId+"    channel:"+channel);
 							Response refreshPositionResponse = positionBS.refreshPositionToThirdPartyPlatform(positionId, channel);
+							logger.info("data:"+refreshPositionResponse.getData());
 							refreshResult.add(JSON.parse(refreshPositionResponse.getData()));
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
