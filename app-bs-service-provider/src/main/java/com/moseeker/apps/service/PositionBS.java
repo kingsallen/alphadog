@@ -239,6 +239,7 @@ public class PositionBS {
 	 */
 	public Response refreshPosition(int positionId, int channel) {
 		logger.info("refreshPosition start");
+		System.out.println("refreshPosition start");
 		HashMap<String, Object> result = new HashMap<>();
 		result.put("position_id", positionId);
 		result.put("channel", channel);
@@ -247,11 +248,13 @@ public class PositionBS {
 		try {
 			boolean permission = positionServices.ifAllowRefresh(positionId, channel);
 			logger.info("permission:"+permission);
+			System.out.println("permission:"+permission);
 			if (permission) {
 				ThirdPartyPositionForSynchronizationWithAccount refreshPosition = positionServices
 						.createRefreshPosition(positionId, channel);
 				if(refreshPosition.getPosition_info() != null && StringUtils.isNotNullOrEmpty(refreshPosition.getUser_name())) {
 					logger.info("refreshPosition:"+JSON.toJSONString(refreshPosition));
+					System.out.println("refreshPosition:"+JSON.toJSONString(refreshPosition));
 					response = chaosService.refreshPosition(refreshPosition);
 					ThirdPartyPositionData account = JSON.parseObject(response.getData(), ThirdPartyPositionData.class);
 					result.put("is_refresh", 2);

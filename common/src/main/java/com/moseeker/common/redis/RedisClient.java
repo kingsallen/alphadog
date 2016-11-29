@@ -3,6 +3,8 @@ package com.moseeker.common.redis;
 import java.util.List;
 import java.util.Set;
 
+import org.aspectj.weaver.Constants;
+
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CacheConfigNotExistException;
@@ -285,7 +287,7 @@ public abstract class RedisClient {
 			throw new CacheConfigNotExistException();
 		}
 		try {
-			return redisCluster.brpop(redisKey.getTtl(), cacheKey);
+			return redisCluster.brpop(Constant.BRPOP_TTL, cacheKey);
 		} catch (Exception e) {
 			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}

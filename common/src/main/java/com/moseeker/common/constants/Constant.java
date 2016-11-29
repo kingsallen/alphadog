@@ -181,4 +181,6 @@ public final class Constant {
 	
 	public static final String POSITION_SYNCHRONIZATION_FAILED = "同步失败！";
 	public static final String POSITION_REFRESH_FAILED = "刷新失败！";
+	
+	public static final int BRPOP_TTL 		= 5; 	//brpop超时时间
 }

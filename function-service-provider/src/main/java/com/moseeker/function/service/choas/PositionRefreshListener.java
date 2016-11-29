@@ -1,5 +1,7 @@
 package com.moseeker.function.service.choas;
 
+import java.util.List;
+
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +14,7 @@ import com.moseeker.common.constants.PositionRefreshType;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.dao.service.CompanyDao;
 import com.moseeker.thrift.gen.dao.service.PositionDao;
@@ -43,9 +46,11 @@ public class PositionRefreshListener {
 		try {
 			String sync = fetchCompledPosition();
 			logger.info(" refresh completed queue :"+sync);
-			PositionForSyncResultPojo pojo = JSONObject.parseObject(sync, PositionForSyncResultPojo.class);
-			
-			writeBack(pojo);
+			if(StringUtils.isNotNullOrEmpty(sync)) {
+				PositionForSyncResultPojo pojo = JSONObject.parseObject(sync, PositionForSyncResultPojo.class);
+				
+				writeBack(pojo);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e.getMessage(), e);
@@ -61,7 +66,12 @@ public class PositionRefreshListener {
 	 */
 	private String fetchCompledPosition() {
 		RedisClient redisClient = RedisClientFactory.getCacheClient();
-		return redisClient.brpop(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH_COMPLETED_QUEUE.toString()).get(1);
+		List<String> result = redisClient.brpop(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH_COMPLETED_QUEUE.toString());
+		if(result != null && result.size() > 0) {
+			return result.get(0);
+		} else {
+			return null;
+		}
 	}
 	/**
 	 * 回写数据
