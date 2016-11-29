@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hr.CompanyDao;
 import com.moseeker.baseorm.dao.hr.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hr.HRThirdPartyPositionDao;
@@ -44,12 +45,14 @@ public class CompanyThriftService implements Iface {
 
 	@Override
 	public ThirdPartAccountData getThirdPartyAccount(CommonQuery query) throws TException {
+		logger.info("getThirdPartyAccount");
 		ThirdPartAccountData data =  new ThirdPartAccountData();
 		try {
 			HrThirdPartyAccountRecord record = thirdPartyAccountDao.getResource(query);
 			if(record != null) {
 				copy(data, record);
 			}
+			logger.info("data:"+JSON.toJSONString(data));
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e.getMessage(), e);
