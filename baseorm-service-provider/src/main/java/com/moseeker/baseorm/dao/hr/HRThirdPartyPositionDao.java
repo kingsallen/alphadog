@@ -246,6 +246,15 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 					.fetchOne();
 			if (record != null) {
 				BeanUtils.structToDB(position, record, null);
+				if(position.isSetIs_refresh()) {
+					record.setIsRefresh(Short.valueOf(position.getIs_refresh()));
+				}
+				if(position.isSetRefresh_time()) {
+					record.setRefreshTime(new Timestamp(sdf.parse(position.getRefresh_time()).getTime()));
+				}
+				if(position.isSetSync_fail_reason()) {
+					record.setSyncFailReason(position.getSync_fail_reason());
+				}
 				count = record.update();
 			} else {
 				HrThirdPartyPositionRecord record1 = (HrThirdPartyPositionRecord) BeanUtils.structToDB(position,
@@ -260,6 +269,7 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 		} finally {
 			// do nothing
 		}
+		logger.info("upsertThirdPartyPosition count:"+count);
 		return count;
 	}
 }
