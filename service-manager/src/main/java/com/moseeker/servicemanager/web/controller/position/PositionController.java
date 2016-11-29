@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
@@ -199,29 +200,40 @@ public class PositionController {
 		try {
 			Params<String, Object> params = ParamUtils.parseRequestParam(request);
 			List<Map<String, Object>> positions = (List<Map<String, Object>>)params.get("positions");
-			HashMap<Integer, Integer> param = new HashMap<>();
+			List<HashMap<Integer, Integer>> paramList = new ArrayList<>();
 			if(positions != null && positions.size() > 0) {
 				positions.forEach(position -> {
 					int positionId = (Integer)position.get("position_id");
 					List<Integer> channels = (List<Integer>)position.get("channels");
 					if(channels != null && channels.size() > 0) {
 						channels.forEach(channel -> {
+							HashMap<Integer, Integer> param = new HashMap<>();
 							param.put(positionId, channel);
+							paramList.add(param);
 						});
 					}
 				});
 			}
 			List<Object> refreshResult = new ArrayList<>();
-			if(param.size() > 0) {
-				param.forEach((positionId, channel) -> {
-					try {
-						Response refreshPositionResponse = positionBS.refreshPositionToThirdPartyPlatform(positionId, channel);
-						refreshResult.add(JSON.parse(refreshPositionResponse.getData()));
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						logger.error(e.getMessage(), e);
-					}
+			if(paramList.size() > 0) {
+				paramList.forEach(map -> {
+					map.forEach((positionId, channel) -> {
+						try {
+							Response refreshPositionResponse = positionBS.refreshPositionToThirdPartyPlatform(positionId, channel);
+							refreshResult.add(JSON.parse(refreshPositionResponse.getData()));
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							HashMap<String, Object> param = new HashMap<>();
+							param.put("position_id", String.valueOf(positionId));
+							param.put("channel", String.valueOf(channel));
+							param.put("sync_status", "0");
+							param.put("sync_fail_reason", Constant.POSITION_REFRESH_FAILED);
+							refreshResult.add(param);
+						} finally {
+							//do nothing
+						}
+					});
 				});
 			}
 			Response res = ResponseUtils.success(refreshResult);

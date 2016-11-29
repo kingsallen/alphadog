@@ -327,6 +327,8 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 			account.setUser_name(accountData.getUsername());
 			account.setMember_name(accountData.getMembername());
 			account.setPassword(accountData.getPassword());
+			account.setChannel(String.valueOf(channel));
+			account.setPosition_id(String.valueOf(positionId));
 			
 			form.setChannel((byte)channel);
 			if(position.getId() > 0 && thirdPartyPosition.getId() > 0) {

@@ -1,6 +1,7 @@
 package com.moseeker.apps.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.thrift.TException;
@@ -216,7 +217,11 @@ public class PositionBS {
 	 * @return
 	 */
 	public Response refreshPosition(int positionId, int channel) {
-		Response response = ResultMessage.PROGRAM_EXHAUSTED.toResponse();
+		HashMap<String, Object> result = new HashMap<>();
+		result.put("position_id", positionId);
+		result.put("channel", channel);
+		result.put("is_refresh", 0);
+		Response response = ResultMessage.PROGRAM_EXHAUSTED.toResponse(result);
 		try {
 			boolean permission = positionServices.ifAllowRefresh(positionId, channel);
 			if (permission) {
@@ -224,16 +229,20 @@ public class PositionBS {
 						.createRefreshPosition(positionId, channel);
 				if(refreshPosition.getPosition_info() != null && StringUtils.isNotNullOrEmpty(refreshPosition.getUser_name())) {
 					response = chaosService.refreshPosition(refreshPosition);
+					ThirdPartyPositionData account = JSON.parseObject(response.getData(), ThirdPartyPositionData.class);
+					result.put("is_refresh", 2);
+					result.put("sync_time", account.getSync_time());
+					response = ResultMessage.SUCCESS.toResponse(result);
 				} else {
-					response = ResultMessage.PROGRAM_PARAM_NOTEXIST.toResponse();
+					response = ResultMessage.PROGRAM_PARAM_NOTEXIST.toResponse(result);
 				}
 			} else {
-				response = ResultMessage.POSITION_NOT_ALLOW_REFRESH.toResponse();
+				response = ResultMessage.POSITION_NOT_ALLOW_REFRESH.toResponse(result);
 			}
 		} catch (TException e) {
 			e.printStackTrace();
 			logger.error(e.getMessage(), e);
-			response = ResultMessage.POSITION_NOT_EXIST.toResponse();
+			response = ResultMessage.POSITION_NOT_EXIST.toResponse(result);
 		} finally {
 			// do nothing
 		}

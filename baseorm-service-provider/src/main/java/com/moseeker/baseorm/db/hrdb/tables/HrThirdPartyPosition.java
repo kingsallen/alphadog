@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> {
 
-	private static final long serialVersionUID = 297874353;
+	private static final long serialVersionUID = 557357403;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_third_party_position</code>
@@ -110,6 +110,11 @@ public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> 
 	 * The column <code>hrdb.hr_third_party_position.sync_fail_reason</code>. 失败原因
 	 */
 	public final TableField<HrThirdPartyPositionRecord, String> SYNC_FAIL_REASON = createField("sync_fail_reason", org.jooq.impl.SQLDataType.VARCHAR.length(60), this, "失败原因");
+
+	/**
+	 * The column <code>hrdb.hr_third_party_position.use_company_address</code>. 使用企业地址
+	 */
+	public final TableField<HrThirdPartyPositionRecord, Short> USE_COMPANY_ADDRESS = createField("use_company_address", org.jooq.impl.SQLDataType.SMALLINT.defaulted(true), this, "使用企业地址");
 
 	/**
 	 * Create a <code>hrdb.hr_third_party_position</code> table reference

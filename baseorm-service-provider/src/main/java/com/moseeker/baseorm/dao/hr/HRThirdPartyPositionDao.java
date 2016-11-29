@@ -210,8 +210,12 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 				if (record != null) {
 					record.into(position);
 					position.setUpdate_time(sdf.format(record.getUpdateTime()));
-					position.setSync_time(sdf.format(record.getSyncTime()));
-					position.setRefresh_time(sdf.format(record.getRefreshTime()));
+					if(record.getSyncTime() != null) {
+						position.setSync_time(sdf.format(record.getSyncTime()));
+					}
+					if(record.getRefreshTime() != null) {
+						position.setRefresh_time(sdf.format(record.getRefreshTime()));
+					}
 				}
 
 			} catch (Exception e) {
