@@ -236,6 +236,9 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 	 */
 	public int upsertThirdPartyPosition(ThirdPartyPositionData position) {
 		int count = 0;
+		
+		logger.info("isrefresh:"+position.getIs_refresh());
+		logger.info("getRefresh_time:"+position.getRefresh_time());
 		try (Connection conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);) {
 
@@ -255,6 +258,8 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 				if(position.isSetSync_fail_reason()) {
 					record.setSyncFailReason(position.getSync_fail_reason());
 				}
+				logger.info("record is_refresh:"+record.getIsRefresh());
+				logger.info("record Refresh_time:"+record.getRefreshTime());
 				count = record.update();
 			} else {
 				HrThirdPartyPositionRecord record1 = (HrThirdPartyPositionRecord) BeanUtils.structToDB(position,
