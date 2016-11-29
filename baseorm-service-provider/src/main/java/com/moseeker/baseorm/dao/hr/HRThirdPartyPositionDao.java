@@ -238,7 +238,7 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 		int count = 0;
 		
 		logger.info("isrefresh:"+position.getIs_refresh());
-		logger.info("getRefresh_time:"+position.getRefresh_time());
+		logger.info("refresh_time:"+position.getRefresh_time());
 		try (Connection conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);) {
 
@@ -248,7 +248,8 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 					.and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL.eq((short) position.getChannel()))
 					.fetchOne();
 			if (record != null) {
-				BeanUtils.structToDB(position, record, null);
+				//BeanUtils.structToDB(position, record, null);
+				logger.info("record before is_refresh:"+record.getIsRefresh());
 				if(position.isSetIs_refresh()) {
 					record.setIsRefresh(Short.valueOf(position.getIs_refresh()));
 				}
