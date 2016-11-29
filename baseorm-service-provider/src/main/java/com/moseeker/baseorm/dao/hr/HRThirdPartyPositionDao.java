@@ -260,6 +260,7 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 				}
 				logger.info("record is_refresh:"+record.getIsRefresh());
 				logger.info("record Refresh_time:"+record.getRefreshTime());
+				create.attach(record);
 				count = record.update();
 			} else {
 				HrThirdPartyPositionRecord record1 = (HrThirdPartyPositionRecord) BeanUtils.structToDB(position,
