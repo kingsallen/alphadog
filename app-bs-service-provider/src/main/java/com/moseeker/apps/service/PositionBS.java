@@ -21,6 +21,7 @@ import com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPositionForm;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
+import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.service.CompanyDao;
 import com.moseeker.thrift.gen.dao.service.PositionDao;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
@@ -80,6 +81,7 @@ public class PositionBS {
 				List<ThirdPartAccountData> thirdPartyAccounts = CompanyDao
 						.getThirdPartyBindingAccounts(ThirdPartyBindingAccounts);
 				if (thirdPartyAccounts != null && thirdPartyAccounts.size() > 0) {
+					setCompanyAddress(position.getChannels(), positionStruct.getCompany_id());
 					for (ThridPartyPosition p : position.getChannels()) {
 						for (ThirdPartAccountData account : thirdPartyAccounts) {
 							if (account.getId() > 0 && account.binding == 1 && account.getRemain_num() > 0) {
@@ -106,20 +108,6 @@ public class PositionBS {
 							results.add(result);
 						}
 					}
-					/*
-					 * position.getChannels().forEach(p -> { boolean exist =
-					 * false; for(ThirdPartAccountData account :
-					 * thirdPartyAccounts) { if(account.getId() > 0 &&
-					 * account.binding == 1 && account.getRemain_num() > 0) {
-					 * if(p.getChannel() == account.getChannel()) { exist =
-					 * true; positionFroms.add(p); } } } if(exist) {
-					 * PositionSyncResultPojo result = new
-					 * PositionSyncResultPojo();
-					 * result.setChannel(p.getChannel());
-					 * result.setSync_fail_reason("未绑定或者没有可发布职位点数!");
-					 * results.add(result); } });
-					 */
-
 				}
 				logger.info("positionFroms:" + JSON.toJSONString(positionFroms));
 				if (positionFroms.size() > 0) {
@@ -208,6 +196,34 @@ public class PositionBS {
 			// do nothing
 		}
 		return response;
+	}
+
+	private void setCompanyAddress(List<ThridPartyPosition> channels, int companyId) {
+		boolean useCompanyAddress = false;
+		for(ThridPartyPosition channel : channels) {
+			if(channel.isUse_company_address()) {
+				useCompanyAddress = true;
+				break;
+			}
+		}
+		if(useCompanyAddress) {
+			try {
+				QueryUtil qu = new QueryUtil();
+				qu.addEqualFilter("id", String.valueOf(companyId));
+				Hrcompany company = CompanyDao.getCompany(qu);
+				for(ThridPartyPosition channel : channels) {
+					if(channel.isUse_company_address()) {
+						channel.setAddress(company.getAddress());
+					}
+				}
+			} catch (TException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				logger.error(e.getMessage(), e);
+			} finally {
+				//do nothing
+			}
+		}
 	}
 
 	/**

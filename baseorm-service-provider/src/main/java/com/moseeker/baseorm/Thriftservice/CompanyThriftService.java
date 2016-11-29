@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.moseeker.baseorm.dao.hr.CompanyDao;
 import com.moseeker.baseorm.dao.hr.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hr.HRThirdPartyPositionDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
@@ -17,6 +18,7 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.service.CompanyDao.Iface;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
@@ -36,6 +38,9 @@ public class CompanyThriftService implements Iface {
 	
 	@Autowired
 	private HRThirdPartyPositionDao thirdPartyPositionDao;
+	
+	@Autowired
+	private CompanyDao companyDao;
 
 	@Override
 	public ThirdPartAccountData getThirdPartyAccount(CommonQuery query) throws TException {
@@ -99,6 +104,11 @@ public class CompanyThriftService implements Iface {
 		}
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
 	}
+	
+	@Override
+	public Hrcompany getCompany(CommonQuery query) throws TException {
+		return companyDao.getCompany(query);
+	}
 
 	private void copy(ThirdPartAccountData data, HrThirdPartyAccountRecord record) {
 		data.setId(record.getId());
@@ -127,5 +137,13 @@ public class CompanyThriftService implements Iface {
 
 	public void setThirdPartyPositionDao(HRThirdPartyPositionDao thirdPartyPositionDao) {
 		this.thirdPartyPositionDao = thirdPartyPositionDao;
+	}
+
+	public CompanyDao getCompanyDao() {
+		return companyDao;
+	}
+
+	public void setCompanyDao(CompanyDao companyDao) {
+		this.companyDao = companyDao;
 	}
 }
