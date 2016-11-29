@@ -42,7 +42,7 @@ public class PositionRefreshListener {
 	private void task() {
 		try {
 			String sync = fetchCompledPosition();
-			logger.info("completed queue :"+sync);
+			logger.info(" refresh completed queue :"+sync);
 			PositionForSyncResultPojo pojo = JSONObject.parseObject(sync, PositionForSyncResultPojo.class);
 			
 			writeBack(pojo);
@@ -85,11 +85,11 @@ public class PositionRefreshListener {
 		try {
 			QueryUtil qu = new QueryUtil();
 			qu.addEqualFilter("id", pojo.getPosition_id());
-			logger.info("completed queue search position:"+pojo.getPosition_id());
+			logger.info("refresh completed queue search position:"+pojo.getPosition_id());
 			Position p = positionDao.getPosition(qu);
 			if(p != null && p.getId() > 0) {
-				logger.info("completed queue position existî");
-				logger.info("completed queue update thirdpartyposition to synchronized");
+				logger.info("refresh completed queue position existî");
+				logger.info("refresh completed queue update thirdpartyposition to synchronized");
 				positionDao.upsertThirdPartyPositions(data);
 				if(pojo.getStatus() == 0) {
 					ThirdPartAccountData d = new ThirdPartAccountData();
@@ -98,7 +98,7 @@ public class PositionRefreshListener {
 					d.setChannel(Integer.valueOf(pojo.getChannel().trim()));
 					d.setSync_time(pojo.getSync_time());
 					//positionDao.updatePosition(p);
-					logger.info("completed queue update thirdpartyposition to synchronized");
+					logger.info("refresh completed queue update thirdpartyposition to synchronized");
 					companyDao.updatePartyAccountByCompanyIdChannel(d);
 				}
 			}
