@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.apps.constants.ResultMessage;
 import com.moseeker.apps.service.position.PositionSyncResultPojo;
+import com.moseeker.common.constants.PositionRefreshType;
 import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.StringUtils;
@@ -28,6 +29,7 @@ import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.position.service.PositionServices;
+import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
@@ -243,12 +245,16 @@ public class PositionBS {
 		HashMap<String, Object> result = new HashMap<>();
 		result.put("position_id", positionId);
 		result.put("channel", channel);
-		result.put("is_refresh", 0);
+		result.put("is_refresh", PositionRefreshType.notRefresh.getValue());
 		Response response = ResultMessage.PROGRAM_EXHAUSTED.toResponse(result);
 		try {
+			//更新仟寻职位的修改时间
+			writeBackToQX(positionId);
+			
 			boolean permission = positionServices.ifAllowRefresh(positionId, channel);
 			logger.info("permission:"+permission);
 			System.out.println("permission:"+permission);
+			
 			if (permission) {
 				ThirdPartyPositionForSynchronizationWithAccount refreshPosition = positionServices
 						.createRefreshPosition(positionId, channel);
@@ -257,13 +263,14 @@ public class PositionBS {
 					System.out.println("refreshPosition:"+JSON.toJSONString(refreshPosition));
 					response = chaosService.refreshPosition(refreshPosition);
 					ThirdPartyPositionData account = JSON.parseObject(response.getData(), ThirdPartyPositionData.class);
-					result.put("is_refresh", 2);
+					result.put("is_refresh", PositionRefreshType.refreshing.getValue());
 					result.put("sync_time", account.getSync_time());
 					response = ResultMessage.SUCCESS.toResponse(result);
 				} else {
 					response = ResultMessage.PROGRAM_PARAM_NOTEXIST.toResponse(result);
 				}
 			} else {
+				result.put("is_refresh", PositionRefreshType.failed.getValue());
 				response = ResultMessage.POSITION_NOT_ALLOW_REFRESH.toResponse(result);
 			}
 		} catch (TException e) {
@@ -275,6 +282,20 @@ public class PositionBS {
 		}
 
 		return response;
+	}
+	
+	private void writeBackToQX(int positionId) {
+		try {
+			Position job = new Position();
+			job.setId(positionId);
+			job.setUpdate_time((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
+			positionDao.updatePosition(job);
+		} catch (TException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			//do nothing
+		}
 	}
 
 }
