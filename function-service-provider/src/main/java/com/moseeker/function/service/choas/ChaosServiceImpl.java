@@ -48,6 +48,7 @@ public class ChaosServiceImpl {
 	PositionDao.Iface positionDao = ServiceManager.SERVICEMANAGER.getService(PositionDao.Iface.class);
 
 	public Response bind(String username, String password, String memberName, byte channel) {
+		logger.info("ChaosServiceImpl bind");
 		try {
 			String domain = "";
 			try {
@@ -61,8 +62,11 @@ public class ChaosServiceImpl {
 			}
 			ChannelType chnnelType = ChannelType.instaceFromInteger(channel);
 			String bindURI = chnnelType.getBindURI(domain);
+			logger.info("ChaosServiceImpl bind bindURI:"+bindURI);
 			String params = ChaosTool.getParams(username, password, memberName, chnnelType);
+			logger.info("ChaosServiceImpl bind params:"+params);
 			String data = UrlUtil.sendPost(bindURI, params, Constant.CONNECTION_TIME_OUT, Constant.READ_TIME_OUT);
+			logger.info("ChaosServiceImpl bind data:"+data);
 			//String data = "{\"status\":0,\"message\":\"success\", \"data\":3}";
 			Response response = ChaosTool.createResponse(data);
 			return response;
@@ -171,6 +175,12 @@ public class ChaosServiceImpl {
 			p.setIs_refresh((byte)PositionRefreshType.refreshing.getValue());
 			p.setRefresh_time((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
 			positionDao.upsertThirdPartyPositions(p);
+			
+			DateTime dt = new DateTime();
+			int second = dt.getSecondOfDay();
+			if(second < 60*60*24) {
+				redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(position.getPosition_id()), null, "1", 60*60*24-second);
+			}
 		} catch (TException e) {
 			e.printStackTrace();
 			logger.error(e.getMessage(), e);
