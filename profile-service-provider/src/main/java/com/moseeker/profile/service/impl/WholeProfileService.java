@@ -408,6 +408,7 @@ public class WholeProfileService {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_USER_NOTEXIST);
 		}
 		ProfileProfileRecord profileDB = profileDao.getProfileByIdOrUserIdOrUUID(userRecord.getId().intValue(), 0, null);
+		((Map<String, Object>) resume.get("profile")).put("origin", profileDB.getOrigin());
 		if(profileDB != null) {
 			ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
 			int profileId = profileDB.getId().intValue();
