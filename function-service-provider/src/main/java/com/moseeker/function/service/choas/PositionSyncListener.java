@@ -69,7 +69,7 @@ public class PositionSyncListener {
 		logger.info(redisClient.toString());
 		List<String> result = redisClient.brpop(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_COMPLETED_QUEUE.toString());
 		if(result != null && result.size() > 0) {
-			return result.get(0);
+			return result.get(1);
 		} else {
 			return null;
 		}

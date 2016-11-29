@@ -68,7 +68,7 @@ public class PositionRefreshListener {
 		RedisClient redisClient = RedisClientFactory.getCacheClient();
 		List<String> result = redisClient.brpop(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH_COMPLETED_QUEUE.toString());
 		if(result != null && result.size() > 0) {
-			return result.get(0);
+			return result.get(1);
 		} else {
 			return null;
 		}
