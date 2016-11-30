@@ -26,10 +26,12 @@ import com.moseeker.common.util.DateUtils;
 import com.moseeker.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.db.jobdb.tables.records.JobCustomRecord;
+import com.moseeker.db.jobdb.tables.records.JobOccupationRecord;
 import com.moseeker.db.jobdb.tables.records.JobPositionExtRecord;
 import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.position.dao.DictConstantDao;
 import com.moseeker.position.dao.JobCustomDao;
+import com.moseeker.position.dao.JobOccupationDao;
 import com.moseeker.position.dao.JobPositionDao;
 import com.moseeker.position.dao.JobPositonExtDao;
 import com.moseeker.position.dao.PositionDao;
@@ -68,6 +70,11 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 
 	@Autowired
 	private JobPositonExtDao jobPositonExtDao;
+	
+	@Autowired
+	private JobOccupationDao jobOccupationDao;
+	
+	
 
 	com.moseeker.thrift.gen.dao.service.PositionDao.Iface positionDaoService = ServiceManager.SERVICEMANAGER
 			.getService(com.moseeker.thrift.gen.dao.service.PositionDao.Iface.class);
@@ -184,13 +191,20 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 			// 招聘类型
 			jobPositionPojo.candidate_source_name = getDictConstantJson(2104, jobPositionPojo.candidate_source);
 
-			// 自定义字段
+			// 自定义字段 与 自定义职位职能
+			jobPositionPojo.occupation = null;
 			JobPositionExtRecord jobPositionExtRecord = getJobPositionExtRecord(positionId);
 			if (jobPositionExtRecord != null && jobPositionExtRecord.getJobCustomId() > 0) {
 				JobCustomRecord jobCustomRecord = jobCustomDao
 						.getJobCustomRecord(jobPositionExtRecord.getJobCustomId());
 				if (jobCustomRecord != null && !"".equals(jobCustomRecord.getName())) {
 					jobPositionPojo.custom = jobCustomRecord.getName();
+				}
+				
+				JobOccupationRecord jobOccupationRecord = 
+						jobOccupationDao.getJobOccupationRecord(jobPositionExtRecord.getJobOccupationId());
+				if(jobOccupationRecord != null && com.moseeker.common.util.StringUtils.isNotNullOrEmpty(jobOccupationRecord.getName())) {
+					jobPositionPojo.occupation = jobOccupationRecord.getName();
 				}
 			}
 
@@ -355,5 +369,13 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 			//do nothing
 		}
 		return account;
+	}
+
+	public JobOccupationDao getJobOccupationDao() {
+		return jobOccupationDao;
+	}
+
+	public void setJobOccupationDao(JobOccupationDao jobOccupationDao) {
+		this.jobOccupationDao = jobOccupationDao;
 	}
 }
