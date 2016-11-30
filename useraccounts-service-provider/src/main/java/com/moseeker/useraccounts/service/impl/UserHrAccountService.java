@@ -278,19 +278,25 @@ public class UserHrAccountService {
 	 */
 	public Response bindThirdAccount(BindAccountStruct account) {
 		try {
+			logger.info("-------bindThirdAccount--------");
+			logger.info("bindThirdAccount");
 			// 判断是否需要进行帐号绑定
 			if (account.getCompany_id() == 0 && account.getUser_id() != 0) {
 				QueryUtil qu = new QueryUtil();
 				qu.addEqualFilter("id", String.valueOf(account.getUser_id()));
+				logger.info("search third party account");
 				Response response = hraccountDao.getAccount(qu);
 				if (response.getStatus() == 0) {
+					logger.info("thirdPartyAccount:"+response.getData());
 					JSONObject json = JSONObject.parseObject(response.getData());
 					account.setCompany_id(json.getIntValue("company_id"));
 				}
 			}
+			logger.info("search allowBind");
 			Response allowBindResponse = hrAccountService.allowBind(account.getUser_id(), account.getCompany_id(),
 					account.getChannel());
 			if (allowBindResponse.getStatus() == 0) {
+				logger.info("bindThirdAccount have permission");
 				// 请求chaos，获取点数
 				Response response = chaosService.binding(account.getUsername(), account.getPassword(),
 						account.getMember_name(), account.getChannel());

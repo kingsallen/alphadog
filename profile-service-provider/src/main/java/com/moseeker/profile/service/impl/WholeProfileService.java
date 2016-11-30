@@ -409,6 +409,7 @@ public class WholeProfileService {
 		}
 		ProfileProfileRecord profileDB = profileDao.getProfileByIdOrUserIdOrUUID(userRecord.getId().intValue(), 0, null);
 		if(profileDB != null) {
+			((Map<String, Object>) resume.get("profile")).put("origin", profileDB.getOrigin());
 			ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
 			int profileId = profileDB.getId().intValue();
 			improveUser(profilePojo.getUserRecord());

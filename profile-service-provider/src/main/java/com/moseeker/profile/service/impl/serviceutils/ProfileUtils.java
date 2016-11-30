@@ -333,6 +333,9 @@ public class ProfileUtils {
 			} else {
 				record.setDisable(UByte.valueOf(1));
 			}
+			if(profile.get("origin") != null) {
+				record.setOrigin((String)profile.get("origin"));
+			}
 			return record;
 		}
 		return record;

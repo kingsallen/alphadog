@@ -1381,7 +1381,7 @@ public class UseraccountsService {
 		qu.addEqualFilter("username", mobile);
 		try {
 			User user = userDao.getUser(qu);
-			if(user == null) {
+			if(user == null || user.getId() == 0) {
 				QueryUtil autoCreate = new QueryUtil();
 				autoCreate.addEqualFilter("mobile", mobile);
 				autoCreate.addEqualFilter("source", String.valueOf(UserSource.RETRIEVE_PROFILE.getValue()));

@@ -1,5 +1,6 @@
 package com.moseeker.baseorm.Thriftservice;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,8 @@ import com.moseeker.thrift.gen.position.struct.Position;
 public class PositionDaoThriftService implements Iface {
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	@Autowired
 	JobPositionDao positionDao;
@@ -76,11 +79,15 @@ public class PositionDaoThriftService implements Iface {
 			List<HrThirdPartyPositionRecord> records = thirdpartyPositionDao.getResources(query);
 			if(records != null && records.size() > 0) {
 				records.forEach(record -> {
-					data.add(record.intoMap());
+					Map<String, Object> result = record.intoMap();
+					result.put("position_id", record.getPositionId().intValue());
+					result.put("sync_time", sdf.format(record.getSyncTime()));
+					result.put("update_time", sdf.format(record.getUpdateTime()));
+					result.put("refresh_time", sdf.format(record.getRefreshTime()));
+					data.add(result);
 				});
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			logger.error(e.getMessage(), e);
 		} finally {

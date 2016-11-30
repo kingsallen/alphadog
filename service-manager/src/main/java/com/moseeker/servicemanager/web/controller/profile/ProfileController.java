@@ -178,7 +178,7 @@ public class ProfileController {
 			Response result = profileBSService.retrieveProfile(
 					form.getInt("position_id"), 
 					form.getInt("channel"),
-					form.getString("profile"));
+					JSON.toJSONString(form.get("profile")));
 
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {

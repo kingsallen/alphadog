@@ -61,8 +61,15 @@ public class UserCommonService {
 				try {
 					data = wordpressService.getNewsletter(form);
 					if(data != null) {
+						byte showNewVersion = data.getShow_new_version();
+						if(showNewVersion == 1) {
+							data.setShow_new_version((byte)0);
+						}
 						redis.set(AppId.APPID_ALPHADOG.getValue(),
 								KeyIdentifier.NEWSLETTER_HRACCOUNT_READED.toString(), String.valueOf(form.getAccount_id()), JSON.toJSONString(newsletterToMap(data)));
+						if(showNewVersion == 1) {
+							data.setShow_new_version(showNewVersion);
+						}
 					}
 				} catch (TException e) {
 					e.printStackTrace();
