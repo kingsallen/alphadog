@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.thrift.TBase;
+import org.jooq.impl.TableImpl;
 import org.jooq.impl.UpdatableRecordImpl;
 import org.jooq.types.UInteger;
 import org.jooq.types.UShort;
@@ -27,7 +28,7 @@ public class OrmTools {
 	/*
 	 * 按照内部是三层嵌套的方式的list集合的response
 	 */
-	public  static Response getAll(BaseDaoImpl<?,?> dao){
+	public static <K extends UpdatableRecordImpl<K>, V extends TableImpl<K>> Response getAll(BaseDaoImpl<K,V> dao){
 		List<Map<String, Object>> result=new ArrayList<>();
 		try {
 			CommonQuery query=new CommonQuery();
@@ -36,7 +37,7 @@ public class OrmTools {
 			query.setPer_page(Integer.MAX_VALUE);
 			query.setEqualFilter(map1);
 			List<Map<String, Object>> allData = new ArrayList<>();
-			List<? extends UpdatableRecordImpl<?>> list = dao.getResources(query);
+			List<K> list = dao.getResources(query);
 			if(list != null && list.size() > 0) {
 				list.forEach(r -> {
 					Map<String, Object> map = new HashMap<String, Object>();
