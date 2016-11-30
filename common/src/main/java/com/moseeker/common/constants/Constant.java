@@ -183,4 +183,5 @@ public final class Constant {
 	public static final String POSITION_REFRESH_FAILED = "刷新失败！";
 	
 	public static final int BRPOP_TTL 		= 5; 	//brpop超时时间
+	public static final int DESCRIPTION_LENGTH 		= 900; 	//描述长度
 }
