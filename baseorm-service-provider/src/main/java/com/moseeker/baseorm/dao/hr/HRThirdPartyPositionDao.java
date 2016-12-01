@@ -278,7 +278,7 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 				if(position.isSetIs_refresh()) {
 					record.setIsRefresh(Short.valueOf(position.getIs_refresh()));
 				}
-				if(position.isSetIs_synchronization()) {
+				if(position.getIs_synchronization() != 0) {
 					record.setIsSynchronization(Short.valueOf(position.getIs_synchronization()));
 				}
 				if(position.getOccupation() != null) {
