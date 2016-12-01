@@ -3,8 +3,6 @@ package com.moseeker.common.redis;
 import java.util.List;
 import java.util.Set;
 
-import org.aspectj.weaver.Constants;
-
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CacheConfigNotExistException;

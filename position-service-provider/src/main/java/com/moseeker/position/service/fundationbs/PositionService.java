@@ -312,7 +312,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 						&& p.getIs_synchronization() == PositionSync.bound.getValue()) {
 					logger.info("data allow");
 					String str = RedisClientFactory.getCacheClient().get(AppId.APPID_ALPHADOG.getValue(),
-							KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(positionId));
+							KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(positionId), String.valueOf(channel));
 					if(StringUtils.isNullOrEmpty(str)) {
 						logger.info("cache allow");
 						permission = true;
