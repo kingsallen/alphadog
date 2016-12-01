@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.db.profiledb.tables.records.ProfileAttachmentRecord;
@@ -56,6 +57,7 @@ public class ProfilePojo {
 	 */
 	@SuppressWarnings("unchecked")
 	public static ProfilePojo parseProfile(Map<String, Object> resume, UserUserRecord userRecord) {
+		LoggerFactory.getLogger(ProfilePojo.class).info("------parseProfile-------");
 		ProfilePojo pojo = new ProfilePojo();
 		ProfileUtils profileUtils = new ProfileUtils();
 		
@@ -187,8 +189,16 @@ public class ProfilePojo {
 			if(profileRecord.getSource() != null) {
 				source = profileRecord.getSource().intValue();
 			}
+			LoggerFactory.getLogger(ProfilePojo.class).info("workexp:{}", JSON.toJSONString(resume.get("workexps")));
 			workexpRecords = profileUtils
 					.mapToWorkexpRecords((List<Map<String, Object>>) resume.get("workexps"), source);
+			if(workexpRecords != null && workexpRecords.size() > 0) {
+				workexpRecords.forEach(workexp -> {
+					if(workexp.getCompany() != null) {
+						LoggerFactory.getLogger(ProfilePojo.class).info("company:{}, company.name:{}", workexp.getCompany(), workexp.getCompany().getName());
+					}
+				});
+			}
 			pojo.setWorkexpRecords(workexpRecords);
 		} catch (Exception e) {
 			LoggerFactory.getLogger(ProfilePojo.class).error(e.getMessage(), e);

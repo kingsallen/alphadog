@@ -124,17 +124,17 @@ public class PositionChangeUtil {
 			case JOB51 : 
 				DecimalFormat df = new DecimalFormat("0000");
 				if(StringUtils.isNotNullOrEmpty(categorySubCode)) {
-					position.setCategory_main_code(df.format(Integer.valueOf(categorySubCode)));
+					position.setCategory_sub_code(df.format(Integer.valueOf(categorySubCode)));
 				}
 				break;
 			case ZHILIAN : 
 				DecimalFormat df1 = new DecimalFormat("000");
 				if(StringUtils.isNotNullOrEmpty(categorySubCode)) {
-					position.setCategory_main_code(df1.format(Integer.valueOf(categorySubCode)));
+					position.setCategory_sub_code(df1.format(Integer.valueOf(categorySubCode)));
 				}
 				break;
 				default :
-					position.setCategory_main_code(categorySubCode);
+					position.setCategory_sub_code(categorySubCode);
 			}
 		}
 	}

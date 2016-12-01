@@ -154,6 +154,8 @@ public class PositionController {
 		} catch (Exception e) {	
 			logger.error(e.getMessage(), e);
 			return ResponseLogNotification.fail(request, e.getMessage());
+		} finally {
+			//do nothing
 		}
 	}
     
