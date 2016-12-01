@@ -166,7 +166,7 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 									dbrecord.setUpdateTime(
 											new Timestamp(sdf.parse(position.getUpdate_time()).getTime()));
 								}
-								if (StringUtils.isNotNullOrEmpty(position.getSync_fail_reason())) {
+								if(position.isSetSync_fail_reason()) {
 									dbrecord.setSyncFailReason(position.getSync_fail_reason());
 								}
 								count = dbrecord.update();
@@ -260,11 +260,33 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 			if (record != null) {
 				BeanUtils.structToDB(position, record, null);
 				logger.info("record before is_refresh:"+record.getIsRefresh());
+				if(StringUtils.isNotNullOrEmpty(position.getAddress())) {
+					record.setAddress(position.getAddress());
+				}
+				record.setPositionId(UInteger.valueOf(position.getPosition_id()));
+				if(position.getThird_part_position_id() != null) {
+					record.setThirdPartPositionId(position.getThird_part_position_id());
+				}
+				record.setChannel(Short.valueOf(position.getChannel()));
 				if(position.isSetIs_refresh()) {
 					record.setIsRefresh(Short.valueOf(position.getIs_refresh()));
 				}
-				if(position.isSetRefresh_time()) {
-					record.setRefreshTime(new Timestamp(sdf.parse(position.getRefresh_time()).getTime()));
+				if(position.isSetIs_synchronization()) {
+					record.setIsSynchronization(Short.valueOf(position.getIs_synchronization()));
+				}
+				if(position.getOccupation() != null) {
+					record.setOccupation(position.getOccupation());
+				}
+				if (position.getSync_time() != null) {
+					record.setSyncTime(new Timestamp(sdf.parse(position.getSync_time()).getTime()));
+				}
+				if (position.getRefresh_time() != null) {
+					record.setRefreshTime(
+							new Timestamp(sdf.parse(position.getRefresh_time()).getTime()));
+				}
+				if (position.getUpdate_time() != null) {
+					record.setUpdateTime(
+							new Timestamp(sdf.parse(position.getUpdate_time()).getTime()));
 				}
 				if(position.isSetSync_fail_reason()) {
 					record.setSyncFailReason(position.getSync_fail_reason());
