@@ -83,6 +83,7 @@ public class PositionSyncListener {
 		ThirdPartyPositionData data = new ThirdPartyPositionData();
 		data.setChannel(Byte.valueOf(pojo.getChannel()));
 		data.setPosition_id(Integer.valueOf(pojo.getPosition_id()));
+		data.setThird_part_position_id(pojo.getJob_id());
 		if(pojo.getStatus() == 0) {
 			data.setIs_synchronization((byte)PositionSync.bound.getValue());
 			data.setSync_time(pojo.getSync_time());

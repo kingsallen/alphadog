@@ -141,6 +141,10 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 								if(StringUtils.isNotNullOrEmpty(position.getAddress())) {
 									dbrecord.setAddress(position.getAddress());
 								}
+								
+								if(StringUtils.isNotNullOrEmpty(position.getThird_part_position_id())) {
+									dbrecord.setThirdPartPositionId(position.getThird_part_position_id());
+								}
 								dbrecord.setPositionId(UInteger.valueOf(position.getPosition_id()));
 								if(position.getThird_part_position_id() != null) {
 									dbrecord.setThirdPartPositionId(position.getThird_part_position_id());
@@ -262,6 +266,9 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 				logger.info("record before is_refresh:"+record.getIsRefresh());
 				if(StringUtils.isNotNullOrEmpty(position.getAddress())) {
 					record.setAddress(position.getAddress());
+				}
+				if(StringUtils.isNotNullOrEmpty(position.getThird_part_position_id())) {
+					record.setThirdPartPositionId(position.getThird_part_position_id());
 				}
 				record.setPositionId(UInteger.valueOf(position.getPosition_id()));
 				if(position.getThird_part_position_id() != null) {
