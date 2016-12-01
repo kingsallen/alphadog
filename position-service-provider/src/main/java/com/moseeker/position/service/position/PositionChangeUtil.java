@@ -68,13 +68,16 @@ public class PositionChangeUtil {
 		position.setWork_place(form.getAddress());
 		positionDB.getEmployment_type();
 		setEmployeeType(positionDB.getEmployment_type(), form.getChannel(),  position);
-		if(positionDB.getStop_date() != null) {
+		/*if(positionDB.getStop_date() != null) {
 			position.setStop_date(positionDB.getStop_date());
 		} else {
 			DateTime dt = new DateTime();
 			DateTime dayAfter60 = dt.plusDays(60);
 			position.setStop_date(dayAfter60.toString("yyyy-MM-dd"));
-		}
+		}*/
+		DateTime dt = new DateTime();
+		DateTime dayAfter60 = dt.plusDays(60);
+		position.setStop_date(dayAfter60.toString("yyyy-MM-dd"));
 		//转职位
 		if(positionDB.getCities() != null && positionDB.getCities().size() > 0) {
 			try {
