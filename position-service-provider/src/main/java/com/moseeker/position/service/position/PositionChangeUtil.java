@@ -63,7 +63,7 @@ public class PositionChangeUtil {
 		
 		setSalaryTop(form.getSalary_top(), positionDB.getSalary_top(), position);
 		setSalaryBottom(form.getSalary_bottom(), positionDB.getSalary_bottom(), position);
-		position.setDescription(positionDB.getAccountabilities()+positionDB.getRequirement());
+		position.setDescription("职位描述：\n"+positionDB.getAccountabilities()+"\n"+"职位要求：\n"+positionDB.getRequirement());
 		position.setPosition_id(positionDB.getId());
 		position.setWork_place(form.getAddress());
 		positionDB.getEmployment_type();
