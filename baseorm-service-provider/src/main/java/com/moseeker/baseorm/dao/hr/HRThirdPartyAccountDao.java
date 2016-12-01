@@ -110,7 +110,7 @@ public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecor
 	 * @return
 	 */
 	public int updatePartyAccountByCompanyIdChannel(ThirdPartAccountData account) {
-
+		logger.info("updatePartyAccountByCompanyIdChannel");
 		int count = 0;
 		try (Connection conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);) {
@@ -120,6 +120,8 @@ public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecor
 					.and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.equal((short) account.getChannel()))
 					.fetchOne();
 			if(record != null) {
+				logger.info("HrThirdPartyAccount.id:{}", record.getId().intValue());
+				logger.info("remainume:{}",account.getRemain_num());
 				Date date = sdf.parse(account.getSync_time());
 				record.setSyncTime(new Timestamp(date.getTime()));
 				record.setRemainNum(UInteger.valueOf(account.getRemain_num()));

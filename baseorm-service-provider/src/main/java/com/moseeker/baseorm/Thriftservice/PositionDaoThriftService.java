@@ -81,9 +81,15 @@ public class PositionDaoThriftService implements Iface {
 				records.forEach(record -> {
 					Map<String, Object> result = record.intoMap();
 					result.put("position_id", record.getPositionId().intValue());
-					result.put("sync_time", sdf.format(record.getSyncTime()));
-					result.put("update_time", sdf.format(record.getUpdateTime()));
-					result.put("refresh_time", sdf.format(record.getRefreshTime()));
+					if(record.getSyncTime() != null) {
+						result.put("sync_time", sdf.format(record.getSyncTime()));
+					}
+					if(record.getUpdateTime() != null) {
+						result.put("update_time", sdf.format(record.getUpdateTime()));
+					}
+					if(record.getRefreshTime() != null) {
+						result.put("refresh_time", sdf.format(record.getRefreshTime()));
+					}
 					data.add(result);
 				});
 			}
