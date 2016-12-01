@@ -123,10 +123,10 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 							pstmt.setObject(7, null);
 						}
 						pstmt.setString(8, position.getOccupation());
-						pstmt.setString(9, position.getAddress());
-						pstmt.setObject(10, position.getChannel());
-						pstmt.setObject(11, position.getChannel());
-						pstmt.setInt(12, position.getPosition_id());
+//						pstmt.setString(9, position.getAddress());
+						pstmt.setObject(9, position.getChannel());
+//						pstmt.setObject(11, position.getChannel());
+						pstmt.setInt(10, position.getPosition_id());
 						count = pstmt.executeUpdate();
 						if (count == 0) {
 							logger.info("companyDao upsertThirdPartyPositions exist");
