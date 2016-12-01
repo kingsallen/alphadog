@@ -258,7 +258,7 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 					.and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL.eq((short) position.getChannel()))
 					.fetchOne();
 			if (record != null) {
-				BeanUtils.structToDB(position, record, null);
+				//BeanUtils.structToDB(position, record, null);
 				logger.info("record before is_refresh:"+record.getIsRefresh());
 				if(StringUtils.isNotNullOrEmpty(position.getAddress())) {
 					record.setAddress(position.getAddress());
