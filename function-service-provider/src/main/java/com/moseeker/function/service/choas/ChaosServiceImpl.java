@@ -179,7 +179,7 @@ public class ChaosServiceImpl {
 			DateTime dt = new DateTime();
 			int second = dt.getSecondOfDay();
 			if(second < 60*60*24) {
-				redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(position.getPosition_id()), null, "1", 60*60*24-second);
+				redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(position.getPosition_id()), String.valueOf(position.getChannel()), "1", 60*60*24-second);
 			}
 		} catch (TException e) {
 			e.printStackTrace();
