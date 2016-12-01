@@ -153,7 +153,7 @@ public class PositionBS {
 							data.setAddress(p.getWork_place());
 							data.setChannel((byte) p.getChannel());
 							data.setIs_synchronization((byte) PositionSync.binding.getValue());
-							data.setOccupation(p.getCategory_sub());
+							data.setOccupation(p.getCategory_sub_code());
 							data.setSync_time(syncTime);
 							data.setPosition_id(p.getPosition_id());
 							pds.add(data);
