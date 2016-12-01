@@ -165,11 +165,11 @@ public class PositionBS {
 						ThirdPartyPositionForSynchronization p = positions.get(positions.size() - 1);
 						boolean needWriteBackToPositin = false;
 						if (!p.getSalary_high().equals(String.valueOf(positionStruct.getSalary_top()))) {
-							positionStruct.setSalary_top(Integer.valueOf(p.getSalary_high()));
+							positionStruct.setSalary_top(Integer.valueOf(p.getSalary_high())/1000);
 							needWriteBackToPositin = true;
 						}
 						if (!p.getSalary_low().equals(String.valueOf(positionStruct.getSalary_bottom()))) {
-							positionStruct.setSalary_bottom(Integer.valueOf(p.getSalary_low()));
+							positionStruct.setSalary_bottom(Integer.valueOf(p.getSalary_low())/1000);
 							needWriteBackToPositin = true;
 						}
 						if (!p.getQuantity().equals(String.valueOf(positionStruct.getCount()))) {
