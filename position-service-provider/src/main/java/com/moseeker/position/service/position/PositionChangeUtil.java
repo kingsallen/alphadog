@@ -82,17 +82,20 @@ public class PositionChangeUtil {
 		position.setStop_date(dayAfter60.toString("yyyy-MM-dd"));
 		//转职位
 		if(positionDB.getCities() != null && positionDB.getCities().size() > 0) {
+			LoggerFactory.getLogger(PositionChangeUtil.class).info("position have city");
 			try {
 				int cityCode = 0;
 				String cityName = null;
 				Map<Integer, String> cities = positionDB.getCities();
 				if(cities != null && cities.size() > 0) {
 					for(Map.Entry<Integer,String> entry : cities.entrySet()) {
+						LoggerFactory.getLogger(PositionChangeUtil.class).info("entry.getKey():{}, entry.getValue():{}", entry.getKey(), entry.getValue());
 						cityCode = entry.getKey();
 						cityName = entry.getValue();
 						break;
 					}
 				}
+				LoggerFactory.getLogger(PositionChangeUtil.class).info("cityCode:{}, cityName:{}", cityCode, cityName);
 				String otherCode = changeCity(cityCode, form.getChannel());
 				position.setPub_place_code(otherCode);
 				position.setPub_place_name(cityName);
