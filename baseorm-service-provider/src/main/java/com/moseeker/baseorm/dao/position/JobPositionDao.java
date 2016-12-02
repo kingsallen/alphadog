@@ -2,12 +2,16 @@ package com.moseeker.baseorm.dao.position;
 
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.jooq.DSLContext;
 import org.jooq.Result;
 import org.springframework.stereotype.Service;
 
+import com.moseeker.baseorm.db.dictdb.tables.DictCity;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionCity;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCityRecord;
@@ -34,16 +38,32 @@ public class JobPositionDao extends BaseDaoImpl<JobPositionRecord, JobPosition> 
 			JobPositionRecord record = this.getResource(query);
 			if (record != null) {
 				position = record.into(position);
+				Map<Integer, String> citiesParam = new HashMap<Integer, String>();
 				List<Integer> cityCodes = new ArrayList<>();
 				Result<JobPositionCityRecord> cities = create.selectFrom(JobPositionCity.JOB_POSITION_CITY)
 						.where(JobPositionCity.JOB_POSITION_CITY.PID.equal(record.getId())).fetch();
 				if (cities != null && cities.size() > 0) {
 					cities.forEach(city -> {
-						cityCodes.add(city.getCode());
+						if(city.getCode() != null) {
+							citiesParam.put(city.getCode(), null);
+							cityCodes.add(city.getCode());
+						}
 					});
+					
+					Result<DictCityRecord> dictDicties = create.selectFrom(DictCity.DICT_CITY).where(DictCity.DICT_CITY.CODE.in(cityCodes)).fetch();
+					if(dictDicties != null && dictDicties.size() > 0) {
+						dictDicties.forEach(dictCity -> {
+							citiesParam.entrySet().forEach(entry -> {
+								if(entry.getKey().intValue() == dictCity.getCode().intValue()) {
+									entry.setValue(dictCity.getName());
+								}
+							});
+						});
+					}
 				}
+				
 				position.setCompany_id(record.getCompanyId().intValue());
-				position.setCities(cityCodes);
+				position.setCities(citiesParam);
 			}
 
 		} catch (Exception e) {

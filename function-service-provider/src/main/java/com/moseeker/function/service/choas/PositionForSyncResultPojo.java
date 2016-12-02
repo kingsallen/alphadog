@@ -9,6 +9,7 @@ public class PositionForSyncResultPojo {
 	private String channel;
 	private int remain_number;
 	private String sync_time;
+	private String pub_place_name;
 	
 	public int getStatus() {
 		return status;
@@ -51,5 +52,11 @@ public class PositionForSyncResultPojo {
 	}
 	public void setSync_time(String sync_time) {
 		this.sync_time = sync_time;
+	}
+	public String getPub_place_name() {
+		return pub_place_name;
+	}
+	public void setPub_place_name(String pub_place_name) {
+		this.pub_place_name = pub_place_name;
 	}
 }

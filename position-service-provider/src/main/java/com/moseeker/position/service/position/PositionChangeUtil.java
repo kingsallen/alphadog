@@ -1,6 +1,7 @@
 package com.moseeker.position.service.position;
 
 import java.text.DecimalFormat;
+import java.util.Map;
 
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
@@ -81,8 +82,20 @@ public class PositionChangeUtil {
 		//转职位
 		if(positionDB.getCities() != null && positionDB.getCities().size() > 0) {
 			try {
-				String otherCode = changeCity(positionDB.getCities().get(0), form.getChannel());
+				int cityCode = 0;
+				String cityName = null;
+				Map<Integer, String> cities = positionDB.getCities();
+				if(cities != null && cities.size() > 0) {
+					for(Map.Entry<Integer,String> entry : cities.entrySet()) {
+						cityCode = entry.getKey();
+						cityName = entry.getValue();
+						break;
+					}
+				}
+				String otherCode = changeCity(cityCode, form.getChannel());
 				position.setPub_place_code(otherCode);
+				position.setPub_place_name(cityName);
+				
 			} catch (Exception e) {
 				position.setPub_place_code("");
 				e.printStackTrace();

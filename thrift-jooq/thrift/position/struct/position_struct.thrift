@@ -58,7 +58,7 @@ struct Position {
     47: optional byte language_required,
     48: optional i32 target_industry,
     49: optional i32 current_status,
-    50: optional list<i32> cities
+    50: optional map<i32, string> cities
 }
 /*
 	第三方自定义职能
@@ -92,7 +92,8 @@ struct ThirdPartyPositionForSynchronization {
     18: string stop_date,
     19: i32 channel,
     20: string type_code,
-    21: string job_id
+    21: string job_id,
+    22: string pub_place_name
 }
 
 /*

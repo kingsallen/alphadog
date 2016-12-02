@@ -91,7 +91,11 @@ public class PositionSyncListener {
 			if(pojo.getStatus() == 2) {
 				data.setSync_fail_reason(Constant.POSITION_SYNCHRONIZATION_FAILED);
 			} else {
-				data.setSync_fail_reason(pojo.getMessage());
+				if(StringUtils.isNotNullOrEmpty(pojo.getPub_place_name())) {
+					data.setSync_fail_reason(pojo.getMessage().replace("{}", pojo.getPub_place_name()));
+				} else {
+					data.setSync_fail_reason(pojo.getMessage());
+				}
 			}
 		}
 		datas.add(data);
