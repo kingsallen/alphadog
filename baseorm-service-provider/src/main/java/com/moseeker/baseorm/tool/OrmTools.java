@@ -193,9 +193,9 @@ public class OrmTools {
 	/*
 	 * 按照内部是数据的list集合的方式返回response
 	 */
-	public static Response getList(BaseDaoImpl<?,?> dao,CommonQuery query,TBase bean){
+	public static <K extends UpdatableRecordImpl<K>, V extends TableImpl<K>> Response getList(BaseDaoImpl<K,V> dao,CommonQuery query,TBase bean){
 		try{
-			List<? extends UpdatableRecordImpl<?>> list=dao.getResources(query);
+			List<K> list=dao.getResources(query);
 			List<TBase> result=new ArrayList<TBase>();
 			if(list!=null&&list.size()>0){
 				for(int z=0;z<list.size();z++){
@@ -209,10 +209,10 @@ public class OrmTools {
 		}
 	}
 	
-	public static Response getSingle(BaseDaoImpl<?,?> dao,CommonQuery query){
+	public static <K extends UpdatableRecordImpl<K>, V extends TableImpl<K>> Response getSingle(BaseDaoImpl<K,V> dao,CommonQuery query){
 		List<Map<String, Object>> allData = new ArrayList<>();
 		try{
-			List<? extends UpdatableRecordImpl<?>> list = dao.getResources(query);
+			List<K> list = dao.getResources(query);
 			if(list != null && list.size() > 0) {
 				list.forEach(r -> {
 					Map<String, Object> map = new HashMap<String, Object>();

@@ -45,14 +45,15 @@ public class DictOccupationTest {
 //		System.out.println(result);
 //	}
 //	//测试获取joboccupation
-//	@Test
-//	public void testJobOccupation(){
-//		init();
-//		CommonQuery query=new CommonQuery();
-//		HashMap<String,String> map=new HashMap<String,String>();
-//		map.put("company_id", "1");
-//		query.setEqualFilter(map);
-//		Response result=position.getJobOccupation(query);
-//		System.out.println(result.getData());
-//	}
+	@Test
+	public void testJobOccupation(){
+		init();
+		CommonQuery query=new CommonQuery();
+		HashMap<String,String> map=new HashMap<String,String>();
+		map.put("company_id", "2");
+		map.put("status", "1");
+		query.setEqualFilter(map);
+		Response result=position.getJobOccupation(query);
+		System.out.println(result.getData());
+	}
 }
