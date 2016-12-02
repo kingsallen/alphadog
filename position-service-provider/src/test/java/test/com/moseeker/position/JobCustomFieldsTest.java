@@ -1,13 +1,9 @@
 package test.com.moseeker.position;
 
-import java.util.HashMap;
-
-import org.jooq.tools.json.JSONObject;
 import org.junit.Test;
-
-import com.moseeker.rpccenter.client.ServiceManager;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import com.moseeker.position.service.fundationbs.PositionService;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.position.service.PositionServices;
 
 public class JobCustomFieldsTest {
 	
@@ -20,5 +16,18 @@ public class JobCustomFieldsTest {
 //		Response result=positonServices.CustomField(param);
 //		System.out.println(result);
 	}
-
+	private PositionService position;
+	@Test
+   public void test() throws Exception{
+		init();
+		Response result=position.getPositionById(382);
+		System.out.println(result);
+   }
+	
+	public void init() {
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+		context.scan("com.moseeker.position");
+		context.refresh();
+		position= context.getBean(PositionService.class);
+	}
 }
