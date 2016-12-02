@@ -31,6 +31,9 @@ public class JobPositionDao extends BaseDaoImpl<JobPositionRecord, JobPosition> 
 	}
 
 	public Position getPositionWithCityCode(CommonQuery query) {
+		
+		logger.info("JobPositionDao getPositionWithCityCode");
+		
 		Position position = new Position();
 		try (Connection conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);) {
@@ -44,17 +47,19 @@ public class JobPositionDao extends BaseDaoImpl<JobPositionRecord, JobPosition> 
 						.where(JobPositionCity.JOB_POSITION_CITY.PID.equal(record.getId())).fetch();
 				if (cities != null && cities.size() > 0) {
 					cities.forEach(city -> {
+						logger.info("code:{}", city.getCode());
 						if(city.getCode() != null) {
 							citiesParam.put(city.getCode(), null);
 							cityCodes.add(city.getCode());
 						}
 					});
-					
+					logger.info("cityCodes:{}", cityCodes);
 					Result<DictCityRecord> dictDicties = create.selectFrom(DictCity.DICT_CITY).where(DictCity.DICT_CITY.CODE.in(cityCodes)).fetch();
 					if(dictDicties != null && dictDicties.size() > 0) {
 						dictDicties.forEach(dictCity -> {
 							citiesParam.entrySet().forEach(entry -> {
 								if(entry.getKey().intValue() == dictCity.getCode().intValue()) {
+									logger.info("cityName:{}", dictCity.getName());
 									entry.setValue(dictCity.getName());
 								}
 							});
@@ -64,6 +69,9 @@ public class JobPositionDao extends BaseDaoImpl<JobPositionRecord, JobPosition> 
 				
 				position.setCompany_id(record.getCompanyId().intValue());
 				position.setCities(citiesParam);
+				citiesParam.forEach((cityCode, cityName) -> {
+					logger.info("cityCode:{}, cityName:{}", cityCode, cityName);
+				});
 			}
 
 		} catch (Exception e) {
