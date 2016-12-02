@@ -131,10 +131,12 @@ public class PositionBS {
 									p.setPosition_id(String.valueOf(pos.getPosition_id()));
 									p.setMember_name(account.getMembername());
 									PositionsForSynchronizations.add(p);
+									logger.info("ThirdPartyPositionForSynchronization:{}",JSON.toJSONString(p));
 								}
 							});
 						});
 					}
+					logger.info("chaosService.synchronizePosition:{}",JSON.toJSONString(PositionsForSynchronizations));
 					Response synchronizeResult = chaosService.synchronizePosition(PositionsForSynchronizations);
 					logger.info("synchronizeResult:" + JSON.toJSONString(synchronizeResult));
 					if (synchronizeResult.getStatus() == 0) {
