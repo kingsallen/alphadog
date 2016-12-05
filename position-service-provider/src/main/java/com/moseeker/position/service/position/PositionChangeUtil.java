@@ -264,7 +264,7 @@ public class PositionChangeUtil {
 			if(accounTabilities.contains("职位描述")){
 				descript.append(tablities.toString());
 			}else{
-				descript.append("<p>职位描述："+tablities.toString()+"</p>");
+				descript.append("<p>职位描述：</p>"+tablities.toString());
 			}
 		}
 		if(StringUtils.isNotNullOrEmpty(requirement)){
@@ -280,7 +280,7 @@ public class PositionChangeUtil {
 			if(requirement.contains("职位描述")){
 				descript.append(require.toString());
 			}else{
-				descript.append("<p>职位要求："+require.toString()+"</p>");
+				descript.append("<p>职位要求：</p>"+require.toString());
 			}
 		}
 		
