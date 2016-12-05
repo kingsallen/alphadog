@@ -43,7 +43,7 @@ public class PositionBS {
    */
   public interface Iface {
 
-    public com.moseeker.thrift.gen.common.struct.Response synchronizePositionToThirdPartyPlatform(com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPositionForm position) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response synchronizePositionToThirdPartyPlatform(com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm position) throws org.apache.thrift.TException;
 
     public com.moseeker.thrift.gen.common.struct.Response refreshPositionToThirdPartyPlatform(int positionId, int channel) throws org.apache.thrift.TException;
 
@@ -51,7 +51,7 @@ public class PositionBS {
 
   public interface AsyncIface {
 
-    public void synchronizePositionToThirdPartyPlatform(com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPositionForm position, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void synchronizePositionToThirdPartyPlatform(com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm position, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
     public void refreshPositionToThirdPartyPlatform(int positionId, int channel, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
@@ -77,13 +77,13 @@ public class PositionBS {
       super(iprot, oprot);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response synchronizePositionToThirdPartyPlatform(com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPositionForm position) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response synchronizePositionToThirdPartyPlatform(com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm position) throws org.apache.thrift.TException
     {
       send_synchronizePositionToThirdPartyPlatform(position);
       return recv_synchronizePositionToThirdPartyPlatform();
     }
 
-    public void send_synchronizePositionToThirdPartyPlatform(com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPositionForm position) throws org.apache.thrift.TException
+    public void send_synchronizePositionToThirdPartyPlatform(com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm position) throws org.apache.thrift.TException
     {
       synchronizePositionToThirdPartyPlatform_args args = new synchronizePositionToThirdPartyPlatform_args();
       args.setPosition(position);
@@ -142,7 +142,7 @@ public class PositionBS {
       super(protocolFactory, clientManager, transport);
     }
 
-    public void synchronizePositionToThirdPartyPlatform(com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPositionForm position, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void synchronizePositionToThirdPartyPlatform(com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm position, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       synchronizePositionToThirdPartyPlatform_call method_call = new synchronizePositionToThirdPartyPlatform_call(position, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -150,8 +150,8 @@ public class PositionBS {
     }
 
     public static class synchronizePositionToThirdPartyPlatform_call extends org.apache.thrift.async.TAsyncMethodCall {
-      private com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPositionForm position;
-      public synchronizePositionToThirdPartyPlatform_call(com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPositionForm position, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm position;
+      public synchronizePositionToThirdPartyPlatform_call(com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm position, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.position = position;
       }
@@ -400,7 +400,7 @@ public class PositionBS {
       schemes.put(TupleScheme.class, new synchronizePositionToThirdPartyPlatform_argsTupleSchemeFactory());
     }
 
-    public com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPositionForm position; // required
+    public com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm position; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -465,7 +465,7 @@ public class PositionBS {
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.POSITION, new org.apache.thrift.meta_data.FieldMetaData("position", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPositionForm.class)));
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm.class)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(synchronizePositionToThirdPartyPlatform_args.class, metaDataMap);
     }
@@ -474,7 +474,7 @@ public class PositionBS {
     }
 
     public synchronizePositionToThirdPartyPlatform_args(
-      com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPositionForm position)
+      com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm position)
     {
       this();
       this.position = position;
@@ -485,7 +485,7 @@ public class PositionBS {
      */
     public synchronizePositionToThirdPartyPlatform_args(synchronizePositionToThirdPartyPlatform_args other) {
       if (other.isSetPosition()) {
-        this.position = new com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPositionForm(other.position);
+        this.position = new com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm(other.position);
       }
     }
 
@@ -498,11 +498,11 @@ public class PositionBS {
       this.position = null;
     }
 
-    public com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPositionForm getPosition() {
+    public com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm getPosition() {
       return this.position;
     }
 
-    public synchronizePositionToThirdPartyPlatform_args setPosition(com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPositionForm position) {
+    public synchronizePositionToThirdPartyPlatform_args setPosition(com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm position) {
       this.position = position;
       return this;
     }
@@ -528,7 +528,7 @@ public class PositionBS {
         if (value == null) {
           unsetPosition();
         } else {
-          setPosition((com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPositionForm)value);
+          setPosition((com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm)value);
         }
         break;
 
@@ -687,7 +687,7 @@ public class PositionBS {
           switch (schemeField.id) {
             case 1: // POSITION
               if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                struct.position = new com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPositionForm();
+                struct.position = new com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm();
                 struct.position.read(iprot);
                 struct.setPositionIsSet(true);
               } else { 
@@ -746,7 +746,7 @@ public class PositionBS {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
-          struct.position = new com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPositionForm();
+          struct.position = new com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm();
           struct.position.read(iprot);
           struct.setPositionIsSet(true);
         }

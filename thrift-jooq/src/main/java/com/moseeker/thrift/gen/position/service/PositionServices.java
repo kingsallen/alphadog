@@ -49,7 +49,7 @@ public class PositionServices {
 
     public com.moseeker.thrift.gen.common.struct.Response CustomField(String param) throws org.apache.thrift.TException;
 
-    public List<com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(List<com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition> form, com.moseeker.thrift.gen.position.struct.Position position) throws org.apache.thrift.TException;
+    public List<com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(List<com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition> form, com.moseeker.thrift.gen.position.struct.Position position) throws org.apache.thrift.TException;
 
     public com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(int positionId, int channel) throws org.apache.thrift.TException;
 
@@ -69,7 +69,7 @@ public class PositionServices {
 
     public void CustomField(String param, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void changeToThirdPartyPosition(List<com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition> form, com.moseeker.thrift.gen.position.struct.Position position, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void changeToThirdPartyPosition(List<com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition> form, com.moseeker.thrift.gen.position.struct.Position position, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
     public void createRefreshPosition(int positionId, int channel, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
@@ -212,13 +212,13 @@ public class PositionServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "CustomField failed: unknown result");
     }
 
-    public List<com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(List<com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition> form, com.moseeker.thrift.gen.position.struct.Position position) throws org.apache.thrift.TException
+    public List<com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(List<com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition> form, com.moseeker.thrift.gen.position.struct.Position position) throws org.apache.thrift.TException
     {
       send_changeToThirdPartyPosition(form, position);
       return recv_changeToThirdPartyPosition();
     }
 
-    public void send_changeToThirdPartyPosition(List<com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition> form, com.moseeker.thrift.gen.position.struct.Position position) throws org.apache.thrift.TException
+    public void send_changeToThirdPartyPosition(List<com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition> form, com.moseeker.thrift.gen.position.struct.Position position) throws org.apache.thrift.TException
     {
       changeToThirdPartyPosition_args args = new changeToThirdPartyPosition_args();
       args.setForm(form);
@@ -462,7 +462,7 @@ public class PositionServices {
       }
     }
 
-    public void changeToThirdPartyPosition(List<com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition> form, com.moseeker.thrift.gen.position.struct.Position position, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void changeToThirdPartyPosition(List<com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition> form, com.moseeker.thrift.gen.position.struct.Position position, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
       changeToThirdPartyPosition_call method_call = new changeToThirdPartyPosition_call(form, position, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -470,9 +470,9 @@ public class PositionServices {
     }
 
     public static class changeToThirdPartyPosition_call extends org.apache.thrift.async.TAsyncMethodCall {
-      private List<com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition> form;
+      private List<com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition> form;
       private com.moseeker.thrift.gen.position.struct.Position position;
-      public changeToThirdPartyPosition_call(List<com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition> form, com.moseeker.thrift.gen.position.struct.Position position, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public changeToThirdPartyPosition_call(List<com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition> form, com.moseeker.thrift.gen.position.struct.Position position, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.form = form;
         this.position = position;
@@ -4833,7 +4833,7 @@ public class PositionServices {
       schemes.put(TupleScheme.class, new changeToThirdPartyPosition_argsTupleSchemeFactory());
     }
 
-    public List<com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition> form; // required
+    public List<com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition> form; // required
     public com.moseeker.thrift.gen.position.struct.Position position; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
@@ -4903,7 +4903,7 @@ public class PositionServices {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.FORM, new org.apache.thrift.meta_data.FieldMetaData("form", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
-              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition.class))));
+              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition.class))));
       tmpMap.put(_Fields.POSITION, new org.apache.thrift.meta_data.FieldMetaData("position", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.position.struct.Position.class)));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
@@ -4914,7 +4914,7 @@ public class PositionServices {
     }
 
     public changeToThirdPartyPosition_args(
-      List<com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition> form,
+      List<com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition> form,
       com.moseeker.thrift.gen.position.struct.Position position)
     {
       this();
@@ -4927,9 +4927,9 @@ public class PositionServices {
      */
     public changeToThirdPartyPosition_args(changeToThirdPartyPosition_args other) {
       if (other.isSetForm()) {
-        List<com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition> __this__form = new ArrayList<com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition>(other.form.size());
-        for (com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition other_element : other.form) {
-          __this__form.add(new com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition(other_element));
+        List<com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition> __this__form = new ArrayList<com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition>(other.form.size());
+        for (com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition other_element : other.form) {
+          __this__form.add(new com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition(other_element));
         }
         this.form = __this__form;
       }
@@ -4952,22 +4952,22 @@ public class PositionServices {
       return (this.form == null) ? 0 : this.form.size();
     }
 
-    public java.util.Iterator<com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition> getFormIterator() {
+    public java.util.Iterator<com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition> getFormIterator() {
       return (this.form == null) ? null : this.form.iterator();
     }
 
-    public void addToForm(com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition elem) {
+    public void addToForm(com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition elem) {
       if (this.form == null) {
-        this.form = new ArrayList<com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition>();
+        this.form = new ArrayList<com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition>();
       }
       this.form.add(elem);
     }
 
-    public List<com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition> getForm() {
+    public List<com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition> getForm() {
       return this.form;
     }
 
-    public changeToThirdPartyPosition_args setForm(List<com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition> form) {
+    public changeToThirdPartyPosition_args setForm(List<com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition> form) {
       this.form = form;
       return this;
     }
@@ -5017,7 +5017,7 @@ public class PositionServices {
         if (value == null) {
           unsetForm();
         } else {
-          setForm((List<com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition>)value);
+          setForm((List<com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition>)value);
         }
         break;
 
@@ -5223,11 +5223,11 @@ public class PositionServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
                 {
                   org.apache.thrift.protocol.TList _list0 = iprot.readListBegin();
-                  struct.form = new ArrayList<com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition>(_list0.size);
-                  com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition _elem1;
+                  struct.form = new ArrayList<com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition>(_list0.size);
+                  com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition _elem1;
                   for (int _i2 = 0; _i2 < _list0.size; ++_i2)
                   {
-                    _elem1 = new com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition();
+                    _elem1 = new com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition();
                     _elem1.read(iprot);
                     struct.form.add(_elem1);
                   }
@@ -5266,7 +5266,7 @@ public class PositionServices {
           oprot.writeFieldBegin(FORM_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.form.size()));
-            for (com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition _iter3 : struct.form)
+            for (com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition _iter3 : struct.form)
             {
               _iter3.write(oprot);
             }
@@ -5307,7 +5307,7 @@ public class PositionServices {
         if (struct.isSetForm()) {
           {
             oprot.writeI32(struct.form.size());
-            for (com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition _iter4 : struct.form)
+            for (com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition _iter4 : struct.form)
             {
               _iter4.write(oprot);
             }
@@ -5325,11 +5325,11 @@ public class PositionServices {
         if (incoming.get(0)) {
           {
             org.apache.thrift.protocol.TList _list5 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-            struct.form = new ArrayList<com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition>(_list5.size);
-            com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition _elem6;
+            struct.form = new ArrayList<com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition>(_list5.size);
+            com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition _elem6;
             for (int _i7 = 0; _i7 < _list5.size; ++_i7)
             {
-              _elem6 = new com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition();
+              _elem6 = new com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition();
               _elem6.read(iprot);
               struct.form.add(_elem6);
             }

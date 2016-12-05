@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.moseeker.apps.service.PositionBS;
 import com.moseeker.thrift.gen.apps.positionbs.service.PositionBS.Iface;
-import com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPositionForm;
+import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.common.struct.Response;
 
 @Service
@@ -19,7 +19,7 @@ public class PositionBSThriftService implements Iface {
 	 * 同步第三方职位
 	 */
 	@Override
-	public Response synchronizePositionToThirdPartyPlatform(ThridPartyPositionForm position) throws TException {
+	public Response synchronizePositionToThirdPartyPlatform(ThirdPartyPositionForm position) throws TException {
 		return positionBS.synchronizePositionToThirdPartyPlatform(position);
 	}
 	

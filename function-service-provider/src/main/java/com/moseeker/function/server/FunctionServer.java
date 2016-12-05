@@ -4,8 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.moseeker.function.service.choas.PositionRefreshListener;
-import com.moseeker.function.service.choas.PositionSyncListener;
+import com.moseeker.function.service.chaos.PositionRefreshConsumer;
+import com.moseeker.function.service.chaos.PositionSyncConsumer;
 import com.moseeker.function.thrift.service.ChaosThriftService;
 import com.moseeker.function.thrift.service.FunctionService;
 import com.moseeker.function.thrift.service.HRAccountThriftService;
@@ -39,10 +39,10 @@ public class FunctionServer {
 			server.start(); // 启动服务，非阻塞
 			
 			//开启监听同步完成任务
-			PositionSyncListener listener = new PositionSyncListener();
+			PositionSyncConsumer listener = new PositionSyncConsumer();
 			listener.startTask();
 			
-			PositionRefreshListener refreshListener = new PositionRefreshListener();
+			PositionRefreshConsumer refreshListener = new PositionRefreshConsumer();
 			refreshListener.startTask();
 
 			synchronized (FunctionServer.class) {

@@ -60,7 +60,7 @@ public class ProfileBS {
 		} catch (TException e1) {
 			e1.printStackTrace();
 			logger.error(e1.getMessage(), e1);
-			return ResultMessage.PROGRAM_EXHAUSTED.toResponse();
+			return ResultMessage.PROGRAM_EXCEPTION.toResponse();
 		} finally {
 			//do nothing
 		}

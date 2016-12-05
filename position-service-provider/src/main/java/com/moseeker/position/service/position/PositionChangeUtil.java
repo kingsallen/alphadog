@@ -13,7 +13,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.service.position.qianxun.Degree;
 import com.moseeker.position.service.position.qianxun.WorkType;
 import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition;
+import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.dao.service.DictDao;
 import com.moseeker.thrift.gen.dict.struct.CityMap;
 import com.moseeker.thrift.gen.position.struct.Position;
@@ -34,7 +34,7 @@ public class PositionChangeUtil {
 	 * @param positionDB
 	 * @return
 	 */
-	public static ThirdPartyPositionForSynchronization changeToThirdPartyPosition(ThridPartyPosition form, Position positionDB) {
+	public static ThirdPartyPositionForSynchronization changeToThirdPartyPosition(ThirdPartyPosition form, Position positionDB) {
 		LoggerFactory.getLogger(PositionChangeUtil.class).info("---------------------");
 		ThirdPartyPositionForSynchronization position = new ThirdPartyPositionForSynchronization();
 		position.setChannel(form.getChannel());

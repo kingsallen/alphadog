@@ -1,4 +1,4 @@
-package com.moseeker.function.service.choas;
+package com.moseeker.function.service.chaos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +28,9 @@ import com.moseeker.thrift.gen.position.struct.Position;
  * @author wjf
  *
  */
-public class PositionSyncListener {
+public class PositionSyncConsumer {
 	
-	private static Logger logger = LoggerFactory.getLogger(PositionSyncListener.class);
+	private static Logger logger = LoggerFactory.getLogger(PositionSyncConsumer.class);
 	
 	CompanyDao.Iface companyDao = ServiceManager.SERVICEMANAGER
 			.getService(CompanyDao.Iface.class);

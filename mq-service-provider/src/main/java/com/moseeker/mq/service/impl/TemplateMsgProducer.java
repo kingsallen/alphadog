@@ -26,7 +26,7 @@ import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
  */
 @Service
 @CounterIface
-public class MqServiceImpl {
+public class TemplateMsgProducer {
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 

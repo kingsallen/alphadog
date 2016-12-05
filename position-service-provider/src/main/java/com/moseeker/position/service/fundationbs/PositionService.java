@@ -41,7 +41,7 @@ import com.moseeker.position.pojo.PositionForSynchronizationPojo;
 import com.moseeker.position.pojo.RecommendedPositonPojo;
 import com.moseeker.position.service.position.PositionChangeUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition;
+import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.CompanyDao;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
@@ -269,7 +269,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 	 * @param position
 	 * @return
 	 */
-	public List<ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(List<ThridPartyPosition> forms,
+	public List<ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(List<ThirdPartyPosition> forms,
 			Position position) {
 		List<ThirdPartyPositionForSynchronization> positions = new ArrayList<>();
 		if (forms != null && forms.size() > 0 && position != null && position.getId() > 0) {
@@ -343,7 +343,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 		
 		ThirdPartyPositionForSynchronizationWithAccount account = new ThirdPartyPositionForSynchronizationWithAccount();
 		try {
-			ThridPartyPosition form = new ThridPartyPosition();
+			ThirdPartyPosition form = new ThirdPartyPosition();
 			QueryUtil findPosition = new QueryUtil();
 			findPosition.addEqualFilter("id", String.valueOf(positionId));
 			Position position = positionDaoService.getPosition(findPosition);

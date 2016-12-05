@@ -43,7 +43,7 @@ import com.moseeker.mq.server.MqServer;
  * @author wjf
  * @version
  */
-public class ConstantlyMail {
+public class ConstantlyMailConsumer {
 	
 	private static Logger logger = LoggerFactory.getLogger(MqServer.class);
 

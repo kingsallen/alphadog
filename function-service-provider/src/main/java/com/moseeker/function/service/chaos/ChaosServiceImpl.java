@@ -1,4 +1,4 @@
-package com.moseeker.function.service.choas;
+package com.moseeker.function.service.chaos;
 
 import java.net.ConnectException;
 import java.util.List;
@@ -54,7 +54,7 @@ public class ChaosServiceImpl {
 			try {
 				ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
 				configUtils.loadResource("chaos.properties");
-				domain = configUtils.get("choas.domain", String.class);
+				domain = configUtils.get("chaos.domain", String.class);
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			} finally {
@@ -92,7 +92,7 @@ public class ChaosServiceImpl {
 			try {
 				ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
 				configUtils.loadResource("chaos.properties");
-				domain = configUtils.get("choas.domain", String.class);
+				domain = configUtils.get("chaos.domain", String.class);
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			} finally {
@@ -138,7 +138,7 @@ public class ChaosServiceImpl {
 				try {
 					ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
 					configUtils.loadResource("chaos.properties");
-					email = configUtils.get("choas.email", String.class);
+					email = configUtils.get("chaos.email", String.class);
 				} catch (Exception e) {
 					logger.error(e.getMessage(), e);
 				} finally {

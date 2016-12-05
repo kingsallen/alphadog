@@ -18,8 +18,8 @@ import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition;
-import com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPositionForm;
+import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
+import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
@@ -63,7 +63,7 @@ public class PositionBS {
 	 * @param position
 	 * @return
 	 */
-	public Response synchronizePositionToThirdPartyPlatform(ThridPartyPositionForm position) {
+	public Response synchronizePositionToThirdPartyPlatform(ThirdPartyPositionForm position) {
 		Response response = null;
 		// 职位数据是否存在
 		QueryUtil qu = new QueryUtil();
@@ -76,7 +76,7 @@ public class PositionBS {
 				// 返回结果
 				List<PositionSyncResultPojo> results = new ArrayList<>();
 				// 是否可以同步职位
-				List<ThridPartyPosition> positionFroms = new ArrayList<>(); // 可同步的职位
+				List<ThirdPartyPosition> positionFroms = new ArrayList<>(); // 可同步的职位
 
 				QueryUtil ThirdPartyBindingAccounts = new QueryUtil();
 				ThirdPartyBindingAccounts.addEqualFilter("company_id", String.valueOf(positionStruct.getCompany_id()));
@@ -84,7 +84,7 @@ public class PositionBS {
 						.getThirdPartyBindingAccounts(ThirdPartyBindingAccounts);
 				if (thirdPartyAccounts != null && thirdPartyAccounts.size() > 0) {
 					setCompanyAddress(position.getChannels(), positionStruct.getCompany_id());
-					for (ThridPartyPosition p : position.getChannels()) {
+					for (ThirdPartyPosition p : position.getChannels()) {
 						for (ThirdPartAccountData account : thirdPartyAccounts) {
 							if (account.getId() > 0 && account.binding == 1 && account.getRemain_num() > 0) {
 								if (p.getChannel() == account.getChannel()) {
@@ -94,10 +94,10 @@ public class PositionBS {
 						}
 					}
 
-					for (ThridPartyPosition pp : position.getChannels()) {
+					for (ThirdPartyPosition pp : position.getChannels()) {
 						boolean exist = true;
 						if (positionFroms.size() > 0) {
-							for (ThridPartyPosition ppp : positionFroms) {
+							for (ThirdPartyPosition ppp : positionFroms) {
 								if (pp.getChannel() == ppp.getChannel()) {
 									exist = false;
 								}
@@ -207,9 +207,9 @@ public class PositionBS {
 	 * @param channels 渠道职位
 	 * @param companyId 公司编号
 	 */
-	private void setCompanyAddress(List<ThridPartyPosition> channels, int companyId) {
+	private void setCompanyAddress(List<ThirdPartyPosition> channels, int companyId) {
 		boolean useCompanyAddress = false;
-		for(ThridPartyPosition channel : channels) {
+		for(ThirdPartyPosition channel : channels) {
 			if(channel.isUse_company_address()) {
 				useCompanyAddress = true;
 				break;
@@ -220,7 +220,7 @@ public class PositionBS {
 				QueryUtil qu = new QueryUtil();
 				qu.addEqualFilter("id", String.valueOf(companyId));
 				Hrcompany company = CompanyDao.getCompany(qu);
-				for(ThridPartyPosition channel : channels) {
+				for(ThirdPartyPosition channel : channels) {
 					if(channel.isUse_company_address()) {
 						channel.setAddress(company.getAddress());
 					}

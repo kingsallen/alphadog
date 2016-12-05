@@ -6,7 +6,7 @@ import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.function.service.choas.ChaosServiceImpl;
+import com.moseeker.function.service.chaos.ChaosServiceImpl;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices.Iface;
 import com.moseeker.thrift.gen.foundation.chaos.struct.ThirdPartyAccountStruct;

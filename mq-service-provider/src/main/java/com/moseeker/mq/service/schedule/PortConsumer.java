@@ -20,7 +20,7 @@ import com.moseeker.common.redis.RedisClientFactory;
  * @author wjf
  * @version
  */
-public class Porter implements Runnable {
+public class PortConsumer implements Runnable {
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
