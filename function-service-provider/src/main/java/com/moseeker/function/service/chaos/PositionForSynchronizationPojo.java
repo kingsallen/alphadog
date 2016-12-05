@@ -1,4 +1,4 @@
-package com.moseeker.function.service.choas;
+package com.moseeker.function.service.chaos;
 
 import com.moseeker.common.constants.ChannelType;
 

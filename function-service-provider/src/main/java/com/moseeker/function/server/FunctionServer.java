@@ -4,8 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.moseeker.function.service.choas.PositionRefreshListener;
-import com.moseeker.function.service.choas.PositionSyncListener;
+import com.moseeker.function.service.chaos.PositionRefreshListener;
+import com.moseeker.function.service.chaos.PositionSyncListener;
 import com.moseeker.function.thrift.service.ChaosThriftService;
 import com.moseeker.function.thrift.service.FunctionService;
 import com.moseeker.function.thrift.service.HRAccountThriftService;
