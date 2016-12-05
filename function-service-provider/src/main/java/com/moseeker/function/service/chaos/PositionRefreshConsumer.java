@@ -27,9 +27,9 @@ import com.moseeker.thrift.gen.position.struct.Position;
  * @author wjf
  *
  */
-public class PositionRefreshListener {
+public class PositionRefreshConsumer {
 	
-	private static Logger logger = LoggerFactory.getLogger(PositionRefreshListener.class);
+	private static Logger logger = LoggerFactory.getLogger(PositionRefreshConsumer.class);
 	
 	CompanyDao.Iface companyDao = ServiceManager.SERVICEMANAGER
 			.getService(CompanyDao.Iface.class);

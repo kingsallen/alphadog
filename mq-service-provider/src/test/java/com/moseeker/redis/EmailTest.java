@@ -12,13 +12,13 @@ import com.moseeker.common.email.config.EmailContent;
 import com.moseeker.common.email.config.EmailSessionConfig;
 import com.moseeker.common.email.mail.Mail;
 import com.moseeker.common.email.mail.Mail.MailBuilder;
-import com.moseeker.mq.service.email.ConstantlyMail;
+import com.moseeker.mq.service.email.ConstantlyMailConsumer;
 
 public class EmailTest {
 
 	@Test
 	public void sendEmail() {
-		ConstantlyMail mailUtil = new ConstantlyMail();
+		ConstantlyMailConsumer mailUtil = new ConstantlyMailConsumer();
 		try {
 			mailUtil.start();
 		} catch (IOException | MessagingException e) {

@@ -29,9 +29,9 @@ import com.moseeker.thrift.gen.common.struct.Response;
 
 @Service
 @CounterIface
-public class EmailProvider {
+public class EmailProducer {
 	
-	private static Logger logger = LoggerFactory.getLogger(EmailProvider.class);
+	private static Logger logger = LoggerFactory.getLogger(EmailProducer.class);
 	
 	@Autowired
 	private UserDao userDao;

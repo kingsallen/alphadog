@@ -33,9 +33,9 @@ import com.moseeker.common.util.StringUtils;
  * @author wjf
  * @version
  */
-public class WarningMail {
+public class WarningMailConsumer {
 	
-	private static Logger logger = LoggerFactory.getLogger(WarningMail.class);
+	private static Logger logger = LoggerFactory.getLogger(WarningMailConsumer.class);
 	
 	private HashMap<String, Long> sendLogs = new HashMap<>();			//报警邮件按照类型和位置分类记录发送时间
 	private ExecutorService executorService;							//线程池
