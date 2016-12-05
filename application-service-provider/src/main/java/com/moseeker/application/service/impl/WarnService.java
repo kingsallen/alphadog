@@ -24,7 +24,7 @@ public class WarnService {
 	 * @return
 	 */
 	public static WarnSetService.Iface getInstance(){
-		synchronized (warn) {
+		synchronized (WarnService.class) {
 			if (warn == null) {
 				warn = ServiceManager.SERVICEMANAGER.getService(WarnSetService.Iface.class);
 			}
@@ -41,6 +41,6 @@ public class WarnService {
 			getInstance().sendOperator(new WarnBean(String.valueOf(e.getAppid()), e.getEventKey(), e.getMessage(), e.getLocation()));
 		} catch (TException te) {
 			log.error("sendOperator error:", te);
-		};
+		}
 	}
 }
