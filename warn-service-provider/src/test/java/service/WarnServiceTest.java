@@ -4,13 +4,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.rpccenter.main.Server;
 import com.moseeker.thrift.gen.warn.service.WarnSetService;
 import com.moseeker.thrift.gen.warn.struct.WarnBean;
 import com.moseeker.warn.server.WarnServer;
 import com.moseeker.warn.thrift.WarnThriftService;
+import com.moseeker.warn.utils.SendChannel;
 
 public class WarnServiceTest {
 	
@@ -41,8 +41,14 @@ public class WarnServiceTest {
 	
 	@After
 	public void doLast(){
-		if (server != null) {
-			server.close();
+		SendChannel.threadPool.shutdown();
+		while(true){
+			if (SendChannel.threadPool.isTerminated()) {
+				if (server != null) {
+					server.close();
+				}
+				break;
+			}
 		}
 	}
 }
