@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.moseeker.position.service.JobOccupationService;
 import com.moseeker.position.service.fundationbs.PositionService;
-import com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition;
+import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.position.service.PositionServices.Iface;
@@ -73,7 +73,7 @@ public class PositionServicesImpl implements Iface {
 	}
 
 	@Override
-	public List<ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(List<ThridPartyPosition> forms,
+	public List<ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(List<ThirdPartyPosition> forms,
 			Position position) throws TException {
 		return service.changeToThirdPartyPosition(forms, position);
 	}

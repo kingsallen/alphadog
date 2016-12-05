@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import com.moseeker.thrift.gen.apps.positionbs.service.PositionBS.Client;
 import com.moseeker.thrift.gen.apps.positionbs.service.PositionBS.Client.Factory;
-import com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPositionForm;
+import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.common.struct.Response;
 
 public class PositionBSTest {
@@ -26,7 +26,7 @@ public class PositionBSTest {
 			TMultiplexedProtocol mulProtocol= new TMultiplexedProtocol(protocol, "com.moseeker.thrift.gen.apps.positionbs.service.PositionBS");
 			Factory factory = new Factory();
 			Client client = factory.getClient(mulProtocol);
-			ThridPartyPositionForm form = new ThridPartyPositionForm();
+			ThirdPartyPositionForm form = new ThirdPartyPositionForm();
 			Response response = client.synchronizePositionToThirdPartyPlatform(form);
 			System.out.println(response.getData());
 		} catch (TException e) {

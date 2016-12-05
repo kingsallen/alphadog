@@ -26,7 +26,7 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.apps.positionbs.service.PositionBS;
-import com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPositionForm;
+import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.position.service.PositionDao;
@@ -130,7 +130,7 @@ public class PositionController {
 	@ResponseBody
 	public String synchronizePosition(HttpServletRequest request, HttpServletResponse response) {
 		try {
-			ThridPartyPositionForm form = PositionParamUtils.parseSyncParam(request);
+			ThirdPartyPositionForm form = PositionParamUtils.parseSyncParam(request);
 			logger.info("-----------synchronizePosition------------");
 			logger.info("params:"+JSON.toJSONString(form));
 			Response result = positionBS.synchronizePositionToThirdPartyPlatform(form);

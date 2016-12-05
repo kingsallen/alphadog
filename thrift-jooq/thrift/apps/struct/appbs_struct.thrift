@@ -6,7 +6,7 @@ typedef string Timestamp
 * 申请记录实体
 *
 */
-struct ThridPartyPosition {
+struct ThirdPartyPosition {
      1: optional i32 salary_top,             // 薪资上限
      2: optional i32 salary_bottom,          // 薪资下限
      3: optional i32 count,            	     // 招聘人数
@@ -17,8 +17,8 @@ struct ThridPartyPosition {
      8: optional byte channel               // 渠道
 }
 
-struct ThridPartyPositionForm {
+struct ThirdPartyPositionForm {
     1: i32 position_id,				//职位编号
     2: i32 appid,				//调用方编号
-    3: list<ThridPartyPosition> channels	//渠道参数
+    3: list<ThirdPartyPosition> channels	//渠道参数
 } 

@@ -11,24 +11,24 @@ import org.slf4j.LoggerFactory;
 
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.web.controller.util.Params;
-import com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPosition;
-import com.moseeker.thrift.gen.apps.positionbs.struct.ThridPartyPositionForm;
+import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
+import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 
 public class PositionParamUtils extends ParamUtils {
 	
 	@SuppressWarnings("unchecked")
-	public static ThridPartyPositionForm parseSyncParam(HttpServletRequest request) {
-		ThridPartyPositionForm form = new ThridPartyPositionForm();
+	public static ThirdPartyPositionForm parseSyncParam(HttpServletRequest request) {
+		ThirdPartyPositionForm form = new ThirdPartyPositionForm();
 		try {
 			HashMap<String, Object> data = parseRequestParam(request);
 			form.setAppid((Integer)data.get("appid"));
 			form.setPosition_id((Integer)data.get("position_id"));
-			List<ThridPartyPosition> cs = new ArrayList<>();
+			List<ThirdPartyPosition> cs = new ArrayList<>();
 			List<HashMap<String, Object>> channels = (List<HashMap<String, Object>>)data.get("channels");
 			if(channels != null) {
 				channels.forEach(channel -> {
 					try {
-						ThridPartyPosition c = ParamUtils.initModelForm(channel, ThridPartyPosition.class);
+						ThirdPartyPosition c = ParamUtils.initModelForm(channel, ThirdPartyPosition.class);
 						cs.add(c);
 					} catch (Exception e) {
 						e.printStackTrace();
