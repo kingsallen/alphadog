@@ -66,7 +66,7 @@ public class IntentionDaoImpl extends BaseDaoImpl<ProfileIntentionRecord, Profil
 		try (Connection conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn)) {
 			
-			Result<Record1<UInteger>> intentionIds = create.select(ProfileIntention.PROFILE_INTENTION.ID).where(
+			Result<Record1<UInteger>> intentionIds = create.select(ProfileIntention.PROFILE_INTENTION.ID).from(ProfileIntention.PROFILE_INTENTION).where(
 					ProfileIntention.PROFILE_INTENTION.PROFILE_ID.equal(UInteger.valueOf(profileId))).fetch();
 
 			create.deleteFrom(ProfileIntentionCity.PROFILE_INTENTION_CITY)
