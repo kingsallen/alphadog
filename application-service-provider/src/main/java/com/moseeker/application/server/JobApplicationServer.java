@@ -5,8 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.moseeker.application.thrift.JobApplicataionServicesImpl;
-import com.moseeker.application.thriftservice.OperatorThirdPartThriftService;
-import com.moseeker.application.thriftservice.ThirdPartPositionAddOrUpDateService;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.MultiRegServer;
 
@@ -24,12 +22,9 @@ public class JobApplicationServer {
         	MultiRegServer server = new MultiRegServer(
                     JobApplicationServer.class,
                     ServerNodeUtils.getPort(args),
-                    acac.getBean(JobApplicataionServicesImpl.class),
-                    acac.getBean(OperatorThirdPartThriftService.class)
+                    acac.getBean(JobApplicataionServicesImpl.class)
             );
             server.start();
-            ThirdPartPositionAddOrUpDateService toRedis=new ThirdPartPositionAddOrUpDateService();
-            toRedis.start();
             synchronized (JobApplicationServer.class) {
                 while (true) {
                     try {
