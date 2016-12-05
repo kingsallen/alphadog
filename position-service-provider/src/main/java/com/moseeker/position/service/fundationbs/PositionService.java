@@ -192,20 +192,24 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 			jobPositionPojo.candidate_source_name = getDictConstantJson(2104, jobPositionPojo.candidate_source);
 
 			// 自定义字段 与 自定义职位职能
-			jobPositionPojo.occupation = null;
 			JobPositionExtRecord jobPositionExtRecord = getJobPositionExtRecord(positionId);
-			if (jobPositionExtRecord != null && jobPositionExtRecord.getJobCustomId() > 0) {
-				JobCustomRecord jobCustomRecord = jobCustomDao
-						.getJobCustomRecord(jobPositionExtRecord.getJobCustomId());
-				if (jobCustomRecord != null && !"".equals(jobCustomRecord.getName())) {
-					jobPositionPojo.custom = jobCustomRecord.getName();
+			if (jobPositionExtRecord != null ) {
+				if(jobPositionExtRecord.getJobCustomId() > 0){
+					JobCustomRecord jobCustomRecord = jobCustomDao
+							.getJobCustomRecord(jobPositionExtRecord.getJobCustomId());
+					if (jobCustomRecord != null && !"".equals(jobCustomRecord.getName())) {
+						jobPositionPojo.custom = jobCustomRecord.getName();
+					}
+				}
+				if(jobPositionExtRecord.getJobCustomId() > 0){
+					JobOccupationRecord jobOccupationRecord = 
+							jobOccupationDao.getJobOccupationRecord(jobPositionExtRecord.getJobOccupationId());
+					if(jobOccupationRecord != null && com.moseeker.common.util.StringUtils.isNotNullOrEmpty(jobOccupationRecord.getName())) {
+						jobPositionPojo.occupation = jobOccupationRecord.getName();
+					}
 				}
 				
-				JobOccupationRecord jobOccupationRecord = 
-						jobOccupationDao.getJobOccupationRecord(jobPositionExtRecord.getJobOccupationId());
-				if(jobOccupationRecord != null && com.moseeker.common.util.StringUtils.isNotNullOrEmpty(jobOccupationRecord.getName())) {
-					jobPositionPojo.occupation = jobOccupationRecord.getName();
-				}
+				
 			}
 
 			// 修改更新时间

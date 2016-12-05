@@ -256,24 +256,32 @@ public class PositionChangeUtil {
 			if(accounTabilities.contains("\n")){
 				String results[]=accounTabilities.split("\n");
 				for(String result :results){
-					tablities.append("<p>&nbsp&nbsp&nbsp"+result+"</p>");
+					tablities.append("<p>  "+result+"</p>");
 				}
 			}else{
-				tablities.append("<p>&nbsp&nbsp&nbsp"+accounTabilities+"</p>");
+				tablities.append("<p>  "+accounTabilities+"</p>");
 			}
-			descript.append("<p>职位描述："+tablities.toString()+"</p>");
+			if(accounTabilities.contains("职位描述")){
+				descript.append(tablities.toString());
+			}else{
+				descript.append("<p>职位描述："+tablities.toString()+"</p>");
+			}
 		}
 		if(StringUtils.isNotNullOrEmpty(requirement)){
 			StringBuffer require=new StringBuffer();
 			if(requirement.contains("\n")){
 				String results1[]=accounTabilities.split("\n");
 				for(String result :results1){
-					require.append("<p>&nbsp&nbsp&nbsp"+result+"</p>");
+					require.append("<p>  "+result+"</p>");
 				}
 			}else{
-				require.append("<p>&nbsp&nbsp&nbsp"+accounTabilities+"</p>");
+				require.append("<p>  "+accounTabilities+"</p>");
 			}
-			descript.append("<p>职位要求："+require.toString()+"</p>");
+			if(requirement.contains("职位描述")){
+				descript.append(require.toString());
+			}else{
+				descript.append("<p>职位要求："+require.toString()+"</p>");
+			}
 		}
 		
 		return descript.toString();
