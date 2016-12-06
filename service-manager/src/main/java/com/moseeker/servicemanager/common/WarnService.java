@@ -24,7 +24,7 @@ public class WarnService {
 	 * @return
 	 */
 	public static WarnSetService.Iface getInstance(){
-		synchronized (warn) {
+		synchronized (WarnService.class) {
 			if (warn == null) {
 				warn = ServiceManager.SERVICEMANAGER.getService(WarnSetService.Iface.class);
 			}
@@ -39,8 +39,8 @@ public class WarnService {
 	public static void notify(RedisException e) {
 		try {
 			getInstance().sendOperator(new WarnBean(String.valueOf(e.getAppid()), e.getEventKey(), e.getMessage(), e.getLocation().concat(":").concat(String.valueOf(e.getStackTrace()[0].getLineNumber()))));
-		} catch (TException e1) {
-			log.error("sendOperator error:", e);
+		} catch (TException te) {
+			log.error("sendOperator error:", te);
 		};
 	}
 }
