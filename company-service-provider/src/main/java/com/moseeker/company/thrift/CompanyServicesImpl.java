@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.company.service.impl.CompanyService;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices.Iface;
@@ -18,7 +17,7 @@ public class CompanyServicesImpl implements Iface {
     Logger logger = LoggerFactory.getLogger(this.getClass());
     
     @Autowired
-    private CompanyService service;
+    private CompanyServicesImpl service;
 
     public Response getAllCompanies(CommonQuery query) {
        return service.getAllCompanies(query);
@@ -37,6 +36,11 @@ public class CompanyServicesImpl implements Iface {
 	@Override
 	public Response getResources(CommonQuery query) throws TException {
 		return service.getResources(query);
+	}
+
+	@Override
+	public Response getWechat(long companyId, long wechatId) throws TException {
+		return service.getWechat(companyId, wechatId);
 	}
 	
 }

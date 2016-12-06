@@ -1,6 +1,7 @@
 package com.moseeker.useraccounts.dao;
 
 import com.moseeker.common.providerutils.daoutils.BaseDao;
+import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.db.userdb.tables.records.UserFavPositionRecord;
 
 /**
@@ -9,5 +10,7 @@ import com.moseeker.db.userdb.tables.records.UserFavPositionRecord;
 public interface UserFavoritePositionDao extends BaseDao<UserFavPositionRecord> {
 
     public int getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId, byte favorite) throws Exception;
+
+	public JobPositionRecord getUserFavPositiond(int positionId);
 
 }

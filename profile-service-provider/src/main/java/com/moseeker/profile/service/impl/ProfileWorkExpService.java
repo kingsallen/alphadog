@@ -68,6 +68,10 @@ public class ProfileWorkExpService extends JOOQBaseServiceImpl<WorkExp, ProfileW
 	@Override
 	public Response getResources(CommonQuery query) throws TException {
 		try {
+			// 按照结束时间倒序
+			query.setSortby("end_until_now,start");
+			query.setOrder("desc,desc");
+			
 			List<ProfileWorkexpRecord> records = dao.getResources(query);
 			if (records != null && records.size() > 0) {
 				List<WorkExp> workExps = DBsToStructs(records);

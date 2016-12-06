@@ -95,6 +95,7 @@ public class ProfileController {
 	@RequestMapping(value = "/profiles", method = RequestMethod.POST)
 	@ResponseBody
 	public String getBatchProfiles(HttpServletRequest request, HttpServletResponse response) {
+		System.out.println("----------getBatchProfiles-----------");
 		// PrintWriter writer = null;
 		try {
 			// GET方法 通用参数解析并赋值
@@ -103,22 +104,29 @@ public class ProfileController {
 			List<String> userIds = ProfileParamUtil.getProfilesUserIds(param);
 			List<String> uuids = ProfileParamUtil.getProfilesUUIDs(param);
 			List<String> profileIds = ProfileParamUtil.getProfilesIds(param);
+			logger.info("-----------------------------------");
 			if ((userIds != null && userIds.size() > 0) || (uuids != null && uuids.size() > 0)
 					|| (profileIds != null && profileIds.size() > 0)) {
 				int count = 0;
 				if(userIds != null) {
 					count = userIds.size();
+					logger.info("userIds:"+JSON.toJSONString(userIds));
 				}
 				if(uuids != null) {
 					count = Math.max(count, uuids.size());
+					logger.info("uuids:"+JSON.toJSONString(uuids));
 				}
 				if(profileIds != null) {
 					count = Math.max(count, profileIds.size());
+					logger.info("profileIds:"+JSON.toJSONString(profileIds));
 				}
-				if(count > 1000) {
-					count = 1000;
+				if(count > 5000) {
+					return ResponseLogNotification.fail(request, "profile数量过大，拒绝查询！");
 				}
 				List<Object> profileData = new ArrayList<>();
+				logger.info("count:"+count);
+				
+				
 				Response result = null;
 				for(int i=0; i<count; i++) {
 					int userId = 0;
@@ -138,6 +146,8 @@ public class ProfileController {
 						uuid = BeanUtils.converToString(uuids.get(i));
 					}
 					result = profileService.getResource(userId, profileId, uuid);
+					logger.info("current:"+i);
+					logger.info("data:"+JSON.parse(result.getData()));
 					if(result != null && result.getStatus() == 0) {
 						profileData.add(JSON.parse(result.getData()));
 					}
