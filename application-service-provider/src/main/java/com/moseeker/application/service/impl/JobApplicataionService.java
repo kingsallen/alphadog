@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.application.dao.HrCompanyConfDao;
-import com.moseeker.application.dao.HrOperationRecordDao;
 import com.moseeker.application.dao.JobApplicationDao;
 import com.moseeker.application.dao.JobPositionDao;
 import com.moseeker.application.dao.JobResumeOtherDao;
@@ -70,9 +69,6 @@ public class JobApplicataionService {
     private HrCompanyConfDao hrCompanyConfDao;
 
     @Autowired
-    private HrOperationRecordDao hrOperationRecordDao;
-
-    @Autowired
     private UserUserDao userUserDao;
     
     /**
@@ -81,7 +77,8 @@ public class JobApplicataionService {
      * @return 新创建的申请记录ID
      * @throws TException
      */
-    @CounterIface
+    @SuppressWarnings("serial")
+	@CounterIface
     public Response postApplication(JobApplication jobApplication) throws TException {
         try {
             // 申请验证
@@ -143,7 +140,8 @@ public class JobApplicataionService {
      * @param jobApplication 用户实体
      *
      * */
-    @CounterIface
+    @SuppressWarnings("serial")
+	@CounterIface
     public Response putApplication(JobApplication jobApplication) throws TException {
         try {
 
