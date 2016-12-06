@@ -4,21 +4,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.moseeker.profile.service.impl.ProfileAttachmentServicesImpl;
-import com.moseeker.profile.service.impl.ProfileAwardsServicesImpl;
-import com.moseeker.profile.service.impl.ProfileBasicServicesImpl;
-import com.moseeker.profile.service.impl.ProfileCredentialsServicesImpl;
-import com.moseeker.profile.service.impl.ProfileCustomizeResumeServicesImpl;
-import com.moseeker.profile.service.impl.ProfileEducationServicesImpl;
-import com.moseeker.profile.service.impl.ProfileImportServicesImpl;
-import com.moseeker.profile.service.impl.ProfileIntentionServicesImpl;
-import com.moseeker.profile.service.impl.ProfileLanguageServicesImpl;
-import com.moseeker.profile.service.impl.ProfileProjectExpServicesImpl;
-import com.moseeker.profile.service.impl.ProfileServicesImpl;
-import com.moseeker.profile.service.impl.ProfileSkillServicesImpl;
-import com.moseeker.profile.service.impl.ProfileWorkExpServicesImpl;
-import com.moseeker.profile.service.impl.ProfileWorksServicesImpl;
-import com.moseeker.profile.service.impl.WholeProfileServicesImpl;
+import com.moseeker.profile.thrift.ProfileAttachmentServicesImpl;
+import com.moseeker.profile.thrift.ProfileAwardsServicesImpl;
+import com.moseeker.profile.thrift.ProfileBasicServicesImpl;
+import com.moseeker.profile.thrift.ProfileCredentialsServicesImpl;
+import com.moseeker.profile.thrift.ProfileCustomizeResumeServicesImpl;
+import com.moseeker.profile.thrift.ProfileEducationServicesImpl;
+import com.moseeker.profile.thrift.ProfileImportServicesImpl;
+import com.moseeker.profile.thrift.ProfileIntentionServicesImpl;
+import com.moseeker.profile.thrift.ProfileLanguageServicesImpl;
+import com.moseeker.profile.thrift.ProfileProjectExpServicesImpl;
+import com.moseeker.profile.thrift.ProfileServicesImpl;
+import com.moseeker.profile.thrift.ProfileSkillServicesImpl;
+import com.moseeker.profile.thrift.ProfileWorkExpServicesImpl;
+import com.moseeker.profile.thrift.ProfileWorksServicesImpl;
+import com.moseeker.profile.thrift.WholeProfileServicesImpl;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.MultiRegServer;
 
@@ -84,6 +84,7 @@ public class ProfileServer {
 	private static AnnotationConfigApplicationContext initSpring() {
 		AnnotationConfigApplicationContext acac = new AnnotationConfigApplicationContext();
 		acac.scan("com.moseeker.profile");
+		acac.scan("com.moseeker.common.aop.iface");
 		acac.refresh();
 		return acac;
 	}

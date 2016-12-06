@@ -1,19 +1,22 @@
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 
-// 设置 maven 仓库地址
-repositories { 
-	maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
-}
 // 设置依赖
 dependencies { 
 	compile project (":rpc-center")
 	compile project (":common")
 	compile project (":thrift-jooq")
+<<<<<<< HEAD
         compile deps["spring-core"]
         compile deps["spring-context"]
         compile deps["spring-test"]
 	testCompile 'junit:junit:4.12'
+=======
+	compile deps["spring-core"]
+	compile deps["spring-context"]
+	testCompile deps["spring-test"]
+	testCompile deps["junit"]
+>>>>>>> f3d910d733004ccf89ae29a23631cd0a3fb2f2df
 }
 
 task copyJars(type: Copy) {

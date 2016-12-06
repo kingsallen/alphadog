@@ -48,6 +48,7 @@ public class FunctionServer {
     private static AnnotationConfigApplicationContext initSpring() {
 		AnnotationConfigApplicationContext acac = new AnnotationConfigApplicationContext();
 		acac.scan("com.moseeker.function");
+		acac.scan("com.moseeker.common.aop.iface"); //开启接口统计
 		acac.refresh();
 		return acac;
 	}

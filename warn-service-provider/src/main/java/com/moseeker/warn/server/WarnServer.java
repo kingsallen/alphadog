@@ -2,21 +2,20 @@ package com.moseeker.warn.server;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.moseeker.warn.service.EventConfigService;
+import com.moseeker.rpccenter.common.ServerNodeUtils;
+import com.moseeker.rpccenter.main.Server;
+import com.moseeker.warn.thrift.WarnThriftService;
 
 /**
  * @author ltf
- * 
+ * 预警模块启动器
  */
 public class WarnServer {
 	
 	public static void main(String[] args) throws Exception {
 		AnnotationConfigApplicationContext context = initSpring();
-		EventConfigService bean = context.getBean(EventConfigService.class);
-		bean.getEvents().forEach((eventKey, event) -> {
-			System.out.println(eventKey);
-			System.out.println(event);
-		});
+		Server server=new Server(WarnServer.class,ServerNodeUtils.getPort(args),context.getBean(WarnThriftService.class));
+		server.start();
 	}
 	
 	/**

@@ -13,8 +13,10 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.email.config.EmailContent;
 import com.moseeker.common.email.mail.Message;
+import com.moseeker.common.exception.RedisClientException;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.redis.RedisClient;
@@ -24,9 +26,11 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.mq.dao.UserDao;
+import com.moseeker.mq.service.WarnService;
 import com.moseeker.thrift.gen.common.struct.Response;
 
 @Service
+@CounterIface
 public class EmailProvider {
 	
 	private static Logger logger = LoggerFactory.getLogger(EmailProvider.class);
@@ -92,10 +96,12 @@ public class EmailProvider {
 			} else {
 				return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", vuResult));
 			}
+		} catch (RedisClientException e) {
+			WarnService.notify(e);
+			return ResponseUtils.fail(99999, e.getMessage());
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			return ResponseUtils.fail(99999, e.getMessage());
-			
 		} finally {
 			//do nothing
 		}
