@@ -2,9 +2,12 @@ package com.moseeker.common.aop.iface;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
@@ -16,6 +19,9 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterInfo;
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.redis.RedisClient;
+import com.moseeker.common.redis.RedisClientFactory;
 
 
 
@@ -35,6 +41,11 @@ public class CounterIfaceAop {
 	 * 切入点
 	 */
 	private static final String POINCUT="@within(com.moseeker.common.annotation.iface.CounterIface) || @annotation(com.moseeker.common.annotation.iface.CounterIface)";
+	
+	/**
+	 * 线程池
+	 */
+	private static ExecutorService threadPool = new ThreadPoolExecutor(5, 15, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 	
 	ThreadLocal<CounterInfo> counterLocal = new ThreadLocal<CounterInfo>(){
 		@Override
@@ -63,7 +74,7 @@ public class CounterIfaceAop {
 		counterLocal.get().setStatus("fail");
 		counterLocal.get().setEndTime(new Date().getTime());
 		counterLocal.get().setTime(counterLocal.get().getEndTime()-counterLocal.get().getStartTime());
-		log.info("counterInfo:{}", JSONObject.toJSONString(counterLocal.get()));
+		save(JSONObject.toJSONString(counterLocal.get()));
 	}
 	
 	/**
@@ -74,7 +85,15 @@ public class CounterIfaceAop {
 		counterLocal.get().setStatus("success");
 		counterLocal.get().setEndTime(new Date().getTime());
 		counterLocal.get().setTime(counterLocal.get().getEndTime()-counterLocal.get().getStartTime());
-		log.info("counterInfo:{}", JSONObject.toJSONString(counterLocal.get()));
+		save(JSONObject.toJSONString(counterLocal.get()));
 	}
-
+	
+	public void save(String jsonStr) {
+		threadPool.execute(() -> {
+			RedisClient client = RedisClientFactory.getLogClient();
+			client.lpush(Constant.APPID_ALPHADOG, "LOG_STATS", jsonStr);
+		});
+		log.info("counterInfo:{}", jsonStr);
+	}
+	
 }
