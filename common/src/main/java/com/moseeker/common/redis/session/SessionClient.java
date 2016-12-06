@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.moseeker.common.constants.Constant;
-import com.moseeker.common.exception.RedisClientException;
+import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
@@ -70,7 +70,7 @@ public class SessionClient extends RedisClient {
 						}
 					}
 				} else {
-					throw new RedisClientException("Redis集群redis.log.host,redis.log.port尚未配置", Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+					throw new RedisException("Redis集群redis.log.host,redis.log.port尚未配置", Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
 //					Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID,
 //							Constant.REDIS_CONNECT_ERROR_EVENTKEY, "Redis集群redis.session.host,redis.session.port尚未配置");
 				}
@@ -79,7 +79,7 @@ public class SessionClient extends RedisClient {
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				throw new RedisClientException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+				throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
 //				Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY,
 //						e.getMessage());
 

@@ -2,10 +2,10 @@ package com.moseeker.common.exception;
 
 /**
  * @author ltf
- * redis 连接异常
+ * redis 异常
  * 2016年11月7日
  */
-public class RedisClientException extends RuntimeException {
+public class RedisException extends RuntimeException {
 	/**
 	 * 版本号
 	 */
@@ -33,7 +33,7 @@ public class RedisClientException extends RuntimeException {
 	 * @param location 出错位置(this.getClass().getName())
 	 * @param eventKey 事件类型
 	 */
-	public RedisClientException(String message, int appid, String location, String eventKey){
+	public RedisException(String message, int appid, String location, String eventKey){
 		super(message);
 		this.message = message;
 		this.appid = appid;
@@ -41,7 +41,7 @@ public class RedisClientException extends RuntimeException {
 		this.eventKey = eventKey;
 	}
 	
-	public RedisClientException(){}
+	public RedisException(){}
 
 	public String getMessage() {
 		return message;

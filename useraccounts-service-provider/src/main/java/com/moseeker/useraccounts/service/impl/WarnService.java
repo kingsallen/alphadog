@@ -4,7 +4,7 @@ import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.moseeker.common.exception.RedisClientException;
+import com.moseeker.common.exception.RedisException;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.warn.service.WarnSetService;
 import com.moseeker.thrift.gen.warn.struct.WarnBean;
@@ -36,9 +36,9 @@ public class WarnService {
 	 * 预警通知
 	 * @param e
 	 */
-	public static void notify(RedisClientException e) {
+	public static void notify(RedisException e) {
 		try {
-			getInstance().sendOperator(new WarnBean(String.valueOf(e.getAppid()), e.getEventKey(), e.getMessage(), e.getLocation()));
+			getInstance().sendOperator(new WarnBean(String.valueOf(e.getAppid()), e.getEventKey(), e.getMessage(), e.getLocation().concat(":").concat(String.valueOf(e.getStackTrace()[0].getLineNumber()))));
 		} catch (TException te) {
 			log.error("sendOperator error:", te);
 		}

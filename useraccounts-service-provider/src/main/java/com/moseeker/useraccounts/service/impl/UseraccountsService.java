@@ -23,7 +23,7 @@ import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.constants.RespnoseUtil;
 import com.moseeker.common.constants.TemplateId;
 import com.moseeker.common.constants.UserType;
-import com.moseeker.common.exception.RedisClientException;
+import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.daoutils.BaseDao;
@@ -1210,7 +1210,7 @@ public class UseraccountsService {
 				break;
 			default:
 			}
-		} catch (RedisClientException e) {
+		} catch (RedisException e) {
 			WarnService.notify(e);
 		}
 		return false;

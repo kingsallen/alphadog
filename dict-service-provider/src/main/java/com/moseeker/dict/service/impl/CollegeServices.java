@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.exception.RedisClientException;
+import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
@@ -79,7 +79,7 @@ public class CollegeServices {
             });
             result = JSON.parseObject(cachedResult, Response.class);
 
-        } catch(RedisClientException e){
+        } catch(RedisException e){
         		WarnService.notify(e);
         		 List joinedResult = this.dao.getJoinedResults(query);
              List<College> structs = DBsToStructs(joinedResult);

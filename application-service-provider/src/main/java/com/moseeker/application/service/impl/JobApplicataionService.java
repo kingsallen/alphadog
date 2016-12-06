@@ -19,7 +19,7 @@ import com.moseeker.application.dao.UserUserDao;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.exception.RedisClientException;
+import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
@@ -244,7 +244,7 @@ public class JobApplicataionService {
 	                    (int)DateUtils.calcCurrMonthSurplusSeconds()
 	            );
 	        }
-		} catch (RedisClientException e) {
+		} catch (RedisException e) {
 			WarnService.notify(e);
 		}
     }
@@ -274,7 +274,7 @@ public class JobApplicataionService {
 						String.valueOf(jobApplication.getApplierId()),
 						String.valueOf(jobApplication.getCompanyId()));
 			}
-		} catch (RedisClientException e) {
+		} catch (RedisException e) {
 			WarnService.notify(e);
 		}
     }
@@ -501,7 +501,7 @@ public class JobApplicataionService {
 							.getApplicationCountLimit((int) companyId)) {
 				return true;
 			}
-		} catch (RedisClientException e) {
+		} catch (RedisException e) {
 			WarnService.notify(e);
 		}
 		return false;
@@ -514,12 +514,12 @@ public class JobApplicataionService {
      * @param companyId 公司id
      */
     @CounterIface
-    public Response deleteRedisKeyApplicationCheckCount(long userId, long companyId) throws TException, RedisClientException {
+    public Response deleteRedisKeyApplicationCheckCount(long userId, long companyId) throws TException, RedisException {
         try {
             redisClient.del(Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
                     String.valueOf(userId), String.valueOf(companyId));
             return new Response(0, "ok");
-        } catch (RedisClientException e) {
+        } catch (RedisException e) {
         		WarnService.notify(e);
         } catch (Exception e) {
         		logger.error("deleteRedisKeyApplicationCheckCount error:", e);

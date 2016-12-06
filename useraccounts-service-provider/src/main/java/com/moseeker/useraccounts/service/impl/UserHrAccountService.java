@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.exception.RedisClientException;
+import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
@@ -138,7 +138,7 @@ public class UserHrAccountService {
             } else {
             	return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", message));
             }
-        } catch(RedisClientException e){
+        } catch(RedisException e){
         		WarnService.notify(e);
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -218,7 +218,7 @@ public class UserHrAccountService {
 							REDIS_KEY_HR_SMS_SIGNUP,
 							Constant.HR_ACCOUNT_SIGNUP_SOURCE_ARRAY[userHrAccount.source - 1],
 							userHrAccount.mobile);
-		} catch (RedisClientException e) {
+		} catch (RedisException e) {
 			WarnService.notify(e);
 		}
         // 验证码无法验证

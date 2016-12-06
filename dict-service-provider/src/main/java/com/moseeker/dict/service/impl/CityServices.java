@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.exception.CacheConfigNotExistException;
-import com.moseeker.common.exception.RedisClientException;
+import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
@@ -42,7 +42,7 @@ public class CityServices {
                 return JSON.toJSONString(this.getCitiesResponse(true, 0));
             });
             result = JSON.parseObject(cachedResult, Response.class);
-        } catch (RedisClientException e) {
+        } catch (RedisException e) {
         		WarnService.notify(e);
         		result = this.getCitiesResponse(true, 0);
         } catch (CacheConfigNotExistException e) {
@@ -82,7 +82,7 @@ public class CityServices {
                 return JSON.toJSONString(this.getCitiesResponse(false, level));
             });
             result = JSON.parseObject(cachedResult, Response.class);
-        } catch (RedisClientException e) {
+        } catch (RedisException e) {
         		WarnService.notify(e);
         		result = this.getCitiesResponse(false, level);
         } catch (CacheConfigNotExistException e) {
@@ -104,7 +104,7 @@ public class CityServices {
                 return JSON.toJSONString(this.getCitiesResponseById(id));
             });
             result = JSON.parseObject(cachedResult, Response.class);
-        } catch (RedisClientException e) {
+        } catch (RedisException e) {
         		WarnService.notify(e);
             result = this.getCitiesResponseById(id);
         } catch (CacheConfigNotExistException e) {

@@ -12,7 +12,7 @@ import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.KeyIdentifier;
-import com.moseeker.common.exception.RedisClientException;
+import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
@@ -63,7 +63,7 @@ public class MqServiceImpl {
 					return ResponseUtils.success(res);
 				}
 			}
-		} catch (RedisClientException e) {
+		} catch (RedisException e) {
     		WarnService.notify(e);
 		} catch (Exception e) {
 			logger.error("MqServiceImpl messageTemplateNotice error: ", e);

@@ -16,7 +16,7 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.email.config.EmailContent;
 import com.moseeker.common.email.mail.Message;
-import com.moseeker.common.exception.RedisClientException;
+import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.redis.RedisClient;
@@ -96,7 +96,7 @@ public class EmailProvider {
 			} else {
 				return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", vuResult));
 			}
-		} catch (RedisClientException e) {
+		} catch (RedisException e) {
 			WarnService.notify(e);
 			return ResponseUtils.fail(99999, e.getMessage());
 		} catch (Exception e) {

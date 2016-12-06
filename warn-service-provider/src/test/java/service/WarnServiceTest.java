@@ -33,7 +33,7 @@ public class WarnServiceTest {
 	@Test
 	public void notifyTest() throws Exception{
 		try {
-			warn.sendOperator(new WarnBean("0", "REDIS_CONNECT_ERROR", "Redis 连接失败", getClass().getName()));
+			warn.sendOperator(new WarnBean("0", "REDIS_CONNECT_ERROR", "Redis 连接失败", getClass().getName().concat(":36")));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
