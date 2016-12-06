@@ -29,6 +29,7 @@ import com.moseeker.thrift.gen.apps.positionbs.service.PositionBS;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.position.service.PositionDao;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 
@@ -149,7 +150,8 @@ public class PositionController {
 	public String thirdpartyposition(HttpServletRequest request, HttpServletResponse response) {
 		try {
 			CommonQuery qu = ParamUtils.initCommonQuery(request, CommonQuery.class);
-			Response result = positionDao1.getPositionThirdPartyPositions(qu);
+			List<ThirdPartyPositionData> datas = positonServices.getThirdPartyPositions(qu);
+			Response result = ResponseUtils.success(datas);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
 			logger.error(e.getMessage(), e);

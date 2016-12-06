@@ -1,7 +1,9 @@
 package com.moseeker.position.service.fundationbs;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -42,6 +44,7 @@ import com.moseeker.position.pojo.RecommendedPositonPojo;
 import com.moseeker.position.service.position.PositionChangeUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.CompanyDao;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
@@ -381,5 +384,25 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 
 	public void setJobOccupationDao(JobOccupationDao jobOccupationDao) {
 		this.jobOccupationDao = jobOccupationDao;
+	}
+
+	public List<ThirdPartyPositionData> getThirdPartyPositions(CommonQuery query) {
+		List<ThirdPartyPositionData> datas = new ArrayList<>();
+		try {
+			if(query.getEqualFilter() != null) {
+				query.getEqualFilter().put("channel", "1");
+			} else {
+				Map<String, String> equalFilter = new HashMap<>();
+				equalFilter.put("channel", "1");
+				query.setEqualFilter(equalFilter);
+			}
+			datas = positionDaoService.getPositionThirdPartyPositions(query);
+		} catch (TException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			//do nothing
+		}
+		return datas;
 	}
 }

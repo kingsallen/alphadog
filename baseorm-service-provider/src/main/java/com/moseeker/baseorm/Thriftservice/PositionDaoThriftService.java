@@ -18,7 +18,6 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.PositionDao.Iface;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.position.struct.Position;
@@ -73,13 +72,14 @@ public class PositionDaoThriftService implements Iface {
 	}
 
 	@Override
-	public Response getPositionThirdPartyPositions(CommonQuery query) throws TException {
-		List<Map<String, Object>> data = new ArrayList<>();
+	public List<ThirdPartyPositionData> getPositionThirdPartyPositions(CommonQuery query) throws TException {
+		List<ThirdPartyPositionData> datas = new ArrayList<>();
 		try {
 			List<HrThirdPartyPositionRecord> records = thirdpartyPositionDao.getResources(query);
 			if(records != null && records.size() > 0) {
 				records.forEach(record -> {
-					Map<String, Object> result = record.intoMap();
+					ThirdPartyPositionData data = (ThirdPartyPositionData)BeanUtils.DBToStruct(ThirdPartyPositionData.class, record);
+					/*Map<String, Object> result = record.intoMap();
 					result.put("position_id", record.getPositionId().intValue());
 					if(record.getSyncTime() != null) {
 						result.put("sync_time", sdf.format(record.getSyncTime()));
@@ -89,8 +89,8 @@ public class PositionDaoThriftService implements Iface {
 					}
 					if(record.getRefreshTime() != null) {
 						result.put("refresh_time", sdf.format(record.getRefreshTime()));
-					}
-					data.add(result);
+					}*/
+					datas.add(data);
 				});
 			}
 		} catch (Exception e) {
@@ -99,7 +99,7 @@ public class PositionDaoThriftService implements Iface {
 		} finally {
 			//do nothing
 		}
-		return ResponseUtils.success(data);
+		return datas;
 	}
 
 	@Override

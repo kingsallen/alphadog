@@ -1,6 +1,7 @@
 include "../struct/position_struct.thrift"
 include "../../common/struct/common_struct.thrift"
 include "../../apps/struct/appbs_struct.thrift"
+include "../../dao/struct/dao_struct.thrift"
 
 namespace java com.moseeker.thrift.gen.position.service
 /*
@@ -15,11 +16,12 @@ service PositionServices {
     //获取公司两种自定义的字段
     common_struct.Response CustomField(1:string param);    
     //转成第三方同步职位数据    
-    list<position_struct.ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(1:list<appbs_struct.ThridPartyPosition> form, 2:position_struct.Position position);
+    list<position_struct.ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(1:list<appbs_struct.ThirdPartyPosition> form, 2:position_struct.Position position);
     //生成第三方同步职位数据
     position_struct.ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(1: i32 positionId, 2: i32 channel);
     //是否可以刷新
     bool ifAllowRefresh(1: i32 positionId, 2:i32 channel);
+    list<dao_struct.ThirdPartyPositionData> getThirdPartyPositions(1: common_struct.CommonQuery query);
 }
 /*
 	查询第三方自定义职能

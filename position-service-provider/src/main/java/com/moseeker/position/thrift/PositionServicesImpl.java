@@ -13,6 +13,7 @@ import com.moseeker.position.service.fundationbs.PositionService;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.position.service.PositionServices.Iface;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
@@ -87,5 +88,10 @@ public class PositionServicesImpl implements Iface {
 	public ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(int positionId, int channel)
 			throws TException {
 		return service.createRefreshPosition(positionId, channel);
+	}
+
+	@Override
+	public List<ThirdPartyPositionData> getThirdPartyPositions(CommonQuery query) throws TException {
+		return service.getThirdPartyPositions(query);
 	}
 }
