@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -24,7 +25,6 @@ import com.moseeker.common.email.mail.Mail.MailBuilder;
 import com.moseeker.common.email.mail.Message;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
-import com.moseeker.common.util.StringUtils;
 import com.moseeker.mq.server.MqServer;
 
 /**
@@ -57,7 +57,11 @@ public class ConstantlyMailConsumer {
 	 */
 	private String fetchConstantlyMessage() {
 		RedisClient redisClient = RedisClientFactory.getCacheClient();
-		return redisClient.brpop(Constant.APPID_ALPHADOG, Constant.MQ_MESSAGE_EMAIL_BIZ).get(1);
+		List<String> result = redisClient.brpop(Constant.APPID_ALPHADOG, Constant.MQ_MESSAGE_EMAIL_BIZ);
+		if(result != null && result.size() > 0) {
+			return result.get(1);
+		}
+		return null;
 	}
 
 	/**
@@ -89,37 +93,36 @@ public class ConstantlyMailConsumer {
 	private String sendMail() throws Exception {
 		String redisMsg = fetchConstantlyMessage();
 		
-		executorService.submit(() -> {
-			try {
-				Message message = JSON.parseObject(redisMsg, Message.class);
-				String html = null;
-				for (Entry<Integer, String> entry : templates.entrySet()) {
-					if (message.getEventType() == entry.getKey().intValue()) {
-						html = entry.getValue();
-						EmailContent content = message.getEmailContent();
-						if (message.getParams() != null) {
-							for (Entry<String, String> param : message.getParams().entrySet()) {
-								html = html.replaceAll(param.getKey(), param.getValue());
+		if(redisMsg != null) {
+			executorService.submit(() -> {
+				try {
+					Message message = JSON.parseObject(redisMsg, Message.class);
+					String html = null;
+					for (Entry<Integer, String> entry : templates.entrySet()) {
+						if (message.getEventType() == entry.getKey().intValue()) {
+							html = entry.getValue();
+							EmailContent content = message.getEmailContent();
+							if (message.getParams() != null) {
+								for (Entry<String, String> param : message.getParams().entrySet()) {
+									html = html.replaceAll(param.getKey(), param.getValue());
+								}
 							}
+							content.setContent(html);
 						}
-						content.setContent(html);
 					}
+					logger.info("redisMsg:"+redisMsg);
+					System.out.println("redisMsg:"+redisMsg);
+					MailBuilder mailBuilder = new MailBuilder();
+					EmailSessionConfig sessionConfig = new EmailSessionConfig(true, "smtp");
+					Mail mail = mailBuilder.buildSessionConfig(sessionConfig).build(message.getEmailContent());
+					logger.info("redisMsg:"+redisMsg);
+					mail.send();
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-				logger.info("redisMsg:"+redisMsg);
-				System.out.println("redisMsg:"+redisMsg);
-				MailBuilder mailBuilder = new MailBuilder();
-				EmailSessionConfig sessionConfig = new EmailSessionConfig(true, "smtp");
-				Mail mail = mailBuilder.buildSessionConfig(sessionConfig).build(message.getEmailContent());
-				logger.info("redisMsg:"+redisMsg);
-				mail.send();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		});
-		
-		if (StringUtils.isNotNullOrEmpty(redisMsg)) {
-			sendMail();
+			});
 		}
+		sendMail();
 		return redisMsg;
 	}
 
@@ -133,6 +136,7 @@ public class ConstantlyMailConsumer {
 		executorService = new ThreadPoolExecutor(3, 10,
                 60L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<Runnable>());
+		
 		new Thread(() -> {
 			try {
 				sendMail();

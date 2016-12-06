@@ -44,6 +44,7 @@ public class UserCommonService {
 	 * @return
 	 */
 	public Response newsletter(NewsletterForm form) {
+		
 		if (form.getAccount_id() > 0) {
 			RedisClient redis = RedisClientFactory.getCacheClient();
 			String value = redis.get(AppId.APPID_ALPHADOG.getValue(),
@@ -83,8 +84,9 @@ public class UserCommonService {
 					return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 				}
 			}
+		} else {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
 		}
-		return null;
 	}
 	
 	private HashMap<String, Object> newsletterToMap(NewsletterData data) {
