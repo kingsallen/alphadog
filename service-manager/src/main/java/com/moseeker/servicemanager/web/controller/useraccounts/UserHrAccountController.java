@@ -17,6 +17,7 @@ import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
+import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.DownloadReport;
 
 /**
@@ -80,6 +81,22 @@ public class UserHrAccountController {
 			}
 		} catch (Exception e) {
 			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
+	
+	@RequestMapping(value = "/hraccount/binding", method = RequestMethod.POST)
+	@ResponseBody
+	public String bindThirdPartyAccount(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			
+			BindAccountStruct struct = ParamUtils.initModelForm(request, BindAccountStruct.class);
+			
+			Response result = userHrAccountService.bind(struct);
+			return ResponseLogNotification.success(request, result);
+		} catch (Exception e) {
+			return ResponseLogNotification.fail(request, e.getMessage());
+		} finally {
+			//do nothing
 		}
 	}
 }

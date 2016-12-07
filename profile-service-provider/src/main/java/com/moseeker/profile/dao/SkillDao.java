@@ -11,4 +11,6 @@ public interface SkillDao extends BaseDao<ProfileSkillRecord> {
 
 	int updateProfileUpdateTime(Set<Integer> skillIds);
 
+	int delSkillByProfileId(int profileId);
+
 }

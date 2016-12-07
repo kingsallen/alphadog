@@ -4,8 +4,8 @@ import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.mq.service.impl.EmailProvider;
-import com.moseeker.mq.service.impl.MqServiceImpl;
+import com.moseeker.mq.service.impl.EmailProducer;
+import com.moseeker.mq.service.impl.TemplateMsgProducer;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.mq.service.MqService.Iface;
 import com.moseeker.thrift.gen.mq.struct.EmailStruct;
@@ -31,10 +31,10 @@ import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
 public class ThriftService implements Iface {
 
 	@Autowired
-	private MqServiceImpl mqService;
+	private TemplateMsgProducer mqService;
 
 	@Autowired
-	private EmailProvider emailProvider;
+	private EmailProducer emailProvider;
 
 	@Override
 	public Response messageTemplateNotice(MessageTemplateNoticeStruct messageTemplateNoticeStruct) throws TException {
@@ -47,19 +47,19 @@ public class ThriftService implements Iface {
 				emailStruct.getSubject());
 	}
 
-	public MqServiceImpl getMqService() {
+	public TemplateMsgProducer getMqService() {
 		return mqService;
 	}
 
-	public void setMqService(MqServiceImpl mqService) {
+	public void setMqService(TemplateMsgProducer mqService) {
 		this.mqService = mqService;
 	}
 
-	public EmailProvider getEmailProvider() {
+	public EmailProducer getEmailProvider() {
 		return emailProvider;
 	}
 
-	public void setEmailProvider(EmailProvider emailProvider) {
+	public void setEmailProvider(EmailProducer emailProvider) {
 		this.emailProvider = emailProvider;
 	}
 }

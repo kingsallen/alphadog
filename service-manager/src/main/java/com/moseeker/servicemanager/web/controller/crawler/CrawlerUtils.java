@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -14,6 +17,8 @@ import com.moseeker.common.util.UrlUtil;
 import com.moseeker.thrift.gen.common.struct.Response;
 
 public class CrawlerUtils {
+	
+	Logger logger = LoggerFactory.getLogger(CrawlerUtils.class);
 
 	public Response fetchFirstResume(String userName, String password, String token, int type, int lang, int source,
 			int completeness, int appid, int user_id) throws Exception {
@@ -46,6 +51,7 @@ public class CrawlerUtils {
 			//result = "{\"status\": 0, \"resumes\":[{\"other\": {},\"workexps\": [{\"company\": {\"company_name\": \"IBM China\",\"company_introduction\": \"\"},\"end_until_now\": 1,\"description\": \"doing is better than perfect.\",\"end_date\": \"\",\"job\": \"Software Engineer\",\"start_date\": \"2007-07-01\"}],\"credentials\": [],\"import\": {\"resume_id\": \"PjrMx2C9nE\",\"source\": \"4\",\"username\": \"\",\"account_id\": \"\"},\"educations\": [],\"skills\": [],\"basic\": {\"birth\": \" \",\"name\": \"Wang Yaofeng\",\"nationality_name\": \"China\",\"city_name\": \"Shanghai City\",\"gender\": \"0\"},\"user\": {\"name\": \"Wang Yaofeng\",\"mobile\": \"\"},\"works\": [],\"languages\": [],\"awards\": [],\"attachments\": [],\"intentions\": [],\"projectexps\": []}]}";
 			break;
 		}
+		logger.info("fetchFirstResume:"+result);
 		return cleanning(result, lang, source, completeness, appid, user_id);
 	}
 

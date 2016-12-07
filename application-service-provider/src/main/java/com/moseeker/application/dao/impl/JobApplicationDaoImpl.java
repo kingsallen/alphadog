@@ -159,6 +159,44 @@ public class JobApplicationDaoImpl extends BaseDaoImpl<JobApplicationRecord, Job
         }
         return appId;
     }
+    
+    @Override
+	public int saveApplicationIfNotExist(JobApplicationRecord jobApplicationRecord,
+			JobPositionRecord jobPositionRecord) throws Exception {
+    	 int appId = 0;
+         Connection conn = null;
+         try {
+             conn = DBConnHelper.DBConn.getConn();
+             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+
+             HrOperationRecordRecord hrOperationRecord = null;
+
+             create.attach(jobApplicationRecord);
+             //todo 需要做去重处理
+             jobApplicationRecord.insert();
+             appId = jobApplicationRecord.getId().intValue();
+
+             if(appId > 0){
+                 hrOperationRecord = getHrOperationRecordRecord(appId, jobApplicationRecord, jobPositionRecord);
+                 create.attach(hrOperationRecord);
+                 hrOperationRecord.insert();
+             }
+             
+         } catch (Exception e) {
+             conn.rollback();
+             logger.error("error", e);
+             throw new Exception(e);
+         } finally {
+             try {
+                 if (conn != null && !conn.isClosed()) {
+                     conn.close();
+                 }
+             } catch (SQLException e) {
+                 e.printStackTrace();
+             }
+         }
+         return appId;
+	}
 
     /**
      * 归档申请记录

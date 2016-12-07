@@ -8,6 +8,8 @@ import com.moseeker.db.jobdb.tables.JobApplication;
 import com.moseeker.db.jobdb.tables.JobApplicationConf;
 import com.moseeker.db.jobdb.tables.JobApplicationStatusBeisen;
 import com.moseeker.db.jobdb.tables.JobCustom;
+import com.moseeker.db.jobdb.tables.JobOccupation;
+import com.moseeker.db.jobdb.tables.JobOccupationRel;
 import com.moseeker.db.jobdb.tables.JobPosition;
 import com.moseeker.db.jobdb.tables.JobPositionCity;
 import com.moseeker.db.jobdb.tables.JobPositionExt;
@@ -50,6 +52,16 @@ public class Tables {
 	 * 职位自定义字段配置表
 	 */
 	public static final JobCustom JOB_CUSTOM = com.moseeker.db.jobdb.tables.JobCustom.JOB_CUSTOM;
+
+	/**
+	 * 公司自定义职能表
+	 */
+	public static final JobOccupation JOB_OCCUPATION = com.moseeker.db.jobdb.tables.JobOccupation.JOB_OCCUPATION;
+
+	/**
+	 * 职位与职能关系表
+	 */
+	public static final JobOccupationRel JOB_OCCUPATION_REL = com.moseeker.db.jobdb.tables.JobOccupationRel.JOB_OCCUPATION_REL;
 
 	/**
 	 * The table jobdb.job_position

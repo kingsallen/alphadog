@@ -5,11 +5,13 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.SensitiveWordDB;
 import com.moseeker.function.service.SensitiveWordService;
 
 @Service
+@CounterIface
 public class SensitiveWordServiceImpl implements SensitiveWordService {
 
 	private SensitiveWordDB db = SensitiveWordDB.getSingleton(); // 敏感词过滤

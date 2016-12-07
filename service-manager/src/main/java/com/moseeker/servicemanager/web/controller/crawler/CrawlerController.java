@@ -52,10 +52,12 @@ public class CrawlerController {
 			}
 			String result = vu.validate();
 			if (StringUtils.isNullOrEmpty(result)) {
+				logger.info("/crawler");
 				Response res = crawlerUtils.fetchFirstResume(form.getUsername(), form.getPassword(), form.getToken(),
 						form.getType(), form.getLang(), form.getSource(), form.getCompleteness(), form.getAppid(),
 						form.getUser_id());
 				if (res != null && res.getStatus() == 0) {
+					logger.info("/crawler    profile:"+res.getData());
 					res = profileService.importCV(res.getData(), form.getUser_id());
 					return ResponseLogNotification.success(request, res);
 				} else {

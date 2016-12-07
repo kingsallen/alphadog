@@ -37,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileProfile extends TableImpl<ProfileProfileRecord> {
 
-	private static final long serialVersionUID = 125029595;
+	private static final long serialVersionUID = 793238873;
 
 	/**
 	 * The reference instance of <code>profiledb.profile_profile</code>
@@ -58,9 +58,9 @@ public class ProfileProfile extends TableImpl<ProfileProfileRecord> {
 	public final TableField<ProfileProfileRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
 
 	/**
-	 * The column <code>profiledb.profile_profile.uuid</code>. profile的uuid标识, 与主键一一对应
+	 * The column <code>profiledb.profile_profile.uuid</code>. profile的uuid标识,与主键一一对应
 	 */
-	public final TableField<ProfileProfileRecord, String> UUID = createField("uuid", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaulted(true), this, "profile的uuid标识, 与主键一一对应");
+	public final TableField<ProfileProfileRecord, String> UUID = createField("uuid", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaulted(true), this, "profile的uuid标识,与主键一一对应");
 
 	/**
 	 * The column <code>profiledb.profile_profile.lang</code>. profile语言 1:chinese 2:english
@@ -96,6 +96,11 @@ public class ProfileProfile extends TableImpl<ProfileProfileRecord> {
 	 * The column <code>profiledb.profile_profile.update_time</code>. 更新时间
 	 */
 	public final TableField<ProfileProfileRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "更新时间");
+
+	/**
+	 * The column <code>profiledb.profile_profile.origin</code>. 简历来源二进制数值,1表示维系企业端（正常），10表示微信企业端(我要投递)，100表示微信企业端(我感兴趣)，1000表示微信企业端(我感兴趣)，10000表示微信聚合端(正常)，100000表示微信聚合端(我要投递)，1000000表示微信聚合端(我感兴趣)，1000000表示微信企业端Email申请，100000000表示微信聚合端Email申请，1000000000表示微信企业端导入，10000000000表示微信聚合端导入，10000000000表示PC导入，100000000000表示PC(正常添加)，1000000000000表示PC(我要投递)，10000000000000表示PC(我感兴趣)，1000000000000000表示51job，10000000000000000表示智联
+	 */
+	public final TableField<ProfileProfileRecord, String> ORIGIN = createField("origin", org.jooq.impl.SQLDataType.VARCHAR.length(20).defaulted(true), this, "简历来源二进制数值,1表示维系企业端（正常），10表示微信企业端(我要投递)，100表示微信企业端(我感兴趣)，1000表示微信企业端(我感兴趣)，10000表示微信聚合端(正常)，100000表示微信聚合端(我要投递)，1000000表示微信聚合端(我感兴趣)，1000000表示微信企业端Email申请，100000000表示微信聚合端Email申请，1000000000表示微信企业端导入，10000000000表示微信聚合端导入，10000000000表示PC导入，100000000000表示PC(正常添加)，1000000000000表示PC(我要投递)，10000000000000表示PC(我感兴趣)，1000000000000000表示51job，10000000000000000表示智联");
 
 	/**
 	 * Create a <code>profiledb.profile_profile</code> table reference

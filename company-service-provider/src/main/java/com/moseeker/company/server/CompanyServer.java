@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.moseeker.company.thrift.ThriftCompanyService;
+import com.moseeker.company.thrift.CompanyServicesImpl;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.Server;
 
@@ -32,7 +32,7 @@ public class CompanyServer {
 			AnnotationConfigApplicationContext acac = initSpring();
 			Server server = new Server(CompanyServer.class,
 					ServerNodeUtils.getPort(args),
-					acac.getBean(ThriftCompanyService.class));
+					acac.getBean(CompanyServicesImpl.class));
 			
 			server.start(); // 启动服务，非阻塞
 
@@ -54,6 +54,7 @@ public class CompanyServer {
 	private static AnnotationConfigApplicationContext initSpring() {
 		AnnotationConfigApplicationContext acac = new AnnotationConfigApplicationContext();
 		acac.scan("com.moseeker.company");
+		acac.scan("com.moseeker.common.aop.iface");
 		acac.refresh();
 		return acac;
 	}

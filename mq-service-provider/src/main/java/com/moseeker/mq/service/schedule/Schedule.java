@@ -36,7 +36,7 @@ public class Schedule {
 		ScheduledExecutorService service = Executors  
                 .newSingleThreadScheduledExecutor();  
         // 第二个参数为首次执行的延时时间，第三个参数为定时执行的间隔时间  
-		Porter porter = new Porter();
+		PortConsumer porter = new PortConsumer();
         service.scheduleAtFixedRate(porter, initialDelay, period, unit);  
 	}
 }

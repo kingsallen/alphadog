@@ -10,6 +10,8 @@ service JobApplicationServices {
 
     // 添加申请
     common_struct.Response postApplication(1: application_struct.JobApplication application);
+    //添加申请
+    common_struct.Response postApplicationIfNotApply(1: application_struct.JobApplication application);
 
     // 更新申请
     common_struct.Response putApplication(1: application_struct.JobApplication application);

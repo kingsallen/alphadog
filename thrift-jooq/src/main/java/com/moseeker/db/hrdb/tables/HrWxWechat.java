@@ -37,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
 
-	private static final long serialVersionUID = -842956735;
+	private static final long serialVersionUID = -1076288987;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_wx_wechat</code>
@@ -181,6 +181,11 @@ public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
 	 * The column <code>hrdb.hr_wx_wechat.update_time</code>. 修改时间
 	 */
 	public final TableField<HrWxWechatRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "修改时间");
+
+	/**
+	 * The column <code>hrdb.hr_wx_wechat.hr_chat</code>. IM聊天开关，0：不开启，1：开启
+	 */
+	public final TableField<HrWxWechatRecord, Byte> HR_CHAT = createField("hr_chat", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "IM聊天开关，0：不开启，1：开启");
 
 	/**
 	 * Create a <code>hrdb.hr_wx_wechat</code> table reference

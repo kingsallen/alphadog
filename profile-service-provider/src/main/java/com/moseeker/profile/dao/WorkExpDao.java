@@ -13,4 +13,6 @@ public interface WorkExpDao extends BaseDao<ProfileWorkexpRecord> {
 
 	int updateProfileUpdateTime(Set<Integer> workExpIds);
 
+	int delWorkExpsByProfileId(int profileId);
+
 }

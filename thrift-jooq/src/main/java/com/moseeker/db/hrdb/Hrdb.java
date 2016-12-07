@@ -29,6 +29,8 @@ import com.moseeker.db.hrdb.tables.HrReferralStatistics;
 import com.moseeker.db.hrdb.tables.HrRuleStatistics;
 import com.moseeker.db.hrdb.tables.HrRuleUniqueStatistics;
 import com.moseeker.db.hrdb.tables.HrSuperaccountApply;
+import com.moseeker.db.hrdb.tables.HrThirdPartyAccount;
+import com.moseeker.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.db.hrdb.tables.HrTopic;
 import com.moseeker.db.hrdb.tables.HrWxBasicReply;
 import com.moseeker.db.hrdb.tables.HrWxHrChat;
@@ -65,7 +67,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-	private static final long serialVersionUID = -1950646122;
+	private static final long serialVersionUID = -120454602;
 
 	/**
 	 * The reference instance of <code>hrdb</code>
@@ -113,6 +115,8 @@ public class Hrdb extends SchemaImpl {
 			HrRuleStatistics.HR_RULE_STATISTICS,
 			HrRuleUniqueStatistics.HR_RULE_UNIQUE_STATISTICS,
 			HrSuperaccountApply.HR_SUPERACCOUNT_APPLY,
+			HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT,
+			HrThirdPartyPosition.HR_THIRD_PARTY_POSITION,
 			HrTopic.HR_TOPIC,
 			HrWxBasicReply.HR_WX_BASIC_REPLY,
 			HrWxHrChat.HR_WX_HR_CHAT,

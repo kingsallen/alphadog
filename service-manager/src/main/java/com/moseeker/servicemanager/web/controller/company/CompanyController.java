@@ -1,5 +1,6 @@
 package com.moseeker.servicemanager.web.controller.company;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -94,6 +96,27 @@ public class CompanyController {
 			return ResponseLogNotification.fail(request, e.getMessage());
 		} finally {
 			// do nothing
+		}
+	}
+	
+	@RequestMapping(value = "/company/{id}/thirdpartyaccount", method = RequestMethod.GET)
+	@ResponseBody
+	public String synchronizeThirdpartyAccount(@PathVariable int id, HttpServletRequest request, HttpServletResponse response) {
+		try {
+			HashMap<String, Object> map = ParamUtils.parseRequestParam(request);
+			byte channel = 0;
+			if(map.get("channel") != null) {
+				try {
+					channel = Integer.valueOf((String)map.get("channel")).byteValue();
+				} catch (Exception e) {
+					return ResponseLogNotification.fail(request, "渠道参数不正确!");
+				}
+			}
+			Response result = companyServices.synchronizeThirdpartyAccount(id, channel);
+			return ResponseLogNotification.success(request, result);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}
 }

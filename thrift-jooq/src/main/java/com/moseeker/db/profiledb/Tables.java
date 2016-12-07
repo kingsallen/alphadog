@@ -22,6 +22,7 @@ import com.moseeker.db.profiledb.tables.ProfileProjectexp;
 import com.moseeker.db.profiledb.tables.ProfileSkill;
 import com.moseeker.db.profiledb.tables.ProfileWorkexp;
 import com.moseeker.db.profiledb.tables.ProfileWorks;
+import com.moseeker.db.profiledb.tables.SchemaMigrations;
 
 import javax.annotation.Generated;
 
@@ -128,4 +129,9 @@ public class Tables {
 	 * Profile的个人作品
 	 */
 	public static final ProfileWorks PROFILE_WORKS = com.moseeker.db.profiledb.tables.ProfileWorks.PROFILE_WORKS;
+
+	/**
+	 * The table profiledb.schema_migrations
+	 */
+	public static final SchemaMigrations SCHEMA_MIGRATIONS = com.moseeker.db.profiledb.tables.SchemaMigrations.SCHEMA_MIGRATIONS;
 }

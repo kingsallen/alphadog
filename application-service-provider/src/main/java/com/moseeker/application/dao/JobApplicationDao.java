@@ -20,4 +20,7 @@ public interface JobApplicationDao extends BaseDao<JobApplicationRecord>{
 
     public int archiveApplicationRecord(JobApplicationRecord jobApplicationRecord) throws Exception;
 
+	public int saveApplicationIfNotExist(JobApplicationRecord jobApplicationRecord,
+			JobPositionRecord jobPositionRecord) throws Exception;
+
 }

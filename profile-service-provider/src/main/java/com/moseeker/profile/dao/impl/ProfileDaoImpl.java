@@ -608,7 +608,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 
 				/* 计算profile完整度 */
 				ProfileCompletenessRecord completenessRecord = new ProfileCompletenessRecord();
-
+				completenessRecord.setProfileId(profileRecord.getId());
 				if (basicRecord != null) {
 					basicRecord.setProfileId(profileRecord.getId());
 					basicRecord.setCreateTime(now);
@@ -827,6 +827,8 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						create.attach(workexp);
 						workexp.insert();
 					});
+					int workExpCompleteness = completenessCalculator.calculateWorks(worksRecords);
+					completenessRecord.setProfileWorkexp(workExpCompleteness);
 				}
 
 				if (worksRecords != null && worksRecords.size() > 0) {
@@ -836,7 +838,32 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						create.attach(worksRecord);
 						worksRecord.insert();
 					});
+					int worksCompleteness = completenessCalculator.calculateWorks(worksRecords);
+					completenessRecord.setProfileWorks(worksCompleteness);
 				}
+				
+				int totalComplementness = (completenessRecord.getUserUser() == null ? 0
+						: completenessRecord.getUserUser())
+						+ (completenessRecord.getProfileBasic() == null ? 0 : completenessRecord.getProfileBasic())
+						+ (completenessRecord.getProfileWorkexp() == null ? 0 : completenessRecord.getProfileWorkexp())
+						+ (completenessRecord.getProfileEducation() == null ? 0
+								: completenessRecord.getProfileEducation())
+						+ (completenessRecord.getProfileProjectexp() == null ? 0
+								: completenessRecord.getProfileProjectexp())
+						+ (completenessRecord.getProfileLanguage() == null ? 0
+								: completenessRecord.getProfileLanguage())
+						+ (completenessRecord.getProfileSkill() == null ? 0 : completenessRecord.getProfileSkill())
+						+ (completenessRecord.getProfileCredentials() == null ? 0
+								: completenessRecord.getProfileCredentials())
+						+ (completenessRecord.getProfileAwards() == null ? 0 : completenessRecord.getProfileAwards())
+						+ (completenessRecord.getProfileWorks() == null ? 0 : completenessRecord.getProfileWorks())
+						+ (completenessRecord.getProfileIntention() == null ? 0
+								: completenessRecord.getProfileIntention());
+				
+				profileRecord.setCompleteness(UByte.valueOf(totalComplementness));
+				profileRecord.update();
+				create.attach(completenessRecord);
+				completenessRecord.insert();
 				if (userRecord != null) {
 					create.attach(userRecord);
 					userRecord.update();

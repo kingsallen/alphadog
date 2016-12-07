@@ -26,6 +26,10 @@ dependencies {
     compile deps["cglib"]
     compile deps["beanutils"]
     compile deps["gjson"]
+    compile deps["spring-context"]
+    compile deps["spring-aop"]
+    compile deps["aspectj"]
+    compile deps["aspectjrt"]
     compile fileTree(dir:'../libs',include:'*.jar')
 
 }

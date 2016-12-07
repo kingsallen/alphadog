@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.util.HashSet;
 
 import org.jooq.DSLContext;
+import org.jooq.types.UInteger;
 import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.dbutils.DBConnHelper;
@@ -38,13 +39,11 @@ public class AwardsDaoImpl extends
 
 	@Override
 	public int updateProfileUpdateTime(HashSet<Integer> awardIds) {
-		logger.error("-----award updateProfileUpdateTime-------");
 		int status = 0;
 		try (Connection conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn)) {
 
 			Timestamp updateTime = new Timestamp(System.currentTimeMillis());
-			logger.error("-----award updateTime:"+updateTime+"-------");
 			status = create.update(ProfileProfile.PROFILE_PROFILE)
 					.set(ProfileProfile.PROFILE_PROFILE.UPDATE_TIME, updateTime)
 					.where(ProfileProfile.PROFILE_PROFILE.ID
@@ -57,5 +56,22 @@ public class AwardsDaoImpl extends
 			logger.error(e.getMessage(), e);
 		}
 		return status;
+	}
+
+	@Override
+	public int delAwardsByProfileId(int profileId) {
+		int count= 0;
+		try (Connection conn = DBConnHelper.DBConn.getConn();
+				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn)) {
+			count = create.delete(ProfileAwards.PROFILE_AWARDS)
+					 .where(ProfileAwards.PROFILE_AWARDS.PROFILE_ID.equal(UInteger.valueOf(profileId)))
+					 .execute();
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		} finally {
+			//do nothing
+		}
+		return count;
 	}
 }

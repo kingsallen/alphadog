@@ -213,6 +213,7 @@ public abstract class RedisClient {
 				return redisCluster.get(cacheKey);
 			} catch (Exception e) {
 				Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
+			} finally {
 			}
 		}
 		return null;
@@ -284,7 +285,7 @@ public abstract class RedisClient {
 			throw new CacheConfigNotExistException();
 		}
 		try {
-			return redisCluster.brpop(redisKey.getTtl(), cacheKey);
+			return redisCluster.brpop(Constant.BRPOP_TTL, cacheKey);
 		} catch (Exception e) {
 			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}

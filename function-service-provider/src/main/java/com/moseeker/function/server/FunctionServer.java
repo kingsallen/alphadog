@@ -4,9 +4,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import com.moseeker.function.service.chaos.PositionRefreshConsumer;
+import com.moseeker.function.service.chaos.PositionSyncConsumer;
+import com.moseeker.function.thrift.service.ChaosThriftService;
 import com.moseeker.function.thrift.service.FunctionService;
+import com.moseeker.function.thrift.service.HRAccountThriftService;
+import com.moseeker.function.thrift.service.WordpressThriftService;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
-import com.moseeker.rpccenter.main.Server;
+import com.moseeker.rpccenter.main.MultiRegServer;
 
 /**
  * 
@@ -25,10 +30,20 @@ public class FunctionServer {
 
         try {
         	AnnotationConfigApplicationContext acac = initSpring();
-			Server server = new Server(FunctionServer.class,
-					ServerNodeUtils.getPort(args),
-					acac.getBean(FunctionService.class));
+        	MultiRegServer server = new MultiRegServer(FunctionServer.class,
+        			ServerNodeUtils.getPort(args),
+					acac.getBean(FunctionService.class),
+					acac.getBean(ChaosThriftService.class),
+					acac.getBean(WordpressThriftService.class),
+					acac.getBean(HRAccountThriftService.class));
 			server.start(); // 启动服务，非阻塞
+			
+			//开启监听同步完成任务
+			PositionSyncConsumer listener = new PositionSyncConsumer();
+			listener.startTask();
+			
+			PositionRefreshConsumer refreshListener = new PositionRefreshConsumer();
+			refreshListener.startTask();
 
 			synchronized (FunctionServer.class) {
 				while (true) {
@@ -48,6 +63,7 @@ public class FunctionServer {
     private static AnnotationConfigApplicationContext initSpring() {
 		AnnotationConfigApplicationContext acac = new AnnotationConfigApplicationContext();
 		acac.scan("com.moseeker.function");
+		acac.scan("com.moseeker.common.aop.iface"); //开启接口统计
 		acac.refresh();
 		return acac;
 	}
