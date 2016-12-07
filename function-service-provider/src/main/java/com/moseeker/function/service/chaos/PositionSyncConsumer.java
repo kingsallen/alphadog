@@ -46,7 +46,6 @@ public class PositionSyncConsumer {
 	private void task() {
 		try {
 			String sync = fetchCompledPosition();
-			logger.info("completed queue :"+sync);
 			if(StringUtils.isNotNullOrEmpty(sync)) {
 				PositionForSyncResultPojo pojo = JSONObject.parseObject(sync, PositionForSyncResultPojo.class);
 				writeBack(pojo);
@@ -68,6 +67,7 @@ public class PositionSyncConsumer {
 		RedisClient redisClient = RedisClientFactory.getCacheClient();
 		List<String> result = redisClient.brpop(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_COMPLETED_QUEUE.toString());
 		if(result != null && result.size() > 0) {
+			logger.info("completed queue :"+result.get(1));
 			return result.get(1);
 		} else {
 			return null;
