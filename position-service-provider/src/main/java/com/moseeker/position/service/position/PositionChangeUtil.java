@@ -302,7 +302,7 @@ public class PositionChangeUtil {
 		}
 		if(StringUtils.isNotNullOrEmpty(requirement)){
 			if(!requirement.contains("职位要求")){
-				descript.append("职位要求：\n"+requirement);
+				descript.append("\n职位要求：\n"+requirement);
 			}else{
 				descript.append(requirement);
 			}
