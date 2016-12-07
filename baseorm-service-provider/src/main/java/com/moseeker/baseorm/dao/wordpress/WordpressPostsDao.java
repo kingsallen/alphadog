@@ -37,6 +37,7 @@ public class WordpressPostsDao extends BaseDaoImpl<WordpressPostsRecord, Wordpre
 							.equal(WordpressTermRelationships.WORDPRESS_TERM_RELATIONSHIPS.OBJECT_ID))
 					.where(WordpressTermRelationships.WORDPRESS_TERM_RELATIONSHIPS.TERM_TAXONOMY_ID
 							.equal(ULong.valueOf(Constant.WORDPRESS_NEWSLETTER_VALUE)))
+					.and(WordpressPosts.WORDPRESS_POSTS.POST_STATUS.equal(Constant.WORDPRESS_POST_POSTSTATUS_PUBLISH))
 					.orderBy(WordpressPosts.WORDPRESS_POSTS.ID.desc())
 					.limit(1).fetchOne();
 			if(postRecord != null) {
