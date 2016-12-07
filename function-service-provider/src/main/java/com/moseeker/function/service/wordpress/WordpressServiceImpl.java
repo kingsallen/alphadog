@@ -35,13 +35,13 @@ public class WordpressServiceImpl {
 	 */
 	public NewsletterData getNewsletter(NewsletterForm newsletter) {
 		//
+		NewsletterData data = new NewsletterData();
 		try {
 			// todo 缺少其他平台的查询
 			/*WordpressTermRelationships relationships = wordpressDao
 					.getLastRelationships(Constant.WORDPRESS_NEWSLETTER_VALUE);*/
 			WordpressPosts post = wordpressDao.getReleaseVersionPost();
 			if (post != null && post.getId() > 0) {
-				NewsletterData data = new NewsletterData();
 				long readedPostId = wordpressDao.getReadedPostId(newsletter.getAccount_id());
 				//如果用户之前读的文章的编号小于最新文章编号，则表示用户未读过新版本
 				if(readedPostId < post.getId()) {
@@ -76,7 +76,7 @@ public class WordpressServiceImpl {
 		} finally {
 			// do nothing
 		}
-		return null;
+		return data;
 	}
 
 	/**
