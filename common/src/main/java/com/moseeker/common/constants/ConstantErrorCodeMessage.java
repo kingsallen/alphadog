@@ -6,7 +6,7 @@ public final class ConstantErrorCodeMessage {
     public static final String PROGRAM_EXHAUSTED = "{'status':-1,'message':'系统繁忙，请稍候再试!'}";
     public static final String PROGRAM_EXCEPTION = "{'status':99999 ,'message':'发生异常，请稍候再试!'}";
     public static final int PROGRAM_EXCEPTION_STATUS = 99999;
-
+    
     public static final String PROGRAM_DATA_EMPTY = "{'status':90010,'message':'请求数据为空！'}";
     public static final String PROGRAM_VALIDATE_REQUIRED = "{'status':90014,'message':'{0}是必填项！'}";
     public static final String PROGRAM_POST_FAILED = "{'status':90011,'message':'添加失败！'}";

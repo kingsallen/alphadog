@@ -15,6 +15,7 @@ import com.moseeker.baseorm.dao.hr.CompanyDao;
 import com.moseeker.baseorm.dao.hr.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hr.HRThirdPartyPositionDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
+import com.moseeker.baseorm.service.HrCompanyService;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -42,7 +43,8 @@ public class CompanyThriftService implements Iface {
 	
 	@Autowired
 	private CompanyDao companyDao;
-
+	@Autowired
+	private HrCompanyService hrCompanyService;
 	@Override
 	public ThirdPartAccountData getThirdPartyAccount(CommonQuery query) throws TException {
 		logger.info("getThirdPartyAccount");
@@ -148,5 +150,17 @@ public class CompanyThriftService implements Iface {
 
 	public void setCompanyDao(CompanyDao companyDao) {
 		this.companyDao = companyDao;
+	}
+    /*
+     * (non-Javadoc)
+     * @see com.moseeker.thrift.gen.dao.service.CompanyDao.Iface#getHrCompanyConfig(com.moseeker.thrift.gen.common.struct.CommonQuery)
+     * auth:zzt
+     * time:2016 12 7
+     * function:查询hrcompanyconf
+     */
+	@Override
+	public Response getHrCompanyConfig(CommonQuery query){
+		// TODO Auto-generated method stub
+		return hrCompanyService.getCompanyConf(query);
 	}
 }
