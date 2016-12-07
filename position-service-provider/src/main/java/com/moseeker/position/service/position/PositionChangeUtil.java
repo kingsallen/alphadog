@@ -64,7 +64,12 @@ public class PositionChangeUtil {
 		
 		setSalaryTop(form.getSalary_top(), positionDB.getSalary_top(), position);
 		setSalaryBottom(form.getSalary_bottom(), positionDB.getSalary_bottom(), position);
-		String description=convertDescription(positionDB.getAccountabilities(),positionDB.getRequirement());
+		String description="";
+		if(channelType.getValue()==1){
+			description=convertDescriptionFor51(positionDB.getAccountabilities(),positionDB.getRequirement());
+		}else{
+			description=convertDescription(positionDB.getAccountabilities(),positionDB.getRequirement());
+		}
 		position.setDescription(description);
 		position.setPosition_id(positionDB.getId());
 		position.setWork_place(form.getAddress());
@@ -286,5 +291,22 @@ public class PositionChangeUtil {
 		
 		return descript.toString();
 	}
-	
+	private static String convertDescriptionFor51(String accounTabilities,String requirement){
+		StringBuffer descript=new StringBuffer();
+		if(StringUtils.isNotNullOrEmpty(accounTabilities)){
+			if(!accounTabilities.contains("职位描述")){
+				descript.append("职位描述:\n"+accounTabilities);
+			}else{
+				descript.append(accounTabilities);
+			}
+		}
+		if(StringUtils.isNotNullOrEmpty(requirement)){
+			if(!requirement.contains("职位要求")){
+				descript.append("职位要求：\n"+requirement);
+			}else{
+				descript.append(requirement);
+			}
+		}
+		return descript.toString();
+	}
 }
