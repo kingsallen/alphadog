@@ -294,11 +294,7 @@ public class PositionChangeUtil {
 	private static String convertDescriptionFor51(String accounTabilities,String requirement){
 		StringBuffer descript=new StringBuffer();
 		if(StringUtils.isNotNullOrEmpty(accounTabilities)){
-			if(!accounTabilities.contains("职位描述")){
-				descript.append("职位描述:\n"+accounTabilities);
-			}else{
-				descript.append(accounTabilities);
-			}
+			descript.append(accounTabilities);
 		}
 		if(StringUtils.isNotNullOrEmpty(requirement)){
 			if(!requirement.contains("职位要求")){
