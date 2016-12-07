@@ -203,7 +203,6 @@ public class WordpressDaoThriftService implements Iface{
 		long postId = 0;
 		QueryUtil qu = new QueryUtil();
 		qu.addEqualFilter("user_id", String.valueOf(userId));
-		qu.addEqualFilter("post_status", "publish");
 		try {
 			WordpressUserPostRecord record = wordpressUserPostDao.getResource(qu);
 			if(record != null) {
