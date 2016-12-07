@@ -122,7 +122,6 @@ public class ConstantlyMailConsumer {
 				}
 			});
 		}
-		sendMail();
 		return redisMsg;
 	}
 
@@ -139,7 +138,9 @@ public class ConstantlyMailConsumer {
 		
 		new Thread(() -> {
 			try {
-				sendMail();
+				while(true) {
+					sendMail();
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				logger.error(e.getMessage(), e);
