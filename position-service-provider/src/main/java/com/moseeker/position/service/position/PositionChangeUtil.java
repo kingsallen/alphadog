@@ -282,7 +282,7 @@ public class PositionChangeUtil {
 			}else{
 				require.append("<p>  "+accounTabilities+"</p>");
 			}
-			if(requirement.contains("职位描述")){
+			if(requirement.contains("职位要求")){
 				descript.append(require.toString());
 			}else{
 				descript.append("<p>职位要求：</p>"+require.toString());
