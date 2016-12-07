@@ -42,6 +42,7 @@ service CompanyDao {
 	common_struct.Response updatePartyAccountByCompanyIdChannel(1: dao_struct.ThirdPartAccountData account);
 	//查找公司信息
 	company_struct.Hrcompany getCompany(1:common_struct.CommonQuery query);
+	common_struct.Response getHrCompanyConfig(1:common_struct.CommonQuery query);
 }
 
 service UserDao {

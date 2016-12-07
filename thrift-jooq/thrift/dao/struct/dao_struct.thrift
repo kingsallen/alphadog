@@ -61,3 +61,11 @@ struct ThirdPartyPositionData {
 	11: string address,
 	12: string sync_fail_reason
 }
+struct HRCompanyConfData{
+    1:i32 company_id,
+    2:i32 theme_id,
+    3:i32 hb_throttle,
+    4:string app_reply,
+    5:string job_custom_title,
+    6:string job_occupation
+}
