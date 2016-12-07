@@ -39,7 +39,9 @@ public class PositionSyncConsumer {
 	
 	public void startTask() {
 		new Thread(()-> {
-			task();
+			while(true) {
+				task();
+			}
 		}).start();
 	}
 	
@@ -56,7 +58,6 @@ public class PositionSyncConsumer {
 		} finally {
 			//do nothing
 		}
-		task();
 	}
 
 	/**

@@ -38,7 +38,9 @@ public class PositionRefreshConsumer {
 	
 	public void startTask() {
 		new Thread(()-> {
-			task();
+			while(true) {
+				task();
+			}
 		}).start();
 	}
 	
@@ -57,7 +59,6 @@ public class PositionRefreshConsumer {
 		} finally {
 			//do nothing
 		}
-		task();
 	}
 
 	/**
