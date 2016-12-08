@@ -21,18 +21,23 @@ import com.moseeker.db.dictdb.tables.DictPosition;
 import com.moseeker.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.db.dictdb.tables.records.DictIndustryRecord;
 import com.moseeker.db.dictdb.tables.records.DictPositionRecord;
+import com.moseeker.db.profiledb.tables.ProfileCompleteness;
 import com.moseeker.db.profiledb.tables.ProfileIntention;
 import com.moseeker.db.profiledb.tables.ProfileIntentionCity;
 import com.moseeker.db.profiledb.tables.ProfileIntentionIndustry;
 import com.moseeker.db.profiledb.tables.ProfileIntentionPosition;
 import com.moseeker.db.profiledb.tables.ProfileProfile;
+import com.moseeker.db.profiledb.tables.records.ProfileCompletenessRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileIntentionCityRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileIntentionPositionRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileIntentionRecord;
 import com.moseeker.profile.dao.IntentionDao;
+import com.moseeker.profile.service.impl.serviceutils.CompletenessCalculator;
 
 @Repository
 public class IntentionDaoImpl extends BaseDaoImpl<ProfileIntentionRecord, ProfileIntention> implements IntentionDao {
+	
+	private CompletenessCalculator completenessCalculator = new CompletenessCalculator();
 
 	@Override
 	protected void initJOOQEntity() {
@@ -101,6 +106,12 @@ public class IntentionDaoImpl extends BaseDaoImpl<ProfileIntentionRecord, Profil
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn)) {
 			if (intentionRecords != null && intentionRecords.size() > 0) {
 				
+				ProfileCompletenessRecord completenessRecord = create.selectFrom(ProfileCompleteness.PROFILE_COMPLETENESS).where(ProfileCompleteness.PROFILE_COMPLETENESS.PROFILE_ID.equal(intentionRecords.get(0).getProfileId())).fetchOne();
+				if(completenessRecord == null) {
+					completenessRecord = new ProfileCompletenessRecord();
+					completenessRecord.setProfileId(intentionRecords.get(0).getProfileId());
+				}
+				
 				Result<DictCityRecord> cities = create.selectFrom(DictCity.DICT_CITY).fetch();
 				Result<DictPositionRecord> positions = create.selectFrom(DictPosition.DICT_POSITION).fetch();
 				Result<DictIndustryRecord> industries = create.selectFrom(DictIndustry.DICT_INDUSTRY).fetch();
@@ -159,6 +170,9 @@ public class IntentionDaoImpl extends BaseDaoImpl<ProfileIntentionRecord, Profil
 						});
 					}
 				});
+				int intentionCompleteness = completenessCalculator.calculateIntentions(intentionRecords,
+						intentionCityRecords, intentionPositionRecords);
+				completenessRecord.setProfileIntention(intentionCompleteness);
 			}
 
 		} catch (Exception e) {

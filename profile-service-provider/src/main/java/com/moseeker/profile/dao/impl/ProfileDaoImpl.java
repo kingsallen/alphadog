@@ -782,6 +782,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 					completenessRecord.setProfileSkill(skillCompleteness);
 				}
 				if (workexpRecords != null && workexpRecords.size() > 0) {
+					List<HrCompanyRecord> companies = new ArrayList<>();
 					workexpRecords.forEach(workexp -> {
 						workexp.setProfileId(profileRecord.getId());
 						workexp.setCreateTime(now);
@@ -792,11 +793,13 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 									.fetchOne();
 							if (hc != null) {
 								workexp.setCompanyId(hc.getId());
+								companies.add(hc);
 							} else {
 								HrCompanyRecord newCompany = workexp.getCompany();
 								create.attach(newCompany);
 								newCompany.insert();
 								workexp.setCompanyId(newCompany.getId());
+								companies.add(newCompany);
 							}
 						}
 						if (!StringUtils.isNullOrEmpty(workexp.getIndustryName())) {
@@ -827,7 +830,8 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						create.attach(workexp);
 						workexp.insert();
 					});
-					int workExpCompleteness = completenessCalculator.calculateWorks(worksRecords);
+					int workExpCompleteness = completenessCalculator.calculateProfileWorkexps(workexpRecords,
+							companies);
 					completenessRecord.setProfileWorkexp(workExpCompleteness);
 				}
 

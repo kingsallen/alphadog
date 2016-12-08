@@ -467,13 +467,14 @@ public class WholeProfileService {
 		if(workexpRecords != null && workexpRecords.size() > 0) {
 			workExpDao.delWorkExpsByProfileId(profileId);
 			try {
-				List<ProfileWorkexpRecord> records = new ArrayList<>();
+				List<ProfileWorkexpEntity> records = new ArrayList<>();
 				
 				workexpRecords.forEach(skill -> {
 					skill.setProfileId(UInteger.valueOf(profileId));
 					records.add(skill);
 				});
-				workExpDao.postResources(records);
+				workExpDao.postWordExps(records);
+				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -583,7 +584,8 @@ public class WholeProfileService {
 				educationRecords.forEach(education ->{
 					education.setProfileId(UInteger.valueOf(profileId));
 				});
-				educationDao.postResources(educationRecords);
+				
+				educationDao.saveEducations(educationRecords);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
