@@ -102,7 +102,9 @@ public class CompanyController {
 	@RequestMapping(value = "/company/{id}/thirdpartyaccount", method = RequestMethod.GET)
 	@ResponseBody
 	public String synchronizeThirdpartyAccount(@PathVariable int id, HttpServletRequest request, HttpServletResponse response) {
+		long startTime= System.currentTimeMillis();
 		try {
+			
 			HashMap<String, Object> map = ParamUtils.parseRequestParam(request);
 			byte channel = 0;
 			if(map.get("channel") != null) {
@@ -113,10 +115,15 @@ public class CompanyController {
 				}
 			}
 			Response result = companyServices.synchronizeThirdpartyAccount(id, channel);
+			
+			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseLogNotification.fail(request, e.getMessage());
+		}finally{
+			long allUseTime=System.currentTimeMillis()-startTime;
+			logger.info("refresh thirdParyAccount in controller Use time==========================="+allUseTime); 
 		}
 	}
 }
