@@ -166,12 +166,16 @@ public class CompanyService extends JOOQBaseServiceImpl<Hrcompany, HrCompanyReco
 	 * @return
 	 */
 	public Response synchronizeThirdpartyAccount(int id, byte channel) {
+		long startMethodTime=System.currentTimeMillis();
 		//查找第三方帐号
 		QueryUtil qu = new QueryUtil();
 		qu.addEqualFilter("company_id", String.valueOf(id));
 		qu.addEqualFilter("channel", String.valueOf(channel));
 		try {
+			long startGetAccountData=System.currentTimeMillis();
 			ThirdPartAccountData data = companyDao.getThirdPartyAccount(qu);
+			long getAccountUseTime=System.currentTimeMillis()-startGetAccountData;
+			logger.info("ThirdPartAccountData in CompanyService use  time========== "+getAccountUseTime); 
 			//如果是绑定状态，则进行
 			//判断是否已经判定第三方帐号
 			if(data.getId() > 0 && data.getBinding() == BindingStatus.BOUND.getValue()) {
@@ -181,7 +185,10 @@ public class CompanyService extends JOOQBaseServiceImpl<Hrcompany, HrCompanyReco
 				thirdPartyAccount.setUsername(data.getUsername());
 				thirdPartyAccount.setPassword(data.getPassword());
 				//获取剩余点数
+				long startRemindTime=System.currentTimeMillis();
 				ThirdPartyAccountStruct synchronizeResult = chaosService.synchronization(thirdPartyAccount);
+				long getRemindUseTime=System.currentTimeMillis()-startRemindTime;
+				logger.info("get reminds in CompanyService Use time============== "+getRemindUseTime); 
 				if(synchronizeResult != null && synchronizeResult.getStatus() == 0) {
 					BindAccountStruct  thirdPartyAccount1 = new BindAccountStruct();
 					thirdPartyAccount1.setBinding(1);
@@ -192,7 +199,10 @@ public class CompanyService extends JOOQBaseServiceImpl<Hrcompany, HrCompanyReco
 					thirdPartyAccount1.setUsername(data.getUsername());
 					thirdPartyAccount1.setRemainNum(synchronizeResult.getRemainNum());
 					//更新第三方帐号信息
+					long startUpdateTime=System.currentTimeMillis();
 					Response response = hraccountDao.upsertThirdPartyAccount(thirdPartyAccount1);
+					long updateUseTime=System.currentTimeMillis() -startUpdateTime;
+					logger.info("update ThirdPartyAccount in CompanyService use time"+updateUseTime); 
 					if(response.getStatus() == 0) {
 						HashMap<String, Object> result = new HashMap<>();
 						result.put("remain_num", synchronizeResult.getRemainNum());
@@ -213,6 +223,8 @@ public class CompanyService extends JOOQBaseServiceImpl<Hrcompany, HrCompanyReco
 			return ResultMessage.PROGRAM_EXCEPTION.toResponse();
 		} finally {
 			//do nothing
+			long methodUseTime=System.currentTimeMillis()-startMethodTime;
+			logger.info("synchronizeThirdpartyAccount method in CompanyService use time ============"+methodUseTime); 
 		}
 	}
 
