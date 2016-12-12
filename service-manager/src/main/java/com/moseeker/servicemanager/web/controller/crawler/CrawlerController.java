@@ -68,9 +68,11 @@ public class CrawlerController {
 				return ResponseLogNotification.fail(request, result);
 			}
 		} catch (ConnectException e) {
+			logger.error(e.getMessage(), e);
 			return ResponseLogNotification.fail(request,
 					ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_SERVICE_TIMEOUT));
 		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
 			return ResponseLogNotification.fail(request, e.getMessage());
 		} finally {
 			// do nothing
