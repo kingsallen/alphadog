@@ -123,7 +123,7 @@ public class MultiTServerThread extends Thread {
 	 */
 	public void stopServer() {
 		server.stop();
-		LOGGER.info("Server is stop!");
+		LOGGER.info("MultiTServerThread Server stopServer!");
 	}
 
 	/**
