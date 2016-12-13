@@ -29,7 +29,7 @@ import com.moseeker.rpccenter.server.thrift.ThriftMultiServer;
 public class MuitilRegServerConfig implements IConfigCheck {
 
     /** LOGGER */
-    final Logger LOGGER = LoggerFactory.getLogger(ServerConfig.class);
+    final Logger LOGGER = LoggerFactory.getLogger(MuitilRegServerConfig.class);
 
     /** 服务名 */
     private String name;
