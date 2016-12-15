@@ -302,4 +302,13 @@ public class UseraccountsServiceImpl implements Iface {
 		// TODO Auto-generated method stub
 		return service.ifExistProfile(mobile);
 	}
+
+	/* 
+	 *	百度账号合并 
+	 */
+	@Override
+	public Response postuserbdbindmobile(int appid, String userid, String mobile)
+			throws TException {
+		return service.postuserbdbindmobile(appid, userid, mobile);
+	}
 }

@@ -203,6 +203,29 @@ public class UseraccountsController {
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}
+	
+	@RequestMapping(value = "/user/bdbindmobile", method = RequestMethod.POST)
+	@ResponseBody
+	public String postuserbdbindmobile(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			// GET方法 通用参数解析并赋值
+			Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
+			String userid = BeanUtils.converToString(reqParams.get("userid"));
+			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
+			Integer appid = BeanUtils.converToInteger(reqParams.get("appid"));
+
+			Response result = useraccountsServices.postuserbdbindmobile(appid, userid, mobile);
+			if (result.getStatus() == 0) {
+				profileService.reCalculateUserCompleteness(0, mobile);
+				return ResponseLogNotification.success(request, result);
+			} else {
+				return ResponseLogNotification.fail(request, result);
+			}
+
+		} catch (Exception e) {
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
 
 	@RequestMapping(value = "/user/changepassword", method = RequestMethod.POST)
 	@ResponseBody
