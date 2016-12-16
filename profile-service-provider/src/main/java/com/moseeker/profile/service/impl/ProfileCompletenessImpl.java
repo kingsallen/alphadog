@@ -2,6 +2,7 @@ package com.moseeker.profile.service.impl;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.jooq.types.UByte;
@@ -148,7 +149,19 @@ public class ProfileCompletenessImpl {
 		}
 		return totalComplementness;
 	}
-	
+	public int getCompleteness1(int userId, String uuid, int profileId) {
+		int totalComplementness=0;
+		ProfileProfileRecord profileRecord = profileDao.getProfileByIdOrUserIdOrUUID(userId, profileId, uuid);
+		if (profileRecord == null) {
+			return calculateUserUserByUserId(userId);
+		}
+		try {
+			totalComplementness = reCalculateProfileCompleteness(profileRecord.getId().intValue());
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		return totalComplementness;
+	}	
 	public int reCalculateProfileBasic(int profileId) {
 		int result = 0;
 		ProfileCompletenessRecord completenessRecord = completenessDao.getCompletenessByProfileId(profileId);
@@ -160,15 +173,22 @@ public class ProfileCompletenessImpl {
 			qu.addEqualFilter("profile_id", String.valueOf(profileId));
 			try {
 				ProfileBasicRecord record = basicDao.getResource(qu);
-				
-				int basicCompleteness = completenessCalculator.calculateProfileBasic(record);
-				if(basicCompleteness != completenessRecord.getProfileBasic()) {
-					completenessRecord.setProfileBasic(basicCompleteness);
-					result = completenessDao.updateCompleteness(completenessRecord);
-					reCalculateProfileCompleteness(completenessRecord);
-				} else {
-					result = 1;
+				ProfileProfileRecord profileRecord = profileDao.getProfileByIdOrUserIdOrUUID(0, profileId, null);
+				if(profileRecord!=null){
+					UserUserRecord userRecord = userDao.getUserById(profileRecord.getUserId().intValue());
+					if(userRecord!=null){
+						int basicCompleteness = completenessCalculator.calculateProfileBasic(record,userRecord.getMobile());
+						if(basicCompleteness != completenessRecord.getProfileBasic()) {
+							completenessRecord.setProfileBasic(basicCompleteness);
+							result = completenessDao.updateCompleteness(completenessRecord);
+							reCalculateProfileCompleteness(completenessRecord);
+						} else {
+							result = 1;
+						}
+					}
+					
 				}
+				
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
@@ -317,7 +337,14 @@ public class ProfileCompletenessImpl {
 				
 				List<ProfileWorkexpRecord> workExps = null;
 				List<HrCompanyRecord> companies = null;
+				
 				try {
+					List<ProfileEducationRecord> educations =educationDao.getResources(qu);
+					ProfileBasicRecord basicRecord = basicDao.getResource(qu);
+					Date birth=null;
+					if(basicRecord!=null){
+						birth=basicRecord.getBirth();
+					}
 					workExps = workExpDao.getResources(qu);
 					List<Integer> companyIds = new ArrayList<>();
 					if (workExps != null && workExps.size() > 0) {
@@ -328,7 +355,8 @@ public class ProfileCompletenessImpl {
 						});
 					}
 					companies = companyDao.getCompaniesByIds(companyIds);
-					int workExpCompleteness = completenessCalculator.calculateProfileWorkexps(workExps, companies);
+//					int workExpCompleteness = completenessCalculator.calculateProfileWorkexps(workExps, companies);
+					int workExpCompleteness = completenessCalculator.calculateProfileWorkexps(workExps, educations,birth);
 					if(workExpCompleteness != completenessRecord.getProfileWorkexp()) {
 						completenessRecord.setProfileWorkexp(workExpCompleteness);
 						result = completenessDao.updateCompleteness(completenessRecord);
@@ -428,8 +456,10 @@ public class ProfileCompletenessImpl {
 			QueryUtil qu = new QueryUtil();
 			qu.addEqualFilter("profile_id", String.valueOf(profileId));
 			try {
+				//传参加入工作经历
+				List<ProfileWorkexpRecord> workExps=workExpDao.getResources(qu);
 				List<ProfileProjectexpRecord> ProjectExpRecords = projectExpDao.getResources(qu);
-				int projectExpCompleteness = completenessCalculator.calculateProjectexps(ProjectExpRecords);
+				int projectExpCompleteness = completenessCalculator.calculateProjectexps(ProjectExpRecords,workExps);
 				if(projectExpCompleteness != completenessRecord.getProfileProjectexp().intValue()) {
 					completenessRecord.setProfileProjectexp(projectExpCompleteness);
 					result = completenessDao.updateCompleteness(completenessRecord);
@@ -706,17 +736,29 @@ public class ProfileCompletenessImpl {
 
 			QueryUtil qu = new QueryUtil();
 			qu.addEqualFilter("profile_id", String.valueOf(profileId));
-
+			Date birth=null;
 			ProfileBasicRecord basicRecord = null;
 			try {
 				basicRecord = basicDao.getResource(qu);
-				int basicCompleteness = completenessCalculator.calculateProfileBasic(basicRecord);
+				int basicCompleteness = completenessCalculator.calculateProfileBasic(basicRecord,userRecord.getMobile());
 				completenessRecord.setProfileBasic(basicCompleteness);
 				completeness += basicCompleteness;
+				if(basicRecord!=null){
+					birth=basicRecord.getBirth();
+				}
+				
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
-
+			List<ProfileEducationRecord> educations = null;
+			try {
+				educations = educationDao.getResources(qu);
+				int educationCompleteness = completenessCalculator.calculateProfileEducations(educations);
+				completenessRecord.setProfileEducation(educationCompleteness);
+				completeness += educationCompleteness;
+			} catch (Exception e1) {
+				logger.error(e1.getMessage(), e1);
+			}
 			List<ProfileWorkexpRecord> workExps = null;
 			List<HrCompanyRecord> companies = null;
 			try {
@@ -730,22 +772,15 @@ public class ProfileCompletenessImpl {
 					});
 				}
 				companies = companyDao.getCompaniesByIds(companyIds);
-				int workExpCompleteness = completenessCalculator.calculateProfileWorkexps(workExps, companies);
+//				int workExpCompleteness = completenessCalculator.calculateProfileWorkexps(workExps, companies);
+				int workExpCompleteness = completenessCalculator.calculateProfileWorkexps(workExps,educations,birth);
 				completenessRecord.setProfileWorkexp(workExpCompleteness);
 				completeness += workExpCompleteness;
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
 			
-			List<ProfileEducationRecord> educations = null;
-			try {
-				educations = educationDao.getResources(qu);
-				int educationCompleteness = completenessCalculator.calculateProfileEducations(educations);
-				completenessRecord.setProfileEducation(educationCompleteness);
-				completeness += educationCompleteness;
-			} catch (Exception e1) {
-				logger.error(e1.getMessage(), e1);
-			}
+			
 			
 			List<ProfileProjectexpRecord> projectExps = null;
 			try {
@@ -753,7 +788,7 @@ public class ProfileCompletenessImpl {
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
-			int projectExpCompleteness = completenessCalculator.calculateProjectexps(projectExps);
+			int projectExpCompleteness = completenessCalculator.calculateProjectexps(projectExps,workExps);
 			completenessRecord.setProfileProjectexp(projectExpCompleteness);
 			completeness += projectExpCompleteness;
 
