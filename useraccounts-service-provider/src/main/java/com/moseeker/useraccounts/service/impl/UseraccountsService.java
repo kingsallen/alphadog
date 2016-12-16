@@ -47,6 +47,7 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
+import com.moseeker.thrift.gen.useraccounts.struct.BindType;
 import com.moseeker.thrift.gen.useraccounts.struct.User;
 import com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition;
 import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
@@ -312,6 +313,7 @@ public class UseraccountsService {
 	 * 否则unionid和mobile分别存在2条记录里面， 需要做合并。 如果unionid或者手机号均没有， 应该在之前先注册.
 	 * code验证码可选.
 	 */
+	@Deprecated
 	public Response postuserwxbindmobile(int appid, String unionid, String code, String mobile) throws TException {
 		try {
 			return bindOnAccount.get("bindWxAccount").handler(appid, unionid, mobile);
@@ -328,9 +330,21 @@ public class UseraccountsService {
 	 * 绑定用户的手机号和userid， 如果在一条记录里都有，提示已经绑定成功， 如果在一条记录里有部分，userid 或者 mobile， 补全。
 	 * 否则userid和mobile分别存在2条记录里面， 需要做合并。 如果userid或者手机号均没有， 应该在之前先注册.
 	 */
+	@Deprecated
 	public Response postuserbdbindmobile(int appid, String userid, String mobile) throws TException {
 		try {
 			return bindOnAccount.get("bindBaiduAccount").handler(appid, userid, mobile);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		} finally {
+			// do nothing
+		}
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+	}
+	
+	public Response postuserbindmobile(int appid, String unionid, String code, String mobile, BindType bindType) throws TException {
+		try {
+			return bindOnAccount.get(String.valueOf(bindType).toLowerCase()).handler(appid, unionid, mobile);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		} finally {

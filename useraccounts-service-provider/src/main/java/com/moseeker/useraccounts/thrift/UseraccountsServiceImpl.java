@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Iface;
+import com.moseeker.thrift.gen.useraccounts.struct.BindType;
 import com.moseeker.thrift.gen.useraccounts.struct.User;
 import com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition;
 import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
@@ -303,12 +304,9 @@ public class UseraccountsServiceImpl implements Iface {
 		return service.ifExistProfile(mobile);
 	}
 
-	/* 
-	 *	百度账号合并 
-	 */
 	@Override
-	public Response postuserbdbindmobile(int appid, String userid, String mobile)
-			throws TException {
-		return service.postuserbdbindmobile(appid, userid, mobile);
+	public Response postuserbindmobile(int appid, String unionid, String code,
+			String mobile, BindType bindType) throws TException {
+		return service.postuserbindmobile(appid, unionid, code, mobile, bindType);
 	}
 }

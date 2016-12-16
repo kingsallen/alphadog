@@ -6,12 +6,17 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.asm.Type;
+import com.google.common.base.FinalizablePhantomReference;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.db.userdb.tables.records.UserBdUserRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.useraccounts.struct.BindType;
 import com.moseeker.useraccounts.dao.impl.UserBdUserDaoImpl;
 import com.moseeker.useraccounts.service.BindOnAccountService;
 
@@ -21,7 +26,7 @@ import com.moseeker.useraccounts.service.BindOnAccountService;
  *
  * 2016年12月14日
  */
-@Service("bindBaiduAccount")
+@Service("baidu")
 public class BindBaiduAccountService extends BindOnAccountService{
 	
 	private static final Logger logger = LoggerFactory.getLogger(BindBaiduAccountService.class);

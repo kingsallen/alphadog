@@ -17,11 +17,14 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.util.Params;
+import com.moseeker.thrift.gen.apps.profilebs.service.ProfileBS;
+import com.moseeker.thrift.gen.apps.userbs.service.UserBS;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import com.moseeker.thrift.gen.useraccounts.service.UsersettingServices;
+import com.moseeker.thrift.gen.useraccounts.struct.BindType;
 import com.moseeker.thrift.gen.useraccounts.struct.User;
 import com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition;
 import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
@@ -38,6 +41,8 @@ public class UseraccountsController {
 	UsersettingServices.Iface usersettingServices = ServiceManager.SERVICEMANAGER
 			.getService(UsersettingServices.Iface.class);
 	ProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER.getService(ProfileServices.Iface.class);
+	
+	UserBS.Iface userBS = ServiceManager.SERVICEMANAGER.getService(UserBS.Iface.class);
 
 	/**
 	 * 获取用户数据
@@ -191,9 +196,8 @@ public class UseraccountsController {
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 			Integer appid = BeanUtils.converToInteger(reqParams.get("appid"));
 
-			Response result = useraccountsServices.postuserwxbindmobile(appid, unionid, code, mobile);
+			Response result = userBS.bindOnAccount(appid, unionid, code, mobile, BindType.WECHAT);
 			if (result.getStatus() == 0) {
-				profileService.reCalculateUserCompleteness(0, mobile);
 				return ResponseLogNotification.success(request, result);
 			} else {
 				return ResponseLogNotification.fail(request, result);
@@ -214,9 +218,8 @@ public class UseraccountsController {
 			String mobile = BeanUtils.converToString(reqParams.get("mobile"));
 			Integer appid = BeanUtils.converToInteger(reqParams.get("appid"));
 
-			Response result = useraccountsServices.postuserbdbindmobile(appid, userid, mobile);
+			Response result = userBS.bindOnAccount(appid, userid, null, mobile, BindType.BAIDU);
 			if (result.getStatus() == 0) {
-				profileService.reCalculateUserCompleteness(0, mobile);
 				return ResponseLogNotification.success(request, result);
 			} else {
 				return ResponseLogNotification.fail(request, result);

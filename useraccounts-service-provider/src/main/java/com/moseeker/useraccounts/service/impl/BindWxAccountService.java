@@ -18,7 +18,7 @@ import com.moseeker.useraccounts.service.BindOnAccountService;
  *
  * 2016年12月14日
  */
-@Service("bindWxAccount")
+@Service("wechat")
 public class BindWxAccountService extends BindOnAccountService{
 	
 	private static final Logger logger = LoggerFactory.getLogger(BindWxAccountService.class);
