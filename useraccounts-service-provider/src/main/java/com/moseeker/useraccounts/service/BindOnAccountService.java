@@ -2,6 +2,10 @@ package com.moseeker.useraccounts.service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +34,8 @@ import com.moseeker.useraccounts.dao.UsersettingDao;
 public abstract class BindOnAccountService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(BindOnAccountService.class);
+	
+	protected ExecutorService taskPool = new ThreadPoolExecutor(5, 10, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 	
 	@Autowired
 	protected UserDao userdao;
@@ -74,7 +80,7 @@ public abstract class BindOnAccountService {
 					return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
 				}
 			} else if (userUnionid == null && userMobile != null) {
-				if(StringUtils.isNotNullOrEmpty(userMobile.getUnionid())) {
+				if(volidationBind(userMobile)) {
 					return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_BIND_REPEATBIND);
 				}
 				userMobile.setUnionid(unionid);
@@ -88,7 +94,7 @@ public abstract class BindOnAccountService {
 			} else if (userUnionid != null && userMobile != null
 					&& userUnionid.getId().intValue() != userMobile.getId().intValue()) {
 				// 2 accounts, one unoinid, one mobile, need to merge.
-				if (StringUtils.isNotNullOrEmpty(userMobile.getUnionid())) {
+				if (volidationBind(userMobile)) {
 					return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_BIND_REPEATBIND);
 				}
 				combineAccount(appid, userMobile, userUnionid);
@@ -284,4 +290,9 @@ public abstract class BindOnAccountService {
 	 * @param dest
 	 */
 	protected abstract void doSomthing(int orig, int dest);
+	
+	/**
+	 * 判断是否绑定过第三方账号
+	 */
+	protected abstract boolean volidationBind(UserUserRecord user);
 }
