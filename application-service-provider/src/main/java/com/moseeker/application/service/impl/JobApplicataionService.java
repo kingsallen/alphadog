@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.application.dao.HrCompanyConfDao;
-import com.moseeker.application.dao.HrOperationRecordDao;
 import com.moseeker.application.dao.JobApplicationDao;
 import com.moseeker.application.dao.JobPositionDao;
 import com.moseeker.application.dao.JobResumeOtherDao;
@@ -68,9 +67,6 @@ public class JobApplicataionService {
     private HrCompanyConfDao hrCompanyConfDao;
 
     @Autowired
-    private HrOperationRecordDao hrOperationRecordDao;
-
-    @Autowired
     private UserUserDao userUserDao;
     
     /**
@@ -79,14 +75,10 @@ public class JobApplicataionService {
      * @return 新创建的申请记录ID
      * @throws TException
      */
-    @CounterIface
+    @SuppressWarnings("serial")
+	@CounterIface
     public Response postApplication(JobApplication jobApplication) throws TException {
         try {
-            // 申请验证
-            Response response = validateJobApplication(jobApplication);
-            if (response.status > 0){
-                return response;
-            }
 
             // 获取该申请的职位
             JobPositionRecord jobPositionRecord = jobPositionDao.getPositionById((int)jobApplication.position_id);
@@ -133,15 +125,65 @@ public class JobApplicataionService {
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
     }
+    
+    @SuppressWarnings("serial")
+	public Response postApplicationIfNotApply(JobApplication jobApplication) {
+    	 try {
 
+             // 获取该申请的职位
+             JobPositionRecord jobPositionRecord = jobPositionDao.getPositionById((int)jobApplication.position_id);
 
+             // 职位有效性验证
+             Response responseJob = validateJobPosition(jobPositionRecord);
+             if (responseJob.status > 0){
+                 return responseJob;
+             }
+
+             // 初始化参数
+             initJobApplication(jobApplication, jobPositionRecord);
+
+             // 添加申请
+             JobApplicationRecord jobApplicationRecord = (JobApplicationRecord)BeanUtils.structToDB(jobApplication,
+                     JobApplicationRecord.class);
+
+             if(jobApplicationRecord.getWechatId() == null) {
+                 jobApplicationRecord.setWechatId(UInteger.valueOf(0));
+             }
+
+             int jobApplicationId = jobApplicationDao.saveApplicationIfNotExist(jobApplicationRecord, jobPositionRecord);
+             if (jobApplicationId > 0) {
+
+                 // proxy 0: 正常投递, 1: 代理投递, null:默认为0
+                 // 代理投递不能增加用户的申请限制次数
+                 if(jobApplicationRecord.getProxy() == null || jobApplicationRecord.getProxy() == 0){
+                     // 添加该人该公司的申请次数
+                     addApplicationCountAtCompany(jobApplication);
+                 }
+
+                 return ResponseUtils.success(new HashMap<String, Object>(){
+                         {
+                             put("jobApplicationId", jobApplicationId);
+                         }
+                     }
+                 ); // 返回 jobApplicationId
+             }
+         } catch (Exception e) {
+             // TODO Auto-generated catch block
+             logger.error("postResources JobApplication error: ", e);
+         } finally {
+             //do nothing
+         }
+         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+	}
+    
     /**
      * 更新申请数据
      *
      * @param jobApplication 用户实体
      *
      * */
-    @CounterIface
+    @SuppressWarnings("serial")
+	@CounterIface
     public Response putApplication(JobApplication jobApplication) throws TException {
         try {
 

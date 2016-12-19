@@ -262,8 +262,7 @@ public class UseraccountsServiceImpl implements Iface {
 	}
 
 	@Override
-	public Response cerateQrcode(int wechatId, long sceneId, int expireSeconds,
-			int action_name) throws TException {
+	public Response cerateQrcode(int wechatId, long sceneId, int expireSeconds, int action_name) throws TException {
 		return service.cerateQrcode(wechatId, sceneId, expireSeconds, action_name);
 	}
 
@@ -277,9 +276,22 @@ public class UseraccountsServiceImpl implements Iface {
 		return service.getScanResult(wechatId, sceneId);
 	}
 
-	@Override
-	public Response setScanResult(int wechatId, long sceneId, String value)
-			throws TException {
+	public Response setScanResult(int wechatId, long sceneId, String value) throws TException {
 		return service.setScanResult(wechatId, sceneId, value);
+	}
+
+	@Override
+	public User ifExistUser(String mobile) throws TException {
+		return service.ifExistUser(mobile);
+	}
+
+	@Override
+	public int createRetrieveProfileUser(User user) throws TException {
+		return service.createRetrieveProfileUser(user);
+	}
+
+	@Override
+	public boolean ifExistProfile(String mobile) throws TException {
+		return service.ifExistProfile(mobile);
 	}
 }

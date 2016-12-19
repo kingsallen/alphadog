@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService.Iface;
+import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.DownloadReport;
 import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
 import com.moseeker.useraccounts.service.impl.UserHrAccountService;
@@ -62,4 +63,9 @@ public class UserHrAccountServiceImpl implements Iface {
         return service.putResource(userHrAccount);
     }
 
+	@Override
+	public Response bind(BindAccountStruct account) throws TException {
+		
+		return service.bindThirdAccount(account);
+	}
 }

@@ -206,6 +206,7 @@ public class ZkServerRegistry implements IRegistry {
     }
 
     public void unregister() {
+    	LOGGER.error("-----ZkServerRegistry unregister-----");
         zookeeper.close();
     }
 

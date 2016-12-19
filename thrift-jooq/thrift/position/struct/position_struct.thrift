@@ -57,5 +57,53 @@ struct Position {
     46: optional i32 underlings,
     47: optional byte language_required,
     48: optional i32 target_industry,
-    49: optional i32 current_status
+    49: optional i32 current_status,
+    50: optional map<i32, string> cities
+}
+/*
+	第三方自定义职能
+*/
+struct JobOccupationCustom{
+  1: optional i32 id ,
+  2: optional string name
+}
+
+/*
+ * 第三方渠道职位，用于职位同步。
+ */
+struct ThirdPartyPositionForSynchronization {
+    1: string title,
+    2: string category_main_code,
+    3: string category_main,
+    4: string category_sub_code,
+    5: string category_sub,
+    6: string quantity,
+    7: string degree_code,
+    8: string degree,
+    9: string experience_code,
+    10: string experience,
+    11: string salary_low,
+    12: string salary_high,
+    13: string description,
+    14: string pub_place_code,
+    15: i32 position_id,
+    16: string work_place,
+    17: string email,
+    18: string stop_date,
+    19: i32 channel,
+    20: string type_code,
+    21: string job_id,
+    22: string pub_place_name
+}
+
+/*
+ *
+ */
+struct ThirdPartyPositionForSynchronizationWithAccount {
+    1: string user_name,
+    2: string password,
+    3: string member_name,
+    4: string position_id,
+    5: string channel,
+    6: ThirdPartyPositionForSynchronization position_info
 }

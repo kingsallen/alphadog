@@ -67,6 +67,11 @@ public class TMultiServicePoolFactory<T> extends BaseKeyedPoolableObjectFactory<
             }
         }
         LOGGER.error("Not find a vilid server!");
+        if(path != null) {
+        	LOGGER.error(path.getData().toString());
+	    } else {
+	       	 LOGGER.error("path is null");
+	    }
         throw new RpcException("Not find a vilid server!");
     }
 

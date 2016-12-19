@@ -8,6 +8,8 @@ import com.moseeker.db.jobdb.tables.JobApplication;
 import com.moseeker.db.jobdb.tables.JobApplicationConf;
 import com.moseeker.db.jobdb.tables.JobApplicationStatusBeisen;
 import com.moseeker.db.jobdb.tables.JobCustom;
+import com.moseeker.db.jobdb.tables.JobOccupation;
+import com.moseeker.db.jobdb.tables.JobOccupationRel;
 import com.moseeker.db.jobdb.tables.JobPosition;
 import com.moseeker.db.jobdb.tables.JobPositionCity;
 import com.moseeker.db.jobdb.tables.JobPositionExt;
@@ -38,7 +40,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Jobdb extends SchemaImpl {
 
-	private static final long serialVersionUID = 1177618633;
+	private static final long serialVersionUID = -1654592975;
 
 	/**
 	 * The reference instance of <code>jobdb</code>
@@ -65,6 +67,8 @@ public class Jobdb extends SchemaImpl {
 			JobApplicationConf.JOB_APPLICATION_CONF,
 			JobApplicationStatusBeisen.JOB_APPLICATION_STATUS_BEISEN,
 			JobCustom.JOB_CUSTOM,
+			JobOccupation.JOB_OCCUPATION,
+			JobOccupationRel.JOB_OCCUPATION_REL,
 			JobPosition.JOB_POSITION,
 			JobPositionCity.JOB_POSITION_CITY,
 			JobPositionExt.JOB_POSITION_EXT,

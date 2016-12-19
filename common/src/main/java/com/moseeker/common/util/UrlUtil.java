@@ -10,6 +10,8 @@ import java.net.URLConnection;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.LoggerFactory;
+
 public class UrlUtil {
 	
 	public static String sendGet(String url, String param) {
@@ -43,6 +45,7 @@ public class UrlUtil {
         } catch (Exception e) {
             System.out.println("发送GET请求出现异常！" + e);
             e.printStackTrace();
+            LoggerFactory.getLogger(UrlUtil.class).error(e.getMessage(), e);
         }
         // 使用finally块来关闭输入流
         finally {
@@ -89,6 +92,7 @@ public class UrlUtil {
                 result += line;
             }
         } catch (Exception e) {
+        	LoggerFactory.getLogger(UrlUtil.class).error(e.getMessage(), e);
         	throw new ConnectException();
         }
         //使用finally块来关闭输出流、输入流
@@ -140,6 +144,7 @@ public class UrlUtil {
                 result += line;
             }
         } catch (Exception e) {
+        	LoggerFactory.getLogger(UrlUtil.class).error(e.getMessage(), e);
         	throw new ConnectException();
         }
         //使用finally块来关闭输出流、输入流

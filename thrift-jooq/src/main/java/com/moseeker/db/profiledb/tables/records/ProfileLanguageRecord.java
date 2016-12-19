@@ -32,7 +32,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileLanguageRecord extends UpdatableRecordImpl<ProfileLanguageRecord> implements Record6<UInteger, UInteger, String, UByte, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = -1702311516;
+	private static final long serialVersionUID = -2129194400;
 
 	/**
 	 * Setter for <code>profiledb.profile_language.id</code>. 主key
@@ -77,14 +77,14 @@ public class ProfileLanguageRecord extends UpdatableRecordImpl<ProfileLanguageRe
 	}
 
 	/**
-	 * Setter for <code>profiledb.profile_language.level</code>. 掌握程度 0:未选择 1: 初级（入门）, 2:中级（日常会话）,3:中高级（商务会话）,4:高级（无障碍商务沟通）
+	 * Setter for <code>profiledb.profile_language.level</code>. 掌握程度, dict_constant.parent_code:3108
 	 */
 	public void setLevel(UByte value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>profiledb.profile_language.level</code>. 掌握程度 0:未选择 1: 初级（入门）, 2:中级（日常会话）,3:中高级（商务会话）,4:高级（无障碍商务沟通）
+	 * Getter for <code>profiledb.profile_language.level</code>. 掌握程度, dict_constant.parent_code:3108
 	 */
 	public UByte getLevel() {
 		return (UByte) getValue(3);

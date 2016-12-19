@@ -13,10 +13,11 @@ public class SendFactory{
 	public SendFactory(Map<String,Object> map){
 		this.map=map;
 	}
-	public  void createSend(Class c){
+	public  void createSend(Class<? extends SendParent> c){
 		SendParent send=null;
 		try{
-			send=(SendParent) Class.forName(c.getName()).newInstance();
+			//send=(SendParent) Class.forName(c.getName()).newInstance();
+			send= c.newInstance();
 			send.send(map);
 		}catch(Exception e){
 			e.printStackTrace();

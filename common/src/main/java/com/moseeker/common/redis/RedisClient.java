@@ -9,7 +9,6 @@ import com.moseeker.common.exception.CacheConfigNotExistException;
 import com.moseeker.common.redis.cache.db.DbManager;
 import com.moseeker.common.util.Notification;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.thrift.gen.warn.service.WarnSetService;
 
 import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.exceptions.JedisConnectionException;
@@ -214,6 +213,7 @@ public abstract class RedisClient {
 				return redisCluster.get(cacheKey);
 			} catch (Exception e) {
 				Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
+			} finally {
 			}
 		}
 		return null;
@@ -285,7 +285,7 @@ public abstract class RedisClient {
 			throw new CacheConfigNotExistException();
 		}
 		try {
-			return redisCluster.brpop(redisKey.getTtl(), cacheKey);
+			return redisCluster.brpop(Constant.BRPOP_TTL, cacheKey);
 		} catch (Exception e) {
 			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}

@@ -11,4 +11,6 @@ public interface LanguageDao extends BaseDao<ProfileLanguageRecord> {
 
 	int updateProfileUpdateTime(Set<Integer> intentionIds);
 
+	int delLanguageByProfileId(int profileId);
+
 }

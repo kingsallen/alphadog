@@ -101,6 +101,10 @@ public class ProfileEducationService extends JOOQBaseServiceImpl<Education, Prof
 	@Override
 	public Response getResources(CommonQuery query) throws TException {
 		try {
+			// 按照结束时间倒序
+			query.setSortby("end_until_now,start");
+			query.setOrder("desc,desc");
+			
 			List<ProfileEducationRecord> educationRecords = dao.getResources(query);
 			List<Education> educations = DBsToStructs(educationRecords);
 			if (educations != null && educations.size() > 0) {

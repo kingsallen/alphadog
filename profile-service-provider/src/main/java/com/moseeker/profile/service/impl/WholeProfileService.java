@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import org.apache.thrift.TException;
 import org.jooq.types.UByte;
+import org.jooq.types.UInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,7 @@ import com.moseeker.profile.dao.IntentionIndustryDao;
 import com.moseeker.profile.dao.IntentionPositionDao;
 import com.moseeker.profile.dao.JobPositionDao;
 import com.moseeker.profile.dao.LanguageDao;
+import com.moseeker.profile.dao.OtherDao;
 import com.moseeker.profile.dao.PositionDao;
 import com.moseeker.profile.dao.ProfileBasicDao;
 import com.moseeker.profile.dao.ProfileDao;
@@ -73,6 +75,7 @@ import com.moseeker.profile.dao.WorkExpDao;
 import com.moseeker.profile.dao.WorksDao;
 import com.moseeker.profile.dao.entity.ProfileWorkexpEntity;
 import com.moseeker.profile.dao.impl.IntentionRecord;
+import com.moseeker.profile.service.impl.serviceutils.ProfilePojo;
 import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -91,8 +94,10 @@ public class WholeProfileService {
 
 			ProfileProfileRecord profileRecord = profileDao.getProfileByIdOrUserIdOrUUID(userId, profileId, uuid);
 			if (profileRecord != null) {
-				if(profileRecord.getCompleteness().intValue() == 0 || profileRecord.getCompleteness().intValue() == 10) {
-					int completeness = completenessImpl.getCompleteness(profileRecord.getUserId().intValue(), profileRecord.getUuid(), profileRecord.getId().intValue());
+				if (profileRecord.getCompleteness().intValue() == 0
+						|| profileRecord.getCompleteness().intValue() == 10) {
+					int completeness = completenessImpl.getCompleteness(profileRecord.getUserId().intValue(),
+							profileRecord.getUuid(), profileRecord.getId().intValue());
 					profileRecord.setCompleteness(UByte.valueOf(completeness));
 				}
 				CommonQuery query = new CommonQuery();
@@ -134,7 +139,9 @@ public class WholeProfileService {
 				List<Map<String, Object>> works = buildsWorks(profileRecord, query);
 				profile.put("works", works);
 
-				List<Map<String, Object>> intentions = profileUtils.buildsIntentions(profileRecord, query, constantRecords, intentionDao, intentionCityDao, intentionIndustryDao, intentionPositionDao, dictCityDao, dictIndustryDao, dictPositionDao);
+				List<Map<String, Object>> intentions = profileUtils.buildsIntentions(profileRecord, query,
+						constantRecords, intentionDao, intentionCityDao, intentionIndustryDao, intentionPositionDao,
+						dictCityDao, dictIndustryDao, dictPositionDao);
 				profile.put("intentions", intentions);
 
 				List<ProfileAttachmentRecord> attachmentRecords = attachmentDao.getResources(query);
@@ -194,16 +201,20 @@ public class WholeProfileService {
 			} catch (Exception e1) {
 				logger.error(e1.getMessage(), e1);
 			}
-			if ((userRecord.getMobile() == null || userRecord.getMobile() == 0) && crawlerUser != null && crawlerUser.getMobile() != null) {
+			if ((userRecord.getMobile() == null || userRecord.getMobile() == 0) && crawlerUser != null
+					&& crawlerUser.getMobile() != null) {
 				userRecord.setMobile(crawlerUser.getMobile());
 			}
-			if (StringUtils.isNullOrEmpty(userRecord.getName()) && crawlerUser != null && !StringUtils.isNullOrEmpty(crawlerUser.getName())) {
+			if (StringUtils.isNullOrEmpty(userRecord.getName()) && crawlerUser != null
+					&& !StringUtils.isNullOrEmpty(crawlerUser.getName())) {
 				userRecord.setName(crawlerUser.getName());
 			}
-			if (StringUtils.isNullOrEmpty(userRecord.getHeadimg()) && crawlerUser != null && !StringUtils.isNullOrEmpty(crawlerUser.getHeadimg())) {
+			if (StringUtils.isNullOrEmpty(userRecord.getHeadimg()) && crawlerUser != null
+					&& !StringUtils.isNullOrEmpty(crawlerUser.getHeadimg())) {
 				userRecord.setHeadimg(crawlerUser.getHeadimg());
 			}
-			if (StringUtils.isNullOrEmpty(userRecord.getEmail()) && crawlerUser != null && !StringUtils.isNullOrEmpty(crawlerUser.getEmail())) {
+			if (StringUtils.isNullOrEmpty(userRecord.getEmail()) && crawlerUser != null
+					&& !StringUtils.isNullOrEmpty(crawlerUser.getEmail())) {
 				userRecord.setEmail(crawlerUser.getEmail());
 			}
 			ProfileBasicRecord basicRecord = null;
@@ -212,7 +223,8 @@ public class WholeProfileService {
 			} catch (Exception e1) {
 				logger.error(e1.getMessage(), e1);
 			}
-			if (StringUtils.isNullOrEmpty(userRecord.getName()) && basicRecord != null && !StringUtils.isNullOrEmpty(basicRecord.getName())) {
+			if (StringUtils.isNullOrEmpty(userRecord.getName()) && basicRecord != null
+					&& !StringUtils.isNullOrEmpty(basicRecord.getName())) {
 				userRecord.setName(basicRecord.getName());
 			}
 			List<ProfileAttachmentRecord> attachmentRecords = null;
@@ -224,8 +236,7 @@ public class WholeProfileService {
 			}
 			List<ProfileAwardsRecord> awardsRecords = null;
 			try {
-				awardsRecords = profileUtils
-						.mapToAwardsRecords((List<Map<String, Object>>) resume.get("awards"));
+				awardsRecords = profileUtils.mapToAwardsRecords((List<Map<String, Object>>) resume.get("awards"));
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
@@ -258,8 +269,7 @@ public class WholeProfileService {
 			}
 			List<ProfileLanguageRecord> languages = null;
 			try {
-				languages = profileUtils
-						.mapToLanguageRecord((List<Map<String, Object>>) resume.get("languages"));
+				languages = profileUtils.mapToLanguageRecord((List<Map<String, Object>>) resume.get("languages"));
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
@@ -278,22 +288,20 @@ public class WholeProfileService {
 			}
 			List<ProfileSkillRecord> skillRecords = null;
 			try {
-				skillRecords = profileUtils
-						.mapToSkillRecords((List<Map<String, Object>>) resume.get("skills"));
+				skillRecords = profileUtils.mapToSkillRecords((List<Map<String, Object>>) resume.get("skills"));
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
 			List<ProfileWorkexpEntity> workexpRecords = null;
 			try {
-				workexpRecords = profileUtils
-						.mapToWorkexpRecords((List<Map<String, Object>>) resume.get("workexps"), profileRecord.getSource().intValue());
+				workexpRecords = profileUtils.mapToWorkexpRecords((List<Map<String, Object>>) resume.get("workexps"),
+						profileRecord.getSource().intValue());
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
 			List<ProfileWorksRecord> worksRecords = null;
 			try {
-				worksRecords = profileUtils
-						.mapToWorksRecords((List<Map<String, Object>>) resume.get("works"));
+				worksRecords = profileUtils.mapToWorksRecords((List<Map<String, Object>>) resume.get("works"));
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
@@ -311,6 +319,55 @@ public class WholeProfileService {
 	@SuppressWarnings("unchecked")
 	public Response importCV(String profile, int userId) throws TException {
 
+		logger.info("importCV profile:"+profile);
+		Map<String, Object> resume = JSON.parseObject(profile);
+		logger.info("resume:"+resume);
+		ProfileProfileRecord profileRecord = profileUtils
+				.mapToProfileRecord((Map<String, Object>) resume.get("profile"));
+		if (profileRecord == null) {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ILLEGAL);
+		}
+		UserUserRecord userRecord = userDao.getUserById(profileRecord.getUserId().intValue());
+		if (userRecord == null) {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_USER_NOTEXIST);
+		}
+		logger.info("importCV user_id:"+userRecord.getId().intValue());
+		// ProfileProfileRecord profileRecord =
+		// profileUtils.mapToProfileRecord((Map<String, Object>)
+		// resume.get("user_user"));
+		List<ProfileProfileRecord> oldProfile = profileDao.getProfilesByIdOrUserIdOrUUID(userId, 0, null);
+
+		if (oldProfile != null && oldProfile.size() > 0 && StringUtils.isNotNullOrEmpty(oldProfile.get(0).getUuid())) {
+			logger.info("importCV oldProfile:"+oldProfile.get(0).getId().intValue());
+			profileRecord.setUuid(oldProfile.get(0).getUuid());
+		} else {
+			profileRecord.setUuid(UUID.randomUUID().toString());
+		}
+		ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
+		
+		int id = profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
+				profilePojo.getAttachmentRecords(), profilePojo.getAwardsRecords(), profilePojo.getCredentialsRecords(),
+				profilePojo.getEducationRecords(), profilePojo.getImportRecords(), profilePojo.getIntentionRecords(),
+				profilePojo.getLanguageRecords(), profilePojo.getOtherRecord(), profilePojo.getProjectExps(),
+				profilePojo.getSkillRecords(), profilePojo.getWorkexpRecords(), profilePojo.getWorksRecords(),
+				userRecord, oldProfile);
+		if (id > 0) {
+			logger.info("importCV 添加成功");
+			return ResponseUtils.success(id);
+		} else {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+		}
+	}
+
+	/**
+	 * 创建简历
+	 * 
+	 * @param profile
+	 *            简历json格式的数据
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public Response createProfile(String profile) {
 		Map<String, Object> resume = JSON.parseObject(profile);
 		ProfileProfileRecord profileRecord = profileUtils
 				.mapToProfileRecord((Map<String, Object>) resume.get("profile"));
@@ -321,132 +378,15 @@ public class WholeProfileService {
 		if (userRecord == null) {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_USER_NOTEXIST);
 		}
-		// ProfileProfileRecord profileRecord =
-		// profileUtils.mapToProfileRecord((Map<String, Object>)
-		// resume.get("user_user"));
-		List<ProfileProfileRecord> oldProfile = profileDao.getProfilesByIdOrUserIdOrUUID(userId, 0, null);
-
-		if(oldProfile !=null && oldProfile.size() > 0 && StringUtils.isNotNullOrEmpty(oldProfile.get(0).getUuid())) {
-			profileRecord.setUuid(oldProfile.get(0).getUuid());
-		} else {
-			profileRecord.setUuid(UUID.randomUUID().toString());
-		}
-		profileRecord.setUserId(userRecord.getId());
-		profileRecord.setDisable(UByte.valueOf(Constant.ENABLE));
-
-		UserUserRecord crawlerUser = null;
-		try {
-			crawlerUser = profileUtils.mapToUserUserRecord((Map<String, Object>) resume.get("user"));
-		} catch (Exception e1) {
-			logger.error(e1.getMessage(), e1);
-		}
-		if ((userRecord.getMobile() == null || userRecord.getMobile() == 0) && crawlerUser != null && crawlerUser.getMobile() != null) {
-			userRecord.setMobile(crawlerUser.getMobile());
-		}
-		if (StringUtils.isNullOrEmpty(userRecord.getName()) && crawlerUser != null && !StringUtils.isNullOrEmpty(crawlerUser.getName())) {
-			userRecord.setName(crawlerUser.getName());
-		}
-		if (StringUtils.isNullOrEmpty(userRecord.getHeadimg()) && crawlerUser != null && !StringUtils.isNullOrEmpty(crawlerUser.getHeadimg())) {
-			userRecord.setHeadimg(crawlerUser.getHeadimg());
-		}
-		if (StringUtils.isNullOrEmpty(userRecord.getEmail()) && crawlerUser != null && !StringUtils.isNullOrEmpty(crawlerUser.getEmail())) {
-			userRecord.setEmail(crawlerUser.getEmail());
-		}
-		ProfileBasicRecord basicRecord = null;
-		try {
-			basicRecord = profileUtils.mapToBasicRecord((Map<String, Object>) resume.get("basic"));
-		} catch (Exception e1) {
-			logger.error(e1.getMessage(), e1);
-		}
-		if (StringUtils.isNullOrEmpty(userRecord.getName()) && basicRecord != null && !StringUtils.isNullOrEmpty(basicRecord.getName())) {
-			userRecord.setName(basicRecord.getName());
-		}
-		List<ProfileAttachmentRecord> attachmentRecords = null;
-		try {
-			attachmentRecords = profileUtils
-					.mapToAttachmentRecords((List<Map<String, Object>>) resume.get("attachments"));
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		List<ProfileAwardsRecord> awardsRecords = null;
-		try {
-			awardsRecords = profileUtils
-					.mapToAwardsRecords((List<Map<String, Object>>) resume.get("awards"));
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		List<ProfileCredentialsRecord> credentialsRecords = null;
-		try {
-			credentialsRecords = profileUtils
-					.mapToCredentialsRecords((List<Map<String, Object>>) resume.get("credentials"));
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		List<ProfileEducationRecord> educationRecords = null;
-		try {
-			educationRecords = profileUtils
-					.mapToEducationRecords((List<Map<String, Object>>) resume.get("educations"));
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		ProfileImportRecord importRecords = null;
-		try {
-			importRecords = profileUtils.mapToImportRecord((Map<String, Object>) resume.get("import"));
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		List<IntentionRecord> intentionRecords = null;
-		try {
-			intentionRecords = profileUtils
-					.mapToIntentionRecord((List<Map<String, Object>>) resume.get("intentions"));
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		List<ProfileLanguageRecord> languages = null;
-		try {
-			languages = profileUtils
-					.mapToLanguageRecord((List<Map<String, Object>>) resume.get("languages"));
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		ProfileOtherRecord otherRecord = null;
-		try {
-			otherRecord = profileUtils.mapToOtherRecord((Map<String, Object>) resume.get("other"));
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		List<ProfileProjectexpRecord> projectExps = null;
-		try {
-			projectExps = profileUtils
-					.mapToProjectExpsRecords((List<Map<String, Object>>) resume.get("projectexps"));
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		List<ProfileSkillRecord> skillRecords = null;
-		try {
-			skillRecords = profileUtils
-					.mapToSkillRecords((List<Map<String, Object>>) resume.get("skills"));
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		List<ProfileWorkexpEntity> workexpRecords = null;
-		try {
-			workexpRecords = profileUtils
-					.mapToWorkexpRecords((List<Map<String, Object>>) resume.get("workexps"), profileRecord.getSource().intValue());
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-		List<ProfileWorksRecord> worksRecords = null;
-		try {
-			worksRecords = profileUtils
-					.mapToWorksRecords((List<Map<String, Object>>) resume.get("works"));
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-
-		int id = profileDao.saveProfile(profileRecord, basicRecord, attachmentRecords, awardsRecords,
-				credentialsRecords, educationRecords, importRecords, intentionRecords, languages, otherRecord,
-				projectExps, skillRecords, workexpRecords, worksRecords, userRecord, oldProfile);
+		
+		ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
+		
+		int id = profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
+				profilePojo.getAttachmentRecords(), profilePojo.getAwardsRecords(), profilePojo.getCredentialsRecords(),
+				profilePojo.getEducationRecords(), profilePojo.getImportRecords(), profilePojo.getIntentionRecords(),
+				profilePojo.getLanguageRecords(), profilePojo.getOtherRecord(), profilePojo.getProjectExps(),
+				profilePojo.getSkillRecords(), profilePojo.getWorkexpRecords(), profilePojo.getWorksRecords(),
+				userRecord, null);
 		if (id > 0) {
 			return ResponseUtils.success(id);
 		} else {
@@ -454,9 +394,362 @@ public class WholeProfileService {
 		}
 	}
 
-	/*private int clearProfile(int profileId) {
-		return profileDao.deleteProfile(profileId);
-	}*/
+	// 完善简历
+	@SuppressWarnings("unchecked")
+	public Response improveProfile(String profile) {
+		Map<String, Object> resume = JSON.parseObject(profile);
+		ProfileProfileRecord profileRecord = profileUtils
+				.mapToProfileRecord((Map<String, Object>) resume.get("profile"));
+		if (profileRecord == null) {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ILLEGAL);
+		}
+		UserUserRecord userRecord = userDao.getUserById(profileRecord.getUserId().intValue());
+		if (userRecord == null) {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_USER_NOTEXIST);
+		}
+		ProfileProfileRecord profileDB = profileDao.getProfileByIdOrUserIdOrUUID(userRecord.getId().intValue(), 0, null);
+		if(profileDB != null) {
+			((Map<String, Object>) resume.get("profile")).put("origin", profileDB.getOrigin());
+			ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
+			int profileId = profileDB.getId().intValue();
+			improveUser(profilePojo.getUserRecord());
+			improveProfile(profilePojo.getProfileRecord(), profileDB);
+			improveBasic(profilePojo.getBasicRecord(), profileId);
+			improveAttachment(profilePojo.getAttachmentRecords(), profileId);
+			improveAwards(profilePojo.getAwardsRecords(), profileId);
+			improveCredentials(profilePojo.getCredentialsRecords(), profileId);
+			improveEducation(profilePojo.getEducationRecords(), profileId);
+			improveIntention(profilePojo.getIntentionRecords(), profileId);
+			improveLanguage(profilePojo.getLanguageRecords(), profileId);
+			improveOther(profilePojo.getOtherRecord(), profileId);
+			improveProjectexp(profilePojo.getProjectExps(), profileId);
+			improveSkill(profilePojo.getSkillRecords(), profileId);
+			improveWorkexp(profilePojo.getWorkexpRecords(), profileId);
+			improveWorks(profilePojo.getWorksRecords(), profileId);
+			
+			completenessImpl.getCompleteness(0, null, profileId);
+			return ResponseUtils.success(null);
+		} else {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ALLREADY_NOT_EXIST);
+		}
+	}
+
+	private void improveUser(UserUserRecord userRecord) {
+		try {
+			userDao.putResource(userRecord);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+		} finally {
+			//do nothing
+		}
+	}
+
+	private void improveWorks(List<ProfileWorksRecord> worksRecords, int profileId) {
+		if(worksRecords != null && worksRecords.size() > 0) {
+			worksDao.delWorksByProfileId(profileId);
+			try {
+				worksRecords.forEach(skill -> {
+					skill.setProfileId(UInteger.valueOf(profileId));
+				});
+				worksDao.postResources(worksRecords);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				logger.error(e.getMessage(), e);
+			} finally {
+				//do nothing
+			}
+		}
+	}
+
+	private void improveWorkexp(List<ProfileWorkexpEntity> workexpRecords, int profileId) {
+		if(workexpRecords != null && workexpRecords.size() > 0) {
+			workExpDao.delWorkExpsByProfileId(profileId);
+			try {
+				List<ProfileWorkexpEntity> records = new ArrayList<>();
+				
+				workexpRecords.forEach(skill -> {
+					skill.setProfileId(UInteger.valueOf(profileId));
+					records.add(skill);
+				});
+				workExpDao.postWordExps(records);
+				
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				logger.error(e.getMessage(), e);
+			} finally {
+				//do nothing
+			}
+		}
+	}
+
+	private void improveSkill(List<ProfileSkillRecord> skillRecords, int profileId) {
+		if(skillRecords != null && skillRecords.size() > 0) {
+			skillDao.delSkillByProfileId(profileId);
+			try {
+				skillRecords.forEach(skill -> {
+					skill.setProfileId(UInteger.valueOf(profileId));
+				});
+				skillDao.postResources(skillRecords);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				logger.error(e.getMessage(), e);
+			} finally {
+				//do nothing
+			}
+		}
+	}
+
+	private void improveProjectexp(List<ProfileProjectexpRecord> projectExps, int profileId) {
+		if(projectExps != null && projectExps.size() > 0) {
+			projectExpDao.delProjectExpByProfileId(profileId);
+			try {
+				projectExps.forEach(language -> {
+					language.setProfileId(UInteger.valueOf(profileId));
+				});
+				projectExpDao.postResources(projectExps);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				logger.error(e.getMessage(), e);
+			} finally {
+				//do nothing
+			}
+		}
+	}
+
+	private void improveOther(ProfileOtherRecord otherRecord, int profileId) {
+		if(otherRecord != null && StringUtils.isNotNullOrEmpty(otherRecord.getOther())) {
+			QueryUtil qu = new QueryUtil();
+			qu.addEqualFilter("profile_id", String.valueOf(profileId));
+			try {
+				ProfileOtherRecord record = otherDao.getResource(qu);
+				if(record != null) {
+					record.setOther(otherRecord.getOther());
+					otherDao.putResource(record);
+				} else {
+					otherRecord.setProfileId(UInteger.valueOf(profileId));
+					otherDao.postResource(otherRecord);
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void improveLanguage(List<ProfileLanguageRecord> languageRecords, int profileId) {
+		if(languageRecords != null && languageRecords.size() > 0) {
+			languageDao.delLanguageByProfileId(profileId);
+			try {
+				languageRecords.forEach(language -> {
+					language.setProfileId(UInteger.valueOf(profileId));
+				});
+				languageDao.postResources(languageRecords);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				logger.error(e.getMessage(), e);
+			} finally {
+				//do nothing
+			}
+		}
+	}
+
+	private void improveIntention(List<IntentionRecord> intentionRecords, int profileId) {
+		if(intentionRecords != null && intentionRecords.size() > 0) {
+			intentionDao.delIntentionsByProfileId(profileId);
+			try {
+				intentionRecords.forEach(intention -> {
+					intention.setProfileId(UInteger.valueOf(profileId));
+				});
+				intentionDao.postIntentions(intentionRecords);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				logger.error(e.getMessage(), e);
+			} finally {
+				//do nothing
+			}
+		}
+	}
+
+	private void improveEducation(List<ProfileEducationRecord> educationRecords, int profileId) {
+		if(educationRecords != null && educationRecords.size() > 0) {
+			educationDao.delEducationsByProfileId(profileId);
+			try {
+				educationRecords.forEach(education ->{
+					education.setProfileId(UInteger.valueOf(profileId));
+				});
+				
+				educationDao.saveEducations(educationRecords);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				logger.error(e.getMessage(), e);
+			} finally {
+				//do nothing
+			}
+		}
+	}
+
+	private void improveCredentials(List<ProfileCredentialsRecord> credentialsRecords, int profileId) {
+		if(credentialsRecords != null && credentialsRecords.size() > 0) {
+			credentialsDao.delCredentialsByProfileId(profileId);
+			try {
+				credentialsRecords.forEach(credential -> {
+					credential.setProfileId(UInteger.valueOf(profileId));
+				});
+				credentialsDao.postResources(credentialsRecords);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				logger.error(e.getMessage(), e);
+			} finally {
+				//do nothing
+			}
+		}
+	}
+
+	private void improveAwards(List<ProfileAwardsRecord> awardsRecords, int profileId) {
+		if(awardsRecords != null && awardsRecords.size() > 0) {
+			awardsDao.delAwardsByProfileId(profileId);
+			try {
+				awardsRecords.forEach(award -> {
+					award.setProfileId(UInteger.valueOf(profileId));
+				});
+				awardsDao.postResources(awardsRecords);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				logger.error(e.getMessage(), e);
+			} finally {
+				//do nothing
+			}
+		}
+	}
+
+	private void improveAttachment(List<ProfileAttachmentRecord> attachmentRecords, int profileId) {
+		if(attachmentRecords != null && attachmentRecords.size() > 0) {
+			attachmentDao.delAttachmentsByProfileId(profileId);
+			try {
+				attachmentRecords.forEach(attachment -> {
+					attachment.setProfileId(UInteger.valueOf(profileId));
+				});
+				attachmentDao.postResources(attachmentRecords);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				logger.error(e.getMessage(), e);
+			} finally {
+				//do nothing
+			}
+		}
+	}
+
+	/**
+	 * 完善基本信息
+	 * @param basicRecord
+	 * @param profileId
+	 */
+	private void improveBasic(ProfileBasicRecord basicRecord, int profileId) {
+		if(basicRecord != null) {
+			QueryUtil qu  = new QueryUtil();
+			qu.addEqualFilter("profile_id", String.valueOf(profileId));
+			try {
+				boolean flag = false;
+				ProfileBasicRecord basic = profileBasicDao.getResource(qu);
+				if(basic != null) {
+					if(StringUtils.isNotNullOrEmpty(basicRecord.getName()) && !basicRecord.getName().equals(basic.getName())) {
+						basic.setName(basicRecord.getName());
+						flag = true;
+					}
+					if(basicRecord.getGender() != null && basicRecord.getGender().intValue() != basic.getGender().intValue()) {
+						basic.setGender(basicRecord.getGender());
+						flag = true;
+					}
+					if(basicRecord.getNationalityCode() != null) {
+						basic.setNationalityCode(basicRecord.getNationalityCode());
+						flag = true;
+					}
+					if(StringUtils.isNotNullOrEmpty(basicRecord.getNationalityName())) {
+						basic.setNationalityName(basicRecord.getNationalityName());
+						flag = true;
+					}
+					if(basicRecord.getCityCode() != null) {
+						basic.setCityCode(basicRecord.getCityCode());
+						flag = true;
+					}
+					if(StringUtils.isNotNullOrEmpty(basicRecord.getCityName())) {
+						basic.setCityName(basicRecord.getCityName());
+						flag = true;
+					}
+					if(basicRecord.getBirth() != null) {
+						basic.setBirth(basicRecord.getBirth());
+						flag = true;
+					}
+					if(StringUtils.isNotNullOrEmpty(basicRecord.getWeixin())) {
+						basic.setWeixin(basicRecord.getWeixin());
+						flag = true;
+					}
+					if(StringUtils.isNotNullOrEmpty(basicRecord.getQq())) {
+						basic.setQq(basicRecord.getQq());
+						flag = true;
+					}
+					if(StringUtils.isNotNullOrEmpty(basicRecord.getMotto())) {
+						basic.setMotto(basicRecord.getMotto());
+						flag = true;
+					}
+					if(StringUtils.isNotNullOrEmpty(basicRecord.getSelfIntroduction())) {
+						basic.setSelfIntroduction(basicRecord.getSelfIntroduction());
+						flag = true;
+					}
+					if(flag) {
+						profileBasicDao.putResource(basic);
+					}
+				} else {
+					basicRecord.setProfileId(UInteger.valueOf(profileId));
+					profileBasicDao.postResource(basicRecord);
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				logger.error(e.getMessage(), e);
+			} finally {
+				//do nothing
+			}
+		}
+	}
+
+	/**
+	 * 更新profile_profile数据
+	 * @param profileRecord
+	 * @param record 
+	 */
+	private void improveProfile(ProfileProfileRecord profileRecord, ProfileProfileRecord record) {
+		if(profileRecord != null) {
+			if(record != null) {
+				boolean flag = false;
+				try {
+					if(profileRecord.getOrigin() != null && record.getOrigin() != null && !profileRecord.getOrigin().equals(record.getOrigin())) {
+						record.setOrigin(profileRecord.getOrigin());
+						flag = true;
+					}
+					if(flag) {
+						profileDao.putResource(record);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					logger.error(e.getMessage(), e);
+				} finally {
+					//do nothing
+				}
+			}
+		}
+	}
 
 	public Response verifyRequires(int userId, int positionId) throws TException {
 		UserUserRecord userRecord = userDao.getUserById(userId);
@@ -598,6 +891,9 @@ public class WholeProfileService {
 	private List<Map<String, Object>> buildProjectexps(ProfileProfileRecord profileRecord, CommonQuery query) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
+			// 按照结束时间倒序
+			query.setSortby("end_until_now,start");
+			query.setOrder("desc,desc");
 			List<ProfileProjectexpRecord> records = projectExpDao.getResources(query);
 			if (records != null && records.size() > 0) {
 				records.forEach(record -> {
@@ -629,6 +925,9 @@ public class WholeProfileService {
 	private List<Map<String, Object>> buildEducations(ProfileProfileRecord profileRecord, CommonQuery query) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
+			// 按照结束时间倒序
+			query.setSortby("end_until_now,start");
+			query.setOrder("desc,desc");
 			List<ProfileEducationRecord> records = educationDao.getResources(query);
 
 			if (records != null && records.size() > 0) {
@@ -680,6 +979,9 @@ public class WholeProfileService {
 	private List<Map<String, Object>> buildWorkexps(ProfileProfileRecord profileRecord, CommonQuery query) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
+			// 按照结束时间倒序
+			query.setSortby("end_until_now,start");
+			query.setOrder("desc,desc");
 			List<ProfileWorkexpRecord> records = workExpDao.getResources(query);
 			if (records != null && records.size() > 0) {
 				List<Integer> companyIds = new ArrayList<>();
@@ -747,10 +1049,10 @@ public class WholeProfileService {
 			UserWxUserRecord wxuserRecord = null;
 			if (userRecord != null) {
 				wxuserRecord = wxuserDao.getWXUserByUserId(userRecord.getId().intValue());
-				if(!StringUtils.isNullOrEmpty(userRecord.getHeadimg())) {
+				if (!StringUtils.isNullOrEmpty(userRecord.getHeadimg())) {
 					map.put("headimg", userRecord.getHeadimg());
 				} else {
-					if(wxuserRecord != null) {
+					if (wxuserRecord != null) {
 						map.put("headimg", wxuserRecord.getHeadimgurl());
 					}
 				}
@@ -847,16 +1149,16 @@ public class WholeProfileService {
 		}
 		return map;
 	}
-	
+
 	@Autowired
 	private IndustryDao dictIndustryDao;
-	
+
 	@Autowired
 	private PositionDao dictPositionDao;
-	
+
 	@Autowired
 	private CityDao dictCityDao;
-	
+
 	@Autowired
 	private WXUserDao wxuserDao;
 
@@ -913,6 +1215,9 @@ public class WholeProfileService {
 
 	@Autowired
 	private LanguageDao languageDao;
+	
+	@Autowired
+	private OtherDao otherDao;
 
 	@Autowired
 	private ProfileBasicDao profileBasicDao;
@@ -931,7 +1236,7 @@ public class WholeProfileService {
 
 	@Autowired
 	private WorkExpDao workExpDao;
-	
+
 	@Autowired
 	private ProfileCompletenessImpl completenessImpl;
 
@@ -1173,5 +1478,13 @@ public class WholeProfileService {
 
 	public void setDictPositionDao(PositionDao dictPositionDao) {
 		this.dictPositionDao = dictPositionDao;
+	}
+
+	public OtherDao getOtherDao() {
+		return otherDao;
+	}
+
+	public void setOtherDao(OtherDao otherDao) {
+		this.otherDao = otherDao;
 	}
 }

@@ -271,14 +271,17 @@ public class ServerConfig implements IConfigCheck {
      * @param server
      */
     protected void addShutdownHook(final IRegistry registry, final IServer server) {
+    	LOGGER.error("-----MuitilRegServerConfig server addShutdownHook-----");
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
             public void run() {
                 if (registry != null) {
+                	LOGGER.error("-----MuitilRegServerConfig server registry.unregister()-----");
                 	System.out.println("--------register.unregister-------");
                     registry.unregister();
                 }
                 if (server != null) {
+                	LOGGER.error("-----MuitilRegServerConfig server server.stop()-----");
                 	System.out.println("--------server.stop-------");
                     server.stop();
                 }
@@ -292,10 +295,13 @@ public class ServerConfig implements IConfigCheck {
      * <p>
      */
     public void destory() {
+    	LOGGER.error("-----MuitilRegServerConfig server destory-----");
         if (registry != null) {
+        	LOGGER.error("-----MuitilRegServerConfig server registry.unregister()-----");
             registry.unregister();
         }
         if (server != null) {
+        	LOGGER.error("-----MuitilRegServerConfig server server.stop()-----");
             server.stop();
         }
     }
