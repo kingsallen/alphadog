@@ -13,6 +13,7 @@ import com.alibaba.fastjson.asm.Type;
 import com.google.common.base.FinalizablePhantomReference;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.userdb.tables.records.UserBdUserRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -72,6 +73,6 @@ public class BindBaiduAccountService extends BindOnAccountService{
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
-		return resource != null;
+		return resource != null || StringUtils.isNotNullOrEmpty(user.getUnionid());
 	}
 }
