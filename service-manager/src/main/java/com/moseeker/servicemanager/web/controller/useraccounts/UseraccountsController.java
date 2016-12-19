@@ -208,7 +208,7 @@ public class UseraccountsController {
 		}
 	}
 	
-	@RequestMapping(value = "/user/bdbindmobile", method = RequestMethod.POST)
+	@RequestMapping(value = "/user/bindmobile", method = RequestMethod.POST)
 	@ResponseBody
 	public String postuserbdbindmobile(HttpServletRequest request, HttpServletResponse response) {
 		try {
