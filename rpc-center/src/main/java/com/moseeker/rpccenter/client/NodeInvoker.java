@@ -2,6 +2,7 @@ package com.moseeker.rpccenter.client;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.ConnectException;
 import java.net.SocketException;
 
 import org.apache.commons.pool.impl.GenericKeyedObjectPool;
@@ -82,6 +83,10 @@ public class NodeInvoker<T> implements Invoker {
                 Object result = method.invoke(client, args);
                 
                 return result;
+            } catch (ConnectException ce) {
+            	LOGGER.error(ce.getMessage(), ce);
+            	pool.clear(node);
+                NodeManager.NODEMANAGER.removePath(node);
             } catch (InvocationTargetException ite) {// XXX:InvocationTargetException异常发生在method.invoke()中
                 Throwable cause = ite.getCause();
                 
@@ -97,6 +102,10 @@ public class NodeInvoker<T> implements Invoker {
                             // XXX:这里直接清空pool,否则会出现连接慢恢复的现象
                             // 发送socket异常时，证明socket已经失效，需要重新创建
                             if (cause.getCause() != null && cause.getCause() instanceof SocketException) {
+                            	//有节点重建任务，一般不存在超时问题
+                                /*pool.clear(node);
+                                NodeManager.NODEMANAGER.removePath(node);*/
+                                //warning
                                 //Notification.sendThriftConnectionError(serverNode+"  socket已经失效, error:"+ite.getMessage());
                                 LOGGER.error(node+"  socket已经失效, error:"+ite.getMessage(), ite);
                                 LOGGER.debug("after clear getNumActive:"+pool.getNumActive());
@@ -118,6 +127,7 @@ public class NodeInvoker<T> implements Invoker {
                 } else {
                     exception = ite;
                 }
+                ite.printStackTrace();
                 LOGGER.error(ite.getMessage(), ite);
             } catch (Throwable e) {
             	e.printStackTrace();

@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionExt extends TableImpl<JobPositionExtRecord> {
 
-	private static final long serialVersionUID = 1875883801;
+	private static final long serialVersionUID = -1068118361;
 
 	/**
 	 * The reference instance of <code>jobdb.job_position_ext</code>
@@ -68,6 +68,11 @@ public class JobPositionExt extends TableImpl<JobPositionExtRecord> {
 	 * The column <code>jobdb.job_position_ext.update_time</code>. 修改时间
 	 */
 	public final TableField<JobPositionExtRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "修改时间");
+
+	/**
+	 * The column <code>jobdb.job_position_ext.job_occupation_id</code>. jobdb.job_occupation.id
+	 */
+	public final TableField<JobPositionExtRecord, Integer> JOB_OCCUPATION_ID = createField("job_occupation_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "jobdb.job_occupation.id");
 
 	/**
 	 * Create a <code>jobdb.job_position_ext</code> table reference

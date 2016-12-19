@@ -9,6 +9,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.thrift.TMultiplexedProcessor;
 import org.apache.thrift.TProcessor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.annotation.JSONField;
@@ -27,7 +29,7 @@ import com.moseeker.rpccenter.server.thrift.ThriftMultiServer;
 public class MuitilRegServerConfig implements IConfigCheck {
 
     /** LOGGER */
-    //final Logger LOGGER = LoggerFactory.getLogger(ServerConfig.class);
+    final Logger LOGGER = LoggerFactory.getLogger(MuitilRegServerConfig.class);
 
     /** 服务名 */
     private String name;
@@ -117,10 +119,12 @@ public class MuitilRegServerConfig implements IConfigCheck {
                     addShutdownHook(registries, server);
             	});
             } catch (Exception e) {
-                //LOGGER.error(e.getMessage(), e);
+            	LOGGER.error("-----MuitilRegServerConfig Exception server stop-----");
+                LOGGER.error(e.getMessage(), e);
                 server.stop();
             }
         } else {
+        	LOGGER.error("-----MuitilRegServerConfig erver.isStarted server stop-----");
             server.stop();
         }
     }
@@ -300,15 +304,18 @@ public class MuitilRegServerConfig implements IConfigCheck {
      * @param server
      */
     protected void addShutdownHook(final List<IRegistry> registries, final IServer server) {
+    	LOGGER.error("-----MuitilRegServerConfig server addShutdownHook-----");
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             @Override
             public void run() {
                 if (registries != null && registries.size() > 0) {
                 	registries.forEach(registry -> {
+                		LOGGER.error("-----MuitilRegServerConfig server registry.unregister()-----");
                 		registry.unregister();
                 	});
                 }
                 if (server != null) {
+                	LOGGER.error("-----MuitilRegServerConfig server server.stop()-----");
                     server.stop();
                 }
             }
@@ -321,12 +328,15 @@ public class MuitilRegServerConfig implements IConfigCheck {
      * <p>
      */
     public void destory() {
+    	LOGGER.error("-----MuitilRegServerConfig server destory-----");
         if (registries != null && registries.size() > 0) {
             registries.forEach(registry->{
+            	LOGGER.error("-----MuitilRegServerConfig server registry.unregister()-----");
             	 registry.unregister();
             });
         }
         if (server != null) {
+        	LOGGER.error("-----MuitilRegServerConfig server server.stop()-----");
             server.stop();
         }
     }

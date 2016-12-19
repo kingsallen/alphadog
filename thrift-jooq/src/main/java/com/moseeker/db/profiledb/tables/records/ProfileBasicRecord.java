@@ -33,7 +33,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileBasicRecord extends UpdatableRecordImpl<ProfileBasicRecord> implements Record14<UInteger, String, UByte, Integer, String, Integer, String, Date, String, String, String, String, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = -106601068;
+	private static final long serialVersionUID = -1369044688;
 
 	/**
 	 * Setter for <code>profiledb.profile_basic.profile_id</code>. profile.id
@@ -50,28 +50,28 @@ public class ProfileBasicRecord extends UpdatableRecordImpl<ProfileBasicRecord> 
 	}
 
 	/**
-	 * Setter for <code>profiledb.profile_basic.name</code>.
+	 * Setter for <code>profiledb.profile_basic.name</code>. 姓名
 	 */
 	public void setName(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>profiledb.profile_basic.name</code>.
+	 * Getter for <code>profiledb.profile_basic.name</code>. 姓名
 	 */
 	public String getName() {
 		return (String) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>profiledb.profile_basic.gender</code>. 性别 0:没选择 1:男, 2: 女
+	 * Setter for <code>profiledb.profile_basic.gender</code>. 性别, dict_constant.parent_code:3109
 	 */
 	public void setGender(UByte value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>profiledb.profile_basic.gender</code>. 性别 0:没选择 1:男, 2: 女
+	 * Getter for <code>profiledb.profile_basic.gender</code>. 性别, dict_constant.parent_code:3109
 	 */
 	public UByte getGender() {
 		return (UByte) getValue(2);

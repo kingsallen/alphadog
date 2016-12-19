@@ -12,10 +12,23 @@ import com.moseeker.warn.thrift.WarnThriftService;
  */
 public class WarnServer {
 	
-	public static void main(String[] args) throws Exception {
-		AnnotationConfigApplicationContext context = initSpring();
-		Server server=new Server(WarnServer.class,ServerNodeUtils.getPort(args),context.getBean(WarnThriftService.class));
-		server.start();
+	public static void main(String[] args){
+		try{
+			AnnotationConfigApplicationContext context = initSpring();
+			Server server=new Server(WarnServer.class,ServerNodeUtils.getPort(args),context.getBean(WarnThriftService.class));
+			server.start();
+			synchronized (WarnServer.class) {
+				while(true){
+					try{
+						WarnServer.class.wait();
+					}catch(Exception e){
+						e.printStackTrace();
+					}
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 	
 	/**

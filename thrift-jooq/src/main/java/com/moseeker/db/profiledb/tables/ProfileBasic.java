@@ -37,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileBasic extends TableImpl<ProfileBasicRecord> {
 
-	private static final long serialVersionUID = -871617363;
+	private static final long serialVersionUID = -1974859293;
 
 	/**
 	 * The reference instance of <code>profiledb.profile_basic</code>
@@ -58,14 +58,14 @@ public class ProfileBasic extends TableImpl<ProfileBasicRecord> {
 	public final TableField<ProfileBasicRecord, UInteger> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "profile.id");
 
 	/**
-	 * The column <code>profiledb.profile_basic.name</code>.
+	 * The column <code>profiledb.profile_basic.name</code>. 姓名
 	 */
-	public final TableField<ProfileBasicRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "");
+	public final TableField<ProfileBasicRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "姓名");
 
 	/**
-	 * The column <code>profiledb.profile_basic.gender</code>. 性别 0:没选择 1:男, 2: 女
+	 * The column <code>profiledb.profile_basic.gender</code>. 性别, dict_constant.parent_code:3109
 	 */
-	public final TableField<ProfileBasicRecord, UByte> GENDER = createField("gender", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "性别 0:没选择 1:男, 2: 女");
+	public final TableField<ProfileBasicRecord, UByte> GENDER = createField("gender", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "性别, dict_constant.parent_code:3109");
 
 	/**
 	 * The column <code>profiledb.profile_basic.nationality_code</code>. 国籍code，国家字典表, dict_country.id

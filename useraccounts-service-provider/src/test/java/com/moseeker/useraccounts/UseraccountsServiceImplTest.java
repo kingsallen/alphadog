@@ -1,11 +1,17 @@
 package com.moseeker.useraccounts;
 
-import com.moseeker.rpccenter.config.ClientConfig;
-import com.moseeker.rpccenter.config.RegistryConfig;
+import org.apache.thrift.TException;
+import org.apache.thrift.protocol.TCompactProtocol;
+import org.apache.thrift.protocol.TMultiplexedProtocol;
+import org.apache.thrift.protocol.TProtocol;
+import org.apache.thrift.transport.TFastFramedTransport;
+import org.apache.thrift.transport.TSocket;
+import org.apache.thrift.transport.TTransport;
+import org.junit.Test;
+
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
-import com.moseeker.thrift.gen.useraccounts.struct.User;
-import com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition;
+import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Client;
+import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Client.Factory;
 
 /**
  * 用户服务 客户端测试类
@@ -15,91 +21,25 @@ import com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition;
  */
 public class UseraccountsServiceImplTest {
 
-    public static void main(String[] args) {
-
-        RegistryConfig registryConfig = new RegistryConfig();
-        registryConfig.setConnectstr("127.0.0.1:2181");
-        registryConfig.setNamespace("services");
-
-        String iface = UseraccountsServices.Iface.class.getName();
-        ClientConfig<UseraccountsServices.Iface> clientConfig = new ClientConfig<UseraccountsServices.Iface>();
-        clientConfig.setService("com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices");
-        clientConfig.setIface(iface);
-
-        UseraccountsServices.Iface useraccountsServices = null;
-
-        try {
-            useraccountsServices = clientConfig.createProxy(registryConfig);
-
-            // 添加我感兴趣
-            Response getUserFavoritePosition = useraccountsServices.postUserFavoritePosition(getUserFavoritePosition());
-
-            System.out.println(getUserFavoritePosition);
-
-            // 是否我感兴趣
-            Response response1 = useraccountsServices.getUserFavPositionCountByUserIdAndPositionId(1, 1);
-
-            System.out.println(response1);
-
-            Response response2 = useraccountsServices.getUserFavPositionCountByUserIdAndPositionId(1, 2);
-
-            System.out.println(response2);
-
-            // 用户注册
-            String code = "1234";
-            Response userResponse = useraccountsServices.postusermobilesignup(getUser(), code);
-            System.out.println(userResponse);
-
-            // 更新用户
-            Response userResponse2 = useraccountsServices.updateUser(getUpdateUser(7));
-            System.out.println(userResponse2);
-
-            // 获取用户
-            Response userResponse3 = useraccountsServices.getUserById(7);
-            System.out.println(userResponse3);
-
-            // 更新用户
-            Response userResponse4 = useraccountsServices.updateUser(getUpdateUser1(7));
-            System.out.println(userResponse4);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    @Test
+    public void testDao() {
+    	TTransport transport = null;
+		try {
+			transport = new TFastFramedTransport(new TSocket("127.0.0.1", 19201, 60*1000));
+			TProtocol protocol = new TCompactProtocol(transport);
+			transport.open();
+			TMultiplexedProtocol mulProtocol= new TMultiplexedProtocol(protocol, "com.moseeker.useraccounts.thrift.UseraccountsServiceImpl");
+			Factory factory = new Factory();
+			Client client = factory.getClient(mulProtocol);
+			Response response = client.postuserlogout(82712);
+			System.out.println(response.getData());
+		} catch (TException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			if(transport != null) {
+				transport.close();
+			}
+		}
     }
-
-    public static UserFavoritePosition getUserFavoritePosition(){
-        UserFavoritePosition userFavoritePosition = new UserFavoritePosition();
-        userFavoritePosition.setSysuser_id(1);
-        userFavoritePosition.setPosition_id(1);
-        return userFavoritePosition;
-    }
-
-    public static User getUser(){
-        User user = new User();
-        user.setMobile(18610245973L);
-        user.setUsername("18610245973");
-        user.setPassword("123456");
-        user.setSource((byte) 9);
-        return user;
-    }
-
-    public static User getUpdateUser(int id){
-        User user = new User();
-        user.setId(id);
-        user.setPassword("123456111111");
-        user.setSource((byte) 8);
-        user.setEmail("intasect@126.com");
-        user.setName("zhaozhognhua");
-        user.setCompany("company");
-        user.setPosition("position");
-        return user;
-    }
-
-    public static User getUpdateUser1(int id){
-        User user = new User();
-        user.setId(id);
-        user.setPassword("123456789");
-        return user;
-    }
-
 }

@@ -49,6 +49,10 @@ public final class Constant {
 
     public static final String NONE_JSON = "{}";
     public static final String TIPS_ERROR = "error";
+    //异常队列的key值
+    public static final String EXCEPTION_LIST_KEY="EXCEPTION_LIST_WARN";
+    //统计异常的数值用于报错
+    public static final String EXCEPTION_WARN_NUM="EXCEPTION_WARN_NUM";
 
     /** 系统appid 常量定义 && 共同常量定义 END  **/
 
@@ -166,4 +170,21 @@ public final class Constant {
 	public static final String MQ_MESSAGE_EMAIL_WARNING = "MQ_MESSAGE_EMAIL_WARNING";	//报警邮件消息队列的key_identifier
 	
 	public static final byte LOG_SMS_SENDRECORD_SYS_ALPHADOG = 5;
+	
+	public static final int READ_TIME_OUT = 60*1000;
+	public static final int CONNECTION_TIME_OUT = 60*1000;
+	
+	
+	public static final String WORDPRESS_POST_CUSTOMFIELD_VERSION = "version";
+	public static final String WORDPRESS_POST_CUSTOMFIELD_PLATFORM = "platform";
+	
+	public static final int WORDPRESS_NEWSLETTER_VALUE 		= 2; 	//博客类别编号为2定义为版本更新
+	
+	public static final String POSITION_SYNCHRONIZATION_FAILED = "同步失败！";
+	public static final String POSITION_REFRESH_FAILED = "刷新失败！";
+	
+	public static final int BRPOP_TTL 		= 5; 	//brpop超时时间
+	public static final int DESCRIPTION_LENGTH 		= 900; 	//描述长度
+	
+	 public static final String WORDPRESS_POST_POSTSTATUS_PUBLISH = "publish";
 }

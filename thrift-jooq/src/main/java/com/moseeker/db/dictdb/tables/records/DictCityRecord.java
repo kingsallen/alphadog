@@ -4,14 +4,15 @@
 package com.moseeker.db.dictdb.tables.records;
 
 
-import com.moseeker.db.dictdb.tables.DictCity;
+import javax.annotation.Generated;
+
 import org.jooq.Field;
 import org.jooq.Record6;
 import org.jooq.Row6;
 import org.jooq.impl.UpdatableRecordImpl;
 import org.jooq.types.UInteger;
 
-import javax.annotation.Generated;
+import com.moseeker.db.dictdb.tables.DictCity;
 
 
 /**

@@ -87,4 +87,21 @@ public class AttachmentDaoImpl extends BaseDaoImpl<ProfileAttachmentRecord, Prof
 		}
 		return status;
 	}
+
+	@Override
+	public int delAttachmentsByProfileId(int profileId) {
+		int count= 0;
+		try (Connection conn = DBConnHelper.DBConn.getConn();
+				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn)) {
+			count = create.delete(ProfileAttachment.PROFILE_ATTACHMENT)
+					 .where(ProfileAttachment.PROFILE_ATTACHMENT.PROFILE_ID.equal(UInteger.valueOf(profileId)))
+					 .execute();
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		} finally {
+			//do nothing
+		}
+		return count;
+	}
 }

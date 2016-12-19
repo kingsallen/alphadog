@@ -32,8 +32,8 @@ public class ThriftServerConfig {
     /** 负载均衡策略，默认为round，可选：round和random */
     private String loadbalance = "random";
 
-    /** thrift connect 超时时间，单位为ms，默认为3s */
-    private int timeout = 100000;
+    /** thrift connect 超时时间，单位为ms，默认为60s */
+    private int timeout = 60*1000;
 
     // 下面的配置项是连接池的基本配置
     /** 最大活跃连接数 */
@@ -43,7 +43,7 @@ public class ThriftServerConfig {
     private int maxIdle = 100;
 
     /** 连接池中最少空闲的连接数,默认为0 */
-    private int minIdle = 0;
+    private int minIdle = 1;
 
     /** 当连接池资源耗尽时，调用者最大阻塞的时间 */
     private int maxWait = 10000;
@@ -59,7 +59,7 @@ public class ThriftServerConfig {
     private int heartbeat = 10 * 1000;
 
     /** 心跳执行的超时时间，单位ms ,默认3s */
-    private int heartbeatTimeout = 3000;
+    private int heartbeatTimeout = 60*1000;
 
     /** 重试次数，默认3次 */
     private int heartbeatTimes = 3;

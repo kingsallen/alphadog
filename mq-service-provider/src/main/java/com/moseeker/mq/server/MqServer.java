@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.moseeker.mq.service.email.ConstantlyMail;
+import com.moseeker.mq.service.email.ConstantlyMailConsumer;
 import com.moseeker.mq.service.schedule.Schedule;
 import com.moseeker.mq.thrift.ThriftService;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
@@ -35,7 +35,7 @@ public class MqServer {
             );
             server.start();
             
-            ConstantlyMail mailUtil = new ConstantlyMail();
+            ConstantlyMailConsumer mailUtil = new ConstantlyMailConsumer();
     		try {
     			mailUtil.start();
     		} catch (IOException | MessagingException e) {
