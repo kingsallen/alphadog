@@ -25,7 +25,7 @@ public class WarnServiceTest {
 		annConfig = new AnnotationConfigApplicationContext();
 		annConfig.scan("com.moseeker.warn");
 		annConfig.refresh();
-		server = new Server(WarnServer.class, 19200, annConfig.getBean(WarnThriftService.class));
+		server = new Server(WarnServer.class, 1221, annConfig.getBean(WarnThriftService.class));
 		server.start();
 		warn = ServiceManager.SERVICEMANAGER.getService(WarnSetService.Iface.class);
 	}
