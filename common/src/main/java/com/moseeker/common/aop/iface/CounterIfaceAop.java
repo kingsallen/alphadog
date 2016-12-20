@@ -90,7 +90,7 @@ public class CounterIfaceAop {
 	
 	public void save(String jsonStr) {
 		threadPool.execute(() -> {
-			RedisClient client = RedisClientFactory.getLogClient();
+			RedisClient client = RedisClientFactory.getElkClient();
 			client.lpush(Constant.APPID_ALPHADOG, "LOG_STATS", jsonStr);
 		});
 		log.info("counterInfo:{}", jsonStr);
