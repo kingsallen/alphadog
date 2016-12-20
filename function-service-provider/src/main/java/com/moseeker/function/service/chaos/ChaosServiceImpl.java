@@ -144,11 +144,18 @@ public class ChaosServiceImpl {
 				} finally {
 					//do nothing
 				}
+				DateTime dt = new DateTime();
+				int second = dt.getSecondOfDay();
 				for(ThirdPartyPositionForSynchronizationWithAccount position : positions) {
 					position.getPosition_info().setEmail("cv_"+position.getPosition_id()+email);
 					String positionJson = JSON.toJSONString(position);
 					logger.info("synchronize position:"+positionJson);
-					RedisClientFactory.getCacheClient().lpush(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_QUEUE.toString(), positionJson);
+					
+					RedisClient redisClient = RedisClientFactory.getCacheClient();
+					redisClient.lpush(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_SYNCHRONIZATION_QUEUE.toString(), positionJson);
+					if(second < 60*60*24) {
+						redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(position.getPosition_id()), String.valueOf(position.getChannel()), "1", 60*60*24-second);
+					}
 				}
 				return ResponseUtils.success(null);
 			} else {
