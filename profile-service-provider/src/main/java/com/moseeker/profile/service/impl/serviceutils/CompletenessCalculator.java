@@ -1,10 +1,13 @@
 package com.moseeker.profile.service.impl.serviceutils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.jooq.types.UByte;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.moseeker.common.constants.Constant;
@@ -120,8 +123,21 @@ public class CompletenessCalculator {
 		int completeness = 0;
 		if(workexpRecords!=null&&workexpRecords.size()>0){
 			if(education!=null&&education.size()>0){
+				for(ProfileEducationRecord record:education){
+					int isflag=record.getEndUntilNow().intValue();
+					if(isflag==1){
+						completeness=45;
+						break;
+					}
+				}
+				if(completeness>0){
+					return completeness;
+				}
 				//有教育经历的工作经历的建立完整度计算
 				completeness=getWorkCompletenessHasEducation(workexpRecords,education,birth);
+				
+					
+								
 			}else{
 				if(birth!=null){
 					//无教育经历的工作经历但是有出生日期的简历完整度计算
@@ -159,6 +175,11 @@ public class CompletenessCalculator {
 		int completeness=0;
 		Date endTime=null;
 		for(ProfileEducationRecord record:education){
+			if(record.getEndUntilNow().intValue()==1){
+				SimpleDateFormat format=new SimpleDateFormat("yyyy-mm-dd");
+				String date=format.format(new Date());
+				record.setEnd((java.sql.Date) new Date(date));
+			}
 			if(endTime==null){
 				endTime=record.getEnd();
 			}
@@ -169,8 +190,10 @@ public class CompletenessCalculator {
 		if(endTime==null){
 			return 0;
 		}
-		
-		int period=new Date().getYear()-2-endTime.getYear();
+		int end=Integer.parseInt(endTime.toString().split("－")[0]);
+		String date=new SimpleDateFormat("yyyy-mm-dd").format(new Date());
+		int now=Integer.parseInt(date.toString().split("－")[0]);
+		int period=now-2-end;
 		int workTime=getWorkTime(workexpRecords);
 		if(period<=0){
 			period=1;
@@ -191,14 +214,16 @@ public class CompletenessCalculator {
 	@SuppressWarnings("deprecation")
 	private int getWorkCompletenessNoEducation(List<? extends ProfileWorkexpRecord> workexpRecords,Date birth){
 		int completeness=0;
-		int startTime=birth.getYear()+21;
+		int startTime=Integer.parseInt(birth.toString().split("－")[0])+21;
+		String date=new SimpleDateFormat("yyyy-mm-dd").format(new Date());
+		int now=Integer.parseInt(date.toString().split("－")[0]);
 		//年龄小于22岁且有工作经历的，直接给满分
-		if(startTime>new Date().getYear()){
+		if(startTime>=now){
 			completeness=45;
 			return completeness;
 		}
 		//目前开始的前一年减去到22岁的年份得到时间段即为应该参加工作的总时间段
-		int period=new Date().getYear()-1-startTime;
+		int period=now-1-startTime;
 		
 		int time=getWorkTime(workexpRecords);
 		if(time==0){
@@ -217,6 +242,11 @@ public class CompletenessCalculator {
 	private List<Map<String,Integer>> convertList(List<? extends ProfileWorkexpRecord> workexpRecords){
 		List<Map<String,Integer>> list=new ArrayList<Map<String,Integer>>();
 		for(ProfileWorkexpRecord record:workexpRecords){
+			int endutil=record.getEndUntilNow().intValue();
+			if(endutil==1){
+				String date=new SimpleDateFormat("yyyy-mm-dd").format(new Date());
+				record.setEnd((java.sql.Date) new Date(date));
+			}
 			if(record.getStart()!=null&&record.getEnd()!=null){
 				Map<String,Integer> map=new HashMap<String,Integer>();
 				String start=record.getStart().toString();
@@ -263,6 +293,7 @@ public class CompletenessCalculator {
 			for(int i=0;i<list.size();i++){
 				int start=list.get(i).get("start");
 				int end=list.get(i).get("end");
+				
 				if(i>0){
 					//如果上一段工作经历的结束时间和下一份工作经历的起始时间在同一年，那么合并两段经历
 					if(endtime1==start){
