@@ -18,6 +18,7 @@ service WholeProfileServices {
     common_struct.Response createProfile(1:string profile);
     //更新简历
     common_struct.Response improveProfile(1:string profile);
+    common_struct.Response moveProfile(1:i32 destUserId, 2:i32 originUserId);
 }
 
 service ProfileServices {

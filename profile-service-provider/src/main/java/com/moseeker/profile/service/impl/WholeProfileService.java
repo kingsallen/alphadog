@@ -34,6 +34,7 @@ import com.moseeker.db.profiledb.tables.records.ProfileBasicRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileCredentialsRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileEducationRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileImportRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileIntentionRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileLanguageRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileOtherRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
@@ -428,6 +429,119 @@ public class WholeProfileService {
 			improveWorks(profilePojo.getWorksRecords(), profileId);
 			
 			completenessImpl.getCompleteness(0, null, profileId);
+			return ResponseUtils.success(null);
+		} else {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ALLREADY_NOT_EXIST);
+		}
+	}
+	
+	public Response improveProfile(int destUserId, int originUserId) {
+		ProfileProfileRecord destProfile = profileDao.getProfileByIdOrUserIdOrUUID(destUserId, 0, null);
+		ProfileProfileRecord originProfile = profileDao.getProfileByIdOrUserIdOrUUID(originUserId, 0, null);
+		if(originProfile != null && destProfile != null) {
+			QueryUtil queryUtil = new QueryUtil();
+			HashMap<String, String> eqs = new HashMap<String, String>();
+			queryUtil.setEqualFilter(eqs);
+			// orgin 简历信息查询
+			try {
+				eqs.put("profile_id", String.valueOf(originProfile.getId()));
+//				ProfileBasicRecord originRecord = profileBasicDao.getResource(queryUtil);
+				List<ProfileAttachmentRecord> originAttachments = attachmentDao.getResources(queryUtil);
+				List<ProfileAwardsRecord> originAwards = awardsDao.getResources(queryUtil);
+				List<ProfileCredentialsRecord> originCredentials = credentialsDao.getResources(queryUtil);
+				List<ProfileEducationRecord> originEducations = educationDao.getResources(queryUtil);
+				List<ProfileIntentionRecord> originIntentions = intentionDao.getResources(queryUtil);
+				List<ProfileLanguageRecord> originLanguages = languageDao.getResources(queryUtil);
+				ProfileOtherRecord originOther = otherDao.getResource(queryUtil);
+				List<ProfileProjectexpRecord> originProjectexps = projectExpDao.getResources(queryUtil);
+				List<ProfileSkillRecord> originSkills = skillDao.getResources(queryUtil);
+				List<ProfileWorkexpRecord> originWorkxps = workExpDao.getResources(queryUtil);
+				List<ProfileWorksRecord> originWorks = worksDao.getResources(queryUtil);
+				// dest 简历信息查询
+				eqs.put("profile_id", String.valueOf(destProfile.getId()));
+				ProfileBasicRecord destRecord = profileBasicDao.getResource(queryUtil);
+				List<ProfileAttachmentRecord> destAttachments = attachmentDao.getResources(queryUtil);
+				List<ProfileAwardsRecord> destAwards = awardsDao.getResources(queryUtil);
+				List<ProfileCredentialsRecord> destCredentials = credentialsDao.getResources(queryUtil);
+				List<ProfileEducationRecord> destEducations = educationDao.getResources(queryUtil);
+				List<ProfileIntentionRecord> destIntentions = intentionDao.getResources(queryUtil);
+				List<ProfileLanguageRecord> destLanguages = languageDao.getResources(queryUtil);
+				ProfileOtherRecord destOther = otherDao.getResource(queryUtil);
+				List<ProfileProjectexpRecord> destProjectexps = projectExpDao.getResources(queryUtil);
+				List<ProfileSkillRecord> destSkills = skillDao.getResources(queryUtil);
+				List<ProfileWorkexpRecord> destWorkxps = workExpDao.getResources(queryUtil);
+				List<ProfileWorksRecord> destWorks = worksDao.getResources(queryUtil);
+				improveBasic(destRecord, originProfile.getId().intValue());
+				if ((originAttachments == null || originAttachments.isEmpty()) && destAttachments != null && !destAttachments.isEmpty()) {
+					destAttachments.forEach(attachment -> {
+						attachment.setProfileId(originProfile.getId());
+					});
+					attachmentDao.postResources(destAttachments);
+				}
+				if ((originAwards == null || originAwards.isEmpty()) && destAwards != null && !destAwards.isEmpty()) {
+					destAwards.forEach(award -> {
+						award.setProfileId(originProfile.getId());
+					});
+					awardsDao.postResources(destAwards);
+				}
+				if ((originCredentials == null || originCredentials.isEmpty()) && destCredentials != null && !destCredentials.isEmpty()) {
+					destCredentials.forEach(credental -> {
+						credental.setProfileId(originProfile.getId());
+					});
+					credentialsDao.postResources(destCredentials);
+				}
+				if ((originEducations == null || originEducations.isEmpty()) && destEducations != null && !destEducations.isEmpty()) {
+					destEducations.forEach(education -> {
+						education.setProfileId(originProfile.getId());
+					});
+					educationDao.postResources(destEducations);
+				}
+				if ((originIntentions == null || originIntentions.isEmpty()) && destIntentions != null && !destIntentions.isEmpty()) {
+					destIntentions.forEach(intention -> {
+						intention.setProfileId(originProfile.getId());
+					});
+					intentionDao.postResources(destIntentions);
+				}
+				if ((originLanguages == null || originLanguages.isEmpty()) && destLanguages != null && !destLanguages.isEmpty()) {
+					destLanguages.forEach(language -> {
+						language.setProfileId(originProfile.getId());
+					});
+					languageDao.postResources(destLanguages);
+				}
+				if (originOther == null && destOther != null) {
+					originOther = destOther;
+					originOther.setProfileId(originProfile.getId());
+					otherDao.putResource(originOther);
+				}
+				if ((originProjectexps == null || originProjectexps.isEmpty()) && destProjectexps != null && !destProjectexps.isEmpty()) {
+					destProjectexps.forEach(projectex -> {
+						projectex.setProfileId(originProfile.getId());
+					});
+					projectExpDao.postResources(destProjectexps);
+				}
+				if ((originSkills == null || originSkills.isEmpty()) && destSkills != null && !destSkills.isEmpty()) {
+					destSkills.forEach(skill -> {
+						skill.setProfileId(originProfile.getId());
+					});
+					skillDao.postResources(destSkills);
+				}
+				if ((originWorks == null || originWorks.isEmpty()) && destWorks != null && !destWorks.isEmpty()) {
+					destWorks.forEach(work -> {
+						work.setProfileId(originProfile.getId());
+					});
+					worksDao.postResources(destWorks);
+				}
+				if ((originWorkxps == null || originWorkxps.isEmpty()) && destWorkxps != null && !destWorkxps.isEmpty()) {
+					destWorkxps.forEach(workxp -> {
+						workxp.setPositionCode(originProfile.getId());
+					});
+					workExpDao.postResources(destWorkxps);
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+				ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+			}
+			completenessImpl.getCompleteness(0, null, originProfile.getId().intValue());
 			return ResponseUtils.success(null);
 		} else {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ALLREADY_NOT_EXIST);

@@ -24,6 +24,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.useraccounts.dao.ProfileDao;
 import com.moseeker.useraccounts.dao.UserDao;
 import com.moseeker.useraccounts.dao.UsersettingDao;
+import com.moseeker.useraccounts.dao.impl.WxuserDaoImpl;
 
 /**
  * @author ltf
@@ -45,6 +46,9 @@ public abstract class BindOnAccountService {
 
 	@Autowired
 	protected UsersettingDao userSettingDao;
+	
+	@Autowired
+	protected WxuserDaoImpl wxUserDao;
 	
 	/**
 	 * 账号绑定操作
@@ -80,7 +84,7 @@ public abstract class BindOnAccountService {
 					return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
 				}
 			} else if (userUnionid == null && userMobile != null) {
-				if(volidationBind(userMobile)) {
+				if(volidationBind(userMobile, userUnionid)) {
 					return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_BIND_REPEATBIND);
 				}
 				userMobile.setUnionid(unionid);
@@ -94,7 +98,7 @@ public abstract class BindOnAccountService {
 			} else if (userUnionid != null && userMobile != null
 					&& userUnionid.getId().intValue() != userMobile.getId().intValue()) {
 				// 2 accounts, one unoinid, one mobile, need to merge.
-				if (volidationBind(userMobile)) {
+				if (volidationBind(userMobile, userUnionid)) {
 					return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_BIND_REPEATBIND);
 				}
 				combineAccount(appid, userMobile, userUnionid);
@@ -160,7 +164,14 @@ public abstract class BindOnAccountService {
 		map.put("parentid", userUnionid.getParentid().intValue());
 	}
 	
-	private void combineAccount(int appid, UserUserRecord userMobile, UserUserRecord userUnionid) {
+	
+	/**
+	 * 账号合并
+	 * @param appid
+	 * @param userMobile
+	 * @param userUnionid
+	 */
+	protected void combineAccount(int appid, UserUserRecord userMobile, UserUserRecord userUnionid){
 		try {
 			// unnionid置为子账号
 			userUnionid.setParentid(userMobile.getId());
@@ -173,44 +184,41 @@ public abstract class BindOnAccountService {
 			if (userdao.putResource(userUnionid) > 0) {
 				consummateUserAccount(userMobile, userUnionid);
 				// profile合并成功
-			} else {
-				// 合并失败, log.
 			}
-
 			// weixin端(聚合号),weixin端（企业号） 发起, 保留微信端 profile; 否则保留pc端(无需处理).
-			switch (appid) {
-			case Constant.APPID_QX:
-			case Constant.APPID_PLATFORM:
-				ProfileProfileRecord userMobileProfileRecord = profileDao
-						.getProfileByUserId(userMobile.getId().intValue());
-				// 微信端profile转移到pc用户下.
-				ProfileProfileRecord userUnionProfileRecord = profileDao
-						.getProfileByUserId(userUnionid.getId().intValue());
-				if (userUnionProfileRecord != null) {
-					// pc 端profile 设置为无效
-					if (userMobileProfileRecord != null) {
-						profileDao.delResource(userMobileProfileRecord);
-					}
-					userUnionProfileRecord.setUserId(userMobile.getId());
-					profileDao.putResource(userUnionProfileRecord);
-				}
-
-				break;
-			case Constant.APPID_C:
-				ProfileProfileRecord userMobileProfileRecord1 = profileDao
-					.getProfileByUserId(userMobile.getId().intValue());
-				if(userMobileProfileRecord1 == null) {
-					// 微信端profile转移到pc用户下.
-					ProfileProfileRecord userUnionProfileRecord1 = profileDao
-							.getProfileByUserId(userUnionid.getId().intValue());
-					if(userUnionProfileRecord1 != null) {
-						userUnionProfileRecord1.setUserId(userMobile.getId());
-						profileDao.putResource(userUnionProfileRecord1);
-					}
-				}
-			default:
-				break;
-			}
+//			switch (appid) {
+//			case Constant.APPID_QX:
+//			case Constant.APPID_PLATFORM:
+//				ProfileProfileRecord userMobileProfileRecord = profileDao
+//						.getProfileByUserId(userMobile.getId().intValue());
+//				// 微信端profile转移到pc用户下.
+//				ProfileProfileRecord userUnionProfileRecord = profileDao
+//						.getProfileByUserId(userUnionid.getId().intValue());
+//				if (userUnionProfileRecord != null) {
+//					// pc 端profile 设置为无效
+//					if (userMobileProfileRecord != null) {
+//						profileDao.delResource(userMobileProfileRecord);
+//					}
+//					userUnionProfileRecord.setUserId(userMobile.getId());
+//					profileDao.putResource(userUnionProfileRecord);
+//				}
+//
+//				break;
+//			case Constant.APPID_C:
+//				ProfileProfileRecord userMobileProfileRecord1 = profileDao
+//					.getProfileByUserId(userMobile.getId().intValue());
+//				if(userMobileProfileRecord1 == null) {
+//					// 微信端profile转移到pc用户下.
+//					ProfileProfileRecord userUnionProfileRecord1 = profileDao
+//							.getProfileByUserId(userUnionid.getId().intValue());
+//					if(userUnionProfileRecord1 != null) {
+//						userUnionProfileRecord1.setUserId(userMobile.getId());
+//						profileDao.putResource(userUnionProfileRecord1);
+//					}
+//				}
+//			default:
+//				break;
+//			}
 			
 			doSomthing(userMobile.getId().intValue(), userUnionid.getId().intValue());
 		} catch (Exception e) {
@@ -294,5 +302,5 @@ public abstract class BindOnAccountService {
 	/**
 	 * 判断是否绑定过第三方账号
 	 */
-	protected abstract boolean volidationBind(UserUserRecord user);
+	protected abstract boolean volidationBind(UserUserRecord mobileUser, UserUserRecord idUser) throws Exception;
 }

@@ -51,7 +51,7 @@ public class BindWxAccountService extends BindOnAccountService{
 	}
 	
 	@Override
-	protected boolean volidationBind(UserUserRecord user) {
-		return StringUtils.isNotNullOrEmpty(user.getUnionid());
+	protected boolean volidationBind(UserUserRecord mobileUser, UserUserRecord idUser) {
+		return StringUtils.isNotNullOrEmpty(mobileUser.getUnionid());
 	}
 }
