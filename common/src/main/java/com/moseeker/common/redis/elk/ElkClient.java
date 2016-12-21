@@ -26,7 +26,7 @@ public class ElkClient extends RedisClient {
 		ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
 		redisConfigKeyName = propertiesUtils.get("redis.elk.config_key_name", String.class);
 		redisConfigTimeOut = propertiesUtils.get("redis.elk.config_timeout", Integer.class);
-		redisConfigType = Constant.logConfigType;
+		redisConfigType = Constant.elkConfigType;
 		redisCluster = initRedisCluster();
 		reloadRedisKey();
 	}
