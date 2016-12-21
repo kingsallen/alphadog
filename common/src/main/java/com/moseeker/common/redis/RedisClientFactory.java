@@ -1,7 +1,6 @@
 package com.moseeker.common.redis;
 
 import com.moseeker.common.redis.cache.CacheClient;
-import com.moseeker.common.redis.elk.ElkClient;
 import com.moseeker.common.redis.log.LogClient;
 import com.moseeker.common.redis.session.SessionClient;
 
@@ -30,10 +29,6 @@ public class RedisClientFactory {
 	 */
 	private static SessionClient sessionClient;
 	
-	/**
-	 * logredis输出到elk帮助类
-	 */
-	private static ElkClient elkClient;
 	
 	/**
 	 * Redis工厂创建方法
@@ -76,15 +71,5 @@ public class RedisClientFactory {
 		}
 		return sessionClient;
 	}
-	
-	/**
-	 * 获取log-elk客户端
-	 * @return
-	 */
-	public static RedisClient getElkClient() {
-		if (elkClient == null) {
-			elkClient = ElkClient.getInstance();
-		}
-		return elkClient;
-	}
+
 }

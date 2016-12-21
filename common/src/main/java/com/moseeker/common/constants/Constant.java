@@ -32,7 +32,7 @@ public final class Constant {
     public static final int logConfigType = 3;
     public static final int cacheConfigType = 1;
     public static final int sessionConfigType = 2;
-    public static final int elkConfigType = 5;
+    public static final byte elkConfigType = 5;
 
     public static final int ENABLE = 1;
     public static final int DISABLE = 0;

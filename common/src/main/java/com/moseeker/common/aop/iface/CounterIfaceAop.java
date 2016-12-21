@@ -7,6 +7,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.PostConstruct;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -17,11 +19,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Component;
 
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterInfo;
-import com.moseeker.common.constants.Constant;
-import com.moseeker.common.redis.RedisClient;
-import com.moseeker.common.redis.RedisClientFactory;
+import com.moseeker.common.util.ConfigPropertiesUtil;
 
 
 
@@ -36,6 +39,18 @@ import com.moseeker.common.redis.RedisClientFactory;
 public class CounterIfaceAop {
 	
 	private Logger log = LoggerFactory.getLogger(getClass());
+	
+	private final String redisKey = "log_0_info";
+	
+	JedisPool jedisPool;
+	
+	@PostConstruct
+	public void init() {
+		ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
+		String host = propertiesUtils.get("redis.elk.host", String.class);
+		Integer port = propertiesUtils.get("redis.elk.port", Integer.class);
+		jedisPool = new JedisPool(host, port);
+	}
 
 	/**
 	 * 切入点
@@ -90,8 +105,9 @@ public class CounterIfaceAop {
 	
 	public void save(String jsonStr) {
 		threadPool.execute(() -> {
-			RedisClient client = RedisClientFactory.getElkClient();
-			client.lpush(Constant.APPID_ALPHADOG, "LOG_STATS", jsonStr);
+			try(Jedis client = jedisPool.getResource()){
+				client.lpush(redisKey, jsonStr);
+			}
 		});
 		log.info("counterInfo:{}", jsonStr);
 	}
