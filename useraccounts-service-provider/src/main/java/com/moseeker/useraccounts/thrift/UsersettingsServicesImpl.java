@@ -41,7 +41,7 @@ public class UsersettingsServicesImpl implements Iface {
 	}
 
 	public Response putResource(Usersetting struct) throws TException {
-		return service.postResource(struct);
+		return service.putResource(struct);
 	}
 
 	public Response delResource(Usersetting struct) throws TException {
