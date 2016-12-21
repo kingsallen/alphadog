@@ -174,11 +174,10 @@ public class CompletenessCalculator {
 	private int getWorkCompletenessHasEducation(List<? extends ProfileWorkexpRecord> workexpRecords,List<ProfileEducationRecord> education,Date birth){
 		int completeness=0;
 		Date endTime=null;
+		SimpleDateFormat format=new SimpleDateFormat("yyyy-mm-dd");
 		for(ProfileEducationRecord record:education){
 			if(record.getEndUntilNow().intValue()==1){
-				SimpleDateFormat format=new SimpleDateFormat("yyyy-mm-dd");
-				String date=format.format(new Date());
-				record.setEnd((java.sql.Date) new Date(date));
+				return 45;
 			}
 			if(endTime==null){
 				endTime=record.getEnd();
@@ -190,9 +189,9 @@ public class CompletenessCalculator {
 		if(endTime==null){
 			return 0;
 		}
-		int end=Integer.parseInt(endTime.toString().split("－")[0]);
-		String date=new SimpleDateFormat("yyyy-mm-dd").format(new Date());
-		int now=Integer.parseInt(date.toString().split("－")[0]);
+		String date=format.format(new Date());
+		int end=Integer.parseInt(format.format(endTime).split("-")[0]);
+		int now=Integer.parseInt(date.toString().split("-")[0]);
 		int period=now-2-end;
 		int workTime=getWorkTime(workexpRecords);
 		if(period<=0){
@@ -211,12 +210,12 @@ public class CompletenessCalculator {
 	/*
 	 * 没有教育经历有年龄的，从22岁开始到目前的前一年，按照每年占的百分比来计算总分。年龄小于22岁且有工作经历的，直接给满分；
 	 */
-	@SuppressWarnings("deprecation")
 	private int getWorkCompletenessNoEducation(List<? extends ProfileWorkexpRecord> workexpRecords,Date birth){
 		int completeness=0;
-		int startTime=Integer.parseInt(birth.toString().split("－")[0])+21;
-		String date=new SimpleDateFormat("yyyy-mm-dd").format(new Date());
-		int now=Integer.parseInt(date.toString().split("－")[0]);
+		SimpleDateFormat format= new SimpleDateFormat("yyyy-mm-dd");
+		int startTime=Integer.parseInt(format.format(birth).split("-")[0])+21;
+		String date=format.format(new Date());
+		int now=Integer.parseInt(date.toString().split("-")[0]);
 		//年龄小于22岁且有工作经历的，直接给满分
 		if(startTime>=now){
 			completeness=45;
@@ -238,19 +237,19 @@ public class CompletenessCalculator {
 		}
 		return completeness;
 	}
-	@SuppressWarnings("deprecation")
 	private List<Map<String,Integer>> convertList(List<? extends ProfileWorkexpRecord> workexpRecords){
 		List<Map<String,Integer>> list=new ArrayList<Map<String,Integer>>();
+		SimpleDateFormat format=new SimpleDateFormat("yyyy-mm-dd");
 		for(ProfileWorkexpRecord record:workexpRecords){
 			int endutil=record.getEndUntilNow().intValue();
 			if(endutil==1){
-				String date=new SimpleDateFormat("yyyy-mm-dd").format(new Date());
-				record.setEnd((java.sql.Date) new Date(date));
+				java.sql.Date date=new java.sql.Date(new Date().getTime());
+				record.setEnd(date);
 			}
 			if(record.getStart()!=null&&record.getEnd()!=null){
 				Map<String,Integer> map=new HashMap<String,Integer>();
-				String start=record.getStart().toString();
-				String end=record.getEnd().toString();
+				String start=format.format(record.getStart());
+				String end=format.format(record.getEnd());
 				int start1=Integer.parseInt(start.split("-")[0]);
 				int end1=Integer.parseInt(end.split("-")[0]);
 				map.put("start",start1);
