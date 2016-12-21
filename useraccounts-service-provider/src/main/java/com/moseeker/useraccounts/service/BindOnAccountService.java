@@ -90,7 +90,7 @@ public abstract class BindOnAccountService {
 				userMobile.setUnionid(unionid);
 				if (userdao.putResource(userMobile) > 0) {
 					Map<String, Object> map = new HashMap<String, Object>();
-					resultFull(userUnionid, map);
+					resultFull(userMobile, map);
 					return ResponseUtils.success(map);
 				} else {
 					return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
