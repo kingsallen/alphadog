@@ -597,13 +597,10 @@ public class WholeProfileService {
 			qu.addEqualFilter("profile_id", String.valueOf(profileId));
 			try {
 				ProfileOtherRecord record = otherDao.getResource(qu);
-				if(record != null) {
-					record.setOther(otherRecord.getOther());
-					otherDao.putResource(record);
-				} else {
+				if(record == null && otherRecord != null) {
 					otherRecord.setProfileId(UInteger.valueOf(profileId));
 					otherDao.postResource(otherRecord);
-				}
+				} 
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -733,11 +730,11 @@ public class WholeProfileService {
 				boolean flag = false;
 				ProfileBasicRecord basic = profileBasicDao.getResource(qu);
 				if(basic != null) {
-					if(StringUtils.isNotNullOrEmpty(basicRecord.getName()) && !basicRecord.getName().equals(basic.getName())) {
+					if(StringUtils.isNotNullOrEmpty(basicRecord.getName()) && StringUtils.isNullOrEmpty(basic.getName())) {
 						basic.setName(basicRecord.getName());
 						flag = true;
 					}
-					if(basicRecord.getGender() != null && basicRecord.getGender().intValue() != basic.getGender().intValue()) {
+					if(basicRecord.getGender() != null && basic.getGender() == null) {
 						basic.setGender(basicRecord.getGender());
 						flag = true;
 					}
