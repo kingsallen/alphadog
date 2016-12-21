@@ -13,8 +13,15 @@ public class IntentionRecord extends ProfileIntentionRecord {
 	private static final long serialVersionUID = 8505792517035776734L;
 	
 	private List<ProfileIntentionCityRecord> cities = new ArrayList<>();
-	private List<ProfileIntentionPositionRecord> positions = new ArrayList<>();;
-	private List<ProfileIntentionIndustryRecord> industries = new ArrayList<>();;
+	private List<ProfileIntentionPositionRecord> positions = new ArrayList<>();
+	private List<ProfileIntentionIndustryRecord> industries = new ArrayList<>();
+	
+	public IntentionRecord(){};
+	
+	public IntentionRecord(ProfileIntentionRecord pir) {
+		super(pir.getId(), pir.getProfileId(), pir.getWorktype(), pir.getWorkstate(), pir.getSalaryCode(), pir.getTag(), pir.getConsiderVentureCompanyOpportunities(), pir.getCreateTime(), pir.getUpdateTime());
+	}
+	
 	
 	public List<ProfileIntentionCityRecord> getCities() {
 		return cities;

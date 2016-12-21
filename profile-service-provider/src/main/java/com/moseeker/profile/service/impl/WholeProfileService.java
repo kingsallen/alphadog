@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.thrift.TException;
 import org.jooq.types.UByte;
@@ -80,6 +81,7 @@ import com.moseeker.profile.service.impl.serviceutils.ProfilePojo;
 import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.useraccounts.service.UserCommonService.AsyncProcessor.newsletter;
 
 @Service
 @CounterIface
@@ -438,25 +440,15 @@ public class WholeProfileService {
 	public Response improveProfile(int destUserId, int originUserId) {
 		ProfileProfileRecord destProfile = profileDao.getProfileByIdOrUserIdOrUUID(destUserId, 0, null);
 		ProfileProfileRecord originProfile = profileDao.getProfileByIdOrUserIdOrUUID(originUserId, 0, null);
-		if(originProfile != null && destProfile != null) {
-			QueryUtil queryUtil = new QueryUtil();
-			HashMap<String, String> eqs = new HashMap<String, String>();
-			queryUtil.setEqualFilter(eqs);
-			// orgin 简历信息查询
-			try {
-				eqs.put("profile_id", String.valueOf(originProfile.getId()));
-//				ProfileBasicRecord originRecord = profileBasicDao.getResource(queryUtil);
-				List<ProfileAttachmentRecord> originAttachments = attachmentDao.getResources(queryUtil);
-				List<ProfileAwardsRecord> originAwards = awardsDao.getResources(queryUtil);
-				List<ProfileCredentialsRecord> originCredentials = credentialsDao.getResources(queryUtil);
-				List<ProfileEducationRecord> originEducations = educationDao.getResources(queryUtil);
-				List<ProfileIntentionRecord> originIntentions = intentionDao.getResources(queryUtil);
-				List<ProfileLanguageRecord> originLanguages = languageDao.getResources(queryUtil);
-				ProfileOtherRecord originOther = otherDao.getResource(queryUtil);
-				List<ProfileProjectexpRecord> originProjectexps = projectExpDao.getResources(queryUtil);
-				List<ProfileSkillRecord> originSkills = skillDao.getResources(queryUtil);
-				List<ProfileWorkexpRecord> originWorkxps = workExpDao.getResources(queryUtil);
-				List<ProfileWorksRecord> originWorks = worksDao.getResources(queryUtil);
+		try {
+			if (originProfile == null && destProfile != null && userDao.getUserById(originUserId) != null) {
+				destProfile.setUserId(UInteger.valueOf(originUserId));
+				profileDao.postResource(destProfile);
+			}
+			if(originProfile != null && destProfile != null) {
+				QueryUtil queryUtil = new QueryUtil();
+				HashMap<String, String> eqs = new HashMap<String, String>();
+				queryUtil.setEqualFilter(eqs);
 				// dest 简历信息查询
 				eqs.put("profile_id", String.valueOf(destProfile.getId()));
 				ProfileBasicRecord destRecord = profileBasicDao.getResource(queryUtil);
@@ -464,88 +456,52 @@ public class WholeProfileService {
 				List<ProfileAwardsRecord> destAwards = awardsDao.getResources(queryUtil);
 				List<ProfileCredentialsRecord> destCredentials = credentialsDao.getResources(queryUtil);
 				List<ProfileEducationRecord> destEducations = educationDao.getResources(queryUtil);
-				List<ProfileIntentionRecord> destIntentions = intentionDao.getResources(queryUtil);
+				List<IntentionRecord> destIntentions = new ArrayList<IntentionRecord>();
+				QueryUtil query = new QueryUtil();
+				Map<String, String> param = new HashMap<>();
+				query.setEqualFilter(param);
+				intentionDao.getResources(queryUtil).forEach(intention -> {
+					IntentionRecord irecodr = new IntentionRecord(intention);
+					param.put("profile_intention_id", String.valueOf(intention.getId().intValue()));
+					try {
+						irecodr.setCities(intentionCityDao.getResources(query));
+						irecodr.setPositions(intentionPositionDao.getResources(query));
+						irecodr.setIndustries(intentionIndustryDao.getResources(query));
+						destIntentions.add(irecodr);
+					} catch (Exception e) {
+						logger.error(e.getMessage(), e);
+					}
+				});
 				List<ProfileLanguageRecord> destLanguages = languageDao.getResources(queryUtil);
 				ProfileOtherRecord destOther = otherDao.getResource(queryUtil);
 				List<ProfileProjectexpRecord> destProjectexps = projectExpDao.getResources(queryUtil);
 				List<ProfileSkillRecord> destSkills = skillDao.getResources(queryUtil);
-				List<ProfileWorkexpRecord> destWorkxps = workExpDao.getResources(queryUtil);
+				List<ProfileWorkexpEntity> destWorkxps = new ArrayList<ProfileWorkexpEntity>();
+				workExpDao.getResources(queryUtil).forEach(workexp -> {
+					ProfileWorkexpEntity workexpEntity = new ProfileWorkexpEntity(workexp);
+					destWorkxps.add(workexpEntity);
+				});
 				List<ProfileWorksRecord> destWorks = worksDao.getResources(queryUtil);
-				improveBasic(destRecord, originProfile.getId().intValue());
-				if ((originAttachments == null || originAttachments.isEmpty()) && destAttachments != null && !destAttachments.isEmpty()) {
-					destAttachments.forEach(attachment -> {
-						attachment.setProfileId(originProfile.getId());
-					});
-					attachmentDao.postResources(destAttachments);
-				}
-				if ((originAwards == null || originAwards.isEmpty()) && destAwards != null && !destAwards.isEmpty()) {
-					destAwards.forEach(award -> {
-						award.setProfileId(originProfile.getId());
-					});
-					awardsDao.postResources(destAwards);
-				}
-				if ((originCredentials == null || originCredentials.isEmpty()) && destCredentials != null && !destCredentials.isEmpty()) {
-					destCredentials.forEach(credental -> {
-						credental.setProfileId(originProfile.getId());
-					});
-					credentialsDao.postResources(destCredentials);
-				}
-				if ((originEducations == null || originEducations.isEmpty()) && destEducations != null && !destEducations.isEmpty()) {
-					destEducations.forEach(education -> {
-						education.setProfileId(originProfile.getId());
-					});
-					educationDao.postResources(destEducations);
-				}
-				if ((originIntentions == null || originIntentions.isEmpty()) && destIntentions != null && !destIntentions.isEmpty()) {
-					destIntentions.forEach(intention -> {
-						intention.setProfileId(originProfile.getId());
-					});
-					intentionDao.postResources(destIntentions);
-				}
-				if ((originLanguages == null || originLanguages.isEmpty()) && destLanguages != null && !destLanguages.isEmpty()) {
-					destLanguages.forEach(language -> {
-						language.setProfileId(originProfile.getId());
-					});
-					languageDao.postResources(destLanguages);
-				}
-				if (originOther == null && destOther != null) {
-					originOther = destOther;
-					originOther.setProfileId(originProfile.getId());
-					otherDao.putResource(originOther);
-				}
-				if ((originProjectexps == null || originProjectexps.isEmpty()) && destProjectexps != null && !destProjectexps.isEmpty()) {
-					destProjectexps.forEach(projectex -> {
-						projectex.setProfileId(originProfile.getId());
-					});
-					projectExpDao.postResources(destProjectexps);
-				}
-				if ((originSkills == null || originSkills.isEmpty()) && destSkills != null && !destSkills.isEmpty()) {
-					destSkills.forEach(skill -> {
-						skill.setProfileId(originProfile.getId());
-					});
-					skillDao.postResources(destSkills);
-				}
-				if ((originWorks == null || originWorks.isEmpty()) && destWorks != null && !destWorks.isEmpty()) {
-					destWorks.forEach(work -> {
-						work.setProfileId(originProfile.getId());
-					});
-					worksDao.postResources(destWorks);
-				}
-				if ((originWorkxps == null || originWorkxps.isEmpty()) && destWorkxps != null && !destWorkxps.isEmpty()) {
-					destWorkxps.forEach(workxp -> {
-						workxp.setPositionCode(originProfile.getId());
-					});
-					workExpDao.postResources(destWorkxps);
-				}
-			} catch (Exception e) {
-				logger.error(e.getMessage(), e);
-				ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+				int originProfileId = originProfile.getId().intValue();
+				improveBasic(destRecord, originProfileId);
+				improveAttachment(destAttachments, originProfileId);
+				improveAwards(destAwards, originProfileId);
+				improveCredentials(destCredentials, originProfileId);
+				improveEducation(destEducations, originProfileId);
+				improveIntention(destIntentions, originProfileId);
+				improveLanguage(destLanguages, originProfileId);
+				improveOther(destOther, originProfileId);
+				improveProjectexp(destProjectexps, originProfileId);
+				improveSkill(destSkills, originProfileId);
+				improveWorks(destWorks, originProfileId);
+				improveWorkexp(destWorkxps, originProfileId);
 			}
 			completenessImpl.getCompleteness(0, null, originProfile.getId().intValue());
-			return ResponseUtils.success(null);
-		} else {
-			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ALLREADY_NOT_EXIST);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		}
+		return ResponseUtils.success(null);
 	}
 
 	private void improveUser(UserUserRecord userRecord) {
@@ -785,39 +741,39 @@ public class WholeProfileService {
 						basic.setGender(basicRecord.getGender());
 						flag = true;
 					}
-					if(basicRecord.getNationalityCode() != null) {
+					if(basicRecord.getNationalityCode() != null && basic.getNationalityCode() == null) {
 						basic.setNationalityCode(basicRecord.getNationalityCode());
 						flag = true;
 					}
-					if(StringUtils.isNotNullOrEmpty(basicRecord.getNationalityName())) {
+					if(StringUtils.isNotNullOrEmpty(basicRecord.getNationalityName()) && StringUtils.isNullOrEmpty(basic.getNationalityName())) {
 						basic.setNationalityName(basicRecord.getNationalityName());
 						flag = true;
 					}
-					if(basicRecord.getCityCode() != null) {
+					if(basicRecord.getCityCode() != null && basic.getCityCode() == null) {
 						basic.setCityCode(basicRecord.getCityCode());
 						flag = true;
 					}
-					if(StringUtils.isNotNullOrEmpty(basicRecord.getCityName())) {
+					if(StringUtils.isNotNullOrEmpty(basicRecord.getCityName()) && StringUtils.isNullOrEmpty(basic.getCityName())) {
 						basic.setCityName(basicRecord.getCityName());
 						flag = true;
 					}
-					if(basicRecord.getBirth() != null) {
+					if(basicRecord.getBirth() != null && basic.getBirth() == null) {
 						basic.setBirth(basicRecord.getBirth());
 						flag = true;
 					}
-					if(StringUtils.isNotNullOrEmpty(basicRecord.getWeixin())) {
+					if(StringUtils.isNotNullOrEmpty(basicRecord.getWeixin()) && StringUtils.isNullOrEmpty(basic.getWeixin())) {
 						basic.setWeixin(basicRecord.getWeixin());
 						flag = true;
 					}
-					if(StringUtils.isNotNullOrEmpty(basicRecord.getQq())) {
+					if(StringUtils.isNotNullOrEmpty(basicRecord.getQq()) && StringUtils.isNullOrEmpty(basic.getQq())) {
 						basic.setQq(basicRecord.getQq());
 						flag = true;
 					}
-					if(StringUtils.isNotNullOrEmpty(basicRecord.getMotto())) {
+					if(StringUtils.isNotNullOrEmpty(basicRecord.getMotto()) && StringUtils.isNullOrEmpty(basic.getMotto())) {
 						basic.setMotto(basicRecord.getMotto());
 						flag = true;
 					}
-					if(StringUtils.isNotNullOrEmpty(basicRecord.getSelfIntroduction())) {
+					if(StringUtils.isNotNullOrEmpty(basicRecord.getSelfIntroduction()) && StringUtils.isNullOrEmpty(basic.getSelfIntroduction())) {
 						basic.setSelfIntroduction(basicRecord.getSelfIntroduction());
 						flag = true;
 					}

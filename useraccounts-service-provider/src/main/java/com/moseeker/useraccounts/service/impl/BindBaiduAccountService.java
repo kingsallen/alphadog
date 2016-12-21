@@ -2,23 +2,15 @@ package com.moseeker.useraccounts.service.impl;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-
-import com.alibaba.fastjson.asm.Type;
-import com.google.common.base.FinalizablePhantomReference;
-import com.moseeker.common.constants.Constant;
 import com.moseeker.common.providerutils.QueryUtil;
-import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.userdb.tables.records.UserBdUserRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.useraccounts.struct.BindType;
 import com.moseeker.useraccounts.dao.impl.UserBdUserDaoImpl;
 import com.moseeker.useraccounts.service.BindOnAccountService;
 
@@ -67,16 +59,17 @@ public class BindBaiduAccountService extends BindOnAccountService{
 	protected boolean volidationBind(UserUserRecord mobileUser, UserUserRecord idUser) throws Exception {
 		QueryUtil queryUtil = new QueryUtil();
 		Map<String, String> map = new HashMap<String, String>();
-		map.put("user_id", String.valueOf(idUser.getId()));
 		queryUtil.setEqualFilter(map);
-		UserBdUserRecord bdIdUser = bduserDao.getResource(queryUtil);
-		map.put("sysuser_id", String.valueOf(idUser.getId()));
-		UserWxUserRecord wxIdUser = wxUserDao.getResource(queryUtil);
+//		map.put("user_id", String.valueOf(idUser.getId()));
+//		UserBdUserRecord bdIdUser = bduserDao.getResource(queryUtil);
 		map.put("user_id", String.valueOf(mobileUser.getId()));
 		UserBdUserRecord bdMbUser = bduserDao.getResource(queryUtil);
+		map.clear();
+//		map.put("sysuser_id", String.valueOf(idUser.getId()));
+//		UserWxUserRecord wxIdUser = wxUserDao.getResource(queryUtil);
 		map.put("sysuser_id", String.valueOf(mobileUser.getId()));
 		UserWxUserRecord wxMbUser = wxUserDao.getResource(queryUtil);
-		if ((bdIdUser != null && bdMbUser != null) || (wxIdUser != null && wxMbUser != null)) {
+		if ((bdMbUser != null) || (wxMbUser != null)) {
 			return true;
 		}
 		return false;

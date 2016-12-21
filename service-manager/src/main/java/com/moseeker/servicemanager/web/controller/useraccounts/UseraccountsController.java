@@ -17,7 +17,6 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.util.Params;
-import com.moseeker.thrift.gen.apps.profilebs.service.ProfileBS;
 import com.moseeker.thrift.gen.apps.userbs.service.UserBS;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;

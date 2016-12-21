@@ -90,7 +90,7 @@ public abstract class BindOnAccountService {
 				userMobile.setUnionid(unionid);
 				if (userdao.putResource(userMobile) > 0) {
 					Map<String, Object> map = new HashMap<String, Object>();
-					resultFull(userMobile, map);
+					resultFull(userUnionid, map);
 					return ResponseUtils.success(map);
 				} else {
 					return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
@@ -105,7 +105,7 @@ public abstract class BindOnAccountService {
 				// 来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录, 7:PC(正常添加) 8:PC(我要投递) 9:
 				// PC(我感兴趣)
 				Map<String, Object> map = new HashMap<String, Object>();
-				resultFull(userMobile, map);
+				resultFull(userUnionid, map);
 				return ResponseUtils.success(map);
 			} else {
 				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
