@@ -321,6 +321,7 @@ public class UseraccountsService {
 			CommonQuery query1 = new CommonQuery();
 			Map<String, String> filters1 = new HashMap<>();
 			filters1.put("unionid", unionid);
+			filters1.put("parentid", "0");
 			query1.setEqualFilter(filters1);
 			UserUserRecord userUnionid = userdao.getResource(query1);
 
