@@ -43,3 +43,10 @@ struct JobResumeOther {
     3:  optional Timestamp create_time,       // 表记录创建时间
     4:  optional Timestamp update_time        // 最新更新时间
 }
+struct ProcessValidationStruct{
+	1: optional i32 id,
+	2: optional i32 company_id,
+	3: optional i32 recommender_id,
+	4: optional i32 recruit_order,
+	5: optional i32 template_id
+}
