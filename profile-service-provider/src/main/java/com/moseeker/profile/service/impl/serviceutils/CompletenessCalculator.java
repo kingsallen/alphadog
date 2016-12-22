@@ -179,11 +179,13 @@ public class CompletenessCalculator {
 			if(record.getEndUntilNow().intValue()==1){
 				return 45;
 			}
-			if(endTime==null){
-				endTime=record.getEnd();
-			}
-			if(endTime.before(record.getEnd())){
-				endTime=record.getEnd();
+			if(record.getEnd()!=null){
+				if(endTime==null){
+					endTime=record.getEnd();
+				}
+				if(endTime.before(record.getEnd())){
+					endTime=record.getEnd();
+				}
 			}
 		}
 		if(endTime==null){
@@ -200,7 +202,7 @@ public class CompletenessCalculator {
 		if(workTime==0){
 			return 0;
 		}else{
-			completeness= workTime*45/16;
+			completeness= Math.abs(workTime*45/period);
 		}	
 		if(completeness >= Constant.PROFILER_COMPLETENESS_WORKEXP_MAXVALUE) {
 			completeness = Constant.PROFILER_COMPLETENESS_WORKEXP_MAXVALUE;
@@ -231,7 +233,7 @@ public class CompletenessCalculator {
 		if(period<=0){
 			period=1;
 		}
-		completeness=time/period*45;
+		completeness=Math.abs(time/period*45);
 		if(completeness >= Constant.PROFILER_COMPLETENESS_WORKEXP_MAXVALUE) {
 			completeness = Constant.PROFILER_COMPLETENESS_WORKEXP_MAXVALUE;
 		}
@@ -292,8 +294,10 @@ public class CompletenessCalculator {
 			for(int i=0;i<list.size();i++){
 				int start=list.get(i).get("start");
 				int end=list.get(i).get("end");
-				
-				if(i>0){
+				if(startTime1==0&&endtime1==0){
+					startTime1=start;
+					endtime1=end;
+				}else{
 					//如果上一段工作经历的结束时间和下一份工作经历的起始时间在同一年，那么合并两段经历
 					if(endtime1==start){
 						endtime1=end;
@@ -306,17 +310,14 @@ public class CompletenessCalculator {
 						if(endtime1==startTime1){
 							time+=1;
 						}else{
-							time+=endtime1-startTime1;
+							time+=Math.abs(endtime1-startTime1+1);
 						}
-						startTime1=start;
-						endtime1=end;
+						startTime1=0;
+						endtime1=0;
 					}
-				}else{
-					startTime1=start;
-					endtime1=end;
 				}
 			}
-			time+=endtime1-startTime1;
+			time+=Math.abs(endtime1-startTime1);
 			if(time==0){
 				time=1;
 			}
