@@ -189,4 +189,24 @@ public class ProfileController {
 			// do nothing
 		}
 	}
+	@RequestMapping(value = "/profile/process", method = RequestMethod.POST)
+	@ResponseBody
+	public String rofileProcess(HttpServletRequest request, HttpServletResponse response) {
+		try {
+
+			Params<String, Object> form = ParamUtils.parseRequestParam(request);
+			Response result = profileBSService.retrieveProfile(
+					form.getInt("position_id"), 
+					form.getInt("channel"),
+					JSON.toJSONString(form.get("profile")));
+
+			return ResponseLogNotification.success(request, result);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+			return ResponseLogNotification.fail(request, e.getMessage());
+		} finally {
+			// do nothing
+		}
+	}
 }
