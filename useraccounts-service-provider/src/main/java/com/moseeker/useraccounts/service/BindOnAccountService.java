@@ -105,6 +105,8 @@ public abstract class BindOnAccountService {
 				// 来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录, 7:PC(正常添加) 8:PC(我要投递) 9:
 				// PC(我感兴趣)
 				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("dest_id", userUnionid.getId().intValue());
+				map.put("origin_id", userMobile.getId().intValue());
 				resultFull(userUnionid, map);
 				return ResponseUtils.success(map);
 			} else {

@@ -7,6 +7,7 @@ import org.apache.thrift.TException;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
@@ -24,9 +25,12 @@ public class UserBs {
 	public Response bindOnAccount(int appid, String unionid, String code,
 			String mobile, BindType bindType) throws TException {
 		Response result = useraccountsServices.postuserbindmobile(appid, unionid, code, mobile, bindType);
-		if (result.getStatus() == 0) {
-			Map<String, Object> data = JSON.parseObject(result.getData());
-			wholeService.moveProfile(NumberUtils.toInt(String.valueOf(data.get("id")), -1), NumberUtils.toInt(String.valueOf(data.get("parentid")), -1));
+		JSONObject data = JSON.parseObject(result.getData());
+		int destId = NumberUtils.toInt(String.valueOf(data.remove("dest_id")), -1);
+		int originId = NumberUtils.toInt(String.valueOf(data.remove("origin_id")), -1);
+		result.setData(data.toString());
+		if (result.getStatus() == 0 && destId != -1 && originId != -1) {
+			wholeService.moveProfile(destId, originId);
 		}
 		return result;
 	}
