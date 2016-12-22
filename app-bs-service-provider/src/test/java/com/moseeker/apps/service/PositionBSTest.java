@@ -1,22 +1,66 @@
 package com.moseeker.apps.service;
 
 import org.apache.thrift.TException;
-import org.apache.thrift.protocol.TCompactProtocol;
-import org.apache.thrift.protocol.TMultiplexedProtocol;
-import org.apache.thrift.protocol.TProtocol;
-import org.apache.thrift.transport.TFastFramedTransport;
-import org.apache.thrift.transport.TSocket;
-import org.apache.thrift.transport.TTransport;
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
-import com.moseeker.thrift.gen.apps.positionbs.service.PositionBS.Client;
-import com.moseeker.thrift.gen.apps.positionbs.service.PositionBS.Client.Factory;
-import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
-import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.company.service.CompanyServices;
+import com.moseeker.thrift.gen.dao.service.CompanyDao;
+import com.moseeker.thrift.gen.dao.service.PositionDao;
+import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
+import com.moseeker.thrift.gen.position.service.PositionServices;
+import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
+import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 
 public class PositionBSTest {
+	
+	@Mock
+	ChaosServices.Iface chaosService;
+	
+	@Mock
+	PositionServices.Iface positionServices;
+	
+	@Mock
+	PositionDao.Iface positionDao;
 
+	@Mock
+	UserHrAccountService.Iface userHrAccountService ;
+
+	@Mock
+	CompanyServices.Iface companyService;
+
+	@Mock
+	CompanyDao.Iface CompanyDao;
+
+	
+	@Rule 
+	public MockitoRule mockitoRule = MockitoJUnit.rule();
+	
+	@Before
+	private void init() {
+		int positionId = 0;
+		int channel = 0;
+		ThirdPartyPositionForSynchronizationWithAccount account = new ThirdPartyPositionForSynchronizationWithAccount();
+		PositionServices.Iface positionServices = Mockito.mock(PositionServices.Iface.class);
+		try {
+			Mockito.when(positionServices.createRefreshPosition(positionId, channel)).thenReturn(account);
+			
+		} catch (TException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	@Test
+	public void testRefreshPosition() {
+		
+	}
+
+	/*@Test
     public void testDao() {
     	TTransport transport = null;
 		try {
@@ -37,5 +81,5 @@ public class PositionBSTest {
 				transport.close();
 			}
 		}
-    }
+    }*/
 }
