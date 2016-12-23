@@ -23,9 +23,11 @@ import com.moseeker.common.email.config.EmailSessionConfig;
 import com.moseeker.common.email.mail.Mail;
 import com.moseeker.common.email.mail.Mail.MailBuilder;
 import com.moseeker.common.email.mail.Message;
+import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.mq.server.MqServer;
+import com.moseeker.mq.service.WarnService;
 
 /**
  * 
@@ -56,12 +58,14 @@ public class ConstantlyMailConsumer {
 	 * @return
 	 */
 	private String fetchConstantlyMessage() {
-		RedisClient redisClient = RedisClientFactory.getCacheClient();
-		List<String> result = redisClient.brpop(Constant.APPID_ALPHADOG, Constant.MQ_MESSAGE_EMAIL_BIZ);
-		if(result != null && result.size() > 0) {
-			return result.get(1);
+		try {
+			RedisClient redisClient = RedisClientFactory.getCacheClient();
+			return redisClient.brpop(Constant.APPID_ALPHADOG,
+					Constant.MQ_MESSAGE_EMAIL_BIZ).get(1);
+		} catch (RedisException e) {
+			WarnService.notify(e);
+			return null;
 		}
-		return null;
 	}
 
 	/**

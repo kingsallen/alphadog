@@ -24,6 +24,7 @@ import com.moseeker.common.constants.RespnoseUtil;
 import com.moseeker.common.constants.TemplateId;
 import com.moseeker.common.constants.UserSource;
 import com.moseeker.common.constants.UserType;
+import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.daoutils.BaseDao;
@@ -1181,8 +1182,9 @@ public class UseraccountsService {
 	 */
 	private boolean validateCode(String mobile, String code, int type) {
 		String codeinRedis = null;
-		RedisClient redisclient = RedisClientFactory.getCacheClient();
-		switch (type) {
+		try {
+			RedisClient redisclient = RedisClientFactory.getCacheClient();
+			switch (type) {
 			case 1:
 				codeinRedis = redisclient.get(0, "SMS_SIGNUP", mobile);
 				if (code.equals(codeinRedis)) {
@@ -1197,22 +1199,25 @@ public class UseraccountsService {
 					return true;
 				}
 			case 3:
-				codeinRedis = redisclient.get(0, "SMS_CHANGEMOBILE_CODE", mobile);
+				codeinRedis = redisclient.get(0, "SMS_CHANGEMOBILE_CODE",
+						mobile);
 				if (code.equals(codeinRedis)) {
 					redisclient.del(0, "SMS_CHANGEMOBILE_CODE", mobile);
 					return true;
 				}
 			case 4:
-				codeinRedis = redisclient.get(0, "SMS_RESETMOBILE_CODE", mobile);
+				codeinRedis = redisclient
+						.get(0, "SMS_RESETMOBILE_CODE", mobile);
 				if (code.equals(codeinRedis)) {
 					redisclient.del(0, "SMS_RESETMOBILE_CODE", mobile);
 					return true;
 				}
 				break;
-			default :
+			default:
+			}
+		} catch (RedisException e) {
+			WarnService.notify(e);
 		}
-		
-
 		return false;
 	}
 

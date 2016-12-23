@@ -162,6 +162,13 @@ public class WarnBean implements org.apache.thrift.TBase<WarnBean, WarnBean._Fie
     this.event_desc = event_desc;
     this.event_local = event_local;
   }
+  
+  public WarnBean( String project_appid, String event_key, String event_desc, String event_local){
+	    this.project_appid = project_appid;
+	    this.event_key = event_key;
+	    this.event_desc = event_desc;
+	    this.event_local = event_local;
+  }
 
   /**
    * Performs a deep copy on <i>other</i>.
