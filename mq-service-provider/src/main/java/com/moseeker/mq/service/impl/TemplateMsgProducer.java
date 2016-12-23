@@ -12,10 +12,12 @@ import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.KeyIdentifier;
+import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.BeanUtils;
+import com.moseeker.mq.service.WarnService;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
 
@@ -60,6 +62,8 @@ public class TemplateMsgProducer {
 					return ResponseUtils.success(res);
 				}
 			}
+		} catch (RedisException e) {
+    		WarnService.notify(e);
 		} catch (Exception e) {
 			logger.error("MqServiceImpl messageTemplateNotice error: ", e);
 		} finally {
