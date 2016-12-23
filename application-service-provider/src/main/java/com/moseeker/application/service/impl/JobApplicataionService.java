@@ -497,7 +497,9 @@ public class JobApplicataionService {
         if(jobApplication.getApp_tpl_id() == 0){
             jobApplication.setApp_tpl_id(Constant.RECRUIT_STATUS_APPLY);
         }
-
+        if(jobApplication.getCompany_id() == 0) {
+        	jobApplication.setCompany_id(jobPositionRecord.getCompanyId().intValue());
+        }
         // ats_status初始化 ats_status初始化:1 是ats职位申请  ats_status初始化:0 仟寻职位申请
         // TODO 职位表的source_id > 0 只能识别出是ats职位/ 不能识别出该ats是否可用
         if(jobPositionRecord != null && jobPositionRecord.getSourceId() > 0){
