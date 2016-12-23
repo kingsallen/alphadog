@@ -1,8 +1,10 @@
 package com.moseeker.apps.constants;
 
+import java.text.MessageFormat;
+
 public enum TemplateMs {
 	
-	TOSEEKER(9) {
+	TOSEEKER(9, "{0}/mobile/application?wechat_signature={1}&m=checkstatus&app_id={2}") {
 		@Override
 		public MsInfo processStatus(int status, Object...args) {
 			MsInfo mi = null;
@@ -26,16 +28,16 @@ public enum TemplateMs {
 		}
 	},
 	
-	TORECOM(9) {
+	TORECOM(9, "{0}/mobile/sysuser?m=recom&wechat_signature={1}&app_id={2}") {
 		@Override
 		public MsInfo processStatus(int status, Object ...args) {
 			MsInfo mi = null;
 			switch (status) {
 				case 12:
-			        mi = new MsInfo(String.format("您推荐的{0}已经成功入职", args), "成功入职", "感谢您对公司人才招聘的贡献！");
+			        mi = new MsInfo(MessageFormat.format("您推荐的{0}已经成功入职", args), "成功入职", "感谢您对公司人才招聘的贡献！");
 			        break;
 				case 13:
-				    mi = new MsInfo(String.format("您推荐的【{0}】经评定与我司需求匹配度上存在一定差异，现将其资料纳入公司人才库中，后续有机会再与其联系。", args), "纳入人才库", "感谢您对公司人才招聘的贡献！");
+				    mi = new MsInfo(MessageFormat.format("您推荐的【{0}】经评定与我司需求匹配度上存在一定差异，现将其资料纳入公司人才库中，后续有机会再与其联系。", args), "纳入人才库", "感谢您对公司人才招聘的贡献！");
 				    break;
 			}
 			return mi;
@@ -43,9 +45,11 @@ public enum TemplateMs {
 	};
 	
 	private int systemlateId;
+	private String url;
 	
-	TemplateMs(int systemlateId) {
+	TemplateMs(int systemlateId, String url) {
 		this.systemlateId = systemlateId;
+		this.url = url;
 	}
 	
 	public int getSystemlateId() {
@@ -54,6 +58,14 @@ public enum TemplateMs {
 
 	public void setSystemlateId(int systemlateId) {
 		this.systemlateId = systemlateId;
+	}
+	
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
 	public abstract MsInfo processStatus(int status, Object ...args);
