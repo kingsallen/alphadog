@@ -48,5 +48,6 @@ struct ProcessValidationStruct{
 	2: optional i32 company_id,
 	3: optional i32 recommender_id,
 	4: optional i32 recruit_order,
-	5: optional i32 template_id
+	5: optional i32 template_id,
+	6: optional i64 reward
 }
