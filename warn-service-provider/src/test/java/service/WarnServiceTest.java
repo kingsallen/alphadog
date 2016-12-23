@@ -1,39 +1,33 @@
 package service;
 
+import java.util.concurrent.TimeUnit;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.rpccenter.main.Server;
-import com.moseeker.thrift.gen.warn.service.WarnSetService;
+
 import com.moseeker.thrift.gen.warn.struct.WarnBean;
-import com.moseeker.warn.server.WarnServer;
-import com.moseeker.warn.thrift.WarnThriftService;
+import com.moseeker.warn.service.ValidationService;
 import com.moseeker.warn.utils.SendChannel;
 
 public class WarnServiceTest {
 	
-	private WarnSetService.Iface warn = null;
+	private ValidationService service;
 	
-	private AnnotationConfigApplicationContext annConfig;
-	
-	private Server server;
-	
+	@SuppressWarnings("resource")
 	@Before
-	public void doFast() throws Exception{
-		annConfig = new AnnotationConfigApplicationContext();
-		annConfig.scan("com.moseeker.warn");
-		annConfig.refresh();
-		server = new Server(WarnServer.class, 1221, annConfig.getBean(WarnThriftService.class));
-		server.start();
-		warn = ServiceManager.SERVICEMANAGER.getService(WarnSetService.Iface.class);
+	public void init() {
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+		context.scan("com.moseeker.warn");
+		context.refresh();
+		service = context.getBean(ValidationService.class);
 	}
 	
 	@Test
 	public void notifyTest() throws Exception{
 		try {
-			warn.sendOperator(new WarnBean("0", "REDIS_CONNECT_ERROR", "Redis 连接失败", getClass().getName().concat(":36")));
+			service.valid(new WarnBean("0", "REDIS_CONNECT_ERROR", "Redis 连接失败", getClass().getName().concat(":36")));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -42,11 +36,15 @@ public class WarnServiceTest {
 	@After
 	public void doLast(){
 		SendChannel.threadPool.shutdown();
-		while(true){
-			if (SendChannel.threadPool.isTerminated()) {
-				if (server != null) {
-					server.close();
+		int retry = 6;
+		while(retry > 0){
+			try {
+				// 每10秒检查一次是否关闭
+				if (SendChannel.threadPool.awaitTermination(10, TimeUnit.SECONDS)) {
+					break;
 				}
+				retry--;
+			} catch (InterruptedException e) {
 				break;
 			}
 		}
