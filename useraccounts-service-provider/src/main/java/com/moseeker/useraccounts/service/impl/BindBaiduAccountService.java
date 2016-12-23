@@ -2,10 +2,12 @@ package com.moseeker.useraccounts.service.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.db.userdb.tables.records.UserBdUserRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
@@ -73,5 +75,25 @@ public class BindBaiduAccountService extends BindOnAccountService{
 			return true;
 		}
 		return false;
+	}
+	
+	@Override
+	protected void combineAccount(int appid, UserUserRecord userMobile, UserUserRecord userUnionid) {
+		try {
+			// unnionid置为子账号
+			userUnionid.setParentid(userMobile.getId());
+			if (userdao.putResource(userUnionid) > 0) {
+				consummateUserAccount(userMobile, userUnionid);
+			}
+			doSomthing(userMobile.getId().intValue(), userUnionid.getId().intValue());
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+	}
+
+	@Override
+	protected void completeUserMobile(UserUserRecord userMobile, String unionid) {
+		// TODO Auto-generated method stub
+		
 	}
 }

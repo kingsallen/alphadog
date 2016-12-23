@@ -12,12 +12,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -87,14 +85,10 @@ public abstract class BindOnAccountService {
 				if(volidationBind(userMobile, userUnionid)) {
 					return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_BIND_REPEATBIND);
 				}
-				userMobile.setUnionid(unionid);
-				if (userdao.putResource(userMobile) > 0) {
-					Map<String, Object> map = new HashMap<String, Object>();
-					resultFull(userMobile, map);
-					return ResponseUtils.success(map);
-				} else {
-					return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
-				}
+				completeUserMobile(userMobile, unionid);
+				Map<String, Object> map = new HashMap<String, Object>();
+				resultFull(userMobile, map);
+				return ResponseUtils.success(map);
 			} else if (userUnionid != null && userMobile != null
 					&& userUnionid.getId().intValue() != userMobile.getId().intValue()) {
 				// 2 accounts, one unoinid, one mobile, need to merge.
@@ -173,60 +167,7 @@ public abstract class BindOnAccountService {
 	 * @param userMobile
 	 * @param userUnionid
 	 */
-	protected void combineAccount(int appid, UserUserRecord userMobile, UserUserRecord userUnionid){
-		try {
-			// unnionid置为子账号
-			userUnionid.setParentid(userMobile.getId());
-			/* 完善unionid */
-			if (StringUtils.isNullOrEmpty(userMobile.getUnionid())
-					&& StringUtils.isNotNullOrEmpty(userUnionid.getUnionid())) {
-				userMobile.setUnionid(userUnionid.getUnionid());
-			}
-			userUnionid.setUnionid("");
-			if (userdao.putResource(userUnionid) > 0) {
-				consummateUserAccount(userMobile, userUnionid);
-				// profile合并成功
-			}
-			// weixin端(聚合号),weixin端（企业号） 发起, 保留微信端 profile; 否则保留pc端(无需处理).
-//			switch (appid) {
-//			case Constant.APPID_QX:
-//			case Constant.APPID_PLATFORM:
-//				ProfileProfileRecord userMobileProfileRecord = profileDao
-//						.getProfileByUserId(userMobile.getId().intValue());
-//				// 微信端profile转移到pc用户下.
-//				ProfileProfileRecord userUnionProfileRecord = profileDao
-//						.getProfileByUserId(userUnionid.getId().intValue());
-//				if (userUnionProfileRecord != null) {
-//					// pc 端profile 设置为无效
-//					if (userMobileProfileRecord != null) {
-//						profileDao.delResource(userMobileProfileRecord);
-//					}
-//					userUnionProfileRecord.setUserId(userMobile.getId());
-//					profileDao.putResource(userUnionProfileRecord);
-//				}
-//
-//				break;
-//			case Constant.APPID_C:
-//				ProfileProfileRecord userMobileProfileRecord1 = profileDao
-//					.getProfileByUserId(userMobile.getId().intValue());
-//				if(userMobileProfileRecord1 == null) {
-//					// 微信端profile转移到pc用户下.
-//					ProfileProfileRecord userUnionProfileRecord1 = profileDao
-//							.getProfileByUserId(userUnionid.getId().intValue());
-//					if(userUnionProfileRecord1 != null) {
-//						userUnionProfileRecord1.setUserId(userMobile.getId());
-//						profileDao.putResource(userUnionProfileRecord1);
-//					}
-//				}
-//			default:
-//				break;
-//			}
-			
-			doSomthing(userMobile.getId().intValue(), userUnionid.getId().intValue());
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-	}
+	protected abstract void combineAccount(int appid, UserUserRecord userMobile, UserUserRecord userUnionid);
 	
 	/**
 	 * 账号合并完善账号信息
@@ -236,7 +177,7 @@ public abstract class BindOnAccountService {
 	 * @param userUnionid
 	 *            信息来源
 	 */
-	private void consummateUserAccount(UserUserRecord userMobile, UserUserRecord userUnionid) {
+	protected void consummateUserAccount(UserUserRecord userMobile, UserUserRecord userUnionid) {
 		/* 完善用户名称 */
 		if (StringUtils.isNullOrEmpty(userMobile.getName()) && StringUtils.isNotNullOrEmpty(userUnionid.getName())) {
 			userMobile.setName(userUnionid.getName());
@@ -305,4 +246,6 @@ public abstract class BindOnAccountService {
 	 * 判断是否绑定过第三方账号
 	 */
 	protected abstract boolean volidationBind(UserUserRecord mobileUser, UserUserRecord idUser) throws Exception;
+	
+	protected abstract void completeUserMobile(UserUserRecord userMobile, String unionid);
 }

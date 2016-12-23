@@ -54,4 +54,35 @@ public class BindWxAccountService extends BindOnAccountService{
 	protected boolean volidationBind(UserUserRecord mobileUser, UserUserRecord idUser) {
 		return StringUtils.isNotNullOrEmpty(mobileUser.getUnionid());
 	}
+
+	@Override
+	protected void combineAccount(int appid, UserUserRecord userMobile, UserUserRecord userUnionid) {
+		try {
+			// unnionid置为子账号
+			userUnionid.setParentid(userMobile.getId());
+			/* 完善unionid */
+			if (StringUtils.isNullOrEmpty(userMobile.getUnionid())
+					&& StringUtils.isNotNullOrEmpty(userUnionid.getUnionid())) {
+				userMobile.setUnionid(userUnionid.getUnionid());
+			}
+			userUnionid.setUnionid("");
+			if (userdao.putResource(userUnionid) > 0) {
+				consummateUserAccount(userMobile, userUnionid);
+			}
+			doSomthing(userMobile.getId().intValue(), userUnionid.getId().intValue());
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+	}
+	
+	@Override
+	protected void completeUserMobile(UserUserRecord userMobile, String unionid) {
+		// TODO Auto-generated method stub
+		userMobile.setUnionid(unionid);
+		try {
+			userdao.putResource(userMobile);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+	}
 }

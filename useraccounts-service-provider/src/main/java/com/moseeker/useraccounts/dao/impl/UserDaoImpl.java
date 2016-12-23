@@ -110,10 +110,6 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
 	        .set(UserIntention.USER_INTENTION.SYSUSER_ID, orig)
 	        .where(UserIntention.USER_INTENTION.SYSUSER_ID.equal(dest))
 	        .execute();
-	        create.update(UserWxUser.USER_WX_USER)
-            .set(UserWxUser.USER_WX_USER.SYSUSER_ID, orig)
-            .where(UserWxUser.USER_WX_USER.SYSUSER_ID.equal(dest))
-            .execute();
 	        create.update(UserBdUser.USER_BD_USER)
 	        .set(UserBdUser.USER_BD_USER.USER_ID, orig)
 	        .where(UserBdUser.USER_BD_USER.USER_ID.equal(dest))
