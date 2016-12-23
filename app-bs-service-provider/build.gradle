@@ -9,6 +9,7 @@ dependencies {
     //testCompile deps["junit"]
     compile deps["spring-core"]
     compile deps["spring-context"]
+    testCompile deps["spring-test"]
     //compile deps["jetty-support"]
 }
 
