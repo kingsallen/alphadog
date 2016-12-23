@@ -101,7 +101,7 @@ public abstract class BindOnAccountService {
 				Map<String, Object> map = new HashMap<String, Object>();
 				map.put("dest_id", userUnionid.getId().intValue());
 				map.put("origin_id", userMobile.getId().intValue());
-				resultFull(userUnionid, map);
+				resultFull(userMobile, map);
 				return ResponseUtils.success(map);
 			} else {
 				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
