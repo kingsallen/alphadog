@@ -81,9 +81,6 @@ public class CollegeServices {
 
         } catch(RedisException e){
         		WarnService.notify(e);
-        		 List joinedResult = this.dao.getJoinedResults(query);
-             List<College> structs = DBsToStructs(joinedResult);
-             result = ResponseUtils.success(transformData(structs));
         } catch(Exception e) {
             e.printStackTrace();
             List joinedResult = this.dao.getJoinedResults(query);
