@@ -170,9 +170,9 @@ public class ProfileProcessBS {
 				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 			}
 	    	Response application=applicationDao.getProcessAuth(appIds.toString(), companyId, progressStatus);
-	    	if(application.status==0){
+	    	if(application.getStatus()==0){
 	    		String data=application.getData();
-	    		if(StringUtils.isNullOrEmpty(data)){
+	    		if(StringUtils.isNullOrEmpty(data)||"[]".equals(data)){
 	    			return ResponseUtils.success("");
 	    		}
 	    		boolean processStatus = true;
@@ -201,7 +201,7 @@ public class ProfileProcessBS {
 	    			Response recruit=configDao.getRecruitProcesses(companyId);
 	    			
 	    			List<HrAwardConfigTemplate> recruitProcesses=null;
-	    			if(recruit.getStatus()==0&&StringUtils.isNotNullOrEmpty(recruit.getData())){
+	    			if(recruit.getStatus()==0&&StringUtils.isNotNullOrEmpty(recruit.getData())&&!"[]".equals(recruit.getData())){
 	    				recruitProcesses=this.convertRecruitProcessesList(recruit.getData());
 	    			}
 	    			RecruitmentResult result=BusinessUtil.excuteRecruitRewardOperation(recruitOrder, progressStatus, recruitProcesses);
@@ -236,7 +236,7 @@ public class ProfileProcessBS {
 	    				}
 	    				Response employeeResult=userDao.getUserEmployee(companyId, weChatIds);
 	    				List<UserEmployeeStruct> employeesToBeUpdates=new ArrayList<UserEmployeeStruct>();
-	    				if(employeeResult.getStatus()==0&&StringUtils.isNotNullOrEmpty(employeeResult.getData())){
+	    				if(employeeResult.getStatus()==0&&StringUtils.isNotNullOrEmpty(employeeResult.getData())&&!"[]".equals(employeeResult.getData())){
 	    					employeesToBeUpdates=ConvertUserEmployeeList(employeeResult.getData());
 	    				}
 	    				if(employeesToBeUpdates!=null&&employeesToBeUpdates.size()>0){
@@ -317,7 +317,7 @@ public class ProfileProcessBS {
     			records.add(Long.parseLong(data.getEmployeeid()));
     		}
     		Response result=userDao.getPointSum(records);
-    		if(result.status==0&&StringUtils.isNotNullOrEmpty(result.getData())){
+    		if(result.getStatus()==0&&StringUtils.isNotNullOrEmpty(result.getData())&&!"[]".equals(result.getData())){
     			List<UserEmployeePointSum> list=this.ConvertpointSumList(result.getData());
     			for(UserEmployeeStruct employee:employeesToBeUpdates){
     				for(UserEmployeePointSum point:list){
@@ -343,8 +343,8 @@ public class ProfileProcessBS {
 	    public List<RewardsToBeAddBean> OperationOther(List<ProcessValidationStruct> applications,
 				 List<RewardsToBeAddBean> rewardsToBeAdd,int progressStatus) throws Exception{
 	    	CommonQuery query=new CommonQuery();
-	    	Response result=configDao.getConfigSysPointsConfTpl(query);
-	    	if(result.status==0&&StringUtils.isNotNullOrEmpty(result.getData())){
+	    	Response result=configDao.getConfigSysPointsConfTpls(query);
+	    	if(result.getStatus()==0&&StringUtils.isNotNullOrEmpty(result.getData())&&!"[]".equals(result.getData())){
 	    		List<ConfigSysPointsConfTpl> list=this.ConvertConfigList(result.getData());
 	    		List<JobApplication> app=new ArrayList<JobApplication>();
 	    		JobApplication jobApplication=null;
@@ -358,6 +358,7 @@ public class ProfileProcessBS {
 	    					break;
 	    				}
 	    			}
+	    			app.add(jobApplication);
 	    		}
 	    		applicationDao.putApplications(app);
 	    		int operate_tpl_id=0;
@@ -384,7 +385,7 @@ public class ProfileProcessBS {
 	    private List<RewardsToBeAddBean> Operation99(List<ProcessValidationStruct> applications,
 	    											 List<RewardsToBeAddBean> rewardsToBeAdd) throws Exception{
 	    	Response result=hrDao.getHrHistoryOperations(applications);
-	    	if(result.status==0&&StringUtils.isNotNullOrEmpty(result.getData())){
+	    	if(result.getStatus()==0&&StringUtils.isNotNullOrEmpty(result.getData())&&!"[]".equals(result.getData())){
 	    		List<HistoryOperate> list=ConvertHistoryList(result.getData());
 	    		for(RewardsToBeAddBean reward : rewardsToBeAdd) {
 	    			for(HistoryOperate his:list){
@@ -425,7 +426,7 @@ public class ProfileProcessBS {
 	    	map.put("recruit_order", 13+"");
 	    	query.setEqualFilter(map);
 	    	Response result=configDao.getConfigSysPointsConfTpl(query);
-	    	if(result.status==0&&StringUtils.isNotNullOrEmpty(result.getData())){
+	    	if(result.getStatus()==0&&StringUtils.isNotNullOrEmpty(result.getData())&&!"[]".equals(result.getData())){
 	    		ConfigSysPointsConfTpl config=JSONObject.toJavaObject(JSONObject.parseObject(result.getData()), ConfigSysPointsConfTpl.class);
 	    		int app_tpl_id=config.getId();
 	    		List<JobApplication> list=new ArrayList<JobApplication>();
@@ -485,7 +486,7 @@ public class ProfileProcessBS {
 	    	map.put("id", accountId+"");
 	    	query.setEqualFilter(map);
 	    	Response user=useraccountDao.getAccount(query);
-	    	if(user.getStatus()==0&&StringUtils.isNotNullOrEmpty(user.getData())){
+	    	if(user.getStatus()==0&&StringUtils.isNotNullOrEmpty(user.getData())&&!"[]".equals(user.getData())){
 	    		account=JSONObject.toJavaObject(JSONObject.parseObject(user.getData()), UserHrAccount.class);
 	    	}
 	    	return account;
