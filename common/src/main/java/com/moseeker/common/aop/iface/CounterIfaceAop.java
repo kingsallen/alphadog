@@ -26,8 +26,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterInfo;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 
-
-
 /**
  * @author ltf
  * 接口统计 Aop
@@ -107,6 +105,8 @@ public class CounterIfaceAop {
 		threadPool.execute(() -> {
 			try(Jedis client = jedisPool.getResource()){
 				client.lpush(redisKey, jsonStr);
+			} catch (Exception e) {
+				log.error(e.getMessage(), e);
 			}
 		});
 		log.info("counterInfo:{}", jsonStr);
