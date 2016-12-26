@@ -2,14 +2,12 @@ package com.moseeker.application.service.impl;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.thrift.TException;
 import org.jooq.types.UInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSON;
 import com.moseeker.application.dao.HrCompanyConfDao;
 import com.moseeker.application.dao.JobApplicationDao;
@@ -69,6 +67,7 @@ public class JobApplicataionService {
 
     @Autowired
     private UserUserDao userUserDao;
+    
     
     /**
      * 创建申请
@@ -620,4 +619,6 @@ public class JobApplicataionService {
 //        }
         return response;
     }
+    
+   
 }

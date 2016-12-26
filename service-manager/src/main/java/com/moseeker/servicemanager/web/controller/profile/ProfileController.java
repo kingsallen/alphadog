@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -191,15 +193,24 @@ public class ProfileController {
 	}
 	@RequestMapping(value = "/profile/process", method = RequestMethod.POST)
 	@ResponseBody
-	public String rofileProcess(HttpServletRequest request, HttpServletResponse response) {
+	public String profileProcess(HttpServletRequest request, HttpServletResponse response) {
 		try {
 
 			Params<String, Object> form = ParamUtils.parseRequestParam(request);
-			Response result = profileBSService.retrieveProfile(
-					form.getInt("position_id"), 
-					form.getInt("channel"),
-					JSON.toJSONString(form.get("profile")));
-
+			Integer companyId=form.getInt("company_id");
+			Integer progress_status=form.getInt("progress_status");
+			String params= form.getString("aids");
+			Integer accountId=form.getInt("account_id");
+			if(companyId==null||progress_status==null||StringUtils.isNullOrEmpty(params)){
+				return ResponseLogNotification.success(request, ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY));
+			}
+			List<Integer> appIds=new ArrayList<Integer>();
+			appIds.add(64);
+			appIds.add(65);
+			appIds.add(66);
+			appIds.add(67);
+			Response result = profileBSService.profileProcess(companyId,progress_status,appIds,accountId);
+			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
 			e.printStackTrace();
