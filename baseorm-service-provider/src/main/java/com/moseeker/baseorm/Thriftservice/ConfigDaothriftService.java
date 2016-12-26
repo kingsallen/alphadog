@@ -2,12 +2,13 @@ package com.moseeker.baseorm.Thriftservice;
 
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.moseeker.baseorm.service.ConfigService;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.ConfigDao.Iface;
-
+@Service
 public class ConfigDaothriftService implements Iface{
 	@Autowired
 	private ConfigService configService;
