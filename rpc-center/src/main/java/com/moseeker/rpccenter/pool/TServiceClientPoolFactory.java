@@ -5,7 +5,7 @@ import org.apache.thrift.TServiceClient;
 import org.apache.thrift.TServiceClientFactory;
 import org.apache.thrift.protocol.TCompactProtocol;
 import org.apache.thrift.protocol.TProtocol;
-import org.apache.thrift.transport.TFramedTransport;
+import org.apache.thrift.transport.TFastFramedTransport;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
 import org.slf4j.Logger;
@@ -45,7 +45,7 @@ public class TServiceClientPoolFactory<T> extends BaseKeyedPoolableObjectFactory
     public T makeObject(ServerNode key) throws Exception {
         // 生成client对象
         if (key != null) {
-        	TTransport transport = new TFramedTransport(new TSocket(key.getIp(), key.getPort(), timeout));
+        	TTransport transport = new TFastFramedTransport(new TSocket(key.getIp(), key.getPort(), timeout));
             TProtocol protocol = new TCompactProtocol(transport);
             transport.open();
             TServiceClient client = clientFactory.getClient(protocol);

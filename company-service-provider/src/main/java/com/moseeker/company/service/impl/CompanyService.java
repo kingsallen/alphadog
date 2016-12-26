@@ -38,6 +38,7 @@ import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
 public class CompanyService extends JOOQBaseServiceImpl<Hrcompany, HrCompanyRecord> {
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	
 	com.moseeker.thrift.gen.dao.service.CompanyDao.Iface companyDao = ServiceManager.SERVICEMANAGER.getService(com.moseeker.thrift.gen.dao.service.CompanyDao.Iface.class);
 	ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);

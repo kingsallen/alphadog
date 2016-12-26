@@ -55,7 +55,6 @@ public class CompanyServicesImpl implements Iface {
 	public Response ifSynchronizePosition(int companyId, int channel) throws TException {
 		// TODO Auto-generated method stub
 		return service.ifSynchronizePosition(companyId, channel);
-	}
-	
+	}	
 }
 
