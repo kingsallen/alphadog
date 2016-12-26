@@ -4,7 +4,17 @@
 package com.moseeker.db.userdb;
 
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.annotation.Generated;
+
+import org.jooq.Table;
+import org.jooq.impl.SchemaImpl;
+
 import com.moseeker.db.userdb.tables.CandidateVJobPositionRecom;
+import com.moseeker.db.userdb.tables.UserBdUser;
 import com.moseeker.db.userdb.tables.UserEmployee;
 import com.moseeker.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.db.userdb.tables.UserFavPosition;
@@ -15,15 +25,6 @@ import com.moseeker.db.userdb.tables.UserUser;
 import com.moseeker.db.userdb.tables.UserUserTmp;
 import com.moseeker.db.userdb.tables.UserWxUser;
 import com.moseeker.db.userdb.tables.UserWxViewer;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.Generated;
-
-import org.jooq.Table;
-import org.jooq.impl.SchemaImpl;
 
 
 /**
@@ -72,6 +73,7 @@ public class Userdb extends SchemaImpl {
 			UserUser.USER_USER,
 			UserUserTmp.USER_USER_TMP,
 			UserWxUser.USER_WX_USER,
-			UserWxViewer.USER_WX_VIEWER);
+			UserWxViewer.USER_WX_VIEWER,
+			UserBdUser.USER_BD_USER);
 	}
 }

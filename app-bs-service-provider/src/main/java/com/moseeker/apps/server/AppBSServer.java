@@ -6,6 +6,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import com.moseeker.apps.thrift.service.PositionBSThriftService;
 import com.moseeker.apps.thrift.service.ProfileBSThriftService;
+import com.moseeker.apps.thrift.service.UserBSThriftService;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.MultiRegServer;
 
@@ -29,7 +30,8 @@ public class AppBSServer {
         	MultiRegServer server = new MultiRegServer(AppBSServer.class,
         			ServerNodeUtils.getPort(args),
         			acac.getBean(PositionBSThriftService.class),
-					acac.getBean(ProfileBSThriftService.class));
+					acac.getBean(ProfileBSThriftService.class),
+					acac.getBean(UserBSThriftService.class));
 			server.start(); // 启动服务，非阻塞
 
 			synchronized (AppBSServer.class) {
