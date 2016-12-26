@@ -34,6 +34,10 @@ public class TMultiServicePoolFactory<T> extends BaseKeyedPoolableObjectFactory<
 
     /** 超时时间 */
     private final int timeout;
+    
+    private final int initialBufferCapacity = 1024;
+
+    private final int  maxLength = 1024*1024*1024;
 
     /**
      * 
@@ -53,7 +57,7 @@ public class TMultiServicePoolFactory<T> extends BaseKeyedPoolableObjectFactory<
     public T makeObject(ZKPath path) throws Exception {
         // 生成client对象
         if (path != null && path.getData() != null) {
-        	TTransport transport = new TFastFramedTransport(new TSocket(path.getData().getIP(), path.getData().getPort(), timeout));
+        	TTransport transport = new TFastFramedTransport(new TSocket(path.getData().getIP(), path.getData().getPort(), timeout), initialBufferCapacity, maxLength);
             TProtocol protocol = new TCompactProtocol(transport);
             if(path.getData().getMulti() == 1) {
             	TMultiplexedProtocol mulProtocol= new TMultiplexedProtocol(protocol, path.getData().getPath());
