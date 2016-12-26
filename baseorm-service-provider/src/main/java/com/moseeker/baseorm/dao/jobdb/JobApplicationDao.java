@@ -51,7 +51,7 @@ public class JobApplicationDao extends BaseDaoImpl<JobApplicationRecord, JobAppl
 			table.leftJoin(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL)
 			.on("jobdb.job_application.app_tpl_id=configdb.config_sys_points_conf_tpl.id");
 			table.leftJoin(JobPosition.JOB_POSITION).on("jobdb.job_application.position_id=jobdb.job_position.id");
-			table.leftJoin(UserUser.USER_USER).on("jobdb.job_application.recommender_id=userdb.user_wx_user.id");
+			table.leftJoin(UserWxUser.USER_WX_USER).on("jobdb.job_application.recommender_id=userdb.user_wx_user.id");
 			table.where(JobApplication.JOB_APPLICATION.ID.in(appIds)
 					.and(JobApplication.JOB_APPLICATION.COMPANY_ID.eq(UInteger.valueOf(companyId))));
 			if(progressStatus==13){
