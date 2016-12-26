@@ -201,7 +201,7 @@ public class ProfileProcessBS {
 	    			Response recruit=configDao.getRecruitProcesses(companyId);
 	    			
 	    			List<HrAwardConfigTemplate> recruitProcesses=null;
-	    			if(recruit.status==1&&StringUtils.isNotNullOrEmpty(recruit.getData())){
+	    			if(recruit.getStatus()==0&&StringUtils.isNotNullOrEmpty(recruit.getData())){
 	    				recruitProcesses=this.convertRecruitProcessesList(recruit.getData());
 	    			}
 	    			RecruitmentResult result=BusinessUtil.excuteRecruitRewardOperation(recruitOrder, progressStatus, recruitProcesses);
@@ -485,7 +485,7 @@ public class ProfileProcessBS {
 	    	map.put("id", accountId+"");
 	    	query.setEqualFilter(map);
 	    	Response user=useraccountDao.getAccount(query);
-	    	if(user.getStatus()==0&&StringUtils.isNullOrEmpty(user.getData())){
+	    	if(user.getStatus()==0&&StringUtils.isNotNullOrEmpty(user.getData())){
 	    		account=JSONObject.toJavaObject(JSONObject.parseObject(user.getData()), UserHrAccount.class);
 	    	}
 	    	return account;
