@@ -38,6 +38,23 @@ public class CompanyServicesImpl implements Iface {
 	public Response getResources(CommonQuery query) throws TException {
 		return service.getResources(query);
 	}
-	
+
+	@Override
+	public Response getWechat(long companyId, long wechatId) throws TException {
+		// TODO Auto-generated method stub
+		return service.getWechat(companyId, wechatId);
+	}
+
+	@Override
+	public Response synchronizeThirdpartyAccount(int id, byte channel) throws TException {
+		// TODO Auto-generated method stub
+		return service.synchronizeThirdpartyAccount(id, channel);
+	}
+
+	@Override
+	public Response ifSynchronizePosition(int companyId, int channel) throws TException {
+		// TODO Auto-generated method stub
+		return service.ifSynchronizePosition(companyId, channel);
+	}	
 }
 

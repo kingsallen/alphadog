@@ -84,7 +84,7 @@ public class SearchengineController {
         return ResponseLogNotification.success(request, search_res);
     }
 
-    @RequestMapping(value = "/search/position", method = RequestMethod.GET, produces = "application/json;charset=utf-8")
+    @RequestMapping(value = "/search/position", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
     @ResponseBody
     public String search_position(HttpServletRequest request, HttpServletResponse response) {
     

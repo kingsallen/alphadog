@@ -13,27 +13,43 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.AppId;
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.KeyIdentifier;
+import com.moseeker.common.constants.RespnoseUtil;
+import com.moseeker.common.constants.TemplateId;
+import com.moseeker.common.constants.UserSource;
+import com.moseeker.common.constants.UserType;
+import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.daoutils.BaseDao;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
-import com.moseeker.common.sms.SmsSender;
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.common.util.Constant;
-import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
+import com.moseeker.common.weixin.AccountMng;
+import com.moseeker.common.weixin.QrcodeType;
+import com.moseeker.common.weixin.WeixinTicketBean;
+import com.moseeker.db.hrdb.tables.records.HrWxWechatRecord;
+import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.db.logdb.tables.records.LogUserloginRecordRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.db.userdb.tables.records.UserFavPositionRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.mq.service.MqService;
+import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.User;
 import com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition;
 import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
@@ -41,6 +57,8 @@ import com.moseeker.useraccounts.dao.ProfileDao;
 import com.moseeker.useraccounts.dao.UserDao;
 import com.moseeker.useraccounts.dao.UserFavoritePositionDao;
 import com.moseeker.useraccounts.dao.UsersettingDao;
+import com.moseeker.useraccounts.dao.WechatDao;
+import com.moseeker.useraccounts.pojo.MessageTemplate;
 
 /**
  * 用户登陆， 注册，合并等api的实现
@@ -53,6 +71,11 @@ import com.moseeker.useraccounts.dao.UsersettingDao;
 public class UseraccountsService {
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+	MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
+	
+	com.moseeker.thrift.gen.dao.service.UserDao.Iface userDao = ServiceManager.SERVICEMANAGER
+			.getService(com.moseeker.thrift.gen.dao.service.UserDao.Iface.class);
 
 	@Autowired
 	protected BaseDao<UserWxUserRecord> wxuserdao;
@@ -71,6 +94,12 @@ public class UseraccountsService {
 
 	@Autowired
 	protected UserFavoritePositionDao userFavoritePositionDao;
+	
+	@Autowired
+	protected SmsSender smsSender;
+	
+	@Autowired
+	protected WechatDao wechatDao;
 	
 	/**
 	 * 用户登陆， 返回用户登陆后的信息。
@@ -198,7 +227,7 @@ public class UseraccountsService {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 		}
 
-		if (SmsSender.sendSMS_signup(mobile)) {
+		if (smsSender.sendSMS_signup(mobile)) {
 			return ResponseUtils.success(null);
 		} else {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
@@ -248,7 +277,7 @@ public class UseraccountsService {
 
 				// 未设置密码, 主动短信通知用户
 				if (!hasPassword) {
-					SmsSender.sendSMS_signupRandomPassword(String.valueOf(user.mobile), plainPassword);
+					smsSender.sendSMS_signupRandomPassword(String.valueOf(user.mobile), plainPassword);
 				}
 
 				// // 初始化 user_setting 表.
@@ -361,6 +390,9 @@ public class UseraccountsService {
 					return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
 				}
 			} else if (userUnionid == null && userMobile != null) {
+				if(StringUtils.isNotNullOrEmpty(userMobile.getUnionid())) {
+					return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_BIND_REPEATBIND);
+				}
 				userMobile.setUnionid(unionid);
 				if (userdao.putResource(userMobile) > 0) {
 					Map<String, Object> map = new HashMap<String, Object>();
@@ -482,6 +514,12 @@ public class UseraccountsService {
 		try {
 			// unnionid置为子账号
 			userUnionid.setParentid(userMobile.getId());
+			/* 完善unionid */
+			if (StringUtils.isNullOrEmpty(userMobile.getUnionid())
+					&& StringUtils.isNotNullOrEmpty(userUnionid.getUnionid())) {
+				userMobile.setUnionid(userUnionid.getUnionid());
+			}
+			userUnionid.setUnionid("");
 			if (userdao.putResource(userUnionid) > 0) {
 				consummateUserAccount(userMobile, userUnionid);
 				// profile合并成功
@@ -495,21 +533,31 @@ public class UseraccountsService {
 			case Constant.APPID_PLATFORM:
 				ProfileProfileRecord userMobileProfileRecord = profileDao
 						.getProfileByUserId(userMobile.getId().intValue());
-				// pc 端profile 设置为无效
-				if (userMobileProfileRecord != null) {
-					profileDao.delResource(userMobileProfileRecord);
-				}
-
 				// 微信端profile转移到pc用户下.
 				ProfileProfileRecord userUnionProfileRecord = profileDao
 						.getProfileByUserId(userUnionid.getId().intValue());
 				if (userUnionProfileRecord != null) {
+					// pc 端profile 设置为无效
+					if (userMobileProfileRecord != null) {
+						profileDao.delResource(userMobileProfileRecord);
+					}
 					userUnionProfileRecord.setUserId(userMobile.getId());
 					profileDao.putResource(userUnionProfileRecord);
 				}
 
 				break;
 			case Constant.APPID_C:
+				ProfileProfileRecord userMobileProfileRecord1 = profileDao
+					.getProfileByUserId(userMobile.getId().intValue());
+				if(userMobileProfileRecord1 == null) {
+					// 微信端profile转移到pc用户下.
+					ProfileProfileRecord userUnionProfileRecord1 = profileDao
+							.getProfileByUserId(userUnionid.getId().intValue());
+					if(userUnionProfileRecord1 != null) {
+						userUnionProfileRecord1.setUserId(userMobile.getId());
+						profileDao.putResource(userUnionProfileRecord1);
+					}
+				}
 			default:
 				break;
 			}
@@ -579,11 +627,6 @@ public class UseraccountsService {
 		if (StringUtils.isNullOrEmpty(userMobile.getPosition())
 				&& StringUtils.isNotNullOrEmpty(userUnionid.getPosition())) {
 			userMobile.setPosition(userUnionid.getPosition());
-		}
-		/* 完善unionid */
-		if (StringUtils.isNullOrEmpty(userMobile.getUnionid())
-				&& StringUtils.isNotNullOrEmpty(userUnionid.getUnionid())) {
-			userMobile.setUnionid(userUnionid.getUnionid());
 		}
 		try {
 			userdao.putResource(userMobile);
@@ -674,7 +717,7 @@ public class UseraccountsService {
 			}
 		}
 
-		if (SmsSender.sendSMS_passwordforgot(mobile)) {
+		if (smsSender.sendSMS_passwordforgot(mobile)) {
 			return ResponseUtils.success(null);
 		} else {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
@@ -872,7 +915,7 @@ public class UseraccountsService {
 			}
 		}
 
-		if (SmsSender.sendSMS_changemobilecode(oldmobile)) {
+		if (smsSender.sendSMS_changemobilecode(oldmobile)) {
 			return ResponseUtils.success(null);
 		} else {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
@@ -915,7 +958,7 @@ public class UseraccountsService {
 			}
 		}
 
-		if (SmsSender.sendSMS_resetmobilecode(newmobile)) {
+		if (smsSender.sendSMS_resetmobilecode(newmobile)) {
 			return ResponseUtils.success(null);
 		} else {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.USER_SMS_LIMITED);
@@ -1028,6 +1071,19 @@ public class UseraccountsService {
 			if (userFavoritePositionId > 0) {
 				Map<String, Object> hashmap = new HashMap<>();
 				hashmap.put("userFavoritePositionId", userFavoritePositionId);
+//				Thread t = new Thread(() -> {
+//					try {
+//						MessageTemplate messageTemplate = fetchMessageTemplate(userFavoritePosition.getPosition_id(), userFavoritePosition.getSysuser_id());
+//						MessageTemplateNoticeStruct mtns = createMessageTemplate(messageTemplate);
+//						
+//						mqService.messageTemplateNotice(mtns);
+//					} catch (Exception e) {
+//						logger.error(e.getMessage(), e);
+//					}
+//				});
+//				t.start();
+//				MessageTemplateNoticeStruct messageTemplateNoticeStruct = new MessageTemplateNoticeStruct();
+				
 				return ResponseUtils.success(hashmap); // 返回
 														// userFavoritePositionId
 			}
@@ -1038,6 +1094,50 @@ public class UseraccountsService {
 			// do nothing
 		}
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+	}
+
+	private MessageTemplateNoticeStruct createMessageTemplate(MessageTemplate messageTemplate) {
+		if(messageTemplate != null) {
+			MessageTemplateNoticeStruct message = new MessageTemplateNoticeStruct();
+			StringBuffer content = new StringBuffer();
+			content.append("您发布的“");
+			content.append(messageTemplate.getPositionTitle()+"”");
+			content.append("职位有了一位新候选人，请及时与TA联系。");
+			message.setUser_id(messageTemplate.getHrAccountId());
+			message.setSys_template_id(TemplateId.TEMPLATE_MESSAGE_FAV_HR.getValue());
+			message.setType(UserType.PC.getValueToByte());
+			HashMap<String, Object> data = new HashMap<String, Object>();
+			
+			//message.setData(data);
+			
+		}
+		return null;
+	}
+
+	private MessageTemplate fetchMessageTemplate(int positionId, int userId) {
+		MessageTemplate messageTemplate = null;
+		try {
+			JobPositionRecord position = userFavoritePositionDao.getUserFavPositiond(positionId);
+			com.moseeker.useraccounts.pojo.User user = userdao.getUserById(userId);
+			if(position != null && user != null) {
+				messageTemplate = new MessageTemplate();
+				messageTemplate.setPositionTitle(position.getTitle());
+				messageTemplate.setHrAccountId(position.getPublisher());
+				if(StringUtils.isNotNullOrEmpty(user.name)) {
+					messageTemplate.setName(user.name);
+				} else if(StringUtils.isNotNullOrEmpty(user.nickname)) {
+					messageTemplate.setName(user.nickname);
+				} else {
+					messageTemplate.setName(user.username);
+				}
+				messageTemplate.setContact(String.valueOf(user.mobile));
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		} finally {
+			
+		}
+		return messageTemplate;
 	}
 
 	/**
@@ -1081,8 +1181,9 @@ public class UseraccountsService {
 	 */
 	private boolean validateCode(String mobile, String code, int type) {
 		String codeinRedis = null;
-		RedisClient redisclient = RedisClientFactory.getCacheClient();
-		switch (type) {
+		try {
+			RedisClient redisclient = RedisClientFactory.getCacheClient();
+			switch (type) {
 			case 1:
 				codeinRedis = redisclient.get(0, "SMS_SIGNUP", mobile);
 				if (code.equals(codeinRedis)) {
@@ -1097,22 +1198,25 @@ public class UseraccountsService {
 					return true;
 				}
 			case 3:
-				codeinRedis = redisclient.get(0, "SMS_CHANGEMOBILE_CODE", mobile);
+				codeinRedis = redisclient.get(0, "SMS_CHANGEMOBILE_CODE",
+						mobile);
 				if (code.equals(codeinRedis)) {
 					redisclient.del(0, "SMS_CHANGEMOBILE_CODE", mobile);
 					return true;
 				}
 			case 4:
-				codeinRedis = redisclient.get(0, "SMS_RESETMOBILE_CODE", mobile);
+				codeinRedis = redisclient
+						.get(0, "SMS_RESETMOBILE_CODE", mobile);
 				if (code.equals(codeinRedis)) {
 					redisclient.del(0, "SMS_RESETMOBILE_CODE", mobile);
 					return true;
 				}
 				break;
-			default :
+			default:
+			}
+		} catch (RedisException e) {
+			WarnService.notify(e);
 		}
-		
-
 		return false;
 	}
 
@@ -1122,7 +1226,7 @@ public class UseraccountsService {
 		vu.addRequiredStringValidate("验证码", code, null, null);
 		String message = vu.validate();
 		if(StringUtils.isNullOrEmpty(message)) {
-			boolean flag = validateCode(mobile, code, 1);
+			boolean flag = validateCode(mobile, code, type);
 			if(flag) {
 				return ResponseUtils.success(1);
 			} else {
@@ -1134,7 +1238,7 @@ public class UseraccountsService {
 	}
 
 	public Response sendVerifyCode(String mobile, int type) throws TException {
-		boolean result = SmsSender.sendSMS(mobile, type);
+		boolean result = smsSender.sendSMS(mobile, type);
 		if(result) {
 			return ResponseUtils.success("success");
 		} else {
@@ -1159,5 +1263,198 @@ public class UseraccountsService {
 		} finally {
 			
 		}
+	}
+
+	/**
+	 * 创建微信二维码
+	 */
+	public Response cerateQrcode(int wechatId, long sceneId, int expireSeconds, int action_name) throws TException {
+		
+		try {
+			QueryUtil qu = new QueryUtil();
+			qu.addEqualFilter("id", String.valueOf(wechatId));
+			HrWxWechatRecord record = wechatDao.getResource(qu);
+			if(record == null) {
+				return RespnoseUtil.USERACCOUNT_WECHAT_NOTEXISTS.toResponse();
+			} else {
+				String accessToken = record.getAccessToken();
+				if(StringUtils.isNotNullOrEmpty(accessToken)) {
+					WeixinTicketBean bean = AccountMng.createTicket(accessToken, expireSeconds, QrcodeType.fromInt(action_name), sceneId, null);
+					if(bean != null) {
+						return RespnoseUtil.SUCCESS.toResponse(bean);
+					} else {
+						return RespnoseUtil.USERACCOUNT_WECHAT_GETQRCODE_FAILED.toResponse();
+					}
+				} else {
+					return RespnoseUtil.USERACCOUNT_WECHAT_ACCESSTOKEN_NOTEXISTS.toResponse();
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+			return RespnoseUtil.PROGRAM_EXCEPTION.setMessage(e.getMessage()).toResponse();
+		} finally {
+			//do nothing
+		}
+	}
+
+	/**
+	 * 利用票据获取二维码数据
+	 */
+	public Response getQrcode(String ticket) throws TException {
+		if(StringUtils.isNullOrEmpty(ticket)) {
+			return RespnoseUtil.USERACCOUNT_WECHAT_TICKET_NOTEXISTS.toResponse();
+		} else {
+			String qrcode = AccountMng.getQrcode(ticket);
+			return RespnoseUtil.SUCCESS.toResponse(qrcode);
+		}
+	}
+
+	/**
+	 * 获取扫码信息
+	 * @param wechatId 公众号信息
+	 * @param sceneId 场景编号
+	 * @return
+	 * @throws TException
+	 */
+	public Response getScanResult(int wechatId, long sceneId) throws TException {
+		RedisClient redisClient = RedisClientFactory.getCacheClient();
+		String result = redisClient.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.WEIXIN_SCANRESULT.toString(), String.valueOf(wechatId), String.valueOf(sceneId));
+		if(StringUtils.isNotNullOrEmpty(result)) {
+			redisClient.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.WEIXIN_SCANRESULT.toString(), String.valueOf(wechatId), String.valueOf(sceneId));
+			JSONObject json = JSON.parseObject(result);
+			if(json.get("status") != null && (Integer)json.get("status") ==0) {
+				return RespnoseUtil.SUCCESS.toResponse(json.get("data"));
+			} else {
+				return RespnoseUtil.USERACCOUNT_WECHAT_SCAN_ERROR.setMessage((String)json.get("message")).toResponse(json.get("data"));
+			}
+		} else {
+			return RespnoseUtil.SUCCESS.toResponse(2);
+		}
+	}
+
+	/**
+	 * 设置用户扫码信息
+	 * @param wechatId 公众号编号
+	 * @param sceneId 场景编号
+	 * @param value 扫码结果
+	 * @return
+	 * @throws TException
+	 */
+	public Response setScanResult(int wechatId, long sceneId, String value) throws TException {
+		RedisClient redisClient = RedisClientFactory.getCacheClient();
+		redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.WEIXIN_SCANRESULT.toString(), String.valueOf(wechatId), String.valueOf(sceneId), value);
+		return RespnoseUtil.SUCCESS.toResponse();
+	}
+	
+	public User ifExistUser(String mobile) {
+		User user = new User();
+		QueryUtil qu = new QueryUtil();
+		qu.addEqualFilter("mobile", mobile);
+		qu.addEqualFilter("source", String.valueOf(UserSource.RETRIEVE_PROFILE.getValue()));
+		try {
+			user = userDao.getUser(qu);
+		} catch (TException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+		} finally {
+			//do nothing
+		}
+		return user;
+	}
+
+	public int createRetrieveProfileUser(User user) {
+		if(user.getMobile() == 0) {
+			return 0;
+		}
+		user.setSource((byte)UserSource.RETRIEVE_PROFILE.getValue());
+		try {
+			user = userDao.saveUser(user);
+		} catch (TException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+		} finally {
+			//do nothing
+		}
+		return (int)user.getId();
+	}
+
+	public boolean ifExistProfile(String mobile) {
+		QueryUtil qu = new QueryUtil();
+		qu.addEqualFilter("username", mobile);
+		try {
+			User user = userDao.getUser(qu);
+			if(user == null || user.getId() == 0) {
+				QueryUtil autoCreate = new QueryUtil();
+				autoCreate.addEqualFilter("mobile", mobile);
+				autoCreate.addEqualFilter("source", String.valueOf(UserSource.RETRIEVE_PROFILE.getValue()));
+				user = userDao.getUser(autoCreate);
+			}
+			if(user != null && user.getId() > 0) {
+				ProfileProfileRecord record = profileDao.getProfileByUserId((int)user.getId());
+				if(record != null) {
+					return true;
+				}
+			}
+		} catch (TException e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+		} finally {
+			//do nothing
+		}
+		return false;
+	}
+
+	public BaseDao<UserWxUserRecord> getWxuserdao() {
+		return wxuserdao;
+	}
+
+	public void setWxuserdao(BaseDao<UserWxUserRecord> wxuserdao) {
+		this.wxuserdao = wxuserdao;
+	}
+
+	public UserDao getUserdao() {
+		return userdao;
+	}
+
+	public void setUserdao(UserDao userdao) {
+		this.userdao = userdao;
+	}
+
+	public ProfileDao getProfileDao() {
+		return profileDao;
+	}
+
+	public void setProfileDao(ProfileDao profileDao) {
+		this.profileDao = profileDao;
+	}
+
+	public UsersettingDao getUserSettingDao() {
+		return userSettingDao;
+	}
+
+	public void setUserSettingDao(UsersettingDao userSettingDao) {
+		this.userSettingDao = userSettingDao;
+	}
+
+	public UserFavoritePositionDao getUserFavoritePositionDao() {
+		return userFavoritePositionDao;
+	}
+
+	public void setUserFavoritePositionDao(UserFavoritePositionDao userFavoritePositionDao) {
+		this.userFavoritePositionDao = userFavoritePositionDao;
+	}
+
+	public WechatDao getWechatDao() {
+		return wechatDao;
+	}
+
+	public void setWechatDao(WechatDao wechatDao) {
+		this.wechatDao = wechatDao;
 	}
 }

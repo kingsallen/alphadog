@@ -2,7 +2,9 @@ package com.moseeker.warn.server;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.moseeker.warn.service.ManageService;
+import com.moseeker.rpccenter.common.ServerNodeUtils;
+import com.moseeker.rpccenter.main.Server;
+import com.moseeker.warn.thrift.WarnThriftService;
 
 /**
  * @author ltf
@@ -10,12 +12,23 @@ import com.moseeker.warn.service.ManageService;
  */
 public class WarnServer {
 	
-	public static void main(String[] args) throws Exception {
-		AnnotationConfigApplicationContext context = initSpring();
-		Thread sendMsgThread = new Thread(() -> {
-			context.getBean(ManageService.class).sendMessage();
-		});
-		sendMsgThread.start();
+	public static void main(String[] args){
+		try{
+			AnnotationConfigApplicationContext context = initSpring();
+			Server server=new Server(WarnServer.class,ServerNodeUtils.getPort(args),context.getBean(WarnThriftService.class));
+			server.start();
+			synchronized (WarnServer.class) {
+				while(true){
+					try{
+						WarnServer.class.wait();
+					}catch(Exception e){
+						e.printStackTrace();
+					}
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 	
 	/**

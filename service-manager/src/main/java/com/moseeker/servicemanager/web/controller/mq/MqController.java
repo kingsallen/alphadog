@@ -75,6 +75,9 @@ public class MqController {
 		paramMap = ParamUtils.parseRequestParam(request);
         if(paramMap != null){
             messageTemplateNoticeStruct.setUser_id((int)paramMap.get("user_id"));
+            if(paramMap.get("type") != null) {
+            	messageTemplateNoticeStruct.setType((byte)(int)paramMap.get("type"));
+            }
             messageTemplateNoticeStruct.setSys_template_id((int)paramMap.get("sys_template_id"));
             if(paramMap.get("url") != null) {
             	messageTemplateNoticeStruct.setUrl(paramMap.get("url").toString());
@@ -82,6 +85,12 @@ public class MqController {
             messageTemplateNoticeStruct.setCompany_id((int)paramMap.get("company_id"));
             messageTemplateNoticeStruct.setData(this.getMessagetplData((Map<String, Map<String, JSONObject>>)paramMap.get("data")));
             messageTemplateNoticeStruct.setEnable_qx_retry((byte)(int)paramMap.getOrDefault("enable_qx_retry", 1)); // Integer->int->byte
+            if(paramMap.get("delay") != null) {
+            	 messageTemplateNoticeStruct.setDelay((Integer)paramMap.get("delay"));
+            }
+            if(paramMap.get("validators") != null) {
+            	messageTemplateNoticeStruct.setValidators((String)paramMap.get("validators"));
+            }
             return messageTemplateNoticeStruct;
         }
         return null;

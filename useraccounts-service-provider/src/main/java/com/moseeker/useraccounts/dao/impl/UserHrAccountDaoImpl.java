@@ -1,19 +1,26 @@
 package com.moseeker.useraccounts.dao.impl;
 
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.jooq.DSLContext;
+import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Result;
+import org.jooq.types.UInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
-import com.moseeker.common.util.Constant;
+import com.moseeker.db.configdb.tables.ConfigSysPointsConfTpl;
+import com.moseeker.db.configdb.tables.records.ConfigSysPointsConfTplRecord;
 import com.moseeker.db.hrdb.tables.HrCompany;
 import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
+import com.moseeker.db.hrdb.tables.records.HrPointsConfRecord;
 import com.moseeker.db.userdb.tables.UserHrAccount;
 import com.moseeker.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.useraccounts.dao.UserHrAccountDao;
@@ -52,7 +59,6 @@ public class UserHrAccountDaoImpl extends BaseDaoImpl<UserHrAccountRecord, UserH
 				create.attach(userHrAccountRecord);
 				int insertResult = userHrAccountRecord.insert();
 				if (insertResult > 0) {
-					result = userHrAccountRecord.getId().intValue();
 					Result<Record1<Integer>> verifyCompanyNameResult = create.selectCount().from(HrCompany.HR_COMPANY)
 							.join(UserHrAccount.USER_HR_ACCOUNT)
 							.on(HrCompany.HR_COMPANY.HRACCOUNT_ID.equal(UserHrAccount.USER_HR_ACCOUNT.ID))
@@ -67,6 +73,25 @@ public class UserHrAccountDaoImpl extends BaseDaoImpl<UserHrAccountRecord, UserH
 						companyRecord.insert();
 						userHrAccountRecord.setCompanyId(companyRecord.getId().intValue());
 						userHrAccountRecord.update();
+						Result<Record> result1=create.select().from(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL)
+								.where(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.AWARD.gt(0)).fetch();
+						List<HrPointsConfRecord> list=new ArrayList<HrPointsConfRecord>();
+						HrPointsConfRecord bean=null;
+						if(result1!=null){
+							for(Record r : result1){
+								bean=new HrPointsConfRecord();
+								ConfigSysPointsConfTplRecord cspcr=(ConfigSysPointsConfTplRecord) r;
+								bean.setStatusName(cspcr.getStatus());
+								bean.setReward((long)cspcr.getAward());
+								bean.setDescription(cspcr.getDescription());
+								bean.setTemplateId(UInteger.valueOf(cspcr.getId()));
+								bean.setTag(String.valueOf(cspcr.getTag()));
+								bean.setCompanyId(companyRecord.getId().intValue());
+								list.add(bean);
+							}
+							create.batchInsert(list).execute();
+						}
+						result = userHrAccountRecord.getId().intValue();;
 					}
 				}
 			}

@@ -4,9 +4,8 @@ import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.ParamNullException;
-import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
 

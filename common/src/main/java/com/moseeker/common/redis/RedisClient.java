@@ -1,17 +1,18 @@
 package com.moseeker.common.redis;
 
 import java.util.List;
+import java.util.Set;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CacheConfigNotExistException;
+import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.redis.cache.db.DbManager;
-import com.moseeker.common.util.Constant;
-import com.moseeker.common.util.Notification;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.thrift.gen.warn.service.WarnSetService;
 
 import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.exceptions.JedisConnectionException;
+import redis.clients.jedis.params.sortedset.ZAddParams;
 
 public abstract class RedisClient {
 
@@ -28,7 +29,7 @@ public abstract class RedisClient {
 	 * @return List<CacheConfigRedisKey> {@see
 	 *         com.moseeker.common.cache.lru.CacheConfigRedisKey}
 	 */
-	protected List<RedisConfigRedisKey> reloadRedisKey() {
+	protected List<RedisConfigRedisKey> reloadRedisKey() throws RedisException {
 		List<RedisConfigRedisKey> redisKeys = DbManager.readAllConfigFromDB(redisConfigType);
 		try {
 			if (redisKeys != null && redisKeys.size() > 0) {
@@ -42,7 +43,8 @@ public abstract class RedisClient {
 				}
 			}
 		} catch (JedisConnectionException e) {
-			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
+			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+//			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}
 		return redisKeys;
 	}
@@ -58,7 +60,7 @@ public abstract class RedisClient {
 	 *         com.moseeker.common.cache.lru.CacheConfigRedisKey}
 	 */
 	protected RedisConfigRedisKey readRedisKey(int appId, String keyIdentifier)
-			throws CacheConfigNotExistException {
+			throws RedisException {
 		RedisConfigRedisKey redisval = null;
 		try {
 			String appIdKeyIdentifier = redisConfigKeyName+"_"+appId + keyIdentifier;
@@ -75,8 +77,11 @@ public abstract class RedisClient {
 			} else {
 				redisval = JSON.parseObject(redisValue, RedisConfigRedisKey.class);
 			}
+		} catch (CacheConfigNotExistException e) {
+			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CACHE_CONFIG_NOTEXIST_ERROR_EVENTKEY);
 		} catch (Exception e) {
-			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
+			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+//			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}
 		return redisval;
 	}
@@ -94,15 +99,15 @@ public abstract class RedisClient {
 	 * @throws CacheConfigNotExistException
 	 */
 	public String set(int appId, String key_identifier, String str, String value)
-			throws CacheConfigNotExistException {
+			throws CacheConfigNotExistException,RedisException {
 		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
 		String cacheKey = String.format(redisKey.getPattern(), str);
 		try {
 			return redisCluster.setex(cacheKey, redisKey.getTtl(), value);
 		} catch (Exception e) {
-			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
+			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+//			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}
-		return null;
 	}
 
 	/**
@@ -114,15 +119,15 @@ public abstract class RedisClient {
 	 * @throws CacheConfigNotExistException 关键词未配置提示异常
 	 */
 	public String get(int appId, String key_identifier, String str)
-			throws CacheConfigNotExistException {
+			throws CacheConfigNotExistException,RedisException {
 		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
 		String cacheKey = String.format(redisKey.getPattern(), str);
 		try {
 			return redisCluster.get(cacheKey);
 		} catch (Exception e) {
-			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
+			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+//			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}
-		return null;
 	}
 
 	/**
@@ -136,7 +141,7 @@ public abstract class RedisClient {
 	 * @throws CacheConfigNotExistException 关键词未配置提示异常
 	 */
 	public String get(int appId, String key_identifier, String str,
-			RedisCallback callback) throws CacheConfigNotExistException {
+			RedisCallback callback) throws CacheConfigNotExistException,RedisException {
 		String result = null;
 		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
 		String cacheKey = String.format(redisKey.getPattern(), str);
@@ -148,7 +153,8 @@ public abstract class RedisClient {
 				redisCluster.setex(cacheKey, redisKey.getTtl(), result);
 			}
 		} catch (Exception e) {
-			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
+			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+//			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}
 		return result;
 	}
@@ -164,15 +170,15 @@ public abstract class RedisClient {
 	 * @throws CacheConfigNotExistException 关键词未配置的提示异常
 	 */
 	public String set(int appId, String key_identifier, String str1,
-			String str2, String value) throws CacheConfigNotExistException {
+			String str2, String value) throws CacheConfigNotExistException,RedisException {
 		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
 		String cacheKey = String.format(redisKey.getPattern(), str1, str2);
 		try {
 			return redisCluster.setex(cacheKey, redisKey.getTtl(), value);
 		} catch (Exception e) {
-			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
+			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+//			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}
-		return null;
 	}
 
 	/**
@@ -187,7 +193,7 @@ public abstract class RedisClient {
 	 * @throws CacheConfigNotExistException 关键词未配置的提示异常
 	 */
 	public String set(int appId, String key_identifier, String str1,
-					  String str2, String value, int ttl) throws CacheConfigNotExistException {
+					  String str2, String value, int ttl) throws CacheConfigNotExistException,RedisException {
 		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
 		String cacheKey = String.format(redisKey.getPattern(), str1, str2);
 		return redisCluster.setex(cacheKey, ttl, value);
@@ -203,15 +209,17 @@ public abstract class RedisClient {
 	 * @throws CacheConfigNotExistException 关键词未配置的提示异常
 	 */
 	public String get(int appId, String key_identifier, String str1, String str2)
-			throws CacheConfigNotExistException {
+			throws CacheConfigNotExistException,RedisException {
 		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
 		String cacheKey = String.format(redisKey.getPattern(), str1, str2);
 		try {
 			return redisCluster.get(cacheKey);
 		} catch (Exception e) {
-			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
+			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+//			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
+		} finally {
+			//do nothing
 		}
-		return null;
 	}
 
 	/**
@@ -225,7 +233,7 @@ public abstract class RedisClient {
 	 * @throws CacheConfigNotExistException 关键词未配置的提示异常
 	 */
 	public String get(int appId, String key_identifier, String str1,
-			String str2, RedisCallback callback) throws CacheConfigNotExistException {
+			String str2, RedisCallback callback) throws CacheConfigNotExistException,RedisException {
 		String result = null;
 		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
 		String cacheKey = String.format(redisKey.getPattern(), str1, str2);
@@ -237,7 +245,8 @@ public abstract class RedisClient {
 				redisCluster.setex(cacheKey, redisKey.getTtl(), result);
 			}
 		} catch (Exception e) {
-			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
+			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+//			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}
 		return result;
 	}
@@ -251,18 +260,20 @@ public abstract class RedisClient {
 	 * @throws CacheConfigNotExistException 关键词未配置的提示异常
 	 */
 	public Long lpush(int appId, String key_identifier, String newvalue)
-			throws CacheConfigNotExistException {
+			throws CacheConfigNotExistException,RedisException {
 		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
 		String cacheKey = redisKey.getPattern();
-		if(cacheKey == null) {
-			throw new CacheConfigNotExistException();
-		}
 		try {
+			if(cacheKey == null) {
+				throw new CacheConfigNotExistException();
+			}
 			return redisCluster.lpush(cacheKey, newvalue);
+		} catch (CacheConfigNotExistException e) { 
+			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CACHE_CONFIG_NOTEXIST_ERROR_EVENTKEY);
 		} catch (Exception e) {
-			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
+			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+//			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}
-		return null;
 	}
 	
 	/**
@@ -273,18 +284,20 @@ public abstract class RedisClient {
 	 * @param key_identifier config_cacheconfig_rediskey.key_identifier 关键词标识符
 	 * @return 当没有元素可以被弹出时返回一个 nil 的多批量值，并且 timeout 过期。 当有元素弹出时会返回一个双元素的多批量值，其中第一个元素是弹出元素的 key，第二个元素是 value。
 	 */
-	public List<String> brpop(int appId, String key_identifier) {
+	public List<String> brpop(int appId, String key_identifier) throws RedisException {
 		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
 		String cacheKey = redisKey.getPattern();
-		if(cacheKey == null) {
-			throw new CacheConfigNotExistException();
-		}
 		try {
+			if(cacheKey == null) {
+				throw new CacheConfigNotExistException();
+			}
 			return redisCluster.brpop(redisKey.getTtl(), cacheKey);
+		} catch (CacheConfigNotExistException e) {
+			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CACHE_CONFIG_NOTEXIST_ERROR_EVENTKEY);
 		} catch (Exception e) {
-			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
+			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+//			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}
-		return null;
 	}
 	
 	/**
@@ -305,9 +318,9 @@ public abstract class RedisClient {
 		try {
 			return redisCluster.brpoplpush(cacheKey_rpop, cacheKey_lpush, cfg_rpop.getTtl());
 		} catch (Exception e) {
-			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
+			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+//			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}
-		return null;
 	}
 
 	/**
@@ -328,9 +341,9 @@ public abstract class RedisClient {
 		try {
 			return redisCluster.rpoplpush(cacheKey_rpop, cacheKey_lpush);
 		} catch (Exception e) {
-			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
+			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+//			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}
-		return null;
 	}
 	
 	/**
@@ -346,9 +359,9 @@ public abstract class RedisClient {
 		try {
 			return redisCluster.rpop(cacheKey);
 		} catch (Exception e) {
-			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
+			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+//			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}
-		return null;
 	}
 	
 	/**
@@ -369,7 +382,8 @@ public abstract class RedisClient {
 				result =  redisCluster.del(cacheKey);
 			}
 		} catch (Exception e) {
-			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
+			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+//			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}
 		return result;
 	}
@@ -393,7 +407,8 @@ public abstract class RedisClient {
 				result =  redisCluster.del(cacheKey);
 			}
 		} catch (Exception e) {
-			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
+			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+//			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}
 		return result;
 	}
@@ -430,5 +445,101 @@ public abstract class RedisClient {
 		if(redisCluster.exists(cacheKey)) {
 			redisCluster.decr(cacheKey);
 		}
+	}
+	
+	/**
+	 * 添加排序队列
+	 * @param appId 调用方编号
+	 * @param key_identifier 关键词
+	 * @param time 排序字段
+	 * @param str2 内容
+	 * @throws CacheConfigNotExistException
+	 */
+	public void zadd(int appId, String key_identifier, long time, String str2)
+			throws CacheConfigNotExistException {
+		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
+		redisCluster.zadd(redisKey.getPattern(), time, str2);
+	}
+	
+	/**
+	 * 添加排序队列
+	 * @param appId 调用方编号
+	 * @param key_identifier 关键词
+	 * @param time 排序字段
+	 * @param str2 内容
+	 * @param zaddParams 排序字段参数
+	 * @throws CacheConfigNotExistException
+	 */
+	public void zaddWithZaddParams(int appId, String key_identifier, long time, String str2, ZAddParams zaddParams)
+			throws CacheConfigNotExistException {
+		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
+		redisCluster.zadd(redisKey.getPattern(), time, str2, zaddParams);
+	}
+	
+	/**
+	 * 查找排序队列的内容
+	 * @param appId 调用方编号
+	 * @param key_identifier 关键词
+	 * @param min 排序字段起始位置
+	 * @param max 排序字段结束位置
+	 * @return 查找到的排序字段集合
+	 * @throws CacheConfigNotExistException
+	 */
+	public Set<String> zrange(int appId, String key_identifier, Long min, Long max)
+			throws CacheConfigNotExistException {
+		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
+		long start = 0; 
+		long end = -1;
+		if(min != null && min > 0) {
+			start = min;
+		}
+		if(max != null) {
+			end = max;
+		}
+		return redisCluster.zrange(redisKey.getPattern(), start, end);
+	}
+	
+	/**
+	 * 查找排序队列的内容
+	 * @param appId 调用方编号
+	 * @param key_identifier 关键词
+	 * @param min 排序字段起始位置
+	 * @param max 排序字段结束位置
+	 * @return
+	 * @throws CacheConfigNotExistException
+	 */
+	public Set<String> rangeByScore(int appId, String key_identifier, Long min, Long max)
+			throws CacheConfigNotExistException {
+		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
+		long start = 0; 
+		long end = 0;
+		if(min != null && min > 0) {
+			start = min;
+		}
+		if(max != null) {
+			end = max;
+		}
+		return redisCluster.zrangeByScore(redisKey.getPattern(), start, end);
+	}
+	
+	/**
+	 * 删除排序队列任务
+	 * @param appId 调用方编号
+	 * @param key_identifier 关键词
+	 * @param min 排序字段起始位置
+	 * @param max 排序字段结束位置
+	 * @return
+	 */
+	public Long zRemRangeByScore(int appId, String key_identifier, Long min, Long max) {
+		long start = 0; 
+		long end = 0;
+		if(min != null && min > 0) {
+			start = min;
+		}
+		if(max != null) {
+			end = max;
+		}
+		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
+		return redisCluster.zremrangeByScore(redisKey.getPattern(), start, end);
 	}
 }

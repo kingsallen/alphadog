@@ -11,4 +11,6 @@ public interface AwardsDao extends BaseDao<ProfileAwardsRecord> {
 
 	int updateProfileUpdateTime(HashSet<Integer> awardIds);
 
+	int delAwardsByProfileId(int profileId);
+
 }

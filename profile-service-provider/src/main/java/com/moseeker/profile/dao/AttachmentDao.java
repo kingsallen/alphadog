@@ -11,4 +11,6 @@ public interface AttachmentDao extends BaseDao<ProfileAttachmentRecord> {
 
 	int updateProfileUpdateTime(HashSet<Integer> attachmentIds);
 
+	int delAttachmentsByProfileId(int profileId);
+
 }

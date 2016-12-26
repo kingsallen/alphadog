@@ -11,8 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.dictdb.tables.records.DictCityRecord;
@@ -58,6 +58,9 @@ public class ProfileUtils {
 			works.forEach(work -> {
 				ProfileWorksRecord record = BeanUtils.MapToRecord(work, ProfileWorksRecord.class);
 				if (record != null) {
+					if(StringUtils.isNotNullOrEmpty(record.getDescription()) && record.getDescription().length() > Constant.DESCRIPTION_LENGTH) {
+						record.setDescription(record.getDescription().substring(0, Constant.DESCRIPTION_LENGTH));
+					}
 					worksRecords.add(record);
 				}
 			});
@@ -76,6 +79,9 @@ public class ProfileUtils {
 					}
 					if (workexp.get("end_date") != null) {
 						record.setEnd(BeanUtils.convertToSQLDate(workexp.get("end_date")));
+					}
+					if(StringUtils.isNotNullOrEmpty(record.getDescription()) && record.getDescription().length() > Constant.DESCRIPTION_LENGTH) {
+						record.setDescription(record.getDescription().substring(0, Constant.DESCRIPTION_LENGTH));
 					}
 					if (workexp.get("company") != null) {
 						@SuppressWarnings("unchecked")
@@ -138,6 +144,9 @@ public class ProfileUtils {
 			projectexps.forEach(projectexp -> {
 				ProfileProjectexpRecord record = BeanUtils.MapToRecord(projectexp, ProfileProjectexpRecord.class);
 				if (record != null) {
+					if(StringUtils.isNotNullOrEmpty(record.getDescription()) && record.getDescription().length() > Constant.DESCRIPTION_LENGTH) {
+						record.setDescription(record.getDescription().substring(0, Constant.DESCRIPTION_LENGTH));
+					}
 					if (projectexp.get("start_date") != null) {
 						record.setStart(BeanUtils.convertToSQLDate(projectexp.get("start_date")));
 					}
@@ -252,6 +261,9 @@ public class ProfileUtils {
 			educations.forEach(education -> {
 				ProfileEducationRecord record = BeanUtils.MapToRecord(education, ProfileEducationRecord.class);
 				if (record != null) {
+					if(StringUtils.isNotNullOrEmpty(record.getDescription()) && record.getDescription().length() > Constant.DESCRIPTION_LENGTH) {
+						record.setDescription(record.getDescription().substring(0, Constant.DESCRIPTION_LENGTH));
+					}
 					if (education.get("start_date") != null) {
 						record.setStart(BeanUtils.convertToSQLDate(education.get("start_date")));
 					}
@@ -284,6 +296,9 @@ public class ProfileUtils {
 			awards.forEach(award -> {
 				ProfileAwardsRecord record = BeanUtils.MapToRecord(award, ProfileAwardsRecord.class);
 				if (record != null) {
+					if(StringUtils.isNotNullOrEmpty(record.getDescription()) && record.getDescription().length() > Constant.DESCRIPTION_LENGTH) {
+						record.setDescription(record.getDescription().substring(0, Constant.DESCRIPTION_LENGTH));
+					}
 					awardsRecords.add(record);
 				}
 			});
@@ -297,6 +312,9 @@ public class ProfileUtils {
 			attachments.forEach(attachment -> {
 				ProfileAttachmentRecord record = BeanUtils.MapToRecord(attachment, ProfileAttachmentRecord.class);
 				if (record != null) {
+					if(StringUtils.isNotNullOrEmpty(record.getDescription()) && record.getDescription().length() > Constant.DESCRIPTION_LENGTH) {
+						record.setDescription(record.getDescription().substring(0, Constant.DESCRIPTION_LENGTH));
+					}
 					attchmentRecords.add(record);
 				}
 			});
@@ -308,6 +326,9 @@ public class ProfileUtils {
 		ProfileBasicRecord record = null;
 		if (basic != null) {
 			record = BeanUtils.MapToRecord(basic, ProfileBasicRecord.class);
+			if(StringUtils.isNotNullOrEmpty(record.getSelfIntroduction()) && record.getSelfIntroduction().length() > Constant.DESCRIPTION_LENGTH) {
+				record.setSelfIntroduction(record.getSelfIntroduction().substring(0, Constant.DESCRIPTION_LENGTH));
+			}
 			return record;
 		}
 		return record;
@@ -332,6 +353,9 @@ public class ProfileUtils {
 				record.setDisable(UByte.valueOf((Integer) profile.get("disable")));
 			} else {
 				record.setDisable(UByte.valueOf(1));
+			}
+			if(profile.get("origin") != null) {
+				record.setOrigin((String)profile.get("origin"));
 			}
 			return record;
 		}
@@ -558,5 +582,33 @@ public class ProfileUtils {
 			// do nothing
 		}
 		return list;
+	}
+
+	/**
+	 * 更新用户信息
+	 * @param userRecord 数据持久化的用户信息
+	 * @param basicRecord 解析出来的简历基本信息
+	 * @param crawlerUser 解析出来的用户信息
+	 */
+	public void updateUser(UserUserRecord userRecord, ProfileBasicRecord basicRecord, UserUserRecord crawlerUser) {
+		if(userRecord != null && crawlerUser != null) {
+			if ((userRecord.getMobile() == null || userRecord.getMobile() == 0) && crawlerUser != null && crawlerUser.getMobile() != null) {
+				userRecord.setMobile(crawlerUser.getMobile());
+			}
+			if (StringUtils.isNullOrEmpty(userRecord.getName()) && crawlerUser != null && !StringUtils.isNullOrEmpty(crawlerUser.getName())) {
+				userRecord.setName(crawlerUser.getName());
+			}
+			if (StringUtils.isNullOrEmpty(userRecord.getHeadimg()) && crawlerUser != null && !StringUtils.isNullOrEmpty(crawlerUser.getHeadimg())) {
+				userRecord.setHeadimg(crawlerUser.getHeadimg());
+			}
+			if (StringUtils.isNullOrEmpty(userRecord.getEmail()) && crawlerUser != null && !StringUtils.isNullOrEmpty(crawlerUser.getEmail())) {
+				userRecord.setEmail(crawlerUser.getEmail());
+			}
+		}
+		if(userRecord != null && basicRecord != null) {
+			if (StringUtils.isNullOrEmpty(userRecord.getName()) && basicRecord != null && !StringUtils.isNullOrEmpty(basicRecord.getName())) {
+				userRecord.setName(basicRecord.getName());
+			}
+		}
 	}
 }

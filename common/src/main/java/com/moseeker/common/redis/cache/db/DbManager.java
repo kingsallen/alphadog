@@ -10,9 +10,10 @@ import org.jooq.Record;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.dbutils.DBConnHelper;
+import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.redis.RedisConfigRedisKey;
-import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.Notification;
 import com.moseeker.db.configdb.Tables;
 
@@ -49,7 +50,7 @@ public class DbManager {
 	 * @return CacheConfigRedisKey
 	 *         {@see com.moseeker.common.cache.lru.CacheConfigRedisKey}
 	 */
-	public static RedisConfigRedisKey readFromDB(int appId, String keyIdentifier, byte configType) {
+	public static RedisConfigRedisKey readFromDB(int appId, String keyIdentifier, byte configType) throws RedisException {
 		RedisConfigRedisKey redisKey = null;
 		Connection conn = null;
 		try {
@@ -70,7 +71,8 @@ public class DbManager {
 
 		} catch (Exception e) {
 			LoggerFactory.getLogger(DbManager.class).error("error", e);
-			Notification.sendNotification(appId, keyIdentifier, e.getMessage());
+			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, DbManager.class.getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+//			Notification.sendNotification(appId, keyIdentifier, e.getMessage());
 		} finally {
 			try {
 				if(conn != null && !conn.isClosed()) {
@@ -89,7 +91,7 @@ public class DbManager {
 	 * @return List<CacheConfigRedisKey>
 	 *         {@see com.moseeker.common.cache.lru.CacheConfigRedisKey }
 	 */
-	public static List<RedisConfigRedisKey> readAllConfigFromDB(byte configType) {
+	public static List<RedisConfigRedisKey> readAllConfigFromDB(byte configType) throws RedisException {
 		List<RedisConfigRedisKey> redisKeys = new ArrayList<>();
 		Connection conn = null;
 		try {
@@ -107,7 +109,8 @@ public class DbManager {
 					});
 		} catch (Exception e) {
 			LoggerFactory.getLogger(DbManager.class).error("error", e);
-			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
+			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, DbManager.class.getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+//			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		} finally {
 			try {
 				if(conn != null && !conn.isClosed()) {

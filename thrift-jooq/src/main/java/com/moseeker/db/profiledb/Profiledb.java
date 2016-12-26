@@ -22,6 +22,7 @@ import com.moseeker.db.profiledb.tables.ProfileProjectexp;
 import com.moseeker.db.profiledb.tables.ProfileSkill;
 import com.moseeker.db.profiledb.tables.ProfileWorkexp;
 import com.moseeker.db.profiledb.tables.ProfileWorks;
+import com.moseeker.db.profiledb.tables.SchemaMigrations;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,7 +47,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Profiledb extends SchemaImpl {
 
-	private static final long serialVersionUID = -585152291;
+	private static final long serialVersionUID = 1372855577;
 
 	/**
 	 * The reference instance of <code>profiledb</code>
@@ -86,6 +87,7 @@ public class Profiledb extends SchemaImpl {
 			ProfileProjectexp.PROFILE_PROJECTEXP,
 			ProfileSkill.PROFILE_SKILL,
 			ProfileWorkexp.PROFILE_WORKEXP,
-			ProfileWorks.PROFILE_WORKS);
+			ProfileWorks.PROFILE_WORKS,
+			SchemaMigrations.SCHEMA_MIGRATIONS);
 	}
 }

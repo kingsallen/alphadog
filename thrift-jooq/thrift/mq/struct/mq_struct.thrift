@@ -14,11 +14,15 @@ struct MessageTplDataCol {
 */
 struct MessageTemplateNoticeStruct {
     1: optional i32 user_id,
-    2: optional i32 sys_template_id,
-    3: optional string url,
-    4: optional i32 company_id,
-    5: optional map<string, MessageTplDataCol> data,
-    6: optional byte enable_qx_retry = 1
+    2: optional byte type,
+    3: optional i32 sys_template_id,
+    4: optional string url,
+    5: optional i32 company_id,
+    6: optional map<string, MessageTplDataCol> data,
+    7: optional byte enable_qx_retry = 1,
+    8: optional i64 delay = 0,
+    9: optional string validators,
+    10: optional string id
 }
 
 struct EmailStruct {

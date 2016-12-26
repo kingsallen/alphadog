@@ -11,4 +11,6 @@ public interface WorksDao extends BaseDao<ProfileWorksRecord> {
 
 	int updateProfileUpdateTime(Set<Integer> workIds);
 
+	int delWorksByProfileId(int profileId);
+
 }

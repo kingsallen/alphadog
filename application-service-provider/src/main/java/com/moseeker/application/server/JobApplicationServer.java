@@ -6,7 +6,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import com.moseeker.application.thrift.JobApplicataionServicesImpl;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
-import com.moseeker.rpccenter.main.Server;
+import com.moseeker.rpccenter.main.MultiRegServer;
 
 /**
  * Created by zzh on 16/5/24.
@@ -19,13 +19,12 @@ public class JobApplicationServer {
 
         AnnotationConfigApplicationContext acac = initSpring();
         try {
-            Server server = new Server(
+        	MultiRegServer server = new MultiRegServer(
                     JobApplicationServer.class,
                     ServerNodeUtils.getPort(args),
                     acac.getBean(JobApplicataionServicesImpl.class)
             );
             server.start();
-
             synchronized (JobApplicationServer.class) {
                 while (true) {
                     try {
@@ -36,6 +35,7 @@ public class JobApplicationServer {
                 }
             }
         } catch (Exception e) {
+        	e.printStackTrace();
             LOGGER.error("error", e);
         }
 

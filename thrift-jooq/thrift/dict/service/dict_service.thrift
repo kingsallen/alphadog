@@ -40,3 +40,18 @@ service IndustryService {
 service PositionService {
    common_struct.Response getPositionsByCode(1:string code);
 }
+/*
+	orm层第三方职位职能查询
+*/
+service DictOccupationDao{
+	common_struct.Response getOccupations51();
+	common_struct.Response getOccupationsZPin();
+	common_struct.Response getOccupation51(1:common_struct.CommonQuery query);
+	common_struct.Response getOccupationZPin(1:common_struct.CommonQuery query);
+}
+/*
+ service层第三方职位职能查询
+*/
+service DictOccupationService{
+	common_struct.Response getDictOccupation(1:string param);
+}

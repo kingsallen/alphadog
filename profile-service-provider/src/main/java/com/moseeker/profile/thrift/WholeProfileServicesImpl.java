@@ -35,13 +35,19 @@ public class WholeProfileServicesImpl implements Iface {
 		return service.importCV(profile, userId);
 	}
 
-	/*private int clearProfile(int profileId) {
-		return profileDao.deleteProfile(profileId);
-	}*/
-
 	@Override
 	public Response verifyRequires(int userId, int positionId) throws TException {
 		return service.verifyRequires(userId, positionId);
+	}
+
+	@Override
+	public Response createProfile(String profile) throws TException {
+		return service.createProfile(profile);
+	}
+
+	@Override
+	public Response improveProfile(String profile) throws TException {
+		return service.improveProfile(profile);
 	}
 
 }

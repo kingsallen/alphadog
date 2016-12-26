@@ -103,4 +103,10 @@ public class JobApplicataionServicesImpl implements Iface {
     public Response deleteRedisKeyApplicationCheckCount(long userId, long companyId) throws TException {
     		return service.deleteRedisKeyApplicationCheckCount(userId, companyId);
     }
+
+
+	@Override
+	public Response postApplicationIfNotApply(JobApplication application) throws TException {
+		return service.postApplicationIfNotApply(application);
+	}
 }

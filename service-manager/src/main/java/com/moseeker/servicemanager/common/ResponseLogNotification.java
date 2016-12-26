@@ -9,9 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.ConfigPropertiesUtil;
-import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.common.util.Notification;
 import com.moseeker.thrift.gen.common.struct.Response;
 
@@ -44,6 +45,7 @@ public class ResponseLogNotification {
 			if (request.getParameter("appid") != null){
 				appid = Integer.parseInt(request.getParameter("appid"));
 			}
+			logger.info(JSON.toJSONString(response));
 			Notification.sendNotification(appid, eventkey, response.getMessage());
 			return jsonresponse;
 		} catch (Exception e) {
@@ -64,6 +66,7 @@ public class ResponseLogNotification {
 			if (request.getParameter("appid") != null){
 				appid = Integer.parseInt(request.getParameter("appid"));
 			}
+			logger.info(JSON.toJSONString(response));
 			Notification.sendNotification(appid, eventkey, response.getMessage());
 			return jsonresponse;
 		} catch (Exception e) {
@@ -88,6 +91,8 @@ public class ResponseLogNotification {
 
 				RedisClientFactory.getLogClient().lpush(appid, logkey, JSON.toJSONString(reqResp));
 			}
+		} catch (RedisException e) {
+			WarnService.notify(e);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

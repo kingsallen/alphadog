@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -52,10 +52,12 @@ public class CrawlerController {
 			}
 			String result = vu.validate();
 			if (StringUtils.isNullOrEmpty(result)) {
+				logger.info("/crawler");
 				Response res = crawlerUtils.fetchFirstResume(form.getUsername(), form.getPassword(), form.getToken(),
 						form.getType(), form.getLang(), form.getSource(), form.getCompleteness(), form.getAppid(),
 						form.getUser_id());
 				if (res != null && res.getStatus() == 0) {
+					logger.info("/crawler    profile:"+res.getData());
 					res = profileService.importCV(res.getData(), form.getUser_id());
 					return ResponseLogNotification.success(request, res);
 				} else {
@@ -66,9 +68,11 @@ public class CrawlerController {
 				return ResponseLogNotification.fail(request, result);
 			}
 		} catch (ConnectException e) {
+			logger.error(e.getMessage(), e);
 			return ResponseLogNotification.fail(request,
 					ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_SERVICE_TIMEOUT));
 		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
 			return ResponseLogNotification.fail(request, e.getMessage());
 		} finally {
 			// do nothing

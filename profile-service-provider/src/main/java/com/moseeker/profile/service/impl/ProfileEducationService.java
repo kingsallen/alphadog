@@ -15,11 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.common.util.ConstantErrorCodeMessage;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.dictdb.tables.records.DictCollegeRecord;
 import com.moseeker.db.dictdb.tables.records.DictMajorRecord;
@@ -101,6 +101,10 @@ public class ProfileEducationService extends JOOQBaseServiceImpl<Education, Prof
 	@Override
 	public Response getResources(CommonQuery query) throws TException {
 		try {
+			// 按照结束时间倒序
+			query.setSortby("end_until_now,start");
+			query.setOrder("desc,desc");
+			
 			List<ProfileEducationRecord> educationRecords = dao.getResources(query);
 			List<Education> educations = DBsToStructs(educationRecords);
 			if (educations != null && educations.size() > 0) {

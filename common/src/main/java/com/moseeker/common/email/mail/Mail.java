@@ -20,12 +20,12 @@ import javax.mail.internet.MimeMultipart;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.email.attachment.Attachment;
 import com.moseeker.common.email.config.EmailContent;
 import com.moseeker.common.email.config.EmailSessionConfig;
 import com.moseeker.common.email.config.ServerConfig;
 import com.moseeker.common.util.ConfigPropertiesUtil;
-import com.moseeker.common.util.Constant;
 import com.moseeker.common.util.StringUtils;
 
 /**

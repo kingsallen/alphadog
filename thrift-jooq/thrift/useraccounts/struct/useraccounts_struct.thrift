@@ -4,6 +4,7 @@ namespace java com.moseeker.thrift.gen.useraccounts.struct
 
 typedef string Timestamp;
 
+
 struct Userloginreq { 
     1: optional string unionid,
     2: optional string mobile,
@@ -46,7 +47,8 @@ struct User {
     22: optional string     company         ,    // 点击我感兴趣时填写的公司
     23: optional string     position        ,    // 点击我感兴趣时填写的职位
     24: optional i64        parentid             // 合并到了新用户的id
-    25: optional i32        email_verified       // 邮箱是否认证
+    25: optional i32        email_verified  ,    // 邮箱是否认证
+    26: optional string     nickname       	 // 用户昵称
 }
 
 /*
@@ -97,4 +99,19 @@ struct DownloadReport {
    5: optional i32 source,							//来源
    6: optional string register_ip,					//注册IP
    7: optional string last_login_ip					//最后登录IP
+}
+
+/*
+* 帐号绑定
+*/
+struct BindAccountStruct {
+    1: string username,
+    2: string password,
+    3: optional string member_name,
+    4: byte channel,
+    5: i32 appid,
+    6: i32 user_id,
+    7: i32 company_id,
+    8: i32 remainNum,
+    9: i32 binding
 }
