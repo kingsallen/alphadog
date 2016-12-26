@@ -90,9 +90,9 @@ public class MultiTServerThread extends Thread {
 		TProtocolFactory proFactory = new TCompactProtocol.Factory();
 		Args args = new Args(serverTransport).protocolFactory(proFactory).transportFactory(transportFactory)
 				.processor(processor);
-		args.selectorThreads(minWorkerThreads);
-		args.workerThreads(maxWorkerThreads);
-
+		args.selectorThreads(4);
+		args.workerThreads(8);
+		args.maxReadBufferBytes = Integer.MAX_VALUE;
 		// 创建服务器
 		server = new TThreadedSelectorServer(args);
 		//server.serve();

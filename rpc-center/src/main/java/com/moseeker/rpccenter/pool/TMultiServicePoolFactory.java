@@ -57,8 +57,9 @@ public class TMultiServicePoolFactory<T> extends BaseKeyedPoolableObjectFactory<
     public T makeObject(ZKPath path) throws Exception {
         // 生成client对象
         if (path != null && path.getData() != null) {
-        	TTransport transport = new TFastFramedTransport(new TSocket(path.getData().getIP(), path.getData().getPort(), timeout), initialBufferCapacity, maxLength);
-            TProtocol protocol = new TCompactProtocol(transport);
+        		TTransport transport = new TFastFramedTransport(new TSocket(path.getData().getIP(), path.getData().getPort(), timeout), initialBufferCapacity, maxLength);
+        		//TTransport transport = new TFastFramedTransport(new TSocket(path.getData().getIP(), path.getData().getPort(), timeout));  
+        		TProtocol protocol = new TCompactProtocol(transport);
             if(path.getData().getMulti() == 1) {
             	TMultiplexedProtocol mulProtocol= new TMultiplexedProtocol(protocol, path.getData().getPath());
                 transport.open();
