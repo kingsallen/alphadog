@@ -7,6 +7,8 @@ import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Record8;
 import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.jooq.SelectJoinStep;
 import org.springframework.stereotype.Service;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysPointsConfTpl;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysPointsConfTplRecord;
@@ -28,7 +30,7 @@ public class ConfigSysPointsConfTplDao extends BaseDaoImpl<ConfigSysPointsConfTp
 		try {
 			conn = DBConnHelper.DBConn.getConn();
 			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-			Result<Record8<Integer, Integer, Integer, Integer, Integer, Integer, String, Long>> result=create.select(
+			SelectConditionStep<Record8<Integer, Integer, Integer, Integer, Integer, Integer, String, Long>> table =create.select(
 					ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.ID,
 					ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.AWARD, 
 					ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.DISABLE,
@@ -38,8 +40,9 @@ public class ConfigSysPointsConfTplDao extends BaseDaoImpl<ConfigSysPointsConfTp
 					ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.STATUS,
 					HrPointsConf.HR_POINTS_CONF.REWARD)
 			.from(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL)
-			.leftJoin(HrPointsConf.HR_POINTS_CONF).on("HR_POINTS_CONF.template_id=CONFIG_SYS_POINTS_CONF_TPL.id")
-			.where(HrPointsConf.HR_POINTS_CONF.COMPANY_ID.eq(companyId)).fetch();
+			.leftJoin(HrPointsConf.HR_POINTS_CONF).on("hrdb.hr_points_conf.template_id=configdb.config_sys_points_conf_tpl.id")
+			.where(HrPointsConf.HR_POINTS_CONF.COMPANY_ID.eq(companyId));
+			Result<Record8<Integer, Integer, Integer, Integer, Integer, Integer, String, Long>> result=table.fetch();
 			if(result!=null&&result.size()>0){
 				HrAwardConfigTemplate config=null;
 				for(Record8<Integer, Integer, Integer, Integer, Integer, Integer, String, Long> r:result){

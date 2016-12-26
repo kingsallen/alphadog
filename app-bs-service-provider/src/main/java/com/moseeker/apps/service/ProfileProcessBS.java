@@ -63,6 +63,7 @@ public class ProfileProcessBS {
 	    		int recruitOrder = 0;
 	    		List<ProcessValidationStruct> list=this.ConvertList(data);
 	    		UserHrAccount account=this.getAccount(accountId);
+	    		// 判断申请状态是否相同
 	    		if(account!=null){
 	    			for(ProcessValidationStruct record:list){
 	    				if(record.getRecruit_order()==0){
@@ -79,8 +80,10 @@ public class ProfileProcessBS {
 	    			}
 	    			
 	    		}
+	    		//  对所有的
 	    		if(processStatus||progressStatus==13||progressStatus==99){
 	    			Response recruit=configDao.getRecruitProcesses(companyId);
+	    			
 	    			List<HrAwardConfigTemplate> recruitProcesses=null;
 	    			if(recruit.status==1&&StringUtils.isNotNullOrEmpty(recruit.getData())){
 	    				recruitProcesses=this.convertRecruitProcessesList(recruit.getData());
@@ -89,18 +92,19 @@ public class ProfileProcessBS {
 	    			if(result.getStatus() == 0){
 	    				List<Integer> weChatIds=new ArrayList<Integer>();
 	    				List<RewardsToBeAddBean>rewardsToBeAdd=new ArrayList<RewardsToBeAddBean>();
+	    				// 简历还未被浏览就被拒绝，则视为已被浏览，需要在添加角色操作的历史记录之前插入建立被查看的历史记录
 	    				List<HrOperationrecordStruct> turnToCVCheckeds=new ArrayList<HrOperationrecordStruct>();
 	    				RewardsToBeAddBean reward=null;
 	    				HrOperationrecordStruct turnToCVChecked=null;
 	    				for(ProcessValidationStruct record:list){
 	    					RecruitmentResult result1 = BusinessUtil.excuteRecruitRewardOperation(record.getRecruit_order(), progressStatus, recruitProcesses);
 	    					reward=new RewardsToBeAddBean();
-	    					reward.setCompany_id(record.getCompany_id());
 	    					reward.setAccount_id(accountId);
+	    					reward.setEmployee_id(0);
 	    					reward.setReason(result1.getReason());
 	    					reward.setAward(result1.getReward());
 	    					reward.setApplication_id(record.getId());
-	    					reward.setEmployee_id(0);
+	    					reward.setCompany_id(record.getCompany_id());
 	    					reward.setOperate_tpl_id(record.getTemplate_id());
 	    					reward.setRecommender_id(record.getRecommender_id());
 	    					if(progressStatus == 13&&record.getTemplate_id()==ProcessUtils.RECRUIT_STATUS_APPLY_ID){
@@ -146,6 +150,7 @@ public class ProfileProcessBS {
 	    	}
 	    	
 	    }
+	    //插入hr操作记录
 	    private void  updateRecruitState(Integer progressStatus,
 	    		List<ProcessValidationStruct> applications,
 	    		List<HrOperationrecordStruct> turnToCVCheckeds,
@@ -160,10 +165,11 @@ public class ProfileProcessBS {
 	    		rewardsToBeAdd=this.OperationOther(applications, rewardsToBeAdd, progressStatus);
 	    	}
 	    	hrDao.postHrOperationrecords(turnToCVCheckeds);
-	    	updateRecord(result,rewardsToBeAdd,employeesToBeUpdates);
+	    	insertRecord(result,rewardsToBeAdd,employeesToBeUpdates);
 	    	
 	    }
-	    private void updateRecord(RecruitmentResult result,List<RewardsToBeAddBean> rewardsToBeAdd,
+	    //修改推荐用户积分
+	    private void insertRecord(RecruitmentResult result,List<RewardsToBeAddBean> rewardsToBeAdd,
 	    		List<UserEmployeeStruct> employeesToBeUpdates) throws Exception{
 	    	if(result.getReward()!=0){
 	    		List<UserEmployeePointStruct> list=new ArrayList<UserEmployeePointStruct>();
@@ -178,11 +184,13 @@ public class ProfileProcessBS {
 	    				list.add(point);
 	    			}
 	    		}
+	    		//插入积分操作日志
 	    		userDao.postUserEmployeePoints(list);
 	    		this.updateEmployee(employeesToBeUpdates);
 	    		
 	    	}
 	    }
+	    //更新雇员信息
 	    public void updateEmployee(List<UserEmployeeStruct> employeesToBeUpdates) throws Exception{
 	    	List<Long> records=new ArrayList<Long>();
     		for(UserEmployeeStruct data:employeesToBeUpdates){

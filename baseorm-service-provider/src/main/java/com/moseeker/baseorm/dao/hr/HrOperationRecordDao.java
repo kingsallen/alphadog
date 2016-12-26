@@ -32,9 +32,9 @@ public class HrOperationRecordDao extends BaseDaoImpl<HrOperationRecordRecord, H
 			StringBuffer sb=new StringBuffer();
 			sb.append(" select op.id, op.app_id, op.operate_tpl_id, template.recruit_order from ( ");
 			sb.append(" select r.id, r.app_id, r.operate_tpl_id from ( ");
-			sb.append(" select max(id) id from hr_operation_record where operate_tpl_id !=4 and app_id in ("+employeeIds);
-			sb.append("  ) group by app_id) op, hr_operation_record r where r.id=op.id ) as op ");
-			sb.append(" left join config_sys_points_conf_tpl template on op.operate_tpl_id = template.id ");
+			sb.append(" select max(id) id from hrdb.hr_operation_record where operate_tpl_id !=4 and app_id in "+employeeIds);
+			sb.append(" group by app_id) op, hrdb.hr_operation_record r where r.id=op.id ) as op ");
+			sb.append(" left join configdb.config_sys_points_conf_tpl template on op.operate_tpl_id = template.id ");
 			String sql=sb.toString();
 			Result<Record> result=create.fetch(sql);
 			if(result!=null&&result.size()>0){
