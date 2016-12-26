@@ -147,10 +147,6 @@ public class ProfileProcessBS {
 		}
 	}
 	
-	public static void main(String[] args) {
-		System.out.println(MessageFormat.format("{0}/mobile/application?wechat_signature={1}==&m=checkstatus&app_id={2}", "http://platform1.dqprism.com/", "123", "0"));
-	}
-	
      private List<Integer> convertList(String params){
     	 List<Integer> list=new ArrayList<Integer>();
     	 if(params.contains("[")){
