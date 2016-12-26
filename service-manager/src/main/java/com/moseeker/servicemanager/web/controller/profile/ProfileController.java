@@ -199,16 +199,11 @@ public class ProfileController {
 			Params<String, Object> form = ParamUtils.parseRequestParam(request);
 			Integer companyId=form.getInt("company_id");
 			Integer progress_status=form.getInt("progress_status");
-			String params= form.getString("aids");
+			List<Integer> appIds= (List<Integer>) form.get("aids");
 			Integer accountId=form.getInt("account_id");
-			if(companyId==null||progress_status==null||StringUtils.isNullOrEmpty(params)){
+			if(companyId==null||progress_status==null||appIds==null||appIds.size()==0){
 				return ResponseLogNotification.success(request, ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY));
 			}
-			List<Integer> appIds=new ArrayList<Integer>();
-			appIds.add(64);
-			appIds.add(65);
-			appIds.add(66);
-			appIds.add(67);
 			Response result = profileBSService.profileProcess(companyId,progress_status,appIds,accountId);
 			
 			return ResponseLogNotification.success(request, result);

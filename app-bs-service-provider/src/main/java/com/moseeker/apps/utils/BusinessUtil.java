@@ -14,7 +14,6 @@ public class BusinessUtil {
 		int recruitOrderOfferedReward = 0;
 		int recruitOrderHiredReward = 0;
 		for(HrAwardConfigTemplate recruitProcess : recruitProcesses) {
-			long reward=0l;
 			if((Integer)recruitProcess.getRecruit_order() == 3 && recruitProcess.getReward()!=0l) {
 				recruitOrderCVApply = (int) recruitProcess.getReward();
 			}
@@ -38,7 +37,6 @@ public class BusinessUtil {
 		if(preRecruitOrder == 0 && recruitOrder == 3) {
 			result.setReason(ProcessUtils.LETTERS_RECRUITMENT_APPLY);
 			result.setReward(recruitOrderCVApply);
-			
 			result.setStatus(0);
 		}
 		if(preRecruitOrder == 3 && recruitOrder == 4) {
@@ -62,46 +60,38 @@ public class BusinessUtil {
 		if(preRecruitOrder == 10 && recruitOrder == 12) {
 			result.setReason(ProcessUtils.LETTERS_RECRUITMENT_HIRED);
 			result.setReward(recruitOrderHiredReward);
-			
 			result.setStatus(0);
 		}
 		
 		if(preRecruitOrder == 12 && recruitOrder == 10) {
 			result.setReason(ProcessUtils.LETTERS_RECRUITMENT_REOFFERED);
 			result.setReward(0);
-			
 			result.setStatus(0);
 		}
 		if(preRecruitOrder == 10 && recruitOrder == 7) {
 			result.setReason(ProcessUtils.LETTERS_RECRUITMENT_RECVPASSED);
 			result.setReward(0);
-			
 			result.setStatus(0);
 		}
 		if(preRecruitOrder == 7 && recruitOrder == 4) {
 			result.setReason(ProcessUtils.LETTERS_RECRUITMENT_RECVCHECKED);
 			result.setReward(0);
-			
 			result.setStatus(0);
 		}
 		if(recruitOrder == 13) {
 			result.setReason(ProcessUtils.LETTERS_RECRUITMENT_BATCHREJECT);
-			
 			result.setStatus(0);
 		}
 		if(preRecruitOrder == 3 && recruitOrder == 13) {
 			result.setReason(ProcessUtils.LETTERS_RECRUITMENT_APPLYREJECT);
-			
 			result.setStatus(0);
 		}
 		if(preRecruitOrder == 4 && recruitOrder == 13) {
 			result.setReason(ProcessUtils.LETTERS_RECRUITMENT_CVCHECKEDREJECT);
-			
 			result.setStatus(0);
 		}
 		if(preRecruitOrder == 7 && recruitOrder == 13) {
 			result.setReason(ProcessUtils.LETTERS_RECRUITMENT_CVPASSEDREJECT);
-			
 			result.setStatus(0);
 		}
 		if(preRecruitOrder == 10 && recruitOrder == 13) {
@@ -111,49 +101,41 @@ public class BusinessUtil {
 		}
 		if(preRecruitOrder == 12 && recruitOrder == 13) {
 			result.setReason(ProcessUtils.LETTERS_RECRUITMENT_OFFEREDREJECT);
-			
 			result.setStatus(0);
 		}
 		if(preRecruitOrder == 13 && recruitOrder == 4) {
 			result.setReason(ProcessUtils.LETTERS_RECRUITMENT_CANCELILLEGAL);
 			result.setReward(0);
-			
 			result.setStatus(0);
 		}
 		if(preRecruitOrder == 13 && recruitOrder == 3) {
 			result.setReason(ProcessUtils.LETTERS_RECRUITMENT_CANCELILLEGAL);
 			result.setReward(0);
-			
 			result.setStatus(0);
 		}
 		if(preRecruitOrder == 13 && recruitOrder == 4) {
 			result.setReason(ProcessUtils.LETTERS_RECRUITMENT_CANCELILLEGAL);
 			result.setReward(0);
-			
 			result.setStatus(0);
 		}
 		if(preRecruitOrder == 13 && recruitOrder == 7) {
 			result.setReason(ProcessUtils.LETTERS_RECRUITMENT_CANCELILLEGAL);
 			result.setReward(0);
-			
 			result.setStatus(0);
 		}
 		if(preRecruitOrder == 13 && recruitOrder == 10) {
 			result.setReason(ProcessUtils.LETTERS_RECRUITMENT_CANCELILLEGAL);
 			result.setReward(0);
-			
 			result.setStatus(0);
 		}
 		if(preRecruitOrder == 13 && recruitOrder == 12) {
 			result.setReason(ProcessUtils.LETTERS_RECRUITMENT_CANCELILLEGAL);
 			result.setReward(0);
-			
 			result.setStatus(0);
 		}
 		if(preRecruitOrder == 13 && recruitOrder == 99) {
 			result.setReason(ProcessUtils.LETTERS_RECRUITMENT_CANCELILLEGAL);
 			result.setReward(0);
-			
 			result.setStatus(0);
 		}
 		return result;
