@@ -73,7 +73,11 @@ public class JobApplicationDao extends BaseDaoImpl<JobApplicationRecord, JobAppl
 					data.setApplier_id(record.getValue(JobApplication.JOB_APPLICATION.APPLIER_ID).intValue());
 					data.setApplier_name(record.getValue(JobApplication.JOB_APPLICATION.APPLIER_NAME));
 					data.setPosition_name(record.getValue(JobPosition.JOB_POSITION.TITLE));
-					data.setRecommender_user_id(record.getValue(JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID).intValue());
+					if(record.getValue(JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID)==null){
+						data.setRecommender_user_id(0);
+					}else{
+						data.setRecommender_user_id(record.getValue(JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID).intValue());
+					}
 					list.add(data);
 				}
 			}
