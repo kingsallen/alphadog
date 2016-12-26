@@ -12,6 +12,6 @@ service ProfileBS {
    	//简历回收
 	common_struct.Response retrieveProfile(1:i32 positionId, 2:i32 channel, 3:string profile);
 	//简历进度
-	common_struct.Response profileProcess(1:i32 company_id, 2:i32 progress_status, 3:list<i32> aids,4:i32 account_id);
+	common_struct.Response profileProcess(1:i32 company_id, 2:i32 progress_status, 3:string aids,4:i32 account_id);
 }
 

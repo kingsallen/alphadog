@@ -22,9 +22,10 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 	@Autowired
 	private JobApplicationDao dao;
 	@Override
-	public Response processvalidation(List<Integer> appIds, Integer companyId,
+	public Response processvalidation(String params, Integer companyId,
 			Integer progressStatus) {
 		// TODO Auto-generated method stub
+		List<Integer> appIds=this.convertList(params);
 		List<UInteger> list=this.convertUInteger(appIds);
 		List<ProcessValidationStruct> result=null;
 		try{
@@ -34,6 +35,18 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		}
 	}
+    private List<Integer> convertList(String params){
+   	 List<Integer> list=new ArrayList<Integer>();
+   	 if(params.contains("[")){
+   		 params=params.replace("[", "").replace("]", "");
+   		 String [] array=params.split(",");
+   		 for(String param:array){
+   			 list.add(Integer.parseInt(param.trim()));
+   		 }
+   	 }
+		return list;
+   	 
+    }
 	private List<UInteger> convertUInteger(List<Integer> appIds){
 		List<UInteger> list=new ArrayList<UInteger>();
 		for(Integer param:appIds){
