@@ -55,6 +55,7 @@ public class ThriftMultiServer implements IServer {
 
     @Override
     public void stop() {
+    	LOGGER.error("-----ThriftMultiServer server stop-----");
         if (isStarted) {
             serverThread.stopServer();
             isStarted = false;

@@ -7,10 +7,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.moseeker.common.email.config.EmailContent;
 import com.moseeker.common.email.config.EmailSessionConfig;
 import com.moseeker.common.email.mail.Mail;
@@ -30,7 +28,7 @@ public enum SendChannel {
 	EMAIL {
 		@Override
 		public void send(List<Member> recipients, String message) {
-			threadPool.submit(() -> {
+			threadPool.execute(() -> {
 				EmailContent emailContent = new EmailContent();
 				emailContent.setSubject("预警信息");
 				emailContent.setContent(message);
@@ -86,7 +84,7 @@ public enum SendChannel {
 	/**
 	 * 线程池 [用于邮件、短信、微信的发送]
 	 */
-	public ExecutorService threadPool = new ThreadPoolExecutor(5, 15, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+	public static final ExecutorService threadPool = new ThreadPoolExecutor(5, 15, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 	
 	public Logger getLog(){
 		return LoggerFactory.getLogger(getClass());

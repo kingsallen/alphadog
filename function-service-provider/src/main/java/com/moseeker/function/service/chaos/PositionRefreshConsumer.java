@@ -47,8 +47,10 @@ public class PositionRefreshConsumer {
 	private void task() {
 		try {
 			String sync = fetchCompledPosition();
-			logger.info(" refresh completed queue :"+sync);
 			if(StringUtils.isNotNullOrEmpty(sync)) {
+				
+				logger.info(" refresh completed queue :"+sync);
+				
 				PositionForSyncResultPojo pojo = JSONObject.parseObject(sync, PositionForSyncResultPojo.class);
 				
 				writeBack(pojo);

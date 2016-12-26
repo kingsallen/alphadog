@@ -2,6 +2,7 @@ package com.moseeker.rpccenter.client;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.ConnectException;
 import java.net.SocketException;
 
 import org.apache.commons.pool.impl.GenericKeyedObjectPool;
@@ -82,6 +83,10 @@ public class NodeInvoker<T> implements Invoker {
                 Object result = method.invoke(client, args);
                 
                 return result;
+            } catch (ConnectException ce) {
+            	LOGGER.error(ce.getMessage(), ce);
+            	pool.clear(node);
+                NodeManager.NODEMANAGER.removePath(node);
             } catch (InvocationTargetException ite) {// XXX:InvocationTargetException异常发生在method.invoke()中
                 Throwable cause = ite.getCause();
                 

@@ -275,12 +275,12 @@ public class PositionChangeUtil {
 		if(StringUtils.isNotNullOrEmpty(requirement)){
 			StringBuffer require=new StringBuffer();
 			if(requirement.contains("\n")){
-				String results1[]=accounTabilities.split("\n");
+				String results1[]=requirement.split("\n");
 				for(String result :results1){
 					require.append("<p>  "+result+"</p>");
 				}
 			}else{
-				require.append("<p>  "+accounTabilities+"</p>");
+				require.append("<p>  "+requirement+"</p>");
 			}
 			if(requirement.contains("职位要求")){
 				descript.append(require.toString());

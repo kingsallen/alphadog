@@ -32,6 +32,7 @@ public final class Constant {
     public static final int logConfigType = 3;
     public static final int cacheConfigType = 1;
     public static final int sessionConfigType = 2;
+    public static final byte elkConfigType = 5;
 
     public static final int ENABLE = 1;
     public static final int DISABLE = 0;
@@ -41,6 +42,7 @@ public final class Constant {
 
     public static final int REDIS_CONNECT_ERROR_APPID = 0;
     public static final String REDIS_CONNECT_ERROR_EVENTKEY = "REDIS_CONNECT_ERROR";
+    public static final String REDIS_CACHE_CONFIG_NOTEXIST_ERROR_EVENTKEY = "REDIS_CACHE_CONFIG_NOTEXIST_ERROR";
     // 消息模板通知 KEY_IDENTIFIER
     public static final String REDIS_KEY_IDENTIFIER_MQ_MESSAGE_NOTICE_TEMPLATE = "MQ_MESSAGE_NOTICE_TEMPLATE";
 
