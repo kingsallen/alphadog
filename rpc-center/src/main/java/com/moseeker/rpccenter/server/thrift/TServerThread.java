@@ -6,7 +6,7 @@ import org.apache.thrift.protocol.TProtocolFactory;
 import org.apache.thrift.server.TServer;
 import org.apache.thrift.server.TThreadedSelectorServer;
 import org.apache.thrift.server.TThreadedSelectorServer.Args;
-import org.apache.thrift.transport.TFastFramedTransport;
+import org.apache.thrift.transport.TFramedTransport;
 import org.apache.thrift.transport.TNonblockingServerSocket;
 import org.apache.thrift.transport.TNonblockingServerTransport;
 import org.apache.thrift.transport.TTransportFactory;
@@ -82,9 +82,8 @@ public class TServerThread extends Thread {
 		} catch (Exception e) {
 			throw new RpcException(RpcException.NETWORK_EXCEPTION, e);
 		}
-
 		// 异步IO，需要使用TFramedTransport，它将分块缓存读取。
-		TTransportFactory transportFactory = new TFastFramedTransport.Factory();
+		TTransportFactory transportFactory = new TFramedTransport.Factory(1024 * 1024 * 1024);
 
 		// 使用高密度二进制协议
 		TProtocolFactory proFactory = new TCompactProtocol.Factory();
