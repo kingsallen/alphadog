@@ -5,17 +5,21 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.apps.bean.RecruitmentResult;
 import com.moseeker.apps.bean.RewardsToBeAddBean;
 import com.moseeker.apps.utils.BusinessUtil;
 import com.moseeker.apps.utils.ProcessUtils;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -77,7 +81,7 @@ public class ProfileProcessBS {
 	 * @param applicationId
 	 * @param tm
 	 */
-	public void sendTplToSeeker(int userId, String userName, int companyId, int status, String companyName, String positionName, int applicationId, TemplateMs tm) {
+	public void sendTemplate(int userId, String userName, int companyId, int status, String positionName, int applicationId, TemplateMs tm) {
 		if (StringUtils.isNullOrEmpty(positionName)) {
 			return;
 		}
@@ -85,6 +89,20 @@ public class ProfileProcessBS {
 		MsInfo msInfo = tm.processStatus(status, userName);
 		if (msInfo != null) {
 			String color = "#173177";
+			String companyName = "";
+			CommonQuery query = new CommonQuery();
+	        Map<String, String> paramMap = new HashMap<String, String>();
+	        query.setEqualFilter(paramMap);
+	        paramMap.put("id", String.valueOf(companyId));
+			try {
+				Response company = companyService.getResource(query);
+				if (company.status == 0) {
+					JSONObject companyJson = JSON.parseObject(company.getData());
+					companyName = companyJson.getString("name");
+				}
+			} catch (TException e2) {
+				log.error(e2.getMessage(), e2);
+			}
 			MessageTplDataCol firstMs = new MessageTplDataCol();
 			firstMs.setColor(color);
 			firstMs.setValue(msInfo.getResult());
@@ -128,6 +146,7 @@ public class ProfileProcessBS {
 			}
 		}
 	}
+<<<<<<< HEAD
 	
 	public static void main(String[] args) {
 		System.out.println(MessageFormat.format("{0}/mobile/application?wechat_signature={1}==&m=checkstatus&app_id={2}", "http://platform1.dqprism.com/", "123", "0"));
@@ -146,6 +165,10 @@ public class ProfileProcessBS {
     	 
      }
 	 public Response processProfile(int companyId,int progressStatus,String params,int accountId ){
+=======
+   
+	 public Response processProfile(int companyId,int progressStatus,List<Integer> appIds,int accountId ){
+>>>>>>> 1dc4568d839b23ce519d72c8463059f127b7cc18
 		 try{
 			List<Integer> appIds=this.convertList(params);
 			if(appIds==null||appIds.size()==0){
@@ -237,6 +260,10 @@ public class ProfileProcessBS {
 	    					process.setReward(result.getReward());
 						}
 	    				this.updateRecruitState(progressStatus, list, turnToCVCheckeds, employeesToBeUpdates, result, rewardsToBeAdd);
+	    				list.forEach(pvs -> {
+	    					sendTemplate(pvs.getApplier_id(), pvs.getApplier_name(), companyId, progressStatus, pvs.getPosition_name(), Constant.APPID_ALPHADOG, TemplateMs.TOSEEKER);
+	    					sendTemplate(pvs.getRecommender_user_id(), pvs.getApplier_name(), companyId, progressStatus, pvs.getPosition_name(), Constant.APPID_ALPHADOG, TemplateMs.TOSEEKER);
+	    				});
 	    			}
 				}
 	    		
