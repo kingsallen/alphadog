@@ -132,6 +132,8 @@ public class JobApplicationDaoImpl extends BaseDaoImpl<JobApplicationRecord, Job
             conn = DBConnHelper.DBConn.getConn();
             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 
+            conn.setAutoCommit(false);
+            
             HrOperationRecordRecord hrOperationRecord = null;
 
             create.attach(jobApplicationRecord);
@@ -143,7 +145,8 @@ public class JobApplicationDaoImpl extends BaseDaoImpl<JobApplicationRecord, Job
                 create.attach(hrOperationRecord);
                 hrOperationRecord.insert();
             }
-            
+            conn.commit();
+            conn.setAutoCommit(false);
         } catch (Exception e) {
             conn.rollback();
             logger.error("error", e);

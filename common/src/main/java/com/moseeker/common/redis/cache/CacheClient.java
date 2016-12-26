@@ -4,9 +4,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.util.ConfigPropertiesUtil;
-import com.moseeker.common.util.Notification;
 import com.moseeker.common.util.StringUtils;
 
 import redis.clients.jedis.HostAndPort;
@@ -52,7 +52,7 @@ public class CacheClient extends RedisClient {
 		return instance;
 	}
 
-	protected JedisCluster initRedisCluster() {
+	protected JedisCluster initRedisCluster() throws RedisException {
 		ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
 		if (redisCluster == null) {
 			try {
@@ -69,8 +69,9 @@ public class CacheClient extends RedisClient {
 						}
 					}
 				} else {
-					Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID,
-							Constant.REDIS_CONNECT_ERROR_EVENTKEY, "Redis集群redis.cache.host,redis.cache.port尚未配置");
+					throw new RedisException("Redis集群redis.cache.host,redis.cache.port尚未配置", Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+//					Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID,
+//							Constant.REDIS_CONNECT_ERROR_EVENTKEY, "Redis集群redis.cache.host,redis.cache.port尚未配置");
 
 				}
 				redisCluster = new JedisCluster(jedisClusterNodes);
@@ -78,8 +79,9 @@ public class CacheClient extends RedisClient {
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY,
-						e.getMessage());
+				throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+//				Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY,
+//						e.getMessage());
 
 			}
 		}

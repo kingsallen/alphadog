@@ -33,6 +33,8 @@ import com.moseeker.servicemanager.web.controller.util.Params;
  */
 public class ParamUtils {
 	
+	Logger logger = LoggerFactory.getLogger(ParamUtils.class);
+	
 	/**
 	 * 通用的参数解析方法。将request参数信息解析出来，如果属性名字和参数名称一致，则设法将参数的值赋值给类对象的值。
 	 * @param request HttpServletRequest
@@ -199,6 +201,12 @@ public class ParamUtils {
 				}
 			}
 		}
+		if(param.size() > 0) {
+			param.forEach((key, value) -> {
+				LoggerFactory.getLogger(ParamUtils.class).info("----initParamFromRequestParameter key:{}    value:{}", key, value);
+			});
+		}
+		LoggerFactory.getLogger(ParamUtils.class).info("----initParamFromRequestBody:", param.toString());
 		return param;
 	}
 	
@@ -219,6 +227,7 @@ public class ParamUtils {
 			}
 		} catch (IOException | IllegalStateException e) {
 		}
+		LoggerFactory.getLogger(ParamUtils.class).info("----initParamFromRequestBody:", jb.toString());
 		Map<String, Object> map = JsonToMap.parseJSON2Map(jb.toString());
 		return map;
 	}
