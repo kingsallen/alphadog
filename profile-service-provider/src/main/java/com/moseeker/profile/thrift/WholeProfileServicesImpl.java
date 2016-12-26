@@ -50,4 +50,10 @@ public class WholeProfileServicesImpl implements Iface {
 		return service.improveProfile(profile);
 	}
 
+	@Override
+	public Response moveProfile(int destUserId, int originUserId)
+			throws TException {
+		return service.improveProfile(destUserId, originUserId);
+	}
+
 }

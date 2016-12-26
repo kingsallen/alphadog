@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.thrift.TException;
 import org.jooq.types.UByte;
@@ -35,6 +36,7 @@ import com.moseeker.db.profiledb.tables.records.ProfileBasicRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileCredentialsRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileEducationRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileImportRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileIntentionRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileLanguageRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileOtherRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
@@ -80,6 +82,7 @@ import com.moseeker.profile.service.impl.serviceutils.ProfilePojo;
 import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.useraccounts.service.UserCommonService.AsyncProcessor.newsletter;
 
 @Service
 @CounterIface
@@ -438,6 +441,73 @@ public class WholeProfileService {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ALLREADY_NOT_EXIST);
 		}
 	}
+	
+	public Response improveProfile(int destUserId, int originUserId) {
+		ProfileProfileRecord destProfile = profileDao.getProfileByIdOrUserIdOrUUID(destUserId, 0, null);
+		ProfileProfileRecord originProfile = profileDao.getProfileByIdOrUserIdOrUUID(originUserId, 0, null);
+		try {
+			if (originProfile == null && destProfile != null && userDao.getUserById(originUserId) != null) {
+				destProfile.setUserId(UInteger.valueOf(originUserId));
+				profileDao.postResource(destProfile);
+			}
+			if(originProfile != null && destProfile != null) {
+				QueryUtil queryUtil = new QueryUtil();
+				HashMap<String, String> eqs = new HashMap<String, String>();
+				queryUtil.setEqualFilter(eqs);
+				// dest 简历信息查询
+				eqs.put("profile_id", String.valueOf(destProfile.getId()));
+				ProfileBasicRecord destRecord = profileBasicDao.getResource(queryUtil);
+				List<ProfileAttachmentRecord> destAttachments = attachmentDao.getResources(queryUtil);
+				List<ProfileAwardsRecord> destAwards = awardsDao.getResources(queryUtil);
+				List<ProfileCredentialsRecord> destCredentials = credentialsDao.getResources(queryUtil);
+				List<ProfileEducationRecord> destEducations = educationDao.getResources(queryUtil);
+				List<IntentionRecord> destIntentions = new ArrayList<IntentionRecord>();
+				QueryUtil query = new QueryUtil();
+				Map<String, String> param = new HashMap<>();
+				query.setEqualFilter(param);
+				intentionDao.getResources(queryUtil).forEach(intention -> {
+					IntentionRecord irecodr = new IntentionRecord(intention);
+					param.put("profile_intention_id", String.valueOf(intention.getId().intValue()));
+					try {
+						irecodr.setCities(intentionCityDao.getResources(query));
+						irecodr.setPositions(intentionPositionDao.getResources(query));
+						irecodr.setIndustries(intentionIndustryDao.getResources(query));
+						destIntentions.add(irecodr);
+					} catch (Exception e) {
+						logger.error(e.getMessage(), e);
+					}
+				});
+				List<ProfileLanguageRecord> destLanguages = languageDao.getResources(queryUtil);
+				ProfileOtherRecord destOther = otherDao.getResource(queryUtil);
+				List<ProfileProjectexpRecord> destProjectexps = projectExpDao.getResources(queryUtil);
+				List<ProfileSkillRecord> destSkills = skillDao.getResources(queryUtil);
+				List<ProfileWorkexpEntity> destWorkxps = new ArrayList<ProfileWorkexpEntity>();
+				workExpDao.getResources(queryUtil).forEach(workexp -> {
+					ProfileWorkexpEntity workexpEntity = new ProfileWorkexpEntity(workexp);
+					destWorkxps.add(workexpEntity);
+				});
+				List<ProfileWorksRecord> destWorks = worksDao.getResources(queryUtil);
+				int originProfileId = originProfile.getId().intValue();
+				improveBasic(destRecord, originProfileId);
+				improveAttachment(destAttachments, originProfileId);
+				improveAwards(destAwards, originProfileId);
+				improveCredentials(destCredentials, originProfileId);
+				improveEducation(destEducations, originProfileId);
+				improveIntention(destIntentions, originProfileId);
+				improveLanguage(destLanguages, originProfileId);
+				improveOther(destOther, originProfileId);
+				improveProjectexp(destProjectexps, originProfileId);
+				improveSkill(destSkills, originProfileId);
+				improveWorks(destWorks, originProfileId);
+				improveWorkexp(destWorkxps, originProfileId);
+			}
+			completenessImpl.getCompleteness(0, null, originProfile.getId().intValue());
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		}
+		return ResponseUtils.success(null);
+	}
 
 	private void improveUser(UserUserRecord userRecord) {
 		try {
@@ -533,13 +603,10 @@ public class WholeProfileService {
 			qu.addEqualFilter("profile_id", String.valueOf(profileId));
 			try {
 				ProfileOtherRecord record = otherDao.getResource(qu);
-				if(record != null) {
-					record.setOther(otherRecord.getOther());
-					otherDao.putResource(record);
-				} else {
+				if(record == null && otherRecord != null) {
 					otherRecord.setProfileId(UInteger.valueOf(profileId));
 					otherDao.postResource(otherRecord);
-				}
+				} 
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -669,47 +736,47 @@ public class WholeProfileService {
 				boolean flag = false;
 				ProfileBasicRecord basic = profileBasicDao.getResource(qu);
 				if(basic != null) {
-					if(StringUtils.isNotNullOrEmpty(basicRecord.getName()) && !basicRecord.getName().equals(basic.getName())) {
+					if(StringUtils.isNotNullOrEmpty(basicRecord.getName()) && StringUtils.isNullOrEmpty(basic.getName())) {
 						basic.setName(basicRecord.getName());
 						flag = true;
 					}
-					if(basicRecord.getGender() != null && basicRecord.getGender().intValue() != basic.getGender().intValue()) {
+					if(basicRecord.getGender() != null && basic.getGender() == null) {
 						basic.setGender(basicRecord.getGender());
 						flag = true;
 					}
-					if(basicRecord.getNationalityCode() != null) {
+					if(basicRecord.getNationalityCode() != null && basic.getNationalityCode() == null) {
 						basic.setNationalityCode(basicRecord.getNationalityCode());
 						flag = true;
 					}
-					if(StringUtils.isNotNullOrEmpty(basicRecord.getNationalityName())) {
+					if(StringUtils.isNotNullOrEmpty(basicRecord.getNationalityName()) && StringUtils.isNullOrEmpty(basic.getNationalityName())) {
 						basic.setNationalityName(basicRecord.getNationalityName());
 						flag = true;
 					}
-					if(basicRecord.getCityCode() != null) {
+					if(basicRecord.getCityCode() != null && basic.getCityCode() == null) {
 						basic.setCityCode(basicRecord.getCityCode());
 						flag = true;
 					}
-					if(StringUtils.isNotNullOrEmpty(basicRecord.getCityName())) {
+					if(StringUtils.isNotNullOrEmpty(basicRecord.getCityName()) && StringUtils.isNullOrEmpty(basic.getCityName())) {
 						basic.setCityName(basicRecord.getCityName());
 						flag = true;
 					}
-					if(basicRecord.getBirth() != null) {
+					if(basicRecord.getBirth() != null && basic.getBirth() == null) {
 						basic.setBirth(basicRecord.getBirth());
 						flag = true;
 					}
-					if(StringUtils.isNotNullOrEmpty(basicRecord.getWeixin())) {
+					if(StringUtils.isNotNullOrEmpty(basicRecord.getWeixin()) && StringUtils.isNullOrEmpty(basic.getWeixin())) {
 						basic.setWeixin(basicRecord.getWeixin());
 						flag = true;
 					}
-					if(StringUtils.isNotNullOrEmpty(basicRecord.getQq())) {
+					if(StringUtils.isNotNullOrEmpty(basicRecord.getQq()) && StringUtils.isNullOrEmpty(basic.getQq())) {
 						basic.setQq(basicRecord.getQq());
 						flag = true;
 					}
-					if(StringUtils.isNotNullOrEmpty(basicRecord.getMotto())) {
+					if(StringUtils.isNotNullOrEmpty(basicRecord.getMotto()) && StringUtils.isNullOrEmpty(basic.getMotto())) {
 						basic.setMotto(basicRecord.getMotto());
 						flag = true;
 					}
-					if(StringUtils.isNotNullOrEmpty(basicRecord.getSelfIntroduction())) {
+					if(StringUtils.isNotNullOrEmpty(basicRecord.getSelfIntroduction()) && StringUtils.isNullOrEmpty(basic.getSelfIntroduction())) {
 						basic.setSelfIntroduction(basicRecord.getSelfIntroduction());
 						flag = true;
 					}
