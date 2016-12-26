@@ -317,7 +317,7 @@ public class CompletenessCalculator {
 					}
 				}
 			}
-			time+=Math.abs(endtime1-startTime1);
+			time+=Math.abs(endtime1-startTime1+1);
 			if(time==0){
 				time=1;
 			}
