@@ -269,35 +269,35 @@ public class ProfileCompletenessImpl {
 	public int reCalculateUserUser(int profileId) {
 		int result = 0;
 		try {
-			ProfileCompletenessRecord completenessRecord = completenessDao.getCompletenessByProfileId(profileId);
-			if (completenessRecord == null) {
+//			ProfileCompletenessRecord completenessRecord = completenessDao.getCompletenessByProfileId(profileId);
+//			if (completenessRecord == null) {
 				reCalculateProfileCompleteness(profileId);
-			} else {
-				ProfileProfileRecord profileRecord = profileDao.getProfileByIdOrUserIdOrUUID(0, profileId, null);
-				if (profileRecord != null) {
-					UserUserRecord userRecord = userDao.getUserById(profileRecord.getUserId().intValue());
-					UserWxUserRecord wxuserRecord = null;
-					UserSettingsRecord settingRecord = null;
-					if (userRecord != null) {
-						settingRecord = settingDao.getUserSettingsById(profileRecord.getUserId().intValue());
-						try {
-							wxuserRecord = wxuserDao.getWXUserByUserId(userRecord.getId().intValue());
-						} catch (SQLException e) {
-							logger.error(e.getMessage(), e);
-						}
-						int useruserCompleteness = completenessCalculator.calculateUserUser(userRecord, settingRecord,
-								wxuserRecord);
-
-						if (completenessRecord.getUserUser().intValue() != useruserCompleteness) {
-							completenessRecord.setUserUser(useruserCompleteness);
-							result = completenessDao.updateCompleteness(completenessRecord);
-							reCalculateProfileCompleteness(completenessRecord);
-						} else {
-							result = 1;
-						}
-					}
-				}
-			}
+//			} else {
+//				ProfileProfileRecord profileRecord = profileDao.getProfileByIdOrUserIdOrUUID(0, profileId, null);
+//				if (profileRecord != null) {
+//					UserUserRecord userRecord = userDao.getUserById(profileRecord.getUserId().intValue());
+//					UserWxUserRecord wxuserRecord = null;
+//					UserSettingsRecord settingRecord = null;
+//					if (userRecord != null) {
+//						settingRecord = settingDao.getUserSettingsById(profileRecord.getUserId().intValue());
+//						try {
+//							wxuserRecord = wxuserDao.getWXUserByUserId(userRecord.getId().intValue());
+//						} catch (SQLException e) {
+//							logger.error(e.getMessage(), e);
+//						}
+//						int useruserCompleteness = completenessCalculator.calculateUserUser(userRecord, settingRecord,
+//								wxuserRecord);
+//
+//						if (completenessRecord.getUserUser().intValue() != useruserCompleteness) {
+//							completenessRecord.setUserUser(useruserCompleteness);
+//							result = completenessDao.updateCompleteness(completenessRecord);
+//							reCalculateProfileCompleteness(completenessRecord);
+//						} else {
+//							result = 1;
+//						}
+//					}
+//				}
+//			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
@@ -398,27 +398,28 @@ public class ProfileCompletenessImpl {
 				}
 			}
 			
-			ProfileCompletenessRecord completenessRecord = completenessDao.getCompletenessByProfileId(profileId);
-			if (completenessRecord == null) {
+//			ProfileCompletenessRecord completenessRecord = completenessDao.getCompletenessByProfileId(profileId);
+//			if (completenessRecord == null) {
 				reCalculateProfileCompleteness(profileId);
-			} else {
-				
-				QueryUtil qu = new QueryUtil();
-				qu.addEqualFilter("profile_id", String.valueOf(profileId));
-				try {
-					List<ProfileEducationRecord> educationRecords = educationDao.getResources(qu);
-					int educationCompleteness = completenessCalculator.calculateProfileEducations(educationRecords);
-					if(educationCompleteness != completenessRecord.getProfileEducation().intValue()) {
-						completenessRecord.setProfileEducation(educationCompleteness);
-						result = completenessDao.updateCompleteness(completenessRecord);
-						reCalculateProfileCompleteness(completenessRecord);
-					} else {
-						result = 1;
-					}
-				} catch (Exception e) {
-					logger.error(e.getMessage(), e);
-				}
-			}
+				result = 1;
+//			} else {
+//				
+//				QueryUtil qu = new QueryUtil();
+//				qu.addEqualFilter("profile_id", String.valueOf(profileId));
+//				try {
+//					List<ProfileEducationRecord> educationRecords = educationDao.getResources(qu);
+//					int educationCompleteness = completenessCalculator.calculateProfileEducations(educationRecords);
+//					if(educationCompleteness != completenessRecord.getProfileEducation().intValue()) {
+//						completenessRecord.setProfileEducation(educationCompleteness);
+//						result = completenessDao.updateCompleteness(completenessRecord);
+//						reCalculateProfileCompleteness(completenessRecord);
+//					} else {
+//						result = 1;
+//					}
+//				} catch (Exception e) {
+//					logger.error(e.getMessage(), e);
+//				}
+//			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
