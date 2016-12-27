@@ -226,19 +226,16 @@ public class CompletenessCalculator {
 		//目前开始的前一年减去到22岁的年份得到时间段即为应该参加工作的总时间段
 		int period=Math.abs(now-startTime);
 		int time=getWorkTime(workexpRecords);
-		logger.info("=============================time======"+time);
-		logger.info("=============================period====="+period);
 		if(time==0){
 			return 0;
 		}
 		if(period<=0){
 			period=1;
 		}
-		completeness=Math.abs(time/period*45);
+		completeness=Math.abs(time*45/period);
 		if(completeness >= Constant.PROFILER_COMPLETENESS_WORKEXP_MAXVALUE) {
 			completeness = Constant.PROFILER_COMPLETENESS_WORKEXP_MAXVALUE;
 		}
-		logger.info("=============================completeness====="+completeness);
 		return completeness;
 	}
 	private List<Map<String,Integer>> convertList(List<? extends ProfileWorkexpRecord> workexpRecords){
