@@ -224,7 +224,7 @@ public class CompletenessCalculator {
 			return completeness;
 		}
 		//目前开始的前一年减去到22岁的年份得到时间段即为应该参加工作的总时间段
-		int period=Math.abs(now-startTime);
+		int period=Math.abs(now-startTime)-1;
 		int time=getWorkTime(workexpRecords);
 		if(time==0){
 			return 0;
