@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Iface;
+import com.moseeker.thrift.gen.useraccounts.struct.BindType;
 import com.moseeker.thrift.gen.useraccounts.struct.User;
 import com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition;
 import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
@@ -293,5 +294,11 @@ public class UseraccountsServiceImpl implements Iface {
 	@Override
 	public boolean ifExistProfile(String mobile) throws TException {
 		return service.ifExistProfile(mobile);
+	}
+
+	@Override
+	public Response postuserbindmobile(int appid, String unionid, String code,
+			String mobile, BindType bindType) throws TException {
+		return service.postuserbindmobile(appid, unionid, code, mobile, bindType);
 	}
 }

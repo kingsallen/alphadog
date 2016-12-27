@@ -38,6 +38,7 @@ public class TMultiServicePoolFactory<T> extends BaseKeyedPoolableObjectFactory<
     private final int initialBufferCapacity = 1024;
 
     private final int  maxLength = 1024*1024*1024;
+
     /**
      * 
      * @param clientFactory

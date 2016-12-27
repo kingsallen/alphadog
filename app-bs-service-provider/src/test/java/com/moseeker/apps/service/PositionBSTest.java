@@ -2,12 +2,14 @@ package com.moseeker.apps.service;
 
 import static org.junit.Assert.assertEquals;
 
+import org.apache.http.HttpRequest;
 import org.apache.thrift.TException;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matcher;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
@@ -15,7 +17,6 @@ import org.junit.rules.Timeout;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
@@ -53,9 +54,11 @@ public class PositionBSTest {
 	@Mock
 	CompanyDao.Iface CompanyDao;
 	
+	@Mock 
+	HttpRequest request;
+	
 	@InjectMocks 
 	private PositionBS positionBS;
-
 	
 	@Rule 
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -63,8 +66,10 @@ public class PositionBSTest {
 	@Rule
     public Timeout globalTimeout = Timeout.seconds(10); // 10 seconds max per method tested. including any @Before or @After methods
 	
-	@Before
+	@BeforeClass
 	public void init() {
+		
+		//Mockito.when(request.getParams()).thenReturn("");
 		
 		int positionId = 1;
 		int channel = 1;
@@ -75,7 +80,7 @@ public class PositionBSTest {
 		PositionServices.Iface positionServices = Mockito.mock(PositionServices.Iface.class);
 		try {
 			Mockito.when(positionServices.createRefreshPosition(positionId, channel)).thenReturn(account);
-			Mockito.when(positionServices.ifAllowRefresh(positionId, channel)).thenReturn(true);
+			Mockito.when(positionServices.ifAllowRefresh(positionId, channel)).thenReturn(false);
 			Response response = ResultMessage.SUCCESS.toResponse();
 			ThirdPartyPositionData data = new ThirdPartyPositionData();
 			data.setSync_time(new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
@@ -119,7 +124,7 @@ public class PositionBSTest {
 	@Test
 	public void testRefreshPosition() {
 		Response response = positionBS.refreshPosition(1, 1);
-		assertEquals(0, response.getStatus());
+		assertEquals(100005, response.getStatus());
 	}
 
 	/*@Test
