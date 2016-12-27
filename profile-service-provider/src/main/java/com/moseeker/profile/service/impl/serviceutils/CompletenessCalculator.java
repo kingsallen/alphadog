@@ -215,18 +215,19 @@ public class CompletenessCalculator {
 	private int getWorkCompletenessNoEducation(List<? extends ProfileWorkexpRecord> workexpRecords,Date birth){
 		int completeness=0;
 		SimpleDateFormat format= new SimpleDateFormat("yyyy-mm-dd");
-		int startTime=Integer.parseInt(format.format(birth).split("-")[0])+21;
+		int startTime=Integer.parseInt(format.format(birth).split("-")[0])+22;
 		String date=format.format(new Date());
-		int now=Integer.parseInt(date.toString().split("-")[0]);
+		int now=Integer.parseInt(date.split("-")[0]);
 		//年龄小于22岁且有工作经历的，直接给满分
 		if(startTime>=now){
 			completeness=45;
 			return completeness;
 		}
 		//目前开始的前一年减去到22岁的年份得到时间段即为应该参加工作的总时间段
-		int period=now-1-startTime;
-		
+		int period=Math.abs(now-startTime);
 		int time=getWorkTime(workexpRecords);
+		logger.info("=============================time======"+time);
+		logger.info("=============================period====="+period);
 		if(time==0){
 			return 0;
 		}
@@ -237,6 +238,7 @@ public class CompletenessCalculator {
 		if(completeness >= Constant.PROFILER_COMPLETENESS_WORKEXP_MAXVALUE) {
 			completeness = Constant.PROFILER_COMPLETENESS_WORKEXP_MAXVALUE;
 		}
+		logger.info("=============================completeness====="+completeness);
 		return completeness;
 	}
 	private List<Map<String,Integer>> convertList(List<? extends ProfileWorkexpRecord> workexpRecords){
