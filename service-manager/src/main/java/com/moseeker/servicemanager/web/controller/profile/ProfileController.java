@@ -18,6 +18,7 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -198,12 +199,12 @@ public class ProfileController {
 			Params<String, Object> form = ParamUtils.parseRequestParam(request);
 			Integer companyId=form.getInt("company_id");
 			Integer progress_status=form.getInt("progress_status");
-			List<Integer> appIds= (List<Integer>) form.get("aids");
+			String appIds=form.getString("aids");
 			Integer accountId=form.getInt("account_id");
-			if(companyId==null||progress_status==null||appIds==null||appIds.size()==0){
+			if(companyId==null||progress_status==null||StringUtils.isNullOrEmpty(appIds)){
 				return ResponseLogNotification.success(request, ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY));
 			}
-			Response result = profileBSService.profileProcess(companyId,progress_status,appIds.toString(),accountId);
+			Response result = profileBSService.profileProcess(companyId,progress_status,appIds,accountId);
 			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {

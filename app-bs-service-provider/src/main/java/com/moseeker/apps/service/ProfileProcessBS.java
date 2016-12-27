@@ -149,15 +149,15 @@ public class ProfileProcessBS {
 	
      private List<Integer> convertList(String params){
     	 List<Integer> list=new ArrayList<Integer>();
-    	 if(params.contains("[")){
-    		 params=params.replace("[", "").replace("]", "");
+    	 if(params.contains(",")){
     		 String [] array=params.split(",");
     		 for(String param:array){
     			 list.add(Integer.parseInt(param.trim()));
     		 }
+    	 }else{
+    		 list.add(Integer.parseInt(params.trim()));
     	 }
 		return list;
-    	 
      }
 	 public Response processProfile(int companyId,int progressStatus,String params,int accountId ){
 		 try{
