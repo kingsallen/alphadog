@@ -327,47 +327,47 @@ public class ProfileCompletenessImpl {
 					logger.error(e.getMessage(), e);
 				}
 			}
-			ProfileCompletenessRecord completenessRecord = completenessDao.getCompletenessByProfileId(profileId);
-			if (completenessRecord == null) {
+//			ProfileCompletenessRecord completenessRecord = completenessDao.getCompletenessByProfileId(profileId);
+//			if (completenessRecord == null) {
 				reCalculateProfileCompleteness(profileId);
-			} else {
-				
-				QueryUtil qu = new QueryUtil();
-				qu.addEqualFilter("profile_id", String.valueOf(profileId));
-				
-				List<ProfileWorkexpRecord> workExps = null;
-				List<HrCompanyRecord> companies = null;
-				
-				try {
-					List<ProfileEducationRecord> educations =educationDao.getResources(qu);
-					ProfileBasicRecord basicRecord = basicDao.getResource(qu);
-					Date birth=null;
-					if(basicRecord!=null){
-						birth=basicRecord.getBirth();
-					}
-					workExps = workExpDao.getResources(qu);
-					List<Integer> companyIds = new ArrayList<>();
-					if (workExps != null && workExps.size() > 0) {
-						workExps.forEach(workExp -> {
-							if (workExp.getCompanyId() != null && workExp.getCompanyId().intValue() > 0) {
-								companyIds.add(workExp.getCompanyId().intValue());
-							}
-						});
-					}
-					companies = companyDao.getCompaniesByIds(companyIds);
-//					int workExpCompleteness = completenessCalculator.calculateProfileWorkexps(workExps, companies);
-					int workExpCompleteness = completenessCalculator.calculateProfileWorkexps(workExps, educations,birth);
-					if(workExpCompleteness != completenessRecord.getProfileWorkexp()) {
-						completenessRecord.setProfileWorkexp(workExpCompleteness);
-						result = completenessDao.updateCompleteness(completenessRecord);
-						reCalculateProfileCompleteness(completenessRecord);
-					} else {
-						result = 1;
-					}
-				} catch (Exception e) {
-					logger.error(e.getMessage(), e);
-				}
-			}
+//			} else {
+//				
+//				QueryUtil qu = new QueryUtil();
+//				qu.addEqualFilter("profile_id", String.valueOf(profileId));
+//				
+//				List<ProfileWorkexpRecord> workExps = null;
+//				List<HrCompanyRecord> companies = null;
+//				
+//				try {
+//					List<ProfileEducationRecord> educations =educationDao.getResources(qu);
+//					ProfileBasicRecord basicRecord = basicDao.getResource(qu);
+//					Date birth=null;
+//					if(basicRecord!=null){
+//						birth=basicRecord.getBirth();
+//					}
+//					workExps = workExpDao.getResources(qu);
+//					List<Integer> companyIds = new ArrayList<>();
+//					if (workExps != null && workExps.size() > 0) {
+//						workExps.forEach(workExp -> {
+//							if (workExp.getCompanyId() != null && workExp.getCompanyId().intValue() > 0) {
+//								companyIds.add(workExp.getCompanyId().intValue());
+//							}
+//						});
+//					}
+//					companies = companyDao.getCompaniesByIds(companyIds);
+////					int workExpCompleteness = completenessCalculator.calculateProfileWorkexps(workExps, companies);
+//					int workExpCompleteness = completenessCalculator.calculateProfileWorkexps(workExps, educations,birth);
+//					if(workExpCompleteness != completenessRecord.getProfileWorkexp()) {
+//						completenessRecord.setProfileWorkexp(workExpCompleteness);
+//						result = completenessDao.updateCompleteness(completenessRecord);
+//						reCalculateProfileCompleteness(completenessRecord);
+//					} else {
+//						result = 1;
+//					}
+//				} catch (Exception e) {
+//					logger.error(e.getMessage(), e);
+//				}
+//			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		}
