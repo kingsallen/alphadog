@@ -61,12 +61,12 @@ public class TMultiServicePoolFactory<T> extends BaseKeyedPoolableObjectFactory<
         		//TTransport transport = new TFastFramedTransport(new TSocket(path.getData().getIP(), path.getData().getPort(), timeout));  
         		TProtocol protocol = new TCompactProtocol(transport);
             if(path.getData().getMulti() == 1) {
-            	TMultiplexedProtocol mulProtocol= new TMultiplexedProtocol(protocol, path.getData().getPath());
+            		TMultiplexedProtocol mulProtocol= new TMultiplexedProtocol(protocol, path.getData().getPath());
                 transport.open();
                 TServiceClient client = clientFactory.getClient(mulProtocol);
                 return (T) client;
             } else {
-            	transport.open();
+            		transport.open();
                 TServiceClient client = clientFactory.getClient(protocol);
                 return (T) client;
             }

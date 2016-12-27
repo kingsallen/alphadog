@@ -83,7 +83,7 @@ public class TServerThread extends Thread {
 			throw new RpcException(RpcException.NETWORK_EXCEPTION, e);
 		}
 		// 异步IO，需要使用TFramedTransport，它将分块缓存读取。
-		TTransportFactory transportFactory = new TFastFramedTransport.Factory(1024,1024 * 1024 * 1024);
+		TTransportFactory transportFactory = new TFastFramedTransport.Factory(1024, 1024 * 1024 * 1024);
 		//TTransportFactory transportFactory = new TFastFramedTransport.Factory();
 
 		// 使用高密度二进制协议
