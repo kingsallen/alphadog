@@ -310,14 +310,14 @@ public class CompletenessCalculator {
 						if(endtime1==startTime1){
 							time+=1;
 						}else{
-							time+=Math.abs(endtime1-startTime1+1);
+							time+=Math.abs(endtime1-startTime1)+1;
 						}
-						startTime1=0;
-						endtime1=0;
+						startTime1=start;
+						endtime1=end;
 					}
 				}
 			}
-			time+=Math.abs(endtime1-startTime1+1);
+			time+=Math.abs(endtime1-startTime1)+1;
 			if(time==0){
 				time=1;
 			}
