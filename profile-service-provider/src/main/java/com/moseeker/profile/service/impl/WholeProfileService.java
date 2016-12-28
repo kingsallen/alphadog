@@ -2,6 +2,7 @@ package com.moseeker.profile.service.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -411,9 +412,14 @@ public class WholeProfileService {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_USER_NOTEXIST);
 		}
 		ProfileProfileRecord profileDB = profileDao.getProfileByIdOrUserIdOrUUID(userRecord.getId().intValue(), 0, null);
+		
 		if(profileDB != null) {
 			((Map<String, Object>) resume.get("profile")).put("origin", profileDB.getOrigin());
 			ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
+			Date birth=null;
+			if(profilePojo.getBasicRecord()!=null){
+				birth=profilePojo.getBasicRecord().getBirth();
+			}
 			int profileId = profileDB.getId().intValue();
 			improveUser(profilePojo.getUserRecord());
 			improveProfile(profilePojo.getProfileRecord(), profileDB);
@@ -429,8 +435,7 @@ public class WholeProfileService {
 			improveSkill(profilePojo.getSkillRecords(), profileId);
 			improveWorkexp(profilePojo.getWorkexpRecords(), profileId);
 			improveWorks(profilePojo.getWorksRecords(), profileId);
-			
-			completenessImpl.getCompleteness(0, null, profileId);
+			completenessImpl.getCompleteness1(0, null, profileId);
 			return ResponseUtils.success(null);
 		} else {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ALLREADY_NOT_EXIST);
@@ -507,6 +512,7 @@ public class WholeProfileService {
 	private void improveUser(UserUserRecord userRecord) {
 		try {
 			userDao.putResource(userRecord);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e.getMessage(), e);

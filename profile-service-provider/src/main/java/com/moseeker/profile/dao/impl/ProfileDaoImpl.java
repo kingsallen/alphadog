@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -271,7 +272,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 
 				/* 计算profile完整度 */
 				ProfileCompletenessRecord completenessRecord = new ProfileCompletenessRecord();
-
+				Date birthDay=null;
 				if (basicRecord != null) {
 					basicRecord.setProfileId(profileRecord.getId());
 					basicRecord.setCreateTime(now);
@@ -292,7 +293,8 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						}
 					}
 					basicRecord.insert();
-					int basicCompleteness = completenessCalculator.calculateProfileBasic(basicRecord);
+					birthDay=basicRecord.getBirth();
+					int basicCompleteness = completenessCalculator.calculateProfileBasic(basicRecord,userRecord.getMobile());
 					completenessRecord.setProfileBasic(basicCompleteness);
 				}
 				if (attachmentRecords != null && attachmentRecords.size() > 0) {
@@ -423,16 +425,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 					otherRecord.setCreateTime(now);
 					otherRecord.insert();
 				}
-				if (projectExps != null && projectExps.size() > 0) {
-					projectExps.forEach(projectExp -> {
-						projectExp.setProfileId(profileRecord.getId());
-						projectExp.setCreateTime(now);
-						create.attach(projectExp);
-						projectExp.insert();
-					});
-					int projectExpCompleteness = completenessCalculator.calculateProjectexps(projectExps);
-					completenessRecord.setProfileProjectexp(projectExpCompleteness);
-				}
+			
 				if (skillRecords != null && skillRecords.size() > 0) {
 					skillRecords.forEach(skill -> {
 						skill.setProfileId(profileRecord.getId());
@@ -493,8 +486,18 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						workexp.insert();
 					});
 					int workExpCompleteness = completenessCalculator.calculateProfileWorkexps(workexpRecords,
-							companies);
+							educationRecords,birthDay);
 					completenessRecord.setProfileWorkexp(workExpCompleteness);
+				}
+				if (projectExps != null && projectExps.size() > 0) {
+					projectExps.forEach(projectExp -> {
+						projectExp.setProfileId(profileRecord.getId());
+						projectExp.setCreateTime(now);
+						create.attach(projectExp);
+						projectExp.insert();
+					});
+					int projectExpCompleteness = completenessCalculator.calculateProjectexps(projectExps,workexpRecords);
+					completenessRecord.setProfileProjectexp(projectExpCompleteness);
 				}
 
 				if (worksRecords != null && worksRecords.size() > 0) {
@@ -609,6 +612,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 				/* 计算profile完整度 */
 				ProfileCompletenessRecord completenessRecord = new ProfileCompletenessRecord();
 				completenessRecord.setProfileId(profileRecord.getId());
+				Date birthDay=null;
 				if (basicRecord != null) {
 					basicRecord.setProfileId(profileRecord.getId());
 					basicRecord.setCreateTime(now);
@@ -629,7 +633,9 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						}
 					}
 					basicRecord.insert();
-					int basicCompleteness = completenessCalculator.calculateProfileBasic(basicRecord);
+					birthDay=basicRecord.getBirth();
+					//计算basic完整度，由于修改规则，mobile或者微信号有一个即计入，为了不改变数据库表结构所以将mobile传入basic的完整度计算程序当中
+					int basicCompleteness = completenessCalculator.calculateProfileBasic(basicRecord,userRecord.getMobile());
 					completenessRecord.setProfileBasic(basicCompleteness);
 				}
 				if (attachmentRecords != null && attachmentRecords.size() > 0) {
@@ -647,6 +653,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						create.attach(awardsRecord);
 						awardsRecord.insert();
 					});
+					// 计算奖项完整度
 					int awardCompleteness = completenessCalculator.calculateAwards(awardsRecords);
 					completenessRecord.setProfileAwards(awardCompleteness);
 				}
@@ -657,6 +664,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						create.attach(credentialsRecord);
 						credentialsRecord.insert();
 					});
+					//计算证书完整度
 					int credentialsCompleteness = completenessCalculator.calculateCredentials(credentialsRecords);
 					completenessRecord.setProfileCredentials(credentialsCompleteness);
 				}
@@ -676,6 +684,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						create.attach(educationRecord);
 						educationRecord.insert();
 					});
+					//计算教育经历完整度
 					int educationCompleteness = completenessCalculator.calculateProfileEducations(educationRecords);
 					completenessRecord.setProfileEducation(educationCompleteness);
 				}
@@ -741,6 +750,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 							});
 						}
 					});
+					//计算求职意向完整度
 					int intentionCompleteness = completenessCalculator.calculateIntentions(intentionRecords,
 							intentionCityRecords, intentionPositionRecords);
 					completenessRecord.setProfileIntention(intentionCompleteness);
@@ -752,6 +762,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						create.attach(language);
 						language.insert();
 					});
+					//计算语言完整度
 					int languageCompleteness = completenessCalculator.calculateLanguages(languages);
 					completenessRecord.setProfileLanguage(languageCompleteness);
 				}
@@ -761,16 +772,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 					otherRecord.setProfileId(profileRecord.getId());
 					otherRecord.insert();
 				}
-				if (projectExps != null && projectExps.size() > 0) {
-					projectExps.forEach(projectExp -> {
-						projectExp.setProfileId(profileRecord.getId());
-						projectExp.setCreateTime(now);
-						create.attach(projectExp);
-						projectExp.insert();
-					});
-					int projectExpCompleteness = completenessCalculator.calculateProjectexps(projectExps);
-					completenessRecord.setProfileProjectexp(projectExpCompleteness);
-				}
+				
 				if (skillRecords != null && skillRecords.size() > 0) {
 					skillRecords.forEach(skill -> {
 						skill.setProfileId(profileRecord.getId());
@@ -778,6 +780,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						create.attach(skill);
 						skill.insert();
 					});
+					//计算技能完整度
 					int skillCompleteness = completenessCalculator.calculateSkills(skillRecords);
 					completenessRecord.setProfileSkill(skillCompleteness);
 				}
@@ -830,11 +833,21 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						create.attach(workexp);
 						workexp.insert();
 					});
-					int workExpCompleteness = completenessCalculator.calculateProfileWorkexps(workexpRecords,
-							companies);
+					//计算工作经历完整度
+					int workExpCompleteness = completenessCalculator.calculateProfileWorkexps(workexpRecords,educationRecords,birthDay);
 					completenessRecord.setProfileWorkexp(workExpCompleteness);
 				}
-
+				if (projectExps != null && projectExps.size() > 0) {
+					projectExps.forEach(projectExp -> {
+						projectExp.setProfileId(profileRecord.getId());
+						projectExp.setCreateTime(now);
+						create.attach(projectExp);
+						projectExp.insert();
+					});
+					//计算项目经历完整度
+					int projectExpCompleteness = completenessCalculator.calculateProjectexps(projectExps,workexpRecords);
+					completenessRecord.setProfileProjectexp(projectExpCompleteness);
+				}
 				if (worksRecords != null && worksRecords.size() > 0) {
 					worksRecords.forEach(worksRecord -> {
 						worksRecord.setProfileId(profileRecord.getId());
@@ -844,6 +857,22 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 					});
 					int worksCompleteness = completenessCalculator.calculateWorks(worksRecords);
 					completenessRecord.setProfileWorks(worksCompleteness);
+				}
+				//========================发现原来没有，现在添加上＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
+				if (userRecord != null) {
+					create.attach(userRecord);
+					userRecord.update();
+
+					/* 计算简历完整度 */
+					completenessRecord.setProfileId(profileRecord.getId());
+					UserWxUserRecord wxuserRecord = create.selectFrom(UserWxUser.USER_WX_USER)
+							.where(UserWxUser.USER_WX_USER.SYSUSER_ID.equal(userRecord.getId().intValue())).limit(1)
+							.fetchOne();
+					UserSettingsRecord settingRecord = create.selectFrom(UserSettings.USER_SETTINGS)
+							.where(UserSettings.USER_SETTINGS.USER_ID.equal(userRecord.getId())).limit(1).fetchOne();
+					int userCompleteness = completenessCalculator.calculateUserUser(userRecord, settingRecord,
+							wxuserRecord);
+					completenessRecord.setUserUser(userCompleteness);
 				}
 				
 				int totalComplementness = (completenessRecord.getUserUser() == null ? 0
