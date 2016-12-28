@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -27,6 +28,7 @@ import com.moseeker.db.profiledb.tables.ProfileCompleteness;
 import com.moseeker.db.profiledb.tables.ProfileProfile;
 import com.moseeker.db.profiledb.tables.ProfileWorkexp;
 import com.moseeker.db.profiledb.tables.records.ProfileCompletenessRecord;
+import com.moseeker.db.profiledb.tables.records.ProfileEducationRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileWorkexpRecord;
 import com.moseeker.profile.dao.WorkExpDao;
 import com.moseeker.profile.dao.entity.ProfileWorkexpEntity;
@@ -124,11 +126,11 @@ public class WorkExpDaoImpl extends
 				
 				List<HrCompanyRecord> companies = new ArrayList<>();
 				
-				ProfileCompletenessRecord completenessRecord = create.selectFrom(ProfileCompleteness.PROFILE_COMPLETENESS).where(ProfileCompleteness.PROFILE_COMPLETENESS.PROFILE_ID.equal(workexpRecords.get(0).getProfileId())).fetchOne();
-				if(completenessRecord == null) {
-					completenessRecord = new ProfileCompletenessRecord();
-					completenessRecord.setProfileId(workexpRecords.get(0).getProfileId());
-				}
+//				ProfileCompletenessRecord completenessRecord = create.selectFrom(ProfileCompleteness.PROFILE_COMPLETENESS).where(ProfileCompleteness.PROFILE_COMPLETENESS.PROFILE_ID.equal(workexpRecords.get(0).getProfileId())).fetchOne();
+//				if(completenessRecord == null) {
+//					completenessRecord = new ProfileCompletenessRecord();
+//					completenessRecord.setProfileId(workexpRecords.get(0).getProfileId());
+//				}
 				
 				Result<DictIndustryRecord> industries = create.selectFrom(DictIndustry.DICT_INDUSTRY).fetch();
 				Result<DictCityRecord> cities = create.selectFrom(DictCity.DICT_CITY).fetch();
@@ -181,10 +183,11 @@ public class WorkExpDaoImpl extends
 					create.attach(workexp);
 					workexp.insert();
 				});
-				int workExpCompleteness = completenessCalculator.calculateProfileWorkexps(workexpRecords, companies);
-				completenessRecord.setProfileWorkexp(workExpCompleteness);
-				create.attach(completenessRecord);
-				completenessRecord.update();
+				
+//              int workExpCompleteness = completenessCalculator.calculateProfileWorkexps(workexpRecords, companies);
+//				completenessRecord.setProfileWorkexp(workExpCompleteness);
+//				create.attach(completenessRecord);
+//				completenessRecord.update();
 			}
 
 		} catch (Exception e) {

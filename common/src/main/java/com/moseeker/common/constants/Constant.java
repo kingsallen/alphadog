@@ -148,16 +148,16 @@ public final class Constant {
 	public static final String EXCEPTION_PROFILEWORKS_LOST = "计算作品完整度时，作品不能为空";
 	public static final String EXCEPTION_PROFILINTENTION_LOST = "计算期望职位完整度时，期望职位不能为空";
 	
-	public static final int PROFILER_COMPLETENESS_USERUSER_MAXVALUE = 19; 		//用户信息完成度最大值
-	public static final int PROFILER_COMPLETENESS_BASIC_MAXVALUE = 19; 			//简历基本信息完成度最大值
-	public static final int PROFILER_COMPLETENESS_WORKEXP_MAXVALUE = 15; 		//工作经历最大值
-	public static final int PROFILER_COMPLETENESS_EDUCATION_MAXVALUE = 17; 		//教育经历最大值
-	public static final int PROFILER_COMPLETENESS_PROJECTEXP_MAXVALUE = 15; 	//项目经历最大值
-	public static final int PROFILER_COMPLETENESS_LANGUAGE_MAXVALUE = 4; 		//外语技能最大值
+	public static final int PROFILER_COMPLETENESS_USERUSER_MAXVALUE = 8; 		//用户信息完成度最大值
+	public static final int PROFILER_COMPLETENESS_BASIC_MAXVALUE = 16; 			//简历基本信息完成度最大值
+	public static final int PROFILER_COMPLETENESS_WORKEXP_MAXVALUE = 45; 		//工作经历最大值
+	public static final int PROFILER_COMPLETENESS_EDUCATION_MAXVALUE = 10; 		//教育经历最大值
+	public static final int PROFILER_COMPLETENESS_PROJECTEXP_MAXVALUE = 10; 	//项目经历最大值
+	public static final int PROFILER_COMPLETENESS_LANGUAGE_MAXVALUE = 2; 		//外语技能最大值
 	public static final int PROFILER_COMPLETENESS_SKILL_MAXVALUE = 1; 			//技能最大值
-	public static final int PROFILER_COMPLETENESS_CREDENTIAL_MAXVALUE = 1;		//获得的证书完成度最大值
-	public static final int PROFILER_COMPLETENESS_AWARD_MAXVALUE = 2;			//活得奖项完成度最大值
-	public static final int PROFILER_COMPLETENESS_WORKS_MAXVALUE = 3; 			//作品完成度的最大值
+	public static final int PROFILER_COMPLETENESS_CREDENTIAL_MAXVALUE = 2;		//获得的证书完成度最大值
+	public static final int PROFILER_COMPLETENESS_AWARD_MAXVALUE = 1;			//活得奖项完成度最大值
+	public static final int PROFILER_COMPLETENESS_WORKS_MAXVALUE = 1; 			//作品完成度的最大值
 	public static final int PROFILER_COMPLETENESS_INTENTION_MAXVALUE = 4;		//求职意愿完成度最大值
 	
 	public static final int DICT_CONSTANT_COMPANY_SCAL = 1102; 					//公司规模常量表parent_code值
