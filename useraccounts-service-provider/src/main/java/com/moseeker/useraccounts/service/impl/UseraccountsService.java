@@ -317,7 +317,7 @@ public class UseraccountsService {
 	@Deprecated
 	public Response postuserwxbindmobile(int appid, String unionid, String code, String mobile) throws TException {
 		try {
-			return bindOnAccount.get("bindWxAccount").handler(appid, unionid, mobile);
+			return bindOnAccount.get("wechat").handler(appid, unionid, mobile);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		} finally {
@@ -334,7 +334,7 @@ public class UseraccountsService {
 	@Deprecated
 	public Response postuserbdbindmobile(int appid, String userid, String mobile) throws TException {
 		try {
-			return bindOnAccount.get("bindBaiduAccount").handler(appid, userid, mobile);
+			return bindOnAccount.get("baidu").handler(appid, userid, mobile);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		} finally {
