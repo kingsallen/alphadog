@@ -90,7 +90,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 	public Response putJobApplications(List<JobApplication> applications) {
 		// TODO Auto-generated method stub
 		try{
-			int result=dao.postResources(this.convertDB(applications));
+			int result=dao.putResources(this.convertDB(applications));
 			return ResponseUtils.success(result);
 		}catch(Exception e){
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
