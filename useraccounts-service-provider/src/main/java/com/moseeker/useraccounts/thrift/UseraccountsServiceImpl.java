@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Iface;
+import com.moseeker.thrift.gen.useraccounts.struct.BindType;
 import com.moseeker.thrift.gen.useraccounts.struct.User;
 import com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition;
 import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
@@ -263,43 +264,41 @@ public class UseraccountsServiceImpl implements Iface {
 
 	@Override
 	public Response cerateQrcode(int wechatId, long sceneId, int expireSeconds, int action_name) throws TException {
-		// TODO Auto-generated method stub
 		return service.cerateQrcode(wechatId, sceneId, expireSeconds, action_name);
 	}
 
 	@Override
 	public Response getQrcode(String ticket) throws TException {
-		// TODO Auto-generated method stub
 		return service.getQrcode(ticket);
 	}
 
 	@Override
 	public Response getScanResult(int wechatId, long sceneId) throws TException {
-		// TODO Auto-generated method stub
 		return service.getScanResult(wechatId, sceneId);
 	}
 
-	@Override
 	public Response setScanResult(int wechatId, long sceneId, String value) throws TException {
-		// TODO Auto-generated method stub
 		return service.setScanResult(wechatId, sceneId, value);
 	}
 
 	@Override
 	public User ifExistUser(String mobile) throws TException {
-		// TODO Auto-generated method stub
 		return service.ifExistUser(mobile);
 	}
 
 	@Override
 	public int createRetrieveProfileUser(User user) throws TException {
-		// TODO Auto-generated method stub
 		return service.createRetrieveProfileUser(user);
 	}
 
 	@Override
 	public boolean ifExistProfile(String mobile) throws TException {
-		// TODO Auto-generated method stub
 		return service.ifExistProfile(mobile);
+	}
+
+	@Override
+	public Response postuserbindmobile(int appid, String unionid, String code,
+			String mobile, BindType bindType) throws TException {
+		return service.postuserbindmobile(appid, unionid, code, mobile, bindType);
 	}
 }

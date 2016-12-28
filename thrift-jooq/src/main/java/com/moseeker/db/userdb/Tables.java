@@ -4,7 +4,10 @@
 package com.moseeker.db.userdb;
 
 
+import javax.annotation.Generated;
+
 import com.moseeker.db.userdb.tables.CandidateVJobPositionRecom;
+import com.moseeker.db.userdb.tables.UserBdUser;
 import com.moseeker.db.userdb.tables.UserEmployee;
 import com.moseeker.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.db.userdb.tables.UserFavPosition;
@@ -15,8 +18,6 @@ import com.moseeker.db.userdb.tables.UserUser;
 import com.moseeker.db.userdb.tables.UserUserTmp;
 import com.moseeker.db.userdb.tables.UserWxUser;
 import com.moseeker.db.userdb.tables.UserWxViewer;
-
-import javax.annotation.Generated;
 
 
 /**
@@ -86,4 +87,9 @@ public class Tables {
 	 * 用户浏览者记录
 	 */
 	public static final UserWxViewer USER_WX_VIEWER = com.moseeker.db.userdb.tables.UserWxViewer.USER_WX_VIEWER;
+	
+	/**
+     * 百度用户信息表
+     */
+    public static final UserBdUser USER_BD_USER = com.moseeker.db.userdb.tables.UserBdUser.USER_BD_USER;
 }

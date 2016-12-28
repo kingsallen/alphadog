@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.Notification;
@@ -90,6 +91,8 @@ public class ResponseLogNotification {
 
 				RedisClientFactory.getLogClient().lpush(appid, logkey, JSON.toJSONString(reqResp));
 			}
+		} catch (RedisException e) {
+			WarnService.notify(e);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -4,9 +4,9 @@ import org.apache.thrift.TProcessor;
 import org.apache.thrift.protocol.TCompactProtocol;
 import org.apache.thrift.protocol.TProtocolFactory;
 import org.apache.thrift.server.TServer;
-import org.apache.thrift.server.TThreadedSelectorServer.Args;
 import org.apache.thrift.server.TThreadedSelectorServer;
-import org.apache.thrift.transport.TFramedTransport;
+import org.apache.thrift.server.TThreadedSelectorServer.Args;
+import org.apache.thrift.transport.TFastFramedTransport;
 import org.apache.thrift.transport.TNonblockingServerSocket;
 import org.apache.thrift.transport.TNonblockingServerTransport;
 import org.apache.thrift.transport.TTransportFactory;
@@ -82,15 +82,17 @@ public class TServerThread extends Thread {
 		} catch (Exception e) {
 			throw new RpcException(RpcException.NETWORK_EXCEPTION, e);
 		}
-
 		// 异步IO，需要使用TFramedTransport，它将分块缓存读取。
-		TTransportFactory transportFactory = new TFramedTransport.Factory();
+		TTransportFactory transportFactory = new TFastFramedTransport.Factory(1024, 1024 * 1024 * 1024);
+		//TTransportFactory transportFactory = new TFastFramedTransport.Factory();
 
 		// 使用高密度二进制协议
 		TProtocolFactory proFactory = new TCompactProtocol.Factory();
 		Args args = new Args(serverTransport).protocolFactory(proFactory).transportFactory(transportFactory)
 				.processor(processor);
-
+		args.selectorThreads(4);
+		args.workerThreads(8);
+		args.maxReadBufferBytes = Integer.MAX_VALUE;
 		// 创建服务器
 		server = new TThreadedSelectorServer(args);
 		//server.serve();

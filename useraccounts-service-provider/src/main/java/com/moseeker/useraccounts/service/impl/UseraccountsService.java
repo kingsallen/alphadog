@@ -17,20 +17,19 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AppId;
-import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.constants.RespnoseUtil;
 import com.moseeker.common.constants.TemplateId;
 import com.moseeker.common.constants.UserSource;
 import com.moseeker.common.constants.UserType;
+import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.daoutils.BaseDao;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
@@ -49,6 +48,7 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
+import com.moseeker.thrift.gen.useraccounts.struct.BindType;
 import com.moseeker.thrift.gen.useraccounts.struct.User;
 import com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition;
 import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
@@ -58,6 +58,7 @@ import com.moseeker.useraccounts.dao.UserFavoritePositionDao;
 import com.moseeker.useraccounts.dao.UsersettingDao;
 import com.moseeker.useraccounts.dao.WechatDao;
 import com.moseeker.useraccounts.pojo.MessageTemplate;
+import com.moseeker.useraccounts.service.BindOnAccountService;
 
 /**
  * 用户登陆， 注册，合并等api的实现
@@ -99,6 +100,9 @@ public class UseraccountsService {
 	
 	@Autowired
 	protected WechatDao wechatDao;
+	
+	@Autowired
+	protected Map<String, BindOnAccountService> bindOnAccount;
 	
 	/**
 	 * 用户登陆， 返回用户登陆后的信息。
@@ -310,328 +314,44 @@ public class UseraccountsService {
 	 * 否则unionid和mobile分别存在2条记录里面， 需要做合并。 如果unionid或者手机号均没有， 应该在之前先注册.
 	 * code验证码可选.
 	 */
+	@Deprecated
 	public Response postuserwxbindmobile(int appid, String unionid, String code, String mobile) throws TException {
-		// TODO validate code.
-		/*
-		 * if (!StringUtils.isNullOrEmpty(code) && !validateCode(mobile, code,
-		 * 1)) { return
-		 * ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE); }
-		 */
 		try {
-			CommonQuery query1 = new CommonQuery();
-			Map<String, String> filters1 = new HashMap<>();
-			filters1.put("unionid", unionid);
-			query1.setEqualFilter(filters1);
-			UserUserRecord userUnionid = userdao.getResource(query1);
-
-			CommonQuery query2 = new CommonQuery();
-			Map<String, String> filters2 = new HashMap<>();
-			filters2.put("username", mobile);
-			query2.setEqualFilter(filters2);
-			UserUserRecord userMobile = userdao.getResource(query2);
-
-			if (userUnionid == null && userMobile == null) {
-				// post, 都为空的情况, 需要事先调用 user_
-				return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_BIND_NONEED);
-			} else if (userUnionid != null && userMobile != null
-					&& userUnionid.getId().intValue() == userMobile.getId().intValue()) {
-				return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_BIND_NONEED);
-			} else if (userUnionid != null && userMobile == null) {
-				userUnionid.setMobile(Long.valueOf(mobile));
-				userUnionid.setUsername(mobile);
-				if (userdao.putResource(userUnionid) > 0) {
-					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("id", userUnionid.getId().intValue());
-					map.put("username", userUnionid.getUsername());
-					if (userUnionid.getIsDisable() != null) {
-						map.put("is_disable", userUnionid.getIsDisable().intValue());
-					}
-					if (userUnionid.getRank() != null) {
-						map.put("rank", userUnionid.getRank());
-					}
-					if (userUnionid.getRegisterTime() != null) {
-						map.put("register_time", DateUtils.dateToShortTime(userUnionid.getRegisterTime()));
-					}
-					map.put("register_ip", userUnionid.getRegisterIp());
-					if (userUnionid.getLastLoginTime() != null) {
-						map.put("last_login_time", DateUtils.dateToShortTime(userUnionid.getLastLoginTime()));
-					}
-					map.put("last_login_ip", userUnionid.getLastLoginIp());
-					if (userUnionid.getLoginCount() != null) {
-						map.put("login_count", userUnionid.getLoginCount().intValue());
-					}
-					if (userUnionid.getMobile() != null) {
-						map.put("mobile", userUnionid.getMobile().longValue());
-					}
-					map.put("email", userUnionid.getEmail());
-					if (userUnionid.getActivation() != null) {
-						map.put("activation", userUnionid.getActivation().intValue());
-					}
-					map.put("activation_code", userUnionid.getActivationCode());
-					map.put("token", userUnionid.getToken());
-					map.put("name", userUnionid.getName());
-					map.put("headimg", userUnionid.getHeadimg());
-					if (userUnionid.getNationalCodeId() != null) {
-						map.put("national_code_id", userUnionid.getNationalCodeId().intValue());
-					}
-					if (userUnionid.getWechatId() != null) {
-						map.put("wechat_id", userUnionid.getWechatId().intValue());
-					}
-					map.put("unionid", userUnionid.getUnionid());
-					if (userUnionid.getSource() != null) {
-						map.put("source", userUnionid.getSource().intValue());
-					}
-					map.put("company", userUnionid.getCompany());
-					map.put("position", userUnionid.getPosition());
-					map.put("parentid", userUnionid.getParentid().intValue());
-					return ResponseUtils.success(map);
-				} else {
-					return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
-				}
-			} else if (userUnionid == null && userMobile != null) {
-				if(StringUtils.isNotNullOrEmpty(userMobile.getUnionid())) {
-					return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_BIND_REPEATBIND);
-				}
-				userMobile.setUnionid(unionid);
-				if (userdao.putResource(userMobile) > 0) {
-					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("id", userMobile.getId().intValue());
-					map.put("username", userMobile.getUsername());
-					if (userMobile.getIsDisable() != null) {
-						map.put("is_disable", userMobile.getIsDisable().intValue());
-					}
-					if (userMobile.getRank() != null) {
-						map.put("rank", userMobile.getRank());
-					}
-					if (userMobile.getRegisterTime() != null) {
-						map.put("register_time", DateUtils.dateToShortTime(userMobile.getRegisterTime()));
-					}
-					map.put("register_ip", userMobile.getRegisterIp());
-					if (userMobile.getLastLoginTime() != null) {
-						map.put("last_login_time", DateUtils.dateToShortTime(userMobile.getLastLoginTime()));
-					}
-					map.put("last_login_ip", userMobile.getLastLoginIp());
-					if (userMobile.getLoginCount() != null) {
-						map.put("login_count", userMobile.getLoginCount().intValue());
-					}
-					if (userMobile.getMobile() != null) {
-						map.put("mobile", userMobile.getMobile().longValue());
-					}
-					map.put("email", userMobile.getEmail());
-					if (userMobile.getActivation() != null) {
-						map.put("activation", userMobile.getActivation().intValue());
-					}
-					map.put("activation_code", userMobile.getActivationCode());
-					map.put("token", userMobile.getToken());
-					map.put("name", userMobile.getName());
-					map.put("headimg", userMobile.getHeadimg());
-					if (userMobile.getNationalCodeId() != null) {
-						map.put("national_code_id", userMobile.getNationalCodeId().intValue());
-					}
-					if (userMobile.getWechatId() != null) {
-						map.put("wechat_id", userMobile.getWechatId().intValue());
-					}
-					map.put("unionid", userMobile.getUnionid());
-					if (userMobile.getSource() != null) {
-						map.put("source", userMobile.getSource().intValue());
-					}
-					map.put("company", userMobile.getCompany());
-					map.put("position", userMobile.getPosition());
-					map.put("parentid", userMobile.getParentid().intValue());
-					return ResponseUtils.success(map);
-				} else {
-					return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
-				}
-			} else if (userUnionid != null && userMobile != null
-					&& userUnionid.getId().intValue() != userMobile.getId().intValue()) {
-				// 2 accounts, one unoinid, one mobile, need to merge.
-				if (StringUtils.isNotNullOrEmpty(userMobile.getUnionid())) {
-					return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_BIND_REPEATBIND);
-				}
-				combineAccount(appid, userMobile, userUnionid);
-				// 来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录, 7:PC(正常添加) 8:PC(我要投递) 9:
-				// PC(我感兴趣)
-				Map<String, Object> map = new HashMap<String, Object>();
-				map.put("id", userMobile.getId().intValue());
-				map.put("username", userMobile.getUsername());
-				if (userMobile.getIsDisable() != null) {
-					map.put("is_disable", userMobile.getIsDisable().intValue());
-				}
-				if (userMobile.getRank() != null) {
-					map.put("rank", userMobile.getRank());
-				}
-				if (userMobile.getRegisterTime() != null) {
-					map.put("register_time", DateUtils.dateToShortTime(userMobile.getRegisterTime()));
-				}
-				map.put("register_ip", userMobile.getRegisterIp());
-				if (userMobile.getLastLoginTime() != null) {
-					map.put("last_login_time", DateUtils.dateToShortTime(userMobile.getLastLoginTime()));
-				}
-				map.put("last_login_ip", userMobile.getLastLoginIp());
-				if (userMobile.getLoginCount() != null) {
-					map.put("login_count", userMobile.getLoginCount().intValue());
-				}
-				if (userMobile.getMobile() != null) {
-					map.put("mobile", userMobile.getMobile().longValue());
-				}
-				map.put("email", userMobile.getEmail());
-				if (userMobile.getActivation() != null) {
-					map.put("activation", userMobile.getActivation().intValue());
-				}
-				map.put("activation_code", userMobile.getActivationCode());
-				map.put("token", userMobile.getToken());
-				map.put("name", userMobile.getName());
-				map.put("headimg", userMobile.getHeadimg());
-				if (userMobile.getNationalCodeId() != null) {
-					map.put("national_code_id", userMobile.getNationalCodeId().intValue());
-				}
-				if (userMobile.getWechatId() != null) {
-					map.put("wechat_id", userMobile.getWechatId().intValue());
-				}
-				map.put("unionid", userMobile.getUnionid());
-				if (userMobile.getSource() != null) {
-					map.put("source", userMobile.getSource().intValue());
-				}
-				map.put("company", userMobile.getCompany());
-				map.put("position", userMobile.getPosition());
-				map.put("parentid", userMobile.getParentid().intValue());
-				return ResponseUtils.success(map);
-			} else {
-				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-			}
+			return bindOnAccount.get("bindWxAccount").handler(appid, unionid, mobile);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
-
 		} finally {
 			// do nothing
 		}
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 
 	}
-
-	private void combineAccount(int appid, UserUserRecord userMobile, UserUserRecord userUnionid) {
-		try {
-			// unnionid置为子账号
-			userUnionid.setParentid(userMobile.getId());
-			/* 完善unionid */
-			if (StringUtils.isNullOrEmpty(userMobile.getUnionid())
-					&& StringUtils.isNotNullOrEmpty(userUnionid.getUnionid())) {
-				userMobile.setUnionid(userUnionid.getUnionid());
-			}
-			userUnionid.setUnionid("");
-			if (userdao.putResource(userUnionid) > 0) {
-				consummateUserAccount(userMobile, userUnionid);
-				// profile合并成功
-			} else {
-				// 合并失败, log.
-			}
-
-			// weixin端(聚合号),weixin端（企业号） 发起, 保留微信端 profile; 否则保留pc端(无需处理).
-			switch (appid) {
-			case Constant.APPID_QX:
-			case Constant.APPID_PLATFORM:
-				ProfileProfileRecord userMobileProfileRecord = profileDao
-						.getProfileByUserId(userMobile.getId().intValue());
-				// 微信端profile转移到pc用户下.
-				ProfileProfileRecord userUnionProfileRecord = profileDao
-						.getProfileByUserId(userUnionid.getId().intValue());
-				if (userUnionProfileRecord != null) {
-					// pc 端profile 设置为无效
-					if (userMobileProfileRecord != null) {
-						profileDao.delResource(userMobileProfileRecord);
-					}
-					userUnionProfileRecord.setUserId(userMobile.getId());
-					profileDao.putResource(userUnionProfileRecord);
-				}
-
-				break;
-			case Constant.APPID_C:
-				ProfileProfileRecord userMobileProfileRecord1 = profileDao
-					.getProfileByUserId(userMobile.getId().intValue());
-				if(userMobileProfileRecord1 == null) {
-					// 微信端profile转移到pc用户下.
-					ProfileProfileRecord userUnionProfileRecord1 = profileDao
-							.getProfileByUserId(userUnionid.getId().intValue());
-					if(userUnionProfileRecord1 != null) {
-						userUnionProfileRecord1.setUserId(userMobile.getId());
-						profileDao.putResource(userUnionProfileRecord1);
-					}
-				}
-			default:
-				break;
-			}
-			// 合并业务代码
-			// 最后通过消息队列交给独立的服务处理
-			new Thread(() -> {
-				try {
-					userdao.combineAccount(userMobile.getId().intValue(), userUnionid.getId().intValue());
-				} catch (Exception e) {
-					logger.error(e.getMessage(), e);
-				}
-			}).start();
-
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-		}
-	}
-
+	
 	/**
-	 * 账号合并完善账号信息
-	 * 
-	 * @param userMobile
-	 *            需要完善的账号
-	 * @param userUnionid
-	 *            信息来源
+	 * 绑定用户的手机号和userid， 如果在一条记录里都有，提示已经绑定成功， 如果在一条记录里有部分，userid 或者 mobile， 补全。
+	 * 否则userid和mobile分别存在2条记录里面， 需要做合并。 如果userid或者手机号均没有， 应该在之前先注册.
 	 */
-	private void consummateUserAccount(UserUserRecord userMobile, UserUserRecord userUnionid) {
-		/* 完善用户名称 */
-		if (StringUtils.isNullOrEmpty(userMobile.getName()) && StringUtils.isNotNullOrEmpty(userUnionid.getName())) {
-			userMobile.setName(userUnionid.getName());
-		}
-		/* 完善用户昵称 */
-		if (StringUtils.isNullOrEmpty(userMobile.getNickname())
-				&& StringUtils.isNotNullOrEmpty(userUnionid.getNickname())) {
-			userMobile.setNickname(userUnionid.getNickname());
-		}
-		/* 完善用户级别，预计rank越高，表示用户等级越高。 */
-		if ((userUnionid.getRank() != null && userMobile.getRank() == null) || (userUnionid.getRank() != null
-				&& userMobile.getRank() != null && userUnionid.getRank() > userMobile.getRank())) {
-			userMobile.setRank(userUnionid.getRank());
-		}
-		/* 完善用户未验证的手机号码 */
-		if (userUnionid.getMobile() != null && userUnionid.getMobile() > 0
-				&& (userMobile.getMobile() == null || userMobile.getMobile() == 0)) {
-			userMobile.setMobile(userUnionid.getMobile());
-		}
-		/* 完善用户邮箱 */
-		if (StringUtils.isNullOrEmpty(userMobile.getEmail()) && StringUtils.isNotNullOrEmpty(userUnionid.getEmail())) {
-			userMobile.setEmail(userUnionid.getEmail());
-		}
-		/* 完善用户头像 */
-		if (StringUtils.isNullOrEmpty(userMobile.getHeadimg())
-				&& StringUtils.isNotNullOrEmpty(userUnionid.getHeadimg())) {
-			userMobile.setHeadimg(userUnionid.getHeadimg());
-		}
-		/* 完善国家代码 */
-		if (userUnionid.getNationalCodeId() != null && userUnionid.getNationalCodeId() != 1
-				&& (userMobile.getNationalCodeId() == null || userMobile.getNationalCodeId() == 1)) {
-			userMobile.setNationalCodeId(userUnionid.getNationalCodeId());
-		}
-		/* 完善感兴趣的公司 */
-		if (StringUtils.isNullOrEmpty(userMobile.getCompany())
-				&& StringUtils.isNotNullOrEmpty(userUnionid.getCompany())) {
-			userMobile.setCompany(userUnionid.getCompany());
-		}
-		/* 完善感兴趣的职位 */
-		if (StringUtils.isNullOrEmpty(userMobile.getPosition())
-				&& StringUtils.isNotNullOrEmpty(userUnionid.getPosition())) {
-			userMobile.setPosition(userUnionid.getPosition());
-		}
+	@Deprecated
+	public Response postuserbdbindmobile(int appid, String userid, String mobile) throws TException {
 		try {
-			userdao.putResource(userMobile);
+			return bindOnAccount.get("bindBaiduAccount").handler(appid, userid, mobile);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
+		} finally {
+			// do nothing
 		}
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+	}
+	
+	public Response postuserbindmobile(int appid, String unionid, String code, String mobile, BindType bindType) throws TException {
+		try {
+			return bindOnAccount.get(String.valueOf(bindType).toLowerCase()).handler(appid, unionid, mobile);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		} finally {
+			// do nothing
+		}
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 	}
 
 	/**
@@ -1180,8 +900,9 @@ public class UseraccountsService {
 	 */
 	private boolean validateCode(String mobile, String code, int type) {
 		String codeinRedis = null;
-		RedisClient redisclient = RedisClientFactory.getCacheClient();
-		switch (type) {
+		try {
+			RedisClient redisclient = RedisClientFactory.getCacheClient();
+			switch (type) {
 			case 1:
 				codeinRedis = redisclient.get(0, "SMS_SIGNUP", mobile);
 				if (code.equals(codeinRedis)) {
@@ -1196,22 +917,25 @@ public class UseraccountsService {
 					return true;
 				}
 			case 3:
-				codeinRedis = redisclient.get(0, "SMS_CHANGEMOBILE_CODE", mobile);
+				codeinRedis = redisclient.get(0, "SMS_CHANGEMOBILE_CODE",
+						mobile);
 				if (code.equals(codeinRedis)) {
 					redisclient.del(0, "SMS_CHANGEMOBILE_CODE", mobile);
 					return true;
 				}
 			case 4:
-				codeinRedis = redisclient.get(0, "SMS_RESETMOBILE_CODE", mobile);
+				codeinRedis = redisclient
+						.get(0, "SMS_RESETMOBILE_CODE", mobile);
 				if (code.equals(codeinRedis)) {
 					redisclient.del(0, "SMS_RESETMOBILE_CODE", mobile);
 					return true;
 				}
 				break;
-			default :
+			default:
+			}
+		} catch (RedisException e) {
+			WarnService.notify(e);
 		}
-		
-
 		return false;
 	}
 

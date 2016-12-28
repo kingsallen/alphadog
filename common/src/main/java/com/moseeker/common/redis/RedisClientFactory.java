@@ -29,6 +29,7 @@ public class RedisClientFactory {
 	 */
 	private static SessionClient sessionClient;
 	
+	
 	/**
 	 * Redis工厂创建方法
 	 */
@@ -70,4 +71,5 @@ public class RedisClientFactory {
 		}
 		return sessionClient;
 	}
+
 }

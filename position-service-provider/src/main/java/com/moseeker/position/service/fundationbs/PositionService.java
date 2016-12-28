@@ -389,13 +389,13 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 	public List<ThirdPartyPositionData> getThirdPartyPositions(CommonQuery query) {
 		List<ThirdPartyPositionData> datas = new ArrayList<>();
 		try {
-			if(query.getEqualFilter() != null) {
-				query.getEqualFilter().put("channel", "1");
-			} else {
-				Map<String, String> equalFilter = new HashMap<>();
-				equalFilter.put("channel", "1");
-				query.setEqualFilter(equalFilter);
-			}
+//			if(query.getEqualFilter() != null) {
+//				query.getEqualFilter().put("channel", "1");
+//			} else {
+//				Map<String, String> equalFilter = new HashMap<>();
+//				equalFilter.put("channel", "1");
+//				query.setEqualFilter(equalFilter);
+//			}
 			datas = positionDaoService.getPositionThirdPartyPositions(query);
 		} catch (TException e) {
 			// TODO Auto-generated catch block

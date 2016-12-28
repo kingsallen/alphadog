@@ -4,6 +4,15 @@
 package com.moseeker.db.userdb;
 
 
+import javax.annotation.Generated;
+
+import org.jooq.Identity;
+import org.jooq.UniqueKey;
+import org.jooq.impl.AbstractKeys;
+import org.jooq.types.UInteger;
+import org.jooq.types.ULong;
+
+import com.moseeker.db.userdb.tables.UserBdUser;
 import com.moseeker.db.userdb.tables.UserEmployee;
 import com.moseeker.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.db.userdb.tables.UserFavPosition;
@@ -13,6 +22,7 @@ import com.moseeker.db.userdb.tables.UserUser;
 import com.moseeker.db.userdb.tables.UserUserTmp;
 import com.moseeker.db.userdb.tables.UserWxUser;
 import com.moseeker.db.userdb.tables.UserWxViewer;
+import com.moseeker.db.userdb.tables.records.UserBdUserRecord;
 import com.moseeker.db.userdb.tables.records.UserEmployeePointsRecordRecord;
 import com.moseeker.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.db.userdb.tables.records.UserFavPositionRecord;
@@ -22,14 +32,6 @@ import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.db.userdb.tables.records.UserUserTmpRecord;
 import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.db.userdb.tables.records.UserWxViewerRecord;
-
-import javax.annotation.Generated;
-
-import org.jooq.Identity;
-import org.jooq.UniqueKey;
-import org.jooq.impl.AbstractKeys;
-import org.jooq.types.UInteger;
-import org.jooq.types.ULong;
 
 
 /**
@@ -58,6 +60,8 @@ public class Keys {
 	public static final Identity<UserUserRecord, UInteger> IDENTITY_USER_USER = Identities0.IDENTITY_USER_USER;
 	public static final Identity<UserWxUserRecord, ULong> IDENTITY_USER_WX_USER = Identities0.IDENTITY_USER_WX_USER;
 	public static final Identity<UserWxViewerRecord, UInteger> IDENTITY_USER_WX_VIEWER = Identities0.IDENTITY_USER_WX_VIEWER;
+	public static final Identity<UserBdUserRecord, ULong> IDENTITY_USER_BD_USER = Identities0.IDENTITY_USER_BD_USER;
+	
 
 	// -------------------------------------------------------------------------
 	// UNIQUE and PRIMARY KEY definitions
@@ -76,6 +80,8 @@ public class Keys {
 	public static final UniqueKey<UserWxUserRecord> KEY_USER_WX_USER_PRIMARY = UniqueKeys0.KEY_USER_WX_USER_PRIMARY;
 	public static final UniqueKey<UserWxUserRecord> KEY_USER_WX_USER_WECHAT_ID = UniqueKeys0.KEY_USER_WX_USER_WECHAT_ID;
 	public static final UniqueKey<UserWxViewerRecord> KEY_USER_WX_VIEWER_PRIMARY = UniqueKeys0.KEY_USER_WX_VIEWER_PRIMARY;
+	public static final UniqueKey<UserBdUserRecord> KEY_USER_BD_USER_PRIMARY = UniqueKeys0.KEY_USER_BD_USER_PRIMARY;
+    public static final UniqueKey<UserBdUserRecord> KEY_USER_BD_USER_UID = UniqueKeys0.KEY_USER_BD_USER_UID;
 
 	// -------------------------------------------------------------------------
 	// FOREIGN KEY definitions
@@ -95,6 +101,7 @@ public class Keys {
 		public static Identity<UserUserRecord, UInteger> IDENTITY_USER_USER = createIdentity(UserUser.USER_USER, UserUser.USER_USER.ID);
 		public static Identity<UserWxUserRecord, ULong> IDENTITY_USER_WX_USER = createIdentity(UserWxUser.USER_WX_USER, UserWxUser.USER_WX_USER.ID);
 		public static Identity<UserWxViewerRecord, UInteger> IDENTITY_USER_WX_VIEWER = createIdentity(UserWxViewer.USER_WX_VIEWER, UserWxViewer.USER_WX_VIEWER.ID);
+		public static Identity<UserBdUserRecord, ULong> IDENTITY_USER_BD_USER = createIdentity(UserBdUser.USER_BD_USER, UserBdUser.USER_BD_USER.ID);
 	}
 
 	private static class UniqueKeys0 extends AbstractKeys {
@@ -111,5 +118,7 @@ public class Keys {
 		public static final UniqueKey<UserWxUserRecord> KEY_USER_WX_USER_PRIMARY = createUniqueKey(UserWxUser.USER_WX_USER, UserWxUser.USER_WX_USER.ID);
 		public static final UniqueKey<UserWxUserRecord> KEY_USER_WX_USER_WECHAT_ID = createUniqueKey(UserWxUser.USER_WX_USER, UserWxUser.USER_WX_USER.WECHAT_ID, UserWxUser.USER_WX_USER.OPENID);
 		public static final UniqueKey<UserWxViewerRecord> KEY_USER_WX_VIEWER_PRIMARY = createUniqueKey(UserWxViewer.USER_WX_VIEWER, UserWxViewer.USER_WX_VIEWER.ID);
+		public static final UniqueKey<UserBdUserRecord> KEY_USER_BD_USER_PRIMARY = createUniqueKey(UserBdUser.USER_BD_USER, "KEY_user_bd_user_PRIMARY", UserBdUser.USER_BD_USER.ID);
+		public static final UniqueKey<UserBdUserRecord> KEY_USER_BD_USER_UID = createUniqueKey(UserBdUser.USER_BD_USER, "KEY_user_bd_user_uid", UserBdUser.USER_BD_USER.UID);
 	}
 }

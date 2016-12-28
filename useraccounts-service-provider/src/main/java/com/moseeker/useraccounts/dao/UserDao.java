@@ -11,6 +11,8 @@ import com.moseeker.useraccounts.pojo.User;
 public interface UserDao extends BaseDao<UserUserRecord> {
 
     public void combineAccount(int orig, int dest) throws Exception;
+    
+    public void combineAccountBd(int orig, int dest) throws Exception;
 
     public User getUserById(long userId) throws Exception;
 
