@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.moseeker.company.service.impl.CompanyService;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices.Iface;
@@ -17,7 +18,7 @@ public class CompanyServicesImpl implements Iface {
     Logger logger = LoggerFactory.getLogger(this.getClass());
     
     @Autowired
-    private CompanyServicesImpl service;
+    private CompanyService service;
 
     public Response getAllCompanies(CommonQuery query) {
        return service.getAllCompanies(query);
