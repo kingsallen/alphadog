@@ -445,7 +445,7 @@ public class WholeProfileService {
 		try {
 			if (originProfile == null && destProfile != null && userDao.getUserById(originUserId) != null) {
 				destProfile.setUserId(UInteger.valueOf(originUserId));
-				profileDao.postResource(destProfile);
+				profileDao.putResource(destProfile);
 			}
 			if(originProfile != null && destProfile != null) {
 				QueryUtil queryUtil = new QueryUtil();
