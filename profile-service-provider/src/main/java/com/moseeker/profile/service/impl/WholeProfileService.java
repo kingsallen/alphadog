@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.apache.thrift.TException;
 import org.jooq.types.UByte;
@@ -36,7 +35,6 @@ import com.moseeker.db.profiledb.tables.records.ProfileBasicRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileCredentialsRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileEducationRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileImportRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileIntentionRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileLanguageRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileOtherRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
@@ -82,7 +80,6 @@ import com.moseeker.profile.service.impl.serviceutils.ProfilePojo;
 import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.useraccounts.service.UserCommonService.AsyncProcessor.newsletter;
 
 @Service
 @CounterIface
@@ -448,7 +445,7 @@ public class WholeProfileService {
 		try {
 			if (originProfile == null && destProfile != null && userDao.getUserById(originUserId) != null) {
 				destProfile.setUserId(UInteger.valueOf(originUserId));
-				profileDao.postResource(destProfile);
+				profileDao.putResource(destProfile);
 			}
 			if(originProfile != null && destProfile != null) {
 				QueryUtil queryUtil = new QueryUtil();
@@ -500,8 +497,8 @@ public class WholeProfileService {
 				improveSkill(destSkills, originProfileId);
 				improveWorks(destWorks, originProfileId);
 				improveWorkexp(destWorkxps, originProfileId);
+				completenessImpl.getCompleteness(0, null, originProfile.getId().intValue());
 			}
-			completenessImpl.getCompleteness(0, null, originProfile.getId().intValue());
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);

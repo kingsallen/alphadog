@@ -111,7 +111,7 @@ public abstract class BindOnAccountService {
 		} finally {
 			// do nothing
 		}
-		return null;
+		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 	}
 
 	private void resultFull(UserUserRecord userUnionid, Map<String, Object> map) {

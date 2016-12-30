@@ -62,16 +62,9 @@ public class BindBaiduAccountService extends BindOnAccountService{
 		QueryUtil queryUtil = new QueryUtil();
 		Map<String, String> map = new HashMap<String, String>();
 		queryUtil.setEqualFilter(map);
-		map.put("user_id", String.valueOf(idUser.getId()));
-		UserBdUserRecord bdIdUser = bduserDao.getResource(queryUtil);
 		map.put("user_id", String.valueOf(mobileUser.getId()));
 		UserBdUserRecord bdMbUser = bduserDao.getResource(queryUtil);
-		map.clear();
-		map.put("sysuser_id", String.valueOf(idUser.getId()));
-		UserWxUserRecord wxIdUser = wxUserDao.getResource(queryUtil);
-		map.put("sysuser_id", String.valueOf(mobileUser.getId()));
-		UserWxUserRecord wxMbUser = wxUserDao.getResource(queryUtil);
-		if ((bdMbUser != null && bdIdUser != null) || (wxMbUser != null && wxIdUser != null)) {
+		if (bdMbUser != null) {
 			return true;
 		}
 		return false;
