@@ -66,7 +66,7 @@ public class PositionBSTest {
 	@Rule
     public Timeout globalTimeout = Timeout.seconds(10); // 10 seconds max per method tested. including any @Before or @After methods
 	
-	@BeforeClass
+	@Before
 	public void init() {
 		
 		//Mockito.when(request.getParams()).thenReturn("");
@@ -80,7 +80,7 @@ public class PositionBSTest {
 		PositionServices.Iface positionServices = Mockito.mock(PositionServices.Iface.class);
 		try {
 			Mockito.when(positionServices.createRefreshPosition(positionId, channel)).thenReturn(account);
-			Mockito.when(positionServices.ifAllowRefresh(positionId, channel)).thenReturn(false);
+			Mockito.when(positionServices.ifAllowRefresh(positionId, channel)).thenReturn(true);
 			Response response = ResultMessage.SUCCESS.toResponse();
 			ThirdPartyPositionData data = new ThirdPartyPositionData();
 			data.setSync_time(new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
@@ -124,7 +124,7 @@ public class PositionBSTest {
 	@Test
 	public void testRefreshPosition() {
 		Response response = positionBS.refreshPosition(1, 1);
-		assertEquals(100005, response.getStatus());
+		assertEquals(10005, response.getStatus());
 	}
 
 	/*@Test

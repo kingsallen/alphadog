@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -47,7 +47,7 @@ public class PositionBS1Test {
 	@Rule 
 	public MockitoRule mockitoRule = MockitoJUnit.rule();
 	
-	@BeforeClass
+	@Before
 	public void init() {
 		
 		Position job = new Position();
