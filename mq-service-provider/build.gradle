@@ -9,6 +9,7 @@ dependencies {
     compile deps["spring-core"]
     compile deps["spring-context"]
     compile deps["jetty-support"]
+    compile deps["mandrill"]
 }
 
 //compileJava.dependsOn(":thrift-jooq:copyGeneratedFile")

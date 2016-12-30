@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.moseeker.mq.service.email.ConstantlyMailConsumer;
+import com.moseeker.mq.service.email.MandrillMailConsumer;
 import com.moseeker.mq.service.schedule.Schedule;
 import com.moseeker.mq.thrift.ThriftService;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
@@ -36,6 +37,10 @@ public class MqServer {
             server.start();
             
             ConstantlyMailConsumer mailUtil = new ConstantlyMailConsumer();
+
+    		MandrillMailConsumer mandrill = new MandrillMailConsumer();
+    		mandrill.start();            
+            
     		try {
     			mailUtil.start();
     		} catch (IOException | MessagingException e) {

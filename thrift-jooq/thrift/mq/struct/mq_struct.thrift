@@ -32,3 +32,14 @@ struct EmailStruct {
     4: optional i32 eventType,
     5: optional string subject
 }
+
+
+struct MandrillEmailStruct {
+    1: 		string templateName,
+    2: 		string to_email,
+    3: optional string to_name,          
+    4: optional	map<string,string> mergeVars,
+    5: optional string from_email,
+    6: optional string from_name,
+    7: optional string subject
+}

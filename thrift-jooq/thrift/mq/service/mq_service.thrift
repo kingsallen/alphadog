@@ -12,4 +12,6 @@ service MqService {
    
    common_struct.Response sendEMail(1: mq_struct.EmailStruct emailStruct);
 
+   common_struct.Response sendMandrilEmail(1: mq_struct.MandrillEmailStruct mandrillEmailStruct);
+
 }
