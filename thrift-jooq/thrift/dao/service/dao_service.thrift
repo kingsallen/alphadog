@@ -55,6 +55,7 @@ service UserDao {
 	common_struct.Response postUserEmployeePoints(1:list<useraccounts_struct.UserEmployeePointStruct> records);
 	common_struct.Response getPointSum(1:list<i64> record);
 	common_struct.Response putUserEmployees(1:list<useraccounts_struct.UserEmployeeStruct> records);
+	common_struct.Response putUserEmployeePoints(1:list<useraccounts_struct.UserEmployeePointStruct> records);
 }
 
 service PositionDao {

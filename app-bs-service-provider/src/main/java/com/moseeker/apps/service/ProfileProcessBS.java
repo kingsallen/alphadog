@@ -310,14 +310,14 @@ public class ProfileProcessBS {
 	    public void updateEmployee(List<UserEmployeeStruct> employeesToBeUpdates) throws Exception{
 	    	List<Long> records=new ArrayList<Long>();
     		for(UserEmployeeStruct data:employeesToBeUpdates){
-    			records.add(Long.parseLong(data.getEmployeeid()));
+    			records.add(Long.parseLong(data.getId()+""));
     		}
     		Response result=userDao.getPointSum(records);
     		if(result.getStatus()==0&&StringUtils.isNotNullOrEmpty(result.getData())&&!"[]".equals(result.getData())){
     			List<UserEmployeePointSum> list=this.ConvertpointSumList(result.getData());
     			for(UserEmployeeStruct employee:employeesToBeUpdates){
     				for(UserEmployeePointSum point:list){
-    					if(Long.parseLong(employee.getEmployeeid())==point.getEmployee_id()){
+    					if(Long.parseLong(employee.getId()+"")==point.getEmployee_id()){
     						employee.setAward(point.getAward());
     						break;
     					}
@@ -339,6 +339,7 @@ public class ProfileProcessBS {
 	    public List<RewardsToBeAddBean> OperationOther(List<ProcessValidationStruct> applications,
 				 List<RewardsToBeAddBean> rewardsToBeAdd,int progressStatus) throws Exception{
 	    	CommonQuery query=new CommonQuery();
+	    	query.setPer_page(Integer.MAX_VALUE);
 	    	Response result=configDao.getConfigSysPointsConfTpls(query);
 	    	if(result.getStatus()==0&&StringUtils.isNotNullOrEmpty(result.getData())&&!"[]".equals(result.getData())){
 	    		List<ConfigSysPointsConfTpl> list=this.ConvertConfigList(result.getData());

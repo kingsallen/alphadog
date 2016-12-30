@@ -79,5 +79,19 @@ public class UserEmployeeServiceImpl implements UserEmployeeService {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		}
 	}
+	@Override
+	public Response putUserEmployeePointsRecords(List<UserEmployeePointStruct> records) {
+		// TODO Auto-generated method stub
+		try{
+			List<UserEmployeePointsRecordRecord> list=new ArrayList<UserEmployeePointsRecordRecord>();
+			for(UserEmployeePointStruct record:records){
+				list.add((UserEmployeePointsRecordRecord) BeanUtils.structToDB(record, UserEmployeePointsRecordRecord.class));
+			}
+			int result=dao1.putResources(list);
+			return ResponseUtils.success(result);
+		}catch(Exception e){
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		}
+	}
 	
 }

@@ -9,6 +9,7 @@ import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Record2;
 import org.jooq.Result;
+import org.jooq.SelectConditionStep;
 import org.springframework.stereotype.Service;
 
 import com.moseeker.baseorm.util.BaseDaoImpl;
@@ -30,18 +31,18 @@ public class UserEmployeePointsRecordDao extends BaseDaoImpl<UserEmployeePointsR
 		try {
 			conn = DBConnHelper.DBConn.getConn();
 			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-			Result<Record2<BigDecimal, Long>> result=create.select(
+			SelectConditionStep<Record2<BigDecimal, Long>> table=create.select(
 					sum(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.AWARD),
 					UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID)
 			.from(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD)
-			.where(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID.in(list))
-			.fetch();
+			.where(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID.in(list));
+			Result<Record2<BigDecimal, Long>> result=table.fetch();
 			if(result!=null&&result.size()>0){
 				UserEmployeePointSum point=null;
 				for(Record2<BigDecimal, Long> r:result){
 					point=new UserEmployeePointSum();
-					point.setAward((long)r.getValue(1));
-					point.setEmployee_id((long)r.getValue(2));
+					point.setAward(Long.parseLong(r.getValue(0)+""));
+					point.setEmployee_id((long)r.getValue(1));
 					points.add(point);
 				}
 			}
