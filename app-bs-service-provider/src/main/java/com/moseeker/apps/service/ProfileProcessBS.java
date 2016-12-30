@@ -253,7 +253,7 @@ public class ProfileProcessBS {
 	    				this.updateRecruitState(progressStatus, list, turnToCVCheckeds, employeesToBeUpdates, result, rewardsToBeAdd);
 	    				list.forEach(pvs -> {
 	    					sendTemplate(pvs.getApplier_id(), pvs.getApplier_name(), companyId, progressStatus, pvs.getPosition_name(), Constant.APPID_ALPHADOG, TemplateMs.TOSEEKER);
-	    					sendTemplate(pvs.getRecommender_user_id(), pvs.getApplier_name(), companyId, progressStatus, pvs.getPosition_name(), Constant.APPID_ALPHADOG, TemplateMs.TOSEEKER);
+	    					sendTemplate(pvs.getRecommender_user_id(), pvs.getApplier_name(), companyId, progressStatus, pvs.getPosition_name(), Constant.APPID_ALPHADOG, TemplateMs.TORECOM);
 	    				});
 	    			}
 				}
