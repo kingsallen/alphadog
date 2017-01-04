@@ -3,6 +3,7 @@ package com.moseeker.profile.service.impl;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -18,7 +19,9 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.profiledb.tables.records.ProfileLanguageRecord;
+import com.moseeker.profile.constants.ValidationMessage;
 import com.moseeker.profile.dao.LanguageDao;
 import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -70,6 +73,16 @@ public class ProfileLanguageService extends JOOQBaseServiceImpl<Language, Profil
 	
 	@Override
 	public Response postResources(List<Language> structs) throws TException {
+		if(structs != null && structs.size() > 0) {
+			Iterator<Language> ic = structs.iterator();
+			while(ic.hasNext()) {
+				Language language = ic.next();
+				ValidationMessage<Language> vm = verifyLanguage(language);
+				if(!vm.isPass()) {
+					ic.remove();
+				}
+			}
+		}
 		Response response = super.postResources(structs);
 		if(response.getStatus() == 0 && structs != null && structs.size() > 0) {
 			Set<Integer> profileIds = new HashSet<>();
@@ -141,6 +154,10 @@ public class ProfileLanguageService extends JOOQBaseServiceImpl<Language, Profil
 
 	@Override
 	public Response postResource(Language struct) throws TException {
+		ValidationMessage<Language> vm = verifyLanguage(struct);
+		if(!vm.isPass()) {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}'}", vm.getResult()));
+		}
 		Response response = super.postResource(struct);
 		if(response.getStatus() == 0) {
 			
@@ -179,6 +196,14 @@ public class ProfileLanguageService extends JOOQBaseServiceImpl<Language, Profil
 			completenessImpl.recalculateprofileLanguage(struct.getProfile_id(), struct.getId());
 		}
 		return response;
+	}
+	
+	public ValidationMessage<Language> verifyLanguage(Language language) {
+		ValidationMessage<Language> vm = new ValidationMessage<Language>();
+		if(StringUtils.isNullOrEmpty(language.getName())) {
+			vm.addFailedElement("语言名称", "未填写语言名称");
+		}
+		return vm;
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,6 +29,7 @@ import com.moseeker.db.dictdb.tables.records.DictIndustryRecord;
 import com.moseeker.db.dictdb.tables.records.DictPositionRecord;
 import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileWorkexpRecord;
+import com.moseeker.profile.constants.ValidationMessage;
 import com.moseeker.profile.dao.CityDao;
 import com.moseeker.profile.dao.CompanyDao;
 import com.moseeker.profile.dao.IndustryDao;
@@ -183,6 +185,10 @@ public class ProfileWorkExpService extends JOOQBaseServiceImpl<WorkExp, ProfileW
 
 	@Override
 	public Response postResource(WorkExp struct) throws TException {
+		ValidationMessage<WorkExp> vm = verifyWorkExp(struct);
+		if(!vm.isPass()) {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}'}", vm.getResult()));
+		}
 		int i = 0;
 		try {
 			if(struct.getCity_code() > 0) {
@@ -326,6 +332,16 @@ public class ProfileWorkExpService extends JOOQBaseServiceImpl<WorkExp, ProfileW
 	
 	@Override
 	public Response postResources(List<WorkExp> structs) throws TException {
+		if(structs != null && structs.size() > 0) {
+			Iterator<WorkExp> wei = structs.iterator();
+			while(wei.hasNext()) {
+				WorkExp workExp = wei.next();
+				ValidationMessage<WorkExp> vm = verifyWorkExp(workExp);
+				if(!vm.isPass()) {
+					wei.remove();
+				}
+			}
+		}
 		Response response = super.postResources(structs);
 		if(structs != null && structs.size() > 0 && response.getStatus() == 0) {
 			Set<Integer> profileIds = new HashSet<>();
@@ -457,6 +473,23 @@ public class ProfileWorkExpService extends JOOQBaseServiceImpl<WorkExp, ProfileW
 	@Override
 	protected void initDao() {
 		super.dao = this.dao;
+	}
+	
+	public ValidationMessage<WorkExp> verifyWorkExp(WorkExp workExp) {
+		ValidationMessage<WorkExp> vm = new ValidationMessage<>();
+		if(workExp.getCompany_id() == 0 && StringUtils.isNullOrEmpty(workExp.getCompany_name())) {
+			vm.addFailedElement("就职公司", "未填写就职公司");
+		}
+		if(StringUtils.isNullOrEmpty(workExp.getJob())) {
+			vm.addFailedElement("职位名称", "未填写职位名称");
+		}
+		if(StringUtils.isNullOrEmpty(workExp.getStart_date())) {
+			vm.addFailedElement("开始时间", "未填写开始时间");
+		}
+		if(StringUtils.isNullOrEmpty(workExp.getDescription())) {
+			vm.addFailedElement("职位描述", "未对该职位做详细描述");
+		}
+		return vm;
 	}
 
 	@Override

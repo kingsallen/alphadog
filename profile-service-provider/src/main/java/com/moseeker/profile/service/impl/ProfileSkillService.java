@@ -3,6 +3,7 @@ package com.moseeker.profile.service.impl;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -13,10 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.profiledb.tables.records.ProfileSkillRecord;
+import com.moseeker.profile.constants.ValidationMessage;
 import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.profile.dao.SkillDao;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -68,6 +73,16 @@ public class ProfileSkillService extends JOOQBaseServiceImpl<Skill, ProfileSkill
 
 	@Override
 	public Response postResources(List<Skill> structs) throws TException {
+		if(structs != null && structs.size() > 0) {
+			Iterator<Skill> is = structs.iterator();
+			while(is.hasNext()) {
+				Skill skill = is.next();
+				ValidationMessage<Skill> vm = verifySkill(skill);
+				if(!vm.isPass()) {
+					is.remove();
+				}
+			}
+		}
 		Response response = super.postResources(structs);
 		if (response.getStatus() == 0 && structs != null && structs.size() > 0) {
 			Set<Integer> profileIds = new HashSet<>();
@@ -128,6 +143,10 @@ public class ProfileSkillService extends JOOQBaseServiceImpl<Skill, ProfileSkill
 
 	@Override
 	public Response postResource(Skill struct) throws TException {
+		ValidationMessage<Skill> vm = verifySkill(struct);
+		if(!vm.isPass()) {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}'}", vm.getResult()));
+		}
 		Response response = super.postResource(struct);
 		if (response.getStatus() == 0) {
 			Set<Integer> profileIds = new HashSet<>();
@@ -165,6 +184,14 @@ public class ProfileSkillService extends JOOQBaseServiceImpl<Skill, ProfileSkill
 					skillRecord.getId().intValue());
 		}
 		return response;
+	}
+	
+	public ValidationMessage<Skill> verifySkill(Skill skill) {
+		ValidationMessage<Skill> vm = new ValidationMessage<>();
+		if(StringUtils.isNullOrEmpty(skill.getName())) {
+			vm.addFailedElement("语言名称", "未填写语言名称");
+		}
+		return vm;
 	}
 
 	@Override

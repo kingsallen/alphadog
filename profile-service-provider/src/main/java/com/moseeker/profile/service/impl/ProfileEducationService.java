@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,6 +25,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.dictdb.tables.records.DictCollegeRecord;
 import com.moseeker.db.dictdb.tables.records.DictMajorRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileEducationRecord;
+import com.moseeker.profile.constants.ValidationMessage;
 import com.moseeker.profile.dao.CollegeDao;
 import com.moseeker.profile.dao.EducationDao;
 import com.moseeker.profile.dao.MajorDao;
@@ -185,6 +187,11 @@ public class ProfileEducationService extends JOOQBaseServiceImpl<Education, Prof
 	@Override
 	public Response postResource(Education education) throws TException {
 		try {
+			//添加信息校验
+			ValidationMessage<Education> vm = verifyEducation(education);
+			if(!vm.isPass()) {
+				return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}'}", vm.getResult()));
+			}
 			if (education.getCollege_code() > 0) {
 				DictCollegeRecord college = collegeDao.getCollegeByID(education.getCollege_code());
 				if (college != null) {
@@ -253,6 +260,17 @@ public class ProfileEducationService extends JOOQBaseServiceImpl<Education, Prof
 
 	@Override
 	public Response postResources(List<Education> structs) throws TException {
+		//添加信息校验
+		if(structs != null && structs.size() > 0) {
+			Iterator<Education> ie = structs.iterator();
+			while(ie.hasNext()) {
+				Education education = ie.next();
+				ValidationMessage<Education> vm = verifyEducation(education);
+				if(!vm.isPass()) {
+					ie.remove();
+				}
+			}
+		}
 		Response response = super.postResources(structs);
 		if (response.getStatus() == 0) {
 			if (structs != null && structs.size() > 0) {
@@ -343,7 +361,24 @@ public class ProfileEducationService extends JOOQBaseServiceImpl<Education, Prof
 		}
 		return response;
 	}
-
+	
+	public ValidationMessage<Education> verifyEducation(Education education) {
+		ValidationMessage<Education> vm = new ValidationMessage<>();
+		if(education.getCollege_code() == 0 && StringUtils.isNullOrEmpty(education.getCollege_name())) {
+			vm.addFailedElement("院校", "未选择院校");
+		}
+		if(education.getDegree() == 0) {
+			vm.addFailedElement("学历", "未选择学历");
+		}
+		if(StringUtils.isNullOrEmpty(education.getStart_date())) {
+			vm.addFailedElement("开始时间", "未选择开始时间");
+		}
+		if(StringUtils.isNullOrEmpty(education.getDescription())) {
+			vm.addFailedElement("描述", "未对教育背景做详细描述");
+		}
+		return vm;
+	}
+	
 	@Override
 	protected Education DBToStruct(ProfileEducationRecord r) {
 		Map<String, String> equalRules = new HashMap<>();

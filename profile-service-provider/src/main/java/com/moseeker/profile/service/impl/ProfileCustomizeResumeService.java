@@ -3,6 +3,7 @@ package com.moseeker.profile.service.impl;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.thrift.TException;
@@ -17,7 +18,9 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.profiledb.tables.records.ProfileOtherRecord;
+import com.moseeker.profile.constants.ValidationMessage;
 import com.moseeker.profile.dao.CustomizeResumeDao;
 import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -50,6 +53,16 @@ public class ProfileCustomizeResumeService extends JOOQBaseServiceImpl<Customize
 
 	@Override
 	public Response postResources(List<CustomizeResume> structs) throws TException {
+		if(structs != null && structs.size() > 0) {
+			Iterator<CustomizeResume> icr = structs.iterator();
+			while(icr.hasNext()) {
+				CustomizeResume cr = icr.next();
+				ValidationMessage<CustomizeResume> vm = verifyCustomizeResume(cr);
+				if(!vm.isPass()) {
+					icr.remove();
+				}
+			}
+		}
 		Response response = super.postResources(structs);
 		updateUpdateTime(structs, response);
 		return response;
@@ -79,6 +92,11 @@ public class ProfileCustomizeResumeService extends JOOQBaseServiceImpl<Customize
 	@Override
 	public Response postResource(CustomizeResume struct) throws TException {
 		try {
+			ValidationMessage<CustomizeResume> vm = verifyCustomizeResume(struct);
+			if(!vm.isPass()) {
+				return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}'}", vm.getResult()));
+			}
+			
 			QueryUtil qu = new QueryUtil();
 			qu.addEqualFilter("profile_id", String.valueOf(struct.getProfile_id()));
 			ProfileOtherRecord repeat = dao.getResource(qu);
@@ -114,6 +132,14 @@ public class ProfileCustomizeResumeService extends JOOQBaseServiceImpl<Customize
 		Response response = super.putResource(struct);
 		updateUpdateTime(struct, response);
 		return response;
+	}
+	
+	public ValidationMessage<CustomizeResume> verifyCustomizeResume(CustomizeResume customizeResume) {
+		ValidationMessage<CustomizeResume> vm = new ValidationMessage<>();
+		if(StringUtils.isNullOrEmpty(customizeResume.getOther())) {
+			vm.addFailedElement("其他字段", "未填写其他字段的内容");
+		}
+		return vm;
 	}
 
 	@Override
