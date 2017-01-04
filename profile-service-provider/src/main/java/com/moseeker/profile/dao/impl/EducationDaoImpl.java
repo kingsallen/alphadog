@@ -80,11 +80,11 @@ public class EducationDaoImpl extends
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn)) {
 			if (educationRecords != null && educationRecords.size() > 0) {
 				
-				ProfileCompletenessRecord completenessRecord = create.selectFrom(ProfileCompleteness.PROFILE_COMPLETENESS).where(ProfileCompleteness.PROFILE_COMPLETENESS.PROFILE_ID.equal(educationRecords.get(0).getProfileId())).fetchOne();
-				if(completenessRecord == null) {
-					completenessRecord = new ProfileCompletenessRecord();
-					completenessRecord.setProfileId(educationRecords.get(0).getProfileId());
-				}
+//				ProfileCompletenessRecord completenessRecord = create.selectFrom(ProfileCompleteness.PROFILE_COMPLETENESS).where(ProfileCompleteness.PROFILE_COMPLETENESS.PROFILE_ID.equal(educationRecords.get(0).getProfileId())).fetchOne();
+//				if(completenessRecord == null) {
+//					completenessRecord = new ProfileCompletenessRecord();
+//					completenessRecord.setProfileId(educationRecords.get(0).getProfileId());
+//				}
 				
 				Timestamp now = new Timestamp(System.currentTimeMillis());
 				Result<DictCollegeRecord> colleges = create.selectFrom(DictCollege.DICT_COLLEGE).fetch();
@@ -102,10 +102,10 @@ public class EducationDaoImpl extends
 					create.attach(educationRecord);
 					educationRecord.insert();
 				});
-				int educationCompleteness = completenessCalculator.calculateProfileEducations(educationRecords);
-				completenessRecord.setProfileEducation(educationCompleteness);
-				create.attach(completenessRecord);
-				completenessRecord.update();
+//				int educationCompleteness = completenessCalculator.calculateProfileEducations(educationRecords);
+//				completenessRecord.setProfileEducation(educationCompleteness);
+//				create.attach(completenessRecord);
+//				completenessRecord.update();
 				
 			}
 		} catch (Exception e) {

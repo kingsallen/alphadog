@@ -2,7 +2,6 @@ package com.moseeker.profile.dao;
 
 import java.util.List;
 import java.util.Set;
-
 import com.moseeker.common.providerutils.daoutils.BaseDao;
 import com.moseeker.db.profiledb.tables.records.ProfileWorkexpRecord;
 import com.moseeker.profile.dao.entity.ProfileWorkexpEntity;
