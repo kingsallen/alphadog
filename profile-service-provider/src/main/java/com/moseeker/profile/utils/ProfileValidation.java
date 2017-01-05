@@ -63,9 +63,6 @@ public class ProfileValidation {
 		if(StringUtils.isNullOrEmpty(education.getStart_date())) {
 			vm.addFailedElement("开始时间", "未选择开始时间");
 		}
-		if(StringUtils.isNullOrEmpty(education.getDescription())) {
-			vm.addFailedElement("描述", "未对教育背景做详细描述");
-		}
 		return vm;
 	}
 	
@@ -79,9 +76,6 @@ public class ProfileValidation {
 		}
 		if(education.getStart() == null) {
 			vm.addFailedElement("开始时间", "未选择开始时间");
-		}
-		if(StringUtils.isNullOrEmpty(education.getDescription())) {
-			vm.addFailedElement("描述", "未对教育背景做详细描述");
 		}
 		return vm;
 	}
@@ -151,9 +145,6 @@ public class ProfileValidation {
 		if(StringUtils.isNullOrEmpty(workExp.getStart_date())) {
 			vm.addFailedElement("开始时间", "未填写开始时间");
 		}
-		if(StringUtils.isNullOrEmpty(workExp.getDescription())) {
-			vm.addFailedElement("职位描述", "未对该职位做详细描述");
-		}
 		return vm;
 	}
 	
@@ -167,9 +158,6 @@ public class ProfileValidation {
 		}
 		if(workExp.getStart() == null) {
 			vm.addFailedElement("开始时间", "未填写开始时间");
-		}
-		if(StringUtils.isNullOrEmpty(workExp.getDescription())) {
-			vm.addFailedElement("职位描述", "未对该职位做详细描述");
 		}
 		return vm;
 	}

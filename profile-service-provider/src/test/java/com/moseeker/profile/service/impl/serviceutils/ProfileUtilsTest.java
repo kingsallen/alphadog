@@ -49,14 +49,6 @@ public class ProfileUtilsTest {
 			
 			add(new HashMap<String, Object>() {{
 				Map<String, Object> company = new HashMap<String, Object>();
-				company.put("company_name", "test5");
-				put("company", company);
-				put("job", "职位5");
-				put("start", "2016-07-05");
-			}});
-			
-			add(new HashMap<String, Object>() {{
-				Map<String, Object> company = new HashMap<String, Object>();
 				company.put("company_name", "test6");
 				put("company", company);
 				put("description", "描述6");
@@ -214,13 +206,6 @@ public class ProfileUtilsTest {
 				this.put("college_code", 1);
 				this.put("degree", 1);
 				this.put("description", "test");
-			}});
-			
-			this.add(new HashMap<String, Object>(){
-			{
-				this.put("college_code", 1);
-				this.put("degree", 1);
-				this.put("start_date", "2016-06-07");
 			}});
 	}};
 		

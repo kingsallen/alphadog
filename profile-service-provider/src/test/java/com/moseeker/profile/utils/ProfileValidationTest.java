@@ -169,18 +169,6 @@ public class ProfileValidationTest {
 	}
 	
 	@Test
-	public void testVerifyEducatione6() {
-		Education education = new Education();
-		education.setCollege_code(0);
-		education.setCollege_name("test");
-		education.setDegree(1);
-		education.setStart_date("2016-12-17");
-		ValidationMessage<Education> vm = ProfileValidation.verifyEducation(education);
-		System.out.println(vm.getResult());
-		assertEquals(false, vm.isPass());
-	}
-	
-	@Test
 	public void testVerifyEducationRecord() {
 		ProfileEducationRecord education = new ProfileEducationRecord();
 		education.setCollegeCode(Integer.valueOf(1));
@@ -250,18 +238,6 @@ public class ProfileValidationTest {
 		education.setCollegeName("test");
 		education.setDegree(UByte.valueOf(1));
 		education.setDescription("详细描述");
-		ValidationMessage<ProfileEducationRecord> vm = ProfileValidation.verifyEducation(education);
-		System.out.println(vm.getResult());
-		assertEquals(false, vm.isPass());
-	}
-	
-	@Test
-	public void testVerifyEducationRecord6() {
-		ProfileEducationRecord education = new ProfileEducationRecord();
-		education.setCollegeCode(0);
-		education.setCollegeName("test");
-		education.setDegree(UByte.valueOf(1));
-		education.setStart(new java.sql.Date(System.currentTimeMillis()));
 		ValidationMessage<ProfileEducationRecord> vm = ProfileValidation.verifyEducation(education);
 		System.out.println(vm.getResult());
 		assertEquals(false, vm.isPass());
@@ -436,16 +412,6 @@ public class ProfileValidationTest {
 	}
 	
 	@Test
-	public void testVerifyWorkExp4() {
-		WorkExp workExp = new WorkExp();
-		workExp.setCompany_id(1);
-		workExp.setJob("test");
-		workExp.setStart_date("2016-07-01");
-		ValidationMessage<WorkExp> vm = ProfileValidation.verifyWorkExp(workExp);
-		assertEquals(false, vm.isPass());
-	}
-	
-	@Test
 	public void testVerifyWorkExp5() {
 		WorkExp workExp = new WorkExp();
 		workExp.setCompany_id(1);
@@ -491,16 +457,6 @@ public class ProfileValidationTest {
 	public void testVerifyWorkExpRecord3() {
 		ProfileWorkexpRecord workExp = new ProfileWorkexpRecord();
 		workExp.setDescription("test");
-		workExp.setJob("test");
-		workExp.setStart(new java.sql.Date(System.currentTimeMillis()));
-		ValidationMessage<ProfileWorkexpRecord> vm = ProfileValidation.verifyWorkExp(workExp);
-		assertEquals(false, vm.isPass());
-	}
-	
-	@Test
-	public void testVerifyWorkExpRecord4() {
-		ProfileWorkexpRecord workExp = new ProfileWorkexpRecord();
-		workExp.setCompanyId(UInteger.valueOf(1));
 		workExp.setJob("test");
 		workExp.setStart(new java.sql.Date(System.currentTimeMillis()));
 		ValidationMessage<ProfileWorkexpRecord> vm = ProfileValidation.verifyWorkExp(workExp);
