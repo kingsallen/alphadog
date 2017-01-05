@@ -36,6 +36,7 @@ import com.moseeker.profile.dao.IndustryDao;
 import com.moseeker.profile.dao.PositionDao;
 import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.profile.dao.WorkExpDao;
+import com.moseeker.profile.utils.ProfileValidation;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.WorkExp;
@@ -185,7 +186,7 @@ public class ProfileWorkExpService extends JOOQBaseServiceImpl<WorkExp, ProfileW
 
 	@Override
 	public Response postResource(WorkExp struct) throws TException {
-		ValidationMessage<WorkExp> vm = verifyWorkExp(struct);
+		ValidationMessage<WorkExp> vm = ProfileValidation.verifyWorkExp(struct);
 		if(!vm.isPass()) {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}'}", vm.getResult()));
 		}
@@ -336,7 +337,7 @@ public class ProfileWorkExpService extends JOOQBaseServiceImpl<WorkExp, ProfileW
 			Iterator<WorkExp> wei = structs.iterator();
 			while(wei.hasNext()) {
 				WorkExp workExp = wei.next();
-				ValidationMessage<WorkExp> vm = verifyWorkExp(workExp);
+				ValidationMessage<WorkExp> vm = ProfileValidation.verifyWorkExp(workExp);
 				if(!vm.isPass()) {
 					wei.remove();
 				}
@@ -475,23 +476,6 @@ public class ProfileWorkExpService extends JOOQBaseServiceImpl<WorkExp, ProfileW
 		super.dao = this.dao;
 	}
 	
-	public ValidationMessage<WorkExp> verifyWorkExp(WorkExp workExp) {
-		ValidationMessage<WorkExp> vm = new ValidationMessage<>();
-		if(workExp.getCompany_id() == 0 && StringUtils.isNullOrEmpty(workExp.getCompany_name())) {
-			vm.addFailedElement("就职公司", "未填写就职公司");
-		}
-		if(StringUtils.isNullOrEmpty(workExp.getJob())) {
-			vm.addFailedElement("职位名称", "未填写职位名称");
-		}
-		if(StringUtils.isNullOrEmpty(workExp.getStart_date())) {
-			vm.addFailedElement("开始时间", "未填写开始时间");
-		}
-		if(StringUtils.isNullOrEmpty(workExp.getDescription())) {
-			vm.addFailedElement("职位描述", "未对该职位做详细描述");
-		}
-		return vm;
-	}
-
 	@Override
 	protected WorkExp DBToStruct(ProfileWorkexpRecord r) {
 		Map<String, String> equalRules = new HashMap<>();

@@ -18,11 +18,11 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.profiledb.tables.records.ProfileOtherRecord;
 import com.moseeker.profile.constants.ValidationMessage;
 import com.moseeker.profile.dao.CustomizeResumeDao;
 import com.moseeker.profile.dao.ProfileDao;
+import com.moseeker.profile.utils.ProfileValidation;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.CustomizeResume;
 
@@ -57,7 +57,7 @@ public class ProfileCustomizeResumeService extends JOOQBaseServiceImpl<Customize
 			Iterator<CustomizeResume> icr = structs.iterator();
 			while(icr.hasNext()) {
 				CustomizeResume cr = icr.next();
-				ValidationMessage<CustomizeResume> vm = verifyCustomizeResume(cr);
+				ValidationMessage<CustomizeResume> vm = ProfileValidation.verifyCustomizeResume(cr);
 				if(!vm.isPass()) {
 					icr.remove();
 				}
@@ -92,7 +92,7 @@ public class ProfileCustomizeResumeService extends JOOQBaseServiceImpl<Customize
 	@Override
 	public Response postResource(CustomizeResume struct) throws TException {
 		try {
-			ValidationMessage<CustomizeResume> vm = verifyCustomizeResume(struct);
+			ValidationMessage<CustomizeResume> vm = ProfileValidation.verifyCustomizeResume(struct);
 			if(!vm.isPass()) {
 				return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}'}", vm.getResult()));
 			}
@@ -134,14 +134,6 @@ public class ProfileCustomizeResumeService extends JOOQBaseServiceImpl<Customize
 		return response;
 	}
 	
-	public ValidationMessage<CustomizeResume> verifyCustomizeResume(CustomizeResume customizeResume) {
-		ValidationMessage<CustomizeResume> vm = new ValidationMessage<>();
-		if(StringUtils.isNullOrEmpty(customizeResume.getOther())) {
-			vm.addFailedElement("其他字段", "未填写其他字段的内容");
-		}
-		return vm;
-	}
-
 	@Override
 	protected CustomizeResume DBToStruct(ProfileOtherRecord r) {
 		return (CustomizeResume)BeanUtils.DBToStruct(CustomizeResume.class, r);

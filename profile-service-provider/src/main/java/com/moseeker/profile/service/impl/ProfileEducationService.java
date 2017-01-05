@@ -30,6 +30,7 @@ import com.moseeker.profile.dao.CollegeDao;
 import com.moseeker.profile.dao.EducationDao;
 import com.moseeker.profile.dao.MajorDao;
 import com.moseeker.profile.dao.ProfileDao;
+import com.moseeker.profile.utils.ProfileValidation;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.Education;
@@ -188,7 +189,7 @@ public class ProfileEducationService extends JOOQBaseServiceImpl<Education, Prof
 	public Response postResource(Education education) throws TException {
 		try {
 			//添加信息校验
-			ValidationMessage<Education> vm = verifyEducation(education);
+			ValidationMessage<Education> vm = ProfileValidation.verifyEducation(education);
 			if(!vm.isPass()) {
 				return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}'}", vm.getResult()));
 			}
@@ -265,7 +266,7 @@ public class ProfileEducationService extends JOOQBaseServiceImpl<Education, Prof
 			Iterator<Education> ie = structs.iterator();
 			while(ie.hasNext()) {
 				Education education = ie.next();
-				ValidationMessage<Education> vm = verifyEducation(education);
+				ValidationMessage<Education> vm = ProfileValidation.verifyEducation(education);
 				if(!vm.isPass()) {
 					ie.remove();
 				}
@@ -360,23 +361,6 @@ public class ProfileEducationService extends JOOQBaseServiceImpl<Education, Prof
 					education.getId().intValue());
 		}
 		return response;
-	}
-	
-	public ValidationMessage<Education> verifyEducation(Education education) {
-		ValidationMessage<Education> vm = new ValidationMessage<>();
-		if(education.getCollege_code() == 0 && StringUtils.isNullOrEmpty(education.getCollege_name())) {
-			vm.addFailedElement("院校", "未选择院校");
-		}
-		if(education.getDegree() == 0) {
-			vm.addFailedElement("学历", "未选择学历");
-		}
-		if(StringUtils.isNullOrEmpty(education.getStart_date())) {
-			vm.addFailedElement("开始时间", "未选择开始时间");
-		}
-		if(StringUtils.isNullOrEmpty(education.getDescription())) {
-			vm.addFailedElement("描述", "未对教育背景做详细描述");
-		}
-		return vm;
 	}
 	
 	@Override

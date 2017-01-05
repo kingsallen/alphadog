@@ -19,11 +19,11 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.profiledb.tables.records.ProfileSkillRecord;
 import com.moseeker.profile.constants.ValidationMessage;
 import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.profile.dao.SkillDao;
+import com.moseeker.profile.utils.ProfileValidation;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.Skill;
 
@@ -77,7 +77,7 @@ public class ProfileSkillService extends JOOQBaseServiceImpl<Skill, ProfileSkill
 			Iterator<Skill> is = structs.iterator();
 			while(is.hasNext()) {
 				Skill skill = is.next();
-				ValidationMessage<Skill> vm = verifySkill(skill);
+				ValidationMessage<Skill> vm = ProfileValidation.verifySkill(skill);
 				if(!vm.isPass()) {
 					is.remove();
 				}
@@ -143,7 +143,7 @@ public class ProfileSkillService extends JOOQBaseServiceImpl<Skill, ProfileSkill
 
 	@Override
 	public Response postResource(Skill struct) throws TException {
-		ValidationMessage<Skill> vm = verifySkill(struct);
+		ValidationMessage<Skill> vm = ProfileValidation.verifySkill(struct);
 		if(!vm.isPass()) {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}'}", vm.getResult()));
 		}
@@ -186,14 +186,6 @@ public class ProfileSkillService extends JOOQBaseServiceImpl<Skill, ProfileSkill
 		return response;
 	}
 	
-	public ValidationMessage<Skill> verifySkill(Skill skill) {
-		ValidationMessage<Skill> vm = new ValidationMessage<>();
-		if(StringUtils.isNullOrEmpty(skill.getName())) {
-			vm.addFailedElement("语言名称", "未填写语言名称");
-		}
-		return vm;
-	}
-
 	@Override
 	protected Skill DBToStruct(ProfileSkillRecord r) {
 		return (Skill) BeanUtils.DBToStruct(Skill.class, r);

@@ -1,11 +1,12 @@
 package com.moseeker.profile.service.impl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.moseeker.profile.constants.ValidationMessage;
+import com.moseeker.profile.utils.ProfileValidation;
 import com.moseeker.thrift.gen.profile.struct.WorkExp;
 
 public class ProfileWorkExpServiceTest {
@@ -24,7 +25,7 @@ public class ProfileWorkExpServiceTest {
 		workExp.setDescription("test");
 		workExp.setJob("test");
 		workExp.setStart_date("2016-07-01");
-		ValidationMessage<WorkExp> vm = workExpService.verifyWorkExp(workExp);
+		ValidationMessage<WorkExp> vm = ProfileValidation.verifyWorkExp(workExp);
 		assertEquals(true, vm.isPass());
 	}
 
@@ -35,7 +36,7 @@ public class ProfileWorkExpServiceTest {
 		workExp.setDescription("test");
 		workExp.setJob("test");
 		workExp.setStart_date("2016-07-01");
-		ValidationMessage<WorkExp> vm = workExpService.verifyWorkExp(workExp);
+		ValidationMessage<WorkExp> vm = ProfileValidation.verifyWorkExp(workExp);
 		assertEquals(true, vm.isPass());
 	}
 	
@@ -46,7 +47,7 @@ public class ProfileWorkExpServiceTest {
 		workExp.setDescription("test");
 		workExp.setJob("test");
 		workExp.setStart_date("2016-07-01");
-		ValidationMessage<WorkExp> vm = workExpService.verifyWorkExp(workExp);
+		ValidationMessage<WorkExp> vm = ProfileValidation.verifyWorkExp(workExp);
 		assertEquals(true, vm.isPass());
 	}
 	
@@ -56,7 +57,7 @@ public class ProfileWorkExpServiceTest {
 		workExp.setDescription("test");
 		workExp.setJob("test");
 		workExp.setStart_date("2016-07-01");
-		ValidationMessage<WorkExp> vm = workExpService.verifyWorkExp(workExp);
+		ValidationMessage<WorkExp> vm = ProfileValidation.verifyWorkExp(workExp);
 		assertEquals(false, vm.isPass());
 	}
 	
@@ -66,7 +67,7 @@ public class ProfileWorkExpServiceTest {
 		workExp.setCompany_id(1);
 		workExp.setJob("test");
 		workExp.setStart_date("2016-07-01");
-		ValidationMessage<WorkExp> vm = workExpService.verifyWorkExp(workExp);
+		ValidationMessage<WorkExp> vm = ProfileValidation.verifyWorkExp(workExp);
 		assertEquals(false, vm.isPass());
 	}
 	
@@ -76,7 +77,7 @@ public class ProfileWorkExpServiceTest {
 		workExp.setCompany_id(1);
 		workExp.setDescription("test");
 		workExp.setStart_date("2016-07-01");
-		ValidationMessage<WorkExp> vm = workExpService.verifyWorkExp(workExp);
+		ValidationMessage<WorkExp> vm = ProfileValidation.verifyWorkExp(workExp);
 		assertEquals(false, vm.isPass());
 	}
 	
@@ -86,7 +87,7 @@ public class ProfileWorkExpServiceTest {
 		workExp.setCompany_id(1);
 		workExp.setDescription("test");
 		workExp.setJob("test");
-		ValidationMessage<WorkExp> vm = workExpService.verifyWorkExp(workExp);
+		ValidationMessage<WorkExp> vm = ProfileValidation.verifyWorkExp(workExp);
 		assertEquals(false, vm.isPass());
 	}
 }

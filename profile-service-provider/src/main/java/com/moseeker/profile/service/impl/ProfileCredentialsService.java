@@ -19,11 +19,11 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.profiledb.tables.records.ProfileCredentialsRecord;
 import com.moseeker.profile.constants.ValidationMessage;
 import com.moseeker.profile.dao.CredentialsDao;
 import com.moseeker.profile.dao.ProfileDao;
+import com.moseeker.profile.utils.ProfileValidation;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.Credentials;
 
@@ -48,7 +48,7 @@ public class ProfileCredentialsService extends JOOQBaseServiceImpl<Credentials, 
 			Iterator<Credentials> ic = structs.iterator();
 			while(ic.hasNext()) {
 				Credentials credential = ic.next();
-				ValidationMessage<Credentials> vm = verifyCredential(credential);
+				ValidationMessage<Credentials> vm = ProfileValidation.verifyCredential(credential);
 				if(!vm.isPass()) {
 					ic.remove();
 				}
@@ -127,7 +127,7 @@ public class ProfileCredentialsService extends JOOQBaseServiceImpl<Credentials, 
 
 	@Override
 	public Response postResource(Credentials struct) throws TException {
-		ValidationMessage<Credentials> vm = verifyCredential(struct);
+		ValidationMessage<Credentials> vm = ProfileValidation.verifyCredential(struct);
 		if(!vm.isPass()) {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}'}", vm.getResult()));
 		}
@@ -174,14 +174,6 @@ public class ProfileCredentialsService extends JOOQBaseServiceImpl<Credentials, 
 		return response;
 	}
 	
-	public ValidationMessage<Credentials> verifyCredential(Credentials credentials) {
-		ValidationMessage<Credentials> vm = new ValidationMessage<Credentials>();
-		if(StringUtils.isNullOrEmpty(credentials.getName())) {
-			vm.addFailedElement("证书名称", "未填写证书名称");
-		}
-		return vm;
-	}
-
 	public CredentialsDao getDao() {
 		return dao;
 	}

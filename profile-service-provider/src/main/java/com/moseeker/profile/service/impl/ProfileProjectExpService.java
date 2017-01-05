@@ -21,11 +21,11 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.profiledb.tables.records.ProfileProjectexpRecord;
 import com.moseeker.profile.constants.ValidationMessage;
 import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.profile.dao.ProjectExpDao;
+import com.moseeker.profile.utils.ProfileValidation;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.ProjectExp;
@@ -89,7 +89,7 @@ public class ProfileProjectExpService extends JOOQBaseServiceImpl<ProjectExp, Pr
 			Iterator<ProjectExp> ipe = structs.iterator();
 			while(ipe.hasNext()) {
 				ProjectExp pe = ipe.next();
-				ValidationMessage<ProjectExp> vm = verifyProjectExp(pe);
+				ValidationMessage<ProjectExp> vm = ProfileValidation.verifyProjectExp(pe);
 				if(!vm.isPass()) {
 					ipe.remove();
 				}
@@ -166,7 +166,7 @@ public class ProfileProjectExpService extends JOOQBaseServiceImpl<ProjectExp, Pr
 
 	@Override
 	public Response postResource(ProjectExp struct) throws TException {
-		ValidationMessage<ProjectExp> vm = verifyProjectExp(struct);
+		ValidationMessage<ProjectExp> vm = ProfileValidation.verifyProjectExp(struct);
 		if(!vm.isPass()) {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}'}", vm.getResult()));
 		}
@@ -212,17 +212,6 @@ public class ProfileProjectExpService extends JOOQBaseServiceImpl<ProjectExp, Pr
 		return response;
 	}
 	
-	public ValidationMessage<ProjectExp> verifyProjectExp(ProjectExp projectExp) {
-		ValidationMessage<ProjectExp> vm = new ValidationMessage<>();
-		if(StringUtils.isNullOrEmpty(projectExp.getName())) {
-			vm.addFailedElement("项目名称", "未填写项目名称!");
-		}
-		if(StringUtils.isNullOrEmpty(projectExp.getStart_date())) {
-			vm.addFailedElement("开始时间", "未填写开始时间");
-		}
-		return vm;
-	}
-
 	@Override
 	protected ProjectExp DBToStruct(ProfileProjectexpRecord r) {
 		Map<String, String> equalRules = new HashMap<>();

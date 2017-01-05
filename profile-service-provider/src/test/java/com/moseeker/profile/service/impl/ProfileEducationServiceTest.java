@@ -1,10 +1,11 @@
 package com.moseeker.profile.service.impl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
 import com.moseeker.profile.constants.ValidationMessage;
+import com.moseeker.profile.utils.ProfileValidation;
 import com.moseeker.thrift.gen.profile.struct.Education;
 
 public class ProfileEducationServiceTest extends ProfileEducationService {
@@ -19,7 +20,7 @@ public class ProfileEducationServiceTest extends ProfileEducationService {
 		education.setDegree(1);
 		education.setStart_date("2016-12-17");
 		education.setDescription("详细描述");
-		ValidationMessage<Education> vm = educationService.verifyEducation(education);
+		ValidationMessage<Education> vm = ProfileValidation.verifyEducation(education);
 		System.out.println(vm.getResult());
 		assertEquals(true, vm.isPass());
 	}
@@ -31,7 +32,7 @@ public class ProfileEducationServiceTest extends ProfileEducationService {
 		education.setDegree(1);
 		education.setStart_date("2016-12-17");
 		education.setDescription("详细描述");
-		ValidationMessage<Education> vm = educationService.verifyEducation(education);
+		ValidationMessage<Education> vm = ProfileValidation.verifyEducation(education);
 		System.out.println(vm.getResult());
 		assertEquals(false, vm.isPass());
 	}
@@ -44,7 +45,7 @@ public class ProfileEducationServiceTest extends ProfileEducationService {
 		education.setDegree(1);
 		education.setStart_date("2016-12-17");
 		education.setDescription("详细描述");
-		ValidationMessage<Education> vm = educationService.verifyEducation(education);
+		ValidationMessage<Education> vm = ProfileValidation.verifyEducation(education);
 		System.out.println(vm.getResult());
 		assertEquals(false, vm.isPass());
 	}
@@ -57,7 +58,7 @@ public class ProfileEducationServiceTest extends ProfileEducationService {
 		education.setDegree(1);
 		education.setStart_date("2016-12-17");
 		education.setDescription("详细描述");
-		ValidationMessage<Education> vm = educationService.verifyEducation(education);
+		ValidationMessage<Education> vm = ProfileValidation.verifyEducation(education);
 		System.out.println(vm.getResult());
 		assertEquals(true, vm.isPass());
 	}
@@ -69,7 +70,7 @@ public class ProfileEducationServiceTest extends ProfileEducationService {
 		education.setCollege_name("test");
 		education.setStart_date("2016-12-17");
 		education.setDescription("详细描述");
-		ValidationMessage<Education> vm = educationService.verifyEducation(education);
+		ValidationMessage<Education> vm = ProfileValidation.verifyEducation(education);
 		System.out.println(vm.getResult());
 		assertEquals(false, vm.isPass());
 	}
@@ -81,7 +82,7 @@ public class ProfileEducationServiceTest extends ProfileEducationService {
 		education.setCollege_name("test");
 		education.setDegree(1);
 		education.setDescription("详细描述");
-		ValidationMessage<Education> vm = educationService.verifyEducation(education);
+		ValidationMessage<Education> vm = ProfileValidation.verifyEducation(education);
 		System.out.println(vm.getResult());
 		assertEquals(false, vm.isPass());
 	}
@@ -93,7 +94,7 @@ public class ProfileEducationServiceTest extends ProfileEducationService {
 		education.setCollege_name("test");
 		education.setDegree(1);
 		education.setStart_date("2016-12-17");
-		ValidationMessage<Education> vm = educationService.verifyEducation(education);
+		ValidationMessage<Education> vm = ProfileValidation.verifyEducation(education);
 		System.out.println(vm.getResult());
 		assertEquals(false, vm.isPass());
 	}

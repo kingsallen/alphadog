@@ -3,12 +3,13 @@
  */
 package com.moseeker.profile.service.impl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.moseeker.profile.constants.ValidationMessage;
+import com.moseeker.profile.utils.ProfileValidation;
 import com.moseeker.thrift.gen.profile.struct.Credentials;
 
 /**
@@ -17,8 +18,6 @@ import com.moseeker.thrift.gen.profile.struct.Credentials;
  */
 public class ProfileCredentialsServiceTest extends ProfileCredentialsService {
 	
-	ProfileCredentialsService credentialsService = new ProfileCredentialsService();
-
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -30,7 +29,7 @@ public class ProfileCredentialsServiceTest extends ProfileCredentialsService {
 	public void testVerifyCredential() {
 		Credentials credentials = new Credentials();
 		credentials.setName("");
-		ValidationMessage<Credentials> vm = credentialsService.verifyCredential(credentials);
+		ValidationMessage<Credentials> vm = ProfileValidation.verifyCredential(credentials);
 		assertEquals(false, vm.isPass());
 	}
 	
@@ -38,7 +37,7 @@ public class ProfileCredentialsServiceTest extends ProfileCredentialsService {
 	public void testVerifyCredential1() {
 		Credentials credentials = new Credentials();
 		credentials.setName("test");
-		ValidationMessage<Credentials> vm = credentialsService.verifyCredential(credentials);
+		ValidationMessage<Credentials> vm = ProfileValidation.verifyCredential(credentials);
 		assertEquals(true, vm.isPass());
 	}
 }
