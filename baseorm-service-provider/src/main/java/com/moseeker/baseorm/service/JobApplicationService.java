@@ -11,4 +11,5 @@ public interface JobApplicationService {
 	public Response putJobApplication(JobApplication application);
 	public Response postJobApplications(List<JobApplication> applications);
 	public Response putJobApplications(List<JobApplication> applications);
+	public Response getApplicationByAts(List<Integer> list);
 }

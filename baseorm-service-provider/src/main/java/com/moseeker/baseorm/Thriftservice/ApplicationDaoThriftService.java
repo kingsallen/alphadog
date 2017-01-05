@@ -40,5 +40,10 @@ public class ApplicationDaoThriftService implements Iface{
 		// TODO Auto-generated method stub
 		return applicationService.postJobApplications(application);
 	}
+	@Override
+	public Response getApplicationsByList(List<Integer> params) throws TException {
+		// TODO Auto-generated method stub
+		return applicationService.getApplicationByAts(params);
+	}
 
 }

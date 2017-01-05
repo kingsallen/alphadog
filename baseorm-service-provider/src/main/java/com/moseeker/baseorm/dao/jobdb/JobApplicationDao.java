@@ -5,8 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.Record3;
 import org.jooq.Record9;
 import org.jooq.Result;
+import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
 import org.jooq.types.UInteger;
 import org.slf4j.Logger;
@@ -21,6 +24,7 @@ import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.db.configdb.tables.ConfigSysPointsConfTpl;
 import com.moseeker.db.userdb.tables.UserUser;
 import com.moseeker.db.userdb.tables.UserWxUser;
+import com.moseeker.thrift.gen.application.struct.ApplicationAts;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
 @Service
 public class JobApplicationDao extends BaseDaoImpl<JobApplicationRecord, JobApplication>{
@@ -83,6 +87,42 @@ public class JobApplicationDao extends BaseDaoImpl<JobApplicationRecord, JobAppl
 				}
 			}
 			
+		}catch(Exception e){
+			logger.error("error", e);
+			throw new Exception(e);
+		}finally{
+			if(conn!=null&&!conn.isClosed()){
+				conn.close();
+				conn=null;
+			}
+		}
+		return list;
+	}
+	public List<ApplicationAts> getApplicationByLApId(List<UInteger> lists) throws Exception{
+		List<ApplicationAts> list=new ArrayList<ApplicationAts>();
+		Connection conn = null;
+		try {
+			conn = DBConnHelper.DBConn.getConn();
+			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+			SelectConditionStep<Record3<UInteger, UInteger, Integer>> table =create.select(
+					JobApplication.JOB_APPLICATION.COMPANY_ID,
+					JobApplication.JOB_APPLICATION.ID,
+					JobPosition.JOB_POSITION.PUBLISHER
+					).from(JobApplication.JOB_APPLICATION)
+					.innerJoin(JobPosition.JOB_POSITION)
+					.on("jobdb.job_application.position_id=jobdb.job_position.id")
+					.where(JobApplication.JOB_APPLICATION.L_APPLICATION_ID.in(lists));
+			Result<Record3<UInteger, UInteger, Integer>> result=table.fetch();
+			if(result!=null&&result.size()>0){
+				ApplicationAts ats=null;
+				for(Record3<UInteger, UInteger, Integer> r:result){
+					ats=new ApplicationAts();
+					ats.setAccount_id(r.getValue(JobPosition.JOB_POSITION.PUBLISHER).intValue());
+					ats.setApplication_id(r.getValue(JobApplication.JOB_APPLICATION.ID).intValue());
+					ats.setCompany_id(r.getValue(JobApplication.JOB_APPLICATION.COMPANY_ID).intValue());
+					list.add(ats);
+				}
+			}
 		}catch(Exception e){
 			logger.error("error", e);
 			throw new Exception(e);

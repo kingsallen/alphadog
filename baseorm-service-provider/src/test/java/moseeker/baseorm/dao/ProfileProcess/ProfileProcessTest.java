@@ -57,4 +57,12 @@ public class ProfileProcessTest {
 		records.add(ss3);
 		System.out.println(hrDB.getHrHistoryOpertation(records));
 	}
+	@Test
+	public void TestAts(){
+		init();
+		List<Integer>list=new ArrayList<Integer>();
+		list.add(1);
+		list.add(2);
+		System.out.println(jobApplication.getApplicationByAts(list));
+	}
 }

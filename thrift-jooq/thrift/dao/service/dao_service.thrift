@@ -77,6 +77,7 @@ service ApplicationDao{
 		common_struct.Response postApplication(1: application_struct.JobApplication application);
 		common_struct.Response putApplications(1: list<application_struct.JobApplication> application);
 		common_struct.Response postApplications(1:list<application_struct.JobApplication> application);
+		common_struct.Response getApplicationsByList(1:list<i32> params);
 }
 service ConfigDao{
         common_struct.Response getConfigSysPointsConfTpls(1:common_struct.CommonQuery query);

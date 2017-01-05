@@ -14,6 +14,7 @@ import com.moseeker.baseorm.service.JobApplicationService;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BeanUtils;
+import com.moseeker.thrift.gen.application.struct.ApplicationAts;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -102,5 +103,20 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 			list.add((JobApplicationRecord) BeanUtils.structToDB(application, JobApplicationRecord.class));
 		}
 		return list;
+	}
+	@Override
+	public Response getApplicationByAts(List<Integer> list) {
+		// TODO Auto-generated method stub
+		try{
+			List<UInteger> params=new ArrayList<UInteger>();
+			for(Integer num:list){
+				params.add(UInteger.valueOf(num));
+			}
+			List<ApplicationAts> result=dao.getApplicationByLApId(params);
+			return ResponseUtils.success(result);
+		}catch(Exception e){
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		}
+		
 	}
 }

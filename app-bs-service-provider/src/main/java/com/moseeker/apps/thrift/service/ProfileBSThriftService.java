@@ -38,5 +38,11 @@ public class ProfileBSThriftService implements Iface {
 		return profileProcessBS.processProfile(company_id,progress_status,aids,account_id);
 	}
 
+	@Override
+	public Response profileProcessAts(int progress_status, String aids) throws TException {
+		// TODO Auto-generated method stub
+		return profileProcessBS.processProfileAts(progress_status, aids);
+	}
+
 
 }

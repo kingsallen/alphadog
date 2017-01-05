@@ -201,10 +201,32 @@ public class ProfileController {
 			Integer progress_status=form.getInt("progress_status");
 			String appIds=form.getString("aids");
 			Integer accountId=form.getInt("account_id");
-			if(companyId==null||progress_status==null||StringUtils.isNullOrEmpty(appIds)){
+			if(progress_status==null||StringUtils.isNullOrEmpty(appIds)){
 				return ResponseLogNotification.success(request, ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY));
 			}
 			Response result = profileBSService.profileProcess(companyId,progress_status,appIds,accountId);
+			
+			return ResponseLogNotification.success(request, result);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+			return ResponseLogNotification.fail(request, e.getMessage());
+		} finally {
+			// do nothing
+		}
+	}
+	@RequestMapping(value = "/profile/processats", method = RequestMethod.POST)
+	@ResponseBody
+	public String profileProcessAts(HttpServletRequest request, HttpServletResponse response) {
+		try {
+
+			Params<String, Object> form = ParamUtils.parseRequestParam(request);
+			Integer progress_status=form.getInt("progress_status");
+			String appIds=form.getString("aids");
+			if(progress_status==null||StringUtils.isNullOrEmpty(appIds)){
+				return ResponseLogNotification.success(request, ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY));
+			}
+			Response result = profileBSService.profileProcessAts(progress_status,appIds);
 			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {

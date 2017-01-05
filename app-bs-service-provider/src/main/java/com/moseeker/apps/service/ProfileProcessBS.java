@@ -23,6 +23,7 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.thrift.gen.application.struct.ApplicationAts;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -159,9 +160,47 @@ public class ProfileProcessBS {
     	 }
 		return list;
      }
+     private List<ApplicationAts> getJobApplication(String params) throws Exception{
+    	 List<Integer> appIds=this.convertList(params);
+    	 Response result=applicationDao.getApplicationsByList(appIds);
+    	 if(result.getStatus()==0&&StringUtils.isNotNullOrEmpty(result.getData())){
+    		 return this.convertApplicationAtsList(result.getData());
+    	 }
+    	 return null;
+     }
+     private List<ApplicationAts> convertApplicationAtsList(String params ){
+    	 List<ApplicationAts> list=new ArrayList<ApplicationAts>();
+    	 JSONArray jsay=JSON.parseArray(params);
+    	 for(int i=0;i<jsay.size();i++){
+    		 JSONObject obj=jsay.getJSONObject(i) ;
+    		 list.add(JSONObject.toJavaObject(obj, ApplicationAts.class));
+    	 }
+    	 return list;
+     }
+     public Response processProfileAts(int progressStatus,String params){
+    	int companyId=0;
+    	int accountId=0;
+    	List<Integer> appIds=new ArrayList<Integer>();
+    	 try{
+				 List<ApplicationAts> list=getJobApplication(params);
+				 if(list==null&&list.size()==0){
+					 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION); 
+				 }
+				 for(ApplicationAts jop:list){
+					 appIds.add((int) jop.getApplication_id());
+				 }
+				 companyId=list.get(0).getCompany_id();
+				 accountId=list.get(0).getAccount_id();
+				 Response result= processProfile(companyId,progressStatus,appIds.toString(),accountId );
+				 return result;
+			 }catch(Exception e){
+				 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+			 }
+
+     }
 	 public Response processProfile(int companyId,int progressStatus,String params,int accountId ){
 		 try{
-			List<Integer> appIds=this.convertList(params);
+            List<Integer> appIds=this.convertList(params);
 			if(appIds==null||appIds.size()==0){
 				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 			}
