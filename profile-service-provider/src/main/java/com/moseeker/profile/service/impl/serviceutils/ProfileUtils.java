@@ -37,6 +37,7 @@ import com.moseeker.db.profiledb.tables.records.ProfileProjectexpRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileSkillRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileWorksRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.profile.constants.ValidationMessage;
 import com.moseeker.profile.dao.CityDao;
 import com.moseeker.profile.dao.IndustryDao;
 import com.moseeker.profile.dao.IntentionCityDao;
@@ -46,6 +47,7 @@ import com.moseeker.profile.dao.IntentionPositionDao;
 import com.moseeker.profile.dao.PositionDao;
 import com.moseeker.profile.dao.entity.ProfileWorkexpEntity;
 import com.moseeker.profile.dao.impl.IntentionRecord;
+import com.moseeker.profile.utils.ProfileValidation;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 
 public class ProfileUtils {
@@ -118,7 +120,10 @@ public class ProfileUtils {
 							record.setCompany(hrCompany);
 						}
 					}
-					workexpRecords.add(record);
+					ValidationMessage<ProfileWorkexpEntity> vm = ProfileValidation.verifyWorkExp(record);
+					if(vm.isPass()) {
+						workexpRecords.add(record);
+					}
 				}
 			});
 		}
@@ -130,7 +135,8 @@ public class ProfileUtils {
 		if (skills != null && skills.size() > 0) {
 			skills.forEach(skill -> {
 				ProfileSkillRecord record = BeanUtils.MapToRecord(skill, ProfileSkillRecord.class);
-				if (record != null) {
+				ValidationMessage<ProfileSkillRecord> vm = ProfileValidation.verifySkill(record);
+				if (record != null && vm.isPass()) {
 					skillRecords.add(record);
 				}
 			});
@@ -153,7 +159,10 @@ public class ProfileUtils {
 					if (projectexp.get("end_date") != null) {
 						record.setEnd(BeanUtils.convertToSQLDate(projectexp.get("end_date")));
 					}
-					projectExpRecords.add(record);
+					ValidationMessage<ProfileProjectexpRecord> vm = ProfileValidation.verifyProjectExp(record);
+					if(vm.isPass()) {
+						projectExpRecords.add(record);
+					}
 				}
 			});
 		}
@@ -165,6 +174,10 @@ public class ProfileUtils {
 		if (other != null) {
 			otherRecord = new ProfileOtherRecord();
 			otherRecord.setOther(JSON.toJSONString(other));
+			ValidationMessage<ProfileOtherRecord> vm = ProfileValidation.verifyCustomizeResume(otherRecord);
+			if(!vm.isPass()) {
+				otherRecord = null;
+			}
 		}
 		return otherRecord;
 	}
@@ -174,7 +187,8 @@ public class ProfileUtils {
 		if (languages != null && languages.size() > 0) {
 			languages.forEach(language -> {
 				ProfileLanguageRecord record = BeanUtils.MapToRecord(language, ProfileLanguageRecord.class);
-				if (record != null) {
+				ValidationMessage<ProfileLanguageRecord> vm = ProfileValidation.verifyLanguage(record);
+				if (record != null && vm.isPass()) {
 					languageRecords.add(record);
 				}
 			});
@@ -270,7 +284,10 @@ public class ProfileUtils {
 					if (education.get("end_date") != null) {
 						record.setEnd(BeanUtils.convertToSQLDate(education.get("end_date")));
 					}
-					educationRecords.add(record);
+					ValidationMessage<ProfileEducationRecord> vm = ProfileValidation.verifyEducation(record);
+					if(vm.isPass()) {
+						educationRecords.add(record);
+					}
 				}
 			});
 		}
@@ -282,7 +299,8 @@ public class ProfileUtils {
 		if (credentials != null && credentials.size() > 0) {
 			credentials.forEach(credential -> {
 				ProfileCredentialsRecord record = BeanUtils.MapToRecord(credential, ProfileCredentialsRecord.class);
-				if (record != null) {
+				ValidationMessage<ProfileCredentialsRecord> vm = ProfileValidation.verifyCredential(record);
+				if (record != null && vm.isPass()) {
 					credentialRecords.add(record);
 				}
 			});

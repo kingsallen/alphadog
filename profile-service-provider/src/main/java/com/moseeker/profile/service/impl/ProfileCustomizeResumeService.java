@@ -3,6 +3,7 @@ package com.moseeker.profile.service.impl;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.thrift.TException;
@@ -18,8 +19,10 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.db.profiledb.tables.records.ProfileOtherRecord;
+import com.moseeker.profile.constants.ValidationMessage;
 import com.moseeker.profile.dao.CustomizeResumeDao;
 import com.moseeker.profile.dao.ProfileDao;
+import com.moseeker.profile.utils.ProfileValidation;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.CustomizeResume;
 
@@ -50,6 +53,16 @@ public class ProfileCustomizeResumeService extends JOOQBaseServiceImpl<Customize
 
 	@Override
 	public Response postResources(List<CustomizeResume> structs) throws TException {
+		if(structs != null && structs.size() > 0) {
+			Iterator<CustomizeResume> icr = structs.iterator();
+			while(icr.hasNext()) {
+				CustomizeResume cr = icr.next();
+				ValidationMessage<CustomizeResume> vm = ProfileValidation.verifyCustomizeResume(cr);
+				if(!vm.isPass()) {
+					icr.remove();
+				}
+			}
+		}
 		Response response = super.postResources(structs);
 		updateUpdateTime(structs, response);
 		return response;
@@ -79,6 +92,11 @@ public class ProfileCustomizeResumeService extends JOOQBaseServiceImpl<Customize
 	@Override
 	public Response postResource(CustomizeResume struct) throws TException {
 		try {
+			ValidationMessage<CustomizeResume> vm = ProfileValidation.verifyCustomizeResume(struct);
+			if(!vm.isPass()) {
+				return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}'}", vm.getResult()));
+			}
+			
 			QueryUtil qu = new QueryUtil();
 			qu.addEqualFilter("profile_id", String.valueOf(struct.getProfile_id()));
 			ProfileOtherRecord repeat = dao.getResource(qu);
@@ -115,7 +133,7 @@ public class ProfileCustomizeResumeService extends JOOQBaseServiceImpl<Customize
 		updateUpdateTime(struct, response);
 		return response;
 	}
-
+	
 	@Override
 	protected CustomizeResume DBToStruct(ProfileOtherRecord r) {
 		return (CustomizeResume)BeanUtils.DBToStruct(CustomizeResume.class, r);

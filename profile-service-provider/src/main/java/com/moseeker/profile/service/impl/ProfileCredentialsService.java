@@ -3,6 +3,7 @@ package com.moseeker.profile.service.impl;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -13,12 +14,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.db.profiledb.tables.records.ProfileCredentialsRecord;
+import com.moseeker.profile.constants.ValidationMessage;
 import com.moseeker.profile.dao.CredentialsDao;
 import com.moseeker.profile.dao.ProfileDao;
+import com.moseeker.profile.utils.ProfileValidation;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.Credentials;
 
@@ -39,6 +44,16 @@ public class ProfileCredentialsService extends JOOQBaseServiceImpl<Credentials, 
 
 	@Override
 	public Response postResources(List<Credentials> structs) throws TException {
+		if(structs != null && structs.size() > 0) {
+			Iterator<Credentials> ic = structs.iterator();
+			while(ic.hasNext()) {
+				Credentials credential = ic.next();
+				ValidationMessage<Credentials> vm = ProfileValidation.verifyCredential(credential);
+				if(!vm.isPass()) {
+					ic.remove();
+				}
+			}
+		}
 		Response response = super.postResources(structs);
 		/* 重新计算profile完整度 */
 		if (response.getStatus() == 0 && structs != null && structs.size() > 0) {
@@ -112,6 +127,10 @@ public class ProfileCredentialsService extends JOOQBaseServiceImpl<Credentials, 
 
 	@Override
 	public Response postResource(Credentials struct) throws TException {
+		ValidationMessage<Credentials> vm = ProfileValidation.verifyCredential(struct);
+		if(!vm.isPass()) {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}'}", vm.getResult()));
+		}
 		Response response = super.postResource(struct);
 		/* 计算profile完整度 */
 		if (response.getStatus() == 0 && struct != null) {
@@ -154,7 +173,7 @@ public class ProfileCredentialsService extends JOOQBaseServiceImpl<Credentials, 
 		}
 		return response;
 	}
-
+	
 	public CredentialsDao getDao() {
 		return dao;
 	}
