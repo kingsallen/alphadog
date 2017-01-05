@@ -35,7 +35,6 @@ import com.moseeker.db.profiledb.tables.records.ProfileOtherRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProjectexpRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileSkillRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileWorkexpRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileWorksRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.profile.constants.ValidationMessage;
@@ -121,7 +120,7 @@ public class ProfileUtils {
 							record.setCompany(hrCompany);
 						}
 					}
-					ValidationMessage<ProfileWorkexpRecord> vm = ProfileValidation.verifyWorkExp(record);
+					ValidationMessage<ProfileWorkexpEntity> vm = ProfileValidation.verifyWorkExp(record);
 					if(vm.isPass()) {
 						workexpRecords.add(record);
 					}

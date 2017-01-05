@@ -9,6 +9,7 @@ import com.moseeker.db.profiledb.tables.records.ProfileProjectexpRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileSkillRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileWorkexpRecord;
 import com.moseeker.profile.constants.ValidationMessage;
+import com.moseeker.profile.dao.entity.ProfileWorkexpEntity;
 import com.moseeker.thrift.gen.profile.struct.Credentials;
 import com.moseeker.thrift.gen.profile.struct.CustomizeResume;
 import com.moseeker.thrift.gen.profile.struct.Education;
@@ -159,6 +160,23 @@ public class ProfileValidation {
 	public static ValidationMessage<ProfileWorkexpRecord> verifyWorkExp(ProfileWorkexpRecord workExp) {
 		ValidationMessage<ProfileWorkexpRecord> vm = new ValidationMessage<>();
 		if((workExp.getCompanyId() == null || workExp.getCompanyId().intValue() == 0)) {
+			vm.addFailedElement("就职公司", "未填写就职公司");
+		}
+		if(StringUtils.isNullOrEmpty(workExp.getJob())) {
+			vm.addFailedElement("职位名称", "未填写职位名称");
+		}
+		if(workExp.getStart() == null) {
+			vm.addFailedElement("开始时间", "未填写开始时间");
+		}
+		if(StringUtils.isNullOrEmpty(workExp.getDescription())) {
+			vm.addFailedElement("职位描述", "未对该职位做详细描述");
+		}
+		return vm;
+	}
+	
+	public static ValidationMessage<ProfileWorkexpEntity> verifyWorkExp(ProfileWorkexpEntity workExp) {
+		ValidationMessage<ProfileWorkexpEntity> vm = new ValidationMessage<>();
+		if(workExp.getCompany() == null || StringUtils.isNullOrEmpty(workExp.getCompany().getName())) {
 			vm.addFailedElement("就职公司", "未填写就职公司");
 		}
 		if(StringUtils.isNullOrEmpty(workExp.getJob())) {
