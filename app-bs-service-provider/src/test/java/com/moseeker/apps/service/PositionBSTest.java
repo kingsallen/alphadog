@@ -124,7 +124,7 @@ public class PositionBSTest {
 	@Test
 	public void testRefreshPosition() {
 		Response response = positionBS.refreshPosition(1, 1);
-		assertEquals(10005, response.getStatus());
+		assertEquals(0, response.getStatus());
 	}
 
 	/*@Test
