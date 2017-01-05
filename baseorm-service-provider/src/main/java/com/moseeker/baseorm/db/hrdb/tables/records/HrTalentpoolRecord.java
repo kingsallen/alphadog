@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrTalentpoolRecord extends UpdatableRecordImpl<HrTalentpoolRecord> implements Record6<Integer, Integer, Integer, Timestamp, Timestamp, Integer> {
 
-    private static final long serialVersionUID = 819168007;
+    private static final long serialVersionUID = -1413999859;
 
     /**
      * Setter for <code>hrdb.hr_talentpool.id</code>.
@@ -61,16 +61,16 @@ public class HrTalentpoolRecord extends UpdatableRecordImpl<HrTalentpoolRecord> 
     }
 
     /**
-     * Setter for <code>hrdb.hr_talentpool.user_id</code>. 候选人id（user_user.id）
+     * Setter for <code>hrdb.hr_talentpool.applier_id</code>. 候选人id（user_user.id）
      */
-    public void setUserId(Integer value) {
+    public void setApplierId(Integer value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_talentpool.user_id</code>. 候选人id（user_user.id）
+     * Getter for <code>hrdb.hr_talentpool.applier_id</code>. 候选人id（user_user.id）
      */
-    public Integer getUserId() {
+    public Integer getApplierId() {
         return (Integer) get(2);
     }
 
@@ -169,7 +169,7 @@ public class HrTalentpoolRecord extends UpdatableRecordImpl<HrTalentpoolRecord> 
      */
     @Override
     public Field<Integer> field3() {
-        return HrTalentpool.HR_TALENTPOOL.USER_ID;
+        return HrTalentpool.HR_TALENTPOOL.APPLIER_ID;
     }
 
     /**
@@ -217,7 +217,7 @@ public class HrTalentpoolRecord extends UpdatableRecordImpl<HrTalentpoolRecord> 
      */
     @Override
     public Integer value3() {
-        return getUserId();
+        return getApplierId();
     }
 
     /**
@@ -267,7 +267,7 @@ public class HrTalentpoolRecord extends UpdatableRecordImpl<HrTalentpoolRecord> 
      */
     @Override
     public HrTalentpoolRecord value3(Integer value) {
-        setUserId(value);
+        setApplierId(value);
         return this;
     }
 
@@ -326,12 +326,12 @@ public class HrTalentpoolRecord extends UpdatableRecordImpl<HrTalentpoolRecord> 
     /**
      * Create a detached, initialised HrTalentpoolRecord
      */
-    public HrTalentpoolRecord(Integer id, Integer hrAccountId, Integer userId, Timestamp createTime, Timestamp updateTime, Integer status) {
+    public HrTalentpoolRecord(Integer id, Integer hrAccountId, Integer applierId, Timestamp createTime, Timestamp updateTime, Integer status) {
         super(HrTalentpool.HR_TALENTPOOL);
 
         set(0, id);
         set(1, hrAccountId);
-        set(2, userId);
+        set(2, applierId);
         set(3, createTime);
         set(4, updateTime);
         set(5, status);

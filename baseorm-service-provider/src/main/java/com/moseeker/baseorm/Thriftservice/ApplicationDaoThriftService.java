@@ -16,7 +16,7 @@ public class ApplicationDaoThriftService implements Iface{
 	@Autowired
 	private JobApplicationService applicationService;
 	@Override
-	public Response getProcessAuth(String appIds, int companyId, int progressStatus) throws TException {
+	public Response getProcessAuth(List<Integer> appIds, int companyId, int progressStatus) throws TException {
 		// TODO Auto-generated method stub
 		return applicationService.processvalidation(appIds, companyId, progressStatus);
 	}

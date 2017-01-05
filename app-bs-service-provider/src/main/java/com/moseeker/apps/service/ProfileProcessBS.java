@@ -70,124 +70,24 @@ public class ProfileProcessBS {
     HrDBDao.Iface hrDao = ServiceManager.SERVICEMANAGER
 			.getService(HrDBDao.Iface.class);
     Logger logger = LoggerFactory.getLogger(this.getClass());
-	
 	/**
-	 * 发送消息模板
-	 * @param userId
-	 * @param userName
-	 * @param companyId
-	 * @param status
-	 * @param companyName
-	 * @param positionName
-	 * @param applicationId
-	 * @param tm
+	 * ats简历进度
+	 * @param progressStatus－－－－下一步的状态，对应config_sys_points_conf_tpl.recruit_order
+	 * @param params        －－－－l_application_id的字符串，之间用，隔开
+	 * @author zzt
+	 * @return Response(status,message,data)
 	 */
-	public void sendTemplate(int userId, String userName, int companyId, int status, String positionName, int applicationId, TemplateMs tm) {
-		if (StringUtils.isNullOrEmpty(positionName)) {
-			return;
-		}
-		Map<String,MessageTplDataCol> data = new HashMap<String, MessageTplDataCol>();
-		MsInfo msInfo = tm.processStatus(status, userName);
-		if (msInfo != null) {
-			String color = "#173177";
-			String companyName = "";
-			CommonQuery query = new CommonQuery();
-	        Map<String, String> paramMap = new HashMap<String, String>();
-	        query.setEqualFilter(paramMap);
-	        paramMap.put("id", String.valueOf(companyId));
-			try {
-				Response company = companyService.getResource(query);
-				if (company.status == 0) {
-					JSONObject companyJson = JSON.parseObject(company.getData());
-					companyName = companyJson.getString("name");
-				}
-			} catch (TException e2) {
-				log.error(e2.getMessage(), e2);
-			}
-			MessageTplDataCol firstMs = new MessageTplDataCol();
-			firstMs.setColor(color);
-			firstMs.setValue(msInfo.getResult());
-	        data.put("first", firstMs);
-	        MessageTplDataCol keyOneMs = new MessageTplDataCol();
-	        keyOneMs.setColor(color);
-	        keyOneMs.setValue(companyName);
-	        data.put("keyword1", keyOneMs);
-	        MessageTplDataCol keyTwoMs = new MessageTplDataCol();
-	        keyTwoMs.setColor(color);
-	        keyTwoMs.setValue(positionName);
-	        data.put("keyword2", keyTwoMs);
-	        MessageTplDataCol keyThreeMs = new MessageTplDataCol();
-	        keyThreeMs.setColor(color);
-	        keyThreeMs.setValue(msInfo.getResult());
-	        data.put("keyword3", keyThreeMs);
-	        MessageTplDataCol remarkMs = new MessageTplDataCol();
-	        remarkMs.setColor(color);
-	        remarkMs.setValue(msInfo.getRemark());
-	        data.put("remark", remarkMs);
-	        MessageTemplateNoticeStruct templateNoticeStruct = new MessageTemplateNoticeStruct();
-	        templateNoticeStruct.setCompany_id(companyId);
-	        templateNoticeStruct.setData(data);
-	        templateNoticeStruct.setUser_id(userId);
-	        templateNoticeStruct.setSys_template_id(tm.getSystemlateId());
-	        String signature = "";
-			try {
-				 Response wechat = companyService.getWechat(companyId, 0);
-				 if (wechat.getStatus() == 0) {
-		        		Map<String, Object> wechatData = JSON.parseObject(wechat.getData());
-		        		signature = String.valueOf(wechatData.get("signature"));
-				}
-			} catch (TException e1) {
-				log.error(e1.getMessage(), e1);
-			}
-			templateNoticeStruct.setUrl(MessageFormat.format(tm.getUrl(), ConfigPropertiesUtil.getInstance().get("platform.url", String.class), signature, "0"));
-	        try {
-				mqService.messageTemplateNotice(templateNoticeStruct);
-			} catch (TException e) {
-				log.error(e.getMessage(), e);
-			}
-		}
-	}
-	
-     private List<Integer> convertList(String params){
-    	 List<Integer> list=new ArrayList<Integer>();
-    	 if(params.contains(",")){
-    		 String [] array=params.split(",");
-    		 for(String param:array){
-    			 list.add(Integer.parseInt(param.trim()));
-    		 }
-    	 }else{
-    		 list.add(Integer.parseInt(params.trim()));
-    	 }
-		return list;
-     }
-     private List<ApplicationAts> getJobApplication(String params) throws Exception{
-    	 List<Integer> appIds=this.convertList(params);
-    	 Response result=applicationDao.getApplicationsByList(appIds);
-    	 if(result.getStatus()==0&&StringUtils.isNotNullOrEmpty(result.getData())){
-    		 return this.convertApplicationAtsList(result.getData());
-    	 }
-    	 return null;
-     }
-     private List<ApplicationAts> convertApplicationAtsList(String params ){
-    	 List<ApplicationAts> list=new ArrayList<ApplicationAts>();
-    	 JSONArray jsay=JSON.parseArray(params);
-    	 for(int i=0;i<jsay.size();i++){
-    		 JSONObject obj=jsay.getJSONObject(i) ;
-    		 list.add(JSONObject.toJavaObject(obj, ApplicationAts.class));
-    	 }
-    	 return list;
-     }
-     public Response processProfileAts(int progressStatus,String params){
+    public Response processProfileAts(int progressStatus,String params){
     	int companyId=0;
     	int accountId=0;
     	List<Integer> appIds=new ArrayList<Integer>();
     	 try{
 				 List<ApplicationAts> list=getJobApplication(params);
-				 if(list==null&&list.size()==0){
+				 if(list==null||list.size()==0){
 					 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION); 
 				 }
 				 for(ApplicationAts jop:list){
-					 appIds.add((int) jop.getApplication_id());
+					 appIds.add(jop.getApplication_id());
 				 }
 				 companyId=list.get(0).getCompany_id();
 				 accountId=list.get(0).getAccount_id();
@@ -198,13 +98,42 @@ public class ProfileProcessBS {
 			 }
 
      }
+    //通过ats的l_application_id得到List<account_id,company_id,application_ia>
+    private List<ApplicationAts> getJobApplication(String params) throws Exception{
+	   	 List<Integer> appIds=this.convertList(params);
+	   	 Response result=applicationDao.getApplicationsByList(appIds);
+	   	 if(result.getStatus()==0&&StringUtils.isNotNullOrEmpty(result.getData())&&!"[]".equals(result.getData())){
+	   		 return this.convertApplicationAtsList(result.getData());
+	   	 }
+	   	 return null;
+    }
+    //将ApplicationAts（account_id,company_id,application_ia）转化为list
+    private List<ApplicationAts> convertApplicationAtsList(String params ){
+	   	 List<ApplicationAts> list=new ArrayList<ApplicationAts>();
+	   	 JSONArray jsay=JSON.parseArray(params);
+	   	 for(int i=0;i<jsay.size();i++){
+	   		 JSONObject obj=jsay.getJSONObject(i) ;
+	   		 list.add(JSONObject.toJavaObject(obj, ApplicationAts.class));
+	   	 }
+	   	 return list;
+    }
+	/**
+	 * 招聘进度
+	 * @param progressStatus－－－－下一步的状态，对应config_sys_points_conf_tpl.recruit_order
+	 * @param params        －－－－l_application_id的字符串，之间用，隔开
+	 * @param companyId     －－－－企业编号
+	 * @param accountId     －－－－hr_account.id
+	 * @author zzt
+	 * @return Response(status,message,data)
+	 */
 	 public Response processProfile(int companyId,int progressStatus,String params,int accountId ){
 		 try{
             List<Integer> appIds=this.convertList(params);
 			if(appIds==null||appIds.size()==0){
 				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 			}
-	    	Response application=applicationDao.getProcessAuth(appIds.toString(), companyId, progressStatus);
+			//对需要修改的进行权限验证
+	    	Response application=applicationDao.getProcessAuth(appIds, companyId, progressStatus);
 	    	if(application.getStatus()==0){
 	    		String data=application.getData();
 	    		if(StringUtils.isNullOrEmpty(data)||"[]".equals(data)){
@@ -305,6 +234,97 @@ public class ProfileProcessBS {
 	    	}
 	    	
 	    }
+	/**
+	 * 发送消息模板
+	 * @param userId
+	 * @param userName
+	 * @param companyId
+	 * @param status
+	 * @param companyName
+	 * @param positionName
+	 * @param applicationId
+	 * @param tm
+	 */
+	public void sendTemplate(int userId, String userName, int companyId, int status, String positionName, int applicationId, TemplateMs tm) {
+		if (StringUtils.isNullOrEmpty(positionName)) {
+			return;
+		}
+		Map<String,MessageTplDataCol> data = new HashMap<String, MessageTplDataCol>();
+		MsInfo msInfo = tm.processStatus(status, userName);
+		if (msInfo != null) {
+			String color = "#173177";
+			String companyName = "";
+			CommonQuery query = new CommonQuery();
+	        Map<String, String> paramMap = new HashMap<String, String>();
+	        query.setEqualFilter(paramMap);
+	        paramMap.put("id", String.valueOf(companyId));
+			try {
+				Response company = companyService.getResource(query);
+				if (company.status == 0) {
+					JSONObject companyJson = JSON.parseObject(company.getData());
+					companyName = companyJson.getString("name");
+				}
+			} catch (TException e2) {
+				log.error(e2.getMessage(), e2);
+			}
+			MessageTplDataCol firstMs = new MessageTplDataCol();
+			firstMs.setColor(color);
+			firstMs.setValue(msInfo.getResult());
+	        data.put("first", firstMs);
+	        MessageTplDataCol keyOneMs = new MessageTplDataCol();
+	        keyOneMs.setColor(color);
+	        keyOneMs.setValue(companyName);
+	        data.put("keyword1", keyOneMs);
+	        MessageTplDataCol keyTwoMs = new MessageTplDataCol();
+	        keyTwoMs.setColor(color);
+	        keyTwoMs.setValue(positionName);
+	        data.put("keyword2", keyTwoMs);
+	        MessageTplDataCol keyThreeMs = new MessageTplDataCol();
+	        keyThreeMs.setColor(color);
+	        keyThreeMs.setValue(msInfo.getResult());
+	        data.put("keyword3", keyThreeMs);
+	        MessageTplDataCol remarkMs = new MessageTplDataCol();
+	        remarkMs.setColor(color);
+	        remarkMs.setValue(msInfo.getRemark());
+	        data.put("remark", remarkMs);
+	        MessageTemplateNoticeStruct templateNoticeStruct = new MessageTemplateNoticeStruct();
+	        templateNoticeStruct.setCompany_id(companyId);
+	        templateNoticeStruct.setData(data);
+	        templateNoticeStruct.setUser_id(userId);
+	        templateNoticeStruct.setSys_template_id(tm.getSystemlateId());
+	        String signature = "";
+			try {
+				 Response wechat = companyService.getWechat(companyId, 0);
+				 if (wechat.getStatus() == 0) {
+		        		Map<String, Object> wechatData = JSON.parseObject(wechat.getData());
+		        		signature = String.valueOf(wechatData.get("signature"));
+				}
+			} catch (TException e1) {
+				log.error(e1.getMessage(), e1);
+			}
+			templateNoticeStruct.setUrl(MessageFormat.format(tm.getUrl(), ConfigPropertiesUtil.getInstance().get("platform.url", String.class), signature, "0"));
+	        try {
+				mqService.messageTemplateNotice(templateNoticeStruct);
+			} catch (TException e) {
+				log.error(e.getMessage(), e);
+			}
+		}
+	}
+	
+     private List<Integer> convertList(String params){
+    	 List<Integer> list=new ArrayList<Integer>();
+    	 if(params.contains(",")){
+    		 String [] array=params.split(",");
+    		 for(String param:array){
+    			 list.add(Integer.parseInt(param.trim()));
+    		 }
+    	 }else{
+    		 list.add(Integer.parseInt(params.trim()));
+    	 }
+		return list;
+     }
+
+     
 	    //插入hr操作记录
 	    private void  updateRecruitState(Integer progressStatus,
 	    		List<ProcessValidationStruct> applications,
@@ -366,6 +386,7 @@ public class ProfileProcessBS {
     			userDao.putUserEmployees(employeesToBeUpdates);
     		}
 	    }
+	    //将总积分列表的string转化为list
 	    private List<UserEmployeePointSum> ConvertpointSumList(String data){
 	    	List<UserEmployeePointSum> list=new ArrayList<UserEmployeePointSum>();
 	    	JSONArray jsay=JSONObject.parseArray(data);
@@ -375,6 +396,7 @@ public class ProfileProcessBS {
 	    	}
 	    	return list;
 	    }
+	    // 当 progress_status！=13&&progress_status！=99时的操作
 	    public List<RewardsToBeAddBean> OperationOther(List<ProcessValidationStruct> applications,
 				 List<RewardsToBeAddBean> rewardsToBeAdd,int progressStatus) throws Exception{
 	    	CommonQuery query=new CommonQuery();
@@ -409,6 +431,7 @@ public class ProfileProcessBS {
 	    	}
 	    	return rewardsToBeAdd;
 	    }
+	    // 将积分配置表的string转化为list
 	    private List<ConfigSysPointsConfTpl> ConvertConfigList(String data){
 	    	List<ConfigSysPointsConfTpl> list=new ArrayList<ConfigSysPointsConfTpl>();
 	    	JSONArray jsay=JSONObject.parseArray(data);
@@ -418,6 +441,7 @@ public class ProfileProcessBS {
 	    	}
 	    	return list;
 	    }
+	    // 当 progress_status=99时的操作
 	    private List<RewardsToBeAddBean> Operation99(List<ProcessValidationStruct> applications,
 	    											 List<RewardsToBeAddBean> rewardsToBeAdd) throws Exception{
 	    	Response result=hrDao.getHrHistoryOperations(applications);
@@ -446,6 +470,7 @@ public class ProfileProcessBS {
 	    	}
 	    	return rewardsToBeAdd;
 	    }
+	    // 将操作记录的string转化为list
 	    private List<HistoryOperate> ConvertHistoryList(String data){
 	    	List<HistoryOperate> list=new ArrayList<HistoryOperate>();
 	    	JSONArray jsay=JSONObject.parseArray(data);
@@ -455,6 +480,7 @@ public class ProfileProcessBS {
 	    	}
 	    	return list;
 	    }
+	    // 当 progress_status=13时的操作
 	    private List<RewardsToBeAddBean> Operation13(List<ProcessValidationStruct> applications,List<RewardsToBeAddBean> rewardsToBeAdd,
 	    		List<HrOperationrecordStruct> turnToCVCheckeds) throws Exception{
 	    	CommonQuery query=new CommonQuery();

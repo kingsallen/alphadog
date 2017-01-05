@@ -32,7 +32,7 @@ public class ProfileProcessTest {
 		appIds.add(67);
 		int companyId=8;
 		int progressStatus=13;
-		System.out.println(jobApplication.processvalidation(appIds.toString(), companyId, progressStatus));
+		System.out.println(jobApplication.processvalidation(appIds, companyId, progressStatus));
 	}
 	@Test
 	public void TestGetRecruitProcess(){

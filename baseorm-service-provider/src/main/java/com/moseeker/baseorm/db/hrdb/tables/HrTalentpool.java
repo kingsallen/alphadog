@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrTalentpool extends TableImpl<HrTalentpoolRecord> {
 
-    private static final long serialVersionUID = -1808865823;
+    private static final long serialVersionUID = -530883549;
 
     /**
      * The reference instance of <code>hrdb.hr_talentpool</code>
@@ -62,19 +62,19 @@ public class HrTalentpool extends TableImpl<HrTalentpoolRecord> {
     public final TableField<HrTalentpoolRecord, Integer> HR_ACCOUNT_ID = createField("hr_account_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "创建人id(user_hr_account.id)");
 
     /**
-     * The column <code>hrdb.hr_talentpool.user_id</code>. 候选人id（user_user.id）
+     * The column <code>hrdb.hr_talentpool.applier_id</code>. 候选人id（user_user.id）
      */
-    public final TableField<HrTalentpoolRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "候选人id（user_user.id）");
+    public final TableField<HrTalentpoolRecord, Integer> APPLIER_ID = createField("applier_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "候选人id（user_user.id）");
 
     /**
      * The column <code>hrdb.hr_talentpool.create_time</code>.
      */
-    public final TableField<HrTalentpoolRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<HrTalentpoolRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>hrdb.hr_talentpool.update_time</code>.
      */
-    public final TableField<HrTalentpoolRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<HrTalentpoolRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>hrdb.hr_talentpool.status</code>. 状态(0：正常，1：删除)

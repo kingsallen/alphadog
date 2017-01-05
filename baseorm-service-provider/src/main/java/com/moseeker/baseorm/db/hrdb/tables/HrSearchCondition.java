@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
 
-    private static final long serialVersionUID = -1960714316;
+    private static final long serialVersionUID = 879290816;
 
     /**
      * The reference instance of <code>hrdb.hr_search_condition</code>
@@ -102,9 +102,9 @@ public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
     public final TableField<HrSearchConditionRecord, String> PAST_POSITION = createField("past_position", org.jooq.impl.SQLDataType.VARCHAR.length(255), this, "曾任职务");
 
     /**
-     * The column <code>hrdb.hr_search_condition.in_last_job_search_position</code>. 是否只在最近一份工作中搜索曾任职务
+     * The column <code>hrdb.hr_search_condition.in_last_job_search_position</code>. 是否只在最近一份工作中搜索曾任职务(0:否，1:是)
      */
-    public final TableField<HrSearchConditionRecord, String> IN_LAST_JOB_SEARCH_POSITION = createField("in_last_job_search_position", org.jooq.impl.SQLDataType.CHAR.length(50), this, "是否只在最近一份工作中搜索曾任职务");
+    public final TableField<HrSearchConditionRecord, Integer> IN_LAST_JOB_SEARCH_POSITION = createField("in_last_job_search_position", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "是否只在最近一份工作中搜索曾任职务(0:否，1:是)");
 
     /**
      * The column <code>hrdb.hr_search_condition.min_age</code>. 最小年龄
@@ -124,7 +124,7 @@ public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
     /**
      * The column <code>hrdb.hr_search_condition.sex</code>. 性别
      */
-    public final TableField<HrSearchConditionRecord, String> SEX = createField("sex", org.jooq.impl.SQLDataType.CHAR.length(50), this, "性别");
+    public final TableField<HrSearchConditionRecord, Integer> SEX = createField("sex", org.jooq.impl.SQLDataType.INTEGER, this, "性别");
 
     /**
      * The column <code>hrdb.hr_search_condition.intention_salary_code</code>. 期望薪资
@@ -137,9 +137,9 @@ public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
     public final TableField<HrSearchConditionRecord, String> COMPANY_NAME = createField("company_name", org.jooq.impl.SQLDataType.VARCHAR.length(255), this, "公司名称");
 
     /**
-     * The column <code>hrdb.hr_search_condition.in_last_job_search_company</code>. 是否只在最近一份工作中搜索公司名称
+     * The column <code>hrdb.hr_search_condition.in_last_job_search_company</code>. 是否只在最近一份工作中搜索公司名称（0:否，1:是）
      */
-    public final TableField<HrSearchConditionRecord, String> IN_LAST_JOB_SEARCH_COMPANY = createField("in_last_job_search_company", org.jooq.impl.SQLDataType.CHAR.length(50), this, "是否只在最近一份工作中搜索公司名称");
+    public final TableField<HrSearchConditionRecord, Integer> IN_LAST_JOB_SEARCH_COMPANY = createField("in_last_job_search_company", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "是否只在最近一份工作中搜索公司名称（0:否，1:是）");
 
     /**
      * The column <code>hrdb.hr_search_condition.hr_account_id</code>. 创建人id(user_hr_account.id)
@@ -149,7 +149,7 @@ public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
     /**
      * The column <code>hrdb.hr_search_condition.create_time</code>. 创建时间
      */
-    public final TableField<HrSearchConditionRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "创建时间");
+    public final TableField<HrSearchConditionRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
 
     /**
      * The column <code>hrdb.hr_search_condition.update_time</code>. 简历更新时间选项（0：不限，1：最近一周，2：最近两周，3：最近一个月）
