@@ -8,6 +8,7 @@ import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
@@ -298,6 +299,54 @@ public class PositionBS {
 		} finally {
 			//do nothing
 		}
+	}
+	
+	public PositionDao.Iface getPositionDao() {
+		return positionDao;
+	}
+
+	public void setPositionDao(PositionDao.Iface positionDao) {
+		this.positionDao = positionDao;
+	}
+
+	public UserHrAccountService.Iface getUserHrAccountService() {
+		return userHrAccountService;
+	}
+
+	public void setUserHrAccountService(UserHrAccountService.Iface userHrAccountService) {
+		this.userHrAccountService = userHrAccountService;
+	}
+
+	public CompanyServices.Iface getCompanyService() {
+		return companyService;
+	}
+
+	public void setCompanyService(CompanyServices.Iface companyService) {
+		this.companyService = companyService;
+	}
+
+	public PositionServices.Iface getPositionServices() {
+		return positionServices;
+	}
+
+	public void setPositionServices(PositionServices.Iface positionServices) {
+		this.positionServices = positionServices;
+	}
+
+	public CompanyDao.Iface getCompanyDao() {
+		return CompanyDao;
+	}
+
+	public void setCompanyDao(CompanyDao.Iface companyDao) {
+		CompanyDao = companyDao;
+	}
+
+	public ChaosServices.Iface getChaosService() {
+		return chaosService;
+	}
+
+	public void setChaosService(ChaosServices.Iface chaosService) {
+		this.chaosService = chaosService;
 	}
 
 }
