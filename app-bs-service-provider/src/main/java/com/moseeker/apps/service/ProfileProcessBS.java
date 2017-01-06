@@ -80,18 +80,19 @@ public class ProfileProcessBS {
     public Response processProfileAts(int progressStatus,String params){
     	int companyId=0;
     	int accountId=0;
-    	List<Integer> appIds=new ArrayList<Integer>();
+    	StringBuffer sb=new StringBuffer();
     	 try{
 				 List<ApplicationAts> list=getJobApplication(params);
 				 if(list==null||list.size()==0){
 					 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION); 
 				 }
 				 for(ApplicationAts jop:list){
-					 appIds.add(jop.getApplication_id());
+					 sb.append(jop.getApplication_id()+",");
 				 }
+				 sb.deleteCharAt(sb.length()-1);
 				 companyId=list.get(0).getCompany_id();
 				 accountId=list.get(0).getAccount_id();
-				 Response result= processProfile(companyId,progressStatus,appIds.toString(),accountId );
+				 Response result= processProfile(companyId,progressStatus,sb.toString(),accountId );
 				 return result;
 			 }catch(Exception e){
 				 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
