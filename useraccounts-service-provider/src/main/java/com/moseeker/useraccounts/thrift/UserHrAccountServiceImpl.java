@@ -5,10 +5,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.DownloadReport;
+import com.moseeker.thrift.gen.useraccounts.struct.SearchCondition;
 import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
 import com.moseeker.useraccounts.service.impl.UserHrAccountService;
 
@@ -65,5 +67,35 @@ public class UserHrAccountServiceImpl implements Iface {
 	@Override
 	public Response bind(BindAccountStruct account) throws TException {
 		return service.bindThirdAccount(account);
+	}
+
+	@Override
+	public Response getSearchCondition(int hrAccountId, int type)
+			throws TException {
+		return service.getSearchCondition(hrAccountId, type);
+	}
+
+	@Override
+	public Response postSearchCondition(SearchCondition searchCondition)
+			throws TException {
+		return service.postSearchCondition(searchCondition);
+	}
+
+	@Override
+	public Response delSearchCondition(int hrAccountId, int id)
+			throws TException {
+		return service.delSearchCondition(hrAccountId, id);
+	}
+
+	@Override
+	public Response joinTalentpool(int hrAccountId, int applier_id)
+			throws TException {
+		return service.joinTalentpool(hrAccountId, applier_id);
+	}
+
+	@Override
+	public Response shiftOutTalentpool(int hrAccountId, int applier_id)
+			throws TException {
+		return service.shiftOutTalentpool(hrAccountId, applier_id);
 	}
 }

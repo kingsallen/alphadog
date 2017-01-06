@@ -28,7 +28,9 @@ import com.moseeker.baseorm.db.hrdb.tables.HrRecruitUniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrReferralStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrRuleStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrRuleUniqueStatistics;
+import com.moseeker.baseorm.db.hrdb.tables.HrSearchCondition;
 import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
+import com.moseeker.baseorm.db.hrdb.tables.HrTalentpool;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.baseorm.db.hrdb.tables.HrTopic;
@@ -68,7 +70,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 343106482;
+    private static final long serialVersionUID = -232300112;
 
     /**
      * The reference instance of <code>hrdb</code>
@@ -196,9 +198,19 @@ public class Hrdb extends SchemaImpl {
     public final HrRuleUniqueStatistics HR_RULE_UNIQUE_STATISTICS = com.moseeker.baseorm.db.hrdb.tables.HrRuleUniqueStatistics.HR_RULE_UNIQUE_STATISTICS;
 
     /**
+     * 候选人列表常用筛选项
+     */
+    public final HrSearchCondition HR_SEARCH_CONDITION = com.moseeker.baseorm.db.hrdb.tables.HrSearchCondition.HR_SEARCH_CONDITION;
+
+    /**
      * 升级超级账号申请表
      */
     public final HrSuperaccountApply HR_SUPERACCOUNT_APPLY = com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply.HR_SUPERACCOUNT_APPLY;
+
+    /**
+     * 人才库
+     */
+    public final HrTalentpool HR_TALENTPOOL = com.moseeker.baseorm.db.hrdb.tables.HrTalentpool.HR_TALENTPOOL;
 
     /**
      * 第三方渠道帐号
@@ -319,7 +331,9 @@ public class Hrdb extends SchemaImpl {
             HrReferralStatistics.HR_REFERRAL_STATISTICS,
             HrRuleStatistics.HR_RULE_STATISTICS,
             HrRuleUniqueStatistics.HR_RULE_UNIQUE_STATISTICS,
+            HrSearchCondition.HR_SEARCH_CONDITION,
             HrSuperaccountApply.HR_SUPERACCOUNT_APPLY,
+            HrTalentpool.HR_TALENTPOOL,
             HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT,
             HrThirdPartyPosition.HR_THIRD_PARTY_POSITION,
             HrTopic.HR_TOPIC,

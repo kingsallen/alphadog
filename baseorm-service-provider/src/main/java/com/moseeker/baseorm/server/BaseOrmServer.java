@@ -10,6 +10,8 @@ import com.moseeker.baseorm.Thriftservice.DictDaoThriftService;
 import com.moseeker.baseorm.Thriftservice.HRAccountThriftService;
 import com.moseeker.baseorm.Thriftservice.PositionDaoThriftService;
 import com.moseeker.baseorm.Thriftservice.PositionThriftService;
+import com.moseeker.baseorm.Thriftservice.SearchConditionDaoThriftService;
+import com.moseeker.baseorm.Thriftservice.TalentpoolDaoThriftService;
 import com.moseeker.baseorm.Thriftservice.UserDaoThriftService;
 import com.moseeker.baseorm.Thriftservice.WordpressDaoThriftService;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
@@ -40,7 +42,9 @@ public class BaseOrmServer {
 	        			acac.getBean(UserDaoThriftService.class),
 	        			acac.getBean(DictDaoThriftService.class),
 	        			acac.getBean(DictDaoMapThriftService.class),
-	        			acac.getBean(PositionThriftService.class)
+	        			acac.getBean(PositionThriftService.class),
+	        			acac.getBean(SearchConditionDaoThriftService.class),
+	        			acac.getBean(TalentpoolDaoThriftService.class)
 	        	);
 	            server.start();
 

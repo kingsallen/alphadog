@@ -28,7 +28,9 @@ import com.moseeker.baseorm.db.hrdb.tables.HrRecruitUniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrReferralStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrRuleStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrRuleUniqueStatistics;
+import com.moseeker.baseorm.db.hrdb.tables.HrSearchCondition;
 import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
+import com.moseeker.baseorm.db.hrdb.tables.HrTalentpool;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.baseorm.db.hrdb.tables.HrTopic;
@@ -181,9 +183,19 @@ public class Tables {
     public static final HrRuleUniqueStatistics HR_RULE_UNIQUE_STATISTICS = com.moseeker.baseorm.db.hrdb.tables.HrRuleUniqueStatistics.HR_RULE_UNIQUE_STATISTICS;
 
     /**
+     * 候选人列表常用筛选项
+     */
+    public static final HrSearchCondition HR_SEARCH_CONDITION = com.moseeker.baseorm.db.hrdb.tables.HrSearchCondition.HR_SEARCH_CONDITION;
+
+    /**
      * 升级超级账号申请表
      */
     public static final HrSuperaccountApply HR_SUPERACCOUNT_APPLY = com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply.HR_SUPERACCOUNT_APPLY;
+
+    /**
+     * 人才库
+     */
+    public static final HrTalentpool HR_TALENTPOOL = com.moseeker.baseorm.db.hrdb.tables.HrTalentpool.HR_TALENTPOOL;
 
     /**
      * 第三方渠道帐号

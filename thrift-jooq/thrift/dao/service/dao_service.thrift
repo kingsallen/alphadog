@@ -64,3 +64,18 @@ service PositionDao {
 service DictDao {
         dict_struct.CityMap getDictMap(1:common_struct.CommonQuery query);
 }
+
+service SearcheConditionDao {
+	list<useraccounts_struct.SearchCondition> getResources(1:common_struct.CommonQuery query);
+	useraccounts_struct.SearchCondition getResource(1:common_struct.CommonQuery query);
+	i32 getResourceCount(1:common_struct.CommonQuery query);
+	i32 postResource(1:useraccounts_struct.SearchCondition searchCondition);
+	i32 delResource(1:i32 hrAccountId, 2:i32 id);
+}
+
+service TalentpoolDao {
+	list<dao_struct.Talentpool> getResources(1:common_struct.CommonQuery query);
+	dao_struct.Talentpool getResource(1:common_struct.CommonQuery query);
+	i32 postResource(1:dao_struct.Talentpool talentpool);
+	i32 putResource(1:dao_struct.Talentpool talentpool);
+}
