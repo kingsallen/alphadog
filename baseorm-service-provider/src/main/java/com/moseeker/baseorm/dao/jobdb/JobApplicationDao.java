@@ -46,7 +46,7 @@ public class JobApplicationDao extends BaseDaoImpl<JobApplicationRecord, JobAppl
 					JobApplication.JOB_APPLICATION.COMPANY_ID, 
 					JobApplication.JOB_APPLICATION.RECOMMENDER_ID,
 					JobApplication.JOB_APPLICATION.APPLIER_ID,
-					JobApplication.JOB_APPLICATION.APPLIER_NAME,
+					UserUser.USER_USER.NAME,
 					UserWxUser.USER_WX_USER.SYSUSER_ID,
 					ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.ID ,
 					ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.RECRUIT_ORDER,
@@ -56,6 +56,7 @@ public class JobApplicationDao extends BaseDaoImpl<JobApplicationRecord, JobAppl
 			.on("jobdb.job_application.app_tpl_id=configdb.config_sys_points_conf_tpl.id");
 			table.leftJoin(JobPosition.JOB_POSITION).on("jobdb.job_application.position_id=jobdb.job_position.id");
 			table.leftJoin(UserWxUser.USER_WX_USER).on("jobdb.job_application.recommender_id=userdb.user_wx_user.id");
+			table.leftJoin(UserUser.USER_USER).on("jobdb.job_application.applier_id=userdb.user_user.id");
 			table.where(JobApplication.JOB_APPLICATION.ID.in(appIds)
 					.and(JobApplication.JOB_APPLICATION.COMPANY_ID.eq(UInteger.valueOf(companyId))));
 			if(progressStatus==13){
@@ -74,7 +75,7 @@ public class JobApplicationDao extends BaseDaoImpl<JobApplicationRecord, JobAppl
 					data.setRecruit_order(record.getValue(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.RECRUIT_ORDER).intValue());
 					data.setTemplate_id(record.getValue(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.ID).intValue());
 					data.setApplier_id(record.getValue(JobApplication.JOB_APPLICATION.APPLIER_ID).intValue());
-					data.setApplier_name(record.getValue(JobApplication.JOB_APPLICATION.APPLIER_NAME));
+					data.setApplier_name(record.getValue(UserUser.USER_USER.NAME));
 					data.setPosition_name(record.getValue(JobPosition.JOB_POSITION.TITLE));
 					if(record.getValue(UserWxUser.USER_WX_USER.SYSUSER_ID)!=null){
 						data.setRecommender_user_id(record.getValue(UserWxUser.USER_WX_USER.SYSUSER_ID));
