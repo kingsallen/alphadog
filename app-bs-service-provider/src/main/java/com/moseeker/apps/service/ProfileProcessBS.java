@@ -19,7 +19,6 @@ import com.moseeker.apps.utils.BusinessUtil;
 import com.moseeker.apps.utils.ProcessUtils;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
