@@ -91,6 +91,7 @@ public class ProfileProcessBS {
 				 sb.deleteCharAt(sb.length()-1);
 				 companyId=list.get(0).getCompany_id();
 				 accountId=list.get(0).getAccount_id();
+				 
 				 Response result= processProfile(companyId,progressStatus,sb.toString(),accountId );
 				 return result;
 			 }catch(Exception e){
@@ -160,6 +161,9 @@ public class ProfileProcessBS {
 	    			}
 	    			
 	    		}
+	    		if (recruitOrder==progressStatus){
+    				return ResponseUtils.success("操作成功");
+    			}
 	    		//  对所有的
 	    		if(processStatus||progressStatus==13||progressStatus==99){
 	    			Response recruit=configDao.getRecruitProcesses(companyId);
@@ -168,6 +172,7 @@ public class ProfileProcessBS {
 	    			if(recruit.getStatus()==0&&StringUtils.isNotNullOrEmpty(recruit.getData())&&!"[]".equals(recruit.getData())){
 	    				recruitProcesses=this.convertRecruitProcessesList(recruit.getData());
 	    			}
+	    			
 	    			RecruitmentResult result=BusinessUtil.excuteRecruitRewardOperation(recruitOrder, progressStatus, recruitProcesses);
 	    			if(result.getStatus() == 0){
 	    				List<Integer> weChatIds=new ArrayList<Integer>();
