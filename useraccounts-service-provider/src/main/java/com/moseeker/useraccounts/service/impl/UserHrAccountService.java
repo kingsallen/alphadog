@@ -428,9 +428,9 @@ public class UserHrAccountService {
 				logger.warn("保存常用筛选失败，筛选项名称={}，已存在", searchCondition.getName());
 				return ResponseUtils.fail(ConstantErrorCodeMessage.THIRD_PARTY_POSITION_UPSERT_FAILED);
 			}
-			int resultRow = searchConditionDao.postResource(searchCondition);
-			if (resultRow > 0) {
-				return ResponseUtils.success("");
+			int primaryKey = searchConditionDao.postResource(searchCondition);
+			if (primaryKey > 0) {
+				return ResponseUtils.success(primaryKey);
 			} else {
 				return ResponseUtils.fail(ConstantErrorCodeMessage.THIRD_PARTY_POSITION_UPSERT_FAILED);
 			}
@@ -439,7 +439,7 @@ public class UserHrAccountService {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		}
 	}
-
+	
 	/**
 	 * 删除常用筛选条件
 	 * @param hrAccountId
