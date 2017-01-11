@@ -225,8 +225,8 @@ public class ProfileProcessBS {
 						}
 	    				this.updateRecruitState(progressStatus, list, turnToCVCheckeds, employeesToBeUpdates, result, rewardsToBeAdd);
 	    				list.forEach(pvs -> {
-	    					sendTemplate(pvs.getApplier_id(), pvs.getApplier_name(), companyId, progressStatus, pvs.getPosition_name(), Constant.APPID_ALPHADOG, TemplateMs.TOSEEKER);
-	    					sendTemplate(pvs.getRecommender_user_id(), pvs.getApplier_name(), companyId, progressStatus, pvs.getPosition_name(), Constant.APPID_ALPHADOG, TemplateMs.TORECOM);
+	    					sendTemplate(pvs.getApplier_id(), pvs.getApplier_name(), companyId, progressStatus, pvs.getPosition_name(), pvs.getId(), TemplateMs.TOSEEKER);
+	    					sendTemplate(pvs.getRecommender_user_id(), pvs.getApplier_name(), companyId, progressStatus, pvs.getPosition_name(), pvs.getId(), TemplateMs.TORECOM);
 	    				});
 	    			}
 				}
@@ -307,7 +307,7 @@ public class ProfileProcessBS {
 			} catch (TException e1) {
 				log.error(e1.getMessage(), e1);
 			}
-			templateNoticeStruct.setUrl(MessageFormat.format(tm.getUrl(), ConfigPropertiesUtil.getInstance().get("platform.url", String.class), signature));
+			templateNoticeStruct.setUrl(MessageFormat.format(tm.getUrl(), ConfigPropertiesUtil.getInstance().get("platform.url", String.class), signature, applicationId));
 	        try {
 				mqService.messageTemplateNotice(templateNoticeStruct);
 			} catch (TException e) {

@@ -4,7 +4,7 @@ import java.text.MessageFormat;
 
 public enum TemplateMs {
 	
-	TOSEEKER(9, "{0}mobile/application?wechat_signature={1}&m=checkstatus") {
+	TOSEEKER(9, "{0}mobile/application?wechat_signature={1}&m=checkstatus&appid={2}") {
 		@Override
 		public MsInfo processStatus(int status, Object...args) {
 			MsInfo mi = null;
@@ -100,4 +100,5 @@ public enum TemplateMs {
 		}
 		public MsInfo() {}
 	}
+	
 }
