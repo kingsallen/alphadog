@@ -307,7 +307,7 @@ public class ProfileProcessBS {
 			} catch (TException e1) {
 				log.error(e1.getMessage(), e1);
 			}
-			templateNoticeStruct.setUrl(MessageFormat.format(tm.getUrl(), ConfigPropertiesUtil.getInstance().get("platform.url", String.class), signature, applicationId));
+			templateNoticeStruct.setUrl(MessageFormat.format(tm.getUrl(), ConfigPropertiesUtil.getInstance().get("platform.url", String.class), signature, String.valueOf(applicationId)));
 	        try {
 				mqService.messageTemplateNotice(templateNoticeStruct);
 			} catch (TException e) {
