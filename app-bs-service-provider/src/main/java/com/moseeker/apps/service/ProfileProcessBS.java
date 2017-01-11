@@ -229,12 +229,12 @@ public class ProfileProcessBS {
 	    					sendTemplate(pvs.getRecommender_user_id(), pvs.getApplier_name(), companyId, progressStatus, pvs.getPosition_name(), pvs.getId(), TemplateMs.TORECOM);
 	    				});
 	    			}else{
-	    				 return ResponseUtils.fail("{\"errcode\":2158, \"errmsg\":\"招聘进度流程异常！\"}");	
+	    				 return ResponseUtils.fail("{\"status\":2158, \"message\":\"招聘进度流程异常！\"}");	
 	    			}
 				}
 	    		
 	    	}else{
-	    		 return ResponseUtils.fail("{\"errcode\":2201, \"errmsg\":\"参数错误\"}");
+	    		 return ResponseUtils.fail("{\"status\":2201, \"message\":\"参数错误\"}");
 	    	}
 	    	return ResponseUtils.success("操作成功");
 		 }catch(Exception e){
