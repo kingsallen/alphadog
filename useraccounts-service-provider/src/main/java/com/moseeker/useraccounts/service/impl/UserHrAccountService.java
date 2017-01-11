@@ -1,5 +1,7 @@
 package com.moseeker.useraccounts.service.impl;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
@@ -394,14 +397,41 @@ public class UserHrAccountService {
 		param.put("hr_account_id", String.valueOf(hrAccountId));
 		param.put("type", String.valueOf(type));
 		List<SearchCondition> list;
+		List<Map<String, Object>> result = new ArrayList<Map<String,Object>>();
 		try {
 			list = searchConditionDao.getResources(query);
-			return ResponseUtils.success(list);
+			list.forEach(sc -> {
+				Map<String, Object> map = new HashMap<>();
+				map.put("id", sc.getId());
+				map.put("name", sc.getName());
+				map.put("publisher", sc.getPublisher());
+				map.put("position_id", sc.getPosition_id());
+				map.put("keyword", sc.getKeyword());
+				map.put("submit_time", sc.getSubmit_time());
+				map.put("work_years", sc.getWork_years());
+				map.put("city_code", sc.getCity_code());
+				map.put("degree", sc.getDegree());
+				map.put("past_position", sc.getPast_position());
+				map.put("in_last_job_search_position", sc.getIn_last_job_search_position());
+				map.put("min_age", sc.getMin_age());
+				map.put("max_age", sc.getMax_age());
+				map.put("intention_city_code", sc.getIntention_city_code());
+				map.put("sex", sc.getSex());
+				map.put("intention_salary_code", sc.getIntention_salary_code());
+				map.put("company_name", sc.getCompany_name());
+				map.put("in_last_job_search_company", sc.getIn_last_job_search_company());
+				map.put("hr_account_id", sc.getHr_account_id());
+				map.put("update_tiem", sc.getUpdate_tiem());
+				map.put("type", sc.getType());
+				result.add(map);
+			});
+			return ResponseUtils.success(result);
 		} catch (TException e) {
 			logger.error(e.getMessage(), e);
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		}
 	}
+	
 
 	/**
 	 * 添加常用筛选条件
