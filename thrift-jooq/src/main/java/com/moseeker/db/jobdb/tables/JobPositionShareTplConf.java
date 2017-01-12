@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionShareTplConf extends TableImpl<JobPositionShareTplConfRecord> {
 
-	private static final long serialVersionUID = -2008574531;
+	private static final long serialVersionUID = 1928290041;
 
 	/**
 	 * The reference instance of <code>jobdb.job_position_share_tpl_conf</code>
@@ -55,9 +55,9 @@ public class JobPositionShareTplConf extends TableImpl<JobPositionShareTplConfRe
 	public final TableField<JobPositionShareTplConfRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "PK");
 
 	/**
-	 * The column <code>jobdb.job_position_share_tpl_conf.type</code>. 模板分类 1：雇主分享模板 2：员工分享模板
+	 * The column <code>jobdb.job_position_share_tpl_conf.type</code>. 模板分类 1:雇主分享模板 2:员工分享模板(已弃用) 3:转发模板 4:默认转发模板
 	 */
-	public final TableField<JobPositionShareTplConfRecord, Short> TYPE = createField("type", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaulted(true), this, "模板分类 1：雇主分享模板 2：员工分享模板");
+	public final TableField<JobPositionShareTplConfRecord, Short> TYPE = createField("type", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaulted(true), this, "模板分类 1:雇主分享模板 2:员工分享模板(已弃用) 3:转发模板 4:默认转发模板");
 
 	/**
 	 * The column <code>jobdb.job_position_share_tpl_conf.name</code>. 模板名称
