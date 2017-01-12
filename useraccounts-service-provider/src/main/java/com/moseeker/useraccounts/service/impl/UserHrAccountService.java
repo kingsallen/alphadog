@@ -414,7 +414,7 @@ public class UserHrAccountService {
 				map.put("in_last_job_search_position", sc.getIn_last_job_search_position());
 				map.put("min_age", sc.getMin_age());
 				map.put("max_age", sc.getMax_age());
-				map.put("intention_city_name", sc.getIntention_city_name());
+				map.put("intention_city_name", org.apache.commons.lang.StringUtils.defaultString(sc.getIntention_city_name()));
 				map.put("sex", sc.getSex());
 				map.put("intention_salary_code", org.apache.commons.lang.StringUtils.defaultString(sc.getIntention_salary_code()));
 				map.put("company_name", org.apache.commons.lang.StringUtils.defaultString(sc.getCompany_name()));
