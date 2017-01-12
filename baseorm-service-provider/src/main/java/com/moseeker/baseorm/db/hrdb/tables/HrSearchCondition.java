@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
 
-    private static final long serialVersionUID = 2132150695;
+    private static final long serialVersionUID = 919261684;
 
     /**
      * The reference instance of <code>hrdb.hr_search_condition</code>
@@ -119,7 +119,7 @@ public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
     /**
      * The column <code>hrdb.hr_search_condition.intention_city_name</code>. 期望工作地
      */
-    public final TableField<HrSearchConditionRecord, Integer> INTENTION_CITY_NAME = createField("intention_city_name", org.jooq.impl.SQLDataType.INTEGER, this, "期望工作地");
+    public final TableField<HrSearchConditionRecord, String> INTENTION_CITY_NAME = createField("intention_city_name", org.jooq.impl.SQLDataType.VARCHAR.length(255), this, "期望工作地");
 
     /**
      * The column <code>hrdb.hr_search_condition.sex</code>. 性别
