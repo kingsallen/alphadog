@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditionRecord> implements Record22<Integer, String, Integer, Integer, String, String, String, String, String, String, Integer, Integer, Integer, Integer, Integer, String, String, Integer, Integer, Timestamp, Integer, Integer> {
 
-    private static final long serialVersionUID = -616816023;
+    private static final long serialVersionUID = -28404131;
 
     /**
      * Setter for <code>hrdb.hr_search_condition.id</code>.
@@ -131,16 +131,16 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
     }
 
     /**
-     * Setter for <code>hrdb.hr_search_condition.city_code</code>. 现居住地
+     * Setter for <code>hrdb.hr_search_condition.city_name</code>. 现居住地
      */
-    public void setCityCode(String value) {
+    public void setCityName(String value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_search_condition.city_code</code>. 现居住地
+     * Getter for <code>hrdb.hr_search_condition.city_name</code>. 现居住地
      */
-    public String getCityCode() {
+    public String getCityName() {
         return (String) get(7);
     }
 
@@ -215,16 +215,16 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
     }
 
     /**
-     * Setter for <code>hrdb.hr_search_condition.intention_city_code</code>. 期望工作地(城市编码)
+     * Setter for <code>hrdb.hr_search_condition.intention_city_name</code>. 期望工作地
      */
-    public void setIntentionCityCode(Integer value) {
+    public void setIntentionCityName(Integer value) {
         set(13, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_search_condition.intention_city_code</code>. 期望工作地(城市编码)
+     * Getter for <code>hrdb.hr_search_condition.intention_city_name</code>. 期望工作地
      */
-    public Integer getIntentionCityCode() {
+    public Integer getIntentionCityName() {
         return (Integer) get(13);
     }
 
@@ -433,7 +433,7 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
      */
     @Override
     public Field<String> field8() {
-        return HrSearchCondition.HR_SEARCH_CONDITION.CITY_CODE;
+        return HrSearchCondition.HR_SEARCH_CONDITION.CITY_NAME;
     }
 
     /**
@@ -481,7 +481,7 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
      */
     @Override
     public Field<Integer> field14() {
-        return HrSearchCondition.HR_SEARCH_CONDITION.INTENTION_CITY_CODE;
+        return HrSearchCondition.HR_SEARCH_CONDITION.INTENTION_CITY_NAME;
     }
 
     /**
@@ -609,7 +609,7 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
      */
     @Override
     public String value8() {
-        return getCityCode();
+        return getCityName();
     }
 
     /**
@@ -657,7 +657,7 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
      */
     @Override
     public Integer value14() {
-        return getIntentionCityCode();
+        return getIntentionCityName();
     }
 
     /**
@@ -792,7 +792,7 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
      */
     @Override
     public HrSearchConditionRecord value8(String value) {
-        setCityCode(value);
+        setCityName(value);
         return this;
     }
 
@@ -846,7 +846,7 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
      */
     @Override
     public HrSearchConditionRecord value14(Integer value) {
-        setIntentionCityCode(value);
+        setIntentionCityName(value);
         return this;
     }
 
@@ -966,7 +966,7 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
     /**
      * Create a detached, initialised HrSearchConditionRecord
      */
-    public HrSearchConditionRecord(Integer id, String name, Integer publisher, Integer positionId, String keyword, String submitTime, String workYears, String cityCode, String degree, String pastPosition, Integer inLastJobSearchPosition, Integer minAge, Integer maxAge, Integer intentionCityCode, Integer sex, String intentionSalaryCode, String companyName, Integer inLastJobSearchCompany, Integer hrAccountId, Timestamp createTime, Integer updateTime, Integer type) {
+    public HrSearchConditionRecord(Integer id, String name, Integer publisher, Integer positionId, String keyword, String submitTime, String workYears, String cityName, String degree, String pastPosition, Integer inLastJobSearchPosition, Integer minAge, Integer maxAge, Integer intentionCityName, Integer sex, String intentionSalaryCode, String companyName, Integer inLastJobSearchCompany, Integer hrAccountId, Timestamp createTime, Integer updateTime, Integer type) {
         super(HrSearchCondition.HR_SEARCH_CONDITION);
 
         set(0, id);
@@ -976,13 +976,13 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
         set(4, keyword);
         set(5, submitTime);
         set(6, workYears);
-        set(7, cityCode);
+        set(7, cityName);
         set(8, degree);
         set(9, pastPosition);
         set(10, inLastJobSearchPosition);
         set(11, minAge);
         set(12, maxAge);
-        set(13, intentionCityCode);
+        set(13, intentionCityName);
         set(14, sex);
         set(15, intentionSalaryCode);
         set(16, companyName);

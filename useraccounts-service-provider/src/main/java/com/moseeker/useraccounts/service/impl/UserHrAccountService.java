@@ -408,13 +408,13 @@ public class UserHrAccountService {
 				map.put("keyword", org.apache.commons.lang.StringUtils.defaultString(sc.getKeyword()));
 				map.put("submit_time", org.apache.commons.lang.StringUtils.defaultString(sc.getSubmit_time()));
 				map.put("work_years", sc.getWork_years());
-				map.put("city_code", org.apache.commons.lang.StringUtils.defaultString(sc.getCity_code()));
+				map.put("city_name", org.apache.commons.lang.StringUtils.defaultString(sc.getCity_name()));
 				map.put("degree", org.apache.commons.lang.StringUtils.defaultString(sc.getDegree()));
 				map.put("past_position", org.apache.commons.lang.StringUtils.defaultString(sc.getPast_position()));
 				map.put("in_last_job_search_position", sc.getIn_last_job_search_position());
 				map.put("min_age", sc.getMin_age());
 				map.put("max_age", sc.getMax_age());
-				map.put("intention_city_code", sc.getIntention_city_code());
+				map.put("intention_city_name", sc.getIntention_city_name());
 				map.put("sex", sc.getSex());
 				map.put("intention_salary_code", org.apache.commons.lang.StringUtils.defaultString(sc.getIntention_salary_code()));
 				map.put("company_name", org.apache.commons.lang.StringUtils.defaultString(sc.getCompany_name()));
