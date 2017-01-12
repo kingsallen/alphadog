@@ -34,6 +34,7 @@ public class TalentpoolDaoThriftService implements Iface {
 			});
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
+			throw new TException(MessageFormat.format("根据commonQuery={}查询结果集出错", query.toString()));
 		}
 		return list;
 	}
@@ -44,7 +45,7 @@ public class TalentpoolDaoThriftService implements Iface {
 			return (Talentpool)BeanUtils.DBToStruct(Talentpool.class, dao.getResource(query));
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
-			throw new TException(MessageFormat.format("根据commonQuery={0}查询结果集出错", query.toString()));
+			throw new TException(MessageFormat.format("根据commonQuery={}查询结果集出错", query.toString()));
 		}
 	}
 

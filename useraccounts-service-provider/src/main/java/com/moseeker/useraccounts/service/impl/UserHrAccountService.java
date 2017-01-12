@@ -1,6 +1,5 @@
 package com.moseeker.useraccounts.service.impl;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.common.annotation.dao.SqlListener;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -58,7 +58,7 @@ public class UserHrAccountService {
 
 	private static final String REDIS_KEY_HR_SMS_SIGNUP = "HR_SMS_SIGNUP";
 
-	private RedisClient redisClient = RedisClientFactory.getCacheClient();
+	RedisClient redisClient = RedisClientFactory.getCacheClient();
 
 	ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
 	
@@ -495,6 +495,7 @@ public class UserHrAccountService {
 	 * @param applier_id
 	 * @return
 	 */
+	@SqlListener("hr_talentpool")
 	public Response joinTalentpool(int hrAccountId, int applier_id) {
 		CommonQuery query = new CommonQuery();
 		Map<String, String> param = new HashMap<String, String>();
@@ -532,6 +533,7 @@ public class UserHrAccountService {
 	 * @param applier_id
 	 * @return
 	 */
+	@SqlListener("hr_talentpool")
 	public Response shiftOutTalentpool(int hrAccountId, int applier_id) {
 		CommonQuery query = new CommonQuery();
 		Map<String, String> param = new HashMap<String, String>();
