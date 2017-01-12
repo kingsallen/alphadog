@@ -126,7 +126,7 @@ struct SearchCondition {
 	4: i32 position_id, // 职位id
 	5: string keyword, // 关键字
 	6: string submit_time, // 发布时间
-	7: i32 work_years, // 工作年限
+	7: string work_years, // 工作年限
 	8: string city_code, // 城市
 	9: string degree, // 学历
    10: string past_position, // 曾任职位
@@ -139,7 +139,7 @@ struct SearchCondition {
    17: string company_name, // 城市名称
    18: i32 in_last_job_search_company, // 是否只在最近一份工作中搜索公司名称（0:否，1:是）
    19: i32 hr_account_id, // 创建人id(user_hr_account.id)
-   20: i32 update_tiem, // 简历更新时间选项（0：不限，1：最近一周，2：最近两周，3：最近一个月）
+   20: i32 update_time, // 简历更新时间选项（0：不限，1：最近一周，2：最近两周，3：最近一个月）
    21: i32 type // 类型（0：候选人列表筛选条件，1：人才库列表筛选条件）
 }
 

@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.service.impl;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -419,7 +420,7 @@ public class UserHrAccountService {
 				map.put("company_name", org.apache.commons.lang.StringUtils.defaultString(sc.getCompany_name()));
 				map.put("in_last_job_search_company", sc.getIn_last_job_search_company());
 				map.put("hr_account_id", sc.getHr_account_id());
-				map.put("update_time", sc.getUpdate_tiem());
+				map.put("update_time", sc.getUpdate_time());
 				map.put("type", sc.getType());
 				result.add(map);
 			});
@@ -430,7 +431,6 @@ public class UserHrAccountService {
 		}
 	}
 	
-
 	/**
 	 * 添加常用筛选条件
 	 * @param searchCondition
@@ -447,14 +447,14 @@ public class UserHrAccountService {
 			// 每个hr最多只能添加10条常用筛选
 			if (row >= 10){
 				logger.warn("保存常用筛选失败，hr={}，已拥有{}条常用筛选项", searchCondition.getHr_account_id(), row);
-				return ResponseUtils.fail(ConstantErrorCodeMessage.THIRD_PARTY_POSITION_UPSERT_FAILED);
+				return ResponseUtils.fail("{'status':42004,'message':'添加失败，最多只能添加10条筛选项'}");
 			} 
 			// 筛选项名字保证不重复
 			param.put("name", searchCondition.getName());
 			row = searchConditionDao.getResourceCount(query);
 			if (row > 0) {
 				logger.warn("保存常用筛选失败，筛选项名称={}，已存在", searchCondition.getName());
-				return ResponseUtils.fail(ConstantErrorCodeMessage.THIRD_PARTY_POSITION_UPSERT_FAILED);
+				return ResponseUtils.fail("{'status':42004,'message':'保存失败，改筛选项名称已存在'}");
 			}
 			int primaryKey = searchConditionDao.postResource(searchCondition);
 			if (primaryKey > 0) {
