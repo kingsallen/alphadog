@@ -69,3 +69,9 @@ struct HRCompanyConfData{
     5:string job_custom_title,
     6:string job_occupation
 }
+struct HistoryOperate{
+	1: optional i32 id,
+	2: optional i64 app_id,
+	3: optional i32 operate_tpl_id,
+	4: optional i32 recruit_order
+}

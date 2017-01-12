@@ -2,7 +2,6 @@ package com.moseeker.application.service.impl;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.thrift.TException;
 import org.jooq.types.UInteger;
 import org.slf4j.Logger;
@@ -69,6 +68,7 @@ public class JobApplicataionService {
 
     @Autowired
     private UserUserDao userUserDao;
+    
     
     /**
      * 创建申请
@@ -641,4 +641,6 @@ public class JobApplicataionService {
 //        }
         return response;
     }
+    
+   
 }
