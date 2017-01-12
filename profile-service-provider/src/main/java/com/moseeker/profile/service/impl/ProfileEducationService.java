@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,10 +25,12 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.dictdb.tables.records.DictCollegeRecord;
 import com.moseeker.db.dictdb.tables.records.DictMajorRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileEducationRecord;
+import com.moseeker.profile.constants.ValidationMessage;
 import com.moseeker.profile.dao.CollegeDao;
 import com.moseeker.profile.dao.EducationDao;
 import com.moseeker.profile.dao.MajorDao;
 import com.moseeker.profile.dao.ProfileDao;
+import com.moseeker.profile.utils.ProfileValidation;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.Education;
@@ -185,6 +188,11 @@ public class ProfileEducationService extends JOOQBaseServiceImpl<Education, Prof
 	@Override
 	public Response postResource(Education education) throws TException {
 		try {
+			//添加信息校验
+			ValidationMessage<Education> vm = ProfileValidation.verifyEducation(education);
+			if(!vm.isPass()) {
+				return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}'}", vm.getResult()));
+			}
 			if (education.getCollege_code() > 0) {
 				DictCollegeRecord college = collegeDao.getCollegeByID(education.getCollege_code());
 				if (college != null) {
@@ -253,6 +261,17 @@ public class ProfileEducationService extends JOOQBaseServiceImpl<Education, Prof
 
 	@Override
 	public Response postResources(List<Education> structs) throws TException {
+		//添加信息校验
+		if(structs != null && structs.size() > 0) {
+			Iterator<Education> ie = structs.iterator();
+			while(ie.hasNext()) {
+				Education education = ie.next();
+				ValidationMessage<Education> vm = ProfileValidation.verifyEducation(education);
+				if(!vm.isPass()) {
+					ie.remove();
+				}
+			}
+		}
 		Response response = super.postResources(structs);
 		if (response.getStatus() == 0) {
 			if (structs != null && structs.size() > 0) {
@@ -343,7 +362,7 @@ public class ProfileEducationService extends JOOQBaseServiceImpl<Education, Prof
 		}
 		return response;
 	}
-
+	
 	@Override
 	protected Education DBToStruct(ProfileEducationRecord r) {
 		Map<String, String> equalRules = new HashMap<>();

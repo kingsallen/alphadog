@@ -5,10 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.moseeker.mq.service.impl.EmailProducer;
+import com.moseeker.mq.service.impl.MandrillEmailProducer;
 import com.moseeker.mq.service.impl.TemplateMsgProducer;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.mq.service.MqService.Iface;
 import com.moseeker.thrift.gen.mq.struct.EmailStruct;
+import com.moseeker.thrift.gen.mq.struct.MandrillEmailStruct;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
 
 /**
@@ -35,6 +37,9 @@ public class ThriftService implements Iface {
 
 	@Autowired
 	private EmailProducer emailProvider;
+	
+	@Autowired
+	private MandrillEmailProducer mandrillEmailProducer;
 
 	@Override
 	public Response messageTemplateNotice(MessageTemplateNoticeStruct messageTemplateNoticeStruct) throws TException {
@@ -61,5 +66,19 @@ public class ThriftService implements Iface {
 
 	public void setEmailProvider(EmailProducer emailProvider) {
 		this.emailProvider = emailProvider;
+	}
+
+	@Override
+	public Response sendMandrilEmail(MandrillEmailStruct mandrillEmailStruct) throws TException {
+		// TODO Auto-generated method stub
+		return mandrillEmailProducer.queueEmail(mandrillEmailStruct);
+	}
+
+	public MandrillEmailProducer getMandrillEmailProducer() {
+		return mandrillEmailProducer;
+	}
+
+	public void setMandrillEmailProducer(MandrillEmailProducer mandrillEmailProducer) {
+		this.mandrillEmailProducer = mandrillEmailProducer;
 	}
 }

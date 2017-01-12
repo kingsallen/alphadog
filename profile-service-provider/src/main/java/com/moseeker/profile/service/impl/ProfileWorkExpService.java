@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,12 +29,14 @@ import com.moseeker.db.dictdb.tables.records.DictIndustryRecord;
 import com.moseeker.db.dictdb.tables.records.DictPositionRecord;
 import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileWorkexpRecord;
+import com.moseeker.profile.constants.ValidationMessage;
 import com.moseeker.profile.dao.CityDao;
 import com.moseeker.profile.dao.CompanyDao;
 import com.moseeker.profile.dao.IndustryDao;
 import com.moseeker.profile.dao.PositionDao;
 import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.profile.dao.WorkExpDao;
+import com.moseeker.profile.utils.ProfileValidation;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.WorkExp;
@@ -183,6 +186,10 @@ public class ProfileWorkExpService extends JOOQBaseServiceImpl<WorkExp, ProfileW
 
 	@Override
 	public Response postResource(WorkExp struct) throws TException {
+		ValidationMessage<WorkExp> vm = ProfileValidation.verifyWorkExp(struct);
+		if(!vm.isPass()) {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}'}", vm.getResult()));
+		}
 		int i = 0;
 		try {
 			if(struct.getCity_code() > 0) {
@@ -326,6 +333,16 @@ public class ProfileWorkExpService extends JOOQBaseServiceImpl<WorkExp, ProfileW
 	
 	@Override
 	public Response postResources(List<WorkExp> structs) throws TException {
+		if(structs != null && structs.size() > 0) {
+			Iterator<WorkExp> wei = structs.iterator();
+			while(wei.hasNext()) {
+				WorkExp workExp = wei.next();
+				ValidationMessage<WorkExp> vm = ProfileValidation.verifyWorkExp(workExp);
+				if(!vm.isPass()) {
+					wei.remove();
+				}
+			}
+		}
 		Response response = super.postResources(structs);
 		if(structs != null && structs.size() > 0 && response.getStatus() == 0) {
 			Set<Integer> profileIds = new HashSet<>();
@@ -458,7 +475,7 @@ public class ProfileWorkExpService extends JOOQBaseServiceImpl<WorkExp, ProfileW
 	protected void initDao() {
 		super.dao = this.dao;
 	}
-
+	
 	@Override
 	protected WorkExp DBToStruct(ProfileWorkexpRecord r) {
 		Map<String, String> equalRules = new HashMap<>();

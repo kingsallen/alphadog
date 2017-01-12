@@ -60,8 +60,12 @@ public class ConstantlyMailConsumer {
 	private String fetchConstantlyMessage() {
 		try {
 			RedisClient redisClient = RedisClientFactory.getCacheClient();
-			return redisClient.brpop(Constant.APPID_ALPHADOG,
-					Constant.MQ_MESSAGE_EMAIL_BIZ).get(1);
+			List<String> el =  redisClient.brpop(Constant.APPID_ALPHADOG,
+					Constant.MQ_MESSAGE_EMAIL_BIZ);
+			if (el != null){
+				return el.get(1);
+			}
+			return null;
 		} catch (RedisException e) {
 			WarnService.notify(e);
 			return null;

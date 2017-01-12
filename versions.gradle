@@ -37,7 +37,8 @@ ext {
 	    "jaxb-api"		  : 'javax.xml.bind:jaxb-api:2.2.12',
 	    "thrift-gradle-plugin": 'gradle.plugin.org.jruyi.gradle:thrift-gradle-plugin:0.3.1',
 	    "jetty-support": 'org.eclipse.jetty:jetty-maven-plugin:9.3.0.M2',
-	    "httpclient": 'commons-httpclient:commons-httpclient:3.1'
+	    "httpclient": 'commons-httpclient:commons-httpclient:3.1',
+	    "mandrill":'com.mandrillapp.wrapper.lutung:lutung:0.0.7'
 
     ]
 }

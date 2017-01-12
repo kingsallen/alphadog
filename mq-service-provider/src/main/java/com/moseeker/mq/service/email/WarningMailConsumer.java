@@ -2,6 +2,7 @@ package com.moseeker.mq.service.email;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -52,8 +53,12 @@ public class WarningMailConsumer {
 	private String fetchConstantlyMessage() {
 		try {
 			RedisClient redisClient = RedisClientFactory.getCacheClient();
-			return redisClient.brpop(Constant.APPID_ALPHADOG,
-					Constant.MQ_MESSAGE_EMAIL_WARNING).get(1);
+			List<String> el = redisClient.brpop(Constant.APPID_ALPHADOG,
+					Constant.MQ_MESSAGE_EMAIL_WARNING);
+			if (el != null){
+				return el.get(1);
+			}
+			return null;
 		} catch (RedisException e) {
 			WarnService.notify(e);
 			return null;
