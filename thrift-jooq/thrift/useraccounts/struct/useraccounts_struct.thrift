@@ -133,7 +133,7 @@ struct SearchCondition {
    11: i32 in_last_job_search_position, // 是否只在最近一份工作中搜索曾任职务(0:否，1:是)
    12: i32 min_age, // 最小年龄
    13: i32 max_age, // 最大年龄
-   14: i32 intention_city_name, // 期望城市
+   14: string intention_city_name, // 期望城市
    15: i32 sex, // 性别
    16: string intention_salary_code, // 期望薪资 
    17: string company_name, // 城市名称

@@ -51,7 +51,7 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
   private static final org.apache.thrift.protocol.TField IN_LAST_JOB_SEARCH_POSITION_FIELD_DESC = new org.apache.thrift.protocol.TField("in_last_job_search_position", org.apache.thrift.protocol.TType.I32, (short)11);
   private static final org.apache.thrift.protocol.TField MIN_AGE_FIELD_DESC = new org.apache.thrift.protocol.TField("min_age", org.apache.thrift.protocol.TType.I32, (short)12);
   private static final org.apache.thrift.protocol.TField MAX_AGE_FIELD_DESC = new org.apache.thrift.protocol.TField("max_age", org.apache.thrift.protocol.TType.I32, (short)13);
-  private static final org.apache.thrift.protocol.TField INTENTION_CITY_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("intention_city_name", org.apache.thrift.protocol.TType.I32, (short)14);
+  private static final org.apache.thrift.protocol.TField INTENTION_CITY_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("intention_city_name", org.apache.thrift.protocol.TType.STRING, (short)14);
   private static final org.apache.thrift.protocol.TField SEX_FIELD_DESC = new org.apache.thrift.protocol.TField("sex", org.apache.thrift.protocol.TType.I32, (short)15);
   private static final org.apache.thrift.protocol.TField INTENTION_SALARY_CODE_FIELD_DESC = new org.apache.thrift.protocol.TField("intention_salary_code", org.apache.thrift.protocol.TType.STRING, (short)16);
   private static final org.apache.thrift.protocol.TField COMPANY_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("company_name", org.apache.thrift.protocol.TType.STRING, (short)17);
@@ -79,7 +79,7 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
   public int in_last_job_search_position; // required
   public int min_age; // required
   public int max_age; // required
-  public int intention_city_name; // required
+  public String intention_city_name; // required
   public int sex; // required
   public String intention_salary_code; // required
   public String company_name; // required
@@ -213,12 +213,11 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
   private static final int __IN_LAST_JOB_SEARCH_POSITION_ISSET_ID = 3;
   private static final int __MIN_AGE_ISSET_ID = 4;
   private static final int __MAX_AGE_ISSET_ID = 5;
-  private static final int __INTENTION_CITY_NAME_ISSET_ID = 6;
-  private static final int __SEX_ISSET_ID = 7;
-  private static final int __IN_LAST_JOB_SEARCH_COMPANY_ISSET_ID = 8;
-  private static final int __HR_ACCOUNT_ID_ISSET_ID = 9;
-  private static final int __UPDATE_TIME_ISSET_ID = 10;
-  private static final int __TYPE_ISSET_ID = 11;
+  private static final int __SEX_ISSET_ID = 6;
+  private static final int __IN_LAST_JOB_SEARCH_COMPANY_ISSET_ID = 7;
+  private static final int __HR_ACCOUNT_ID_ISSET_ID = 8;
+  private static final int __UPDATE_TIME_ISSET_ID = 9;
+  private static final int __TYPE_ISSET_ID = 10;
   private short __isset_bitfield = 0;
   public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
@@ -250,7 +249,7 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
     tmpMap.put(_Fields.MAX_AGE, new org.apache.thrift.meta_data.FieldMetaData("max_age", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.INTENTION_CITY_NAME, new org.apache.thrift.meta_data.FieldMetaData("intention_city_name", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.SEX, new org.apache.thrift.meta_data.FieldMetaData("sex", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.INTENTION_SALARY_CODE, new org.apache.thrift.meta_data.FieldMetaData("intention_salary_code", org.apache.thrift.TFieldRequirementType.DEFAULT, 
@@ -286,7 +285,7 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
     int in_last_job_search_position,
     int min_age,
     int max_age,
-    int intention_city_name,
+    String intention_city_name,
     int sex,
     String intention_salary_code,
     String company_name,
@@ -316,7 +315,6 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
     this.max_age = max_age;
     setMax_ageIsSet(true);
     this.intention_city_name = intention_city_name;
-    setIntention_city_nameIsSet(true);
     this.sex = sex;
     setSexIsSet(true);
     this.intention_salary_code = intention_salary_code;
@@ -363,7 +361,9 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
     this.in_last_job_search_position = other.in_last_job_search_position;
     this.min_age = other.min_age;
     this.max_age = other.max_age;
-    this.intention_city_name = other.intention_city_name;
+    if (other.isSetIntention_city_name()) {
+      this.intention_city_name = other.intention_city_name;
+    }
     this.sex = other.sex;
     if (other.isSetIntention_salary_code()) {
       this.intention_salary_code = other.intention_salary_code;
@@ -402,8 +402,7 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
     this.min_age = 0;
     setMax_ageIsSet(false);
     this.max_age = 0;
-    setIntention_city_nameIsSet(false);
-    this.intention_city_name = 0;
+    this.intention_city_name = null;
     setSexIsSet(false);
     this.sex = 0;
     this.intention_salary_code = null;
@@ -724,27 +723,28 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
     __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __MAX_AGE_ISSET_ID, value);
   }
 
-  public int getIntention_city_name() {
+  public String getIntention_city_name() {
     return this.intention_city_name;
   }
 
-  public SearchCondition setIntention_city_name(int intention_city_name) {
+  public SearchCondition setIntention_city_name(String intention_city_name) {
     this.intention_city_name = intention_city_name;
-    setIntention_city_nameIsSet(true);
     return this;
   }
 
   public void unsetIntention_city_name() {
-    __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __INTENTION_CITY_NAME_ISSET_ID);
+    this.intention_city_name = null;
   }
 
   /** Returns true if field intention_city_name is set (has been assigned a value) and false otherwise */
   public boolean isSetIntention_city_name() {
-    return EncodingUtils.testBit(__isset_bitfield, __INTENTION_CITY_NAME_ISSET_ID);
+    return this.intention_city_name != null;
   }
 
   public void setIntention_city_nameIsSet(boolean value) {
-    __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __INTENTION_CITY_NAME_ISSET_ID, value);
+    if (!value) {
+      this.intention_city_name = null;
+    }
   }
 
   public int getSex() {
@@ -1020,7 +1020,7 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
       if (value == null) {
         unsetIntention_city_name();
       } else {
-        setIntention_city_name((Integer)value);
+        setIntention_city_name((String)value);
       }
       break;
 
@@ -1335,12 +1335,12 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
         return false;
     }
 
-    boolean this_present_intention_city_name = true;
-    boolean that_present_intention_city_name = true;
+    boolean this_present_intention_city_name = true && this.isSetIntention_city_name();
+    boolean that_present_intention_city_name = true && that.isSetIntention_city_name();
     if (this_present_intention_city_name || that_present_intention_city_name) {
       if (!(this_present_intention_city_name && that_present_intention_city_name))
         return false;
-      if (this.intention_city_name != that.intention_city_name)
+      if (!this.intention_city_name.equals(that.intention_city_name))
         return false;
     }
 
@@ -1479,7 +1479,7 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
     if (present_max_age)
       list.add(max_age);
 
-    boolean present_intention_city_name = true;
+    boolean present_intention_city_name = true && (isSetIntention_city_name());
     list.add(present_intention_city_name);
     if (present_intention_city_name)
       list.add(intention_city_name);
@@ -1841,7 +1841,11 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
     first = false;
     if (!first) sb.append(", ");
     sb.append("intention_city_name:");
-    sb.append(this.intention_city_name);
+    if (this.intention_city_name == null) {
+      sb.append("null");
+    } else {
+      sb.append(this.intention_city_name);
+    }
     first = false;
     if (!first) sb.append(", ");
     sb.append("sex:");
@@ -2029,8 +2033,8 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
             }
             break;
           case 14: // INTENTION_CITY_NAME
-            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.intention_city_name = iprot.readI32();
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.intention_city_name = iprot.readString();
               struct.setIntention_city_nameIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -2160,9 +2164,11 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
       oprot.writeFieldBegin(MAX_AGE_FIELD_DESC);
       oprot.writeI32(struct.max_age);
       oprot.writeFieldEnd();
-      oprot.writeFieldBegin(INTENTION_CITY_NAME_FIELD_DESC);
-      oprot.writeI32(struct.intention_city_name);
-      oprot.writeFieldEnd();
+      if (struct.intention_city_name != null) {
+        oprot.writeFieldBegin(INTENTION_CITY_NAME_FIELD_DESC);
+        oprot.writeString(struct.intention_city_name);
+        oprot.writeFieldEnd();
+      }
       oprot.writeFieldBegin(SEX_FIELD_DESC);
       oprot.writeI32(struct.sex);
       oprot.writeFieldEnd();
@@ -2310,7 +2316,7 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
         oprot.writeI32(struct.max_age);
       }
       if (struct.isSetIntention_city_name()) {
-        oprot.writeI32(struct.intention_city_name);
+        oprot.writeString(struct.intention_city_name);
       }
       if (struct.isSetSex()) {
         oprot.writeI32(struct.sex);
@@ -2392,7 +2398,7 @@ public class SearchCondition implements org.apache.thrift.TBase<SearchCondition,
         struct.setMax_ageIsSet(true);
       }
       if (incoming.get(13)) {
-        struct.intention_city_name = iprot.readI32();
+        struct.intention_city_name = iprot.readString();
         struct.setIntention_city_nameIsSet(true);
       }
       if (incoming.get(14)) {
