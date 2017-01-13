@@ -228,9 +228,13 @@ public class ProfileProcessBS {
 	    					sendTemplate(pvs.getApplier_id(), pvs.getApplier_name(), companyId, progressStatus, pvs.getPosition_name(), pvs.getId(), TemplateMs.TOSEEKER);
 	    					sendTemplate(pvs.getRecommender_user_id(), pvs.getApplier_name(), companyId, progressStatus, pvs.getPosition_name(), pvs.getId(), TemplateMs.TORECOM);
 	    				});
+	    			}else{
+	    				 return ResponseUtils.fail("{\"status\":2158, \"message\":\"招聘进度流程异常！\"}");	
 	    			}
 				}
 	    		
+	    	}else{
+	    		 return ResponseUtils.fail("{\"status\":2201, \"message\":\"参数错误\"}");
 	    	}
 	    	return ResponseUtils.success("操作成功");
 		 }catch(Exception e){
@@ -344,7 +348,17 @@ public class ProfileProcessBS {
 	    	}else{
 	    		rewardsToBeAdd=this.OperationOther(applications, rewardsToBeAdd, progressStatus);
 	    	}
-	    	hrDao.postHrOperationrecords(turnToCVCheckeds);
+	    	List<HrOperationrecordStruct> lists=new ArrayList<HrOperationrecordStruct>();
+	    	HrOperationrecordStruct struct=null;
+	    	for(RewardsToBeAddBean beans:rewardsToBeAdd){
+	    		struct=new HrOperationrecordStruct();
+	    		struct.setAdmin_id(beans.getAccount_id());
+	    		struct.setCompany_id(beans.getCompany_id());
+	    		struct.setOperate_tpl_id(beans.getOperate_tpl_id());
+	    		struct.setApp_id(beans.getApplication_id());
+	    		lists.add(struct);
+	    	}
+	    	hrDao.postHrOperationrecords(lists);
 	    	insertRecord(result,rewardsToBeAdd,employeesToBeUpdates);
 	    	
 	    }
@@ -415,6 +429,7 @@ public class ProfileProcessBS {
 	    			jobApplication=new JobApplication();
 	    			jobApplication.setReward(data.getReward());
 	    			jobApplication.setId(data.getId());
+	    			jobApplication.setNot_suitable(0);
 	    			for(ConfigSysPointsConfTpl config:list){
 	    				if(data.getRecruit_order()==config.getRecruit_order()){
 	    					jobApplication.setApp_tpl_id(config.getId());
@@ -469,6 +484,7 @@ public class ProfileProcessBS {
 	    			jobApplication=new JobApplication();
 	    			jobApplication.setId(data.getApp_id());
 	    			jobApplication.setApp_tpl_id(data.getOperate_tpl_id());
+	    			jobApplication.setNot_suitable(0);
 	    			app.add(jobApplication);
 	    		}
 	    		applicationDao.putApplications(app);

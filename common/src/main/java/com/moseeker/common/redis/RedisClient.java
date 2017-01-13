@@ -291,7 +291,7 @@ public abstract class RedisClient {
 			if(cacheKey == null) {
 				throw new CacheConfigNotExistException();
 			}
-			return redisCluster.brpop(redisKey.getTtl(), cacheKey);
+			return redisCluster.brpop(Constant.BRPOP_BLOCKING_TIMEOUT, cacheKey);
 		} catch (CacheConfigNotExistException e) {
 			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CACHE_CONFIG_NOTEXIST_ERROR_EVENTKEY);
 		} catch (Exception e) {
@@ -316,7 +316,7 @@ public abstract class RedisClient {
 		String cacheKey_rpop = cfg_rpop.getPattern();
 		String cacheKey_lpush = cfg_lpush.getPattern();
 		try {
-			return redisCluster.brpoplpush(cacheKey_rpop, cacheKey_lpush, cfg_rpop.getTtl());
+			return redisCluster.brpoplpush(cacheKey_rpop, cacheKey_lpush, Constant.BRPOP_BLOCKING_TIMEOUT);
 		} catch (Exception e) {
 			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
 //			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());

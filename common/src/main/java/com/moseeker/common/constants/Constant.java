@@ -169,7 +169,8 @@ public final class Constant {
 	public static final String EMAIL_VERIFIED_SUBJECT = "邮箱认证";				//业务邮件消息队列的key_identifier
 	
 	public static final String MQ_MESSAGE_EMAIL_WARNING = "MQ_MESSAGE_EMAIL_WARNING";	//报警邮件消息队列的key_identifier
-	
+	public static final String MQ_MESSAGE_EMAIL_MANDRILL = "MQ_MESSAGE_EMAIL_MANDRILL";	//mandrill 邮件消息队列的key_identifier	
+
 	public static final byte LOG_SMS_SENDRECORD_SYS_ALPHADOG = 5;
 	
 	public static final int READ_TIME_OUT = 60*1000;
@@ -184,7 +185,7 @@ public final class Constant {
 	public static final String POSITION_SYNCHRONIZATION_FAILED = "同步失败！";
 	public static final String POSITION_REFRESH_FAILED = "刷新失败！";
 	
-	public static final int BRPOP_TTL 		= 5; 	//brpop超时时间
+	public static final int BRPOP_BLOCKING_TIMEOUT 		= 5; 	//brpop超时时间
 	public static final int DESCRIPTION_LENGTH 		= 900; 	//描述长度
 	
 	 public static final String WORDPRESS_POST_POSTSTATUS_PUBLISH = "publish";
