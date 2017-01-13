@@ -70,6 +70,7 @@ struct HRCompanyConfData{
     5:string job_custom_title,
     6:string job_occupation
 }
+<<<<<<< HEAD
 
 struct Talentpool {
 	1:i32 id,
@@ -78,4 +79,11 @@ struct Talentpool {
 	4:string create_time,
 	5:string update_time,
 	6:i32 status
+=======
+struct HistoryOperate{
+	1: optional i32 id,
+	2: optional i64 app_id,
+	3: optional i32 operate_tpl_id,
+	4: optional i32 recruit_order
+>>>>>>> master
 }

@@ -121,6 +121,7 @@ public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
      */
     public final TableField<HrSearchConditionRecord, String> INTENTION_CITY_NAME = createField("intention_city_name", org.jooq.impl.SQLDataType.VARCHAR.length(255), this, "期望工作地");
 
+
     /**
      * The column <code>hrdb.hr_search_condition.sex</code>. 性别
      */

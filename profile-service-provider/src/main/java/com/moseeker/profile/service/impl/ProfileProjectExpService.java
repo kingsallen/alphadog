@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,12 +16,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.db.profiledb.tables.records.ProfileProjectexpRecord;
+import com.moseeker.profile.constants.ValidationMessage;
 import com.moseeker.profile.dao.ProfileDao;
 import com.moseeker.profile.dao.ProjectExpDao;
+import com.moseeker.profile.utils.ProfileValidation;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.ProjectExp;
@@ -36,7 +41,7 @@ public class ProfileProjectExpService extends JOOQBaseServiceImpl<ProjectExp, Pr
 	
 	@Autowired
 	private ProfileDao profileDao;
-
+	
 	@Autowired
 	private ProfileCompletenessImpl completenessImpl;
 
@@ -80,6 +85,16 @@ public class ProfileProjectExpService extends JOOQBaseServiceImpl<ProjectExp, Pr
 	
 	@Override
 	public Response postResources(List<ProjectExp> structs) throws TException {
+		if(structs != null && structs.size() > 0) {
+			Iterator<ProjectExp> ipe = structs.iterator();
+			while(ipe.hasNext()) {
+				ProjectExp pe = ipe.next();
+				ValidationMessage<ProjectExp> vm = ProfileValidation.verifyProjectExp(pe);
+				if(!vm.isPass()) {
+					ipe.remove();
+				}
+			}
+		}
 		Response response = super.postResources(structs);
 		if (response.getStatus() == 0 && structs != null && structs.size() > 0) {
 			Set<Integer> profileIds = new HashSet<Integer>();
@@ -151,6 +166,10 @@ public class ProfileProjectExpService extends JOOQBaseServiceImpl<ProjectExp, Pr
 
 	@Override
 	public Response postResource(ProjectExp struct) throws TException {
+		ValidationMessage<ProjectExp> vm = ProfileValidation.verifyProjectExp(struct);
+		if(!vm.isPass()) {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}'}", vm.getResult()));
+		}
 		Response response = super.postResource(struct);
 		if (response.getStatus() == 0) {
 			Set<Integer> profileIds = new HashSet<>();
@@ -192,7 +211,7 @@ public class ProfileProjectExpService extends JOOQBaseServiceImpl<ProjectExp, Pr
 		}
 		return response;
 	}
-
+	
 	@Override
 	protected ProjectExp DBToStruct(ProfileProjectexpRecord r) {
 		Map<String, String> equalRules = new HashMap<>();

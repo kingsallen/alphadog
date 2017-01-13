@@ -2,7 +2,6 @@ package com.moseeker.profile.service.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -157,6 +156,7 @@ public class WholeProfileService {
 				List<Map<String, Object>> others = profileUtils.buildOthers(profileRecord, otherRecords);
 
 				profile.put("others", others);
+				String jsonString=JSON.toJSONString(profile);
 				return ResponseUtils.success(profile);
 				// response.setData(gson.toJson(profile));
 			} else {
@@ -413,10 +413,6 @@ public class WholeProfileService {
 		if(profileDB != null) {
 			((Map<String, Object>) resume.get("profile")).put("origin", profileDB.getOrigin());
 			ProfilePojo profilePojo = ProfilePojo.parseProfile(resume, userRecord);
-			Date birth=null;
-			if(profilePojo.getBasicRecord()!=null){
-				birth=profilePojo.getBasicRecord().getBirth();
-			}
 			int profileId = profileDB.getId().intValue();
 			improveUser(profilePojo.getUserRecord());
 			improveProfile(profilePojo.getProfileRecord(), profileDB);
