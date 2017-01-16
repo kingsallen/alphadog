@@ -13,8 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.moseeker.common.annotation.dao.SqlListener;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.annotation.notify.UpdateEs;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.RedisException;
@@ -495,7 +495,7 @@ public class UserHrAccountService {
 	 * @param applier_id
 	 * @return
 	 */
-	@SqlListener("hr_talentpool")
+	@UpdateEs(tableName = "hr_talentpool", argsIndex = 1)
 	public Response joinTalentpool(int hrAccountId, int applier_id) {
 		CommonQuery query = new CommonQuery();
 		Map<String, String> param = new HashMap<String, String>();
@@ -533,7 +533,7 @@ public class UserHrAccountService {
 	 * @param applier_id
 	 * @return
 	 */
-	@SqlListener("hr_talentpool")
+	@UpdateEs(tableName = "hr_talentpool", argsIndex = 1)
 	public Response shiftOutTalentpool(int hrAccountId, int applier_id) {
 		CommonQuery query = new CommonQuery();
 		Map<String, String> param = new HashMap<String, String>();

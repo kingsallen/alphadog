@@ -20,7 +20,7 @@ import com.moseeker.apps.constants.TemplateMs;
 import com.moseeker.apps.constants.TemplateMs.MsInfo;
 import com.moseeker.apps.utils.BusinessUtil;
 import com.moseeker.apps.utils.ProcessUtils;
-import com.moseeker.common.annotation.dao.SqlListener;
+import com.moseeker.common.annotation.notify.UpdateEs;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
@@ -147,7 +147,7 @@ public class ProfileProcessBS {
 	 * @author zzt
 	 * @return Response(status,message,data)
 	 */
-	@SqlListener("job_application")
+	@UpdateEs(tableName = "job_application", argsIndex = 2)
 	public Response processProfile(int companyId, int progressStatus,
 			String params, int accountId) {
 		try {
