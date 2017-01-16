@@ -201,7 +201,7 @@ public class UserHrAccountController {
 			vu.addRequiredValidate("hr账号", hrAccountId, null, null);
 			vu.addRequiredValidate("候选人id", applierIds, null, null);
 			if (StringUtils.isNullOrEmpty(vu.validate())) {
-				Response result = userHrAccountService.joinTalentpool(hrAccountId, applierIds);
+				Response result = userHrAccountService.joinTalentpool(hrAccountId, applierIds.replaceAll("\\[|\\]", ""));
 				return ResponseLogNotification.success(request, result);
 			} else {
 				return ResponseLogNotification.fail(request, vu.validate());
@@ -229,7 +229,7 @@ public class UserHrAccountController {
 			vu.addRequiredValidate("hr账号", hrAccountId, null, null);
 			vu.addRequiredValidate("候选人id", applierIds, null, null);
 			if (StringUtils.isNullOrEmpty(vu.validate())) {
-				Response result = userHrAccountService.shiftOutTalentpool(hrAccountId, applierIds);
+				Response result = userHrAccountService.shiftOutTalentpool(hrAccountId, applierIds.replaceAll("\\[|\\]", ""));
 				return ResponseLogNotification.success(request, result);
 			} else {
 				return ResponseLogNotification.fail(request, vu.validate());
