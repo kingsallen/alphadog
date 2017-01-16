@@ -1,9 +1,12 @@
 package com.moseeker.useraccounts.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
+
 
 import org.apache.thrift.TException;
 import org.jooq.types.UByte;
@@ -11,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -496,25 +500,27 @@ public class UserHrAccountService {
 	 * @return
 	 */
 	@UpdateEs(tableName = "hr_talentpool", argsIndex = 1)
-	public Response joinTalentpool(int hrAccountId, int applier_id) {
+	public Response joinTalentpool(int hrAccountId, String applierIds) {
 		CommonQuery query = new CommonQuery();
 		Map<String, String> param = new HashMap<String, String>();
 		query.setEqualFilter(param);
 		param.put("hr_account_id", String.valueOf(hrAccountId));
-		param.put("applier_id", String.valueOf(applier_id));
+		int resultRow = 0;
 		try {
-			int resultRow = 0;
-			Talentpool talentpool = talentpoolDao.getResource(query);
-			if (talentpool == null || talentpool.getId() == 0) {
-				// 将用户加入人才库
-				talentpool = new Talentpool();
-				talentpool.setApplier_id(applier_id);
-				talentpool.setHr_account_id(hrAccountId);
-				resultRow = talentpoolDao.postResource(talentpool);
-			} else {
-				// 将状态改为正常
-				talentpool.setStatus(0);
-				resultRow = talentpoolDao.putResource(talentpool);
+			for (String applierId : Arrays.asList(applierIds.split(","))) {
+				param.put("applier_id", String.valueOf(applierId));
+				Talentpool talentpool = talentpoolDao.getResource(query);
+				if (talentpool == null || talentpool.getId() == 0) {
+					// 将用户加入人才库
+					talentpool = new Talentpool();
+					talentpool.setApplier_id(Integer.valueOf(applierId));
+					talentpool.setHr_account_id(hrAccountId);
+					resultRow += talentpoolDao.postResource(talentpool);
+				} else {
+					// 将状态改为正常
+					talentpool.setStatus(0);
+					resultRow += talentpoolDao.putResource(talentpool);
+				}
 			}
 			if (resultRow > 0) {
 				return ResponseUtils.success("");
@@ -534,23 +540,26 @@ public class UserHrAccountService {
 	 * @return
 	 */
 	@UpdateEs(tableName = "hr_talentpool", argsIndex = 1)
-	public Response shiftOutTalentpool(int hrAccountId, int applier_id) {
+	public Response shiftOutTalentpool(int hrAccountId, String applierIds) {
 		CommonQuery query = new CommonQuery();
 		Map<String, String> param = new HashMap<String, String>();
 		query.setEqualFilter(param);
 		param.put("hr_account_id", String.valueOf(hrAccountId));
-		param.put("applier_id", String.valueOf(applier_id));
 		try {
 			int resultRow = 0;
-			Talentpool talentpool = talentpoolDao.getResource(query);
-			if (talentpool != null && talentpool.getId() > 0) {
-				// 将状态改为删除
-				talentpool.setStatus(1);
-				resultRow = talentpoolDao.putResource(talentpool);
-				if (resultRow <= 0) {
-					return ResponseUtils.fail(ConstantErrorCodeMessage.THIRD_PARTY_POSITION_UPSERT_FAILED);
-				}
-			} 
+			for (String applierId : Arrays.asList(applierIds.split(","))) {
+				param.put("applier_id", String.valueOf(applierId));
+				Talentpool talentpool = talentpoolDao.getResource(query);
+				if (talentpool != null && talentpool.getId() > 0) {
+					// 将状态改为删除
+					talentpool.setStatus(1);
+					resultRow += talentpoolDao.putResource(talentpool);
+					
+				} 
+			}
+			if (resultRow <= 0) {
+				return ResponseUtils.fail(ConstantErrorCodeMessage.THIRD_PARTY_POSITION_UPSERT_FAILED);
+			}
 			return ResponseUtils.success("");
 		} catch (TException e) {
 			logger.error(e.getMessage(), e);

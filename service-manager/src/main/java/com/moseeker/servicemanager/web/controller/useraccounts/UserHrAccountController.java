@@ -196,12 +196,12 @@ public class UserHrAccountController {
 		try {
 			Params<String,Object> params = ParamUtils.parseRequestParam(request);
 			Integer hrAccountId = params.getInt("hr_account_id");
-			Integer applierId = params.getInt("applier_id");
+			String applierIds = params.getString("applier_ids");
 			ValidateUtil vu = new ValidateUtil();
 			vu.addRequiredValidate("hr账号", hrAccountId, null, null);
-			vu.addRequiredValidate("候选人id", applierId, null, null);
+			vu.addRequiredValidate("候选人id", applierIds, null, null);
 			if (StringUtils.isNullOrEmpty(vu.validate())) {
-				Response result = userHrAccountService.joinTalentpool(hrAccountId, applierId);
+				Response result = userHrAccountService.joinTalentpool(hrAccountId, applierIds);
 				return ResponseLogNotification.success(request, result);
 			} else {
 				return ResponseLogNotification.fail(request, vu.validate());
@@ -224,12 +224,12 @@ public class UserHrAccountController {
 		try {
 			Params<String,Object> params = ParamUtils.parseRequestParam(request);
 			Integer hrAccountId = params.getInt("hr_account_id");
-			Integer applierId = params.getInt("applier_id");
+			String applierIds = params.getString("applier_ids");
 			ValidateUtil vu = new ValidateUtil();
 			vu.addRequiredValidate("hr账号", hrAccountId, null, null);
-			vu.addRequiredValidate("候选人id", applierId, null, null);
+			vu.addRequiredValidate("候选人id", applierIds, null, null);
 			if (StringUtils.isNullOrEmpty(vu.validate())) {
-				Response result = userHrAccountService.shiftOutTalentpool(hrAccountId, applierId);
+				Response result = userHrAccountService.shiftOutTalentpool(hrAccountId, applierIds);
 				return ResponseLogNotification.success(request, result);
 			} else {
 				return ResponseLogNotification.fail(request, vu.validate());

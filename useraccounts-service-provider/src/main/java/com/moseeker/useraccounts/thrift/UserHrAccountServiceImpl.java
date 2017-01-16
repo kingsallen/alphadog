@@ -88,14 +88,14 @@ public class UserHrAccountServiceImpl implements Iface {
 	}
 
 	@Override
-	public Response joinTalentpool(int hrAccountId, int applier_id)
+	public Response joinTalentpool(int hrAccountId, String applierIds)
 			throws TException {
-		return service.joinTalentpool(hrAccountId, applier_id);
+		return service.joinTalentpool(hrAccountId, applierIds);
 	}
 
 	@Override
-	public Response shiftOutTalentpool(int hrAccountId, int applier_id)
+	public Response shiftOutTalentpool(int hrAccountId, String applierIds)
 			throws TException {
-		return service.shiftOutTalentpool(hrAccountId, applier_id);
+		return service.shiftOutTalentpool(hrAccountId, applierIds);
 	}
 }

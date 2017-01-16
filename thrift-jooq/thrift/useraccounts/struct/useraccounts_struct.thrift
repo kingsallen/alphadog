@@ -115,7 +115,6 @@ struct BindAccountStruct {
     8: i32 remainNum,
     9: i32 binding
 }
-<<<<<<< HEAD
 
 /*
 * hr常用筛选条件
@@ -144,7 +143,6 @@ struct SearchCondition {
    21: i32 type // 类型（0：候选人列表筛选条件，1：人才库列表筛选条件）
 }
 
-=======
 struct UserEmployeeStruct{
 	1: optional i32 id,
 	2: optional string employeeid,
@@ -172,4 +170,3 @@ struct UserEmployeePointSum{
 	1: optional i64 award,
 	2: optional i64 employee_id
 }
->>>>>>> master

@@ -91,9 +91,9 @@ service UserHrAccountService {
     // 删除常用筛选项
     common_struct.Response delSearchCondition(1: i32 hrAccountId, 2: i32 id);
     // 加入人才库
-    common_struct.Response joinTalentpool(1: i32 hrAccountId, 2: i32 applier_id)
+    common_struct.Response joinTalentpool(1: i32 hrAccountId, 2: string applierIds)
     // 移出人才库
-    common_struct.Response shiftOutTalentpool(1: i32 hrAccountId, 2: i32 applier_id)
+    common_struct.Response shiftOutTalentpool(1: i32 hrAccountId, 2: string applierIds)
 }
 
 /**

@@ -31,7 +31,7 @@ public class UpdateEsAop {
 	/**
 	 * es数据模板，tableName: 表名， user_id: 用户id
 	 */
-	String ms = "{\"tableName\":\"%s\", \"user_id\":%d}";
+	String ms = "{\"tableName\":\"%s\", \"user_id\":%s}";
 	
 	RedisClient client = CacheClient.getInstance();
 	
