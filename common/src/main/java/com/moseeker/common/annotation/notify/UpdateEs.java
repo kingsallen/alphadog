@@ -18,8 +18,14 @@ public @interface UpdateEs {
 	String tableName();
 	
 	/**
-	 * user_user.id的参数列表下标
+	 * 目标方法的参数列表下标
 	 * @return
 	 */
 	int argsIndex();
+	
+	/**
+	 * 通知es的参数名称
+	 * @return
+	 */
+	String argsName() default "";
 }

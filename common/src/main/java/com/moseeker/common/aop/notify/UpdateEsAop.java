@@ -31,9 +31,10 @@ public class UpdateEsAop {
 	/**
 	 * es数据模板，tableName: 表名， user_id: 用户id
 	 */
-	String ms = "{\"tableName\":\"%s\", \"user_id\":%s}";
+	String ms = "{'tableName':'%s'}";
 	
 	RedisClient client = CacheClient.getInstance();
+	
 	
 	/**
 	 * 线程池
@@ -55,10 +56,10 @@ public class UpdateEsAop {
 				JSONObject jsb = JSONObject.parseObject(JSON.toJSONString(returnValue));
 				if (jsb.getIntValue("status") == 0) {
 					threadPool.execute(() -> {
+						JSONObject result = JSON.parseObject(String.format(ms, ups.tableName()));
+						result.put(ups.argsName(), jp.getArgs()[ups.argsIndex()]);
 						client.lpush(Constant.APPID_ALPHADOG,
-								"ES_REALTIME_UPDATE_INDEX_USER_IDS", String.format(
-										ms, ups.tableName(),
-										jp.getArgs()[ups.argsIndex()]));
+								"ES_REALTIME_UPDATE_INDEX_USER_IDS", result.toJSONString());
 					});
 				}
 			} catch (Exception e) {

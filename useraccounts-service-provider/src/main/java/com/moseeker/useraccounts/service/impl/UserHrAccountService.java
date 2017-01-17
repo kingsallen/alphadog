@@ -499,7 +499,7 @@ public class UserHrAccountService {
 	 * @param applier_id
 	 * @return
 	 */
-	@UpdateEs(tableName = "hr_talentpool", argsIndex = 1)
+	@UpdateEs(tableName = "hr_talentpool", argsIndex = 1, argsName = "user_id")
 	public Response joinTalentpool(int hrAccountId, String applierIds) {
 		CommonQuery query = new CommonQuery();
 		Map<String, String> param = new HashMap<String, String>();
@@ -539,7 +539,7 @@ public class UserHrAccountService {
 	 * @param applier_id
 	 * @return
 	 */
-	@UpdateEs(tableName = "hr_talentpool", argsIndex = 1)
+	@UpdateEs(tableName = "hr_talentpool", argsIndex = 1, argsName = "user_id")
 	public Response shiftOutTalentpool(int hrAccountId, String applierIds) {
 		CommonQuery query = new CommonQuery();
 		Map<String, String> param = new HashMap<String, String>();

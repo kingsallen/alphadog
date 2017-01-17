@@ -147,7 +147,7 @@ public class ProfileProcessBS {
 	 * @author zzt
 	 * @return Response(status,message,data)
 	 */
-	@UpdateEs(tableName = "job_application", argsIndex = 2)
+	@UpdateEs(tableName = "job_application", argsIndex = 2, argsName = "application_id")
 	public Response processProfile(int companyId, int progressStatus,
 			String params, int accountId) {
 		try {
