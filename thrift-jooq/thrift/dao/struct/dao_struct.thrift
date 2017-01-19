@@ -8,6 +8,20 @@ namespace java com.moseeker.thrift.gen.dao.struct
  */
 typedef string Timestamp;
 
+enum ConditionType {
+    AndType,
+    OrType,
+    MoreThanType,
+    LessThanType,
+    BetweenType
+}
+
+struct Condition {
+    1: optional ConditionType conditionType,
+    2: optional Condition condition,
+    3: optional list<string> params
+}
+
 struct WordpressPosts { 
     1: i64 id,
     2: i64 postAuthor,
