@@ -106,4 +106,10 @@ service HrDBDao{
 	    common_struct.Response postHrOperationrecord(1:hr_struct.HrOperationrecordStruct record);
 	    common_struct.Response getHrHistoryOperations(1:list<application_struct.ProcessValidationStruct> record);
 }
+<<<<<<< HEAD
 >>>>>>> master
+=======
+service WxUserDao {
+	common_struct.Response getResource(1:common_struct.CommonQuery query);
+}
+>>>>>>> feature/pc/v1.4.1
