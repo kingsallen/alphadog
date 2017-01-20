@@ -29,29 +29,33 @@ public class WxUserDaoThriftService implements Iface {
 	public Response getResource(CommonQuery query) throws TException {
 		try {
 			UserWxUserRecord record = dao.getResource(query);
-			Map<String, Object> result = new HashMap<String, Object>();
-			result.put("id", record.getId().longValue());
-			result.put("wechat_id", record.getWechatId().intValue());
-			result.put("group_id", record.getGroupId().intValue());
-			result.put("sysuser_id", record.getSysuserId().intValue());
-			result.put("is_subscribe", record.getIsSubscribe().byteValue());
-			result.put("openid", record.getOpenid());
-			result.put("nickname", record.getNickname());
-			result.put("sex", record.getSex().intValue());
-			result.put("city", record.getCity());
-			result.put("country", record.getCountry());
-			result.put("province", record.getProvince());
-			result.put("language", record.getLanguage());
-			result.put("headimgurl", record.getHeadimgurl());
-			result.put("subscribe_time", record.getSubscribeTime());
-			result.put("unsubscibe_time", record.getUnsubscibeTime());
-			result.put("unionid", record.getUnionid());
-			result.put("reward", record.getReward().intValue());
-			result.put("auto_sync_info", record.getAutoSyncInfo().byteValue());
-			result.put("create_time", record.getCreateTime());
-			result.put("update_time", record.getUpdateTime());
-			result.put("source", record.getSource().byteValue());
-			return ResponseUtils.success(result);
+			if (record != null) {
+				Map<String, Object> result = new HashMap<String, Object>();
+				result.put("id", record.getId().longValue());
+				result.put("wechat_id", record.getWechatId().intValue());
+				result.put("group_id", record.getGroupId().intValue());
+				result.put("sysuser_id", record.getSysuserId().intValue());
+				result.put("is_subscribe", record.getIsSubscribe().byteValue());
+				result.put("openid", record.getOpenid());
+				result.put("nickname", record.getNickname());
+				result.put("sex", record.getSex().intValue());
+				result.put("city", record.getCity());
+				result.put("country", record.getCountry());
+				result.put("province", record.getProvince());
+				result.put("language", record.getLanguage());
+				result.put("headimgurl", record.getHeadimgurl());
+				result.put("subscribe_time", record.getSubscribeTime());
+				result.put("unsubscibe_time", record.getUnsubscibeTime());
+				result.put("unionid", record.getUnionid());
+				result.put("reward", record.getReward().intValue());
+				result.put("auto_sync_info", record.getAutoSyncInfo().byteValue());
+				result.put("create_time", record.getCreateTime());
+				result.put("update_time", record.getUpdateTime());
+				result.put("source", record.getSource().byteValue());
+				return ResponseUtils.success(result);
+			} else {
+				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);

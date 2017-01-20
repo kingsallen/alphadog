@@ -33,7 +33,9 @@ public class UserWxUserController {
 			CommonQuery query = ParamUtils.initCommonQuery(request, CommonQuery.class);
 
 			Response result = wxuser.getResource(query);
-			// jsonStringResponse = JSON.toJSONString(result);
+			if (result.getStatus() != 0) {
+				return ResponseLogNotification.fail(request, result.getMessage());
+			}
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
 			return ResponseLogNotification.fail(request, e.getMessage());
