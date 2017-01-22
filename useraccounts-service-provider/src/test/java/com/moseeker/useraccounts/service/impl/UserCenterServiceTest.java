@@ -1,6 +1,7 @@
 package com.moseeker.useraccounts.service.impl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,8 +18,8 @@ import org.mockito.junit.MockitoRule;
 
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.position.struct.Position;
+import com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm;
 import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
-import com.moseeker.useraccounts.service.impl.pojos.ApplicationRecords;
 
 public class UserCenterServiceTest {
 	
@@ -75,7 +76,7 @@ public class UserCenterServiceTest {
 	@Test
 	public void testGetApplication() {
 		try {
-			List<ApplicationRecords> records = userCenterService.getApplication(1);
+			List<ApplicationRecordsForm> records = userCenterService.getApplication(1);
 			assertEquals(2, records.size());
 		} catch (TException e) {
 			e.printStackTrace();
@@ -86,17 +87,17 @@ public class UserCenterServiceTest {
 	@Test
 	public void testGetApplication2() {
 		try {
-			List<ApplicationRecords> records = userCenterService.getApplication(1);
+			List<ApplicationRecordsForm> records = userCenterService.getApplication(1);
 			assertEquals(1, records.get(0).getId());
 			assertEquals("department1", records.get(0).getDepartment());
 			assertEquals("title1", records.get(0).getTitle());
-			assertEquals("1", records.get(0).getStatus());
+			assertEquals(1, records.get(0).getStatus());
 			assertEquals("2017-01-01 11:11:11", records.get(0).getTime());
 			
 			assertEquals(2, records.get(1).getId());
 			assertEquals("department2", records.get(1).getDepartment());
 			assertEquals("title2", records.get(1).getTitle());
-			assertEquals("2", records.get(1).getStatus());
+			assertEquals(2, records.get(1).getStatus());
 			assertEquals("2017-02-02 22:22:22", records.get(1).getTime());
 		} catch (TException e) {
 			// TODO Auto-generated catch block

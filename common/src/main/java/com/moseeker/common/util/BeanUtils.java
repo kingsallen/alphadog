@@ -216,7 +216,7 @@ public class BeanUtils {
 		List<T> list = new ArrayList<>();
 		
 		if(dests != null && dests.size() > 0) {
-			dests.stream().map(dest -> {
+			list = dests.stream().map(dest -> {
 				T t = null;
 				try {
 					t = orig.newInstance();
@@ -280,8 +280,12 @@ public class BeanUtils {
 				String[] splitArray = name.split("_");
 				if (splitArray.length > 1) {
 					for (int i = 0; i < splitArray.length; i++) {
-						sb.append(splitArray[i].substring(0, 1).toUpperCase());
-						sb.append(splitArray[i].substring(1));
+						if(StringUtils.isNullOrEmpty(splitArray[i])) {
+							sb.append("_");
+						} else {
+							sb.append(splitArray[i].substring(0, 1).toUpperCase());
+							sb.append(splitArray[i].substring(1));
+						}
 					}
 				} else {
 					sb.append(name.substring(0, 1).toUpperCase());

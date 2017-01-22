@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.position.struct.Position;
+import com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm;
 import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
-import com.moseeker.useraccounts.service.impl.pojos.ApplicationRecords;
 
 /**
  * 用户个人中心功能相关接口
@@ -27,8 +27,8 @@ public class UserCenterService {
 	@Autowired
 	private UserCenterBizTools bizTools;
 	
-	public List<ApplicationRecords> getApplication(int userId) throws TException {
-		List<ApplicationRecords> applications = new ArrayList<>();
+	public List<ApplicationRecordsForm> getApplication(int userId) throws TException {
+		List<ApplicationRecordsForm> applications = new ArrayList<>();
 		
 		//参数有效性校验
 		if(userId > 0) {
@@ -39,9 +39,9 @@ public class UserCenterService {
 				List<Position> positions = bizTools.getPositionsByApps(apps.stream().mapToInt(app -> (int)app.getId()).toArray());
 				
 				applications = apps.stream().map(app -> {
-					ApplicationRecords ar = new ApplicationRecords();
+					ApplicationRecordsForm ar = new ApplicationRecordsForm();
 					ar.setId((int)app.getId());
-					ar.setStatus(String.valueOf(app.getApp_tpl_id()));
+					ar.setStatus((byte)app.getApp_tpl_id());
 					ar.setTime(app.get_create_time());
 					Optional<Position> op = positions.stream().filter(position -> position.getId() == app.getId()).findFirst();
 					if(op.isPresent()) {
