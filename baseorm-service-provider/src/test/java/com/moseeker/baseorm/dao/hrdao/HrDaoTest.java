@@ -20,7 +20,7 @@ import com.moseeker.thrift.gen.dao.struct.HrHbSendRecordPojo;
 
 public class HrDaoTest {
 	
-	HrDBDao.Iface hrDao;
+	private HrDBDao.Iface hrDao;
 	
 	@Before public void initialize() {
 		hrDao = ServiceManager.SERVICEMANAGER.getService(HrDBDao.Iface.class);
@@ -41,16 +41,13 @@ public class HrDaoTest {
 	
 	@Test
 	public void testGetHrHbItemsList() {
-		HrDBDao.Iface hrDao = ServiceManager.SERVICEMANAGER.getService(HrDBDao.Iface.class);
-		
 		QueryUtil qu = new QueryUtil();
 		qu.addEqualFilter("id", "[1,2]");
-		
-		
+
 		try {
 			List<HrHbItemsPojo> result = hrDao.getHbItems(qu);
 			assertEquals(result.size(), 2);
-			assertEquals(result.stream().mapToInt(p->p.getId()).sum(), 3);
+			assertEquals(result.stream().mapToInt(HrHbItemsPojo::getId).sum(), 3);
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -90,7 +87,7 @@ public class HrDaoTest {
 		
 		try {
 			HrHbSendRecordPojo result = hrDao.getHbSendRecord(qu);
-			assertTrue(result instanceof HrHbSendRecordPojo);
+			assertTrue(result != null);
 		} catch (TException e) {
 			e.printStackTrace();
 		}
