@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.apache.thrift.TBase;
 import org.apache.thrift.TException;
@@ -48,7 +49,7 @@ public class BeanUtils {
 	private static Logger logger = LoggerFactory.getLogger(BeanUtils.class);
 
 	@SuppressWarnings("rawtypes")
-	public static UpdatableRecordImpl structToDB(TBase dest, Class<? extends UpdatableRecordImpl> origClazz,
+	public static <T extends TBase, R extends UpdatableRecordImpl> UpdatableRecordImpl structToDB(T t, Class<R> origClazz,
 			Map<String, String> equalRules) {
 		UpdatableRecordImpl orig = null;
 		try {
@@ -56,19 +57,19 @@ public class BeanUtils {
 		} catch (InstantiationException | IllegalAccessException e) {
 			logger.error("error", e);
 		}
-		structToDB(dest, orig, equalRules);
+		structToDB(t, orig, equalRules);
 		return orig;
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public static UpdatableRecordImpl structToDB(TBase dest, Class<? extends UpdatableRecordImpl> origClazz) {
+	public static <T extends TBase, R extends UpdatableRecordImpl> UpdatableRecordImpl structToDB(T t, Class<R> origClazz) {
 		UpdatableRecordImpl orig = null;
 		try {
 			orig = origClazz.newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {
 			logger.error("error", e);
 		}
-		structToDB(dest, orig, null);
+		structToDB(t, orig, null);
 		return orig;
 	}
 
@@ -78,8 +79,8 @@ public class BeanUtils {
 	 * @param dest
 	 * @param orig
 	 */
-	public static void structToDB(@SuppressWarnings("rawtypes") TBase dest,
-			@SuppressWarnings("rawtypes") UpdatableRecordImpl orig, Map<String, String> equalRules) {
+	@SuppressWarnings("rawtypes")
+	public static <T extends TBase, R extends UpdatableRecordImpl> void structToDB(T dest, R orig, Map<String, String> equalRules) {
 		if (dest == null || orig == null) {
 			return;
 		}
@@ -128,28 +129,8 @@ public class BeanUtils {
 		}
 	}
 
-	/*private static boolean defaultValue(Field field, Method destMethods, @SuppressWarnings("rawtypes") TBase dest) {
-		if (field.getType().isAssignableFrom(int.class) || field.getType().isAssignableFrom(Integer.class)
-				|| field.getType().isAssignableFrom(short.class) || field.getType().isAssignableFrom(Short.class)
-				|| field.getType().isAssignableFrom(long.class) || field.getType().isAssignableFrom(Long.class)
-				|| field.getType().isAssignableFrom(double.class) || field.getType().isAssignableFrom(Double.class)) {
-			try {
-				Integer object = convertTo(destMethods.invoke(dest, new Object[] {}), Integer.class);
-				if(object != null && object.intValue() == -32768) {
-					return true;
-				} else {
-					return false;
-				}
-			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-				return true;
-			}
-		} else {
-			return false;
-		}
-	}*/
-
 	@SuppressWarnings("rawtypes")
-	public static TBase DBToStruct(Class<? extends TBase> destClazz, UpdatableRecordImpl orig,
+	public static <T extends TBase, R extends UpdatableRecordImpl> TBase DBToStruct(Class<T> destClazz, R orig,
 			Map<String, String> equalRules) {
 		TBase base = null;
 		try {
@@ -162,8 +143,8 @@ public class BeanUtils {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static TBase DBToStruct(Class<? extends TBase> destClazz, UpdatableRecordImpl orig) {
-		TBase base = null;
+	public static <T extends TBase, R extends UpdatableRecordImpl> T DBToStruct(Class<T> destClazz, R orig) {
+		T base = null;
 		try {
 			base = destClazz.newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {
@@ -172,9 +153,23 @@ public class BeanUtils {
 		DBToStruct(base, orig, null);
 		return base;
 	}
+	
+	@SuppressWarnings("rawtypes")
+	public static <T extends TBase, R extends UpdatableRecordImpl> List<T> DBToStruct(Class<T> destClazz, List<R> origs) {
+		List<T> list = new ArrayList<>();
+		
+		if(origs != null && origs.size() > 0) {
+			list = origs.stream().filter(orig -> orig != null).map(orig -> {
+				T t = (T)DBToStruct(destClazz, orig);
+				return t;
+			}).collect(Collectors.toList());
+		}
+		
+		return list;
+	}
 
-	public static void DBToStruct(@SuppressWarnings("rawtypes") TBase dest,
-			@SuppressWarnings("rawtypes") UpdatableRecordImpl orig, Map<String, String> equalRules) {
+	@SuppressWarnings("rawtypes")
+	public static <T extends TBase, R extends UpdatableRecordImpl> void DBToStruct(T dest,R orig, Map<String, String> equalRules) {
 		if (dest == null || orig == null) {
 			return;
 		}
@@ -215,6 +210,26 @@ public class BeanUtils {
 				}
 			}
 		}
+	}
+	
+	public static <R, T> List<T> copies(List<R> dests, Class<T> orig) {
+		List<T> list = new ArrayList<>();
+		
+		if(dests != null && dests.size() > 0) {
+			dests.stream().map(dest -> {
+				T t = null;
+				try {
+					t = orig.newInstance();
+					org.apache.commons.beanutils.BeanUtils.copyProperties(dests, t);
+				} catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+					e.printStackTrace();
+					logger.error(e.getMessage(), e);
+				}
+				return t;
+			}).filter(t -> t != null).collect(Collectors.toList());
+		}
+		
+		return list;
 	}
 
 	public static <T> T MapToRecord(Map<String, Object> map, Class<T> clazz) {
