@@ -27,6 +27,8 @@ public class UserCenterBizTools {
 	public List<JobApplication> getAppsForUser(int userId) throws TException {
 		QueryUtil qu = new QueryUtil();
 		qu.addEqualFilter("applier_id", String.valueOf(userId));
+		qu.setOrder("desc");
+		qu.setSortby("submit_time");
 		return jobDBDao.getApplications(qu);
 	}
 
