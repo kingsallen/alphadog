@@ -143,7 +143,10 @@ public class UserHrAccountController {
 			SearchCondition searchCondition = ParamUtils.initModelForm(request, SearchCondition.class);
 			ValidateUtil vu = new ValidateUtil();
 			vu.addIntTypeValidate("hr账号", searchCondition.getHr_account_id(), null, "hr账号不能为空", 1, null);
-			vu.addStringLengthValidate("筛选名", searchCondition.getName(), null, null, 1, 12);
+			// 筛选名长度不能大于24字节
+			if (searchCondition.getName() == null || "".equals(searchCondition.getName().trim()) || searchCondition.getName().getBytes("GBK").length > 24 ) {
+				return ResponseLogNotification.fail(request, "筛选名不能超过24个字节");
+			}
 			if (StringUtils.isNullOrEmpty(vu.validate())) {
 				Response result = userHrAccountService.postSearchCondition(searchCondition);
 				return ResponseLogNotification.success(request, result);
