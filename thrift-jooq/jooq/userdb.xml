@@ -32,9 +32,9 @@ Excludes match before includes -->
 </database>
 <target>
 <!-- The destination package of your generated classes (within the destination directory) -->
-<packageName>com.moseeker.baseorm.db</packageName>
+<packageName>com.moseeker.db.userdb</packageName>
 <!-- The destination directory of your generated classes -->
-<directory>/tmp/</directory>
+<directory>src/main/java</directory>
 </target>
 </generator>
 </configuration>

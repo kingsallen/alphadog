@@ -560,6 +560,8 @@ public class UseraccountsService {
 				}
 				// 用户记录转换
 				UserUserRecord userUserRecord = (UserUserRecord) BeanUtils.structToDB(user, UserUserRecord.class);
+				Timestamp updateTime = new Timestamp(System.currentTimeMillis());
+				userUserRecord.setUpdateTime(updateTime);
 				if (userdao.putResource(userUserRecord) > 0) {
 					if (user.isSetUsername() || user.isSetMobile() || user.isSetEmail() || user.isSetName()
 							|| user.isSetHeadimg()) {

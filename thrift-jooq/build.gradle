@@ -9,6 +9,7 @@ sourceCompatibility = 1.8
 
 dependencies {
     compile deps["libthrift"]
+    compile deps["mysql-connector-java"]
     compile  fileTree(dir:'../libs',include:'jooq*.jar')
     testCompile deps["junit"]
 }
