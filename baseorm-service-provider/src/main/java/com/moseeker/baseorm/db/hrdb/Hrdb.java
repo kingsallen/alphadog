@@ -10,6 +10,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeePosition;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeSection;
 import com.moseeker.baseorm.db.hrdb.tables.HrFeedback;
@@ -21,14 +22,20 @@ import com.moseeker.baseorm.db.hrdb.tables.HrHbSendRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrHtml5Statistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrHtml5UniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor;
+import com.moseeker.baseorm.db.hrdb.tables.HrMedia;
 import com.moseeker.baseorm.db.hrdb.tables.HrOperationRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrPointsConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrRecruitStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrRecruitUniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrReferralStatistics;
+import com.moseeker.baseorm.db.hrdb.tables.HrResource;
 import com.moseeker.baseorm.db.hrdb.tables.HrRuleStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrRuleUniqueStatistics;
+import com.moseeker.baseorm.db.hrdb.tables.HrSearchCondition;
 import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
+import com.moseeker.baseorm.db.hrdb.tables.HrTalentpool;
+import com.moseeker.baseorm.db.hrdb.tables.HrTeam;
+import com.moseeker.baseorm.db.hrdb.tables.HrTeamMember;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.baseorm.db.hrdb.tables.HrTopic;
@@ -68,7 +75,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 343106482;
+    private static final long serialVersionUID = 1043831611;
 
     /**
      * The reference instance of <code>hrdb</code>
@@ -104,6 +111,11 @@ public class Hrdb extends SchemaImpl {
      * 部门员工配置表
      */
     public final HrEmployeeCertConf HR_EMPLOYEE_CERT_CONF = com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF;
+
+    /**
+     * 员工认证自定义字段表
+     */
+    public final HrEmployeeCustomFields HR_EMPLOYEE_CUSTOM_FIELDS = com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS;
 
     /**
      * 员工职能表
@@ -161,6 +173,11 @@ public class Hrdb extends SchemaImpl {
     public final HrImporterMonitor HR_IMPORTER_MONITOR = com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor.HR_IMPORTER_MONITOR;
 
     /**
+     * 模板媒体表，存储模板渲染的媒体信息
+     */
+    public final HrMedia HR_MEDIA = com.moseeker.baseorm.db.hrdb.tables.HrMedia.HR_MEDIA;
+
+    /**
      * hr申请状态操作记录
      */
     public final HrOperationRecord HR_OPERATION_RECORD = com.moseeker.baseorm.db.hrdb.tables.HrOperationRecord.HR_OPERATION_RECORD;
@@ -186,6 +203,11 @@ public class Hrdb extends SchemaImpl {
     public final HrReferralStatistics HR_REFERRAL_STATISTICS = com.moseeker.baseorm.db.hrdb.tables.HrReferralStatistics.HR_REFERRAL_STATISTICS;
 
     /**
+     * 资源集合表
+     */
+    public final HrResource HR_RESOURCE = com.moseeker.baseorm.db.hrdb.tables.HrResource.HR_RESOURCE;
+
+    /**
      * 微信图文传播次数统计表
      */
     public final HrRuleStatistics HR_RULE_STATISTICS = com.moseeker.baseorm.db.hrdb.tables.HrRuleStatistics.HR_RULE_STATISTICS;
@@ -196,9 +218,29 @@ public class Hrdb extends SchemaImpl {
     public final HrRuleUniqueStatistics HR_RULE_UNIQUE_STATISTICS = com.moseeker.baseorm.db.hrdb.tables.HrRuleUniqueStatistics.HR_RULE_UNIQUE_STATISTICS;
 
     /**
+     * 候选人列表常用筛选项
+     */
+    public final HrSearchCondition HR_SEARCH_CONDITION = com.moseeker.baseorm.db.hrdb.tables.HrSearchCondition.HR_SEARCH_CONDITION;
+
+    /**
      * 升级超级账号申请表
      */
     public final HrSuperaccountApply HR_SUPERACCOUNT_APPLY = com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply.HR_SUPERACCOUNT_APPLY;
+
+    /**
+     * 人才库
+     */
+    public final HrTalentpool HR_TALENTPOOL = com.moseeker.baseorm.db.hrdb.tables.HrTalentpool.HR_TALENTPOOL;
+
+    /**
+     * 团队信息
+     */
+    public final HrTeam HR_TEAM = com.moseeker.baseorm.db.hrdb.tables.HrTeam.HR_TEAM;
+
+    /**
+     * 团队成员信息
+     */
+    public final HrTeamMember HR_TEAM_MEMBER = com.moseeker.baseorm.db.hrdb.tables.HrTeamMember.HR_TEAM_MEMBER;
 
     /**
      * 第三方渠道帐号
@@ -301,6 +343,7 @@ public class Hrdb extends SchemaImpl {
             HrCompanyAccount.HR_COMPANY_ACCOUNT,
             HrCompanyConf.HR_COMPANY_CONF,
             HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF,
+            HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS,
             HrEmployeePosition.HR_EMPLOYEE_POSITION,
             HrEmployeeSection.HR_EMPLOYEE_SECTION,
             HrFeedback.HR_FEEDBACK,
@@ -312,14 +355,20 @@ public class Hrdb extends SchemaImpl {
             HrHtml5Statistics.HR_HTML5_STATISTICS,
             HrHtml5UniqueStatistics.HR_HTML5_UNIQUE_STATISTICS,
             HrImporterMonitor.HR_IMPORTER_MONITOR,
+            HrMedia.HR_MEDIA,
             HrOperationRecord.HR_OPERATION_RECORD,
             HrPointsConf.HR_POINTS_CONF,
             HrRecruitStatistics.HR_RECRUIT_STATISTICS,
             HrRecruitUniqueStatistics.HR_RECRUIT_UNIQUE_STATISTICS,
             HrReferralStatistics.HR_REFERRAL_STATISTICS,
+            HrResource.HR_RESOURCE,
             HrRuleStatistics.HR_RULE_STATISTICS,
             HrRuleUniqueStatistics.HR_RULE_UNIQUE_STATISTICS,
+            HrSearchCondition.HR_SEARCH_CONDITION,
             HrSuperaccountApply.HR_SUPERACCOUNT_APPLY,
+            HrTalentpool.HR_TALENTPOOL,
+            HrTeam.HR_TEAM,
+            HrTeamMember.HR_TEAM_MEMBER,
             HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT,
             HrThirdPartyPosition.HR_THIRD_PARTY_POSITION,
             HrTopic.HR_TOPIC,
