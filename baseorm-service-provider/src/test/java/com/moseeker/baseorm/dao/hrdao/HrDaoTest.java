@@ -1,26 +1,8 @@
 package com.moseeker.baseorm.dao.hrdao;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-
-import org.apache.thrift.TException;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.moseeker.common.providerutils.QueryUtil;
-import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.dao.service.HrDBDao;
-import com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo;
-import com.moseeker.thrift.gen.dao.struct.HrHbItemsPojo;
-import com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo;
-import com.moseeker.thrift.gen.dao.struct.HrHbScratchCardPojo;
-import com.moseeker.thrift.gen.dao.struct.HrHbSendRecordPojo;
-
 public class HrDaoTest {
 	
-	private HrDBDao.Iface hrDao;
+	/*private HrDBDao.Iface hrDao;
 	
 	@Before public void initialize() {
 		hrDao = ServiceManager.SERVICEMANAGER.getService(HrDBDao.Iface.class);
@@ -91,5 +73,5 @@ public class HrDaoTest {
 		} catch (TException e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 }

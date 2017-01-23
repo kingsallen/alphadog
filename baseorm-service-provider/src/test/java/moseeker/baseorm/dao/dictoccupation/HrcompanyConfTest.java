@@ -1,15 +1,7 @@
 package moseeker.baseorm.dao.dictoccupation;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.Test;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import com.moseeker.baseorm.service.Impl.HrCompanyServiceImpl;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-
 public class HrcompanyConfTest {
-	private  HrCompanyServiceImpl htcompany;
+	/*private  HrCompanyServiceImpl htcompany;
 	public void init() {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 		context.scan("com.moseeker.baseorm");
@@ -24,5 +16,5 @@ public class HrcompanyConfTest {
 		map.put("company_id", 2879+"");
 		query.setEqualFilter(map);
 		System.out.println(htcompany.getCompanyConf(query));
-	}
+	}*/
 }
