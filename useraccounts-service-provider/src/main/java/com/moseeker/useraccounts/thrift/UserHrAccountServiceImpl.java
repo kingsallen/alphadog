@@ -1,5 +1,7 @@
 package com.moseeker.useraccounts.thrift;
 
+import java.util.List;
+
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,13 +90,13 @@ public class UserHrAccountServiceImpl implements Iface {
 	}
 
 	@Override
-	public Response joinTalentpool(int hrAccountId, String applierIds)
+	public Response joinTalentpool(int hrAccountId, List<Integer> applierIds)
 			throws TException {
 		return service.joinTalentpool(hrAccountId, applierIds);
 	}
 
 	@Override
-	public Response shiftOutTalentpool(int hrAccountId, String applierIds)
+	public Response shiftOutTalentpool(int hrAccountId, List<Integer> applierIds)
 			throws TException {
 		return service.shiftOutTalentpool(hrAccountId, applierIds);
 	}

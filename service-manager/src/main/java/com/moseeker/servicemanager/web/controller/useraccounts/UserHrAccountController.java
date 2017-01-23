@@ -1,5 +1,7 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -199,12 +201,14 @@ public class UserHrAccountController {
 		try {
 			Params<String,Object> params = ParamUtils.parseRequestParam(request);
 			Integer hrAccountId = params.getInt("hr_account_id");
-			String applierIds = params.getString("applier_ids");
+			List<Integer> applierIds = (List<Integer>) params.get("applier_ids");
+			if (applierIds == null || applierIds.isEmpty()) {
+				return ResponseLogNotification.fail(request, "候选人id为空");
+			}
 			ValidateUtil vu = new ValidateUtil();
 			vu.addRequiredValidate("hr账号", hrAccountId, null, null);
-			vu.addRequiredValidate("候选人id", applierIds, null, null);
 			if (StringUtils.isNullOrEmpty(vu.validate())) {
-				Response result = userHrAccountService.joinTalentpool(hrAccountId, applierIds.replaceAll("\\[|\\]", ""));
+				Response result = userHrAccountService.joinTalentpool(hrAccountId, applierIds);
 				return ResponseLogNotification.success(request, result);
 			} else {
 				return ResponseLogNotification.fail(request, vu.validate());
@@ -227,12 +231,14 @@ public class UserHrAccountController {
 		try {
 			Params<String,Object> params = ParamUtils.parseRequestParam(request);
 			Integer hrAccountId = params.getInt("hr_account_id");
-			String applierIds = params.getString("applier_ids");
+			List<Integer> applierIds = (List<Integer>) params.get("applier_ids");
+			if (applierIds == null || applierIds.isEmpty()) {
+				return ResponseLogNotification.fail(request, "候选人id为空");
+			}
 			ValidateUtil vu = new ValidateUtil();
 			vu.addRequiredValidate("hr账号", hrAccountId, null, null);
-			vu.addRequiredValidate("候选人id", applierIds, null, null);
 			if (StringUtils.isNullOrEmpty(vu.validate())) {
-				Response result = userHrAccountService.shiftOutTalentpool(hrAccountId, applierIds.replaceAll("\\[|\\]", ""));
+				Response result = userHrAccountService.shiftOutTalentpool(hrAccountId, applierIds);
 				return ResponseLogNotification.success(request, result);
 			} else {
 				return ResponseLogNotification.fail(request, vu.validate());

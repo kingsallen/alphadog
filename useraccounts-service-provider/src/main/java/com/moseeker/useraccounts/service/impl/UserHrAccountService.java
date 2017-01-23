@@ -499,14 +499,14 @@ public class UserHrAccountService {
 	 * @return
 	 */
 	@UpdateEs(tableName = "hr_talentpool", argsIndex = 1, argsName = "user_id")
-	public Response joinTalentpool(int hrAccountId, String applierIds) {
+	public Response joinTalentpool(int hrAccountId, List<Integer> applierIds) {
 		CommonQuery query = new CommonQuery();
 		Map<String, String> param = new HashMap<String, String>();
 		query.setEqualFilter(param);
 		param.put("hr_account_id", String.valueOf(hrAccountId));
 		int resultRow = 0;
 		try {
-			for (String applierId : Arrays.asList(applierIds.split(","))) {
+			for (Integer applierId : applierIds) {
 				param.put("applier_id", String.valueOf(applierId));
 				Talentpool talentpool = talentpoolDao.getResource(query);
 				if (talentpool == null || talentpool.getId() == 0) {
@@ -539,14 +539,14 @@ public class UserHrAccountService {
 	 * @return
 	 */
 	@UpdateEs(tableName = "hr_talentpool", argsIndex = 1, argsName = "user_id")
-	public Response shiftOutTalentpool(int hrAccountId, String applierIds) {
+	public Response shiftOutTalentpool(int hrAccountId, List<Integer> applierIds) {
 		CommonQuery query = new CommonQuery();
 		Map<String, String> param = new HashMap<String, String>();
 		query.setEqualFilter(param);
 		param.put("hr_account_id", String.valueOf(hrAccountId));
 		try {
 			int resultRow = 0;
-			for (String applierId : Arrays.asList(applierIds.split(","))) {
+			for (Integer applierId : applierIds) {
 				param.put("applier_id", String.valueOf(applierId));
 				Talentpool talentpool = talentpoolDao.getResource(query);
 				if (talentpool != null && talentpool.getId() > 0) {
