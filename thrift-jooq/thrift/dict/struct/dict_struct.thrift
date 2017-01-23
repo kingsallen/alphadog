@@ -8,10 +8,10 @@ typedef string Timestamp;
 struct City {
     1: optional i32 code,
     2: optional string name,
-    3: optional byte level,
-    4: optional byte hot_city, // 热门城市 0:否 1：是
+    3: optional i8 level,
+    4: optional i8 hot_city, // 热门城市 0:否 1：是
     5: optional string ename, // 英文名称
-    6: optional byte is_using // 正在使用 0:没在用 1:在使用
+    6: optional i8 is_using // 正在使用 0:没在用 1:在使用
 }
 
 /*
@@ -48,7 +48,7 @@ struct DictCountry {
     5: optional string iso_code_3,
     6: optional string code,
     7: optional string icon_class,
-    8: optional byte hot_country,
+    8: optional i8 hot_country,
     9: optional i32 continent_code
 }
 

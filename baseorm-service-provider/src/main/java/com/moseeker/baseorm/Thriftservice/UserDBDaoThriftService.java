@@ -1,5 +1,7 @@
 package com.moseeker.baseorm.Thriftservice;
 
+import java.util.List;
+
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,18 +9,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.moseeker.baseorm.dao.user.UserDao;
+import com.moseeker.baseorm.dao.user.UserFavPositionDao;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.dao.service.UserDao.Iface;
+import com.moseeker.thrift.gen.dao.service.UserDBDao.Iface;
+import com.moseeker.thrift.gen.dao.struct.UserFavPositionPojo;
 import com.moseeker.thrift.gen.useraccounts.struct.User;
 
 @Service
-public class UserDaoThriftService implements Iface {
+public class UserDBDaoThriftService implements Iface {
 	
-	Logger logger = LoggerFactory.getLogger(UserDaoThriftService.class);
+	Logger logger = LoggerFactory.getLogger(UserDBDaoThriftService.class);
 	
 	@Autowired
-	UserDao userDao;
+	private UserDao userDao;
+	
+	@Autowired
+	private UserFavPositionDao favPositionDao;
 
 	@Override
 	public User getUser(CommonQuery query) throws TException {
@@ -38,19 +45,16 @@ public class UserDaoThriftService implements Iface {
 		return user;
 	}
 
-	public UserDao getUserDao() {
-		return userDao;
-	}
-
-	public void setUserDao(UserDao userDao) {
-		this.userDao = userDao;
-	}
-
 	@Override
 	public User saveUser(User user) throws TException {
 		if(user.getPassword() == null) {
 			user.setPassword("");
 		}
 		return userDao.saveUser(user);
+	}
+
+	@Override
+	public List<UserFavPositionPojo> getUserFavPositions(CommonQuery query) throws TException {
+		return favPositionDao.getUserFavPositions(query);
 	}
 }
