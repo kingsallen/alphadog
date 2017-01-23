@@ -199,9 +199,9 @@ public class ProfileController {
 			Params<String, Object> form = ParamUtils.parseRequestParam(request);
 			Integer companyId=form.getInt("company_id");
 			Integer progress_status=form.getInt("progress_status");
-			String appIds=form.getString("aids");
+			List<Integer> appIds = (ArrayList<Integer>)form.get("aids");
 			Integer accountId=form.getInt("account_id");
-			if(progress_status==null||StringUtils.isNullOrEmpty(appIds)){
+			if(progress_status==null || appIds == null || appIds.isEmpty()){
 				return ResponseLogNotification.success(request, ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY));
 			}
 			Response result = profileBSService.profileProcess(companyId,progress_status,appIds,accountId);

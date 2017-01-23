@@ -6,7 +6,7 @@
 //import static org.mockito.ArgumentMatchers.anyInt;
 //import static org.mockito.Mockito.when;
 //
-//import java.util.ArrayList;
+//import java.util.Arrays;
 //
 //import org.apache.thrift.TException;
 //import org.junit.Test;
@@ -37,7 +37,7 @@
 //	public void getSearchConditionTest() {
 //		try {
 //			// case 1: 请求成功
-//			when(searchConditionDao.getResources(any())).thenReturn(new ArrayList<SearchCondition>());
+//			when(searchConditionDao.getResources(any())).thenReturn(Arrays.asList(new SearchCondition()));
 //			assertSame(service.getSearchCondition(50, 0).getStatus(), 0);
 //			// case 2: 出现异常
 //			when(searchConditionDao.getResources(any())).thenThrow(TException.class);
@@ -95,19 +95,19 @@
 //			when(talentpoolDao.postResource(any())).thenThrow(TException.class).thenReturn(0).thenReturn(1);
 //			when(talentpoolDao.putResource(any())).thenThrow(TException.class).thenReturn(0).thenReturn(1);
 //			// case 1: 出现异常
-//			assertEquals(service.joinTalentpool(50, "0").getStatus(), 99999);
+//			assertEquals(service.joinTalentpool(50, Arrays.asList(0)).getStatus(), 99999);
 //			// case 2: 候选人不存在人才库，将其加入人才库 if 数据插入异常
-//			assertEquals(service.joinTalentpool(50, "0").getStatus(), 99999);
+//			assertEquals(service.joinTalentpool(50, Arrays.asList(0)).getStatus(), 99999);
 //			// case 3: 候选人不存在人才库，将其加入人才库 if 数据插入失败
-//			assertEquals(service.joinTalentpool(50, "0").getStatus(), 42004);
+//			assertEquals(service.joinTalentpool(50, Arrays.asList(0)).getStatus(), 42004);
 //			// case 4: 候选人不存在人才库，将其加入人才库 if 数据插入成功
-//			assertEquals(service.joinTalentpool(50, "0").getStatus(), 0);
+//			assertEquals(service.joinTalentpool(50, Arrays.asList(0)).getStatus(), 0);
 //			// case 4: 候选人存在，将其状态修改为正常 if 数据修改异常
-//			assertEquals(service.joinTalentpool(50, "0").getStatus(), 99999);
+//			assertEquals(service.joinTalentpool(50, Arrays.asList(0)).getStatus(), 99999);
 //			// case 5: 候选人存在，将其状态修改为正常 if 数据修改失败
-//			assertEquals(service.joinTalentpool(50, "0").getStatus(), 42004);
+//			assertEquals(service.joinTalentpool(50, Arrays.asList(0)).getStatus(), 42004);
 //			// case 6: 候选人存在，将其状态修改为正常 if 数据修改成功
-//			assertEquals(service.joinTalentpool(50, "0,1").getStatus(), 0);
+//			assertEquals(service.joinTalentpool(50, Arrays.asList(0,1)).getStatus(), 0);
 //		} catch (TException e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
@@ -120,17 +120,17 @@
 //			when(talentpoolDao.getResource(any())).thenThrow(TException.class).thenReturn(null, new Talentpool(0, 50, 22, "", "", 0), new Talentpool(1, 50, 22, "", "", 0));
 //			when(talentpoolDao.putResource(any())).thenThrow(TException.class).thenReturn(0).thenReturn(1);
 //			// case 1: 出现异常
-//			assertEquals(service.shiftOutTalentpool(50, "0").getStatus(), 99999);
+//			assertEquals(service.shiftOutTalentpool(50, Arrays.asList(0)).getStatus(), 99999);
 //			// case 2: 候选人不存在人才库 talentpool == null，不做处理
-//			assertEquals(service.shiftOutTalentpool(50, "0").getStatus(), 0);
+//			assertEquals(service.shiftOutTalentpool(50, Arrays.asList(0)).getStatus(), 42004);
 //			// case 3: 候选人不存在人才库 talentpool.getId() == 0，不做处理
-//			assertEquals(service.shiftOutTalentpool(50, "0").getStatus(), 0);
+//			assertEquals(service.shiftOutTalentpool(50, Arrays.asList(0)).getStatus(), 42004);
 //			// case 4: 候选人存在，将其状态修改为删除 if 数据修改异常
-//			assertEquals(service.shiftOutTalentpool(50, "0").getStatus(), 99999);
+//			assertEquals(service.shiftOutTalentpool(50, Arrays.asList(0)).getStatus(), 99999);
 //			// case 5: 候选人存在，将其状态修改为正常 if 数据修改失败
-//			assertEquals(service.shiftOutTalentpool(50, "0").getStatus(), 42004);
+//			assertEquals(service.shiftOutTalentpool(50, Arrays.asList(0)).getStatus(), 42004);
 //			// case 6: 候选人存在，将其状态修改为正常 if 数据修改成功
-//			assertEquals(service.shiftOutTalentpool(50, "0,1").getStatus(), 0);
+//			assertEquals(service.shiftOutTalentpool(50, Arrays.asList(0,1)).getStatus(), 0);
 //		} catch (TException e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();

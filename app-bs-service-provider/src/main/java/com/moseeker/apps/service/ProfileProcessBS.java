@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -85,22 +86,14 @@ public class ProfileProcessBS {
 	public Response processProfileAts(int progressStatus, String params) {
 		int companyId = 0;
 		int accountId = 0;
-		StringBuffer sb = new StringBuffer();
 		try {
 			List<ApplicationAts> list = getJobApplication(params);
 			if (list == null || list.size() == 0) {
 				return ResponseUtils
 						.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 			}
-			for (ApplicationAts jop : list) {
-				sb.append(jop.getApplication_id() + ",");
-			}
-			sb.deleteCharAt(sb.length() - 1);
-			companyId = list.get(0).getCompany_id();
-			accountId = list.get(0).getAccount_id();
-
-			Response result = processProfile(companyId, progressStatus,
-					sb.toString(), accountId);
+			List<Integer> appIds = list.stream().map(jop -> jop.getApplication_id()).collect(Collectors.toList());
+			Response result = processProfile(companyId, progressStatus, appIds, accountId);
 			return result;
 		} catch (Exception e) {
 			return ResponseUtils
@@ -148,10 +141,8 @@ public class ProfileProcessBS {
 	 * @return Response(status,message,data)
 	 */
 	@UpdateEs(tableName = "job_application", argsIndex = 2, argsName = "application_id")
-	public Response processProfile(int companyId, int progressStatus,
-			String params, int accountId) {
+	public Response processProfile(int companyId, int progressStatus, List<Integer> appIds, int accountId) {
 		try {
-			List<Integer> appIds = this.convertList(params);
 			if (appIds == null || appIds.size() == 0) {
 				return ResponseUtils
 						.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
