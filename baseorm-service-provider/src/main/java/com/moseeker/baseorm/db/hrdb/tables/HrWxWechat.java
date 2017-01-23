@@ -38,7 +38,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
 
-    private static final long serialVersionUID = 1433658010;
+    private static final long serialVersionUID = 820765329;
 
     /**
      * The reference instance of <code>hrdb.hr_wx_wechat</code>
@@ -126,7 +126,7 @@ public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
     /**
      * The column <code>hrdb.hr_wx_wechat.passive_seeker</code>. 被动求职者开关，0：开启，1：不开启
      */
-    public final TableField<HrWxWechatRecord, Byte> PASSIVE_SEEKER = createField("passive_seeker", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("1", org.jooq.impl.SQLDataType.TINYINT)), this, "被动求职者开关，0：开启，1：不开启");
+    public final TableField<HrWxWechatRecord, Byte> PASSIVE_SEEKER = createField("passive_seeker", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.TINYINT)), this, "被动求职者开关，0：开启，1：不开启");
 
     /**
      * The column <code>hrdb.hr_wx_wechat.third_oauth</code>. 授权大岂第三方平台0：未授权 1：授权了
@@ -187,6 +187,16 @@ public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
      * The column <code>hrdb.hr_wx_wechat.hr_chat</code>. IM聊天开关，0：不开启，1：开启
      */
     public final TableField<HrWxWechatRecord, Byte> HR_CHAT = createField("hr_chat", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.TINYINT)), this, "IM聊天开关，0：不开启，1：开启");
+
+    /**
+     * The column <code>hrdb.hr_wx_wechat.show_qx_qrcode</code>. 显示仟寻聚合号二维码, 0:不允许，1:允许
+     */
+    public final TableField<HrWxWechatRecord, Integer> SHOW_QX_QRCODE = createField("show_qx_qrcode", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("1", org.jooq.impl.SQLDataType.INTEGER)), this, "显示仟寻聚合号二维码, 0:不允许，1:允许");
+
+    /**
+     * The column <code>hrdb.hr_wx_wechat.show_new_jd</code>. 显示新JD样式, 0:不启用, 1:启用
+     */
+    public final TableField<HrWxWechatRecord, Integer> SHOW_NEW_JD = createField("show_new_jd", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "显示新JD样式, 0:不启用, 1:启用");
 
     /**
      * Create a <code>hrdb.hr_wx_wechat</code> table reference
