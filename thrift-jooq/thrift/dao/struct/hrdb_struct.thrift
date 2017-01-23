@@ -89,3 +89,11 @@ struct HrHbSendRecordPojo {
     15: optional Timestamp create_time,
     16: optional i32 hb_item_id
 }
+
+struct HrOperationrecordStruct{
+    1: optional double admin_id,
+    2: optional double company_id,
+    3: optional double app_id,
+    4: optional double status_id,
+    5: optional i32 operate_tpl_id
+}

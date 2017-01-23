@@ -1,4 +1,4 @@
-package com.moseeker.baseorm.dao.user;
+package com.moseeker.baseorm.dao.userdb;
 
 import java.sql.Connection;
 import java.sql.SQLException;
