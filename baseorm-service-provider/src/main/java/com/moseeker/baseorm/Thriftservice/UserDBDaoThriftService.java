@@ -8,11 +8,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.baseorm.dao.user.UserDao;
-import com.moseeker.baseorm.dao.user.UserFavPositionDao;
+import com.moseeker.baseorm.dao.userdb.UserDao;
+import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.dao.userdb.UserFavPositionDao;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.service.UserDBDao.Iface;
+import com.moseeker.thrift.gen.dao.struct.UserEmployeePojo;
 import com.moseeker.thrift.gen.dao.struct.UserFavPositionPojo;
 import com.moseeker.thrift.gen.useraccounts.struct.User;
 
@@ -26,6 +28,9 @@ public class UserDBDaoThriftService implements Iface {
 	
 	@Autowired
 	private UserFavPositionDao favPositionDao;
+	
+	@Autowired
+	private UserEmployeeDao employeeDao;
 
 	@Override
 	public User getUser(CommonQuery query) throws TException {
@@ -56,5 +61,10 @@ public class UserDBDaoThriftService implements Iface {
 	@Override
 	public List<UserFavPositionPojo> getUserFavPositions(CommonQuery query) throws TException {
 		return favPositionDao.getUserFavPositions(query);
+	}
+
+	@Override
+	public UserEmployeePojo getEmployee(CommonQuery query) throws TException {
+		return employeeDao.getEmployee(query);
 	}
 }

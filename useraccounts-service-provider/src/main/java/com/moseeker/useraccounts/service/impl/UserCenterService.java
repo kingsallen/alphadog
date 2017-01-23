@@ -152,12 +152,32 @@ public class UserCenterService {
 		return forms;
 	}
 	
+	/**
+	 * 查找积分
+	 * @param userId
+	 * @return
+	 * @throws TException
+	 */
 	public List<AwardRecordForm> getAwardRecords(int userId) throws TException {
 		List<AwardRecordForm> awards = new ArrayList<>();
 		
-		
+		//参数校验
+		if(userId > 0) {
+			
+		}
+		//判断用户是否是员工
+		//查找积分记录
+		//查找申请
+		//查找职位
+		//封装数据
 		
 		return awards;
 	}
 	
+	
+	public boolean isEmployee(int userId) throws TException {
+		boolean flag =  false;
+		
+		return flag;
+	}
 }
