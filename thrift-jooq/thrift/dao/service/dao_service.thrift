@@ -71,7 +71,6 @@ service PositionDao {
 service DictDao {
         dict_struct.CityMap getDictMap(1:common_struct.CommonQuery query);
 }
-<<<<<<< HEAD
 
 service SearcheConditionDao {
 	list<useraccounts_struct.SearchCondition> getResources(1:common_struct.CommonQuery query);
@@ -87,7 +86,7 @@ service TalentpoolDao {
 	i32 postResource(1:dao_struct.Talentpool talentpool);
 	i32 putResource(1:dao_struct.Talentpool talentpool);
 }
-=======
+
 service ApplicationDao{
 		common_struct.Response getProcessAuth(1:list<i32> appIds,2:i32 companyId 3:i32 progressStatus);
 		common_struct.Response putApplication(1: application_struct.JobApplication application);
@@ -106,10 +105,6 @@ service HrDBDao{
 	    common_struct.Response postHrOperationrecord(1:hr_struct.HrOperationrecordStruct record);
 	    common_struct.Response getHrHistoryOperations(1:list<application_struct.ProcessValidationStruct> record);
 }
-<<<<<<< HEAD
->>>>>>> master
-=======
 service WxUserDao {
 	common_struct.Response getResource(1:common_struct.CommonQuery query);
 }
->>>>>>> feature/pc/v1.4.1
