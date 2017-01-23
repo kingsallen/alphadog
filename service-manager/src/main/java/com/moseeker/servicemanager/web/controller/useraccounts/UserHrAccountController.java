@@ -195,7 +195,7 @@ public class UserHrAccountController {
 	 * @param response
 	 * @return
 	 */
-	@RequestMapping(value = "/hraccount/talentpool", method = RequestMethod.POST)
+	@RequestMapping(value = "/hraccount/talentpool/in", method = RequestMethod.POST)
 	@ResponseBody
 	public String joinTalentpool(HttpServletRequest request, HttpServletResponse response) {
 		try {
@@ -225,7 +225,7 @@ public class UserHrAccountController {
 	 * @param response
 	 * @return
 	 */
-	@RequestMapping(value = "/hraccount/talentpool", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/hraccount/talentpool/out", method = RequestMethod.POST)
 	@ResponseBody
 	public String shiftOutTalentpool(HttpServletRequest request, HttpServletResponse response) {
 		try {
