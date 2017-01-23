@@ -115,6 +115,33 @@ struct BindAccountStruct {
     8: i32 remainNum,
     9: i32 binding
 }
+struct UserEmployeeStruct{
+	1: optional i32 id,
+	2: optional string employeeid,
+	3: optional i32 company_id,
+	4: optional i32 role_id,
+	5: optional i32 wxuser_id,
+	6: optional string ename,
+	7: optional i32 position_id,
+	8: optional i32 section_id,
+	9: optional string custom_field,	
+	10:optional i64 award
+}
+struct UserEmployeePointStruct{
+   1: optional i32 id,
+   2: optional double employee_id,
+   3: optional string reason,
+   4: optional i32 award,
+   5: optional double application_id,
+   6: optional double recom_wxuser,
+   7: optional double position_id,
+   8: optional double berecom_wxuser_id,
+   9: optional double award_config_id
+}
+struct UserEmployeePointSum{
+	1: optional i64 award,
+	2: optional i64 employee_id
+}
 /*
  * 个人中心推荐记录
  */
