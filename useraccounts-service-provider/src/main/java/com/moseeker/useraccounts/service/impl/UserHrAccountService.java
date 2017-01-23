@@ -553,13 +553,13 @@ public class UserHrAccountService {
 					// 将状态改为删除
 					talentpool.setStatus(1);
 					resultRow += talentpoolDao.putResource(talentpool);
-					
-				} 
+				}
 			}
 			if (resultRow <= 0) {
 				return ResponseUtils.fail(ConstantErrorCodeMessage.THIRD_PARTY_POSITION_UPSERT_FAILED);
+			} else {
+				return ResponseUtils.success("");
 			}
-			return ResponseUtils.success("");
 		} catch (TException e) {
 			logger.error(e.getMessage(), e);
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
