@@ -16,7 +16,9 @@ import com.moseeker.thrift.gen.dao.struct.AwardConfigTpl;
 import com.moseeker.thrift.gen.dao.struct.UserFavPositionPojo;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm;
+import com.moseeker.thrift.gen.useraccounts.struct.AwardRecordForm;
 import com.moseeker.thrift.gen.useraccounts.struct.FavPositionForm;
+import com.moseeker.thrift.gen.useraccounts.struct.RecommendationForm;
 import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
 
 /**
@@ -136,4 +138,26 @@ public class UserCenterService {
 		
 		return favPositions;
 	}
+	
+	/**
+	 * (todo)
+	 * 查询历史推荐记录
+	 * @param userId 用户编号
+	 * @return 历史推荐记录
+	 * @throws TException thrift异常类
+	 */
+	public List<RecommendationForm> getRecommendations(int userId) throws TException {
+		List<RecommendationForm> forms = new ArrayList<>();
+		
+		return forms;
+	}
+	
+	public List<AwardRecordForm> getAwardRecords(int userId) throws TException {
+		List<AwardRecordForm> awards = new ArrayList<>();
+		
+		
+		
+		return awards;
+	}
+	
 }

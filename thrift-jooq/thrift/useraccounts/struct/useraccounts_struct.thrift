@@ -157,3 +157,12 @@ struct RecommendationForm {
     13: optional i32 view_number,               //点击次数
     14: optional string headimgurl              //头像
 }
+/*
+ * 个人中心积分记录（只有用户是员工时才具备）
+ */
+struct AwardRecordForm {
+    1: optional i32 id,                //积分记录表编号
+    2: optional string reason,         //申请编号
+    3: optional string title,          //职位名称
+    4: optional Timestamp create_time  //创建时间
+}
