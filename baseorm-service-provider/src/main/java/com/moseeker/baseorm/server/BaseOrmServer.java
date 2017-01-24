@@ -15,6 +15,7 @@ import com.moseeker.baseorm.Thriftservice.PositionDaoThriftService;
 import com.moseeker.baseorm.Thriftservice.PositionThriftService;
 import com.moseeker.baseorm.Thriftservice.UserDaoThriftService;
 import com.moseeker.baseorm.Thriftservice.WordpressDaoThriftService;
+import com.moseeker.baseorm.Thriftservice.WxUserDaoThriftService;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.MultiRegServer;
 /*
@@ -46,8 +47,8 @@ public class BaseOrmServer {
 	        			acac.getBean(PositionThriftService.class),
 	        			acac.getBean(ApplicationDaoThriftService.class),
 	        			acac.getBean(ConfigDaothriftService.class),
-	        			acac.getBean(HrDBThriftService.class)
-	        			
+	        			acac.getBean(HrDBThriftService.class),
+	        			acac.getBean(WxUserDaoThriftService.class)
 	        	);
 	            server.start();
 
