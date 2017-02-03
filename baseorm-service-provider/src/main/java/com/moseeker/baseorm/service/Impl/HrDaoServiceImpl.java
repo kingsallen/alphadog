@@ -55,12 +55,40 @@ public class HrDaoServiceImpl implements HrDaoService {
         }
         return result;
     }
+    
+    @Override
+	public List<HrHbConfigPojo> getHbConfigs(CommonQuery query) throws TException {
+    	List<HrHbConfigPojo> result = new ArrayList<HrHbConfigPojo>();
+        try {
+            result = BeanUtils.DBToStruct(HrHbConfigPojo.class, hrHbConfigDao.getResources(query));
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+        }
+        return result;
+	}
 
     @Override
     public HrHbPositionBindingPojo getHbPositionBinding(CommonQuery query) throws TException {
     	HrHbPositionBindingPojo result = new HrHbPositionBindingPojo();
         try {
         	result = BeanUtils.DBToStruct(HrHbPositionBindingPojo.class, hrHbPositionBindingDao.getResource(query));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+        }
+        return result;
+    }
+
+    @Override
+    public List<HrHbPositionBindingPojo> getHbPositionBindings(CommonQuery query) throws TException {
+        List<HrHbPositionBindingPojo> result = new ArrayList<HrHbPositionBindingPojo>();
+        try {
+            result = BeanUtils.DBToStruct(HrHbPositionBindingPojo.class, hrHbPositionBindingDao.getResources(query));
+
         }
         catch (Exception e) {
             e.printStackTrace();

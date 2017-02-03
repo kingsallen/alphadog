@@ -21,7 +21,6 @@ public class HrDbDaoThriftService implements Iface {
     @Autowired
     private HrDaoService hrDaoService;
 
-
     @Override
     public HrHbConfigPojo getHbConfig(CommonQuery query) throws TException {
         return hrDaoService.getHbConfig(query);
@@ -30,6 +29,11 @@ public class HrDbDaoThriftService implements Iface {
     @Override
     public HrHbPositionBindingPojo getHbPositionBinding(CommonQuery query) throws TException {
         return hrDaoService.getHbPositionBinding(query);
+    }
+
+    @Override
+    public List<HrHbPositionBindingPojo> getHbPositionBindings(CommonQuery query) throws TException {
+        return hrDaoService.getHbPositionBindings(query);
     }
 
     @Override
@@ -51,4 +55,9 @@ public class HrDbDaoThriftService implements Iface {
     public HrHbSendRecordPojo getHbSendRecord(CommonQuery query) throws TException {
         return hrDaoService.getHbSendRecord(query);
     }
+
+	@Override
+	public List<HrHbConfigPojo> getHbConfigs(CommonQuery query) throws TException {
+		return hrDaoService.getHbConfigs(query);
+	}
 }

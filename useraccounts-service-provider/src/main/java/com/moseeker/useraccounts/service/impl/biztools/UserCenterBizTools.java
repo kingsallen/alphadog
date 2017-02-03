@@ -1,18 +1,15 @@
 package com.moseeker.useraccounts.service.impl.biztools;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import com.moseeker.thrift.gen.position.struct.Position;
 import org.apache.thrift.TException;
-import org.junit.Test;
 import org.springframework.stereotype.Component;
 
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.dao.service.JobDBDao;
-import com.moseeker.thrift.gen.position.struct.Position;
 
 /**
  * 个人中心片段业务处理类

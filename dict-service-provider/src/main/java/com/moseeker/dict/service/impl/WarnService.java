@@ -38,7 +38,7 @@ public class WarnService {
 	 */
 	public static void notify(RedisException e) {
 		try {
-			getInstance().sendOperator(new WarnBean(String.valueOf(e.getAppid()), e.getEventKey(), e.getMessage(), e.getLocation().concat(":").concat(String.valueOf(e.getStackTrace()[0].getLineNumber()))));
+			getInstance().sendOperator(new WarnBean(String.valueOf(e.getAppid()), e.getEventKey(),null, e.getMessage(), e.getLocation().concat(":").concat(String.valueOf(e.getStackTrace()[0].getLineNumber()))));
 		} catch (TException te) {
 			log.error("sendOperator error:", te);
 		}

@@ -2,6 +2,14 @@ package com.moseeker.position.thrift;
 
 import java.util.List;
 
+import com.moseeker.thrift.gen.position.struct.Position;
+import com.moseeker.thrift.gen.position.struct.RpExtInfo;
+import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
+import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
+import com.moseeker.thrift.gen.position.struct.WechatPositionListData;
+import com.moseeker.thrift.gen.position.struct.WechatPositionListQuery;
+import com.moseeker.thrift.gen.position.struct.WechatRpPositionListData;
+import com.moseeker.thrift.gen.position.struct.WechatShareData;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,9 +23,6 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.position.service.PositionServices.Iface;
-import com.moseeker.thrift.gen.position.struct.Position;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
 
 @Service
 public class PositionServicesImpl implements Iface {
@@ -75,7 +80,7 @@ public class PositionServicesImpl implements Iface {
 
 	@Override
 	public List<ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(List<ThirdPartyPosition> forms,
-			Position position) throws TException {
+																				 Position position) throws TException {
 		return service.changeToThirdPartyPosition(forms, position);
 	}
 
@@ -93,5 +98,25 @@ public class PositionServicesImpl implements Iface {
 	@Override
 	public List<ThirdPartyPositionData> getThirdPartyPositions(CommonQuery query) throws TException {
 		return service.getThirdPartyPositions(query);
+	}
+
+	@Override
+	public List<WechatPositionListData> getPositionList(WechatPositionListQuery query) throws TException {
+		return service.getPositionList(query);
+	}
+
+	@Override
+	public List<RpExtInfo> getPositionListRpExt(List<Integer> pids) throws TException {
+		return service.getPositionListRpExt(pids);
+	}
+
+	@Override
+	public WechatShareData getShareInfo(int hb_config_id) throws TException {
+		return service.getShareInfo(hb_config_id);
+	}
+
+	@Override
+	public List<WechatRpPositionListData> getRpPositionList(int hb_config_id) throws TException {
+		return service.getRpPositionList(hb_config_id);
 	}
 }

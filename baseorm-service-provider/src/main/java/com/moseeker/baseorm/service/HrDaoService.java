@@ -13,8 +13,12 @@ import java.util.List;
 public interface HrDaoService {
 
     HrHbConfigPojo getHbConfig(CommonQuery query) throws TException;
+    
+    List<HrHbConfigPojo> getHbConfigs(CommonQuery query) throws TException;
 
     HrHbPositionBindingPojo getHbPositionBinding(CommonQuery query) throws TException;
+
+    List<HrHbPositionBindingPojo> getHbPositionBindings(CommonQuery query) throws TException;
 
     HrHbItemsPojo getHbItem(CommonQuery query) throws TException;
 
@@ -23,4 +27,5 @@ public interface HrDaoService {
     HrHbScratchCardPojo getHbScratchCard(CommonQuery query) throws TException;
 
     HrHbSendRecordPojo getHbSendRecord(CommonQuery query) throws TException;
+    
 }

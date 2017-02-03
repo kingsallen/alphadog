@@ -5,7 +5,7 @@ include "../../dao/struct/dao_struct.thrift"
 
 namespace java com.moseeker.thrift.gen.position.service
 /*
-	查询第三方职位职能
+    查询第三方职位职能
 */
 service PositionServices {
     common_struct.Response getResources(1:common_struct.CommonQuery query);
@@ -22,12 +22,23 @@ service PositionServices {
     //是否可以刷新
     bool ifAllowRefresh(1: i32 positionId, 2:i32 channel);
     list<dao_struct.ThirdPartyPositionData> getThirdPartyPositions(1: common_struct.CommonQuery query);
+
+    //微信端职位列表
+    list<position_struct.WechatPositionListData> getPositionList(1: position_struct.WechatPositionListQuery query);
+
+    //微信端职位列表的附加红包信息
+    list<position_struct.RpExtInfo> getPositionListRpExt(1: list<i32> pids);
+
+    //微信红包职位列表
+    list<position_struct.WechatRpPositionListData> getRpPositionList(1: i32 hb_config_id);
+
+    //微信获取红包转发信息
+    position_struct.WechatShareData getShareInfo(1: i32 hb_config_id);
 }
 /*
-	查询第三方自定义职能
+    查询第三方自定义职能
 */
 service PositionDao{
-	common_struct.Response getJobCustoms(1:common_struct.CommonQuery query);
-	common_struct.Response getJobOccupations(1:common_struct.CommonQuery query);
+    common_struct.Response getJobCustoms(1:common_struct.CommonQuery query);
+    common_struct.Response getJobOccupations(1:common_struct.CommonQuery query);
 }
-

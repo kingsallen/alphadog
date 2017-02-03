@@ -41,7 +41,8 @@ service CompanyDao {
 	common_struct.Response upsertThirdPartyPositions(1: list<dao_struct.ThirdPartyPositionData> positions);
 	common_struct.Response updatePartyAccountByCompanyIdChannel(1: dao_struct.ThirdPartAccountData account);
 	//查找公司信息
-	company_struct.Hrcompany getCompany(1:common_struct.CommonQuery query);
+	company_struct.Hrcompany getCompany(1: common_struct.CommonQuery query);
+	list<company_struct.Hrcompany> getCompanies(1: common_struct.CommonQuery query);
 	common_struct.Response getHrCompanyConfig(1:common_struct.CommonQuery query);
 }
 

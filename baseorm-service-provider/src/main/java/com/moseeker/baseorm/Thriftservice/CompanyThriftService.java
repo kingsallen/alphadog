@@ -115,6 +115,11 @@ public class CompanyThriftService implements Iface {
 		return companyDao.getCompany(query);
 	}
 
+	@Override
+	public List<Hrcompany> getCompanies(CommonQuery query) throws TException {
+		return companyDao.getCompanies(query);
+	}
+
 	private void copy(ThirdPartAccountData data, HrThirdPartyAccountRecord record) {
 		data.setId(record.getId());
 		data.setBinding(record.getBinding());

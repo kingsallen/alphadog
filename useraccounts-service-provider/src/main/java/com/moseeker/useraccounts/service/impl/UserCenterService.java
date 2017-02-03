@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.moseeker.thrift.gen.position.struct.Position;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
-import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm;
 import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
 
