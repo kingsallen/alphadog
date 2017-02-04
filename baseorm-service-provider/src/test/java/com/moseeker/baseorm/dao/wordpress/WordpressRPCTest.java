@@ -7,7 +7,6 @@ import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TFastFramedTransport;
 import org.apache.thrift.transport.TSocket;
 import org.apache.thrift.transport.TTransport;
-import org.junit.Test;
 
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.thrift.gen.dao.service.WordpressDao.Client;
@@ -17,7 +16,7 @@ import com.moseeker.thrift.gen.dao.struct.WordpressTermRelationships;
 
 public class WordpressRPCTest {
 
-	@Test
+	//@Test
 	public void test() {
 		TTransport transport = null;
 		try {
