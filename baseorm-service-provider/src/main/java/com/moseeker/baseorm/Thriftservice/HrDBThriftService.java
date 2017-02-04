@@ -38,8 +38,18 @@ public class HrDBThriftService implements Iface {
 	}
 
 	@Override
+	public List<HrHbConfigPojo> getHbConfigs(CommonQuery query) throws TException {
+		return hrDaoService.getHbConfigs(query);
+	}
+
+	@Override
 	public HrHbPositionBindingPojo getHbPositionBinding(CommonQuery query) throws TException {
 		return hrDaoService.getHbPositionBinding(query);
+	}
+
+	@Override
+	public List<HrHbPositionBindingPojo> getHbPositionBindings(CommonQuery query) throws TException {
+		return hrDaoService.getHbPositionBindings(query);
 	}
 
 	@Override
