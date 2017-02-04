@@ -60,69 +60,71 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 			conn = DBConnHelper.DBConn.getConn();
 			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 			SelectJoinStep<Record> table = create.select().from(tableLike);
-			if (query.getEqualFilter() != null
-					&& query.getEqualFilter().size() > 0) {
-				Map<String, String> equalFilter = query.getEqualFilter();
-				for (Entry<String, String> entry : equalFilter.entrySet()) {
-					Field<?> field = tableLike.field(entry.getKey());
-					if (field != null) {
-						if(entry.getValue().startsWith("[") && entry.getValue().endsWith("]")) {
-							String[] arrayValue = entry.getValue().substring(1, entry.getValue().length()-1).split(",");
-							Condition condition = null;
-							for(String value : arrayValue) {
-								if(condition == null) {
-									condition = field.strictEqual(BeanUtils.convertTo(
-											value, field.getType()));
-								} else {
-									condition = condition.or(field.strictEqual(BeanUtils.convertTo(
-											value, field.getType())));
+			if(query != null) {
+				//解析equal fileter 内容
+				if (query.getEqualFilter() != null
+						&& query.getEqualFilter().size() > 0) {
+					Map<String, String> equalFilter = query.getEqualFilter();
+					for (Entry<String, String> entry : equalFilter.entrySet()) {
+						Field<?> field = tableLike.field(entry.getKey());
+						if (field != null) {
+							if(entry.getValue().startsWith("[") && entry.getValue().endsWith("]")) {
+								String[] arrayValue = entry.getValue().substring(1, entry.getValue().length()-1).split(",");
+								Condition condition = null;
+								for(String value : arrayValue) {
+									if(condition == null) {
+										condition = field.strictEqual(BeanUtils.convertTo(
+												value, field.getType()));
+									} else {
+										condition = condition.or(field.strictEqual(BeanUtils.convertTo(
+												value, field.getType())));
+									}
 								}
+								table.where(condition);
+							} else {
+								table.where(field.strictEqual(BeanUtils.convertTo(
+										entry.getValue(), field.getType())));
 							}
-							table.where(condition);
-						} else {
-							table.where(field.strictEqual(BeanUtils.convertTo(
-									entry.getValue(), field.getType())));
 						}
 					}
 				}
-			}
+				//解析排序
+				if (!StringUtils.isNullOrEmpty(query.getSortby())) {
+					String[] sortBy = query.getSortby().split(",");
+					String[] order = query.getOrder().split(",");
 
-			if (!StringUtils.isNullOrEmpty(query.getSortby())) {
-				String[] sortBy = query.getSortby().split(",");
-				String[] order = query.getOrder().split(",");
-
-				List<SortField<?>> fields = new ArrayList<>(sortBy.length);
-				SortOrder so = SortOrder.ASC;
-				for (int i = 0; i < sortBy.length; i++) {
-					Field<?> field = tableLike.field(sortBy[i]);
-					if (sortBy.length == order.length
-							&& !StringUtils.isNullOrEmpty(order[i])
-							&& order[i].toLowerCase().equals("desc")) {
-						so = SortOrder.DESC;
-					}
-					if (field != null) {
-						switch (so) {
-							case ASC:
-								fields.add(field.asc());
-								break;
-							case DESC:
-								fields.add(field.desc());
-								break;
-							default:
+					List<SortField<?>> fields = new ArrayList<>(sortBy.length);
+					SortOrder so = SortOrder.ASC;
+					for (int i = 0; i < sortBy.length; i++) {
+						Field<?> field = tableLike.field(sortBy[i]);
+						if (sortBy.length == order.length
+								&& !StringUtils.isNullOrEmpty(order[i])
+								&& order[i].toLowerCase().equals("desc")) {
+							so = SortOrder.DESC;
+						}
+						if (field != null) {
+							switch (so) {
+								case ASC:
+									fields.add(field.asc());
+									break;
+								case DESC:
+									fields.add(field.desc());
+									break;
+								default:
+							}
 						}
 					}
+					table.orderBy(fields);
 				}
-				table.orderBy(fields);
+				/* 分段查找数据库结果集 */
+				int page = 1;
+				int per_page = 0;
+				if (query != null && query.getPage() > 0) {
+						page = query.getPage();
+				}
+				per_page = query.getPer_page()>0 ? query.getPer_page() : 10 ;
+				table.limit((page-1)*per_page, per_page);
 			}
-
-			/* 分段查找数据库结果集 */
-			int page = 1;
-			int per_page = 0;
-			if (query.getPage() > 0) {
-					page = query.getPage();
-			}
-			per_page = query.getPer_page()>0 ? query.getPer_page() : 10 ;
-			table.limit((page-1)*per_page, per_page);
 
 			Result<Record> result = table.fetch();
 
@@ -133,6 +135,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 			}
 		} catch (Exception e) {
 			logger.error("error", e);
+			e.printStackTrace();
 			throw new Exception(e);
 		} finally {
 			if(conn != null && !conn.isClosed()) {

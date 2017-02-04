@@ -18,6 +18,7 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.useraccounts.service.UserCenterService;
 import com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm;
+import com.moseeker.thrift.gen.useraccounts.struct.FavPositionForm;
 
 @Controller
 public class UserCenterController {
@@ -29,9 +30,22 @@ public class UserCenterController {
 	
 	@RequestMapping(value = "/user/{id}/applications", method = RequestMethod.GET)
 	@ResponseBody
-	public String newsletter(HttpServletRequest request, HttpServletResponse response, @PathVariable int id) {
+	public String applications(HttpServletRequest request, HttpServletResponse response, @PathVariable int id) {
 		try {
 			List<ApplicationRecordsForm> forms = userCenterService.getApplications(id);
+			return ResponseLogNotification.success(request, ResponseUtils.success(forms));
+		} catch (Exception e) {
+			return ResponseLogNotification.fail(request, e.getMessage());
+		} finally {
+			//do nothing
+		}
+	}
+	
+	@RequestMapping(value = "/user/{id}/fav-position", method = RequestMethod.GET)
+	@ResponseBody
+	public String favPositions(HttpServletRequest request, HttpServletResponse response, @PathVariable int id) {
+		try {
+			List<FavPositionForm> forms = userCenterService.getFavPositions(id);
 			return ResponseLogNotification.success(request, ResponseUtils.success(forms));
 		} catch (Exception e) {
 			return ResponseLogNotification.fail(request, e.getMessage());

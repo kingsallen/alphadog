@@ -165,7 +165,11 @@ public class CompanyThriftService implements Iface {
      */
 	@Override
 	public Response getHrCompanyConfig(CommonQuery query){
-		// TODO Auto-generated method stub
 		return hrCompanyService.getCompanyConf(query);
+	}
+
+	@Override
+	public List<Hrcompany> getCompanies(CommonQuery query) throws TException {
+		return companyDao.getCompanies(query);
 	}
 }

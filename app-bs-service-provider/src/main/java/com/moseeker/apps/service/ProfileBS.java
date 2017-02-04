@@ -31,8 +31,8 @@ public class ProfileBS {
 	UseraccountsServices.Iface useraccountsServices = ServiceManager.SERVICEMANAGER
 			.getService(UseraccountsServices.Iface.class);
 	
-	com.moseeker.thrift.gen.dao.service.UserDao.Iface userDao = ServiceManager.SERVICEMANAGER
-			.getService(com.moseeker.thrift.gen.dao.service.UserDao.Iface.class);
+	com.moseeker.thrift.gen.dao.service.UserDBDao.Iface userDao = ServiceManager.SERVICEMANAGER
+			.getService(com.moseeker.thrift.gen.dao.service.UserDBDao.Iface.class);
 	
 	WholeProfileServices.Iface wholeProfileService = ServiceManager.SERVICEMANAGER
 			.getService(WholeProfileServices.Iface.class);

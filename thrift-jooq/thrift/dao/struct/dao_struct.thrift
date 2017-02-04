@@ -65,9 +65,9 @@ struct ThirdPartyPositionData {
 	1: i32 id,
 	2: i32 position_id,
 	3: string third_part_position_id,
-	4: byte channel,
-	5: byte is_synchronization,
-	6: byte is_refresh,
+	4: i8 channel,
+	5: i8 is_synchronization,
+	6: i8 is_refresh,
 	7: string sync_time,
 	8: string refresh_time,
 	9: string update_time,
@@ -82,4 +82,10 @@ struct HRCompanyConfData{
     4:string app_reply,
     5:string job_custom_title,
     6:string job_occupation
+}
+struct HistoryOperate{
+	1: optional i32 id,
+	2: optional i64 app_id,
+	3: optional i32 operate_tpl_id,
+	4: optional i32 recruit_order
 }

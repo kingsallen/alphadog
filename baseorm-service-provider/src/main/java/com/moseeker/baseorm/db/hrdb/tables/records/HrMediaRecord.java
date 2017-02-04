@@ -59,14 +59,22 @@ public class HrMediaRecord extends UpdatableRecordImpl<HrMediaRecord> implements
     }
 
     /**
+<<<<<<< HEAD
      * Setter for <code>hrdb.hr_media.attrs</code>. 客户属性，可选 字段
+=======
+     * Setter for <code>hrdb.hr_media.attrs</code>. 客户属性，可选字段
+>>>>>>> master
      */
     public void setAttrs(String value) {
         set(2, value);
     }
 
     /**
+<<<<<<< HEAD
      * Getter for <code>hrdb.hr_media.attrs</code>. 客户属性，可选 字段
+=======
+     * Getter for <code>hrdb.hr_media.attrs</code>. 客户属性，可选字段
+>>>>>>> master
      */
     public String getAttrs() {
         return (String) get(2);

@@ -6,6 +6,8 @@ include "../../position/struct/position_struct.thrift"
 include "../../dict/struct/dict_struct.thrift"
 include "../struct/dao_struct.thrift"
 include "../../company/struct/company_struct.thrift"
+include "../../application/struct/application_struct.thrift"
+include "../../hr/struct/hr_struct.thrift"
 
 service UserHrAccountDao {
 	common_struct.Response getAccount(1:common_struct.CommonQuery query);
@@ -41,15 +43,9 @@ service CompanyDao {
 	common_struct.Response upsertThirdPartyPositions(1: list<dao_struct.ThirdPartyPositionData> positions);
 	common_struct.Response updatePartyAccountByCompanyIdChannel(1: dao_struct.ThirdPartAccountData account);
 	//查找公司信息
-	company_struct.Hrcompany getCompany(1: common_struct.CommonQuery query);
-	list<company_struct.Hrcompany> getCompanies(1: common_struct.CommonQuery query);
+	company_struct.Hrcompany getCompany(1:common_struct.CommonQuery query);
+	list<company_struct.Hrcompany> getCompanies(1:common_struct.CommonQuery query);
 	common_struct.Response getHrCompanyConfig(1:common_struct.CommonQuery query);
-}
-
-service UserDao {
-	useraccounts_struct.User getUser(1:common_struct.CommonQuery query);
-	//保存用户	
-	useraccounts_struct.User saveUser(1:useraccounts_struct.User user);
 }
 
 service PositionDao {
@@ -64,4 +60,17 @@ service PositionDao {
 
 service DictDao {
         dict_struct.CityMap getDictMap(1:common_struct.CommonQuery query);
+}
+service ApplicationDao{
+		common_struct.Response getProcessAuth(1:list<i32> appIds,2:i32 companyId 3:i32 progressStatus);
+		common_struct.Response putApplication(1: application_struct.JobApplication application);
+		common_struct.Response postApplication(1: application_struct.JobApplication application);
+		common_struct.Response putApplications(1: list<application_struct.JobApplication> application);
+		common_struct.Response postApplications(1:list<application_struct.JobApplication> application);
+		common_struct.Response getApplicationsByList(1:list<i32> params);
+}
+service ConfigDao{
+        common_struct.Response getConfigSysPointsConfTpls(1:common_struct.CommonQuery query);
+        common_struct.Response getConfigSysPointsConfTpl(1:common_struct.CommonQuery query);
+        common_struct.Response getRecruitProcesses(1:i32 companyId);
 }

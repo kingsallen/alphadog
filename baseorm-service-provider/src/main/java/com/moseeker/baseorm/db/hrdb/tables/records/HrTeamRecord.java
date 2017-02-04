@@ -75,14 +75,22 @@ public class HrTeamRecord extends UpdatableRecordImpl<HrTeamRecord> implements R
     }
 
     /**
+<<<<<<< HEAD
      * Setter for <code>hrdb.hr_team.description</code>. 团队介绍
+=======
+     * Setter for <code>hrdb.hr_team.description</code>.
+>>>>>>> master
      */
     public void setDescription(String value) {
         set(3, value);
     }
 
     /**
+<<<<<<< HEAD
      * Getter for <code>hrdb.hr_team.description</code>. 团队介绍
+=======
+     * Getter for <code>hrdb.hr_team.description</code>.
+>>>>>>> master
      */
     public String getDescription() {
         return (String) get(3);

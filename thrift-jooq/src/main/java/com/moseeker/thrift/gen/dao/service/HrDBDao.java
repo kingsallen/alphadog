@@ -14,11 +14,7 @@ public class HrDBDao {
 
     public com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo getHbConfig(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException;
 
-    public java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo> getHbConfigs(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException;
-
     public com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo getHbPositionBinding(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException;
-
-    public java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo> getHbPositionBindings(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException;
 
     public com.moseeker.thrift.gen.dao.struct.HrHbItemsPojo getHbItem(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException;
 
@@ -28,17 +24,19 @@ public class HrDBDao {
 
     public com.moseeker.thrift.gen.dao.struct.HrHbSendRecordPojo getHbSendRecord(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException;
 
+    public com.moseeker.thrift.gen.common.struct.Response postHrOperationrecords(java.util.List<com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct> record) throws org.apache.thrift.TException;
+
+    public com.moseeker.thrift.gen.common.struct.Response postHrOperationrecord(com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct record) throws org.apache.thrift.TException;
+
+    public com.moseeker.thrift.gen.common.struct.Response getHrHistoryOperations(java.util.List<com.moseeker.thrift.gen.application.struct.ProcessValidationStruct> record) throws org.apache.thrift.TException;
+
   }
 
   public interface AsyncIface {
 
     public void getHbConfig(com.moseeker.thrift.gen.common.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo> resultHandler) throws org.apache.thrift.TException;
 
-    public void getHbConfigs(com.moseeker.thrift.gen.common.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo>> resultHandler) throws org.apache.thrift.TException;
-
     public void getHbPositionBinding(com.moseeker.thrift.gen.common.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo> resultHandler) throws org.apache.thrift.TException;
-
-    public void getHbPositionBindings(com.moseeker.thrift.gen.common.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo>> resultHandler) throws org.apache.thrift.TException;
 
     public void getHbItem(com.moseeker.thrift.gen.common.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.HrHbItemsPojo> resultHandler) throws org.apache.thrift.TException;
 
@@ -47,6 +45,12 @@ public class HrDBDao {
     public void getHbScratchCard(com.moseeker.thrift.gen.common.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.HrHbScratchCardPojo> resultHandler) throws org.apache.thrift.TException;
 
     public void getHbSendRecord(com.moseeker.thrift.gen.common.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.HrHbSendRecordPojo> resultHandler) throws org.apache.thrift.TException;
+
+    public void postHrOperationrecords(java.util.List<com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct> record, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+
+    public void postHrOperationrecord(com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct record, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+
+    public void getHrHistoryOperations(java.util.List<com.moseeker.thrift.gen.application.struct.ProcessValidationStruct> record, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -93,29 +97,6 @@ public class HrDBDao {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getHbConfig failed: unknown result");
     }
 
-    public java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo> getHbConfigs(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException
-    {
-      send_getHbConfigs(query);
-      return recv_getHbConfigs();
-    }
-
-    public void send_getHbConfigs(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException
-    {
-      getHbConfigs_args args = new getHbConfigs_args();
-      args.setQuery(query);
-      sendBase("getHbConfigs", args);
-    }
-
-    public java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo> recv_getHbConfigs() throws org.apache.thrift.TException
-    {
-      getHbConfigs_result result = new getHbConfigs_result();
-      receiveBase(result, "getHbConfigs");
-      if (result.isSetSuccess()) {
-        return result.success;
-      }
-      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getHbConfigs failed: unknown result");
-    }
-
     public com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo getHbPositionBinding(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException
     {
       send_getHbPositionBinding(query);
@@ -137,29 +118,6 @@ public class HrDBDao {
         return result.success;
       }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getHbPositionBinding failed: unknown result");
-    }
-
-    public java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo> getHbPositionBindings(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException
-    {
-      send_getHbPositionBindings(query);
-      return recv_getHbPositionBindings();
-    }
-
-    public void send_getHbPositionBindings(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException
-    {
-      getHbPositionBindings_args args = new getHbPositionBindings_args();
-      args.setQuery(query);
-      sendBase("getHbPositionBindings", args);
-    }
-
-    public java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo> recv_getHbPositionBindings() throws org.apache.thrift.TException
-    {
-      getHbPositionBindings_result result = new getHbPositionBindings_result();
-      receiveBase(result, "getHbPositionBindings");
-      if (result.isSetSuccess()) {
-        return result.success;
-      }
-      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getHbPositionBindings failed: unknown result");
     }
 
     public com.moseeker.thrift.gen.dao.struct.HrHbItemsPojo getHbItem(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException
@@ -254,6 +212,75 @@ public class HrDBDao {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getHbSendRecord failed: unknown result");
     }
 
+    public com.moseeker.thrift.gen.common.struct.Response postHrOperationrecords(java.util.List<com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct> record) throws org.apache.thrift.TException
+    {
+      send_postHrOperationrecords(record);
+      return recv_postHrOperationrecords();
+    }
+
+    public void send_postHrOperationrecords(java.util.List<com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct> record) throws org.apache.thrift.TException
+    {
+      postHrOperationrecords_args args = new postHrOperationrecords_args();
+      args.setRecord(record);
+      sendBase("postHrOperationrecords", args);
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response recv_postHrOperationrecords() throws org.apache.thrift.TException
+    {
+      postHrOperationrecords_result result = new postHrOperationrecords_result();
+      receiveBase(result, "postHrOperationrecords");
+      if (result.isSetSuccess()) {
+        return result.success;
+      }
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postHrOperationrecords failed: unknown result");
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response postHrOperationrecord(com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct record) throws org.apache.thrift.TException
+    {
+      send_postHrOperationrecord(record);
+      return recv_postHrOperationrecord();
+    }
+
+    public void send_postHrOperationrecord(com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct record) throws org.apache.thrift.TException
+    {
+      postHrOperationrecord_args args = new postHrOperationrecord_args();
+      args.setRecord(record);
+      sendBase("postHrOperationrecord", args);
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response recv_postHrOperationrecord() throws org.apache.thrift.TException
+    {
+      postHrOperationrecord_result result = new postHrOperationrecord_result();
+      receiveBase(result, "postHrOperationrecord");
+      if (result.isSetSuccess()) {
+        return result.success;
+      }
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postHrOperationrecord failed: unknown result");
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response getHrHistoryOperations(java.util.List<com.moseeker.thrift.gen.application.struct.ProcessValidationStruct> record) throws org.apache.thrift.TException
+    {
+      send_getHrHistoryOperations(record);
+      return recv_getHrHistoryOperations();
+    }
+
+    public void send_getHrHistoryOperations(java.util.List<com.moseeker.thrift.gen.application.struct.ProcessValidationStruct> record) throws org.apache.thrift.TException
+    {
+      getHrHistoryOperations_args args = new getHrHistoryOperations_args();
+      args.setRecord(record);
+      sendBase("getHrHistoryOperations", args);
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response recv_getHrHistoryOperations() throws org.apache.thrift.TException
+    {
+      getHrHistoryOperations_result result = new getHrHistoryOperations_result();
+      receiveBase(result, "getHrHistoryOperations");
+      if (result.isSetSuccess()) {
+        return result.success;
+      }
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getHrHistoryOperations failed: unknown result");
+    }
+
   }
   public static class AsyncClient extends org.apache.thrift.async.TAsyncClient implements AsyncIface {
     public static class Factory implements org.apache.thrift.async.TAsyncClientFactory<AsyncClient> {
@@ -304,38 +331,6 @@ public class HrDBDao {
       }
     }
 
-    public void getHbConfigs(com.moseeker.thrift.gen.common.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo>> resultHandler) throws org.apache.thrift.TException {
-      checkReady();
-      getHbConfigs_call method_call = new getHbConfigs_call(query, resultHandler, this, ___protocolFactory, ___transport);
-      this.___currentMethod = method_call;
-      ___manager.call(method_call);
-    }
-
-    public static class getHbConfigs_call extends org.apache.thrift.async.TAsyncMethodCall<java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo>> {
-      private com.moseeker.thrift.gen.common.struct.CommonQuery query;
-      public getHbConfigs_call(com.moseeker.thrift.gen.common.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo>> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
-        super(client, protocolFactory, transport, resultHandler, false);
-        this.query = query;
-      }
-
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getHbConfigs", org.apache.thrift.protocol.TMessageType.CALL, 0));
-        getHbConfigs_args args = new getHbConfigs_args();
-        args.setQuery(query);
-        args.write(prot);
-        prot.writeMessageEnd();
-      }
-
-      public java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo> getResult() throws org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new java.lang.IllegalStateException("Method call not finished!");
-        }
-        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
-        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        return (new Client(prot)).recv_getHbConfigs();
-      }
-    }
-
     public void getHbPositionBinding(com.moseeker.thrift.gen.common.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       getHbPositionBinding_call method_call = new getHbPositionBinding_call(query, resultHandler, this, ___protocolFactory, ___transport);
@@ -365,38 +360,6 @@ public class HrDBDao {
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
         return (new Client(prot)).recv_getHbPositionBinding();
-      }
-    }
-
-    public void getHbPositionBindings(com.moseeker.thrift.gen.common.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo>> resultHandler) throws org.apache.thrift.TException {
-      checkReady();
-      getHbPositionBindings_call method_call = new getHbPositionBindings_call(query, resultHandler, this, ___protocolFactory, ___transport);
-      this.___currentMethod = method_call;
-      ___manager.call(method_call);
-    }
-
-    public static class getHbPositionBindings_call extends org.apache.thrift.async.TAsyncMethodCall<java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo>> {
-      private com.moseeker.thrift.gen.common.struct.CommonQuery query;
-      public getHbPositionBindings_call(com.moseeker.thrift.gen.common.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo>> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
-        super(client, protocolFactory, transport, resultHandler, false);
-        this.query = query;
-      }
-
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getHbPositionBindings", org.apache.thrift.protocol.TMessageType.CALL, 0));
-        getHbPositionBindings_args args = new getHbPositionBindings_args();
-        args.setQuery(query);
-        args.write(prot);
-        prot.writeMessageEnd();
-      }
-
-      public java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo> getResult() throws org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new java.lang.IllegalStateException("Method call not finished!");
-        }
-        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
-        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        return (new Client(prot)).recv_getHbPositionBindings();
       }
     }
 
@@ -528,6 +491,102 @@ public class HrDBDao {
       }
     }
 
+    public void postHrOperationrecords(java.util.List<com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct> record, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+      checkReady();
+      postHrOperationrecords_call method_call = new postHrOperationrecords_call(record, resultHandler, this, ___protocolFactory, ___transport);
+      this.___currentMethod = method_call;
+      ___manager.call(method_call);
+    }
+
+    public static class postHrOperationrecords_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
+      private java.util.List<com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct> record;
+      public postHrOperationrecords_call(java.util.List<com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct> record, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+        super(client, protocolFactory, transport, resultHandler, false);
+        this.record = record;
+      }
+
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("postHrOperationrecords", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        postHrOperationrecords_args args = new postHrOperationrecords_args();
+        args.setRecord(record);
+        args.write(prot);
+        prot.writeMessageEnd();
+      }
+
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
+        }
+        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+        return (new Client(prot)).recv_postHrOperationrecords();
+      }
+    }
+
+    public void postHrOperationrecord(com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct record, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+      checkReady();
+      postHrOperationrecord_call method_call = new postHrOperationrecord_call(record, resultHandler, this, ___protocolFactory, ___transport);
+      this.___currentMethod = method_call;
+      ___manager.call(method_call);
+    }
+
+    public static class postHrOperationrecord_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
+      private com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct record;
+      public postHrOperationrecord_call(com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct record, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+        super(client, protocolFactory, transport, resultHandler, false);
+        this.record = record;
+      }
+
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("postHrOperationrecord", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        postHrOperationrecord_args args = new postHrOperationrecord_args();
+        args.setRecord(record);
+        args.write(prot);
+        prot.writeMessageEnd();
+      }
+
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
+        }
+        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+        return (new Client(prot)).recv_postHrOperationrecord();
+      }
+    }
+
+    public void getHrHistoryOperations(java.util.List<com.moseeker.thrift.gen.application.struct.ProcessValidationStruct> record, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+      checkReady();
+      getHrHistoryOperations_call method_call = new getHrHistoryOperations_call(record, resultHandler, this, ___protocolFactory, ___transport);
+      this.___currentMethod = method_call;
+      ___manager.call(method_call);
+    }
+
+    public static class getHrHistoryOperations_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
+      private java.util.List<com.moseeker.thrift.gen.application.struct.ProcessValidationStruct> record;
+      public getHrHistoryOperations_call(java.util.List<com.moseeker.thrift.gen.application.struct.ProcessValidationStruct> record, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+        super(client, protocolFactory, transport, resultHandler, false);
+        this.record = record;
+      }
+
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getHrHistoryOperations", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        getHrHistoryOperations_args args = new getHrHistoryOperations_args();
+        args.setRecord(record);
+        args.write(prot);
+        prot.writeMessageEnd();
+      }
+
+      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
+        }
+        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+        return (new Client(prot)).recv_getHrHistoryOperations();
+      }
+    }
+
   }
 
   public static class Processor<I extends Iface> extends org.apache.thrift.TBaseProcessor<I> implements org.apache.thrift.TProcessor {
@@ -542,13 +601,14 @@ public class HrDBDao {
 
     private static <I extends Iface> java.util.Map<java.lang.String,  org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>> getProcessMap(java.util.Map<java.lang.String, org.apache.thrift.ProcessFunction<I, ? extends  org.apache.thrift.TBase>> processMap) {
       processMap.put("getHbConfig", new getHbConfig());
-      processMap.put("getHbConfigs", new getHbConfigs());
       processMap.put("getHbPositionBinding", new getHbPositionBinding());
-      processMap.put("getHbPositionBindings", new getHbPositionBindings());
       processMap.put("getHbItem", new getHbItem());
       processMap.put("getHbItems", new getHbItems());
       processMap.put("getHbScratchCard", new getHbScratchCard());
       processMap.put("getHbSendRecord", new getHbSendRecord());
+      processMap.put("postHrOperationrecords", new postHrOperationrecords());
+      processMap.put("postHrOperationrecord", new postHrOperationrecord());
+      processMap.put("getHrHistoryOperations", new getHrHistoryOperations());
       return processMap;
     }
 
@@ -572,26 +632,6 @@ public class HrDBDao {
       }
     }
 
-    public static class getHbConfigs<I extends Iface> extends org.apache.thrift.ProcessFunction<I, getHbConfigs_args> {
-      public getHbConfigs() {
-        super("getHbConfigs");
-      }
-
-      public getHbConfigs_args getEmptyArgsInstance() {
-        return new getHbConfigs_args();
-      }
-
-      protected boolean isOneway() {
-        return false;
-      }
-
-      public getHbConfigs_result getResult(I iface, getHbConfigs_args args) throws org.apache.thrift.TException {
-        getHbConfigs_result result = new getHbConfigs_result();
-        result.success = iface.getHbConfigs(args.query);
-        return result;
-      }
-    }
-
     public static class getHbPositionBinding<I extends Iface> extends org.apache.thrift.ProcessFunction<I, getHbPositionBinding_args> {
       public getHbPositionBinding() {
         super("getHbPositionBinding");
@@ -608,26 +648,6 @@ public class HrDBDao {
       public getHbPositionBinding_result getResult(I iface, getHbPositionBinding_args args) throws org.apache.thrift.TException {
         getHbPositionBinding_result result = new getHbPositionBinding_result();
         result.success = iface.getHbPositionBinding(args.query);
-        return result;
-      }
-    }
-
-    public static class getHbPositionBindings<I extends Iface> extends org.apache.thrift.ProcessFunction<I, getHbPositionBindings_args> {
-      public getHbPositionBindings() {
-        super("getHbPositionBindings");
-      }
-
-      public getHbPositionBindings_args getEmptyArgsInstance() {
-        return new getHbPositionBindings_args();
-      }
-
-      protected boolean isOneway() {
-        return false;
-      }
-
-      public getHbPositionBindings_result getResult(I iface, getHbPositionBindings_args args) throws org.apache.thrift.TException {
-        getHbPositionBindings_result result = new getHbPositionBindings_result();
-        result.success = iface.getHbPositionBindings(args.query);
         return result;
       }
     }
@@ -712,6 +732,66 @@ public class HrDBDao {
       }
     }
 
+    public static class postHrOperationrecords<I extends Iface> extends org.apache.thrift.ProcessFunction<I, postHrOperationrecords_args> {
+      public postHrOperationrecords() {
+        super("postHrOperationrecords");
+      }
+
+      public postHrOperationrecords_args getEmptyArgsInstance() {
+        return new postHrOperationrecords_args();
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public postHrOperationrecords_result getResult(I iface, postHrOperationrecords_args args) throws org.apache.thrift.TException {
+        postHrOperationrecords_result result = new postHrOperationrecords_result();
+        result.success = iface.postHrOperationrecords(args.record);
+        return result;
+      }
+    }
+
+    public static class postHrOperationrecord<I extends Iface> extends org.apache.thrift.ProcessFunction<I, postHrOperationrecord_args> {
+      public postHrOperationrecord() {
+        super("postHrOperationrecord");
+      }
+
+      public postHrOperationrecord_args getEmptyArgsInstance() {
+        return new postHrOperationrecord_args();
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public postHrOperationrecord_result getResult(I iface, postHrOperationrecord_args args) throws org.apache.thrift.TException {
+        postHrOperationrecord_result result = new postHrOperationrecord_result();
+        result.success = iface.postHrOperationrecord(args.record);
+        return result;
+      }
+    }
+
+    public static class getHrHistoryOperations<I extends Iface> extends org.apache.thrift.ProcessFunction<I, getHrHistoryOperations_args> {
+      public getHrHistoryOperations() {
+        super("getHrHistoryOperations");
+      }
+
+      public getHrHistoryOperations_args getEmptyArgsInstance() {
+        return new getHrHistoryOperations_args();
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public getHrHistoryOperations_result getResult(I iface, getHrHistoryOperations_args args) throws org.apache.thrift.TException {
+        getHrHistoryOperations_result result = new getHrHistoryOperations_result();
+        result.success = iface.getHrHistoryOperations(args.record);
+        return result;
+      }
+    }
+
   }
 
   public static class AsyncProcessor<I extends AsyncIface> extends org.apache.thrift.TBaseAsyncProcessor<I> {
@@ -726,13 +806,14 @@ public class HrDBDao {
 
     private static <I extends AsyncIface> java.util.Map<java.lang.String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase,?>> getProcessMap(java.util.Map<java.lang.String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase, ?>> processMap) {
       processMap.put("getHbConfig", new getHbConfig());
-      processMap.put("getHbConfigs", new getHbConfigs());
       processMap.put("getHbPositionBinding", new getHbPositionBinding());
-      processMap.put("getHbPositionBindings", new getHbPositionBindings());
       processMap.put("getHbItem", new getHbItem());
       processMap.put("getHbItems", new getHbItems());
       processMap.put("getHbScratchCard", new getHbScratchCard());
       processMap.put("getHbSendRecord", new getHbSendRecord());
+      processMap.put("postHrOperationrecords", new postHrOperationrecords());
+      processMap.put("postHrOperationrecord", new postHrOperationrecord());
+      processMap.put("getHrHistoryOperations", new getHrHistoryOperations());
       return processMap;
     }
 
@@ -797,67 +878,6 @@ public class HrDBDao {
       }
     }
 
-    public static class getHbConfigs<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getHbConfigs_args, java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo>> {
-      public getHbConfigs() {
-        super("getHbConfigs");
-      }
-
-      public getHbConfigs_args getEmptyArgsInstance() {
-        return new getHbConfigs_args();
-      }
-
-      public org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo>> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
-        final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo>>() { 
-          public void onComplete(java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo> o) {
-            getHbConfigs_result result = new getHbConfigs_result();
-            result.success = o;
-            try {
-              fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
-            } catch (org.apache.thrift.transport.TTransportException e) {
-              _LOGGER.error("TTransportException writing to internal frame buffer", e);
-              fb.close();
-            } catch (java.lang.Exception e) {
-              _LOGGER.error("Exception writing to internal frame buffer", e);
-              onError(e);
-            }
-          }
-          public void onError(java.lang.Exception e) {
-            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
-            org.apache.thrift.TSerializable msg;
-            getHbConfigs_result result = new getHbConfigs_result();
-            if (e instanceof org.apache.thrift.transport.TTransportException) {
-              _LOGGER.error("TTransportException inside handler", e);
-              fb.close();
-              return;
-            } else if (e instanceof org.apache.thrift.TApplicationException) {
-              _LOGGER.error("TApplicationException inside handler", e);
-              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
-              msg = (org.apache.thrift.TApplicationException)e;
-            } else {
-              _LOGGER.error("Exception inside handler", e);
-              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
-              msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
-            }
-            try {
-              fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (java.lang.Exception ex) {
-              _LOGGER.error("Exception writing to internal frame buffer", ex);
-              fb.close();
-            }
-          }
-        };
-      }
-
-      protected boolean isOneway() {
-        return false;
-      }
-
-      public void start(I iface, getHbConfigs_args args, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo>> resultHandler) throws org.apache.thrift.TException {
-        iface.getHbConfigs(args.query,resultHandler);
-      }
-    }
-
     public static class getHbPositionBinding<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getHbPositionBinding_args, com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo> {
       public getHbPositionBinding() {
         super("getHbPositionBinding");
@@ -916,67 +936,6 @@ public class HrDBDao {
 
       public void start(I iface, getHbPositionBinding_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo> resultHandler) throws org.apache.thrift.TException {
         iface.getHbPositionBinding(args.query,resultHandler);
-      }
-    }
-
-    public static class getHbPositionBindings<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getHbPositionBindings_args, java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo>> {
-      public getHbPositionBindings() {
-        super("getHbPositionBindings");
-      }
-
-      public getHbPositionBindings_args getEmptyArgsInstance() {
-        return new getHbPositionBindings_args();
-      }
-
-      public org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo>> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
-        final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo>>() { 
-          public void onComplete(java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo> o) {
-            getHbPositionBindings_result result = new getHbPositionBindings_result();
-            result.success = o;
-            try {
-              fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
-            } catch (org.apache.thrift.transport.TTransportException e) {
-              _LOGGER.error("TTransportException writing to internal frame buffer", e);
-              fb.close();
-            } catch (java.lang.Exception e) {
-              _LOGGER.error("Exception writing to internal frame buffer", e);
-              onError(e);
-            }
-          }
-          public void onError(java.lang.Exception e) {
-            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
-            org.apache.thrift.TSerializable msg;
-            getHbPositionBindings_result result = new getHbPositionBindings_result();
-            if (e instanceof org.apache.thrift.transport.TTransportException) {
-              _LOGGER.error("TTransportException inside handler", e);
-              fb.close();
-              return;
-            } else if (e instanceof org.apache.thrift.TApplicationException) {
-              _LOGGER.error("TApplicationException inside handler", e);
-              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
-              msg = (org.apache.thrift.TApplicationException)e;
-            } else {
-              _LOGGER.error("Exception inside handler", e);
-              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
-              msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
-            }
-            try {
-              fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (java.lang.Exception ex) {
-              _LOGGER.error("Exception writing to internal frame buffer", ex);
-              fb.close();
-            }
-          }
-        };
-      }
-
-      protected boolean isOneway() {
-        return false;
-      }
-
-      public void start(I iface, getHbPositionBindings_args args, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo>> resultHandler) throws org.apache.thrift.TException {
-        iface.getHbPositionBindings(args.query,resultHandler);
       }
     }
 
@@ -1221,6 +1180,189 @@ public class HrDBDao {
 
       public void start(I iface, getHbSendRecord_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.HrHbSendRecordPojo> resultHandler) throws org.apache.thrift.TException {
         iface.getHbSendRecord(args.query,resultHandler);
+      }
+    }
+
+    public static class postHrOperationrecords<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, postHrOperationrecords_args, com.moseeker.thrift.gen.common.struct.Response> {
+      public postHrOperationrecords() {
+        super("postHrOperationrecords");
+      }
+
+      public postHrOperationrecords_args getEmptyArgsInstance() {
+        return new postHrOperationrecords_args();
+      }
+
+      public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
+        final org.apache.thrift.AsyncProcessFunction fcall = this;
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+          public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
+            postHrOperationrecords_result result = new postHrOperationrecords_result();
+            result.success = o;
+            try {
+              fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
+            } catch (org.apache.thrift.transport.TTransportException e) {
+              _LOGGER.error("TTransportException writing to internal frame buffer", e);
+              fb.close();
+            } catch (java.lang.Exception e) {
+              _LOGGER.error("Exception writing to internal frame buffer", e);
+              onError(e);
+            }
+          }
+          public void onError(java.lang.Exception e) {
+            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
+            org.apache.thrift.TSerializable msg;
+            postHrOperationrecords_result result = new postHrOperationrecords_result();
+            if (e instanceof org.apache.thrift.transport.TTransportException) {
+              _LOGGER.error("TTransportException inside handler", e);
+              fb.close();
+              return;
+            } else if (e instanceof org.apache.thrift.TApplicationException) {
+              _LOGGER.error("TApplicationException inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = (org.apache.thrift.TApplicationException)e;
+            } else {
+              _LOGGER.error("Exception inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
+            }
+            try {
+              fcall.sendResponse(fb,msg,msgType,seqid);
+            } catch (java.lang.Exception ex) {
+              _LOGGER.error("Exception writing to internal frame buffer", ex);
+              fb.close();
+            }
+          }
+        };
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public void start(I iface, postHrOperationrecords_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+        iface.postHrOperationrecords(args.record,resultHandler);
+      }
+    }
+
+    public static class postHrOperationrecord<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, postHrOperationrecord_args, com.moseeker.thrift.gen.common.struct.Response> {
+      public postHrOperationrecord() {
+        super("postHrOperationrecord");
+      }
+
+      public postHrOperationrecord_args getEmptyArgsInstance() {
+        return new postHrOperationrecord_args();
+      }
+
+      public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
+        final org.apache.thrift.AsyncProcessFunction fcall = this;
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+          public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
+            postHrOperationrecord_result result = new postHrOperationrecord_result();
+            result.success = o;
+            try {
+              fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
+            } catch (org.apache.thrift.transport.TTransportException e) {
+              _LOGGER.error("TTransportException writing to internal frame buffer", e);
+              fb.close();
+            } catch (java.lang.Exception e) {
+              _LOGGER.error("Exception writing to internal frame buffer", e);
+              onError(e);
+            }
+          }
+          public void onError(java.lang.Exception e) {
+            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
+            org.apache.thrift.TSerializable msg;
+            postHrOperationrecord_result result = new postHrOperationrecord_result();
+            if (e instanceof org.apache.thrift.transport.TTransportException) {
+              _LOGGER.error("TTransportException inside handler", e);
+              fb.close();
+              return;
+            } else if (e instanceof org.apache.thrift.TApplicationException) {
+              _LOGGER.error("TApplicationException inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = (org.apache.thrift.TApplicationException)e;
+            } else {
+              _LOGGER.error("Exception inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
+            }
+            try {
+              fcall.sendResponse(fb,msg,msgType,seqid);
+            } catch (java.lang.Exception ex) {
+              _LOGGER.error("Exception writing to internal frame buffer", ex);
+              fb.close();
+            }
+          }
+        };
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public void start(I iface, postHrOperationrecord_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+        iface.postHrOperationrecord(args.record,resultHandler);
+      }
+    }
+
+    public static class getHrHistoryOperations<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getHrHistoryOperations_args, com.moseeker.thrift.gen.common.struct.Response> {
+      public getHrHistoryOperations() {
+        super("getHrHistoryOperations");
+      }
+
+      public getHrHistoryOperations_args getEmptyArgsInstance() {
+        return new getHrHistoryOperations_args();
+      }
+
+      public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
+        final org.apache.thrift.AsyncProcessFunction fcall = this;
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
+          public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
+            getHrHistoryOperations_result result = new getHrHistoryOperations_result();
+            result.success = o;
+            try {
+              fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
+            } catch (org.apache.thrift.transport.TTransportException e) {
+              _LOGGER.error("TTransportException writing to internal frame buffer", e);
+              fb.close();
+            } catch (java.lang.Exception e) {
+              _LOGGER.error("Exception writing to internal frame buffer", e);
+              onError(e);
+            }
+          }
+          public void onError(java.lang.Exception e) {
+            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
+            org.apache.thrift.TSerializable msg;
+            getHrHistoryOperations_result result = new getHrHistoryOperations_result();
+            if (e instanceof org.apache.thrift.transport.TTransportException) {
+              _LOGGER.error("TTransportException inside handler", e);
+              fb.close();
+              return;
+            } else if (e instanceof org.apache.thrift.TApplicationException) {
+              _LOGGER.error("TApplicationException inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = (org.apache.thrift.TApplicationException)e;
+            } else {
+              _LOGGER.error("Exception inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
+            }
+            try {
+              fcall.sendResponse(fb,msg,msgType,seqid);
+            } catch (java.lang.Exception ex) {
+              _LOGGER.error("Exception writing to internal frame buffer", ex);
+              fb.close();
+            }
+          }
+        };
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public void start(I iface, getHrHistoryOperations_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+        iface.getHrHistoryOperations(args.record,resultHandler);
       }
     }
 
@@ -1960,789 +2102,6 @@ public class HrDBDao {
     }
   }
 
-  public static class getHbConfigs_args implements org.apache.thrift.TBase<getHbConfigs_args, getHbConfigs_args._Fields>, java.io.Serializable, Cloneable, Comparable<getHbConfigs_args>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getHbConfigs_args");
-
-    private static final org.apache.thrift.protocol.TField QUERY_FIELD_DESC = new org.apache.thrift.protocol.TField("query", org.apache.thrift.protocol.TType.STRUCT, (short)1);
-
-    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getHbConfigs_argsStandardSchemeFactory();
-    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getHbConfigs_argsTupleSchemeFactory();
-
-    public com.moseeker.thrift.gen.common.struct.CommonQuery query; // required
-
-    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
-    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      QUERY((short)1, "query");
-
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
-
-      static {
-        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
-          byName.put(field.getFieldName(), field);
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, or null if its not found.
-       */
-      public static _Fields findByThriftId(int fieldId) {
-        switch(fieldId) {
-          case 1: // QUERY
-            return QUERY;
-          default:
-            return null;
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, throwing an exception
-       * if it is not found.
-       */
-      public static _Fields findByThriftIdOrThrow(int fieldId) {
-        _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
-        return fields;
-      }
-
-      /**
-       * Find the _Fields constant that matches name, or null if its not found.
-       */
-      public static _Fields findByName(java.lang.String name) {
-        return byName.get(name);
-      }
-
-      private final short _thriftId;
-      private final java.lang.String _fieldName;
-
-      _Fields(short thriftId, java.lang.String fieldName) {
-        _thriftId = thriftId;
-        _fieldName = fieldName;
-      }
-
-      public short getThriftFieldId() {
-        return _thriftId;
-      }
-
-      public java.lang.String getFieldName() {
-        return _fieldName;
-      }
-    }
-
-    // isset id assignments
-    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
-    static {
-      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.QUERY, new org.apache.thrift.meta_data.FieldMetaData("query", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.CommonQuery.class)));
-      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getHbConfigs_args.class, metaDataMap);
-    }
-
-    public getHbConfigs_args() {
-    }
-
-    public getHbConfigs_args(
-      com.moseeker.thrift.gen.common.struct.CommonQuery query)
-    {
-      this();
-      this.query = query;
-    }
-
-    /**
-     * Performs a deep copy on <i>other</i>.
-     */
-    public getHbConfigs_args(getHbConfigs_args other) {
-      if (other.isSetQuery()) {
-        this.query = new com.moseeker.thrift.gen.common.struct.CommonQuery(other.query);
-      }
-    }
-
-    public getHbConfigs_args deepCopy() {
-      return new getHbConfigs_args(this);
-    }
-
-    @Override
-    public void clear() {
-      this.query = null;
-    }
-
-    public com.moseeker.thrift.gen.common.struct.CommonQuery getQuery() {
-      return this.query;
-    }
-
-    public getHbConfigs_args setQuery(com.moseeker.thrift.gen.common.struct.CommonQuery query) {
-      this.query = query;
-      return this;
-    }
-
-    public void unsetQuery() {
-      this.query = null;
-    }
-
-    /** Returns true if field query is set (has been assigned a value) and false otherwise */
-    public boolean isSetQuery() {
-      return this.query != null;
-    }
-
-    public void setQueryIsSet(boolean value) {
-      if (!value) {
-        this.query = null;
-      }
-    }
-
-    public void setFieldValue(_Fields field, java.lang.Object value) {
-      switch (field) {
-      case QUERY:
-        if (value == null) {
-          unsetQuery();
-        } else {
-          setQuery((com.moseeker.thrift.gen.common.struct.CommonQuery)value);
-        }
-        break;
-
-      }
-    }
-
-    public java.lang.Object getFieldValue(_Fields field) {
-      switch (field) {
-      case QUERY:
-        return getQuery();
-
-      }
-      throw new java.lang.IllegalStateException();
-    }
-
-    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
-    public boolean isSet(_Fields field) {
-      if (field == null) {
-        throw new java.lang.IllegalArgumentException();
-      }
-
-      switch (field) {
-      case QUERY:
-        return isSetQuery();
-      }
-      throw new java.lang.IllegalStateException();
-    }
-
-    @Override
-    public boolean equals(java.lang.Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof getHbConfigs_args)
-        return this.equals((getHbConfigs_args)that);
-      return false;
-    }
-
-    public boolean equals(getHbConfigs_args that) {
-      if (that == null)
-        return false;
-      if (this == that)
-        return true;
-
-      boolean this_present_query = true && this.isSetQuery();
-      boolean that_present_query = true && that.isSetQuery();
-      if (this_present_query || that_present_query) {
-        if (!(this_present_query && that_present_query))
-          return false;
-        if (!this.query.equals(that.query))
-          return false;
-      }
-
-      return true;
-    }
-
-    @Override
-    public int hashCode() {
-      int hashCode = 1;
-
-      hashCode = hashCode * 8191 + ((isSetQuery()) ? 131071 : 524287);
-      if (isSetQuery())
-        hashCode = hashCode * 8191 + query.hashCode();
-
-      return hashCode;
-    }
-
-    @Override
-    public int compareTo(getHbConfigs_args other) {
-      if (!getClass().equals(other.getClass())) {
-        return getClass().getName().compareTo(other.getClass().getName());
-      }
-
-      int lastComparison = 0;
-
-      lastComparison = java.lang.Boolean.valueOf(isSetQuery()).compareTo(other.isSetQuery());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetQuery()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.query, other.query);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      return 0;
-    }
-
-    public _Fields fieldForId(int fieldId) {
-      return _Fields.findByThriftId(fieldId);
-    }
-
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
-      scheme(iprot).read(iprot, this);
-    }
-
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
-      scheme(oprot).write(oprot, this);
-    }
-
-    @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("getHbConfigs_args(");
-      boolean first = true;
-
-      sb.append("query:");
-      if (this.query == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.query);
-      }
-      first = false;
-      sb.append(")");
-      return sb.toString();
-    }
-
-    public void validate() throws org.apache.thrift.TException {
-      // check for required fields
-      // check for sub-struct validity
-      if (query != null) {
-        query.validate();
-      }
-    }
-
-    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
-      try {
-        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
-      try {
-        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private static class getHbConfigs_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
-      public getHbConfigs_argsStandardScheme getScheme() {
-        return new getHbConfigs_argsStandardScheme();
-      }
-    }
-
-    private static class getHbConfigs_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<getHbConfigs_args> {
-
-      public void read(org.apache.thrift.protocol.TProtocol iprot, getHbConfigs_args struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TField schemeField;
-        iprot.readStructBegin();
-        while (true)
-        {
-          schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
-            break;
-          }
-          switch (schemeField.id) {
-            case 1: // QUERY
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                struct.query = new com.moseeker.thrift.gen.common.struct.CommonQuery();
-                struct.query.read(iprot);
-                struct.setQueryIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            default:
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-          }
-          iprot.readFieldEnd();
-        }
-        iprot.readStructEnd();
-
-        // check for required fields of primitive type, which can't be checked in the validate method
-        struct.validate();
-      }
-
-      public void write(org.apache.thrift.protocol.TProtocol oprot, getHbConfigs_args struct) throws org.apache.thrift.TException {
-        struct.validate();
-
-        oprot.writeStructBegin(STRUCT_DESC);
-        if (struct.query != null) {
-          oprot.writeFieldBegin(QUERY_FIELD_DESC);
-          struct.query.write(oprot);
-          oprot.writeFieldEnd();
-        }
-        oprot.writeFieldStop();
-        oprot.writeStructEnd();
-      }
-
-    }
-
-    private static class getHbConfigs_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
-      public getHbConfigs_argsTupleScheme getScheme() {
-        return new getHbConfigs_argsTupleScheme();
-      }
-    }
-
-    private static class getHbConfigs_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<getHbConfigs_args> {
-
-      @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, getHbConfigs_args struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet optionals = new java.util.BitSet();
-        if (struct.isSetQuery()) {
-          optionals.set(0);
-        }
-        oprot.writeBitSet(optionals, 1);
-        if (struct.isSetQuery()) {
-          struct.query.write(oprot);
-        }
-      }
-
-      @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, getHbConfigs_args struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(1);
-        if (incoming.get(0)) {
-          struct.query = new com.moseeker.thrift.gen.common.struct.CommonQuery();
-          struct.query.read(iprot);
-          struct.setQueryIsSet(true);
-        }
-      }
-    }
-
-    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
-      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
-    }
-  }
-
-  public static class getHbConfigs_result implements org.apache.thrift.TBase<getHbConfigs_result, getHbConfigs_result._Fields>, java.io.Serializable, Cloneable, Comparable<getHbConfigs_result>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getHbConfigs_result");
-
-    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.LIST, (short)0);
-
-    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getHbConfigs_resultStandardSchemeFactory();
-    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getHbConfigs_resultTupleSchemeFactory();
-
-    public java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo> success; // required
-
-    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
-    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      SUCCESS((short)0, "success");
-
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
-
-      static {
-        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
-          byName.put(field.getFieldName(), field);
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, or null if its not found.
-       */
-      public static _Fields findByThriftId(int fieldId) {
-        switch(fieldId) {
-          case 0: // SUCCESS
-            return SUCCESS;
-          default:
-            return null;
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, throwing an exception
-       * if it is not found.
-       */
-      public static _Fields findByThriftIdOrThrow(int fieldId) {
-        _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
-        return fields;
-      }
-
-      /**
-       * Find the _Fields constant that matches name, or null if its not found.
-       */
-      public static _Fields findByName(java.lang.String name) {
-        return byName.get(name);
-      }
-
-      private final short _thriftId;
-      private final java.lang.String _fieldName;
-
-      _Fields(short thriftId, java.lang.String fieldName) {
-        _thriftId = thriftId;
-        _fieldName = fieldName;
-      }
-
-      public short getThriftFieldId() {
-        return _thriftId;
-      }
-
-      public java.lang.String getFieldName() {
-        return _fieldName;
-      }
-    }
-
-    // isset id assignments
-    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
-    static {
-      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
-              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo.class))));
-      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getHbConfigs_result.class, metaDataMap);
-    }
-
-    public getHbConfigs_result() {
-    }
-
-    public getHbConfigs_result(
-      java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo> success)
-    {
-      this();
-      this.success = success;
-    }
-
-    /**
-     * Performs a deep copy on <i>other</i>.
-     */
-    public getHbConfigs_result(getHbConfigs_result other) {
-      if (other.isSetSuccess()) {
-        java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo> __this__success = new java.util.ArrayList<com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo>(other.success.size());
-        for (com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo other_element : other.success) {
-          __this__success.add(new com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo(other_element));
-        }
-        this.success = __this__success;
-      }
-    }
-
-    public getHbConfigs_result deepCopy() {
-      return new getHbConfigs_result(this);
-    }
-
-    @Override
-    public void clear() {
-      this.success = null;
-    }
-
-    public int getSuccessSize() {
-      return (this.success == null) ? 0 : this.success.size();
-    }
-
-    public java.util.Iterator<com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo> getSuccessIterator() {
-      return (this.success == null) ? null : this.success.iterator();
-    }
-
-    public void addToSuccess(com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo elem) {
-      if (this.success == null) {
-        this.success = new java.util.ArrayList<com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo>();
-      }
-      this.success.add(elem);
-    }
-
-    public java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo> getSuccess() {
-      return this.success;
-    }
-
-    public getHbConfigs_result setSuccess(java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo> success) {
-      this.success = success;
-      return this;
-    }
-
-    public void unsetSuccess() {
-      this.success = null;
-    }
-
-    /** Returns true if field success is set (has been assigned a value) and false otherwise */
-    public boolean isSetSuccess() {
-      return this.success != null;
-    }
-
-    public void setSuccessIsSet(boolean value) {
-      if (!value) {
-        this.success = null;
-      }
-    }
-
-    public void setFieldValue(_Fields field, java.lang.Object value) {
-      switch (field) {
-      case SUCCESS:
-        if (value == null) {
-          unsetSuccess();
-        } else {
-          setSuccess((java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo>)value);
-        }
-        break;
-
-      }
-    }
-
-    public java.lang.Object getFieldValue(_Fields field) {
-      switch (field) {
-      case SUCCESS:
-        return getSuccess();
-
-      }
-      throw new java.lang.IllegalStateException();
-    }
-
-    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
-    public boolean isSet(_Fields field) {
-      if (field == null) {
-        throw new java.lang.IllegalArgumentException();
-      }
-
-      switch (field) {
-      case SUCCESS:
-        return isSetSuccess();
-      }
-      throw new java.lang.IllegalStateException();
-    }
-
-    @Override
-    public boolean equals(java.lang.Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof getHbConfigs_result)
-        return this.equals((getHbConfigs_result)that);
-      return false;
-    }
-
-    public boolean equals(getHbConfigs_result that) {
-      if (that == null)
-        return false;
-      if (this == that)
-        return true;
-
-      boolean this_present_success = true && this.isSetSuccess();
-      boolean that_present_success = true && that.isSetSuccess();
-      if (this_present_success || that_present_success) {
-        if (!(this_present_success && that_present_success))
-          return false;
-        if (!this.success.equals(that.success))
-          return false;
-      }
-
-      return true;
-    }
-
-    @Override
-    public int hashCode() {
-      int hashCode = 1;
-
-      hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
-      if (isSetSuccess())
-        hashCode = hashCode * 8191 + success.hashCode();
-
-      return hashCode;
-    }
-
-    @Override
-    public int compareTo(getHbConfigs_result other) {
-      if (!getClass().equals(other.getClass())) {
-        return getClass().getName().compareTo(other.getClass().getName());
-      }
-
-      int lastComparison = 0;
-
-      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetSuccess()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      return 0;
-    }
-
-    public _Fields fieldForId(int fieldId) {
-      return _Fields.findByThriftId(fieldId);
-    }
-
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
-      scheme(iprot).read(iprot, this);
-    }
-
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
-      scheme(oprot).write(oprot, this);
-      }
-
-    @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("getHbConfigs_result(");
-      boolean first = true;
-
-      sb.append("success:");
-      if (this.success == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.success);
-      }
-      first = false;
-      sb.append(")");
-      return sb.toString();
-    }
-
-    public void validate() throws org.apache.thrift.TException {
-      // check for required fields
-      // check for sub-struct validity
-    }
-
-    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
-      try {
-        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
-      try {
-        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private static class getHbConfigs_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
-      public getHbConfigs_resultStandardScheme getScheme() {
-        return new getHbConfigs_resultStandardScheme();
-      }
-    }
-
-    private static class getHbConfigs_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<getHbConfigs_result> {
-
-      public void read(org.apache.thrift.protocol.TProtocol iprot, getHbConfigs_result struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TField schemeField;
-        iprot.readStructBegin();
-        while (true)
-        {
-          schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
-            break;
-          }
-          switch (schemeField.id) {
-            case 0: // SUCCESS
-              if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
-                {
-                  org.apache.thrift.protocol.TList _list0 = iprot.readListBegin();
-                  struct.success = new java.util.ArrayList<com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo>(_list0.size);
-                  com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo _elem1;
-                  for (int _i2 = 0; _i2 < _list0.size; ++_i2)
-                  {
-                    _elem1 = new com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo();
-                    _elem1.read(iprot);
-                    struct.success.add(_elem1);
-                  }
-                  iprot.readListEnd();
-                }
-                struct.setSuccessIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            default:
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-          }
-          iprot.readFieldEnd();
-        }
-        iprot.readStructEnd();
-
-        // check for required fields of primitive type, which can't be checked in the validate method
-        struct.validate();
-      }
-
-      public void write(org.apache.thrift.protocol.TProtocol oprot, getHbConfigs_result struct) throws org.apache.thrift.TException {
-        struct.validate();
-
-        oprot.writeStructBegin(STRUCT_DESC);
-        if (struct.success != null) {
-          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
-          {
-            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.success.size()));
-            for (com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo _iter3 : struct.success)
-            {
-              _iter3.write(oprot);
-            }
-            oprot.writeListEnd();
-          }
-          oprot.writeFieldEnd();
-        }
-        oprot.writeFieldStop();
-        oprot.writeStructEnd();
-      }
-
-    }
-
-    private static class getHbConfigs_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
-      public getHbConfigs_resultTupleScheme getScheme() {
-        return new getHbConfigs_resultTupleScheme();
-      }
-    }
-
-    private static class getHbConfigs_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<getHbConfigs_result> {
-
-      @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, getHbConfigs_result struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet optionals = new java.util.BitSet();
-        if (struct.isSetSuccess()) {
-          optionals.set(0);
-        }
-        oprot.writeBitSet(optionals, 1);
-        if (struct.isSetSuccess()) {
-          {
-            oprot.writeI32(struct.success.size());
-            for (com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo _iter4 : struct.success)
-            {
-              _iter4.write(oprot);
-            }
-          }
-        }
-      }
-
-      @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, getHbConfigs_result struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(1);
-        if (incoming.get(0)) {
-          {
-            org.apache.thrift.protocol.TList _list5 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-            struct.success = new java.util.ArrayList<com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo>(_list5.size);
-            com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo _elem6;
-            for (int _i7 = 0; _i7 < _list5.size; ++_i7)
-            {
-              _elem6 = new com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo();
-              _elem6.read(iprot);
-              struct.success.add(_elem6);
-            }
-          }
-          struct.setSuccessIsSet(true);
-        }
-      }
-    }
-
-    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
-      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
-    }
-  }
-
   public static class getHbPositionBinding_args implements org.apache.thrift.TBase<getHbPositionBinding_args, getHbPositionBinding_args._Fields>, java.io.Serializable, Cloneable, Comparable<getHbPositionBinding_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getHbPositionBinding_args");
 
@@ -3467,789 +2826,6 @@ public class HrDBDao {
         if (incoming.get(0)) {
           struct.success = new com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo();
           struct.success.read(iprot);
-          struct.setSuccessIsSet(true);
-        }
-      }
-    }
-
-    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
-      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
-    }
-  }
-
-  public static class getHbPositionBindings_args implements org.apache.thrift.TBase<getHbPositionBindings_args, getHbPositionBindings_args._Fields>, java.io.Serializable, Cloneable, Comparable<getHbPositionBindings_args>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getHbPositionBindings_args");
-
-    private static final org.apache.thrift.protocol.TField QUERY_FIELD_DESC = new org.apache.thrift.protocol.TField("query", org.apache.thrift.protocol.TType.STRUCT, (short)1);
-
-    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getHbPositionBindings_argsStandardSchemeFactory();
-    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getHbPositionBindings_argsTupleSchemeFactory();
-
-    public com.moseeker.thrift.gen.common.struct.CommonQuery query; // required
-
-    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
-    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      QUERY((short)1, "query");
-
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
-
-      static {
-        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
-          byName.put(field.getFieldName(), field);
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, or null if its not found.
-       */
-      public static _Fields findByThriftId(int fieldId) {
-        switch(fieldId) {
-          case 1: // QUERY
-            return QUERY;
-          default:
-            return null;
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, throwing an exception
-       * if it is not found.
-       */
-      public static _Fields findByThriftIdOrThrow(int fieldId) {
-        _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
-        return fields;
-      }
-
-      /**
-       * Find the _Fields constant that matches name, or null if its not found.
-       */
-      public static _Fields findByName(java.lang.String name) {
-        return byName.get(name);
-      }
-
-      private final short _thriftId;
-      private final java.lang.String _fieldName;
-
-      _Fields(short thriftId, java.lang.String fieldName) {
-        _thriftId = thriftId;
-        _fieldName = fieldName;
-      }
-
-      public short getThriftFieldId() {
-        return _thriftId;
-      }
-
-      public java.lang.String getFieldName() {
-        return _fieldName;
-      }
-    }
-
-    // isset id assignments
-    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
-    static {
-      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.QUERY, new org.apache.thrift.meta_data.FieldMetaData("query", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.CommonQuery.class)));
-      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getHbPositionBindings_args.class, metaDataMap);
-    }
-
-    public getHbPositionBindings_args() {
-    }
-
-    public getHbPositionBindings_args(
-      com.moseeker.thrift.gen.common.struct.CommonQuery query)
-    {
-      this();
-      this.query = query;
-    }
-
-    /**
-     * Performs a deep copy on <i>other</i>.
-     */
-    public getHbPositionBindings_args(getHbPositionBindings_args other) {
-      if (other.isSetQuery()) {
-        this.query = new com.moseeker.thrift.gen.common.struct.CommonQuery(other.query);
-      }
-    }
-
-    public getHbPositionBindings_args deepCopy() {
-      return new getHbPositionBindings_args(this);
-    }
-
-    @Override
-    public void clear() {
-      this.query = null;
-    }
-
-    public com.moseeker.thrift.gen.common.struct.CommonQuery getQuery() {
-      return this.query;
-    }
-
-    public getHbPositionBindings_args setQuery(com.moseeker.thrift.gen.common.struct.CommonQuery query) {
-      this.query = query;
-      return this;
-    }
-
-    public void unsetQuery() {
-      this.query = null;
-    }
-
-    /** Returns true if field query is set (has been assigned a value) and false otherwise */
-    public boolean isSetQuery() {
-      return this.query != null;
-    }
-
-    public void setQueryIsSet(boolean value) {
-      if (!value) {
-        this.query = null;
-      }
-    }
-
-    public void setFieldValue(_Fields field, java.lang.Object value) {
-      switch (field) {
-      case QUERY:
-        if (value == null) {
-          unsetQuery();
-        } else {
-          setQuery((com.moseeker.thrift.gen.common.struct.CommonQuery)value);
-        }
-        break;
-
-      }
-    }
-
-    public java.lang.Object getFieldValue(_Fields field) {
-      switch (field) {
-      case QUERY:
-        return getQuery();
-
-      }
-      throw new java.lang.IllegalStateException();
-    }
-
-    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
-    public boolean isSet(_Fields field) {
-      if (field == null) {
-        throw new java.lang.IllegalArgumentException();
-      }
-
-      switch (field) {
-      case QUERY:
-        return isSetQuery();
-      }
-      throw new java.lang.IllegalStateException();
-    }
-
-    @Override
-    public boolean equals(java.lang.Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof getHbPositionBindings_args)
-        return this.equals((getHbPositionBindings_args)that);
-      return false;
-    }
-
-    public boolean equals(getHbPositionBindings_args that) {
-      if (that == null)
-        return false;
-      if (this == that)
-        return true;
-
-      boolean this_present_query = true && this.isSetQuery();
-      boolean that_present_query = true && that.isSetQuery();
-      if (this_present_query || that_present_query) {
-        if (!(this_present_query && that_present_query))
-          return false;
-        if (!this.query.equals(that.query))
-          return false;
-      }
-
-      return true;
-    }
-
-    @Override
-    public int hashCode() {
-      int hashCode = 1;
-
-      hashCode = hashCode * 8191 + ((isSetQuery()) ? 131071 : 524287);
-      if (isSetQuery())
-        hashCode = hashCode * 8191 + query.hashCode();
-
-      return hashCode;
-    }
-
-    @Override
-    public int compareTo(getHbPositionBindings_args other) {
-      if (!getClass().equals(other.getClass())) {
-        return getClass().getName().compareTo(other.getClass().getName());
-      }
-
-      int lastComparison = 0;
-
-      lastComparison = java.lang.Boolean.valueOf(isSetQuery()).compareTo(other.isSetQuery());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetQuery()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.query, other.query);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      return 0;
-    }
-
-    public _Fields fieldForId(int fieldId) {
-      return _Fields.findByThriftId(fieldId);
-    }
-
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
-      scheme(iprot).read(iprot, this);
-    }
-
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
-      scheme(oprot).write(oprot, this);
-    }
-
-    @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("getHbPositionBindings_args(");
-      boolean first = true;
-
-      sb.append("query:");
-      if (this.query == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.query);
-      }
-      first = false;
-      sb.append(")");
-      return sb.toString();
-    }
-
-    public void validate() throws org.apache.thrift.TException {
-      // check for required fields
-      // check for sub-struct validity
-      if (query != null) {
-        query.validate();
-      }
-    }
-
-    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
-      try {
-        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
-      try {
-        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private static class getHbPositionBindings_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
-      public getHbPositionBindings_argsStandardScheme getScheme() {
-        return new getHbPositionBindings_argsStandardScheme();
-      }
-    }
-
-    private static class getHbPositionBindings_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<getHbPositionBindings_args> {
-
-      public void read(org.apache.thrift.protocol.TProtocol iprot, getHbPositionBindings_args struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TField schemeField;
-        iprot.readStructBegin();
-        while (true)
-        {
-          schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
-            break;
-          }
-          switch (schemeField.id) {
-            case 1: // QUERY
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                struct.query = new com.moseeker.thrift.gen.common.struct.CommonQuery();
-                struct.query.read(iprot);
-                struct.setQueryIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            default:
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-          }
-          iprot.readFieldEnd();
-        }
-        iprot.readStructEnd();
-
-        // check for required fields of primitive type, which can't be checked in the validate method
-        struct.validate();
-      }
-
-      public void write(org.apache.thrift.protocol.TProtocol oprot, getHbPositionBindings_args struct) throws org.apache.thrift.TException {
-        struct.validate();
-
-        oprot.writeStructBegin(STRUCT_DESC);
-        if (struct.query != null) {
-          oprot.writeFieldBegin(QUERY_FIELD_DESC);
-          struct.query.write(oprot);
-          oprot.writeFieldEnd();
-        }
-        oprot.writeFieldStop();
-        oprot.writeStructEnd();
-      }
-
-    }
-
-    private static class getHbPositionBindings_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
-      public getHbPositionBindings_argsTupleScheme getScheme() {
-        return new getHbPositionBindings_argsTupleScheme();
-      }
-    }
-
-    private static class getHbPositionBindings_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<getHbPositionBindings_args> {
-
-      @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, getHbPositionBindings_args struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet optionals = new java.util.BitSet();
-        if (struct.isSetQuery()) {
-          optionals.set(0);
-        }
-        oprot.writeBitSet(optionals, 1);
-        if (struct.isSetQuery()) {
-          struct.query.write(oprot);
-        }
-      }
-
-      @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, getHbPositionBindings_args struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(1);
-        if (incoming.get(0)) {
-          struct.query = new com.moseeker.thrift.gen.common.struct.CommonQuery();
-          struct.query.read(iprot);
-          struct.setQueryIsSet(true);
-        }
-      }
-    }
-
-    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
-      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
-    }
-  }
-
-  public static class getHbPositionBindings_result implements org.apache.thrift.TBase<getHbPositionBindings_result, getHbPositionBindings_result._Fields>, java.io.Serializable, Cloneable, Comparable<getHbPositionBindings_result>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getHbPositionBindings_result");
-
-    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.LIST, (short)0);
-
-    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getHbPositionBindings_resultStandardSchemeFactory();
-    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getHbPositionBindings_resultTupleSchemeFactory();
-
-    public java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo> success; // required
-
-    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
-    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      SUCCESS((short)0, "success");
-
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
-
-      static {
-        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
-          byName.put(field.getFieldName(), field);
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, or null if its not found.
-       */
-      public static _Fields findByThriftId(int fieldId) {
-        switch(fieldId) {
-          case 0: // SUCCESS
-            return SUCCESS;
-          default:
-            return null;
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, throwing an exception
-       * if it is not found.
-       */
-      public static _Fields findByThriftIdOrThrow(int fieldId) {
-        _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
-        return fields;
-      }
-
-      /**
-       * Find the _Fields constant that matches name, or null if its not found.
-       */
-      public static _Fields findByName(java.lang.String name) {
-        return byName.get(name);
-      }
-
-      private final short _thriftId;
-      private final java.lang.String _fieldName;
-
-      _Fields(short thriftId, java.lang.String fieldName) {
-        _thriftId = thriftId;
-        _fieldName = fieldName;
-      }
-
-      public short getThriftFieldId() {
-        return _thriftId;
-      }
-
-      public java.lang.String getFieldName() {
-        return _fieldName;
-      }
-    }
-
-    // isset id assignments
-    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
-    static {
-      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
-              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo.class))));
-      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getHbPositionBindings_result.class, metaDataMap);
-    }
-
-    public getHbPositionBindings_result() {
-    }
-
-    public getHbPositionBindings_result(
-      java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo> success)
-    {
-      this();
-      this.success = success;
-    }
-
-    /**
-     * Performs a deep copy on <i>other</i>.
-     */
-    public getHbPositionBindings_result(getHbPositionBindings_result other) {
-      if (other.isSetSuccess()) {
-        java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo> __this__success = new java.util.ArrayList<com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo>(other.success.size());
-        for (com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo other_element : other.success) {
-          __this__success.add(new com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo(other_element));
-        }
-        this.success = __this__success;
-      }
-    }
-
-    public getHbPositionBindings_result deepCopy() {
-      return new getHbPositionBindings_result(this);
-    }
-
-    @Override
-    public void clear() {
-      this.success = null;
-    }
-
-    public int getSuccessSize() {
-      return (this.success == null) ? 0 : this.success.size();
-    }
-
-    public java.util.Iterator<com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo> getSuccessIterator() {
-      return (this.success == null) ? null : this.success.iterator();
-    }
-
-    public void addToSuccess(com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo elem) {
-      if (this.success == null) {
-        this.success = new java.util.ArrayList<com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo>();
-      }
-      this.success.add(elem);
-    }
-
-    public java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo> getSuccess() {
-      return this.success;
-    }
-
-    public getHbPositionBindings_result setSuccess(java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo> success) {
-      this.success = success;
-      return this;
-    }
-
-    public void unsetSuccess() {
-      this.success = null;
-    }
-
-    /** Returns true if field success is set (has been assigned a value) and false otherwise */
-    public boolean isSetSuccess() {
-      return this.success != null;
-    }
-
-    public void setSuccessIsSet(boolean value) {
-      if (!value) {
-        this.success = null;
-      }
-    }
-
-    public void setFieldValue(_Fields field, java.lang.Object value) {
-      switch (field) {
-      case SUCCESS:
-        if (value == null) {
-          unsetSuccess();
-        } else {
-          setSuccess((java.util.List<com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo>)value);
-        }
-        break;
-
-      }
-    }
-
-    public java.lang.Object getFieldValue(_Fields field) {
-      switch (field) {
-      case SUCCESS:
-        return getSuccess();
-
-      }
-      throw new java.lang.IllegalStateException();
-    }
-
-    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
-    public boolean isSet(_Fields field) {
-      if (field == null) {
-        throw new java.lang.IllegalArgumentException();
-      }
-
-      switch (field) {
-      case SUCCESS:
-        return isSetSuccess();
-      }
-      throw new java.lang.IllegalStateException();
-    }
-
-    @Override
-    public boolean equals(java.lang.Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof getHbPositionBindings_result)
-        return this.equals((getHbPositionBindings_result)that);
-      return false;
-    }
-
-    public boolean equals(getHbPositionBindings_result that) {
-      if (that == null)
-        return false;
-      if (this == that)
-        return true;
-
-      boolean this_present_success = true && this.isSetSuccess();
-      boolean that_present_success = true && that.isSetSuccess();
-      if (this_present_success || that_present_success) {
-        if (!(this_present_success && that_present_success))
-          return false;
-        if (!this.success.equals(that.success))
-          return false;
-      }
-
-      return true;
-    }
-
-    @Override
-    public int hashCode() {
-      int hashCode = 1;
-
-      hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
-      if (isSetSuccess())
-        hashCode = hashCode * 8191 + success.hashCode();
-
-      return hashCode;
-    }
-
-    @Override
-    public int compareTo(getHbPositionBindings_result other) {
-      if (!getClass().equals(other.getClass())) {
-        return getClass().getName().compareTo(other.getClass().getName());
-      }
-
-      int lastComparison = 0;
-
-      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetSuccess()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      return 0;
-    }
-
-    public _Fields fieldForId(int fieldId) {
-      return _Fields.findByThriftId(fieldId);
-    }
-
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
-      scheme(iprot).read(iprot, this);
-    }
-
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
-      scheme(oprot).write(oprot, this);
-      }
-
-    @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("getHbPositionBindings_result(");
-      boolean first = true;
-
-      sb.append("success:");
-      if (this.success == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.success);
-      }
-      first = false;
-      sb.append(")");
-      return sb.toString();
-    }
-
-    public void validate() throws org.apache.thrift.TException {
-      // check for required fields
-      // check for sub-struct validity
-    }
-
-    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
-      try {
-        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
-      try {
-        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private static class getHbPositionBindings_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
-      public getHbPositionBindings_resultStandardScheme getScheme() {
-        return new getHbPositionBindings_resultStandardScheme();
-      }
-    }
-
-    private static class getHbPositionBindings_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<getHbPositionBindings_result> {
-
-      public void read(org.apache.thrift.protocol.TProtocol iprot, getHbPositionBindings_result struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TField schemeField;
-        iprot.readStructBegin();
-        while (true)
-        {
-          schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
-            break;
-          }
-          switch (schemeField.id) {
-            case 0: // SUCCESS
-              if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
-                {
-                  org.apache.thrift.protocol.TList _list8 = iprot.readListBegin();
-                  struct.success = new java.util.ArrayList<com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo>(_list8.size);
-                  com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo _elem9;
-                  for (int _i10 = 0; _i10 < _list8.size; ++_i10)
-                  {
-                    _elem9 = new com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo();
-                    _elem9.read(iprot);
-                    struct.success.add(_elem9);
-                  }
-                  iprot.readListEnd();
-                }
-                struct.setSuccessIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            default:
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-          }
-          iprot.readFieldEnd();
-        }
-        iprot.readStructEnd();
-
-        // check for required fields of primitive type, which can't be checked in the validate method
-        struct.validate();
-      }
-
-      public void write(org.apache.thrift.protocol.TProtocol oprot, getHbPositionBindings_result struct) throws org.apache.thrift.TException {
-        struct.validate();
-
-        oprot.writeStructBegin(STRUCT_DESC);
-        if (struct.success != null) {
-          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
-          {
-            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.success.size()));
-            for (com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo _iter11 : struct.success)
-            {
-              _iter11.write(oprot);
-            }
-            oprot.writeListEnd();
-          }
-          oprot.writeFieldEnd();
-        }
-        oprot.writeFieldStop();
-        oprot.writeStructEnd();
-      }
-
-    }
-
-    private static class getHbPositionBindings_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
-      public getHbPositionBindings_resultTupleScheme getScheme() {
-        return new getHbPositionBindings_resultTupleScheme();
-      }
-    }
-
-    private static class getHbPositionBindings_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<getHbPositionBindings_result> {
-
-      @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, getHbPositionBindings_result struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet optionals = new java.util.BitSet();
-        if (struct.isSetSuccess()) {
-          optionals.set(0);
-        }
-        oprot.writeBitSet(optionals, 1);
-        if (struct.isSetSuccess()) {
-          {
-            oprot.writeI32(struct.success.size());
-            for (com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo _iter12 : struct.success)
-            {
-              _iter12.write(oprot);
-            }
-          }
-        }
-      }
-
-      @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, getHbPositionBindings_result struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(1);
-        if (incoming.get(0)) {
-          {
-            org.apache.thrift.protocol.TList _list13 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-            struct.success = new java.util.ArrayList<com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo>(_list13.size);
-            com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo _elem14;
-            for (int _i15 = 0; _i15 < _list13.size; ++_i15)
-            {
-              _elem14 = new com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo();
-              _elem14.read(iprot);
-              struct.success.add(_elem14);
-            }
-          }
           struct.setSuccessIsSet(true);
         }
       }
@@ -5675,14 +4251,14 @@ public class HrDBDao {
             case 0: // SUCCESS
               if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
                 {
-                  org.apache.thrift.protocol.TList _list16 = iprot.readListBegin();
-                  struct.success = new java.util.ArrayList<com.moseeker.thrift.gen.dao.struct.HrHbItemsPojo>(_list16.size);
-                  com.moseeker.thrift.gen.dao.struct.HrHbItemsPojo _elem17;
-                  for (int _i18 = 0; _i18 < _list16.size; ++_i18)
+                  org.apache.thrift.protocol.TList _list0 = iprot.readListBegin();
+                  struct.success = new java.util.ArrayList<com.moseeker.thrift.gen.dao.struct.HrHbItemsPojo>(_list0.size);
+                  com.moseeker.thrift.gen.dao.struct.HrHbItemsPojo _elem1;
+                  for (int _i2 = 0; _i2 < _list0.size; ++_i2)
                   {
-                    _elem17 = new com.moseeker.thrift.gen.dao.struct.HrHbItemsPojo();
-                    _elem17.read(iprot);
-                    struct.success.add(_elem17);
+                    _elem1 = new com.moseeker.thrift.gen.dao.struct.HrHbItemsPojo();
+                    _elem1.read(iprot);
+                    struct.success.add(_elem1);
                   }
                   iprot.readListEnd();
                 }
@@ -5710,9 +4286,9 @@ public class HrDBDao {
           oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.success.size()));
-            for (com.moseeker.thrift.gen.dao.struct.HrHbItemsPojo _iter19 : struct.success)
+            for (com.moseeker.thrift.gen.dao.struct.HrHbItemsPojo _iter3 : struct.success)
             {
-              _iter19.write(oprot);
+              _iter3.write(oprot);
             }
             oprot.writeListEnd();
           }
@@ -5743,9 +4319,9 @@ public class HrDBDao {
         if (struct.isSetSuccess()) {
           {
             oprot.writeI32(struct.success.size());
-            for (com.moseeker.thrift.gen.dao.struct.HrHbItemsPojo _iter20 : struct.success)
+            for (com.moseeker.thrift.gen.dao.struct.HrHbItemsPojo _iter4 : struct.success)
             {
-              _iter20.write(oprot);
+              _iter4.write(oprot);
             }
           }
         }
@@ -5757,14 +4333,14 @@ public class HrDBDao {
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TList _list21 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-            struct.success = new java.util.ArrayList<com.moseeker.thrift.gen.dao.struct.HrHbItemsPojo>(_list21.size);
-            com.moseeker.thrift.gen.dao.struct.HrHbItemsPojo _elem22;
-            for (int _i23 = 0; _i23 < _list21.size; ++_i23)
+            org.apache.thrift.protocol.TList _list5 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+            struct.success = new java.util.ArrayList<com.moseeker.thrift.gen.dao.struct.HrHbItemsPojo>(_list5.size);
+            com.moseeker.thrift.gen.dao.struct.HrHbItemsPojo _elem6;
+            for (int _i7 = 0; _i7 < _list5.size; ++_i7)
             {
-              _elem22 = new com.moseeker.thrift.gen.dao.struct.HrHbItemsPojo();
-              _elem22.read(iprot);
-              struct.success.add(_elem22);
+              _elem6 = new com.moseeker.thrift.gen.dao.struct.HrHbItemsPojo();
+              _elem6.read(iprot);
+              struct.success.add(_elem6);
             }
           }
           struct.setSuccessIsSet(true);
@@ -7234,6 +5810,2306 @@ public class HrDBDao {
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           struct.success = new com.moseeker.thrift.gen.dao.struct.HrHbSendRecordPojo();
+          struct.success.read(iprot);
+          struct.setSuccessIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class postHrOperationrecords_args implements org.apache.thrift.TBase<postHrOperationrecords_args, postHrOperationrecords_args._Fields>, java.io.Serializable, Cloneable, Comparable<postHrOperationrecords_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("postHrOperationrecords_args");
+
+    private static final org.apache.thrift.protocol.TField RECORD_FIELD_DESC = new org.apache.thrift.protocol.TField("record", org.apache.thrift.protocol.TType.LIST, (short)1);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new postHrOperationrecords_argsStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new postHrOperationrecords_argsTupleSchemeFactory();
+
+    public java.util.List<com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct> record; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      RECORD((short)1, "record");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 1: // RECORD
+            return RECORD;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.RECORD, new org.apache.thrift.meta_data.FieldMetaData("record", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct.class))));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(postHrOperationrecords_args.class, metaDataMap);
+    }
+
+    public postHrOperationrecords_args() {
+    }
+
+    public postHrOperationrecords_args(
+      java.util.List<com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct> record)
+    {
+      this();
+      this.record = record;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public postHrOperationrecords_args(postHrOperationrecords_args other) {
+      if (other.isSetRecord()) {
+        java.util.List<com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct> __this__record = new java.util.ArrayList<com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct>(other.record.size());
+        for (com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct other_element : other.record) {
+          __this__record.add(new com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct(other_element));
+        }
+        this.record = __this__record;
+      }
+    }
+
+    public postHrOperationrecords_args deepCopy() {
+      return new postHrOperationrecords_args(this);
+    }
+
+    @Override
+    public void clear() {
+      this.record = null;
+    }
+
+    public int getRecordSize() {
+      return (this.record == null) ? 0 : this.record.size();
+    }
+
+    public java.util.Iterator<com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct> getRecordIterator() {
+      return (this.record == null) ? null : this.record.iterator();
+    }
+
+    public void addToRecord(com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct elem) {
+      if (this.record == null) {
+        this.record = new java.util.ArrayList<com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct>();
+      }
+      this.record.add(elem);
+    }
+
+    public java.util.List<com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct> getRecord() {
+      return this.record;
+    }
+
+    public postHrOperationrecords_args setRecord(java.util.List<com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct> record) {
+      this.record = record;
+      return this;
+    }
+
+    public void unsetRecord() {
+      this.record = null;
+    }
+
+    /** Returns true if field record is set (has been assigned a value) and false otherwise */
+    public boolean isSetRecord() {
+      return this.record != null;
+    }
+
+    public void setRecordIsSet(boolean value) {
+      if (!value) {
+        this.record = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+      case RECORD:
+        if (value == null) {
+          unsetRecord();
+        } else {
+          setRecord((java.util.List<com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct>)value);
+        }
+        break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+      case RECORD:
+        return getRecord();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+      case RECORD:
+        return isSetRecord();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof postHrOperationrecords_args)
+        return this.equals((postHrOperationrecords_args)that);
+      return false;
+    }
+
+    public boolean equals(postHrOperationrecords_args that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_record = true && this.isSetRecord();
+      boolean that_present_record = true && that.isSetRecord();
+      if (this_present_record || that_present_record) {
+        if (!(this_present_record && that_present_record))
+          return false;
+        if (!this.record.equals(that.record))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetRecord()) ? 131071 : 524287);
+      if (isSetRecord())
+        hashCode = hashCode * 8191 + record.hashCode();
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(postHrOperationrecords_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetRecord()).compareTo(other.isSetRecord());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetRecord()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.record, other.record);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+    }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postHrOperationrecords_args(");
+      boolean first = true;
+
+      sb.append("record:");
+      if (this.record == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.record);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class postHrOperationrecords_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public postHrOperationrecords_argsStandardScheme getScheme() {
+        return new postHrOperationrecords_argsStandardScheme();
+      }
+    }
+
+    private static class postHrOperationrecords_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<postHrOperationrecords_args> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postHrOperationrecords_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 1: // RECORD
+              if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
+                {
+                  org.apache.thrift.protocol.TList _list8 = iprot.readListBegin();
+                  struct.record = new java.util.ArrayList<com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct>(_list8.size);
+                  com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct _elem9;
+                  for (int _i10 = 0; _i10 < _list8.size; ++_i10)
+                  {
+                    _elem9 = new com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct();
+                    _elem9.read(iprot);
+                    struct.record.add(_elem9);
+                  }
+                  iprot.readListEnd();
+                }
+                struct.setRecordIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postHrOperationrecords_args struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.record != null) {
+          oprot.writeFieldBegin(RECORD_FIELD_DESC);
+          {
+            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.record.size()));
+            for (com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct _iter11 : struct.record)
+            {
+              _iter11.write(oprot);
+            }
+            oprot.writeListEnd();
+          }
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class postHrOperationrecords_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public postHrOperationrecords_argsTupleScheme getScheme() {
+        return new postHrOperationrecords_argsTupleScheme();
+      }
+    }
+
+    private static class postHrOperationrecords_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<postHrOperationrecords_args> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, postHrOperationrecords_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetRecord()) {
+          optionals.set(0);
+        }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetRecord()) {
+          {
+            oprot.writeI32(struct.record.size());
+            for (com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct _iter12 : struct.record)
+            {
+              _iter12.write(oprot);
+            }
+          }
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, postHrOperationrecords_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(1);
+        if (incoming.get(0)) {
+          {
+            org.apache.thrift.protocol.TList _list13 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+            struct.record = new java.util.ArrayList<com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct>(_list13.size);
+            com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct _elem14;
+            for (int _i15 = 0; _i15 < _list13.size; ++_i15)
+            {
+              _elem14 = new com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct();
+              _elem14.read(iprot);
+              struct.record.add(_elem14);
+            }
+          }
+          struct.setRecordIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class postHrOperationrecords_result implements org.apache.thrift.TBase<postHrOperationrecords_result, postHrOperationrecords_result._Fields>, java.io.Serializable, Cloneable, Comparable<postHrOperationrecords_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("postHrOperationrecords_result");
+
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new postHrOperationrecords_resultStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new postHrOperationrecords_resultTupleSchemeFactory();
+
+    public com.moseeker.thrift.gen.common.struct.Response success; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      SUCCESS((short)0, "success");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 0: // SUCCESS
+            return SUCCESS;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(postHrOperationrecords_result.class, metaDataMap);
+    }
+
+    public postHrOperationrecords_result() {
+    }
+
+    public postHrOperationrecords_result(
+      com.moseeker.thrift.gen.common.struct.Response success)
+    {
+      this();
+      this.success = success;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public postHrOperationrecords_result(postHrOperationrecords_result other) {
+      if (other.isSetSuccess()) {
+        this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
+      }
+    }
+
+    public postHrOperationrecords_result deepCopy() {
+      return new postHrOperationrecords_result(this);
+    }
+
+    @Override
+    public void clear() {
+      this.success = null;
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
+      return this.success;
+    }
+
+    public postHrOperationrecords_result setSuccess(com.moseeker.thrift.gen.common.struct.Response success) {
+      this.success = success;
+      return this;
+    }
+
+    public void unsetSuccess() {
+      this.success = null;
+    }
+
+    /** Returns true if field success is set (has been assigned a value) and false otherwise */
+    public boolean isSetSuccess() {
+      return this.success != null;
+    }
+
+    public void setSuccessIsSet(boolean value) {
+      if (!value) {
+        this.success = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+      case SUCCESS:
+        if (value == null) {
+          unsetSuccess();
+        } else {
+          setSuccess((com.moseeker.thrift.gen.common.struct.Response)value);
+        }
+        break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+      case SUCCESS:
+        return getSuccess();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+      case SUCCESS:
+        return isSetSuccess();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof postHrOperationrecords_result)
+        return this.equals((postHrOperationrecords_result)that);
+      return false;
+    }
+
+    public boolean equals(postHrOperationrecords_result that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_success = true && this.isSetSuccess();
+      boolean that_present_success = true && that.isSetSuccess();
+      if (this_present_success || that_present_success) {
+        if (!(this_present_success && that_present_success))
+          return false;
+        if (!this.success.equals(that.success))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
+      if (isSetSuccess())
+        hashCode = hashCode * 8191 + success.hashCode();
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(postHrOperationrecords_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSuccess()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+      }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postHrOperationrecords_result(");
+      boolean first = true;
+
+      sb.append("success:");
+      if (this.success == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.success);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+      if (success != null) {
+        success.validate();
+      }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class postHrOperationrecords_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public postHrOperationrecords_resultStandardScheme getScheme() {
+        return new postHrOperationrecords_resultStandardScheme();
+      }
+    }
+
+    private static class postHrOperationrecords_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<postHrOperationrecords_result> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postHrOperationrecords_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 0: // SUCCESS
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+                struct.success.read(iprot);
+                struct.setSuccessIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postHrOperationrecords_result struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.success != null) {
+          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+          struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class postHrOperationrecords_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public postHrOperationrecords_resultTupleScheme getScheme() {
+        return new postHrOperationrecords_resultTupleScheme();
+      }
+    }
+
+    private static class postHrOperationrecords_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<postHrOperationrecords_result> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, postHrOperationrecords_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetSuccess()) {
+          optionals.set(0);
+        }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetSuccess()) {
+          struct.success.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, postHrOperationrecords_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(1);
+        if (incoming.get(0)) {
+          struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+          struct.success.read(iprot);
+          struct.setSuccessIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class postHrOperationrecord_args implements org.apache.thrift.TBase<postHrOperationrecord_args, postHrOperationrecord_args._Fields>, java.io.Serializable, Cloneable, Comparable<postHrOperationrecord_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("postHrOperationrecord_args");
+
+    private static final org.apache.thrift.protocol.TField RECORD_FIELD_DESC = new org.apache.thrift.protocol.TField("record", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new postHrOperationrecord_argsStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new postHrOperationrecord_argsTupleSchemeFactory();
+
+    public com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct record; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      RECORD((short)1, "record");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 1: // RECORD
+            return RECORD;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.RECORD, new org.apache.thrift.meta_data.FieldMetaData("record", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct.class)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(postHrOperationrecord_args.class, metaDataMap);
+    }
+
+    public postHrOperationrecord_args() {
+    }
+
+    public postHrOperationrecord_args(
+      com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct record)
+    {
+      this();
+      this.record = record;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public postHrOperationrecord_args(postHrOperationrecord_args other) {
+      if (other.isSetRecord()) {
+        this.record = new com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct(other.record);
+      }
+    }
+
+    public postHrOperationrecord_args deepCopy() {
+      return new postHrOperationrecord_args(this);
+    }
+
+    @Override
+    public void clear() {
+      this.record = null;
+    }
+
+    public com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct getRecord() {
+      return this.record;
+    }
+
+    public postHrOperationrecord_args setRecord(com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct record) {
+      this.record = record;
+      return this;
+    }
+
+    public void unsetRecord() {
+      this.record = null;
+    }
+
+    /** Returns true if field record is set (has been assigned a value) and false otherwise */
+    public boolean isSetRecord() {
+      return this.record != null;
+    }
+
+    public void setRecordIsSet(boolean value) {
+      if (!value) {
+        this.record = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+      case RECORD:
+        if (value == null) {
+          unsetRecord();
+        } else {
+          setRecord((com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct)value);
+        }
+        break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+      case RECORD:
+        return getRecord();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+      case RECORD:
+        return isSetRecord();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof postHrOperationrecord_args)
+        return this.equals((postHrOperationrecord_args)that);
+      return false;
+    }
+
+    public boolean equals(postHrOperationrecord_args that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_record = true && this.isSetRecord();
+      boolean that_present_record = true && that.isSetRecord();
+      if (this_present_record || that_present_record) {
+        if (!(this_present_record && that_present_record))
+          return false;
+        if (!this.record.equals(that.record))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetRecord()) ? 131071 : 524287);
+      if (isSetRecord())
+        hashCode = hashCode * 8191 + record.hashCode();
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(postHrOperationrecord_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetRecord()).compareTo(other.isSetRecord());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetRecord()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.record, other.record);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+    }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postHrOperationrecord_args(");
+      boolean first = true;
+
+      sb.append("record:");
+      if (this.record == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.record);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+      if (record != null) {
+        record.validate();
+      }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class postHrOperationrecord_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public postHrOperationrecord_argsStandardScheme getScheme() {
+        return new postHrOperationrecord_argsStandardScheme();
+      }
+    }
+
+    private static class postHrOperationrecord_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<postHrOperationrecord_args> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postHrOperationrecord_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 1: // RECORD
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.record = new com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct();
+                struct.record.read(iprot);
+                struct.setRecordIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postHrOperationrecord_args struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.record != null) {
+          oprot.writeFieldBegin(RECORD_FIELD_DESC);
+          struct.record.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class postHrOperationrecord_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public postHrOperationrecord_argsTupleScheme getScheme() {
+        return new postHrOperationrecord_argsTupleScheme();
+      }
+    }
+
+    private static class postHrOperationrecord_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<postHrOperationrecord_args> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, postHrOperationrecord_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetRecord()) {
+          optionals.set(0);
+        }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetRecord()) {
+          struct.record.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, postHrOperationrecord_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(1);
+        if (incoming.get(0)) {
+          struct.record = new com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct();
+          struct.record.read(iprot);
+          struct.setRecordIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class postHrOperationrecord_result implements org.apache.thrift.TBase<postHrOperationrecord_result, postHrOperationrecord_result._Fields>, java.io.Serializable, Cloneable, Comparable<postHrOperationrecord_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("postHrOperationrecord_result");
+
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new postHrOperationrecord_resultStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new postHrOperationrecord_resultTupleSchemeFactory();
+
+    public com.moseeker.thrift.gen.common.struct.Response success; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      SUCCESS((short)0, "success");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 0: // SUCCESS
+            return SUCCESS;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(postHrOperationrecord_result.class, metaDataMap);
+    }
+
+    public postHrOperationrecord_result() {
+    }
+
+    public postHrOperationrecord_result(
+      com.moseeker.thrift.gen.common.struct.Response success)
+    {
+      this();
+      this.success = success;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public postHrOperationrecord_result(postHrOperationrecord_result other) {
+      if (other.isSetSuccess()) {
+        this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
+      }
+    }
+
+    public postHrOperationrecord_result deepCopy() {
+      return new postHrOperationrecord_result(this);
+    }
+
+    @Override
+    public void clear() {
+      this.success = null;
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
+      return this.success;
+    }
+
+    public postHrOperationrecord_result setSuccess(com.moseeker.thrift.gen.common.struct.Response success) {
+      this.success = success;
+      return this;
+    }
+
+    public void unsetSuccess() {
+      this.success = null;
+    }
+
+    /** Returns true if field success is set (has been assigned a value) and false otherwise */
+    public boolean isSetSuccess() {
+      return this.success != null;
+    }
+
+    public void setSuccessIsSet(boolean value) {
+      if (!value) {
+        this.success = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+      case SUCCESS:
+        if (value == null) {
+          unsetSuccess();
+        } else {
+          setSuccess((com.moseeker.thrift.gen.common.struct.Response)value);
+        }
+        break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+      case SUCCESS:
+        return getSuccess();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+      case SUCCESS:
+        return isSetSuccess();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof postHrOperationrecord_result)
+        return this.equals((postHrOperationrecord_result)that);
+      return false;
+    }
+
+    public boolean equals(postHrOperationrecord_result that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_success = true && this.isSetSuccess();
+      boolean that_present_success = true && that.isSetSuccess();
+      if (this_present_success || that_present_success) {
+        if (!(this_present_success && that_present_success))
+          return false;
+        if (!this.success.equals(that.success))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
+      if (isSetSuccess())
+        hashCode = hashCode * 8191 + success.hashCode();
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(postHrOperationrecord_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSuccess()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+      }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postHrOperationrecord_result(");
+      boolean first = true;
+
+      sb.append("success:");
+      if (this.success == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.success);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+      if (success != null) {
+        success.validate();
+      }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class postHrOperationrecord_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public postHrOperationrecord_resultStandardScheme getScheme() {
+        return new postHrOperationrecord_resultStandardScheme();
+      }
+    }
+
+    private static class postHrOperationrecord_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<postHrOperationrecord_result> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, postHrOperationrecord_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 0: // SUCCESS
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+                struct.success.read(iprot);
+                struct.setSuccessIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, postHrOperationrecord_result struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.success != null) {
+          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+          struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class postHrOperationrecord_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public postHrOperationrecord_resultTupleScheme getScheme() {
+        return new postHrOperationrecord_resultTupleScheme();
+      }
+    }
+
+    private static class postHrOperationrecord_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<postHrOperationrecord_result> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, postHrOperationrecord_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetSuccess()) {
+          optionals.set(0);
+        }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetSuccess()) {
+          struct.success.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, postHrOperationrecord_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(1);
+        if (incoming.get(0)) {
+          struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+          struct.success.read(iprot);
+          struct.setSuccessIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class getHrHistoryOperations_args implements org.apache.thrift.TBase<getHrHistoryOperations_args, getHrHistoryOperations_args._Fields>, java.io.Serializable, Cloneable, Comparable<getHrHistoryOperations_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getHrHistoryOperations_args");
+
+    private static final org.apache.thrift.protocol.TField RECORD_FIELD_DESC = new org.apache.thrift.protocol.TField("record", org.apache.thrift.protocol.TType.LIST, (short)1);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getHrHistoryOperations_argsStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getHrHistoryOperations_argsTupleSchemeFactory();
+
+    public java.util.List<com.moseeker.thrift.gen.application.struct.ProcessValidationStruct> record; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      RECORD((short)1, "record");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 1: // RECORD
+            return RECORD;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.RECORD, new org.apache.thrift.meta_data.FieldMetaData("record", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.application.struct.ProcessValidationStruct.class))));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getHrHistoryOperations_args.class, metaDataMap);
+    }
+
+    public getHrHistoryOperations_args() {
+    }
+
+    public getHrHistoryOperations_args(
+      java.util.List<com.moseeker.thrift.gen.application.struct.ProcessValidationStruct> record)
+    {
+      this();
+      this.record = record;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public getHrHistoryOperations_args(getHrHistoryOperations_args other) {
+      if (other.isSetRecord()) {
+        java.util.List<com.moseeker.thrift.gen.application.struct.ProcessValidationStruct> __this__record = new java.util.ArrayList<com.moseeker.thrift.gen.application.struct.ProcessValidationStruct>(other.record.size());
+        for (com.moseeker.thrift.gen.application.struct.ProcessValidationStruct other_element : other.record) {
+          __this__record.add(new com.moseeker.thrift.gen.application.struct.ProcessValidationStruct(other_element));
+        }
+        this.record = __this__record;
+      }
+    }
+
+    public getHrHistoryOperations_args deepCopy() {
+      return new getHrHistoryOperations_args(this);
+    }
+
+    @Override
+    public void clear() {
+      this.record = null;
+    }
+
+    public int getRecordSize() {
+      return (this.record == null) ? 0 : this.record.size();
+    }
+
+    public java.util.Iterator<com.moseeker.thrift.gen.application.struct.ProcessValidationStruct> getRecordIterator() {
+      return (this.record == null) ? null : this.record.iterator();
+    }
+
+    public void addToRecord(com.moseeker.thrift.gen.application.struct.ProcessValidationStruct elem) {
+      if (this.record == null) {
+        this.record = new java.util.ArrayList<com.moseeker.thrift.gen.application.struct.ProcessValidationStruct>();
+      }
+      this.record.add(elem);
+    }
+
+    public java.util.List<com.moseeker.thrift.gen.application.struct.ProcessValidationStruct> getRecord() {
+      return this.record;
+    }
+
+    public getHrHistoryOperations_args setRecord(java.util.List<com.moseeker.thrift.gen.application.struct.ProcessValidationStruct> record) {
+      this.record = record;
+      return this;
+    }
+
+    public void unsetRecord() {
+      this.record = null;
+    }
+
+    /** Returns true if field record is set (has been assigned a value) and false otherwise */
+    public boolean isSetRecord() {
+      return this.record != null;
+    }
+
+    public void setRecordIsSet(boolean value) {
+      if (!value) {
+        this.record = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+      case RECORD:
+        if (value == null) {
+          unsetRecord();
+        } else {
+          setRecord((java.util.List<com.moseeker.thrift.gen.application.struct.ProcessValidationStruct>)value);
+        }
+        break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+      case RECORD:
+        return getRecord();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+      case RECORD:
+        return isSetRecord();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof getHrHistoryOperations_args)
+        return this.equals((getHrHistoryOperations_args)that);
+      return false;
+    }
+
+    public boolean equals(getHrHistoryOperations_args that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_record = true && this.isSetRecord();
+      boolean that_present_record = true && that.isSetRecord();
+      if (this_present_record || that_present_record) {
+        if (!(this_present_record && that_present_record))
+          return false;
+        if (!this.record.equals(that.record))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetRecord()) ? 131071 : 524287);
+      if (isSetRecord())
+        hashCode = hashCode * 8191 + record.hashCode();
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(getHrHistoryOperations_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetRecord()).compareTo(other.isSetRecord());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetRecord()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.record, other.record);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+    }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("getHrHistoryOperations_args(");
+      boolean first = true;
+
+      sb.append("record:");
+      if (this.record == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.record);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class getHrHistoryOperations_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public getHrHistoryOperations_argsStandardScheme getScheme() {
+        return new getHrHistoryOperations_argsStandardScheme();
+      }
+    }
+
+    private static class getHrHistoryOperations_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<getHrHistoryOperations_args> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getHrHistoryOperations_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 1: // RECORD
+              if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
+                {
+                  org.apache.thrift.protocol.TList _list16 = iprot.readListBegin();
+                  struct.record = new java.util.ArrayList<com.moseeker.thrift.gen.application.struct.ProcessValidationStruct>(_list16.size);
+                  com.moseeker.thrift.gen.application.struct.ProcessValidationStruct _elem17;
+                  for (int _i18 = 0; _i18 < _list16.size; ++_i18)
+                  {
+                    _elem17 = new com.moseeker.thrift.gen.application.struct.ProcessValidationStruct();
+                    _elem17.read(iprot);
+                    struct.record.add(_elem17);
+                  }
+                  iprot.readListEnd();
+                }
+                struct.setRecordIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getHrHistoryOperations_args struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.record != null) {
+          oprot.writeFieldBegin(RECORD_FIELD_DESC);
+          {
+            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.record.size()));
+            for (com.moseeker.thrift.gen.application.struct.ProcessValidationStruct _iter19 : struct.record)
+            {
+              _iter19.write(oprot);
+            }
+            oprot.writeListEnd();
+          }
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class getHrHistoryOperations_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public getHrHistoryOperations_argsTupleScheme getScheme() {
+        return new getHrHistoryOperations_argsTupleScheme();
+      }
+    }
+
+    private static class getHrHistoryOperations_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<getHrHistoryOperations_args> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, getHrHistoryOperations_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetRecord()) {
+          optionals.set(0);
+        }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetRecord()) {
+          {
+            oprot.writeI32(struct.record.size());
+            for (com.moseeker.thrift.gen.application.struct.ProcessValidationStruct _iter20 : struct.record)
+            {
+              _iter20.write(oprot);
+            }
+          }
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, getHrHistoryOperations_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(1);
+        if (incoming.get(0)) {
+          {
+            org.apache.thrift.protocol.TList _list21 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+            struct.record = new java.util.ArrayList<com.moseeker.thrift.gen.application.struct.ProcessValidationStruct>(_list21.size);
+            com.moseeker.thrift.gen.application.struct.ProcessValidationStruct _elem22;
+            for (int _i23 = 0; _i23 < _list21.size; ++_i23)
+            {
+              _elem22 = new com.moseeker.thrift.gen.application.struct.ProcessValidationStruct();
+              _elem22.read(iprot);
+              struct.record.add(_elem22);
+            }
+          }
+          struct.setRecordIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class getHrHistoryOperations_result implements org.apache.thrift.TBase<getHrHistoryOperations_result, getHrHistoryOperations_result._Fields>, java.io.Serializable, Cloneable, Comparable<getHrHistoryOperations_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getHrHistoryOperations_result");
+
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getHrHistoryOperations_resultStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getHrHistoryOperations_resultTupleSchemeFactory();
+
+    public com.moseeker.thrift.gen.common.struct.Response success; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      SUCCESS((short)0, "success");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 0: // SUCCESS
+            return SUCCESS;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getHrHistoryOperations_result.class, metaDataMap);
+    }
+
+    public getHrHistoryOperations_result() {
+    }
+
+    public getHrHistoryOperations_result(
+      com.moseeker.thrift.gen.common.struct.Response success)
+    {
+      this();
+      this.success = success;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public getHrHistoryOperations_result(getHrHistoryOperations_result other) {
+      if (other.isSetSuccess()) {
+        this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
+      }
+    }
+
+    public getHrHistoryOperations_result deepCopy() {
+      return new getHrHistoryOperations_result(this);
+    }
+
+    @Override
+    public void clear() {
+      this.success = null;
+    }
+
+    public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
+      return this.success;
+    }
+
+    public getHrHistoryOperations_result setSuccess(com.moseeker.thrift.gen.common.struct.Response success) {
+      this.success = success;
+      return this;
+    }
+
+    public void unsetSuccess() {
+      this.success = null;
+    }
+
+    /** Returns true if field success is set (has been assigned a value) and false otherwise */
+    public boolean isSetSuccess() {
+      return this.success != null;
+    }
+
+    public void setSuccessIsSet(boolean value) {
+      if (!value) {
+        this.success = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+      case SUCCESS:
+        if (value == null) {
+          unsetSuccess();
+        } else {
+          setSuccess((com.moseeker.thrift.gen.common.struct.Response)value);
+        }
+        break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+      case SUCCESS:
+        return getSuccess();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+      case SUCCESS:
+        return isSetSuccess();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof getHrHistoryOperations_result)
+        return this.equals((getHrHistoryOperations_result)that);
+      return false;
+    }
+
+    public boolean equals(getHrHistoryOperations_result that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_success = true && this.isSetSuccess();
+      boolean that_present_success = true && that.isSetSuccess();
+      if (this_present_success || that_present_success) {
+        if (!(this_present_success && that_present_success))
+          return false;
+        if (!this.success.equals(that.success))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
+      if (isSetSuccess())
+        hashCode = hashCode * 8191 + success.hashCode();
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(getHrHistoryOperations_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSuccess()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+      }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("getHrHistoryOperations_result(");
+      boolean first = true;
+
+      sb.append("success:");
+      if (this.success == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.success);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+      if (success != null) {
+        success.validate();
+      }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class getHrHistoryOperations_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public getHrHistoryOperations_resultStandardScheme getScheme() {
+        return new getHrHistoryOperations_resultStandardScheme();
+      }
+    }
+
+    private static class getHrHistoryOperations_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<getHrHistoryOperations_result> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, getHrHistoryOperations_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 0: // SUCCESS
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+                struct.success.read(iprot);
+                struct.setSuccessIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, getHrHistoryOperations_result struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.success != null) {
+          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+          struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class getHrHistoryOperations_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public getHrHistoryOperations_resultTupleScheme getScheme() {
+        return new getHrHistoryOperations_resultTupleScheme();
+      }
+    }
+
+    private static class getHrHistoryOperations_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<getHrHistoryOperations_result> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, getHrHistoryOperations_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetSuccess()) {
+          optionals.set(0);
+        }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetSuccess()) {
+          struct.success.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, getHrHistoryOperations_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(1);
+        if (incoming.get(0)) {
+          struct.success = new com.moseeker.thrift.gen.common.struct.Response();
           struct.success.read(iprot);
           struct.setSuccessIsSet(true);
         }

@@ -98,4 +98,6 @@ service UserCommonService {
 service UserCenterService {
     //查询用户的申请记录
     list<useraccounts_struct.ApplicationRecordsForm> getApplications(1: i32 userId);
+    //查询用户的只为收藏记录
+    list<useraccounts_struct.FavPositionForm> getFavPositions(1: i32 userId);
 }

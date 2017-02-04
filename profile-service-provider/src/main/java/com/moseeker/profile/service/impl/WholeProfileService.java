@@ -156,6 +156,7 @@ public class WholeProfileService {
 				List<Map<String, Object>> others = profileUtils.buildOthers(profileRecord, otherRecords);
 
 				profile.put("others", others);
+				String jsonString=JSON.toJSONString(profile);
 				return ResponseUtils.success(profile);
 				// response.setData(gson.toJson(profile));
 			} else {
