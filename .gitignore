@@ -82,3 +82,4 @@ rpc-center/src/main/resources/*.properties
 service-manager/src/main/resources/*.properties
 
 /tmp/
+gen-java/
