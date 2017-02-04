@@ -1,4 +1,4 @@
-package com.moseeker.baseorm.dao.hr;
+package com.moseeker.baseorm.dao.hrdb;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,10 +1,9 @@
-package com.moseeker.baseorm.dao.hr;
-
-import org.springframework.stereotype.Service;
+package com.moseeker.baseorm.dao.hrdb;
 
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.util.BaseDaoImpl;
+import org.springframework.stereotype.Service;
 @Service
 public class HRCompanyConfDao extends BaseDaoImpl<HrCompanyConfRecord, HrCompanyConf>{
 

@@ -1,19 +1,9 @@
 package com.moseeker.baseorm.Thriftservice;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.thrift.TException;
-import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSON;
-import com.moseeker.baseorm.dao.hr.CompanyDao;
-import com.moseeker.baseorm.dao.hr.HRThirdPartyAccountDao;
-import com.moseeker.baseorm.dao.hr.HRThirdPartyPositionDao;
+import com.moseeker.baseorm.dao.hrdb.CompanyDao;
+import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
+import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
 import com.moseeker.baseorm.service.HrCompanyService;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -24,6 +14,15 @@ import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.service.CompanyDao.Iface;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
+import org.apache.thrift.TException;
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 提供公司数据以及公司相关数据的查询
@@ -43,6 +42,7 @@ public class CompanyThriftService implements Iface {
 	
 	@Autowired
 	private CompanyDao companyDao;
+
 	@Autowired
 	private HrCompanyService hrCompanyService;
 	@Override
@@ -166,10 +166,5 @@ public class CompanyThriftService implements Iface {
 	@Override
 	public Response getHrCompanyConfig(CommonQuery query){
 		return hrCompanyService.getCompanyConf(query);
-	}
-
-	@Override
-	public List<Hrcompany> getCompanies(CommonQuery query) throws TException {
-		return companyDao.getCompanies(query);
 	}
 }

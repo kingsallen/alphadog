@@ -1,22 +1,22 @@
-package com.moseeker.baseorm.dao.user;
-
-import java.math.BigDecimal;
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
-import static org.jooq.impl.DSL.sum;
-import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.Record2;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
-import org.springframework.stereotype.Service;
+package com.moseeker.baseorm.dao.userdb;
 
 import com.moseeker.baseorm.util.BaseDaoImpl;
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.db.userdb.tables.records.UserEmployeePointsRecordRecord;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointSum;
+import org.jooq.DSLContext;
+import org.jooq.Record2;
+import org.jooq.Result;
+import org.jooq.SelectConditionStep;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.jooq.impl.DSL.sum;
 @Service
 public class UserEmployeePointsRecordDao extends BaseDaoImpl<UserEmployeePointsRecordRecord, UserEmployeePointsRecord>{
 

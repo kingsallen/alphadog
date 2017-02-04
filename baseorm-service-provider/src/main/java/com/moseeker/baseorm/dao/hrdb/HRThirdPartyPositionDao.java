@@ -1,4 +1,4 @@
-package com.moseeker.baseorm.dao.hr;
+package com.moseeker.baseorm.dao.hrdb;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
