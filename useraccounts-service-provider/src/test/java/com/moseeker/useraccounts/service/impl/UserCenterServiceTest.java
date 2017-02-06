@@ -162,30 +162,30 @@ public class UserCenterServiceTest {
 		}
 	}
 	
-	@Test
-	public void testGetFavPositions() {
-		try {
-			List<FavPositionForm> forms = userCenterService.getFavPositions(1);
-			assertEquals(2, forms.size());
-			
-			assertEquals(1, forms.get(0).getId());
-			assertEquals("title1", forms.get(0).getTitle());
-			assertEquals("department1", forms.get(0).getDepartment());
-			assertEquals("上海", forms.get(0).getCity());
-			assertEquals(4, forms.get(0).getSalary_bottom());
-			assertEquals(6, forms.get(0).getSalary_top());
-			assertEquals(null, forms.get(0).getUpdate_time());
-			
-			assertEquals(2, forms.get(1).getId());
-			assertEquals("title2", forms.get(1).getTitle());
-			assertEquals("department2", forms.get(1).getDepartment());
-			assertEquals(null, forms.get(1).getCity());
-			assertEquals(5, forms.get(1).getSalary_bottom());
-			assertEquals(10, forms.get(1).getSalary_top());
-			assertEquals("2017-02-02 22:22:22", forms.get(1).getUpdate_time());
-		} catch (TException e) {
-			e.printStackTrace();
-			fail("Exception");
-		}
-	}
+//	@Test
+//	public void testGetFavPositions() {
+//		try {
+//			List<FavPositionForm> forms = userCenterService.getFavPositions(1);
+//			assertEquals(2, forms.size());
+//
+//			assertEquals(1, forms.get(0).getId());
+//			assertEquals("title1", forms.get(0).getTitle());
+//			assertEquals("department1", forms.get(0).getDepartment());
+//			assertEquals("上海", forms.get(0).getCity());
+//			assertEquals(4, forms.get(0).getSalary_bottom());
+//			assertEquals(6, forms.get(0).getSalary_top());
+//			assertEquals(null, forms.get(0).getUpdate_time());
+//
+//			assertEquals(2, forms.get(1).getId());
+//			assertEquals("title2", forms.get(1).getTitle());
+//			assertEquals("department2", forms.get(1).getDepartment());
+//			assertEquals(null, forms.get(1).getCity());
+//			assertEquals(5, forms.get(1).getSalary_bottom());
+//			assertEquals(10, forms.get(1).getSalary_top());
+//			assertEquals("2017-02-02 22:22:22", forms.get(1).getUpdate_time());
+//		} catch (TException e) {
+//			e.printStackTrace();
+//			fail("Exception");
+//		}
+//	}
 }
