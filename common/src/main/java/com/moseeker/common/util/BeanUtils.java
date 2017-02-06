@@ -462,11 +462,11 @@ public class BeanUtils {
 		} else if (value instanceof Byte) {
 			return BigDecimal.valueOf((Byte) value);
 		} else if (value instanceof Float) {
-			return BigDecimal.valueOf(((Float) value).intValue());
+			return BigDecimal.valueOf(((Float) value).floatValue());
 		} else if (value instanceof Long) {
-			return BigDecimal.valueOf(((Long) value).shortValue());
+			return BigDecimal.valueOf(((Long) value).longValue());
 		} else if (value instanceof Double) {
-			return BigDecimal.valueOf(((Double) value).shortValue());
+			return BigDecimal.valueOf(((Double) value).longValue());
 		} else if (value instanceof UInteger) {
 			return BigDecimal.valueOf(((UInteger) value).intValue());
 		} else if (value instanceof Date) {
