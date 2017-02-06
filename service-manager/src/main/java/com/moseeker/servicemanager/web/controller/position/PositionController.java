@@ -237,8 +237,8 @@ public class PositionController {
                 throw new Exception("公司 id 未提供!");
             }
 
-            query.setPage_from((Integer) map.getOrDefault("page_from", 0));
-            query.setPage_size((Integer) map.getOrDefault("page_size", 10));
+            query.setPage_from(Integer.valueOf((String)map.getOrDefault("page_from", "0")));
+            query.setPage_size(Integer.valueOf((String)map.getOrDefault("page_size", "10")));
             query.setKeywords((String) map.getOrDefault("keywords", ""));
             query.setCities((String) map.getOrDefault("cities", ""));
             query.setIndustries((String) map.getOrDefault("industries", ""));
@@ -251,12 +251,13 @@ public class PositionController {
             query.setDegree((String) map.getOrDefault("degree", ""));
             query.setDepartment((String) map.getOrDefault("department", ""));
             query.setCustom((String) map.getOrDefault("custom", ""));
-            query.setDid((Integer) map.getOrDefault("did", 0));
-            query.setOrder_by_priority((Boolean)map.getOrDefault("order_by_priority", true));
+            query.setDid(Integer.valueOf((String)map.getOrDefault("did", "0")));
+			 String param_setOrder_by_priority = (String)map.getOrDefault("order_by_priority", "True");
+			 query.setOrder_by_priority(param_setOrder_by_priority.equals("True"));
 
-			List<WechatPositionListData> positionList = positonServices.getPositionList(query);
-			Response res = ResponseUtils.success(positionList);
-			return ResponseLogNotification.success(request, res);
+			 List<WechatPositionListData> positionList = positonServices.getPositionList(query);
+			 Response res = ResponseUtils.success(positionList);
+			 return ResponseLogNotification.success(request, res);
 		}
 		catch (Exception e) {
 			logger.error(e.getMessage(), e);
