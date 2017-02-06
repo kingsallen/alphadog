@@ -101,7 +101,7 @@ public class HrDaoServiceImpl implements HrDaoService {
     public HrHbItemsPojo getHbItem(CommonQuery query) throws TException {
     	HrHbItemsPojo result = new HrHbItemsPojo();
         try {
-        	result = BeanUtils.DBToStruct(HrHbItemsPojo.class, hrHbPositionBindingDao.getResource(query));
+            result = BeanUtils.DBToStruct(HrHbItemsPojo.class, hrHbItemsDao.getResource(query));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -114,8 +114,8 @@ public class HrDaoServiceImpl implements HrDaoService {
     public List<HrHbItemsPojo> getHbItems(CommonQuery query) throws TException {
         List<HrHbItemsPojo> result = new ArrayList<HrHbItemsPojo>();
         try {
-            result = BeanUtils.DBToStruct(HrHbItemsPojo.class, hrHbItemsDao.getResources(query));
-
+            List<com.moseeker.baseorm.db.hrdb.tables.records.HrHbItemsRecord> records = hrHbItemsDao.getResources(query);
+            result = BeanUtils.DBToStruct(HrHbItemsPojo.class, records);
         }
         catch (Exception e) {
             e.printStackTrace();

@@ -633,10 +633,10 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 					qu.addEqualFilter("position_id", String.valueOf(p.getId()));
 					qu.addEqualFilter("hb_config_id", allHbConfigIdsFilterString);
 
-					HrHbPositionBindingPojo binding = hrDao.getHbPositionBinding(qu);
+					List<HrHbPositionBindingPojo> bindings = hrDao.getHbPositionBindings(qu);
 
 					// 确认 binding 只有一个，获取binding 对应的红包活动信息
-					HrHbConfigPojo hbConfig = hbConfigs.stream().filter(c -> c.getId() == binding.getHb_config_id())
+					HrHbConfigPojo hbConfig = hbConfigs.stream().filter(c -> c.getId() == bindings.get(0).getHb_config_id())
 							.findFirst().orElseGet(null);
 
 					if (hbConfig != null) {
@@ -650,7 +650,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 
 					// 根据 binding 获取 hb_items 记录
 					qu = new QueryUtil();
-					qu.addEqualFilter("binding_id", String.valueOf(binding.getId()));
+					qu.addEqualFilter("binding_id", String.valueOf(bindings.get(0).getId()));
 					qu.addEqualFilter("wxuser_id", "0"); // 还未发出的
 					List<HrHbItemsPojo> remainItems = hrDao.getHbItems(qu);
 
@@ -720,10 +720,10 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 			}
 		} catch (TException e) {
 			e.printStackTrace();
+			return result;
 		} finally {
-			// do nothing
-		}
 
+		}
 		return result;
 	}
 
@@ -791,10 +791,12 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 
 		}
 		catch (TException e) {
-			//todo
+			e.printStackTrace();
+			return result;
 		}
 		catch (Exception e){
 			e.printStackTrace();
+			return result;
 		}
 		finally {
 			// do nothing
