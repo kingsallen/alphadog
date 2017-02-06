@@ -41,6 +41,7 @@ public class PositionDaoThriftService implements Iface {
 			JobPositionRecord record = positionDao.getResource(query);
 			if(record != null) {
 				record.into(position);
+				position.setHb_status(record.getHbStatus());
 				position.setCompany_id(record.getCompanyId().intValue());
 				position.setAccountabilities(record.getAccountabilities());
 				return position;

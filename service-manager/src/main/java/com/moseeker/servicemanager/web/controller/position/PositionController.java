@@ -254,7 +254,7 @@ public class PositionController {
             query.setDid(Integer.valueOf((String)map.getOrDefault("did", "0")));
 			 String param_setOrder_by_priority = (String)map.getOrDefault("order_by_priority", "True");
 			 query.setOrder_by_priority(param_setOrder_by_priority.equals("True"));
-			 
+
 			 List<WechatPositionListData> positionList = positonServices.getPositionList(query);
 			 Response res = ResponseUtils.success(positionList);
 			 return ResponseLogNotification.success(request, res);
