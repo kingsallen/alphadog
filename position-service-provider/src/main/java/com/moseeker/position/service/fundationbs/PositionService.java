@@ -509,6 +509,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 					e.setVisitnum(jr.getVisitnum());
 					e.setIn_hb(jr.getHbStatus() > 0);
 					e.setCount(jr.getCount());
+					e.setCity(jr.getCity());
 
 					dataList.add(e);
 				}
@@ -762,6 +763,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 				e.setVisitnum(jr.getVisitnum());
 				e.setIn_hb(true);
 				e.setCount(jr.getCount());
+				e.setCity(jr.getCity());
 				result.add(e);
 			}
 

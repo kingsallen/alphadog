@@ -95,7 +95,8 @@ struct WechatPositionListData {
     11: required string company_abbr,
     12: required string company_logo,
     13: required string company_name,
-    14: required bool is_new
+    14: required bool is_new,
+    15: required string city
 }
 
 // 微信端职位列表的附加红包信息
@@ -122,7 +123,8 @@ struct WechatRpPositionListData {
     13: required string company_name,
     14: required bool is_new
     15: required i32 remain,
-    16: required bool employee_only
+    16: required bool employee_only,
+    17: required string city
 }
 
 // 微信端获取红包分享信息
