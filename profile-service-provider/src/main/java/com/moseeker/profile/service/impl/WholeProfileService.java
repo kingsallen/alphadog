@@ -121,9 +121,9 @@ public class WholeProfileService {
 				//将学历加入到basic中
 				Map<String, Object> basic = buildBasic(profileRecord, query, constantRecords);
 				if(educations!=null&&educations.size()>0){
-					basic.put("degree", educations.get(0).get("degree"));
+					basic.put("highest_degree", educations.get(0).get("degree"));
 				}else{
-					basic.put("degree", 0);
+					basic.put("highest_degree", 0);
 				}
 				profile.put("basic", basic);
 				
