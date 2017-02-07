@@ -13,7 +13,7 @@ import com.moseeker.warn.utils.SendChannel;
 
 public class WarnServiceTest {
 	
-	private ValidationService service;
+	/*private ValidationService service;
 	
 	@SuppressWarnings("resource")
 	@Before
@@ -48,5 +48,5 @@ public class WarnServiceTest {
 				break;
 			}
 		}
-	}
+	}*/
 }

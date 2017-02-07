@@ -115,7 +115,8 @@ struct BindAccountStruct {
     8: i32 remainNum,
     9: i32 binding
 }
-struct UserEmployeeStruct{
+
+struct UserEmployeeStruct {
 	1: optional i32 id,
 	2: optional string employeeid,
 	3: optional i32 company_id,
@@ -127,7 +128,7 @@ struct UserEmployeeStruct{
 	9: optional string custom_field,	
 	10:optional i64 award
 }
-struct UserEmployeePointStruct{
+struct UserEmployeePointStruct {
    1: optional i32 id,
    2: optional double employee_id,
    3: optional string reason,

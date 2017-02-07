@@ -35,7 +35,6 @@ public class DictOccupationTest {
 		query.setEqualFilter(map);
 		Response result=service.occupationsZPin();
 		System.out.println(result);
-		
 	}*/
 //  //获取occupation，通过Iface
 //	@Test

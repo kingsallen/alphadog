@@ -7,7 +7,7 @@ import com.moseeker.common.providerutils.QueryUtil;
 public class WordpressDaoTest {
 
 	//@Test
-	public void testMysql() {
+	/*public void testMysql() {
 		WordpressPostsDao dao = new WordpressPostsDao();
 		
 		WordpressTermRelationshipDao relationshipDao = new WordpressTermRelationshipDao();
@@ -24,5 +24,5 @@ public class WordpressDaoTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
+	}*/
 }

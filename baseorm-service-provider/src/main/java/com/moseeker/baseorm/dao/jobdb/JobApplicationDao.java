@@ -1,9 +1,15 @@
 package com.moseeker.baseorm.dao.jobdb;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> refactor/v4.1.0
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.moseeker.common.util.BeanUtils;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import org.jooq.DSLContext;
 import org.jooq.Record3;
 import org.jooq.Record9;
@@ -40,6 +46,26 @@ public class JobApplicationDao extends BaseDaoImpl<JobApplicationRecord, JobAppl
 	protected void initJOOQEntity() {
 		// TODO Auto-generated method stub
 		this.tableLike=JobApplication.JOB_APPLICATION;
+	}
+
+	/**
+	 * 查询申请数据
+	 * @param query
+	 * @return
+	 */
+	public List<com.moseeker.thrift.gen.application.struct.JobApplication> getApplications(CommonQuery query) {
+		List<com.moseeker.thrift.gen.application.struct.JobApplication> applications = new ArrayList<>();
+		try {
+			List<JobApplicationRecord> records = getResources(query);
+			if(records != null && records.size() > 0) {
+				applications = BeanUtils.DBToStruct(com.moseeker.thrift.gen.application.struct.JobApplication.class, records);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			//do nothing
+		}
+		return applications;
 	}
 	
 	/**

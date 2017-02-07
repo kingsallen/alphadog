@@ -7,7 +7,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import com.moseeker.baseorm.Thriftservice.ApplicationDaoThriftService;
 import com.moseeker.baseorm.Thriftservice.CompanyThriftService;
 import com.moseeker.baseorm.Thriftservice.ConfigDBDaoThriftService;
-import com.moseeker.baseorm.Thriftservice.ConfigDaothriftService;
 import com.moseeker.baseorm.Thriftservice.DictDaoMapThriftService;
 import com.moseeker.baseorm.Thriftservice.DictDaoThriftService;
 import com.moseeker.baseorm.Thriftservice.HRAccountThriftService;
@@ -17,6 +16,7 @@ import com.moseeker.baseorm.Thriftservice.PositionDaoThriftService;
 import com.moseeker.baseorm.Thriftservice.PositionThriftService;
 import com.moseeker.baseorm.Thriftservice.UserDBDaoThriftService;
 import com.moseeker.baseorm.Thriftservice.WordpressDaoThriftService;
+import com.moseeker.baseorm.Thriftservice.WxUserDaoThriftService;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.MultiRegServer;
 /*
@@ -46,15 +46,11 @@ public class BaseOrmServer {
 	        			acac.getBean(DictDaoThriftService.class),
 	        			acac.getBean(DictDaoMapThriftService.class),
 	        			acac.getBean(JobDBDaoThriftService.class),
-	        			acac.getBean(ConfigDBDaoThriftService.class),
-	        			acac.getBean(PositionThriftService.class),
-	        			acac.getBean(PositionThriftService.class),
-						acac.getBean(HrDBThriftService.class),
 	        			acac.getBean(PositionThriftService.class),
 	        			acac.getBean(ApplicationDaoThriftService.class),
-	        			acac.getBean(ConfigDaothriftService.class),
-	        			acac.getBean(HrDBThriftService.class)
-	        			
+	        			acac.getBean(ConfigDBDaoThriftService.class),
+	        			acac.getBean(HrDBThriftService.class),
+	        			acac.getBean(WxUserDaoThriftService.class)
 	        	);
 	            server.start();
 
