@@ -1,9 +1,5 @@
 package com.moseeker.baseorm.dao.jobdb;
 
-<<<<<<< HEAD
-=======
-
->>>>>>> refactor/v4.1.0
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,27 +63,7 @@ public class JobApplicationDao extends BaseDaoImpl<JobApplicationRecord, JobAppl
 		}
 		return applications;
 	}
-	
-	/**
-	 * 查询申请数据
-	 * @param query
-	 * @return
-	 */
-	public List<com.moseeker.thrift.gen.application.struct.JobApplication> getApplications(CommonQuery query) {
-		List<com.moseeker.thrift.gen.application.struct.JobApplication> applications = new ArrayList<>();
-		try {
-			List<JobApplicationRecord> records = getResources(query);
-			if(records != null && records.size() > 0) {
-				applications = BeanUtils.DBToStruct(com.moseeker.thrift.gen.application.struct.JobApplication.class, records);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			//do nothing
-		}
-		return applications;
-	}
-	
+
 	public List<ProcessValidationStruct> getAuth(List<UInteger> appIds,Integer companyId,Integer progressStatus) throws Exception{
 		List<ProcessValidationStruct> list=new ArrayList<ProcessValidationStruct>();
 		Connection conn = null;
