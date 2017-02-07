@@ -3,7 +3,6 @@ package com.moseeker.rpccenter.config;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.common.NetUtils;
 import com.moseeker.rpccenter.exception.IncompleteException;
-import com.moseeker.rpccenter.exception.RpcException;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -30,6 +29,7 @@ public class ZKConfig implements ConfigCheck {
 
     @Override
     public boolean check() throws IncompleteException {
+
         if(StringUtils.isNullOrEmpty(ip)) {
             return false;
         }

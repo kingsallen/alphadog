@@ -29,9 +29,9 @@ public enum MoSever {
         try {
             configUtils.loadResource("server.properties");
 
-            String 
+            //String
             ThriftConfig.Builder thriftBuilder = new ThriftConfig.Builder();
-            thriftBuilder.
+            //thriftBuilder.
         } catch (Exception e) {
             e.printStackTrace();
         }

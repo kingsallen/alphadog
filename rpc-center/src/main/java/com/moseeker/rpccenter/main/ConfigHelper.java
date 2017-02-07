@@ -77,7 +77,7 @@ class ConfigHelper {
 
             port = configUtils.get("port", Integer.class);
             ThriftConfig.Builder thriftBuilder = new ThriftConfig.Builder();
-            thriftBuilder.
+            //thriftBuilder.
         } catch (Exception e) {
             e.printStackTrace();
         }
