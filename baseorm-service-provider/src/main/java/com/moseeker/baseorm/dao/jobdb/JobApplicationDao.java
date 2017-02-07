@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.moseeker.common.util.BeanUtils;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import org.jooq.DSLContext;
 import org.jooq.Record3;
 import org.jooq.Record9;
@@ -41,7 +43,7 @@ public class JobApplicationDao extends BaseDaoImpl<JobApplicationRecord, JobAppl
 		// TODO Auto-generated method stub
 		this.tableLike=JobApplication.JOB_APPLICATION;
 	}
-	
+
 	/**
 	 * 查询申请数据
 	 * @param query
@@ -61,7 +63,7 @@ public class JobApplicationDao extends BaseDaoImpl<JobApplicationRecord, JobAppl
 		}
 		return applications;
 	}
-	
+
 	public List<ProcessValidationStruct> getAuth(List<UInteger> appIds,Integer companyId,Integer progressStatus) throws Exception{
 		List<ProcessValidationStruct> list=new ArrayList<ProcessValidationStruct>();
 		Connection conn = null;

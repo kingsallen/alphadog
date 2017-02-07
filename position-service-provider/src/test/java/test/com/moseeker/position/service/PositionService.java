@@ -10,7 +10,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class PositionService {
-    private PositionServices.Iface positionService;
+    /*private PositionServices.Iface positionService;
 
     @Before
     public void initialize() {
@@ -29,5 +29,5 @@ public class PositionService {
         catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 }

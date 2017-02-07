@@ -17,7 +17,7 @@ import com.moseeker.thrift.gen.dao.struct.WordpressTermRelationships;
 public class WordpressRPCTest {
 
 	//@Test
-	public void test() {
+	/*public void test() {
 		TTransport transport = null;
 		try {
 			transport = new TFastFramedTransport(new TSocket("127.0.0.1", 19080, 60*1000));
@@ -40,5 +40,5 @@ public class WordpressRPCTest {
 				transport.close();
 			}
 		}
-	}
+	}*/
 }

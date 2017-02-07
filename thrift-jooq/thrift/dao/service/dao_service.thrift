@@ -7,7 +7,6 @@ include "../../dict/struct/dict_struct.thrift"
 include "../struct/dao_struct.thrift"
 include "../../company/struct/company_struct.thrift"
 include "../../application/struct/application_struct.thrift"
-include "../../hr/struct/hr_struct.thrift"
 
 service UserHrAccountDao {
 	common_struct.Response getAccount(1:common_struct.CommonQuery query);
@@ -73,4 +72,7 @@ service ConfigDao{
         common_struct.Response getConfigSysPointsConfTpls(1:common_struct.CommonQuery query);
         common_struct.Response getConfigSysPointsConfTpl(1:common_struct.CommonQuery query);
         common_struct.Response getRecruitProcesses(1:i32 companyId);
+}
+service WxUserDao {
+	common_struct.Response getResource(1:common_struct.CommonQuery query);
 }

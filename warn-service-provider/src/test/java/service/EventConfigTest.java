@@ -11,7 +11,7 @@ import com.moseeker.warn.service.EventConfigService;
 
 public class EventConfigTest {
 	
-	private EventConfigService service;
+	/*private EventConfigService service;
 	
 	@SuppressWarnings("resource")
 	@Before
@@ -28,6 +28,6 @@ public class EventConfigTest {
 		events.forEach((key, value) -> {
 			System.out.println((key.concat(":").concat(value.toString())));
 		});
-	}
+	}*/
 
 }
