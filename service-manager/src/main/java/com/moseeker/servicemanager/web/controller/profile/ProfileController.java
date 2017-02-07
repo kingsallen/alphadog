@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -180,6 +182,52 @@ public class ProfileController {
 					form.getInt("channel"),
 					JSON.toJSONString(form.get("profile")));
 
+			return ResponseLogNotification.success(request, result);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+			return ResponseLogNotification.fail(request, e.getMessage());
+		} finally {
+			// do nothing
+		}
+	}
+	@RequestMapping(value = "/profile/process", method = RequestMethod.POST)
+	@ResponseBody
+	public String profileProcess(HttpServletRequest request, HttpServletResponse response) {
+		try {
+
+			Params<String, Object> form = ParamUtils.parseRequestParam(request);
+			Integer companyId=form.getInt("company_id");
+			Integer progress_status=form.getInt("progress_status");
+			String appIds=form.getString("aids");
+			Integer accountId=form.getInt("account_id");
+			if(progress_status==null||StringUtils.isNullOrEmpty(appIds)){
+				return ResponseLogNotification.success(request, ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY));
+			}
+			Response result = profileBSService.profileProcess(companyId,progress_status,appIds,accountId);
+			
+			return ResponseLogNotification.success(request, result);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+			return ResponseLogNotification.fail(request, e.getMessage());
+		} finally {
+			// do nothing
+		}
+	}
+	@RequestMapping(value = "/profile/processats", method = RequestMethod.POST)
+	@ResponseBody
+	public String profileProcessAts(HttpServletRequest request, HttpServletResponse response) {
+		try {
+
+			Params<String, Object> form = ParamUtils.parseRequestParam(request);
+			Integer progress_status=form.getInt("progress_status");
+			String appIds=form.getString("aids");
+			if(progress_status==null||StringUtils.isNullOrEmpty(appIds)){
+				return ResponseLogNotification.success(request, ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY));
+			}
+			Response result = profileBSService.profileProcessAts(progress_status,appIds);
+			
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
 			e.printStackTrace();
