@@ -121,8 +121,11 @@ public class ServerRegistry {
         try {
             client.create().creatingParentContainersIfNeeded().forPath(parentPath.toString());
             //client.create().creatingParentContainersIfNeeded().withMode(CreateMode.PERSISTENT).forPath(sb.toString());
-            client.create().withMode(CreateMode.EPHEMERAL).forPath(serverPath.toString(),
-                    JSON.toJSONString(data).getBytes(Constants.UTF8));
+            client.inTransaction()
+                    .delete().forPath(serverPath.toString())
+                    .and().create().withMode(CreateMode.EPHEMERAL).forPath(serverPath.toString(),
+                    JSON.toJSONString(data).getBytes(Constants.UTF8))
+                    .and().commit();
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -205,6 +208,10 @@ public class ServerRegistry {
         config.getServerNames().forEach(serverName -> clear(serverName));
     }
 
+    /**
+     * 删除具体服务节点以及子节点
+     * @param serverName
+     */
     private void clear(String serverName) {
         StringBuffer parentPath = new StringBuffer();
         parentPath.append(config.getZkSeparator()+serverName+config.getServers());
@@ -216,6 +223,9 @@ public class ServerRegistry {
         }
     }
 
+    /**
+     * 清空节点监听
+     */
     private void clearListeners() {
         if(listeners.size() > 0) {
             listeners.forEach(listener -> {
