@@ -500,6 +500,7 @@ public class ProfileProcessBS {
 				jobApplication.setReward(data.getReward());
 				jobApplication.setId(data.getId());
 				jobApplication.setNot_suitable(0);
+				jobApplication.setIs_viewed(0);
 				for (ConfigSysPointsConfTpl config : list) {
 					if (data.getRecruit_order() == config.getRecruit_order()) {
 						jobApplication.setApp_tpl_id(config.getId());
@@ -561,6 +562,7 @@ public class ProfileProcessBS {
 				jobApplication.setId(data.getApp_id());
 				jobApplication.setApp_tpl_id(data.getOperate_tpl_id());
 				jobApplication.setNot_suitable(0);
+				jobApplication.setIs_viewed(0);
 				app.add(jobApplication);
 			}
 			applicationDao.putApplications(app);
