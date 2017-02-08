@@ -121,10 +121,12 @@ public class ThriftConfig implements ConfigCheck {
             if(StringUtils.isNotNullOrEmpty(IP)) {
                 this.IP = IP;
             } else {
-                IP = NetUtils.getLocalHost();
+                this.IP = NetUtils.getLocalHost();
             }
             if(port > 0) {
-                port = NetUtils.getAvailablePort();
+                this.port = port;
+            } else {
+                this.port = NetUtils.getAvailablePort();
             }
         }
 
@@ -136,6 +138,16 @@ public class ThriftConfig implements ConfigCheck {
          */
         public Builder addServer(String serverName, Class clazz) {
             servers.put(serverName, clazz);
+            return this;
+        }
+
+        /**
+         * 添加服务
+         * @param services 服务名称
+         * @return 创建工具本身
+         */
+        public Builder addAllServer(Map<String, Class> services) {
+            servers.putAll(services);
             return this;
         }
 

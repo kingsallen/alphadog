@@ -178,5 +178,22 @@ public class ConfigPropertiesUtil {
 		}
 		return null;
 	}
-	
+
+    public <T> T get(String key, Class<T> clazz, T defaultValue) {
+        if(properties.get(key) != null) {
+            T t = BeanUtils.convertTo(properties.get(key), clazz);
+            if(t != null) {
+                return t;
+            } else {
+                return defaultValue;
+            }
+        }
+        return defaultValue;
+    }
+
+    public Set<Object> returnKeys() {
+        if(properties != null)
+            return properties.keySet();
+        return new HashSet<Object>();
+    }
 }

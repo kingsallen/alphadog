@@ -19,6 +19,8 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.rpccenter.common.Constants;
 import com.moseeker.rpccenter.config.ServerManagerZKConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -35,15 +37,20 @@ import com.moseeker.rpccenter.config.ServerManagerZKConfig;
 public enum NodeManager {
 
 	NODEMANAGER;
-	
+
+	private Logger logger = LoggerFactory.getLogger(NodeManager.class);
 	private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock(true);	//读写锁
 	
 	private ServerManagerZKConfig config;													//zookeeper配置信息
 	private ZKPath path = null;																//根节点
 	
-	NodeManager() {
+	private NodeManager() {
 		ServerManagerZKConfig config = ServerManagerZKConfig.config;
 		this.config = config;
+		initRoot();
+	}
+
+	private void initRoot() {
 		if(path == null) {
 			path = search();
 			addListener(path);
@@ -55,6 +62,18 @@ public enum NodeManager {
 	 * @return 根节点
 	 */
 	public ZKPath getRoot() {
+		if(path == null) {
+			int i = 0;
+			while(i < config.getRetry() && path == null) {
+				initRoot();
+				try {
+					Thread.sleep(1000 * i++);
+				} catch (InterruptedException e) {
+					logger.error(e.getMessage(), e);
+					e.printStackTrace();
+				}
+			}
+		}
 		return path;
 	}
 	
@@ -129,10 +148,10 @@ public enum NodeManager {
 		ZKPath zkPath = null;
 		CuratorFramework zookeeper = null;
 		try {
-			zkPath = new ZKPath(config.getNamespace());
+			zkPath = new ZKPath(config.getRoot());
 			CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder();
-			zookeeper = builder.connectString(config.getConnectstr()).sessionTimeoutMs(config.getTimeout())
-					.connectionTimeoutMs(config.getConnectionTimeout()).namespace(config.getNamespace())
+			zookeeper = builder.connectString(config.getIP()+":"+config.getPort()).sessionTimeoutMs(config.getSessionTimeOut())
+					.connectionTimeoutMs(config.getConnectionTimeOut()).namespace(config.getRoot())
 					.retryPolicy(new ExponentialBackoffRetry(1000, config.getRetry())).build();
 			zookeeper.start();
 			Stat stat = zookeeper.checkExists().forPath(Constants.ZK_SEPARATOR_DEFAULT);
@@ -187,6 +206,7 @@ public enum NodeManager {
 			zkPath = null;
 			zookeeper.close();
 			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} finally {
 			lock.readLock().unlock();
 		}
@@ -259,6 +279,7 @@ public enum NodeManager {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} finally {
 			lock.writeLock().unlock();
 		}
@@ -277,7 +298,6 @@ public enum NodeManager {
 					ZKPath izkpath = iZKPath.next();
 					removeParentPath(izkpath);
 					iZKPath.remove();
-					izkpath = null;
 				}
 			}
 			root.getChirldren().clear();
@@ -336,7 +356,6 @@ public enum NodeManager {
 					ZKPath izkpath = iZKPath.next();
 					removeParentPath(izkpath);
 					iZKPath.remove();
-					izkpath = null;
 				}
 			}
 		} catch (Exception e) {
@@ -447,6 +466,7 @@ public enum NodeManager {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} finally {
 			lock.writeLock().unlock();
 		}
@@ -485,6 +505,7 @@ public enum NodeManager {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} finally {
 			lock.writeLock().unlock();
 		}
@@ -549,6 +570,7 @@ public enum NodeManager {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} finally {
 			lock.writeLock().unlock();
 		}

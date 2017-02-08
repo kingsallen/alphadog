@@ -34,6 +34,7 @@ public class ThriftServerRegister implements IServer {
     private ThriftConfig config;            //thrift 配置信息
     private TServer server;                 //thrift 服务
     private volatile boolean isStart;       //thrift服务是否开启
+    private Thread thread;
 
     /**
      * 初始化thrift服务注册工具
@@ -43,7 +44,7 @@ public class ThriftServerRegister implements IServer {
      */
     public ThriftServerRegister(ThriftConfig config) throws IncompleteException, RpcException {
 
-        if(config.check()) {
+        if(!config.check()) {
             throw new IncompleteException();
         }
         this.config = config;
@@ -89,10 +90,20 @@ public class ThriftServerRegister implements IServer {
     public void start() throws IncompleteException, RpcException {
         logger.info("Server is start!");
         if(server != null) {
-            server.serve();
+            if(thread != null) {
+                thread.interrupt();
+                thread = null;
+            }
+            thread = new Thread(() -> server.serve());
+            thread.start();
         } else {
+            if(thread != null) {
+                thread.interrupt();
+                thread = null;
+            }
             initServer();
-            server.serve();
+            thread = new Thread(() -> server.serve());
+            thread.start();
         }
         isStart = true;
     }
@@ -104,6 +115,10 @@ public class ThriftServerRegister implements IServer {
     public void stop() {
         if(server != null) {
             server.stop();
+            if(thread != null) {
+                thread.interrupt();
+                thread = null;
+            }
         }
         isStart = false;
     }
@@ -145,11 +160,11 @@ public class ThriftServerRegister implements IServer {
             }
 
             for (Class c : interfaces) {
-                String cname = clazz.getSimpleName();
+                String cname = c.getSimpleName();
                 if (!cname.equals("Iface")) {
                     continue;
                 }
-                String pname = clazz.getEnclosingClass().getName() + "$Processor";
+                String pname = c.getEnclosingClass().getName() + "$Processor";
                 try {
                     Class<?> pclass = classLoader.loadClass(pname);
                     Constructor constructor = pclass.getConstructor(c);
@@ -162,7 +177,6 @@ public class ThriftServerRegister implements IServer {
                     throw new RpcException("初始化Processor失败!");
                 }
             }
-            String pname = clazz.getEnclosingClass().getName() + "$Processor";
         });
         return multiProcessor;
     }

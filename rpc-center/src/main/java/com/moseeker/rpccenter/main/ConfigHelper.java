@@ -2,11 +2,14 @@ package com.moseeker.rpccenter.main;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.rpccenter.config.ServerData;
 import com.moseeker.rpccenter.config.ThriftConfig;
 import com.moseeker.rpccenter.config.ZKConfig;
+import com.moseeker.rpccenter.exception.IncompleteException;
 import org.apache.commons.lang.StringUtils;
 
 import com.moseeker.rpccenter.common.configure.PropertiesConfiguration;
@@ -67,20 +70,155 @@ class ConfigHelper {
         }
     }
 
-    private void initConfig() {
+    /**
+     * 初始化参数配置
+     * @param configName 配置文件名称
+     * @param impls thrift服务实现类
+     * @throws ClassNotFoundException 配置文件定义的类不存在
+     * @throws IncompleteException 无法正常加载server.properties配置文件
+     * @throws RpcException 服务类错误
+     */
+    public void initConfig(String configName, List<Class> impls)
+            throws ClassNotFoundException, IncompleteException, RpcException {
         ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
+
         try {
-            configUtils.loadResource("server.properties");
-
-            int port = -1;
-            int interval = -1;
-
-            port = configUtils.get("port", Integer.class);
-            ThriftConfig.Builder thriftBuilder = new ThriftConfig.Builder();
-            //thriftBuilder.
+            configUtils.loadResource(configName);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new IncompleteException();
         }
 
+        int interval = configUtils.get("interval", Integer.class, 0);
+        String root = configUtils.get("root", String.class, "");
+        String servers = configUtils.get("servers", String.class, "");
+        String zkSeparator = configUtils.get("zkSeparator", String.class, "");
+        int sessionTimeOut = configUtils.get("sessionTimeOut", Integer.class, 0);
+        int connectionTimeOut = configUtils.get("connectionTimeOut", Integer.class, 0);
+        int baseSleepTimeMS = configUtils.get("baseSleepTimeMS", Integer.class, 0);
+        int maxRetry = configUtils.get("maxRetry", Integer.class, 0);
+        String protocol = configUtils.get("protocol", String.class, "");
+        int weight = configUtils.get("weight", Integer.class, 0);
+        String zkIP = configUtils.get("ZKIP", String.class, "");
+        int zkPort = configUtils.get("ZKport", Integer.class, 0);
+        int multi = configUtils.get("multi", Integer.class, 0);
+        String owner = configUtils.get("owner", String.class, "");
+        String language = configUtils.get("language", String.class, "");
+        String server_type = configUtils.get("server_type", String.class, "");
+
+        int initialCapacity = configUtils.get("initialCapacity", Integer.class, 0);
+        int maxLength = configUtils.get("maxLength", Integer.class, 0);
+        int selector = configUtils.get("selector", Integer.class, 0);
+        int worker = configUtils.get("worker", Integer.class, 0);
+        int retry = configUtils.get("retry", Integer.class, 0);
+
+        String IP = configUtils.get("ip", String.class, "");
+        int port = configUtils.get("port", Integer.class, 0);
+
+        Map<String, Class> services = createServices(configUtils, impls);
+
+        ThriftConfig.Builder thriftBuilder = new ThriftConfig.Builder(IP, port);
+        thriftConfig = thriftBuilder.setInitialCapicity(initialCapacity).setMaxLength(maxLength)
+                .setSelector(selector).setWorker(worker).setRetry(retry).addAllServer(services).createConfig();
+
+
+        List<String> serviceNames = services.keySet().stream().collect(Collectors.toList());
+        ZKConfig.Builder zkBuilder = new ZKConfig.Builder(zkIP, zkPort);
+        zkConfig = zkBuilder.setInterval(interval).setRoot(root).setZkSeparator(zkSeparator).setSessionTimeOut(sessionTimeOut)
+                .setConnectionTimeOut(connectionTimeOut).setBaseSleepTimeMS(baseSleepTimeMS).setMaxRetry(maxRetry)
+                .setServers(servers).addServerNames(serviceNames).createConfig();
+
+        serverData = new ServerData();
+        serverData.setWorker(worker);
+        serverData.setSelector(selector);
+        serverData.setInterval(interval);
+        serverData.setIp(thriftConfig.getIP());
+        serverData.setPort(thriftConfig.getPort());
+        serverData.setMulti(multi);
+        serverData.setProtocol(protocol);
+        serverData.setWeight(weight);
+        serverData.setOwner(owner);
+        serverData.setServer_type(server_type);
+        serverData.setLanguage(language);
+    }
+
+    /**
+     * 解析服务名称和服务实现类
+     * @param configUtils 配置文件解析工具
+     * @param impl 服务实现类
+     * @return 服务名称和服务实现类对应关系
+     * @throws ClassNotFoundException 配置文件定义的类不存在
+     * @throws RpcException 服务类错误
+     */
+    private Map<String, Class> createServices(ConfigPropertiesUtil configUtils, List<Class> impl)
+            throws ClassNotFoundException, RpcException {
+        Map<String, Class> services = createServicesByClass(impl);
+        if(services == null || services.size() == 0) {
+            services = createServicesByConf(configUtils);
+        }
+        return services;
+    }
+
+    /**
+     * 通过服务实现类生成 服务名称和服务实现类对应关系
+     * @param impl 服务实现类
+     * @return 服务名称和服务实现类对应关系
+     * @throws RpcException 服务类错误
+     */
+    private Map<String, Class> createServicesByClass(List<Class> impl) throws RpcException {
+        Map<String, Class> servers = new HashMap<>();
+
+        for(Class clazz : impl) {
+            Class<?>[] interfaces = clazz.getInterfaces();
+            if (interfaces.length == 0) {
+                throw new RpcException("Service class should implements Iface!");
+            }
+            for (Class clazz1 : interfaces) {
+                String cname = clazz1.getSimpleName();
+                if (!cname.equals("Iface")) {
+                    continue;
+                }
+                String pname = clazz1.getEnclosingClass().getSimpleName();
+                servers.put(pname.toLowerCase(), clazz);
+                break;
+            }
+
+        }
+
+        return servers;
+    }
+
+    /**
+     * 通过配置信息生成 服务名称和服务实现类对应关系
+     * @param configUtils
+     * @return 服务名称和服务实现类对应关系
+     * @throws ClassNotFoundException 配置文件定义的类不存在
+     */
+    private Map<String, Class> createServicesByConf(ConfigPropertiesUtil configUtils) throws ClassNotFoundException {
+        Map<String, Class> servers = new HashMap<>();
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
+        Set<Object> keys = configUtils.returnKeys();
+        if(keys != null && keys.size() > 0) {
+            keys.stream().filter(key -> ((String)key).startsWith("servername."));
+            for(Object obj : keys) {
+                String className = configUtils.get((String)obj, String.class);
+                Class clazz = classLoader.loadClass(className);
+                servers.put(clazz.getSimpleName().toLowerCase(), clazz);
+            }
+        }
+
+        return servers;
+    }
+
+    public ThriftConfig getThriftConfig() {
+        return thriftConfig;
+    }
+
+    public ZKConfig getZkConfig() {
+        return zkConfig;
+    }
+
+    public ServerData getServerData() {
+        return serverData;
     }
 }

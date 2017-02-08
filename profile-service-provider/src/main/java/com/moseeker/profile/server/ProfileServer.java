@@ -1,5 +1,9 @@
 package com.moseeker.profile.server;
 
+import com.moseeker.rpccenter.exception.IncompleteException;
+import com.moseeker.rpccenter.exception.RegisterException;
+import com.moseeker.rpccenter.exception.RpcException;
+import com.moseeker.rpccenter.main.MoServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -47,8 +51,8 @@ public class ProfileServer {
 
 		try {
 			AnnotationConfigApplicationContext acac = initSpring();
-			MultiRegServer server = new MultiRegServer(ProfileServer.class,
-					ServerNodeUtils.getPort(args), 
+			/*MultiRegServer server = new MultiRegServer(ProfileServer.class,
+					ServerNodeUtils.getPort(args),
 					acac.getBean(ProfileServicesImpl.class),
 					acac.getBean(ProfileAwardsServicesImpl.class),
 					acac.getBean(ProfileBasicServicesImpl.class),
@@ -64,16 +68,40 @@ public class ProfileServer {
 					acac.getBean(ProfileWorksServicesImpl.class),
 					acac.getBean(WholeProfileServicesImpl.class),
 					acac.getBean(ProfileAttachmentServicesImpl.class));
-			server.start(); // 启动服务，非阻塞
+			server.start();*/
+			MoServer server = new MoServer("server.properties",
+					acac.getBean(ProfileServicesImpl.class),
+					acac.getBean(ProfileAwardsServicesImpl.class),
+					acac.getBean(ProfileBasicServicesImpl.class),
+					acac.getBean(ProfileCredentialsServicesImpl.class),
+					acac.getBean(ProfileCustomizeResumeServicesImpl.class),
+					acac.getBean(ProfileEducationServicesImpl.class),
+					acac.getBean(ProfileImportServicesImpl.class),
+					acac.getBean(ProfileIntentionServicesImpl.class),
+					acac.getBean(ProfileLanguageServicesImpl.class),
+					acac.getBean(ProfileProjectExpServicesImpl.class),
+					acac.getBean(ProfileSkillServicesImpl.class),
+					acac.getBean(ProfileWorkExpServicesImpl.class),
+					acac.getBean(ProfileWorksServicesImpl.class),
+					acac.getBean(WholeProfileServicesImpl.class),
+					acac.getBean(ProfileAttachmentServicesImpl.class));
+			// 启动服务，非阻塞
+			try {
+				server.startServer();
 
-			synchronized (ProfileServer.class) {
-				while (true) {
-					try {
-						ProfileServer.class.wait();
-                    } catch (Exception e) {
-                        LOGGER.error(" service provider ProfileServer error", e);
+				synchronized (ProfileServer.class) {
+                    while (true) {
+                        try {
+                            ProfileServer.class.wait();
+                        } catch (Exception e) {
+                            LOGGER.error(" service provider ProfileServer error", e);
+                        }
                     }
-				}
+                }
+			} catch (IncompleteException | RpcException | RegisterException e) {
+				e.printStackTrace();
+				server.stopServer();
+			} finally {
 			}
 		} catch (Exception e) {
 			LOGGER.error("error", e);

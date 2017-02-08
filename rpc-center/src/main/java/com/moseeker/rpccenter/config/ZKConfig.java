@@ -99,9 +99,11 @@ public class ZKConfig implements ConfigCheck {
             if(StringUtils.isNotNullOrEmpty(IP)) {
                 this.IP = IP;
             } else {
-                IP = NetUtils.getLocalHost();
+                this.IP = NetUtils.getLocalHost();
             }
             if(port > 0) {
+                this.port = port;
+            } else {
                 port = NetUtils.getAvailablePort();
             }
         }
@@ -128,7 +130,7 @@ public class ZKConfig implements ConfigCheck {
             return this;
         }
 
-        public Builder addServerNmae(String serverName) {
+        public Builder addServerName(String serverName) {
             if(StringUtils.isNotNullOrEmpty(serverName))
                 this.serverNames.add(serverName);
             return this;
@@ -139,7 +141,7 @@ public class ZKConfig implements ConfigCheck {
          * @param serverNames 服务名称
          * @return 构造者本身
          */
-        public Builder addServerNmae(List<String> serverNames) {
+        public Builder addServerNames(List<String> serverNames) {
             if(serverNames != null && serverNames.size() > 0) {
                 serverNames.forEach(serverName -> {
                     this.serverNames.add(serverName);

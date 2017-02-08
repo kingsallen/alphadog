@@ -4,19 +4,25 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.rpccenter.common.Constants;
 import com.moseeker.rpccenter.config.ServerData;
 import com.moseeker.rpccenter.config.ZKConfig;
+import com.moseeker.rpccenter.exception.IncompleteException;
 import com.moseeker.rpccenter.exception.RegisterException;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.framework.api.transaction.CuratorTransactionResult;
+import org.apache.curator.framework.api.transaction.TransactionCheckBuilder;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
+import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -35,15 +41,54 @@ public class ServerRegistry {
      * 初始化服务注册工具
      * @param config ZK配置信息
      * @param data  服务节点的data数据
-     * @throws RegisterException
+     * @throws RegisterException 连接zookeeper失败
+     * @throws IncompleteException 配置信息丢失
      */
-    public ServerRegistry(ZKConfig config, ServerData data) throws RegisterException {
-        if(config.check() && data.check()) {
-            throw new RegisterException();
+    public ServerRegistry(ZKConfig config, ServerData data) throws RegisterException, IncompleteException {
+        if(!config.check() && !data.check()) {
+            throw new IncompleteException();
         }
         try {
             this.config = config;
             this.data = data;
+            initZK();
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            e.printStackTrace();
+            throw new RegisterException();
+        } finally {
+            /*if(client != null) {
+                client.close();
+            }*/
+        }
+    }
+
+    /**
+     * 注册服务。根据配置信息注册相关服务
+     */
+    public void register() throws RegisterException {
+        if(client == null) {
+            initZK();
+        }
+        buildPaths();
+        addListeners();
+        logger.info("-----ServerRegistry register-----");
+    }
+
+    /**
+     * 取消注册的服务，并关闭相关的curator资源
+     */
+    public void unRegister() {
+        logger.info("-----ServerRegistry unRegister-----");
+        clearAll();
+        if(client != null) {
+            client.close();
+            client = null;
+        }
+    }
+
+    private void initZK() throws RegisterException {
+        try {
             CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder();
             // FixedEnsembleProvider
             client = builder.connectString(this.config.getIp()+":"+this.config.getPort())
@@ -55,34 +100,8 @@ public class ServerRegistry {
                     .build();
             client.start();
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
             e.printStackTrace();
             throw new RegisterException();
-        } finally {
-            if(client != null) {
-                client.close();
-            }
-        }
-    }
-
-    /**
-     * 注册服务。根据配置信息注册相关服务
-     */
-    public void register() {
-        buildPaths();
-        addListeners();
-        logger.info("-----ServerRegistry register-----");
-    }
-
-    /**
-     * 取消注册的服务，并关闭相关的curator资源
-     */
-    public void unRegister() {
-        logger.info("-----ServerRegistry unRegister-----");
-        clearListeners();
-        if(client != null) {
-            client.close();
-            client = null;
         }
     }
 
@@ -108,23 +127,43 @@ public class ServerRegistry {
      */
     private void buildPath(String serverName) throws RegisterException {
 
+        data.setService(serverName);
         StringBuffer parentPath = new StringBuffer();
         parentPath.append(config.getZkSeparator()).append(serverName).append(config.getZkSeparator())
                 .append(config.getServers());
 
         StringBuffer serverPath = new StringBuffer();
-        parentPath.append(config.getZkSeparator()).append(serverName).append(config.getZkSeparator())
-                .append(config.getServers()).append(config.getIp()).append(":").append(config.getPort());
+        serverPath.append(config.getZkSeparator()).append(serverName).append(config.getZkSeparator())
+                .append(config.getServers()).append(config.getZkSeparator())
+                .append(data.getIp()).append(":").append(data.getPort());
         try {
-            client.create().creatingParentContainersIfNeeded().forPath(parentPath.toString());
-            //client.create().creatingParentContainersIfNeeded().withMode(CreateMode.PERSISTENT).forPath(sb.toString());
-            client.inTransaction()
+            if(client.checkExists().forPath(parentPath.toString()) == null) {
+                try {
+                    client.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(parentPath.toString());
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
+                    e.printStackTrace();
+                }
+            }
+
+            if(client.checkExists().forPath(serverPath.toString()) == null) {
+                try {
+                    client.create().withMode(CreateMode.EPHEMERAL).forPath(serverPath.toString(), JSON.toJSONString(data).getBytes(Constants.UTF8));
+                } catch (Exception e) {
+                    client.inTransaction()
+                        .delete().forPath(serverPath.toString())
+                        .and().create().forPath(serverPath.toString(), JSON.toJSONString(data).getBytes(Constants.UTF8))
+                        .and().commit();
+                }
+            } else {
+                client.inTransaction()
                     .delete().forPath(serverPath.toString())
-                    .and().create().withMode(CreateMode.EPHEMERAL).forPath(serverPath.toString(),
-                    JSON.toJSONString(data).getBytes(Constants.UTF8))
+                    .and().create().forPath(serverPath.toString(), JSON.toJSONString(data).getBytes(Constants.UTF8))
                     .and().commit();
+            }
 
         } catch (Exception e) {
+            e.printStackTrace();
             logger.error(e.getMessage(), e);
             throw new RegisterException();
         }
@@ -186,6 +225,7 @@ public class ServerRegistry {
             listeners.add(pathChildrenCache);
         } catch (Exception e) {
             e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -194,7 +234,7 @@ public class ServerRegistry {
      */
     private void reRegister() {
         clearAll();
-        buildPaths();
+        register();
     }
 
     /**
@@ -225,14 +265,17 @@ public class ServerRegistry {
      */
     private void clearListeners() {
         if(listeners.size() > 0) {
-            listeners.forEach(listener -> {
+            Iterator<PathChildrenCache> ci = listeners.iterator();
+            while (ci.hasNext()) {
+                PathChildrenCache childrenCache = ci.next();
                 try {
-                    listener.close();
+                    childrenCache.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                     logger.error(e.getMessage(), e);
                 }
-            });
+                ci.remove();
+            }
         }
     }
 }
