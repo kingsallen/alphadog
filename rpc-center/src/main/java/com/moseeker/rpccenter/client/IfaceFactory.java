@@ -81,7 +81,7 @@ public class IfaceFactory<T> {
         // 加载Client.Factory类
         Class<TServiceClientFactory<TServiceClient>> fi = (Class<TServiceClientFactory<TServiceClient>>) classLoader.loadClass(findOutClassName(ifaceClass) + "$Client$Factory");
         TServiceClientFactory<TServiceClient> clientFactory = fi.newInstance();
-        TMultiServicePoolFactory<T> clientPool = new TMultiServicePoolFactory<T>(clientFactory, config.getTimeout());
+        TMultiServicePoolFactory<T> clientPool = new TMultiServicePoolFactory<T>(clientFactory, config.getTimeout(), config.getInitialBufferCapacity(), config.getMaxLength());
 
         return new GenericKeyedObjectPool<ZKPath, T>(clientPool, poolConfig);
     }

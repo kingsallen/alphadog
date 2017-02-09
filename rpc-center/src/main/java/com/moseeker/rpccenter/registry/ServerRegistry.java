@@ -170,17 +170,47 @@ public class ServerRegistry {
     }
 
     /**
+     * 修复节点
+     * @param serverName 节点名称
+     * @throws RegisterException zookeeper异常
+     */
+    private void reBuild(String serverName) throws RegisterException {
+
+        StringBuffer serverPath = new StringBuffer();
+        serverPath.append(config.getZkSeparator()).append(serverName).append(config.getZkSeparator())
+                .append(config.getServers()).append(config.getZkSeparator())
+                .append(data.getIp()).append(":").append(data.getPort());
+
+        try {
+            if(client.checkExists().forPath(serverPath.toString()) == null ) {
+                buildPath(serverName);
+                addListener(serverName);
+            }
+        } catch (Exception e) {
+            throw new RegisterException();
+        }
+    }
+
+    /**
      * 添加监听
      */
     private void addListeners() {
-        config.getServerNames().forEach(serverName -> {
+        new Thread(() -> {
             try {
-                addListener(serverName);
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        });
+            logger.info("add listener");
+            config.getServerNames().forEach(serverName -> {
+                try {
+                    addListener(serverName);
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
+                    e.printStackTrace();
+                }
+            });
+        }).start();
     }
 
     /**
@@ -204,6 +234,12 @@ public class ServerRegistry {
                     case CHILD_REMOVED:
                         System.out.println("CHILD_REMOVED");
                         //reRegister();
+                        try {
+                            reBuild(serverName);
+                        } catch (RegisterException e) {
+                            logger.error(e.getMessage(), e);
+                            e.printStackTrace();
+                        }
                         break;
                     case CONNECTION_SUSPENDED:
                         System.out.println("CONNECTION_SUSPENDED");
@@ -213,6 +249,7 @@ public class ServerRegistry {
                         break;
                     case CONNECTION_LOST:
                         System.out.println("CONNECTION_LOST");
+                        logger.error("zookeeper监听：zookeeper连接丢失");
                         break;
                     case INITIALIZED:
                         break;

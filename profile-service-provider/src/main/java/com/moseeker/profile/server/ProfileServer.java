@@ -6,6 +6,7 @@ import com.moseeker.rpccenter.exception.RpcException;
 import com.moseeker.rpccenter.main.MoServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.moseeker.profile.thrift.ProfileAttachmentServicesImpl;
@@ -69,7 +70,8 @@ public class ProfileServer {
 					acac.getBean(WholeProfileServicesImpl.class),
 					acac.getBean(ProfileAttachmentServicesImpl.class));
 			server.start();*/
-			MoServer server = new MoServer("server.properties",
+			MoServer server = new MoServer(acac,
+					"server.properties",
 					acac.getBean(ProfileServicesImpl.class),
 					acac.getBean(ProfileAwardsServicesImpl.class),
 					acac.getBean(ProfileBasicServicesImpl.class),
@@ -98,7 +100,7 @@ public class ProfileServer {
                         }
                     }
                 }
-			} catch (IncompleteException | RpcException | RegisterException e) {
+			} catch (IncompleteException | RpcException | RegisterException | BeansException e) {
 				e.printStackTrace();
 				server.stopServer();
 			} finally {

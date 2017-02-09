@@ -98,6 +98,11 @@ public enum ServiceManager {
         }));
     }
 
+    /**
+     * 使用thrift定义的名字小写作为服务名称
+     * @param clazz
+     * @return
+     */
     private String getServerName(Class clazz) {
         String iface = clazz.getName();
         if (iface.contains("$")) {

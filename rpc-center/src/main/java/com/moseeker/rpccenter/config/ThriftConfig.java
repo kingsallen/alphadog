@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class ThriftConfig implements ConfigCheck {
 
-    private final Map<String, Class> servers;         //服务名称和具体服务对应关系
+    private final Map<String, Object> servers;        //服务名称和具体服务对应关系
     private final int port;                           //服务的端口号
     private final String IP;                          //服务的IP地址
     private int initialCapacity = 1024;               //初始化缓存大小 TTransportFactory
@@ -24,7 +24,7 @@ public class ThriftConfig implements ConfigCheck {
     private int worker = 8;                           //初始化worker数量
     private int retry = 3;                            //重试次数
 
-    private ThriftConfig(String IP, int port, Map<String, Class> servers, int initialCapacity, int maxLength,
+    private ThriftConfig(String IP, int port, Map<String, Object> servers, int initialCapacity, int maxLength,
                          int selector, int worker, int retry){
         this.IP = IP;
         this.port = port;
@@ -54,7 +54,7 @@ public class ThriftConfig implements ConfigCheck {
         return worker;
     }
 
-    public Map<String, Class> getServers() {
+    public Map<String, Object> getServers() {
         return servers;
     }
 
@@ -101,7 +101,7 @@ public class ThriftConfig implements ConfigCheck {
         private int selector = 4;
         private int worker = 8;
         private int retry = 3;
-        private Map<String, Class> servers = new HashMap<>();
+        private Map<String, Object> servers = new HashMap<>();
 
         /**
          * 初始化构造器
@@ -133,11 +133,11 @@ public class ThriftConfig implements ConfigCheck {
         /**
          * 添加服务
          * @param serverName 服务名称
-         * @param clazz 类对象
+         * @param object 类对象
          * @return 创建工具本身
          */
-        public Builder addServer(String serverName, Class clazz) {
-            servers.put(serverName, clazz);
+        public Builder addServer(String serverName, Object object) {
+            servers.put(serverName, object);
             return this;
         }
 
@@ -146,7 +146,7 @@ public class ThriftConfig implements ConfigCheck {
          * @param services 服务名称
          * @return 创建工具本身
          */
-        public Builder addAllServer(Map<String, Class> services) {
+        public Builder addAllServer(Map<String, Object> services) {
             servers.putAll(services);
             return this;
         }

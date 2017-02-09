@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.moseeker.rpccenter.config.ServerData;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
 
@@ -24,7 +25,7 @@ public class ZKPath {
 
 	private String name;						//路径名称
 	private List<ZKPath> chirldren; 			//子节点
-	private ThriftData data;					//rpc服务注册的特定的数据结构。存储rpc服务所在的ip地址和端口号等重要信息
+	private ServerData data;					//rpc服务注册的特定的数据结构。存储rpc服务所在的ip地址和端口号等重要信息
 	private PathChildrenCache chirldrenCache;
 	private CuratorFramework zookeeper;
 	private ZKPath parentNode;
@@ -75,11 +76,11 @@ public class ZKPath {
 		this.chirldren = chirldren;
 	}
 
-	public ThriftData getData() {
+	public ServerData getData() {
 		return data;
 	}
 
-	public void setData(ThriftData data) {
+	public void setData(ServerData data) {
 		this.data = data;
 	}
 

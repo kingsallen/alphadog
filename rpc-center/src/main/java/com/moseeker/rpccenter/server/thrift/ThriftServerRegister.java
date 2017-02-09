@@ -147,14 +147,14 @@ public class ThriftServerRegister implements IServer {
      * @throws RpcException 代理了反射涉及的一些异常，如 ClassNotFoundException,NoSuchMethodException,
      * IllegalAccessException,InvocationTargetException,InstantiationException
      */
-    private TProcessor reflectProcessor(Map<String, Class> map) throws RpcException {
+    private TProcessor reflectProcessor(Map<String, Object> map) throws RpcException {
         TMultiplexedProcessor multiProcessor = new TMultiplexedProcessor();
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         if(map == null || map.size() == 0) {
             throw new RpcException("服务不存在!");
         }
-        map.forEach((serverName, clazz) -> {
-            Class<?>[] interfaces = clazz.getInterfaces();
+        map.forEach((serverName, obj) -> {
+            Class<?>[] interfaces = obj.getClass().getInterfaces();
             if (interfaces.length == 0) {
                 throw new RpcException("Service class should implements Iface!");
             }
@@ -168,7 +168,7 @@ public class ThriftServerRegister implements IServer {
                 try {
                     Class<?> pclass = classLoader.loadClass(pname);
                     Constructor constructor = pclass.getConstructor(c);
-                    TProcessor processor = (TProcessor) constructor.newInstance(getProxy(classLoader, c, clazz, null));
+                    TProcessor processor = (TProcessor) constructor.newInstance(getProxy(classLoader, c, obj, null));
                     multiProcessor.registerProcessor(serverName, processor);
                 } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException |
                         InvocationTargetException | InstantiationException e) {

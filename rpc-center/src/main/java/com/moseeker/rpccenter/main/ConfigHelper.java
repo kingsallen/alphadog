@@ -14,6 +14,8 @@ import org.apache.commons.lang.StringUtils;
 
 import com.moseeker.rpccenter.common.configure.PropertiesConfiguration;
 import com.moseeker.rpccenter.exception.RpcException;
+import org.springframework.beans.BeansException;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
  * Created by zzh on 16/3/29.
@@ -77,8 +79,9 @@ class ConfigHelper {
      * @throws ClassNotFoundException 配置文件定义的类不存在
      * @throws IncompleteException 无法正常加载server.properties配置文件
      * @throws RpcException 服务类错误
+     * @throws BeansException 类找不着
      */
-    public void initConfig(String configName, List<Class> impls)
+    public void initConfig(AnnotationConfigApplicationContext acac, String configName, List<Object> impls)
             throws ClassNotFoundException, IncompleteException, RpcException {
         ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
 
@@ -114,7 +117,7 @@ class ConfigHelper {
         String IP = configUtils.get("ip", String.class, "");
         int port = configUtils.get("port", Integer.class, 0);
 
-        Map<String, Class> services = createServices(configUtils, impls);
+        Map<String, Object> services = createServices(configUtils, impls, acac);
 
         ThriftConfig.Builder thriftBuilder = new ThriftConfig.Builder(IP, port);
         thriftConfig = thriftBuilder.setInitialCapicity(initialCapacity).setMaxLength(maxLength)
@@ -148,12 +151,15 @@ class ConfigHelper {
      * @return 服务名称和服务实现类对应关系
      * @throws ClassNotFoundException 配置文件定义的类不存在
      * @throws RpcException 服务类错误
+     * @throws BeansException 类找不着
      */
-    private Map<String, Class> createServices(ConfigPropertiesUtil configUtils, List<Class> impl)
+    private Map<String, Object> createServices(ConfigPropertiesUtil configUtils, List<Object> impl,
+                                               AnnotationConfigApplicationContext acac)
             throws ClassNotFoundException, RpcException {
-        Map<String, Class> services = createServicesByClass(impl);
+
+        Map<String, Object> services = createServicesByConf(configUtils, acac);
         if(services == null || services.size() == 0) {
-            services = createServicesByConf(configUtils);
+            services = createServicesByClass(impl);
         }
         return services;
     }
@@ -164,11 +170,11 @@ class ConfigHelper {
      * @return 服务名称和服务实现类对应关系
      * @throws RpcException 服务类错误
      */
-    private Map<String, Class> createServicesByClass(List<Class> impl) throws RpcException {
-        Map<String, Class> servers = new HashMap<>();
+    private Map<String, Object> createServicesByClass(List<Object> impl) throws RpcException {
+        Map<String, Object> servers = new HashMap<>();
 
-        for(Class clazz : impl) {
-            Class<?>[] interfaces = clazz.getInterfaces();
+        for(Object clazz : impl) {
+            Class<?>[] interfaces = clazz.getClass().getInterfaces();
             if (interfaces.length == 0) {
                 throw new RpcException("Service class should implements Iface!");
             }
@@ -190,23 +196,28 @@ class ConfigHelper {
     /**
      * 通过配置信息生成 服务名称和服务实现类对应关系
      * @param configUtils
+     * @param acac spring
      * @return 服务名称和服务实现类对应关系
      * @throws ClassNotFoundException 配置文件定义的类不存在
+     * @throws BeansException 类找不着
      */
-    private Map<String, Class> createServicesByConf(ConfigPropertiesUtil configUtils) throws ClassNotFoundException {
-        Map<String, Class> servers = new HashMap<>();
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+    private Map<String, Object> createServicesByConf(ConfigPropertiesUtil configUtils,
+                                                    AnnotationConfigApplicationContext acac)
+            throws ClassNotFoundException, BeansException {
+        Map<String, Object> servers = new HashMap<>();
+        if(acac != null) {
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
-        Set<Object> keys = configUtils.returnKeys();
-        if(keys != null && keys.size() > 0) {
-            keys.stream().filter(key -> ((String)key).startsWith("servername."));
-            for(Object obj : keys) {
-                String className = configUtils.get((String)obj, String.class);
-                Class clazz = classLoader.loadClass(className);
-                servers.put(clazz.getSimpleName().toLowerCase(), clazz);
+            Set<Object> keys = configUtils.returnKeys();
+            if(keys != null && keys.size() > 0) {
+                keys = keys.stream().filter(key -> ((String)key).startsWith("servername.")).collect(Collectors.toSet());
+                for(Object obj : keys) {
+                    String className = configUtils.get((String)obj, String.class);
+                    Object object = acac.getBean(classLoader.loadClass(className));
+                    servers.put(((String)obj).substring(((String)obj).indexOf(".")+1), object);
+                }
             }
         }
-
         return servers;
     }
 

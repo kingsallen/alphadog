@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import com.moseeker.rpccenter.config.ServerData;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.api.GetChildrenBuilder;
@@ -187,7 +188,7 @@ public enum NodeManager {
 									grandChirld.start();
 									GetDataBuilder dataBuilder = grandChirld.getData();
 									String json = new String(dataBuilder.forPath("/"), "utf8");
-									ThriftData data = JSON.parseObject(json, ThriftData.class);
+									ServerData data = JSON.parseObject(json, ServerData.class);
 									grandChirldrenPath.setData(data);
 									grandChirldrenPath.setParentNode(chirldrenPath);
 									grandChirldrenPaths.add(grandChirldrenPath);
@@ -551,7 +552,7 @@ public enum NodeManager {
 						GetDataBuilder dataBuilder = grandChild.getData();
 						String json = new String(dataBuilder.forPath("/"), "utf8");
 						System.out.println(grandChirldrenPath.getName()+"-data:"+json);
-						ThriftData data = JSON.parseObject(json, ThriftData.class);
+						ServerData data = JSON.parseObject(json, ServerData.class);
 						grandChirldrenPath.setData(data);
 					} catch (Exception e) {
 						//报警

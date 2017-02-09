@@ -12,6 +12,8 @@ import com.moseeker.rpccenter.server.IServer;
 import com.moseeker.rpccenter.server.thrift.ThriftServerRegister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,17 +40,18 @@ public class MoServer {
     private String configName = "server.properties";    //配置文件名称
     private Object[] impls;                             //服务实现类
 
-    public MoServer() throws ClassNotFoundException, IncompleteException {
-        initConfig();
+    public MoServer(AnnotationConfigApplicationContext acac) throws ClassNotFoundException, IncompleteException,
+            RpcException, BeansException {
+        initConfig(acac);
     };
 
-    public MoServer(String configName, Object... impls)
-            throws ClassNotFoundException, IncompleteException, RpcException {
+    public MoServer(AnnotationConfigApplicationContext acac, String configName, Object... impls)
+            throws ClassNotFoundException, IncompleteException, RpcException, BeansException {
         if(StringUtils.isNotNullOrEmpty(configName)) {
             this.configName = configName;
         }
         this.impls = impls;
-        initConfig();
+        initConfig(acac);
     }
 
     /**
@@ -125,10 +128,12 @@ public class MoServer {
      * 初始化配置信息
      * @throws ClassNotFoundException 配置文件定义的类不存在
      * @throws IncompleteException 无法正常加载server.properties配置文件
+     * @throws org.springframework.beans.BeansException 类找不着
      */
-    private void initConfig() throws ClassNotFoundException, IncompleteException {
-        List<Class> clazzs = Arrays.asList(impls).stream().map(obj -> obj.getClass()).collect(Collectors.toList());
-        configHelper.initConfig(configName, clazzs);
+    private void initConfig(AnnotationConfigApplicationContext acac) throws ClassNotFoundException,
+            IncompleteException, org.springframework.beans.BeansException {
+        //List<Object> clazzs = Arrays.asList(impls).stream().map(obj -> obj.getClass()).collect(Collectors.toList());
+        configHelper.initConfig(acac, configName, Arrays.asList(impls));
         this.thriftConfig = configHelper.getThriftConfig();
         this.zkConfig = configHelper.getZkConfig();
         this.serverData = configHelper.getServerData();
