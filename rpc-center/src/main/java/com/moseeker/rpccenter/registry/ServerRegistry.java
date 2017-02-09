@@ -203,7 +203,7 @@ public class ServerRegistry {
                         break;
                     case CHILD_REMOVED:
                         System.out.println("CHILD_REMOVED");
-                        reRegister();
+                        //reRegister();
                         break;
                     case CONNECTION_SUSPENDED:
                         System.out.println("CONNECTION_SUSPENDED");

@@ -24,13 +24,15 @@ public class IfaceFactory<T> {
 	
 	private ThriftServerConfig config;						//配置信息
 	private GenericKeyedObjectPool<ZKPath, T> pool = null;	//节点对象池
+	private String serverName;
 	
 	/**
 	 * 初始化thrift客户端工厂
 	 * @param config
 	 */
-	public IfaceFactory(ThriftServerConfig config) {
+	public IfaceFactory(ThriftServerConfig config, String serverName) {
 		this.config = config;
+		this.serverName = serverName;
 	}
 	
 	/**
@@ -38,13 +40,13 @@ public class IfaceFactory<T> {
 	 * @param clazz 指定创建客户端 （thrift service下的 iface接口）
 	 * @return
 	 */
-	public <clazz> clazz createIface(Class<T> clazz) {
+	public <clazz> clazz createIface(Class<T> clazz, String serverName) {
 		try {
 			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 			if(pool == null) {
 				pool = bulidClientPool(classLoader, clazz);
 			}
-			Invoker invoker = new NodeInvoker<T>(pool, BeanUtils.findOutClassName(clazz), config.getRetry());
+			Invoker invoker = new NodeInvoker<T>(pool, serverName, config.getRetry());
 			DynamicClientHandler dynamicClientHandler = new DynamicClientHandler(invoker);
 			return dynamicClientHandler.bind(classLoader, clazz);
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
@@ -101,4 +103,8 @@ public class IfaceFactory<T> {
     public void clear() {
     	pool.clear();
     }
+
+	public String getServerName() {
+		return serverName;
+	}
 }

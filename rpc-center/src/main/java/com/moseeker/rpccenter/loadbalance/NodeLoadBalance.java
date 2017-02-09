@@ -45,6 +45,7 @@ public enum NodeLoadBalance {
 					} else {
 						index.put(name, position+1);
 					}
+					break;
 				}
 			}
 		} else {

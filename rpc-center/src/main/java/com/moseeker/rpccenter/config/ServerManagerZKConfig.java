@@ -36,8 +36,6 @@ public enum ServerManagerZKConfig {
 	/** 连接超时时间 */
 	private int connectionTimeOut = 15000;
 
-
-
     /** 重试次数，默认重试为1次 */
     private int retry = 2;
 
@@ -46,6 +44,10 @@ public enum ServerManagerZKConfig {
 
     /** 授权字符串(server端配置，client端不用设置) */
     private String auth;
+
+    private String connectstr;
+
+    private int baseSleepTimeMS;
     
     private ServerManagerZKConfig() {
 
@@ -61,12 +63,22 @@ public enum ServerManagerZKConfig {
 			this.sessionTimeOut = configUtil.get("zookeeper.sessionTimeOut", Integer.class, 30000);
 			this.connectionTimeOut = configUtil.get("zookeeper.connectionTimeOut", Integer.class, 15000);
 			this.retry = configUtil.get("thrift.client.retry", Integer.class, 2);
+			this.baseSleepTimeMS = configUtil.get("zookeeper.baseSleepTimeMS", Integer.class, 1000);
+			this.connectstr = this.getIP()+":"+this.port;
 			//configUtil.loadAbsoluteResource(confPath);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
+
+	public String getConnectstr() {
+		return connectstr;
+	}
+
+	public int getBaseSleepTimeMS() {
+		return baseSleepTimeMS;
+	}
 
 	public String getIP() {
 		return IP;

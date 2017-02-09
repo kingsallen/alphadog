@@ -154,23 +154,23 @@ public enum NodeManager {
 					.connectionTimeoutMs(config.getConnectionTimeOut()).namespace(config.getRoot())
 					.retryPolicy(new ExponentialBackoffRetry(1000, config.getRetry())).build();
 			zookeeper.start();
-			Stat stat = zookeeper.checkExists().forPath(Constants.ZK_SEPARATOR_DEFAULT);
+			Stat stat = zookeeper.checkExists().forPath(config.getZkSeparator());
 			if(stat == null) {
-				zookeeper.create().forPath(Constants.ZK_SEPARATOR_DEFAULT);
+				zookeeper.create().forPath(config.getZkSeparator());
 			}
 			GetChildrenBuilder getChildrenBuilder = zookeeper.getChildren();
-			List<String> services = getChildrenBuilder.forPath(Constants.ZK_SEPARATOR_DEFAULT);
+			List<String> services = getChildrenBuilder.forPath(config.getZkSeparator());
 			if (services != null && services.size() > 0) {
 				List<ZKPath> childrenPaths = new ArrayList<>();
 				for (String service : services) {
 					ZKPath chirldrenPath = new ZKPath(service);
 					chirldrenPath.setParentNode(zkPath);
 					List<String> chirldrenServices = getChildrenBuilder
-							.forPath(Constants.ZK_SEPARATOR_DEFAULT + service);
+							.forPath(config.getZkSeparator() + service);
 					if (chirldrenServices != null && chirldrenServices.size() > 0) {
 						for (String childrenService : chirldrenServices) {
 							List<String> grandChirldrenServices = getChildrenBuilder
-									.forPath(Constants.ZK_SEPARATOR_DEFAULT + service + Constants.ZK_SEPARATOR_DEFAULT
+									.forPath(config.getZkSeparator() + service + config.getZkSeparator()
 											+ childrenService);
 							if (grandChirldrenServices != null && grandChirldrenServices.size() > 0) {
 								List<ZKPath> grandChirldrenPaths = new ArrayList<>();
@@ -178,11 +178,11 @@ public enum NodeManager {
 									ZKPath grandChirldrenPath = new ZKPath(grandChirldrenService);
 									CuratorFrameworkFactory.Builder builder1 = CuratorFrameworkFactory.builder();
 									CuratorFramework grandChirld = builder1.connectString(config.getConnectstr())
-											.sessionTimeoutMs(config.getTimeout())
-											.connectionTimeoutMs(config.getConnectionTimeout())
-											.namespace(config.getNamespace() + Constants.ZK_SEPARATOR_DEFAULT + service
-													+ Constants.ZK_SEPARATOR_DEFAULT + childrenService
-													+ Constants.ZK_SEPARATOR_DEFAULT + grandChirldrenService)
+											.sessionTimeoutMs(config.getSessionTimeOut())
+											.connectionTimeoutMs(config.getConnectionTimeOut())
+											.namespace(config.getRoot() + config.getZkSeparator() + service
+													+ config.getZkSeparator() + childrenService
+													+ config.getZkSeparator() + grandChirldrenService)
 											.retryPolicy(new ExponentialBackoffRetry(1000, config.getRetry())).build();
 									grandChirld.start();
 									GetDataBuilder dataBuilder = grandChirld.getData();
@@ -224,13 +224,13 @@ public enum NodeManager {
 			if (root != null) {
 				CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder();
 				CuratorFramework zookeeper = builder.connectString(config.getConnectstr())
-						.sessionTimeoutMs(config.getTimeout()).connectionTimeoutMs(config.getConnectionTimeout())
-						.namespace(config.getNamespace())
-						.retryPolicy(new ExponentialBackoffRetry(1000, config.getRetry())).build();
+						.sessionTimeoutMs(config.getSessionTimeOut()).connectionTimeoutMs(config.getConnectionTimeOut())
+						.namespace(config.getRoot())
+						.retryPolicy(new ExponentialBackoffRetry(config.getBaseSleepTimeMS(), config.getRetry())).build();
 				zookeeper.start();
 				root.setZookeeper(zookeeper);
 				// 监控服务节点的增减
-				PathChildrenCache pathChildrenCache = new PathChildrenCache(zookeeper, Constants.ZK_SEPARATOR_DEFAULT, false);
+				PathChildrenCache pathChildrenCache = new PathChildrenCache(zookeeper, config.getZkSeparator(), false);
 				pathChildrenCache.getListenable().addListener(new PathChildrenCacheListener() {
 
 					@Override
@@ -317,7 +317,7 @@ public enum NodeManager {
 		lock.writeLock().lock();
 		try {
 			GetChildrenBuilder getChildrenBuilder = root.getZookeeper().getChildren();
-			List<String> services = getChildrenBuilder.forPath(Constants.ZK_SEPARATOR_DEFAULT);
+			List<String> services = getChildrenBuilder.forPath(config.getZkSeparator());
 			if (services != null && services.size() > 0) {
 				for (String service : services) {
 					boolean newNode = true;
@@ -373,7 +373,7 @@ public enum NodeManager {
 		try {
 			lock.writeLock().lock();
 			GetChildrenBuilder getChildrenBuilder = root.getZookeeper().getChildren();
-			List<String> services = getChildrenBuilder.forPath(Constants.ZK_SEPARATOR_DEFAULT);
+			List<String> services = getChildrenBuilder.forPath(config.getZkSeparator());
 			if (services != null && services.size() > 0) {
 				for (String service : services) {
 					boolean newNode = true;
@@ -410,10 +410,10 @@ public enum NodeManager {
 			CuratorFramework zookeeper = null;
 			if(parentPath.getZookeeper() == null) {
 				CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder();
-				zookeeper = builder.connectString(config.getConnectstr()).sessionTimeoutMs(config.getTimeout())
-						.connectionTimeoutMs(config.getConnectionTimeout())
-						.namespace(config.getNamespace() + Constants.ZK_SEPARATOR_DEFAULT + parentPath.getName()
-								+ Constants.ZK_SEPARATOR_DEFAULT + Constants.ZK_NAMESPACE_SERVERS)
+				zookeeper = builder.connectString(config.getConnectstr()).sessionTimeoutMs(config.getSessionTimeOut())
+						.connectionTimeoutMs(config.getConnectionTimeOut())
+						.namespace(config.getRoot() + config.getZkSeparator() + parentPath.getName()
+								+ config.getZkSeparator() + config.getServers())
 						.retryPolicy(new ExponentialBackoffRetry(1000, config.getRetry())).build();
 				zookeeper.start();
 				parentPath.setZookeeper(zookeeper);
@@ -423,7 +423,7 @@ public enum NodeManager {
 					pathChildrenCache = parentPath.getChirldrenCache();
 				} else {
 					pathChildrenCache = new PathChildrenCache(zookeeper,
-							Constants.ZK_SEPARATOR_DEFAULT,
+							config.getZkSeparator(),
 							false);
 					pathChildrenCache.getListenable().addListener(new PathChildrenCacheListener() {
 
@@ -523,32 +523,32 @@ public enum NodeManager {
 		try {
 			if(parentPath.getZookeeper() == null) {
 				CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder();
-				CuratorFramework zookeeper = builder.connectString(config.getConnectstr()).sessionTimeoutMs(config.getTimeout())
-						.connectionTimeoutMs(config.getConnectionTimeout())
-						.namespace(config.getNamespace() + Constants.ZK_SEPARATOR_DEFAULT + parentPath.getName()
-								+ Constants.ZK_SEPARATOR_DEFAULT + Constants.ZK_NAMESPACE_SERVERS)
+				CuratorFramework zookeeper = builder.connectString(config.getConnectstr()).sessionTimeoutMs(config.getSessionTimeOut())
+						.connectionTimeoutMs(config.getConnectionTimeOut())
+						.namespace(config.getRoot() + config.getZkSeparator() + parentPath.getName()
+								+ config.getZkSeparator() + config.getServers())
 						.retryPolicy(new ExponentialBackoffRetry(1000, config.getRetry())).build();
 				zookeeper.start();
 				parentPath.setZookeeper(zookeeper);
 			}
 			GetChildrenBuilder getChildrenBuilder = parentPath.getZookeeper().getChildren();
 			List<String> grandChirldrenServices = getChildrenBuilder
-					.forPath(Constants.ZK_SEPARATOR_DEFAULT);
+					.forPath(config.getZkSeparator());
 			if(grandChirldrenServices != null && grandChirldrenServices.size() > 0) {
 				List<ZKPath> nodes = new ArrayList<>();
 				for(String nodeName : grandChirldrenServices) {
 					ZKPath grandChirldrenPath = new ZKPath(nodeName);
 					CuratorFrameworkFactory.Builder builder1 = CuratorFrameworkFactory.builder();
-					CuratorFramework grandChirld = builder1.connectString(config.getConnectstr())
-							.sessionTimeoutMs(config.getTimeout())
-							.connectionTimeoutMs(config.getConnectionTimeout())
-							.namespace(config.getNamespace() + Constants.ZK_SEPARATOR_DEFAULT + parentPath.getName()
-									+ Constants.ZK_SEPARATOR_DEFAULT + Constants.ZK_NAMESPACE_SERVERS
-									+ Constants.ZK_SEPARATOR_DEFAULT + nodeName)
+					CuratorFramework grandChild = builder1.connectString(config.getConnectstr())
+							.sessionTimeoutMs(config.getSessionTimeOut())
+							.connectionTimeoutMs(config.getConnectionTimeOut())
+							.namespace(config.getRoot() + config.getZkSeparator() + parentPath.getName()
+									+ config.getZkSeparator() + config.getServers()
+									+ config.getZkSeparator() + nodeName)
 							.retryPolicy(new ExponentialBackoffRetry(1000, config.getRetry())).build();
-					grandChirld.start();
+					grandChild.start();
 					try {
-						GetDataBuilder dataBuilder = grandChirld.getData();
+						GetDataBuilder dataBuilder = grandChild.getData();
 						String json = new String(dataBuilder.forPath("/"), "utf8");
 						System.out.println(grandChirldrenPath.getName()+"-data:"+json);
 						ThriftData data = JSON.parseObject(json, ThriftData.class);
@@ -560,7 +560,7 @@ public enum NodeManager {
 						//
 					}
 					grandChirldrenPath.setParentNode(parentPath);
-					grandChirld.close();
+					grandChild.close();
 					nodes.add(grandChirldrenPath);
 					
 				}
