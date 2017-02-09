@@ -14,25 +14,25 @@ import java.util.List;
 
 public class HrDaoTest {
 	
-	private HrDBDao.Iface hrDao;
-
-	@Before
-	public void initialize() {
-		hrDao = ServiceManager.SERVICEMANAGER.getService(HrDBDao.Iface.class);
-	}
-
-	@Test
-	public void testGet() {
-		QueryUtil qu = new QueryUtil();
-		qu.addEqualFilter("company_id", "1");
-
-		try {
-			List<HrEmployeeCustomFieldsPojo> result = hrDao.getEmployeeCustomFields(qu);
-			result.forEach(e -> System.out.println(e));
-		} catch (TException e) {
-			e.printStackTrace();
-		}
-	}
+//	private HrDBDao.Iface hrDao;
+//
+//	@Before
+//	public void initialize() {
+//		hrDao = ServiceManager.SERVICEMANAGER.getService(HrDBDao.Iface.class);
+//	}
+//
+//	@Test
+//	public void testGet() {
+//		QueryUtil qu = new QueryUtil();
+//		qu.addEqualFilter("company_id", "1");
+//
+//		try {
+//			List<HrEmployeeCustomFieldsPojo> result = hrDao.getEmployeeCustomFields(qu);
+//			result.forEach(e -> System.out.println(e));
+//		} catch (TException e) {
+//			e.printStackTrace();
+//		}
+//	}
 
 	/*
 	@Test
