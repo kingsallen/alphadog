@@ -91,31 +91,31 @@ class ConfigHelper {
             throw new IncompleteException();
         }
 
-        int interval = configUtils.get("interval", Integer.class, 0);
-        String root = configUtils.get("root", String.class, "");
-        String servers = configUtils.get("servers", String.class, "");
-        String zkSeparator = configUtils.get("zkSeparator", String.class, "");
-        int sessionTimeOut = configUtils.get("sessionTimeOut", Integer.class, 0);
-        int connectionTimeOut = configUtils.get("connectionTimeOut", Integer.class, 0);
-        int baseSleepTimeMS = configUtils.get("baseSleepTimeMS", Integer.class, 0);
-        int maxRetry = configUtils.get("maxRetry", Integer.class, 0);
-        String protocol = configUtils.get("protocol", String.class, "");
-        int weight = configUtils.get("weight", Integer.class, 0);
-        String zkIP = configUtils.get("ZKIP", String.class, "");
-        int zkPort = configUtils.get("ZKport", Integer.class, 0);
-        int multi = configUtils.get("multi", Integer.class, 0);
-        String owner = configUtils.get("owner", String.class, "");
-        String language = configUtils.get("language", String.class, "");
-        String server_type = configUtils.get("server_type", String.class, "");
+        int interval = configUtils.get("zookeeper.interval", Integer.class, 0);
+        String root = configUtils.get("zookeeper.root", String.class, "");
+        String servers = configUtils.get("zookeeper.servers", String.class, "");
+        String zkSeparator = configUtils.get("zookeeper.zkSeparator", String.class, "");
+        int sessionTimeOut = configUtils.get("zookeeper.sessionTimeOut", Integer.class, 0);
+        int connectionTimeOut = configUtils.get("zookeeper.connectionTimeOut", Integer.class, 0);
+        int baseSleepTimeMS = configUtils.get("zookeeper.baseSleepTimeMS", Integer.class, 0);
+        int maxRetry = configUtils.get("zookeeper.maxRetry", Integer.class, 0);
+        String protocol = configUtils.get("zookeeper.protocol", String.class, "");
+        int weight = configUtils.get("zookeeper.weight", Integer.class, 0);
+        String zkIP = configUtils.get("zookeeper.ZKIP", String.class, "");
+        int zkPort = configUtils.get("zookeeper.ZKport", Integer.class, 0);
+        int multi = configUtils.get("zookeeper.multi", Integer.class, 0);
+        String owner = configUtils.get("zookeeper.owner", String.class, "");
+        String language = configUtils.get("zookeeper.language", String.class, "");
 
-        int initialCapacity = configUtils.get("initialCapacity", Integer.class, 0);
-        int maxLength = configUtils.get("maxLength", Integer.class, 0);
-        int selector = configUtils.get("selector", Integer.class, 0);
-        int worker = configUtils.get("worker", Integer.class, 0);
-        int retry = configUtils.get("retry", Integer.class, 0);
+        String server_type = configUtils.get("thrift.server_type", String.class, "");
+        int initialCapacity = configUtils.get("thrift.initialCapacity", Integer.class, 0);
+        int maxLength = configUtils.get("thrift.maxLength", Integer.class, 0);
+        int selector = configUtils.get("thrift.selector", Integer.class, 0);
+        int worker = configUtils.get("thrift.worker", Integer.class, 0);
+        int retry = configUtils.get("thrift.retry", Integer.class, 0);
 
-        String IP = configUtils.get("ip", String.class, "");
-        int port = configUtils.get("port", Integer.class, 0);
+        String IP = configUtils.get("thrift.ip", String.class, "");
+        int port = configUtils.get("thrift.port", Integer.class, 0);
 
         Map<String, Object> services = createServices(configUtils, impls, acac);
 
@@ -210,11 +210,11 @@ class ConfigHelper {
 
             Set<Object> keys = configUtils.returnKeys();
             if(keys != null && keys.size() > 0) {
-                keys = keys.stream().filter(key -> ((String)key).startsWith("servername.")).collect(Collectors.toSet());
+                keys = keys.stream().filter(key -> ((String)key).startsWith("zookeeper.servername.")).collect(Collectors.toSet());
                 for(Object obj : keys) {
                     String className = configUtils.get((String)obj, String.class);
                     Object object = acac.getBean(classLoader.loadClass(className));
-                    servers.put(((String)obj).substring(((String)obj).indexOf(".")+1), object);
+                    servers.put(((String)obj).substring(((String)obj).lastIndexOf(".")+1), object);
                 }
             }
         }

@@ -104,7 +104,7 @@ public class ZKConfig implements ConfigCheck {
             if(port > 0) {
                 this.port = port;
             } else {
-                port = NetUtils.getAvailablePort();
+                this.port = NetUtils.getAvailablePort();
             }
         }
 

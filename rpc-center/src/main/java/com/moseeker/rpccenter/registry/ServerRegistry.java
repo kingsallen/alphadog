@@ -184,7 +184,7 @@ public class ServerRegistry {
         try {
             if(client.checkExists().forPath(serverPath.toString()) == null ) {
                 buildPath(serverName);
-                addListener(serverName);
+                //addListener(serverName);
             }
         } catch (Exception e) {
             throw new RegisterException();

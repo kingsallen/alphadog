@@ -140,15 +140,16 @@ public enum ServiceManager {
             e.printStackTrace();
         }
         int connectionTimeOut = configUtils.get("thrift.client.timeout", Integer.class, 60000);
-        int initialBufferCapacity = configUtils.get("initialBufferCapacity", Integer.class, 1024);
-        int maxLength = configUtils.get("maxLength", Integer.class, 1024*1024*1024);
-        int maxActive = configUtils.get("maxActive", Integer.class, 1024);
-        int maxIdle = configUtils.get("maxIdle", Integer.class, 100);
-        int minIdle = configUtils.get("minIdle", Integer.class, 1);
-        int maxWait = configUtils.get("maxWait", Integer.class, 10000);
-        int timeBetweenEvictionRunsMillis = configUtils.get("timeBetweenEvictionRunsMillis", Integer.class, 180000);
-        boolean testWhileIdle = configUtils.get("testWhileIdle", Boolean.class, false);
-        int retry = configUtils.get("retry", Integer.class, 3);
+        int initialBufferCapacity = configUtils.get("thrift.client.initialBufferCapacity", Integer.class, 1024);
+        int retry = configUtils.get("thrift.client.retry", Integer.class, 3);
+        int maxLength = configUtils.get("thrift.client.maxLength", Integer.class, 1024*1024*1024);
+
+        int maxActive = configUtils.get("objectpool.maxActive", Integer.class, 1024);
+        int maxIdle = configUtils.get("objectpool.maxIdle", Integer.class, 100);
+        int minIdle = configUtils.get("objectpool.minIdle", Integer.class, 1);
+        int maxWait = configUtils.get("objectpool.maxWait", Integer.class, 10000);
+        int timeBetweenEvictionRunsMillis = configUtils.get("objectpool.timeBetweenEvictionRunsMillis", Integer.class, 180000);
+        boolean testWhileIdle = configUtils.get("objectpool.testWhileIdle", Boolean.class, false);
 
         config.setRetry(retry);
         config.setTimeout(connectionTimeOut);
