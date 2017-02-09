@@ -2,6 +2,7 @@ package com.moseeker.baseorm.Thriftservice;
 
 import java.util.List;
 
+import com.moseeker.thrift.gen.dao.struct.HrEmployeeCertConfPojo;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,11 @@ public class HrDBThriftService implements Iface {
 	@Override
 	public Response getHrHistoryOperations(List<ProcessValidationStruct> record) throws TException {
 		return hrDBService.getHrHistoryOpertation(record);
+	}
+
+	@Override
+	public HrEmployeeCertConfPojo getEmployeeCertConf(CommonQuery query) throws TException {
+		return hrDaoService.getEmployeeCertConf(query);
 	}
 
 	@Override

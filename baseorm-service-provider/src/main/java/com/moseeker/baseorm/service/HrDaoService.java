@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.service;
 
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.dao.struct.HrEmployeeCertConfPojo;
 import com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo;
 import com.moseeker.thrift.gen.dao.struct.HrHbItemsPojo;
 import com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo;
@@ -27,5 +28,7 @@ public interface HrDaoService {
     HrHbScratchCardPojo getHbScratchCard(CommonQuery query) throws TException;
 
     HrHbSendRecordPojo getHbSendRecord(CommonQuery query) throws TException;
+
+    HrEmployeeCertConfPojo getEmployeeCertConf(CommonQuery query) throws TException;
     
 }

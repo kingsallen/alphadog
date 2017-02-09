@@ -97,3 +97,19 @@ struct HrOperationrecordStruct{
     4: optional double status_id,
     5: optional i32 operate_tpl_id
 }
+
+struct HrEmployeeCertConfPojo {
+    1: optional i32 company_id,
+    2: optional i32 is_strict,
+    3: optional string email_suffix,
+    4: optional Timestamp create_time,
+    5: optional Timestamp update_time,
+    6: optional i32 disable,
+    7: optional i32 bd_add_group,
+    8: optional i32 bd_use_group_id,
+    9: optional i32 auth_mode,
+    10:optional string auth_code,
+    11:optional string custom,
+    12:optional string questions,
+    13:optional string custom_hint
+}

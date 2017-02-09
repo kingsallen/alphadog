@@ -1,13 +1,38 @@
 package com.moseeker.baseorm.dao.hrdao;
 
+import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.thrift.gen.dao.service.HrDBDao;
+import com.moseeker.thrift.gen.dao.struct.HrEmployeeCertConfPojo;
+import org.apache.thrift.TException;
+import org.junit.Before;
+import org.junit.Test;
+
+
+
 public class HrDaoTest {
 	
-	/*private HrDBDao.Iface hrDao;
-	
-	@Before public void initialize() {
-		hrDao = ServiceManager.SERVICEMANAGER.getService(HrDBDao.Iface.class);
-	}
-	
+//	private HrDBDao.Iface hrDao;
+//
+//	@Before
+//	public void initialize() {
+//		hrDao = ServiceManager.SERVICEMANAGER.getService(HrDBDao.Iface.class);
+//	}
+//
+//	@Test
+//	public void testGetEmployeeCertconf() {
+//		QueryUtil qu = new QueryUtil();
+//		qu.addEqualFilter("id", "1");
+//
+//		try {
+//			HrEmployeeCertConfPojo result = hrDao.getEmployeeCertConf(qu);
+//			System.out.println(result);
+//		} catch (TException e) {
+//			e.printStackTrace();
+//		}
+//	}
+
+	/*
 	@Test
 	public void testGetHrHbConfig() {
 		QueryUtil qu = new QueryUtil();
