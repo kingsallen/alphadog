@@ -113,3 +113,15 @@ struct HrEmployeeCertConfPojo {
     12:optional string questions,
     13:optional string custom_hint
 }
+
+struct HrEmployeeCustomFieldsPojo {
+    1: i32 id,
+    2: i32 company_id,
+    3: string fname,
+    4: string fvalues,
+    5: i32 forder,
+    6: i32 disable,
+    7: i32 mandatory,
+    8: i32 status
+}
+

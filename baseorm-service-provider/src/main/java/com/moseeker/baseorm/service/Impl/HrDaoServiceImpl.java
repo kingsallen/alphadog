@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.service.Impl;
 
 import com.moseeker.baseorm.dao.hrdb.HrEmployeeCertConfDao;
+import com.moseeker.baseorm.dao.hrdb.HrEmployeeCustomFieldsDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbConfigDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbItemsDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbPositionBindingDao;
@@ -10,6 +11,7 @@ import com.moseeker.baseorm.service.HrDaoService;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.struct.HrEmployeeCertConfPojo;
+import com.moseeker.thrift.gen.dao.struct.HrEmployeeCustomFieldsPojo;
 import com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo;
 import com.moseeker.thrift.gen.dao.struct.HrHbItemsPojo;
 import com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo;
@@ -47,6 +49,9 @@ public class HrDaoServiceImpl implements HrDaoService {
 
     @Autowired
     private HrEmployeeCertConfDao hrEmployeeCertConfDao;
+
+    @Autowired
+    private HrEmployeeCustomFieldsDao hrEmployeeCustomFieldsDao;
 
     @Override
     public HrHbConfigPojo getHbConfig(CommonQuery query) throws TException {
@@ -161,6 +166,20 @@ public class HrDaoServiceImpl implements HrDaoService {
         try {
             result = BeanUtils.DBToStruct(HrEmployeeCertConfPojo.class, hrEmployeeCertConfDao.getResource(query));
         } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+        }
+        return result;
+    }
+
+    @Override
+    public List<HrEmployeeCustomFieldsPojo> getEmployeeCustomFields(CommonQuery query) throws TException {
+        List<HrEmployeeCustomFieldsPojo> result = new ArrayList<HrEmployeeCustomFieldsPojo>();
+        try {
+            List<com.moseeker.baseorm.db.hrdb.tables.records.HrEmployeeCustomFieldsRecord> records = hrEmployeeCustomFieldsDao.getResources(query);
+            result = BeanUtils.DBToStruct(HrEmployeeCustomFieldsPojo.class, records);
+        }
+        catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
         }

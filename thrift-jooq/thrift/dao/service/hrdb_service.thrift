@@ -22,4 +22,6 @@ service HrDBDao {
     common_struct.Response getHrHistoryOperations(1:list<application_struct.ProcessValidationStruct> record);
 
     hrdb_struct.HrEmployeeCertConfPojo getEmployeeCertConf(1: common_struct.CommonQuery query);
+
+    list<hrdb_struct.HrEmployeeCustomFieldsPojo> getEmployeeCustomFields(1: common_struct.CommonQuery query);
 }

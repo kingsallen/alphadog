@@ -4,33 +4,35 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.dao.service.HrDBDao;
 import com.moseeker.thrift.gen.dao.struct.HrEmployeeCertConfPojo;
+import com.moseeker.thrift.gen.dao.struct.HrEmployeeCustomFieldsPojo;
 import org.apache.thrift.TException;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
 
 
 public class HrDaoTest {
 	
-//	private HrDBDao.Iface hrDao;
-//
-//	@Before
-//	public void initialize() {
-//		hrDao = ServiceManager.SERVICEMANAGER.getService(HrDBDao.Iface.class);
-//	}
-//
-//	@Test
-//	public void testGetEmployeeCertconf() {
-//		QueryUtil qu = new QueryUtil();
-//		qu.addEqualFilter("id", "1");
-//
-//		try {
-//			HrEmployeeCertConfPojo result = hrDao.getEmployeeCertConf(qu);
-//			System.out.println(result);
-//		} catch (TException e) {
-//			e.printStackTrace();
-//		}
-//	}
+	private HrDBDao.Iface hrDao;
+
+	@Before
+	public void initialize() {
+		hrDao = ServiceManager.SERVICEMANAGER.getService(HrDBDao.Iface.class);
+	}
+
+	@Test
+	public void testGet() {
+		QueryUtil qu = new QueryUtil();
+		qu.addEqualFilter("company_id", "1");
+
+		try {
+			List<HrEmployeeCustomFieldsPojo> result = hrDao.getEmployeeCustomFields(qu);
+			result.forEach(e -> System.out.println(e));
+		} catch (TException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/*
 	@Test
