@@ -1,9 +1,11 @@
 package com.moseeker.apps.server;
 
+import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.exception.IncompleteException;
 import com.moseeker.rpccenter.exception.RegisterException;
 import com.moseeker.rpccenter.exception.RpcException;
 import com.moseeker.rpccenter.main.MoServer;
+import com.moseeker.rpccenter.main.MultiRegServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -30,17 +32,12 @@ public class AppBSServer {
 
 		try {
 			AnnotationConfigApplicationContext acac = initSpring();
-			MoServer server = new MoServer("server.properties",
-                    acac.getBean(ProfileBSThriftService.class),
-                    acac.getBean(PositionBSThriftService.class),
-                    acac.getBean(UserBSThriftService.class));
-
-		/*MultiRegServer server = new MultiRegServer(AppBSServer.class,
-				ServerNodeUtils.getPort(args),
-				acac.getBean(PositionBSThriftService.class),
-				acac.getBean(ProfileBSThriftService.class),
-				acac.getBean(UserBSThriftService.class));*/
-			server.startServer();
+			MultiRegServer server = new MultiRegServer(AppBSServer.class,
+					ServerNodeUtils.getPort(args),
+					acac.getBean(PositionBSThriftService.class),
+					acac.getBean(ProfileBSThriftService.class),
+					acac.getBean(UserBSThriftService.class));
+				server.start();
 
 			// 启动服务，非阻塞
 			synchronized (AppBSServer.class) {
@@ -52,7 +49,7 @@ public class AppBSServer {
                     }
                 }
             }
-		} catch (ClassNotFoundException | IncompleteException | RpcException | RegisterException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e.getMessage(), e);
 		}

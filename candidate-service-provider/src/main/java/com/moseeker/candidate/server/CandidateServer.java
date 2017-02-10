@@ -1,4 +1,4 @@
-package com.moseeker.profile.server;
+package com.moseeker.candidate.server;
 
 import com.moseeker.rpccenter.exception.IncompleteException;
 import com.moseeker.rpccenter.exception.RegisterException;
@@ -10,26 +10,26 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 
-public class DemoServer {
+public class CandidateServer {
 	
-	private static Logger LOGGER = LoggerFactory.getLogger(DemoServer.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(CandidateServer.class);
 	
 	public static void main(String[] args) {
 
 		try {
 			AnnotationConfigApplicationContext acac = initSpring();
 			MoServer server = new MoServer(acac,
-					"server.properties"));
+					"server.properties");
 			// 启动服务，非阻塞
 			try {
 				server.startServer();
 
-				synchronized (DemoServer.class) {
+				synchronized (CandidateServer.class) {
                     while (true) {
                         try {
-                            DemoServer.class.wait();
+                            CandidateServer.class.wait();
                         } catch (Exception e) {
-                            LOGGER.error(" service provider DemoServer error", e);
+                            LOGGER.error(" service provider CandidateServer error", e);
                         }
                     }
                 }
