@@ -23,7 +23,7 @@ struct UserFavPositionPojo  {
  */
 struct UserEmployeePojo {
     1: optional i32 id,                     //数据库标志 
-    2: optional i32 employeeid,             //员工ID，hr上传
+    2: optional string employeeid,             //员工ID，hr上传
     3: optional i32 companyId,              //公司编号 hrdb.hr_company.id
     4: optional i32 roleId,                 //角色编号，暂时没有使用起来
     5: optional i8 sex,                     //性别 0：未知 1：男 2：女
@@ -72,4 +72,9 @@ struct UserEmployeePojo {
     48: optional i8 emailIsvalid,           //是否认证了1：是, 0：否
     49: optional i8 authMethod,             //员工认证途径 0:使用邮箱认证 1:使用自定义认证 2:使用问答认证
     50: optional string customFieldValues  //自定 义字段键值, 结构[{<id>: "<value>"},{...},...]
+}
+
+struct UserUserDTO {
+    1: optional i32 id,
+    2: optional i32 id,
 }
