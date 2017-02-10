@@ -1,4 +1,4 @@
-package com.moseeker.profile.server;
+package com.moseeker.demo.server;
 
 import com.moseeker.rpccenter.exception.IncompleteException;
 import com.moseeker.rpccenter.exception.RegisterException;
@@ -19,7 +19,7 @@ public class DemoServer {
 		try {
 			AnnotationConfigApplicationContext acac = initSpring();
 			MoServer server = new MoServer(acac,
-					"server.properties"));
+					"server.properties");
 			// 启动服务，非阻塞
 			try {
 				server.startServer();
