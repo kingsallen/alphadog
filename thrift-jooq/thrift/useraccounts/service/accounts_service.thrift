@@ -94,3 +94,8 @@ service UserCommonService {
     // 获取新版本内容
     common_struct.Response newsletter(1: wordpress_foundation_strcut.NewsletterForm form);
 }
+
+service UserCenterService {
+    //查询用户的申请记录
+    list<useraccounts_struct.ApplicationRecordsForm> getApplications(1: i32 userId);
+}

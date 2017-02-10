@@ -28,7 +28,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
 
-	private static final long serialVersionUID = 609094741;
+	private static final long serialVersionUID = 1557319362;
 
 	/**
 	 * Setter for <code>jobdb.job_position.id</code>.
@@ -101,14 +101,14 @@ public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
 	}
 
 	/**
-	 * Setter for <code>jobdb.job_position.city</code>. 所在城市
+	 * Setter for <code>jobdb.job_position.city</code>. 所在城市，多城市使用中文逗号分割
 	 */
 	public void setCity(String value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>jobdb.job_position.city</code>. 所在城市
+	 * Getter for <code>jobdb.job_position.city</code>. 所在城市，多城市使用中文逗号分割
 	 */
 	public String getCity() {
 		return (String) getValue(5);
@@ -255,14 +255,14 @@ public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
 	}
 
 	/**
-	 * Setter for <code>jobdb.job_position.status</code>. 0 有效, 1 无效, 2 撤销
+	 * Setter for <code>jobdb.job_position.status</code>. 0 有效, 1 删除, 2 撤下
 	 */
 	public void setStatus(Byte value) {
 		setValue(16, value);
 	}
 
 	/**
-	 * Getter for <code>jobdb.job_position.status</code>. 0 有效, 1 无效, 2 撤销
+	 * Getter for <code>jobdb.job_position.status</code>. 0 有效, 1 删除, 2 撤下
 	 */
 	public Byte getStatus() {
 		return (Byte) getValue(16);
@@ -381,42 +381,42 @@ public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
 	}
 
 	/**
-	 * Setter for <code>jobdb.job_position.degree</code>. 0:无 1:大专 2:本科 3:硕士 4:MBA 5:博士 6:中专 7:高中 8: 博士后 9:初中
+	 * Setter for <code>jobdb.job_position.degree</code>. 0:无 1:大专 2:本科 3:硕士 4:MBA 5:博士
 	 */
 	public void setDegree(Byte value) {
 		setValue(25, value);
 	}
 
 	/**
-	 * Getter for <code>jobdb.job_position.degree</code>. 0:无 1:大专 2:本科 3:硕士 4:MBA 5:博士 6:中专 7:高中 8: 博士后 9:初中
+	 * Getter for <code>jobdb.job_position.degree</code>. 0:无 1:大专 2:本科 3:硕士 4:MBA 5:博士
 	 */
 	public Byte getDegree() {
 		return (Byte) getValue(25);
 	}
 
 	/**
-	 * Setter for <code>jobdb.job_position.feature</code>. 职位特色
+	 * Setter for <code>jobdb.job_position.feature</code>. 职位特色，多福利特色使用#分割
 	 */
 	public void setFeature(String value) {
 		setValue(26, value);
 	}
 
 	/**
-	 * Getter for <code>jobdb.job_position.feature</code>. 职位特色
+	 * Getter for <code>jobdb.job_position.feature</code>. 职位特色，多福利特色使用#分割
 	 */
 	public String getFeature() {
 		return (String) getValue(26);
 	}
 
 	/**
-	 * Setter for <code>jobdb.job_position.email_notice</code>. application after email notice hr, 0:yes 1:no
+	 * Setter for <code>jobdb.job_position.email_notice</code>. 申请后是否给 HR 发送邮件 0:发送 1:不发送
 	 */
 	public void setEmailNotice(Byte value) {
 		setValue(27, value);
 	}
 
 	/**
-	 * Getter for <code>jobdb.job_position.email_notice</code>. application after email notice hr, 0:yes 1:no
+	 * Getter for <code>jobdb.job_position.email_notice</code>. 申请后是否给 HR 发送邮件 0:发送 1:不发送
 	 */
 	public Byte getEmailNotice() {
 		return (Byte) getValue(27);
@@ -912,6 +912,20 @@ public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
 		return (UInteger) getValue(62);
 	}
 
+	/**
+	 * Setter for <code>jobdb.job_position.team_id</code>. 职位所属团队
+	 */
+	public void setTeamId(Integer value) {
+		setValue(63, value);
+	}
+
+	/**
+	 * Getter for <code>jobdb.job_position.team_id</code>. 职位所属团队
+	 */
+	public Integer getTeamId() {
+		return (Integer) getValue(63);
+	}
+
 	// -------------------------------------------------------------------------
 	// Primary key information
 	// -------------------------------------------------------------------------
@@ -938,7 +952,7 @@ public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
 	/**
 	 * Create a detached, initialised JobPositionRecord
 	 */
-	public JobPositionRecord(Integer id, String jobnumber, UInteger companyId, String title, String province, String city, String department, Integer lJobid, Timestamp publishDate, Timestamp stopDate, String accountabilities, String experience, String requirement, String salary, String language, Integer jobGrade, Byte status, Integer visitnum, String lastvisit, Integer sourceId, Timestamp updateTime, String businessGroup, Byte employmentType, String hrEmail, String benefits, Byte degree, String feature, Byte emailNotice, Byte candidateSource, String occupation, Integer isRecom, String industry, Integer hongbaoConfigId, Integer hongbaoConfigRecomId, Integer hongbaoConfigAppId, Byte emailResumeConf, Integer lPostingtargetid, Byte priority, Short shareTplId, String district, Short count, Integer salaryTop, Integer salaryBottom, Byte experienceAbove, Byte degreeAbove, Byte managementExperience, Byte gender, Integer publisher, Integer appCvConfigId, Short source, Byte hbStatus, Integer childCompanyId, Byte age, String majorRequired, String workAddress, String keyword, String reportingTo, Byte isHiring, Byte underlings, Byte languageRequired, Byte targetIndustry, Byte currentStatus, UInteger positionCode) {
+	public JobPositionRecord(Integer id, String jobnumber, UInteger companyId, String title, String province, String city, String department, Integer lJobid, Timestamp publishDate, Timestamp stopDate, String accountabilities, String experience, String requirement, String salary, String language, Integer jobGrade, Byte status, Integer visitnum, String lastvisit, Integer sourceId, Timestamp updateTime, String businessGroup, Byte employmentType, String hrEmail, String benefits, Byte degree, String feature, Byte emailNotice, Byte candidateSource, String occupation, Integer isRecom, String industry, Integer hongbaoConfigId, Integer hongbaoConfigRecomId, Integer hongbaoConfigAppId, Byte emailResumeConf, Integer lPostingtargetid, Byte priority, Short shareTplId, String district, Short count, Integer salaryTop, Integer salaryBottom, Byte experienceAbove, Byte degreeAbove, Byte managementExperience, Byte gender, Integer publisher, Integer appCvConfigId, Short source, Byte hbStatus, Integer childCompanyId, Byte age, String majorRequired, String workAddress, String keyword, String reportingTo, Byte isHiring, Byte underlings, Byte languageRequired, Byte targetIndustry, Byte currentStatus, UInteger positionCode, Integer teamId) {
 		super(JobPosition.JOB_POSITION);
 
 		setValue(0, id);
@@ -1004,5 +1018,6 @@ public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
 		setValue(60, targetIndustry);
 		setValue(61, currentStatus);
 		setValue(62, positionCode);
+		setValue(63, teamId);
 	}
 }

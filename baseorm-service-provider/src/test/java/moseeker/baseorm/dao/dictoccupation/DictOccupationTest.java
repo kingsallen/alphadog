@@ -15,7 +15,7 @@ import com.moseeker.thrift.gen.dict.service.DictOccupationDao;
  * time:2016-11-21
  */
 public class DictOccupationTest {
-	private DictDaoServiceImpl service;
+	/*private DictDaoServiceImpl service;
 	private PositionServiceImpl position;
 	public void init() {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
@@ -35,7 +35,7 @@ public class DictOccupationTest {
 		query.setEqualFilter(map);
 		Response result=service.occupationsZPin();
 		System.out.println(result);
-	}
+	}*/
 //  //获取occupation，通过Iface
 //	@Test
 //	public void getOccupation() throws Exception{
@@ -45,7 +45,7 @@ public class DictOccupationTest {
 //		System.out.println(result);
 //	}
 //	//测试获取joboccupation
-	@Test
+	/*@Test
 	public void testJobOccupation(){
 		init();
 		CommonQuery query=new CommonQuery();
@@ -55,5 +55,5 @@ public class DictOccupationTest {
 		query.setEqualFilter(map);
 		Response result=position.getJobOccupation(query);
 		System.out.println(result.getData());
-	}
+	}*/
 }

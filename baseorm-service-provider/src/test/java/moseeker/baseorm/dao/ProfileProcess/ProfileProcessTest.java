@@ -11,7 +11,7 @@ import com.moseeker.baseorm.service.Impl.JobApplicationServiceImpl;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
 
 public class ProfileProcessTest {
-	private JobApplicationServiceImpl jobApplication;
+	/*private JobApplicationServiceImpl jobApplication;
 	private ConfigServiceImpl config;
 	private HrDBServiceImpl hrDB;
 	public void init() {
@@ -64,5 +64,5 @@ public class ProfileProcessTest {
 		list.add(1);
 		list.add(2);
 		System.out.println(jobApplication.getApplicationByAts(list));
-	}
+	}*/
 }

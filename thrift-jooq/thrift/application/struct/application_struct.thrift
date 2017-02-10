@@ -30,7 +30,8 @@ struct JobApplication {
     21: optional i32 proxy,                  // 是否是代理投递	0：正常数据，1：代理假投递
     22: optional i32 apply_type,             // 投递区分， 0：profile投递， 1：email投递
     23: optional i32 email_status,           // email解析状态, 0，有效；1,未收到回复邮件；2，文件格式不支持；3，附件超过10M；8, 特殊符号,解析失败 9，提取邮件失败
-    24: optional i32 view_count              // profile被hr查看次数
+    24: optional i64 recommender_user_id,    // 推荐者的C端账号编号ID,user_user.id
+    25: optional i32 view_count              // profile被hr查看次数
 }
 
 /*
