@@ -8,7 +8,7 @@ namespace java com.moseeker.thrift.gen.dao.struct
  */
 typedef string Timestamp;
 
-struct UserFavPositionPojo  {
+struct UserFavPositionDTO  {
     1: optional i32 sysuserId,          //用户编号 userdb.user_user.id
     2: optional i32 positionId,         //职位编号 jobdb.job_position.id
     3: optional i8 favorite,            //职位编号
@@ -21,7 +21,7 @@ struct UserFavPositionPojo  {
 /*
  * 员工数据
  */
-struct UserEmployeePojo {
+struct UserEmployeeDTO {
     1: optional i32 id,                     //数据库标志 
     2: optional string employeeid,             //员工ID，hr上传
     3: optional i32 companyId,              //公司编号 hrdb.hr_company.id
@@ -75,6 +75,33 @@ struct UserEmployeePojo {
 }
 
 struct UserUserDTO {
-    1: optional i32 id,
-    2: optional i32 id,
+    1: optional i32 id,                         //数据库编号
+    2: optional string username,                //用户名称
+    3: optional string password,                //密码
+    4: optional bool is_disable,                //是否禁用，0：可用，1：禁用
+    5: optional i32 rank,                       //用户等级
+    6: optional Timestamp register_time,        //注册时间
+    7: optional string register_ip,             //注册IP
+    8: optional Timestamp last_login_time,      //最后一次登录时间
+    9: optional string last_login_ip,           //最后一次登录IP地址
+    10: optional i32 login_count,               //登录次数
+    11: optional i32 mobile,                    //手机号码
+    12: optional string email,                  //邮箱
+    13: optional bool activation,               //是否激活0:未激活 1:激活
+    14: optional string activation_code,        //激活码
+    15: optional string token,                  //票据
+    16: optional string name,                   //名称
+    17: optional string headimg,                //头像
+    18: optional i32 national_code_id,          //国际电话区号ID(应该没在使用)
+    19: optional i32 wechat_id,                 //注册用户来自于哪个公众号, 0:默认为来自浏览器的用户（应该没在使用）
+    20: optional string unionid,                //存储仟寻服务号的unionid
+    21: optional i16 source,                    //来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录 3:微信端百度 oauth 7:PC(正常添加) 8:PC(我要投递) 9:PC(我感兴趣) 10:PC(微信扫描后手机注册) 100:简历回收自动创建
+    22: optional string company,                //点击我感兴趣时填写的公司
+    23: optional string position,               //点击我感兴趣时填写的职位
+    24: optional i32 parentid,                  //账号被合并之后，被合并的用户编号。如果没有被合并，为0
+    25: optional string nickname,               //昵称 微信扫码生成的用户取微信昵称
+    26: optional i8 email_verified,             //邮箱是否认证 2:老数据 1:已认证 0:未认证
+    27: optional Timestamp update_time          //修改时间
 }
+
+struct 

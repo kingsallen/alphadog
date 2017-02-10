@@ -1,11 +1,12 @@
 package com.moseeker.useraccounts.service.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
-import java.util.Arrays;
-import java.util.List;
-
+import com.moseeker.thrift.gen.application.struct.JobApplication;
+import com.moseeker.thrift.gen.company.struct.Hrcompany;
+import com.moseeker.thrift.gen.dao.struct.AwardConfigTpl;
+import com.moseeker.thrift.gen.dao.struct.UserFavPositionDTO;
+import com.moseeker.thrift.gen.position.struct.Position;
+import com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm;
+import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
 import org.apache.thrift.TException;
 import org.junit.Before;
 import org.junit.Rule;
@@ -16,14 +17,11 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import com.moseeker.thrift.gen.application.struct.JobApplication;
-import com.moseeker.thrift.gen.company.struct.Hrcompany;
-import com.moseeker.thrift.gen.dao.struct.AwardConfigTpl;
-import com.moseeker.thrift.gen.dao.struct.UserFavPositionPojo;
-import com.moseeker.thrift.gen.position.struct.Position;
-import com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm;
-import com.moseeker.thrift.gen.useraccounts.struct.FavPositionForm;
-import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class UserCenterServiceTest {
 	
@@ -113,14 +111,14 @@ public class UserCenterServiceTest {
 			fail("Exception");
 		}
 		
-		UserFavPositionPojo favP1 = new UserFavPositionPojo();
+		UserFavPositionDTO favP1 = new UserFavPositionDTO();
 		favP1.setSysuserId(1);
 		favP1.setPositionId(1);
 		
-		UserFavPositionPojo favP2 = new UserFavPositionPojo();
+		UserFavPositionDTO favP2 = new UserFavPositionDTO();
 		favP2.setSysuserId(1);
 		favP2.setPositionId(2);
-		List<UserFavPositionPojo> favPs = Arrays.asList(favP1, favP2);
+		List<UserFavPositionDTO> favPs = Arrays.asList(favP1, favP2);
 		try {
 			Mockito.when(bizTools.getFavPositions(1,1)).thenReturn(favPs);
 		} catch (TException e) {
