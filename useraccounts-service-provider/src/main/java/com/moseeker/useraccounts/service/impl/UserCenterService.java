@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.moseeker.thrift.gen.dao.struct.UserFavPositionDTO;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,6 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.AwardConfigTpl;
-import com.moseeker.thrift.gen.dao.struct.UserFavPositionPojo;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm;
 import com.moseeker.thrift.gen.useraccounts.struct.AwardRecordForm;
@@ -90,8 +90,7 @@ public class UserCenterService {
 	/**
 	 * 查询职位收藏
 	 * @param userId 用户编号
-	 * @param favorite 收藏类型
-	 * @return
+	 * @return 感兴趣职位集合
 	 * @throws TException
 	 */
 	public List<FavPositionForm> getFavPositions(int userId) throws TException {
@@ -99,7 +98,7 @@ public class UserCenterService {
 		//参数校验
 		if(userId > 0) {
 			//查询用户的收藏职位列表
-			List<UserFavPositionPojo> favPositionRecords = bizTools.getFavPositions(userId, 0);
+			List<UserFavPositionDTO> favPositionRecords = bizTools.getFavPositions(userId, 0);
 			if(favPositionRecords != null && favPositionRecords.size() > 0) {
 				//差用用户收藏职位的职位详情
 				List<Position> positions = bizTools.getPositions(favPositionRecords.stream().mapToInt(favP -> favP.getPositionId()).toArray());

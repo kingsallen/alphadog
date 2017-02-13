@@ -2,6 +2,8 @@ package com.moseeker.baseorm.Thriftservice;
 
 import java.util.List;
 
+import com.moseeker.thrift.gen.dao.struct.UserEmployeeDTO;
+import com.moseeker.thrift.gen.dao.struct.UserFavPositionDTO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,8 +18,6 @@ import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.UserDBDao.Iface;
-import com.moseeker.thrift.gen.dao.struct.UserEmployeePojo;
-import com.moseeker.thrift.gen.dao.struct.UserFavPositionPojo;
 import com.moseeker.thrift.gen.useraccounts.struct.User;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
@@ -66,12 +66,12 @@ public class UserDBDaoThriftService implements Iface {
 	}
 
 	@Override
-	public List<UserFavPositionPojo> getUserFavPositions(CommonQuery query) throws TException {
+	public List<UserFavPositionDTO> getUserFavPositions(CommonQuery query) throws TException {
 		return favPositionDao.getUserFavPositions(query);
 	}
 
 	@Override
-	public UserEmployeePojo getEmployee(CommonQuery query) throws TException {
+	public UserEmployeeDTO getEmployee(CommonQuery query) throws TException {
 		return employeeDao.getEmployee(query);
 	}
 	/*

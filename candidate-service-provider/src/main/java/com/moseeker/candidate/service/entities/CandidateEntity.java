@@ -1,9 +1,11 @@
-package com.moseeker.candidate.service.impl;
+package com.moseeker.candidate.service.entities;
 
 import com.moseeker.candidate.service.Candidate;
+import com.moseeker.candidate.service.values.User;
 import com.moseeker.common.validation.ValidateUtil;
 
 /**
+ * 候选人实体，提供候选人相关业务
  * Created by jack on 10/02/2017.
  */
 public class CandidateEntity implements Candidate {
@@ -15,10 +17,18 @@ public class CandidateEntity implements Candidate {
         vu.addRequiredValidate("是否来自员工转发", fromEmployee, null, null);
         vu.validate();
         if(vu.getVerified().get()) {
-            //检查数据是否存在
-
+            //检查候选人数据是否存在
+            User user = new User(userID);
             //存在
-                //添加
+                //职位是否查看过
+                //查看过
+                    //添加浏览次数
+                //未查看过
+                    //新增职位查看记录
+            //不存在
+                //排除员工和HR
+                //新增候选人记录
+                //新增职位浏览记录
 
         }
     }

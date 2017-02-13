@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  */
 public class MoServer {
 
-    //Instance(String configName, Class... impl) throws ;
+    //Instance(String configName, Class... entities) throws ;
     Logger logger = LoggerFactory.getLogger(MoServer.class);
 
     /* 配置信息 */
