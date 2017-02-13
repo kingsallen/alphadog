@@ -60,6 +60,7 @@ public class UpdateEsAop {
 						result.put(ups.argsName(), jp.getArgs()[ups.argsIndex()]);
 						client.lpush(Constant.APPID_ALPHADOG,
 								"ES_REALTIME_UPDATE_INDEX_USER_IDS", result.toJSONString());
+						log.info("lpush ES_REALTIME_UPDATE_INDEX_USER_IDS:{} success", result.toJSONString());
 					});
 				}
 			} catch (Exception e) {
