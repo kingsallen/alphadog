@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.moseeker.rpccenter.common.ServerNodeUtils;
+import com.moseeker.rpccenter.main.MoServer;
 import com.moseeker.rpccenter.main.Server;
 import com.moseeker.searchengine.thrift.SearchengineServiceImpl;
 
@@ -15,12 +16,13 @@ public class SearchengineServer {
 
 		try {
 			AnnotationConfigApplicationContext acac = initSpring();
-			Server server = new Server(SearchengineServer.class,
-					ServerNodeUtils.getPort(args),
-					acac.getBean(SearchengineServiceImpl.class));
-			
-			server.start(); // 启动服务，非阻塞
-
+//			Server server = new Server(SearchengineServer.class,
+//					ServerNodeUtils.getPort(args),
+//					acac.getBean(SearchengineServiceImpl.class));
+//			
+//			server.start(); // 启动服务，非阻塞
+			MoServer server=new MoServer(acac,"server.properties",acac.getBean(SearchengineServiceImpl.class));
+			server.startServer();
 			synchronized (SearchengineServer.class) {
 				while (true) {
 					try {

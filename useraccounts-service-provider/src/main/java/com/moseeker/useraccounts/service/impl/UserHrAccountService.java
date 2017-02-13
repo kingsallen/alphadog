@@ -49,7 +49,7 @@ public class UserHrAccountService {
 
 	private static final String REDIS_KEY_HR_SMS_SIGNUP = "HR_SMS_SIGNUP";
 
-	private RedisClient redisClient = RedisClientFactory.getCacheClient();
+	private RedisClient redisClient =null;// RedisClientFactory.getCacheClient();
 
 	ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
 	

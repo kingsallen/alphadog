@@ -32,9 +32,7 @@ public enum ServiceManager {
 
 	private ServiceManager() {
         init();
-    } {
-        init();
-    }
+    } 
 
 
     /**
@@ -186,7 +184,7 @@ public enum ServiceManager {
 
         Set<Object> keys = configUtils.returnKeys();
         if(keys != null && keys.size() > 0) {
-            keys = keys.stream().filter(key -> ((String)key).startsWith("zookeeper.servername.")).collect(Collectors.toSet());
+            keys = keys.stream().filter(key -> ((String)key).startsWith("servername.")).collect(Collectors.toSet());
             for(Object obj : keys) {
                 String className = configUtils.get((String)obj, String.class);
                 servers.put((String)obj, className);
