@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobApplication extends TableImpl<JobApplicationRecord> {
 
-	private static final long serialVersionUID = -2139444642;
+	private static final long serialVersionUID = -1159047030;
 
 	/**
 	 * The reference instance of <code>jobdb.job_application</code>
@@ -59,7 +59,7 @@ public class JobApplication extends TableImpl<JobApplicationRecord> {
 	/**
 	 * The column <code>jobdb.job_application.wechat_id</code>. sys_wechat.id, 公众号ID
 	 */
-	public final TableField<JobApplicationRecord, UInteger> WECHAT_ID = createField("wechat_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "sys_wechat.id, 公众号ID");
+	public final TableField<JobApplicationRecord, UInteger> WECHAT_ID = createField("wechat_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "sys_wechat.id, 公众号ID");
 
 	/**
 	 * The column <code>jobdb.job_application.position_id</code>. hr_position.id, 职位ID
@@ -67,9 +67,9 @@ public class JobApplication extends TableImpl<JobApplicationRecord> {
 	public final TableField<JobApplicationRecord, UInteger> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "hr_position.id, 职位ID");
 
 	/**
-	 * The column <code>jobdb.job_application.recommender_id</code>. user_wx_user.id, 微信ID
+	 * The column <code>jobdb.job_application.recommender_id</code>. user_wx_user.id, 微信ID。现在已经废弃，推荐者信息请参考recommend_user_id
 	 */
-	public final TableField<JobApplicationRecord, UInteger> RECOMMENDER_ID = createField("recommender_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "user_wx_user.id, 微信ID");
+	public final TableField<JobApplicationRecord, UInteger> RECOMMENDER_ID = createField("recommender_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "user_wx_user.id, 微信ID。现在已经废弃，推荐者信息请参考recommend_user_id");
 
 	/**
 	 * The column <code>jobdb.job_application.submit_time</code>. 申请提交时间
@@ -77,9 +77,9 @@ public class JobApplication extends TableImpl<JobApplicationRecord> {
 	public final TableField<JobApplicationRecord, Timestamp> SUBMIT_TIME = createField("submit_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "申请提交时间");
 
 	/**
-	 * The column <code>jobdb.job_application.status_id</code>. hr_award_config.id, 申请状态ID
+	 * The column <code>jobdb.job_application.status_id</code>. hr_points_conf.id, 申请状态ID
 	 */
-	public final TableField<JobApplicationRecord, UInteger> STATUS_ID = createField("status_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "hr_award_config.id, 申请状态ID");
+	public final TableField<JobApplicationRecord, UInteger> STATUS_ID = createField("status_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "hr_points_conf.id, 申请状态ID");
 
 	/**
 	 * The column <code>jobdb.job_application.l_application_id</code>. ATS的申请ID
@@ -117,9 +117,9 @@ public class JobApplication extends TableImpl<JobApplicationRecord> {
 	public final TableField<JobApplicationRecord, String> RESUME_ID = createField("resume_id", org.jooq.impl.SQLDataType.VARCHAR.length(24).nullable(false).defaulted(true), this, "mongodb collection application[id]");
 
 	/**
-	 * The column <code>jobdb.job_application.ats_status</code>. 0:unuse, 1:waiting, 2:failed, 3:success, 4:position expire, 5:resume unqualified
+	 * The column <code>jobdb.job_application.ats_status</code>. 0:unuse, 1:waiting, 2:failed, 3:success, 4:position expire, 5:resume unqualified 6:excess apply times
 	 */
-	public final TableField<JobApplicationRecord, Integer> ATS_STATUS = createField("ats_status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "0:unuse, 1:waiting, 2:failed, 3:success, 4:position expire, 5:resume unqualified");
+	public final TableField<JobApplicationRecord, Integer> ATS_STATUS = createField("ats_status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "0:unuse, 1:waiting, 2:failed, 3:success, 4:position expire, 5:resume unqualified 6:excess apply times");
 
 	/**
 	 * The column <code>jobdb.job_application.applier_name</code>. 姓名或微信昵称
@@ -180,6 +180,11 @@ public class JobApplication extends TableImpl<JobApplicationRecord> {
 	 * The column <code>jobdb.job_application.view_count</code>. profile浏览次数
 	 */
 	public final TableField<JobApplicationRecord, Integer> VIEW_COUNT = createField("view_count", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "profile浏览次数");
+
+	/**
+	 * The column <code>jobdb.job_application.recommender_user_id</code>. userdb.user_user.id 推荐人编号
+	 */
+	public final TableField<JobApplicationRecord, UInteger> RECOMMENDER_USER_ID = createField("recommender_user_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "userdb.user_user.id 推荐人编号");
 
 	/**
 	 * Create a <code>jobdb.job_application</code> table reference

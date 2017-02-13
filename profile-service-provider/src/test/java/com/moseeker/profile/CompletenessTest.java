@@ -11,7 +11,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 
 
 public class CompletenessTest {
-	private WholeProfileService service;
+	/*private WholeProfileService service;
 	public void init() {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 		context.scan("com.moseeker.profile");
@@ -46,5 +46,5 @@ public class CompletenessTest {
 		data.put("profile", profileProfile);
 		Response response=service.createProfile(data.toString());
 		System.out.println(response);
-	}
+	}*/
 }

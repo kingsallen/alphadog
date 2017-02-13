@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPosition extends TableImpl<JobPositionRecord> {
 
-	private static final long serialVersionUID = 906480314;
+	private static final long serialVersionUID = 1942678417;
 
 	/**
 	 * The reference instance of <code>jobdb.job_position</code>
@@ -77,9 +77,9 @@ public class JobPosition extends TableImpl<JobPositionRecord> {
 	public final TableField<JobPositionRecord, String> PROVINCE = createField("province", org.jooq.impl.SQLDataType.VARCHAR.length(32).nullable(false).defaulted(true), this, "所在省");
 
 	/**
-	 * The column <code>jobdb.job_position.city</code>. 所在城市
+	 * The column <code>jobdb.job_position.city</code>. 所在城市，多城市使用中文逗号分割
 	 */
-	public final TableField<JobPositionRecord, String> CITY = createField("city", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "所在城市");
+	public final TableField<JobPositionRecord, String> CITY = createField("city", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaulted(true), this, "所在城市，多城市使用中文逗号分割");
 
 	/**
 	 * The column <code>jobdb.job_position.department</code>. 所在部门
@@ -132,9 +132,9 @@ public class JobPosition extends TableImpl<JobPositionRecord> {
 	public final TableField<JobPositionRecord, Integer> JOB_GRADE = createField("job_grade", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "优先级");
 
 	/**
-	 * The column <code>jobdb.job_position.status</code>. 0 有效, 1 无效, 2 撤销
+	 * The column <code>jobdb.job_position.status</code>. 0 有效, 1 删除, 2 撤下
 	 */
-	public final TableField<JobPositionRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "0 有效, 1 无效, 2 撤销");
+	public final TableField<JobPositionRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "0 有效, 1 删除, 2 撤下");
 
 	/**
 	 * The column <code>jobdb.job_position.visitnum</code>.
@@ -177,19 +177,19 @@ public class JobPosition extends TableImpl<JobPositionRecord> {
 	public final TableField<JobPositionRecord, String> BENEFITS = createField("benefits", org.jooq.impl.SQLDataType.VARCHAR.length(999).nullable(false).defaulted(true), this, "职位福利");
 
 	/**
-	 * The column <code>jobdb.job_position.degree</code>. 0:无 1:大专 2:本科 3:硕士 4:MBA 5:博士 6:中专 7:高中 8: 博士后 9:初中
+	 * The column <code>jobdb.job_position.degree</code>. 0:无 1:大专 2:本科 3:硕士 4:MBA 5:博士
 	 */
-	public final TableField<JobPositionRecord, Byte> DEGREE = createField("degree", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "0:无 1:大专 2:本科 3:硕士 4:MBA 5:博士 6:中专 7:高中 8: 博士后 9:初中");
+	public final TableField<JobPositionRecord, Byte> DEGREE = createField("degree", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "0:无 1:大专 2:本科 3:硕士 4:MBA 5:博士");
 
 	/**
-	 * The column <code>jobdb.job_position.feature</code>. 职位特色
+	 * The column <code>jobdb.job_position.feature</code>. 职位特色，多福利特色使用#分割
 	 */
-	public final TableField<JobPositionRecord, String> FEATURE = createField("feature", org.jooq.impl.SQLDataType.VARCHAR.length(999).nullable(false).defaulted(true), this, "职位特色");
+	public final TableField<JobPositionRecord, String> FEATURE = createField("feature", org.jooq.impl.SQLDataType.VARCHAR.length(999).nullable(false).defaulted(true), this, "职位特色，多福利特色使用#分割");
 
 	/**
-	 * The column <code>jobdb.job_position.email_notice</code>. application after email notice hr, 0:yes 1:no
+	 * The column <code>jobdb.job_position.email_notice</code>. 申请后是否给 HR 发送邮件 0:发送 1:不发送
 	 */
-	public final TableField<JobPositionRecord, Byte> EMAIL_NOTICE = createField("email_notice", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "application after email notice hr, 0:yes 1:no");
+	public final TableField<JobPositionRecord, Byte> EMAIL_NOTICE = createField("email_notice", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "申请后是否给 HR 发送邮件 0:发送 1:不发送");
 
 	/**
 	 * The column <code>jobdb.job_position.candidate_source</code>. 0:社招 1：校招 2:定向招聘
@@ -365,6 +365,11 @@ public class JobPosition extends TableImpl<JobPositionRecord> {
 	 * The column <code>jobdb.job_position.position_code</code>. 职能字典code, dict_position.code
 	 */
 	public final TableField<JobPositionRecord, UInteger> POSITION_CODE = createField("position_code", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "职能字典code, dict_position.code");
+
+	/**
+	 * The column <code>jobdb.job_position.team_id</code>. 职位所属团队
+	 */
+	public final TableField<JobPositionRecord, Integer> TEAM_ID = createField("team_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "职位所属团队");
 
 	/**
 	 * Create a <code>jobdb.job_position</code> table reference

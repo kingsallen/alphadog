@@ -10,6 +10,7 @@ import com.moseeker.baseorm.Thriftservice.ConfigDaothriftService;
 import com.moseeker.baseorm.Thriftservice.DictDaoMapThriftService;
 import com.moseeker.baseorm.Thriftservice.DictDaoThriftService;
 import com.moseeker.baseorm.Thriftservice.HRAccountThriftService;
+import com.moseeker.baseorm.Thriftservice.JobDBDaoThriftService;
 import com.moseeker.baseorm.Thriftservice.HrDBThriftService;
 import com.moseeker.baseorm.Thriftservice.PositionDaoThriftService;
 import com.moseeker.baseorm.Thriftservice.PositionThriftService;
@@ -47,6 +48,7 @@ public class BaseOrmServer {
 					acac.getBean(UserDaoThriftService.class),
 					acac.getBean(DictDaoThriftService.class),
 					acac.getBean(DictDaoMapThriftService.class),
+					acac.getBean(JobDBDaoThriftService.class),
 					acac.getBean(PositionThriftService.class),
 					acac.getBean(ApplicationDaoThriftService.class),
 					acac.getBean(ConfigDaothriftService.class),
@@ -54,7 +56,6 @@ public class BaseOrmServer {
 					acac.getBean(WxUserDaoThriftService.class),
 					acac.getBean(SearchConditionDaoThriftService.class),
 					acac.getBean(TalentpoolDaoThriftService.class));
-
 			server.start();
 			synchronized (BaseOrmServer.class) {
 				while (true) {

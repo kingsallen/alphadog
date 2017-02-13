@@ -90,4 +90,9 @@ public class UserDaoThriftService implements Iface {
 		// TODO Auto-generated method stub
 		return userEmployeeService.putUserEmployees(records);
 	}
+
+	@Override
+	public Response putUserEmployeePoints(List<UserEmployeePointStruct> records) throws TException {
+		return userEmployeeService.putUserEmployeePointsRecords(records);
+	}
 }

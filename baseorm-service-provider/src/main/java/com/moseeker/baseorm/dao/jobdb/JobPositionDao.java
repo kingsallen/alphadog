@@ -1,10 +1,11 @@
-package com.moseeker.baseorm.dao.position;
+package com.moseeker.baseorm.dao.jobdb;
 
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.jooq.DSLContext;
 import org.jooq.Result;
@@ -18,6 +19,7 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCityRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
+import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.position.struct.Position;
 
@@ -27,7 +29,25 @@ public class JobPositionDao extends BaseDaoImpl<JobPositionRecord, JobPosition> 
 	@Override
 	protected void initJOOQEntity() {
 		this.tableLike = JobPosition.JOB_POSITION;
-
+	}
+	
+	public List<Position> getPositions(CommonQuery query) {
+		List<Position> positions = new ArrayList<>();
+		
+		try {
+			List<JobPositionRecord> records = getResources(query);
+			if(records != null && records.size() > 0) {
+				positions = records.stream().filter(record -> record != null)
+						.map(record -> BeanUtils.DBToStruct(Position.class, record))
+						.collect(Collectors.toList());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			//do nothing
+		}
+		
+		return positions;
 	}
 
 	public Position getPositionWithCityCode(CommonQuery query) {

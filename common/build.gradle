@@ -19,7 +19,8 @@ dependencies {
     //compile deps["zookeeper"]
     compile deps["curator-recipes"]
     compile deps["fastjson"]
-    compile deps["libthrift"]
+    //compile deps["libthrift"]
+    compile fileTree(dir:'../libs',include:'libthrift-0.10.0.jar')
     compile deps["bonecp"]
     compile deps["javamail"]
     compile deps["servlet-api"]

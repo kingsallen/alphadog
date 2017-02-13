@@ -14,7 +14,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -23,6 +27,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
+import com.taobao.api.internal.toplink.embedded.websocket.util.StringUtil;
 
 @Controller
 public class SearchengineController {
@@ -121,5 +126,70 @@ public class SearchengineController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+    @RequestMapping(value = "/search/updateByCompanyId", method = RequestMethod.POST)
+    @ResponseBody
+    public String updatePositionByCompanyId(HttpServletRequest request, HttpServletResponse response) {
+        Map<String, Object> reqParams = null;
+        Response result=new Response();;
+        try {
+            reqParams = ParamUtils.parseRequestParam(request);
+            Integer company_id = BeanUtils.converToInteger(reqParams.get("company_id"));
+            Response es_result = searchengineServices.query(null, null, null, null, null,
+            		null, null, null, null, null, company_id+"", 0, 1000,
+                    null,null, false, null);
+            if(es_result.getStatus()==0&&StringUtils.isNotNullOrEmpty(es_result.getData())){
+            	JSONObject es_data=JSON.parseObject(es_result.getData());
+            	List<String> position_id_list=(List<String>) es_data.get("jd_id_list");
+            	for(String position_id : position_id_list){
+            		String position=this.getJobPosition(Integer.parseInt(position_id));
+            		if(StringUtils.isNotNullOrEmpty(position)){
+            			searchengineServices.updateposition(position,Integer.parseInt(position_id));	
+            		}
+            		Thread.currentThread().sleep(600);
+            	} 	
+            	result=ResponseUtils.success("");
+            }else{
+            	result=ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+            }
+             
+        } catch (Exception e) {
 
+           e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+        
+        return ResponseLogNotification.success(request,result);
+    }
+    
+    private String getJobPosition(int id) throws Exception{
+        String position = "";
+        try{
+	    	  Response result = positonServices.getPositionById(id);
+	          position = result.data;
+	          Map position_map = (Map) JSON.parse(position);
+	          
+	          String company_id = BeanUtils.converToString(position_map.get("company_id"));
+	          CommonQuery query = new CommonQuery();
+	          query.putToEqualFilter("id", company_id);
+	          Response company_resp = companyServices.getAllCompanies(query);
+	          String company = company_resp.data;
+	          List company_maps = (List) JSON.parse(company);
+	          Map company_map = (Map) company_maps.get(0);
+	          String company_name = (String) company_map.get("name");
+	          String scale = (String) company_map.get("scale");
+	          position_map.put("company_name",company_name);
+	          String degree_name = BeanUtils.converToString(position_map.get("degree_name"));
+	          Integer degree_above =BeanUtils.converToInteger(position_map.get("degree_above"));
+	          if(degree_above==1){
+	              degree_name = degree_name+"及以上";
+	          }
+	          position_map.put("degree_name",degree_name);
+	          position_map.put("scale",scale);        
+	          position = JSON.toJSONString(position_map);
+	          return position;
+        }catch(Exception e){
+      	  logger.info(e.getMessage());
+        }
+        return null;
+  }
 }

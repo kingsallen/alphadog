@@ -8,6 +8,20 @@ namespace java com.moseeker.thrift.gen.dao.struct
  */
 typedef string Timestamp;
 
+enum ConditionType {
+    AndType,
+    OrType,
+    MoreThanType,
+    LessThanType,
+    BetweenType
+}
+
+struct Condition {
+    1: optional ConditionType conditionType,
+    2: optional Condition condition,
+    3: optional list<string> params
+}
+
 struct WordpressPosts { 
     1: i64 id,
     2: i64 postAuthor,
@@ -51,9 +65,9 @@ struct ThirdPartyPositionData {
 	1: i32 id,
 	2: i32 position_id,
 	3: string third_part_position_id,
-	4: byte channel,
-	5: byte is_synchronization,
-	6: byte is_refresh,
+	4: i8 channel,
+	5: i8 is_synchronization,
+	6: i8 is_refresh,
 	7: string sync_time,
 	8: string refresh_time,
 	9: string update_time,
@@ -78,6 +92,8 @@ struct Talentpool {
 	4:string create_time,
 	5:string update_time,
 	6:i32 status
+}
+
 struct HistoryOperate{
 	1: optional i32 id,
 	2: optional i64 app_id,

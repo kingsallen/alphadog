@@ -5,18 +5,13 @@ package com.moseeker.db.jobdb.tables;
 
 
 import com.moseeker.db.jobdb.Jobdb;
-import com.moseeker.db.jobdb.Keys;
 import com.moseeker.db.jobdb.tables.records.JobOccupationRelRecord;
-
-import java.util.Arrays;
-import java.util.List;
 
 import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.Table;
 import org.jooq.TableField;
-import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
 
 
@@ -33,7 +28,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobOccupationRel extends TableImpl<JobOccupationRelRecord> {
 
-	private static final long serialVersionUID = -1162347029;
+	private static final long serialVersionUID = -1374225563;
 
 	/**
 	 * The reference instance of <code>jobdb.job_occupation_rel</code>
@@ -78,22 +73,6 @@ public class JobOccupationRel extends TableImpl<JobOccupationRelRecord> {
 
 	private JobOccupationRel(String alias, Table<JobOccupationRelRecord> aliased, Field<?>[] parameters) {
 		super(alias, Jobdb.JOBDB, aliased, parameters, "职位与职能关系表");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public UniqueKey<JobOccupationRelRecord> getPrimaryKey() {
-		return Keys.KEY_JOB_OCCUPATION_REL_PRIMARY;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public List<UniqueKey<JobOccupationRelRecord>> getKeys() {
-		return Arrays.<UniqueKey<JobOccupationRelRecord>>asList(Keys.KEY_JOB_OCCUPATION_REL_PRIMARY);
 	}
 
 	/**

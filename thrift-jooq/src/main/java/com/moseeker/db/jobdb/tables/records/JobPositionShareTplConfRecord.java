@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionShareTplConfRecord extends UpdatableRecordImpl<JobPositionShareTplConfRecord> implements Record8<Integer, Short, String, String, String, Byte, String, Byte> {
 
-	private static final long serialVersionUID = -1587406090;
+	private static final long serialVersionUID = -886745454;
 
 	/**
 	 * Setter for <code>jobdb.job_position_share_tpl_conf.id</code>. PK
@@ -45,14 +45,14 @@ public class JobPositionShareTplConfRecord extends UpdatableRecordImpl<JobPositi
 	}
 
 	/**
-	 * Setter for <code>jobdb.job_position_share_tpl_conf.type</code>. 模板分类 1：雇主分享模板 2：员工分享模板
+	 * Setter for <code>jobdb.job_position_share_tpl_conf.type</code>. 模板分类 1:雇主分享模板 2:员工分享模板(已弃用) 3:转发模板 4:默认转发模板
 	 */
 	public void setType(Short value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>jobdb.job_position_share_tpl_conf.type</code>. 模板分类 1：雇主分享模板 2：员工分享模板
+	 * Getter for <code>jobdb.job_position_share_tpl_conf.type</code>. 模板分类 1:雇主分享模板 2:员工分享模板(已弃用) 3:转发模板 4:默认转发模板
 	 */
 	public Short getType() {
 		return (Short) getValue(1);
