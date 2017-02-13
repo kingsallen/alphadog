@@ -112,21 +112,15 @@ public class WholeProfileService {
 				Map<String, Object> profileprofile = buildProfile(profileRecord, query, constantRecords);
 				profile.put("profile", profileprofile);
 
+				Map<String, Object> basic = buildBasic(profileRecord, query, constantRecords);
+				profile.put("basic", basic);
+
 				List<Map<String, Object>> workexps = buildWorkexps(profileRecord, query);
 				profile.put("workexps", workexps);
 
 				List<Map<String, Object>> educations = buildEducations(profileRecord, query);
 				profile.put("educations", educations);
-				
-				//将学历加入到basic中
-				Map<String, Object> basic = buildBasic(profileRecord, query, constantRecords);
-				if(educations!=null&&educations.size()>0){
-					basic.put("highest_degree", educations.get(0).get("degree"));
-				}else{
-					basic.put("highest_degree", 0);
-				}
-				profile.put("basic", basic);
-				
+
 				List<Map<String, Object>> projectexps = buildProjectexps(profileRecord, query);
 				profile.put("projectexps", projectexps);
 
