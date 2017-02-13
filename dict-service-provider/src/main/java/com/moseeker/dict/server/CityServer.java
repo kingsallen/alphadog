@@ -11,6 +11,7 @@ import com.moseeker.dict.thrift.DictOccupationServiceImpl;
 import com.moseeker.dict.thrift.IndusteryServiceImpl;
 import com.moseeker.dict.thrift.PositionServiceImpl;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
+import com.moseeker.rpccenter.main.MoServer;
 import com.moseeker.rpccenter.main.MultiRegServer;
 
 /**
@@ -24,9 +25,20 @@ public class CityServer {
 
         AnnotationConfigApplicationContext acac = initSpring();
         try {
-        	MultiRegServer server = new MultiRegServer(
-                    CityServer.class,
-                    ServerNodeUtils.getPort(args),
+//        	MultiRegServer server = new MultiRegServer(
+//                    CityServer.class,
+//                    ServerNodeUtils.getPort(args),
+//                    acac.getBean(CollegeServicesImpl.class),
+//                    acac.getBean(DictConstantServiceImpl.class),
+//                    acac.getBean(DictCountryServiceImpl.class),
+//                    acac.getBean(IndusteryServiceImpl.class),
+//                    acac.getBean(PositionServiceImpl.class),
+//                    acac.getBean(CityServicesImpl.class),
+//                    acac.getBean(DictOccupationServiceImpl.class)
+//            );
+//            server.start();
+        	MoServer server = new MoServer(
+                    acac,"server.properties",
                     acac.getBean(CollegeServicesImpl.class),
                     acac.getBean(DictConstantServiceImpl.class),
                     acac.getBean(DictCountryServiceImpl.class),
@@ -35,8 +47,7 @@ public class CityServer {
                     acac.getBean(CityServicesImpl.class),
                     acac.getBean(DictOccupationServiceImpl.class)
             );
-            server.start();
-
+        	server.startServer();
             synchronized (CityServer.class) {
                 while (true) {
                     try {

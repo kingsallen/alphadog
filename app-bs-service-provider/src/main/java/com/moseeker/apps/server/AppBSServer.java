@@ -32,13 +32,18 @@ public class AppBSServer {
 
 		try {
 			AnnotationConfigApplicationContext acac = initSpring();
-			MultiRegServer server = new MultiRegServer(AppBSServer.class,
-					ServerNodeUtils.getPort(args),
+//			MultiRegServer server = new MultiRegServer(AppBSServer.class,
+//					ServerNodeUtils.getPort(args),
+//					acac.getBean(PositionBSThriftService.class),
+//					acac.getBean(ProfileBSThriftService.class),
+//					acac.getBean(UserBSThriftService.class));
+//				server.start();
+			MoServer server = new MoServer(
+					acac,"server.properties",
 					acac.getBean(PositionBSThriftService.class),
 					acac.getBean(ProfileBSThriftService.class),
 					acac.getBean(UserBSThriftService.class));
-				server.start();
-
+			server.startServer();
 			// 启动服务，非阻塞
 			synchronized (AppBSServer.class) {
                 while (true) {
