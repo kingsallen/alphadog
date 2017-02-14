@@ -3,6 +3,7 @@ package com.moseeker.baseorm.dao.userdb;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import com.moseeker.thrift.gen.dao.struct.UserUserDTO;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +35,7 @@ public class UserDao extends BaseDaoImpl<UserUserRecord, UserUser> {
 	 * @param user
 	 * @return
 	 */
-	public User saveUser(User user) {
+	public UserUserDTO saveUser(UserUserDTO user) {
 		UserUserRecord record = (UserUserRecord)BeanUtils.structToDB(user, UserUserRecord.class);
 		try (
 				Connection conn = DBConnHelper.DBConn.getConn();

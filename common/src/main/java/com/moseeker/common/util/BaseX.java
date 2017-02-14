@@ -108,7 +108,7 @@ public class BaseX {
       exponent++;
     }
 
-    //need to reverse it, since the start of the list contains the least significant values
+    //need to reverse it, since the start of the list contains the least significant pos
     StringBuffer sb = new StringBuffer();
     for(int i = result.size()-1; i >= 0; i--){
       sb.append(result.get(i));
