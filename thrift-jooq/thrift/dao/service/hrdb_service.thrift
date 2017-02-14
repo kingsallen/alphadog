@@ -20,4 +20,8 @@ service HrDBDao {
     common_struct.Response postHrOperationrecords(1:list<hrdb_struct.HrOperationrecordStruct> record);
     common_struct.Response postHrOperationrecord(1:hrdb_struct.HrOperationrecordStruct record);
     common_struct.Response getHrHistoryOperations(1:list<application_struct.ProcessValidationStruct> record);
+
+    hrdb_struct.HrEmployeeCertConfPojo getEmployeeCertConf(1: common_struct.CommonQuery query);
+
+    list<hrdb_struct.HrEmployeeCustomFieldsPojo> getEmployeeCustomFields(1: common_struct.CommonQuery query);
 }

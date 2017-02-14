@@ -104,4 +104,3 @@ struct UserUserDTO {
     27: optional Timestamp update_time          //修改时间
 }
 
-struct 

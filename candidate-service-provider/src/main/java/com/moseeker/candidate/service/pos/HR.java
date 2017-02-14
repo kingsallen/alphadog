@@ -1,4 +1,4 @@
-package com.moseeker.candidate.service.values;
+package com.moseeker.candidate.service.pos;
 
 /**
  * HR

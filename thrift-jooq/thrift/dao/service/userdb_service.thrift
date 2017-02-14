@@ -8,9 +8,9 @@ service UserDBDao {
     list<userdb_struct.UserFavPositionDTO> getUserFavPositions(1:common_struct.CommonQuery query);
     
     //查询用户
-    useraccounts_struct.User getUser(1:common_struct.CommonQuery query);
+    userdb_struct.UserUserDTO getUser(1:common_struct.CommonQuery query);
     //保存用户
-    useraccounts_struct.User saveUser(1:useraccounts_struct.User user);
+    userdb_struct.UserUserDTO saveUser(1:userdb_struct.UserUserDTO user);
 
     userdb_struct.UserEmployeeDTO getEmployee(1:common_struct.CommonQuery query);
     common_struct.Response getUserEmployee(1:i32 companyId,2:list<i32> weChatIds);

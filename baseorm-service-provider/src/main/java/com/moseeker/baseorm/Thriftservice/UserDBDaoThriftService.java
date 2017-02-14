@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.moseeker.thrift.gen.dao.struct.UserEmployeeDTO;
 import com.moseeker.thrift.gen.dao.struct.UserFavPositionDTO;
+import com.moseeker.thrift.gen.dao.struct.UserUserDTO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,12 +41,12 @@ public class UserDBDaoThriftService implements Iface {
 	private UserEmployeeService userEmployeeService; 
 
 	@Override
-	public User getUser(CommonQuery query) throws TException {
-		User user = new User();
+	public UserUserDTO getUser(CommonQuery query) throws TException {
+		UserUserDTO user = new UserUserDTO();
 		try {
 			UserUserRecord record = userDao.getResource(query);
 			if(record != null) {
-				user = record.into(User.class);
+				user = record.into(UserUserDTO.class);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -58,7 +59,7 @@ public class UserDBDaoThriftService implements Iface {
 	}
 
 	@Override
-	public User saveUser(User user) throws TException {
+	public UserUserDTO saveUser(UserUserDTO user) throws TException {
 		if(user.getPassword() == null) {
 			user.setPassword("");
 		}
