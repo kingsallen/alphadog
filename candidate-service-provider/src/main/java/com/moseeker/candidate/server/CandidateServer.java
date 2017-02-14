@@ -19,7 +19,7 @@ public class CandidateServer {
 		try {
 			AnnotationConfigApplicationContext acac = initSpring();
 			MoServer server = new MoServer(acac,
-					"server.properties");
+					"");
 			// 启动服务，非阻塞
 			try {
 				server.startServer();

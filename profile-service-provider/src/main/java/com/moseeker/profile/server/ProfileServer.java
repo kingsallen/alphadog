@@ -71,7 +71,7 @@ public class ProfileServer {
 					acac.getBean(ProfileAttachmentServicesImpl.class));
 			server.start();*/
 			MoServer server = new MoServer(acac,
-					"server.properties",
+					"",
 					acac.getBean(ProfileServicesImpl.class),
 					acac.getBean(ProfileAwardsServicesImpl.class),
 					acac.getBean(ProfileBasicServicesImpl.class),
