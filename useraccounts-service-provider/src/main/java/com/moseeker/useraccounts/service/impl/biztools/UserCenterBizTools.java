@@ -2,6 +2,7 @@ package com.moseeker.useraccounts.service.impl.biztools;
 
 import java.util.List;
 
+import com.moseeker.thrift.gen.dao.struct.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.UserFavPositionDO;
 import org.apache.thrift.TException;
 import org.springframework.stereotype.Component;
@@ -53,7 +54,7 @@ public class UserCenterBizTools {
 	 * @return 职位数据集合
 	 * @throws TException thrift异常信息
 	 */
-	public List<Position> getPositions(int... ids) throws TException {
+	public List<JobPositionDO> getPositions(int... ids) throws TException {
 		QueryUtil qu = new QueryUtil();
 		qu.addEqualFilter("id", arrayToString(ids));
 		return jobDBDao.getPositions(qu);
