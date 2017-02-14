@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.moseeker.thrift.gen.dao.struct.JobPositionDO;
 import org.jooq.DSLContext;
 import org.jooq.Result;
 import org.springframework.stereotype.Service;
@@ -31,14 +32,14 @@ public class JobPositionDao extends BaseDaoImpl<JobPositionRecord, JobPosition> 
 		this.tableLike = JobPosition.JOB_POSITION;
 	}
 	
-	public List<Position> getPositions(CommonQuery query) {
-		List<Position> positions = new ArrayList<>();
+	public List<JobPositionDO> getPositions(CommonQuery query) {
+		List<JobPositionDO> positions = new ArrayList<>();
 		
 		try {
 			List<JobPositionRecord> records = getResources(query);
 			if(records != null && records.size() > 0) {
 				positions = records.stream().filter(record -> record != null)
-						.map(record -> BeanUtils.DBToStruct(Position.class, record))
+						.map(record -> BeanUtils.DBToStruct(JobPositionDO.class, record))
 						.collect(Collectors.toList());
 			}
 		} catch (Exception e) {

@@ -3,14 +3,9 @@ package com.moseeker.candidate.service.entities;
 import com.moseeker.candidate.service.Candidate;
 import com.moseeker.candidate.service.pos.*;
 import com.moseeker.common.providerutils.QueryUtil;
-import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.validation.ValidateUtil;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Future;
 
 /**
  * 候选人实体，提供候选人相关业务

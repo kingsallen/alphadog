@@ -2,6 +2,7 @@ package com.moseeker.baseorm.Thriftservice;
 
 import java.util.List;
 
+import com.moseeker.thrift.gen.dao.struct.JobPositionDO;
 import com.moseeker.thrift.gen.position.struct.Position;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,13 @@ public class JobDBDaoThriftService implements Iface {
 	private JobPositionDao positionDao;
 
 	@Override
-	public List<Position> getPositions(CommonQuery query) throws TException {
+	public List<JobPositionDO> getPositions(CommonQuery query) throws TException {
 		return positionDao.getPositions(query);
+	}
+
+	@Override
+	public JobPositionDO getPosition(CommonQuery query) throws TException {
+		return null;
 	}
 
 	@Override
