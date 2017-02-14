@@ -18,6 +18,7 @@ import com.moseeker.baseorm.Thriftservice.UserDBDaoThriftService;
 import com.moseeker.baseorm.Thriftservice.WordpressDaoThriftService;
 import com.moseeker.baseorm.Thriftservice.WxUserDaoThriftService;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
+import com.moseeker.rpccenter.main.MoServer;
 import com.moseeker.rpccenter.main.MultiRegServer;
 /*
  * baseorm-service-provider的启动类
@@ -35,9 +36,27 @@ public class BaseOrmServer {
 		// TODO Auto-generated method stub
 		 AnnotationConfigApplicationContext acac = initSpring();
 	        try {
-	        	MultiRegServer server  = new MultiRegServer(
-	        			BaseOrmServer.class,
-	        			ServerNodeUtils.getPort(args),
+//	        	MultiRegServer server  = new MultiRegServer(
+//	        			BaseOrmServer.class,
+//	        			ServerNodeUtils.getPort(args),
+//	        			acac.getBean(HRAccountThriftService.class),
+//	        			acac.getBean(WordpressDaoThriftService.class),
+//	        			acac.getBean(CompanyThriftService.class),
+//	        			acac.getBean(PositionDaoThriftService.class),
+//	        			acac.getBean(UserDBDaoThriftService.class),
+//	        			acac.getBean(DictDaoThriftService.class),
+//	        			acac.getBean(DictDaoMapThriftService.class),
+//	        			acac.getBean(JobDBDaoThriftService.class),
+//	        			acac.getBean(PositionThriftService.class),
+//	        			acac.getBean(ApplicationDaoThriftService.class),
+//	        			acac.getBean(ConfigDBDaoThriftService.class),
+//	        			acac.getBean(HrDBThriftService.class),
+//	        			acac.getBean(WxUserDaoThriftService.class)
+//	        	);
+//	            server.start();
+	            
+	        	MoServer server  = new MoServer(
+	        			acac,"server.properties",
 	        			acac.getBean(HRAccountThriftService.class),
 	        			acac.getBean(WordpressDaoThriftService.class),
 	        			acac.getBean(CompanyThriftService.class),
@@ -52,8 +71,7 @@ public class BaseOrmServer {
 	        			acac.getBean(HrDBThriftService.class),
 	        			acac.getBean(WxUserDaoThriftService.class)
 	        	);
-	            server.start();
-
+	        	server.startServer();
 	            synchronized (BaseOrmServer.class) {
 	                while (true) {
 	                    try {

@@ -11,6 +11,7 @@ import com.moseeker.function.thrift.service.FunctionService;
 import com.moseeker.function.thrift.service.HRAccountThriftService;
 import com.moseeker.function.thrift.service.WordpressThriftService;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
+import com.moseeker.rpccenter.main.MoServer;
 import com.moseeker.rpccenter.main.MultiRegServer;
 
 /**
@@ -30,14 +31,21 @@ public class FunctionServer {
 
         try {
         	AnnotationConfigApplicationContext acac = initSpring();
-        	MultiRegServer server = new MultiRegServer(FunctionServer.class,
-        			ServerNodeUtils.getPort(args),
+//        	MultiRegServer server = new MultiRegServer(FunctionServer.class,
+//        			ServerNodeUtils.getPort(args),
+//					acac.getBean(FunctionService.class),
+//					acac.getBean(ChaosThriftService.class),
+//					acac.getBean(WordpressThriftService.class),
+//					acac.getBean(HRAccountThriftService.class));
+//			server.start(); // 启动服务，非阻塞
+        	MoServer server=new MoServer(
+        			acac,"server.properties",
 					acac.getBean(FunctionService.class),
 					acac.getBean(ChaosThriftService.class),
 					acac.getBean(WordpressThriftService.class),
-					acac.getBean(HRAccountThriftService.class));
-			server.start(); // 启动服务，非阻塞
-			
+					acac.getBean(HRAccountThriftService.class)
+        			);
+			server.startServer();
 			//开启监听同步完成任务
 			PositionSyncConsumer listener = new PositionSyncConsumer();
 			listener.startTask();

@@ -14,6 +14,7 @@ import com.moseeker.mq.service.email.MandrillMailConsumer;
 import com.moseeker.mq.service.schedule.Schedule;
 import com.moseeker.mq.thrift.ThriftService;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
+import com.moseeker.rpccenter.main.MoServer;
 import com.moseeker.rpccenter.main.Server;
 
 /**
@@ -29,15 +30,18 @@ public class MqServer {
 
         AnnotationConfigApplicationContext acac = initSpring();
         try {
-            Server server = new Server(
-                    MqServer.class,
-                    ServerNodeUtils.getPort(args),
-                    acac.getBean(ThriftService.class)
-            );
-            server.start();
-            
+//            Server server = new Server(
+//                    MqServer.class,
+//                    ServerNodeUtils.getPort(args),
+//                    acac.getBean(ThriftService.class)
+//            );
+//            server.start();
+        	MoServer server = new MoServer(
+                  acac,"server.properties",
+                  acac.getBean(ThriftService.class)
+          );
+        	server.startServer();
             ConstantlyMailConsumer mailUtil = new ConstantlyMailConsumer();
-
     		MandrillMailConsumer mandrill = new MandrillMailConsumer();
     		mandrill.start();            
             
