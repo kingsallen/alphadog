@@ -3,7 +3,7 @@ package com.moseeker.useraccounts.service.impl;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.AwardConfigTpl;
-import com.moseeker.thrift.gen.dao.struct.UserFavPositionDTO;
+import com.moseeker.thrift.gen.dao.struct.UserFavPositionDO;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm;
 import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
@@ -111,14 +111,14 @@ public class UserCenterServiceTest {
 			fail("Exception");
 		}
 		
-		UserFavPositionDTO favP1 = new UserFavPositionDTO();
+		UserFavPositionDO favP1 = new UserFavPositionDO();
 		favP1.setSysuserId(1);
 		favP1.setPositionId(1);
 		
-		UserFavPositionDTO favP2 = new UserFavPositionDTO();
+		UserFavPositionDO favP2 = new UserFavPositionDO();
 		favP2.setSysuserId(1);
 		favP2.setPositionId(2);
-		List<UserFavPositionDTO> favPs = Arrays.asList(favP1, favP2);
+		List<UserFavPositionDO> favPs = Arrays.asList(favP1, favP2);
 		try {
 			Mockito.when(bizTools.getFavPositions(1,1)).thenReturn(favPs);
 		} catch (TException e) {

@@ -31,13 +31,9 @@ public class CandidateEntity implements Candidate {
             /*Future userFuture = ThreadPool.Instance.startTast(() -> user.dbExist());
             Future positionFuture = ThreadPool.Instance.startTast(() -> position.dbExist());*/
 
-
-
             if(user.dbExist() && position.dbExist()) {
 
                 //暂时不考虑HR的问题
-
-
                 QueryUtil queryUtil = new QueryUtil();
                 queryUtil.addEqualFilter("user_id", String.valueOf(userID));
                 List<CandidateRemark> crs = CandidateRemark.getCandidateRemarks();

@@ -1,6 +1,6 @@
 package com.moseeker.useraccounts.thrift;
 
-import com.moseeker.thrift.gen.dao.struct.UserUserDTO;
+import com.moseeker.thrift.gen.dao.struct.UserUserDO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -283,12 +283,12 @@ public class UseraccountsServiceImpl implements Iface {
 	}
 
 	@Override
-	public UserUserDTO ifExistUser(String mobile) throws TException {
+	public UserUserDO ifExistUser(String mobile) throws TException {
 		return service.ifExistUser(mobile);
 	}
 
 	@Override
-	public int createRetrieveProfileUser(UserUserDTO user) throws TException {
+	public int createRetrieveProfileUser(UserUserDO user) throws TException {
 		return service.createRetrieveProfileUser(user);
 	}
 

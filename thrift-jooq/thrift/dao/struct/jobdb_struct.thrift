@@ -8,7 +8,7 @@ namespace java com.moseeker.thrift.gen.dao.struct
  */
 typedef string Timestamp;
 
-struct JobApplicationDTO {
+struct JobApplicationDO {
     1: optional i32 id,                 //编号 唯一标识
     2: optional i32 wechatId,           //微信公众号编号
     3: optional i32 positionId,         //职位编号
@@ -37,7 +37,7 @@ struct JobApplicationDTO {
     26: optional i32 viewCount          //profile浏览次数
 }
 
-struct JobPositionDTO {
+struct JobPositionDO {
     1: optional i32 id,                     //数据库标志
     2: optional string jobnumber,           //用户上传的职位编号
     3: optional i32 companyId,              //职位所属公司编号hrdb.hr_company.id
