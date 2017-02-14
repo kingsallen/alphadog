@@ -11,7 +11,7 @@ import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.PositionDao;
-import com.moseeker.thrift.gen.dao.struct.UserUserDTO;
+import com.moseeker.thrift.gen.dao.struct.UserUserDO;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
@@ -80,7 +80,7 @@ public class ProfileBS {
 			QueryUtil findRetrieveUserQU = new QueryUtil();
 			findRetrieveUserQU.addEqualFilter("mobile", mobile);
 			findRetrieveUserQU.addEqualFilter("source", String.valueOf(UserSource.RETRIEVE_PROFILE.getValue()));
-			UserUserDTO user = userDao.getUser(findRetrieveUserQU);
+			UserUserDO user = userDao.getUser(findRetrieveUserQU);
 			if(user.getId() > 0) {
 				//查找该帐号是否有profile
 				JobApplication application = initApplication((int)user.getId(), positionId, position.getCompany_id());
@@ -119,7 +119,7 @@ public class ProfileBS {
 				}
 			} else {
 				//如果不存在C端帐号，创建帐号
-				UserUserDTO user1 =  BeanUtils.MapToRecord(map, UserUserDTO.class);
+				UserUserDO user1 =  BeanUtils.MapToRecord(map, UserUserDO.class);
 				user1.setSource((byte)UserSource.RETRIEVE_PROFILE.getValue());
 				int userId = useraccountsServices.createRetrieveProfileUser(user1);
 				//创建profile

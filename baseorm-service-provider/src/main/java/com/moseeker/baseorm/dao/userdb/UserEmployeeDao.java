@@ -6,7 +6,7 @@ import com.moseeker.common.util.BeanUtils;
 import com.moseeker.db.userdb.tables.UserEmployee;
 import com.moseeker.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.dao.struct.UserEmployeeDTO;
+import com.moseeker.thrift.gen.dao.struct.UserEmployeeDO;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
@@ -29,13 +29,13 @@ public class UserEmployeeDao extends BaseDaoImpl<UserEmployeeRecord, UserEmploye
 		this.tableLike = UserEmployee.USER_EMPLOYEE;
 	}
 
-	public UserEmployeeDTO getEmployee(CommonQuery query)  {
-		UserEmployeeDTO employee = new UserEmployeeDTO();
+	public UserEmployeeDO getEmployee(CommonQuery query)  {
+		UserEmployeeDO employee = new UserEmployeeDO();
 		
 		try {
 			UserEmployeeRecord record = this.getResource(query);
 			if(record != null) {
-				employee = BeanUtils.DBToStruct(UserEmployeeDTO.class, record);
+				employee = BeanUtils.DBToStruct(UserEmployeeDO.class, record);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

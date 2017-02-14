@@ -3,7 +3,7 @@ package com.moseeker.baseorm.dao.userdb;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import com.moseeker.thrift.gen.dao.struct.UserUserDTO;
+import com.moseeker.thrift.gen.dao.struct.UserUserDO;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +12,7 @@ import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.db.userdb.tables.UserUser;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
-import com.moseeker.thrift.gen.useraccounts.struct.User;
+
 /**
  * 
  * HR帐号数据库持久类 
@@ -35,7 +35,7 @@ public class UserDao extends BaseDaoImpl<UserUserRecord, UserUser> {
 	 * @param user
 	 * @return
 	 */
-	public UserUserDTO saveUser(UserUserDTO user) {
+	public UserUserDO saveUser(UserUserDO user) {
 		UserUserRecord record = (UserUserRecord)BeanUtils.structToDB(user, UserUserRecord.class);
 		try (
 				Connection conn = DBConnHelper.DBConn.getConn();

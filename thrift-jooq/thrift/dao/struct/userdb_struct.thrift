@@ -8,7 +8,7 @@ namespace java com.moseeker.thrift.gen.dao.struct
  */
 typedef string Timestamp;
 
-struct UserFavPositionDTO  {
+struct UserFavPositionDO  {
     1: optional i32 sysuserId,          //用户编号 userdb.user_user.id
     2: optional i32 positionId,         //职位编号 jobdb.job_position.id
     3: optional i8 favorite,            //职位编号
@@ -21,7 +21,7 @@ struct UserFavPositionDTO  {
 /*
  * 员工数据
  */
-struct UserEmployeeDTO {
+struct UserEmployeeDO {
     1: optional i32 id,                     //数据库标志 
     2: optional string employeeid,             //员工ID，hr上传
     3: optional i32 companyId,              //公司编号 hrdb.hr_company.id
@@ -62,7 +62,7 @@ struct UserEmployeeDTO {
     38: optional string lastLoginIp,        //最近登录的IP
     39: optional i32 loginCount,            //登录次数
     40: optional i8 source,                 //来源，0:默认 1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号) 8:hr导入员工 9:hr添加的员工
-    41: optional string downloadToken,      //下载行业报告的校验token
+    41: optional string downloaDOken,      //下载行业报告的校验token
     42: optional i32 hrWxuserId,            //hr招聘助手的微信ID，user_wx_user.id
     43: optional string customField,        //配置的自定义认证名称对应的内容
     44: optional i8 isRpSent,               //是否拿过员工认证红包 0: 没有 1:有
@@ -74,7 +74,7 @@ struct UserEmployeeDTO {
     50: optional string customFieldValues  //自定 义字段键值, 结构[{<id>: "<value>"},{...},...]
 }
 
-struct UserUserDTO {
+struct UserUserDO {
     1: optional i32 id,                         //数据库编号
     2: optional string username,                //用户名称
     3: optional string password,                //密码

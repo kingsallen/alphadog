@@ -3,8 +3,7 @@ package com.moseeker.candidate.service.pos;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.dao.service.JobDBDao;
-import com.moseeker.thrift.gen.dao.struct.JobPositionDTO;
-import com.moseeker.thrift.gen.dao.struct.UserUserDTO;
+import com.moseeker.thrift.gen.dao.struct.JobPositionDO;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.thrift.TException;
 
@@ -95,7 +94,7 @@ public class Position extends Model {
         QueryUtil query = new QueryUtil();
         query.addEqualFilter("id", String.valueOf(this.id));
         try {
-            JobPositionDTO positionDTO = jobdb.getPosition(query);
+            JobPositionDO positionDTO = jobdb.getPosition(query);
             if(positionDTO != null && positionDTO.getId() > 0) {
                 this.exist = true;
                 try {

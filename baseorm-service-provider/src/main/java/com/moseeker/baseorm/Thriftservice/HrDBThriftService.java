@@ -2,8 +2,7 @@ package com.moseeker.baseorm.Thriftservice;
 
 import java.util.List;
 
-import com.moseeker.thrift.gen.dao.struct.HrEmployeeCertConfPojo;
-import com.moseeker.thrift.gen.dao.struct.HrEmployeeCustomFieldsPojo;
+import com.moseeker.thrift.gen.dao.struct.*;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,11 +13,6 @@ import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.HrDBDao.Iface;
-import com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo;
-import com.moseeker.thrift.gen.dao.struct.HrHbItemsPojo;
-import com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo;
-import com.moseeker.thrift.gen.dao.struct.HrHbScratchCardPojo;
-import com.moseeker.thrift.gen.dao.struct.HrHbSendRecordPojo;
 
 @Service
 public class HrDBThriftService implements Iface {
@@ -85,13 +79,13 @@ public class HrDBThriftService implements Iface {
 	}
 
 	@Override
-	public Response postHrOperationrecords(List<com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct> record)
+	public Response postHrOperationrecords(List<HrOperationrecordDO> record)
 			throws TException {
 		return hrDBService.postHrOperations(record);
 	}
 
 	@Override
-	public Response postHrOperationrecord(com.moseeker.thrift.gen.dao.struct.HrOperationrecordStruct record)
+	public Response postHrOperationrecord(HrOperationrecordDO record)
 			throws TException {
 		return hrDBService.postHrOperation(record);
 	}

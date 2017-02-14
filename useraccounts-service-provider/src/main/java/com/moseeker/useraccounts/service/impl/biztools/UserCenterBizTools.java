@@ -2,6 +2,7 @@ package com.moseeker.useraccounts.service.impl.biztools;
 
 import java.util.List;
 
+import com.moseeker.thrift.gen.dao.struct.UserFavPositionDO;
 import org.apache.thrift.TException;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +16,6 @@ import com.moseeker.thrift.gen.dao.service.ConfigDBDao;
 import com.moseeker.thrift.gen.dao.service.JobDBDao;
 import com.moseeker.thrift.gen.dao.service.UserDBDao;
 import com.moseeker.thrift.gen.dao.struct.AwardConfigTpl;
-import com.moseeker.thrift.gen.dao.struct.UserFavPositionDTO;
 import com.moseeker.thrift.gen.position.struct.Position;
 
 /**
@@ -88,7 +88,7 @@ public class UserCenterBizTools {
 	 * @return 感兴趣职位集合
 	 * @throws TException thrift异常信息
 	 */
-	public List<UserFavPositionDTO> getFavPositions(int userId, int favorite) throws TException {
+	public List<UserFavPositionDO> getFavPositions(int userId, int favorite) throws TException {
 		QueryUtil qu = new QueryUtil();
 		qu.addEqualFilter("sysuser_id", String.valueOf(userId));
 		qu.addEqualFilter("favorite", String.valueOf(favorite));
