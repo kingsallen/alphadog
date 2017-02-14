@@ -1,10 +1,23 @@
 package com.moseeker.candidate.service.pos;
 
+import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.thrift.gen.dao.service.JobDBDao;
+import com.moseeker.thrift.gen.dao.struct.JobPositionDTO;
+import com.moseeker.thrift.gen.dao.struct.UserUserDTO;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.thrift.TException;
+
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * 职位
  * Created by jack on 10/02/2017.
  */
 public class Position extends Model {
+
+    JobDBDao.Iface jobdb = ServiceManager.SERVICEMANAGER
+            .getService(JobDBDao.Iface.class);
 
     private int id; // optional
     private java.lang.String jobnumber; // optional
@@ -78,7 +91,26 @@ public class Position extends Model {
 
     @Override
     public void loadFromDB() {
-
+        this.persist = true;
+        QueryUtil query = new QueryUtil();
+        query.addEqualFilter("id", String.valueOf(this.id));
+        try {
+            JobPositionDTO positionDTO = jobdb.getPosition(query);
+            if(positionDTO != null && positionDTO.getId() > 0) {
+                this.exist = true;
+                try {
+                    BeanUtils.copyProperties(this, positionDTO);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                this.exist = false;
+            }
+        } catch (TException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
