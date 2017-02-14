@@ -3,7 +3,7 @@ package com.moseeker.candidate.service.pos;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.dao.service.UserDBDao;
-import com.moseeker.thrift.gen.dao.struct.UserUserDTO;
+import com.moseeker.thrift.gen.dao.struct.UserUserDO;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.thrift.TException;
 
@@ -76,7 +76,7 @@ public class User extends Model {
         QueryUtil query = new QueryUtil();
         query.addEqualFilter("id", String.valueOf(this.ID));
         try {
-            UserUserDTO userDTO = userDao.getUser(query);
+            UserUserDO userDTO = userDao.getUser(query);
             if(userDTO != null && userDTO.getId() > 0) {
                 this.exist = true;
                 try {

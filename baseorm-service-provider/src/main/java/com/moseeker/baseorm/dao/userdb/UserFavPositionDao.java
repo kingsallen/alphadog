@@ -5,7 +5,7 @@ import com.moseeker.common.util.BeanUtils;
 import com.moseeker.db.userdb.tables.UserFavPosition;
 import com.moseeker.db.userdb.tables.records.UserFavPositionRecord;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.dao.struct.UserFavPositionDTO;
+import com.moseeker.thrift.gen.dao.struct.UserFavPositionDO;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,13 +24,13 @@ public class UserFavPositionDao extends BaseDaoImpl<UserFavPositionRecord, UserF
 	 * @param query
 	 * @return
 	 */
-	public List<UserFavPositionDTO> getUserFavPositions(CommonQuery query) {
-		List<UserFavPositionDTO> favPositions = new ArrayList<>();
+	public List<UserFavPositionDO> getUserFavPositions(CommonQuery query) {
+		List<UserFavPositionDO> favPositions = new ArrayList<>();
 		
 		try {
 			List<UserFavPositionRecord> records = getResources(query);
 			if(records != null && records.size() > 0) {
-				favPositions = BeanUtils.DBToStruct(UserFavPositionDTO.class, records);
+				favPositions = BeanUtils.DBToStruct(UserFavPositionDO.class, records);
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

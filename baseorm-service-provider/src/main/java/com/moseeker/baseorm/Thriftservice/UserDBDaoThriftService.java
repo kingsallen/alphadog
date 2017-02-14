@@ -2,9 +2,9 @@ package com.moseeker.baseorm.Thriftservice;
 
 import java.util.List;
 
-import com.moseeker.thrift.gen.dao.struct.UserEmployeeDTO;
-import com.moseeker.thrift.gen.dao.struct.UserFavPositionDTO;
-import com.moseeker.thrift.gen.dao.struct.UserUserDTO;
+import com.moseeker.thrift.gen.dao.struct.UserEmployeeDO;
+import com.moseeker.thrift.gen.dao.struct.UserFavPositionDO;
+import com.moseeker.thrift.gen.dao.struct.UserUserDO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +19,6 @@ import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.UserDBDao.Iface;
-import com.moseeker.thrift.gen.useraccounts.struct.User;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 
@@ -41,12 +40,12 @@ public class UserDBDaoThriftService implements Iface {
 	private UserEmployeeService userEmployeeService; 
 
 	@Override
-	public UserUserDTO getUser(CommonQuery query) throws TException {
-		UserUserDTO user = new UserUserDTO();
+	public UserUserDO getUser(CommonQuery query) throws TException {
+		UserUserDO user = new UserUserDO();
 		try {
 			UserUserRecord record = userDao.getResource(query);
 			if(record != null) {
-				user = record.into(UserUserDTO.class);
+				user = record.into(UserUserDO.class);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -59,7 +58,7 @@ public class UserDBDaoThriftService implements Iface {
 	}
 
 	@Override
-	public UserUserDTO saveUser(UserUserDTO user) throws TException {
+	public UserUserDO saveUser(UserUserDO user) throws TException {
 		if(user.getPassword() == null) {
 			user.setPassword("");
 		}
@@ -67,12 +66,12 @@ public class UserDBDaoThriftService implements Iface {
 	}
 
 	@Override
-	public List<UserFavPositionDTO> getUserFavPositions(CommonQuery query) throws TException {
+	public List<UserFavPositionDO> getUserFavPositions(CommonQuery query) throws TException {
 		return favPositionDao.getUserFavPositions(query);
 	}
 
 	@Override
-	public UserEmployeeDTO getEmployee(CommonQuery query) throws TException {
+	public UserEmployeeDO getEmployee(CommonQuery query) throws TException {
 		return employeeDao.getEmployee(query);
 	}
 	/*

@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.moseeker.thrift.gen.dao.struct.UserUserDTO;
+import com.moseeker.thrift.gen.dao.struct.UserUserDO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1067,8 +1067,8 @@ public class UseraccountsService {
 		return RespnoseUtil.SUCCESS.toResponse();
 	}
 	
-	public UserUserDTO ifExistUser(String mobile) {
-		UserUserDTO user = new UserUserDTO();
+	public UserUserDO ifExistUser(String mobile) {
+		UserUserDO user = new UserUserDO();
 		QueryUtil qu = new QueryUtil();
 		qu.addEqualFilter("mobile", mobile);
 		qu.addEqualFilter("source", String.valueOf(UserSource.RETRIEVE_PROFILE.getValue()));
@@ -1084,7 +1084,7 @@ public class UseraccountsService {
 		return user;
 	}
 
-	public int createRetrieveProfileUser(UserUserDTO user) {
+	public int createRetrieveProfileUser(UserUserDO user) {
 		if(user.getMobile() == 0) {
 			return 0;
 		}
@@ -1105,7 +1105,7 @@ public class UseraccountsService {
 		QueryUtil qu = new QueryUtil();
 		qu.addEqualFilter("username", mobile);
 		try {
-			UserUserDTO user = userDao.getUser(qu);
+			UserUserDO user = userDao.getUser(qu);
 			if(user == null || user.getId() == 0) {
 				QueryUtil autoCreate = new QueryUtil();
 				autoCreate.addEqualFilter("mobile", mobile);
