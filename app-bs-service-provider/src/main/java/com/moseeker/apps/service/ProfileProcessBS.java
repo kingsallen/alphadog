@@ -281,7 +281,7 @@ public class ProfileProcessBS {
 			}
 			return ResponseUtils.success("操作成功");
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(e.getMessage(), e);
 			return ResponseUtils
 					.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		}
