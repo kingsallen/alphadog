@@ -136,14 +136,14 @@ public enum ServiceManager {
 
     private void init() {
         try {
-            configUtils.loadResource("services.properties");
+            configUtils.loadResource("service.properties");
         } catch (Exception e) {
             e.printStackTrace();
         }
-        int connectionTimeOut = configUtils.get("thrift.client.timeout", Integer.class, 60000);
-        int initialBufferCapacity = configUtils.get("thrift.client.initialBufferCapacity", Integer.class, 1024);
-        int retry = configUtils.get("thrift.client.retry", Integer.class, 3);
-        int maxLength = configUtils.get("thrift.client.maxLength", Integer.class, 1024*1024*1024);
+        int connectionTimeOut = configUtils.get("timeout", Integer.class, 60000);
+        int initialBufferCapacity = configUtils.get("initialBufferCapacity", Integer.class, 1024);
+        int retry = configUtils.get("retry", Integer.class, 3);
+        int maxLength = configUtils.get("maxLength", Integer.class, 1024*1024*1024);
 
         int maxActive = configUtils.get("objectpool.maxActive", Integer.class, 1024);
         int maxIdle = configUtils.get("objectpool.maxIdle", Integer.class, 100);

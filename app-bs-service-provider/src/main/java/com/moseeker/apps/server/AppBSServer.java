@@ -39,7 +39,7 @@ public class AppBSServer {
 //					acac.getBean(UserBSThriftService.class));
 //				server.start();
 			MoServer server = new MoServer(
-					acac,"server.properties",
+					acac,"",
 					acac.getBean(PositionBSThriftService.class),
 					acac.getBean(ProfileBSThriftService.class),
 					acac.getBean(UserBSThriftService.class));

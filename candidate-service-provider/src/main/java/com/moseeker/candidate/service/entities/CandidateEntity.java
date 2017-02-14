@@ -6,7 +6,6 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.sun.org.apache.xalan.internal.utils.FeatureManager;
 
 import java.util.ArrayList;
 import java.util.Date;
