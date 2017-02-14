@@ -54,7 +54,12 @@ public class ConfigSysPointsConfTplDao extends BaseDaoImpl<ConfigSysPointsConfTp
 				    config.setRecruit_order(r.getValue(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.RECRUIT_ORDER));
 				    config.setType_id(r.getValue(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.TYPE_ID));
 				    config.setStatus(r.getValue(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.STATUS));
-				    config.setReward(r.getValue(HrPointsConf.HR_POINTS_CONF.REWARD));
+				    if(r.getValue(HrPointsConf.HR_POINTS_CONF.REWARD)==null){
+				    	 config.setReward(0);
+				    }else{
+				    	 config.setReward(r.getValue(HrPointsConf.HR_POINTS_CONF.REWARD));
+				    }
+				   
 				    list.add(config);
 				}
 			}
