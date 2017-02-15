@@ -8,6 +8,11 @@ namespace java com.moseeker.thrift.gen.dao.struct
  */
 typedef string Timestamp;
 
+exception CURDException {
+    1: i32 code,
+    2: string message
+}
+
 /*
  * 候选人记录
  */
