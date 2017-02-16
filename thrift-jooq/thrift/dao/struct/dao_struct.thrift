@@ -65,9 +65,9 @@ struct ThirdPartyPositionData {
 	1: i32 id,
 	2: i32 position_id,
 	3: string third_part_position_id,
-	4: byte channel,
-	5: byte is_synchronization,
-	6: byte is_refresh,
+	4: i8 channel,
+	5: i8 is_synchronization,
+	6: i8 is_refresh,
 	7: string sync_time,
 	8: string refresh_time,
 	9: string update_time,
@@ -75,6 +75,7 @@ struct ThirdPartyPositionData {
 	11: string address,
 	12: string sync_fail_reason
 }
+
 struct HRCompanyConfData{
     1:i32 company_id,
     2:i32 theme_id,
@@ -83,6 +84,16 @@ struct HRCompanyConfData{
     5:string job_custom_title,
     6:string job_occupation
 }
+
+struct Talentpool {
+	1:i32 id,
+	2:i32 hr_account_id,
+	3:i32 applier_id,
+	4:string create_time,
+	5:string update_time,
+	6:i32 status
+}
+
 struct HistoryOperate{
 	1: optional i32 id,
 	2: optional i64 app_id,

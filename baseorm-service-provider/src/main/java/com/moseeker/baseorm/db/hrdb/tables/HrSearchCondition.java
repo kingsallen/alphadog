@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
 
-    private static final long serialVersionUID = 1622047971;
+    private static final long serialVersionUID = 919261684;
 
     /**
      * The reference instance of <code>hrdb.hr_search_condition</code>
@@ -87,9 +87,9 @@ public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
     public final TableField<HrSearchConditionRecord, String> WORK_YEARS = createField("work_years", org.jooq.impl.SQLDataType.VARCHAR.length(255), this, "工作年限、工龄");
 
     /**
-     * The column <code>hrdb.hr_search_condition.city_code</code>. 现居住地
+     * The column <code>hrdb.hr_search_condition.city_name</code>. 现居住地
      */
-    public final TableField<HrSearchConditionRecord, String> CITY_CODE = createField("city_code", org.jooq.impl.SQLDataType.VARCHAR.length(255), this, "现居住地");
+    public final TableField<HrSearchConditionRecord, String> CITY_NAME = createField("city_name", org.jooq.impl.SQLDataType.VARCHAR.length(255), this, "现居住地");
 
     /**
      * The column <code>hrdb.hr_search_condition.degree</code>. 学历
@@ -117,9 +117,10 @@ public class HrSearchCondition extends TableImpl<HrSearchConditionRecord> {
     public final TableField<HrSearchConditionRecord, Integer> MAX_AGE = createField("max_age", org.jooq.impl.SQLDataType.INTEGER, this, "最大年龄");
 
     /**
-     * The column <code>hrdb.hr_search_condition.intention_city_code</code>. 期望工作地(城市编码)
+     * The column <code>hrdb.hr_search_condition.intention_city_name</code>. 期望工作地
      */
-    public final TableField<HrSearchConditionRecord, Integer> INTENTION_CITY_CODE = createField("intention_city_code", org.jooq.impl.SQLDataType.INTEGER, this, "期望工作地(城市编码)");
+    public final TableField<HrSearchConditionRecord, String> INTENTION_CITY_NAME = createField("intention_city_name", org.jooq.impl.SQLDataType.VARCHAR.length(255), this, "期望工作地");
+
 
     /**
      * The column <code>hrdb.hr_search_condition.sex</code>. 性别

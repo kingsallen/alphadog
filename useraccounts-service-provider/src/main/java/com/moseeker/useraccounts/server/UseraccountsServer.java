@@ -63,6 +63,7 @@ public class UseraccountsServer {
         AnnotationConfigApplicationContext acac = new AnnotationConfigApplicationContext();
         acac.scan("com.moseeker.useraccounts");
         acac.scan("com.moseeker.common.aop.iface");
+        acac.scan("com.moseeker.common.aop.notify");
         acac.refresh();
         return acac;
     }

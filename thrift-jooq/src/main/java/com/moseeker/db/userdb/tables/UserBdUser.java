@@ -3,6 +3,11 @@
  */
 package com.moseeker.db.userdb.tables;
 
+
+import com.moseeker.db.userdb.Keys;
+import com.moseeker.db.userdb.Userdb;
+import com.moseeker.db.userdb.tables.records.UserBdUserRecord;
+
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
@@ -18,10 +23,6 @@ import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
 import org.jooq.types.ULong;
 
-import com.moseeker.db.userdb.Keys;
-import com.moseeker.db.userdb.Userdb;
-import com.moseeker.db.userdb.tables.records.UserBdUserRecord;
-
 
 /**
  * 百度用户信息表
@@ -36,7 +37,7 @@ import com.moseeker.db.userdb.tables.records.UserBdUserRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserBdUser extends TableImpl<UserBdUserRecord> {
 
-    private static final long serialVersionUID = 640166531;
+    private static final long serialVersionUID = 946890987;
 
     /**
      * The reference instance of <code>userdb.user_bd_user</code>

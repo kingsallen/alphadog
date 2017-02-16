@@ -54,6 +54,7 @@ public class AppBSServer {
 		AnnotationConfigApplicationContext acac = new AnnotationConfigApplicationContext();
 		acac.scan("com.moseeker.apps");
 		acac.scan("com.moseeker.common.aop.iface"); //开启接口统计
+		acac.scan("com.moseeker.common.aop.notify");
 		acac.refresh();
 		return acac;
 	}
