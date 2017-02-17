@@ -125,3 +125,22 @@ struct HrEmployeeCustomFieldsPojo {
     8: i32 status
 }
 
+struct HrPointsConfDo {
+    1:  optional i32 id,
+    2:  optional i32 company_id,
+    3:  optional string status_name,
+    4:  optional i32 reward,
+    5:  optional string description
+    6:  optional i32 is_using,
+    7:  optional i32 order_num
+    8:  optional string _update_time,
+    9:  optional string tag,
+    10: optional i32 is_applier_send,
+    11: optional string applier_first,
+    12: optional string applier_remark,
+    13: optional i32 is_recom_send,
+    14: optional string recom_first,
+    15: optional string recom_remark,
+    16: optional i32 template_id
+}
+

@@ -2,6 +2,7 @@ package com.moseeker.baseorm.Thriftservice;
 
 import java.util.List;
 
+import com.moseeker.thrift.gen.dao.struct.UserEmployeePointsRecordDo;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,5 +104,10 @@ public class UserDBDaoThriftService implements Iface {
 	@Override
 	public Response putUserEmployeePoints(List<UserEmployeePointStruct> records) throws TException {
 		return userEmployeeService.putUserEmployeePointsRecords(records);
+	}
+
+	@Override
+	public List<UserEmployeePointsRecordDo> getUserEmployeePoints(int employeeId) throws TException {
+		return userEmployeeService.getUserEmployeePoints(employeeId);
 	}
 }

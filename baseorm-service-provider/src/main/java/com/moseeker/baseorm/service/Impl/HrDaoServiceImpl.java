@@ -7,6 +7,7 @@ import com.moseeker.baseorm.dao.hrdb.HrHbItemsDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbPositionBindingDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbScratchCardDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbSendRecordDao;
+import com.moseeker.baseorm.dao.hrdb.HrPointsConfDao;
 import com.moseeker.baseorm.service.HrDaoService;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -17,6 +18,7 @@ import com.moseeker.thrift.gen.dao.struct.HrHbItemsPojo;
 import com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo;
 import com.moseeker.thrift.gen.dao.struct.HrHbScratchCardPojo;
 import com.moseeker.thrift.gen.dao.struct.HrHbSendRecordPojo;
+import com.moseeker.thrift.gen.dao.struct.HrPointsConfDo;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +54,9 @@ public class HrDaoServiceImpl implements HrDaoService {
 
     @Autowired
     private HrEmployeeCustomFieldsDao hrEmployeeCustomFieldsDao;
+
+    @Autowired
+    private HrPointsConfDao hrPointsConfDao;
 
     @Override
     public HrHbConfigPojo getHbConfig(CommonQuery query) throws TException {
@@ -178,6 +183,21 @@ public class HrDaoServiceImpl implements HrDaoService {
         try {
             List<com.moseeker.baseorm.db.hrdb.tables.records.HrEmployeeCustomFieldsRecord> records = hrEmployeeCustomFieldsDao.getResources(query);
             result = BeanUtils.DBToStruct(HrEmployeeCustomFieldsPojo.class, records);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+        }
+        return result;
+    }
+
+    @Override
+    public List<HrPointsConfDo> getPointsConfs(CommonQuery query) throws TException {
+        List<HrPointsConfDo> result = new ArrayList<>();
+        try {
+            List<com.moseeker.baseorm.db.hrdb.tables.records.HrPointsConfRecord> records =
+                    hrPointsConfDao.getResources(query);
+            result = BeanUtils.DBToStruct(HrPointsConfDo.class, records);
         }
         catch (Exception e) {
             e.printStackTrace();

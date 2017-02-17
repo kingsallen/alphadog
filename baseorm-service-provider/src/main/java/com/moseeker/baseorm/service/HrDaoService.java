@@ -8,6 +8,7 @@ import com.moseeker.thrift.gen.dao.struct.HrHbItemsPojo;
 import com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo;
 import com.moseeker.thrift.gen.dao.struct.HrHbScratchCardPojo;
 import com.moseeker.thrift.gen.dao.struct.HrHbSendRecordPojo;
+import com.moseeker.thrift.gen.dao.struct.HrPointsConfDo;
 import org.apache.thrift.TException;
 
 import java.util.List;
@@ -33,4 +34,6 @@ public interface HrDaoService {
     HrEmployeeCertConfPojo getEmployeeCertConf(CommonQuery query) throws TException;
 
     List<HrEmployeeCustomFieldsPojo> getEmployeeCustomFields(CommonQuery query) throws TException;
+
+    List<HrPointsConfDo> getPointsConfs(CommonQuery query) throws TException;
 }

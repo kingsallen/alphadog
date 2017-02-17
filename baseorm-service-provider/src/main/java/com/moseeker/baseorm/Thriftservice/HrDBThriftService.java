@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.moseeker.thrift.gen.dao.struct.HrEmployeeCertConfPojo;
 import com.moseeker.thrift.gen.dao.struct.HrEmployeeCustomFieldsPojo;
+import com.moseeker.thrift.gen.dao.struct.HrPointsConfDo;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,6 +43,11 @@ public class HrDBThriftService implements Iface {
 	@Override
 	public List<HrEmployeeCustomFieldsPojo> getEmployeeCustomFields(CommonQuery query) throws TException {
 		return hrDaoService.getEmployeeCustomFields(query);
+	}
+
+	@Override
+	public List<HrPointsConfDo> getPointsConfs(CommonQuery query) throws TException {
+		return hrDaoService.getPointsConfs(query);
 	}
 
 	@Override

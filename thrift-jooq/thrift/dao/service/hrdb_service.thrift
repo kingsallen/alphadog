@@ -24,4 +24,5 @@ service HrDBDao {
     hrdb_struct.HrEmployeeCertConfPojo getEmployeeCertConf(1: common_struct.CommonQuery query);
 
     list<hrdb_struct.HrEmployeeCustomFieldsPojo> getEmployeeCustomFields(1: common_struct.CommonQuery query);
+    list<hrdb_struct.HrPointsConfDo> getPointsConfs(1: common_struct.CommonQuery query);
 }

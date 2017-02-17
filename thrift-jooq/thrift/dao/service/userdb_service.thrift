@@ -18,4 +18,5 @@ service UserDBDao {
     common_struct.Response getPointSum(1:list<i64> record);
     common_struct.Response putUserEmployees(1:list<useraccounts_struct.UserEmployeeStruct> records);
     common_struct.Response putUserEmployeePoints(1:list<useraccounts_struct.UserEmployeePointStruct> records);
+    list<userdb_struct.UserEmployeePointsRecordDo> getUserEmployeePoints(1: i32 employeeId);
 }
