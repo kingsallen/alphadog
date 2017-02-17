@@ -1,4 +1,5 @@
 namespace java com.moseeker.thrift.gen.dao.service
+namespace py thrift_gen.gen.dao.service.configdb
 
 include "../../common/struct/common_struct.thrift"
 include "../struct/configdb_struct.thrift"

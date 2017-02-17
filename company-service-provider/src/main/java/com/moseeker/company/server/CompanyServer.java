@@ -6,6 +6,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import com.moseeker.company.thrift.CompanyServicesImpl;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
+import com.moseeker.rpccenter.main.MoServer;
 import com.moseeker.rpccenter.main.Server;
 
 /**
@@ -30,12 +31,15 @@ public class CompanyServer {
 
 		try {
 			AnnotationConfigApplicationContext acac = initSpring();
-			Server server = new Server(CompanyServer.class,
-					ServerNodeUtils.getPort(args),
+//			Server server = new Server(CompanyServer.class,
+//					ServerNodeUtils.getPort(args),
+//					acac.getBean(CompanyServicesImpl.class));
+//			
+//			server.start(); // 启动服务，非阻塞
+			MoServer server = new MoServer(
+					acac,"",
 					acac.getBean(CompanyServicesImpl.class));
-			
-			server.start(); // 启动服务，非阻塞
-
+			server.startServer();
 			synchronized (CompanyServer.class) {
 				while (true) {
 					try {

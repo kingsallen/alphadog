@@ -5,6 +5,7 @@ dependencies {
 
     // compile project(":thrift-gen-java")
     compile project(":rpc-center")
+    compile project(":common")
 
     //testCompile deps["junit"]
     compile deps["spring-core"]

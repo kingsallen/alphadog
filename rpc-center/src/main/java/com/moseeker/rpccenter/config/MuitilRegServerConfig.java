@@ -300,7 +300,7 @@ public class MuitilRegServerConfig implements IConfigCheck {
      * 添加关闭钩子
      * <p>
      *
-     * @param registries2
+     * @param registries
      * @param server
      */
     protected void addShutdownHook(final List<IRegistry> registries, final IServer server) {
@@ -491,7 +491,7 @@ public class MuitilRegServerConfig implements IConfigCheck {
     /**
      * getter method
      *
-     * @see MuitilRegServerConfig#service
+     * @see MuitilRegServerConfig#services
      * @return the service
      */
     public List<String> getServices() {
@@ -501,8 +501,8 @@ public class MuitilRegServerConfig implements IConfigCheck {
     /**
      * setter method
      *
-     * @see MuitilRegServerConfig#service
-     * @param service
+     * @see MuitilRegServerConfig#services
+     * @param services
      *            the service to set
      */
     public void setServices(List<String> services) {

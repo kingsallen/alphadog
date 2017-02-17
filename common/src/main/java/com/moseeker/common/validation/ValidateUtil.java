@@ -1,9 +1,6 @@
 package com.moseeker.common.validation;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +34,10 @@ public class ValidateUtil {
 
 	private Map<String, List<ValidateRule>> rules = new HashMap<>();
 
+	private Optional<Boolean> verified = Optional.empty();
+
+	private StringBuffer sb = new StringBuffer();
+
 	/**
 	 * 往验证器中添加一个requiredValidateRule(必要验证器)
 	 * 
@@ -69,9 +70,9 @@ public class ValidateUtil {
 	 * 
 	 * @param paramName
 	 * @param beanToBeValidated
-	 * @param errorMessage
-	 * @param message
-	 * @return DasValidateRule
+	 * @param paramName
+	 * @param beanToBeValidated
+	 * @return CommonException
 	 */
 	public ValidateRule addRequiredValidate(String paramName,
 			Object beanToBeValidated)
@@ -469,7 +470,7 @@ public class ValidateUtil {
 	 */
 	public String validate() {
 
-		StringBuffer sb = new StringBuffer("");
+		boolean flag = true;
 
 		if (rules == null || rules.size() == 0) {
 			ValidateNotAppointValidateException e = new ValidateNotAppointValidateException();
@@ -481,16 +482,36 @@ public class ValidateUtil {
 			if (entry.getValue() != null && entry.getValue().size() > 0) {
 				for (ValidateRule rule : entry.getValue()) {
 					rule.validate();
+					if(flag) {
+						flag = rule.isLegal();
+					}
 					if (!StringUtils.isNullOrEmpty(rule.getMessage())) {
 						sb.append(rule.getMessage() + ";");
 					}
 				}
 			}
 		}
+		this.verified = Optional.of(flag);
 		if (sb.length() > 0) {
 			sb.deleteCharAt(sb.length() - 1);
 		}
 
+		return sb.toString();
+	}
+
+	/**
+	 * 获取认证结果
+	 * @return 认证结果
+	 */
+	public Optional<Boolean> getVerified() {
+		return this.verified;
+	}
+
+	/**
+	 * 获取校验信息
+	 * @return 校验信息
+	 */
+	public String getResult() {
 		return sb.toString();
 	}
 }

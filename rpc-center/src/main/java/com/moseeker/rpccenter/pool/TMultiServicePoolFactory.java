@@ -35,18 +35,29 @@ public class TMultiServicePoolFactory<T> extends BaseKeyedPoolableObjectFactory<
     /** 超时时间 */
     private final int timeout;
     
-    private final int initialBufferCapacity = 1024;
+    private final int initialBufferCapacity;
 
-    private final int  maxLength = 1024*1024*1024;
+    private final int  maxLength ;
 
     /**
      * 
      * @param clientFactory
      * @param timeout
      */
-    public TMultiServicePoolFactory(TServiceClientFactory<TServiceClient> clientFactory, int timeout) {
+    public TMultiServicePoolFactory(TServiceClientFactory<TServiceClient> clientFactory, int timeout,
+                                    int initialBufferCapacity, int maxLength) {
         this.clientFactory = clientFactory;
         this.timeout = timeout;
+        if(initialBufferCapacity > 0) {
+            this.initialBufferCapacity = initialBufferCapacity;
+        } else {
+            this.initialBufferCapacity = 1024;
+        }
+        if(maxLength > 0) {
+            this.maxLength = maxLength;
+        } else {
+            this.maxLength = 1024*1024*1024;
+        }
     }
 
     /**
@@ -57,19 +68,19 @@ public class TMultiServicePoolFactory<T> extends BaseKeyedPoolableObjectFactory<
     public T makeObject(ZKPath path) throws Exception {
         // 生成client对象
         if (path != null && path.getData() != null) {
-        		TTransport transport = new TFastFramedTransport(new TSocket(path.getData().getIP(), path.getData().getPort(), timeout), initialBufferCapacity, maxLength);
+        		TTransport transport = new TFastFramedTransport(new TSocket(path.getData().getIp(), path.getData().getPort(), timeout), initialBufferCapacity, maxLength);
         		//TTransport transport = new TFastFramedTransport(new TSocket(path.getData().getIP(), path.getData().getPort(), timeout));  
         		TProtocol protocol = new TCompactProtocol(transport);
-            if(path.getData().getMulti() == 1) {
-            		TMultiplexedProtocol mulProtocol= new TMultiplexedProtocol(protocol, path.getData().getPath());
+            //if(path.getData().getMulti() == 1) {
+            		TMultiplexedProtocol mulProtocol= new TMultiplexedProtocol(protocol, path.getData().getService());
                 transport.open();
                 TServiceClient client = clientFactory.getClient(mulProtocol);
                 return (T) client;
-            } else {
+            /*} else {
             		transport.open();
                 TServiceClient client = clientFactory.getClient(protocol);
                 return (T) client;
-            }
+            }*/
         }
         LOGGER.error("Not find a vilid server!");
         if(path != null) {

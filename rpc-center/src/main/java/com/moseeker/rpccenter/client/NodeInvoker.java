@@ -120,7 +120,7 @@ public class NodeInvoker<T> implements Invoker {
                         } catch (Exception e) {
                             LOGGER.error(e.getMessage(), e);
                         }
-                        client = null; // 这里是为了防止后续return回pool中
+                        //client = null; // 这里是为了防止后续return回pool中
                     } else {
                         exception = cause;
                     }

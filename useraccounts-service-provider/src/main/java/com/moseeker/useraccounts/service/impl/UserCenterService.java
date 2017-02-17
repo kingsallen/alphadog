@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.moseeker.thrift.gen.dao.struct.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.UserFavPositionDO;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +15,6 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.AwardConfigTpl;
-import com.moseeker.thrift.gen.dao.struct.UserFavPositionPojo;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm;
 import com.moseeker.thrift.gen.useraccounts.struct.AwardRecordForm;
@@ -48,7 +49,7 @@ public class UserCenterService {
 			List<JobApplication> apps = bizTools.getAppsForUser(userId);
 			if(apps != null && apps.size() > 0) {
 				//查询申请记录对应的职位数据
-				List<Position> positions = bizTools.getPositions(apps.stream().mapToInt(app -> (int)app.getPosition_id()).toArray());
+				List<JobPositionDO> positions = bizTools.getPositions(apps.stream().mapToInt(app -> (int)app.getPosition_id()).toArray());
 				List<Hrcompany> companies = bizTools.getCompanies(apps.stream().mapToInt(app -> (int)app.getCompany_id()).toArray());
 				List<AwardConfigTpl> tpls = bizTools.getAwardConfigTpls();
 				
@@ -58,7 +59,7 @@ public class UserCenterService {
 					ar.setStatus((byte)app.getApp_tpl_id());
 					ar.setTime(app.get_create_time());
 					if(positions != null) {
-						Optional<Position> op = positions.stream().filter(position -> position.getId() == app.getPosition_id()).findFirst();
+						Optional<JobPositionDO> op = positions.stream().filter(position -> position.getId() == app.getPosition_id()).findFirst();
 						if(op.isPresent()) {
 							ar.setTitle(op.get().getTitle());
 						}
@@ -90,8 +91,7 @@ public class UserCenterService {
 	/**
 	 * 查询职位收藏
 	 * @param userId 用户编号
-	 * @param favorite 收藏类型
-	 * @return
+	 * @return 感兴趣职位集合
 	 * @throws TException
 	 */
 	public List<FavPositionForm> getFavPositions(int userId) throws TException {
@@ -99,16 +99,16 @@ public class UserCenterService {
 		//参数校验
 		if(userId > 0) {
 			//查询用户的收藏职位列表
-			List<UserFavPositionPojo> favPositionRecords = bizTools.getFavPositions(userId, 0);
+			List<UserFavPositionDO> favPositionRecords = bizTools.getFavPositions(userId, 0);
 			if(favPositionRecords != null && favPositionRecords.size() > 0) {
 				//差用用户收藏职位的职位详情
-				List<Position> positions = bizTools.getPositions(favPositionRecords.stream().mapToInt(favP -> favP.getPositionId()).toArray());
+				List<JobPositionDO> positions = bizTools.getPositions(favPositionRecords.stream().mapToInt(favP -> favP.getPositionId()).toArray());
 				//拼装职位收藏记录
 				if(positions != null && positions.size() > 0) {
 					favPositions = favPositionRecords.stream()
 							.filter(favP -> {			//过滤不存在职位的职位收藏记录
 								boolean flag = false;
-								for(Position p : positions) {
+								for(JobPositionDO p : positions) {
 									if(p.getId() == favP.getPositionId()) {
 										flag = true;
 									}
@@ -117,16 +117,16 @@ public class UserCenterService {
 							})
 							.map(record -> {
 						FavPositionForm form = new FavPositionForm();
-						Optional<Position> op = positions.stream().filter(p -> p.getId() == record.getPositionId()).findFirst();
+						Optional<JobPositionDO> op = positions.stream().filter(p -> p.getId() == record.getPositionId()).findFirst();
 						if(op.isPresent()) {
 							form.setId(op.get().getId());
 							form.setTitle(op.get().getTitle());
 							form.setDepartment(op.get().getDepartment());
 							form.setTime(record.getUpdate_time());
 							form.setCity(op.get().getCity());
-							form.setSalary_top(op.get().getSalary_top());
-							form.setSalary_bottom(op.get().getSalary_bottom());
-							form.setUpdate_time(op.get().getUpdate_time());
+							form.setSalary_top(op.get().getSalaryTop());
+							form.setSalary_bottom(op.get().getSalaryBottom());
+							form.setUpdate_time(op.get().getUpdateTime());
 						}
 						return form;
 					}).collect(Collectors.toList());

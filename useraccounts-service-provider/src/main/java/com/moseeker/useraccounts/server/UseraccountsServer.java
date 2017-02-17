@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.moseeker.rpccenter.common.ServerNodeUtils;
+import com.moseeker.rpccenter.main.MoServer;
 import com.moseeker.rpccenter.main.MultiRegServer;
 import com.moseeker.useraccounts.thrift.UserCenterThriftService;
 import com.moseeker.useraccounts.thrift.UserCommonThriftService;
@@ -34,15 +35,22 @@ public class UseraccountsServer {
 
         try {
             AnnotationConfigApplicationContext acac = initSpring();
-            MultiRegServer server = new MultiRegServer(UseraccountsServer.class,
-                    ServerNodeUtils.getPort(args),
-                    acac.getBean(UserHrAccountServiceImpl.class),
+//            MultiRegServer server = new MultiRegServer(UseraccountsServer.class,
+//                    ServerNodeUtils.getPort(args),
+//                    acac.getBean(UserHrAccountServiceImpl.class),
+//                    acac.getBean(UsersettingsServicesImpl.class),
+//                    acac.getBean(UserCommonThriftService.class),
+//                    acac.getBean(UserCenterThriftService.class),
+//                    acac.getBean(UseraccountsServiceImpl.class));
+//            server.start(); // 阻塞式IO + 多线程处理
+            MoServer server = new MoServer(acac,"",
+            		acac.getBean(UserHrAccountServiceImpl.class),
                     acac.getBean(UsersettingsServicesImpl.class),
                     acac.getBean(UserCommonThriftService.class),
                     acac.getBean(UserCenterThriftService.class),
                     acac.getBean(UseraccountsServiceImpl.class));
+            server.startServer();
             
-            server.start(); // 阻塞式IO + 多线程处理
 
             synchronized (UseraccountsServer.class) {
                 while (true) {

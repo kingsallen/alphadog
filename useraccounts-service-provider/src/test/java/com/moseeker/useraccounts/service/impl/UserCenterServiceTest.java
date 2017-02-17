@@ -1,11 +1,14 @@
 package com.moseeker.useraccounts.service.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
-import java.util.Arrays;
-import java.util.List;
-
+import com.moseeker.thrift.gen.application.struct.JobApplication;
+import com.moseeker.thrift.gen.company.struct.Hrcompany;
+import com.moseeker.thrift.gen.dao.struct.AwardConfigTpl;
+import com.moseeker.thrift.gen.dao.struct.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.UserFavPositionDO;
+import com.moseeker.thrift.gen.position.struct.Position;
+import com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm;
+import com.moseeker.thrift.gen.useraccounts.struct.FavPositionForm;
+import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
 import org.apache.thrift.TException;
 import org.junit.Before;
 import org.junit.Rule;
@@ -16,14 +19,11 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import com.moseeker.thrift.gen.application.struct.JobApplication;
-import com.moseeker.thrift.gen.company.struct.Hrcompany;
-import com.moseeker.thrift.gen.dao.struct.AwardConfigTpl;
-import com.moseeker.thrift.gen.dao.struct.UserFavPositionPojo;
-import com.moseeker.thrift.gen.position.struct.Position;
-import com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm;
-import com.moseeker.thrift.gen.useraccounts.struct.FavPositionForm;
-import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class UserCenterServiceTest {
 	
@@ -60,23 +60,23 @@ public class UserCenterServiceTest {
 			e.printStackTrace();
 			fail("Exception");
 		}
-		
-		Position p1 = new Position();
+
+		JobPositionDO p1 = new JobPositionDO();
 		p1.setId(1);
 		p1.setTitle("title1");
 		p1.setDepartment("department1");
 		p1.setCity("上海");
-		p1.setSalary_bottom(4);
-		p1.setSalary_top(6);
-		
-		Position p2 = new Position();
+		p1.setSalaryBottom(4);
+		p1.setSalaryTop(6);
+
+		JobPositionDO p2 = new JobPositionDO();
 		p2.setId(2);
 		p2.setTitle("title2");
 		p2.setDepartment("department2");
-		p2.setSalary_bottom(5);
-		p2.setSalary_top(10);
-		p2.setUpdate_time("2017-02-02 22:22:22");
-		List<Position> positions = Arrays.asList(p1,p2);
+		p2.setSalaryBottom(5);
+		p2.setSalaryTop(10);
+		p2.setUpdateTime("2017-02-02 22:22:22");
+		List<JobPositionDO> positions = Arrays.asList(p1,p2);
 		try {
 			Mockito.when(bizTools.getPositions(1,2)).thenReturn(positions);
 		} catch (TException e) {
@@ -113,16 +113,16 @@ public class UserCenterServiceTest {
 			fail("Exception");
 		}
 		
-		UserFavPositionPojo favP1 = new UserFavPositionPojo();
+		UserFavPositionDO favP1 = new UserFavPositionDO();
 		favP1.setSysuserId(1);
 		favP1.setPositionId(1);
 		
-		UserFavPositionPojo favP2 = new UserFavPositionPojo();
+		UserFavPositionDO favP2 = new UserFavPositionDO();
 		favP2.setSysuserId(1);
 		favP2.setPositionId(2);
-		List<UserFavPositionPojo> favPs = Arrays.asList(favP1, favP2);
+		List<UserFavPositionDO> favPs = Arrays.asList(favP1, favP2);
 		try {
-			Mockito.when(bizTools.getFavPositions(1,1)).thenReturn(favPs);
+			Mockito.when(bizTools.getFavPositions(1,0)).thenReturn(favPs);
 		} catch (TException e) {
 			e.printStackTrace();
 			fail("Exception");
@@ -162,30 +162,30 @@ public class UserCenterServiceTest {
 		}
 	}
 	
-//	@Test
-//	public void testGetFavPositions() {
-//		try {
-//			List<FavPositionForm> forms = userCenterService.getFavPositions(1);
-//			assertEquals(2, forms.size());
-//
-//			assertEquals(1, forms.get(0).getId());
-//			assertEquals("title1", forms.get(0).getTitle());
-//			assertEquals("department1", forms.get(0).getDepartment());
-//			assertEquals("上海", forms.get(0).getCity());
-//			assertEquals(4, forms.get(0).getSalary_bottom());
-//			assertEquals(6, forms.get(0).getSalary_top());
-//			assertEquals(null, forms.get(0).getUpdate_time());
-//
-//			assertEquals(2, forms.get(1).getId());
-//			assertEquals("title2", forms.get(1).getTitle());
-//			assertEquals("department2", forms.get(1).getDepartment());
-//			assertEquals(null, forms.get(1).getCity());
-//			assertEquals(5, forms.get(1).getSalary_bottom());
-//			assertEquals(10, forms.get(1).getSalary_top());
-//			assertEquals("2017-02-02 22:22:22", forms.get(1).getUpdate_time());
-//		} catch (TException e) {
-//			e.printStackTrace();
-//			fail("Exception");
-//		}
-//	}
+	@Test
+	public void testGetFavPositions() {
+		try {
+			List<FavPositionForm> forms = userCenterService.getFavPositions(1);
+			assertEquals(2, forms.size());
+
+			assertEquals(1, forms.get(0).getId());
+			assertEquals("title1", forms.get(0).getTitle());
+			assertEquals("department1", forms.get(0).getDepartment());
+			assertEquals("上海", forms.get(0).getCity());
+			assertEquals(4, forms.get(0).getSalary_bottom());
+			assertEquals(6, forms.get(0).getSalary_top());
+			assertEquals(null, forms.get(0).getUpdate_time());
+
+			assertEquals(2, forms.get(1).getId());
+			assertEquals("title2", forms.get(1).getTitle());
+			assertEquals("department2", forms.get(1).getDepartment());
+			assertEquals(null, forms.get(1).getCity());
+			assertEquals(5, forms.get(1).getSalary_bottom());
+			assertEquals(10, forms.get(1).getSalary_top());
+			assertEquals("2017-02-02 22:22:22", forms.get(1).getUpdate_time());
+		} catch (TException e) {
+			e.printStackTrace();
+			fail("Exception");
+		}
+	}
 }

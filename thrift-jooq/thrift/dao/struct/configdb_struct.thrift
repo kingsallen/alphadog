@@ -1,6 +1,5 @@
-# file:configdb_struct.thrift 
-
 namespace java com.moseeker.thrift.gen.dao.struct
+namespace py thrift_gen.gen.dao.struct.configdb
 
 /**
  * TODO:list what notation this dateTime represents. eg ISO-8601

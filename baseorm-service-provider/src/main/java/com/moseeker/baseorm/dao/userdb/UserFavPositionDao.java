@@ -1,16 +1,15 @@
 package com.moseeker.baseorm.dao.userdb;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import com.moseeker.baseorm.util.BaseDaoImpl;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.db.userdb.tables.UserFavPosition;
 import com.moseeker.db.userdb.tables.records.UserFavPositionRecord;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.dao.struct.UserFavPositionPojo;
+import com.moseeker.thrift.gen.dao.struct.UserFavPositionDO;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserFavPositionDao extends BaseDaoImpl<UserFavPositionRecord, UserFavPosition> {
@@ -25,13 +24,13 @@ public class UserFavPositionDao extends BaseDaoImpl<UserFavPositionRecord, UserF
 	 * @param query
 	 * @return
 	 */
-	public List<UserFavPositionPojo> getUserFavPositions(CommonQuery query) {
-		List<UserFavPositionPojo> favPositions = new ArrayList<>();
+	public List<UserFavPositionDO> getUserFavPositions(CommonQuery query) {
+		List<UserFavPositionDO> favPositions = new ArrayList<>();
 		
 		try {
 			List<UserFavPositionRecord> records = getResources(query);
 			if(records != null && records.size() > 0) {
-				favPositions = BeanUtils.DBToStruct(UserFavPositionPojo.class, records);
+				favPositions = BeanUtils.DBToStruct(UserFavPositionDO.class, records);
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

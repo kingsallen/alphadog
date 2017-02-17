@@ -161,7 +161,7 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
 //
 //                // 根据用户数据初始化用户配置表
 //                create.insertInto(UserSettings.USER_SETTINGS, UserSettings.USER_SETTINGS.USER_ID)
-//                        .values(userUserRecord.getId())
+//                        .pos(userUserRecord.getId())
 //                        .execute();
 //
 //            });

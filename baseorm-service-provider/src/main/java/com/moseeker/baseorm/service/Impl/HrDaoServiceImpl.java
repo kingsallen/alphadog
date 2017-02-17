@@ -11,14 +11,7 @@ import com.moseeker.baseorm.dao.hrdb.HrPointsConfDao;
 import com.moseeker.baseorm.service.HrDaoService;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.dao.struct.HrEmployeeCertConfPojo;
-import com.moseeker.thrift.gen.dao.struct.HrEmployeeCustomFieldsPojo;
-import com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo;
-import com.moseeker.thrift.gen.dao.struct.HrHbItemsPojo;
-import com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo;
-import com.moseeker.thrift.gen.dao.struct.HrHbScratchCardPojo;
-import com.moseeker.thrift.gen.dao.struct.HrHbSendRecordPojo;
-import com.moseeker.thrift.gen.dao.struct.HrPointsConfDo;
+import com.moseeker.thrift.gen.dao.struct.*;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,10 +52,10 @@ public class HrDaoServiceImpl implements HrDaoService {
     private HrPointsConfDao hrPointsConfDao;
 
     @Override
-    public HrHbConfigPojo getHbConfig(CommonQuery query) throws TException {
-    	HrHbConfigPojo result = new HrHbConfigPojo();
+    public HrHbConfigDO getHbConfig(CommonQuery query) throws TException {
+    	HrHbConfigDO result = new HrHbConfigDO();
         try {
-            result = BeanUtils.DBToStruct(HrHbConfigPojo.class, hrHbConfigDao.getResource(query));
+            result = BeanUtils.DBToStruct(HrHbConfigDO.class, hrHbConfigDao.getResource(query));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -72,10 +65,10 @@ public class HrDaoServiceImpl implements HrDaoService {
     }
     
     @Override
-	public List<HrHbConfigPojo> getHbConfigs(CommonQuery query) throws TException {
-    	List<HrHbConfigPojo> result = new ArrayList<HrHbConfigPojo>();
+	public List<HrHbConfigDO> getHbConfigs(CommonQuery query) throws TException {
+    	List<HrHbConfigDO> result = new ArrayList<HrHbConfigDO>();
         try {
-            result = BeanUtils.DBToStruct(HrHbConfigPojo.class, hrHbConfigDao.getResources(query));
+            result = BeanUtils.DBToStruct(HrHbConfigDO.class, hrHbConfigDao.getResources(query));
 
         }
         catch (Exception e) {
@@ -86,10 +79,10 @@ public class HrDaoServiceImpl implements HrDaoService {
 	}
 
     @Override
-    public HrHbPositionBindingPojo getHbPositionBinding(CommonQuery query) throws TException {
-    	HrHbPositionBindingPojo result = new HrHbPositionBindingPojo();
+    public HrHbPositionBindingDO getHbPositionBinding(CommonQuery query) throws TException {
+    	HrHbPositionBindingDO result = new HrHbPositionBindingDO();
         try {
-        	result = BeanUtils.DBToStruct(HrHbPositionBindingPojo.class, hrHbPositionBindingDao.getResource(query));
+        	result = BeanUtils.DBToStruct(HrHbPositionBindingDO.class, hrHbPositionBindingDao.getResource(query));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -99,10 +92,10 @@ public class HrDaoServiceImpl implements HrDaoService {
     }
 
     @Override
-    public List<HrHbPositionBindingPojo> getHbPositionBindings(CommonQuery query) throws TException {
-        List<HrHbPositionBindingPojo> result = new ArrayList<HrHbPositionBindingPojo>();
+    public List<HrHbPositionBindingDO> getHbPositionBindings(CommonQuery query) throws TException {
+        List<HrHbPositionBindingDO> result = new ArrayList<HrHbPositionBindingDO>();
         try {
-            result = BeanUtils.DBToStruct(HrHbPositionBindingPojo.class, hrHbPositionBindingDao.getResources(query));
+            result = BeanUtils.DBToStruct(HrHbPositionBindingDO.class, hrHbPositionBindingDao.getResources(query));
 
         }
         catch (Exception e) {
@@ -113,10 +106,10 @@ public class HrDaoServiceImpl implements HrDaoService {
     }
 
     @Override
-    public HrHbItemsPojo getHbItem(CommonQuery query) throws TException {
-    	HrHbItemsPojo result = new HrHbItemsPojo();
+    public HrHbItemsDO getHbItem(CommonQuery query) throws TException {
+    	HrHbItemsDO result = new HrHbItemsDO();
         try {
-            result = BeanUtils.DBToStruct(HrHbItemsPojo.class, hrHbItemsDao.getResource(query));
+            result = BeanUtils.DBToStruct(HrHbItemsDO.class, hrHbItemsDao.getResource(query));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -126,11 +119,11 @@ public class HrDaoServiceImpl implements HrDaoService {
     }
 
     @Override
-    public List<HrHbItemsPojo> getHbItems(CommonQuery query) throws TException {
-        List<HrHbItemsPojo> result = new ArrayList<HrHbItemsPojo>();
+    public List<HrHbItemsDO> getHbItems(CommonQuery query) throws TException {
+        List<HrHbItemsDO> result = new ArrayList<HrHbItemsDO>();
         try {
             List<com.moseeker.baseorm.db.hrdb.tables.records.HrHbItemsRecord> records = hrHbItemsDao.getResources(query);
-            result = BeanUtils.DBToStruct(HrHbItemsPojo.class, records);
+            result = BeanUtils.DBToStruct(HrHbItemsDO.class, records);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -140,10 +133,10 @@ public class HrDaoServiceImpl implements HrDaoService {
     }
 
     @Override
-    public HrHbScratchCardPojo getHbScratchCard(CommonQuery query) throws TException {
-        HrHbScratchCardPojo result = new HrHbScratchCardPojo();
+    public HrHbScratchCardDO getHbScratchCard(CommonQuery query) throws TException {
+        HrHbScratchCardDO result = new HrHbScratchCardDO();
         try {
-            result = BeanUtils.DBToStruct(HrHbScratchCardPojo.class, hrHbScratchCardDao.getResource(query));
+            result = BeanUtils.DBToStruct(HrHbScratchCardDO.class, hrHbScratchCardDao.getResource(query));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -153,10 +146,10 @@ public class HrDaoServiceImpl implements HrDaoService {
     }
 
     @Override
-    public HrHbSendRecordPojo getHbSendRecord(CommonQuery query) throws TException {
-        HrHbSendRecordPojo result = new HrHbSendRecordPojo();
+    public HrHbSendRecordDO getHbSendRecord(CommonQuery query) throws TException {
+        HrHbSendRecordDO result = new HrHbSendRecordDO();
         try {
-            result = BeanUtils.DBToStruct(HrHbSendRecordPojo.class, hrHbSendRecordDao.getResource(query));
+            result = BeanUtils.DBToStruct(HrHbSendRecordDO.class, hrHbSendRecordDao.getResource(query));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -166,10 +159,10 @@ public class HrDaoServiceImpl implements HrDaoService {
     }
 
     @Override
-    public HrEmployeeCertConfPojo getEmployeeCertConf(CommonQuery query) throws TException {
-        HrEmployeeCertConfPojo result = new HrEmployeeCertConfPojo();
+    public HrEmployeeCertConfDO getEmployeeCertConf(CommonQuery query) throws TException {
+        HrEmployeeCertConfDO result = new HrEmployeeCertConfDO();
         try {
-            result = BeanUtils.DBToStruct(HrEmployeeCertConfPojo.class, hrEmployeeCertConfDao.getResource(query));
+            result = BeanUtils.DBToStruct(HrEmployeeCertConfDO.class, hrEmployeeCertConfDao.getResource(query));
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
@@ -178,11 +171,11 @@ public class HrDaoServiceImpl implements HrDaoService {
     }
 
     @Override
-    public List<HrEmployeeCustomFieldsPojo> getEmployeeCustomFields(CommonQuery query) throws TException {
-        List<HrEmployeeCustomFieldsPojo> result = new ArrayList<HrEmployeeCustomFieldsPojo>();
+    public List<HrEmployeeCustomFieldsDO> getEmployeeCustomFields(CommonQuery query) throws TException {
+        List<HrEmployeeCustomFieldsDO> result = new ArrayList<HrEmployeeCustomFieldsDO>();
         try {
             List<com.moseeker.baseorm.db.hrdb.tables.records.HrEmployeeCustomFieldsRecord> records = hrEmployeeCustomFieldsDao.getResources(query);
-            result = BeanUtils.DBToStruct(HrEmployeeCustomFieldsPojo.class, records);
+            result = BeanUtils.DBToStruct(HrEmployeeCustomFieldsDO.class, records);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -192,12 +185,12 @@ public class HrDaoServiceImpl implements HrDaoService {
     }
 
     @Override
-    public List<HrPointsConfDo> getPointsConfs(CommonQuery query) throws TException {
-        List<HrPointsConfDo> result = new ArrayList<>();
+    public List<HrPointsConfDO> getPointsConfs(CommonQuery query) throws TException {
+        List<HrPointsConfDO> result = new ArrayList<>();
         try {
             List<com.moseeker.baseorm.db.hrdb.tables.records.HrPointsConfRecord> records =
                     hrPointsConfDao.getResources(query);
-            result = BeanUtils.DBToStruct(HrPointsConfDo.class, records);
+            result = BeanUtils.DBToStruct(HrPointsConfDO.class, records);
         }
         catch (Exception e) {
             e.printStackTrace();

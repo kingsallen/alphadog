@@ -2,7 +2,7 @@ package com.moseeker.baseorm.Thriftservice;
 
 import java.util.List;
 
-import com.moseeker.thrift.gen.dao.struct.UserEmployeePointsRecordDo;
+import com.moseeker.thrift.gen.dao.struct.*;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,16 +17,13 @@ import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.UserDBDao.Iface;
-import com.moseeker.thrift.gen.dao.struct.UserEmployeePojo;
-import com.moseeker.thrift.gen.dao.struct.UserFavPositionPojo;
-import com.moseeker.thrift.gen.useraccounts.struct.User;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 
 @Service
 public class UserDBDaoThriftService implements Iface {
-	
-	Logger logger = LoggerFactory.getLogger(UserDBDaoThriftService.class);
+
+	private Logger logger = LoggerFactory.getLogger(UserDBDaoThriftService.class);
 	
 	@Autowired
 	private UserDao userDao;
@@ -41,12 +38,12 @@ public class UserDBDaoThriftService implements Iface {
 	private UserEmployeeService userEmployeeService; 
 
 	@Override
-	public User getUser(CommonQuery query) throws TException {
-		User user = new User();
+	public UserUserDO getUser(CommonQuery query) throws TException {
+		UserUserDO user = new UserUserDO();
 		try {
 			UserUserRecord record = userDao.getResource(query);
 			if(record != null) {
-				user = record.into(User.class);
+				user = record.into(UserUserDO.class);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -59,7 +56,7 @@ public class UserDBDaoThriftService implements Iface {
 	}
 
 	@Override
-	public User saveUser(User user) throws TException {
+	public UserUserDO saveUser(UserUserDO user) throws TException {
 		if(user.getPassword() == null) {
 			user.setPassword("");
 		}
@@ -67,12 +64,12 @@ public class UserDBDaoThriftService implements Iface {
 	}
 
 	@Override
-	public List<UserFavPositionPojo> getUserFavPositions(CommonQuery query) throws TException {
+	public List<UserFavPositionDO> getUserFavPositions(CommonQuery query) throws TException {
 		return favPositionDao.getUserFavPositions(query);
 	}
 
 	@Override
-	public UserEmployeePojo getEmployee(CommonQuery query) throws TException {
+	public UserEmployeeDO getEmployee(CommonQuery query) throws TException {
 		return employeeDao.getEmployee(query);
 	}
 	/*
@@ -107,7 +104,7 @@ public class UserDBDaoThriftService implements Iface {
 	}
 
 	@Override
-	public List<UserEmployeePointsRecordDo> getUserEmployeePoints(int employeeId) throws TException {
+	public List<UserEmployeePointsRecordDO> getUserEmployeePoints(int employeeId) throws TException {
 		return userEmployeeService.getUserEmployeePoints(employeeId);
 	}
 }

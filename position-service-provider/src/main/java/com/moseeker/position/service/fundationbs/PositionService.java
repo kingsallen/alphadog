@@ -41,11 +41,8 @@ import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.service.CompanyDao;
 import com.moseeker.thrift.gen.dao.service.HrDBDao;
 import com.moseeker.thrift.gen.dao.service.UserHrAccountDao;
-import com.moseeker.thrift.gen.dao.struct.HrHbConfigPojo;
-import com.moseeker.thrift.gen.dao.struct.HrHbItemsPojo;
-import com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingPojo;
-import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
-import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
+import com.moseeker.thrift.gen.dao.struct.*;
+import com.moseeker.thrift.gen.dao.struct.HrHbConfigDO;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.RpExtInfo;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
@@ -579,7 +576,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 		QueryUtil qu = new QueryUtil();
 		qu.addEqualFilter("id", String.valueOf(hb_config_id));
 		try {
-			HrHbConfigPojo hbConfig = this.hrDao.getHbConfig(qu);
+			HrHbConfigDO hbConfig = this.hrDao.getHbConfig(qu);
 			result.setCover(hbConfig.getShare_img());
 			result.setTitle(hbConfig.getShare_title());
 			result.setDescription(hbConfig.getShare_desc());
@@ -614,8 +611,8 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 			qu.addEqualFilter("status", "3"); //正在运行
 			qu.addEqualFilter("company_id", String.valueOf(company_id));
 			qu.addEqualFilter("type", "[2,3]"); //转发类职位
-			List<HrHbConfigPojo> hbConfigs = hrDao.getHbConfigs(qu);
-			List<Integer> hbConfgIds = hbConfigs.stream().map(HrHbConfigPojo::getId).collect(Collectors.toList());
+			List<HrHbConfigDO> hbConfigs = hrDao.getHbConfigs(qu);
+			List<Integer> hbConfgIds = hbConfigs.stream().map(HrHbConfigDO::getId).collect(Collectors.toList());
 			String allHbConfigIdsFilterString = "["+ org.apache.commons.lang.StringUtils.join(hbConfgIds.toArray(), ",") + "]";
 
 			for (Integer pid : pids) {
@@ -634,10 +631,10 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 					qu.addEqualFilter("position_id", String.valueOf(p.getId()));
 					qu.addEqualFilter("hb_config_id", allHbConfigIdsFilterString);
 
-					List<HrHbPositionBindingPojo> bindings = hrDao.getHbPositionBindings(qu);
+					List<HrHbPositionBindingDO> bindings = hrDao.getHbPositionBindings(qu);
 
 					// 确认 binding 只有一个，获取binding 对应的红包活动信息
-					HrHbConfigPojo hbConfig = hbConfigs.stream().filter(c -> c.getId() == bindings.get(0).getHb_config_id())
+					HrHbConfigDO hbConfig = hbConfigs.stream().filter(c -> c.getId() == bindings.get(0).getHb_config_id())
 							.findFirst().orElseGet(null);
 
 					if (hbConfig != null) {
@@ -653,9 +650,9 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 					qu = new QueryUtil();
 					qu.addEqualFilter("binding_id", String.valueOf(bindings.get(0).getId()));
 					qu.addEqualFilter("wxuser_id", "0"); // 还未发出的
-					List<HrHbItemsPojo> remainItems = hrDao.getHbItems(qu);
+					List<HrHbItemsDO> remainItems = hrDao.getHbItems(qu);
 
-					Double remain = remainItems.stream().mapToDouble(HrHbItemsPojo::getAmount).sum();
+					Double remain = remainItems.stream().mapToDouble(HrHbItemsDO::getAmount).sum();
 					Integer remainInt = toIntExact(round(remain));
 					if (remainInt < 0) {
 						remainInt = 0;
@@ -675,17 +672,17 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 					qu.addEqualFilter("position_id", String.valueOf(p.getId()));
 					qu.addEqualFilter("hb_config_id", allHbConfigIdsFilterString);
 
-					List<HrHbPositionBindingPojo> bindings = hrDao.getHbPositionBindings(qu);
+					List<HrHbPositionBindingDO> bindings = hrDao.getHbPositionBindings(qu);
 					//获取binding ids
-					List<Integer> bindingIds = bindings.stream().map(HrHbPositionBindingPojo::getId).collect(Collectors.toList());
+					List<Integer> bindingIds = bindings.stream().map(HrHbPositionBindingDO::getId).collect(Collectors.toList());
 					//获取binding 所对应的红包活动 id
-					List<Integer> hbConfigIds = bindings.stream().map(HrHbPositionBindingPojo::getHb_config_id).collect(Collectors.toList());
+					List<Integer> hbConfigIds = bindings.stream().map(HrHbPositionBindingDO::getHb_config_id).collect(Collectors.toList());
 
 					// 得到对应的红包活动 pojo （2个）
-					List<HrHbConfigPojo> configs = hbConfigs.stream().filter(s -> hbConfigIds.contains(s.getId())).collect(Collectors.toList());
+					List<HrHbConfigDO> configs = hbConfigs.stream().filter(s -> hbConfigIds.contains(s.getId())).collect(Collectors.toList());
 
 					// 如果任意一个对象是非员工，设置成 false
-					for (HrHbConfigPojo config : configs) {
+					for (HrHbConfigDO config : configs) {
 						if (config.target > 0) {
 							rpExtInfo.setEmployee_only(false);
 							break;
@@ -701,9 +698,9 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 					qu = new QueryUtil();
 					qu.addEqualFilter("binding_id", String.valueOf(bindingIdsFilterString));
 					qu.addEqualFilter("wxuser_id", "0"); // 未发出
-					List<HrHbItemsPojo> remainItems = hrDao.getHbItems(qu);
+					List<HrHbItemsDO> remainItems = hrDao.getHbItems(qu);
 
-					Double remain = remainItems.stream().mapToDouble(HrHbItemsPojo::getAmount).sum();
+					Double remain = remainItems.stream().mapToDouble(HrHbItemsDO::getAmount).sum();
 					Integer remainInt = toIntExact(round(remain));
 					if (remainInt < 0) {
 						remainInt = 0;
@@ -738,8 +735,8 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 		try {
 			QueryUtil qu = new QueryUtil();
 			qu.addEqualFilter("hb_config_id", String.valueOf(hbConfigId));
-			List<HrHbPositionBindingPojo> bindings = hrDao.getHbPositionBindings(qu);
-			List<Integer> pids = bindings.stream().map(HrHbPositionBindingPojo::getPosition_id).collect(Collectors.toList());
+			List<HrHbPositionBindingDO> bindings = hrDao.getHbPositionBindings(qu);
+			List<Integer> pids = bindings.stream().map(HrHbPositionBindingDO::getPosition_id).collect(Collectors.toList());
 			String pidFilter = "["+ org.apache.commons.lang.StringUtils.join(pids.toArray(), ",") + "]";
 
 			QueryUtil q = new QueryUtil();

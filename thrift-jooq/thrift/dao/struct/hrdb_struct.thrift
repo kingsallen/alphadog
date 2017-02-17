@@ -1,6 +1,5 @@
-# file: hrdb_struct
-
 namespace java com.moseeker.thrift.gen.dao.struct
+namespace py thrift_gen.gen.dao.struct.hrdb
 
 /**
  * TODO:list what notation this dateTime represents. eg ISO-8601
@@ -8,7 +7,15 @@ namespace java com.moseeker.thrift.gen.dao.struct
  */
 typedef string Timestamp
 
-struct HrHbConfigPojo {
+struct HrOperationrecordDO {
+    1: optional double admin_id,
+    2: optional double company_id,
+    3: optional double app_id,
+    4: optional double status_id,
+    5: optional i32 operate_tpl_id
+}
+
+struct HrHbConfigDO {
     1:  optional i32 id,
     2:  optional i32 type,
     3:  optional i32 target,
@@ -33,7 +40,7 @@ struct HrHbConfigPojo {
     22: optional i32 actual_total
 }
 
-struct HrHbPositionBindingPojo {
+struct HrHbPositionBindingDO {
     1: optional i32 id,
     2: optional i32 hb_config_id,
     3: optional i32 position_id,
@@ -44,7 +51,7 @@ struct HrHbPositionBindingPojo {
     8: optional Timestamp update_time
 }
 
-struct HrHbItemsPojo {
+struct HrHbItemsDO {
     1:  optional i32 id,
     2:  optional i32 hb_config_id,
     3:  optional i32 binding_id,
@@ -58,7 +65,7 @@ struct HrHbItemsPojo {
     11: optional i32 trigger_wxuser_id
 }
 
-struct HrHbScratchCardPojo {
+struct HrHbScratchCardDO {
     1:  optional i32 id,
     2:  optional i32 wechat_id,
     3:  optional string cardno,
@@ -71,7 +78,7 @@ struct HrHbScratchCardPojo {
     10: optional i32 tips
 }
 
-struct HrHbSendRecordPojo {
+struct HrHbSendRecordDO {
     1:  optional i32 id,
     2:  optional string return_code,
     3:  optional string return_msg,
@@ -90,15 +97,7 @@ struct HrHbSendRecordPojo {
     16: optional i32 hb_item_id
 }
 
-struct HrOperationrecordStruct{
-    1: optional double admin_id,
-    2: optional double company_id,
-    3: optional double app_id,
-    4: optional double status_id,
-    5: optional i32 operate_tpl_id
-}
-
-struct HrEmployeeCertConfPojo {
+struct HrEmployeeCertConfDO {
     1: optional i32 company_id,
     2: optional i32 is_strict,
     3: optional string email_suffix,
@@ -114,7 +113,7 @@ struct HrEmployeeCertConfPojo {
     13:optional string custom_hint
 }
 
-struct HrEmployeeCustomFieldsPojo {
+struct HrEmployeeCustomFieldsDO {
     1: i32 id,
     2: i32 company_id,
     3: string fname,
@@ -125,7 +124,7 @@ struct HrEmployeeCustomFieldsPojo {
     8: i32 status
 }
 
-struct HrPointsConfDo {
+struct HrPointsConfDO {
     1:  optional i32 id,
     2:  optional i32 company_id,
     3:  optional string status_name,

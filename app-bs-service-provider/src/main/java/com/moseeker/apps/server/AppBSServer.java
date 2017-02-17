@@ -1,5 +1,11 @@
 package com.moseeker.apps.server;
 
+import com.moseeker.rpccenter.common.ServerNodeUtils;
+import com.moseeker.rpccenter.exception.IncompleteException;
+import com.moseeker.rpccenter.exception.RegisterException;
+import com.moseeker.rpccenter.exception.RpcException;
+import com.moseeker.rpccenter.main.MoServer;
+import com.moseeker.rpccenter.main.MultiRegServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -7,8 +13,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import com.moseeker.apps.thrift.service.PositionBSThriftService;
 import com.moseeker.apps.thrift.service.ProfileBSThriftService;
 import com.moseeker.apps.thrift.service.UserBSThriftService;
-import com.moseeker.rpccenter.common.ServerNodeUtils;
-import com.moseeker.rpccenter.main.MultiRegServer;
 
 /**
  * 
@@ -21,34 +25,40 @@ import com.moseeker.rpccenter.main.MultiRegServer;
  */
 public class AppBSServer {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(AppBSServer.class);
+    private static Logger logger = LoggerFactory.getLogger(AppBSServer.class);
     
     public static void main(String[] args) {
 
-        try {
-        	AnnotationConfigApplicationContext acac = initSpring();
-        	MultiRegServer server = new MultiRegServer(AppBSServer.class,
-        			ServerNodeUtils.getPort(args),
-        			acac.getBean(PositionBSThriftService.class),
+
+		try {
+			AnnotationConfigApplicationContext acac = initSpring();
+//			MultiRegServer server = new MultiRegServer(AppBSServer.class,
+//					ServerNodeUtils.getPort(args),
+//					acac.getBean(PositionBSThriftService.class),
+//					acac.getBean(ProfileBSThriftService.class),
+//					acac.getBean(UserBSThriftService.class));
+//				server.start();
+			MoServer server = new MoServer(
+					acac,"",
+					acac.getBean(PositionBSThriftService.class),
 					acac.getBean(ProfileBSThriftService.class),
 					acac.getBean(UserBSThriftService.class));
-			server.start(); // 启动服务，非阻塞
-
+			server.startServer();
+			// 启动服务，非阻塞
 			synchronized (AppBSServer.class) {
-				while (true) {
-					try {
-						AppBSServer.class.wait();
+                while (true) {
+                    try {
+                        AppBSServer.class.wait();
                     } catch (Exception e) {
-                        LOGGER.error(" service provider ProfileAttachmentServer error", e);
+						logger.error(" service provider ProfileAttachmentServer error", e);
                     }
-				}
-			}
-        } catch (Exception e) {
-        	e.printStackTrace();
-            LOGGER.error("error", e);
-        }
-
-    }
+                }
+            }
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+		}
+	}
     
     private static AnnotationConfigApplicationContext initSpring() {
 		AnnotationConfigApplicationContext acac = new AnnotationConfigApplicationContext();

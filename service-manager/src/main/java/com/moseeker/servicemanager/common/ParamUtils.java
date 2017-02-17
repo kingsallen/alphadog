@@ -165,7 +165,7 @@ public class ParamUtils {
 							try {
 								method.invoke(t, cval);
 							} catch (Exception e) {
-								// TODO Auto-generated catch block
+								LoggerFactory.getLogger(ParamUtils.class).error("method-name: "+method.getName()+" field-type:"+fields[i].getType()+" value:"+entry.getValue().toString(), e);
 								e.printStackTrace();
 							}
 						}
