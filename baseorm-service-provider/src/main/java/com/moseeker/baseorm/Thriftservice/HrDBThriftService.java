@@ -1,7 +1,9 @@
 package com.moseeker.baseorm.Thriftservice;
 
 import java.util.List;
+import java.util.Set;
 
+import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
 import com.moseeker.thrift.gen.dao.struct.*;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +24,23 @@ public class HrDBThriftService implements Iface {
 	
 	@Autowired
     private HrDaoService hrDaoService;
-	
+
+	@Autowired
+	private HrOperationRecordDao hrOperationRecordDao;
+
 	@Override
 	public Response getHrHistoryOperations(List<ProcessValidationStruct> record) throws TException {
 		return hrDBService.getHrHistoryOpertation(record);
+	}
+
+	@Override
+	public List<HrOperationrecordDO> listHrOperationRecord(CommonQuery query) throws TException {
+		return hrOperationRecordDao.listResources(query);
+	}
+
+	@Override
+	public List<HrOperationrecordDO> listLatestOperationRecordByAppIdSet(Set<Integer> appidSet) throws TException {
+		return hrOperationRecordDao.listLatestOperationRecordByAppIdSet(appidSet);
 	}
 
 	@Override

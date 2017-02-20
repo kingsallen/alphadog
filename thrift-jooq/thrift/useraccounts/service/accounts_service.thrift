@@ -58,9 +58,9 @@ service UseraccountsServices {
     common_struct.Response setScanResult(1: i32 wechatId, 2: i64 sceneId, 3:string value);
 	
     //根据手机号码获取用户数据
-    userdb_struct.UserUserDTO ifExistUser(1: string mobile);
+    userdb_struct.UserUserDO ifExistUser(1: string mobile);
     //简历回收的自动生成帐号
-    i32 createRetrieveProfileUser(1: userdb_struct.UserUserDTO user);
+    i32 createRetrieveProfileUser(1: userdb_struct.UserUserDO user);
     //查询用户是否存在简历
     bool ifExistProfile(1:string mobile);
 }
@@ -101,4 +101,6 @@ service UserCenterService {
     list<useraccounts_struct.ApplicationRecordsForm> getApplications(1: i32 userId);
     //查询用户的只为收藏记录
     list<useraccounts_struct.FavPositionForm> getFavPositions(1: i32 userId);
+    //查询推荐记录
+    list<useraccounts_struct.RecommendationForm> listRecommendation(1: i32 userId, 2: i32 pageNo, 3: i32 pageSize);
 }

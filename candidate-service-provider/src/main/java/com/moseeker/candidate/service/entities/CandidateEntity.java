@@ -1,17 +1,34 @@
 package com.moseeker.candidate.service.entities;
 
 import com.moseeker.candidate.service.Candidate;
-import com.moseeker.candidate.service.pos.*;
-import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.candidate.service.dao.CandidateDBDao;
 import com.moseeker.common.validation.ValidateUtil;
-import java.util.Date;
+import com.moseeker.thrift.gen.dao.struct.*;
+import org.apache.thrift.TException;
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 候选人实体，提供候选人相关业务
+ * //todo 数据库访问操作，如果可以并行处理，则并行处理
  * Created by jack on 10/02/2017.
  */
+@Component
 public class CandidateEntity implements Candidate {
+
+    Logger logger = LoggerFactory.getLogger(CandidateEntity.class);
+
+    /**
+     * C端用户查看职位，判断是否生成候选人数据
+     * @param userID 用户编号
+     * @param positionID 职位编号
+     * @param fromEmployee 是否来自员工转发
+     */
     @Override
     public void glancePosition(int userID, int positionID, boolean fromEmployee) {
         ValidateUtil vu = new ValidateUtil();
@@ -20,47 +37,45 @@ public class CandidateEntity implements Candidate {
         vu.addRequiredValidate("是否来自员工转发", fromEmployee, null, null);
         vu.validate();
         if(vu.getVerified().get()) {
-            //检查候选人数据是否存在
-            User user = new User(userID);
-            Position position = new Position(positionID);
-            /*Future userFuture = ThreadPool.Instance.startTast(() -> user.dbExist());
-            Future positionFuture = ThreadPool.Instance.startTast(() -> position.dbExist());*/
-
-            if(user.dbExist() && position.dbExist()) {
-
-                //暂时不考虑HR的问题
-                QueryUtil queryUtil = new QueryUtil();
-                queryUtil.addEqualFilter("user_id", String.valueOf(userID));
-                List<CandidateRemark> crs = CandidateRemark.getCandidateRemarks();
-                if(crs != null && crs.size() > 0) {
-                    crs.forEach(candidateRemark -> candidateRemark.setStatus(1));
-                }
-                CandidateRemark.updateToDB(crs);
-
-                Date date = new Date();
-                CandidatePosition cp = new CandidatePosition(positionID, userID);
-                if(cp.dbExist()) {
-                    cp.addViewNumber();
-                    cp.setSharedFromEmployee(fromEmployee);
-                    cp.updateToDB();
-                } else {
-                    CandidateCompany candidateCompany = new CandidateCompany(position.getCompanyId(), userID);
-                    if(candidateCompany.dbExist()) {
-                        candidateCompany.setCompanyId(position.getCompanyId());
-                        candidateCompany.setNickname(user.getNickname());
-                        candidateCompany.setHeadimgurl(user.getHeadimg());
-                        candidateCompany.setSysUserId(userID);
-                        candidateCompany.setMobile(String.valueOf(user.getMobile()));
-                        candidateCompany.setEmail(user.getEmail());
-                        candidateCompany.setUpdateTime(date);
-                        candidateCompany.upsertToDB();
+            try {
+                //检查候选人数据是否存在
+                Optional<UserUserDO> user = CandidateDBDao.getUserByID(userID);
+                Optional<JobPositionDO> position = CandidateDBDao.getPositionByID(positionID);
+                if(user.isPresent() && position.isPresent()) {
+                    //暂时不考虑HR的问题
+                    List<CandidateRemarkDO> crs = CandidateDBDao.getCandidateRemarks(userID, position.get().getCompanyId());
+                    if(crs != null && crs.size() > 0) {
+                        crs.forEach(candidateRemark -> candidateRemark.setStatus((byte)1));
                     }
-                    cp.setCandidateCompanyId(candidateCompany.getId());
-                    cp.setViewNumber(1);
-                    cp.setUpdateTime(date);
-                    cp.setSharedFromEmployee(fromEmployee);
-                    cp.upsertToDB();
+                    CandidateDBDao.updateCandidateRemarks(crs);
+
+                    String date = new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS");
+                    Optional<CandidatePositionDO> cp = CandidateDBDao.getCandidatePosition(positionID, userID);
+                    if(cp.isPresent()) {
+                        cp.get().setViewNumber(cp.get().getViewNumber()+1);
+                        cp.get().setSharedFromEmployee(fromEmployee?(byte)1:0);
+                        CandidateDBDao.updateCandidatePosition(cp.get());
+                    } else {
+                        Optional<CandidateCompanyDO> candidateCompany = CandidateDBDao.getCandidateCompanyByUserIDCompanyID(userID, position.get().getCompanyId());
+                        if(candidateCompany.isPresent()) {
+                            candidateCompany.get().setCompanyId(position.get().getCompanyId());
+                            candidateCompany.get().setNickname(user.get().getNickname());
+                            candidateCompany.get().setHeadimgurl(user.get().getHeadimg());
+                            candidateCompany.get().setSysUserId(userID);
+                            candidateCompany.get().setMobile(String.valueOf(user.get().getMobile()));
+                            candidateCompany.get().setEmail(user.get().getEmail());
+                            candidateCompany.get().setUpdateTime(date);
+                            CandidateDBDao.updateCandidateCompany(candidateCompany.get());
+                        }
+                        cp.get().setCandidateCompanyId(candidateCompany.get().getId());
+                        cp.get().setViewNumber(1);
+                        cp.get().setUpdateTime(date);
+                        cp.get().setSharedFromEmployee(fromEmployee?(byte)1:0);
+                        CandidateDBDao.saveCandidatePosition(cp.get());
+                    }
                 }
+            } catch (TException e) {
+                logger.error(e.getMessage(), e);
             }
         }
     }

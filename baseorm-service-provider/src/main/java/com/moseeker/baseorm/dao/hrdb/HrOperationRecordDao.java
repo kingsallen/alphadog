@@ -1,22 +1,25 @@
 package com.moseeker.baseorm.dao.hrdb;
 
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.moseeker.baseorm.db.hrdb.tables.HrOperationRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrOperationRecordRecord;
+import com.moseeker.baseorm.util.StructDaoImpl;
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.dbutils.DBConnHelper;
+import com.moseeker.thrift.gen.dao.struct.HistoryOperate;
+import com.moseeker.thrift.gen.dao.struct.HrOperationrecordDO;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.baseorm.db.hrdb.tables.HrOperationRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrOperationRecordRecord;
-import com.moseeker.baseorm.util.BaseDaoImpl;
-import com.moseeker.common.dbutils.DBConnHelper;
-import com.moseeker.db.userdb.tables.records.UserEmployeeRecord;
-import com.moseeker.thrift.gen.dao.struct.HistoryOperate;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 @Service
-public class HrOperationRecordDao extends BaseDaoImpl<HrOperationRecordRecord, HrOperationRecord>{
+public class HrOperationRecordDao extends StructDaoImpl<HrOperationrecordDO, HrOperationRecordRecord, HrOperationRecord> {
 
 	@Override
 	protected void initJOOQEntity() {
@@ -58,5 +61,39 @@ public class HrOperationRecordDao extends BaseDaoImpl<HrOperationRecordRecord, H
 			}
 		}
 		return list;
+	}
+
+	public List<HrOperationrecordDO> listLatestOperationRecordByAppIdSet(Set<Integer> appidSet) {
+		List<HrOperationrecordDO> operationrecordDOList = new ArrayList<>();
+
+		Connection conn = null;
+		try {
+			conn = DBConnHelper.DBConn.getConn();
+			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+
+			operationrecordDOList = create.select(HrOperationRecord.HR_OPERATION_RECORD.ID, HrOperationRecord.HR_OPERATION_RECORD.APP_ID,
+					HrOperationRecord.HR_OPERATION_RECORD.OPERATE_TPL_ID)
+					.from(
+							create.select().from(HrOperationRecord.HR_OPERATION_RECORD)
+									.where(HrOperationRecord.HR_OPERATION_RECORD.APP_ID.in(appidSet))
+									.and(HrOperationRecord.HR_OPERATION_RECORD.OPERATE_TPL_ID.notEqual(Constant.RECRUIT_STATUS_REJECT))
+									.orderBy(HrOperationRecord.HR_OPERATION_RECORD.OPT_TIME.desc())
+					)
+					.groupBy(HrOperationRecord.HR_OPERATION_RECORD.APP_ID)
+					.fetch().into(HrOperationrecordDO.class);
+
+		} catch (SQLException e) {
+			logger.error(e.getMessage(), e);
+		} finally {
+			try {
+				if(conn!=null && !conn.isClosed()){
+                    conn.close();
+                }
+			} catch (SQLException e) {
+				logger.error(e.getMessage(), e);
+			}
+		}
+
+		return operationrecordDOList;
 	}
 }

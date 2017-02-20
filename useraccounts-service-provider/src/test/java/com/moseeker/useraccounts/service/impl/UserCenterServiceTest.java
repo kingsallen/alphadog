@@ -1,11 +1,10 @@
 package com.moseeker.useraccounts.service.impl;
 
-import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
-import com.moseeker.thrift.gen.dao.struct.AwardConfigTpl;
+import com.moseeker.thrift.gen.dao.struct.ConfigSysPointConfTplDO;
+import com.moseeker.thrift.gen.dao.struct.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.UserFavPositionDO;
-import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm;
 import com.moseeker.thrift.gen.useraccounts.struct.FavPositionForm;
 import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
@@ -38,22 +37,22 @@ public class UserCenterServiceTest {
 	
 	@Before
 	public void init() {
-		JobApplication a1 = new JobApplication();
+		JobApplicationDO a1 = new JobApplicationDO();
 		a1.setId(1);
-		a1.setStatus_id(1);
-		a1.setApp_tpl_id(1);
-		a1.setPosition_id(1);
-		a1.setCompany_id(1);
-		a1.set_create_time("2017-01-01 11:11:11");
-		JobApplication a2 = new JobApplication();
+		a1.setStatusId(1);
+		a1.setAppTplId(1);
+		a1.setPositionId(1);
+		a1.setCompanyId(1);
+		a1.setCreateTime("2017-01-01 11:11:11");
+		JobApplicationDO a2 = new JobApplicationDO();
 		a2.setId(2);
-		a2.setStatus_id(2);
-		a2.setApp_tpl_id(2);
-		a2.setPosition_id(2);
-		a2.setCompany_id(2);
-		a2.set_create_time("2017-02-02 22:22:22");
+		a2.setStatusId(2);
+		a2.setAppTplId(2);
+		a2.setPositionId(2);
+		a2.setCompanyId(2);
+		a2.setCreateTime("2017-02-02 22:22:22");
 		
-		List<JobApplication> apps = Arrays.asList(a1,a2);
+		List<JobApplicationDO> apps = Arrays.asList(a1,a2);
 		try {
 			Mockito.when(bizTools.getAppsForUser(1)).thenReturn(apps);
 		} catch (TException e) {
@@ -83,14 +82,14 @@ public class UserCenterServiceTest {
 			e.printStackTrace();
 			fail("Exception");
 		}
-		
-		AwardConfigTpl tpl1 = new AwardConfigTpl();
+
+		ConfigSysPointConfTplDO tpl1 = new ConfigSysPointConfTplDO();
 		tpl1.setId(1);
 		tpl1.setRecruitOrder(11);
-		AwardConfigTpl tpl2 = new AwardConfigTpl();
+		ConfigSysPointConfTplDO tpl2 = new ConfigSysPointConfTplDO();
 		tpl2.setId(2);
 		tpl2.setRecruitOrder(12);
-		List<AwardConfigTpl> tpls = Arrays.asList(tpl1, tpl2);
+		List<ConfigSysPointConfTplDO> tpls = Arrays.asList(tpl1, tpl2);
 		try {
 			Mockito.when(bizTools.getAwardConfigTpls()).thenReturn(tpls);
 		} catch (TException e) {

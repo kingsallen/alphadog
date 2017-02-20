@@ -5,23 +5,26 @@ include "../struct/hrdb_struct.thrift"
 include "../../application/struct/application_struct.thrift"
 
 service HrDBDao {
-    hrdb_struct.HrHbConfigPojo getHbConfig(1: common_struct.CommonQuery query);
-    list<hrdb_struct.HrHbConfigPojo> getHbConfigs(1: common_struct.CommonQuery query);
+    hrdb_struct.HrHbConfigDO getHbConfig(1: common_struct.CommonQuery query);
+    list<hrdb_struct.HrHbConfigDO> getHbConfigs(1: common_struct.CommonQuery query);
     
-    hrdb_struct.HrHbPositionBindingPojo getHbPositionBinding(1: common_struct.CommonQuery query);
-    list<hrdb_struct.HrHbPositionBindingPojo> getHbPositionBindings(1: common_struct.CommonQuery query);
+    hrdb_struct.HrHbPositionBindingDO getHbPositionBinding(1: common_struct.CommonQuery query);
+    list<hrdb_struct.HrHbPositionBindingDO> getHbPositionBindings(1: common_struct.CommonQuery query);
 
-    hrdb_struct.HrHbItemsPojo getHbItem(1: common_struct.CommonQuery query);
-    list<hrdb_struct.HrHbItemsPojo> getHbItems(1: common_struct.CommonQuery query);
+    hrdb_struct.HrHbItemsDO getHbItem(1: common_struct.CommonQuery query);
+    list<hrdb_struct.HrHbItemsDO> getHbItems(1: common_struct.CommonQuery query);
     
-    hrdb_struct.HrHbScratchCardPojo getHbScratchCard(1: common_struct.CommonQuery query);
+    hrdb_struct.HrHbScratchCardDO getHbScratchCard(1: common_struct.CommonQuery query);
     
-    hrdb_struct.HrHbSendRecordPojo getHbSendRecord(1: common_struct.CommonQuery query);
-    common_struct.Response postHrOperationrecords(1:list<hrdb_struct.HrOperationrecordStruct> record);
-    common_struct.Response postHrOperationrecord(1:hrdb_struct.HrOperationrecordStruct record);
+    hrdb_struct.HrHbSendRecordDO getHbSendRecord(1: common_struct.CommonQuery query);
+
+    common_struct.Response postHrOperationrecords(1:list<hrdb_struct.HrOperationrecordDO> record);
+    common_struct.Response postHrOperationrecord(1:hrdb_struct.HrOperationrecordDO record);
     common_struct.Response getHrHistoryOperations(1:list<application_struct.ProcessValidationStruct> record);
+    list<hrdb_struct.HrOperationrecordDO> listHrOperationRecord(1: common_struct.CommonQuery query);
+    list<hrdb_struct.HrOperationrecordDO> listLatestOperationRecordByAppIdSet(1: set<i32> appidSet);
 
-    hrdb_struct.HrEmployeeCertConfPojo getEmployeeCertConf(1: common_struct.CommonQuery query);
+    hrdb_struct.HrEmployeeCertConfDO getEmployeeCertConf(1: common_struct.CommonQuery query);
 
-    list<hrdb_struct.HrEmployeeCustomFieldsPojo> getEmployeeCustomFields(1: common_struct.CommonQuery query);
+    list<hrdb_struct.HrEmployeeCustomFieldsDO> getEmployeeCustomFields(1: common_struct.CommonQuery query);
 }

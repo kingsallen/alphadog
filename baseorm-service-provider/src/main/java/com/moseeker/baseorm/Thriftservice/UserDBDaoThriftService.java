@@ -2,8 +2,10 @@ package com.moseeker.baseorm.Thriftservice;
 
 import java.util.List;
 
+import com.moseeker.baseorm.dao.userdb.UserHRAccountDao;
 import com.moseeker.thrift.gen.dao.struct.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.UserFavPositionDO;
+import com.moseeker.thrift.gen.dao.struct.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.UserUserDO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -37,7 +39,10 @@ public class UserDBDaoThriftService implements Iface {
 	private UserEmployeeDao employeeDao;
 	
 	@Autowired
-	private UserEmployeeService userEmployeeService; 
+	private UserEmployeeService userEmployeeService;
+
+	@Autowired
+	private UserHRAccountDao userHRAccountDao;
 
 	@Override
 	public UserUserDO getUser(CommonQuery query) throws TException {
@@ -58,11 +63,21 @@ public class UserDBDaoThriftService implements Iface {
 	}
 
 	@Override
+	public List<UserUserDO> listUser(CommonQuery query) throws TException {
+		return userDao.listResources(query);
+	}
+
+	@Override
 	public UserUserDO saveUser(UserUserDO user) throws TException {
 		if(user.getPassword() == null) {
 			user.setPassword("");
 		}
-		return userDao.saveUser(user);
+		return userDao.saveResource(user);
+	}
+
+	@Override
+	public List<UserHrAccountDO> listHRFromCompany(int comanyId) throws TException {
+		return userHRAccountDao.listHRFromCompany(comanyId);
 	}
 
 	@Override

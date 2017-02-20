@@ -1,6 +1,6 @@
 package com.moseeker.baseorm.Thriftservice;
 
-import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
+import com.moseeker.baseorm.dao.candidatedb.*;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.service.CandidateDBDao;
 import com.moseeker.thrift.gen.dao.struct.*;
@@ -8,6 +8,7 @@ import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * candidatedb数据库表的增删该查操作
@@ -18,148 +19,181 @@ public class CandidateDaoThriftService implements CandidateDBDao.Iface {
     @Autowired
     private CandidateCompanyDao candidateCompanyDao;
 
+    @Autowired
+    private CandidatePositionDao candidatePositionDao;
+
+    @Autowired
+    private CandidatePositionShareRecordDao candidatePositionShareRecordDao;
+
+    @Autowired
+    private CandidateRecomRecordDao candidateRecomRecordDao;
+
+    @Autowired
+    private CandidateShareChainDao candidateShareChainDao;
+
+    @Autowired
+    private CandidateRemarkDao candidateRemarkDao;
+
+    @Autowired
+    private CandidateSuggestPositionDao candidateSuggestPositionDao;
+
     @Override
-    public CandidateRemarkDO getCandidateRemark(CommonQuery query) throws CURDException, TException {
-        return null;
+    public CandidateRemarkDO getCandidateRemark(CommonQuery query) throws TException {
+        return candidateRemarkDao.findResource(query);
     }
 
     @Override
-    public List<CandidateRemarkDO> listCandidateRemarks(CommonQuery query) throws CURDException, TException {
-        return null;
+    public List<CandidateRemarkDO> listCandidateRemarks(CommonQuery query) throws TException {
+        return candidateRemarkDao.listResources(query);
     }
 
     @Override
-    public CandidateRemarkDO saveCandidateRemark(CandidateRemarkDO candidateRemark) throws CURDException, TException {
-        return null;
+    public CandidateRemarkDO saveCandidateRemark(CandidateRemarkDO candidateRemark) throws TException {
+        return candidateRemarkDao.saveResource(candidateRemark);
     }
 
     @Override
-    public void deleteCandidateRemark(int id) throws CURDException, TException {
-
+    public CandidateRemarkDO updateCandidateRemark(CandidateRemarkDO candidateRemark) throws CURDException, TException {
+        return candidateRemarkDao.updateResource(candidateRemark);
     }
 
     @Override
-    public CandidateCompanyDO getCandidateCompany(CommonQuery query) throws CURDException, TException {
-        return candidateCompanyDao.getCandidateCompany(query);
+    public List<CandidateRemarkDO> updateCandidateRemarks(List<CandidateRemarkDO> candidateRemarks) throws CURDException, TException {
+        return candidateRemarkDao.updateResources(candidateRemarks);
     }
 
     @Override
-    public List<CandidateCompanyDO> listCandidateCompanys(CommonQuery query) throws CURDException, TException {
-        return candidateCompanyDao.listCandidateCompanys(query);
+    public void deleteCandidateRemark(int id) throws TException {
+        candidateRemarkDao.deleteCandidateRemark(id);
     }
 
     @Override
-    public CandidateCompanyDO saveCandidateCompanys(CandidateCompanyDO candidateCompany) throws CURDException, TException {
-        return candidateCompanyDao.saveCandidateCompany(candidateCompany);
+    public CandidateCompanyDO getCandidateCompany(CommonQuery query) throws TException {
+        return candidateCompanyDao.findResource(query);
     }
 
     @Override
-    public CandidateCompanyDO updateCandidateCompanys(CandidateCompanyDO candidateCompany) throws CURDException, TException {
-        return candidateCompanyDao.updateCandidateCompany(candidateCompany);
+    public List<CandidateCompanyDO> listCandidateCompanys(CommonQuery query) throws TException {
+        return candidateCompanyDao.listResources(query);
     }
 
     @Override
-    public void deleteCandidateCompany(int id) throws CURDException, TException {
+    public CandidateCompanyDO saveCandidateCompanys(CandidateCompanyDO candidateCompany) throws TException {
+        return candidateCompanyDao.saveResource(candidateCompany);
+    }
+
+    @Override
+    public CandidateCompanyDO updateCandidateCompanys(CandidateCompanyDO candidateCompany) throws TException {
+        return candidateCompanyDao.updateResource(candidateCompany);
+    }
+
+    @Override
+    public void deleteCandidateCompany(int id) throws TException {
         candidateCompanyDao.deleteCandidateCompany(id);
     }
 
     @Override
-    public CandidatePositionDO getCandidatePosition(CommonQuery query) throws CURDException, TException {
-        return null;
+    public CandidatePositionDO getCandidatePosition(CommonQuery query) throws TException {
+        return candidatePositionDao.findResource(query);
     }
 
     @Override
-    public List<CandidatePositionDO> listCandidatePositions(CommonQuery query) throws CURDException, TException {
-        return null;
+    public List<CandidatePositionDO> listCandidatePositions(CommonQuery query) throws TException {
+        return candidatePositionDao.listResources(query);
     }
 
     @Override
-    public CandidatePositionDO updateCandidatePositions(CandidatePositionDO candidatePosition) throws CURDException, TException {
-        return null;
+    public List<CandidatePositionDO> listCandidatePositionsByPositionIDUserID(List<Map<Integer, Integer>> companyPositionIds) throws TException {
+        return candidatePositionDao.listCandidatePositionsByPositionIDUserID(companyPositionIds);
     }
 
     @Override
-    public void deleteCandidatePositions(int userId, int positionId) throws CURDException, TException {
-
+    public CandidatePositionDO updateCandidatePosition(CandidatePositionDO candidatePosition) throws TException {
+        return candidatePositionDao.updateResource(candidatePosition);
     }
 
     @Override
-    public CandidatePositionShareRecordDO getCandidatePositionShareRecord(CommonQuery query) throws CURDException, TException {
-        return null;
+    public void deleteCandidatePositions(int userId, int positionId) throws TException {
+        candidatePositionDao.deleteCandidatePosition(userId, positionId);
     }
 
     @Override
-    public List<CandidatePositionShareRecordDO> listCandidatePositionShareRecord(CommonQuery query) throws CURDException, TException {
-        return null;
+    public CandidatePositionShareRecordDO getCandidatePositionShareRecord(CommonQuery query) throws TException {
+        return candidatePositionShareRecordDao.findResource(query);
     }
 
     @Override
-    public CandidatePositionShareRecordDO updateCandidatePositionShareRecord(CandidatePositionShareRecordDO candidatePositionShareRecord) throws CURDException, TException {
-        return null;
+    public List<CandidatePositionShareRecordDO> listCandidatePositionShareRecord(CommonQuery query) throws TException {
+        return candidatePositionShareRecordDao.listResources(query);
     }
 
     @Override
-    public void deleteCandidatePositionShareRecord(int id) throws CURDException, TException {
-
+    public CandidatePositionShareRecordDO updateCandidatePositionShareRecord(CandidatePositionShareRecordDO candidatePositionShareRecord) throws TException {
+        return candidatePositionShareRecordDao.updateResource(candidatePositionShareRecord);
     }
 
     @Override
-    public CandidateRecomRecordDO getCandidateRecomRecord(CommonQuery query) throws CURDException, TException {
-        return null;
+    public void deleteCandidatePositionShareRecord(int id) throws TException {
+        candidatePositionShareRecordDao.deleteCandidatePositionShareRecord(id);
     }
 
     @Override
-    public List<CandidateRecomRecordDO> listCandidateRecomRecords(CommonQuery query) throws CURDException, TException {
-        return null;
+    public CandidateRecomRecordDO getCandidateRecomRecord(CommonQuery query) throws TException {
+        return candidateRecomRecordDao.findResource(query);
     }
 
     @Override
-    public CandidateRecomRecordDO updateCandidateRecomRecords(CandidateRecomRecordDO candidateRecomRecord) throws CURDException, TException {
-        return null;
+    public List<CandidateRecomRecordDO> listCandidateRecomRecords(CommonQuery query) throws TException {
+        return candidateRecomRecordDao.listResources(query);
     }
 
     @Override
-    public void deleteCandidateRecomRecords(int id) throws CURDException, TException {
-
+    public CandidateRecomRecordDO updateCandidateRecomRecords(CandidateRecomRecordDO candidateRecomRecord) throws TException {
+        return candidateRecomRecordDao.updateResource(candidateRecomRecord);
     }
 
     @Override
-    public CandidateShareChainDO getCandidateShareChain(CommonQuery query) throws CURDException, TException {
-        return null;
+    public void deleteCandidateRecomRecords(int id) throws TException {
+        candidateRecomRecordDao.deleteCandidateRecomRecord(id);
     }
 
     @Override
-    public List<CandidateShareChainDO> listCandidateShareChain(CommonQuery query) throws CURDException, TException {
-        return null;
+    public CandidateShareChainDO getCandidateShareChain(CommonQuery query) throws TException {
+        return candidateShareChainDao.findResource(query);
     }
 
     @Override
-    public CandidateShareChainDO updateCandidateShareChain(CandidateShareChainDO candidateShareChain) throws CURDException, TException {
-        return null;
+    public List<CandidateShareChainDO> listCandidateShareChain(CommonQuery query) throws TException {
+        return candidateShareChainDao.listResources(query);
     }
 
     @Override
-    public void deleteCandidateShareChain(int id) throws CURDException, TException {
-
+    public CandidateShareChainDO updateCandidateShareChain(CandidateShareChainDO candidateShareChain) throws TException {
+        return candidateShareChainDao.updateResource(candidateShareChain);
     }
 
     @Override
-    public CandidateSuggestPositionDO getCandidateSuggestPosition(CommonQuery query) throws CURDException, TException {
-        return null;
+    public void deleteCandidateShareChain(int id) throws TException {
+        candidateShareChainDao.deleteCandidateShareChain(id);
     }
 
     @Override
-    public List<CandidateSuggestPositionDO> listCandidateSuggestPosition(CommonQuery query) throws CURDException, TException {
-        return null;
+    public CandidateSuggestPositionDO getCandidateSuggestPosition(CommonQuery query) throws TException {
+        return candidateSuggestPositionDao.findResource(query);
     }
 
     @Override
-    public CandidateSuggestPositionDO updateCandidateSuggestPosition(CandidateSuggestPositionDO candidateSuggestPosition) throws CURDException, TException {
-        return null;
+    public List<CandidateSuggestPositionDO> listCandidateSuggestPosition(CommonQuery query) throws TException {
+        return candidateSuggestPositionDao.listResources(query);
     }
 
     @Override
-    public void deleteCandidateSuggestPosition(int id) throws CURDException, TException {
+    public CandidateSuggestPositionDO updateCandidateSuggestPosition(CandidateSuggestPositionDO candidateSuggestPosition) throws TException {
+        return candidateSuggestPositionDao.updateResource(candidateSuggestPosition);
+    }
 
+    @Override
+    public void deleteCandidateSuggestPosition(int id) throws TException {
+        candidateSuggestPositionDao.deleteCandidateShareChain(id);
     }
 }

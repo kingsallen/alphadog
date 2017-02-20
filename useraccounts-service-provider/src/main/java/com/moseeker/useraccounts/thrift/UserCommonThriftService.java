@@ -19,13 +19,4 @@ public class UserCommonThriftService implements Iface {
 	public Response newsletter(NewsletterForm form) throws TException {
 		return userCommonService.newsletter(form);
 	}
-
-	public UserCommonService getUserCommonService() {
-		return userCommonService;
-	}
-
-	public void setUserCommonService(UserCommonService userCommonService) {
-		this.userCommonService = userCommonService;
-	}
-
 }

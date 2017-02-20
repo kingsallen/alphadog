@@ -75,6 +75,16 @@ public class BeanUtils {
 		return orig;
 	}
 
+	@SuppressWarnings("rawtypes")
+	public static <T extends TBase, R extends UpdatableRecordImpl> List<R> structToDB(List<T> ts, Class<R> origClazz) {
+		List<R> records = new ArrayList<R>();
+		ts.forEach(t -> {
+			R r = structToDB(t, origClazz);
+			records.add(r);
+		});
+		return records;
+	}
+
 	/**
 	 * struct 类和JOOQ类的属性和方法固定，可以预先加载成静态的属性和方法
 	 * 

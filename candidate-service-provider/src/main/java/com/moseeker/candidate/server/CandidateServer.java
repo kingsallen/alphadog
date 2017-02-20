@@ -46,7 +46,7 @@ public class CandidateServer {
 
 	private static AnnotationConfigApplicationContext initSpring() {
 		AnnotationConfigApplicationContext acac = new AnnotationConfigApplicationContext();
-		acac.scan("com.moseeker.demo");
+		acac.scan("com.moseeker.candidate");
 		acac.scan("com.moseeker.common.aop.iface");
 		acac.refresh();
 		return acac;
