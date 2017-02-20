@@ -23,11 +23,11 @@ public class CustomizeResumeDaoImpl extends
 	}
 
 	protected CustomizeResume DBToStruct(ProfileOtherRecord r) {
-		return (CustomizeResume)BeanUtils.DBToStruct(CustomizeResume.class, r);
+		return BeanUtils.DBToStruct(CustomizeResume.class, r);
 	}
 
 	protected ProfileOtherRecord structToDB(CustomizeResume customizeResume)
 			throws ParseException {
-		return (ProfileOtherRecord)BeanUtils.structToDB(customizeResume, ProfileCredentialsRecord.class);
+		return BeanUtils.structToDB(customizeResume, ProfileOtherRecord.class);
 	}
 }

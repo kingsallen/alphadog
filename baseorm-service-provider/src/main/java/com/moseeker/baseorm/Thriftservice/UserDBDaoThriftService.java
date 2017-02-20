@@ -1,32 +1,24 @@
 package com.moseeker.baseorm.Thriftservice;
 
-import java.util.List;
-
-<<<<<<< HEAD
+import com.moseeker.baseorm.dao.userdb.UserDao;
+import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.dao.userdb.UserFavPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserHRAccountDao;
-import com.moseeker.thrift.gen.dao.struct.UserEmployeeDO;
-import com.moseeker.thrift.gen.dao.struct.UserFavPositionDO;
-import com.moseeker.thrift.gen.dao.struct.UserHrAccountDO;
-import com.moseeker.thrift.gen.dao.struct.UserUserDO;
-=======
+import com.moseeker.baseorm.service.UserEmployeeService;
+import com.moseeker.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.service.UserDBDao.Iface;
 import com.moseeker.thrift.gen.dao.struct.*;
->>>>>>> 4a0393a5704386fc0dd6d1bb63eeee37286fa4d0
+import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointStruct;
+import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.baseorm.dao.userdb.UserDao;
-import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
-import com.moseeker.baseorm.dao.userdb.UserFavPositionDao;
-import com.moseeker.baseorm.service.UserEmployeeService;
-import com.moseeker.db.userdb.tables.records.UserUserRecord;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.service.UserDBDao.Iface;
-import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointStruct;
-import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
+import java.util.List;
 
 @Service
 public class UserDBDaoThriftService implements Iface {
