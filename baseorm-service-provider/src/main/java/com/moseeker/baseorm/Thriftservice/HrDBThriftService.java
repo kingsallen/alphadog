@@ -54,6 +54,10 @@ public class HrDBThriftService implements Iface {
 	}
 
 	@Override
+	public List<HrPointsConfDO> getPointsConfs(CommonQuery query) throws TException {
+		return hrDaoService.getPointsConfs(query);
+	}
+
 	public HrHbConfigDO getHbConfig(CommonQuery query) throws TException {
 		return hrDaoService.getHbConfig(query);
 	}

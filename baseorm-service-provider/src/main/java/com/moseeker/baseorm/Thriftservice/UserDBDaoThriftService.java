@@ -2,11 +2,15 @@ package com.moseeker.baseorm.Thriftservice;
 
 import java.util.List;
 
+<<<<<<< HEAD
 import com.moseeker.baseorm.dao.userdb.UserHRAccountDao;
 import com.moseeker.thrift.gen.dao.struct.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.UserFavPositionDO;
 import com.moseeker.thrift.gen.dao.struct.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.UserUserDO;
+=======
+import com.moseeker.thrift.gen.dao.struct.*;
+>>>>>>> 4a0393a5704386fc0dd6d1bb63eeee37286fa4d0
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,8 +30,8 @@ import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 
 @Service
 public class UserDBDaoThriftService implements Iface {
-	
-	Logger logger = LoggerFactory.getLogger(UserDBDaoThriftService.class);
+
+	private Logger logger = LoggerFactory.getLogger(UserDBDaoThriftService.class);
 	
 	@Autowired
 	private UserDao userDao;
@@ -118,5 +122,10 @@ public class UserDBDaoThriftService implements Iface {
 	@Override
 	public Response putUserEmployeePoints(List<UserEmployeePointStruct> records) throws TException {
 		return userEmployeeService.putUserEmployeePointsRecords(records);
+	}
+
+	@Override
+	public List<UserEmployeePointsRecordDO> getUserEmployeePoints(int employeeId) throws TException {
+		return userEmployeeService.getUserEmployeePoints(employeeId);
 	}
 }

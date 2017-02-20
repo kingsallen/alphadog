@@ -3,6 +3,9 @@ package com.moseeker.baseorm.service.Impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.thrift.gen.dao.struct.UserEmployeePointsRecordDO;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -92,6 +95,23 @@ public class UserEmployeeServiceImpl implements UserEmployeeService {
 		}catch(Exception e){
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		}
+	}
+
+	@Override
+	public List<UserEmployeePointsRecordDO> getUserEmployeePoints(int employeeId) {
+		List<UserEmployeePointsRecordDO> result = new ArrayList<>();
+		try {
+			QueryUtil qu = new QueryUtil();
+			qu.addEqualFilter("employee_id", String.valueOf(employeeId));
+
+			List<com.moseeker.db.userdb.tables.records.UserEmployeePointsRecordRecord> records =
+					dao1.getResources(qu);
+			result = BeanUtils.DBToStruct(UserEmployeePointsRecordDO.class, records);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 	
 }

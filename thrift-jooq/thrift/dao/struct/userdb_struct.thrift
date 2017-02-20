@@ -1,12 +1,11 @@
-# file:userdb_struct.thrift 
-
 namespace java com.moseeker.thrift.gen.dao.struct
+namespace py thrift_gen.gen.dao.struct.userdb
 
 /**
  * TODO:list what notation this dateTime represents. eg ISO-8601
  * or if its in the format like YYYY-mm-DD you mentioned.
  */
-typedef string Timestamp;
+typedef string Timestamp
 
 struct UserFavPositionDO  {
     1: optional i32 sysuserId,          //用户编号 userdb.user_user.id
@@ -74,6 +73,22 @@ struct UserEmployeeDO {
     50: optional string customFieldValues  //自定 义字段键值, 结构[{<id>: "<value>"},{...},...]
 }
 
+struct UserEmployeePointsRecordDO {
+    1:  optional i32 id,
+    2:  optional i32 employee_idk
+    3:  optional string reason
+    4:  optional i32 award,
+    5:  optional string _create_time
+    6:  optional i32 application_id,
+    7:  optional i32 recom_wxuser,
+    8:  optional string update_time,
+    9:  optional i32 position_id,
+    10: optional i32 berecom_wxuser_id,
+    11: optional i32 award_config_id,
+    12: optional i32 recom_user_id,
+    13: optional i32 berecom_user_id
+}
+
 struct UserUserDO {
     1: optional i32 id,                         //数据库编号
     2: optional string username,                //用户名称
@@ -129,4 +144,3 @@ struct UserHrAccountDO {
     19: optional Timestamp updateTime,              // 修改时间
     20: optional string headimgurl                  // 修改时间
 }
-

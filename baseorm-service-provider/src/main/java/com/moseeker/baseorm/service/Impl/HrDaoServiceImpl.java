@@ -7,11 +7,11 @@ import com.moseeker.baseorm.dao.hrdb.HrHbItemsDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbPositionBindingDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbScratchCardDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbSendRecordDao;
+import com.moseeker.baseorm.dao.hrdb.HrPointsConfDao;
 import com.moseeker.baseorm.service.HrDaoService;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.struct.*;
-import com.moseeker.thrift.gen.dao.struct.HrHbConfigDO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +47,9 @@ public class HrDaoServiceImpl implements HrDaoService {
 
     @Autowired
     private HrEmployeeCustomFieldsDao hrEmployeeCustomFieldsDao;
+
+    @Autowired
+    private HrPointsConfDao hrPointsConfDao;
 
     @Override
     public HrHbConfigDO getHbConfig(CommonQuery query) throws TException {
@@ -173,6 +176,21 @@ public class HrDaoServiceImpl implements HrDaoService {
         try {
             List<com.moseeker.baseorm.db.hrdb.tables.records.HrEmployeeCustomFieldsRecord> records = hrEmployeeCustomFieldsDao.getResources(query);
             result = BeanUtils.DBToStruct(HrEmployeeCustomFieldsDO.class, records);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+        }
+        return result;
+    }
+
+    @Override
+    public List<HrPointsConfDO> getPointsConfs(CommonQuery query) throws TException {
+        List<HrPointsConfDO> result = new ArrayList<>();
+        try {
+            List<com.moseeker.baseorm.db.hrdb.tables.records.HrPointsConfRecord> records =
+                    hrPointsConfDao.getResources(query);
+            result = BeanUtils.DBToStruct(HrPointsConfDO.class, records);
         }
         catch (Exception e) {
             e.printStackTrace();

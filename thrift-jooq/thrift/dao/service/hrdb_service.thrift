@@ -1,4 +1,5 @@
 namespace java com.moseeker.thrift.gen.dao.service
+namespace py thrift_gen.gen.dao.service.hrdb
 
 include "../../common/struct/common_struct.thrift"
 include "../struct/hrdb_struct.thrift"
@@ -17,7 +18,7 @@ service HrDBDao {
     hrdb_struct.HrHbScratchCardDO getHbScratchCard(1: common_struct.CommonQuery query);
     
     hrdb_struct.HrHbSendRecordDO getHbSendRecord(1: common_struct.CommonQuery query);
-
+    
     common_struct.Response postHrOperationrecords(1:list<hrdb_struct.HrOperationrecordDO> record);
     common_struct.Response postHrOperationrecord(1:hrdb_struct.HrOperationrecordDO record);
     common_struct.Response getHrHistoryOperations(1:list<application_struct.ProcessValidationStruct> record);
@@ -27,4 +28,5 @@ service HrDBDao {
     hrdb_struct.HrEmployeeCertConfDO getEmployeeCertConf(1: common_struct.CommonQuery query);
 
     list<hrdb_struct.HrEmployeeCustomFieldsDO> getEmployeeCustomFields(1: common_struct.CommonQuery query);
+    list<hrdb_struct.HrPointsConfDO> getPointsConfs(1: common_struct.CommonQuery query);
 }
