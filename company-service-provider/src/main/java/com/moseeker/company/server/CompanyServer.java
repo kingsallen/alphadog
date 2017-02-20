@@ -37,7 +37,7 @@ public class CompanyServer {
 //			
 //			server.start(); // 启动服务，非阻塞
 			MoServer server = new MoServer(
-					acac,"server.properties",
+					acac,"",
 					acac.getBean(CompanyServicesImpl.class));
 			server.startServer();
 			synchronized (CompanyServer.class) {

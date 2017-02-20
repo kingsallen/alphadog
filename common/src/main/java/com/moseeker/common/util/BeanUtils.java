@@ -51,9 +51,9 @@ public class BeanUtils {
 	private static Logger logger = LoggerFactory.getLogger(BeanUtils.class);
 
 	@SuppressWarnings("rawtypes")
-	public static <T extends TBase, R extends UpdatableRecordImpl> UpdatableRecordImpl structToDB(T t, Class<R> origClazz,
+	public static <T extends TBase, R extends UpdatableRecordImpl> R structToDB(T t, Class<R> origClazz,
 			Map<String, String> equalRules) {
-		UpdatableRecordImpl orig = null;
+		R orig = null;
 		try {
 			orig = origClazz.newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {
@@ -64,8 +64,8 @@ public class BeanUtils {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public static <T extends TBase, R extends UpdatableRecordImpl> UpdatableRecordImpl structToDB(T t, Class<R> origClazz) {
-		UpdatableRecordImpl orig = null;
+	public static <T extends TBase, R extends UpdatableRecordImpl> R structToDB(T t, Class<R> origClazz) {
+		R orig = null;
 		try {
 			orig = origClazz.newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {
@@ -73,6 +73,16 @@ public class BeanUtils {
 		}
 		structToDB(t, orig, null);
 		return orig;
+	}
+
+	@SuppressWarnings("rawtypes")
+	public static <T extends TBase, R extends UpdatableRecordImpl> List<R> structToDB(List<T> ts, Class<R> origClazz) {
+		List<R> records = new ArrayList<R>();
+		ts.forEach(t -> {
+			R r = structToDB(t, origClazz);
+			records.add(r);
+		});
+		return records;
 	}
 
 	/**

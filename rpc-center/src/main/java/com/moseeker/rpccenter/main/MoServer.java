@@ -37,7 +37,7 @@ public class MoServer {
     private ServerRegistry serverRegistry;              //zookeeper节点注册服务
 
     private ConfigHelper configHelper = new ConfigHelper();
-    private String configName = "server.properties";    //配置文件名称
+    private String configName = "service.properties";    //配置文件名称
     private Object[] impls;                             //服务实现类
 
     public MoServer(AnnotationConfigApplicationContext acac) throws ClassNotFoundException, IncompleteException,

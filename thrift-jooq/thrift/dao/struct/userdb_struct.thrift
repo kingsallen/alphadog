@@ -1,12 +1,11 @@
-# file:userdb_struct.thrift 
-
 namespace java com.moseeker.thrift.gen.dao.struct
+namespace py thrift_gen.gen.dao.struct.userdb
 
 /**
  * TODO:list what notation this dateTime represents. eg ISO-8601
  * or if its in the format like YYYY-mm-DD you mentioned.
  */
-typedef string Timestamp;
+typedef string Timestamp
 
 struct UserFavPositionDO  {
     1: optional i32 sysuserId,          //用户编号 userdb.user_user.id
@@ -74,6 +73,22 @@ struct UserEmployeeDO {
     50: optional string customFieldValues  //自定 义字段键值, 结构[{<id>: "<value>"},{...},...]
 }
 
+struct UserEmployeePointsRecordDO {
+    1:  optional i32 id,
+    2:  optional i32 employee_idk
+    3:  optional string reason
+    4:  optional i32 award,
+    5:  optional string _create_time
+    6:  optional i32 application_id,
+    7:  optional i32 recom_wxuser,
+    8:  optional string update_time,
+    9:  optional i32 position_id,
+    10: optional i32 berecom_wxuser_id,
+    11: optional i32 award_config_id,
+    12: optional i32 recom_user_id,
+    13: optional i32 berecom_user_id
+}
+
 struct UserUserDO {
     1: optional i32 id,                         //数据库编号
     2: optional string username,                //用户名称
@@ -104,3 +119,28 @@ struct UserUserDO {
     27: optional Timestamp update_time          //修改时间
 }
 
+/*
+HR用户实体
+*/
+struct UserHrAccountDO {
+     1: optional i32 id,                            // 数据库编号
+     2: optional i32 companyId,                     // hrdb.hr_company.id
+     3: optional string mobile,                     // 手机号码
+     4: optional string email,                      // 邮箱
+     5: optional i32 wxuserId,                      // 绑定的微信账号
+     6: optional string password,                   // 登录密码
+     7: optional string username,                   // 企业联系人
+     8: optional i8 accountType,                    // 0 超级账号；1：子账号; 2：普通账号
+     9: optional i8 activation,                     // 账号是否激活，1：激活；0：未激活
+    10: optional i8 disable,                        // 1：可用账号；0禁用账号 ） 遵循数据库整体的设计习惯，1表示可用，0表示不可用
+    11: optional Timestamp registerTime,            // 注册时间
+    12: optional string registerIp,                 // 注册时的IP地址
+    13: optional Timestamp lastLoginTime,           // 最后的登录时间
+    14: optional string lastLoginIp,                // 最后一次登录的IP
+    15: optional i32 loginCount,                    // 登录次数
+    16: optional i32 source,                        // 来源1:雇主 2:官网 3:微信扫描 4:我也要招人(聚合号) 5:我也要招人(企业号)
+    17: optional string downloadToken,              // 下载行业报告校验码
+    18: optional Timestamp createTime,              // 创建时间
+    19: optional Timestamp updateTime,              // 修改时间
+    20: optional string headimgurl                  // 修改时间
+}

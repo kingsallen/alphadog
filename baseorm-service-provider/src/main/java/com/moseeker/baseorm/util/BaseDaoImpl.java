@@ -1,22 +1,22 @@
 package com.moseeker.baseorm.util;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
-import org.jooq.Condition;
-import org.jooq.DSLContext;
-import org.jooq.Field;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.SelectJoinStep;
-import org.jooq.SelectQuery;
-import org.jooq.SortField;
-import org.jooq.SortOrder;
-import org.jooq.TableLike;
+import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateCompanyRecord;
+import com.moseeker.thrift.gen.dao.struct.CURDException;
+import com.moseeker.thrift.gen.dao.struct.CandidateCompanyDO;
+import org.apache.thrift.TBase;
+import org.jooq.*;
 import org.jooq.impl.TableImpl;
 import org.jooq.impl.UpdatableRecordImpl;
 import org.slf4j.Logger;
@@ -59,8 +59,18 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 		try {
 			conn = DBConnHelper.DBConn.getConn();
 			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+
 			SelectJoinStep<Record> table = create.select().from(tableLike);
+
 			if(query != null) {
+				//解析查询条件
+				if(query.getAttributes().size() > 0) {
+					Field[] fields = (Field[]) query.getAttributes().stream().filter(attribute -> tableLike.field(attribute) != null).map(attribute -> tableLike.field(attribute)).toArray();
+					if(fields != null && fields.length > 0) {
+						table = create.select(fields).from(tableLike);
+					}
+				}
+
 				//解析equal fileter 内容
 				if (query.getEqualFilter() != null
 						&& query.getEqualFilter().size() > 0) {
@@ -86,6 +96,15 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 										entry.getValue(), field.getType())));
 							}
 						}
+					}
+				}
+				//解析groupby
+				if(query.getGrouops().size() > 0) {
+
+					Field[] fields = (Field[]) query.getGrouops().stream().filter(group -> tableLike.field(group) != null).map(group -> tableLike.field(group)).toArray();
+
+					if(fields != null && fields.length > 0) {
+						table.groupBy(fields);
 					}
 				}
 				//解析排序
@@ -116,6 +135,9 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 					}
 					table.orderBy(fields);
 				}
+
+
+
 				/* 分段查找数据库结果集 */
 				int page = 1;
 				int per_page = 0;
@@ -165,6 +187,13 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 						selectQuery.addConditions(field.strictEqual(BeanUtils.convertTo(
 								entry.getValue(), field.getType())));
 					}
+				}
+			}
+
+			if(query.getGrouops() != null && query.getGrouops().size() > 0) {
+				Field[] fields = (Field[]) query.getGrouops().stream().filter(group -> tableLike.field(group) != null).map(group -> tableLike.field(group)).toArray();
+				if(fields != null && fields.length > 0) {
+					selectQuery.addGroupBy(fields);
 				}
 			}
 			totalCount = create.fetchCount(selectQuery);

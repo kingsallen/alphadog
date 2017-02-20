@@ -3,6 +3,7 @@ package com.moseeker.baseorm.dao.userdb;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.UserUserDO;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Service;
@@ -23,35 +24,10 @@ import com.moseeker.db.userdb.tables.records.UserUserRecord;
  * @version
  */
 @Service
-public class UserDao extends BaseDaoImpl<UserUserRecord, UserUser> {
+public class UserDao extends StructDaoImpl<UserUserDO, UserUserRecord, UserUser> {
 
 	@Override
 	protected void initJOOQEntity() {
 		this.tableLike = UserUser.USER_USER;
 	}
-
-	/**
-	 * 对用户数据持久化，并返回结果
-	 * @param user
-	 * @return
-	 */
-	public UserUserDO saveUser(UserUserDO user) {
-		UserUserRecord record = (UserUserRecord)BeanUtils.structToDB(user, UserUserRecord.class);
-		try (
-				Connection conn = DBConnHelper.DBConn.getConn();
-				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-				) {
-			create.attach(record);
-			record.insert();
-			record.into(user);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			logger.error(e.getMessage(), e);
-		} finally {
-			//do nothing
-		}
-		return user;
-	}
-
 }

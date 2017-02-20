@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.dao.struct.JobApplicationDO;
 import org.jooq.DSLContext;
 import org.jooq.Record3;
 import org.jooq.Record9;
@@ -49,12 +50,12 @@ public class JobApplicationDao extends BaseDaoImpl<JobApplicationRecord, JobAppl
 	 * @param query
 	 * @return
 	 */
-	public List<com.moseeker.thrift.gen.application.struct.JobApplication> getApplications(CommonQuery query) {
-		List<com.moseeker.thrift.gen.application.struct.JobApplication> applications = new ArrayList<>();
+	public List<JobApplicationDO> getApplications(CommonQuery query) {
+		List<JobApplicationDO> applications = new ArrayList<>();
 		try {
 			List<JobApplicationRecord> records = getResources(query);
 			if(records != null && records.size() > 0) {
-				applications = BeanUtils.DBToStruct(com.moseeker.thrift.gen.application.struct.JobApplication.class, records);
+				applications = BeanUtils.DBToStruct(JobApplicationDO.class, records);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

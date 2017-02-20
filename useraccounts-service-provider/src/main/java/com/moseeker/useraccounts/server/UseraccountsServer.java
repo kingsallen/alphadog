@@ -43,7 +43,7 @@ public class UseraccountsServer {
 //                    acac.getBean(UserCenterThriftService.class),
 //                    acac.getBean(UseraccountsServiceImpl.class));
 //            server.start(); // 阻塞式IO + 多线程处理
-            MoServer server = new MoServer(acac,"server.properties",
+            MoServer server = new MoServer(acac,"",
             		acac.getBean(UserHrAccountServiceImpl.class),
                     acac.getBean(UsersettingsServicesImpl.class),
                     acac.getBean(UserCommonThriftService.class),

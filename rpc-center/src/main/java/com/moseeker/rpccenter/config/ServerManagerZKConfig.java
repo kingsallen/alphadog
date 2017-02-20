@@ -54,7 +54,7 @@ public enum ServerManagerZKConfig {
         ConfigPropertiesUtil configUtil = ConfigPropertiesUtil.getInstance();
         try {
         	
-        	configUtil.loadResource("services.properties");
+        	configUtil.loadResource("service.properties");
 			this.IP = configUtil.get("zookeeper.ZKIP", String.class, "127.0.0.1");
 			this.port = configUtil.get("zookeeper.ZKport", Integer.class, 0);
 			this.root = configUtil.get("zookeeper.root", String.class, Constants.ZK_NAMESPACE_ROOT);

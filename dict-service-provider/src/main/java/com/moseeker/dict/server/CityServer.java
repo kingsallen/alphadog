@@ -38,7 +38,7 @@ public class CityServer {
 //            );
 //            server.start();
         	MoServer server = new MoServer(
-                    acac,"server.properties",
+                    acac,"",
                     acac.getBean(CollegeServicesImpl.class),
                     acac.getBean(DictConstantServiceImpl.class),
                     acac.getBean(DictCountryServiceImpl.class),

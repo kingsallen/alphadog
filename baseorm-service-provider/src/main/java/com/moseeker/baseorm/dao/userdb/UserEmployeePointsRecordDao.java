@@ -25,6 +25,7 @@ public class UserEmployeePointsRecordDao extends BaseDaoImpl<UserEmployeePointsR
 		// TODO Auto-generated method stub
 		this.tableLike=UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD;
 	}
+
 	public List<UserEmployeePointSum> getSumRecord(List<Long> list) throws Exception{
 		Connection conn = null;
 		List<UserEmployeePointSum> points=new ArrayList<UserEmployeePointSum>();

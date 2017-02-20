@@ -37,7 +37,7 @@ public class MqServer {
 //            );
 //            server.start();
         	MoServer server = new MoServer(
-                  acac,"server.properties",
+                  acac,"",
                   acac.getBean(ThriftService.class)
           );
         	server.startServer();

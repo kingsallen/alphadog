@@ -2,7 +2,6 @@ package com.moseeker.baseorm.service;
 
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.struct.*;
-import com.moseeker.thrift.gen.dao.struct.HrHbConfigDO;
 import org.apache.thrift.TException;
 
 import java.util.List;
@@ -26,6 +25,8 @@ public interface HrDaoService {
     HrHbSendRecordDO getHbSendRecord(CommonQuery query) throws TException;
 
     HrEmployeeCertConfDO getEmployeeCertConf(CommonQuery query) throws TException;
+
+    List<HrPointsConfDO> getPointsConfs(CommonQuery query) throws TException;
 
     List<HrEmployeeCustomFieldsDO> getEmployeeCustomFields(CommonQuery query) throws TException;
 }

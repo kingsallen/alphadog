@@ -1,31 +1,29 @@
 package com.moseeker.baseorm.Thriftservice;
 
-import java.util.List;
-
-import com.moseeker.thrift.gen.dao.struct.UserEmployeeDO;
-import com.moseeker.thrift.gen.dao.struct.UserFavPositionDO;
-import com.moseeker.thrift.gen.dao.struct.UserUserDO;
+import com.moseeker.baseorm.dao.userdb.UserDao;
+import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.dao.userdb.UserFavPositionDao;
+import com.moseeker.baseorm.dao.userdb.UserHRAccountDao;
+import com.moseeker.baseorm.service.UserEmployeeService;
+import com.moseeker.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.service.UserDBDao.Iface;
+import com.moseeker.thrift.gen.dao.struct.*;
+import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointStruct;
+import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.baseorm.dao.userdb.UserDao;
-import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
-import com.moseeker.baseorm.dao.userdb.UserFavPositionDao;
-import com.moseeker.baseorm.service.UserEmployeeService;
-import com.moseeker.db.userdb.tables.records.UserUserRecord;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.service.UserDBDao.Iface;
-import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointStruct;
-import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
+import java.util.List;
 
 @Service
 public class UserDBDaoThriftService implements Iface {
-	
-	Logger logger = LoggerFactory.getLogger(UserDBDaoThriftService.class);
+
+	private Logger logger = LoggerFactory.getLogger(UserDBDaoThriftService.class);
 	
 	@Autowired
 	private UserDao userDao;
@@ -37,7 +35,10 @@ public class UserDBDaoThriftService implements Iface {
 	private UserEmployeeDao employeeDao;
 	
 	@Autowired
-	private UserEmployeeService userEmployeeService; 
+	private UserEmployeeService userEmployeeService;
+
+	@Autowired
+	private UserHRAccountDao userHRAccountDao;
 
 	@Override
 	public UserUserDO getUser(CommonQuery query) throws TException {
@@ -58,11 +59,21 @@ public class UserDBDaoThriftService implements Iface {
 	}
 
 	@Override
+	public List<UserUserDO> listUser(CommonQuery query) throws TException {
+		return userDao.listResources(query);
+	}
+
+	@Override
 	public UserUserDO saveUser(UserUserDO user) throws TException {
 		if(user.getPassword() == null) {
 			user.setPassword("");
 		}
-		return userDao.saveUser(user);
+		return userDao.saveResource(user);
+	}
+
+	@Override
+	public List<UserHrAccountDO> listHRFromCompany(int comanyId) throws TException {
+		return userHRAccountDao.listHRFromCompany(comanyId);
 	}
 
 	@Override
@@ -103,5 +114,10 @@ public class UserDBDaoThriftService implements Iface {
 	@Override
 	public Response putUserEmployeePoints(List<UserEmployeePointStruct> records) throws TException {
 		return userEmployeeService.putUserEmployeePointsRecords(records);
+	}
+
+	@Override
+	public List<UserEmployeePointsRecordDO> getUserEmployeePoints(int employeeId) throws TException {
+		return userEmployeeService.getUserEmployeePoints(employeeId);
 	}
 }

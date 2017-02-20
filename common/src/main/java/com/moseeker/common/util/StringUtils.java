@@ -1,5 +1,8 @@
 package com.moseeker.common.util;
 
+import com.moseeker.thrift.gen.profile.struct.Intention;
+
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
@@ -73,5 +76,17 @@ public class StringUtils {
 	    }     
 	    return sb.toString();     
 	 }   	
-    
+
+	 public static String converToArrayStr(Collection<Integer> collection) {
+		if(collection != null && collection.size() > 0) {
+			StringBuffer sb = new StringBuffer();
+			sb.append("[");
+			collection.forEach(i -> sb.append(i).append(","));
+			sb.deleteCharAt(sb.length()-1);
+			sb.append("]");
+			return sb.toString();
+		} else {
+			return null;
+		}
+	 }
 }

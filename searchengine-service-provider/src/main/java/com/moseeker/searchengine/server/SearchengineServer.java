@@ -21,7 +21,7 @@ public class SearchengineServer {
 //					acac.getBean(SearchengineServiceImpl.class));
 //			
 //			server.start(); // 启动服务，非阻塞
-			MoServer server=new MoServer(acac,"server.properties",acac.getBean(SearchengineServiceImpl.class));
+			MoServer server=new MoServer(acac,"",acac.getBean(SearchengineServiceImpl.class));
 			server.startServer();
 			synchronized (SearchengineServer.class) {
 				while (true) {

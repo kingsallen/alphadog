@@ -1,6 +1,5 @@
-# file: jobdb_struct 
-
 namespace java com.moseeker.thrift.gen.dao.struct
+namespace py thrift_gen.gen.dao.struct.jobdb
 
 /**
  * TODO:list what notation this dateTime represents. eg ISO-8601
