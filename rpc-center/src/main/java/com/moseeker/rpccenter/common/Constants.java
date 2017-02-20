@@ -11,7 +11,7 @@ public class Constants {
     public static final String ZOO_CONF_FILE = "zookeeper.properties";
 
     /** zookeeper根目录 */
-    public static final String ZK_NAMESPACE_ROOT = "server_menu";
+    public static final String ZK_NAMESPACE_ROOT = "service_menu";
 
     /** zookeeper目录分割符 */
     public static final String ZK_SEPARATOR_DEFAULT = "/";
