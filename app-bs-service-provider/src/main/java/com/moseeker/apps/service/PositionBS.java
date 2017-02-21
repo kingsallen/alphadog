@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.moseeker.thrift.gen.dao.struct.HrCompanyDO;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
@@ -219,7 +220,7 @@ public class PositionBS {
 			try {
 				QueryUtil qu = new QueryUtil();
 				qu.addEqualFilter("id", String.valueOf(companyId));
-				Hrcompany company = CompanyDao.getCompany(qu);
+				HrCompanyDO company = CompanyDao.getCompany(qu);
 				for(ThirdPartyPosition channel : channels) {
 					if(channel.isUse_company_address()) {
 						channel.setAddress(company.getAddress());

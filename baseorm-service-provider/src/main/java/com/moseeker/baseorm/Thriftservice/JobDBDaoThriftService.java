@@ -39,4 +39,9 @@ public class JobDBDaoThriftService implements Iface {
 		return applicationDao.getApplications(query);
 	}
 
+	@Override
+	public JobApplicationDO getApplication(CommonQuery query) throws TException {
+		return applicationDao.findResource(query);
+	}
+
 }

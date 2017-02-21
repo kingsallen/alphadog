@@ -33,6 +33,7 @@ dependencies {
     compile deps["aspectjrt"]
     compile fileTree(dir:'../libs',include:'*.jar')
 
+    compile 'org.jetbrains:annotations:15.0'
 }
 
 project.description = '''

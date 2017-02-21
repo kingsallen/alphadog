@@ -3,6 +3,7 @@ package com.moseeker.baseorm.Thriftservice;
 import java.util.List;
 import java.util.Set;
 
+import com.moseeker.baseorm.dao.hrdb.CompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
 import com.moseeker.thrift.gen.dao.struct.*;
 import org.apache.thrift.TException;
@@ -28,18 +29,21 @@ public class HrDBThriftService implements Iface {
 	@Autowired
 	private HrOperationRecordDao hrOperationRecordDao;
 
+	@Autowired
+	private CompanyDao companyDao;
+
 	@Override
 	public Response getHrHistoryOperations(List<ProcessValidationStruct> record) throws TException {
 		return hrDBService.getHrHistoryOpertation(record);
 	}
 
 	@Override
-	public List<HrOperationrecordDO> listHrOperationRecord(CommonQuery query) throws TException {
+	public List<HrOperationRecordDO> listHrOperationRecord(CommonQuery query) throws TException {
 		return hrOperationRecordDao.listResources(query);
 	}
 
 	@Override
-	public List<HrOperationrecordDO> listLatestOperationRecordByAppIdSet(Set<Integer> appidSet) throws TException {
+	public List<HrOperationRecordDO> listLatestOperationRecordByAppIdSet(Set<Integer> appidSet) throws TException {
 		return hrOperationRecordDao.listLatestOperationRecordByAppIdSet(appidSet);
 	}
 
@@ -56,6 +60,11 @@ public class HrDBThriftService implements Iface {
 	@Override
 	public List<HrPointsConfDO> getPointsConfs(CommonQuery query) throws TException {
 		return hrDaoService.getPointsConfs(query);
+	}
+
+	@Override
+	public HrCompanyDO getCompany(CommonQuery query) throws TException {
+		return companyDao.getCompany(query);
 	}
 
 	public HrHbConfigDO getHbConfig(CommonQuery query) throws TException {
@@ -98,13 +107,13 @@ public class HrDBThriftService implements Iface {
 	}
 
 	@Override
-	public Response postHrOperationrecords(List<HrOperationrecordDO> record)
+	public Response postHrOperationrecords(List<HrOperationRecordDO> record)
 			throws TException {
 		return hrDBService.postHrOperations(record);
 	}
 
 	@Override
-	public Response postHrOperationrecord(HrOperationrecordDO record)
+	public Response postHrOperationrecord(HrOperationRecordDO record)
 			throws TException {
 		return hrDBService.postHrOperation(record);
 	}

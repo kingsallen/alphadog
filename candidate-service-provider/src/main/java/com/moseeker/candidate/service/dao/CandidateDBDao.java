@@ -4,6 +4,7 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.dao.struct.*;
 import org.apache.thrift.TException;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,37 +41,31 @@ public class CandidateDBDao {
         }
     }
 
-    public static void updateCandidateCompany(CandidateCompanyDO candidateCompany) throws TException {
+    public static void updateCandidateCompany(CandidateCompanyDO candidateCompany) throws TException  {
         candidateCompany = candidateDBDao.updateCandidateCompanys(candidateCompany);
     }
 
-    public static Optional<JobPositionDO> getPositionByID(int positionID) throws TException {
+    public static JobPositionDO getPositionByID(int positionID) {
         QueryUtil queryUtil = new QueryUtil();
         queryUtil.addEqualFilter("id", String.valueOf(positionID));
         try {
             JobPositionDO positionDO = jobDBDao.getPosition(queryUtil);
-            return Optional.of(positionDO);
-        } catch (CURDException e) {
-            if(e.getCode() != 90010) {
-                throw e;
-            } else {
-                return Optional.of(null);
-            }
+            return positionDO;
+        } catch (TException e) {
+            LoggerFactory.getLogger(CandidateDBDao.class).error(e.getMessage(), e);
+            return null;
         }
     }
 
-    public static Optional<UserUserDO> getUserByID(int userID) throws TException {
+    public static UserUserDO getUserByID(int userID) {
         QueryUtil queryUtil = new QueryUtil();
         queryUtil.addEqualFilter("id", String.valueOf(userID));
         try {
             UserUserDO userUserDO = userDBDao.getUser(queryUtil);
-            return Optional.of(userUserDO);
-        } catch (CURDException e) {
-            if(e.getCode() != 90010) {
-                throw e;
-            } else {
-                return Optional.of(null);
-            }
+            return userUserDO;
+        } catch (TException e) {
+            LoggerFactory.getLogger(CandidateDBDao.class).error(e.getMessage(), e);
+            return null;
         }
     }
 
@@ -121,5 +116,13 @@ public class CandidateDBDao {
 
     public static void updateCandidateRemarks(List<CandidateRemarkDO> crs) throws TException {
         candidateDBDao.updateCandidateRemarks(crs);
+    }
+
+    public static CandidateShareChainDO getCandidateShareChain(int shareChainID) {
+        return null;
+    }
+
+    public static UserEmployeeDO getEmployee(int userID) {
+        return null;
     }
 }

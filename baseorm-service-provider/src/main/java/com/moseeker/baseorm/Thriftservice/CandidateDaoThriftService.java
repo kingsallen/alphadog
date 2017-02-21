@@ -6,6 +6,7 @@ import com.moseeker.thrift.gen.dao.service.CandidateDBDao;
 import com.moseeker.thrift.gen.dao.struct.*;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import java.util.Map;
  * candidatedb数据库表的增删该查操作
  * Created by jack on 15/02/2017.
  */
+@Service
 public class CandidateDaoThriftService implements CandidateDBDao.Iface {
 
     @Autowired

@@ -232,22 +232,90 @@ public class UserCenterBizTools {
 	}
 
 	/**
-	 * 根据申请编号，查找最后一条操作记录
+	 * 根据申请编号，查找排除不合适记录的最后一条操作记录
 	 * @param rejectAppIdSet 申请编号
-	 * @return 拒绝上一条操作记录
+	 * @return 最后一条操作记录
 	 */
-	public List<HrOperationrecordDO> listHrOperationRecord(Set<Integer> rejectAppIdSet) {
-		List<HrOperationrecordDO> hrOperationrecordDOList = new ArrayList<>();
+	public List<HrOperationRecordDO> listLastHrOperationRecordPassedReject(Set<Integer> rejectAppIdSet) {
+		List<HrOperationRecordDO> hrOperationRecordDOList = new ArrayList<>();
 
 		if(rejectAppIdSet != null && rejectAppIdSet.size() > 0) {
 			try {
-				hrOperationrecordDOList = hrDBDao.listLatestOperationRecordByAppIdSet(rejectAppIdSet);
+				hrOperationRecordDOList = hrDBDao.listLatestOperationRecordByAppIdSet(rejectAppIdSet);
 			} catch (TException e) {
 				logger.error(e.getMessage(), e);
 			}
 		}
 
-		return hrOperationrecordDOList;
+		return hrOperationRecordDOList;
 
+	}
+
+	/**
+	 * 查找申请记录集合信息
+	 * @param appId 申请记录编号
+	 * @return 申请记录集合
+	 * @throws TException thrift异常
+	 */
+	public JobApplicationDO getApplication(int appId) throws TException {
+		QueryUtil qu = new QueryUtil();
+		qu.addEqualFilter("id", appId).addEqualFilter("disable", AbleFlag.OLDENABLE.getValueStr());
+
+		qu.addSelectAttribute("id").addSelectAttribute("applier_id").addSelectAttribute("email_status")
+				.addSelectAttribute("apply_type").addSelectAttribute("app_tpl_id").addSelectAttribute("position_id")
+				.addSelectAttribute("company_id");
+		return jobDBDao.getApplication(qu);
+	}
+
+	/**
+	 * 查找职位名称
+	 * @param positionId 职位编号
+	 * @return 职位信息
+	 */
+	public JobPositionDO getPosition(int positionId) {
+		QueryUtil qu = new QueryUtil();
+		qu.addEqualFilter("id", positionId);
+		qu.addSelectAttribute("id").addSelectAttribute("title");
+		try {
+			return jobDBDao.getPosition(qu);
+		} catch (TException e) {
+			logger.error(e.getMessage(), e);
+			return null;
+		}
+	}
+
+	/**
+	 * 查询公司名称
+	 * @param companyId
+	 * @return
+	 */
+	public HrCompanyDO getCompany(int companyId) {
+		QueryUtil qu = new QueryUtil();
+		qu.addEqualFilter("id", companyId);
+		qu.addSelectAttribute("id").addSelectAttribute("name").addSelectAttribute("abbreviation");
+		try {
+			return hrDBDao.getCompany(qu);
+		} catch (TException e) {
+			logger.error(e.getMessage(), e);
+			return null;
+		}
+	}
+
+	/**
+	 * 根据申请编号查找该申请记录的HR操作记录
+	 * @param appId 申请记录
+	 * @return 操作记录
+	 */
+	public List<HrOperationRecordDO> listHrOperationRecord(int appId) {
+		QueryUtil queryUtil = new QueryUtil();
+		queryUtil.addEqualFilter("app_id", appId);
+		queryUtil.addSelectAttribute("id").addSelectAttribute("app_id").addSelectAttribute("opt_time");
+		queryUtil.setSortby("opt_time");
+		try {
+			return hrDBDao.listHrOperationRecord(queryUtil);
+		} catch (TException e) {
+			logger.error(e.getMessage(), e);
+			return null;
+		}
 	}
 }

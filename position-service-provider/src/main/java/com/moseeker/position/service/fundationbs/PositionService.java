@@ -512,7 +512,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 				}
 
 				// 获取公司信息，拼装 company abbr, logo 等信息
-				final Hrcompany companyInfo;
+				final HrCompanyDO companyInfo;
 
 				QueryUtil hrm = new QueryUtil();
 				if (query.getDid() == 0) {
@@ -521,7 +521,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 else {
                     hrm.addEqualFilter("id", String.valueOf(query.getDid()));
                 }
-				Hrcompany mainCompanyInfo = companyDao.getCompany(hrm);
+				HrCompanyDO mainCompanyInfo = companyDao.getCompany(hrm);
 
 
 				if (query.isSetDid() && query.getDid() == query.getCompany_id()) {
@@ -529,9 +529,9 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 
 					QueryUtil hrd = new QueryUtil();
 					hrd.addEqualFilter("id", String.valueOf(query.getDid()));
-					Hrcompany subCompanyInfo = companyDao.getCompany(hrd);
+					HrCompanyDO subCompanyInfo = companyDao.getCompany(hrd);
 
-					if (subCompanyInfo.getParent_id() == mainCompanyInfo.getId()) {
+					if (subCompanyInfo.getParentId() == mainCompanyInfo.getId()) {
 						companyInfo = subCompanyInfo;
 					}
 					else {
@@ -769,7 +769,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 			qu.addEqualFilter("id", String.valueOf(hbConfigId));
             Integer companyId = hrDao.getHbConfig(qu).getCompany_id();
             qu.addEqualFilter("id", String.valueOf(companyId));
-            Hrcompany company = companyDao.getCompany(qu);
+			HrCompanyDO company = companyDao.getCompany(qu);
             result.forEach(s -> {
                 s.setCompany_abbr(company.getAbbreviation());
                 s.setCompany_logo(company.getLogo());

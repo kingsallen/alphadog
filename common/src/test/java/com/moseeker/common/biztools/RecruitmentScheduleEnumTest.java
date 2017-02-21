@@ -1,6 +1,5 @@
 package com.moseeker.common.biztools;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.After;
@@ -39,34 +38,34 @@ public class RecruitmentScheduleEnumTest {
         RecruitmentScheduleEnum recruitmentScheduleEnum = RecruitmentScheduleEnum.createFromID(4);
 
         recruitmentScheduleEnum.setLastStep(7);
-        assertEquals(6, recruitmentScheduleEnum.getDisplayStatus());
+        assertEquals(6, recruitmentScheduleEnum.getStatusForRecommendationInPersonalCenter());
 
         recruitmentScheduleEnum.setLastStep(13);
-        assertEquals(6, recruitmentScheduleEnum.getDisplayStatus());
+        assertEquals(6, recruitmentScheduleEnum.getStatusForRecommendationInPersonalCenter());
 
         recruitmentScheduleEnum.setLastStep(1);
-        assertEquals(6, recruitmentScheduleEnum.getDisplayStatus());
+        assertEquals(6, recruitmentScheduleEnum.getStatusForRecommendationInPersonalCenter());
 
         recruitmentScheduleEnum.setLastStep(6);
-        assertEquals(7, recruitmentScheduleEnum.getDisplayStatus());
+        assertEquals(7, recruitmentScheduleEnum.getStatusForRecommendationInPersonalCenter());
 
         recruitmentScheduleEnum.setLastStep(8);
-        assertEquals(8, recruitmentScheduleEnum.getDisplayStatus());
+        assertEquals(8, recruitmentScheduleEnum.getStatusForRecommendationInPersonalCenter());
 
         recruitmentScheduleEnum.setLastStep(9);
-        assertEquals(8, recruitmentScheduleEnum.getDisplayStatus());
+        assertEquals(8, recruitmentScheduleEnum.getStatusForRecommendationInPersonalCenter());
 
         recruitmentScheduleEnum.setLastStep(10);
-        assertEquals(8, recruitmentScheduleEnum.getDisplayStatus());
+        assertEquals(8, recruitmentScheduleEnum.getStatusForRecommendationInPersonalCenter());
 
         recruitmentScheduleEnum.setLastStep(2);
-        assertEquals(9, recruitmentScheduleEnum.getDisplayStatus());
+        assertEquals(9, recruitmentScheduleEnum.getStatusForRecommendationInPersonalCenter());
 
         recruitmentScheduleEnum.setLastStep(5);
-        assertEquals(9, recruitmentScheduleEnum.getDisplayStatus());
+        assertEquals(9, recruitmentScheduleEnum.getStatusForRecommendationInPersonalCenter());
 
         recruitmentScheduleEnum.setLastStep(12);
-        assertEquals(9, recruitmentScheduleEnum.getDisplayStatus());
+        assertEquals(9, recruitmentScheduleEnum.getStatusForRecommendationInPersonalCenter());
     }
 
     /**
@@ -77,10 +76,10 @@ public class RecruitmentScheduleEnumTest {
         RecruitmentScheduleEnum recruitmentScheduleEnum = RecruitmentScheduleEnum.createFromID(1);
 
         recruitmentScheduleEnum.setLastStep(7);
-        assertEquals(1, recruitmentScheduleEnum.getDisplayStatus());
+        assertEquals(1, recruitmentScheduleEnum.getStatusForRecommendationInPersonalCenter());
 
         recruitmentScheduleEnum.setLastStep(13);
-        assertEquals(1, recruitmentScheduleEnum.getDisplayStatus());
+        assertEquals(1, recruitmentScheduleEnum.getStatusForRecommendationInPersonalCenter());
 
 
     }

@@ -16,7 +16,7 @@ public class CandidateThriftService implements CandidateService.Iface {
     private Candidate candidate;
 
     @Override
-    public void glancePosition(int userId, int positionId, boolean fromEmployee) throws TException {
-        candidate.glancePosition(userId,positionId,fromEmployee);
+    public void glancePosition(int userId, int positionId, int shareChainId) throws TException {
+        candidate.glancePosition(userId, positionId, shareChainId);
     }
 }

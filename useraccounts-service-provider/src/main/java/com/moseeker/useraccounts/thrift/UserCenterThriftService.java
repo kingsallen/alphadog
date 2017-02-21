@@ -32,4 +32,6 @@ public class UserCenterThriftService implements Iface {
 	public List<RecommendationForm> listRecommendation(int userId, int pageNo, int pageSize) throws TException {
 		return userCenterService.listRecommendations(userId, pageNo, pageSize);
 	}
+
+
 }

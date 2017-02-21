@@ -1,27 +1,27 @@
 package com.moseeker.baseorm.dao.hrdb;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
-import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
+import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
+import com.moseeker.thrift.gen.dao.struct.HrCompanyDO;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
-public class CompanyDao extends BaseDaoImpl<HrCompanyRecord, HrCompany> {
+public class CompanyDao extends StructDaoImpl<HrCompanyDO, HrCompanyRecord, HrCompany> {
 
 	@Override
 	protected void initJOOQEntity() {
 		this.tableLike = HrCompany.HR_COMPANY;
 	}
 
-	public Hrcompany getCompany(CommonQuery query) {
-		Hrcompany company = new Hrcompany();
+	public HrCompanyDO getCompany(CommonQuery query) {
+		HrCompanyDO company = new HrCompanyDO();
 		try {
 			HrCompanyRecord record = this.getResource(query);
 			record.into(company);

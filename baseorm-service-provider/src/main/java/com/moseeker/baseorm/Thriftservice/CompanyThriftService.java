@@ -12,6 +12,7 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.service.CompanyDao.Iface;
+import com.moseeker.thrift.gen.dao.struct.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import org.apache.thrift.TException;
@@ -111,7 +112,7 @@ public class CompanyThriftService implements Iface {
 	}
 	
 	@Override
-	public Hrcompany getCompany(CommonQuery query) throws TException {
+	public HrCompanyDO getCompany(CommonQuery query) throws TException {
 		return companyDao.getCompany(query);
 	}
 

@@ -6,6 +6,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.moseeker.common.util.ConfigPropertiesUtil;
+import com.moseeker.rpccenter.common.Constants;
 import com.moseeker.rpccenter.config.ServerData;
 import com.moseeker.rpccenter.config.ThriftConfig;
 import com.moseeker.rpccenter.config.ZKConfig;
@@ -92,15 +93,15 @@ class ConfigHelper {
         }
 
         int interval = configUtils.get("zookeeper.interval", Integer.class, 0);
-        String root = configUtils.get("zookeeper.root", String.class, "");
-        String servers = configUtils.get("zookeeper.servers", String.class, "");
-        String zkSeparator = configUtils.get("zookeeper.zkSeparator", String.class, "");
-        int sessionTimeOut = configUtils.get("zookeeper.sessionTimeOut", Integer.class, 0);
-        int connectionTimeOut = configUtils.get("zookeeper.connectionTimeOut", Integer.class, 0);
-        int baseSleepTimeMS = configUtils.get("zookeeper.baseSleepTimeMS", Integer.class, 0);
-        int maxRetry = configUtils.get("zookeeper.maxRetry", Integer.class, 0);
-        String protocol = configUtils.get("zookeeper.protocol", String.class, "");
-        int weight = configUtils.get("zookeeper.weight", Integer.class, 0);
+        String root = configUtils.get("zookeeper.root", String.class, Constants.ZK_NAMESPACE_ROOT);
+        String servers = configUtils.get("zookeeper.servers", String.class, Constants.ZK_NAMESPACE_SERVERS);
+        String zkSeparator = configUtils.get("zookeeper.zkSeparator", String.class, Constants.ZK_SEPARATOR_DEFAULT);
+        int sessionTimeOut = configUtils.get("zookeeper.sessionTimeOut", Integer.class, 30000);
+        int connectionTimeOut = configUtils.get("zookeeper.connectionTimeOut", Integer.class, 15000);
+        int baseSleepTimeMS = configUtils.get("zookeeper.baseSleepTimeMS", Integer.class, 1000);
+        int maxRetry = configUtils.get("zookeeper.maxRetry", Integer.class, 3);
+        String protocol = configUtils.get("zookeeper.protocol", String.class, "thrift");
+        int weight = configUtils.get("zookeeper.weight", Integer.class, 10);
         String zkIP = configUtils.get("zookeeper.ZKIP", String.class, "");
         int zkPort = configUtils.get("zookeeper.ZKport", Integer.class, 0);
         int multi = configUtils.get("zookeeper.multi", Integer.class, 0);
@@ -108,11 +109,11 @@ class ConfigHelper {
         String language = configUtils.get("zookeeper.language", String.class, "");
 
         String server_type = configUtils.get("thrift.server_type", String.class, "");
-        int initialCapacity = configUtils.get("thrift.initialCapacity", Integer.class, 0);
-        int maxLength = configUtils.get("thrift.maxLength", Integer.class, 0);
-        int selector = configUtils.get("thrift.selector", Integer.class, 0);
-        int worker = configUtils.get("thrift.worker", Integer.class, 0);
-        int retry = configUtils.get("thrift.retry", Integer.class, 0);
+        int initialCapacity = configUtils.get("thrift.initialCapacity", Integer.class, 1024);
+        int maxLength = configUtils.get("thrift.maxLength", Integer.class, 1024*1024*1024);
+        int selector = configUtils.get("thrift.selector", Integer.class, 4);
+        int worker = configUtils.get("thrift.worker", Integer.class, 4);
+        int retry = configUtils.get("thrift.retry", Integer.class, 3);
 
         String IP = configUtils.get("thrift.ip", String.class, "");
         int port = configUtils.get("thrift.port", Integer.class, 0);
