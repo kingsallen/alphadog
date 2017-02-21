@@ -590,7 +590,7 @@ public class UseraccountsService {
 	public Response getismobileregisted(String mobile) throws TException {
 		CommonQuery query = new CommonQuery();
 		Map<String, String> filters = new HashMap<>();
-		if (mobile.length() > 0) {
+		if (mobile != null && mobile.length() > 0) {
 			filters.put("username", mobile);
 			query.setEqualFilter(filters);
 			try {

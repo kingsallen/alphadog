@@ -11,7 +11,11 @@ import com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm;
 import com.moseeker.thrift.gen.useraccounts.struct.AwardRecordForm;
 import com.moseeker.thrift.gen.useraccounts.struct.FavPositionForm;
 import com.moseeker.thrift.gen.useraccounts.struct.RecommendationForm;
+import com.moseeker.useraccounts.service.impl.biztools.ApplyType;
+import com.moseeker.useraccounts.service.impl.biztools.EmailStatus;
 import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
+import com.moseeker.useraccounts.service.impl.pojos.ApplicationDetailVO;
+import com.moseeker.useraccounts.service.impl.pojos.ApplicationOperationRecordVO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -132,6 +136,7 @@ public class UserCenterService {
                                     form.setSalary_top(op.get().getSalaryTop());
                                     form.setSalary_bottom(op.get().getSalaryBottom());
                                     form.setUpdate_time(op.get().getUpdateTime());
+                                    form.setStatus((byte) op.get().getStatus());
                                 }
                                 return form;
                             }).collect(Collectors.toList());
@@ -201,7 +206,7 @@ public class UserCenterService {
                     apps.stream().filter(app -> app.getAppTplId() == 4).forEach(app -> rejectAppIdSet.add(app.getId()));
                 }
 
-                List<HrOperationrecordDO> operationList =  bizTools.listHrOperationRecord(rejectAppIdSet);
+                List<HrOperationRecordDO> operationList =  bizTools.listLastHrOperationRecordPassedReject(rejectAppIdSet);
 
                 recomRecordDOList.forEach(candidateRecomRecordDO -> {
                     RecommendationForm form = new RecommendationForm();
@@ -237,10 +242,10 @@ public class UserCenterService {
                             form.setApp_time(app.getSubmitTime());
                             RecruitmentScheduleEnum recruitmentScheduleEnum = RecruitmentScheduleEnum.createFromID(app.getAppTplId());
                             if(recruitmentScheduleEnum != null && operationList != null && operationList.size() > 0) {
-                                Optional<HrOperationrecordDO> oprationOP = operationList.stream().filter(operation -> operation.getApp_id() == app.getId()).findFirst();
+                                Optional<HrOperationRecordDO> oprationOP = operationList.stream().filter(operation -> operation.getAppId() == app.getId()).findFirst();
                                 if(oprationOP.isPresent()) {
                                     try {
-                                        recruitmentScheduleEnum.setLastStep(oprationOP.get().getOperate_tpl_id());
+                                        recruitmentScheduleEnum.setLastStep(oprationOP.get().getOperateTplId());
                                     } catch (RecruitmentScheduleLastStepNotExistException e) { //设置了一个意外的上衣进度的状态值，上衣状态值调整成0
                                         logger.error(e.getMessage(), e);
                                     }
@@ -248,7 +253,7 @@ public class UserCenterService {
                             }
                             //生成招聘进度状态 form.setStatus()
 
-                            form.setStatus((short) recruitmentScheduleEnum.getDisplayStatus());
+                            form.setStatus((short) recruitmentScheduleEnum.getStatusForRecommendationInPersonalCenter());
                         });
                     }
                     if(candidatePositionDOList != null && candidatePositionDOList.size() > 0) {
@@ -273,6 +278,119 @@ public class UserCenterService {
             e.printStackTrace();
         }
         return forms;
+    }
+
+    public ApplicationDetailVO getApplicationDetail(int userId, int appId) {
+
+        ApplicationDetailVO applicationDetailVO = new ApplicationDetailVO();
+
+        if(userId > 0 && appId > 0) {
+            try {
+                JobApplicationDO applicationDO = bizTools.getApplication(appId);
+                if(applicationDO != null && applicationDO.getId() > 0) {
+                    applicationDetailVO.setPid(appId);
+                    //查找申请记录
+                    RecruitmentScheduleEnum recruitmentScheduleEnum = RecruitmentScheduleEnum.createFromID(applicationDO.getAppTplId());
+
+                    /** 并行查询公司、职位、HR操作记录信息*/
+                    ThreadPool tp = ThreadPool.Instance;
+                    Future positionDOFuture = tp.startTast(() -> bizTools.getPosition(applicationDO.getPositionId()));
+                    Future companyDOFuture = tp.startTast(() -> bizTools.getCompany(applicationDO.getCompanyId()));
+                    Future operationFuture = null;
+                    if(recruitmentScheduleEnum.getId() == RecruitmentScheduleEnum.REJECT.getId()) {
+                        operationFuture = tp.startTast(() -> bizTools.listLastHrOperationRecordPassedReject(new HashSet<Integer>() {
+                            {
+                                add(applicationDO.getId());
+                            }
+                        }));
+                    }
+                    /** 查找HR操作记录 */
+                    Future timeLineListFuture = tp.startTast(() -> bizTools.listHrOperationRecord(appId));
+                    try {
+                        JobPositionDO positionDO = (JobPositionDO)positionDOFuture.get();
+                        if(positionDO != null) {
+                            applicationDetailVO.setPosition_title(positionDO.getTitle());
+                        }
+                        HrCompanyDO companyDO = (HrCompanyDO) companyDOFuture.get();
+                        if(companyDO != null) {
+                            if(StringUtils.isNotNullOrEmpty(companyDO.getName())) {
+                                applicationDetailVO.setCompany_name(companyDO.getName());
+                            } else {
+                                applicationDetailVO.setCompany_name(companyDO.getAbbreviation());
+                            }
+                        }
+
+                        if(operationFuture != null) {
+                            List<HrOperationRecordDO> operationrecordDOList = (List<HrOperationRecordDO>)operationFuture.get();
+                            if(operationrecordDOList != null && operationrecordDOList.size() > 0) {
+                                HrOperationRecordDO operationRecordDO = operationrecordDOList.get(0);
+                                recruitmentScheduleEnum.setLastStep(operationRecordDO.getOperateTplId());
+                                applicationDetailVO.setStep_status(recruitmentScheduleEnum.getStepStatusForApplicationDetail());
+                                applicationDetailVO.setStep(recruitmentScheduleEnum.getStepForApplicationDetail());
+                            }
+                        }
+                        List<HrOperationRecordDO> operationrecordDOList = (List<HrOperationRecordDO>) timeLineListFuture.get();
+                        if(operationrecordDOList != null && operationrecordDOList.size() > 0) {
+                            Iterator<HrOperationRecordDO> it = operationrecordDOList.iterator();
+                            int applyCount = 0;         //只显示第一条投递操作
+                            while(it.hasNext()) {
+                                HrOperationRecordDO oprationRecord = it.next();
+                                ApplicationOperationRecordVO applicationOprationRecordVO = new ApplicationOperationRecordVO();
+                                applicationOprationRecordVO.setDate(oprationRecord.getOptTime());
+                                if(oprationRecord.getOperateTplId() == RecruitmentScheduleEnum.REJECT.getId()) {
+                                    applicationOprationRecordVO.setStep_status(2);
+                                }
+                                /** 如果上一条是拒绝，这一条是其他操作记录，那么现实"HR将您纳入候选名单" */
+                                if(recruitmentScheduleEnum.getId() != RecruitmentScheduleEnum.REJECT.getId()
+                                        && recruitmentScheduleEnum.getLastID() == RecruitmentScheduleEnum.REJECT.getId()) {
+                                    applicationOprationRecordVO.setEvent("HR将您纳入候选名单");
+                                }
+                                /** 如果投递时邮件投递，并且投递状态是成功投递 */
+                                if (applicationDO.getApplyType() == ApplyType.EMAIL.getValue()){
+                                    if(applicationDO.getAppTplId() == RecruitmentScheduleEnum.APPLY.getId()) {
+                                        switch (applicationDO.getEmailStatus()) {
+                                            case 1: applicationOprationRecordVO.setEvent(EmailStatus.NOT_ANSWER_EMAIL.getMessage());break;
+                                            case 2: applicationOprationRecordVO.setEvent(EmailStatus.ATTACHMENT_NOT_SUPPORT.getMessage());break;
+                                            case 3: applicationOprationRecordVO.setEvent(EmailStatus.ATTACHMENT_MORE_THEN_MAXIMUN.getMessage());break;
+                                            case 8: applicationOprationRecordVO.setEvent(EmailStatus.MAIL_NOT_FOUND.getMessage());break;
+                                            case 9: applicationOprationRecordVO.setEvent(EmailStatus.MAIL_PARSING_FAILED.getMessage());break;
+                                        }
+                                    }
+                                }
+                                /** 如果投递是Email投递， */
+                                if(applicationDO.getApplyType() == ApplyType.EMAIL.getValue()
+                                        && applicationDO.getEmailStatus() != EmailStatus.NOMAIL.getValue()
+                                        && applicationDO.getAppTplId() == RecruitmentScheduleEnum.APPLY.getId()) {
+                                    applicationOprationRecordVO.setHide(1);
+                                }
+                                /** 如果前一条操作记录也是拒绝的操作记录，那么这一条操作记录隐藏 */
+                                if(recruitmentScheduleEnum.getId() == RecruitmentScheduleEnum.REJECT.getId()
+                                        && recruitmentScheduleEnum.getLastID() == RecruitmentScheduleEnum.REJECT.getId()) {
+                                    applicationOprationRecordVO.setHide(1);
+                                }
+                                /** HR操作记录中，只显示第一条投递成功的操作记录。其余的全部隐藏 */
+                                if(oprationRecord.getOperateTplId() == RecruitmentScheduleEnum.APPLY.getId()) {
+                                    if(applyCount > 1) {
+                                        applicationOprationRecordVO.setHide(1);
+                                    }
+                                    applyCount ++;
+                                }
+                            }
+                        }
+
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            } catch (TException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+
+        return applicationDetailVO;
     }
 
     /**

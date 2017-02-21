@@ -63,6 +63,11 @@ public class HrOperationRecordDao extends StructDaoImpl<HrOperationrecordDO, HrO
 		return list;
 	}
 
+	/**
+	 * 查找拒绝前的最近一条记录
+	 * @param appidSet
+	 * @return
+	 */
 	public List<HrOperationrecordDO> listLatestOperationRecordByAppIdSet(Set<Integer> appidSet) {
 		List<HrOperationrecordDO> operationrecordDOList = new ArrayList<>();
 
@@ -79,6 +84,7 @@ public class HrOperationRecordDao extends StructDaoImpl<HrOperationrecordDO, HrO
 									.and(HrOperationRecord.HR_OPERATION_RECORD.OPERATE_TPL_ID.notEqual(Constant.RECRUIT_STATUS_REJECT))
 									.orderBy(HrOperationRecord.HR_OPERATION_RECORD.OPT_TIME.desc())
 					)
+					.where(HrOperationRecord.HR_OPERATION_RECORD.OPERATE_TPL_ID.notEqual(Constant.RECRUIT_STATUS_REJECT))
 					.groupBy(HrOperationRecord.HR_OPERATION_RECORD.APP_ID)
 					.fetch().into(HrOperationrecordDO.class);
 
