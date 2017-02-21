@@ -1,12 +1,5 @@
 package com.moseeker.baseorm.service.Impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.moseeker.thrift.gen.dao.struct.HrOperationrecordDO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrOperationRecordRecord;
 import com.moseeker.baseorm.service.HrDBService;
@@ -16,13 +9,19 @@ import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.HistoryOperate;
+import com.moseeker.thrift.gen.dao.struct.HrOperationRecordDO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class HrDBServiceImpl implements HrDBService{
 	@Autowired
 	private HrOperationRecordDao hrOperationRecordDao;
 	@Override
-	public Response postHrOperation(HrOperationrecordDO record) {
+	public Response postHrOperation(HrOperationRecordDO record) {
 		// TODO Auto-generated method stub
 		try{
 			HrOperationRecordRecord data=(HrOperationRecordRecord) BeanUtils.structToDB(record, HrOperationRecordRecord.class);
@@ -34,11 +33,11 @@ public class HrDBServiceImpl implements HrDBService{
 	}
 
 	@Override
-	public Response postHrOperations(List<HrOperationrecordDO> record) {
+	public Response postHrOperations(List<HrOperationRecordDO> record) {
 		// TODO Auto-generated method stub
 		try{
 			List<HrOperationRecordRecord> list=new ArrayList<HrOperationRecordRecord>();
-			for(HrOperationrecordDO data:record){
+			for(HrOperationRecordDO data:record){
 				list.add((HrOperationRecordRecord) BeanUtils.structToDB(data, HrOperationRecordRecord.class));
 			}
 			int result=hrOperationRecordDao.postResources(list);

@@ -2,7 +2,6 @@ package com.moseeker.common.biztools;
 
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.RecruitmentScheduleLastStepNotExistException;
-import com.sun.tools.internal.jxc.ap.Const;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -6,7 +6,7 @@ import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.thrift.gen.dao.struct.HistoryOperate;
-import com.moseeker.thrift.gen.dao.struct.HrOperationrecordDO;
+import com.moseeker.thrift.gen.dao.struct.HrOperationRecordDO;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-public class HrOperationRecordDao extends StructDaoImpl<HrOperationrecordDO, HrOperationRecordRecord, HrOperationRecord> {
+public class HrOperationRecordDao extends StructDaoImpl<HrOperationRecordDO, HrOperationRecordRecord, HrOperationRecord> {
 
 	@Override
 	protected void initJOOQEntity() {
@@ -68,8 +68,8 @@ public class HrOperationRecordDao extends StructDaoImpl<HrOperationrecordDO, HrO
 	 * @param appidSet
 	 * @return
 	 */
-	public List<HrOperationrecordDO> listLatestOperationRecordByAppIdSet(Set<Integer> appidSet) {
-		List<HrOperationrecordDO> operationrecordDOList = new ArrayList<>();
+	public List<HrOperationRecordDO> listLatestOperationRecordByAppIdSet(Set<Integer> appidSet) {
+		List<HrOperationRecordDO> operationrecordDOList = new ArrayList<>();
 
 		Connection conn = null;
 		try {
@@ -86,7 +86,7 @@ public class HrOperationRecordDao extends StructDaoImpl<HrOperationrecordDO, HrO
 					)
 					.where(HrOperationRecord.HR_OPERATION_RECORD.OPERATE_TPL_ID.notEqual(Constant.RECRUIT_STATUS_REJECT))
 					.groupBy(HrOperationRecord.HR_OPERATION_RECORD.APP_ID)
-					.fetch().into(HrOperationrecordDO.class);
+					.fetch().into(HrOperationRecordDO.class);
 
 		} catch (SQLException e) {
 			logger.error(e.getMessage(), e);
