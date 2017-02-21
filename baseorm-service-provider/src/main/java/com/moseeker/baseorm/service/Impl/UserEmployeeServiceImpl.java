@@ -21,6 +21,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointSum;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
+
 @Service
 public class UserEmployeeServiceImpl implements UserEmployeeService {
 	@Autowired
@@ -113,5 +114,16 @@ public class UserEmployeeServiceImpl implements UserEmployeeService {
 		}
 		return result;
 	}
-	
+
+	@Override
+	public Response putUserEmployee(UserEmployeePointsRecordDO employeeDo) {
+		try {
+			UserEmployeeRecord record = (UserEmployeeRecord) BeanUtils.structToDB(employeeDo, UserEmployeeRecord.class);
+			int result = dao.putResource(record);
+			return ResponseUtils.success(result);
+		}
+		catch (Exception e) {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		}
+	}
 }
