@@ -1213,6 +1213,8 @@ public class WholeProfileService {
 		if (profileRecord.getUpdateTime() != null) {
 			map.put("update_time", DateUtils.dateToShortTime(profileRecord.getUpdateTime()));
 		}
+		//在profile中添加origin字段的获取，用于获取第三方简历来源
+		map.put("origin", profileRecord.getOrigin());
 		return map;
 	}
 
