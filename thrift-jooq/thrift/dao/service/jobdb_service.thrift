@@ -12,4 +12,7 @@ service JobDBDao {
 
 	list<jobdb_struct.JobApplicationDO> getApplications(1:common_struct.CommonQuery query);
     jobdb_struct.JobApplicationDO getApplication(1:common_struct.CommonQuery query);
+    
+    common_struct.Response getJobCustoms(1:common_struct.CommonQuery query);
+    common_struct.Response getJobOccupations(1:common_struct.CommonQuery query);
 }

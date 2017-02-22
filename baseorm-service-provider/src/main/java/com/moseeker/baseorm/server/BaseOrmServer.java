@@ -53,7 +53,6 @@ public class BaseOrmServer {
 	        			acac.getBean(DictDaoThriftService.class),
 	        			acac.getBean(DictDaoMapThriftService.class),
 	        			acac.getBean(JobDBDaoThriftService.class),
-	        			acac.getBean(PositionThriftService.class),
 	        			acac.getBean(ApplicationDaoThriftService.class),
 	        			acac.getBean(ConfigDBDaoThriftService.class),
 	        			acac.getBean(HrDBThriftService.class),

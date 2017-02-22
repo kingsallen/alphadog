@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.JobPositionDO;
 import org.jooq.DSLContext;
 import org.jooq.Result;
@@ -25,7 +26,7 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.position.struct.Position;
 
 @Service
-public class JobPositionDao extends BaseDaoImpl<JobPositionRecord, JobPosition> {
+public class JobPositionDao extends StructDaoImpl<JobPositionDO, JobPositionRecord, JobPosition> {
 
 	@Override
 	protected void initJOOQEntity() {

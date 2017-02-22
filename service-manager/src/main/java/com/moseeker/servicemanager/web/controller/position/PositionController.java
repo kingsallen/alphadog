@@ -12,8 +12,8 @@ import com.moseeker.thrift.gen.apps.positionbs.service.PositionBS;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.service.JobDBDao;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
-import com.moseeker.thrift.gen.position.service.PositionDao;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.RpExtInfo;
 import com.moseeker.thrift.gen.position.struct.WechatPositionListData;
@@ -36,10 +36,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
-
-import static java.util.Arrays.asList;
 
 //@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
@@ -48,7 +45,7 @@ public class PositionController {
     private Logger logger = LoggerFactory.getLogger(PositionController.class);
 
     private PositionServices.Iface positonServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
-    private PositionDao.Iface positionDao = ServiceManager.SERVICEMANAGER.getService(PositionDao.Iface.class);
+    private JobDBDao.Iface jobDBDao = ServiceManager.SERVICEMANAGER.getService(JobDBDao.Iface.class);
     private PositionBS.Iface positionBS = ServiceManager.SERVICEMANAGER.getService(PositionBS.Iface.class);
     
     com.moseeker.thrift.gen.dao.service.PositionDao.Iface positionDao1 = ServiceManager.SERVICEMANAGER.getService(com.moseeker.thrift.gen.dao.service.PositionDao.Iface.class);
@@ -127,7 +124,7 @@ public class PositionController {
 			param.put("company_id", company_id+"");
 			query.setEqualFilter(param);
 			query.setPer_page(Integer.MAX_VALUE);
-			Response result=positionDao.getJobOccupations(query);
+			Response result=jobDBDao.getJobOccupations(query);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {	
 			logger.error(e.getMessage(), e);

@@ -35,10 +35,3 @@ service PositionServices {
     //微信获取红包转发信息
     position_struct.WechatShareData getShareInfo(1: i32 hb_config_id);
 }
-/*
-    查询第三方自定义职能
-*/
-service PositionDao{
-    common_struct.Response getJobCustoms(1:common_struct.CommonQuery query);
-    common_struct.Response getJobOccupations(1:common_struct.CommonQuery query);
-}
