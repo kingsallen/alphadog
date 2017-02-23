@@ -3,7 +3,11 @@ package com.moseeker.baseorm.service.Impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.moseeker.common.email.Email;
 import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.db.userdb.tables.UserEmployee;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.dao.struct.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.UserEmployeePointsRecordDO;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,6 +127,35 @@ public class UserEmployeeServiceImpl implements UserEmployeeService {
 			return ResponseUtils.success(result);
 		}
 		catch (Exception e) {
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		}
+	}
+
+	@Override
+	public List<UserEmployeeDO> getEmployeesDO(CommonQuery query) {
+		List<UserEmployeeDO> result = new ArrayList<>();
+		try {
+			List<com.moseeker.db.userdb.tables.records.UserEmployeeRecord> records =
+					dao.getResources(query);
+			result = BeanUtils.DBToStruct(UserEmployeeDO.class, records);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	@Override
+	public Response putEmployeesDO(List<UserEmployeeDO> employeeDOs) {
+		try{
+			List<UserEmployeePointsRecordRecord> list = new ArrayList<UserEmployeePointsRecordRecord>();
+			for(UserEmployeeDO employeeDo: employeeDOs){
+				list.add((UserEmployeePointsRecordRecord) BeanUtils.structToDB(employeeDo, UserEmployeePointsRecordRecord.class));
+			}
+			int result=dao1.putResources(list);
+			return ResponseUtils.success(result);
+		}
+		catch(Exception e) {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		}
 	}
