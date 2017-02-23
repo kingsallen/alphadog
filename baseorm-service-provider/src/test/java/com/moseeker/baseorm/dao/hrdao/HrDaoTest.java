@@ -16,12 +16,10 @@
 //
 //public class HrDaoTest {
 //
-//	private HrDBDao.Iface hrDao;
 //	private UserDBDao.Iface userDao;
 //
 //	@Before
 //	public void initialize() {
-//		hrDao = ServiceManager.SERVICEMANAGER.getService(HrDBDao.Iface.class);
 //		userDao = ServiceManager.SERVICEMANAGER.getService(UserDBDao.Iface.class);
 //	}
 //
@@ -31,8 +29,7 @@
 //		qu.addEqualFilter("id", "1");
 //
 //		try {
-//			UserEmployeeDO result = userDao.getEmployee(qu);
-//
+//            com.moseeker.thrift.gen.dao.struct.UserEmployeeDO result = userDao.getEmployee(qu);
 //			System.out.println(result);
 //
 //		} catch (TException e) {
