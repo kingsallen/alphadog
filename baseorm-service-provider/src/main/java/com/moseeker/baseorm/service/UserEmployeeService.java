@@ -14,4 +14,5 @@ public interface UserEmployeeService {
 	public Response getSumPoint(List<Long> records);
 	public Response putUserEmployees(List<UserEmployeeStruct> records);
 	public List<UserEmployeePointsRecordDO> getUserEmployeePoints(int employeeId);
+	public Response putUserEmployee(UserEmployeePointsRecordDO employeeDo);
 }

@@ -1,9 +1,10 @@
 //package com.moseeker.baseorm.dao.hrdao;
 //
-//
+//import com.moseeker.common.providerutils.QueryUtil;
 //import com.moseeker.rpccenter.client.ServiceManager;
 //import com.moseeker.thrift.gen.dao.service.HrDBDao;
 //import com.moseeker.thrift.gen.dao.service.UserDBDao;
+//import com.moseeker.thrift.gen.dao.struct.UserEmployeeDO;
 //import com.moseeker.thrift.gen.dao.struct.UserEmployeePointsRecordDO;
 //import org.apache.thrift.TException;
 //import org.junit.Before;
@@ -15,35 +16,31 @@
 //
 //public class HrDaoTest {
 //
-//	private HrDBDao.Iface hrDao;
 //	private UserDBDao.Iface userDao;
 //
 //	@Before
 //	public void initialize() {
-//		hrDao = ServiceManager.SERVICEMANAGER.getService(HrDBDao.Iface.class);
 //		userDao = ServiceManager.SERVICEMANAGER.getService(UserDBDao.Iface.class);
 //	}
 //
 //	@Test
 //	public void testGet() {
 //		QueryUtil qu = new QueryUtil();
-//		qu.addEqualFilter("company_id", "1");
+//		qu.addEqualFilter("id", "1");
 //
 //		try {
-//			List<HrPointsConfDo> result = hrDao.getPointsConfs(qu);
-
-//			result.forEach(e -> System.out.println(e));
+//            com.moseeker.thrift.gen.dao.struct.UserEmployeeDO result = userDao.getEmployee(qu);
+//			System.out.println(result);
+//
 //		} catch (TException e) {
-//			e.printStackTrace();
-//		}
-//		try {
-//			List<UserEmployeePointsRecordDO> result = userDao.getUserEmployeePoints(1);
-//			result.forEach(e -> System.out.println(e));
-//		}catch (TException e) {
 //			e.printStackTrace();
 //		}
 //
 //	}
+//}
+
+
+
 
 	/*
 	@Test
