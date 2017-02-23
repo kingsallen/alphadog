@@ -7,15 +7,10 @@ import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.*;
-import com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm;
-import com.moseeker.thrift.gen.useraccounts.struct.AwardRecordForm;
-import com.moseeker.thrift.gen.useraccounts.struct.FavPositionForm;
-import com.moseeker.thrift.gen.useraccounts.struct.RecommendationForm;
+import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.service.impl.biztools.ApplyType;
 import com.moseeker.useraccounts.service.impl.biztools.EmailStatus;
 import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
-import com.moseeker.useraccounts.service.impl.pojos.ApplicationDetailVO;
-import com.moseeker.useraccounts.service.impl.pojos.ApplicationOperationRecordVO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,7 +58,7 @@ public class UserCenterService {
 
                 applications = apps.stream().map(app -> {
                     ApplicationRecordsForm ar = new ApplicationRecordsForm();
-                    ar.setId((int) app.getId());
+                    ar.setId(app.getId());
                     ar.setStatus((byte) app.getAppTplId());
                     ar.setTime(app.getCreateTime());
                     if (positions != null) {
@@ -156,17 +151,38 @@ public class UserCenterService {
      * @return 历史推荐记录
      * @throws TException thrift异常类
      */
-    public List<RecommendationForm> listRecommendations(int userId, int pageNo, int pageSize) throws TException {
-        List<RecommendationForm> forms = new ArrayList<>();
+    @SuppressWarnings("unchecked")
+    public RecommendationVO getRecommendations(int userId, byte type, int pageNo, int pageSize) throws TException {
+        RecommendationVO recommendationForm = new RecommendationVO();
         try {
-            List<CandidateRecomRecordDO> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, pageNo, pageSize);
-            if (recomRecordDOList.size() > 0) {
 
-                Set<Integer> positionIDSet = new HashSet<>();
-                Set<Integer> presenteeIDSet = new HashSet<>();
-                Set<Integer> repostIDSet = new HashSet<>();
-                Set<Integer> appIDSet = new HashSet<>();
-                List<Map<Integer, Integer>> cps = new ArrayList<>();
+            ThreadPool tp = ThreadPool.Instance;
+            int totalCount = 0;             //转发记录总数
+            int interestedCount = 0;         //被推荐的转发记录数
+            int applyCount = 0;             //有过申请的转发记录数
+            /** 并行查找三个统计信息 */
+            Future<Integer> totalCountFuture = tp.startTast(() -> bizTools.countCandidateRecomRecord(userId), totalCount);
+            Future<Integer> interestedCountFuture = tp.startTast(() -> bizTools.countInterestedCandidateRecomRecord(userId), interestedCount);
+            Future<Integer> applyCountFuture = tp.startTast(() -> bizTools.countAppliedCandidateRecomRecord(userId), applyCount);
+            totalCount = totalCountFuture.get();
+            interestedCount = interestedCountFuture.get();
+            applyCount = applyCountFuture.get();
+            RecommendationScoreVO scoreVO = new RecommendationScoreVO();
+            scoreVO.setApplied_count(applyCount);
+            scoreVO.setInterested_count(interestedCount);
+            scoreVO.setLink_viewed_count(totalCount);
+            recommendationForm.setScore(scoreVO);
+
+            /** 分页查找相关职位转发记录 */
+            List<CandidateRecomRecordDO> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, type, pageNo, pageSize);
+            if (recomRecordDOList.size() > 0) {
+                recommendationForm.setHasRecommends(true);
+
+                Set<Integer> positionIDSet = new HashSet<>();           //转发记录涉及到的职位编号，需要根据这些职位编号查找职位名称
+                Set<Integer> presenteeIDSet = new HashSet<>();          //转发记录涉及到的浏览者编号，需要根据这些编号查找用户名称、昵称等信息
+                Set<Integer> repostIDSet = new HashSet<>();             //转发记录涉及到的转发者编号，需要根据这些编号查找用户名称、昵称等信息
+                Set<Integer> appIDSet = new HashSet<>();                //转发职位涉及到的申请编号，需要根据这些申请编号查找申请人等信息
+                List<Map<Integer, Integer>> cps = new ArrayList<>();    //转发职位涉及到的职位编号和浏览者编号，需要根据这些信息查找候选人浏览职位的记录，以便确认是否感兴趣和浏览该职位的次数
 
                 recomRecordDOList.forEach(candidateRecomRecordDO -> {
 
@@ -188,16 +204,15 @@ public class UserCenterService {
                 });
 
                 /** 并行处理数据查询 */
-                ThreadPool tp = ThreadPool.Instance;
-                Future psotionFuture = tp.startTast(()-> bizTools.listJobPositions(positionIDSet), List.class);
-                Future presenteeFuture = tp.startTast(()-> bizTools.listPresentees(presenteeIDSet), List.class);
-                Future repostFuture = tp.startTast(()-> bizTools.listReposts(repostIDSet), List.class);
-                Future appFuture = tp.startTast(()-> bizTools.listApps(appIDSet), List.class);
+                Future psotionFuture = tp.startTast(()-> bizTools.listJobPositions(positionIDSet));
+                Future presenteeFuture = tp.startTast(()-> bizTools.listPresentees(presenteeIDSet));
+                Future repostFuture = tp.startTast(()-> bizTools.listReposts(repostIDSet));
+                Future appFuture = tp.startTast(()-> bizTools.listApps(appIDSet));
                 Future candidateFuture = tp.startTast(()-> bizTools.listCandidatePositionsByPositionIDUserID(cps), List.class);
 
                 List<JobPositionDO> positions = (List<JobPositionDO>) psotionFuture.get();
                 List<UserUserDO> presentees = (List<UserUserDO>) presenteeFuture.get();
-                List<UserUserDO> reposts = (List<UserUserDO>) repostFuture.get();
+                //List<UserUserDO> reposts = (List<UserUserDO>) repostFuture.get();
                 List<JobApplicationDO> apps = (List<JobApplicationDO>) appFuture.get();
                 List<CandidatePositionDO> candidatePositionDOList = (List<CandidatePositionDO>) candidateFuture.get();
 
@@ -207,39 +222,40 @@ public class UserCenterService {
                 }
 
                 List<HrOperationRecordDO> operationList =  bizTools.listLastHrOperationRecordPassedReject(rejectAppIdSet);
+                List<RecommendationRecordVO> recommendationRecordVOList = new ArrayList<>();
 
+                /** 生成RecommendationRecordVO记录 */
                 recomRecordDOList.forEach(candidateRecomRecordDO -> {
-                    RecommendationForm form = new RecommendationForm();
+                    RecommendationRecordVO recommendationRecordVO = new RecommendationRecordVO();
 
-                    form.setApp_id(candidateRecomRecordDO.getAppId());
-                    form.setClick_time(candidateRecomRecordDO.getClickTime());
-                    form.setRecom_time(candidateRecomRecordDO.getRecomTime());
-                    form.setRecom_status(candidateRecomRecordDO.getIsRecom());
-                    form.setCandidate_recom_record_id(candidateRecomRecordDO.getId());
+                    recommendationRecordVO.setClick_time(candidateRecomRecordDO.getClickTime());
+                    recommendationRecordVO.setRecom_status(candidateRecomRecordDO.getIsRecom());
 
+                    /** 匹配职位名称 */
                     if (positions != null && positions.size() > 0) {
                         positions.stream().filter(position -> position.getId() == candidateRecomRecordDO.getPositionId())
                                 .forEach(position -> {
-                            form.setPosition(position.getTitle());
-                        });
+                                    recommendationRecordVO.setPosition(position.getTitle());
+                                });
                     }
+                    /** 匹配浏览者的编号、名称以及头像 */
                     if (presentees != null && presentees.size() > 0) {
                         presentees.stream().filter(presentee -> presentee.getId() == candidateRecomRecordDO.getPresenteeUserId())
                                 .forEach(presentee -> {
-                            form.setApplier_id(presentee.getId());
-                            form.setApplier_name(StringUtils.isNotNullOrEmpty(presentee.getName()) ? presentee.getName() : presentee.getNickname());
-                            form.setHeadimgurl(presentee.getHeadimg());
-                        });
+                                    recommendationRecordVO.setApplier_name(StringUtils.isNotNullOrEmpty(presentee.getName()) ? presentee.getName() : presentee.getNickname());
+                                    recommendationRecordVO.setHeadimgurl(presentee.getHeadimg());
+                                });
                     }
-                    if (reposts != null && reposts.size() > 0) {
+                    /** 匹配转发者的名称 */
+                    /*if (reposts != null && reposts.size() > 0) {
                         reposts.stream().filter(repost -> repost.getId() == candidateRecomRecordDO.getRepostUserId())
                                 .forEach(repost ->
-                                        form.setRecom_2nd_nickname(StringUtils.isNotNullOrEmpty(repost.getName())
+                                        recommendationRecordVO.setRecom_2nd_nickname(StringUtils.isNotNullOrEmpty(repost.getName())
                                                 ? repost.getName() : repost.getNickname()));
-                    }
+                    }*/
+                    /** 计算招聘进度 */
                     if(apps != null && apps.size() > 0) {
                         apps.stream().filter(app -> app.getId() == candidateRecomRecordDO.getAppId()).forEach(app -> {
-                            form.setApp_time(app.getSubmitTime());
                             RecruitmentScheduleEnum recruitmentScheduleEnum = RecruitmentScheduleEnum.createFromID(app.getAppTplId());
                             if(recruitmentScheduleEnum != null && operationList != null && operationList.size() > 0) {
                                 Optional<HrOperationRecordDO> oprationOP = operationList.stream().filter(operation -> operation.getAppId() == app.getId()).findFirst();
@@ -253,7 +269,7 @@ public class UserCenterService {
                             }
                             //生成招聘进度状态 form.setStatus()
 
-                            form.setStatus((short) recruitmentScheduleEnum.getStatusForRecommendationInPersonalCenter());
+                            recommendationRecordVO.setStatus((short) recruitmentScheduleEnum.getStatusForRecommendationInPersonalCenter());
                         });
                     }
                     if(candidatePositionDOList != null && candidatePositionDOList.size() > 0) {
@@ -262,13 +278,15 @@ public class UserCenterService {
                                         candidatePosition.getPositionId() == candidateRecomRecordDO.getPositionId()
                                                 && candidatePosition.getUserId() == candidateRecomRecordDO.getPresenteeUserId())
                                 .forEach(candidatePosition -> {
-                                    form.setIs_interested(candidatePosition.isIsInterested()?(byte)1:0);
-                                    form.setView_number(candidatePosition.getViewNumber());
+                                    recommendationRecordVO.setIs_interested(candidatePosition.isIsInterested()?(byte)1:0);
+                                    recommendationRecordVO.setView_number(candidatePosition.getViewNumber());
                                 });
                     }
-                    forms.add(form);
+                    recommendationRecordVOList.add(recommendationRecordVO);
 
                 });
+            } else {
+                recommendationForm.setHasRecommends(false);
             }
         } catch (TException e) {
             logger.error(e.getMessage(), e);
@@ -277,7 +295,7 @@ public class UserCenterService {
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        return forms;
+        return recommendationForm;
     }
 
     public ApplicationDetailVO getApplicationDetail(int userId, int appId) {
@@ -325,8 +343,8 @@ public class UserCenterService {
                             if(operationrecordDOList != null && operationrecordDOList.size() > 0) {
                                 HrOperationRecordDO operationRecordDO = operationrecordDOList.get(0);
                                 recruitmentScheduleEnum.setLastStep(operationRecordDO.getOperateTplId());
-                                applicationDetailVO.setStep_status(recruitmentScheduleEnum.getStepStatusForApplicationDetail());
-                                applicationDetailVO.setStep(recruitmentScheduleEnum.getStepForApplicationDetail());
+                                applicationDetailVO.setStep_status((byte) recruitmentScheduleEnum.getStepStatusForApplicationDetail());
+                                applicationDetailVO.setStep((byte) recruitmentScheduleEnum.getStepForApplicationDetail());
                             }
                         }
                         List<HrOperationRecordDO> operationrecordDOList = (List<HrOperationRecordDO>) timeLineListFuture.get();
