@@ -85,6 +85,12 @@ public class UserDBDaoThriftService implements Iface {
 	public UserEmployeeDO getEmployee(CommonQuery query) throws TException {
 		return employeeDao.getEmployee(query);
 	}
+
+	@Override
+	public Response putUserEmployee(UserEmployeePointsRecordDO employeeDo) throws TException {
+		return userEmployeeService.putUserEmployee(employeeDo);
+	}
+
 	/*
 	 * @auth zzt
 	 * 获取推荐者列表
