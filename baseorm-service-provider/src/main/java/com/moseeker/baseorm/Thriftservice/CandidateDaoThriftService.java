@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * candidatedb数据库表的增删该查操作
@@ -147,6 +148,40 @@ public class CandidateDaoThriftService implements CandidateDBDao.Iface {
     @Override
     public List<CandidateRecomRecordDO> listCandidateRecomRecords(CommonQuery query) throws TException {
         return candidateRecomRecordDao.listResources(query);
+    }
+
+    @Override
+    public List<CandidateRecomRecordDO> listCandidateRecomRecordsForApplied(int userId, int pageNo, int pageSize) throws TException {
+        return candidateRecomRecordDao.listCandidateRecomRecordsForApplied(userId, pageNo, pageSize);
+    }
+
+    @Override
+    public List<CandidateRecomRecordDO> listInterestedCandidateRecomRecord(int userId, int pageNo, int pageSize) throws TException {
+        return candidateRecomRecordDao.listInterestedCandidateRecomRecord(userId, pageNo, pageSize);
+    }
+
+    @Override
+    public List<CandidateRecomRecordDO> listCandidateRecomRecordsByPositionSetAndPresenteeId(Set<Integer> positionIdSet, int presenteeId, int pageNo, int pageSize) throws TException {
+        return candidateRecomRecordDao.listCandidateRecomRecordsByPositionSetAndPresenteeId(positionIdSet, presenteeId, pageNo, pageSize);
+    }
+
+    @Override
+    public int countCandidateRecomRecord(CommonQuery query) throws TException {
+        try {
+            return candidateRecomRecordDao.getResourceCount(query);
+        } catch (Exception e) {
+            throw new CURDException();
+        }
+    }
+
+    @Override
+    public int countAppliedCandidateRecomRecord(int userId) throws TException {
+        return candidateRecomRecordDao.countAppliedCandidateRecomRecord(userId);
+    }
+
+    @Override
+    public int countInterestedCandidateRecomRecord(int userId) throws TException {
+        return candidateRecomRecordDao.countInterestedCandidateRecomRecord(userId);
     }
 
     @Override

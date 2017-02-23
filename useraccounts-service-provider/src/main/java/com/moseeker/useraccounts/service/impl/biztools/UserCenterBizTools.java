@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.candidatedb.Candidatedb;
@@ -103,16 +104,106 @@ public class UserCenterBizTools {
 		return userDBDao.getUserFavPositions(qu);
 	}
 
-	public List<CandidateRecomRecordDO> listCandidateRecomRecords(int userId, int pageNo, int pageSize) throws TException {
-		QueryUtil qu = new QueryUtil();
-		qu.addSelectAttribute("id").addSelectAttribute("app_id").addSelectAttribute("repost_user_id").addSelectAttribute("click_time").addSelectAttribute("recom_time").addSelectAttribute("is_recom").addSelectAttribute("presentee_user_id");
-		qu.addEqualFilter("post_user_id", userId);
-		qu.addGroup("position_id").addGroup("presentee_user_id");
-		qu.setPage(pageNo);
-		qu.setPer_page(pageSize);
-		return candidateDBDao.listCandidateRecomRecords(qu);
+	/**
+	 * 查找转发浏览记录
+	 * @param userId 用户编号
+	 * @param type 类型 1：表示所有相关的浏览记录，2：表示被推荐的浏览用户，3：表示提交申请的浏览记录
+	 * @param pageNo 页码
+	 * @param pageSize 每页显示的数量
+	 * @return 转发浏览记录集合
+	 * @throws TException
+	 */
+	public List<CandidateRecomRecordDO> listCandidateRecomRecords(int userId, int type, int pageNo, int pageSize) throws TException {
+		List<CandidateRecomRecordDO> recomRecordDOList = null;
+		switch (type) {
+			case 1:			//查找所有相关的职位转发记录
+				QueryUtil qu = new QueryUtil();
+				qu.addSelectAttribute("id").addSelectAttribute("app_id").addSelectAttribute("repost_user_id")
+						.addSelectAttribute("click_time").addSelectAttribute("recom_time").addSelectAttribute("is_recom")
+						.addSelectAttribute("presentee_user_id").addSelectAttribute("position_id");
+				qu.addEqualFilter("post_user_id", userId);
+				qu.addGroup("position_id").addGroup("presentee_user_id");
+				qu.setPage(pageNo);
+				qu.setPer_page(pageSize);
+				recomRecordDOList = candidateDBDao.listCandidateRecomRecords(qu);
+				break;
+			case 2:			//查找被推荐的职位转发记录
+				recomRecordDOList = candidateDBDao.listInterestedCandidateRecomRecord(userId, pageNo, pageSize);
+				break;
+			case 3:			//查找申请的职位转发记录
+				recomRecordDOList = candidateDBDao.listCandidateRecomRecordsForApplied(userId, pageNo, pageSize);
+				break;
+			default:
+		}
+		return recomRecordDOList;
 	}
-	
+
+	/**
+	 * 根据转发者查找转发记录
+	 * @param userId
+	 * @return
+	 */
+	public int countCandidateRecomRecord(int userId) {
+		int count = 0;
+		QueryUtil qu = new QueryUtil();
+		qu.addEqualFilter("post_user_id", userId);
+		try {
+			count = candidateDBDao.countCandidateRecomRecord(qu);
+		} catch (TException e) {
+			logger.error(e.getMessage(), e);
+		}
+		return count;
+	}
+
+	/**
+	 * 根据转发者查找已经被推荐的转发记录
+	 * @param userId
+	 * @return
+	 */
+	public int countRecommendedCandidateRecomRecord(int userId) {
+		int count = 0;
+		QueryUtil qu = new QueryUtil();
+		qu.addEqualFilter("post_user_id", userId).addEqualFilter("is_recom", 0);
+		try {
+			count = candidateDBDao.countCandidateRecomRecord(qu);
+		} catch (TException e) {
+			logger.error(e.getMessage(), e);
+		}
+		return count;
+	}
+
+	/**
+	 * 根据转发者查找已经被感兴趣的转发记录
+	 * @param userId
+	 * @return
+	 */
+	public int countInterestedCandidateRecomRecord(int userId) {
+		int count = 0;
+		try {
+			count = candidateDBDao.countInterestedCandidateRecomRecord(userId);
+		} catch (TException e) {
+			logger.error(e.getMessage(), e);
+		}
+		return count;
+	}
+
+	/**
+	 * 根据转发者查找已经申请的转发记录
+	 * @param userId
+	 * @return
+	 */
+	public int countAppliedCandidateRecomRecord(int userId) {
+		int count = 0;
+		QueryUtil qu = new QueryUtil();
+		qu.addEqualFilter("post_user_id", userId);
+		try {
+			count = candidateDBDao.countAppliedCandidateRecomRecord(userId);
+		} catch (TException e) {
+			logger.error(e.getMessage(), e);
+		}
+		return count;
+	}
+
 	/**
 	 * 数组转成逗号隔开，开始和结束用中括号括起来的字符创。如[1,2,3]
 	 * @param array 整型数组
