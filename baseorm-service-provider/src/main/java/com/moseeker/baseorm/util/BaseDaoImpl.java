@@ -64,7 +64,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 
 			if(query != null) {
 				//解析查询条件
-				if(query.getAttributes().size() > 0) {
+				if(query.getAttributes() != null && query.getAttributes().size() > 0) {
 					Field[] fields = (Field[]) query.getAttributes().stream().filter(attribute -> tableLike.field(attribute) != null).map(attribute -> tableLike.field(attribute)).toArray();
 					if(fields != null && fields.length > 0) {
 						table = create.select(fields).from(tableLike);
@@ -99,7 +99,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 					}
 				}
 				//解析groupby
-				if(query.getGrouops().size() > 0) {
+				if(query.getGrouops() != null && query.getGrouops().size() > 0) {
 
 					Field[] fields = (Field[]) query.getGrouops().stream().filter(group -> tableLike.field(group) != null).map(group -> tableLike.field(group)).toArray();
 

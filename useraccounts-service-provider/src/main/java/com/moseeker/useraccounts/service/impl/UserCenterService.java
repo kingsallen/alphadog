@@ -52,8 +52,8 @@ public class UserCenterService {
             List<JobApplicationDO> apps = bizTools.getAppsForUser(userId);
             if (apps != null && apps.size() > 0) {
                 //查询申请记录对应的职位数据
-                List<JobPositionDO> positions = bizTools.getPositions(apps.stream().mapToInt(app -> (int) app.getPositionId()).toArray());
-                List<Hrcompany> companies = bizTools.getCompanies(apps.stream().mapToInt(app -> (int) app.getCompanyId()).toArray());
+                List<JobPositionDO> positions = bizTools.getPositions(apps.stream().mapToInt(app -> app.getPositionId()).toArray());
+                List<Hrcompany> companies = bizTools.getCompanies(apps.stream().mapToInt(app -> app.getCompanyId()).toArray());
                 List<ConfigSysPointConfTplDO> tpls = bizTools.getAwardConfigTpls();
 
                 applications = apps.stream().map(app -> {
