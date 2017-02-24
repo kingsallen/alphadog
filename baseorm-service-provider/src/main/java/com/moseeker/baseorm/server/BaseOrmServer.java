@@ -45,7 +45,7 @@ public class BaseOrmServer {
 	            
 	        	MoServer server  = new MoServer(
 	        			acac,"",
-	        			acac.getBean(HRAccountThriftService.class),
+	        			acac.getBean(HRAccountDaoThriftService.class),
 	        			acac.getBean(WordpressDaoThriftService.class),
 	        			acac.getBean(CompanyThriftService.class),
 	        			acac.getBean(PositionDaoThriftService.class),
