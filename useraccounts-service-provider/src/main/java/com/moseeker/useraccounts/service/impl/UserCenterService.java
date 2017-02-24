@@ -103,7 +103,7 @@ public class UserCenterService {
         //参数校验
         if (userId > 0) {
             //查询用户的收藏职位列表
-            List<UserFavPositionDO> favPositionRecords = bizTools.getFavPositions(userId, 0);
+            List<UserFavPositionDO> favPositionRecords = bizTools.getFavPositions(userId, 2);
             if (favPositionRecords != null && favPositionRecords.size() > 0) {
                 //差用用户收藏职位的职位详情
                 List<JobPositionDO> positions = bizTools.getPositions(favPositionRecords.stream().mapToInt(favP -> favP.getPositionId()).toArray());
