@@ -1,4 +1,4 @@
-package com.moseeker.useraccounts.service.impl.biztools;
+package com.moseeker.common.biztools;
 
 /**
  * 邮箱状态

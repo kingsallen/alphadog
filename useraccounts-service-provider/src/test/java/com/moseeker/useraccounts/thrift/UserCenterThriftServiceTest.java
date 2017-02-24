@@ -39,11 +39,11 @@ public class UserCenterThriftServiceTest {
         List<ApplicationRecordsForm> formList = userCenterService.getApplications(4);
         if(formList != null && formList.size() > 0) {
             formList.forEach(form -> {
-                System.out.println(form.getDepartment());
+                System.out.println(form.getCompany_name());
                 System.out.println(form.getId());
-                System.out.println(form.getStatus());
+                System.out.println(form.getStatus_name());
                 System.out.println(form.getTime());
-                System.out.println(form.getTitle());
+                System.out.println(form.getPosition_title());
             });
         }
     }

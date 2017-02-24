@@ -1,6 +1,8 @@
 package com.moseeker.useraccounts.service.impl;
 
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.biztools.ApplyType;
+import com.moseeker.common.biztools.EmailStatus;
 import com.moseeker.common.biztools.RecruitmentScheduleEnum;
 import com.moseeker.common.exception.RecruitmentScheduleLastStepNotExistException;
 import com.moseeker.common.thread.ThreadPool;
@@ -8,8 +10,6 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.*;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
-import com.moseeker.useraccounts.service.impl.biztools.ApplyType;
-import com.moseeker.useraccounts.service.impl.biztools.EmailStatus;
 import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -54,7 +54,8 @@ public class UserCenterService {
                 //查询申请记录对应的职位数据
                 List<JobPositionDO> positions = bizTools.getPositions(apps.stream().mapToInt(app -> app.getPositionId()).toArray());
                 List<Hrcompany> companies = bizTools.getCompanies(apps.stream().mapToInt(app -> app.getCompanyId()).toArray());
-                List<ConfigSysPointConfTplDO> tpls = bizTools.getAwardConfigTpls();
+                List<HrOperationRecordDO> operationRecordDOList = bizTools.listLastHrOperationRecordPassedReject(apps.stream().map(app -> app.getAppTplId()).collect(Collectors.toSet()));
+                //List<ConfigSysPointConfTplDO> tpls = bizTools.getAwardConfigTpls();
 
                 applications = apps.stream().map(app -> {
                     ApplicationRecordsForm ar = new ApplicationRecordsForm();
@@ -74,14 +75,15 @@ public class UserCenterService {
                             ar.setCompany_name(op.get().getAbbreviation());
                         }
                     }
-
-                    if (tpls != null) {
-                        Optional<ConfigSysPointConfTplDO> op = tpls.stream().filter(tpl -> tpl.getId() == app.getAppTplId()).findFirst();
-                        if (op.isPresent()) {
-                            RecruitmentScheduleEnum r = RecruitmentScheduleEnum.createFromID(op.get().getId());
-                            ar.setStatus_name(r.getStatus());
+                    //设置最后一个非拒绝申请记录
+                    if(operationRecordDOList != null) {
+                        Optional<HrOperationRecordDO> operationRecordDOOptional = operationRecordDOList.stream()
+                                .filter(operation -> operation.getOperateTplId() == app.getAppTplId()).findFirst();
+                        if(operationRecordDOOptional.isPresent() && operationRecordDOOptional.get().getOperateTplId() != recruitmentScheduleEnum.getId()) {
+                            recruitmentScheduleEnum.setLastStep(operationRecordDOOptional.get().getOperateTplId());
                         }
                     }
+                    ar.setStatus_name(recruitmentScheduleEnum.getAppStatusDescription(app.getApplyType(), app.getEmailStatus()));
 
                     return ar;
                 }).collect(Collectors.toList());
@@ -360,23 +362,7 @@ public class UserCenterService {
                                 if(oprationRecord.getOperateTplId() == RecruitmentScheduleEnum.REJECT.getId()) {
                                     applicationOprationRecordVO.setStep_status(2);
                                 }
-                                /** 如果上一条是拒绝，这一条是其他操作记录，那么现实"HR将您纳入候选名单" */
-                                if(recruitmentScheduleEnum.getId() != RecruitmentScheduleEnum.REJECT.getId()
-                                        && recruitmentScheduleEnum.getLastID() == RecruitmentScheduleEnum.REJECT.getId()) {
-                                    applicationOprationRecordVO.setEvent("HR将您纳入候选名单");
-                                }
-                                /** 如果投递时邮件投递，并且投递状态是成功投递 */
-                                if (applicationDO.getApplyType() == ApplyType.EMAIL.getValue()){
-                                    if(applicationDO.getAppTplId() == RecruitmentScheduleEnum.APPLY.getId()) {
-                                        switch (applicationDO.getEmailStatus()) {
-                                            case 1: applicationOprationRecordVO.setEvent(EmailStatus.NOT_ANSWER_EMAIL.getMessage());break;
-                                            case 2: applicationOprationRecordVO.setEvent(EmailStatus.ATTACHMENT_NOT_SUPPORT.getMessage());break;
-                                            case 3: applicationOprationRecordVO.setEvent(EmailStatus.ATTACHMENT_MORE_THEN_MAXIMUN.getMessage());break;
-                                            case 8: applicationOprationRecordVO.setEvent(EmailStatus.MAIL_NOT_FOUND.getMessage());break;
-                                            case 9: applicationOprationRecordVO.setEvent(EmailStatus.MAIL_PARSING_FAILED.getMessage());break;
-                                        }
-                                    }
-                                }
+                                applicationOprationRecordVO.setEvent(recruitmentScheduleEnum.getAppStatusDescription(applicationDO.getApplyType(), applicationDO.getEmailStatus()));
                                 /** 如果投递是Email投递， */
                                 if(applicationDO.getApplyType() == ApplyType.EMAIL.getValue()
                                         && applicationDO.getEmailStatus() != EmailStatus.NOMAIL.getValue()

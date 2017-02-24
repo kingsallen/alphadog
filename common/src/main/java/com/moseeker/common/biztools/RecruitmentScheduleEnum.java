@@ -332,4 +332,32 @@ public enum RecruitmentScheduleEnum {
     public String getApplierView() {
         return applierView;
     }
+
+    /**
+     * 查询个人中西，申请记录状态描述
+     * @param applyType
+     * @param emailStatus
+     * @return
+     */
+    public String getAppStatusDescription(byte applyType, byte emailStatus) {
+        String eventDescription = applierView;
+        /** 如果上一条是拒绝，这一条是其他操作记录，那么现实"HR将您纳入候选名单" */
+        if(id != RecruitmentScheduleEnum.REJECT.getId()
+                && lastID == RecruitmentScheduleEnum.REJECT.getId()) {
+            eventDescription = "HR将您纳入候选名单";
+        }
+        /** 如果投递时邮件投递，并且投递状态是成功投递 */
+        if (applyType == ApplyType.EMAIL.getValue()){
+            if(id == RecruitmentScheduleEnum.APPLY.getId()) {
+                switch (emailStatus) {
+                    case 1: eventDescription = EmailStatus.NOT_ANSWER_EMAIL.getMessage();break;
+                    case 2: eventDescription = EmailStatus.ATTACHMENT_NOT_SUPPORT.getMessage();break;
+                    case 3: eventDescription = EmailStatus.ATTACHMENT_MORE_THEN_MAXIMUN.getMessage();break;
+                    case 8: eventDescription = EmailStatus.MAIL_NOT_FOUND.getMessage();break;
+                    case 9: eventDescription = EmailStatus.MAIL_PARSING_FAILED.getMessage();break;
+                }
+            }
+        }
+        return eventDescription;
+    }
 }
