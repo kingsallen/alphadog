@@ -17,11 +17,13 @@ service UserDBDao {
     list<userdb_struct.UserHrAccountDO> listHRFromCompany(1: i32 comanyId);
 
     userdb_struct.UserEmployeeDO getEmployee(1:common_struct.CommonQuery query);
+    common_struct.Response putUserEmployee(1: userdb_struct.UserEmployeePointsRecordDO employeeDo);
 
     common_struct.Response getUserEmployee(1:i32 companyId,2:list<i32> weChatIds);
     common_struct.Response postUserEmployeePoints(1:list<useraccounts_struct.UserEmployeePointStruct> records);
     common_struct.Response getPointSum(1:list<i64> record);
     common_struct.Response putUserEmployees(1:list<useraccounts_struct.UserEmployeeStruct> records);
     common_struct.Response putUserEmployeePoints(1:list<useraccounts_struct.UserEmployeePointStruct> records);
+
     list<userdb_struct.UserEmployeePointsRecordDO> getUserEmployeePoints(1: i32 employeeId);
 }
