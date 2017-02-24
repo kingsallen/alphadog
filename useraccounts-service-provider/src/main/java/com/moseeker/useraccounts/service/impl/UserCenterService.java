@@ -59,25 +59,27 @@ public class UserCenterService {
                 applications = apps.stream().map(app -> {
                     ApplicationRecordsForm ar = new ApplicationRecordsForm();
                     ar.setId(app.getId());
-                    ar.setStatus((byte) app.getAppTplId());
+                    RecruitmentScheduleEnum recruitmentScheduleEnum = RecruitmentScheduleEnum.createFromID(app.getAppTplId());
+                    ar.setStatus_name(recruitmentScheduleEnum.getStatus());
                     ar.setTime(app.getCreateTime());
                     if (positions != null) {
                         Optional<JobPositionDO> op = positions.stream().filter(position -> position.getId() == app.getPositionId()).findFirst();
                         if (op.isPresent()) {
-                            ar.setTitle(op.get().getTitle());
+                            ar.setPosition_title(op.get().getTitle());
                         }
                     }
                     if (companies != null) {
                         Optional<Hrcompany> op = companies.stream().filter(company -> company.getId() == app.getCompanyId()).findFirst();
                         if (op.isPresent()) {
-                            ar.setDepartment(op.get().getAbbreviation());
+                            ar.setCompany_name(op.get().getAbbreviation());
                         }
                     }
 
                     if (tpls != null) {
                         Optional<ConfigSysPointConfTplDO> op = tpls.stream().filter(tpl -> tpl.getId() == app.getAppTplId()).findFirst();
                         if (op.isPresent()) {
-                            ar.setStatus((byte) op.get().getRecruitOrder());
+                            RecruitmentScheduleEnum r = RecruitmentScheduleEnum.createFromID(op.get().getId());
+                            ar.setStatus_name(r.getStatus());
                         }
                     }
 
@@ -92,10 +94,10 @@ public class UserCenterService {
     }
 
     /**
-     * 查询职位收藏
+     * 查询用户收藏的职位
      *
      * @param userId 用户编号
-     * @return 感兴趣职位集合
+     * @return 收藏的职位集合
      * @throws TException
      */
     public List<FavPositionForm> getFavPositions(int userId) throws TException {
@@ -103,7 +105,7 @@ public class UserCenterService {
         //参数校验
         if (userId > 0) {
             //查询用户的收藏职位列表
-            List<UserFavPositionDO> favPositionRecords = bizTools.getFavPositions(userId, 2);
+            List<UserFavPositionDO> favPositionRecords = bizTools.getFavPositions(userId, 0);
             if (favPositionRecords != null && favPositionRecords.size() > 0) {
                 //差用用户收藏职位的职位详情
                 List<JobPositionDO> positions = bizTools.getPositions(favPositionRecords.stream().mapToInt(favP -> favP.getPositionId()).toArray());

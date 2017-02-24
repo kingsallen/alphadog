@@ -148,9 +148,9 @@ struct UserEmployeePointSum{
  */
 struct ApplicationRecordsForm {
     1: optional i32 id,
-    2: optional string title,
-    3: optional string department,
-    4: optional i8 status,
+    2: optional string position_title,
+    3: optional string company_name,
+    4: optional string status_name,
     5: optional Timestamp time
 }
 /*
