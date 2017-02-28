@@ -7,9 +7,7 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.thrift.gen.dao.struct.HistoryOperate;
 import com.moseeker.thrift.gen.dao.struct.HrOperationRecordDO;
-import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.Result;
+import org.jooq.*;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
@@ -76,16 +74,21 @@ public class HrOperationRecordDao extends StructDaoImpl<HrOperationRecordDO, HrO
 			conn = DBConnHelper.DBConn.getConn();
 			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 
-			operationrecordDOList = create.select(HrOperationRecord.HR_OPERATION_RECORD.ID, HrOperationRecord.HR_OPERATION_RECORD.APP_ID,
-					HrOperationRecord.HR_OPERATION_RECORD.OPERATE_TPL_ID)
-					.from(
-							create.select().from(HrOperationRecord.HR_OPERATION_RECORD)
-									.where(HrOperationRecord.HR_OPERATION_RECORD.APP_ID.in(appidSet))
-									.and(HrOperationRecord.HR_OPERATION_RECORD.OPERATE_TPL_ID.notEqual(Constant.RECRUIT_STATUS_REJECT))
-									.orderBy(HrOperationRecord.HR_OPERATION_RECORD.OPT_TIME.desc())
-					)
-					.where(HrOperationRecord.HR_OPERATION_RECORD.OPERATE_TPL_ID.notEqual(Constant.RECRUIT_STATUS_REJECT))
-					.groupBy(HrOperationRecord.HR_OPERATION_RECORD.APP_ID)
+			TableLike<?> e = create.select(HrOperationRecord.HR_OPERATION_RECORD.ID, HrOperationRecord.HR_OPERATION_RECORD.APP_ID,
+					HrOperationRecord.HR_OPERATION_RECORD.OPERATE_TPL_ID).from(HrOperationRecord.HR_OPERATION_RECORD)
+					.where(HrOperationRecord.HR_OPERATION_RECORD.APP_ID.in(appidSet))
+					.and(HrOperationRecord.HR_OPERATION_RECORD.OPERATE_TPL_ID.notEqual(Constant.RECRUIT_STATUS_REJECT))
+					.orderBy(HrOperationRecord.HR_OPERATION_RECORD.OPT_TIME.desc());
+
+			HrOperationRecord.HR_OPERATION_RECORD.as("s");
+			Field<Integer> ID = HrOperationRecord.HR_OPERATION_RECORD.ID.as("id");
+			Field<Long> APP_ID = HrOperationRecord.HR_OPERATION_RECORD.APP_ID.as("app_id");
+			Field<Integer> OPERATE_TPL_ID = HrOperationRecord.HR_OPERATION_RECORD.OPERATE_TPL_ID.as("operate_tpl_id");
+
+			operationrecordDOList = create.select(ID, APP_ID, OPERATE_TPL_ID)
+					.from(e)
+					.where(e.field(OPERATE_TPL_ID).notEqual(Constant.RECRUIT_STATUS_REJECT))
+					.groupBy(e.fields(APP_ID))
 					.fetch().into(HrOperationRecordDO.class);
 
 		} catch (SQLException e) {

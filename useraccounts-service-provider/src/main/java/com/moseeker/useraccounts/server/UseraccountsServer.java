@@ -1,17 +1,10 @@
 package com.moseeker.useraccounts.server;
 
+import com.moseeker.rpccenter.main.MoServer;
+import com.moseeker.useraccounts.thrift.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
-import com.moseeker.rpccenter.common.ServerNodeUtils;
-import com.moseeker.rpccenter.main.MoServer;
-import com.moseeker.rpccenter.main.MultiRegServer;
-import com.moseeker.useraccounts.thrift.UserCenterThriftService;
-import com.moseeker.useraccounts.thrift.UserCommonThriftService;
-import com.moseeker.useraccounts.thrift.UserHrAccountServiceImpl;
-import com.moseeker.useraccounts.thrift.UseraccountsServiceImpl;
-import com.moseeker.useraccounts.thrift.UsersettingsServicesImpl;
 
 /**
  * 

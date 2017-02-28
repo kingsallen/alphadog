@@ -144,15 +144,15 @@ public class UserCenterServiceTest {
 		try {
 			List<ApplicationRecordsForm> records = userCenterService.getApplication(1);
 			assertEquals(1, records.get(0).getId());
-			assertEquals("公司1", records.get(0).getDepartment());
-			assertEquals("title1", records.get(0).getTitle());
-			assertEquals(11, records.get(0).getStatus());
+			assertEquals("公司1", records.get(0).getCompany_name());
+			assertEquals("title1", records.get(0).getPosition_title());
+			//assertEquals("11", records.get(0).getStatus_name());
 			assertEquals("2017-01-01 11:11:11", records.get(0).getTime());
 			
 			assertEquals(2, records.get(1).getId());
-			assertEquals("公司2", records.get(1).getDepartment());
-			assertEquals("title2", records.get(1).getTitle());
-			assertEquals(12, records.get(1).getStatus());
+			assertEquals("公司2", records.get(1).getCompany_name());
+			assertEquals("title2", records.get(1).getPosition_title());
+			//assertEquals(12, records.get(1).getStatus_name());
 			assertEquals("2017-02-02 22:22:22", records.get(1).getTime());
 		} catch (TException e) {
 			// TODO Auto-generated catch block
