@@ -216,7 +216,7 @@ public class UserCenterService {
 
                 List<JobPositionDO> positions = (List<JobPositionDO>) psotionFuture.get();
                 List<UserUserDO> presentees = (List<UserUserDO>) presenteeFuture.get();
-                //List<UserUserDO> reposts = (List<UserUserDO>) repostFuture.get();
+                List<UserUserDO> reposts = (List<UserUserDO>) repostFuture.get();
                 List<JobApplicationDO> apps = (List<JobApplicationDO>) appFuture.get();
                 List<CandidatePositionDO> candidatePositionDOList = (List<CandidatePositionDO>) candidateFuture.get();
 
@@ -251,12 +251,12 @@ public class UserCenterService {
                                 });
                     }
                     /** 匹配转发者的名称 */
-                    /*if (reposts != null && reposts.size() > 0) {
+                    if (reposts != null && reposts.size() > 0) {
                         reposts.stream().filter(repost -> repost.getId() == candidateRecomRecordDO.getRepostUserId())
                                 .forEach(repost ->
-                                        recommendationRecordVO.setRecom_2nd_nickname(StringUtils.isNotNullOrEmpty(repost.getName())
+                                        recommendationRecordVO.setApplier_rel(StringUtils.isNotNullOrEmpty(repost.getName())
                                                 ? repost.getName() : repost.getNickname()));
-                    }*/
+                    }
                     /** 计算招聘进度 */
                     if(apps != null && apps.size() > 0) {
                         apps.stream().filter(app -> app.getId() == candidateRecomRecordDO.getAppId()).forEach(app -> {
