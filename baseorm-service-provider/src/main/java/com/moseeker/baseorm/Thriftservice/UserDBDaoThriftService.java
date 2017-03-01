@@ -126,4 +126,14 @@ public class UserDBDaoThriftService implements Iface {
 	public List<UserEmployeePointsRecordDO> getUserEmployeePoints(int employeeId) throws TException {
 		return userEmployeeService.getUserEmployeePoints(employeeId);
 	}
+
+	@Override
+	public List<UserEmployeeDO> getUserEmployeesDO(CommonQuery query) throws TException {
+		return userEmployeeService.getEmployeesDO(query);
+	}
+
+	@Override
+	public Response putUserEmployeesDO(List<UserEmployeeDO> employeeDoList) throws TException {
+		return userEmployeeService.putEmployeesDO(employeeDoList);
+	}
 }

@@ -34,16 +34,16 @@ public class UserCenterThriftServiceTest {
     /**
      * Method: getApplications(int userId)
      */
-    @Test
+    //@Test
     public void testGetApplications() throws Exception {
         List<ApplicationRecordsForm> formList = userCenterService.getApplications(4);
         if(formList != null && formList.size() > 0) {
             formList.forEach(form -> {
-                System.out.println(form.getDepartment());
+                System.out.println(form.getCompany_name());
                 System.out.println(form.getId());
-                System.out.println(form.getStatus());
+                System.out.println(form.getStatus_name());
                 System.out.println(form.getTime());
-                System.out.println(form.getTitle());
+                System.out.println(form.getPosition_title());
             });
         }
     }
@@ -51,7 +51,7 @@ public class UserCenterThriftServiceTest {
     /**
      * Method: getApplicationDetail(int userId, int appId)
      */
-    @Test
+    //@Test
     public void testGetApplicationDetail() throws Exception {
         ApplicationDetailVO vo = userCenterService.getApplicationDetail(4, 5);
         if(vo != null) {
@@ -75,7 +75,7 @@ public class UserCenterThriftServiceTest {
     /**
      * Method: getFavPositions(int userId)
      */
-    @Test
+    //@Test
     public void testGetFavPositions() throws Exception {
         List<FavPositionForm> formList = userCenterService.getFavPositions(2);
         if(formList != null && formList.size() > 0) {
@@ -96,7 +96,7 @@ public class UserCenterThriftServiceTest {
     /**
      * Method: getRecommendation(int userId, byte type, int pageNo, int pageSize)
      */
-    @Test
+    //@Test
     public void testGetRecommendation() throws Exception {
 
     }

@@ -15,7 +15,7 @@ public enum ThreadPool {
             60L, TimeUnit.SECONDS,
             new SynchronousQueue<Runnable>());
 
-    public Future<?> startTast(Runnable task) {
+    public <T> Future<T> startTast(Callable<T> task) {
         return this.service.submit(task);
     }
 

@@ -148,9 +148,9 @@ struct UserEmployeePointSum{
  */
 struct ApplicationRecordsForm {
     1: optional i32 id,
-    2: optional string title,
-    3: optional string department,
-    4: optional i8 status,
+    2: optional string position_title,
+    3: optional string company_name,
+    4: optional string status_name,
     5: optional Timestamp time
 }
 /*
@@ -207,6 +207,16 @@ struct AwardRecordForm {
 }
 
 /*
+ * 操作记录
+ */
+struct ApplicationOperationRecordVO {
+    1: optional string date,                    // 操作日期
+    2: optional string event,                   // 描述
+    3: optional i32 hide,                       // 是否隐藏 
+    4: optional i32 step_status                 // 状态 2表示拒绝
+}
+
+/*
  * 求职记录详情
  */
 struct ApplicationDetailVO {
@@ -216,14 +226,4 @@ struct ApplicationDetailVO {
     4: optional i8 step,                                //进度
     5: optional i8 step_status,                         //状态
     6: optional list<ApplicationOperationRecordVO> status_timeline  //操作记录
-}
-
-/*
- * 操作记录
- */
-struct ApplicationOperationRecordVO {
-    1: optional string date,                    // 操作日期
-    2: optional string event,                   // 描述
-    3: optional i32 hide,                       // 是否隐藏 
-    4: optional i32 step_status                 // 状态 2表示拒绝
 }
