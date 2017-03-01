@@ -33,7 +33,7 @@ import java.util.HashMap;
  * @version
  */
 @Service
-public class HRAccountThriftService implements Iface {
+public class HRAccountDaoThriftService implements Iface {
 	
 	private Logger logger = LoggerFactory.getLogger(ChannelType.class);
 	
