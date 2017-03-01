@@ -94,7 +94,7 @@ public class UserCenterThriftServiceTest {
     /**
      * Method: getRecommendation(int userId, byte type, int pageNo, int pageSize)
      */
-    @Test
+    //@Test
     public void testGetRecommendation() throws Exception {
         RecommendationVO recommendationVO = userCenterService.getRecommendation(4, (byte) 1, 1, 10);
         if(recommendationVO != null) {
