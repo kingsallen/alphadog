@@ -295,10 +295,12 @@ public enum NodeManager {
 		try {
 			if(root.getChirldren() != null && root.getChirldren().size() > 0) {
 				Iterator<ZKPath> iZKPath = root.getChirldren().iterator();
-				while(iZKPath.hasNext()) {
-					ZKPath izkpath = iZKPath.next();
-					removeParentPath(izkpath);
-					iZKPath.remove();
+				synchronized (root.getChirldren()) {
+					while(iZKPath.hasNext()) {
+						ZKPath izkpath = iZKPath.next();
+						removeParentPath(izkpath);
+						iZKPath.remove();
+					}
 				}
 			}
 			root.getChirldren().clear();
@@ -347,17 +349,22 @@ public enum NodeManager {
 						}
 					}
 					if(!notOldZKPathFlag) {
-						removeParentPath(izkpath);
-						iZKPath.remove();
+						synchronized (root.getChirldren()) {
+							removeParentPath(izkpath);
+							iZKPath.remove();
+						}
 					}
 				}
 			} else {
 				Iterator<ZKPath> iZKPath = root.getChirldren().iterator();
-				while(iZKPath.hasNext()) {
-					ZKPath izkpath = iZKPath.next();
-					removeParentPath(izkpath);
-					iZKPath.remove();
+				synchronized (root.getChirldren()) {
+					while(iZKPath.hasNext()) {
+						ZKPath izkpath = iZKPath.next();
+						removeParentPath(izkpath);
+						iZKPath.remove();
+					}
 				}
+
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -494,11 +501,13 @@ public enum NodeManager {
 				}
 				if(parentPath.getParentNode() != null) {
 					Iterator<ZKPath> zki = parentPath.getParentNode().getChirldren().iterator();
-					while(zki.hasNext()) {
-						ZKPath samePath = zki.next();
-						if(parentPath.equals(samePath)) {
-							zki.remove();
-							break;
+					synchronized (parentPath.getParentNode().getChirldren()) {
+						while(zki.hasNext()) {
+							ZKPath samePath = zki.next();
+							if(parentPath.equals(samePath)) {
+								zki.remove();
+								break;
+							}
 						}
 					}
 				}
