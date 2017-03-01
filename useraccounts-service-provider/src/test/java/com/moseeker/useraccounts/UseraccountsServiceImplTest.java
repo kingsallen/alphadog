@@ -21,7 +21,7 @@ import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Client.
  */
 public class UseraccountsServiceImplTest {
 
-    @Test
+    //@Test
     public void testDao() {
     	TTransport transport = null;
 		try {
