@@ -51,7 +51,7 @@ public class UserCenterThriftServiceTest {
     /**
      * Method: getApplicationDetail(int userId, int appId)
      */
-    //@Test
+    @Test
     public void testGetApplicationDetail() throws Exception {
         ApplicationDetailVO vo = userCenterService.getApplicationDetail(4, 5);
         if(vo != null) {
