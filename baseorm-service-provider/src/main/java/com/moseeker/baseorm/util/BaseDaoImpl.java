@@ -64,7 +64,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 
 			if(query != null) {
 				//解析查询条件
-				if(query.getAttributes() != null && query.getAttributes().size() > 0) {
+				/*if(query.getAttributes() != null && query.getAttributes().size() > 0) {
 					Field[] fieldArray = new Field[query.getAttributes().size()];
 					int count = 0;
 					for(String attribute : query.getAttributes()) {
@@ -77,7 +77,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 					if(count > 0) {
 						table = create.select(fieldArray).from(tableLike);
 					}
-				}
+				}*/
 
 				//解析equal fileter 内容
 				if (query.getEqualFilter() != null
@@ -109,7 +109,13 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 				//解析groupby
 				if(query.getGrouops() != null && query.getGrouops().size() > 0) {
 
-					Field[] fields = (Field[]) query.getGrouops().stream().filter(group -> tableLike.field(group) != null).map(group -> tableLike.field(group)).toArray();
+					Field[] fields = new Field[query.getGrouops().size()];
+					int count = 0;
+					for(String group : query.getGrouops()) {
+						fields[count] = tableLike.field(group);
+						count ++;
+					}
+					//Field[] fields = (Field[]) query.getGrouops().stream().filter(group -> tableLike.field(group) != null).map(group -> tableLike.field(group)).toArray();
 
 					if(fields != null && fields.length > 0) {
 						table.groupBy(fields);
@@ -163,10 +169,16 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 				per_page = query.getPer_page()>0 ? query.getPer_page() : 10 ;
 				table.limit((page-1)*per_page, per_page);
 			}
-			Result<Record> result = table.fetchInto((Table) tableLike);
+			Result<Record> result = table.fetch();
 
 			if (result != null && result.size() > 0) {
 				for (Record r : result) {
+					/*if(r instanceof UpdatableRecordImpl) {
+						records.add((R)r);
+					} else {
+						//r.into(R);
+						records.add((R)r.into((Table) tableLike));
+					}*/
 					records.add((R)r);
 				}
 			}

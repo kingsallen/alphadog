@@ -2,9 +2,7 @@ package com.moseeker.useraccounts.thrift;
 
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.useraccounts.service.UserCenterService;
-import com.moseeker.thrift.gen.useraccounts.struct.ApplicationDetailVO;
-import com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm;
-import com.moseeker.thrift.gen.useraccounts.struct.FavPositionForm;
+import com.moseeker.thrift.gen.useraccounts.struct.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,7 +49,7 @@ public class UserCenterThriftServiceTest {
     /**
      * Method: getApplicationDetail(int userId, int appId)
      */
-    @Test
+    //@Test
     public void testGetApplicationDetail() throws Exception {
         ApplicationDetailVO vo = userCenterService.getApplicationDetail(4, 5);
         if(vo != null) {
@@ -96,8 +94,31 @@ public class UserCenterThriftServiceTest {
     /**
      * Method: getRecommendation(int userId, byte type, int pageNo, int pageSize)
      */
-    //@Test
+    @Test
     public void testGetRecommendation() throws Exception {
+        RecommendationVO recommendationVO = userCenterService.getRecommendation(4, (byte) 1, 1, 10);
+        if(recommendationVO != null) {
+            System.out.println("is recommended : "+recommendationVO.isHasRecommends());
+            System.out.println("score:");
+            if(recommendationVO.getScore() != null) {
+                System.out.println(" applier_count : "+recommendationVO.getScore().getApplied_count());
+                System.out.println(" interested_count : "+recommendationVO.getScore().getInterested_count());
+                System.out.println(" link_viewed_count : "+recommendationVO.getScore().getLink_viewed_count());
+            }
 
+            List<RecommendationRecordVO> recommendationRecordVOList = recommendationVO.getRecommends();
+            if(recommendationRecordVOList != null && recommendationRecordVOList.size() > 0) {
+                recommendationRecordVOList.forEach(recommendationRecordVO -> {
+                    System.out.println(" appler_name : " + recommendationRecordVO.getApplier_name());
+                    System.out.println(" click_time : " + recommendationRecordVO.getClick_time());
+                    System.out.println(" headimgurl : " + recommendationRecordVO.getHeadimgurl());
+                    System.out.println(" position : " + recommendationRecordVO.getPosition());
+                    System.out.println(" is_interested : " + recommendationRecordVO.getIs_interested());
+                    System.out.println(" recom_status : " + recommendationRecordVO.getRecom_status());
+                    System.out.println(" status : "+recommendationRecordVO.getStatus());
+                    System.out.println(" view_number : " + recommendationRecordVO.getView_number());
+                });
+            }
+        }
     }
 }

@@ -212,7 +212,7 @@ public class UserCenterService {
                 Future presenteeFuture = tp.startTast(()-> bizTools.listPresentees(presenteeIDSet));
                 Future repostFuture = tp.startTast(()-> bizTools.listReposts(repostIDSet));
                 Future appFuture = tp.startTast(()-> bizTools.listApps(appIDSet));
-                Future candidateFuture = tp.startTast(()-> bizTools.listCandidatePositionsByPositionIDUserID(cps), List.class);
+                Future candidateFuture = tp.startTast(()-> bizTools.listCandidatePositionsByPositionIDUserID(cps));
 
                 List<JobPositionDO> positions = (List<JobPositionDO>) psotionFuture.get();
                 List<UserUserDO> presentees = (List<UserUserDO>) presenteeFuture.get();
