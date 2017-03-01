@@ -65,9 +65,17 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 			if(query != null) {
 				//解析查询条件
 				if(query.getAttributes() != null && query.getAttributes().size() > 0) {
-					Field[] fields = (Field[]) query.getAttributes().stream().filter(attribute -> tableLike.field(attribute) != null).map(attribute -> tableLike.field(attribute)).toArray();
-					if(fields != null && fields.length > 0) {
-						table = create.select(fields).from(tableLike);
+					Field[] fieldArray = new Field[query.getAttributes().size()];
+					int count = 0;
+					for(String attribute : query.getAttributes()) {
+						Field field = tableLike.field(attribute);
+						if(field != null) {
+							fieldArray[count] = field;
+							count ++;
+						}
+					}
+					if(count > 0) {
+						table = create.select(fieldArray).from(tableLike);
 					}
 				}
 
@@ -110,7 +118,15 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 				//解析排序
 				if (!StringUtils.isNullOrEmpty(query.getSortby())) {
 					String[] sortBy = query.getSortby().split(",");
-					String[] order = query.getOrder().split(",");
+					String[] order;
+					if(StringUtils.isNotNullOrEmpty(query.getOrder())) {
+						order = query.getOrder().split(",");
+					} else {
+						order = new String[sortBy.length];
+						for(int i=0; i< order.length; i++) {
+							order[i] = "asc";
+						}
+					}
 
 					List<SortField<?>> fields = new ArrayList<>(sortBy.length);
 					SortOrder so = SortOrder.ASC;
@@ -147,8 +163,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 				per_page = query.getPer_page()>0 ? query.getPer_page() : 10 ;
 				table.limit((page-1)*per_page, per_page);
 			}
-
-			Result<Record> result = table.fetch();
+			Result<Record> result = table.fetchInto((Table) tableLike);
 
 			if (result != null && result.size() > 0) {
 				for (Record r : result) {

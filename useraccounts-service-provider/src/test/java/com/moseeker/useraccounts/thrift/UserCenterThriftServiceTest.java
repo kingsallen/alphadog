@@ -36,7 +36,7 @@ public class UserCenterThriftServiceTest {
      */
     //@Test
     public void testGetApplications() throws Exception {
-        List<ApplicationRecordsForm> formList = userCenterService.getApplications(1);
+        List<ApplicationRecordsForm> formList = userCenterService.getApplications(4);
         if(formList != null && formList.size() > 0) {
             formList.forEach(form -> {
                 System.out.println(form.getCompany_name());
