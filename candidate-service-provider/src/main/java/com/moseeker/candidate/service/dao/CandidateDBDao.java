@@ -88,7 +88,11 @@ public class CandidateDBDao {
             hrs.forEach(i -> hraccountIds.append(i.getId()).append(","));
             hraccountIds.deleteCharAt(hraccountIds.length() - 1).append("]");
             qu.addEqualFilter("hraccount_id", hraccountIds.toString());
-            remarkDOList = candidateDBDao.listCandidateRemarks(qu);
+            try {
+                remarkDOList = candidateDBDao.listCandidateRemarks(qu);
+            } catch (CURDException e) {
+                LoggerFactory.getLogger(CandidateDBDao.class).error(e.getMessage(), e);
+            }
         }
         return remarkDOList;
     }
@@ -118,11 +122,15 @@ public class CandidateDBDao {
         candidateDBDao.updateCandidateRemarks(crs);
     }
 
-    public static CandidateShareChainDO getCandidateShareChain(int shareChainID) {
-        return null;
+    public static CandidateShareChainDO getCandidateShareChain(int shareChainID) throws TException {
+        QueryUtil qu = new QueryUtil();
+        qu.addEqualFilter("id", shareChainID);
+        return candidateDBDao.getCandidateShareChain(qu);
     }
 
-    public static UserEmployeeDO getEmployee(int userID) {
-        return null;
+    public static UserEmployeeDO getEmployee(int userID) throws TException {
+        QueryUtil qu = new QueryUtil();
+        qu.addEqualFilter("sysuser_id", userID);
+        return userDBDao.getEmployee(qu);
     }
 }
