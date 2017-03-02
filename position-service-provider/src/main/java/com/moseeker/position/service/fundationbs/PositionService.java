@@ -496,7 +496,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 				// 内容拼装和返回
 				for (JobPositionRecord jr : jobRecords) {
 					WechatPositionListData e = new WechatPositionListData();
-
+					logger.debug(jr.toString());
 					e.setTitle(jr.getTitle());
 					e.setId(jr.getId());
 					e.setSalary_top(jr.getSalaryTop());
