@@ -1,5 +1,8 @@
 package com.moseeker.application.service.impl;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.thrift.TException;
@@ -196,7 +199,8 @@ public class JobApplicataionService {
             // 更新申请
             JobApplicationRecord jobApplicationRecord = (JobApplicationRecord) BeanUtils.structToDB(jobApplication,
                     JobApplicationRecord.class);
-
+            Timestamp updateTime = new Timestamp(System.currentTimeMillis());
+            jobApplicationRecord.setUpdateTime(updateTime);
             int updateStatus = jobApplicationDao.putResource(jobApplicationRecord);
             if (updateStatus > 0) {
                 return ResponseUtils.success(new HashMap<String, Object>(){

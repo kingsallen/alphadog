@@ -8,6 +8,7 @@ apply plugin: 'eclipse'
 sourceCompatibility = 1.8
 
 dependencies {
+    compile deps["mysql-connector-java"]
     //compile deps["libthrift"]
     compile  fileTree(dir:'../libs',include:'libthrift-0.10.0.jar')
     compile  fileTree(dir:'../libs',include:'jooq*.jar')

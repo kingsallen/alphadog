@@ -33,9 +33,9 @@ public class ProfileBSThriftService implements Iface {
 	}
 
 	@Override
-	public Response profileProcess(int company_id, int progress_status, String aids, int account_id) {
+	public Response profileProcess(int company_id, int progress_status, List<Integer> aids, int account_id) {
 		// TODO Auto-generated method stub
-		return profileProcessBS.processProfile(company_id,progress_status,aids,account_id);
+		return profileProcessBS.processProfile(company_id, progress_status, aids, account_id);
 	}
 
 	@Override

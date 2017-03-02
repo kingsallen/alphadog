@@ -9,6 +9,7 @@ import org.jooq.Record8;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectJoinStep;
+import org.jooq.SelectOnConditionStep;
 import org.springframework.stereotype.Service;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysPointsConfTpl;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysPointsConfTplRecord;
@@ -30,7 +31,7 @@ public class ConfigSysPointsConfTplDao extends BaseDaoImpl<ConfigSysPointsConfTp
 		try {
 			conn = DBConnHelper.DBConn.getConn();
 			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-			SelectConditionStep<Record8<Integer, Integer, Integer, Integer, Integer, Integer, String, Long>> table =create.select(
+			SelectOnConditionStep<Record8<Integer, Integer, Integer, Integer, Integer, Integer, String, Long>> table =create.select(
 					ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.ID,
 					ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.AWARD, 
 					ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.DISABLE,
@@ -40,8 +41,7 @@ public class ConfigSysPointsConfTplDao extends BaseDaoImpl<ConfigSysPointsConfTp
 					ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.STATUS,
 					HrPointsConf.HR_POINTS_CONF.REWARD)
 			.from(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL)
-			.leftJoin(HrPointsConf.HR_POINTS_CONF).on("hrdb.hr_points_conf.template_id=configdb.config_sys_points_conf_tpl.id")
-			.where(HrPointsConf.HR_POINTS_CONF.COMPANY_ID.eq(companyId));
+			.leftJoin(HrPointsConf.HR_POINTS_CONF).on("hrdb.hr_points_conf.template_id=configdb.config_sys_points_conf_tpl.id ").and(HrPointsConf.HR_POINTS_CONF.COMPANY_ID.eq(companyId));
 			Result<Record8<Integer, Integer, Integer, Integer, Integer, Integer, String, Long>> result=table.fetch();
 			if(result!=null&&result.size()>0){
 				HrAwardConfigTemplate config=null;
@@ -54,7 +54,12 @@ public class ConfigSysPointsConfTplDao extends BaseDaoImpl<ConfigSysPointsConfTp
 				    config.setRecruit_order(r.getValue(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.RECRUIT_ORDER));
 				    config.setType_id(r.getValue(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.TYPE_ID));
 				    config.setStatus(r.getValue(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.STATUS));
-				    config.setReward(r.getValue(HrPointsConf.HR_POINTS_CONF.REWARD));
+				    if(r.getValue(HrPointsConf.HR_POINTS_CONF.REWARD)==null){
+				    	 config.setReward(0);
+				    }else{
+				    	 config.setReward(r.getValue(HrPointsConf.HR_POINTS_CONF.REWARD));
+				    }
+				   
 				    list.add(config);
 				}
 			}
