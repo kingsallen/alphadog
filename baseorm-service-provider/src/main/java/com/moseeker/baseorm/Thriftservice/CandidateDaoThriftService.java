@@ -8,6 +8,7 @@ import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,7 +47,7 @@ public class CandidateDaoThriftService implements CandidateDBDao.Iface {
     }
 
     @Override
-    public List<CandidateRemarkDO> listCandidateRemarks(CommonQuery query) throws TException {
+    public List<CandidateRemarkDO> listCandidateRemarks(CommonQuery query) throws CURDException, TException {
         return candidateRemarkDao.listResources(query);
     }
 

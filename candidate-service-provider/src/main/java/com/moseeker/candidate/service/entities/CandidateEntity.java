@@ -56,8 +56,10 @@ public class CandidateEntity implements Candidate {
                     jobPositionDO = (JobPositionDO) positionFuture.get();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                    logger.error(e.getMessage(), e);
                 } catch (ExecutionException e) {
                     e.printStackTrace();
+                    logger.error(e.getMessage(), e);
                 }
 
                 if(userUserDO != null && jobPositionDO != null) {
