@@ -28,7 +28,7 @@ public class CandidateThriftServiceTest {
     /**
      * Method: glancePosition(int userId, int positionId, int shareChainId)
      */
-    @Test
+    //@Test
     public void testGlancePosition() throws Exception {
         candidateService.glancePosition(2, 1, 1);
     }
