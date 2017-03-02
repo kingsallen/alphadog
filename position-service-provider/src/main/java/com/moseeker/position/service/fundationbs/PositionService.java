@@ -429,7 +429,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 	 */
 	public List<WechatPositionListData> getPositionList(WechatPositionListQuery query) {
 
-		List<WechatPositionListData> dataList = new ArrayList<>();
+		List<WechatPositionListData> dataList = new ArrayList<WechatPositionListData>();
 
 		try {
 			String childCompanyId = "";
@@ -486,7 +486,6 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     }
                 }
 
-
 				QueryUtil q = new QueryUtil();
 				q.addEqualFilter("id", "["+ org.apache.commons.lang.StringUtils.join(pids.toArray(), ",") + "]");
 				q.setSortby("priority");
@@ -496,7 +495,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 				// 内容拼装和返回
 				for (JobPositionRecord jr : jobRecords) {
 					WechatPositionListData e = new WechatPositionListData();
-					logger.debug(jr.toString());
+					logger.info(jr.toString());
 					e.setTitle(jr.getTitle());
 					e.setId(jr.getId());
 					e.setSalary_top(jr.getSalaryTop());
