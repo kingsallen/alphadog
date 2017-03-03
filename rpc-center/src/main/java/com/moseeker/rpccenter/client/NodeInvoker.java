@@ -85,7 +85,7 @@ public class NodeInvoker<T> implements Invoker {
                 return result;
             } catch (ConnectException ce) {
             	LOGGER.error(ce.getMessage(), ce);
-            	//pool.clear(node);
+            	pool.clear(node);
                 //NodeManager.NODEMANAGER.removePath(node);
             } catch (InvocationTargetException ite) {// XXX:InvocationTargetException异常发生在method.invoke()中
                 Throwable cause = ite.getCause();
