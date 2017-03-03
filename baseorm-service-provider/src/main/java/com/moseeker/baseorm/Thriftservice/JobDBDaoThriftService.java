@@ -3,6 +3,7 @@ package com.moseeker.baseorm.Thriftservice;
 import java.util.List;
 
 import com.moseeker.baseorm.service.PositionService;
+import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.JobPositionDO;

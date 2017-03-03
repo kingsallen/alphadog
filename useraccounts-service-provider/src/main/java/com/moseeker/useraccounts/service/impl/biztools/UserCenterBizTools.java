@@ -53,7 +53,11 @@ public class UserCenterBizTools {
 		qu.addEqualFilter("email_status", AbleFlag.OLDENABLE.getValueStr());
 		qu.setOrder("desc");
 		qu.setSortby("submit_time");
-		return jobDBDao.getApplications(qu);
+		try {
+			return jobDBDao.getApplications(qu);
+		} catch (CURDException e) {
+			return null;
+		}
 	}
 
 	/**
