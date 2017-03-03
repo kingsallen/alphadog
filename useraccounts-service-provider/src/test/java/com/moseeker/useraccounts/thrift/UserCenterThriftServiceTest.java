@@ -32,7 +32,7 @@ public class UserCenterThriftServiceTest {
     /**
      * Method: getApplications(int userId)
      */
-    @Test
+    //@Test
     public void testGetApplications() throws Exception {
         List<ApplicationRecordsForm> formList = userCenterService.getApplications(4);
         if(formList != null && formList.size() > 0) {
