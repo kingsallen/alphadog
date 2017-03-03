@@ -91,7 +91,11 @@ public class UserCenterService {
         } else {
             //do nothing
         }
-
+        if(applications.size() > 0) {
+            applications.forEach(application -> {
+                logger.info("ApplicationRecordsForm:"+application);
+            });
+        }
         return applications;
     }
 
@@ -398,7 +402,7 @@ public class UserCenterService {
                 logger.error(e.getMessage(), e);
             }
         }
-
+        logger.info("getApplicationDetail:"+applicationDetailVO);
         return applicationDetailVO;
     }
 
