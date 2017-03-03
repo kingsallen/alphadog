@@ -62,7 +62,7 @@ public class UserCenterService {
                     ar.setId(app.getId());
                     RecruitmentScheduleEnum recruitmentScheduleEnum = RecruitmentScheduleEnum.createFromID(app.getAppTplId());
                     ar.setStatus_name(recruitmentScheduleEnum.getStatus());
-                    ar.setTime(app.getCreateTime());
+                    ar.setTime(app.getSubmitTime());
                     if (positions != null) {
                         Optional<JobPositionDO> op = positions.stream().filter(position -> position.getId() == app.getPositionId()).findFirst();
                         if (op.isPresent()) {

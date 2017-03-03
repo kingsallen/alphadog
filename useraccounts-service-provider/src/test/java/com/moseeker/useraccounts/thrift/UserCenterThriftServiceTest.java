@@ -5,6 +5,7 @@ import com.moseeker.thrift.gen.useraccounts.service.UserCenterService;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class UserCenterThriftServiceTest {
     /**
      * Method: getApplications(int userId)
      */
-    //@Test
+    @Test
     public void testGetApplications() throws Exception {
         List<ApplicationRecordsForm> formList = userCenterService.getApplications(4);
         if(formList != null && formList.size() > 0) {
