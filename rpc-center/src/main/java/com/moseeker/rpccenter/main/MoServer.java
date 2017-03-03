@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 服务管理中心
+ * 服务管理中心。主要提供thrift服务创建和服务注册功能
  * Created by jack on 06/02/2017.
  */
 public class MoServer {
@@ -29,16 +29,16 @@ public class MoServer {
     Logger logger = LoggerFactory.getLogger(MoServer.class);
 
     /* 配置信息 */
-    private ThriftConfig thriftConfig;                  //thrift服务配置信息
-    private ZKConfig zkConfig;                          //zk配置
-    private ServerData serverData;                      //节点信息
+    private ThriftConfig thriftConfig;                          //thrift服务配置信息
+    private ZKConfig zkConfig;                                  //zk配置
+    private ServerData serverData;                              //节点信息
 
-    private IServer server;                             //thrift服务
-    private ServerRegistry serverRegistry;              //zookeeper节点注册服务
+    private IServer server;                                     //thrift服务
+    private ServerRegistry serverRegistry;                      //zookeeper节点注册服务
 
     private ConfigHelper configHelper = new ConfigHelper();
-    private String configName = "service.properties";    //配置文件名称
-    private Object[] impls;                             //服务实现类
+    private String configName = "service.properties";           //配置文件名称
+    private Object[] impls;                                     //服务实现类
 
     public MoServer(AnnotationConfigApplicationContext acac) throws ClassNotFoundException, IncompleteException,
             RpcException, BeansException {

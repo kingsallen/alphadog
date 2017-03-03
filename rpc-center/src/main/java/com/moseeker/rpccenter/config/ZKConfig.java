@@ -18,7 +18,7 @@ public class ZKConfig implements ConfigCheck {
     private String ip;                          //zookeeper IP地址
     private int port;                           //zookeeper 端口
     private int interval = 5 * 60;              //心跳时间间隔
-    private String root = "server_menu";        //根目录
+    private String root = "service_menu";       //根目录
     private List<String> serverNames;           //服务名称
     private String servers = "services";        //服务子目录
     private String zkSeparator = "/";           //zookeeper服务分隔符
