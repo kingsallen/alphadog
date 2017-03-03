@@ -206,7 +206,19 @@ public class BeanUtils {
 									if (origMethods[k].getName().trim().equals(origMethodName)) {
 										Object object = convertTo(origMethods[k].invoke(orig, new Object[] {}),
 												destMethods[j].getParameterTypes()[0]);
-										destMethods[j].invoke(dest, object);
+										try {
+											if(object != null) {
+												destMethods[j].invoke(dest, object);
+											}
+										} catch (IllegalAccessException e) {
+											e.printStackTrace();
+											logger.error(e.getMessage(), e);
+										} catch (IllegalArgumentException e) {
+											logger.info("IllegalArgumentException -- method:{}, methodType:{}, param value:{}, param before convert:",origMethods[k].getName().trim(), destMethods[j].getParameterTypes()[0], object, orig);
+											logger.error(e.getMessage(), e);
+										} catch (InvocationTargetException e) {
+											logger.error(e.getMessage(), e);
+										}
 										break;
 									}
 								}
