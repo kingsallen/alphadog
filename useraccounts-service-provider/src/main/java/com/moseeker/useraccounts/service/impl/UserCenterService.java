@@ -307,12 +307,14 @@ public class UserCenterService {
     }
 
     public ApplicationDetailVO getApplicationDetail(int userId, int appId) {
-
+        logger.info("--------getApplicationDetail---------");
+        logger.info("params   userId:{}, appId:{}", userId, appId);
         ApplicationDetailVO applicationDetailVO = new ApplicationDetailVO();
 
         if(userId > 0 && appId > 0) {
             try {
                 JobApplicationDO applicationDO = bizTools.getApplication(appId);
+                logger.info("applicationDO:{}",applicationDO);
                 if(applicationDO != null && applicationDO.getId() > 0) {
                     applicationDetailVO.setPid(appId);
                     //查找申请记录
@@ -335,6 +337,7 @@ public class UserCenterService {
                     try {
                         JobPositionDO positionDO = (JobPositionDO)positionDOFuture.get();
                         if(positionDO != null) {
+                            logger.info("title:{}", positionDO.getTitle());
                             applicationDetailVO.setPosition_title(positionDO.getTitle());
                         }
                         HrCompanyDO companyDO = (HrCompanyDO) companyDOFuture.get();
@@ -344,6 +347,7 @@ public class UserCenterService {
                             } else {
                                 applicationDetailVO.setCompany_name(companyDO.getAbbreviation());
                             }
+                            logger.info("company_name:{}", companyDO.getName());
                         }
 
                         if(operationFuture != null) {
