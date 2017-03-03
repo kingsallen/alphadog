@@ -353,6 +353,7 @@ public class UserCenterService {
                         }
                         List<HrOperationRecordDO> operationrecordDOList = (List<HrOperationRecordDO>) timeLineListFuture.get();
                         if(operationrecordDOList != null && operationrecordDOList.size() > 0) {
+                            List<ApplicationOperationRecordVO> applicationOperationRecordVOList = new ArrayList<>();
                             Iterator<HrOperationRecordDO> it = operationrecordDOList.iterator();
                             int applyCount = 0;         //只显示第一条投递操作
                             while(it.hasNext()) {
@@ -381,7 +382,9 @@ public class UserCenterService {
                                     }
                                     applyCount ++;
                                 }
+                                applicationOperationRecordVOList.add(applicationOprationRecordVO);
                             }
+                            applicationDetailVO.setStatus_timeline(applicationOperationRecordVOList);
                         }
 
                     } catch (InterruptedException e) {
