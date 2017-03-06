@@ -84,6 +84,12 @@ public class RecruitmentScheduleEnumTest {
 
     }
 
+    @Test
+    public void testGetAppStatusDescription() throws Exception {
+        RecruitmentScheduleEnum recruitmentScheduleEnum = RecruitmentScheduleEnum.createFromID(12);
+        assertEquals("HR将您的状态改为待重新面试", recruitmentScheduleEnum.getAppStatusDescription((byte)0, (byte)0,2));
+
+    }
 
     /**
      * Method: init(int value)

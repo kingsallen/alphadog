@@ -388,7 +388,9 @@ public class UserCenterService {
                                     }
                                     logger.info("preID :{}", preID);
                                 }
-                                applicationOprationRecordVO.setEvent(recruitmentScheduleEnum.getAppStatusDescription(applicationDO.getApplyType(), applicationDO.getEmailStatus(), preID));
+                                RecruitmentScheduleEnum recruitmentScheduleEnum1 = RecruitmentScheduleEnum.createFromID(oprationRecord.getOperateTplId());
+                                recruitmentScheduleEnum1.setLastStep(preID);
+                                applicationOprationRecordVO.setEvent(recruitmentScheduleEnum1.getAppStatusDescription(applicationDO.getApplyType(), applicationDO.getEmailStatus(), preID));
                                 /** 如果投递是Email投递， */
                                 if(applicationDO.getApplyType() == ApplyType.EMAIL.getValue()
                                         && applicationDO.getEmailStatus() != EmailStatus.NOMAIL.getValue()
