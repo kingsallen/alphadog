@@ -112,6 +112,9 @@ public class RecruitmentScheduleEnumTest {
 
         RecruitmentScheduleEnum recruitmentScheduleEnum8 = RecruitmentScheduleEnum.createFromID(10);
         System.out.println(recruitmentScheduleEnum8.getAppStatusDescription((byte)0, (byte)0,12));
+
+        RecruitmentScheduleEnum recruitmentScheduleEnum9 = RecruitmentScheduleEnum.createFromID(3);
+        System.out.println(recruitmentScheduleEnum9.getAppStatusDescription((byte)0, (byte)0,12));
     }
 
     /**

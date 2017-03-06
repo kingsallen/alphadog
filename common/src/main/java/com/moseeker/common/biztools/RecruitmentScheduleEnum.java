@@ -351,13 +351,13 @@ public enum RecruitmentScheduleEnum {
                 && preID == RecruitmentScheduleEnum.REJECT.getId()) {
             return  "HR将您纳入候选名单";
         }
-        if(id == RecruitmentScheduleEnum.HIRED.getId() && preID == RecruitmentScheduleEnum.OFFERED.getId()) {
+        if(id == RecruitmentScheduleEnum.OFFERED.getId() && preID == RecruitmentScheduleEnum.HIRED.getId()) {
             return  "HR将您的状态改为待重新入职";
         }
         if(id == RecruitmentScheduleEnum.OFFERED.getId() && preID == RecruitmentScheduleEnum.CV_PASSED.getId()) {
             return  "HR将您的状态改为待重新面试";
         }
-        if(id == RecruitmentScheduleEnum.INTERVIEW.getId() && preID == RecruitmentScheduleEnum.CV_CHECKED.getId()) {
+        if(id == RecruitmentScheduleEnum.CV_PASSED.getId() && preID == RecruitmentScheduleEnum.CV_CHECKED.getId()) {
             return  "HR将您的状态改为待重新评审";
         }
         String eventDescription = applierView;
