@@ -115,6 +115,15 @@ public class RecruitmentScheduleEnumTest {
 
         RecruitmentScheduleEnum recruitmentScheduleEnum9 = RecruitmentScheduleEnum.createFromID(3);
         System.out.println(recruitmentScheduleEnum9.getAppStatusDescription((byte)0, (byte)0,12));
+
+        RecruitmentScheduleEnum recruitmentScheduleEnum11 = RecruitmentScheduleEnum.createFromID(12);
+        System.out.println(recruitmentScheduleEnum11.getAppStatusDescription((byte)0, (byte)0,3));
+
+        RecruitmentScheduleEnum recruitmentScheduleEnum10 = RecruitmentScheduleEnum.createFromID(10);
+        System.out.println(recruitmentScheduleEnum10.getAppStatusDescription((byte)0, (byte)0,12));
+
+        RecruitmentScheduleEnum recruitmentScheduleEnum12 = RecruitmentScheduleEnum.createFromID(6);
+        System.out.println(recruitmentScheduleEnum12.getAppStatusDescription((byte)0, (byte)0,10));
     }
 
     /**

@@ -354,10 +354,10 @@ public enum RecruitmentScheduleEnum {
         if(id == RecruitmentScheduleEnum.OFFERED.getId() && preID == RecruitmentScheduleEnum.HIRED.getId()) {
             return  "HR将您的状态改为待重新入职";
         }
-        if(id == RecruitmentScheduleEnum.OFFERED.getId() && preID == RecruitmentScheduleEnum.CV_PASSED.getId()) {
+        if(id == RecruitmentScheduleEnum.CV_PASSED.getId() && preID == RecruitmentScheduleEnum.OFFERED.getId()) {
             return  "HR将您的状态改为待重新面试";
         }
-        if(id == RecruitmentScheduleEnum.CV_PASSED.getId() && preID == RecruitmentScheduleEnum.CV_CHECKED.getId()) {
+        if(id == RecruitmentScheduleEnum.CV_CHECKED.getId() && preID == RecruitmentScheduleEnum.CV_PASSED.getId()) {
             return  "HR将您的状态改为待重新评审";
         }
         String eventDescription = applierView;
