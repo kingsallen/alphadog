@@ -364,6 +364,7 @@ public class UserCenterService {
                         }
                         List<HrOperationRecordDO> operationrecordDOList = (List<HrOperationRecordDO>) timeLineListFuture.get();
                         if(operationrecordDOList != null && operationrecordDOList.size() > 0) {
+                            logger.info("operationrecordDOList : {}", operationrecordDOList);
                             List<ApplicationOperationRecordVO> applicationOperationRecordVOList = new ArrayList<>();
                             Iterator<HrOperationRecordDO> it = operationrecordDOList.iterator();
                             int applyCount = 0;         //只显示第一条投递操作
@@ -381,7 +382,7 @@ public class UserCenterService {
                                     while(operationrecordDOList.get(j).getOperateTplId() == RecruitmentScheduleEnum.REJECT.getId() || j > 0) {
                                         j--;
                                     }
-                                    logger.info("preID j:{}", j);
+                                    logger.info("preID j:{} count:{}", j, count);
                                     if(operationrecordDOList.get(j).getOperateTplId() != RecruitmentScheduleEnum.REJECT.getId()) {
                                         preID = operationrecordDOList.get(j).getOperateTplId();
                                     }
