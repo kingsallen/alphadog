@@ -344,7 +344,7 @@ public enum RecruitmentScheduleEnum {
      */
     public String getAppStatusDescription(byte applyType, byte emailStatus, int preID) {
 
-        logger.info("getAppStatusDescription -- applyType : {},  emailStatus : {}, preID : {}", applyType, emailStatus, preID);
+        logger.info("getAppStatusDescription -- id:{}, applyType : {},  emailStatus : {}, preID : {}", id, applyType, emailStatus, preID);
 
         String eventDescription = applierView;
         /** 如果上一条是拒绝，这一条是其他操作记录，那么现实"HR将您纳入候选名单" */
