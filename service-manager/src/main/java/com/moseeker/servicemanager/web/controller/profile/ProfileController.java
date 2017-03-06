@@ -195,17 +195,18 @@ public class ProfileController {
 	@ResponseBody
 	public String profileProcess(HttpServletRequest request, HttpServletResponse response) {
 		try {
-
 			Params<String, Object> form = ParamUtils.parseRequestParam(request);
 			Integer companyId=form.getInt("company_id");
 			Integer progress_status=form.getInt("progress_status");
 			List<Integer> appIds = (ArrayList<Integer>)form.get("aids");
 			Integer accountId=form.getInt("account_id");
+			logger.info("profileProcess companyId:{}, progress_status:{}  appIds:{}, accountId:{}", companyId, progress_status, appIds, accountId);
 			if(progress_status==null || appIds == null || appIds.isEmpty()){
+				logger.info("profileProcess param illegal");
 				return ResponseLogNotification.success(request, ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY));
 			}
 			Response result = profileBSService.profileProcess(companyId,progress_status,appIds,accountId);
-			
+			logger.info("profileProcess result:{}", request);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
 			e.printStackTrace();
