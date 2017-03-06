@@ -80,32 +80,4 @@ public class NormalSpecialCharCheck implements SpecialCharCheck {
 		Matcher m = p.matcher(str);
 		return m.find();
 	}
-	
-	
-
-	@Test
-	public void testStringFilter() throws PatternSyntaxException {
-		String str = "*adCVs*34_a _09_b5*[/435^*&城池()^$$&*).{}+.|.)%%*(*.中国}34{45[]12.fd'*&999下面是中文的字符￥……{}【】。，；’“‘”？";
-		System.out.println(str);
-		System.out.println(StringFilter(str));
-	}
-	
-	@Test
-	public void testStringChar() {
-		char a = 'a';
-		String aa = "a";
-		System.out.println(aa.equals(a));
-	}
-
-	@Test
-	public void subStringTest() {
-		String str = "abcdefghijklmnopqrstuvwxyz";
-		System.out.println(str.substring(0, 3));
-		System.out.println(str.substring(1, 1));
-		System.out.println(str.substring(1, 1));
-		System.out.println(str.substring(1, 2));
-		System.out.println(str.substring(1, 3));
-		System.out.println(str.substring(1, 4));
-		System.out.println(str.substring(4, 5));
-	}
 }
