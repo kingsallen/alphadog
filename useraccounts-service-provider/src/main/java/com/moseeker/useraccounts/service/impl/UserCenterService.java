@@ -316,7 +316,7 @@ public class UserCenterService {
                 JobApplicationDO applicationDO = bizTools.getApplication(appId);
                 logger.info("applicationDO:{}",applicationDO);
                 if(applicationDO != null && applicationDO.getId() > 0) {
-                    applicationDetailVO.setPid(appId);
+                    applicationDetailVO.setPid(applicationDO.getPositionId());
                     //查找申请记录
                     RecruitmentScheduleEnum recruitmentScheduleEnum = RecruitmentScheduleEnum.createFromID(applicationDO.getAppTplId());
 

@@ -346,6 +346,15 @@ public enum RecruitmentScheduleEnum {
                 && lastID == RecruitmentScheduleEnum.REJECT.getId()) {
             eventDescription = "HR将您纳入候选名单";
         }
+        if(id == RecruitmentScheduleEnum.HIRED.getId() && lastID == RecruitmentScheduleEnum.OFFERED.getId()) {
+            eventDescription = "HR将您的状态改为待重新入职";
+        }
+        if(id == RecruitmentScheduleEnum.OFFERED.getId() && lastID == RecruitmentScheduleEnum.INTERVIEW.getId()) {
+            eventDescription = "HR将您的状态改为待重新面试";
+        }
+        if(id == RecruitmentScheduleEnum.INTERVIEW.getId() && lastID == RecruitmentScheduleEnum.CV_CHECKED.getId()) {
+            eventDescription = "HR将您的状态改为待重新评审";
+        }
         /** 如果投递时邮件投递，并且投递状态是成功投递 */
         if (applyType == ApplyType.EMAIL.getValue()){
             if(id == RecruitmentScheduleEnum.APPLY.getId()) {
