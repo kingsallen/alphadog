@@ -2,6 +2,8 @@ package com.moseeker.common.biztools;
 
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.RecruitmentScheduleLastStepNotExistException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +32,7 @@ public enum RecruitmentScheduleEnum {
     }
 
     private static Map<Integer, RecruitmentScheduleEnum> recruitmentScheduleEnumHashMap = new HashMap<>();
+    private Logger logger = LoggerFactory.getLogger(RecruitmentScheduleEnum.class);
 
     static {                                                    // Initialize map from constant name to enum constant
         for (RecruitmentScheduleEnum op : values())
@@ -340,6 +343,9 @@ public enum RecruitmentScheduleEnum {
      * @return
      */
     public String getAppStatusDescription(byte applyType, byte emailStatus, int preID) {
+
+        logger.info("getAppStatusDescription -- applyType : {},  emailStatus : {}, preID : {}", applyType, emailStatus, preID);
+
         String eventDescription = applierView;
         /** 如果上一条是拒绝，这一条是其他操作记录，那么现实"HR将您纳入候选名单" */
         if(id != RecruitmentScheduleEnum.REJECT.getId()
@@ -367,6 +373,7 @@ public enum RecruitmentScheduleEnum {
                 }
             }
         }
+        logger.info("getAppStatusDescription -- eventDescription : {}", eventDescription);
         return eventDescription;
     }
 }
