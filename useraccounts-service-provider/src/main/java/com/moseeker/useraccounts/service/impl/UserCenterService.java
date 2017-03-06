@@ -76,14 +76,16 @@ public class UserCenterService {
                         }
                     }
                     //设置最后一个非拒绝申请记录
+                    int preID = 0;
                     if(operationRecordDOList != null) {
                         Optional<HrOperationRecordDO> operationRecordDOOptional = operationRecordDOList.stream()
                                 .filter(operation -> operation.getOperateTplId() == app.getAppTplId()).findFirst();
                         if(operationRecordDOOptional.isPresent() && operationRecordDOOptional.get().getOperateTplId() != recruitmentScheduleEnum.getId()) {
                             recruitmentScheduleEnum.setLastStep(operationRecordDOOptional.get().getOperateTplId());
+                            preID = operationRecordDOOptional.get().getOperateTplId();
                         }
                     }
-                    ar.setStatus_name(recruitmentScheduleEnum.getAppStatusDescription(app.getApplyType(), app.getEmailStatus()));
+                    ar.setStatus_name(recruitmentScheduleEnum.getAppStatusDescription(app.getApplyType(), app.getEmailStatus(), preID));
 
                     return ar;
                 }).collect(Collectors.toList());
@@ -354,6 +356,7 @@ public class UserCenterService {
                             List<HrOperationRecordDO> operationrecordDOList = (List<HrOperationRecordDO>)operationFuture.get();
                             if(operationrecordDOList != null && operationrecordDOList.size() > 0) {
                                 HrOperationRecordDO operationRecordDO = operationrecordDOList.get(0);
+
                                 recruitmentScheduleEnum.setLastStep(operationRecordDO.getOperateTplId());
                                 applicationDetailVO.setStep_status((byte) recruitmentScheduleEnum.getStepStatusForApplicationDetail());
                                 applicationDetailVO.setStep((byte) recruitmentScheduleEnum.getStepForApplicationDetail());
@@ -364,6 +367,7 @@ public class UserCenterService {
                             List<ApplicationOperationRecordVO> applicationOperationRecordVOList = new ArrayList<>();
                             Iterator<HrOperationRecordDO> it = operationrecordDOList.iterator();
                             int applyCount = 0;         //只显示第一条投递操作
+                            int count = 0;
                             while(it.hasNext()) {
                                 HrOperationRecordDO oprationRecord = it.next();
                                 ApplicationOperationRecordVO applicationOprationRecordVO = new ApplicationOperationRecordVO();
@@ -371,7 +375,17 @@ public class UserCenterService {
                                 if(oprationRecord.getOperateTplId() == RecruitmentScheduleEnum.REJECT.getId()) {
                                     applicationOprationRecordVO.setStep_status(2);
                                 }
-                                applicationOprationRecordVO.setEvent(recruitmentScheduleEnum.getAppStatusDescription(applicationDO.getApplyType(), applicationDO.getEmailStatus()));
+                                int preID = 0;
+                                if(count > 0) {
+                                    int j = count-1;
+                                    while(operationrecordDOList.get(j).getOperateTplId() == RecruitmentScheduleEnum.REJECT.getId() || j > 0) {
+                                        j--;
+                                    }
+                                    if(operationrecordDOList.get(j).getOperateTplId() != RecruitmentScheduleEnum.REJECT.getId()) {
+                                        preID = operationrecordDOList.get(j).getOperateTplId();
+                                    }
+                                }
+                                applicationOprationRecordVO.setEvent(recruitmentScheduleEnum.getAppStatusDescription(applicationDO.getApplyType(), applicationDO.getEmailStatus(), preID));
                                 /** 如果投递是Email投递， */
                                 if(applicationDO.getApplyType() == ApplyType.EMAIL.getValue()
                                         && applicationDO.getEmailStatus() != EmailStatus.NOMAIL.getValue()
@@ -391,6 +405,7 @@ public class UserCenterService {
                                     applyCount ++;
                                 }
                                 applicationOperationRecordVOList.add(applicationOprationRecordVO);
+                                count ++;
                             }
                             applicationDetailVO.setStatus_timeline(applicationOperationRecordVOList);
                         }
