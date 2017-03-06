@@ -346,21 +346,21 @@ public enum RecruitmentScheduleEnum {
 
         logger.info("getAppStatusDescription -- id:{}, applyType : {},  emailStatus : {}, preID : {}", id, applyType, emailStatus, preID);
 
-        String eventDescription = applierView;
         /** 如果上一条是拒绝，这一条是其他操作记录，那么现实"HR将您纳入候选名单" */
         if(id != RecruitmentScheduleEnum.REJECT.getId()
                 && preID == RecruitmentScheduleEnum.REJECT.getId()) {
-            eventDescription = "HR将您纳入候选名单";
+            return  "HR将您纳入候选名单";
         }
         if(id == RecruitmentScheduleEnum.HIRED.getId() && preID == RecruitmentScheduleEnum.OFFERED.getId()) {
-            eventDescription = "HR将您的状态改为待重新入职";
+            return  "HR将您的状态改为待重新入职";
         }
-        if(id == RecruitmentScheduleEnum.OFFERED.getId() && preID == RecruitmentScheduleEnum.INTERVIEW.getId()) {
-            eventDescription = "HR将您的状态改为待重新面试";
+        if(id == RecruitmentScheduleEnum.OFFERED.getId() && preID == RecruitmentScheduleEnum.CV_PASSED.getId()) {
+            return  "HR将您的状态改为待重新面试";
         }
         if(id == RecruitmentScheduleEnum.INTERVIEW.getId() && preID == RecruitmentScheduleEnum.CV_CHECKED.getId()) {
-            eventDescription = "HR将您的状态改为待重新评审";
+            return  "HR将您的状态改为待重新评审";
         }
+        String eventDescription = applierView;
         /** 如果投递时邮件投递，并且投递状态是成功投递 */
         if (applyType == ApplyType.EMAIL.getValue()){
             if(id == RecruitmentScheduleEnum.APPLY.getId()) {

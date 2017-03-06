@@ -406,6 +406,8 @@ public class UserCenterBizTools {
 		queryUtil.addEqualFilter("app_id", appId);
 		queryUtil.addSelectAttribute("id").addSelectAttribute("app_id").addSelectAttribute("opt_time");
 		queryUtil.setSortby("opt_time");
+		queryUtil.setPage(0);
+		queryUtil.setPer_page(Integer.MAX_VALUE);
 		try {
 			return hrDBDao.listHrOperationRecord(queryUtil);
 		} catch (TException e) {
