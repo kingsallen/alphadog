@@ -379,7 +379,7 @@ public class UserCenterService {
                                 int preID = 0;
                                 if(count > 0) {
                                     int j = count-1;
-                                    while(operationrecordDOList.get(j).getOperateTplId() == RecruitmentScheduleEnum.REJECT.getId() || j > 0) {
+                                    while(operationrecordDOList.get(j).getOperateTplId() == RecruitmentScheduleEnum.REJECT.getId() && j > 0) {
                                         j--;
                                     }
                                     logger.info("preID j:{} count:{}", j, count);
