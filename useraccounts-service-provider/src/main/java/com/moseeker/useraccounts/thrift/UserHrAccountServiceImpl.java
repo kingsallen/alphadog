@@ -74,6 +74,7 @@ public class UserHrAccountServiceImpl implements Iface {
 	@Override
 	public Response getSearchCondition(int hrAccountId, int type)
 			throws TException {
+    	logger.info("UserHrAccountServiceImpl - getSearchCondition ");
 		return service.getSearchCondition(hrAccountId, type);
 	}
 
