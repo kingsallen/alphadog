@@ -381,9 +381,11 @@ public class UserCenterService {
                                     while(operationrecordDOList.get(j).getOperateTplId() == RecruitmentScheduleEnum.REJECT.getId() || j > 0) {
                                         j--;
                                     }
+                                    logger.info("preID j:{}", j);
                                     if(operationrecordDOList.get(j).getOperateTplId() != RecruitmentScheduleEnum.REJECT.getId()) {
                                         preID = operationrecordDOList.get(j).getOperateTplId();
                                     }
+                                    logger.info("preID :{}", preID);
                                 }
                                 applicationOprationRecordVO.setEvent(recruitmentScheduleEnum.getAppStatusDescription(applicationDO.getApplyType(), applicationDO.getEmailStatus(), preID));
                                 /** 如果投递是Email投递， */
