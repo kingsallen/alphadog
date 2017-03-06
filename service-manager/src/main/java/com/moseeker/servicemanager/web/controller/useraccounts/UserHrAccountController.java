@@ -118,6 +118,7 @@ public class UserHrAccountController {
 			Params<String, Object> params = ParamUtils.parseRequestParam(request);
 			Integer hrAccountId = params.getInt("hr_account_id");
 			int type = params.getInt("type", 0);
+			logger.info("/hraccount/searchcondition  hrAccountId:{}    type:{}", hrAccountId, type);
 			ValidateUtil vu = new ValidateUtil();
 			vu.addRequiredValidate("hr账号", hrAccountId);
 			if (StringUtils.isNullOrEmpty(vu.validate())) {
