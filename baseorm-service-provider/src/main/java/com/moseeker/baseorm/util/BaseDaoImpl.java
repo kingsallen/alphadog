@@ -92,10 +92,10 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 								for(String value : arrayValue) {
 									if(condition == null) {
 										condition = field.strictEqual(BeanUtils.convertTo(
-												value, field.getType()));
+												value.trim(), field.getType()));
 									} else {
 										condition = condition.or(field.strictEqual(BeanUtils.convertTo(
-												value, field.getType())));
+												value.trim(), field.getType())));
 									}
 								}
 								table.where(condition);
