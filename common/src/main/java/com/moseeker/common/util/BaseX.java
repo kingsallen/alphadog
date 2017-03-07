@@ -1,5 +1,8 @@
 package com.moseeker.common.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,6 +15,8 @@ import java.util.Map;
  * encoding.
  */
 public class BaseX {
+
+  Logger logger = LoggerFactory.getLogger(BaseX.class);
 
   /**
    * contains hexadecimals 0-F only.
@@ -53,7 +58,6 @@ public class BaseX {
   /**
    * creates an encoder with the {@link #DICTIONARY_62} dictionary.
    *
-   * @param dictionary the dictionary to use when encoding and decoding.
    */
   public BaseX(){
     this.dictionary = DICTIONARY_62;

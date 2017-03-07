@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.moseeker.common.redis.RedisConfigRedisKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -25,6 +27,8 @@ import com.moseeker.common.redis.RedisConfigRedisKey;
  * @version Beta
  */
 public class LRUCache {
+
+	Logger logger = LoggerFactory.getLogger(LRUCache.class);
 
 	/**
 	 * 
@@ -141,8 +145,7 @@ public class LRUCache {
 		} else {
 			Node newNode = new Node(appIdAndKeyIdentifier, redisKey);
 			if (cache.size() >= capacity) {
-				System.out.println("# Cache is FULL! Removing "
-						+ end.appIdAndKeyIdentifier + " from cache...");
+				logger.info("# Cache is FULL! Removing {} from cache...", end.appIdAndKeyIdentifier);
 				cache.remove(end.appIdAndKeyIdentifier); // remove LRU data from
 															// cache.
 				remove(end);
@@ -168,8 +171,7 @@ public class LRUCache {
 	 * @param appIdAndKeyIdentifier 关键词
 	 */
 	public void invalidate(String appIdAndKeyIdentifier) {
-		System.out.println("# " + appIdAndKeyIdentifier
-				+ " has been updated! Removing older version from cache...");
+		logger.info("# {} has been updated! Removing older version from cache...", appIdAndKeyIdentifier);
 		Node toBeRemoved = cache.get(appIdAndKeyIdentifier);
 		remove(toBeRemoved);
 		cache.remove(appIdAndKeyIdentifier);

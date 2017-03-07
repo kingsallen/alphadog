@@ -9,17 +9,9 @@ import com.moseeker.db.candidatedb.tables.CandidatePosition;
 import com.moseeker.db.candidatedb.tables.CandidatePositionShareRecord;
 import com.moseeker.db.candidatedb.tables.CandidateRecomRecord;
 import com.moseeker.db.candidatedb.tables.CandidateRemark;
+import com.moseeker.db.candidatedb.tables.CandidateShareChain;
 import com.moseeker.db.candidatedb.tables.CandidateSuggestPosition;
 import com.moseeker.db.candidatedb.tables.CandidateVJobPositionRecom;
-import com.moseeker.db.candidatedb.tables.JobApplication;
-import com.moseeker.db.candidatedb.tables.JobApplicationConf;
-import com.moseeker.db.candidatedb.tables.JobApplicationStatusBeisen;
-import com.moseeker.db.candidatedb.tables.JobPosition;
-import com.moseeker.db.candidatedb.tables.JobPositionCity;
-import com.moseeker.db.candidatedb.tables.JobPositionShareTplConf;
-import com.moseeker.db.candidatedb.tables.JobPositionTopic;
-import com.moseeker.db.candidatedb.tables.JobResumeBasic;
-import com.moseeker.db.candidatedb.tables.JobResumeOther;
 
 import javax.annotation.Generated;
 
@@ -63,6 +55,11 @@ public class Tables {
 	public static final CandidateRemark CANDIDATE_REMARK = com.moseeker.db.candidatedb.tables.CandidateRemark.CANDIDATE_REMARK;
 
 	/**
+	 * 链路信息表
+	 */
+	public static final CandidateShareChain CANDIDATE_SHARE_CHAIN = com.moseeker.db.candidatedb.tables.CandidateShareChain.CANDIDATE_SHARE_CHAIN;
+
+	/**
 	 * HR手动添加相关职位表
 	 */
 	public static final CandidateSuggestPosition CANDIDATE_SUGGEST_POSITION = com.moseeker.db.candidatedb.tables.CandidateSuggestPosition.CANDIDATE_SUGGEST_POSITION;
@@ -71,49 +68,4 @@ public class Tables {
 	 * VIEW
 	 */
 	public static final CandidateVJobPositionRecom CANDIDATE_V_JOB_POSITION_RECOM = com.moseeker.db.candidatedb.tables.CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM;
-
-	/**
-	 * The table candidatedb.job_application
-	 */
-	public static final JobApplication JOB_APPLICATION = com.moseeker.db.candidatedb.tables.JobApplication.JOB_APPLICATION;
-
-	/**
-	 * 部门申请配置表
-	 */
-	public static final JobApplicationConf JOB_APPLICATION_CONF = com.moseeker.db.candidatedb.tables.JobApplicationConf.JOB_APPLICATION_CONF;
-
-	/**
-	 * 申请状态记录（ats北森）
-	 */
-	public static final JobApplicationStatusBeisen JOB_APPLICATION_STATUS_BEISEN = com.moseeker.db.candidatedb.tables.JobApplicationStatusBeisen.JOB_APPLICATION_STATUS_BEISEN;
-
-	/**
-	 * The table candidatedb.job_position
-	 */
-	public static final JobPosition JOB_POSITION = com.moseeker.db.candidatedb.tables.JobPosition.JOB_POSITION;
-
-	/**
-	 * The table candidatedb.job_position_city
-	 */
-	public static final JobPositionCity JOB_POSITION_CITY = com.moseeker.db.candidatedb.tables.JobPositionCity.JOB_POSITION_CITY;
-
-	/**
-	 * 职位分享描述配置模板
-	 */
-	public static final JobPositionShareTplConf JOB_POSITION_SHARE_TPL_CONF = com.moseeker.db.candidatedb.tables.JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF;
-
-	/**
-	 * 职位主题活动关系表
-	 */
-	public static final JobPositionTopic JOB_POSITION_TOPIC = com.moseeker.db.candidatedb.tables.JobPositionTopic.JOB_POSITION_TOPIC;
-
-	/**
-	 * 申请简历简述表
-	 */
-	public static final JobResumeBasic JOB_RESUME_BASIC = com.moseeker.db.candidatedb.tables.JobResumeBasic.JOB_RESUME_BASIC;
-
-	/**
-	 * 自定义简历副本记录表
-	 */
-	public static final JobResumeOther JOB_RESUME_OTHER = com.moseeker.db.candidatedb.tables.JobResumeOther.JOB_RESUME_OTHER;
 }

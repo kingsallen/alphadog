@@ -28,7 +28,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationRecord> {
 
-	private static final long serialVersionUID = -1291159825;
+	private static final long serialVersionUID = 787042473;
 
 	/**
 	 * Setter for <code>jobdb.job_application.id</code>.
@@ -101,14 +101,14 @@ public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationReco
 	}
 
 	/**
-	 * Setter for <code>jobdb.job_application.status_id</code>. hr_points_conf.id, 申请状态ID
+	 * Setter for <code>jobdb.job_application.status_id</code>. hr_award_config.id, 申请状态ID
 	 */
 	public void setStatusId(UInteger value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>jobdb.job_application.status_id</code>. hr_points_conf.id, 申请状态ID
+	 * Getter for <code>jobdb.job_application.status_id</code>. hr_award_config.id, 申请状态ID
 	 */
 	public UInteger getStatusId() {
 		return (UInteger) getValue(5);

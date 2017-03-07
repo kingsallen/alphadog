@@ -21,8 +21,12 @@ import org.jooq.Result;
 
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.email.Email;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Notification {
+
+    private static Logger logger = LoggerFactory.getLogger(Notification.class);
 
     public static void sendMyCatConnectionError(String errorMessage) {
         ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
@@ -69,16 +73,15 @@ public class Notification {
                 for (Record r : members) {
                     String email = r.getValue(CONFIG_ADMINNOTIFICATION_MEMBERS.EMAIL);
                     emails.add(email);
-                    System.out.println(email);
+                    logger.info(email);
 
                     String mobile = r.getValue(CONFIG_ADMINNOTIFICATION_MEMBERS.MOBILEPHONE);
                     mobiles.add(mobile);
-                    System.out.println(mobile);
+                    logger.info(mobile);
 
                 }
                 if (emailEnabled.equals("1")) {
-                    System.out.println("start send emails.");
-                    System.out.println(emails);
+                    logger.info("start send emails. emails : {}", emails);
                     try {
                         Email registerSuccessEmail = new Email.EmailBuilder(emails)
                                                                 .setSubject("阿里云监控-基础服务-响应异常-发生告警通知")

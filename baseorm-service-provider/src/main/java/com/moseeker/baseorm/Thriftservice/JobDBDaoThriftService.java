@@ -3,6 +3,7 @@ package com.moseeker.baseorm.Thriftservice;
 import java.util.List;
 
 import com.moseeker.baseorm.service.PositionService;
+import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.JobPositionDO;
@@ -35,7 +36,7 @@ public class JobDBDaoThriftService implements Iface {
 	}
 
 	@Override
-	public JobPositionDO getPosition(CommonQuery query) throws TException {
+	public JobPositionDO getPosition(CommonQuery query) throws CURDException, TException {
 		return positionDao.findResource(query);
 	}
 
@@ -45,7 +46,7 @@ public class JobDBDaoThriftService implements Iface {
 	}
 
 	@Override
-	public JobApplicationDO getApplication(CommonQuery query) throws TException {
+	public JobApplicationDO getApplication(CommonQuery query) throws CURDException, TException {
 		return applicationDao.findResource(query);
 	}
 

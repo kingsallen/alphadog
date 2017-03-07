@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.moseeker.thrift.gen.dao.service.*;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,11 +36,6 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.config.ConfigSysPointsConfTpl;
 import com.moseeker.thrift.gen.config.HrAwardConfigTemplate;
-import com.moseeker.thrift.gen.dao.service.ApplicationDao;
-import com.moseeker.thrift.gen.dao.service.ConfigDao;
-import com.moseeker.thrift.gen.dao.service.HrDBDao;
-import com.moseeker.thrift.gen.dao.service.UserDBDao;
-import com.moseeker.thrift.gen.dao.service.UserHrAccountDao;
 import com.moseeker.thrift.gen.dao.struct.HistoryOperate;
 import com.moseeker.thrift.gen.dao.struct.HrOperationRecordDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
@@ -65,8 +61,8 @@ public class ProfileProcessBS {
 			.getService(ApplicationDao.Iface.class);
 	UserHrAccountDao.Iface useraccountDao = ServiceManager.SERVICEMANAGER
 			.getService(UserHrAccountDao.Iface.class);
-	ConfigDao.Iface configDao = ServiceManager.SERVICEMANAGER
-			.getService(ConfigDao.Iface.class);
+	ConfigDBDao.Iface configDao = ServiceManager.SERVICEMANAGER
+			.getService(ConfigDBDao.Iface.class);
     UserDBDao.Iface userDao = ServiceManager.SERVICEMANAGER
 			.getService(UserDBDao.Iface.class);
     HrDBDao.Iface hrDao = ServiceManager.SERVICEMANAGER

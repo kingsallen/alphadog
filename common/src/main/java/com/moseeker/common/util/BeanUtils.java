@@ -198,25 +198,41 @@ public class BeanUtils {
 					String upperFirst = field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
 					String setMethodName = "set" + upperFirst;
 					for (j = 0; j < destMethods.length; j++) {
-						try {
-							if (destMethods[j].getName().equals(setMethodName)) {
-								String origMethodName = buiderRecordMethodName(field.getName(), MethodType.GET,
-										equalRules);
-								for (k = 0; k < origMethods.length; k++) {
-									if (origMethods[k].getName().trim().equals(origMethodName)) {
-										Object object = convertTo(origMethods[k].invoke(orig, new Object[] {}),
+						if (destMethods[j].getName().equals(setMethodName)) {
+							String origMethodName = buiderRecordMethodName(field.getName(), MethodType.GET,
+									equalRules);
+							for (k = 0; k < origMethods.length; k++) {
+								if (origMethods[k].getName().trim().equals(origMethodName)) {
+
+									Object object = null;
+									try {
+										object = convertTo(origMethods[k].invoke(orig, new Object[] {}),
 												destMethods[j].getParameterTypes()[0]);
-										destMethods[j].invoke(dest, object);
-										break;
+									} catch (IllegalAccessException e) {
+										e.printStackTrace();
+									} catch (IllegalArgumentException e) {
+										e.printStackTrace();
+									} catch (InvocationTargetException e) {
+										logger.error("InvocationTargetException -- origin:{}, method:{}, param value:{}",orig, origMethods[k], destMethods[j].getParameterTypes()[0]);
+										e.printStackTrace();
 									}
+									try {
+										if(object != null) {
+											destMethods[j].invoke(dest, object);
+										}
+									} catch (IllegalAccessException e) {
+										e.printStackTrace();
+										logger.error(e.getMessage(), e);
+									} catch (IllegalArgumentException e) {
+										logger.info("IllegalArgumentException -- method:{}, methodType:{}, param value:{}, param before convert:",origMethods[k].getName().trim(), destMethods[j].getParameterTypes()[0], object, orig);
+										logger.error(e.getMessage(), e);
+									} catch (InvocationTargetException e) {
+										logger.error(e.getMessage(), e);
+									}
+									break;
 								}
-								break;
 							}
-						} catch (SecurityException | IllegalAccessException | IllegalArgumentException
-								| InvocationTargetException e) {
-							logger.error("error", e);
-						} finally {
-							// do nothing
+							break;
 						}
 					}
 				}
