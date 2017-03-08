@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.alibaba.fastjson.JSONObject;
+import com.moseeker.common.log.ELKLog;
+import com.moseeker.common.log.LogVO;
+import com.moseeker.profile.constants.StatisticsForChannelmportVO;
 import org.apache.thrift.TException;
 import org.jooq.types.UByte;
 import org.jooq.types.UInteger;
@@ -311,6 +315,16 @@ public class WholeProfileService {
 					credentialsRecords, educationRecords, importRecords, intentionRecords, languages, otherRecord,
 					projectExps, skillRecords, workexpRecords, worksRecords, userRecord);
 			if (id > 0) {
+
+				StatisticsForChannelmportVO statisticsForChannelmportVO = new StatisticsForChannelmportVO();
+				statisticsForChannelmportVO.setProfile_operation((byte)0);
+				statisticsForChannelmportVO.setProfile_id(id);
+				statisticsForChannelmportVO.setUser_id(userId);
+				profileUtils.logForStatistics("postResource", new JSONObject(){{
+					this.put("profile", profile);
+					this.put("userId", userId);
+				}}.toJSONString(), statisticsForChannelmportVO);
+
 				return ResponseUtils.success(String.valueOf(id));
 			}
 		}
@@ -354,6 +368,14 @@ public class WholeProfileService {
 				userRecord, oldProfile);
 		if (id > 0) {
 			logger.info("importCV 添加成功");
+			StatisticsForChannelmportVO statisticsForChannelmportVO = new StatisticsForChannelmportVO();
+			statisticsForChannelmportVO.setProfile_operation((byte)0);
+			statisticsForChannelmportVO.setProfile_id(id);
+			statisticsForChannelmportVO.setUser_id(userId);
+			profileUtils.logForStatistics("importCV", new JSONObject(){{
+				this.put("profile", profile);
+				this.put("userId", userId);
+			}}.toJSONString(), statisticsForChannelmportVO);
 			return ResponseUtils.success(id);
 		} else {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
@@ -429,6 +451,19 @@ public class WholeProfileService {
 			improveWorkexp(profilePojo.getWorkexpRecords(), profileId);
 			improveWorks(profilePojo.getWorksRecords(), profileId);
 			completenessImpl.getCompleteness1(0, null, profileId);
+
+			StatisticsForChannelmportVO statisticsForChannelmportVO = new StatisticsForChannelmportVO();
+			statisticsForChannelmportVO.setProfile_operation((byte)0);
+			statisticsForChannelmportVO.setProfile_id(profileDB.getId().intValue());
+			statisticsForChannelmportVO.setUser_id(profileDB.getUserId().intValue());
+			if(profilePojo.getImportRecords() != null) {
+				statisticsForChannelmportVO.setImport_channel(profilePojo.getImportRecords().getSource().byteValue());
+				statisticsForChannelmportVO.setImport_time(profilePojo.getImportRecords().getCreateTime().getTime());
+			}
+			profileUtils.logForStatistics("improveProfile", new JSONObject(){{
+				this.put("profile", profile);
+			}}.toJSONString(), statisticsForChannelmportVO);
+
 			return ResponseUtils.success(null);
 		} else {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ALLREADY_NOT_EXIST);
