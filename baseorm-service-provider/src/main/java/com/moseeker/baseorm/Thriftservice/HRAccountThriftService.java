@@ -61,6 +61,11 @@ public class HRAccountThriftService implements Iface {
 		}
 	}
 
+	@Override
+	public Response getAccounts(CommonQuery query) throws TException {
+		return null;
+	}
+
 	public HRAccountDao getHraccountDao() {
 		return hraccountDao;
 	}

@@ -1,14 +1,25 @@
 package com.moseeker.useraccounts;
 
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.rpccenter.config.ClientConfig;
 import com.moseeker.rpccenter.config.RegistryConfig;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
+import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
+import com.moseeker.useraccounts.thrift.UserHrAccountServiceImpl;
+import org.apache.thrift.TException;
+import org.apache.thrift.protocol.TCompactProtocol;
+import org.apache.thrift.protocol.TMultiplexedProtocol;
+import org.apache.thrift.protocol.TProtocol;
+import org.apache.thrift.transport.TFastFramedTransport;
+import org.apache.thrift.transport.TSocket;
+import org.apache.thrift.transport.TTransport;
+import org.junit.Test;
 
 /**
  * HR账号服务
- *
+ * <p>
  * Created by zzh on 16/6/1.
  */
 public class UserHrAccountServiceImplTest {
@@ -31,9 +42,10 @@ public class UserHrAccountServiceImplTest {
 
             // 添加我感兴趣
             String code = "1234";
-            //Response postResource = userHrAccountService.postResource(getUserHrAccount(), code);
+//            Response postResource = userHrAccountService.postResource(getUserHrAccount(), code);
+            Response postResource = userHrAccountService.userHrAccount(1, 1);
 
-            //System.out.println(postResource);
+            System.out.println(postResource);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -43,13 +55,45 @@ public class UserHrAccountServiceImplTest {
 
     /**
      * 添加HR账号
-     *
-     * */
-    private static UserHrAccount getUserHrAccount(){
+     */
+    private static UserHrAccount getUserHrAccount() {
         UserHrAccount userHrAccount = new UserHrAccount();
         userHrAccount.setMobile("18610245972");
         userHrAccount.setSource(2);
         return userHrAccount;
+    }
+
+
+    @Test
+    public void userHrAccount() throws TException {
+//
+        UserHrAccountService.Iface user = ServiceManager.SERVICEMANAGER.getService(UserHrAccountService.Iface.class);
+
+        Response response = user.userHrAccount(0, 1);
+
+        System.out.println(response.getData());
+
+
+//        TTransport transport = null;
+//        try {
+//            transport = new TFastFramedTransport(new TSocket("127.0.0.1", 12121, 60 * 1000));
+//            TProtocol protocol = new TCompactProtocol(transport);
+//            transport.open();
+//            TMultiplexedProtocol mulProtocol = new TMultiplexedProtocol(protocol, "com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService");
+//            UserHrAccountService.Client.Factory factory = new UserHrAccountService.Client.Factory();
+//            UserHrAccountService.Client client = factory.getClient(mulProtocol);
+//            Response response = client.userHrAccount(1, 1);
+////            Response response = client.getSearchCondition(50, 1);
+//
+//            System.out.println(response.getData());
+//        } catch (TException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        } finally {
+//            if (transport != null) {
+//                transport.close();
+//            }
+//        }
     }
 
 }

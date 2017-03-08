@@ -94,6 +94,9 @@ service UserHrAccountService {
     common_struct.Response joinTalentpool(1: i32 hrAccountId, 2: list<i32> applierIds)
     // 移出人才库
     common_struct.Response shiftOutTalentpool(1: i32 hrAccountId, 2: list<i32> applierIds)
+
+    // 获取userHrAccount
+    common_struct.Response userHrAccount(1: i32 company_id, 2: i32 disable)
 }
 
 /**

@@ -13,23 +13,22 @@ import com.moseeker.useraccounts.thrift.UseraccountsServiceImpl;
 import com.moseeker.useraccounts.thrift.UsersettingsServicesImpl;
 
 /**
- * 
  * 服务启动入口。
- * 
+ * <p>
  * <p>
  * Company: MoSeeker
  * </P>
  * <p>
  * date: Mar 27, 2016
  * </p>
- * 
+ *
  * @author yaofeng
  * @version Beta
  */
 public class UseraccountsServer {
-    
+
     private static Logger LOGGER = LoggerFactory.getLogger(UseraccountsServer.class);
-    
+
     public static void main(String[] args) {
 
         try {
@@ -41,7 +40,7 @@ public class UseraccountsServer {
                     acac.getBean(UserCommonThriftService.class),
                     acac.getBean(UserCenterThriftService.class),
                     acac.getBean(UseraccountsServiceImpl.class));
-            
+
             server.start(); // 阻塞式IO + 多线程处理
 
             synchronized (UseraccountsServer.class) {
@@ -54,7 +53,7 @@ public class UseraccountsServer {
                 }
             }
         } catch (Exception e) {
-        	e.printStackTrace();
+            e.printStackTrace();
             LOGGER.error("error", e);
         }
     }
