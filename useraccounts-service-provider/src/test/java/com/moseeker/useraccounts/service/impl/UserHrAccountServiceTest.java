@@ -19,7 +19,7 @@ public class UserHrAccountServiceTest {
     @Test
     public void testUserHrAccount() {
         try {
-            Response response = userHrAccountService.userHrAccount(1, 1);
+            Response response = userHrAccountService.userHrAccount(1, 1, 1, 20);
             System.out.println(response);
         } catch (Exception e) {
             e.printStackTrace();

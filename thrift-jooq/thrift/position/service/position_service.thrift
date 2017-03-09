@@ -22,6 +22,9 @@ service PositionServices {
     //是否可以刷新
     bool ifAllowRefresh(1: i32 positionId, 2:i32 channel);
     list<dao_struct.ThirdPartyPositionData> getThirdPartyPositions(1: common_struct.CommonQuery query);
+
+    // 批量修改职位
+    common_struct.Response batchhandler(1:string appid,2:string data,3:string fields_nooverwrite,4:bool nodelete,5:string fields_nohash);
 }
 /*
 	查询第三方自定义职能

@@ -43,7 +43,7 @@ public class UserHrAccountServiceImplTest {
             // 添加我感兴趣
             String code = "1234";
 //            Response postResource = userHrAccountService.postResource(getUserHrAccount(), code);
-            Response postResource = userHrAccountService.userHrAccount(1, 1);
+            Response postResource = userHrAccountService.userHrAccount(1, 1, 1, 10);
 
             System.out.println(postResource);
 
@@ -66,34 +66,9 @@ public class UserHrAccountServiceImplTest {
 
     @Test
     public void userHrAccount() throws TException {
-//
         UserHrAccountService.Iface user = ServiceManager.SERVICEMANAGER.getService(UserHrAccountService.Iface.class);
-
-        Response response = user.userHrAccount(0, 1);
-
+        Response response = user.userHrAccount(0, 1, 1, 10);
         System.out.println(response.getData());
-
-
-//        TTransport transport = null;
-//        try {
-//            transport = new TFastFramedTransport(new TSocket("127.0.0.1", 12121, 60 * 1000));
-//            TProtocol protocol = new TCompactProtocol(transport);
-//            transport.open();
-//            TMultiplexedProtocol mulProtocol = new TMultiplexedProtocol(protocol, "com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService");
-//            UserHrAccountService.Client.Factory factory = new UserHrAccountService.Client.Factory();
-//            UserHrAccountService.Client client = factory.getClient(mulProtocol);
-//            Response response = client.userHrAccount(1, 1);
-////            Response response = client.getSearchCondition(50, 1);
-//
-//            System.out.println(response.getData());
-//        } catch (TException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        } finally {
-//            if (transport != null) {
-//                transport.close();
-//            }
-//        }
     }
 
 }

@@ -100,8 +100,8 @@ public class UserHrAccountServiceImpl implements Iface {
     }
 
     @Override
-    public Response userHrAccount(int company_id, int disable) throws TException {
-        return service.userHrAccount(company_id, disable);
+    public Response userHrAccount(int company_id, int disable, int page, int per_age) throws TException {
+        return service.userHrAccount(company_id, disable, page, per_age);
     }
 
 }

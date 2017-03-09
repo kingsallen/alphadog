@@ -1,20 +1,5 @@
 package com.moseeker.useraccounts.service.impl;
 
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Stream;
-
-import org.apache.thrift.TException;
-import org.jooq.types.UByte;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.annotation.notify.UpdateEs;
@@ -46,6 +31,17 @@ import com.moseeker.thrift.gen.useraccounts.struct.DownloadReport;
 import com.moseeker.thrift.gen.useraccounts.struct.SearchCondition;
 import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
 import com.moseeker.useraccounts.dao.UserHrAccountDao;
+import org.apache.thrift.TException;
+import org.jooq.types.UByte;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * HR账号服务
@@ -558,11 +554,28 @@ public class UserHrAccountService {
         }
     }
 
-
-    public Response userHrAccount(int CompanyId, int disable) throws TException {
-        CommonQuery commonQuery = new CommonQuery();
-        hraccountDao.getAccounts(commonQuery);
-        return null;
+    /**
+     * 分页获取userHrAccount数据
+     *
+     * @param companyId
+     * @param disable
+     * @return
+     */
+    public Response userHrAccount(int companyId, int disable, int page, int per_age) {
+        try {
+            CommonQuery commonQuery = new CommonQuery();
+            Map<String, String> param = new HashMap<String, String>();
+            param.put("company_id", String.valueOf(companyId));
+            param.put("disable", String.valueOf(disable));
+            commonQuery.setEqualFilter(param);
+            commonQuery.setPage(page);
+            commonQuery.setPer_page(per_age);
+            Response response = hraccountDao.getAccounts(commonQuery);
+            return response;
+        } catch (TException e) {
+            logger.error(e.getMessage(), e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        }
     }
 
 }
