@@ -160,11 +160,50 @@ struct UserEmployeeStruct {
 	3: optional i32 company_id,
 	4: optional i32 role_id,
 	5: optional i32 wxuser_id,
-	6: optional string ename,
-	7: optional i32 position_id,
-	8: optional i32 section_id,
-	9: optional string custom_field,	
-	10:optional i64 award
+	6: optional i8 sex,
+	7: optional string ename,
+	8: optional string efname,
+	9: optional string cname,
+	10: optional string cfname,
+	11: optional string password,
+	12: optional i8 is_admin,
+	13: optional i32 status,
+	14: optional string companybody,
+	15: optional string groupname,
+	16: optional string position,
+	17: optional Timestamp employdate,
+	18: optional string managername,
+	19: optional string city,
+	20: optional Timestamp birthday,
+	21: optional Timestamp retiredate,
+	22: optional string education,
+	23: optional string address,
+	24: optional string idcard,
+	25: optional string mobile,
+	26: optional i64 award,
+	27: optional Timestamp binding_time,
+	28: optional string email,
+	29: optional string activation_code,
+	30: optional i8 disable,
+	31: optional Timestamp create_time,
+	32: optional Timestamp update_time,
+	33: optional i8 auth_level,
+	34: optional Timestamp register_time,
+	35: optional string register_ip,
+	36: optional Timestamp last_login_time,
+	37: optional string last_login_ip
+	38: optional i32 login_count
+	39: optional i8 source
+	40: optional string download_token
+	41: optional i32 hr_wxuser_id
+	42: optional string custom_field
+	43: optional i8 is_rp_sent
+	44: optional i32 sysuser_id
+	45: optional i32 position_id
+	46: optional i32 section_id
+	47: optional i8 email_isvalid
+	48: optional i8 auth_method
+	49: optional string custom_field_values
 }
 struct UserEmployeePointStruct {
    1: optional i32 id,
@@ -180,4 +219,14 @@ struct UserEmployeePointStruct {
 struct UserEmployeePointSum{
 	1: optional i64 award,
 	2: optional i64 employee_id
+}
+
+struct ThirdPartyUser{
+    1: optional i64 id,
+    2: optional i32 user_id,
+    3: optional i32 source_id,
+    4: optional string username,
+    5: optional string password,
+    6: optional Timestamp create_time,
+    7: optional Timestamp update_time
 }

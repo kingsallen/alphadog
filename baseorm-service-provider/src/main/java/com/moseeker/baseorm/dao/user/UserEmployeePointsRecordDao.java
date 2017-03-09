@@ -5,6 +5,9 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import static org.jooq.impl.DSL.sum;
+
+import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRecord;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Record2;
@@ -14,8 +17,6 @@ import org.springframework.stereotype.Service;
 
 import com.moseeker.baseorm.util.BaseDaoImpl;
 import com.moseeker.common.dbutils.DBConnHelper;
-import com.moseeker.db.userdb.tables.UserEmployeePointsRecord;
-import com.moseeker.db.userdb.tables.records.UserEmployeePointsRecordRecord;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointSum;
 @Service
 public class UserEmployeePointsRecordDao extends BaseDaoImpl<UserEmployeePointsRecordRecord, UserEmployeePointsRecord>{

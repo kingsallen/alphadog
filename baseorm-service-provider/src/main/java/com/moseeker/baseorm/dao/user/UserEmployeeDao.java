@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
@@ -15,8 +17,6 @@ import org.springframework.stereotype.Service;
 
 import com.moseeker.baseorm.util.BaseDaoImpl;
 import com.moseeker.common.dbutils.DBConnHelper;
-import com.moseeker.db.userdb.tables.UserEmployee;
-import com.moseeker.db.userdb.tables.records.UserEmployeeRecord;
 @Service
 public class UserEmployeeDao extends BaseDaoImpl<UserEmployeeRecord, UserEmployee> {
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());

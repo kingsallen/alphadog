@@ -12,6 +12,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserFavPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserIntention;
 import com.moseeker.baseorm.db.userdb.tables.UserSettings;
+import com.moseeker.baseorm.db.userdb.tables.UserThirdpartyUser;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.UserUserNameEmail1128;
 import com.moseeker.baseorm.db.userdb.tables.UserUserTmp;
@@ -73,6 +74,11 @@ public class Tables {
      * 用户设置表
      */
     public static final UserSettings USER_SETTINGS = com.moseeker.baseorm.db.userdb.tables.UserSettings.USER_SETTINGS;
+
+    /**
+     * The table <code>userdb.user_thirdparty_user</code>.
+     */
+    public static final UserThirdpartyUser USER_THIRDPARTY_USER = com.moseeker.baseorm.db.userdb.tables.UserThirdpartyUser.USER_THIRDPARTY_USER;
 
     /**
      * 用户表

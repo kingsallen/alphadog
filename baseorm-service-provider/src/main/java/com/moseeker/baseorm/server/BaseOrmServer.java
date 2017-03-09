@@ -1,24 +1,11 @@
 package com.moseeker.baseorm.server;
 
+import com.moseeker.baseorm.Thriftservice.*;
+import com.moseeker.baseorm.dao.user.ThirdPartyUserDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.moseeker.baseorm.Thriftservice.ApplicationDaoThriftService;
-import com.moseeker.baseorm.Thriftservice.CompanyThriftService;
-import com.moseeker.baseorm.Thriftservice.ConfigDaothriftService;
-import com.moseeker.baseorm.Thriftservice.DictDaoMapThriftService;
-import com.moseeker.baseorm.Thriftservice.DictDaoThriftService;
-import com.moseeker.baseorm.Thriftservice.HRAccountThriftService;
-import com.moseeker.baseorm.Thriftservice.JobDBDaoThriftService;
-import com.moseeker.baseorm.Thriftservice.HrDBThriftService;
-import com.moseeker.baseorm.Thriftservice.PositionDaoThriftService;
-import com.moseeker.baseorm.Thriftservice.PositionThriftService;
-import com.moseeker.baseorm.Thriftservice.SearchConditionDaoThriftService;
-import com.moseeker.baseorm.Thriftservice.TalentpoolDaoThriftService;
-import com.moseeker.baseorm.Thriftservice.UserDaoThriftService;
-import com.moseeker.baseorm.Thriftservice.WordpressDaoThriftService;
-import com.moseeker.baseorm.Thriftservice.WxUserDaoThriftService;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.MultiRegServer;
 
@@ -55,7 +42,9 @@ public class BaseOrmServer {
 					acac.getBean(HrDBThriftService.class),
 					acac.getBean(WxUserDaoThriftService.class),
 					acac.getBean(SearchConditionDaoThriftService.class),
-					acac.getBean(TalentpoolDaoThriftService.class));
+					acac.getBean(TalentpoolDaoThriftService.class),
+					acac.getBean(ThirdPartyUserDaoThriftService.class),
+					acac.getBean(UserEmployeeDaoThriftService.class));
 			server.start();
 			synchronized (BaseOrmServer.class) {
 				while (true) {

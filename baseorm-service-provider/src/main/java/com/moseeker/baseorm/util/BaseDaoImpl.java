@@ -6,17 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
-import org.jooq.Condition;
-import org.jooq.DSLContext;
-import org.jooq.Field;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.SelectJoinStep;
-import org.jooq.SelectQuery;
-import org.jooq.SortField;
-import org.jooq.SortOrder;
-import org.jooq.TableLike;
+import org.jooq.*;
 import org.jooq.impl.TableImpl;
 import org.jooq.impl.UpdatableRecordImpl;
 import org.slf4j.Logger;
@@ -382,6 +374,69 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 				create.attach(record);
 				insertret = record.delete();
+			} catch (Exception e) {
+				logger.error("error", e);
+				throw new Exception(e);
+			} finally {
+				if(conn != null && !conn.isClosed()) {
+					conn.close();
+				}
+			}
+		}
+
+		return insertret;
+	}
+
+	@Override
+	public int postPutResources(List<R> records) throws Exception {
+		initJOOQEntity();
+		int insertret = 0;
+		Connection conn = null;
+		try {
+			if (records != null && records.size() > 0) {
+				conn = DBConnHelper.DBConn.getConn();
+				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+				List<InsertOnDuplicateSetMoreStep> steps = records
+						.stream()
+						.map(record->create.insertInto(tableLike.asTable())
+						.set(record)
+						.onDuplicateKeyUpdate()
+						.set(record))
+						.collect(Collectors.toList());
+
+				int[] insertarray = create.batch(steps).execute();
+				if (insertarray.length == 0){
+					return 0;
+				}else{
+					insertret = insertarray[0];
+				}
+			}
+		} catch (Exception e) {
+			logger.error("error", e);
+			throw new Exception(e);
+		} finally {
+			if(conn != null && !conn.isClosed()) {
+				conn.close();
+			}
+		}
+
+		return insertret;
+	}
+
+	@Override
+	public int postPutResource(R record) throws Exception {
+		initJOOQEntity();
+		int insertret = 0;
+		Connection conn = null;
+		if (record != null) {
+			try {
+				conn = DBConnHelper.DBConn.getConn();
+				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+				return create.insertInto(tableLike.asTable())
+						.set(record)
+						.onDuplicateKeyUpdate()
+						.set(record)
+						.execute();
 			} catch (Exception e) {
 				logger.error("error", e);
 				throw new Exception(e);

@@ -62,8 +62,8 @@ public class BeanUtils {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public static <T extends TBase, R extends UpdatableRecordImpl> UpdatableRecordImpl structToDB(T t, Class<R> origClazz) {
-		UpdatableRecordImpl orig = null;
+	public static <T extends TBase, R extends UpdatableRecordImpl> R structToDB(T t, Class<R> origClazz) {
+		R orig = null;
 		try {
 			orig = origClazz.newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {

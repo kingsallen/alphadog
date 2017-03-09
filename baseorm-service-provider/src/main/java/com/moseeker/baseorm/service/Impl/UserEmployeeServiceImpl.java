@@ -3,6 +3,8 @@ package com.moseeker.baseorm.service.Impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,8 +14,6 @@ import com.moseeker.baseorm.service.UserEmployeeService;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.db.userdb.tables.records.UserEmployeePointsRecordRecord;
-import com.moseeker.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointSum;

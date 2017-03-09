@@ -109,3 +109,19 @@ service UserCenterService {
     //查询用户的申请记录
     list<useraccounts_struct.ApplicationRecordsForm> getApplications(1: i32 userId);
 }
+
+//user thirdparty user 服务
+service ThirdPartyUserService {
+    //更新账号
+    common_struct.Response updateUser(1: useraccounts_struct.ThirdPartyUser user);
+}
+
+//UserEmployeeDao数据库单表操作
+service UserEmployeeService {
+
+    common_struct.Response getUserEmployee(1: common_struct.CommonQuery query);
+
+    common_struct.Response delUserEmployee(1: useraccounts_struct.UserEmployeeStruct userEmployee);
+
+    common_struct.Response postPutUserEmployeeBatch(1:list<useraccounts_struct.UserEmployeeStruct> userEmployees);
+}
