@@ -520,6 +520,7 @@ public class ProfileProcessBS {
 	    			jobApplication.setNot_suitable(1);
 	    			jobApplication.setIs_viewed(0);
 	    			jobApplication.setReward(struct.getReward());
+	
 	    			list.add(jobApplication);
 	    		}
 	    		applicationDao.putApplications(list);
