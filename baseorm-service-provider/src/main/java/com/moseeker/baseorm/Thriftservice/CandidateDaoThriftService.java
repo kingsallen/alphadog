@@ -72,12 +72,12 @@ public class CandidateDaoThriftService implements CandidateDBDao.Iface {
     }
 
     @Override
-    public CandidateCompanyDO getCandidateCompany(CommonQuery query) throws TException {
+    public CandidateCompanyDO getCandidateCompany(CommonQuery query) throws CURDException, TException {
         return candidateCompanyDao.findResource(query);
     }
 
     @Override
-    public List<CandidateCompanyDO> listCandidateCompanys(CommonQuery query) throws TException {
+    public List<CandidateCompanyDO> listCandidateCompanys(CommonQuery query) throws CURDException, TException {
         return candidateCompanyDao.listResources(query);
     }
 

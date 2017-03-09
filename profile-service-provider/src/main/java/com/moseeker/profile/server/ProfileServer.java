@@ -52,24 +52,6 @@ public class ProfileServer {
 
 		try {
 			AnnotationConfigApplicationContext acac = initSpring();
-			/*MultiRegServer server = new MultiRegServer(ProfileServer.class,
-					ServerNodeUtils.getPort(args),
-					acac.getBean(ProfileServicesImpl.class),
-					acac.getBean(ProfileAwardsServicesImpl.class),
-					acac.getBean(ProfileBasicServicesImpl.class),
-					acac.getBean(ProfileCredentialsServicesImpl.class),
-					acac.getBean(ProfileCustomizeResumeServicesImpl.class),
-					acac.getBean(ProfileEducationServicesImpl.class),
-					acac.getBean(ProfileImportServicesImpl.class),
-					acac.getBean(ProfileIntentionServicesImpl.class),
-					acac.getBean(ProfileLanguageServicesImpl.class),
-					acac.getBean(ProfileProjectExpServicesImpl.class),
-					acac.getBean(ProfileSkillServicesImpl.class),
-					acac.getBean(ProfileWorkExpServicesImpl.class),
-					acac.getBean(ProfileWorksServicesImpl.class),
-					acac.getBean(WholeProfileServicesImpl.class),
-					acac.getBean(ProfileAttachmentServicesImpl.class));
-			server.start();*/
 			MoServer server = new MoServer(acac,
 					"",
 					acac.getBean(ProfileServicesImpl.class),

@@ -118,15 +118,19 @@ public class UserHrAccountController {
 			Params<String, Object> params = ParamUtils.parseRequestParam(request);
 			Integer hrAccountId = params.getInt("hr_account_id");
 			int type = params.getInt("type", 0);
+			logger.info("/hraccount/searchcondition  hrAccountId:{}    type:{}", hrAccountId, type);
 			ValidateUtil vu = new ValidateUtil();
 			vu.addRequiredValidate("hr账号", hrAccountId);
 			if (StringUtils.isNullOrEmpty(vu.validate())) {
 				Response result = userHrAccountService.getSearchCondition(hrAccountId, type);
+				logger.info("/hraccount/searchcondition SUCCESS  result:{}", result);
 				return ResponseLogNotification.success(request, result);
 			} else {
+				logger.info("/hraccount/searchcondition FAILED  result:{}", vu.validate());
 				return ResponseLogNotification.fail(request, vu.validate());
 			}
 		} catch (Exception e) {
+			logger.info("/hraccount/searchcondition EXCEPTION  E:{}", e);
 			logger.error(e.getMessage(), e);
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}

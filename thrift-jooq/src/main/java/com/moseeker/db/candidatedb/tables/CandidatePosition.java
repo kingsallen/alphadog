@@ -19,6 +19,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
+import org.jooq.types.UInteger;
 
 
 /**
@@ -34,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidatePosition extends TableImpl<CandidatePositionRecord> {
 
-	private static final long serialVersionUID = -778211242;
+	private static final long serialVersionUID = 2114202394;
 
 	/**
 	 * The reference instance of <code>candidatedb.candidate_position</code>
@@ -60,9 +61,9 @@ public class CandidatePosition extends TableImpl<CandidatePositionRecord> {
 	public final TableField<CandidatePositionRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "修改时间");
 
 	/**
-	 * The column <code>candidatedb.candidate_position.wxuser_id</code>. wx_group_user.id
+	 * The column <code>candidatedb.candidate_position.wxuser_id</code>. user_wx_user.id，表示候选人代表的微信账号。已经废弃。微信账号由C端账号代替，请参考user_id
 	 */
-	public final TableField<CandidatePositionRecord, Integer> WXUSER_ID = createField("wxuser_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "wx_group_user.id");
+	public final TableField<CandidatePositionRecord, Integer> WXUSER_ID = createField("wxuser_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "user_wx_user.id，表示候选人代表的微信账号。已经废弃。微信账号由C端账号代替，请参考user_id");
 
 	/**
 	 * The column <code>candidatedb.candidate_position.is_interested</code>. 是否感兴趣
@@ -83,6 +84,11 @@ public class CandidatePosition extends TableImpl<CandidatePositionRecord> {
 	 * The column <code>candidatedb.candidate_position.shared_from_employee</code>.
 	 */
 	public final TableField<CandidatePositionRecord, Byte> SHARED_FROM_EMPLOYEE = createField("shared_from_employee", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "");
+
+	/**
+	 * The column <code>candidatedb.candidate_position.user_id</code>. userdb.user_user.id 候选人代表的C端用户
+	 */
+	public final TableField<CandidatePositionRecord, UInteger> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "userdb.user_user.id 候选人代表的C端用户");
 
 	/**
 	 * Create a <code>candidatedb.candidate_position</code> table reference

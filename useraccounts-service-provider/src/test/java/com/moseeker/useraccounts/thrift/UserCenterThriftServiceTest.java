@@ -5,6 +5,7 @@ import com.moseeker.thrift.gen.useraccounts.service.UserCenterService;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 
 import java.util.List;
 

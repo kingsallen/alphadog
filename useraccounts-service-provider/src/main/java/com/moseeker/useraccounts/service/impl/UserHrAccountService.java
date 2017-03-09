@@ -112,12 +112,9 @@ public class UserHrAccountService {
 
 	/**
 	 * 下载行业报告，添加HR记录
-	 *
-	 * @param userHrAccount
-	 *            hr用户实体
-	 * @param code
-	 *            验证码
-	 *
+	 * @param downloadReport
+	 * @return
+	 * @throws TException
 	 */
 	public Response postResource(DownloadReport downloadReport) throws TException {
 		try {
@@ -393,6 +390,7 @@ public class UserHrAccountService {
 	 * @throws TException
 	 */
 	public Response getSearchCondition(int hrAccountId, int type) {
+		logger.info("UserHrAccountService - getSearchCondition ");
 		CommonQuery query = new CommonQuery();
 		Map<String, String> param = new HashMap<String, String>();
 		query.setEqualFilter(param);
@@ -402,6 +400,7 @@ public class UserHrAccountService {
 		List<Map<String, Object>> result = new ArrayList<Map<String,Object>>();
 		try {
 			list = searchConditionDao.getResources(query);
+			logger.info("UserHrAccountService - getSearchCondition  list:{}", list);
 			list.forEach(sc -> {
 				Map<String, Object> map = new HashMap<>();
 				map.put("id", sc.getId());
@@ -427,9 +426,11 @@ public class UserHrAccountService {
 				map.put("type", sc.getType());
 				result.add(map);
 			});
+			logger.info("UserHrAccountService - getSearchCondition  result:{}", result);
 			return ResponseUtils.success(result);
 		} catch (TException e) {
 			logger.error(e.getMessage(), e);
+			logger.info("UserHrAccountService - getSearchCondition  error:{}", e);
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		}
 	}
@@ -495,7 +496,7 @@ public class UserHrAccountService {
 	/**
 	 * 加入人才库
 	 * @param hrAccountId
-	 * @param applier_id
+	 * @param applierIds
 	 * @return
 	 */
 	@UpdateEs(tableName = "hr_talentpool", argsIndex = 1, argsName = "user_id")
@@ -535,7 +536,7 @@ public class UserHrAccountService {
 	/**
 	 * 移出人才库
 	 * @param hrAccountId
-	 * @param applier_id
+	 * @param applierIds
 	 * @return
 	 */
 	@UpdateEs(tableName = "hr_talentpool", argsIndex = 1, argsName = "user_id")

@@ -62,10 +62,17 @@ public class StructDaoImpl<S extends  TBase, R extends UpdatableRecordImpl<R>, T
             if(record != null) {
                 return BeanUtils.DBToStruct(sClass, record);
             } else {
-                throw CURDExceptionUtils.buildGetNothingException();
+                return sClass.newInstance();
+                //throw CURDExceptionUtils.buildGetNothingException();
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+            try {
+                return sClass.newInstance();
+            } catch (InstantiationException | IllegalAccessException e1) {
+                logger.error(e.getMessage(), e);
+            }
+
             throw CURDExceptionUtils.buildGetNothingException();
         }
     }

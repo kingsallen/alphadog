@@ -53,7 +53,11 @@ public class UserCenterBizTools {
 		qu.addEqualFilter("email_status", AbleFlag.OLDENABLE.getValueStr());
 		qu.setOrder("desc");
 		qu.setSortby("submit_time");
-		return jobDBDao.getApplications(qu);
+		try {
+			return jobDBDao.getApplications(qu);
+		} catch (CURDException e) {
+			return null;
+		}
 	}
 
 	/**
@@ -402,6 +406,8 @@ public class UserCenterBizTools {
 		queryUtil.addEqualFilter("app_id", appId);
 		queryUtil.addSelectAttribute("id").addSelectAttribute("app_id").addSelectAttribute("opt_time");
 		queryUtil.setSortby("opt_time");
+		queryUtil.setPage(0);
+		queryUtil.setPer_page(Integer.MAX_VALUE);
 		try {
 			return hrDBDao.listHrOperationRecord(queryUtil);
 		} catch (TException e) {

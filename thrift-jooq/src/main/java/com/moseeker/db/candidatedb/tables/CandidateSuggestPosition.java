@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateSuggestPosition extends TableImpl<CandidateSuggestPositionRecord> {
 
-	private static final long serialVersionUID = -1781926122;
+	private static final long serialVersionUID = -1877776526;
 
 	/**
 	 * The reference instance of <code>candidatedb.candidate_suggest_position</code>
@@ -67,9 +67,9 @@ public class CandidateSuggestPosition extends TableImpl<CandidateSuggestPosition
 	public final TableField<CandidateSuggestPositionRecord, Integer> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "hr_position.id");
 
 	/**
-	 * The column <code>candidatedb.candidate_suggest_position.wxuser_id</code>. wx_group_user.id
+	 * The column <code>candidatedb.candidate_suggest_position.wxuser_id</code>. user_wx_user.id 候选人关联的微信账号。已经废弃，微信账号由C端账号代替，请参考user_id
 	 */
-	public final TableField<CandidateSuggestPositionRecord, Integer> WXUSER_ID = createField("wxuser_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "wx_group_user.id");
+	public final TableField<CandidateSuggestPositionRecord, Integer> WXUSER_ID = createField("wxuser_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "user_wx_user.id 候选人关联的微信账号。已经废弃，微信账号由C端账号代替，请参考user_id");
 
 	/**
 	 * The column <code>candidatedb.candidate_suggest_position.create_time</code>. 创建时间
@@ -85,6 +85,11 @@ public class CandidateSuggestPosition extends TableImpl<CandidateSuggestPosition
 	 * The column <code>candidatedb.candidate_suggest_position.disable</code>. 是否生效 0：生效 1：不生效
 	 */
 	public final TableField<CandidateSuggestPositionRecord, Integer> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "是否生效 0：生效 1：不生效");
+
+	/**
+	 * The column <code>candidatedb.candidate_suggest_position.user_id</code>. userdb.user_user.id C端账号编号
+	 */
+	public final TableField<CandidateSuggestPositionRecord, UInteger> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "userdb.user_user.id C端账号编号");
 
 	/**
 	 * Create a <code>candidatedb.candidate_suggest_position</code> table reference
