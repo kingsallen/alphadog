@@ -3,8 +3,10 @@ package com.moseeker.baseorm.Thriftservice;
 import java.util.List;
 import java.util.Set;
 
-import com.moseeker.baseorm.dao.hrdb.CompanyDao;
-import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
+import com.moseeker.baseorm.dao.hrdb.*;
+import com.moseeker.baseorm.util.CURDExceptionUtils;
+import com.moseeker.thrift.gen.common.struct.*;
+import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.dao.struct.*;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +15,6 @@ import org.springframework.stereotype.Service;
 import com.moseeker.baseorm.service.HrDBService;
 import com.moseeker.baseorm.service.HrDaoService;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.HrDBDao.Iface;
 
 @Service
@@ -31,6 +31,15 @@ public class HrDBThriftService implements Iface {
 
 	@Autowired
 	private CompanyDao companyDao;
+
+	@Autowired
+	private ChatDao chatDao;
+
+	@Autowired
+	private ChatRoomDao chatRoomDao;
+
+	@Autowired
+	private HrChatUnreadCountDao hrChatUnreadCountDao;
 
 	@Override
 	public Response getHrHistoryOperations(List<ProcessValidationStruct> record) throws TException {
@@ -65,6 +74,53 @@ public class HrDBThriftService implements Iface {
 	@Override
 	public HrCompanyDO getCompany(CommonQuery query) throws TException {
 		return companyDao.getCompany(query);
+	}
+
+	@Override
+	public List<HrWxHrChatDO> listChats(CommonQuery query) throws CURDException, TException {
+		return chatDao.listResources(query);
+	}
+
+	@Override
+	public int countChats(CommonQuery query) throws CURDException, TException {
+		try {
+			return chatDao.getResourceCount(query);
+		} catch (Exception e) {
+			throw new CURDExceptionUtils().buildGetNothingException();
+		}
+	}
+
+	@Override
+	public HrWxHrChatDO getChat(CommonQuery query) throws CURDException, TException {
+		try {
+			return chatDao.findResource(query);
+		} catch (Exception e) {
+			throw new CURDExceptionUtils().buildGetNothingException();
+		}
+	}
+
+	@Override
+	public List<HrWxHrChatListDO> listChatRooms(CommonQuery query) throws CURDException, TException {
+		return chatRoomDao.listResources(query);
+	}
+
+	@Override
+	public int countChatRooms(CommonQuery query) throws CURDException, TException {
+		try {
+			return chatRoomDao.getResourceCount(query);
+		} catch (Exception e) {
+			throw new CURDExceptionUtils().buildGetNothingException();
+		}
+	}
+
+	@Override
+	public HrWxHrChatListDO getChatRoom(CommonQuery query) throws CURDException, TException {
+		return chatRoomDao.findResource(query);
+	}
+
+	@Override
+	public List<HrChatUnreadCountDO> listChatRoomUnreadSort(CommonQuery query) throws CURDException, TException {
+		return hrChatUnreadCountDao.listResources(query);
 	}
 
 	public HrHbConfigDO getHbConfig(CommonQuery query) throws TException {
