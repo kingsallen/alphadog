@@ -1,20 +1,27 @@
 package com.moseeker.useraccounts.service.impl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.redis.RedisClient;
+import com.moseeker.common.redis.cache.CacheClient;
+import com.moseeker.common.util.DESCoder;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -25,6 +32,7 @@ import com.moseeker.thrift.gen.dao.service.JobDBDao;
 import com.moseeker.thrift.gen.dao.service.UserDBDao;
 import com.moseeker.thrift.gen.dao.service.WxUserDao;
 import com.moseeker.thrift.gen.dao.struct.ConfigSysPointConfTplDO;
+import com.moseeker.thrift.gen.dao.struct.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.HrEmployeeCertConfDO;
 import com.moseeker.thrift.gen.dao.struct.HrEmployeeCustomFieldsDO;
 import com.moseeker.thrift.gen.dao.struct.HrPointsConfDO;
@@ -42,6 +50,7 @@ import com.moseeker.thrift.gen.employee.struct.Result;
 import com.moseeker.thrift.gen.employee.struct.Reward;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
 import com.moseeker.thrift.gen.employee.struct.RewardsResponse;
+import com.moseeker.thrift.gen.mq.service.MqService;
 
 /**
  * @author ltf
@@ -58,6 +67,8 @@ public class EmployeeService {
 	HrDBDao.Iface hrDBDao = ServiceManager.SERVICEMANAGER.getService(HrDBDao.Iface.class);
 	ConfigDBDao.Iface configDBDao = ServiceManager.SERVICEMANAGER.getService(ConfigDBDao.Iface.class);
 	JobDBDao.Iface jobDBDao = ServiceManager.SERVICEMANAGER.getService(JobDBDao.Iface.class);
+	MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
+	RedisClient client = CacheClient.getInstance();
 
 	public EmployeeResponse getEmployee(int userId, int companyId) throws TException {
 		CommonQuery query = new CommonQuery();
@@ -145,12 +156,35 @@ public class EmployeeService {
 				query.getEqualFilter().put("disable", "0");
 				query.getEqualFilter().put("status", "0");
 				UserEmployeeDO employee = userDao.getEmployee(query);
-				if (employee != null) {
+				if (employee != null && employee.getId() != 0) {
 					response.setSuccess(false);
 					response.setMessage("该员工已绑定");
 					break;
 				}
+				
 				// TODO: 将信息放入redis
+				query.getEqualFilter().clear();
+				query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
+				HrCompanyDO companyDO = hrDBDao.getCompany(query);
+				Response hrwechatResult = hrDBDao.getHrWxWechat(query);
+				if (companyDO != null && hrwechatResult.getStatus() == 0 && StringUtils.isNotNullOrEmpty(hrwechatResult.getData())) {
+					JSONObject hrWxWechatJson = JSONObject.parseObject(hrwechatResult.getData());
+					Map<String, String> mesBody = new HashMap<String, String>();
+					mesBody.put("#company_log#",  companyDO.getLogo());
+					mesBody.put("#employee_name#",  employee.getCname());
+					mesBody.put("#company_abbr#",  companyDO.getName());
+					mesBody.put("#official_account_name#",  hrWxWechatJson.getString("name"));
+					mesBody.put("#official_account_qrcode#",  hrWxWechatJson.getString("qrcode"));
+					mesBody.put("#date_today#",  LocalDate.now().toString());
+					mesBody.put("#auth_url#", "xxx");
+					// 发送认证邮件
+					String activationCode = DESCoder.encrypt(String.valueOf(employee.getId()));
+					Response mailResponse = mqService.sendAuthEMail(mesBody, Constant.EVENT_TYPE_EMPLOYEE_AUTH, bindingParams.getEmail(), "员工认证");
+					// 邮件发送成功
+					if (mailResponse.getStatus() == 0) {
+						client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, String.valueOf(employee.getId()), JSONObject.toJSONString(bindingParams));
+					}
+				}
 				break;
 			case CUSTOMFIELD:
 				// 员工信息验证
@@ -167,32 +201,7 @@ public class EmployeeService {
 					response.setSuccess(false);
 					response.setMessage("该员工已绑定");
 				} else {
-					// step 1: 认证当前员工   step 2: 将其他公司的该用户员工设为未认证
-					UserEmployeeDO userEmployeeDO = new UserEmployeeDO();
-					userEmployeeDO.setId(employee.getId());
-					userEmployeeDO.setActivation((byte)0);
-					userEmployeeDO.setAuthMethod((byte)bindingParams.getType().getValue());
-					userEmployeeDO.setBindingTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
-					userEmployeeDO.setCname(bindingParams.getName());
-					userEmployeeDO.setMobile(bindingParams.getMobile());
-					Response updateResult = userDao.putUserEmployeesDO(Arrays.asList(userEmployeeDO));
-					if (updateResult.getStatus() == 0) {
-						response.setSuccess(true);
-						response.setMessage(updateResult.getMessage());
-						query.getEqualFilter().clear();
-						query.getEqualFilter().put("sysuser_id", String.valueOf(bindingParams.getUserId()));
-						query.getEqualFilter().put("activation", "0");
-						query.getEqualFilter().put("disable", "0");
-						query.getEqualFilter().put("status", "0");
-						List<UserEmployeeDO> employees = userDao.getUserEmployeesDO(query);
-						if (!StringUtils.isEmptyList(employees)) {
-							List<UserEmployeeDO> updateList = employees.stream().filter(f -> f.getCompanyId() != bindingParams.getCompanyId()).map(m -> m.setActivation((byte)0)).collect(Collectors.toList());
-							userDao.putUserEmployeesDO(updateList);
-						}
-					} else {
-						response.setSuccess(false);
-						response.setMessage(updateResult.getMessage());
-					}
+					response = updateEmployee(bindingParams);
 				}
 				break;
 			case QUESTIONS:
@@ -215,32 +224,49 @@ public class EmployeeService {
 					response.setMessage("员工认证信息不正确");
 					break;
 				}
-				query.getEqualFilter().clear();
-				query.getEqualFilter().put("sysuser_id", String.valueOf(bindingParams.getUserId()));
-				query.getEqualFilter().put("disable", "0");
-				query.getEqualFilter().put("status", "0");
-				List<UserEmployeeDO> employees = userDao.getUserEmployeesDO(query);
-				if (!StringUtils.isEmptyList(employees)) {
-					employees.forEach(e -> {
-						if (e.getCompanyId() == bindingParams.getCompanyId()) {
-							e.setActivation((byte)0);
-							e.setUpdateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
-						} else {
-							e.setActivation((byte)1);
-						}
-					});
-				}
-				Response updateResult = userDao.putUserEmployeesDO(employees);
-				if (updateResult.getStatus() == 0){
-					response.setSuccess(true);
-					response.setMessage(updateResult.getMessage());
-				} else {
-					response.setSuccess(false);
-					response.setMessage(updateResult.getMessage());
-				}
+				response = updateEmployee(bindingParams);
 				break;
 			default:
 				break;
+		}
+		return response;
+	}
+
+	/**
+	 * step 1: 认证当前员工   step 2: 将其他公司的该用户员工设为未认证
+	 * @param bindingParams
+	 * @return
+	 * @throws TException
+	 */
+	private Result updateEmployee(BindingParams bindingParams) throws TException {
+		Result response = new Result();
+		CommonQuery query = new CommonQuery();
+		query.setEqualFilter(new HashMap<String, String>());
+		query.getEqualFilter().put("sysuser_id", String.valueOf(bindingParams.getUserId()));
+		query.getEqualFilter().put("disable", "0");
+		query.getEqualFilter().put("status", "0");
+		List<UserEmployeeDO> employees = userDao.getUserEmployeesDO(query);
+		Optional<BindingParams> optional = Optional.of(bindingParams);
+		if (!StringUtils.isEmptyList(employees)) {
+			employees.forEach(e -> {
+				if (e.getCompanyId() == bindingParams.getCompanyId()) {
+					e.setActivation((byte)0);
+					e.setAuthMethod((byte)bindingParams.getType().getValue());
+					e.setUpdateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
+					if (StringUtils.isNotNullOrEmpty(bindingParams.getName())) e.setCname(bindingParams.getName());
+					if (StringUtils.isNotNullOrEmpty(bindingParams.getMobile())) e.setMobile(bindingParams.getMobile());
+				} else {
+					e.setActivation((byte)1);
+				}
+			});
+		}
+		Response updateResult = userDao.putUserEmployeesDO(employees);
+		if (updateResult.getStatus() == 0){
+			response.setSuccess(true);
+			response.setMessage(updateResult.getMessage());
+		} else {
+			response.setSuccess(false);
+			response.setMessage(updateResult.getMessage());
 		}
 		return response;
 	}
@@ -275,8 +301,8 @@ public class EmployeeService {
 	public List<EmployeeCustomFieldsConf> getEmployeeCustomFieldsConf(int companyId)
 			throws TException {
 		CommonQuery query = new CommonQuery();
-		Map<String, String> eqf = new HashMap<String, String>();
-		query.setEqualFilter(eqf);
+		query.setEqualFilter(new HashMap<String, String>());
+		query.getEqualFilter().put("company_id", String.valueOf(companyId));
 		List<HrEmployeeCustomFieldsDO> customFields = new ArrayList<HrEmployeeCustomFieldsDO>();
 		List<EmployeeCustomFieldsConf> response = new ArrayList<EmployeeCustomFieldsConf>();
 		try {
@@ -387,14 +413,29 @@ public class EmployeeService {
 			userEmployeesDO.get(0).setCustomFieldValues(customValues);
 			Response result = userDao.putUserEmployeesDO(userEmployeesDO.subList(0, 1));
 			if (result.getStatus() == 0) {
-				response.setSuccess(false);
+				response.setSuccess(true);
 				response.setMessage(result.getMessage());
 			} else {
-				response.setSuccess(true);
+				response.setSuccess(false);
 				response.setMessage(result.getMessage());
 			}
 		}
 		return response;
 	}
 	
+	
+	public Result emailActivation(String activationCodee) throws TException {
+		Result response = new Result();
+		response.setSuccess(false);
+		response.setMessage("激活信息不正确");
+		String employeeId = DESCoder.decrypt(activationCodee);
+		if (StringUtils.isNotNullOrEmpty(employeeId)) {
+			String value = client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, employeeId);
+			if (StringUtils.isNotNullOrEmpty(value)) {
+				BindingParams bindingParams = JSONObject.parseObject(value, BindingParams.class);
+				response = updateEmployee(bindingParams);
+			} 
+		}
+		return response;
+	}
 }

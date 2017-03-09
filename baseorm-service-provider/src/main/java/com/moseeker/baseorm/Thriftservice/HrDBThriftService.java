@@ -5,7 +5,9 @@ import java.util.Set;
 
 import com.moseeker.baseorm.dao.hrdb.CompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
+import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.thrift.gen.dao.struct.*;
+
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,7 +33,7 @@ public class HrDBThriftService implements Iface {
 
 	@Autowired
 	private CompanyDao companyDao;
-
+	
 	@Override
 	public Response getHrHistoryOperations(List<ProcessValidationStruct> record) throws TException {
 		return hrDBService.getHrHistoryOpertation(record);
@@ -116,5 +118,11 @@ public class HrDBThriftService implements Iface {
 	public Response postHrOperationrecord(HrOperationRecordDO record)
 			throws TException {
 		return hrDBService.postHrOperation(record);
+	}
+
+	@Override
+	public Response getHrWxWechat(CommonQuery query) throws TException {
+		// TODO Auto-generated method stub
+		return hrDBService.getHrWxWechat(query);
 	}
 }

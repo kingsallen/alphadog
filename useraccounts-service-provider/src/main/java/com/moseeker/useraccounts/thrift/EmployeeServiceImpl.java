@@ -110,5 +110,11 @@ public class EmployeeServiceImpl implements Iface {
 		
 		return service.setEmployeeCustomInfo(employeeId, customValues);
 	}
+
+	@Override
+	public Result emailActivation(String activationCodee) throws TException {
+		// TODO Auto-generated method stub
+		return service.emailActivation(activationCodee);
+	}
 	
 }

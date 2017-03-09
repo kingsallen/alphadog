@@ -31,4 +31,6 @@ service HrDBDao {
     list<hrdb_struct.HrPointsConfDO> getPointsConfs(1: common_struct.CommonQuery query);
     
     hrdb_struct.HrCompanyDO getCompany(1: common_struct.CommonQuery query);
+    
+    common_struct.Response getHrWxWechat(1: common_struct.CommonQuery query);
 }

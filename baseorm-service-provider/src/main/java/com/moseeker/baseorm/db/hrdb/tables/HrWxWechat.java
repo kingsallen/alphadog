@@ -38,7 +38,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
 
-    private static final long serialVersionUID = 820765329;
+    private static final long serialVersionUID = 1898241054;
 
     /**
      * The reference instance of <code>hrdb.hr_wx_wechat</code>
@@ -124,9 +124,9 @@ public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
     public final TableField<HrWxWechatRecord, String> QRCODE = createField("qrcode", org.jooq.impl.SQLDataType.VARCHAR.length(150).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "关注公众号的二维码");
 
     /**
-     * The column <code>hrdb.hr_wx_wechat.passive_seeker</code>. 被动求职者开关，0：开启，1：不开启
+     * The column <code>hrdb.hr_wx_wechat.passive_seeker</code>. 被动求职者开关，0= 开启, 1=不开启
      */
-    public final TableField<HrWxWechatRecord, Byte> PASSIVE_SEEKER = createField("passive_seeker", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.TINYINT)), this, "被动求职者开关，0：开启，1：不开启");
+    public final TableField<HrWxWechatRecord, Byte> PASSIVE_SEEKER = createField("passive_seeker", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.TINYINT)), this, "被动求职者开关，0= 开启, 1=不开启");
 
     /**
      * The column <code>hrdb.hr_wx_wechat.third_oauth</code>. 授权大岂第三方平台0：未授权 1：授权了
@@ -186,7 +186,7 @@ public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
     /**
      * The column <code>hrdb.hr_wx_wechat.hr_chat</code>. IM聊天开关，0：不开启，1：开启
      */
-    public final TableField<HrWxWechatRecord, Byte> HR_CHAT = createField("hr_chat", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.TINYINT)), this, "IM聊天开关，0：不开启，1：开启");
+    public final TableField<HrWxWechatRecord, Byte> HR_CHAT = createField("hr_chat", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("1", org.jooq.impl.SQLDataType.TINYINT)), this, "IM聊天开关，0：不开启，1：开启");
 
     /**
      * The column <code>hrdb.hr_wx_wechat.show_qx_qrcode</code>. 显示仟寻聚合号二维码, 0:不允许，1:允许

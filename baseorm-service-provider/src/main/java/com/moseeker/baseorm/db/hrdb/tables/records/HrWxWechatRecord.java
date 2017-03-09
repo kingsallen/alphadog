@@ -29,7 +29,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxWechatRecord extends UpdatableRecordImpl<HrWxWechatRecord> {
 
-    private static final long serialVersionUID = -423858098;
+    private static final long serialVersionUID = 1177029698;
 
     /**
      * Setter for <code>hrdb.hr_wx_wechat.id</code>.
@@ -228,14 +228,14 @@ public class HrWxWechatRecord extends UpdatableRecordImpl<HrWxWechatRecord> {
     }
 
     /**
-     * Setter for <code>hrdb.hr_wx_wechat.passive_seeker</code>. 被动求职者开关，0：开启，1：不开启
+     * Setter for <code>hrdb.hr_wx_wechat.passive_seeker</code>. 被动求职者开关，0= 开启, 1=不开启
      */
     public void setPassiveSeeker(Byte value) {
         set(14, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_wx_wechat.passive_seeker</code>. 被动求职者开关，0：开启，1：不开启
+     * Getter for <code>hrdb.hr_wx_wechat.passive_seeker</code>. 被动求职者开关，0= 开启, 1=不开启
      */
     public Byte getPassiveSeeker() {
         return (Byte) get(14);

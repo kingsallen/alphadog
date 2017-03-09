@@ -31,7 +31,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrHbItemsRecord extends UpdatableRecordImpl<HrHbItemsRecord> implements Record11<Integer, Integer, Integer, Integer, BigDecimal, Byte, Integer, Timestamp, Timestamp, Timestamp, Integer> {
 
-    private static final long serialVersionUID = -1679342676;
+    private static final long serialVersionUID = 1815164558;
 
     /**
      * Setter for <code>hrdb.hr_hb_items.id</code>.
@@ -76,14 +76,14 @@ public class HrHbItemsRecord extends UpdatableRecordImpl<HrHbItemsRecord> implem
     }
 
     /**
-     * Setter for <code>hrdb.hr_hb_items.index</code>. 这条数据是第几个红包 0 < x <= 总红包数
+     * Setter for <code>hrdb.hr_hb_items.index</code>. 这条数据是第几个红包 0 < x <= 总红包数, 如果是 NULL 表示这是一个空红包
      */
     public void setIndex(Integer value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_hb_items.index</code>. 这条数据是第几个红包 0 < x <= 总红包数
+     * Getter for <code>hrdb.hr_hb_items.index</code>. 这条数据是第几个红包 0 < x <= 总红包数, 如果是 NULL 表示这是一个空红包
      */
     public Integer getIndex() {
         return (Integer) get(3);

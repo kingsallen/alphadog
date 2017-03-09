@@ -30,4 +30,7 @@ service EmployeeService {
 
     // 推荐记录
     list<employee_struct.RecomInfo> getEmployeeRecoms(1: i32 recomId);
+    
+    // 员工绑定(邮箱激活)
+    employee_struct.Result emailActivation(1: string activationCodee);
 }

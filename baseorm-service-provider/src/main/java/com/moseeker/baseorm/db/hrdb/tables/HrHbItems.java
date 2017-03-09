@@ -37,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrHbItems extends TableImpl<HrHbItemsRecord> {
 
-    private static final long serialVersionUID = -30889347;
+    private static final long serialVersionUID = -842345290;
 
     /**
      * The reference instance of <code>hrdb.hr_hb_items</code>
@@ -68,9 +68,9 @@ public class HrHbItems extends TableImpl<HrHbItemsRecord> {
     public final TableField<HrHbItemsRecord, Integer> BINDING_ID = createField("binding_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "position_hb_binding.id");
 
     /**
-     * The column <code>hrdb.hr_hb_items.index</code>. 这条数据是第几个红包 0 < x <= 总红包数
+     * The column <code>hrdb.hr_hb_items.index</code>. 这条数据是第几个红包 0 < x <= 总红包数, 如果是 NULL 表示这是一个空红包
      */
-    public final TableField<HrHbItemsRecord, Integer> INDEX = createField("index", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "这条数据是第几个红包 0 < x <= 总红包数");
+    public final TableField<HrHbItemsRecord, Integer> INDEX = createField("index", org.jooq.impl.SQLDataType.INTEGER, this, "这条数据是第几个红包 0 < x <= 总红包数, 如果是 NULL 表示这是一个空红包");
 
     /**
      * The column <code>hrdb.hr_hb_items.amount</code>. 红包金额
@@ -158,7 +158,7 @@ public class HrHbItems extends TableImpl<HrHbItemsRecord> {
      */
     @Override
     public List<UniqueKey<HrHbItemsRecord>> getKeys() {
-        return Arrays.<UniqueKey<HrHbItemsRecord>>asList(Keys.KEY_HR_HB_ITEMS_PRIMARY);
+        return Arrays.<UniqueKey<HrHbItemsRecord>>asList(Keys.KEY_HR_HB_ITEMS_PRIMARY, Keys.KEY_HR_HB_ITEMS_HB_CONFIG_BINDING_INDEX);
     }
 
     /**
