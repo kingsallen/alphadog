@@ -105,6 +105,16 @@ public class HrDBThriftService implements Iface {
 	}
 
 	@Override
+	public HrWxHrChatDO saveChat(HrWxHrChatDO chatDO) throws CURDException, TException {
+		return chatDao.saveResource(chatDO);
+	}
+
+	@Override
+	public HrWxHrChatDO updateChat(HrWxHrChatDO chatDO) throws CURDException, TException {
+		return chatDao.updateResource(chatDO);
+	}
+
+	@Override
 	public List<HrWxHrChatListDO> listChatRooms(CommonQuery query) throws CURDException, TException {
 		return chatRoomDao.listResources(query);
 	}
@@ -121,6 +131,16 @@ public class HrDBThriftService implements Iface {
 	@Override
 	public HrWxHrChatListDO getChatRoom(CommonQuery query) throws CURDException, TException {
 		return chatRoomDao.findResource(query);
+	}
+
+	@Override
+	public HrWxHrChatListDO saveChatRoom(HrWxHrChatListDO chatRoom) throws CURDException, TException {
+		return chatRoomDao.saveResource(chatRoom);
+	}
+
+	@Override
+	public HrWxHrChatListDO updateChatRoom(HrWxHrChatListDO chatRoom) throws CURDException, TException {
+		return chatRoomDao.updateResource(chatRoom);
 	}
 
 	@Override

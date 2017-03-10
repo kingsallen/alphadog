@@ -338,4 +338,22 @@ public class ChatDao {
             return null;
         }
     }
+
+    public HrWxHrChatDO saveChat(HrWxHrChatDO chatDO) {
+        try {
+            return hrDBDao.saveChat(chatDO);
+        } catch (TException e) {
+            logger.error(e.getMessage(), e);
+            return null;
+        }
+    }
+
+    public HrWxHrChatListDO saveChatRoom(HrWxHrChatListDO chatRoom) {
+        try {
+            return hrDBDao.saveChatRoom(chatRoom);
+        } catch (TException e) {
+            logger.error(e.getMessage(), e);
+            return null;
+        }
+    }
 }

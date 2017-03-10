@@ -250,12 +250,13 @@ public class ChatService {
     public void saveChat(int roomId, String content, int positionId, byte speaker) {
         HrWxHrChatDO chatDO = new HrWxHrChatDO();
         String date = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
-        chatDO.setCreateTime(new DateTime().toString());
+        chatDO.setCreateTime(date);
         chatDO.setContent(content);
         chatDO.setPid(positionId);
         boolean spk = speaker == 0 ? false : true;
         chatDO.setSpeaker(spk);
         chatDO.setChatlistId(roomId);
+        chaoDao.saveChat(chatDO);
     }
 
     /**
@@ -266,6 +267,14 @@ public class ChatService {
      */
     public ResultOfSaveRoomVO saveChatRoom(int userId, int hrId) {
         ResultOfSaveRoomVO resultOfSaveRoomVO = new ResultOfSaveRoomVO();
+        String createTime = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
+        HrWxHrChatListDO chatRoom = new HrWxHrChatListDO();
+        chatRoom.setCreateTime(createTime);
+        chatRoom.setHraccountId(hrId);
+        chatRoom.setSysuserId(userId);
+        chatRoom.setStatus(false);
+        chatRoom = chaoDao.saveChatRoom(chatRoom);
+        
         return resultOfSaveRoomVO;
     }
 
