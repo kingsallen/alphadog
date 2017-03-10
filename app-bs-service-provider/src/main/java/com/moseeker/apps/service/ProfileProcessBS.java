@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.moseeker.thrift.gen.dao.service.*;
+import com.moseeker.thrift.gen.dao.struct.HrOperationRecordDO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
