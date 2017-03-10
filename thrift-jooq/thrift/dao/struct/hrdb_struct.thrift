@@ -178,17 +178,19 @@ struct HrWxHrChatDO {
 }
 
 struct HrWxHrChatListDO { 
-    1: optional i32 id,
-    2: optional i32 chatlistId,
-    3: optional string content,
-    4: optional i32 pid,
-    5: optional bool speaker,
-    6: optional bool status,
-    7: optional Timestamp createTime
+    1: optional i32 id,                     //数据库编号
+    2: optional i32 sysuserId,              //用户编号 userdb.user_user.id
+    3: optional i32 hraccountId,            //HR编号 userdb.user_hr_account.id
+    4: optional Timestamp createTime,       //聊天室创建时间 
+    5: optional Timestamp wxChatTime,       //HR最后聊天的时间
+    6: optional Timestamp hrChatTime,       //用户最后聊天的时间
+    7: optional bool status                 // 聊天室状态
 }
 
 struct HrChatUnreadCountDO {
     1:  optional i32 roomId,                //聊天室ID
     2:  optional i32 hrUnreadCount,         //HR未读信息
-    3:  optional i32 userUnreadCount        //用户未读信息
+    3:  optional i32 userUnreadCount,       //用户未读信息
+    4:  optional i32 hrId,                  //HR编号
+    5:  optional i32 userId                 //用户编号
 }

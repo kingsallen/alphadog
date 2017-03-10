@@ -143,17 +143,6 @@ struct SearchCondition {
    21: i32 type // 类型（0：候选人列表筛选条件，1：人才库列表筛选条件）
 }
 
-/*
- * 个人中心推荐记录
- */
-struct ApplicationRecordsForm {
-    1: optional i32 id,
-    2: optional string title,
-    3: optional string department,
-    4: optional i8 status,
-    5: optional Timestamp time
-}
-
 struct UserEmployeeStruct {
 	1: optional i32 id,
 	2: optional string employeeid,

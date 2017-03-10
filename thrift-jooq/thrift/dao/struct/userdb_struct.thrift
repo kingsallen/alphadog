@@ -144,3 +144,27 @@ struct UserHrAccountDO {
     19: optional Timestamp updateTime,              // 修改时间
     20: optional string headimgurl                  // 修改时间
 }
+
+struct UserWxUserDO {
+    1:  optional i32 id,                             // 数据库编号 
+    2:  optional i32 wechatId,                       // 所属公众号
+    3:  optional i32 groupId,                        // 分组编号（可能已经废弃）
+    4:  optional i32 sysuserId,                      // userdb.user_user.id 用户编号
+    5:  optional i8 isSubscribe,                     // 是否关注 1:关注 0：没关注
+    6:  optional string openid,                      // 公共号下的唯一标识
+    7:  optional string nickname,                    // 微信昵称（不会一直同步微信账号的昵称）
+    8:  optional i8 sex,                             // 用户性别 0:未知 1:男性 2:女性
+    9:  optional string city,                        // 用户所在城市
+    10: optional string country,                     // 用户所在国家 
+    11: optional string province,                    // 用户所在省份
+    12: optional string language,                    // 用户语言
+    13: optional string headimgurl,                  // 用户头像
+    14: optional Timestamp subscribeTime,            // 用户关注时间
+    15: optional Timestamp unsubscibeTime,           // 用户取消关注的时间
+    16: optional string unionid,                     // 用户微信唯一标识
+    17: optional i32 reward,                         // 积分奖励，暂时不用
+    18: optional i8 autoSyncInfo,                    // 0：需要处理，1：处理过了
+    19: optional Timestamp createTime,               // 创建时间
+    20: optional Timestamp updateTime,               // 修改时间
+    21: optional i8 source                           // insert来源 1:SUBSCRIBED 2:UNSUBSCRIBED 3:订阅号调用api的48001 4:oauth 5:update all 6:update short 7:oauth update 8:微信扫码注册 9:upd unionid 10:upd sysuser, 11:ups sysnuser 12：微信端我也要招人注册
+}

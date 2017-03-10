@@ -77,6 +77,11 @@ public class HrDBThriftService implements Iface {
 	}
 
 	@Override
+	public List<HrCompanyDO> listCompany(CommonQuery query) throws CURDException, TException {
+		return companyDao.listResources(query);
+	}
+
+	@Override
 	public List<HrWxHrChatDO> listChats(CommonQuery query) throws CURDException, TException {
 		return chatDao.listResources(query);
 	}

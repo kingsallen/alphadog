@@ -16,6 +16,14 @@ public class Page {
     public Page(int pageNo, int pageSize, int totalRow) {
         this.pageNo = pageNo;
         this.pageSize = pageSize;
+
+        if(this.pageNo <= 0) {
+            this.pageNo = 0;
+        }
+        if(this.pageSize <= 0 ) {
+            this.pageSize = 10;
+        }
+
         this.totalRow = totalRow;
 
         if(totalRow == 0) {

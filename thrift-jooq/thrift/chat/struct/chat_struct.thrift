@@ -22,12 +22,14 @@ struct HRChatRoomsVO {
 
 struct UserChatRoomVO {
     1:  optional i32 id,                    //聊天室编号
-    2:  optional i32 userId,                //userdb.user_user.id 用户编号
+    2:  optional i32 hrId,                  //userdb.user_hr_account.id HR编号
     3:  optional string name,               //用户名称 userdb.user_user.name > userdb.user_user.nickname
-    4:  optional string headImgUrl,         //用户头像 userdb.user_user.headimg > user_wx_user.headimg
-    5:  optional string createTime,         //最后一次聊天的时间
-    6:  optional i32 status,                //聊天室状态
-    7:  optional i32 unReadNum              //未读信息数量
+    4:  optional string headImgUrl,         // HR头像 userdb.user_hr_account.headimgurl > user_wx_user.headimgurl > hrdb.hr_company.logo
+    5:  optional string companyName,        // 公司名称
+    6:  optional string companyLogo,        // 公司logo
+    7:  optional string createTime,         //最后一次聊天的时间
+    8:  optional i32 status,                //聊天室状态
+    9:  optional i32 unReadNum              //未读信息数量
 }
 
 struct UserChatRoomsVO {
