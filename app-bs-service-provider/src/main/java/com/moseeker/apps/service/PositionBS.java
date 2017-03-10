@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.moseeker.thrift.gen.dao.struct.HrCompanyDO;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
