@@ -37,7 +37,7 @@ import org.jooq.types.UShort;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
 
-    private static final long serialVersionUID = -58481521;
+    private static final long serialVersionUID = -1865229109;
 
     /**
      * The reference instance of <code>hrdb.hr_company_conf</code>
@@ -126,6 +126,11 @@ public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
      * The column <code>hrdb.hr_company_conf.job_occupation</code>. 自定义字段名称
      */
     public final TableField<HrCompanyConfRecord, String> JOB_OCCUPATION = createField("job_occupation", org.jooq.impl.SQLDataType.VARCHAR.length(30).defaultValue(org.jooq.impl.DSL.field("职位职能", org.jooq.impl.SQLDataType.VARCHAR)), this, "自定义字段名称");
+
+    /**
+     * The column <code>hrdb.hr_company_conf.teamname_custom</code>. 自定义部门别名
+     */
+    public final TableField<HrCompanyConfRecord, String> TEAMNAME_CUSTOM = createField("teamname_custom", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "自定义部门别名");
 
     /**
      * Create a <code>hrdb.hr_company_conf</code> table reference

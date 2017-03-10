@@ -38,16 +38,8 @@ public class CandidateThriftServiceTest {
         candidateService.glancePosition(2, 1, 1);
     }
     
-//    @Test
-//    public void changeInterestingTest() throws TException {
-//    		candidateService.changeInteresting(391470, 61106, (byte)1);
-//    }
-//
-//
-//    public static void main(String[] args) {
-//		CandidatePositionDO cpdo = new CandidatePositionDO();
-//		cpdo.setIsInterested(true);
-//		CandidatePositionRecord record = BeanUtils.structToDB(cpdo, CandidatePositionRecord.class);
-//		System.out.println(record.getIsInterested());
-//	}
+    @Test
+    public void changeInterestingTest() throws TException {
+    		candidateService.changeInteresting(391470, 61106, (byte)1);
+    }
 } 

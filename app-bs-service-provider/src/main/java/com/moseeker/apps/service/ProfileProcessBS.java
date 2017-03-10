@@ -37,7 +37,6 @@ import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.config.ConfigSysPointsConfTpl;
 import com.moseeker.thrift.gen.config.HrAwardConfigTemplate;
 import com.moseeker.thrift.gen.dao.struct.HistoryOperate;
-import com.moseeker.thrift.gen.dao.struct.HrOperationRecordDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
 import com.moseeker.thrift.gen.mq.struct.MessageTplDataCol;

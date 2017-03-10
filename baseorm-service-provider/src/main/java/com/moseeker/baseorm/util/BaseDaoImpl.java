@@ -47,7 +47,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 	/**
 	 * 需要制定JOOQ
 	 */
-	protected TableLike<R> tableLike;
+	protected TableImpl<R> tableLike;
 
 	protected abstract void initJOOQEntity();
 
@@ -64,7 +64,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 
 			if(query != null) {
 				//解析查询条件
-				/*if(query.getAttributes() != null && query.getAttributes().size() > 0) {
+				if(query.getAttributes() != null && query.getAttributes().size() > 0) {
 					Field[] fieldArray = new Field[query.getAttributes().size()];
 					int count = 0;
 					for(String attribute : query.getAttributes()) {
@@ -77,7 +77,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 					if(count > 0) {
 						table = create.select(fieldArray).from(tableLike);
 					}
-				}*/
+				}
 
 				//解析equal fileter 内容
 				if (query.getEqualFilter() != null
@@ -158,8 +158,6 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 					table.orderBy(fields);
 				}
 
-
-
 				/* 分段查找数据库结果集 */
 				int page = 1;
 				int per_page = 0;
@@ -169,19 +167,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 				per_page = query.getPer_page()>0 ? query.getPer_page() : 10 ;
 				table.limit((page-1)*per_page, per_page);
 			}
-			Result<Record> result = table.fetch();
-
-			if (result != null && result.size() > 0) {
-				for (Record r : result) {
-					/*if(r instanceof UpdatableRecordImpl) {
-						records.add((R)r);
-					} else {
-						//r.into(R);
-						records.add((R)r.into((Table) tableLike));
-					}*/
-					records.add((R)r);
-				}
-			}
+			records = table.fetchInto(tableLike.getRecordType());
 		} catch (Exception e) {
 			logger.error("error", e);
 			e.printStackTrace();

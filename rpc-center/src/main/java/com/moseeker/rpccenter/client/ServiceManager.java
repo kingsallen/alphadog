@@ -193,9 +193,4 @@ public enum ServiceManager {
 
         return servers;
     }
-
-    public static void main(String[] args) {
-        String strTest = "com.moseeker.com.profile.ProfileServices$Iface";
-        System.out.println(strTest.substring(strTest.lastIndexOf(".")+1, strTest.indexOf("$")).toLowerCase());
-    }
 }
