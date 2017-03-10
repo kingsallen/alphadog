@@ -268,14 +268,15 @@ public class WholeProfileService {
 					projectExps, skillRecords, workexpRecords, worksRecords, userRecord);
 			if (id > 0) {
 
-				StatisticsForChannelmportVO statisticsForChannelmportVO = new StatisticsForChannelmportVO();
-				statisticsForChannelmportVO.setProfile_operation((byte)0);
-				statisticsForChannelmportVO.setProfile_id(id);
-				statisticsForChannelmportVO.setUser_id(userId);
-				profileUtils.logForStatistics("postResource", new JSONObject(){{
-					this.put("profile", profile);
-					this.put("userId", userId);
-				}}.toJSONString(), statisticsForChannelmportVO);
+				try {
+					StatisticsForChannelmportVO statisticsForChannelmportVO = createStaticstics(id, userId, (byte)0, importRecords);
+					profileUtils.logForStatistics("postResource", new JSONObject(){{
+                        this.put("profile", profile);
+                        this.put("userId", userId);
+                    }}.toJSONString(), statisticsForChannelmportVO);
+				} catch (Exception e) {
+					logger.error(e.getMessage(), e);
+				}
 
 				return ResponseUtils.success(String.valueOf(id));
 			}
@@ -320,14 +321,16 @@ public class WholeProfileService {
 				userRecord, oldProfile);
 		if (id > 0) {
 			logger.info("importCV 添加成功");
-			StatisticsForChannelmportVO statisticsForChannelmportVO = new StatisticsForChannelmportVO();
-			statisticsForChannelmportVO.setProfile_operation((byte)0);
-			statisticsForChannelmportVO.setProfile_id(id);
-			statisticsForChannelmportVO.setUser_id(userId);
-			profileUtils.logForStatistics("importCV", new JSONObject(){{
-				this.put("profile", profile);
-				this.put("userId", userId);
-			}}.toJSONString(), statisticsForChannelmportVO);
+			try {
+				StatisticsForChannelmportVO statisticsForChannelmportVO = createStaticstics(id, userId, (byte)1,
+                        profilePojo.getImportRecords());
+				profileUtils.logForStatistics("importCV", new JSONObject(){{
+                    this.put("profile", profile);
+                    this.put("userId", userId);
+                }}.toJSONString(), statisticsForChannelmportVO);
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
 			return ResponseUtils.success(id);
 		} else {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
@@ -363,6 +366,16 @@ public class WholeProfileService {
 				profilePojo.getSkillRecords(), profilePojo.getWorkexpRecords(), profilePojo.getWorksRecords(),
 				userRecord, null);
 		if (id > 0) {
+
+			try {
+				StatisticsForChannelmportVO statisticsForChannelmportVO = createStaticstics(id,
+                        userRecord.getId().intValue(), (byte)0, profilePojo.getImportRecords());
+				profileUtils.logForStatistics("importCV", new JSONObject(){{
+                    this.put("profile", profile);
+                }}.toJSONString(), statisticsForChannelmportVO);
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
 			return ResponseUtils.success(id);
 		} else {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
@@ -404,24 +417,21 @@ public class WholeProfileService {
 			improveWorks(profilePojo.getWorksRecords(), profileId);
 			completenessImpl.getCompleteness1(0, null, profileId);
 
-			StatisticsForChannelmportVO statisticsForChannelmportVO = new StatisticsForChannelmportVO();
-			statisticsForChannelmportVO.setProfile_operation((byte)0);
-			statisticsForChannelmportVO.setProfile_id(profileDB.getId().intValue());
-			statisticsForChannelmportVO.setUser_id(profileDB.getUserId().intValue());
-			if(profilePojo.getImportRecords() != null) {
-				statisticsForChannelmportVO.setImport_channel(profilePojo.getImportRecords().getSource().byteValue());
-				statisticsForChannelmportVO.setImport_time(profilePojo.getImportRecords().getCreateTime().getTime());
+			try {
+				StatisticsForChannelmportVO statisticsForChannelmportVO = createStaticstics(profileDB.getId().intValue(), profileDB.getUserId().intValue(), (byte)2,
+						profilePojo.getImportRecords());
+				profileUtils.logForStatistics("importCV", new JSONObject(){{
+					this.put("profile", profile);
+				}}.toJSONString(), statisticsForChannelmportVO);
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
 			}
-			profileUtils.logForStatistics("improveProfile", new JSONObject(){{
-				this.put("profile", profile);
-			}}.toJSONString(), statisticsForChannelmportVO);
-
 			return ResponseUtils.success(null);
 		} else {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ALLREADY_NOT_EXIST);
 		}
 	}
-	
+
 	public Response improveProfile(int destUserId, int originUserId) {
 		ProfileProfileRecord destProfile = profileDao.getProfileByIdOrUserIdOrUUID(destUserId, 0, null);
 		ProfileProfileRecord originProfile = profileDao.getProfileByIdOrUserIdOrUUID(originUserId, 0, null);
@@ -487,6 +497,22 @@ public class WholeProfileService {
 			ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		}
 		return ResponseUtils.success(null);
+	}
+
+	private static StatisticsForChannelmportVO createStaticstics(int profileId, int userId, byte operation, ProfileImportRecord record) {
+		StatisticsForChannelmportVO statisticsForChannelmportVO = new StatisticsForChannelmportVO();
+		statisticsForChannelmportVO.setProfile_operation((byte)0);
+		statisticsForChannelmportVO.setProfile_id(profileId);
+		statisticsForChannelmportVO.setUser_id(userId);
+		if(record != null) {
+			if(record.getCreateTime() != null) {
+				statisticsForChannelmportVO.setImport_time(record.getCreateTime().getTime());
+			}
+			if(record.getSource() != null) {
+				statisticsForChannelmportVO.setImport_channel(record.getSource().byteValue());
+			}
+		}
+		return statisticsForChannelmportVO;
 	}
 
 	private void improveUser(UserUserRecord userRecord) {
