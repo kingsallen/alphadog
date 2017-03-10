@@ -42,7 +42,6 @@ import com.moseeker.thrift.gen.dao.service.CompanyDao;
 import com.moseeker.thrift.gen.dao.service.HrDBDao;
 import com.moseeker.thrift.gen.dao.service.UserHrAccountDao;
 import com.moseeker.thrift.gen.dao.struct.*;
-import com.moseeker.thrift.gen.dao.struct.HrHbConfigDO;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.RpExtInfo;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;

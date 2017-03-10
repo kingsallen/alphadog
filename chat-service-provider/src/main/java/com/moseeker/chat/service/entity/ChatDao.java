@@ -356,4 +356,18 @@ public class ChatDao {
             return null;
         }
     }
+
+    public HrCompanyDO getCompany(int hrId) {
+        HrCompanyDO companyDO = null;
+
+        return companyDO;
+    }
+
+    public JobPositionDO getPosition(int roomId) {
+        return null;
+    }
+
+    public UserHrAccountDO getHr(int hrId) {
+        return null;
+    }
 }

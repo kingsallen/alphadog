@@ -107,7 +107,12 @@ public class BeanUtils {
 				if (!descFields[i].getName().trim().equals("metaDataMap")) {
 					Field field = descFields[i];
 					String upperFirst = field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
-					String getMethodName = "get" + upperFirst;
+					String getMethodName;
+					if(field.getType().isAssignableFrom(boolean.class)) {
+						getMethodName = "is" + upperFirst;
+					} else {
+						getMethodName = "get" + upperFirst;
+					}
 					for (j = 0; j < destMethods.length; j++) {
 						try {
 							if (destMethods[j].getName().equals(getMethodName)) {
@@ -199,6 +204,7 @@ public class BeanUtils {
 					String setMethodName = "set" + upperFirst;
 					for (j = 0; j < destMethods.length; j++) {
 						if (destMethods[j].getName().equals(setMethodName)) {
+
 							String origMethodName = buiderRecordMethodName(field.getName(), MethodType.GET,
 									equalRules);
 							for (k = 0; k < origMethods.length; k++) {
@@ -267,6 +273,7 @@ public class BeanUtils {
 			try {
 				t = clazz.newInstance();
 				for (Entry<String, Object> entry : map.entrySet()) {
+
 					String origMethodName = buiderRecordMethodName(entry.getKey(), MethodType.SET, null);
 					for (int i = 0; i < methods.length; i++) {
 						if (methods[i].getName().equals(origMethodName)) {
@@ -289,7 +296,7 @@ public class BeanUtils {
 	}
 
 	private enum MethodType {
-		GET, SET;
+		GET, SET, IS;
 
 		@Override
 		public String toString() {

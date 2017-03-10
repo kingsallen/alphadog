@@ -274,7 +274,53 @@ public class ChatService {
         chatRoom.setSysuserId(userId);
         chatRoom.setStatus(false);
         chatRoom = chaoDao.saveChatRoom(chatRoom);
-        
+
+        if(chatRoom != null) {
+            resultOfSaveRoomVO.setId(chatRoom.getId());
+            Future companyFuture = pool.startTast(() -> chaoDao.getCompany(hrId));
+            final int roomId = chatRoom.getId();
+            Future positionFuture = pool.startTast(() -> chaoDao.getPosition(roomId));
+            Future hrFuture = pool.startTast(() -> chaoDao.getHr(hrId));
+
+            try {
+                HrCompanyDO companyDO = (HrCompanyDO) companyFuture.get();
+                if(companyDO != null) {
+                    String name = StringUtils.isNullOrEmpty(companyDO.getAbbreviation())
+                            ? companyDO.getAbbreviation() : companyDO.getName();
+                    resultOfSaveRoomVO.setCompanyName(name);
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                logger.error(e.getMessage(), e);
+            }
+
+            try {
+                JobPositionDO positionDO = (JobPositionDO) positionFuture.get();
+                if(positionDO != null) {
+                    resultOfSaveRoomVO.setId(positionDO.getId());
+                    resultOfSaveRoomVO.setPositionTitle(positionDO.getTitle());
+                    resultOfSaveRoomVO.setCity(positionDO.getCity());
+                    resultOfSaveRoomVO.setSalaryTop(positionDO.getSalaryTop());
+                    resultOfSaveRoomVO.setSalaryBottom(positionDO.getSalaryBottom());
+                    resultOfSaveRoomVO.setPositionUpdateTime(positionDO.getUpdateTime());
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                logger.error(e.getMessage(), e);
+            }
+
+            try {
+                UserHrAccountDO hrAccountDO = (UserHrAccountDO) hrFuture.get();
+                if(hrAccountDO != null) {
+                    resultOfSaveRoomVO.setHrHeadImgUrl(hrAccountDO.getHeadimgurl());
+                    resultOfSaveRoomVO.setHrName(hrAccountDO.getUsername());
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                logger.error(e.getMessage(), e);
+            }
+
+        } else {
+            //throw
+            //todo 添加出错异常
+        }
         return resultOfSaveRoomVO;
     }
 
