@@ -10,6 +10,7 @@ import org.apache.thrift.TException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by eddie on 2017/3/9.
@@ -25,8 +26,8 @@ public class UserEmployeeService implements com.moseeker.thrift.gen.useraccounts
     }
 
     @Override
-    public Response delUserEmployee(UserEmployeeStruct userEmployee) throws TException {
-        return userEmployeeDao.delResource(userEmployee);
+    public Response delUserEmployee(Map<String,String> filter) throws TException {
+        return userEmployeeDao.delResource(filter);
     }
 
     @Override

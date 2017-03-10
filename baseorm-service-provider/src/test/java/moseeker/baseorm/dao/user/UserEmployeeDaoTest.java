@@ -11,7 +11,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by eddie on 2017/3/9.
@@ -72,11 +74,10 @@ public class UserEmployeeDaoTest {
     @Test
     public void testDeleteUserEmployee() throws TException {
         init();
-        UserEmployeeStruct ues = new UserEmployeeStruct();
-        ues.setId(141766);
-        ues.setCompany_id(76);
-        ues.setCustom_field("qb");
-        Response response  = service.delResource(ues);
+        Map<String,String> filter = new HashMap<>();
+        filter.put("company","89");
+        filter.put("custom_field","abcd");
+        Response response  = service.delResource(filter);
 
         System.out.println(response);
     }

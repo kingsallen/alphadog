@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by eddie on 2017/3/9.
@@ -129,20 +130,9 @@ public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
     }
 
     @Override
-    public Response delResource(UserEmployeeStruct record) throws TException {
+    public Response delResource(Map<String,String> filter) throws TException {
         try {
-            int result = userEmployeeDao.delResource(BeanUtils.structToDB(record, UserEmployeeRecord.class));
-            return ResponseUtils.success(result);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-        }
-    }
-
-    @Override
-    public Response delResources(List<UserEmployeeStruct> records) throws TException {
-        try {
-            int result = userEmployeeDao.delResources(convertDB(records));
+            int result = userEmployeeDao.delResource(filter);
             return ResponseUtils.success(result);
         } catch (Exception e) {
             e.printStackTrace();

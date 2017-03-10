@@ -1,5 +1,6 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -15,6 +16,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.AbstractMap;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by eddie on 2017/3/7.
@@ -28,21 +34,20 @@ public class UserEmployeeController {
     @ResponseBody
     public String deleteUserEmployee(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            int companyId = params.getInt("company_id", -1);
-            String customField = params.getString("custom_field");
-
-            if (companyId == -1) {
-                return ResponseLogNotification.fail(request, "company_id不能为空");
-            } else if (customField == null) {
-                return ResponseLogNotification.fail(request, "custom_field不能为空");
+            Map<String, String> filter = request.getParameterMap().entrySet().stream()
+                    .map(entry -> new AbstractMap.SimpleEntry<>(entry.getKey(), entry.getValue()[0]))
+                    .collect(Collectors.toMap((t -> t.getKey()), (s -> s.getValue())));
+            String companyId = filter.get("company_id");
+            String customField = filter.get("custom_field");
+            String id = filter.get("id");
+            if (StringUtils.isNullOrEmpty(id)) {
+                if (StringUtils.isNullOrEmpty(companyId)) {
+                    return ResponseLogNotification.fail(request, "company_id不能为空");
+                } else if (StringUtils.isNullOrEmpty(customField)) {
+                    return ResponseLogNotification.fail(request, "custom_field不能为空");
+                }
             }
-
-            int id = params.getInt("id", -1);
-
-            UserEmployeeStruct userEmployee = ParamUtils.initModelForm(request, UserEmployeeStruct.class);
-
-            Response result = service.delUserEmployee(userEmployee);
+            Response result = service.delUserEmployee(filter);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());

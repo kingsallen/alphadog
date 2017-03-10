@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by eddie on 2017/3/9.
@@ -26,9 +27,10 @@ public class UserEmployeeServiceImpl implements UserEmployeeService.Iface {
     }
 
     @Override
-    public Response delUserEmployee(UserEmployeeStruct userEmployee) throws TException {
-        return employeeService.delUserEmployee(userEmployee);
+    public Response delUserEmployee(Map<String, String> filter) throws TException {
+        return employeeService.delUserEmployee(filter);
     }
+
 
     @Override
     public Response postPutUserEmployeeBatch(List<UserEmployeeStruct> update) throws TException {

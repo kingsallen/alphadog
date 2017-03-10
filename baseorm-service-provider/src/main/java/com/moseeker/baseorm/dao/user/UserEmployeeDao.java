@@ -3,9 +3,11 @@ package com.moseeker.baseorm.dao.user;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
@@ -53,6 +55,18 @@ public class UserEmployeeDao extends BaseDaoImpl<UserEmployeeRecord, UserEmploye
 			}
 		}
 		return list;
+	}
+
+	public int delResource(Map<String,String> filter) throws Exception {
+		if(filter.size() > 0) {
+			CommonQuery commonQuery = new CommonQuery();
+			commonQuery.setEqualFilter(filter);
+			List<UserEmployeeRecord> records = getResources(commonQuery);
+			if(records.size() > 0){
+				return delResources(records);
+			}
+		}
+		return 0;
 	}
 
 }
