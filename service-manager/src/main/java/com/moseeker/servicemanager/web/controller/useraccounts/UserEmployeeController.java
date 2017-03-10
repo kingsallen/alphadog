@@ -1,10 +1,10 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
-import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by eddie on 2017/3/7.
@@ -70,10 +70,22 @@ public class UserEmployeeController {
     @ResponseBody
     public String addOrUpdateUserEmployees(HttpServletRequest request, HttpServletResponse response) {
         try {
-            /**
-             * TODO
-             */
-            Response result = service.postPutUserEmployeeBatch(null);
+            String raw = ParamUtils.getStringRaw(request);
+
+            raw = StringUtils.isNotNullOrEmpty(raw)?request.getParameter("data"):raw;
+
+            if(StringUtils.isNullOrEmpty(raw) ){
+                return ResponseLogNotification.fail(request, "没有参数");
+            }
+
+            List<UserEmployeeStruct> employeeStructs = new ArrayList<>();
+            if(raw.startsWith("[")) {
+                employeeStructs = JSON.parseArray(raw, UserEmployeeStruct.class);
+            }else if(raw.startsWith("{")){
+                employeeStructs.add(JSON.parseObject(raw,UserEmployeeStruct.class));
+            }
+
+            Response result = service.postPutUserEmployeeBatch(employeeStructs);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
