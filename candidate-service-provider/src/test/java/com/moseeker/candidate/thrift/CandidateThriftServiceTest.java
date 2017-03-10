@@ -1,7 +1,12 @@
 package com.moseeker.candidate.thrift;
 
+import com.moseeker.common.util.BeanUtils;
+import com.moseeker.db.candidatedb.tables.records.CandidatePositionRecord;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.candidate.service.CandidateService;
+import com.moseeker.thrift.gen.dao.struct.CandidatePositionDO;
+
+import org.apache.thrift.TException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +37,17 @@ public class CandidateThriftServiceTest {
     public void testGlancePosition() throws Exception {
         candidateService.glancePosition(2, 1, 1);
     }
-
-
+    
+//    @Test
+//    public void changeInterestingTest() throws TException {
+//    		candidateService.changeInteresting(391470, 61106, (byte)1);
+//    }
+//
+//
+//    public static void main(String[] args) {
+//		CandidatePositionDO cpdo = new CandidatePositionDO();
+//		cpdo.setIsInterested(true);
+//		CandidatePositionRecord record = BeanUtils.structToDB(cpdo, CandidatePositionRecord.class);
+//		System.out.println(record.getIsInterested());
+//	}
 } 
