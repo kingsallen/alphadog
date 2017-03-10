@@ -1,5 +1,6 @@
 package com.moseeker.candidate.service.entities;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -131,7 +132,7 @@ public class CandidateEntity implements Candidate {
 		Boolean isInterested = BooleanUtils.toBooleanObject(is_interested);
 		if (position.filter(f -> f.userId != 0 && f.isInterested != isInterested).isPresent()) {
 			try {
-				CandidateDBDao.updateCandidatePosition(position.map(m -> m.setIsInterested(isInterested)).get());
+				CandidateDBDao.updateCandidatePosition(position.map(m -> m.setIsInterested(isInterested)).map(m -> m.setUpdateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '))).get());
 			} catch (TException e) {
 				logger.error(e.getMessage(), e);
 				response = ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);

@@ -5,6 +5,7 @@ package com.moseeker.baseorm.db.hrdb;
 
 
 import com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrChatUnreadCount;
 import com.moseeker.baseorm.db.hrdb.tables.HrChildCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
@@ -51,6 +52,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrAppCvConfRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrChatUnreadCountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrChildCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
@@ -174,6 +176,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final UniqueKey<HrAppCvConfRecord> KEY_HR_APP_CV_CONF_PRIMARY = UniqueKeys0.KEY_HR_APP_CV_CONF_PRIMARY;
+    public static final UniqueKey<HrChatUnreadCountRecord> KEY_HR_CHAT_UNREAD_COUNT_PRIMARY = UniqueKeys0.KEY_HR_CHAT_UNREAD_COUNT_PRIMARY;
     public static final UniqueKey<HrChildCompanyRecord> KEY_HR_CHILD_COMPANY_PRIMARY = UniqueKeys0.KEY_HR_CHILD_COMPANY_PRIMARY;
     public static final UniqueKey<HrCompanyRecord> KEY_HR_COMPANY_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_PRIMARY;
     public static final UniqueKey<HrCompanyAccountRecord> KEY_HR_COMPANY_ACCOUNT_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_ACCOUNT_PRIMARY;
@@ -281,6 +284,7 @@ public class Keys {
 
     private static class UniqueKeys0 extends AbstractKeys {
         public static final UniqueKey<HrAppCvConfRecord> KEY_HR_APP_CV_CONF_PRIMARY = createUniqueKey(HrAppCvConf.HR_APP_CV_CONF, "KEY_hr_app_cv_conf_PRIMARY", HrAppCvConf.HR_APP_CV_CONF.ID);
+        public static final UniqueKey<HrChatUnreadCountRecord> KEY_HR_CHAT_UNREAD_COUNT_PRIMARY = createUniqueKey(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT, "KEY_hr_chat_unread_count_PRIMARY", HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.ROOM_ID);
         public static final UniqueKey<HrChildCompanyRecord> KEY_HR_CHILD_COMPANY_PRIMARY = createUniqueKey(HrChildCompany.HR_CHILD_COMPANY, "KEY_hr_child_company_PRIMARY", HrChildCompany.HR_CHILD_COMPANY.ID);
         public static final UniqueKey<HrCompanyRecord> KEY_HR_COMPANY_PRIMARY = createUniqueKey(HrCompany.HR_COMPANY, "KEY_hr_company_PRIMARY", HrCompany.HR_COMPANY.ID);
         public static final UniqueKey<HrCompanyAccountRecord> KEY_HR_COMPANY_ACCOUNT_PRIMARY = createUniqueKey(HrCompanyAccount.HR_COMPANY_ACCOUNT, "KEY_hr_company_account_PRIMARY", HrCompanyAccount.HR_COMPANY_ACCOUNT.ACCOUNT_ID);

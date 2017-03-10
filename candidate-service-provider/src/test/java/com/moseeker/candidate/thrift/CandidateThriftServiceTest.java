@@ -38,8 +38,8 @@ public class CandidateThriftServiceTest {
         candidateService.glancePosition(2, 1, 1);
     }
     
-    @Test
-    public void changeInterestingTest() throws TException {
-    		candidateService.changeInteresting(391470, 61106, (byte)1);
-    }
+//    @Test
+//    public void changeInterestingTest() throws TException {
+//    		candidateService.changeInteresting(391470, 61106, (byte)0);
+//    }
 } 

@@ -3,9 +3,9 @@
 <!-- Configure the database connection here -->
 <jdbc>
 <driver>com.mysql.jdbc.Driver</driver>
-<url>jdbc:mysql://db-d.dqprism.com/hrdb</url>
-<user>daqi</user>
-<password>5F51692091B4031640E18E7C27430E071BC878C8</password>
+<url>jdbc:mysql://192.168.31.66:3306/hrdb</url>
+<user>www</user>
+<password>moseeker.com</password>
 </jdbc>
 <generator>
 <!-- The default code generator. You can override this one, to generate your own code style.
