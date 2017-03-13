@@ -100,3 +100,17 @@ struct HistoryOperate{
 	3: optional i32 operate_tpl_id,
 	4: optional i32 recruit_order
 }
+struct HrTeamStruct{
+	1: optional i32 id,
+	2: optional string name,
+	3: optional i32 disable,
+	4: optional i32 is_show,
+	5: optional i32 show_order,
+	6: optional i32 company_id,
+	7: optional i32 res_id,
+	8: optional string summary,
+	9: optional string description,
+	10: optional string slogan,
+	11: optional string create_time,
+	12: optional string update_time
+}

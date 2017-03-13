@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.ValueFilter;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AccountSync;
@@ -47,6 +48,8 @@ import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.CompanyDao;
+import com.moseeker.thrift.gen.dao.service.HrDBDao;
+import com.moseeker.thrift.gen.dao.struct.HrTeamStruct;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.position.struct.Position;
@@ -83,6 +86,8 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 			.getService(com.moseeker.thrift.gen.dao.service.PositionDao.Iface.class);
 
 	CompanyDao.Iface CompanyDao = ServiceManager.SERVICEMANAGER.getService(CompanyDao.Iface.class);
+	//获取hrdb库中的内容
+	HrDBDao.Iface hrDBDao=ServiceManager.SERVICEMANAGER.getService(HrDBDao.Iface.class);
 
 	@Override
 	protected void initDao() {
@@ -162,11 +167,23 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 			// NullPoint check
 			JobPositionRecord jobPositionRecord = jobPositionDao.getPositionById(positionId);
 			if (jobPositionRecord == null) {
-				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+ 				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 			}
 
 			JobPositionPojo jobPositionPojo = jobPositionDao.getPosition(positionId);
-
+			int team_id=jobPositionPojo.team_id;
+			CommonQuery query=new CommonQuery();
+			Map<String,String> map=new HashMap<String,String>();
+			map.put("id", team_id+"");
+			map.put("disable", "0");
+			query.setEqualFilter(map);
+			Response result=hrDBDao.getHrTeam(query);
+			if(result.getStatus()==0&&!StringUtils.isNullOrEmpty(result.getData())){
+				HrTeamStruct team=JSONObject.toJavaObject(JSONObject.parseObject(result.getData()), HrTeamStruct.class);
+				jobPositionPojo.department=team.getName();
+				jobPositionPojo.team_name=team.getName();
+			}
+			
 			/** 子公司Id设置 **/
 			if (jobPositionPojo.publisher != 0) {
 				HrCompanyAccountRecord hrCompanyAccountRecord = jobPositionDao
