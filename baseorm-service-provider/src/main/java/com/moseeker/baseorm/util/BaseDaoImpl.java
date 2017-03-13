@@ -65,17 +65,17 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 			if(query != null) {
 				//解析查询条件
 				if(query.getAttributes() != null && query.getAttributes().size() > 0) {
-					Field[] fieldArray = new Field[query.getAttributes().size()];
-					int count = 0;
+
+					List<Field> fieldList = new ArrayList<>();
 					for(String attribute : query.getAttributes()) {
 						Field field = tableLike.field(attribute);
 						if(field != null) {
-							fieldArray[count] = field;
-							count ++;
+							fieldList.add(field);
 						}
 					}
-					if(count > 0) {
-						table = create.select(fieldArray).from(tableLike);
+					if(fieldList.size() > 0) {
+						Field[] fieldArray = new Field[fieldList.size()];
+						table = create.select(fieldList.toArray(fieldArray)).from(tableLike);
 					}
 				}
 
@@ -211,6 +211,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 			}
 			totalCount = create.fetchCount(selectQuery);
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.error("error", e);
 			throw new Exception(e);
 		} finally {

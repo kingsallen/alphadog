@@ -29,6 +29,9 @@ public class ChatService {
     private ChatDao chaoDao = new ChatDao();
     private ThreadPool pool = ThreadPool.Instance;
 
+    private static String AUTO_CONTENT_WITH_HR_NOTEXIST = "我是{companyName}HR，我可以推荐您或者您的朋友加入我们！";
+    private static String AUTO_CONTENT_WITH_HR_EXIST = "我是{hrName}，{companyName}HR，我可以推荐您或者您的朋友加入我们！";
+
     /**
      * HR查找聊天室列表
      * //todo hr_chat_unread_count的初始化脚本和定时更新脚本
@@ -55,16 +58,18 @@ public class ChatService {
                 Future usersFuture = pool.startTast(() -> chaoDao.listUsers(userIdArray));
 
                 /** 封装聊天室返回值 */
+                List<HRChatRoomVO> roomVOList = new ArrayList<>();
                 chatUnreadCountDOlist.forEach(chatUnreadCountDO -> {
                     HRChatRoomVO hrChatRoomVO = new HRChatRoomVO();
                     hrChatRoomVO.setId(chatUnreadCountDO.getRoomId());
                     hrChatRoomVO.setUserId(chatUnreadCountDO.getUserId());
-                    hrChatRoomVO.setUnReadNum(chatUnreadCountDO.getHrUnreadCount());
+                    hrChatRoomVO.setUnReadNum(chatUnreadCountDO.getUserUnreadCount());
 
                     List<HrWxHrChatListDO> chatRoomList = null;
                     List<UserUserDO> userList = null;
                     try {
                         chatRoomList = (List<HrWxHrChatListDO>) chatRoomsFuture.get();
+
                     } catch (InterruptedException | ExecutionException e) {
                         logger.error(e.getMessage(), e);
                     }
@@ -78,6 +83,7 @@ public class ChatService {
                             hrChatRoomVO.setStatus(status);
                         }
                     }
+                    /** 匹配用户名称和头像 */
                     try {
                         userList = (List<UserUserDO>) usersFuture.get();
                     } catch (InterruptedException | ExecutionException e) {
@@ -94,7 +100,9 @@ public class ChatService {
                             hrChatRoomVO.setName(name);
                         }
                     }
+                    roomVOList.add(hrChatRoomVO);
                 });
+                rooms.setRooms(roomVOList);
             }
         }
 
@@ -132,6 +140,7 @@ public class ChatService {
                 Future hrsFuture = pool.startTast(() -> chaoDao.listHr(hrIdArray));
                 Future companyFuture = pool.startTast(() -> chaoDao.listCompany(hrIdArray));
 
+                List<UserChatRoomVO> userChatRoomVOList = new ArrayList<>();
                 chatUnreadCountDOlist.forEach(hrChatUnreadCountDO -> {
                     UserChatRoomVO userChatRoomVO = new UserChatRoomVO();
                     userChatRoomVO.setId(hrChatUnreadCountDO.getRoomId());
@@ -187,8 +196,9 @@ public class ChatService {
                     } catch (InterruptedException | ExecutionException e) {
                         logger.error(e.getMessage(), e);
                     }
-
+                    userChatRoomVOList.add(userChatRoomVO);
                 });
+                userChatRoomsVO.setRooms(userChatRoomVOList);
             }
         }
 
@@ -260,13 +270,169 @@ public class ChatService {
     }
 
     /**
-     * 创建聊天室
+     * 进入聊天室
+     * 如果不存在聊天室，则创建聊天室。
+     * 创建聊天室时，需要默认添加一条聊天内容，规则如下：
+     *  1.如果HR的名称不存在，则存储 "我是{companyName}HR，我可以推荐您或者您的朋友加入我们！"
+     *  2.如果HR的名称存在，则存储 "我是{hrName}，{companyName}HR，我可以推荐您或者您的朋友加入我们！"
+     * @param userId 用户编号
+     * @param hrId HR编号
+     * @param positionId 职位编号
+     * @param roomId 聊天室编号
+     * @return ResultOfSaveRoomVO
+     */
+    public ResultOfSaveRoomVO enterChatRoom(int userId, int hrId, int positionId, int roomId) {
+
+        final ResultOfSaveRoomVO resultOfSaveRoomVO;
+
+        HrWxHrChatListDO chatRoom = chaoDao.getChatRoom(roomId, userId, hrId);
+        boolean chatDebut = false;
+        if(chatRoom == null) {
+            String createTime = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
+            chatRoom.setCreateTime(createTime);
+            chatRoom.setHraccountId(hrId);
+            chatRoom.setSysuserId(userId);
+            chatRoom.setStatus(false);
+            chatRoom = chaoDao.saveChatRoom(chatRoom);
+            chatDebut = true;
+        }
+        if(chatRoom != null) {
+            resultOfSaveRoomVO = searchResult(chatRoom);
+            pool.startTast(() -> createChat(resultOfSaveRoomVO));
+            resultOfSaveRoomVO.setChatDebut(chatDebut);
+        } else {
+            resultOfSaveRoomVO = new ResultOfSaveRoomVO();
+        }
+
+        return resultOfSaveRoomVO;
+    }
+
+    /**
+     * 查找返回值
+     * @param chatRoom 聊天室
+     * @return
+     */
+    private ResultOfSaveRoomVO searchResult(HrWxHrChatListDO chatRoom) {
+        ResultOfSaveRoomVO resultOfSaveRoomVO = new ResultOfSaveRoomVO();
+        resultOfSaveRoomVO.setRoomId(chatRoom.getId());
+
+        /** 并行查询职位信息、hr信息、公司信息以及用户信息 */
+        final int roomId = chatRoom.getId();
+        Future positionFuture = pool.startTast(() -> chaoDao.getPosition(roomId));
+        Future hrFuture = pool.startTast(() -> chaoDao.getHr(chatRoom.getHraccountId()));
+        Future userFuture = pool.startTast(() -> chaoDao.getUser(chatRoom.getSysuserId()));
+
+        /** 设置职位信息 */
+        try {
+            JobPositionDO positionDO = (JobPositionDO) positionFuture.get();
+
+            if(positionDO != null) {
+
+                PositionVO positionVO = new PositionVO();
+                positionVO.setPositionId(positionDO.getId());
+                positionVO.setPositionTitle(positionDO.getTitle());
+                positionVO.setSalaryBottom(positionDO.getSalaryBottom());
+                positionVO.setSalaryTop(positionDO.getSalaryTop());
+                positionVO.setUpdateTime(positionDO.getUpdateTime());
+
+                if(positionDO.getCompanyId() > 0) {
+                    HrCompanyDO companyDO = chaoDao.getCompany(positionDO.getCompanyId());
+                    String companyName;
+                    if(StringUtils.isNullOrEmpty(companyDO.getAbbreviation())) {
+                        companyName = companyDO.getAbbreviation();
+                    } else {
+                        companyName = companyDO.getName();
+                    }
+                    positionVO.setCompanyName(companyName);
+                }
+                resultOfSaveRoomVO.setPosition(positionVO);
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        /** 设置用户信息 */
+        try {
+            UserUserDO userUserDO = (UserUserDO) userFuture.get();
+            if(userUserDO != null) {
+                UserVO userVO = new UserVO();
+                userVO.setUserId(userUserDO.getId());
+                userVO.setUserHeadImg(userUserDO.getHeadimg());
+                userVO.setUserId(chatRoom.getSysuserId());
+                String name;
+                if(StringUtils.isNotNullOrEmpty(userUserDO.getName())) {
+                    name = userUserDO.getName();
+                } else {
+                    name = userUserDO.getNickname();
+                }
+                userVO.setUserName(name);
+                resultOfSaveRoomVO.setUser(userVO);
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        /** 设置HR信息 */
+        try {
+            UserHrAccountDO hrAccountDO = (UserHrAccountDO) hrFuture.get();
+            if(hrAccountDO != null) {
+                HrVO hrVO = new HrVO();
+                hrVO.setHrId(hrAccountDO.getId());
+                hrVO.setHrName(hrAccountDO.getUsername());
+                hrVO.setHrHeadImg(hrAccountDO.getHeadimgurl());
+                resultOfSaveRoomVO.setHr(hrVO);
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        return resultOfSaveRoomVO;
+    }
+
+    /**
+     * 创建聊天室时，初始化一条聊天记录
+     *
+     * @param resultOfSaveRoomVO 进入聊天室返回的结果
+     * @return 聊天记录
+     */
+    private HrWxHrChatDO createChat(ResultOfSaveRoomVO resultOfSaveRoomVO) {
+
+        //1.如果HR的名称不存在，则存储 "我是{companyName}HR，我可以推荐您或者您的朋友加入我们！"
+        //2.如果HR的名称存在，则存储 "我是{hrName}，{companyName}HR，我可以推荐您或者您的朋友加入我们！"
+        HrWxHrChatDO chatDO = new HrWxHrChatDO();
+        chatDO.setChatlistId(resultOfSaveRoomVO.getRoomId());
+        chatDO.setSpeaker(true);
+        String createTime = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
+        chatDO.setCreateTime(createTime);
+        String content;
+        if(resultOfSaveRoomVO.getHr() != null && resultOfSaveRoomVO.getPosition() != null) {
+            content = AUTO_CONTENT_WITH_HR_EXIST.replace("{hrName}", resultOfSaveRoomVO.getHr()
+                    .getHrName()).replace("{companyName}", resultOfSaveRoomVO.getPosition().getCompanyName());
+        } else {
+            content = AUTO_CONTENT_WITH_HR_NOTEXIST
+                    .replace("{companyName}", resultOfSaveRoomVO.getPosition().getCompanyName());
+        }
+        chatDO.setContent(content);
+        if(resultOfSaveRoomVO.getPosition() != null) {
+            chatDO.setPid(resultOfSaveRoomVO.getPosition().getPositionId());
+        }
+        chaoDao.saveChat(chatDO);
+        return chatDO;
+    }
+
+    /**
+     * 进入聊天室
+     * 如果不存在聊天室，则创建聊天室。
+     * 创建聊天室时，需要默认添加一条聊天内容，规则如下：
+     *  1.如果
      * @param userId 用户编号 user_user.id
      * @param hrId 员工编号 user_hr_account.id
      * @return 聊天室创建信息
      */
-    public ResultOfSaveRoomVO saveChatRoom(int userId, int hrId) {
+    /*public ResultOfSaveRoomVO saveChatRoom(int userId, int hrId) {
         ResultOfSaveRoomVO resultOfSaveRoomVO = new ResultOfSaveRoomVO();
+
+        *//** 设置聊天室信息，并保存到数据库中 *//*
         String createTime = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
         HrWxHrChatListDO chatRoom = new HrWxHrChatListDO();
         chatRoom.setCreateTime(createTime);
@@ -276,42 +442,71 @@ public class ChatService {
         chatRoom = chaoDao.saveChatRoom(chatRoom);
 
         if(chatRoom != null) {
-            resultOfSaveRoomVO.setId(chatRoom.getId());
-            Future companyFuture = pool.startTast(() -> chaoDao.getCompany(hrId));
+
+            resultOfSaveRoomVO.setRoomId(chatRoom.getId());
+
+            *//** 并行查询职位信息、hr信息、公司信息以及用户信息 *//*
             final int roomId = chatRoom.getId();
             Future positionFuture = pool.startTast(() -> chaoDao.getPosition(roomId));
             Future hrFuture = pool.startTast(() -> chaoDao.getHr(hrId));
+            Future userFuture = pool.startTast(() -> chaoDao.getUser(userId));
 
-            try {
-                HrCompanyDO companyDO = (HrCompanyDO) companyFuture.get();
-                if(companyDO != null) {
-                    String name = StringUtils.isNullOrEmpty(companyDO.getAbbreviation())
-                            ? companyDO.getAbbreviation() : companyDO.getName();
-                    resultOfSaveRoomVO.setCompanyName(name);
-                }
-            } catch (InterruptedException | ExecutionException e) {
-                logger.error(e.getMessage(), e);
-            }
-
+            *//** 设置职位信息 *//*
             try {
                 JobPositionDO positionDO = (JobPositionDO) positionFuture.get();
+
                 if(positionDO != null) {
-                    resultOfSaveRoomVO.setId(positionDO.getId());
-                    resultOfSaveRoomVO.setPositionTitle(positionDO.getTitle());
-                    resultOfSaveRoomVO.setCity(positionDO.getCity());
-                    resultOfSaveRoomVO.setSalaryTop(positionDO.getSalaryTop());
-                    resultOfSaveRoomVO.setSalaryBottom(positionDO.getSalaryBottom());
-                    resultOfSaveRoomVO.setPositionUpdateTime(positionDO.getUpdateTime());
+
+                    PositionVO positionVO = new PositionVO();
+                    positionVO.setPositionId(positionDO.getId());
+                    positionVO.setPositionTitle(positionDO.getTitle());
+                    positionVO.setSalaryBottom(positionDO.getSalaryBottom());
+                    positionVO.setSalaryTop(positionDO.getSalaryTop());
+                    positionVO.setUpdateTime(positionDO.getUpdateTime());
+
+                    if(positionDO.getCompanyId() > 0) {
+                        HrCompanyDO companyDO = chaoDao.getCompany(positionDO.getCompanyId());
+                        String companyName;
+                        if(StringUtils.isNullOrEmpty(companyDO.getAbbreviation())) {
+                            companyName = companyDO.getAbbreviation();
+                        } else {
+                            companyName = companyDO.getName();
+                        }
+                        positionVO.setCompanyName(companyName);
+                    }
                 }
             } catch (InterruptedException | ExecutionException e) {
                 logger.error(e.getMessage(), e);
             }
 
+            *//** 设置用户信息 *//*
+            try {
+                UserUserDO userUserDO = (UserUserDO) userFuture.get();
+                if(userUserDO != null) {
+                    UserVO userVO = new UserVO();
+                    userVO.setUserHeadImg(userUserDO.getHeadimg());
+                    userVO.setUserId(userId);
+                    String name;
+                    if(StringUtils.isNotNullOrEmpty(userUserDO.getName())) {
+                        name = userUserDO.getName();
+                    } else {
+                        name = userUserDO.getNickname();
+                    }
+                    userVO.setUserName(name);
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                logger.error(e.getMessage(), e);
+            }
+
+            *//** 设置HR信息 *//*
             try {
                 UserHrAccountDO hrAccountDO = (UserHrAccountDO) hrFuture.get();
                 if(hrAccountDO != null) {
-                    resultOfSaveRoomVO.setHrHeadImgUrl(hrAccountDO.getHeadimgurl());
-                    resultOfSaveRoomVO.setHrName(hrAccountDO.getUsername());
+                    HrVO hrVO = new HrVO();
+                    hrVO.setHrId(hrAccountDO.getId());
+                    hrVO.setHrName(hrAccountDO.getUsername());
+                    hrVO.setHrHeadImg(hrAccountDO.getHeadimgurl());
+                    resultOfSaveRoomVO.setHr(hrVO);
                 }
             } catch (InterruptedException | ExecutionException e) {
                 logger.error(e.getMessage(), e);
@@ -322,7 +517,7 @@ public class ChatService {
             //todo 添加出错异常
         }
         return resultOfSaveRoomVO;
-    }
+    }*/
 
     /**
      * 获取聊天内容
@@ -332,6 +527,24 @@ public class ChatService {
      */
     public ChatVO getChat(int roomId, byte speaker) {
         ChatVO chatVO = new ChatVO();
+
         return chatVO;
+    }
+
+    /**
+     * 退出聊天室
+     * @param roomId 聊天室编号
+     * @param speaker 退出聊天室用户的类型 0表示用户，1表示HR
+     */
+    public void leaveChatRoom(int roomId, byte speaker) {
+        HrWxHrChatListDO chatRoom = new HrWxHrChatListDO();
+        chatRoom.setId(roomId);
+        String time = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
+        if(speaker == 0) {
+            chatRoom.setWxChatTime(time);
+        } else {
+            chatRoom.setHrChatTime(time);
+        }
+        chaoDao.updateChatRoom(chatRoom);
     }
 }

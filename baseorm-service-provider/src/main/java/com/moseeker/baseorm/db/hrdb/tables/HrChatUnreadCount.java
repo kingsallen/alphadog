@@ -34,95 +34,97 @@ import org.jooq.types.UInteger;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrChatUnreadCount extends TableImpl<HrChatUnreadCountRecord> {
+	
+	private static final long serialVersionUID = 1972437383;
 
-    private static final long serialVersionUID = 549956124;
+	/**
+	 * The reference instance of <code>hrdb.hr_chat_unread_count</code>
+	 */
+	public static final HrChatUnreadCount HR_CHAT_UNREAD_COUNT = new HrChatUnreadCount();
 
-    /**
-     * The reference instance of <code>hrdb.hr_chat_unread_count</code>
-     */
-    public static final HrChatUnreadCount HR_CHAT_UNREAD_COUNT = new HrChatUnreadCount();
+	/**
+	 * The class holding records for this type
+	 */
+	@Override
+	public Class<HrChatUnreadCountRecord> getRecordType() {
+		return HrChatUnreadCountRecord.class;
+	}
 
-    /**
-     * The class holding records for this type
-     */
-    @Override
-    public Class<HrChatUnreadCountRecord> getRecordType() {
-        return HrChatUnreadCountRecord.class;
-    }
+	/**
+	 * The column <code>hrdb.hr_chat_unread_count.room_id</code>. 聊天室编号
+	 */
+	public final TableField<HrChatUnreadCountRecord, UInteger> ROOM_ID = createField("room_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "聊天室编号");
 
-    /**
-     * The column <code>hrdb.hr_chat_unread_count.room_id</code>. 聊天室编号
-     */
-    public final TableField<HrChatUnreadCountRecord, UInteger> ROOM_ID = createField("room_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "聊天室编号");
+	/**
+	 * The column <code>hrdb.hr_chat_unread_count.hr_id</code>. HR编号 userdb.user_hr_account
+	 */
+	public final TableField<HrChatUnreadCountRecord, Integer> HR_ID = createField("hr_id", org.jooq.impl.SQLDataType.INTEGER, this, "HR编号 userdb.user_hr_account");
 
-    /**
-     * The column <code>hrdb.hr_chat_unread_count.hr_unread_count</code>. hr未读消息数量
-     */
-    public final TableField<HrChatUnreadCountRecord, Integer> HR_UNREAD_COUNT = createField("hr_unread_count", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "hr未读消息数量");
+	/**
+	 * The column <code>hrdb.hr_chat_unread_count.user_id</code>. 用户编号 userdb.user_user.id
+	 */
+	public final TableField<HrChatUnreadCountRecord, UInteger> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED, this, "用户编号 userdb.user_user.id");
 
-    /**
-     * The column <code>hrdb.hr_chat_unread_count.user_unread_count</code>. 员工未读消息数量
-     */
-    public final TableField<HrChatUnreadCountRecord, Integer> USER_UNREAD_COUNT = createField("user_unread_count", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "员工未读消息数量");
+	/**
+	 * The column <code>hrdb.hr_chat_unread_count.hr_unread_count</code>. hr未读消息数量
+	 */
+	public final TableField<HrChatUnreadCountRecord, Integer> HR_UNREAD_COUNT = createField("hr_unread_count", org.jooq.impl.SQLDataType.INTEGER.defaulted(true), this, "hr未读消息数量");
 
-    /**
-     * Create a <code>hrdb.hr_chat_unread_count</code> table reference
-     */
-    public HrChatUnreadCount() {
-        this("hr_chat_unread_count", null);
-    }
+	/**
+	 * The column <code>hrdb.hr_chat_unread_count.user_unread_count</code>. 员工未读消息数量
+	 */
+	public final TableField<HrChatUnreadCountRecord, Integer> USER_UNREAD_COUNT = createField("user_unread_count", org.jooq.impl.SQLDataType.INTEGER.defaulted(true), this, "员工未读消息数量");
 
-    /**
-     * Create an aliased <code>hrdb.hr_chat_unread_count</code> table reference
-     */
-    public HrChatUnreadCount(String alias) {
-        this(alias, HR_CHAT_UNREAD_COUNT);
-    }
+	/**
+	 * Create a <code>hrdb.hr_chat_unread_count</code> table reference
+	 */
+	public HrChatUnreadCount() {
+		this("hr_chat_unread_count", null);
+	}
 
-    private HrChatUnreadCount(String alias, Table<HrChatUnreadCountRecord> aliased) {
-        this(alias, aliased, null);
-    }
+	/**
+	 * Create an aliased <code>hrdb.hr_chat_unread_count</code> table reference
+	 */
+	public HrChatUnreadCount(String alias) {
+		this(alias, HR_CHAT_UNREAD_COUNT);
+	}
 
-    private HrChatUnreadCount(String alias, Table<HrChatUnreadCountRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, "聊天室未读消息");
-    }
+	private HrChatUnreadCount(String alias, Table<HrChatUnreadCountRecord> aliased) {
+		this(alias, aliased, null);
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Schema getSchema() {
-        return Hrdb.HRDB;
-    }
+	private HrChatUnreadCount(String alias, Table<HrChatUnreadCountRecord> aliased, Field<?>[] parameters) {
+		super(alias, Hrdb.HRDB, aliased, parameters, "聊天室未读消息");
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public UniqueKey<HrChatUnreadCountRecord> getPrimaryKey() {
-        return Keys.KEY_HR_CHAT_UNREAD_COUNT_PRIMARY;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public UniqueKey<HrChatUnreadCountRecord> getPrimaryKey() {
+		return Keys.KEY_HR_CHAT_UNREAD_COUNT_PRIMARY;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<UniqueKey<HrChatUnreadCountRecord>> getKeys() {
-        return Arrays.<UniqueKey<HrChatUnreadCountRecord>>asList(Keys.KEY_HR_CHAT_UNREAD_COUNT_PRIMARY);
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<UniqueKey<HrChatUnreadCountRecord>> getKeys() {
+		return Arrays.<UniqueKey<HrChatUnreadCountRecord>>asList(Keys.KEY_HR_CHAT_UNREAD_COUNT_PRIMARY);
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public HrChatUnreadCount as(String alias) {
-        return new HrChatUnreadCount(alias, this);
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public HrChatUnreadCount as(String alias) {
+		return new HrChatUnreadCount(alias, this);
+	}
 
-    /**
-     * Rename this table
-     */
-    public HrChatUnreadCount rename(String name) {
-        return new HrChatUnreadCount(name, null);
-    }
+	/**
+	 * Rename this table
+	 */
+	public HrChatUnreadCount rename(String name) {
+		return new HrChatUnreadCount(name, null);
+	}
 }

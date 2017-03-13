@@ -3,6 +3,7 @@ namespace py thrift_gen.gen.dao.service.hrdb
 
 include "../../common/struct/common_struct.thrift"
 include "../struct/hrdb_struct.thrift"
+include "../struct/dao_struct.thrift"
 include "../../application/struct/application_struct.thrift"
 
 service HrDBDao {

@@ -11,6 +11,10 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public class ChatRoomDao extends StructDaoImpl<HrWxHrChatListDO, HrWxHrChatListRecord, HrWxHrChatList> {
+    @Override
+    protected void initJOOQEntity() {
+        this.tableLike = HrWxHrChatList.HR_WX_HR_CHAT_LIST;
+    }
 
     /*public List<UnReadSortRoomListDO> listUnReadSortRoom(int id, byte speaker, int pageNo, int pageSize) {
         List<UnReadSortRoomListDO> unReadSortRoomListDOList = new ArrayList<>();

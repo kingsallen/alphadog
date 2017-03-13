@@ -12,4 +12,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class ChatDao extends StructDaoImpl<HrWxHrChatDO, HrWxHrChatRecord, HrWxHrChat>{
 
+    @Override
+    protected void initJOOQEntity() {
+        this.tableLike = HrWxHrChat.HR_WX_HR_CHAT;
+    }
 }

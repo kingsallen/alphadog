@@ -16,11 +16,7 @@ import java.util.List;
 /**
  * Created by jack on 15/02/2017.
  */
-public class StructDaoImpl<S extends  TBase, R extends UpdatableRecordImpl<R>, T extends TableImpl<R>> extends BaseDaoImpl<R, T> {
-    @Override
-    protected void initJOOQEntity() {
-
-    }
+public abstract class StructDaoImpl<S extends  TBase, R extends UpdatableRecordImpl<R>, T extends TableImpl<R>> extends BaseDaoImpl<R, T> {
 
     private Class<S> sClass;
     private Class<R> rClass;

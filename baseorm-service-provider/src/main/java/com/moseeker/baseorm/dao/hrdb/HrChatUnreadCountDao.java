@@ -12,4 +12,8 @@ import com.moseeker.thrift.gen.dao.struct.HrChatUnreadCountDO;
  */
 @Repository
 public class HrChatUnreadCountDao extends StructDaoImpl<HrChatUnreadCountDO, HrChatUnreadCountRecord, HrChatUnreadCount> {
+    @Override
+    protected void initJOOQEntity() {
+        this.tableLike = HrChatUnreadCount.HR_CHAT_UNREAD_COUNT;
+    }
 }

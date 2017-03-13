@@ -33,4 +33,15 @@ public class UserHRAccountDao extends StructDaoImpl<UserHrAccountDO, UserHrAccou
 		qu.addEqualFilter("company_id", String.valueOf(comanyId));
 		return this.listResources(qu);
 	}
+
+    public int deleteUserHrAccount(int id) {
+		UserHrAccountRecord record = new UserHrAccountRecord();
+		record.setId(id);
+		try {
+			return this.delResource(record);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			return 0;
+		}
+	}
 }
