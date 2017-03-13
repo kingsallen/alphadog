@@ -37,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
 
-    private static final long serialVersionUID = 1144773915;
+    private static final long serialVersionUID = 1983875133;
 
     /**
      * The reference instance of <code>hrdb.hr_third_party_account</code>
@@ -78,9 +78,9 @@ public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
     public final TableField<HrThirdPartyAccountRecord, String> MEMBERNAME = createField("membername", org.jooq.impl.SQLDataType.VARCHAR.length(60).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "会员名称");
 
     /**
-     * The column <code>hrdb.hr_third_party_account.binding</code>. 0=未绑定,1=绑定
+     * The column <code>hrdb.hr_third_party_account.binding</code>. 0=未绑定,1=绑定,2=绑定中，3=绑定失败
      */
-    public final TableField<HrThirdPartyAccountRecord, Short> BINDING = createField("binding", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "0=未绑定,1=绑定");
+    public final TableField<HrThirdPartyAccountRecord, Short> BINDING = createField("binding", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "0=未绑定,1=绑定,2=绑定中，3=绑定失败");
 
     /**
      * The column <code>hrdb.hr_third_party_account.company_id</code>. hrdb.hr_company.id

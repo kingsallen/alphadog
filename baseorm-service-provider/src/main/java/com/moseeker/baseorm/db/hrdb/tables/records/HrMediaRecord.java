@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrMediaRecord extends UpdatableRecordImpl<HrMediaRecord> implements Record7<Integer, String, String, String, String, String, Integer> {
 
-    private static final long serialVersionUID = -478456060;
+    private static final long serialVersionUID = -758714790;
 
     /**
      * Setter for <code>hrdb.hr_media.id</code>.
@@ -59,14 +59,14 @@ public class HrMediaRecord extends UpdatableRecordImpl<HrMediaRecord> implements
     }
 
     /**
-     * Setter for <code>hrdb.hr_media.attrs</code>. 客户属性，可选 字段
+     * Setter for <code>hrdb.hr_media.attrs</code>. 客户属性，可选字段
      */
     public void setAttrs(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_media.attrs</code>. 客户属性，可选 字段
+     * Getter for <code>hrdb.hr_media.attrs</code>. 客户属性，可选字段
      */
     public String getAttrs() {
         return (String) get(2);

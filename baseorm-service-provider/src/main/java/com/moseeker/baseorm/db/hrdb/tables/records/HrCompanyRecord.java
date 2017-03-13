@@ -32,7 +32,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyRecord extends UpdatableRecordImpl<HrCompanyRecord> implements Record20<UInteger, UByte, String, String, UByte, String, UByte, String, String, String, String, String, String, UInteger, Integer, Byte, Timestamp, Timestamp, UByte, String> {
 
-    private static final long serialVersionUID = -1793478892;
+    private static final long serialVersionUID = 1498452664;
 
     /**
      * Setter for <code>hrdb.hr_company.id</code>.
@@ -119,14 +119,14 @@ public class HrCompanyRecord extends UpdatableRecordImpl<HrCompanyRecord> implem
     }
 
     /**
-     * Setter for <code>hrdb.hr_company.property</code>. 公司性质 0:未填写 1:外商独资 3:国企 4:合资 5:民营公司 6:事业单位 7:上市公司 8:政府机关/非盈利机构 10:代表处 11:股份制企业 12:创业公司 13:其它
+     * Setter for <code>hrdb.hr_company.property</code>. 公司性质 0:没选择 1:国有 2:三资 3:集体 4:私有
      */
     public void setProperty(UByte value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_company.property</code>. 公司性质 0:未填写 1:外商独资 3:国企 4:合资 5:民营公司 6:事业单位 7:上市公司 8:政府机关/非盈利机构 10:代表处 11:股份制企业 12:创业公司 13:其它
+     * Getter for <code>hrdb.hr_company.property</code>. 公司性质 0:没选择 1:国有 2:三资 3:集体 4:私有
      */
     public UByte getProperty() {
         return (UByte) get(6);
@@ -245,14 +245,14 @@ public class HrCompanyRecord extends UpdatableRecordImpl<HrCompanyRecord> implem
     }
 
     /**
-     * Setter for <code>hrdb.hr_company.disable</code>. 0:无效 1:有效, 删除子公司使用， 母公司目前没有禁用功能
+     * Setter for <code>hrdb.hr_company.disable</code>. 0:无效 1:有效
      */
     public void setDisable(Byte value) {
         set(15, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_company.disable</code>. 0:无效 1:有效, 删除子公司使用， 母公司目前没有禁用功能
+     * Getter for <code>hrdb.hr_company.disable</code>. 0:无效 1:有效
      */
     public Byte getDisable() {
         return (Byte) get(15);
@@ -287,14 +287,14 @@ public class HrCompanyRecord extends UpdatableRecordImpl<HrCompanyRecord> implem
     }
 
     /**
-     * Setter for <code>hrdb.hr_company.source</code>. 添加来源 0:hr系统, 1:官网下载行业报告, 6:无线官网添加, 7:PC端 添加, 8:微信端添加, 9:PC导入, 10:微信端导入
+     * Setter for <code>hrdb.hr_company.source</code>. 添加来源 {"0":"hr系统", "8":"微信端添加" "9":"profile添加"}
      */
     public void setSource(UByte value) {
         set(18, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_company.source</code>. 添加来源 0:hr系统, 1:官网下载行业报告, 6:无线官网添加, 7:PC端 添加, 8:微信端添加, 9:PC导入, 10:微信端导入
+     * Getter for <code>hrdb.hr_company.source</code>. 添加来源 {"0":"hr系统", "8":"微信端添加" "9":"profile添加"}
      */
     public UByte getSource() {
         return (UByte) get(18);

@@ -37,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrHbItems extends TableImpl<HrHbItemsRecord> {
 
-    private static final long serialVersionUID = -842345290;
+    private static final long serialVersionUID = 1919898875;
 
     /**
      * The reference instance of <code>hrdb.hr_hb_items</code>
@@ -68,9 +68,9 @@ public class HrHbItems extends TableImpl<HrHbItemsRecord> {
     public final TableField<HrHbItemsRecord, Integer> BINDING_ID = createField("binding_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "position_hb_binding.id");
 
     /**
-     * The column <code>hrdb.hr_hb_items.index</code>. 这条数据是第几个红包 0 < x <= 总红包数, 如果是 NULL 表示这是一个空红包
+     * The column <code>hrdb.hr_hb_items.index</code>. 这条数据是第几个红包 0 < x <= 总红包数
      */
-    public final TableField<HrHbItemsRecord, Integer> INDEX = createField("index", org.jooq.impl.SQLDataType.INTEGER, this, "这条数据是第几个红包 0 < x <= 总红包数, 如果是 NULL 表示这是一个空红包");
+    public final TableField<HrHbItemsRecord, Integer> INDEX = createField("index", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "这条数据是第几个红包 0 < x <= 总红包数");
 
     /**
      * The column <code>hrdb.hr_hb_items.amount</code>. 红包金额
@@ -78,9 +78,9 @@ public class HrHbItems extends TableImpl<HrHbItemsRecord> {
     public final TableField<HrHbItemsRecord, BigDecimal> AMOUNT = createField("amount", org.jooq.impl.SQLDataType.DECIMAL.precision(11, 2).nullable(false).defaultValue(org.jooq.impl.DSL.field("0.00", org.jooq.impl.SQLDataType.DECIMAL)), this, "红包金额");
 
     /**
-     * The column <code>hrdb.hr_hb_items.status</code>. 0:初始状态,1:发送了消息模成功,2:发送消息模板失败,尝试直接发送有金额的红包,3:打开刮刮卡,点击红包数字前,4:点击刮刮卡上红包数字后,5:发送红包前,校验 current_user.qxuser 不通过,红包停发,6:发送红包前,校验刮刮卡中的 hb_item 不通过,红包停发,7:跳过模版消息直接发送红包失败,100: 发送消息模板后成功发送了红包,101: 跳过发送消息模板后成功发送了红包,-1: 发送了 0 元红包的消息模板
+     * The column <code>hrdb.hr_hb_items.status</code>. 0:还未送出，1:已经送出
      */
-    public final TableField<HrHbItemsRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:初始状态,1:发送了消息模成功,2:发送消息模板失败,尝试直接发送有金额的红包,3:打开刮刮卡,点击红包数字前,4:点击刮刮卡上红包数字后,5:发送红包前,校验 current_user.qxuser 不通过,红包停发,6:发送红包前,校验刮刮卡中的 hb_item 不通过,红包停发,7:跳过模版消息直接发送红包失败,100: 发送消息模板后成功发送了红包,101: 跳过发送消息模板后成功发送了红包,-1: 发送了 0 元红包的消息模板");
+    public final TableField<HrHbItemsRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0:还未送出，1:已经送出");
 
     /**
      * The column <code>hrdb.hr_hb_items.wxuser_id</code>. 获取红包的用户
@@ -158,7 +158,7 @@ public class HrHbItems extends TableImpl<HrHbItemsRecord> {
      */
     @Override
     public List<UniqueKey<HrHbItemsRecord>> getKeys() {
-        return Arrays.<UniqueKey<HrHbItemsRecord>>asList(Keys.KEY_HR_HB_ITEMS_PRIMARY, Keys.KEY_HR_HB_ITEMS_HB_CONFIG_BINDING_INDEX);
+        return Arrays.<UniqueKey<HrHbItemsRecord>>asList(Keys.KEY_HR_HB_ITEMS_PRIMARY);
     }
 
     /**

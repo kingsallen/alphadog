@@ -188,7 +188,6 @@ public class Keys {
     public static final UniqueKey<HrFeedbackRecord> KEY_HR_FEEDBACK_PRIMARY = UniqueKeys0.KEY_HR_FEEDBACK_PRIMARY;
     public static final UniqueKey<HrHbConfigRecord> KEY_HR_HB_CONFIG_PRIMARY = UniqueKeys0.KEY_HR_HB_CONFIG_PRIMARY;
     public static final UniqueKey<HrHbItemsRecord> KEY_HR_HB_ITEMS_PRIMARY = UniqueKeys0.KEY_HR_HB_ITEMS_PRIMARY;
-    public static final UniqueKey<HrHbItemsRecord> KEY_HR_HB_ITEMS_HB_CONFIG_BINDING_INDEX = UniqueKeys0.KEY_HR_HB_ITEMS_HB_CONFIG_BINDING_INDEX;
     public static final UniqueKey<HrHbPositionBindingRecord> KEY_HR_HB_POSITION_BINDING_PRIMARY = UniqueKeys0.KEY_HR_HB_POSITION_BINDING_PRIMARY;
     public static final UniqueKey<HrHbScratchCardRecord> KEY_HR_HB_SCRATCH_CARD_PRIMARY = UniqueKeys0.KEY_HR_HB_SCRATCH_CARD_PRIMARY;
     public static final UniqueKey<HrHbSendRecordRecord> KEY_HR_HB_SEND_RECORD_PRIMARY = UniqueKeys0.KEY_HR_HB_SEND_RECORD_PRIMARY;
@@ -296,7 +295,6 @@ public class Keys {
         public static final UniqueKey<HrFeedbackRecord> KEY_HR_FEEDBACK_PRIMARY = createUniqueKey(HrFeedback.HR_FEEDBACK, "KEY_hr_feedback_PRIMARY", HrFeedback.HR_FEEDBACK.ID);
         public static final UniqueKey<HrHbConfigRecord> KEY_HR_HB_CONFIG_PRIMARY = createUniqueKey(HrHbConfig.HR_HB_CONFIG, "KEY_hr_hb_config_PRIMARY", HrHbConfig.HR_HB_CONFIG.ID);
         public static final UniqueKey<HrHbItemsRecord> KEY_HR_HB_ITEMS_PRIMARY = createUniqueKey(HrHbItems.HR_HB_ITEMS, "KEY_hr_hb_items_PRIMARY", HrHbItems.HR_HB_ITEMS.ID);
-        public static final UniqueKey<HrHbItemsRecord> KEY_HR_HB_ITEMS_HB_CONFIG_BINDING_INDEX = createUniqueKey(HrHbItems.HR_HB_ITEMS, "KEY_hr_hb_items_hb_config_binding_index", HrHbItems.HR_HB_ITEMS.HB_CONFIG_ID, HrHbItems.HR_HB_ITEMS.INDEX, HrHbItems.HR_HB_ITEMS.BINDING_ID);
         public static final UniqueKey<HrHbPositionBindingRecord> KEY_HR_HB_POSITION_BINDING_PRIMARY = createUniqueKey(HrHbPositionBinding.HR_HB_POSITION_BINDING, "KEY_hr_hb_position_binding_PRIMARY", HrHbPositionBinding.HR_HB_POSITION_BINDING.ID);
         public static final UniqueKey<HrHbScratchCardRecord> KEY_HR_HB_SCRATCH_CARD_PRIMARY = createUniqueKey(HrHbScratchCard.HR_HB_SCRATCH_CARD, "KEY_hr_hb_scratch_card_PRIMARY", HrHbScratchCard.HR_HB_SCRATCH_CARD.ID);
         public static final UniqueKey<HrHbSendRecordRecord> KEY_HR_HB_SEND_RECORD_PRIMARY = createUniqueKey(HrHbSendRecord.HR_HB_SEND_RECORD, "KEY_hr_hb_send_record_PRIMARY", HrHbSendRecord.HR_HB_SEND_RECORD.ID);

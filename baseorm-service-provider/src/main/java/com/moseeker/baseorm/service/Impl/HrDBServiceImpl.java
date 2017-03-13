@@ -113,7 +113,6 @@ public class HrDBServiceImpl implements HrDBService{
 				 result.put("update_time", rs.getUpdateTime());
 				 result.put("hr_chat", rs.getHrChat());
 				 result.put("show_qx_qrcode", rs.getShowQxQrcode());
-				 result.put("show_new_jd", rs.getShowNewJd());
 				 return ResponseUtils.success(result);
 			}
 		} catch (Exception e) {

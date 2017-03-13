@@ -6,6 +6,8 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
+import javax.xml.bind.DatatypeConverterInterface;
+import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 
 import org.apache.commons.codec.binary.Hex;
 import org.slf4j.Logger;
@@ -74,6 +76,7 @@ public class DESCoder {
 			Key k = toKey(SECRETKEY.getBytes());
 			Cipher cipher = Cipher.getInstance(ALGORITHM);
 			cipher.init(cipher.DECRYPT_MODE, k);
+			
 			return new String(cipher.doFinal(Hex.decodeHex(data.toCharArray())));
 		} catch (Exception e) {
 			log.error("DES decrypt fail", e);

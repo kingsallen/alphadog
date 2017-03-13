@@ -1,16 +1,11 @@
 //package com.moseeker.useraccounts.service;
 //
-//import java.sql.Array;
 //import java.util.Arrays;
-//import java.util.HashMap;
 //import java.util.List;
-//
 //import org.apache.thrift.TException;
 //import org.junit.Before;
 //import org.junit.Test;
-//
 //import com.moseeker.rpccenter.client.ServiceManager;
-//import com.moseeker.thrift.gen.common.struct.Response;
 //import com.moseeker.thrift.gen.employee.service.EmployeeService;
 //import com.moseeker.thrift.gen.employee.struct.BindType;
 //import com.moseeker.thrift.gen.employee.struct.BindingParams;
@@ -18,8 +13,6 @@
 //import com.moseeker.thrift.gen.employee.struct.EmployeeVerificationConfResponse;
 //import com.moseeker.thrift.gen.employee.struct.Result;
 //import com.moseeker.thrift.gen.employee.struct.RewardsResponse;
-//import com.moseeker.thrift.gen.mq.service.MqService;
-//import com.moseeker.thrift.gen.mq.service.MqService.Iface;
 //
 //public class EmployeeServiceTest {
 //	
@@ -86,10 +79,9 @@
 //	@Test
 //	public void bindTest() {
 //		BindingParams bp = new BindingParams();
-//		bp.setAnswer1("仟寻");
-//		bp.setAnswer2("上海");
+//		bp.setEmail("510340677@qq.com");
 //		bp.setCompanyId(2878);
-//		bp.setType(BindType.QUESTIONS);
+//		bp.setType(BindType.EMAIL);
 //		try {
 //			Result result = service.bind(bp);
 //			System.out.println(result);
@@ -99,11 +91,14 @@
 //		}
 //	}
 //	
-////	@Test
-////	public void sendAuthMail() throws TException {
-////		Iface service = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
-////		Response response = service.sendAuthEMail(new HashMap<String, String>(){{put("#employee_name#", "vincent");}}, 2, "510340677@qq.com", "发送");
-////		System.out.println(response);
-////	}
-//
+//	@Test
+//	public void emailActivationTest() {
+//		try {
+//			Result result = service.emailActivation("ff24a4dc10362b20");
+//			System.out.println(result);
+//		} catch (TException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
 //}

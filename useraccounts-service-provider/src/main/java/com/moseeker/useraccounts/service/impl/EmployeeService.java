@@ -19,8 +19,10 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.cache.CacheClient;
+import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.DESCoder;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -40,6 +42,7 @@ import com.moseeker.thrift.gen.dao.struct.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.UserEmployeePointsRecordDO;
+import com.moseeker.thrift.gen.dao.struct.UserUserDO;
 import com.moseeker.thrift.gen.employee.struct.BindingParams;
 import com.moseeker.thrift.gen.employee.struct.Employee;
 import com.moseeker.thrift.gen.employee.struct.EmployeeCustomFieldsConf;
@@ -98,6 +101,7 @@ public class EmployeeService {
 		return response;
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public EmployeeVerificationConfResponse getEmployeeVerificationConf(int companyId)
 			throws TException {
 		CommonQuery query = new CommonQuery();
@@ -114,7 +118,9 @@ public class EmployeeService {
 			    evc.setAuthMode((short)employeeCertConf.getAuth_mode());
 			    evc.setAuthCode(employeeCertConf.getAuth_code());
 			    evc.setCustom(employeeCertConf.getCustom());
-			    evc.setQuestions(JSONObject.parseArray(employeeCertConf.getQuestions()).stream().map(m -> JSONObject.parseObject(String.valueOf(m), Map.class)).collect(Collectors.toList()));
+			    // 为解决gradle build时无法完成类推导的问题，顾list不指定类型
+			    List questions = JSONObject.parseArray(employeeCertConf.getQuestions()).stream().map(m -> JSONObject.parseObject(String.valueOf(m), Map.class)).collect(Collectors.toList());
+				evc.setQuestions(questions);
 			    evc.setCustomHint(employeeCertConf.getCustom_hint());
 			    response.setEmployeeVerificationConf(evc);
 			    response.setExits(true);
@@ -152,11 +158,16 @@ public class EmployeeService {
 				query.getEqualFilter().clear();
 				query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
 				query.getEqualFilter().put("email", bindingParams.getEmail());
-				query.getEqualFilter().put("activation", "0");
 				query.getEqualFilter().put("disable", "0");
 				query.getEqualFilter().put("status", "0");
 				UserEmployeeDO employee = userDao.getEmployee(query);
-				if (employee != null && employee.getId() != 0) {
+				if (employee == null || employee.getId() == 0) {
+					response.setSuccess(false);
+					response.setMessage("您提供的员工认证信息不正确");
+					break;
+				}
+				
+				if (employee.getActivation() == 0) {
 					response.setSuccess(false);
 					response.setMessage("该员工已绑定");
 					break;
@@ -169,20 +180,24 @@ public class EmployeeService {
 				Response hrwechatResult = hrDBDao.getHrWxWechat(query);
 				if (companyDO != null && hrwechatResult.getStatus() == 0 && StringUtils.isNotNullOrEmpty(hrwechatResult.getData())) {
 					JSONObject hrWxWechatJson = JSONObject.parseObject(hrwechatResult.getData());
-					Map<String, String> mesBody = new HashMap<String, String>();
-					mesBody.put("#company_log#",  companyDO.getLogo());
-					mesBody.put("#employee_name#",  employee.getCname());
-					mesBody.put("#company_abbr#",  companyDO.getName());
-					mesBody.put("#official_account_name#",  hrWxWechatJson.getString("name"));
-					mesBody.put("#official_account_qrcode#",  hrWxWechatJson.getString("qrcode"));
-					mesBody.put("#date_today#",  LocalDate.now().toString());
-					mesBody.put("#auth_url#", "xxx");
-					// 发送认证邮件
 					String activationCode = DESCoder.encrypt(String.valueOf(employee.getId()));
+					Map<String, String> mesBody = new HashMap<String, String>();
+					mesBody.put("#company_log#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(companyDO.getLogo(), ""));
+					mesBody.put("#employee_name#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(employee.getCname(), genUsername(employee.getSysuserId())));
+					mesBody.put("#company_abbr#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(companyDO.getName(), ""));
+					mesBody.put("#official_account_name#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(hrWxWechatJson.getString("name"), ""));
+					mesBody.put("#official_account_qrcode#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(hrWxWechatJson.getString("qrcode"), ""));
+					mesBody.put("#date_today#",  LocalDate.now().toString());
+					mesBody.put("#auth_url#", ConfigPropertiesUtil.getInstance().get("platform.url", String.class).concat("m/bindemail?activation_code=").concat(activationCode));
+					// 发送认证邮件
 					Response mailResponse = mqService.sendAuthEMail(mesBody, Constant.EVENT_TYPE_EMPLOYEE_AUTH, bindingParams.getEmail(), "员工认证");
 					// 邮件发送成功
 					if (mailResponse.getStatus() == 0) {
 						client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, String.valueOf(employee.getId()), JSONObject.toJSONString(bindingParams));
+						response.setSuccess(true);
+						response.setMessage("发送激活邮件成功");
+					} else {
+						response.setMessage("发送激活邮件失败");
 					}
 				}
 				break;
@@ -194,7 +209,7 @@ public class EmployeeService {
 				query.getEqualFilter().put("cname", bindingParams.getName());
 				query.getEqualFilter().put("custom_field", bindingParams.getCustomField());
 				employee = userDao.getEmployee(query);
-				if (employee == null) {
+				if (employee == null || employee.getId() == 0) {
 					response.setSuccess(false);
 					response.setMessage("您提供的员工认证信息不正确");
 				} else if (employee.getActivation() == 0) {
@@ -246,7 +261,6 @@ public class EmployeeService {
 		query.getEqualFilter().put("disable", "0");
 		query.getEqualFilter().put("status", "0");
 		List<UserEmployeeDO> employees = userDao.getUserEmployeesDO(query);
-		Optional<BindingParams> optional = Optional.of(bindingParams);
 		if (!StringUtils.isEmptyList(employees)) {
 			employees.forEach(e -> {
 				if (e.getCompanyId() == bindingParams.getCompanyId()) {
@@ -434,8 +448,38 @@ public class EmployeeService {
 			if (StringUtils.isNotNullOrEmpty(value)) {
 				BindingParams bindingParams = JSONObject.parseObject(value, BindingParams.class);
 				response = updateEmployee(bindingParams);
+				if (response.success) {
+					client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, employeeId);
+				}
 			} 
 		}
 		return response;
+	}
+	
+	/**
+	 * 获取用户的称呼
+	 * @param userId 用户id
+	 * @return
+	 */
+	public String genUsername(int userId) {
+		QueryUtil qu = new QueryUtil();
+		qu.addEqualFilter("id", String.valueOf(userId));
+		UserUserDO user;
+		String username = "";
+		try {
+			user = userDao.getUser(qu);
+			if(user != null) {
+				if(StringUtils.isNotNullOrEmpty(user.getName())) {
+					username = user.getName();
+				} else if(StringUtils.isNotNullOrEmpty(user.getNickname())) {
+					username = user.getNickname();
+				} else {
+					username = user.getUsername();
+				}
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		}
+		return username;
 	}
 }

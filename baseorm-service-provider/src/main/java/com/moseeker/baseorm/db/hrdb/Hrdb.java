@@ -76,13 +76,12 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 1449449974;
+    private static final long serialVersionUID = -283763554;
 
     /**
      * The reference instance of <code>hrdb</code>
      */
     public static final Hrdb HRDB = new Hrdb();
-
 
     /**
      * 企业申请简历校验配置
@@ -98,6 +97,7 @@ public class Hrdb extends SchemaImpl {
      * 子公司表
      */
     public final HrChildCompany HR_CHILD_COMPANY = com.moseeker.baseorm.db.hrdb.tables.HrChildCompany.HR_CHILD_COMPANY;
+
 
     /**
      * 公司表
