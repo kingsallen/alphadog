@@ -533,7 +533,23 @@ public class ChatDao {
      * @return
      */
     public HrWxHrChatListDO getChatRoom(int roomId, int userId, int hrId) {
-        return null;
+        HrWxHrChatListDO chatRoom = null;
+        if(roomId > 0) {
+            QueryUtil queryUtil = new QueryUtil();
+            queryUtil.addEqualFilter("id", roomId);
+            try {
+                chatRoom = hrDBDao.getChatRoom(queryUtil);
+                if(chatRoom == null) {
+                    QueryUtil findChatRoom = new QueryUtil();
+                    findChatRoom.addEqualFilter("sysuser_id", userId);
+                    findChatRoom.addEqualFilter("hraccount_id", hrId);
+                    chatRoom = hrDBDao.getChatRoom(queryUtil);
+                }
+            } catch (TException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+        return chatRoom;
     }
 
     public HrWxHrChatDO saveAutoChat(ResultOfSaveRoomVO resultOfSaveRoomVO) {

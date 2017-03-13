@@ -288,6 +288,7 @@ public class ChatService {
         HrWxHrChatListDO chatRoom = chaoDao.getChatRoom(roomId, userId, hrId);
         boolean chatDebut = false;
         if(chatRoom == null) {
+            chatRoom = new HrWxHrChatListDO();
             String createTime = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
             chatRoom.setCreateTime(createTime);
             chatRoom.setHraccountId(hrId);

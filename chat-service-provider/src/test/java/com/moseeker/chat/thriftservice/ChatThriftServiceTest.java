@@ -4,6 +4,8 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.chat.service.ChatService;
 import com.moseeker.thrift.gen.chat.struct.HRChatRoomVO;
 import com.moseeker.thrift.gen.chat.struct.HRChatRoomsVO;
+import com.moseeker.thrift.gen.chat.struct.UserChatRoomVO;
+import com.moseeker.thrift.gen.chat.struct.UserChatRoomsVO;
 import org.junit.Test;
 
 import java.util.List;
@@ -36,9 +38,24 @@ public class ChatThriftServiceTest {
         }
     }
 
-    @Test
+    //@Test
     public void listUserChatRoom() throws Exception {
-        //chatService.listUserChatRoom();
+        UserChatRoomsVO roomsVO = chatService.listUserChatRoom(393861, 1, 10);
+        System.out.println("pageNo : "+roomsVO.getPageNo());
+        System.out.println("pageSize : " + roomsVO.getPageSize());
+        System.out.println("totalRow : " + roomsVO.getTotalRow());
+        System.out.println("totalPage : " + roomsVO.getTotalPage());
+        List<UserChatRoomVO> roomVOList = roomsVO.getRooms();
+        if(roomVOList != null) {
+            roomVOList.forEach(room -> {
+                System.out.println("name:"+room.getName());
+                System.out.println("id:"+room.getId());
+                System.out.println("userId:"+room.getHrId());
+                System.out.println("headImgUrl:"+room.getHeadImgUrl());
+                System.out.println("createTime:"+room.getCreateTime());
+                System.out.println("status:"+room.getUnReadNum());
+            });
+        }
     }
 
     @Test
