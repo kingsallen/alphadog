@@ -56,4 +56,8 @@ public class WholeProfileServicesImpl implements Iface {
 		return service.improveProfile(destUserId, originUserId);
 	}
 
+	@Override
+	public Response getResourceByApplication(int companyId, int sourceId, int atsStatus, boolean recommender) throws TException {
+		return service.getResourceByApplication(companyId,sourceId,atsStatus,recommender);
+	}
 }

@@ -4,14 +4,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.thrift.TBase;
 import org.apache.thrift.TException;
 import org.apache.thrift.TSerializer;
@@ -1027,5 +1025,15 @@ public class BeanUtils {
 	public static String convertStructToJSON(final TBase<?, ?> tobj) throws TException{
 		TSerializer serializer = new TSerializer(new TSimpleJSONProtocol.Factory());
 		return serializer.toString(tobj, "utf8");
+	}
+
+	public static Map<String, Object> object2Map(Object object){
+		JSONObject jsonObject = (JSONObject) JSONObject.toJSON(object);
+		Set<Entry<String,Object>> entrySet = jsonObject.entrySet();
+		Map<String, Object> map=new HashMap<String,Object>();
+		for (Entry<String, Object> entry : entrySet) {
+			map.put(entry.getKey(), entry.getValue());
+		}
+		return map;
 	}
 }

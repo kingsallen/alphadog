@@ -107,3 +107,10 @@ struct ThirdPartyPositionForSynchronizationWithAccount {
     5: string channel,
     6: ThirdPartyPositionForSynchronization position_info
 }
+
+struct JobPositionExt{
+    1:i32 job_custom_id,
+    2:Timestamp create_time,
+    3:Timestamp update_time,
+    4:i32 job_occupation_id
+}

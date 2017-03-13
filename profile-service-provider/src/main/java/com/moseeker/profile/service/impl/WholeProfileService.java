@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import org.apache.thrift.TException;
 import org.jooq.types.UByte;
 import org.jooq.types.UInteger;
@@ -82,7 +84,17 @@ import com.moseeker.thrift.gen.common.struct.Response;
 
 @Service
 @CounterIface
-public class WholeProfileService {
+public class WholeProfileService{
+
+
+	com.moseeker.thrift.gen.dao.service.ProfileDao.Iface thriftProfileDao = ServiceManager.SERVICEMANAGER
+			.getService(com.moseeker.thrift.gen.dao.service.ProfileDao.Iface.class);
+
+
+	public Response getResourceByApplication(int companyId, int sourceId, int atsStatus, boolean recommender) throws TException {
+
+		return thriftProfileDao.getResourceByApplication(companyId,sourceId,atsStatus,recommender);
+	}
 
 	Logger logger = LoggerFactory.getLogger(WholeProfileService.class);
 	ProfileUtils profileUtils = new ProfileUtils();

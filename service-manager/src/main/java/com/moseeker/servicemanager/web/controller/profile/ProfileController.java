@@ -237,4 +237,41 @@ public class ProfileController {
 			// do nothing
 		}
 	}
+
+	/**
+	 * 批量修改职位
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/profiles/application", method = RequestMethod.GET)
+	@ResponseBody
+	public String profilesByApplication(HttpServletRequest request, HttpServletResponse response) {
+		try {
+
+			Params<String, Object> form = ParamUtils.parseRequestParam(request);
+
+			int companyId = form.getInt("company_id",-1);
+			int sourceId = form.getInt("source_id",-1);
+			int atsStatus = form.getInt("ats_status",1);
+			boolean recommender = form.getBoolean("recommender",false);
+
+
+			if(companyId == -1){
+				return ResponseLogNotification.fail(request, "company_id不能为空");
+			}else if(sourceId == -1){
+				return ResponseLogNotification.fail(request,"sourceId不能为空");
+			}
+
+			Response result = profileService.getResourceByApplication(companyId,sourceId,atsStatus,recommender);
+
+			return ResponseLogNotification.success(request, result);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage(), e);
+			return ResponseLogNotification.fail(request, e.getMessage());
+		} finally {
+			// do nothing
+		}
+	}
 }

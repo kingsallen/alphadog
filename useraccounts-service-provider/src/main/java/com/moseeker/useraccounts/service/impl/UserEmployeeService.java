@@ -1,6 +1,5 @@
 package com.moseeker.useraccounts.service.impl;
 
-import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -16,21 +15,18 @@ import java.util.Map;
  * Created by eddie on 2017/3/9.
  */
 @Service
-public class UserEmployeeService implements com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService.Iface {
+public class UserEmployeeService {
 
     UserEmployeeDao.Iface userEmployeeDao = ServiceManager.SERVICEMANAGER.getService(UserEmployeeDao.Iface.class);
 
-    @Override
     public Response getUserEmployee(CommonQuery query) throws TException {
         return userEmployeeDao.getResource(query);
     }
 
-    @Override
     public Response delUserEmployee(Map<String,String> filter) throws TException {
         return userEmployeeDao.delResource(filter);
     }
 
-    @Override
     public Response postPutUserEmployeeBatch(List<UserEmployeeStruct> update) throws TException {
         return userEmployeeDao.postPutResources(update);
     }
