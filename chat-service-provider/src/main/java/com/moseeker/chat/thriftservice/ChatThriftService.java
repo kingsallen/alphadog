@@ -6,10 +6,12 @@ import com.moseeker.thrift.gen.chat.struct.*;
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by jack on 08/03/2017.
  */
+@Service
 public class ChatThriftService implements Iface {
 
     @Autowired

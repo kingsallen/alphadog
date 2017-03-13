@@ -63,12 +63,13 @@ public class ChatService {
                     HRChatRoomVO hrChatRoomVO = new HRChatRoomVO();
                     hrChatRoomVO.setId(chatUnreadCountDO.getRoomId());
                     hrChatRoomVO.setUserId(chatUnreadCountDO.getUserId());
-                    hrChatRoomVO.setUnReadNum(chatUnreadCountDO.getHrUnreadCount());
+                    hrChatRoomVO.setUnReadNum(chatUnreadCountDO.getUserUnreadCount());
 
                     List<HrWxHrChatListDO> chatRoomList = null;
                     List<UserUserDO> userList = null;
                     try {
                         chatRoomList = (List<HrWxHrChatListDO>) chatRoomsFuture.get();
+
                     } catch (InterruptedException | ExecutionException e) {
                         logger.error(e.getMessage(), e);
                     }
@@ -82,6 +83,7 @@ public class ChatService {
                             hrChatRoomVO.setStatus(status);
                         }
                     }
+                    /** 匹配用户名称和头像 */
                     try {
                         userList = (List<UserUserDO>) usersFuture.get();
                     } catch (InterruptedException | ExecutionException e) {
@@ -343,6 +345,7 @@ public class ChatService {
                     }
                     positionVO.setCompanyName(companyName);
                 }
+                resultOfSaveRoomVO.setPosition(positionVO);
             }
         } catch (InterruptedException | ExecutionException e) {
             logger.error(e.getMessage(), e);
@@ -353,6 +356,7 @@ public class ChatService {
             UserUserDO userUserDO = (UserUserDO) userFuture.get();
             if(userUserDO != null) {
                 UserVO userVO = new UserVO();
+                userVO.setUserId(userUserDO.getId());
                 userVO.setUserHeadImg(userUserDO.getHeadimg());
                 userVO.setUserId(chatRoom.getSysuserId());
                 String name;
@@ -362,6 +366,7 @@ public class ChatService {
                     name = userUserDO.getNickname();
                 }
                 userVO.setUserName(name);
+                resultOfSaveRoomVO.setUser(userVO);
             }
         } catch (InterruptedException | ExecutionException e) {
             logger.error(e.getMessage(), e);

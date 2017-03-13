@@ -46,14 +46,14 @@ public class ChatDao {
         queryUtil.setOrder("desc");
         switch (type) {
             case HR:
-                queryUtil.addSelectAttribute("hr_unread_count").addSelectAttribute("hr_id");
-                queryUtil.setSortby("hr_unread_count");
-                queryUtil.addEqualFilter("hr_unread_count", id);
-                break;
-            case USER:
                 queryUtil.addSelectAttribute("user_unread_count").addSelectAttribute("user_id");
                 queryUtil.setSortby("user_unread_count");
-                queryUtil.addEqualFilter("user_unread_count", id);
+                queryUtil.addEqualFilter("hr_id", id);
+                break;
+            case USER:
+                queryUtil.addSelectAttribute("hr_unread_count").addSelectAttribute("hr_id");
+                queryUtil.setSortby("hr_unread_count");
+                queryUtil.addEqualFilter("user_id", id);
                 break;
             default:
         }
