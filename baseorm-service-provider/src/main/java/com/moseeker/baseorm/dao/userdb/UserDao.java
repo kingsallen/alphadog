@@ -4,8 +4,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import com.moseeker.baseorm.util.StructDaoImpl;
+import com.moseeker.db.userdb.tables.UserEmployee;
 import com.moseeker.thrift.gen.dao.struct.UserUserDO;
 import org.jooq.DSLContext;
+import org.junit.Test;
 import org.springframework.stereotype.Service;
 
 import com.moseeker.common.dbutils.DBConnHelper;

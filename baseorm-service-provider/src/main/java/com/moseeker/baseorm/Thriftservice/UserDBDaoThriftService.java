@@ -82,6 +82,21 @@ public class UserDBDaoThriftService implements Iface {
 	}
 
 	@Override
+	public UserHrAccountDO getUserHrAccount(CommonQuery query) throws CURDException, TException {
+		return userHRAccountDao.findResource(query);
+	}
+
+	@Override
+	public UserHrAccountDO updateUserHrAccount(UserHrAccountDO userHrAccountDO) throws CURDException, TException {
+		return userHRAccountDao.updateResource(userHrAccountDO);
+	}
+
+	@Override
+	public int deleteUserHrAccount(int id) throws CURDException, TException {
+		return userHRAccountDao.deleteUserHrAccount(id);
+	}
+
+	@Override
 	public List<UserFavPositionDO> getUserFavPositions(CommonQuery query) throws TException {
 		return favPositionDao.getUserFavPositions(query);
 	}
@@ -145,5 +160,10 @@ public class UserDBDaoThriftService implements Iface {
 	@Override
 	public List<UserWxUserDO> listUserWxUserDO(CommonQuery query) throws CURDException, TException {
 		return wxUserDao.listResources(query);
+	}
+
+	@Override
+	public UserWxUserDO getUserWxUserDO(CommonQuery query) throws CURDException, TException {
+		return null;
 	}
 }

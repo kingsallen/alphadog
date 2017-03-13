@@ -5,6 +5,7 @@ dependencies {
 
     compile project(":rpc-center")
     testCompile deps["junit"]
+    testCompile deps["mockito"]
     compile deps["spring-core"]
     compile deps["spring-context"]
 }

@@ -36,12 +36,17 @@ public class ChatThriftService implements Iface {
     }
 
     @Override
-    public ResultOfSaveRoomVO saveChatRoom(int userId, int hrId) throws CURDException, TException {
-        return chatService.saveChatRoom(userId, hrId);
+    public ResultOfSaveRoomVO enterRoom(int userId, int hrId, int positionId, int roomId) throws CURDException, TException {
+        return chatService.enterChatRoom(userId, hrId, positionId, roomId);
     }
 
     @Override
     public ChatVO getChat(int roomId, byte speaker) throws CURDException, TException {
         return chatService.getChat(roomId, speaker);
+    }
+
+    @Override
+    public void leaveChatRoom(int roomId, byte speaker) throws TException {
+        chatService.leaveChatRoom(roomId, speaker);
     }
 }
