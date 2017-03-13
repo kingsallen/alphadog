@@ -20,6 +20,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
+import org.jooq.types.UInteger;
 
 
 /**
@@ -35,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidatePositionShareRecord extends TableImpl<CandidatePositionShareRecordRecord> {
 
-	private static final long serialVersionUID = -932238588;
+	private static final long serialVersionUID = 674015676;
 
 	/**
 	 * The reference instance of <code>candidatedb.candidate_position_share_record</code>
@@ -66,19 +67,19 @@ public class CandidatePositionShareRecord extends TableImpl<CandidatePositionSha
 	public final TableField<CandidatePositionShareRecordRecord, Long> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaulted(true), this, "position.id 分享职位ID");
 
 	/**
-	 * The column <code>candidatedb.candidate_position_share_record.recom_id</code>. wx_group_user.id 分享用户微信ID
+	 * The column <code>candidatedb.candidate_position_share_record.recom_id</code>. userdb.user_wx_user.id 分享用户微信ID。现在已经废弃，请参考recom_user_id字段
 	 */
-	public final TableField<CandidatePositionShareRecordRecord, Long> RECOM_ID = createField("recom_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaulted(true), this, "wx_group_user.id 分享用户微信ID");
+	public final TableField<CandidatePositionShareRecordRecord, Long> RECOM_ID = createField("recom_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaulted(true), this, "userdb.user_wx_user.id 分享用户微信ID。现在已经废弃，请参考recom_user_id字段");
 
 	/**
-	 * The column <code>candidatedb.candidate_position_share_record.sysuser_id</code>. sysuser.id 浏览用户sysuser.id
+	 * The column <code>candidatedb.candidate_position_share_record.recom_user_id</code>. userdb.user_user.id 转发者的C端账号编号
 	 */
-	public final TableField<CandidatePositionShareRecordRecord, Long> SYSUSER_ID = createField("sysuser_id", org.jooq.impl.SQLDataType.BIGINT.defaulted(true), this, "sysuser.id 浏览用户sysuser.id");
+	public final TableField<CandidatePositionShareRecordRecord, UInteger> RECOM_USER_ID = createField("recom_user_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "userdb.user_user.id 转发者的C端账号编号");
 
 	/**
-	 * The column <code>candidatedb.candidate_position_share_record.viewer_id</code>. wx_viewer.id 浏览用户ID
+	 * The column <code>candidatedb.candidate_position_share_record.viewer_id</code>. userdb.user_wx_viewer.id 浏览用户ID
 	 */
-	public final TableField<CandidatePositionShareRecordRecord, String> VIEWER_ID = createField("viewer_id", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaulted(true), this, "wx_viewer.id 浏览用户ID");
+	public final TableField<CandidatePositionShareRecordRecord, String> VIEWER_ID = createField("viewer_id", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaulted(true), this, "userdb.user_wx_viewer.id 浏览用户ID");
 
 	/**
 	 * The column <code>candidatedb.candidate_position_share_record.viewer_ip</code>. 浏览用户IP
@@ -101,14 +102,19 @@ public class CandidatePositionShareRecord extends TableImpl<CandidatePositionSha
 	public final TableField<CandidatePositionShareRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "修改时间");
 
 	/**
-	 * The column <code>candidatedb.candidate_position_share_record.presentee_id</code>. 被动求职者,浏览者的微信ID，wx_group_user.id
+	 * The column <code>candidatedb.candidate_position_share_record.presentee_id</code>. 被动求职者,浏览者的微信ID，userdb.user_wx_user.id。现在已经废弃，请参考presentee_user_id
 	 */
-	public final TableField<CandidatePositionShareRecordRecord, Long> PRESENTEE_ID = createField("presentee_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaulted(true), this, "被动求职者,浏览者的微信ID，wx_group_user.id");
+	public final TableField<CandidatePositionShareRecordRecord, Long> PRESENTEE_ID = createField("presentee_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaulted(true), this, "被动求职者,浏览者的微信ID，userdb.user_wx_user.id。现在已经废弃，请参考presentee_user_id");
 
 	/**
 	 * The column <code>candidatedb.candidate_position_share_record.click_from</code>. 来自, 0:未知, 朋友圈(timeline ) 1, 微信群(groupmessage) 2, 个人消息(singlemessage) 3
 	 */
 	public final TableField<CandidatePositionShareRecordRecord, Byte> CLICK_FROM = createField("click_from", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "来自, 0:未知, 朋友圈(timeline ) 1, 微信群(groupmessage) 2, 个人消息(singlemessage) 3");
+
+	/**
+	 * The column <code>candidatedb.candidate_position_share_record.presentee_user_id</code>. userdb.user_user.id 浏览者的C端账号编号
+	 */
+	public final TableField<CandidatePositionShareRecordRecord, UInteger> PRESENTEE_USER_ID = createField("presentee_user_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "userdb.user_user.id 浏览者的C端账号编号");
 
 	/**
 	 * Create a <code>candidatedb.candidate_position_share_record</code> table reference

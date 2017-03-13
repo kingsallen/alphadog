@@ -1,17 +1,16 @@
 package com.moseeker.profile.dao.impl;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
-import org.jooq.DSLContext;
-import org.jooq.Result;
-import org.springframework.stereotype.Repository;
-
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
 import com.moseeker.db.jobdb.tables.JobPosition;
 import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.profile.dao.JobPositionDao;
+import org.jooq.DSLContext;
+import org.jooq.Result;
+import org.springframework.stereotype.Repository;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 @Repository
 public class JobPoistionDaoImpl extends

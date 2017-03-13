@@ -110,6 +110,7 @@ public class UserCenterThriftServiceTest {
             if(recommendationRecordVOList != null && recommendationRecordVOList.size() > 0) {
                 recommendationRecordVOList.forEach(recommendationRecordVO -> {
                     System.out.println(" appler_name : " + recommendationRecordVO.getApplier_name());
+                    System.out.println(" appler_rel : " + recommendationRecordVO.getApplier_rel());
                     System.out.println(" click_time : " + recommendationRecordVO.getClick_time());
                     System.out.println(" headimgurl : " + recommendationRecordVO.getHeadimgurl());
                     System.out.println(" position : " + recommendationRecordVO.getPosition());

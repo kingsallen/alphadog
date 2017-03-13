@@ -13,18 +13,20 @@ public class RecommendationRecordVO implements org.apache.thrift.TBase<Recommend
 
   private static final org.apache.thrift.protocol.TField RECOM_STATUS_FIELD_DESC = new org.apache.thrift.protocol.TField("recom_status", org.apache.thrift.protocol.TType.BYTE, (short)1);
   private static final org.apache.thrift.protocol.TField APPLIER_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("applier_name", org.apache.thrift.protocol.TType.STRING, (short)2);
-  private static final org.apache.thrift.protocol.TField POSITION_FIELD_DESC = new org.apache.thrift.protocol.TField("position", org.apache.thrift.protocol.TType.STRING, (short)3);
-  private static final org.apache.thrift.protocol.TField CLICK_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("click_time", org.apache.thrift.protocol.TType.STRING, (short)4);
-  private static final org.apache.thrift.protocol.TField STATUS_FIELD_DESC = new org.apache.thrift.protocol.TField("status", org.apache.thrift.protocol.TType.I16, (short)5);
-  private static final org.apache.thrift.protocol.TField IS_INTERESTED_FIELD_DESC = new org.apache.thrift.protocol.TField("is_interested", org.apache.thrift.protocol.TType.BYTE, (short)6);
-  private static final org.apache.thrift.protocol.TField VIEW_NUMBER_FIELD_DESC = new org.apache.thrift.protocol.TField("view_number", org.apache.thrift.protocol.TType.I32, (short)7);
-  private static final org.apache.thrift.protocol.TField HEADIMGURL_FIELD_DESC = new org.apache.thrift.protocol.TField("headimgurl", org.apache.thrift.protocol.TType.STRING, (short)8);
+  private static final org.apache.thrift.protocol.TField APPLIER_REL_FIELD_DESC = new org.apache.thrift.protocol.TField("applier_rel", org.apache.thrift.protocol.TType.STRING, (short)3);
+  private static final org.apache.thrift.protocol.TField POSITION_FIELD_DESC = new org.apache.thrift.protocol.TField("position", org.apache.thrift.protocol.TType.STRING, (short)4);
+  private static final org.apache.thrift.protocol.TField CLICK_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("click_time", org.apache.thrift.protocol.TType.STRING, (short)5);
+  private static final org.apache.thrift.protocol.TField STATUS_FIELD_DESC = new org.apache.thrift.protocol.TField("status", org.apache.thrift.protocol.TType.I16, (short)6);
+  private static final org.apache.thrift.protocol.TField IS_INTERESTED_FIELD_DESC = new org.apache.thrift.protocol.TField("is_interested", org.apache.thrift.protocol.TType.BYTE, (short)7);
+  private static final org.apache.thrift.protocol.TField VIEW_NUMBER_FIELD_DESC = new org.apache.thrift.protocol.TField("view_number", org.apache.thrift.protocol.TType.I32, (short)8);
+  private static final org.apache.thrift.protocol.TField HEADIMGURL_FIELD_DESC = new org.apache.thrift.protocol.TField("headimgurl", org.apache.thrift.protocol.TType.STRING, (short)9);
 
   private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new RecommendationRecordVOStandardSchemeFactory();
   private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new RecommendationRecordVOTupleSchemeFactory();
 
   public byte recom_status; // optional
   public java.lang.String applier_name; // optional
+  public java.lang.String applier_rel; // optional
   public java.lang.String position; // optional
   public java.lang.String click_time; // optional
   public short status; // optional
@@ -36,12 +38,13 @@ public class RecommendationRecordVO implements org.apache.thrift.TBase<Recommend
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
     RECOM_STATUS((short)1, "recom_status"),
     APPLIER_NAME((short)2, "applier_name"),
-    POSITION((short)3, "position"),
-    CLICK_TIME((short)4, "click_time"),
-    STATUS((short)5, "status"),
-    IS_INTERESTED((short)6, "is_interested"),
-    VIEW_NUMBER((short)7, "view_number"),
-    HEADIMGURL((short)8, "headimgurl");
+    APPLIER_REL((short)3, "applier_rel"),
+    POSITION((short)4, "position"),
+    CLICK_TIME((short)5, "click_time"),
+    STATUS((short)6, "status"),
+    IS_INTERESTED((short)7, "is_interested"),
+    VIEW_NUMBER((short)8, "view_number"),
+    HEADIMGURL((short)9, "headimgurl");
 
     private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
@@ -60,17 +63,19 @@ public class RecommendationRecordVO implements org.apache.thrift.TBase<Recommend
           return RECOM_STATUS;
         case 2: // APPLIER_NAME
           return APPLIER_NAME;
-        case 3: // POSITION
+        case 3: // APPLIER_REL
+          return APPLIER_REL;
+        case 4: // POSITION
           return POSITION;
-        case 4: // CLICK_TIME
+        case 5: // CLICK_TIME
           return CLICK_TIME;
-        case 5: // STATUS
+        case 6: // STATUS
           return STATUS;
-        case 6: // IS_INTERESTED
+        case 7: // IS_INTERESTED
           return IS_INTERESTED;
-        case 7: // VIEW_NUMBER
+        case 8: // VIEW_NUMBER
           return VIEW_NUMBER;
-        case 8: // HEADIMGURL
+        case 9: // HEADIMGURL
           return HEADIMGURL;
         default:
           return null;
@@ -117,13 +122,15 @@ public class RecommendationRecordVO implements org.apache.thrift.TBase<Recommend
   private static final int __IS_INTERESTED_ISSET_ID = 2;
   private static final int __VIEW_NUMBER_ISSET_ID = 3;
   private byte __isset_bitfield = 0;
-  private static final _Fields optionals[] = {_Fields.RECOM_STATUS,_Fields.APPLIER_NAME,_Fields.POSITION,_Fields.CLICK_TIME,_Fields.STATUS,_Fields.IS_INTERESTED,_Fields.VIEW_NUMBER,_Fields.HEADIMGURL};
+  private static final _Fields optionals[] = {_Fields.RECOM_STATUS,_Fields.APPLIER_NAME,_Fields.APPLIER_REL,_Fields.POSITION,_Fields.CLICK_TIME,_Fields.STATUS,_Fields.IS_INTERESTED,_Fields.VIEW_NUMBER,_Fields.HEADIMGURL};
   public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
     tmpMap.put(_Fields.RECOM_STATUS, new org.apache.thrift.meta_data.FieldMetaData("recom_status", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BYTE)));
     tmpMap.put(_Fields.APPLIER_NAME, new org.apache.thrift.meta_data.FieldMetaData("applier_name", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.APPLIER_REL, new org.apache.thrift.meta_data.FieldMetaData("applier_rel", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.POSITION, new org.apache.thrift.meta_data.FieldMetaData("position", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
@@ -153,6 +160,9 @@ public class RecommendationRecordVO implements org.apache.thrift.TBase<Recommend
     if (other.isSetApplier_name()) {
       this.applier_name = other.applier_name;
     }
+    if (other.isSetApplier_rel()) {
+      this.applier_rel = other.applier_rel;
+    }
     if (other.isSetPosition()) {
       this.position = other.position;
     }
@@ -176,6 +186,7 @@ public class RecommendationRecordVO implements org.apache.thrift.TBase<Recommend
     setRecom_statusIsSet(false);
     this.recom_status = 0;
     this.applier_name = null;
+    this.applier_rel = null;
     this.position = null;
     this.click_time = null;
     setStatusIsSet(false);
@@ -231,6 +242,30 @@ public class RecommendationRecordVO implements org.apache.thrift.TBase<Recommend
   public void setApplier_nameIsSet(boolean value) {
     if (!value) {
       this.applier_name = null;
+    }
+  }
+
+  public java.lang.String getApplier_rel() {
+    return this.applier_rel;
+  }
+
+  public RecommendationRecordVO setApplier_rel(java.lang.String applier_rel) {
+    this.applier_rel = applier_rel;
+    return this;
+  }
+
+  public void unsetApplier_rel() {
+    this.applier_rel = null;
+  }
+
+  /** Returns true if field applier_rel is set (has been assigned a value) and false otherwise */
+  public boolean isSetApplier_rel() {
+    return this.applier_rel != null;
+  }
+
+  public void setApplier_relIsSet(boolean value) {
+    if (!value) {
+      this.applier_rel = null;
     }
   }
 
@@ -393,6 +428,14 @@ public class RecommendationRecordVO implements org.apache.thrift.TBase<Recommend
       }
       break;
 
+    case APPLIER_REL:
+      if (value == null) {
+        unsetApplier_rel();
+      } else {
+        setApplier_rel((java.lang.String)value);
+      }
+      break;
+
     case POSITION:
       if (value == null) {
         unsetPosition();
@@ -452,6 +495,9 @@ public class RecommendationRecordVO implements org.apache.thrift.TBase<Recommend
     case APPLIER_NAME:
       return getApplier_name();
 
+    case APPLIER_REL:
+      return getApplier_rel();
+
     case POSITION:
       return getPosition();
 
@@ -485,6 +531,8 @@ public class RecommendationRecordVO implements org.apache.thrift.TBase<Recommend
       return isSetRecom_status();
     case APPLIER_NAME:
       return isSetApplier_name();
+    case APPLIER_REL:
+      return isSetApplier_rel();
     case POSITION:
       return isSetPosition();
     case CLICK_TIME:
@@ -531,6 +579,15 @@ public class RecommendationRecordVO implements org.apache.thrift.TBase<Recommend
       if (!(this_present_applier_name && that_present_applier_name))
         return false;
       if (!this.applier_name.equals(that.applier_name))
+        return false;
+    }
+
+    boolean this_present_applier_rel = true && this.isSetApplier_rel();
+    boolean that_present_applier_rel = true && that.isSetApplier_rel();
+    if (this_present_applier_rel || that_present_applier_rel) {
+      if (!(this_present_applier_rel && that_present_applier_rel))
+        return false;
+      if (!this.applier_rel.equals(that.applier_rel))
         return false;
     }
 
@@ -603,6 +660,10 @@ public class RecommendationRecordVO implements org.apache.thrift.TBase<Recommend
     if (isSetApplier_name())
       hashCode = hashCode * 8191 + applier_name.hashCode();
 
+    hashCode = hashCode * 8191 + ((isSetApplier_rel()) ? 131071 : 524287);
+    if (isSetApplier_rel())
+      hashCode = hashCode * 8191 + applier_rel.hashCode();
+
     hashCode = hashCode * 8191 + ((isSetPosition()) ? 131071 : 524287);
     if (isSetPosition())
       hashCode = hashCode * 8191 + position.hashCode();
@@ -654,6 +715,16 @@ public class RecommendationRecordVO implements org.apache.thrift.TBase<Recommend
     }
     if (isSetApplier_name()) {
       lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.applier_name, other.applier_name);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
+    lastComparison = java.lang.Boolean.valueOf(isSetApplier_rel()).compareTo(other.isSetApplier_rel());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetApplier_rel()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.applier_rel, other.applier_rel);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -750,6 +821,16 @@ public class RecommendationRecordVO implements org.apache.thrift.TBase<Recommend
         sb.append("null");
       } else {
         sb.append(this.applier_name);
+      }
+      first = false;
+    }
+    if (isSetApplier_rel()) {
+      if (!first) sb.append(", ");
+      sb.append("applier_rel:");
+      if (this.applier_rel == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.applier_rel);
       }
       first = false;
     }
@@ -862,7 +943,15 @@ public class RecommendationRecordVO implements org.apache.thrift.TBase<Recommend
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 3: // POSITION
+          case 3: // APPLIER_REL
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.applier_rel = iprot.readString();
+              struct.setApplier_relIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
+          case 4: // POSITION
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.position = iprot.readString();
               struct.setPositionIsSet(true);
@@ -870,7 +959,7 @@ public class RecommendationRecordVO implements org.apache.thrift.TBase<Recommend
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 4: // CLICK_TIME
+          case 5: // CLICK_TIME
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.click_time = iprot.readString();
               struct.setClick_timeIsSet(true);
@@ -878,7 +967,7 @@ public class RecommendationRecordVO implements org.apache.thrift.TBase<Recommend
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 5: // STATUS
+          case 6: // STATUS
             if (schemeField.type == org.apache.thrift.protocol.TType.I16) {
               struct.status = iprot.readI16();
               struct.setStatusIsSet(true);
@@ -886,7 +975,7 @@ public class RecommendationRecordVO implements org.apache.thrift.TBase<Recommend
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 6: // IS_INTERESTED
+          case 7: // IS_INTERESTED
             if (schemeField.type == org.apache.thrift.protocol.TType.BYTE) {
               struct.is_interested = iprot.readByte();
               struct.setIs_interestedIsSet(true);
@@ -894,7 +983,7 @@ public class RecommendationRecordVO implements org.apache.thrift.TBase<Recommend
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 7: // VIEW_NUMBER
+          case 8: // VIEW_NUMBER
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.view_number = iprot.readI32();
               struct.setView_numberIsSet(true);
@@ -902,7 +991,7 @@ public class RecommendationRecordVO implements org.apache.thrift.TBase<Recommend
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 8: // HEADIMGURL
+          case 9: // HEADIMGURL
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.headimgurl = iprot.readString();
               struct.setHeadimgurlIsSet(true);
@@ -934,6 +1023,13 @@ public class RecommendationRecordVO implements org.apache.thrift.TBase<Recommend
         if (struct.isSetApplier_name()) {
           oprot.writeFieldBegin(APPLIER_NAME_FIELD_DESC);
           oprot.writeString(struct.applier_name);
+          oprot.writeFieldEnd();
+        }
+      }
+      if (struct.applier_rel != null) {
+        if (struct.isSetApplier_rel()) {
+          oprot.writeFieldBegin(APPLIER_REL_FIELD_DESC);
+          oprot.writeString(struct.applier_rel);
           oprot.writeFieldEnd();
         }
       }
@@ -997,30 +1093,36 @@ public class RecommendationRecordVO implements org.apache.thrift.TBase<Recommend
       if (struct.isSetApplier_name()) {
         optionals.set(1);
       }
-      if (struct.isSetPosition()) {
+      if (struct.isSetApplier_rel()) {
         optionals.set(2);
       }
-      if (struct.isSetClick_time()) {
+      if (struct.isSetPosition()) {
         optionals.set(3);
       }
-      if (struct.isSetStatus()) {
+      if (struct.isSetClick_time()) {
         optionals.set(4);
       }
-      if (struct.isSetIs_interested()) {
+      if (struct.isSetStatus()) {
         optionals.set(5);
       }
-      if (struct.isSetView_number()) {
+      if (struct.isSetIs_interested()) {
         optionals.set(6);
       }
-      if (struct.isSetHeadimgurl()) {
+      if (struct.isSetView_number()) {
         optionals.set(7);
       }
-      oprot.writeBitSet(optionals, 8);
+      if (struct.isSetHeadimgurl()) {
+        optionals.set(8);
+      }
+      oprot.writeBitSet(optionals, 9);
       if (struct.isSetRecom_status()) {
         oprot.writeByte(struct.recom_status);
       }
       if (struct.isSetApplier_name()) {
         oprot.writeString(struct.applier_name);
+      }
+      if (struct.isSetApplier_rel()) {
+        oprot.writeString(struct.applier_rel);
       }
       if (struct.isSetPosition()) {
         oprot.writeString(struct.position);
@@ -1045,7 +1147,7 @@ public class RecommendationRecordVO implements org.apache.thrift.TBase<Recommend
     @Override
     public void read(org.apache.thrift.protocol.TProtocol prot, RecommendationRecordVO struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-      java.util.BitSet incoming = iprot.readBitSet(8);
+      java.util.BitSet incoming = iprot.readBitSet(9);
       if (incoming.get(0)) {
         struct.recom_status = iprot.readByte();
         struct.setRecom_statusIsSet(true);
@@ -1055,26 +1157,30 @@ public class RecommendationRecordVO implements org.apache.thrift.TBase<Recommend
         struct.setApplier_nameIsSet(true);
       }
       if (incoming.get(2)) {
+        struct.applier_rel = iprot.readString();
+        struct.setApplier_relIsSet(true);
+      }
+      if (incoming.get(3)) {
         struct.position = iprot.readString();
         struct.setPositionIsSet(true);
       }
-      if (incoming.get(3)) {
+      if (incoming.get(4)) {
         struct.click_time = iprot.readString();
         struct.setClick_timeIsSet(true);
       }
-      if (incoming.get(4)) {
+      if (incoming.get(5)) {
         struct.status = iprot.readI16();
         struct.setStatusIsSet(true);
       }
-      if (incoming.get(5)) {
+      if (incoming.get(6)) {
         struct.is_interested = iprot.readByte();
         struct.setIs_interestedIsSet(true);
       }
-      if (incoming.get(6)) {
+      if (incoming.get(7)) {
         struct.view_number = iprot.readI32();
         struct.setView_numberIsSet(true);
       }
-      if (incoming.get(7)) {
+      if (incoming.get(8)) {
         struct.headimgurl = iprot.readString();
         struct.setHeadimgurlIsSet(true);
       }

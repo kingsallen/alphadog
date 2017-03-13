@@ -4,6 +4,8 @@
 package com.moseeker.db.userdb.tables.records;
 
 
+import com.moseeker.db.userdb.tables.UserBdUser;
+
 import java.sql.Timestamp;
 
 import javax.annotation.Generated;
@@ -14,8 +16,6 @@ import org.jooq.Record8;
 import org.jooq.Row8;
 import org.jooq.impl.UpdatableRecordImpl;
 import org.jooq.types.ULong;
-
-import com.moseeker.db.userdb.tables.UserBdUser;
 
 
 /**
@@ -31,7 +31,7 @@ import com.moseeker.db.userdb.tables.UserBdUser;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserBdUserRecord extends UpdatableRecordImpl<UserBdUserRecord> implements Record8<ULong, Long, Integer, String, Integer, String, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 1345160720;
+    private static final long serialVersionUID = 1275542360;
 
     /**
      * Setter for <code>userdb.user_bd_user.id</code>.

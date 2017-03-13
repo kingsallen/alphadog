@@ -1,13 +1,10 @@
 package com.moseeker.baseorm.Thriftservice;
 
-import com.moseeker.baseorm.dao.userdb.UserDao;
-import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
-import com.moseeker.baseorm.dao.userdb.UserFavPositionDao;
-import com.moseeker.baseorm.dao.userdb.UserHRAccountDao;
+import com.moseeker.baseorm.dao.userdb.*;
 import com.moseeker.baseorm.service.UserEmployeeService;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.common.struct.*;
+import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.dao.service.UserDBDao.Iface;
 import com.moseeker.thrift.gen.dao.struct.*;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointStruct;
@@ -39,6 +36,9 @@ public class UserDBDaoThriftService implements Iface {
 
 	@Autowired
 	private UserHRAccountDao userHRAccountDao;
+
+	@Autowired
+	private WxUserDao wxUserDao;
 
 	@Override
 	public UserUserDO getUser(CommonQuery query) throws TException {
@@ -74,6 +74,26 @@ public class UserDBDaoThriftService implements Iface {
 	@Override
 	public List<UserHrAccountDO> listHRFromCompany(int comanyId) throws TException {
 		return userHRAccountDao.listHRFromCompany(comanyId);
+	}
+
+	@Override
+	public List<UserHrAccountDO> listUserHrAccount(CommonQuery query) throws CURDException, TException {
+		return userHRAccountDao.listResources(query);
+	}
+
+	@Override
+	public UserHrAccountDO getUserHrAccount(CommonQuery query) throws CURDException, TException {
+		return userHRAccountDao.findResource(query);
+	}
+
+	@Override
+	public UserHrAccountDO updateUserHrAccount(UserHrAccountDO userHrAccountDO) throws CURDException, TException {
+		return userHRAccountDao.updateResource(userHrAccountDO);
+	}
+
+	@Override
+	public int deleteUserHrAccount(int id) throws CURDException, TException {
+		return userHRAccountDao.deleteUserHrAccount(id);
 	}
 
 	@Override
@@ -135,5 +155,15 @@ public class UserDBDaoThriftService implements Iface {
 	@Override
 	public Response putUserEmployeesDO(List<UserEmployeeDO> employeeDoList) throws TException {
 		return userEmployeeService.putEmployeesDO(employeeDoList);
+	}
+
+	@Override
+	public List<UserWxUserDO> listUserWxUserDO(CommonQuery query) throws CURDException, TException {
+		return wxUserDao.listResources(query);
+	}
+
+	@Override
+	public UserWxUserDO getUserWxUserDO(CommonQuery query) throws CURDException, TException {
+		return null;
 	}
 }

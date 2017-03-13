@@ -29,7 +29,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateVJobPositionRecomRecord extends TableRecordImpl<CandidateVJobPositionRecomRecord> implements Record5<Long, Long, Long, Timestamp, String> {
 
-	private static final long serialVersionUID = -1275929290;
+	private static final long serialVersionUID = 1738392406;
 
 	/**
 	 * Setter for <code>candidatedb.candidate_v_job_position_recom.position_id</code>. position.id 分享职位ID
@@ -46,28 +46,28 @@ public class CandidateVJobPositionRecomRecord extends TableRecordImpl<CandidateV
 	}
 
 	/**
-	 * Setter for <code>candidatedb.candidate_v_job_position_recom.recom_id</code>. wx_group_user.id 分享用户微信ID
+	 * Setter for <code>candidatedb.candidate_v_job_position_recom.recom_id</code>. userdb.user_wx_user.id 分享用户微信ID。现在已经废弃，请参考recom_user_id字段
 	 */
 	public void setRecomId(Long value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>candidatedb.candidate_v_job_position_recom.recom_id</code>. wx_group_user.id 分享用户微信ID
+	 * Getter for <code>candidatedb.candidate_v_job_position_recom.recom_id</code>. userdb.user_wx_user.id 分享用户微信ID。现在已经废弃，请参考recom_user_id字段
 	 */
 	public Long getRecomId() {
 		return (Long) getValue(1);
 	}
 
 	/**
-	 * Setter for <code>candidatedb.candidate_v_job_position_recom.presentee_id</code>. 被动求职者,浏览者的微信ID，wx_group_user.id
+	 * Setter for <code>candidatedb.candidate_v_job_position_recom.presentee_id</code>. 被动求职者,浏览者的微信ID，userdb.user_wx_user.id。现在已经废弃，请参考presentee_user_id
 	 */
 	public void setPresenteeId(Long value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>candidatedb.candidate_v_job_position_recom.presentee_id</code>. 被动求职者,浏览者的微信ID，wx_group_user.id
+	 * Getter for <code>candidatedb.candidate_v_job_position_recom.presentee_id</code>. 被动求职者,浏览者的微信ID，userdb.user_wx_user.id。现在已经废弃，请参考presentee_user_id
 	 */
 	public Long getPresenteeId() {
 		return (Long) getValue(2);

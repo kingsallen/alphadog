@@ -32,7 +32,7 @@ Excludes match before includes -->
 </database>
 <target>
 <!-- The destination package of your generated classes (within the destination directory) -->
-<packageName>com.moseeker.baseorm.db.profiledb</packageName>
+<packageName>com.moseeker.db.profiledb</packageName>
 <!-- The destination directory of your generated classes -->
 <directory>/tmp/</directory>
 </target>

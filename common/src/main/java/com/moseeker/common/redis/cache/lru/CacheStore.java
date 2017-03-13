@@ -80,7 +80,6 @@ public class CacheStore {
 	public RedisConfigRedisKey readRedisKey(int appId, String keyIdentifier) {
 		String appIdKeyIdentifier = appId + keyIdentifier;
 		if (lruCache.contains(appIdKeyIdentifier)) {
-			System.out.println("# Cache Hit!");
 			return lruCache.getRedisKey(appIdKeyIdentifier);
 		}
 		RedisConfigRedisKey redisKey = DbManager.readFromDB(appId, keyIdentifier, configType);

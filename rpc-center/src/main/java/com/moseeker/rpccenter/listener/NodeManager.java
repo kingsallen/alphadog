@@ -290,17 +290,14 @@ public enum NodeManager {
 	 * 清空除根节点下的所有子节点
 	 * @param root 根节点
 	 */
-	private void clear(ZKPath root) {
-		lock.writeLock().lock();
+	private synchronized void clear(ZKPath root) {
 		try {
 			if(root.getChirldren() != null && root.getChirldren().size() > 0) {
 				Iterator<ZKPath> iZKPath = root.getChirldren().iterator();
-				synchronized (root.getChirldren()) {
-					while(iZKPath.hasNext()) {
-						ZKPath izkpath = iZKPath.next();
-						removeParentPath(izkpath);
-						iZKPath.remove();
-					}
+				while(iZKPath.hasNext()) {
+					ZKPath izkpath = iZKPath.next();
+					removeParentPath(izkpath);
+					iZKPath.remove();
 				}
 			}
 			root.getChirldren().clear();
@@ -308,7 +305,6 @@ public enum NodeManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			lock.writeLock().unlock();
 		}
 	}
 	
@@ -316,7 +312,7 @@ public enum NodeManager {
 	 * 刷新根节点下的子节点
 	 * @param root 根节点
 	 */
-	private void refreshParentNode(ZKPath root) {
+	private synchronized void refreshParentNode(ZKPath root) {
 		lock.writeLock().lock();
 		try {
 			GetChildrenBuilder getChildrenBuilder = root.getZookeeper().getChildren();
@@ -349,20 +345,16 @@ public enum NodeManager {
 						}
 					}
 					if(!notOldZKPathFlag) {
-						synchronized (root.getChirldren()) {
-							removeParentPath(izkpath);
-							iZKPath.remove();
-						}
+						removeParentPath(izkpath);
+						iZKPath.remove();
 					}
 				}
 			} else {
 				Iterator<ZKPath> iZKPath = root.getChirldren().iterator();
-				synchronized (root.getChirldren()) {
-					while(iZKPath.hasNext()) {
-						ZKPath izkpath = iZKPath.next();
-						removeParentPath(izkpath);
-						iZKPath.remove();
-					}
+				while(iZKPath.hasNext()) {
+					ZKPath izkpath = iZKPath.next();
+					removeParentPath(izkpath);
+					iZKPath.remove();
 				}
 
 			}
@@ -484,7 +476,7 @@ public enum NodeManager {
 	 * 删除二级节点
 	 * @param parentPath 二级子节点
 	 */
-	private void removeParentPath(ZKPath parentPath) {
+	private synchronized void removeParentPath(ZKPath parentPath) {
 		lock.writeLock().lock();
 		try {
 			if(parentPath != null) {
@@ -501,13 +493,11 @@ public enum NodeManager {
 				}
 				if(parentPath.getParentNode() != null) {
 					Iterator<ZKPath> zki = parentPath.getParentNode().getChirldren().iterator();
-					synchronized (parentPath.getParentNode().getChirldren()) {
-						while(zki.hasNext()) {
-							ZKPath samePath = zki.next();
-							if(parentPath.equals(samePath)) {
-								zki.remove();
-								break;
-							}
+					while(zki.hasNext()) {
+						ZKPath samePath = zki.next();
+						if(parentPath.equals(samePath)) {
+							zki.remove();
+							break;
 						}
 					}
 				}

@@ -68,19 +68,12 @@ public class TMultiServicePoolFactory<T> extends BaseKeyedPoolableObjectFactory<
     public T makeObject(ZKPath path) throws Exception {
         // 生成client对象
         if (path != null && path.getData() != null) {
-        		TTransport transport = new TFastFramedTransport(new TSocket(path.getData().getIp(), path.getData().getPort(), timeout), initialBufferCapacity, maxLength);
-        		//TTransport transport = new TFastFramedTransport(new TSocket(path.getData().getIP(), path.getData().getPort(), timeout));  
-        		TProtocol protocol = new TCompactProtocol(transport);
-            //if(path.getData().getMulti() == 1) {
-            	TMultiplexedProtocol mulProtocol= new TMultiplexedProtocol(protocol, path.getData().getService());
-                transport.open();
-                TServiceClient client = clientFactory.getClient(mulProtocol);
-                return (T) client;
-            /*} else {
-            		transport.open();
-                TServiceClient client = clientFactory.getClient(protocol);
-                return (T) client;
-            }*/
+            TTransport transport = new TFastFramedTransport(new TSocket(path.getData().getIp(), path.getData().getPort(), timeout), initialBufferCapacity, maxLength);
+            TProtocol protocol = new TCompactProtocol(transport);
+            TMultiplexedProtocol mulProtocol= new TMultiplexedProtocol(protocol, path.getData().getService());
+            transport.open();
+            TServiceClient client = clientFactory.getClient(mulProtocol);
+            return (T) client;
         }
         LOGGER.error("Not find a vilid server!");
         if(path != null) {

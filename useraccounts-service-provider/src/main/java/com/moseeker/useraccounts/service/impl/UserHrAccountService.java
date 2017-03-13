@@ -1,6 +1,12 @@
 package com.moseeker.useraccounts.service.impl;
 
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
 import org.apache.thrift.TException;
 import org.jooq.types.UByte;
@@ -9,10 +15,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.annotation.notify.UpdateEs;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -26,12 +33,17 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.CompanyDao;
+import com.moseeker.thrift.gen.dao.service.SearcheConditionDao;
+import com.moseeker.thrift.gen.dao.service.TalentpoolDao;
+import com.moseeker.thrift.gen.dao.struct.Talentpool;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.foundation.passport.service.HRAccountFoundationServices;
 import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.DownloadReport;
+import com.moseeker.thrift.gen.useraccounts.struct.SearchCondition;
 import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
 import com.moseeker.useraccounts.dao.UserHrAccountDao;
 
@@ -49,7 +61,7 @@ public class UserHrAccountService {
 
 	private static final String REDIS_KEY_HR_SMS_SIGNUP = "HR_SMS_SIGNUP";
 
-	private RedisClient redisClient = RedisClientFactory.getCacheClient();
+	RedisClient redisClient = RedisClientFactory.getCacheClient();
 
 	ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
 	
@@ -60,6 +72,10 @@ public class UserHrAccountService {
 			.getService(HRAccountFoundationServices.Iface.class);
 	
 	CompanyDao.Iface companyDao = ServiceManager.SERVICEMANAGER.getService(CompanyDao.Iface.class);
+	
+	SearcheConditionDao.Iface searchConditionDao = ServiceManager.SERVICEMANAGER.getService(SearcheConditionDao.Iface.class);
+	
+	TalentpoolDao.Iface talentpoolDao = ServiceManager.SERVICEMANAGER.getService(TalentpoolDao.Iface.class);
 
 	@Autowired
 	private UserHrAccountDao userHrAccountDao;
@@ -96,12 +112,9 @@ public class UserHrAccountService {
 
 	/**
 	 * 下载行业报告，添加HR记录
-	 *
-	 * @param userHrAccount
-	 *            hr用户实体
-	 * @param code
-	 *            验证码
-	 *
+	 * @param downloadReport
+	 * @return
+	 * @throws TException
 	 */
 	public Response postResource(DownloadReport downloadReport) throws TException {
 		try {
@@ -368,4 +381,190 @@ public class UserHrAccountService {
 
 		return passwordArray;
 	}
+	
+	/**
+	 * 获取常用筛选项
+	 * @param hrAccountId 
+	 * @param type (0:候选人列表筛选项， 1：人才库列表筛选)
+	 * @return
+	 * @throws TException
+	 */
+	public Response getSearchCondition(int hrAccountId, int type) {
+		logger.info("UserHrAccountService - getSearchCondition ");
+		CommonQuery query = new CommonQuery();
+		Map<String, String> param = new HashMap<String, String>();
+		query.setEqualFilter(param);
+		param.put("hr_account_id", String.valueOf(hrAccountId));
+		param.put("type", String.valueOf(type));
+		List<SearchCondition> list;
+		List<Map<String, Object>> result = new ArrayList<Map<String,Object>>();
+		try {
+			list = searchConditionDao.getResources(query);
+			logger.info("UserHrAccountService - getSearchCondition  list:{}", list);
+			list.forEach(sc -> {
+				Map<String, Object> map = new HashMap<>();
+				map.put("id", sc.getId());
+				map.put("name", org.apache.commons.lang.StringUtils.defaultString(sc.getName()));
+				map.put("publisher", sc.getPublisher());
+				map.put("position_id", sc.getPosition_id());
+				map.put("keyword", org.apache.commons.lang.StringUtils.defaultString(sc.getKeyword()));
+				map.put("submit_time", org.apache.commons.lang.StringUtils.defaultString(sc.getSubmit_time()));
+				map.put("work_years", sc.getWork_years());
+				map.put("city_name", org.apache.commons.lang.StringUtils.defaultString(sc.getCity_name()));
+				map.put("degree", org.apache.commons.lang.StringUtils.defaultString(sc.getDegree()));
+				map.put("past_position", org.apache.commons.lang.StringUtils.defaultString(sc.getPast_position()));
+				map.put("in_last_job_search_position", sc.getIn_last_job_search_position());
+				map.put("min_age", sc.getMin_age());
+				map.put("max_age", sc.getMax_age());
+				map.put("intention_city_name", org.apache.commons.lang.StringUtils.defaultString(sc.getIntention_city_name()));
+				map.put("sex", sc.getSex());
+				map.put("intention_salary_code", org.apache.commons.lang.StringUtils.defaultString(sc.getIntention_salary_code()));
+				map.put("company_name", org.apache.commons.lang.StringUtils.defaultString(sc.getCompany_name()));
+				map.put("in_last_job_search_company", sc.getIn_last_job_search_company());
+				map.put("hr_account_id", sc.getHr_account_id());
+				map.put("update_time", sc.getUpdate_time());
+				map.put("type", sc.getType());
+				result.add(map);
+			});
+			logger.info("UserHrAccountService - getSearchCondition  result:{}", result);
+			return ResponseUtils.success(result);
+		} catch (TException e) {
+			logger.error(e.getMessage(), e);
+			logger.info("UserHrAccountService - getSearchCondition  error:{}", e);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		}
+	}
+	
+	/**
+	 * 添加常用筛选条件
+	 * @param searchCondition
+	 * @return
+	 */
+	public Response postSearchCondition(SearchCondition searchCondition) {
+		try {
+			CommonQuery query = new CommonQuery();
+			Map<String, String> param = new HashMap<String, String>();
+			query.setEqualFilter(param);
+			param.put("hr_account_id", String.valueOf(searchCondition.getHr_account_id()));
+			param.put("type", String.valueOf(searchCondition.getType()));
+			int row = searchConditionDao.getResourceCount(query);
+			// 每个hr最多只能添加10条常用筛选
+			if (row >= 10){
+				logger.warn("保存常用筛选失败，hr={}，已拥有{}条常用筛选项", searchCondition.getHr_account_id(), row);
+				return ResponseUtils.fail("{'status':42004,'message':'添加失败，最多只能添加10条筛选项'}");
+			} 
+			// 筛选项名字保证不重复
+			param.put("name", searchCondition.getName());
+			row = searchConditionDao.getResourceCount(query);
+			if (row > 0) {
+				logger.warn("保存常用筛选失败，筛选项名称={}，已存在", searchCondition.getName());
+				return ResponseUtils.fail("{'status':42004,'message':'保存失败，改筛选项名称已存在'}");
+			}
+			int primaryKey = searchConditionDao.postResource(searchCondition);
+			if (primaryKey > 0) {
+				return ResponseUtils.success(primaryKey);
+			} else {
+				return ResponseUtils.fail(ConstantErrorCodeMessage.THIRD_PARTY_POSITION_UPSERT_FAILED);
+			}
+		} catch (TException e) {
+			logger.error(e.getMessage(), e);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		}
+	}
+	
+	/**
+	 * 删除常用筛选条件
+	 * @param hrAccountId
+	 * @param id
+	 * @return
+	 */
+	public Response delSearchCondition(int hrAccountId, int id) {
+		int resultRow = 0;
+		try {
+			resultRow = searchConditionDao.delResource(hrAccountId, id);
+			if (resultRow > 0) {
+				return ResponseUtils.success("");
+			} else {
+				return ResponseUtils.fail(ConstantErrorCodeMessage.THIRD_PARTY_POSITION_UPSERT_FAILED);
+			}
+		} catch (TException e) {
+			logger.error(e.getMessage(), e);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		}
+	}
+
+	/**
+	 * 加入人才库
+	 * @param hrAccountId
+	 * @param applierIds
+	 * @return
+	 */
+	@UpdateEs(tableName = "hr_talentpool", argsIndex = 1, argsName = "user_id")
+	public Response joinTalentpool(int hrAccountId, List<Integer> applierIds) {
+		CommonQuery query = new CommonQuery();
+		Map<String, String> param = new HashMap<String, String>();
+		query.setEqualFilter(param);
+		param.put("hr_account_id", String.valueOf(hrAccountId));
+		int resultRow = 0;
+		try {
+			for (Integer applierId : applierIds) {
+				param.put("applier_id", String.valueOf(applierId));
+				Talentpool talentpool = talentpoolDao.getResource(query);
+				if (talentpool == null || talentpool.getId() == 0) {
+					// 将用户加入人才库
+					talentpool = new Talentpool();
+					talentpool.setApplier_id(Integer.valueOf(applierId));
+					talentpool.setHr_account_id(hrAccountId);
+					resultRow += talentpoolDao.postResource(talentpool);
+				} else {
+					// 将状态改为正常
+					talentpool.setStatus(0);
+					resultRow += talentpoolDao.putResource(talentpool);
+				}
+			}
+			if (resultRow > 0) {
+				return ResponseUtils.success("");
+			} else {
+				return ResponseUtils.fail(ConstantErrorCodeMessage.THIRD_PARTY_POSITION_UPSERT_FAILED);
+			}
+		} catch (TException e) {
+			logger.error(e.getMessage(), e);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		}
+	}
+
+	/**
+	 * 移出人才库
+	 * @param hrAccountId
+	 * @param applierIds
+	 * @return
+	 */
+	@UpdateEs(tableName = "hr_talentpool", argsIndex = 1, argsName = "user_id")
+	public Response shiftOutTalentpool(int hrAccountId, List<Integer> applierIds) {
+		CommonQuery query = new CommonQuery();
+		Map<String, String> param = new HashMap<String, String>();
+		query.setEqualFilter(param);
+		param.put("hr_account_id", String.valueOf(hrAccountId));
+		try {
+			int resultRow = 0;
+			for (Integer applierId : applierIds) {
+				param.put("applier_id", String.valueOf(applierId));
+				Talentpool talentpool = talentpoolDao.getResource(query);
+				if (talentpool != null && talentpool.getId() > 0) {
+					// 将状态改为删除
+					talentpool.setStatus(1);
+					resultRow += talentpoolDao.putResource(talentpool);
+				}
+			}
+			if (resultRow <= 0) {
+				return ResponseUtils.fail(ConstantErrorCodeMessage.THIRD_PARTY_POSITION_UPSERT_FAILED);
+			} else {
+				return ResponseUtils.success("");
+			}
+		} catch (TException e) {
+			logger.error(e.getMessage(), e);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		}
+	}
+	
 }

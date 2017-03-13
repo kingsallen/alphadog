@@ -84,6 +84,47 @@ public class RecruitmentScheduleEnumTest {
 
     }
 
+    @Test
+    public void testGetAppStatusDescription() throws Exception {
+        RecruitmentScheduleEnum recruitmentScheduleEnum = RecruitmentScheduleEnum.createFromID(12);
+        System.out.println(recruitmentScheduleEnum.getAppStatusDescription((byte)0, (byte)0,10));
+
+        RecruitmentScheduleEnum recruitmentScheduleEnum1 = RecruitmentScheduleEnum.createFromID(4);
+        System.out.println(recruitmentScheduleEnum1.getAppStatusDescription((byte)0, (byte)0,12));
+
+        RecruitmentScheduleEnum recruitmentScheduleEnum2 = RecruitmentScheduleEnum.createFromID(4);
+        System.out.println(recruitmentScheduleEnum2.getAppStatusDescription((byte)0, (byte)0,12));
+
+        RecruitmentScheduleEnum recruitmentScheduleEnum3 = RecruitmentScheduleEnum.createFromID(12);
+        System.out.println(recruitmentScheduleEnum3.getAppStatusDescription((byte)0, (byte)0,12));
+
+        RecruitmentScheduleEnum recruitmentScheduleEnum4 = RecruitmentScheduleEnum.createFromID(10);
+        System.out.println(recruitmentScheduleEnum4.getAppStatusDescription((byte)0, (byte)0,12));
+
+        RecruitmentScheduleEnum recruitmentScheduleEnum5 = RecruitmentScheduleEnum.createFromID(6);
+        System.out.println(recruitmentScheduleEnum5.getAppStatusDescription((byte)0, (byte)0,10));
+
+        RecruitmentScheduleEnum recruitmentScheduleEnum6 = RecruitmentScheduleEnum.createFromID(10);
+        System.out.println(recruitmentScheduleEnum6.getAppStatusDescription((byte)0, (byte)0,6));
+
+        RecruitmentScheduleEnum recruitmentScheduleEnum7 = RecruitmentScheduleEnum.createFromID(12);
+        System.out.println(recruitmentScheduleEnum7.getAppStatusDescription((byte)0, (byte)0,10));
+
+        RecruitmentScheduleEnum recruitmentScheduleEnum8 = RecruitmentScheduleEnum.createFromID(10);
+        System.out.println(recruitmentScheduleEnum8.getAppStatusDescription((byte)0, (byte)0,12));
+
+        RecruitmentScheduleEnum recruitmentScheduleEnum9 = RecruitmentScheduleEnum.createFromID(3);
+        System.out.println(recruitmentScheduleEnum9.getAppStatusDescription((byte)0, (byte)0,12));
+
+        RecruitmentScheduleEnum recruitmentScheduleEnum11 = RecruitmentScheduleEnum.createFromID(12);
+        System.out.println(recruitmentScheduleEnum11.getAppStatusDescription((byte)0, (byte)0,3));
+
+        RecruitmentScheduleEnum recruitmentScheduleEnum10 = RecruitmentScheduleEnum.createFromID(10);
+        System.out.println(recruitmentScheduleEnum10.getAppStatusDescription((byte)0, (byte)0,12));
+
+        RecruitmentScheduleEnum recruitmentScheduleEnum12 = RecruitmentScheduleEnum.createFromID(6);
+        System.out.println(recruitmentScheduleEnum12.getAppStatusDescription((byte)0, (byte)0,10));
+    }
 
     /**
      * Method: init(int value)

@@ -42,7 +42,6 @@ import com.moseeker.thrift.gen.dao.service.CompanyDao;
 import com.moseeker.thrift.gen.dao.service.HrDBDao;
 import com.moseeker.thrift.gen.dao.service.UserHrAccountDao;
 import com.moseeker.thrift.gen.dao.struct.*;
-import com.moseeker.thrift.gen.dao.struct.HrHbConfigDO;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.RpExtInfo;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
@@ -429,7 +428,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 	 */
 	public List<WechatPositionListData> getPositionList(WechatPositionListQuery query) {
 
-		List<WechatPositionListData> dataList = new ArrayList<>();
+		List<WechatPositionListData> dataList = new ArrayList<WechatPositionListData>();
 
 		try {
 			String childCompanyId = "";
@@ -486,7 +485,6 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     }
                 }
 
-
 				QueryUtil q = new QueryUtil();
 				q.addEqualFilter("id", "["+ org.apache.commons.lang.StringUtils.join(pids.toArray(), ",") + "]");
 				q.setSortby("priority");
@@ -496,11 +494,23 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 				// 内容拼装和返回
 				for (JobPositionRecord jr : jobRecords) {
 					WechatPositionListData e = new WechatPositionListData();
-
 					e.setTitle(jr.getTitle());
 					e.setId(jr.getId());
-					e.setSalary_top(jr.getSalaryTop());
-					e.setSalary_bottom(jr.getSalaryBottom());
+
+					// 数据库的 salary_top 和 salary_bottom 默认是 NULL 不是 0
+					// 所以这里需要对这两个字段做 null pointer 检查
+					if (jr.getSalaryTop() == null) {
+						e.setSalary_top(0);
+					} else {
+						e.setSalary_top(jr.getSalaryTop());
+					}
+
+					if (jr.getSalaryBottom() == null) {
+						e.setSalary_bottom(0);
+					} else {
+						e.setSalary_bottom(jr.getSalaryBottom());
+					}
+
 					e.setPublish_date(new SimpleDateFormat("YYYY-MM-dd HH:mm:ss").format(jr.getUpdateTime()));
 					e.setDepartment(jr.getDepartment());
 					e.setVisitnum(jr.getVisitnum());

@@ -5,7 +5,7 @@ public class RecruitmentResult {
 	
 	private String reason;
 	private int reward;
-	private int status=0;
+	private int status;
 	public int getStatus() {
 		return status;
 	}

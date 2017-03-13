@@ -1,8 +1,11 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -15,10 +18,12 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.DownloadReport;
+import com.moseeker.thrift.gen.useraccounts.struct.SearchCondition;
 
 /**
  * HR账号服务
@@ -97,6 +102,154 @@ public class UserHrAccountController {
 			return ResponseLogNotification.fail(request, e.getMessage());
 		} finally {
 			//do nothing
+		}
+	}
+	
+	/**
+	 * 获取hr常用筛选项
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/hraccount/searchcondition", method = RequestMethod.GET)
+	@ResponseBody
+	public String getSearchCondition(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Params<String, Object> params = ParamUtils.parseRequestParam(request);
+			Integer hrAccountId = params.getInt("hr_account_id");
+			int type = params.getInt("type", 0);
+			logger.info("/hraccount/searchcondition  hrAccountId:{}    type:{}", hrAccountId, type);
+			ValidateUtil vu = new ValidateUtil();
+			vu.addRequiredValidate("hr账号", hrAccountId);
+			if (StringUtils.isNullOrEmpty(vu.validate())) {
+				Response result = userHrAccountService.getSearchCondition(hrAccountId, type);
+				logger.info("/hraccount/searchcondition SUCCESS  result:{}", result);
+				return ResponseLogNotification.success(request, result);
+			} else {
+				logger.info("/hraccount/searchcondition FAILED  result:{}", vu.validate());
+				return ResponseLogNotification.fail(request, vu.validate());
+			}
+		} catch (Exception e) {
+			logger.info("/hraccount/searchcondition EXCEPTION  E:{}", e);
+			logger.error(e.getMessage(), e);
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
+	
+	/**
+	 * 保存hr常用筛选项
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/hraccount/searchcondition", method = RequestMethod.POST)
+	@ResponseBody
+	public String postSearchCondition(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			SearchCondition searchCondition = ParamUtils.initModelForm(request, SearchCondition.class);
+			ValidateUtil vu = new ValidateUtil();
+			vu.addIntTypeValidate("hr账号", searchCondition.getHr_account_id(), null, "hr账号不能为空", 1, null);
+			// 筛选名长度不能大于24字节
+			if (searchCondition.getName() == null || "".equals(searchCondition.getName().trim()) || searchCondition.getName().getBytes("GBK").length > 24 ) {
+				return ResponseLogNotification.fail(request, "筛选名不能超过24个字节");
+			}
+			if (StringUtils.isNullOrEmpty(vu.validate())) {
+				Response result = userHrAccountService.postSearchCondition(searchCondition);
+				return ResponseLogNotification.success(request, result);
+			} else {
+				return ResponseLogNotification.fail(request, vu.validate());
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
+	
+	/**
+	 * 删除hr常用筛选项
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/hraccount/searchcondition", method = RequestMethod.DELETE)
+	@ResponseBody
+	public String DelSearchCondition(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Params<String, Object> params = ParamUtils.parseRequestParam(request);
+			Integer hrAccountId = params.getInt("hr_account_id");
+			Integer id = params.getInt("id");
+			ValidateUtil vu = new ValidateUtil();
+			vu.addRequiredValidate("hr账号", hrAccountId, null, null);
+			vu.addRequiredValidate("筛选项id", id, null, null);
+			if (StringUtils.isNullOrEmpty(vu.validate())) {
+				Response result = userHrAccountService.delSearchCondition(hrAccountId, id);
+				return ResponseLogNotification.success(request, result);
+			} else {
+				return ResponseLogNotification.fail(request, vu.validate());
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
+	
+	/**
+	 * 将候选人加入人才库
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/hraccount/talentpool/in", method = RequestMethod.POST)
+	@ResponseBody
+	public String joinTalentpool(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Params<String,Object> params = ParamUtils.parseRequestParam(request);
+			Integer hrAccountId = params.getInt("hr_account_id");
+			List<Integer> applierIds = (List<Integer>) params.get("applier_ids");
+			if (applierIds == null || applierIds.isEmpty()) {
+				return ResponseLogNotification.fail(request, "候选人id为空");
+			}
+			ValidateUtil vu = new ValidateUtil();
+			vu.addRequiredValidate("hr账号", hrAccountId, null, null);
+			if (StringUtils.isNullOrEmpty(vu.validate())) {
+				Response result = userHrAccountService.joinTalentpool(hrAccountId, applierIds);
+				return ResponseLogNotification.success(request, result);
+			} else {
+				return ResponseLogNotification.fail(request, vu.validate());
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
+	
+	/**
+	 * 将候选人移出人才库
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/hraccount/talentpool/out", method = RequestMethod.POST)
+	@ResponseBody
+	public String shiftOutTalentpool(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Params<String,Object> params = ParamUtils.parseRequestParam(request);
+			Integer hrAccountId = params.getInt("hr_account_id");
+			List<Integer> applierIds = (List<Integer>) params.get("applier_ids");
+			if (applierIds == null || applierIds.isEmpty()) {
+				return ResponseLogNotification.fail(request, "候选人id为空");
+			}
+			ValidateUtil vu = new ValidateUtil();
+			vu.addRequiredValidate("hr账号", hrAccountId, null, null);
+			if (StringUtils.isNullOrEmpty(vu.validate())) {
+				Response result = userHrAccountService.shiftOutTalentpool(hrAccountId, applierIds);
+				return ResponseLogNotification.success(request, result);
+			} else {
+				return ResponseLogNotification.fail(request, vu.validate());
+			}
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}
 }

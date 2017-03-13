@@ -2,12 +2,15 @@ package com.moseeker.baseorm.db.candidatedb.tables.records;
 
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.dao.struct.CandidateCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.CandidatePositionDO;
 import org.joda.time.DateTime;
 import org.jooq.types.UInteger;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
@@ -46,5 +49,19 @@ public class CandidateCompanyTest {
         assertEquals("wjf", candidateCompanyDO.getName());
         assertEquals("wjfnickname", candidateCompanyDO.getNickname());
         assertEquals(7, candidateCompanyDO.getSysUserId());
+    }
+
+    @Test
+    public void candidatePositionRecordTest() {
+        /*CandidatePositionRecord record = new CandidatePositionRecord();
+        record.setIsInterested((byte)2);
+        CandidatePositionDO candidatePositionDO = BeanUtils.DBToStruct(CandidatePositionDO.class, record);
+        assertEquals(true, candidatePositionDO.isIsInterested());*/
+
+        CandidatePositionDO candidatePositionDO1 = new CandidatePositionDO();
+        candidatePositionDO1.setIsInterested(true);
+
+        CandidatePositionRecord record1 = BeanUtils.structToDB(candidatePositionDO1, CandidatePositionRecord.class);
+        assertEquals(1, record1.getIsInterested().intValue());
     }
 }

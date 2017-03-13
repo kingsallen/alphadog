@@ -15,6 +15,10 @@ service UserDBDao {
     userdb_struct.UserUserDO saveUser(1:userdb_struct.UserUserDO user);
     //查找公司下的HR
     list<userdb_struct.UserHrAccountDO> listHRFromCompany(1: i32 comanyId);
+    list<userdb_struct.UserHrAccountDO> listUserHrAccount(1: common_struct.CommonQuery query) throws (1: common_struct.CURDException e);
+    userdb_struct.UserHrAccountDO getUserHrAccount(1: common_struct.CommonQuery query) throws (1: common_struct.CURDException e);
+    userdb_struct.UserHrAccountDO updateUserHrAccount(1: userdb_struct.UserHrAccountDO userHrAccountDO) throws (1: common_struct.CURDException e);
+    i32 deleteUserHrAccount(1: i32 id) throws (1: common_struct.CURDException e);
 
     userdb_struct.UserEmployeeDO getEmployee(1:common_struct.CommonQuery query);
     common_struct.Response putUserEmployee(1: userdb_struct.UserEmployeePointsRecordDO employeeDo);
@@ -30,4 +34,6 @@ service UserDBDao {
     list<userdb_struct.UserEmployeeDO> getUserEmployeesDO(1: common_struct.CommonQuery query)
     common_struct.Response putUserEmployeesDO(1: list<userdb_struct.UserEmployeeDO> employeeDoList)
 
+    list<userdb_struct.UserWxUserDO> listUserWxUserDO(1: common_struct.CommonQuery query) throws (1:common_struct.CURDException e)
+    userdb_struct.UserWxUserDO getUserWxUserDO(1: common_struct.CommonQuery query) throws (1:common_struct.CURDException e)
 }

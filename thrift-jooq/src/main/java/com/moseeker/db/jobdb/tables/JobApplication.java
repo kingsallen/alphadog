@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobApplication extends TableImpl<JobApplicationRecord> {
 
-	private static final long serialVersionUID = -1159047030;
+	private static final long serialVersionUID = 1377871730;
 
 	/**
 	 * The reference instance of <code>jobdb.job_application</code>
@@ -77,9 +77,9 @@ public class JobApplication extends TableImpl<JobApplicationRecord> {
 	public final TableField<JobApplicationRecord, Timestamp> SUBMIT_TIME = createField("submit_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "申请提交时间");
 
 	/**
-	 * The column <code>jobdb.job_application.status_id</code>. hr_points_conf.id, 申请状态ID
+	 * The column <code>jobdb.job_application.status_id</code>. hr_award_config.id, 申请状态ID
 	 */
-	public final TableField<JobApplicationRecord, UInteger> STATUS_ID = createField("status_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "hr_points_conf.id, 申请状态ID");
+	public final TableField<JobApplicationRecord, UInteger> STATUS_ID = createField("status_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "hr_award_config.id, 申请状态ID");
 
 	/**
 	 * The column <code>jobdb.job_application.l_application_id</code>. ATS的申请ID

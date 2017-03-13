@@ -10,6 +10,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -61,28 +62,36 @@ public class StructDaoImpl<S extends  TBase, R extends UpdatableRecordImpl<R>, T
             if(record != null) {
                 return BeanUtils.DBToStruct(sClass, record);
             } else {
-                throw CURDExceptionUtils.buildGetNothingException();
+                return sClass.newInstance();
+                //throw CURDExceptionUtils.buildGetNothingException();
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+            try {
+                return sClass.newInstance();
+            } catch (InstantiationException | IllegalAccessException e1) {
+                logger.error(e.getMessage(), e);
+            }
+
             throw CURDExceptionUtils.buildGetNothingException();
         }
     }
 
     public List<S> listResources(CommonQuery query) throws CURDException {
-        List<S> resources = null;
+        List<S> resources = new ArrayList<S>();
         try {
             List<R> records = this.getResources(query);
             if(records != null && records.size() > 0) {
                 resources = BeanUtils.DBToStruct(sClass, records);
-                return resources;
-            } else {
-                throw CURDExceptionUtils.buildGetNothingException();
             }
+            /*else {
+                throw CURDExceptionUtils.buildGetNothingException();
+            }*/
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw CURDExceptionUtils.buildGetNothingException();
+            //throw CURDExceptionUtils.buildGetNothingException();
         }
+        return resources;
     }
 
     public void deleteResource(S s) throws CURDException {
