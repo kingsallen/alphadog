@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrTeam extends TableImpl<HrTeamRecord> {
 
-    private static final long serialVersionUID = 406882091;
+    private static final long serialVersionUID = 361886744;
 
     /**
      * The reference instance of <code>hrdb.hr_team</code>
@@ -67,14 +67,19 @@ public class HrTeam extends TableImpl<HrTeamRecord> {
     public final TableField<HrTeamRecord, String> SUMMARY = createField("summary", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "职能概述");
 
     /**
-     * The column <code>hrdb.hr_team.description</code>.
+     * The column <code>hrdb.hr_team.description</code>. 团队介绍
      */
-    public final TableField<HrTeamRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.VARCHAR.length(2048).nullable(false).defaultValue(org.jooq.impl.DSL.field("团队介绍", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<HrTeamRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.VARCHAR.length(2048).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "团队介绍");
 
     /**
      * The column <code>hrdb.hr_team.show_order</code>. 团队显示顺序
      */
     public final TableField<HrTeamRecord, Integer> SHOW_ORDER = createField("show_order", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "团队显示顺序");
+
+    /**
+     * The column <code>hrdb.hr_team.jd_media</code>. 成员一天信息hr_media.id: [1, 23, 32]
+     */
+    public final TableField<HrTeamRecord, String> JD_MEDIA = createField("jd_media", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaultValue(org.jooq.impl.DSL.field("[]", org.jooq.impl.SQLDataType.VARCHAR)), this, "成员一天信息hr_media.id: [1, 23, 32]");
 
     /**
      * The column <code>hrdb.hr_team.company_id</code>. 团队所在母公司
@@ -107,19 +112,14 @@ public class HrTeam extends TableImpl<HrTeamRecord> {
     public final TableField<HrTeamRecord, Integer> RES_ID = createField("res_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "团队主图片hr_resource.id");
 
     /**
-     * The column <code>hrdb.hr_team.disable</code>. 0是正常 1是删除
-     */
-    public final TableField<HrTeamRecord, Integer> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "0是正常 1是删除");
-
-    /**
      * The column <code>hrdb.hr_team.team_detail</code>. 团队详情页配置hr_media.id: [1, 23, 32]
      */
     public final TableField<HrTeamRecord, String> TEAM_DETAIL = createField("team_detail", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaultValue(org.jooq.impl.DSL.field("[]", org.jooq.impl.SQLDataType.VARCHAR)), this, "团队详情页配置hr_media.id: [1, 23, 32]");
 
     /**
-     * The column <code>hrdb.hr_team.jd_media</code>. 成员一天信息hr_media.id: [1, 23, 32]
+     * The column <code>hrdb.hr_team.disable</code>. 0是正常 1是删除
      */
-    public final TableField<HrTeamRecord, String> JD_MEDIA = createField("jd_media", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaultValue(org.jooq.impl.DSL.field("[]", org.jooq.impl.SQLDataType.VARCHAR)), this, "成员一天信息hr_media.id: [1, 23, 32]");
+    public final TableField<HrTeamRecord, Integer> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "0是正常 1是删除");
 
     /**
      * Create a <code>hrdb.hr_team</code> table reference
