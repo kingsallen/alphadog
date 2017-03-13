@@ -15,7 +15,7 @@ public class ChatThriftServiceTest {
 
     ChatService.Iface chatService = ServiceManager.SERVICEMANAGER.getService(ChatService.Iface.class);
 
-    @Test
+    //@Test
     public void listHRChatRoom() throws Exception {
 
         HRChatRoomsVO chatRoomsVO = chatService.listHRChatRoom(82689, 1, 10);
