@@ -38,7 +38,7 @@ public class ChatThriftServiceTest {
 
     @Test
     public void listUserChatRoom() throws Exception {
-
+        //chatService.listUserChatRoom();
     }
 
     @Test
