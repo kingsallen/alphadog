@@ -82,7 +82,7 @@ public class EmployeeService {
 			query.getEqualFilter().put("sysuser_id", String.valueOf(userId));
 			query.getEqualFilter().put("company_id", String.valueOf(companyId));
 			employee = userDao.getEmployee(query);
-			if (employee != null) {
+			if (employee != null && employee.getId() != 0) {
 			    // 根据user_id获取用户wxuserId
 				query.getEqualFilter().remove("company_id");
 			    Response wxResult = wxUserDao.getResource(query);
