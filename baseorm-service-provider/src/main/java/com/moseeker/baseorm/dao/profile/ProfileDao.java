@@ -1,5 +1,6 @@
 package com.moseeker.baseorm.dao.profile;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.profiledb.Tables;
@@ -13,6 +14,8 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.HttpClient;
+import com.moseeker.common.util.JsonToMap;
 import com.moseeker.thrift.gen.application.struct.JobResumeOther;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.position.struct.JobPositionExt;
@@ -27,10 +30,12 @@ import org.jooq.DSLContext;
 import org.jooq.types.UInteger;
 import org.springframework.stereotype.Service;
 
+import java.net.ConnectException;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -43,7 +48,26 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
         tableLike = Tables.PROFILE_PROFILE;
     }
 
-    public Map<String, Object> getRelatedDataByJobApplication(DSLContext create, com.moseeker.thrift.gen.application.struct.JobApplication application, boolean recommender) {
+    private String getDownloadUrlByUserId(int userid){
+        String url = null;
+        Map<String,Object> params = new HashMap<String,Object>(){{
+            put("user_id",userid);
+            put("password","moseeker.com");
+        }};
+        try {
+            String content = HttpClient.sendPost("http://download.moseeker.com/generatebyuserid", JSON.toJSONString(params));
+            Map<String,Object> mp = JsonToMap.parseJSON2Map(content);
+            Object link = mp.get("downloadlink");
+            if(link != null) {
+                url = link.toString();
+            }
+        } catch (ConnectException e) {
+            e.printStackTrace();
+        }
+        return url;
+    }
+
+    public Map<String, Object> getRelatedDataByJobApplication(DSLContext create, com.moseeker.thrift.gen.application.struct.JobApplication application, boolean recommender,boolean dl_url_required) {
         long start = System.currentTimeMillis();
         Map<String, Object> map = new HashMap<>();
         //all from jobdb.job_application
@@ -305,18 +329,25 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
             }
         }
 
+        map.put("attachment_url","temp url");
+
+        if(dl_url_required && application.getApplier_id() != 0){
+            String url = getDownloadUrlByUserId((int) application.getApplier_id());
+            map.put("download_url",url == null?"":url);
+        }
+
         return map;
 
     }
 
-    public Response getResourceByApplication(int companyId, int sourceId, int atsStatus, boolean recommender) throws Exception {
+    public Response getResourceByApplication(int companyId, int sourceId, int atsStatus, boolean recommender, boolean dl_url_required) throws Exception {
         Connection conn = null;
         try {
             conn = DBConnHelper.DBConn.getConn();
             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
             long start = System.currentTimeMillis();
             System.err.println("start-----------:" + start);
-            List<Map<String, Object>> datas = create
+            Set<Map<String, Object>> datas = create
                     .select()
                     .from(JobApplication.JOB_APPLICATION)
                     .where(JobApplication.JOB_APPLICATION.COMPANY_ID.eq(UInteger.valueOf(companyId)))
@@ -324,10 +355,10 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
                     .and(JobApplication.JOB_APPLICATION.ATS_STATUS.eq(atsStatus))
                     .fetchInto(com.moseeker.thrift.gen.application.struct.JobApplication.class)
                     .stream()
-                    .map(application -> getRelatedDataByJobApplication(create, application, recommender))
-                    .collect(Collectors.toList());
+                    .map(application -> getRelatedDataByJobApplication(create, application, recommender,dl_url_required))
+                    .collect(Collectors.toSet());
             System.err.println("end-----------:" + (System.currentTimeMillis() - start));
-            return ResponseUtils.success(datas);
+            return ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(datas));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);

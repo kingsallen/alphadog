@@ -1,5 +1,6 @@
 package moseeker.baseorm.dao.Profile;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.Thriftservice.ProfileDaoThriftService;
 import com.moseeker.baseorm.Thriftservice.UserEmployeeDaoThriftService;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
@@ -7,6 +8,7 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.HttpClient;
 import com.moseeker.thrift.gen.common.struct.Response;
 import org.apache.thrift.TException;
 import org.jooq.DSLContext;
@@ -14,7 +16,9 @@ import org.jooq.types.UInteger;
 import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import java.net.ConnectException;
 import java.sql.Connection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -68,7 +72,18 @@ public class ProfileDaoTest {
     @Test
     public void testProfileByApplication() throws TException {
         init();
-        Response response = service.getResourceByApplication(1,0,3,true);
+        Response response = service.getResourceByApplication(107604,0,0,true,false);
         System.out.println(response);
+    }
+
+    @Test
+    public void testDownloadProfileByUserId() throws ConnectException {
+        Map<String,Object> map = new HashMap<String,Object>(){{
+            put("user_id",2590);
+            put("password","moseeker.com");
+        }};
+        String content = HttpClient.sendPost("http://download.moseeker.com/generatebyuserid", JSON.toJSONString(map));
+
+        System.out.println(content);
     }
 }

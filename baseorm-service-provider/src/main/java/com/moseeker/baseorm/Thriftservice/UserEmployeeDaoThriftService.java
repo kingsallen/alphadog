@@ -9,6 +9,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.UserEmployeeDao;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import org.apache.thrift.TException;
+import org.apache.thrift.TSerializable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
         try {
             UserEmployeeRecord result = userEmployeeDao.getResource(query);
             if (result != null) {
-                return ResponseUtils.success(BeanUtils.DBToStruct(UserEmployeeStruct.class, result));
+                return ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(result.into(UserEmployeeStruct.class)));
             } else {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
             }
@@ -52,9 +53,9 @@ public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
             if (result != null) {
                 List<UserEmployeeStruct> userEmployeeStructs = new ArrayList<>(result.size());
                 for (UserEmployeeRecord uer : result) {
-                    userEmployeeStructs.add(BeanUtils.DBToStruct(UserEmployeeStruct.class, uer));
+                    userEmployeeStructs.add(uer.into(UserEmployeeStruct.class));
                 }
-                return ResponseUtils.success(userEmployeeStructs);
+                return ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeStructs));
             } else {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
             }
@@ -155,6 +156,17 @@ public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
     public Response postPutResources(List<UserEmployeeStruct> records) throws TException {
         try {
             int result = userEmployeeDao.postPutResources(convertDB(records));
+            return ResponseUtils.success(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        }
+    }
+
+    @Override
+    public Response postPutUserEmployeeBatch(List<UserEmployeeStruct> userEmployees) throws TException {
+        try {
+            int result = userEmployeeDao.postPutUserEmployeeBatch(userEmployees);
             return ResponseUtils.success(result);
         } catch (Exception e) {
             e.printStackTrace();

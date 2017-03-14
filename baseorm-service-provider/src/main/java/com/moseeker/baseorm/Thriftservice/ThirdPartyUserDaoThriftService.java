@@ -8,6 +8,8 @@ import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.struct.ThirdPartyUser;
 import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.moseeker.thrift.gen.dao.service.ThirdPartyUserDao.Iface;
@@ -19,20 +21,16 @@ import java.sql.Timestamp;
  */
 @Service
 public class ThirdPartyUserDaoThriftService implements Iface {
-
+    private Logger log = LoggerFactory.getLogger(getClass());
     @Autowired
     ThirdPartyUserDao thirdPartyUserDao;
 
     @Override
     public Response putThirdPartyUser(ThirdPartyUser user) throws TException {
         try {
-            UserThirdpartyUserRecord record = BeanUtils.structToDB(user, UserThirdpartyUserRecord.class);
-            Timestamp updateTime = new Timestamp(System.currentTimeMillis());
-            record.setUpdateTime(updateTime);
-            int result = thirdPartyUserDao.putResource(record);
+            int result = thirdPartyUserDao.putThirdPartyUser(user);
             return ResponseUtils.success(result);
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
     }

@@ -91,9 +91,9 @@ public class WholeProfileService{
 			.getService(com.moseeker.thrift.gen.dao.service.ProfileDao.Iface.class);
 
 
-	public Response getResourceByApplication(int companyId, int sourceId, int atsStatus, boolean recommender) throws TException {
+	public Response getResourceByApplication(int companyId, int sourceId, int atsStatus, boolean recommender,boolean dl_url_required) throws TException {
 
-		return thriftProfileDao.getResourceByApplication(companyId,sourceId,atsStatus,recommender);
+		return thriftProfileDao.getResourceByApplication(companyId,sourceId,atsStatus,recommender,dl_url_required);
 	}
 
 	Logger logger = LoggerFactory.getLogger(WholeProfileService.class);

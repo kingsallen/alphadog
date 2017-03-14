@@ -4,5 +4,5 @@ include "../../common/struct/common_struct.thrift"
 
 service ProfileDao{
 
-    common_struct.Response getResourceByApplication(1:i32 companyId,2:i32 sourceId,3:i32 atsStatus,4:bool recommender);
+    common_struct.Response getResourceByApplication(1:i32 companyId,2:i32 sourceId,3:i32 atsStatus,4:bool recommender,5:bool dl_url_required);
 }

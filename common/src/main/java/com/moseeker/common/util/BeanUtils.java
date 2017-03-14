@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.PropertyFilter;
 import org.apache.thrift.TBase;
 import org.apache.thrift.TException;
 import org.apache.thrift.TSerializer;
@@ -1026,6 +1027,33 @@ public class BeanUtils {
 		TSerializer serializer = new TSerializer(new TSimpleJSONProtocol.Factory());
 		return serializer.toString(tobj, "utf8");
 	}
+
+	public static String convertStructToJSON(final List<? extends TBase<?, ?>> tobj) throws TException{
+		StringBuilder builder = new StringBuilder();
+		for(TBase t : tobj){
+			builder.append(',').append(convertStructToJSON(t));
+		}
+		builder.delete(0,1);
+		builder.insert(0,'[').append(']');
+		return builder.toString();
+	}
+
+	static PropertyFilter profilter = new PropertyFilter(){
+
+		@Override
+		public boolean apply(Object object, String name, Object value) {
+			if(name.startsWith("set")){
+				return false;
+			}
+			return true;
+		}
+
+	};
+
+	public static String convertStructToJSON(Object object) throws TException{
+		return JSON.toJSONString(object,profilter);
+	}
+
 
 	public static Map<String, Object> object2Map(Object object){
 		JSONObject jsonObject = (JSONObject) JSONObject.toJSON(object);

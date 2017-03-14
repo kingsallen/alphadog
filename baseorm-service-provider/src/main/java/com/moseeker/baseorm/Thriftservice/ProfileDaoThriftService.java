@@ -17,9 +17,9 @@ public class ProfileDaoThriftService implements ProfileDao.Iface {
     @Autowired
     com.moseeker.baseorm.dao.profile.ProfileDao profileDao;
     @Override
-    public Response getResourceByApplication(int companyId, int sourceId, int atsStatus, boolean recommender) throws TException {
+    public Response getResourceByApplication(int companyId, int sourceId, int atsStatus, boolean recommender, boolean dl_url_required) throws TException {
         try {
-            return profileDao.getResourceByApplication(companyId, sourceId, atsStatus, recommender);
+            return profileDao.getResourceByApplication(companyId, sourceId, atsStatus, recommender,dl_url_required);
         } catch (Exception e) {
             e.printStackTrace();
             throw new TException(MessageFormat.format("getResourceByApplication查询错误", "companyId="+companyId+"&sourceId="+sourceId+"&atsStatus="+atsStatus+"&recommender="+recommender));

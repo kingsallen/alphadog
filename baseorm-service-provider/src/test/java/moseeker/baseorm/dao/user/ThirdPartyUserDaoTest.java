@@ -26,20 +26,12 @@ public class ThirdPartyUserDaoTest {
 //    public void testUpdateUser() throws TException {
 //        init();
 //        ThirdPartyUser user = new ThirdPartyUser();
-//        user.setId(1);
-//        user.setUsername("testUn1");
+//        user.setUser_id(1);
+//        user.setSource_id(3);
+//        user.setUsername("abcd");
+//        user.setPassword("ppppp");
 //        Response response = service.putThirdPartyUser(user);
 //        System.out.println(response);
 //        Assert.assertEquals(response.getData(),"1");
-//
-//        user.setId(0);
-//        user.setUsername("testUn1");
-//        response = service.putThirdPartyUser(user);
-//        System.out.println(response);
-//        Assert.assertEquals(response.getData(),"0");
-//
-//        response = service.putThirdPartyUser(new ThirdPartyUser());
-//        System.out.println(response);
-//        Assert.assertEquals(response.getData(),"0");
 //    }
 }

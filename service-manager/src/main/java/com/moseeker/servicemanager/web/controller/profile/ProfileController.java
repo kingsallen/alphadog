@@ -255,7 +255,7 @@ public class ProfileController {
 			int sourceId = form.getInt("source_id",-1);
 			int atsStatus = form.getInt("ats_status",1);
 			boolean recommender = form.getBoolean("recommender",false);
-
+			boolean dlUrlRequired = form.getBoolean("dl_url_required",false);
 
 			if(companyId == -1){
 				return ResponseLogNotification.fail(request, "company_id不能为空");
@@ -263,7 +263,7 @@ public class ProfileController {
 				return ResponseLogNotification.fail(request,"sourceId不能为空");
 			}
 
-			Response result = profileService.getResourceByApplication(companyId,sourceId,atsStatus,recommender);
+			Response result = profileService.getResourceByApplication(companyId,sourceId,atsStatus,recommender,dlUrlRequired);
 
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
