@@ -6,7 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.Future;
 
+import com.moseeker.common.thread.ThreadPool;
 import org.apache.thrift.TException;
 import org.jooq.types.UByte;
 import org.jooq.types.UInteger;
@@ -87,6 +89,8 @@ public class WholeProfileService {
 	Logger logger = LoggerFactory.getLogger(WholeProfileService.class);
 	ProfileUtils profileUtils = new ProfileUtils();
 
+	ThreadPool pool = ThreadPool.Instance;
+
 	public Response getResource(int userId, int profileId, String uuid) throws TException {
 		Response response = new Response();
 		try {
@@ -112,53 +116,65 @@ public class WholeProfileService {
 				Map<String, Object> profileprofile = buildProfile(profileRecord, query, constantRecords);
 				profile.put("profile", profileprofile);
 
-				Map<String, Object> basic = buildBasic(profileRecord, query, constantRecords);
+				Future<Map<String, Object>> basicFuture = pool.startTast(() -> buildBasic(profileRecord, query, constantRecords));
+				Future<List<Map<String, Object>>> workexpsFuture = pool.startTast(() -> buildWorkexps(profileRecord, query));
+				Future<List<Map<String, Object>>> educationsFuture = pool.startTast(() -> buildEducations(profileRecord, query));
+				Future<List<Map<String, Object>>> projectexpsFuture = pool.startTast(() -> buildProjectexps(profileRecord, query));
+				Future<List<Map<String, Object>>> buildLanguageFuture = pool.startTast(() -> buildLanguage(profileRecord, query));
+				Future<List<Map<String, Object>>> buildskillsFuture = pool.startTast(() -> buildskills(profileRecord, query));
+				Future<List<Map<String, Object>>> buildsCredentialsFuture = pool.startTast(() -> buildsCredentials(profileRecord, query));
+				Future<List<Map<String, Object>>> buildsAwardsFuture = pool.startTast(() -> buildsAwards(profileRecord, query));
+				Future<List<Map<String, Object>>> buildsWorksFuture = pool.startTast(() -> buildsWorks(profileRecord, query));
+				Future<List<Map<String, Object>>> intentionsFuture = pool.startTast(() -> profileUtils.buildsIntentions(profileRecord, query,
+						constantRecords, intentionDao, intentionCityDao, intentionIndustryDao, intentionPositionDao,
+						dictCityDao, dictIndustryDao, dictPositionDao));
+				Future<List<ProfileAttachmentRecord>> attachmentRecordsFuture = pool.startTast(() -> attachmentDao.getResources(query));
+				Future<List<ProfileImportRecord>> importRecordsFuture = pool.startTast(() -> profileImportDao.getResources(query));
+				Future<List<ProfileOtherRecord>> otherRecordsFuture = pool.startTast(() -> customizeResumeDao.getResources(query));
+
+				Map<String, Object> basic = basicFuture.get();
 				profile.put("basic", basic);
 
-				List<Map<String, Object>> workexps = buildWorkexps(profileRecord, query);
+				List<Map<String, Object>> workexps = workexpsFuture.get();
 				profile.put("workexps", workexps);
 
-				List<Map<String, Object>> educations = buildEducations(profileRecord, query);
+				List<Map<String, Object>> educations = educationsFuture.get();
 				profile.put("educations", educations);
 
-				List<Map<String, Object>> projectexps = buildProjectexps(profileRecord, query);
+				List<Map<String, Object>> projectexps = projectexpsFuture.get();
 				profile.put("projectexps", projectexps);
 
-				List<Map<String, Object>> languages = buildLanguage(profileRecord, query);
+				List<Map<String, Object>> languages = buildLanguageFuture.get();
 				profile.put("languages", languages);
 
-				List<Map<String, Object>> skills = buildskills(profileRecord, query);
+				List<Map<String, Object>> skills = buildskillsFuture.get();
 				profile.put("skills", skills);
 
-				List<Map<String, Object>> credentials = buildsCredentials(profileRecord, query);
+				List<Map<String, Object>> credentials = buildsCredentialsFuture.get();
 				profile.put("credentials", credentials);
 
-				List<Map<String, Object>> awards = buildsAwards(profileRecord, query);
+				List<Map<String, Object>> awards = buildsAwardsFuture.get();
 				profile.put("awards", awards);
 
-				List<Map<String, Object>> works = buildsWorks(profileRecord, query);
+				List<Map<String, Object>> works = buildsWorksFuture.get();
 				profile.put("works", works);
 
-				List<Map<String, Object>> intentions = profileUtils.buildsIntentions(profileRecord, query,
-						constantRecords, intentionDao, intentionCityDao, intentionIndustryDao, intentionPositionDao,
-						dictCityDao, dictIndustryDao, dictPositionDao);
+				List<Map<String, Object>> intentions = intentionsFuture.get();
 				profile.put("intentions", intentions);
 
-				List<ProfileAttachmentRecord> attachmentRecords = attachmentDao.getResources(query);
+				List<ProfileAttachmentRecord> attachmentRecords = attachmentRecordsFuture.get();
 				List<Map<String, Object>> attachments = profileUtils.buildAttachments(profileRecord, attachmentRecords);
 				profile.put("attachments", attachments);
 
-				List<ProfileImportRecord> importRecords = profileImportDao.getResources(query);
+				List<ProfileImportRecord> importRecords = importRecordsFuture.get();
 				List<Map<String, Object>> imports = profileUtils.buildImports(profileRecord, importRecords);
 				profile.put("imports", imports);
 
-				List<ProfileOtherRecord> otherRecords = customizeResumeDao.getResources(query);
+				List<ProfileOtherRecord> otherRecords = otherRecordsFuture.get();
 				List<Map<String, Object>> others = profileUtils.buildOthers(profileRecord, otherRecords);
 
 				profile.put("others", others);
-				String jsonString=JSON.toJSONString(profile);
 				return ResponseUtils.success(profile);
-				// response.setData(gson.toJson(profile));
 			} else {
 				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 			}
@@ -1096,11 +1112,21 @@ public class WholeProfileService {
 			List<DictConstantRecord> constantRecords) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			ProfileBasicRecord basicRecord = profileBasicDao.getResource(query);
+			/*ProfileBasicRecord basicRecord = profileBasicDao.getResource(query);
 			UserUserRecord userRecord = userDao.getUserById(profileRecord.getUserId().intValue());
 			ProfileWorkexpRecord lastWorkExp = workExpDao.getLastWorkExp(profileRecord.getId().intValue());
 			UserSettingsRecord userSettingsRecord = userSettingsDao
-					.getUserSettingsById(profileRecord.getUserId().intValue());
+					.getUserSettingsById(profileRecord.getUserId().intValue());*/
+
+			Future<ProfileBasicRecord> basicRecordFuture = pool.startTast(() -> profileBasicDao.getResource(query));
+			Future<UserUserRecord> userRecordFuture = pool.startTast(() -> userDao.getUserById(profileRecord.getUserId().intValue()));
+			Future<ProfileWorkexpRecord> lastWorkExpFuture = pool.startTast(() -> workExpDao.getLastWorkExp(profileRecord.getId().intValue()));
+			Future<UserSettingsRecord> userSettingsRecordFuture = pool.startTast(() -> userSettingsDao.getUserSettingsById(profileRecord.getUserId().intValue()));
+
+			ProfileBasicRecord basicRecord = basicRecordFuture.get();
+			UserUserRecord userRecord = userRecordFuture.get();
+			ProfileWorkexpRecord lastWorkExp = lastWorkExpFuture.get();
+			UserSettingsRecord userSettingsRecord = userSettingsRecordFuture.get();
 
 			HrCompanyRecord company = null;
 			if (lastWorkExp != null) {
