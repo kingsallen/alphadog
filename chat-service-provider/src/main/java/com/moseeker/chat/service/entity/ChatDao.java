@@ -596,4 +596,13 @@ public class ChatDao {
         }
         return null;
     }
+
+    public HrChatUnreadCountDO saveUnreadCount(HrChatUnreadCountDO unreadCountDO) {
+        try {
+            return hrDBDao.saveChatUnreadCount(unreadCountDO);
+        } catch (TException e) {
+            logger.error(e.getMessage(), e);
+            return null;
+        }
+    }
 }
