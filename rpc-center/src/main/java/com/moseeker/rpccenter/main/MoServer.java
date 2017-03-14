@@ -92,6 +92,8 @@ public class MoServer {
         }
         if(!server.isStarted()) {
             server.start();
+            System.out.println("Server is started! IP : " + thriftConfig.getIP() + " port : "+ thriftConfig.getPort());
+            logger.info("Server is started! IP : {} Port : {}", thriftConfig.getIP(), thriftConfig.getPort());
         }
     }
 

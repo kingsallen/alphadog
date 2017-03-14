@@ -63,12 +63,13 @@ public class ChatService {
                     HRChatRoomVO hrChatRoomVO = new HRChatRoomVO();
                     hrChatRoomVO.setId(chatUnreadCountDO.getRoomId());
                     hrChatRoomVO.setUserId(chatUnreadCountDO.getUserId());
-                    hrChatRoomVO.setUnReadNum(chatUnreadCountDO.getHrUnreadCount());
+                    hrChatRoomVO.setUnReadNum(chatUnreadCountDO.getUserUnreadCount());
 
                     List<HrWxHrChatListDO> chatRoomList = null;
                     List<UserUserDO> userList = null;
                     try {
                         chatRoomList = (List<HrWxHrChatListDO>) chatRoomsFuture.get();
+
                     } catch (InterruptedException | ExecutionException e) {
                         logger.error(e.getMessage(), e);
                     }
@@ -82,6 +83,7 @@ public class ChatService {
                             hrChatRoomVO.setStatus(status);
                         }
                     }
+                    /** 匹配用户名称和头像 */
                     try {
                         userList = (List<UserUserDO>) usersFuture.get();
                     } catch (InterruptedException | ExecutionException e) {
@@ -286,6 +288,7 @@ public class ChatService {
         HrWxHrChatListDO chatRoom = chaoDao.getChatRoom(roomId, userId, hrId);
         boolean chatDebut = false;
         if(chatRoom == null) {
+            chatRoom = new HrWxHrChatListDO();
             String createTime = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
             chatRoom.setCreateTime(createTime);
             chatRoom.setHraccountId(hrId);
@@ -295,28 +298,38 @@ public class ChatService {
             chatDebut = true;
         }
         if(chatRoom != null) {
-            resultOfSaveRoomVO = searchResult(chatRoom);
-            pool.startTast(() -> createChat(resultOfSaveRoomVO));
-            resultOfSaveRoomVO.setChatDebut(chatDebut);
+            resultOfSaveRoomVO = searchResult(chatRoom, positionId, chatDebut);
+            if(chatDebut) {
+                pool.startTast(() -> createChat(resultOfSaveRoomVO));
+                resultOfSaveRoomVO.setChatDebut(chatDebut);
+            }
         } else {
             resultOfSaveRoomVO = new ResultOfSaveRoomVO();
         }
-
+        resultOfSaveRoomVO.setChatDebut(chatDebut);
         return resultOfSaveRoomVO;
     }
 
     /**
      * 查找返回值
      * @param chatRoom 聊天室
+     * @param positionId 职位编号
+     * @param chatDebut 是否是第一次访问
      * @return
      */
-    private ResultOfSaveRoomVO searchResult(HrWxHrChatListDO chatRoom) {
+    private ResultOfSaveRoomVO searchResult(HrWxHrChatListDO chatRoom, int positionId, boolean chatDebut) {
         ResultOfSaveRoomVO resultOfSaveRoomVO = new ResultOfSaveRoomVO();
         resultOfSaveRoomVO.setRoomId(chatRoom.getId());
 
         /** 并行查询职位信息、hr信息、公司信息以及用户信息 */
         final int roomId = chatRoom.getId();
-        Future positionFuture = pool.startTast(() -> chaoDao.getPosition(roomId));
+
+        Future positionFuture;
+        if(chatDebut) {
+            positionFuture = pool.startTast(() -> chaoDao.getPositionById(positionId));
+        } else {
+            positionFuture = pool.startTast(() -> chaoDao.getPosition(roomId));
+        }
         Future hrFuture = pool.startTast(() -> chaoDao.getHr(chatRoom.getHraccountId()));
         Future userFuture = pool.startTast(() -> chaoDao.getUser(chatRoom.getSysuserId()));
 
@@ -343,6 +356,7 @@ public class ChatService {
                     }
                     positionVO.setCompanyName(companyName);
                 }
+                resultOfSaveRoomVO.setPosition(positionVO);
             }
         } catch (InterruptedException | ExecutionException e) {
             logger.error(e.getMessage(), e);
@@ -353,6 +367,7 @@ public class ChatService {
             UserUserDO userUserDO = (UserUserDO) userFuture.get();
             if(userUserDO != null) {
                 UserVO userVO = new UserVO();
+                userVO.setUserId(userUserDO.getId());
                 userVO.setUserHeadImg(userUserDO.getHeadimg());
                 userVO.setUserId(chatRoom.getSysuserId());
                 String name;
@@ -362,6 +377,7 @@ public class ChatService {
                     name = userUserDO.getNickname();
                 }
                 userVO.setUserName(name);
+                resultOfSaveRoomVO.setUser(userVO);
             }
         } catch (InterruptedException | ExecutionException e) {
             logger.error(e.getMessage(), e);

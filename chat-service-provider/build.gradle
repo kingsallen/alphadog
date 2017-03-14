@@ -25,7 +25,7 @@ jar {
     }
 
     manifest {
-       attributes 'Main-Class': 'ChatServer'
+       attributes 'Main-Class': 'com.moseeker.chat.server.ChatServer'
     }
 
     
