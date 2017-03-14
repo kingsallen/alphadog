@@ -78,7 +78,7 @@ public class ChatThriftServiceTest {
         chatService.saveChat(5, "test", 3, (byte) 0);
     }
 
-    @Test
+    //@Test
     public void enterRoom() throws Exception {
         ResultOfSaveRoomVO resultOfSaveRoomVO = chatService.enterRoom(2, 82689, 3, 0);
         System.out.println("roomId : "+resultOfSaveRoomVO.getRoomId());
@@ -87,7 +87,7 @@ public class ChatThriftServiceTest {
         System.out.println(resultOfSaveRoomVO.getUser());
     }
 
-    @Test
+    //@Test
     public void getChat() throws Exception {
 
     }
