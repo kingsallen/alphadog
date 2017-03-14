@@ -302,6 +302,15 @@ public class ChatService {
             if(chatDebut) {
                 pool.startTast(() -> createChat(resultOfSaveRoomVO));
                 resultOfSaveRoomVO.setChatDebut(chatDebut);
+
+                HrChatUnreadCountDO unreadCountDO = new HrChatUnreadCountDO();
+                unreadCountDO.setHrId(hrId);
+                unreadCountDO.setUserId(userId);
+                unreadCountDO.setHrUnreadCount(0);
+                unreadCountDO.setUserUnreadCount(1);
+                unreadCountDO.setRoomId(chatRoom.getId());
+                chaoDao.saveUnreadCount(unreadCountDO);
+                pool.startTast(() -> chaoDao.saveUnreadCount(unreadCountDO));
             }
         } else {
             resultOfSaveRoomVO = new ResultOfSaveRoomVO();
