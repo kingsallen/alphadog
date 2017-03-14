@@ -23,6 +23,10 @@ public class UserEmployeeService {
         return userEmployeeDao.getResource(query);
     }
 
+    public Response getUserEmployees(CommonQuery query) throws TException {
+        return userEmployeeDao.getResources(query);
+    }
+
     public Response delUserEmployee(Map<String,String> filter) throws TException {
         return userEmployeeDao.delResource(filter);
     }

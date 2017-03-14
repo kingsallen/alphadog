@@ -27,6 +27,11 @@ public class UserEmployeeServiceImpl implements UserEmployeeService.Iface {
     }
 
     @Override
+    public Response getUserEmployees(CommonQuery query) throws TException {
+        return employeeService.getUserEmployees(query);
+    }
+
+    @Override
     public Response delUserEmployee(Map<String, String> filter) throws TException {
         return employeeService.delUserEmployee(filter);
     }

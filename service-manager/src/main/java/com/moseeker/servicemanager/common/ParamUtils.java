@@ -221,7 +221,7 @@ public class ParamUtils {
             jb.append(line);
         }
 
-        return reader.toString();
+        return jb.toString();
     }
 
     /**

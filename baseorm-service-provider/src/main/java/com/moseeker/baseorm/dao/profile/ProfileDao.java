@@ -23,7 +23,6 @@ import com.moseeker.thrift.gen.profile.struct.ProfileOther;
 import com.moseeker.thrift.gen.useraccounts.struct.ThirdPartyUser;
 import com.moseeker.thrift.gen.useraccounts.struct.User;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
-import com.sun.istack.internal.NotNull;
 import org.jooq.DSLContext;
 import org.jooq.types.UInteger;
 import org.springframework.stereotype.Service;
@@ -44,7 +43,7 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
         tableLike = Tables.PROFILE_PROFILE;
     }
 
-    public Map<String, Object> getRelatedDataByJobApplication(DSLContext create, @NotNull com.moseeker.thrift.gen.application.struct.JobApplication application, boolean recommender) {
+    public Map<String, Object> getRelatedDataByJobApplication(DSLContext create, com.moseeker.thrift.gen.application.struct.JobApplication application, boolean recommender) {
         long start = System.currentTimeMillis();
         Map<String, Object> map = new HashMap<>();
         //all from jobdb.job_application
