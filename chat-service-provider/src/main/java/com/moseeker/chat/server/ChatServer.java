@@ -19,9 +19,7 @@ public class ChatServer {
 
 		try {
 			AnnotationConfigApplicationContext acac = initSpring();
-			MoServer server = new MoServer(acac,
-					"",
-					acac.getBean(ChatThriftService.class));
+			MoServer server = new MoServer(acac,"",acac.getBean(ChatThriftService.class));
 			// 启动服务，非阻塞
 			try {
 				server.startServer();
