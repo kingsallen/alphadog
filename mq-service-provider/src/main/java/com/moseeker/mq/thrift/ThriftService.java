@@ -7,24 +7,20 @@ import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.email.mail.Message;
-import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
-import com.moseeker.db.userdb.tables.records.UserUserRecord;
-import com.moseeker.mq.dao.UserDao;
 import com.moseeker.mq.service.impl.EmailProducer;
 import com.moseeker.mq.service.impl.MandrillEmailProducer;
 import com.moseeker.mq.service.impl.TemplateMsgProducer;
+import com.moseeker.mq.service.sms.SmsService;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.mq.service.MqService.Iface;
 import com.moseeker.thrift.gen.mq.struct.EmailStruct;
 import com.moseeker.thrift.gen.mq.struct.MandrillEmailStruct;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
+import com.moseeker.thrift.gen.mq.struct.SmsType;
 
 /**
  * 
@@ -47,6 +43,9 @@ public class ThriftService implements Iface {
 
 	@Autowired
 	private TemplateMsgProducer mqService;
+	
+	@Autowired
+	private SmsService smsService;
 
 	@Autowired
 	private EmailProducer emailProvider;
@@ -85,39 +84,21 @@ public class ThriftService implements Iface {
 		
 	}
 
-	public TemplateMsgProducer getMqService() {
-		return mqService;
-	}
-
-	public void setMqService(TemplateMsgProducer mqService) {
-		this.mqService = mqService;
-	}
-
-	public EmailProducer getEmailProvider() {
-		return emailProvider;
-	}
-
-	public void setEmailProvider(EmailProducer emailProvider) {
-		this.emailProvider = emailProvider;
-	}
-
 	@Override
 	public Response sendMandrilEmail(MandrillEmailStruct mandrillEmailStruct) throws TException {
 		// TODO Auto-generated method stub
 		return mandrillEmailProducer.queueEmail(mandrillEmailStruct);
 	}
-
-	public MandrillEmailProducer getMandrillEmailProducer() {
-		return mandrillEmailProducer;
-	}
-
-	public void setMandrillEmailProducer(MandrillEmailProducer mandrillEmailProducer) {
-		this.mandrillEmailProducer = mandrillEmailProducer;
-	}
-
+	
 	@Override
 	public Response sendAuthEMail(Map<String, String> params, int eventType,
 			String email, String subject) throws TException {
 		return emailProvider.sendBizEmail(params, eventType, email, subject);
+	}
+	
+	@Override
+	public Response sendSMS(SmsType smsType, String mobile,
+			Map<String, String> data) throws TException {
+		return smsService.sendSMS(smsType, mobile, data);
 	}
 }

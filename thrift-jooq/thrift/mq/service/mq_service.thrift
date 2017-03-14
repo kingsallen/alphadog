@@ -16,4 +16,5 @@ service MqService {
 
    common_struct.Response sendMandrilEmail(1: mq_struct.MandrillEmailStruct mandrillEmailStruct);
 
+   common_struct.Response sendSMS(1: mq_struct.SmsType smsType, 2: string mobile, 3: map<string, string> data);
 }

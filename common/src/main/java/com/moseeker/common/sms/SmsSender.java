@@ -10,10 +10,12 @@ import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
 import com.taobao.api.request.AlibabaAliqinFcSmsNumSendRequest;
 import com.taobao.api.response.AlibabaAliqinFcSmsNumSendResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 短信发送客户端
@@ -50,7 +52,7 @@ public class SmsSender {
      * @param params 需要的变量map
      *
      * */
-    public static boolean sendSMS(String mobile, String templateCode, HashMap params){
+    public static boolean sendSMS(String mobile, String templateCode, Map params){
         initTaobaoClientInstance();
         
         if (mobile==null){

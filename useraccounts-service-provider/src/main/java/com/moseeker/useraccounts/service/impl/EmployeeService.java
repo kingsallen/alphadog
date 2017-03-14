@@ -111,7 +111,7 @@ public class EmployeeService {
 		try {
 			eqf.put("company_id", String.valueOf(companyId));
 			HrEmployeeCertConfDO employeeCertConf = hrDBDao.getEmployeeCertConf(query);
-			if (employeeCertConf != null) {
+			if (employeeCertConf != null && employeeCertConf.getEmail_suffix() != null && employeeCertConf.getQuestions() != null) {
 			    EmployeeVerificationConf evc = new EmployeeVerificationConf();
 			    evc.setCompanyId(employeeCertConf.getCompany_id());
 			    evc.setEmailSuffix(JSONObject.parseArray(employeeCertConf.getEmail_suffix()).stream().map(m -> String.valueOf(m)).collect(Collectors.toList()));
@@ -140,7 +140,7 @@ public class EmployeeService {
 		query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
 		query.getEqualFilter().put("auth_mode", String.valueOf(bindingParams.getType().getValue()));
 		HrEmployeeCertConfDO certConf = hrDBDao.getEmployeeCertConf(query);
-		if(certConf == null) {
+		if(certConf == null || certConf.getCompany_id() == 0) {
 			response.setSuccess(false);
 			response.setMessage("暂时不接受员工认证");
 			return response;
@@ -149,7 +149,7 @@ public class EmployeeService {
 		switch(bindingParams.getType()){
 			case EMAIL:
 				// 邮箱校验后缀
-				if (!bindingParams.getEmail().endsWith(certConf.email_suffix)) {
+				if (JSONObject.parseArray(certConf.getEmail_suffix()).stream().noneMatch(m -> bindingParams.getEmail().endsWith(String.valueOf(m)))) {
 					response.setSuccess(false);
 					response.setMessage("员工认证信息不正确");
 					break;
@@ -240,6 +240,11 @@ public class EmployeeService {
 					break;
 				}
 				response = updateEmployee(bindingParams);
+				/* 
+				 * TODO 员工认证发送消息模板
+	             *  a: 认证成功以后发送消息模板,点击消息模板填写自定义字段 (company_id 为奇数)
+	             *  b: 直接填写自定义字段 (company_id 为偶数)
+				 * */
 				break;
 			default:
 				break;
@@ -294,7 +299,7 @@ public class EmployeeService {
 		query.getEqualFilter().put("company_id", String.valueOf(companyId));
 		query.getEqualFilter().put("employeeid", String.valueOf(employeeId));
 		UserEmployeeDO employee = userDao.getEmployee(query);
-		if (employee == null) {
+		if (employee == null && employee.getId() == 0) {
 			response.setSuccess(false);
 			response.setMessage("员工信息不存在");
 		} else {
@@ -468,7 +473,7 @@ public class EmployeeService {
 		String username = "";
 		try {
 			user = userDao.getUser(qu);
-			if(user != null) {
+			if(user != null && user.getUsername() != null) {
 				if(StringUtils.isNotNullOrEmpty(user.getName())) {
 					username = user.getName();
 				} else if(StringUtils.isNotNullOrEmpty(user.getNickname())) {
