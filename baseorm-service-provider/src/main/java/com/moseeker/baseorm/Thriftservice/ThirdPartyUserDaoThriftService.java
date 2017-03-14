@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.moseeker.thrift.gen.dao.service.ThirdPartyUserDao.Iface;
 
+import java.sql.Timestamp;
+
 /**
  * Created by eddie on 2017/3/7.
  */
@@ -24,7 +26,10 @@ public class ThirdPartyUserDaoThriftService implements Iface {
     @Override
     public Response putThirdPartyUser(ThirdPartyUser user) throws TException {
         try {
-            int result = thirdPartyUserDao.putResource((UserThirdpartyUserRecord) BeanUtils.structToDB(user, UserThirdpartyUserRecord.class));
+            UserThirdpartyUserRecord record = BeanUtils.structToDB(user, UserThirdpartyUserRecord.class);
+            Timestamp updateTime = new Timestamp(System.currentTimeMillis());
+            record.setUpdateTime(updateTime);
+            int result = thirdPartyUserDao.putResource(record);
             return ResponseUtils.success(result);
         } catch (Exception e) {
             e.printStackTrace();
