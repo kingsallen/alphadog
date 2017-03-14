@@ -33,7 +33,6 @@ public class JobPositionDao extends BaseDaoImpl<JobPositionRecord, JobPosition> 
 
     public List<Position> getPositions(CommonQuery query) {
         List<Position> positions = new ArrayList<>();
-
         try {
             List<JobPositionRecord> records = getResources(query);
             if (records != null && records.size() > 0) {
@@ -46,7 +45,6 @@ public class JobPositionDao extends BaseDaoImpl<JobPositionRecord, JobPosition> 
         } finally {
             //do nothing
         }
-
         return positions;
     }
 
@@ -103,21 +101,4 @@ public class JobPositionDao extends BaseDaoImpl<JobPositionRecord, JobPosition> 
         return position;
     }
 
-    /**
-     * 批量修改职位
-     */
-    public void batchhandler() {
-        logger.info("开始批量修改职位");
-        Connection conn = null;
-        try {
-            conn = DBConnHelper.DBConn.getConn();
-            DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-            create.transaction(configuration -> {
-                    }
-            );
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-
-    }
 }

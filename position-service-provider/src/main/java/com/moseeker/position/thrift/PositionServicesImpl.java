@@ -2,6 +2,7 @@ package com.moseeker.position.thrift;
 
 import java.util.List;
 
+import com.moseeker.thrift.gen.position.struct.BatchHandlerJobPostion;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,70 +29,76 @@ public class PositionServicesImpl implements Iface {
     private PositionService service;
     @Autowired
     private JobOccupationService customService;
-	/**
-	 * 获取推荐职位
-	 * <p></p>
-	 *
-	 * @param pid
-	 * @return
+
+    /**
+     * 获取推荐职位
+     * <p></p>
+     *
+     * @param pid
+     * @return
      */
-	@Override
+    @Override
     public Response getRecommendedPositions(int pid) {
-		return service.getRecommendedPositions(pid);
+        return service.getRecommendedPositions(pid);
     }
 
-	@Override
-	public Response verifyCustomize(int positionId) throws TException {
-		return service.verifyCustomize(positionId);
-	}
+    @Override
+    public Response verifyCustomize(int positionId) throws TException {
+        return service.verifyCustomize(positionId);
+    }
 
-	/**
-	 * 根据职位Id获取当前职位信息
-	 *
-	 * @param positionId
-	 * @return
-	 * @throws TException
-     */
-	@Override
-	public Response getPositionById(int positionId) throws TException {
-		return service.getPositionById(positionId);
-	}
-
-	@Override
-	public Response getResources(CommonQuery query) throws TException {
-		return service.getResources(query);
-	}
     /**
-     * @author zztaiwll
-     * @return response
+     * 根据职位Id获取当前职位信息
+     *
+     * @param positionId
+     * @return
      * @throws TException
-     * time 2016-11-21
      */
-	@Override
-	public Response CustomField(String param) throws TException {
-		// TODO Auto-generated method stub
-		return customService.getCustomField(param);
-	}
+    @Override
+    public Response getPositionById(int positionId) throws TException {
+        return service.getPositionById(positionId);
+    }
 
-	@Override
-	public List<ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(List<ThirdPartyPosition> forms,
-			Position position) throws TException {
-		return service.changeToThirdPartyPosition(forms, position);
-	}
+    @Override
+    public Response getResources(CommonQuery query) throws TException {
+        return service.getResources(query);
+    }
 
-	@Override
-	public boolean ifAllowRefresh(int positionId, int channel) throws TException {
-		return service.ifAllowRefresh(positionId, channel);
-	}
+    /**
+     * @return response
+     * @throws TException time 2016-11-21
+     * @author zztaiwll
+     */
+    @Override
+    public Response CustomField(String param) throws TException {
+        // TODO Auto-generated method stub
+        return customService.getCustomField(param);
+    }
 
-	@Override
-	public ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(int positionId, int channel)
-			throws TException {
-		return service.createRefreshPosition(positionId, channel);
-	}
+    @Override
+    public List<ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(List<ThirdPartyPosition> forms,
+                                                                                 Position position) throws TException {
+        return service.changeToThirdPartyPosition(forms, position);
+    }
 
-	@Override
-	public List<ThirdPartyPositionData> getThirdPartyPositions(CommonQuery query) throws TException {
-		return service.getThirdPartyPositions(query);
-	}
+    @Override
+    public boolean ifAllowRefresh(int positionId, int channel) throws TException {
+        return service.ifAllowRefresh(positionId, channel);
+    }
+
+    @Override
+    public ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(int positionId, int channel)
+            throws TException {
+        return service.createRefreshPosition(positionId, channel);
+    }
+
+    @Override
+    public List<ThirdPartyPositionData> getThirdPartyPositions(CommonQuery query) throws TException {
+        return service.getThirdPartyPositions(query);
+    }
+
+    @Override
+    public Response batchHandlerJobPostion(BatchHandlerJobPostion batchHandlerJobPostion) throws TException {
+        return service.batchHandlerJobPostion(batchHandlerJobPostion);
+    }
 }

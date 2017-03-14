@@ -24,6 +24,7 @@ public class PositionServiceImpl implements PositionService {
     @Autowired
     private JobOccupationDao occuPationdao;
 
+
     //获取job_occupation
     @Override
     public Response getJobOccupation(CommonQuery query) {
@@ -36,14 +37,5 @@ public class PositionServiceImpl implements PositionService {
         return OrmTools.getList(customDao, query, new JobOccupationCustom());
     }
 
-    /**
-     * 批量修改职位
-     *
-     * @return
-     */
-    @Override
-    public Response batchhandler() {
-        return null;
-    }
 
 }

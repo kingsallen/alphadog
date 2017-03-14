@@ -11,6 +11,7 @@ public interface JobPositionDao extends BaseDao<JobPositionRecord> {
 
 	JobPositionRecord getPositionById(int positionId);
 
+
 	HrCompanyAccountRecord getHrCompanyAccountByPublisher(int publisher);
 	
 }
