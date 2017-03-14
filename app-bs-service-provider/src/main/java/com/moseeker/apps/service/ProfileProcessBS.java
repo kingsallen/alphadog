@@ -531,6 +531,7 @@ public class ProfileProcessBS {
 						reward.setOperate_tpl_id(his.getOperate_tpl_id());
 						break;
 					}
+
 				}
 			}
 			List<JobApplication> app = new ArrayList<JobApplication>();
