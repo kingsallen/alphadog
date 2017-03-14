@@ -2,10 +2,7 @@ package com.moseeker.chat.thriftservice;
 
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.chat.service.ChatService;
-import com.moseeker.thrift.gen.chat.struct.HRChatRoomVO;
-import com.moseeker.thrift.gen.chat.struct.HRChatRoomsVO;
-import com.moseeker.thrift.gen.chat.struct.UserChatRoomVO;
-import com.moseeker.thrift.gen.chat.struct.UserChatRoomsVO;
+import com.moseeker.thrift.gen.chat.struct.*;
 import org.junit.Test;
 
 import java.util.List;
@@ -58,19 +55,36 @@ public class ChatThriftServiceTest {
         }
     }
 
-    @Test
+    //@Test
     public void listChatLogs() throws Exception {
-
+        ChatsVO chatsVO = chatService.listChatLogs(5, 1, 10);
+        System.out.println("pageNo : "+chatsVO.getPageNo());
+        System.out.println("pageSize : " + chatsVO.getPageSize());
+        System.out.println("totalRow : " + chatsVO.getTotalRow());
+        System.out.println("totalPage : " + chatsVO.getTotalPage());
+        List<ChatVO> chatVOList = chatsVO.getChatLogs();
+        if(chatVOList != null) {
+            chatVOList.forEach(chatVO -> {
+                System.out.println("id:"+chatVO.getId());
+                System.out.println("content:"+chatVO.getContent());
+                System.out.println("createTime:"+chatVO.getCreate_time());
+                System.out.println("speaker:"+chatVO.getSpeaker());
+            });
+        }
     }
 
-    @Test
+    //@Test
     public void saveChat() throws Exception {
-
+        chatService.saveChat(5, "test", 3, (byte) 0);
     }
 
     @Test
     public void enterRoom() throws Exception {
-
+        ResultOfSaveRoomVO resultOfSaveRoomVO = chatService.enterRoom(2, 82689, 3, 0);
+        System.out.println("roomId : "+resultOfSaveRoomVO.getRoomId());
+        System.out.println(resultOfSaveRoomVO.getHr());
+        System.out.println(resultOfSaveRoomVO.getPosition());
+        System.out.println(resultOfSaveRoomVO.getUser());
     }
 
     @Test
@@ -78,9 +92,14 @@ public class ChatThriftServiceTest {
 
     }
 
-    @Test
+    //@Test
     public void leaveChatRoom() throws Exception {
+        chatService.leaveChatRoom(12, (byte) 0);
+    }
 
+    //@Test
+    public void leaveChatRoom1() throws Exception {
+        chatService.leaveChatRoom(12, (byte) 1);
     }
 
 }

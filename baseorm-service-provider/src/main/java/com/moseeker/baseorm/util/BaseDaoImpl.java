@@ -64,108 +64,17 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 
 			if(query != null) {
 				//解析查询条件
-				if(query.getAttributes() != null && query.getAttributes().size() > 0) {
-
-					List<Field> fieldList = new ArrayList<>();
-					for(String attribute : query.getAttributes()) {
-						Field field = tableLike.field(attribute);
-						if(field != null) {
-							fieldList.add(field);
-						}
-					}
-					if(fieldList.size() > 0) {
-						Field[] fieldArray = new Field[fieldList.size()];
-						table = create.select(fieldList.toArray(fieldArray)).from(tableLike);
-					}
-				}
+				parseSelectAttribute(create, table, query);
 
 				//解析equal fileter 内容
-				if (query.getEqualFilter() != null
-						&& query.getEqualFilter().size() > 0) {
-					Map<String, String> equalFilter = query.getEqualFilter();
-					for (Entry<String, String> entry : equalFilter.entrySet()) {
-						Field<?> field = tableLike.field(entry.getKey());
-						if (field != null) {
-							if(entry.getValue().startsWith("[") && entry.getValue().endsWith("]")) {
-								String[] arrayValue = entry.getValue().substring(1, entry.getValue().length()-1).split(",");
-								Condition condition = null;
-								for(String value : arrayValue) {
-									if(condition == null) {
-										condition = field.strictEqual(BeanUtils.convertTo(
-												value, field.getType()));
-									} else {
-										condition = condition.or(field.strictEqual(BeanUtils.convertTo(
-												value, field.getType())));
-									}
-								}
-								table.where(condition);
-							} else {
-								table.where(field.strictEqual(BeanUtils.convertTo(
-										entry.getValue(), field.getType())));
-							}
-						}
-					}
-				}
+				parseEqualAttribute(table, query);
 				//解析groupby
-				if(query.getGrouops() != null && query.getGrouops().size() > 0) {
-
-					Field[] fields = new Field[query.getGrouops().size()];
-					int count = 0;
-					for(String group : query.getGrouops()) {
-						fields[count] = tableLike.field(group);
-						count ++;
-					}
-					//Field[] fields = (Field[]) query.getGrouops().stream().filter(group -> tableLike.field(group) != null).map(group -> tableLike.field(group)).toArray();
-
-					if(fields != null && fields.length > 0) {
-						table.groupBy(fields);
-					}
-				}
+				parseGroup(table, query);
 				//解析排序
-				if (!StringUtils.isNullOrEmpty(query.getSortby())) {
-					String[] sortBy = query.getSortby().split(",");
-					String[] order;
-					if(StringUtils.isNotNullOrEmpty(query.getOrder())) {
-						order = query.getOrder().split(",");
-					} else {
-						order = new String[sortBy.length];
-						for(int i=0; i< order.length; i++) {
-							order[i] = "asc";
-						}
-					}
-
-					List<SortField<?>> fields = new ArrayList<>(sortBy.length);
-					SortOrder so = SortOrder.ASC;
-					for (int i = 0; i < sortBy.length; i++) {
-						Field<?> field = tableLike.field(sortBy[i]);
-						if (sortBy.length == order.length
-								&& !StringUtils.isNullOrEmpty(order[i])
-								&& order[i].toLowerCase().equals("desc")) {
-							so = SortOrder.DESC;
-						}
-						if (field != null) {
-							switch (so) {
-								case ASC:
-									fields.add(field.asc());
-									break;
-								case DESC:
-									fields.add(field.desc());
-									break;
-								default:
-							}
-						}
-					}
-					table.orderBy(fields);
-				}
+				parseOrder(table, query);
 
 				/* 分段查找数据库结果集 */
-				int page = 1;
-				int per_page = 0;
-				if (query != null && query.getPage() > 0) {
-						page = query.getPage();
-				}
-				per_page = query.getPer_page()>0 ? query.getPer_page() : 10 ;
-				table.limit((page-1)*per_page, per_page);
+				parsePage(table, query);
 			}
 			records = table.fetchInto(tableLike.getRecordType());
 		} catch (Exception e) {
@@ -179,6 +88,127 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 		}
 		return records;
 	}
+
+	/**
+	 * 解析查询条件
+	 * @param create
+	 * @param table
+	 * @param query
+	 */
+	private void parseSelectAttribute(DSLContext create, SelectJoinStep<Record> table, CommonQuery query) {
+		//解析查询条件
+		if(query.getAttributes() != null && query.getAttributes().size() > 0) {
+
+			List<Field> fieldList = new ArrayList<>();
+			for(String attribute : query.getAttributes()) {
+				Field field = tableLike.field(attribute);
+				if(field != null) {
+					fieldList.add(field);
+				}
+			}
+			if(fieldList.size() > 0) {
+				Field[] fieldArray = new Field[fieldList.size()];
+				table = create.select(fieldList.toArray(fieldArray)).from(tableLike);
+			}
+		}
+	}
+
+	/**
+	 * 解析where条件
+	 * @param table
+	 * @param query
+	 */
+	private void parseEqualAttribute(SelectJoinStep<Record> table, CommonQuery query) {
+		if (query.getEqualFilter() != null
+				&& query.getEqualFilter().size() > 0) {
+			Map<String, String> equalFilter = query.getEqualFilter();
+			for (Entry<String, String> entry : equalFilter.entrySet()) {
+				Field<?> field = tableLike.field(entry.getKey());
+				if (field != null) {
+					if(entry.getValue().startsWith("[") && entry.getValue().endsWith("]")) {
+						String[] arrayValue = entry.getValue().substring(1, entry.getValue().length()-1).split(",");
+						Condition condition = null;
+						for(String value : arrayValue) {
+							if(condition == null) {
+								condition = field.strictEqual(BeanUtils.convertTo(
+										value, field.getType()));
+							} else {
+								condition = condition.or(field.strictEqual(BeanUtils.convertTo(
+										value, field.getType())));
+							}
+						}
+						table.where(condition);
+					} else {
+						table.where(field.strictEqual(BeanUtils.convertTo(
+								entry.getValue(), field.getType())));
+					}
+				}
+			}
+		}
+	}
+
+	private void parseGroup(SelectJoinStep<Record> table, CommonQuery query) {
+		if(query.getGrouops() != null && query.getGrouops().size() > 0) {
+
+			Field[] fields = new Field[query.getGrouops().size()];
+			int count = 0;
+			for(String group : query.getGrouops()) {
+				fields[count] = tableLike.field(group);
+				count ++;
+			}
+			if(fields != null && fields.length > 0) {
+				table.groupBy(fields);
+			}
+		}
+	}
+
+	private void parseOrder(SelectJoinStep<Record> table, CommonQuery query) {
+		if (!StringUtils.isNullOrEmpty(query.getSortby())) {
+			String[] sortBy = query.getSortby().split(",");
+			String[] order;
+			if(StringUtils.isNotNullOrEmpty(query.getOrder())) {
+				order = query.getOrder().split(",");
+			} else {
+				order = new String[sortBy.length];
+				for(int i=0; i< order.length; i++) {
+					order[i] = "asc";
+				}
+			}
+
+			List<SortField<?>> fields = new ArrayList<>(sortBy.length);
+			SortOrder so = SortOrder.ASC;
+			for (int i = 0; i < sortBy.length; i++) {
+				Field<?> field = tableLike.field(sortBy[i]);
+				if (sortBy.length == order.length
+						&& !StringUtils.isNullOrEmpty(order[i])
+						&& order[i].toLowerCase().equals("desc")) {
+					so = SortOrder.DESC;
+				}
+				if (field != null) {
+					switch (so) {
+						case ASC:
+							fields.add(field.asc());
+							break;
+						case DESC:
+							fields.add(field.desc());
+							break;
+						default:
+					}
+				}
+			}
+			table.orderBy(fields);
+		}
+	}
+
+	private void parsePage(SelectJoinStep<Record> table, CommonQuery query) {
+		int page = 1;
+		int per_page = 0;
+		if (query != null && query.getPage() > 0) {
+			page = query.getPage();
+		}
+		per_page = query.getPer_page()>0 ? query.getPer_page() : 10 ;
+		table.limit((page-1)*per_page, per_page);
+	}
 	
 	@SuppressWarnings({"unchecked" })
 	public int getResourceCount(CommonQuery query) throws Exception {
@@ -189,27 +219,11 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 			conn = DBConnHelper.DBConn.getConn();
 			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 
-			SelectQuery<?> selectQuery = create.selectQuery();
-			selectQuery.addFrom(tableLike);
-
-			if (query.getEqualFilter() != null && query.getEqualFilter().size() > 0) {
-				Map<String, String> equalFilter = query.getEqualFilter();
-				for (Entry<String, String> entry : equalFilter.entrySet()) {
-					Field field = tableLike.field(entry.getKey());
-					if (field != null) {
-						selectQuery.addConditions(field.strictEqual(BeanUtils.convertTo(
-								entry.getValue(), field.getType())));
-					}
-				}
-			}
-
-			if(query.getGrouops() != null && query.getGrouops().size() > 0) {
-				Field[] fields = (Field[]) query.getGrouops().stream().filter(group -> tableLike.field(group) != null).map(group -> tableLike.field(group)).toArray();
-				if(fields != null && fields.length > 0) {
-					selectQuery.addGroupBy(fields);
-				}
-			}
-			totalCount = create.fetchCount(selectQuery);
+			SelectJoinStep<Record> table = create.select().from(tableLike);
+			parseEqualAttribute(table, query);
+			parseGroup(table, query);
+			parseOrder(table, query);
+			totalCount = create.fetchCount(table);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("error", e);
@@ -305,56 +319,25 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 
 			SelectJoinStep<Record> table = create.select().from(tableLike);
 
-			if (query.getEqualFilter() != null
-					&& query.getEqualFilter().size() > 0) {
-				Map<String, String> equalFilter = query.getEqualFilter();
-				for (Entry<String, String> entry : equalFilter.entrySet()) {
-					Field field = tableLike.field(entry.getKey());
-					if (field != null) {
-						table.where(field.strictEqual(BeanUtils.convertTo(
-								entry.getValue(), field.getType())));
-					}
-				}
-			}
+			parseSelectAttribute(create, table, query);
 
-			if (!StringUtils.isNullOrEmpty(query.getSortby())) {
-				String[] sortBy = query.getSortby().split(",");
-				String[] order = query.getOrder().split(",");
+			parseEqualAttribute(table, query);
 
-				List<SortField<?>> fields = new ArrayList<>(sortBy.length);
-				SortOrder so = SortOrder.ASC;
-				for (int i = 0; i < sortBy.length; i++) {
-					Field<?> field = tableLike.field(sortBy[i]);
-					if (sortBy.length == order.length
-							&& !StringUtils.isNullOrEmpty(order[i])
-							&& order[i].toLowerCase().equals("desc")) {
-						so = SortOrder.DESC;
-					}
-					if (field != null) {
-						switch (so) {
-						case ASC:
-							fields.add(field.asc());
-							break;
-						case DESC:
-							fields.add(field.desc());
-							break;
-						default:
-						}
-					}
-				}
-				Field<?>[] fieldArray = null;
-				table.orderBy(fields.toArray(fieldArray));
-			}
+			parseGroup(table, query);
+
+			parseOrder(table, query);
 
 			table.limit(1);
 
-			Result<Record> result = table.fetch();
+
+			List<R> result = table.fetchInto(tableLike.getRecordType());
 
 			if (result != null && result.size() > 0) {
-				record = (R) result.get(0);
+				record = result.get(0);
 			}
 		} catch (Exception e) {
 			logger.error("error", e);
+			e.printStackTrace();
 			throw new Exception(e);
 		} finally {
 			if(conn != null && !conn.isClosed()) {

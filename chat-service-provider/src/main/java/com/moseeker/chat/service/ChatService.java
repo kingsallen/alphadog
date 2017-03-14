@@ -298,28 +298,38 @@ public class ChatService {
             chatDebut = true;
         }
         if(chatRoom != null) {
-            resultOfSaveRoomVO = searchResult(chatRoom);
-            pool.startTast(() -> createChat(resultOfSaveRoomVO));
-            resultOfSaveRoomVO.setChatDebut(chatDebut);
+            resultOfSaveRoomVO = searchResult(chatRoom, positionId, chatDebut);
+            if(chatDebut) {
+                pool.startTast(() -> createChat(resultOfSaveRoomVO));
+                resultOfSaveRoomVO.setChatDebut(chatDebut);
+            }
         } else {
             resultOfSaveRoomVO = new ResultOfSaveRoomVO();
         }
-
+        resultOfSaveRoomVO.setChatDebut(chatDebut);
         return resultOfSaveRoomVO;
     }
 
     /**
      * 查找返回值
      * @param chatRoom 聊天室
+     * @param positionId 职位编号
+     * @param chatDebut 是否是第一次访问
      * @return
      */
-    private ResultOfSaveRoomVO searchResult(HrWxHrChatListDO chatRoom) {
+    private ResultOfSaveRoomVO searchResult(HrWxHrChatListDO chatRoom, int positionId, boolean chatDebut) {
         ResultOfSaveRoomVO resultOfSaveRoomVO = new ResultOfSaveRoomVO();
         resultOfSaveRoomVO.setRoomId(chatRoom.getId());
 
         /** 并行查询职位信息、hr信息、公司信息以及用户信息 */
         final int roomId = chatRoom.getId();
-        Future positionFuture = pool.startTast(() -> chaoDao.getPosition(roomId));
+
+        Future positionFuture;
+        if(chatDebut) {
+            positionFuture = pool.startTast(() -> chaoDao.getPositionById(positionId));
+        } else {
+            positionFuture = pool.startTast(() -> chaoDao.getPosition(roomId));
+        }
         Future hrFuture = pool.startTast(() -> chaoDao.getHr(chatRoom.getHraccountId()));
         Future userFuture = pool.startTast(() -> chaoDao.getUser(chatRoom.getSysuserId()));
 

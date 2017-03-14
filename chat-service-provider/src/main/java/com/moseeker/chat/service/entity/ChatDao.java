@@ -179,20 +179,28 @@ public class ChatDao {
      */
     public List<HrCompanyDO> listCompany(int[] hrIdArray) {
         List<HrCompanyDO> companyDOList = null;
-        if(hrIdArray != null && hrIdArray.length > 0) {
-            String hrId = StringUtils.converFromArrayToStr(hrIdArray);
-            QueryUtil queryUtil = new QueryUtil();
-            queryUtil.addSelectAttribute("id").addSelectAttribute("name").addSelectAttribute("abbreviation")
-                    .addSelectAttribute("logo");
-            queryUtil.addEqualFilter("id", hrId);
-            try {
-                companyDOList = hrDBDao.listCompany(queryUtil);
-            } catch (CURDException e) {
-                companyDOList = new ArrayList<>();
-            } catch (TException e) {
-                logger.error(e.getMessage(), e);
+
+        String idStr = StringUtils.converFromArrayToStr(hrIdArray);
+        QueryUtil queryUtil = new QueryUtil();
+        queryUtil.addSelectAttribute("company_id");
+        queryUtil.addEqualFilter("id", idStr);
+        List<UserHrAccountDO> userHrAccountDOList = null;
+        try {
+            userHrAccountDOList = userDBDao.listUserHrAccount(queryUtil);
+            if(userHrAccountDOList != null && userHrAccountDOList.size() > 0) {
+                int[] companyIds = userHrAccountDOList.stream().filter(hr -> hr.getCompanyId() > 0).mapToInt(hr -> hr.getCompanyId()).toArray();
+
+                String hrId = StringUtils.converFromArrayToStr(companyIds);
+                QueryUtil findCompanyInfo = new QueryUtil();
+                findCompanyInfo.addSelectAttribute("id").addSelectAttribute("name").addSelectAttribute("abbreviation")
+                        .addSelectAttribute("logo");
+                findCompanyInfo.addEqualFilter("id", hrId);
+                companyDOList = hrDBDao.listCompany(findCompanyInfo);
             }
+        } catch (TException e) {
+            logger.error(e.getMessage(), e);
         }
+
         return companyDOList;
     }
 
@@ -540,26 +548,52 @@ public class ChatDao {
             try {
                 chatRoom = hrDBDao.getChatRoom(queryUtil);
                 if(chatRoom == null) {
-                    QueryUtil findChatRoom = new QueryUtil();
-                    findChatRoom.addEqualFilter("sysuser_id", userId);
-                    findChatRoom.addEqualFilter("hraccount_id", hrId);
-                    chatRoom = hrDBDao.getChatRoom(queryUtil);
+                    chatRoom = findChatRoomByUserIdHrId(userId, hrId);
                 }
             } catch (TException e) {
                 logger.error(e.getMessage(), e);
             }
+        } else {
+                chatRoom = findChatRoomByUserIdHrId(userId, hrId);
+        }
+        if(chatRoom.getId() == 0) {
+            return null;
         }
         return chatRoom;
     }
 
-    public HrWxHrChatDO saveAutoChat(ResultOfSaveRoomVO resultOfSaveRoomVO) {
+    /**
+     * 根据用户编号和HR编号查找聊天室信息
+     * @param userId 用户编号
+     * @param hrId HR编号
+     * @return 聊天室
+     */
+    private HrWxHrChatListDO findChatRoomByUserIdHrId(int userId, int hrId) {
+        HrWxHrChatListDO chatRoom = null;
+        QueryUtil findChatRoom = new QueryUtil();
+        findChatRoom.addEqualFilter("sysuser_id", userId);
+        findChatRoom.addEqualFilter("hraccount_id", hrId);
         try {
-            HrWxHrChatDO chatDO = new HrWxHrChatDO();
+            chatRoom = hrDBDao.getChatRoom(findChatRoom);
+        } catch (TException e) {
+            e.printStackTrace();
+        }
+        return chatRoom;
+    }
 
-            return hrDBDao.saveChat(chatDO);
+    /**
+     * 根据职位编号查找职位信息
+     * @param positionId
+     * @return
+     */
+    public JobPositionDO getPositionById(int positionId) {
+        QueryUtil queryUtil = new QueryUtil();
+        queryUtil.addEqualFilter("id", positionId);
+        try {
+            return jobDBDao.getPosition(queryUtil);
         } catch (TException e) {
             logger.error(e.getMessage(), e);
-            return null;
         }
+        return null;
     }
 }
