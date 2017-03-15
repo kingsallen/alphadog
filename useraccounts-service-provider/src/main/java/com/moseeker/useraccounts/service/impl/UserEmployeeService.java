@@ -15,7 +15,7 @@ import java.util.Map;
  * Created by eddie on 2017/3/9.
  */
 @Service
-public class UserEmployeeService {
+public class  UserEmployeeService {
 
     UserEmployeeDao.Iface userEmployeeDao = ServiceManager.SERVICEMANAGER.getService(UserEmployeeDao.Iface.class);
 
@@ -32,6 +32,6 @@ public class UserEmployeeService {
     }
 
     public Response postPutUserEmployeeBatch(List<UserEmployeeStruct> update) throws TException {
-        return userEmployeeDao.postPutResources(update);
+        return userEmployeeDao.postPutUserEmployeeBatch(update);
     }
 }

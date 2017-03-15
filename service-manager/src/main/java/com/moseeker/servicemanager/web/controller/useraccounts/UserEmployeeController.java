@@ -87,21 +87,15 @@ public class UserEmployeeController {
     @ResponseBody
     public String addOrUpdateUserEmployees(HttpServletRequest request, HttpServletResponse response) {
         try {
-            String raw = ParamUtils.getStringRaw(request);
+            Map<String,Object> datas = ParamUtils.parseRequestParam(request);
 
-            raw = StringUtils.isNotNullOrEmpty(raw)?request.getParameter("data"):raw;
+            Object data = datas.get("data");
 
-            if(StringUtils.isNullOrEmpty(raw) ){
+            if(data == null){
                 return ResponseLogNotification.fail(request, "没有参数");
             }
 
-            List<UserEmployeeStruct> employeeStructs = new ArrayList<>();
-            if(raw.startsWith("[")) {
-                employeeStructs = JSON.parseArray(raw, UserEmployeeStruct.class);
-            }else if(raw.startsWith("{")){
-                employeeStructs.add(JSON.parseObject(raw,UserEmployeeStruct.class));
-            }
-
+            List<UserEmployeeStruct> employeeStructs = JSON.parseArray(data.toString(), UserEmployeeStruct.class);
             Response result = service.postPutUserEmployeeBatch(employeeStructs);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {

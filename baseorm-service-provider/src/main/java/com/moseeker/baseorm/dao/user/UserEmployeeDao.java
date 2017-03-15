@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.user;
 
 import java.sql.Connection;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -91,6 +92,7 @@ public class UserEmployeeDao extends BaseDaoImpl<UserEmployeeRecord, UserEmploye
                 queryUtil.addEqualFilter("cname", struct.getCname());
                 queryUtil.addEqualFilter("cfname", struct.getCfname());
             }
+            queryUtil.setPer_page(Integer.MAX_VALUE);
 
             if(queryUtil != null) {
                 List<UserEmployeeRecord> userEmployeeRecords = getResources(queryUtil);
@@ -98,6 +100,7 @@ public class UserEmployeeDao extends BaseDaoImpl<UserEmployeeRecord, UserEmploye
                     for (UserEmployeeRecord record : userEmployeeRecords) {
                         UserEmployeeRecord userEmployeeRecord = BeanUtils.structToDB(struct, UserEmployeeRecord.class);
                         userEmployeeRecord.setId(record.getId());
+                        userEmployeeRecord.setUpdateTime( new Timestamp(System.currentTimeMillis()));
                         i += putResource(userEmployeeRecord);
                     }
                 } else {

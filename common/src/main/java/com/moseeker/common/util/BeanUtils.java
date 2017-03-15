@@ -1028,16 +1028,6 @@ public class BeanUtils {
 		return serializer.toString(tobj, "utf8");
 	}
 
-	public static String convertStructToJSON(final List<? extends TBase<?, ?>> tobj) throws TException{
-		StringBuilder builder = new StringBuilder();
-		for(TBase t : tobj){
-			builder.append(',').append(convertStructToJSON(t));
-		}
-		builder.delete(0,1);
-		builder.insert(0,'[').append(']');
-		return builder.toString();
-	}
-
 	static PropertyFilter profilter = new PropertyFilter(){
 
 		@Override
