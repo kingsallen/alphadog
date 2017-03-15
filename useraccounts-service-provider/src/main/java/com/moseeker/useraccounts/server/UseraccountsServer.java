@@ -33,7 +33,8 @@ public class UseraccountsServer {
                     acac.getBean(UsersettingsServicesImpl.class),
                     acac.getBean(UserCommonThriftService.class),
                     acac.getBean(UserCenterThriftService.class),
-                    acac.getBean(UseraccountsServiceImpl.class));
+                    acac.getBean(UseraccountsServiceImpl.class),
+                    acac.getBean(EmployeeServiceImpl.class));
             server.startServer();
             
 

@@ -1,21 +1,33 @@
 package com.moseeker.candidate.service.entities;
 
-import com.moseeker.candidate.service.Candidate;
-import com.moseeker.candidate.service.dao.CandidateDBDao;
-import com.moseeker.common.thread.ThreadPool;
-import com.moseeker.common.validation.ValidateUtil;
-import com.moseeker.thrift.gen.dao.struct.*;
-import org.apache.commons.pool2.PoolUtils;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
+import com.moseeker.candidate.service.Candidate;
+import com.moseeker.candidate.service.dao.CandidateDBDao;
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.thread.ThreadPool;
+import com.moseeker.common.validation.ValidateUtil;
+import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.CandidateCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.CandidatePositionDO;
+import com.moseeker.thrift.gen.dao.struct.CandidateRemarkDO;
+import com.moseeker.thrift.gen.dao.struct.CandidateShareChainDO;
+import com.moseeker.thrift.gen.dao.struct.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.UserEmployeeDO;
+import com.moseeker.thrift.gen.dao.struct.UserUserDO;
 
 /**
  * 候选人实体，提供候选人相关业务
@@ -112,4 +124,20 @@ public class CandidateEntity implements Candidate {
             }
         }
     }
+
+	@Override
+	public Response changeInteresting(int user_id, int position_id, byte is_interested) {
+		Response response = ResponseUtils.success("{}");
+		Optional<CandidatePositionDO> position = CandidateDBDao.getCandidatePosition(position_id, user_id);
+		Boolean isInterested = BooleanUtils.toBooleanObject(is_interested);
+		if (position.filter(f -> f.userId != 0 && f.isInterested != isInterested).isPresent()) {
+			try {
+				CandidateDBDao.updateCandidatePosition(position.map(m -> m.setIsInterested(isInterested)).map(m -> m.setUpdateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '))).get());
+			} catch (TException e) {
+				logger.error(e.getMessage(), e);
+				response = ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+			}
+		}
+		return response;
+	}
 }
