@@ -1,15 +1,5 @@
 package moseeker.baseorm.dao.ProfileProcess;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.junit.Test;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
-import com.moseeker.baseorm.service.Impl.ConfigServiceImpl;
-import com.moseeker.baseorm.service.Impl.HrDBServiceImpl;
-import com.moseeker.baseorm.service.Impl.JobApplicationServiceImpl;
-import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
-
 public class ProfileProcessTest {
 	/*private JobApplicationServiceImpl jobApplication;
 	private ConfigServiceImpl config;

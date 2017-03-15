@@ -1,13 +1,10 @@
 package com.moseeker.baseorm.server;
 
 import com.moseeker.baseorm.Thriftservice.*;
-import com.moseeker.baseorm.dao.user.ThirdPartyUserDao;
+import com.moseeker.rpccenter.main.MoServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
-import com.moseeker.rpccenter.common.ServerNodeUtils;
-import com.moseeker.rpccenter.main.MultiRegServer;
 
 /*
  * baseorm-service-provider的启动类
@@ -26,27 +23,28 @@ public class BaseOrmServer {
 		// TODO Auto-generated method stub
 		AnnotationConfigApplicationContext acac = initSpring();
 		try {
-			MultiRegServer server = new MultiRegServer(BaseOrmServer.class,
-					ServerNodeUtils.getPort(args),
-					acac.getBean(HRAccountThriftService.class),
-					acac.getBean(WordpressDaoThriftService.class),
-					acac.getBean(CompanyThriftService.class),
-					acac.getBean(PositionDaoThriftService.class),
-					acac.getBean(UserDaoThriftService.class),
-					acac.getBean(DictDaoThriftService.class),
-					acac.getBean(DictDaoMapThriftService.class),
-					acac.getBean(JobDBDaoThriftService.class),
-					acac.getBean(PositionThriftService.class),
-					acac.getBean(ApplicationDaoThriftService.class),
-					acac.getBean(ConfigDaothriftService.class),
-					acac.getBean(HrDBThriftService.class),
-					acac.getBean(WxUserDaoThriftService.class),
-					acac.getBean(SearchConditionDaoThriftService.class),
-					acac.getBean(TalentpoolDaoThriftService.class),
+			MoServer server  = new MoServer(
+				acac,"",
+				acac.getBean(HRAccountDaoThriftService.class),
+				acac.getBean(WordpressDaoThriftService.class),
+				acac.getBean(CompanyThriftService.class),
+				acac.getBean(PositionDaoThriftService.class),
+				acac.getBean(UserDBDaoThriftService.class),
+				acac.getBean(DictDaoThriftService.class),
+				acac.getBean(DictDaoMapThriftService.class),
+				acac.getBean(JobDBDaoThriftService.class),
+				acac.getBean(ApplicationDaoThriftService.class),
+				acac.getBean(ConfigDBDaoThriftService.class),
+				acac.getBean(HrDBThriftService.class),
+				acac.getBean(CandidateDaoThriftService.class),
+				acac.getBean(SearchConditionDaoThriftService.class),
+				acac.getBean(ProfileDBDaoThriftService.class),
+				acac.getBean(WxUserDaoThriftService.class),
+				acac.getBean(LogDBDaoThriftService.class),
 					acac.getBean(ThirdPartyUserDaoThriftService.class),
 					acac.getBean(UserEmployeeDaoThriftService.class),
 					acac.getBean(ProfileDaoThriftService.class));
-			server.start();
+			server.startServer();
 			synchronized (BaseOrmServer.class) {
 				while (true) {
 					try {

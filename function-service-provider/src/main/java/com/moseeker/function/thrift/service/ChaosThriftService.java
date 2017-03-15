@@ -2,6 +2,7 @@ package com.moseeker.function.thrift.service;
 
 import java.util.List;
 
+import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,8 +11,6 @@ import com.moseeker.function.service.chaos.ChaosServiceImpl;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices.Iface;
 import com.moseeker.thrift.gen.foundation.chaos.struct.ThirdPartyAccountStruct;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
 
 /**
  * 

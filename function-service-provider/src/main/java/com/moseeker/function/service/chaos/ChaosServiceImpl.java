@@ -3,6 +3,7 @@ package com.moseeker.function.service.chaos;
 import java.net.ConnectException;
 import java.util.List;
 
+import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -28,7 +29,6 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.PositionDao;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.foundation.chaos.struct.ThirdPartyAccountStruct;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
 
 /**
  * 

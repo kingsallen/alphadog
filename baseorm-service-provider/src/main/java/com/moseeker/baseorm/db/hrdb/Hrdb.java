@@ -5,11 +5,13 @@ package com.moseeker.baseorm.db.hrdb;
 
 
 import com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrChatUnreadCount;
 import com.moseeker.baseorm.db.hrdb.tables.HrChildCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeePosition;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeSection;
 import com.moseeker.baseorm.db.hrdb.tables.HrFeedback;
@@ -49,6 +51,8 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxRule;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
+import com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5Statistics;
+import com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5UniqueStatistics;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,7 +78,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 670490300;
+    private static final long serialVersionUID = 1449449974;
 
     /**
      * The reference instance of <code>hrdb</code>
@@ -82,9 +86,24 @@ public class Hrdb extends SchemaImpl {
     public static final Hrdb HRDB = new Hrdb();
 
     /**
+     * The table <code>hrdb.hrdb.hr_html5_statistics</code>.
+     */
+    public final HrdbHrHtml5Statistics HRDB_HR_HTML5_STATISTICS = com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5Statistics.HRDB_HR_HTML5_STATISTICS;
+
+    /**
+     * The table <code>hrdb.hrdb.hr_html5_unique_statistics</code>.
+     */
+    public final HrdbHrHtml5UniqueStatistics HRDB_HR_HTML5_UNIQUE_STATISTICS = com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5UniqueStatistics.HRDB_HR_HTML5_UNIQUE_STATISTICS;
+
+    /**
      * 企业申请简历校验配置
      */
     public final HrAppCvConf HR_APP_CV_CONF = com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf.HR_APP_CV_CONF;
+
+    /**
+     * 聊天室未读消息
+     */
+    public final HrChatUnreadCount HR_CHAT_UNREAD_COUNT = com.moseeker.baseorm.db.hrdb.tables.HrChatUnreadCount.HR_CHAT_UNREAD_COUNT;
 
     /**
      * 子公司表
@@ -110,6 +129,11 @@ public class Hrdb extends SchemaImpl {
      * 部门员工配置表
      */
     public final HrEmployeeCertConf HR_EMPLOYEE_CERT_CONF = com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF;
+
+    /**
+     * 员工认证自定义字段表
+     */
+    public final HrEmployeeCustomFields HR_EMPLOYEE_CUSTOM_FIELDS = com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS;
 
     /**
      * 员工职能表
@@ -331,12 +355,16 @@ public class Hrdb extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
+            HrdbHrHtml5Statistics.HRDB_HR_HTML5_STATISTICS,
+            HrdbHrHtml5UniqueStatistics.HRDB_HR_HTML5_UNIQUE_STATISTICS,
             HrAppCvConf.HR_APP_CV_CONF,
+            HrChatUnreadCount.HR_CHAT_UNREAD_COUNT,
             HrChildCompany.HR_CHILD_COMPANY,
             HrCompany.HR_COMPANY,
             HrCompanyAccount.HR_COMPANY_ACCOUNT,
             HrCompanyConf.HR_COMPANY_CONF,
             HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF,
+            HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS,
             HrEmployeePosition.HR_EMPLOYEE_POSITION,
             HrEmployeeSection.HR_EMPLOYEE_SECTION,
             HrFeedback.HR_FEEDBACK,

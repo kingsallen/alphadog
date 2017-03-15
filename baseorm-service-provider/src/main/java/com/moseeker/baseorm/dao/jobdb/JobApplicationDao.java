@@ -1,36 +1,36 @@
 package com.moseeker.baseorm.dao.jobdb;
 
+import com.moseeker.baseorm.db.configdb.tables.ConfigSysPointsConfTpl;
+import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
+import com.moseeker.baseorm.util.StructDaoImpl;
+import com.moseeker.common.dbutils.DBConnHelper;
+import com.moseeker.common.util.BeanUtils;
+import com.moseeker.db.userdb.tables.UserUser;
+import com.moseeker.db.userdb.tables.UserWxUser;
+import com.moseeker.thrift.gen.application.struct.ApplicationAts;
+import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.dao.struct.JobApplicationDO;
+import org.jooq.*;
+import org.jooq.types.UInteger;
+import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.moseeker.common.util.BeanUtils;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import org.jooq.DSLContext;
-import org.jooq.Record3;
-import org.jooq.Record9;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
-import org.jooq.SelectJoinStep;
-import org.jooq.types.UInteger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
-import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
-import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
-import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
-import com.moseeker.baseorm.util.BaseDaoImpl;
-import com.moseeker.common.dbutils.DBConnHelper;
-import com.moseeker.db.configdb.tables.ConfigSysPointsConfTpl;
-import com.moseeker.db.userdb.tables.UserUser;
-import com.moseeker.db.userdb.tables.UserWxUser;
-import com.moseeker.thrift.gen.application.struct.ApplicationAts;
-import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
+/**
+ * 封装申请表基本操作
+ *
+ * @author jack
+ * date : Jan 22, 2017
+ * email: wengjianfei@moseeker.com
+ */
 @Service
-public class JobApplicationDao extends BaseDaoImpl<JobApplicationRecord, JobApplication>{
-	protected Logger logger = LoggerFactory.getLogger(this.getClass());
+public class JobApplicationDao extends StructDaoImpl<JobApplicationDO, JobApplicationRecord, JobApplication> {
+
 	@Override
 	protected void initJOOQEntity() {
 		// TODO Auto-generated method stub
@@ -42,12 +42,12 @@ public class JobApplicationDao extends BaseDaoImpl<JobApplicationRecord, JobAppl
 	 * @param query
 	 * @return
 	 */
-	public List<com.moseeker.thrift.gen.application.struct.JobApplication> getApplications(CommonQuery query) {
-		List<com.moseeker.thrift.gen.application.struct.JobApplication> applications = new ArrayList<>();
+	public List<JobApplicationDO> getApplications(CommonQuery query) {
+		List<JobApplicationDO> applications = new ArrayList<>();
 		try {
 			List<JobApplicationRecord> records = getResources(query);
 			if(records != null && records.size() > 0) {
-				applications = BeanUtils.DBToStruct(com.moseeker.thrift.gen.application.struct.JobApplication.class, records);
+				applications = BeanUtils.DBToStruct(JobApplicationDO.class, records);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -56,7 +56,7 @@ public class JobApplicationDao extends BaseDaoImpl<JobApplicationRecord, JobAppl
 		}
 		return applications;
 	}
-	
+
 	public List<ProcessValidationStruct> getAuth(List<UInteger> appIds,Integer companyId,Integer progressStatus) throws Exception{
 		List<ProcessValidationStruct> list=new ArrayList<ProcessValidationStruct>();
 		Connection conn = null;

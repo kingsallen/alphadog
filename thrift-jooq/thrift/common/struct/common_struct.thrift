@@ -16,5 +16,12 @@ struct CommonQuery {
     5: optional string order,
     6: optional string fields,
     7: optional bool nocache=false,
-    8: optional map<string, string> equalFilter
+    8: optional map<string, string> equalFilter,
+    9: optional list<string> attributes,
+    10: optional list<string> grouops
+}
+
+exception CURDException {
+    1: i32 code,
+    2: string message
 }

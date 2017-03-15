@@ -1,7 +1,7 @@
 package com.moseeker.baseorm.service.Impl;
 
 import com.moseeker.baseorm.dao.user.ThirdPartyUserDao;
-import com.moseeker.baseorm.dao.user.UserEmployeeDao;
+import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.db.userdb.tables.records.UserThirdpartyUserRecord;
 import com.moseeker.baseorm.service.UserDBService;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;

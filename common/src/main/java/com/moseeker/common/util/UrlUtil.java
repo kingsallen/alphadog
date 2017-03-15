@@ -10,9 +10,12 @@ import java.net.URLConnection;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class UrlUtil {
+
+    private static Logger logger = LoggerFactory.getLogger(UrlUtil.class);
 	
 	public static String sendGet(String url, String param) {
         String result = "";
@@ -33,7 +36,7 @@ public class UrlUtil {
             Map<String, List<String>> map = connection.getHeaderFields();
             // 遍历所有的响应头字段
             for (String key : map.keySet()) {
-                System.out.println(key + "--->" + map.get(key));
+                logger.info("{}  ---> {}", key, map.get(key));
             }
             // 定义 BufferedReader输入流来读取URL的响应
             in = new BufferedReader(new InputStreamReader(
@@ -43,9 +46,7 @@ public class UrlUtil {
                 result += line;
             }
         } catch (Exception e) {
-            System.out.println("发送GET请求出现异常！" + e);
-            e.printStackTrace();
-            LoggerFactory.getLogger(UrlUtil.class).error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
         // 使用finally块来关闭输入流
         finally {

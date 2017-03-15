@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.moseeker.thrift.gen.dao.service.JobDBDao;
 import org.apache.thrift.TBase;
 import org.apache.thrift.TException;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.utils.ConvertUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -19,7 +19,6 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.CompanyDao;
 import com.moseeker.thrift.gen.dao.struct.HRCompanyConfData;
-import com.moseeker.thrift.gen.position.service.PositionDao;
 import com.moseeker.thrift.gen.position.struct.dao.JobOccupationCustom;
 
 @Service
@@ -30,8 +29,8 @@ public class JobOccupationService {
 	 * param:company_id
 	 * function:查找公司的自定义的字段，包括自定义职能和自定义字段
 	 */
-	PositionDao.Iface positionDao =ServiceManager.SERVICEMANAGER
-			.getService(PositionDao.Iface.class);
+	JobDBDao.Iface jobDBDao =ServiceManager.SERVICEMANAGER
+			.getService(JobDBDao.Iface.class);
 	CompanyDao.Iface companyDao=ServiceManager.SERVICEMANAGER
 			.getService(CompanyDao.Iface.class);
 	public Response getCustomField(String param){
@@ -45,10 +44,10 @@ public class JobOccupationService {
 		query.setPer_page(Integer.MAX_VALUE);
 		try{
 			HRCompanyConfData hrconf=getHRCompanyConf(company_id);
-			Response result1=positionDao.getJobCustoms(query);
+			Response result1=jobDBDao.getJobCustoms(query);
 			List<? extends TBase> list1=ConvertUtils.convert(JobOccupationCustom.class, result1);
 			Map<String,Object> map1= ConvertUtils.convertToJSON(list1, hrconf.job_custom_title);
-			Response result2=positionDao.getJobOccupations(query);
+			Response result2=jobDBDao.getJobOccupations(query);
 			List<? extends TBase> list2=ConvertUtils.convert(JobOccupationCustom.class, result2);
 			Map<String,Object> map2= ConvertUtils.convertToJSON(list2, hrconf.getJob_occupation());
 			Map<String,Object> hashmap=new HashMap<String,Object>();

@@ -28,7 +28,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
 
-	private static final long serialVersionUID = 1557319362;
+	private static final long serialVersionUID = 1088912002;
 
 	/**
 	 * Setter for <code>jobdb.job_position.id</code>.
@@ -381,14 +381,14 @@ public class JobPositionRecord extends UpdatableRecordImpl<JobPositionRecord> {
 	}
 
 	/**
-	 * Setter for <code>jobdb.job_position.degree</code>. 0:无 1:大专 2:本科 3:硕士 4:MBA 5:博士
+	 * Setter for <code>jobdb.job_position.degree</code>. 0:无 1:大专 2:本科 3:硕士 4:MBA 5:博士 6:中专 7:高中 8: 博士后 9:初中
 	 */
 	public void setDegree(Byte value) {
 		setValue(25, value);
 	}
 
 	/**
-	 * Getter for <code>jobdb.job_position.degree</code>. 0:无 1:大专 2:本科 3:硕士 4:MBA 5:博士
+	 * Getter for <code>jobdb.job_position.degree</code>. 0:无 1:大专 2:本科 3:硕士 4:MBA 5:博士 6:中专 7:高中 8: 博士后 9:初中
 	 */
 	public Byte getDegree() {
 		return (Byte) getValue(25);

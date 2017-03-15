@@ -2,10 +2,8 @@ apply plugin: 'idea'
 apply plugin: 'eclipse'
   
 dependencies {
-
-    // compile project(":thrift-gen-java")
     compile project(":rpc-center")
-
+    compile project(":thrift-jooq")
     //testCompile deps["junit"]
     compile deps["spring-core"]
     compile deps["spring-context"]

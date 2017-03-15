@@ -1415,13 +1415,13 @@ public class ApplicationDao {
             case 1: // APP_IDS
               if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
                 {
-                  org.apache.thrift.protocol.TList _list72 = iprot.readListBegin();
-                  struct.appIds = new java.util.ArrayList<java.lang.Integer>(_list72.size);
-                  int _elem73;
-                  for (int _i74 = 0; _i74 < _list72.size; ++_i74)
+                  org.apache.thrift.protocol.TList _list40 = iprot.readListBegin();
+                  struct.appIds = new java.util.ArrayList<java.lang.Integer>(_list40.size);
+                  int _elem41;
+                  for (int _i42 = 0; _i42 < _list40.size; ++_i42)
                   {
-                    _elem73 = iprot.readI32();
-                    struct.appIds.add(_elem73);
+                    _elem41 = iprot.readI32();
+                    struct.appIds.add(_elem41);
                   }
                   iprot.readListEnd();
                 }
@@ -1465,9 +1465,9 @@ public class ApplicationDao {
           oprot.writeFieldBegin(APP_IDS_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, struct.appIds.size()));
-            for (int _iter75 : struct.appIds)
+            for (int _iter43 : struct.appIds)
             {
-              oprot.writeI32(_iter75);
+              oprot.writeI32(_iter43);
             }
             oprot.writeListEnd();
           }
@@ -1510,9 +1510,9 @@ public class ApplicationDao {
         if (struct.isSetAppIds()) {
           {
             oprot.writeI32(struct.appIds.size());
-            for (int _iter76 : struct.appIds)
+            for (int _iter44 : struct.appIds)
             {
-              oprot.writeI32(_iter76);
+              oprot.writeI32(_iter44);
             }
           }
         }
@@ -1530,13 +1530,13 @@ public class ApplicationDao {
         java.util.BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TList _list77 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
-            struct.appIds = new java.util.ArrayList<java.lang.Integer>(_list77.size);
-            int _elem78;
-            for (int _i79 = 0; _i79 < _list77.size; ++_i79)
+            org.apache.thrift.protocol.TList _list45 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
+            struct.appIds = new java.util.ArrayList<java.lang.Integer>(_list45.size);
+            int _elem46;
+            for (int _i47 = 0; _i47 < _list45.size; ++_i47)
             {
-              _elem78 = iprot.readI32();
-              struct.appIds.add(_elem78);
+              _elem46 = iprot.readI32();
+              struct.appIds.add(_elem46);
             }
           }
           struct.setAppIdsIsSet(true);
@@ -3706,14 +3706,14 @@ public class ApplicationDao {
             case 1: // APPLICATION
               if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
                 {
-                  org.apache.thrift.protocol.TList _list80 = iprot.readListBegin();
-                  struct.application = new java.util.ArrayList<com.moseeker.thrift.gen.application.struct.JobApplication>(_list80.size);
-                  com.moseeker.thrift.gen.application.struct.JobApplication _elem81;
-                  for (int _i82 = 0; _i82 < _list80.size; ++_i82)
+                  org.apache.thrift.protocol.TList _list48 = iprot.readListBegin();
+                  struct.application = new java.util.ArrayList<com.moseeker.thrift.gen.application.struct.JobApplication>(_list48.size);
+                  com.moseeker.thrift.gen.application.struct.JobApplication _elem49;
+                  for (int _i50 = 0; _i50 < _list48.size; ++_i50)
                   {
-                    _elem81 = new com.moseeker.thrift.gen.application.struct.JobApplication();
-                    _elem81.read(iprot);
-                    struct.application.add(_elem81);
+                    _elem49 = new com.moseeker.thrift.gen.application.struct.JobApplication();
+                    _elem49.read(iprot);
+                    struct.application.add(_elem49);
                   }
                   iprot.readListEnd();
                 }
@@ -3741,9 +3741,9 @@ public class ApplicationDao {
           oprot.writeFieldBegin(APPLICATION_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.application.size()));
-            for (com.moseeker.thrift.gen.application.struct.JobApplication _iter83 : struct.application)
+            for (com.moseeker.thrift.gen.application.struct.JobApplication _iter51 : struct.application)
             {
-              _iter83.write(oprot);
+              _iter51.write(oprot);
             }
             oprot.writeListEnd();
           }
@@ -3774,9 +3774,9 @@ public class ApplicationDao {
         if (struct.isSetApplication()) {
           {
             oprot.writeI32(struct.application.size());
-            for (com.moseeker.thrift.gen.application.struct.JobApplication _iter84 : struct.application)
+            for (com.moseeker.thrift.gen.application.struct.JobApplication _iter52 : struct.application)
             {
-              _iter84.write(oprot);
+              _iter52.write(oprot);
             }
           }
         }
@@ -3788,14 +3788,14 @@ public class ApplicationDao {
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TList _list85 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-            struct.application = new java.util.ArrayList<com.moseeker.thrift.gen.application.struct.JobApplication>(_list85.size);
-            com.moseeker.thrift.gen.application.struct.JobApplication _elem86;
-            for (int _i87 = 0; _i87 < _list85.size; ++_i87)
+            org.apache.thrift.protocol.TList _list53 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+            struct.application = new java.util.ArrayList<com.moseeker.thrift.gen.application.struct.JobApplication>(_list53.size);
+            com.moseeker.thrift.gen.application.struct.JobApplication _elem54;
+            for (int _i55 = 0; _i55 < _list53.size; ++_i55)
             {
-              _elem86 = new com.moseeker.thrift.gen.application.struct.JobApplication();
-              _elem86.read(iprot);
-              struct.application.add(_elem86);
+              _elem54 = new com.moseeker.thrift.gen.application.struct.JobApplication();
+              _elem54.read(iprot);
+              struct.application.add(_elem54);
             }
           }
           struct.setApplicationIsSet(true);
@@ -4489,14 +4489,14 @@ public class ApplicationDao {
             case 1: // APPLICATION
               if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
                 {
-                  org.apache.thrift.protocol.TList _list88 = iprot.readListBegin();
-                  struct.application = new java.util.ArrayList<com.moseeker.thrift.gen.application.struct.JobApplication>(_list88.size);
-                  com.moseeker.thrift.gen.application.struct.JobApplication _elem89;
-                  for (int _i90 = 0; _i90 < _list88.size; ++_i90)
+                  org.apache.thrift.protocol.TList _list56 = iprot.readListBegin();
+                  struct.application = new java.util.ArrayList<com.moseeker.thrift.gen.application.struct.JobApplication>(_list56.size);
+                  com.moseeker.thrift.gen.application.struct.JobApplication _elem57;
+                  for (int _i58 = 0; _i58 < _list56.size; ++_i58)
                   {
-                    _elem89 = new com.moseeker.thrift.gen.application.struct.JobApplication();
-                    _elem89.read(iprot);
-                    struct.application.add(_elem89);
+                    _elem57 = new com.moseeker.thrift.gen.application.struct.JobApplication();
+                    _elem57.read(iprot);
+                    struct.application.add(_elem57);
                   }
                   iprot.readListEnd();
                 }
@@ -4524,9 +4524,9 @@ public class ApplicationDao {
           oprot.writeFieldBegin(APPLICATION_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.application.size()));
-            for (com.moseeker.thrift.gen.application.struct.JobApplication _iter91 : struct.application)
+            for (com.moseeker.thrift.gen.application.struct.JobApplication _iter59 : struct.application)
             {
-              _iter91.write(oprot);
+              _iter59.write(oprot);
             }
             oprot.writeListEnd();
           }
@@ -4557,9 +4557,9 @@ public class ApplicationDao {
         if (struct.isSetApplication()) {
           {
             oprot.writeI32(struct.application.size());
-            for (com.moseeker.thrift.gen.application.struct.JobApplication _iter92 : struct.application)
+            for (com.moseeker.thrift.gen.application.struct.JobApplication _iter60 : struct.application)
             {
-              _iter92.write(oprot);
+              _iter60.write(oprot);
             }
           }
         }
@@ -4571,14 +4571,14 @@ public class ApplicationDao {
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TList _list93 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-            struct.application = new java.util.ArrayList<com.moseeker.thrift.gen.application.struct.JobApplication>(_list93.size);
-            com.moseeker.thrift.gen.application.struct.JobApplication _elem94;
-            for (int _i95 = 0; _i95 < _list93.size; ++_i95)
+            org.apache.thrift.protocol.TList _list61 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+            struct.application = new java.util.ArrayList<com.moseeker.thrift.gen.application.struct.JobApplication>(_list61.size);
+            com.moseeker.thrift.gen.application.struct.JobApplication _elem62;
+            for (int _i63 = 0; _i63 < _list61.size; ++_i63)
             {
-              _elem94 = new com.moseeker.thrift.gen.application.struct.JobApplication();
-              _elem94.read(iprot);
-              struct.application.add(_elem94);
+              _elem62 = new com.moseeker.thrift.gen.application.struct.JobApplication();
+              _elem62.read(iprot);
+              struct.application.add(_elem62);
             }
           }
           struct.setApplicationIsSet(true);
@@ -5269,13 +5269,13 @@ public class ApplicationDao {
             case 1: // PARAMS
               if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
                 {
-                  org.apache.thrift.protocol.TList _list96 = iprot.readListBegin();
-                  struct.params = new java.util.ArrayList<java.lang.Integer>(_list96.size);
-                  int _elem97;
-                  for (int _i98 = 0; _i98 < _list96.size; ++_i98)
+                  org.apache.thrift.protocol.TList _list64 = iprot.readListBegin();
+                  struct.params = new java.util.ArrayList<java.lang.Integer>(_list64.size);
+                  int _elem65;
+                  for (int _i66 = 0; _i66 < _list64.size; ++_i66)
                   {
-                    _elem97 = iprot.readI32();
-                    struct.params.add(_elem97);
+                    _elem65 = iprot.readI32();
+                    struct.params.add(_elem65);
                   }
                   iprot.readListEnd();
                 }
@@ -5303,9 +5303,9 @@ public class ApplicationDao {
           oprot.writeFieldBegin(PARAMS_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, struct.params.size()));
-            for (int _iter99 : struct.params)
+            for (int _iter67 : struct.params)
             {
-              oprot.writeI32(_iter99);
+              oprot.writeI32(_iter67);
             }
             oprot.writeListEnd();
           }
@@ -5336,9 +5336,9 @@ public class ApplicationDao {
         if (struct.isSetParams()) {
           {
             oprot.writeI32(struct.params.size());
-            for (int _iter100 : struct.params)
+            for (int _iter68 : struct.params)
             {
-              oprot.writeI32(_iter100);
+              oprot.writeI32(_iter68);
             }
           }
         }
@@ -5350,13 +5350,13 @@ public class ApplicationDao {
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TList _list101 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
-            struct.params = new java.util.ArrayList<java.lang.Integer>(_list101.size);
-            int _elem102;
-            for (int _i103 = 0; _i103 < _list101.size; ++_i103)
+            org.apache.thrift.protocol.TList _list69 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
+            struct.params = new java.util.ArrayList<java.lang.Integer>(_list69.size);
+            int _elem70;
+            for (int _i71 = 0; _i71 < _list69.size; ++_i71)
             {
-              _elem102 = iprot.readI32();
-              struct.params.add(_elem102);
+              _elem70 = iprot.readI32();
+              struct.params.add(_elem70);
             }
           }
           struct.setParamsIsSet(true);

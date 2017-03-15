@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.moseeker.thrift.gen.dao.service.*;
+import com.moseeker.thrift.gen.dao.struct.HrOperationRecordDO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,13 +37,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.config.ConfigSysPointsConfTpl;
 import com.moseeker.thrift.gen.config.HrAwardConfigTemplate;
-import com.moseeker.thrift.gen.dao.service.ApplicationDao;
-import com.moseeker.thrift.gen.dao.service.ConfigDao;
-import com.moseeker.thrift.gen.dao.service.HrDBDao;
-import com.moseeker.thrift.gen.dao.service.UserDao;
-import com.moseeker.thrift.gen.dao.service.UserHrAccountDao;
 import com.moseeker.thrift.gen.dao.struct.HistoryOperate;
-import com.moseeker.thrift.gen.hr.struct.HrOperationrecordStruct;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
 import com.moseeker.thrift.gen.mq.struct.MessageTplDataCol;
@@ -65,11 +61,11 @@ public class ProfileProcessBS {
 			.getService(ApplicationDao.Iface.class);
 	UserHrAccountDao.Iface useraccountDao = ServiceManager.SERVICEMANAGER
 			.getService(UserHrAccountDao.Iface.class);
-	ConfigDao.Iface configDao = ServiceManager.SERVICEMANAGER
-			.getService(ConfigDao.Iface.class);
-	UserDao.Iface userDao = ServiceManager.SERVICEMANAGER
-			.getService(UserDao.Iface.class);
-	HrDBDao.Iface hrDao = ServiceManager.SERVICEMANAGER
+	ConfigDBDao.Iface configDao = ServiceManager.SERVICEMANAGER
+			.getService(ConfigDBDao.Iface.class);
+    UserDBDao.Iface userDao = ServiceManager.SERVICEMANAGER
+			.getService(UserDBDao.Iface.class);
+    HrDBDao.Iface hrDao = ServiceManager.SERVICEMANAGER
 			.getService(HrDBDao.Iface.class);
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -128,17 +124,11 @@ public class ProfileProcessBS {
 
 	/**
 	 * 招聘进度
-	 * 
-	 * @param progressStatus
-	 *            －－－－下一步的状态，对应config_sys_points_conf_tpl.recruit_order
-	 * @param params
-	 *            －－－－l_application_id的字符串，之间用，隔开
-	 * @param companyId
-	 *            －－－－企业编号
-	 * @param accountId
-	 *            －－－－hr_account.id
-	 * @author zzt
-	 * @return Response(status,message,data)
+	 * @param companyId 企业编号
+	 * @param progressStatus 下一步的状态，对应config_sys_points_conf_tpl.recruit_order
+	 * @param appIds 申请编号
+	 * @param accountId hr_account.id
+	 * @return
 	 */
 	@UpdateEs(tableName = "job_application", argsIndex = 2, argsName = "application_id")
 	public Response processProfile(int companyId, int progressStatus, List<Integer> appIds, int accountId) {
@@ -173,57 +163,45 @@ public class ProfileProcessBS {
 							processStatus = false;
 							break;
 						}
-					}
-
-				}
-				if (recruitOrder == progressStatus) {
-					return ResponseUtils.success("操作成功");
-				}
-				// 对所有的
-				if (processStatus || progressStatus == 13
-						|| progressStatus == 99) {
-					Response recruit = configDao.getRecruitProcesses(companyId);
-
-					List<HrAwardConfigTemplate> recruitProcesses = null;
-					if (recruit.getStatus() == 0
-							&& StringUtils.isNotNullOrEmpty(recruit.getData())
-							&& !"[]".equals(recruit.getData())) {
-						recruitProcesses = this
-								.convertRecruitProcessesList(recruit.getData());
-					}
-
-					RecruitmentResult result = BusinessUtil
-							.excuteRecruitRewardOperation(recruitOrder,
-									progressStatus, recruitProcesses);
-					if (result.getStatus() == 0) {
-						List<Integer> weChatIds = new ArrayList<Integer>();
-						List<RewardsToBeAddBean> rewardsToBeAdd = new ArrayList<RewardsToBeAddBean>();
-						// 简历还未被浏览就被拒绝，则视为已被浏览，需要在添加角色操作的历史记录之前插入建立被查看的历史记录
-						List<HrOperationrecordStruct> turnToCVCheckeds = new ArrayList<HrOperationrecordStruct>();
-						RewardsToBeAddBean reward = null;
-						HrOperationrecordStruct turnToCVChecked = null;
-						for (ProcessValidationStruct record : list) {
-							RecruitmentResult result1 = BusinessUtil
-									.excuteRecruitRewardOperation(
-											record.getRecruit_order(),
-											progressStatus, recruitProcesses);
-							reward = new RewardsToBeAddBean();
-							reward.setAccount_id(accountId);
-							reward.setEmployee_id(0);
-							reward.setReason(result1.getReason());
-							reward.setAward(result1.getReward());
-							reward.setApplication_id(record.getId());
-							reward.setCompany_id(record.getCompany_id());
-							reward.setOperate_tpl_id(record.getTemplate_id());
-							reward.setRecommender_id(record.getRecommender_id());
-							if (progressStatus == 13
-									&& record.getTemplate_id() == ProcessUtils.RECRUIT_STATUS_APPLY_ID) {
-								turnToCVChecked = new HrOperationrecordStruct();
-								turnToCVChecked.setAdmin_id(accountId);
-								turnToCVChecked.setCompany_id(companyId);
-								turnToCVChecked
-										.setOperate_tpl_id(ProcessUtils.RECRUIT_STATUS_CVCHECKED_ID);
-								turnToCVChecked.setApp_id(record.getId());
+	    			}
+	    		}
+	    		if (recruitOrder==progressStatus){
+    				return ResponseUtils.success("操作成功");
+    			}
+	    		//  对所有的
+	    		if(processStatus||progressStatus==13||progressStatus==99){
+	    			Response recruit=configDao.getRecruitProcesses(companyId);
+	    			
+	    			List<HrAwardConfigTemplate> recruitProcesses=null;
+	    			if(recruit.getStatus()==0&&StringUtils.isNotNullOrEmpty(recruit.getData())&&!"[]".equals(recruit.getData())){
+	    				recruitProcesses=this.convertRecruitProcessesList(recruit.getData());
+	    			}
+	    			
+	    			RecruitmentResult result=BusinessUtil.excuteRecruitRewardOperation(recruitOrder, progressStatus, recruitProcesses);
+	    			if(result.getStatus() == 0){
+	    				List<Integer> weChatIds=new ArrayList<Integer>();
+	    				List<RewardsToBeAddBean>rewardsToBeAdd=new ArrayList<RewardsToBeAddBean>();
+	    				// 简历还未被浏览就被拒绝，则视为已被浏览，需要在添加角色操作的历史记录之前插入建立被查看的历史记录
+	    				List<HrOperationRecordDO> turnToCVCheckeds=new ArrayList<HrOperationRecordDO>();
+	    				RewardsToBeAddBean reward=null;
+	    				HrOperationRecordDO turnToCVChecked=null;
+	    				for(ProcessValidationStruct record:list){
+	    					RecruitmentResult result1 = BusinessUtil.excuteRecruitRewardOperation(record.getRecruit_order(), progressStatus, recruitProcesses);
+	    					reward=new RewardsToBeAddBean();
+	    					reward.setAccount_id(accountId);
+	    					reward.setEmployee_id(0);
+	    					reward.setReason(result1.getReason());
+	    					reward.setAward(result1.getReward());
+	    					reward.setApplication_id(record.getId());
+	    					reward.setCompany_id(record.getCompany_id());
+	    					reward.setOperate_tpl_id(record.getTemplate_id());
+	    					reward.setRecommender_id(record.getRecommender_id());
+	    					if(progressStatus == 13&&record.getTemplate_id()==ProcessUtils.RECRUIT_STATUS_APPLY_ID){
+	    						turnToCVChecked=new HrOperationRecordDO();
+	    						turnToCVChecked.setAdminId(accountId);
+	    						turnToCVChecked.setCompanyId(companyId);
+	    						turnToCVChecked.setOperateTplId(ProcessUtils.RECRUIT_STATUS_CVCHECKED_ID);
+	    						turnToCVChecked.setAppId(record.getId());
 								turnToCVCheckeds.add(turnToCVChecked);
 							}
 							rewardsToBeAdd.add(reward);
@@ -295,7 +273,7 @@ public class ProfileProcessBS {
 	 * @param userName
 	 * @param companyId
 	 * @param status
-	 * @param companyName
+	 * @param positionName
 	 * @param positionName
 	 * @param applicationId
 	 * @param tm
@@ -389,7 +367,7 @@ public class ProfileProcessBS {
 	// 插入hr操作记录
 	private void updateRecruitState(Integer progressStatus,
 			List<ProcessValidationStruct> applications,
-			List<HrOperationrecordStruct> turnToCVCheckeds,
+			List<HrOperationRecordDO> turnToCVCheckeds,
 			List<UserEmployeeStruct> employeesToBeUpdates,
 			RecruitmentResult result, List<RewardsToBeAddBean> rewardsToBeAdd)
 			throws Exception {
@@ -402,14 +380,14 @@ public class ProfileProcessBS {
 			rewardsToBeAdd = this.OperationOther(applications, rewardsToBeAdd,
 					progressStatus);
 		}
-		List<HrOperationrecordStruct> lists = new ArrayList<HrOperationrecordStruct>();
-		HrOperationrecordStruct struct = null;
+		List<HrOperationRecordDO> lists = new ArrayList<HrOperationRecordDO>();
+		HrOperationRecordDO struct = null;
 		for (RewardsToBeAddBean beans : rewardsToBeAdd) {
-			struct = new HrOperationrecordStruct();
-			struct.setAdmin_id(beans.getAccount_id());
-			struct.setCompany_id(beans.getCompany_id());
-			struct.setOperate_tpl_id(beans.getOperate_tpl_id());
-			struct.setApp_id(beans.getApplication_id());
+			struct = new HrOperationRecordDO();
+			struct.setAdminId(beans.getAccount_id());
+			struct.setCompanyId(beans.getCompany_id());
+			struct.setOperateTplId(beans.getOperate_tpl_id());
+			struct.setAppId(beans.getApplication_id());
 			lists.add(struct);
 		}
 		hrDao.postHrOperationrecords(lists);
@@ -553,6 +531,7 @@ public class ProfileProcessBS {
 						reward.setOperate_tpl_id(his.getOperate_tpl_id());
 						break;
 					}
+
 				}
 			}
 			List<JobApplication> app = new ArrayList<JobApplication>();
@@ -586,7 +565,7 @@ public class ProfileProcessBS {
 	private List<RewardsToBeAddBean> Operation13(
 			List<ProcessValidationStruct> applications,
 			List<RewardsToBeAddBean> rewardsToBeAdd,
-			List<HrOperationrecordStruct> turnToCVCheckeds) throws Exception {
+			List<HrOperationRecordDO> turnToCVCheckeds) throws Exception {
 		CommonQuery query = new CommonQuery();
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("recruit_order", 13 + "");

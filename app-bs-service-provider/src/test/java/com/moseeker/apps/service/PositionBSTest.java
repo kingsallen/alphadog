@@ -2,6 +2,9 @@ package com.moseeker.apps.service;
 
 import static org.junit.Assert.assertEquals;
 
+import com.moseeker.thrift.gen.position.struct.Position;
+import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
+import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
 import org.apache.http.HttpRequest;
 import org.apache.thrift.TException;
 import org.hamcrest.CoreMatchers;
@@ -9,7 +12,6 @@ import org.hamcrest.Matcher;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,9 +31,6 @@ import com.moseeker.thrift.gen.dao.service.PositionDao;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.position.service.PositionServices;
-import com.moseeker.thrift.gen.position.struct.Position;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 
 public class PositionBSTest {

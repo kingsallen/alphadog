@@ -3,6 +3,8 @@ package com.moseeker.common.util;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.*;
 import java.util.Map.Entry;
@@ -48,9 +50,9 @@ public class BeanUtils {
 	private static Logger logger = LoggerFactory.getLogger(BeanUtils.class);
 
 	@SuppressWarnings("rawtypes")
-	public static <T extends TBase, R extends UpdatableRecordImpl> UpdatableRecordImpl structToDB(T t, Class<R> origClazz,
+	public static <T extends TBase, R extends UpdatableRecordImpl> R structToDB(T t, Class<R> origClazz,
 			Map<String, String> equalRules) {
-		UpdatableRecordImpl orig = null;
+		R orig = null;
 		try {
 			orig = origClazz.newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {
@@ -70,6 +72,16 @@ public class BeanUtils {
 		}
 		structToDB(t, orig, null);
 		return orig;
+	}
+
+	@SuppressWarnings("rawtypes")
+	public static <T extends TBase, R extends UpdatableRecordImpl> List<R> structToDB(List<T> ts, Class<R> origClazz) {
+		List<R> records = new ArrayList<R>();
+		ts.forEach(t -> {
+			R r = structToDB(t, origClazz);
+			records.add(r);
+		});
+		return records;
 	}
 
 	/**
@@ -94,7 +106,12 @@ public class BeanUtils {
 				if (!descFields[i].getName().trim().equals("metaDataMap")) {
 					Field field = descFields[i];
 					String upperFirst = field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
-					String getMethodName = "get" + upperFirst;
+					String getMethodName;
+					if(field.getType().isAssignableFrom(boolean.class)) {
+						getMethodName = "is" + upperFirst;
+					} else {
+						getMethodName = "get" + upperFirst;
+					}
 					for (j = 0; j < destMethods.length; j++) {
 						try {
 							if (destMethods[j].getName().equals(getMethodName)) {
@@ -185,25 +202,42 @@ public class BeanUtils {
 					String upperFirst = field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
 					String setMethodName = "set" + upperFirst;
 					for (j = 0; j < destMethods.length; j++) {
-						try {
-							if (destMethods[j].getName().equals(setMethodName)) {
-								String origMethodName = buiderRecordMethodName(field.getName(), MethodType.GET,
-										equalRules);
-								for (k = 0; k < origMethods.length; k++) {
-									if (origMethods[k].getName().trim().equals(origMethodName)) {
-										Object object = convertTo(origMethods[k].invoke(orig, new Object[] {}),
+						if (destMethods[j].getName().equals(setMethodName)) {
+
+							String origMethodName = buiderRecordMethodName(field.getName(), MethodType.GET,
+									equalRules);
+							for (k = 0; k < origMethods.length; k++) {
+								if (origMethods[k].getName().trim().equals(origMethodName)) {
+
+									Object object = null;
+									try {
+										object = convertTo(origMethods[k].invoke(orig, new Object[] {}),
 												destMethods[j].getParameterTypes()[0]);
-										destMethods[j].invoke(dest, object);
-										break;
+									} catch (IllegalAccessException e) {
+										e.printStackTrace();
+									} catch (IllegalArgumentException e) {
+										e.printStackTrace();
+									} catch (InvocationTargetException e) {
+										logger.error("InvocationTargetException -- origin:{}, method:{}, param value:{}",orig, origMethods[k], destMethods[j].getParameterTypes()[0]);
+										e.printStackTrace();
 									}
+									try {
+										if(object != null) {
+											destMethods[j].invoke(dest, object);
+										}
+									} catch (IllegalAccessException e) {
+										e.printStackTrace();
+										logger.error(e.getMessage(), e);
+									} catch (IllegalArgumentException e) {
+										logger.info("IllegalArgumentException -- method:{}, methodType:{}, param value:{}, param before convert:",origMethods[k].getName().trim(), destMethods[j].getParameterTypes()[0], object, orig);
+										logger.error(e.getMessage(), e);
+									} catch (InvocationTargetException e) {
+										logger.error(e.getMessage(), e);
+									}
+									break;
 								}
-								break;
 							}
-						} catch (SecurityException | IllegalAccessException | IllegalArgumentException
-								| InvocationTargetException e) {
-							logger.error("error", e);
-						} finally {
-							// do nothing
+							break;
 						}
 					}
 				}
@@ -238,6 +272,7 @@ public class BeanUtils {
 			try {
 				t = clazz.newInstance();
 				for (Entry<String, Object> entry : map.entrySet()) {
+
 					String origMethodName = buiderRecordMethodName(entry.getKey(), MethodType.SET, null);
 					for (int i = 0; i < methods.length; i++) {
 						if (methods[i].getName().equals(origMethodName)) {
@@ -260,7 +295,7 @@ public class BeanUtils {
 	}
 
 	private enum MethodType {
-		GET, SET;
+		GET, SET, IS;
 
 		@Override
 		public String toString() {
@@ -349,8 +384,12 @@ public class BeanUtils {
 			return (T) converToDouble(value);
 		} else if (clazzType.isAssignableFrom(Boolean.class) || clazzType.isAssignableFrom(boolean.class)) {
 			return (T) convertToBoolean(value);
+		} else if (clazzType.isAssignableFrom(BigInteger.class)) {
+			return (T) convertToBigInteger(value);
 		} else if (clazzType.isAssignableFrom(java.sql.Date.class)) {
 			return (T) convertToSQLDate(value);
+		} else if (clazzType.isAssignableFrom(BigDecimal.class)) {
+			return (T) convertToBigDecimal(value);
 		} else if (clazzType.isAssignableFrom(java.sql.Timestamp.class)) {
 			return (T) convertToSQLTimestamp(value);
 		} else if (clazzType.isAssignableFrom(UInteger.class)) {
@@ -387,6 +426,96 @@ public class BeanUtils {
 		return result;
 	}
 
+	public static BigInteger convertToBigInteger(Object value) {
+		if(value instanceof String[]) {
+			value = ((String[])value)[0];
+		}
+		if (value instanceof String && !((String) value).trim().equals("")) {
+			try {
+				return BigInteger.valueOf(Integer.valueOf((String)value));
+			} catch (NumberFormatException e) {
+				return BigInteger.valueOf(0);
+			}
+		} else if (value instanceof Boolean) {
+			if ((Boolean) value) {
+				return BigInteger.valueOf(1);
+			} else {
+				return BigInteger.valueOf(0);
+			}
+		} else if (value instanceof Integer) {
+			return BigInteger.valueOf((Integer) value);
+		}else if (value instanceof BigDecimal) {
+			return BigInteger.valueOf(((BigDecimal)value).intValue());
+		} else if (value instanceof Byte) {
+			return BigInteger.valueOf((Byte) value);
+		} else if (value instanceof Float) {
+			return BigInteger.valueOf(((Float) value).intValue());
+		} else if (value instanceof Long) {
+			return BigInteger.valueOf(((Long) value).shortValue());
+		} else if (value instanceof Double) {
+			return BigInteger.valueOf(((Double) value).shortValue());
+		} else if (value instanceof UInteger) {
+			return BigInteger.valueOf(((UInteger) value).intValue());
+		} else if (value instanceof Date) {
+			return BigInteger.valueOf((short) ((Date) value).getTime());
+		} else if (value instanceof UShort) {
+			return BigInteger.valueOf(((UShort) value).longValue());
+		} else if (value instanceof UByte) {
+			return BigInteger.valueOf(((UByte) value).shortValue());
+		} else if (value instanceof ULong) {
+			return BigInteger.valueOf(((ULong) value).longValue());
+		} else if (value instanceof BigInteger) {
+			return (BigInteger) value;
+		} else {
+			return null;
+		}
+	}
+
+	public static BigDecimal convertToBigDecimal(Object value) {
+		if(value instanceof String[]) {
+			value = ((String[])value)[0];
+		}
+		if (value instanceof String && !((String) value).trim().equals("")) {
+			try {
+				return BigDecimal.valueOf(Double.valueOf((String)value));
+			} catch (NumberFormatException e) {
+				return BigDecimal.valueOf(0);
+			}
+		} else if (value instanceof Boolean) {
+			if ((Boolean) value) {
+				return BigDecimal.valueOf(1);
+			} else {
+				return BigDecimal.valueOf(0);
+			}
+		} else if (value instanceof Integer) {
+			return BigDecimal.valueOf((Integer) value);
+		}else if (value instanceof BigInteger) {
+			return BigDecimal.valueOf(((BigInteger)value).intValue());
+		} else if (value instanceof Byte) {
+			return BigDecimal.valueOf((Byte) value);
+		} else if (value instanceof Float) {
+			return BigDecimal.valueOf(((Float) value).floatValue());
+		} else if (value instanceof Long) {
+			return BigDecimal.valueOf(((Long) value).longValue());
+		} else if (value instanceof Double) {
+			return BigDecimal.valueOf(((Double) value).longValue());
+		} else if (value instanceof UInteger) {
+			return BigDecimal.valueOf(((UInteger) value).intValue());
+		} else if (value instanceof Date) {
+			return BigDecimal.valueOf((short) ((Date) value).getTime());
+		} else if (value instanceof UShort) {
+			return BigDecimal.valueOf(((UShort) value).longValue());
+		} else if (value instanceof UByte) {
+			return BigDecimal.valueOf(((UByte) value).shortValue());
+		} else if (value instanceof ULong) {
+			return BigDecimal.valueOf(((ULong) value).longValue());
+		} else if (value instanceof BigDecimal) {
+			return (BigDecimal) value;
+		} else {
+			return null;
+		}
+	}
+
 	public static ULong converToULong(Object value) {
 		if(value instanceof String[]) {
 			value = ((String[])value)[0];
@@ -405,6 +534,8 @@ public class BeanUtils {
 			}
 		} else if (value instanceof Integer) {
 			return ULong.valueOf((Integer) value);
+		} else if (value instanceof BigInteger) {
+			return ULong.valueOf((BigInteger)value);
 		} else if (value instanceof Byte) {
 			return ULong.valueOf((Byte) value);
 		} else if (value instanceof Float) {
@@ -421,6 +552,8 @@ public class BeanUtils {
 			return ULong.valueOf(((UShort) value).longValue());
 		} else if (value instanceof UByte) {
 			return ULong.valueOf(((UByte) value).shortValue());
+		} else if (value instanceof BigDecimal) {
+			return ULong.valueOf(((BigDecimal) value).longValue());
 		} else if (value instanceof ULong) {
 			return (ULong) value;
 		} else {
@@ -446,6 +579,8 @@ public class BeanUtils {
 			}
 		} else if (value instanceof Integer) {
 			return UShort.valueOf((Integer) value);
+		} else if (value instanceof BigInteger) {
+			return UShort.valueOf(((BigInteger) value).shortValue());
 		} else if (value instanceof Byte) {
 			return UShort.valueOf((Byte) value);
 		} else if (value instanceof Float) {
@@ -464,6 +599,8 @@ public class BeanUtils {
 			return (UShort) value;
 		} else if (value instanceof UByte) {
 			return UShort.valueOf(((UByte) value).shortValue());
+		} else if (value instanceof BigDecimal) {
+			return UShort.valueOf(((BigDecimal) value).shortValue());
 		} else {
 			return null;
 		}
@@ -487,6 +624,8 @@ public class BeanUtils {
 			}
 		} else if (value instanceof Integer) {
 			return UByte.valueOf((Integer) value);
+		} else if (value instanceof BigInteger) {
+			return UByte.valueOf(((BigInteger) value).byteValue());
 		} else if (value instanceof Byte) {
 			return UByte.valueOf((Byte) value);
 		} else if (value instanceof Float) {
@@ -507,6 +646,8 @@ public class BeanUtils {
 			return UByte.valueOf(((UShort) value).shortValue());
 		} else if (value instanceof Short) {
 			return UByte.valueOf(((Short) value).shortValue());
+		} else if (value instanceof BigDecimal) {
+			return UByte.valueOf(((BigDecimal) value).byteValue());
 		} else {
 			return null;
 		}
@@ -530,6 +671,8 @@ public class BeanUtils {
 			}
 		} else if (value instanceof Integer) {
 			return ((Integer) value).shortValue();
+		} else if (value instanceof BigInteger) {
+			return Short.valueOf(((BigInteger) value).shortValue());
 		} else if (value instanceof Byte) {
 			return ((Byte) value).shortValue();
 		} else if (value instanceof Float) {
@@ -548,6 +691,8 @@ public class BeanUtils {
 			return ((UByte) value).shortValue();
 		} else if (value instanceof UShort) {
 			return ((UShort) value).shortValue();
+		} else if (value instanceof BigDecimal) {
+			return Short.valueOf(((BigDecimal) value).shortValue());
 		} else {
 			return null;
 		}
@@ -573,6 +718,8 @@ public class BeanUtils {
 			return UInteger.valueOf((Short) value);
 		} else if (value instanceof Integer) {
 			return UInteger.valueOf((Integer) value);
+		} else if (value instanceof BigInteger) {
+			return UInteger.valueOf(((BigInteger) value).intValue());
 		} else if (value instanceof Byte) {
 			return UInteger.valueOf((Byte) value);
 		} else if (value instanceof Float) {
@@ -595,6 +742,8 @@ public class BeanUtils {
 			return UInteger.valueOf(((UByte) value).intValue());
 		} else if (value instanceof UShort) {
 			return UInteger.valueOf(((UShort) value).intValue());
+		} else if (value instanceof BigDecimal) {
+			return UInteger.valueOf(((BigDecimal) value).intValue());
 		} else {
 			return null;
 		}
@@ -624,7 +773,9 @@ public class BeanUtils {
 			return new java.sql.Timestamp((Short) value);
 		} else if (value instanceof Integer) {
 			return new java.sql.Timestamp((Integer) value);
-		} else if (value instanceof Byte) {
+		} else if (value instanceof BigInteger) {
+			return new java.sql.Timestamp(((BigInteger) value).intValue());
+		}  else if (value instanceof Byte) {
 			return new java.sql.Timestamp((Byte) value);
 		} else if (value instanceof Float) {
 			return new java.sql.Timestamp(((Float) value).longValue());
@@ -644,6 +795,8 @@ public class BeanUtils {
 			return new java.sql.Timestamp(((Date) value).getTime());
 		} else if (value instanceof UByte) {
 			return new java.sql.Timestamp(((UByte) value).intValue());
+		} else if (value instanceof BigDecimal) {
+			return new java.sql.Timestamp(((BigDecimal) value).longValue());
 		} else {
 			return null;
 		}
@@ -667,7 +820,9 @@ public class BeanUtils {
 			return new java.sql.Date((Short) value);
 		} else if (value instanceof Integer) {
 			return new java.sql.Date((Integer) value);
-		} else if (value instanceof Byte) {
+		} else if (value instanceof BigInteger) {
+			return new java.sql.Date(((BigInteger) value).intValue());
+		}  else if (value instanceof Byte) {
 			return new java.sql.Date((Byte) value);
 		} else if (value instanceof Float) {
 			return new java.sql.Date(((Float) value).longValue());
@@ -687,6 +842,8 @@ public class BeanUtils {
 			return new java.sql.Date(((UByte) value).intValue());
 		} else if (value instanceof ULong) {
 			return new java.sql.Date(((ULong) value).longValue());
+		} else if (value instanceof BigDecimal) {
+			return new java.sql.Date(((BigDecimal) value).longValue());
 		} else {
 			return null;
 		}
@@ -718,6 +875,12 @@ public class BeanUtils {
 			}
 		} else if (value instanceof Integer) {
 			if ((Integer) value > 0) {
+				return Boolean.TRUE;
+			} else {
+				return Boolean.FALSE;
+			}
+		} else if (value instanceof BigInteger) {
+			if (((BigInteger) value).intValue() > 0) {
 				return Boolean.TRUE;
 			} else {
 				return Boolean.FALSE;
@@ -764,6 +927,12 @@ public class BeanUtils {
 			} else {
 				return Boolean.FALSE;
 			}
+		} else if (value instanceof BigDecimal) {
+			if (((BigDecimal) value).longValue() > 0) {
+				return Boolean.TRUE;
+			} else {
+				return Boolean.FALSE;
+			}
 		} else {
 			// sql.date sql.timestamp date timestamp
 			if (value != null) {
@@ -796,6 +965,8 @@ public class BeanUtils {
 			return ((UShort) value).doubleValue();
 		} else if (value instanceof Integer) {
 			return Double.valueOf((Integer) value);
+		} else if (value instanceof BigInteger) {
+			return Double.valueOf(((BigInteger) value).intValue());
 		} else if (value instanceof Byte) {
 			return Double.valueOf((Byte) value);
 		} else if (value instanceof Float) {
@@ -812,6 +983,8 @@ public class BeanUtils {
 			return ((UByte) value).doubleValue();
 		} else if (value instanceof ULong) {
 			return ((ULong) value).doubleValue();
+		} else if (value instanceof BigDecimal) {
+			return ((BigDecimal) value).doubleValue();
 		} else {
 			return null;
 		}
@@ -839,6 +1012,8 @@ public class BeanUtils {
 			return ((UShort) value).floatValue();
 		} else if (value instanceof Integer) {
 			return (Float) ((Integer) value).floatValue();
+		} else if (value instanceof BigInteger) {
+			return ((BigInteger) value).floatValue();
 		} else if (value instanceof Byte) {
 			return (Float) ((Byte) value).floatValue();
 		} else if (value instanceof Float) {
@@ -855,6 +1030,8 @@ public class BeanUtils {
 			return ((UByte) value).floatValue();
 		} else if (value instanceof ULong) {
 			return ((ULong) value).floatValue();
+		} else if (value instanceof BigDecimal) {
+			return ((BigDecimal) value).floatValue();
 		} else {
 			return null;
 		}
@@ -883,6 +1060,8 @@ public class BeanUtils {
 			return ((UShort) value).intValue();
 		} else if (value instanceof Integer) {
 			return (Integer) value;
+		} else if (value instanceof BigInteger) {
+			return ((BigInteger) value).intValue();
 		} else if (value instanceof Byte) {
 			return (Integer) ((Byte) value).intValue();
 		} else if (value instanceof Float) {
@@ -899,6 +1078,8 @@ public class BeanUtils {
 			return ((UByte) value).intValue();
 		} else if (value instanceof ULong) {
 			return ((ULong) value).intValue();
+		} else if (value instanceof BigDecimal) {
+			return ((BigDecimal) value).intValue();
 		} else {
 			return null;
 		}
@@ -927,6 +1108,8 @@ public class BeanUtils {
 			return ((UShort) value).byteValue();
 		} else if (value instanceof Integer) {
 			return (Byte) ((Integer) value).byteValue();
+		} else if (value instanceof BigInteger) {
+			return ((BigInteger) value).byteValue();
 		} else if (value instanceof Float) {
 			return (Byte) ((Float) value).byteValue();
 		} else if (value instanceof Long) {
@@ -941,6 +1124,8 @@ public class BeanUtils {
 			return ((UByte) value).byteValue();
 		} else if (value instanceof ULong) {
 			return ((ULong) value).byteValue();
+		} else if (value instanceof BigDecimal) {
+			return ((BigDecimal) value).byteValue();
 		} else {
 			return null;
 		}
@@ -966,6 +1151,8 @@ public class BeanUtils {
 			return ((UShort) value).longValue();
 		} else if (value instanceof Integer) {
 			return Long.valueOf((Integer) value);
+		} else if (value instanceof BigInteger) {
+			return ((BigInteger) value).longValue();
 		} else if (value instanceof Float) {
 			return Long.valueOf(((Float) value).longValue());
 		} else if (value instanceof Long) {
@@ -980,6 +1167,8 @@ public class BeanUtils {
 			return ((UByte) value).longValue();
 		} else if (value instanceof ULong) {
 			return ((ULong) value).longValue();
+		} else if (value instanceof BigDecimal) {
+			return ((BigDecimal) value).longValue();
 		} else {
 			return null;
 		}

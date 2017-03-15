@@ -67,7 +67,7 @@ public class CrawlerUtils {
 		if (messagBean.get("status") != null && (Integer) messagBean.get("status") == 0) {
 			List<Map<String, Object>> resumes = (List<Map<String, Object>>) messagBean.get("resumes");
 			Map<String, Object> resume = resumes.get(0);
-			if (resume.get("profile") != null) {
+			if (resume != null && resume.get("profile") != null) {
 				Map<String, Object> profile = (Map<String, Object>) resume.get("profile");
 				if (lang != 0) {
 					profile.put("lang", lang);

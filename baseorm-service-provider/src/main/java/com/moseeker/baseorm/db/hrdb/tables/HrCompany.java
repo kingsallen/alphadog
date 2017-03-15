@@ -38,7 +38,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompany extends TableImpl<HrCompanyRecord> {
 
-    private static final long serialVersionUID = 890428156;
+    private static final long serialVersionUID = 1372539976;
 
     /**
      * The reference instance of <code>hrdb.hr_company</code>
@@ -84,9 +84,9 @@ public class HrCompany extends TableImpl<HrCompanyRecord> {
     public final TableField<HrCompanyRecord, String> ADDRESS = createField("address", org.jooq.impl.SQLDataType.VARCHAR.length(999).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "公司地址");
 
     /**
-     * The column <code>hrdb.hr_company.property</code>. 公司性质 0:没选择 1:国有 2:三资 3:集体 4:私有
+     * The column <code>hrdb.hr_company.property</code>. 公司性质 0:未填写 1:外商独资 3:国企 4:合资 5:民营公司 6:事业单位 7:上市公司 8:政府机关/非盈利机构 10:代表处 11:股份制企业 12:创业公司 13:其它
      */
-    public final TableField<HrCompanyRecord, UByte> PROPERTY = createField("property", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.TINYINTUNSIGNED)), this, "公司性质 0:没选择 1:国有 2:三资 3:集体 4:私有");
+    public final TableField<HrCompanyRecord, UByte> PROPERTY = createField("property", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.TINYINTUNSIGNED)), this, "公司性质 0:未填写 1:外商独资 3:国企 4:合资 5:民营公司 6:事业单位 7:上市公司 8:政府机关/非盈利机构 10:代表处 11:股份制企业 12:创业公司 13:其它");
 
     /**
      * The column <code>hrdb.hr_company.industry</code>. 所属行业
@@ -129,9 +129,9 @@ public class HrCompany extends TableImpl<HrCompanyRecord> {
     public final TableField<HrCompanyRecord, Integer> HRACCOUNT_ID = createField("hraccount_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "公司联系人, hr_account.id");
 
     /**
-     * The column <code>hrdb.hr_company.disable</code>. 0:无效 1:有效
+     * The column <code>hrdb.hr_company.disable</code>. 0:无效 1:有效, 删除子公司使用， 母公司目前没有禁用功能
      */
-    public final TableField<HrCompanyRecord, Byte> DISABLE = createField("disable", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("1", org.jooq.impl.SQLDataType.TINYINT)), this, "0:无效 1:有效");
+    public final TableField<HrCompanyRecord, Byte> DISABLE = createField("disable", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("1", org.jooq.impl.SQLDataType.TINYINT)), this, "0:无效 1:有效, 删除子公司使用， 母公司目前没有禁用功能");
 
     /**
      * The column <code>hrdb.hr_company.create_time</code>. 创建时间
@@ -144,9 +144,9 @@ public class HrCompany extends TableImpl<HrCompanyRecord> {
     public final TableField<HrCompanyRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
 
     /**
-     * The column <code>hrdb.hr_company.source</code>. 添加来源 {"0":"hr系统", "8":"微信端添加" "9":"profile添加"}
+     * The column <code>hrdb.hr_company.source</code>. 添加来源 0:hr系统, 1:官网下载行业报告, 6:无线官网添加, 7:PC端 添加, 8:微信端添加, 9:PC导入, 10:微信端导入
      */
-    public final TableField<HrCompanyRecord, UByte> SOURCE = createField("source", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.TINYINTUNSIGNED)), this, "添加来源 {\"0\":\"hr系统\", \"8\":\"微信端添加\" \"9\":\"profile添加\"}");
+    public final TableField<HrCompanyRecord, UByte> SOURCE = createField("source", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.TINYINTUNSIGNED)), this, "添加来源 0:hr系统, 1:官网下载行业报告, 6:无线官网添加, 7:PC端 添加, 8:微信端添加, 9:PC导入, 10:微信端导入");
 
     /**
      * The column <code>hrdb.hr_company.slogan</code>. 公司口号

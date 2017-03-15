@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateRemark extends TableImpl<CandidateRemarkRecord> {
 
-	private static final long serialVersionUID = 1862748887;
+	private static final long serialVersionUID = -1050945664;
 
 	/**
 	 * The reference instance of <code>candidatedb.candidate_remark</code>
@@ -62,9 +62,9 @@ public class CandidateRemark extends TableImpl<CandidateRemarkRecord> {
 	public final TableField<CandidateRemarkRecord, Integer> HRACCOUNT_ID = createField("hraccount_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "做候选人标记的账号编号 hr_account.id");
 
 	/**
-	 * The column <code>candidatedb.candidate_remark.wxuser_id</code>. wx_group_user.id 被推荐者 微信 ID
+	 * The column <code>candidatedb.candidate_remark.wxuser_id</code>. user_wx_user.id 被推荐者微信 ID。已经废弃，微信用户信息由C端账号信息代替
 	 */
-	public final TableField<CandidateRemarkRecord, Integer> WXUSER_ID = createField("wxuser_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "wx_group_user.id 被推荐者 微信 ID");
+	public final TableField<CandidateRemarkRecord, Integer> WXUSER_ID = createField("wxuser_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "user_wx_user.id 被推荐者微信 ID。已经废弃，微信用户信息由C端账号信息代替");
 
 	/**
 	 * The column <code>candidatedb.candidate_remark.gender</code>. 0：未知，1：男，2：女
@@ -140,6 +140,11 @@ public class CandidateRemark extends TableImpl<CandidateRemarkRecord> {
 	 * The column <code>candidatedb.candidate_remark.name</code>. 候选人姓名
 	 */
 	public final TableField<CandidateRemarkRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaulted(true), this, "候选人姓名");
+
+	/**
+	 * The column <code>candidatedb.candidate_remark.user_id</code>. userdb.user_user.id 被推荐者的C端账号
+	 */
+	public final TableField<CandidateRemarkRecord, UInteger> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "userdb.user_user.id 被推荐者的C端账号");
 
 	/**
 	 * Create a <code>candidatedb.candidate_remark</code> table reference

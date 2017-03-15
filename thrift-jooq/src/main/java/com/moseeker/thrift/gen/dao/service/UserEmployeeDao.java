@@ -26,10 +26,6 @@ public class UserEmployeeDao {
 
     public com.moseeker.thrift.gen.common.struct.Response putResources(java.util.List<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct> records) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postPutResource(com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct record) throws org.apache.thrift.TException;
-
-    public com.moseeker.thrift.gen.common.struct.Response postPutResources(java.util.List<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct> records) throws org.apache.thrift.TException;
-
     public com.moseeker.thrift.gen.common.struct.Response delResource(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException;
 
     public com.moseeker.thrift.gen.common.struct.Response postPutUserEmployeeBatch(java.util.List<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct> userEmployees) throws org.apache.thrift.TException;
@@ -51,10 +47,6 @@ public class UserEmployeeDao {
     public void putResource(com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct record, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
     public void putResources(java.util.List<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct> records, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
-
-    public void postPutResource(com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct record, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
-
-    public void postPutResources(java.util.List<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct> records, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
     public void delResource(com.moseeker.thrift.gen.common.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
@@ -241,52 +233,6 @@ public class UserEmployeeDao {
         return result.success;
       }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "putResources failed: unknown result");
-    }
-
-    public com.moseeker.thrift.gen.common.struct.Response postPutResource(com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct record) throws org.apache.thrift.TException
-    {
-      send_postPutResource(record);
-      return recv_postPutResource();
-    }
-
-    public void send_postPutResource(com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct record) throws org.apache.thrift.TException
-    {
-      postPutResource_args args = new postPutResource_args();
-      args.setRecord(record);
-      sendBase("postPutResource", args);
-    }
-
-    public com.moseeker.thrift.gen.common.struct.Response recv_postPutResource() throws org.apache.thrift.TException
-    {
-      postPutResource_result result = new postPutResource_result();
-      receiveBase(result, "postPutResource");
-      if (result.isSetSuccess()) {
-        return result.success;
-      }
-      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postPutResource failed: unknown result");
-    }
-
-    public com.moseeker.thrift.gen.common.struct.Response postPutResources(java.util.List<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct> records) throws org.apache.thrift.TException
-    {
-      send_postPutResources(records);
-      return recv_postPutResources();
-    }
-
-    public void send_postPutResources(java.util.List<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct> records) throws org.apache.thrift.TException
-    {
-      postPutResources_args args = new postPutResources_args();
-      args.setRecords(records);
-      sendBase("postPutResources", args);
-    }
-
-    public com.moseeker.thrift.gen.common.struct.Response recv_postPutResources() throws org.apache.thrift.TException
-    {
-      postPutResources_result result = new postPutResources_result();
-      receiveBase(result, "postPutResources");
-      if (result.isSetSuccess()) {
-        return result.success;
-      }
-      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postPutResources failed: unknown result");
     }
 
     public com.moseeker.thrift.gen.common.struct.Response delResource(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException
@@ -577,70 +523,6 @@ public class UserEmployeeDao {
       }
     }
 
-    public void postPutResource(com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct record, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
-      checkReady();
-      postPutResource_call method_call = new postPutResource_call(record, resultHandler, this, ___protocolFactory, ___transport);
-      this.___currentMethod = method_call;
-      ___manager.call(method_call);
-    }
-
-    public static class postPutResource_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
-      private com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct record;
-      public postPutResource_call(com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct record, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
-        super(client, protocolFactory, transport, resultHandler, false);
-        this.record = record;
-      }
-
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("postPutResource", org.apache.thrift.protocol.TMessageType.CALL, 0));
-        postPutResource_args args = new postPutResource_args();
-        args.setRecord(record);
-        args.write(prot);
-        prot.writeMessageEnd();
-      }
-
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
-        }
-        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
-        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        return (new Client(prot)).recv_postPutResource();
-      }
-    }
-
-    public void postPutResources(java.util.List<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct> records, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
-      checkReady();
-      postPutResources_call method_call = new postPutResources_call(records, resultHandler, this, ___protocolFactory, ___transport);
-      this.___currentMethod = method_call;
-      ___manager.call(method_call);
-    }
-
-    public static class postPutResources_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
-      private java.util.List<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct> records;
-      public postPutResources_call(java.util.List<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct> records, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
-        super(client, protocolFactory, transport, resultHandler, false);
-        this.records = records;
-      }
-
-      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("postPutResources", org.apache.thrift.protocol.TMessageType.CALL, 0));
-        postPutResources_args args = new postPutResources_args();
-        args.setRecords(records);
-        args.write(prot);
-        prot.writeMessageEnd();
-      }
-
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
-        }
-        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
-        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        return (new Client(prot)).recv_postPutResources();
-      }
-    }
-
     public void delResource(com.moseeker.thrift.gen.common.struct.CommonQuery query, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       delResource_call method_call = new delResource_call(query, resultHandler, this, ___protocolFactory, ___transport);
@@ -725,8 +607,6 @@ public class UserEmployeeDao {
       processMap.put("postResources", new postResources());
       processMap.put("putResource", new putResource());
       processMap.put("putResources", new putResources());
-      processMap.put("postPutResource", new postPutResource());
-      processMap.put("postPutResources", new postPutResources());
       processMap.put("delResource", new delResource());
       processMap.put("postPutUserEmployeeBatch", new postPutUserEmployeeBatch());
       return processMap;
@@ -872,46 +752,6 @@ public class UserEmployeeDao {
       }
     }
 
-    public static class postPutResource<I extends Iface> extends org.apache.thrift.ProcessFunction<I, postPutResource_args> {
-      public postPutResource() {
-        super("postPutResource");
-      }
-
-      public postPutResource_args getEmptyArgsInstance() {
-        return new postPutResource_args();
-      }
-
-      protected boolean isOneway() {
-        return false;
-      }
-
-      public postPutResource_result getResult(I iface, postPutResource_args args) throws org.apache.thrift.TException {
-        postPutResource_result result = new postPutResource_result();
-        result.success = iface.postPutResource(args.record);
-        return result;
-      }
-    }
-
-    public static class postPutResources<I extends Iface> extends org.apache.thrift.ProcessFunction<I, postPutResources_args> {
-      public postPutResources() {
-        super("postPutResources");
-      }
-
-      public postPutResources_args getEmptyArgsInstance() {
-        return new postPutResources_args();
-      }
-
-      protected boolean isOneway() {
-        return false;
-      }
-
-      public postPutResources_result getResult(I iface, postPutResources_args args) throws org.apache.thrift.TException {
-        postPutResources_result result = new postPutResources_result();
-        result.success = iface.postPutResources(args.records);
-        return result;
-      }
-    }
-
     public static class delResource<I extends Iface> extends org.apache.thrift.ProcessFunction<I, delResource_args> {
       public delResource() {
         super("delResource");
@@ -972,8 +812,6 @@ public class UserEmployeeDao {
       processMap.put("postResources", new postResources());
       processMap.put("putResource", new putResource());
       processMap.put("putResources", new putResources());
-      processMap.put("postPutResource", new postPutResource());
-      processMap.put("postPutResources", new postPutResources());
       processMap.put("delResource", new delResource());
       processMap.put("postPutUserEmployeeBatch", new postPutUserEmployeeBatch());
       return processMap;
@@ -1403,128 +1241,6 @@ public class UserEmployeeDao {
 
       public void start(I iface, putResources_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
         iface.putResources(args.records,resultHandler);
-      }
-    }
-
-    public static class postPutResource<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, postPutResource_args, com.moseeker.thrift.gen.common.struct.Response> {
-      public postPutResource() {
-        super("postPutResource");
-      }
-
-      public postPutResource_args getEmptyArgsInstance() {
-        return new postPutResource_args();
-      }
-
-      public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
-        final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
-          public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
-            postPutResource_result result = new postPutResource_result();
-            result.success = o;
-            try {
-              fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
-            } catch (org.apache.thrift.transport.TTransportException e) {
-              _LOGGER.error("TTransportException writing to internal frame buffer", e);
-              fb.close();
-            } catch (Exception e) {
-              _LOGGER.error("Exception writing to internal frame buffer", e);
-              onError(e);
-            }
-          }
-          public void onError(Exception e) {
-            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
-            org.apache.thrift.TSerializable msg;
-            postPutResource_result result = new postPutResource_result();
-            if (e instanceof org.apache.thrift.transport.TTransportException) {
-              _LOGGER.error("TTransportException inside handler", e);
-              fb.close();
-              return;
-            } else if (e instanceof org.apache.thrift.TApplicationException) {
-              _LOGGER.error("TApplicationException inside handler", e);
-              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
-              msg = (org.apache.thrift.TApplicationException)e;
-            } else {
-              _LOGGER.error("Exception inside handler", e);
-              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
-              msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
-            }
-            try {
-              fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
-              _LOGGER.error("Exception writing to internal frame buffer", ex);
-              fb.close();
-            }
-          }
-        };
-      }
-
-      protected boolean isOneway() {
-        return false;
-      }
-
-      public void start(I iface, postPutResource_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
-        iface.postPutResource(args.record,resultHandler);
-      }
-    }
-
-    public static class postPutResources<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, postPutResources_args, com.moseeker.thrift.gen.common.struct.Response> {
-      public postPutResources() {
-        super("postPutResources");
-      }
-
-      public postPutResources_args getEmptyArgsInstance() {
-        return new postPutResources_args();
-      }
-
-      public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
-        final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
-          public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
-            postPutResources_result result = new postPutResources_result();
-            result.success = o;
-            try {
-              fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
-            } catch (org.apache.thrift.transport.TTransportException e) {
-              _LOGGER.error("TTransportException writing to internal frame buffer", e);
-              fb.close();
-            } catch (Exception e) {
-              _LOGGER.error("Exception writing to internal frame buffer", e);
-              onError(e);
-            }
-          }
-          public void onError(Exception e) {
-            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
-            org.apache.thrift.TSerializable msg;
-            postPutResources_result result = new postPutResources_result();
-            if (e instanceof org.apache.thrift.transport.TTransportException) {
-              _LOGGER.error("TTransportException inside handler", e);
-              fb.close();
-              return;
-            } else if (e instanceof org.apache.thrift.TApplicationException) {
-              _LOGGER.error("TApplicationException inside handler", e);
-              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
-              msg = (org.apache.thrift.TApplicationException)e;
-            } else {
-              _LOGGER.error("Exception inside handler", e);
-              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
-              msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
-            }
-            try {
-              fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
-              _LOGGER.error("Exception writing to internal frame buffer", ex);
-              fb.close();
-            }
-          }
-        };
-      }
-
-      protected boolean isOneway() {
-        return false;
-      }
-
-      public void start(I iface, postPutResources_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
-        iface.postPutResources(args.records,resultHandler);
       }
     }
 
@@ -4902,14 +4618,14 @@ public class UserEmployeeDao {
             case 1: // RECORDS
               if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
                 {
-                  org.apache.thrift.protocol.TList _list136 = iprot.readListBegin();
-                  struct.records = new java.util.ArrayList<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct>(_list136.size);
-                  com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _elem137;
-                  for (int _i138 = 0; _i138 < _list136.size; ++_i138)
+                  org.apache.thrift.protocol.TList _list88 = iprot.readListBegin();
+                  struct.records = new java.util.ArrayList<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct>(_list88.size);
+                  com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _elem89;
+                  for (int _i90 = 0; _i90 < _list88.size; ++_i90)
                   {
-                    _elem137 = new com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct();
-                    _elem137.read(iprot);
-                    struct.records.add(_elem137);
+                    _elem89 = new com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct();
+                    _elem89.read(iprot);
+                    struct.records.add(_elem89);
                   }
                   iprot.readListEnd();
                 }
@@ -4937,9 +4653,9 @@ public class UserEmployeeDao {
           oprot.writeFieldBegin(RECORDS_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.records.size()));
-            for (com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _iter139 : struct.records)
+            for (com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _iter91 : struct.records)
             {
-              _iter139.write(oprot);
+              _iter91.write(oprot);
             }
             oprot.writeListEnd();
           }
@@ -4970,9 +4686,9 @@ public class UserEmployeeDao {
         if (struct.isSetRecords()) {
           {
             oprot.writeI32(struct.records.size());
-            for (com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _iter140 : struct.records)
+            for (com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _iter92 : struct.records)
             {
-              _iter140.write(oprot);
+              _iter92.write(oprot);
             }
           }
         }
@@ -4984,14 +4700,14 @@ public class UserEmployeeDao {
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TList _list141 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-            struct.records = new java.util.ArrayList<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct>(_list141.size);
-            com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _elem142;
-            for (int _i143 = 0; _i143 < _list141.size; ++_i143)
+            org.apache.thrift.protocol.TList _list93 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+            struct.records = new java.util.ArrayList<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct>(_list93.size);
+            com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _elem94;
+            for (int _i95 = 0; _i95 < _list93.size; ++_i95)
             {
-              _elem142 = new com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct();
-              _elem142.read(iprot);
-              struct.records.add(_elem142);
+              _elem94 = new com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct();
+              _elem94.read(iprot);
+              struct.records.add(_elem94);
             }
           }
           struct.setRecordsIsSet(true);
@@ -6419,14 +6135,14 @@ public class UserEmployeeDao {
             case 1: // RECORDS
               if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
                 {
-                  org.apache.thrift.protocol.TList _list144 = iprot.readListBegin();
-                  struct.records = new java.util.ArrayList<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct>(_list144.size);
-                  com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _elem145;
-                  for (int _i146 = 0; _i146 < _list144.size; ++_i146)
+                  org.apache.thrift.protocol.TList _list96 = iprot.readListBegin();
+                  struct.records = new java.util.ArrayList<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct>(_list96.size);
+                  com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _elem97;
+                  for (int _i98 = 0; _i98 < _list96.size; ++_i98)
                   {
-                    _elem145 = new com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct();
-                    _elem145.read(iprot);
-                    struct.records.add(_elem145);
+                    _elem97 = new com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct();
+                    _elem97.read(iprot);
+                    struct.records.add(_elem97);
                   }
                   iprot.readListEnd();
                 }
@@ -6454,9 +6170,9 @@ public class UserEmployeeDao {
           oprot.writeFieldBegin(RECORDS_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.records.size()));
-            for (com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _iter147 : struct.records)
+            for (com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _iter99 : struct.records)
             {
-              _iter147.write(oprot);
+              _iter99.write(oprot);
             }
             oprot.writeListEnd();
           }
@@ -6487,9 +6203,9 @@ public class UserEmployeeDao {
         if (struct.isSetRecords()) {
           {
             oprot.writeI32(struct.records.size());
-            for (com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _iter148 : struct.records)
+            for (com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _iter100 : struct.records)
             {
-              _iter148.write(oprot);
+              _iter100.write(oprot);
             }
           }
         }
@@ -6501,14 +6217,14 @@ public class UserEmployeeDao {
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TList _list149 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-            struct.records = new java.util.ArrayList<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct>(_list149.size);
-            com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _elem150;
-            for (int _i151 = 0; _i151 < _list149.size; ++_i151)
+            org.apache.thrift.protocol.TList _list101 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+            struct.records = new java.util.ArrayList<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct>(_list101.size);
+            com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _elem102;
+            for (int _i103 = 0; _i103 < _list101.size; ++_i103)
             {
-              _elem150 = new com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct();
-              _elem150.read(iprot);
-              struct.records.add(_elem150);
+              _elem102 = new com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct();
+              _elem102.read(iprot);
+              struct.records.add(_elem102);
             }
           }
           struct.setRecordsIsSet(true);
@@ -6873,1523 +6589,6 @@ public class UserEmployeeDao {
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, putResources_result struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(1);
-        if (incoming.get(0)) {
-          struct.success = new com.moseeker.thrift.gen.common.struct.Response();
-          struct.success.read(iprot);
-          struct.setSuccessIsSet(true);
-        }
-      }
-    }
-
-    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
-      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
-    }
-  }
-
-  public static class postPutResource_args implements org.apache.thrift.TBase<postPutResource_args, postPutResource_args._Fields>, java.io.Serializable, Cloneable, Comparable<postPutResource_args>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("postPutResource_args");
-
-    private static final org.apache.thrift.protocol.TField RECORD_FIELD_DESC = new org.apache.thrift.protocol.TField("record", org.apache.thrift.protocol.TType.STRUCT, (short)1);
-
-    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new postPutResource_argsStandardSchemeFactory();
-    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new postPutResource_argsTupleSchemeFactory();
-
-    public com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct record; // required
-
-    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
-    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      RECORD((short)1, "record");
-
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
-
-      static {
-        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
-          byName.put(field.getFieldName(), field);
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, or null if its not found.
-       */
-      public static _Fields findByThriftId(int fieldId) {
-        switch(fieldId) {
-          case 1: // RECORD
-            return RECORD;
-          default:
-            return null;
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, throwing an exception
-       * if it is not found.
-       */
-      public static _Fields findByThriftIdOrThrow(int fieldId) {
-        _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
-        return fields;
-      }
-
-      /**
-       * Find the _Fields constant that matches name, or null if its not found.
-       */
-      public static _Fields findByName(String name) {
-        return byName.get(name);
-      }
-
-      private final short _thriftId;
-      private final String _fieldName;
-
-      _Fields(short thriftId, String fieldName) {
-        _thriftId = thriftId;
-        _fieldName = fieldName;
-      }
-
-      public short getThriftFieldId() {
-        return _thriftId;
-      }
-
-      public String getFieldName() {
-        return _fieldName;
-      }
-    }
-
-    // isset id assignments
-    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
-    static {
-      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.RECORD, new org.apache.thrift.meta_data.FieldMetaData("record", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct.class)));
-      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(postPutResource_args.class, metaDataMap);
-    }
-
-    public postPutResource_args() {
-    }
-
-    public postPutResource_args(
-      com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct record)
-    {
-      this();
-      this.record = record;
-    }
-
-    /**
-     * Performs a deep copy on <i>other</i>.
-     */
-    public postPutResource_args(postPutResource_args other) {
-      if (other.isSetRecord()) {
-        this.record = new com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct(other.record);
-      }
-    }
-
-    public postPutResource_args deepCopy() {
-      return new postPutResource_args(this);
-    }
-
-    @Override
-    public void clear() {
-      this.record = null;
-    }
-
-    public com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct getRecord() {
-      return this.record;
-    }
-
-    public postPutResource_args setRecord(com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct record) {
-      this.record = record;
-      return this;
-    }
-
-    public void unsetRecord() {
-      this.record = null;
-    }
-
-    /** Returns true if field record is set (has been assigned a value) and false otherwise */
-    public boolean isSetRecord() {
-      return this.record != null;
-    }
-
-    public void setRecordIsSet(boolean value) {
-      if (!value) {
-        this.record = null;
-      }
-    }
-
-    public void setFieldValue(_Fields field, Object value) {
-      switch (field) {
-      case RECORD:
-        if (value == null) {
-          unsetRecord();
-        } else {
-          setRecord((com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct)value);
-        }
-        break;
-
-      }
-    }
-
-    public Object getFieldValue(_Fields field) {
-      switch (field) {
-      case RECORD:
-        return getRecord();
-
-      }
-      throw new IllegalStateException();
-    }
-
-    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
-    public boolean isSet(_Fields field) {
-      if (field == null) {
-        throw new IllegalArgumentException();
-      }
-
-      switch (field) {
-      case RECORD:
-        return isSetRecord();
-      }
-      throw new IllegalStateException();
-    }
-
-    @Override
-    public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof postPutResource_args)
-        return this.equals((postPutResource_args)that);
-      return false;
-    }
-
-    public boolean equals(postPutResource_args that) {
-      if (that == null)
-        return false;
-      if (this == that)
-        return true;
-
-      boolean this_present_record = true && this.isSetRecord();
-      boolean that_present_record = true && that.isSetRecord();
-      if (this_present_record || that_present_record) {
-        if (!(this_present_record && that_present_record))
-          return false;
-        if (!this.record.equals(that.record))
-          return false;
-      }
-
-      return true;
-    }
-
-    @Override
-    public int hashCode() {
-      int hashCode = 1;
-
-      hashCode = hashCode * 8191 + ((isSetRecord()) ? 131071 : 524287);
-      if (isSetRecord())
-        hashCode = hashCode * 8191 + record.hashCode();
-
-      return hashCode;
-    }
-
-    @Override
-    public int compareTo(postPutResource_args other) {
-      if (!getClass().equals(other.getClass())) {
-        return getClass().getName().compareTo(other.getClass().getName());
-      }
-
-      int lastComparison = 0;
-
-      lastComparison = Boolean.valueOf(isSetRecord()).compareTo(other.isSetRecord());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetRecord()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.record, other.record);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      return 0;
-    }
-
-    public _Fields fieldForId(int fieldId) {
-      return _Fields.findByThriftId(fieldId);
-    }
-
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
-      scheme(iprot).read(iprot, this);
-    }
-
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
-      scheme(oprot).write(oprot, this);
-    }
-
-    @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postPutResource_args(");
-      boolean first = true;
-
-      sb.append("record:");
-      if (this.record == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.record);
-      }
-      first = false;
-      sb.append(")");
-      return sb.toString();
-    }
-
-    public void validate() throws org.apache.thrift.TException {
-      // check for required fields
-      // check for sub-struct validity
-      if (record != null) {
-        record.validate();
-      }
-    }
-
-    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
-      try {
-        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
-      try {
-        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private static class postPutResource_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
-      public postPutResource_argsStandardScheme getScheme() {
-        return new postPutResource_argsStandardScheme();
-      }
-    }
-
-    private static class postPutResource_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<postPutResource_args> {
-
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postPutResource_args struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TField schemeField;
-        iprot.readStructBegin();
-        while (true)
-        {
-          schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
-            break;
-          }
-          switch (schemeField.id) {
-            case 1: // RECORD
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                struct.record = new com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct();
-                struct.record.read(iprot);
-                struct.setRecordIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            default:
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-          }
-          iprot.readFieldEnd();
-        }
-        iprot.readStructEnd();
-
-        // check for required fields of primitive type, which can't be checked in the validate method
-        struct.validate();
-      }
-
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postPutResource_args struct) throws org.apache.thrift.TException {
-        struct.validate();
-
-        oprot.writeStructBegin(STRUCT_DESC);
-        if (struct.record != null) {
-          oprot.writeFieldBegin(RECORD_FIELD_DESC);
-          struct.record.write(oprot);
-          oprot.writeFieldEnd();
-        }
-        oprot.writeFieldStop();
-        oprot.writeStructEnd();
-      }
-
-    }
-
-    private static class postPutResource_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
-      public postPutResource_argsTupleScheme getScheme() {
-        return new postPutResource_argsTupleScheme();
-      }
-    }
-
-    private static class postPutResource_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<postPutResource_args> {
-
-      @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postPutResource_args struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet optionals = new java.util.BitSet();
-        if (struct.isSetRecord()) {
-          optionals.set(0);
-        }
-        oprot.writeBitSet(optionals, 1);
-        if (struct.isSetRecord()) {
-          struct.record.write(oprot);
-        }
-      }
-
-      @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postPutResource_args struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(1);
-        if (incoming.get(0)) {
-          struct.record = new com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct();
-          struct.record.read(iprot);
-          struct.setRecordIsSet(true);
-        }
-      }
-    }
-
-    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
-      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
-    }
-  }
-
-  public static class postPutResource_result implements org.apache.thrift.TBase<postPutResource_result, postPutResource_result._Fields>, java.io.Serializable, Cloneable, Comparable<postPutResource_result>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("postPutResource_result");
-
-    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
-
-    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new postPutResource_resultStandardSchemeFactory();
-    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new postPutResource_resultTupleSchemeFactory();
-
-    public com.moseeker.thrift.gen.common.struct.Response success; // required
-
-    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
-    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      SUCCESS((short)0, "success");
-
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
-
-      static {
-        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
-          byName.put(field.getFieldName(), field);
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, or null if its not found.
-       */
-      public static _Fields findByThriftId(int fieldId) {
-        switch(fieldId) {
-          case 0: // SUCCESS
-            return SUCCESS;
-          default:
-            return null;
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, throwing an exception
-       * if it is not found.
-       */
-      public static _Fields findByThriftIdOrThrow(int fieldId) {
-        _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
-        return fields;
-      }
-
-      /**
-       * Find the _Fields constant that matches name, or null if its not found.
-       */
-      public static _Fields findByName(String name) {
-        return byName.get(name);
-      }
-
-      private final short _thriftId;
-      private final String _fieldName;
-
-      _Fields(short thriftId, String fieldName) {
-        _thriftId = thriftId;
-        _fieldName = fieldName;
-      }
-
-      public short getThriftFieldId() {
-        return _thriftId;
-      }
-
-      public String getFieldName() {
-        return _fieldName;
-      }
-    }
-
-    // isset id assignments
-    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
-    static {
-      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(postPutResource_result.class, metaDataMap);
-    }
-
-    public postPutResource_result() {
-    }
-
-    public postPutResource_result(
-      com.moseeker.thrift.gen.common.struct.Response success)
-    {
-      this();
-      this.success = success;
-    }
-
-    /**
-     * Performs a deep copy on <i>other</i>.
-     */
-    public postPutResource_result(postPutResource_result other) {
-      if (other.isSetSuccess()) {
-        this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
-      }
-    }
-
-    public postPutResource_result deepCopy() {
-      return new postPutResource_result(this);
-    }
-
-    @Override
-    public void clear() {
-      this.success = null;
-    }
-
-    public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
-      return this.success;
-    }
-
-    public postPutResource_result setSuccess(com.moseeker.thrift.gen.common.struct.Response success) {
-      this.success = success;
-      return this;
-    }
-
-    public void unsetSuccess() {
-      this.success = null;
-    }
-
-    /** Returns true if field success is set (has been assigned a value) and false otherwise */
-    public boolean isSetSuccess() {
-      return this.success != null;
-    }
-
-    public void setSuccessIsSet(boolean value) {
-      if (!value) {
-        this.success = null;
-      }
-    }
-
-    public void setFieldValue(_Fields field, Object value) {
-      switch (field) {
-      case SUCCESS:
-        if (value == null) {
-          unsetSuccess();
-        } else {
-          setSuccess((com.moseeker.thrift.gen.common.struct.Response)value);
-        }
-        break;
-
-      }
-    }
-
-    public Object getFieldValue(_Fields field) {
-      switch (field) {
-      case SUCCESS:
-        return getSuccess();
-
-      }
-      throw new IllegalStateException();
-    }
-
-    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
-    public boolean isSet(_Fields field) {
-      if (field == null) {
-        throw new IllegalArgumentException();
-      }
-
-      switch (field) {
-      case SUCCESS:
-        return isSetSuccess();
-      }
-      throw new IllegalStateException();
-    }
-
-    @Override
-    public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof postPutResource_result)
-        return this.equals((postPutResource_result)that);
-      return false;
-    }
-
-    public boolean equals(postPutResource_result that) {
-      if (that == null)
-        return false;
-      if (this == that)
-        return true;
-
-      boolean this_present_success = true && this.isSetSuccess();
-      boolean that_present_success = true && that.isSetSuccess();
-      if (this_present_success || that_present_success) {
-        if (!(this_present_success && that_present_success))
-          return false;
-        if (!this.success.equals(that.success))
-          return false;
-      }
-
-      return true;
-    }
-
-    @Override
-    public int hashCode() {
-      int hashCode = 1;
-
-      hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
-      if (isSetSuccess())
-        hashCode = hashCode * 8191 + success.hashCode();
-
-      return hashCode;
-    }
-
-    @Override
-    public int compareTo(postPutResource_result other) {
-      if (!getClass().equals(other.getClass())) {
-        return getClass().getName().compareTo(other.getClass().getName());
-      }
-
-      int lastComparison = 0;
-
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetSuccess()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      return 0;
-    }
-
-    public _Fields fieldForId(int fieldId) {
-      return _Fields.findByThriftId(fieldId);
-    }
-
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
-      scheme(iprot).read(iprot, this);
-    }
-
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
-      scheme(oprot).write(oprot, this);
-      }
-
-    @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postPutResource_result(");
-      boolean first = true;
-
-      sb.append("success:");
-      if (this.success == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.success);
-      }
-      first = false;
-      sb.append(")");
-      return sb.toString();
-    }
-
-    public void validate() throws org.apache.thrift.TException {
-      // check for required fields
-      // check for sub-struct validity
-      if (success != null) {
-        success.validate();
-      }
-    }
-
-    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
-      try {
-        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
-      try {
-        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private static class postPutResource_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
-      public postPutResource_resultStandardScheme getScheme() {
-        return new postPutResource_resultStandardScheme();
-      }
-    }
-
-    private static class postPutResource_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<postPutResource_result> {
-
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postPutResource_result struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TField schemeField;
-        iprot.readStructBegin();
-        while (true)
-        {
-          schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
-            break;
-          }
-          switch (schemeField.id) {
-            case 0: // SUCCESS
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                struct.success = new com.moseeker.thrift.gen.common.struct.Response();
-                struct.success.read(iprot);
-                struct.setSuccessIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            default:
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-          }
-          iprot.readFieldEnd();
-        }
-        iprot.readStructEnd();
-
-        // check for required fields of primitive type, which can't be checked in the validate method
-        struct.validate();
-      }
-
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postPutResource_result struct) throws org.apache.thrift.TException {
-        struct.validate();
-
-        oprot.writeStructBegin(STRUCT_DESC);
-        if (struct.success != null) {
-          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
-          struct.success.write(oprot);
-          oprot.writeFieldEnd();
-        }
-        oprot.writeFieldStop();
-        oprot.writeStructEnd();
-      }
-
-    }
-
-    private static class postPutResource_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
-      public postPutResource_resultTupleScheme getScheme() {
-        return new postPutResource_resultTupleScheme();
-      }
-    }
-
-    private static class postPutResource_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<postPutResource_result> {
-
-      @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postPutResource_result struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet optionals = new java.util.BitSet();
-        if (struct.isSetSuccess()) {
-          optionals.set(0);
-        }
-        oprot.writeBitSet(optionals, 1);
-        if (struct.isSetSuccess()) {
-          struct.success.write(oprot);
-        }
-      }
-
-      @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postPutResource_result struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(1);
-        if (incoming.get(0)) {
-          struct.success = new com.moseeker.thrift.gen.common.struct.Response();
-          struct.success.read(iprot);
-          struct.setSuccessIsSet(true);
-        }
-      }
-    }
-
-    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
-      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
-    }
-  }
-
-  public static class postPutResources_args implements org.apache.thrift.TBase<postPutResources_args, postPutResources_args._Fields>, java.io.Serializable, Cloneable, Comparable<postPutResources_args>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("postPutResources_args");
-
-    private static final org.apache.thrift.protocol.TField RECORDS_FIELD_DESC = new org.apache.thrift.protocol.TField("records", org.apache.thrift.protocol.TType.LIST, (short)1);
-
-    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new postPutResources_argsStandardSchemeFactory();
-    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new postPutResources_argsTupleSchemeFactory();
-
-    public java.util.List<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct> records; // required
-
-    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
-    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      RECORDS((short)1, "records");
-
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
-
-      static {
-        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
-          byName.put(field.getFieldName(), field);
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, or null if its not found.
-       */
-      public static _Fields findByThriftId(int fieldId) {
-        switch(fieldId) {
-          case 1: // RECORDS
-            return RECORDS;
-          default:
-            return null;
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, throwing an exception
-       * if it is not found.
-       */
-      public static _Fields findByThriftIdOrThrow(int fieldId) {
-        _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
-        return fields;
-      }
-
-      /**
-       * Find the _Fields constant that matches name, or null if its not found.
-       */
-      public static _Fields findByName(String name) {
-        return byName.get(name);
-      }
-
-      private final short _thriftId;
-      private final String _fieldName;
-
-      _Fields(short thriftId, String fieldName) {
-        _thriftId = thriftId;
-        _fieldName = fieldName;
-      }
-
-      public short getThriftFieldId() {
-        return _thriftId;
-      }
-
-      public String getFieldName() {
-        return _fieldName;
-      }
-    }
-
-    // isset id assignments
-    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
-    static {
-      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.RECORDS, new org.apache.thrift.meta_data.FieldMetaData("records", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
-              new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct.class))));
-      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(postPutResources_args.class, metaDataMap);
-    }
-
-    public postPutResources_args() {
-    }
-
-    public postPutResources_args(
-      java.util.List<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct> records)
-    {
-      this();
-      this.records = records;
-    }
-
-    /**
-     * Performs a deep copy on <i>other</i>.
-     */
-    public postPutResources_args(postPutResources_args other) {
-      if (other.isSetRecords()) {
-        java.util.List<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct> __this__records = new java.util.ArrayList<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct>(other.records.size());
-        for (com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct other_element : other.records) {
-          __this__records.add(new com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct(other_element));
-        }
-        this.records = __this__records;
-      }
-    }
-
-    public postPutResources_args deepCopy() {
-      return new postPutResources_args(this);
-    }
-
-    @Override
-    public void clear() {
-      this.records = null;
-    }
-
-    public int getRecordsSize() {
-      return (this.records == null) ? 0 : this.records.size();
-    }
-
-    public java.util.Iterator<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct> getRecordsIterator() {
-      return (this.records == null) ? null : this.records.iterator();
-    }
-
-    public void addToRecords(com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct elem) {
-      if (this.records == null) {
-        this.records = new java.util.ArrayList<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct>();
-      }
-      this.records.add(elem);
-    }
-
-    public java.util.List<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct> getRecords() {
-      return this.records;
-    }
-
-    public postPutResources_args setRecords(java.util.List<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct> records) {
-      this.records = records;
-      return this;
-    }
-
-    public void unsetRecords() {
-      this.records = null;
-    }
-
-    /** Returns true if field records is set (has been assigned a value) and false otherwise */
-    public boolean isSetRecords() {
-      return this.records != null;
-    }
-
-    public void setRecordsIsSet(boolean value) {
-      if (!value) {
-        this.records = null;
-      }
-    }
-
-    public void setFieldValue(_Fields field, Object value) {
-      switch (field) {
-      case RECORDS:
-        if (value == null) {
-          unsetRecords();
-        } else {
-          setRecords((java.util.List<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct>)value);
-        }
-        break;
-
-      }
-    }
-
-    public Object getFieldValue(_Fields field) {
-      switch (field) {
-      case RECORDS:
-        return getRecords();
-
-      }
-      throw new IllegalStateException();
-    }
-
-    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
-    public boolean isSet(_Fields field) {
-      if (field == null) {
-        throw new IllegalArgumentException();
-      }
-
-      switch (field) {
-      case RECORDS:
-        return isSetRecords();
-      }
-      throw new IllegalStateException();
-    }
-
-    @Override
-    public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof postPutResources_args)
-        return this.equals((postPutResources_args)that);
-      return false;
-    }
-
-    public boolean equals(postPutResources_args that) {
-      if (that == null)
-        return false;
-      if (this == that)
-        return true;
-
-      boolean this_present_records = true && this.isSetRecords();
-      boolean that_present_records = true && that.isSetRecords();
-      if (this_present_records || that_present_records) {
-        if (!(this_present_records && that_present_records))
-          return false;
-        if (!this.records.equals(that.records))
-          return false;
-      }
-
-      return true;
-    }
-
-    @Override
-    public int hashCode() {
-      int hashCode = 1;
-
-      hashCode = hashCode * 8191 + ((isSetRecords()) ? 131071 : 524287);
-      if (isSetRecords())
-        hashCode = hashCode * 8191 + records.hashCode();
-
-      return hashCode;
-    }
-
-    @Override
-    public int compareTo(postPutResources_args other) {
-      if (!getClass().equals(other.getClass())) {
-        return getClass().getName().compareTo(other.getClass().getName());
-      }
-
-      int lastComparison = 0;
-
-      lastComparison = Boolean.valueOf(isSetRecords()).compareTo(other.isSetRecords());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetRecords()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.records, other.records);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      return 0;
-    }
-
-    public _Fields fieldForId(int fieldId) {
-      return _Fields.findByThriftId(fieldId);
-    }
-
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
-      scheme(iprot).read(iprot, this);
-    }
-
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
-      scheme(oprot).write(oprot, this);
-    }
-
-    @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postPutResources_args(");
-      boolean first = true;
-
-      sb.append("records:");
-      if (this.records == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.records);
-      }
-      first = false;
-      sb.append(")");
-      return sb.toString();
-    }
-
-    public void validate() throws org.apache.thrift.TException {
-      // check for required fields
-      // check for sub-struct validity
-    }
-
-    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
-      try {
-        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
-      try {
-        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private static class postPutResources_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
-      public postPutResources_argsStandardScheme getScheme() {
-        return new postPutResources_argsStandardScheme();
-      }
-    }
-
-    private static class postPutResources_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<postPutResources_args> {
-
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postPutResources_args struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TField schemeField;
-        iprot.readStructBegin();
-        while (true)
-        {
-          schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
-            break;
-          }
-          switch (schemeField.id) {
-            case 1: // RECORDS
-              if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
-                {
-                  org.apache.thrift.protocol.TList _list152 = iprot.readListBegin();
-                  struct.records = new java.util.ArrayList<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct>(_list152.size);
-                  com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _elem153;
-                  for (int _i154 = 0; _i154 < _list152.size; ++_i154)
-                  {
-                    _elem153 = new com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct();
-                    _elem153.read(iprot);
-                    struct.records.add(_elem153);
-                  }
-                  iprot.readListEnd();
-                }
-                struct.setRecordsIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            default:
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-          }
-          iprot.readFieldEnd();
-        }
-        iprot.readStructEnd();
-
-        // check for required fields of primitive type, which can't be checked in the validate method
-        struct.validate();
-      }
-
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postPutResources_args struct) throws org.apache.thrift.TException {
-        struct.validate();
-
-        oprot.writeStructBegin(STRUCT_DESC);
-        if (struct.records != null) {
-          oprot.writeFieldBegin(RECORDS_FIELD_DESC);
-          {
-            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.records.size()));
-            for (com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _iter155 : struct.records)
-            {
-              _iter155.write(oprot);
-            }
-            oprot.writeListEnd();
-          }
-          oprot.writeFieldEnd();
-        }
-        oprot.writeFieldStop();
-        oprot.writeStructEnd();
-      }
-
-    }
-
-    private static class postPutResources_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
-      public postPutResources_argsTupleScheme getScheme() {
-        return new postPutResources_argsTupleScheme();
-      }
-    }
-
-    private static class postPutResources_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<postPutResources_args> {
-
-      @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postPutResources_args struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet optionals = new java.util.BitSet();
-        if (struct.isSetRecords()) {
-          optionals.set(0);
-        }
-        oprot.writeBitSet(optionals, 1);
-        if (struct.isSetRecords()) {
-          {
-            oprot.writeI32(struct.records.size());
-            for (com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _iter156 : struct.records)
-            {
-              _iter156.write(oprot);
-            }
-          }
-        }
-      }
-
-      @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postPutResources_args struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(1);
-        if (incoming.get(0)) {
-          {
-            org.apache.thrift.protocol.TList _list157 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-            struct.records = new java.util.ArrayList<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct>(_list157.size);
-            com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _elem158;
-            for (int _i159 = 0; _i159 < _list157.size; ++_i159)
-            {
-              _elem158 = new com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct();
-              _elem158.read(iprot);
-              struct.records.add(_elem158);
-            }
-          }
-          struct.setRecordsIsSet(true);
-        }
-      }
-    }
-
-    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
-      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
-    }
-  }
-
-  public static class postPutResources_result implements org.apache.thrift.TBase<postPutResources_result, postPutResources_result._Fields>, java.io.Serializable, Cloneable, Comparable<postPutResources_result>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("postPutResources_result");
-
-    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
-
-    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new postPutResources_resultStandardSchemeFactory();
-    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new postPutResources_resultTupleSchemeFactory();
-
-    public com.moseeker.thrift.gen.common.struct.Response success; // required
-
-    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
-    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      SUCCESS((short)0, "success");
-
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
-
-      static {
-        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
-          byName.put(field.getFieldName(), field);
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, or null if its not found.
-       */
-      public static _Fields findByThriftId(int fieldId) {
-        switch(fieldId) {
-          case 0: // SUCCESS
-            return SUCCESS;
-          default:
-            return null;
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, throwing an exception
-       * if it is not found.
-       */
-      public static _Fields findByThriftIdOrThrow(int fieldId) {
-        _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
-        return fields;
-      }
-
-      /**
-       * Find the _Fields constant that matches name, or null if its not found.
-       */
-      public static _Fields findByName(String name) {
-        return byName.get(name);
-      }
-
-      private final short _thriftId;
-      private final String _fieldName;
-
-      _Fields(short thriftId, String fieldName) {
-        _thriftId = thriftId;
-        _fieldName = fieldName;
-      }
-
-      public short getThriftFieldId() {
-        return _thriftId;
-      }
-
-      public String getFieldName() {
-        return _fieldName;
-      }
-    }
-
-    // isset id assignments
-    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
-    static {
-      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
-      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(postPutResources_result.class, metaDataMap);
-    }
-
-    public postPutResources_result() {
-    }
-
-    public postPutResources_result(
-      com.moseeker.thrift.gen.common.struct.Response success)
-    {
-      this();
-      this.success = success;
-    }
-
-    /**
-     * Performs a deep copy on <i>other</i>.
-     */
-    public postPutResources_result(postPutResources_result other) {
-      if (other.isSetSuccess()) {
-        this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
-      }
-    }
-
-    public postPutResources_result deepCopy() {
-      return new postPutResources_result(this);
-    }
-
-    @Override
-    public void clear() {
-      this.success = null;
-    }
-
-    public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
-      return this.success;
-    }
-
-    public postPutResources_result setSuccess(com.moseeker.thrift.gen.common.struct.Response success) {
-      this.success = success;
-      return this;
-    }
-
-    public void unsetSuccess() {
-      this.success = null;
-    }
-
-    /** Returns true if field success is set (has been assigned a value) and false otherwise */
-    public boolean isSetSuccess() {
-      return this.success != null;
-    }
-
-    public void setSuccessIsSet(boolean value) {
-      if (!value) {
-        this.success = null;
-      }
-    }
-
-    public void setFieldValue(_Fields field, Object value) {
-      switch (field) {
-      case SUCCESS:
-        if (value == null) {
-          unsetSuccess();
-        } else {
-          setSuccess((com.moseeker.thrift.gen.common.struct.Response)value);
-        }
-        break;
-
-      }
-    }
-
-    public Object getFieldValue(_Fields field) {
-      switch (field) {
-      case SUCCESS:
-        return getSuccess();
-
-      }
-      throw new IllegalStateException();
-    }
-
-    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
-    public boolean isSet(_Fields field) {
-      if (field == null) {
-        throw new IllegalArgumentException();
-      }
-
-      switch (field) {
-      case SUCCESS:
-        return isSetSuccess();
-      }
-      throw new IllegalStateException();
-    }
-
-    @Override
-    public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof postPutResources_result)
-        return this.equals((postPutResources_result)that);
-      return false;
-    }
-
-    public boolean equals(postPutResources_result that) {
-      if (that == null)
-        return false;
-      if (this == that)
-        return true;
-
-      boolean this_present_success = true && this.isSetSuccess();
-      boolean that_present_success = true && that.isSetSuccess();
-      if (this_present_success || that_present_success) {
-        if (!(this_present_success && that_present_success))
-          return false;
-        if (!this.success.equals(that.success))
-          return false;
-      }
-
-      return true;
-    }
-
-    @Override
-    public int hashCode() {
-      int hashCode = 1;
-
-      hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
-      if (isSetSuccess())
-        hashCode = hashCode * 8191 + success.hashCode();
-
-      return hashCode;
-    }
-
-    @Override
-    public int compareTo(postPutResources_result other) {
-      if (!getClass().equals(other.getClass())) {
-        return getClass().getName().compareTo(other.getClass().getName());
-      }
-
-      int lastComparison = 0;
-
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetSuccess()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      return 0;
-    }
-
-    public _Fields fieldForId(int fieldId) {
-      return _Fields.findByThriftId(fieldId);
-    }
-
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
-      scheme(iprot).read(iprot, this);
-    }
-
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
-      scheme(oprot).write(oprot, this);
-      }
-
-    @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postPutResources_result(");
-      boolean first = true;
-
-      sb.append("success:");
-      if (this.success == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.success);
-      }
-      first = false;
-      sb.append(")");
-      return sb.toString();
-    }
-
-    public void validate() throws org.apache.thrift.TException {
-      // check for required fields
-      // check for sub-struct validity
-      if (success != null) {
-        success.validate();
-      }
-    }
-
-    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
-      try {
-        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
-      try {
-        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private static class postPutResources_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
-      public postPutResources_resultStandardScheme getScheme() {
-        return new postPutResources_resultStandardScheme();
-      }
-    }
-
-    private static class postPutResources_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<postPutResources_result> {
-
-      public void read(org.apache.thrift.protocol.TProtocol iprot, postPutResources_result struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TField schemeField;
-        iprot.readStructBegin();
-        while (true)
-        {
-          schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
-            break;
-          }
-          switch (schemeField.id) {
-            case 0: // SUCCESS
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                struct.success = new com.moseeker.thrift.gen.common.struct.Response();
-                struct.success.read(iprot);
-                struct.setSuccessIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            default:
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-          }
-          iprot.readFieldEnd();
-        }
-        iprot.readStructEnd();
-
-        // check for required fields of primitive type, which can't be checked in the validate method
-        struct.validate();
-      }
-
-      public void write(org.apache.thrift.protocol.TProtocol oprot, postPutResources_result struct) throws org.apache.thrift.TException {
-        struct.validate();
-
-        oprot.writeStructBegin(STRUCT_DESC);
-        if (struct.success != null) {
-          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
-          struct.success.write(oprot);
-          oprot.writeFieldEnd();
-        }
-        oprot.writeFieldStop();
-        oprot.writeStructEnd();
-      }
-
-    }
-
-    private static class postPutResources_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
-      public postPutResources_resultTupleScheme getScheme() {
-        return new postPutResources_resultTupleScheme();
-      }
-    }
-
-    private static class postPutResources_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<postPutResources_result> {
-
-      @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, postPutResources_result struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet optionals = new java.util.BitSet();
-        if (struct.isSetSuccess()) {
-          optionals.set(0);
-        }
-        oprot.writeBitSet(optionals, 1);
-        if (struct.isSetSuccess()) {
-          struct.success.write(oprot);
-        }
-      }
-
-      @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, postPutResources_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
@@ -9453,14 +7652,14 @@ public class UserEmployeeDao {
             case 1: // USER_EMPLOYEES
               if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
                 {
-                  org.apache.thrift.protocol.TList _list160 = iprot.readListBegin();
-                  struct.userEmployees = new java.util.ArrayList<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct>(_list160.size);
-                  com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _elem161;
-                  for (int _i162 = 0; _i162 < _list160.size; ++_i162)
+                  org.apache.thrift.protocol.TList _list104 = iprot.readListBegin();
+                  struct.userEmployees = new java.util.ArrayList<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct>(_list104.size);
+                  com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _elem105;
+                  for (int _i106 = 0; _i106 < _list104.size; ++_i106)
                   {
-                    _elem161 = new com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct();
-                    _elem161.read(iprot);
-                    struct.userEmployees.add(_elem161);
+                    _elem105 = new com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct();
+                    _elem105.read(iprot);
+                    struct.userEmployees.add(_elem105);
                   }
                   iprot.readListEnd();
                 }
@@ -9488,9 +7687,9 @@ public class UserEmployeeDao {
           oprot.writeFieldBegin(USER_EMPLOYEES_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.userEmployees.size()));
-            for (com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _iter163 : struct.userEmployees)
+            for (com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _iter107 : struct.userEmployees)
             {
-              _iter163.write(oprot);
+              _iter107.write(oprot);
             }
             oprot.writeListEnd();
           }
@@ -9521,9 +7720,9 @@ public class UserEmployeeDao {
         if (struct.isSetUserEmployees()) {
           {
             oprot.writeI32(struct.userEmployees.size());
-            for (com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _iter164 : struct.userEmployees)
+            for (com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _iter108 : struct.userEmployees)
             {
-              _iter164.write(oprot);
+              _iter108.write(oprot);
             }
           }
         }
@@ -9535,14 +7734,14 @@ public class UserEmployeeDao {
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TList _list165 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-            struct.userEmployees = new java.util.ArrayList<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct>(_list165.size);
-            com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _elem166;
-            for (int _i167 = 0; _i167 < _list165.size; ++_i167)
+            org.apache.thrift.protocol.TList _list109 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+            struct.userEmployees = new java.util.ArrayList<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct>(_list109.size);
+            com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _elem110;
+            for (int _i111 = 0; _i111 < _list109.size; ++_i111)
             {
-              _elem166 = new com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct();
-              _elem166.read(iprot);
-              struct.userEmployees.add(_elem166);
+              _elem110 = new com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct();
+              _elem110.read(iprot);
+              struct.userEmployees.add(_elem110);
             }
           }
           struct.setUserEmployeesIsSet(true);

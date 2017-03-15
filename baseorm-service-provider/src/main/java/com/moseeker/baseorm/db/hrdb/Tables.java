@@ -5,11 +5,13 @@ package com.moseeker.baseorm.db.hrdb;
 
 
 import com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrChatUnreadCount;
 import com.moseeker.baseorm.db.hrdb.tables.HrChildCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeePosition;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeSection;
 import com.moseeker.baseorm.db.hrdb.tables.HrFeedback;
@@ -49,6 +51,8 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxRule;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
+import com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5Statistics;
+import com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5UniqueStatistics;
 
 import javax.annotation.Generated;
 
@@ -67,9 +71,24 @@ import javax.annotation.Generated;
 public class Tables {
 
     /**
+     * The table <code>hrdb.hrdb.hr_html5_statistics</code>.
+     */
+    public static final HrdbHrHtml5Statistics HRDB_HR_HTML5_STATISTICS = com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5Statistics.HRDB_HR_HTML5_STATISTICS;
+
+    /**
+     * The table <code>hrdb.hrdb.hr_html5_unique_statistics</code>.
+     */
+    public static final HrdbHrHtml5UniqueStatistics HRDB_HR_HTML5_UNIQUE_STATISTICS = com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5UniqueStatistics.HRDB_HR_HTML5_UNIQUE_STATISTICS;
+
+    /**
      * 企业申请简历校验配置
      */
     public static final HrAppCvConf HR_APP_CV_CONF = com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf.HR_APP_CV_CONF;
+
+    /**
+     * 聊天室未读消息
+     */
+    public static final HrChatUnreadCount HR_CHAT_UNREAD_COUNT = com.moseeker.baseorm.db.hrdb.tables.HrChatUnreadCount.HR_CHAT_UNREAD_COUNT;
 
     /**
      * 子公司表
@@ -95,6 +114,11 @@ public class Tables {
      * 部门员工配置表
      */
     public static final HrEmployeeCertConf HR_EMPLOYEE_CERT_CONF = com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF;
+
+    /**
+     * 员工认证自定义字段表
+     */
+    public static final HrEmployeeCustomFields HR_EMPLOYEE_CUSTOM_FIELDS = com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS;
 
     /**
      * 员工职能表

@@ -26,15 +26,11 @@ public interface BaseDao<S> {
 
 	int putResources(List<S> structs) throws Exception;
 
-	int postPutResources(List<S> structs) throws Exception;
-
 	int delResources(List<S> structs) throws Exception;
 
 	int postResource(S struct) throws Exception;
 
 	int putResource(S struct) throws Exception;
-
-	int postPutResource(S struct) throws Exception;
 
 	int delResource(S struct) throws Exception;
 

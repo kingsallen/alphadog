@@ -67,6 +67,10 @@ public class ThriftServerConfig {
     /** 重试间隔,单位为ms，默认为3s */
     private int heartbeatInterval = 3000;
 
+    private int initialBufferCapacity = 1024;
+
+    private int maxLength = 1024*1024*1024;
+
 	public String getName() {
 		return name;
 	}
@@ -233,5 +237,21 @@ public class ThriftServerConfig {
 
 	public void setHeartbeatInterval(int heartbeatInterval) {
 		this.heartbeatInterval = heartbeatInterval;
+	}
+
+	public int getInitialBufferCapacity() {
+		return initialBufferCapacity;
+	}
+
+	public void setInitialBufferCapacity(int initialBufferCapacity) {
+		this.initialBufferCapacity = initialBufferCapacity;
+	}
+
+	public int getMaxLength() {
+		return maxLength;
+	}
+
+	public void setMaxLength(int maxLength) {
+		this.maxLength = maxLength;
 	}
 }

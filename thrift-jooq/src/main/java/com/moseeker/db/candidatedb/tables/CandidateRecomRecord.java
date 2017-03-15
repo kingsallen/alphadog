@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateRecomRecord extends TableImpl<CandidateRecomRecordRecord> {
 
-	private static final long serialVersionUID = 2122024492;
+	private static final long serialVersionUID = -1857962401;
 
 	/**
 	 * The reference instance of <code>candidatedb.candidate_recom_record</code>
@@ -67,9 +67,9 @@ public class CandidateRecomRecord extends TableImpl<CandidateRecomRecordRecord> 
 	public final TableField<CandidateRecomRecordRecord, Integer> APP_ID = createField("app_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "job_application.id, 被推荐者申请ID");
 
 	/**
-	 * The column <code>candidatedb.candidate_recom_record.presentee_id</code>. wx_group_user.id, 被推荐者的微信ID
+	 * The column <code>candidatedb.candidate_recom_record.presentee_id</code>. userdb.user_wx_user.id, 被推荐者的微信ID。现在已经废弃，改由被推荐者的C端账号编号表示，请参考presentee_user_id
 	 */
-	public final TableField<CandidateRecomRecordRecord, Integer> PRESENTEE_ID = createField("presentee_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "wx_group_user.id, 被推荐者的微信ID");
+	public final TableField<CandidateRecomRecordRecord, Integer> PRESENTEE_ID = createField("presentee_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "userdb.user_wx_user.id, 被推荐者的微信ID。现在已经废弃，改由被推荐者的C端账号编号表示，请参考presentee_user_id");
 
 	/**
 	 * The column <code>candidatedb.candidate_recom_record.click_time</code>. 职位点击时间
@@ -82,14 +82,14 @@ public class CandidateRecomRecord extends TableImpl<CandidateRecomRecordRecord> 
 	public final TableField<CandidateRecomRecordRecord, Integer> DEPTH = createField("depth", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "第几层关系");
 
 	/**
-	 * The column <code>candidatedb.candidate_recom_record.recom_id_2</code>. wx_group_user.id, 第2度人脉推荐人微信ID，用来标记谁的朋友
+	 * The column <code>candidatedb.candidate_recom_record.recom_id_2</code>. userdb.user_wx_usesr.id, 第2度人脉推荐人微信ID，用来标记谁的朋友。已经废弃，第2度人脉微信ID由第2度人脉C端账号编号替换，请参考repost_user_id
 	 */
-	public final TableField<CandidateRecomRecordRecord, Integer> RECOM_ID_2 = createField("recom_id_2", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "wx_group_user.id, 第2度人脉推荐人微信ID，用来标记谁的朋友");
+	public final TableField<CandidateRecomRecordRecord, Integer> RECOM_ID_2 = createField("recom_id_2", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "userdb.user_wx_usesr.id, 第2度人脉推荐人微信ID，用来标记谁的朋友。已经废弃，第2度人脉微信ID由第2度人脉C端账号编号替换，请参考repost_user_id");
 
 	/**
-	 * The column <code>candidatedb.candidate_recom_record.recom_id</code>. wx_group_user.id, 推荐者的微信ID
+	 * The column <code>candidatedb.candidate_recom_record.recom_id</code>. userdb.user_wx_user.id, 推荐者的微信ID。已经废弃，推荐者的微信ID被推荐者的C端账号编号替换，请参考post_user_id
 	 */
-	public final TableField<CandidateRecomRecordRecord, Integer> RECOM_ID = createField("recom_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "wx_group_user.id, 推荐者的微信ID");
+	public final TableField<CandidateRecomRecordRecord, Integer> RECOM_ID = createField("recom_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "userdb.user_wx_user.id, 推荐者的微信ID。已经废弃，推荐者的微信ID被推荐者的C端账号编号替换，请参考post_user_id");
 
 	/**
 	 * The column <code>candidatedb.candidate_recom_record.realname</code>. 被推荐人真实姓名
@@ -117,9 +117,9 @@ public class CandidateRecomRecord extends TableImpl<CandidateRecomRecordRecord> 
 	public final TableField<CandidateRecomRecordRecord, Timestamp> RECOM_TIME = createField("recom_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "推荐时间");
 
 	/**
-	 * The column <code>candidatedb.candidate_recom_record.is_recom</code>. 推荐状态，0：推荐过，1：未推荐
+	 * The column <code>candidatedb.candidate_recom_record.is_recom</code>. 推荐状态，0：推荐过，1：未推荐,2:忽略--推荐被动求职者时，可以选中多个求职者挨个填写求职者信息。忽略是指跳过当前求职者，到下一个求职者。3： 选中--推荐被动求职者时，可以选中多个被动求职者。
 	 */
-	public final TableField<CandidateRecomRecordRecord, Integer> IS_RECOM = createField("is_recom", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "推荐状态，0：推荐过，1：未推荐");
+	public final TableField<CandidateRecomRecordRecord, Integer> IS_RECOM = createField("is_recom", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "推荐状态，0：推荐过，1：未推荐,2:忽略--推荐被动求职者时，可以选中多个求职者挨个填写求职者信息。忽略是指跳过当前求职者，到下一个求职者。3： 选中--推荐被动求职者时，可以选中多个被动求职者。");
 
 	/**
 	 * The column <code>candidatedb.candidate_recom_record.create_time</code>. 创建时间
@@ -135,6 +135,21 @@ public class CandidateRecomRecord extends TableImpl<CandidateRecomRecordRecord> 
 	 * The column <code>candidatedb.candidate_recom_record.mobile</code>. 被推荐者的手机号
 	 */
 	public final TableField<CandidateRecomRecordRecord, String> MOBILE = createField("mobile", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false).defaulted(true), this, "被推荐者的手机号");
+
+	/**
+	 * The column <code>candidatedb.candidate_recom_record.presentee_user_id</code>. userdb.user_user.id 被推荐者的C端账号编号
+	 */
+	public final TableField<CandidateRecomRecordRecord, UInteger> PRESENTEE_USER_ID = createField("presentee_user_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "userdb.user_user.id 被推荐者的C端账号编号");
+
+	/**
+	 * The column <code>candidatedb.candidate_recom_record.repost_user_id</code>. userdb.user_user.id 第2度人脉推荐人C 端账号编号，用来标记谁的朋友
+	 */
+	public final TableField<CandidateRecomRecordRecord, UInteger> REPOST_USER_ID = createField("repost_user_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "userdb.user_user.id 第2度人脉推荐人C 端账号编号，用来标记谁的朋友");
+
+	/**
+	 * The column <code>candidatedb.candidate_recom_record.post_user_id</code>. userdb.user_user.id 推荐者的C端账号编号
+	 */
+	public final TableField<CandidateRecomRecordRecord, UInteger> POST_USER_ID = createField("post_user_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "userdb.user_user.id 推荐者的C端账号编号");
 
 	/**
 	 * Create a <code>candidatedb.candidate_recom_record</code> table reference

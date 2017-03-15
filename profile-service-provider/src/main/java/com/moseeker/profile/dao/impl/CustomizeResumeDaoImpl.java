@@ -23,7 +23,7 @@ public class CustomizeResumeDaoImpl extends
 	}
 
 	protected CustomizeResume DBToStruct(ProfileOtherRecord r) {
-		return (CustomizeResume)BeanUtils.DBToStruct(CustomizeResume.class, r);
+		return BeanUtils.DBToStruct(CustomizeResume.class, r);
 	}
 
 	protected ProfileOtherRecord structToDB(CustomizeResume customizeResume)

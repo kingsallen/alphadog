@@ -3174,14 +3174,14 @@ public class UserEmployeeService {
             case 1: // USER_EMPLOYEES
               if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
                 {
-                  org.apache.thrift.protocol.TList _list24 = iprot.readListBegin();
-                  struct.userEmployees = new java.util.ArrayList<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct>(_list24.size);
-                  com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _elem25;
-                  for (int _i26 = 0; _i26 < _list24.size; ++_i26)
+                  org.apache.thrift.protocol.TList _list32 = iprot.readListBegin();
+                  struct.userEmployees = new java.util.ArrayList<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct>(_list32.size);
+                  com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _elem33;
+                  for (int _i34 = 0; _i34 < _list32.size; ++_i34)
                   {
-                    _elem25 = new com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct();
-                    _elem25.read(iprot);
-                    struct.userEmployees.add(_elem25);
+                    _elem33 = new com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct();
+                    _elem33.read(iprot);
+                    struct.userEmployees.add(_elem33);
                   }
                   iprot.readListEnd();
                 }
@@ -3209,9 +3209,9 @@ public class UserEmployeeService {
           oprot.writeFieldBegin(USER_EMPLOYEES_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.userEmployees.size()));
-            for (com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _iter27 : struct.userEmployees)
+            for (com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _iter35 : struct.userEmployees)
             {
-              _iter27.write(oprot);
+              _iter35.write(oprot);
             }
             oprot.writeListEnd();
           }
@@ -3242,9 +3242,9 @@ public class UserEmployeeService {
         if (struct.isSetUserEmployees()) {
           {
             oprot.writeI32(struct.userEmployees.size());
-            for (com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _iter28 : struct.userEmployees)
+            for (com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _iter36 : struct.userEmployees)
             {
-              _iter28.write(oprot);
+              _iter36.write(oprot);
             }
           }
         }
@@ -3256,14 +3256,14 @@ public class UserEmployeeService {
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TList _list29 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-            struct.userEmployees = new java.util.ArrayList<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct>(_list29.size);
-            com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _elem30;
-            for (int _i31 = 0; _i31 < _list29.size; ++_i31)
+            org.apache.thrift.protocol.TList _list37 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+            struct.userEmployees = new java.util.ArrayList<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct>(_list37.size);
+            com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct _elem38;
+            for (int _i39 = 0; _i39 < _list37.size; ++_i39)
             {
-              _elem30 = new com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct();
-              _elem30.read(iprot);
-              struct.userEmployees.add(_elem30);
+              _elem38 = new com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct();
+              _elem38.read(iprot);
+              struct.userEmployees.add(_elem38);
             }
           }
           struct.setUserEmployeesIsSet(true);

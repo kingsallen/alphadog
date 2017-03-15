@@ -26,7 +26,7 @@ public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
     Logger logger = LoggerFactory.getLogger(UserEmployeeDaoThriftService.class);
 
     @Autowired
-    com.moseeker.baseorm.dao.user.UserEmployeeDao userEmployeeDao;
+    com.moseeker.baseorm.dao.userdb.UserEmployeeDao userEmployeeDao;
 
     @Override
     public Response getResource(CommonQuery query) throws TException {
@@ -125,26 +125,6 @@ public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
     public Response delResource(CommonQuery query) throws TException {
         try {
             int result = userEmployeeDao.delResource(query);
-            return ResponseUtils.success(result);
-        } catch (Exception e) {
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-        }
-    }
-
-    @Override
-    public Response postPutResource(UserEmployeeStruct record) throws TException {
-        try {
-            int result = userEmployeeDao.postPutResource(BeanUtils.structToDB(record, UserEmployeeRecord.class));
-            return ResponseUtils.success(result);
-        } catch (Exception e) {
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-        }
-    }
-
-    @Override
-    public Response postPutResources(List<UserEmployeeStruct> records) throws TException {
-        try {
-            int result = userEmployeeDao.postPutResources(convertDB(records));
             return ResponseUtils.success(result);
         } catch (Exception e) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
