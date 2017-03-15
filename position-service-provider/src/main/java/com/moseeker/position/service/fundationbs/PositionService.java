@@ -172,6 +172,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 
 			JobPositionPojo jobPositionPojo = jobPositionDao.getPosition(positionId);
 			jobPositionPojo.team_name="";
+			jobPositionPojo.department="";
 			int team_id=jobPositionPojo.team_id;
 			if(team_id!=0){
 				CommonQuery query=new CommonQuery();
