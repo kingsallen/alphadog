@@ -1,7 +1,12 @@
 package com.moseeker.candidate.thrift;
 
+import com.moseeker.common.util.BeanUtils;
+import com.moseeker.db.candidatedb.tables.records.CandidatePositionRecord;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.candidate.service.CandidateService;
+import com.moseeker.thrift.gen.dao.struct.CandidatePositionDO;
+
+import org.apache.thrift.TException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +20,7 @@ import org.junit.Test;
  */
 public class CandidateThriftServiceTest {
 
-    CandidateService.Iface candidateService = ServiceManager.SERVICEMANAGER.getService(CandidateService.Iface.class);
+//    CandidateService.Iface candidateService = ServiceManager.SERVICEMANAGER.getService(CandidateService.Iface.class);
 
     @Before
     public void before() throws Exception {
@@ -29,9 +34,12 @@ public class CandidateThriftServiceTest {
      * Method: glancePosition(int userId, int positionId, int shareChainId)
      */
     //@Test
-    public void testGlancePosition() throws Exception {
-        candidateService.glancePosition(2, 1, 1);
-    }
-
-
+//    public void testGlancePosition() throws Exception {
+//        candidateService.glancePosition(2, 1, 1);
+//    }
+    
+//    @Test
+//    public void changeInterestingTest() throws TException {
+//    		candidateService.changeInteresting(391470, 61106, (byte)0);
+//    }
 } 

@@ -13,7 +13,7 @@ dependencies {
 
 }
 
-//compileJava.dependsOn(":thrift-jooq:copyGeneratedFile")
+//compileJava.dependsOn(":thrift-jooq:copyGeneratedFile") 
 
 task copyJars(type: Copy) {
   from configurations.runtime

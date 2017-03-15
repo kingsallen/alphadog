@@ -32,6 +32,7 @@ service HrDBDao {
     list<hrdb_struct.HrPointsConfDO> getPointsConfs(1: common_struct.CommonQuery query);
     
     hrdb_struct.HrCompanyDO getCompany(1: common_struct.CommonQuery query);
+
     list<hrdb_struct.HrCompanyDO> listCompany(1: common_struct.CommonQuery query) throws (1: common_struct.CURDException e);
     
     list<hrdb_struct.HrWxHrChatDO> listChats(1: common_struct.CommonQuery query) throws (1:common_struct.CURDException e);
@@ -49,4 +50,6 @@ service HrDBDao {
     list<hrdb_struct.HrChatUnreadCountDO> listChatRoomUnreadSort(1: common_struct.CommonQuery query) throws (1:common_struct.CURDException e);
     
     hrdb_struct.HrChatUnreadCountDO saveChatUnreadCount(1: hrdb_struct.HrChatUnreadCountDO unreadCount) throws (1:common_struct.CURDException e);
+	
+	common_struct.Response getHrWxWechat(1: common_struct.CommonQuery query);
 }
