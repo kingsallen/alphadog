@@ -20,7 +20,7 @@ import org.junit.Test;
  */
 public class CandidateThriftServiceTest {
 
-    CandidateService.Iface candidateService = ServiceManager.SERVICEMANAGER.getService(CandidateService.Iface.class);
+//    CandidateService.Iface candidateService = ServiceManager.SERVICEMANAGER.getService(CandidateService.Iface.class);
 
     @Before
     public void before() throws Exception {
@@ -34,9 +34,9 @@ public class CandidateThriftServiceTest {
      * Method: glancePosition(int userId, int positionId, int shareChainId)
      */
     //@Test
-    public void testGlancePosition() throws Exception {
-        candidateService.glancePosition(2, 1, 1);
-    }
+//    public void testGlancePosition() throws Exception {
+//        candidateService.glancePosition(2, 1, 1);
+//    }
     
 //    @Test
 //    public void changeInterestingTest() throws TException {
