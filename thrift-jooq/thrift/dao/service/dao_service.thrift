@@ -129,7 +129,7 @@ service UserEmployeeDao {
     common_struct.Response postPutResource(1:useraccounts_struct.UserEmployeeStruct record);
     common_struct.Response postPutResources(1:list<useraccounts_struct.UserEmployeeStruct> records);
 
-    common_struct.Response delResource(1:map<string,string> filter);
+    common_struct.Response delResource(1:common_struct.CommonQuery query);
 
     common_struct.Response postPutUserEmployeeBatch(1:list<useraccounts_struct.UserEmployeeStruct> userEmployees);
 }

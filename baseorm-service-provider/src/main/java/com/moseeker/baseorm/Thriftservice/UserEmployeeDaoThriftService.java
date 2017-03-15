@@ -9,7 +9,6 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.UserEmployeeDao;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import org.apache.thrift.TException;
-import org.apache.thrift.TSerializable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by eddie on 2017/3/9.
@@ -40,7 +38,6 @@ public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
@@ -60,7 +57,6 @@ public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
@@ -72,7 +68,6 @@ public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
             int count = userEmployeeDao.getResourceCount(query);
             return ResponseUtils.success(count);
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
@@ -84,7 +79,6 @@ public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
             int result = userEmployeeDao.postResource(BeanUtils.structToDB(record, UserEmployeeRecord.class));
             return ResponseUtils.success(result);
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
     }
@@ -103,7 +97,6 @@ public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
             int result = userEmployeeDao.postResources(convertDB(records));
             return ResponseUtils.success(result);
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
     }
@@ -114,7 +107,6 @@ public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
             int result = userEmployeeDao.putResource(BeanUtils.structToDB(record, UserEmployeeRecord.class));
             return ResponseUtils.success(result);
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
     }
@@ -125,18 +117,16 @@ public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
             int result = userEmployeeDao.putResources(convertDB(records));
             return ResponseUtils.success(result);
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
     }
 
     @Override
-    public Response delResource(Map<String,String> filter) throws TException {
+    public Response delResource(CommonQuery query) throws TException {
         try {
-            int result = userEmployeeDao.delResource(filter);
+            int result = userEmployeeDao.delResource(query);
             return ResponseUtils.success(result);
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
     }
@@ -147,7 +137,6 @@ public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
             int result = userEmployeeDao.postPutResource(BeanUtils.structToDB(record, UserEmployeeRecord.class));
             return ResponseUtils.success(result);
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
     }
@@ -158,7 +147,6 @@ public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
             int result = userEmployeeDao.postPutResources(convertDB(records));
             return ResponseUtils.success(result);
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
     }
@@ -169,7 +157,6 @@ public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
             int result = userEmployeeDao.postPutUserEmployeeBatch(userEmployees);
             return ResponseUtils.success(result);
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
     }

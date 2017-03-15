@@ -27,6 +27,13 @@ public class UserThirdPartyController {
     public String update(HttpServletRequest request, HttpServletResponse response) {
         try {
             ThirdPartyUser user = ParamUtils.initModelForm(request, ThirdPartyUser.class);
+            if(!user.isSetId()) {
+                if (!user.isSetUser_id()) {
+                    return ResponseLogNotification.fail(request, "user_id不能为空");
+                } else if (!user.isSetSource_id()) {
+                    return ResponseLogNotification.fail(request, "source_id不能为空");
+                }
+            }
             Response result = service.updateUser(user);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {

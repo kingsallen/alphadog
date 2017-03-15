@@ -67,11 +67,9 @@ public class UserEmployeeDao extends BaseDaoImpl<UserEmployeeRecord, UserEmploye
         return list;
     }
 
-    public int delResource(Map<String, String> filter) throws Exception {
-        if (filter.size() > 0) {
-            CommonQuery commonQuery = new CommonQuery();
-            commonQuery.setEqualFilter(filter);
-            List<UserEmployeeRecord> records = getResources(commonQuery);
+    public int delResource(CommonQuery query) throws Exception {
+        if (query != null && query.getEqualFilter() !=null && query.getEqualFilter().size() > 0) {
+            List<UserEmployeeRecord> records = getResources(query);
             if (records.size() > 0) {
                 return delResources(records);
             }

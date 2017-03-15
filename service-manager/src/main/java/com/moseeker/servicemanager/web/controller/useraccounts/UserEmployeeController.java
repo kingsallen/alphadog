@@ -49,7 +49,9 @@ public class UserEmployeeController {
                     return ResponseLogNotification.fail(request, "custom_field不能为空");
                 }
             }
-            Response result = service.delUserEmployee(filter);
+            CommonQuery query = new CommonQuery();
+            query.setEqualFilter(filter);
+            Response result = service.delUserEmployee(query);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -70,7 +72,7 @@ public class UserEmployeeController {
 
     @RequestMapping(value = "/user/employee/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public String getUserEmployees(HttpServletRequest request, HttpServletResponse response, @PathVariable int id) {
+    public String getUserEmployee(HttpServletRequest request, HttpServletResponse response, @PathVariable int id) {
         try {
             QueryUtil queryUtil = new QueryUtil();
             queryUtil.addEqualFilter("id",String.valueOf(id));

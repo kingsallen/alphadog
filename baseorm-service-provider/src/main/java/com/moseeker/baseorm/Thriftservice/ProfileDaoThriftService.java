@@ -21,8 +21,7 @@ public class ProfileDaoThriftService implements ProfileDao.Iface {
         try {
             return profileDao.getResourceByApplication(companyId, sourceId, atsStatus, recommender,dl_url_required);
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new TException(MessageFormat.format("getResourceByApplication查询错误", "companyId="+companyId+"&sourceId="+sourceId+"&atsStatus="+atsStatus+"&recommender="+recommender));
+            throw new TException(MessageFormat.format("getResourceByApplication查询错误:companyId={1}&sourceId={2}&atsStatus={3}&recommender={4}", companyId,sourceId,atsStatus,recommender));
         }
     }
 }

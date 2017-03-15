@@ -27,8 +27,8 @@ public class UserEmployeeService {
         return userEmployeeDao.getResources(query);
     }
 
-    public Response delUserEmployee(Map<String,String> filter) throws TException {
-        return userEmployeeDao.delResource(filter);
+    public Response delUserEmployee(CommonQuery query) throws TException {
+        return userEmployeeDao.delResource(query);
     }
 
     public Response postPutUserEmployeeBatch(List<UserEmployeeStruct> update) throws TException {

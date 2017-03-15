@@ -123,7 +123,7 @@ service UserEmployeeService {
 
     common_struct.Response getUserEmployees(1: common_struct.CommonQuery query);
 
-    common_struct.Response delUserEmployee(1: map<string,string> filter);
+    common_struct.Response delUserEmployee(1: common_struct.CommonQuery query);
 
     common_struct.Response postPutUserEmployeeBatch(1:list<useraccounts_struct.UserEmployeeStruct> userEmployees);
 }
