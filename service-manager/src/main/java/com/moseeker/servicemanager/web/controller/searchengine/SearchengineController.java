@@ -109,7 +109,8 @@ public class SearchengineController {
             int page_from = BeanUtils.converToInteger(reqParams.get("page_from"));
             int page_size = BeanUtils.converToInteger(reqParams.get("page_size"));
             String child_company_id = BeanUtils.converToString(reqParams.get("child_company_id"));
-            String department = BeanUtils.converToString(reqParams.get("department"));
+            //由于department废弃，查询部门时使用team_name
+            String department = BeanUtils.converToString(reqParams.get("team_name"));
             boolean order_by_priority = BeanUtils.convertToBoolean(reqParams.get("order_by_priority"));
             String custom = BeanUtils.converToString(reqParams.get("custom"));
             

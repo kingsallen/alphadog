@@ -150,7 +150,7 @@ public class SearchengineService {
             }
             
             if ( !StringUtils.isEmpty(department)) {
-                QueryBuilder departmentfilter = QueryBuilders.matchPhraseQuery("department", department);
+                QueryBuilder departmentfilter = QueryBuilders.matchPhraseQuery("team_name", department);
                 ((BoolQueryBuilder) query).must(departmentfilter);
             }
             
