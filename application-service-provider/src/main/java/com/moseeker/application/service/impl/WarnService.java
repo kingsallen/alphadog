@@ -1,5 +1,8 @@
 package com.moseeker.application.service.impl;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +41,15 @@ public class WarnService {
 	 */
 	public static void notify(RedisException e) {
 		try {
-			getInstance().sendOperator(new WarnBean(String.valueOf(e.getAppid()), e.getEventKey(), null, e.getMessage(), e.getLocation().concat(":").concat(String.valueOf(e.getStackTrace()[0].getLineNumber()))));
+			String stackTrace = "";
+			try (StringWriter sw = new StringWriter(); PrintWriter pw = new PrintWriter(sw)){
+				e.printStackTrace(pw);
+				stackTrace = sw.toString();
+			} catch (Exception e2) {
+				log.error(e2.getMessage(), e2);
+			}
+			log.error(stackTrace);
+			getInstance().sendOperator(new WarnBean(String.valueOf(e.getAppid()), e.getEventKey(), null, stackTrace, e.getLocation().concat(":").concat(String.valueOf(e.getStackTrace()[0].getLineNumber()))));
 		} catch (TException te) {
 			log.error("sendOperator error:", te);
 		}

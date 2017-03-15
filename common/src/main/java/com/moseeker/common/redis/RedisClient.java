@@ -23,6 +23,8 @@ public abstract class RedisClient {
 	
 	protected abstract JedisCluster initRedisCluster();
 	
+	private static final String className = RedisClient.class.getName();
+	
 	/**
 	 * 一次性加载配置信息到缓存中，并返回配置信息集合
 	 * 
@@ -43,7 +45,7 @@ public abstract class RedisClient {
 				}
 			}
 		} catch (JedisConnectionException e) {
-			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+			throw new RedisException(e, Constant.REDIS_CONNECT_ERROR_APPID, className, Constant.REDIS_CONNECT_ERROR_EVENTKEY);
 //			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}
 		return redisKeys;
@@ -78,10 +80,9 @@ public abstract class RedisClient {
 				redisval = JSON.parseObject(redisValue, RedisConfigRedisKey.class);
 			}
 		} catch (CacheConfigNotExistException e) {
-			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CACHE_CONFIG_NOTEXIST_ERROR_EVENTKEY);
+			throw new RedisException(e, Constant.REDIS_CONNECT_ERROR_APPID, className, Constant.REDIS_CACHE_CONFIG_NOTEXIST_ERROR_EVENTKEY);
 		} catch (Exception e) {
-			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
-//			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
+			throw new RedisException(e, Constant.REDIS_CONNECT_ERROR_APPID, className, Constant.REDIS_CONNECT_ERROR_EVENTKEY);
 		}
 		return redisval;
 	}
@@ -105,7 +106,7 @@ public abstract class RedisClient {
 		try {
 			return redisCluster.setex(cacheKey, redisKey.getTtl(), value);
 		} catch (Exception e) {
-			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+			throw new RedisException(e, Constant.REDIS_CONNECT_ERROR_APPID, className, Constant.REDIS_CONNECT_ERROR_EVENTKEY);
 //			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}
 	}
@@ -125,7 +126,7 @@ public abstract class RedisClient {
 		try {
 			return redisCluster.get(cacheKey);
 		} catch (Exception e) {
-			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+			throw new RedisException(e, Constant.REDIS_CONNECT_ERROR_APPID, className, Constant.REDIS_CONNECT_ERROR_EVENTKEY);
 //			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}
 	}
@@ -153,7 +154,7 @@ public abstract class RedisClient {
 				redisCluster.setex(cacheKey, redisKey.getTtl(), result);
 			}
 		} catch (Exception e) {
-			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+			throw new RedisException(e, Constant.REDIS_CONNECT_ERROR_APPID, className, Constant.REDIS_CONNECT_ERROR_EVENTKEY);
 //			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}
 		return result;
@@ -176,7 +177,7 @@ public abstract class RedisClient {
 		try {
 			return redisCluster.setex(cacheKey, redisKey.getTtl(), value);
 		} catch (Exception e) {
-			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+			throw new RedisException(e, Constant.REDIS_CONNECT_ERROR_APPID, className, Constant.REDIS_CONNECT_ERROR_EVENTKEY);
 //			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}
 	}
@@ -215,7 +216,7 @@ public abstract class RedisClient {
 		try {
 			return redisCluster.get(cacheKey);
 		} catch (Exception e) {
-			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+			throw new RedisException(e, Constant.REDIS_CONNECT_ERROR_APPID, className, Constant.REDIS_CONNECT_ERROR_EVENTKEY);
 //			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		} finally {
 			//do nothing
@@ -245,7 +246,7 @@ public abstract class RedisClient {
 				redisCluster.setex(cacheKey, redisKey.getTtl(), result);
 			}
 		} catch (Exception e) {
-			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+			throw new RedisException(e, Constant.REDIS_CONNECT_ERROR_APPID, className, Constant.REDIS_CONNECT_ERROR_EVENTKEY);
 //			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}
 		return result;
@@ -269,9 +270,9 @@ public abstract class RedisClient {
 			}
 			return redisCluster.lpush(cacheKey, newvalue);
 		} catch (CacheConfigNotExistException e) { 
-			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CACHE_CONFIG_NOTEXIST_ERROR_EVENTKEY);
+			throw new RedisException(e, Constant.REDIS_CONNECT_ERROR_APPID, className, Constant.REDIS_CACHE_CONFIG_NOTEXIST_ERROR_EVENTKEY);
 		} catch (Exception e) {
-			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+			throw new RedisException(e, Constant.REDIS_CONNECT_ERROR_APPID, className, Constant.REDIS_CONNECT_ERROR_EVENTKEY);
 //			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}
 	}
@@ -293,9 +294,9 @@ public abstract class RedisClient {
 			}
 			return redisCluster.brpop(Constant.BRPOP_BLOCKING_TIMEOUT, cacheKey);
 		} catch (CacheConfigNotExistException e) {
-			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CACHE_CONFIG_NOTEXIST_ERROR_EVENTKEY);
+			throw new RedisException(e, Constant.REDIS_CONNECT_ERROR_APPID, className, Constant.REDIS_CACHE_CONFIG_NOTEXIST_ERROR_EVENTKEY);
 		} catch (Exception e) {
-			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+			throw new RedisException(e, Constant.REDIS_CONNECT_ERROR_APPID, className, Constant.REDIS_CONNECT_ERROR_EVENTKEY);
 //			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}
 	}
@@ -318,7 +319,7 @@ public abstract class RedisClient {
 		try {
 			return redisCluster.brpoplpush(cacheKey_rpop, cacheKey_lpush, Constant.BRPOP_BLOCKING_TIMEOUT);
 		} catch (Exception e) {
-			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+			throw new RedisException(e, Constant.REDIS_CONNECT_ERROR_APPID, className, Constant.REDIS_CONNECT_ERROR_EVENTKEY);
 //			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}
 	}
@@ -341,7 +342,7 @@ public abstract class RedisClient {
 		try {
 			return redisCluster.rpoplpush(cacheKey_rpop, cacheKey_lpush);
 		} catch (Exception e) {
-			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+			throw new RedisException(e, Constant.REDIS_CONNECT_ERROR_APPID, className, Constant.REDIS_CONNECT_ERROR_EVENTKEY);
 //			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}
 	}
@@ -359,7 +360,7 @@ public abstract class RedisClient {
 		try {
 			return redisCluster.rpop(cacheKey);
 		} catch (Exception e) {
-			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+			throw new RedisException(e, Constant.REDIS_CONNECT_ERROR_APPID, className, Constant.REDIS_CONNECT_ERROR_EVENTKEY);
 //			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}
 	}
@@ -382,7 +383,7 @@ public abstract class RedisClient {
 				result =  redisCluster.del(cacheKey);
 			}
 		} catch (Exception e) {
-			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+			throw new RedisException(e, Constant.REDIS_CONNECT_ERROR_APPID, className, Constant.REDIS_CONNECT_ERROR_EVENTKEY);
 //			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}
 		return result;
@@ -407,7 +408,7 @@ public abstract class RedisClient {
 				result =  redisCluster.del(cacheKey);
 			}
 		} catch (Exception e) {
-			throw new RedisException(e.getMessage(), Constant.REDIS_CONNECT_ERROR_APPID, this.getClass().getName(), Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+			throw new RedisException(e, Constant.REDIS_CONNECT_ERROR_APPID, className, Constant.REDIS_CONNECT_ERROR_EVENTKEY);
 //			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}
 		return result;
