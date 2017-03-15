@@ -7,6 +7,7 @@ import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
@@ -98,7 +99,7 @@ public class ThriftService implements Iface {
 	
 	@Override
 	public Response sendSMS(SmsType smsType, String mobile,
-			Map<String, String> data) throws TException {
-		return smsService.sendSMS(smsType, mobile, data);
+			Map<String, String> data, String sys, String ip) throws TException {
+		return smsService.sendSMS(smsType, mobile, data, sys, ip);
 	}
 }

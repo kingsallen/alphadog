@@ -28,6 +28,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.service.CompanyDao;
 import com.moseeker.thrift.gen.dao.service.ConfigDBDao;
 import com.moseeker.thrift.gen.dao.service.HrDBDao;
 import com.moseeker.thrift.gen.dao.service.JobDBDao;
@@ -71,6 +72,7 @@ public class EmployeeService {
 	ConfigDBDao.Iface configDBDao = ServiceManager.SERVICEMANAGER.getService(ConfigDBDao.Iface.class);
 	JobDBDao.Iface jobDBDao = ServiceManager.SERVICEMANAGER.getService(JobDBDao.Iface.class);
 	MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
+	CompanyDao.Iface companyDao = ServiceManager.SERVICEMANAGER.getService(CompanyDao.Iface.class);
 	RedisClient client = CacheClient.getInstance();
 
 	public EmployeeResponse getEmployee(int userId, int companyId) throws TException {
@@ -122,6 +124,10 @@ public class EmployeeService {
 			    List questions = JSONObject.parseArray(employeeCertConf.getQuestions()).stream().map(m -> JSONObject.parseObject(String.valueOf(m), Map.class)).collect(Collectors.toList());
 				evc.setQuestions(questions);
 			    evc.setCustomHint(employeeCertConf.getCustom_hint());
+			    Response hrCompanyConfig = companyDao.getHrCompanyConfig(query);
+			    if (hrCompanyConfig.status == 0 && StringUtils.isNotNullOrEmpty(hrCompanyConfig.getData())) {
+			    		evc.setBindSuccessMessage(JSONObject.parseObject(hrCompanyConfig.getData()).getString("employee_binding"));
+				}
 			    response.setEmployeeVerificationConf(evc);
 			    response.setExits(true);
 			} else {
@@ -138,7 +144,6 @@ public class EmployeeService {
 		CommonQuery query = new CommonQuery();
 		query.setEqualFilter(new HashMap<String, String>());
 		query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
-		query.getEqualFilter().put("auth_mode", String.valueOf(bindingParams.getType().getValue()));
 		HrEmployeeCertConfDO certConf = hrDBDao.getEmployeeCertConf(query);
 		if(certConf == null || certConf.getCompany_id() == 0) {
 			response.setSuccess(false);
