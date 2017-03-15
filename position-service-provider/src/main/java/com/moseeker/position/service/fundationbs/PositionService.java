@@ -182,6 +182,8 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 				HrTeamStruct team=JSONObject.toJavaObject(JSONObject.parseObject(result.getData()), HrTeamStruct.class);
 				jobPositionPojo.department=team.getName();
 				jobPositionPojo.team_name=team.getName();
+			}else{
+				jobPositionPojo.team_name="";
 			}
 			
 			/** 子公司Id设置 **/
