@@ -63,7 +63,6 @@ public class SearchengineController {
             Response company_resp = companyServices.getAllCompanies(query);
             String company = company_resp.data;
             logger.info(company);
-            logger.info(JSON.parse(company));
             List company_maps = (List) JSON.parse(company);
             Map company_map = (Map) company_maps.get(0);
             String company_name = (String) company_map.get("name");
