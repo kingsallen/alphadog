@@ -171,20 +171,22 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 			}
 
 			JobPositionPojo jobPositionPojo = jobPositionDao.getPosition(positionId);
+			jobPositionPojo.team_name="";
 			int team_id=jobPositionPojo.team_id;
-			CommonQuery query=new CommonQuery();
-			Map<String,String> map=new HashMap<String,String>();
-			map.put("id", team_id+"");
-			map.put("disable", "0");
-			query.setEqualFilter(map);
-			Response result=hrDBDao.getHrTeam(query);
-			if(result.getStatus()==0&&!StringUtils.isNullOrEmpty(result.getData())){
-				HrTeamStruct team=JSONObject.toJavaObject(JSONObject.parseObject(result.getData()), HrTeamStruct.class);
-				jobPositionPojo.department=team.getName();
-				jobPositionPojo.team_name=team.getName();
-			}else{
-				jobPositionPojo.team_name="";
+			if(team_id!=0){
+				CommonQuery query=new CommonQuery();
+				Map<String,String> map=new HashMap<String,String>();
+				map.put("id", team_id+"");
+				map.put("disable", "0");
+				query.setEqualFilter(map);
+				Response result=hrDBDao.getHrTeam(query);
+				if(result.getStatus()==0&&result.getData()!=null&&!"".equals(result.getData())&&!"null".equals(result.getData())){
+					HrTeamStruct team=JSONObject.toJavaObject(JSONObject.parseObject(result.getData()), HrTeamStruct.class);
+					jobPositionPojo.department=team.getName();
+					jobPositionPojo.team_name=team.getName();
+				}
 			}
+			
 			
 			/** 子公司Id设置 **/
 			if (jobPositionPojo.publisher != 0) {
