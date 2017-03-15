@@ -76,14 +76,15 @@ public class SearchengineController {
             position_map.put("scale",scale);
             
             position = JSON.toJSONString(position_map);
-
-             search_res = searchengineServices.updateposition(position,id);
+            logger.info(position);
+            search_res = searchengineServices.updateposition(position,id);
 
              
         } catch (Exception e) {
 
            e.printStackTrace();
-            return ResponseLogNotification.fail(request, e.getMessage());
+           logger.error(e.getMessage(),e);
+           return ResponseLogNotification.fail(request, e.getMessage());
         }
         
         return ResponseLogNotification.success(request, search_res);
@@ -189,7 +190,7 @@ public class SearchengineController {
 	          position = JSON.toJSONString(position_map);
 	          return position;
         }catch(Exception e){
-      	  logger.info(e.getMessage());
+      	  logger.info(e.getMessage(),e);
         }
         return null;
   }
