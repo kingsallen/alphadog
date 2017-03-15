@@ -2,7 +2,7 @@ package moseeker.baseorm.dao.user;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.Thriftservice.UserEmployeeDaoThriftService;
-import com.moseeker.baseorm.dao.user.UserEmployeeDao;
+import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
