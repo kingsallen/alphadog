@@ -4,6 +4,10 @@
 package com.moseeker.baseorm.db.profiledb.tables;
 
 
+import com.moseeker.baseorm.db.profiledb.Keys;
+import com.moseeker.baseorm.db.profiledb.Profiledb;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileAwardsRecord;
+
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -18,10 +22,6 @@ import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
 import org.jooq.types.UInteger;
-
-import com.moseeker.baseorm.db.profiledb.Keys;
-import com.moseeker.baseorm.db.profiledb.Profiledb;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileAwardsRecord;
 
 
 /**

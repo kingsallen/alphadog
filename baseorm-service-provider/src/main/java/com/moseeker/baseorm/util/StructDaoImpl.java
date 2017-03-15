@@ -90,10 +90,10 @@ public abstract class StructDaoImpl<S extends  TBase, R extends UpdatableRecordI
         return resources;
     }
 
-    public void deleteResource(S s) throws CURDException {
+    public int deleteResource(S s) throws CURDException {
         R r = BeanUtils.structToDB(s, rClass);
         try {
-            this.delResource(r);
+            return this.delResource(r);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw CURDExceptionUtils.buildDelException();

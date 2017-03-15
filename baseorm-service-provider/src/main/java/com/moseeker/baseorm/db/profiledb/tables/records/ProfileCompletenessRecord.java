@@ -4,6 +4,8 @@
 package com.moseeker.baseorm.db.profiledb.tables.records;
 
 
+import com.moseeker.baseorm.db.profiledb.tables.ProfileCompleteness;
+
 import javax.annotation.Generated;
 
 import org.jooq.Field;
@@ -12,8 +14,6 @@ import org.jooq.Record12;
 import org.jooq.Row12;
 import org.jooq.impl.UpdatableRecordImpl;
 import org.jooq.types.UInteger;
-
-import com.moseeker.baseorm.db.profiledb.tables.ProfileCompleteness;
 
 
 /**
