@@ -62,20 +62,23 @@ public class SearchengineController {
             query.putToEqualFilter("id", company_id);
             Response company_resp = companyServices.getAllCompanies(query);
             String company = company_resp.data;
-            logger.info(company);
-            List company_maps = JSON.parseArray(company,List.class);
-            Map company_map = (Map) company_maps.get(0);
-            String company_name = (String) company_map.get("name");
-            String scale = (String) company_map.get("scale");
-            position_map.put("company_name",company_name);
-            String degree_name = BeanUtils.converToString(position_map.get("degree_name"));
-            Integer degree_above =BeanUtils.converToInteger(position_map.get("degree_above"));
-            if(degree_above==1){
-                degree_name = degree_name+"及以上";
+            logger.info("======"+company);
+            if(!"{}".equals(company)&&StringUtils.isNotNullOrEmpty(company)&&company.startsWith("[")){
+            	 List company_maps = JSON.parseArray(company,List.class);
+                 Map company_map = (Map) company_maps.get(0);
+                 String company_name = (String) company_map.get("name");
+                 String scale = (String) company_map.get("scale");
+                 position_map.put("company_name",company_name);
+                 String degree_name = BeanUtils.converToString(position_map.get("degree_name"));
+                 Integer degree_above =BeanUtils.converToInteger(position_map.get("degree_above"));
+                 if(degree_above==1){
+                     degree_name = degree_name+"及以上";
+                 }
+                 position_map.put("degree_name",degree_name);
+                 position_map.put("scale",scale);
+                 
             }
-            position_map.put("degree_name",degree_name);
-            position_map.put("scale",scale);
-            
+           
             position = JSON.toJSONString(position_map);
             logger.info(position);
             search_res = searchengineServices.updateposition(position,id);
