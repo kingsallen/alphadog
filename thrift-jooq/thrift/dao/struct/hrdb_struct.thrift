@@ -184,7 +184,8 @@ struct HrWxHrChatListDO {
     4: optional Timestamp createTime,       //聊天室创建时间 
     5: optional Timestamp wxChatTime,       //HR最后聊天的时间
     6: optional Timestamp hrChatTime,       //用户最后聊天的时间
-    7: optional bool status                 // 聊天室状态
+    7: optional bool status,                // 聊天室状态
+    8: optional Timestamp updateTime        // 修改时间
 }
 
 struct HrChatUnreadCountDO {

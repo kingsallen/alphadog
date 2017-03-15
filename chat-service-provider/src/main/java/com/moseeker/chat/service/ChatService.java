@@ -78,7 +78,7 @@ public class ChatService {
                         Optional<HrWxHrChatListDO> chatRoomDOOptional = chatRoomList.stream()
                                 .filter(chatRoom -> chatRoom.getId() == chatUnreadCountDO.getRoomId()).findFirst();
                         if(chatRoomDOOptional.isPresent()) {
-                            hrChatRoomVO.setCreateTime(chatRoomDOOptional.get().getHrChatTime());
+                            hrChatRoomVO.setCreateTime(chatRoomDOOptional.get().getUpdateTime());
                             int status = chatRoomDOOptional.get().isStatus()?1:0;
                             hrChatRoomVO.setStatus(status);
                         }
@@ -155,7 +155,7 @@ public class ChatService {
                             if(chatRoomOptional.isPresent()) {
                                 int status = chatRoomOptional.get().isStatus() ? 1:0;
                                 userChatRoomVO.setStatus(status);
-                                userChatRoomVO.setCreateTime(chatRoomOptional.get().getWxChatTime());
+                                userChatRoomVO.setCreateTime(chatRoomOptional.get().getUpdateTime());
                             }
                         }
 
@@ -267,6 +267,11 @@ public class ChatService {
         chatDO.setSpeaker(spk);
         chatDO.setChatlistId(roomId);
         chaoDao.saveChat(chatDO);
+
+        HrWxHrChatListDO chatRoomDO = new HrWxHrChatListDO();
+        chatRoomDO.setId(roomId);
+        chatRoomDO.setUpdateTime(date);
+        chaoDao.updateChatRoom(chatRoomDO);
     }
 
     /**
