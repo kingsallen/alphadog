@@ -238,7 +238,7 @@ public class EmployeeService {
 				break;
 			case QUESTIONS:
 				// 问题校验
-				List<String> answers = JSONObject.parseArray(certConf.getQuestions()).stream().map(m -> JSONObject.parseObject(String.valueOf(m)).getString("a")).map(m -> String.valueOf(m)).collect(Collectors.toList());
+				List<String> answers = JSONObject.parseArray(certConf.getQuestions()).stream().map(m -> JSONObject.parseObject(String.valueOf(m)).getString("a")).collect(Collectors.toList());
 				log.info("answers: {}", answers);
 				String[] replys = {bindingParams.getAnswer1().trim(), bindingParams.getAnswer2().trim()};
 				boolean bool = true;
