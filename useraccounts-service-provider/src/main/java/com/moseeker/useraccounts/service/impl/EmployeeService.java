@@ -94,7 +94,18 @@ public class EmployeeService {
 			    if (wxResult.getStatus() == 0) {
 			    		wxuserId = JSONObject.parseObject(wxResult.getData()).getIntValue("id");
 			    }
-			    response.setEmployee(new Employee(employee.getId(), employee.getEmployeeid(), employee.getCompanyId(), employee.getSysuserId(), employee.getMobile(), wxuserId, org.apache.commons.lang.StringUtils.defaultIfBlank(employee.getCname(), ""), employee.getAward(), employee.getIsRpSent() == 0 ? false : true, employee.getCustomFieldValues()));
+			    Employee emp = new Employee();
+			    emp.setId(employee.getId());
+			    emp.setEmployeeId(employee.getEmployeeid());
+			    emp.setCompanyId(employee.getCompanyId());
+			    emp.setSysuerId(employee.getSysuserId());
+			    emp.setMobile(employee.getMobile());
+			    emp.setCname(org.apache.commons.lang.StringUtils.defaultIfBlank(employee.getCname(), ""));
+			    emp.setAward(employee.getAward());
+			    emp.setIsRpSent(employee.getIsRpSent() == 0 ? false : true);
+			    emp.setCustomFieldValues(employee.getCustomFieldValues());
+			    emp.setWxuserId(wxuserId);
+			    response.setEmployee(emp);
 
 			    if (employee.getActivation() == 0) {
 			    		response.setBindStatus(BindStatus.BINDED);
