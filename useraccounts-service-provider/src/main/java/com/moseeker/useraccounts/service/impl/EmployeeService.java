@@ -151,6 +151,7 @@ public class EmployeeService {
 	}
 	
 	public Result bind(BindingParams bindingParams) throws TException {
+		log.info("BindingParams: {}", bindingParams);
 		Result response = new Result();
 		CommonQuery query = new CommonQuery();
 		query.setEqualFilter(new HashMap<String, String>());
@@ -238,11 +239,12 @@ public class EmployeeService {
 			case QUESTIONS:
 				// 问题校验
 				List<String> answers = JSONObject.parseArray(certConf.getQuestions()).stream().flatMap(m -> JSONObject.parseObject(String.valueOf(m)).values().stream()).map(m -> String.valueOf(m)).collect(Collectors.toList());
+				log.info("answers: {}", answers);
 				String[] replys = {bindingParams.getAnswer1().trim(), bindingParams.getAnswer2().trim()};
 				boolean bool = true;
 				if (!StringUtils.isEmptyList(answers) && answers.size() == replys.length) {
 					for (int i = 0; i < answers.size(); i++) {
-						if (!org.apache.commons.lang.StringUtils.defaultString(answers.get(i), " ").equals(replys[i])) {
+						if (!org.apache.commons.lang.StringUtils.defaultString(answers.get(i), "").equals(replys[i])) {
 							bool = false;
 							break;
 						}
@@ -267,6 +269,7 @@ public class EmployeeService {
 		}
 		return response;
 	}
+	
 
 	/**
 	 * step 1: 认证当前员工   step 2: 将其他公司的该用户员工设为未认证
