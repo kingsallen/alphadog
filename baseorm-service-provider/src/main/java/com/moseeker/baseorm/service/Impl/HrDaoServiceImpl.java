@@ -165,9 +165,9 @@ public class HrDaoServiceImpl implements HrDaoService {
         HrEmployeeCertConfDO result = new HrEmployeeCertConfDO();
         try {
         		HrEmployeeCertConfRecord record = hrEmployeeCertConfDao.getResource(query);
-        		logger.info("HrEmployeeCertConfRecord: {0}", record.intoMap());
+        		logger.info("HrEmployeeCertConfRecord: {}", record.intoMap());
             result = BeanUtils.DBToStruct(HrEmployeeCertConfDO.class, record);
-            logger.info("HrEmployeeCertConfDO: {0}", result.toString());
+            logger.info("HrEmployeeCertConfDO: {}", result.toString());
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
