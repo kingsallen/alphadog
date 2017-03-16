@@ -455,7 +455,7 @@ public class ChatDao {
                     QueryUtil findCompany = new QueryUtil();
                     findCompany.addSelectAttribute("id").addSelectAttribute("logo");
                     findCompany.addEqualFilter("id", userHrAccountDO.getCompanyId());
-                    companyFuture = threadPool.startTast(() -> userDBDao.getUserWxUserDO(findCompany));
+                    companyFuture = threadPool.startTast(() -> hrDBDao.getCompany(findCompany));
                 }
 
                 if(wxUserFuture != null) {
