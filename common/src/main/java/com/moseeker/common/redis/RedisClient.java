@@ -1,5 +1,6 @@
 package com.moseeker.common.redis;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -10,11 +11,15 @@ import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.redis.cache.db.DbManager;
 import com.moseeker.common.util.StringUtils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 import redis.clients.jedis.params.sortedset.ZAddParams;
 
 public abstract class RedisClient {
+
+	Logger logger = LoggerFactory.getLogger(RedisClient.class);
 
 	protected JedisCluster redisCluster;
 	protected String redisConfigKeyName;
@@ -108,6 +113,7 @@ public abstract class RedisClient {
 		} catch (Exception e) {
 			throw new RedisException(e, Constant.REDIS_CONNECT_ERROR_APPID, className, Constant.REDIS_CONNECT_ERROR_EVENTKEY);
 //			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
+		} finally {
 		}
 	}
 
