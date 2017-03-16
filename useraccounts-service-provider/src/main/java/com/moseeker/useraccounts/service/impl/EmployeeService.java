@@ -139,6 +139,7 @@ public class EmployeeService {
 			    		evc.setBindSuccessMessage(JSONObject.parseObject(hrCompanyConfig.getData()).getString("employee_binding"));
 				}
 			    response.setEmployeeVerificationConf(evc);
+			    log.info("EmployeeVerificationConfResponse: {}", response.getEmployeeVerificationConf());
 			    response.setExists(true);
 			} else {
 				response.setExists(false);
