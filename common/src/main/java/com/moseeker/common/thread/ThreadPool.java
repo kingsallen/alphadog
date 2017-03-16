@@ -11,15 +11,42 @@ public enum ThreadPool {
 
     Instance;
 
-    ExecutorService service = new ThreadPoolExecutor(0, 1000,
-            60L, TimeUnit.SECONDS,
-            new SynchronousQueue<Runnable>());
+    ExecutorService service;
+
+    private ThreadPool() {
+        init();
+    }
 
     public <T> Future<T> startTast(Callable<T> task) {
+        if(service == null) {
+            synchronized (this) {
+                init();
+            }
+        }
         return this.service.submit(task);
     }
 
     public <T> Future<T> startTast(Runnable task, T t) {
+        if(service == null) {
+            synchronized (this) {
+                init();
+            }
+        }
         return this.service.submit(task, t);
+    }
+
+    public void close() {
+        synchronized (service) {
+            if(service != null) {
+                this.service.shutdown();
+            }
+        }
+
+    }
+
+    private void init() {
+        service = new ThreadPoolExecutor(0, 1000,
+                60L, TimeUnit.SECONDS,
+                new SynchronousQueue<Runnable>());
     }
 }
