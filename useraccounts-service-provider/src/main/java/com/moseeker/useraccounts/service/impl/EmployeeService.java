@@ -122,6 +122,7 @@ public class EmployeeService {
 		try {
 			eqf.put("company_id", String.valueOf(companyId));
 			HrEmployeeCertConfDO employeeCertConf = hrDBDao.getEmployeeCertConf(query);
+			log.info("HrEmployeeCertConfDO: {0}", employeeCertConf);
 			if (employeeCertConf != null && employeeCertConf.getEmail_suffix() != null && employeeCertConf.getQuestions() != null) {
 			    EmployeeVerificationConf evc = new EmployeeVerificationConf();
 			    evc.setCompanyId(employeeCertConf.getCompany_id());
