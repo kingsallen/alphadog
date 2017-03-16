@@ -48,17 +48,17 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
         tableLike = Tables.PROFILE_PROFILE;
     }
 
-    private String getDownloadUrlByUserId(int userid){
+    private String getDownloadUrlByUserId(int userid) {
         String url = null;
-        Map<String,Object> params = new HashMap<String,Object>(){{
-            put("user_id",userid);
-            put("password","moseeker.com");
+        Map<String, Object> params = new HashMap<String, Object>() {{
+            put("user_id", userid);
+            put("password", "moseeker.com");
         }};
         try {
             String content = HttpClient.sendPost("http://download.moseeker.com/generatebyuserid", JSON.toJSONString(params));
-            Map<String,Object> mp = JsonToMap.parseJSON2Map(content);
+            Map<String, Object> mp = JsonToMap.parseJSON2Map(content);
             Object link = mp.get("downloadlink");
-            if(link != null) {
+            if (link != null) {
                 url = link.toString();
             }
         } catch (ConnectException e) {
@@ -67,8 +67,18 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
         return url;
     }
 
-    public Map<String, Object> getRelatedDataByJobApplication(DSLContext create, com.moseeker.thrift.gen.application.struct.JobApplication application, boolean recommender,boolean dl_url_required) {
-        long start = System.currentTimeMillis();
+    long last = 0;
+
+    private void printQueryTime(String tag) {
+        long current = System.currentTimeMillis();
+        logger.info(tag + (current - last));
+        last = current;
+    }
+
+    public Map<String, Object> getRelatedDataByJobApplication(DSLContext create, com.moseeker.thrift.gen.application.struct.JobApplication application, boolean recommender, boolean dl_url_required) {
+
+        last = System.currentTimeMillis();
+
         Map<String, Object> map = new HashMap<>();
         //all from jobdb.job_application
         map.put("job_application", application);
@@ -82,7 +92,7 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
         if (position != null) {
             map.put("job_position", position);
         }
-        System.err.println(application.getId() + ":job_position-----------:" + (System.currentTimeMillis() - start));
+        printQueryTime(application.getId() + ":job_position-----------:");
 
         //extra from jobdb.job_position_ext # custom job fields in JSON format
         JobPositionExt positionExt = create
@@ -93,7 +103,7 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
         if (positionExt != null) {
             map.put("job_position_ext", positionExt);
         }
-        System.err.println(application.getId() + ":job_position_ext-----------:" + (System.currentTimeMillis() - start));
+        printQueryTime(application.getId() + ":job_position_ext-----------:");
 
         //other from jobdb.job_resume_other # custom résumé fields in JSON format
         JobResumeOther resumeOther = create
@@ -104,7 +114,7 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
         if (resumeOther != null) {
             map.put("job_resume_other", resumeOther);
         }
-        System.err.println(application.getId() + ":job_resume_other-----------:" + (System.currentTimeMillis() - start));
+        printQueryTime(application.getId() + ":job_resume_other-----------:");
 
         //all from userdb.user_user
         User user = create
@@ -115,7 +125,7 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
         if (user != null) {
             map.put("user_user", user);
         }
-        System.err.println(application.getId() + ":user_user-----------:" + (System.currentTimeMillis() - start));
+        printQueryTime(application.getId() + ":user_user-----------:");
 
         //all from profiledb.user_thirdparty_user # ATS login
         ThirdPartyUser thirdPartyUser = create
@@ -126,7 +136,7 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
         if (thirdPartyUser != null) {
             map.put("user_thirdparty_user", thirdPartyUser);
         }
-        System.err.println(application.getId() + ":user_thirdparty_user-----------:" + (System.currentTimeMillis() - start));
+        printQueryTime(application.getId() + ":user_thirdparty_user-----------:");
 
         //all from profiledb.profile_profile
         Profile profile = create
@@ -136,7 +146,7 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
                 .fetchAnyInto(Profile.class);
         if (profile != null) {
             map.put("profile_profile", profile);
-            System.err.println(application.getId() + ":profile_profile-----------:" + (System.currentTimeMillis() - start));
+            printQueryTime(application.getId() + ":profile_profile-----------:");
 
             //all from profiledb.profile_attachment
             Attachment profile_attachment = create
@@ -147,7 +157,7 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
             if (profile_attachment != null) {
                 map.put("profile_attachment", profile_attachment);
             }
-            System.err.println(application.getId() + ":profile_attachment-----------:" + (System.currentTimeMillis() - start));
+            printQueryTime(application.getId() + ":profile_attachment-----------:");
 
             //all from profiledb.profile_award
             List<Awards> profile_award = create
@@ -158,7 +168,7 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
             if (profile_award != null) {
                 map.put("profile_award", profile_award);
             }
-            System.err.println(application.getId() + ":profile_award-----------:" + (System.currentTimeMillis() - start));
+            printQueryTime(application.getId() + ":profile_award-----------:");
 
             //all from profiledb.profile_credentials ORDER most recent first by start date
             List<Credentials> profile_credentials = create
@@ -170,7 +180,7 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
             if (profile_credentials != null) {
                 map.put("profile_credentials", profile_credentials);
             }
-            System.err.println(application.getId() + ":profile_credentials-----------:" + (System.currentTimeMillis() - start));
+            printQueryTime(application.getId() + ":profile_credentials-----------:");
 
             //all from profiledb.profile_educations ORDER most recent first by start date
             List<Education> profile_educations = create
@@ -182,7 +192,7 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
             if (profile_educations != null) {
                 map.put("profile_educations", profile_educations);
             }
-            System.err.println(application.getId() + ":profile_educations-----------:" + (System.currentTimeMillis() - start));
+            printQueryTime(application.getId() + ":profile_educations-----------:");
 
             //all from profiledb.profile_import
             ProfileImport profile_import = create
@@ -193,7 +203,7 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
             if (profile_import != null) {
                 map.put("profile_import", profile_import);
             }
-            System.err.println(application.getId() + ":profile_import-----------:" + (System.currentTimeMillis() - start));
+            printQueryTime(application.getId() + ":profile_import-----------:");
 
             //all from profiledb.profile_intention
             Intention profile_intention = create
@@ -204,7 +214,7 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
             if (profile_intention != null) {
                 map.put("profile_intention", profile_intention);
             }
-            System.err.println(application.getId() + ":profile_intention-----------:" + (System.currentTimeMillis() - start));
+            printQueryTime(application.getId() + ":profile_intention-----------:");
 
             if (profile_intention != null) {
                 //all from profiledb.profile_intention_city
@@ -216,7 +226,7 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
                 if (profile_intention_city != null) {
                     map.put("profile_intention_city", profile_intention_city);
                 }
-                System.err.println(application.getId() + ":profile_intention_city-----------:" + (System.currentTimeMillis() - start));
+                printQueryTime(application.getId() + ":profile_intention_city-----------:");
 
                 //all from profiledb.profile_intention_industry
                 IntentionIndustry profile_intention_industry = create
@@ -227,7 +237,7 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
                 if (profile_intention_industry != null) {
                     map.put("profile_intention_industry", profile_intention_industry);
                 }
-                System.err.println(application.getId() + ":profile_intention_industry-----------:" + (System.currentTimeMillis() - start));
+                printQueryTime(application.getId() + ":profile_intention_industry-----------:");
 
                 //all from profiledb.profile_intention_position
                 IntentionPosition profile_intention_position = create
@@ -238,7 +248,7 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
                 if (profile_intention_position != null) {
                     map.put("profile_intention_position", profile_intention_position);
                 }
-                System.err.println(application.getId() + ":profile_intention_position-----------:" + (System.currentTimeMillis() - start));
+                printQueryTime(application.getId() + ":profile_intention_position-----------:");
             }
 
             //all from profiledb.profile_language
@@ -250,7 +260,7 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
             if (profile_language != null) {
                 map.put("profile_language", profile_language);
             }
-            System.err.println(application.getId() + ":profile_language-----------:" + (System.currentTimeMillis() - start));
+            printQueryTime(application.getId() + ":profile_language-----------:");
 
             //all from profiledb.profile_other
             ProfileOther profile_other = create
@@ -261,7 +271,7 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
             if (profile_other != null) {
                 map.put("profile_other", profile_other);
             }
-            System.err.println(application.getId() + ":profile_other-----------:" + (System.currentTimeMillis() - start));
+            printQueryTime(application.getId() + ":profile_other-----------:");
 
             //all from profiledb.profile_projectexp ORDER most recent first by start date
             List<ProjectExp> profile_projectexp = create
@@ -272,7 +282,7 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
             if (profile_projectexp != null) {
                 map.put("profile_projectexp", profile_projectexp);
             }
-            System.err.println(application.getId() + ":profile_projectexp-----------:" + (System.currentTimeMillis() - start));
+            printQueryTime(application.getId() + ":profile_projectexp-----------:");
 
             //all from profiledb.profile_skills
             List<Skill> profile_skills = create
@@ -283,7 +293,7 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
             if (profile_skills != null) {
                 map.put("profile_skills", profile_skills);
             }
-            System.err.println(application.getId() + ":profile_skills-----------:" + (System.currentTimeMillis() - start));
+            printQueryTime(application.getId() + ":profile_skills-----------:");
 
             //all from profiledb.profile_workexp
             List<WorkExp> profile_workexp = create
@@ -294,7 +304,7 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
             if (profile_workexp != null) {
                 map.put("profile_workexp", profile_workexp);
             }
-            System.err.println(application.getId() + ":profile_workexp-----------:" + (System.currentTimeMillis() - start));
+            printQueryTime(application.getId() + ":profile_workexp-----------:");
 
         }
 
@@ -325,13 +335,13 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
                 recommenderMap.put("employeeid", employee.getEmployeeid());
                 recommenderMap.put("custom_field", employee.getCustom_field());
                 map.put("recommender", recommenderMap);
-                System.err.println(application.getId() + ":recommender-----------:" + (System.currentTimeMillis() - start));
+                printQueryTime(application.getId() + ":recommender-----------:");
             }
         }
 
-        if(dl_url_required && application.getApplier_id() != 0){
+        if (dl_url_required && application.getApplier_id() != 0) {
             String url = getDownloadUrlByUserId((int) application.getApplier_id());
-            map.put("download_url",url == null?"":url);
+            map.put("download_url", url == null ? "" : url);
         }
 
         return map;
@@ -339,17 +349,11 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
     }
 
     public Response getResourceByApplication(int companyId, int sourceId, int atsStatus, boolean recommender, boolean dl_url_required) throws Exception {
-
-        if(true){
-            return ResponseUtils.success(111);
-        }
-
         Connection conn = null;
         try {
             conn = DBConnHelper.DBConn.getConn();
             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
             long start = System.currentTimeMillis();
-            System.err.println("start-----------:" + start);
             Set<Map<String, Object>> datas = create
                     .select()
                     .from(JobApplication.JOB_APPLICATION)
@@ -358,9 +362,8 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
                     .and(JobApplication.JOB_APPLICATION.ATS_STATUS.eq(atsStatus))
                     .fetchInto(com.moseeker.thrift.gen.application.struct.JobApplication.class)
                     .stream()
-                    .map(application -> getRelatedDataByJobApplication(create, application, recommender,dl_url_required))
+                    .map(application -> getRelatedDataByJobApplication(create, application, recommender, dl_url_required))
                     .collect(Collectors.toSet());
-            System.err.println("end-----------:" + (System.currentTimeMillis() - start));
             return ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(datas));
         } catch (Exception e) {
             e.printStackTrace();

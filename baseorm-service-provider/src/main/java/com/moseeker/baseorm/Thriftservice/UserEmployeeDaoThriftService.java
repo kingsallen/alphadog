@@ -105,7 +105,11 @@ public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
     public Response putResource(UserEmployeeStruct record) throws TException {
         try {
             int result = userEmployeeDao.putResource(BeanUtils.structToDB(record, UserEmployeeRecord.class));
-            return ResponseUtils.success(result);
+            if(result > 0) {
+                return ResponseUtils.success(result);
+            }else{
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+            }
         } catch (Exception e) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
@@ -115,6 +119,7 @@ public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
     public Response putResources(List<UserEmployeeStruct> records) throws TException {
         try {
             int result = userEmployeeDao.putResources(convertDB(records));
+
             return ResponseUtils.success(result);
         } catch (Exception e) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
@@ -125,7 +130,11 @@ public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
     public Response delResource(CommonQuery query) throws TException {
         try {
             int result = userEmployeeDao.delResource(query);
-            return ResponseUtils.success(result);
+            if(result > 0) {
+                return ResponseUtils.success(result);
+            }else{
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+            }
         } catch (Exception e) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
