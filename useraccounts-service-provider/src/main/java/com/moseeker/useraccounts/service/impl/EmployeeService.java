@@ -238,7 +238,7 @@ public class EmployeeService {
 				break;
 			case QUESTIONS:
 				// 问题校验
-				List<String> answers = JSONObject.parseArray(certConf.getQuestions()).stream().flatMap(m -> JSONObject.parseObject(String.valueOf(m)).values().stream()).map(m -> String.valueOf(m)).collect(Collectors.toList());
+				List<String> answers = JSONObject.parseArray(certConf.getQuestions()).stream().map(m -> JSONObject.parseObject(String.valueOf(m)).getString("a")).map(m -> String.valueOf(m)).collect(Collectors.toList());
 				log.info("answers: {}", answers);
 				String[] replys = {bindingParams.getAnswer1().trim(), bindingParams.getAnswer2().trim()};
 				boolean bool = true;
@@ -270,7 +270,6 @@ public class EmployeeService {
 		return response;
 	}
 	
-
 	/**
 	 * step 1: 认证当前员工   step 2: 将其他公司的该用户员工设为未认证
 	 * @param bindingParams
