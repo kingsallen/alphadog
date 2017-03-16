@@ -8,10 +8,12 @@ import com.moseeker.baseorm.dao.hrdb.HrHbPositionBindingDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbScratchCardDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbSendRecordDao;
 import com.moseeker.baseorm.dao.hrdb.HrPointsConfDao;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrEmployeeCertConfRecord;
 import com.moseeker.baseorm.service.HrDaoService;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.struct.*;
+
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -162,7 +164,10 @@ public class HrDaoServiceImpl implements HrDaoService {
     public HrEmployeeCertConfDO getEmployeeCertConf(CommonQuery query) throws TException {
         HrEmployeeCertConfDO result = new HrEmployeeCertConfDO();
         try {
-            result = BeanUtils.DBToStruct(HrEmployeeCertConfDO.class, hrEmployeeCertConfDao.getResource(query));
+        		HrEmployeeCertConfRecord record = hrEmployeeCertConfDao.getResource(query);
+        		logger.info("HrEmployeeCertConfRecord: {0}", record.intoMap());
+            result = BeanUtils.DBToStruct(HrEmployeeCertConfDO.class, record);
+            logger.info("HrEmployeeCertConfDO: {0}", result.toString());
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
