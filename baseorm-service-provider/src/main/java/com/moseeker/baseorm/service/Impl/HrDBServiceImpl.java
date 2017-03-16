@@ -3,23 +3,32 @@ package com.moseeker.baseorm.service.Impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.moseeker.baseorm.dao.hr.HrOperationRecordDao;
+import com.moseeker.baseorm.dao.hr.HrTeamDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrOperationRecordRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
 import com.moseeker.baseorm.service.HrDBService;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.HistoryOperate;
+import com.moseeker.thrift.gen.dao.struct.HrTeamStruct;
 import com.moseeker.thrift.gen.hr.struct.HrOperationrecordStruct;
 @Service
 public class HrDBServiceImpl implements HrDBService{
 	@Autowired
 	private HrOperationRecordDao hrOperationRecordDao;
+	
+	@Autowired
+	private HrTeamDao  hrTeamDao;
+	 Logger logger = LoggerFactory.getLogger(HrDBServiceImpl.class);
 	@Override
 	public Response postHrOperation(HrOperationrecordStruct record) {
 		// TODO Auto-generated method stub
@@ -28,6 +37,7 @@ public class HrDBServiceImpl implements HrDBService{
 			int result=hrOperationRecordDao.postResource(data);
 			return ResponseUtils.success(result);
 		}catch(Exception e){
+			logger.error(e.getMessage(),e);
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		}
 	}
@@ -43,6 +53,7 @@ public class HrDBServiceImpl implements HrDBService{
 			int result=hrOperationRecordDao.postResources(list);
 			return ResponseUtils.success(result);
 		}catch(Exception e){
+			logger.error(e.getMessage(),e);
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		}
 
@@ -62,11 +73,28 @@ public class HrDBServiceImpl implements HrDBService{
 				List<HistoryOperate> list=hrOperationRecordDao.getHistoryOperate(param);
 				return ResponseUtils.success(list);
 			}catch(Exception e){
+				logger.error(e.getMessage(),e);
 				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 			}
 		}
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 		
+	}
+
+	@Override
+	public Response getHrTeam(CommonQuery query) {
+		// TODO Auto-generated method stub
+		try{
+			HrTeamRecord data= hrTeamDao.getResource(query);
+			if(data!=null){
+				HrTeamStruct result=BeanUtils.DBToStruct(HrTeamStruct.class, data);
+				return ResponseUtils.success(result);
+			}
+			return ResponseUtils.success(null);
+		}catch(Exception e){
+			logger.error(e.getMessage(),e);
+			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+		}
 	}
 	
 }

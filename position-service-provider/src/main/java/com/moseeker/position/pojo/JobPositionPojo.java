@@ -88,4 +88,8 @@ public class JobPositionPojo {
 
     // 自定义字段
     public String custom = "";
+    //团队的id
+    public int team_id;
+    //团队名称
+    public String  team_name="";
 }

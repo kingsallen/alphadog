@@ -5,11 +5,13 @@ package com.moseeker.baseorm.db.hrdb;
 
 
 import com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrChatUnreadCount;
 import com.moseeker.baseorm.db.hrdb.tables.HrChildCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeePosition;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeSection;
 import com.moseeker.baseorm.db.hrdb.tables.HrFeedback;
@@ -50,11 +52,13 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrAppCvConfRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrChatUnreadCountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrChildCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrEmployeeCertConfRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrEmployeeCustomFieldsRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrEmployeePositionRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrEmployeeSectionRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrFeedbackRecord;
@@ -126,6 +130,7 @@ public class Keys {
     public static final Identity<HrChildCompanyRecord, Integer> IDENTITY_HR_CHILD_COMPANY = Identities0.IDENTITY_HR_CHILD_COMPANY;
     public static final Identity<HrCompanyRecord, UInteger> IDENTITY_HR_COMPANY = Identities0.IDENTITY_HR_COMPANY;
     public static final Identity<HrEmployeeCertConfRecord, Integer> IDENTITY_HR_EMPLOYEE_CERT_CONF = Identities0.IDENTITY_HR_EMPLOYEE_CERT_CONF;
+    public static final Identity<HrEmployeeCustomFieldsRecord, Integer> IDENTITY_HR_EMPLOYEE_CUSTOM_FIELDS = Identities0.IDENTITY_HR_EMPLOYEE_CUSTOM_FIELDS;
     public static final Identity<HrEmployeePositionRecord, Integer> IDENTITY_HR_EMPLOYEE_POSITION = Identities0.IDENTITY_HR_EMPLOYEE_POSITION;
     public static final Identity<HrEmployeeSectionRecord, Integer> IDENTITY_HR_EMPLOYEE_SECTION = Identities0.IDENTITY_HR_EMPLOYEE_SECTION;
     public static final Identity<HrFeedbackRecord, UInteger> IDENTITY_HR_FEEDBACK = Identities0.IDENTITY_HR_FEEDBACK;
@@ -171,16 +176,19 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final UniqueKey<HrAppCvConfRecord> KEY_HR_APP_CV_CONF_PRIMARY = UniqueKeys0.KEY_HR_APP_CV_CONF_PRIMARY;
+    public static final UniqueKey<HrChatUnreadCountRecord> KEY_HR_CHAT_UNREAD_COUNT_PRIMARY = UniqueKeys0.KEY_HR_CHAT_UNREAD_COUNT_PRIMARY;
     public static final UniqueKey<HrChildCompanyRecord> KEY_HR_CHILD_COMPANY_PRIMARY = UniqueKeys0.KEY_HR_CHILD_COMPANY_PRIMARY;
     public static final UniqueKey<HrCompanyRecord> KEY_HR_COMPANY_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_PRIMARY;
     public static final UniqueKey<HrCompanyAccountRecord> KEY_HR_COMPANY_ACCOUNT_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_ACCOUNT_PRIMARY;
     public static final UniqueKey<HrCompanyConfRecord> KEY_HR_COMPANY_CONF_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_CONF_PRIMARY;
     public static final UniqueKey<HrEmployeeCertConfRecord> KEY_HR_EMPLOYEE_CERT_CONF_PRIMARY = UniqueKeys0.KEY_HR_EMPLOYEE_CERT_CONF_PRIMARY;
+    public static final UniqueKey<HrEmployeeCustomFieldsRecord> KEY_HR_EMPLOYEE_CUSTOM_FIELDS_PRIMARY = UniqueKeys0.KEY_HR_EMPLOYEE_CUSTOM_FIELDS_PRIMARY;
     public static final UniqueKey<HrEmployeePositionRecord> KEY_HR_EMPLOYEE_POSITION_PRIMARY = UniqueKeys0.KEY_HR_EMPLOYEE_POSITION_PRIMARY;
     public static final UniqueKey<HrEmployeeSectionRecord> KEY_HR_EMPLOYEE_SECTION_PRIMARY = UniqueKeys0.KEY_HR_EMPLOYEE_SECTION_PRIMARY;
     public static final UniqueKey<HrFeedbackRecord> KEY_HR_FEEDBACK_PRIMARY = UniqueKeys0.KEY_HR_FEEDBACK_PRIMARY;
     public static final UniqueKey<HrHbConfigRecord> KEY_HR_HB_CONFIG_PRIMARY = UniqueKeys0.KEY_HR_HB_CONFIG_PRIMARY;
     public static final UniqueKey<HrHbItemsRecord> KEY_HR_HB_ITEMS_PRIMARY = UniqueKeys0.KEY_HR_HB_ITEMS_PRIMARY;
+    public static final UniqueKey<HrHbItemsRecord> KEY_HR_HB_ITEMS_HB_CONFIG_BINDING_INDEX = UniqueKeys0.KEY_HR_HB_ITEMS_HB_CONFIG_BINDING_INDEX;
     public static final UniqueKey<HrHbPositionBindingRecord> KEY_HR_HB_POSITION_BINDING_PRIMARY = UniqueKeys0.KEY_HR_HB_POSITION_BINDING_PRIMARY;
     public static final UniqueKey<HrHbScratchCardRecord> KEY_HR_HB_SCRATCH_CARD_PRIMARY = UniqueKeys0.KEY_HR_HB_SCRATCH_CARD_PRIMARY;
     public static final UniqueKey<HrHbSendRecordRecord> KEY_HR_HB_SEND_RECORD_PRIMARY = UniqueKeys0.KEY_HR_HB_SEND_RECORD_PRIMARY;
@@ -232,6 +240,7 @@ public class Keys {
         public static Identity<HrChildCompanyRecord, Integer> IDENTITY_HR_CHILD_COMPANY = createIdentity(HrChildCompany.HR_CHILD_COMPANY, HrChildCompany.HR_CHILD_COMPANY.ID);
         public static Identity<HrCompanyRecord, UInteger> IDENTITY_HR_COMPANY = createIdentity(HrCompany.HR_COMPANY, HrCompany.HR_COMPANY.ID);
         public static Identity<HrEmployeeCertConfRecord, Integer> IDENTITY_HR_EMPLOYEE_CERT_CONF = createIdentity(HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF, HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF.ID);
+        public static Identity<HrEmployeeCustomFieldsRecord, Integer> IDENTITY_HR_EMPLOYEE_CUSTOM_FIELDS = createIdentity(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS, HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.ID);
         public static Identity<HrEmployeePositionRecord, Integer> IDENTITY_HR_EMPLOYEE_POSITION = createIdentity(HrEmployeePosition.HR_EMPLOYEE_POSITION, HrEmployeePosition.HR_EMPLOYEE_POSITION.ID);
         public static Identity<HrEmployeeSectionRecord, Integer> IDENTITY_HR_EMPLOYEE_SECTION = createIdentity(HrEmployeeSection.HR_EMPLOYEE_SECTION, HrEmployeeSection.HR_EMPLOYEE_SECTION.ID);
         public static Identity<HrFeedbackRecord, UInteger> IDENTITY_HR_FEEDBACK = createIdentity(HrFeedback.HR_FEEDBACK, HrFeedback.HR_FEEDBACK.ID);
@@ -275,16 +284,19 @@ public class Keys {
 
     private static class UniqueKeys0 extends AbstractKeys {
         public static final UniqueKey<HrAppCvConfRecord> KEY_HR_APP_CV_CONF_PRIMARY = createUniqueKey(HrAppCvConf.HR_APP_CV_CONF, "KEY_hr_app_cv_conf_PRIMARY", HrAppCvConf.HR_APP_CV_CONF.ID);
+        public static final UniqueKey<HrChatUnreadCountRecord> KEY_HR_CHAT_UNREAD_COUNT_PRIMARY = createUniqueKey(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT, "KEY_hr_chat_unread_count_PRIMARY", HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.ROOM_ID);
         public static final UniqueKey<HrChildCompanyRecord> KEY_HR_CHILD_COMPANY_PRIMARY = createUniqueKey(HrChildCompany.HR_CHILD_COMPANY, "KEY_hr_child_company_PRIMARY", HrChildCompany.HR_CHILD_COMPANY.ID);
         public static final UniqueKey<HrCompanyRecord> KEY_HR_COMPANY_PRIMARY = createUniqueKey(HrCompany.HR_COMPANY, "KEY_hr_company_PRIMARY", HrCompany.HR_COMPANY.ID);
         public static final UniqueKey<HrCompanyAccountRecord> KEY_HR_COMPANY_ACCOUNT_PRIMARY = createUniqueKey(HrCompanyAccount.HR_COMPANY_ACCOUNT, "KEY_hr_company_account_PRIMARY", HrCompanyAccount.HR_COMPANY_ACCOUNT.ACCOUNT_ID);
         public static final UniqueKey<HrCompanyConfRecord> KEY_HR_COMPANY_CONF_PRIMARY = createUniqueKey(HrCompanyConf.HR_COMPANY_CONF, "KEY_hr_company_conf_PRIMARY", HrCompanyConf.HR_COMPANY_CONF.COMPANY_ID);
         public static final UniqueKey<HrEmployeeCertConfRecord> KEY_HR_EMPLOYEE_CERT_CONF_PRIMARY = createUniqueKey(HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF, "KEY_hr_employee_cert_conf_PRIMARY", HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF.ID);
+        public static final UniqueKey<HrEmployeeCustomFieldsRecord> KEY_HR_EMPLOYEE_CUSTOM_FIELDS_PRIMARY = createUniqueKey(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS, "KEY_hr_employee_custom_fields_PRIMARY", HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.ID);
         public static final UniqueKey<HrEmployeePositionRecord> KEY_HR_EMPLOYEE_POSITION_PRIMARY = createUniqueKey(HrEmployeePosition.HR_EMPLOYEE_POSITION, "KEY_hr_employee_position_PRIMARY", HrEmployeePosition.HR_EMPLOYEE_POSITION.ID);
         public static final UniqueKey<HrEmployeeSectionRecord> KEY_HR_EMPLOYEE_SECTION_PRIMARY = createUniqueKey(HrEmployeeSection.HR_EMPLOYEE_SECTION, "KEY_hr_employee_section_PRIMARY", HrEmployeeSection.HR_EMPLOYEE_SECTION.ID);
         public static final UniqueKey<HrFeedbackRecord> KEY_HR_FEEDBACK_PRIMARY = createUniqueKey(HrFeedback.HR_FEEDBACK, "KEY_hr_feedback_PRIMARY", HrFeedback.HR_FEEDBACK.ID);
         public static final UniqueKey<HrHbConfigRecord> KEY_HR_HB_CONFIG_PRIMARY = createUniqueKey(HrHbConfig.HR_HB_CONFIG, "KEY_hr_hb_config_PRIMARY", HrHbConfig.HR_HB_CONFIG.ID);
         public static final UniqueKey<HrHbItemsRecord> KEY_HR_HB_ITEMS_PRIMARY = createUniqueKey(HrHbItems.HR_HB_ITEMS, "KEY_hr_hb_items_PRIMARY", HrHbItems.HR_HB_ITEMS.ID);
+        public static final UniqueKey<HrHbItemsRecord> KEY_HR_HB_ITEMS_HB_CONFIG_BINDING_INDEX = createUniqueKey(HrHbItems.HR_HB_ITEMS, "KEY_hr_hb_items_hb_config_binding_index", HrHbItems.HR_HB_ITEMS.HB_CONFIG_ID, HrHbItems.HR_HB_ITEMS.INDEX, HrHbItems.HR_HB_ITEMS.BINDING_ID);
         public static final UniqueKey<HrHbPositionBindingRecord> KEY_HR_HB_POSITION_BINDING_PRIMARY = createUniqueKey(HrHbPositionBinding.HR_HB_POSITION_BINDING, "KEY_hr_hb_position_binding_PRIMARY", HrHbPositionBinding.HR_HB_POSITION_BINDING.ID);
         public static final UniqueKey<HrHbScratchCardRecord> KEY_HR_HB_SCRATCH_CARD_PRIMARY = createUniqueKey(HrHbScratchCard.HR_HB_SCRATCH_CARD, "KEY_hr_hb_scratch_card_PRIMARY", HrHbScratchCard.HR_HB_SCRATCH_CARD.ID);
         public static final UniqueKey<HrHbSendRecordRecord> KEY_HR_HB_SEND_RECORD_PRIMARY = createUniqueKey(HrHbSendRecord.HR_HB_SEND_RECORD, "KEY_hr_hb_send_record_PRIMARY", HrHbSendRecord.HR_HB_SEND_RECORD.ID);

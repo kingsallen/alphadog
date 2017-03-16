@@ -29,7 +29,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> {
 
-    private static final long serialVersionUID = 578458532;
+    private static final long serialVersionUID = -1784324068;
 
     /**
      * Setter for <code>userdb.user_employee.id</code>.
@@ -731,6 +731,20 @@ public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> 
         return (Byte) get(49);
     }
 
+    /**
+     * Setter for <code>userdb.user_employee.custom_field_values</code>. 自定 义字段
+     */
+    public void setCustomFieldValues(String value) {
+        set(50, value);
+    }
+
+    /**
+     * Getter for <code>userdb.user_employee.custom_field_values</code>. 自定 义字段
+     */
+    public String getCustomFieldValues() {
+        return (String) get(50);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -757,7 +771,7 @@ public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> 
     /**
      * Create a detached, initialised UserEmployeeRecord
      */
-    public UserEmployeeRecord(Integer id, String employeeid, Integer companyId, Integer roleId, Integer wxuserId, Byte sex, String ename, String efname, String cname, String cfname, String password, Byte isAdmin, Integer status, String companybody, String departmentname, String groupname, String position, Date employdate, String managername, String city, Date birthday, Date retiredate, String education, String address, String idcard, String mobile, Integer award, Timestamp bindingTime, String email, Byte activation, String activationCode, Byte disable, Timestamp createTime, Timestamp updateTime, Byte authLevel, Timestamp registerTime, String registerIp, Timestamp lastLoginTime, String lastLoginIp, Long loginCount, Byte source, String downloadToken, UInteger hrWxuserId, String customField, Byte isRpSent, Integer sysuserId, Integer positionId, Integer sectionId, Byte emailIsvalid, Byte authMethod) {
+    public UserEmployeeRecord(Integer id, String employeeid, Integer companyId, Integer roleId, Integer wxuserId, Byte sex, String ename, String efname, String cname, String cfname, String password, Byte isAdmin, Integer status, String companybody, String departmentname, String groupname, String position, Date employdate, String managername, String city, Date birthday, Date retiredate, String education, String address, String idcard, String mobile, Integer award, Timestamp bindingTime, String email, Byte activation, String activationCode, Byte disable, Timestamp createTime, Timestamp updateTime, Byte authLevel, Timestamp registerTime, String registerIp, Timestamp lastLoginTime, String lastLoginIp, Long loginCount, Byte source, String downloadToken, UInteger hrWxuserId, String customField, Byte isRpSent, Integer sysuserId, Integer positionId, Integer sectionId, Byte emailIsvalid, Byte authMethod, String customFieldValues) {
         super(UserEmployee.USER_EMPLOYEE);
 
         set(0, id);
@@ -810,5 +824,6 @@ public class UserEmployeeRecord extends UpdatableRecordImpl<UserEmployeeRecord> 
         set(47, sectionId);
         set(48, emailIsvalid);
         set(49, authMethod);
+        set(50, customFieldValues);
     }
 }

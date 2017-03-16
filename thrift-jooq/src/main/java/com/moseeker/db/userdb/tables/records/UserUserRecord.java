@@ -28,7 +28,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
 
-    private static final long serialVersionUID = -891521231;
+    private static final long serialVersionUID = -1197925755;
 
     /**
      * Setter for <code>userdb.user_user.id</code>. 主key
@@ -395,14 +395,14 @@ public class UserUserRecord extends UpdatableRecordImpl<UserUserRecord> {
     }
 
     /**
-     * Setter for <code>userdb.user_user.update_time</code>. 更新时间
+     * Setter for <code>userdb.user_user.update_time</code>.
      */
     public void setUpdateTime(Timestamp value) {
         set(26, value);
     }
 
     /**
-     * Getter for <code>userdb.user_user.update_time</code>. 更新时间
+     * Getter for <code>userdb.user_user.update_time</code>.
      */
     public Timestamp getUpdateTime() {
         return (Timestamp) get(26);

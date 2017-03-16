@@ -104,6 +104,7 @@ service HrDBDao{
 	    common_struct.Response postHrOperationrecords(1:list<hr_struct.HrOperationrecordStruct> record);
 	    common_struct.Response postHrOperationrecord(1:hr_struct.HrOperationrecordStruct record);
 	    common_struct.Response getHrHistoryOperations(1:list<application_struct.ProcessValidationStruct> record);
+	    common_struct.Response getHrTeam(1:common_struct.CommonQuery query);
 }
 service WxUserDao {
 	common_struct.Response getResource(1:common_struct.CommonQuery query);

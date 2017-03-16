@@ -37,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserUser extends TableImpl<UserUserRecord> {
 
-    private static final long serialVersionUID = 1219593844;
+    private static final long serialVersionUID = 411645064;
 
     /**
      * The reference instance of <code>userdb.user_user</code>
@@ -183,9 +183,9 @@ public class UserUser extends TableImpl<UserUserRecord> {
     public final TableField<UserUserRecord, Byte> EMAIL_VERIFIED = createField("email_verified", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("2", org.jooq.impl.SQLDataType.TINYINT)), this, "邮箱是否认证 2:老数据 1:已认证 0:未认证");
 
     /**
-     * The column <code>userdb.user_user.update_time</code>. 更新时间
+     * The column <code>userdb.user_user.update_time</code>.
      */
-    public final TableField<UserUserRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
+    public final TableField<UserUserRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * Create a <code>userdb.user_user</code> table reference

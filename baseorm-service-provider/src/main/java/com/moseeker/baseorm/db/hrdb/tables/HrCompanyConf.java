@@ -37,7 +37,7 @@ import org.jooq.types.UShort;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
 
-    private static final long serialVersionUID = 1981015839;
+    private static final long serialVersionUID = -1865229109;
 
     /**
      * The reference instance of <code>hrdb.hr_company_conf</code>
@@ -58,9 +58,9 @@ public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
     public final TableField<HrCompanyConfRecord, UInteger> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
 
     /**
-     * The column <code>hrdb.hr_company_conf.theme_id</code>. sys_theme id
+     * The column <code>hrdb.hr_company_conf.theme_id</code>. config_sys_theme.id
      */
-    public final TableField<HrCompanyConfRecord, Integer> THEME_ID = createField("theme_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "sys_theme id");
+    public final TableField<HrCompanyConfRecord, Integer> THEME_ID = createField("theme_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("5", org.jooq.impl.SQLDataType.INTEGER)), this, "config_sys_theme.id");
 
     /**
      * The column <code>hrdb.hr_company_conf.hb_throttle</code>. 全局每人每次红包活动可以获得的红包金额上限
@@ -108,14 +108,29 @@ public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
     public final TableField<HrCompanyConfRecord, UShort> APPLICATION_COUNT_LIMIT = createField("application_count_limit", org.jooq.impl.SQLDataType.SMALLINTUNSIGNED.nullable(false).defaultValue(org.jooq.impl.DSL.field("3", org.jooq.impl.SQLDataType.SMALLINTUNSIGNED)), this, "一个人在一个公司下每月申请次数限制");
 
     /**
-     * The column <code>hrdb.hr_company_conf.job_occupation</code>. 自定义字段名称
-     */
-    public final TableField<HrCompanyConfRecord, String> JOB_OCCUPATION = createField("job_occupation", org.jooq.impl.SQLDataType.VARCHAR.length(30), this, "自定义字段名称");
-
-    /**
      * The column <code>hrdb.hr_company_conf.job_custom_title</code>. 职位自定义字段标题
      */
     public final TableField<HrCompanyConfRecord, String> JOB_CUSTOM_TITLE = createField("job_custom_title", org.jooq.impl.SQLDataType.VARCHAR.length(32).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "职位自定义字段标题");
+
+    /**
+     * The column <code>hrdb.hr_company_conf.search_seq</code>. 搜索页页面设置顺序,3#1#2
+     */
+    public final TableField<HrCompanyConfRecord, String> SEARCH_SEQ = createField("search_seq", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "搜索页页面设置顺序,3#1#2");
+
+    /**
+     * The column <code>hrdb.hr_company_conf.search_img</code>. 搜索页页面设置背景图
+     */
+    public final TableField<HrCompanyConfRecord, String> SEARCH_IMG = createField("search_img", org.jooq.impl.SQLDataType.VARCHAR.length(200).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "搜索页页面设置背景图");
+
+    /**
+     * The column <code>hrdb.hr_company_conf.job_occupation</code>. 自定义字段名称
+     */
+    public final TableField<HrCompanyConfRecord, String> JOB_OCCUPATION = createField("job_occupation", org.jooq.impl.SQLDataType.VARCHAR.length(30).defaultValue(org.jooq.impl.DSL.field("职位职能", org.jooq.impl.SQLDataType.VARCHAR)), this, "自定义字段名称");
+
+    /**
+     * The column <code>hrdb.hr_company_conf.teamname_custom</code>. 自定义部门别名
+     */
+    public final TableField<HrCompanyConfRecord, String> TEAMNAME_CUSTOM = createField("teamname_custom", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "自定义部门别名");
 
     /**
      * Create a <code>hrdb.hr_company_conf</code> table reference
