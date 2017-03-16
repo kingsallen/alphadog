@@ -77,6 +77,7 @@ public class EmployeeService {
 	RedisClient client = CacheClient.getInstance();
 
 	public EmployeeResponse getEmployee(int userId, int companyId) throws TException {
+		log.info("getEmployee param: userId={} , companyId={}", userId, companyId);
 		CommonQuery query = new CommonQuery();
 		query.setEqualFilter(new HashMap<String, String>());
 		UserEmployeeDO employee;
@@ -109,12 +110,14 @@ public class EmployeeService {
 			log.error(e.getMessage(), e);
 			response.setBindStatus(BindStatus.UNBIND);
 		}
+		log.info("getEmployee response: {}", response);
 		return response;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public EmployeeVerificationConfResponse getEmployeeVerificationConf(int companyId)
 			throws TException {
+		log.info("getEmployeeVerificationConf param: companyId={}", companyId);
 		CommonQuery query = new CommonQuery();
 		Map<String, String> eqf = new HashMap<String, String>();
 		query.setEqualFilter(eqf);
@@ -151,7 +154,7 @@ public class EmployeeService {
 	}
 	
 	public Result bind(BindingParams bindingParams) throws TException {
-		log.info("BindingParams: {}", bindingParams);
+		log.info("bind param: BindingParams={}", bindingParams);
 		Result response = new Result();
 		CommonQuery query = new CommonQuery();
 		query.setEqualFilter(new HashMap<String, String>());
@@ -242,7 +245,7 @@ public class EmployeeService {
 				log.info("answers: {}", answers);
 				String[] replys = {bindingParams.getAnswer1().trim(), bindingParams.getAnswer2().trim()};
 				boolean bool = true;
-				if (!StringUtils.isEmptyList(answers) && answers.size() == replys.length) {
+				if (!StringUtils.isEmptyList(answers)) {
 					for (int i = 0; i < answers.size(); i++) {
 						if (!org.apache.commons.lang.StringUtils.defaultString(answers.get(i), "").equals(replys[i])) {
 							bool = false;
@@ -267,6 +270,7 @@ public class EmployeeService {
 			default:
 				break;
 		}
+		log.info("BindingParams response: {}", response);
 		return response;
 	}
 	
@@ -277,6 +281,7 @@ public class EmployeeService {
 	 * @throws TException
 	 */
 	private Result updateEmployee(BindingParams bindingParams) throws TException {
+		log.info("updateEmployee param: BindingParams={}", bindingParams);
 		Result response = new Result();
 		CommonQuery query = new CommonQuery();
 		query.setEqualFilter(new HashMap<String, String>());
@@ -284,11 +289,24 @@ public class EmployeeService {
 		query.getEqualFilter().put("disable", "0");
 		query.getEqualFilter().put("status", "0");
 		List<UserEmployeeDO> employees = userDao.getUserEmployeesDO(query);
+		log.info("select employees by: {}, result = {}", query, Arrays.toString(employees.toArray()));
 		if (!StringUtils.isEmptyList(employees)) {
 			employees.forEach(e -> {
 				if (e.getCompanyId() == bindingParams.getCompanyId()) {
 					e.setActivation((byte)0);
 					e.setAuthMethod((byte)bindingParams.getType().getValue());
+					query.getEqualFilter().clear();
+					query.getEqualFilter().put("sysuser_id", String.valueOf(bindingParams.getUserId()));
+					Response wxResult;
+					try {
+						wxResult = wxUserDao.getResource(query);
+						if (wxResult.getStatus() == 0 && StringUtils.isNotNullOrEmpty(wxResult.getData())) {
+							e.setWxUserId(JSONObject.parseObject(wxResult.getData()).getIntValue("id"));
+						}
+					} catch (Exception e1) {
+						log.error(e1.getMessage(), e1);
+					}
+					e.setBindingTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
 					e.setUpdateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
 					if (StringUtils.isNotNullOrEmpty(bindingParams.getName())) e.setCname(bindingParams.getName());
 					if (StringUtils.isNotNullOrEmpty(bindingParams.getMobile())) e.setMobile(bindingParams.getMobile());
@@ -297,6 +315,7 @@ public class EmployeeService {
 				}
 			});
 		}
+		log.info("update employess = {}", Arrays.toString(employees.toArray()));
 		Response updateResult = userDao.putUserEmployeesDO(employees);
 		if (updateResult.getStatus() == 0){
 			response.setSuccess(true);
@@ -305,18 +324,21 @@ public class EmployeeService {
 			response.setSuccess(false);
 			response.setMessage(updateResult.getMessage());
 		}
+		log.info("updateEmployee response : {}", response);
 		return response;
 	}
 	
 	public Result unbind(int employeeId, int companyId, int userId)
 			throws TException {
+		log.info("unbind param: employeeId={}, companyId={}, userId={}", employeeId, companyId, userId);
 		Result response = new Result();
 		CommonQuery query = new CommonQuery();
 		query.setEqualFilter(new HashMap<String, String>());
 		query.getEqualFilter().put("sysuser_id", String.valueOf(userId));
 		query.getEqualFilter().put("company_id", String.valueOf(companyId));
-		query.getEqualFilter().put("employeeid", String.valueOf(employeeId));
+		query.getEqualFilter().put("id", String.valueOf(employeeId));
 		UserEmployeeDO employee = userDao.getEmployee(query);
+		log.info("select employee by: {} , result: {}", query, employee);
 		if (employee == null && employee.getId() == 0) {
 			response.setSuccess(false);
 			response.setMessage("员工信息不存在");
@@ -327,16 +349,18 @@ public class EmployeeService {
 			if (result.getStatus() == 0){
 				response.setSuccess(true);
 				response.setMessage(result.getMessage());
-			} else {
 				response.setSuccess(false);
+			} else {
 				response.setMessage(result.getMessage());
 			}
 		}
+		log.info("unbind response: {}", response);
 		return response;
 	}
 
 	public List<EmployeeCustomFieldsConf> getEmployeeCustomFieldsConf(int companyId)
 			throws TException {
+		log.info("getEmployeeCustomFieldsConf param: companyId={}", companyId);
 		CommonQuery query = new CommonQuery();
 		query.setEqualFilter(new HashMap<String, String>());
 		query.getEqualFilter().put("company_id", String.valueOf(companyId));
@@ -344,6 +368,7 @@ public class EmployeeService {
 		List<EmployeeCustomFieldsConf> response = new ArrayList<EmployeeCustomFieldsConf>();
 		try {
 			customFields = hrDBDao.getEmployeeCustomFields(query);
+			log.info("select EmployeeCustomField by: {}, result = {}", query, customFields);
 			if(!StringUtils.isEmptyList(customFields)) {
 				customFields.forEach(m -> {
 					EmployeeCustomFieldsConf efc = new EmployeeCustomFieldsConf();
@@ -359,12 +384,14 @@ public class EmployeeService {
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
+		log.info("getEmployeeCustomFieldsConf response: {}", response);
 		return response;
 	}
 	
 
 	public RewardsResponse getEmployeeRewards(int employeeId, int companyId)
 			throws TException {
+		log.info("getEmployeeRewards param: employeeId={}, companyId={}", employeeId, companyId);
 		RewardsResponse response = new RewardsResponse();
 		CommonQuery query = new CommonQuery();
 		query.setEqualFilter(new HashMap<String, String>());
@@ -433,16 +460,19 @@ public class EmployeeService {
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
+		log.info("getEmployeeRewards response: {}", response);
 		return response;
 	}
 
 	public Result setEmployeeCustomInfo(int employeeId, String customValues)
 			throws TException {
+		log.info("setEmployeeCustomInfo param: employeeId={}, customValues={}", employeeId, customValues);
 		Result response = new Result();
 		CommonQuery query = new CommonQuery();
 		query.setEqualFilter(new HashMap<String, String>());
 		query.getEqualFilter().put("employeeid", String.valueOf(employeeId));
 		List<UserEmployeeDO> userEmployeesDO = userDao.getUserEmployeesDO(query);
+		log.info("select userEmployee by: {}, result = {}", query, Arrays.toString(userEmployeesDO.toArray()));
 		if(StringUtils.isEmptyList(userEmployeesDO)) {
 			response.setSuccess(false);
 			response.setMessage("员工信息不存在");
@@ -457,11 +487,13 @@ public class EmployeeService {
 				response.setMessage(result.getMessage());
 			}
 		}
+		log.info("setEmployeeCustomInfo response: {}", response);
 		return response;
 	}
 	
 	
 	public Result emailActivation(String activationCodee) throws TException {
+		log.info("emailActivation param: activationCodee={}", activationCodee);
 		Result response = new Result();
 		response.setSuccess(false);
 		response.setMessage("激活信息不正确");
@@ -476,6 +508,7 @@ public class EmployeeService {
 				}
 			} 
 		}
+		log.info("emailActivation response: {}", response);
 		return response;
 	}
 	
