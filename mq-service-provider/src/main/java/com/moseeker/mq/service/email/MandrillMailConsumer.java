@@ -95,12 +95,11 @@ public class MandrillMailConsumer {
 	/**
 	 * 发送邮件
 	 * 
-	 * @param mail
+	 * @param redisMsg
 	 * @return
 	 * @throws Exception
 	 */
-	private void sendMail() throws Exception {
-		String redisMsg = fetchConstantlyMessage();
+	private void sendMail(String redisMsg) throws Exception {
 		if (StringUtils.isNotNullOrEmpty(redisMsg)) {
 			executorService.submit(() -> {
 				try {
@@ -172,8 +171,6 @@ public class MandrillMailConsumer {
 				}
 			});
 		}
-
-		sendMail();
 	}
 
 	/**
@@ -188,7 +185,10 @@ public class MandrillMailConsumer {
 				new LinkedBlockingQueue<Runnable>());
 		new Thread(() -> {
 			try {
-				sendMail();
+				while (true) {
+					String redisMsg = fetchConstantlyMessage();
+					sendMail(redisMsg);
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				logger.error(e.getMessage(), e);

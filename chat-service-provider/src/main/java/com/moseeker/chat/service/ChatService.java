@@ -41,6 +41,7 @@ public class ChatService {
      * @return 聊天室分页信息
      */
     public HRChatRoomsVO listHRChatRoom(int hrId, int pageNo, int pageSize) {
+        logger.debug("listHRChatRoom hrId:{}, pageNo:{} pageSize:{}", hrId, pageNo, pageSize);
         HRChatRoomsVO rooms = new HRChatRoomsVO();
         int count = chaoDao.countHRChatRoom(hrId);
         Page page = new Page(pageNo, pageSize, count);
@@ -78,7 +79,7 @@ public class ChatService {
                         Optional<HrWxHrChatListDO> chatRoomDOOptional = chatRoomList.stream()
                                 .filter(chatRoom -> chatRoom.getId() == chatUnreadCountDO.getRoomId()).findFirst();
                         if(chatRoomDOOptional.isPresent()) {
-                            hrChatRoomVO.setCreateTime(chatRoomDOOptional.get().getHrChatTime());
+                            hrChatRoomVO.setCreateTime(chatRoomDOOptional.get().getUpdateTime());
                             int status = chatRoomDOOptional.get().isStatus()?1:0;
                             hrChatRoomVO.setStatus(status);
                         }
@@ -106,6 +107,7 @@ public class ChatService {
             }
         }
 
+        logger.debug("listHRChatRoom result : {}", rooms);
         return rooms;
     }
 
@@ -117,6 +119,7 @@ public class ChatService {
      * @return 聊天室分页信息
      */
     public UserChatRoomsVO listUserChatRoom(int userId, int pageNo, int pageSize) {
+        logger.debug("userChatRoomsVO userId:{}, pageNo:{} pageSize:{}", userId, pageNo, pageSize);
         UserChatRoomsVO userChatRoomsVO = new UserChatRoomsVO();
 
         //计算数量的操作理论上是最快的，所以用它去判断是否有聊天室
@@ -155,7 +158,7 @@ public class ChatService {
                             if(chatRoomOptional.isPresent()) {
                                 int status = chatRoomOptional.get().isStatus() ? 1:0;
                                 userChatRoomVO.setStatus(status);
-                                userChatRoomVO.setCreateTime(chatRoomOptional.get().getWxChatTime());
+                                userChatRoomVO.setCreateTime(chatRoomOptional.get().getUpdateTime());
                             }
                         }
 
@@ -201,7 +204,7 @@ public class ChatService {
                 userChatRoomsVO.setRooms(userChatRoomVOList);
             }
         }
-
+        logger.debug("userChatRoomsVO result:{}", userChatRoomsVO);
         return userChatRoomsVO;
     }
 
@@ -213,6 +216,7 @@ public class ChatService {
      * @return
      */
     public ChatsVO listChatLogs(int roomId, int pageNo, int pageSize) {
+        logger.debug("listChatLogs roomId:{} pageNo:{}, pageSize:{}", roomId, pageNo, pageSize);
         ChatsVO chatsVO = new ChatsVO();
 
         int count = 0;
@@ -247,6 +251,7 @@ public class ChatService {
         } catch (InterruptedException | ExecutionException e) {
             logger.error(e.getMessage(), e);
         }
+        logger.debug("listChatLogs result:{}", chatsVO);
         return chatsVO;
     }
 
@@ -258,6 +263,7 @@ public class ChatService {
      * @param speaker 消息发送人标记
      */
     public void saveChat(int roomId, String content, int positionId, byte speaker) {
+        logger.debug("saveChat roomId:{} content:{}, positionId:{} speaker:{}", roomId, content, positionId, speaker);
         HrWxHrChatDO chatDO = new HrWxHrChatDO();
         String date = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
         chatDO.setCreateTime(date);
@@ -267,6 +273,11 @@ public class ChatService {
         chatDO.setSpeaker(spk);
         chatDO.setChatlistId(roomId);
         chaoDao.saveChat(chatDO);
+
+        HrWxHrChatListDO chatRoomDO = new HrWxHrChatListDO();
+        chatRoomDO.setId(roomId);
+        chatRoomDO.setUpdateTime(date);
+        chaoDao.updateChatRoom(chatRoomDO);
     }
 
     /**
@@ -282,7 +293,7 @@ public class ChatService {
      * @return ResultOfSaveRoomVO
      */
     public ResultOfSaveRoomVO enterChatRoom(int userId, int hrId, int positionId, int roomId) {
-
+        logger.debug("enterChatRoom userId:{} hrId:{}, positionId:{} roomId:{}", userId, hrId, positionId, roomId);
         final ResultOfSaveRoomVO resultOfSaveRoomVO;
 
         HrWxHrChatListDO chatRoom = chaoDao.getChatRoom(roomId, userId, hrId);
@@ -316,6 +327,7 @@ public class ChatService {
             resultOfSaveRoomVO = new ResultOfSaveRoomVO();
         }
         resultOfSaveRoomVO.setChatDebut(chatDebut);
+        logger.debug("enterChatRoom result:{}", resultOfSaveRoomVO);
         return resultOfSaveRoomVO;
     }
 
@@ -327,6 +339,7 @@ public class ChatService {
      * @return
      */
     private ResultOfSaveRoomVO searchResult(HrWxHrChatListDO chatRoom, int positionId, boolean chatDebut) {
+        logger.debug("searchResult HrWxHrChatListDO:{} positionId:{}, chatDebut:{}", chatRoom, positionId, chatDebut);
         ResultOfSaveRoomVO resultOfSaveRoomVO = new ResultOfSaveRoomVO();
         resultOfSaveRoomVO.setRoomId(chatRoom.getId());
 
@@ -406,6 +419,7 @@ public class ChatService {
             logger.error(e.getMessage(), e);
         }
 
+        logger.debug("searchResult result:{}", resultOfSaveRoomVO);
         return resultOfSaveRoomVO;
     }
 
@@ -417,6 +431,7 @@ public class ChatService {
      */
     private HrWxHrChatDO createChat(ResultOfSaveRoomVO resultOfSaveRoomVO) {
 
+        logger.debug("createChat ResultOfSaveRoomVO:{}", resultOfSaveRoomVO);
         //1.如果HR的名称不存在，则存储 "我是{companyName}HR，我可以推荐您或者您的朋友加入我们！"
         //2.如果HR的名称存在，则存储 "我是{hrName}，{companyName}HR，我可以推荐您或者您的朋友加入我们！"
         HrWxHrChatDO chatDO = new HrWxHrChatDO();
@@ -437,6 +452,7 @@ public class ChatService {
             chatDO.setPid(resultOfSaveRoomVO.getPosition().getPositionId());
         }
         chaoDao.saveChat(chatDO);
+        logger.debug("createChat result:{}", chatDO);
         return chatDO;
     }
 
@@ -557,6 +573,7 @@ public class ChatService {
      * @param speaker 退出聊天室用户的类型 0表示用户，1表示HR
      */
     public void leaveChatRoom(int roomId, byte speaker) {
+        logger.debug("leaveChatRoom roomId:{} speaker:{}", roomId, speaker);
         HrWxHrChatListDO chatRoom = new HrWxHrChatListDO();
         chatRoom.setId(roomId);
         String time = new DateTime().toString("yyyy-MM-dd HH:mm:ss");

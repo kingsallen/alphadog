@@ -41,14 +41,24 @@ public class RedisException extends RuntimeException {
 		this.eventKey = eventKey;
 	}
 	
+	/**
+	 * @param Exception 异常
+	 * @param appid 项目appid
+	 * @param location 出错位置(this.getClass().getName())
+	 * @param eventKey 事件类型
+	 */
+	public RedisException(Exception e, int appid, String location, String eventKey){
+		super(e);
+		this.message = e.getMessage();
+		this.appid = appid;
+		this.location = location;
+		this.eventKey = eventKey;
+	}
+	
 	public RedisException(){}
 
 	public String getMessage() {
 		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
 	}
 
 	public int getAppid() {
