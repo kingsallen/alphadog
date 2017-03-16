@@ -6,8 +6,6 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
-import javax.xml.bind.DatatypeConverterInterface;
-import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 
 import org.apache.commons.codec.binary.Hex;
 import org.slf4j.Logger;
