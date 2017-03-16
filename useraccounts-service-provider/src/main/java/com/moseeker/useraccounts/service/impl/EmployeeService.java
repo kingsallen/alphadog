@@ -339,7 +339,7 @@ public class EmployeeService {
 		query.getEqualFilter().put("id", String.valueOf(employeeId));
 		UserEmployeeDO employee = userDao.getEmployee(query);
 		log.info("select employee by: {} , result: {}", query, employee);
-		if (employee == null && employee.getId() == 0) {
+		if (employee == null || employee.getId() == 0) {
 			response.setSuccess(false);
 			response.setMessage("员工信息不存在");
 		} else {
