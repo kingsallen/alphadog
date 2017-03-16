@@ -44,6 +44,7 @@ import com.moseeker.thrift.gen.dao.struct.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.dao.struct.UserUserDO;
+import com.moseeker.thrift.gen.employee.struct.BindStatus;
 import com.moseeker.thrift.gen.employee.struct.BindingParams;
 import com.moseeker.thrift.gen.employee.struct.Employee;
 import com.moseeker.thrift.gen.employee.struct.EmployeeCustomFieldsConf;
@@ -93,12 +94,20 @@ public class EmployeeService {
 			    		wxuserId = JSONObject.parseObject(wxResult.getData()).getIntValue("id");
 			    }
 			    response.setEmployee(new Employee(employee.getId(), employee.getEmployeeid(), employee.getCompanyId(), employee.getSysuserId(), employee.getMobile(), wxuserId, employee.getCname(), employee.getAward(), employee.getIsRpSent() == 0 ? false : true, employee.getCustomFieldValues()));
-			    response.setExists(true);
+
+			    if (employee.getActivation() == 0) {
+			    		response.setBindStatus(BindStatus.BINDED);
+				} else if (StringUtils.isNotNullOrEmpty(client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, String.valueOf(employee.getId())))) {
+					response.setBindStatus(BindStatus.PENDING);
+				} else {
+					response.setBindStatus(BindStatus.UNBIND);
+				}
 			} else {
-				response.setExists(false);
+				response.setBindStatus(BindStatus.UNBIND);
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
+			response.setBindStatus(BindStatus.UNBIND);
 		}
 		return response;
 	}
@@ -113,6 +122,7 @@ public class EmployeeService {
 		try {
 			eqf.put("company_id", String.valueOf(companyId));
 			HrEmployeeCertConfDO employeeCertConf = hrDBDao.getEmployeeCertConf(query);
+			log.info("HrEmployeeCertConfDO: {}", employeeCertConf);
 			if (employeeCertConf != null && employeeCertConf.getEmail_suffix() != null && employeeCertConf.getQuestions() != null) {
 			    EmployeeVerificationConf evc = new EmployeeVerificationConf();
 			    evc.setCompanyId(employeeCertConf.getCompany_id());

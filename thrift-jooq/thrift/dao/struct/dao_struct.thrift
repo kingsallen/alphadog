@@ -80,7 +80,8 @@ struct HRCompanyConfData{
     3:i32 hb_throttle,
     4:string app_reply,
     5:string job_custom_title,
-    6:string job_occupation
+    6:string job_occupation,
+    7:string employee_binding
 }
 
 struct Talentpool {
