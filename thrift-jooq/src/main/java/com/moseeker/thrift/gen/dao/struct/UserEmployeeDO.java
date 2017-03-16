@@ -61,7 +61,7 @@ public class UserEmployeeDO implements org.apache.thrift.TBase<UserEmployeeDO, U
   private static final org.apache.thrift.protocol.TField EMAIL_ISVALID_FIELD_DESC = new org.apache.thrift.protocol.TField("emailIsvalid", org.apache.thrift.protocol.TType.BYTE, (short)48);
   private static final org.apache.thrift.protocol.TField AUTH_METHOD_FIELD_DESC = new org.apache.thrift.protocol.TField("authMethod", org.apache.thrift.protocol.TType.BYTE, (short)49);
   private static final org.apache.thrift.protocol.TField CUSTOM_FIELD_VALUES_FIELD_DESC = new org.apache.thrift.protocol.TField("customFieldValues", org.apache.thrift.protocol.TType.STRING, (short)50);
-  private static final org.apache.thrift.protocol.TField WX_USER_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("wxUserId", org.apache.thrift.protocol.TType.I32, (short)51);
+  private static final org.apache.thrift.protocol.TField WXUSER_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("wxuser_id", org.apache.thrift.protocol.TType.I32, (short)51);
 
   private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new UserEmployeeDOStandardSchemeFactory();
   private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new UserEmployeeDOTupleSchemeFactory();
@@ -116,7 +116,7 @@ public class UserEmployeeDO implements org.apache.thrift.TBase<UserEmployeeDO, U
   public byte emailIsvalid; // optional
   public byte authMethod; // optional
   public java.lang.String customFieldValues; // optional
-  public int wxUserId; // optional
+  public int wxuser_id; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -170,7 +170,7 @@ public class UserEmployeeDO implements org.apache.thrift.TBase<UserEmployeeDO, U
     EMAIL_ISVALID((short)48, "emailIsvalid"),
     AUTH_METHOD((short)49, "authMethod"),
     CUSTOM_FIELD_VALUES((short)50, "customFieldValues"),
-    WX_USER_ID((short)51, "wxUserId");
+    WXUSER_ID((short)51, "wxuser_id");
 
     private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
@@ -285,8 +285,8 @@ public class UserEmployeeDO implements org.apache.thrift.TBase<UserEmployeeDO, U
           return AUTH_METHOD;
         case 50: // CUSTOM_FIELD_VALUES
           return CUSTOM_FIELD_VALUES;
-        case 51: // WX_USER_ID
-          return WX_USER_ID;
+        case 51: // WXUSER_ID
+          return WXUSER_ID;
         default:
           return null;
       }
@@ -346,9 +346,9 @@ public class UserEmployeeDO implements org.apache.thrift.TBase<UserEmployeeDO, U
   private static final int __SECTIONID_ISSET_ID = 16;
   private static final int __EMAILISVALID_ISSET_ID = 17;
   private static final int __AUTHMETHOD_ISSET_ID = 18;
-  private static final int __WXUSERID_ISSET_ID = 19;
+  private static final int __WXUSER_ID_ISSET_ID = 19;
   private int __isset_bitfield = 0;
-  private static final _Fields optionals[] = {_Fields.ID,_Fields.EMPLOYEEID,_Fields.COMPANY_ID,_Fields.ROLE_ID,_Fields.SEX,_Fields.ENAME,_Fields.EFNAME,_Fields.CNAME,_Fields.CFNAME,_Fields.PASSWORD,_Fields.IS_ADMIN,_Fields.STATUS,_Fields.COMPANYBODY,_Fields.DEPARTMENTNAME,_Fields.GROUPNAME,_Fields.POSITION,_Fields.EMPLOYDATE,_Fields.MANAGERNAME,_Fields.CITY,_Fields.BIRTHDAY,_Fields.RETIREDATE,_Fields.EDUCATION,_Fields.ADDRESS,_Fields.IDCARD,_Fields.MOBILE,_Fields.AWARD,_Fields.BINDING_TIME,_Fields.EMAIL,_Fields.ACTIVATION,_Fields.ACTIVATION_CODE,_Fields.DISABLE,_Fields.CREATE_TIME,_Fields.UPDATE_TIME,_Fields.AUTH_LEVEL,_Fields.REGISTER_TIME,_Fields.REGISTER_IP,_Fields.LAST_LOGIN_TIME,_Fields.LAST_LOGIN_IP,_Fields.LOGIN_COUNT,_Fields.SOURCE,_Fields.DOWNLOA_DOKEN,_Fields.HR_WXUSER_ID,_Fields.CUSTOM_FIELD,_Fields.IS_RP_SENT,_Fields.SYSUSER_ID,_Fields.POSITION_ID,_Fields.SECTION_ID,_Fields.EMAIL_ISVALID,_Fields.AUTH_METHOD,_Fields.CUSTOM_FIELD_VALUES,_Fields.WX_USER_ID};
+  private static final _Fields optionals[] = {_Fields.ID,_Fields.EMPLOYEEID,_Fields.COMPANY_ID,_Fields.ROLE_ID,_Fields.SEX,_Fields.ENAME,_Fields.EFNAME,_Fields.CNAME,_Fields.CFNAME,_Fields.PASSWORD,_Fields.IS_ADMIN,_Fields.STATUS,_Fields.COMPANYBODY,_Fields.DEPARTMENTNAME,_Fields.GROUPNAME,_Fields.POSITION,_Fields.EMPLOYDATE,_Fields.MANAGERNAME,_Fields.CITY,_Fields.BIRTHDAY,_Fields.RETIREDATE,_Fields.EDUCATION,_Fields.ADDRESS,_Fields.IDCARD,_Fields.MOBILE,_Fields.AWARD,_Fields.BINDING_TIME,_Fields.EMAIL,_Fields.ACTIVATION,_Fields.ACTIVATION_CODE,_Fields.DISABLE,_Fields.CREATE_TIME,_Fields.UPDATE_TIME,_Fields.AUTH_LEVEL,_Fields.REGISTER_TIME,_Fields.REGISTER_IP,_Fields.LAST_LOGIN_TIME,_Fields.LAST_LOGIN_IP,_Fields.LOGIN_COUNT,_Fields.SOURCE,_Fields.DOWNLOA_DOKEN,_Fields.HR_WXUSER_ID,_Fields.CUSTOM_FIELD,_Fields.IS_RP_SENT,_Fields.SYSUSER_ID,_Fields.POSITION_ID,_Fields.SECTION_ID,_Fields.EMAIL_ISVALID,_Fields.AUTH_METHOD,_Fields.CUSTOM_FIELD_VALUES,_Fields.WXUSER_ID};
   public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -452,7 +452,7 @@ public class UserEmployeeDO implements org.apache.thrift.TBase<UserEmployeeDO, U
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BYTE)));
     tmpMap.put(_Fields.CUSTOM_FIELD_VALUES, new org.apache.thrift.meta_data.FieldMetaData("customFieldValues", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.WX_USER_ID, new org.apache.thrift.meta_data.FieldMetaData("wxUserId", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+    tmpMap.put(_Fields.WXUSER_ID, new org.apache.thrift.meta_data.FieldMetaData("wxuser_id", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(UserEmployeeDO.class, metaDataMap);
@@ -578,7 +578,7 @@ public class UserEmployeeDO implements org.apache.thrift.TBase<UserEmployeeDO, U
     if (other.isSetCustomFieldValues()) {
       this.customFieldValues = other.customFieldValues;
     }
-    this.wxUserId = other.wxUserId;
+    this.wxuser_id = other.wxuser_id;
   }
 
   public UserEmployeeDO deepCopy() {
@@ -656,8 +656,8 @@ public class UserEmployeeDO implements org.apache.thrift.TBase<UserEmployeeDO, U
     setAuthMethodIsSet(false);
     this.authMethod = 0;
     this.customFieldValues = null;
-    setWxUserIdIsSet(false);
-    this.wxUserId = 0;
+    setWxuser_idIsSet(false);
+    this.wxuser_id = 0;
   }
 
   public int getId() {
@@ -1841,27 +1841,27 @@ public class UserEmployeeDO implements org.apache.thrift.TBase<UserEmployeeDO, U
     }
   }
 
-  public int getWxUserId() {
-    return this.wxUserId;
+  public int getWxuser_id() {
+    return this.wxuser_id;
   }
 
-  public UserEmployeeDO setWxUserId(int wxUserId) {
-    this.wxUserId = wxUserId;
-    setWxUserIdIsSet(true);
+  public UserEmployeeDO setWxuser_id(int wxuser_id) {
+    this.wxuser_id = wxuser_id;
+    setWxuser_idIsSet(true);
     return this;
   }
 
-  public void unsetWxUserId() {
-    __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __WXUSERID_ISSET_ID);
+  public void unsetWxuser_id() {
+    __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __WXUSER_ID_ISSET_ID);
   }
 
-  /** Returns true if field wxUserId is set (has been assigned a value) and false otherwise */
-  public boolean isSetWxUserId() {
-    return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __WXUSERID_ISSET_ID);
+  /** Returns true if field wxuser_id is set (has been assigned a value) and false otherwise */
+  public boolean isSetWxuser_id() {
+    return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __WXUSER_ID_ISSET_ID);
   }
 
-  public void setWxUserIdIsSet(boolean value) {
-    __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __WXUSERID_ISSET_ID, value);
+  public void setWxuser_idIsSet(boolean value) {
+    __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __WXUSER_ID_ISSET_ID, value);
   }
 
   public void setFieldValue(_Fields field, java.lang.Object value) {
@@ -2266,11 +2266,11 @@ public class UserEmployeeDO implements org.apache.thrift.TBase<UserEmployeeDO, U
       }
       break;
 
-    case WX_USER_ID:
+    case WXUSER_ID:
       if (value == null) {
-        unsetWxUserId();
+        unsetWxuser_id();
       } else {
-        setWxUserId((java.lang.Integer)value);
+        setWxuser_id((java.lang.Integer)value);
       }
       break;
 
@@ -2429,8 +2429,8 @@ public class UserEmployeeDO implements org.apache.thrift.TBase<UserEmployeeDO, U
     case CUSTOM_FIELD_VALUES:
       return getCustomFieldValues();
 
-    case WX_USER_ID:
-      return getWxUserId();
+    case WXUSER_ID:
+      return getWxuser_id();
 
     }
     throw new java.lang.IllegalStateException();
@@ -2543,8 +2543,8 @@ public class UserEmployeeDO implements org.apache.thrift.TBase<UserEmployeeDO, U
       return isSetAuthMethod();
     case CUSTOM_FIELD_VALUES:
       return isSetCustomFieldValues();
-    case WX_USER_ID:
-      return isSetWxUserId();
+    case WXUSER_ID:
+      return isSetWxuser_id();
     }
     throw new java.lang.IllegalStateException();
   }
@@ -3014,12 +3014,12 @@ public class UserEmployeeDO implements org.apache.thrift.TBase<UserEmployeeDO, U
         return false;
     }
 
-    boolean this_present_wxUserId = true && this.isSetWxUserId();
-    boolean that_present_wxUserId = true && that.isSetWxUserId();
-    if (this_present_wxUserId || that_present_wxUserId) {
-      if (!(this_present_wxUserId && that_present_wxUserId))
+    boolean this_present_wxuser_id = true && this.isSetWxuser_id();
+    boolean that_present_wxuser_id = true && that.isSetWxuser_id();
+    if (this_present_wxuser_id || that_present_wxuser_id) {
+      if (!(this_present_wxuser_id && that_present_wxuser_id))
         return false;
-      if (this.wxUserId != that.wxUserId)
+      if (this.wxuser_id != that.wxuser_id)
         return false;
     }
 
@@ -3230,9 +3230,9 @@ public class UserEmployeeDO implements org.apache.thrift.TBase<UserEmployeeDO, U
     if (isSetCustomFieldValues())
       hashCode = hashCode * 8191 + customFieldValues.hashCode();
 
-    hashCode = hashCode * 8191 + ((isSetWxUserId()) ? 131071 : 524287);
-    if (isSetWxUserId())
-      hashCode = hashCode * 8191 + wxUserId;
+    hashCode = hashCode * 8191 + ((isSetWxuser_id()) ? 131071 : 524287);
+    if (isSetWxuser_id())
+      hashCode = hashCode * 8191 + wxuser_id;
 
     return hashCode;
   }
@@ -3745,12 +3745,12 @@ public class UserEmployeeDO implements org.apache.thrift.TBase<UserEmployeeDO, U
         return lastComparison;
       }
     }
-    lastComparison = java.lang.Boolean.valueOf(isSetWxUserId()).compareTo(other.isSetWxUserId());
+    lastComparison = java.lang.Boolean.valueOf(isSetWxuser_id()).compareTo(other.isSetWxuser_id());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetWxUserId()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.wxUserId, other.wxUserId);
+    if (isSetWxuser_id()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.wxuser_id, other.wxuser_id);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -4198,10 +4198,10 @@ public class UserEmployeeDO implements org.apache.thrift.TBase<UserEmployeeDO, U
       }
       first = false;
     }
-    if (isSetWxUserId()) {
+    if (isSetWxuser_id()) {
       if (!first) sb.append(", ");
-      sb.append("wxUserId:");
-      sb.append(this.wxUserId);
+      sb.append("wxuser_id:");
+      sb.append(this.wxuser_id);
       first = false;
     }
     sb.append(")");
@@ -4649,10 +4649,10 @@ public class UserEmployeeDO implements org.apache.thrift.TBase<UserEmployeeDO, U
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 51: // WX_USER_ID
+          case 51: // WXUSER_ID
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.wxUserId = iprot.readI32();
-              struct.setWxUserIdIsSet(true);
+              struct.wxuser_id = iprot.readI32();
+              struct.setWxuser_idIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -4984,9 +4984,9 @@ public class UserEmployeeDO implements org.apache.thrift.TBase<UserEmployeeDO, U
           oprot.writeFieldEnd();
         }
       }
-      if (struct.isSetWxUserId()) {
-        oprot.writeFieldBegin(WX_USER_ID_FIELD_DESC);
-        oprot.writeI32(struct.wxUserId);
+      if (struct.isSetWxuser_id()) {
+        oprot.writeFieldBegin(WXUSER_ID_FIELD_DESC);
+        oprot.writeI32(struct.wxuser_id);
         oprot.writeFieldEnd();
       }
       oprot.writeFieldStop();
@@ -5157,7 +5157,7 @@ public class UserEmployeeDO implements org.apache.thrift.TBase<UserEmployeeDO, U
       if (struct.isSetCustomFieldValues()) {
         optionals.set(49);
       }
-      if (struct.isSetWxUserId()) {
+      if (struct.isSetWxuser_id()) {
         optionals.set(50);
       }
       oprot.writeBitSet(optionals, 51);
@@ -5311,8 +5311,8 @@ public class UserEmployeeDO implements org.apache.thrift.TBase<UserEmployeeDO, U
       if (struct.isSetCustomFieldValues()) {
         oprot.writeString(struct.customFieldValues);
       }
-      if (struct.isSetWxUserId()) {
-        oprot.writeI32(struct.wxUserId);
+      if (struct.isSetWxuser_id()) {
+        oprot.writeI32(struct.wxuser_id);
       }
     }
 
@@ -5521,8 +5521,8 @@ public class UserEmployeeDO implements org.apache.thrift.TBase<UserEmployeeDO, U
         struct.setCustomFieldValuesIsSet(true);
       }
       if (incoming.get(50)) {
-        struct.wxUserId = iprot.readI32();
-        struct.setWxUserIdIsSet(true);
+        struct.wxuser_id = iprot.readI32();
+        struct.setWxuser_idIsSet(true);
       }
     }
   }

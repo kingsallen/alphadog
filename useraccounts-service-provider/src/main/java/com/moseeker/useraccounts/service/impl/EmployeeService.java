@@ -188,7 +188,6 @@ public class EmployeeService {
 				// 验证员工是否已认证
 				query.getEqualFilter().clear();
 				query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
-				query.getEqualFilter().put("email", bindingParams.getEmail());
 				query.getEqualFilter().put("disable", "0");
 				query.getEqualFilter().put("status", "0");
 				UserEmployeeDO employee = userDao.getEmployee(query);
@@ -312,7 +311,7 @@ public class EmployeeService {
 					try {
 						wxResult = wxUserDao.getResource(query);
 						if (wxResult.getStatus() == 0 && StringUtils.isNotNullOrEmpty(wxResult.getData())) {
-							e.setWxUserId(JSONObject.parseObject(wxResult.getData()).getIntValue("id"));
+							e.setWxuser_id(JSONObject.parseObject(wxResult.getData()).getIntValue("id"));
 						}
 					} catch (Exception e1) {
 						log.error(e1.getMessage(), e1);
@@ -337,6 +336,12 @@ public class EmployeeService {
 		}
 		log.info("updateEmployee response : {}", response);
 		return response;
+	}
+	
+	public static void main(String[] args) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("id", 100L);
+		System.out.println(JSONObject.parseObject(JSONObject.toJSONString(map)).getIntValue("id"));
 	}
 	
 	public Result unbind(int employeeId, int companyId, int userId)
