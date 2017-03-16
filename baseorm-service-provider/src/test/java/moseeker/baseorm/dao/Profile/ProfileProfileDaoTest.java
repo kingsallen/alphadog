@@ -1,40 +1,29 @@
 package moseeker.baseorm.dao.Profile;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.baseorm.Thriftservice.ProfileDaoThriftService;
-import com.moseeker.baseorm.Thriftservice.UserEmployeeDaoThriftService;
-import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
-import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.dbutils.DBConnHelper;
-import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.baseorm.Thriftservice.ProfileProfileDaoThriftService;
 import com.moseeker.common.util.HttpClient;
 import com.moseeker.thrift.gen.common.struct.Response;
 import org.apache.thrift.TException;
-import org.jooq.DSLContext;
-import org.jooq.types.UInteger;
 import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.net.ConnectException;
-import java.sql.Connection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Created by moseeker on 2017/3/13.
  */
-public class ProfileDaoTest {
+public class ProfileProfileDaoTest {
 
-    ProfileDaoThriftService service;
+    ProfileProfileDaoThriftService service;
 
     public void init() {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
         context.scan("com.moseeker.baseorm");
         context.refresh();
-        service = context.getBean(ProfileDaoThriftService.class);
+        service = context.getBean(ProfileProfileDaoThriftService.class);
     }
 
     @Test

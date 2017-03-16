@@ -3,6 +3,9 @@ package com.moseeker.profile.service.impl;
 import java.text.ParseException;
 import java.util.UUID;
 
+import com.moseeker.common.constants.RespnoseUtil;
+import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.thrift.gen.dao.service.ProfileProfileDao;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -168,5 +171,14 @@ public class ProfileService extends JOOQBaseServiceImpl<Profile, ProfileProfileR
 
 	public void setCompletenessDao(CompletenessDao completenessDao) {
 		this.completenessDao = completenessDao;
+	}
+
+	ProfileProfileDao.Iface profileProfileDao = ServiceManager.SERVICEMANAGER
+			.getService(ProfileProfileDao.Iface.class);
+
+
+	public Response getProfileByApplication(int companyId, int sourceId, int ats_status, boolean recommender,boolean dl_url_required) throws TException {
+
+		return profileProfileDao.getResourceByApplication(companyId,sourceId,ats_status,recommender,dl_url_required);
 	}
 }

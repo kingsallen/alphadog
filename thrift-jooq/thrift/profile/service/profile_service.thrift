@@ -11,7 +11,6 @@ namespace java com.moseeker.thrift.gen.profile.service
  
 service WholeProfileServices {
     common_struct.Response getResource(1:i32 userId, 2:i32 profileId, 3:string uuid);
-    common_struct.Response getResourceByApplication(1:i32 companyId,2:i32 sourceId,3:i32 atsStatus,4:bool recommender,5:bool dl_url_required);
     common_struct.Response postResource(1:string profile, 2:i32 user_id);
     common_struct.Response importCV(1:string profile, 2:i32 user_id);
     common_struct.Response verifyRequires(1:i32 userId, 2:i32 positionId);
@@ -36,6 +35,7 @@ service ProfileServices {
     common_struct.Response getCompleteness(1:i32 user_id, 2: string uuid, 3: i32 profile_id);
     common_struct.Response reCalculateUserCompleteness(1:i32 userId, 2:string mobile);
     common_struct.Response reCalculateUserCompletenessBySettingId(1:i32 id);
+    common_struct.Response getProfileByApplication(1:i32 companyId,2:i32 sourceId,3:i32 ats_status,4:bool recommender,5:bool dl_url_required);
 }
 
 service AttachmentServices {

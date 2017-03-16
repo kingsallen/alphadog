@@ -47,15 +47,6 @@ public class WholeProfileService {
 
 	ThreadPool pool = ThreadPool.Instance;
 
-	com.moseeker.thrift.gen.dao.service.ProfileDao.Iface thriftProfileDao = ServiceManager.SERVICEMANAGER
-			.getService(com.moseeker.thrift.gen.dao.service.ProfileDao.Iface.class);
-
-
-	public Response getResourceByApplication(int companyId, int sourceId, int atsStatus, boolean recommender,boolean dl_url_required) throws TException {
-
-		return thriftProfileDao.getResourceByApplication(companyId,sourceId,atsStatus,recommender,dl_url_required);
-	}
-
 	public Response getResource(int userId, int profileId, String uuid) throws TException {
 		logger.info("WholeProfileService getResource");
 		logger.info("WholeProfileService getResource start : {}",new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));

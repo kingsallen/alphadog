@@ -329,8 +329,6 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
             }
         }
 
-        map.put("attachment_url","temp url");
-
         if(dl_url_required && application.getApplier_id() != 0){
             String url = getDownloadUrlByUserId((int) application.getApplier_id());
             map.put("download_url",url == null?"":url);
@@ -341,6 +339,11 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
     }
 
     public Response getResourceByApplication(int companyId, int sourceId, int atsStatus, boolean recommender, boolean dl_url_required) throws Exception {
+
+        if(true){
+            return ResponseUtils.success(111);
+        }
+
         Connection conn = null;
         try {
             conn = DBConnHelper.DBConn.getConn();

@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.moseeker.thrift.gen.profile.service.ProfileServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -38,6 +39,8 @@ public class ProfileController {
 
 	WholeProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER
 			.getService(WholeProfileServices.Iface.class);
+	ProfileServices.Iface service = ServiceManager.SERVICEMANAGER
+			.getService(ProfileServices.Iface.class);
 	OutPutResumeUtil outPutResumeService = new OutPutResumeUtil();
 
 	ProfileBS.Iface profileBSService = ServiceManager.SERVICEMANAGER.getService(ProfileBS.Iface.class);
@@ -264,7 +267,7 @@ public class ProfileController {
 				return ResponseLogNotification.fail(request,"sourceId不能为空");
 			}
 
-			Response result = profileService.getResourceByApplication(companyId,sourceId,atsStatus,recommender,dlUrlRequired);
+			Response result = service.getProfileByApplication(companyId,sourceId,atsStatus,recommender,dlUrlRequired);
 
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
