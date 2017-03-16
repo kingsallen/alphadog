@@ -96,7 +96,7 @@ public class ChatService {
                                 .filter(userUserDO -> userUserDO.getId() == chatUnreadCountDO.getUserId()).findAny();
                         if(userUserDOOptional.isPresent()) {
                             hrChatRoomVO.setHeadImgUrl(userUserDOOptional.get().getHeadimg());
-                            String name = StringUtils.isNullOrEmpty(userUserDOOptional.get().getName())
+                            String name = StringUtils.isNotNullOrEmpty(userUserDOOptional.get().getName())
                                     ? userUserDOOptional.get().getName():userUserDOOptional.get().getNickname();
                             hrChatRoomVO.setName(name);
                         }
@@ -186,7 +186,7 @@ public class ChatService {
                                     if(companyDOOptional.isPresent()) {
                                         userChatRoomVO.setCompanyLogo(companyDOOptional.get().getLogo());
                                         String companyName;
-                                        if(StringUtils.isNullOrEmpty(companyDOOptional.get().getAbbreviation())) {
+                                        if(StringUtils.isNotNullOrEmpty(companyDOOptional.get().getAbbreviation())) {
                                             companyName = companyDOOptional.get().getAbbreviation();
                                         } else {
                                             companyName = companyDOOptional.get().getName();
@@ -371,7 +371,7 @@ public class ChatService {
                 if(positionDO.getCompanyId() > 0) {
                     HrCompanyDO companyDO = chaoDao.getCompany(positionDO.getCompanyId());
                     String companyName;
-                    if(StringUtils.isNullOrEmpty(companyDO.getAbbreviation())) {
+                    if(StringUtils.isNotNullOrEmpty(companyDO.getAbbreviation())) {
                         companyName = companyDO.getAbbreviation();
                     } else {
                         companyName = companyDO.getName();
