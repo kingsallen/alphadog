@@ -94,7 +94,7 @@ public class EmployeeService {
 			    if (wxResult.getStatus() == 0) {
 			    		wxuserId = JSONObject.parseObject(wxResult.getData()).getIntValue("id");
 			    }
-			    response.setEmployee(new Employee(employee.getId(), employee.getEmployeeid(), employee.getCompanyId(), employee.getSysuserId(), employee.getMobile(), wxuserId, employee.getCname(), employee.getAward(), employee.getIsRpSent() == 0 ? false : true, employee.getCustomFieldValues()));
+			    response.setEmployee(new Employee(employee.getId(), employee.getEmployeeid(), employee.getCompanyId(), employee.getSysuserId(), employee.getMobile(), wxuserId, org.apache.commons.lang.StringUtils.defaultIfBlank(employee.getCname(), ""), employee.getAward(), employee.getIsRpSent() == 0 ? false : true, employee.getCustomFieldValues()));
 
 			    if (employee.getActivation() == 0) {
 			    		response.setBindStatus(BindStatus.BINDED);
