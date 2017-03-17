@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.mail.MessagingException;
 
+import com.moseeker.common.exception.RedisException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,10 +75,14 @@ public class MandrillMailConsumer {
 	 * @return
 	 */
 	private String fetchConstantlyMessage() {
-		RedisClient redisClient = RedisClientFactory.getCacheClient();
-		List<String> el = redisClient.brpop(Constant.APPID_ALPHADOG, Constant.MQ_MESSAGE_EMAIL_MANDRILL);
-		if (el != null){
-			return el.get(1);
+		try {
+			RedisClient redisClient = RedisClientFactory.getCacheClient();
+			List<String> el = redisClient.brpop(Constant.APPID_ALPHADOG, Constant.MQ_MESSAGE_EMAIL_MANDRILL);
+			if (el != null){
+                return el.get(1);
+            }
+		} catch (RedisException e) {
+			logger.error(e.getMessage(), e);
 		}
 		return null;
 	}
