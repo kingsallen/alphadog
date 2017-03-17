@@ -100,7 +100,8 @@ public class UserEmployeeDao extends BaseDaoImpl<UserEmployeeRecord, UserEmploye
         return 0;
     }
 
-    public int postPutUserEmployeeBatch(List<UserEmployeeStruct> userEmployees) throws Exception {
+    public int[] postPutUserEmployeeBatch(List<UserEmployeeStruct> userEmployees) throws Exception {
+        int[] successArray = new int[userEmployees.size()];
         int i = 0;
         for (UserEmployeeStruct struct : userEmployees) {
             QueryUtil queryUtil = null;
@@ -119,18 +120,28 @@ public class UserEmployeeDao extends BaseDaoImpl<UserEmployeeRecord, UserEmploye
             if (queryUtil != null) {
                 List<UserEmployeeRecord> userEmployeeRecords = getResources(queryUtil);
                 if (userEmployeeRecords.size() > 0) {
+                    int innserSuccessFlag = 0;
                     for (UserEmployeeRecord record : userEmployeeRecords) {
                         UserEmployeeRecord userEmployeeRecord = BeanUtils.structToDB(struct, UserEmployeeRecord.class);
                         userEmployeeRecord.setId(record.getId());
-                        userEmployeeRecord.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-                        i += putResource(userEmployeeRecord);
+                        try {
+                            innserSuccessFlag += putResource(userEmployeeRecord);
+                        }catch (Exception e){
+                        }
                     }
+                    successArray[i] = innserSuccessFlag > 0 ? 1 : 0;
                 } else {
-                    postResource(BeanUtils.structToDB(struct, UserEmployeeRecord.class));
-                    i += 1;
+                    try {
+                        successArray[i] = postResource(BeanUtils.structToDB(struct, UserEmployeeRecord.class));
+                    }catch (Exception e){
+                        successArray[i] = 0;
+                    }
                 }
+            }else{
+                successArray[i] = 0;
             }
+            i++;
         }
-        return i;
+        return successArray;
     }
 }

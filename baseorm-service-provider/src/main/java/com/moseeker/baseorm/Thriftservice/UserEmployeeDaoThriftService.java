@@ -143,8 +143,7 @@ public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
     @Override
     public Response postPutUserEmployeeBatch(List<UserEmployeeStruct> userEmployees) throws TException {
         try {
-            int result = userEmployeeDao.postPutUserEmployeeBatch(userEmployees);
-            return ResponseUtils.success(result);
+            return ResponseUtils.success(userEmployeeDao.postPutUserEmployeeBatch(userEmployees));
         } catch (Exception e) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }

@@ -1,4 +1,4 @@
-package com.moseeker.baseorm.dao.profile;
+package com.moseeker.baseorm.dao.profiledb;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;

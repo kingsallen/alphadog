@@ -1,7 +1,6 @@
 package com.moseeker.baseorm.Thriftservice;
 
-import com.moseeker.baseorm.dao.profile.ProfileDao;
-import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.baseorm.dao.profiledb.ProfileDao;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.ProfileProfileDao;
 import org.apache.thrift.TException;

@@ -1,4 +1,4 @@
-package com.moseeker.baseorm.dao.user;
+package com.moseeker.baseorm.dao.userdb;
 
 import com.moseeker.baseorm.db.userdb.tables.UserThirdpartyUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserThirdpartyUserRecord;

@@ -1,6 +1,6 @@
 package com.moseeker.baseorm.service.Impl;
 
-import com.moseeker.baseorm.dao.user.ThirdPartyUserDao;
+import com.moseeker.baseorm.dao.userdb.ThirdPartyUserDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.db.userdb.tables.records.UserThirdpartyUserRecord;
 import com.moseeker.baseorm.service.UserDBService;
@@ -49,9 +49,13 @@ public class UserDBServiceImpl implements UserDBService {
                 Timestamp updateTime = new Timestamp(System.currentTimeMillis());
                 record.setUpdateTime(updateTime);
                 int row = thirdPartyUserDao.putResource(record);
-                return ResponseUtils.success(row);
+                if(row > 0) {
+                    return ResponseUtils.success(row);
+                }else{
+                    return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+                }
             } else {
-                return ResponseUtils.success(0);
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
             }
         } catch (Exception e) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
