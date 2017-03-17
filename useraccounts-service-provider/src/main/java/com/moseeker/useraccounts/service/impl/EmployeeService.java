@@ -188,6 +188,7 @@ public class EmployeeService {
 				// 验证员工是否已认证
 				query.getEqualFilter().clear();
 				query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
+				query.getEqualFilter().put("sysuser_id", String.valueOf(bindingParams.getUserId()));
 				query.getEqualFilter().put("disable", "0");
 				query.getEqualFilter().put("status", "0");
 				UserEmployeeDO employee = userDao.getEmployee(query);
