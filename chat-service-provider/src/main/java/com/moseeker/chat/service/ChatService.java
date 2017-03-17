@@ -1,5 +1,6 @@
 package com.moseeker.chat.service;
 
+import com.google.common.collect.Lists;
 import com.moseeker.chat.constant.ChatSpeakerType;
 import com.moseeker.chat.service.entity.ChatDao;
 import com.moseeker.chat.utils.Page;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -96,7 +98,7 @@ public class ChatService {
                                 .filter(userUserDO -> userUserDO.getId() == chatUnreadCountDO.getUserId()).findAny();
                         if(userUserDOOptional.isPresent()) {
                             hrChatRoomVO.setHeadImgUrl(userUserDOOptional.get().getHeadimg());
-                            String name = StringUtils.isNullOrEmpty(userUserDOOptional.get().getName())
+                            String name = StringUtils.isNotNullOrEmpty(userUserDOOptional.get().getName())
                                     ? userUserDOOptional.get().getName():userUserDOOptional.get().getNickname();
                             hrChatRoomVO.setName(name);
                         }
@@ -186,7 +188,7 @@ public class ChatService {
                                     if(companyDOOptional.isPresent()) {
                                         userChatRoomVO.setCompanyLogo(companyDOOptional.get().getLogo());
                                         String companyName;
-                                        if(StringUtils.isNullOrEmpty(companyDOOptional.get().getAbbreviation())) {
+                                        if(StringUtils.isNotNullOrEmpty(companyDOOptional.get().getAbbreviation())) {
                                             companyName = companyDOOptional.get().getAbbreviation();
                                         } else {
                                             companyName = companyDOOptional.get().getName();
@@ -221,7 +223,7 @@ public class ChatService {
 
         int count = 0;
         Future<Integer> countFuture = pool.startTast(() -> chaoDao.countChatLog(roomId));
-        Future chatFuture = pool.startTast(() -> chaoDao.listChat(roomId));
+        Future chatFuture = pool.startTast(() -> chaoDao.listChat(roomId, pageNo, pageSize));
         try {
             count = countFuture.get();
         } catch (InterruptedException | ExecutionException e) {
@@ -243,9 +245,10 @@ public class ChatService {
                     chatVO.setCreate_time(chatDO.getCreateTime());
                     byte speaker = (byte) (chatDO.isSpeaker() ? 1:0);
                     chatVO.setSpeaker(speaker);
-
                     chatVOList.add(chatVO);
                 });
+                //Lists.reverse(chatDOList);
+                Collections.reverse(chatVOList);
                 chatsVO.setChatLogs(chatVOList);
             }
         } catch (InterruptedException | ExecutionException e) {
@@ -367,11 +370,12 @@ public class ChatService {
                 positionVO.setSalaryBottom(positionDO.getSalaryBottom());
                 positionVO.setSalaryTop(positionDO.getSalaryTop());
                 positionVO.setUpdateTime(positionDO.getUpdateTime());
+                positionVO.setCity(positionDO.getCity());
 
                 if(positionDO.getCompanyId() > 0) {
                     HrCompanyDO companyDO = chaoDao.getCompany(positionDO.getCompanyId());
                     String companyName;
-                    if(StringUtils.isNullOrEmpty(companyDO.getAbbreviation())) {
+                    if(StringUtils.isNotNullOrEmpty(companyDO.getAbbreviation())) {
                         companyName = companyDO.getAbbreviation();
                     } else {
                         companyName = companyDO.getName();
