@@ -218,12 +218,13 @@ public class EmployeeService {
 					mesBody.put("#official_account_name#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(hrWxWechatJson.getString("name"), ""));
 					mesBody.put("#official_account_qrcode#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(hrWxWechatJson.getString("qrcode"), ""));
 					mesBody.put("#date_today#",  LocalDate.now().toString());
-					mesBody.put("#auth_url#", ConfigPropertiesUtil.getInstance().get("platform.url", String.class).concat("m/bindemail?activation_code=").concat(activationCode));
+					mesBody.put("#auth_url#", ConfigPropertiesUtil.getInstance().get("platform.url", String.class).concat("m/employee/bindemail?activation_code=").concat(activationCode).concat("wechat_signature=").concat(hrWxWechatJson.getString("signature")));
 					// 发送认证邮件
 					Response mailResponse = mqService.sendAuthEMail(mesBody, Constant.EVENT_TYPE_EMPLOYEE_AUTH, bindingParams.getEmail(), "员工认证");
 					// 邮件发送成功
 					if (mailResponse.getStatus() == 0) {
-						client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, String.valueOf(employee.getId()), JSONObject.toJSONString(bindingParams));
+						String redStr = client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, String.valueOf(employee.getId()), JSONObject.toJSONString(bindingParams));
+						log.info("set redis result: ", redStr);
 						response.setSuccess(true);
 						response.setMessage("发送激活邮件成功");
 					} else {

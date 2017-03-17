@@ -93,14 +93,14 @@
 //	@Test
 //	public void bindTest() {
 //		BindingParams bp = new BindingParams();
-////		bp.setEmail("510340677@qq.com");
-////		bp.setCompanyId(2878);
-////		bp.setType(BindType.EMAIL);
-//		bp.setAnswer1("上海");
-//		bp.setAnswer2("仟寻");
+//		bp.setEmail("510340677@qq.com");
 //		bp.setCompanyId(2878);
-//		bp.setType(BindType.QUESTIONS);
-//		bp.setUserId(1122611);
+//		bp.setType(BindType.EMAIL);
+////		bp.setAnswer1("上海");
+////		bp.setAnswer2("仟寻");
+////		bp.setCompanyId(2878);
+////		bp.setType(BindType.QUESTIONS);
+////		bp.setUserId(1122611);
 //		try {
 //			Result result = service.bind(bp);
 //			System.out.println(result);
