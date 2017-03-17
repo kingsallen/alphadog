@@ -578,7 +578,7 @@ public class UserHrAccountService {
             commonQuery.setEqualFilter(param);
             commonQuery.setPage(page);
             commonQuery.setPer_page(per_age);
-            Response response = hraccountDao.getUserHrAccounts(commonQuery);
+            Response response = hraccountDao.getAccounts(commonQuery);
             return response;
         } catch (TException e) {
             logger.error(e.getMessage(), e);
