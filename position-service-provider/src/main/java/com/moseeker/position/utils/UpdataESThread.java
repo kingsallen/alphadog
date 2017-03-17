@@ -1,14 +1,20 @@
 package com.moseeker.position.utils;
 
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
+import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 批量更新ES Search Engine
@@ -20,10 +26,14 @@ public class UpdataESThread implements Runnable {
 
     private com.moseeker.thrift.gen.searchengine.service.SearchengineServices.Iface searchengineServices;
 
+    private com.moseeker.thrift.gen.company.service.CompanyServices.Iface companyServices;
+
+
     private List<JobPositionRecord> list;
 
-    public UpdataESThread(SearchengineServices.Iface searchengineServices, List<JobPositionRecord> list) {
+    public UpdataESThread(SearchengineServices.Iface searchengineServices, CompanyServices.Iface companyServices, List<JobPositionRecord> list) {
         this.searchengineServices = searchengineServices;
+        this.companyServices = companyServices;
         this.list = list;
     }
 
@@ -31,9 +41,35 @@ public class UpdataESThread implements Runnable {
     public void run() {
         logger.info("---Start ES Search Engine---");
         if (list != null && list.size() > 0) {
+            String companyId = BeanUtils.converToString(list.get(0).getCompanyId().intValue());
+
+            CommonQuery query = new CommonQuery();
+            query.putToEqualFilter("id", companyId);
+            Response company_resp = null;
+            try {
+                company_resp = companyServices.getAllCompanies(query);
+            } catch (TException e) {
+                logger.error(e.getMessage(), e);
+            }
+
+            String company = company_resp.data;
+            List company_maps = (List) JSON.parse(company);
+            Map company_map = (Map) company_maps.get(0);
+            String company_name = (String) company_map.get("name");
+            String scale = (String) company_map.get("scale");
+
             for (JobPositionRecord jobPositionRecord : list) {
                 try {
-                    searchengineServices.updateposition(JSONObject.toJSONString(jobPositionRecord.intoMap()), jobPositionRecord.getId());
+                    Map map = jobPositionRecord.intoMap();
+                    map.put("company_name", company_name);
+                    map.put("scale", scale);
+                    String degree_name = BeanUtils.converToString(map.get("degree_name"));
+                    Integer degree_above = BeanUtils.converToInteger(map.get("degree_above"));
+                    if (degree_above == 1) {
+                        degree_name = degree_name + "及以上";
+                    }
+                    map.put("degree_name", degree_name);
+                    searchengineServices.updateposition(JSONObject.toJSONString(map), jobPositionRecord.getId());
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
                 }

@@ -83,6 +83,10 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
     com.moseeker.thrift.gen.searchengine.service.SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER
             .getService(com.moseeker.thrift.gen.searchengine.service.SearchengineServices.Iface.class);
 
+
+    com.moseeker.thrift.gen.company.service.CompanyServices.Iface companyServices = ServiceManager.SERVICEMANAGER
+            .getService(com.moseeker.thrift.gen.company.service.CompanyServices.Iface.class);
+
     @Override
     protected void initDao() {
         super.dao = this.dao;
@@ -460,7 +464,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                         jobPositionCityDao.delJobPostionCityByPids(deleteCitylist);
                         jobPositonExtDao.delResources(deleteExtlist);
                         // 更新
-                        UpdataESThread updataESThread = new UpdataESThread(searchengineServices, dbList);
+                        UpdataESThread updataESThread = new UpdataESThread(searchengineServices, companyServices, dbList);
                         Thread thread = new Thread(updataESThread);
                         thread.start();
                         return ResponseUtils.success(0);
@@ -518,14 +522,14 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                             QueryUtil query = new QueryUtil();
                             query.addEqualFilter("pid", String.valueOf(jobPositionRecordTemp.getId()));
                             JobPositionExtRecord jobPositionExtRecord = jobPositonExtDao.getResource(query);
-                            if (fieldsNohashs == null || jobPostrionHandlerDate.getExtra() == null ||
+                            if (fieldsNohashs == null ||
                                     (!md5(fieldsNohashs, jobPositionRecordTemp, jobPositionExtRecord.getExtra()).equals(md5(fieldsNohashs, record, jobPostrionHandlerDate.getExtra())))) {
                                 // 设置不需要更新的字段
                                 if (fieldsNooverwriteStrings != null && fieldsNooverwriteStrings.length > 0) {
                                     for (Field field : record.fields()) {
                                         for (String fieldNo : fieldsNooverwriteStrings) {
                                             if (field.getName().equals(fieldNo)) {
-                                                record.set(field, null);
+                                                record.set(field, jobPositionRecordTemp.getValue(field.getName()));
                                             }
                                         }
                                     }
@@ -570,7 +574,6 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                                 jobPositionCityRecordsAddlist.addAll(cityCode(jobPostrionHandlerDate.getCity(), record.getId()));
                             }
                         }
-
                         // 需要新增的JobPosition数据
                         jobPositionAddRecordList.add(record);
                         if (jobPostrionHandlerDate.getExtra() != null) {
@@ -605,13 +608,16 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     }
                     jobPositionCityDao.postResources(jobPositionCityRecordsUpdatelist);
                 }
+                if (jobPositionUpdateRecordList.size() > 0 || jobPositionAddRecordList.size() > 0) {
+                    // 更新ES Search Engine
+                    if (jobPositionUpdateRecordList.size() > 0) {
+                        jobPositionAddRecordList.addAll(jobPositionUpdateRecordList);
+                    }
+                    UpdataESThread updataESThread = new UpdataESThread(searchengineServices, companyServices, jobPositionAddRecordList);
+                    Thread thread = new Thread(updataESThread);
+                    thread.start();
+                }
             }
-            // 取最新的数据用于更新ES Search Engine
-            dbList = jobPositionDao.getResources(commonQuery);
-            // 更新ES Search Engine
-            UpdataESThread updataESThread = new UpdataESThread(searchengineServices, dbList);
-            Thread thread = new Thread(updataESThread);
-            thread.start();
             return ResponseUtils.success(0);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -662,7 +668,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 jobPositonExtDao.delResource(jobPositionExtRecord);
                 // 更新ES Search Engine
                 jobPositionRecords.add(jobPositionRecord);
-                UpdataESThread updataESThread = new UpdataESThread(searchengineServices, jobPositionRecords);
+                UpdataESThread updataESThread = new UpdataESThread(searchengineServices, companyServices, jobPositionRecords);
                 Thread thread = new Thread(updataESThread);
                 thread.start();
                 return ResponseUtils.success(0);
