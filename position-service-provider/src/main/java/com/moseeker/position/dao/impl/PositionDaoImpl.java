@@ -79,7 +79,7 @@ public class PositionDaoImpl extends BaseDaoImpl<JobPositionRecord, JobPosition>
 			if (company_type == 0) {
 				UserHrAccountRecord account = create.selectFrom(UserHrAccount.USER_HR_ACCOUNT).where(UserHrAccount.USER_HR_ACCOUNT.ID.equal(positionAndCompanyRecord.getValue(JobPosition.JOB_POSITION.PUBLISHER))).fetchOne();
 				//如果是子账号，则查询子账号下的推荐职位；如果是主帐号，则查询公司下的所有职位
-				if(account.getAccountType().intValue() == 1) { 
+				if(account != null && account.getAccountType() != null && account.getAccountType().intValue() == 1) {
 					/* 检查是否是子公司的职位 */
 					int publisher = (Integer) positionAndCompanyRecord.getValue("publisher");
 
