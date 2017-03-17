@@ -385,11 +385,11 @@ public class ChatServiceTest {
         assertEquals(3, chatsVO.getTotalRow());
         List<ChatVO> chatVOList = chatsVO.getChatLogs();
         ChatVO chatVO1 = chatVOList.get(0);
-        assertEquals(1, chatVO1.getId());
+        assertEquals(3, chatVO1.getId());
         ChatVO chatVO2 = chatVOList.get(1);
         assertEquals(2, chatVO2.getId());
         ChatVO chatVO3 = chatVOList.get(2);
-        assertEquals(3, chatVO3.getId());
+        assertEquals(1, chatVO3.getId());
     }
 
     @Test
