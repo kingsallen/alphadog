@@ -5,7 +5,6 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.chat.struct.ResultOfSaveRoomVO;
 import com.moseeker.thrift.gen.dao.service.HrDBDao;
 import com.moseeker.thrift.gen.dao.service.JobDBDao;
 import com.moseeker.thrift.gen.dao.service.UserDBDao;
@@ -332,14 +331,18 @@ public class ChatDao {
 
     /**
      * 分页查找聊天室下的聊天记录
-     * @param roomId 聊天室编号
-     * @return 聊天内容集合
+     *
+     * @param roomId 聊天室编号  @return 聊天内容集合
+     * @param pageNo 页码
+     *@param pageSize 分页信息
      */
-    public List<HrWxHrChatDO> listChat(int roomId) {
+    public List<HrWxHrChatDO> listChat(int roomId, int pageNo, int pageSize) {
         QueryUtil queryUtil = new QueryUtil();
         queryUtil.addEqualFilter("chatlist_id", roomId);
         queryUtil.setOrder("desc");
         queryUtil.setSortby("create_time");
+        queryUtil.setPage(pageNo);
+        queryUtil.setPer_page(pageSize);
         try {
             return hrDBDao.listChats(queryUtil);
         } catch (CURDException e) {

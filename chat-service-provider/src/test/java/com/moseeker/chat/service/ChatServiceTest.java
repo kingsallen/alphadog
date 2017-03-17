@@ -2,7 +2,6 @@ package com.moseeker.chat.service;
 
 import com.moseeker.chat.constant.ChatSpeakerType;
 import com.moseeker.chat.service.entity.ChatDao;
-import com.moseeker.db.hrdb.tables.HrCompany;
 import com.moseeker.thrift.gen.chat.struct.*;
 import com.moseeker.thrift.gen.dao.struct.*;
 import org.joda.time.DateTime;
@@ -14,7 +13,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
-import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -301,7 +299,7 @@ public class ChatServiceTest {
         chatListRoom1.add(chatDO3);
 
         Mockito.when(chatDao.countChatLog(1)).thenReturn(3);
-        Mockito.when(chatDao.listChat(1)).thenReturn(chatListRoom1);
+        Mockito.when(chatDao.listChat(1, 1, 10)).thenReturn(chatListRoom1);
 
         HrWxHrChatListDO room = new HrWxHrChatListDO();
         room.setId(1);
