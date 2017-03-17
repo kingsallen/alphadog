@@ -173,3 +173,10 @@ struct City{
     1:string type,
     2:string value
 }
+
+struct DelePostion{
+    1:i32 id,
+    2:i32 company_id,
+    3:string jobnumber,
+    4:i32 source_id
+}

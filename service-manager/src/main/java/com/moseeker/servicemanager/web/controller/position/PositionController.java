@@ -16,6 +16,7 @@ import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.position.service.PositionDao;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.BatchHandlerJobPostion;
+import com.moseeker.thrift.gen.position.struct.DelePostion;
 import org.jooq.tools.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -219,6 +220,29 @@ public class PositionController {
         try {
             BatchHandlerJobPostion batchHandlerJobPostion = PositionParamUtils.parseBatchHandlerJobPostionParam(request);
             Response res = positonServices.batchHandlerJobPostion(batchHandlerJobPostion);
+            return ResponseLogNotification.success(request, res);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            //do nothing
+        }
+    }
+
+
+    /**
+     * 删除职位
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/delete/jobpostion", method = RequestMethod.PUT)
+    @ResponseBody
+    public String deleteJobPostion(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            DelePostion params = ParamUtils.initModelForm(request, DelePostion.class);
+            Response res = positonServices.deleteJobposition(params);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

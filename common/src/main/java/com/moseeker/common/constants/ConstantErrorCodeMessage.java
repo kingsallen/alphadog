@@ -22,7 +22,7 @@ public final class ConstantErrorCodeMessage {
     public static final String LOGIN_UPDATE_PASSWORD_FAILED = "{'status':10013,'message':'修改密码失败！'}";
     public static final String LOGIN_MOBILE_NOTEXIST = "{'status':10014,'message':'手机号不存在！'}";
     public static final String USERACCOUNT_BIND_NONEED = "{'status':10015,'message':'手机号已经注册'}";
-    ;
+
     public static final String USERACCOUNT_EXIST = "{'status':10016,'message':'帐号已存在!'}";
     public static final String USERACCOUNT_NOTEXIST = "{'status':10017,'message':'帐号不存在!'}";
     public static final String USER_FAV_POSITION_FAILED = "{'status':10018,'message':'获取我感兴趣失败!'}";
@@ -83,7 +83,9 @@ public final class ConstantErrorCodeMessage {
     //Position服务提示信息说明
     public static final String POSITION_NODELETE_BLANK = "{'status':51001,'message':'参数nodelete不能为空！'}";
     public static final String POSITION_DATA_BLANK = "{'status':51002,'message':'提交的数据为空！'}";
-    public static final String POSITION_DATA_DELETE_FAIL = "{'status':51003,'message':'职位数据删除失败！'}";
+    public static final String POSITION_DATA_BATCH_DELETE_FAIL = "{'status':51003,'message':'批量职位数据删除失败！'}";
+    public static final String POSITION_DATA_DELETE_FAIL = "{'status':51004,'message':'该职位不存在或者已经删除！'}";
+    public static final String POSITION_DATA_DELETE_PARAM = "{'status':51005,'message':'删除职位参数有误,参数job_position_id必填或 company_id, jobnumber, source_id 必填'}";
     // 工具类错误
     public static final String USER_SMS_LIMITED = "{'status':80001,'message':'短信发送异常!'}";
 }

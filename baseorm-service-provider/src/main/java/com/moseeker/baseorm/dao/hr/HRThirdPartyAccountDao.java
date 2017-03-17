@@ -51,6 +51,8 @@ public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecor
 	public int upsertResource(HrThirdPartyAccountRecord record) {
 		int count = 0;
 		try (Connection conn = DBConnHelper.DBConn.getConn();) {
+
+			conn.setAutoCommit(false);
 			PreparedStatement pstmt = conn.prepareStatement(UPSERT_SQL);
 			pstmt.setShort(1, record.getChannel());
 			pstmt.setString(2, record.getUsername());

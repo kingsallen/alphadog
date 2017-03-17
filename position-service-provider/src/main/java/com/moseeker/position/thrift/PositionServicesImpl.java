@@ -2,7 +2,7 @@ package com.moseeker.position.thrift;
 
 import java.util.List;
 
-import com.moseeker.thrift.gen.position.struct.BatchHandlerJobPostion;
+import com.moseeker.thrift.gen.position.struct.*;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,9 +16,6 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.position.service.PositionServices.Iface;
-import com.moseeker.thrift.gen.position.struct.Position;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
 
 @Service
 public class PositionServicesImpl implements Iface {
@@ -100,5 +97,22 @@ public class PositionServicesImpl implements Iface {
     @Override
     public Response batchHandlerJobPostion(BatchHandlerJobPostion batchHandlerJobPostion) throws TException {
         return service.batchHandlerJobPostion(batchHandlerJobPostion);
+    }
+
+    @Override
+    public Response deleteJobposition(DelePostion delePostion) throws TException {
+        Integer id = null;
+        if (delePostion.isSetId()) {
+            id = delePostion.getId();
+        }
+        Integer companyId = null;
+        if (delePostion.isSetCompany_id()) {
+            companyId = delePostion.getCompany_id();
+        }
+        Integer sourceId = null;
+        if (delePostion.isSetSource_id()) {
+            sourceId = delePostion.getSource_id();
+        }
+        return service.deleteJobposition(id, companyId, delePostion.getJobnumber(), sourceId);
     }
 }

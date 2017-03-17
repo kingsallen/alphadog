@@ -25,6 +25,8 @@ service PositionServices {
 
     // 批量修改职位
     common_struct.Response batchHandlerJobPostion(1:position_struct.BatchHandlerJobPostion batchHandlerJobPostion);
+    // 删除职位
+    common_struct.Response deleteJobposition(1:position_struct.DelePostion delePostion);
 }
 /*
 	查询第三方自定义职能

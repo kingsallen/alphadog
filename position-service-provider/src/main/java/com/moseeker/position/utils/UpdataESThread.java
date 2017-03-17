@@ -33,7 +33,7 @@ public class UpdataESThread implements Runnable {
         if (list != null && list.size() > 0) {
             for (JobPositionRecord jobPositionRecord : list) {
                 try {
-                    searchengineServices.updateposition(JSONObject.toJSONString(jobPositionRecord), jobPositionRecord.getId());
+                    searchengineServices.updateposition(JSONObject.toJSONString(jobPositionRecord.intoMap()), jobPositionRecord.getId());
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
                 }
