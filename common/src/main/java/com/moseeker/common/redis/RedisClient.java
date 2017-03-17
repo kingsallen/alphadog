@@ -3,10 +3,14 @@ package com.moseeker.common.redis;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CacheConfigNotExistException;
 import com.moseeker.common.exception.RedisException;
+import com.moseeker.common.proxy.Log;
 import com.moseeker.common.redis.cache.db.DbManager;
 import com.moseeker.common.util.StringUtils;
 
@@ -24,6 +28,8 @@ public abstract class RedisClient {
 	protected abstract JedisCluster initRedisCluster();
 	
 	private static final String className = RedisClient.class.getName();
+	
+	private static final Logger log = LoggerFactory.getLogger(RedisClient.class);
 	
 	/**
 	 * 一次性加载配置信息到缓存中，并返回配置信息集合
@@ -106,6 +112,7 @@ public abstract class RedisClient {
 		try {
 			return redisCluster.setex(cacheKey, redisKey.getTtl(), value);
 		} catch (Exception e) {
+			log.error(e.getMessage(), e);
 			throw new RedisException(e, Constant.REDIS_CONNECT_ERROR_APPID, className, Constant.REDIS_CONNECT_ERROR_EVENTKEY);
 //			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		}
