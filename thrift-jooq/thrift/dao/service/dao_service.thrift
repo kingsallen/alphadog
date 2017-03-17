@@ -15,6 +15,7 @@ service UserHrAccountDao {
 	common_struct.Response getThirdPartyAccount(1:common_struct.CommonQuery query);
 	common_struct.Response createThirdPartyAccount(1:useraccounts_struct.BindAccountStruct account);
 	common_struct.Response upsertThirdPartyAccount(1:useraccounts_struct.BindAccountStruct account);
+	common_struct.Response getAccounts(1:common_struct.CommonQuery query);
 }
 
 service WordpressDao {

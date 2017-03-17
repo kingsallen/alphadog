@@ -160,7 +160,6 @@ public class UserCenterServiceTest {
 			fail("Exception");
 		}
 	}
-	
 	@Test
 	public void testGetFavPositions() {
 		try {
