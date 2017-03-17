@@ -203,8 +203,13 @@ public class EmployeeService {
 					response.setMessage("该员工已绑定");
 					break;
 				}
-				
-				// TODO: 将信息放入redis
+				// 防止用户频繁认证，24h内不重复发认证邮件
+				if (StringUtils.isNotNullOrEmpty(client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, String.valueOf(employee.getId())))) {
+					response.setSuccess(false);
+					response.setMessage("已发送过邮件到指定邮箱，24h内请勿重复该操作");
+					break;
+				}
+				// step 1: 发送认证邮件 step 2：将信息存入redis
 				query.getEqualFilter().clear();
 				query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
 				HrCompanyDO companyDO = hrDBDao.getCompany(query);
@@ -338,12 +343,6 @@ public class EmployeeService {
 		}
 		log.info("updateEmployee response : {}", response);
 		return response;
-	}
-	
-	public static void main(String[] args) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("id", 100L);
-		System.out.println(JSONObject.parseObject(JSONObject.toJSONString(map)).getIntValue("id"));
 	}
 	
 	public Result unbind(int employeeId, int companyId, int userId)
