@@ -32,10 +32,7 @@ import org.springframework.stereotype.Service;
 
 import java.net.ConnectException;
 import java.sql.Connection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -75,35 +72,51 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
         last = current;
     }
 
+    private boolean showEmptyKey = false;
+
+    private void buildMap(Map map, String key, Object object) {
+        if (showEmptyKey) {
+            map.put(key, object);
+        } else if (object != null) {
+            if (object instanceof Map) {
+                if (((Map) object).size() > 0) {
+                    map.put(key, object);
+                }
+            } else if (object instanceof Collection) {
+                if (((Collection) object).size() > 0) {
+                    map.put(key, object);
+                }
+            }
+        }
+    }
+
     public Map<String, Object> getRelatedDataByJobApplication(DSLContext create, com.moseeker.thrift.gen.application.struct.JobApplication application, boolean recommender, boolean dl_url_required) {
 
         last = System.currentTimeMillis();
 
         Map<String, Object> map = new HashMap<>();
         //all from jobdb.job_application
-        map.put("job_application", application);
+        buildMap(map, "job_application", application);
 
-        //job_number and title from jobdb.job_position
-        Position position = create
-                .select(JobPosition.JOB_POSITION.JOBNUMBER, JobPosition.JOB_POSITION.TITLE)
-                .from(JobPosition.JOB_POSITION)
-                .where(JobPosition.JOB_POSITION.ID.eq((int) application.getPosition_id()))
-                .fetchAnyInto(Position.class);
-        if (position != null) {
-            map.put("job_position", position);
-        }
-        printQueryTime(application.getId() + ":job_position-----------:");
+        if (application.getPosition_id() != 0) {
+            //job_number and title from jobdb.job_position
+            Position position = create
+                    .select(JobPosition.JOB_POSITION.JOBNUMBER, JobPosition.JOB_POSITION.TITLE)
+                    .from(JobPosition.JOB_POSITION)
+                    .where(JobPosition.JOB_POSITION.ID.eq((int) application.getPosition_id()))
+                    .fetchAnyInto(Position.class);
+            buildMap(map, "job_position", position);
+            printQueryTime(application.getId() + ":job_position-----------:");
 
-        //extra from jobdb.job_position_ext # custom job fields in JSON format
-        JobPositionExt positionExt = create
-                .select()
-                .from(com.moseeker.baseorm.db.jobdb.tables.JobPositionExt.JOB_POSITION_EXT)
-                .where(com.moseeker.baseorm.db.jobdb.tables.JobPositionExt.JOB_POSITION_EXT.PID.eq((int) application.getPosition_id()))
-                .fetchAnyInto(JobPositionExt.class);
-        if (positionExt != null) {
-            map.put("job_position_ext", positionExt);
+            //extra from jobdb.job_position_ext # custom job fields in JSON format
+            JobPositionExt positionExt = create
+                    .select()
+                    .from(com.moseeker.baseorm.db.jobdb.tables.JobPositionExt.JOB_POSITION_EXT)
+                    .where(com.moseeker.baseorm.db.jobdb.tables.JobPositionExt.JOB_POSITION_EXT.PID.eq((int) application.getPosition_id()))
+                    .fetchAnyInto(JobPositionExt.class);
+            buildMap(map, "job_position_ext", positionExt);
+            printQueryTime(application.getId() + ":job_position_ext-----------:");
         }
-        printQueryTime(application.getId() + ":job_position_ext-----------:");
 
         //other from jobdb.job_resume_other # custom résumé fields in JSON format
         JobResumeOther resumeOther = create
@@ -111,204 +124,176 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
                 .from(com.moseeker.baseorm.db.jobdb.tables.JobResumeOther.JOB_RESUME_OTHER)
                 .where(com.moseeker.baseorm.db.jobdb.tables.JobResumeOther.JOB_RESUME_OTHER.APP_ID.eq(UInteger.valueOf(application.getId())))
                 .fetchAnyInto(JobResumeOther.class);
-        if (resumeOther != null) {
-            map.put("job_resume_other", resumeOther);
-        }
+        buildMap(map, "job_resume_other", resumeOther);
         printQueryTime(application.getId() + ":job_resume_other-----------:");
 
-        //all from userdb.user_user
-        User user = create
-                .select()
-                .from(UserUser.USER_USER)
-                .where(UserUser.USER_USER.ID.eq(UInteger.valueOf(application.getApplier_id())))
-                .fetchAnyInto(User.class);
-        if (user != null) {
-            map.put("user_user", user);
-        }
-        printQueryTime(application.getId() + ":user_user-----------:");
+        if (application.getApplier_id() != 0) {
+            //all from userdb.user_user
+            User user = create
+                    .select()
+                    .from(UserUser.USER_USER)
+                    .where(UserUser.USER_USER.ID.eq(UInteger.valueOf(application.getApplier_id())))
+                    .fetchAnyInto(User.class);
+            buildMap(map, "user_user", user);
+            printQueryTime(application.getId() + ":user_user-----------:");
 
-        //all from profiledb.user_thirdparty_user # ATS login
-        ThirdPartyUser thirdPartyUser = create
-                .select()
-                .from(UserThirdpartyUser.USER_THIRDPARTY_USER)
-                .where(UserThirdpartyUser.USER_THIRDPARTY_USER.USER_ID.eq((int) application.getApplier_id()))
-                .fetchAnyInto(ThirdPartyUser.class);
-        if (thirdPartyUser != null) {
-            map.put("user_thirdparty_user", thirdPartyUser);
-        }
-        printQueryTime(application.getId() + ":user_thirdparty_user-----------:");
+            //all from profiledb.user_thirdparty_user # ATS login
+            ThirdPartyUser thirdPartyUser = create
+                    .select()
+                    .from(UserThirdpartyUser.USER_THIRDPARTY_USER)
+                    .where(UserThirdpartyUser.USER_THIRDPARTY_USER.USER_ID.eq((int) application.getApplier_id()))
+                    .fetchAnyInto(ThirdPartyUser.class);
+            buildMap(map, "user_thirdparty_user", thirdPartyUser);
+            printQueryTime(application.getId() + ":user_thirdparty_user-----------:");
 
-        //all from profiledb.profile_profile
-        Profile profile = create
-                .select()
-                .from(ProfileProfile.PROFILE_PROFILE)
-                .where(ProfileProfile.PROFILE_PROFILE.USER_ID.eq(UInteger.valueOf(application.getApplier_id())))
-                .fetchAnyInto(Profile.class);
-        if (profile != null) {
-            map.put("profile_profile", profile);
+            //all from profiledb.profile_profile
+            Profile profile = create
+                    .select()
+                    .from(ProfileProfile.PROFILE_PROFILE)
+                    .where(ProfileProfile.PROFILE_PROFILE.USER_ID.eq(UInteger.valueOf(application.getApplier_id())))
+                    .fetchAnyInto(Profile.class);
+            buildMap(map, "profile_profile", profile);
             printQueryTime(application.getId() + ":profile_profile-----------:");
-
-            //all from profiledb.profile_attachment
-            Attachment profile_attachment = create
-                    .select()
-                    .from(ProfileAttachment.PROFILE_ATTACHMENT)
-                    .where(ProfileAttachment.PROFILE_ATTACHMENT.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
-                    .fetchAnyInto(Attachment.class);
-            if (profile_attachment != null) {
-                map.put("profile_attachment", profile_attachment);
-            }
-            printQueryTime(application.getId() + ":profile_attachment-----------:");
-
-            //all from profiledb.profile_award
-            List<Awards> profile_award = create
-                    .select()
-                    .from(ProfileAwards.PROFILE_AWARDS)
-                    .where(ProfileAwards.PROFILE_AWARDS.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
-                    .fetchInto(Awards.class);
-            if (profile_award != null) {
-                map.put("profile_award", profile_award);
-            }
-            printQueryTime(application.getId() + ":profile_award-----------:");
-
-            //all from profiledb.profile_credentials ORDER most recent first by start date
-            List<Credentials> profile_credentials = create
-                    .select()
-                    .from(ProfileCredentials.PROFILE_CREDENTIALS)
-                    .where(ProfileCredentials.PROFILE_CREDENTIALS.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
-                    .orderBy(ProfileCredentials.PROFILE_CREDENTIALS.GET_DATE.desc())
-                    .fetchInto(Credentials.class);
-            if (profile_credentials != null) {
-                map.put("profile_credentials", profile_credentials);
-            }
-            printQueryTime(application.getId() + ":profile_credentials-----------:");
-
-            //all from profiledb.profile_educations ORDER most recent first by start date
-            List<Education> profile_educations = create
-                    .select()
-                    .from(ProfileEducation.PROFILE_EDUCATION)
-                    .where(ProfileEducation.PROFILE_EDUCATION.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
-                    .orderBy(ProfileEducation.PROFILE_EDUCATION.START.desc())
-                    .fetchInto(Education.class);
-            if (profile_educations != null) {
-                map.put("profile_educations", profile_educations);
-            }
-            printQueryTime(application.getId() + ":profile_educations-----------:");
-
-            //all from profiledb.profile_import
-            ProfileImport profile_import = create
-                    .select()
-                    .from(com.moseeker.baseorm.db.profiledb.tables.ProfileImport.PROFILE_IMPORT)
-                    .where(com.moseeker.baseorm.db.profiledb.tables.ProfileImport.PROFILE_IMPORT.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
-                    .fetchAnyInto(ProfileImport.class);
-            if (profile_import != null) {
-                map.put("profile_import", profile_import);
-            }
-            printQueryTime(application.getId() + ":profile_import-----------:");
-
-            //all from profiledb.profile_intention
-            Intention profile_intention = create
-                    .select()
-                    .from(ProfileIntention.PROFILE_INTENTION)
-                    .where(ProfileIntention.PROFILE_INTENTION.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
-                    .fetchAnyInto(Intention.class);
-            if (profile_intention != null) {
-                map.put("profile_intention", profile_intention);
-            }
-            printQueryTime(application.getId() + ":profile_intention-----------:");
-
-            if (profile_intention != null) {
-                //all from profiledb.profile_intention_city
-                IntentionCity profile_intention_city = create
+            if (profile != null) {
+                //all from profiledb.profile_attachment
+                Attachment profile_attachment = create
                         .select()
-                        .from(ProfileIntentionCity.PROFILE_INTENTION_CITY)
-                        .where(ProfileIntentionCity.PROFILE_INTENTION_CITY.PROFILE_INTENTION_ID.eq(UInteger.valueOf(profile_intention.getId())))
-                        .fetchAnyInto(IntentionCity.class);
-                if (profile_intention_city != null) {
-                    map.put("profile_intention_city", profile_intention_city);
-                }
-                printQueryTime(application.getId() + ":profile_intention_city-----------:");
+                        .from(ProfileAttachment.PROFILE_ATTACHMENT)
+                        .where(ProfileAttachment.PROFILE_ATTACHMENT.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
+                        .fetchAnyInto(Attachment.class);
+                buildMap(map, "profile_attachment", profile_attachment);
+                printQueryTime(application.getId() + ":profile_attachment-----------:");
 
-                //all from profiledb.profile_intention_industry
-                IntentionIndustry profile_intention_industry = create
+                //all from profiledb.profile_award
+                List<Awards> profile_award = create
                         .select()
-                        .from(ProfileIntentionIndustry.PROFILE_INTENTION_INDUSTRY)
-                        .where(ProfileIntentionIndustry.PROFILE_INTENTION_INDUSTRY.PROFILE_INTENTION_ID.eq(UInteger.valueOf(profile_intention.getId())))
-                        .fetchAnyInto(IntentionIndustry.class);
-                if (profile_intention_industry != null) {
-                    map.put("profile_intention_industry", profile_intention_industry);
-                }
-                printQueryTime(application.getId() + ":profile_intention_industry-----------:");
+                        .from(ProfileAwards.PROFILE_AWARDS)
+                        .where(ProfileAwards.PROFILE_AWARDS.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
+                        .fetchInto(Awards.class);
+                buildMap(map, "profile_award", profile_award);
+                printQueryTime(application.getId() + ":profile_award-----------:");
 
-                //all from profiledb.profile_intention_position
-                IntentionPosition profile_intention_position = create
+                //all from profiledb.profile_credentials ORDER most recent first by start date
+                List<Credentials> profile_credentials = create
                         .select()
-                        .from(ProfileIntentionPosition.PROFILE_INTENTION_POSITION)
-                        .where(ProfileIntentionPosition.PROFILE_INTENTION_POSITION.PROFILE_INTENTION_ID.eq(UInteger.valueOf(profile_intention.getId())))
-                        .fetchAnyInto(IntentionPosition.class);
-                if (profile_intention_position != null) {
-                    map.put("profile_intention_position", profile_intention_position);
+                        .from(ProfileCredentials.PROFILE_CREDENTIALS)
+                        .where(ProfileCredentials.PROFILE_CREDENTIALS.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
+                        .orderBy(ProfileCredentials.PROFILE_CREDENTIALS.GET_DATE.desc())
+                        .fetchInto(Credentials.class);
+                buildMap(map, "profile_credentials", profile_credentials);
+                printQueryTime(application.getId() + ":profile_credentials-----------:");
+
+                //all from profiledb.profile_educations ORDER most recent first by start date
+                List<Education> profile_educations = create
+                        .select()
+                        .from(ProfileEducation.PROFILE_EDUCATION)
+                        .where(ProfileEducation.PROFILE_EDUCATION.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
+                        .orderBy(ProfileEducation.PROFILE_EDUCATION.START.desc())
+                        .fetchInto(Education.class);
+                buildMap(map, "profile_educations", profile_educations);
+                printQueryTime(application.getId() + ":profile_educations-----------:");
+
+                //all from profiledb.profile_import
+                ProfileImport profile_import = create
+                        .select()
+                        .from(com.moseeker.baseorm.db.profiledb.tables.ProfileImport.PROFILE_IMPORT)
+                        .where(com.moseeker.baseorm.db.profiledb.tables.ProfileImport.PROFILE_IMPORT.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
+                        .fetchAnyInto(ProfileImport.class);
+                buildMap(map, "profile_import", profile_import);
+                printQueryTime(application.getId() + ":profile_import-----------:");
+
+                //all from profiledb.profile_intention
+                Intention profile_intention = create
+                        .select()
+                        .from(ProfileIntention.PROFILE_INTENTION)
+                        .where(ProfileIntention.PROFILE_INTENTION.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
+                        .fetchAnyInto(Intention.class);
+                buildMap(map, "profile_intention", profile_intention);
+                printQueryTime(application.getId() + ":profile_intention-----------:");
+
+                if (profile_intention != null) {
+                    //all from profiledb.profile_intention_city
+                    IntentionCity profile_intention_city = create
+                            .select()
+                            .from(ProfileIntentionCity.PROFILE_INTENTION_CITY)
+                            .where(ProfileIntentionCity.PROFILE_INTENTION_CITY.PROFILE_INTENTION_ID.eq(UInteger.valueOf(profile_intention.getId())))
+                            .fetchAnyInto(IntentionCity.class);
+                    buildMap(map, "profile_intention_city", profile_intention_city);
+                    printQueryTime(application.getId() + ":profile_intention_city-----------:");
+
+                    //all from profiledb.profile_intention_industry
+                    IntentionIndustry profile_intention_industry = create
+                            .select()
+                            .from(ProfileIntentionIndustry.PROFILE_INTENTION_INDUSTRY)
+                            .where(ProfileIntentionIndustry.PROFILE_INTENTION_INDUSTRY.PROFILE_INTENTION_ID.eq(UInteger.valueOf(profile_intention.getId())))
+                            .fetchAnyInto(IntentionIndustry.class);
+                    buildMap(map, "profile_intention_industry", profile_intention_industry);
+                    printQueryTime(application.getId() + ":profile_intention_industry-----------:");
+
+                    //all from profiledb.profile_intention_position
+                    IntentionPosition profile_intention_position = create
+                            .select()
+                            .from(ProfileIntentionPosition.PROFILE_INTENTION_POSITION)
+                            .where(ProfileIntentionPosition.PROFILE_INTENTION_POSITION.PROFILE_INTENTION_ID.eq(UInteger.valueOf(profile_intention.getId())))
+                            .fetchAnyInto(IntentionPosition.class);
+                    buildMap(map, "profile_intention_position", profile_intention_position);
+                    printQueryTime(application.getId() + ":profile_intention_position-----------:");
                 }
-                printQueryTime(application.getId() + ":profile_intention_position-----------:");
+
+                //all from profiledb.profile_language
+                List<Language> profile_language = create
+                        .select()
+                        .from(ProfileLanguage.PROFILE_LANGUAGE)
+                        .where(ProfileLanguage.PROFILE_LANGUAGE.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
+                        .fetchInto(Language.class);
+                buildMap(map, "profile_language", profile_language);
+                printQueryTime(application.getId() + ":profile_language-----------:");
+
+                //all from profiledb.profile_other
+                ProfileOther profile_other = create
+                        .select()
+                        .from(com.moseeker.baseorm.db.profiledb.tables.ProfileOther.PROFILE_OTHER)
+                        .where(com.moseeker.baseorm.db.profiledb.tables.ProfileOther.PROFILE_OTHER.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
+                        .fetchAnyInto(ProfileOther.class);
+                buildMap(map, "profile_other", profile_other);
+                printQueryTime(application.getId() + ":profile_other-----------:");
+
+                //all from profiledb.profile_projectexp ORDER most recent first by start date
+                List<ProjectExp> profile_projectexp = create
+                        .select()
+                        .from(ProfileProjectexp.PROFILE_PROJECTEXP)
+                        .where(ProfileProjectexp.PROFILE_PROJECTEXP.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
+                        .fetchInto(ProjectExp.class);
+                buildMap(map, "profile_projectexp", profile_projectexp);
+                printQueryTime(application.getId() + ":profile_projectexp-----------:");
+
+                //all from profiledb.profile_skills
+                List<Skill> profile_skills = create
+                        .select()
+                        .from(ProfileSkill.PROFILE_SKILL)
+                        .where(ProfileSkill.PROFILE_SKILL.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
+                        .fetchInto(Skill.class);
+                buildMap(map, "profile_skills", profile_skills);
+                printQueryTime(application.getId() + ":profile_skills-----------:");
+
+                //all from profiledb.profile_workexp
+                List<WorkExp> profile_workexp = create
+                        .select()
+                        .from(ProfileWorkexp.PROFILE_WORKEXP)
+                        .where(ProfileWorkexp.PROFILE_WORKEXP.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
+                        .fetchInto(WorkExp.class);
+                buildMap(map, "profile_workexp", profile_workexp);
+                printQueryTime(application.getId() + ":profile_workexp-----------:");
+
             }
 
-            //all from profiledb.profile_language
-            List<Language> profile_language = create
-                    .select()
-                    .from(ProfileLanguage.PROFILE_LANGUAGE)
-                    .where(ProfileLanguage.PROFILE_LANGUAGE.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
-                    .fetchInto(Language.class);
-            if (profile_language != null) {
-                map.put("profile_language", profile_language);
+            if (dl_url_required) {
+                String url = getDownloadUrlByUserId((int) application.getApplier_id());
+                buildMap(map, "download_url", url == null ? "" : url);
             }
-            printQueryTime(application.getId() + ":profile_language-----------:");
-
-            //all from profiledb.profile_other
-            ProfileOther profile_other = create
-                    .select()
-                    .from(com.moseeker.baseorm.db.profiledb.tables.ProfileOther.PROFILE_OTHER)
-                    .where(com.moseeker.baseorm.db.profiledb.tables.ProfileOther.PROFILE_OTHER.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
-                    .fetchAnyInto(ProfileOther.class);
-            if (profile_other != null) {
-                map.put("profile_other", profile_other);
-            }
-            printQueryTime(application.getId() + ":profile_other-----------:");
-
-            //all from profiledb.profile_projectexp ORDER most recent first by start date
-            List<ProjectExp> profile_projectexp = create
-                    .select()
-                    .from(ProfileProjectexp.PROFILE_PROJECTEXP)
-                    .where(ProfileProjectexp.PROFILE_PROJECTEXP.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
-                    .fetchInto(ProjectExp.class);
-            if (profile_projectexp != null) {
-                map.put("profile_projectexp", profile_projectexp);
-            }
-            printQueryTime(application.getId() + ":profile_projectexp-----------:");
-
-            //all from profiledb.profile_skills
-            List<Skill> profile_skills = create
-                    .select()
-                    .from(ProfileSkill.PROFILE_SKILL)
-                    .where(ProfileSkill.PROFILE_SKILL.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
-                    .fetchInto(Skill.class);
-            if (profile_skills != null) {
-                map.put("profile_skills", profile_skills);
-            }
-            printQueryTime(application.getId() + ":profile_skills-----------:");
-
-            //all from profiledb.profile_workexp
-            List<WorkExp> profile_workexp = create
-                    .select()
-                    .from(ProfileWorkexp.PROFILE_WORKEXP)
-                    .where(ProfileWorkexp.PROFILE_WORKEXP.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
-                    .fetchInto(WorkExp.class);
-            if (profile_workexp != null) {
-                map.put("profile_workexp", profile_workexp);
-            }
-            printQueryTime(application.getId() + ":profile_workexp-----------:");
-
         }
 
-        if (recommender) {
+        if (recommender && application.getRecommender_user_id() != 0) {
             //user_employee.disable=0, activation=0, status=0
             UserEmployeeStruct employee = create
                     .select()
@@ -334,14 +319,9 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
                 }
                 recommenderMap.put("employeeid", employee.getEmployeeid());
                 recommenderMap.put("custom_field", employee.getCustom_field());
-                map.put("recommender", recommenderMap);
+                buildMap(map, "recommender", recommenderMap);
                 printQueryTime(application.getId() + ":recommender-----------:");
             }
-        }
-
-        if (dl_url_required && application.getApplier_id() != 0) {
-            String url = getDownloadUrlByUserId((int) application.getApplier_id());
-            map.put("download_url", url == null ? "" : url);
         }
 
         return map;
@@ -353,7 +333,6 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
         try {
             conn = DBConnHelper.DBConn.getConn();
             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-            long start = System.currentTimeMillis();
             Set<Map<String, Object>> datas = create
                     .select()
                     .from(JobApplication.JOB_APPLICATION)
