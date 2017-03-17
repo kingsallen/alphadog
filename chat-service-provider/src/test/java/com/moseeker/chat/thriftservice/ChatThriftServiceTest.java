@@ -59,7 +59,7 @@ public class ChatThriftServiceTest {
 
     //@Test
     public void listChatLogs() throws Exception {
-        ChatsVO chatsVO = chatService.listChatLogs(5, 1, 10);
+        ChatsVO chatsVO = chatService.listChatLogs(5, 2, 10);
         System.out.println("pageNo : "+chatsVO.getPageNo());
         System.out.println("pageSize : " + chatsVO.getPageSize());
         System.out.println("totalRow : " + chatsVO.getTotalRow());
