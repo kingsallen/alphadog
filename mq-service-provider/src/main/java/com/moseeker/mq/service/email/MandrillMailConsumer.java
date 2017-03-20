@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.mail.MessagingException;
 
+import com.moseeker.common.exception.RedisException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,10 +75,14 @@ public class MandrillMailConsumer {
 	 * @return
 	 */
 	private String fetchConstantlyMessage() {
-		RedisClient redisClient = RedisClientFactory.getCacheClient();
-		List<String> el = redisClient.brpop(Constant.APPID_ALPHADOG, Constant.MQ_MESSAGE_EMAIL_MANDRILL);
-		if (el != null){
-			return el.get(1);
+		try {
+			RedisClient redisClient = RedisClientFactory.getCacheClient();
+			List<String> el = redisClient.brpop(Constant.APPID_ALPHADOG, Constant.MQ_MESSAGE_EMAIL_MANDRILL);
+			if (el != null){
+                return el.get(1);
+            }
+		} catch (RedisException e) {
+			logger.error(e.getMessage(), e);
 		}
 		return null;
 	}
@@ -95,12 +100,11 @@ public class MandrillMailConsumer {
 	/**
 	 * 发送邮件
 	 * 
-	 * @param mail
+	 * @param redisMsg
 	 * @return
 	 * @throws Exception
 	 */
-	private void sendMail() throws Exception {
-		String redisMsg = fetchConstantlyMessage();
+	private void sendMail(String redisMsg) throws Exception {
 		if (StringUtils.isNotNullOrEmpty(redisMsg)) {
 			executorService.submit(() -> {
 				try {
@@ -172,8 +176,6 @@ public class MandrillMailConsumer {
 				}
 			});
 		}
-
-		sendMail();
 	}
 
 	/**
@@ -188,7 +190,10 @@ public class MandrillMailConsumer {
 				new LinkedBlockingQueue<Runnable>());
 		new Thread(() -> {
 			try {
-				sendMail();
+				while (true) {
+					String redisMsg = fetchConstantlyMessage();
+					sendMail(redisMsg);
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				logger.error(e.getMessage(), e);

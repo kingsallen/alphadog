@@ -70,7 +70,8 @@ struct UserEmployeeDO {
     47: optional i32 sectionId,             //部门编号 应该已经废弃
     48: optional i8 emailIsvalid,           //是否认证了1：是, 0：否
     49: optional i8 authMethod,             //员工认证途径 0:使用邮箱认证 1:使用自定义认证 2:使用问答认证
-    50: optional string customFieldValues  //自定 义字段键值, 结构[{<id>: "<value>"},{...},...]
+    50: optional string customFieldValues,  //自定 义字段键值, 结构[{<id>: "<value>"},{...},...]
+    51: optional i32 wxuser_id // userdb.user_wx_user.id 微信账号编号
 }
 
 struct UserEmployeePointsRecordDO {

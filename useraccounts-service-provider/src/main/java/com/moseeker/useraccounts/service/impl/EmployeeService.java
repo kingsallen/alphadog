@@ -44,6 +44,7 @@ import com.moseeker.thrift.gen.dao.struct.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.dao.struct.UserUserDO;
+import com.moseeker.thrift.gen.employee.struct.BindStatus;
 import com.moseeker.thrift.gen.employee.struct.BindingParams;
 import com.moseeker.thrift.gen.employee.struct.Employee;
 import com.moseeker.thrift.gen.employee.struct.EmployeeCustomFieldsConf;
@@ -76,6 +77,7 @@ public class EmployeeService {
 	RedisClient client = CacheClient.getInstance();
 
 	public EmployeeResponse getEmployee(int userId, int companyId) throws TException {
+		log.info("getEmployee param: userId={} , companyId={}", userId, companyId);
 		CommonQuery query = new CommonQuery();
 		query.setEqualFilter(new HashMap<String, String>());
 		UserEmployeeDO employee;
@@ -92,20 +94,41 @@ public class EmployeeService {
 			    if (wxResult.getStatus() == 0) {
 			    		wxuserId = JSONObject.parseObject(wxResult.getData()).getIntValue("id");
 			    }
-			    response.setEmployee(new Employee(employee.getId(), employee.getEmployeeid(), employee.getCompanyId(), employee.getSysuserId(), employee.getMobile(), wxuserId, employee.getCname(), employee.getAward(), employee.getIsRpSent() == 0 ? false : true, employee.getCustomFieldValues()));
-			    response.setExists(true);
+			    Employee emp = new Employee();
+			    emp.setId(employee.getId());
+			    emp.setEmployeeId(employee.getEmployeeid());
+			    emp.setCompanyId(employee.getCompanyId());
+			    emp.setSysuerId(employee.getSysuserId());
+			    emp.setMobile(employee.getMobile());
+			    emp.setCname(org.apache.commons.lang.StringUtils.defaultIfBlank(employee.getCname(), ""));
+			    emp.setAward(employee.getAward());
+			    emp.setIsRpSent(employee.getIsRpSent() == 0 ? false : true);
+			    emp.setCustomFieldValues(employee.getCustomFieldValues());
+			    emp.setWxuserId(wxuserId);
+			    response.setEmployee(emp);
+
+			    if (employee.getActivation() == 0) {
+			    		response.setBindStatus(BindStatus.BINDED);
+				} else if (StringUtils.isNotNullOrEmpty(client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, String.valueOf(employee.getId())))) {
+					response.setBindStatus(BindStatus.PENDING);
+				} else {
+					response.setBindStatus(BindStatus.UNBIND);
+				}
 			} else {
-				response.setExists(false);
+				response.setBindStatus(BindStatus.UNBIND);
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
+			response.setBindStatus(BindStatus.UNBIND);
 		}
+		log.info("getEmployee response: {}", response);
 		return response;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public EmployeeVerificationConfResponse getEmployeeVerificationConf(int companyId)
 			throws TException {
+		log.info("getEmployeeVerificationConf param: companyId={}", companyId);
 		CommonQuery query = new CommonQuery();
 		Map<String, String> eqf = new HashMap<String, String>();
 		query.setEqualFilter(eqf);
@@ -113,6 +136,7 @@ public class EmployeeService {
 		try {
 			eqf.put("company_id", String.valueOf(companyId));
 			HrEmployeeCertConfDO employeeCertConf = hrDBDao.getEmployeeCertConf(query);
+			log.info("HrEmployeeCertConfDO: {}", employeeCertConf);
 			if (employeeCertConf != null && employeeCertConf.getEmail_suffix() != null && employeeCertConf.getQuestions() != null) {
 			    EmployeeVerificationConf evc = new EmployeeVerificationConf();
 			    evc.setCompanyId(employeeCertConf.getCompany_id());
@@ -129,6 +153,7 @@ public class EmployeeService {
 			    		evc.setBindSuccessMessage(JSONObject.parseObject(hrCompanyConfig.getData()).getString("employee_binding"));
 				}
 			    response.setEmployeeVerificationConf(evc);
+			    log.info("EmployeeVerificationConfResponse: {}", response.getEmployeeVerificationConf());
 			    response.setExists(true);
 			} else {
 				response.setExists(false);
@@ -140,6 +165,7 @@ public class EmployeeService {
 	}
 	
 	public Result bind(BindingParams bindingParams) throws TException {
+		log.info("bind param: BindingParams={}", bindingParams);
 		Result response = new Result();
 		CommonQuery query = new CommonQuery();
 		query.setEqualFilter(new HashMap<String, String>());
@@ -162,7 +188,7 @@ public class EmployeeService {
 				// 验证员工是否已认证
 				query.getEqualFilter().clear();
 				query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
-				query.getEqualFilter().put("email", bindingParams.getEmail());
+				query.getEqualFilter().put("sysuser_id", String.valueOf(bindingParams.getUserId()));
 				query.getEqualFilter().put("disable", "0");
 				query.getEqualFilter().put("status", "0");
 				UserEmployeeDO employee = userDao.getEmployee(query);
@@ -177,8 +203,13 @@ public class EmployeeService {
 					response.setMessage("该员工已绑定");
 					break;
 				}
-				
-				// TODO: 将信息放入redis
+				// 防止用户频繁认证，24h内不重复发认证邮件
+				if (StringUtils.isNotNullOrEmpty(client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, String.valueOf(employee.getId())))) {
+					response.setSuccess(false);
+					response.setMessage("已发送过邮件到指定邮箱，24h内请勿重复该操作");
+					break;
+				}
+				// step 1: 发送认证邮件 step 2：将信息存入redis
 				query.getEqualFilter().clear();
 				query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
 				HrCompanyDO companyDO = hrDBDao.getCompany(query);
@@ -193,12 +224,13 @@ public class EmployeeService {
 					mesBody.put("#official_account_name#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(hrWxWechatJson.getString("name"), ""));
 					mesBody.put("#official_account_qrcode#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(hrWxWechatJson.getString("qrcode"), ""));
 					mesBody.put("#date_today#",  LocalDate.now().toString());
-					mesBody.put("#auth_url#", ConfigPropertiesUtil.getInstance().get("platform.url", String.class).concat("m/bindemail?activation_code=").concat(activationCode));
+					mesBody.put("#auth_url#", ConfigPropertiesUtil.getInstance().get("platform.url", String.class).concat("m/employee/bindemail?activation_code=").concat(activationCode).concat("&wechat_signature=").concat(hrWxWechatJson.getString("signature")));
 					// 发送认证邮件
 					Response mailResponse = mqService.sendAuthEMail(mesBody, Constant.EVENT_TYPE_EMPLOYEE_AUTH, bindingParams.getEmail(), "员工认证");
 					// 邮件发送成功
 					if (mailResponse.getStatus() == 0) {
-						client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, String.valueOf(employee.getId()), JSONObject.toJSONString(bindingParams));
+						String redStr = client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, String.valueOf(employee.getId()), JSONObject.toJSONString(bindingParams));
+						log.info("set redis result: ", redStr);
 						response.setSuccess(true);
 						response.setMessage("发送激活邮件成功");
 					} else {
@@ -226,12 +258,13 @@ public class EmployeeService {
 				break;
 			case QUESTIONS:
 				// 问题校验
-				List<String> answers = JSONObject.parseArray(certConf.getQuestions()).stream().flatMap(m -> JSONObject.parseObject(String.valueOf(m)).values().stream()).map(m -> String.valueOf(m)).collect(Collectors.toList());
+				List<String> answers = JSONObject.parseArray(certConf.getQuestions()).stream().map(m -> JSONObject.parseObject(String.valueOf(m)).getString("a")).collect(Collectors.toList());
+				log.info("answers: {}", answers);
 				String[] replys = {bindingParams.getAnswer1().trim(), bindingParams.getAnswer2().trim()};
 				boolean bool = true;
-				if (!StringUtils.isEmptyList(answers) && answers.size() == replys.length) {
+				if (!StringUtils.isEmptyList(answers)) {
 					for (int i = 0; i < answers.size(); i++) {
-						if (!org.apache.commons.lang.StringUtils.defaultString(answers.get(i), " ").equals(replys[i])) {
+						if (!org.apache.commons.lang.StringUtils.defaultString(answers.get(i), "").equals(replys[i])) {
 							bool = false;
 							break;
 						}
@@ -254,9 +287,10 @@ public class EmployeeService {
 			default:
 				break;
 		}
+		log.info("BindingParams response: {}", response);
 		return response;
 	}
-
+	
 	/**
 	 * step 1: 认证当前员工   step 2: 将其他公司的该用户员工设为未认证
 	 * @param bindingParams
@@ -264,6 +298,7 @@ public class EmployeeService {
 	 * @throws TException
 	 */
 	private Result updateEmployee(BindingParams bindingParams) throws TException {
+		log.info("updateEmployee param: BindingParams={}", bindingParams);
 		Result response = new Result();
 		CommonQuery query = new CommonQuery();
 		query.setEqualFilter(new HashMap<String, String>());
@@ -271,11 +306,24 @@ public class EmployeeService {
 		query.getEqualFilter().put("disable", "0");
 		query.getEqualFilter().put("status", "0");
 		List<UserEmployeeDO> employees = userDao.getUserEmployeesDO(query);
+		log.info("select employees by: {}, result = {}", query, Arrays.toString(employees.toArray()));
 		if (!StringUtils.isEmptyList(employees)) {
 			employees.forEach(e -> {
 				if (e.getCompanyId() == bindingParams.getCompanyId()) {
 					e.setActivation((byte)0);
 					e.setAuthMethod((byte)bindingParams.getType().getValue());
+					query.getEqualFilter().clear();
+					query.getEqualFilter().put("sysuser_id", String.valueOf(bindingParams.getUserId()));
+					Response wxResult;
+					try {
+						wxResult = wxUserDao.getResource(query);
+						if (wxResult.getStatus() == 0 && StringUtils.isNotNullOrEmpty(wxResult.getData())) {
+							e.setWxuser_id(JSONObject.parseObject(wxResult.getData()).getIntValue("id"));
+						}
+					} catch (Exception e1) {
+						log.error(e1.getMessage(), e1);
+					}
+					e.setBindingTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
 					e.setUpdateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
 					if (StringUtils.isNotNullOrEmpty(bindingParams.getName())) e.setCname(bindingParams.getName());
 					if (StringUtils.isNotNullOrEmpty(bindingParams.getMobile())) e.setMobile(bindingParams.getMobile());
@@ -284,6 +332,7 @@ public class EmployeeService {
 				}
 			});
 		}
+		log.info("update employess = {}", Arrays.toString(employees.toArray()));
 		Response updateResult = userDao.putUserEmployeesDO(employees);
 		if (updateResult.getStatus() == 0){
 			response.setSuccess(true);
@@ -292,19 +341,22 @@ public class EmployeeService {
 			response.setSuccess(false);
 			response.setMessage(updateResult.getMessage());
 		}
+		log.info("updateEmployee response : {}", response);
 		return response;
 	}
 	
 	public Result unbind(int employeeId, int companyId, int userId)
 			throws TException {
+		log.info("unbind param: employeeId={}, companyId={}, userId={}", employeeId, companyId, userId);
 		Result response = new Result();
 		CommonQuery query = new CommonQuery();
 		query.setEqualFilter(new HashMap<String, String>());
 		query.getEqualFilter().put("sysuser_id", String.valueOf(userId));
 		query.getEqualFilter().put("company_id", String.valueOf(companyId));
-		query.getEqualFilter().put("employeeid", String.valueOf(employeeId));
+		query.getEqualFilter().put("id", String.valueOf(employeeId));
 		UserEmployeeDO employee = userDao.getEmployee(query);
-		if (employee == null && employee.getId() == 0) {
+		log.info("select employee by: {} , result: {}", query, employee);
+		if (employee == null || employee.getId() == 0) {
 			response.setSuccess(false);
 			response.setMessage("员工信息不存在");
 		} else {
@@ -314,16 +366,18 @@ public class EmployeeService {
 			if (result.getStatus() == 0){
 				response.setSuccess(true);
 				response.setMessage(result.getMessage());
-			} else {
 				response.setSuccess(false);
+			} else {
 				response.setMessage(result.getMessage());
 			}
 		}
+		log.info("unbind response: {}", response);
 		return response;
 	}
 
 	public List<EmployeeCustomFieldsConf> getEmployeeCustomFieldsConf(int companyId)
 			throws TException {
+		log.info("getEmployeeCustomFieldsConf param: companyId={}", companyId);
 		CommonQuery query = new CommonQuery();
 		query.setEqualFilter(new HashMap<String, String>());
 		query.getEqualFilter().put("company_id", String.valueOf(companyId));
@@ -331,6 +385,7 @@ public class EmployeeService {
 		List<EmployeeCustomFieldsConf> response = new ArrayList<EmployeeCustomFieldsConf>();
 		try {
 			customFields = hrDBDao.getEmployeeCustomFields(query);
+			log.info("select EmployeeCustomField by: {}, result = {}", query, customFields);
 			if(!StringUtils.isEmptyList(customFields)) {
 				customFields.forEach(m -> {
 					EmployeeCustomFieldsConf efc = new EmployeeCustomFieldsConf();
@@ -346,12 +401,14 @@ public class EmployeeService {
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
+		log.info("getEmployeeCustomFieldsConf response: {}", response);
 		return response;
 	}
 	
 
 	public RewardsResponse getEmployeeRewards(int employeeId, int companyId)
 			throws TException {
+		log.info("getEmployeeRewards param: employeeId={}, companyId={}", employeeId, companyId);
 		RewardsResponse response = new RewardsResponse();
 		CommonQuery query = new CommonQuery();
 		query.setEqualFilter(new HashMap<String, String>());
@@ -420,16 +477,19 @@ public class EmployeeService {
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
+		log.info("getEmployeeRewards response: {}", response);
 		return response;
 	}
 
 	public Result setEmployeeCustomInfo(int employeeId, String customValues)
 			throws TException {
+		log.info("setEmployeeCustomInfo param: employeeId={}, customValues={}", employeeId, customValues);
 		Result response = new Result();
 		CommonQuery query = new CommonQuery();
 		query.setEqualFilter(new HashMap<String, String>());
 		query.getEqualFilter().put("employeeid", String.valueOf(employeeId));
 		List<UserEmployeeDO> userEmployeesDO = userDao.getUserEmployeesDO(query);
+		log.info("select userEmployee by: {}, result = {}", query, Arrays.toString(userEmployeesDO.toArray()));
 		if(StringUtils.isEmptyList(userEmployeesDO)) {
 			response.setSuccess(false);
 			response.setMessage("员工信息不存在");
@@ -444,11 +504,13 @@ public class EmployeeService {
 				response.setMessage(result.getMessage());
 			}
 		}
+		log.info("setEmployeeCustomInfo response: {}", response);
 		return response;
 	}
 	
 	
 	public Result emailActivation(String activationCodee) throws TException {
+		log.info("emailActivation param: activationCodee={}", activationCodee);
 		Result response = new Result();
 		response.setSuccess(false);
 		response.setMessage("激活信息不正确");
@@ -463,6 +525,7 @@ public class EmployeeService {
 				}
 			} 
 		}
+		log.info("emailActivation response: {}", response);
 		return response;
 	}
 	

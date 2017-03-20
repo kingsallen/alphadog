@@ -18,7 +18,7 @@ public class Page {
         this.pageSize = pageSize;
 
         if(this.pageNo <= 0) {
-            this.pageNo = 0;
+            this.pageNo = 1;
         }
         if(this.pageSize <= 0 ) {
             this.pageSize = 10;

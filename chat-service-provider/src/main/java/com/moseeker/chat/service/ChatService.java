@@ -1,5 +1,6 @@
 package com.moseeker.chat.service;
 
+import com.google.common.collect.Lists;
 import com.moseeker.chat.constant.ChatSpeakerType;
 import com.moseeker.chat.service.entity.ChatDao;
 import com.moseeker.chat.utils.Page;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -79,7 +81,7 @@ public class ChatService {
                         Optional<HrWxHrChatListDO> chatRoomDOOptional = chatRoomList.stream()
                                 .filter(chatRoom -> chatRoom.getId() == chatUnreadCountDO.getRoomId()).findFirst();
                         if(chatRoomDOOptional.isPresent()) {
-                            hrChatRoomVO.setCreateTime(chatRoomDOOptional.get().getHrChatTime());
+                            hrChatRoomVO.setCreateTime(chatRoomDOOptional.get().getUpdateTime());
                             int status = chatRoomDOOptional.get().isStatus()?1:0;
                             hrChatRoomVO.setStatus(status);
                         }
@@ -96,7 +98,7 @@ public class ChatService {
                                 .filter(userUserDO -> userUserDO.getId() == chatUnreadCountDO.getUserId()).findAny();
                         if(userUserDOOptional.isPresent()) {
                             hrChatRoomVO.setHeadImgUrl(userUserDOOptional.get().getHeadimg());
-                            String name = StringUtils.isNullOrEmpty(userUserDOOptional.get().getName())
+                            String name = StringUtils.isNotNullOrEmpty(userUserDOOptional.get().getName())
                                     ? userUserDOOptional.get().getName():userUserDOOptional.get().getNickname();
                             hrChatRoomVO.setName(name);
                         }
@@ -106,6 +108,7 @@ public class ChatService {
                 rooms.setRooms(roomVOList);
             }
         }
+
         logger.debug("listHRChatRoom result : {}", rooms);
         return rooms;
     }
@@ -157,7 +160,7 @@ public class ChatService {
                             if(chatRoomOptional.isPresent()) {
                                 int status = chatRoomOptional.get().isStatus() ? 1:0;
                                 userChatRoomVO.setStatus(status);
-                                userChatRoomVO.setCreateTime(chatRoomOptional.get().getWxChatTime());
+                                userChatRoomVO.setCreateTime(chatRoomOptional.get().getUpdateTime());
                             }
                         }
 
@@ -185,7 +188,7 @@ public class ChatService {
                                     if(companyDOOptional.isPresent()) {
                                         userChatRoomVO.setCompanyLogo(companyDOOptional.get().getLogo());
                                         String companyName;
-                                        if(StringUtils.isNullOrEmpty(companyDOOptional.get().getAbbreviation())) {
+                                        if(StringUtils.isNotNullOrEmpty(companyDOOptional.get().getAbbreviation())) {
                                             companyName = companyDOOptional.get().getAbbreviation();
                                         } else {
                                             companyName = companyDOOptional.get().getName();
@@ -220,7 +223,7 @@ public class ChatService {
 
         int count = 0;
         Future<Integer> countFuture = pool.startTast(() -> chaoDao.countChatLog(roomId));
-        Future chatFuture = pool.startTast(() -> chaoDao.listChat(roomId));
+        Future chatFuture = pool.startTast(() -> chaoDao.listChat(roomId, pageNo, pageSize));
         try {
             count = countFuture.get();
         } catch (InterruptedException | ExecutionException e) {
@@ -242,9 +245,10 @@ public class ChatService {
                     chatVO.setCreate_time(chatDO.getCreateTime());
                     byte speaker = (byte) (chatDO.isSpeaker() ? 1:0);
                     chatVO.setSpeaker(speaker);
-
                     chatVOList.add(chatVO);
                 });
+                //Lists.reverse(chatDOList);
+                Collections.reverse(chatVOList);
                 chatsVO.setChatLogs(chatVOList);
             }
         } catch (InterruptedException | ExecutionException e) {
@@ -272,6 +276,11 @@ public class ChatService {
         chatDO.setSpeaker(spk);
         chatDO.setChatlistId(roomId);
         chaoDao.saveChat(chatDO);
+
+        HrWxHrChatListDO chatRoomDO = new HrWxHrChatListDO();
+        chatRoomDO.setId(roomId);
+        chatRoomDO.setUpdateTime(date);
+        chaoDao.updateChatRoom(chatRoomDO);
     }
 
     /**
@@ -303,7 +312,7 @@ public class ChatService {
             chatDebut = true;
         }
         if(chatRoom != null) {
-            resultOfSaveRoomVO = searchResult(chatRoom, positionId, chatDebut);
+            resultOfSaveRoomVO = searchResult(chatRoom, positionId);
             if(chatDebut) {
                 pool.startTast(() -> createChat(resultOfSaveRoomVO));
                 resultOfSaveRoomVO.setChatDebut(chatDebut);
@@ -329,50 +338,49 @@ public class ChatService {
      * 查找返回值
      * @param chatRoom 聊天室
      * @param positionId 职位编号
-     * @param chatDebut 是否是第一次访问
      * @return
      */
-    private ResultOfSaveRoomVO searchResult(HrWxHrChatListDO chatRoom, int positionId, boolean chatDebut) {
-        logger.debug("searchResult HrWxHrChatListDO:{} positionId:{}, chatDebut:{}", chatRoom, positionId, chatDebut);
+    private ResultOfSaveRoomVO searchResult(HrWxHrChatListDO chatRoom, int positionId) {
+        logger.debug("searchResult HrWxHrChatListDO:{} positionId:{}", chatRoom, positionId);
         ResultOfSaveRoomVO resultOfSaveRoomVO = new ResultOfSaveRoomVO();
         resultOfSaveRoomVO.setRoomId(chatRoom.getId());
 
         /** 并行查询职位信息、hr信息、公司信息以及用户信息 */
-        final int roomId = chatRoom.getId();
 
-        Future positionFuture;
-        if(chatDebut) {
+        Future positionFuture = null;
+        if(positionId > 0) {
             positionFuture = pool.startTast(() -> chaoDao.getPositionById(positionId));
-        } else {
-            positionFuture = pool.startTast(() -> chaoDao.getPosition(roomId));
         }
         Future hrFuture = pool.startTast(() -> chaoDao.getHr(chatRoom.getHraccountId()));
         Future userFuture = pool.startTast(() -> chaoDao.getUser(chatRoom.getSysuserId()));
 
         /** 设置职位信息 */
         try {
-            JobPositionDO positionDO = (JobPositionDO) positionFuture.get();
+            if(positionFuture != null) {
+                JobPositionDO positionDO = (JobPositionDO) positionFuture.get();
 
-            if(positionDO != null) {
+                if(positionDO != null) {
 
-                PositionVO positionVO = new PositionVO();
-                positionVO.setPositionId(positionDO.getId());
-                positionVO.setPositionTitle(positionDO.getTitle());
-                positionVO.setSalaryBottom(positionDO.getSalaryBottom());
-                positionVO.setSalaryTop(positionDO.getSalaryTop());
-                positionVO.setUpdateTime(positionDO.getUpdateTime());
+                    PositionVO positionVO = new PositionVO();
+                    positionVO.setPositionId(positionDO.getId());
+                    positionVO.setPositionTitle(positionDO.getTitle());
+                    positionVO.setSalaryBottom(positionDO.getSalaryBottom());
+                    positionVO.setSalaryTop(positionDO.getSalaryTop());
+                    positionVO.setUpdateTime(positionDO.getUpdateTime());
+                    positionVO.setCity(positionDO.getCity());
 
-                if(positionDO.getCompanyId() > 0) {
-                    HrCompanyDO companyDO = chaoDao.getCompany(positionDO.getCompanyId());
-                    String companyName;
-                    if(StringUtils.isNullOrEmpty(companyDO.getAbbreviation())) {
-                        companyName = companyDO.getAbbreviation();
-                    } else {
-                        companyName = companyDO.getName();
+                    if(positionDO.getCompanyId() > 0) {
+                        HrCompanyDO companyDO = chaoDao.getCompany(positionDO.getCompanyId());
+                        String companyName;
+                        if(StringUtils.isNotNullOrEmpty(companyDO.getAbbreviation())) {
+                            companyName = companyDO.getAbbreviation();
+                        } else {
+                            companyName = companyDO.getName();
+                        }
+                        positionVO.setCompanyName(companyName);
                     }
-                    positionVO.setCompanyName(companyName);
+                    resultOfSaveRoomVO.setPosition(positionVO);
                 }
-                resultOfSaveRoomVO.setPosition(positionVO);
             }
         } catch (InterruptedException | ExecutionException e) {
             logger.error(e.getMessage(), e);
@@ -412,6 +420,7 @@ public class ChatService {
         } catch (InterruptedException | ExecutionException e) {
             logger.error(e.getMessage(), e);
         }
+
         logger.debug("searchResult result:{}", resultOfSaveRoomVO);
         return resultOfSaveRoomVO;
     }
