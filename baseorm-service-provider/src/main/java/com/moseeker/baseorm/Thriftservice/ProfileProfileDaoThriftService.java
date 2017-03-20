@@ -17,12 +17,13 @@ public class ProfileProfileDaoThriftService implements ProfileProfileDao.Iface {
 
     @Autowired
     ProfileDao profileDao;
+
     @Override
-    public Response getResourceByApplication(int companyId, int sourceId, int atsStatus, boolean recommender, boolean dl_url_required) throws TException {
+    public Response getResourceByApplication(String downloadApi, int companyId, int sourceId, int atsStatus, boolean recommender, boolean dl_url_required) throws TException {
         try {
-            return profileDao.getResourceByApplication(companyId, sourceId, atsStatus, recommender,dl_url_required);
+            return profileDao.getResourceByApplication(downloadApi, companyId, sourceId, atsStatus, recommender, dl_url_required);
         } catch (Exception e) {
-            throw new TException(MessageFormat.format("getResourceByApplication查询错误:companyId={1}&sourceId={2}&atsStatus={3}&recommender={4}", companyId,sourceId,atsStatus,recommender));
+            throw new TException(MessageFormat.format("getResourceByApplication查询错误:companyId={1}&sourceId={2}&atsStatus={3}&recommender={4}", companyId, sourceId, atsStatus, recommender));
         }
     }
 
