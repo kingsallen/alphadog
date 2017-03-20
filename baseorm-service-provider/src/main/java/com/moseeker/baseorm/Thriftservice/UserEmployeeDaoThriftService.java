@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by eddie on 2017/3/9.
+ * Created by zhangdi on 2017/3/9.
  */
 @Service
 public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
@@ -77,7 +77,11 @@ public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
     public Response postResource(UserEmployeeStruct record) throws TException {
         try {
             int result = userEmployeeDao.postResource(BeanUtils.structToDB(record, UserEmployeeRecord.class));
-            return ResponseUtils.success(result);
+            if(result > 0) {
+                return ResponseUtils.success(result);
+            }else{
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+            }
         } catch (Exception e) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
@@ -119,7 +123,6 @@ public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
     public Response putResources(List<UserEmployeeStruct> records) throws TException {
         try {
             int result = userEmployeeDao.putResources(convertDB(records));
-
             return ResponseUtils.success(result);
         } catch (Exception e) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
@@ -133,7 +136,7 @@ public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
             if(result > 0) {
                 return ResponseUtils.success(result);
             }else{
-                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
             }
         } catch (Exception e) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
