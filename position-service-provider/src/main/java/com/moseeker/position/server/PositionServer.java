@@ -47,6 +47,7 @@ public class PositionServer {
     private static AnnotationConfigApplicationContext initSpring() {
         AnnotationConfigApplicationContext acac = new AnnotationConfigApplicationContext();
         acac.scan("com.moseeker.position");
+        acac.scan("com.moseeker.baseorm");
         acac.scan("com.moseeker.common.aop.iface");
         acac.refresh();
         return acac;

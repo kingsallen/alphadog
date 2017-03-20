@@ -37,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
 
-	private static final long serialVersionUID = -1076288987;
+	private static final long serialVersionUID = 63424725;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_wx_wechat</code>
@@ -120,7 +120,7 @@ public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
 	/**
 	 * The column <code>hrdb.hr_wx_wechat.qrcode</code>. 关注公众号的二维码
 	 */
-	public final TableField<HrWxWechatRecord, String> QRCODE = createField("qrcode", org.jooq.impl.SQLDataType.VARCHAR.length(150).nullable(false).defaulted(true), this, "关注公众号的二维码");
+	public final TableField<HrWxWechatRecord, String> QRCODE = createField("qrcode", org.jooq.impl.SQLDataType.VARCHAR.length(300).nullable(false).defaulted(true), this, "关注公众号的二维码");
 
 	/**
 	 * The column <code>hrdb.hr_wx_wechat.passive_seeker</code>. 被动求职者开关，0：开启，1：不开启
@@ -186,6 +186,16 @@ public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
 	 * The column <code>hrdb.hr_wx_wechat.hr_chat</code>. IM聊天开关，0：不开启，1：开启
 	 */
 	public final TableField<HrWxWechatRecord, Byte> HR_CHAT = createField("hr_chat", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "IM聊天开关，0：不开启，1：开启");
+
+	/**
+	 * The column <code>hrdb.hr_wx_wechat.show_qx_qrcode</code>. 显示仟寻聚合号二维码, 0:不允许，1:允许
+	 */
+	public final TableField<HrWxWechatRecord, Integer> SHOW_QX_QRCODE = createField("show_qx_qrcode", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "显示仟寻聚合号二维码, 0:不允许，1:允许");
+
+	/**
+	 * The column <code>hrdb.hr_wx_wechat.show_custom_theme</code>. show_custom_theme,用于表示是否可以开启企业自定义颜色配置 0是否 1是开启
+	 */
+	public final TableField<HrWxWechatRecord, Integer> SHOW_CUSTOM_THEME = createField("show_custom_theme", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "show_custom_theme,用于表示是否可以开启企业自定义颜色配置 0是否 1是开启");
 
 	/**
 	 * Create a <code>hrdb.hr_wx_wechat</code> table reference

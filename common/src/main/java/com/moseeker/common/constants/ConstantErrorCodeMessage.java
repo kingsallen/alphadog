@@ -87,6 +87,8 @@ public final class ConstantErrorCodeMessage {
     public static final String POSITION_DATA_BATCH_DELETE_FAIL = "{'status':51003,'message':'批量职位数据删除失败！'}";
     public static final String POSITION_DATA_DELETE_FAIL = "{'status':51004,'message':'该职位不存在或者已经删除！'}";
     public static final String POSITION_DATA_DELETE_PARAM = "{'status':51005,'message':'删除职位参数有误,参数job_position_id必填或 company_id, jobnumber, source_id 必填'}";
+    public static final String POSITION_DATA_DEPARTMENT_BLANK = "{'status':51006,'message':'部门不能必须设置'}";
+    public static final String POSITION_DATA_DEPARTMENT_ERROR = "{'status':51007,'message':'该部门在该公司不存在，请联系管理员更新部门信息'}";
     // 工具类错误
     public static final String USER_SMS_LIMITED = "{'status':80001,'message':'短信发送异常!'}";
 }

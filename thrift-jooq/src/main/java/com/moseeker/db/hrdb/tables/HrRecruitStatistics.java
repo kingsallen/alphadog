@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrRecruitStatistics extends TableImpl<HrRecruitStatisticsRecord> {
 
-	private static final long serialVersionUID = -618277922;
+	private static final long serialVersionUID = -727215122;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_recruit_statistics</code>
@@ -129,6 +129,26 @@ public class HrRecruitStatistics extends TableImpl<HrRecruitStatisticsRecord> {
 	 * The column <code>hrdb.hr_recruit_statistics.recom_on_board_num</code>. 推荐入职人数
 	 */
 	public final TableField<HrRecruitStatisticsRecord, Integer> RECOM_ON_BOARD_NUM = createField("recom_on_board_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "推荐入职人数");
+
+	/**
+	 * The column <code>hrdb.hr_recruit_statistics.not_viewed_num</code>. 简历未查阅人数
+	 */
+	public final TableField<HrRecruitStatisticsRecord, Integer> NOT_VIEWED_NUM = createField("not_viewed_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "简历未查阅人数");
+
+	/**
+	 * The column <code>hrdb.hr_recruit_statistics.recom_not_viewed_num</code>. 推荐简历未查阅人数
+	 */
+	public final TableField<HrRecruitStatisticsRecord, Integer> RECOM_NOT_VIEWED_NUM = createField("recom_not_viewed_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "推荐简历未查阅人数");
+
+	/**
+	 * The column <code>hrdb.hr_recruit_statistics.not_qualified_num</code>. 简历不匹配人数
+	 */
+	public final TableField<HrRecruitStatisticsRecord, Integer> NOT_QUALIFIED_NUM = createField("not_qualified_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "简历不匹配人数");
+
+	/**
+	 * The column <code>hrdb.hr_recruit_statistics.recom_not_qualified_num</code>. 推荐简历不匹配人数
+	 */
+	public final TableField<HrRecruitStatisticsRecord, Integer> RECOM_NOT_QUALIFIED_NUM = createField("recom_not_qualified_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "推荐简历不匹配人数");
 
 	/**
 	 * Create a <code>hrdb.hr_recruit_statistics</code> table reference
