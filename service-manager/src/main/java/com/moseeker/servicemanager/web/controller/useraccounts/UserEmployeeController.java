@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.AbstractMap;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -36,8 +35,8 @@ public class UserEmployeeController {
     @ResponseBody
     public String deleteUserEmployee(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Map<String, String> filter = request.getParameterMap().entrySet().stream()
-                    .map(entry -> new AbstractMap.SimpleEntry<>(entry.getKey(), entry.getValue()[0]))
+            Map<String, String> filter = ParamUtils.parseRequestParam(request).entrySet().stream()
+                    .map(entry -> new AbstractMap.SimpleEntry<>(entry.getKey(), entry.getValue().toString()))
                     .collect(Collectors.toMap((t -> t.getKey()), (s -> s.getValue())));
             String companyId = filter.get("company_id");
             String customField = filter.get("custom_field");
@@ -75,7 +74,7 @@ public class UserEmployeeController {
     public String getUserEmployee(HttpServletRequest request, HttpServletResponse response, @PathVariable int id) {
         try {
             QueryUtil queryUtil = new QueryUtil();
-            queryUtil.addEqualFilter("id",String.valueOf(id));
+            queryUtil.addEqualFilter("id", String.valueOf(id));
             Response result = service.getUserEmployee(queryUtil);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
@@ -87,11 +86,11 @@ public class UserEmployeeController {
     @ResponseBody
     public String addOrUpdateUserEmployees(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Map<String,Object> datas = ParamUtils.parseRequestParam(request);
+            Map<String, Object> datas = ParamUtils.parseRequestParam(request);
 
             Object data = datas.get("data");
 
-            if(data == null){
+            if (data == null) {
                 return ResponseLogNotification.fail(request, "没有参数");
             }
 
