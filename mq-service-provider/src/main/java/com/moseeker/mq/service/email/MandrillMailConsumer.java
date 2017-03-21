@@ -78,7 +78,7 @@ public class MandrillMailConsumer {
 		try {
 			RedisClient redisClient = RedisClientFactory.getCacheClient();
 			List<String> el = redisClient.brpop(Constant.APPID_ALPHADOG, Constant.MQ_MESSAGE_EMAIL_MANDRILL);
-			if (el != null){
+			if (el != null && el.size() > 1){
                 return el.get(1);
             }
 		} catch (RedisException e) {

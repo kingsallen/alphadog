@@ -4,6 +4,7 @@ apply plugin: 'eclipse'
 dependencies {
 
     compile project(":rpc-center")
+    compile project(":baseorm-service-provider")
     testCompile deps["junit"]
     testCompile deps["mockito"]
     compile deps["spring-core"]
@@ -23,7 +24,7 @@ jar {
     }
 
     manifest {
-       attributes 'Main-Class': 'DemoServer'
+       attributes 'Main-Class': 'com.moseeker.demo.server.DemoServer'
     }
 
     
