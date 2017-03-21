@@ -5,6 +5,7 @@ import com.moseeker.common.email.Email;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Result;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.mail.MessagingException;
@@ -17,23 +18,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-<<<<<<< HEAD
-import javax.mail.MessagingException;
-import javax.mail.internet.AddressException;
-
-import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.Result;
-
-import com.moseeker.common.dbutils.DBConnHelper;
-import com.moseeker.common.email.Email;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-=======
 import static com.moseeker.db.configdb.tables.ConfigAdminnotificationEvents.CONFIG_ADMINNOTIFICATION_EVENTS;
 import static com.moseeker.db.configdb.tables.ConfigAdminnotificationGroupmembers.CONFIG_ADMINNOTIFICATION_GROUPMEMBERS;
 import static com.moseeker.db.configdb.tables.ConfigAdminnotificationMembers.CONFIG_ADMINNOTIFICATION_MEMBERS;
->>>>>>> master
 
 public class Notification {
 
