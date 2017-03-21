@@ -432,7 +432,7 @@ public class BeanUtils {
 		}
 		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
-				return BigInteger.valueOf(Integer.valueOf((String)value));
+				return BigInteger.valueOf(Integer.valueOf(((String)value).trim()));
 			} catch (NumberFormatException e) {
 				return BigInteger.valueOf(0);
 			}
@@ -477,7 +477,7 @@ public class BeanUtils {
 		}
 		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
-				return BigDecimal.valueOf(Double.valueOf((String)value));
+				return BigDecimal.valueOf(Double.valueOf(((String)value).trim()));
 			} catch (NumberFormatException e) {
 				return BigDecimal.valueOf(0);
 			}
@@ -522,7 +522,7 @@ public class BeanUtils {
 		}
 		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
-				return ULong.valueOf((String) value);
+				return ULong.valueOf(((String) value).trim());
 			} catch (NumberFormatException e) {
 				return ULong.valueOf(0);
 			}
@@ -567,7 +567,7 @@ public class BeanUtils {
 		}
 		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
-				return UShort.valueOf((String) value);
+				return UShort.valueOf(((String) value).trim());
 			} catch (NumberFormatException e) {
 				return UShort.valueOf(0);
 			}
@@ -612,7 +612,7 @@ public class BeanUtils {
 		}
 		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
-				return UByte.valueOf((String) value);
+				return UByte.valueOf(((String) value).trim());
 			} catch (NumberFormatException e) {
 				return UByte.valueOf(0);
 			}
@@ -659,7 +659,7 @@ public class BeanUtils {
 		}
 		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
-				return Short.valueOf((String) value);
+				return Short.valueOf(((String) value).trim());
 			} catch (NumberFormatException e) {
 				return 0;
 			}
@@ -704,7 +704,7 @@ public class BeanUtils {
 		}
 		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
-				return UInteger.valueOf((String) value);
+				return UInteger.valueOf(((String) value).trim());
 			} catch (NumberFormatException e) {
 				return UInteger.valueOf(0);
 			}
@@ -855,7 +855,7 @@ public class BeanUtils {
 		}
 		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
-				return Boolean.valueOf((String) value);
+				return Boolean.valueOf(((String) value).trim());
 			} catch (Exception e) {
 				return Boolean.FALSE;
 			}
@@ -949,7 +949,7 @@ public class BeanUtils {
 		}
 		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
-				return Double.valueOf((String) value);
+				return Double.valueOf(((String) value).trim());
 			} catch (NumberFormatException e) {
 				return Double.valueOf(0);
 			}
@@ -996,7 +996,7 @@ public class BeanUtils {
 		}
 		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
-				return Float.valueOf((String) value);
+				return Float.valueOf(((String)value).trim());
 			} catch (NumberFormatException e) {
 				return Float.valueOf(0f);
 			}
@@ -1043,7 +1043,7 @@ public class BeanUtils {
 		}
 		if (value instanceof String && !((String) value).trim().equals("")) {
 			try {
-				return Long.valueOf((String) value).intValue();
+				return Integer.valueOf(((String)value).trim());
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 				return Integer.valueOf(0);
@@ -1090,7 +1090,7 @@ public class BeanUtils {
 			value = ((String[])value)[0];
 		}
 		if (value instanceof String && !((String) value).trim().equals("")) {
-			return Byte.valueOf((String) value);
+			return Byte.valueOf(((String) value).trim());
 		} else if (value instanceof Byte) {
 			return (Byte) value;
 		} else if (value instanceof Boolean) {
@@ -1136,7 +1136,7 @@ public class BeanUtils {
 			value = ((String[])value)[0];
 		}
 		if (value instanceof String && !((String) value).trim().equals("")) {
-			return Long.valueOf((String) value);
+			return Long.valueOf(((String) value).trim());
 		} else if (value instanceof Byte) {
 			return Long.valueOf((Byte) value);
 		} else if (value instanceof Boolean) {
