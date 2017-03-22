@@ -46,12 +46,12 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
         tableLike = Tables.PROFILE_PROFILE;
     }
 
-    private String getDownloadUrlByUserId(String downloadApi, int userid) {
+    private String getDownloadUrlByUserId(String downloadApi, String password, int userid) {
         String url = null;
         if (StringUtils.isNotNullOrEmpty(downloadApi)) {
             Map<String, Object> params = new HashMap<String, Object>() {{
                 put("user_id", userid);
-                put("password", "moseeker.com");
+                put("password", password);
             }};
             try {
                 String content = HttpClient.sendPost(downloadApi, JSON.toJSONString(params));
@@ -93,7 +93,7 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
         }
     }
 
-    public Map<String, Object> getRelatedDataByJobApplication(DSLContext create, com.moseeker.thrift.gen.application.struct.JobApplication application, String downloadApi, boolean recommender, boolean dl_url_required) {
+    public Map<String, Object> getRelatedDataByJobApplication(DSLContext create, com.moseeker.thrift.gen.application.struct.JobApplication application, String downloadApi, String password, boolean recommender, boolean dl_url_required) {
 
         last = System.currentTimeMillis();
 
@@ -291,7 +291,7 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
             }
 
             if (dl_url_required) {
-                String url = getDownloadUrlByUserId(downloadApi, (int) application.getApplier_id());
+                String url = getDownloadUrlByUserId(downloadApi, password, (int) application.getApplier_id());
                 buildMap(map, "download_url", url == null ? "" : url);
             }
         }
@@ -331,7 +331,7 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
 
     }
 
-    public Response getResourceByApplication(String downloadApi, int companyId, int sourceId, int atsStatus, boolean recommender, boolean dl_url_required) throws Exception {
+    public Response getResourceByApplication(String downloadApi, String password, int companyId, int sourceId, int atsStatus, boolean recommender, boolean dl_url_required) throws Exception {
         Connection conn = null;
         try {
             conn = DBConnHelper.DBConn.getConn();
@@ -344,7 +344,7 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
                     .and(JobApplication.JOB_APPLICATION.ATS_STATUS.eq(atsStatus))
                     .fetchInto(com.moseeker.thrift.gen.application.struct.JobApplication.class)
                     .stream()
-                    .map(application -> getRelatedDataByJobApplication(create, application, downloadApi, recommender, dl_url_required))
+                    .map(application -> getRelatedDataByJobApplication(create, application, downloadApi, password, recommender, dl_url_required))
                     .collect(Collectors.toSet());
             return ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(datas));
         } catch (Exception e) {
