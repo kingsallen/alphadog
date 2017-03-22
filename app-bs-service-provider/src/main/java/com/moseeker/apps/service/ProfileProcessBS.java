@@ -84,8 +84,6 @@ public class ProfileProcessBS {
 	 * @return Response(status,message,data)
 	 */
 	public Response processProfileAts(int progressStatus, String params) {
-		int companyId = 0;
-		int accountId = 0;
 		try {
 			List<ApplicationAts> list = getJobApplication(params);
 			if (list == null || list.size() == 0) {
@@ -93,6 +91,8 @@ public class ProfileProcessBS {
 						.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 			}
 			List<Integer> appIds = list.stream().map(jop -> jop.getApplication_id()).collect(Collectors.toList());
+			int companyId=list.get(0).getCompany_id();
+			int accountId=list.get(0).getAccount_id();
 			Response result = processProfile(companyId, progressStatus, appIds, accountId);
 			return result;
 		} catch (Exception e) {
