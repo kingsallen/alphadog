@@ -1,12 +1,13 @@
-package com.moseeker.baseorm.dao.hrdb;
+package com.moseeker.position.dao.impl;
 
 import com.moseeker.baseorm.db.hrdb.tables.HrTeam;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
 import com.moseeker.baseorm.util.BaseDaoImpl;
-import org.springframework.stereotype.Service;
 
-@Service
-public class HrTeamDao extends BaseDaoImpl<HrTeamRecord, HrTeam> {
+import org.springframework.stereotype.Repository;
+
+@Repository
+public class HrTeamDaoImpl extends BaseDaoImpl<HrTeamRecord, HrTeam> {
 
     @Override
     protected void initJOOQEntity() {
