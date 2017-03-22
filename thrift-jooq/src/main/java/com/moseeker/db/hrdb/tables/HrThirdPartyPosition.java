@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> {
 
-	private static final long serialVersionUID = 1248253907;
+	private static final long serialVersionUID = 666632455;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_third_party_position</code>
@@ -89,7 +89,7 @@ public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> 
 	/**
 	 * The column <code>hrdb.hr_third_party_position.refresh_time</code>. 职位刷新时间
 	 */
-	public final TableField<HrThirdPartyPositionRecord, Timestamp> REFRESH_TIME = createField("refresh_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "职位刷新时间");
+	public final TableField<HrThirdPartyPositionRecord, Timestamp> REFRESH_TIME = createField("refresh_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "职位刷新时间");
 
 	/**
 	 * The column <code>hrdb.hr_third_party_position.update_time</code>. 数据更新时间
@@ -97,19 +97,24 @@ public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> 
 	public final TableField<HrThirdPartyPositionRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "数据更新时间");
 
 	/**
+	 * The column <code>hrdb.hr_third_party_position.address</code>. 详细地址
+	 */
+	public final TableField<HrThirdPartyPositionRecord, String> ADDRESS = createField("address", org.jooq.impl.SQLDataType.VARCHAR.length(100), this, "详细地址");
+
+	/**
 	 * The column <code>hrdb.hr_third_party_position.occupation</code>. 同步时选中的第三方职位职能
 	 */
 	public final TableField<HrThirdPartyPositionRecord, String> OCCUPATION = createField("occupation", org.jooq.impl.SQLDataType.VARCHAR.length(20), this, "同步时选中的第三方职位职能");
 
 	/**
-	 * The column <code>hrdb.hr_third_party_position.address</code>. 职位的详细地址
-	 */
-	public final TableField<HrThirdPartyPositionRecord, String> ADDRESS = createField("address", org.jooq.impl.SQLDataType.VARCHAR.length(100), this, "职位的详细地址");
-
-	/**
 	 * The column <code>hrdb.hr_third_party_position.sync_fail_reason</code>. 失败原因
 	 */
 	public final TableField<HrThirdPartyPositionRecord, String> SYNC_FAIL_REASON = createField("sync_fail_reason", org.jooq.impl.SQLDataType.VARCHAR.length(60), this, "失败原因");
+
+	/**
+	 * The column <code>hrdb.hr_third_party_position.use_company_address</code>. 使用企业地址
+	 */
+	public final TableField<HrThirdPartyPositionRecord, Short> USE_COMPANY_ADDRESS = createField("use_company_address", org.jooq.impl.SQLDataType.SMALLINT.defaulted(true), this, "使用企业地址");
 
 	/**
 	 * Create a <code>hrdb.hr_third_party_position</code> table reference

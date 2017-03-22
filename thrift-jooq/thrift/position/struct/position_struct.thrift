@@ -174,3 +174,83 @@ struct ThirdPartyPositionForSynchronizationWithAccount {
     5: string channel,
     6: ThirdPartyPositionForSynchronization position_info
 }
+
+struct JobPositionExt{
+    1:i32 job_custom_id,
+    2:Timestamp create_time,
+    3:Timestamp update_time,
+    4:i32 job_occupation_id
+}
+
+
+// 批量修改职位
+struct BatchHandlerJobPostion{
+    1:i32 appid,
+    2:list<JobPostrionObj> data,
+    3:string fields_nooverwrite,
+    4:bool nodelete,
+    5:string fields_nohash
+}
+
+struct JobPostrionObj{
+    1:string jobnumber,
+    2:i32 company_id,
+    3:string title,// 职位名称
+    4:string province,
+    5:string department,// 所在部门
+    6:Timestamp stop_date,
+    7:string accountabilities, //职责描述
+    8:string experience,  //任职条件
+    9:string salary, // 薪水
+    10:string language,//  外语要求
+    11:i8 status,// 状态 ： 0 有效 ，1 删除 2 :撤下
+    12:i32 source_id, // 职位来源
+    13:string business_group, // 事业群
+    14:i32 employment_type, // 应聘职位类型，0：全职，1：兼职 2：共同工 3：实习 9：其他
+    15:string hr_email, // HR联系邮箱，申请通知
+    16:i32 degree,// 学历 0：无 1：大专 2：本科 3：硕士 4：MBA 5:博士
+    17:string  feature, // 职位特色
+    18:i32  email_notice,  // 申请后是否给HR发送邮件，0：发送，1：不发送
+    19:i32  candidate_source,// 0：社招 1：校招 2：定向招聘
+    20:string occupation, // 职位职能
+    21:string  industry, // 所属行业
+    22:i32 email_resume_conf, // 0:允许使用email简历进行投递 1：不允许使用email简历投递
+    23:string district, // 添加区
+    24:i32 count, // 添加招聘人数 0：不限
+    25:double salary_top, // 工资上限
+    26:double  salary_bottom, // 工资下限
+    27:i32 experience_above, // 经验要求 1：需要 0：不需要
+    28:i32   degree_above, // 学位要 1：需要 0：不需要
+    29:i32   management_experience, // 是否需要管理经验 1：不需要 0：需求
+    30:i32   gender, // 性别要求 0 ：女  1： 男  2：不限
+    31:i32   publisher, // hr_account.id
+    32:i32   app_cv_config_id, // 职位开启并配置自定义模板
+    33:i32   source, // 来源 0：手动创建 1：导入 9 ：ATS导入
+    34:i32   age, // 年龄要求 0：无要求
+    35:string   major_required, // 专业要求
+    36:string   work_address, // 工作地址
+    37:string   keyword, // 职位关键字
+    38:string   reporting_to, // 回报对象
+    39:i32   is_hiring, // 是否急招 1：是 0： 否
+    40:i32   underlings,  // 下属人数 0：没有下属
+    41:i32   language_required, // 语言要求 1：是 0：否
+    42:i32   current_status, // 当前职位状态 0 ：招募中 1：未发布 2：暂停 3：撤下 4： 关闭
+    43:i64   position_code, // 智能字典code
+    44:i32   team_id,  // 职位所属团队
+    45:list<City> city, // 城市列表
+    46:string extra,
+    47:i32 id,
+    48:string requirement
+}
+
+struct City{
+    1:string type,
+    2:string value
+}
+
+struct DelePostion{
+    1:i32 id,
+    2:i32 company_id,
+    3:string jobnumber,
+    4:i32 source_id
+}

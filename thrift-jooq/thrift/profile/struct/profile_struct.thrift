@@ -121,6 +121,27 @@ struct Intention {
    14: optional map<string, i32> cities
 }
 
+struct IntentionCity{
+    1: optional i32 id,
+    2: optional i32 profile_intention_id,
+    3: optional i16 city_code,
+    4: optional string city_name
+}
+
+struct IntentionIndustry{
+    1: optional i32 id,
+    2: optional i32 profile_intention_id,
+    3: optional i16 industry_code,
+    4: optional string industry_name
+}
+
+struct IntentionPosition{
+    1: optional i32 id,
+    2: optional i32 profile_intention_id,
+    3: optional i16 position_code,
+    4: optional string position_name
+}
+
 struct Language { 
 	1: optional i32 id,
     2: optional i32 profile_id,
@@ -128,6 +149,13 @@ struct Language {
     4: optional i16 level, 
     5: optional Timestamp create_time,
     6: optional Timestamp update_time
+}
+
+struct ProfileOther {
+    1: optional i32 profile_id,
+    2: optional string other,
+    3: optional Timestamp create_time,
+    4: optional Timestamp update_time
 }
 
 struct CustomizeResume { 
