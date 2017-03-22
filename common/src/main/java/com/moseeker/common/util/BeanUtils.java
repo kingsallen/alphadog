@@ -1,17 +1,19 @@
 package com.moseeker.common.util;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.thrift.TBase;
@@ -25,7 +27,6 @@ import org.jooq.types.ULong;
 import org.jooq.types.UShort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.alibaba.fastjson.JSONArray;
 
 /**
@@ -49,6 +50,20 @@ import com.alibaba.fastjson.JSONArray;
 public class BeanUtils {
 
 	private static Logger logger = LoggerFactory.getLogger(BeanUtils.class);
+	
+	/**
+	 * 解决数据库字段命名与thrift关键字冲突问题
+	 * 
+	 */
+	@SuppressWarnings("serial")
+	public static Map<String, String> colNameMapping = new HashMap<String, String>(){{
+		put("required", "needed");
+		put("alias", "allonym");
+		put("module", "component");
+		put("default", "defMsg");
+		put("start", "startTime");
+		put("end", "endTime");	
+	}};
 
 	@SuppressWarnings("rawtypes")
 	public static <T extends TBase, R extends UpdatableRecordImpl> R structToDB(T t, Class<R> origClazz,
@@ -84,66 +99,79 @@ public class BeanUtils {
 		});
 		return records;
 	}
-
+	
+	/**
+	 * 将 xx_yy 命名转为驼峰命名 xxYy
+	 * @param strName
+	 * @return
+	 */
+	public static String humpName(String strName) {
+		String[] strs = strName.split("_");
+		if (strs.length > 1) {
+			String name = strs[0];
+			for (int i = 1; i < strs.length; i++) {
+				name += strs[i].substring(0, 1).toUpperCase() + strs[i].substring(1); 
+			}
+			return name;
+		} else {
+			return strName;
+		}
+	}
+	
 	/**
 	 * struct 类和JOOQ类的属性和方法固定，可以预先加载成静态的属性和方法
 	 * 
-	 * @param dest
-	 * @param orig
+	 * @param dest struct 对象
+	 * @param orig record 对象
 	 */
 	@SuppressWarnings("rawtypes")
 	public static <T extends TBase, R extends UpdatableRecordImpl> void structToDB(T dest, R orig, Map<String, String> equalRules) {
 		if (dest == null || orig == null) {
 			return;
 		}
-		Field[] descFields = dest.getClass().getFields();
-		Method[] destMethods = dest.getClass().getMethods();
+		/*
+		 * 兼容老代码，将equalRules与{@link colNameMapping}合并 <br/>
+		 */
+		Map<String, String> eqr = new HashMap<String, String>();
+		eqr.putAll(colNameMapping);
+		if (equalRules != null) {
+		   eqr.putAll(equalRules);
+		} 
+		
+		// 将strut对象的属性名和get方法提取成map
+		Map<String, Method>  destGetMeths = Arrays.asList(dest.getClass().getMethods()).stream().filter(f -> f.getName().startsWith("get") || f.getName().startsWith("is")).collect(Collectors.toMap(k -> k.getName(), v -> v, (oldValue, newValue) -> newValue));
+		Map<String, Method> destMap = Arrays.asList(dest.getClass().getFields()).stream().filter(f -> !f.getName().equals("metaDataMap")).collect(Collectors.toMap(k -> humpName(k.getName()), v -> {
+			String fileName = v.getName().substring(0, 1).toUpperCase() + v.getName().substring(1);
+			if (destGetMeths.containsKey("get".concat(fileName))){
+				return destGetMeths.get("get".concat(fileName));
+			} else if (v.getType().isAssignableFrom(boolean.class) && destGetMeths.containsKey("is".concat(fileName))) {
+				return destGetMeths.get("is".concat(fileName));
+			} else {
+				return null;
+			}
+		}));
+		
+		// 将DO对象的属性名和set方法提取成map
+		Map<String, Method> origMap = Arrays.asList(orig.getClass().getMethods()).stream().filter(f -> f.getName().length() > 3 && f.getName().startsWith("set")).collect(Collectors.toMap(k -> {
+			String fileName = k.getName().substring(3, 4).toLowerCase() + k.getName().substring(4);
+			return eqr.containsKey(fileName) ? humpName(eqr.get(fileName)) : humpName(fileName); 
+		}, v -> v, (oldValue, newValue) -> newValue));
 
-		Method[] origMethods = orig.getClass().getMethods();
-
-		int i = 0, j = 0, k = 0;
-		if (descFields != null && descFields.length > 0 && destMethods != null && destMethods.length > 0) {
-			for (i = 0; i < descFields.length; i++) {
-				if (!descFields[i].getName().trim().equals("metaDataMap")) {
-					Field field = descFields[i];
-					String upperFirst = field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
-					String getMethodName;
-					if(field.getType().isAssignableFrom(boolean.class)) {
-						getMethodName = "is" + upperFirst;
-					} else {
-						getMethodName = "get" + upperFirst;
-					}
-					for (j = 0; j < destMethods.length; j++) {
-						try {
-							if (destMethods[j].getName().equals(getMethodName)) {
-								/*if (defaultValue(field, destMethods[j], dest)) {
-									continue;
-								}*/
-								Method isSetMethod = dest.getClass().getMethod("isSet" + upperFirst, new Class[] {});
-								if ((Boolean) isSetMethod.invoke(dest, new Object[] {})) {
-									String origMethodName = buiderRecordMethodName(field.getName(), MethodType.SET,
-											equalRules);
-									for (k = 0; k < origMethods.length; k++) {
-										if (origMethods[k].getName().trim().equals(origMethodName)) {
-											Object object = convertTo(destMethods[j].invoke(dest, new Object[] {}),
-													origMethods[k].getParameterTypes()[0]);
-											origMethods[k].invoke(orig, object);
-											break;
-										}
-									}
-								}
-								break;
-							}
-						} catch (NoSuchMethodException | SecurityException | IllegalAccessException
-								| IllegalArgumentException | InvocationTargetException e) {
-							logger.error("error", e);
-						} finally {
-							// do nothing
-						}
-					}
+		// 赋值
+		Set<String> origKey = origMap.keySet();
+		for (String field : origKey) {
+			if (destMap.containsKey(field) && origMap.get(field) != null && destMap.get(field) != null) {
+				Object object;
+				try {
+					object = convertTo(destMap.get(field).invoke(dest, new Object[] {}),
+							origMap.get(field).getParameterTypes()[0]);
+					origMap.get(field).invoke(orig, object);
+				} catch (Exception e) {
+					logger.error(e.getMessage(), e);
 				}
 			}
 		}
+		
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -190,57 +218,52 @@ public class BeanUtils {
 		if (dest == null || orig == null) {
 			return;
 		}
-		Field[] descFields = dest.getClass().getFields();
-		Method[] destMethods = dest.getClass().getMethods();
+		/*
+		 * 兼容老代码，将equalRules与{@link colNameMapping}合并 <br/>
+		 */
+		Map<String, String> eqr = new HashMap<String, String>();
+		eqr.putAll(colNameMapping);
+		if (equalRules != null) {
+		   eqr.putAll(equalRules);
+		} 
+		
+		// 将strut对象的属性名和set方法提取成map
+		Map<String, Method>  destGetMeths = Arrays.asList(dest.getClass().getMethods()).stream().filter(f -> f.getName().startsWith("set")).collect(Collectors.toMap(k -> k.getName(), v -> v, (oldValue, newValue) -> newValue));
+		Map<String, Method> destMap = Arrays.asList(dest.getClass().getFields()).stream().filter(f -> !f.getName().equals("metaDataMap")).collect(Collectors.toMap(k -> humpName(k.getName()), v -> {
+			String fileName = v.getName().substring(0, 1).toUpperCase() + v.getName().substring(1);
+			if (destGetMeths.containsKey("set".concat(fileName))){
+				return destGetMeths.get("set".concat(fileName));
+			} else {
+				return null;
+			}
+		}));
+		
+		// 将DO对象的属性名和get方法提取成map
+		Map<String, Method> origMap = Arrays.asList(orig.getClass().getMethods()).stream().filter(f -> f.getName().length() > 3 && f.getName().startsWith("get")).collect(Collectors.toMap(k -> {
+			String fileName = k.getName().substring(3, 4).toLowerCase() + k.getName().substring(4);
+			return eqr.containsKey(fileName) ? humpName(eqr.get(fileName)) : humpName(fileName); 
+		}, v -> v, (oldValue, newValue) -> newValue));
 
-		Method[] origMethods = orig.getClass().getMethods();
-
-		int i = 0, j = 0, k = 0;
-		if (descFields != null && descFields.length > 0 && destMethods != null && destMethods.length > 0) {
-			for (i = 0; i < descFields.length; i++) {
-				if (!descFields[i].getName().trim().equals("metaDataMap")) {
-					Field field = descFields[i];
-					String upperFirst = field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
-					String setMethodName = "set" + upperFirst;
-					for (j = 0; j < destMethods.length; j++) {
-						if (destMethods[j].getName().equals(setMethodName)) {
-
-							String origMethodName = buiderRecordMethodName(field.getName(), MethodType.GET,
-									equalRules);
-							for (k = 0; k < origMethods.length; k++) {
-								if (origMethods[k].getName().trim().equals(origMethodName)) {
-
-									Object object = null;
-									try {
-										object = convertTo(origMethods[k].invoke(orig, new Object[] {}),
-												destMethods[j].getParameterTypes()[0]);
-									} catch (IllegalAccessException e) {
-										e.printStackTrace();
-									} catch (IllegalArgumentException e) {
-										e.printStackTrace();
-									} catch (InvocationTargetException e) {
-										logger.error("InvocationTargetException -- origin:{}, method:{}, param value:{}",orig, origMethods[k], destMethods[j].getParameterTypes()[0]);
-										e.printStackTrace();
-									}
-									try {
-										if(object != null) {
-											destMethods[j].invoke(dest, object);
-										}
-									} catch (IllegalAccessException e) {
-										e.printStackTrace();
-										logger.error(e.getMessage(), e);
-									} catch (IllegalArgumentException e) {
-										logger.info("IllegalArgumentException -- method:{}, methodType:{}, param value:{}, param before convert:",origMethods[k].getName().trim(), destMethods[j].getParameterTypes()[0], object, orig);
-										logger.error(e.getMessage(), e);
-									} catch (InvocationTargetException e) {
-										logger.error(e.getMessage(), e);
-									}
-									break;
-								}
-							}
-							break;
-						}
+		
+		Set<String> destKey = destMap.keySet();
+		for (String field : destKey) {
+			if (destMap.containsKey(field) && origMap.get(field) != null && destMap.get(field) != null) {
+				Object object = null;
+				try {
+					object = convertTo(origMap.get(field).invoke(orig, new Object[] {}),
+							destMap.get(field).getParameterTypes()[0]);
+					if (object != null) {
+						destMap.get(field).invoke(dest, object);
 					}
+				} catch (IllegalArgumentException e) {
+					logger.info("IllegalArgumentException -- method:{}, methodType:{}, param value:{}, param before convert:", origMap.get(field).getName().trim(), destMap.get(field).getParameterTypes()[0], object, orig);
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+					logger.error("InvocationTargetException -- origin:{}, method:{}, param value:{}", orig, origMap.get(field), destMap.get(field).getParameterTypes()[0]);
+				} catch (Exception e) {
+					e.printStackTrace();
+					logger.error(e.getMessage(), e);
 				}
 			}
 		}
@@ -274,7 +297,7 @@ public class BeanUtils {
 				t = clazz.newInstance();
 				for (Entry<String, Object> entry : map.entrySet()) {
 
-					String origMethodName = buiderRecordMethodName(entry.getKey(), MethodType.SET, null);
+					String origMethodName = buiderRecordMethodName(entry.getKey(), MethodType.SET);
 					for (int i = 0; i < methods.length; i++) {
 						if (methods[i].getName().equals(origMethodName)) {
 							Object obj = convertTo(entry.getValue(), methods[i].getParameterTypes()[0]);
@@ -304,28 +327,23 @@ public class BeanUtils {
 		}
 	}
 
-	private static String buiderRecordMethodName(String name, MethodType methodType, Map<String, String> equalRules) {
+	private static String buiderRecordMethodName(String name, MethodType methodType) {
 		if (name != null) {
 			StringBuffer sb = new StringBuffer();
 			sb.append(methodType);
-			if (equalRules != null && equalRules.containsKey(name)) {
-				sb.append(equalRules.get(name).substring(0, 1).toUpperCase());
-				sb.append(equalRules.get(name).substring(1));
-			} else {
-				String[] splitArray = name.split("_");
-				if (splitArray.length > 1) {
-					for (int i = 0; i < splitArray.length; i++) {
-						if(StringUtils.isNullOrEmpty(splitArray[i])) {
-							sb.append("_");
-						} else {
-							sb.append(splitArray[i].substring(0, 1).toUpperCase());
-							sb.append(splitArray[i].substring(1));
-						}
+			String[] splitArray = name.split("_");
+			if (splitArray.length > 1) {
+				for (int i = 0; i < splitArray.length; i++) {
+					if(StringUtils.isNullOrEmpty(splitArray[i])) {
+						sb.append("_");
+					} else {
+						sb.append(splitArray[i].substring(0, 1).toUpperCase());
+						sb.append(splitArray[i].substring(1));
 					}
-				} else {
-					sb.append(name.substring(0, 1).toUpperCase());
-					sb.append(name.substring(1));
 				}
+			} else {
+				sb.append(name.substring(0, 1).toUpperCase());
+				sb.append(name.substring(1));
 			}
 			return sb.toString();
 		} else {

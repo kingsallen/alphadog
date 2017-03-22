@@ -1,16 +1,17 @@
 package com.moseeker.baseorm.Thriftservice;
 
-import com.moseeker.baseorm.dao.HRAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
+import com.moseeker.baseorm.dao.userdb.UserHRAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.UserHrAccountDao.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
+
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.jooq.types.UInteger;
@@ -38,7 +39,7 @@ public class HRAccountDaoThriftService implements Iface {
 	private Logger logger = LoggerFactory.getLogger(ChannelType.class);
 	
 	@Autowired
-	private HRAccountDao hraccountDao;
+	private UserHRAccountDao hraccountDao;
 	
 	@Autowired
 	private HRThirdPartyAccountDao hrThirdPartyAccountDao;
@@ -59,14 +60,6 @@ public class HRAccountDaoThriftService implements Iface {
 		} finally {
 			//do nothing
 		}
-	}
-
-	public HRAccountDao getHraccountDao() {
-		return hraccountDao;
-	}
-
-	public void setHraccountDao(HRAccountDao hraccountDao) {
-		this.hraccountDao = hraccountDao;
 	}
 
 	@Override
