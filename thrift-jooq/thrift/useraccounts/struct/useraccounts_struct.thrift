@@ -180,19 +180,20 @@ struct UserEmployeeStruct {
 	34: optional Timestamp register_time,
 	35: optional string register_ip,
 	36: optional Timestamp last_login_time,
-	37: optional string last_login_ip
-	38: optional i32 login_count
-	39: optional i8 source
-	40: optional string download_token
-	41: optional i32 hr_wxuser_id
-	42: optional string custom_field
-	43: optional i8 is_rp_sent
-	44: optional i32 sysuser_id
-	45: optional i32 position_id
-	46: optional i32 section_id
-	47: optional i8 email_isvalid
-	48: optional i8 auth_method
-	49: optional string custom_field_values
+	37: optional string last_login_ip,
+	38: optional i32 login_count,
+	39: optional i8 source,
+	40: optional string download_token,
+	41: optional i32 hr_wxuser_id,
+	42: optional string custom_field,
+	43: optional i8 is_rp_sent,
+	44: optional i32 sysuser_id,
+	45: optional i32 position_id,
+	46: optional i32 section_id,
+	47: optional i8 email_isvalid,
+	48: optional i8 auth_method,
+	49: optional string custom_field_values,
+	50: optional string departmentname
 }
 struct UserEmployeePointStruct {
    1: optional i32 id,
