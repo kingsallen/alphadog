@@ -24,7 +24,7 @@ import com.moseeker.position.pojo.JobPositionPojo;
 import com.moseeker.position.pojo.PositionForSynchronizationPojo;
 import com.moseeker.position.pojo.RecommendedPositonPojo;
 import com.moseeker.position.service.position.PositionChangeUtil;
-import com.moseeker.position.utils.UpdataESThread;
+import com.moseeker.position.utils.UpdateESThread;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -61,17 +61,10 @@ import java.util.stream.Collectors;
 import static java.lang.Math.round;
 import static java.lang.Math.toIntExact;
 
-import org.apache.thrift.TException;
 import org.jooq.Field;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 @Service
 public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRecord> {
@@ -517,7 +510,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                         jobPositionCityDao.delJobPostionCityByPids(deleteCitylist);
                         jobPositonExtDao.delResources(deleteExtlist);
                         // 更新
-                        UpdataESThread updataESThread = new UpdataESThread(searchengineServices, companyServices, dbList);
+                        UpdateESThread updataESThread = new UpdateESThread(searchengineServices, companyServices, dbList);
                         Thread thread = new Thread(updataESThread);
                         thread.start();
                         return ResponseUtils.success(0);
@@ -667,7 +660,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     if (jobPositionUpdateRecordList.size() > 0) {
                         jobPositionAddRecordList.addAll(jobPositionUpdateRecordList);
                     }
-                    UpdataESThread updataESThread = new UpdataESThread(searchengineServices, companyServices, jobPositionAddRecordList);
+                    UpdateESThread updataESThread = new UpdateESThread(searchengineServices, companyServices, jobPositionAddRecordList);
                     Thread thread = new Thread(updataESThread);
                     thread.start();
                 }
@@ -722,7 +715,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 jobPositonExtDao.delResource(jobPositionExtRecord);
                 // 更新ES Search Engine
                 jobPositionRecords.add(jobPositionRecord);
-                UpdataESThread updataESThread = new UpdataESThread(searchengineServices, companyServices, jobPositionRecords);
+                UpdateESThread updataESThread = new UpdateESThread(searchengineServices, companyServices, jobPositionRecords);
                 Thread thread = new Thread(updataESThread);
                 thread.start();
                 return ResponseUtils.success(0);
