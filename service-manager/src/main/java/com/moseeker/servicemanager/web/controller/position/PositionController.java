@@ -237,7 +237,7 @@ public class PositionController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/delete/jobpostion", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/jobposition", method = RequestMethod.DELETE)
     @ResponseBody
     public String deleteJobPostion(HttpServletRequest request, HttpServletResponse response) {
         try {
