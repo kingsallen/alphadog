@@ -89,6 +89,8 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
                 if (((Collection) object).size() > 0) {
                     map.put(key, object);
                 }
+            } else {
+                map.put(key, object);
             }
         }
     }
