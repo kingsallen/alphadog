@@ -1,6 +1,7 @@
 package com.moseeker.position.pojo;
 
-import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
+
+import java.io.Serializable;
 
 /**
  * Created by YYF
@@ -11,13 +12,24 @@ import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
  *
  * 用于返回批量更新职位时候提示信息
  */
-public class UpdateJobPositionFailMessPojo {
+public class JobPositionFailMessPojo implements Serializable {
 
     // 失败原因
     private String message;
 
-    // 失败的数据
-    private JobPositionRecord jobPositionRecord;
+    private Integer companyId;
+    private Integer sourceId;
+    private String jobNumber;
+
+    private Integer jobPostionId;
+
+    public Integer getJobPostionId() {
+        return jobPostionId;
+    }
+
+    public void setJobPostionId(Integer jobPostionId) {
+        this.jobPostionId = jobPostionId;
+    }
 
     public String getMessage() {
         return message;
@@ -27,11 +39,27 @@ public class UpdateJobPositionFailMessPojo {
         this.message = message;
     }
 
-    public JobPositionRecord getJobPositionRecord() {
-        return jobPositionRecord;
+    public Integer getCompanyId() {
+        return companyId;
     }
 
-    public void setJobPositionRecord(JobPositionRecord jobPositionRecord) {
-        this.jobPositionRecord = jobPositionRecord;
+    public void setCompanyId(Integer companyId) {
+        this.companyId = companyId;
+    }
+
+    public Integer getSourceId() {
+        return sourceId;
+    }
+
+    public void setSourceId(Integer sourceId) {
+        this.sourceId = sourceId;
+    }
+
+    public String getJobNumber() {
+        return jobNumber;
+    }
+
+    public void setJobNumber(String jobNumber) {
+        this.jobNumber = jobNumber;
     }
 }

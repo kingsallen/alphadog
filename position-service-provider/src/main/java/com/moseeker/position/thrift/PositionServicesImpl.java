@@ -11,6 +11,7 @@ import com.moseeker.thrift.gen.position.struct.WechatPositionListQuery;
 import com.moseeker.thrift.gen.position.struct.WechatRpPositionListData;
 import com.moseeker.thrift.gen.position.struct.WechatShareData;
 import com.moseeker.thrift.gen.position.struct.*;
+
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,9 +39,6 @@ public class PositionServicesImpl implements Iface {
     /**
      * 获取推荐职位
      * <p></p>
-     *
-     * @param pid
-     * @return
      */
     @Override
     public Response getRecommendedPositions(int pid) {
@@ -54,10 +52,6 @@ public class PositionServicesImpl implements Iface {
 
     /**
      * 根据职位Id获取当前职位信息
-     *
-     * @param positionId
-     * @return
-     * @throws TException
      */
     @Override
     public Response getPositionById(int positionId) throws TException {
