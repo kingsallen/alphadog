@@ -1,5 +1,6 @@
 package com.moseeker.demo.server;
 
+import com.moseeker.demo.thriftservice.ServiceTestThriftService;
 import com.moseeker.rpccenter.exception.IncompleteException;
 import com.moseeker.rpccenter.exception.RegisterException;
 import com.moseeker.rpccenter.exception.RpcException;
@@ -19,7 +20,7 @@ public class DemoServer {
 		try {
 			AnnotationConfigApplicationContext acac = initSpring();
 			MoServer server = new MoServer(acac,
-					"");
+					"", ServiceTestThriftService.class);
 			// 启动服务，非阻塞
 			try {
 				server.startServer();
@@ -47,6 +48,7 @@ public class DemoServer {
 	private static AnnotationConfigApplicationContext initSpring() {
 		AnnotationConfigApplicationContext acac = new AnnotationConfigApplicationContext();
 		acac.scan("com.moseeker.demo");
+		acac.scan("com.moseeker.baseorm");
 		acac.scan("com.moseeker.common.aop.iface");
 		acac.refresh();
 		return acac;

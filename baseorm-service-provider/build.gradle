@@ -13,6 +13,7 @@ dependencies {
 	compile deps["spring-core"]
     compile deps["spring-context"]
     compile deps["spring-test"]
+    compile deps["spring-beans"]
     compile fileTree(dir:'../libs',include:'libthrift-0.10.0.jar')
     //compile deps["libthrift"]
     compile  fileTree(dir:'../libs',include:'jooq*.jar')

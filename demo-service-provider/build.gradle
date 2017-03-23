@@ -9,6 +9,8 @@ dependencies {
     testCompile deps["mockito"]
     compile deps["spring-core"]
     compile deps["spring-context"]
+    compile deps["spring-jdbc"]
+    compile deps["spring-beans"]
 }
 
 task copyJars(type: Copy) {

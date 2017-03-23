@@ -1,21 +1,19 @@
 package com.moseeker.common.redis.cache.db;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.dbutils.DBConnHelper;
+import com.moseeker.common.exception.RedisException;
+import com.moseeker.common.redis.RedisConfigRedisKey;
+import com.moseeker.db.configdb.Tables;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.moseeker.common.constants.Constant;
-import com.moseeker.common.dbutils.DBConnHelper;
-import com.moseeker.common.exception.RedisException;
-import com.moseeker.common.redis.RedisConfigRedisKey;
-import com.moseeker.common.util.Notification;
-import com.moseeker.db.configdb.Tables;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
