@@ -776,13 +776,17 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     JobPositionCityRecord jobPositionCityRecord = new JobPositionCityRecord();
                     jobPositionCityRecord.setPid(pid);
                     if (city.getType().toLowerCase().equals("text")) { // 城市名字，转换成cityCode
-                        cityCodeQuery.addEqualFilter("city", city.getValue());
+                        String strings = "上海市北京市天津市重庆市";
                         try {
                             DictCityPostcodeRecord cityPostcodeRecord = (DictCityPostcodeRecord) cityPostCodeMap.get(city.getValue());
                             if (cityPostcodeRecord != null) {
                                 jobPositionCityRecord.setCode(Integer.valueOf(cityPostcodeRecord.getCode()));
                             } else {
-                                cityCodeQuery.addEqualFilter("city", city.getValue());
+                                if (strings.indexOf(city.getValue()) > -1) {
+                                    cityCodeQuery.addEqualFilter("province", city.getValue());
+                                } else {
+                                    cityCodeQuery.addEqualFilter("city", city.getValue());
+                                }
                                 cityPostcodeRecord = dictCityPostCodeDao.getResource(cityCodeQuery);
                                 if (cityPostcodeRecord != null && cityPostcodeRecord.getCode() != null) {
                                     jobPositionCityRecord.setCode(Integer.valueOf(cityPostcodeRecord.getCode()));
@@ -1298,4 +1302,5 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
         // 查询到职位
         return result;
     }
+
 }
