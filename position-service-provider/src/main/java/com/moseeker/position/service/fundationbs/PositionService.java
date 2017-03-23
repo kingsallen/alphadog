@@ -618,6 +618,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                                 if (jobPositionHandlerDate.getExtra() != null) {
                                     if (jobPositionExtRecord == null) {
                                         jobPositionExtRecord = new JobPositionExtRecord();
+                                        jobPositionExtRecord.setPid(jobPositionRecordTemp.getId());
                                         jobPositionExtRecord.setExtra(jobPositionHandlerDate.getExtra());
                                         jobPositionExtRecordAddRecords.add(jobPositionExtRecord);
                                     } else {
