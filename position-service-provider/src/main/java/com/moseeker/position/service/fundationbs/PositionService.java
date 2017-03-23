@@ -616,8 +616,14 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                                 }
                                 // 需要更新的JobPositionExra数据
                                 if (jobPositionHandlerDate.getExtra() != null) {
-                                    jobPositionExtRecord.setExtra(jobPositionHandlerDate.getExtra());
-                                    jobPositionExtRecordUpdateRecords.add(jobPositionExtRecord);
+                                    if (jobPositionExtRecord == null) {
+                                        jobPositionExtRecord = new JobPositionExtRecord();
+                                        jobPositionExtRecord.setExtra(jobPositionHandlerDate.getExtra());
+                                        jobPositionExtRecordAddRecords.add(jobPositionExtRecord);
+                                    } else {
+                                        jobPositionExtRecord.setExtra(jobPositionHandlerDate.getExtra());
+                                        jobPositionExtRecordUpdateRecords.add(jobPositionExtRecord);
+                                    }
                                 }
                             }
                         }
