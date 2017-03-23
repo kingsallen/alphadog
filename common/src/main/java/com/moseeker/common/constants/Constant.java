@@ -42,7 +42,7 @@ public final class Constant {
 
     public static final int REDIS_CONNECT_ERROR_APPID = 0;
     public static final String REDIS_CONNECT_ERROR_EVENTKEY = "REDIS_CONNECT_ERROR";
-    public static final String REDIS_CACHE_CONFIG_NOTEXIST_ERROR_EVENTKEY = "REDIS_CACHE_CONFIG_NOTEXIST_ERROR";
+    public static final String REDIS_CACHE_CONFIG_NOTEXIST_ERROR_EVENTKEY = "REDIS_CACHE_CONFIG_NOTEXIST_ERRO";
     // 消息模板通知 KEY_IDENTIFIER
     public static final String REDIS_KEY_IDENTIFIER_MQ_MESSAGE_NOTICE_TEMPLATE = "MQ_MESSAGE_NOTICE_TEMPLATE";
 
@@ -164,12 +164,15 @@ public final class Constant {
 	public static final int DICT_CONSTANT_COMPANY_PROPERTY = 1103; 				//公司性质常量表parent_code值
 	
 	public static final int EVENT_TYPE_EMAIL_VERIFIED = 1;								//邮件认证邮件模版
+	public static final int EVENT_TYPE_EMPLOYEE_AUTH = 2; 									//员工认证邮件模板
 	
 	public static final String MQ_MESSAGE_EMAIL_BIZ = "MQ_MESSAGE_EMAIL_BIZ";	//业务邮件消息队列的key_identifier
 	public static final String EMAIL_VERIFIED_SUBJECT = "邮箱认证";				//业务邮件消息队列的key_identifier
 	
 	public static final String MQ_MESSAGE_EMAIL_WARNING = "MQ_MESSAGE_EMAIL_WARNING";	//报警邮件消息队列的key_identifier
 	public static final String MQ_MESSAGE_EMAIL_MANDRILL = "MQ_MESSAGE_EMAIL_MANDRILL";	//mandrill 邮件消息队列的key_identifier	
+	
+	public static final String EMPLOYEE_AUTH_CODE = "EMPLOYEE_AUTH_CODE"; // 员工认知redisKey
 
 	public static final byte LOG_SMS_SENDRECORD_SYS_ALPHADOG = 5;
 	

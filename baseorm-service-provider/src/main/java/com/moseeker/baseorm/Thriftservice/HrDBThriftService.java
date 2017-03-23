@@ -3,6 +3,8 @@ package com.moseeker.baseorm.Thriftservice;
 import java.util.List;
 import java.util.Set;
 
+import com.moseeker.baseorm.dao.hrdb.CompanyDao;
+import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.util.CURDExceptionUtils;
 import com.moseeker.thrift.gen.common.struct.*;
@@ -11,7 +13,6 @@ import com.moseeker.thrift.gen.dao.struct.*;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.moseeker.baseorm.service.HrDBService;
 import com.moseeker.baseorm.service.HrDaoService;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
@@ -40,6 +41,7 @@ public class HrDBThriftService implements Iface {
 
 	@Autowired
 	private HrChatUnreadCountDao hrChatUnreadCountDao;
+
 
 	@Override
 	public Response getHrHistoryOperations(List<ProcessValidationStruct> record) throws TException {
@@ -148,6 +150,11 @@ public class HrDBThriftService implements Iface {
 		return hrChatUnreadCountDao.listResources(query);
 	}
 
+	@Override
+	public HrChatUnreadCountDO saveChatUnreadCount(HrChatUnreadCountDO unreadCount) throws CURDException, TException {
+		return hrChatUnreadCountDao.saveResource(unreadCount);
+	}
+
 	public HrHbConfigDO getHbConfig(CommonQuery query) throws TException {
 		return hrDaoService.getHbConfig(query);
 	}
@@ -197,5 +204,11 @@ public class HrDBThriftService implements Iface {
 	public Response postHrOperationrecord(HrOperationRecordDO record)
 			throws TException {
 		return hrDBService.postHrOperation(record);
+	}
+
+	@Override
+	public Response getHrWxWechat(CommonQuery query) throws TException {
+		// TODO Auto-generated method stub
+		return hrDBService.getHrWxWechat(query);
 	}
 }

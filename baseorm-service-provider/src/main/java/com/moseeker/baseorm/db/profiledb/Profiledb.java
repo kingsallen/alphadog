@@ -4,15 +4,6 @@
 package com.moseeker.baseorm.db.profiledb;
 
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.Generated;
-
-import org.jooq.Table;
-import org.jooq.impl.SchemaImpl;
-
 import com.moseeker.baseorm.db.profiledb.tables.ProfileAttachment;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileAwards;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileBasic;
@@ -31,7 +22,15 @@ import com.moseeker.baseorm.db.profiledb.tables.ProfileProjectexp;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileSkill;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileWorkexp;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileWorks;
-import com.moseeker.baseorm.db.profiledb.tables.SchemaMigrations;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.annotation.Generated;
+
+import org.jooq.Table;
+import org.jooq.impl.SchemaImpl;
 
 
 /**
@@ -47,7 +46,7 @@ import com.moseeker.baseorm.db.profiledb.tables.SchemaMigrations;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Profiledb extends SchemaImpl {
 
-	private static final long serialVersionUID = 253108219;
+	private static final long serialVersionUID = 61827558;
 
 	/**
 	 * The reference instance of <code>profiledb</code>
@@ -87,7 +86,6 @@ public class Profiledb extends SchemaImpl {
 			ProfileProjectexp.PROFILE_PROJECTEXP,
 			ProfileSkill.PROFILE_SKILL,
 			ProfileWorkexp.PROFILE_WORKEXP,
-			ProfileWorks.PROFILE_WORKS,
-			SchemaMigrations.SCHEMA_MIGRATIONS);
+			ProfileWorks.PROFILE_WORKS);
 	}
 }

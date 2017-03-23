@@ -1,5 +1,7 @@
 package com.moseeker.candidate.service;
 
+import com.moseeker.thrift.gen.common.struct.Response;
+
 /**
  * 候选人
  * Created by jack on 10/02/2017.
@@ -13,4 +15,13 @@ public interface Candidate {
      * @param shareChainID 转发编号
      */
     public void glancePosition(int userID, int positionID, int shareChainID);
+    
+    /**
+     * 设置感兴趣职位
+     * @param user_id
+     * @param position_id
+     * @param is_interested
+     * @return
+     */
+    public Response changeInteresting(int user_id, int position_id, byte is_interested);
 }

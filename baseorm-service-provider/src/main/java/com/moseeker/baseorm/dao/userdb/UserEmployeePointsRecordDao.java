@@ -1,10 +1,11 @@
 package com.moseeker.baseorm.dao.userdb;
 
+import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRecord;
 import com.moseeker.baseorm.util.BaseDaoImpl;
 import com.moseeker.common.dbutils.DBConnHelper;
-import com.moseeker.db.userdb.tables.UserEmployeePointsRecord;
-import com.moseeker.db.userdb.tables.records.UserEmployeePointsRecordRecord;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointSum;
+
 import org.jooq.DSLContext;
 import org.jooq.Record2;
 import org.jooq.Result;

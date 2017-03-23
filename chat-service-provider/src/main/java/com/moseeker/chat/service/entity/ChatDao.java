@@ -5,7 +5,6 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.chat.struct.ResultOfSaveRoomVO;
 import com.moseeker.thrift.gen.dao.service.HrDBDao;
 import com.moseeker.thrift.gen.dao.service.JobDBDao;
 import com.moseeker.thrift.gen.dao.service.UserDBDao;
@@ -46,14 +45,14 @@ public class ChatDao {
         queryUtil.setOrder("desc");
         switch (type) {
             case HR:
-                queryUtil.addSelectAttribute("hr_unread_count").addSelectAttribute("hr_id");
-                queryUtil.setSortby("hr_unread_count");
-                queryUtil.addEqualFilter("hr_unread_count", id);
-                break;
-            case USER:
                 queryUtil.addSelectAttribute("user_unread_count").addSelectAttribute("user_id");
                 queryUtil.setSortby("user_unread_count");
-                queryUtil.addEqualFilter("user_unread_count", id);
+                queryUtil.addEqualFilter("hr_id", id);
+                break;
+            case USER:
+                queryUtil.addSelectAttribute("hr_unread_count").addSelectAttribute("hr_id");
+                queryUtil.setSortby("hr_unread_count");
+                queryUtil.addEqualFilter("user_id", id);
                 break;
             default:
         }
@@ -179,20 +178,28 @@ public class ChatDao {
      */
     public List<HrCompanyDO> listCompany(int[] hrIdArray) {
         List<HrCompanyDO> companyDOList = null;
-        if(hrIdArray != null && hrIdArray.length > 0) {
-            String hrId = StringUtils.converFromArrayToStr(hrIdArray);
-            QueryUtil queryUtil = new QueryUtil();
-            queryUtil.addSelectAttribute("id").addSelectAttribute("name").addSelectAttribute("abbreviation")
-                    .addSelectAttribute("logo");
-            queryUtil.addEqualFilter("id", hrId);
-            try {
-                companyDOList = hrDBDao.listCompany(queryUtil);
-            } catch (CURDException e) {
-                companyDOList = new ArrayList<>();
-            } catch (TException e) {
-                logger.error(e.getMessage(), e);
+
+        String idStr = StringUtils.converFromArrayToStr(hrIdArray);
+        QueryUtil queryUtil = new QueryUtil();
+        queryUtil.addSelectAttribute("company_id");
+        queryUtil.addEqualFilter("id", idStr);
+        List<UserHrAccountDO> userHrAccountDOList = null;
+        try {
+            userHrAccountDOList = userDBDao.listUserHrAccount(queryUtil);
+            if(userHrAccountDOList != null && userHrAccountDOList.size() > 0) {
+                int[] companyIds = userHrAccountDOList.stream().filter(hr -> hr.getCompanyId() > 0).mapToInt(hr -> hr.getCompanyId()).toArray();
+
+                String hrId = StringUtils.converFromArrayToStr(companyIds);
+                QueryUtil findCompanyInfo = new QueryUtil();
+                findCompanyInfo.addSelectAttribute("id").addSelectAttribute("name").addSelectAttribute("abbreviation")
+                        .addSelectAttribute("logo");
+                findCompanyInfo.addEqualFilter("id", hrId);
+                companyDOList = hrDBDao.listCompany(findCompanyInfo);
             }
+        } catch (TException e) {
+            logger.error(e.getMessage(), e);
         }
+
         return companyDOList;
     }
 
@@ -324,14 +331,18 @@ public class ChatDao {
 
     /**
      * 分页查找聊天室下的聊天记录
-     * @param roomId 聊天室编号
-     * @return 聊天内容集合
+     *
+     * @param roomId 聊天室编号  @return 聊天内容集合
+     * @param pageNo 页码
+     *@param pageSize 分页信息
      */
-    public List<HrWxHrChatDO> listChat(int roomId) {
+    public List<HrWxHrChatDO> listChat(int roomId, int pageNo, int pageSize) {
         QueryUtil queryUtil = new QueryUtil();
         queryUtil.addEqualFilter("chatlist_id", roomId);
         queryUtil.setOrder("desc");
         queryUtil.setSortby("create_time");
+        queryUtil.setPage(pageNo);
+        queryUtil.setPer_page(pageSize);
         try {
             return hrDBDao.listChats(queryUtil);
         } catch (CURDException e) {
@@ -447,7 +458,7 @@ public class ChatDao {
                     QueryUtil findCompany = new QueryUtil();
                     findCompany.addSelectAttribute("id").addSelectAttribute("logo");
                     findCompany.addEqualFilter("id", userHrAccountDO.getCompanyId());
-                    companyFuture = threadPool.startTast(() -> userDBDao.getUserWxUserDO(findCompany));
+                    companyFuture = threadPool.startTast(() -> hrDBDao.getCompany(findCompany));
                 }
 
                 if(wxUserFuture != null) {
@@ -533,14 +544,65 @@ public class ChatDao {
      * @return
      */
     public HrWxHrChatListDO getChatRoom(int roomId, int userId, int hrId) {
+        HrWxHrChatListDO chatRoom = null;
+        if(roomId > 0) {
+            QueryUtil queryUtil = new QueryUtil();
+            queryUtil.addEqualFilter("id", roomId);
+            try {
+                chatRoom = hrDBDao.getChatRoom(queryUtil);
+                if(chatRoom == null) {
+                    chatRoom = findChatRoomByUserIdHrId(userId, hrId);
+                }
+            } catch (TException e) {
+                logger.error(e.getMessage(), e);
+            }
+        } else {
+                chatRoom = findChatRoomByUserIdHrId(userId, hrId);
+        }
+        if(chatRoom.getId() == 0) {
+            return null;
+        }
+        return chatRoom;
+    }
+
+    /**
+     * 根据用户编号和HR编号查找聊天室信息
+     * @param userId 用户编号
+     * @param hrId HR编号
+     * @return 聊天室
+     */
+    private HrWxHrChatListDO findChatRoomByUserIdHrId(int userId, int hrId) {
+        HrWxHrChatListDO chatRoom = null;
+        QueryUtil findChatRoom = new QueryUtil();
+        findChatRoom.addEqualFilter("sysuser_id", userId);
+        findChatRoom.addEqualFilter("hraccount_id", hrId);
+        try {
+            chatRoom = hrDBDao.getChatRoom(findChatRoom);
+        } catch (TException e) {
+            e.printStackTrace();
+        }
+        return chatRoom;
+    }
+
+    /**
+     * 根据职位编号查找职位信息
+     * @param positionId
+     * @return
+     */
+    public JobPositionDO getPositionById(int positionId) {
+        QueryUtil queryUtil = new QueryUtil();
+        queryUtil.addEqualFilter("id", positionId);
+        try {
+            return jobDBDao.getPosition(queryUtil);
+        } catch (TException e) {
+            logger.error(e.getMessage(), e);
+        }
         return null;
     }
 
-    public HrWxHrChatDO saveAutoChat(ResultOfSaveRoomVO resultOfSaveRoomVO) {
+    public HrChatUnreadCountDO saveUnreadCount(HrChatUnreadCountDO unreadCountDO) {
         try {
-            HrWxHrChatDO chatDO = new HrWxHrChatDO();
-
-            return hrDBDao.saveChat(chatDO);
+            return hrDBDao.saveChatUnreadCount(unreadCountDO);
         } catch (TException e) {
             logger.error(e.getMessage(), e);
             return null;

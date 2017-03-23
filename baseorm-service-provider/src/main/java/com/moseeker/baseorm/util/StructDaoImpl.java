@@ -16,11 +16,7 @@ import java.util.List;
 /**
  * Created by jack on 15/02/2017.
  */
-public class StructDaoImpl<S extends  TBase, R extends UpdatableRecordImpl<R>, T extends TableImpl<R>> extends BaseDaoImpl<R, T> {
-    @Override
-    protected void initJOOQEntity() {
-
-    }
+public abstract class StructDaoImpl<S extends  TBase, R extends UpdatableRecordImpl<R>, T extends TableImpl<R>> extends BaseDaoImpl<R, T> {
 
     private Class<S> sClass;
     private Class<R> rClass;
@@ -94,10 +90,10 @@ public class StructDaoImpl<S extends  TBase, R extends UpdatableRecordImpl<R>, T
         return resources;
     }
 
-    public void deleteResource(S s) throws CURDException {
+    public int deleteResource(S s) throws CURDException {
         R r = BeanUtils.structToDB(s, rClass);
         try {
-            this.delResource(r);
+            return this.delResource(r);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw CURDExceptionUtils.buildDelException();

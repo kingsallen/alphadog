@@ -5,11 +5,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.mail.MessagingException;
 
@@ -62,7 +65,7 @@ public class ConstantlyMailConsumer {
 			RedisClient redisClient = RedisClientFactory.getCacheClient();
 			List<String> el =  redisClient.brpop(Constant.APPID_ALPHADOG,
 					Constant.MQ_MESSAGE_EMAIL_BIZ);
-			if (el != null){
+			if (el != null && el.size() >= 1){
 				return el.get(1);
 			}
 			return null;
@@ -80,16 +83,22 @@ public class ConstantlyMailConsumer {
 	 */
 	private void initConstantlyMail() throws IOException, MessagingException {
 		// 加载模版文件
-		//URL fileURL=this.getClass().getResource("/resource/res.txt");
-		InputStreamReader is= new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("email_verifier_template.html"), "UTF-8");    
-       //InputStream is=当前类.class.getResourceAsStream("XX.config");     
-        BufferedReader br = new BufferedReader(is);    
-        StringBuffer sb = new StringBuffer(); 
-        String s = "";
-        while((s=br.readLine())!=null) {
-        	sb.append(s);
-        }
-		templates.put(Constant.EVENT_TYPE_EMAIL_VERIFIED, sb.toString());
+		templates.putAll(Stream.of(Constant.EVENT_TYPE_EMAIL_VERIFIED, Constant.EVENT_TYPE_EMPLOYEE_AUTH).collect(Collectors.toMap(k -> k, v -> {
+			String templateName = "";
+			if (v == 1) {
+				templateName = "email_verifier_template.html";
+			} else if (v == 2) {
+				templateName = "employee_auth_template.html";
+			}
+			StringBuffer sb = new StringBuffer();
+			try (InputStreamReader is = new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(templateName), "UTF-8")) {
+				BufferedReader br = new BufferedReader(is);
+				for (String s = ""; (s = br.readLine()) != null; sb.append(s));
+			} catch (Exception e) {
+				logger.info(e.getMessage(), e);
+			} 
+			return sb.toString();
+		})));
 	}
 
 	/**

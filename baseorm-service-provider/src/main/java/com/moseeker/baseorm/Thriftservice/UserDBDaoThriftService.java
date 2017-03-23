@@ -164,6 +164,6 @@ public class UserDBDaoThriftService implements Iface {
 
 	@Override
 	public UserWxUserDO getUserWxUserDO(CommonQuery query) throws CURDException, TException {
-		return null;
+		return wxUserDao.findResource(query);
 	}
 }

@@ -4,6 +4,8 @@
 package com.moseeker.baseorm.db.profiledb.tables.records;
 
 
+import com.moseeker.baseorm.db.profiledb.tables.ProfileAwards;
+
 import java.sql.Date;
 import java.sql.Timestamp;
 
@@ -15,8 +17,6 @@ import org.jooq.Record9;
 import org.jooq.Row9;
 import org.jooq.impl.UpdatableRecordImpl;
 import org.jooq.types.UInteger;
-
-import com.moseeker.baseorm.db.profiledb.tables.ProfileAwards;
 
 
 /**
