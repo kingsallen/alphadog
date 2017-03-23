@@ -466,7 +466,6 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             }
             // 需要删除的城市的数据ID列表
             List<Integer> deleteCitylist = new ArrayList<>();
-            List<JobPositionExtRecord> deleteExtlist = new ArrayList<>();
             // 删除操作,删除除了data以外的数据库中的数据
             if (!noDelete) {
                 if (!com.moseeker.common.util.StringUtils.isEmptyList(dbList)) {
@@ -487,11 +486,6 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                                 noDeleJobPostionRecords.add(jobPositionRecord);
                                 continue;
                             }
-                            // 删除job_position_ext
-                            deleteCitylist.add(jobPositionRecord.getId());
-                            JobPositionExtRecord jobPositionExtRecord = new JobPositionExtRecord();
-                            jobPositionExtRecord.setPid(jobPositionRecord.getId());
-                            deleteExtlist.add(jobPositionExtRecord);
                             jobPositionRecord.setStatus((byte) 1);
                         }
                     }
