@@ -309,24 +309,24 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
                     .and(UserEmployee.USER_EMPLOYEE.STATUS.eq(0))
                     .fetchAnyInto(UserEmployeeStruct.class);
 
-            if (employee != null) {
 
-                User recommenderUser = create
-                        .select()
-                        .from(UserUser.USER_USER)
-                        .where(UserUser.USER_USER.ID.eq(UInteger.valueOf(application.getRecommender_user_id())))
-                        .fetchAnyInto(User.class);
-                Map<String, Object> recommenderMap;
-                if (recommenderUser != null) {
-                    recommenderMap = BeanUtils.object2Map(recommenderUser);
-                } else {
-                    recommenderMap = new HashMap<>();
-                }
+            User recommenderUser = create
+                    .select()
+                    .from(UserUser.USER_USER)
+                    .where(UserUser.USER_USER.ID.eq(UInteger.valueOf(application.getRecommender_user_id())))
+                    .fetchAnyInto(User.class);
+            Map<String, Object> recommenderMap;
+            if (recommenderUser != null) {
+                recommenderMap = BeanUtils.object2Map(recommenderUser);
+            } else {
+                recommenderMap = new HashMap<>();
+            }
+            if(employee != null) {
                 recommenderMap.put("employeeid", employee.getEmployeeid());
                 recommenderMap.put("custom_field", employee.getCustom_field());
-                buildMap(map, "recommender", recommenderMap);
-                printQueryTime(application.getId() + ":recommender-----------:");
             }
+            buildMap(map, "recommender", recommenderMap);
+            printQueryTime(application.getId() + ":recommender-----------:");
         }
 
         return map;
