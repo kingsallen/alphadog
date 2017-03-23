@@ -431,7 +431,11 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 QueryUtil queryUtil = new QueryUtil();
                 queryUtil.addEqualFilter("id", String.valueOf(jobPositionHandlerDates.get(0).getId()));
                 JobPositionRecord jobPostionTemp = jobPositionDao.getResource(queryUtil);
-                companyId = jobPostionTemp.getCompanyId().intValue();
+                if (jobPostionTemp != null) {
+                    companyId = jobPostionTemp.getCompanyId().intValue();
+                } else {
+                    return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_JOBPOSITION_COMPANY_ID_BLANK);
+                }
             } else {
                 // 将该公司下的所有职位查询出来
                 companyId = jobPositionHandlerDates.get(0).getCompany_id();
@@ -536,6 +540,17 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 // 处理数据
                 for (JobPostrionObj jobPositionHandlerDate : jobPositionHandlerDates) {
                     JobPositionRecord record = BeanUtils.structToDB(jobPositionHandlerDate, JobPositionRecord.class);
+                    // 职位要求不能为空
+                    if (com.moseeker.common.util.StringUtils.isNullOrEmpty(record.getRequirement())) {
+                        JobPositionFailMessPojo jobPositionFailMessPojo = new JobPositionFailMessPojo();
+                        jobPositionFailMessPojo.setCompanyId(jobPositionHandlerDate.getCompany_id());
+                        jobPositionFailMessPojo.setJobNumber(jobPositionHandlerDate.getJobnumber());
+                        jobPositionFailMessPojo.setSourceId(jobPositionHandlerDate.getSource_id());
+                        jobPositionFailMessPojo.setJobPostionId(jobPositionHandlerDate.getId());
+                        jobPositionFailMessPojo.setMessage(ConstantErrorCodeMessage.POSITION_JOBPOSITION_REQUIREMENT_BLANK);
+                        jobPositionFailMessPojos.add(jobPositionFailMessPojo);
+                        continue;
+                    }
                     // 设置部门信息，返回错误
                     if (com.moseeker.common.util.StringUtils.isNullOrEmpty(record.getDepartment())) {
                         JobPositionFailMessPojo jobPositionFailMessPojo = new JobPositionFailMessPojo();
