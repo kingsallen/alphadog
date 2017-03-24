@@ -27,6 +27,7 @@ import org.jooq.types.ULong;
 import org.jooq.types.UShort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.alibaba.fastjson.JSONArray;
 
 /**
@@ -139,23 +140,33 @@ public class BeanUtils {
 		} 
 		
 		// 将strut对象的属性名和get方法提取成map
-		Map<String, Method>  destGetMeths = Arrays.asList(dest.getClass().getMethods()).stream().filter(f -> f.getName().startsWith("get") || f.getName().startsWith("is")).collect(Collectors.toMap(k -> k.getName(), v -> v, (oldValue, newValue) -> newValue));
-		Map<String, Method> destMap = Arrays.asList(dest.getClass().getFields()).stream().filter(f -> !f.getName().equals("metaDataMap")).collect(Collectors.toMap(k -> humpName(k.getName()), v -> {
+		Map<String, Method>  destGetMeths = Arrays.asList(dest.getClass().getMethods()).stream().filter(f -> f.getName().startsWith("get") || f.getName().startsWith("is")).collect(Collectors.toMap(k -> k.getName(), v -> v, (oldKey, newKey) -> newKey));
+		Map<String, Method> destMap = Arrays.asList(dest.getClass().getFields()).stream().filter(f -> !f.getName().equals("metaDataMap")).collect(MyCollectors.toMap(k -> humpName(k.getName()), v -> {
 			String fileName = v.getName().substring(0, 1).toUpperCase() + v.getName().substring(1);
-			if (destGetMeths.containsKey("get".concat(fileName))){
-				return destGetMeths.get("get".concat(fileName));
-			} else if (v.getType().isAssignableFrom(boolean.class) && destGetMeths.containsKey("is".concat(fileName))) {
-				return destGetMeths.get("is".concat(fileName));
-			} else {
-				return null;
+			Method isSetMethod;
+			try {
+				isSetMethod = dest.getClass().getMethod("isSet" + fileName, new Class[] {});
+				if ((Boolean) isSetMethod.invoke(dest, new Object[] {})) {
+					if (destGetMeths.containsKey("get".concat(fileName))) {
+						return destGetMeths.get("get".concat(fileName));
+					} else if (v.getType().isAssignableFrom(boolean.class)
+							&& destGetMeths.containsKey("is".concat(fileName))) {
+						return destGetMeths.get("is".concat(fileName));
+					} else {
+						return null;
+					}
+				}
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
 			}
+			return null;
 		}));
 		
 		// 将DO对象的属性名和set方法提取成map
 		Map<String, Method> origMap = Arrays.asList(orig.getClass().getMethods()).stream().filter(f -> f.getName().length() > 3 && f.getName().startsWith("set")).collect(Collectors.toMap(k -> {
 			String fileName = k.getName().substring(3, 4).toLowerCase() + k.getName().substring(4);
 			return eqr.containsKey(fileName) ? humpName(eqr.get(fileName)) : humpName(fileName); 
-		}, v -> v, (oldValue, newValue) -> newValue));
+		}, v -> v, (oldKey, newKey) -> newKey));
 
 		// 赋值
 		Set<String> origKey = origMap.keySet();
@@ -228,8 +239,8 @@ public class BeanUtils {
 		} 
 		
 		// 将strut对象的属性名和set方法提取成map
-		Map<String, Method>  destGetMeths = Arrays.asList(dest.getClass().getMethods()).stream().filter(f -> f.getName().startsWith("set")).collect(Collectors.toMap(k -> k.getName(), v -> v, (oldValue, newValue) -> newValue));
-		Map<String, Method> destMap = Arrays.asList(dest.getClass().getFields()).stream().filter(f -> !f.getName().equals("metaDataMap")).collect(Collectors.toMap(k -> humpName(k.getName()), v -> {
+		Map<String, Method>  destGetMeths = Arrays.asList(dest.getClass().getMethods()).stream().filter(f -> f.getName().startsWith("set")).collect(Collectors.toMap(k -> k.getName(), v -> v, (oldKey, newKey) -> newKey));
+		Map<String, Method> destMap = Arrays.asList(dest.getClass().getFields()).stream().filter(f -> !f.getName().equals("metaDataMap")).collect(MyCollectors.toMap(k -> humpName(k.getName()), v -> {
 			String fileName = v.getName().substring(0, 1).toUpperCase() + v.getName().substring(1);
 			if (destGetMeths.containsKey("set".concat(fileName))){
 				return destGetMeths.get("set".concat(fileName));
@@ -242,7 +253,7 @@ public class BeanUtils {
 		Map<String, Method> origMap = Arrays.asList(orig.getClass().getMethods()).stream().filter(f -> f.getName().length() > 3 && f.getName().startsWith("get")).collect(Collectors.toMap(k -> {
 			String fileName = k.getName().substring(3, 4).toLowerCase() + k.getName().substring(4);
 			return eqr.containsKey(fileName) ? humpName(eqr.get(fileName)) : humpName(fileName); 
-		}, v -> v, (oldValue, newValue) -> newValue));
+		}, v -> v, (oldKey, newKey) -> newKey));
 
 		
 		Set<String> destKey = destMap.keySet();

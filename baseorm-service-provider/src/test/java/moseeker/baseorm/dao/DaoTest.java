@@ -9,12 +9,16 @@
 //
 //import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 //import com.moseeker.baseorm.dao.hrdb.HrAppCvConfDao;
+//import com.moseeker.baseorm.dao.userdb.UserUserDao;
 //import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 //import com.moseeker.baseorm.db.hrdb.tables.records.HrAppCvConfRecord;
 //import com.moseeker.common.util.BeanUtils;
 //import com.moseeker.thrift.gen.common.struct.CommonQuery;
+//import com.moseeker.thrift.gen.dao.struct.CURDException;
+//import com.moseeker.thrift.gen.dao.struct.CandidatePositionDO;
 //import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 //import com.moseeker.thrift.gen.dao.struct.hrdb.HrAppCvConfDO;
+//import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 //
 //
 //public class DaoTest {
@@ -50,5 +54,15 @@
 //		HrAppCvConfDO struct = BeanUtils.DBToStruct(HrAppCvConfDO.class, record);
 //		System.out.println(record);
 //		System.out.println(struct);
+//	}
+//	
+//	
+//	@Test
+//	public void userDaoTest() throws Exception {
+//		UserUserDao userDao = annConfig.getBean(UserUserDao.class);
+//		UserUserDO userDO = new UserUserDO();
+//		userDO.setLastLoginIp("10.172.169.163");
+//		userDO.setId(1122611);
+//		userDao.updateResource(userDO);
 //	}
 //}
