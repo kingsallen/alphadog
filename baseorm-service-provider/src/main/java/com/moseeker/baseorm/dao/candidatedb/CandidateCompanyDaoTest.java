@@ -20,6 +20,7 @@ public class CandidateCompanyDaoTest {
     DataSourceTransactionManager txMgr;
 
     public CandidateCompanyRecord addCandidateCompany(CandidateCompanyRecord candidateCompanyRecord) {
+
         dsl.attach(candidateCompanyRecord);
         candidateCompanyRecord.insert();
         return candidateCompanyRecord;

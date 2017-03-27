@@ -34,7 +34,6 @@ public class ServiceTest {
         candidateCompanyRecord.setSysUserId(UInteger.valueOf(1));
         candidateCompanyRecord = candidateCompanyDao.addCandidateCompany(candidateCompanyRecord);
 
-
         CandidatePositionRecord candidatePositionRecord = new CandidatePositionRecord();
         candidatePositionRecord.setCandidateCompanyId(candidateCompanyRecord.getId());
         candidatePositionRecord.setIsInterested((byte)0);

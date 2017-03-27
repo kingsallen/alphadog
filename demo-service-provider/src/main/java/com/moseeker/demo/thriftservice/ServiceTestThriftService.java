@@ -16,6 +16,6 @@ public class ServiceTestThriftService implements ServiceTest.Iface {
 
     @Override
     public void serviceTest() throws TException {
-        serviceTest.testTransactionRolback();
+        serviceTest.testTransaction();
     }
 }
