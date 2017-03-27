@@ -6,6 +6,7 @@ package com.moseeker.db.dictdb;
 
 import com.moseeker.db.dictdb.tables.DictCity;
 import com.moseeker.db.dictdb.tables.DictCityMap;
+import com.moseeker.db.dictdb.tables.DictCityPostcode;
 import com.moseeker.db.dictdb.tables.DictCollege;
 import com.moseeker.db.dictdb.tables.DictConstant;
 import com.moseeker.db.dictdb.tables.DictCountry;
@@ -33,7 +34,7 @@ import javax.annotation.Generated;
 public class Tables {
 
 	/**
-	 * The table dictdb.dict_51job_occupation
+	 * 51的职位表
 	 */
 	public static final Dict_51jobOccupation DICT_51JOB_OCCUPATION = com.moseeker.db.dictdb.tables.Dict_51jobOccupation.DICT_51JOB_OCCUPATION;
 
@@ -43,9 +44,14 @@ public class Tables {
 	public static final DictCity DICT_CITY = com.moseeker.db.dictdb.tables.DictCity.DICT_CITY;
 
 	/**
-	 * The table dictdb.dict_city_map
+	 * 城市字典code映射表
 	 */
 	public static final DictCityMap DICT_CITY_MAP = com.moseeker.db.dictdb.tables.DictCityMap.DICT_CITY_MAP;
+
+	/**
+	 * The table dictdb.dict_city_postcode
+	 */
+	public static final DictCityPostcode DICT_CITY_POSTCODE = com.moseeker.db.dictdb.tables.DictCityPostcode.DICT_CITY_POSTCODE;
 
 	/**
 	 * 学校字典表
@@ -53,7 +59,7 @@ public class Tables {
 	public static final DictCollege DICT_COLLEGE = com.moseeker.db.dictdb.tables.DictCollege.DICT_COLLEGE;
 
 	/**
-	 * 常量字典表
+	 * The table dictdb.dict_constant
 	 */
 	public static final DictConstant DICT_CONSTANT = com.moseeker.db.dictdb.tables.DictConstant.DICT_CONSTANT;
 
@@ -63,7 +69,7 @@ public class Tables {
 	public static final DictCountry DICT_COUNTRY = com.moseeker.db.dictdb.tables.DictCountry.DICT_COUNTRY;
 
 	/**
-	 * 行业二级分类字典表
+	 * The table dictdb.dict_industry
 	 */
 	public static final DictIndustry DICT_INDUSTRY = com.moseeker.db.dictdb.tables.DictIndustry.DICT_INDUSTRY;
 
@@ -83,7 +89,7 @@ public class Tables {
 	public static final DictPosition DICT_POSITION = com.moseeker.db.dictdb.tables.DictPosition.DICT_POSITION;
 
 	/**
-	 * The table dictdb.dict_zhilian_occupation
+	 * 智联的职位表
 	 */
 	public static final DictZhilianOccupation DICT_ZHILIAN_OCCUPATION = com.moseeker.db.dictdb.tables.DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION;
 }
