@@ -87,6 +87,7 @@ public final class Constant {
     public static final int PROFILE_SOURCE_WEIXIN_COMPANY_IMPORT        	= 150;     // 微信企业端导入
     public static final int PROFILE_SOURCE_WEIXIN_TEGETHER_IMPORT         	= 151;     // 微信聚合端导入
     public static final int PROFILE_SOURCE_PC_IMPORT    					= 152;     // PC导入
+    public static final int PROFILE_SOURCE_MOBILE_BROWSER 					= 153;     // 移动浏览器
     public static final int PROFILE_SOURCE_PC_CREATE          				= 200;     // PC(正常添加)
     public static final int PROFILE_SOURCE_PC_DILIVER  						= 201;     // PC(我要投递)
     public static final int PROFILE_SOURCE_PC_INTERESTED  					= 202;     // PC(我感兴趣)
