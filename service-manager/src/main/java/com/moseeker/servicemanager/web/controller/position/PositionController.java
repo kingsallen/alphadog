@@ -238,7 +238,7 @@ public class PositionController {
 							refreshResult.add(JSON.parse(refreshPositionResponse.getData()));
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
-							e.printStackTrace();
+							logger.error(e.getMessage(), e);
 							HashMap<String, Object> param = new HashMap<>();
 							param.put("position_id", String.valueOf(positionId));
 							param.put("channel", String.valueOf(channel));
