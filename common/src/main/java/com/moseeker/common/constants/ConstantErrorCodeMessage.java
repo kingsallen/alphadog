@@ -91,7 +91,7 @@ public final class ConstantErrorCodeMessage {
     public static final String POSITION_DATA_DEPARTMENT_ERROR = "{'status':51007,'message':'该部门在该公司不存在，请联系管理员更新部门信息'}";
     public static final String POSITION_DATA_COMPANY_DATA_BLANK = "{'status':51008,'message':'该公司需要删除的数据为空'}";
     public static final String POSITION_COMPANY_DEPARTMENT_BLANK = "{'status':51009,'message':'该公司为设置任何部门信息，请联系管理员更新部门信息'}";
-    public static final String POSITION_JOBPOSITIONID_OR_COMPANY_IDANDSOURCEIDJOBNUMBER_BLANK = "{'status':51010,'message':'job_position.id和company_id，source_id，jobnumber都为空'}";
+    public static final String POSTION_COMPANY_DEPARTMENTI_PARAMETER_BLANK = "{'status':51010,'message':'未设置部门名'}";
     public static final String POSITION_JOBPOSITION_REQUIREMENT_BLANK = "{'status':51011,'message':'职位要求不能为空'}";
     public static final String POSITION_JOBPOSITION_COMPANY_ID_BLANK = "{'status':51012,'message':'未找到该公司'}";
     // 工具类错误

@@ -1243,6 +1243,32 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
     }
 
     /**
+     * @param company_id      公司ID
+     * @param department_name 部门名称
+     */
+    public Response getTeamIdbyDepartmentName(Integer company_id, String department_name) {
+        try {
+            if (com.moseeker.common.util.StringUtils.isNullOrEmpty(department_name)) {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.POSTION_COMPANY_DEPARTMENTI_PARAMETER_BLANK);
+            }
+            QueryUtil queryUtilDepartment = new QueryUtil();
+            queryUtilDepartment.addEqualFilter("company_id", String.valueOf(company_id));
+            queryUtilDepartment.addEqualFilter("disable", 0);
+            queryUtilDepartment.addEqualFilter("name", department_name);
+            HrTeamRecord hrTeamRecord = hrTeamDao.getResource(queryUtilDepartment);
+            if (com.moseeker.common.util.StringUtils.isEmptyObject(hrTeamRecord)) {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_DATA_DEPARTMENT_ERROR);
+            }
+            HashMap hashMap = new HashMap();
+            hashMap.put("team_id", hrTeamRecord.getId());
+            return ResponseUtils.success(hashMap);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
+
+    /**
      * 根据 hbConfigId 返回职位列表
      *
      * @param hbConfigId 红包活动id

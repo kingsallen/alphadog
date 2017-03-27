@@ -137,4 +137,9 @@ public class PositionServicesImpl implements Iface {
         }
         return service.deleteJobposition(id, companyId, delePostion.getJobnumber(), sourceId);
     }
+
+    @Override
+    public Response getTeamIdByDepartmentName(int companyId, String departmentName) throws TException {
+        return service.getTeamIdbyDepartmentName(companyId, departmentName);
+    }
 }
