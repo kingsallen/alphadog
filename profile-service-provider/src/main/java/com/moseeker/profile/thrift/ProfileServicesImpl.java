@@ -53,6 +53,11 @@ public class ProfileServicesImpl implements Iface {
 	}
 
 	@Override
+	public Response getProfileByApplication(int companyId, int sourceId, int ats_status, boolean recommender, boolean dl_url_required) throws TException {
+		return service.getProfileByApplication(companyId,sourceId,ats_status,recommender,dl_url_required);
+	}
+
+	@Override
 	public Response getResources(CommonQuery query) throws TException {
 		return service.getResources(query);
 	}

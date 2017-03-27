@@ -15,11 +15,8 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.JobDBDao;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.position.service.PositionServices;
-import com.moseeker.thrift.gen.position.struct.RpExtInfo;
-import com.moseeker.thrift.gen.position.struct.WechatPositionListData;
-import com.moseeker.thrift.gen.position.struct.WechatPositionListQuery;
-import com.moseeker.thrift.gen.position.struct.WechatRpPositionListData;
-import com.moseeker.thrift.gen.position.struct.WechatShareData;
+import com.moseeker.thrift.gen.position.struct.BatchHandlerJobPostion;
+import com.moseeker.thrift.gen.position.struct.DelePostion;
 import org.jooq.tools.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,11 +29,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 //@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
@@ -212,130 +207,45 @@ public class PositionController {
 		}
 	}
 
-	/**
-	 * 获取职位列表
-	 *
-	 * @param request request
-	 * @param response response
-	 * @return 职位列表数据
-	 */
-	@RequestMapping(value = "/position/list", method = RequestMethod.GET)
-	@ResponseBody
-	public String getPositionList(HttpServletRequest request, HttpServletResponse response) {
-		try {
-			WechatPositionListQuery query = new WechatPositionListQuery();
+    /**
+     * 批量修改职位
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/jobposition/batchhandler", method = RequestMethod.POST)
+    @ResponseBody
+    public String batchHandlerJobPostion(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            BatchHandlerJobPostion batchHandlerJobPostion = PositionParamUtils.parseBatchHandlerJobPostionParam(request);
+            Response res = positonServices.batchHandlerJobPostion(batchHandlerJobPostion);
+            return ResponseLogNotification.success(request, res);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        } finally {
+            //do nothing
+        }
+    }
 
-            Map<String, Object> map = ParamUtils.parseRequestParam(request);
-
-            if (map.getOrDefault("company_id", null) != null) {
-                query.setCompany_id(Integer.valueOf((String)map.get("company_id")));
-            }
-            else {
-                throw new Exception("公司 id 未提供!");
-            }
-
-            query.setPage_from(Integer.valueOf((String)map.getOrDefault("page_from", "0")));
-            query.setPage_size(Integer.valueOf((String)map.getOrDefault("page_size", "10")));
-            query.setKeywords((String) map.getOrDefault("keywords", ""));
-            query.setCities((String) map.getOrDefault("cities", ""));
-            query.setIndustries((String) map.getOrDefault("industries", ""));
-            query.setOccupations((String) map.getOrDefault("occupations", ""));
-            query.setScale((String) map.getOrDefault("scale", ""));
-            query.setCandidate_source((String) map.getOrDefault("candidate_source", ""));
-            query.setEmployment_type((String) map.getOrDefault("employment_type", ""));
-            query.setExperience((String) map.getOrDefault("experience", ""));
-            query.setSalary((String) map.getOrDefault("salary", ""));
-            query.setDegree((String) map.getOrDefault("degree", ""));
-            query.setDepartment((String) map.getOrDefault("department", ""));
-            query.setCustom((String) map.getOrDefault("custom", ""));
-            query.setDid(Integer.valueOf((String)map.getOrDefault("did", "0")));
-			 String param_setOrder_by_priority = (String)map.getOrDefault("order_by_priority", "True");
-			 query.setOrder_by_priority(param_setOrder_by_priority.equals("True"));
-
-			 List<WechatPositionListData> positionList = positonServices.getPositionList(query);
-			 Response res = ResponseUtils.success(positionList);
-			 return ResponseLogNotification.success(request, res);
-		}
-		catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			return ResponseLogNotification.fail(request, e.getMessage());
-		}
-	}
-
-	/**
-	 * 根据 hb_config_id 获取分享信息
-	 *
-	 * @param request request
-	 * @param response response
-	 * @return 分享信息
-	 */
-	@RequestMapping(value = "/position/list/hb_share_info", method = RequestMethod.GET)
-	@ResponseBody
-	public String getHbShareInfo(HttpServletRequest request, HttpServletResponse response) {
-		try {
-			Map<String, Object> params = ParamUtils.parseRequestParam(request);
-			Integer hbConfigId = Integer.valueOf((String)params.get("hb_config_id"));
-			WechatShareData shareData = positonServices.getShareInfo(hbConfigId);
-
-			Response res = ResponseUtils.success(shareData);
-			return ResponseLogNotification.success(request, res);
-		}
-		catch (Exception e) {
-			logger.error(e.getMessage());
-			return ResponseLogNotification.fail(request, e.getMessage());
-		}
-	}
-
-	/**
-	 * 根据 hb_config_id 获取职位列表
-	 *
-	 * @param request request
-	 * @param response response
-	 * @return 红包职位列表
-	 */
-	@RequestMapping(value = "/position/rplist", method = RequestMethod.GET)
-	@ResponseBody
-	public String getRpPositionList(HttpServletRequest request, HttpServletResponse response) {
-		try {
-			Map<String, Object> params = ParamUtils.parseRequestParam(request);
-			Integer hbConfigId = Integer.valueOf((String)params.get("hb_config_id"));
-			if (hbConfigId == null) {
-			    throw new Exception("红包活动 id 不正确!");
-            }
-            List<WechatRpPositionListData> rpPositionList = positonServices.getRpPositionList(hbConfigId);
-
-			Response res = ResponseUtils.success(rpPositionList);
-			return ResponseLogNotification.success(request, res);
-		}
-		catch (Exception e) {
-			logger.error(e.getMessage());
-			return ResponseLogNotification.fail(request, e.getMessage());
-		}
-	}
 
     /**
-     * 根据 pids (List<Integer>) 获取职位的红包附加信息
+     * 删除职位
      *
-     * @param request request
-     * @param response response
-     * @return 红包职位列表
+     * @param request
+     * @param response
+     * @return
      */
-    @RequestMapping(value = "/position/rpext", method = RequestMethod.GET)
+    @RequestMapping(value = "/delete/jobpostion", method = RequestMethod.DELETE)
     @ResponseBody
-    @SuppressWarnings("unchecked")
-    public String getPositionListRpExt(HttpServletRequest request, HttpServletResponse response) {
+    public String deleteJobPostion(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Map<String, Object> params = ParamUtils.parseRequestParam(request);
-            List<String> pidStringList = Arrays.asList(((String) params.get("pids")).split(","));
-            List<Integer> pids = pidStringList.stream().map(Integer::valueOf).collect(Collectors.toList());
-
-            List<RpExtInfo> rpExtInfoList = positonServices.getPositionListRpExt(pids);
-
-            Response res = ResponseUtils.success(rpExtInfoList);
+            DelePostion params = ParamUtils.initModelForm(request, DelePostion.class);
+            Response res = positonServices.deleteJobposition(params);
             return ResponseLogNotification.success(request, res);
-        }
-        catch (Exception e) {
-            logger.error(e.getMessage());
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }

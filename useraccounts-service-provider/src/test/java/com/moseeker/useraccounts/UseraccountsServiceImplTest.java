@@ -25,7 +25,7 @@ public class UseraccountsServiceImplTest {
     public void testDao() {
     	TTransport transport = null;
 		try {
-			transport = new TFastFramedTransport(new TSocket("127.0.0.1", 19201, 60*1000));
+			transport = new TFastFramedTransport(new TSocket("127.0.0.1", 12121, 60*1000));
 			TProtocol protocol = new TCompactProtocol(transport);
 			transport.open();
 			TMultiplexedProtocol mulProtocol= new TMultiplexedProtocol(protocol, "com.moseeker.useraccounts.thrift.UseraccountsServiceImpl");

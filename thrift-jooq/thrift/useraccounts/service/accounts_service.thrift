@@ -95,6 +95,9 @@ service UserHrAccountService {
     common_struct.Response joinTalentpool(1: i32 hrAccountId, 2: list<i32> applierIds)
     // 移出人才库
     common_struct.Response shiftOutTalentpool(1: i32 hrAccountId, 2: list<i32> applierIds)
+
+    // 获取userHrAccount
+    common_struct.Response userHrAccount(1: i32 company_id, 2: i32 disable,3:i32 page ,4:i32 per_age)
 }
 
 /**
@@ -114,4 +117,22 @@ service UserCenterService {
     list<useraccounts_struct.FavPositionForm> getFavPositions(1: i32 userId);
     //查询推荐记录
     useraccounts_struct.RecommendationVO getRecommendation(1: i32 userId, 2:i8 type, 3: i32 pageNo, 4: i32 pageSize);
+}
+
+//user thirdparty user 服务
+service ThirdPartyUserService {
+    //更新账号
+    common_struct.Response updateUser(1: useraccounts_struct.ThirdPartyUser user);
+}
+
+//UserEmployeeDao数据库单表操作
+service UserEmployeeService {
+
+    common_struct.Response getUserEmployee(1: common_struct.CommonQuery query);
+
+    common_struct.Response getUserEmployees(1: common_struct.CommonQuery query);
+
+    common_struct.Response delUserEmployee(1: common_struct.CommonQuery query);
+
+    common_struct.Response postPutUserEmployeeBatch(1:list<useraccounts_struct.UserEmployeeStruct> userEmployees);
 }

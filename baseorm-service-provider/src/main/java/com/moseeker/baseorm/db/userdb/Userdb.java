@@ -12,6 +12,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserFavPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserIntention;
 import com.moseeker.baseorm.db.userdb.tables.UserSettings;
+import com.moseeker.baseorm.db.userdb.tables.UserThirdpartyUser;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.UserUserNameEmail1128;
 import com.moseeker.baseorm.db.userdb.tables.UserUserTmp;
@@ -42,7 +43,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Userdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -1603494798;
+    private static final long serialVersionUID = 488808204;
 
     /**
      * The reference instance of <code>userdb</code>
@@ -88,6 +89,11 @@ public class Userdb extends SchemaImpl {
      * 用户设置表
      */
     public final UserSettings USER_SETTINGS = com.moseeker.baseorm.db.userdb.tables.UserSettings.USER_SETTINGS;
+
+    /**
+     * The table <code>userdb.user_thirdparty_user</code>.
+     */
+    public final UserThirdpartyUser USER_THIRDPARTY_USER = com.moseeker.baseorm.db.userdb.tables.UserThirdpartyUser.USER_THIRDPARTY_USER;
 
     /**
      * 用户表
@@ -147,6 +153,7 @@ public class Userdb extends SchemaImpl {
             UserHrAccount.USER_HR_ACCOUNT,
             UserIntention.USER_INTENTION,
             UserSettings.USER_SETTINGS,
+            UserThirdpartyUser.USER_THIRDPARTY_USER,
             UserUser.USER_USER,
             UserUserNameEmail1128.USER_USER_NAME_EMAIL1128,
             UserUserTmp.USER_USER_TMP,

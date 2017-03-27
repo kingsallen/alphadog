@@ -55,5 +55,4 @@ public class WholeProfileServicesImpl implements Iface {
 			throws TException {
 		return service.improveProfile(destUserId, originUserId);
 	}
-
 }

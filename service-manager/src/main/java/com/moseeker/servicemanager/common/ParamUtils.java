@@ -23,16 +23,15 @@ import com.moseeker.common.util.JsonToMap;
 import com.moseeker.servicemanager.web.controller.util.Params;
 
 /**
- * 
- * 主要用于生成form表单 
- * <p>Company: MoSeeker</P>  
- * <p>date: Aug 22, 2016</p>  
+ * 主要用于生成form表单
+ * <p>Company: MoSeeker</P>
+ * <p>date: Aug 22, 2016</p>
  * <p>Email: wjf2255@gmail.com</p>
+ *
  * @author wjf
- * @version
  */
 public class ParamUtils {
-	
+
 	Logger logger = LoggerFactory.getLogger(ParamUtils.class);
 	
 	/**
@@ -248,5 +247,16 @@ public class ParamUtils {
 																			// tornado不一致，需要实际测试。
 		return remoteIpForwardedbyLbs == null ? request.getRemoteAddr()
 				: remoteIpForwardedbyLbs;
+	}
+
+	public static String getStringRaw(HttpServletRequest request) throws IOException {
+		StringBuffer jb = new StringBuffer();
+		String line = null;
+		BufferedReader reader = request.getReader();
+		while ((line = reader.readLine()) != null) {
+			jb.append(line);
+		}
+
+		return jb.toString();
 	}
 }
