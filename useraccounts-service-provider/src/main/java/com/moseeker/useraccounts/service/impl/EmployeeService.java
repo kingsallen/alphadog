@@ -33,6 +33,7 @@ import com.moseeker.thrift.gen.dao.service.ConfigDBDao;
 import com.moseeker.thrift.gen.dao.service.HrDBDao;
 import com.moseeker.thrift.gen.dao.service.JobDBDao;
 import com.moseeker.thrift.gen.dao.service.UserDBDao;
+import com.moseeker.thrift.gen.dao.service.UserEmployeeDao;
 import com.moseeker.thrift.gen.dao.service.WxUserDao;
 import com.moseeker.thrift.gen.dao.struct.ConfigSysPointConfTplDO;
 import com.moseeker.thrift.gen.dao.struct.HrCompanyDO;
@@ -56,6 +57,7 @@ import com.moseeker.thrift.gen.employee.struct.Reward;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
 import com.moseeker.thrift.gen.employee.struct.RewardsResponse;
 import com.moseeker.thrift.gen.mq.service.MqService;
+import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 
 /**
  * @author ltf
@@ -75,6 +77,7 @@ public class EmployeeService {
 	MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
 	CompanyDao.Iface companyDao = ServiceManager.SERVICEMANAGER.getService(CompanyDao.Iface.class);
 	RedisClient client = CacheClient.getInstance();
+	UserEmployeeDao.Iface userEmployeeDao = ServiceManager.SERVICEMANAGER.getService(UserEmployeeDao.Iface.class);
 
 	public EmployeeResponse getEmployee(int userId, int companyId) throws TException {
 		log.info("getEmployee param: userId={} , companyId={}", userId, companyId);
@@ -192,17 +195,44 @@ public class EmployeeService {
 				query.getEqualFilter().put("disable", "0");
 				query.getEqualFilter().put("status", "0");
 				UserEmployeeDO employee = userDao.getEmployee(query);
-				if (employee == null || employee.getId() == 0) {
-					response.setSuccess(false);
-					response.setMessage("您提供的员工认证信息不正确");
-					break;
-				}
 				
-				if (employee.getActivation() == 0) {
+				if (employee != null && employee.getId() > 0 && employee.getActivation() == 0) {
 					response.setSuccess(false);
 					response.setMessage("该员工已绑定");
 					break;
 				}
+				
+				// 员工信息不存在，创建员工信息（仅邮箱认证时进行该操作）
+				if (employee == null || employee.getId() == 0) {
+					employee = new UserEmployeeDO();
+					employee.setCompanyId(bindingParams.getCompanyId());
+					employee.setEmployeeid(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), ""));
+					employee.setSysuserId(bindingParams.getUserId());
+					employee.setCname(bindingParams.getName());
+					employee.setMobile(bindingParams.getMobile());
+					employee.setEmail(bindingParams.getEmail());
+					query.getEqualFilter().clear();
+					query.getEqualFilter().put("sysuser_id", String.valueOf(bindingParams.getUserId()));
+					Response wxResult;
+					try {
+						wxResult = wxUserDao.getResource(query);
+						if (wxResult.getStatus() == 0 && StringUtils.isNotNullOrEmpty(wxResult.getData())) {
+							employee.setWxuser_id(JSONObject.parseObject(wxResult.getData()).getIntValue("id"));
+						}
+					} catch (Exception e1) {
+						log.error(e1.getMessage(), e1);
+					}
+					employee.setAuthMethod((byte)bindingParams.getType().getValue());
+					employee.setActivation((byte)1);
+					employee.setCreateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
+					if(userDao.postUserEmployeeDO(employee) == 0) {
+						response.setSuccess(false);
+						response.setMessage("认证失败，请检查员工信息");
+						log.info("员工邮箱认证，保存员工信息失败 employee={}", employee);
+						break;
+					} 
+				}
+				
 				// 防止用户频繁认证，24h内不重复发认证邮件
 				if (StringUtils.isNotNullOrEmpty(client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, String.valueOf(employee.getId())))) {
 					response.setSuccess(false);
@@ -242,8 +272,6 @@ public class EmployeeService {
 				// 员工信息验证
 				query.getEqualFilter().clear();
 				query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
-				query.getEqualFilter().put("sysuser_id", String.valueOf(bindingParams.getUserId()));
-				query.getEqualFilter().put("cname", bindingParams.getName());
 				query.getEqualFilter().put("custom_field", bindingParams.getCustomField());
 				employee = userDao.getEmployee(query);
 				if (employee == null || employee.getId() == 0) {

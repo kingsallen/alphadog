@@ -96,6 +96,8 @@
 //		bp.setEmail("510340677@qq.com");
 //		bp.setCompanyId(2878);
 //		bp.setType(BindType.EMAIL);
+//		bp.setUserId(1122611);
+//		bp.setName("小飞");
 ////		bp.setAnswer1("上海");
 ////		bp.setAnswer2("仟寻");
 ////		bp.setCompanyId(2878);
