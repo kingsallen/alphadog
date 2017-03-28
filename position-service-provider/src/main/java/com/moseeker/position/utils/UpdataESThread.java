@@ -3,6 +3,7 @@ package com.moseeker.position.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -43,8 +44,8 @@ public class UpdataESThread implements Runnable {
         if (list != null && list.size() > 0) {
             String companyId = BeanUtils.converToString(list.get(0).getCompanyId().intValue());
 
-            CommonQuery query = new CommonQuery();
-            query.putToEqualFilter("id", companyId);
+            QueryUtil query = new QueryUtil();
+            query.addEqualFilter("id", companyId);
             Response company_resp = null;
             try {
                 company_resp = companyServices.getAllCompanies(query);

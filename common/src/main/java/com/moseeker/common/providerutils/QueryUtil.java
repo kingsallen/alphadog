@@ -5,12 +5,17 @@ import com.moseeker.thrift.gen.common.struct.*;
 import java.util.ArrayList;
 import java.util.Map;
 
+/**
+ * 该类只为兼容以前的调用方式，后续接口直接使用CommonQuery，或者使用新的工具类
+ */
+@Deprecated
 public class QueryUtil extends CommonQuery {
 
     private static final long serialVersionUID = 2531526866610292082L;
 
-    public QueryUtil addEqualFilter(String key, String value) {
-        ValueCondition valueCondition = new ValueCondition(key, value, ValueOp.EQ);
+    @Deprecated
+    public QueryUtil addEqualFilter(String key, Object value) {
+        ValueCondition valueCondition = new ValueCondition(key, String.valueOf(value), ValueOp.EQ);
         if (conditions == null) {
             conditions = new Condition();
             conditions.setValueCondition(valueCondition);
@@ -33,8 +38,11 @@ public class QueryUtil extends CommonQuery {
         return this;
     }
 
+    @Deprecated
     public QueryUtil setEqualFilter(Map<String, String> equalFilter) {
-        if (equalFilter.size() == 1) {
+        if(equalFilter==null || equalFilter.size() == 0){
+            conditions = null;
+        }else if (equalFilter.size() == 1) {
             conditions = new Condition();
             for (String key : equalFilter.keySet()) {
                 conditions.setValueCondition(new ValueCondition(key, equalFilter.get(key), ValueOp.EQ));
@@ -58,6 +66,7 @@ public class QueryUtil extends CommonQuery {
         return this;
     }
 
+    @Deprecated
     public QueryUtil addGroupBy(String field) {
         if (groups == null) {
             groups = new ArrayList<>();
@@ -66,11 +75,58 @@ public class QueryUtil extends CommonQuery {
         return this;
     }
 
+    @Deprecated
     public QueryUtil addOrderBy(String filed, Order order) {
         if (orders == null) {
             orders = new ArrayList<>();
         }
         orders.add(new OrderBy(filed, order));
+        return this;
+    }
+
+    @Deprecated
+    public QueryUtil addSelectAttribute(String field) {
+        addToAttributes(new Select(field, SelectOp.FIELD));
+        return this;
+    }
+
+    String tmpOrder;
+
+    @Deprecated
+    public void setOrder(String order) {
+        this.tmpOrder = order;
+        checkOrder();
+    }
+
+    String tmpSort;
+
+    @Deprecated
+    public void setSortby(String sortby) {
+        this.tmpSort = sortby;
+        checkOrder();
+    }
+
+
+    private void checkOrder() {
+        if (tmpSort != null && tmpOrder != null) {
+            if ("desc".equals(tmpOrder.trim())) {
+                addToOrders(new OrderBy(tmpSort, Order.DESC));
+            } else {
+                addToOrders(new OrderBy());
+            }
+            tmpOrder = null;
+            tmpSort = null;
+        }
+    }
+
+    @Deprecated
+    public void setPer_page(int per_page) {
+        this.pageSize = per_page;
+    }
+
+    @Deprecated
+    public QueryUtil addGroup(String field) {
+        addToGroups(field);
         return this;
     }
 }

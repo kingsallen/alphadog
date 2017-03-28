@@ -433,7 +433,7 @@ public class UserHrAccountService {
      */
     public Response postSearchCondition(SearchCondition searchCondition) {
         try {
-            CommonQuery query = new CommonQuery();
+            QueryUtil query = new QueryUtil();
             Map<String, String> param = new HashMap<String, String>();
             query.setEqualFilter(param);
             param.put("hr_account_id", String.valueOf(searchCondition.getHr_account_id()));
@@ -571,7 +571,7 @@ public class UserHrAccountService {
      */
     public Response userHrAccount(int companyId, int disable, int page, int per_age) {
         try {
-            CommonQuery commonQuery = new CommonQuery();
+            QueryUtil commonQuery = new QueryUtil();
             Map<String, String> param = new HashMap<String, String>();
             param.put("company_id", String.valueOf(companyId));
             param.put("disable", String.valueOf(disable));

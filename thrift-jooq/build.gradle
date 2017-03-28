@@ -9,16 +9,17 @@ sourceCompatibility = 1.8
 
 dependencies {
     compile deps["mysql-connector-java"]
-    //compile deps["libthrift"]
-    compile  fileTree(dir:'../libs',include:'libthrift-0.10.0.jar')
-    compile  fileTree(dir:'../libs',include:'jooq*.jar')
+    compile deps["libthrift"]
+    compile deps['jooq']
+    compile deps['jooq-codegen']
+    compile deps['jooq-meta']
     compile deps["slf4j-log4j12"]
     testCompile deps["junit"]
 }
 
 task copyJars(type: Copy) {
-  from configurations.runtime
-  into 'build/libs' // 目标位置
+    from configurations.runtime
+    into 'build/libs' // 目标位置
 }
 
 jar {
@@ -27,3 +28,63 @@ jar {
     //    configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     //}
 }
+
+//
+//dependencies {
+//    runtime deps["mysql-connector-java"]
+//    compile deps["jooq-codegen"]
+//    compile deps["jooq-meta"]
+//    compile deps["jooq"]
+//    compile deps["libthrift"]
+//    compile deps["slf4j-log4j12"]
+//    testCompile deps["junit"]
+//}
+//
+//buildscript {
+//    repositories {
+//        mavenLocal()
+//        mavenCentral()
+//    }
+//
+//    dependencies {
+//        classpath deps["jooq-codegen"]
+//        classpath deps["jooq-meta"]
+//        classpath deps["mysql-connector-java"]
+//    }
+//}
+//
+//sourceCompatibility = 1.8
+//
+//import javax.xml.bind.JAXB
+//import org.jooq.util.GenerationTool
+//
+//['analytics','candidatedb','configdb','dictdb','historydb','hrdb','jobdb','logdb','profiledb','userdb','wordpressdb'].forEach{ db->
+//    def writer = new StringWriter()
+//    def xml = new groovy.xml.MarkupBuilder(writer).configuration('xmlns': 'http://www.jooq.org/xsd/jooq-codegen-3.9.0.xsd') {
+//        jdbc() {
+//            driver('com.mysql.jdbc.Driver')
+//            url('jdbc:mysql://192.168.31.66:3306')
+//            user('wyf')
+//            password('moseeker.com')
+//        }
+//        generator() {
+//            database {
+//                unsignedTypes false
+//                name 'org.jooq.util.mysql.MySQLDatabase'
+//                inputSchema db
+//                includes '.*'
+//            }
+//            generate() {
+//            }
+//            target() {
+//                packageName('com.moseeker.db.'+db)
+//                directory('src/main/java')
+//            }
+//        }
+//    }
+//
+//    GenerationTool.main(
+//            JAXB.unmarshal(new StringReader(writer.toString()), org.jooq.util.jaxb.Configuration.class)
+//    )
+//}
+

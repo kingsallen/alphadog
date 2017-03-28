@@ -48,7 +48,7 @@ public class UserEmployeeController {
                     return ResponseLogNotification.fail(request, "custom_field不能为空");
                 }
             }
-            CommonQuery query = new CommonQuery();
+            QueryUtil query = new QueryUtil();
             query.setEqualFilter(filter);
             Response result = service.delUserEmployee(query);
             return ResponseLogNotification.success(request, result);

@@ -467,7 +467,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             if (com.moseeker.common.util.StringUtils.isEmptyObject(hrTeamRecord)) {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, ConstantErrorCodeMessage.POSITION_DATA_DEPARTMENT_ERROR);
             }
-            CommonQuery commonQuery = new CommonQuery();
+            QueryUtil commonQuery = new QueryUtil();
             HashMap hashMap = new HashMap();
             hashMap.put("company_id", String.valueOf(companyId));
             // 默认会取10条数据
