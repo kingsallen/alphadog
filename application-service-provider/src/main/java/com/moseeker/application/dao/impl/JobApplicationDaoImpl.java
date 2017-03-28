@@ -152,6 +152,10 @@ public class JobApplicationDaoImpl extends BaseDaoImpl<JobApplicationRecord, Job
                 if(!existUserEmployee) {
                     jobApplicationRecord.setRecommenderUserId(UInteger.valueOf(0));
                 }
+
+                if(jobApplicationRecord.getApplierId() != null && jobApplicationRecord.getApplierId().intValue() == jobApplicationRecord.getRecommenderUserId().intValue()) {
+                    jobApplicationRecord.setRecommenderUserId(UInteger.valueOf(0));
+                }
             }
 
             create.attach(jobApplicationRecord);
