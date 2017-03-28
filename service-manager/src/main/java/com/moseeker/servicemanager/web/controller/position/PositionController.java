@@ -35,6 +35,8 @@ import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.BatchHandlerJobPostion;
 import com.moseeker.thrift.gen.position.struct.DelePostion;
+import com.moseeker.thrift.gen.position.struct.WechatPositionListData;
+import com.moseeker.thrift.gen.position.struct.WechatPositionListQuery;
 import org.jooq.tools.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,6 +86,56 @@ public class PositionController {
 			Response result = positonServices.getPositionById(id);
 			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
+
+	/**
+	 * 获取职位列表
+	 *
+	 * @param request request
+	 * @param response response
+	 * @return 职位列表数据
+	 */
+	@RequestMapping(value = "/position/list", method = RequestMethod.GET)
+	@ResponseBody
+	public String getPositionList(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			WechatPositionListQuery query = new WechatPositionListQuery();
+
+			Map<String, Object> map = ParamUtils.parseRequestParam(request);
+
+			if (map.getOrDefault("company_id", null) != null) {
+				query.setCompany_id(Integer.valueOf((String)map.get("company_id")));
+			}
+			else {
+				throw new Exception("公司 id 未提供!");
+			}
+
+			query.setPage_from(Integer.valueOf((String)map.getOrDefault("page_from", "0")));
+			query.setPage_size(Integer.valueOf((String)map.getOrDefault("page_size", "10")));
+			query.setKeywords((String) map.getOrDefault("keywords", ""));
+			query.setCities((String) map.getOrDefault("cities", ""));
+			query.setIndustries((String) map.getOrDefault("industries", ""));
+			query.setOccupations((String) map.getOrDefault("occupations", ""));
+			query.setScale((String) map.getOrDefault("scale", ""));
+			query.setCandidate_source((String) map.getOrDefault("candidate_source", ""));
+			query.setEmployment_type((String) map.getOrDefault("employment_type", ""));
+			query.setExperience((String) map.getOrDefault("experience", ""));
+			query.setSalary((String) map.getOrDefault("salary", ""));
+			query.setDegree((String) map.getOrDefault("degree", ""));
+			query.setDepartment((String) map.getOrDefault("department", ""));
+			query.setCustom((String) map.getOrDefault("custom", ""));
+			query.setDid(Integer.valueOf((String)map.getOrDefault("did", "0")));
+			String param_setOrder_by_priority = (String)map.getOrDefault("order_by_priority", "True");
+			query.setOrder_by_priority(param_setOrder_by_priority.equals("True"));
+
+			List<WechatPositionListData> positionList = positonServices.getPositionList(query);
+			Response res = ResponseUtils.success(positionList);
+			return ResponseLogNotification.success(request, res);
+		}
+		catch (Exception e) {
+			logger.error(e.getMessage(), e);
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}
@@ -204,7 +256,7 @@ public class PositionController {
 							refreshResult.add(JSON.parse(refreshPositionResponse.getData()));
 						} catch (Exception e) {
 							// TODO Auto-generated catch block
-							e.printStackTrace();
+							logger.error(e.getMessage(), e);
 							HashMap<String, Object> param = new HashMap<>();
 							param.put("position_id", String.valueOf(positionId));
 							param.put("channel", String.valueOf(channel));
@@ -224,48 +276,4 @@ public class PositionController {
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}
-
-    /**
-     * 批量修改职位
-     *
-     * @param request
-     * @param response
-     * @return
-     */
-    @RequestMapping(value = "/jobposition/batchhandler", method = RequestMethod.POST)
-    @ResponseBody
-    public String batchHandlerJobPostion(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            BatchHandlerJobPostion batchHandlerJobPostion = PositionParamUtils.parseBatchHandlerJobPostionParam(request);
-            Response res = positonServices.batchHandlerJobPostion(batchHandlerJobPostion);
-            return ResponseLogNotification.success(request, res);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
-        } finally {
-            //do nothing
-        }
-    }
-
-
-    /**
-     * 删除职位
-     *
-     * @param request
-     * @param response
-     * @return
-     */
-    @RequestMapping(value = "/delete/jobpostion", method = RequestMethod.DELETE)
-    @ResponseBody
-    public String deleteJobPostion(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            DelePostion params = ParamUtils.initModelForm(request, DelePostion.class);
-            Response res = positonServices.deleteJobposition(params);
-            return ResponseLogNotification.success(request, res);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
-        }
-    }
-
 }
