@@ -29,7 +29,7 @@ public class PositionService {
 		try {
 			if(code == null || code.equals("")) {
 				CommonQuery query = new CommonQuery();
-				query.setPer_page(Integer.MAX_VALUE);
+				query.setPageSize(Integer.MAX_VALUE);
 				positions = positionDao.getResources(query);
 			} else {
 				positions = positionDao.getIndustriesByParentCode(Integer.valueOf(code));

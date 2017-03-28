@@ -91,7 +91,7 @@ public class UserEmployeeDao extends BaseDaoImpl<UserEmployeeRecord, UserEmploye
     }
 
     public int delResource(CommonQuery query) throws Exception {
-        if (query != null && query.getEqualFilter() != null && query.getEqualFilter().size() > 0) {
+        if (query != null && query.getConditions() != null) {
             List<UserEmployeeRecord> records = getResources(query);
             if (records.size() > 0) {
                 return delResources(records);
@@ -115,7 +115,7 @@ public class UserEmployeeDao extends BaseDaoImpl<UserEmployeeRecord, UserEmploye
                 queryUtil.addEqualFilter("cname", struct.getCname());
                 queryUtil.addEqualFilter("cfname", struct.getCfname());
             }
-            queryUtil.setPer_page(Integer.MAX_VALUE);
+            queryUtil.setPageSize(Integer.MAX_VALUE);
 
             if (queryUtil != null) {
                 List<UserEmployeeRecord> userEmployeeRecords = getResources(queryUtil);
@@ -126,18 +126,18 @@ public class UserEmployeeDao extends BaseDaoImpl<UserEmployeeRecord, UserEmploye
                         userEmployeeRecord.setId(record.getId());
                         try {
                             innserSuccessFlag += putResource(userEmployeeRecord);
-                        }catch (Exception e){
+                        } catch (Exception e) {
                         }
                     }
                     successArray[i] = innserSuccessFlag > 0 ? 1 : 0;
                 } else {
                     try {
                         successArray[i] = postResource(BeanUtils.structToDB(struct, UserEmployeeRecord.class));
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         successArray[i] = 0;
                     }
                 }
-            }else{
+            } else {
                 successArray[i] = 0;
             }
             i++;

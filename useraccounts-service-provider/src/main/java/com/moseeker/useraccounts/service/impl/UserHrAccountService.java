@@ -381,7 +381,7 @@ public class UserHrAccountService {
      */
     public Response getSearchCondition(int hrAccountId, int type) {
         logger.info("UserHrAccountService - getSearchCondition ");
-        CommonQuery query = new CommonQuery();
+        QueryUtil query = new QueryUtil();
         Map<String, String> param = new HashMap<String, String>();
         query.setEqualFilter(param);
         param.put("hr_account_id", String.valueOf(hrAccountId));
@@ -494,7 +494,7 @@ public class UserHrAccountService {
      */
     @UpdateEs(tableName = "hr_talentpool", argsIndex = 1, argsName = "user_id")
     public Response joinTalentpool(int hrAccountId, List<Integer> applierIds) {
-        CommonQuery query = new CommonQuery();
+        QueryUtil query = new QueryUtil();
         Map<String, String> param = new HashMap<String, String>();
         query.setEqualFilter(param);
         param.put("hr_account_id", String.valueOf(hrAccountId));
@@ -535,7 +535,7 @@ public class UserHrAccountService {
      */
     @UpdateEs(tableName = "hr_talentpool", argsIndex = 1, argsName = "user_id")
     public Response shiftOutTalentpool(int hrAccountId, List<Integer> applierIds) {
-        CommonQuery query = new CommonQuery();
+        QueryUtil query = new QueryUtil();
         Map<String, String> param = new HashMap<String, String>();
         query.setEqualFilter(param);
         param.put("hr_account_id", String.valueOf(hrAccountId));

@@ -191,7 +191,7 @@ public class ProfileIntentionService extends JOOQBaseServiceImpl<Intention, Prof
 			if(struct.isSetProfile_id()) {
 				QueryUtil query = new QueryUtil();
 				query.setPage(1);
-				query.setPer_page(1);
+				query.setPageSize(1);
 				query.addEqualFilter("profile_id", String.valueOf(struct.getProfile_id()));
 				repeatIntention = dao.getResource(query);
 			}
@@ -357,7 +357,7 @@ public class ProfileIntentionService extends JOOQBaseServiceImpl<Intention, Prof
 	private void updateIntentionPosition(Intention struct, int intentionId) throws Exception {
 		QueryUtil positionQuery = new QueryUtil();
 		positionQuery.setPage(1);
-		positionQuery.setPer_page(Integer.MAX_VALUE);
+		positionQuery.setPageSize(Integer.MAX_VALUE);
 		List<DictPositionRecord> positionRecordList = dictPositionDao.getResources(positionQuery);
 
 		QueryUtil selectedPositionQuery = new QueryUtil();
@@ -432,7 +432,7 @@ public class ProfileIntentionService extends JOOQBaseServiceImpl<Intention, Prof
 	private void updateIntentionIndustry(Intention struct, int intentionId) throws Exception {
 		QueryUtil industryQuery = new QueryUtil();
 		industryQuery.setPage(1);
-		industryQuery.setPer_page(Integer.MAX_VALUE);
+		industryQuery.setPageSize(Integer.MAX_VALUE);
 		List<DictIndustryRecord> industryRecordList = dictIndustryDao.getResources(industryQuery);
 
 		QueryUtil selectedIndustryQuery = new QueryUtil();
@@ -513,7 +513,7 @@ public class ProfileIntentionService extends JOOQBaseServiceImpl<Intention, Prof
 	private void updateIntentionCity(Intention struct, int intentionId) throws Exception {
 		QueryUtil cityQuery = new QueryUtil();
 		cityQuery.setPage(1);
-		cityQuery.setPer_page(Integer.MAX_VALUE);
+		cityQuery.setPageSize(Integer.MAX_VALUE);
 		List<DictCityRecord> cityRecordList = dictCityDao.getResources(cityQuery);
 
 		QueryUtil selectedCityQuery = new QueryUtil();

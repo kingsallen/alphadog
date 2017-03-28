@@ -7,6 +7,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import com.moseeker.common.providerutils.QueryUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +60,7 @@ public abstract class BindOnAccountService {
 			
 			UserUserRecord userUnionid = getUserByUnionId(unionid);
 
-			CommonQuery query = new CommonQuery();
+			QueryUtil query = new QueryUtil();
 			Map<String, String> filters = new HashMap<>();
 			filters.put("username", mobile);
 			query.setEqualFilter(filters);

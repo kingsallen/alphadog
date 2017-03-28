@@ -1,69 +1,76 @@
 package com.moseeker.common.providerutils;
 
+import com.moseeker.thrift.gen.common.struct.*;
+
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 
-import com.moseeker.common.util.BeanUtils;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-
-/**
- * 通用查询工具辅助类，方便添加属性
- */
 public class QueryUtil extends CommonQuery {
 
-	private static final long serialVersionUID = 2531526866610292082L;
+    private static final long serialVersionUID = 2531526866610292082L;
 
-	/**
-	 * 添加查询条件，以后会用Condition替换
-	 * @param key 数据库字段名称
-	 * @param value 值
-	 * @return 查询工具类本身
-	 */
-	public QueryUtil addEqualFilter(String key, String value) {
-		if(this.equalFilter == null) {
-			this.equalFilter = new HashMap<String, String>();
-		}
-		this.equalFilter.put(key, value);
-		return this;
-	}
+    public QueryUtil addEqualFilter(String key, String value) {
+        ValueCondition valueCondition = new ValueCondition(key, value, ValueOp.EQ);
+        if (conditions == null) {
+            conditions = new Condition();
+            conditions.setValueCondition(valueCondition);
+        }
 
-	/**
-	 * 添加查询条件
-	 * @param key 数据库字段名称
-	 * @param value 值
-	 * @return 查询工具类本身
-	 */
-	public QueryUtil addEqualFilter(String key, Object value) {
-		if(this.equalFilter == null) {
-			this.equalFilter = new HashMap<String, String>();
-		}
-		this.equalFilter.put(key, BeanUtils.converToString(value));
-		return this;
-	}
+        if (conditions.getValueCondition() != null) {
+            Condition conditions1 = new Condition();
+            conditions1.setValueCondition(conditions.getValueCondition());
+            Condition conditions2 = new Condition();
+            conditions2.setValueCondition(valueCondition);
+            conditions.setInnerCondition(new InnerCondition(conditions1, conditions2, ConditionOp.AND));
+        } else {
+            Condition replaceCondition = new Condition();
+            Condition newCondition = new Condition();
+            newCondition.setValueCondition(valueCondition);
+            InnerCondition innerCondition = new InnerCondition(conditions, newCondition, ConditionOp.AND);
+            replaceCondition.setInnerCondition(innerCondition);
+            conditions = replaceCondition;
+        }
+        return this;
+    }
 
-	/**
-	 * 添加group条件
-	 * @param attribute 数据库字段名称
-	 * @return 查询工具类本身
-	 */
-	public QueryUtil addGroup(String attribute) {
-		if(this.grouops == null) {
-			this.grouops = new ArrayList<>();
-		}
-		this.grouops.add(attribute);
-		return this;
-	}
+    public QueryUtil setEqualFilter(Map<String, String> equalFilter) {
+        if (equalFilter.size() == 1) {
+            conditions = new Condition();
+            for (String key : equalFilter.keySet()) {
+                conditions.setValueCondition(new ValueCondition(key, equalFilter.get(key), ValueOp.EQ));
+            }
+        } else if (equalFilter.size() > 1) {
+            Condition newCondition = null;
+            for (String key : equalFilter.keySet()) {
+                ValueCondition valueCondition = new ValueCondition(key, equalFilter.get(key), ValueOp.EQ);
+                Condition valueConditionOuter = new Condition();
+                valueConditionOuter.setValueCondition(valueCondition);
+                if (newCondition == null) {
+                    newCondition = valueConditionOuter;
+                } else {
+                    InnerCondition innerCondition = new InnerCondition(newCondition, valueConditionOuter, ConditionOp.AND);
+                    newCondition = new Condition();
+                    newCondition.setInnerCondition(innerCondition);
+                }
+            }
+            conditions = newCondition;
+        }
+        return this;
+    }
 
-	/**
-	 * 添加制定查询字段条件
-	 * @param attribute 制定查询返回的字段
-	 * @return 查询工具类本身
-	 */
-	public QueryUtil addSelectAttribute(String attribute) {
-		if(this.attributes == null) {
-			this.attributes = new ArrayList<>();
-		}
-		this.attributes.add(attribute);
-		return this;
-	}
+    public QueryUtil addGroupBy(String field) {
+        if (groups == null) {
+            groups = new ArrayList<>();
+        }
+        groups.add(field);
+        return this;
+    }
+
+    public QueryUtil addOrderBy(String filed, Order order) {
+        if (orders == null) {
+            orders = new ArrayList<>();
+        }
+        orders.add(new OrderBy(filed, order));
+        return this;
+    }
 }

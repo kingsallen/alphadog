@@ -1,5 +1,22 @@
 package com.moseeker.profile.service.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import com.moseeker.thrift.gen.common.struct.Order;
+import com.moseeker.thrift.gen.common.struct.OrderBy;
+import org.apache.thrift.TException;
+import org.jooq.types.UByte;
+import org.jooq.types.UInteger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
@@ -65,10 +82,10 @@ public class WholeProfileService {
 							profileRecord.getUuid(), profileRecord.getId().intValue());
 					profileRecord.setCompleteness(UByte.valueOf(completeness));
 				}
-				CommonQuery query = new CommonQuery();
+				QueryUtil query = new QueryUtil();
 				HashMap<String, String> equalFilter = new HashMap<String, String>();
 				equalFilter.put("profile_id", String.valueOf(profileRecord.getId()));
-				query.setPer_page(Integer.MAX_VALUE);
+				query.setPageSize(Integer.MAX_VALUE);
 				query.setEqualFilter(equalFilter);
 
 				logger.info("WholeProfileService getResource before  constantDao.getCitiesByParentCodes : {}",new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
@@ -967,8 +984,8 @@ public class WholeProfileService {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
 			// 按照结束时间倒序
-			query.setSortby("end_until_now,start");
-			query.setOrder("desc,desc");
+			query.addToOrders(new OrderBy("end_until_now", Order.DESC));
+			query.addToOrders(new OrderBy("start", Order.DESC));
 			List<ProfileProjectexpRecord> records = projectExpDao.getResources(query);
 			if (records != null && records.size() > 0) {
 				records.forEach(record -> {
@@ -1001,8 +1018,8 @@ public class WholeProfileService {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
 			// 按照结束时间倒序
-			query.setSortby("end_until_now,start");
-			query.setOrder("desc,desc");
+			query.addToOrders(new OrderBy("end_until_now", Order.DESC));
+			query.addToOrders(new OrderBy("start", Order.DESC));
 			List<ProfileEducationRecord> records = educationDao.getResources(query);
 
 			if (records != null && records.size() > 0) {
@@ -1055,8 +1072,8 @@ public class WholeProfileService {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
 			// 按照结束时间倒序
-			query.setSortby("end_until_now,start");
-			query.setOrder("desc,desc");
+			query.addToOrders(new OrderBy("end_until_now", Order.DESC));
+			query.addToOrders(new OrderBy("start", Order.DESC));
 			List<ProfileWorkexpRecord> records = workExpDao.getResources(query);
 			if (records != null && records.size() > 0) {
 				List<Integer> companyIds = new ArrayList<>();

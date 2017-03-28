@@ -246,8 +246,8 @@ public abstract class JOOQBaseServiceImpl<S extends TBase, R extends UpdatableRe
 			if(query.getPage() > 1) {
 				pageNo = query.getPage();
 			}
-			if(query.getPer_page() > 0) {
-				pageSize = query.getPer_page();
+			if(query.getPageSize() > 0) {
+				pageSize = query.getPageSize();
 			}
 			int totalPage = (int) (totalRow / pageSize);
 			if (totalRow % pageSize != 0) {

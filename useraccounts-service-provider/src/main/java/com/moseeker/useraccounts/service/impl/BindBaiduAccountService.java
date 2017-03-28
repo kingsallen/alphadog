@@ -32,7 +32,7 @@ public class BindBaiduAccountService extends BindOnAccountService{
 	
 	@Override
 	protected UserUserRecord getUserByUnionId(String id) {
-		CommonQuery query = new CommonQuery();
+		QueryUtil query = new QueryUtil();
 		Map<String, String> filters = new HashMap<>();
 		filters.put("id", id);
 		query.setEqualFilter(filters);

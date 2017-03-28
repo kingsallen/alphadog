@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.moseeker.thrift.gen.common.struct.Order;
+import com.moseeker.thrift.gen.common.struct.OrderBy;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,9 +107,9 @@ public class ProfileEducationService extends JOOQBaseServiceImpl<Education, Prof
 	public Response getResources(CommonQuery query) throws TException {
 		try {
 			// 按照结束时间倒序
-			query.setSortby("end_until_now,start");
-			query.setOrder("desc,desc");
-			
+			query.addToOrders(new OrderBy("end_until_now", Order.DESC));
+			query.addToOrders(new OrderBy("start", Order.DESC));
+
 			List<ProfileEducationRecord> educationRecords = dao.getResources(query);
 			List<Education> educations = DBsToStructs(educationRecords);
 			if (educations != null && educations.size() > 0) {

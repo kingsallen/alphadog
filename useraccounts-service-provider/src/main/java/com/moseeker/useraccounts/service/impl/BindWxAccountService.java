@@ -3,6 +3,7 @@ package com.moseeker.useraccounts.service.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.moseeker.common.providerutils.QueryUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class BindWxAccountService extends BindOnAccountService{
 	
 	@Override
 	protected UserUserRecord getUserByUnionId(String unionId) {
-		CommonQuery query = new CommonQuery();
+		QueryUtil query = new QueryUtil();
 		Map<String, String> filters = new HashMap<>();
 		filters.put("unionid", unionId);
 		query.setEqualFilter(filters);

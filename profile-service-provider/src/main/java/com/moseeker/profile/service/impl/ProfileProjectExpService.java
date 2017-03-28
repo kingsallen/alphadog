@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.moseeker.thrift.gen.common.struct.Order;
+import com.moseeker.thrift.gen.common.struct.OrderBy;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,8 +79,8 @@ public class ProfileProjectExpService extends JOOQBaseServiceImpl<ProjectExp, Pr
 	@Override
 	public Response getResources(CommonQuery query) throws TException {
 		// 按照结束时间倒序
-		query.setSortby("end_until_now,start");
-		query.setOrder("desc,desc");
+		query.addToOrders(new OrderBy("end_until_now", Order.DESC));
+		query.addToOrders(new OrderBy("start", Order.DESC));
 		return super.getResources(query);
 	}
 	

@@ -3,6 +3,7 @@ package com.moseeker.baseorm.dao.hr;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.moseeker.common.providerutils.QueryUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ public class SearchConditionDao extends BaseDaoImpl<HrSearchConditionRecord, HrS
 	}
 	
 	public int delResource(int hrAccountId, int id) {
-		CommonQuery query = new CommonQuery();
+		QueryUtil query = new QueryUtil();
 		Map<String, String> param = new HashMap<String, String>();
 		query.setEqualFilter(param);
 		param.put("hr_account_id", String.valueOf(hrAccountId));

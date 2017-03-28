@@ -48,7 +48,7 @@ public class DemoServer {
 	private static AnnotationConfigApplicationContext initSpring() {
 		AnnotationConfigApplicationContext acac = new AnnotationConfigApplicationContext();
 		acac.scan("com.moseeker.demo");
-		acac.scan("com.moseeker.baseorm");
+  		acac.scan("com.moseeker.baseorm");
 		acac.scan("com.moseeker.common.aop.iface");
 		acac.refresh();
 		return acac;

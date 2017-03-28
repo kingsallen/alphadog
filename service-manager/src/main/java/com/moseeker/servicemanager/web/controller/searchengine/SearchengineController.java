@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.moseeker.common.providerutils.QueryUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -58,8 +59,8 @@ public class SearchengineController {
             Map position_map = (Map) JSON.parse(position);
             
             String company_id = BeanUtils.converToString(position_map.get("company_id"));
-            CommonQuery query = new CommonQuery();
-            query.putToEqualFilter("id", company_id);
+            QueryUtil query = new QueryUtil();
+            query.addEqualFilter("id", company_id);
             Response company_resp = companyServices.getAllCompanies(query);
             String company = company_resp.data;
             List company_maps = (List) JSON.parse(company);
@@ -169,8 +170,8 @@ public class SearchengineController {
 	          Map position_map = (Map) JSON.parse(position);
 	          
 	          String company_id = BeanUtils.converToString(position_map.get("company_id"));
-	          CommonQuery query = new CommonQuery();
-	          query.putToEqualFilter("id", company_id);
+	          QueryUtil query = new QueryUtil();
+	          query.addEqualFilter("id", company_id);
 	          Response company_resp = companyServices.getAllCompanies(query);
 	          String company = company_resp.data;
 	          List company_maps = (List) JSON.parse(company);

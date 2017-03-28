@@ -2,21 +2,16 @@ package com.moseeker.common.providerutils.daoutils;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import com.moseeker.common.exception.OrmException;
+import com.moseeker.thrift.gen.common.struct.*;
+import org.jooq.*;
 import org.jooq.Condition;
-import org.jooq.DSLContext;
-import org.jooq.Field;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.SelectJoinStep;
-import org.jooq.SelectQuery;
-import org.jooq.SortField;
-import org.jooq.SortOrder;
-import org.jooq.TableLike;
+import org.jooq.SelectField;
 import org.jooq.impl.TableImpl;
 import org.jooq.impl.UpdatableRecordImpl;
 import org.slf4j.Logger;
@@ -25,98 +20,180 @@ import org.slf4j.LoggerFactory;
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
 
 /**
+ *
  * 实现通用数据操作接口的抽象类
  * <p>Company: MoSeeker</P>
  * <p>date: May 5, 2016</p>
  * <p>Email: wjf2255@gmail.com</p>
- *
- * @param <R> 表示JOOQ表记录的ORM类
- * @param <T> 表示JOOQ表的ORM类
  * @author wjf
  * @version Beta
+ * @param <R> 表示JOOQ表记录的ORM类
+ * @param <T> 表示JOOQ表的ORM类
  */
 @SuppressWarnings("rawtypes")
 public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends TableImpl<R>>
         implements BaseDao<R> {
 
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
+    private SelectSelectStep<Record> buildSelect(DSLContext create, CommonQuery query) {
+        Set<SelectField<?>> fieldSet = Stream.of(query)
+                .filter(query1 -> query1 != null)
+                .flatMap(query1 -> Stream.of(query.getAttributes()))
+                .filter(attributes -> attributes != null)
+                .flatMap(attributes -> attributes.stream())
+                .map(select -> {
+                    Field<?> field = tableLike.field(select.field);
+                    if (field == null) {
+                        throw new OrmException("field '" + select.field + "' not found in table " + tableLike.getName());
+                    } else {
+                        return field;
+                    }
+                })
+                .collect(Collectors.toSet());
+        return create.select(fieldSet);
+    }
 
+    private Condition connectInnerCondition(InnerCondition innerCondition) {
+        Condition c1 = convertCondition(innerCondition.getFirstCondition());
+        Condition c2 = convertCondition(innerCondition.getSecondCondition());
+
+        if (innerCondition.getConditionOp() == ConditionOp.AND) {
+            return c1.and(c2);
+        } else if (innerCondition.getConditionOp() == ConditionOp.OR) {
+            return c1.or(c2);
+        } else {
+            throw new IllegalArgumentException("error condition");
+        }
+    }
+
+    private <T> T convertTo(String value, Class<T> tClass) {
+        return BeanUtils.convertTo(value, tClass);
+    }
+
+    private <E> Condition connectValueCondition(Field<E> field, String value, ValueOp valueOp) {
+        switch (valueOp) {
+            case EQ:
+                return field.equal(convertTo(value, field.getType()));
+            case NEQ:
+                return field.notEqual(convertTo(value, field.getType()));
+            case IN:
+                if (value.startsWith("[") && value.endsWith("]")) {
+                    List<E> list = BeanUtils.convertTo(value, field.getType());
+                    return field.in(list);
+                } else {
+                    return null;
+                }
+            case NIN:
+                if (value.startsWith("[") && value.endsWith("]")) {
+                    List<E> list = BeanUtils.convertTo(value, field.getType());
+                    return field.notIn(list);
+                } else {
+                    return null;
+                }
+            case GT:
+                return field.greaterThan(convertTo(value, field.getType()));
+            case GE:
+                return field.greaterOrEqual(convertTo(value, field.getType()));
+            case LT:
+                return field.lessThan(convertTo(value, field.getType()));
+            case LE:
+                return field.lessOrEqual(convertTo(value, field.getType()));
+            case BT:
+                if (value.startsWith("[") && value.endsWith("]")) {
+                    List<E> list = BeanUtils.convertTo(value, field.getType());
+                    return field.in(list);
+                } else {
+                    return null;
+                }
+            case NBT:
+            case LIKE:
+            case NLIKE:
+                return null;
+            default:
+                throw new IllegalArgumentException("error value constraint");
+        }
+    }
+
+    private Condition connectValueCondition(ValueCondition valueCondition) {
+        Field<?> field = tableLike.field(valueCondition.field);
+        if (field != null) {
+            return connectValueCondition(field, valueCondition.value, valueCondition.valueOp);
+        } else {
+            throw new IllegalArgumentException("error field:" + valueCondition.field);
+        }
+    }
+
+    private Condition convertCondition(com.moseeker.thrift.gen.common.struct.Condition condition) {
+        if (condition.getInnerCondition() != null) {
+            return connectInnerCondition(condition.getInnerCondition());
+        } else if (condition.getValueCondition() != null) {
+            return connectValueCondition(condition.getValueCondition());
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * 所有Condition组装
+     *
+     * @param query
+     * @return
+     */
+    private Condition buildConditions(CommonQuery query) {
+        com.moseeker.thrift.gen.common.struct.Condition condition = query.getConditions();
+        return convertCondition(condition);
+    }
+
+
+    /**
+     * 所有Order的组装
+     *
+     * @param query
+     * @return
+     */
+    private Collection<? extends SortField<?>> buildOrder(CommonQuery query) {
+        return Stream.of(query)
+                .filter(query1 -> query1 != null)
+                .map(query1 -> query1.getOrders())
+                .filter(orders -> orders != null)
+                .flatMap(orders -> orders.stream())
+                .map(orderBy -> {
+                    Field<?> field = tableLike.field(orderBy.field);
+                    if (field == null) {
+                        throw new OrmException("field '" + orderBy.field + "' not found in table " + tableLike.getName());
+                    } else {
+                        switch (orderBy.getOrder()) {
+                            case DESC:
+                                return field.desc();
+                            default:
+                                return field.asc();
+                        }
+                    }
+                })
+                .collect(Collectors.toSet());
+    }
     /**
      * 需要制定JOOQ
      */
-    protected TableLike<R> tableLike;
+    protected TableImpl<R> tableLike;
 
     protected abstract void initJOOQEntity();
-
     @SuppressWarnings("unchecked")
     public List<R> getResources(CommonQuery query) throws Exception {
         initJOOQEntity();
-        List<R> records = new ArrayList<>();
+        List<R> records;
         Connection conn = null;
         try {
             conn = DBConnHelper.DBConn.getConn();
             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 
-            SelectJoinStep<Record> table = create.select().from(tableLike);
+            SelectJoinStep<Record> table = buildSelect(create, query).from(tableLike);
 
-            if (query.getEqualFilter() != null
-                    && query.getEqualFilter().size() > 0) {
-                Map<String, String> equalFilter = query.getEqualFilter();
-                for (Entry<String, String> entry : equalFilter.entrySet()) {
-                    Field<?> field = tableLike.field(entry.getKey());
-                    if (field != null) {
-                        if (entry.getValue().startsWith("[") && entry.getValue().endsWith("]")) {
-                            String[] arrayValue = entry.getValue().substring(1, entry.getValue().length() - 1).split(",");
-                            Condition condition = null;
-                            for (String value : arrayValue) {
-                                if (condition == null) {
-                                    condition = field.strictEqual(BeanUtils.convertTo(
-                                            value, field.getType()));
-                                } else {
-                                    condition = condition.or(field.strictEqual(BeanUtils.convertTo(
-                                            value, field.getType())));
-                                }
-                            }
-                            table.where(condition);
-                        } else {
-                            table.where(field.strictEqual(BeanUtils.convertTo(
-                                    entry.getValue(), field.getType())));
-                        }
-                    }
-                }
-            }
+            table.where(buildConditions(query));
 
-            if (!StringUtils.isNullOrEmpty(query.getSortby())) {
-                String[] sortBy = query.getSortby().split(",");
-                String[] order = query.getOrder().split(",");
-
-                List<SortField<?>> fields = new ArrayList<>(sortBy.length);
-                SortOrder so;
-                for (int i = 0; i < sortBy.length; i++) {
-                    Field<?> field = tableLike.field(sortBy[i]);
-                    so = SortOrder.ASC;
-                    if (sortBy.length == order.length
-                            && !StringUtils.isNullOrEmpty(order[i])
-                            && order[i].toLowerCase().equals("desc")) {
-                        so = SortOrder.DESC;
-                    }
-                    if (field != null) {
-                        switch (so) {
-                            case ASC:
-                                fields.add(field.asc());
-                                break;
-                            case DESC:
-                                fields.add(field.desc());
-                                break;
-                            default:
-                        }
-                    }
-                }
-                table.orderBy(fields);
-            }
+            table.orderBy(buildOrder(query));
 
 			/* 分段查找数据库结果集 */
             int page = 1;
@@ -124,16 +201,10 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
             if (query.getPage() > 0) {
                 page = query.getPage();
             }
-            per_page = query.getPer_page() > 0 ? query.getPer_page() : 10;
+            per_page = query.getPageSize() > 0 ? query.getPageSize() : 10;
             table.limit((page - 1) * per_page, per_page);
 
-            Result<Record> result = table.fetch();
-
-            if (result != null && result.size() > 0) {
-                for (Record r : result) {
-                    records.add((R) r);
-                }
-            }
+            records = table.fetchInto(tableLike.getRecordType());
         } catch (Exception e) {
             logger.error("error", e);
             throw new Exception(e);
@@ -157,14 +228,12 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
             SelectQuery<?> selectQuery = create.selectQuery();
             selectQuery.addFrom(tableLike);
 
-            if (query.getEqualFilter() != null && query.getEqualFilter().size() > 0) {
-                Map<String, String> equalFilter = query.getEqualFilter();
-                for (Entry<String, String> entry : equalFilter.entrySet()) {
-                    Field field = tableLike.field(entry.getKey());
-                    if (field != null) {
-                        selectQuery.addConditions(field.strictEqual(BeanUtils.convertTo(
-                                entry.getValue(), field.getType())));
-                    }
+            buildSelect(create, query);
+
+            if (query.getGroups() != null && query.getGroups().size() > 0) {
+                Field[] fields = (Field[]) query.getGroups().stream().filter(group -> tableLike.field(group) != null).map(group -> tableLike.field(group)).toArray();
+                if (fields != null && fields.length > 0) {
+                    selectQuery.addGroupBy(fields);
                 }
             }
             totalCount = create.fetchCount(selectQuery);
@@ -217,7 +286,6 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
                 DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
                 insertret = create.batchUpdate(records).execute()[0];
             } catch (Exception e) {
-                e.printStackTrace();
                 logger.error("error", e);
                 throw new Exception(e);
             } finally {
@@ -261,55 +329,17 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
             conn = DBConnHelper.DBConn.getConn();
             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 
-            SelectJoinStep<Record> table = create.select().from(tableLike);
+            buildSelect(create, query);
 
-            if (query.getEqualFilter() != null
-                    && query.getEqualFilter().size() > 0) {
-                Map<String, String> equalFilter = query.getEqualFilter();
-                for (Entry<String, String> entry : equalFilter.entrySet()) {
-                    Field field = tableLike.field(entry.getKey());
-                    if (field != null) {
-                        table.where(field.strictEqual(BeanUtils.convertTo(
-                                entry.getValue(), field.getType())));
-                    }
-                }
-            }
+            SelectJoinStep<Record> table = buildSelect(create, query).from(tableLike);
 
-            if (!StringUtils.isNullOrEmpty(query.getSortby())) {
-                String[] sortBy = query.getSortby().split(",");
-                String[] order = query.getOrder().split(",");
+            table.where(buildConditions(query));
 
-                List<SortField<?>> fields = new ArrayList<>(sortBy.length);
-                SortOrder so = SortOrder.ASC;
-                for (int i = 0; i < sortBy.length; i++) {
-                    Field<?> field = tableLike.field(sortBy[i]);
-                    if (sortBy.length == order.length
-                            && !StringUtils.isNullOrEmpty(order[i])
-                            && order[i].toLowerCase().equals("desc")) {
-                        so = SortOrder.DESC;
-                    }
-                    if (field != null) {
-                        switch (so) {
-                            case ASC:
-                                fields.add(field.asc());
-                                break;
-                            case DESC:
-                                fields.add(field.desc());
-                                break;
-                            default:
-                        }
-                    }
-                }
-                table.orderBy(fields);
-            }
+            buildOrder(query);
 
             table.limit(1);
 
-            Result<Record> result = table.fetch();
-
-            if (result != null && result.size() > 0) {
-                record = (R) result.get(0);
-            }
+            record = table.fetchOneInto(tableLike.getRecordType());
         } catch (Exception e) {
             logger.error("error", e);
             throw new Exception(e);
@@ -345,6 +375,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
                 }
             }
         }
+
         return insertret;
     }
 

@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import com.moseeker.thrift.gen.dao.service.*;
 import com.moseeker.thrift.gen.dao.struct.HrOperationRecordDO;
+import com.moseeker.common.providerutils.QueryUtil;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -171,12 +172,12 @@ public class ProfileProcessBS {
 	    		//  对所有的
 	    		if(processStatus||progressStatus==13||progressStatus==99){
 	    			Response recruit=configDao.getRecruitProcesses(companyId);
-	    			
+
 	    			List<HrAwardConfigTemplate> recruitProcesses=null;
 	    			if(recruit.getStatus()==0&&StringUtils.isNotNullOrEmpty(recruit.getData())&&!"[]".equals(recruit.getData())){
 	    				recruitProcesses=this.convertRecruitProcessesList(recruit.getData());
 	    			}
-	    			
+
 	    			RecruitmentResult result=BusinessUtil.excuteRecruitRewardOperation(recruitOrder, progressStatus, recruitProcesses);
 	    			if(result.getStatus() == 0){
 	    				List<Integer> weChatIds=new ArrayList<Integer>();
@@ -288,7 +289,7 @@ public class ProfileProcessBS {
 		if (msInfo != null) {
 			String color = "#173177";
 			String companyName = "";
-			CommonQuery query = new CommonQuery();
+			QueryUtil query = new QueryUtil();
 			Map<String, String> paramMap = new HashMap<String, String>();
 			query.setEqualFilter(paramMap);
 			paramMap.put("id", String.valueOf(companyId));
@@ -464,7 +465,7 @@ public class ProfileProcessBS {
 			List<RewardsToBeAddBean> rewardsToBeAdd, int progressStatus)
 			throws Exception {
 		CommonQuery query = new CommonQuery();
-		query.setPer_page(Integer.MAX_VALUE);
+		query.setPageSize(Integer.MAX_VALUE);
 		Response result = configDao.getConfigSysPointsConfTpls(query);
 		if (result.getStatus() == 0
 				&& StringUtils.isNotNullOrEmpty(result.getData())
@@ -566,7 +567,7 @@ public class ProfileProcessBS {
 			List<ProcessValidationStruct> applications,
 			List<RewardsToBeAddBean> rewardsToBeAdd,
 			List<HrOperationRecordDO> turnToCVCheckeds) throws Exception {
-		CommonQuery query = new CommonQuery();
+		QueryUtil query = new QueryUtil();
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("recruit_order", 13 + "");
 		query.setEqualFilter(map);
@@ -637,7 +638,7 @@ public class ProfileProcessBS {
 	// 获取账户信息
 	private UserHrAccount getAccount(int accountId) throws Exception {
 		UserHrAccount account = null;
-		CommonQuery query = new CommonQuery();
+		QueryUtil query = new QueryUtil();
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("id", accountId + "");
 		query.setEqualFilter(map);

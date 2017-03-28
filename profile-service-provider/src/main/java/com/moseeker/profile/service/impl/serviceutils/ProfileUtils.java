@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.moseeker.common.providerutils.QueryUtil;
 import org.jooq.types.UByte;
 import org.jooq.types.UInteger;
 import org.slf4j.Logger;
@@ -483,8 +484,8 @@ public class ProfileUtils {
 		try {
 			List<ProfileIntentionRecord> records = intentionDao.getResources(query);
 			if (records != null && records.size() > 0) {
-				CommonQuery dictQuery = new CommonQuery();
-				dictQuery.setPer_page(Integer.MAX_VALUE);
+				QueryUtil dictQuery = new QueryUtil();
+				dictQuery.setPageSize(Integer.MAX_VALUE);
 				List<DictCityRecord> dictCities = dictCityDao.getResources(dictQuery);
 				List<DictIndustryRecord> dictIndustries = dictIndustryDao.getResources(dictQuery);
 				List<DictPositionRecord> dictPositions = dictPositionDao.getResources(dictQuery);

@@ -110,7 +110,7 @@ public class UseraccountsService {
 	 */
 	public Response postuserlogin(Userloginreq userloginreq) throws TException {
 		// TODO to add login log
-		CommonQuery query = new CommonQuery();
+		QueryUtil query = new QueryUtil();
 		int parentid = 0;
 		Map<String, String> filters = new HashMap<>();
 
@@ -138,7 +138,7 @@ public class UseraccountsService {
 				parentid = user.getParentid().intValue();
 				if (parentid > 0) {
 					// 当前帐号已经被合并到 parentid.
-					query = new CommonQuery();
+					query = new QueryUtil();
 					filters = new HashMap<>();
 					filters.put("id", String.valueOf(parentid));
 					query.setEqualFilter(filters);
@@ -370,7 +370,7 @@ public class UseraccountsService {
 		if(StringUtils.isNullOrEmpty(password) || StringUtils.isNullOrEmpty(old_password)) {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
 		}
-		CommonQuery query = new CommonQuery();
+		QueryUtil query = new QueryUtil();
 		Map<String, String> filters = new HashMap<>();
 		filters.put("id", String.valueOf(user_id));
 		filters.put("password", MD5Util.encryptSHA(old_password));
@@ -385,7 +385,7 @@ public class UseraccountsService {
 				int parentid = user.getParentid().intValue();
 				if (parentid > 0) {
 					// 当前帐号已经被合并到 parentid.
-					query = new CommonQuery();
+					query = new QueryUtil();
 					filters = new HashMap<>();
 					filters.put("id", String.valueOf(parentid));
 					query.setEqualFilter(filters);
@@ -418,7 +418,7 @@ public class UseraccountsService {
 	 */
 	public Response postusersendpasswordforgotcode(String mobile) throws TException {
 		// TODO 只有已经存在的用户才能发验证码。
-		CommonQuery query = new CommonQuery();
+		QueryUtil query = new QueryUtil();
 		Map<String, String> filters = new HashMap<>();
 
 		if (mobile.length() > 0) {
@@ -455,9 +455,9 @@ public class UseraccountsService {
 		if (code != null && !validateCode(mobile, code, 2)) {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
 		}
-		
 
-		CommonQuery query = new CommonQuery();
+
+		QueryUtil query = new QueryUtil();
 		Map<String, String> filters = new HashMap<>();
 		filters.put("username", mobile);
 		query.setEqualFilter(filters);
@@ -472,7 +472,7 @@ public class UseraccountsService {
 				String newPassword = MD5Util.encryptSHA(password);
 				if (parentid > 0) {
 					// 当前帐号已经被合并到 parentid.
-					query = new CommonQuery();
+					query = new QueryUtil();
 					filters = new HashMap<>();
 					filters.put("id", String.valueOf(parentid));
 					query.setEqualFilter(filters);
@@ -590,7 +590,7 @@ public class UseraccountsService {
 	 * @throws TException
 	 */
 	public Response getismobileregisted(String mobile) throws TException {
-		CommonQuery query = new CommonQuery();
+		QueryUtil query = new QueryUtil();
 		Map<String, String> filters = new HashMap<>();
 		if (mobile != null && mobile.length() > 0) {
 			filters.put("username", mobile);
@@ -618,7 +618,7 @@ public class UseraccountsService {
 	 */
 	public Response postsendchangemobilecode(String oldmobile) throws TException {
 		// TODO 只有已经存在的用户才能发验证码。
-		CommonQuery query = new CommonQuery();
+		QueryUtil query = new QueryUtil();
 		Map<String, String> filters = new HashMap<>();
 
 		if (oldmobile.length() > 0) {
@@ -661,7 +661,7 @@ public class UseraccountsService {
 	 *
 	 */
 	public Response postsendresetmobilecode(String newmobile) throws TException {
-		CommonQuery query = new CommonQuery();
+		QueryUtil query = new QueryUtil();
 		Map<String, String> filters = new HashMap<>();
 
 		if (newmobile.length() > 0) {
@@ -701,7 +701,7 @@ public class UseraccountsService {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
 		}
 
-		CommonQuery query = new CommonQuery();
+		QueryUtil query = new QueryUtil();
 		Map<String, String> filters = new HashMap<>();
 		filters.put("id", String.valueOf(user_id));
 		query.setEqualFilter(filters);
@@ -715,7 +715,7 @@ public class UseraccountsService {
 				int parentid = user.getParentid().intValue();
 				if (parentid > 0) {
 					// 当前帐号已经被合并到 parentid.
-					query = new CommonQuery();
+					query = new QueryUtil();
 					filters = new HashMap<>();
 					filters.put("id", String.valueOf(parentid));
 					query.setEqualFilter(filters);

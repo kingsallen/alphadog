@@ -45,7 +45,7 @@ public class IndusteryService {
 				});
 			}
 			QueryUtil qu = new QueryUtil();
-			qu.setPer_page(Integer.MAX_VALUE);
+			qu.setPageSize(Integer.MAX_VALUE);
 			List<DictIndustryRecord> industries = null;;
 			try {
 				industries = industryDao.getResources(qu);

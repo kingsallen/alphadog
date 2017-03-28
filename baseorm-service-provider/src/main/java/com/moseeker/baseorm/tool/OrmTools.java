@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.moseeker.common.providerutils.QueryUtil;
 import org.apache.thrift.TBase;
 import org.jooq.impl.TableImpl;
 import org.jooq.impl.UpdatableRecordImpl;
@@ -31,10 +32,10 @@ public class OrmTools {
 	public static <K extends UpdatableRecordImpl<K>, V extends TableImpl<K>> Response getAll(BaseDaoImpl<K,V> dao){
 		List<Map<String, Object>> result=new ArrayList<>();
 		try {
-			CommonQuery query=new CommonQuery();
+			QueryUtil query=new QueryUtil();
 			HashMap<String,String> map1=new HashMap<String,String>();
 			map1.put("status", "1");
-			query.setPer_page(Integer.MAX_VALUE);
+			query.setPageSize(Integer.MAX_VALUE);
 			query.setEqualFilter(map1);
 			List<Map<String, Object>> allData = new ArrayList<>();
 			List<K> list = dao.getResources(query);

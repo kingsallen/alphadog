@@ -11,13 +11,15 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.ValueFilter;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.PropertyFilter;
 import org.apache.thrift.TBase;
 import org.apache.thrift.TException;
 import org.apache.thrift.TSerializer;
 import org.apache.thrift.protocol.TSimpleJSONProtocol;
-import org.jooq.impl.UpdatableRecordImpl;
+import org.jooq.Record;
 import org.jooq.types.UByte;
 import org.jooq.types.UInteger;
 import org.jooq.types.ULong;
@@ -28,7 +30,6 @@ import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSONArray;
 
 /**
- * 
  * 利用反射的方式，对于get,set方法去除"get"和"set"剔除后相同,并且数据类型相同，
  * 进行值传递。比如被复制的方法存在getId返回int，存在复制对象存在setId(int id)，
  * 则调用被复制对象的的getId()拿到值作为参数，调用复制对象的setId(int id)。 利用这种方式进行类复制。
@@ -41,64 +42,63 @@ import com.alibaba.fastjson.JSONArray;
  * <p>
  * Email: wjf2255@gmail.com
  * </p>
- * 
+ *
  * @author wjf
- * @version
  */
 public class BeanUtils {
 
-	private static Logger logger = LoggerFactory.getLogger(BeanUtils.class);
+    private static Logger logger = LoggerFactory.getLogger(BeanUtils.class);
 
-	@SuppressWarnings("rawtypes")
-	public static <T extends TBase, R extends UpdatableRecordImpl> R structToDB(T t, Class<R> origClazz,
-			Map<String, String> equalRules) {
-		R orig = null;
-		try {
-			orig = origClazz.newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
-			logger.error("error", e);
-		}
-		structToDB(t, orig, equalRules);
-		return orig;
-	}
-	
-	@SuppressWarnings("rawtypes")
-	public static <T extends TBase, R extends UpdatableRecordImpl> R structToDB(T t, Class<R> origClazz) {
-		R orig = null;
-		try {
-			orig = origClazz.newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
-			logger.error("error", e);
-		}
-		structToDB(t, orig, null);
-		return orig;
-	}
+    @SuppressWarnings("rawtypes")
+    public static <T, R extends Record> R structToDB(T t, Class<R> origClazz,
+                                                     Map<String, String> equalRules) {
+        R orig = null;
+        try {
+            orig = origClazz.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            logger.error("error", e);
+        }
+        structToDB(t, orig, equalRules);
+        return orig;
+    }
 
-	@SuppressWarnings("rawtypes")
-	public static <T extends TBase, R extends UpdatableRecordImpl> List<R> structToDB(List<T> ts, Class<R> origClazz) {
-		List<R> records = new ArrayList<R>();
-		ts.forEach(t -> {
-			R r = structToDB(t, origClazz);
-			records.add(r);
-		});
-		return records;
-	}
+    @SuppressWarnings("rawtypes")
+    public static <T, R extends Record> R structToDB(T t, Class<R> origClazz) {
+        R orig = null;
+        try {
+            orig = origClazz.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            logger.error("error", e);
+        }
+        structToDB(t, orig, null);
+        return orig;
+    }
 
-	/**
-	 * struct 类和JOOQ类的属性和方法固定，可以预先加载成静态的属性和方法
-	 * 
-	 * @param dest
-	 * @param orig
-	 */
-	@SuppressWarnings("rawtypes")
-	public static <T extends TBase, R extends UpdatableRecordImpl> void structToDB(T dest, R orig, Map<String, String> equalRules) {
-		if (dest == null || orig == null) {
-			return;
-		}
-		Field[] descFields = dest.getClass().getFields();
-		Method[] destMethods = dest.getClass().getMethods();
+    @SuppressWarnings("rawtypes")
+    public static <T, R extends Record> List<R> structToDB(List<T> ts, Class<R> origClazz) {
+        List<R> records = new ArrayList<R>();
+        ts.forEach(t -> {
+            R r = structToDB(t, origClazz);
+            records.add(r);
+        });
+        return records;
+    }
 
-		Method[] origMethods = orig.getClass().getMethods();
+    /**
+     * struct 类和JOOQ类的属性和方法固定，可以预先加载成静态的属性和方法
+     *
+     * @param dest
+     * @param orig
+     */
+    @SuppressWarnings("rawtypes")
+    public static <T, R extends Record> void structToDB(T dest, R orig, Map<String, String> equalRules) {
+        if (dest == null || orig == null) {
+            return;
+        }
+        Field[] descFields = dest.getClass().getFields();
+        Method[] destMethods = dest.getClass().getMethods();
+
+        Method[] origMethods = orig.getClass().getMethods();
 
 		int i = 0, j = 0, k = 0;
 		if (descFields != null && descFields.length > 0 && destMethods != null && destMethods.length > 0) {
@@ -118,81 +118,81 @@ public class BeanUtils {
 								/*if (defaultValue(field, destMethods[j], dest)) {
 									continue;
 								}*/
-								Method isSetMethod = dest.getClass().getMethod("isSet" + upperFirst, new Class[] {});
-								if ((Boolean) isSetMethod.invoke(dest, new Object[] {})) {
-									String origMethodName = buiderRecordMethodName(field.getName(), MethodType.SET,
-											equalRules);
-									for (k = 0; k < origMethods.length; k++) {
-										if (origMethods[k].getName().trim().equals(origMethodName)) {
-											Object object = convertTo(destMethods[j].invoke(dest, new Object[] {}),
-													origMethods[k].getParameterTypes()[0]);
-											origMethods[k].invoke(orig, object);
-											break;
-										}
-									}
-								}
-								break;
-							}
-						} catch (NoSuchMethodException | SecurityException | IllegalAccessException
-								| IllegalArgumentException | InvocationTargetException e) {
-							logger.error("error", e);
-						} finally {
-							// do nothing
-						}
-					}
-				}
-			}
-		}
-	}
+                                Method isSetMethod = dest.getClass().getMethod("isSet" + upperFirst, new Class[]{});
+                                if ((Boolean) isSetMethod.invoke(dest, new Object[]{})) {
+                                    String origMethodName = buiderRecordMethodName(field.getName(), MethodType.SET,
+                                            equalRules);
+                                    for (k = 0; k < origMethods.length; k++) {
+                                        if (origMethods[k].getName().trim().equals(origMethodName)) {
+                                            Object object = convertTo(destMethods[j].invoke(dest, new Object[]{}),
+                                                    origMethods[k].getParameterTypes()[0]);
+                                            origMethods[k].invoke(orig, object);
+                                            break;
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+                        } catch (NoSuchMethodException | SecurityException | IllegalAccessException
+                                | IllegalArgumentException | InvocationTargetException e) {
+                            logger.error("error", e);
+                        } finally {
+                            // do nothing
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-	@SuppressWarnings("rawtypes")
-	public static <T extends TBase, R extends UpdatableRecordImpl> TBase DBToStruct(Class<T> destClazz, R orig,
-			Map<String, String> equalRules) {
-		TBase base = null;
-		try {
-			base = destClazz.newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
-			logger.error("error", e);
-		}
-		DBToStruct(base, orig, equalRules);
-		return base;
-	}
+    @SuppressWarnings("rawtypes")
+    public static <T, R extends Record> T DBToStruct(Class<T> destClazz, R orig,
+                                                     Map<String, String> equalRules) {
+        T base = null;
+        try {
+            base = destClazz.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            logger.error("error", e);
+        }
+        DBToStruct(base, orig, equalRules);
+        return base;
+    }
 
-	@SuppressWarnings("rawtypes")
-	public static <T extends TBase, R extends UpdatableRecordImpl> T DBToStruct(Class<T> destClazz, R orig) {
-		T base = null;
-		try {
-			base = destClazz.newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
-			logger.error("error", e);
-		}
-		DBToStruct(base, orig, null);
-		return base;
-	}
-	
-	@SuppressWarnings("rawtypes")
-	public static <T extends TBase, R extends UpdatableRecordImpl> List<T> DBToStruct(Class<T> destClazz, List<R> origs) {
-		List<T> list = new ArrayList<>();
-		
-		if(origs != null && origs.size() > 0) {
-			list = origs.stream().filter(orig -> orig != null).map(orig -> {
-				T t = (T)DBToStruct(destClazz, orig);
-				return t;
-			}).collect(Collectors.toList());
-		}
-		
-		return list;
-	}
+    @SuppressWarnings("rawtypes")
+    public static <T, R extends Record> T DBToStruct(Class<T> destClazz, R orig) {
+        T base = null;
+        try {
+            base = destClazz.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            logger.error("error", e);
+        }
+        DBToStruct(base, orig, null);
+        return base;
+    }
 
-	@SuppressWarnings("rawtypes")
-	public static <T extends TBase, R extends UpdatableRecordImpl> void DBToStruct(T dest,R orig, Map<String, String> equalRules) {
-		if (dest == null || orig == null) {
-			return;
-		}
-		Field[] descFields = dest.getClass().getFields();
-		Method[] destMethods = dest.getClass().getMethods();
+    @SuppressWarnings("rawtypes")
+    public static <T, R extends Record> List<T> DBToStruct(Class<T> destClazz, List<R> origs) {
+        List<T> list = new ArrayList<>();
 
-		Method[] origMethods = orig.getClass().getMethods();
+        if (origs != null && origs.size() > 0) {
+            list = origs.stream().filter(orig -> orig != null).map(orig -> {
+                T t = DBToStruct(destClazz, orig);
+                return t;
+            }).collect(Collectors.toList());
+        }
+
+        return list;
+    }
+
+    @SuppressWarnings("rawtypes")
+    public static <T, R extends Record> void DBToStruct(T dest, R orig, Map<String, String> equalRules) {
+        if (dest == null || orig == null) {
+            return;
+        }
+        Field[] descFields = dest.getClass().getFields();
+        Method[] destMethods = dest.getClass().getMethods();
+
+        Method[] origMethods = orig.getClass().getMethods();
 
 		int i = 0, j = 0, k = 0;
 		if (descFields != null && descFields.length > 0 && destMethods != null && destMethods.length > 0) {
@@ -297,67 +297,66 @@ public class BeanUtils {
 	private enum MethodType {
 		GET, SET, IS;
 
-		@Override
-		public String toString() {
-			return this.name().toLowerCase();
-		}
-	}
+        @Override
+        public String toString() {
+            return this.name().toLowerCase();
+        }
+    }
 
-	private static String buiderRecordMethodName(String name, MethodType methodType, Map<String, String> equalRules) {
-		if (name != null) {
-			StringBuffer sb = new StringBuffer();
-			sb.append(methodType);
-			if (equalRules != null && equalRules.containsKey(name)) {
-				sb.append(equalRules.get(name).substring(0, 1).toUpperCase());
-				sb.append(equalRules.get(name).substring(1));
-			} else {
-				String[] splitArray = name.split("_");
-				if (splitArray.length > 1) {
-					for (int i = 0; i < splitArray.length; i++) {
-						if(StringUtils.isNullOrEmpty(splitArray[i])) {
-							sb.append("_");
-						} else {
-							sb.append(splitArray[i].substring(0, 1).toUpperCase());
-							sb.append(splitArray[i].substring(1));
-						}
-					}
-				} else {
-					sb.append(name.substring(0, 1).toUpperCase());
-					sb.append(name.substring(1));
-				}
-			}
-			return sb.toString();
-		} else {
-			return null;
-		}
-	}
+    private static String buiderRecordMethodName(String name, MethodType methodType, Map<String, String> equalRules) {
+        if (name != null) {
+            StringBuffer sb = new StringBuffer();
+            sb.append(methodType);
+            if (equalRules != null && equalRules.containsKey(name)) {
+                sb.append(equalRules.get(name).substring(0, 1).toUpperCase());
+                sb.append(equalRules.get(name).substring(1));
+            } else {
+                String[] splitArray = name.split("_");
+                if (splitArray.length > 1) {
+                    for (int i = 0; i < splitArray.length; i++) {
+                        if (StringUtils.isNullOrEmpty(splitArray[i])) {
+                            sb.append("_");
+                        } else {
+                            sb.append(splitArray[i].substring(0, 1).toUpperCase());
+                            sb.append(splitArray[i].substring(1));
+                        }
+                    }
+                } else {
+                    sb.append(name.substring(0, 1).toUpperCase());
+                    sb.append(name.substring(1));
+                }
+            }
+            return sb.toString();
+        } else {
+            return null;
+        }
+    }
 
-	/**
-	 * 
-	 * @param value
-	 * @param clazzType
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public static <T> T StringConvertTo(String value, Class<T> clazzType) {
-		if (clazzType.isAssignableFrom(String.class)) {
-			return (T) value.toString();
-		} else if (clazzType.isAssignableFrom(Long.class)) {
-			return (T) new Long(value.toString());
-		} else if (clazzType.isAssignableFrom(Byte.class)) {
-			return (T) new Byte(value.toString());
-		} else if (clazzType.isAssignableFrom(Integer.class)) {
-			return (T) new Integer(value.toString());
-		} else if (clazzType.isAssignableFrom(Float.class)) {
-			return (T) new Float(value.toString());
-		} else if (clazzType.isAssignableFrom(Float.class)) {
-			return (T) new Double(value.toString());
-		} else if (clazzType.isAssignableFrom(Boolean.class)) {
-			return (T) new Boolean(value.toString());
-		} else {
-			return (T) value.toString();
-		}
-	}
+    /**
+     * @param value
+     * @param clazzType
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T StringConvertTo(String value, Class<T> clazzType) {
+        if (clazzType.isAssignableFrom(String.class)) {
+            return (T) value.toString();
+        } else if (clazzType.isAssignableFrom(Long.class)) {
+            return (T) new Long(value.toString());
+        } else if (clazzType.isAssignableFrom(Byte.class)) {
+            return (T) new Byte(value.toString());
+        } else if (clazzType.isAssignableFrom(Integer.class)) {
+            return (T) new Integer(value.toString());
+        } else if (clazzType.isAssignableFrom(Float.class)) {
+            return (T) new Float(value.toString());
+        } else if (clazzType.isAssignableFrom(Float.class)) {
+            return (T) new Double(value.toString());
+        } else if (clazzType.isAssignableFrom(Boolean.class)) {
+            return (T) new Boolean(value.toString());
+        } else {
+            return (T) value.toString();
+        }
+    }
 
 	/**
 	 * 
@@ -412,19 +411,19 @@ public class BeanUtils {
 		}
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private static List<Object> converToList(Object value) {
-		List<Object> result = new ArrayList<>();
-		if(value instanceof JSONArray) {
-			Collections.addAll(result, ((JSONArray)value).toArray());
-		} else if(value instanceof ArrayList) {
-			return (List)value;
-		} else {
-			Object[] params = (Object[])value;
-			Collections.addAll(result, params);
-		}
-		return result;
-	}
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static List<Object> converToList(Object value) {
+        List<Object> result = new ArrayList<>();
+        if (value instanceof JSONArray) {
+            Collections.addAll(result, ((JSONArray) value).toArray());
+        } else if (value instanceof ArrayList) {
+            return (List) value;
+        } else {
+            Object[] params = (Object[]) value;
+            Collections.addAll(result, params);
+        }
+        return result;
+    }
 
 	public static BigInteger convertToBigInteger(Object value) {
 		if(value instanceof String[]) {
@@ -1174,48 +1173,60 @@ public class BeanUtils {
 		}
 	}
 
-	public static String converToString(Object value) {
-		if(value instanceof String[]) {
-			value = ((String[])value)[0];
-		}
-		if (value instanceof String) {
-			return (String) value;
-		} else if (value instanceof java.sql.Timestamp) {
-			return DateUtils.dateToShortTime(((java.sql.Timestamp) value));
-		} else if (value instanceof Date) {
-			return DateUtils.dateToNormalDate(((Date) value));
-		} else if (value != null) {
-			return value.toString();
-		} else {
-			return null;
-		}
-	}
-	
-	/**
+    public static String converToString(Object value) {
+        if (value instanceof String[]) {
+            value = ((String[]) value)[0];
+        }
+        if (value instanceof String) {
+            return (String) value;
+        } else if (value instanceof java.sql.Timestamp) {
+            return DateUtils.dateToShortTime(((java.sql.Timestamp) value));
+        } else if (value instanceof Date) {
+            return DateUtils.dateToNormalDate(((Date) value));
+        } else if (value != null) {
+            return value.toString();
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * 获取外部内的类名
      * <p>
      *
      * @return 类名
      */
     public static String findOutClassName(Class<?> clazz) {
-    	String iface = clazz.getName();
+        String iface = clazz.getName();
         if (iface.contains("$")) {
             return iface.substring(0, iface.indexOf("$"));
         }
         return iface;
     }
 
-	/**
-	 * Convert the generic TBase<?, ?> entity to JSON object.
-	 *
-	 * @param tobj
-	 * @author Allex Wang
-	 * @return
-	 */
-	public static String convertStructToJSON(final TBase<?, ?> tobj) throws TException{
-		TSerializer serializer = new TSerializer(new TSimpleJSONProtocol.Factory());
-		return serializer.toString(tobj, "utf8");
-	}
+    public static final ValueFilter jooqMapfilter = (object, name, value) -> {
+        if (value instanceof UInteger) {
+            return ((UInteger) value).intValue();
+        } else if (value instanceof UByte) {
+            return ((UByte) value).byteValue();
+        } else if (value instanceof ULong) {
+            return ((ULong) value).longValue();
+        } else if (value instanceof UShort) {
+            return ((UShort) value).shortValue();
+        }
+        return value;
+    };
+
+    public static String convertStructToJSON(final TBase<?, ?> tobj) throws TException {
+        TSerializer serializer = new TSerializer(new TSimpleJSONProtocol.Factory());
+        return serializer.toString(tobj, "utf8");
+    }
+
+
+
+    public static String jooqMapToJSON(Map<String, Object> objectMap) {
+        return JSON.toJSONString(objectMap, jooqMapfilter);
+    }
 
 	static PropertyFilter profilter = new PropertyFilter(){
 

@@ -1,6 +1,8 @@
 package com.moseeker.dict.service.impl;
 
 import java.util.HashMap;
+
+import com.moseeker.common.providerutils.QueryUtil;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -42,8 +44,8 @@ public class DictOccupationService {
 				Integer level=obj.getInteger("level") ;
 				Integer id=obj.getInteger("code");
 				Integer parentId=obj.getInteger("parent_id");
-				CommonQuery query=new CommonQuery();
-				query.setPer_page(Integer.MAX_VALUE);
+				QueryUtil query=new QueryUtil();
+				query.setPageSize(Integer.MAX_VALUE);
 				HashMap<String,String> map=new HashMap<String,String>();
 				map.put("status", "1");
 				if(id!=null){

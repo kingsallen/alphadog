@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.moseeker.thrift.gen.dao.service.JobDBDao;
+import com.moseeker.common.providerutils.QueryUtil;
 import org.apache.thrift.TBase;
 import org.apache.thrift.TException;
 import org.springframework.stereotype.Service;
@@ -36,12 +37,12 @@ public class JobOccupationService {
 	public Response getCustomField(String param){
 		JSONObject obj=JSONObject.parseObject(param);
 		int company_id=obj.getIntValue("company_id");
-		CommonQuery query=new CommonQuery();
+		QueryUtil query=new QueryUtil();
 		HashMap<String,String> map=new HashMap<String,String>();
 		map.put("company_id", company_id+"");
 		map.put("status", "1");
 		query.setEqualFilter(map);
-		query.setPer_page(Integer.MAX_VALUE);
+		query.setPageSize(Integer.MAX_VALUE);
 		try{
 			HRCompanyConfData hrconf=getHRCompanyConf(company_id);
 			Response result1=jobDBDao.getJobCustoms(query);
@@ -61,7 +62,7 @@ public class JobOccupationService {
 	}
 	  private  HRCompanyConfData getHRCompanyConf(int company_id){
 		  HRCompanyConfData data=null;
-		  CommonQuery query=new CommonQuery();
+		  QueryUtil query=new QueryUtil();
 		  Map<String,String> map=new HashMap<String,String>();
 		  map.put("company_id", String.valueOf(company_id));
 		  query.setEqualFilter(map);
