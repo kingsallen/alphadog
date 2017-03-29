@@ -30,14 +30,14 @@ public class QueryUtilTest {
     public void testAddEqualFilterForKeyValue() throws Exception {
         QueryUtil queryUtil = new QueryUtil();
         queryUtil.addEqualFilter("user_id", 1);
-        assertEquals("1", queryUtil.getEqualFilter().get("user_id"));
+        assertEquals("1", queryUtil.getConditions().getValueCondition().getValue());
     }
 
     @Test
     public void testAddGroup() throws Exception {
         QueryUtil queryUtil = new QueryUtil();
         queryUtil.addGroup("user_id");
-        assertEquals(1, queryUtil.getGrouops().size());
+        assertEquals(1, queryUtil.getGroups().size());
     }
 
     @Test
