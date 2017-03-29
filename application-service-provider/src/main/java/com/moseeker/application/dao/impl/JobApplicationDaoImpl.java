@@ -144,7 +144,12 @@ public class JobApplicationDaoImpl extends BaseDaoImpl<JobApplicationRecord, Job
                 boolean existUserEmployee = false;
                 UserUserRecord userUserRecord = create.selectFrom(UserUser.USER_USER).where(UserUser.USER_USER.ID.equal(jobApplicationRecord.getRecommenderUserId())).fetchAny();
                 if(userUserRecord != null) {
-                    UserEmployeeRecord userEmployeeRecord = create.selectFrom(UserEmployee.USER_EMPLOYEE).where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.equal(userUserRecord.getId().intValue())).fetchAny();
+                    UserEmployeeRecord userEmployeeRecord = create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                            .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.equal(userUserRecord.getId().intValue())
+                                    .and(UserEmployee.USER_EMPLOYEE.DISABLE.equal((byte)0))
+                                    .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.equal((byte)0))
+                                    .and(UserEmployee.USER_EMPLOYEE.STATUS.equal(0)))
+                            .fetchAny();
                     if(userEmployeeRecord != null) {
                         existUserEmployee = true;
                     }
