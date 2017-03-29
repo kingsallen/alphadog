@@ -1,6 +1,5 @@
 package com.moseeker.servicemanager.web.controller.position;
 
-import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.web.controller.util.Params;
@@ -12,12 +11,12 @@ import com.moseeker.thrift.gen.position.struct.JobPostrionObj;
 
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletRequest;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class PositionParamUtils extends ParamUtils {
 
@@ -55,7 +54,6 @@ public class PositionParamUtils extends ParamUtils {
     public static BatchHandlerJobPostion parseBatchHandlerJobPostionParam(HttpServletRequest request) throws Exception {
         BatchHandlerJobPostion batchHandlerDate = new BatchHandlerJobPostion();
         HashMap<String, Object> data = parseRequestParam(request);
-        batchHandlerDate.setAppid((Integer) data.get("appid"));
         batchHandlerDate.setFields_nohash((String) data.get("fields_nohash"));
         batchHandlerDate.setFields_nooverwrite((String) data.get("fields_nooverwrite"));
         if (StringUtils.isEmptyObject(data.get("nodelete"))) {
