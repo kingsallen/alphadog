@@ -62,7 +62,7 @@ public class ConstantlyMailConsumer {
 			RedisClient redisClient = RedisClientFactory.getCacheClient();
 			List<String> el =  redisClient.brpop(Constant.APPID_ALPHADOG,
 					Constant.MQ_MESSAGE_EMAIL_BIZ);
-			if (el != null){
+			if (el != null && el.size() >= 1){
 				return el.get(1);
 			}
 			return null;
@@ -119,7 +119,6 @@ public class ConstantlyMailConsumer {
 						}
 					}
 					logger.info("redisMsg:"+redisMsg);
-					System.out.println("redisMsg:"+redisMsg);
 					MailBuilder mailBuilder = new MailBuilder();
 					EmailSessionConfig sessionConfig = new EmailSessionConfig(true, "smtp");
 					Mail mail = mailBuilder.buildSessionConfig(sessionConfig).build(message.getEmailContent());
