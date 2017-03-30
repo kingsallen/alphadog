@@ -35,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrChatUnreadCount extends TableImpl<HrChatUnreadCountRecord> {
 
-    private static final long serialVersionUID = 549956124;
+    private static final long serialVersionUID = -548270453;
 
     /**
      * The reference instance of <code>hrdb.hr_chat_unread_count</code>
@@ -54,6 +54,16 @@ public class HrChatUnreadCount extends TableImpl<HrChatUnreadCountRecord> {
      * The column <code>hrdb.hr_chat_unread_count.room_id</code>. 聊天室编号
      */
     public final TableField<HrChatUnreadCountRecord, UInteger> ROOM_ID = createField("room_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "聊天室编号");
+
+    /**
+     * The column <code>hrdb.hr_chat_unread_count.hr_id</code>. HR编号 userdb.user_hr_account
+     */
+    public final TableField<HrChatUnreadCountRecord, Integer> HR_ID = createField("hr_id", org.jooq.impl.SQLDataType.INTEGER, this, "HR编号 userdb.user_hr_account");
+
+    /**
+     * The column <code>hrdb.hr_chat_unread_count.user_id</code>. 用户编号 userdb.user_user.id
+     */
+    public final TableField<HrChatUnreadCountRecord, UInteger> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED, this, "用户编号 userdb.user_user.id");
 
     /**
      * The column <code>hrdb.hr_chat_unread_count.hr_unread_count</code>. hr未读消息数量

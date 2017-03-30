@@ -2,6 +2,7 @@ package com.moseeker.function.service.chaos;
 
 import java.util.List;
 
+import com.moseeker.thrift.gen.position.struct.Position;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +21,6 @@ import com.moseeker.thrift.gen.dao.service.CompanyDao;
 import com.moseeker.thrift.gen.dao.service.PositionDao;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
-import com.moseeker.thrift.gen.position.struct.Position;
 
 /**
  * 监听刷新完成队列

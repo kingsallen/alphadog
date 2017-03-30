@@ -164,12 +164,15 @@ public final class Constant {
 	public static final int DICT_CONSTANT_COMPANY_PROPERTY = 1103; 				//公司性质常量表parent_code值
 	
 	public static final int EVENT_TYPE_EMAIL_VERIFIED = 1;								//邮件认证邮件模版
+	public static final int EVENT_TYPE_EMPLOYEE_AUTH = 2; 									//员工认证邮件模板
 	
 	public static final String MQ_MESSAGE_EMAIL_BIZ = "MQ_MESSAGE_EMAIL_BIZ";	//业务邮件消息队列的key_identifier
 	public static final String EMAIL_VERIFIED_SUBJECT = "邮箱认证";				//业务邮件消息队列的key_identifier
 	
 	public static final String MQ_MESSAGE_EMAIL_WARNING = "MQ_MESSAGE_EMAIL_WARNING";	//报警邮件消息队列的key_identifier
 	public static final String MQ_MESSAGE_EMAIL_MANDRILL = "MQ_MESSAGE_EMAIL_MANDRILL";	//mandrill 邮件消息队列的key_identifier	
+	
+	public static final String EMPLOYEE_AUTH_CODE = "EMPLOYEE_AUTH_CODE"; // 员工认知redisKey
 
 	public static final byte LOG_SMS_SENDRECORD_SYS_ALPHADOG = 5;
 	

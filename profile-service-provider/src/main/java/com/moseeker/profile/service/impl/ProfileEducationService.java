@@ -191,7 +191,7 @@ public class ProfileEducationService extends JOOQBaseServiceImpl<Education, Prof
 			//添加信息校验
 			ValidationMessage<Education> vm = ProfileValidation.verifyEducation(education);
 			if(!vm.isPass()) {
-				return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}'}", vm.getResult()));
+				return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", vm.getResult()));
 			}
 			if (education.getCollege_code() > 0) {
 				DictCollegeRecord college = collegeDao.getCollegeByID(education.getCollege_code());
@@ -224,6 +224,7 @@ public class ProfileEducationService extends JOOQBaseServiceImpl<Education, Prof
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
+			e.printStackTrace();
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		} finally {
 			// do nothing

@@ -61,3 +61,11 @@ struct ApplicationAts{
 	2:optional i32 account_id,
 	3:optional i32 application_id
 }
+
+/**
+* 重新封装更新职位申请
+**/
+struct ApplicationResponse{
+     1:i32 company_id,
+     2:i32 account_id
+}

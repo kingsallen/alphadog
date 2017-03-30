@@ -37,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxHrChatList extends TableImpl<HrWxHrChatListRecord> {
 
-    private static final long serialVersionUID = -1460253206;
+    private static final long serialVersionUID = 1156311967;
 
     /**
      * The reference instance of <code>hrdb.hr_wx_hr_chat_list</code>
@@ -86,6 +86,11 @@ public class HrWxHrChatList extends TableImpl<HrWxHrChatListRecord> {
      * The column <code>hrdb.hr_wx_hr_chat_list.hr_chat_time</code>. HR最近一次聊天时间
      */
     public final TableField<HrWxHrChatListRecord, Timestamp> HR_CHAT_TIME = createField("hr_chat_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "HR最近一次聊天时间");
+
+    /**
+     * The column <code>hrdb.hr_wx_hr_chat_list.update_time</code>. 更新时间
+     */
+    public final TableField<HrWxHrChatListRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
 
     /**
      * Create a <code>hrdb.hr_wx_hr_chat_list</code> table reference

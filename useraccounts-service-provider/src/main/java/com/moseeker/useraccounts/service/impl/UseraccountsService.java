@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.moseeker.thrift.gen.dao.struct.UserUserDO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,8 +75,8 @@ public class UseraccountsService {
 	
 	MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
 	
-	com.moseeker.thrift.gen.dao.service.UserDao.Iface userDao = ServiceManager.SERVICEMANAGER
-			.getService(com.moseeker.thrift.gen.dao.service.UserDao.Iface.class);
+	com.moseeker.thrift.gen.dao.service.UserDBDao.Iface userDao = ServiceManager.SERVICEMANAGER
+			.getService(com.moseeker.thrift.gen.dao.service.UserDBDao.Iface.class);
 
 	@Autowired
 	protected BaseDao<UserWxUserRecord> wxuserdao;
@@ -591,7 +592,7 @@ public class UseraccountsService {
 	public Response getismobileregisted(String mobile) throws TException {
 		CommonQuery query = new CommonQuery();
 		Map<String, String> filters = new HashMap<>();
-		if (mobile.length() > 0) {
+		if (mobile != null && mobile.length() > 0) {
 			filters.put("username", mobile);
 			query.setEqualFilter(filters);
 			try {
@@ -1068,8 +1069,8 @@ public class UseraccountsService {
 		return RespnoseUtil.SUCCESS.toResponse();
 	}
 	
-	public User ifExistUser(String mobile) {
-		User user = new User();
+	public UserUserDO ifExistUser(String mobile) {
+		UserUserDO user = new UserUserDO();
 		QueryUtil qu = new QueryUtil();
 		qu.addEqualFilter("mobile", mobile);
 		qu.addEqualFilter("source", String.valueOf(UserSource.RETRIEVE_PROFILE.getValue()));
@@ -1085,7 +1086,7 @@ public class UseraccountsService {
 		return user;
 	}
 
-	public int createRetrieveProfileUser(User user) {
+	public int createRetrieveProfileUser(UserUserDO user) {
 		if(user.getMobile() == 0) {
 			return 0;
 		}
@@ -1106,7 +1107,7 @@ public class UseraccountsService {
 		QueryUtil qu = new QueryUtil();
 		qu.addEqualFilter("username", mobile);
 		try {
-			User user = userDao.getUser(qu);
+			UserUserDO user = userDao.getUser(qu);
 			if(user == null || user.getId() == 0) {
 				QueryUtil autoCreate = new QueryUtil();
 				autoCreate.addEqualFilter("mobile", mobile);

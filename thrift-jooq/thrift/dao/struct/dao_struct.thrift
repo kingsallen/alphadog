@@ -1,7 +1,5 @@
-# file: profile.thrift
-
 namespace java com.moseeker.thrift.gen.dao.struct
-
+namespace py thrift_gen.gen.dao.struct.dao
 /**
  * TODO:list what notation this dateTime represents. eg ISO-8601
  * or if its in the format like YYYY-mm-DD you mentioned.
@@ -82,7 +80,8 @@ struct HRCompanyConfData{
     3:i32 hb_throttle,
     4:string app_reply,
     5:string job_custom_title,
-    6:string job_occupation
+    6:string job_occupation,
+    7:string employee_binding
 }
 
 struct Talentpool {

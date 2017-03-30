@@ -44,7 +44,7 @@ public class ResponseUtils {
     /**
      * 处理失败响应的数据格式
      * @param constantErrorCodeMessage json格式的String字符串"{}", 否则会抛异常
-     *                                 eg: syntax error, pos 1, json : JobApplication failed
+     *                                 eg: syntax error, dao 1, json : JobApplication failed
      * @return
      * @throws ParamNullException
      */

@@ -86,7 +86,7 @@ public class NodeInvoker<T> implements Invoker {
             } catch (ConnectException ce) {
             	LOGGER.error(ce.getMessage(), ce);
             	pool.clear(node);
-                NodeManager.NODEMANAGER.removePath(node);
+                //NodeManager.NODEMANAGER.removePath(node);
             } catch (InvocationTargetException ite) {// XXX:InvocationTargetException异常发生在method.invoke()中
                 Throwable cause = ite.getCause();
                 
@@ -108,6 +108,7 @@ public class NodeInvoker<T> implements Invoker {
                                 //warning
                                 //Notification.sendThriftConnectionError(serverNode+"  socket已经失效, error:"+ite.getMessage());
                                 LOGGER.error(node+"  socket已经失效, error:"+ite.getMessage(), ite);
+                                LOGGER.error("parentName:{}  node:{}", parentName, node);
                                 LOGGER.debug("after clear getNumActive:"+pool.getNumActive());
                             } else {
                                 // XXX:其他异常的情况，需要将当前链接置为无效
@@ -120,7 +121,7 @@ public class NodeInvoker<T> implements Invoker {
                         } catch (Exception e) {
                             LOGGER.error(e.getMessage(), e);
                         }
-                        client = null; // 这里是为了防止后续return回pool中
+                        //client = null; // 这里是为了防止后续return回pool中
                     } else {
                         exception = cause;
                     }

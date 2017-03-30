@@ -143,28 +143,57 @@ struct SearchCondition {
    21: i32 type // 类型（0：候选人列表筛选条件，1：人才库列表筛选条件）
 }
 
-/*
- * 个人中心推荐记录
- */
-struct ApplicationRecordsForm {
-    1: optional i32 id,
-    2: optional string title,
-    3: optional string department,
-    4: optional i8 status,
-    5: optional Timestamp time
-}
-
 struct UserEmployeeStruct {
 	1: optional i32 id,
 	2: optional string employeeid,
 	3: optional i32 company_id,
 	4: optional i32 role_id,
 	5: optional i32 wxuser_id,
-	6: optional string ename,
-	7: optional i32 position_id,
-	8: optional i32 section_id,
-	9: optional string custom_field,	
-	10:optional i64 award
+	6: optional i8 sex,
+	7: optional string ename,
+	8: optional string efname,
+	9: optional string cname,
+	10: optional string cfname,
+	11: optional string password,
+	12: optional i8 is_admin,
+	13: optional i32 status,
+	14: optional string companybody,
+	15: optional string groupname,
+	16: optional string position,
+	17: optional Timestamp employdate,
+	18: optional string managername,
+	19: optional string city,
+	20: optional Timestamp birthday,
+	21: optional Timestamp retiredate,
+	22: optional string education,
+	23: optional string address,
+	24: optional string idcard,
+	25: optional string mobile,
+	26: optional i64 award,
+	27: optional Timestamp binding_time,
+	28: optional string email,
+	29: optional string activation_code,
+	30: optional i8 disable,
+	31: optional Timestamp create_time,
+	32: optional Timestamp update_time,
+	33: optional i8 auth_level,
+	34: optional Timestamp register_time,
+	35: optional string register_ip,
+	36: optional Timestamp last_login_time,
+	37: optional string last_login_ip,
+	38: optional i32 login_count,
+	39: optional i8 source,
+	40: optional string download_token,
+	41: optional i32 hr_wxuser_id,
+	42: optional string custom_field,
+	43: optional i8 is_rp_sent,
+	44: optional i32 sysuser_id,
+	45: optional i32 position_id,
+	46: optional i32 section_id,
+	47: optional i8 email_isvalid,
+	48: optional i8 auth_method,
+	49: optional string custom_field_values,
+	50: optional string departmentname
 }
 struct UserEmployeePointStruct {
    1: optional i32 id,
@@ -180,4 +209,100 @@ struct UserEmployeePointStruct {
 struct UserEmployeePointSum{
 	1: optional i64 award,
 	2: optional i64 employee_id
+}
+
+struct ThirdPartyUser{
+    1: optional i64 id,
+    2: optional i32 user_id,
+    3: optional i32 source_id,
+    4: optional string username,
+    5: optional string password,
+    6: optional Timestamp create_time,
+    7: optional Timestamp update_time
+}
+
+/*
+ * 个人中心推荐记录
+ */
+struct ApplicationRecordsForm {
+    1: optional i32 id,
+    2: optional string position_title,
+    3: optional string company_name,
+    4: optional string status_name,
+    5: optional Timestamp time
+}
+/*
+ * 个人中心职位收藏列表
+ */
+struct FavPositionForm {
+    1: optional i32 id,                 //职位编号
+    2: optional string title,           //职位名称
+    3: optional string department,      //招聘部门
+    4: optional Timestamp time,         //收藏的更新时间
+    5: optional string city,            //再招城市 
+    6: optional i32 salary_top,          //薪资上限
+    7: optional i32 salary_bottom,       //薪资下限
+    8: optional i8 status,              //薪资下限
+    9: optional Timestamp update_time    //职位的更新时间
+}
+
+struct RecommendationScoreVO {
+    1:i32 link_viewed_count,
+    2:i32 interested_count,
+    3:i32 applied_count
+}
+
+/*
+ * 个人中心推荐历史记录信息主体
+ */
+struct RecommendationRecordVO {
+    1: optional i8 recom_status,                //职位编号
+    2: optional string applier_name,            //申请人姓名
+    3: optional string applier_rel,             //转发者姓名
+    4: optional string position,                //职位名称
+    5: optional Timestamp click_time,           //点击事件
+    6: optional i16 status,                     //招聘进度状态
+    7: optional i8 is_interested,              //是否推荐 0没有推荐 1推荐 
+    8: optional i32 view_number,               //点击次数
+    9: optional string headimgurl              //头像
+}
+
+/*
+ * 查询推荐信息(只有用户是员工时才具备该功能)
+ */
+struct RecommendationVO {
+    1: optional bool hasRecommends,                     //职位编号
+    2: optional RecommendationScoreVO score,            //申请编号
+    3: optional list<RecommendationRecordVO> recommends //头像
+}
+/*
+ * 个人中心积分记录（只有用户是员工时才具备）
+ */
+struct AwardRecordForm {
+    1: optional i32 id,                //积分记录表编号
+    2: optional string reason,         //申请编号
+    3: optional string title,          //职位名称
+    4: optional Timestamp create_time  //创建时间
+}
+
+/*
+ * 操作记录
+ */
+struct ApplicationOperationRecordVO {
+    1: optional string date,                    // 操作日期
+    2: optional string event,                   // 描述
+    3: optional i32 hide,                       // 是否隐藏 
+    4: optional i32 step_status                 // 状态 2表示拒绝
+}
+
+/*
+ * 求职记录详情
+ */
+struct ApplicationDetailVO {
+    1: optional i32 pid,                                //积分记录表编号
+    2: optional string position_title,                  //申请编号
+    3: optional string company_name,                    //职位名称
+    4: optional i8 step,                                //进度
+    5: optional i8 step_status,                         //状态
+    6: optional list<ApplicationOperationRecordVO> status_timeline  //操作记录
 }

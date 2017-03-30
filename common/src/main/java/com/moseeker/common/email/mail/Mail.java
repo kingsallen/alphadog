@@ -172,7 +172,6 @@ public class Mail {
         
         /**
          * 创建邮件
-         * @param emailContent
          * @return
          * @throws MessagingException 
          * @throws Exception
@@ -258,9 +257,9 @@ public class Mail {
     		message.setFrom(new InternetAddress(sender));
     	} else {
     		if(message == null) {
-    			System.out.println("message is null!");
+    		    logger.info("message is null!");
     		}
-    		System.out.println("message is null!"+emailContent.getSenderName()+" "+emailContent.getSenderDisplay());
+    		logger.info("message is null! {} {}", emailContent.getSenderName(), emailContent.getSenderDisplay());
     		message.setFrom(new InternetAddress(emailContent.getSenderName(), emailContent.getSenderDisplay()));
     	}
     	if(StringUtils.isNotNullOrEmpty(emailContent.getSubject())) {

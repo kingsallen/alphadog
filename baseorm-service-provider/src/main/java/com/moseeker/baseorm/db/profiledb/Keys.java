@@ -4,13 +4,6 @@
 package com.moseeker.baseorm.db.profiledb;
 
 
-import javax.annotation.Generated;
-
-import org.jooq.Identity;
-import org.jooq.UniqueKey;
-import org.jooq.impl.AbstractKeys;
-import org.jooq.types.UInteger;
-
 import com.moseeker.baseorm.db.profiledb.tables.ProfileAttachment;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileAwards;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileBasic;
@@ -29,7 +22,6 @@ import com.moseeker.baseorm.db.profiledb.tables.ProfileProjectexp;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileSkill;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileWorkexp;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileWorks;
-import com.moseeker.baseorm.db.profiledb.tables.SchemaMigrations;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileAttachmentRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileAwardsRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileBasicRecord;
@@ -48,7 +40,13 @@ import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProjectexpRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileSkillRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileWorkexpRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileWorksRecord;
-import com.moseeker.baseorm.db.profiledb.tables.records.SchemaMigrationsRecord;
+
+import javax.annotation.Generated;
+
+import org.jooq.Identity;
+import org.jooq.UniqueKey;
+import org.jooq.impl.AbstractKeys;
+import org.jooq.types.UInteger;
 
 
 /**
@@ -109,7 +107,6 @@ public class Keys {
 	public static final UniqueKey<ProfileSkillRecord> KEY_PROFILE_SKILL_PRIMARY = UniqueKeys0.KEY_PROFILE_SKILL_PRIMARY;
 	public static final UniqueKey<ProfileWorkexpRecord> KEY_PROFILE_WORKEXP_PRIMARY = UniqueKeys0.KEY_PROFILE_WORKEXP_PRIMARY;
 	public static final UniqueKey<ProfileWorksRecord> KEY_PROFILE_WORKS_PRIMARY = UniqueKeys0.KEY_PROFILE_WORKS_PRIMARY;
-	public static final UniqueKey<SchemaMigrationsRecord> KEY_SCHEMA_MIGRATIONS_UNIQUE_SCHEMA_MIGRATIONS = UniqueKeys0.KEY_SCHEMA_MIGRATIONS_UNIQUE_SCHEMA_MIGRATIONS;
 
 	// -------------------------------------------------------------------------
 	// FOREIGN KEY definitions
@@ -159,6 +156,5 @@ public class Keys {
 		public static final UniqueKey<ProfileSkillRecord> KEY_PROFILE_SKILL_PRIMARY = createUniqueKey(ProfileSkill.PROFILE_SKILL, ProfileSkill.PROFILE_SKILL.ID);
 		public static final UniqueKey<ProfileWorkexpRecord> KEY_PROFILE_WORKEXP_PRIMARY = createUniqueKey(ProfileWorkexp.PROFILE_WORKEXP, ProfileWorkexp.PROFILE_WORKEXP.ID);
 		public static final UniqueKey<ProfileWorksRecord> KEY_PROFILE_WORKS_PRIMARY = createUniqueKey(ProfileWorks.PROFILE_WORKS, ProfileWorks.PROFILE_WORKS.ID);
-		public static final UniqueKey<SchemaMigrationsRecord> KEY_SCHEMA_MIGRATIONS_UNIQUE_SCHEMA_MIGRATIONS = createUniqueKey(SchemaMigrations.SCHEMA_MIGRATIONS, SchemaMigrations.SCHEMA_MIGRATIONS.VERSION);
 	}
 }

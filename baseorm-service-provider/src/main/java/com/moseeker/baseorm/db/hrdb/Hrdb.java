@@ -24,19 +24,24 @@ import com.moseeker.baseorm.db.hrdb.tables.HrHtml5Statistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrHtml5UniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor;
 import com.moseeker.baseorm.db.hrdb.tables.HrMedia;
+import com.moseeker.baseorm.db.hrdb.tables.HrMediaBackupChendi;
 import com.moseeker.baseorm.db.hrdb.tables.HrOperationRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrPointsConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrRecruitStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrRecruitUniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrReferralStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrResource;
+import com.moseeker.baseorm.db.hrdb.tables.HrResourceBackupChendi;
+import com.moseeker.baseorm.db.hrdb.tables.HrResourceOnline;
 import com.moseeker.baseorm.db.hrdb.tables.HrRuleStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrRuleUniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrSearchCondition;
 import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
 import com.moseeker.baseorm.db.hrdb.tables.HrTalentpool;
 import com.moseeker.baseorm.db.hrdb.tables.HrTeam;
+import com.moseeker.baseorm.db.hrdb.tables.HrTeamBackupChendi;
 import com.moseeker.baseorm.db.hrdb.tables.HrTeamMember;
+import com.moseeker.baseorm.db.hrdb.tables.HrTeamMemberBackupChendi;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.baseorm.db.hrdb.tables.HrTopic;
@@ -78,7 +83,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 1449449974;
+    private static final long serialVersionUID = 1326407603;
 
     /**
      * The reference instance of <code>hrdb</code>
@@ -196,6 +201,11 @@ public class Hrdb extends SchemaImpl {
     public final HrMedia HR_MEDIA = com.moseeker.baseorm.db.hrdb.tables.HrMedia.HR_MEDIA;
 
     /**
+     * The table <code>hrdb.hr_media_backup_chendi</code>.
+     */
+    public final HrMediaBackupChendi HR_MEDIA_BACKUP_CHENDI = com.moseeker.baseorm.db.hrdb.tables.HrMediaBackupChendi.HR_MEDIA_BACKUP_CHENDI;
+
+    /**
      * hr申请状态操作记录
      */
     public final HrOperationRecord HR_OPERATION_RECORD = com.moseeker.baseorm.db.hrdb.tables.HrOperationRecord.HR_OPERATION_RECORD;
@@ -224,6 +234,16 @@ public class Hrdb extends SchemaImpl {
      * 资源集合表
      */
     public final HrResource HR_RESOURCE = com.moseeker.baseorm.db.hrdb.tables.HrResource.HR_RESOURCE;
+
+    /**
+     * The table <code>hrdb.hr_resource_backup_chendi</code>.
+     */
+    public final HrResourceBackupChendi HR_RESOURCE_BACKUP_CHENDI = com.moseeker.baseorm.db.hrdb.tables.HrResourceBackupChendi.HR_RESOURCE_BACKUP_CHENDI;
+
+    /**
+     * The table <code>hrdb.hr_resource_online</code>.
+     */
+    public final HrResourceOnline HR_RESOURCE_ONLINE = com.moseeker.baseorm.db.hrdb.tables.HrResourceOnline.HR_RESOURCE_ONLINE;
 
     /**
      * 微信图文传播次数统计表
@@ -256,9 +276,19 @@ public class Hrdb extends SchemaImpl {
     public final HrTeam HR_TEAM = com.moseeker.baseorm.db.hrdb.tables.HrTeam.HR_TEAM;
 
     /**
+     * The table <code>hrdb.hr_team_backup_chendi</code>.
+     */
+    public final HrTeamBackupChendi HR_TEAM_BACKUP_CHENDI = com.moseeker.baseorm.db.hrdb.tables.HrTeamBackupChendi.HR_TEAM_BACKUP_CHENDI;
+
+    /**
      * 团队成员信息
      */
     public final HrTeamMember HR_TEAM_MEMBER = com.moseeker.baseorm.db.hrdb.tables.HrTeamMember.HR_TEAM_MEMBER;
+
+    /**
+     * The table <code>hrdb.hr_team_member_backup_chendi</code>.
+     */
+    public final HrTeamMemberBackupChendi HR_TEAM_MEMBER_BACKUP_CHENDI = com.moseeker.baseorm.db.hrdb.tables.HrTeamMemberBackupChendi.HR_TEAM_MEMBER_BACKUP_CHENDI;
 
     /**
      * 第三方渠道帐号
@@ -377,19 +407,24 @@ public class Hrdb extends SchemaImpl {
             HrHtml5UniqueStatistics.HR_HTML5_UNIQUE_STATISTICS,
             HrImporterMonitor.HR_IMPORTER_MONITOR,
             HrMedia.HR_MEDIA,
+            HrMediaBackupChendi.HR_MEDIA_BACKUP_CHENDI,
             HrOperationRecord.HR_OPERATION_RECORD,
             HrPointsConf.HR_POINTS_CONF,
             HrRecruitStatistics.HR_RECRUIT_STATISTICS,
             HrRecruitUniqueStatistics.HR_RECRUIT_UNIQUE_STATISTICS,
             HrReferralStatistics.HR_REFERRAL_STATISTICS,
             HrResource.HR_RESOURCE,
+            HrResourceBackupChendi.HR_RESOURCE_BACKUP_CHENDI,
+            HrResourceOnline.HR_RESOURCE_ONLINE,
             HrRuleStatistics.HR_RULE_STATISTICS,
             HrRuleUniqueStatistics.HR_RULE_UNIQUE_STATISTICS,
             HrSearchCondition.HR_SEARCH_CONDITION,
             HrSuperaccountApply.HR_SUPERACCOUNT_APPLY,
             HrTalentpool.HR_TALENTPOOL,
             HrTeam.HR_TEAM,
+            HrTeamBackupChendi.HR_TEAM_BACKUP_CHENDI,
             HrTeamMember.HR_TEAM_MEMBER,
+            HrTeamMemberBackupChendi.HR_TEAM_MEMBER_BACKUP_CHENDI,
             HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT,
             HrThirdPartyPosition.HR_THIRD_PARTY_POSITION,
             HrTopic.HR_TOPIC,

@@ -3,6 +3,8 @@ package com.moseeker.position.service.position;
 import java.text.DecimalFormat;
 import java.util.Map;
 
+import com.moseeker.thrift.gen.position.struct.Position;
+import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.LoggerFactory;
@@ -16,8 +18,6 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.dao.service.DictDao;
 import com.moseeker.thrift.gen.dict.struct.CityMap;
-import com.moseeker.thrift.gen.position.struct.Position;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
 
 /**
  * 职位转换

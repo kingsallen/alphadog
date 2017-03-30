@@ -38,7 +38,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
 
-    private static final long serialVersionUID = 1898241054;
+    private static final long serialVersionUID = 543198995;
 
     /**
      * The reference instance of <code>hrdb.hr_wx_wechat</code>
@@ -197,6 +197,11 @@ public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
      * The column <code>hrdb.hr_wx_wechat.show_new_jd</code>. 显示新JD样式, 0:不启用, 1:启用
      */
     public final TableField<HrWxWechatRecord, Integer> SHOW_NEW_JD = createField("show_new_jd", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "显示新JD样式, 0:不启用, 1:启用");
+
+    /**
+     * The column <code>hrdb.hr_wx_wechat.show_custom_theme</code>. show_custom_theme, 用于表示是否可以开启企业自定义颜色配置 0是否 1是开启
+     */
+    public final TableField<HrWxWechatRecord, Integer> SHOW_CUSTOM_THEME = createField("show_custom_theme", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "show_custom_theme, 用于表示是否可以开启企业自定义颜色配置 0是否 1是开启");
 
     /**
      * Create a <code>hrdb.hr_wx_wechat</code> table reference

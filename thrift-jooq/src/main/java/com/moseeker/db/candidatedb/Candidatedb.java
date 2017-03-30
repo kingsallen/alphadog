@@ -9,17 +9,9 @@ import com.moseeker.db.candidatedb.tables.CandidatePosition;
 import com.moseeker.db.candidatedb.tables.CandidatePositionShareRecord;
 import com.moseeker.db.candidatedb.tables.CandidateRecomRecord;
 import com.moseeker.db.candidatedb.tables.CandidateRemark;
+import com.moseeker.db.candidatedb.tables.CandidateShareChain;
 import com.moseeker.db.candidatedb.tables.CandidateSuggestPosition;
 import com.moseeker.db.candidatedb.tables.CandidateVJobPositionRecom;
-import com.moseeker.db.candidatedb.tables.JobApplication;
-import com.moseeker.db.candidatedb.tables.JobApplicationConf;
-import com.moseeker.db.candidatedb.tables.JobApplicationStatusBeisen;
-import com.moseeker.db.candidatedb.tables.JobPosition;
-import com.moseeker.db.candidatedb.tables.JobPositionCity;
-import com.moseeker.db.candidatedb.tables.JobPositionShareTplConf;
-import com.moseeker.db.candidatedb.tables.JobPositionTopic;
-import com.moseeker.db.candidatedb.tables.JobResumeBasic;
-import com.moseeker.db.candidatedb.tables.JobResumeOther;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +36,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Candidatedb extends SchemaImpl {
 
-	private static final long serialVersionUID = 833120327;
+	private static final long serialVersionUID = -2036112215;
 
 	/**
 	 * The reference instance of <code>candidatedb</code>
@@ -72,16 +64,8 @@ public class Candidatedb extends SchemaImpl {
 			CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD,
 			CandidateRecomRecord.CANDIDATE_RECOM_RECORD,
 			CandidateRemark.CANDIDATE_REMARK,
+			CandidateShareChain.CANDIDATE_SHARE_CHAIN,
 			CandidateSuggestPosition.CANDIDATE_SUGGEST_POSITION,
-			CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM,
-			JobApplication.JOB_APPLICATION,
-			JobApplicationConf.JOB_APPLICATION_CONF,
-			JobApplicationStatusBeisen.JOB_APPLICATION_STATUS_BEISEN,
-			JobPosition.JOB_POSITION,
-			JobPositionCity.JOB_POSITION_CITY,
-			JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF,
-			JobPositionTopic.JOB_POSITION_TOPIC,
-			JobResumeBasic.JOB_RESUME_BASIC,
-			JobResumeOther.JOB_RESUME_OTHER);
+			CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM);
 	}
 }

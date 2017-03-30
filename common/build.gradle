@@ -31,8 +31,10 @@ dependencies {
     compile deps["spring-aop"]
     compile deps["aspectj"]
     compile deps["aspectjrt"]
+    compile deps["commons-codec"]
     compile fileTree(dir:'../libs',include:'*.jar')
 
+    compile 'org.jetbrains:annotations:15.0'
 }
 
 project.description = '''
