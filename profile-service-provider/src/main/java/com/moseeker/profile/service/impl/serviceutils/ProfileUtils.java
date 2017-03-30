@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.moseeker.common.providerutils.QueryUtil;
-import org.jooq.types.UByte;
-import org.jooq.types.UInteger;
+
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,19 +102,19 @@ public class ProfileUtils {
 										.setIntroduction(BeanUtils.converToString(company.get("company_introduction")));
 							}
 							if (company.get("company_scale") != null) {
-								hrCompany.setScale(BeanUtils.converToUByte(company.get("company_scale")));
+								hrCompany.setScale((Byte) company.get("company_scale"));
 							}
 							if (company.get("company_property") != null) {
-								hrCompany.setProperty(BeanUtils.converToUByte(company.get("company_property")));
+								hrCompany.setProperty((Byte) company.get("company_property"));
 							}
-							hrCompany.setType(UByte.valueOf(Constant.COMPANY_TYPE_FREE));
+							hrCompany.setType((byte)(Constant.COMPANY_TYPE_FREE));
 							switch(source) {
 								case Constant.PROFILE_SOURCE_WEIXIN_TEGETHER_IMPORT:
 								case Constant.PROFILE_SOURCE_WEIXIN_COMPANY_IMPORT:
-									hrCompany.setSource(UByte.valueOf(Constant.COMPANY_SOURCE_WX_IMPORT));
+									hrCompany.setSource((byte)(Constant.COMPANY_SOURCE_WX_IMPORT));
 									break;
 								case Constant.PROFILE_SOURCE_PC_IMPORT:
-									hrCompany.setSource(UByte.valueOf(Constant.COMPANY_SOURCE_PC_IMPORT));
+									hrCompany.setSource((byte)(Constant.COMPANY_SOURCE_PC_IMPORT));
 									break;
 								default:
 							}
@@ -359,19 +359,19 @@ public class ProfileUtils {
 			record = new ProfileProfileRecord();
 			record.setUuid((String) profile.get("uuid"));
 			if (profile.get("lang") != null) {
-				record.setLang(UByte.valueOf((Integer) profile.get("lang")));
+				record.setLang((byte)(profile.get("lang")));
 			}
 			if (profile.get("source") != null) {
-				record.setSource(UInteger.valueOf((Integer) profile.get("source")));
+				record.setSource((int)((Integer) profile.get("source")));
 			}
 			if (profile.get("completeness") != null) {
-				record.setCompleteness(UByte.valueOf((Integer) profile.get("completeness")));
+				record.setCompleteness((byte)(profile.get("completeness")));
 			}
-			record.setUserId(UInteger.valueOf((Integer) profile.get("user_id")));
+			record.setUserId((int)((Integer) profile.get("user_id")));
 			if (profile.get("disable") != null) {
-				record.setDisable(UByte.valueOf((Integer) profile.get("disable")));
+				record.setDisable((byte)(profile.get("disable")));
 			} else {
-				record.setDisable(UByte.valueOf(1));
+				record.setDisable((byte)(1));
 			}
 			if(profile.get("origin") != null) {
 				record.setOrigin((String)profile.get("origin"));

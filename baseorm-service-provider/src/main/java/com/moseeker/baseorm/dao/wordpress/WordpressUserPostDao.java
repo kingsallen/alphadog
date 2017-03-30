@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import org.jooq.DSLContext;
-import org.jooq.types.ULong;
+
 import org.springframework.stereotype.Service;
 
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressUserPost;
@@ -36,7 +36,7 @@ public class WordpressUserPostDao
 			if(count == 0) {
 				WordpressUserPostRecord userPost = new WordpressUserPostRecord();
 				userPost.setUserId(userId);
-				userPost.setObjectId(ULong.valueOf(postId));
+				userPost.setObjectId((long)(postId));
 				create.attach(userPost);
 				count = userPost.update();
 			}

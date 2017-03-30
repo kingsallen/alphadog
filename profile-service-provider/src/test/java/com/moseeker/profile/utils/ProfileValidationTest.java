@@ -2,8 +2,8 @@ package com.moseeker.profile.utils;
 
 import static org.junit.Assert.assertEquals;
 
-import org.jooq.types.UByte;
-import org.jooq.types.UInteger;
+
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -173,7 +173,7 @@ public class ProfileValidationTest {
 		ProfileEducationRecord education = new ProfileEducationRecord();
 		education.setCollegeCode(Integer.valueOf(1));
 		education.setCollegeName("");
-		education.setDegree(UByte.valueOf(1));
+		education.setDegree((byte)(1));
 		education.setStart(new java.sql.Date(System.currentTimeMillis()));
 		education.setDescription("详细描述");
 		ValidationMessage<ProfileEducationRecord> vm = ProfileValidation.verifyEducation(education);
@@ -185,7 +185,7 @@ public class ProfileValidationTest {
 	public void testVerifyEducationRecord1() {
 		ProfileEducationRecord education = new ProfileEducationRecord();
 		education.setCollegeName("");
-		education.setDegree(UByte.valueOf(1));
+		education.setDegree((byte)(1));
 		education.setStart(new java.sql.Date(System.currentTimeMillis()));
 		education.setDescription("详细描述");
 		ValidationMessage<ProfileEducationRecord> vm = ProfileValidation.verifyEducation(education);
@@ -198,7 +198,7 @@ public class ProfileValidationTest {
 		ProfileEducationRecord education = new ProfileEducationRecord();
 		education.setCollegeCode(0);
 		education.setCollegeName("");
-		education.setDegree(UByte.valueOf(1));
+		education.setDegree((byte)(1));
 		education.setStart(new java.sql.Date(System.currentTimeMillis()));
 		education.setDescription("详细描述");
 		ValidationMessage<ProfileEducationRecord> vm = ProfileValidation.verifyEducation(education);
@@ -211,7 +211,7 @@ public class ProfileValidationTest {
 		ProfileEducationRecord education = new ProfileEducationRecord();
 		education.setCollegeCode(0);
 		education.setCollegeName("test");
-		education.setDegree(UByte.valueOf(1));
+		education.setDegree((byte)(1));
 		education.setStart(new java.sql.Date(System.currentTimeMillis()));
 		education.setDescription("详细描述");
 		ValidationMessage<ProfileEducationRecord> vm = ProfileValidation.verifyEducation(education);
@@ -236,7 +236,7 @@ public class ProfileValidationTest {
 		ProfileEducationRecord education = new ProfileEducationRecord();
 		education.setCollegeCode(0);
 		education.setCollegeName("test");
-		education.setDegree(UByte.valueOf(1));
+		education.setDegree((byte)(1));
 		education.setDescription("详细描述");
 		ValidationMessage<ProfileEducationRecord> vm = ProfileValidation.verifyEducation(education);
 		System.out.println(vm.getResult());
@@ -434,7 +434,7 @@ public class ProfileValidationTest {
 	@Test
 	public void testVerifyWorkExpRecord() {
 		ProfileWorkexpRecord workExp = new ProfileWorkexpRecord();
-		workExp.setCompanyId(UInteger.valueOf(1));
+		workExp.setCompanyId((int)(1));
 		workExp.setDescription("test");
 		workExp.setJob("test");
 		workExp.setStart(new java.sql.Date(System.currentTimeMillis()));
@@ -445,7 +445,7 @@ public class ProfileValidationTest {
 	@Test
 	public void testVerifyWorkExpRecord2() {
 		ProfileWorkexpRecord workExp = new ProfileWorkexpRecord();
-		workExp.setCompanyId(UInteger.valueOf(1));
+		workExp.setCompanyId((int)(1));
 		workExp.setDescription("test");
 		workExp.setJob("test");
 		workExp.setStart(new java.sql.Date(System.currentTimeMillis()));
@@ -466,7 +466,7 @@ public class ProfileValidationTest {
 	@Test
 	public void testVerifyWorkExpRecord5() {
 		ProfileWorkexpRecord workExp = new ProfileWorkexpRecord();
-		workExp.setCompanyId(UInteger.valueOf(1));
+		workExp.setCompanyId((int)(1));
 		workExp.setDescription("test");
 		workExp.setStart(new java.sql.Date(System.currentTimeMillis()));
 		ValidationMessage<ProfileWorkexpRecord> vm = ProfileValidation.verifyWorkExp(workExp);
@@ -476,7 +476,7 @@ public class ProfileValidationTest {
 	@Test
 	public void testVerifyWorkExpRecord6() {
 		ProfileWorkexpRecord workExp = new ProfileWorkexpRecord();
-		workExp.setCompanyId(UInteger.valueOf(1));
+		workExp.setCompanyId((int)(1));
 		workExp.setDescription("test");
 		workExp.setJob("test");
 		ValidationMessage<ProfileWorkexpRecord> vm = ProfileValidation.verifyWorkExp(workExp);

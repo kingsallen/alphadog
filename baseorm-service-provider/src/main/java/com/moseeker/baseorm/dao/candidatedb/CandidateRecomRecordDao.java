@@ -13,7 +13,7 @@ import org.jooq.DSLContext;
 import org.jooq.Record1;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
-import org.jooq.types.UInteger;
+
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
@@ -55,7 +55,7 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
                     CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
                     CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID)
                     .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
-                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(UInteger.valueOf(userId))
+                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal((int)(userId))
                             .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID.greaterThan(0)));
             if(pageNo > 0 && pageSize > 0) {
                 selectConditionStep.limit((pageNo-1)*pageSize, pageSize);
@@ -93,7 +93,7 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
                     CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
                     CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID)
                     .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
-                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(UInteger.valueOf(presenteeId))
+                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal((int)(presenteeId))
                             .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.in(positionIdSet)));
             if(pageNo > 0 && pageSize > 0) {
                 selectConditionStep.limit((pageNo-1)*pageSize, pageSize);
@@ -125,7 +125,7 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
             Result<Record1<Integer>> result = create.selectCount()
                     .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
-                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(UInteger.valueOf(userId))
+                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal((int)(userId))
                             .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM.equal(0))).fetch();
             if(result != null && result.size() > 0) {
                 count = result.get(0).value1();
@@ -157,7 +157,7 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
                                     .equal(CandidatePosition.CANDIDATE_POSITION.USER_ID))
                             .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID
                                     .equal(CandidatePosition.CANDIDATE_POSITION.POSITION_ID)))
-                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(UInteger.valueOf(userId))
+                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal((int)(userId))
                             .and(CandidatePosition.CANDIDATE_POSITION.IS_INTERESTED.equal((byte)1)))
                     .fetch();
             if(result != null && result.size() > 0) {
@@ -197,7 +197,7 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
                                     .equal(CandidatePosition.CANDIDATE_POSITION.USER_ID))
                             .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID
                                     .equal(CandidatePosition.CANDIDATE_POSITION.POSITION_ID)))
-                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(UInteger.valueOf(userId))
+                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal((int)(userId))
                             .and(CandidatePosition.CANDIDATE_POSITION.IS_INTERESTED.equal((byte)1)));
             if(pageNo > 0 && pageSize > 0) {
                 selectConditionStep.limit((pageNo-1)*pageSize, pageSize);

@@ -1,29 +1,9 @@
 package com.moseeker.useraccounts.service.impl;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.moseeker.thrift.gen.dao.struct.UserUserDO;
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.AppId;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.constants.KeyIdentifier;
-import com.moseeker.common.constants.RespnoseUtil;
-import com.moseeker.common.constants.TemplateId;
-import com.moseeker.common.constants.UserSource;
-import com.moseeker.common.constants.UserType;
+import com.moseeker.common.constants.*;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -39,7 +19,6 @@ import com.moseeker.common.weixin.QrcodeType;
 import com.moseeker.common.weixin.WeixinTicketBean;
 import com.moseeker.db.hrdb.tables.records.HrWxWechatRecord;
 import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
-import com.moseeker.db.logdb.tables.records.LogUserloginRecordRecord;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.db.userdb.tables.records.UserFavPositionRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
@@ -47,19 +26,24 @@ import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.UserUserDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.BindType;
 import com.moseeker.thrift.gen.useraccounts.struct.User;
 import com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition;
 import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
-import com.moseeker.useraccounts.dao.ProfileDao;
-import com.moseeker.useraccounts.dao.UserDao;
-import com.moseeker.useraccounts.dao.UserFavoritePositionDao;
-import com.moseeker.useraccounts.dao.UsersettingDao;
-import com.moseeker.useraccounts.dao.WechatDao;
+import com.moseeker.useraccounts.dao.*;
 import com.moseeker.useraccounts.pojo.MessageTemplate;
 import com.moseeker.useraccounts.service.BindOnAccountService;
+import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.util.*;
 
 /**
  * 用户登陆， 注册，合并等api的实现
@@ -188,9 +172,6 @@ public class UseraccountsService {
 	 * @throws TException
 	 */
 	public Response postuserlogout(int userid) throws TException {
-		LogUserloginRecordRecord logout = new LogUserloginRecordRecord();
-		logout.setUserId(userid);
-		logout.setActiontype(2);
 		try {
 			logger.info("userid:{} log out", userid);
 			return ResponseUtils.success(null);
@@ -284,8 +265,8 @@ public class UseraccountsService {
 				// // 初始化 user_setting 表.
 				// UserSettingsRecord userSettingsRecord = new
 				// UserSettingsRecord();
-				// userSettingsRecord.setUserId(UInteger.valueOf(newCreateUserId));
-				// userSettingsRecord.setPrivacyPolicy(UByte.valueOf(0));
+				// userSettingsRecord.setUserId((int)(newCreateUserId));
+				// userSettingsRecord.setPrivacyPolicy((byte)(0));
 				// userSettingDao.postResource(userSettingsRecord);
 
 				return ResponseUtils.success(new HashMap<String, Object>() {

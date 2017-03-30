@@ -5,7 +5,7 @@ import java.util.Set;
 
 import org.jooq.Record2;
 import org.jooq.Result;
-import org.jooq.types.UInteger;
+
 
 import com.moseeker.common.providerutils.daoutils.BaseDao;
 import com.moseeker.db.profiledb.tables.records.ProfileAttachmentRecord;
@@ -52,7 +52,7 @@ public interface ProfileDao extends BaseDao<ProfileProfileRecord> {
 			List<ProfileWorkexpEntity> workexpRecords, List<ProfileWorksRecord> worksRecords, UserUserRecord userRecord,
 			List<ProfileProfileRecord> oldProfile);
 
-	Result<Record2<UInteger, String>> findRealName(List<Integer> profileIds);
+	Result<Record2<Integer, String>> findRealName(List<Integer> profileIds);
 
 	String findRealName(int profile_id);
 

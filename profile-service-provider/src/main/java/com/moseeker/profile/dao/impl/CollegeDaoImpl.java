@@ -9,7 +9,7 @@ import org.jooq.DSLContext;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
-import org.jooq.types.UInteger;
+
 import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.dbutils.DBConnHelper;
@@ -41,9 +41,9 @@ public class CollegeDaoImpl extends
 				SelectConditionStep<DictCollegeRecord> selectCondition = null;
 				for(int i=0; i<ids.size(); i++) {
 					if(i == 0) {
-						selectCondition = select.where(DictCollege.DICT_COLLEGE.CODE.equal(UInteger.valueOf(ids.get(i))));
+						selectCondition = select.where(DictCollege.DICT_COLLEGE.CODE.equal((int)(ids.get(i))));
 					} else {
-						selectCondition.or(DictCollege.DICT_COLLEGE.CODE.equal(UInteger.valueOf(ids.get(i))));
+						selectCondition.or(DictCollege.DICT_COLLEGE.CODE.equal((int)(ids.get(i))));
 					}
 				}
 				records = selectCondition.fetch();
@@ -74,7 +74,7 @@ public class CollegeDaoImpl extends
 				conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 				Result<DictCollegeRecord> result = create.selectFrom(DictCollege.DICT_COLLEGE)
-						.where(DictCollege.DICT_COLLEGE.CODE.equal(UInteger.valueOf(code))).limit(1).fetch();
+						.where(DictCollege.DICT_COLLEGE.CODE.equal((int)(code))).limit(1).fetch();
 				if(result != null && result.size() > 0) {
 					record = result.get(0);
 				}

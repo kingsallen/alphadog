@@ -87,4 +87,35 @@ public class CommonCondition<T extends CommonCondition<T>> extends Condition {
     public static CommonCondition unLike(String field, Object value) {
         return valueCondition(field, value, ValueOp.NLIKE);
     }
+<<<<<<< Updated upstream
+=======
+
+    public CommonQuery getCommonQuery() {
+        commonQuery.setConditions(condition);
+        return commonQuery;
+    }
+
+    CommonCondition setCommonQuery(CommonQuery commonQuery) {
+        this.commonQuery = commonQuery;
+        return this;
+    }
+
+    public CommonGroupBy groupBy(String... fields) {
+        commonQuery.setConditions(condition);
+        for (String filed : fields) {
+            this.commonQuery.addToGroups(filed);
+        }
+        return new CommonGroupBy(commonQuery);
+    }
+
+    public CommonOrderBy orderBy(String field, Order order) {
+        commonQuery.setConditions(condition);
+        commonQuery.addToOrders(new OrderBy(field, order));
+        return new CommonOrderBy(commonQuery);
+    }
+
+    public CommonPageSize pageSize(int size) {
+        return new CommonPageSize(commonQuery, size);
+    }
+>>>>>>> Stashed changes
 }

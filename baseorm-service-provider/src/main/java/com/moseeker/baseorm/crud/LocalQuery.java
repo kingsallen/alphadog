@@ -125,7 +125,11 @@ public class LocalQuery<R extends Record> extends CommonQuery {
      * @return
      */
     public org.jooq.Condition buildConditions() {
+<<<<<<< Updated upstream
         return localCondition.convertCondition(getConditions());
+=======
+        return convertCondition(getConditions());
+>>>>>>> Stashed changes
     }
 
     /**

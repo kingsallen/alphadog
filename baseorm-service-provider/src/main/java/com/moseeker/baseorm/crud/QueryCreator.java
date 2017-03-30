@@ -22,4 +22,8 @@ public class QueryCreator {
     public static QueryCondition where(QueryCondition queryCondition) {
         return new QuerySelect().select().where(queryCondition);
     }
+
+    public static CommonCondition where(CommonCondition commonCondition) {
+        return new CommonSelect().select().where(commonCondition);
+    }
 }

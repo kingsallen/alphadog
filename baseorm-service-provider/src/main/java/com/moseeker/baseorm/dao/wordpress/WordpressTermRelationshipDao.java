@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.jooq.DSLContext;
-import org.jooq.types.ULong;
+
 import org.springframework.stereotype.Service;
 
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressTermRelationships;
@@ -27,7 +27,7 @@ public class WordpressTermRelationshipDao
 			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 			record = create.selectFrom(WordpressTermRelationships.WORDPRESS_TERM_RELATIONSHIPS)
 					.where(WordpressTermRelationships.WORDPRESS_TERM_RELATIONSHIPS.TERM_TAXONOMY_ID
-							.equal(ULong.valueOf(termTaxonomyId))).orderBy(WordpressTermRelationships.WORDPRESS_TERM_RELATIONSHIPS.OBJECT_ID.desc()).limit(1).fetchOne();
+							.equal((long)(termTaxonomyId))).orderBy(WordpressTermRelationships.WORDPRESS_TERM_RELATIONSHIPS.OBJECT_ID.desc()).limit(1).fetchOne();
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

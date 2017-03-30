@@ -9,7 +9,7 @@ import org.jooq.DSLContext;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
-import org.jooq.types.UInteger;
+
 import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.dbutils.DBConnHelper;
@@ -41,9 +41,9 @@ public class CityDaoImpl extends
 				SelectConditionStep<DictCityRecord> selectCondition = null;
 				for(int i=0; i<cityCodes.size(); i++) {
 					if(i == 0) {
-						selectCondition = select.where(DictCity.DICT_CITY.CODE.equal(UInteger.valueOf(cityCodes.get(i))));
+						selectCondition = select.where(DictCity.DICT_CITY.CODE.equal((int)(cityCodes.get(i))));
 					} else {
-						selectCondition.or(DictCity.DICT_CITY.CODE.equal(UInteger.valueOf(cityCodes.get(i))));
+						selectCondition.or(DictCity.DICT_CITY.CODE.equal((int)(cityCodes.get(i))));
 					}
 				}
 				records = selectCondition.fetch();
@@ -74,7 +74,7 @@ public class CityDaoImpl extends
 				conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 				Result<DictCityRecord> result = create.selectFrom(DictCity.DICT_CITY)
-						.where(DictCity.DICT_CITY.CODE.equal(UInteger.valueOf(city_code)))
+						.where(DictCity.DICT_CITY.CODE.equal((int)(city_code)))
 						.limit(1).fetch();
 				if(result != null && result.size() > 0) {
 					record = result.get(0);

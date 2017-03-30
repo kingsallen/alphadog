@@ -6,7 +6,7 @@ import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
 import com.moseeker.db.userdb.tables.UserUser;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import org.jooq.DSLContext;
-import org.jooq.types.UInteger;
+
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -40,7 +40,7 @@ public class UserUserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> imple
                 conn = DBConnHelper.DBConn.getConn();
                 DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
                 record = create.selectFrom(UserUser.USER_USER)
-                        .where(UserUser.USER_USER.ID.equal(UInteger.valueOf(userId)))
+                        .where(UserUser.USER_USER.ID.equal((int)(userId)))
                         .limit(1).fetchOne();
             }
         } catch (Exception e) {

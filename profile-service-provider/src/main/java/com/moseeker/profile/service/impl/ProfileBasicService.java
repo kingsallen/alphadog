@@ -9,7 +9,7 @@ import java.util.Set;
 import org.apache.thrift.TException;
 import org.jooq.Record2;
 import org.jooq.Result;
-import org.jooq.types.UInteger;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,11 +82,11 @@ public class ProfileBasicService extends JOOQBaseServiceImpl<Basic, ProfileBasic
 						}
 					}
 				}
-				Result<Record2<UInteger, String>> result = profileDao.findRealName(profileIds);
+				Result<Record2<Integer, String>> result = profileDao.findRealName(profileIds);
 				if(result != null && result.size() > 0) {
 					for(Basic basic : basics) {
-						for(Record2<UInteger, String> record2 : result) {
-							if(basic.getProfile_id() == ((UInteger)record2.get(0)).intValue()) {
+						for(Record2<Integer, String> record2 : result) {
+							if(basic.getProfile_id() == (int)record2.get(0)) {
 								basic.setName((String)record2.get(1));
 								break;
 							}

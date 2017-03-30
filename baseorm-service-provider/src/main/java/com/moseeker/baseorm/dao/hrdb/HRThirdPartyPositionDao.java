@@ -10,7 +10,7 @@ import java.util.List;
 
 import org.joda.time.DateTime;
 import org.jooq.DSLContext;
-import org.jooq.types.UInteger;
+
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
@@ -133,7 +133,7 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 							HrThirdPartyPositionRecord dbrecord = create
 									.selectFrom(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION)
 									.where(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID
-											.equal(UInteger.valueOf(position.getPosition_id())))
+											.equal((int)(position.getPosition_id())))
 									.and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL
 											.equal(Short.valueOf(position.getChannel())))
 									.fetchOne();
@@ -145,7 +145,7 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 								if(StringUtils.isNotNullOrEmpty(position.getThird_part_position_id())) {
 									dbrecord.setThirdPartPositionId(position.getThird_part_position_id());
 								}
-								dbrecord.setPositionId(UInteger.valueOf(position.getPosition_id()));
+								dbrecord.setPositionId((int)(position.getPosition_id()));
 								if(position.getThird_part_position_id() != null) {
 									dbrecord.setThirdPartPositionId(position.getThird_part_position_id());
 								}
@@ -219,7 +219,7 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 
 				HrThirdPartyPositionRecord record = create.selectFrom(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION)
 						.where(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID
-								.eq(UInteger.valueOf(positionId)))
+								.eq((int)(positionId)))
 						.and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL.eq((short) channel)).fetchOne();
 				if (record != null) {
 					record.into(position);
@@ -258,7 +258,7 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 
 			HrThirdPartyPositionRecord record = create.selectFrom(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION)
 					.where(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID
-							.eq(UInteger.valueOf(position.getPosition_id())))
+							.eq((int)(position.getPosition_id())))
 					.and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL.eq((short) position.getChannel()))
 					.fetchOne();
 			if (record != null) {
@@ -270,7 +270,7 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 				if(StringUtils.isNotNullOrEmpty(position.getThird_part_position_id())) {
 					record.setThirdPartPositionId(position.getThird_part_position_id());
 				}
-				record.setPositionId(UInteger.valueOf(position.getPosition_id()));
+				record.setPositionId((int)(position.getPosition_id()));
 				if(position.getThird_part_position_id() != null) {
 					record.setThirdPartPositionId(position.getThird_part_position_id());
 				}

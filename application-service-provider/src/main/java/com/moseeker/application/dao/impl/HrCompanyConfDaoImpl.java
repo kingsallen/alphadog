@@ -6,7 +6,7 @@ import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
 import com.moseeker.db.hrdb.tables.HrCompanyConf;
 import com.moseeker.db.hrdb.tables.records.HrCompanyConfRecord;
 import org.jooq.DSLContext;
-import org.jooq.types.UInteger;
+
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -43,7 +43,7 @@ public class HrCompanyConfDaoImpl extends
 				conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 				record = create.selectFrom(HrCompanyConf.HR_COMPANY_CONF)
-						.where(HrCompanyConf.HR_COMPANY_CONF.COMPANY_ID.equal(UInteger.valueOf(companyId)))
+						.where(HrCompanyConf.HR_COMPANY_CONF.COMPANY_ID.equal(companyId))
 						.limit(1).fetchOne();
 			}
 		} catch (Exception e) {

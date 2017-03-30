@@ -5,14 +5,16 @@ package com.moseeker.db.jobdb.tables.records;
 
 
 import com.moseeker.db.jobdb.tables.JobPositionExt;
+
+import java.sql.Timestamp;
+
+import javax.annotation.Generated;
+
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record6;
 import org.jooq.Row6;
 import org.jooq.impl.UpdatableRecordImpl;
-
-import javax.annotation.Generated;
-import java.sql.Timestamp;
 
 
 /**
@@ -28,7 +30,7 @@ import java.sql.Timestamp;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionExtRecord extends UpdatableRecordImpl<JobPositionExtRecord> implements Record6<Integer, Integer, Timestamp, Timestamp, Integer, String> {
 
-    private static final long serialVersionUID = 1270675766;
+    private static final long serialVersionUID = 1104809778;
 
     /**
      * Setter for <code>jobdb.job_position_ext.pid</code>. job_position.id

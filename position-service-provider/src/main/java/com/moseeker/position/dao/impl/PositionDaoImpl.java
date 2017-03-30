@@ -11,8 +11,8 @@ import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Result;
-import org.jooq.types.UByte;
-import org.jooq.types.UInteger;
+
+
 import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.dbutils.DBConnHelper;
@@ -58,7 +58,7 @@ public class PositionDaoImpl extends BaseDaoImpl<JobPositionRecord, JobPosition>
 			 * positionResult.getValue("company_id")).intValue(); // get company
 			 * info Result<? extends Record> companyResults =
 			 * create.select().from(HrCompany.HR_COMPANY).where(HrCompany.
-			 * HR_COMPANY.ID.equal(UInteger.valueOf(company_id))).fetch();
+			 * HR_COMPANY.ID.equal((int)(company_id))).fetch();
 			 * Record companyResult = companyResults.get(0); int company_type =
 			 * ((UByte) companyResult.getValue("type")).intValue();
 			 * //公司区分(其它:2,免费用户:1,企业用户:0)
@@ -70,8 +70,8 @@ public class PositionDaoImpl extends BaseDaoImpl<JobPositionRecord, JobPosition>
 				return recommedPositoinsList;
 			}
 			Record positionAndCompanyRecord = positionAndCompanyRecords.get(0);
-			int company_id = ((UInteger) positionAndCompanyRecord.getValue("company_id")).intValue();
-			int company_type = ((UByte) positionAndCompanyRecord.getValue("type")).intValue(); // 公司区分(其它:2,免费用户:1,企业用户:0)
+			int company_id = positionAndCompanyRecord.getValue(JobPosition.JOB_POSITION.COMPANY_ID);
+			int company_type = (int) positionAndCompanyRecord.getValue("type"); // 公司区分(其它:2,免费用户:1,企业用户:0)
 
 			// get recom
 			Result<? extends Record> recomResults;
@@ -92,7 +92,7 @@ public class PositionDaoImpl extends BaseDaoImpl<JobPositionRecord, JobPosition>
 					}
 					condition = condition.and(StJobSimilarity.ST_JOB_SIMILARITY.DEPARTMENT_ID.equal(company_id)); 
 				} else {
-					Result<Record1<UInteger>> result = create.select(HrCompany.HR_COMPANY.ID).from(HrCompany.HR_COMPANY).where(HrCompany.HR_COMPANY.PARENT_ID.equal(UInteger.valueOf(company_id))).fetch();
+					Result<Record1<Integer>> result = create.select(HrCompany.HR_COMPANY.ID).from(HrCompany.HR_COMPANY).where(HrCompany.HR_COMPANY.PARENT_ID.equal((int)(company_id))).fetch();
 					List<Integer> departmentIds = new ArrayList<>();
 					if(result != null && result.size() > 0) {
 						result.forEach(record -> {
@@ -136,7 +136,7 @@ public class PositionDaoImpl extends BaseDaoImpl<JobPositionRecord, JobPosition>
 				if (hrcompanyAccountrecord != null && hrcompanyAccountrecord.getCompanyId() != null) {
 					if (position.getCompany_id() != hrcompanyAccountrecord.getCompanyId()) {
 						HrCompanyRecord subcompany = create.selectFrom(HrCompany.HR_COMPANY)
-								.where(HrCompany.HR_COMPANY.ID.equal(UInteger.valueOf(hrcompanyAccountrecord.getCompanyId()))).fetchOne();							
+								.where(HrCompany.HR_COMPANY.ID.equal((int)(hrcompanyAccountrecord.getCompanyId()))).fetchOne();
 						if (subcompany != null){
 							position.setCompany_logo(subcompany.getLogo());
 							position.setCompany_name(subcompany.getAbbreviation());							
@@ -161,9 +161,9 @@ public class PositionDaoImpl extends BaseDaoImpl<JobPositionRecord, JobPosition>
 					.from(JobPositionCity.JOB_POSITION_CITY)
 					.where(JobPositionCity.JOB_POSITION_CITY.PID.equal(positionId)).fetch();
 			if(cityCodes != null && cityCodes.size() > 0) {
-				Set<UInteger> codes = new HashSet<>();
+				Set<Integer> codes = new HashSet<>();
 				cityCodes.forEach(record -> {
-					codes.add(UInteger.valueOf(((Integer)record.get(0) / 10000) * 10000));
+					codes.add((int)(((Integer)record.get(0) / 10000) * 10000));
 				});
 				Result<DictCityRecord> records = create.selectFrom(DictCity.DICT_CITY)
 				.where(DictCity.DICT_CITY.CODE.in(codes)).fetch();

@@ -8,7 +8,7 @@ import java.util.List;
 import org.jooq.DSLContext;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
-import org.jooq.types.UInteger;
+
 import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.dbutils.DBConnHelper;
@@ -40,9 +40,9 @@ public class IntentionPositionDaoImpl extends
 			if(cityCodes != null && cityCodes.size() > 0) {
 				for(int i=0; i<cityCodes.size(); i++) {
 					if(i == 0) {
-						selectCondition = select.where(ProfileIntentionPosition.PROFILE_INTENTION_POSITION.PROFILE_INTENTION_ID.equal(UInteger.valueOf(cityCodes.get(i))));
+						selectCondition = select.where(ProfileIntentionPosition.PROFILE_INTENTION_POSITION.PROFILE_INTENTION_ID.equal((int)(cityCodes.get(i))));
 					} else {
-						selectCondition.or(ProfileIntentionPosition.PROFILE_INTENTION_POSITION.PROFILE_INTENTION_ID.equal(UInteger.valueOf(cityCodes.get(i))));
+						selectCondition.or(ProfileIntentionPosition.PROFILE_INTENTION_POSITION.PROFILE_INTENTION_ID.equal((int)(cityCodes.get(i))));
 					}
 				}
 			}

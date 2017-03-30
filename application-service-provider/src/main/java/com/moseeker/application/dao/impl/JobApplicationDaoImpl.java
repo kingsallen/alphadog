@@ -11,8 +11,8 @@ import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Record;
-import org.jooq.types.UByte;
-import org.jooq.types.UInteger;
+
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -53,7 +53,7 @@ public class JobApplicationDaoImpl extends BaseDaoImpl<JobApplicationRecord, Job
             conn = DBConnHelper.DBConn.getConn();
             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 
-            Condition condition = JobApplication.JOB_APPLICATION.ID.equal(UInteger.valueOf(applicationId));
+            Condition condition = JobApplication.JOB_APPLICATION.ID.equal((int) applicationId);
 
             jobApplicationRecord = create.selectFrom(JobApplication.JOB_APPLICATION).where(condition).fetchOne();
 
@@ -94,8 +94,8 @@ public class JobApplicationDaoImpl extends BaseDaoImpl<JobApplicationRecord, Job
             conn = DBConnHelper.DBConn.getConn();
             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 
-            Condition condition = JobApplication.JOB_APPLICATION.APPLIER_ID.equal(UInteger.valueOf(userId))
-                    .and(JobApplication.JOB_APPLICATION.POSITION_ID.equal(UInteger.valueOf(positionId)));
+            Condition condition = JobApplication.JOB_APPLICATION.APPLIER_ID.equal((int) userId)
+                    .and(JobApplication.JOB_APPLICATION.POSITION_ID.equal((int) positionId));
 
             Record record = create.selectCount().from(JobApplication.JOB_APPLICATION).where(condition).limit(1)
                     .fetchOne();
@@ -264,17 +264,17 @@ public class JobApplicationDaoImpl extends BaseDaoImpl<JobApplicationRecord, Job
             historyJobApplicationRecord.setRecommenderId(jobApplicationRecord.getRecommenderId());
             historyJobApplicationRecord.setLApplicationId(jobApplicationRecord.getLApplicationId());
             historyJobApplicationRecord.setUserId(jobApplicationRecord.getApplierId());
-            historyJobApplicationRecord.setAtsStatus(UInteger.valueOf(jobApplicationRecord.getAtsStatus()));
-            historyJobApplicationRecord.setDisable(UInteger.valueOf(jobApplicationRecord.getDisable()));
-            historyJobApplicationRecord.setRoutine(UInteger.valueOf(jobApplicationRecord.getRoutine()));
-            historyJobApplicationRecord.setIsViewed(UByte.valueOf(jobApplicationRecord.getIsViewed()));
-            historyJobApplicationRecord.setViewCount(UInteger.valueOf(jobApplicationRecord.getViewCount()));
-            historyJobApplicationRecord.setNotSuitable(UByte.valueOf(jobApplicationRecord.getNotSuitable()));
+            historyJobApplicationRecord.setAtsStatus((jobApplicationRecord.getAtsStatus()));
+            historyJobApplicationRecord.setDisable((int)(jobApplicationRecord.getDisable()));
+            historyJobApplicationRecord.setRoutine((int)(jobApplicationRecord.getRoutine()));
+            historyJobApplicationRecord.setIsViewed((byte)(jobApplicationRecord.getIsViewed()));
+            historyJobApplicationRecord.setViewCount((int)(jobApplicationRecord.getViewCount()));
+            historyJobApplicationRecord.setNotSuitable((byte)(jobApplicationRecord.getNotSuitable()));
             historyJobApplicationRecord.setCompanyId(jobApplicationRecord.getCompanyId());
             historyJobApplicationRecord.setAppTplId(jobApplicationRecord.getAppTplId());
-            historyJobApplicationRecord.setProxy(UByte.valueOf(jobApplicationRecord.getProxy()));
-            historyJobApplicationRecord.setApplyType(UInteger.valueOf(jobApplicationRecord.getApplyType()));
-            historyJobApplicationRecord.setEmailStatus(UInteger.valueOf(jobApplicationRecord.getEmailStatus()));
+            historyJobApplicationRecord.setProxy((byte)(jobApplicationRecord.getProxy()));
+            historyJobApplicationRecord.setApplyType((int)(jobApplicationRecord.getApplyType()));
+            historyJobApplicationRecord.setEmailStatus((int)(jobApplicationRecord.getEmailStatus()));
             historyJobApplicationRecord.setSubmitTime(jobApplicationRecord.getSubmitTime());
             historyJobApplicationRecord.setCreateTime(jobApplicationRecord.get_CreateTime());
             historyJobApplicationRecord.setUpdateTime(jobApplicationRecord.getUpdateTime());

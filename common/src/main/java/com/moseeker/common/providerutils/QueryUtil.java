@@ -13,9 +13,14 @@ public class QueryUtil extends CommonQuery {
 
     private static final long serialVersionUID = 2531526866610292082L;
 
+<<<<<<< Updated upstream
     @Deprecated
     public QueryUtil addEqualFilter(String key, Object value) {
         ValueCondition valueCondition = new ValueCondition(key, String.valueOf(value), ValueOp.EQ);
+=======
+    public QueryUtil addEqualFilter(String key, String value) {
+        ValueCondition valueCondition = new ValueCondition(key, value, ValueOp.EQ);
+>>>>>>> Stashed changes
         if (conditions == null) {
             conditions = new Condition();
             conditions.setValueCondition(valueCondition);
@@ -40,9 +45,13 @@ public class QueryUtil extends CommonQuery {
 
     @Deprecated
     public QueryUtil setEqualFilter(Map<String, String> equalFilter) {
+<<<<<<< Updated upstream
         if(equalFilter==null || equalFilter.size() == 0){
             conditions = null;
         }else if (equalFilter.size() == 1) {
+=======
+        if (equalFilter.size() == 1) {
+>>>>>>> Stashed changes
             conditions = new Condition();
             for (String key : equalFilter.keySet()) {
                 conditions.setValueCondition(new ValueCondition(key, equalFilter.get(key), ValueOp.EQ));

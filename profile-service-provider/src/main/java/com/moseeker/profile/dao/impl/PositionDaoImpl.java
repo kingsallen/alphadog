@@ -9,7 +9,7 @@ import org.jooq.DSLContext;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
-import org.jooq.types.UInteger;
+
 import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.dbutils.DBConnHelper;
@@ -40,9 +40,9 @@ public class PositionDaoImpl extends
 				SelectConditionStep<DictPositionRecord> selectCondition = null;
 				for(int i=0; i<positionCodes.size(); i++) {
 					if(i == 0) {
-						selectCondition = select.where(DictPosition.DICT_POSITION.CODE.equal(UInteger.valueOf(positionCodes.get(i))));
+						selectCondition = select.where(DictPosition.DICT_POSITION.CODE.equal((int)(positionCodes.get(i))));
 					} else {
-						selectCondition.or(DictPosition.DICT_POSITION.CODE.equal(UInteger.valueOf(positionCodes.get(i))));
+						selectCondition.or(DictPosition.DICT_POSITION.CODE.equal((int)(positionCodes.get(i))));
 					}
 				}
 				records = selectCondition.fetch();
@@ -73,7 +73,7 @@ public class PositionDaoImpl extends
 				conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 				Result<DictPositionRecord> result = create.selectFrom(DictPosition.DICT_POSITION)
-						.where(DictPosition.DICT_POSITION.CODE.equal(UInteger.valueOf(positionCode)))
+						.where(DictPosition.DICT_POSITION.CODE.equal((int)(positionCode)))
 						.limit(1).fetch();
 				if(result != null && result.size() > 0) {
 					record = result.get(0);

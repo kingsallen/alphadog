@@ -12,7 +12,7 @@ import java.util.Set;
 import com.moseeker.thrift.gen.common.struct.Order;
 import com.moseeker.thrift.gen.common.struct.OrderBy;
 import org.apache.thrift.TException;
-import org.jooq.types.UByte;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -236,8 +236,8 @@ public class ProfileWorkExpService extends JOOQBaseServiceImpl<WorkExp, ProfileW
 						if(!StringUtils.isNullOrEmpty(struct.getCompany_logo())) {
 							newCompany.setLogo(struct.getCompany_logo());
 						}
-						newCompany.setType(UByte.valueOf(Constant.COMPANY_TYPE_FREE));
-						newCompany.setSource(UByte.valueOf(struct.getSource()));
+						newCompany.setType((byte)(Constant.COMPANY_TYPE_FREE));
+						newCompany.setSource((byte)(struct.getSource()));
 						int companyId = companyDao.postResource(newCompany);
 						struct.setCompany_id(companyId);
 					}
@@ -311,8 +311,8 @@ public class ProfileWorkExpService extends JOOQBaseServiceImpl<WorkExp, ProfileW
 						if(!StringUtils.isNullOrEmpty(struct.getCompany_logo())) {
 							newCompany.setLogo(struct.getCompany_logo());
 						}
-						newCompany.setType(UByte.valueOf(Constant.COMPANY_TYPE_FREE));
-						newCompany.setSource(UByte.valueOf(struct.getSource()));
+						newCompany.setType((byte)(Constant.COMPANY_TYPE_FREE));
+						newCompany.setSource((byte)(struct.getSource()));
 						int companyId = companyDao.postResource(newCompany);
 						struct.setCompany_id(companyId);
 					}

@@ -1,5 +1,6 @@
 package com.moseeker.baseorm.crud;
 
+<<<<<<< Updated upstream
 import com.moseeker.common.util.BeanUtils;
 import org.jooq.Field;
 import org.jooq.impl.TableImpl;
@@ -7,11 +8,14 @@ import org.jooq.impl.TableImpl;
 import java.util.*;
 import java.util.stream.Collectors;
 
+=======
+>>>>>>> Stashed changes
 /**
  * Created by moseeker on 2017/3/23.
  */
 public class FieldUtils {
 
+<<<<<<< Updated upstream
     public static AbstractMap.SimpleEntry<Collection<Field<?>>, Collection<?>> convertInsertFieldMap(TableImpl<?> table, Map<String, String> filedValues) {
         List<Field<?>> fields = new ArrayList<>();
         List<?> values = new ArrayList<>();
@@ -24,5 +28,8 @@ public class FieldUtils {
         }
         return new AbstractMap.SimpleEntry<>(fields, values);
     }
+=======
+
+>>>>>>> Stashed changes
 
 }
