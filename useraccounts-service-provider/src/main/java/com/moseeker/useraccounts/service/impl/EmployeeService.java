@@ -377,31 +377,38 @@ public class EmployeeService {
 	public Result unbind(int employeeId, int companyId, int userId)
 			throws TException {
 		log.info("unbind param: employeeId={}, companyId={}, userId={}", employeeId, companyId, userId);
-		Result response = new Result();
-		CommonQuery query = new CommonQuery();
-		query.setEqualFilter(new HashMap<String, String>());
-		query.getEqualFilter().put("sysuser_id", String.valueOf(userId));
-		query.getEqualFilter().put("company_id", String.valueOf(companyId));
-		query.getEqualFilter().put("id", String.valueOf(employeeId));
-		UserEmployeeDO employee = userDao.getEmployee(query);
-		log.info("select employee by: {} , result: {}", query, employee);
-		if (employee == null || employee.getId() == 0) {
-			response.setSuccess(false);
-			response.setMessage("员工信息不存在");
-		} else {
-			employee.setActivation((byte)1);
-			employee.setEmailIsvalid((byte)0);
-			Response result = userDao.putUserEmployeesDO(Arrays.asList(employee));
-			if (result.getStatus() == 0){
-				response.setSuccess(true);
-				response.setMessage(result.getMessage());
-				response.setSuccess(false);
-			} else {
-				response.setMessage(result.getMessage());
-			}
-		}
-		log.info("unbind response: {}", response);
-		return response;
+        Result response = new Result();
+		// 如果是email激活发送了激活邮件，但用户未激活(状态为PENDING)，此时用户进行取消绑定操作，删除员工认证的redis信息
+        if (StringUtils.isNotNullOrEmpty(client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, String.valueOf(employeeId)))) {
+            client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, String.valueOf(employeeId));
+            response.setSuccess(true);
+            response.setMessage("解绑成功");
+        } else {
+            CommonQuery query = new CommonQuery();
+            query.setEqualFilter(new HashMap<String, String>());
+            query.getEqualFilter().put("sysuser_id", String.valueOf(userId));
+            query.getEqualFilter().put("company_id", String.valueOf(companyId));
+            query.getEqualFilter().put("id", String.valueOf(employeeId));
+            UserEmployeeDO employee = userDao.getEmployee(query);
+            log.info("select employee by: {} , result: {}", query, employee);
+            if (employee == null || employee.getId() == 0) {
+                response.setSuccess(false);
+                response.setMessage("员工信息不存在");
+            } else {
+                employee.setActivation((byte)1);
+                employee.setEmailIsvalid((byte)0);
+                Response result = userDao.putUserEmployeesDO(Arrays.asList(employee));
+                if (result.getStatus() == 0){
+                    response.setSuccess(true);
+                    response.setMessage(result.getMessage());
+                    response.setSuccess(false);
+                } else {
+                    response.setMessage(result.getMessage());
+                }
+            }
+        }
+        log.info("unbind response: {}", response);
+        return response;
 	}
 
 	public List<EmployeeCustomFieldsConf> getEmployeeCustomFieldsConf(int companyId)
