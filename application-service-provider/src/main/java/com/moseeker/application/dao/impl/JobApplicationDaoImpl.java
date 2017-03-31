@@ -8,6 +8,10 @@ import com.moseeker.db.hrdb.tables.records.HrOperationRecordRecord;
 import com.moseeker.db.jobdb.tables.JobApplication;
 import com.moseeker.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.db.userdb.tables.UserEmployee;
+import com.moseeker.db.userdb.tables.UserUser;
+import com.moseeker.db.userdb.tables.records.UserEmployeeRecord;
+import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Record;
@@ -137,7 +141,26 @@ public class JobApplicationDaoImpl extends BaseDaoImpl<JobApplicationRecord, Job
             HrOperationRecordRecord hrOperationRecord = null;
 
             if(jobApplicationRecord.getRecommenderUserId() != null && jobApplicationRecord.getRecommenderUserId().intValue() > 0) {
+                boolean existUserEmployee = false;
+                UserUserRecord userUserRecord = create.selectFrom(UserUser.USER_USER).where(UserUser.USER_USER.ID.equal(jobApplicationRecord.getRecommenderUserId())).fetchAny();
+                if(userUserRecord != null) {
+                    UserEmployeeRecord userEmployeeRecord = create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                            .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.equal(userUserRecord.getId().intValue())
+                                    .and(UserEmployee.USER_EMPLOYEE.DISABLE.equal((byte)0))
+                                    .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.equal((byte)0))
+                                    .and(UserEmployee.USER_EMPLOYEE.STATUS.equal(0)))
+                            .fetchAny();
+                    if(userEmployeeRecord != null) {
+                        existUserEmployee = true;
+                    }
+                }
+                if(!existUserEmployee) {
+                    jobApplicationRecord.setRecommenderUserId(UInteger.valueOf(0));
+                }
 
+                if(jobApplicationRecord.getApplierId() != null && jobApplicationRecord.getApplierId().intValue() == jobApplicationRecord.getRecommenderUserId().intValue()) {
+                    jobApplicationRecord.setRecommenderUserId(UInteger.valueOf(0));
+                }
             }
             create.attach(jobApplicationRecord);
             jobApplicationRecord.insert();
