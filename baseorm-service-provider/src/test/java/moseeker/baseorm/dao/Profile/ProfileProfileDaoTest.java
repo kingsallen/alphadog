@@ -61,8 +61,8 @@ public class ProfileProfileDaoTest {
     @Test
     public void testProfileByApplication() throws TException {
         init();
-        Response response = service.getResourceByApplication(107604,0,0,true,false);
-        System.out.println(response);
+//        Response response = service.getResourceByApplication(107604,0,0,true,false);
+//        System.out.println(response);
     }
 
     @Test
