@@ -401,8 +401,8 @@ public class EmployeeService {
                 if (result.getStatus() == 0){
                     response.setSuccess(true);
                     response.setMessage(result.getMessage());
-                    response.setSuccess(false);
                 } else {
+                    response.setSuccess(false);
                     response.setMessage(result.getMessage());
                 }
             }
