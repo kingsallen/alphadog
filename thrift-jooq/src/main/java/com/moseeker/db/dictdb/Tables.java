@@ -4,9 +4,18 @@
 package com.moseeker.db.dictdb;
 
 
-
-
-import com.moseeker.db.dictdb.tables.*;
+import com.moseeker.db.dictdb.tables.DictCity;
+import com.moseeker.db.dictdb.tables.DictCityMap;
+import com.moseeker.db.dictdb.tables.DictCityPostcode;
+import com.moseeker.db.dictdb.tables.DictCollege;
+import com.moseeker.db.dictdb.tables.DictConstant;
+import com.moseeker.db.dictdb.tables.DictCountry;
+import com.moseeker.db.dictdb.tables.DictIndustry;
+import com.moseeker.db.dictdb.tables.DictIndustryType;
+import com.moseeker.db.dictdb.tables.DictMajor;
+import com.moseeker.db.dictdb.tables.DictPosition;
+import com.moseeker.db.dictdb.tables.DictZhilianOccupation;
+import com.moseeker.db.dictdb.tables.Dict_51jobOccupation;
 
 import javax.annotation.Generated;
 
@@ -50,7 +59,7 @@ public class Tables {
     public static final DictCollege DICT_COLLEGE = com.moseeker.db.dictdb.tables.DictCollege.DICT_COLLEGE;
 
     /**
-     * The table <code>dictdb.dict_constant</code>.
+     * 常量字典表
      */
     public static final DictConstant DICT_CONSTANT = com.moseeker.db.dictdb.tables.DictConstant.DICT_CONSTANT;
 
@@ -60,7 +69,7 @@ public class Tables {
     public static final DictCountry DICT_COUNTRY = com.moseeker.db.dictdb.tables.DictCountry.DICT_COUNTRY;
 
     /**
-     * The table <code>dictdb.dict_industry</code>.
+     * 行业二级分类字典表
      */
     public static final DictIndustry DICT_INDUSTRY = com.moseeker.db.dictdb.tables.DictIndustry.DICT_INDUSTRY;
 

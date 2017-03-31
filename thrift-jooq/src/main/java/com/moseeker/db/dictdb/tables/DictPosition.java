@@ -35,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictPosition extends TableImpl<DictPositionRecord> {
 
-    private static final long serialVersionUID = -1834057118;
+    private static final long serialVersionUID = 1120377102;
 
     /**
      * The reference instance of <code>dictdb.dict_position</code>

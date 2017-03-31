@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictCityPostcode extends TableImpl<DictCityPostcodeRecord> {
 
-    private static final long serialVersionUID = 1852976225;
+    private static final long serialVersionUID = 1521595814;
 
     /**
      * The reference instance of <code>dictdb.dict_city_postcode</code>
@@ -73,7 +73,7 @@ public class DictCityPostcode extends TableImpl<DictCityPostcodeRecord> {
     /**
      * The column <code>dictdb.dict_city_postcode.district</code>. 地区或区县
      */
-    public final TableField<DictCityPostcodeRecord, String> DISTRICT = createField("district", org.jooq.impl.SQLDataType.VARCHAR.length(10), this, "地区或区县");
+    public final TableField<DictCityPostcodeRecord, String> DISTRICT = createField("district", org.jooq.impl.SQLDataType.VARCHAR.length(80), this, "地区或区县");
 
     /**
      * The column <code>dictdb.dict_city_postcode.code</code>. 行政区号

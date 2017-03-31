@@ -4,10 +4,10 @@
 package com.moseeker.db.dictdb.tables.records;
 
 
+import com.moseeker.db.dictdb.tables.DictCountry;
 
 import javax.annotation.Generated;
 
-import com.moseeker.db.dictdb.tables.DictCountry;
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record10;
@@ -29,7 +29,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictCountryRecord extends UpdatableRecordImpl<DictCountryRecord> implements Record10<UInteger, String, String, String, String, String, String, Byte, UInteger, Short> {
 
-    private static final long serialVersionUID = 562748485;
+    private static final long serialVersionUID = 491476763;
 
     /**
      * Setter for <code>dictdb.dict_country.id</code>. 主key

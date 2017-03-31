@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictMajor extends TableImpl<DictMajorRecord> {
 
-    private static final long serialVersionUID = -1686194712;
+    private static final long serialVersionUID = -1596289644;
 
     /**
      * The reference instance of <code>dictdb.dict_major</code>

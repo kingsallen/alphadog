@@ -35,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictCollege extends TableImpl<DictCollegeRecord> {
 
-    private static final long serialVersionUID = 1075600708;
+    private static final long serialVersionUID = 1860236056;
 
     /**
      * The reference instance of <code>dictdb.dict_college</code>

@@ -4,7 +4,18 @@
 package com.moseeker.db.dictdb;
 
 
-
+import com.moseeker.db.dictdb.tables.DictCity;
+import com.moseeker.db.dictdb.tables.DictCityMap;
+import com.moseeker.db.dictdb.tables.DictCityPostcode;
+import com.moseeker.db.dictdb.tables.DictCollege;
+import com.moseeker.db.dictdb.tables.DictConstant;
+import com.moseeker.db.dictdb.tables.DictCountry;
+import com.moseeker.db.dictdb.tables.DictIndustry;
+import com.moseeker.db.dictdb.tables.DictIndustryType;
+import com.moseeker.db.dictdb.tables.DictMajor;
+import com.moseeker.db.dictdb.tables.DictPosition;
+import com.moseeker.db.dictdb.tables.DictZhilianOccupation;
+import com.moseeker.db.dictdb.tables.Dict_51jobOccupation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,7 +23,6 @@ import java.util.List;
 
 import javax.annotation.Generated;
 
-import com.moseeker.db.dictdb.tables.*;
 import org.jooq.Catalog;
 import org.jooq.Table;
 import org.jooq.impl.SchemaImpl;
@@ -31,7 +41,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dictdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -446472791;
+    private static final long serialVersionUID = -2088327045;
 
     /**
      * The reference instance of <code>dictdb</code>
@@ -64,7 +74,7 @@ public class Dictdb extends SchemaImpl {
     public final DictCollege DICT_COLLEGE = com.moseeker.db.dictdb.tables.DictCollege.DICT_COLLEGE;
 
     /**
-     * The table <code>dictdb.dict_constant</code>.
+     * 常量字典表
      */
     public final DictConstant DICT_CONSTANT = com.moseeker.db.dictdb.tables.DictConstant.DICT_CONSTANT;
 
@@ -74,7 +84,7 @@ public class Dictdb extends SchemaImpl {
     public final DictCountry DICT_COUNTRY = com.moseeker.db.dictdb.tables.DictCountry.DICT_COUNTRY;
 
     /**
-     * The table <code>dictdb.dict_industry</code>.
+     * 行业二级分类字典表
      */
     public final DictIndustry DICT_INDUSTRY = com.moseeker.db.dictdb.tables.DictIndustry.DICT_INDUSTRY;
 

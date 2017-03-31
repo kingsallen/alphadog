@@ -4,12 +4,12 @@
 package com.moseeker.db.dictdb.tables.records;
 
 
+import com.moseeker.db.dictdb.tables.Dict_51jobOccupation;
 
 import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
-import com.moseeker.db.dictdb.tables.Dict_51jobOccupation;
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record7;
@@ -32,17 +32,17 @@ import org.jooq.types.UShort;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dict_51jobOccupationRecord extends UpdatableRecordImpl<Dict_51jobOccupationRecord> implements Record7<UInteger, UInteger, String, UInteger, UShort, UShort, Timestamp> {
 
-    private static final long serialVersionUID = -500297879;
+    private static final long serialVersionUID = 1902889363;
 
     /**
-     * Setter for <code>dictdb.dict_51job_occupation.code</code>. 职能id
+     * Setter for <code>dictdb.dict_51job_occupation.CODE</code>. 职能id
      */
     public void setCode(UInteger value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>dictdb.dict_51job_occupation.code</code>. 职能id
+     * Getter for <code>dictdb.dict_51job_occupation.CODE</code>. 职能id
      */
     public UInteger getCode() {
         return (UInteger) get(0);
@@ -63,14 +63,14 @@ public class Dict_51jobOccupationRecord extends UpdatableRecordImpl<Dict_51jobOc
     }
 
     /**
-     * Setter for <code>dictdb.dict_51job_occupation.name</code>. 职能名称
+     * Setter for <code>dictdb.dict_51job_occupation.NAME</code>. 职能名称
      */
     public void setName(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>dictdb.dict_51job_occupation.name</code>. 职能名称
+     * Getter for <code>dictdb.dict_51job_occupation.NAME</code>. 职能名称
      */
     public String getName() {
         return (String) get(2);
@@ -91,28 +91,28 @@ public class Dict_51jobOccupationRecord extends UpdatableRecordImpl<Dict_51jobOc
     }
 
     /**
-     * Setter for <code>dictdb.dict_51job_occupation.level</code>. 职能级别 1是一级2是二级依次类推
+     * Setter for <code>dictdb.dict_51job_occupation.LEVEL</code>. 职能级别 1是一级2是二级依次类推
      */
     public void setLevel(UShort value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>dictdb.dict_51job_occupation.level</code>. 职能级别 1是一级2是二级依次类推
+     * Getter for <code>dictdb.dict_51job_occupation.LEVEL</code>. 职能级别 1是一级2是二级依次类推
      */
     public UShort getLevel() {
         return (UShort) get(4);
     }
 
     /**
-     * Setter for <code>dictdb.dict_51job_occupation.status</code>. 只能状态 0 是有效 1是无效
+     * Setter for <code>dictdb.dict_51job_occupation.STATUS</code>. 只能状态 0 是有效 1是无效
      */
     public void setStatus(UShort value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>dictdb.dict_51job_occupation.status</code>. 只能状态 0 是有效 1是无效
+     * Getter for <code>dictdb.dict_51job_occupation.STATUS</code>. 只能状态 0 是有效 1是无效
      */
     public UShort getStatus() {
         return (UShort) get(5);

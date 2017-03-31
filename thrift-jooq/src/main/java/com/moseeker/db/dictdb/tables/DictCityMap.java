@@ -37,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictCityMap extends TableImpl<DictCityMapRecord> {
 
-    private static final long serialVersionUID = -438863998;
+    private static final long serialVersionUID = -1065969106;
 
     /**
      * The reference instance of <code>dictdb.dict_city_map</code>

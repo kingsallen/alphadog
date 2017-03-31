@@ -4,10 +4,10 @@
 package com.moseeker.db.dictdb.tables.records;
 
 
+import com.moseeker.db.dictdb.tables.DictCityPostcode;
 
 import javax.annotation.Generated;
 
-import com.moseeker.db.dictdb.tables.DictCityPostcode;
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record6;
@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictCityPostcodeRecord extends UpdatableRecordImpl<DictCityPostcodeRecord> implements Record6<Integer, String, String, String, String, String> {
 
-    private static final long serialVersionUID = -516489790;
+    private static final long serialVersionUID = -1336179688;
 
     /**
      * Setter for <code>dictdb.dict_city_postcode.id</code>.

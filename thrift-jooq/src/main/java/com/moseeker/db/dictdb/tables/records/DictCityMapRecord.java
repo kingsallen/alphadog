@@ -4,12 +4,12 @@
 package com.moseeker.db.dictdb.tables.records;
 
 
+import com.moseeker.db.dictdb.tables.DictCityMap;
 
 import java.sql.Timestamp;
 
 import javax.annotation.Generated;
 
-import com.moseeker.db.dictdb.tables.DictCityMap;
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record6;
@@ -31,7 +31,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictCityMapRecord extends UpdatableRecordImpl<DictCityMapRecord> implements Record6<UInteger, UInteger, UInteger, UInteger, UInteger, Timestamp> {
 
-    private static final long serialVersionUID = 1113275312;
+    private static final long serialVersionUID = 1532844678;
 
     /**
      * Setter for <code>dictdb.dict_city_map.id</code>. 主键id

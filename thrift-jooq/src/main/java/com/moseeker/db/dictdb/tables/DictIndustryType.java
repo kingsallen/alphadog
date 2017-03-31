@@ -35,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictIndustryType extends TableImpl<DictIndustryTypeRecord> {
 
-    private static final long serialVersionUID = -2139474804;
+    private static final long serialVersionUID = 1637201720;
 
     /**
      * The reference instance of <code>dictdb.dict_industry_type</code>

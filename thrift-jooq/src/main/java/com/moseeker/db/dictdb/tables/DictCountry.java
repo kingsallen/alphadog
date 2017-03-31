@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictCountry extends TableImpl<DictCountryRecord> {
 
-    private static final long serialVersionUID = 842668911;
+    private static final long serialVersionUID = -1229344229;
 
     /**
      * The reference instance of <code>dictdb.dict_country</code>
