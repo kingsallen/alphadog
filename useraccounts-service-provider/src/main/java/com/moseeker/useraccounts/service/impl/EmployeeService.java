@@ -108,6 +108,7 @@ public class EmployeeService {
 			    emp.setIsRpSent(employee.getIsRpSent() == 0 ? false : true);
 			    emp.setCustomFieldValues(employee.getCustomFieldValues());
 			    emp.setWxuserId(wxuserId);
+			    emp.setEmail(employee.getEmail());
 			    response.setEmployee(emp);
 
 			    if (employee.getActivation() == 0) {
