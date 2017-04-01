@@ -92,11 +92,7 @@ public class EmployeeService {
 			if (employee != null && employee.getId() != 0) {
 			    // 根据user_id获取用户wxuserId
 				query.getEqualFilter().remove("company_id");
-			    Response wxResult = wxUserDao.getResource(query);
-			    int wxuserId = 0;
-			    if (wxResult.getStatus() == 0) {
-			    		wxuserId = JSONObject.parseObject(wxResult.getData()).getIntValue("id");
-			    }
+
 			    Employee emp = new Employee();
 			    emp.setId(employee.getId());
 			    emp.setEmployeeId(employee.getEmployeeid());
@@ -107,7 +103,7 @@ public class EmployeeService {
 			    emp.setAward(employee.getAward());
 			    emp.setIsRpSent(employee.getIsRpSent() == 0 ? false : true);
 			    emp.setCustomFieldValues(employee.getCustomFieldValues());
-			    emp.setWxuserId(wxuserId);
+			    emp.setWxuserId(getWxuserId(query));
 			    emp.setEmail(employee.getEmail());
 			    response.setEmployee(emp);
 
@@ -214,16 +210,8 @@ public class EmployeeService {
 					employee.setEmail(bindingParams.getEmail());
 					query.getEqualFilter().clear();
 					query.getEqualFilter().put("sysuser_id", String.valueOf(bindingParams.getUserId()));
-					Response wxResult;
-					try {
-						wxResult = wxUserDao.getResource(query);
-						if (wxResult.getStatus() == 0 && StringUtils.isNotNullOrEmpty(wxResult.getData())) {
-							employee.setWxuser_id(JSONObject.parseObject(wxResult.getData()).getIntValue("id"));
-						}
-					} catch (Exception e1) {
-						log.error(e1.getMessage(), e1);
-					}
-					employee.setAuthMethod((byte)bindingParams.getType().getValue());
+                    employee.setWxuser_id(getWxuserId(query));
+                    employee.setAuthMethod((byte)bindingParams.getType().getValue());
 					employee.setActivation((byte)1);
 					employee.setCreateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
 					if(userDao.postUserEmployeeDO(employee) == 0) {
@@ -319,8 +307,9 @@ public class EmployeeService {
 		log.info("BindingParams response: {}", response);
 		return response;
 	}
-	
-	/**
+
+
+    /**
 	 * step 1: 认证当前员工   step 2: 将其他公司的该用户员工设为未认证
 	 * @param bindingParams
 	 * @return
@@ -343,15 +332,7 @@ public class EmployeeService {
 					e.setAuthMethod((byte)bindingParams.getType().getValue());
 					query.getEqualFilter().clear();
 					query.getEqualFilter().put("sysuser_id", String.valueOf(bindingParams.getUserId()));
-					Response wxResult;
-					try {
-						wxResult = wxUserDao.getResource(query);
-						if (wxResult.getStatus() == 0 && StringUtils.isNotNullOrEmpty(wxResult.getData())) {
-							e.setWxuser_id(JSONObject.parseObject(wxResult.getData()).getIntValue("id"));
-						}
-					} catch (Exception e1) {
-						log.error(e1.getMessage(), e1);
-					}
+					e.setWxuser_id(getWxuserId(query));
 					e.setBindingTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
 					e.setUpdateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
 					if (StringUtils.isNotNullOrEmpty(bindingParams.getName())) e.setCname(bindingParams.getName());
@@ -591,4 +572,21 @@ public class EmployeeService {
 		}
 		return username;
 	}
+
+    /**
+     *  获取用户wxUserId
+     */
+    private int getWxuserId(CommonQuery query) {
+        int wxUserId = 0;
+        Response wxResult;
+        try {
+            wxResult = wxUserDao.getResource(query);
+            if (wxResult.getStatus() == 0 && StringUtils.isNotNullOrEmpty(wxResult.getData())) {
+                wxUserId = JSONObject.parseObject(wxResult.getData()).getIntValue("id");
+            }
+        } catch (Exception e1) {
+            log.error(e1.getMessage(), e1);
+        }
+        return wxUserId;
+    }
 }
