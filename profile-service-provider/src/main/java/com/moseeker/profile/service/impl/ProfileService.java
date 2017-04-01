@@ -190,6 +190,7 @@ public class ProfileService extends JOOQBaseServiceImpl<Profile, ProfileProfileR
             logger.error(e1.getMessage(), e1);
         }
         String downloadUrl = propertiesUtils.get("GENERATE_USER_ID", String.class);
-        return profileProfileDao.getResourceByApplication(downloadUrl, companyId, sourceId, ats_status, recommender, dl_url_required);
+        String password = propertiesUtils.get("GENERATE_USER_PASSWORD", String.class);
+        return profileProfileDao.getResourceByApplication(downloadUrl, password, companyId, sourceId, ats_status, recommender, dl_url_required);
     }
 }

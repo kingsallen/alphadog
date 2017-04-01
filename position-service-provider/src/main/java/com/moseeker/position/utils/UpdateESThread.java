@@ -21,7 +21,7 @@ import java.util.Map;
  * 批量更新ES Search Engine
  * Created by yuyunfeng on 2017/3/14.
  */
-public class UpdataESThread implements Runnable {
+public class UpdateESThread implements Runnable {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -32,7 +32,7 @@ public class UpdataESThread implements Runnable {
 
     private List<JobPositionRecord> list;
 
-    public UpdataESThread(SearchengineServices.Iface searchengineServices, CompanyServices.Iface companyServices, List<JobPositionRecord> list) {
+    public UpdateESThread(SearchengineServices.Iface searchengineServices, CompanyServices.Iface companyServices, List<JobPositionRecord> list) {
         this.searchengineServices = searchengineServices;
         this.companyServices = companyServices;
         this.list = list;

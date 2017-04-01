@@ -27,14 +27,8 @@ service PositionServices {
     common_struct.Response batchHandlerJobPostion(1:position_struct.BatchHandlerJobPostion batchHandlerJobPostion);
     // 删除职位
     common_struct.Response deleteJobposition(1:position_struct.DelePostion delePostion);
-}
-/*
-	查询第三方自定义职能
-*/
-service PositionDao{
-	common_struct.Response getJobCustoms(1:common_struct.CommonQuery query);
-	common_struct.Response getJobOccupations(1:common_struct.CommonQuery query);
-}
+    // 通过companyId和部门名获取TeamId
+    common_struct.Response getTeamIdByDepartmentName(1:i32 companyId, 2:string departmentName);
 
     //微信端职位列表
     list<position_struct.WechatPositionListData> getPositionList(1: position_struct.WechatPositionListQuery query);
@@ -47,4 +41,11 @@ service PositionDao{
 
     //微信获取红包转发信息
     position_struct.WechatShareData getShareInfo(1: i32 hb_config_id);
+}
+/*
+	查询第三方自定义职能
+*/
+service PositionDao{
+	common_struct.Response getJobCustoms(1:common_struct.CommonQuery query);
+	common_struct.Response getJobOccupations(1:common_struct.CommonQuery query);
 }

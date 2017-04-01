@@ -59,7 +59,7 @@ public class Tables {
 	public static final DictCollege DICT_COLLEGE = com.moseeker.db.dictdb.tables.DictCollege.DICT_COLLEGE;
 
 	/**
-	 * The table dictdb.dict_constant
+	 * 常量字典表
 	 */
 	public static final DictConstant DICT_CONSTANT = com.moseeker.db.dictdb.tables.DictConstant.DICT_CONSTANT;
 
@@ -69,7 +69,7 @@ public class Tables {
 	public static final DictCountry DICT_COUNTRY = com.moseeker.db.dictdb.tables.DictCountry.DICT_COUNTRY;
 
 	/**
-	 * The table dictdb.dict_industry
+	 * 行业二级分类字典表
 	 */
 	public static final DictIndustry DICT_INDUSTRY = com.moseeker.db.dictdb.tables.DictIndustry.DICT_INDUSTRY;
 

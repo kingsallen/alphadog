@@ -56,35 +56,40 @@ public class SearchengineController {
             Integer id = BeanUtils.converToInteger(reqParams.get("id"));
             Response result = positonServices.getPositionById(id);
             position = result.data;
-            Map position_map = (Map) JSON.parse(position);
+            Map position_map =JSON.parseObject(position,Map.class);
             
             String company_id = BeanUtils.converToString(position_map.get("company_id"));
             QueryUtil query = new QueryUtil();
             query.addEqualFilter("id", company_id);
             Response company_resp = companyServices.getAllCompanies(query);
             String company = company_resp.data;
-            List company_maps = (List) JSON.parse(company);
-            Map company_map = (Map) company_maps.get(0);
-            String company_name = (String) company_map.get("name");
-            String scale = (String) company_map.get("scale");
-            position_map.put("company_name",company_name);
-            String degree_name = BeanUtils.converToString(position_map.get("degree_name"));
-            Integer degree_above =BeanUtils.converToInteger(position_map.get("degree_above"));
-            if(degree_above==1){
-                degree_name = degree_name+"及以上";
+            logger.info("======"+company);
+            if(!"{}".equals(company)&&StringUtils.isNotNullOrEmpty(company)&&company.startsWith("[")){
+            	 List company_maps = JSON.parseArray(company,List.class);
+                 Map company_map = (Map) company_maps.get(0);
+                 String company_name = (String) company_map.get("name");
+                 String scale = (String) company_map.get("scale");
+                 position_map.put("company_name",company_name);
+                 String degree_name = BeanUtils.converToString(position_map.get("degree_name"));
+                 Integer degree_above =BeanUtils.converToInteger(position_map.get("degree_above"));
+                 if(degree_above==1){
+                     degree_name = degree_name+"及以上";
+                 }
+                 position_map.put("degree_name",degree_name);
+                 position_map.put("scale",scale);
+                 
             }
-            position_map.put("degree_name",degree_name);
-            position_map.put("scale",scale);
-            
+           
             position = JSON.toJSONString(position_map);
-
-             search_res = searchengineServices.updateposition(position,id);
+            logger.info(position);
+            search_res = searchengineServices.updateposition(position,id);
 
              
         } catch (Exception e) {
 
            e.printStackTrace();
-            return ResponseLogNotification.fail(request, e.getMessage());
+           logger.error(e.getMessage(),e);
+           return ResponseLogNotification.fail(request, e.getMessage());
         }
         
         return ResponseLogNotification.success(request, search_res);
@@ -110,7 +115,8 @@ public class SearchengineController {
             int page_from = BeanUtils.converToInteger(reqParams.get("page_from"));
             int page_size = BeanUtils.converToInteger(reqParams.get("page_size"));
             String child_company_id = BeanUtils.converToString(reqParams.get("child_company_id"));
-            String department = BeanUtils.converToString(reqParams.get("department"));
+            //由于department废弃，查询部门时使用team_name
+            String department = BeanUtils.converToString(reqParams.get("team_name"));
             boolean order_by_priority = BeanUtils.convertToBoolean(reqParams.get("order_by_priority"));
             String custom = BeanUtils.converToString(reqParams.get("custom"));
             
@@ -189,7 +195,7 @@ public class SearchengineController {
 	          position = JSON.toJSONString(position_map);
 	          return position;
         }catch(Exception e){
-      	  logger.info(e.getMessage());
+      	  logger.info(e.getMessage(),e);
         }
         return null;
   }
