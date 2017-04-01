@@ -32,17 +32,17 @@ import org.jooq.types.UShort;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dict_51jobOccupationRecord extends UpdatableRecordImpl<Dict_51jobOccupationRecord> implements Record7<UInteger, UInteger, String, UInteger, UShort, UShort, Timestamp> {
 
-	private static final long serialVersionUID = 83945585;
+	private static final long serialVersionUID = 658475185;
 
 	/**
-	 * Setter for <code>dictdb.dict_51job_occupation.code</code>. 职能id
+	 * Setter for <code>dictdb.dict_51job_occupation.CODE</code>. 职能id
 	 */
 	public void setCode(UInteger value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>dictdb.dict_51job_occupation.code</code>. 职能id
+	 * Getter for <code>dictdb.dict_51job_occupation.CODE</code>. 职能id
 	 */
 	public UInteger getCode() {
 		return (UInteger) getValue(0);
@@ -63,14 +63,14 @@ public class Dict_51jobOccupationRecord extends UpdatableRecordImpl<Dict_51jobOc
 	}
 
 	/**
-	 * Setter for <code>dictdb.dict_51job_occupation.name</code>. 职能名称
+	 * Setter for <code>dictdb.dict_51job_occupation.NAME</code>. 职能名称
 	 */
 	public void setName(String value) {
 		setValue(2, value);
 	}
 
 	/**
-	 * Getter for <code>dictdb.dict_51job_occupation.name</code>. 职能名称
+	 * Getter for <code>dictdb.dict_51job_occupation.NAME</code>. 职能名称
 	 */
 	public String getName() {
 		return (String) getValue(2);
@@ -91,28 +91,28 @@ public class Dict_51jobOccupationRecord extends UpdatableRecordImpl<Dict_51jobOc
 	}
 
 	/**
-	 * Setter for <code>dictdb.dict_51job_occupation.level</code>. 职能级别 1是一级2是二级依次类推
+	 * Setter for <code>dictdb.dict_51job_occupation.LEVEL</code>. 职能级别 1是一级2是二级依次类推
 	 */
 	public void setLevel(UShort value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>dictdb.dict_51job_occupation.level</code>. 职能级别 1是一级2是二级依次类推
+	 * Getter for <code>dictdb.dict_51job_occupation.LEVEL</code>. 职能级别 1是一级2是二级依次类推
 	 */
 	public UShort getLevel() {
 		return (UShort) getValue(4);
 	}
 
 	/**
-	 * Setter for <code>dictdb.dict_51job_occupation.status</code>. 只能状态 0 是有效 1是无效
+	 * Setter for <code>dictdb.dict_51job_occupation.STATUS</code>. 只能状态 0 是有效 1是无效
 	 */
 	public void setStatus(UShort value) {
 		setValue(5, value);
 	}
 
 	/**
-	 * Getter for <code>dictdb.dict_51job_occupation.status</code>. 只能状态 0 是有效 1是无效
+	 * Getter for <code>dictdb.dict_51job_occupation.STATUS</code>. 只能状态 0 是有效 1是无效
 	 */
 	public UShort getStatus() {
 		return (UShort) getValue(5);

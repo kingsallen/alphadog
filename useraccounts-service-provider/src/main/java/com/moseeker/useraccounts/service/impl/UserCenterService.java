@@ -351,7 +351,8 @@ public class UserCenterService {
                             }
                             logger.info("company_name:{}", companyDO.getName());
                         }
-
+                        applicationDetailVO.setStep_status((byte) recruitmentScheduleEnum.getStepStatusForApplicationDetail());
+                        applicationDetailVO.setStep((byte) recruitmentScheduleEnum.getStepForApplicationDetail());
                         if(operationFuture != null) {
                             List<HrOperationRecordDO> operationrecordDOList = (List<HrOperationRecordDO>)operationFuture.get();
                             if(operationrecordDOList != null && operationrecordDOList.size() > 0) {

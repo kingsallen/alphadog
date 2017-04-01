@@ -5,16 +5,13 @@ package com.moseeker.db.dictdb.tables.records;
 
 
 import com.moseeker.db.dictdb.tables.DictCollege;
-
-import javax.annotation.Generated;
-
 import org.jooq.Field;
 import org.jooq.Record4;
 import org.jooq.Row4;
-import org.jooq.impl.TableRecordImpl;
 import org.jooq.impl.UpdatableRecordImpl;
 import org.jooq.types.UInteger;
 
+import javax.annotation.Generated;
 
 /**
  * 学校字典表

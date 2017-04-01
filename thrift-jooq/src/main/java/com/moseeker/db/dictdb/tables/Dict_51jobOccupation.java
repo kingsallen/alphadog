@@ -37,7 +37,7 @@ import org.jooq.types.UShort;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dict_51jobOccupation extends TableImpl<Dict_51jobOccupationRecord> {
 
-	private static final long serialVersionUID = 765790614;
+	private static final long serialVersionUID = 1998742934;
 
 	/**
 	 * The reference instance of <code>dictdb.dict_51job_occupation</code>
@@ -53,9 +53,9 @@ public class Dict_51jobOccupation extends TableImpl<Dict_51jobOccupationRecord> 
 	}
 
 	/**
-	 * The column <code>dictdb.dict_51job_occupation.code</code>. 职能id
+	 * The column <code>dictdb.dict_51job_occupation.CODE</code>. 职能id
 	 */
-	public final TableField<Dict_51jobOccupationRecord, UInteger> CODE = createField("code", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "职能id");
+	public final TableField<Dict_51jobOccupationRecord, UInteger> CODE = createField("CODE", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "职能id");
 
 	/**
 	 * The column <code>dictdb.dict_51job_occupation.parent_id</code>. 父Id，上一级职能的ID
@@ -63,9 +63,9 @@ public class Dict_51jobOccupation extends TableImpl<Dict_51jobOccupationRecord> 
 	public final TableField<Dict_51jobOccupationRecord, UInteger> PARENT_ID = createField("parent_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "父Id，上一级职能的ID");
 
 	/**
-	 * The column <code>dictdb.dict_51job_occupation.name</code>. 职能名称
+	 * The column <code>dictdb.dict_51job_occupation.NAME</code>. 职能名称
 	 */
-	public final TableField<Dict_51jobOccupationRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaulted(true), this, "职能名称");
+	public final TableField<Dict_51jobOccupationRecord, String> NAME = createField("NAME", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaulted(true), this, "职能名称");
 
 	/**
 	 * The column <code>dictdb.dict_51job_occupation.code_other</code>. 第三方职能id
@@ -73,14 +73,14 @@ public class Dict_51jobOccupation extends TableImpl<Dict_51jobOccupationRecord> 
 	public final TableField<Dict_51jobOccupationRecord, UInteger> CODE_OTHER = createField("code_other", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "第三方职能id");
 
 	/**
-	 * The column <code>dictdb.dict_51job_occupation.level</code>. 职能级别 1是一级2是二级依次类推
+	 * The column <code>dictdb.dict_51job_occupation.LEVEL</code>. 职能级别 1是一级2是二级依次类推
 	 */
-	public final TableField<Dict_51jobOccupationRecord, UShort> LEVEL = createField("level", org.jooq.impl.SQLDataType.SMALLINTUNSIGNED.nullable(false).defaulted(true), this, "职能级别 1是一级2是二级依次类推");
+	public final TableField<Dict_51jobOccupationRecord, UShort> LEVEL = createField("LEVEL", org.jooq.impl.SQLDataType.SMALLINTUNSIGNED.nullable(false).defaulted(true), this, "职能级别 1是一级2是二级依次类推");
 
 	/**
-	 * The column <code>dictdb.dict_51job_occupation.status</code>. 只能状态 0 是有效 1是无效
+	 * The column <code>dictdb.dict_51job_occupation.STATUS</code>. 只能状态 0 是有效 1是无效
 	 */
-	public final TableField<Dict_51jobOccupationRecord, UShort> STATUS = createField("status", org.jooq.impl.SQLDataType.SMALLINTUNSIGNED.nullable(false).defaulted(true), this, "只能状态 0 是有效 1是无效");
+	public final TableField<Dict_51jobOccupationRecord, UShort> STATUS = createField("STATUS", org.jooq.impl.SQLDataType.SMALLINTUNSIGNED.nullable(false).defaulted(true), this, "只能状态 0 是有效 1是无效");
 
 	/**
 	 * The column <code>dictdb.dict_51job_occupation.createTime</code>. 创建时间

@@ -51,14 +51,14 @@ public class UserCenterThriftServiceTest {
      */
     //@Test
     public void testGetApplicationDetail() throws Exception {
-        ApplicationDetailVO vo = userCenterService.getApplicationDetail(4, 5);
+        ApplicationDetailVO vo = userCenterService.getApplicationDetail(1, 17);
         if(vo != null) {
-            System.out.println(vo.getCompany_name());
-            System.out.println(vo.getPid());
-            System.out.println(vo.getPosition_title());
-            System.out.println(vo.getStatus_timeline());
-            System.out.println(vo.getStep());
-            System.out.println(vo.getStep_status());
+            System.out.println("name : "+vo.getCompany_name());
+            System.out.println("pid : "+vo.getPid());
+            System.out.println("title : "+vo.getPosition_title());
+            System.out.println("status_timeline : "+vo.getStatus_timeline());
+            System.out.println("step : "+vo.getStep());
+            System.out.println("step_status : "+vo.getStep_status());
             if(vo.getStatus_timeline() != null && vo.getStatus_timeline().size() > 0) {
                 vo.getStatus_timeline().forEach(time_line-> {
                     System.out.println(time_line.getStep_status());
