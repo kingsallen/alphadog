@@ -429,7 +429,7 @@ public class ProfileProcessBS {
 					point = new UserEmployeePointStruct();
 					point.setEmployee_id(bean.getEmployee_id());
 					point.setAward(bean.getAward());
-					point.setApplication_id(bean.getAccount_id());
+					point.setApplication_id(bean.getApplication_id());
 					point.setReason(bean.getReason());
 					list.add(point);
 				}
