@@ -526,12 +526,12 @@ public class EmployeeService {
 	}
 	
 	
-	public Result emailActivation(String activationCodee) throws TException {
-		log.info("emailActivation param: activationCodee={}", activationCodee);
+	public Result emailActivation(String activationCode) throws TException {
+		log.info("emailActivation param: activationCode={}", activationCode);
 		Result response = new Result();
 		response.setSuccess(false);
 		response.setMessage("激活信息不正确");
-		String employeeId = DESCoder.decrypt(activationCodee);
+		String employeeId = DESCoder.decrypt(activationCode);
 		if (StringUtils.isNotNullOrEmpty(employeeId)) {
 			String value = client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, employeeId);
 			if (StringUtils.isNotNullOrEmpty(value)) {

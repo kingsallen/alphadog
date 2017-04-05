@@ -112,9 +112,9 @@ public class EmployeeServiceImpl implements Iface {
 	}
 
 	@Override
-	public Result emailActivation(String activationCodee) throws TException {
+	public Result emailActivation(String activationCode) throws TException {
 		// TODO Auto-generated method stub
-		return service.emailActivation(activationCodee);
+		return service.emailActivation(activationCode);
 	}
 	
 }
