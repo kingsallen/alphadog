@@ -542,14 +542,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     JobPositionRecord record = BeanUtils.structToDB(jobPositionHandlerDate, JobPositionRecord.class);
                     // 职位要求不能为空
                     if (com.moseeker.common.util.StringUtils.isNullOrEmpty(record.getRequirement())) {
-                        JobPositionFailMessPojo jobPositionFailMessPojo = new JobPositionFailMessPojo();
-                        jobPositionFailMessPojo.setCompanyId(jobPositionHandlerDate.getCompany_id());
-                        jobPositionFailMessPojo.setJobNumber(jobPositionHandlerDate.getJobnumber());
-                        jobPositionFailMessPojo.setSourceId(jobPositionHandlerDate.getSource_id());
-                        jobPositionFailMessPojo.setJobPostionId(jobPositionHandlerDate.getId());
-                        jobPositionFailMessPojo.setMessage(ConstantErrorCodeMessage.POSITION_JOBPOSITION_REQUIREMENT_BLANK);
-                        jobPositionFailMessPojos.add(jobPositionFailMessPojo);
-                        continue;
+                        record.setRequirement("");
                     }
                     // 设置部门信息，返回错误
                     if (com.moseeker.common.util.StringUtils.isNullOrEmpty(record.getDepartment())) {
