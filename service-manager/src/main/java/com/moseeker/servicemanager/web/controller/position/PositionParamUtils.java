@@ -1,6 +1,6 @@
 package com.moseeker.servicemanager.web.controller.position;
 
-import com.alibaba.fastjson.JSONObject;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
@@ -8,13 +8,15 @@ import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.position.struct.BatchHandlerJobPostion;
 import com.moseeker.thrift.gen.position.struct.City;
 import com.moseeker.thrift.gen.position.struct.JobPostrionObj;
+
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class PositionParamUtils extends ParamUtils {
 
@@ -52,10 +54,13 @@ public class PositionParamUtils extends ParamUtils {
     public static BatchHandlerJobPostion parseBatchHandlerJobPostionParam(HttpServletRequest request) throws Exception {
         BatchHandlerJobPostion batchHandlerDate = new BatchHandlerJobPostion();
         HashMap<String, Object> data = parseRequestParam(request);
-        batchHandlerDate.setAppid((Integer) data.get("appid"));
         batchHandlerDate.setFields_nohash((String) data.get("fields_nohash"));
         batchHandlerDate.setFields_nooverwrite((String) data.get("fields_nooverwrite"));
-        batchHandlerDate.setNodelete((Boolean) data.get("nodelete"));
+        if (StringUtils.isEmptyObject(data.get("nodelete"))) {
+            batchHandlerDate.setNodelete(false);
+        } else {
+            batchHandlerDate.setNodelete((Boolean) data.get("nodelete"));
+        }
         List<JobPostrionObj> cs = new ArrayList<>();
         List<HashMap<String, Object>> datas = (List<HashMap<String, Object>>) data.get("data");
         if (datas != null) {
@@ -90,9 +95,6 @@ public class PositionParamUtils extends ParamUtils {
 
     /**
      * 解析职位刷新参数
-     *
-     * @param request
-     * @return
      */
     @SuppressWarnings("unchecked")
     public static List<HashMap<Integer, Integer>> parseRefreshParam(HttpServletRequest request) {

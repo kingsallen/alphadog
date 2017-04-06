@@ -52,4 +52,6 @@ service HrDBDao {
     hrdb_struct.HrChatUnreadCountDO saveChatUnreadCount(1: hrdb_struct.HrChatUnreadCountDO unreadCount) throws (1:common_struct.CURDException e);
 	
 	common_struct.Response getHrWxWechat(1: common_struct.CommonQuery query);
+
+    common_struct.Response getHrTeam(1:common_struct.CommonQuery query);
 }

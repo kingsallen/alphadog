@@ -92,6 +92,7 @@ service ConfigDao{
         common_struct.Response getConfigSysPointsConfTpl(1:common_struct.CommonQuery query);
         common_struct.Response getRecruitProcesses(1:i32 companyId);
 }
+
 service WxUserDao {
 	common_struct.Response getResource(1:common_struct.CommonQuery query);
 }

@@ -146,9 +146,9 @@ public class SearchengineService {
                 QueryBuilder candidatefilter = QueryBuilders.matchPhraseQuery("candidate_source_name", candidate_source);
                 ((BoolQueryBuilder) query).must(candidatefilter);
             }
-
-            if (!StringUtils.isEmpty(department)) {
-                QueryBuilder departmentfilter = QueryBuilders.matchPhraseQuery("department", department);
+            
+            if ( !StringUtils.isEmpty(department)) {
+                QueryBuilder departmentfilter = QueryBuilders.matchPhraseQuery("team_name", department);
                 ((BoolQueryBuilder) query).must(departmentfilter);
             }
 

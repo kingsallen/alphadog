@@ -11,5 +11,7 @@ public interface HrDBService {
 	public Response postHrOperation(HrOperationRecordDO record);
 	public Response postHrOperations(List<HrOperationRecordDO> record);
 	public Response getHrHistoryOpertation(List<ProcessValidationStruct> records);
+	// 获取团队信息
+	public Response getHrTeam(CommonQuery query);
 	public Response getHrWxWechat(CommonQuery query);
 }

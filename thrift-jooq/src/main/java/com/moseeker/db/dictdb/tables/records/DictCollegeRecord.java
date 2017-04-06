@@ -5,6 +5,7 @@ package com.moseeker.db.dictdb.tables.records;
 
 
 import com.moseeker.db.dictdb.tables.DictCollege;
+
 import org.jooq.Field;
 import org.jooq.Record4;
 import org.jooq.Row4;

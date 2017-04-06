@@ -38,7 +38,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserEmployee extends TableImpl<UserEmployeeRecord> {
 
-    private static final long serialVersionUID = 1473136570;
+    private static final long serialVersionUID = -4135062;
 
     /**
      * The reference instance of <code>userdb.user_employee</code>
@@ -302,6 +302,11 @@ public class UserEmployee extends TableImpl<UserEmployeeRecord> {
      * The column <code>userdb.user_employee.auth_method</code>. 员工认证途径 0:使用邮箱认证 1:使用自定义认证 2:使用问答认证
      */
     public final TableField<UserEmployeeRecord, Byte> AUTH_METHOD = createField("auth_method", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.TINYINT)), this, "员工认证途径 0:使用邮箱认证 1:使用自定义认证 2:使用问答认证");
+
+    /**
+     * The column <code>userdb.user_employee.custom_field_values</code>. 自定 义字段
+     */
+    public final TableField<UserEmployeeRecord, String> CUSTOM_FIELD_VALUES = createField("custom_field_values", org.jooq.impl.SQLDataType.VARCHAR.length(4096).nullable(false).defaultValue(org.jooq.impl.DSL.field("[]", org.jooq.impl.SQLDataType.VARCHAR)), this, "自定 义字段");
 
     /**
      * Create a <code>userdb.user_employee</code> table reference

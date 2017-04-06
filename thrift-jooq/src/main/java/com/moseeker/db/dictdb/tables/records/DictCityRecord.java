@@ -14,7 +14,6 @@ import org.jooq.types.UInteger;
 
 import javax.annotation.Generated;
 
-
 /**
  * 城市字典表
  */
