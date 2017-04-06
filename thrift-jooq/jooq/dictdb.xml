@@ -34,7 +34,7 @@ Excludes match before includes -->
 <!-- The destination package of your generated classes (within the destination directory) -->
 <packageName>com.moseeker.db.dictdb</packageName>
 <!-- The destination directory of your generated classes -->
-<directory>/tmp/</directory>
+<directory>src/main/java</directory>
 </target>
 </generator>
 </configuration>

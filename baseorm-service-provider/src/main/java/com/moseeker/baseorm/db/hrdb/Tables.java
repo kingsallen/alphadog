@@ -5,11 +5,13 @@ package com.moseeker.baseorm.db.hrdb;
 
 
 import com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrChatUnreadCount;
 import com.moseeker.baseorm.db.hrdb.tables.HrChildCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeePosition;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeSection;
 import com.moseeker.baseorm.db.hrdb.tables.HrFeedback;
@@ -22,19 +24,24 @@ import com.moseeker.baseorm.db.hrdb.tables.HrHtml5Statistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrHtml5UniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor;
 import com.moseeker.baseorm.db.hrdb.tables.HrMedia;
+import com.moseeker.baseorm.db.hrdb.tables.HrMediaBackupChendi;
 import com.moseeker.baseorm.db.hrdb.tables.HrOperationRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrPointsConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrRecruitStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrRecruitUniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrReferralStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrResource;
+import com.moseeker.baseorm.db.hrdb.tables.HrResourceBackupChendi;
+import com.moseeker.baseorm.db.hrdb.tables.HrResourceOnline;
 import com.moseeker.baseorm.db.hrdb.tables.HrRuleStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrRuleUniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrSearchCondition;
 import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
 import com.moseeker.baseorm.db.hrdb.tables.HrTalentpool;
 import com.moseeker.baseorm.db.hrdb.tables.HrTeam;
+import com.moseeker.baseorm.db.hrdb.tables.HrTeamBackupChendi;
 import com.moseeker.baseorm.db.hrdb.tables.HrTeamMember;
+import com.moseeker.baseorm.db.hrdb.tables.HrTeamMemberBackupChendi;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.baseorm.db.hrdb.tables.HrTopic;
@@ -49,6 +56,8 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxRule;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
+import com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5Statistics;
+import com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5UniqueStatistics;
 
 import javax.annotation.Generated;
 
@@ -67,9 +76,24 @@ import javax.annotation.Generated;
 public class Tables {
 
     /**
+     * The table <code>hrdb.hrdb.hr_html5_statistics</code>.
+     */
+    public static final HrdbHrHtml5Statistics HRDB_HR_HTML5_STATISTICS = com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5Statistics.HRDB_HR_HTML5_STATISTICS;
+
+    /**
+     * The table <code>hrdb.hrdb.hr_html5_unique_statistics</code>.
+     */
+    public static final HrdbHrHtml5UniqueStatistics HRDB_HR_HTML5_UNIQUE_STATISTICS = com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5UniqueStatistics.HRDB_HR_HTML5_UNIQUE_STATISTICS;
+
+    /**
      * 企业申请简历校验配置
      */
     public static final HrAppCvConf HR_APP_CV_CONF = com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf.HR_APP_CV_CONF;
+
+    /**
+     * 聊天室未读消息
+     */
+    public static final HrChatUnreadCount HR_CHAT_UNREAD_COUNT = com.moseeker.baseorm.db.hrdb.tables.HrChatUnreadCount.HR_CHAT_UNREAD_COUNT;
 
     /**
      * 子公司表
@@ -95,6 +119,11 @@ public class Tables {
      * 部门员工配置表
      */
     public static final HrEmployeeCertConf HR_EMPLOYEE_CERT_CONF = com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF;
+
+    /**
+     * 员工认证自定义字段表
+     */
+    public static final HrEmployeeCustomFields HR_EMPLOYEE_CUSTOM_FIELDS = com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS;
 
     /**
      * 员工职能表
@@ -157,6 +186,11 @@ public class Tables {
     public static final HrMedia HR_MEDIA = com.moseeker.baseorm.db.hrdb.tables.HrMedia.HR_MEDIA;
 
     /**
+     * The table <code>hrdb.hr_media_backup_chendi</code>.
+     */
+    public static final HrMediaBackupChendi HR_MEDIA_BACKUP_CHENDI = com.moseeker.baseorm.db.hrdb.tables.HrMediaBackupChendi.HR_MEDIA_BACKUP_CHENDI;
+
+    /**
      * hr申请状态操作记录
      */
     public static final HrOperationRecord HR_OPERATION_RECORD = com.moseeker.baseorm.db.hrdb.tables.HrOperationRecord.HR_OPERATION_RECORD;
@@ -185,6 +219,16 @@ public class Tables {
      * 资源集合表
      */
     public static final HrResource HR_RESOURCE = com.moseeker.baseorm.db.hrdb.tables.HrResource.HR_RESOURCE;
+
+    /**
+     * The table <code>hrdb.hr_resource_backup_chendi</code>.
+     */
+    public static final HrResourceBackupChendi HR_RESOURCE_BACKUP_CHENDI = com.moseeker.baseorm.db.hrdb.tables.HrResourceBackupChendi.HR_RESOURCE_BACKUP_CHENDI;
+
+    /**
+     * The table <code>hrdb.hr_resource_online</code>.
+     */
+    public static final HrResourceOnline HR_RESOURCE_ONLINE = com.moseeker.baseorm.db.hrdb.tables.HrResourceOnline.HR_RESOURCE_ONLINE;
 
     /**
      * 微信图文传播次数统计表
@@ -217,9 +261,19 @@ public class Tables {
     public static final HrTeam HR_TEAM = com.moseeker.baseorm.db.hrdb.tables.HrTeam.HR_TEAM;
 
     /**
+     * The table <code>hrdb.hr_team_backup_chendi</code>.
+     */
+    public static final HrTeamBackupChendi HR_TEAM_BACKUP_CHENDI = com.moseeker.baseorm.db.hrdb.tables.HrTeamBackupChendi.HR_TEAM_BACKUP_CHENDI;
+
+    /**
      * 团队成员信息
      */
     public static final HrTeamMember HR_TEAM_MEMBER = com.moseeker.baseorm.db.hrdb.tables.HrTeamMember.HR_TEAM_MEMBER;
+
+    /**
+     * The table <code>hrdb.hr_team_member_backup_chendi</code>.
+     */
+    public static final HrTeamMemberBackupChendi HR_TEAM_MEMBER_BACKUP_CHENDI = com.moseeker.baseorm.db.hrdb.tables.HrTeamMemberBackupChendi.HR_TEAM_MEMBER_BACKUP_CHENDI;
 
     /**
      * 第三方渠道帐号

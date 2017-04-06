@@ -111,7 +111,7 @@ public class ConfigPropertiesUtil {
     /**
      * 读取指定名字的配置文件。如果配置文件的key和已存在的key冲突，会覆盖已存在的key的内容。
      *
-     * @param fileName 配置文件的名称
+     * @param absoluteFile 配置文件的名称
      * @throws Exception 如果配置文件不存在，抛出异常
      */
     public void loadAbsoluteResource(String absoluteFile) throws Exception {
@@ -138,7 +138,7 @@ public class ConfigPropertiesUtil {
     /**
      * 读取指定名字的配置文件。如果配置文件的key和已存在的key冲突，会覆盖已存在的key的内容。
      *
-     * @param fileName 配置文件的名称
+     * @param absoluteFile 配置文件的名称
      * @throws Exception 如果配置文件不存在，抛出异常
      */
     public void reloadAbsoluteResource(String absoluteFile) throws Exception {
@@ -178,5 +178,22 @@ public class ConfigPropertiesUtil {
 		}
 		return null;
 	}
-	
+
+    public <T> T get(String key, Class<T> clazz, T defaultValue) {
+        if(properties.get(key) != null) {
+            T t = BeanUtils.convertTo(properties.get(key), clazz);
+            if(t != null) {
+                return t;
+            } else {
+                return defaultValue;
+            }
+        }
+        return defaultValue;
+    }
+
+    public Set<Object> returnKeys() {
+        if(properties != null)
+            return properties.keySet();
+        return new HashSet<Object>();
+    }
 }

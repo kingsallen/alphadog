@@ -2,6 +2,7 @@ package com.moseeker.apps.service;
 
 import static org.junit.Assert.assertEquals;
 
+import com.moseeker.thrift.gen.position.struct.Position;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -18,7 +19,6 @@ import com.moseeker.thrift.gen.dao.service.CompanyDao;
 import com.moseeker.thrift.gen.dao.service.PositionDao;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.position.service.PositionServices;
-import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 
 public class PositionBS1Test {

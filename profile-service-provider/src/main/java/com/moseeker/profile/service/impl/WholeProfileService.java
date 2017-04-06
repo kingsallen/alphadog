@@ -1,26 +1,12 @@
 package com.moseeker.profile.service.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import org.apache.thrift.TException;
-import org.jooq.types.UByte;
-import org.jooq.types.UInteger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.dictdb.tables.records.DictCollegeRecord;
@@ -28,57 +14,29 @@ import com.moseeker.db.dictdb.tables.records.DictConstantRecord;
 import com.moseeker.db.dictdb.tables.records.DictCountryRecord;
 import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileAttachmentRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileAwardsRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileBasicRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileCredentialsRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileEducationRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileImportRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileLanguageRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileOtherRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileProjectexpRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileSkillRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileWorkexpRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileWorksRecord;
+import com.moseeker.db.profiledb.tables.records.*;
 import com.moseeker.db.userdb.tables.records.UserSettingsRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
-import com.moseeker.profile.dao.AttachmentDao;
-import com.moseeker.profile.dao.AwardsDao;
-import com.moseeker.profile.dao.CityDao;
-import com.moseeker.profile.dao.CollegeDao;
-import com.moseeker.profile.dao.CompanyDao;
-import com.moseeker.profile.dao.ConstantDao;
-import com.moseeker.profile.dao.CountryDao;
-import com.moseeker.profile.dao.CredentialsDao;
-import com.moseeker.profile.dao.CustomizeResumeDao;
-import com.moseeker.profile.dao.EducationDao;
-import com.moseeker.profile.dao.IndustryDao;
-import com.moseeker.profile.dao.IntentionCityDao;
-import com.moseeker.profile.dao.IntentionDao;
-import com.moseeker.profile.dao.IntentionIndustryDao;
-import com.moseeker.profile.dao.IntentionPositionDao;
-import com.moseeker.profile.dao.JobPositionDao;
-import com.moseeker.profile.dao.LanguageDao;
-import com.moseeker.profile.dao.OtherDao;
-import com.moseeker.profile.dao.PositionDao;
-import com.moseeker.profile.dao.ProfileBasicDao;
-import com.moseeker.profile.dao.ProfileDao;
-import com.moseeker.profile.dao.ProfileImportDao;
-import com.moseeker.profile.dao.ProjectExpDao;
-import com.moseeker.profile.dao.SkillDao;
-import com.moseeker.profile.dao.UserDao;
-import com.moseeker.profile.dao.UserSettingsDao;
-import com.moseeker.profile.dao.WXUserDao;
-import com.moseeker.profile.dao.WorkExpDao;
-import com.moseeker.profile.dao.WorksDao;
+import com.moseeker.profile.dao.*;
 import com.moseeker.profile.dao.entity.ProfileWorkexpEntity;
 import com.moseeker.profile.dao.impl.IntentionRecord;
 import com.moseeker.profile.service.impl.serviceutils.ProfilePojo;
 import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import org.apache.thrift.TException;
+import org.joda.time.DateTime;
+import org.jooq.types.UByte;
+import org.jooq.types.UInteger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+import java.util.concurrent.Future;
 
 @Service
 @CounterIface
@@ -87,12 +45,19 @@ public class WholeProfileService {
 	Logger logger = LoggerFactory.getLogger(WholeProfileService.class);
 	ProfileUtils profileUtils = new ProfileUtils();
 
+	ThreadPool pool = ThreadPool.Instance;
+
 	public Response getResource(int userId, int profileId, String uuid) throws TException {
+		logger.info("WholeProfileService getResource");
+		logger.info("WholeProfileService getResource start : {}",new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 		Response response = new Response();
 		try {
 			HashMap<String, Object> profile = new HashMap<String, Object>();
 
 			ProfileProfileRecord profileRecord = profileDao.getProfileByIdOrUserIdOrUUID(userId, profileId, uuid);
+
+			logger.info("WholeProfileService getResource after  profileDao.getProfileByIdOrUserIdOrUUID: {}",new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+
 			if (profileRecord != null) {
 				if (profileRecord.getCompleteness().intValue() == 0
 						|| profileRecord.getCompleteness().intValue() == 10) {
@@ -106,59 +71,103 @@ public class WholeProfileService {
 				query.setPer_page(Integer.MAX_VALUE);
 				query.setEqualFilter(equalFilter);
 
+				logger.info("WholeProfileService getResource before  constantDao.getCitiesByParentCodes : {}",new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+
 				List<DictConstantRecord> constantRecords = constantDao
 						.getCitiesByParentCodes(Arrays.asList(3109, 3105, 3102, 2105, 3120, 3115, 3114, 3119, 3120));
+
+				logger.info("WholeProfileService getResource after constantDao.getCitiesByParentCodes : {}",new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
 				Map<String, Object> profileprofile = buildProfile(profileRecord, query, constantRecords);
 				profile.put("profile", profileprofile);
 
-				Map<String, Object> basic = buildBasic(profileRecord, query, constantRecords);
+				logger.info("WholeProfileService getResource after buildProfile : {}",new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+
+				Future<Map<String, Object>> basicFuture = pool.startTast(() -> buildBasic(profileRecord, query, constantRecords));
+				Future<List<Map<String, Object>>> workexpsFuture = pool.startTast(() -> buildWorkexps(profileRecord, query));
+				Future<List<Map<String, Object>>> educationsFuture = pool.startTast(() -> buildEducations(profileRecord, query));
+				Future<List<Map<String, Object>>> projectexpsFuture = pool.startTast(() -> buildProjectexps(profileRecord, query));
+				Future<List<Map<String, Object>>> buildLanguageFuture = pool.startTast(() -> buildLanguage(profileRecord, query));
+				Future<List<Map<String, Object>>> buildskillsFuture = pool.startTast(() -> buildskills(profileRecord, query));
+				Future<List<Map<String, Object>>> buildsCredentialsFuture = pool.startTast(() -> buildsCredentials(profileRecord, query));
+				Future<List<Map<String, Object>>> buildsAwardsFuture = pool.startTast(() -> buildsAwards(profileRecord, query));
+				Future<List<Map<String, Object>>> buildsWorksFuture = pool.startTast(() -> buildsWorks(profileRecord, query));
+				Future<List<Map<String, Object>>> intentionsFuture = pool.startTast(() -> profileUtils.buildsIntentions(profileRecord, query,
+						constantRecords, intentionDao, intentionCityDao, intentionIndustryDao, intentionPositionDao,
+						dictCityDao, dictIndustryDao, dictPositionDao));
+				Future<List<ProfileAttachmentRecord>> attachmentRecordsFuture = pool.startTast(() -> attachmentDao.getResources(query));
+				Future<List<ProfileImportRecord>> importRecordsFuture = pool.startTast(() -> profileImportDao.getResources(query));
+				Future<List<ProfileOtherRecord>> otherRecordsFuture = pool.startTast(() -> customizeResumeDao.getResources(query));
+
+				Map<String, Object> basic = basicFuture.get();
 				profile.put("basic", basic);
 
-				List<Map<String, Object>> workexps = buildWorkexps(profileRecord, query);
+				logger.info("WholeProfileService getResource basicFuture.get() : {}",new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+
+				List<Map<String, Object>> workexps = workexpsFuture.get();
 				profile.put("workexps", workexps);
 
-				List<Map<String, Object>> educations = buildEducations(profileRecord, query);
+				logger.info("WholeProfileService getResource workexpsFuture.get() : {}",new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+
+				List<Map<String, Object>> educations = educationsFuture.get();
 				profile.put("educations", educations);
 
-				List<Map<String, Object>> projectexps = buildProjectexps(profileRecord, query);
+				logger.info("WholeProfileService getResource educationsFuture.get() : {}",new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+
+				List<Map<String, Object>> projectexps = projectexpsFuture.get();
 				profile.put("projectexps", projectexps);
 
-				List<Map<String, Object>> languages = buildLanguage(profileRecord, query);
+				logger.info("WholeProfileService getResource projectexpsFuture.get() : {}",new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+
+				List<Map<String, Object>> languages = buildLanguageFuture.get();
 				profile.put("languages", languages);
 
-				List<Map<String, Object>> skills = buildskills(profileRecord, query);
+				logger.info("WholeProfileService getResource buildLanguageFuture.get() : {}",new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+
+				List<Map<String, Object>> skills = buildskillsFuture.get();
 				profile.put("skills", skills);
 
-				List<Map<String, Object>> credentials = buildsCredentials(profileRecord, query);
+				logger.info("WholeProfileService getResource buildskillsFuture.get() : {}",new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+
+				List<Map<String, Object>> credentials = buildsCredentialsFuture.get();
 				profile.put("credentials", credentials);
 
-				List<Map<String, Object>> awards = buildsAwards(profileRecord, query);
+				logger.info("WholeProfileService getResource buildsCredentialsFuture.get() : {}",new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+
+				List<Map<String, Object>> awards = buildsAwardsFuture.get();
 				profile.put("awards", awards);
 
-				List<Map<String, Object>> works = buildsWorks(profileRecord, query);
+				logger.info("WholeProfileService getResource buildsAwardsFuture.get() : {}",new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+
+				List<Map<String, Object>> works = buildsWorksFuture.get();
 				profile.put("works", works);
 
-				List<Map<String, Object>> intentions = profileUtils.buildsIntentions(profileRecord, query,
-						constantRecords, intentionDao, intentionCityDao, intentionIndustryDao, intentionPositionDao,
-						dictCityDao, dictIndustryDao, dictPositionDao);
+				logger.info("WholeProfileService getResource buildsWorksFuture.get() : {}",new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+
+				List<Map<String, Object>> intentions = intentionsFuture.get();
 				profile.put("intentions", intentions);
 
-				List<ProfileAttachmentRecord> attachmentRecords = attachmentDao.getResources(query);
+				logger.info("WholeProfileService getResource intentionsFuture.get() : {}",new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+
+				List<ProfileAttachmentRecord> attachmentRecords = attachmentRecordsFuture.get();
 				List<Map<String, Object>> attachments = profileUtils.buildAttachments(profileRecord, attachmentRecords);
 				profile.put("attachments", attachments);
 
-				List<ProfileImportRecord> importRecords = profileImportDao.getResources(query);
+				logger.info("WholeProfileService getResource attachmentRecordsFuture.get() : {}",new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+
+				List<ProfileImportRecord> importRecords = importRecordsFuture.get();
 				List<Map<String, Object>> imports = profileUtils.buildImports(profileRecord, importRecords);
 				profile.put("imports", imports);
 
-				List<ProfileOtherRecord> otherRecords = customizeResumeDao.getResources(query);
+				logger.info("WholeProfileService getResource importRecordsFuture.get() : {}",new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+
+				List<ProfileOtherRecord> otherRecords = otherRecordsFuture.get();
 				List<Map<String, Object>> others = profileUtils.buildOthers(profileRecord, otherRecords);
 
+				logger.info("WholeProfileService getResource done : {}",new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+
 				profile.put("others", others);
-				String jsonString=JSON.toJSONString(profile);
 				return ResponseUtils.success(profile);
-				// response.setData(gson.toJson(profile));
 			} else {
 				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 			}
@@ -1096,11 +1105,21 @@ public class WholeProfileService {
 			List<DictConstantRecord> constantRecords) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
-			ProfileBasicRecord basicRecord = profileBasicDao.getResource(query);
+			/*ProfileBasicRecord basicRecord = profileBasicDao.getResource(query);
 			UserUserRecord userRecord = userDao.getUserById(profileRecord.getUserId().intValue());
 			ProfileWorkexpRecord lastWorkExp = workExpDao.getLastWorkExp(profileRecord.getId().intValue());
 			UserSettingsRecord userSettingsRecord = userSettingsDao
-					.getUserSettingsById(profileRecord.getUserId().intValue());
+					.getUserSettingsById(profileRecord.getUserId().intValue());*/
+
+			Future<ProfileBasicRecord> basicRecordFuture = pool.startTast(() -> profileBasicDao.getResource(query));
+			Future<UserUserRecord> userRecordFuture = pool.startTast(() -> userDao.getUserById(profileRecord.getUserId().intValue()));
+			Future<ProfileWorkexpRecord> lastWorkExpFuture = pool.startTast(() -> workExpDao.getLastWorkExp(profileRecord.getId().intValue()));
+			Future<UserSettingsRecord> userSettingsRecordFuture = pool.startTast(() -> userSettingsDao.getUserSettingsById(profileRecord.getUserId().intValue()));
+
+			ProfileBasicRecord basicRecord = basicRecordFuture.get();
+			UserUserRecord userRecord = userRecordFuture.get();
+			ProfileWorkexpRecord lastWorkExp = lastWorkExpFuture.get();
+			UserSettingsRecord userSettingsRecord = userSettingsRecordFuture.get();
 
 			HrCompanyRecord company = null;
 			if (lastWorkExp != null) {

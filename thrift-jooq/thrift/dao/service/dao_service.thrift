@@ -1,19 +1,21 @@
 namespace java com.moseeker.thrift.gen.dao.service
+namespace py thrift_gen.gen.dao.service.dao
 
 include "../../common/struct/common_struct.thrift"
 include "../../useraccounts/struct/useraccounts_struct.thrift"
 include "../../position/struct/position_struct.thrift"
 include "../../dict/struct/dict_struct.thrift"
 include "../struct/dao_struct.thrift"
+include "../struct/hrdb_struct.thrift"
 include "../../company/struct/company_struct.thrift"
 include "../../application/struct/application_struct.thrift"
-include "../../hr/struct/hr_struct.thrift"
 
 service UserHrAccountDao {
 	common_struct.Response getAccount(1:common_struct.CommonQuery query);
 	common_struct.Response getThirdPartyAccount(1:common_struct.CommonQuery query);
 	common_struct.Response createThirdPartyAccount(1:useraccounts_struct.BindAccountStruct account);
 	common_struct.Response upsertThirdPartyAccount(1:useraccounts_struct.BindAccountStruct account);
+	common_struct.Response getAccounts(1:common_struct.CommonQuery query);
 }
 
 service WordpressDao {
@@ -43,19 +45,9 @@ service CompanyDao {
 	common_struct.Response upsertThirdPartyPositions(1: list<dao_struct.ThirdPartyPositionData> positions);
 	common_struct.Response updatePartyAccountByCompanyIdChannel(1: dao_struct.ThirdPartAccountData account);
 	//查找公司信息
-	company_struct.Hrcompany getCompany(1:common_struct.CommonQuery query);
+	hrdb_struct.HrCompanyDO getCompany(1:common_struct.CommonQuery query);
+	list<company_struct.Hrcompany> getCompanies(1:common_struct.CommonQuery query);
 	common_struct.Response getHrCompanyConfig(1:common_struct.CommonQuery query);
-}
-
-service UserDao {
-	useraccounts_struct.User getUser(1:common_struct.CommonQuery query);
-	//保存用户	
-	useraccounts_struct.User saveUser(1:useraccounts_struct.User user);
-	common_struct.Response getUserEmployee(1:i32 companyId,2:list<i32> weChatIds);
-	common_struct.Response postUserEmployeePoints(1:list<useraccounts_struct.UserEmployeePointStruct> records);
-	common_struct.Response getPointSum(1:list<i64> record);
-	common_struct.Response putUserEmployees(1:list<useraccounts_struct.UserEmployeeStruct> records);
-	common_struct.Response putUserEmployeePoints(1:list<useraccounts_struct.UserEmployeePointStruct> records);
 }
 
 service PositionDao {
@@ -100,11 +92,29 @@ service ConfigDao{
         common_struct.Response getConfigSysPointsConfTpl(1:common_struct.CommonQuery query);
         common_struct.Response getRecruitProcesses(1:i32 companyId);
 }
-service HrDBDao{
-	    common_struct.Response postHrOperationrecords(1:list<hr_struct.HrOperationrecordStruct> record);
-	    common_struct.Response postHrOperationrecord(1:hr_struct.HrOperationrecordStruct record);
-	    common_struct.Response getHrHistoryOperations(1:list<application_struct.ProcessValidationStruct> record);
-}
+
 service WxUserDao {
 	common_struct.Response getResource(1:common_struct.CommonQuery query);
+}
+
+service ThirdPartyUserDao {
+    common_struct.Response putThirdPartyUser(1: useraccounts_struct.ThirdPartyUser user);
+}
+
+//UserEmployeeDao数据库单表操作
+service UserEmployeeDao {
+    common_struct.Response getResource(1:common_struct.CommonQuery query);
+    common_struct.Response getResources(1:common_struct.CommonQuery query);
+
+    common_struct.Response getResourceCount(1:common_struct.CommonQuery query);
+
+    common_struct.Response postResource(1:useraccounts_struct.UserEmployeeStruct record);
+    common_struct.Response postResources(1:list<useraccounts_struct.UserEmployeeStruct> records);
+
+    common_struct.Response putResource(1:useraccounts_struct.UserEmployeeStruct record);
+    common_struct.Response putResources(1:list<useraccounts_struct.UserEmployeeStruct> records);
+
+    common_struct.Response delResource(1:common_struct.CommonQuery query);
+
+    common_struct.Response postPutUserEmployeeBatch(1:list<useraccounts_struct.UserEmployeeStruct> userEmployees);
 }

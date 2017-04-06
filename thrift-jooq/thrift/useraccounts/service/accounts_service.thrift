@@ -4,6 +4,7 @@ include "../struct/useraccounts_struct.thrift"
 include "../../common/struct/common_struct.thrift"
 include "../../foundataionbs/wordpress/struct/wordpress_foundation_strcut.thrift"
 include "../struct/bindtype_struct.thrift"
+include "../../dao/struct/userdb_struct.thrift"
 
 namespace java com.moseeker.thrift.gen.useraccounts.service
 
@@ -57,9 +58,9 @@ service UseraccountsServices {
     common_struct.Response setScanResult(1: i32 wechatId, 2: i64 sceneId, 3:string value);
 	
     //根据手机号码获取用户数据
-    useraccounts_struct.User ifExistUser(1: string mobile);
+    userdb_struct.UserUserDO ifExistUser(1: string mobile);
     //简历回收的自动生成帐号
-    i32 createRetrieveProfileUser(1: useraccounts_struct.User user);
+    i32 createRetrieveProfileUser(1: userdb_struct.UserUserDO user);
     //查询用户是否存在简历
     bool ifExistProfile(1:string mobile);
 }
@@ -94,6 +95,9 @@ service UserHrAccountService {
     common_struct.Response joinTalentpool(1: i32 hrAccountId, 2: list<i32> applierIds)
     // 移出人才库
     common_struct.Response shiftOutTalentpool(1: i32 hrAccountId, 2: list<i32> applierIds)
+
+    // 获取userHrAccount
+    common_struct.Response userHrAccount(1: i32 company_id, 2: i32 disable,3:i32 page ,4:i32 per_age)
 }
 
 /**
@@ -108,4 +112,27 @@ service UserCommonService {
 service UserCenterService {
     //查询用户的申请记录
     list<useraccounts_struct.ApplicationRecordsForm> getApplications(1: i32 userId);
+    useraccounts_struct.ApplicationDetailVO getApplicationDetail(1: i32 userId, 2: i32 appId);
+    //查询用户的只为收藏记录
+    list<useraccounts_struct.FavPositionForm> getFavPositions(1: i32 userId);
+    //查询推荐记录
+    useraccounts_struct.RecommendationVO getRecommendation(1: i32 userId, 2:i8 type, 3: i32 pageNo, 4: i32 pageSize);
+}
+
+//user thirdparty user 服务
+service ThirdPartyUserService {
+    //更新账号
+    common_struct.Response updateUser(1: useraccounts_struct.ThirdPartyUser user);
+}
+
+//UserEmployeeDao数据库单表操作
+service UserEmployeeService {
+
+    common_struct.Response getUserEmployee(1: common_struct.CommonQuery query);
+
+    common_struct.Response getUserEmployees(1: common_struct.CommonQuery query);
+
+    common_struct.Response delUserEmployee(1: common_struct.CommonQuery query);
+
+    common_struct.Response postPutUserEmployeeBatch(1:list<useraccounts_struct.UserEmployeeStruct> userEmployees);
 }

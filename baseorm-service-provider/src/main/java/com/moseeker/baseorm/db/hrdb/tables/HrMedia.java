@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrMedia extends TableImpl<HrMediaRecord> {
 
-    private static final long serialVersionUID = -971045260;
+    private static final long serialVersionUID = 152906265;
 
     /**
      * The reference instance of <code>hrdb.hr_media</code>
@@ -61,9 +61,9 @@ public class HrMedia extends TableImpl<HrMediaRecord> {
     public final TableField<HrMediaRecord, String> LONGTEXT = createField("longtext", org.jooq.impl.SQLDataType.VARCHAR.length(2048).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "描述");
 
     /**
-     * The column <code>hrdb.hr_media.attrs</code>. 客户属性，可选字段
+     * The column <code>hrdb.hr_media.attrs</code>. 客户属性，可选 字段
      */
-    public final TableField<HrMediaRecord, String> ATTRS = createField("attrs", org.jooq.impl.SQLDataType.VARCHAR.length(2048).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "客户属性，可选字段");
+    public final TableField<HrMediaRecord, String> ATTRS = createField("attrs", org.jooq.impl.SQLDataType.VARCHAR.length(1024).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "客户属性，可选 字段");
 
     /**
      * The column <code>hrdb.hr_media.title</code>. 模板名称

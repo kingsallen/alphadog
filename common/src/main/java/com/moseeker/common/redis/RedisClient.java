@@ -28,6 +28,8 @@ public abstract class RedisClient {
 	
 	private static final String className = RedisClient.class.getName();
 	
+	private static final Logger log = LoggerFactory.getLogger(RedisClient.class);
+	
 	/**
 	 * 一次性加载配置信息到缓存中，并返回配置信息集合
 	 * 
@@ -109,6 +111,7 @@ public abstract class RedisClient {
 		try {
 			return redisCluster.setex(cacheKey, redisKey.getTtl(), value);
 		} catch (Exception e) {
+			log.error(e.getMessage(), e);
 			throw new RedisException(e, Constant.REDIS_CONNECT_ERROR_APPID, className, Constant.REDIS_CONNECT_ERROR_EVENTKEY);
 //			Notification.sendNotification(Constant.REDIS_CONNECT_ERROR_APPID, Constant.REDIS_CONNECT_ERROR_EVENTKEY, e.getMessage());
 		} finally {

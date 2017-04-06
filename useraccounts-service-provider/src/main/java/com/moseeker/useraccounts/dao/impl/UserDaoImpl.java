@@ -48,8 +48,8 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
     	try(Connection conn = DBConnHelper.DBConn.getConn(); DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);) {
     		conn.setAutoCommit(false);
     		create.update(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD)
-            .set(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.SYSUSER_ID, Long.valueOf(orig))
-            .where(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.SYSUSER_ID.equal(Long.valueOf(dest)))
+            .set(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.RECOM_USER_ID, UInteger.valueOf(orig))
+            .where(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.RECOM_USER_ID.equal(UInteger.valueOf(dest)))
             .execute();
             create.update(HrWxHrChatList.HR_WX_HR_CHAT_LIST)
             .set(HrWxHrChatList.HR_WX_HR_CHAT_LIST.SYSUSER_ID, orig)
@@ -72,8 +72,8 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
             .where(UserWxViewer.USER_WX_VIEWER.SYSUSER_ID.equal(dest))
             .execute();
             create.update(CandidateCompany.CANDIDATE_COMPANY)
-            .set(CandidateCompany.CANDIDATE_COMPANY.SYS_USER_ID, orig)
-            .where(CandidateCompany.CANDIDATE_COMPANY.SYS_USER_ID.equal(dest))
+            .set(CandidateCompany.CANDIDATE_COMPANY.SYS_USER_ID, UInteger.valueOf(orig))
+            .where(CandidateCompany.CANDIDATE_COMPANY.SYS_USER_ID.equal(UInteger.valueOf(dest)))
             .execute();
             create.update(JobApplication.JOB_APPLICATION)
             .set(JobApplication.JOB_APPLICATION.APPLIER_ID, UInteger.valueOf(orig))
@@ -95,8 +95,8 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
 		try(Connection conn = DBConnHelper.DBConn.getConn(); DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);) {
 			conn.setAutoCommit(false);
 			create.update(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD)
-	        .set(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.SYSUSER_ID, Long.valueOf(orig))
-	        .where(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.SYSUSER_ID.equal(Long.valueOf(dest)))
+	        .set(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.RECOM_USER_ID, UInteger.valueOf(orig))
+	        .where(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.RECOM_USER_ID.equal(UInteger.valueOf(dest)))
 	        .execute();
 	        create.update(HrWxHrChatList.HR_WX_HR_CHAT_LIST)
 	        .set(HrWxHrChatList.HR_WX_HR_CHAT_LIST.SYSUSER_ID, orig)
@@ -119,8 +119,8 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
 	        .where(UserWxViewer.USER_WX_VIEWER.SYSUSER_ID.equal(dest))
 	        .execute();
 	        create.update(CandidateCompany.CANDIDATE_COMPANY)
-	        .set(CandidateCompany.CANDIDATE_COMPANY.SYS_USER_ID, orig)
-	        .where(CandidateCompany.CANDIDATE_COMPANY.SYS_USER_ID.equal(dest))
+	        .set(CandidateCompany.CANDIDATE_COMPANY.SYS_USER_ID, UInteger.valueOf(orig))
+	        .where(CandidateCompany.CANDIDATE_COMPANY.SYS_USER_ID.equal(UInteger.valueOf(dest)))
 	        .execute();
 	        create.update(JobApplication.JOB_APPLICATION)
 	        .set(JobApplication.JOB_APPLICATION.APPLIER_ID, UInteger.valueOf(orig))
@@ -161,7 +161,7 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
 //
 //                // 根据用户数据初始化用户配置表
 //                create.insertInto(UserSettings.USER_SETTINGS, UserSettings.USER_SETTINGS.USER_ID)
-//                        .values(userUserRecord.getId())
+//                        .dao(userUserRecord.getId())
 //                        .execute();
 //
 //            });

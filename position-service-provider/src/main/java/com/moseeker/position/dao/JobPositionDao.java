@@ -7,10 +7,18 @@ import com.moseeker.position.pojo.JobPositionPojo;
 
 public interface JobPositionDao extends BaseDao<JobPositionRecord> {
 
-	JobPositionPojo getPosition(int positionId);
+    JobPositionPojo getPosition(int positionId);
 
-	JobPositionRecord getPositionById(int positionId);
+    JobPositionRecord getPositionById(int positionId);
 
-	HrCompanyAccountRecord getHrCompanyAccountByPublisher(int publisher);
-	
+
+    HrCompanyAccountRecord getHrCompanyAccountByPublisher(int publisher);
+
+    /**
+     * 新增JobPosition数据并且返回jobPositionId
+     *
+     * @return
+     */
+    Integer insertJobPostion(JobPositionRecord jobPositionRecord);
+
 }

@@ -1,48 +1,43 @@
 package com.moseeker.useraccounts.server;
 
+import com.moseeker.rpccenter.main.MoServer;
+import com.moseeker.useraccounts.thrift.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.moseeker.rpccenter.common.ServerNodeUtils;
-import com.moseeker.rpccenter.main.MultiRegServer;
-import com.moseeker.useraccounts.thrift.UserCenterThriftService;
-import com.moseeker.useraccounts.thrift.UserCommonThriftService;
-import com.moseeker.useraccounts.thrift.UserHrAccountServiceImpl;
-import com.moseeker.useraccounts.thrift.UseraccountsServiceImpl;
-import com.moseeker.useraccounts.thrift.UsersettingsServicesImpl;
-
 /**
- * 
  * 服务启动入口。
- * 
+ * <p>
  * <p>
  * Company: MoSeeker
  * </P>
  * <p>
  * date: Mar 27, 2016
  * </p>
- * 
+ *
  * @author yaofeng
  * @version Beta
  */
 public class UseraccountsServer {
-    
+
     private static Logger LOGGER = LoggerFactory.getLogger(UseraccountsServer.class);
-    
+
     public static void main(String[] args) {
 
         try {
             AnnotationConfigApplicationContext acac = initSpring();
-            MultiRegServer server = new MultiRegServer(UseraccountsServer.class,
-                    ServerNodeUtils.getPort(args),
+            MoServer server = new MoServer(acac, "",
                     acac.getBean(UserHrAccountServiceImpl.class),
                     acac.getBean(UsersettingsServicesImpl.class),
                     acac.getBean(UserCommonThriftService.class),
                     acac.getBean(UserCenterThriftService.class),
-                    acac.getBean(UseraccountsServiceImpl.class));
-            
-            server.start(); // 阻塞式IO + 多线程处理
+                    acac.getBean(UseraccountsServiceImpl.class),
+                    acac.getBean(ThirdPartyUserServiceImpl.class),
+                    acac.getBean(UserEmployeeServiceImpl.class),
+                    acac.getBean(EmployeeServiceImpl.class));
+            server.startServer();
+
 
             synchronized (UseraccountsServer.class) {
                 while (true) {
@@ -54,7 +49,7 @@ public class UseraccountsServer {
                 }
             }
         } catch (Exception e) {
-        	e.printStackTrace();
+            e.printStackTrace();
             LOGGER.error("error", e);
         }
     }

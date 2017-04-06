@@ -30,7 +30,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateVJobPositionRecom extends TableImpl<CandidateVJobPositionRecomRecord> {
 
-	private static final long serialVersionUID = -1109229947;
+	private static final long serialVersionUID = -1031804617;
 
 	/**
 	 * The reference instance of <code>candidatedb.candidate_v_job_position_recom</code>
@@ -51,14 +51,14 @@ public class CandidateVJobPositionRecom extends TableImpl<CandidateVJobPositionR
 	public final TableField<CandidateVJobPositionRecomRecord, Long> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaulted(true), this, "position.id 分享职位ID");
 
 	/**
-	 * The column <code>candidatedb.candidate_v_job_position_recom.recom_id</code>. wx_group_user.id 分享用户微信ID
+	 * The column <code>candidatedb.candidate_v_job_position_recom.recom_id</code>. userdb.user_wx_user.id 分享用户微信ID。现在已经废弃，请参考recom_user_id字段
 	 */
-	public final TableField<CandidateVJobPositionRecomRecord, Long> RECOM_ID = createField("recom_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaulted(true), this, "wx_group_user.id 分享用户微信ID");
+	public final TableField<CandidateVJobPositionRecomRecord, Long> RECOM_ID = createField("recom_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaulted(true), this, "userdb.user_wx_user.id 分享用户微信ID。现在已经废弃，请参考recom_user_id字段");
 
 	/**
-	 * The column <code>candidatedb.candidate_v_job_position_recom.presentee_id</code>. 被动求职者,浏览者的微信ID，wx_group_user.id
+	 * The column <code>candidatedb.candidate_v_job_position_recom.presentee_id</code>. 被动求职者,浏览者的微信ID，userdb.user_wx_user.id。现在已经废弃，请参考presentee_user_id
 	 */
-	public final TableField<CandidateVJobPositionRecomRecord, Long> PRESENTEE_ID = createField("presentee_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaulted(true), this, "被动求职者,浏览者的微信ID，wx_group_user.id");
+	public final TableField<CandidateVJobPositionRecomRecord, Long> PRESENTEE_ID = createField("presentee_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaulted(true), this, "被动求职者,浏览者的微信ID，userdb.user_wx_user.id。现在已经废弃，请参考presentee_user_id");
 
 	/**
 	 * The column <code>candidatedb.candidate_v_job_position_recom.create_time</code>. 创建时间

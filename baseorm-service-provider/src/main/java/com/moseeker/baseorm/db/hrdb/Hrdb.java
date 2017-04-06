@@ -5,11 +5,13 @@ package com.moseeker.baseorm.db.hrdb;
 
 
 import com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrChatUnreadCount;
 import com.moseeker.baseorm.db.hrdb.tables.HrChildCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeePosition;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeSection;
 import com.moseeker.baseorm.db.hrdb.tables.HrFeedback;
@@ -22,19 +24,24 @@ import com.moseeker.baseorm.db.hrdb.tables.HrHtml5Statistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrHtml5UniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor;
 import com.moseeker.baseorm.db.hrdb.tables.HrMedia;
+import com.moseeker.baseorm.db.hrdb.tables.HrMediaBackupChendi;
 import com.moseeker.baseorm.db.hrdb.tables.HrOperationRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrPointsConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrRecruitStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrRecruitUniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrReferralStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrResource;
+import com.moseeker.baseorm.db.hrdb.tables.HrResourceBackupChendi;
+import com.moseeker.baseorm.db.hrdb.tables.HrResourceOnline;
 import com.moseeker.baseorm.db.hrdb.tables.HrRuleStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrRuleUniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrSearchCondition;
 import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
 import com.moseeker.baseorm.db.hrdb.tables.HrTalentpool;
 import com.moseeker.baseorm.db.hrdb.tables.HrTeam;
+import com.moseeker.baseorm.db.hrdb.tables.HrTeamBackupChendi;
 import com.moseeker.baseorm.db.hrdb.tables.HrTeamMember;
+import com.moseeker.baseorm.db.hrdb.tables.HrTeamMemberBackupChendi;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.baseorm.db.hrdb.tables.HrTopic;
@@ -49,6 +56,8 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxRule;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
+import com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5Statistics;
+import com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5UniqueStatistics;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -74,7 +83,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 670490300;
+    private static final long serialVersionUID = 1326407603;
 
     /**
      * The reference instance of <code>hrdb</code>
@@ -82,9 +91,24 @@ public class Hrdb extends SchemaImpl {
     public static final Hrdb HRDB = new Hrdb();
 
     /**
+     * The table <code>hrdb.hrdb.hr_html5_statistics</code>.
+     */
+    public final HrdbHrHtml5Statistics HRDB_HR_HTML5_STATISTICS = com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5Statistics.HRDB_HR_HTML5_STATISTICS;
+
+    /**
+     * The table <code>hrdb.hrdb.hr_html5_unique_statistics</code>.
+     */
+    public final HrdbHrHtml5UniqueStatistics HRDB_HR_HTML5_UNIQUE_STATISTICS = com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5UniqueStatistics.HRDB_HR_HTML5_UNIQUE_STATISTICS;
+
+    /**
      * 企业申请简历校验配置
      */
     public final HrAppCvConf HR_APP_CV_CONF = com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf.HR_APP_CV_CONF;
+
+    /**
+     * 聊天室未读消息
+     */
+    public final HrChatUnreadCount HR_CHAT_UNREAD_COUNT = com.moseeker.baseorm.db.hrdb.tables.HrChatUnreadCount.HR_CHAT_UNREAD_COUNT;
 
     /**
      * 子公司表
@@ -110,6 +134,11 @@ public class Hrdb extends SchemaImpl {
      * 部门员工配置表
      */
     public final HrEmployeeCertConf HR_EMPLOYEE_CERT_CONF = com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF;
+
+    /**
+     * 员工认证自定义字段表
+     */
+    public final HrEmployeeCustomFields HR_EMPLOYEE_CUSTOM_FIELDS = com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS;
 
     /**
      * 员工职能表
@@ -172,6 +201,11 @@ public class Hrdb extends SchemaImpl {
     public final HrMedia HR_MEDIA = com.moseeker.baseorm.db.hrdb.tables.HrMedia.HR_MEDIA;
 
     /**
+     * The table <code>hrdb.hr_media_backup_chendi</code>.
+     */
+    public final HrMediaBackupChendi HR_MEDIA_BACKUP_CHENDI = com.moseeker.baseorm.db.hrdb.tables.HrMediaBackupChendi.HR_MEDIA_BACKUP_CHENDI;
+
+    /**
      * hr申请状态操作记录
      */
     public final HrOperationRecord HR_OPERATION_RECORD = com.moseeker.baseorm.db.hrdb.tables.HrOperationRecord.HR_OPERATION_RECORD;
@@ -200,6 +234,16 @@ public class Hrdb extends SchemaImpl {
      * 资源集合表
      */
     public final HrResource HR_RESOURCE = com.moseeker.baseorm.db.hrdb.tables.HrResource.HR_RESOURCE;
+
+    /**
+     * The table <code>hrdb.hr_resource_backup_chendi</code>.
+     */
+    public final HrResourceBackupChendi HR_RESOURCE_BACKUP_CHENDI = com.moseeker.baseorm.db.hrdb.tables.HrResourceBackupChendi.HR_RESOURCE_BACKUP_CHENDI;
+
+    /**
+     * The table <code>hrdb.hr_resource_online</code>.
+     */
+    public final HrResourceOnline HR_RESOURCE_ONLINE = com.moseeker.baseorm.db.hrdb.tables.HrResourceOnline.HR_RESOURCE_ONLINE;
 
     /**
      * 微信图文传播次数统计表
@@ -232,9 +276,19 @@ public class Hrdb extends SchemaImpl {
     public final HrTeam HR_TEAM = com.moseeker.baseorm.db.hrdb.tables.HrTeam.HR_TEAM;
 
     /**
+     * The table <code>hrdb.hr_team_backup_chendi</code>.
+     */
+    public final HrTeamBackupChendi HR_TEAM_BACKUP_CHENDI = com.moseeker.baseorm.db.hrdb.tables.HrTeamBackupChendi.HR_TEAM_BACKUP_CHENDI;
+
+    /**
      * 团队成员信息
      */
     public final HrTeamMember HR_TEAM_MEMBER = com.moseeker.baseorm.db.hrdb.tables.HrTeamMember.HR_TEAM_MEMBER;
+
+    /**
+     * The table <code>hrdb.hr_team_member_backup_chendi</code>.
+     */
+    public final HrTeamMemberBackupChendi HR_TEAM_MEMBER_BACKUP_CHENDI = com.moseeker.baseorm.db.hrdb.tables.HrTeamMemberBackupChendi.HR_TEAM_MEMBER_BACKUP_CHENDI;
 
     /**
      * 第三方渠道帐号
@@ -331,12 +385,16 @@ public class Hrdb extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
+            HrdbHrHtml5Statistics.HRDB_HR_HTML5_STATISTICS,
+            HrdbHrHtml5UniqueStatistics.HRDB_HR_HTML5_UNIQUE_STATISTICS,
             HrAppCvConf.HR_APP_CV_CONF,
+            HrChatUnreadCount.HR_CHAT_UNREAD_COUNT,
             HrChildCompany.HR_CHILD_COMPANY,
             HrCompany.HR_COMPANY,
             HrCompanyAccount.HR_COMPANY_ACCOUNT,
             HrCompanyConf.HR_COMPANY_CONF,
             HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF,
+            HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS,
             HrEmployeePosition.HR_EMPLOYEE_POSITION,
             HrEmployeeSection.HR_EMPLOYEE_SECTION,
             HrFeedback.HR_FEEDBACK,
@@ -349,19 +407,24 @@ public class Hrdb extends SchemaImpl {
             HrHtml5UniqueStatistics.HR_HTML5_UNIQUE_STATISTICS,
             HrImporterMonitor.HR_IMPORTER_MONITOR,
             HrMedia.HR_MEDIA,
+            HrMediaBackupChendi.HR_MEDIA_BACKUP_CHENDI,
             HrOperationRecord.HR_OPERATION_RECORD,
             HrPointsConf.HR_POINTS_CONF,
             HrRecruitStatistics.HR_RECRUIT_STATISTICS,
             HrRecruitUniqueStatistics.HR_RECRUIT_UNIQUE_STATISTICS,
             HrReferralStatistics.HR_REFERRAL_STATISTICS,
             HrResource.HR_RESOURCE,
+            HrResourceBackupChendi.HR_RESOURCE_BACKUP_CHENDI,
+            HrResourceOnline.HR_RESOURCE_ONLINE,
             HrRuleStatistics.HR_RULE_STATISTICS,
             HrRuleUniqueStatistics.HR_RULE_UNIQUE_STATISTICS,
             HrSearchCondition.HR_SEARCH_CONDITION,
             HrSuperaccountApply.HR_SUPERACCOUNT_APPLY,
             HrTalentpool.HR_TALENTPOOL,
             HrTeam.HR_TEAM,
+            HrTeamBackupChendi.HR_TEAM_BACKUP_CHENDI,
             HrTeamMember.HR_TEAM_MEMBER,
+            HrTeamMemberBackupChendi.HR_TEAM_MEMBER_BACKUP_CHENDI,
             HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT,
             HrThirdPartyPosition.HR_THIRD_PARTY_POSITION,
             HrTopic.HR_TOPIC,

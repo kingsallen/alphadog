@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.moseeker.thrift.gen.dao.struct.HrCompanyDO;
+import com.moseeker.thrift.gen.position.struct.Position;
+import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
+import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
@@ -23,16 +26,12 @@ import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
-import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.service.CompanyDao;
 import com.moseeker.thrift.gen.dao.service.PositionDao;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.position.service.PositionServices;
-import com.moseeker.thrift.gen.position.struct.Position;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 
 /**
@@ -220,7 +219,7 @@ public class PositionBS {
 			try {
 				QueryUtil qu = new QueryUtil();
 				qu.addEqualFilter("id", String.valueOf(companyId));
-				Hrcompany company = CompanyDao.getCompany(qu);
+				HrCompanyDO company = CompanyDao.getCompany(qu);
 				for(ThirdPartyPosition channel : channels) {
 					if(channel.isUse_company_address()) {
 						channel.setAddress(company.getAddress());
@@ -244,7 +243,6 @@ public class PositionBS {
 	 */
 	public Response refreshPosition(int positionId, int channel) {
 		logger.info("refreshPosition start");
-		System.out.println("refreshPosition start");
 		HashMap<String, Object> result = new HashMap<>();
 		result.put("position_id", positionId);
 		result.put("channel", channel);
@@ -256,14 +254,12 @@ public class PositionBS {
 			
 			boolean permission = positionServices.ifAllowRefresh(positionId, channel);
 			logger.info("permission:"+permission);
-			System.out.println("permission:"+permission);
-			
+
 			if (permission) {
 				ThirdPartyPositionForSynchronizationWithAccount refreshPosition = positionServices
 						.createRefreshPosition(positionId, channel);
 				if(refreshPosition.getPosition_info() != null && StringUtils.isNotNullOrEmpty(refreshPosition.getUser_name())) {
 					logger.info("refreshPosition:"+JSON.toJSONString(refreshPosition));
-					System.out.println("refreshPosition:"+JSON.toJSONString(refreshPosition));
 					response = chaosService.refreshPosition(refreshPosition);
 					ThirdPartyPositionData account = JSON.parseObject(response.getData(), ThirdPartyPositionData.class);
 					result.put("is_refresh", PositionRefreshType.refreshing.getValue());

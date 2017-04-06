@@ -31,7 +31,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyAccountRecord extends UpdatableRecordImpl<HrThirdPartyAccountRecord> implements Record11<Integer, Short, String, String, String, Short, UInteger, UInteger, Timestamp, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = -314953305;
+    private static final long serialVersionUID = 1575334927;
 
     /**
      * Setter for <code>hrdb.hr_third_party_account.id</code>. 编号
@@ -104,14 +104,14 @@ public class HrThirdPartyAccountRecord extends UpdatableRecordImpl<HrThirdPartyA
     }
 
     /**
-     * Setter for <code>hrdb.hr_third_party_account.binding</code>. 0=未绑定,1=绑定,2=绑定中，3=绑定失败
+     * Setter for <code>hrdb.hr_third_party_account.binding</code>. 0=未绑定,1=绑定
      */
     public void setBinding(Short value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_third_party_account.binding</code>. 0=未绑定,1=绑定,2=绑定中，3=绑定失败
+     * Getter for <code>hrdb.hr_third_party_account.binding</code>. 0=未绑定,1=绑定
      */
     public Short getBinding() {
         return (Short) get(5);

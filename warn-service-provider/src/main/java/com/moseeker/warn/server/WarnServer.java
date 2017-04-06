@@ -3,6 +3,7 @@ package com.moseeker.warn.server;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.moseeker.rpccenter.common.ServerNodeUtils;
+import com.moseeker.rpccenter.main.MoServer;
 import com.moseeker.rpccenter.main.Server;
 import com.moseeker.warn.thrift.WarnThriftService;
 
@@ -15,8 +16,10 @@ public class WarnServer {
 	public static void main(String[] args){
 		try{
 			AnnotationConfigApplicationContext context = initSpring();
-			Server server=new Server(WarnServer.class,ServerNodeUtils.getPort(args),context.getBean(WarnThriftService.class));
-			server.start();
+//			Server server=new Server(WarnServer.class,ServerNodeUtils.getPort(args),context.getBean(WarnThriftService.class));
+//			server.start();
+			MoServer server=new MoServer(context,"",context.getBean(WarnThriftService.class));
+			server.startServer();
 			synchronized (WarnServer.class) {
 				while(true){
 					try{

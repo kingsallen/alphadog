@@ -21,7 +21,7 @@ public class CounterIfaceAopTest {
 		service = context.getBean(CounterIfaceService.class);
 	}
 	
-	@Test
+	//@Test
 	public void counter(){
 		service.display("vincent");
 	}

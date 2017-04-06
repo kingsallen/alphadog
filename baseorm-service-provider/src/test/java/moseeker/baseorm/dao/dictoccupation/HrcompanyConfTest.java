@@ -1,13 +1,5 @@
 package moseeker.baseorm.dao.dictoccupation;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.Test;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import com.moseeker.baseorm.service.Impl.HrCompanyServiceImpl;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-
 public class HrcompanyConfTest {
 	/*private  HrCompanyServiceImpl htcompany;
 	public void init() {

@@ -6,6 +6,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import com.moseeker.application.thrift.JobApplicataionServicesImpl;
 import com.moseeker.rpccenter.common.ServerNodeUtils;
+import com.moseeker.rpccenter.main.MoServer;
 import com.moseeker.rpccenter.main.MultiRegServer;
 
 /**
@@ -19,12 +20,18 @@ public class JobApplicationServer {
 
         AnnotationConfigApplicationContext acac = initSpring();
         try {
-        	MultiRegServer server = new MultiRegServer(
-                    JobApplicationServer.class,
-                    ServerNodeUtils.getPort(args),
+//        	MultiRegServer server = new MultiRegServer(
+//                    JobApplicationServer.class,
+//                    ServerNodeUtils.getPort(args),
+//                    acac.getBean(JobApplicataionServicesImpl.class)
+//            );
+//            server.start();
+            
+            MoServer server = new MoServer(
+                    acac,"",
                     acac.getBean(JobApplicataionServicesImpl.class)
             );
-            server.start();
+            server.startServer();
             synchronized (JobApplicationServer.class) {
                 while (true) {
                     try {

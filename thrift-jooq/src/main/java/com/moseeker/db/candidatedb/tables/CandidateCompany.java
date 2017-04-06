@@ -20,6 +20,7 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
+import org.jooq.types.UInteger;
 
 
 /**
@@ -35,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateCompany extends TableImpl<CandidateCompanyRecord> {
 
-	private static final long serialVersionUID = 1234853270;
+	private static final long serialVersionUID = 1194335673;
 
 	/**
 	 * The reference instance of <code>candidatedb.candidate_company</code>
@@ -66,9 +67,9 @@ public class CandidateCompany extends TableImpl<CandidateCompanyRecord> {
 	public final TableField<CandidateCompanyRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "修改时间");
 
 	/**
-	 * The column <code>candidatedb.candidate_company.wxuser_id</code>. wx_group_user.id
+	 * The column <code>candidatedb.candidate_company.wxuser_id</code>. user_wx_user.id  候选人绑定的user_wx_user.id，现在已经废弃。微信账号由C端账号替换，请参考sys_user_id
 	 */
-	public final TableField<CandidateCompanyRecord, Integer> WXUSER_ID = createField("wxuser_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "wx_group_user.id");
+	public final TableField<CandidateCompanyRecord, Integer> WXUSER_ID = createField("wxuser_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "user_wx_user.id  候选人绑定的user_wx_user.id，现在已经废弃。微信账号由C端账号替换，请参考sys_user_id");
 
 	/**
 	 * The column <code>candidatedb.candidate_company.status</code>. 候选人状态，0：删除，1：正常状态
@@ -106,9 +107,9 @@ public class CandidateCompany extends TableImpl<CandidateCompanyRecord> {
 	public final TableField<CandidateCompanyRecord, String> HEADIMGURL = createField("headimgurl", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaulted(true), this, "wx_group_user.headimgurl 用户头像");
 
 	/**
-	 * The column <code>candidatedb.candidate_company.sys_user_id</code>. sys_user.id
+	 * The column <code>candidatedb.candidate_company.sys_user_id</code>. userdb.user_user.id C端账号编号，表示该候选人绑定的C端账号
 	 */
-	public final TableField<CandidateCompanyRecord, Integer> SYS_USER_ID = createField("sys_user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "sys_user.id");
+	public final TableField<CandidateCompanyRecord, UInteger> SYS_USER_ID = createField("sys_user_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "userdb.user_user.id C端账号编号，表示该候选人绑定的C端账号");
 
 	/**
 	 * The column <code>candidatedb.candidate_company.click_from</code>. 来自, 0:未知, 朋友圈(timeline ) 1, 微信群(groupmessage) 2, 个人消息(singlemessage)
@@ -158,7 +159,7 @@ public class CandidateCompany extends TableImpl<CandidateCompanyRecord> {
 	 */
 	@Override
 	public List<UniqueKey<CandidateCompanyRecord>> getKeys() {
-		return Arrays.<UniqueKey<CandidateCompanyRecord>>asList(Keys.KEY_CANDIDATE_COMPANY_PRIMARY);
+		return Arrays.<UniqueKey<CandidateCompanyRecord>>asList(Keys.KEY_CANDIDATE_COMPANY_PRIMARY, Keys.KEY_CANDIDATE_COMPANY_UNIQUE_INDEX_COMPANY_USER);
 	}
 
 	/**
