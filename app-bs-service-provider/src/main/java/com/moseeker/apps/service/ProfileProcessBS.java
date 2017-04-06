@@ -49,7 +49,6 @@ import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
 
 @Service
 public class ProfileProcessBS {
-
     private Logger log = LoggerFactory.getLogger(getClass());
 
     private MqService.Iface mqService = ServiceManager.SERVICEMANAGER
@@ -399,7 +398,7 @@ public class ProfileProcessBS {
                     point = new UserEmployeePointStruct();
                     point.setEmployee_id(bean.getEmployee_id());
                     point.setAward(bean.getAward());
-                    point.setApplication_id(bean.getAccount_id());
+                    point.setApplication_id(bean.getApplication_id());
                     point.setReason(bean.getReason());
                     list.add(point);
                 }
@@ -643,4 +642,5 @@ public class ProfileProcessBS {
         }
         return account;
     }
+
 }
