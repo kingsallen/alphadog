@@ -1,22 +1,5 @@
 package com.moseeker.useraccounts.service.impl;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang.math.NumberUtils;
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.providerutils.QueryUtil;
@@ -28,36 +11,19 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.service.CompanyDao;
-import com.moseeker.thrift.gen.dao.service.ConfigDBDao;
-import com.moseeker.thrift.gen.dao.service.HrDBDao;
-import com.moseeker.thrift.gen.dao.service.JobDBDao;
-import com.moseeker.thrift.gen.dao.service.UserDBDao;
-import com.moseeker.thrift.gen.dao.service.UserEmployeeDao;
-import com.moseeker.thrift.gen.dao.service.WxUserDao;
-import com.moseeker.thrift.gen.dao.struct.ConfigSysPointConfTplDO;
-import com.moseeker.thrift.gen.dao.struct.HrCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.HrEmployeeCertConfDO;
-import com.moseeker.thrift.gen.dao.struct.HrEmployeeCustomFieldsDO;
-import com.moseeker.thrift.gen.dao.struct.HrPointsConfDO;
-import com.moseeker.thrift.gen.dao.struct.JobApplicationDO;
-import com.moseeker.thrift.gen.dao.struct.JobPositionDO;
-import com.moseeker.thrift.gen.dao.struct.UserEmployeeDO;
-import com.moseeker.thrift.gen.dao.struct.UserEmployeePointsRecordDO;
-import com.moseeker.thrift.gen.dao.struct.UserUserDO;
-import com.moseeker.thrift.gen.employee.struct.BindStatus;
-import com.moseeker.thrift.gen.employee.struct.BindingParams;
-import com.moseeker.thrift.gen.employee.struct.Employee;
-import com.moseeker.thrift.gen.employee.struct.EmployeeCustomFieldsConf;
-import com.moseeker.thrift.gen.employee.struct.EmployeeResponse;
-import com.moseeker.thrift.gen.employee.struct.EmployeeVerificationConf;
-import com.moseeker.thrift.gen.employee.struct.EmployeeVerificationConfResponse;
-import com.moseeker.thrift.gen.employee.struct.Result;
-import com.moseeker.thrift.gen.employee.struct.Reward;
-import com.moseeker.thrift.gen.employee.struct.RewardConfig;
-import com.moseeker.thrift.gen.employee.struct.RewardsResponse;
+import com.moseeker.thrift.gen.dao.service.*;
+import com.moseeker.thrift.gen.dao.struct.*;
+import com.moseeker.thrift.gen.employee.struct.*;
 import com.moseeker.thrift.gen.mq.service.MqService;
-import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
+import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author ltf
@@ -181,10 +147,11 @@ public class EmployeeService {
 			return response;
 		}
 		query.setEqualFilter(new HashMap<String, String>());
-		switch(bindingParams.getType()){
+		switch(bindingParams.getType()) {
 			case EMAIL:
 				// 邮箱校验后缀
-				if (JSONObject.parseArray(certConf.getEmail_suffix()).stream().noneMatch(m -> bindingParams.getEmail().endsWith(String.valueOf(m)))) {
+				if (JSONObject.parseArray(certConf.getEmail_suffix()).stream().noneMatch(m -> bindingParams.getEmail()
+						.endsWith(String.valueOf(m)))) {
 					response.setSuccess(false);
 					response.setMessage("员工认证信息不正确");
 					break;
@@ -224,14 +191,14 @@ public class EmployeeService {
 						log.error(e1.getMessage(), e1);
 					}
 					employee.setAuthMethod((byte)bindingParams.getType().getValue());
-					employee.setActivation((byte)1);
+					employee.setActivation((byte)3);
 					employee.setCreateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
 					if(userDao.postUserEmployeeDO(employee) == 0) {
 						response.setSuccess(false);
 						response.setMessage("认证失败，请检查员工信息");
 						log.info("员工邮箱认证，保存员工信息失败 employee={}", employee);
 						break;
-					} 
+					}
 				}
 				
 				// 防止用户频繁认证，24h内不重复发认证邮件
@@ -357,7 +324,7 @@ public class EmployeeService {
 					if (StringUtils.isNotNullOrEmpty(bindingParams.getName())) e.setCname(bindingParams.getName());
 					if (StringUtils.isNotNullOrEmpty(bindingParams.getMobile())) e.setMobile(bindingParams.getMobile());
 				} else {
-					e.setActivation((byte)1);
+					e.setActivation((byte)4);
 				}
 			});
 		}
