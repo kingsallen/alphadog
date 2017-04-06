@@ -6,6 +6,13 @@ import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import com.moseeker.candidate.service.checkout.CandidateCheckTool;
+import com.moseeker.candidate.service.exception.CandidateException;
+import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.thrift.gen.candidate.struct.CandidateList;
+import com.moseeker.thrift.gen.candidate.struct.CandidateListParam;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
@@ -45,6 +52,7 @@ public class CandidateEntity implements Candidate {
      * @param positionID 职位编号
      * @param shareChainID 是否来自员工转发
      */
+    @CounterIface
     @Override
     public void glancePosition(int userID, int positionID, int shareChainID) {
         ValidateUtil vu = new ValidateUtil();
@@ -125,6 +133,7 @@ public class CandidateEntity implements Candidate {
         }
     }
 
+    @CounterIface
 	@Override
 	public Response changeInteresting(int user_id, int position_id, byte is_interested) {
 		Response response = ResponseUtils.success("{}");
@@ -140,4 +149,17 @@ public class CandidateEntity implements Candidate {
 		}
 		return response;
 	}
+
+    @Override
+    public CandidateList candidateList(CandidateListParam param) throws BIZException {
+        ValidateUtil vu = CandidateCheckTool.checkCandidateList(param);
+        String message = vu.validate();
+        if(!StringUtils.isNullOrEmpty(message)) {
+            throw CandidateException.PROGRAM_PARAM_VALIDATE_ERROR.buildException();
+        }
+
+        return null;
+    }
+
+
 }

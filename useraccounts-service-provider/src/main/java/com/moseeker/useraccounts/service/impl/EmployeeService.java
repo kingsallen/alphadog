@@ -177,9 +177,10 @@ public class EmployeeService {
 					employee.setEmail(bindingParams.getEmail());
 					query.getEqualFilter().clear();
 					query.getEqualFilter().put("sysuser_id", String.valueOf(bindingParams.getUserId()));
+
                     employee.setWxuser_id(getWxuserId(query));
                     employee.setAuthMethod((byte)bindingParams.getType().getValue());
-					employee.setActivation((byte)3);
+					employee.setActivation((byte)1);
 					employee.setCreateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
 					if(userDao.postUserEmployeeDO(employee) == 0) {
 						response.setSuccess(false);

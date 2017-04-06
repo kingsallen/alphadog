@@ -1,5 +1,8 @@
 package com.moseeker.candidate.service;
 
+import com.moseeker.thrift.gen.candidate.struct.CandidateList;
+import com.moseeker.thrift.gen.candidate.struct.CandidateListParam;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 
 /**
@@ -24,4 +27,12 @@ public interface Candidate {
      * @return
      */
     public Response changeInteresting(int user_id, int position_id, byte is_interested);
+
+    /**
+     * 查找被动求职者列表
+     * @param param 查询参数
+     * @return 被动求职者列表
+     * @throws BIZException 业务异常
+     */
+    CandidateList candidateList(CandidateListParam param) throws BIZException;
 }

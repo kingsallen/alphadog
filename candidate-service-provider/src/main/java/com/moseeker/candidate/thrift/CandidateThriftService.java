@@ -2,6 +2,9 @@ package com.moseeker.candidate.thrift;
 
 import com.moseeker.candidate.service.Candidate;
 import com.moseeker.thrift.gen.candidate.service.CandidateService;
+import com.moseeker.thrift.gen.candidate.struct.CandidateList;
+import com.moseeker.thrift.gen.candidate.struct.CandidateListParam;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 
 import org.apache.thrift.TException;
@@ -26,5 +29,10 @@ public class CandidateThriftService implements CandidateService.Iface {
     public Response changeInteresting(int user_id, int position_id, byte is_interested) throws TException {
     		return candidate.changeInteresting(user_id, position_id, is_interested);
     }
-    
+
+    @Override
+    public CandidateList candidateList(CandidateListParam param) throws BIZException, TException {
+        return candidate.candidateList(param);
+    }
+
 }

@@ -15,6 +15,7 @@ public final class ConstantErrorCodeMessage {
     public static final String VALIDATE_FAILED = "{'errcode':90014, 'message':'{MESSAGE}'}";
     public static final String PROGRAM_PARAM_NOTEXIST = "{'status':90015,'message':'参数不正确!'}";
     public static final String PROGRAM_CONFIG_INCOMPLETE = "{'status':90016,'message':'配置信息丢失!'}";
+    public static final String PROGRAM_PARAM_VALIDATE_ERROR = "{'status':90017,'message':'{MESSAGE}'}";
 
     // 用户服务ERRCODE说明定义 1字头
     public static final String LOGIN_ACCOUNT_ILLEAGUE = "{'status':10010,'message':'用户名密码不匹配!'}";
