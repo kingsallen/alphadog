@@ -30,6 +30,7 @@ service CandidateDBDao {
     void deleteCandidatePositionShareRecord(1: i32 id) 
     
     candidatedb_struct.CandidateRecomRecordDO getCandidateRecomRecord(1:common_struct.CommonQuery query) 
+    list<candidatedb_struct.CandidateRecomRecordDO> listCandidateRecomRecord(1: i32 postUserId, 2 : string clickTime, 3 : list<i32> recoms) throws (1: common_struct.CURDException e) 
     list<candidatedb_struct.CandidateRecomRecordDO> listCandidateRecomRecords(1:common_struct.CommonQuery query) 
     list<candidatedb_struct.CandidateRecomRecordDO> listCandidateRecomRecordsForApplied(1: i32 userId, 2: i32 pageNo, 3: i32 pageSize) 
     list<candidatedb_struct.CandidateRecomRecordDO> listInterestedCandidateRecomRecord(1: i32 userId, 2: i32 pageNo, 3: i32 pageSize) 

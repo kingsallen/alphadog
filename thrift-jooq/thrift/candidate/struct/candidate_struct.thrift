@@ -20,10 +20,10 @@ struct CandidateList {
     3:  optional list<Candidate> candidates  //职位名称
 }
 
-//
+//推荐人列表接口调用参数
 struct CandidateListParam {
     1:  optional i32 postUserId,            //推荐者编号 user_user.id
     2:  optional string clickTime,          //点击职位信息的时间
-    3:  optional i32 isRecom,               //是否推荐
+    3:  optional list<i32> recoms,          //是否推荐
     4:  optional i32 companyId              //公司编号
 }

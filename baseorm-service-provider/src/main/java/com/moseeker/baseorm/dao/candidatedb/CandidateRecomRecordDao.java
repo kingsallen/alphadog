@@ -9,15 +9,16 @@ import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.dao.struct.CURDException;
 import com.moseeker.thrift.gen.dao.struct.CandidateRecomRecordDO;
-import org.jooq.DSLContext;
-import org.jooq.Record1;
-import org.jooq.Result;
-import org.jooq.SelectConditionStep;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.jooq.*;
 import org.jooq.types.UInteger;
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -207,6 +208,53 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
                 candidateRecomRecordDOList = BeanUtils.DBToStruct(CandidateRecomRecordDO.class, result);
             }
         } catch (SQLException e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+            try {
+                if(conn != null && !conn.isClosed()) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+        return candidateRecomRecordDOList;
+    }
+
+    public List<CandidateRecomRecordDO> listCandidateRecomRecord(int postUserId, String clickTime, List<Integer> recoms) {
+        List<CandidateRecomRecordDO> candidateRecomRecordDOList = new ArrayList<>();
+        Connection conn = null;
+        try {
+            conn = DBConnHelper.DBConn.getConn();
+            DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+
+            DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd");
+            DateTime dateTime = DateTime.parse(clickTime, format);
+            Condition condition = CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(UInteger.valueOf(postUserId))
+                    .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME.greaterOrEqual(new Timestamp(dateTime.getMillis())))
+                    .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME.lessThan(new Timestamp(dateTime.plusDays(1).getMillis())));
+            if(recoms != null && recoms.size() > 0) {
+                condition.and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM.in(recoms));
+            }
+
+            Result<CandidateRecomRecordRecord> result = create.selectFrom(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
+                    .where(condition)
+                    .groupBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID,
+                            CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID)
+                    .orderBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME)
+                    .fetch();
+            if(result != null && result.size() > 0) {
+                candidateRecomRecordDOList = BeanUtils.DBToStruct(CandidateRecomRecordDO.class, result);
+            }
+
+        } catch (SQLException e) {
+            try {
+                if(conn != null && !conn.isClosed()) {
+                    conn.rollback();
+                }
+            } catch (SQLException e1) {
+                logger.error(e1.getMessage(), e1);
+            }
             logger.error(e.getMessage(), e);
         } finally {
             try {

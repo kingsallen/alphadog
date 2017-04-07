@@ -11,6 +11,8 @@ import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by jack on 16/02/2017.
  */
@@ -31,7 +33,7 @@ public class CandidateThriftService implements CandidateService.Iface {
     }
 
     @Override
-    public CandidateList candidateList(CandidateListParam param) throws BIZException, TException {
+    public List<CandidateList> candidateList(CandidateListParam param) throws BIZException, TException {
         return candidate.candidateList(param);
     }
 

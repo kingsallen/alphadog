@@ -5,6 +5,8 @@ import com.moseeker.thrift.gen.candidate.struct.CandidateListParam;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 
+import java.util.List;
+
 /**
  * 候选人
  * Created by jack on 10/02/2017.
@@ -34,5 +36,5 @@ public interface Candidate {
      * @return 被动求职者列表
      * @throws BIZException 业务异常
      */
-    CandidateList candidateList(CandidateListParam param) throws BIZException;
+    List<CandidateList> candidateList(CandidateListParam param) throws BIZException;
 }

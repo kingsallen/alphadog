@@ -8,7 +8,7 @@ import com.moseeker.thrift.gen.candidate.struct.CandidateListParam;
  * 校验工具
  * Created by jack on 06/04/2017.
  */
-public class CandidateCheckTool {
+public class ParamCheckTool {
 
     public static ValidateUtil checkCandidateList(CandidateListParam param) {
 

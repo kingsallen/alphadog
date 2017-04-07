@@ -1,19 +1,22 @@
 package com.moseeker.candidate.service.entities;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
-import com.moseeker.candidate.service.checkout.CandidateCheckTool;
+import com.moseeker.candidate.service.checkout.ParamCheckTool;
+import com.moseeker.candidate.service.exception.CandidateCategory;
 import com.moseeker.candidate.service.exception.CandidateExceptionFactory;
-import com.moseeker.candidate.service.exception.CandidateExceptionType;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.candidate.struct.CandidateList;
 import com.moseeker.thrift.gen.candidate.struct.CandidateListParam;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.dao.struct.*;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
@@ -28,13 +31,6 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.CandidateCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.CandidatePositionDO;
-import com.moseeker.thrift.gen.dao.struct.CandidateRemarkDO;
-import com.moseeker.thrift.gen.dao.struct.CandidateShareChainDO;
-import com.moseeker.thrift.gen.dao.struct.JobPositionDO;
-import com.moseeker.thrift.gen.dao.struct.UserEmployeeDO;
-import com.moseeker.thrift.gen.dao.struct.UserUserDO;
 
 /**
  * 候选人实体，提供候选人相关业务
@@ -45,6 +41,8 @@ import com.moseeker.thrift.gen.dao.struct.UserUserDO;
 public class CandidateEntity implements Candidate {
 
     Logger logger = LoggerFactory.getLogger(CandidateEntity.class);
+
+    ThreadPool tp = ThreadPool.Instance;
 
     /**
      * C端用户查看职位，判断是否生成候选人数据
@@ -63,7 +61,7 @@ public class CandidateEntity implements Candidate {
         if(vu.getVerified().get()) {
             try {
                 //检查候选人数据是否存在
-                ThreadPool tp = ThreadPool.Instance;
+
                 Future userFuture = tp.startTast(() -> CandidateDBDao.getUserByID(userID));
                 Future positionFuture = tp.startTast(() -> CandidateDBDao.getPositionByID(positionID));
                 Future shareChainDOFuture = tp.startTast(() -> CandidateDBDao.getCandidateShareChain(shareChainID));
@@ -150,17 +148,194 @@ public class CandidateEntity implements Candidate {
 		return response;
 	}
 
+    /**
+     * 查找职位转发浏览记录
+     * @param param 查询参数
+     * @return 职位转发浏览记录
+     * @throws BIZException
+     */
     @Override
-    public CandidateList candidateList(CandidateListParam param) throws BIZException {
-        ValidateUtil vu = CandidateCheckTool.checkCandidateList(param);
+    public List<CandidateList> candidateList(CandidateListParam param) throws BIZException {
+
+        List<CandidateList> result = new ArrayList<>();
+
+        ValidateUtil vu = ParamCheckTool.checkCandidateList(param);
         String message = vu.validate();
         if(!StringUtils.isNullOrEmpty(message)) {
             throw CandidateExceptionFactory.buildCheckFailedException(message);
         }
+
         //是否开启挖掘被动求职者
-        //
-        return null;
+        boolean passiveSeeker = CandidateDBDao.isStartPassiveSeeker(param.getCompanyId());
+        if(!passiveSeeker) {
+            throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_NOT_START);
+        }
+
+        /** 查找职位转发浏览记录 */
+        List<CandidateRecomRecordDO> candidateRecomRecordDOList =
+                CandidateDBDao.getCandidateRecomRecordDO(param.getPostUserId(), param.getClickTime(), param.getRecoms());
+
+
+
+        if(candidateRecomRecordDOList != null && candidateRecomRecordDOList.size() > 0) {
+
+            //职位编号
+            List<Integer> positionIdList = candidateRecomRecordDOList.stream()
+                    .map(candidateRecomRecordDO -> candidateRecomRecordDO.getPositionId())
+                    .collect(Collectors.toList());
+
+            //被动求职者编号
+            List<Integer> presenteeIdList = candidateRecomRecordDOList.stream()
+                    .map(candidateRecomRecordDO -> candidateRecomRecordDO.getPresenteeUserId())
+                    .collect(Collectors.toList());
+
+            //推荐人编号
+            List<Integer> repostIdList = candidateRecomRecordDOList.stream()
+                    .map(candidateRecomRecordDO -> candidateRecomRecordDO.getRepostUserId())
+                    .collect(Collectors.toList());
+
+            /** 并行查找职位信息，被动求职者信息，推荐人信息 */
+            Future positionFuture = tp.startTast(() -> CandidateDBDao.getPositionByIdList(positionIdList));
+            Future presenteeFuture = tp.startTast(() -> CandidateDBDao.getUserByIDList(presenteeIdList));
+            Future repostFuture = tp.startTast(() -> CandidateDBDao.getUserByIDList(repostIdList));
+
+            /** 封装职位标题，推荐人信息，被动求职者信息 */
+            List<JobPositionDO> jobPositionDOList = null;
+            try {
+                jobPositionDOList = (List<JobPositionDO>) positionFuture.get();
+                if(jobPositionDOList != null && jobPositionDOList.size() > 0) {
+
+                    List<UserUserDO> presenteeUserList = findPresentee(presenteeFuture);    //候选人
+                    List<UserUserDO> repostUserList = findRepost(repostFuture);             //推荐者
+
+                    for(JobPositionDO positionDO : jobPositionDOList) {
+                        CandidateList postionCandidate = addPositionCandidate(positionDO, candidateRecomRecordDOList, presenteeUserList, repostUserList);
+                        result.add(postionCandidate);
+                    }
+                } else {
+                    throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_CANDIDATES_POSITION_NOT_EXIST);
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                logger.error(e.getMessage(), e);
+                throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_CANDIDATES_POSITION_NOT_EXIST);
+            }
+        } else {
+            throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_CANDIDATES_RECORD_NOT_EXIST);
+        }
+        return result;
     }
 
+    /**
+     * 生成职位候选人信息
+     * @param positionDO 职位信息
+     * @param candidateRecomRecordDOList 职位转发浏览记录
+     * @param presenteeUserList 被动求职者
+     * @param repostUserList 推荐人信息
+     * @return 职位候选人信息
+     */
+    private CandidateList addPositionCandidate(JobPositionDO positionDO,
+                                               List<CandidateRecomRecordDO> candidateRecomRecordDOList,
+                                               List<UserUserDO> presenteeUserList, List<UserUserDO> repostUserList) {
+        CandidateList postionCandidate = new CandidateList();
+        postionCandidate.setPositionId(positionDO.getId());
+        postionCandidate.setPositionName(positionDO.getTitle());
+
+        List<CandidateRecomRecordDO> candidateRecomRecordDOPositionList = candidateRecomRecordDOList
+                .stream()
+                .filter(candidateRecomRecordDO -> candidateRecomRecordDO.getPositionId() == positionDO.getId())
+                .collect(Collectors.toList());
+
+        List<com.moseeker.thrift.gen.candidate.struct.Candidate> candidates
+                = addCandidate(candidateRecomRecordDOPositionList, presenteeUserList, repostUserList);
+
+        postionCandidate.setCandidates(candidates);
+        return postionCandidate;
+    }
+
+    /**
+     * 生成职位下的候选人信息
+     * @param candidateRecomRecordDOPositionList 职位转发浏览记录
+     * @param presenteeUserList 被动求职者
+     * @param repostUserList 推荐人信息
+     * @return 职位相关的被动求职者信息
+     */
+    private List<com.moseeker.thrift.gen.candidate.struct.Candidate> addCandidate(List<CandidateRecomRecordDO> candidateRecomRecordDOPositionList, List<UserUserDO> presenteeUserList, List<UserUserDO> repostUserList) {
+
+        List<com.moseeker.thrift.gen.candidate.struct.Candidate> candidates = new ArrayList<>();
+
+        for (CandidateRecomRecordDO candidateRecomRecordDO : candidateRecomRecordDOPositionList) {
+
+            com.moseeker.thrift.gen.candidate.struct.Candidate candidate = new com.moseeker.thrift.gen.candidate.struct.Candidate();
+            candidate.setIsRecom(candidateRecomRecordDO.getIsRecom());
+
+            setPresentee(candidate, presenteeUserList, candidateRecomRecordDO);
+
+            setRepost(candidate, repostUserList, candidateRecomRecordDO);
+
+            candidates.add(candidate);
+        }
+        return candidates;
+    }
+
+    /**
+     * 封装推荐人信息
+     * @param candidate 被动求职者和推荐者信息
+     * @param repostUserList 推荐人列表
+     * @param candidateRecomRecordDO 职位转发浏览记录
+     */
+    private void setRepost(com.moseeker.thrift.gen.candidate.struct.Candidate candidate,
+                           List<UserUserDO> repostUserList, CandidateRecomRecordDO candidateRecomRecordDO) {
+        if(repostUserList != null && repostUserList.size() > 0) {
+            Optional<UserUserDO> userUserDOOptional = repostUserList.stream()
+                    .filter(userUserDO -> userUserDO.getId() == candidateRecomRecordDO.getRepostUserId())
+                    .findAny();
+            if(userUserDOOptional.isPresent()) {
+                candidate.setPresenteeFriendId(userUserDOOptional.get().getId());
+                String name = StringUtils.isNotNullOrEmpty(userUserDOOptional.get().getName())
+                        ? userUserDOOptional.get().getName():userUserDOOptional.get().getNickname();
+                candidate.setPresenteeFriendName(name);
+            }
+        }
+    }
+
+    /**
+     * 封装求职者信息
+     * @param candidate 被动求职者和推荐者信息
+     * @param presenteeUserList 被动求职者列表
+     * @param candidateRecomRecordDO 职位转发浏览记录
+     */
+    private void setPresentee(com.moseeker.thrift.gen.candidate.struct.Candidate candidate,
+                              List<UserUserDO> presenteeUserList, CandidateRecomRecordDO candidateRecomRecordDO) {
+        if(presenteeUserList != null && presenteeUserList.size() > 0) {
+            Optional<UserUserDO> userUserDOOptional = presenteeUserList
+                    .stream()
+                    .filter(presentee -> presentee.getId() == candidateRecomRecordDO.getPresenteeUserId()).findAny();
+            if(userUserDOOptional.isPresent()) {
+                candidate.setPresenteeUserId(userUserDOOptional.get().getId());
+                String name = StringUtils.isNotNullOrEmpty(userUserDOOptional.get().getName())
+                        ? userUserDOOptional.get().getName():userUserDOOptional.get().getNickname();
+                candidate.setPresenteeName(name);
+                candidate.setPresenteeLogo(userUserDOOptional.get().getHeadimg());
+            }
+        }
+    }
+
+    private List<UserUserDO> findRepost(Future repostFuture) {
+        try {
+            return  (List<UserUserDO>) repostFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            logger.error(e.getMessage(), e);
+            return null;
+        }
+    }
+
+    private List<UserUserDO> findPresentee(Future presenteeFuture) {
+        try {
+            return  (List<UserUserDO>) presenteeFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            logger.error(e.getMessage(), e);
+            return null;
+        }
+    }
 
 }

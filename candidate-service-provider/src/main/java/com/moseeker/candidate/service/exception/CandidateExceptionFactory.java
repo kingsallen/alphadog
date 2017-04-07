@@ -1,9 +1,11 @@
 package com.moseeker.candidate.service.exception;
 
+import com.moseeker.common.exception.Category;
+import com.moseeker.common.exception.ParamIllegalException;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.ExceptionFactory;
-
-import java.util.HashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 候选人服务业务异常工厂
@@ -11,16 +13,41 @@ import java.util.HashMap;
  */
 public class CandidateExceptionFactory extends ExceptionFactory {
 
-    private CandidateExceptionType candidateExceptionType = new CandidateExceptionType();
+    private Logger logger = LoggerFactory.getLogger(CandidateExceptionFactory.class);
 
     public CandidateExceptionFactory() {
-        HashMap<Integer, String> exceptionTypePool = candidateExceptionType.getExceptionTypePool();
-        if(exceptionTypePool != null && exceptionTypePool.size() > 0) {
-            exceptionTypePool.forEach((code, msg) -> {
-                BIZException bizException = new BIZException(code, msg);
-                addException(bizException);
-            });
+        logger.info("init candidate exception");
+        for(Category category : Category.values()) {
+            BIZException bizException = new BIZException(category.getCode(), category.getMsg());
+            addException(bizException);
         }
+        for (CandidateCategory candidateCategory : CandidateCategory.values()) {
+            BIZException bizException = new BIZException(candidateCategory.getCode(), candidateCategory.getMsg());
+            addException(bizException);
+            logger.info("exception type -- code:{0},  msg:{1}", candidateCategory.getCode(), candidateCategory.getMsg());
+        }
+    }
+
+    public static BIZException buildException(CandidateCategory candidateCategory) throws ParamIllegalException {
+        if(candidateCategory != null) {
+            throw new ParamIllegalException("异常类型不存在");
+        }
+        return buildException(candidateCategory.getCode(), candidateCategory.getMsg());
+    }
+
+    public static BIZException buildException(Category category) throws ParamIllegalException {
+        if(category != null) {
+            throw new ParamIllegalException("异常类型不存在");
+        }
+        return buildException(category.getCode(), category.getMsg());
+    }
+
+    /**
+     * 创建未开启挖掘被动求职者异常
+     * @return 未开启挖掘被动求职者异常
+     */
+    public static BIZException buildNotStartPassiveSeekerException() {
+        return buildException(61001);
     }
 
     /**

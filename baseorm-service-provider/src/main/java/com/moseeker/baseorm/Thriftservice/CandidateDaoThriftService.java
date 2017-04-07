@@ -1,9 +1,10 @@
 package com.moseeker.baseorm.Thriftservice;
 
 import com.moseeker.baseorm.dao.candidatedb.*;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.common.struct.*;
 import com.moseeker.thrift.gen.dao.service.CandidateDBDao;
 import com.moseeker.thrift.gen.dao.struct.*;
+import com.moseeker.thrift.gen.dao.struct.CURDException;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -144,6 +145,11 @@ public class CandidateDaoThriftService implements CandidateDBDao.Iface {
     @Override
     public CandidateRecomRecordDO getCandidateRecomRecord(CommonQuery query) throws TException {
         return candidateRecomRecordDao.findResource(query);
+    }
+
+    @Override
+    public List<CandidateRecomRecordDO> listCandidateRecomRecord(int postUserId, String clickTime, List<Integer> recoms) throws com.moseeker.thrift.gen.common.struct.CURDException, TException {
+        return candidateRecomRecordDao.listCandidateRecomRecord(postUserId, clickTime, recoms);
     }
 
     @Override

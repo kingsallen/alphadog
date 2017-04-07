@@ -1,7 +1,6 @@
 package com.moseeker.thrift.gen.common.struct;
 
 import java.util.HashMap;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * 异常生成类。用于缓存各种异常信息
@@ -10,7 +9,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public abstract class ExceptionFactory {
 
     private static HashMap<Integer, BIZException> exceptionHashMap = new HashMap<>();  //异常消息池
-
 
     public static BIZException buildException(int code) {
         return buildException(code, null);
@@ -39,7 +37,7 @@ public abstract class ExceptionFactory {
         return flag;
     }
 
-    protected boolean updateException(BIZException e) {
+    protected synchronized boolean updateException(BIZException e) {
         boolean flag = false;
         if(e != null  && e.getCode() > 0) {
             if(!exceptionHashMap.containsKey(e.getCode())) {
@@ -51,6 +49,10 @@ public abstract class ExceptionFactory {
             }
         }
         return flag;
+    }
+
+    protected static boolean exist(int code) {
+        return exceptionHashMap.containsKey(code);
     }
 
     public boolean updateException(int code, String msg) {
