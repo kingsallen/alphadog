@@ -7,7 +7,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import com.moseeker.candidate.service.checkout.CandidateCheckTool;
-import com.moseeker.candidate.service.exception.CandidateException;
+import com.moseeker.candidate.service.exception.CandidateExceptionFactory;
+import com.moseeker.candidate.service.exception.CandidateExceptionType;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.candidate.struct.CandidateList;
@@ -22,7 +23,6 @@ import org.springframework.stereotype.Component;
 
 import com.moseeker.candidate.service.Candidate;
 import com.moseeker.candidate.service.dao.CandidateDBDao;
-import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
@@ -155,9 +155,10 @@ public class CandidateEntity implements Candidate {
         ValidateUtil vu = CandidateCheckTool.checkCandidateList(param);
         String message = vu.validate();
         if(!StringUtils.isNullOrEmpty(message)) {
-            throw CandidateException.PROGRAM_PARAM_VALIDATE_ERROR.buildException();
+            throw CandidateExceptionFactory.buildCheckFailedException(message);
         }
-
+        //是否开启挖掘被动求职者
+        //
         return null;
     }
 
