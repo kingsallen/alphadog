@@ -27,3 +27,25 @@ struct CandidateListParam {
     3:  optional list<i32> recoms,          //是否推荐
     4:  optional i32 companyId              //公司编号
 }
+
+struct RecommendResult {
+    1: optional i32 id,                     //编号
+    2: optional string positionName,        //职位名称
+    3: optional string presenteeName,       //浏览者名称
+    4: optional bool nextOne,               //是否还有下一个候选人 false：没有，true：还有
+    5: optional i32 recomTotal,             //勾选的候选人总数
+    6: optional i32 recomIndex,             //推荐的候选人总数
+    7: optional i32 recomIgnore             //忽略的候选人人数
+}
+
+struct RecommmendParam {
+    1: optional i32 id,                     //职位转发推荐记录
+    2: optional string realName,            //真实姓名
+    3: optional string company,             //公司名称
+    4: optional string position,            //职位名称
+    5: optional string mobile,              //手机号码
+    6: optional string recomReason,         //推荐理由
+    7: optional string companyId,           //公司编号
+    8: optional i32 postUserId,             //推荐人编号
+    9: optional string clickTime            //推荐时间
+}

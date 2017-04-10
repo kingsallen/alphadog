@@ -4,6 +4,8 @@ import com.moseeker.candidate.service.Candidate;
 import com.moseeker.thrift.gen.candidate.service.CandidateService;
 import com.moseeker.thrift.gen.candidate.struct.CandidateList;
 import com.moseeker.thrift.gen.candidate.struct.CandidateListParam;
+import com.moseeker.thrift.gen.candidate.struct.RecommendResult;
+import com.moseeker.thrift.gen.candidate.struct.RecommmendParam;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 
@@ -35,6 +37,16 @@ public class CandidateThriftService implements CandidateService.Iface {
     @Override
     public List<CandidateList> candidateList(CandidateListParam param) throws BIZException, TException {
         return candidate.candidateList(param);
+    }
+
+    @Override
+    public RecommendResult recommends(int companyId, List<Integer> idList) throws BIZException, TException {
+        return candidate.recommends(companyId, idList);
+    }
+
+    @Override
+    public RecommendResult recommend(RecommmendParam param) throws BIZException, TException {
+        return candidate.recommend(param);
     }
 
 }

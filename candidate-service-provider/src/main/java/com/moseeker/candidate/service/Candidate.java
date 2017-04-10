@@ -2,6 +2,8 @@ package com.moseeker.candidate.service;
 
 import com.moseeker.thrift.gen.candidate.struct.CandidateList;
 import com.moseeker.thrift.gen.candidate.struct.CandidateListParam;
+import com.moseeker.thrift.gen.candidate.struct.RecommendResult;
+import com.moseeker.thrift.gen.candidate.struct.RecommmendParam;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 
@@ -37,4 +39,21 @@ public interface Candidate {
      * @throws BIZException 业务异常
      */
     List<CandidateList> candidateList(CandidateListParam param) throws BIZException;
+
+    /**
+     * 修改职位转发浏览记录的推荐标志
+     * @param companyId 公司编号
+     * @param idList 记录编号集合
+     * @return 操作结果
+     * @throws BIZException 业务异常
+     */
+    RecommendResult recommends(int companyId, List<Integer> idList) throws BIZException;
+
+    /**
+     * 推荐浏览者
+     * @param param 推荐信息
+     * @return 推荐结果
+     * @throws BIZException 业务异常
+     */
+    RecommendResult recommend(RecommmendParam param) throws BIZException;
 }

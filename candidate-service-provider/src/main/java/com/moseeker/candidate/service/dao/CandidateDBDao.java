@@ -213,4 +213,23 @@ public class CandidateDBDao {
             return userUserDOList;
         }
     }
+
+    /**
+     * 查找未推荐的职位转发记录
+     * @param idList id集合
+     * @return 未推荐的职位转发记录
+     */
+    public static List<CandidateRecomRecordDO> getCandidateRecomRecordDOByIdList(List<Integer> idList) {
+        QueryUtil queryUtil = new QueryUtil();
+        queryUtil.addSelectAttribute("id").addSelectAttribute("position_id").addSelectAttribute("presentee_user_id");
+        queryUtil.addEqualFilter("is_recom", "[1,2,3]").addEqualFilter("id", StringUtils.converToArrayStr(idList));
+        queryUtil.setSortby("position_id,click_time");
+        queryUtil.setPer_page(2);
+        try {
+            return candidateDBDao.listCandidateRecomRecords(queryUtil);
+        } catch (TException e) {
+            LoggerFactory.getLogger(CandidateDBDao.class).error(e.getMessage(), e);
+            return null;
+        }
+    }
 }

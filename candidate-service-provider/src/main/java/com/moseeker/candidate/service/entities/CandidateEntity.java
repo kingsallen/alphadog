@@ -15,6 +15,8 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.candidate.struct.CandidateList;
 import com.moseeker.thrift.gen.candidate.struct.CandidateListParam;
+import com.moseeker.thrift.gen.candidate.struct.RecommendResult;
+import com.moseeker.thrift.gen.candidate.struct.RecommmendParam;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.*;
 import org.apache.commons.lang.BooleanUtils;
@@ -175,29 +177,12 @@ public class CandidateEntity implements Candidate {
         List<CandidateRecomRecordDO> candidateRecomRecordDOList =
                 CandidateDBDao.getCandidateRecomRecordDO(param.getPostUserId(), param.getClickTime(), param.getRecoms());
 
-
-
         if(candidateRecomRecordDOList != null && candidateRecomRecordDOList.size() > 0) {
 
-            //职位编号
-            List<Integer> positionIdList = candidateRecomRecordDOList.stream()
-                    .map(candidateRecomRecordDO -> candidateRecomRecordDO.getPositionId())
-                    .collect(Collectors.toList());
-
-            //被动求职者编号
-            List<Integer> presenteeIdList = candidateRecomRecordDOList.stream()
-                    .map(candidateRecomRecordDO -> candidateRecomRecordDO.getPresenteeUserId())
-                    .collect(Collectors.toList());
-
-            //推荐人编号
-            List<Integer> repostIdList = candidateRecomRecordDOList.stream()
-                    .map(candidateRecomRecordDO -> candidateRecomRecordDO.getRepostUserId())
-                    .collect(Collectors.toList());
-
             /** 并行查找职位信息，被动求职者信息，推荐人信息 */
-            Future positionFuture = tp.startTast(() -> CandidateDBDao.getPositionByIdList(positionIdList));
-            Future presenteeFuture = tp.startTast(() -> CandidateDBDao.getUserByIDList(presenteeIdList));
-            Future repostFuture = tp.startTast(() -> CandidateDBDao.getUserByIDList(repostIdList));
+            Future positionFuture = findPositionList(candidateRecomRecordDOList);
+            Future presenteeFuture = findPresenteeList(candidateRecomRecordDOList);
+            Future repostFuture = findRepostFuture(candidateRecomRecordDOList);
 
             /** 封装职位标题，推荐人信息，被动求职者信息 */
             List<JobPositionDO> jobPositionDOList = null;
@@ -205,8 +190,8 @@ public class CandidateEntity implements Candidate {
                 jobPositionDOList = (List<JobPositionDO>) positionFuture.get();
                 if(jobPositionDOList != null && jobPositionDOList.size() > 0) {
 
-                    List<UserUserDO> presenteeUserList = findPresentee(presenteeFuture);    //候选人
-                    List<UserUserDO> repostUserList = findRepost(repostFuture);             //推荐者
+                    List<UserUserDO> presenteeUserList = convertPresenteeFuture(presenteeFuture);    //候选人
+                    List<UserUserDO> repostUserList = convertRepostFuture(repostFuture);             //推荐者
 
                     for(JobPositionDO positionDO : jobPositionDOList) {
                         CandidateList postionCandidate = addPositionCandidate(positionDO, candidateRecomRecordDOList, presenteeUserList, repostUserList);
@@ -223,6 +208,153 @@ public class CandidateEntity implements Candidate {
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_CANDIDATES_RECORD_NOT_EXIST);
         }
         return result;
+    }
+
+    @Override
+    public RecommendResult recommends(int companyId, List<Integer> idList) throws BIZException {
+
+        /** 参数校验 */
+        ValidateUtil vu = ParamCheckTool.checkRecommends(companyId, idList);
+        String message = vu.validate();
+        if(!StringUtils.isNullOrEmpty(message)) {
+            throw CandidateExceptionFactory.buildCheckFailedException(message);
+        }
+
+        /** 是否开启被动求职者 */
+        boolean passiveSeeker = CandidateDBDao.isStartPassiveSeeker(companyId);
+        if(!passiveSeeker) {
+            throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_NOT_START);
+        }
+
+        RecommendResult recommendResult = new RecommendResult();
+        recommendResult.setRecomTotal(idList.size());
+        recommendResult.setRecomIndex(0);
+        recommendResult.setRecomIgnore(0);
+
+        /** 查找职位转发浏览记录 */
+        List<CandidateRecomRecordDO> candidateRecomRecordDOList = CandidateDBDao.getCandidateRecomRecordDOByIdList(idList);
+        if(candidateRecomRecordDOList != null && candidateRecomRecordDOList.size() > 0) {
+            CandidateRecomRecordDO candidateRecomRecordDO = candidateRecomRecordDOList.get(0);
+
+            /** 查询职位信息和浏览者信息 */
+            Future positionListFuture = findPositionFutureById(candidateRecomRecordDO.getPositionId());
+            Future presenteeListFuture = findPresenteeFutureById(candidateRecomRecordDO.getPresenteeUserId());
+
+            //组装查询结果
+            recommendResult = assembleResult(recommendResult, candidateRecomRecordDO, positionListFuture, presenteeListFuture);
+        }
+
+        return recommendResult;
+    }
+
+    @Override
+    public RecommendResult recommend(RecommmendParam param) throws BIZException {
+
+        /** 参数校验 */
+        ValidateUtil vu = ParamCheckTool.checkRecommend(param);
+
+
+        return null;
+    }
+
+
+    /**
+     * 组装查询结果
+     * @param recommendResult 查询结果
+     * @param candidateRecomRecordDO 职位转发浏览记录
+     * @param positionListFuture 职位信息
+     * @param presenteeListFuture 浏览者信息
+     * @return 查询结果
+     */
+    private RecommendResult assembleResult(RecommendResult recommendResult, CandidateRecomRecordDO candidateRecomRecordDO,
+                                Future positionListFuture, Future presenteeListFuture) {
+        recommendResult.setId(candidateRecomRecordDO.getId());
+        try {
+            JobPositionDO positionDO = (JobPositionDO) positionListFuture.get();
+            if(positionDO != null) {
+                recommendResult.setPositionName(positionDO.getTitle());
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            logger.error(e.getMessage(), e);
+        }
+        try {
+            UserUserDO userUserDO = (UserUserDO) presenteeListFuture.get();
+            if(userUserDO != null) {
+                String name = StringUtils.isNotNullOrEmpty(userUserDO.getName()) ? userUserDO.getName():userUserDO.getNickname();
+                recommendResult.setPresenteeName(name);
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return recommendResult;
+    }
+
+    /**
+     * 根据编号查找用户信息
+     * @param presenteeUserId 浏览者编号
+     * @return 浏览者信息
+     */
+    private Future findPresenteeFutureById(int presenteeUserId) {
+        Future future = tp.startTast(() -> CandidateDBDao.getUserByID(presenteeUserId));
+        return future;
+    }
+
+    /**
+     * 根据职位编号查找职位信息
+     * @param positionId 职位编号
+     * @return 职位信息
+     */
+    private Future findPositionFutureById(int positionId) {
+        Future future = tp.startTast(() -> {
+            return CandidateDBDao.getPositionByID(positionId);
+        });
+        return future;
+    }
+
+
+    /**
+     * 查找转发者信息
+     * @param candidateRecomRecordDOList 职位转发浏览记录
+     * @return 转发者信息
+     */
+    private Future findRepostFuture(List<CandidateRecomRecordDO> candidateRecomRecordDOList) {
+        Future repostFuture = tp.startTast(() -> {
+            List<Integer> repostIdList = candidateRecomRecordDOList.stream()
+                    .map(candidateRecomRecordDO -> candidateRecomRecordDO.getRepostUserId())
+                    .collect(Collectors.toList());
+            return CandidateDBDao.getUserByIDList(repostIdList);
+        });
+        return repostFuture;
+    }
+
+    /**
+     * 查找职位浏览者信息
+     * @param candidateRecomRecordDOList 职位转发浏览记录
+     * @return 浏览者信息
+     */
+    private Future findPresenteeList(List<CandidateRecomRecordDO> candidateRecomRecordDOList) {
+        Future presenteeFuture = tp.startTast(() -> {
+            List<Integer> presenteeIdList = candidateRecomRecordDOList.stream()
+                    .map(candidateRecomRecordDO -> candidateRecomRecordDO.getPresenteeUserId())
+                    .collect(Collectors.toList());
+            return CandidateDBDao.getUserByIDList(presenteeIdList);
+        });
+        return presenteeFuture;
+    }
+
+    /**
+     * 查找职位
+     * @param candidateRecomRecordDOList 职位转发浏览记录
+     * @return 职位信息
+     */
+    private Future findPositionList(List<CandidateRecomRecordDO> candidateRecomRecordDOList) {
+        Future positionFuture = tp.startTast(() -> {
+            List<Integer> positionIdList = candidateRecomRecordDOList.stream()
+                    .map(candidateRecomRecordDO -> candidateRecomRecordDO.getPositionId())
+                    .collect(Collectors.toList());
+            return CandidateDBDao.getPositionByIdList(positionIdList);
+        });
+        return positionFuture;
     }
 
     /**
@@ -320,7 +452,7 @@ public class CandidateEntity implements Candidate {
         }
     }
 
-    private List<UserUserDO> findRepost(Future repostFuture) {
+    private List<UserUserDO> convertRepostFuture(Future repostFuture) {
         try {
             return  (List<UserUserDO>) repostFuture.get();
         } catch (InterruptedException | ExecutionException e) {
@@ -329,7 +461,7 @@ public class CandidateEntity implements Candidate {
         }
     }
 
-    private List<UserUserDO> findPresentee(Future presenteeFuture) {
+    private List<UserUserDO> convertPresenteeFuture(Future presenteeFuture) {
         try {
             return  (List<UserUserDO>) presenteeFuture.get();
         } catch (InterruptedException | ExecutionException e) {

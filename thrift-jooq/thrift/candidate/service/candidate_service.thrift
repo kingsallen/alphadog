@@ -9,7 +9,11 @@ service CandidateService {
     
      // 感兴趣职位
     common_struct.Response changeInteresting(1: i32 user_id, 2: i32 position_id, 3: i8 is_interested);
-    
+    //查找职位转发浏览者信息
     list<candidate_struct.CandidateList> candidateList(1: candidate_struct.CandidateListParam param) throws (1: common_struct.BIZException e);
+    //查找职位转发浏览记录
+    candidate_struct.RecommendResult recommends(1: i32 companyId, 2: list<i32> idList) throws (1: common_struct.BIZException e);
+    //推荐职位浏览者 
+    candidate_struct.RecommendResult recommend(1: candidate_struct.RecommmendParam param) throws (1: common_struct.BIZException e);
 }
 
