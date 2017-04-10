@@ -13,6 +13,10 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.*;
 import com.moseeker.thrift.gen.dao.struct.*;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCustomFieldsDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrPointsConfDO;
 import com.moseeker.thrift.gen.employee.struct.*;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import org.apache.thrift.TException;
@@ -103,17 +107,17 @@ public class EmployeeService {
 			eqf.put("company_id", String.valueOf(companyId));
 			HrEmployeeCertConfDO employeeCertConf = hrDBDao.getEmployeeCertConf(query);
 			log.info("HrEmployeeCertConfDO: {}", employeeCertConf);
-			if (employeeCertConf != null && employeeCertConf.getEmail_suffix() != null && employeeCertConf.getQuestions() != null) {
+			if (employeeCertConf != null && employeeCertConf.getEmailSuffix() != null && employeeCertConf.getQuestions() != null) {
 			    EmployeeVerificationConf evc = new EmployeeVerificationConf();
-			    evc.setCompanyId(employeeCertConf.getCompany_id());
-			    evc.setEmailSuffix(JSONObject.parseArray(employeeCertConf.getEmail_suffix()).stream().map(m -> String.valueOf(m)).collect(Collectors.toList()));
-			    evc.setAuthMode((short)employeeCertConf.getAuth_mode());
-			    evc.setAuthCode(employeeCertConf.getAuth_code());
+			    evc.setCompanyId(employeeCertConf.getCompanyId());
+			    evc.setEmailSuffix(JSONObject.parseArray(employeeCertConf.getEmailSuffix()).stream().map(m -> String.valueOf(m)).collect(Collectors.toList()));
+			    evc.setAuthMode((short)employeeCertConf.getAuthMode());
+			    evc.setAuthCode(employeeCertConf.getAuthCode());
 			    evc.setCustom(employeeCertConf.getCustom());
 			    // 为解决gradle build时无法完成类推导的问题，顾list不指定类型
 			    List questions = JSONObject.parseArray(employeeCertConf.getQuestions()).stream().map(m -> JSONObject.parseObject(String.valueOf(m), Map.class)).collect(Collectors.toList());
 				evc.setQuestions(questions);
-			    evc.setCustomHint(employeeCertConf.getCustom_hint());
+			    evc.setCustomHint(employeeCertConf.getCustomHint());
 			    Response hrCompanyConfig = companyDao.getHrCompanyConfig(query);
 			    if (hrCompanyConfig.status == 0 && StringUtils.isNotNullOrEmpty(hrCompanyConfig.getData())) {
 			    		evc.setBindSuccessMessage(JSONObject.parseObject(hrCompanyConfig.getData()).getString("employee_binding"));
@@ -137,7 +141,7 @@ public class EmployeeService {
 		query.setEqualFilter(new HashMap<String, String>());
 		query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
 		HrEmployeeCertConfDO certConf = hrDBDao.getEmployeeCertConf(query);
-		if(certConf == null || certConf.getCompany_id() == 0) {
+		if(certConf == null || certConf.getCompanyId() == 0) {
 			response.setSuccess(false);
 			response.setMessage("暂时不接受员工认证");
 			return response;
@@ -146,7 +150,7 @@ public class EmployeeService {
 		switch(bindingParams.getType()) {
 			case EMAIL:
 				// 邮箱校验后缀
-				if (JSONObject.parseArray(certConf.getEmail_suffix()).stream().noneMatch(m -> bindingParams.getEmail()
+				if (JSONObject.parseArray(certConf.getEmailSuffix()).stream().noneMatch(m -> bindingParams.getEmail()
 						.endsWith(String.valueOf(m)))) {
 					response.setSuccess(false);
 					response.setMessage("员工认证信息不正确");
@@ -375,7 +379,7 @@ public class EmployeeService {
 				customFields.forEach(m -> {
 					EmployeeCustomFieldsConf efc = new EmployeeCustomFieldsConf();
 					efc.setId(m.getId());
-					efc.setCompanyId(m.getCompany_id());
+					efc.setCompanyId(m.getCompanyId());
 					efc.setFieldValues(JSONObject.parseArray(m.getFvalues()).stream().map(value -> String.valueOf(value)).collect(Collectors.toList()));
 					efc.setMandatory(m.getMandatory() == 0 ? false : true);
 					efc.setOrder(m.getForder());
@@ -405,18 +409,18 @@ public class EmployeeService {
 			List<RewardConfig> pcfList = new ArrayList<>();
 			List<HrPointsConfDO> pointsConfs = hrDBDao.getPointsConfs(query);
 			if (!StringUtils.isEmptyList(pointsConfs)) {
-				List<Integer> tpIds = pointsConfs.stream().map(m -> m.getTemplate_id()).collect(Collectors.toList());
+				List<Integer> tpIds = pointsConfs.stream().map(m -> m.getTemplateId()).collect(Collectors.toList());
 				query.getEqualFilter().clear();
 				query.getEqualFilter().put("id", Arrays.toString(tpIds.toArray()));
 				List<ConfigSysPointConfTplDO> configTpls = configDBDao.getAwardConfigTpls(query);
 				if (!StringUtils.isEmptyList(configTpls)) {
 					Set<Integer> ctpIds = configTpls.stream().map(m -> m.getId()).collect(Collectors.toSet());
 					for (HrPointsConfDO pcf : pointsConfs) {
-						if (pcf.getReward() != 0 && ctpIds.contains(pcf.getTemplate_id())) {
+						if (pcf.getReward() != 0 && ctpIds.contains(pcf.getTemplateId())) {
 							RewardConfig rewardConfig = new RewardConfig();
 							rewardConfig.setId(pcf.getId());
-							rewardConfig.setPoints(pcf.getReward());
-							rewardConfig.setStatusName(pcf.getStatus_name());
+							rewardConfig.setPoints((int)pcf.getReward());
+							rewardConfig.setStatusName(pcf.getStatusName());
 							pcfList.add(rewardConfig);
 						}
 					}

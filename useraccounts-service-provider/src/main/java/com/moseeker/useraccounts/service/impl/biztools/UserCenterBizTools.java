@@ -1,27 +1,23 @@
 package com.moseeker.useraccounts.service.impl.biztools;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
+import com.moseeker.common.constants.AbleFlag;
+import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.db.candidatedb.Candidatedb;
+import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.service.*;
 import com.moseeker.thrift.gen.dao.struct.*;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
 import org.apache.thrift.TException;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.moseeker.common.constants.AbleFlag;
-import com.moseeker.common.providerutils.QueryUtil;
-import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.application.struct.JobApplication;
-import com.moseeker.thrift.gen.company.struct.Hrcompany;
-import com.moseeker.thrift.gen.position.struct.Position;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 个人中心片段业务处理类

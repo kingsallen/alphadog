@@ -1,6 +1,5 @@
 package com.moseeker.chat.service;
 
-import com.google.common.collect.Lists;
 import com.moseeker.chat.constant.ChatSpeakerType;
 import com.moseeker.chat.service.entity.ChatDao;
 import com.moseeker.chat.utils.Page;
@@ -8,6 +7,10 @@ import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.chat.struct.*;
 import com.moseeker.thrift.gen.dao.struct.*;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrChatUnreadCountDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatListDO;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,7 +85,7 @@ public class ChatService {
                                 .filter(chatRoom -> chatRoom.getId() == chatUnreadCountDO.getRoomId()).findFirst();
                         if(chatRoomDOOptional.isPresent()) {
                             hrChatRoomVO.setCreateTime(chatRoomDOOptional.get().getUpdateTime());
-                            int status = chatRoomDOOptional.get().isStatus()?1:0;
+                            int status = chatRoomDOOptional.get().getStatus();
                             hrChatRoomVO.setStatus(status);
                         }
                     }
@@ -158,7 +161,7 @@ public class ChatService {
                             Optional<HrWxHrChatListDO> chatRoomOptional = chatRooms.stream()
                                     .filter(chatRoom -> chatRoom.getId() == hrChatUnreadCountDO.getRoomId()).findFirst();
                             if(chatRoomOptional.isPresent()) {
-                                int status = chatRoomOptional.get().isStatus() ? 1:0;
+                                int status = chatRoomOptional.get().getStatus();
                                 userChatRoomVO.setStatus(status);
                                 userChatRoomVO.setCreateTime(chatRoomOptional.get().getUpdateTime());
                             }
@@ -243,7 +246,7 @@ public class ChatService {
                     chatVO.setId(chatDO.getId());
                     chatVO.setContent(chatDO.getContent());
                     chatVO.setCreate_time(chatDO.getCreateTime());
-                    byte speaker = (byte) (chatDO.isSpeaker() ? 1:0);
+                    byte speaker = chatDO.getSpeaker();
                     chatVO.setSpeaker(speaker);
                     chatVOList.add(chatVO);
                 });
@@ -272,8 +275,7 @@ public class ChatService {
         chatDO.setCreateTime(date);
         chatDO.setContent(content);
         chatDO.setPid(positionId);
-        boolean spk = speaker == 0 ? false : true;
-        chatDO.setSpeaker(spk);
+        chatDO.setSpeaker(speaker);
         chatDO.setChatlistId(roomId);
         chaoDao.saveChat(chatDO);
 
@@ -307,7 +309,7 @@ public class ChatService {
             chatRoom.setCreateTime(createTime);
             chatRoom.setHraccountId(hrId);
             chatRoom.setSysuserId(userId);
-            chatRoom.setStatus(false);
+            chatRoom.setStatus((byte)0);
             chatRoom = chaoDao.saveChatRoom(chatRoom);
             chatDebut = true;
         }
@@ -438,7 +440,7 @@ public class ChatService {
         //2.如果HR的名称存在，则存储 "我是{hrName}，{companyName}HR，我可以推荐您或者您的朋友加入我们！"
         HrWxHrChatDO chatDO = new HrWxHrChatDO();
         chatDO.setChatlistId(resultOfSaveRoomVO.getRoomId());
-        chatDO.setSpeaker(true);
+        chatDO.setSpeaker((byte)1);
         String createTime = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
         chatDO.setCreateTime(createTime);
         String content;
