@@ -63,8 +63,8 @@ public class SearchengineController {
             Response company_resp = companyServices.getAllCompanies(query);
             String company = company_resp.data;
             logger.info("======"+company);
-            if(!"{}".equals(company)&&StringUtils.isNotNullOrEmpty(company)&&company.startsWith("[")){
-            	 List company_maps = JSON.parseArray(company,List.class);
+            if(StringUtils.isNotNullOrEmpty(company)&&company.startsWith("[")){
+            	 List company_maps = JSON.parseObject(company,List.class);
                  Map company_map = (Map) company_maps.get(0);
                  String company_name = (String) company_map.get("name");
                  String scale = (String) company_map.get("scale");
