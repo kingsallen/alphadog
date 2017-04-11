@@ -45,7 +45,21 @@ struct RecommmendParam {
     4: optional string position,            //职位名称
     5: optional string mobile,              //手机号码
     6: optional string recomReason,         //推荐理由
-    7: optional string companyId,           //公司编号
+    7: optional i32 companyId,              //公司编号
     8: optional i32 postUserId,             //推荐人编号
     9: optional string clickTime            //推荐时间
+}
+
+struct RecomRecordResult {
+    1: optional i32 id,                     //编号
+    2: optional string title,               //职位标题
+    3: optional string presenteeName,       //浏览者名称
+    4: optional string clickTime,           //点击时间
+    5: optional i8 recom                    //推荐标识（0 推荐，1 未推荐，2 忽略，3 选中）
+}
+
+struct SortResult {
+    1: optional i32 count,                  //推荐数量
+    2: optional i32 rank,                   //排名
+    3: optional i32 hongbao,                //红包金额
 }

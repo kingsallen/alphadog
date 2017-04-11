@@ -11,7 +11,9 @@ package com.moseeker.common.constants;
  * @email wjf2255@gmail.com
  */
 public final class Constant {
-    
+
+    public static final int BONUS = 2;  //默认红包金额
+
     private Constant() throws AssertionError {
         throw new AssertionError();
     };
@@ -36,6 +38,9 @@ public final class Constant {
 
     public static final int ENABLE = 1;
     public static final int DISABLE = 0;
+
+    public static final int ENABLE_OLD = 0;
+    public static final int DISABLE_OLD = 1;
 
     // status ok状态
     public static final int OK = 0;

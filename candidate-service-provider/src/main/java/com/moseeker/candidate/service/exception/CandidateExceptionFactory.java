@@ -29,7 +29,7 @@ public class CandidateExceptionFactory extends ExceptionFactory {
     }
 
     public static BIZException buildException(CandidateCategory candidateCategory) throws ParamIllegalException {
-        if(candidateCategory != null) {
+        if(candidateCategory == null) {
             throw new ParamIllegalException("异常类型不存在");
         }
         return buildException(candidateCategory.getCode(), candidateCategory.getMsg());
