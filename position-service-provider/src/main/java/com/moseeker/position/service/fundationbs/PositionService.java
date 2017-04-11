@@ -1,13 +1,15 @@
 package com.moseeker.position.service.fundationbs;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.JSONPObject;
 import com.alibaba.fastjson.serializer.ValueFilter;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.*;
+import com.moseeker.common.constants.AccountSync;
+import com.moseeker.common.constants.AppId;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.KeyIdentifier;
+import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
@@ -19,8 +21,20 @@ import com.moseeker.db.dictdb.tables.records.DictCityPostcodeRecord;
 import com.moseeker.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.db.hrdb.tables.records.HrTeamRecord;
-import com.moseeker.db.jobdb.tables.records.*;
-import com.moseeker.position.dao.*;
+import com.moseeker.db.jobdb.tables.records.JobCustomRecord;
+import com.moseeker.db.jobdb.tables.records.JobOccupationRecord;
+import com.moseeker.db.jobdb.tables.records.JobPositionCityRecord;
+import com.moseeker.db.jobdb.tables.records.JobPositionExtRecord;
+import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.position.dao.DictCityPostCodeDao;
+import com.moseeker.position.dao.DictConstantDao;
+import com.moseeker.position.dao.HrTeamDao;
+import com.moseeker.position.dao.JobCustomDao;
+import com.moseeker.position.dao.JobOccupationDao;
+import com.moseeker.position.dao.JobPositionCityDao;
+import com.moseeker.position.dao.JobPositionDao;
+import com.moseeker.position.dao.JobPositonExtDao;
+import com.moseeker.position.dao.PositionDao;
 import com.moseeker.position.pojo.DictConstantPojo;
 import com.moseeker.position.pojo.JobPositionFailMessPojo;
 import com.moseeker.position.pojo.JobPositionPojo;
@@ -36,11 +50,16 @@ import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.service.CompanyDao;
 import com.moseeker.thrift.gen.dao.service.HrDBDao;
 import com.moseeker.thrift.gen.dao.service.UserHrAccountDao;
-import com.moseeker.thrift.gen.dao.struct.*;
-import com.moseeker.thrift.gen.dao.service.HrDBDao;
+import com.moseeker.thrift.gen.dao.struct.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.HrHbConfigDO;
+import com.moseeker.thrift.gen.dao.struct.HrHbItemsDO;
+import com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingDO;
 import com.moseeker.thrift.gen.dao.struct.HrTeamStruct;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
+import com.moseeker.thrift.gen.position.struct.BatchHandlerJobPostion;
+import com.moseeker.thrift.gen.position.struct.City;
+import com.moseeker.thrift.gen.position.struct.JobPostrionObj;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.RpExtInfo;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
@@ -50,12 +69,10 @@ import com.moseeker.thrift.gen.position.struct.WechatPositionListQuery;
 import com.moseeker.thrift.gen.position.struct.WechatRpPositionListData;
 import com.moseeker.thrift.gen.position.struct.WechatShareData;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
-import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
-import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
-import com.moseeker.thrift.gen.position.struct.*;
 import com.mysql.jdbc.StringUtils;
 
 import org.apache.thrift.TException;
+import org.jooq.Field;
 import org.jooq.types.UInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,13 +80,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.round;
 import static java.lang.Math.toIntExact;
-
-import org.jooq.Field;
 
 @Service
 public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRecord> {
@@ -469,9 +488,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             List<HrTeamRecord> hrTeamRecordList = hrTeamDao.getResources(queryUtilDepartment);
             HashMap hashMapHrTeam = new HashMap();
             // 当更新或者新增jobPosition数据时，如果公司部门信息为空，提示无法更新或者新增jobposition
-            if (com.moseeker.common.util.StringUtils.isEmptyList(hrTeamRecordList) && noDelete) {
-                return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_COMPANY_DEPARTMENT_BLANK);
-            } else {
+            if (!com.moseeker.common.util.StringUtils.isEmptyList(hrTeamRecordList) && noDelete) {
                 for (HrTeamRecord hrTeamRecord : hrTeamRecordList) {
                     hashMapHrTeam.put(hrTeamRecord.getName().trim(), hrTeamRecord);
                 }
@@ -490,6 +507,8 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             }
             // 需要删除的城市的数据ID列表
             List<Integer> deleteCitylist = new ArrayList<>();
+            // 需要更新ES的jobpostionID
+            List<Integer> jobPositionIds = new ArrayList<>();
             // 删除操作,删除除了data以外的数据库中的数据
             if (!noDelete) {
                 if (!com.moseeker.common.util.StringUtils.isEmptyList(dbList)) {
@@ -511,16 +530,18 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                                 continue;
                             }
                             jobPositionRecord.setStatus((byte) 1);
+                            jobPositionIds.add(jobPositionRecord.getId());
                         }
                     }
                     // 将总数据和不需要删除的数据取差集
                     boolean remove = dbList.removeAll(noDeleJobPostionRecords);
                     if (remove) {
                         if (dbList != null && dbList.size() > 0) {
+
                             // 更新jobposition数据，由于做逻辑删除，所以不删除jobpositionExt和jobpositionCity数据
                             jobPositionDao.putResources(dbList);
                             // 更新ES
-                            UpdateESThread updataESThread = new UpdateESThread(searchengineServices, companyServices, dbList);
+                            UpdateESThread updataESThread = new UpdateESThread(searchengineServices, companyServices, jobPositionIds, jobPositionDao);
                             Thread thread = new Thread(updataESThread);
                             thread.start();
                             return ResponseUtils.success(0);
@@ -559,6 +580,8 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 List<JobPositionCityRecord> jobPositionCityRecordsAddlist = new ArrayList<>();
                 // 处理数据
                 for (JobPostrionObj jobPositionHandlerDate : jobPositionHandlerDates) {
+                    logger.info("提交的数据：" + jobPositionHandlerDate.toString());
+                    logger.info("提交的部门信息：" + jobPositionHandlerDate.getDepartment());
                     JobPositionRecord record = BeanUtils.structToDB(jobPositionHandlerDate, JobPositionRecord.class);
                     // 当职位要求为空时候，设置空串
                     if (com.moseeker.common.util.StringUtils.isNullOrEmpty(record.getRequirement())) {
@@ -582,6 +605,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                             jobPositionFailMessPojo.setJobNumber(jobPositionHandlerDate.getJobnumber());
                             jobPositionFailMessPojo.setSourceId(jobPositionHandlerDate.getSource_id());
                             jobPositionFailMessPojo.setJobPostionId(jobPositionHandlerDate.getId());
+                            jobPositionFailMessPojo.setDepartment(jobPositionHandlerDate.getDepartment());
                             jobPositionFailMessPojo.setMessage(ConstantErrorCodeMessage.POSITION_DATA_DEPARTMENT_ERROR);
                             jobPositionFailMessPojos.add(jobPositionFailMessPojo);
                             continue;
@@ -609,6 +633,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                         // 按company_id + .source_id + .jobnumber + source=9取得数据为空时，按Id进行更新
                         if (!com.moseeker.common.util.StringUtils.isEmptyObject(jobPositionRecord)) {
                             record.setId(jobPositionRecord.getId());
+                            jobPositionIds.add(jobPositionRecord.getId());
                         }
                         // 取出数据库中的数据进行对比操作
                         JobPositionRecord jobPositionRecordTemp = (JobPositionRecord) dbListMap.get(record.getId());
@@ -664,6 +689,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                         record.setCity(citys(jobPositionHandlerDate.getCity()));
                         Integer pid = jobPositionDao.insertJobPostion(record);
                         if (pid != null) {
+                            jobPositionIds.add(pid);
                             if (cityCode(jobPositionHandlerDate.getCity(), record.getId()) != null && cityCode(jobPositionHandlerDate.getCity(), record.getId()).size() > 0) {
                                 // 新增城市code时，需要先删除jobpostionCity数据
                                 jobPositionCityRecordsAddlist.addAll(cityCode(jobPositionHandlerDate.getCity(), record.getId()));
@@ -703,12 +729,9 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     }
                     jobPositionCityDao.postResources(jobPositionCityRecordsUpdatelist);
                 }
-                if (jobPositionUpdateRecordList.size() > 0 || jobPositionAddRecordList.size() > 0) {
+                if (jobPositionIds.size() > 0) {
                     // 更新ES Search Engine
-                    if (jobPositionUpdateRecordList.size() > 0) {
-                        jobPositionAddRecordList.addAll(jobPositionUpdateRecordList);
-                    }
-                    UpdateESThread updataESThread = new UpdateESThread(searchengineServices, companyServices, jobPositionAddRecordList);
+                    UpdateESThread updataESThread = new UpdateESThread(searchengineServices, companyServices, jobPositionIds, jobPositionDao);
                     Thread thread = new Thread(updataESThread);
                     thread.start();
                     return ResponseUtils.success(jobPositionFailMessPojos);
@@ -727,7 +750,6 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
      */
     public Response deleteJobposition(Integer id, Integer companyId, String jobnumber, Integer sourceId) {
         try {
-            List<JobPositionRecord> jobPositionRecords = new ArrayList<>();
             JobPositionRecord jobPositionRecord = null;
             if (id != null && id.intValue() != 0) {
                 QueryUtil queryUtil = new QueryUtil();
@@ -751,8 +773,8 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 // 删除JobPostion
                 jobPositionDao.putResource(jobPositionRecord);
                 // 更新ES Search Engine
-                jobPositionRecords.add(jobPositionRecord);
-                UpdateESThread updataESThread = new UpdateESThread(searchengineServices, companyServices, jobPositionRecords);
+                list.add(jobPositionRecord.getId());
+                UpdateESThread updataESThread = new UpdateESThread(searchengineServices, companyServices, list, jobPositionDao);
                 Thread thread = new Thread(updataESThread);
                 thread.start();
                 return ResponseUtils.success(0);

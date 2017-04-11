@@ -20,8 +20,16 @@ public class JobPositionFailMessPojo implements Serializable {
     private Integer companyId;
     private Integer sourceId;
     private String jobNumber;
-
+    private String department;
     private Integer jobPostionId;
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
 
     public Integer getJobPostionId() {
         return jobPostionId;
