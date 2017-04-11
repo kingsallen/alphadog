@@ -13,7 +13,7 @@ public enum CandidateCategory {
     PASSIVE_SEEKER_CANDIDATES_POSITION_NOT_EXIST(61006, "没有合适的职位信息！"),
     PASSIVE_SEEKER_CANDIDATES_RECORD_NOT_EXIST(61007, "没有推荐记录！"),
     PASSIVE_SEEKER_APPLY_POSITION_ALREADY_APPLY(61008, "重复申请职位！"),
-    PASSIVE_SEEKER_ALREADY_APPLIED_OR_RECOMMEND(61009, "已经申请或者被推荐，无法忽略！");
+    PASSIVE_SEEKER_ALREADY_APPLIED_OR_RECOMMEND(61009, "已经申请或者被推荐");
 
     private CandidateCategory(int code, String msg) {
         this.code = code;

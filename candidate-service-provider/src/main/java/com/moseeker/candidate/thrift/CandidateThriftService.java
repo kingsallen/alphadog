@@ -2,10 +2,7 @@ package com.moseeker.candidate.thrift;
 
 import com.moseeker.candidate.service.Candidate;
 import com.moseeker.thrift.gen.candidate.service.CandidateService;
-import com.moseeker.thrift.gen.candidate.struct.CandidateList;
-import com.moseeker.thrift.gen.candidate.struct.CandidateListParam;
-import com.moseeker.thrift.gen.candidate.struct.RecommendResult;
-import com.moseeker.thrift.gen.candidate.struct.RecommmendParam;
+import com.moseeker.thrift.gen.candidate.struct.*;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 
@@ -40,13 +37,28 @@ public class CandidateThriftService implements CandidateService.Iface {
     }
 
     @Override
-    public RecommendResult recommends(int companyId, List<Integer> idList) throws BIZException, TException {
-        return candidate.recommends(companyId, idList);
+    public RecommendResult getRecomendations(int companyId, List<Integer> idList) throws BIZException, TException {
+        return candidate.getRecommendations(companyId, idList);
     }
 
     @Override
     public RecommendResult recommend(RecommmendParam param) throws BIZException, TException {
         return candidate.recommend(param);
+    }
+
+    @Override
+    public RecomRecordResult getRecommendation(int id, int postUserId) throws BIZException, TException {
+        return candidate.getRecommendation(id, postUserId);
+    }
+
+    @Override
+    public SortResult getRecommendatorySorting(int postUserId, int companyId) throws BIZException, TException {
+        return candidate.getRecommendatorySorting(postUserId, companyId);
+    }
+
+    @Override
+    public RecommendResult ignore(int id, int companyId, int postUserId, String clickTime) throws BIZException, TException {
+        return candidate.ignore(id, companyId, postUserId, clickTime);
     }
 
 }

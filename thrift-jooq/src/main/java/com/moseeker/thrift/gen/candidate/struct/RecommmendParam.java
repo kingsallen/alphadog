@@ -17,7 +17,7 @@ public class RecommmendParam implements org.apache.thrift.TBase<RecommmendParam,
   private static final org.apache.thrift.protocol.TField POSITION_FIELD_DESC = new org.apache.thrift.protocol.TField("position", org.apache.thrift.protocol.TType.STRING, (short)4);
   private static final org.apache.thrift.protocol.TField MOBILE_FIELD_DESC = new org.apache.thrift.protocol.TField("mobile", org.apache.thrift.protocol.TType.STRING, (short)5);
   private static final org.apache.thrift.protocol.TField RECOM_REASON_FIELD_DESC = new org.apache.thrift.protocol.TField("recomReason", org.apache.thrift.protocol.TType.STRING, (short)6);
-  private static final org.apache.thrift.protocol.TField COMPANY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("companyId", org.apache.thrift.protocol.TType.STRING, (short)7);
+  private static final org.apache.thrift.protocol.TField COMPANY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("companyId", org.apache.thrift.protocol.TType.I32, (short)7);
   private static final org.apache.thrift.protocol.TField POST_USER_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("postUserId", org.apache.thrift.protocol.TType.I32, (short)8);
   private static final org.apache.thrift.protocol.TField CLICK_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("clickTime", org.apache.thrift.protocol.TType.STRING, (short)9);
 
@@ -30,7 +30,7 @@ public class RecommmendParam implements org.apache.thrift.TBase<RecommmendParam,
   public java.lang.String position; // optional
   public java.lang.String mobile; // optional
   public java.lang.String recomReason; // optional
-  public java.lang.String companyId; // optional
+  public int companyId; // optional
   public int postUserId; // optional
   public java.lang.String clickTime; // optional
 
@@ -118,7 +118,8 @@ public class RecommmendParam implements org.apache.thrift.TBase<RecommmendParam,
 
   // isset id assignments
   private static final int __ID_ISSET_ID = 0;
-  private static final int __POSTUSERID_ISSET_ID = 1;
+  private static final int __COMPANYID_ISSET_ID = 1;
+  private static final int __POSTUSERID_ISSET_ID = 2;
   private byte __isset_bitfield = 0;
   private static final _Fields optionals[] = {_Fields.ID,_Fields.REAL_NAME,_Fields.COMPANY,_Fields.POSITION,_Fields.MOBILE,_Fields.RECOM_REASON,_Fields.COMPANY_ID,_Fields.POST_USER_ID,_Fields.CLICK_TIME};
   public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
@@ -137,7 +138,7 @@ public class RecommmendParam implements org.apache.thrift.TBase<RecommmendParam,
     tmpMap.put(_Fields.RECOM_REASON, new org.apache.thrift.meta_data.FieldMetaData("recomReason", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("companyId", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.POST_USER_ID, new org.apache.thrift.meta_data.FieldMetaData("postUserId", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.CLICK_TIME, new org.apache.thrift.meta_data.FieldMetaData("clickTime", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
@@ -170,9 +171,7 @@ public class RecommmendParam implements org.apache.thrift.TBase<RecommmendParam,
     if (other.isSetRecomReason()) {
       this.recomReason = other.recomReason;
     }
-    if (other.isSetCompanyId()) {
-      this.companyId = other.companyId;
-    }
+    this.companyId = other.companyId;
     this.postUserId = other.postUserId;
     if (other.isSetClickTime()) {
       this.clickTime = other.clickTime;
@@ -192,7 +191,8 @@ public class RecommmendParam implements org.apache.thrift.TBase<RecommmendParam,
     this.position = null;
     this.mobile = null;
     this.recomReason = null;
-    this.companyId = null;
+    setCompanyIdIsSet(false);
+    this.companyId = 0;
     setPostUserIdIsSet(false);
     this.postUserId = 0;
     this.clickTime = null;
@@ -341,28 +341,27 @@ public class RecommmendParam implements org.apache.thrift.TBase<RecommmendParam,
     }
   }
 
-  public java.lang.String getCompanyId() {
+  public int getCompanyId() {
     return this.companyId;
   }
 
-  public RecommmendParam setCompanyId(java.lang.String companyId) {
+  public RecommmendParam setCompanyId(int companyId) {
     this.companyId = companyId;
+    setCompanyIdIsSet(true);
     return this;
   }
 
   public void unsetCompanyId() {
-    this.companyId = null;
+    __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __COMPANYID_ISSET_ID);
   }
 
   /** Returns true if field companyId is set (has been assigned a value) and false otherwise */
   public boolean isSetCompanyId() {
-    return this.companyId != null;
+    return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __COMPANYID_ISSET_ID);
   }
 
   public void setCompanyIdIsSet(boolean value) {
-    if (!value) {
-      this.companyId = null;
-    }
+    __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __COMPANYID_ISSET_ID, value);
   }
 
   public int getPostUserId() {
@@ -466,7 +465,7 @@ public class RecommmendParam implements org.apache.thrift.TBase<RecommmendParam,
       if (value == null) {
         unsetCompanyId();
       } else {
-        setCompanyId((java.lang.String)value);
+        setCompanyId((java.lang.Integer)value);
       }
       break;
 
@@ -625,7 +624,7 @@ public class RecommmendParam implements org.apache.thrift.TBase<RecommmendParam,
     if (this_present_companyId || that_present_companyId) {
       if (!(this_present_companyId && that_present_companyId))
         return false;
-      if (!this.companyId.equals(that.companyId))
+      if (this.companyId != that.companyId)
         return false;
     }
 
@@ -680,7 +679,7 @@ public class RecommmendParam implements org.apache.thrift.TBase<RecommmendParam,
 
     hashCode = hashCode * 8191 + ((isSetCompanyId()) ? 131071 : 524287);
     if (isSetCompanyId())
-      hashCode = hashCode * 8191 + companyId.hashCode();
+      hashCode = hashCode * 8191 + companyId;
 
     hashCode = hashCode * 8191 + ((isSetPostUserId()) ? 131071 : 524287);
     if (isSetPostUserId())
@@ -869,11 +868,7 @@ public class RecommmendParam implements org.apache.thrift.TBase<RecommmendParam,
     if (isSetCompanyId()) {
       if (!first) sb.append(", ");
       sb.append("companyId:");
-      if (this.companyId == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.companyId);
-      }
+      sb.append(this.companyId);
       first = false;
     }
     if (isSetPostUserId()) {
@@ -986,8 +981,8 @@ public class RecommmendParam implements org.apache.thrift.TBase<RecommmendParam,
             }
             break;
           case 7: // COMPANY_ID
-            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.companyId = iprot.readString();
+            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+              struct.companyId = iprot.readI32();
               struct.setCompanyIdIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -1064,12 +1059,10 @@ public class RecommmendParam implements org.apache.thrift.TBase<RecommmendParam,
           oprot.writeFieldEnd();
         }
       }
-      if (struct.companyId != null) {
-        if (struct.isSetCompanyId()) {
-          oprot.writeFieldBegin(COMPANY_ID_FIELD_DESC);
-          oprot.writeString(struct.companyId);
-          oprot.writeFieldEnd();
-        }
+      if (struct.isSetCompanyId()) {
+        oprot.writeFieldBegin(COMPANY_ID_FIELD_DESC);
+        oprot.writeI32(struct.companyId);
+        oprot.writeFieldEnd();
       }
       if (struct.isSetPostUserId()) {
         oprot.writeFieldBegin(POST_USER_ID_FIELD_DESC);
@@ -1148,7 +1141,7 @@ public class RecommmendParam implements org.apache.thrift.TBase<RecommmendParam,
         oprot.writeString(struct.recomReason);
       }
       if (struct.isSetCompanyId()) {
-        oprot.writeString(struct.companyId);
+        oprot.writeI32(struct.companyId);
       }
       if (struct.isSetPostUserId()) {
         oprot.writeI32(struct.postUserId);
@@ -1187,7 +1180,7 @@ public class RecommmendParam implements org.apache.thrift.TBase<RecommmendParam,
         struct.setRecomReasonIsSet(true);
       }
       if (incoming.get(6)) {
-        struct.companyId = iprot.readString();
+        struct.companyId = iprot.readI32();
         struct.setCompanyIdIsSet(true);
       }
       if (incoming.get(7)) {

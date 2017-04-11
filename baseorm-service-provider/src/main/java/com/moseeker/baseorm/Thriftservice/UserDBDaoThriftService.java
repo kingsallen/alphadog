@@ -43,6 +43,9 @@ public class UserDBDaoThriftService implements Iface {
 	@Autowired
 	private WxUserDao wxUserDao;
 
+	@Autowired
+	private UserEmployeePointsDao userEmployeePointsDao;
+
 	@Override
 	public UserUserDO getUser(CommonQuery query) throws TException {
 		UserUserDO user = new UserUserDO();
@@ -131,6 +134,11 @@ public class UserDBDaoThriftService implements Iface {
 	}
 
 	@Override
+	public int updateUserEmployeePoint(int id) throws BIZException, TException {
+		return employeeDao.updateUserEmployeePoint(id);
+	}
+
+	@Override
 	public Response getPointSum(List<Long> record) throws TException {
 		return userEmployeeService.getSumPoint(record);
 	}
@@ -148,6 +156,11 @@ public class UserDBDaoThriftService implements Iface {
 	@Override
 	public List<UserEmployeePointsRecordDO> getUserEmployeePoints(int employeeId) throws TException {
 		return userEmployeeService.getUserEmployeePoints(employeeId);
+	}
+
+	@Override
+	public UserEmployeePointsRecordDO saveUserEmployeePoints(UserEmployeePointsRecordDO employeePoint) throws BIZException, TException {
+		return userEmployeePointsDao.saveResource(employeePoint);
 	}
 
 	@Override
