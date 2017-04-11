@@ -113,7 +113,6 @@ public class UserEmployeeDao extends BaseDaoImpl<UserEmployeeRecord, UserEmploye
                 queryUtil = new QueryUtil();
                 queryUtil.addEqualFilter("company_id", String.valueOf(struct.getCompany_id()));
                 queryUtil.addEqualFilter("cname", struct.getCname());
-                queryUtil.addEqualFilter("cfname", struct.getCfname());
             }
             queryUtil.setPer_page(Integer.MAX_VALUE);
 
