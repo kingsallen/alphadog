@@ -5,6 +5,7 @@ import com.moseeker.baseorm.service.HrDBService;
 import com.moseeker.baseorm.service.HrDaoService;
 import com.moseeker.baseorm.util.CURDExceptionUtils;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -44,6 +45,9 @@ public class HrDBThriftService implements Iface {
 	@Autowired
 	private HrWxWechatDao hrWxWechatDao;
 
+	@Autowired
+	private HrPointsConfDao hrPointsConfDao;
+
 	@Override
 	public Response getHrHistoryOperations(List<ProcessValidationStruct> record) throws TException {
 		return hrDBService.getHrHistoryOpertation(record);
@@ -72,6 +76,11 @@ public class HrDBThriftService implements Iface {
 	@Override
 	public List<HrPointsConfDO> getPointsConfs(CommonQuery query) throws TException {
 		return hrDaoService.getPointsConfs(query);
+	}
+
+	@Override
+	public HrPointsConfDO getPointsConf(CommonQuery query) throws BIZException, TException {
+		return hrPointsConfDao.findResource(query);
 	}
 
 	@Override
