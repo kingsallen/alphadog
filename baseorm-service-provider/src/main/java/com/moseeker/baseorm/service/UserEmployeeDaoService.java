@@ -9,7 +9,7 @@ import com.moseeker.thrift.gen.dao.struct.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 
-public interface UserEmployeeService {
+public interface UserEmployeeDaoService {
 	public Response getUserEmployeeByWeChats(Integer companyId,List<Integer> weChatIds);
 	public Response postUserEmployeePointsRecords(List<UserEmployeePointStruct> records);
 	public Response putUserEmployeePointsRecords(List<UserEmployeePointStruct> records);

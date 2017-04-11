@@ -96,25 +96,3 @@ service ConfigDao{
 service WxUserDao {
 	common_struct.Response getResource(1:common_struct.CommonQuery query);
 }
-
-service ThirdPartyUserDao {
-    common_struct.Response putThirdPartyUser(1: useraccounts_struct.ThirdPartyUser user);
-}
-
-//UserEmployeeDao数据库单表操作
-service UserEmployeeDao {
-    common_struct.Response getResource(1:common_struct.CommonQuery query);
-    common_struct.Response getResources(1:common_struct.CommonQuery query);
-
-    common_struct.Response getResourceCount(1:common_struct.CommonQuery query);
-
-    common_struct.Response postResource(1:useraccounts_struct.UserEmployeeStruct record);
-    common_struct.Response postResources(1:list<useraccounts_struct.UserEmployeeStruct> records);
-
-    common_struct.Response putResource(1:useraccounts_struct.UserEmployeeStruct record);
-    common_struct.Response putResources(1:list<useraccounts_struct.UserEmployeeStruct> records);
-
-    common_struct.Response delResource(1:common_struct.CommonQuery query);
-
-    common_struct.Response postPutUserEmployeeBatch(1:list<useraccounts_struct.UserEmployeeStruct> userEmployees);
-}

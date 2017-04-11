@@ -2,15 +2,7 @@ apply plugin: 'idea'
 apply plugin: 'eclipse'
   
 dependencies {
-
-    compile project(":rpc-center")
     compile project(":baseorm-service-provider")
-    testCompile deps["junit"]
-    testCompile deps["mockito"]
-    compile deps["spring-core"]
-    compile deps["spring-context"]
-    compile deps["spring-jdbc"]
-    compile deps["spring-beans"]
 }
 
 task copyJars(type: Copy) {

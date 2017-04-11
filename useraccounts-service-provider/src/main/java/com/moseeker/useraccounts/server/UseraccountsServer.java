@@ -34,7 +34,7 @@ public class UseraccountsServer {
                     acac.getBean(UserCenterThriftService.class),
                     acac.getBean(UseraccountsServiceImpl.class),
                     acac.getBean(ThirdPartyUserServiceImpl.class),
-                    acac.getBean(UserEmployeeServiceImpl.class),
+                    acac.getBean(UserEmployeeThriftService.class),
                     acac.getBean(EmployeeServiceImpl.class));
             server.startServer();
 
@@ -59,6 +59,7 @@ public class UseraccountsServer {
         acac.scan("com.moseeker.useraccounts");
         acac.scan("com.moseeker.common.aop.iface");
         acac.scan("com.moseeker.common.aop.notify");
+        acac.scan("com.moseeker.baseorm");
         acac.refresh();
         return acac;
     }

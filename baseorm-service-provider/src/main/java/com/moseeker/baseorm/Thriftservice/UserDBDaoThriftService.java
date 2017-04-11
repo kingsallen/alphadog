@@ -1,7 +1,7 @@
 package com.moseeker.baseorm.Thriftservice;
 
 import com.moseeker.baseorm.dao.userdb.*;
-import com.moseeker.baseorm.service.UserEmployeeService;
+import com.moseeker.baseorm.service.UserEmployeeDaoService;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.thrift.gen.common.struct.*;
 import com.moseeker.thrift.gen.common.struct.CURDException;
@@ -29,10 +29,10 @@ public class UserDBDaoThriftService implements Iface {
 	private UserFavPositionDao favPositionDao;
 	
 	@Autowired
-	private UserEmployeeDao employeeDao;
-	
+	private com.moseeker.baseorm.dao.userdb.UserEmployeeDao employeeDao;
+
 	@Autowired
-	private UserEmployeeService userEmployeeService;
+	private UserEmployeeDaoService userEmployeeDaoService;
 
 	@Autowired
 	private UserHRAccountDao userHRAccountDao;
@@ -108,7 +108,7 @@ public class UserDBDaoThriftService implements Iface {
 
 	@Override
 	public Response putUserEmployee(UserEmployeePointsRecordDO employeeDo) throws TException {
-		return userEmployeeService.putUserEmployee(employeeDo);
+		return userEmployeeDaoService.putUserEmployee(employeeDo);
 	}
 
 	/*
@@ -119,42 +119,42 @@ public class UserDBDaoThriftService implements Iface {
 	 */
 	@Override
 	public Response getUserEmployee(int companyId, List<Integer> weChatIds) throws TException {
-		return userEmployeeService.getUserEmployeeByWeChats(companyId, weChatIds);
+		return userEmployeeDaoService.getUserEmployeeByWeChats(companyId, weChatIds);
 	}
 
 	@Override
 	public Response postUserEmployeePoints(List<UserEmployeePointStruct> records) throws TException {
-		return userEmployeeService.postUserEmployeePointsRecords(records);
+		return userEmployeeDaoService.postUserEmployeePointsRecords(records);
 	}
 
 	@Override
 	public Response getPointSum(List<Long> record) throws TException {
-		return userEmployeeService.getSumPoint(record);
+		return userEmployeeDaoService.getSumPoint(record);
 	}
 
 	@Override
 	public Response putUserEmployees(List<UserEmployeeStruct> records) throws TException {
-		return userEmployeeService.putUserEmployees(records);
+		return userEmployeeDaoService.putUserEmployees(records);
 	}
 
 	@Override
 	public Response putUserEmployeePoints(List<UserEmployeePointStruct> records) throws TException {
-		return userEmployeeService.putUserEmployeePointsRecords(records);
+		return userEmployeeDaoService.putUserEmployeePointsRecords(records);
 	}
 
 	@Override
 	public List<UserEmployeePointsRecordDO> getUserEmployeePoints(int employeeId) throws TException {
-		return userEmployeeService.getUserEmployeePoints(employeeId);
+		return userEmployeeDaoService.getUserEmployeePoints(employeeId);
 	}
 
 	@Override
 	public List<UserEmployeeDO> getUserEmployeesDO(CommonQuery query) throws TException {
-		return userEmployeeService.getEmployeesDO(query);
+		return userEmployeeDaoService.getEmployeesDO(query);
 	}
 
 	@Override
 	public Response putUserEmployeesDO(List<UserEmployeeDO> employeeDoList) throws TException {
-		return userEmployeeService.putEmployeesDO(employeeDoList);
+		return userEmployeeDaoService.putEmployeesDO(employeeDoList);
 	}
 
 	@Override

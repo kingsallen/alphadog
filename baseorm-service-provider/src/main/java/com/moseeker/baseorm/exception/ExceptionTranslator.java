@@ -1,4 +1,4 @@
-package com.moseeker.demo.exception;
+package com.moseeker.baseorm.exception;
 
 import org.jooq.ExecuteContext;
 import org.jooq.SQLDialect;

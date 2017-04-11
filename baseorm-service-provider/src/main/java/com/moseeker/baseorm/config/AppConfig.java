@@ -1,8 +1,8 @@
-package com.moseeker.demo.config;
+package com.moseeker.baseorm.config;
 
 import com.jolbox.bonecp.BoneCPDataSource;
 import com.moseeker.common.util.ConfigPropertiesUtil;
-import com.moseeker.demo.exception.ExceptionTranslator;
+import com.moseeker.baseorm.exception.ExceptionTranslator;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DataSourceConnectionProvider;
 import org.jooq.impl.DefaultConfiguration;

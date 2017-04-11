@@ -1,37 +1,43 @@
-package com.moseeker.useraccounts.service.impl;
+package com.moseeker.useraccounts.thrift;
 
-import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.service.UserEmployeeDao;
+import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import org.apache.thrift.TException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by eddie on 2017/3/9.
  */
 @Service
-public class  UserEmployeeService {
+public class UserEmployeeThriftService implements UserEmployeeService.Iface {
 
-    UserEmployeeDao.Iface userEmployeeDao = ServiceManager.SERVICEMANAGER.getService(UserEmployeeDao.Iface.class);
+    @Autowired
+    com.moseeker.useraccounts.service.impl.UserEmployeeServiceImpl employeeService;
 
+
+    @Override
     public Response getUserEmployee(CommonQuery query) throws TException {
-        return userEmployeeDao.getResource(query);
+        return employeeService.getUserEmployee(query);
     }
 
+    @Override
     public Response getUserEmployees(CommonQuery query) throws TException {
-        return userEmployeeDao.getResources(query);
+        return employeeService.getUserEmployees(query);
     }
 
+    @Override
     public Response delUserEmployee(CommonQuery query) throws TException {
-        return userEmployeeDao.delResource(query);
+        return employeeService.delUserEmployee(query);
     }
 
+
+    @Override
     public Response postPutUserEmployeeBatch(List<UserEmployeeStruct> update) throws TException {
-        return userEmployeeDao.postPutUserEmployeeBatch(update);
+        return employeeService.postPutUserEmployeeBatch(update);
     }
 }

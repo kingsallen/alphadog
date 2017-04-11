@@ -1,10 +1,9 @@
 package com.moseeker.baseorm.service.Impl;
 
-import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
-import com.moseeker.baseorm.service.UserEmployeeService;
+import com.moseeker.baseorm.service.UserEmployeeDaoService;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -23,9 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class UserEmployeeServiceImpl implements UserEmployeeService {
+public class UserEmployeeDaoServiceImpl implements UserEmployeeDaoService {
     @Autowired
-    private UserEmployeeDao dao;
+    private com.moseeker.baseorm.dao.userdb.UserEmployeeDao dao;
     @Autowired
     private UserEmployeePointsRecordDao dao1;
 

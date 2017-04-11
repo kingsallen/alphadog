@@ -1,4 +1,4 @@
-package com.moseeker.baseorm.Thriftservice;
+package com.moseeker.useraccounts.service.impl;
 
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -6,10 +6,8 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.service.UserEmployeeDao;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import org.apache.thrift.TException;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,17 +16,36 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by zhangdi on 2017/3/9.
+ * Created by eddie on 2017/3/9.
  */
 @Service
-public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
+public class UserEmployeeServiceImpl {
 
-    Logger logger = LoggerFactory.getLogger(UserEmployeeDaoThriftService.class);
+    org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     com.moseeker.baseorm.dao.userdb.UserEmployeeDao userEmployeeDao;
 
-    @Override
+    public Response getUserEmployee(CommonQuery query) throws TException {
+        return getResource(query);
+    }
+
+    public Response getUserEmployees(CommonQuery query) throws TException {
+        return getResources(query);
+    }
+
+    public Response delUserEmployee(CommonQuery query) throws TException {
+        return delResource(query);
+    }
+
+    public Response postPutUserEmployeeBatch(List<UserEmployeeStruct> update) throws TException {
+        try {
+            return ResponseUtils.success(userEmployeeDao.postPutUserEmployeeBatch(update));
+        } catch (Exception e) {
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        }
+    }
+
     public Response getResource(CommonQuery query) throws TException {
         try {
             UserEmployeeRecord result = userEmployeeDao.getResource(query);
@@ -43,7 +60,6 @@ public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
         }
     }
 
-    @Override
     public Response getResources(CommonQuery query) throws TException {
         try {
             List<UserEmployeeRecord> result = userEmployeeDao.getResources(query);
@@ -62,7 +78,6 @@ public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
         }
     }
 
-    @Override
     public Response getResourceCount(CommonQuery query) throws TException {
         try {
             int count = userEmployeeDao.getResourceCount(query);
@@ -73,13 +88,12 @@ public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
         }
     }
 
-    @Override
     public Response postResource(UserEmployeeStruct record) throws TException {
         try {
             int result = userEmployeeDao.postResource(BeanUtils.structToDB(record, UserEmployeeRecord.class));
-            if(result > 0) {
+            if (result > 0) {
                 return ResponseUtils.success(result);
-            }else{
+            } else {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
             }
         } catch (Exception e) {
@@ -95,7 +109,6 @@ public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
         return list;
     }
 
-    @Override
     public Response postResources(List<UserEmployeeStruct> records) throws TException {
         try {
             int result = userEmployeeDao.postResources(convertDB(records));
@@ -105,13 +118,12 @@ public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
         }
     }
 
-    @Override
     public Response putResource(UserEmployeeStruct record) throws TException {
         try {
             int result = userEmployeeDao.putResource(BeanUtils.structToDB(record, UserEmployeeRecord.class));
-            if(result > 0) {
+            if (result > 0) {
                 return ResponseUtils.success(result);
-            }else{
+            } else {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
             }
         } catch (Exception e) {
@@ -119,7 +131,6 @@ public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
         }
     }
 
-    @Override
     public Response putResources(List<UserEmployeeStruct> records) throws TException {
         try {
             int result = userEmployeeDao.putResources(convertDB(records));
@@ -129,13 +140,12 @@ public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
         }
     }
 
-    @Override
     public Response delResource(CommonQuery query) throws TException {
         try {
             int result = userEmployeeDao.delResource(query);
-            if(result > 0) {
+            if (result > 0) {
                 return ResponseUtils.success(result);
-            }else{
+            } else {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
             }
         } catch (Exception e) {
@@ -143,12 +153,4 @@ public class UserEmployeeDaoThriftService implements UserEmployeeDao.Iface {
         }
     }
 
-    @Override
-    public Response postPutUserEmployeeBatch(List<UserEmployeeStruct> userEmployees) throws TException {
-        try {
-            return ResponseUtils.success(userEmployeeDao.postPutUserEmployeeBatch(userEmployees));
-        } catch (Exception e) {
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-        }
-    }
 }
