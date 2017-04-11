@@ -113,7 +113,6 @@ public class UserEmployeeDao extends BaseDaoImpl<UserEmployeeRecord, UserEmploye
                 queryUtil = new QueryUtil();
                 queryUtil.addEqualFilter("company_id", String.valueOf(struct.getCompany_id()));
                 queryUtil.addEqualFilter("cname", struct.getCname());
-                queryUtil.addEqualFilter("cfname", struct.getCfname());
             }
             queryUtil.setPer_page(Integer.MAX_VALUE);
 
@@ -132,7 +131,8 @@ public class UserEmployeeDao extends BaseDaoImpl<UserEmployeeRecord, UserEmploye
                     successArray[i] = innserSuccessFlag > 0 ? 1 : 0;
                 } else {
                     try {
-                        successArray[i] = postResource(BeanUtils.structToDB(struct, UserEmployeeRecord.class));
+                        int id = postResource(BeanUtils.structToDB(struct, UserEmployeeRecord.class));
+                        successArray[i] = id>0?1:0;
                     }catch (Exception e){
                         successArray[i] = 0;
                     }
