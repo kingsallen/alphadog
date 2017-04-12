@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,8 +32,13 @@ public class ChatService {
     private ChatDao chaoDao = new ChatDao();
     private ThreadPool pool = ThreadPool.Instance;
 
-    private static String AUTO_CONTENT_WITH_HR_NOTEXIST = "我是{companyName}HR，我可以推荐您或者您的朋友加入我们！";
-    private static String AUTO_CONTENT_WITH_HR_EXIST = "我是{hrName}，{companyName}HR，我可以推荐您或者您的朋友加入我们！";
+//    private static String AUTO_CONTENT_WITH_HR_NOTEXIST = "我是{companyName}HR，我可以推荐您或者您的朋友加入我们！";
+//    private static String AUTO_CONTENT_WITH_HR_EXIST = "我是{hrName}，{companyName}HR，我可以推荐您或者您的朋友加入我们！";
+
+    /** 聊天页面欢迎语 **/
+    private static String WELCOMES_CONTER = "亲爱的%s：\n" +
+            "\t仟寻终于等到你啦。你可以在这里直接联系企业的HR，也可以直接和仟寻互动哦。\n" +
+            "\t祝你早日找到心仪的公司，加入令人振奋的团队，再次在你的职业之旅上迈步前行！\n";
 
     /**
      * HR查找聊天室列表
@@ -434,21 +440,12 @@ public class ChatService {
     private HrWxHrChatDO createChat(ResultOfSaveRoomVO resultOfSaveRoomVO) {
 
         logger.debug("createChat ResultOfSaveRoomVO:{}", resultOfSaveRoomVO);
-        //1.如果HR的名称不存在，则存储 "我是{companyName}HR，我可以推荐您或者您的朋友加入我们！"
-        //2.如果HR的名称存在，则存储 "我是{hrName}，{companyName}HR，我可以推荐您或者您的朋友加入我们！"
         HrWxHrChatDO chatDO = new HrWxHrChatDO();
         chatDO.setChatlistId(resultOfSaveRoomVO.getRoomId());
         chatDO.setSpeaker(true);
         String createTime = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
         chatDO.setCreateTime(createTime);
-        String content;
-        if(resultOfSaveRoomVO.getHr() != null && resultOfSaveRoomVO.getPosition() != null) {
-            content = AUTO_CONTENT_WITH_HR_EXIST.replace("{hrName}", resultOfSaveRoomVO.getHr()
-                    .getHrName()).replace("{companyName}", resultOfSaveRoomVO.getPosition().getCompanyName());
-        } else {
-            content = AUTO_CONTENT_WITH_HR_NOTEXIST
-                    .replace("{companyName}", resultOfSaveRoomVO.getPosition().getCompanyName());
-        }
+        String content = String.format(WELCOMES_CONTER, resultOfSaveRoomVO.getUser().getUserName());
         chatDO.setContent(content);
         if(resultOfSaveRoomVO.getPosition() != null) {
             chatDO.setPid(resultOfSaveRoomVO.getPosition().getPositionId());
