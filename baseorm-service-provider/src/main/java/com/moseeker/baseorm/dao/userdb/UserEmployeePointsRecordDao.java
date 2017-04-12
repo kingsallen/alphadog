@@ -43,7 +43,13 @@ public class UserEmployeePointsRecordDao extends BaseDaoImpl<UserEmployeePointsR
 				UserEmployeePointSum point=null;
 				for(Record2<BigDecimal, Long> r:result){
 					point=new UserEmployeePointSum();
-					point.setAward(Long.parseLong(r.getValue(0)+""));
+					//由于可能没有记录，所以可能为null
+					if(r.getValue(0)==null){
+						point.setAward(0L);
+					}else{
+						point.setAward(Long.parseLong(r.getValue(0)+""));
+					}
+					//EMPLOYEE_ID不可能为null，所以不判断null
 					point.setEmployee_id((long)r.getValue(1));
 					points.add(point);
 				}
