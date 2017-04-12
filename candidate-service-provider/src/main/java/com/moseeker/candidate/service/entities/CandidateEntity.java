@@ -28,12 +28,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 候选人实体，提供候选人相关业务
@@ -184,6 +183,7 @@ public class CandidateEntity implements Candidate {
             Future positionFuture = findPositionList(candidateRecomRecordDOList);
             Future presenteeFuture = findPresenteeList(candidateRecomRecordDOList);
             Future repostFuture = findRepostFuture(candidateRecomRecordDOList);
+            Future candidatePositionFuture = findCandidatePositionFuture(candidateRecomRecordDOList);
 
             /** 封装职位标题，推荐人信息，被动求职者信息 */
             List<JobPositionDO> jobPositionDOList = null;
@@ -191,11 +191,13 @@ public class CandidateEntity implements Candidate {
                 jobPositionDOList = (List<JobPositionDO>) positionFuture.get();
                 if(jobPositionDOList != null && jobPositionDOList.size() > 0) {
 
-                    List<UserUserDO> presenteeUserList = convertPresenteeFuture(presenteeFuture);    //候选人
-                    List<UserUserDO> repostUserList = convertRepostFuture(repostFuture);             //推荐者
+                    List<UserUserDO> presenteeUserList = convertFuture(presenteeFuture);    //候选人
+                    List<UserUserDO> repostUserList = convertFuture(repostFuture);             //推荐者
+                    List<CandidatePositionDO> candidatePositionDOList = convertFuture(candidatePositionFuture); //候选人查看职位记录
 
                     for(JobPositionDO positionDO : jobPositionDOList) {
-                        CandidateList postionCandidate = addPositionCandidate(positionDO, candidateRecomRecordDOList, presenteeUserList, repostUserList);
+                        CandidateList postionCandidate = addPositionCandidate(positionDO, candidateRecomRecordDOList,
+                                presenteeUserList, repostUserList, candidatePositionDOList);
                         result.add(postionCandidate);
                     }
                 } else {
@@ -231,6 +233,7 @@ public class CandidateEntity implements Candidate {
         recommendResult.setRecomTotal(idList.size());
         recommendResult.setRecomIndex(0);
         recommendResult.setRecomIgnore(0);
+        recommendResult.setNextOne(false);
 
         /** 查找职位转发浏览记录 */
         List<CandidateRecomRecordDO> candidateRecomRecordDOList = CandidateDBDao.getCandidateRecomRecordDOByIdList(idList);
@@ -243,6 +246,9 @@ public class CandidateEntity implements Candidate {
 
             //组装查询结果
             recommendResult = assembleResult(recommendResult, candidateRecomRecordDO, positionListFuture, presenteeListFuture);
+            if(candidateRecomRecordDOList.size() > 1) {
+                recommendResult.setNextOne(true);
+            }
         }
 
         return recommendResult;
@@ -339,7 +345,7 @@ public class CandidateEntity implements Candidate {
         if(employeeDOList == null || employeeDOList.size() == 0) {
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_SORT_COLLEAGUE_NOT_EXIST);
         }
-        List<Integer> employeeIdList = employeeDOList.stream().map(userEmployeeDO -> userEmployeeDO.getId()).collect(Collectors.toList());
+        List<Integer> employeeIdList = employeeDOList.stream().map(userEmployeeDO -> userEmployeeDO.getSysuserId()).collect(Collectors.toList());
         /** 查找排名 */
         List<CandidateRecomRecordSortingDO> sortingDOList = CandidateDBDao.listSorting(employeeIdList);
         if(sortingDOList == null || sortingDOList.size() == 0) {
@@ -416,8 +422,8 @@ public class CandidateEntity implements Candidate {
 
         List<Integer> exceptNotRecommend = new ArrayList<Integer>(){{
             add(0);
-            add(1);
             add(2);
+            add(3);
         }};
 
         List<Integer> recommended = new ArrayList<Integer>(){{
@@ -428,10 +434,14 @@ public class CandidateEntity implements Candidate {
             add(2);
         }};
 
+        List<Integer> selected = new ArrayList<Integer>(){{
+            add(3);
+        }};
+
         List<CandidateRecomRecordDO> candidateRecomRecordDOList =
                 CandidateDBDao.listCandidateRecomRecordDOExceptId(id, postUserId,
-                        clickTime, exceptNotRecommend);
-        if(candidateRecomRecordDOList == null || candidateRecomRecordDOList.size() == 0) {
+                        clickTime, selected);
+        if(candidateRecomRecordDOList != null && candidateRecomRecordDOList.size() > 0) {
             CandidateRecomRecordDO candidateRecomRecordDO = candidateRecomRecordDOList.get(0);
             Future positionFuture = findPositionFutureById(candidateRecomRecordDO.getPositionId());
             Future userFuture = findUserFutureById(candidateRecomRecordDO.getPresenteeUserId());
@@ -478,7 +488,7 @@ public class CandidateEntity implements Candidate {
                                                         Future positionFuture, Future userFuture) {
         RecomRecordResult recomRecordResult = new RecomRecordResult();
         recomRecordResult.setId(candidateRecomRecordDO.getId());
-        recomRecordResult.setClickTime(recomRecordResult.getClickTime());
+        recomRecordResult.setClickTime(candidateRecomRecordDO.getClickTime());
         recomRecordResult.setPresenteeName(refineUserName(userFuture));
         recomRecordResult.setTitle(refinePositionName(positionFuture));
         recomRecordResult.setRecom(candidateRecomRecordDO.getIsRecom());
@@ -657,6 +667,22 @@ public class CandidateEntity implements Candidate {
         return future;
     }
 
+    private Future findCandidatePositionFuture(List<CandidateRecomRecordDO> candidateRecomRecordDOList) {
+        Future candidatePositionFuture = tp.startTast(() -> {
+            List<Map<Integer, Integer>> param = candidateRecomRecordDOList.stream()
+                    .filter(candidateRecomRecordDO -> candidateRecomRecordDO.getPresenteeUserId() > 0
+                            && candidateRecomRecordDO.getPositionId() > 0)
+                    .flatMap(candidateRecomRecordDO -> {
+                        Map<Integer, Integer> map = new HashMap<>();
+                        map.put(candidateRecomRecordDO.getPositionId(), candidateRecomRecordDO.getPresenteeUserId());
+                        return Stream.of(map);
+                    })
+                    .collect(Collectors.toList());
+
+            return CandidateDBDao.listCandidatePositionByUserIdPositionId(param);
+        });
+        return candidatePositionFuture;
+    }
 
     /**
      * 查找转发者信息
@@ -709,11 +735,13 @@ public class CandidateEntity implements Candidate {
      * @param candidateRecomRecordDOList 职位转发浏览记录
      * @param presenteeUserList 被动求职者
      * @param repostUserList 推荐人信息
+     * @param candidatePositionDOList
      * @return 职位候选人信息
      */
     private CandidateList addPositionCandidate(JobPositionDO positionDO,
                                                List<CandidateRecomRecordDO> candidateRecomRecordDOList,
-                                               List<UserUserDO> presenteeUserList, List<UserUserDO> repostUserList) {
+                                               List<UserUserDO> presenteeUserList, List<UserUserDO> repostUserList,
+                                               List<CandidatePositionDO> candidatePositionDOList) {
         CandidateList postionCandidate = new CandidateList();
         postionCandidate.setPositionId(positionDO.getId());
         postionCandidate.setPositionName(positionDO.getTitle());
@@ -724,7 +752,8 @@ public class CandidateEntity implements Candidate {
                 .collect(Collectors.toList());
 
         List<com.moseeker.thrift.gen.candidate.struct.Candidate> candidates
-                = addCandidate(candidateRecomRecordDOPositionList, presenteeUserList, repostUserList);
+                = addCandidate(candidateRecomRecordDOPositionList, presenteeUserList, repostUserList,
+                candidatePositionDOList);
 
         postionCandidate.setCandidates(candidates);
         return postionCandidate;
@@ -735,9 +764,12 @@ public class CandidateEntity implements Candidate {
      * @param candidateRecomRecordDOPositionList 职位转发浏览记录
      * @param presenteeUserList 被动求职者
      * @param repostUserList 推荐人信息
+     * @param candidatePositionDOList
      * @return 职位相关的被动求职者信息
      */
-    private List<com.moseeker.thrift.gen.candidate.struct.Candidate> addCandidate(List<CandidateRecomRecordDO> candidateRecomRecordDOPositionList, List<UserUserDO> presenteeUserList, List<UserUserDO> repostUserList) {
+    private List<com.moseeker.thrift.gen.candidate.struct.Candidate> addCandidate(
+            List<CandidateRecomRecordDO> candidateRecomRecordDOPositionList, List<UserUserDO> presenteeUserList,
+            List<UserUserDO> repostUserList, List<CandidatePositionDO> candidatePositionDOList) {
 
         List<com.moseeker.thrift.gen.candidate.struct.Candidate> candidates = new ArrayList<>();
 
@@ -750,9 +782,33 @@ public class CandidateEntity implements Candidate {
 
             setRepost(candidate, repostUserList, candidateRecomRecordDO);
 
+            setCandidatePosition(candidate, candidatePositionDOList, candidateRecomRecordDO);
+
             candidates.add(candidate);
         }
         return candidates;
+    }
+
+    /**
+     * 设置浏览次数与是否感兴趣
+     * @param candidate 被动求职者和推荐者信息
+     * @param candidatePositionDOList 候选人浏览职位数据
+     * @param candidateRecomRecordDO 职位转发浏览记录
+     */
+    private void setCandidatePosition(com.moseeker.thrift.gen.candidate.struct.Candidate candidate,
+                                      List<CandidatePositionDO> candidatePositionDOList,
+                                      CandidateRecomRecordDO candidateRecomRecordDO) {
+        if(candidatePositionDOList != null && candidatePositionDOList.size() > 0) {
+            Optional<CandidatePositionDO> candidatePositionDOOptional = candidatePositionDOList.stream()
+                    .filter(candidatePositionDO -> candidatePositionDO.getPositionId()
+                            == candidateRecomRecordDO.getPositionId()
+                            && candidatePositionDO.getUserId() == candidateRecomRecordDO.getPresenteeUserId())
+                    .findAny();
+            if(candidatePositionDOOptional.isPresent()) {
+                candidate.setViewNumber(candidatePositionDOOptional.get().getViewNumber());
+                candidate.setInsterested(candidatePositionDOOptional.get().isIsInterested());
+            }
+        }
     }
 
     /**
@@ -798,22 +854,12 @@ public class CandidateEntity implements Candidate {
         }
     }
 
-    private List<UserUserDO> convertRepostFuture(Future repostFuture) {
+    private <T> T convertFuture(Future future) {
         try {
-            return  (List<UserUserDO>) repostFuture.get();
+            return  (T) future.get();
         } catch (InterruptedException | ExecutionException e) {
             logger.error(e.getMessage(), e);
             return null;
         }
     }
-
-    private List<UserUserDO> convertPresenteeFuture(Future presenteeFuture) {
-        try {
-            return  (List<UserUserDO>) presenteeFuture.get();
-        } catch (InterruptedException | ExecutionException e) {
-            logger.error(e.getMessage(), e);
-            return null;
-        }
-    }
-
 }

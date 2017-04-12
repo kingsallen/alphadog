@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -351,6 +352,15 @@ public class CandidateDBDao {
     public static List<CandidateRecomRecordSortingDO> listSorting(List<Integer> employeeIdList) {
         try {
             return candidateDBDao.listCandidateRecomRecordSorting(employeeIdList);
+        } catch (TException e) {
+            LoggerFactory.getLogger(CandidateDBDao.class).error(e.getMessage(), e);
+            return null;
+        }
+    }
+
+    public static List<CandidatePositionDO> listCandidatePositionByUserIdPositionId(List<Map<Integer, Integer>> param) {
+        try {
+            return candidateDBDao.listCandidatePositionsByPositionIDUserID(param);
         } catch (TException e) {
             LoggerFactory.getLogger(CandidateDBDao.class).error(e.getMessage(), e);
             return null;
