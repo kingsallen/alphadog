@@ -2,8 +2,12 @@ include "../../common/struct/common_struct.thrift"
 
 namespace java com.moseeker.thrift.gen.demo.service
 /*
-    查询第三方职位职能
+    开发标准DMEO
 */
-service ServiceTest {
-    void serviceTest()
+service DemoThriftService {
+    //单表操作逻辑，所有的方法返回最终的结果JSON，抛弃comm_struct.Response
+    string getData(1: common_struct.CommonQuery query);
+    string postData(1: map<string,string> data);
+    string putData(1: common_struct.CommonUpdate data);
+    string deleteData(1: common_struct.Condition condition);
 }

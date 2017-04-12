@@ -1,8 +1,8 @@
 package com.moseeker.demo.crud;
 
-import com.moseeker.baseorm.crud.*;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.common.dbutils.DBConnHelper;
+import com.moseeker.common.providerutils.*;
 import com.moseeker.thrift.gen.common.struct.Order;
 import com.moseeker.thrift.gen.common.struct.Select;
 import com.moseeker.thrift.gen.common.struct.SelectOp;

@@ -1,0 +1,65 @@
+project.description = '''
+    jooq 生成table和record
+'''
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+
+apply from: '../versions.gradle'
+
+dependencies {
+    compile 'org.jooq:jooq:3.7.3'
+    compile 'org.jooq:jooq-meta:3.7.3'
+    compile 'org.jooq:jooq-codegen:3.7.3'
+    testCompile deps["junit"]
+}
+
+buildscript {
+    apply from: '../versions.gradle'
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'org.jooq:jooq-codegen:3.7.3'
+        classpath deps["mysql-connector-java"]
+    }
+}
+
+sourceCompatibility = 1.8
+
+import javax.xml.bind.JAXB
+import org.jooq.util.GenerationTool
+
+
+//['analytics','candidatedb','configdb','dictdb','historydb','hrdb','jobdb','logdb','profiledb','userdb','wordpressdb'].forEach{ db->
+['test'].forEach{ db->
+    def writer = new StringWriter()
+    def xml = new groovy.xml.MarkupBuilder(writer).configuration('xmlns': 'http://www.jooq.org/xsd/jooq-codegen-3.7.0.xsd') {
+        jdbc() {
+            driver('com.mysql.jdbc.Driver')
+            url('jdbc:mysql://192.168.31.66:3306/userdb?useUnicode=true&characterEncoding=utf8&autoReconnect=true&rewriteBatchedStatements=TRUE')
+            user('wyf')
+            password('moseeker.com')
+        }
+        generator() {
+            database {
+                unsignedTypes false
+                name 'org.jooq.util.mysql.MySQLDatabase'
+                inputSchema db
+                excludes 'view_resume_import'
+            }
+            generate() {
+            }
+            target() {
+                packageName('com.moseeker.baseorm.db.'+db)
+                directory('src/main/java')
+            }
+        }
+    }
+
+    GenerationTool.main(
+            JAXB.unmarshal(new StringReader(writer.toString()), org.jooq.util.jaxb.Configuration.class)
+    )
+}

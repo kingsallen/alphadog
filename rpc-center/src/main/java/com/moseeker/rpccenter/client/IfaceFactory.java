@@ -77,6 +77,7 @@ public class IfaceFactory<T> {
         poolConfig.maxWait = config.getMaxWait();
         poolConfig.timeBetweenEvictionRunsMillis = config.getTimeBetweenEvictionRunsMillis();
         poolConfig.testWhileIdle = config.isTestWhileIdle();
+        poolConfig.testOnReturn = true;
 
         // 加载Client.Factory类
         Class<TServiceClientFactory<TServiceClient>> fi = (Class<TServiceClientFactory<TServiceClient>>) classLoader.loadClass(findOutClassName(ifaceClass) + "$Client$Factory");

@@ -6,6 +6,7 @@ import java.net.ConnectException;
 import java.net.SocketException;
 
 import org.apache.commons.pool.impl.GenericKeyedObjectPool;
+import org.apache.thrift.TServiceClient;
 import org.apache.thrift.transport.TTransportException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

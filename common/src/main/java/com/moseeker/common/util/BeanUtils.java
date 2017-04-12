@@ -244,10 +244,10 @@ public class BeanUtils {
 			}
 		}
 	}
-	
+
 	public static <R, T> List<T> copies(List<R> dests, Class<T> orig) {
 		List<T> list = new ArrayList<>();
-		
+
 		if(dests != null && dests.size() > 0) {
 			list = dests.stream().map(dest -> {
 				T t = null;
@@ -261,7 +261,7 @@ public class BeanUtils {
 				return t;
 			}).filter(t -> t != null).collect(Collectors.toList());
 		}
-		
+
 		return list;
 	}
 
@@ -294,7 +294,11 @@ public class BeanUtils {
 		return t;
 	}
 
-	private enum MethodType {
+    public static String toJson(Object data) {
+		return JSON.toJSONString(data);
+    }
+
+    private enum MethodType {
 		GET, SET, IS;
 
         @Override
@@ -359,7 +363,7 @@ public class BeanUtils {
     }
 
 	/**
-	 * 
+	 *
 	 * @param value
 	 * @param clazzType
 	 * @return
@@ -1217,33 +1221,17 @@ public class BeanUtils {
         return value;
     };
 
-    public static String convertStructToJSON(final TBase<?, ?> tobj) throws TException {
-        TSerializer serializer = new TSerializer(new TSimpleJSONProtocol.Factory());
-        return serializer.toString(tobj, "utf8");
+	/**
+	 * 只要内部包含TBase类型的都用这个方法转json
+	 * 当然其它类型也是可以的，不过内部实现是通过GSON来实现的
+	 */
+    public static String convertStructToJSON(Object obj) {
+		return StructSerializer.toString(obj);
     }
-
-
 
     public static String jooqMapToJSON(Map<String, Object> objectMap) {
         return JSON.toJSONString(objectMap, jooqMapfilter);
     }
-
-	static PropertyFilter profilter = new PropertyFilter(){
-
-		@Override
-		public boolean apply(Object object, String name, Object value) {
-			if(name.startsWith("set")){
-				return false;
-			}
-			return true;
-		}
-
-	};
-
-	public static String convertStructToJSON(Object object) throws TException{
-		return JSON.toJSONString(object,profilter);
-	}
-
 
 	public static Map<String, Object> object2Map(Object object){
 		JSONObject jsonObject = (JSONObject) JSONObject.toJSON(object);

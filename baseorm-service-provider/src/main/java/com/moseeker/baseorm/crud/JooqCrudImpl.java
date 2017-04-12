@@ -1,5 +1,6 @@
 package com.moseeker.baseorm.crud;
 
+import com.moseeker.common.providerutils.Crud;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.CommonUpdate;
@@ -11,8 +12,6 @@ import org.jooq.UpdateSetMoreStep;
 import org.jooq.impl.DefaultDSLContext;
 import org.jooq.impl.TableImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.sql.SQLException;
 import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.List;
@@ -46,6 +45,9 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> implements Crud<S, R>
 
     @Override
     public int add(Map<String, String> fieldValues) {
+        if(fieldValues==null || fieldValues.size()==0){
+            return 0;
+        }
         AbstractMap.SimpleEntry<Collection<Field<?>>, Collection<?>> entry = FieldUtils.convertInsertFieldMap(table, fieldValues);
         return create.insertInto(table, entry.getKey()).values(entry.getValue()).execute();
     }
@@ -53,6 +55,9 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> implements Crud<S, R>
     @Override
     public int[] addAll(List<Map<String, String>> fieldValuesList) {
         int[] result = new int[fieldValuesList.size()];
+        if(fieldValuesList==null || fieldValuesList.size()==0){
+            return result;
+        }
         IntStream.range(0, fieldValuesList.size()).forEach(index -> {
             result[index] = add(fieldValuesList.get(index));
         });
@@ -82,7 +87,7 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> implements Crud<S, R>
     }
 
     @Override
-    public int deleteData(S s) throws SQLException {
+    public int deleteData(S s) {
         return deleteRecord(getRecord(s));
     }
 
@@ -148,7 +153,7 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> implements Crud<S, R>
     }
 
     @Override
-    public List<S> getDatas(CommonQuery query) throws SQLException {
+    public List<S> getDatas(CommonQuery query) {
         return getDatas(query, sClass);
     }
 
@@ -168,7 +173,7 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> implements Crud<S, R>
     }
 
     @Override
-    public S getData(CommonQuery query) throws SQLException {
+    public S getData(CommonQuery query) {
         return getData(query, sClass);
     }
 

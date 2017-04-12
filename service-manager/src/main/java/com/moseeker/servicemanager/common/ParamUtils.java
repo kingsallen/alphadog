@@ -1,10 +1,12 @@
 package com.moseeker.servicemanager.common;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.JsonToMap;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.*;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,11 +17,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * 主要用于生成form表单
@@ -231,46 +232,85 @@ public class ParamUtils {
     private static Map<String, Object> initParamFromRequestBody(
             HttpServletRequest request) {
 
-		StringBuffer jb = new StringBuffer();
-		String line = null;
-		try {
-			BufferedReader reader = request.getReader();
-			while ((line = reader.readLine()) != null) {
-				jb.append(line);
-			}
-		} catch (IOException | IllegalStateException e) {
-		}
-		LoggerFactory.getLogger(ParamUtils.class).info("----initParamFromRequestBody:", jb.toString());
-		Map<String, Object> map = JsonToMap.parseJSON2Map(jb.toString());
-		return map;
-	}
-	
-	public static String getLocalHostIp(){
-		try {
-			return InetAddress.getLocalHost().getHostAddress();
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-		}
-		return "unknow";
-	}
-	
-	public static String getRemoteIp(HttpServletRequest request) {
-		String remoteIpForwardedbyLbs = request.getHeader("REMOTE_ADDR");// php
-																			// 和
-																			// python
-																			// tornado不一致，需要实际测试。
-		return remoteIpForwardedbyLbs == null ? request.getRemoteAddr()
-				: remoteIpForwardedbyLbs;
-	}
+        StringBuffer jb = new StringBuffer();
+        String line = null;
+        try {
+            BufferedReader reader = request.getReader();
+            while ((line = reader.readLine()) != null) {
+                jb.append(line);
+            }
+        } catch (IOException | IllegalStateException e) {
+        }
+        LoggerFactory.getLogger(ParamUtils.class).info("----initParamFromRequestBody:", jb.toString());
+        Map<String, Object> map = JsonToMap.parseJSON2Map(jb.toString());
+        return map;
+    }
 
-	public static String getStringRaw(HttpServletRequest request) throws IOException {
-		StringBuffer jb = new StringBuffer();
-		String line = null;
-		BufferedReader reader = request.getReader();
-		while ((line = reader.readLine()) != null) {
-			jb.append(line);
-		}
+    public static String getLocalHostIp() {
+        try {
+            return InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            // TODO Auto-generated catch block
+        }
+        return "unknow";
+    }
 
-		return jb.toString();
-	}
+    public static String getRemoteIp(HttpServletRequest request) {
+        String remoteIpForwardedbyLbs = request.getHeader("REMOTE_ADDR");// php
+        // 和
+        // python
+        // tornado不一致，需要实际测试。
+        return remoteIpForwardedbyLbs == null ? request.getRemoteAddr()
+                : remoteIpForwardedbyLbs;
+    }
+
+    public static String getStringRaw(HttpServletRequest request) throws IOException {
+        StringBuffer jb = new StringBuffer();
+        String line = null;
+        BufferedReader reader = request.getReader();
+        while ((line = reader.readLine()) != null) {
+            jb.append(line);
+        }
+
+        return jb.toString();
+    }
+
+    public static Map<String, String> getMap(HttpServletRequest request) {
+        Map<String, String> map = new HashMap<>();
+        String[] value;
+        Map<String, String[]> paraMap = request.getParameterMap();
+        for (String key : paraMap.keySet()) {
+            value = paraMap.get(key);
+            map.put(key, value == null ? null : value.length == 0 ? null : value[0]);
+        }
+
+        String raw = null;
+        try {
+            raw = getStringRaw(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (raw != null && raw.trim().length() > 0) {
+            if (raw.startsWith("{") && raw.endsWith("}")) {
+                //object
+                Map<String, String> rawMap = (Map<String, String>) JSON.parse(raw);
+                map.putAll(rawMap);
+            } else {
+                Map<String, String> rawMap = Arrays.stream(StringUtils.split(raw, '&'))
+                        .filter(pair -> pair != null && pair.trim().length() > 0)
+                        .map(pair -> {
+                            String[] p = StringUtils.split(pair, '=');
+                            if (p.length == 1) {
+                                return new AbstractMap.SimpleEntry<String, String>(p[0], null);
+                            } else {
+                                return new AbstractMap.SimpleEntry<>(p[0], p[1]);
+                            }
+                        })
+                        .collect(Collectors.toMap(o1 -> o1.getKey(), o2 -> o2.getValue()));
+                map.putAll(rawMap);
+            }
+        }
+        return map;
+    }
 }
