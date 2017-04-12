@@ -6,14 +6,13 @@ package com.moseeker.baseorm.db.hrdb.tables;
 
 import com.moseeker.baseorm.db.hrdb.Hrdb;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrResourceOnlineRecord;
-
-import javax.annotation.Generated;
-
 import org.jooq.Field;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.impl.TableImpl;
+
+import javax.annotation.Generated;
 
 
 /**

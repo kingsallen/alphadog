@@ -5,13 +5,12 @@ package com.moseeker.baseorm.db.hrdb.tables.records;
 
 
 import com.moseeker.baseorm.db.hrdb.tables.HrResourceOnline;
-
-import javax.annotation.Generated;
-
 import org.jooq.Field;
 import org.jooq.Record4;
 import org.jooq.Row4;
 import org.jooq.impl.TableRecordImpl;
+
+import javax.annotation.Generated;
 
 
 /**

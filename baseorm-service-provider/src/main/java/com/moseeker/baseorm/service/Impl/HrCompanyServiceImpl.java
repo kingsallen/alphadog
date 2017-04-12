@@ -1,11 +1,6 @@
 package com.moseeker.baseorm.service.Impl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.moseeker.baseorm.dao.hrdb.HRCompanyConfDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.service.HrCompanyService;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -14,6 +9,10 @@ import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.HRCompanyConfData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 /**
  * 
  * @author zztaiwll
@@ -26,7 +25,7 @@ public class HrCompanyServiceImpl implements HrCompanyService {
 	Logger logger = LoggerFactory.getLogger(HrCompanyServiceImpl.class);
 	
 	@Autowired
-	private HRCompanyConfDao hrCompantDao;
+	private HrCompanyConfDao hrCompantDao;
 	@Override
 	public Response getCompanyConf(CommonQuery query) {
 		// TODO Auto-generated method stub

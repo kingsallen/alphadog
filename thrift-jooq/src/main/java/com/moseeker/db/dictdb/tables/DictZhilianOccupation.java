@@ -82,6 +82,7 @@ public class DictZhilianOccupation extends TableImpl<DictZhilianOccupationRecord
 	 */
 	public final TableField<DictZhilianOccupationRecord, UShort> STATUS = createField("STATUS", org.jooq.impl.SQLDataType.SMALLINTUNSIGNED.nullable(false).defaulted(true), this, "只能状态 0 是有效 1是无效");
 
+
 	/**
 	 * The column <code>dictdb.dict_zhilian_occupation.createTime</code>. 创建时间
 	 */

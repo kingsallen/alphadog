@@ -4,14 +4,13 @@
 package com.moseeker.baseorm.db.hrdb;
 
 
+import org.jooq.Schema;
+import org.jooq.impl.CatalogImpl;
+
+import javax.annotation.Generated;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.annotation.Generated;
-
-import org.jooq.Schema;
-import org.jooq.impl.CatalogImpl;
 
 
 /**
@@ -37,7 +36,7 @@ public class DefaultCatalog extends CatalogImpl {
     /**
      * The schema <code>hrdb</code>.
      */
-    public final Hrdb HRDB = com.moseeker.baseorm.db.hrdb.Hrdb.HRDB;
+    public final Hrdb HRDB = Hrdb.HRDB;
 
     /**
      * No further instances allowed

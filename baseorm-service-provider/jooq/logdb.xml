@@ -3,7 +3,7 @@
 <!-- Configure the database connection here -->
 <jdbc>
 <driver>com.mysql.jdbc.Driver</driver>
-<url>jdbc:mysql://192.168.31.66:3306/hrdb</url>
+<url>jdbc:mysql://192.168.31.66:3306/logdb</url>
 <user>www</user>
 <password>moseeker.com</password>
 </jdbc>

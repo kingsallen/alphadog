@@ -5,13 +5,12 @@ package com.moseeker.baseorm.db.hrdb.tables.records;
 
 
 import com.moseeker.baseorm.db.hrdb.tables.HrResourceBackupChendi;
-
-import javax.annotation.Generated;
-
 import org.jooq.Field;
 import org.jooq.Record7;
 import org.jooq.Row7;
 import org.jooq.impl.TableRecordImpl;
+
+import javax.annotation.Generated;
 
 
 /**

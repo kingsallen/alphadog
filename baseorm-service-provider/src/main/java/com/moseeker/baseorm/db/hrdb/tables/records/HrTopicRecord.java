@@ -5,17 +5,15 @@ package com.moseeker.baseorm.db.hrdb.tables.records;
 
 
 import com.moseeker.baseorm.db.hrdb.tables.HrTopic;
-
-import java.sql.Timestamp;
-
-import javax.annotation.Generated;
-
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record10;
 import org.jooq.Row10;
 import org.jooq.impl.UpdatableRecordImpl;
 import org.jooq.types.UInteger;
+
+import javax.annotation.Generated;
+import java.sql.Timestamp;
 
 
 /**

@@ -4,108 +4,15 @@
 package com.moseeker.baseorm.db.hrdb;
 
 
-import com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf;
-import com.moseeker.baseorm.db.hrdb.tables.HrChatUnreadCount;
-import com.moseeker.baseorm.db.hrdb.tables.HrChildCompany;
-import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
-import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
-import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
-import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf;
-import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields;
-import com.moseeker.baseorm.db.hrdb.tables.HrEmployeePosition;
-import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeSection;
-import com.moseeker.baseorm.db.hrdb.tables.HrFeedback;
-import com.moseeker.baseorm.db.hrdb.tables.HrHbConfig;
-import com.moseeker.baseorm.db.hrdb.tables.HrHbItems;
-import com.moseeker.baseorm.db.hrdb.tables.HrHbPositionBinding;
-import com.moseeker.baseorm.db.hrdb.tables.HrHbScratchCard;
-import com.moseeker.baseorm.db.hrdb.tables.HrHbSendRecord;
-import com.moseeker.baseorm.db.hrdb.tables.HrHtml5Statistics;
-import com.moseeker.baseorm.db.hrdb.tables.HrHtml5UniqueStatistics;
-import com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor;
-import com.moseeker.baseorm.db.hrdb.tables.HrMedia;
-import com.moseeker.baseorm.db.hrdb.tables.HrOperationRecord;
-import com.moseeker.baseorm.db.hrdb.tables.HrPointsConf;
-import com.moseeker.baseorm.db.hrdb.tables.HrRecruitStatistics;
-import com.moseeker.baseorm.db.hrdb.tables.HrRecruitUniqueStatistics;
-import com.moseeker.baseorm.db.hrdb.tables.HrReferralStatistics;
-import com.moseeker.baseorm.db.hrdb.tables.HrResource;
-import com.moseeker.baseorm.db.hrdb.tables.HrRuleStatistics;
-import com.moseeker.baseorm.db.hrdb.tables.HrRuleUniqueStatistics;
-import com.moseeker.baseorm.db.hrdb.tables.HrSearchCondition;
-import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
-import com.moseeker.baseorm.db.hrdb.tables.HrTalentpool;
-import com.moseeker.baseorm.db.hrdb.tables.HrTeam;
-import com.moseeker.baseorm.db.hrdb.tables.HrTeamMember;
-import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
-import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
-import com.moseeker.baseorm.db.hrdb.tables.HrTopic;
-import com.moseeker.baseorm.db.hrdb.tables.HrWxBasicReply;
-import com.moseeker.baseorm.db.hrdb.tables.HrWxHrChat;
-import com.moseeker.baseorm.db.hrdb.tables.HrWxHrChatList;
-import com.moseeker.baseorm.db.hrdb.tables.HrWxImageReply;
-import com.moseeker.baseorm.db.hrdb.tables.HrWxModule;
-import com.moseeker.baseorm.db.hrdb.tables.HrWxNewsReply;
-import com.moseeker.baseorm.db.hrdb.tables.HrWxNoticeMessage;
-import com.moseeker.baseorm.db.hrdb.tables.HrWxRule;
-import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
-import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
-import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrAppCvConfRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrChatUnreadCountRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrChildCompanyRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrEmployeeCertConfRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrEmployeeCustomFieldsRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrEmployeePositionRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrEmployeeSectionRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrFeedbackRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrHbConfigRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrHbItemsRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrHbPositionBindingRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrHbScratchCardRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrHbSendRecordRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrHtml5StatisticsRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrHtml5UniqueStatisticsRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrImporterMonitorRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrMediaRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrOperationRecordRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrPointsConfRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrRecruitStatisticsRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrRecruitUniqueStatisticsRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrReferralStatisticsRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrResourceRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrRuleStatisticsRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrRuleUniqueStatisticsRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrSearchConditionRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrSuperaccountApplyRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrTalentpoolRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamMemberRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyPositionRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrTopicRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrWxBasicReplyRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrWxHrChatListRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrWxHrChatRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrWxImageReplyRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrWxModuleRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrWxNewsReplyRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrWxNoticeMessageRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrWxRuleRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrWxTemplateMessageRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatNoticeSyncStatusRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
-
-import javax.annotation.Generated;
-
+import com.moseeker.baseorm.db.hrdb.tables.*;
+import com.moseeker.baseorm.db.hrdb.tables.records.*;
 import org.jooq.Identity;
 import org.jooq.UniqueKey;
 import org.jooq.impl.AbstractKeys;
 import org.jooq.types.UByte;
 import org.jooq.types.UInteger;
+
+import javax.annotation.Generated;
 
 
 /**
@@ -128,6 +35,9 @@ public class Keys {
 
     public static final Identity<HrAppCvConfRecord, Integer> IDENTITY_HR_APP_CV_CONF = Identities0.IDENTITY_HR_APP_CV_CONF;
     public static final Identity<HrChildCompanyRecord, Integer> IDENTITY_HR_CHILD_COMPANY = Identities0.IDENTITY_HR_CHILD_COMPANY;
+    public static final Identity<HrCmsMediaRecord, Integer> IDENTITY_HR_CMS_MEDIA = Identities0.IDENTITY_HR_CMS_MEDIA;
+    public static final Identity<HrCmsModuleRecord, Integer> IDENTITY_HR_CMS_MODULE = Identities0.IDENTITY_HR_CMS_MODULE;
+    public static final Identity<HrCmsPagesRecord, Integer> IDENTITY_HR_CMS_PAGES = Identities0.IDENTITY_HR_CMS_PAGES;
     public static final Identity<HrCompanyRecord, UInteger> IDENTITY_HR_COMPANY = Identities0.IDENTITY_HR_COMPANY;
     public static final Identity<HrEmployeeCertConfRecord, Integer> IDENTITY_HR_EMPLOYEE_CERT_CONF = Identities0.IDENTITY_HR_EMPLOYEE_CERT_CONF;
     public static final Identity<HrEmployeeCustomFieldsRecord, Integer> IDENTITY_HR_EMPLOYEE_CUSTOM_FIELDS = Identities0.IDENTITY_HR_EMPLOYEE_CUSTOM_FIELDS;
@@ -178,6 +88,9 @@ public class Keys {
     public static final UniqueKey<HrAppCvConfRecord> KEY_HR_APP_CV_CONF_PRIMARY = UniqueKeys0.KEY_HR_APP_CV_CONF_PRIMARY;
     public static final UniqueKey<HrChatUnreadCountRecord> KEY_HR_CHAT_UNREAD_COUNT_PRIMARY = UniqueKeys0.KEY_HR_CHAT_UNREAD_COUNT_PRIMARY;
     public static final UniqueKey<HrChildCompanyRecord> KEY_HR_CHILD_COMPANY_PRIMARY = UniqueKeys0.KEY_HR_CHILD_COMPANY_PRIMARY;
+    public static final UniqueKey<HrCmsMediaRecord> KEY_HR_CMS_MEDIA_PRIMARY = UniqueKeys0.KEY_HR_CMS_MEDIA_PRIMARY;
+    public static final UniqueKey<HrCmsModuleRecord> KEY_HR_CMS_MODULE_PRIMARY = UniqueKeys0.KEY_HR_CMS_MODULE_PRIMARY;
+    public static final UniqueKey<HrCmsPagesRecord> KEY_HR_CMS_PAGES_PRIMARY = UniqueKeys0.KEY_HR_CMS_PAGES_PRIMARY;
     public static final UniqueKey<HrCompanyRecord> KEY_HR_COMPANY_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_PRIMARY;
     public static final UniqueKey<HrCompanyAccountRecord> KEY_HR_COMPANY_ACCOUNT_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_ACCOUNT_PRIMARY;
     public static final UniqueKey<HrCompanyConfRecord> KEY_HR_COMPANY_CONF_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_CONF_PRIMARY;
@@ -238,6 +151,9 @@ public class Keys {
     private static class Identities0 extends AbstractKeys {
         public static Identity<HrAppCvConfRecord, Integer> IDENTITY_HR_APP_CV_CONF = createIdentity(HrAppCvConf.HR_APP_CV_CONF, HrAppCvConf.HR_APP_CV_CONF.ID);
         public static Identity<HrChildCompanyRecord, Integer> IDENTITY_HR_CHILD_COMPANY = createIdentity(HrChildCompany.HR_CHILD_COMPANY, HrChildCompany.HR_CHILD_COMPANY.ID);
+        public static Identity<HrCmsMediaRecord, Integer> IDENTITY_HR_CMS_MEDIA = createIdentity(HrCmsMedia.HR_CMS_MEDIA, HrCmsMedia.HR_CMS_MEDIA.ID);
+        public static Identity<HrCmsModuleRecord, Integer> IDENTITY_HR_CMS_MODULE = createIdentity(HrCmsModule.HR_CMS_MODULE, HrCmsModule.HR_CMS_MODULE.ID);
+        public static Identity<HrCmsPagesRecord, Integer> IDENTITY_HR_CMS_PAGES = createIdentity(HrCmsPages.HR_CMS_PAGES, HrCmsPages.HR_CMS_PAGES.ID);
         public static Identity<HrCompanyRecord, UInteger> IDENTITY_HR_COMPANY = createIdentity(HrCompany.HR_COMPANY, HrCompany.HR_COMPANY.ID);
         public static Identity<HrEmployeeCertConfRecord, Integer> IDENTITY_HR_EMPLOYEE_CERT_CONF = createIdentity(HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF, HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF.ID);
         public static Identity<HrEmployeeCustomFieldsRecord, Integer> IDENTITY_HR_EMPLOYEE_CUSTOM_FIELDS = createIdentity(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS, HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.ID);
@@ -286,6 +202,9 @@ public class Keys {
         public static final UniqueKey<HrAppCvConfRecord> KEY_HR_APP_CV_CONF_PRIMARY = createUniqueKey(HrAppCvConf.HR_APP_CV_CONF, "KEY_hr_app_cv_conf_PRIMARY", HrAppCvConf.HR_APP_CV_CONF.ID);
         public static final UniqueKey<HrChatUnreadCountRecord> KEY_HR_CHAT_UNREAD_COUNT_PRIMARY = createUniqueKey(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT, "KEY_hr_chat_unread_count_PRIMARY", HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.ROOM_ID);
         public static final UniqueKey<HrChildCompanyRecord> KEY_HR_CHILD_COMPANY_PRIMARY = createUniqueKey(HrChildCompany.HR_CHILD_COMPANY, "KEY_hr_child_company_PRIMARY", HrChildCompany.HR_CHILD_COMPANY.ID);
+        public static final UniqueKey<HrCmsMediaRecord> KEY_HR_CMS_MEDIA_PRIMARY = createUniqueKey(HrCmsMedia.HR_CMS_MEDIA, "KEY_hr_cms_media_PRIMARY", HrCmsMedia.HR_CMS_MEDIA.ID);
+        public static final UniqueKey<HrCmsModuleRecord> KEY_HR_CMS_MODULE_PRIMARY = createUniqueKey(HrCmsModule.HR_CMS_MODULE, "KEY_hr_cms_module_PRIMARY", HrCmsModule.HR_CMS_MODULE.ID);
+        public static final UniqueKey<HrCmsPagesRecord> KEY_HR_CMS_PAGES_PRIMARY = createUniqueKey(HrCmsPages.HR_CMS_PAGES, "KEY_hr_cms_pages_PRIMARY", HrCmsPages.HR_CMS_PAGES.ID);
         public static final UniqueKey<HrCompanyRecord> KEY_HR_COMPANY_PRIMARY = createUniqueKey(HrCompany.HR_COMPANY, "KEY_hr_company_PRIMARY", HrCompany.HR_COMPANY.ID);
         public static final UniqueKey<HrCompanyAccountRecord> KEY_HR_COMPANY_ACCOUNT_PRIMARY = createUniqueKey(HrCompanyAccount.HR_COMPANY_ACCOUNT, "KEY_hr_company_account_PRIMARY", HrCompanyAccount.HR_COMPANY_ACCOUNT.ACCOUNT_ID);
         public static final UniqueKey<HrCompanyConfRecord> KEY_HR_COMPANY_CONF_PRIMARY = createUniqueKey(HrCompanyConf.HR_COMPANY_CONF, "KEY_hr_company_conf_PRIMARY", HrCompanyConf.HR_COMPANY_CONF.COMPANY_ID);
