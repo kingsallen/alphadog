@@ -46,7 +46,6 @@ public class DynamicServiceHandler implements InvocationHandler {
             Object result = method.invoke(target, args);
             return result;
         } catch (Exception e) {
-            e.printStackTrace();
             if (e.getCause() instanceof CURDException) {
                 throw  (CURDException)e.getCause();
             }

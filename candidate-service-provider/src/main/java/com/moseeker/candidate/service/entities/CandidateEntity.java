@@ -231,6 +231,7 @@ public class CandidateEntity implements Candidate {
         recommendResult.setRecomTotal(idList.size());
         recommendResult.setRecomIndex(0);
         recommendResult.setRecomIgnore(0);
+        recommendResult.setNextOne(false);
 
         /** 查找职位转发浏览记录 */
         List<CandidateRecomRecordDO> candidateRecomRecordDOList = CandidateDBDao.getCandidateRecomRecordDOByIdList(idList);
@@ -243,6 +244,9 @@ public class CandidateEntity implements Candidate {
 
             //组装查询结果
             recommendResult = assembleResult(recommendResult, candidateRecomRecordDO, positionListFuture, presenteeListFuture);
+            if(candidateRecomRecordDOList.size() > 1) {
+                recommendResult.setNextOne(true);
+            }
         }
 
         return recommendResult;
@@ -339,7 +343,7 @@ public class CandidateEntity implements Candidate {
         if(employeeDOList == null || employeeDOList.size() == 0) {
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_SORT_COLLEAGUE_NOT_EXIST);
         }
-        List<Integer> employeeIdList = employeeDOList.stream().map(userEmployeeDO -> userEmployeeDO.getId()).collect(Collectors.toList());
+        List<Integer> employeeIdList = employeeDOList.stream().map(userEmployeeDO -> userEmployeeDO.getSysuserId()).collect(Collectors.toList());
         /** 查找排名 */
         List<CandidateRecomRecordSortingDO> sortingDOList = CandidateDBDao.listSorting(employeeIdList);
         if(sortingDOList == null || sortingDOList.size() == 0) {
@@ -416,8 +420,8 @@ public class CandidateEntity implements Candidate {
 
         List<Integer> exceptNotRecommend = new ArrayList<Integer>(){{
             add(0);
-            add(1);
             add(2);
+            add(3);
         }};
 
         List<Integer> recommended = new ArrayList<Integer>(){{
@@ -428,10 +432,14 @@ public class CandidateEntity implements Candidate {
             add(2);
         }};
 
+        List<Integer> selected = new ArrayList<Integer>(){{
+            add(3);
+        }};
+
         List<CandidateRecomRecordDO> candidateRecomRecordDOList =
                 CandidateDBDao.listCandidateRecomRecordDOExceptId(id, postUserId,
-                        clickTime, exceptNotRecommend);
-        if(candidateRecomRecordDOList == null || candidateRecomRecordDOList.size() == 0) {
+                        clickTime, selected);
+        if(candidateRecomRecordDOList != null && candidateRecomRecordDOList.size() > 0) {
             CandidateRecomRecordDO candidateRecomRecordDO = candidateRecomRecordDOList.get(0);
             Future positionFuture = findPositionFutureById(candidateRecomRecordDO.getPositionId());
             Future userFuture = findUserFutureById(candidateRecomRecordDO.getPresenteeUserId());
@@ -478,7 +486,7 @@ public class CandidateEntity implements Candidate {
                                                         Future positionFuture, Future userFuture) {
         RecomRecordResult recomRecordResult = new RecomRecordResult();
         recomRecordResult.setId(candidateRecomRecordDO.getId());
-        recomRecordResult.setClickTime(recomRecordResult.getClickTime());
+        recomRecordResult.setClickTime(candidateRecomRecordDO.getClickTime());
         recomRecordResult.setPresenteeName(refineUserName(userFuture));
         recomRecordResult.setTitle(refinePositionName(positionFuture));
         recomRecordResult.setRecom(candidateRecomRecordDO.getIsRecom());
