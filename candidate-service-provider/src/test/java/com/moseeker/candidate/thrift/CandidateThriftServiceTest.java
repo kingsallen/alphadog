@@ -49,7 +49,7 @@ public class CandidateThriftServiceTest {
 //    		candidateService.changeInteresting(391470, 61106, (byte)0);
 //    }
 
-    //@Test
+    @Test
     public void testCandidateList() {
 
         CandidateListParam param = new CandidateListParam();

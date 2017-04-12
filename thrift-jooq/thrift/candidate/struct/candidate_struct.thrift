@@ -10,7 +10,9 @@ struct Candidate {
     4:  optional i32 presenteeFriendId,     //一度朋友编号
     5:  optional string presenteeFriendName,//一度朋友称呼
     6:  optional string presenteeLogo,      //头像
-    7:  optional i32 isRecom                //推荐状态
+    7:  optional i32 isRecom,               //推荐状态
+    8:  optional i32 viewNumber,            //职位查看次数
+    9:  optional bool insterested           //是否感兴趣
 }
 
 //推荐人列表接口中的推荐人列表
