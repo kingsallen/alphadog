@@ -39,7 +39,7 @@ public class CommonTest {
     }
 
 
-    @Test
+    /*@Test
     public void testUpdateMap() throws SQLException {
         int result = UpdateCreator
                 .set("name", "test_add2_" + System.currentTimeMillis())
@@ -48,7 +48,7 @@ public class CommonTest {
                 .update(userDao);
 
         Assert.assertEquals(result, 1);
-    }
+    }*/
 
     @Test
     public void testDelete() throws SQLException {

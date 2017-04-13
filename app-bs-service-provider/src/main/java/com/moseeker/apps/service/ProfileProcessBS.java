@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.thrift.gen.dao.service.*;
-import com.moseeker.thrift.gen.dao.struct.HrOperationRecordDO;
 
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

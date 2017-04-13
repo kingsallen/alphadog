@@ -76,7 +76,7 @@ struct UserEmployeeDO {
 
 struct UserEmployeePointsRecordDO {
     1:  optional i32 id,
-    2:  optional i32 employee_idk
+    2:  optional i32 employee_id
     3:  optional string reason
     4:  optional i32 award,
     5:  optional string _create_time

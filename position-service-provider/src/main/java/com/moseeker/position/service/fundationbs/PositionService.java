@@ -3,8 +3,6 @@ package com.moseeker.position.service.fundationbs;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.JSONPObject;
 import com.alibaba.fastjson.serializer.ValueFilter;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.*;
@@ -36,9 +34,7 @@ import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.service.CompanyDao;
 import com.moseeker.thrift.gen.dao.service.HrDBDao;
 import com.moseeker.thrift.gen.dao.service.UserHrAccountDao;
-import com.moseeker.thrift.gen.dao.struct.*;
-import com.moseeker.thrift.gen.dao.service.HrDBDao;
-import com.moseeker.thrift.gen.dao.struct.HrTeamStruct;
+import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.position.struct.Position;
@@ -50,8 +46,6 @@ import com.moseeker.thrift.gen.position.struct.WechatPositionListQuery;
 import com.moseeker.thrift.gen.position.struct.WechatRpPositionListData;
 import com.moseeker.thrift.gen.position.struct.WechatShareData;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
-import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
-import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.position.struct.*;
 import com.mysql.jdbc.StringUtils;
 
@@ -1105,9 +1099,9 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
         qu.addEqualFilter("id", String.valueOf(hb_config_id));
         try {
             HrHbConfigDO hbConfig = this.hrDao.getHbConfig(qu);
-            result.setCover(hbConfig.getShare_img());
-            result.setTitle(hbConfig.getShare_title());
-            result.setDescription(hbConfig.getShare_desc());
+            result.setCover(hbConfig.getShareImg());
+            result.setTitle(hbConfig.getShareTitle());
+            result.setDescription(hbConfig.getShareDesc());
 
         } catch (TException e) {
             e.printStackTrace();
@@ -1163,7 +1157,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     List<HrHbPositionBindingDO> bindings = hrDao.getHbPositionBindings(qu);
 
                     // 确认 binding 只有一个，获取binding 对应的红包活动信息
-                    HrHbConfigDO hbConfig = hbConfigs.stream().filter(c -> c.getId() == bindings.get(0).getHb_config_id())
+                    HrHbConfigDO hbConfig = hbConfigs.stream().filter(c -> c.getId() == bindings.get(0).getHbConfigId())
                             .findFirst().orElseGet(null);
 
                     if (hbConfig != null) {
@@ -1203,7 +1197,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     //获取binding ids
                     List<Integer> bindingIds = bindings.stream().map(HrHbPositionBindingDO::getId).collect(Collectors.toList());
                     //获取binding 所对应的红包活动 id
-                    List<Integer> hbConfigIds = bindings.stream().map(HrHbPositionBindingDO::getHb_config_id).collect(Collectors.toList());
+                    List<Integer> hbConfigIds = bindings.stream().map(HrHbPositionBindingDO::getHbConfigId).collect(Collectors.toList());
 
                     // 得到对应的红包活动 pojo （2个）
                     List<HrHbConfigDO> configs = hbConfigs.stream().filter(s -> hbConfigIds.contains(s.getId())).collect(Collectors.toList());
@@ -1289,7 +1283,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             QueryUtil qu = new QueryUtil();
             qu.addEqualFilter("hb_config_id", String.valueOf(hbConfigId));
             List<HrHbPositionBindingDO> bindings = hrDao.getHbPositionBindings(qu);
-            List<Integer> pids = bindings.stream().map(HrHbPositionBindingDO::getPosition_id).collect(Collectors.toList());
+            List<Integer> pids = bindings.stream().map(HrHbPositionBindingDO::getPositionId).collect(Collectors.toList());
             String pidFilter = "[" + org.apache.commons.lang.StringUtils.join(pids.toArray(), ",") + "]";
 
             QueryUtil q = new QueryUtil();
@@ -1320,7 +1314,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             // 拼装公司信息
             qu = new QueryUtil();
             qu.addEqualFilter("id", String.valueOf(hbConfigId));
-            Integer companyId = hrDao.getHbConfig(qu).getCompany_id();
+            Integer companyId = hrDao.getHbConfig(qu).getCompanyId();
             qu.addEqualFilter("id", String.valueOf(companyId));
             HrCompanyDO company = companyDao.getCompany(qu);
             result.forEach(s -> {

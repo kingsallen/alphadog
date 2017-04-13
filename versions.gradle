@@ -31,6 +31,7 @@ ext {
             "spring-aop"          : 'org.springframework:spring-aop:4.2.3.RELEASE',
             "spring-jdbc"         : 'org.springframework:spring-jdbc:4.2.3.RELEASE',
             "spring-beans"        : 'org.springframework:spring-beans:4.2.3.RELEASE',
+            "spring-tx"           : 'org.springframework:spring-tx:4.2.3.RELEASE',
             "beanutils"           : 'commons-beanutils:commons-beanutils:1.8.3',
             "commons-lang"        : 'commons-lang:commons-lang:2.6',
             "commons-pool"        : 'commons-pool:commons-pool:1.6',

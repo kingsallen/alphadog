@@ -1,41 +1,30 @@
 package com.moseeker.baseorm.dao.userdb;
 
-import java.sql.Connection;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
-import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
-import com.moseeker.baseorm.util.BaseDaoImpl;
-import com.moseeker.common.dbutils.DBConnHelper;
-import com.moseeker.common.util.BeanUtils;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.dao.struct.UserEmployeeDO;
-
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
+import com.moseeker.baseorm.util.StructDaoImpl;
+import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.UserEmployeeDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
-import org.apache.thrift.TException;
-import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.SelectJoinStep;
+import org.jooq.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import com.moseeker.baseorm.util.BaseDaoImpl;
-import com.moseeker.common.dbutils.DBConnHelper;
+
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.jooq.impl.DSL.sum;
 
 @Service
-public class UserEmployeeDao extends BaseDaoImpl<UserEmployeeRecord, UserEmployee> {
+public class UserEmployeeDao extends StructDaoImpl<UserEmployeeDO, UserEmployeeRecord, UserEmployee> {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -143,5 +132,45 @@ public class UserEmployeeDao extends BaseDaoImpl<UserEmployeeRecord, UserEmploye
             i++;
         }
         return successArray;
+    }
+
+    public int updateUserEmployeePoint(int id) {
+        int count = 0;
+        Connection conn = null;
+        try {
+            conn = DBConnHelper.DBConn.getConn();
+            DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+            Result<Record1<BigDecimal>> result = create.select(sum(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.AWARD))
+                    .from(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD)
+                    .where(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID.equal((long)id)).fetch();
+            if(result != null) {
+                Record1<BigDecimal> record1 = result.get(0);
+                BigDecimal sum = (BigDecimal) record1.get(0);
+                UserEmployeeRecord userEmployeeRecord = new UserEmployeeRecord();
+                userEmployeeRecord.setId(id);
+                userEmployeeRecord.setAward(sum.intValue());
+                create.attach(userEmployeeRecord);
+                userEmployeeRecord.update();
+                count = sum.intValue();
+            }
+
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+            } catch (SQLException e1) {
+                logger.error(e1.getMessage(), e1);
+            }
+            logger.error(e.getMessage(), e);
+        } finally {
+            try {
+                if (conn != null && !conn.isClosed()) {
+                    conn.close();
+                    conn = null;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return count;
     }
 }

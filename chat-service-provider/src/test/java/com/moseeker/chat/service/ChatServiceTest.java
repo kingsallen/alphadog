@@ -315,6 +315,7 @@ public class ChatServiceTest {
         jobPositionDO.setCompanyId(1);
 
         Mockito.when(chatDao.getPosition(1)).thenReturn(jobPositionDO);
+        Mockito.when(chatDao.getPositionById(1)).thenReturn(jobPositionDO);
 
         UserHrAccountDO hrAccountDO = new UserHrAccountDO();
         hrAccountDO.setCompanyId(1);

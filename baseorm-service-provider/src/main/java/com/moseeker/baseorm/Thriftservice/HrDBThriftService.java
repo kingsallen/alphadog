@@ -1,23 +1,22 @@
 package com.moseeker.baseorm.Thriftservice;
 
-import java.util.List;
-import java.util.Set;
-
-import com.moseeker.baseorm.dao.hrdb.CompanyDao;
-import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
 import com.moseeker.baseorm.dao.hrdb.*;
-import com.moseeker.baseorm.util.CURDExceptionUtils;
-import com.moseeker.thrift.gen.common.struct.CURDException;
-import com.moseeker.thrift.gen.dao.struct.*;
-import org.apache.thrift.TException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import com.moseeker.baseorm.service.HrDBService;
 import com.moseeker.baseorm.service.HrDaoService;
+import com.moseeker.baseorm.util.CURDExceptionUtils;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
+import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.HrDBDao.Iface;
+import com.moseeker.thrift.gen.dao.struct.hrdb.*;
+import org.apache.thrift.TException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class HrDBThriftService implements Iface {
@@ -43,6 +42,11 @@ public class HrDBThriftService implements Iface {
 	@Autowired
 	private HrChatUnreadCountDao hrChatUnreadCountDao;
 
+	@Autowired
+	private HrWxWechatDao hrWxWechatDao;
+
+	@Autowired
+	private HrPointsConfDao hrPointsConfDao;
 
 	@Override
 	public Response getHrHistoryOperations(List<ProcessValidationStruct> record) throws TException {
@@ -72,6 +76,11 @@ public class HrDBThriftService implements Iface {
 	@Override
 	public List<HrPointsConfDO> getPointsConfs(CommonQuery query) throws TException {
 		return hrDaoService.getPointsConfs(query);
+	}
+
+	@Override
+	public HrPointsConfDO getPointsConf(CommonQuery query) throws BIZException, TException {
+		return hrPointsConfDao.findResource(query);
 	}
 
 	@Override
@@ -210,6 +219,11 @@ public class HrDBThriftService implements Iface {
 	public Response getHrWxWechat(CommonQuery query) throws TException {
 		// TODO Auto-generated method stub
 		return hrDBService.getHrWxWechat(query);
+	}
+
+	@Override
+	public HrWxWechatDO getHrWxWechatDO(CommonQuery query) throws CURDException, TException {
+		return hrWxWechatDao.findResource(query);
 	}
 
 

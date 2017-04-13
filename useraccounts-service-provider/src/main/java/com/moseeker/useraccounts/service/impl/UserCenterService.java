@@ -9,6 +9,8 @@ import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.*;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
 import org.apache.thrift.TException;
@@ -351,7 +353,8 @@ public class UserCenterService {
                             }
                             logger.info("company_name:{}", companyDO.getName());
                         }
-
+                        applicationDetailVO.setStep_status((byte) recruitmentScheduleEnum.getStepStatusForApplicationDetail());
+                        applicationDetailVO.setStep((byte) recruitmentScheduleEnum.getStepForApplicationDetail());
                         if(operationFuture != null) {
                             List<HrOperationRecordDO> operationrecordDOList = (List<HrOperationRecordDO>)operationFuture.get();
                             if(operationrecordDOList != null && operationrecordDOList.size() > 0) {

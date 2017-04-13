@@ -38,7 +38,6 @@ public class UseraccountsServer {
                     acac.getBean(EmployeeServiceImpl.class));
             server.startServer();
 
-
             synchronized (UseraccountsServer.class) {
                 while (true) {
                     try {

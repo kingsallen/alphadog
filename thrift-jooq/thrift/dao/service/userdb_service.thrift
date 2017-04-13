@@ -25,14 +25,18 @@ service UserDBDao {
 
     common_struct.Response getUserEmployee(1:i32 companyId,2:list<i32> weChatIds);
     common_struct.Response postUserEmployeePoints(1:list<useraccounts_struct.UserEmployeePointStruct> records);
+    i32 updateUserEmployeePoint(1 : i32 id) throws (1:common_struct.BIZException e)
+
     common_struct.Response getPointSum(1:list<i64> record);
     common_struct.Response putUserEmployees(1:list<useraccounts_struct.UserEmployeeStruct> records);
     common_struct.Response putUserEmployeePoints(1:list<useraccounts_struct.UserEmployeePointStruct> records);
 
     list<userdb_struct.UserEmployeePointsRecordDO> getUserEmployeePoints(1: i32 employeeId);
+    userdb_struct.UserEmployeePointsRecordDO saveUserEmployeePoints(1: userdb_struct.UserEmployeePointsRecordDO employeePoint) throws (1: common_struct.BIZException e);
 
     list<userdb_struct.UserEmployeeDO> getUserEmployeesDO(1: common_struct.CommonQuery query)
     common_struct.Response putUserEmployeesDO(1: list<userdb_struct.UserEmployeeDO> employeeDoList)
+    i32 postUserEmployeeDO(1: userdb_struct.UserEmployeeDO userEmployee)
 
     list<userdb_struct.UserWxUserDO> listUserWxUserDO(1: common_struct.CommonQuery query) throws (1:common_struct.CURDException e)
     userdb_struct.UserWxUserDO getUserWxUserDO(1: common_struct.CommonQuery query) throws (1:common_struct.CURDException e)

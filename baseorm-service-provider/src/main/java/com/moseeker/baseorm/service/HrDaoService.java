@@ -1,7 +1,7 @@
 package com.moseeker.baseorm.service;
 
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.dao.struct.*;
+import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import org.apache.thrift.TException;
 
 import java.util.List;

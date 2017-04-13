@@ -19,7 +19,7 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.CompanyDao;
-import com.moseeker.thrift.gen.dao.struct.HRCompanyConfData;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HRCompanyConfData;
 import com.moseeker.thrift.gen.position.struct.dao.JobOccupationCustom;
 
 @Service

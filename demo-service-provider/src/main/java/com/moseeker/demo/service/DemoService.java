@@ -6,8 +6,6 @@ import com.moseeker.thrift.gen.common.struct.Condition;
 import com.moseeker.thrift.gen.demo.struct.DemoStruct;
 import org.apache.thrift.TException;
 
-import java.util.Map;
-
 /**
  * Created by moseeker on 2017/4/11.
  */

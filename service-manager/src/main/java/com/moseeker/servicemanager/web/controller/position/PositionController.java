@@ -1,25 +1,8 @@
 package com.moseeker.servicemanager.web.controller.position;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.moseeker.common.providerutils.QueryUtil;
-import org.jooq.tools.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
@@ -33,11 +16,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.JobDBDao;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.position.service.PositionServices;
-import com.moseeker.thrift.gen.position.struct.BatchHandlerJobPostion;
-import com.moseeker.thrift.gen.position.struct.DelePostion;
-import com.moseeker.thrift.gen.position.struct.WechatPositionListData;
-import com.moseeker.thrift.gen.position.struct.WechatPositionListQuery;
-
+import com.moseeker.thrift.gen.position.struct.*;
 import org.jooq.tools.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,11 +28,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import static java.util.Arrays.asList;
 
 //@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
@@ -274,6 +255,85 @@ public class PositionController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    /**
+     * 根据 hb_config_id 获取分享信息
+     *
+     * @param request request
+     * @param response response
+     * @return 分享信息
+     */
+    @RequestMapping(value = "/position/list/hb_share_info", method = RequestMethod.GET)
+    @ResponseBody
+    public String getHbShareInfo(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer hbConfigId = Integer.valueOf((String)params.get("hb_config_id"));
+            WechatShareData shareData = positonServices.getShareInfo(hbConfigId);
+
+            Response res = ResponseUtils.success(shareData);
+            return ResponseLogNotification.success(request, res);
+        }
+        catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 根据 hb_config_id 获取职位列表
+     *
+     * @param request request
+     * @param response response
+     * @return 红包职位列表
+     */
+    @RequestMapping(value = "/position/rplist", method = RequestMethod.GET)
+    @ResponseBody
+    public String getRpPositionList(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer hbConfigId = Integer.valueOf((String)params.get("hb_config_id"));
+            if (hbConfigId == null) {
+                throw new Exception("红包活动 id 不正确!");
+            }
+            List<WechatRpPositionListData> rpPositionList = positonServices.getRpPositionList(hbConfigId);
+
+            Response res = ResponseUtils.success(rpPositionList);
+            return ResponseLogNotification.success(request, res);
+        }
+        catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 根据 pids (List<Integer>) 获取职位的红包附加信息
+     *
+     * @param request request
+     * @param response response
+     * @return 红包职位列表
+     */
+    @RequestMapping(value = "/position/rpext", method = RequestMethod.GET)
+    @ResponseBody
+    @SuppressWarnings("unchecked")
+    public String getPositionListRpExt(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            List<String> pidStringList = asList(((String) params.get("pids")).split(","));
+            List<Integer> pids = pidStringList.stream().map(Integer::valueOf).collect(Collectors.toList());
+
+            List<RpExtInfo> rpExtInfoList = positonServices.getPositionListRpExt(pids);
+
+            Response res = ResponseUtils.success(rpExtInfoList);
+            return ResponseLogNotification.success(request, res);
+        }
+        catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
 
     /**
      * 批量修改职位

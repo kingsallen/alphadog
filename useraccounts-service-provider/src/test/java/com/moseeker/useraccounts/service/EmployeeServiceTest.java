@@ -3,38 +3,35 @@
 //import java.awt.List;
 //import java.util.Arrays;
 //
+//import com.moseeker.thrift.gen.employee.struct.*;
 //import org.apache.thrift.TException;
 //import org.junit.Before;
 //import org.junit.Test;
 //
 //import com.moseeker.rpccenter.client.ServiceManager;
 //import com.moseeker.thrift.gen.employee.service.EmployeeService;
-//import com.moseeker.thrift.gen.employee.struct.BindType;
-//import com.moseeker.thrift.gen.employee.struct.BindingParams;
-//import com.moseeker.thrift.gen.employee.struct.EmployeeCustomFieldsConf;
-//import com.moseeker.thrift.gen.employee.struct.EmployeeVerificationConfResponse;
-//import com.moseeker.thrift.gen.employee.struct.Result;
-//import com.moseeker.thrift.gen.employee.struct.RewardsResponse;
+//import org.springframework.core.env.SystemEnvironmentPropertySource;
 //
 //public class EmployeeServiceTest {
-//	
-//	
+//
+//
 //	public EmployeeService.Iface service = null;
 //
 //	@Before
 //	public void init() {
 //		service = ServiceManager.SERVICEMANAGER.getService(EmployeeService.Iface.class);
 //	}
-//	
+//
 //	@Test
 //	public void test() {
 //		try {
-//			service.getEmployee(4,  32);
-//		} catch (TException e) {
+//            EmployeeResponse employee = service.getEmployee(4, 1);
+//            System.out.println(employee.getEmployee());
+//        } catch (TException e) {
 //			e.printStackTrace();
 //		}
 //	}
-//	
+//
 //	@Test
 //	public void getEmpConfigTest() {
 //		try {
@@ -45,7 +42,7 @@
 //			e.printStackTrace();
 //		}
 //	}
-//	
+//
 //	@Test
 //	public void unbindTest(){
 //		try {
@@ -56,7 +53,7 @@
 //			e.printStackTrace();
 //		}
 //	}
-//	
+//
 //	@Test
 //	public void getEmployeeRewardsTest() {
 //		try {
@@ -67,7 +64,7 @@
 //			e.printStackTrace();
 //		}
 //	}
-//	
+//
 //	@Test
 //	public void setEmployeeCustomInfoTest() {
 //		try {
@@ -78,7 +75,7 @@
 //			e.printStackTrace();
 //		}
 //	}
-//	
+//
 //	@Test
 //	public void getEmployeeCustomFieldsConfTest() {
 //		try {
@@ -89,13 +86,15 @@
 //			e.printStackTrace();
 //		}
 //	}
-//	
+//
 //	@Test
 //	public void bindTest() {
 //		BindingParams bp = new BindingParams();
 //		bp.setEmail("510340677@qq.com");
 //		bp.setCompanyId(2878);
 //		bp.setType(BindType.EMAIL);
+//		bp.setUserId(1122611);
+//		bp.setName("小飞");
 ////		bp.setAnswer1("上海");
 ////		bp.setAnswer2("仟寻");
 ////		bp.setCompanyId(2878);
@@ -109,7 +108,7 @@
 //			e.printStackTrace();
 //		}
 //	}
-//	
+//
 //	@Test
 //	public void emailActivationTest() {
 //		try {

@@ -36,7 +36,11 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictConstant extends TableImpl<DictConstantRecord> {
 
+<<<<<<< HEAD
 	private static final long serialVersionUID = 742317522;
+=======
+	private static final long serialVersionUID = 657880397;
+>>>>>>> refactor/v4.1.2
 
 	/**
 	 * The reference instance of <code>dictdb.dict_constant</code>
@@ -105,7 +109,11 @@ public class DictConstant extends TableImpl<DictConstantRecord> {
 	}
 
 	private DictConstant(String alias, Table<DictConstantRecord> aliased, Field<?>[] parameters) {
+<<<<<<< HEAD
 		super(alias, Dictdb.DICTDB, aliased, parameters, "常量字典表");
+=======
+		super(alias, Dictdb.DICTDB, aliased, parameters, "");
+>>>>>>> refactor/v4.1.2
 	}
 
 	/**

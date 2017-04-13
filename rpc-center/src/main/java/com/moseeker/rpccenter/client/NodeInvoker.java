@@ -5,8 +5,9 @@ import java.lang.reflect.Method;
 import java.net.ConnectException;
 import java.net.SocketException;
 
+import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.common.struct.CURDException;
 import org.apache.commons.pool.impl.GenericKeyedObjectPool;
-import org.apache.thrift.TServiceClient;
 import org.apache.thrift.transport.TTransportException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +56,7 @@ public class NodeInvoker<T> implements Invoker {
 	 * 
 	 */
 	@Override
-	public Object invoke(Method method, Object[] args) throws RpcException {
+	public Object invoke(Method method, Object[] args) throws CURDException, BIZException, RpcException {
 		T client = null;
         ZKPath root = null;
 		try {
@@ -84,6 +85,10 @@ public class NodeInvoker<T> implements Invoker {
                 Object result = method.invoke(client, args);
                 
                 return result;
+            } catch (CURDException | BIZException ce) {
+                System.out.println("CURDException | BIZException ce");
+                ce.printStackTrace();
+                throw ce;
             } catch (ConnectException ce) {
             	LOGGER.error(ce.getMessage(), ce);
             	pool.clear(node);
@@ -93,6 +98,12 @@ public class NodeInvoker<T> implements Invoker {
                 
               //  cause.getMessage()
                 if (cause != null) {
+                    if (cause instanceof CURDException) {
+                        throw  (CURDException)cause;
+                    }
+                    if (cause instanceof BIZException) {
+                        throw  (BIZException)cause;
+                    }
                     if (cause instanceof TTransportException) {
 
                         // 超时
@@ -147,7 +158,7 @@ public class NodeInvoker<T> implements Invoker {
                 }
             }
         }
-        throw new RpcException("服务超时，请稍候再试!", exception);
+        throw new RpcException(exception.getMessage(), exception);
 	}
 
 	

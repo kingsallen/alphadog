@@ -1,21 +1,5 @@
 package moseeker.baseorm.dao.user;
 
-import com.alibaba.fastjson.JSON;
-import com.moseeker.baseorm.Thriftservice.UserEmployeeDaoThriftService;
-import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
-import com.moseeker.common.providerutils.QueryUtil;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
-import org.apache.thrift.TException;
-import org.junit.Assert;
-import org.junit.Test;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * Created by eddie on 2017/3/9.
  */

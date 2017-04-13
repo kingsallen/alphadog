@@ -1,9 +1,10 @@
 package com.moseeker.baseorm.Thriftservice;
 
 import com.moseeker.baseorm.dao.candidatedb.*;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.common.struct.*;
 import com.moseeker.thrift.gen.dao.service.CandidateDBDao;
 import com.moseeker.thrift.gen.dao.struct.*;
+import com.moseeker.thrift.gen.dao.struct.CURDException;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -147,6 +148,21 @@ public class CandidateDaoThriftService implements CandidateDBDao.Iface {
     }
 
     @Override
+    public List<CandidateRecomRecordDO> listCandidateRecomRecord(int postUserId, String clickTime, List<Integer> recoms) throws com.moseeker.thrift.gen.common.struct.CURDException, TException {
+        return candidateRecomRecordDao.listCandidateRecomRecord(postUserId, clickTime, recoms);
+    }
+
+    @Override
+    public List<CandidateRecomRecordDO> listCandidateRecomRecordExceptId(int id, int postUserId, String clickTime, List<Integer> recoms) throws com.moseeker.thrift.gen.common.struct.CURDException, TException {
+        return candidateRecomRecordDao.listCandidateRecomRecordExceptId(id, postUserId, clickTime, recoms);
+    }
+
+    @Override
+    public int countCandidateRecomRecordCustom(int postUserId, String clickTime, List<Integer> recoms) throws com.moseeker.thrift.gen.common.struct.CURDException, TException {
+        return candidateRecomRecordDao.countCandidateRecomRecordCustom(postUserId, clickTime, recoms);
+    }
+
+    @Override
     public List<CandidateRecomRecordDO> listCandidateRecomRecords(CommonQuery query) throws TException {
         return candidateRecomRecordDao.listResources(query);
     }
@@ -164,6 +180,11 @@ public class CandidateDaoThriftService implements CandidateDBDao.Iface {
     @Override
     public List<CandidateRecomRecordDO> listCandidateRecomRecordsByPositionSetAndPresenteeId(Set<Integer> positionIdSet, int presenteeId, int pageNo, int pageSize) throws TException {
         return candidateRecomRecordDao.listCandidateRecomRecordsByPositionSetAndPresenteeId(positionIdSet, presenteeId, pageNo, pageSize);
+    }
+
+    @Override
+    public List<CandidateRecomRecordSortingDO> listCandidateRecomRecordSorting(List<Integer> postUserId) throws BIZException, TException {
+        return candidateRecomRecordDao.listCandidateRecomRecordSorting(postUserId);
     }
 
     @Override
