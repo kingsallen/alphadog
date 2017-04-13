@@ -990,27 +990,24 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 cIds.add(query.getCompany_id());
                 companyId = org.apache.commons.lang.StringUtils.join(cIds.toArray(), ",");
             }
-            logger.info("keywords: %s, cities: %s, industries: %s, occupations: %s, \n" +
-                    "scale: %s, employment_type: %s, candidate_source: %s, experience: %s, \n" +
-                    "degree: %s, salary: %s, company_id: %s, page_from: %s, page_size: %s, \n" +
-                    "childCompanyId: %s, department: %s, order_by_priority: %s, custom: %s",
-                    query.getKeywords(),
-                    query.getCities(),
-                    query.getIndustries(),
-                    query.getOccupations(),
-                    query.getScale(),
-                    query.getEmployment_type(),
-                    query.getCandidate_source(),
-                    query.getExperience(),
-                    query.getDegree(),
-                    query.getSalary(),
-                    companyId,
-                    query.getPage_from(),
-                    query.getPage_size(),
-                    childCompanyId,
-                    query.getDepartment(),
-                    query.isOrder_by_priority(),
-                    query.getCustom());
+            logger.info(
+                    "keywords:" + query.getKeywords() +
+                    ", cities: " + query.getCities() +
+                    ", industries: " + query.getIndustries() +
+                    ", occupations: " + query.getOccupations() +
+                    ", scale: " + query.getScale() +
+                    ", employment_type: " + query.getEmployment_type() +
+                    ", candidate_source: " + query.getCandidate_source() +
+                    ", experience: " + query.getExperience() +
+                    ", degree: " + query.getDegree() +
+                    ", salary: " + query.getSalary() +
+                    ", company_id: " + query.getCompany_id() +
+                    ", page_from: " + query.getPage_from() +
+                    ", page_size: " + query.getPage_size() +
+                    ", childCompanyId: " + query.getDid() +
+                    ", department: " + query.getDepartment() +
+                    ", order_by_priority: " + query.isOrder_by_priority() +
+                    ", custom: " + query.getCustom());
 
             //获取 pid list
             Response ret = searchEngineService.query(
@@ -1039,7 +1036,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 
                 JSONArray pidsJson = jobj.getJSONArray("jd_id_list");
 
-                logger.info("pidsJson: %s", pidsJson);
+                logger.info("pidsJson: " + pidsJson);
 
                 ArrayList<Integer> pids = new ArrayList<>();
                 if (pidsJson != null) {
