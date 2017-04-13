@@ -1,19 +1,19 @@
 package com.moseeker.baseorm.Thriftservice;
 
-import com.moseeker.baseorm.dao.HRAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
+import com.moseeker.baseorm.dao.userdb.UserHRAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.UserHrAccountDao.Iface;
-import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
 import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
+import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
+
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.jooq.types.UInteger;
@@ -23,10 +23,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import java.text.ParseException;
 
 /**
  * 提供hr帐号表的单表操作
@@ -37,12 +36,12 @@ import java.text.ParseException;
  * @author wjf
  */
 @Service
-public class HRAccountDaoThriftService extends JOOQBaseServiceImpl<UserHrAccount, UserHrAccountRecord> implements Iface {
+public class HRAccountDaoThriftService implements Iface {
 
     private Logger logger = LoggerFactory.getLogger(ChannelType.class);
 
     @Autowired
-    private HRAccountDao hraccountDao;
+    private UserHRAccountDao hraccountDao;
 
     @Autowired
     private HRThirdPartyAccountDao hrThirdPartyAccountDao;
@@ -63,15 +62,6 @@ public class HRAccountDaoThriftService extends JOOQBaseServiceImpl<UserHrAccount
         } finally {
             //do nothing
         }
-    }
-
-
-    public HRAccountDao getHraccountDao() {
-        return hraccountDao;
-    }
-
-    public void setHraccountDao(HRAccountDao hraccountDao) {
-        this.hraccountDao = hraccountDao;
     }
 
     @Override
@@ -158,9 +148,13 @@ public class HRAccountDaoThriftService extends JOOQBaseServiceImpl<UserHrAccount
     public Response getAccounts(CommonQuery query) throws TException {
         try {
             List<UserHrAccountRecord> records = hraccountDao.getResources(query);
+            List<UserHrAccount> datas = new ArrayList<>();
             if (records != null && records.size() > 0) {
-                List<UserHrAccount> structs = DBsToStructs(records);
-                return ResponseUtils.success(structs);
+                records.forEach(record -> {
+                    UserHrAccount data = (UserHrAccount) BeanUtils.DBToStruct(UserHrAccount.class, record);
+                    datas.add(data);
+                });
+                return ResponseUtils.success(datas);
             } else {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
             }
@@ -169,24 +163,6 @@ public class HRAccountDaoThriftService extends JOOQBaseServiceImpl<UserHrAccount
             logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         } finally {
-            //do nothing
-
         }
-    }
-
-    @Override
-    protected void initDao() {
-        this.dao = hraccountDao;
-    }
-
-    @Override
-    protected UserHrAccountRecord structToDB(UserHrAccount userHrAccount) throws ParseException {
-        return (UserHrAccountRecord) BeanUtils.structToDB(userHrAccount, UserHrAccountRecord.class);
-    }
-
-    @Override
-    protected UserHrAccount DBToStruct(UserHrAccountRecord userHrAccountRecord) {
-        return (UserHrAccount) BeanUtils.DBToStruct(UserHrAccount.class, userHrAccountRecord);
-
     }
 }

@@ -234,7 +234,8 @@ public class EmployeeService {
 				// 员工信息验证
 				query.getEqualFilter().clear();
 				query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
-				query.getEqualFilter().put("custom_field", bindingParams.getCustomField());
+                query.getEqualFilter().put("cname", bindingParams.getName());
+                query.getEqualFilter().put("custom_field", bindingParams.getCustomField());
 				employee = userDao.getEmployee(query);
 				if (employee == null || employee.getId() == 0) {
 					response.setSuccess(false);
