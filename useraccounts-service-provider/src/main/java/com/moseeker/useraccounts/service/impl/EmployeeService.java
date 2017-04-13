@@ -75,6 +75,7 @@ public class EmployeeService {
 			    emp.setCustomFieldValues(employee.getCustomFieldValues());
 			    emp.setWxuserId(getWxuserId(query));
 			    emp.setEmail(employee.getEmail());
+			    emp.setCustomField(employee.getCustomField());
 			    response.setEmployee(emp);
 
 			    if (employee.getActivation() == 0) {

@@ -3,7 +3,13 @@ package com.moseeker.chat.service;
 import com.moseeker.chat.constant.ChatSpeakerType;
 import com.moseeker.chat.service.entity.ChatDao;
 import com.moseeker.thrift.gen.chat.struct.*;
-import com.moseeker.thrift.gen.dao.struct.*;
+import com.moseeker.thrift.gen.dao.struct.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.UserHrAccountDO;
+import com.moseeker.thrift.gen.dao.struct.UserUserDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrChatUnreadCountDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatListDO;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Rule;
@@ -17,7 +23,7 @@ import org.mockito.junit.MockitoRule;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by jack on 13/03/2017.
@@ -136,7 +142,7 @@ public class ChatServiceTest {
         HrWxHrChatListDO room1 = new HrWxHrChatListDO();
         room1.setSysuserId(1);
         room1.setHraccountId(1);
-        room1.setStatus(false);
+        room1.setStatus((byte)0);
         room1.setCreateTime(new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
         room1.setHrChatTime(null);
         room1.setId(1);
@@ -147,7 +153,7 @@ public class ChatServiceTest {
         HrWxHrChatListDO room6 = new HrWxHrChatListDO();
         room6.setSysuserId(3);
         room6.setHraccountId(3);
-        room6.setStatus(false);
+        room6.setStatus((byte)0);
         room6.setCreateTime(new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
         room6.setHrChatTime(null);
         room6.setId(6);
@@ -157,7 +163,7 @@ public class ChatServiceTest {
         HrWxHrChatListDO room7= new HrWxHrChatListDO();
         room7.setSysuserId(1);
         room7.setHraccountId(2);
-        room7.setStatus(false);
+        room7.setStatus((byte)0);
         room7.setCreateTime(new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
         room7.setHrChatTime(null);
         room7.setId(7);
@@ -167,7 +173,7 @@ public class ChatServiceTest {
         HrWxHrChatListDO room8 = new HrWxHrChatListDO();
         room8.setSysuserId(1);
         room8.setHraccountId(3);
-        room8.setStatus(false);
+        room8.setStatus((byte)0);
         room8.setCreateTime(new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
         room8.setHrChatTime(null);
         room8.setId(8);
@@ -178,7 +184,7 @@ public class ChatServiceTest {
         HrWxHrChatListDO room9 = new HrWxHrChatListDO();
         room9.setSysuserId(2);
         room9.setHraccountId(3);
-        room9.setStatus(false);
+        room9.setStatus((byte)0);
         room9.setCreateTime(new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
         room9.setHrChatTime(null);
         room9.setId(9);
@@ -277,7 +283,7 @@ public class ChatServiceTest {
         HrWxHrChatDO chatDO1 = new HrWxHrChatDO();
         chatDO1.setContent("chat1");
         chatDO1.setCreateTime(new DateTime().minusDays(1).toString("yyyy-MM-dd HH:mm:ss"));
-        chatDO1.setSpeaker(true);
+        chatDO1.setSpeaker((byte)1);
         chatDO1.setChatlistId(1);
         chatDO1.setId(1);
         chatListRoom1.add(chatDO1);
@@ -285,7 +291,7 @@ public class ChatServiceTest {
         HrWxHrChatDO chatDO2 = new HrWxHrChatDO();
         chatDO2.setContent("chat2");
         chatDO2.setCreateTime(new DateTime().minusDays(1).toString("yyyy-MM-dd HH:mm:ss"));
-        chatDO2.setSpeaker(true);
+        chatDO2.setSpeaker((byte)1);
         chatDO2.setChatlistId(1);
         chatDO2.setId(2);
         chatListRoom1.add(chatDO2);
@@ -293,7 +299,7 @@ public class ChatServiceTest {
         HrWxHrChatDO chatDO3 = new HrWxHrChatDO();
         chatDO3.setContent("chat3");
         chatDO3.setCreateTime(new DateTime().minusDays(1).toString("yyyy-MM-dd HH:mm:ss"));
-        chatDO3.setSpeaker(true);
+        chatDO3.setSpeaker((byte)1);
         chatDO3.setChatlistId(1);
         chatDO3.setId(3);
         chatListRoom1.add(chatDO3);
@@ -303,7 +309,7 @@ public class ChatServiceTest {
 
         HrWxHrChatListDO room = new HrWxHrChatListDO();
         room.setId(1);
-        room.setStatus(false);
+        room.setStatus((byte)0);
         room.setCreateTime(new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
         room.setHraccountId(1);
         room.setSysuserId(1);
