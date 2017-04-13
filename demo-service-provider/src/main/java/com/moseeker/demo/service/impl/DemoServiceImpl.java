@@ -4,6 +4,7 @@ import com.moseeker.baseorm.dao.demo.DemoDao;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.demo.service.DemoService;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.CommonUpdate;
 import com.moseeker.thrift.gen.common.struct.Condition;
@@ -24,13 +25,15 @@ public class DemoServiceImpl implements DemoService {
     //此处我们只处理我们知道的异常，其它Runtime异常都直接抛给上面统一处理
     @Override
     public String getData(CommonQuery query) throws TException {
-        DemoStruct demoStruct = demoDao.getData(query);
-        return ResponseUtils.successStructJson(demoStruct);
+        throw new BIZException(1111, "exception");
+        /*DemoStruct demoStruct = demoDao.getData(query);
+        return ResponseUtils.successStructJson("{}");*/
     }
 
     @Override
     public String postData(DemoStruct demoStruct) throws TException {
-        try {
+        return "{'status':1111,'message':'post success'}";
+        /*try {
             int id = demoDao.addData(demoStruct);
             if (id > 0) {
                 return ResponseUtils.successJson();
@@ -38,16 +41,17 @@ public class DemoServiceImpl implements DemoService {
             return ResponseUtils.failJson(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
         }catch (Exception e){
             throw new TException(e);
-        }
+        }*/
     }
 
     @Override
     public String putData(CommonUpdate data) throws TException {
-        int success = demoDao.update(data);
+        return "{'status':0,'message':'put success'}";
+        /*int success = demoDao.update(data);
         if(success>0){
             return ResponseUtils.successJson();
         }
-        return ResponseUtils.failJson(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+        return ResponseUtils.failJson(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);*/
     }
 
     @Override

@@ -467,7 +467,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_COMPANY_DEPARTMENT_BLANK);
             } else {
                 for (HrTeamRecord hrTeamRecord : hrTeamRecordList) {
-                    hashMapHrTeam.put(hrTeamRecord.getName(), hrTeamRecord);
+                    hashMapHrTeam.put(hrTeamRecord.getName().trim(), hrTeamRecord);
                 }
             }
             QueryUtil commonQuery = new QueryUtil();
@@ -562,8 +562,15 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(record.getDepartment())) {
                         HrTeamRecord hrTeamRecord = (HrTeamRecord) hashMapHrTeam.get(record.getDepartment());
                         if (hrTeamRecord != null) {
+                            logger.info("-----取到TeamId-------");
+                            logger.info("----部门ID为---:" + hrTeamRecord.getId());
                             team_id = hrTeamRecord.getId();
                         } else {
+                            logger.info("-----未取到TeamId-------");
+                            logger.info("--部门名称为--:" + record.getDepartment());
+                            logger.info("--company_id--:" + record.getCompanyId());
+                            logger.info("--JobPositionRecord数据--:" + record.toString());
+                            logger.info("--提交的数据--:" + jobPositionHandlerDate.toString());
                             JobPositionFailMessPojo jobPositionFailMessPojo = new JobPositionFailMessPojo();
                             jobPositionFailMessPojo.setCompanyId(jobPositionHandlerDate.getCompany_id());
                             jobPositionFailMessPojo.setJobNumber(jobPositionHandlerDate.getJobnumber());
@@ -701,6 +708,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     return ResponseUtils.success(jobPositionFailMessPojos);
                 }
             }
+            logger.info("批量修改职位结束");
             return ResponseUtils.fail(1, JSONArray.toJSONString(jobPositionFailMessPojos));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

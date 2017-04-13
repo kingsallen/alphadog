@@ -6,6 +6,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.servicemanager.web.controller.useraccounts.form.UserEmployeeBatch;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
@@ -85,17 +86,18 @@ public class UserEmployeeController {
     @RequestMapping(value = "/user/employee/batchhandler", method = RequestMethod.POST)
     @ResponseBody
     public String addOrUpdateUserEmployees(HttpServletRequest request, HttpServletResponse response) {
+        UserEmployeeBatch batch = null;
         try {
-            Map<String, Object> datas = ParamUtils.parseRequestParam(request);
-
-            Object data = datas.get("data");
-
-            if (data == null) {
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            batch = JSON.parseObject(JSON.toJSONString(params), UserEmployeeBatch.class);
+            if (batch == null || batch.getData() == null || batch.getData().size() == 0) {
                 return ResponseLogNotification.fail(request, "没有参数");
             }
-
-            List<UserEmployeeStruct> employeeStructs = JSON.parseArray(data.toString(), UserEmployeeStruct.class);
-            Response result = service.postPutUserEmployeeBatch(employeeStructs);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, "参数错误");
+        }
+        try {
+            Response result = service.postPutUserEmployeeBatch(batch.getData());
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
