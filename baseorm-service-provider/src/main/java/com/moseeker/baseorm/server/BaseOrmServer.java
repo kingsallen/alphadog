@@ -43,7 +43,8 @@ public class BaseOrmServer {
                     acac.getBean(LogDBDaoThriftService.class),
                     acac.getBean(ThirdPartyUserDaoThriftService.class),
                     acac.getBean(UserEmployeeDaoThriftService.class),
-                    acac.getBean(ProfileProfileDaoThriftService.class));
+                    acac.getBean(ProfileProfileDaoThriftService.class),
+                    acac.getBean(TalentpoolDaoThriftService.class));
             server.startServer();
             synchronized (BaseOrmServer.class) {
                 while (true) {
