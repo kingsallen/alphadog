@@ -2,8 +2,6 @@ package com.moseeker.common.providerutils;
 
 import com.moseeker.thrift.gen.common.struct.CommonUpdate;
 
-import java.sql.SQLException;
-
 /**
  * Created by zhangdi on 2017/3/21.
  */
@@ -24,7 +22,4 @@ public class UpdateCondition extends CommonCondition<UpdateCondition> {
         return commonUpdate;
     }
 
-    public int update(CrudUpdate dao) {
-        return dao.update(commonUpdate);
-    }
 }

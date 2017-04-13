@@ -12,8 +12,6 @@ import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-
 /**
  * Created by moseeker on 2017/4/11.
  */
@@ -31,9 +29,9 @@ public class DemoServiceImpl implements DemoService {
     }
 
     @Override
-    public String postData(Map<String, String> data) throws TException {
+    public String postData(DemoStruct demoStruct) throws TException {
         try {
-            int id = demoDao.add(data);
+            int id = demoDao.addData(demoStruct);
             if (id > 0) {
                 return ResponseUtils.successJson();
             }

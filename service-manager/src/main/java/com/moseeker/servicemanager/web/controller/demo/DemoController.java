@@ -6,6 +6,7 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.web.controller.base.BaseController;
 import com.moseeker.thrift.gen.demo.service.DemoThriftService;
+import com.moseeker.thrift.gen.demo.struct.DemoStruct;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -39,8 +40,8 @@ public class DemoController extends BaseController {
     @RequestMapping(value = "/demo", method = RequestMethod.POST,produces="application/json")
     @ResponseBody
     public String post(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String,String> datas = ParamUtils.getMap(request);
-        return demoThriftService.postData(datas);
+        DemoStruct data = ParamUtils.initModelForm(request, DemoStruct.class);
+        return demoThriftService.postData(data);
     }
 
     @RequestMapping(value = "/demo", method = RequestMethod.PUT,produces="application/json")

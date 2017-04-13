@@ -5,6 +5,7 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.CommonUpdate;
 import com.moseeker.thrift.gen.common.struct.Condition;
 import com.moseeker.thrift.gen.demo.service.DemoThriftService;
+import com.moseeker.thrift.gen.demo.struct.DemoStruct;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class DemoThriftServiceImpl implements DemoThriftService.Iface{
     }
 
     @Override
-    public String postData(Map<String, String> data) throws TException {
+    public String postData(DemoStruct data) throws TException {
         return demoService.postData(data);
     }
 

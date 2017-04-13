@@ -3,9 +3,11 @@ package com.moseeker.demo.crud;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.*;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Order;
 import com.moseeker.thrift.gen.common.struct.Select;
 import com.moseeker.thrift.gen.common.struct.SelectOp;
+import com.moseeker.thrift.gen.useraccounts.struct.User;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.junit.Assert;
@@ -36,15 +38,6 @@ public class CommonTest {
         userDao = acac.getBean(TestUserDao.class);
     }
 
-    @Test
-    public void testAddMap() throws SQLException {
-        int add = userDao.add(new HashMap<String, String>() {{
-            put("name", "test_add_" + System.currentTimeMillis());
-            put("password", "test_add_" + System.currentTimeMillis());
-        }});
-
-        Assert.assertEquals(add, 1);
-    }
 
     @Test
     public void testUpdateMap() throws SQLException {
@@ -63,6 +56,7 @@ public class CommonTest {
         Assert.assertEquals(delete, 1);
     }
 
+
     @Test
     public void testQuery() throws SQLException {
 
@@ -75,7 +69,7 @@ public class CommonTest {
         //groupby username
         //orderby username asc;
 
-        List<Map<String, Object>> objectMap = QueryCreator
+        CommonQuery commonQuery = QueryCreator
                 .select("username")
                 .select(new Select("username", SelectOp.COUNT))
                 .where(CommonCondition.equal("is_disable", 0))
@@ -85,7 +79,9 @@ public class CommonTest {
                 .orderBy("username", Order.ASC)
                 .pageSize(10)
                 .page(1)
-                .getMaps(userDao);
+                .getCommonQuery();
+
+        List<CustomUser> objectMap = userDao.getDatas(commonQuery,CustomUser.class);
 
         List<Map<String, Object>> objectMap2 = DSL.using(DBConnHelper.DBConn.getConn(), SQLDialect.MYSQL)
                 .select(UserUser.USER_USER.USERNAME, UserUser.USER_USER.USERNAME.count().as("username_count"))
@@ -99,14 +95,6 @@ public class CommonTest {
         objectMap.forEach(map -> System.out.println(map));
         System.out.println("----------------");
         objectMap2.forEach(map -> System.out.println(map));
-
-
-        IntStream.range(0, objectMap.size())
-                .forEach(index -> objectMap.get(index).forEach((key, value) -> {
-                    System.out.println(key + "-" + value + "-" + objectMap2.get(index).get(key));
-                    Assert.assertTrue(objectMap2.get(index).containsKey(key));
-                    Assert.assertEquals(objectMap2.get(index).get(key), value);
-                }));
 
     }
 
