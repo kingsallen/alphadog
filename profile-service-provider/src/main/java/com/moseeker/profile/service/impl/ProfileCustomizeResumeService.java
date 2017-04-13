@@ -94,7 +94,7 @@ public class ProfileCustomizeResumeService extends JOOQBaseServiceImpl<Customize
 		try {
 			ValidationMessage<CustomizeResume> vm = ProfileValidation.verifyCustomizeResume(struct);
 			if(!vm.isPass()) {
-				return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}'}", vm.getResult()));
+				return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", vm.getResult()));
 			}
 			
 			QueryUtil qu = new QueryUtil();

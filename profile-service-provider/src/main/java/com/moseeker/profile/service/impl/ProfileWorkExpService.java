@@ -188,7 +188,7 @@ public class ProfileWorkExpService extends JOOQBaseServiceImpl<WorkExp, ProfileW
 	public Response postResource(WorkExp struct) throws TException {
 		ValidationMessage<WorkExp> vm = ProfileValidation.verifyWorkExp(struct);
 		if(!vm.isPass()) {
-			return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}'}", vm.getResult()));
+			return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", vm.getResult()));
 		}
 		int i = 0;
 		try {
