@@ -974,7 +974,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 
         try {
             String childCompanyId = "";
-            String companyId = String.valueOf(query.getCompany_id());
+            String companyId = "";
 
             if (query.isSetDid() && query.getDid() != 0) {
                 // 如果有did, 赋值 childCompanyId
@@ -990,7 +990,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     cIds = companies.stream().map(Hrcompany::getId).collect(Collectors.toList());
                 }
                 cIds.add(query.getCompany_id());
-                childCompanyId = org.apache.commons.lang.StringUtils.join(cIds.toArray(), ",");
+                companyId = org.apache.commons.lang.StringUtils.join(cIds.toArray(), ",");
             }
 
             logger.info("query.getCompanyId(): "+ query.getCompany_id());
