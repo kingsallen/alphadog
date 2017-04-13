@@ -32,7 +32,7 @@ public class DemoServiceImpl implements DemoService {
 
     @Override
     public String postData(DemoStruct demoStruct) throws TException {
-        return "{'status':1111,'message':'post success'}";
+        return "{\"status\":0,\"message\":\"post success\"}";
         /*try {
             int id = demoDao.addData(demoStruct);
             if (id > 0) {
@@ -46,7 +46,7 @@ public class DemoServiceImpl implements DemoService {
 
     @Override
     public String putData(CommonUpdate data) throws TException {
-        return "{'status':0,'message':'put success'}";
+        return "{\"status\":0,\"message\":\"put success\"}";
         /*int success = demoDao.update(data);
         if(success>0){
             return ResponseUtils.successJson();

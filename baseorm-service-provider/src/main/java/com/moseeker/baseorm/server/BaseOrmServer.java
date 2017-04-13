@@ -41,8 +41,6 @@ public class BaseOrmServer {
                     acac.getBean(ProfileDBDaoThriftService.class),
                     acac.getBean(WxUserDaoThriftService.class),
                     acac.getBean(LogDBDaoThriftService.class),
-                    acac.getBean(ThirdPartyUserDaoThriftService.class),
-                    acac.getBean(UserEmployeeDaoThriftService.class),
                     acac.getBean(ProfileProfileDaoThriftService.class),
                     acac.getBean(TalentpoolDaoThriftService.class));
             server.startServer();
