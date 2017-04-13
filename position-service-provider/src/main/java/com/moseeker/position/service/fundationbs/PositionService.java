@@ -990,7 +990,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 cIds.add(query.getCompany_id());
                 companyId = org.apache.commons.lang.StringUtils.join(cIds.toArray(), ",");
             }
-            logger.debug("keywords: %s, cities: %s, industries: %s, occupations: %s, \n" +
+            logger.info("keywords: %s, cities: %s, industries: %s, occupations: %s, \n" +
                     "scale: %s, employment_type: %s, candidate_source: %s, experience: %s, \n" +
                     "degree: %s, salary: %s, company_id: %s, page_from: %s, page_size: %s, \n" +
                     "childCompanyId: %s, department: %s, order_by_priority: %s, custom: %s",
@@ -1039,7 +1039,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 
                 JSONArray pidsJson = jobj.getJSONArray("jd_id_list");
 
-                logger.debug("pidsJson: %s", pidsJson);
+                logger.info("pidsJson: %s", pidsJson);
 
                 ArrayList<Integer> pids = new ArrayList<>();
                 if (pidsJson != null) {
