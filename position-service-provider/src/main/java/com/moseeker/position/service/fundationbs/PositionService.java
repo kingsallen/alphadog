@@ -652,7 +652,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                         query.addEqualFilter("pid", String.valueOf(jobPositionRecordTemp.getId()));
                         JobPositionExtRecord jobPositionExtRecord = jobPositonExtDao.getResource(query);
                         if (fieldsNohashs == null ||
-                                (!md5(fieldsNohashs, jobPositionRecordTemp, jobPositionExtRecord.getExtra()).equals(md5(fieldsNohashs, record, jobPositionHandlerDate.getExtra())))) {
+                                (!md5(fieldsNohashs, jobPositionRecordTemp, jobPositionExtRecord != null ? jobPositionExtRecord.getExtra() : "").equals(md5(fieldsNohashs, record, jobPositionHandlerDate.getExtra())))) {
 
                             record.setSourceId(jobPositionRecordTemp.getSourceId());
                             record.setCompanyId(UInteger.valueOf(companyId));
