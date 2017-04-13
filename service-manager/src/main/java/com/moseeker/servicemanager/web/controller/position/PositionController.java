@@ -85,6 +85,7 @@ public class PositionController {
 			WechatPositionListQuery query = new WechatPositionListQuery();
 
 			Map<String, Object> map = ParamUtils.parseRequestParam(request);
+			logger.info("map: " + map.toString());
 
 			if (map.getOrDefault("company_id", null) != null) {
 				query.setCompany_id(Integer.valueOf((String)map.get("company_id")));
@@ -95,6 +96,7 @@ public class PositionController {
 
 			query.setPage_from(Integer.valueOf((String)map.getOrDefault("page_from", "0")));
 			query.setPage_size(Integer.valueOf((String)map.getOrDefault("page_size", "10")));
+
 			query.setKeywords((String) map.getOrDefault("keywords", ""));
 			query.setCities((String) map.getOrDefault("cities", ""));
 			query.setIndustries((String) map.getOrDefault("industries", ""));
@@ -108,6 +110,7 @@ public class PositionController {
 			query.setDepartment((String) map.getOrDefault("department", ""));
 			query.setCustom((String) map.getOrDefault("custom", ""));
 			query.setDid(Integer.valueOf((String)map.getOrDefault("did", "0")));
+
 			String param_setOrder_by_priority = (String)map.getOrDefault("order_by_priority", "True");
 			query.setOrder_by_priority(param_setOrder_by_priority.equals("True"));
 

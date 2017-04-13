@@ -1,11 +1,15 @@
 package com.moseeker.position.service.fundationbs;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.ValueFilter;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.*;
+import com.moseeker.common.constants.AccountSync;
+import com.moseeker.common.constants.AppId;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.KeyIdentifier;
+import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
@@ -17,8 +21,20 @@ import com.moseeker.db.dictdb.tables.records.DictCityPostcodeRecord;
 import com.moseeker.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.db.hrdb.tables.records.HrTeamRecord;
-import com.moseeker.db.jobdb.tables.records.*;
-import com.moseeker.position.dao.*;
+import com.moseeker.db.jobdb.tables.records.JobCustomRecord;
+import com.moseeker.db.jobdb.tables.records.JobOccupationRecord;
+import com.moseeker.db.jobdb.tables.records.JobPositionCityRecord;
+import com.moseeker.db.jobdb.tables.records.JobPositionExtRecord;
+import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.position.dao.DictCityPostCodeDao;
+import com.moseeker.position.dao.DictConstantDao;
+import com.moseeker.position.dao.HrTeamDao;
+import com.moseeker.position.dao.JobCustomDao;
+import com.moseeker.position.dao.JobOccupationDao;
+import com.moseeker.position.dao.JobPositionCityDao;
+import com.moseeker.position.dao.JobPositionDao;
+import com.moseeker.position.dao.JobPositonExtDao;
+import com.moseeker.position.dao.PositionDao;
 import com.moseeker.position.pojo.DictConstantPojo;
 import com.moseeker.position.pojo.JobPositionFailMessPojo;
 import com.moseeker.position.pojo.JobPositionPojo;
@@ -34,9 +50,16 @@ import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.service.CompanyDao;
 import com.moseeker.thrift.gen.dao.service.HrDBDao;
 import com.moseeker.thrift.gen.dao.service.UserHrAccountDao;
-import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrHbConfigDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrHbItemsDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrHbPositionBindingDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamStruct;
+import com.moseeker.thrift.gen.position.struct.BatchHandlerJobPostion;
+import com.moseeker.thrift.gen.position.struct.City;
+import com.moseeker.thrift.gen.position.struct.JobPostrionObj;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.RpExtInfo;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
@@ -46,10 +69,9 @@ import com.moseeker.thrift.gen.position.struct.WechatPositionListQuery;
 import com.moseeker.thrift.gen.position.struct.WechatRpPositionListData;
 import com.moseeker.thrift.gen.position.struct.WechatShareData;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
-import com.moseeker.thrift.gen.position.struct.*;
 import com.mysql.jdbc.StringUtils;
-
 import org.apache.thrift.TException;
+import org.jooq.Field;
 import org.jooq.types.UInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,13 +79,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.lang.Math.round;
 import static java.lang.Math.toIntExact;
-
-import org.jooq.Field;
 
 @Service
 public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRecord> {
@@ -946,17 +970,19 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
      */
     public List<WechatPositionListData> getPositionList(WechatPositionListQuery query) {
 
-        List<WechatPositionListData> dataList = new ArrayList<WechatPositionListData>();
+        List<WechatPositionListData> dataList = new ArrayList<>();
 
         try {
             String childCompanyId = "";
             String companyId = "";
 
-            if (query.isSetDid() && query.getCompany_id() != query.getDid()) {
+            if (query.isSetDid() && query.getDid() != 0) {
+                // 如果有did, 赋值 childCompanyId
                 childCompanyId = String.valueOf(query.getDid());
+
             } else {
                 QueryUtil qu = new QueryUtil();
-                qu.addEqualFilter("parent_id", String.valueOf(query.getCompany_id()));
+                qu.addEqualFilter("parent_id", companyId);
                 List<Hrcompany> companies = companyDao.getCompanies(qu);
 
                 List<Integer> cIds = new ArrayList<>();
@@ -966,6 +992,32 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 cIds.add(query.getCompany_id());
                 companyId = org.apache.commons.lang.StringUtils.join(cIds.toArray(), ",");
             }
+
+            logger.info("query.getCompanyId(): "+ query.getCompany_id());
+            logger.info("query.getDid(): " + query.getDid());
+            logger.info("query.isSetDid(): "+ query.isSetDid());
+
+            logger.info("companyId: "+ companyId);
+            logger.info("childCompanyId: " + childCompanyId);
+
+            logger.info(
+                    "keywords:" + query.getKeywords() +
+                    ", cities: " + query.getCities() +
+                    ", industries: " + query.getIndustries() +
+                    ", occupations: " + query.getOccupations() +
+                    ", scale: " + query.getScale() +
+                    ", employment_type: " + query.getEmployment_type() +
+                    ", candidate_source: " + query.getCandidate_source() +
+                    ", experience: " + query.getExperience() +
+                    ", degree: " + query.getDegree() +
+                    ", salary: " + query.getSalary() +
+                    ", company_id: " + companyId +
+                    ", page_from: " + query.getPage_from() +
+                    ", page_size: " + query.getPage_size() +
+                    ", childCompanyId: " + childCompanyId +
+                    ", department: " + query.getDepartment() +
+                    ", order_by_priority: " + query.isOrder_by_priority() +
+                    ", custom: " + query.getCustom());
 
             //获取 pid list
             Response ret = searchEngineService.query(
@@ -994,7 +1046,9 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 
                 JSONArray pidsJson = jobj.getJSONArray("jd_id_list");
 
-                ArrayList<Integer> pids = new ArrayList<Integer>();
+                logger.info("pidsJson: " + pidsJson);
+
+                ArrayList<Integer> pids = new ArrayList<>();
                 if (pidsJson != null) {
                     int len = pidsJson.size();
                     for (int i = 0; i < len; i++) {
