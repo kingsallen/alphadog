@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.baseorm.dao.hr.SearchConditionDao;
+import com.moseeker.baseorm.dao.hrdb.HrSearchConditionDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrSearchConditionRecord;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -23,7 +23,7 @@ public class SearchConditionDaoThriftService implements Iface {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	
 	@Autowired
-	private SearchConditionDao dao;
+	private HrSearchConditionDao dao;
 
 	@Override
 	public List<SearchCondition> getResources(CommonQuery query)

@@ -10,10 +10,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.baseorm.dao.wordpress.WordpressPostmetaDao;
-import com.moseeker.baseorm.dao.wordpress.WordpressPostsDao;
-import com.moseeker.baseorm.dao.wordpress.WordpressTermRelationshipDao;
-import com.moseeker.baseorm.dao.wordpress.WordpressUserPostDao;
+import com.moseeker.baseorm.dao.wordpressdb.WordpressPostmetaDao;
+import com.moseeker.baseorm.dao.wordpressdb.WordpressPostsDao;
+import com.moseeker.baseorm.dao.wordpressdb.WordpressTermRelationshipDao;
+import com.moseeker.baseorm.dao.wordpressdb.WordpressUserPostDao;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressPostmetaRecord;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressPostsRecord;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressTermRelationshipsRecord;
