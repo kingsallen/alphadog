@@ -1,18 +1,13 @@
 package com.moseeker.position.pojo;
 
-
-import java.io.Serializable;
-
 /**
  * Created by YYF
  *
- * Date: 2017/3/23
+ * Date: 2017/4/13
  *
  * Project_name :alphadog
- *
- * 用于返回批量更新职位时候提示信息
  */
-public class JobPositionFailMessPojo implements Serializable {
+public class JobPositionFailMess {
 
     // 失败原因
     private String message;
