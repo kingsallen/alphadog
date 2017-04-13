@@ -974,10 +974,12 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 
         try {
             String childCompanyId = "";
-            String companyId = "";
+            String companyId = String.valueOf(query.getCompany_id());
 
-            if (query.isSetDid() && query.getCompany_id() != query.getDid()) {
+            if (query.isSetDid() && query.getDid() != 0) {
+                // 如果有did, 赋值 childCompanyId
                 childCompanyId = String.valueOf(query.getDid());
+
             } else {
                 QueryUtil qu = new QueryUtil();
                 qu.addEqualFilter("parent_id", String.valueOf(query.getCompany_id()));
@@ -988,8 +990,12 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     cIds = companies.stream().map(Hrcompany::getId).collect(Collectors.toList());
                 }
                 cIds.add(query.getCompany_id());
-                companyId = org.apache.commons.lang.StringUtils.join(cIds.toArray(), ",");
+                childCompanyId = org.apache.commons.lang.StringUtils.join(cIds.toArray(), ",");
+
             }
+            logger.info("companyId: "+ companyId);
+            logger.info("childCompanyId: " + childCompanyId);
+
             logger.info(
                     "keywords:" + query.getKeywords() +
                     ", cities: " + query.getCities() +
@@ -1001,10 +1007,10 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     ", experience: " + query.getExperience() +
                     ", degree: " + query.getDegree() +
                     ", salary: " + query.getSalary() +
-                    ", company_id: " + query.getCompany_id() +
+                    ", company_id: " + companyId +
                     ", page_from: " + query.getPage_from() +
                     ", page_size: " + query.getPage_size() +
-                    ", childCompanyId: " + query.getDid() +
+                    ", childCompanyId: " + childCompanyId +
                     ", department: " + query.getDepartment() +
                     ", order_by_priority: " + query.isOrder_by_priority() +
                     ", custom: " + query.getCustom());
