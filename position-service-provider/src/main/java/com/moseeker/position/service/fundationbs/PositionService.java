@@ -982,7 +982,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 
             } else {
                 QueryUtil qu = new QueryUtil();
-                qu.addEqualFilter("parent_id", String.valueOf(query.getCompany_id()));
+                qu.addEqualFilter("parent_id", companyId);
                 List<Hrcompany> companies = companyDao.getCompanies(qu);
 
                 List<Integer> cIds = new ArrayList<>();
@@ -991,8 +991,12 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 }
                 cIds.add(query.getCompany_id());
                 childCompanyId = org.apache.commons.lang.StringUtils.join(cIds.toArray(), ",");
-
             }
+
+            logger.info("query.getCompanyId(): "+ query.getCompany_id());
+            logger.info("query.getDid(): " + query.getDid());
+            logger.info("query.isSetDid(): "+ query.isSetDid());
+
             logger.info("companyId: "+ companyId);
             logger.info("childCompanyId: " + childCompanyId);
 
