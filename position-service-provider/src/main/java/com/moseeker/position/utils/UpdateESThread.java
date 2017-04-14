@@ -12,7 +12,6 @@ import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 
 import org.apache.thrift.TException;
-import org.jooq.types.UInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,6 +46,8 @@ public class UpdateESThread implements Runnable {
     public void run() {
         logger.info("---Start ES Search Engine---");
         if (list != null && list.size() > 0) {
+            logger.info("需要更新ES总条数：" + list.size());
+            logger.info("需要更新ESJobPostionIDs：" + list.toString());
             for (Integer jobPositionId : list) {
                 JobPositionRecord jobPositionRecord = jobPositionDao.getPositionById(jobPositionId);
                 Integer companyId = jobPositionRecord.getCompanyId().intValue();
@@ -75,6 +76,8 @@ public class UpdateESThread implements Runnable {
                         degree_name = degree_name + "及以上";
                     }
                     map.put("degree_name", degree_name);
+                    logger.info("-- JobPositionJOSN -- :", JSONObject.toJSONString(map));
+                    logger.info("-- JobPositionId -- :", jobPositionRecord.getId());
                     searchengineServices.updateposition(JSONObject.toJSONString(map), jobPositionRecord.getId());
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
