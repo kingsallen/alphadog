@@ -8,6 +8,7 @@ public class PositionForSyncResultPojo {
 	private String position_id;
 	private String channel;
 	private int remain_number;
+	private int remain_profile_number;
 	private String sync_time;
 	private String pub_place_name;
 	
@@ -58,5 +59,13 @@ public class PositionForSyncResultPojo {
 	}
 	public void setPub_place_name(String pub_place_name) {
 		this.pub_place_name = pub_place_name;
+	}
+
+	public int getRemain_profile_number() {
+		return remain_profile_number;
+	}
+
+	public void setRemain_profile_number(int remain_profile_number) {
+		this.remain_profile_number = remain_profile_number;
 	}
 }

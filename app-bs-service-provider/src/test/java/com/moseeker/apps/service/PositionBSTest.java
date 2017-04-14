@@ -2,6 +2,7 @@ package com.moseeker.apps.service;
 
 import static org.junit.Assert.assertEquals;
 
+import com.moseeker.thrift.gen.dao.service.UserHrAccountDao;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
@@ -48,7 +49,7 @@ public class PositionBSTest {
 	UserHrAccountService.Iface userHrAccountService ;
 
 	@Mock
-	CompanyServices.Iface companyService;
+	UserHrAccountDao.Iface userHrAccountDao;
 
 	@Mock
 	CompanyDao.Iface CompanyDao;
@@ -96,7 +97,7 @@ public class PositionBSTest {
 		
 		positionBS.setChaosService(chaosService);
 		positionBS.setCompanyDao(CompanyDao);
-		positionBS.setCompanyService(companyService);
+		positionBS.setUserHrAccountDao(userHrAccountDao);
 		positionBS.setPositionDao(positionDao);
 		positionBS.setPositionServices(positionServices);
 		positionBS.setUserHrAccountService(userHrAccountService);

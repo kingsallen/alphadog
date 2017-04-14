@@ -113,7 +113,8 @@ struct BindAccountStruct {
     6: i32 user_id,
     7: i32 company_id,
     8: i32 remainNum,
-    9: i32 binding
+    9: i32 binding,
+    10: i32 remainProfileNum,
 }
 
 /*

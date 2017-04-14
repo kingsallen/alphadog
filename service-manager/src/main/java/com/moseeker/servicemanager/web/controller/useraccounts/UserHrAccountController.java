@@ -1,5 +1,6 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +10,7 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -280,6 +282,26 @@ public class UserHrAccountController {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = " /thirdpartyaccount/refresh/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public String synchronizeThirdpartyAccount(@PathVariable int id, HttpServletRequest request, HttpServletResponse response) {
+        long startTime= System.currentTimeMillis();
+        try {
+
+            HashMap<String, Object> map = ParamUtils.parseRequestParam(request);
+            Response result = userHrAccountService.synchronizeThirdpartyAccount(id);
+
+
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }finally{
+            long allUseTime=System.currentTimeMillis()-startTime;
+            logger.info("refresh thirdParyAccount in controller Use time==========================="+allUseTime);
         }
     }
 }

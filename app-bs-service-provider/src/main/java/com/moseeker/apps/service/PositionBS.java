@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.moseeker.thrift.gen.dao.service.UserHrAccountDao;
 import com.moseeker.thrift.gen.dao.struct.HrCompanyDO;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
@@ -50,13 +51,14 @@ public class PositionBS {
 	UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICEMANAGER
 			.getService(UserHrAccountService.Iface.class);
 
-	CompanyServices.Iface companyService = ServiceManager.SERVICEMANAGER.getService(CompanyServices.Iface.class);
-
 	PositionServices.Iface positionServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
 
 	CompanyDao.Iface CompanyDao = ServiceManager.SERVICEMANAGER.getService(CompanyDao.Iface.class);
 
 	ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
+
+	UserHrAccountDao.Iface userHrAccountDao = ServiceManager.SERVICEMANAGER
+			.getService(UserHrAccountDao.Iface.class);
 
 	/**
 	 * 
@@ -80,7 +82,7 @@ public class PositionBS {
 
 				QueryUtil ThirdPartyBindingAccounts = new QueryUtil();
 				ThirdPartyBindingAccounts.addEqualFilter("company_id", String.valueOf(positionStruct.getCompany_id()));
-				List<ThirdPartAccountData> thirdPartyAccounts = CompanyDao
+				List<ThirdPartAccountData> thirdPartyAccounts = userHrAccountDao
 						.getThirdPartyBindingAccounts(ThirdPartyBindingAccounts);
 				if (thirdPartyAccounts != null && thirdPartyAccounts.size() > 0) {
 					setCompanyAddress(position.getChannels(), positionStruct.getCompany_id());
@@ -162,7 +164,7 @@ public class PositionBS {
 						});
 						// 回写数据到第三方职位表表
 						logger.info("write back to thirdpartyposition:" + JSON.toJSONString(pds));
-						CompanyDao.upsertThirdPartyPositions(pds);
+						userHrAccountDao.upsertThirdPartyPositions(pds);
 
 						ThirdPartyPositionForSynchronization p = positions.get(positions.size() - 1);
 						boolean needWriteBackToPositin = false;
@@ -313,12 +315,12 @@ public class PositionBS {
 		this.userHrAccountService = userHrAccountService;
 	}
 
-	public CompanyServices.Iface getCompanyService() {
-		return companyService;
+	public UserHrAccountDao.Iface getUserHrAccountDao() {
+		return userHrAccountDao;
 	}
 
-	public void setCompanyService(CompanyServices.Iface companyService) {
-		this.companyService = companyService;
+	public void setUserHrAccountDao(UserHrAccountDao.Iface userHrAccountDao) {
+		this.userHrAccountDao = userHrAccountDao;
 	}
 
 	public PositionServices.Iface getPositionServices() {

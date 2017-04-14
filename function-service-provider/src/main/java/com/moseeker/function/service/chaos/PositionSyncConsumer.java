@@ -3,6 +3,7 @@ package com.moseeker.function.service.chaos;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.moseeker.thrift.gen.dao.service.UserHrAccountDao;
 import com.moseeker.thrift.gen.position.struct.Position;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -31,9 +32,8 @@ import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 public class PositionSyncConsumer {
 	
 	private static Logger logger = LoggerFactory.getLogger(PositionSyncConsumer.class);
-	
-	CompanyDao.Iface companyDao = ServiceManager.SERVICEMANAGER
-			.getService(CompanyDao.Iface.class);
+
+	UserHrAccountDao.Iface userHrAccountDao = ServiceManager.SERVICEMANAGER.getService(UserHrAccountDao.Iface.class);
 	PositionDao.Iface positionDao = ServiceManager.SERVICEMANAGER
 			.getService(PositionDao.Iface.class);
 	
@@ -109,16 +109,17 @@ public class PositionSyncConsumer {
 			if(p != null && p.getId() > 0) {
 				logger.info("completed queue position existî");
 				logger.info("completed queue update thirdpartyposition to synchronized");
-				companyDao.upsertThirdPartyPositions(datas);
+				userHrAccountDao.upsertThirdPartyPositions(datas);
 				if(pojo.getStatus() == 0) {
 					ThirdPartAccountData d = new ThirdPartAccountData();
 					d.setCompany_id(p.getCompany_id());
 					d.setRemain_num(pojo.getRemain_number());
+					d.setRemain_profile_num(pojo.getRemain_profile_number());
 					d.setChannel(Integer.valueOf(pojo.getChannel().trim()));
 					d.setSync_time(pojo.getSync_time());
 					//positionDao.updatePosition(p);
 					logger.info("completed queue update thirdpartyposition to synchronized");
-					companyDao.updatePartyAccountByCompanyIdChannel(d);
+					userHrAccountDao.updatePartyAccountByCompanyIdChannel(d);
 				}
 			}
 		} catch (TException e) {

@@ -1,14 +1,16 @@
 package com.moseeker.useraccounts.service.impl;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
+import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
+import com.moseeker.thrift.gen.foundation.chaos.struct.ThirdPartyAccountStruct;
+import com.moseeker.useraccounts.constant.BindingStatus;
+import com.moseeker.useraccounts.constant.ResultMessage;
 import org.apache.thrift.TException;
+import org.joda.time.DateTime;
 import org.jooq.types.UByte;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +37,6 @@ import com.moseeker.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.service.CompanyDao;
 import com.moseeker.thrift.gen.dao.service.SearcheConditionDao;
 import com.moseeker.thrift.gen.dao.service.TalentpoolDao;
 import com.moseeker.thrift.gen.dao.struct.Talentpool;
@@ -45,7 +46,7 @@ import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.DownloadReport;
 import com.moseeker.thrift.gen.useraccounts.struct.SearchCondition;
 import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
-import com.moseeker.useraccounts.dao.UserHrAccountDao;
+import com.moseeker.useraccounts.dao.UserHrDao;
 
 /**
  * HR账号服务
@@ -71,14 +72,12 @@ public class UserHrAccountService {
     HRAccountFoundationServices.Iface hrAccountService = ServiceManager.SERVICEMANAGER
             .getService(HRAccountFoundationServices.Iface.class);
 
-    CompanyDao.Iface companyDao = ServiceManager.SERVICEMANAGER.getService(CompanyDao.Iface.class);
-
     SearcheConditionDao.Iface searchConditionDao = ServiceManager.SERVICEMANAGER.getService(SearcheConditionDao.Iface.class);
 
     TalentpoolDao.Iface talentpoolDao = ServiceManager.SERVICEMANAGER.getService(TalentpoolDao.Iface.class);
 
     @Autowired
-    private UserHrAccountDao userHrAccountDao;
+    private UserHrDao userHrDao;
 
     /**
      * HR在下载行业报告是注册
@@ -152,7 +151,7 @@ public class UserHrAccountService {
                     companyRecord.setName(downloadReport.getCompany_name());
                 }
                 companyRecord.setSource(UByte.valueOf(Constant.COMPANY_SOURCE_DOWNLOAD));
-                int result = userHrAccountDao.createHRAccount(userHrAccountRecord, companyRecord);
+                int result = userHrDao.createHRAccount(userHrAccountRecord, companyRecord);
 
                 if (result > 0 && downloadReport.getSource() == Constant.HR_ACCOUNT_SIGNUP_SOURCE_WWW) {
                     SmsSender.sendHrSmsSignUpForDownloadIndustryReport(downloadReport.getMobile(), passwordArray[0]);
@@ -202,7 +201,7 @@ public class UserHrAccountService {
             UserHrAccountRecord userHrAccountRecord = (UserHrAccountRecord) BeanUtils.structToDB(userHrAccount,
                     UserHrAccountRecord.class);
 
-            int userHrAccountId = userHrAccountDao.putResource(userHrAccountRecord);
+            int userHrAccountId = userHrDao.putResource(userHrAccountRecord);
             if (userHrAccountId > 0) {
                 return ResponseUtils.success(new HashMap<String, Object>() {
                     private static final long serialVersionUID = -5929607838950864392L;
@@ -309,6 +308,10 @@ public class UserHrAccountService {
             if (allowBindResponse.getStatus() == 0) {
                 logger.info("bindThirdAccount have permission");
                 // 请求chaos，获取点数
+                /**
+                 * TODO 获取可发布职位数量
+                 * 传递company name
+                 */
                 Response response = chaosService.binding(account.getUsername(), account.getPassword(),
                         account.getMember_name(), account.getChannel());
                 if (response.getStatus() == 0) {
@@ -586,5 +589,108 @@ public class UserHrAccountService {
         }
     }
 
+
+    /**
+     * 同步第三方职位信息
+     * @param id
+     * @return
+     */
+    public Response synchronizeThirdpartyAccount(int id) {
+        long startMethodTime=System.currentTimeMillis();
+        //查找第三方帐号
+        QueryUtil qu = new QueryUtil();
+        qu.addEqualFilter("id", String.valueOf(id));
+        try {
+            long startGetAccountData=System.currentTimeMillis();
+            ThirdPartAccountData data = hraccountDao.getThirdPartyAccount(qu);
+            long getAccountUseTime=System.currentTimeMillis()-startGetAccountData;
+            logger.info("ThirdPartAccountData in CompanyService use  time========== "+getAccountUseTime);
+            //如果是绑定状态，则进行
+            //判断是否已经判定第三方帐号
+            if(data!=null && data.getId() > 0 && data.getBinding() == BindingStatus.BOUND.getValue()) {
+                ThirdPartyAccountStruct thirdPartyAccount = new ThirdPartyAccountStruct();
+                thirdPartyAccount.setChannel((byte)data.getChannel());
+                thirdPartyAccount.setMemberName(data.getMembername());
+                thirdPartyAccount.setUsername(data.getUsername());
+                thirdPartyAccount.setPassword(data.getPassword());
+                //获取剩余点数
+                long startRemindTime=System.currentTimeMillis();
+                ThirdPartyAccountStruct synchronizeResult = chaosService.synchronization(thirdPartyAccount);
+                long getRemindUseTime=System.currentTimeMillis()-startRemindTime;
+                logger.info("get reminds in CompanyService Use time============== "+getRemindUseTime);
+                if(synchronizeResult != null && synchronizeResult.getStatus() == 0) {
+                    BindAccountStruct  thirdPartyAccount1 = new BindAccountStruct();
+                    thirdPartyAccount1.setBinding(1);
+                    thirdPartyAccount1.setChannel((byte) data.getChannel());
+                    thirdPartyAccount1.setCompany_id(id);
+                    thirdPartyAccount1.setMember_name(data.getMembername());
+                    thirdPartyAccount1.setPassword(data.getPassword());
+                    thirdPartyAccount1.setUsername(data.getUsername());
+                    thirdPartyAccount1.setRemainNum(synchronizeResult.getRemainNum());
+                    thirdPartyAccount1.setRemainProfileNum(synchronizeResult.getRemainProfileNum());
+                    //更新第三方帐号信息
+                    long startUpdateTime=System.currentTimeMillis();
+                    Response response = hraccountDao.upsertThirdPartyAccount(thirdPartyAccount1);
+                    long updateUseTime=System.currentTimeMillis() -startUpdateTime;
+                    logger.info("update ThirdPartyAccount in CompanyService use time"+updateUseTime);
+                    if(response.getStatus() == 0) {
+                        HashMap<String, Object> result = new HashMap<>();
+                        result.put("remain_num", synchronizeResult.getRemainNum());
+                        result.put("remain_num", synchronizeResult.getRemainProfileNum());
+                        result.put("sync_time", (new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
+                        return ResultMessage.SUCCESS.toResponse(result);
+                    } else {
+                        return ResultMessage.THIRD_PARTY_ACCOUNT_SYNC_FAILED.toResponse();
+                    }
+                } else {
+                    return ResultMessage.THIRD_PARTY_ACCOUNT_SYNC_FAILED.toResponse();
+                }
+            } else {
+                return ResultMessage.THIRD_PARTY_ACCOUNT_UNBOUND.toResponse();
+            }
+        } catch (TException e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            return ResultMessage.PROGRAM_EXCEPTION.toResponse();
+        } finally {
+            //do nothing
+            long methodUseTime=System.currentTimeMillis()-startMethodTime;
+            logger.info("synchronizeThirdpartyAccount method in CompanyService use time ============"+methodUseTime);
+        }
+    }
+
+    /**
+     * 判断是否有权限发布职位
+     * @param companyId 公司编号
+     * @param channel 渠道号
+     * @return
+     */
+    public Response ifSynchronizePosition(int companyId, int channel) {
+        Response response = ResultMessage.PROGRAM_EXHAUSTED.toResponse();
+        QueryUtil qu = new QueryUtil();
+        qu.addEqualFilter("company_id", String.valueOf(companyId));
+        qu.addEqualFilter("channel", String.valueOf(channel));
+        try {
+            ThirdPartAccountData data = hraccountDao.getThirdPartyAccount(qu);
+            if(data.getId() == 0 || data.getBinding() != 1) {
+                response = ResultMessage.THIRD_PARTY_ACCOUNT_UNBOUND.toResponse();
+            }
+            if(data.getRemain_num() == 0) {
+                response = ResultMessage.THIRD_PARTY_ACCOUNT_HAVE_NO_REMAIN_NUM.toResponse();
+            }
+            if(data.getId() > 0 && data.binding == 1 && data.getRemain_num() > 0) {
+                response = ResultMessage.SUCCESS.toResponse();
+            } else {
+                response = ResultMessage.THIRD_PARTY_ACCOUNT_UNBOUND.toResponse();
+            }
+        } catch (TException e) {
+            e.printStackTrace();
+            response = ResultMessage.PROGRAM_EXHAUSTED.toResponse();
+            logger.error(e.getMessage(), e);
+        } finally {
+            //do nothing
+        }
+        return response;
+    }
 
 }

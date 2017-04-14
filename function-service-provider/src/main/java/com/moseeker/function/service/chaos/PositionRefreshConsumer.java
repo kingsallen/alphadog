@@ -1,12 +1,5 @@
 package com.moseeker.function.service.chaos;
 
-import java.util.List;
-
-import com.moseeker.thrift.gen.position.struct.Position;
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
@@ -17,10 +10,16 @@ import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.dao.service.CompanyDao;
 import com.moseeker.thrift.gen.dao.service.PositionDao;
+import com.moseeker.thrift.gen.dao.service.UserHrAccountDao;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
+import com.moseeker.thrift.gen.position.struct.Position;
+import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  * 监听刷新完成队列
@@ -30,9 +29,8 @@ import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 public class PositionRefreshConsumer {
 	
 	private static Logger logger = LoggerFactory.getLogger(PositionRefreshConsumer.class);
-	
-	CompanyDao.Iface companyDao = ServiceManager.SERVICEMANAGER
-			.getService(CompanyDao.Iface.class);
+
+	UserHrAccountDao.Iface userHrAccountDao = ServiceManager.SERVICEMANAGER.getService(UserHrAccountDao.Iface.class);
 	PositionDao.Iface positionDao = ServiceManager.SERVICEMANAGER
 			.getService(PositionDao.Iface.class);
 	
@@ -112,7 +110,7 @@ public class PositionRefreshConsumer {
 					d.setSync_time(pojo.getSync_time());
 					//positionDao.updatePosition(p);
 					logger.info("refresh completed queue update thirdpartyposition to synchronized");
-					companyDao.updatePartyAccountByCompanyIdChannel(d);
+					userHrAccountDao.updatePartyAccountByCompanyIdChannel(d);
 				}
 			}
 		} catch (TException e) {

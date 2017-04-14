@@ -113,7 +113,6 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 
     //获取hrdb库中的内容
     HrDBDao.Iface hrDBDao = ServiceManager.SERVICEMANAGER.getService(HrDBDao.Iface.class);
-    CompanyDao.Iface CompanyDao = ServiceManager.SERVICEMANAGER.getService(CompanyDao.Iface.class);
     private SearchengineServices.Iface searchEngineService = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
 
     private HrDBDao.Iface hrDao = ServiceManager.SERVICEMANAGER.getService(HrDBDao.Iface.class);
@@ -353,7 +352,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 findThirdPartyAccount.addEqualFilter("channel", String.valueOf(channel));
 
                 logger.info("search company");
-                ThirdPartAccountData account = companyDao.getThirdPartyAccount(findThirdPartyAccount);
+                ThirdPartAccountData account = hrAccountDao.getThirdPartyAccount(findThirdPartyAccount);
                 logger.info("company:" + JSON.toJSONString(account));
 
                 QueryUtil findThirdPartyPosition = new QueryUtil();
@@ -404,7 +403,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             QueryUtil findAccount = new QueryUtil();
             findAccount.addEqualFilter("company_id", String.valueOf(position.getCompany_id()));
             findAccount.addEqualFilter("channel", String.valueOf(channel));
-            ThirdPartAccountData accountData = companyDao.getThirdPartyAccount(findAccount);
+            ThirdPartAccountData accountData = hrAccountDao.getThirdPartyAccount(findAccount);
             account.setUser_name(accountData.getUsername());
             account.setMember_name(accountData.getMembername());
             account.setPassword(accountData.getPassword());

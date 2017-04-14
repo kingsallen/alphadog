@@ -66,6 +66,9 @@ public class ChaosServiceImpl {
 			String params = ChaosTool.getParams(username, password, memberName, chnnelType);
 			logger.info("ChaosServiceImpl bind params:"+params);
 			String data = UrlUtil.sendPost(bindURI, params, Constant.CONNECTION_TIME_OUT, Constant.READ_TIME_OUT);
+			/**
+			 * TODO remainProfileNum
+			 */
 			logger.info("ChaosServiceImpl bind data:"+data);
 			//String data = "{\"status\":0,\"message\":\"success\", \"data\":3}";
 			Response response = ChaosTool.createResponse(data);
@@ -107,6 +110,10 @@ public class ChaosServiceImpl {
 				if(data != null) {
 					JSONObject result = JSON.parseObject(data);
 					if(result.getInteger("status") != null && result.getInteger("status") == 0) {
+						thirdPartyAccount.setRemainNum(result.getIntValue("data"));
+						/**
+						 * TODO remainProfileNum
+						 */
 						thirdPartyAccount.setRemainNum(result.getIntValue("data"));
 					} else {
 						thirdPartyAccount.setStatus(result.getInteger("status"));

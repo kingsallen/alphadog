@@ -1,10 +1,5 @@
 package com.moseeker.function.service.hraccount;
 
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -13,10 +8,15 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.UserHrAccountDao;
+import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
+import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 @Service
-public class HRAccountService {
+public class   HRAccountService {
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	
@@ -25,7 +25,6 @@ public class HRAccountService {
 	/**
 	 * 是否允许执行绑定
 	 * @param userId
-	 * @param channel
 	 * @return 0表示允许，1表示已经绑定，2...
 	 */
 	@CounterIface
@@ -36,7 +35,12 @@ public class HRAccountService {
 				QueryUtil qu = new QueryUtil();
 				qu.addEqualFilter("company_id", String.valueOf(companyId));
 				qu.addEqualFilter("channel", String.valueOf(channelType));
-				response = hraccountDao.getThirdPartyAccount(qu);
+				ThirdPartAccountData data = hraccountDao.getThirdPartyAccount(qu);
+				if (data != null) {
+					response = ResponseUtils.success(data);
+				} else {
+					response = ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+				}
 			} else {
 				QueryUtil qu = new QueryUtil();
 				qu.addEqualFilter("id", String.valueOf(userId));
@@ -48,7 +52,12 @@ public class HRAccountService {
 						QueryUtil qu1 = new QueryUtil();
 						qu1.addEqualFilter("company_id", String.valueOf(companyId1));
 						qu1.addEqualFilter("channel", String.valueOf(channelType));
-						response = hraccountDao.getThirdPartyAccount(qu1);
+						ThirdPartAccountData data = hraccountDao.getThirdPartyAccount(qu);
+						if (data != null) {
+							response = ResponseUtils.success(data);
+						} else {
+							response = ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+						}
 					} else {
 						//数据异常
 						return ResponseUtils.fail(ConstantErrorCodeMessage.HRACCOUNT_ELLEGLE_DATA);
