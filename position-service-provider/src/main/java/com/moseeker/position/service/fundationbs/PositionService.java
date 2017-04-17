@@ -501,6 +501,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             CommonQuery commonQuery = new CommonQuery();
             HashMap hashMap = new HashMap();
             hashMap.put("company_id", String.valueOf(companyId));
+            hashMap.put("source", String.valueOf(9));
             // 默认会取10条数据
             commonQuery.setPer_page(100000);
             commonQuery.setEqualFilter(hashMap);
