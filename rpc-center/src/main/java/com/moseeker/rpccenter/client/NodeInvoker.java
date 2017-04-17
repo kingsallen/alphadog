@@ -70,7 +70,7 @@ public class NodeInvoker<T> implements Invoker {
 		}
         Throwable exception = null;
         ZKPath node = null;
-        for (int i = 0; i < retry + 1; i++) {
+        for (int i = 0; i < 1; i++) {
             try {
                 node = NodeLoadBalance.LoadBalance.getNextNode(root, parentName);
                 if (node == null) {
@@ -129,6 +129,7 @@ public class NodeInvoker<T> implements Invoker {
                                 //Notification.sendThriftConnectionError(serverNode+"  链接置为无效, error:"+ite.getMessage());
                                 LOGGER.error(node+"  链接置为无效, error:"+ite.getMessage(), ite);
                                 LOGGER.debug("after invalidateObject getNumActive:"+pool.getNumActive());
+                                pool.invalidateObject(node, client);
                             }
                         } catch (Exception e) {
                             LOGGER.error(e.getMessage(), e);
