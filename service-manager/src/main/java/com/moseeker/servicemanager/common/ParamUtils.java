@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.InetAddress;
@@ -206,7 +207,11 @@ public class ParamUtils {
                     for (String value : entry.getValue()) {
                         if (value != null) {
                             if (request.getMethod().equals("GET")) {
-                                value = new String(value.getBytes("iso8859-1"), request.getCharacterEncoding());
+                                try {
+                                    value = new String(value.getBytes("iso8859-1"), request.getCharacterEncoding());
+                                } catch (UnsupportedEncodingException e) {
+                                    LoggerFactory.getLogger(ParamUtils.class).error(e.getMessage(), e);
+                                }
                             }
                             values.add(value);
                         }

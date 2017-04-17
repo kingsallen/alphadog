@@ -2,6 +2,8 @@ package com.moseeker.baseorm.crud;
 
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,9 +15,13 @@ import java.util.stream.Collectors;
 public abstract class Crud<S, R> implements CrudAdd<R>, CrudDelete<R>, CrudUpdate<R>, CrudQuery<R> {
 
     protected Class<S> sClass;
+    protected Class<R> rClass;
 
     public Crud(Class<S> sClass) {
+        Type t = this.getClass().getGenericSuperclass();
+        Type[] params = ((ParameterizedType) t).getActualTypeArguments();
         this.sClass = sClass;
+        this.rClass = (Class<R>) params[1];
     }
 
     public abstract R dataToRecord(S s);

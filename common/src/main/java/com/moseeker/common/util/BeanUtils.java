@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.ValueFilter;
 import org.apache.thrift.TBase;
+import org.jooq.Record;
 import org.jooq.impl.UpdatableRecordImpl;
 import org.jooq.types.UByte;
 import org.jooq.types.UInteger;
@@ -57,7 +58,7 @@ public class BeanUtils {
 	}};
 
 	@SuppressWarnings("rawtypes")
-	public static <T extends TBase, R extends UpdatableRecordImpl> R structToDB(T t, Class<R> origClazz,
+	public static <T, R extends Record> R structToDB(T t, Class<R> origClazz,
 																				Map<String, String> equalRules) {
 		R orig = null;
 		try {
@@ -70,7 +71,7 @@ public class BeanUtils {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static <T extends TBase, R extends UpdatableRecordImpl> R structToDB(T t, Class<R> origClazz) {
+	public static <T, R extends Record> R structToDB(T t, Class<R> origClazz) {
 		R orig = null;
 		try {
 			orig = origClazz.newInstance();
@@ -82,7 +83,7 @@ public class BeanUtils {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static <T extends TBase, R extends UpdatableRecordImpl> List<R> structToDB(List<T> ts, Class<R> origClazz) {
+	public static <T, R extends Record> List<R> structToDB(List<T> ts, Class<R> origClazz) {
 		List<R> records = new ArrayList<R>();
 		ts.forEach(t -> {
 			R r = structToDB(t, origClazz);
@@ -116,7 +117,7 @@ public class BeanUtils {
 	 * @param orig record 对象
 	 */
 	@SuppressWarnings("rawtypes")
-	public static <T extends TBase, R extends UpdatableRecordImpl> void structToDB(T dest, R orig, Map<String, String> equalRules) {
+	public static <T, R extends Record> void structToDB(T dest, R orig, Map<String, String> equalRules) {
 		if (dest == null || orig == null) {
 			return;
 		}
@@ -176,9 +177,9 @@ public class BeanUtils {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static <T extends TBase, R extends UpdatableRecordImpl> TBase DBToStruct(Class<T> destClazz, R orig,
+	public static <T, R extends Record> T DBToStruct(Class<T> destClazz, R orig,
 																					Map<String, String> equalRules) {
-		TBase base = null;
+		T base = null;
 		try {
 			base = destClazz.newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {
@@ -189,7 +190,7 @@ public class BeanUtils {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static <T extends TBase, R extends UpdatableRecordImpl> T DBToStruct(Class<T> destClazz, R orig) {
+	public static <T, R extends Record> T DBToStruct(Class<T> destClazz, R orig) {
 		T base = null;
 		try {
 			base = destClazz.newInstance();
@@ -201,7 +202,7 @@ public class BeanUtils {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static <T extends TBase, R extends UpdatableRecordImpl> List<T> DBToStruct(Class<T> destClazz, List<R> origs) {
+	public static <T, R extends Record> List<T> DBToStruct(Class<T> destClazz, List<R> origs) {
 		List<T> list = new ArrayList<>();
 
 		if(origs != null && origs.size() > 0) {
@@ -215,7 +216,7 @@ public class BeanUtils {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static <T extends TBase, R extends UpdatableRecordImpl> void DBToStruct(T dest,R orig, Map<String, String> equalRules) {
+	public static <T, R extends Record> void DBToStruct(T dest, R orig, Map<String, String> equalRules) {
 		if (dest == null || orig == null) {
 			return;
 		}

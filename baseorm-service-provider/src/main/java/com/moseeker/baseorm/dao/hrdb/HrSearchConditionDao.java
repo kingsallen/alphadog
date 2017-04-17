@@ -3,6 +3,8 @@ package com.moseeker.baseorm.dao.hrdb;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.moseeker.common.providerutils.CommonCondition;
+import com.moseeker.common.providerutils.QueryCreator;
 import org.springframework.stereotype.Repository;
 
 import com.moseeker.baseorm.db.hrdb.tables.HrSearchCondition;
@@ -26,11 +28,9 @@ public class HrSearchConditionDao extends StructDaoImpl<HrSearchConditionDO, HrS
    }
    
    public int delResource(int hrAccountId, int id) {
-		CommonQuery query = new CommonQuery();
-		Map<String, String> param = new HashMap<String, String>();
-		query.setEqualFilter(param);
-		param.put("hr_account_id", String.valueOf(hrAccountId));
-		param.put("id", String.valueOf(id));
+		CommonQuery query = QueryCreator
+				.where(CommonCondition.equal("hr_account_id", String.valueOf(hrAccountId)))
+				.and(CommonCondition.equal("id", String.valueOf(id))).getCommonQuery();
 		try {
 			HrSearchConditionRecord record = getResource(query);
 			return delResource(record);

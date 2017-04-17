@@ -25,6 +25,14 @@ public class DemoServiceImpl implements DemoService {
     //此处我们只处理我们知道的异常，其它Runtime异常都直接抛给上面统一处理
     @Override
     public String getData(CommonQuery query) throws TException {
+        try {
+            int a = 0;
+            int b = 1;
+            int c = b/a;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
         throw new BIZException(1111, "exception");
         /*DemoStruct demoStruct = demoDao.getData(query);
         return ResponseUtils.successStructJson("{}");*/
