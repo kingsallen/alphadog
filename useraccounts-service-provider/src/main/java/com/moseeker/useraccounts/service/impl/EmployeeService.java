@@ -185,7 +185,7 @@ public class EmployeeService {
 
                 if (employee != null && employee.getId() > 0 && employee.getActivation() == 0) {
                     response.setSuccess(false);
-                    response.setMessage("该邮箱已被占用");
+                    response.setMessage("该邮箱已被认证\n请使用其他邮箱");
                     break;
                 }
 
@@ -300,7 +300,6 @@ public class EmployeeService {
 		log.info("BindingParams response: {}", response);
 		return response;
 	}
-
 
     /**
 	 * step 1: 认证当前员工   step 2: 将其他公司的该用户员工设为未认证
