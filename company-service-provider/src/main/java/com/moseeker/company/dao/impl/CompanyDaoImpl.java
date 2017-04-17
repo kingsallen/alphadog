@@ -14,8 +14,8 @@ import org.jooq.Result;
 import org.jooq.SelectJoinStep;
 import org.jooq.SortField;
 import org.jooq.SortOrder;
-import org.jooq.types.UByte;
-import org.jooq.types.UInteger;
+
+
 import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.constants.Constant;
@@ -59,7 +59,7 @@ public class CompanyDaoImpl extends BaseDaoImpl<HrCompanyRecord, HrCompany> impl
 		try {
 			conn = DBConnHelper.DBConn.getConn();
 			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-			Result<Record1<UInteger>> result = create.select(HrCompany.HR_COMPANY.ID)
+			Result<Record1<Integer>> result = create.select(HrCompany.HR_COMPANY.ID)
 					.from(HrCompany.HR_COMPANY.join(UserHrAccount.USER_HR_ACCOUNT)
 							.on(HrCompany.HR_COMPANY.HRACCOUNT_ID.equal(UserHrAccount.USER_HR_ACCOUNT.ID)))
 					.where(HrCompany.HR_COMPANY.NAME.like(name))
@@ -91,22 +91,22 @@ public class CompanyDaoImpl extends BaseDaoImpl<HrCompanyRecord, HrCompany> impl
 			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 			ProfileProfileRecord profile = new ProfileProfileRecord();
 			profile.setUuid("transaction test");
-			profile.setDisable(UByte.valueOf(0));
-			profile.setUserId(UInteger.valueOf(1));
+			profile.setDisable((byte)(0));
+			profile.setUserId((int)(1));
 			create.attach(profile);
 			profile.insert();
 
 			ProfileProfileRecord profile2 = new ProfileProfileRecord();
 			profile2.setUuid("transaction testdele1");
-			profile2.setDisable(UByte.valueOf(0));
-			profile2.setUserId(UInteger.valueOf(2));
+			profile2.setDisable((byte)(0));
+			profile2.setUserId((int)(2));
 			create.attach(profile2);
 			profile2.insert();
 
 			ProfileProfileRecord profile1 = new ProfileProfileRecord();
 			profile1.setUuid("transaction testdele1");
-			profile1.setDisable(UByte.valueOf(0));
-			profile1.setUserId(UInteger.valueOf(2));
+			profile1.setDisable((byte)(0));
+			profile1.setUserId((int)(2));
 			create.attach(profile1);
 			profile1.insert();
 			conn.commit();
@@ -134,7 +134,7 @@ public class CompanyDaoImpl extends BaseDaoImpl<HrCompanyRecord, HrCompany> impl
 	}
 
 	@Override
-	public boolean checkScaleIllegal(UByte scale) {
+	public boolean checkScaleIllegal(Byte scale) {
 		boolean scaleIllegal = false;
 		if (scale != null && scale.intValue() > 0) {
 			Connection conn = null;
@@ -165,7 +165,7 @@ public class CompanyDaoImpl extends BaseDaoImpl<HrCompanyRecord, HrCompany> impl
 	}
 
 	@Override
-	public boolean checkPropertyIllegal(UByte property) {
+	public boolean checkPropertyIllegal(Byte property) {
 		boolean scaleIllegal = false;
 		if (property != null && property.intValue() > 0) {
 			Connection conn = null;

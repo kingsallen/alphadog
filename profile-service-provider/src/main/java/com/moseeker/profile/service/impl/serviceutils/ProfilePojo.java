@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.jooq.types.UByte;
+
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,7 +67,7 @@ public class ProfilePojo {
 		if(profileRecord.getUserId().intValue() != userRecord.getId().intValue()) {
 			profileRecord.setUserId(userRecord.getId());
 		}
-		profileRecord.setDisable(UByte.valueOf(Constant.ENABLE));
+		profileRecord.setDisable((byte)(Constant.ENABLE));
 		profileRecord.setUuid(UUID.randomUUID().toString());
 		if(resume.get("channel") != null && (profileRecord.getSource() == null || profileRecord.getSource().intValue() == 0)) {
 			int channel = (Integer)resume.get("channel");

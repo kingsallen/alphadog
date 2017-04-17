@@ -14,7 +14,7 @@ import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.struct.JobApplicationDO;
 import org.jooq.*;
-import org.jooq.types.UInteger;
+
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
@@ -57,13 +57,13 @@ public class JobApplicationDao extends StructDaoImpl<JobApplicationDO, JobApplic
 		return applications;
 	}
 
-	public List<ProcessValidationStruct> getAuth(List<UInteger> appIds,Integer companyId,Integer progressStatus) throws Exception{
+	public List<ProcessValidationStruct> getAuth(List<Integer> appIds,Integer companyId,Integer progressStatus) throws Exception{
 		List<ProcessValidationStruct> list=new ArrayList<ProcessValidationStruct>();
 		Connection conn = null;
 		try {
 			conn = DBConnHelper.DBConn.getConn();
 			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-			SelectJoinStep<Record9<UInteger, UInteger, UInteger, UInteger, String, Integer, Integer, Integer, String>> table=create.select(
+			SelectJoinStep<Record9<Integer, Integer, Integer, Integer, String, Integer, Integer, Integer, String>> table=create.select(
 					JobApplication.JOB_APPLICATION.ID, 
 					JobApplication.JOB_APPLICATION.COMPANY_ID, 
 					JobApplication.JOB_APPLICATION.RECOMMENDER_ID,
@@ -80,16 +80,16 @@ public class JobApplicationDao extends StructDaoImpl<JobApplicationDO, JobApplic
 			table.leftJoin(UserWxUser.USER_WX_USER).on("jobdb.job_application.recommender_id=userdb.user_wx_user.id");
 			table.leftJoin(UserUser.USER_USER).on("jobdb.job_application.applier_id=userdb.user_user.id");
 			table.where(JobApplication.JOB_APPLICATION.ID.in(appIds)
-					.and(JobApplication.JOB_APPLICATION.COMPANY_ID.eq(UInteger.valueOf(companyId))));
+					.and(JobApplication.JOB_APPLICATION.COMPANY_ID.eq((int)(companyId))));
 			if(progressStatus==13){
-				table.where().and(JobApplication.JOB_APPLICATION.APP_TPL_ID.notEqual(UInteger.valueOf(4)));
+				table.where().and(JobApplication.JOB_APPLICATION.APP_TPL_ID.notEqual((int)(4)));
 			}else if(progressStatus==99){
-				table.where().and(JobApplication.JOB_APPLICATION.APP_TPL_ID.equal(UInteger.valueOf(4)));
+				table.where().and(JobApplication.JOB_APPLICATION.APP_TPL_ID.equal((int)(4)));
 			}
-			Result<Record9<UInteger, UInteger, UInteger, UInteger, String, Integer, Integer, Integer, String>> result=table.fetch();
+			Result<Record9<Integer, Integer, Integer, Integer, String, Integer, Integer, Integer, String>> result=table.fetch();
 			if(result!=null&&result.size()>0){
 				ProcessValidationStruct data= null;
-				for(Record9<UInteger, UInteger, UInteger, UInteger, String, Integer, Integer, Integer, String> record:result){
+				for(Record9<Integer, Integer, Integer, Integer, String, Integer, Integer, Integer, String> record:result){
 					data=new ProcessValidationStruct();
 					data.setCompany_id(record.getValue(JobApplication.JOB_APPLICATION.COMPANY_ID).intValue());
 					data.setId(record.getValue(JobApplication.JOB_APPLICATION.ID).intValue());
@@ -121,13 +121,13 @@ public class JobApplicationDao extends StructDaoImpl<JobApplicationDO, JobApplic
 		}
 		return list;
 	}
-	public List<ApplicationAts> getApplicationByLApId(List<UInteger> lists) throws Exception{
+	public List<ApplicationAts> getApplicationByLApId(List<Integer> lists) throws Exception{
 		List<ApplicationAts> list=new ArrayList<ApplicationAts>();
 		Connection conn = null;
 		try {
 			conn = DBConnHelper.DBConn.getConn();
 			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-			SelectConditionStep<Record3<UInteger, UInteger, Integer>> table =create.select(
+			SelectConditionStep<Record3<Integer, Integer, Integer>> table =create.select(
 					JobApplication.JOB_APPLICATION.COMPANY_ID,
 					JobApplication.JOB_APPLICATION.ID,
 					JobPosition.JOB_POSITION.PUBLISHER
@@ -135,10 +135,10 @@ public class JobApplicationDao extends StructDaoImpl<JobApplicationDO, JobApplic
 					.innerJoin(JobPosition.JOB_POSITION)
 					.on("jobdb.job_application.position_id=jobdb.job_position.id")
 					.where(JobApplication.JOB_APPLICATION.L_APPLICATION_ID.in(lists));
-			Result<Record3<UInteger, UInteger, Integer>> result=table.fetch();
+			Result<Record3<Integer, Integer, Integer>> result=table.fetch();
 			if(result!=null&&result.size()>0){
 				ApplicationAts ats=null;
-				for(Record3<UInteger, UInteger, Integer> r:result){
+				for(Record3<Integer, Integer, Integer> r:result){
 					ats=new ApplicationAts();
 					ats.setAccount_id(r.getValue(JobPosition.JOB_POSITION.PUBLISHER).intValue());
 					ats.setApplication_id(r.getValue(JobApplication.JOB_APPLICATION.ID).intValue());

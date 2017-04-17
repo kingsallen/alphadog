@@ -8,7 +8,7 @@ import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Result;
-import org.jooq.types.UInteger;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -84,7 +84,7 @@ public class UserHrAccountDaoImpl extends BaseDaoImpl<UserHrAccountRecord, UserH
 								bean.setStatusName(cspcr.getStatus());
 								bean.setReward((long)cspcr.getAward());
 								bean.setDescription(cspcr.getDescription());
-								bean.setTemplateId(UInteger.valueOf(cspcr.getId()));
+								bean.setTemplateId((int)(cspcr.getId()));
 								bean.setTag(String.valueOf(cspcr.getTag()));
 								bean.setCompanyId(companyRecord.getId().intValue());
 								list.add(bean);

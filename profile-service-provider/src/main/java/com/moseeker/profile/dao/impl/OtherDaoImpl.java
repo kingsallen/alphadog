@@ -3,7 +3,7 @@ package com.moseeker.profile.dao.impl;
 import java.sql.Connection;
 
 import org.jooq.DSLContext;
-import org.jooq.types.UInteger;
+
 import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.dbutils.DBConnHelper;
@@ -27,7 +27,7 @@ public class OtherDaoImpl extends BaseDaoImpl<ProfileOtherRecord, ProfileOther> 
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn)) {
 			
 			count = create.deleteFrom(ProfileOther.PROFILE_OTHER).where(
-					ProfileOther.PROFILE_OTHER.PROFILE_ID.equal(UInteger.valueOf(profileId))).execute();
+					ProfileOther.PROFILE_OTHER.PROFILE_ID.equal((int)(profileId))).execute();
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);

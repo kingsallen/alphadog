@@ -8,7 +8,7 @@ import com.moseeker.dict.dao.DictCountryDao;
 import com.moseeker.dict.pojo.DictCountryPojo;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
-import org.jooq.types.UInteger;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -42,7 +42,7 @@ public class DictCountryDaoImpl extends BaseDaoImpl<DictCountryRecord, DictCount
             initJOOQEntity();
             conn = DBConnHelper.DBConn.getConn();
             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-            condition = DictCountry.DICT_COUNTRY.CONTINENT_CODE.gt(UInteger.valueOf(0));
+            condition = DictCountry.DICT_COUNTRY.CONTINENT_CODE.gt((int)(0));
 
             dictCountryPojoList = create.select().from(DictCountry.DICT_COUNTRY).
                     where(condition).fetchInto(DictCountryPojo.class);

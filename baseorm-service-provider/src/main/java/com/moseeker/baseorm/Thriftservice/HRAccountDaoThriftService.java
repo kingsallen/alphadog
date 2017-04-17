@@ -16,7 +16,7 @@ import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
 
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
-import org.jooq.types.UInteger;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,12 +88,12 @@ public class HRAccountDaoThriftService implements Iface {
             HrThirdPartyAccountRecord record = new HrThirdPartyAccountRecord();
             record.setBinding((short) account.getBinding());
             record.setChannel((short) account.getChannel());
-            record.setCompanyId(UInteger.valueOf(account.getCompany_id()));
+            record.setCompanyId((int)(account.getCompany_id()));
             Timestamp now = new Timestamp(System.currentTimeMillis());
             record.setCreateTime(now);
             record.setMembername(account.getMember_name());
             record.setPassword(account.getPassword());
-            record.setRemainNum(UInteger.valueOf(account.getRemainNum()));
+            record.setRemainNum((int)(account.getRemainNum()));
             record.setSyncTime(now);
             record.setUsername(account.getUsername());
             hrThirdPartyAccountDao.postResource(record);
@@ -117,12 +117,12 @@ public class HRAccountDaoThriftService implements Iface {
             HrThirdPartyAccountRecord record = new HrThirdPartyAccountRecord();
             record.setBinding((short) account.getBinding());
             record.setChannel((short) account.getChannel());
-            record.setCompanyId(UInteger.valueOf(account.getCompany_id()));
+            record.setCompanyId((int)(account.getCompany_id()));
             Timestamp now = new Timestamp(System.currentTimeMillis());
             record.setCreateTime(now);
             record.setMembername(account.getMember_name());
             record.setPassword(account.getPassword());
-            record.setRemainNum(UInteger.valueOf(account.getRemainNum()));
+            record.setRemainNum((int)(account.getRemainNum()));
             record.setSyncTime(now);
             record.setBinding((short) 1);
             record.setUsername(account.getUsername());

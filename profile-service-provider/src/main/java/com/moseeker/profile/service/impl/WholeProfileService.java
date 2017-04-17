@@ -10,8 +10,8 @@ import java.util.UUID;
 import com.moseeker.thrift.gen.common.struct.Order;
 import com.moseeker.thrift.gen.common.struct.OrderBy;
 import org.apache.thrift.TException;
-import org.jooq.types.UByte;
-import org.jooq.types.UInteger;
+
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,8 +45,8 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
-import org.jooq.types.UByte;
-import org.jooq.types.UInteger;
+
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,7 +80,7 @@ public class WholeProfileService {
 						|| profileRecord.getCompleteness().intValue() == 10) {
 					int completeness = completenessImpl.getCompleteness(profileRecord.getUserId().intValue(),
 							profileRecord.getUuid(), profileRecord.getId().intValue());
-					profileRecord.setCompleteness(UByte.valueOf(completeness));
+					profileRecord.setCompleteness((byte)(completeness));
 				}
 				QueryUtil query = new QueryUtil();
 				HashMap<String, String> equalFilter = new HashMap<String, String>();
@@ -215,7 +215,7 @@ public class WholeProfileService {
 			}
 			profileRecord.setUuid(UUID.randomUUID().toString());
 			profileRecord.setUserId(userRecord.getId());
-			profileRecord.setDisable(UByte.valueOf(Constant.ENABLE));
+			profileRecord.setDisable((byte)(Constant.ENABLE));
 
 			ProfileProfileRecord repeatProfileRecord = profileDao
 					.getProfileByIdOrUserIdOrUUID(profileRecord.getUserId().intValue(), 0, null);
@@ -466,7 +466,7 @@ public class WholeProfileService {
 		ProfileProfileRecord originProfile = profileDao.getProfileByIdOrUserIdOrUUID(originUserId, 0, null);
 		try {
 			if (originProfile == null && destProfile != null && userDao.getUserById(originUserId) != null) {
-				destProfile.setUserId(UInteger.valueOf(originUserId));
+				destProfile.setUserId((int)(originUserId));
 				profileDao.putResource(destProfile);
 			}
 			if(originProfile != null && destProfile != null) {
@@ -545,7 +545,7 @@ public class WholeProfileService {
 			worksDao.delWorksByProfileId(profileId);
 			try {
 				worksRecords.forEach(skill -> {
-					skill.setProfileId(UInteger.valueOf(profileId));
+					skill.setProfileId((int)(profileId));
 				});
 				worksDao.postResources(worksRecords);
 			} catch (Exception e) {
@@ -565,7 +565,7 @@ public class WholeProfileService {
 				List<ProfileWorkexpEntity> records = new ArrayList<>();
 				
 				workexpRecords.forEach(skill -> {
-					skill.setProfileId(UInteger.valueOf(profileId));
+					skill.setProfileId((int)(profileId));
 					records.add(skill);
 				});
 				workExpDao.postWordExps(records);
@@ -585,7 +585,7 @@ public class WholeProfileService {
 			skillDao.delSkillByProfileId(profileId);
 			try {
 				skillRecords.forEach(skill -> {
-					skill.setProfileId(UInteger.valueOf(profileId));
+					skill.setProfileId((int)(profileId));
 				});
 				skillDao.postResources(skillRecords);
 			} catch (Exception e) {
@@ -603,7 +603,7 @@ public class WholeProfileService {
 			projectExpDao.delProjectExpByProfileId(profileId);
 			try {
 				projectExps.forEach(language -> {
-					language.setProfileId(UInteger.valueOf(profileId));
+					language.setProfileId((int)(profileId));
 				});
 				projectExpDao.postResources(projectExps);
 			} catch (Exception e) {
@@ -623,7 +623,7 @@ public class WholeProfileService {
 			try {
 				ProfileOtherRecord record = otherDao.getResource(qu);
 				if(record == null && otherRecord != null) {
-					otherRecord.setProfileId(UInteger.valueOf(profileId));
+					otherRecord.setProfileId((int)(profileId));
 					otherDao.postResource(otherRecord);
 				} 
 			} catch (Exception e) {
@@ -638,7 +638,7 @@ public class WholeProfileService {
 			languageDao.delLanguageByProfileId(profileId);
 			try {
 				languageRecords.forEach(language -> {
-					language.setProfileId(UInteger.valueOf(profileId));
+					language.setProfileId((int)(profileId));
 				});
 				languageDao.postResources(languageRecords);
 			} catch (Exception e) {
@@ -656,7 +656,7 @@ public class WholeProfileService {
 			intentionDao.delIntentionsByProfileId(profileId);
 			try {
 				intentionRecords.forEach(intention -> {
-					intention.setProfileId(UInteger.valueOf(profileId));
+					intention.setProfileId((int)(profileId));
 				});
 				intentionDao.postIntentions(intentionRecords);
 			} catch (Exception e) {
@@ -674,7 +674,7 @@ public class WholeProfileService {
 			educationDao.delEducationsByProfileId(profileId);
 			try {
 				educationRecords.forEach(education ->{
-					education.setProfileId(UInteger.valueOf(profileId));
+					education.setProfileId((int)(profileId));
 				});
 				
 				educationDao.saveEducations(educationRecords);
@@ -693,7 +693,7 @@ public class WholeProfileService {
 			credentialsDao.delCredentialsByProfileId(profileId);
 			try {
 				credentialsRecords.forEach(credential -> {
-					credential.setProfileId(UInteger.valueOf(profileId));
+					credential.setProfileId((int)(profileId));
 				});
 				credentialsDao.postResources(credentialsRecords);
 			} catch (Exception e) {
@@ -711,7 +711,7 @@ public class WholeProfileService {
 			awardsDao.delAwardsByProfileId(profileId);
 			try {
 				awardsRecords.forEach(award -> {
-					award.setProfileId(UInteger.valueOf(profileId));
+					award.setProfileId((int)(profileId));
 				});
 				awardsDao.postResources(awardsRecords);
 			} catch (Exception e) {
@@ -729,7 +729,7 @@ public class WholeProfileService {
 			attachmentDao.delAttachmentsByProfileId(profileId);
 			try {
 				attachmentRecords.forEach(attachment -> {
-					attachment.setProfileId(UInteger.valueOf(profileId));
+					attachment.setProfileId((int)(profileId));
 				});
 				attachmentDao.postResources(attachmentRecords);
 			} catch (Exception e) {
@@ -803,7 +803,7 @@ public class WholeProfileService {
 						profileBasicDao.putResource(basic);
 					}
 				} else {
-					basicRecord.setProfileId(UInteger.valueOf(profileId));
+					basicRecord.setProfileId((int)(profileId));
 					profileBasicDao.postResource(basicRecord);
 				}
 			} catch (Exception e) {

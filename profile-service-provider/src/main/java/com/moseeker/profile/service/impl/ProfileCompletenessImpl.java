@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.jooq.types.UByte;
-import org.jooq.types.UInteger;
+
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -137,7 +137,7 @@ public class ProfileCompletenessImpl {
 							+ completenessRecord.getProfileCredentials() + completenessRecord.getProfileAwards()
 							+ completenessRecord.getProfileWorks() + completenessRecord.getProfileIntention();
 					if(totalComplementness != profileRecord.getCompleteness().intValue()) {
-						profileRecord.setCompleteness(UByte.valueOf(totalComplementness));
+						profileRecord.setCompleteness((byte)(totalComplementness));
 						profileDao.putResource(profileRecord);
 					}
 				} else {
@@ -716,7 +716,7 @@ public class ProfileCompletenessImpl {
 			ProfileCompletenessRecord completenessRecord = completenessDao.getCompletenessByProfileId(profileId);
 			if (completenessRecord == null) {
 				completenessRecord = new ProfileCompletenessRecord();
-				completenessRecord.setProfileId(UInteger.valueOf(profileId));
+				completenessRecord.setProfileId((int)(profileId));
 			}
 
 			UserUserRecord userRecord = userDao.getUserById(profileRecord.getUserId().intValue());
@@ -864,7 +864,7 @@ public class ProfileCompletenessImpl {
 			completenessRecord.setProfileIntention(intentionCompleteness);
 			completenessDao.saveOrUpdate(completenessRecord);
 			completeness += intentionCompleteness;
-			profileRecord.setCompleteness(UByte.valueOf(completeness));
+			profileRecord.setCompleteness((byte)(completeness));
 			try {
 				profileDao.putResource(profileRecord);
 			} catch (Exception e) {
@@ -883,7 +883,7 @@ public class ProfileCompletenessImpl {
 				+ completenessRecord.getProfileWorks() + completenessRecord.getProfileIntention();
 		ProfileProfileRecord profileRecord = profileDao.getProfileByIdOrUserIdOrUUID(0, completenessRecord.getProfileId().intValue(), null);
 		if(profileRecord != null) {
-			profileRecord.setCompleteness(UByte.valueOf(totalComplementness));
+			profileRecord.setCompleteness((byte)(totalComplementness));
 			profileDao.putResource(profileRecord);
 		}
 	}

@@ -34,7 +34,7 @@ import org.jooq.util.GenerationTool
 
 
 //['analytics','candidatedb','configdb','dictdb','historydb','hrdb','jobdb','logdb','profiledb','userdb','wordpressdb'].forEach{ db->
-['test'].forEach{ db->
+['userdb'].forEach{ db->
     def writer = new StringWriter()
     def xml = new groovy.xml.MarkupBuilder(writer).configuration('xmlns': 'http://www.jooq.org/xsd/jooq-codegen-3.7.0.xsd') {
         jdbc() {

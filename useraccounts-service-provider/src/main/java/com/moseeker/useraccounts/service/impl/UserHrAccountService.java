@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import org.apache.thrift.TException;
-import org.jooq.types.UByte;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -147,11 +147,11 @@ public class UserHrAccountService {
                     userHrAccountRecord.setLastLoginIp(downloadReport.getLast_login_ip());
                 }
                 HrCompanyRecord companyRecord = new HrCompanyRecord();
-                companyRecord.setType(UByte.valueOf(1));
+                companyRecord.setType((byte)(1));
                 if (downloadReport.isSetCompany_name()) {
                     companyRecord.setName(downloadReport.getCompany_name());
                 }
-                companyRecord.setSource(UByte.valueOf(Constant.COMPANY_SOURCE_DOWNLOAD));
+                companyRecord.setSource((byte)(Constant.COMPANY_SOURCE_DOWNLOAD));
                 int result = userHrAccountDao.createHRAccount(userHrAccountRecord, companyRecord);
 
                 if (result > 0 && downloadReport.getSource() == Constant.HR_ACCOUNT_SIGNUP_SOURCE_WWW) {

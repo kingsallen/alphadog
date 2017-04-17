@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.apache.thrift.TException;
 import org.jooq.Record;
-import org.jooq.types.UInteger;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,10 +36,10 @@ public class CollegeServices {
 
     protected College DBToStruct(Record r) {
         College c = new College();
-        c.setCollege_code(((UInteger)r.getValue("college_code")).intValue());
+        c.setCollege_code((Integer) r.getValue("college_code"));
         c.setCollge_name((String)r.getValue("college_name"));
         c.setCollge_logo((String)r.getValue("college_logo"));
-        c.setProvince_code(((UInteger)r.getValue("province_code")).intValue());
+        c.setProvince_code((Integer) r.getValue("province_code"));
         c.setProvince_name((String)r.getValue("province_name"));
         return c;
     }

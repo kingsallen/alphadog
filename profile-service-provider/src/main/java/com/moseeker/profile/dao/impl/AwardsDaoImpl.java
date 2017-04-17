@@ -6,7 +6,7 @@ import java.text.ParseException;
 import java.util.HashSet;
 
 import org.jooq.DSLContext;
-import org.jooq.types.UInteger;
+
 import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.dbutils.DBConnHelper;
@@ -64,7 +64,7 @@ public class AwardsDaoImpl extends
 		try (Connection conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn)) {
 			count = create.delete(ProfileAwards.PROFILE_AWARDS)
-					 .where(ProfileAwards.PROFILE_AWARDS.PROFILE_ID.equal(UInteger.valueOf(profileId)))
+					 .where(ProfileAwards.PROFILE_AWARDS.PROFILE_ID.equal((int)(profileId)))
 					 .execute();
 
 		} catch (Exception e) {

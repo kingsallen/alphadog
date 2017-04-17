@@ -3,7 +3,7 @@ package com.moseeker.baseorm.service.Impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jooq.types.UInteger;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.BeanFactoryAnnotationUtils;
 import org.springframework.stereotype.Service;
@@ -26,21 +26,14 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 	public Response processvalidation(List<Integer> params, Integer companyId,
 			Integer progressStatus) {
 		// TODO Auto-generated method stub
-		List<UInteger> list=this.convertUInteger(params);
 		try{
-			List<ProcessValidationStruct> result=dao.getAuth(list, companyId, progressStatus);
+			List<ProcessValidationStruct> result=dao.getAuth(params, companyId, progressStatus);
 			return ResponseUtils.success(result);
 		}catch(Exception e){
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		}
 	}
-	private List<UInteger> convertUInteger(List<Integer> appIds){
-		List<UInteger> list=new ArrayList<UInteger>();
-		for(Integer param:appIds){
-			list.add(UInteger.valueOf(param));
-		}
-		return list;
-	}
+
 	@Override
 	public Response postJobApplication(JobApplication application) {
 		// TODO Auto-generated method stub
@@ -94,9 +87,9 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 	public Response getApplicationByAts(List<Integer> list) {
 		// TODO Auto-generated method stub
 		try{
-			List<UInteger> params=new ArrayList<UInteger>();
+			List<Integer> params=new ArrayList<Integer>();
 			for(Integer num:list){
-				params.add(UInteger.valueOf(num));
+				params.add((int)(num));
 			}
 			List<ApplicationAts> result=dao.getApplicationByLApId(params);
 			return ResponseUtils.success(result);

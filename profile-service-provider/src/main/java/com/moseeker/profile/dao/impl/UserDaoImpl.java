@@ -9,7 +9,7 @@ import org.jooq.DSLContext;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
-import org.jooq.types.UInteger;
+
 import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.dbutils.DBConnHelper;
@@ -39,9 +39,9 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
 			if (cityCodes != null && cityCodes.size() > 0) {
 				for (int i = 0; i < cityCodes.size(); i++) {
 					if (i == 0) {
-						selectCondition = select.where(UserUser.USER_USER.ID.equal(UInteger.valueOf(cityCodes.get(i))));
+						selectCondition = select.where(UserUser.USER_USER.ID.equal((int)(cityCodes.get(i))));
 					} else {
-						selectCondition.or(UserUser.USER_USER.ID.equal(UInteger.valueOf(cityCodes.get(i))));
+						selectCondition.or(UserUser.USER_USER.ID.equal((int)(cityCodes.get(i))));
 					}
 				}
 			}
@@ -71,7 +71,7 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
 			conn = DBConnHelper.DBConn.getConn();
 			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 			Result<UserUserRecord> result = create.selectFrom(UserUser.USER_USER)
-					.where(UserUser.USER_USER.ID.equal(UInteger.valueOf(id)))
+					.where(UserUser.USER_USER.ID.equal((int)(id)))
 					.and(UserUser.USER_USER.IS_DISABLE.equal((byte) 0)).fetch();
 			if (result != null && result.size() > 0) {
 				record = result.get(0);

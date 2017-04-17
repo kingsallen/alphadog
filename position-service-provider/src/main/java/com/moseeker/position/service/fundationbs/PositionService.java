@@ -615,7 +615,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                                 (!md5(fieldsNohashs, jobPositionRecordTemp, jobPositionExtRecord != null ? jobPositionExtRecord.getExtra() : "").equals(md5(fieldsNohashs, record, jobPositionHandlerDate.getExtra())))) {
 
                             record.setSourceId(jobPositionRecordTemp.getSourceId());
-                            record.setCompanyId(UInteger.valueOf(companyId));
+                            record.setCompanyId(companyId);
                             if (com.moseeker.common.util.StringUtils.isNullOrEmpty(record.getJobnumber())) {
                                 record.setJobnumber(jobPositionRecordTemp.getJobnumber());
                             }

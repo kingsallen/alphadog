@@ -9,7 +9,7 @@ import org.jooq.DSLContext;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
-import org.jooq.types.UInteger;
+
 import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.dbutils.DBConnHelper;
@@ -40,9 +40,9 @@ public class IndustryDaoImpl extends
 			if(industryCodes != null && industryCodes.size() > 0) {
 				for(int i=0; i<industryCodes.size(); i++) {
 					if(i == 0) {
-						selectCondition = select.where(DictIndustry.DICT_INDUSTRY.CODE.equal(UInteger.valueOf(industryCodes.get(i))));
+						selectCondition = select.where(DictIndustry.DICT_INDUSTRY.CODE.equal((int)(industryCodes.get(i))));
 					} else {
-						selectCondition.or(DictIndustry.DICT_INDUSTRY.CODE.equal(UInteger.valueOf(industryCodes.get(i))));
+						selectCondition.or(DictIndustry.DICT_INDUSTRY.CODE.equal((int)(industryCodes.get(i))));
 					}
 				}
 				records = selectCondition.fetch();
@@ -71,7 +71,7 @@ public class IndustryDaoImpl extends
 		try {
 			conn = DBConnHelper.DBConn.getConn();
 			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-			Result<DictIndustryRecord> result= create.selectFrom(DictIndustry.DICT_INDUSTRY).where(DictIndustry.DICT_INDUSTRY.CODE.equal(UInteger.valueOf(intValue))).limit(1).fetch();
+			Result<DictIndustryRecord> result= create.selectFrom(DictIndustry.DICT_INDUSTRY).where(DictIndustry.DICT_INDUSTRY.CODE.equal((int)(intValue))).limit(1).fetch();
 			if(result != null && result.size() > 0) {
 				record = result.get(0);
 			}
