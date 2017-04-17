@@ -150,6 +150,7 @@ public class EmployeeService {
 		query.setEqualFilter(new HashMap<String, String>());
 		switch(bindingParams.getType()) {
 			case EMAIL:
+
 				// 邮箱校验后缀
 				if (JSONObject.parseArray(certConf.getEmailSuffix()).stream().noneMatch(m -> bindingParams.getEmail()
 						.endsWith(String.valueOf(m)))) {
@@ -157,6 +158,8 @@ public class EmployeeService {
 					response.setMessage("员工认证信息不正确");
 					break;
 				}
+
+
 				// 验证员工是否已认证
 				query.getEqualFilter().clear();
 				query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
@@ -170,7 +173,23 @@ public class EmployeeService {
 					response.setMessage("该员工已绑定");
 					break;
 				}
-				
+
+
+                // 判断该邮箱是否被占用
+                query.getEqualFilter().clear();
+                query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
+                query.getEqualFilter().put("email", bindingParams.getEmail());
+                query.getEqualFilter().put("disable", "0");
+                query.getEqualFilter().put("status", "0");
+                employee = userDao.getEmployee(query);
+
+                if (employee != null && employee.getId() > 0 && employee.getActivation() == 0) {
+                    response.setSuccess(false);
+                    response.setMessage("该邮箱已被认证\n请使用其他邮箱");
+                    break;
+                }
+
+
 				// 员工信息不存在，创建员工信息（仅邮箱认证时进行该操作）
 				if (employee == null || employee.getId() == 0) {
 					employee = new UserEmployeeDO();
@@ -281,7 +300,6 @@ public class EmployeeService {
 		log.info("BindingParams response: {}", response);
 		return response;
 	}
-
 
     /**
 	 * step 1: 认证当前员工   step 2: 将其他公司的该用户员工设为未认证
