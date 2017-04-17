@@ -130,6 +130,7 @@ public class NodeInvoker<T> implements Invoker {
                                 //Notification.sendThriftConnectionError(serverNode+"  链接置为无效, error:"+ite.getMessage());
                                 LOGGER.error(node+"  链接置为无效, error:"+ite.getMessage(), ite);
                                 LOGGER.debug("after invalidateObject getNumActive:"+pool.getNumActive());
+                                pool.invalidateObject(node, client);
                             }
                         } catch (Exception e) {
                             LOGGER.error(e.getMessage(), e);
