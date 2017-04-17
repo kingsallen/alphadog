@@ -4,12 +4,7 @@ import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.CommonUpdate;
 import com.moseeker.thrift.gen.common.struct.Condition;
-<<<<<<< Updated upstream
 import org.jooq.Field;
-=======
-import org.jooq.DSLContext;
-import org.jooq.SQLDialect;
->>>>>>> Stashed changes
 import org.jooq.UpdatableRecord;
 import org.jooq.UpdateSetFirstStep;
 import org.jooq.UpdateSetMoreStep;
@@ -190,45 +185,5 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> implements Crud<S, R>
     @Override
     public Map<String, Object> getMap(CommonQuery query) {
         return new LocalQuery<>(create, table, query).convertToResultQuery().fetchOneMap();
-    }
-
-    @Override
-    public int add(Connection conn, Map<String, String> fieldValues) {
-        return 0;
-    }
-
-    @Override
-    public int[] addAll(Connection conn, List<Map<String, String>> fieldValuesList) {
-        return new int[0];
-    }
-
-    @Override
-    public int delete(Connection conn, Condition conditions) {
-        return 0;
-    }
-
-    @Override
-    public int update(Connection conn, CommonUpdate commonUpdate) {
-        return 0;
-    }
-
-    @Override
-    public int add(Map<String, String> fieldValues) throws SQLException {
-        return 0;
-    }
-
-    @Override
-    public int[] addAll(List<Map<String, String>> fieldValuesList) throws SQLException {
-        return new int[0];
-    }
-
-    @Override
-    public int delete(Condition conditions) throws SQLException {
-        return 0;
-    }
-
-    @Override
-    public int update(CommonUpdate commonUpdate) throws SQLException {
-        return 0;
     }
 }
