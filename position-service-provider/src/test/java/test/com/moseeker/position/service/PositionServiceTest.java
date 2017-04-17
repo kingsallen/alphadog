@@ -16,15 +16,15 @@ public class PositionServiceTest {
     }
 
 
-
-
     @Test
     public void headImageTest() {
         AnnotationConfigApplicationContext acac = initSpring();
         try {
             PositionService positionService = acac.getBean(PositionService.class);
-            Response response = positionService.headImage();
-            System.out.println(response.toString());
+            System.out.println(positionService.headImage());
+
+//            Response response = positionService.getPositionById(378);
+//            System.out.println(response.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }

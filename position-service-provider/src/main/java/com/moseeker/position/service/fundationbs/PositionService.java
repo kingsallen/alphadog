@@ -52,6 +52,7 @@ import com.moseeker.thrift.gen.dao.service.CampaignDBDao;
 import com.moseeker.thrift.gen.dao.service.CompanyDao;
 import com.moseeker.thrift.gen.dao.service.HrDBDao;
 import com.moseeker.thrift.gen.dao.service.UserHrAccountDao;
+import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
 import com.moseeker.thrift.gen.dao.struct.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.HrHbConfigDO;
 import com.moseeker.thrift.gen.dao.struct.HrHbItemsDO;
@@ -122,9 +123,6 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
     private JobOccupationDao jobOccupationDao;
 
     private UserHrAccountDao.Iface hrAccountDao = ServiceManager.SERVICEMANAGER.getService(UserHrAccountDao.Iface.class);
-
-
-    private CampaignDBDao.Iface campaignDBDao = ServiceManager.SERVICEMANAGER.getService(CampaignDBDao.Iface.class);
 
 
     @Autowired
@@ -1403,20 +1401,6 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
         return result;
     }
 
-    /**
-     * 职位头图查询
-     */
-    public Response headImage() {
-        try {
-            CommonQuery commonQuery = new CommonQuery();
-            commonQuery.setOrder("create_time desc");
-            CampaignHeadImageDO campaignHeadImageDO = campaignDBDao.headImage(commonQuery);
-            return ResponseUtils.success(campaignHeadImageDO);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
-        }
-    }
 
     public String replaceBlank(String str) {
         String dest = "";

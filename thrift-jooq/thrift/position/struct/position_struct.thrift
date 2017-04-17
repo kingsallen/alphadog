@@ -1,6 +1,6 @@
 # file: profile.thrift
-
 namespace java com.moseeker.thrift.gen.position.struct
+include "../../dao/struct/jobdb_struct.thrift"
 
 /**
  * TODO:list what notation this dateTime represents. eg ISO-8601
@@ -253,4 +253,10 @@ struct DelePostion{
     2:i32 company_id,
     3:string jobnumber,
     4:i32 source_id
+}
+/* Gamma 0.9  */
+struct PositionDetailsVO{
+    1:i32 status,
+    2:jobdb_struct.JobPositionDO data,
+    3:string message
 }
