@@ -1,7 +1,7 @@
 package com.moseeker.baseorm.service.Impl;
 
-import com.moseeker.baseorm.dao.hr.HrTeamDao;
 import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
+import com.moseeker.baseorm.dao.hrdb.HrTeamDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrOperationRecordRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
@@ -16,6 +16,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.HistoryOperate;
 import com.moseeker.thrift.gen.dao.struct.HrOperationRecordDO;
 import com.moseeker.thrift.gen.dao.struct.HrTeamStruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

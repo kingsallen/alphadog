@@ -48,6 +48,7 @@ import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
+import com.moseeker.thrift.gen.dao.service.CampaignDBDao;
 import com.moseeker.thrift.gen.dao.service.CompanyDao;
 import com.moseeker.thrift.gen.dao.service.HrDBDao;
 import com.moseeker.thrift.gen.dao.service.UserHrAccountDao;
@@ -58,6 +59,7 @@ import com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingDO;
 import com.moseeker.thrift.gen.dao.struct.HrTeamStruct;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
+import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignHeadImageDO;
 import com.moseeker.thrift.gen.position.struct.BatchHandlerJobPostion;
 import com.moseeker.thrift.gen.position.struct.City;
 import com.moseeker.thrift.gen.position.struct.JobPostrionObj;
@@ -120,6 +122,9 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
     private JobOccupationDao jobOccupationDao;
 
     private UserHrAccountDao.Iface hrAccountDao = ServiceManager.SERVICEMANAGER.getService(UserHrAccountDao.Iface.class);
+
+
+    private CampaignDBDao.Iface campaignDBDao = ServiceManager.SERVICEMANAGER.getService(CampaignDBDao.Iface.class);
 
 
     @Autowired
@@ -1396,6 +1401,21 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
         }
         // 查询到职位
         return result;
+    }
+
+    /**
+     * 职位头图查询
+     */
+    public Response headImage() {
+        try {
+            CommonQuery commonQuery = new CommonQuery();
+            commonQuery.setOrder("create_time desc");
+            CampaignHeadImageDO campaignHeadImageDO = campaignDBDao.headImage(commonQuery);
+            return ResponseUtils.success(campaignHeadImageDO);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
     }
 
     public String replaceBlank(String str) {

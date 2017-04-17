@@ -74,7 +74,7 @@ public class Campaigndb extends SchemaImpl {
      * No further instances allowed
      */
     private Campaigndb() {
-        super("com/moseeker/baseorm/db/campaigndb", null);
+        super("campaigndb", null);
     }
 
 
