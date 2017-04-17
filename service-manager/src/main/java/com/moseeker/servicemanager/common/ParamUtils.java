@@ -200,12 +200,7 @@ public class ParamUtils {
                     }
                     param.put(entry.getKey(), values);
                 } else {
-                    if (request.getMethod().equals("GET")) {
-                        String value = entry.getValue()[0];
-                        param.put(entry.getKey(), new String(value.getBytes("iso8859-1"), request.getCharacterEncoding()));
-                    } else {
-                        param.put(entry.getKey(), entry.getValue()[0]);
-                    }
+                    param.put(entry.getKey(), entry.getValue()[0]);
                 }
             }
         }
