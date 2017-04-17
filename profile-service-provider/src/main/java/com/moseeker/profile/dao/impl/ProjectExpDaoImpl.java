@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 import java.util.Set;
 
 import org.jooq.DSLContext;
-import org.jooq.types.UInteger;
+
 import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.dbutils.DBConnHelper;
@@ -52,7 +52,7 @@ public class ProjectExpDaoImpl extends
 		try (Connection conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn)) {
 			count = create.delete(ProfileProjectexp.PROFILE_PROJECTEXP)
-					.where(ProfileProjectexp.PROFILE_PROJECTEXP.PROFILE_ID.equal(UInteger.valueOf(profileId)))
+					.where(ProfileProjectexp.PROFILE_PROJECTEXP.PROFILE_ID.equal((int)(profileId)))
 					.execute();
 
 		} catch (Exception e) {

@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.jooq.DSLContext;
 import org.jooq.Result;
-import org.jooq.types.UInteger;
+
 import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.dbutils.DBConnHelper;
@@ -62,7 +62,7 @@ public class EducationDaoImpl extends
 		try (Connection conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn)) {
 			count = create.delete(ProfileEducation.PROFILE_EDUCATION)
-					.where(ProfileEducation.PROFILE_EDUCATION.PROFILE_ID.equal(UInteger.valueOf(profileId)))
+					.where(ProfileEducation.PROFILE_EDUCATION.PROFILE_ID.equal((int)(profileId)))
 					.execute();
 
 		} catch (Exception e) {

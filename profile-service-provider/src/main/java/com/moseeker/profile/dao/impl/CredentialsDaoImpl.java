@@ -6,7 +6,7 @@ import java.text.ParseException;
 import java.util.Set;
 
 import org.jooq.DSLContext;
-import org.jooq.types.UInteger;
+
 import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.dbutils.DBConnHelper;
@@ -62,7 +62,7 @@ public class CredentialsDaoImpl extends BaseDaoImpl<ProfileCredentialsRecord, Pr
 		try (Connection conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn)) {
 			count = create.delete(ProfileCredentials.PROFILE_CREDENTIALS)
-					.where(ProfileCredentials.PROFILE_CREDENTIALS.PROFILE_ID.equal(UInteger.valueOf(profileId)))
+					.where(ProfileCredentials.PROFILE_CREDENTIALS.PROFILE_ID.equal((int)(profileId)))
 					.execute();
 
 		} catch (Exception e) {

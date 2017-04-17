@@ -6,7 +6,7 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 
 import java.util.List;
 
-import org.jooq.types.UByte;
+
 
 public interface CompanyDao extends BaseDao<HrCompanyRecord> {
 
@@ -16,8 +16,8 @@ public interface CompanyDao extends BaseDao<HrCompanyRecord> {
 
 	void transactionTest();
 
-	boolean checkScaleIllegal(UByte scale);
+	boolean checkScaleIllegal(Byte scale);
 
-	boolean checkPropertyIllegal(UByte scale);
+	boolean checkPropertyIllegal(Byte scale);
 
 }

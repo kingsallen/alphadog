@@ -9,7 +9,7 @@ import java.util.List;
 import org.jooq.DSLContext;
 import org.jooq.Record1;
 import org.jooq.Result;
-import org.jooq.types.UInteger;
+
 import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.dbutils.DBConnHelper;
@@ -71,8 +71,8 @@ public class IntentionDaoImpl extends BaseDaoImpl<ProfileIntentionRecord, Profil
 		try (Connection conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn)) {
 			
-			Result<Record1<UInteger>> intentionIds = create.select(ProfileIntention.PROFILE_INTENTION.ID).from(ProfileIntention.PROFILE_INTENTION).where(
-					ProfileIntention.PROFILE_INTENTION.PROFILE_ID.equal(UInteger.valueOf(profileId))).fetch();
+			Result<Record1<Integer>> intentionIds = create.select(ProfileIntention.PROFILE_INTENTION.ID).from(ProfileIntention.PROFILE_INTENTION).where(
+					ProfileIntention.PROFILE_INTENTION.PROFILE_ID.equal((int)(profileId))).fetch();
 
 			create.deleteFrom(ProfileIntentionCity.PROFILE_INTENTION_CITY)
 					.where(ProfileIntentionCity.PROFILE_INTENTION_CITY.PROFILE_INTENTION_ID
@@ -90,7 +90,7 @@ public class IntentionDaoImpl extends BaseDaoImpl<ProfileIntentionRecord, Profil
 			.execute();
 			
 			count = create.deleteFrom(ProfileIntention.PROFILE_INTENTION).where(
-					ProfileIntention.PROFILE_INTENTION.PROFILE_ID.equal(UInteger.valueOf(profileId))).execute();
+					ProfileIntention.PROFILE_INTENTION.PROFILE_ID.equal((int)(profileId))).execute();
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);

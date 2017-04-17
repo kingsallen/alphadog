@@ -15,8 +15,8 @@ import org.jooq.DSLContext;
 import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.Result;
-import org.jooq.types.UByte;
-import org.jooq.types.UInteger;
+
+
 import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.dbutils.DBConnHelper;
@@ -84,14 +84,14 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 
 				if (userId > 0) {
 					if (condition == null) {
-						condition = ProfileProfile.PROFILE_PROFILE.USER_ID.equal(UInteger.valueOf(userId));
+						condition = ProfileProfile.PROFILE_PROFILE.USER_ID.equal((int)(userId));
 					}
 				}
 				if (profileId > 0) {
 					if (condition == null) {
-						condition = ProfileProfile.PROFILE_PROFILE.ID.equal(UInteger.valueOf(profileId));
+						condition = ProfileProfile.PROFILE_PROFILE.ID.equal((int)(profileId));
 					} else {
-						condition = condition.or(ProfileProfile.PROFILE_PROFILE.ID.equal(UInteger.valueOf(profileId)));
+						condition = condition.or(ProfileProfile.PROFILE_PROFILE.ID.equal((int)(profileId)));
 					}
 				}
 				if (!StringUtils.isNullOrEmpty(uuid)) {
@@ -104,7 +104,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 
 				if (condition != null) {
 					Result<ProfileProfileRecord> result = create.selectFrom(ProfileProfile.PROFILE_PROFILE)
-							.where(condition).and(ProfileProfile.PROFILE_PROFILE.DISABLE.equal(UByte.valueOf(1)))
+							.where(condition).and(ProfileProfile.PROFILE_PROFILE.DISABLE.equal((byte)(1)))
 							.limit(1).fetch();
 					if (result != null && result.size() > 0) {
 						record = result.get(0);
@@ -138,14 +138,14 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 				Condition condition = null;
 				if (userId > 0) {
 					if (condition == null) {
-						condition = ProfileProfile.PROFILE_PROFILE.USER_ID.equal(UInteger.valueOf(userId));
+						condition = ProfileProfile.PROFILE_PROFILE.USER_ID.equal((int)(userId));
 					}
 				}
 				if (profileId > 0) {
 					if (condition == null) {
-						condition = ProfileProfile.PROFILE_PROFILE.ID.equal(UInteger.valueOf(profileId));
+						condition = ProfileProfile.PROFILE_PROFILE.ID.equal((int)(profileId));
 					} else {
-						condition = condition.or(ProfileProfile.PROFILE_PROFILE.ID.equal(UInteger.valueOf(profileId)));
+						condition = condition.or(ProfileProfile.PROFILE_PROFILE.ID.equal((int)(profileId)));
 					}
 				}
 				if (!StringUtils.isNullOrEmpty(uuid)) {
@@ -158,7 +158,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 
 				if (condition != null) {
 					Result<ProfileProfileRecord> result = create.selectFrom(ProfileProfile.PROFILE_PROFILE)
-							.where(condition).and(ProfileProfile.PROFILE_PROFILE.DISABLE.equal(UByte.valueOf(1)))
+							.where(condition).and(ProfileProfile.PROFILE_PROFILE.DISABLE.equal((byte)(1)))
 							.fetch();
 					if (result != null && result.size() > 0) {
 						records = result;
@@ -549,7 +549,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 
 				create.attach(completenessRecord);
 				completenessRecord.insert();
-				profileRecord.setCompleteness(UByte.valueOf(totalComplementness));
+				profileRecord.setCompleteness((byte)(totalComplementness));
 				profileRecord.update();
 				profileId = profileRecord.getId().intValue();
 			}
@@ -896,7 +896,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 						+ (completenessRecord.getProfileIntention() == null ? 0
 								: completenessRecord.getProfileIntention());
 				
-				profileRecord.setCompleteness(UByte.valueOf(totalComplementness));
+				profileRecord.setCompleteness((byte)(totalComplementness));
 				profileRecord.update();
 				create.attach(completenessRecord);
 				completenessRecord.insert();
@@ -972,8 +972,8 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 	}
 
 	@Override
-	public Result<Record2<UInteger, String>> findRealName(List<Integer> profileIds) {
-		Result<Record2<UInteger, String>> result = null;
+	public Result<Record2<Integer, String>> findRealName(List<Integer> profileIds) {
+		Result<Record2<Integer, String>> result = null;
 		if (profileIds != null && profileIds.size() > 0) {
 			try (Connection conn = DBConnHelper.DBConn.getConn();
 					DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn)) {
@@ -981,9 +981,9 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 				Condition condition = null;
 				for (Integer profileId : profileIds) {
 					if (condition != null) {
-						condition = condition.or(ProfileProfile.PROFILE_PROFILE.ID.equal(UInteger.valueOf(profileId)));
+						condition = condition.or(ProfileProfile.PROFILE_PROFILE.ID.equal((int)(profileId)));
 					} else {
-						condition = ProfileProfile.PROFILE_PROFILE.ID.equal(UInteger.valueOf(profileId));
+						condition = ProfileProfile.PROFILE_PROFILE.ID.equal((int)(profileId));
 					}
 				}
 				result = create.select(ProfileProfile.PROFILE_PROFILE.ID, UserUser.USER_USER.NAME)
@@ -1003,7 +1003,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 	public String findRealName(int profileId) {
 		try (Connection conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn)) {
-			Condition condition = ProfileProfile.PROFILE_PROFILE.ID.equal(UInteger.valueOf(profileId));
+			Condition condition = ProfileProfile.PROFILE_PROFILE.ID.equal((int)(profileId));
 			Record1<String> username = create.select(UserUser.USER_USER.NAME).from(ProfileProfile.PROFILE_PROFILE)
 					.join(UserUser.USER_USER).on(ProfileProfile.PROFILE_PROFILE.USER_ID.equal(UserUser.USER_USER.ID))
 					.where(condition).limit(1).fetchOne();
@@ -1021,7 +1021,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 		try (Connection conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn)) {
 			ProfileProfileRecord record = create.selectFrom(ProfileProfile.PROFILE_PROFILE)
-					.where(ProfileProfile.PROFILE_PROFILE.ID.equal(UInteger.valueOf(profileId))).fetchOne();
+					.where(ProfileProfile.PROFILE_PROFILE.ID.equal((int)(profileId))).fetchOne();
 			if (record != null) {
 				UserUserRecord userRecord = new UserUserRecord();
 				userRecord.setId(record.getUserId());

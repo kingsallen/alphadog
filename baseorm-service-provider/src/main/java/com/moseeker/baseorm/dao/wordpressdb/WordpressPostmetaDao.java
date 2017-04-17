@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.jooq.DSLContext;
-import org.jooq.types.ULong;
+
 import org.springframework.stereotype.Service;
 
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressPostmeta;
@@ -28,7 +28,7 @@ public class WordpressPostmetaDao extends BaseDaoImpl<WordpressPostmetaRecord, W
 			conn = DBConnHelper.DBConn.getConn();
 			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 			records = create.selectFrom(WordpressPostmeta.WORDPRESS_POSTMETA).where(WordpressPostmeta.WORDPRESS_POSTMETA.POST_ID
-					.equal(ULong.valueOf(objectId)).and(WordpressPostmeta.WORDPRESS_POSTMETA.META_KEY.in(keys)))
+					.equal((long)(objectId)).and(WordpressPostmeta.WORDPRESS_POSTMETA.META_KEY.in(keys)))
 					.fetch();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

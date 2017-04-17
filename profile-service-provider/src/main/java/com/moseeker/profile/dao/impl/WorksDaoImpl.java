@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 import java.util.Set;
 
 import org.jooq.DSLContext;
-import org.jooq.types.UInteger;
+
 import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.dbutils.DBConnHelper;
@@ -48,7 +48,7 @@ public class WorksDaoImpl extends BaseDaoImpl<ProfileWorksRecord, ProfileWorks> 
 		try (Connection conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn)) {
 			count = create.delete(ProfileWorks.PROFILE_WORKS)
-					.where(ProfileWorks.PROFILE_WORKS.PROFILE_ID.equal(UInteger.valueOf(profileId))).execute();
+					.where(ProfileWorks.PROFILE_WORKS.PROFILE_ID.equal((int)(profileId))).execute();
 
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);

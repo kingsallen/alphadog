@@ -5,7 +5,7 @@ import java.sql.SQLException;
 
 import org.jooq.DSLContext;
 import org.jooq.Record;
-import org.jooq.types.ULong;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -36,7 +36,7 @@ public class WordpressPostsDao extends BaseDaoImpl<WordpressPostsRecord, Wordpre
 					.on(WordpressPosts.WORDPRESS_POSTS.ID
 							.equal(WordpressTermRelationships.WORDPRESS_TERM_RELATIONSHIPS.OBJECT_ID))
 					.where(WordpressTermRelationships.WORDPRESS_TERM_RELATIONSHIPS.TERM_TAXONOMY_ID
-							.equal(ULong.valueOf(Constant.WORDPRESS_NEWSLETTER_VALUE)))
+							.equal((long)(Constant.WORDPRESS_NEWSLETTER_VALUE)))
 					.and(WordpressPosts.WORDPRESS_POSTS.POST_STATUS.equal(Constant.WORDPRESS_POST_POSTSTATUS_PUBLISH))
 					.orderBy(WordpressPosts.WORDPRESS_POSTS.ID.desc())
 					.limit(1).fetchOne();

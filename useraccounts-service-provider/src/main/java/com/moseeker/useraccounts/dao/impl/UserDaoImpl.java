@@ -4,7 +4,7 @@ import java.sql.Connection;
 
 import org.jooq.Condition;
 import org.jooq.DSLContext;
-import org.jooq.types.UInteger;
+
 import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.dbutils.DBConnHelper;
@@ -48,8 +48,8 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
     	try(Connection conn = DBConnHelper.DBConn.getConn(); DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);) {
     		conn.setAutoCommit(false);
     		create.update(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD)
-            .set(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.RECOM_USER_ID, UInteger.valueOf(orig))
-            .where(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.RECOM_USER_ID.equal(UInteger.valueOf(dest)))
+            .set(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.RECOM_USER_ID, (int)(orig))
+            .where(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.RECOM_USER_ID.equal((int)(dest)))
             .execute();
             create.update(HrWxHrChatList.HR_WX_HR_CHAT_LIST)
             .set(HrWxHrChatList.HR_WX_HR_CHAT_LIST.SYSUSER_ID, orig)
@@ -72,12 +72,12 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
             .where(UserWxViewer.USER_WX_VIEWER.SYSUSER_ID.equal(dest))
             .execute();
             create.update(CandidateCompany.CANDIDATE_COMPANY)
-            .set(CandidateCompany.CANDIDATE_COMPANY.SYS_USER_ID, UInteger.valueOf(orig))
-            .where(CandidateCompany.CANDIDATE_COMPANY.SYS_USER_ID.equal(UInteger.valueOf(dest)))
+            .set(CandidateCompany.CANDIDATE_COMPANY.SYS_USER_ID, (int)(orig))
+            .where(CandidateCompany.CANDIDATE_COMPANY.SYS_USER_ID.equal((int)(dest)))
             .execute();
             create.update(JobApplication.JOB_APPLICATION)
-            .set(JobApplication.JOB_APPLICATION.APPLIER_ID, UInteger.valueOf(orig))
-            .where(JobApplication.JOB_APPLICATION.APPLIER_ID.equal(UInteger.valueOf(dest)))
+            .set(JobApplication.JOB_APPLICATION.APPLIER_ID, (int)(orig))
+            .where(JobApplication.JOB_APPLICATION.APPLIER_ID.equal((int)(dest)))
             .execute();
             create.update(UserEmployee.USER_EMPLOYEE)
             .set(UserEmployee.USER_EMPLOYEE.SYSUSER_ID, orig)
@@ -95,8 +95,8 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
 		try(Connection conn = DBConnHelper.DBConn.getConn(); DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);) {
 			conn.setAutoCommit(false);
 			create.update(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD)
-	        .set(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.RECOM_USER_ID, UInteger.valueOf(orig))
-	        .where(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.RECOM_USER_ID.equal(UInteger.valueOf(dest)))
+	        .set(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.RECOM_USER_ID, (int)(orig))
+	        .where(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.RECOM_USER_ID.equal((int)(dest)))
 	        .execute();
 	        create.update(HrWxHrChatList.HR_WX_HR_CHAT_LIST)
 	        .set(HrWxHrChatList.HR_WX_HR_CHAT_LIST.SYSUSER_ID, orig)
@@ -119,12 +119,12 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
 	        .where(UserWxViewer.USER_WX_VIEWER.SYSUSER_ID.equal(dest))
 	        .execute();
 	        create.update(CandidateCompany.CANDIDATE_COMPANY)
-	        .set(CandidateCompany.CANDIDATE_COMPANY.SYS_USER_ID, UInteger.valueOf(orig))
-	        .where(CandidateCompany.CANDIDATE_COMPANY.SYS_USER_ID.equal(UInteger.valueOf(dest)))
+	        .set(CandidateCompany.CANDIDATE_COMPANY.SYS_USER_ID, (int)(orig))
+	        .where(CandidateCompany.CANDIDATE_COMPANY.SYS_USER_ID.equal((int)(dest)))
 	        .execute();
 	        create.update(JobApplication.JOB_APPLICATION)
-	        .set(JobApplication.JOB_APPLICATION.APPLIER_ID, UInteger.valueOf(orig))
-	        .where(JobApplication.JOB_APPLICATION.APPLIER_ID.equal(UInteger.valueOf(dest)))
+	        .set(JobApplication.JOB_APPLICATION.APPLIER_ID, (int)(orig))
+	        .where(JobApplication.JOB_APPLICATION.APPLIER_ID.equal((int)(dest)))
 	        .execute();
 	        create.update(UserEmployee.USER_EMPLOYEE)
 	        .set(UserEmployee.USER_EMPLOYEE.SYSUSER_ID, orig)
@@ -204,7 +204,7 @@ public class UserDaoImpl extends BaseDaoImpl<UserUserRecord, UserUser> implement
             conn = DBConnHelper.DBConn.getConn();
             create = DBConnHelper.DBConn.getJooqDSL(conn);
 
-            condition = UserUser.USER_USER.ID.equal(UInteger.valueOf(userId));
+            condition = UserUser.USER_USER.ID.equal((int)(userId));
 
 			user = create.selectFrom(UserUser.USER_USER).where(condition).limit(1).fetchOne().into(User.class);
 

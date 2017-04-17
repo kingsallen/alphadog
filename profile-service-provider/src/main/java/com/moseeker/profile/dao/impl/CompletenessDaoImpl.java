@@ -4,8 +4,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.jooq.DSLContext;
-import org.jooq.types.UByte;
-import org.jooq.types.UInteger;
+
+
 import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.dbutils.DBConnHelper;
@@ -32,7 +32,7 @@ public class CompletenessDaoImpl extends BaseDaoImpl<ProfileCompletenessRecord, 
 			conn = DBConnHelper.DBConn.getConn();
 			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 			record = create.selectFrom(ProfileCompleteness.PROFILE_COMPLETENESS)
-					.where(ProfileCompleteness.PROFILE_COMPLETENESS.PROFILE_ID.equal(UInteger.valueOf(profileId)))
+					.where(ProfileCompleteness.PROFILE_COMPLETENESS.PROFILE_ID.equal((int)(profileId)))
 					.fetchOne();
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
@@ -74,7 +74,7 @@ public class CompletenessDaoImpl extends BaseDaoImpl<ProfileCompletenessRecord, 
 
 				if (profileRecord.getCompleteness() == null
 						|| completeness != profileRecord.getCompleteness().intValue()) {
-					profileRecord.setCompleteness(UByte.valueOf(completeness));
+					profileRecord.setCompleteness((byte)(completeness));
 					profileRecord.update();
 				}
 			}

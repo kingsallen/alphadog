@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
  */
 public class FieldUtils {
 
+
     public static AbstractMap.SimpleEntry<Collection<Field<?>>, Collection<?>> convertInsertFieldMap(TableImpl<?> table, Map<String, String> filedValues) {
         List<Field<?>> fields = new ArrayList<>();
         List<?> values = new ArrayList<>();
@@ -24,5 +25,6 @@ public class FieldUtils {
         }
         return new AbstractMap.SimpleEntry<>(fields, values);
     }
+
 
 }

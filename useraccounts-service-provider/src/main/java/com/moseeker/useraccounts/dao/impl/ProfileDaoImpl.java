@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 
 import org.jooq.DSLContext;
-import org.jooq.types.UInteger;
+
 import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.dbutils.DBConnHelper;
@@ -29,7 +29,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
             conn = DBConnHelper.DBConn.getConn();
             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
             record = create.selectFrom(ProfileProfile.PROFILE_PROFILE)
-                    .where(ProfileProfile.PROFILE_PROFILE.USER_ID.equal(UInteger.valueOf(userId)))
+                    .where(ProfileProfile.PROFILE_PROFILE.USER_ID.equal((int)(userId)))
                     .fetchAny();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -57,7 +57,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 			Timestamp updateTime = new Timestamp(System.currentTimeMillis());
 			status = create.update(ProfileProfile.PROFILE_PROFILE)
 					.set(ProfileProfile.PROFILE_PROFILE.UPDATE_TIME, updateTime)
-					.where(ProfileProfile.PROFILE_PROFILE.USER_ID.eq(UInteger.valueOf(userId)))
+					.where(ProfileProfile.PROFILE_PROFILE.USER_ID.eq((int)(userId)))
 					.execute();
 
 		} catch (Exception e) {

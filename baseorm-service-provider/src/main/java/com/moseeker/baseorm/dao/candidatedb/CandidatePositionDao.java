@@ -10,7 +10,7 @@ import com.moseeker.thrift.gen.profile.struct.Intention;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.SelectJoinStep;
-import org.jooq.types.UInteger;
+
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
@@ -55,7 +55,7 @@ public class CandidatePositionDao extends StructDaoImpl<CandidatePositionDO, Can
             for(Map<Integer, Integer> map : positionIdAndUserId) {
                 for(Map.Entry<Integer, Integer> entry : map.entrySet()) {
                     Condition conditionValue = CandidatePosition.CANDIDATE_POSITION.POSITION_ID.equal(entry.getKey())
-                            .and(CandidatePosition.CANDIDATE_POSITION.USER_ID.equal(UInteger.valueOf(entry.getValue())));
+                            .and(CandidatePosition.CANDIDATE_POSITION.USER_ID.equal((int)(entry.getValue())));
 
                     if(condition != null) {
                         condition = condition.or(conditionValue);

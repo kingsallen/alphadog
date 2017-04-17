@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.jooq.DSLContext;
-import org.jooq.types.UInteger;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -32,7 +32,7 @@ public class IndustryDaoImpl extends BaseDaoImpl<DictIndustryRecord, DictIndustr
 		try (Connection conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);) {
 			records = create.selectFrom(DictIndustry.DICT_INDUSTRY)
-					.where(DictIndustry.DICT_INDUSTRY.TYPE.equal(UInteger.valueOf(type))).fetch();
+					.where(DictIndustry.DICT_INDUSTRY.TYPE.equal((int)(type))).fetch();
 		} catch (SQLException e) {
 			logger.error(e.getMessage(), e);
 		}

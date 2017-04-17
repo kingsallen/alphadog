@@ -10,8 +10,8 @@ import com.moseeker.common.providerutils.QueryUtil;
 import org.apache.thrift.TBase;
 import org.jooq.impl.TableImpl;
 import org.jooq.impl.UpdatableRecordImpl;
-import org.jooq.types.UInteger;
-import org.jooq.types.UShort;
+
+
 
 import com.moseeker.baseorm.util.BaseDaoImpl;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -42,12 +42,12 @@ public class OrmTools {
 			if(list != null && list.size() > 0) {
 				list.forEach(r -> {
 					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("code", ((Integer)r.get("code")).intValue());
-					map.put("parent_id", ((UInteger)r.get("parent_Id")).intValue());
+					map.put("code", r.get("code"));
+					map.put("parent_id", r.get("parent_Id"));
 					map.put("name", (String)r.get("name"));
-					map.put("code_other", ((Integer)r.get("code_other")).intValue());
-					map.put("level", ((UShort)r.get("level")).intValue());
-					map.put("status", ((UShort)r.get("status")).intValue());
+					map.put("code_other", r.get("code_other"));
+					map.put("level", r.get("level"));
+					map.put("status", r.get("status"));
 					allData.add(map);
 				});
 			}
@@ -217,12 +217,12 @@ public class OrmTools {
 			if(list != null && list.size() > 0) {
 				list.forEach(r -> {
 					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("code", ((Integer)r.get("code")).intValue());
-					map.put("parent_id", ((UInteger)r.get("parent_Id")).intValue());
+					map.put("code", r.get("code"));
+					map.put("parent_id", r.get("parent_Id"));
 					map.put("name", (String)r.get("name"));
-					map.put("code_other", ((Integer)r.get("code_other")).intValue());
-					map.put("level", ((UShort)r.get("level")).intValue());
-					map.put("status", ((UShort)r.get("status")).intValue());
+					map.put("code_other", r.get("code_other"));
+					map.put("level", r.get("level"));
+					map.put("status", r.get("status"));
 					allData.add(map);
 				});
 			}

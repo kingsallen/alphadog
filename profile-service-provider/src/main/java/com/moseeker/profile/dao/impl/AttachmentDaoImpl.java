@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.HashSet;
 
 import org.jooq.DSLContext;
-import org.jooq.types.UInteger;
+
 import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.dbutils.DBConnHelper;
@@ -50,7 +50,7 @@ public class AttachmentDaoImpl extends BaseDaoImpl<ProfileAttachmentRecord, Prof
 	protected ProfileAttachmentRecord structToDB(Attachment attachment) throws ParseException {
 		ProfileAttachmentRecord record = new ProfileAttachmentRecord();
 		if (attachment.isSetId()) {
-			record.setId(UInteger.valueOf(attachment.getId()));
+			record.setId((int)(attachment.getId()));
 		}
 		if (attachment.isSetName()) {
 			record.setName(attachment.getName());
@@ -59,7 +59,7 @@ public class AttachmentDaoImpl extends BaseDaoImpl<ProfileAttachmentRecord, Prof
 			record.setPath(attachment.getPath());
 		}
 		if (attachment.isSetProfile_id()) {
-			record.setProfileId(UInteger.valueOf(attachment.getProfile_id()));
+			record.setProfileId((int)(attachment.getProfile_id()));
 		}
 		if (attachment.isSetDescription()) {
 			record.setDescription(attachment.getDescription());
@@ -94,7 +94,7 @@ public class AttachmentDaoImpl extends BaseDaoImpl<ProfileAttachmentRecord, Prof
 		try (Connection conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn)) {
 			count = create.delete(ProfileAttachment.PROFILE_ATTACHMENT)
-					 .where(ProfileAttachment.PROFILE_ATTACHMENT.PROFILE_ID.equal(UInteger.valueOf(profileId)))
+					 .where(ProfileAttachment.PROFILE_ATTACHMENT.PROFILE_ID.equal((int)(profileId)))
 					 .execute();
 
 		} catch (Exception e) {

@@ -9,7 +9,7 @@ import org.jooq.DSLContext;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 import org.jooq.SelectWhereStep;
-import org.jooq.types.UInteger;
+
 import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.dbutils.DBConnHelper;
@@ -40,9 +40,9 @@ public class HrCompanyDaoImpl extends
 				SelectConditionStep<HrCompanyRecord> selectCondition = null;
 				for(int i=0; i<companyIds.size(); i++) {
 					if(i == 0) {
-						selectCondition = select.where(HrCompany.HR_COMPANY.ID.equal(UInteger.valueOf(companyIds.get(i))));
+						selectCondition = select.where(HrCompany.HR_COMPANY.ID.equal((int)(companyIds.get(i))));
 					} else {
-						selectCondition.or(HrCompany.HR_COMPANY.ID.equal(UInteger.valueOf(companyIds.get(i))));
+						selectCondition.or(HrCompany.HR_COMPANY.ID.equal((int)(companyIds.get(i))));
 					}
 				}
 				records = selectCondition.fetch();
@@ -73,7 +73,7 @@ public class HrCompanyDaoImpl extends
 				conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 				Result<HrCompanyRecord> result = create.selectFrom(HrCompany.HR_COMPANY)
-						.where(HrCompany.HR_COMPANY.ID.equal(UInteger.valueOf(companyId)))
+						.where(HrCompany.HR_COMPANY.ID.equal((int)(companyId)))
 						.limit(1).fetch();
 				if(result != null && result.size() > 0) {
 					record = result.get(0);

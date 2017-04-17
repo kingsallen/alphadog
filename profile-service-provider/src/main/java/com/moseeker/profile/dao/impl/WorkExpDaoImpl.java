@@ -10,7 +10,7 @@ import java.util.Set;
 
 import org.jooq.DSLContext;
 import org.jooq.Result;
-import org.jooq.types.UInteger;
+
 import org.springframework.stereotype.Repository;
 
 import com.moseeker.common.dbutils.DBConnHelper;
@@ -55,7 +55,7 @@ public class WorkExpDaoImpl extends
 				conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 				Result<ProfileWorkexpRecord> result = create.selectFrom(ProfileWorkexp.PROFILE_WORKEXP)
-						.where(ProfileWorkexp.PROFILE_WORKEXP.PROFILE_ID.equal(UInteger.valueOf(profileId)))
+						.where(ProfileWorkexp.PROFILE_WORKEXP.PROFILE_ID.equal((int)(profileId)))
 						.orderBy(ProfileWorkexp.PROFILE_WORKEXP.END_UNTIL_NOW.desc(), ProfileWorkexp.PROFILE_WORKEXP.END.desc())
 						.limit(1).fetch();
 				if(result != null && result.size() > 0) {
@@ -105,7 +105,7 @@ public class WorkExpDaoImpl extends
 		try (Connection conn = DBConnHelper.DBConn.getConn();
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn)) {
 			count = create.delete(ProfileWorkexp.PROFILE_WORKEXP)
-					.where(ProfileWorkexp.PROFILE_WORKEXP.PROFILE_ID.equal(UInteger.valueOf(profileId)))
+					.where(ProfileWorkexp.PROFILE_WORKEXP.PROFILE_ID.equal((int)(profileId)))
 					.execute();
 
 		} catch (Exception e) {

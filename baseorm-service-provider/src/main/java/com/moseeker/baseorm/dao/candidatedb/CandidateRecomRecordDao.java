@@ -3,6 +3,7 @@ package com.moseeker.baseorm.dao.candidatedb;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidatePosition;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
+import com.moseeker.baseorm.db.userdb.tables.UserFavPosition;
 import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.util.BeanUtils;
@@ -13,6 +14,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.jooq.*;
+
 import org.jooq.types.UInteger;
 import org.springframework.stereotype.Component;
 
@@ -58,7 +60,7 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
                     CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
                     CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID)
                     .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
-                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(UInteger.valueOf(userId))
+                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal((int)(userId))
                             .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID.greaterThan(0)));
             if(pageNo > 0 && pageSize > 0) {
                 selectConditionStep.limit((pageNo-1)*pageSize, pageSize);
@@ -96,7 +98,7 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
                     CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
                     CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID)
                     .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
-                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(UInteger.valueOf(presenteeId))
+                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal((int)(presenteeId))
                             .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.in(positionIdSet)));
             if(pageNo > 0 && pageSize > 0) {
                 selectConditionStep.limit((pageNo-1)*pageSize, pageSize);
@@ -128,7 +130,7 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
             Result<Record1<Integer>> result = create.selectCount()
                     .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
-                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(UInteger.valueOf(userId))
+                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal((int)(userId))
                             .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM.equal(0))).fetch();
             if(result != null && result.size() > 0) {
                 count = result.get(0).value1();
@@ -160,7 +162,7 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
                                     .equal(CandidatePosition.CANDIDATE_POSITION.USER_ID))
                             .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID
                                     .equal(CandidatePosition.CANDIDATE_POSITION.POSITION_ID)))
-                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(UInteger.valueOf(userId))
+                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal((int)(userId))
                             .and(CandidatePosition.CANDIDATE_POSITION.IS_INTERESTED.equal((byte)1)))
                     .fetch();
             if(result != null && result.size() > 0) {
@@ -200,7 +202,7 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
                                     .equal(CandidatePosition.CANDIDATE_POSITION.USER_ID))
                             .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID
                                     .equal(CandidatePosition.CANDIDATE_POSITION.POSITION_ID)))
-                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(UInteger.valueOf(userId))
+                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal((int)(userId))
                             .and(CandidatePosition.CANDIDATE_POSITION.IS_INTERESTED.equal((byte)1)));
             if(pageNo > 0 && pageSize > 0) {
                 selectConditionStep.limit((pageNo-1)*pageSize, pageSize);
@@ -232,7 +234,7 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
 
             DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd");
             DateTime dateTime = DateTime.parse(clickTime, format);
-            Condition condition = CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(UInteger.valueOf(postUserId))
+            Condition condition = CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(postUserId)
                     .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME.greaterOrEqual(new Timestamp(dateTime.getMillis())))
                     .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME.lessThan(new Timestamp(dateTime.plusDays(1).getMillis())));
             if(recoms != null && recoms.size() > 0) {
@@ -280,8 +282,8 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
 
             DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd");
             DateTime dateTime = DateTime.parse(clickTime, format);
-            Condition condition = CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(UInteger.valueOf(postUserId))
-                    .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID.notEqual(UInteger.valueOf(id)))
+            Condition condition = CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(postUserId)
+                    .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID.notEqual(id))
                     .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME.greaterOrEqual(new Timestamp(dateTime.getMillis())))
                     .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME.lessThan(new Timestamp(dateTime.plusDays(1).getMillis())));
             if(recoms != null && recoms.size() > 0) {
@@ -329,7 +331,7 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
 
             DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd");
             DateTime dateTime = DateTime.parse(clickTime, format);
-            Condition condition = CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(UInteger.valueOf(postUserId))
+            Condition condition = CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(postUserId)
                     .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME.greaterOrEqual(new Timestamp(dateTime.getMillis())))
                     .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME.lessThan(new Timestamp(dateTime.plusDays(1).getMillis())));
             if(recoms != null && recoms.size() > 0) {
@@ -372,7 +374,7 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 
             Field<Integer> count = count(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID);
-            Result<Record2<Integer, UInteger>> result = create.select(count,
+            Result<Record2<Integer, Integer>> result = create.select(count,
                     CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID)
                     .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
                     .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM.equal(0).and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.in(postUserId)))
@@ -381,7 +383,7 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
                     .fetch();
 
             if (result != null && result.size() > 0) {
-                for(Record2<Integer, UInteger> record2 : result) {
+                for(Record2<Integer, Integer> record2 : result) {
                     CandidateRecomRecordSortingDO candidateRecomRecordSortingDO = new CandidateRecomRecordSortingDO();
                     if(record2.get(0) != null) {
                         candidateRecomRecordSortingDO.setCount((Integer) record2.get(0));

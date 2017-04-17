@@ -4,7 +4,7 @@ import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.dao.struct.CandidateCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.CandidatePositionDO;
 import org.joda.time.DateTime;
-import org.jooq.types.UInteger;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -35,7 +35,7 @@ public class CandidateCompanyTest {
         record.setMobile("1851129553");
         record.setName("wjf");
         record.setNickname("wjfnickname");
-        record.setSysUserId(UInteger.valueOf(7));
+        record.setSysUserId((int)(7));
         CandidateCompanyDO candidateCompanyDO = BeanUtils.DBToStruct(CandidateCompanyDO.class, record);
         assertEquals(1, candidateCompanyDO.getId());
         assertEquals(new DateTime(time).toString("yyyy-MM-dd HH:mm:ss"), candidateCompanyDO.getUpdateTime());

@@ -11,7 +11,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.thrift.TException;
-import org.jooq.types.UInteger;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -260,13 +260,13 @@ public class ProfileIntentionService extends JOOQBaseServiceImpl<Intention, Prof
 			int intentionId = dao.delResource(record);
 			if(intentionId > 0) {
 				ProfileIntentionCityRecord intentionCityRecord = new ProfileIntentionCityRecord();
-				intentionCityRecord.setProfileIntentionId(UInteger.valueOf(struct.getId()));
+				intentionCityRecord.setProfileIntentionId((int)(struct.getId()));
 				intentionCityDao.delResource(intentionCityRecord);
 				ProfileIntentionPositionRecord intentionPositionRecord = new ProfileIntentionPositionRecord();
-				intentionPositionRecord.setProfileIntentionId(UInteger.valueOf(struct.getId()));
+				intentionPositionRecord.setProfileIntentionId((int)(struct.getId()));
 				intentionPositionDao.delResource(intentionPositionRecord);
 				ProfileIntentionIndustryRecord intentionIndustryRecord = new ProfileIntentionIndustryRecord();
-				intentionIndustryRecord.setProfileIntentionId(UInteger.valueOf(struct.getId()));
+				intentionIndustryRecord.setProfileIntentionId((int)(struct.getId()));
 				intentionIndustryDao.delResource(intentionIndustryRecord);
 				
 				/* 计算profile完整度 */
@@ -396,7 +396,7 @@ public class ProfileIntentionService extends JOOQBaseServiceImpl<Intention, Prof
 							ProfileIntentionPositionRecord tobeAddPositionRecord = new ProfileIntentionPositionRecord();
 							tobeAddPositionRecord.setPositionCode(legalRecord.getCode());
 							tobeAddPositionRecord.setPositionName(legalRecord.getName());
-							tobeAddPositionRecord.setProfileIntentionId(UInteger.valueOf(intentionId));
+							tobeAddPositionRecord.setProfileIntentionId((int)(intentionId));
 							toBeAddList.add(tobeAddPositionRecord);
 						}
 					} else {
@@ -414,7 +414,7 @@ public class ProfileIntentionService extends JOOQBaseServiceImpl<Intention, Prof
 								tobeAddPositionRecord.setPositionCode(legalRecord.getCode());
 							}
 							tobeAddPositionRecord.setPositionName(entry.getKey());
-							tobeAddPositionRecord.setProfileIntentionId(UInteger.valueOf(intentionId));
+							tobeAddPositionRecord.setProfileIntentionId((int)(intentionId));
 							toBeAddList.add(tobeAddPositionRecord);
 						}
 					}
@@ -471,7 +471,7 @@ public class ProfileIntentionService extends JOOQBaseServiceImpl<Intention, Prof
 							ProfileIntentionIndustryRecord tobeAddIndustryRecord = new ProfileIntentionIndustryRecord();
 							tobeAddIndustryRecord.setIndustryCode(legalRecord.getCode());
 							tobeAddIndustryRecord.setIndustryName(legalRecord.getName());
-							tobeAddIndustryRecord.setProfileIntentionId(UInteger.valueOf(intentionId));
+							tobeAddIndustryRecord.setProfileIntentionId((int)(intentionId));
 							toBeAddList.add(tobeAddIndustryRecord);
 						}
 					} else {
@@ -489,7 +489,7 @@ public class ProfileIntentionService extends JOOQBaseServiceImpl<Intention, Prof
 								tobeAddIndustryRecord.setIndustryCode(legalRecord.getCode());
 							}
 							tobeAddIndustryRecord.setIndustryName(entry.getKey());
-							tobeAddIndustryRecord.setProfileIntentionId(UInteger.valueOf(intentionId));
+							tobeAddIndustryRecord.setProfileIntentionId((int)(intentionId));
 							toBeAddList.add(tobeAddIndustryRecord);
 						}
 					}
@@ -552,7 +552,7 @@ public class ProfileIntentionService extends JOOQBaseServiceImpl<Intention, Prof
 							ProfileIntentionCityRecord tobeAddCityRecord = new ProfileIntentionCityRecord();
 							tobeAddCityRecord.setCityCode(legalRecord.getCode());
 							tobeAddCityRecord.setCityName(legalRecord.getName());
-							tobeAddCityRecord.setProfileIntentionId(UInteger.valueOf(intentionId));
+							tobeAddCityRecord.setProfileIntentionId((int)(intentionId));
 							toBeAddList.add(tobeAddCityRecord);
 						}
 					} else {
@@ -570,7 +570,7 @@ public class ProfileIntentionService extends JOOQBaseServiceImpl<Intention, Prof
 								tobeAddCityRecord.setCityCode(legalRecord.getCode());
 							}
 							tobeAddCityRecord.setCityName(entry.getKey());
-							tobeAddCityRecord.setProfileIntentionId(UInteger.valueOf(intentionId));
+							tobeAddCityRecord.setProfileIntentionId((int)(intentionId));
 							toBeAddList.add(tobeAddCityRecord);
 						}
 					}

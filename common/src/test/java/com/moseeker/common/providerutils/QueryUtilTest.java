@@ -1,5 +1,7 @@
 package com.moseeker.common.providerutils;
 
+import com.moseeker.thrift.gen.common.struct.Order;
+import com.moseeker.thrift.gen.common.struct.OrderBy;
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.After;
@@ -45,5 +47,15 @@ public class QueryUtilTest {
         QueryUtil queryUtil = new QueryUtil();
         queryUtil.addSelectAttribute("user_id").addSelectAttribute("id");
         assertEquals(2, queryUtil.getAttributes().size());
+    }
+
+    @Test
+    public void testOrder(){
+        QueryUtil queryUtil = new QueryUtil();
+        queryUtil.setSortby("name");
+        queryUtil.setOrder("desc");
+
+        assertEquals("name",queryUtil.getOrders().get(0).field);
+        assertEquals(Order.DESC,queryUtil.getOrders().get(0).order);
     }
 } 

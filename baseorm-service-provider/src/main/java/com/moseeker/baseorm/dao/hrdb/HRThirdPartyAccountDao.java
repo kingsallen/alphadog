@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.jooq.DSLContext;
-import org.jooq.types.UInteger;
+
 import org.springframework.stereotype.Service;
 
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
@@ -118,7 +118,7 @@ public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecor
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);) {
 			HrThirdPartyAccountRecord record = create.selectFrom(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
 					.where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.COMPANY_ID
-							.equal(UInteger.valueOf(account.getCompany_id())))
+							.equal((int)(account.getCompany_id())))
 					.and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.equal((short) account.getChannel()))
 					.fetchOne();
 			if(record != null) {
@@ -126,7 +126,7 @@ public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecor
 				logger.info("remainume:{}",account.getRemain_num());
 				Date date = sdf.parse(account.getSync_time());
 				record.setSyncTime(new Timestamp(date.getTime()));
-				record.setRemainNum(UInteger.valueOf(account.getRemain_num()));
+				record.setRemainNum((int)(account.getRemain_num()));
 				count = record.update();
 			}
 		} catch (SQLException e) {
