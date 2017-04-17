@@ -190,7 +190,7 @@ public class ProfileWorkExpService extends JOOQBaseServiceImpl<WorkExp, ProfileW
 	public Response postResource(WorkExp struct) throws TException {
 		ValidationMessage<WorkExp> vm = ProfileValidation.verifyWorkExp(struct);
 		if(!vm.isPass()) {
-			return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}'}", vm.getResult()));
+			return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", vm.getResult()));
 		}
 		int i = 0;
 		try {
@@ -481,16 +481,16 @@ public class ProfileWorkExpService extends JOOQBaseServiceImpl<WorkExp, ProfileW
 	@Override
 	protected WorkExp DBToStruct(ProfileWorkexpRecord r) {
 		Map<String, String> equalRules = new HashMap<>();
-		equalRules.put("start_date", "start");
-		equalRules.put("end_date", "end");
+		equalRules.put("start", "start_date");
+		equalRules.put("end", "end_date");
 		return (WorkExp) BeanUtils.DBToStruct(WorkExp.class, r, equalRules);
 	}
 
 	@Override
 	protected ProfileWorkexpRecord structToDB(WorkExp workExp) throws ParseException {
 		Map<String, String> equalRules = new HashMap<>();
-		equalRules.put("start_date", "start");
-		equalRules.put("end_date", "end");
+		equalRules.put("start", "start_date");
+		equalRules.put("end", "end_date");
 		return (ProfileWorkexpRecord) BeanUtils.structToDB(workExp, ProfileWorkexpRecord.class, equalRules);
 	}
 	

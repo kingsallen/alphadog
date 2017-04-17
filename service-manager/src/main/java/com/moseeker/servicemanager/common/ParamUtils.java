@@ -126,7 +126,7 @@ public class ParamUtils {
      * @throws Exception
      */
     public static Params<String, Object> parseRequestParam(HttpServletRequest request) throws Exception {
-        Params<String, Object> data = new Params<String, Object>();
+        Params<String, Object> data = new Params<>();
         data.putAll(initParamFromRequestBody(request));
         data.putAll(initParamFromRequestParameter(request));
 
@@ -205,6 +205,9 @@ public class ParamUtils {
                     List<String> values = new ArrayList<>();
                     for (String value : entry.getValue()) {
                         if (value != null) {
+                            if (request.getMethod().equals("GET")) {
+                                value = new String(value.getBytes("iso8859-1"), request.getCharacterEncoding());
+                            }
                             values.add(value);
                         }
                     }
@@ -240,6 +243,7 @@ public class ParamUtils {
                 jb.append(line);
             }
         } catch (IOException | IllegalStateException e) {
+            LoggerFactory.getLogger(ParamUtils.class).error(e.getMessage(), e);
         }
         LoggerFactory.getLogger(ParamUtils.class).info("----initParamFromRequestBody:", jb.toString());
         Map<String, Object> map = JsonToMap.parseJSON2Map(jb.toString());

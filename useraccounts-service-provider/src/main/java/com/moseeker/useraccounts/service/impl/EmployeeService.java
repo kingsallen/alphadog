@@ -18,7 +18,6 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCustomFieldsDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrPointsConfDO;
 import com.moseeker.thrift.gen.employee.struct.*;
-import com.moseeker.thrift.gen.employee.service.EmployeeService;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -48,7 +47,6 @@ public class EmployeeService {
 	MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
 	CompanyDao.Iface companyDao = ServiceManager.SERVICEMANAGER.getService(CompanyDao.Iface.class);
 	RedisClient client = CacheClient.getInstance();
-	UserEmployeeDao.Iface userEmployeeDao = ServiceManager.SERVICEMANAGER.getService(UserEmployeeDao.Iface.class);
 
 	public EmployeeResponse getEmployee(int userId, int companyId) throws TException {
 		log.info("getEmployee param: userId={} , companyId={}", userId, companyId);
@@ -73,6 +71,7 @@ public class EmployeeService {
 			    emp.setCustomFieldValues(employee.getCustomFieldValues());
 			    emp.setWxuserId(getWxuserId(query));
 			    emp.setEmail(employee.getEmail());
+			    emp.setCustomField(employee.getCustomField());
 			    response.setEmployee(emp);
 
 			    if (employee.getActivation() == 0) {
@@ -233,6 +232,7 @@ public class EmployeeService {
 				query.setEqualFilter(null);
 				query.addEqualFilter("company_id", String.valueOf(bindingParams.getCompanyId()));
 				query.addEqualFilter("custom_field", bindingParams.getCustomField());
+				query.addEqualFilter("cname", bindingParams.getName());
 				employee = userDao.getEmployee(query);
 				if (employee == null || employee.getId() == 0) {
 					response.setSuccess(false);

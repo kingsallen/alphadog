@@ -9,8 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.moseeker.baseorm.dao.hr.TalentpoolDao;
+import com.moseeker.baseorm.dao.hrdb.HrTalentpoolDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTalentpoolRecord;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -23,7 +22,7 @@ public class TalentpoolDaoThriftService implements Iface {
 	private Logger log = LoggerFactory.getLogger(getClass());
 	
 	@Autowired
-	private TalentpoolDao dao;
+	private HrTalentpoolDao dao;
 
 	@Override
 	public List<Talentpool> getResources(CommonQuery query) throws TException {

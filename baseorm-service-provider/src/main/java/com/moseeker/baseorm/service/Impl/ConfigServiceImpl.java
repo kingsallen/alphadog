@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.baseorm.dao.config.ConfigSysPointsConfTplDao;
+import com.moseeker.baseorm.dao.configdb.ConfigSysPointsConfTplDao;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysPointsConfTplRecord;
 import com.moseeker.baseorm.service.ConfigService;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -16,10 +16,13 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.config.ConfigSysPointsConfTpl;
 import com.moseeker.thrift.gen.config.HrAwardConfigTemplate;
+
 @Service
 public class ConfigServiceImpl implements ConfigService {
+	
 	@Autowired
 	private ConfigSysPointsConfTplDao configSysPointsConfTplDao;
+	
 	@Override
 	public Response getConfigSysPointsConfTpl(CommonQuery query) {
 		// TODO Auto-generated method stub

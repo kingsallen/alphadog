@@ -1,7 +1,7 @@
 package com.moseeker.baseorm.service.Impl;
 
-import com.moseeker.baseorm.dao.hr.HrTeamDao;
 import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
+import com.moseeker.baseorm.dao.hrdb.HrTeamDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrOperationRecordRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
@@ -34,6 +34,7 @@ public class HrDBServiceImpl implements HrDBService {
 
     @Autowired
     private HrTeamDao hrTeamDao;
+    
     Logger logger = LoggerFactory.getLogger(HrDBServiceImpl.class);
 
     @Autowired
