@@ -8,6 +8,13 @@ public class InnerCondition {
 
     private Condition firstCondition;
     private Condition secondCondition;
+    private ConditionOp conditionOp;
+
+    public InnerCondition(Condition firstCondition, Condition secondCondition, ConditionOp conditionOp) {
+        this.firstCondition = firstCondition;
+        this.secondCondition = secondCondition;
+        this.conditionOp = conditionOp;
+    }
 
     public Condition getFirstCondition() {
         return firstCondition;

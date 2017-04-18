@@ -9,6 +9,11 @@ public class Select {
     private String field;
     private SelectOp selectOp;
 
+    public Select(String field, SelectOp selectOp) {
+        this.field = field;
+        this.selectOp = selectOp;
+    }
+
     public String getField() {
         return field;
     }

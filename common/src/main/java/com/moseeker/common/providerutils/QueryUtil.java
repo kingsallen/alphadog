@@ -1,6 +1,6 @@
 package com.moseeker.common.providerutils;
 
-import com.moseeker.thrift.gen.common.struct.*;
+import com.moseeker.common.util.query.*;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -10,8 +10,6 @@ import java.util.Map;
  */
 
 public class QueryUtil extends CommonQuery {
-
-    private static final long serialVersionUID = 2531526866610292082L;
 
     @Deprecated
     public QueryUtil addEqualFilter(String key, Object value) {
@@ -86,38 +84,21 @@ public class QueryUtil extends CommonQuery {
 
     @Deprecated
     public QueryUtil addSelectAttribute(String field) {
-        addToAttributes(new Select(field, SelectOp.FIELD));
+        addSelect(new Select(field, SelectOp.FIELD));
         return this;
     }
 
-    String tmpOrder;
-
-    @Deprecated
+    /*@Deprecated
     public void setOrder(String order) {
         this.tmpOrder = order;
         checkOrder();
     }
 
-    String tmpSort;
-
     @Deprecated
     public void setSortby(String sortby) {
         this.tmpSort = sortby;
         checkOrder();
-    }
-
-
-    private void checkOrder() {
-        if (tmpSort != null && tmpOrder != null) {
-            if ("desc".equals(tmpOrder.trim())) {
-                addToOrders(new OrderBy(tmpSort, Order.DESC));
-            } else {
-                addToOrders(new OrderBy());
-            }
-            tmpOrder = null;
-            tmpSort = null;
-        }
-    }
+    }*/
 
     @Deprecated
     public void setPer_page(int per_page) {
@@ -128,5 +109,28 @@ public class QueryUtil extends CommonQuery {
     public QueryUtil addGroup(String field) {
         addToGroups(field);
         return this;
+    }
+
+    public static QueryUtil select() {
+        return new QueryUtil();
+    }
+
+    public static QueryUtil select(String... fields) {
+        QueryUtil queryUtil = select();
+        if(fields != null) {
+            for (String field : fields) {
+                queryUtil.addSelect(field);
+            }
+
+        }
+        return new QueryUtil().select(fields);
+    }
+
+    public static QueryUtil select(Select... selects) {
+        return new QueryUtil().select(selects);
+    }
+
+    public static QueryUtil where(CommonCondition commonCondition) {
+        return new QueryUtil().select().where(commonCondition);
     }
 }

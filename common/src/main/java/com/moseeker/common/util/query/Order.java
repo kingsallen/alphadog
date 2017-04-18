@@ -29,7 +29,7 @@ public enum Order {
         return value;
     }
 
-    public Order buildFromValue(int value) {
+    public static Order buildFromValue(int value) {
         return orderMap.get(value);
     }
 }

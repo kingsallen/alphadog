@@ -8,6 +8,13 @@ public class ValueCondition {
 
     private String field;
     private Object value;
+    private ValueOp valueOp;
+
+    public ValueCondition(String field, Object value, ValueOp valueOp) {
+        this.field = field;
+        this.value = value;
+        this.valueOp = valueOp;
+    }
 
     public String getField() {
         return field;

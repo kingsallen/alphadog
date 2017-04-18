@@ -1,8 +1,8 @@
 package com.moseeker.common.util.query;
 
-import com.moseeker.thrift.gen.common.struct.Condition;
-import com.moseeker.thrift.gen.common.struct.OrderBy;
+import com.moseeker.common.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,65 +14,68 @@ public class CommonQuery {
 
     private java.util.List<Select> attributes; // optional
     private Condition conditions; // optional
-    private java.util.List<OrderBy> orders; // optional
-    private java.util.List<String> groups; // optional
+    private List<OrderBy> orders; // optional
+    private List<String> groups; // optional
     private int pageSize; // optional
     private int pageNum; // optional
-    private java.util.Map<String,String> extras; // optional
+    private Map<String,String> extras; // optional
 
-    public List<Select> getAttributes() {
-        return attributes;
+    public CommonQuery() {
+        this.attributes = new ArrayList<>();
+        this.orders = new ArrayList<>();
     }
 
-    public void setAttributes(List<Select> attributes) {
-        this.attributes = attributes;
+    public void addSelect(String field) {
+        Select select = new Select(field, SelectOp.FIELD);
+        this.attributes.add(select);
     }
 
-    public Condition getConditions() {
-        return conditions;
+    public void addSelect(Select select) {
+        this.attributes.add(select);
     }
 
-    public void setConditions(Condition conditions) {
-        this.conditions = conditions;
+    public void addToOrders(OrderBy orderBy) {
+        this.orders.add(orderBy);
     }
 
-    public List<OrderBy> getOrders() {
-        return orders;
+    public void addToGroups(String field) {
+        this.groups.add(field);
     }
 
-    public void setOrders(List<OrderBy> orders) {
-        this.orders = orders;
-    }
+    public static class QueryBuilder {
 
-    public List<String> getGroups() {
-        return groups;
-    }
+        private java.util.List<Select> attributes; // optional
+        private Condition conditions; // optional
+        private List<OrderBy> orders; // optional
+        private List<String> groups; // optional
+        private int pageSize; // optional
+        private int pageNum; // optional
+        private Map<String,String> extras; // optional
 
-    public void setGroups(List<String> groups) {
-        this.groups = groups;
-    }
+        public QueryBuilder() {
+            this.attributes = new ArrayList<>();
+            this.orders = new ArrayList<>();
+        }
 
-    public int getPageSize() {
-        return pageSize;
-    }
+        public QueryBuilder select(String field) {
+            if(StringUtils.isNullOrEmpty(field)) {
+                Select select = new Select(field, SelectOp.FIELD);
+                attributes.add(select);
+            }
+            return this;
+        }
 
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
+        public QueryBuilder select(Select select) {
+            if(select != null) {
+                attributes.add(select);
+            }
+            return this;
+        }
 
-    public int getPageNum() {
-        return pageNum;
-    }
-
-    public void setPageNum(int pageNum) {
-        this.pageNum = pageNum;
-    }
-
-    public Map<String, String> getExtras() {
-        return extras;
-    }
-
-    public void setExtras(Map<String, String> extras) {
-        this.extras = extras;
+        public QueryBuilder where(String field, Object value) {
+            ValueCondition valueCondition = new ValueCondition(field, value, ValueOp.EQ);
+            CommonCondition commonCondition = new CommonCondition();
+            return this;
+        }
     }
 }

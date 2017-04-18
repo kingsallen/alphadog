@@ -6,22 +6,22 @@ package com.moseeker.common.util.query;
  */
 public class Condition {
 
-    private InnerCondition firstCondition;
-    private ValueCondition secondCondition;
+    protected InnerCondition innerCondition;
+    protected ValueCondition valueCondition;
 
-    public InnerCondition getFirstCondition() {
-        return firstCondition;
+    public InnerCondition getInnerCondition() {
+        return innerCondition;
     }
 
-    public void setFirstCondition(InnerCondition firstCondition) {
-        this.firstCondition = firstCondition;
+    public void setInnerCondition(InnerCondition innerCondition) {
+        this.innerCondition = innerCondition;
     }
 
-    public ValueCondition getSecondCondition() {
-        return secondCondition;
+    public ValueCondition getValueCondition() {
+        return valueCondition;
     }
 
-    public void setSecondCondition(ValueCondition secondCondition) {
-        this.secondCondition = secondCondition;
+    public void setValueCondition(ValueCondition valueCondition) {
+        this.valueCondition = valueCondition;
     }
 }
