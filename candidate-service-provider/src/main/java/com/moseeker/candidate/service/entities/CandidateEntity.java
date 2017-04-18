@@ -40,6 +40,7 @@ import java.util.stream.Stream;
  * Created by jack on 10/02/2017.
  */
 @Component
+@CounterIface
 public class CandidateEntity implements Candidate {
 
     Logger logger = LoggerFactory.getLogger(CandidateEntity.class);
@@ -52,7 +53,6 @@ public class CandidateEntity implements Candidate {
      * @param positionID 职位编号
      * @param shareChainID 是否来自员工转发
      */
-    @CounterIface
     @Override
     public void glancePosition(int userID, int positionID, int shareChainID) {
         ValidateUtil vu = new ValidateUtil();
@@ -133,7 +133,6 @@ public class CandidateEntity implements Candidate {
         }
     }
 
-    @CounterIface
 	@Override
 	public Response changeInteresting(int user_id, int position_id, byte is_interested) {
 		Response response = ResponseUtils.success("{}");
