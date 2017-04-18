@@ -109,9 +109,9 @@ public class NodeInvoker<T> implements Invoker {
 
                         // 超时
                         // hostSet.addDeadInstance(serverNode); // 加入dead集合中
-
                         exception = cause;
                         try {
+                            pool.invalidateObject(node, client);
                             // XXX:这里直接清空pool,否则会出现连接慢恢复的现象
                             // 发送socket异常时，证明socket已经失效，需要重新创建
                             if (cause.getCause() != null && cause.getCause() instanceof SocketException) {
@@ -123,6 +123,7 @@ public class NodeInvoker<T> implements Invoker {
                                 LOGGER.error(node+"  socket已经失效, error:"+ite.getMessage(), ite);
                                 LOGGER.error("parentName:{}  node:{}", parentName, node);
                                 LOGGER.debug("after clear getNumActive:"+pool.getNumActive());
+
                             } else {
                                 // XXX:其他异常的情况，需要将当前链接置为无效
                                 //pool.invalidateObject(node, client);

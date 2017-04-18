@@ -516,9 +516,9 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     // 更新jobposition数据，由于做逻辑删除，所以不删除jobpositionExt和jobpositionCity数据
                     jobPositionDao.putResources(dbOnlineList);
                     // 更新ES
-                    UpdateESThread updataESThread = new UpdateESThread(searchengineServices, companyServices, jobPositionIds, jobPositionDao);
-                    Thread thread = new Thread(updataESThread);
-                    thread.start();
+                    //UpdateESThread updataESThread = new UpdateESThread(searchengineServices, companyServices, jobPositionIds, jobPositionDao);
+                    //Thread thread = new Thread(updataESThread);
+                    //thread.start();
                 }
             }
 
@@ -706,9 +706,9 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             jobPostionResponse.setTotalCounts(jobPositionHandlerDates.size());
             if (jobPositionIds.size() > 0) {
                 // 更新ES Search Engine
-                UpdateESThread updataESThread = new UpdateESThread(searchengineServices, companyServices, jobPositionIds, jobPositionDao);
-                Thread thread = new Thread(updataESThread);
-                thread.start();
+                //UpdateESThread updataESThread = new UpdateESThread(searchengineServices, companyServices, jobPositionIds, jobPositionDao);
+                //Thread thread = new Thread(updataESThread);
+                //thread.start();
                 return ResponseUtils.success(jobPostionResponse);
             }
             logger.info("批量修改职位结束");
@@ -748,9 +748,9 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 jobPositionDao.putResource(jobPositionRecord);
                 // 更新ES Search Engine
                 list.add(jobPositionRecord.getId());
-                UpdateESThread updataESThread = new UpdateESThread(searchengineServices, companyServices, list, jobPositionDao);
-                Thread thread = new Thread(updataESThread);
-                thread.start();
+                //UpdateESThread updataESThread = new UpdateESThread(searchengineServices, companyServices, list, jobPositionDao);
+                //Thread thread = new Thread(updataESThread);
+                //thread.start();
                 return ResponseUtils.success(0);
             } else {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_DATA_DELETE_FAIL);

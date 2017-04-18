@@ -195,20 +195,12 @@ public class ParamUtils {
                     List<String> values = new ArrayList<>();
                     for (String value : entry.getValue()) {
                         if (value != null) {
-                            if (request.getMethod().equals("GET")) {
-                                value = new String(value.getBytes("iso8859-1"), request.getCharacterEncoding());
-                            }
                             values.add(value);
                         }
                     }
                     param.put(entry.getKey(), values);
                 } else {
-                    if (request.getMethod().equals("GET")) {
-                        String value = entry.getValue()[0];
-                        param.put(entry.getKey(), new String(value.getBytes("iso8859-1"), request.getCharacterEncoding()));
-                    } else {
-                        param.put(entry.getKey(), entry.getValue()[0]);
-                    }
+                    param.put(entry.getKey(), entry.getValue()[0]);
                 }
             }
         }

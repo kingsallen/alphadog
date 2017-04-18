@@ -21,7 +21,7 @@ public class CrawlerUtils {
 	Logger logger = LoggerFactory.getLogger(CrawlerUtils.class);
 
 	public Response fetchFirstResume(String userName, String password, String token, int type, int lang, int source,
-			int completeness, int appid, int user_id) throws Exception {
+									 int completeness, int appid, int user_id, int ua) throws Exception {
 		String result = null;
 		Map<String, String> param = new HashMap<>();
 		ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
@@ -52,11 +52,11 @@ public class CrawlerUtils {
 			break;
 		}
 		logger.info("fetchFirstResume:"+result);
-		return cleanning(result, lang, source, completeness, appid, user_id);
+		return cleanning(result, lang, source, completeness, appid, user_id, ua);
 	}
 
 	@SuppressWarnings("unchecked")
-	private Response cleanning(String result, int lang, int source, int completeness, int appid, int user_id) {
+	private Response cleanning(String result, int lang, int source, int completeness, int appid, int user_id, int ua) {
 		Object obj = JSON.parse(result);
 		Map<String, Object> messagBean = null;
 		if (obj instanceof Map) {
@@ -72,31 +72,8 @@ public class CrawlerUtils {
 				if (lang != 0) {
 					profile.put("lang", lang);
 				}
-				if (source != 0) {
-					profile.put("source", source);
-				} else {
-					if (appid == 0) {
-						profile.put("source", Constant.PROFILE_SOURCE_UNKNOW);
-					} else if(appid == 1) {
-						profile.put("source", Constant.PROFILE_SOURCE_PC_IMPORT);
-					} else if(appid == 2) {
-						profile.put("source", Constant.PROFILE_SOURCE_WEIXIN_TEGETHER_IMPORT);
-					} else if(appid == 3) {
-						profile.put("source", Constant.PROFILE_SOURCE_WEIXIN_COMPANY_IMPORT);
-					} else if(appid == 4) {
-						profile.put("source", Constant.PROFILE_SOURCE_UNKNOW);
-					} else if(appid == 20) {
-						profile.put("source", Constant.PROFILE_SOURCE_UNKNOW);
-					} else if(appid == 21) {
-						profile.put("source", Constant.PROFILE_SOURCE_UNKNOW);
-					} else if(appid == 22) {
-						profile.put("source", Constant.PROFILE_SOURCE_UNKNOW);
-					} else if(appid == 101) {
-						profile.put("source", Constant.PROFILE_SOURCE_UNKNOW);
-					} else {
-						profile.put("source", source);
-					}
-				}
+				int sourceResult = createSource(source, appid, ua);
+				profile.put("source", sourceResult);
 				if (completeness != 0) {
 					profile.put("completeness", completeness);
 				}
@@ -106,27 +83,8 @@ public class CrawlerUtils {
 			} else {
 				Map<String, Object> profile = new HashMap<>();
 				profile.put("lang", lang);
-				if (appid == 0) {
-					profile.put("source", Constant.PROFILE_SOURCE_UNKNOW);
-				} else if(appid == 1) {
-					profile.put("source", Constant.PROFILE_SOURCE_PC_IMPORT);
-				} else if(appid == 2) {
-					profile.put("source", Constant.PROFILE_SOURCE_WEIXIN_TEGETHER_IMPORT);
-				} else if(appid == 3) {
-					profile.put("source", Constant.PROFILE_SOURCE_WEIXIN_COMPANY_IMPORT);
-				} else if(appid == 4) {
-					profile.put("source", Constant.PROFILE_SOURCE_UNKNOW);
-				} else if(appid == 20) {
-					profile.put("source", Constant.PROFILE_SOURCE_UNKNOW);
-				} else if(appid == 21) {
-					profile.put("source", Constant.PROFILE_SOURCE_UNKNOW);
-				} else if(appid == 22) {
-					profile.put("source", Constant.PROFILE_SOURCE_UNKNOW);
-				} else if(appid == 101) {
-					profile.put("source", Constant.PROFILE_SOURCE_UNKNOW);
-				} else {
-					profile.put("source", source);
-				}
+				int sourceResult = createSource(source, appid, ua);
+				profile.put("source", sourceResult);
 				profile.put("completeness", completeness);
 				profile.put("user_id", user_id);
 				resume.put("profile", profile);
@@ -152,5 +110,28 @@ public class CrawlerUtils {
 	private String fetchResume(String params, String url) throws ConnectException {
 		int timeOut = 1*60*1000;
 		return UrlUtil.sendPost(url, params, timeOut, timeOut);
+	}
+
+	private int createSource(int source, int appId, int ua) {
+		int sourceResult = source;
+		if (source != 0) {
+			if(ua ==2) {
+				sourceResult = Constant.PROFILE_SOURCE_MOBILE_BROWSER;
+			}
+		} else {
+			if (appId == 0) {
+				sourceResult = Constant.PROFILE_SOURCE_UNKNOW;
+			} else if(appId == 1) {
+				sourceResult = Constant.PROFILE_SOURCE_PC_IMPORT;
+			} else if(appId == 2) {
+				sourceResult = Constant.PROFILE_SOURCE_WEIXIN_TEGETHER_IMPORT;
+			} else if(appId == 3) {
+				sourceResult = Constant.PROFILE_SOURCE_WEIXIN_COMPANY_IMPORT;
+			} else {
+				sourceResult = Constant.PROFILE_SOURCE_UNKNOW;
+			}
+		}
+
+		return sourceResult;
 	}
 }
