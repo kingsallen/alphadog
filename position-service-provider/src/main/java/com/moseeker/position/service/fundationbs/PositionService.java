@@ -1197,34 +1197,35 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     List<HrHbPositionBindingDO> bindings = hrDao.getHbPositionBindings(qu);
 
                     // 确认 binding 只有一个，获取binding 对应的红包活动信息
-                    HrHbConfigDO hbConfig = hbConfigs.stream().filter(c -> c.getId() == bindings.get(0).getHbConfigId())
-                            .findFirst().orElseGet(null);
+                    if (bindings != null && bindings.size() > 0) {
+                        HrHbConfigDO hbConfig = hbConfigs.stream().filter(c -> c.getId() == bindings.get(0).getHbConfigId())
+                                .findFirst().orElseGet(null);
 
-                    if (hbConfig != null) {
-                        // 更新红包发送对象
-                        rpExtInfo.setEmployee_only(hbConfig.getTarget() == 0);
-                    } else {
-                        logger.warn("查询不到对应的 hbConfig");
-                        rpExtInfo.setEmployee_only(false);
+                        if (hbConfig != null) {
+                            // 更新红包发送对象
+                            rpExtInfo.setEmployee_only(hbConfig.getTarget() == 0);
+                        } else {
+                            logger.warn("查询不到对应的 hbConfig");
+                            rpExtInfo.setEmployee_only(false);
+                        }
+
+                        // 根据 binding 获取 hb_items 记录
+                        qu = new QueryUtil();
+                        qu.addEqualFilter("binding_id", String.valueOf(bindings.get(0).getId()));
+                        qu.addEqualFilter("wxuser_id", "0"); // 还未发出的
+                        List<HrHbItemsDO> remainItems = hrDao.getHbItems(qu);
+
+                        Double remain = remainItems.stream().mapToDouble(HrHbItemsDO::getAmount).sum();
+                        Integer remainInt = toIntExact(round(remain));
+                        if (remainInt < 0) {
+                            remainInt = 0;
+                        }
+
+                        rpExtInfo.setPid(p.getId());
+                        rpExtInfo.setRemain(remainInt);
+
+                        result.add(rpExtInfo);
                     }
-
-                    // 根据 binding 获取 hb_items 记录
-                    qu = new QueryUtil();
-                    qu.addEqualFilter("binding_id", String.valueOf(bindings.get(0).getId()));
-                    qu.addEqualFilter("wxuser_id", "0"); // 还未发出的
-                    List<HrHbItemsDO> remainItems = hrDao.getHbItems(qu);
-
-                    Double remain = remainItems.stream().mapToDouble(HrHbItemsDO::getAmount).sum();
-                    Integer remainInt = toIntExact(round(remain));
-                    if (remainInt < 0) {
-                        remainInt = 0;
-                    }
-
-                    rpExtInfo.setPid(p.getId());
-                    rpExtInfo.setRemain(remainInt);
-
-                    result.add(rpExtInfo);
-
                 } else if (p.getHb_status() == 3) {
                     // 该职位参与了两个红包活动
 
