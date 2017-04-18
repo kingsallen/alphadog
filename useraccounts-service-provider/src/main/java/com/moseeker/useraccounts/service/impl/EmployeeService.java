@@ -58,6 +58,7 @@ public class EmployeeService {
 		try {
 			query.getEqualFilter().put("sysuser_id", String.valueOf(userId));
 			query.getEqualFilter().put("company_id", String.valueOf(companyId));
+			query.getEqualFilter().put("disable", String.valueOf(0));
 			employee = userDao.getEmployee(query);
 			if (employee != null && employee.getId() != 0) {
 			    // 根据user_id获取用户wxuserId
@@ -267,6 +268,21 @@ public class EmployeeService {
 				}
 				break;
 			case QUESTIONS:
+
+                // 验证员工是否已认证
+                query.getEqualFilter().clear();
+                query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
+                query.getEqualFilter().put("sysuser_id", String.valueOf(bindingParams.getUserId()));
+                query.getEqualFilter().put("disable", "0");
+                query.getEqualFilter().put("status", "0");
+                employee = userDao.getEmployee(query);
+
+                if (employee != null && employee.getId() > 0 && employee.getActivation() == 0) {
+                    response.setSuccess(false);
+                    response.setMessage("该员工已绑定");
+                    break;
+                }
+
 				// 问题校验
 				List<String> answers = JSONObject.parseArray(certConf.getQuestions()).stream().map(m -> JSONObject.parseObject(String.valueOf(m)).getString("a")).collect(Collectors.toList());
 				log.info("answers: {}", answers);
