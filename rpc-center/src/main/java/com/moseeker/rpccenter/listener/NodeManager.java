@@ -292,12 +292,14 @@ public enum NodeManager {
 	 */
 	private synchronized void clear(ZKPath root) {
 		try {
-			if(root.getChirldren() != null && root.getChirldren().size() > 0) {
-				Iterator<ZKPath> iZKPath = root.getChirldren().iterator();
-				while(iZKPath.hasNext()) {
-					ZKPath izkpath = iZKPath.next();
-					removeParentPath(izkpath);
-					iZKPath.remove();
+			synchronized (root.getChirldren()) {
+				if(root.getChirldren() != null && root.getChirldren().size() > 0) {
+					Iterator<ZKPath> iZKPath = root.getChirldren().iterator();
+					while(iZKPath.hasNext()) {
+						ZKPath izkpath = iZKPath.next();
+						removeParentPath(izkpath);
+						iZKPath.remove();
+					}
 				}
 			}
 			root.getChirldren().clear();
