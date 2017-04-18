@@ -70,7 +70,7 @@ public class ChaosServiceImpl {
 			 * TODO remainProfileNum
 			 */
 			logger.info("ChaosServiceImpl bind data:"+data);
-			//String data = "{\"status\":0,\"message\":\"success\", \"data\":3}";
+			//String data = "{\"status\":0,\"message\":\"success\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
 			Response response = ChaosTool.createResponse(data);
 			return response;
 		//} catch (Exception e) {
@@ -106,15 +106,13 @@ public class ChaosServiceImpl {
 			String params = ChaosTool.getParams(thirdPartyAccount.getUsername(), thirdPartyAccount.getPassword(), thirdPartyAccount.getMemberName(), chnnelType);
 			try {
 				String data = UrlUtil.sendPost(synchronizationURI, params, Constant.CONNECTION_TIME_OUT, Constant.READ_TIME_OUT);
-				//String data = "{\"status\":0,\"message\":\"success\", \"data\":100}";
+				//String data = "{\"status\":0,\"message\":\"success\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
 				if(data != null) {
 					JSONObject result = JSON.parseObject(data);
 					if(result.getInteger("status") != null && result.getInteger("status") == 0) {
-						thirdPartyAccount.setRemainNum(result.getIntValue("data"));
-						/**
-						 * TODO remainProfileNum
-						 */
-						thirdPartyAccount.setRemainNum(result.getIntValue("data"));
+						JSONObject successData = JSON.parseObject(result.getString("data"));
+						thirdPartyAccount.setRemainNum(successData.getIntValue("remain_number"));
+						thirdPartyAccount.setRemainProfileNum(successData.getIntValue("resume_number"));
 					} else {
 						thirdPartyAccount.setStatus(result.getInteger("status"));
 					}

@@ -74,18 +74,16 @@ public class PositionBS {
 			com.moseeker.thrift.gen.position.struct.Position positionStruct = positionDao.getPositionWithCityCode(qu);
 			logger.info("position:" + JSON.toJSONString(positionStruct));
 			// 如果职位数据存在，并且是在招职位
-			if (positionStruct.getId() > 0 && positionStruct.getStatus() == 0) {
+			if (positionStruct!= null && positionStruct.getId() > 0 && positionStruct.getStatus() == 0) {
 				// 返回结果
 				List<PositionSyncResultPojo> results = new ArrayList<>();
 				// 是否可以同步职位
 				List<ThirdPartyPosition> positionFroms = new ArrayList<>(); // 可同步的职位
 
-				QueryUtil ThirdPartyBindingAccounts = new QueryUtil();
-				ThirdPartyBindingAccounts.addEqualFilter("company_id", String.valueOf(positionStruct.getCompany_id()));
+				setCompanyAddress(position.getChannels(), positionStruct.getCompany_id());
 				List<ThirdPartAccountData> thirdPartyAccounts = userHrAccountDao
-						.getThirdPartyBindingAccounts(ThirdPartyBindingAccounts);
+						.getThirdPartyAccountsByUserId(position.getUser_id());
 				if (thirdPartyAccounts != null && thirdPartyAccounts.size() > 0) {
-					setCompanyAddress(position.getChannels(), positionStruct.getCompany_id());
 					for (ThirdPartyPosition p : position.getChannels()) {
 						for (ThirdPartAccountData account : thirdPartyAccounts) {
 							if (account.getId() > 0 && account.binding == 1 && account.getRemain_num() > 0) {

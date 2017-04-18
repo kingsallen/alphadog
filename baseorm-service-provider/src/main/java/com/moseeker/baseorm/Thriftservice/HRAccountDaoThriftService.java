@@ -4,9 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.HRAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
+import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
+import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccountHr;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
@@ -20,12 +23,14 @@ import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
 import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
+import org.jooq.DSLContext;
 import org.jooq.types.UInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -99,13 +104,13 @@ public class HRAccountDaoThriftService extends JOOQBaseServiceImpl<UserHrAccount
     @Override
     public ThirdPartAccountData getThirdPartyAccount(CommonQuery query) throws TException {
         logger.info("getThirdPartyAccount");
-        ThirdPartAccountData data =  new ThirdPartAccountData();
+        ThirdPartAccountData data = new ThirdPartAccountData();
         try {
             HrThirdPartyAccountRecord record = hrThirdPartyAccountDao.getResource(query);
-            if(record != null) {
+            if (record != null) {
                 copy(data, record);
             }
-            logger.info("data:"+ JSON.toJSONString(data));
+            logger.info("data:" + JSON.toJSONString(data));
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
@@ -116,11 +121,34 @@ public class HRAccountDaoThriftService extends JOOQBaseServiceImpl<UserHrAccount
     }
 
     @Override
+    public ThirdPartAccountData getThirdPartyAccountByUserId(int user_id, int channel) throws TException {
+        try {
+            Connection conn = DBConnHelper.DBConn.getConn();
+            DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+            List<Integer> thirdPartyAccounts = create.select(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID).from(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR)
+                    .where(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.HR_ACCOUNT_ID.eq(user_id))
+                    .and(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.STATUS.eq((byte) 1)).fetch(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID);
+
+            if (thirdPartyAccounts != null && thirdPartyAccounts.size() > 0) {
+                ThirdPartAccountData data = create.select().from(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
+                        .where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.in(thirdPartyAccounts))
+                        .and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.eq((short) channel))
+                        .fetchOneInto(ThirdPartAccountData.class);
+                return data;
+            }
+
+            return null;
+        } catch (Exception e) {
+            throw new TException(e);
+        }
+    }
+
+    @Override
     public List<ThirdPartAccountData> getThirdPartyBindingAccounts(CommonQuery query) throws TException {
         List<ThirdPartAccountData> datas = new ArrayList<>();
         try {
             List<HrThirdPartyAccountRecord> records = hrThirdPartyAccountDao.getThirdPartyBindingAccounts(query);
-            if(records != null && records.size() > 0) {
+            if (records != null && records.size() > 0) {
                 records.forEach(r -> {
                     ThirdPartAccountData data = new ThirdPartAccountData();
                     copy(data, r);
@@ -155,7 +183,7 @@ public class HRAccountDaoThriftService extends JOOQBaseServiceImpl<UserHrAccount
     @Override
     public Response updatePartyAccountByCompanyIdChannel(ThirdPartAccountData account) throws TException {
         int count = hrThirdPartyAccountDao.updatePartyAccountByCompanyIdChannel(account);
-        if(count > 0) {
+        if (count > 0) {
             return ResponseUtils.success(null);
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
@@ -203,6 +231,7 @@ public class HRAccountDaoThriftService extends JOOQBaseServiceImpl<UserHrAccount
             record.setMembername(account.getMember_name());
             record.setPassword(account.getPassword());
             record.setRemainNum(UInteger.valueOf(account.getRemainNum()));
+            record.setRemainProfileNum(account.getRemainProfileNum());
             record.setSyncTime(now);
             record.setBinding((short) 1);
             record.setUsername(account.getUsername());
@@ -212,7 +241,7 @@ public class HRAccountDaoThriftService extends JOOQBaseServiceImpl<UserHrAccount
             }
             HashMap<String, Object> map = new HashMap<>();
             map.put("remain_num", account.getRemainNum());
-            map.put("remain_profile_num",account.getRemainProfileNum());
+            map.put("remain_profile_num", account.getRemainProfileNum());
             DateTime dt = new DateTime(now.getTime());
             map.put("sync_time", dt.toString("yyyy-MM-dd HH:mm:ss"));
             return ResponseUtils.success(map);

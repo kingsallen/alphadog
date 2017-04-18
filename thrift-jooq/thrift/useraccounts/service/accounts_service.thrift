@@ -127,6 +127,7 @@ service UserCenterService {
 service ThirdPartyUserService {
     //更新账号
     common_struct.Response updateUser(1: useraccounts_struct.ThirdPartyUser user);
+
 }
 
 //UserEmployeeDao数据库单表操作

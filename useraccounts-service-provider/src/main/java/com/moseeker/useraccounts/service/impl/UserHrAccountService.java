@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.foundation.chaos.struct.ThirdPartyAccountStruct;
 import com.moseeker.useraccounts.constant.BindingStatus;
@@ -315,8 +316,9 @@ public class UserHrAccountService {
                 Response response = chaosService.binding(account.getUsername(), account.getPassword(),
                         account.getMember_name(), account.getChannel());
                 if (response.getStatus() == 0) {
-                    int remainNum = Integer.valueOf(response.getData());
-                    account.setRemainNum(remainNum);
+                    JSONObject data = JSONObject.parseObject(response.getData());
+                    account.setRemainNum(data.getIntValue("remain_number"));
+                    account.setRemainProfileNum(data.getIntValue("resume_number"));
                     return hrAccountService.createThirdPartyAccount(account);
                 } else {
                     return response;
@@ -636,7 +638,7 @@ public class UserHrAccountService {
                     if(response.getStatus() == 0) {
                         HashMap<String, Object> result = new HashMap<>();
                         result.put("remain_num", synchronizeResult.getRemainNum());
-                        result.put("remain_num", synchronizeResult.getRemainProfileNum());
+                        result.put("remain_profile_num", synchronizeResult.getRemainProfileNum());
                         result.put("sync_time", (new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
                         return ResultMessage.SUCCESS.toResponse(result);
                     } else {

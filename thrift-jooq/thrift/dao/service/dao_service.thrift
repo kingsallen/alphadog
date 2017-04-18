@@ -13,6 +13,8 @@ include "../../application/struct/application_struct.thrift"
 service UserHrAccountDao {
 	common_struct.Response getAccount(1:common_struct.CommonQuery query);
 	dao_struct.ThirdPartAccountData getThirdPartyAccount(1:common_struct.CommonQuery query);
+	dao_struct.ThirdPartAccountData getThirdPartyAccountByUserId(1:i32 user_id,2:i32 channel);
+	list<dao_struct.ThirdPartAccountData> getThirdPartyAccountsByUserId(1:i32 user_id);
     list<dao_struct.ThirdPartAccountData> getThirdPartyBindingAccounts(1:common_struct.CommonQuery query);
     //获取第三方渠道职位
     list<dao_struct.ThirdPartyPositionData> getThirdPartyPositions(1:common_struct.CommonQuery query);
