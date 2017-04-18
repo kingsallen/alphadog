@@ -258,6 +258,9 @@ public class EmployeeService {
 				query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
                 query.getEqualFilter().put("cname", bindingParams.getName());
                 query.getEqualFilter().put("custom_field", bindingParams.getCustomField());
+                query.getEqualFilter().put("disable", "0");
+                query.getEqualFilter().put("status", "0");
+
 				employee = userDao.getEmployee(query);
 				if (employee == null || employee.getId() == 0) {
 					response.setSuccess(false);
@@ -265,9 +268,12 @@ public class EmployeeService {
 				} else if (employee.getActivation() == 0) {
 					response.setSuccess(false);
 					response.setMessage("该员工已绑定");
-				} else {
+				} else if (employee.getSysuserId() == bindingParams.getUserId()) {
 					response = updateEmployee(bindingParams);
-				}
+				} else {
+                    response.setSuccess(false);
+                    response.setMessage("员工认证信息不匹配");
+                }
 				break;
 			case QUESTIONS:
 
@@ -279,7 +285,28 @@ public class EmployeeService {
                 query.getEqualFilter().put("status", "0");
                 employee = userDao.getEmployee(query);
 
-                if (employee != null && employee.getId() > 0 && employee.getActivation() == 0) {
+                if (employee == null || employee.getId() == 0) {
+                    employee = new UserEmployeeDO();
+                    employee.setCompanyId(bindingParams.getCompanyId());
+                    employee.setEmployeeid(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), ""));
+                    employee.setSysuserId(bindingParams.getUserId());
+                    employee.setCname(bindingParams.getName());
+                    employee.setMobile(bindingParams.getMobile());
+                    employee.setEmail(bindingParams.getEmail());
+                    query.getEqualFilter().clear();
+                    query.getEqualFilter().put("sysuser_id", String.valueOf(bindingParams.getUserId()));
+
+                    employee.setWxuser_id(getWxuserId(query));
+                    employee.setAuthMethod((byte)bindingParams.getType().getValue());
+                    employee.setActivation((byte)1);
+                    employee.setCreateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
+                    if(userDao.postUserEmployeeDO(employee) == 0) {
+                        response.setSuccess(false);
+                        response.setMessage("认证失败，请检查员工信息");
+                        log.info("员工认证(question模式)，保存员工信息失败 employee={}", employee);
+                        break;
+                    }
+                } else if (employee.getActivation() == 0) {
                     response.setSuccess(false);
                     response.setMessage("该员工已绑定");
                     break;
