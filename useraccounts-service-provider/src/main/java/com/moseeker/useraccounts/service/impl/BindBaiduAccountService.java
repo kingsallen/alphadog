@@ -3,6 +3,7 @@ package com.moseeker.useraccounts.service.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.moseeker.common.annotation.iface.CounterIface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import com.moseeker.useraccounts.service.BindOnAccountService;
  * 2016年12月14日
  */
 @Service("baidu")
+@CounterIface
 public class BindBaiduAccountService extends BindOnAccountService{
 	
 	private static final Logger logger = LoggerFactory.getLogger(BindBaiduAccountService.class);

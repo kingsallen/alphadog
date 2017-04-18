@@ -1,6 +1,7 @@
 package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.redis.RedisClient;
@@ -35,6 +36,7 @@ import java.util.stream.Collectors;
  * 2017年3月3日
  */
 @Service
+@CounterIface
 public class EmployeeService {
 	
 	private Logger log = LoggerFactory.getLogger(EmployeeService.class);
@@ -136,7 +138,7 @@ public class EmployeeService {
 		}
 		return response;
 	}
-	
+
 	public Result bind(BindingParams bindingParams) throws TException {
 		log.info("bind param: BindingParams={}", bindingParams);
 		Result response = new Result();
@@ -400,7 +402,7 @@ public class EmployeeService {
 		log.info("updateEmployee response : {}", response);
 		return response;
 	}
-	
+
 	public Result unbind(int employeeId, int companyId, int userId)
 			throws TException {
 		log.info("unbind param: employeeId={}, companyId={}, userId={}", employeeId, companyId, userId);
@@ -467,7 +469,7 @@ public class EmployeeService {
 		log.info("getEmployeeCustomFieldsConf response: {}", response);
 		return response;
 	}
-	
+
 
 	public RewardsResponse getEmployeeRewards(int employeeId, int companyId)
 			throws TException {
@@ -570,8 +572,8 @@ public class EmployeeService {
 		log.info("setEmployeeCustomInfo response: {}", response);
 		return response;
 	}
-	
-	
+
+
 	public Result emailActivation(String activationCode) throws TException {
 		log.info("emailActivation param: activationCode={}", activationCode);
 		Result response = new Result();
