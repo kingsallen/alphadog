@@ -173,9 +173,9 @@ public class UserCenterService {
             int interestedCount = 0;         //被推荐的转发记录数
             int applyCount = 0;             //有过申请的转发记录数
             /** 并行查找三个统计信息 */
-            Future<Integer> totalCountFuture = tp.startTast(() -> bizTools.countCandidateRecomRecord(userId), totalCount);
-            Future<Integer> interestedCountFuture = tp.startTast(() -> bizTools.countInterestedCandidateRecomRecord(userId), interestedCount);
-            Future<Integer> applyCountFuture = tp.startTast(() -> bizTools.countAppliedCandidateRecomRecord(userId), applyCount);
+            Future<Integer> totalCountFuture = tp.startTast(() -> bizTools.countCandidateRecomRecord(userId));
+            Future<Integer> interestedCountFuture = tp.startTast(() -> bizTools.countInterestedCandidateRecomRecord(userId));
+            Future<Integer> applyCountFuture = tp.startTast(() -> bizTools.countAppliedCandidateRecomRecord(userId));
             totalCount = totalCountFuture.get();
             interestedCount = interestedCountFuture.get();
             applyCount = applyCountFuture.get();
@@ -297,6 +297,7 @@ public class UserCenterService {
                     recommendationRecordVOList.add(recommendationRecordVO);
 
                 });
+                recommendationForm.setRecommends(recommendationRecordVOList);
             } else {
                 recommendationForm.setHasRecommends(false);
             }
@@ -305,7 +306,7 @@ public class UserCenterService {
         } catch (InterruptedException e) {
             logger.error(e.getMessage(), e);
         } catch (ExecutionException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         return recommendationForm;
     }

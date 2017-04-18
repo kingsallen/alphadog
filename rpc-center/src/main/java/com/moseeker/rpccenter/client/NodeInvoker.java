@@ -123,7 +123,6 @@ public class NodeInvoker<T> implements Invoker {
                                 LOGGER.error(node+"  socket已经失效, error:"+ite.getMessage(), ite);
                                 LOGGER.error("parentName:{}  node:{}", parentName, node);
                                 LOGGER.debug("after clear getNumActive:"+pool.getNumActive());
-
                             } else {
                                 // XXX:其他异常的情况，需要将当前链接置为无效
                                 //pool.invalidateObject(node, client);
