@@ -268,7 +268,16 @@ public class EmployeeService {
 				} else if (employee.getActivation() == 0) {
 					response.setSuccess(false);
 					response.setMessage("该员工已绑定");
-				} else if (employee.getSysuserId() == bindingParams.getUserId()) {
+				} else if (employee.getSysuserId() == 0) {
+                    employee.setSysuserId(bindingParams.getUserId());
+                    Response updateResult = userDao.putUserEmployeesDO(Arrays.asList(employee));
+                    if (updateResult.getStatus() == 0){
+                        response = updateEmployee(bindingParams);
+                    } else {
+                        response.setSuccess(false);
+                        response.setMessage(updateResult.getMessage());
+                    }
+                } else if (employee.getSysuserId() == bindingParams.getUserId()) {
 					response = updateEmployee(bindingParams);
 				} else {
                     response.setSuccess(false);
