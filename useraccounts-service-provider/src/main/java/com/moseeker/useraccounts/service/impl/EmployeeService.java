@@ -142,6 +142,7 @@ public class EmployeeService {
 		CommonQuery query = new CommonQuery();
 		query.setEqualFilter(new HashMap<String, String>());
 		query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
+		query.getEqualFilter().put("disable", String.valueOf(0));
 		HrEmployeeCertConfDO certConf = hrDBDao.getEmployeeCertConf(query);
 		if(certConf == null || certConf.getCompanyId() == 0) {
 			response.setSuccess(false);
@@ -259,7 +260,7 @@ public class EmployeeService {
 				employee = userDao.getEmployee(query);
 				if (employee == null || employee.getId() == 0) {
 					response.setSuccess(false);
-					response.setMessage("您提供的员工认证信息不正确");
+					response.setMessage("员工认证信息不正确");
 				} else if (employee.getActivation() == 0) {
 					response.setSuccess(false);
 					response.setMessage("该员工已绑定");
