@@ -58,6 +58,7 @@ public class EmployeeService {
 		try {
 			query.getEqualFilter().put("sysuser_id", String.valueOf(userId));
 			query.getEqualFilter().put("company_id", String.valueOf(companyId));
+			query.getEqualFilter().put("disable", String.valueOf(0));
 			employee = userDao.getEmployee(query);
 			if (employee != null && employee.getId() != 0) {
 			    // 根据user_id获取用户wxuserId
@@ -76,6 +77,7 @@ public class EmployeeService {
 			    emp.setWxuserId(getWxuserId(query));
 			    emp.setEmail(employee.getEmail());
 			    emp.setCustomField(employee.getCustomField());
+			    emp.setAuthMethod(employee.getAuthMethod());
 			    response.setEmployee(emp);
 
 			    if (employee.getActivation() == 0) {
@@ -141,6 +143,7 @@ public class EmployeeService {
 		CommonQuery query = new CommonQuery();
 		query.setEqualFilter(new HashMap<String, String>());
 		query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
+		query.getEqualFilter().put("disable", String.valueOf(0));
 		HrEmployeeCertConfDO certConf = hrDBDao.getEmployeeCertConf(query);
 		if(certConf == null || certConf.getCompanyId() == 0) {
 			response.setSuccess(false);
@@ -258,7 +261,7 @@ public class EmployeeService {
 				employee = userDao.getEmployee(query);
 				if (employee == null || employee.getId() == 0) {
 					response.setSuccess(false);
-					response.setMessage("您提供的员工认证信息不正确");
+					response.setMessage("员工认证信息不正确");
 				} else if (employee.getActivation() == 0) {
 					response.setSuccess(false);
 					response.setMessage("该员工已绑定");
@@ -267,6 +270,21 @@ public class EmployeeService {
 				}
 				break;
 			case QUESTIONS:
+
+                // 验证员工是否已认证
+                query.getEqualFilter().clear();
+                query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
+                query.getEqualFilter().put("sysuser_id", String.valueOf(bindingParams.getUserId()));
+                query.getEqualFilter().put("disable", "0");
+                query.getEqualFilter().put("status", "0");
+                employee = userDao.getEmployee(query);
+
+                if (employee != null && employee.getId() > 0 && employee.getActivation() == 0) {
+                    response.setSuccess(false);
+                    response.setMessage("该员工已绑定");
+                    break;
+                }
+
 				// 问题校验
 				List<String> answers = JSONObject.parseArray(certConf.getQuestions()).stream().map(m -> JSONObject.parseObject(String.valueOf(m)).getString("a")).collect(Collectors.toList());
 				log.info("answers: {}", answers);
