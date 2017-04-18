@@ -3,10 +3,13 @@ package com.moseeker.baseorm.Thriftservice;
 import com.moseeker.baseorm.dao.userdb.*;
 import com.moseeker.baseorm.service.UserEmployeeService;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
-import com.moseeker.thrift.gen.common.struct.*;
 import com.moseeker.thrift.gen.common.struct.CURDException;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.UserDBDao.Iface;
 import com.moseeker.thrift.gen.dao.struct.*;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserSearchConditionDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import org.apache.thrift.TException;
@@ -39,6 +42,12 @@ public class UserDBDaoThriftService implements Iface {
 
 	@Autowired
 	private WxUserDao wxUserDao;
+
+	@Autowired
+    private UserCollectPositionDao collectPositionDao;
+
+	@Autowired
+    private UserSearchConditionDao searchConditionDao;
 
 	@Override
 	public UserUserDO getUser(CommonQuery query) throws TException {
@@ -166,4 +175,35 @@ public class UserDBDaoThriftService implements Iface {
 	public UserWxUserDO getUserWxUserDO(CommonQuery query) throws CURDException, TException {
 		return wxUserDao.findResource(query);
 	}
+
+    @Override
+    public List<UserSearchConditionDO> getUserSearchConditions(CommonQuery query) throws TException {
+        return searchConditionDao.listResources(query);
+    }
+
+    @Override
+    public UserSearchConditionDO saveUserSearchCondition(UserSearchConditionDO entity) throws TException {
+        return searchConditionDao.saveResource(entity);
+    }
+
+    @Override
+    public UserSearchConditionDO updateUserSearchCondition(UserSearchConditionDO entity) throws TException {
+        return searchConditionDao.updateResource(entity);
+    }
+
+    @Override
+    public UserCollectPositionDO getUserCollectPosition(CommonQuery query) throws TException {
+        return collectPositionDao.findResource(query);
+    }
+
+    @Override
+    public UserCollectPositionDO saveUserCollectPosition(UserCollectPositionDO entity) throws TException {
+        return collectPositionDao.saveResource(entity);
+    }
+
+    @Override
+    public UserCollectPositionDO updateUserCollectPosition(UserCollectPositionDO entity) throws TException {
+        return collectPositionDao.updateResource(entity);
+    }
+
 }

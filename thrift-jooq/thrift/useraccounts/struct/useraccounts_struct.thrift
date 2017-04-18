@@ -2,6 +2,9 @@
 
 namespace java com.moseeker.thrift.gen.useraccounts.struct
 
+include "../../dao/struct/userdb/user_search_condition_struct.thrift"
+include "../../dao/struct/userdb/user_collect_position_struct.thrift"
+
 typedef string Timestamp;
 
 
@@ -305,4 +308,22 @@ struct ApplicationDetailVO {
     4: optional i8 step,                                //进度
     5: optional i8 step_status,                         //状态
     6: optional list<ApplicationOperationRecordVO> status_timeline  //操作记录
+}
+
+struct UserSearchConditionListVO {
+    1: optional i32 status,
+    2: optional list<user_search_condition_struct.UserSearchConditionDO> searchConditionList,
+    3: optional string message
+}
+
+struct UserSearchConditionVO {
+    1: optional i32 status,
+    2: optional user_search_condition_struct.UserSearchConditionDO searchCondition,
+    3: optional string message
+}
+
+struct UserCollectPositionVO {
+    1: optional i32 status,
+    2: optional user_collect_position_struct.UserCollectPositionDO userCollectPosition,
+    3: optional string message
 }

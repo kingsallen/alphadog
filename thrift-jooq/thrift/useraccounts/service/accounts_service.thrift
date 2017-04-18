@@ -5,6 +5,8 @@ include "../../common/struct/common_struct.thrift"
 include "../../foundataionbs/wordpress/struct/wordpress_foundation_strcut.thrift"
 include "../struct/bindtype_struct.thrift"
 include "../../dao/struct/userdb_struct.thrift"
+include "../../dao/struct/userdb/user_search_condition_struct.thrift"
+include "../../dao/struct/userdb/user_collect_position_struct.thrift"
 
 namespace java com.moseeker.thrift.gen.useraccounts.service
 
@@ -63,6 +65,20 @@ service UseraccountsServices {
     i32 createRetrieveProfileUser(1: userdb_struct.UserUserDO user);
     //查询用户是否存在简历
     bool ifExistProfile(1:string mobile);
+
+    //获取用户的筛选条件
+    useraccounts_struct.UserSearchConditionListVO userSearchConditionList(1: i32 userId);
+    //保存用户筛选条件
+    useraccounts_struct.UserSearchConditionVO postUserSearchCondition(1: user_search_condition_struct.UserSearchConditionDO userSearchCondition);
+    //删除用户筛选条件
+    useraccounts_struct.UserSearchConditionVO delUserSearchCondition(1: i32 userId, 2: i32 id);
+
+    // 获取用户收藏的职位
+    useraccounts_struct.UserCollectPositionVO getUserCollectPosition(1: i32 userId, 2: i32 positionId);
+    // 用户收藏职位
+    useraccounts_struct.UserCollectPositionVO postUserCollectPosition(1: i32 userId, 2: i32 positionId);
+    // 用户取消收藏职位
+    useraccounts_struct.UserCollectPositionVO delUserCollectPosition(1: i32 userId, 2: i32 positionId);
 }
 
 /**

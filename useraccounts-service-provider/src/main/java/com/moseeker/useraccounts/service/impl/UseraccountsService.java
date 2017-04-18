@@ -1,13 +1,19 @@
 package com.moseeker.useraccounts.service.impl;
 
 import java.sql.Timestamp;
+import java.text.MessageFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.moseeker.thrift.gen.dao.service.UserDBDao;
 import com.moseeker.thrift.gen.dao.struct.UserUserDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserSearchConditionDO;
+import com.moseeker.thrift.gen.useraccounts.struct.*;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,10 +55,6 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
-import com.moseeker.thrift.gen.useraccounts.struct.BindType;
-import com.moseeker.thrift.gen.useraccounts.struct.User;
-import com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition;
-import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
 import com.moseeker.useraccounts.dao.ProfileDao;
 import com.moseeker.useraccounts.dao.UserDao;
 import com.moseeker.useraccounts.dao.UserFavoritePositionDao;
@@ -104,7 +106,8 @@ public class UseraccountsService {
 	
 	@Autowired
 	protected Map<String, BindOnAccountService> bindOnAccount;
-	
+
+
 	/**
 	 * 用户登陆， 返回用户登陆后的信息。
 	 */
@@ -1132,51 +1135,137 @@ public class UseraccountsService {
 		return false;
 	}
 
-	public BaseDao<UserWxUserRecord> getWxuserdao() {
-		return wxuserdao;
-	}
 
-	public void setWxuserdao(BaseDao<UserWxUserRecord> wxuserdao) {
-		this.wxuserdao = wxuserdao;
-	}
+    public UserSearchConditionListVO userSearchConditionList(int userId) throws TException {
+	    logger.info("[Thread-id = {}] getUserSearchCondition params: userId = {}", Thread.currentThread().getId(), userId);
+        UserSearchConditionListVO result = new UserSearchConditionListVO();
+        JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.SUCCESS);
+        CommonQuery query = null;
+        try {
+            query = new CommonQuery();
+            query.setEqualFilter(new HashMap<>());
+            query.getEqualFilter().put("user_id", String.valueOf(userId));
+            query.getEqualFilter().put("disable", String.valueOf(0)); // 0: 不禁用 1: 禁用
+            result.setSearchConditionList(userDao.getUserSearchConditions(query));
+        } catch (Exception e) {
+            jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+            logger.error(e.getMessage(), e);
+        }
+        result.setStatus(jsonObject.getIntValue("status"));
+        result.setMessage(jsonObject.getString("message"));
+        logger.info("[Thread-id = {}] getUserSearchCondition response: {}", Thread.currentThread().getId(), result);
+        return result;
+    }
 
-	public UserDao getUserdao() {
-		return userdao;
-	}
+    public UserSearchConditionVO postUserSearchCondition(UserSearchConditionDO userSearchCondition) throws TException {
+	    logger.info("postUserSearchCondition params: userSearchCondition={}", userSearchCondition);
+        UserSearchConditionVO result = new UserSearchConditionVO();
+        result.setSearchCondition(new UserSearchConditionDO());
+        JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.SUCCESS);
+        try {
+            userSearchCondition = userDao.saveUserSearchCondition(userSearchCondition);
+            if (userSearchCondition != null && userSearchCondition.getId() > 0) {
+                result.setSearchCondition(userSearchCondition);
+            } else {
+                jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+            }
+        } catch (Exception e) {
+            jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+            logger.error(e.getMessage(), e);
+        }
+        result.setStatus(jsonObject.getIntValue("status"));
+        result.setMessage(jsonObject.getString("message"));
+        logger.info("postUserSearchCondition response: {}", result);
+        return result;
+    }
 
-	public void setUserdao(UserDao userdao) {
-		this.userdao = userdao;
-	}
+    public UserSearchConditionVO delUserSearchCondition(int userId, int id) throws TException {
+	    logger.info("delUserSearchCondition params: userId={}, id={}", userId, id);
+        CommonQuery query = new CommonQuery();
+        UserSearchConditionVO result = new UserSearchConditionVO();
+        result.setSearchCondition(new UserSearchConditionDO());
+        JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.SUCCESS);
+        try {
+            query.setEqualFilter(new HashMap<>());
+            query.getEqualFilter().put("user_id", String.valueOf(userId));
+            query.getEqualFilter().put("id", String.valueOf(id));
+            List<UserSearchConditionDO> conditions = userDao.getUserSearchConditions(query);
+            if(conditions != null && conditions.get(0) != null && conditions.get(0).getId() != 0) {
+                result.setSearchCondition(conditions.get(0).getDisable() == 1 ? conditions.get(0) : userDao.updateUserSearchCondition(conditions.get(0)).setDisable((byte)1));
+            } else {
+                jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
+                logger.error("用户(user_id={})不存在该筛选项(筛选项id={})", userId, id);
+            }
+        } catch (Exception e) {
+            jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+            logger.error(e.getMessage(), e);
+        }
+        result.setStatus(jsonObject.getIntValue("status"));
+        result.setMessage(jsonObject.getString("message"));
+        logger.info("delUserSearchCondition response: {}", result);
+        return result;
+    }
 
-	public ProfileDao getProfileDao() {
-		return profileDao;
-	}
+    public UserCollectPositionVO getUserCollectPosition(int userId, int positionId) throws TException {
+        logger.info("getUserCollectPosition params: userId={}, positionId={}", userId, positionId);
+        UserCollectPositionVO result = new UserCollectPositionVO();
+        result.setUserCollectPosition(new UserCollectPositionDO());
+        JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.SUCCESS);
+        try {
+            CommonQuery query = new CommonQuery();
+            query.setEqualFilter(new HashMap<>());
+            query.getEqualFilter().put("user_id", String.valueOf(userId));
+            query.getEqualFilter().put("positionId", String.valueOf(positionId));
+            UserCollectPositionDO entity = userDao.getUserCollectPosition(query);
+            if (entity != null && entity.getId() > 0) {
+                result.setUserCollectPosition(entity);
+            } else {
+                jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", "未找到收藏记录"));
+            }
+        } catch (Exception e) {
+            jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+            logger.error(e.getMessage(), e);
+        }
+        result.setStatus(jsonObject.getIntValue("status"));
+        result.setMessage(jsonObject.getString("message"));
+        logger.info("getUserCollectPosition response: {}", result);
+        return result;
+    }
 
-	public void setProfileDao(ProfileDao profileDao) {
-		this.profileDao = profileDao;
-	}
-
-	public UsersettingDao getUserSettingDao() {
-		return userSettingDao;
-	}
-
-	public void setUserSettingDao(UsersettingDao userSettingDao) {
-		this.userSettingDao = userSettingDao;
-	}
-
-	public UserFavoritePositionDao getUserFavoritePositionDao() {
-		return userFavoritePositionDao;
-	}
-
-	public void setUserFavoritePositionDao(UserFavoritePositionDao userFavoritePositionDao) {
-		this.userFavoritePositionDao = userFavoritePositionDao;
-	}
-
-	public WechatDao getWechatDao() {
-		return wechatDao;
-	}
-
-	public void setWechatDao(WechatDao wechatDao) {
-		this.wechatDao = wechatDao;
-	}
+    public UserCollectPositionVO putUserCollectPosition(int userId, int positionId, int status) throws TException {
+        logger.info("putUserCollectPosition params: userId={}, positionId={}, status={}", userId, positionId, status);
+        UserCollectPositionVO result = new UserCollectPositionVO();
+        result.setUserCollectPosition(new UserCollectPositionDO());
+        JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.SUCCESS);
+        try {
+            CommonQuery query = new CommonQuery();
+            query.setEqualFilter(new HashMap<>());
+            query.getEqualFilter().put("user_id", String.valueOf(userId));
+            query.getEqualFilter().put("positionId", String.valueOf(positionId));
+            UserCollectPositionDO entity = userDao.getUserCollectPosition(query);
+            if (entity != null && entity.getId() > 0) {
+                if (entity.getStatus() == status) {
+                    result.setUserCollectPosition(entity);
+                } else {
+                    entity.setStatus(status);
+                    entity.setUpdateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
+                    result.setUserCollectPosition(userDao.updateUserCollectPosition(entity));
+                }
+            } else {
+                entity = new UserCollectPositionDO();
+                entity.setStatus(status);
+                entity.setUserId(userId);
+                entity.setPositionId(positionId);
+                entity.setCreateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
+                result.setUserCollectPosition(userDao.saveUserCollectPosition(entity));
+            }
+        } catch (Exception e) {
+            jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+            logger.error(e.getMessage(), e);
+        }
+        result.setStatus(jsonObject.getIntValue("status"));
+        result.setMessage(jsonObject.getString("message"));
+        logger.info("putUserCollectPosition response: {}", result);
+        return result;
+    }
 }

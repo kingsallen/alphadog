@@ -4,6 +4,8 @@ namespace py thrift_gen.gen.dao.service.userdb
 include "../../common/struct/common_struct.thrift"
 include "../struct/userdb_struct.thrift"
 include "../../useraccounts/struct/useraccounts_struct.thrift"
+include "../struct/userdb/user_collect_position_struct.thrift"
+include "../struct/userdb/user_search_condition_struct.thrift"
 
 service UserDBDao {
     list<userdb_struct.UserFavPositionDO> getUserFavPositions(1:common_struct.CommonQuery query);
@@ -36,4 +38,18 @@ service UserDBDao {
 
     list<userdb_struct.UserWxUserDO> listUserWxUserDO(1: common_struct.CommonQuery query) throws (1:common_struct.CURDException e)
     userdb_struct.UserWxUserDO getUserWxUserDO(1: common_struct.CommonQuery query) throws (1:common_struct.CURDException e)
+
+    //获取用户的筛选条件
+    list<user_search_condition_struct.UserSearchConditionDO> getUserSearchConditions(1: common_struct.CommonQuery query);
+    //保存用户筛选条件
+    user_search_condition_struct.UserSearchConditionDO saveUserSearchCondition(1: user_search_condition_struct.UserSearchConditionDO entity);
+    //修改用户筛选条件
+    user_search_condition_struct.UserSearchConditionDO updateUserSearchCondition(1: user_search_condition_struct.UserSearchConditionDO entity);
+
+    // 获取用户收藏的职位
+    user_collect_position_struct.UserCollectPositionDO getUserCollectPosition(1: common_struct.CommonQuery query);
+    // 保存用户收藏职位
+    user_collect_position_struct.UserCollectPositionDO saveUserCollectPosition(1: user_collect_position_struct.UserCollectPositionDO entity);
+    // 修改收藏职位
+    user_collect_position_struct.UserCollectPositionDO updateUserCollectPosition(1: user_collect_position_struct.UserCollectPositionDO entity);
 }
