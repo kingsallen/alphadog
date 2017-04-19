@@ -49,7 +49,7 @@ public class UserCenterThriftServiceTest {
     /**
      * Method: getApplicationDetail(int userId, int appId)
      */
-    @Test
+    //@Test
     public void testGetApplicationDetail() throws Exception {
         ApplicationDetailVO vo = userCenterService.getApplicationDetail(3870, 204504);
         if(vo != null) {
