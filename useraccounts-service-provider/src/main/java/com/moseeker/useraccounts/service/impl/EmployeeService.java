@@ -168,16 +168,11 @@ public class EmployeeService {
                 query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
                 query.getEqualFilter().put("email", bindingParams.getEmail());
                 query.getEqualFilter().put("disable", "0");
-                UserEmployeeDO employee = userDao.getEmployee(query);
 
-                // 判断该邮箱现在是否正在被人认证
-                if (employee != null && employee.getId() > 0 && employee.getActivation() == 0) {
-                    response.setSuccess(false);
-                    response.setMessage("该邮箱已被认证\n请使用其他邮箱");
-                    break;
-                }
-
-                if (employee.getId() != 0 && StringUtils.isNotNullOrEmpty(client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, String.valueOf(employee.getId())))) {
+                // 判断该邮箱现在已被占用 或 正在被人认证
+                List<UserEmployeeDO> userEmployees = userDao.getUserEmployeesDO(query);
+                userEmployees = userEmployees.stream().filter(e -> e.getSysuserId() != bindingParams.getUserId() && e.getId() > 0).collect(Collectors.toList());
+                if (userEmployees.stream().anyMatch(e -> e.getActivation() == 0 || StringUtils.isNotNullOrEmpty(client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, String.valueOf(e.getId()))))) {
                     response.setSuccess(false);
                     response.setMessage("该邮箱已被认证\n请使用其他邮箱");
                     break;
@@ -188,7 +183,7 @@ public class EmployeeService {
 				query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
 				query.getEqualFilter().put("sysuser_id", String.valueOf(bindingParams.getUserId()));
 				query.getEqualFilter().put("disable", "0");
-                employee = userDao.getEmployee(query);
+                UserEmployeeDO employee = userDao.getEmployee(query);
 				
 				if (employee != null && employee.getId() > 0 && employee.getActivation() == 0) {
 					response.setSuccess(false);
@@ -386,6 +381,7 @@ public class EmployeeService {
 		log.info("BindingParams response: {}", response);
 		return response;
 	}
+
 
     /**
 	 * step 1: 认证当前员工   step 2: 将其他公司的该用户员工设为未认证
