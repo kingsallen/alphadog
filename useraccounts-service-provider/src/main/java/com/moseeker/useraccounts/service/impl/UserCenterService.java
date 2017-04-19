@@ -1,8 +1,6 @@
 package com.moseeker.useraccounts.service.impl;
 
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.biztools.ApplyType;
-import com.moseeker.common.biztools.EmailStatus;
 import com.moseeker.common.biztools.RecruitmentScheduleEnum;
 import com.moseeker.common.exception.RecruitmentScheduleLastStepNotExistException;
 import com.moseeker.common.thread.ThreadPool;

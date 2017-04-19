@@ -49,7 +49,7 @@ public class UserCenterThriftServiceTest {
     /**
      * Method: getApplicationDetail(int userId, int appId)
      */
-    //@Test
+    @Test
     public void testGetApplicationDetail() throws Exception {
         ApplicationDetailVO vo = userCenterService.getApplicationDetail(3870, 204504);
         if(vo != null) {
@@ -94,7 +94,7 @@ public class UserCenterThriftServiceTest {
     /**
      * Method: getRecommendation(int userId, byte type, int pageNo, int pageSize)
      */
-    @Test
+    //@Test
     public void testGetRecommendation() throws Exception {
         RecommendationVO recommendationVO = userCenterService.getRecommendation(191549, (byte) 3, 1, 10);
         if(recommendationVO != null) {

@@ -138,7 +138,7 @@ public enum RecruitmentScheduleEnum {
             case 12 :
             case 11 :
             case 3:
-                if(emailStatus == EmailStatus.NOMAIL.getValue()) {
+                if(emailStatus != EmailStatus.NOMAIL.getValue()) {
                     value = 0;
                 } else {
                     value = 1;
