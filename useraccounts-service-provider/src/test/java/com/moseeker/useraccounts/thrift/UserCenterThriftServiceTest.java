@@ -101,7 +101,7 @@ public class UserCenterThriftServiceTest {
             System.out.println("is recommended : "+recommendationVO.isHasRecommends());
             System.out.println("score:");
             if(recommendationVO.getScore() != null) {
-                System.out.println(" applier_count : "+recommendationVO.getScore().getApplied_count());
+                System.out.println(" applier_account : "+recommendationVO.getScore().getApplied_count());
                 System.out.println(" interested_count : "+recommendationVO.getScore().getInterested_count());
                 System.out.println(" link_viewed_count : "+recommendationVO.getScore().getLink_viewed_count());
             }

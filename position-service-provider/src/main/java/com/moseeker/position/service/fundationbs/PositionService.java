@@ -979,32 +979,6 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 companyId = org.apache.commons.lang.StringUtils.join(cIds.toArray(), ",");
             }
 
-            logger.info("query.getCompanyId(): "+ query.getCompany_id());
-            logger.info("query.getDid(): " + query.getDid());
-            logger.info("query.isSetDid(): "+ query.isSetDid());
-
-            logger.info("companyId: "+ companyId);
-            logger.info("childCompanyId: " + childCompanyId);
-
-            logger.info(
-                    "keywords:" + query.getKeywords() +
-                    ", cities: " + query.getCities() +
-                    ", industries: " + query.getIndustries() +
-                    ", occupations: " + query.getOccupations() +
-                    ", scale: " + query.getScale() +
-                    ", employment_type: " + query.getEmployment_type() +
-                    ", candidate_source: " + query.getCandidate_source() +
-                    ", experience: " + query.getExperience() +
-                    ", degree: " + query.getDegree() +
-                    ", salary: " + query.getSalary() +
-                    ", company_id: " + companyId +
-                    ", page_from: " + query.getPage_from() +
-                    ", page_size: " + query.getPage_size() +
-                    ", childCompanyId: " + childCompanyId +
-                    ", department: " + query.getDepartment() +
-                    ", order_by_priority: " + query.isOrder_by_priority() +
-                    ", custom: " + query.getCustom());
-
             //获取 pid list
             Response ret = searchEngineService.query(
                     query.getKeywords(),
@@ -1022,7 +996,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     query.getPage_size(),
                     childCompanyId,
                     query.getDepartment(),
-                    query.isOrder_by_priority(),
+                    true,
                     query.getCustom());
 
             if (ret.getStatus() == 0 && !StringUtils.isNullOrEmpty(ret.getData())) {
@@ -1074,9 +1048,12 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     e.setIn_hb(jr.getHbStatus() > 0);
                     e.setCount(jr.getCount());
                     e.setCity(jr.getCity());
+                    e.setPriority(jr.getPriority());
 
                     dataList.add(e);
                 }
+
+                logger.info(dataList.toString());
 
                 // 获取公司信息，拼装 company abbr, logo 等信息
                 final HrCompanyDO companyInfo;
