@@ -166,26 +166,18 @@ public class EmployeeService {
 
 
 				// 验证员工是否已认证
-				query.getEqualFilter().clear();
-				query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
-				query.getEqualFilter().put("sysuser_id", String.valueOf(bindingParams.getUserId()));
-				query.getEqualFilter().put("disable", "0");
-				query.getEqualFilter().put("status", "0");
-				UserEmployeeDO employee = userDao.getEmployee(query);
-				
+				UserEmployeeDO employee = findEmployee(bindingParams.getCompanyId(), bindingParams.getUserId());
 				if (employee != null && employee.getId() > 0 && employee.getActivation() == 0) {
 					response.setSuccess(false);
 					response.setMessage("该员工已绑定");
 					break;
 				}
 
-
                 // 判断该邮箱是否被占用
                 query.getEqualFilter().clear();
                 query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
                 query.getEqualFilter().put("email", bindingParams.getEmail());
                 query.getEqualFilter().put("disable", "0");
-                query.getEqualFilter().put("status", "0");
                 employee = userDao.getEmployee(query);
 
                 if (employee != null && employee.getId() > 0 && employee.getActivation() == 0) {
@@ -193,7 +185,6 @@ public class EmployeeService {
                     response.setMessage("该邮箱已被认证\n请使用其他邮箱");
                     break;
                 }
-
 
 				// 员工信息不存在，创建员工信息（仅邮箱认证时进行该操作）
 				if (employee == null || employee.getId() == 0) {
@@ -255,13 +246,21 @@ public class EmployeeService {
 				}
 				break;
 			case CUSTOMFIELD:
+
+				// 验证员工是否已认证
+				employee = findEmployee(bindingParams.getCompanyId(), bindingParams.getUserId());
+				if (employee != null && employee.getId() > 0 && employee.getActivation() == 0) {
+					response.setSuccess(false);
+					response.setMessage("该员工已绑定");
+					break;
+				}
+
 				// 员工信息验证
 				query.getEqualFilter().clear();
 				query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
                 query.getEqualFilter().put("cname", bindingParams.getName());
                 query.getEqualFilter().put("custom_field", bindingParams.getCustomField());
                 query.getEqualFilter().put("disable", "0");
-                query.getEqualFilter().put("status", "0");
 
 				employee = userDao.getEmployee(query);
 				if (employee == null || employee.getId() == 0) {
@@ -289,13 +288,7 @@ public class EmployeeService {
 			case QUESTIONS:
 
                 // 验证员工是否已认证
-                query.getEqualFilter().clear();
-                query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
-                query.getEqualFilter().put("sysuser_id", String.valueOf(bindingParams.getUserId()));
-                query.getEqualFilter().put("disable", "0");
-                query.getEqualFilter().put("status", "0");
-                employee = userDao.getEmployee(query);
-
+				employee = findEmployee(bindingParams.getCompanyId(), bindingParams.getUserId());
                 if (employee == null || employee.getId() == 0) {
                     employee = new UserEmployeeDO();
                     employee.setCompanyId(bindingParams.getCompanyId());
@@ -370,7 +363,6 @@ public class EmployeeService {
 		query.setEqualFilter(new HashMap<String, String>());
 		query.getEqualFilter().put("sysuser_id", String.valueOf(bindingParams.getUserId()));
 		query.getEqualFilter().put("disable", "0");
-		query.getEqualFilter().put("status", "0");
 		List<UserEmployeeDO> employees = userDao.getUserEmployeesDO(query);
 		log.info("select employees by: {}, result = {}", query, Arrays.toString(employees.toArray()));
 		if (!StringUtils.isEmptyList(employees)) {
@@ -637,4 +629,14 @@ public class EmployeeService {
         }
         return wxUserId;
     }
+
+    private UserEmployeeDO findEmployee(int companyId, int userId) {
+    	QueryUtil query = new QueryUtil();
+		query.addEqualFilter("company_id", companyId).addEqualFilter("sysuser_id", userId).addEqualFilter("disable", 0);
+		try {
+			return userDao.getEmployee(query);
+		} catch (TException e) {
+			return null;
+		}
+	}
 }

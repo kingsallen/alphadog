@@ -266,6 +266,7 @@ public class UserCenterService {
                                                 ? repost.getName() : repost.getNickname()));
                     }
                     /** 计算招聘进度 */
+                    recommendationRecordVO.setStatus((short)0);
                     if(apps != null && apps.size() > 0) {
                         apps.stream().filter(app -> app.getId() == candidateRecomRecordDO.getAppId()).forEach(app -> {
                             RecruitmentScheduleEnum recruitmentScheduleEnum = RecruitmentScheduleEnum.createFromID(app.getAppTplId());
@@ -284,6 +285,8 @@ public class UserCenterService {
                             recommendationRecordVO.setStatus((short) recruitmentScheduleEnum.getStatusForRecommendationInPersonalCenter());
                         });
                     }
+                    recommendationRecordVO.setIs_interested((byte)0);
+                    recommendationRecordVO.setView_number(0);
                     if(candidatePositionDOList != null && candidatePositionDOList.size() > 0) {
                         candidatePositionDOList.stream()
                                 .filter(candidatePosition ->
