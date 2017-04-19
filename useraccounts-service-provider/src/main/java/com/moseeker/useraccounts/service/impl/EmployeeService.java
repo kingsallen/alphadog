@@ -260,6 +260,14 @@ public class EmployeeService {
 				}
 				break;
 			case CUSTOMFIELD:
+
+                // 验证员工是否已存在
+                query.getEqualFilter().clear();
+                query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
+                query.getEqualFilter().put("sysuser_id", String.valueOf(bindingParams.getUserId()));
+                query.getEqualFilter().put("disable", "0");
+                UserEmployeeDO oldEmployee = userDao.getEmployee(query);
+
 				// 员工信息验证
 				query.getEqualFilter().clear();
 				query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
@@ -275,17 +283,24 @@ public class EmployeeService {
 					response.setSuccess(false);
 					response.setMessage("该员工已绑定");
 				} else if (employee.getSysuserId() == 0) {
-                    employee.setSysuserId(bindingParams.getUserId());
-                    Response updateResult = userDao.putUserEmployeesDO(Arrays.asList(employee));
-                    if (updateResult.getStatus() == 0){
-                        response = updateEmployee(bindingParams, employee.getId());
+                    if (oldEmployee != null && oldEmployee.getId() != 0) {
+                        response = updateEmployee(bindingParams, oldEmployee.getId());
                     } else {
-                        response.setSuccess(false);
-                        response.setMessage(updateResult.getMessage());
+                        employee.setSysuserId(bindingParams.getUserId());
+                        Response updateResult = userDao.putUserEmployeesDO(Arrays.asList(employee));
+                        if (updateResult.getStatus() == 0){
+                            response = updateEmployee(bindingParams, employee.getId());
+                        } else {
+                            response.setSuccess(false);
+                            response.setMessage(updateResult.getMessage());
+                        }
                     }
                 } else if (employee.getSysuserId() == bindingParams.getUserId()) {
-					response = updateEmployee(bindingParams, employee.getId());
-				} else {
+                    if (oldEmployee != null && oldEmployee.getId() != 0) {
+                        employee =  oldEmployee;
+                    }
+                    response = updateEmployee(bindingParams, employee.getId());
+                } else {
                     response.setSuccess(false);
                     response.setMessage("员工认证信息不匹配");
                 }
@@ -388,8 +403,9 @@ public class EmployeeService {
 					e.setEmail(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getEmail(), e.getEmail()));
 					e.setBindingTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
 					e.setUpdateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
-					if (StringUtils.isNotNullOrEmpty(bindingParams.getName())) e.setCname(bindingParams.getName());
-					if (StringUtils.isNotNullOrEmpty(bindingParams.getMobile())) e.setMobile(bindingParams.getMobile());
+					e.setCname(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getName(), e.getCname()));
+					e.setMobile(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), e.getMobile()));
+					e.setCustomField(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getCustomField(), e.getCustomField()));
 				} else {
 					e.setActivation((byte)4);
 				}
