@@ -49,12 +49,11 @@ public class EmployeeService {
 	MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
 	CompanyDao.Iface companyDao = ServiceManager.SERVICEMANAGER.getService(CompanyDao.Iface.class);
 	RedisClient client = CacheClient.getInstance();
-	UserEmployeeDao.Iface userEmployeeDao = ServiceManager.SERVICEMANAGER.getService(UserEmployeeDao.Iface.class);
 
 	public EmployeeResponse getEmployee(int userId, int companyId) throws TException {
 		log.info("getEmployee param: userId={} , companyId={}", userId, companyId);
 		CommonQuery query = new CommonQuery();
-		query.setEqualFilter(new HashMap<String, String>());
+		query.setEqualFilter(new HashMap<>());
 		UserEmployeeDO employee;
 		EmployeeResponse response = new EmployeeResponse();
 		try {
@@ -191,7 +190,7 @@ public class EmployeeService {
 				}
 
 
-				// 员工信息不存在，创建员工信息（仅邮箱认证时进行该操作）
+				// 员工信息不存在，创建员工信息
 				if (employee == null || employee.getId() == 0) {
 					employee = new UserEmployeeDO();
 					employee.setCompanyId(bindingParams.getCompanyId());
@@ -233,7 +232,7 @@ public class EmployeeService {
 				if (companyDO != null && hrwechatResult.getStatus() == 0 && StringUtils.isNotNullOrEmpty(hrwechatResult.getData())) {
 					JSONObject hrWxWechatJson = JSONObject.parseObject(hrwechatResult.getData());
 					String activationCode = DESCoder.encrypt(String.valueOf(employee.getId()));
-					Map<String, String> mesBody = new HashMap<String, String>();
+					Map<String, String> mesBody = new HashMap<>();
 					mesBody.put("#company_log#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(companyDO.getLogo(), ""));
 					mesBody.put("#employee_name#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(employee.getCname(), genUsername(employee.getSysuserId())));
 					mesBody.put("#company_abbr#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(companyDO.getAbbreviation(), ""));
@@ -260,6 +259,18 @@ public class EmployeeService {
 				}
 				break;
 			case CUSTOMFIELD:
+
+                /**
+                 *
+                 * 验证员工是否已存在
+                 * 如果存在就在老数据上做认证，如果不存在则新员工信息上做认证
+                 */
+                query.getEqualFilter().clear();
+                query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
+                query.getEqualFilter().put("sysuser_id", String.valueOf(bindingParams.getUserId()));
+                query.getEqualFilter().put("disable", "0");
+                UserEmployeeDO oldEmployee = userDao.getEmployee(query);
+
 				// 员工信息验证
 				query.getEqualFilter().clear();
 				query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
@@ -274,18 +285,25 @@ public class EmployeeService {
 				} else if (employee.getActivation() == 0) {
 					response.setSuccess(false);
 					response.setMessage("该员工已绑定");
-				} else if (employee.getSysuserId() == 0) {
-                    employee.setSysuserId(bindingParams.getUserId());
-                    Response updateResult = userDao.putUserEmployeesDO(Arrays.asList(employee));
-                    if (updateResult.getStatus() == 0){
-                        response = updateEmployee(bindingParams, employee.getId());
+				} else if (employee.getSysuserId() == 0) { // sysuserId =  0 说明员工信息是批量上传的未设置user_id
+                    if (oldEmployee != null && oldEmployee.getId() != 0) {
+                        response = updateEmployee(bindingParams, oldEmployee.getId());
                     } else {
-                        response.setSuccess(false);
-                        response.setMessage(updateResult.getMessage());
+                        employee.setSysuserId(bindingParams.getUserId());
+                        Response updateResult = userDao.putUserEmployeesDO(Arrays.asList(employee));
+                        if (updateResult.getStatus() == 0){
+                            response = updateEmployee(bindingParams, employee.getId());
+                        } else {
+                            response.setSuccess(false);
+                            response.setMessage(updateResult.getMessage());
+                        }
                     }
                 } else if (employee.getSysuserId() == bindingParams.getUserId()) {
-					response = updateEmployee(bindingParams, employee.getId());
-				} else {
+                    if (oldEmployee != null && oldEmployee.getId() != 0) {
+                        employee =  oldEmployee;
+                    }
+                    response = updateEmployee(bindingParams, employee.getId());
+                } else {  // 说明 employee.user_id != bindingParams.user_id 用户提供的信息与员工信息不匹配
                     response.setSuccess(false);
                     response.setMessage("员工认证信息不匹配");
                 }
@@ -299,7 +317,7 @@ public class EmployeeService {
                 query.getEqualFilter().put("disable", "0");
                 employee = userDao.getEmployee(query);
 
-                if (employee == null || employee.getId() == 0) {
+                if (employee == null || employee.getId() == 0) { // 找不到员工信息，创建一条员工信息
                     employee = new UserEmployeeDO();
                     employee.setCompanyId(bindingParams.getCompanyId());
                     employee.setEmployeeid(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), ""));
@@ -372,7 +390,7 @@ public class EmployeeService {
 		log.info("updateEmployee param: BindingParams={}", bindingParams);
 		Result response = new Result();
 		CommonQuery query = new CommonQuery();
-		query.setEqualFilter(new HashMap<String, String>());
+		query.setEqualFilter(new HashMap<>());
 		query.getEqualFilter().put("sysuser_id", String.valueOf(bindingParams.getUserId()));
 		query.getEqualFilter().put("disable", "0");
 		List<UserEmployeeDO> employees = userDao.getUserEmployeesDO(query);
@@ -388,8 +406,9 @@ public class EmployeeService {
 					e.setEmail(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getEmail(), e.getEmail()));
 					e.setBindingTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
 					e.setUpdateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
-					if (StringUtils.isNotNullOrEmpty(bindingParams.getName())) e.setCname(bindingParams.getName());
-					if (StringUtils.isNotNullOrEmpty(bindingParams.getMobile())) e.setMobile(bindingParams.getMobile());
+					e.setCname(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getName(), e.getCname()));
+					e.setMobile(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getMobile(), e.getMobile()));
+					e.setCustomField(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getCustomField(), e.getCustomField()));
 				} else {
 					e.setActivation((byte)4);
 				}
@@ -419,7 +438,7 @@ public class EmployeeService {
             response.setMessage("解绑成功");
         } else {
             CommonQuery query = new CommonQuery();
-            query.setEqualFilter(new HashMap<String, String>());
+            query.setEqualFilter(new HashMap<>());
             query.getEqualFilter().put("sysuser_id", String.valueOf(userId));
             query.getEqualFilter().put("company_id", String.valueOf(companyId));
             query.getEqualFilter().put("id", String.valueOf(employeeId));
@@ -449,10 +468,10 @@ public class EmployeeService {
 			throws TException {
 		log.info("getEmployeeCustomFieldsConf param: companyId={}", companyId);
 		CommonQuery query = new CommonQuery();
-		query.setEqualFilter(new HashMap<String, String>());
+		query.setEqualFilter(new HashMap<>());
 		query.getEqualFilter().put("company_id", String.valueOf(companyId));
-		List<HrEmployeeCustomFieldsDO> customFields = new ArrayList<HrEmployeeCustomFieldsDO>();
-		List<EmployeeCustomFieldsConf> response = new ArrayList<EmployeeCustomFieldsConf>();
+		List<HrEmployeeCustomFieldsDO> customFields = new ArrayList<>();
+		List<EmployeeCustomFieldsConf> response = new ArrayList<>();
 		try {
 			customFields = hrDBDao.getEmployeeCustomFields(query);
 			log.info("select EmployeeCustomField by: {}, result = {}", query, customFields);
@@ -481,7 +500,7 @@ public class EmployeeService {
 		log.info("getEmployeeRewards param: employeeId={}, companyId={}", employeeId, companyId);
 		RewardsResponse response = new RewardsResponse();
 		CommonQuery query = new CommonQuery();
-		query.setEqualFilter(new HashMap<String, String>());
+		query.setEqualFilter(new HashMap<>());
 		query.getEqualFilter().put("company_id", String.valueOf(companyId));
 		try {
 			/*
@@ -515,8 +534,8 @@ public class EmployeeService {
 				query.getEqualFilter().clear();
 				query.getEqualFilter().put("id", Arrays.toString(aids.toArray()));
 				List<JobApplicationDO> applications = jobDBDao.getApplications(query);
-				final Map<Integer, Integer>  appMap = new HashMap<Integer, Integer>();
-				final Map<Integer, String> positionMap = new HashMap<Integer, String>();
+				final Map<Integer, Integer>  appMap = new HashMap<>();
+				final Map<Integer, String> positionMap = new HashMap<>();
 				// 转成map -> k: applicationId, v: positionId
 				if (!StringUtils.isEmptyList(applications)) {
 					appMap.putAll(applications.stream().collect(Collectors.toMap(JobApplicationDO::getId, JobApplicationDO::getPositionId)));
@@ -532,7 +551,7 @@ public class EmployeeService {
 				// 计算积分总合
 				int total = points.stream().mapToInt(m -> m.getAward()).filter(f -> f > 0).sum();
 				// 用户积分记录：
-				List<Reward> rewards = new ArrayList<Reward>();
+				List<Reward> rewards = new ArrayList<>();
 				points.forEach(point -> {
 					Reward reward = new Reward();
 					reward.setReason(point.getReason());
@@ -556,7 +575,7 @@ public class EmployeeService {
 		log.info("setEmployeeCustomInfo param: employeeId={}, customValues={}", employeeId, customValues);
 		Result response = new Result();
 		CommonQuery query = new CommonQuery();
-		query.setEqualFilter(new HashMap<String, String>());
+		query.setEqualFilter(new HashMap<>());
 		query.getEqualFilter().put("employeeid", String.valueOf(employeeId));
 		List<UserEmployeeDO> userEmployeesDO = userDao.getUserEmployeesDO(query);
 		log.info("select userEmployee by: {}, result = {}", query, Arrays.toString(userEmployeesDO.toArray()));
