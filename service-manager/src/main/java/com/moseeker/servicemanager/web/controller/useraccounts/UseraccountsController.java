@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserSearchConditionDO;
@@ -782,8 +783,7 @@ public class UseraccountsController {
             Params<String, Object> param = ParamUtils.parseRequestParam(request);
             int userId = param.getInt("user_id", 0);
 
-            List<UserSearchConditionDO> data = useraccountsServices.userSearchConditionList(userId);
-            return ResponseLogNotification.success(request, ResponseUtils.success(data));
+            return JSONObject.toJSONString(useraccountsServices.userSearchConditionList(userId));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -802,8 +802,7 @@ public class UseraccountsController {
         try {
             UserSearchConditionDO conditionDO = ParamUtils.initModelForm(request, UserSearchConditionDO.class);
 
-            UserSearchConditionDO data = useraccountsServices.postUserSearchCondition(conditionDO);
-            return ResponseLogNotification.success(request, ResponseUtils.success(data));
+            return JSONObject.toJSONString(useraccountsServices.postUserSearchCondition(conditionDO));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -824,8 +823,7 @@ public class UseraccountsController {
             int userId = params.getInt("user_id", 0);
             int id = params.getInt("id", 0);
 
-            Response result = useraccountsServices.delUserSearchCondition(userId, id);
-            return ResponseLogNotification.success(request, result);
+            return JSONObject.toJSONString(useraccountsServices.delUserSearchCondition(userId, id));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -846,8 +844,7 @@ public class UseraccountsController {
             int userId = params.getInt("user_id", 0);
             int positionId = params.getInt("position_id", 0);
 
-            UserCollectPositionDO data = useraccountsServices.postUserCollectPosition(userId, positionId);
-            return ResponseLogNotification.success(request, ResponseUtils.success(data));
+            return JSONObject.toJSONString(useraccountsServices.postUserCollectPosition(userId, positionId));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -868,8 +865,7 @@ public class UseraccountsController {
             int userId = params.getInt("user_id", 0);
             int positionId = params.getInt("position_id", 0);
 
-            UserCollectPositionDO data = useraccountsServices.getUserCollectPosition(userId, positionId);
-            return ResponseLogNotification.success(request, ResponseUtils.success(data));
+            return JSONObject.toJSONString(useraccountsServices.getUserCollectPosition(userId, positionId));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -890,8 +886,7 @@ public class UseraccountsController {
             int userId = params.getInt("user_id", 0);
             int positionId = params.getInt("position_id", 0);
 
-            UserCollectPositionDO data = useraccountsServices.delUserCollectPosition(userId, positionId);
-            return ResponseLogNotification.success(request, ResponseUtils.success(data));
+            return JSONObject.toJSONString(useraccountsServices.delUserCollectPosition(userId, positionId));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());

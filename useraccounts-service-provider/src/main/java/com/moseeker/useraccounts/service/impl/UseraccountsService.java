@@ -9,8 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.moseeker.thrift.gen.dao.service.ProfileDBDao;
 import com.moseeker.thrift.gen.dao.service.UserDBDao;
 import com.moseeker.thrift.gen.dao.struct.UserUserDO;
+import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileBasicDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserSearchConditionDO;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
@@ -79,6 +81,8 @@ public class UseraccountsService {
 	
 	com.moseeker.thrift.gen.dao.service.UserDBDao.Iface userDao = ServiceManager.SERVICEMANAGER
 			.getService(com.moseeker.thrift.gen.dao.service.UserDBDao.Iface.class);
+
+	ProfileDBDao.Iface profileDBDao = ServiceManager.SERVICEMANAGER.getService(ProfileDBDao.Iface.class);
 
 	@Autowired
 	protected BaseDao<UserWxUserRecord> wxuserdao;
@@ -163,6 +167,18 @@ public class UseraccountsService {
 					resp.put("last_login_time", user.getLastLoginTime());
 					resp.put("name", user.getName());
 					resp.put("headimg", user.getHeadimg());
+
+					// TODO 新增返回字段gender,来源于profile_basic
+                    int gender; // 0：未填写	1：男 2：女 3：保密 （默认：0）
+                    ProfileProfileRecord profileRecord = profileDao.getProfileByUserId(user.getId().intValue());
+
+                    query.getEqualFilter().clear();
+                    query.getEqualFilter().put("profile_id", profileRecord.getId().toString());
+
+                    ProfileBasicDO profileBasic = profileDBDao.getProfileBasic(query);
+                    gender = profileBasic.getGender();
+
+                    resp.put("gender", gender);
 
 					user.setLastLoginTime(new Timestamp(new Date().getTime()));
 					user.setLoginCount(user.getLoginCount() + 1);
