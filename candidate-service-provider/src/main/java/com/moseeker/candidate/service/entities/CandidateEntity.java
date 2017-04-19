@@ -109,22 +109,29 @@ public class CandidateEntity implements Candidate {
                         cp.get().setSharedFromEmployee(fromEmployee?(byte)1:0);
                         CandidateDBDao.updateCandidatePosition(cp.get());
                     } else {
-                        Optional<CandidateCompanyDO> candidateCompany = CandidateDBDao.getCandidateCompanyByUserIDCompanyID(userID, jobPositionDO.getCompanyId());
-                        if(candidateCompany.isPresent()) {
-                            candidateCompany.get().setCompanyId(jobPositionDO.getCompanyId());
-                            candidateCompany.get().setNickname(userUserDO.getNickname());
-                            candidateCompany.get().setHeadimgurl(userUserDO.getHeadimg());
-                            candidateCompany.get().setSysUserId(userID);
-                            candidateCompany.get().setMobile(String.valueOf(userUserDO.getMobile()));
-                            candidateCompany.get().setEmail(userUserDO.getEmail());
-                            candidateCompany.get().setUpdateTime(date);
-                            CandidateDBDao.updateCandidateCompany(candidateCompany.get());
+                        Optional<CandidateCompanyDO> candidateCompanyDOOptional = CandidateDBDao.getCandidateCompanyByUserIDCompanyID(userID, jobPositionDO.getCompanyId());
+                        CandidateCompanyDO candidateCompanyDO = null;
+                        if(!candidateCompanyDOOptional.isPresent()) {
+                            candidateCompanyDO = candidateCompanyDOOptional.get();
+                            candidateCompanyDO.setCompanyId(jobPositionDO.getCompanyId());
+                            candidateCompanyDO.setNickname(userUserDO.getNickname());
+                            candidateCompanyDO.setHeadimgurl(userUserDO.getHeadimg());
+                            candidateCompanyDO.setSysUserId(userID);
+                            candidateCompanyDO.setMobile(String.valueOf(userUserDO.getMobile()));
+                            candidateCompanyDO.setEmail(userUserDO.getEmail());
+                            candidateCompanyDO.setUpdateTime(date);
+                            CandidateDBDao.saveCandidateCompany(candidateCompanyDO);
+                        } else {
+                            candidateCompanyDO = candidateCompanyDOOptional.get();
                         }
-                        cp.get().setCandidateCompanyId(candidateCompany.get().getId());
-                        cp.get().setViewNumber(1);
-                        cp.get().setUpdateTime(date);
-                        cp.get().setSharedFromEmployee(fromEmployee?(byte)1:0);
-                        CandidateDBDao.saveCandidatePosition(cp.get());
+                        CandidatePositionDO candidatePositionDO = new CandidatePositionDO();
+                        candidatePositionDO.setCandidateCompanyId(candidateCompanyDO.getId());
+                        candidatePositionDO.setViewNumber(1);
+                        candidatePositionDO.setUpdateTime(date);
+                        candidatePositionDO.setSharedFromEmployee(fromEmployee?(byte)1:0);
+                        candidatePositionDO.setPositionId(positionID);
+                        candidatePositionDO.setUserId(userID);
+                        CandidateDBDao.saveCandidatePosition(candidatePositionDO);
                     }
                 }
             } catch (TException e) {

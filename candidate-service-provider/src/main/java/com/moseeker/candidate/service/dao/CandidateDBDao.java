@@ -55,7 +55,20 @@ public class CandidateDBDao {
     }
 
     public static void updateCandidateCompany(CandidateCompanyDO candidateCompany) throws TException  {
-        candidateDBDao.updateCandidateCompanys(candidateCompany);
+        try {
+            candidateDBDao.updateCandidateCompanys(candidateCompany);
+        } catch (TException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static CandidateCompanyDO saveCandidateCompany(CandidateCompanyDO candidateCompanyDO) {
+        try {
+            return candidateDBDao.saveCandidateCompanys(candidateCompanyDO);
+        } catch (TException e) {
+            LoggerFactory.getLogger(CandidateDBDao.class).error(e.getMessage(), e);
+            return null;
+        }
     }
 
     public static JobPositionDO getPositionByID(int positionID) {
@@ -111,7 +124,7 @@ public class CandidateDBDao {
     }
 
     public static void saveCandidatePosition(CandidatePositionDO cp) throws TException {
-        cp = candidateDBDao.updateCandidatePosition(cp);
+        cp = candidateDBDao.saveCandidatePosition(cp);
     }
 
     public static Optional<CandidatePositionDO> getCandidatePosition(int positionID, int userID) {
@@ -120,9 +133,12 @@ public class CandidateDBDao {
         qu.addEqualFilter("position_id", String.valueOf(positionID));
         try {
             CandidatePositionDO candidatePositionDO = candidateDBDao.getCandidatePosition(qu);
+            if(candidatePositionDO.getUserId() == 0) {
+                return Optional.empty();
+            }
             return Optional.of(candidatePositionDO);
         } catch (TException e) {
-            e.printStackTrace();
+            LoggerFactory.getLogger(CandidateDBDao.class).error(e.getMessage(), e);
             return Optional.empty();
         }
     }
