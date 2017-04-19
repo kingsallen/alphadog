@@ -1,11 +1,9 @@
 package com.moseeker.rpccenter.listener;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
+import com.alibaba.fastjson.JSON;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.rpccenter.config.ServerData;
+import com.moseeker.rpccenter.config.ServerManagerZKConfig;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.api.GetChildrenBuilder;
@@ -15,13 +13,13 @@ import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.data.Stat;
-
-import com.alibaba.fastjson.JSON;
-import com.moseeker.common.constants.Constant;
-import com.moseeker.rpccenter.common.Constants;
-import com.moseeker.rpccenter.config.ServerManagerZKConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * 
@@ -162,7 +160,7 @@ public enum NodeManager {
 			GetChildrenBuilder getChildrenBuilder = zookeeper.getChildren();
 			List<String> services = getChildrenBuilder.forPath(config.getZkSeparator());
 			if (services != null && services.size() > 0) {
-				List<ZKPath> childrenPaths = new ArrayList<>();
+				List<ZKPath> childrenPaths = new CopyOnWriteArrayList<>();
 				for (String service : services) {
 					ZKPath chirldrenPath = new ZKPath(service);
 					chirldrenPath.setParentNode(zkPath);
@@ -174,7 +172,7 @@ public enum NodeManager {
 									.forPath(config.getZkSeparator() + service + config.getZkSeparator()
 											+ childrenService);
 							if (grandChirldrenServices != null && grandChirldrenServices.size() > 0) {
-								List<ZKPath> grandChirldrenPaths = new ArrayList<>();
+								List<ZKPath> grandChirldrenPaths = new CopyOnWriteArrayList<>();
 								for (String grandChirldrenService : grandChirldrenServices) {
 									ZKPath grandChirldrenPath = new ZKPath(grandChirldrenService);
 									CuratorFrameworkFactory.Builder builder1 = CuratorFrameworkFactory.builder();
@@ -271,7 +269,7 @@ public enum NodeManager {
 				root.setChirldrenCache(pathChildrenCache);
 				
 				if(root.getChirldren() == null) {
-					root.setChirldren(new ArrayList<>());
+					root.setChirldren(new CopyOnWriteArrayList<>());
 				} else if(root.getChirldren() != null && root.getChirldren().size() > 0) {
 					for(ZKPath parentPath : root.getChirldren()) {
 						addListenerToParentPath(parentPath);
@@ -290,16 +288,15 @@ public enum NodeManager {
 	 * 清空除根节点下的所有子节点
 	 * @param root 根节点
 	 */
-	private synchronized void clear(ZKPath root) {
+	private void clear(ZKPath root) {
+		lock.writeLock().lock();
 		try {
-			synchronized (root.getChirldren()) {
-				if(root.getChirldren() != null && root.getChirldren().size() > 0) {
-					Iterator<ZKPath> iZKPath = root.getChirldren().iterator();
-					while(iZKPath.hasNext()) {
-						ZKPath izkpath = iZKPath.next();
-						removeParentPath(izkpath);
-						iZKPath.remove();
-					}
+			if(root.getChirldren() != null && root.getChirldren().size() > 0) {
+				Iterator<ZKPath> iZKPath = root.getChirldren().iterator();
+				while(iZKPath.hasNext()) {
+					ZKPath izkpath = iZKPath.next();
+					removeParentPath(izkpath);
+					iZKPath.remove();
 				}
 			}
 			root.getChirldren().clear();
@@ -307,6 +304,7 @@ public enum NodeManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
+			lock.writeLock().unlock();
 		}
 	}
 	
@@ -537,7 +535,7 @@ public enum NodeManager {
 			List<String> grandChirldrenServices = getChildrenBuilder
 					.forPath(config.getZkSeparator());
 			if(grandChirldrenServices != null && grandChirldrenServices.size() > 0) {
-				List<ZKPath> nodes = new ArrayList<>();
+				List<ZKPath> nodes = new CopyOnWriteArrayList<>();
 				for(String nodeName : grandChirldrenServices) {
 					ZKPath grandChirldrenPath = new ZKPath(nodeName);
 					CuratorFrameworkFactory.Builder builder1 = CuratorFrameworkFactory.builder();

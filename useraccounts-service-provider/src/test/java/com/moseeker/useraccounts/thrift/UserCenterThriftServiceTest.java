@@ -51,7 +51,7 @@ public class UserCenterThriftServiceTest {
      */
     //@Test
     public void testGetApplicationDetail() throws Exception {
-        ApplicationDetailVO vo = userCenterService.getApplicationDetail(1, 17);
+        ApplicationDetailVO vo = userCenterService.getApplicationDetail(3870, 204504);
         if(vo != null) {
             System.out.println("name : "+vo.getCompany_name());
             System.out.println("pid : "+vo.getPid());

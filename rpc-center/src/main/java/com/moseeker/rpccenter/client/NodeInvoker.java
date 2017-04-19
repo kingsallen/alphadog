@@ -9,6 +9,7 @@ import com.moseeker.rpccenter.common.ThriftUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import org.apache.commons.pool.impl.GenericKeyedObjectPool;
+import org.apache.thrift.TApplicationException;
 import org.apache.thrift.TException;
 import org.apache.thrift.TServiceClient;
 import org.apache.thrift.server.TServer;
@@ -108,15 +109,15 @@ public class NodeInvoker<T> implements Invoker {
                     if (cause instanceof BIZException) {
                         throw  (BIZException)cause;
                     }
-                    if (cause instanceof TTransportException) {
+                    if (cause instanceof TTransportException || cause instanceof TApplicationException) {
 
                         // 超时
                         // hostSet.addDeadInstance(serverNode); // 加入dead集合中
                         exception = cause;
                         try {
                             pool.invalidateObject(node, client);
+                            ThriftUtils.closeClient((TServiceClient)client);
                             client = null;
-                            //ThriftUtils.closeClient((TServiceClient)client);
                             // XXX:这里直接清空pool,否则会出现连接慢恢复的现象
                             // 发送socket异常时，证明socket已经失效，需要重新创建
                             if (cause.getCause() != null && cause.getCause() instanceof SocketException) {
