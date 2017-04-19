@@ -269,13 +269,13 @@ public class EmployeeService {
                     employee.setSysuserId(bindingParams.getUserId());
                     Response updateResult = userDao.putUserEmployeesDO(Arrays.asList(employee));
                     if (updateResult.getStatus() == 0){
-                        response = updateEmployee(bindingParams);
+                        response = updateEmployee(bindingParams, employee.getId());
                     } else {
                         response.setSuccess(false);
                         response.setMessage(updateResult.getMessage());
                     }
                 } else if (employee.getSysuserId() == bindingParams.getUserId()) {
-					response = updateEmployee(bindingParams);
+					response = updateEmployee(bindingParams, employee.getId());
 				} else {
                     response.setSuccess(false);
                     response.setMessage("员工认证信息不匹配");
@@ -305,12 +305,14 @@ public class EmployeeService {
                     employee.setAuthMethod((byte)bindingParams.getType().getValue());
                     employee.setActivation((byte)1);
                     employee.setCreateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
-                    if(userDao.postUserEmployeeDO(employee) == 0) {
+                    int primaryKey = userDao.postUserEmployeeDO(employee);
+                    if(primaryKey== 0) {
                         response.setSuccess(false);
                         response.setMessage("认证失败，请检查员工信息");
                         log.info("员工认证(question模式)，保存员工信息失败 employee={}", employee);
                         break;
                     }
+                    employee.setId(primaryKey);
                 } else if (employee.getActivation() == 0) {
                     response.setSuccess(false);
                     response.setMessage("该员工已绑定");
@@ -337,7 +339,7 @@ public class EmployeeService {
 					response.setMessage("员工认证信息不正确");
 					break;
 				}
-				response = updateEmployee(bindingParams);
+				response = updateEmployee(bindingParams, employee.getId());
 				/* 
 				 * TODO 员工认证发送消息模板
 	             *  a: 认证成功以后发送消息模板,点击消息模板填写自定义字段 (company_id 为奇数)
@@ -357,7 +359,7 @@ public class EmployeeService {
 	 * @return
 	 * @throws TException
 	 */
-	private Result updateEmployee(BindingParams bindingParams) throws TException {
+	private Result updateEmployee(BindingParams bindingParams, int employeeId) throws TException {
 		log.info("updateEmployee param: BindingParams={}", bindingParams);
 		Result response = new Result();
 		CommonQuery query = new CommonQuery();
@@ -368,7 +370,7 @@ public class EmployeeService {
 		log.info("select employees by: {}, result = {}", query, Arrays.toString(employees.toArray()));
 		if (!StringUtils.isEmptyList(employees)) {
 			employees.forEach(e -> {
-				if (e.getCompanyId() == bindingParams.getCompanyId()) {
+				if (e.getId() == employeeId) {
 					e.setActivation((byte)0);
 					e.setAuthMethod((byte)bindingParams.getType().getValue());
 					query.getEqualFilter().clear();
@@ -578,7 +580,7 @@ public class EmployeeService {
 			String value = client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, employeeId);
 			if (StringUtils.isNotNullOrEmpty(value)) {
 				BindingParams bindingParams = JSONObject.parseObject(value, BindingParams.class);
-				response = updateEmployee(bindingParams);
+				response = updateEmployee(bindingParams, Integer.valueOf(employeeId));
 				if (response.success) {
 					client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, employeeId);
 				}
