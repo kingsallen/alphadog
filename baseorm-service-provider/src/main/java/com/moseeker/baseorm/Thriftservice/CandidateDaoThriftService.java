@@ -197,6 +197,11 @@ public class CandidateDaoThriftService implements CandidateDBDao.Iface {
     }
 
     @Override
+    public int countCandidateRecomRecordDistinctPresentee(int postUserId) throws TException {
+        return candidateRecomRecordDao.countCandidateRecomRecordDistinctPresentee(postUserId);
+    }
+
+    @Override
     public int countAppliedCandidateRecomRecord(int userId) throws TException {
         return candidateRecomRecordDao.countAppliedCandidateRecomRecord(userId);
     }

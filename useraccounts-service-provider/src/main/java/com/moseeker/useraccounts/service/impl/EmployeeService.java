@@ -368,7 +368,7 @@ public class EmployeeService {
 		log.info("select employees by: {}, result = {}", query, Arrays.toString(employees.toArray()));
 		if (!StringUtils.isEmptyList(employees)) {
 			employees.forEach(e -> {
-				if (e.getCompanyId() == bindingParams.getCompanyId()) {
+				if (e.getId() == bindingParams.getCompanyId()) {
 					e.setActivation((byte)0);
 					e.setAuthMethod((byte)bindingParams.getType().getValue());
 					query.getEqualFilter().clear();

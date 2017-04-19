@@ -145,10 +145,8 @@ public class UserCenterBizTools {
 	 */
 	public int countCandidateRecomRecord(int userId) {
 		int count = 0;
-		QueryUtil qu = new QueryUtil();
-		qu.addEqualFilter("post_user_id", userId);
 		try {
-			count = candidateDBDao.countCandidateRecomRecord(qu);
+			count = candidateDBDao.countCandidateRecomRecordDistinctPresentee(userId);
 		} catch (TException e) {
 			logger.error(e.getMessage(), e);
 		}
