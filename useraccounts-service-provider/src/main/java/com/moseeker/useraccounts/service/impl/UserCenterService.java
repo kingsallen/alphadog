@@ -246,7 +246,7 @@ public class UserCenterService {
 
                     /** 匹配职位名称 */
                     if (positions != null && positions.size() > 0) {
-                        positions.stream().filter(position -> position.getId() == candidateRecomRecordDO.getPositionId())
+                        positions.stream().filter(position -> position.getId() == candidateRecomRecordDO.getPositionId() && position.getId() > 0)
                                 .forEach(position -> {
                                     recommendationRecordVO.setPosition(position.getTitle());
                                 });

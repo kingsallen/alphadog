@@ -50,7 +50,7 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
         try {
             conn = DBConnHelper.DBConn.getConn();
             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-            SelectConditionStep selectConditionStep = create.select(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID,
+            SelectHavingStep selectConditionStep = create.select(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID,
                     CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID,
                     CandidateRecomRecord.CANDIDATE_RECOM_RECORD.REPOST_USER_ID,
                     CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME,
@@ -60,7 +60,9 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
                     CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID)
                     .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
                     .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(UInteger.valueOf(userId))
-                            .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID.greaterThan(0)));
+                            .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID.greaterThan(0)))
+                    .groupBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
+                            CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID);
             if(pageNo > 0 && pageSize > 0) {
                 selectConditionStep.limit((pageNo-1)*pageSize, pageSize);
             }
@@ -128,7 +130,8 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
             conn = DBConnHelper.DBConn.getConn();
             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
             Result<Record1<Integer>> result = create
-                    .select(countDistinct(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID))
+                    .select(countDistinct(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
+                            CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID))
                     .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
                     .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(UInteger.valueOf(userId))
                             .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID.greaterThan(0))).fetch();
@@ -157,7 +160,8 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
             conn = DBConnHelper.DBConn.getConn();
             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
             Result<Record1<Integer>> result = create
-                    .select(countDistinct(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID))
+                    .select(countDistinct(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
+                            CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID))
                     .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.leftJoin(CandidatePosition.CANDIDATE_POSITION)
                             .on(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID
                                     .equal(CandidatePosition.CANDIDATE_POSITION.USER_ID))
@@ -190,7 +194,7 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
             conn = DBConnHelper.DBConn.getConn();
             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 
-            SelectConditionStep selectConditionStep = create.select(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID,
+            SelectHavingStep selectConditionStep = create.select(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID,
                     CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID,
                     CandidateRecomRecord.CANDIDATE_RECOM_RECORD.REPOST_USER_ID,
                     CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME,
@@ -204,7 +208,8 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
                             .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID
                                     .equal(CandidatePosition.CANDIDATE_POSITION.POSITION_ID)))
                     .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(UInteger.valueOf(userId))
-                            .and(CandidatePosition.CANDIDATE_POSITION.IS_INTERESTED.equal((byte)1)));
+                            .and(CandidatePosition.CANDIDATE_POSITION.IS_INTERESTED.equal((byte)1)))
+                    .groupBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID, CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID);
             if(pageNo > 0 && pageSize > 0) {
                 selectConditionStep.limit((pageNo-1)*pageSize, pageSize);
             }
@@ -424,7 +429,8 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 
             SelectConditionStep selectConditionStep = create
-                    .select(countDistinct(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID))
+                    .select(countDistinct(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
+                            CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID))
                     .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
                     .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(UInteger.valueOf(postUserId)));
 

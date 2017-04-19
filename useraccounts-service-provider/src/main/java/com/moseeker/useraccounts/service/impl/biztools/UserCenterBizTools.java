@@ -122,7 +122,7 @@ public class UserCenterBizTools {
 						.addSelectAttribute("click_time").addSelectAttribute("recom_time").addSelectAttribute("is_recom")
 						.addSelectAttribute("presentee_user_id").addSelectAttribute("position_id");
 				qu.addEqualFilter("post_user_id", userId);
-				qu.addGroup("position_id").addGroup("presentee_user_id");
+				qu.addGroup("presentee_user_id").addGroup("position_id");
 				qu.setPage(pageNo);
 				qu.setPer_page(pageSize);
 				recomRecordDOList = candidateDBDao.listCandidateRecomRecords(qu);
