@@ -164,6 +164,19 @@ public class EmployeeService {
 					break;
 				}
 
+                // 判断该邮箱是否被占用
+                query.getEqualFilter().clear();
+                query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
+                query.getEqualFilter().put("email", bindingParams.getEmail());
+                query.getEqualFilter().put("disable", "0");
+                query.getEqualFilter().put("status", "0");
+                UserEmployeeDO employee = userDao.getEmployee(query);
+
+                if (employee != null && employee.getId() > 0 && employee.getActivation() == 0) {
+                    response.setSuccess(false);
+                    response.setMessage("该邮箱已被认证\n请使用其他邮箱");
+                    break;
+                }
 
 				// 验证员工是否已认证
 				query.getEqualFilter().clear();
@@ -171,28 +184,13 @@ public class EmployeeService {
 				query.getEqualFilter().put("sysuser_id", String.valueOf(bindingParams.getUserId()));
 				query.getEqualFilter().put("disable", "0");
 				query.getEqualFilter().put("status", "0");
-				UserEmployeeDO employee = userDao.getEmployee(query);
+                employee = userDao.getEmployee(query);
 				
 				if (employee != null && employee.getId() > 0 && employee.getActivation() == 0) {
 					response.setSuccess(false);
 					response.setMessage("该员工已绑定");
 					break;
 				}
-
-
-                // 判断该邮箱是否被占用
-                query.getEqualFilter().clear();
-                query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
-                query.getEqualFilter().put("email", bindingParams.getEmail());
-                query.getEqualFilter().put("disable", "0");
-                query.getEqualFilter().put("status", "0");
-                employee = userDao.getEmployee(query);
-
-                if (employee != null && employee.getId() > 0 && employee.getActivation() == 0) {
-                    response.setSuccess(false);
-                    response.setMessage("该邮箱已被认证\n请使用其他邮箱");
-                    break;
-                }
 
 
 				// 员工信息不存在，创建员工信息（仅邮箱认证时进行该操作）
@@ -381,6 +379,7 @@ public class EmployeeService {
 					query.getEqualFilter().clear();
 					query.getEqualFilter().put("sysuser_id", String.valueOf(bindingParams.getUserId()));
 					e.setWxuser_id(getWxuserId(query));
+					e.setEmail(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getEmail(), e.getEmail()));
 					e.setBindingTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
 					e.setUpdateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
 					if (StringUtils.isNotNullOrEmpty(bindingParams.getName())) e.setCname(bindingParams.getName());
