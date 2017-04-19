@@ -206,13 +206,6 @@ public class ParamUtils {
                     List<String> values = new ArrayList<>();
                     for (String value : entry.getValue()) {
                         if (value != null) {
-                            if (request.getMethod().equals("GET")) {
-                                try {
-                                    value = new String(value.getBytes("iso8859-1"), request.getCharacterEncoding());
-                                } catch (UnsupportedEncodingException e) {
-                                    LoggerFactory.getLogger(ParamUtils.class).error(e.getMessage(), e);
-                                }
-                            }
                             values.add(value);
                         }
                     }

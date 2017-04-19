@@ -197,4 +197,14 @@ public class UserDBDaoThriftService implements Iface {
 		}
 		return 0;
 	}
+
+	@Override
+	public int delUserEmployeeDO(UserEmployeeDO userEmployee) throws TException {
+		return employeeDao.deleteResource(userEmployee);
+	}
+
+	@Override
+	public UserEmployeeDO getUserEmployeeDO(CommonQuery query) throws TException {
+		return employeeDao.getEmployee(query);
+	}
 }

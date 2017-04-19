@@ -40,9 +40,9 @@ public class CandidateThriftServiceTest {
      * Method: glancePosition(int userId, int positionId, int shareChainId)
      */
     //@Test
-//    public void testGlancePosition() throws Exception {
-//        candidateService.glancePosition(2, 1, 1);
-//    }
+    public void testGlancePosition() throws Exception {
+        candidateService.glancePosition(3870, 164107, 892);
+    }
     
 //    @Test
 //    public void changeInterestingTest() throws TException {

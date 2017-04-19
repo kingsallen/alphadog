@@ -3,6 +3,7 @@ package com.moseeker.chat.service;
 import com.moseeker.chat.constant.ChatSpeakerType;
 import com.moseeker.chat.service.entity.ChatDao;
 import com.moseeker.chat.utils.Page;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.chat.struct.*;
@@ -27,6 +28,7 @@ import java.util.concurrent.Future;
  * Created by jack on 08/03/2017.
  */
 @Service
+@CounterIface
 public class ChatService {
 
     Logger logger = LoggerFactory.getLogger(ChatService.class);

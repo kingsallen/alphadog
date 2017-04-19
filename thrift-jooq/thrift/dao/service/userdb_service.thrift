@@ -37,6 +37,8 @@ service UserDBDao {
     list<userdb_struct.UserEmployeeDO> getUserEmployeesDO(1: common_struct.CommonQuery query)
     common_struct.Response putUserEmployeesDO(1: list<userdb_struct.UserEmployeeDO> employeeDoList)
     i32 postUserEmployeeDO(1: userdb_struct.UserEmployeeDO userEmployee)
+    i32 delUserEmployeeDO(1: userdb_struct.UserEmployeeDO userEmployee)
+    userdb_struct.UserEmployeeDO getUserEmployeeDO(1: common_struct.CommonQuery query)
 
     list<userdb_struct.UserWxUserDO> listUserWxUserDO(1: common_struct.CommonQuery query) throws (1:common_struct.CURDException e)
     userdb_struct.UserWxUserDO getUserWxUserDO(1: common_struct.CommonQuery query) throws (1:common_struct.CURDException e)

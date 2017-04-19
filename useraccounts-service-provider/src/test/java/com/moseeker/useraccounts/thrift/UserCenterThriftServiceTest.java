@@ -51,7 +51,7 @@ public class UserCenterThriftServiceTest {
      */
     //@Test
     public void testGetApplicationDetail() throws Exception {
-        ApplicationDetailVO vo = userCenterService.getApplicationDetail(1, 17);
+        ApplicationDetailVO vo = userCenterService.getApplicationDetail(3870, 204504);
         if(vo != null) {
             System.out.println("name : "+vo.getCompany_name());
             System.out.println("pid : "+vo.getPid());
@@ -96,12 +96,12 @@ public class UserCenterThriftServiceTest {
      */
     //@Test
     public void testGetRecommendation() throws Exception {
-        RecommendationVO recommendationVO = userCenterService.getRecommendation(4, (byte) 1, 1, 10);
+        RecommendationVO recommendationVO = userCenterService.getRecommendation(191549, (byte) 3, 1, 10);
         if(recommendationVO != null) {
             System.out.println("is recommended : "+recommendationVO.isHasRecommends());
             System.out.println("score:");
             if(recommendationVO.getScore() != null) {
-                System.out.println(" applier_count : "+recommendationVO.getScore().getApplied_count());
+                System.out.println(" applier_account : "+recommendationVO.getScore().getApplied_count());
                 System.out.println(" interested_count : "+recommendationVO.getScore().getInterested_count());
                 System.out.println(" link_viewed_count : "+recommendationVO.getScore().getLink_viewed_count());
             }

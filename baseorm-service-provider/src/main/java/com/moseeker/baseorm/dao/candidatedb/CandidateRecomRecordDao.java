@@ -3,7 +3,6 @@ package com.moseeker.baseorm.dao.candidatedb;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidatePosition;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
-import com.moseeker.baseorm.db.userdb.tables.UserFavPosition;
 import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.util.BeanUtils;
@@ -14,7 +13,6 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.jooq.*;
-
 import org.jooq.types.UInteger;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.countDistinct;
 
 /**
  * Created by jack on 15/02/2017.
@@ -51,7 +50,7 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
         try {
             conn = DBConnHelper.DBConn.getConn();
             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-            SelectConditionStep selectConditionStep = create.select(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID,
+            SelectHavingStep selectConditionStep = create.select(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID,
                     CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID,
                     CandidateRecomRecord.CANDIDATE_RECOM_RECORD.REPOST_USER_ID,
                     CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME,
@@ -61,7 +60,9 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
                     CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID)
                     .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
                     .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal((int)(userId))
-                            .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID.greaterThan(0)));
+                            .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID.greaterThan(0)))
+                    .groupBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
+                            CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID);
             if(pageNo > 0 && pageSize > 0) {
                 selectConditionStep.limit((pageNo-1)*pageSize, pageSize);
             }
@@ -128,10 +129,12 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
         try {
             conn = DBConnHelper.DBConn.getConn();
             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-            Result<Record1<Integer>> result = create.selectCount()
+            Result<Record1<Integer>> result = create
+                    .select(countDistinct(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
+                            CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID))
                     .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
-                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal((int)(userId))
-                            .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM.equal(0))).fetch();
+                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(userId)
+                            .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID.greaterThan(0))).fetch();
             if(result != null && result.size() > 0) {
                 count = result.get(0).value1();
             }
@@ -156,7 +159,9 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
         try {
             conn = DBConnHelper.DBConn.getConn();
             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-            Result<Record1<Integer>> result = create.selectCount()
+            Result<Record1<Integer>> result = create
+                    .select(countDistinct(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
+                            CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID))
                     .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.leftJoin(CandidatePosition.CANDIDATE_POSITION)
                             .on(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID
                                     .equal(CandidatePosition.CANDIDATE_POSITION.USER_ID))
@@ -189,7 +194,7 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
             conn = DBConnHelper.DBConn.getConn();
             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 
-            SelectConditionStep selectConditionStep = create.select(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID,
+            SelectHavingStep selectConditionStep = create.select(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID,
                     CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID,
                     CandidateRecomRecord.CANDIDATE_RECOM_RECORD.REPOST_USER_ID,
                     CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME,
@@ -202,8 +207,11 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
                                     .equal(CandidatePosition.CANDIDATE_POSITION.USER_ID))
                             .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID
                                     .equal(CandidatePosition.CANDIDATE_POSITION.POSITION_ID)))
-                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal((int)(userId))
-                            .and(CandidatePosition.CANDIDATE_POSITION.IS_INTERESTED.equal((byte)1)));
+                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(userId)
+                            .and(CandidatePosition.CANDIDATE_POSITION.IS_INTERESTED.equal((byte)1)))
+                    .groupBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
+                            CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID);
+
             if(pageNo > 0 && pageSize > 0) {
                 selectConditionStep.limit((pageNo-1)*pageSize, pageSize);
             }
@@ -413,5 +421,44 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
             }
         }
         return recoms;
+    }
+
+    public int countCandidateRecomRecordDistinctPresentee(int postUserId) {
+        int count = 0;
+        Connection conn = null;
+        try {
+            conn = DBConnHelper.DBConn.getConn();
+            DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+
+            SelectConditionStep selectConditionStep = create
+                    .select(countDistinct(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
+                            CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID))
+                    .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
+                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(postUserId));
+
+            Result<Record1<Integer>> result = selectConditionStep.fetch();
+            if(result != null && result.size() > 0) {
+                count = (int) result.get(0).get(0);
+            }
+
+        } catch (SQLException e) {
+            try {
+                if(conn != null && !conn.isClosed()) {
+                    conn.rollback();
+                }
+            } catch (SQLException e1) {
+                logger.error(e1.getMessage(), e1);
+            }
+            logger.error(e.getMessage(), e);
+        } finally {
+            try {
+                if(conn != null && !conn.isClosed()) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+        return count;
     }
 }

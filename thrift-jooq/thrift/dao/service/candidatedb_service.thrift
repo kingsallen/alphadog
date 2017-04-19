@@ -22,6 +22,7 @@ service CandidateDBDao {
     list<candidatedb_struct.CandidatePositionDO> listCandidatePositions(1:common_struct.CommonQuery query) 
     list<candidatedb_struct.CandidatePositionDO> listCandidatePositionsByPositionIDUserID(1: list<map<i32, i32>> companyPositionIds) 
     candidatedb_struct.CandidatePositionDO updateCandidatePosition(1: candidatedb_struct.CandidatePositionDO candidatePosition) 
+    candidatedb_struct.CandidatePositionDO saveCandidatePosition(1: candidatedb_struct.CandidatePositionDO candidatePosition) throws (1:common_struct.CURDException e) 
     void deleteCandidatePositions(1: i32 userId, 2: i32 positionId) 
     
     candidatedb_struct.CandidatePositionShareRecordDO getCandidatePositionShareRecord(1:common_struct.CommonQuery query) 
@@ -39,6 +40,7 @@ service CandidateDBDao {
     list<candidatedb_struct.CandidateRecomRecordDO> listCandidateRecomRecordsByPositionSetAndPresenteeId(1: set<i32> positionIdSet, 2:i32 presenteeId, 3: i32 pageNo, 4: i32 pageSize) 
     list<candidatedb_struct.CandidateRecomRecordSortingDO> listCandidateRecomRecordSorting(1: list<i32> postUserId) throws (1:common_struct.BIZException e) 
     i32 countCandidateRecomRecord(1: common_struct.CommonQuery query) 
+    i32 countCandidateRecomRecordDistinctPresentee(1: i32 postUserId) 
     i32 countAppliedCandidateRecomRecord(1: i32 userId) 
     i32 countInterestedCandidateRecomRecord(1: i32 userId) 
     candidatedb_struct.CandidateRecomRecordDO updateCandidateRecomRecords(1: candidatedb_struct.CandidateRecomRecordDO candidateRecomRecord) 

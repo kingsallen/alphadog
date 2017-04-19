@@ -4,13 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.common.annotation.iface.CounterIface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.useraccounts.service.BindOnAccountService;
 
 /**
@@ -20,6 +20,7 @@ import com.moseeker.useraccounts.service.BindOnAccountService;
  * 2016年12月14日
  */
 @Service("wechat")
+@CounterIface
 public class BindWxAccountService extends BindOnAccountService{
 	
 	private static final Logger logger = LoggerFactory.getLogger(BindWxAccountService.class);
