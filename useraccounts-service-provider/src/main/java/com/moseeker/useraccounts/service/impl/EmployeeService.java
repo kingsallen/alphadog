@@ -207,12 +207,14 @@ public class EmployeeService {
                     employee.setAuthMethod((byte)bindingParams.getType().getValue());
 					employee.setActivation((byte)1);
 					employee.setCreateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
-					if(userDao.postUserEmployeeDO(employee) == 0) {
+                    int primaryKey = userDao.postUserEmployeeDO(employee);
+                    if( primaryKey == 0) {
 						response.setSuccess(false);
 						response.setMessage("认证失败，请检查员工信息");
 						log.info("员工邮箱认证，保存员工信息失败 employee={}", employee);
 						break;
 					}
+					employee.setId(primaryKey);
 				}
 				
 				// 防止用户频繁认证，24h内不重复发认证邮件
@@ -232,13 +234,18 @@ public class EmployeeService {
 					Map<String, String> mesBody = new HashMap<String, String>();
 					mesBody.put("#company_log#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(companyDO.getLogo(), ""));
 					mesBody.put("#employee_name#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(employee.getCname(), genUsername(employee.getSysuserId())));
-					mesBody.put("#company_abbr#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(companyDO.getName(), ""));
+					mesBody.put("#company_abbr#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(companyDO.getAbbreviation(), ""));
 					mesBody.put("#official_account_name#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(hrWxWechatJson.getString("name"), ""));
 					mesBody.put("#official_account_qrcode#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(hrWxWechatJson.getString("qrcode"), ""));
 					mesBody.put("#date_today#",  LocalDate.now().toString());
 					mesBody.put("#auth_url#", ConfigPropertiesUtil.getInstance().get("platform.url", String.class).concat("m/employee/bindemail?activation_code=").concat(activationCode).concat("&wechat_signature=").concat(hrWxWechatJson.getString("signature")));
+					// 发件人信息
+                    ConfigPropertiesUtil propertiesUtil = ConfigPropertiesUtil.getInstance();
+                    String senderName = propertiesUtil.get("email.verify.sendName", String.class);
+                    String subject = "请验证邮箱完成员工认证-".concat(org.apache.commons.lang.StringUtils.defaultIfEmpty(companyDO.getAbbreviation(), ""));
+                    String senderDisplay = org.apache.commons.lang.StringUtils.defaultIfEmpty(companyDO.getAbbreviation(), "");
 					// 发送认证邮件
-					Response mailResponse = mqService.sendAuthEMail(mesBody, Constant.EVENT_TYPE_EMPLOYEE_AUTH, bindingParams.getEmail(), "员工认证");
+					Response mailResponse = mqService.sendAuthEMail(mesBody, Constant.EVENT_TYPE_EMPLOYEE_AUTH, bindingParams.getEmail(), subject, senderName, senderDisplay);
 					// 邮件发送成功
 					if (mailResponse.getStatus() == 0) {
 						String redStr = client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, String.valueOf(employee.getId()), JSONObject.toJSONString(bindingParams));
