@@ -996,7 +996,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     query.getPage_size(),
                     childCompanyId,
                     query.getDepartment(),
-                    query.isOrder_by_priority(),
+                    true,
                     query.getCustom());
 
             if (ret.getStatus() == 0 && !StringUtils.isNullOrEmpty(ret.getData())) {
@@ -1049,8 +1049,11 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     e.setCount(jr.getCount());
                     e.setCity(jr.getCity());
                     e.setPriority(jr.getPriority());
+
                     dataList.add(e);
                 }
+
+                logger.info(dataList.toString());
 
                 // 获取公司信息，拼装 company abbr, logo 等信息
                 final HrCompanyDO companyInfo;
