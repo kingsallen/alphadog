@@ -240,6 +240,7 @@ public class UserCenterService {
                 recomRecordDOList.forEach(candidateRecomRecordDO -> {
                     RecommendationRecordVO recommendationRecordVO = new RecommendationRecordVO();
 
+                    recommendationRecordVO.setId(candidateRecomRecordDO.getId());
                     recommendationRecordVO.setClick_time(candidateRecomRecordDO.getClickTime());
                     recommendationRecordVO.setRecom_status(candidateRecomRecordDO.getIsRecom());
 
