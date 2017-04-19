@@ -26,6 +26,7 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.service.CompanyDao;
 import com.moseeker.thrift.gen.dao.service.HrDBDao;
@@ -460,6 +461,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             CommonQuery commonQuery = new CommonQuery();
             HashMap hashMap = new HashMap();
             hashMap.put("company_id", String.valueOf(companyId));
+            hashMap.put("source", String.valueOf(9));
             // 默认会取10条数据
             commonQuery.setPer_page(100000);
             commonQuery.setEqualFilter(hashMap);
@@ -515,13 +517,8 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     deleteCounts = dbOnlineList.size();
                     // 更新jobposition数据，由于做逻辑删除，所以不删除jobpositionExt和jobpositionCity数据
                     jobPositionDao.putResources(dbOnlineList);
-                    // 更新ES
-                    //UpdateESThread updataESThread = new UpdateESThread(searchengineServices, companyServices, jobPositionIds, jobPositionDao);
-                    //Thread thread = new Thread(updataESThread);
-                    //thread.start();
                 }
             }
-
             // 判断哪些数据不需要更新的
             String fieldsNooverwrite = batchHandlerJobPosition.getFields_nooverwrite();
             String[] fieldsNooverwriteStrings = null;
@@ -706,9 +703,9 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             jobPostionResponse.setTotalCounts(jobPositionHandlerDates.size());
             if (jobPositionIds.size() > 0) {
                 // 更新ES Search Engine
-                //UpdateESThread updataESThread = new UpdateESThread(searchengineServices, companyServices, jobPositionIds, jobPositionDao);
-                //Thread thread = new Thread(updataESThread);
-                //thread.start();
+                PositionService.UpdateES updataESThread = new PositionService.UpdateES(jobPositionIds);
+                Thread thread = new Thread(updataESThread);
+                thread.start();
                 return ResponseUtils.success(jobPostionResponse);
             }
             logger.info("批量修改职位结束");
@@ -748,9 +745,9 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 jobPositionDao.putResource(jobPositionRecord);
                 // 更新ES Search Engine
                 list.add(jobPositionRecord.getId());
-                //UpdateESThread updataESThread = new UpdateESThread(searchengineServices, companyServices, list, jobPositionDao);
-                //Thread thread = new Thread(updataESThread);
-                //thread.start();
+                PositionService.UpdateES updataESThread = new PositionService.UpdateES(list);
+                Thread thread = new Thread(updataESThread);
+                thread.start();
                 return ResponseUtils.success(0);
             } else {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_DATA_DELETE_FAIL);
@@ -1374,6 +1371,57 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             dest = m.replaceAll("");
         }
         return dest;
+    }
+
+    /**
+     * 内部线程类
+     * 用于更改ES索引
+     */
+    private class UpdateES extends Thread {
+        private List<Integer> list;
+
+        public UpdateES(List<Integer> list) {
+            this.list = list;
+        }
+
+        public void run() {
+            String position = "";
+            try {
+                logger.info("---Start ES Search Engine---");
+                for (Integer jobPositionId : list) {
+                    Response result = getPositionById(jobPositionId);
+                    position = result.data;
+                    Map position_map = JSON.parseObject(position, Map.class);
+                    String company_id = BeanUtils.converToString(position_map.get("company_id"));
+                    CommonQuery query = new CommonQuery();
+                    query.putToEqualFilter("id", company_id);
+                    Response company_resp = companyServices.getAllCompanies(query);
+                    String company = company_resp.data;
+                    if (com.moseeker.common.util.StringUtils.isNotNullOrEmpty(company) && company.startsWith("[")) {
+                        List company_maps = JSON.parseObject(company, List.class);
+                        Map company_map = (Map) company_maps.get(0);
+                        String company_name = (String) company_map.get("name");
+                        String scale = (String) company_map.get("scale");
+                        position_map.put("company_name", company_name);
+                        String degree_name = BeanUtils.converToString(position_map.get("degree_name"));
+                        Integer degree_above = BeanUtils.converToInteger(position_map.get("degree_above"));
+                        if (degree_above == 1) {
+                            degree_name = degree_name + "及以上";
+                        }
+                        position_map.put("degree_name", degree_name);
+                        position_map.put("scale", scale);
+                        logger.info("position_map:" + position_map.toString());
+                    }
+                    position = JSON.toJSONString(position_map);
+                    logger.info("position:" + position);
+                    searchengineServices.updateposition(position, jobPositionId);
+                }
+                logger.info("--- ES Search Engine end---");
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.error(e.getMessage(), e);
+            }
+        }
     }
 
 }
