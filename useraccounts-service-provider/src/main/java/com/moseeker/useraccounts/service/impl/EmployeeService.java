@@ -170,7 +170,9 @@ public class EmployeeService {
                 query.getEqualFilter().put("disable", "0");
                 UserEmployeeDO employee = userDao.getEmployee(query);
 
-                if (employee != null && employee.getId() > 0 && employee.getActivation() == 0) {
+                // 判断该邮箱现在是否正在被人认证
+                if (employee != null && employee.getId() > 0 && employee.getActivation() == 0 ||
+                        StringUtils.isNotNullOrEmpty(client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, String.valueOf(employee.getId())))) {
                     response.setSuccess(false);
                     response.setMessage("该邮箱已被认证\n请使用其他邮箱");
                     break;
