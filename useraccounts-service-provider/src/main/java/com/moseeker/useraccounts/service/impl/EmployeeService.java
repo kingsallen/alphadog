@@ -169,7 +169,6 @@ public class EmployeeService {
                 query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
                 query.getEqualFilter().put("email", bindingParams.getEmail());
                 query.getEqualFilter().put("disable", "0");
-                query.getEqualFilter().put("status", "0");
                 UserEmployeeDO employee = userDao.getEmployee(query);
 
                 if (employee != null && employee.getId() > 0 && employee.getActivation() == 0) {
@@ -183,7 +182,6 @@ public class EmployeeService {
 				query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
 				query.getEqualFilter().put("sysuser_id", String.valueOf(bindingParams.getUserId()));
 				query.getEqualFilter().put("disable", "0");
-				query.getEqualFilter().put("status", "0");
                 employee = userDao.getEmployee(query);
 				
 				if (employee != null && employee.getId() > 0 && employee.getActivation() == 0) {
@@ -259,7 +257,6 @@ public class EmployeeService {
                 query.getEqualFilter().put("cname", bindingParams.getName());
                 query.getEqualFilter().put("custom_field", bindingParams.getCustomField());
                 query.getEqualFilter().put("disable", "0");
-                query.getEqualFilter().put("status", "0");
 
 				employee = userDao.getEmployee(query);
 				if (employee == null || employee.getId() == 0) {
@@ -291,7 +288,6 @@ public class EmployeeService {
                 query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
                 query.getEqualFilter().put("sysuser_id", String.valueOf(bindingParams.getUserId()));
                 query.getEqualFilter().put("disable", "0");
-                query.getEqualFilter().put("status", "0");
                 employee = userDao.getEmployee(query);
 
                 if (employee == null || employee.getId() == 0) {
@@ -368,7 +364,6 @@ public class EmployeeService {
 		query.setEqualFilter(new HashMap<String, String>());
 		query.getEqualFilter().put("sysuser_id", String.valueOf(bindingParams.getUserId()));
 		query.getEqualFilter().put("disable", "0");
-		query.getEqualFilter().put("status", "0");
 		List<UserEmployeeDO> employees = userDao.getUserEmployeesDO(query);
 		log.info("select employees by: {}, result = {}", query, Arrays.toString(employees.toArray()));
 		if (!StringUtils.isEmptyList(employees)) {

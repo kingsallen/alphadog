@@ -5,10 +5,13 @@ import java.lang.reflect.Method;
 import java.net.ConnectException;
 import java.net.SocketException;
 
+import com.moseeker.rpccenter.common.ThriftUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import org.apache.commons.pool.impl.GenericKeyedObjectPool;
 import org.apache.thrift.TException;
+import org.apache.thrift.TServiceClient;
+import org.apache.thrift.server.TServer;
 import org.apache.thrift.transport.TTransportException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,10 +97,10 @@ public class NodeInvoker<T> implements Invoker {
             	LOGGER.error(ce.getMessage(), ce);
             	pool.clear(node);
                 NodeManager.NODEMANAGER.removePath(node);
-            } catch (InvocationTargetException ite) {// XXX:InvocationTargetException异常发生在method.invoke()中
+            } catch (InvocationTargetException ite) {
+                // XXX:InvocationTargetException异常发生在method.invoke()中
                 Throwable cause = ite.getCause();
-                
-              //  cause.getMessage()
+                //  cause.getMessage()
                 if (cause != null) {
                     if (cause instanceof CURDException) {
                         throw  (CURDException)cause;
@@ -112,6 +115,8 @@ public class NodeInvoker<T> implements Invoker {
                         exception = cause;
                         try {
                             pool.invalidateObject(node, client);
+                            client = null;
+                            //ThriftUtils.closeClient((TServiceClient)client);
                             // XXX:这里直接清空pool,否则会出现连接慢恢复的现象
                             // 发送socket异常时，证明socket已经失效，需要重新创建
                             if (cause.getCause() != null && cause.getCause() instanceof SocketException) {
@@ -141,10 +146,8 @@ public class NodeInvoker<T> implements Invoker {
                 } else {
                     exception = ite;
                 }
-                ite.printStackTrace();
                 LOGGER.error(ite.getMessage(), ite);
             } catch (Throwable e) {
-            	e.printStackTrace();
             	LOGGER.debug("after returnObject getNumActive:"+pool.getNumActive());
             	LOGGER.error(e.getMessage(), e);
                 exception = e;
