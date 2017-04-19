@@ -142,7 +142,7 @@ public class EmployeeService {
 		log.info("bind param: BindingParams={}", bindingParams);
 		Result response = new Result();
 		CommonQuery query = new CommonQuery();
-		query.setEqualFilter(new HashMap<String, String>());
+		query.setEqualFilter(new HashMap<>());
 		query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
 		query.getEqualFilter().put("disable", String.valueOf(0));
 		HrEmployeeCertConfDO certConf = hrDBDao.getEmployeeCertConf(query);
@@ -171,8 +171,13 @@ public class EmployeeService {
                 UserEmployeeDO employee = userDao.getEmployee(query);
 
                 // 判断该邮箱现在是否正在被人认证
-                if ((employee != null && employee.getId() > 0 && employee.getActivation() == 0) ||
-                        StringUtils.isNotNullOrEmpty(client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, String.valueOf(employee.getId())))) {
+                if (employee != null && employee.getId() > 0 && employee.getActivation() == 0) {
+                    response.setSuccess(false);
+                    response.setMessage("该邮箱已被认证\n请使用其他邮箱");
+                    break;
+                }
+
+                if (employee.getId() != 0 && StringUtils.isNotNullOrEmpty(client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, String.valueOf(employee.getId())))) {
                     response.setSuccess(false);
                     response.setMessage("该邮箱已被认证\n请使用其他邮箱");
                     break;
