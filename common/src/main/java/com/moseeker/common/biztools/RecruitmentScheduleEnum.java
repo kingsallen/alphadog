@@ -122,8 +122,9 @@ public enum RecruitmentScheduleEnum {
      * 查找招聘进度的状态
      * @return 0 表示未开始，1表示通过，2表示拒绝
      * @throws RecruitmentScheduleLastStepNotExistException
+     * @param emailStatus
      */
-    public int getStepStatusForApplicationDetail() throws RecruitmentScheduleLastStepNotExistException {
+    public int getStepStatusForApplicationDetail(byte emailStatus) throws RecruitmentScheduleLastStepNotExistException {
         int value;
         switch (this.id) {
             case 4: value = 2;break;
@@ -136,7 +137,13 @@ public enum RecruitmentScheduleEnum {
             case 5:
             case 12 :
             case 11 :
-            case 3: value = 1; break;
+            case 3:
+                if(emailStatus == EmailStatus.NOMAIL.getValue()) {
+                    value = 0;
+                } else {
+                    value = 1;
+                }
+                break;
             default: value = 0;
         }
 

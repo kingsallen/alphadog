@@ -240,6 +240,7 @@ public class UserCenterService {
                 recomRecordDOList.forEach(candidateRecomRecordDO -> {
                     RecommendationRecordVO recommendationRecordVO = new RecommendationRecordVO();
 
+                    recommendationRecordVO.setId(candidateRecomRecordDO.getId());
                     recommendationRecordVO.setClick_time(candidateRecomRecordDO.getClickTime());
                     recommendationRecordVO.setRecom_status(candidateRecomRecordDO.getIsRecom());
 
@@ -357,7 +358,7 @@ public class UserCenterService {
                             }
                             logger.info("company_name:{}", companyDO.getName());
                         }
-                        applicationDetailVO.setStep_status((byte) recruitmentScheduleEnum.getStepStatusForApplicationDetail());
+                        applicationDetailVO.setStep_status((byte) recruitmentScheduleEnum.getStepStatusForApplicationDetail(applicationDO.getEmailStatus()));
                         applicationDetailVO.setStep((byte) recruitmentScheduleEnum.getStepForApplicationDetail());
                         if(operationFuture != null) {
                             List<HrOperationRecordDO> operationrecordDOList = (List<HrOperationRecordDO>)operationFuture.get();
@@ -365,7 +366,7 @@ public class UserCenterService {
                                 HrOperationRecordDO operationRecordDO = operationrecordDOList.get(0);
 
                                 recruitmentScheduleEnum.setLastStep(operationRecordDO.getOperateTplId());
-                                applicationDetailVO.setStep_status((byte) recruitmentScheduleEnum.getStepStatusForApplicationDetail());
+                                applicationDetailVO.setStep_status((byte) recruitmentScheduleEnum.getStepStatusForApplicationDetail(applicationDO.getEmailStatus()));
                                 applicationDetailVO.setStep((byte) recruitmentScheduleEnum.getStepForApplicationDetail());
                             }
                         }
@@ -379,6 +380,7 @@ public class UserCenterService {
                             while(it.hasNext()) {
                                 HrOperationRecordDO oprationRecord = it.next();
                                 ApplicationOperationRecordVO applicationOprationRecordVO = new ApplicationOperationRecordVO();
+                                applicationOprationRecordVO.setHide(0);
                                 applicationOprationRecordVO.setDate(oprationRecord.getOptTime());
                                 if(oprationRecord.getOperateTplId() == RecruitmentScheduleEnum.REJECT.getId()) {
                                     applicationOprationRecordVO.setStep_status(2);
@@ -397,12 +399,6 @@ public class UserCenterService {
                                 }
                                 RecruitmentScheduleEnum recruitmentScheduleEnum1 = RecruitmentScheduleEnum.createFromID(oprationRecord.getOperateTplId());
                                 applicationOprationRecordVO.setEvent(recruitmentScheduleEnum1.getAppStatusDescription(applicationDO.getApplyType(), applicationDO.getEmailStatus(), preID));
-                                /** 如果投递是Email投递， */
-                                if(applicationDO.getApplyType() == ApplyType.EMAIL.getValue()
-                                        && applicationDO.getEmailStatus() != EmailStatus.NOMAIL.getValue()
-                                        && applicationDO.getAppTplId() == RecruitmentScheduleEnum.APPLY.getId()) {
-                                    applicationOprationRecordVO.setHide(1);
-                                }
                                 /** 如果前一条操作记录也是拒绝的操作记录，那么这一条操作记录隐藏 */
                                 if(recruitmentScheduleEnum.getId() == RecruitmentScheduleEnum.REJECT.getId()
                                         && recruitmentScheduleEnum.getLastID() == RecruitmentScheduleEnum.REJECT.getId()) {

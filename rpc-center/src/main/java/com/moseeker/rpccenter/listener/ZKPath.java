@@ -1,8 +1,8 @@
 package com.moseeker.rpccenter.listener;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.moseeker.rpccenter.config.ServerData;
 import org.apache.curator.framework.CuratorFramework;
@@ -115,7 +115,7 @@ public class ZKPath {
 	public HashMap<String, Object> toHashMap() {
 		HashMap<String, Object> map = new HashMap<>();
 		map.put("name", this.getName());
-		List<HashMap<String, Object>> chirldren = new ArrayList<>();
+		List<HashMap<String, Object>> chirldren = new CopyOnWriteArrayList<>();
 		if(this.getChirldren() != null && this.getChirldren().size() > 0) {
 			this.getChirldren().forEach(chirld -> {
 				chirldren.add(chirld.toHashMap());
