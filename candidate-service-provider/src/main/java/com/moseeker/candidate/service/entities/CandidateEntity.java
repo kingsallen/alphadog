@@ -283,7 +283,7 @@ public class CandidateEntity implements Candidate {
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_CANDIDATES_RECORD_NOT_EXIST);
         }
 
-        if (candidateRecomRecordDO.getIsRecom() == 0 && StringUtils.isNotNullOrEmpty(candidateRecomRecordDO.getRecomReason())) {
+        if (candidateRecomRecordDO.getIsRecom() == 0) {
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_ALREADY_APPLIED_OR_RECOMMEND);
         }
 
