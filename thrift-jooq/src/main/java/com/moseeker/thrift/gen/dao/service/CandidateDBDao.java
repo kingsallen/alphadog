@@ -42,6 +42,8 @@ public class CandidateDBDao {
 
     public com.moseeker.thrift.gen.dao.struct.CandidatePositionDO updateCandidatePosition(com.moseeker.thrift.gen.dao.struct.CandidatePositionDO candidatePosition) throws org.apache.thrift.TException;
 
+    public com.moseeker.thrift.gen.dao.struct.CandidatePositionDO saveCandidatePosition(com.moseeker.thrift.gen.dao.struct.CandidatePositionDO candidatePosition) throws com.moseeker.thrift.gen.common.struct.CURDException, org.apache.thrift.TException;
+
     public void deleteCandidatePositions(int userId, int positionId) throws org.apache.thrift.TException;
 
     public com.moseeker.thrift.gen.dao.struct.CandidatePositionShareRecordDO getCandidatePositionShareRecord(com.moseeker.thrift.gen.common.struct.CommonQuery query) throws org.apache.thrift.TException;
@@ -131,6 +133,8 @@ public class CandidateDBDao {
     public void listCandidatePositionsByPositionIDUserID(java.util.List<java.util.Map<java.lang.Integer,java.lang.Integer>> companyPositionIds, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.dao.struct.CandidatePositionDO>> resultHandler) throws org.apache.thrift.TException;
 
     public void updateCandidatePosition(com.moseeker.thrift.gen.dao.struct.CandidatePositionDO candidatePosition, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.CandidatePositionDO> resultHandler) throws org.apache.thrift.TException;
+
+    public void saveCandidatePosition(com.moseeker.thrift.gen.dao.struct.CandidatePositionDO candidatePosition, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.CandidatePositionDO> resultHandler) throws org.apache.thrift.TException;
 
     public void deleteCandidatePositions(int userId, int positionId, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException;
 
@@ -562,6 +566,32 @@ public class CandidateDBDao {
         return result.success;
       }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "updateCandidatePosition failed: unknown result");
+    }
+
+    public com.moseeker.thrift.gen.dao.struct.CandidatePositionDO saveCandidatePosition(com.moseeker.thrift.gen.dao.struct.CandidatePositionDO candidatePosition) throws com.moseeker.thrift.gen.common.struct.CURDException, org.apache.thrift.TException
+    {
+      send_saveCandidatePosition(candidatePosition);
+      return recv_saveCandidatePosition();
+    }
+
+    public void send_saveCandidatePosition(com.moseeker.thrift.gen.dao.struct.CandidatePositionDO candidatePosition) throws org.apache.thrift.TException
+    {
+      saveCandidatePosition_args args = new saveCandidatePosition_args();
+      args.setCandidatePosition(candidatePosition);
+      sendBase("saveCandidatePosition", args);
+    }
+
+    public com.moseeker.thrift.gen.dao.struct.CandidatePositionDO recv_saveCandidatePosition() throws com.moseeker.thrift.gen.common.struct.CURDException, org.apache.thrift.TException
+    {
+      saveCandidatePosition_result result = new saveCandidatePosition_result();
+      receiveBase(result, "saveCandidatePosition");
+      if (result.isSetSuccess()) {
+        return result.success;
+      }
+      if (result.e != null) {
+        throw result.e;
+      }
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "saveCandidatePosition failed: unknown result");
     }
 
     public void deleteCandidatePositions(int userId, int positionId) throws org.apache.thrift.TException
@@ -1718,6 +1748,38 @@ public class CandidateDBDao {
       }
     }
 
+    public void saveCandidatePosition(com.moseeker.thrift.gen.dao.struct.CandidatePositionDO candidatePosition, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.CandidatePositionDO> resultHandler) throws org.apache.thrift.TException {
+      checkReady();
+      saveCandidatePosition_call method_call = new saveCandidatePosition_call(candidatePosition, resultHandler, this, ___protocolFactory, ___transport);
+      this.___currentMethod = method_call;
+      ___manager.call(method_call);
+    }
+
+    public static class saveCandidatePosition_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.dao.struct.CandidatePositionDO> {
+      private com.moseeker.thrift.gen.dao.struct.CandidatePositionDO candidatePosition;
+      public saveCandidatePosition_call(com.moseeker.thrift.gen.dao.struct.CandidatePositionDO candidatePosition, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.CandidatePositionDO> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+        super(client, protocolFactory, transport, resultHandler, false);
+        this.candidatePosition = candidatePosition;
+      }
+
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("saveCandidatePosition", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        saveCandidatePosition_args args = new saveCandidatePosition_args();
+        args.setCandidatePosition(candidatePosition);
+        args.write(prot);
+        prot.writeMessageEnd();
+      }
+
+      public com.moseeker.thrift.gen.dao.struct.CandidatePositionDO getResult() throws com.moseeker.thrift.gen.common.struct.CURDException, org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
+        }
+        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+        return (new Client(prot)).recv_saveCandidatePosition();
+      }
+    }
+
     public void deleteCandidatePositions(int userId, int positionId, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       deleteCandidatePositions_call method_call = new deleteCandidatePositions_call(userId, positionId, resultHandler, this, ___protocolFactory, ___transport);
@@ -2687,6 +2749,7 @@ public class CandidateDBDao {
       processMap.put("listCandidatePositions", new listCandidatePositions());
       processMap.put("listCandidatePositionsByPositionIDUserID", new listCandidatePositionsByPositionIDUserID());
       processMap.put("updateCandidatePosition", new updateCandidatePosition());
+      processMap.put("saveCandidatePosition", new saveCandidatePosition());
       processMap.put("deleteCandidatePositions", new deleteCandidatePositions());
       processMap.put("getCandidatePositionShareRecord", new getCandidatePositionShareRecord());
       processMap.put("listCandidatePositionShareRecord", new listCandidatePositionShareRecord());
@@ -3034,6 +3097,30 @@ public class CandidateDBDao {
       public updateCandidatePosition_result getResult(I iface, updateCandidatePosition_args args) throws org.apache.thrift.TException {
         updateCandidatePosition_result result = new updateCandidatePosition_result();
         result.success = iface.updateCandidatePosition(args.candidatePosition);
+        return result;
+      }
+    }
+
+    public static class saveCandidatePosition<I extends Iface> extends org.apache.thrift.ProcessFunction<I, saveCandidatePosition_args> {
+      public saveCandidatePosition() {
+        super("saveCandidatePosition");
+      }
+
+      public saveCandidatePosition_args getEmptyArgsInstance() {
+        return new saveCandidatePosition_args();
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public saveCandidatePosition_result getResult(I iface, saveCandidatePosition_args args) throws org.apache.thrift.TException {
+        saveCandidatePosition_result result = new saveCandidatePosition_result();
+        try {
+          result.success = iface.saveCandidatePosition(args.candidatePosition);
+        } catch (com.moseeker.thrift.gen.common.struct.CURDException e) {
+          result.e = e;
+        }
         return result;
       }
     }
@@ -3647,6 +3734,7 @@ public class CandidateDBDao {
       processMap.put("listCandidatePositions", new listCandidatePositions());
       processMap.put("listCandidatePositionsByPositionIDUserID", new listCandidatePositionsByPositionIDUserID());
       processMap.put("updateCandidatePosition", new updateCandidatePosition());
+      processMap.put("saveCandidatePosition", new saveCandidatePosition());
       processMap.put("deleteCandidatePositions", new deleteCandidatePositions());
       processMap.put("getCandidatePositionShareRecord", new getCandidatePositionShareRecord());
       processMap.put("listCandidatePositionShareRecord", new listCandidatePositionShareRecord());
@@ -4608,6 +4696,71 @@ public class CandidateDBDao {
 
       public void start(I iface, updateCandidatePosition_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.CandidatePositionDO> resultHandler) throws org.apache.thrift.TException {
         iface.updateCandidatePosition(args.candidatePosition,resultHandler);
+      }
+    }
+
+    public static class saveCandidatePosition<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, saveCandidatePosition_args, com.moseeker.thrift.gen.dao.struct.CandidatePositionDO> {
+      public saveCandidatePosition() {
+        super("saveCandidatePosition");
+      }
+
+      public saveCandidatePosition_args getEmptyArgsInstance() {
+        return new saveCandidatePosition_args();
+      }
+
+      public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.CandidatePositionDO> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
+        final org.apache.thrift.AsyncProcessFunction fcall = this;
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.CandidatePositionDO>() { 
+          public void onComplete(com.moseeker.thrift.gen.dao.struct.CandidatePositionDO o) {
+            saveCandidatePosition_result result = new saveCandidatePosition_result();
+            result.success = o;
+            try {
+              fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
+            } catch (org.apache.thrift.transport.TTransportException e) {
+              _LOGGER.error("TTransportException writing to internal frame buffer", e);
+              fb.close();
+            } catch (java.lang.Exception e) {
+              _LOGGER.error("Exception writing to internal frame buffer", e);
+              onError(e);
+            }
+          }
+          public void onError(java.lang.Exception e) {
+            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
+            org.apache.thrift.TSerializable msg;
+            saveCandidatePosition_result result = new saveCandidatePosition_result();
+            if (e instanceof com.moseeker.thrift.gen.common.struct.CURDException) {
+              result.e = (com.moseeker.thrift.gen.common.struct.CURDException) e;
+              result.setEIsSet(true);
+              msg = result;
+            } else if (e instanceof org.apache.thrift.transport.TTransportException) {
+              _LOGGER.error("TTransportException inside handler", e);
+              fb.close();
+              return;
+            } else if (e instanceof org.apache.thrift.TApplicationException) {
+              _LOGGER.error("TApplicationException inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = (org.apache.thrift.TApplicationException)e;
+            } else {
+              _LOGGER.error("Exception inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
+            }
+            try {
+              fcall.sendResponse(fb,msg,msgType,seqid);
+            } catch (java.lang.Exception ex) {
+              _LOGGER.error("Exception writing to internal frame buffer", ex);
+              fb.close();
+            }
+          }
+        };
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public void start(I iface, saveCandidatePosition_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.CandidatePositionDO> resultHandler) throws org.apache.thrift.TException {
+        iface.saveCandidatePosition(args.candidatePosition,resultHandler);
       }
     }
 
@@ -18006,6 +18159,846 @@ public class CandidateDBDao {
           struct.success = new com.moseeker.thrift.gen.dao.struct.CandidatePositionDO();
           struct.success.read(iprot);
           struct.setSuccessIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class saveCandidatePosition_args implements org.apache.thrift.TBase<saveCandidatePosition_args, saveCandidatePosition_args._Fields>, java.io.Serializable, Cloneable, Comparable<saveCandidatePosition_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("saveCandidatePosition_args");
+
+    private static final org.apache.thrift.protocol.TField CANDIDATE_POSITION_FIELD_DESC = new org.apache.thrift.protocol.TField("candidatePosition", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new saveCandidatePosition_argsStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new saveCandidatePosition_argsTupleSchemeFactory();
+
+    public com.moseeker.thrift.gen.dao.struct.CandidatePositionDO candidatePosition; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      CANDIDATE_POSITION((short)1, "candidatePosition");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 1: // CANDIDATE_POSITION
+            return CANDIDATE_POSITION;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.CANDIDATE_POSITION, new org.apache.thrift.meta_data.FieldMetaData("candidatePosition", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.dao.struct.CandidatePositionDO.class)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(saveCandidatePosition_args.class, metaDataMap);
+    }
+
+    public saveCandidatePosition_args() {
+    }
+
+    public saveCandidatePosition_args(
+      com.moseeker.thrift.gen.dao.struct.CandidatePositionDO candidatePosition)
+    {
+      this();
+      this.candidatePosition = candidatePosition;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public saveCandidatePosition_args(saveCandidatePosition_args other) {
+      if (other.isSetCandidatePosition()) {
+        this.candidatePosition = new com.moseeker.thrift.gen.dao.struct.CandidatePositionDO(other.candidatePosition);
+      }
+    }
+
+    public saveCandidatePosition_args deepCopy() {
+      return new saveCandidatePosition_args(this);
+    }
+
+    @Override
+    public void clear() {
+      this.candidatePosition = null;
+    }
+
+    public com.moseeker.thrift.gen.dao.struct.CandidatePositionDO getCandidatePosition() {
+      return this.candidatePosition;
+    }
+
+    public saveCandidatePosition_args setCandidatePosition(com.moseeker.thrift.gen.dao.struct.CandidatePositionDO candidatePosition) {
+      this.candidatePosition = candidatePosition;
+      return this;
+    }
+
+    public void unsetCandidatePosition() {
+      this.candidatePosition = null;
+    }
+
+    /** Returns true if field candidatePosition is set (has been assigned a value) and false otherwise */
+    public boolean isSetCandidatePosition() {
+      return this.candidatePosition != null;
+    }
+
+    public void setCandidatePositionIsSet(boolean value) {
+      if (!value) {
+        this.candidatePosition = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+      case CANDIDATE_POSITION:
+        if (value == null) {
+          unsetCandidatePosition();
+        } else {
+          setCandidatePosition((com.moseeker.thrift.gen.dao.struct.CandidatePositionDO)value);
+        }
+        break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+      case CANDIDATE_POSITION:
+        return getCandidatePosition();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+      case CANDIDATE_POSITION:
+        return isSetCandidatePosition();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof saveCandidatePosition_args)
+        return this.equals((saveCandidatePosition_args)that);
+      return false;
+    }
+
+    public boolean equals(saveCandidatePosition_args that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_candidatePosition = true && this.isSetCandidatePosition();
+      boolean that_present_candidatePosition = true && that.isSetCandidatePosition();
+      if (this_present_candidatePosition || that_present_candidatePosition) {
+        if (!(this_present_candidatePosition && that_present_candidatePosition))
+          return false;
+        if (!this.candidatePosition.equals(that.candidatePosition))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetCandidatePosition()) ? 131071 : 524287);
+      if (isSetCandidatePosition())
+        hashCode = hashCode * 8191 + candidatePosition.hashCode();
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(saveCandidatePosition_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetCandidatePosition()).compareTo(other.isSetCandidatePosition());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetCandidatePosition()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.candidatePosition, other.candidatePosition);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+    }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("saveCandidatePosition_args(");
+      boolean first = true;
+
+      sb.append("candidatePosition:");
+      if (this.candidatePosition == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.candidatePosition);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+      if (candidatePosition != null) {
+        candidatePosition.validate();
+      }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class saveCandidatePosition_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public saveCandidatePosition_argsStandardScheme getScheme() {
+        return new saveCandidatePosition_argsStandardScheme();
+      }
+    }
+
+    private static class saveCandidatePosition_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<saveCandidatePosition_args> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, saveCandidatePosition_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 1: // CANDIDATE_POSITION
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.candidatePosition = new com.moseeker.thrift.gen.dao.struct.CandidatePositionDO();
+                struct.candidatePosition.read(iprot);
+                struct.setCandidatePositionIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, saveCandidatePosition_args struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.candidatePosition != null) {
+          oprot.writeFieldBegin(CANDIDATE_POSITION_FIELD_DESC);
+          struct.candidatePosition.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class saveCandidatePosition_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public saveCandidatePosition_argsTupleScheme getScheme() {
+        return new saveCandidatePosition_argsTupleScheme();
+      }
+    }
+
+    private static class saveCandidatePosition_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<saveCandidatePosition_args> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, saveCandidatePosition_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetCandidatePosition()) {
+          optionals.set(0);
+        }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetCandidatePosition()) {
+          struct.candidatePosition.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, saveCandidatePosition_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(1);
+        if (incoming.get(0)) {
+          struct.candidatePosition = new com.moseeker.thrift.gen.dao.struct.CandidatePositionDO();
+          struct.candidatePosition.read(iprot);
+          struct.setCandidatePositionIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class saveCandidatePosition_result implements org.apache.thrift.TBase<saveCandidatePosition_result, saveCandidatePosition_result._Fields>, java.io.Serializable, Cloneable, Comparable<saveCandidatePosition_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("saveCandidatePosition_result");
+
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRUCT, (short)0);
+    private static final org.apache.thrift.protocol.TField E_FIELD_DESC = new org.apache.thrift.protocol.TField("e", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new saveCandidatePosition_resultStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new saveCandidatePosition_resultTupleSchemeFactory();
+
+    public com.moseeker.thrift.gen.dao.struct.CandidatePositionDO success; // required
+    public com.moseeker.thrift.gen.common.struct.CURDException e; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      SUCCESS((short)0, "success"),
+      E((short)1, "e");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 0: // SUCCESS
+            return SUCCESS;
+          case 1: // E
+            return E;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.dao.struct.CandidatePositionDO.class)));
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.CURDException.class)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(saveCandidatePosition_result.class, metaDataMap);
+    }
+
+    public saveCandidatePosition_result() {
+    }
+
+    public saveCandidatePosition_result(
+      com.moseeker.thrift.gen.dao.struct.CandidatePositionDO success,
+      com.moseeker.thrift.gen.common.struct.CURDException e)
+    {
+      this();
+      this.success = success;
+      this.e = e;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public saveCandidatePosition_result(saveCandidatePosition_result other) {
+      if (other.isSetSuccess()) {
+        this.success = new com.moseeker.thrift.gen.dao.struct.CandidatePositionDO(other.success);
+      }
+      if (other.isSetE()) {
+        this.e = new com.moseeker.thrift.gen.common.struct.CURDException(other.e);
+      }
+    }
+
+    public saveCandidatePosition_result deepCopy() {
+      return new saveCandidatePosition_result(this);
+    }
+
+    @Override
+    public void clear() {
+      this.success = null;
+      this.e = null;
+    }
+
+    public com.moseeker.thrift.gen.dao.struct.CandidatePositionDO getSuccess() {
+      return this.success;
+    }
+
+    public saveCandidatePosition_result setSuccess(com.moseeker.thrift.gen.dao.struct.CandidatePositionDO success) {
+      this.success = success;
+      return this;
+    }
+
+    public void unsetSuccess() {
+      this.success = null;
+    }
+
+    /** Returns true if field success is set (has been assigned a value) and false otherwise */
+    public boolean isSetSuccess() {
+      return this.success != null;
+    }
+
+    public void setSuccessIsSet(boolean value) {
+      if (!value) {
+        this.success = null;
+      }
+    }
+
+    public com.moseeker.thrift.gen.common.struct.CURDException getE() {
+      return this.e;
+    }
+
+    public saveCandidatePosition_result setE(com.moseeker.thrift.gen.common.struct.CURDException e) {
+      this.e = e;
+      return this;
+    }
+
+    public void unsetE() {
+      this.e = null;
+    }
+
+    /** Returns true if field e is set (has been assigned a value) and false otherwise */
+    public boolean isSetE() {
+      return this.e != null;
+    }
+
+    public void setEIsSet(boolean value) {
+      if (!value) {
+        this.e = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+      case SUCCESS:
+        if (value == null) {
+          unsetSuccess();
+        } else {
+          setSuccess((com.moseeker.thrift.gen.dao.struct.CandidatePositionDO)value);
+        }
+        break;
+
+      case E:
+        if (value == null) {
+          unsetE();
+        } else {
+          setE((com.moseeker.thrift.gen.common.struct.CURDException)value);
+        }
+        break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+      case SUCCESS:
+        return getSuccess();
+
+      case E:
+        return getE();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+      case SUCCESS:
+        return isSetSuccess();
+      case E:
+        return isSetE();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof saveCandidatePosition_result)
+        return this.equals((saveCandidatePosition_result)that);
+      return false;
+    }
+
+    public boolean equals(saveCandidatePosition_result that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_success = true && this.isSetSuccess();
+      boolean that_present_success = true && that.isSetSuccess();
+      if (this_present_success || that_present_success) {
+        if (!(this_present_success && that_present_success))
+          return false;
+        if (!this.success.equals(that.success))
+          return false;
+      }
+
+      boolean this_present_e = true && this.isSetE();
+      boolean that_present_e = true && that.isSetE();
+      if (this_present_e || that_present_e) {
+        if (!(this_present_e && that_present_e))
+          return false;
+        if (!this.e.equals(that.e))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
+      if (isSetSuccess())
+        hashCode = hashCode * 8191 + success.hashCode();
+
+      hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
+      if (isSetE())
+        hashCode = hashCode * 8191 + e.hashCode();
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(saveCandidatePosition_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSuccess()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetE()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.e, other.e);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+      }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("saveCandidatePosition_result(");
+      boolean first = true;
+
+      sb.append("success:");
+      if (this.success == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.success);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("e:");
+      if (this.e == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.e);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+      if (success != null) {
+        success.validate();
+      }
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class saveCandidatePosition_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public saveCandidatePosition_resultStandardScheme getScheme() {
+        return new saveCandidatePosition_resultStandardScheme();
+      }
+    }
+
+    private static class saveCandidatePosition_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<saveCandidatePosition_result> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, saveCandidatePosition_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 0: // SUCCESS
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.success = new com.moseeker.thrift.gen.dao.struct.CandidatePositionDO();
+                struct.success.read(iprot);
+                struct.setSuccessIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 1: // E
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.e = new com.moseeker.thrift.gen.common.struct.CURDException();
+                struct.e.read(iprot);
+                struct.setEIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, saveCandidatePosition_result struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.success != null) {
+          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+          struct.success.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        if (struct.e != null) {
+          oprot.writeFieldBegin(E_FIELD_DESC);
+          struct.e.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class saveCandidatePosition_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public saveCandidatePosition_resultTupleScheme getScheme() {
+        return new saveCandidatePosition_resultTupleScheme();
+      }
+    }
+
+    private static class saveCandidatePosition_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<saveCandidatePosition_result> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, saveCandidatePosition_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetSuccess()) {
+          optionals.set(0);
+        }
+        if (struct.isSetE()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetSuccess()) {
+          struct.success.write(oprot);
+        }
+        if (struct.isSetE()) {
+          struct.e.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, saveCandidatePosition_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(2);
+        if (incoming.get(0)) {
+          struct.success = new com.moseeker.thrift.gen.dao.struct.CandidatePositionDO();
+          struct.success.read(iprot);
+          struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.e = new com.moseeker.thrift.gen.common.struct.CURDException();
+          struct.e.read(iprot);
+          struct.setEIsSet(true);
         }
       }
     }

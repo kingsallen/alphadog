@@ -22,6 +22,7 @@ service CandidateDBDao {
     list<candidatedb_struct.CandidatePositionDO> listCandidatePositions(1:common_struct.CommonQuery query) 
     list<candidatedb_struct.CandidatePositionDO> listCandidatePositionsByPositionIDUserID(1: list<map<i32, i32>> companyPositionIds) 
     candidatedb_struct.CandidatePositionDO updateCandidatePosition(1: candidatedb_struct.CandidatePositionDO candidatePosition) 
+    candidatedb_struct.CandidatePositionDO saveCandidatePosition(1: candidatedb_struct.CandidatePositionDO candidatePosition) throws (1:common_struct.CURDException e) 
     void deleteCandidatePositions(1: i32 userId, 2: i32 positionId) 
     
     candidatedb_struct.CandidatePositionShareRecordDO getCandidatePositionShareRecord(1:common_struct.CommonQuery query) 

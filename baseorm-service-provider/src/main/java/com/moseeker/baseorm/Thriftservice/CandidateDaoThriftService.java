@@ -118,6 +118,11 @@ public class CandidateDaoThriftService implements CandidateDBDao.Iface {
     }
 
     @Override
+    public CandidatePositionDO saveCandidatePosition(CandidatePositionDO candidatePosition) throws com.moseeker.thrift.gen.common.struct.CURDException, TException {
+        return candidatePositionDao.saveResource(candidatePosition);
+    }
+
+    @Override
     public void deleteCandidatePositions(int userId, int positionId) throws TException {
         candidatePositionDao.deleteCandidatePosition(userId, positionId);
     }
