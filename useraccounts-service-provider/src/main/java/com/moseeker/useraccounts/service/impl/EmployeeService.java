@@ -225,8 +225,10 @@ public class EmployeeService {
 				}
 				// step 1: 发送认证邮件 step 2：将信息存入redis
 				query.getEqualFilter().clear();
-				query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
+				query.getEqualFilter().put("id", String.valueOf(bindingParams.getCompanyId()));
 				HrCompanyDO companyDO = hrDBDao.getCompany(query);
+                query.getEqualFilter().clear();
+                query.getEqualFilter().put("company_id", String.valueOf(bindingParams.getCompanyId()));
 				Response hrwechatResult = hrDBDao.getHrWxWechat(query);
 				if (companyDO != null && hrwechatResult.getStatus() == 0 && StringUtils.isNotNullOrEmpty(hrwechatResult.getData())) {
 					JSONObject hrWxWechatJson = JSONObject.parseObject(hrwechatResult.getData());
