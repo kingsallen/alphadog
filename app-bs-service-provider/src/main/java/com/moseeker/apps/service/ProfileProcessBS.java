@@ -195,7 +195,7 @@ public class ProfileProcessBS {
                             reward.setApplication_id(record.getId());
                             reward.setCompany_id(record.getCompany_id());
                             reward.setOperate_tpl_id(record.getTemplate_id());
-                            reward.setRecommender_id(record.getRecommender_id());
+                            reward.setRecommender_id(record.getRecommender_user_id());
                             if (progressStatus == 13 && record.getTemplate_id() == ProcessUtils.RECRUIT_STATUS_APPLY_ID) {
                                 turnToCVChecked = new HrOperationRecordDO();
                                 turnToCVChecked.setAdminId(accountId);
