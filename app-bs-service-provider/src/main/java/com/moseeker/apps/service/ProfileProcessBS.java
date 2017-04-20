@@ -259,6 +259,7 @@ public class ProfileProcessBS {
             }
             return ResponseUtils.success("操作成功");
         } catch (Exception e) {
+            e.printStackTrace();
             logger.error(e.getMessage(), e);
             return ResponseUtils
                     .fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
