@@ -171,8 +171,13 @@ public class EmployeeService {
 
                 // 判断该邮箱现在已被占用 或 正在被人认证
                 List<UserEmployeeDO> userEmployees = userDao.getUserEmployeesDO(query);
+                log.info("使用了邮箱:{}, 的用户有:{}", bindingParams.getEmail(), Arrays.toString(userEmployees.toArray()));
+                userEmployees.stream().map(m -> m.getId()).forEach(e -> {
+                    log.info("用户id:{}， redisMsg:{}", e, client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, String.valueOf(e)));
+                });
                 userEmployees = userEmployees.stream().filter(e -> e.getSysuserId() != bindingParams.getUserId() && e.getId() > 0).collect(Collectors.toList());
                 if (userEmployees.stream().anyMatch(e -> e.getActivation() == 0 || StringUtils.isNotNullOrEmpty(client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, String.valueOf(e.getId()))))) {
+                    log.info("邮箱:{} 已被占用", bindingParams.getEmail());
                     response.setSuccess(false);
                     response.setMessage("该邮箱已被认证\n请使用其他邮箱");
                     break;
