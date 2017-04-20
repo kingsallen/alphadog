@@ -221,7 +221,7 @@ public enum RecruitmentScheduleEnum {
                 this.disable = true;
                 this.priority = 13;
                 this.recuritOrder = 13;
-                this.applierView = "很遗憾您与该职位无缘";
+                this.applierView = "暂不匹配，纳入人才库";
                 break;
             case 5:
                 this.id = value;
