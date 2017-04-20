@@ -522,7 +522,8 @@ public class EmployeeService {
 				query.getEqualFilter().put("id", Arrays.toString(tpIds.toArray()));
 				List<ConfigSysPointConfTplDO> configTpls = configDBDao.getAwardConfigTpls(query);
 				if (!StringUtils.isEmptyList(configTpls)) {
-					Set<Integer> ctpIds = configTpls.stream().map(m -> m.getId()).collect(Collectors.toSet());
+					Set<Integer> ctpIds = configTpls.stream().filter(m -> m.is_init_award == 0)
+							.map(m -> m.getId()).collect(Collectors.toSet());
 					for (HrPointsConfDO pcf : pointsConfs) {
 						if (pcf.getReward() != 0 && ctpIds.contains(pcf.getTemplateId())) {
 							RewardConfig rewardConfig = new RewardConfig();
