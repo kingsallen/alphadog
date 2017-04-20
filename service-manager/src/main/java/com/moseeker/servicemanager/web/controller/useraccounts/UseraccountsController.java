@@ -1,23 +1,6 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.alibaba.fastjson.JSONObject;
-import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserSearchConditionDO;
-import com.moseeker.thrift.gen.useraccounts.struct.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
@@ -26,9 +9,22 @@ import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.apps.userbs.service.UserBS;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserSearchConditionDO;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
+import com.moseeker.thrift.gen.useraccounts.service.UserQxService;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import com.moseeker.thrift.gen.useraccounts.service.UsersettingServices;
+import com.moseeker.thrift.gen.useraccounts.struct.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 //@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
@@ -41,6 +37,8 @@ public class UseraccountsController {
 	UsersettingServices.Iface usersettingServices = ServiceManager.SERVICEMANAGER
 			.getService(UsersettingServices.Iface.class);
 	ProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER.getService(ProfileServices.Iface.class);
+
+	UserQxService.Iface userQxService = ServiceManager.SERVICEMANAGER.getService(UserQxService.Iface.class);
 	
 	UserBS.Iface userBS = ServiceManager.SERVICEMANAGER.getService(UserBS.Iface.class);
 
@@ -783,7 +781,7 @@ public class UseraccountsController {
             Params<String, Object> param = ParamUtils.parseRequestParam(request);
             int userId = param.getInt("user_id", 0);
 
-            return JSONObject.toJSONString(useraccountsServices.userSearchConditionList(userId));
+            return JSONObject.toJSONString(userQxService.userSearchConditionList(userId));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -802,7 +800,7 @@ public class UseraccountsController {
         try {
             UserSearchConditionDO conditionDO = ParamUtils.initModelForm(request, UserSearchConditionDO.class);
 
-            return JSONObject.toJSONString(useraccountsServices.postUserSearchCondition(conditionDO));
+            return JSONObject.toJSONString(userQxService.postUserSearchCondition(conditionDO));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -823,7 +821,7 @@ public class UseraccountsController {
             int userId = params.getInt("user_id", 0);
             int id = params.getInt("id", 0);
 
-            return JSONObject.toJSONString(useraccountsServices.delUserSearchCondition(userId, id));
+            return JSONObject.toJSONString(userQxService.delUserSearchCondition(userId, id));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -844,7 +842,7 @@ public class UseraccountsController {
             int userId = params.getInt("user_id", 0);
             int positionId = params.getInt("position_id", 0);
 
-            return JSONObject.toJSONString(useraccountsServices.postUserCollectPosition(userId, positionId));
+            return JSONObject.toJSONString(userQxService.postUserCollectPosition(userId, positionId));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -865,7 +863,7 @@ public class UseraccountsController {
             int userId = params.getInt("user_id", 0);
             int positionId = params.getInt("position_id", 0);
 
-            return JSONObject.toJSONString(useraccountsServices.getUserCollectPosition(userId, positionId));
+            return JSONObject.toJSONString(userQxService.getUserCollectPosition(userId, positionId));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -886,7 +884,7 @@ public class UseraccountsController {
             int userId = params.getInt("user_id", 0);
             int positionId = params.getInt("position_id", 0);
 
-            return JSONObject.toJSONString(useraccountsServices.delUserCollectPosition(userId, positionId));
+            return JSONObject.toJSONString(userQxService.delUserCollectPosition(userId, positionId));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());

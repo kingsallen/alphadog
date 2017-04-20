@@ -1,21 +1,13 @@
 package com.moseeker.useraccounts.service.impl;
 
 import java.sql.Timestamp;
-import java.text.MessageFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.moseeker.thrift.gen.dao.service.ProfileDBDao;
-import com.moseeker.thrift.gen.dao.service.UserDBDao;
 import com.moseeker.thrift.gen.dao.struct.UserUserDO;
-import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileBasicDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserSearchConditionDO;
-import com.moseeker.thrift.gen.useraccounts.struct.*;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,6 +49,10 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
+import com.moseeker.thrift.gen.useraccounts.struct.BindType;
+import com.moseeker.thrift.gen.useraccounts.struct.User;
+import com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition;
+import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
 import com.moseeker.useraccounts.dao.ProfileDao;
 import com.moseeker.useraccounts.dao.UserDao;
 import com.moseeker.useraccounts.dao.UserFavoritePositionDao;
@@ -67,7 +63,7 @@ import com.moseeker.useraccounts.service.BindOnAccountService;
 
 /**
  * 用户登陆， 注册，合并等api的实现
- * 
+ *
  * @author yaofeng
  * @email wangyaofeng@moseeker.com
  */
@@ -76,13 +72,11 @@ import com.moseeker.useraccounts.service.BindOnAccountService;
 public class UseraccountsService {
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
-	
+
 	com.moseeker.thrift.gen.dao.service.UserDBDao.Iface userDao = ServiceManager.SERVICEMANAGER
 			.getService(com.moseeker.thrift.gen.dao.service.UserDBDao.Iface.class);
-
-	ProfileDBDao.Iface profileDBDao = ServiceManager.SERVICEMANAGER.getService(ProfileDBDao.Iface.class);
 
 	@Autowired
 	protected BaseDao<UserWxUserRecord> wxuserdao;
@@ -101,16 +95,15 @@ public class UseraccountsService {
 
 	@Autowired
 	protected UserFavoritePositionDao userFavoritePositionDao;
-	
+
 	@Autowired
 	protected SmsSender smsSender;
-	
+
 	@Autowired
 	protected WechatDao wechatDao;
-	
+
 	@Autowired
 	protected Map<String, BindOnAccountService> bindOnAccount;
-
 
 	/**
 	 * 用户登陆， 返回用户登陆后的信息。
@@ -168,18 +161,6 @@ public class UseraccountsService {
 					resp.put("name", user.getName());
 					resp.put("headimg", user.getHeadimg());
 
-					// TODO 新增返回字段gender,来源于profile_basic
-                    int gender; // 0：未填写	1：男 2：女 3：保密 （默认：0）
-                    ProfileProfileRecord profileRecord = profileDao.getProfileByUserId(user.getId().intValue());
-
-                    query.getEqualFilter().clear();
-                    query.getEqualFilter().put("profile_id", profileRecord.getId().toString());
-
-                    ProfileBasicDO profileBasic = profileDBDao.getProfileBasic(query);
-                    gender = profileBasic.getGender();
-
-                    resp.put("gender", gender);
-
 					user.setLastLoginTime(new Timestamp(new Date().getTime()));
 					user.setLoginCount(user.getLoginCount() + 1);
 
@@ -204,7 +185,7 @@ public class UseraccountsService {
 
 	/**
 	 * 记录用户登出时的信息。可能会移到 service-manager 处理。
-	 * 
+	 *
 	 * @param userid
 	 * @return
 	 * @throws TException
@@ -242,7 +223,7 @@ public class UseraccountsService {
 		 * catch (Exception e) { // TODO Auto-generated catch block
 		 * logger.error("getismobileregisted error: ", e); return
 		 * ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-		 * 
+		 *
 		 * } }
 		 */
 
@@ -346,7 +327,7 @@ public class UseraccountsService {
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 
 	}
-	
+
 	/**
 	 * 绑定用户的手机号和userid， 如果在一条记录里都有，提示已经绑定成功， 如果在一条记录里有部分，userid 或者 mobile， 补全。
 	 * 否则userid和mobile分别存在2条记录里面， 需要做合并。 如果userid或者手机号均没有， 应该在之前先注册.
@@ -362,7 +343,7 @@ public class UseraccountsService {
 		}
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 	}
-	
+
 	public Response postuserbindmobile(int appid, String unionid, String code, String mobile, BindType bindType) throws TException {
 		try {
 			return bindOnAccount.get(String.valueOf(bindType).toLowerCase()).handler(appid, unionid, mobile);
@@ -376,7 +357,7 @@ public class UseraccountsService {
 
 	/**
 	 * 修改现有密码
-	 * 
+	 *
 	 * @param user_id
 	 * @param old_password
 	 * @param password
@@ -384,8 +365,8 @@ public class UseraccountsService {
 	 * @throws TException
 	 */
 	public Response postuserchangepassword(int user_id, String old_password, String password) throws TException {
-		
-		
+
+
 		if(StringUtils.isNullOrEmpty(password) || StringUtils.isNullOrEmpty(old_password)) {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
 		}
@@ -465,7 +446,7 @@ public class UseraccountsService {
 
 	/**
 	 * 忘记密码后重置密码,
-	 * 
+	 *
 	 * @param code
 	 *            验证码，可选， 填写时必须判断。不填时， 请先调用postvalidatepasswordforgotcode 进行验证。
 	 */
@@ -474,7 +455,7 @@ public class UseraccountsService {
 		if (code != null && !validateCode(mobile, code, 2)) {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
 		}
-		
+
 
 		CommonQuery query = new CommonQuery();
 		Map<String, String> filters = new HashMap<>();
@@ -548,7 +529,7 @@ public class UseraccountsService {
 		}
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 	}
-	
+
 	public Response getUsers(CommonQuery query) throws TException {
 		try {
 			List<User> users = new ArrayList<>();
@@ -603,7 +584,7 @@ public class UseraccountsService {
 
 	/**
 	 * 检查手机号是否已经注册。 exist: true 已经存在， exist：false 不存在。
-	 * 
+	 *
 	 * @param mobile
 	 * @return
 	 * @throws TException
@@ -708,7 +689,7 @@ public class UseraccountsService {
 
 	/**
 	 * 修改当前用户手机号。
-	 * 
+	 *
 	 * @param user_id
 	 * @param newmobile
 	 *            新手机号
@@ -816,7 +797,7 @@ public class UseraccountsService {
 //					try {
 //						MessageTemplate messageTemplate = fetchMessageTemplate(userFavoritePosition.getPosition_id(), userFavoritePosition.getSysuser_id());
 //						MessageTemplateNoticeStruct mtns = createMessageTemplate(messageTemplate);
-//						
+//
 //						mqService.messageTemplateNotice(mtns);
 //					} catch (Exception e) {
 //						logger.error(e.getMessage(), e);
@@ -824,7 +805,7 @@ public class UseraccountsService {
 //				});
 //				t.start();
 //				MessageTemplateNoticeStruct messageTemplateNoticeStruct = new MessageTemplateNoticeStruct();
-				
+
 				return ResponseUtils.success(hashmap); // 返回
 														// userFavoritePositionId
 			}
@@ -848,9 +829,9 @@ public class UseraccountsService {
 			message.setSys_template_id(TemplateId.TEMPLATE_MESSAGE_FAV_HR.getValue());
 			message.setType(UserType.PC.getValueToByte());
 			HashMap<String, Object> data = new HashMap<String, Object>();
-			
+
 			//message.setData(data);
-			
+
 		}
 		return null;
 	}
@@ -876,7 +857,7 @@ public class UseraccountsService {
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		} finally {
-			
+
 		}
 		return messageTemplate;
 	}
@@ -912,7 +893,7 @@ public class UseraccountsService {
 
 	/**
 	 * 返回手机验证码的正确性, true 验证码正确。
-	 * 
+	 *
 	 * @param mobile
 	 *            手机号
 	 * @param code
@@ -1002,7 +983,7 @@ public class UseraccountsService {
 			logger.error(e.getMessage(), e);
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 		} finally {
-			
+
 		}
 	}
 
@@ -1010,7 +991,7 @@ public class UseraccountsService {
 	 * 创建微信二维码
 	 */
 	public Response cerateQrcode(int wechatId, long sceneId, int expireSeconds, int action_name) throws TException {
-		
+
 		try {
 			QueryUtil qu = new QueryUtil();
 			qu.addEqualFilter("id", String.valueOf(wechatId));
@@ -1087,7 +1068,7 @@ public class UseraccountsService {
 		redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.WEIXIN_SCANRESULT.toString(), String.valueOf(wechatId), String.valueOf(sceneId), value);
 		return RespnoseUtil.SUCCESS.toResponse();
 	}
-	
+
 	public UserUserDO ifExistUser(String mobile) {
 		UserUserDO user = new UserUserDO();
 		QueryUtil qu = new QueryUtil();
@@ -1151,137 +1132,51 @@ public class UseraccountsService {
 		return false;
 	}
 
+	public BaseDao<UserWxUserRecord> getWxuserdao() {
+		return wxuserdao;
+	}
 
-    public UserSearchConditionListVO userSearchConditionList(int userId) throws TException {
-	    logger.info("[Thread-id = {}] getUserSearchCondition params: userId = {}", Thread.currentThread().getId(), userId);
-        UserSearchConditionListVO result = new UserSearchConditionListVO();
-        JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.SUCCESS);
-        CommonQuery query = null;
-        try {
-            query = new CommonQuery();
-            query.setEqualFilter(new HashMap<>());
-            query.getEqualFilter().put("user_id", String.valueOf(userId));
-            query.getEqualFilter().put("disable", String.valueOf(0)); // 0: 不禁用 1: 禁用
-            result.setSearchConditionList(userDao.getUserSearchConditions(query));
-        } catch (Exception e) {
-            jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-            logger.error(e.getMessage(), e);
-        }
-        result.setStatus(jsonObject.getIntValue("status"));
-        result.setMessage(jsonObject.getString("message"));
-        logger.info("[Thread-id = {}] getUserSearchCondition response: {}", Thread.currentThread().getId(), result);
-        return result;
-    }
+	public void setWxuserdao(BaseDao<UserWxUserRecord> wxuserdao) {
+		this.wxuserdao = wxuserdao;
+	}
 
-    public UserSearchConditionVO postUserSearchCondition(UserSearchConditionDO userSearchCondition) throws TException {
-	    logger.info("postUserSearchCondition params: userSearchCondition={}", userSearchCondition);
-        UserSearchConditionVO result = new UserSearchConditionVO();
-        result.setSearchCondition(new UserSearchConditionDO());
-        JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.SUCCESS);
-        try {
-            userSearchCondition = userDao.saveUserSearchCondition(userSearchCondition);
-            if (userSearchCondition != null && userSearchCondition.getId() > 0) {
-                result.setSearchCondition(userSearchCondition);
-            } else {
-                jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
-            }
-        } catch (Exception e) {
-            jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-            logger.error(e.getMessage(), e);
-        }
-        result.setStatus(jsonObject.getIntValue("status"));
-        result.setMessage(jsonObject.getString("message"));
-        logger.info("postUserSearchCondition response: {}", result);
-        return result;
-    }
+	public UserDao getUserdao() {
+		return userdao;
+	}
 
-    public UserSearchConditionVO delUserSearchCondition(int userId, int id) throws TException {
-	    logger.info("delUserSearchCondition params: userId={}, id={}", userId, id);
-        CommonQuery query = new CommonQuery();
-        UserSearchConditionVO result = new UserSearchConditionVO();
-        result.setSearchCondition(new UserSearchConditionDO());
-        JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.SUCCESS);
-        try {
-            query.setEqualFilter(new HashMap<>());
-            query.getEqualFilter().put("user_id", String.valueOf(userId));
-            query.getEqualFilter().put("id", String.valueOf(id));
-            List<UserSearchConditionDO> conditions = userDao.getUserSearchConditions(query);
-            if(conditions != null && conditions.get(0) != null && conditions.get(0).getId() != 0) {
-                result.setSearchCondition(conditions.get(0).getDisable() == 1 ? conditions.get(0) : userDao.updateUserSearchCondition(conditions.get(0)).setDisable((byte)1));
-            } else {
-                jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
-                logger.error("用户(user_id={})不存在该筛选项(筛选项id={})", userId, id);
-            }
-        } catch (Exception e) {
-            jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-            logger.error(e.getMessage(), e);
-        }
-        result.setStatus(jsonObject.getIntValue("status"));
-        result.setMessage(jsonObject.getString("message"));
-        logger.info("delUserSearchCondition response: {}", result);
-        return result;
-    }
+	public void setUserdao(UserDao userdao) {
+		this.userdao = userdao;
+	}
 
-    public UserCollectPositionVO getUserCollectPosition(int userId, int positionId) throws TException {
-        logger.info("getUserCollectPosition params: userId={}, positionId={}", userId, positionId);
-        UserCollectPositionVO result = new UserCollectPositionVO();
-        result.setUserCollectPosition(new UserCollectPositionDO());
-        JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.SUCCESS);
-        try {
-            CommonQuery query = new CommonQuery();
-            query.setEqualFilter(new HashMap<>());
-            query.getEqualFilter().put("user_id", String.valueOf(userId));
-            query.getEqualFilter().put("positionId", String.valueOf(positionId));
-            UserCollectPositionDO entity = userDao.getUserCollectPosition(query);
-            if (entity != null && entity.getId() > 0) {
-                result.setUserCollectPosition(entity);
-            } else {
-                jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", "未找到收藏记录"));
-            }
-        } catch (Exception e) {
-            jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-            logger.error(e.getMessage(), e);
-        }
-        result.setStatus(jsonObject.getIntValue("status"));
-        result.setMessage(jsonObject.getString("message"));
-        logger.info("getUserCollectPosition response: {}", result);
-        return result;
-    }
+	public ProfileDao getProfileDao() {
+		return profileDao;
+	}
 
-    public UserCollectPositionVO putUserCollectPosition(int userId, int positionId, int status) throws TException {
-        logger.info("putUserCollectPosition params: userId={}, positionId={}, status={}", userId, positionId, status);
-        UserCollectPositionVO result = new UserCollectPositionVO();
-        result.setUserCollectPosition(new UserCollectPositionDO());
-        JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.SUCCESS);
-        try {
-            CommonQuery query = new CommonQuery();
-            query.setEqualFilter(new HashMap<>());
-            query.getEqualFilter().put("user_id", String.valueOf(userId));
-            query.getEqualFilter().put("positionId", String.valueOf(positionId));
-            UserCollectPositionDO entity = userDao.getUserCollectPosition(query);
-            if (entity != null && entity.getId() > 0) {
-                if (entity.getStatus() == status) {
-                    result.setUserCollectPosition(entity);
-                } else {
-                    entity.setStatus(status);
-                    entity.setUpdateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
-                    result.setUserCollectPosition(userDao.updateUserCollectPosition(entity));
-                }
-            } else {
-                entity = new UserCollectPositionDO();
-                entity.setStatus(status);
-                entity.setUserId(userId);
-                entity.setPositionId(positionId);
-                entity.setCreateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
-                result.setUserCollectPosition(userDao.saveUserCollectPosition(entity));
-            }
-        } catch (Exception e) {
-            jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-            logger.error(e.getMessage(), e);
-        }
-        result.setStatus(jsonObject.getIntValue("status"));
-        result.setMessage(jsonObject.getString("message"));
-        logger.info("putUserCollectPosition response: {}", result);
-        return result;
-    }
+	public void setProfileDao(ProfileDao profileDao) {
+		this.profileDao = profileDao;
+	}
+
+	public UsersettingDao getUserSettingDao() {
+		return userSettingDao;
+	}
+
+	public void setUserSettingDao(UsersettingDao userSettingDao) {
+		this.userSettingDao = userSettingDao;
+	}
+
+	public UserFavoritePositionDao getUserFavoritePositionDao() {
+		return userFavoritePositionDao;
+	}
+
+	public void setUserFavoritePositionDao(UserFavoritePositionDao userFavoritePositionDao) {
+		this.userFavoritePositionDao = userFavoritePositionDao;
+	}
+
+	public WechatDao getWechatDao() {
+		return wechatDao;
+	}
+
+	public void setWechatDao(WechatDao wechatDao) {
+		this.wechatDao = wechatDao;
+	}
 }

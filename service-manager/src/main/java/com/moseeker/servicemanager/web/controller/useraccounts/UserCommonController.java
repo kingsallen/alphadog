@@ -1,8 +1,11 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.servicemanager.common.ParamUtils;
+import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.foundation.wordpress.struct.NewsletterForm;
+import com.moseeker.thrift.gen.useraccounts.service.UserCommonService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -10,12 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.servicemanager.common.ParamUtils;
-import com.moseeker.servicemanager.common.ResponseLogNotification;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.foundation.wordpress.struct.NewsletterForm;
-import com.moseeker.thrift.gen.useraccounts.service.UserCommonService;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Controller
 public class UserCommonController {

@@ -1,21 +1,24 @@
 package com.moseeker.useraccounts.thrift;
 
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.UserUserDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserSearchConditionDO;
-import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Iface;
-import com.moseeker.thrift.gen.useraccounts.struct.*;
-import com.moseeker.useraccounts.service.impl.UseraccountsService;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Iface;
+import com.moseeker.thrift.gen.useraccounts.struct.BindType;
+import com.moseeker.thrift.gen.useraccounts.struct.User;
+import com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition;
+import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
+import com.moseeker.useraccounts.service.impl.UseraccountsService;
+
 /**
  * 用户登陆， 注册，合并等api的实现
- * 
+ *
  * @author yaofeng
  * @email wangyaofeng@moseeker.com
  */
@@ -26,7 +29,7 @@ public class UseraccountsServiceImpl implements Iface {
 
 	@Autowired
 	private UseraccountsService service;
-	
+
 	/**
 	 * 用户登陆， 返回用户登陆后的信息。
 	 */
@@ -37,7 +40,7 @@ public class UseraccountsServiceImpl implements Iface {
 
 	/**
 	 * 记录用户登出时的信息。可能会移到 service-manager 处理。
-	 * 
+	 *
 	 * @param userid
 	 * @return
 	 * @throws TException
@@ -85,7 +88,7 @@ public class UseraccountsServiceImpl implements Iface {
 
 	/**
 	 * 修改现有密码
-	 * 
+	 *
 	 * @param user_id
 	 * @param old_password
 	 * @param password
@@ -108,7 +111,7 @@ public class UseraccountsServiceImpl implements Iface {
 
 	/**
 	 * 忘记密码后重置密码,
-	 * 
+	 *
 	 * @param code
 	 *            验证码，可选， 填写时必须判断。不填时， 请先调用postvalidatepasswordforgotcode 进行验证。
 	 */
@@ -133,7 +136,7 @@ public class UseraccountsServiceImpl implements Iface {
 	public Response getUserById(long userId) throws TException {
 		return service.getUserById(userId);
 	}
-	
+
 	@Override
 	public Response getUsers(CommonQuery query) throws TException {
 		return service.getUsers(query);
@@ -153,7 +156,7 @@ public class UseraccountsServiceImpl implements Iface {
 
 	/**
 	 * 检查手机号是否已经注册。 exist: true 已经存在， exist：false 不存在。
-	 * 
+	 *
 	 * @param mobile
 	 * @return
 	 * @throws TException
@@ -193,7 +196,7 @@ public class UseraccountsServiceImpl implements Iface {
 
 	/**
 	 * 修改当前用户手机号。
-	 * 
+	 *
 	 * @param user_id
 	 * @param newmobile
 	 *            新手机号
@@ -294,39 +297,9 @@ public class UseraccountsServiceImpl implements Iface {
 		return service.ifExistProfile(mobile);
 	}
 
-    @Override
-    public Response postuserbindmobile(int appid, String unionid, String code,
-                                       String mobile, BindType bindType) throws TException {
-        return service.postuserbindmobile(appid, unionid, code, mobile, bindType);
-    }
-
-    @Override
-    public UserSearchConditionListVO userSearchConditionList(int userId) throws TException {
-        return service.userSearchConditionList(userId);
-    }
-
-    @Override
-    public UserSearchConditionVO postUserSearchCondition(UserSearchConditionDO userSearchCondition) throws TException {
-        return service.postUserSearchCondition(userSearchCondition);
-    }
-
-    @Override
-    public UserSearchConditionVO delUserSearchCondition(int userId, int id) throws TException {
-        return service.delUserSearchCondition(userId, id);
-    }
-
-    @Override
-    public UserCollectPositionVO getUserCollectPosition(int userId, int positionId) throws TException {
-        return service.getUserCollectPosition(userId, positionId);
-    }
-
-    @Override
-    public UserCollectPositionVO postUserCollectPosition(int userId, int positionId) throws TException {
-        return service.putUserCollectPosition(userId, positionId, 0);
-    }
-
-    @Override
-    public UserCollectPositionVO delUserCollectPosition(int userId, int positionId) throws TException {
-        return service.putUserCollectPosition(userId, positionId, 1);
-    }
+	@Override
+	public Response postuserbindmobile(int appid, String unionid, String code,
+			String mobile, BindType bindType) throws TException {
+		return service.postuserbindmobile(appid, unionid, code, mobile, bindType);
+	}
 }
