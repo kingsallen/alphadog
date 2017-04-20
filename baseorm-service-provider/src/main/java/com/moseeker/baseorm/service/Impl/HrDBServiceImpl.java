@@ -16,6 +16,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.HistoryOperate;
 import com.moseeker.thrift.gen.dao.struct.HrOperationRecordDO;
 import com.moseeker.thrift.gen.dao.struct.HrTeamStruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -48,9 +48,11 @@ import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
+import com.moseeker.thrift.gen.dao.service.CampaignDBDao;
 import com.moseeker.thrift.gen.dao.service.CompanyDao;
 import com.moseeker.thrift.gen.dao.service.HrDBDao;
 import com.moseeker.thrift.gen.dao.service.UserHrAccountDao;
+import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
 import com.moseeker.thrift.gen.dao.struct.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.HrHbConfigDO;
 import com.moseeker.thrift.gen.dao.struct.HrHbItemsDO;
@@ -58,6 +60,7 @@ import com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingDO;
 import com.moseeker.thrift.gen.dao.struct.HrTeamStruct;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
+import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignHeadImageDO;
 import com.moseeker.thrift.gen.position.struct.BatchHandlerJobPostion;
 import com.moseeker.thrift.gen.position.struct.City;
 import com.moseeker.thrift.gen.position.struct.JobPostrionObj;
@@ -1397,6 +1400,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
         // 查询到职位
         return result;
     }
+
 
     public String replaceBlank(String str) {
         String dest = "";

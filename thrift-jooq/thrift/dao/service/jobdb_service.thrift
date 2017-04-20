@@ -15,4 +15,8 @@ service JobDBDao {
     
     common_struct.Response getJobCustoms(1:common_struct.CommonQuery query);
     common_struct.Response getJobOccupations(1:common_struct.CommonQuery query);
+
+    position_struct.PositionDetails positionDetails(1:i32 positionId);
+
+    list<position_struct.PositionDetails> positionDetailsList(1:common_struct.CommonQuery query);
 }
