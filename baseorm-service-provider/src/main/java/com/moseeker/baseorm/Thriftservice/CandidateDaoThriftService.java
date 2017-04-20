@@ -188,7 +188,7 @@ public class CandidateDaoThriftService implements CandidateDBDao.Iface {
 
     @Override
     public List<CandidateRecomRecordDO> listInterestedCandidateRecomRecordByUserPositions(int userId, List<Integer> positionIdList, int pageNo, int pageSize) throws TException {
-        return return candidateRecomRecordDao.listInterestedCandidateRecomRecordByUserPositions(userId, positionIdList, pageNo, pageSize);
+        return candidateRecomRecordDao.listInterestedCandidateRecomRecordByUserPositions(userId, positionIdList, pageNo, pageSize);
     }
 
     @Override
