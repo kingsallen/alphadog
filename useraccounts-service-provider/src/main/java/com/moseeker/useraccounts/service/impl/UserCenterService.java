@@ -171,9 +171,15 @@ public class UserCenterService {
             int interestedCount = 0;         //被推荐的转发记录数
             int applyCount = 0;             //有过申请的转发记录数
             /** 并行查找三个统计信息 */
-            Future<Integer> totalCountFuture = tp.startTast(() -> bizTools.countCandidateRecomRecord(userId));
-            Future<Integer> interestedCountFuture = tp.startTast(() -> bizTools.countInterestedCandidateRecomRecord(userId));
-            Future<Integer> applyCountFuture = tp.startTast(() -> bizTools.countAppliedCandidateRecomRecord(userId));
+
+            List<Integer> positionIdList = bizTools.listPositionIdByUserId(userId);
+            if (positionIdList == null) {
+                return recommendationForm;
+            }
+
+            Future<Integer> totalCountFuture = tp.startTast(() -> bizTools.countCandidateRecomRecord(userId, positionIdList));
+            Future<Integer> interestedCountFuture = tp.startTast(() -> bizTools.countInterestedCandidateRecomRecord(userId, positionIdList));
+            Future<Integer> applyCountFuture = tp.startTast(() -> bizTools.countAppliedCandidateRecomRecord(userId, positionIdList));
             totalCount = totalCountFuture.get();
             interestedCount = interestedCountFuture.get();
             applyCount = applyCountFuture.get();
@@ -184,7 +190,7 @@ public class UserCenterService {
             recommendationForm.setScore(scoreVO);
 
             /** 分页查找相关职位转发记录 */
-            List<CandidateRecomRecordDO> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, type, pageNo, pageSize);
+            List<CandidateRecomRecordDO> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, type, positionIdList, pageNo, pageSize);
             if (recomRecordDOList.size() > 0) {
                 recommendationForm.setHasRecommends(true);
 

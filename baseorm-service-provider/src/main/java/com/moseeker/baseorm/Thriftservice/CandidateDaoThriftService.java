@@ -178,8 +178,18 @@ public class CandidateDaoThriftService implements CandidateDBDao.Iface {
     }
 
     @Override
+    public List<CandidateRecomRecordDO> listCandidateRecomRecordsForAppliedByUserPositions(int userId, List<Integer> positionIdList, int pageNo, int pageSize) throws TException {
+        return candidateRecomRecordDao.listCandidateRecomRecordsForAppliedByUserPositions(userId, positionIdList, pageNo, pageSize);
+    }
+
+    @Override
     public List<CandidateRecomRecordDO> listInterestedCandidateRecomRecord(int userId, int pageNo, int pageSize) throws TException {
         return candidateRecomRecordDao.listInterestedCandidateRecomRecord(userId, pageNo, pageSize);
+    }
+
+    @Override
+    public List<CandidateRecomRecordDO> listInterestedCandidateRecomRecordByUserPositions(int userId, List<Integer> positionIdList, int pageNo, int pageSize) throws TException {
+        return null;
     }
 
     @Override
@@ -207,13 +217,28 @@ public class CandidateDaoThriftService implements CandidateDBDao.Iface {
     }
 
     @Override
+    public int countCandidateRecomRecordDistinctPresenteePosition(int postUserId, List<Integer> positionIdList) throws TException {
+        return candidateRecomRecordDao.countCandidateRecomRecordDistinctPresenteePosition(postUserId, positionIdList);
+    }
+
+    @Override
     public int countAppliedCandidateRecomRecord(int userId) throws TException {
         return candidateRecomRecordDao.countAppliedCandidateRecomRecord(userId);
     }
 
     @Override
+    public int countAppliedCandidateRecomRecordByUserPosition(int userId, List<Integer> positionIdList) throws TException {
+        return candidateRecomRecordDao.countAppliedCandidateRecomRecordByUserPosition(userId, positionIdList);
+    }
+
+    @Override
     public int countInterestedCandidateRecomRecord(int userId) throws TException {
         return candidateRecomRecordDao.countInterestedCandidateRecomRecord(userId);
+    }
+
+    @Override
+    public int countInterestedCandidateRecomRecordByUserPosition(int userId, List<Integer> positionIdList) throws TException {
+        return candidateRecomRecordDao.countInterestedCandidateRecomRecordByUserPosition(userId, positionIdList);
     }
 
     @Override
