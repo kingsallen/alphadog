@@ -189,7 +189,7 @@ public class ProfileProcessBS {
                             RecruitmentResult result1 = BusinessUtil.excuteRecruitRewardOperation(record.getRecruit_order(), progressStatus, recruitProcesses);
                             reward = new RewardsToBeAddBean();
                             reward.setAccount_id(accountId);
-                            reward.setEmployee_id(record.getRecommender_user_id());
+                            reward.setEmployee_id(0);
                             reward.setReason(result1.getReason());
                             reward.setAward(result1.getReward());
                             reward.setApplication_id(record.getId());
@@ -216,6 +216,17 @@ public class ProfileProcessBS {
                                 && !"[]".equals(employeeResult.getData())) {
                             employeesToBeUpdates = ConvertUserEmployeeList(employeeResult
                                     .getData());
+                        }
+                        if (employeesToBeUpdates != null
+                                && employeesToBeUpdates.size() > 0) {
+                            for (RewardsToBeAddBean bean : rewardsToBeAdd) {
+                                for (UserEmployeeStruct user : employeesToBeUpdates) {
+                                    if (bean.getRecommender_id() == user.getSysuser_id()) {
+                                        bean.setEmployee_id(user.getId());
+                                        break;
+                                    }
+                                }
+                            }
                         }
                         // 修改招聘进度
                         for (ProcessValidationStruct process : list) {
