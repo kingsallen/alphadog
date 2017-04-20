@@ -107,7 +107,7 @@ public enum RecruitmentScheduleEnum {
             case 11 :
             case 3: value = 3; break;
             case 4:
-                if(this.getLastID() ==0 || this.getLastID() > 13) {
+                if(this.getLastID() < 0 || this.getLastID() > 13) {
                     throw new RecruitmentScheduleLastStepNotExistException();
                 }
                 value = this.getLastID();
