@@ -57,10 +57,7 @@ public class UserEmployeeDao extends StructDaoImpl<UserEmployeeDO, UserEmployeeR
             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
             SelectJoinStep<Record> table = create.select().from(UserEmployee.USER_EMPLOYEE);
             table.where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
-                    .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) 0)
-                            .and(UserEmployee.USER_EMPLOYEE.WXUSER_ID.notEqual(0))
-                            .and(UserEmployee.USER_EMPLOYEE.WXUSER_ID.in(weChatIds))
-                    );
+                    .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) 0));
             Result<Record> result = table.fetch();
             if (result != null && result.size() > 0) {
                 for (Record r : result) {

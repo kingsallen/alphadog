@@ -217,7 +217,6 @@ public class ProfileController {
             logger.info("profileProcess result:{}", request);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
