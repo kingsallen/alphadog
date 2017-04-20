@@ -45,7 +45,7 @@ public class EmailProducer {
 	 * @param eventType
 	 * @return
 	 */
-	public Response sendBizEmail(Map<String, String> params, int eventType, String email, String subject) {
+	public Response sendBizEmail(Map<String, String> params, int eventType, String email, String subject, String senderName, String senderDisplay) {
 		try {
 			Message message = new Message();
 			message.setAppId(Constant.APPID_ALPHADOG);
@@ -53,19 +53,13 @@ public class EmailProducer {
 			message.getParams().putAll(params);
 			EmailContent mailContent = new EmailContent();
 			mailContent.setCharset(StandardCharsets.UTF_8.toString());
-			if(StringUtils.isNullOrEmpty(subject)) {
-				mailContent.setSubject(subject);
-			} else {
-				mailContent.setSubject(Constant.EMAIL_VERIFIED_SUBJECT);
-			}
 			List<String> recipients = new ArrayList<>();
-			recipients.add(email);
-			mailContent.setRecipients(recipients);
-			ConfigPropertiesUtil propertiesUtil = ConfigPropertiesUtil.getInstance();
-			mailContent.setSenderName(propertiesUtil.get("email.verify.sendName", String.class));
-			mailContent.setSenderDisplay(propertiesUtil.get("email.verify.sendDisplay", String.class));
-			mailContent.setSubject(propertiesUtil.get("email.verify.subject", String.class));
-			
+            recipients.add(email);
+            mailContent.setRecipients(recipients);
+            mailContent.setSenderName(senderName);
+            mailContent.setSenderDisplay(senderDisplay);
+            mailContent.setSubject(subject);
+
 			message.setEmailContent(mailContent);
 			
 			String constantlyMsg = JSON.toJSONString(message);

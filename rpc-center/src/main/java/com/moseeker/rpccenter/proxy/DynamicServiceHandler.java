@@ -1,15 +1,21 @@
 package com.moseeker.rpccenter.proxy;
 
+import com.moseeker.rpccenter.common.ServerNode;
+import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.common.struct.CURDException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-
-import com.moseeker.rpccenter.common.ServerNode;
 
 /**
  * Created by zzh on 16/3/28.
  */
 public class DynamicServiceHandler implements InvocationHandler {
+
+    private Logger logger = LoggerFactory.getLogger(DynamicServiceHandler.class);
 
     /** 实际处理实例 */
     private Object target;
@@ -40,8 +46,14 @@ public class DynamicServiceHandler implements InvocationHandler {
             Object result = method.invoke(target, args);
             return result;
         } catch (Exception e) {
-        	e.printStackTrace();
-            throw e;
+            if (e.getCause() instanceof CURDException) {
+                throw  (CURDException)e.getCause();
+            }
+            if (e.getCause() instanceof BIZException) {
+                throw  (BIZException)e.getCause();
+            }
+            logger.error(e.getMessage(), e);
+        	throw e;
         }
     }
 }

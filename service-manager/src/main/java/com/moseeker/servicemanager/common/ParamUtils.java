@@ -73,7 +73,7 @@ public class ParamUtils {
      * @return 存储通过request请求传递过来的参数
      */
     public static Params<String, Object> parseRequestParam(HttpServletRequest request) throws Exception {
-        Params<String, Object> data = new Params<String, Object>();
+        Params<String, Object> data = new Params<>();
         data.putAll(initParamFromRequestBody(request));
         data.putAll(initParamFromRequestParameter(request));
 
@@ -234,6 +234,7 @@ public class ParamUtils {
                 jb.append(line);
             }
         } catch (IOException | IllegalStateException e) {
+            LoggerFactory.getLogger(ParamUtils.class).error(e.getMessage(), e);
         }
         LoggerFactory.getLogger(ParamUtils.class).info("----initParamFromRequestBody:", jb.toString());
         Map<String, Object> map = JsonToMap.parseJSON2Map(jb.toString());

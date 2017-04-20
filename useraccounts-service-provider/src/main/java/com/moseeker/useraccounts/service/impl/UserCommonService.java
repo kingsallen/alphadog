@@ -2,6 +2,7 @@ package com.moseeker.useraccounts.service.impl;
 
 import java.util.HashMap;
 
+import com.moseeker.common.annotation.iface.CounterIface;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,7 @@ import com.moseeker.thrift.gen.foundation.wordpress.struct.NewsletterForm;
  * @version
  */
 @Service
+@CounterIface
 public class UserCommonService {
 	
 	Logger logger = LoggerFactory.getLogger(UserCommonService.class);

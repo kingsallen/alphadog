@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -15,6 +16,7 @@ import java.util.Map;
  * Created by eddie on 2017/3/9.
  */
 @Service
+@CounterIface
 public class  UserEmployeeService {
 
     UserEmployeeDao.Iface userEmployeeDao = ServiceManager.SERVICEMANAGER.getService(UserEmployeeDao.Iface.class);

@@ -7,8 +7,10 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.dao.struct.HistoryOperate;
-import com.moseeker.thrift.gen.dao.struct.HrOperationRecordDO;
-import org.jooq.*;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
+import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.Result;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;

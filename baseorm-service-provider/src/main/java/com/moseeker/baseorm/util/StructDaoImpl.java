@@ -46,6 +46,7 @@ public abstract class StructDaoImpl<S extends  TBase, R extends UpdatableRecordI
             this.postResource(record);
             BeanUtils.DBToStruct(s, record, null);
         } catch (Exception e) {
+            e.printStackTrace();
             logger.error(e.getMessage(), e);
             throw CURDExceptionUtils.buildPutException();
         }

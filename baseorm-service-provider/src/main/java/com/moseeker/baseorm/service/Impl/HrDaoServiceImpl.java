@@ -12,8 +12,8 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrEmployeeCertConfRecord;
 import com.moseeker.baseorm.service.HrDaoService;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.dao.struct.*;
 
+import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
