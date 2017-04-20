@@ -63,10 +63,11 @@ public class JobApplicationDao extends StructDaoImpl<JobApplicationDO, JobApplic
 		try {
 			conn = DBConnHelper.DBConn.getConn();
 			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-			SelectJoinStep<Record9<Integer, Integer, Integer, Integer, String, Integer, Integer, Integer, String>> table=create.select(
+			SelectJoinStep<Record10<Integer, Integer, Integer, Integer, Integer, String, Integer, Integer, Integer, String>> table=create.select(
 					JobApplication.JOB_APPLICATION.ID, 
 					JobApplication.JOB_APPLICATION.COMPANY_ID, 
 					JobApplication.JOB_APPLICATION.RECOMMENDER_ID,
+					JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID,
 					JobApplication.JOB_APPLICATION.APPLIER_ID,
 					UserUser.USER_USER.NAME,
 					UserWxUser.USER_WX_USER.SYSUSER_ID,
@@ -86,26 +87,20 @@ public class JobApplicationDao extends StructDaoImpl<JobApplicationDO, JobApplic
 			}else if(progressStatus==99){
 				table.where().and(JobApplication.JOB_APPLICATION.APP_TPL_ID.equal((int)(4)));
 			}
-			Result<Record9<Integer, Integer, Integer, Integer, String, Integer, Integer, Integer, String>> result=table.fetch();
+			Result<Record10<Integer, Integer, Integer, Integer, Integer, String, Integer, Integer, Integer, String>> result=table.fetch();
 			if(result!=null&&result.size()>0){
 				ProcessValidationStruct data= null;
-				for(Record9<Integer, Integer, Integer, Integer, String, Integer, Integer, Integer, String> record:result){
+				for(Record10<Integer, Integer, Integer, Integer, Integer, String, Integer, Integer, Integer, String> record :result){
 					data=new ProcessValidationStruct();
 					data.setCompany_id(record.getValue(JobApplication.JOB_APPLICATION.COMPANY_ID).intValue());
 					data.setId(record.getValue(JobApplication.JOB_APPLICATION.ID).intValue());
 					data.setRecommender_id(record.getValue(JobApplication.JOB_APPLICATION.RECOMMENDER_ID).intValue());
+					data.setRecommender_user_id(record.getValue(JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID).intValue());
 					data.setRecruit_order(record.getValue(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.RECRUIT_ORDER).intValue());
 					data.setTemplate_id(record.getValue(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.ID).intValue());
 					data.setApplier_id(record.getValue(JobApplication.JOB_APPLICATION.APPLIER_ID).intValue());
 					data.setApplier_name(record.getValue(UserUser.USER_USER.NAME));
 					data.setPosition_name(record.getValue(JobPosition.JOB_POSITION.TITLE));
-					if(record.getValue(UserWxUser.USER_WX_USER.SYSUSER_ID)!=null){
-						data.setRecommender_user_id(record.getValue(UserWxUser.USER_WX_USER.SYSUSER_ID));
-					}else{
-						data.setRecommender_user_id(0);
-					}
-					
-					
 					list.add(data);
 				}
 			}

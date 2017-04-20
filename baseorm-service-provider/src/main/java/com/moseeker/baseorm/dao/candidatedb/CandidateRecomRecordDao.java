@@ -387,7 +387,7 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
                     .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
                     .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM.equal(0).and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.in(postUserId)))
                     .groupBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID)
-                    .orderBy(count)
+                    .orderBy(count.desc())
                     .fetch();
 
             if (result != null && result.size() > 0) {
