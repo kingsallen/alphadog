@@ -215,12 +215,16 @@ public class ParamUtils {
                 }
             }
         }
-        if (param.size() > 0) {
+        if (param.size() > 0)
+
+        {
             param.forEach((key, value) -> {
                 LoggerFactory.getLogger(ParamUtils.class).info("----initParamFromRequestParameter key:{}    value:{}", key, value);
             });
         }
-        LoggerFactory.getLogger(ParamUtils.class).info("----initParamFromRequestBody:", param.toString());
+        LoggerFactory.getLogger(ParamUtils.class).
+
+                info("----initParamFromRequestBody:", param.toString());
         return param;
     }
 
