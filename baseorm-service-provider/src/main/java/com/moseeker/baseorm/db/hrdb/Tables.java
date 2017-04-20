@@ -13,6 +13,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCmsPages;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConfBak;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeePosition;
@@ -75,255 +76,260 @@ public class Tables {
 	/**
 	 * 企业申请简历校验配置
 	 */
-	public static final HrAppCvConf HR_APP_CV_CONF = HrAppCvConf.HR_APP_CV_CONF;
+	public static final HrAppCvConf HR_APP_CV_CONF = com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf.HR_APP_CV_CONF;
 
 	/**
 	 * 聊天室未读消息
 	 */
-	public static final HrChatUnreadCount HR_CHAT_UNREAD_COUNT = HrChatUnreadCount.HR_CHAT_UNREAD_COUNT;
+	public static final HrChatUnreadCount HR_CHAT_UNREAD_COUNT = com.moseeker.baseorm.db.hrdb.tables.HrChatUnreadCount.HR_CHAT_UNREAD_COUNT;
 
 	/**
 	 * 子公司表
 	 */
-	public static final HrChildCompany HR_CHILD_COMPANY = HrChildCompany.HR_CHILD_COMPANY;
+	public static final HrChildCompany HR_CHILD_COMPANY = com.moseeker.baseorm.db.hrdb.tables.HrChildCompany.HR_CHILD_COMPANY;
 
 	/**
 	 * 微信端新jd模块具体内容项
 	 */
-	public static final HrCmsMedia HR_CMS_MEDIA = HrCmsMedia.HR_CMS_MEDIA;
+	public static final HrCmsMedia HR_CMS_MEDIA = com.moseeker.baseorm.db.hrdb.tables.HrCmsMedia.HR_CMS_MEDIA;
 
 	/**
 	 * 微信端新jd内容模块配置项
 	 */
-	public static final HrCmsModule HR_CMS_MODULE = HrCmsModule.HR_CMS_MODULE;
+	public static final HrCmsModule HR_CMS_MODULE = com.moseeker.baseorm.db.hrdb.tables.HrCmsModule.HR_CMS_MODULE;
 
 	/**
 	 * 微信端新jd配置表
 	 */
-	public static final HrCmsPages HR_CMS_PAGES = HrCmsPages.HR_CMS_PAGES;
+	public static final HrCmsPages HR_CMS_PAGES = com.moseeker.baseorm.db.hrdb.tables.HrCmsPages.HR_CMS_PAGES;
 
 	/**
 	 * 公司表
 	 */
-	public static final HrCompany HR_COMPANY = HrCompany.HR_COMPANY;
+	public static final HrCompany HR_COMPANY = com.moseeker.baseorm.db.hrdb.tables.HrCompany.HR_COMPANY;
 
 	/**
 	 * 账号公司关联记录
 	 */
-	public static final HrCompanyAccount HR_COMPANY_ACCOUNT = HrCompanyAccount.HR_COMPANY_ACCOUNT;
+	public static final HrCompanyAccount HR_COMPANY_ACCOUNT = com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount.HR_COMPANY_ACCOUNT;
 
 	/**
 	 * 公司级别的配置信息表
 	 */
-	public static final HrCompanyConf HR_COMPANY_CONF = HrCompanyConf.HR_COMPANY_CONF;
+	public static final HrCompanyConf HR_COMPANY_CONF = com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf.HR_COMPANY_CONF;
+
+	/**
+	 * 公司级别的配置信息表
+	 */
+	public static final HrCompanyConfBak HR_COMPANY_CONF_BAK = com.moseeker.baseorm.db.hrdb.tables.HrCompanyConfBak.HR_COMPANY_CONF_BAK;
 
 	/**
 	 * 部门员工配置表
 	 */
-	public static final HrEmployeeCertConf HR_EMPLOYEE_CERT_CONF = HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF;
+	public static final HrEmployeeCertConf HR_EMPLOYEE_CERT_CONF = com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF;
 
 	/**
 	 * 员工认证自定义字段表
 	 */
-	public static final HrEmployeeCustomFields HR_EMPLOYEE_CUSTOM_FIELDS = HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS;
+	public static final HrEmployeeCustomFields HR_EMPLOYEE_CUSTOM_FIELDS = com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS;
 
 	/**
 	 * 员工职能表
 	 */
-	public static final HrEmployeePosition HR_EMPLOYEE_POSITION = HrEmployeePosition.HR_EMPLOYEE_POSITION;
+	public static final HrEmployeePosition HR_EMPLOYEE_POSITION = com.moseeker.baseorm.db.hrdb.tables.HrEmployeePosition.HR_EMPLOYEE_POSITION;
 
 	/**
 	 * 员工部门表
 	 */
-	public static final HrEmployeeSection HR_EMPLOYEE_SECTION = HrEmployeeSection.HR_EMPLOYEE_SECTION;
+	public static final HrEmployeeSection HR_EMPLOYEE_SECTION = com.moseeker.baseorm.db.hrdb.tables.HrEmployeeSection.HR_EMPLOYEE_SECTION;
 
 	/**
 	 * HR反馈表
 	 */
-	public static final HrFeedback HR_FEEDBACK = HrFeedback.HR_FEEDBACK;
+	public static final HrFeedback HR_FEEDBACK = com.moseeker.baseorm.db.hrdb.tables.HrFeedback.HR_FEEDBACK;
 
 	/**
 	 * 红包配置表
 	 */
-	public static final HrHbConfig HR_HB_CONFIG = HrHbConfig.HR_HB_CONFIG;
+	public static final HrHbConfig HR_HB_CONFIG = com.moseeker.baseorm.db.hrdb.tables.HrHbConfig.HR_HB_CONFIG;
 
 	/**
 	 * 红包记录表
 	 */
-	public static final HrHbItems HR_HB_ITEMS = HrHbItems.HR_HB_ITEMS;
+	public static final HrHbItems HR_HB_ITEMS = com.moseeker.baseorm.db.hrdb.tables.HrHbItems.HR_HB_ITEMS;
 
 	/**
 	 * 红包配置和职位绑定表
 	 */
-	public static final HrHbPositionBinding HR_HB_POSITION_BINDING = HrHbPositionBinding.HR_HB_POSITION_BINDING;
+	public static final HrHbPositionBinding HR_HB_POSITION_BINDING = com.moseeker.baseorm.db.hrdb.tables.HrHbPositionBinding.HR_HB_POSITION_BINDING;
 
 	/**
 	 * 新红包刮刮卡记录表
 	 */
-	public static final HrHbScratchCard HR_HB_SCRATCH_CARD = HrHbScratchCard.HR_HB_SCRATCH_CARD;
+	public static final HrHbScratchCard HR_HB_SCRATCH_CARD = com.moseeker.baseorm.db.hrdb.tables.HrHbScratchCard.HR_HB_SCRATCH_CARD;
 
 	/**
 	 * 红包发送记录
 	 */
-	public static final HrHbSendRecord HR_HB_SEND_RECORD = HrHbSendRecord.HR_HB_SEND_RECORD;
+	public static final HrHbSendRecord HR_HB_SEND_RECORD = com.moseeker.baseorm.db.hrdb.tables.HrHbSendRecord.HR_HB_SEND_RECORD;
 
 	/**
 	 * 专题传播统计次数表
 	 */
-	public static final HrHtml5Statistics HR_HTML5_STATISTICS = HrHtml5Statistics.HR_HTML5_STATISTICS;
+	public static final HrHtml5Statistics HR_HTML5_STATISTICS = com.moseeker.baseorm.db.hrdb.tables.HrHtml5Statistics.HR_HTML5_STATISTICS;
 
 	/**
 	 * 专题传播统计去重信息表
 	 */
-	public static final HrHtml5UniqueStatistics HR_HTML5_UNIQUE_STATISTICS = HrHtml5UniqueStatistics.HR_HTML5_UNIQUE_STATISTICS;
+	public static final HrHtml5UniqueStatistics HR_HTML5_UNIQUE_STATISTICS = com.moseeker.baseorm.db.hrdb.tables.HrHtml5UniqueStatistics.HR_HTML5_UNIQUE_STATISTICS;
 
 	/**
 	 * 企业用户导入数据异步处理监控操作表
 	 */
-	public static final HrImporterMonitor HR_IMPORTER_MONITOR = HrImporterMonitor.HR_IMPORTER_MONITOR;
+	public static final HrImporterMonitor HR_IMPORTER_MONITOR = com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor.HR_IMPORTER_MONITOR;
 
 	/**
 	 * 模板媒体表，存储模板渲染的媒体信息
 	 */
-	public static final HrMedia HR_MEDIA = HrMedia.HR_MEDIA;
+	public static final HrMedia HR_MEDIA = com.moseeker.baseorm.db.hrdb.tables.HrMedia.HR_MEDIA;
 
 	/**
 	 * hr申请状态操作记录
 	 */
-	public static final HrOperationRecord HR_OPERATION_RECORD = HrOperationRecord.HR_OPERATION_RECORD;
+	public static final HrOperationRecord HR_OPERATION_RECORD = com.moseeker.baseorm.db.hrdb.tables.HrOperationRecord.HR_OPERATION_RECORD;
 
 	/**
 	 * 雇主积分规则配置表
 	 */
-	public static final HrPointsConf HR_POINTS_CONF = HrPointsConf.HR_POINTS_CONF;
+	public static final HrPointsConf HR_POINTS_CONF = com.moseeker.baseorm.db.hrdb.tables.HrPointsConf.HR_POINTS_CONF;
 
 	/**
 	 * 招聘数据次数统计表
 	 */
-	public static final HrRecruitStatistics HR_RECRUIT_STATISTICS = HrRecruitStatistics.HR_RECRUIT_STATISTICS;
+	public static final HrRecruitStatistics HR_RECRUIT_STATISTICS = com.moseeker.baseorm.db.hrdb.tables.HrRecruitStatistics.HR_RECRUIT_STATISTICS;
 
 	/**
 	 * 招聘数据去重信息统计表
 	 */
-	public static final HrRecruitUniqueStatistics HR_RECRUIT_UNIQUE_STATISTICS = HrRecruitUniqueStatistics.HR_RECRUIT_UNIQUE_STATISTICS;
+	public static final HrRecruitUniqueStatistics HR_RECRUIT_UNIQUE_STATISTICS = com.moseeker.baseorm.db.hrdb.tables.HrRecruitUniqueStatistics.HR_RECRUIT_UNIQUE_STATISTICS;
 
 	/**
 	 * 内推统计表
 	 */
-	public static final HrReferralStatistics HR_REFERRAL_STATISTICS = HrReferralStatistics.HR_REFERRAL_STATISTICS;
+	public static final HrReferralStatistics HR_REFERRAL_STATISTICS = com.moseeker.baseorm.db.hrdb.tables.HrReferralStatistics.HR_REFERRAL_STATISTICS;
 
 	/**
 	 * 资源集合表
 	 */
-	public static final HrResource HR_RESOURCE = HrResource.HR_RESOURCE;
+	public static final HrResource HR_RESOURCE = com.moseeker.baseorm.db.hrdb.tables.HrResource.HR_RESOURCE;
 
 	/**
 	 * 微信图文传播次数统计表
 	 */
-	public static final HrRuleStatistics HR_RULE_STATISTICS = HrRuleStatistics.HR_RULE_STATISTICS;
+	public static final HrRuleStatistics HR_RULE_STATISTICS = com.moseeker.baseorm.db.hrdb.tables.HrRuleStatistics.HR_RULE_STATISTICS;
 
 	/**
 	 * 微信图文传播去重信息统计表
 	 */
-	public static final HrRuleUniqueStatistics HR_RULE_UNIQUE_STATISTICS = HrRuleUniqueStatistics.HR_RULE_UNIQUE_STATISTICS;
+	public static final HrRuleUniqueStatistics HR_RULE_UNIQUE_STATISTICS = com.moseeker.baseorm.db.hrdb.tables.HrRuleUniqueStatistics.HR_RULE_UNIQUE_STATISTICS;
 
 	/**
 	 * 候选人列表常用筛选项
 	 */
-	public static final HrSearchCondition HR_SEARCH_CONDITION = HrSearchCondition.HR_SEARCH_CONDITION;
+	public static final HrSearchCondition HR_SEARCH_CONDITION = com.moseeker.baseorm.db.hrdb.tables.HrSearchCondition.HR_SEARCH_CONDITION;
 
 	/**
 	 * 升级超级账号申请表
 	 */
-	public static final HrSuperaccountApply HR_SUPERACCOUNT_APPLY = HrSuperaccountApply.HR_SUPERACCOUNT_APPLY;
+	public static final HrSuperaccountApply HR_SUPERACCOUNT_APPLY = com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply.HR_SUPERACCOUNT_APPLY;
 
 	/**
 	 * 人才库
 	 */
-	public static final HrTalentpool HR_TALENTPOOL = HrTalentpool.HR_TALENTPOOL;
+	public static final HrTalentpool HR_TALENTPOOL = com.moseeker.baseorm.db.hrdb.tables.HrTalentpool.HR_TALENTPOOL;
 
 	/**
 	 * 团队信息
 	 */
-	public static final HrTeam HR_TEAM = HrTeam.HR_TEAM;
+	public static final HrTeam HR_TEAM = com.moseeker.baseorm.db.hrdb.tables.HrTeam.HR_TEAM;
 
 	/**
 	 * 团队成员信息
 	 */
-	public static final HrTeamMember HR_TEAM_MEMBER = HrTeamMember.HR_TEAM_MEMBER;
+	public static final HrTeamMember HR_TEAM_MEMBER = com.moseeker.baseorm.db.hrdb.tables.HrTeamMember.HR_TEAM_MEMBER;
 
 	/**
 	 * 第三方渠道帐号
 	 */
-	public static final HrThirdPartyAccount HR_THIRD_PARTY_ACCOUNT = HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT;
+	public static final HrThirdPartyAccount HR_THIRD_PARTY_ACCOUNT = com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT;
 
 	/**
 	 * 第三方账号和hr表关联表，账号分配表，取消分配将status置为0，重新分配不修改记录而是新加分配记录
 	 */
-	public static final HrThirdPartyAccountHr HR_THIRD_PARTY_ACCOUNT_HR = HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR;
+	public static final HrThirdPartyAccountHr HR_THIRD_PARTY_ACCOUNT_HR = com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR;
 
 	/**
 	 * 第三方渠道同步的职位
 	 */
-	public static final HrThirdPartyPosition HR_THIRD_PARTY_POSITION = HrThirdPartyPosition.HR_THIRD_PARTY_POSITION;
+	public static final HrThirdPartyPosition HR_THIRD_PARTY_POSITION = com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition.HR_THIRD_PARTY_POSITION;
 
 	/**
 	 * 雇主主题活动表
 	 */
-	public static final HrTopic HR_TOPIC = HrTopic.HR_TOPIC;
+	public static final HrTopic HR_TOPIC = com.moseeker.baseorm.db.hrdb.tables.HrTopic.HR_TOPIC;
 
 	/**
 	 * 微信文本回复表
 	 */
-	public static final HrWxBasicReply HR_WX_BASIC_REPLY = HrWxBasicReply.HR_WX_BASIC_REPLY;
+	public static final HrWxBasicReply HR_WX_BASIC_REPLY = com.moseeker.baseorm.db.hrdb.tables.HrWxBasicReply.HR_WX_BASIC_REPLY;
 
 	/**
 	 * IM聊天
 	 */
-	public static final HrWxHrChat HR_WX_HR_CHAT = HrWxHrChat.HR_WX_HR_CHAT;
+	public static final HrWxHrChat HR_WX_HR_CHAT = com.moseeker.baseorm.db.hrdb.tables.HrWxHrChat.HR_WX_HR_CHAT;
 
 	/**
 	 * IM聊天人关系
 	 */
-	public static final HrWxHrChatList HR_WX_HR_CHAT_LIST = HrWxHrChatList.HR_WX_HR_CHAT_LIST;
+	public static final HrWxHrChatList HR_WX_HR_CHAT_LIST = com.moseeker.baseorm.db.hrdb.tables.HrWxHrChatList.HR_WX_HR_CHAT_LIST;
 
 	/**
 	 * 微信图片回复
 	 */
-	public static final HrWxImageReply HR_WX_IMAGE_REPLY = HrWxImageReply.HR_WX_IMAGE_REPLY;
+	public static final HrWxImageReply HR_WX_IMAGE_REPLY = com.moseeker.baseorm.db.hrdb.tables.HrWxImageReply.HR_WX_IMAGE_REPLY;
 
 	/**
 	 * 微信模块表
 	 */
-	public static final HrWxModule HR_WX_MODULE = HrWxModule.HR_WX_MODULE;
+	public static final HrWxModule HR_WX_MODULE = com.moseeker.baseorm.db.hrdb.tables.HrWxModule.HR_WX_MODULE;
 
 	/**
 	 * 微信图文回复表
 	 */
-	public static final HrWxNewsReply HR_WX_NEWS_REPLY = HrWxNewsReply.HR_WX_NEWS_REPLY;
+	public static final HrWxNewsReply HR_WX_NEWS_REPLY = com.moseeker.baseorm.db.hrdb.tables.HrWxNewsReply.HR_WX_NEWS_REPLY;
 
 	/**
 	 * 微信消息通知, first和remark文案暂不使用
 	 */
-	public static final HrWxNoticeMessage HR_WX_NOTICE_MESSAGE = HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE;
+	public static final HrWxNoticeMessage HR_WX_NOTICE_MESSAGE = com.moseeker.baseorm.db.hrdb.tables.HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE;
 
 	/**
 	 * 微信回复规则表
 	 */
-	public static final HrWxRule HR_WX_RULE = HrWxRule.HR_WX_RULE;
+	public static final HrWxRule HR_WX_RULE = com.moseeker.baseorm.db.hrdb.tables.HrWxRule.HR_WX_RULE;
 
 	/**
 	 * 微信模板消息
 	 */
-	public static final HrWxTemplateMessage HR_WX_TEMPLATE_MESSAGE = HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE;
+	public static final HrWxTemplateMessage HR_WX_TEMPLATE_MESSAGE = com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE;
 
 	/**
 	 * 微信公众号表
 	 */
-	public static final HrWxWechat HR_WX_WECHAT = HrWxWechat.HR_WX_WECHAT;
+	public static final HrWxWechat HR_WX_WECHAT = com.moseeker.baseorm.db.hrdb.tables.HrWxWechat.HR_WX_WECHAT;
 
 	/**
 	 * 微信消息通知同步状态
 	 */
-	public static final HrWxWechatNoticeSyncStatus HR_WX_WECHAT_NOTICE_SYNC_STATUS = HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS;
+	public static final HrWxWechatNoticeSyncStatus HR_WX_WECHAT_NOTICE_SYNC_STATUS = com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS;
 }

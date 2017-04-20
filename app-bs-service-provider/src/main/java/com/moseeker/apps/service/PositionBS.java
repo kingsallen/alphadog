@@ -37,7 +37,7 @@ import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 
 /**
  * 职位业务层
- * 
+ *
  * @author wjf
  *
  */
@@ -61,7 +61,7 @@ public class PositionBS {
 			.getService(UserHrAccountDao.Iface.class);
 
 	/**
-	 * 
+	 *
 	 * @param position
 	 * @return
 	 */
@@ -241,7 +241,7 @@ public class PositionBS {
 	 * @param channel 渠道编号
 	 * @return
 	 */
-	public Response refreshPosition(int positionId, int channel) {
+	public Response refreshPosition(int user_id, int positionId, int channel) {
 		logger.info("refreshPosition start");
 		HashMap<String, Object> result = new HashMap<>();
 		result.put("position_id", positionId);
@@ -251,8 +251,8 @@ public class PositionBS {
 		try {
 			//更新仟寻职位的修改时间
 			writeBackToQX(positionId);
-			
-			boolean permission = positionServices.ifAllowRefresh(positionId, channel);
+
+			boolean permission = positionServices.ifAllowRefresh(user_id,positionId, channel);
 			logger.info("permission:"+permission);
 
 			if (permission) {
@@ -282,7 +282,7 @@ public class PositionBS {
 
 		return response;
 	}
-	
+
 	private void writeBackToQX(int positionId) {
 		try {
 			Position job = new Position();
@@ -296,7 +296,7 @@ public class PositionBS {
 			//do nothing
 		}
 	}
-	
+
 	public PositionDao.Iface getPositionDao() {
 		return positionDao;
 	}

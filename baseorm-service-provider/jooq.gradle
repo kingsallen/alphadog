@@ -54,7 +54,7 @@ import org.jooq.util.GenerationTool
             }
             target() {
                 packageName('com.moseeker.baseorm.db.'+db)
-                directory('src/')
+                directory('src/main/java')
             }
         }
     }

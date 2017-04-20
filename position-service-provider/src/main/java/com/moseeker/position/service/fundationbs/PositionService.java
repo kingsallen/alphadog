@@ -337,7 +337,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
      * @param channel    渠道编号
      * @return bool
      */
-    public boolean ifAllowRefresh(int positionId, int channel) {
+    public boolean ifAllowRefresh(int user_id,int positionId, int channel) {
         boolean permission = false;
         try {
             logger.info("ifAllowRefresh");

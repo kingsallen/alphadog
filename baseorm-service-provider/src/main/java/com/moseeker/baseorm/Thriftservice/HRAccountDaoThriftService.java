@@ -121,6 +121,28 @@ public class HRAccountDaoThriftService extends JOOQBaseServiceImpl<UserHrAccount
     }
 
     @Override
+    public List<ThirdPartAccountData> getThirdPartyAccountsByUserId(int user_id) throws TException {
+        try {
+            Connection conn = DBConnHelper.DBConn.getConn();
+            DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+            List<Integer> thirdPartyAccounts = create.select(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID).from(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR)
+                    .where(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.HR_ACCOUNT_ID.eq(user_id))
+                    .and(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.STATUS.eq((byte) 1)).fetch(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID);
+
+            if (thirdPartyAccounts != null && thirdPartyAccounts.size() > 0) {
+                List<ThirdPartAccountData> datas = create.select().from(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
+                        .where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.in(thirdPartyAccounts))
+                        .fetchInto(ThirdPartAccountData.class);
+                return datas;
+            }
+
+            return null;
+        } catch (Exception e) {
+            throw new TException(e);
+        }
+    }
+
+    @Override
     public ThirdPartAccountData getThirdPartyAccountByUserId(int user_id, int channel) throws TException {
         try {
             Connection conn = DBConnHelper.DBConn.getConn();

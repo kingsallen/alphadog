@@ -20,7 +20,7 @@ service PositionServices {
     //生成第三方同步职位数据
     position_struct.ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(1: i32 positionId, 2: i32 channel);
     //是否可以刷新
-    bool ifAllowRefresh(1: i32 positionId, 2:i32 channel);
+    bool ifAllowRefresh(1:i32 user_id, 2: i32 positionId, 3:i32 channel);
     list<dao_struct.ThirdPartyPositionData> getThirdPartyPositions(1: common_struct.CommonQuery query);
 
     // 批量修改职位

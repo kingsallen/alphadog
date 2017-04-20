@@ -13,6 +13,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCmsPages;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConfBak;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeePosition;
@@ -79,7 +80,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-	private static final long serialVersionUID = -1855564758;
+	private static final long serialVersionUID = -1819171763;
 
 	/**
 	 * The reference instance of <code>hrdb</code>
@@ -111,6 +112,7 @@ public class Hrdb extends SchemaImpl {
 			HrCompany.HR_COMPANY,
 			HrCompanyAccount.HR_COMPANY_ACCOUNT,
 			HrCompanyConf.HR_COMPANY_CONF,
+			HrCompanyConfBak.HR_COMPANY_CONF_BAK,
 			HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF,
 			HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS,
 			HrEmployeePosition.HR_EMPLOYEE_POSITION,

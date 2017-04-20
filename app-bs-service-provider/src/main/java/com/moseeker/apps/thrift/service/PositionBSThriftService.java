@@ -11,31 +11,31 @@ import com.moseeker.thrift.gen.common.struct.Response;
 
 @Service
 public class PositionBSThriftService implements Iface {
-	
-	@Autowired
-	private PositionBS positionBS;
 
-	/**
-	 * 同步第三方职位
-	 */
-	@Override
-	public Response synchronizePositionToThirdPartyPlatform(ThirdPartyPositionForm position) throws TException {
-		return positionBS.synchronizePositionToThirdPartyPlatform(position);
-	}
-	
-	/**
-	 * 刷新职位
-	 */
-	@Override
-	public Response refreshPositionToThirdPartyPlatform(int positionId, int channel) throws TException {
-		return positionBS.refreshPosition(positionId, channel);
-	}
+    @Autowired
+    private PositionBS positionBS;
 
-	public PositionBS getPositionBS() {
-		return positionBS;
-	}
+    /**
+     * 同步第三方职位
+     */
+    @Override
+    public Response synchronizePositionToThirdPartyPlatform(ThirdPartyPositionForm position) throws TException {
+        return positionBS.synchronizePositionToThirdPartyPlatform(position);
+    }
 
-	public void setPositionBS(PositionBS positionBS) {
-		this.positionBS = positionBS;
-	}
+    /**
+     * 刷新职位
+     */
+    @Override
+    public Response refreshPositionToThirdPartyPlatform(int user_id, int positionId, int channel) throws TException {
+        return positionBS.refreshPosition(user_id, positionId, channel);
+    }
+
+    public PositionBS getPositionBS() {
+        return positionBS;
+    }
+
+    public void setPositionBS(PositionBS positionBS) {
+        this.positionBS = positionBS;
+    }
 }

@@ -73,6 +73,7 @@ public class PositionBSTest {
 		
 		int positionId = 1;
 		int channel = 1;
+		int user_id=1;
 		ThirdPartyPositionForSynchronizationWithAccount account = new ThirdPartyPositionForSynchronizationWithAccount();
 		ThirdPartyPositionForSynchronization position = new ThirdPartyPositionForSynchronization();
 		account.setPosition_info(position);
@@ -80,7 +81,7 @@ public class PositionBSTest {
 		PositionServices.Iface positionServices = Mockito.mock(PositionServices.Iface.class);
 		try {
 			Mockito.when(positionServices.createRefreshPosition(positionId, channel)).thenReturn(account);
-			Mockito.when(positionServices.ifAllowRefresh(positionId, channel)).thenReturn(true);
+			Mockito.when(positionServices.ifAllowRefresh(user_id,positionId, channel)).thenReturn(true);
 			Response response = ResultMessage.SUCCESS.toResponse();
 			ThirdPartyPositionData data = new ThirdPartyPositionData();
 			data.setSync_time(new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
@@ -103,7 +104,7 @@ public class PositionBSTest {
 		positionBS.setUserHrAccountService(userHrAccountService);
 		
 		try {
-			System.out.println("ifAllowRefresh:"+positionServices.ifAllowRefresh(positionId, channel));
+			System.out.println("ifAllowRefresh:"+positionServices.ifAllowRefresh(user_id,positionId, channel));
 		} catch (TException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -113,8 +114,8 @@ public class PositionBSTest {
 	@Test
 	public void testIfAllowRefresh() {
 		try {
-			Mockito.when(positionServices.ifAllowRefresh(0, 0)).thenReturn(true);
-			assertEquals(true,positionServices.ifAllowRefresh(0, 0));
+			Mockito.when(positionServices.ifAllowRefresh(0,0, 0)).thenReturn(true);
+			assertEquals(true,positionServices.ifAllowRefresh(0,0, 0));
 		} catch (TException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -123,7 +124,7 @@ public class PositionBSTest {
 	
 	@Test
 	public void testRefreshPosition() {
-		Response response = positionBS.refreshPosition(1, 1);
+		Response response = positionBS.refreshPosition(1,1, 1);
 		assertEquals(0, response.getStatus());
 	}
 

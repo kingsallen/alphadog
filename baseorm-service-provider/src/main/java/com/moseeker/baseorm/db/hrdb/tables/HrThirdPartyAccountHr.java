@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyAccountHr extends TableImpl<HrThirdPartyAccountHrRecord> {
 
-	private static final long serialVersionUID = -1625571926;
+	private static final long serialVersionUID = -1225057228;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_third_party_account_hr</code>
@@ -79,6 +79,11 @@ public class HrThirdPartyAccountHr extends TableImpl<HrThirdPartyAccountHrRecord
 	 * The column <code>hrdb.hr_third_party_account_hr.update_time</code>. 取消分配账号的时间
 	 */
 	public final TableField<HrThirdPartyAccountHrRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "取消分配账号的时间");
+
+	/**
+	 * The column <code>hrdb.hr_third_party_account_hr.channel</code>. 1=51job,2=猎聘,3=智联,4=linkedin
+	 */
+	public final TableField<HrThirdPartyAccountHrRecord, Short> CHANNEL = createField("channel", org.jooq.impl.SQLDataType.SMALLINT.defaulted(true), this, "1=51job,2=猎聘,3=智联,4=linkedin");
 
 	/**
 	 * Create a <code>hrdb.hr_third_party_account_hr</code> table reference

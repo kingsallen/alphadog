@@ -8,6 +8,7 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.apps.positionbs.service.PositionBS;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -171,15 +172,23 @@ public class PositionController {
     public String refreshPosition(HttpServletRequest request, HttpServletResponse response) {
         try {
             logger.info("/position/refresh");
-            List<HashMap<Integer, Integer>> paramList = PositionParamUtils.parseRefreshParam(request);
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            List<HashMap<Integer, Integer>> paramList = PositionParamUtils.parseRefreshParam(params);
             logger.info("/position/refresh paramList.size:" + paramList.size());
             List<Object> refreshResult = new ArrayList<>();
-            if (paramList.size() > 0) {
+            Integer user_id = params.getInt("user_id");
+            ValidateUtil vu = new ValidateUtil();
+            vu.addRequiredValidate("user_id", user_id);
+            vu.addIntTypeValidate("user_id", user_id, null, null, 1, Integer.MAX_VALUE);
+            String message = vu.validate();
+            if(message!=null){
+                return ResponseLogNotification.fail(request, message);
+            }else if (paramList.size() > 0) {
                 paramList.forEach(map -> {
                     map.forEach((positionId, channel) -> {
                         try {
                             logger.info("positionId:" + positionId + "    channel:" + channel);
-                            Response refreshPositionResponse = positionBS.refreshPositionToThirdPartyPlatform(positionId, channel);
+                            Response refreshPositionResponse = positionBS.refreshPositionToThirdPartyPlatform(user_id,positionId, channel);
                             logger.info("data:" + refreshPositionResponse.getData());
                             refreshResult.add(JSON.parse(refreshPositionResponse.getData()));
                         } catch (Exception e) {
