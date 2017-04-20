@@ -138,6 +138,7 @@ public class ProfileProcessBS {
             // 对需要修改的进行权限验证
             Response application = applicationDao.getProcessAuth(appIds,
                     companyId, progressStatus);
+            logger.info(application.getData()+"==========================");
             if (application.getStatus() == 0) {
                 String data = application.getData();
                 if (StringUtils.isNullOrEmpty(data) || "[]".equals(data)) {
@@ -605,6 +606,7 @@ public class ProfileProcessBS {
 	            	UserUserDO userRecord=userDao.getUser(query);
 	            	String applier_name=userRecord.getName();
 	            	record.setApplier_name(applier_name);
+	            	logger.info(record.toString()+"+++++++++++++++++++++++++++++");
             	}catch(Exception e){
             		logger.info(e.getMessage(),e);
             	}
