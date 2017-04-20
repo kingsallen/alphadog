@@ -1,8 +1,6 @@
 package com.moseeker.baseorm.Thriftservice;
 
-import com.moseeker.baseorm.dao.campaigndb.CampaignBaiduUsersDao;
 import com.moseeker.baseorm.dao.campaigndb.CampaignHeadImageDao;
-import com.moseeker.baseorm.db.campaigndb.tables.CampaignBaiduUsers;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.service.CampaignDBDao;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignHeadImageDO;
@@ -16,9 +14,6 @@ import org.springframework.stereotype.Service;
 public class CampaignDaoThriftService implements CampaignDBDao.Iface {
     @Autowired
     private CampaignHeadImageDao campaignHeadImageDao;
-
-    @Autowired
-    private CampaignBaiduUsersDao campaignBaiduUsersDao;
 
     /**
      * 头图查询

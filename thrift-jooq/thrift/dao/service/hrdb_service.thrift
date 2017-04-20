@@ -5,6 +5,7 @@ include "../../common/struct/common_struct.thrift"
 include "../struct/hrdb_struct.thrift"
 include "../struct/dao_struct.thrift"
 include "../../application/struct/application_struct.thrift"
+include "../../dao/struct/hrdb/hr_team_struct.thrift"
 
 service HrDBDao {
     hrdb_struct.HrHbConfigDO getHbConfig(1: common_struct.CommonQuery query);
@@ -54,4 +55,6 @@ service HrDBDao {
 	common_struct.Response getHrWxWechat(1: common_struct.CommonQuery query);
 
     common_struct.Response getHrTeam(1:common_struct.CommonQuery query);
+
+    hr_team_struct.HrTeamDO hrTeamDo(1:common_struct.CommonQuery query);
 }
