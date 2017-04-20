@@ -6,15 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import com.moseeker.thrift.gen.dao.service.*;
-
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -39,6 +36,7 @@ import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.config.ConfigSysPointsConfTpl;
 import com.moseeker.thrift.gen.config.HrAwardConfigTemplate;
 import com.moseeker.thrift.gen.dao.struct.HistoryOperate;
+import com.moseeker.thrift.gen.dao.struct.UserUserDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
 import com.moseeker.thrift.gen.mq.struct.MessageTplDataCol;
@@ -207,6 +205,7 @@ public class ProfileProcessBS {
                             rewardsToBeAdd.add(reward);
                             weChatIds.add(record.getRecommender_id());
                         }
+                        //注意在获取employyee时，weChatIds已经不用，此处没有修改thrift的代码，所以还在
                         Response employeeResult = userDao.getUserEmployee(
                                 companyId, weChatIds);
                         List<UserEmployeeStruct> employeesToBeUpdates = new ArrayList<UserEmployeeStruct>();
@@ -596,6 +595,20 @@ public class ProfileProcessBS {
         for (int i = 0; i < jsay.size(); i++) {
             ProcessValidationStruct record = JSONObject.toJavaObject(
                     jsay.getJSONObject(i), ProcessValidationStruct.class);
+            Integer applier_id=record.getApplier_id();
+            if(applier_id!=null&&applier_id!=0){
+            	try{
+	            	CommonQuery query=new CommonQuery();
+	            	HashMap<String,String> map=new HashMap<String,String>();
+	            	map.put("id", applier_id+"");
+	            	query.setEqualFilter(map);
+	            	UserUserDO userRecord=userDao.getUser(query);
+	            	String applier_name=userRecord.getName();
+	            	record.setApplier_name(applier_name);
+            	}catch(Exception e){
+            		logger.info(e.getMessage(),e);
+            	}
+            }
             list.add(record);
         }
         return list;
