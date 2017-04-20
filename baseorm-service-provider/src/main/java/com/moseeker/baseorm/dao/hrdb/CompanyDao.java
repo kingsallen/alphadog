@@ -6,7 +6,7 @@ import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
-import com.moseeker.thrift.gen.dao.struct.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

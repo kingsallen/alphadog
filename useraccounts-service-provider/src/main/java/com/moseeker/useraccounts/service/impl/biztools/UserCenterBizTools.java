@@ -1,27 +1,23 @@
 package com.moseeker.useraccounts.service.impl.biztools;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
+import com.moseeker.common.constants.AbleFlag;
+import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.db.candidatedb.Candidatedb;
+import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.service.*;
 import com.moseeker.thrift.gen.dao.struct.*;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
 import org.apache.thrift.TException;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.moseeker.common.constants.AbleFlag;
-import com.moseeker.common.providerutils.QueryUtil;
-import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.application.struct.JobApplication;
-import com.moseeker.thrift.gen.company.struct.Hrcompany;
-import com.moseeker.thrift.gen.position.struct.Position;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 个人中心片段业务处理类
@@ -126,7 +122,7 @@ public class UserCenterBizTools {
 						.addSelectAttribute("click_time").addSelectAttribute("recom_time").addSelectAttribute("is_recom")
 						.addSelectAttribute("presentee_user_id").addSelectAttribute("position_id");
 				qu.addEqualFilter("post_user_id", userId);
-				qu.addGroup("position_id").addGroup("presentee_user_id");
+				qu.addGroup("presentee_user_id").addGroup("position_id");
 				qu.setPage(pageNo);
 				qu.setPer_page(pageSize);
 				recomRecordDOList = candidateDBDao.listCandidateRecomRecords(qu);
@@ -149,10 +145,8 @@ public class UserCenterBizTools {
 	 */
 	public int countCandidateRecomRecord(int userId) {
 		int count = 0;
-		QueryUtil qu = new QueryUtil();
-		qu.addEqualFilter("post_user_id", userId);
 		try {
-			count = candidateDBDao.countCandidateRecomRecord(qu);
+			count = candidateDBDao.countCandidateRecomRecordDistinctPresentee(userId);
 		} catch (TException e) {
 			logger.error(e.getMessage(), e);
 		}

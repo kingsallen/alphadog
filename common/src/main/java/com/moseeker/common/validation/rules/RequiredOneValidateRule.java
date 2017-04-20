@@ -7,10 +7,10 @@ import com.moseeker.common.validation.ValidateRule;
 
 public class RequiredOneValidateRule extends ValidateRule {
 
-	private List<Object> beanToValidated;
+	private List beanToValidated;
 
 	public RequiredOneValidateRule(String paramName,
-			List<Object> beanToValidated, String message, String errorMessage) {
+			List beanToValidated, String message, String errorMessage) {
 		this.paramName = paramName;
 		this.beanToValidated = beanToValidated;
 		this.setMessage(message);
@@ -43,11 +43,11 @@ public class RequiredOneValidateRule extends ValidateRule {
 		return this.message;
 	}
 
-	public List<Object> getBeanToValidated() {
+	public List getBeanToValidated() {
 		return beanToValidated;
 	}
 
-	public void setBeanToValidated(List<Object> beanToValidated) {
+	public void setBeanToValidated(List beanToValidated) {
 		this.beanToValidated = beanToValidated;
 	}
 

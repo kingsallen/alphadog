@@ -3,7 +3,7 @@ package com.moseeker.baseorm.dao.hrdb;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxHrChatList;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxHrChatListRecord;
 import com.moseeker.baseorm.util.StructDaoImpl;
-import com.moseeker.thrift.gen.dao.struct.HrWxHrChatListDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatListDO;
 import org.springframework.stereotype.Repository;
 
 /**

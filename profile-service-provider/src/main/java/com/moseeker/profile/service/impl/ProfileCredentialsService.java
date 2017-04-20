@@ -129,7 +129,7 @@ public class ProfileCredentialsService extends JOOQBaseServiceImpl<Credentials, 
 	public Response postResource(Credentials struct) throws TException {
 		ValidationMessage<Credentials> vm = ProfileValidation.verifyCredential(struct);
 		if(!vm.isPass()) {
-			return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}'}", vm.getResult()));
+			return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", vm.getResult()));
 		}
 		Response response = super.postResource(struct);
 		/* 计算profile完整度 */

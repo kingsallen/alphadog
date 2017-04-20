@@ -97,7 +97,7 @@ public class ValidateUtil {
 	 * @return
 	 */
 	public ValidateRule addRequiredOneValidate(String paramName,
-			List<Object> beanToBeValidated, String errorMessage, String message)
+			List beanToBeValidated, String errorMessage, String message)
 			throws ValidateNotAppointParamException {
 		RequiredOneValidateRule rv = null;
 		try {

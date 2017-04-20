@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.moseeker.thrift.gen.dao.service.*;
-import com.moseeker.thrift.gen.dao.struct.HrOperationRecordDO;
 
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -195,7 +195,7 @@ public class ProfileProcessBS {
                             reward.setApplication_id(record.getId());
                             reward.setCompany_id(record.getCompany_id());
                             reward.setOperate_tpl_id(record.getTemplate_id());
-                            reward.setRecommender_id(record.getRecommender_id());
+                            reward.setRecommender_id(record.getRecommender_user_id());
                             if (progressStatus == 13 && record.getTemplate_id() == ProcessUtils.RECRUIT_STATUS_APPLY_ID) {
                                 turnToCVChecked = new HrOperationRecordDO();
                                 turnToCVChecked.setAdminId(accountId);
@@ -221,8 +221,7 @@ public class ProfileProcessBS {
                                 && employeesToBeUpdates.size() > 0) {
                             for (RewardsToBeAddBean bean : rewardsToBeAdd) {
                                 for (UserEmployeeStruct user : employeesToBeUpdates) {
-                                    if (bean.getRecommender_id() == user
-                                            .getWxuser_id()) {
+                                    if (bean.getRecommender_id() == user.getSysuser_id()) {
                                         bean.setEmployee_id(user.getId());
                                         break;
                                     }
@@ -259,6 +258,7 @@ public class ProfileProcessBS {
             }
             return ResponseUtils.success("操作成功");
         } catch (Exception e) {
+            e.printStackTrace();
             logger.error(e.getMessage(), e);
             return ResponseUtils
                     .fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
