@@ -1,17 +1,6 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
@@ -20,14 +9,22 @@ import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.apps.userbs.service.UserBS;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserSearchConditionDO;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
+import com.moseeker.thrift.gen.useraccounts.service.UserQxService;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import com.moseeker.thrift.gen.useraccounts.service.UsersettingServices;
-import com.moseeker.thrift.gen.useraccounts.struct.BindType;
-import com.moseeker.thrift.gen.useraccounts.struct.User;
-import com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition;
-import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
-import com.moseeker.thrift.gen.useraccounts.struct.Usersetting;
+import com.moseeker.thrift.gen.useraccounts.struct.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 //@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
@@ -40,6 +37,8 @@ public class UseraccountsController {
 	UsersettingServices.Iface usersettingServices = ServiceManager.SERVICEMANAGER
 			.getService(UsersettingServices.Iface.class);
 	ProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER.getService(ProfileServices.Iface.class);
+
+	UserQxService.Iface userQxService = ServiceManager.SERVICEMANAGER.getService(UserQxService.Iface.class);
 	
 	UserBS.Iface userBS = ServiceManager.SERVICEMANAGER.getService(UserBS.Iface.class);
 
@@ -767,4 +766,129 @@ public class UseraccountsController {
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}
+
+
+    /**
+     * 获取用户筛选条件
+     * @param request
+     * @param response
+     * @return
+     */
+	@RequestMapping(value = "/user/searchcondition", method = RequestMethod.GET)
+    @ResponseBody
+	public String getUserSearchCondition(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> param = ParamUtils.parseRequestParam(request);
+            int userId = param.getInt("user_id", 0);
+
+            return JSONObject.toJSONString(userQxService.userSearchConditionList(userId));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 保存用户筛选条件
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/user/searchcondition", method = RequestMethod.POST)
+    @ResponseBody
+    public String  postUserSearchCondition(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            UserSearchConditionDO conditionDO = ParamUtils.initModelForm(request, UserSearchConditionDO.class);
+
+            return JSONObject.toJSONString(userQxService.postUserSearchCondition(conditionDO));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 删除用户筛选条件
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value =  "/user/searchcondition", method = RequestMethod.DELETE)
+    @ResponseBody
+    public String delUserSearchCondition(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int userId = params.getInt("user_id", 0);
+            int id = params.getInt("id", 0);
+
+            return JSONObject.toJSONString(userQxService.delUserSearchCondition(userId, id));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     *  用户收藏职位
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/user/collect/position", method = RequestMethod.POST)
+    @ResponseBody
+    public String postCollectPosition(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int userId = params.getInt("user_id", 0);
+            int positionId = params.getInt("position_id", 0);
+
+            return JSONObject.toJSONString(userQxService.postUserCollectPosition(userId, positionId));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 获取用户收藏的职位信息
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/user/collect/position", method = RequestMethod.GET)
+    @ResponseBody
+    public String getCollectPosition(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int userId = params.getInt("user_id", 0);
+            int positionId = params.getInt("position_id", 0);
+
+            return JSONObject.toJSONString(userQxService.getUserCollectPosition(userId, positionId));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 用户取消收藏职位
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/user/collect/position", method = RequestMethod.DELETE)
+    @ResponseBody
+    public String delCollectPosition(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int userId = params.getInt("user_id", 0);
+            int positionId = params.getInt("position_id", 0);
+
+            return JSONObject.toJSONString(userQxService.delUserCollectPosition(userId, positionId));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
 }

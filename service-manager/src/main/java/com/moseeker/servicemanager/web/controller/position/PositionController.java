@@ -8,6 +8,7 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.apps.positionbs.service.PositionBS;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -262,5 +263,24 @@ public class PositionController {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
+    }
+
+    /**
+     * 根据用户id批量获取用户之于职位的状态
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/positions/status", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPositionsStatus(HttpServletRequest request, HttpServletResponse response){
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer user_id = params.getInt("user_id");
+            List<Integer> prositions = (List<Integer>) params.get("position_ids");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

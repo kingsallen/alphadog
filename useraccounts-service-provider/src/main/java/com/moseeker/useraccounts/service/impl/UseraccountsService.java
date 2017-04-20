@@ -63,7 +63,7 @@ import com.moseeker.useraccounts.service.BindOnAccountService;
 
 /**
  * 用户登陆， 注册，合并等api的实现
- * 
+ *
  * @author yaofeng
  * @email wangyaofeng@moseeker.com
  */
@@ -72,9 +72,9 @@ import com.moseeker.useraccounts.service.BindOnAccountService;
 public class UseraccountsService {
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	MqService.Iface mqService = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
-	
+
 	com.moseeker.thrift.gen.dao.service.UserDBDao.Iface userDao = ServiceManager.SERVICEMANAGER
 			.getService(com.moseeker.thrift.gen.dao.service.UserDBDao.Iface.class);
 
@@ -95,16 +95,16 @@ public class UseraccountsService {
 
 	@Autowired
 	protected UserFavoritePositionDao userFavoritePositionDao;
-	
+
 	@Autowired
 	protected SmsSender smsSender;
-	
+
 	@Autowired
 	protected WechatDao wechatDao;
-	
+
 	@Autowired
 	protected Map<String, BindOnAccountService> bindOnAccount;
-	
+
 	/**
 	 * 用户登陆， 返回用户登陆后的信息。
 	 */
@@ -185,7 +185,7 @@ public class UseraccountsService {
 
 	/**
 	 * 记录用户登出时的信息。可能会移到 service-manager 处理。
-	 * 
+	 *
 	 * @param userid
 	 * @return
 	 * @throws TException
@@ -223,7 +223,7 @@ public class UseraccountsService {
 		 * catch (Exception e) { // TODO Auto-generated catch block
 		 * logger.error("getismobileregisted error: ", e); return
 		 * ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-		 * 
+		 *
 		 * } }
 		 */
 
@@ -327,7 +327,7 @@ public class UseraccountsService {
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 
 	}
-	
+
 	/**
 	 * 绑定用户的手机号和userid， 如果在一条记录里都有，提示已经绑定成功， 如果在一条记录里有部分，userid 或者 mobile， 补全。
 	 * 否则userid和mobile分别存在2条记录里面， 需要做合并。 如果userid或者手机号均没有， 应该在之前先注册.
@@ -343,7 +343,7 @@ public class UseraccountsService {
 		}
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 	}
-	
+
 	public Response postuserbindmobile(int appid, String unionid, String code, String mobile, BindType bindType) throws TException {
 		try {
 			return bindOnAccount.get(String.valueOf(bindType).toLowerCase()).handler(appid, unionid, mobile);
@@ -357,7 +357,7 @@ public class UseraccountsService {
 
 	/**
 	 * 修改现有密码
-	 * 
+	 *
 	 * @param user_id
 	 * @param old_password
 	 * @param password
@@ -365,8 +365,8 @@ public class UseraccountsService {
 	 * @throws TException
 	 */
 	public Response postuserchangepassword(int user_id, String old_password, String password) throws TException {
-		
-		
+
+
 		if(StringUtils.isNullOrEmpty(password) || StringUtils.isNullOrEmpty(old_password)) {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
 		}
@@ -446,7 +446,7 @@ public class UseraccountsService {
 
 	/**
 	 * 忘记密码后重置密码,
-	 * 
+	 *
 	 * @param code
 	 *            验证码，可选， 填写时必须判断。不填时， 请先调用postvalidatepasswordforgotcode 进行验证。
 	 */
@@ -455,7 +455,7 @@ public class UseraccountsService {
 		if (code != null && !validateCode(mobile, code, 2)) {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.INVALID_SMS_CODE);
 		}
-		
+
 
 		CommonQuery query = new CommonQuery();
 		Map<String, String> filters = new HashMap<>();
@@ -529,7 +529,7 @@ public class UseraccountsService {
 		}
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 	}
-	
+
 	public Response getUsers(CommonQuery query) throws TException {
 		try {
 			List<User> users = new ArrayList<>();
@@ -584,7 +584,7 @@ public class UseraccountsService {
 
 	/**
 	 * 检查手机号是否已经注册。 exist: true 已经存在， exist：false 不存在。
-	 * 
+	 *
 	 * @param mobile
 	 * @return
 	 * @throws TException
@@ -689,7 +689,7 @@ public class UseraccountsService {
 
 	/**
 	 * 修改当前用户手机号。
-	 * 
+	 *
 	 * @param user_id
 	 * @param newmobile
 	 *            新手机号
@@ -797,7 +797,7 @@ public class UseraccountsService {
 //					try {
 //						MessageTemplate messageTemplate = fetchMessageTemplate(userFavoritePosition.getPosition_id(), userFavoritePosition.getSysuser_id());
 //						MessageTemplateNoticeStruct mtns = createMessageTemplate(messageTemplate);
-//						
+//
 //						mqService.messageTemplateNotice(mtns);
 //					} catch (Exception e) {
 //						logger.error(e.getMessage(), e);
@@ -805,7 +805,7 @@ public class UseraccountsService {
 //				});
 //				t.start();
 //				MessageTemplateNoticeStruct messageTemplateNoticeStruct = new MessageTemplateNoticeStruct();
-				
+
 				return ResponseUtils.success(hashmap); // 返回
 														// userFavoritePositionId
 			}
@@ -829,9 +829,9 @@ public class UseraccountsService {
 			message.setSys_template_id(TemplateId.TEMPLATE_MESSAGE_FAV_HR.getValue());
 			message.setType(UserType.PC.getValueToByte());
 			HashMap<String, Object> data = new HashMap<String, Object>();
-			
+
 			//message.setData(data);
-			
+
 		}
 		return null;
 	}
@@ -857,7 +857,7 @@ public class UseraccountsService {
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 		} finally {
-			
+
 		}
 		return messageTemplate;
 	}
@@ -893,7 +893,7 @@ public class UseraccountsService {
 
 	/**
 	 * 返回手机验证码的正确性, true 验证码正确。
-	 * 
+	 *
 	 * @param mobile
 	 *            手机号
 	 * @param code
@@ -983,7 +983,7 @@ public class UseraccountsService {
 			logger.error(e.getMessage(), e);
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 		} finally {
-			
+
 		}
 	}
 
@@ -991,7 +991,7 @@ public class UseraccountsService {
 	 * 创建微信二维码
 	 */
 	public Response cerateQrcode(int wechatId, long sceneId, int expireSeconds, int action_name) throws TException {
-		
+
 		try {
 			QueryUtil qu = new QueryUtil();
 			qu.addEqualFilter("id", String.valueOf(wechatId));
@@ -1068,7 +1068,7 @@ public class UseraccountsService {
 		redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.WEIXIN_SCANRESULT.toString(), String.valueOf(wechatId), String.valueOf(sceneId), value);
 		return RespnoseUtil.SUCCESS.toResponse();
 	}
-	
+
 	public UserUserDO ifExistUser(String mobile) {
 		UserUserDO user = new UserUserDO();
 		QueryUtil qu = new QueryUtil();
