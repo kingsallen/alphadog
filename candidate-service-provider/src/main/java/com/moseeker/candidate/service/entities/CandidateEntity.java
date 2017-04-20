@@ -326,7 +326,7 @@ public class CandidateEntity implements Candidate {
         }
 
         Future positionFuture = findPositionFutureById(candidateRecomRecordDO.getPositionId());
-        Future userFuture = findUserFutureById(postUserId);
+        Future userFuture = findUserFutureById(candidateRecomRecordDO.getPresenteeUserId());
         RecomRecordResult recomRecordResult = assembleRecomRecordResult(candidateRecomRecordDO, positionFuture, userFuture);
 
         return recomRecordResult;
