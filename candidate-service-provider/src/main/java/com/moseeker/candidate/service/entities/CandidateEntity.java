@@ -358,7 +358,7 @@ public class CandidateEntity implements Candidate {
             throw CandidateExceptionFactory.buildException(CandidateCategory.PASSIVE_SEEKER_SORT_USER_NOT_EXIST);
         }
 
-        return assembleSortingResult(sortingDOList, postUserId, employeeIdList);
+        return assembleSortingResult(sortingDOList, postUserId);
     }
 
     @Override
@@ -397,14 +397,11 @@ public class CandidateEntity implements Candidate {
      * 组装排序结果
      * @param sortingDOList 推荐排序数组，按照推荐从多到少排序
      * @param postUserId 推荐人编号  @return 排序结果
-     * @param employeeIDList 员工编号集合
+     * @return 排序结果
      */
-    private SortResult assembleSortingResult(List<CandidateRecomRecordSortingDO> sortingDOList, int postUserId, List<Integer> employeeIDList) {
+    private SortResult assembleSortingResult(List<CandidateRecomRecordSortingDO> sortingDOList, int postUserId) {
         SortResult sortResult = new SortResult();
         int rank = 0;
-        if(employeeIDList != null && employeeIDList.size() > 0) {
-            rank = employeeIDList.size() - sortingDOList.size();
-        }
         for(CandidateRecomRecordSortingDO candidateRecomRecordSortingDO : sortingDOList) {
             rank ++;
             if(candidateRecomRecordSortingDO.getPostUserId() == postUserId) {
