@@ -416,9 +416,11 @@ public class UserCenterService {
                         }
 
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage(), e);
                     } catch (ExecutionException e) {
-                        e.printStackTrace();
+                        logger.error(e.getMessage(), e);
+                    } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
                     }
 
                 }
