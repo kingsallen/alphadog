@@ -138,7 +138,6 @@ public class ProfileProcessBS {
             // 对需要修改的进行权限验证
             Response application = applicationDao.getProcessAuth(appIds,
                     companyId, progressStatus);
-            logger.info(application.getData()+"==========================");
             if (application.getStatus() == 0) {
                 String data = application.getData();
                 if (StringUtils.isNullOrEmpty(data) || "[]".equals(data)) {
@@ -596,21 +595,20 @@ public class ProfileProcessBS {
         for (int i = 0; i < jsay.size(); i++) {
             ProcessValidationStruct record = JSONObject.toJavaObject(
                     jsay.getJSONObject(i), ProcessValidationStruct.class);
-            Integer applier_id=record.getApplier_id();
-            if(applier_id!=null&&applier_id!=0){
-            	try{
-	            	CommonQuery query=new CommonQuery();
-	            	HashMap<String,String> map=new HashMap<String,String>();
-	            	map.put("id", applier_id+"");
-	            	query.setEqualFilter(map);
-	            	UserUserDO userRecord=userDao.getUser(query);
-	            	String applier_name=userRecord.getName();
-	            	record.setApplier_name(applier_name);
-	            	logger.info(record.toString()+"+++++++++++++++++++++++++++++");
-            	}catch(Exception e){
-            		logger.info(e.getMessage(),e);
-            	}
-            }
+//            Integer applier_id=record.getApplier_id();
+//            if(applier_id!=null&&applier_id!=0){
+//            	try{
+//	            	CommonQuery query=new CommonQuery();
+//	            	HashMap<String,String> map=new HashMap<String,String>();
+//	            	map.put("id", applier_id+"");
+//	            	query.setEqualFilter(map);
+//	            	UserUserDO userRecord=userDao.getUser(query);
+//	            	String applier_name=userRecord.getName();
+//	            	record.setApplier_name(applier_name);
+//            	}catch(Exception e){
+//            		logger.info(e.getMessage(),e);
+//            	}
+//            }
             list.add(record);
         }
         return list;

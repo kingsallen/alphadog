@@ -63,13 +63,13 @@ public class JobApplicationDao extends StructDaoImpl<JobApplicationDO, JobApplic
 		try {
 			conn = DBConnHelper.DBConn.getConn();
 			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-			SelectJoinStep<Record8<UInteger, UInteger, UInteger, UInteger, UInteger, Integer, Integer, String>> table=create.select(
+			SelectJoinStep<Record9<UInteger, UInteger, UInteger, UInteger, UInteger, String, Integer, Integer, String>> table=create.select(
 					JobApplication.JOB_APPLICATION.ID, 
 					JobApplication.JOB_APPLICATION.COMPANY_ID, 
 					JobApplication.JOB_APPLICATION.RECOMMENDER_ID,
 					JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID,
 					JobApplication.JOB_APPLICATION.APPLIER_ID,
-//					UserUser.USER_USER.NAME,
+					UserUser.USER_USER.NAME,
 //					UserWxUser.USER_WX_USER.SYSUSER_ID,
 					ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.ID ,
 					ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.RECRUIT_ORDER,
@@ -79,7 +79,7 @@ public class JobApplicationDao extends StructDaoImpl<JobApplicationDO, JobApplic
 			.on("jobdb.job_application.app_tpl_id=configdb.config_sys_points_conf_tpl.id");
 			table.leftJoin(JobPosition.JOB_POSITION).on("jobdb.job_application.position_id=jobdb.job_position.id");
 //			table.leftJoin(UserWxUser.USER_WX_USER).on("jobdb.job_application.recommender_id=userdb.user_wx_user.id");
-//			table.leftJoin(UserUser.USER_USER).on("jobdb.job_application.applier_id=userdb.user_user.id");
+			table.leftJoin(UserUser.USER_USER).on("jobdb.job_application.applier_id=userdb.user_user.id");
 			table.where(JobApplication.JOB_APPLICATION.ID.in(appIds)
 					.and(JobApplication.JOB_APPLICATION.COMPANY_ID.eq(UInteger.valueOf(companyId))));
 			if(progressStatus==13){
@@ -87,10 +87,10 @@ public class JobApplicationDao extends StructDaoImpl<JobApplicationDO, JobApplic
 			}else if(progressStatus==99){
 				table.where().and(JobApplication.JOB_APPLICATION.APP_TPL_ID.equal(UInteger.valueOf(4)));
 			}
-			Result<Record8<UInteger, UInteger, UInteger, UInteger, UInteger, Integer, Integer, String>> result=table.fetch();
+			Result<Record9<UInteger, UInteger, UInteger, UInteger, UInteger, String, Integer, Integer, String>> result=table.fetch();
 			if(result!=null&&result.size()>0){
 				ProcessValidationStruct data= null;
-				for(Record8<UInteger, UInteger, UInteger, UInteger, UInteger,  Integer, Integer, String> record:result){
+				for(Record9<UInteger, UInteger, UInteger, UInteger, UInteger, String, Integer, Integer, String> record:result){
 					data=new ProcessValidationStruct();
 					data.setCompany_id(record.getValue(JobApplication.JOB_APPLICATION.COMPANY_ID).intValue());
 					data.setId(record.getValue(JobApplication.JOB_APPLICATION.ID).intValue());
@@ -99,7 +99,7 @@ public class JobApplicationDao extends StructDaoImpl<JobApplicationDO, JobApplic
 					data.setRecruit_order(record.getValue(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.RECRUIT_ORDER).intValue());
 					data.setTemplate_id(record.getValue(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.ID).intValue());
 					data.setApplier_id(record.getValue(JobApplication.JOB_APPLICATION.APPLIER_ID).intValue());
-//					data.setApplier_name(record.getValue(UserUser.USER_USER.NAME));
+					data.setApplier_name(record.getValue(UserUser.USER_USER.NAME));
 					data.setPosition_name(record.getValue(JobPosition.JOB_POSITION.TITLE));
 					list.add(data);
 				}
