@@ -110,7 +110,8 @@ public class UserEmployeeServiceImpl implements UserEmployeeService {
         try {
             QueryUtil qu = new QueryUtil();
             qu.addEqualFilter("employee_id", String.valueOf(employeeId));
-
+            qu.setSortby("id");
+            qu.setOrder("DESC");
             List<UserEmployeePointsRecordRecord> records =
                     dao1.getResources(qu);
             result = BeanUtils.DBToStruct(UserEmployeePointsRecordDO.class, records);

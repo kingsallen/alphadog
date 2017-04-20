@@ -557,7 +557,7 @@ public class EmployeeService {
 				}
 				
 				// 计算积分总合
-				int total = points.stream().mapToInt(m -> m.getAward()).filter(f -> f > 0).sum();
+				int total = points.stream().mapToInt(m -> m.getAward()).sum();
 				// 用户积分记录：
 				List<Reward> rewards = new ArrayList<>();
 				points.forEach(point -> {
