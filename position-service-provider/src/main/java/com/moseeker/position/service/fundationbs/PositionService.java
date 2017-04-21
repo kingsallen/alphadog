@@ -26,6 +26,7 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.service.CompanyDao;
 import com.moseeker.thrift.gen.dao.service.HrDBDao;
@@ -460,6 +461,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             QueryUtil commonQuery = new QueryUtil();
             HashMap hashMap = new HashMap();
             hashMap.put("company_id", String.valueOf(companyId));
+            hashMap.put("source", String.valueOf(9));
             // 默认会取10条数据
             commonQuery.setPer_page(100000);
             commonQuery.setEqualFilter(hashMap);
@@ -515,13 +517,8 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     deleteCounts = dbOnlineList.size();
                     // 更新jobposition数据，由于做逻辑删除，所以不删除jobpositionExt和jobpositionCity数据
                     jobPositionDao.putResources(dbOnlineList);
-                    // 更新ES
-                    UpdateESThread updataESThread = new UpdateESThread(searchengineServices, companyServices, jobPositionIds, jobPositionDao);
-                    Thread thread = new Thread(updataESThread);
-                    thread.start();
                 }
             }
-
             // 判断哪些数据不需要更新的
             String fieldsNooverwrite = batchHandlerJobPosition.getFields_nooverwrite();
             String[] fieldsNooverwriteStrings = null;
@@ -706,7 +703,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             jobPostionResponse.setTotalCounts(jobPositionHandlerDates.size());
             if (jobPositionIds.size() > 0) {
                 // 更新ES Search Engine
-                UpdateESThread updataESThread = new UpdateESThread(searchengineServices, companyServices, jobPositionIds, jobPositionDao);
+                PositionService.UpdateES updataESThread = new PositionService.UpdateES(jobPositionIds);
                 Thread thread = new Thread(updataESThread);
                 thread.start();
                 return ResponseUtils.success(jobPostionResponse);
@@ -748,7 +745,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 jobPositionDao.putResource(jobPositionRecord);
                 // 更新ES Search Engine
                 list.add(jobPositionRecord.getId());
-                UpdateESThread updataESThread = new UpdateESThread(searchengineServices, companyServices, list, jobPositionDao);
+                PositionService.UpdateES updataESThread = new PositionService.UpdateES(list);
                 Thread thread = new Thread(updataESThread);
                 thread.start();
                 return ResponseUtils.success(0);
@@ -979,32 +976,6 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 companyId = org.apache.commons.lang.StringUtils.join(cIds.toArray(), ",");
             }
 
-            logger.info("query.getCompanyId(): "+ query.getCompany_id());
-            logger.info("query.getDid(): " + query.getDid());
-            logger.info("query.isSetDid(): "+ query.isSetDid());
-
-            logger.info("companyId: "+ companyId);
-            logger.info("childCompanyId: " + childCompanyId);
-
-            logger.info(
-                    "keywords:" + query.getKeywords() +
-                    ", cities: " + query.getCities() +
-                    ", industries: " + query.getIndustries() +
-                    ", occupations: " + query.getOccupations() +
-                    ", scale: " + query.getScale() +
-                    ", employment_type: " + query.getEmployment_type() +
-                    ", candidate_source: " + query.getCandidate_source() +
-                    ", experience: " + query.getExperience() +
-                    ", degree: " + query.getDegree() +
-                    ", salary: " + query.getSalary() +
-                    ", company_id: " + companyId +
-                    ", page_from: " + query.getPage_from() +
-                    ", page_size: " + query.getPage_size() +
-                    ", childCompanyId: " + childCompanyId +
-                    ", department: " + query.getDepartment() +
-                    ", order_by_priority: " + query.isOrder_by_priority() +
-                    ", custom: " + query.getCustom());
-
             //获取 pid list
             Response ret = searchEngineService.query(
                     query.getKeywords(),
@@ -1022,7 +993,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     query.getPage_size(),
                     childCompanyId,
                     query.getDepartment(),
-                    query.isOrder_by_priority(),
+                    true,
                     query.getCustom());
 
             if (ret.getStatus() == 0 && !StringUtils.isNullOrEmpty(ret.getData())) {
@@ -1074,9 +1045,12 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     e.setIn_hb(jr.getHbStatus() > 0);
                     e.setCount(jr.getCount());
                     e.setCity(jr.getCity());
+                    e.setPriority(jr.getPriority());
 
                     dataList.add(e);
                 }
+
+                logger.info(dataList.toString());
 
                 // 获取公司信息，拼装 company abbr, logo 等信息
                 final HrCompanyDO companyInfo;
@@ -1197,34 +1171,35 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     List<HrHbPositionBindingDO> bindings = hrDao.getHbPositionBindings(qu);
 
                     // 确认 binding 只有一个，获取binding 对应的红包活动信息
-                    HrHbConfigDO hbConfig = hbConfigs.stream().filter(c -> c.getId() == bindings.get(0).getHbConfigId())
-                            .findFirst().orElseGet(null);
+                    if (bindings != null && bindings.size() > 0) {
+                        HrHbConfigDO hbConfig = hbConfigs.stream().filter(c -> c.getId() == bindings.get(0).getHbConfigId())
+                                .findFirst().orElseGet(null);
 
-                    if (hbConfig != null) {
-                        // 更新红包发送对象
-                        rpExtInfo.setEmployee_only(hbConfig.getTarget() == 0);
-                    } else {
-                        logger.warn("查询不到对应的 hbConfig");
-                        rpExtInfo.setEmployee_only(false);
+                        if (hbConfig != null) {
+                            // 更新红包发送对象
+                            rpExtInfo.setEmployee_only(hbConfig.getTarget() == 0);
+                        } else {
+                            logger.warn("查询不到对应的 hbConfig");
+                            rpExtInfo.setEmployee_only(false);
+                        }
+
+                        // 根据 binding 获取 hb_items 记录
+                        qu = new QueryUtil();
+                        qu.addEqualFilter("binding_id", String.valueOf(bindings.get(0).getId()));
+                        qu.addEqualFilter("wxuser_id", "0"); // 还未发出的
+                        List<HrHbItemsDO> remainItems = hrDao.getHbItems(qu);
+
+                        Double remain = remainItems.stream().mapToDouble(HrHbItemsDO::getAmount).sum();
+                        Integer remainInt = toIntExact(round(remain));
+                        if (remainInt < 0) {
+                            remainInt = 0;
+                        }
+
+                        rpExtInfo.setPid(p.getId());
+                        rpExtInfo.setRemain(remainInt);
+
+                        result.add(rpExtInfo);
                     }
-
-                    // 根据 binding 获取 hb_items 记录
-                    qu = new QueryUtil();
-                    qu.addEqualFilter("binding_id", String.valueOf(bindings.get(0).getId()));
-                    qu.addEqualFilter("wxuser_id", "0"); // 还未发出的
-                    List<HrHbItemsDO> remainItems = hrDao.getHbItems(qu);
-
-                    Double remain = remainItems.stream().mapToDouble(HrHbItemsDO::getAmount).sum();
-                    Integer remainInt = toIntExact(round(remain));
-                    if (remainInt < 0) {
-                        remainInt = 0;
-                    }
-
-                    rpExtInfo.setPid(p.getId());
-                    rpExtInfo.setRemain(remainInt);
-
-                    result.add(rpExtInfo);
-
                 } else if (p.getHb_status() == 3) {
                     // 该职位参与了两个红包活动
 
@@ -1396,6 +1371,57 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             dest = m.replaceAll("");
         }
         return dest;
+    }
+
+    /**
+     * 内部线程类
+     * 用于更改ES索引
+     */
+    private class UpdateES extends Thread {
+        private List<Integer> list;
+
+        public UpdateES(List<Integer> list) {
+            this.list = list;
+        }
+
+        public void run() {
+            String position = "";
+            try {
+                logger.info("---Start ES Search Engine---");
+                for (Integer jobPositionId : list) {
+                    Response result = getPositionById(jobPositionId);
+                    position = result.data;
+                    Map position_map = JSON.parseObject(position, Map.class);
+                    String company_id = BeanUtils.converToString(position_map.get("company_id"));
+                    QueryUtil query = new QueryUtil();
+                    query.addEqualFilter("id", company_id);
+                    Response company_resp = companyServices.getAllCompanies(query);
+                    String company = company_resp.data;
+                    if (com.moseeker.common.util.StringUtils.isNotNullOrEmpty(company) && company.startsWith("[")) {
+                        List company_maps = JSON.parseObject(company, List.class);
+                        Map company_map = (Map) company_maps.get(0);
+                        String company_name = (String) company_map.get("name");
+                        String scale = (String) company_map.get("scale");
+                        position_map.put("company_name", company_name);
+                        String degree_name = BeanUtils.converToString(position_map.get("degree_name"));
+                        Integer degree_above = BeanUtils.converToInteger(position_map.get("degree_above"));
+                        if (degree_above == 1) {
+                            degree_name = degree_name + "及以上";
+                        }
+                        position_map.put("degree_name", degree_name);
+                        position_map.put("scale", scale);
+                        logger.info("position_map:" + position_map.toString());
+                    }
+                    position = JSON.toJSONString(position_map);
+                    logger.info("position:" + position);
+                    searchengineServices.updateposition(position, jobPositionId);
+                }
+                logger.info("--- ES Search Engine end---");
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.error(e.getMessage(), e);
+            }
+        }
     }
 
 }

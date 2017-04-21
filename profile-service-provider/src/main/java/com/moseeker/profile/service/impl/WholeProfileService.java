@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -35,12 +36,12 @@ import com.moseeker.db.profiledb.tables.records.*;
 import com.moseeker.db.userdb.tables.records.UserSettingsRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.profile.constants.StatisticsForChannelmportVO;
 import com.moseeker.profile.dao.*;
 import com.moseeker.profile.dao.entity.ProfileWorkexpEntity;
 import com.moseeker.profile.dao.impl.IntentionRecord;
 import com.moseeker.profile.service.impl.serviceutils.ProfilePojo;
 import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
-import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import org.apache.thrift.TException;
@@ -54,6 +55,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.Future;
+
 
 @Service
 @CounterIface
@@ -337,6 +339,17 @@ public class WholeProfileService {
 					credentialsRecords, educationRecords, importRecords, intentionRecords, languages, otherRecord,
 					projectExps, skillRecords, workexpRecords, worksRecords, userRecord);
 			if (id > 0) {
+
+				try {
+					StatisticsForChannelmportVO statisticsForChannelmportVO = createStaticstics(id, userId, (byte)0, importRecords);
+					profileUtils.logForStatistics("postResource", new JSONObject(){{
+                        this.put("profile", profile);
+                        this.put("userId", userId);
+                    }}.toJSONString(), statisticsForChannelmportVO);
+				} catch (Exception e) {
+					logger.error(e.getMessage(), e);
+				}
+
 				return ResponseUtils.success(String.valueOf(id));
 			}
 		}
@@ -380,6 +393,16 @@ public class WholeProfileService {
 				userRecord, oldProfile);
 		if (id > 0) {
 			logger.info("importCV 添加成功");
+			try {
+				StatisticsForChannelmportVO statisticsForChannelmportVO = createStaticstics(id, userId, (byte)1,
+                        profilePojo.getImportRecords());
+				profileUtils.logForStatistics("importCV", new JSONObject(){{
+                    this.put("profile", profile);
+                    this.put("userId", userId);
+                }}.toJSONString(), statisticsForChannelmportVO);
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
 			return ResponseUtils.success(id);
 		} else {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
@@ -415,6 +438,16 @@ public class WholeProfileService {
 				profilePojo.getSkillRecords(), profilePojo.getWorkexpRecords(), profilePojo.getWorksRecords(),
 				userRecord, null);
 		if (id > 0) {
+
+			try {
+				StatisticsForChannelmportVO statisticsForChannelmportVO = createStaticstics(id,
+                        userRecord.getId().intValue(), (byte)0, profilePojo.getImportRecords());
+				profileUtils.logForStatistics("importCV", new JSONObject(){{
+                    this.put("profile", profile);
+                }}.toJSONString(), statisticsForChannelmportVO);
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
 			return ResponseUtils.success(id);
 		} else {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
@@ -455,12 +488,22 @@ public class WholeProfileService {
 			improveWorkexp(profilePojo.getWorkexpRecords(), profileId);
 			improveWorks(profilePojo.getWorksRecords(), profileId);
 			completenessImpl.getCompleteness1(0, null, profileId);
+
+			try {
+				StatisticsForChannelmportVO statisticsForChannelmportVO = createStaticstics(profileDB.getId().intValue(), profileDB.getUserId().intValue(), (byte)2,
+						profilePojo.getImportRecords());
+				profileUtils.logForStatistics("importCV", new JSONObject(){{
+					this.put("profile", profile);
+				}}.toJSONString(), statisticsForChannelmportVO);
+			} catch (Exception e) {
+				logger.error(e.getMessage(), e);
+			}
 			return ResponseUtils.success(null);
 		} else {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_ALLREADY_NOT_EXIST);
 		}
 	}
-	
+
 	public Response improveProfile(int destUserId, int originUserId) {
 		ProfileProfileRecord destProfile = profileDao.getProfileByIdOrUserIdOrUUID(destUserId, 0, null);
 		ProfileProfileRecord originProfile = profileDao.getProfileByIdOrUserIdOrUUID(originUserId, 0, null);
@@ -526,6 +569,22 @@ public class WholeProfileService {
 			ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		}
 		return ResponseUtils.success(null);
+	}
+
+	private static StatisticsForChannelmportVO createStaticstics(int profileId, int userId, byte operation, ProfileImportRecord record) {
+		StatisticsForChannelmportVO statisticsForChannelmportVO = new StatisticsForChannelmportVO();
+		statisticsForChannelmportVO.setProfile_operation((byte)0);
+		statisticsForChannelmportVO.setProfile_id(profileId);
+		statisticsForChannelmportVO.setUser_id(userId);
+		if(record != null) {
+			if(record.getCreateTime() != null) {
+				statisticsForChannelmportVO.setImport_time(record.getCreateTime().getTime());
+			}
+			if(record.getSource() != null) {
+				statisticsForChannelmportVO.setImport_channel(record.getSource().byteValue());
+			}
+		}
+		return statisticsForChannelmportVO;
 	}
 
 	private void improveUser(UserUserRecord userRecord) {

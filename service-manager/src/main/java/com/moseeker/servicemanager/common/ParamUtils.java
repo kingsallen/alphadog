@@ -206,13 +206,6 @@ public class ParamUtils {
                     List<String> values = new ArrayList<>();
                     for (String value : entry.getValue()) {
                         if (value != null) {
-                            if (request.getMethod().equals("GET")) {
-                                try {
-                                    value = new String(value.getBytes("iso8859-1"), request.getCharacterEncoding());
-                                } catch (UnsupportedEncodingException e) {
-                                    LoggerFactory.getLogger(ParamUtils.class).error(e.getMessage(), e);
-                                }
-                            }
                             values.add(value);
                         }
                     }
@@ -222,12 +215,16 @@ public class ParamUtils {
                 }
             }
         }
-        if (param.size() > 0) {
+        if (param.size() > 0)
+
+        {
             param.forEach((key, value) -> {
                 LoggerFactory.getLogger(ParamUtils.class).info("----initParamFromRequestParameter key:{}    value:{}", key, value);
             });
         }
-        LoggerFactory.getLogger(ParamUtils.class).info("----initParamFromRequestBody:", param.toString());
+        LoggerFactory.getLogger(ParamUtils.class).
+
+                info("----initParamFromRequestBody:", param.toString());
         return param;
     }
 

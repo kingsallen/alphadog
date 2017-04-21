@@ -1,15 +1,14 @@
 package com.moseeker.baseorm.Thriftservice;
 
 import com.moseeker.baseorm.dao.candidatedb.*;
-import com.moseeker.thrift.gen.common.struct.*;
+import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.service.CandidateDBDao;
 import com.moseeker.thrift.gen.dao.struct.*;
-import com.moseeker.thrift.gen.dao.struct.CURDException;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -118,6 +117,11 @@ public class CandidateDaoThriftService implements CandidateDBDao.Iface {
     }
 
     @Override
+    public CandidatePositionDO saveCandidatePosition(CandidatePositionDO candidatePosition) throws com.moseeker.thrift.gen.common.struct.CURDException, TException {
+        return candidatePositionDao.saveResource(candidatePosition);
+    }
+
+    @Override
     public void deleteCandidatePositions(int userId, int positionId) throws TException {
         candidatePositionDao.deleteCandidatePosition(userId, positionId);
     }
@@ -173,8 +177,18 @@ public class CandidateDaoThriftService implements CandidateDBDao.Iface {
     }
 
     @Override
+    public List<CandidateRecomRecordDO> listCandidateRecomRecordsForAppliedByUserPositions(int userId, List<Integer> positionIdList, int pageNo, int pageSize) throws TException {
+        return candidateRecomRecordDao.listCandidateRecomRecordsForAppliedByUserPositions(userId, positionIdList, pageNo, pageSize);
+    }
+
+    @Override
     public List<CandidateRecomRecordDO> listInterestedCandidateRecomRecord(int userId, int pageNo, int pageSize) throws TException {
         return candidateRecomRecordDao.listInterestedCandidateRecomRecord(userId, pageNo, pageSize);
+    }
+
+    @Override
+    public List<CandidateRecomRecordDO> listInterestedCandidateRecomRecordByUserPositions(int userId, List<Integer> positionIdList, int pageNo, int pageSize) throws TException {
+        return candidateRecomRecordDao.listInterestedCandidateRecomRecordByUserPositions(userId, positionIdList, pageNo, pageSize);
     }
 
     @Override
@@ -197,13 +211,33 @@ public class CandidateDaoThriftService implements CandidateDBDao.Iface {
     }
 
     @Override
+    public int countCandidateRecomRecordDistinctPresentee(int postUserId) throws TException {
+        return candidateRecomRecordDao.countCandidateRecomRecordDistinctPresentee(postUserId);
+    }
+
+    @Override
+    public int countCandidateRecomRecordDistinctPresenteePosition(int postUserId, List<Integer> positionIdList) throws TException {
+        return candidateRecomRecordDao.countCandidateRecomRecordDistinctPresenteePosition(postUserId, positionIdList);
+    }
+
+    @Override
     public int countAppliedCandidateRecomRecord(int userId) throws TException {
         return candidateRecomRecordDao.countAppliedCandidateRecomRecord(userId);
     }
 
     @Override
+    public int countAppliedCandidateRecomRecordByUserPosition(int userId, List<Integer> positionIdList) throws TException {
+        return candidateRecomRecordDao.countAppliedCandidateRecomRecordByUserPosition(userId, positionIdList);
+    }
+
+    @Override
     public int countInterestedCandidateRecomRecord(int userId) throws TException {
         return candidateRecomRecordDao.countInterestedCandidateRecomRecord(userId);
+    }
+
+    @Override
+    public int countInterestedCandidateRecomRecordByUserPosition(int userId, List<Integer> positionIdList) throws TException {
+        return candidateRecomRecordDao.countInterestedCandidateRecomRecordByUserPosition(userId, positionIdList);
     }
 
     @Override
