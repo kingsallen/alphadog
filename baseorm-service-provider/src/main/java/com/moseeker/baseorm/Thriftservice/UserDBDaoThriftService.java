@@ -10,6 +10,7 @@ import com.moseeker.thrift.gen.dao.service.UserDBDao.Iface;
 import com.moseeker.thrift.gen.dao.struct.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserSearchConditionDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserViewedPositionDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import org.apache.thrift.TException;
@@ -48,6 +49,9 @@ public class UserDBDaoThriftService implements Iface {
 
 	@Autowired
     private UserSearchConditionDao searchConditionDao;
+
+	@Autowired
+    private UserViewedPositionDao userViewedPositionDao;
 
 	@Override
 	public UserUserDO getUser(CommonQuery query) throws TException {
@@ -182,6 +186,11 @@ public class UserDBDaoThriftService implements Iface {
     }
 
     @Override
+    public UserSearchConditionDO getUserSearchCondition(CommonQuery query) throws TException {
+        return searchConditionDao.findResource(query);
+    }
+
+    @Override
     public UserSearchConditionDO saveUserSearchCondition(UserSearchConditionDO entity) throws TException {
         return searchConditionDao.saveResource(entity);
     }
@@ -189,6 +198,11 @@ public class UserDBDaoThriftService implements Iface {
     @Override
     public UserSearchConditionDO updateUserSearchCondition(UserSearchConditionDO entity) throws TException {
         return searchConditionDao.updateResource(entity);
+    }
+
+    @Override
+    public List<UserCollectPositionDO> getUserCollectPositions(CommonQuery query) throws TException {
+        return collectPositionDao.listResources(query);
     }
 
     @Override
@@ -204,6 +218,21 @@ public class UserDBDaoThriftService implements Iface {
     @Override
     public UserCollectPositionDO updateUserCollectPosition(UserCollectPositionDO entity) throws TException {
         return collectPositionDao.updateResource(entity);
+    }
+
+    @Override
+    public List<UserViewedPositionDO> getUserViewedPositions(CommonQuery query) throws TException {
+        return userViewedPositionDao.listResources(query);
+    }
+
+    @Override
+    public UserViewedPositionDO getUserViewedPosition(CommonQuery query) throws TException {
+        return userViewedPositionDao.findResource(query);
+    }
+
+    @Override
+    public UserViewedPositionDO saveUserViewedPosition(UserViewedPositionDO entity) throws TException {
+        return userViewedPositionDao.saveResource(entity);
     }
 
 }

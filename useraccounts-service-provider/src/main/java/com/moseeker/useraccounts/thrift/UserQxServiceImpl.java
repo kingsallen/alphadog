@@ -50,11 +50,11 @@ public class UserQxServiceImpl implements com.moseeker.thrift.gen.useraccounts.s
 
     @Override
     public UserPositionStatusVO getUserPositionStatus(int userId, List<Integer> positionIds) throws TException {
-        return null;
+        return service.getUserPositionStatus(userId, positionIds);
     }
 
     @Override
     public UserViewedPositionVO userViewedPosition(int userId, int positionId) throws TException {
-        return null;
+        return service.userViewedPosition(userId, positionId);
     }
 }
