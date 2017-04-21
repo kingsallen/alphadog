@@ -334,10 +334,10 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
      * 该职位是否可以刷新
      *
      * @param positionId 职位编号
-     * @param channel    渠道编号
+     * @param account_id 第三方账号ID
      * @return bool
      */
-    public boolean ifAllowRefresh(int user_id,int positionId, int channel) {
+    public boolean ifAllowRefresh(int positionId, int account_id) {
         boolean permission = false;
         try {
             logger.info("ifAllowRefresh");
@@ -347,26 +347,20 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             Position position = positionDaoService.getPosition(findPositionById);
             logger.info("position:" + JSON.toJSONString(position));
             if (position.getId() > 0) {
-                QueryUtil findThirdPartyAccount = new QueryUtil();
-                findThirdPartyAccount.addEqualFilter("company_id", String.valueOf(position.getCompany_id()));
-                findThirdPartyAccount.addEqualFilter("channel", String.valueOf(channel));
-
                 logger.info("search company");
-                ThirdPartAccountData account = hrAccountDao.getThirdPartyAccount(findThirdPartyAccount);
+                QueryUtil queryUtil = new QueryUtil();
+                queryUtil.addEqualFilter("id", account_id);
+                ThirdPartAccountData account = hrAccountDao.getThirdPartyAccount(queryUtil);
                 logger.info("company:" + JSON.toJSONString(account));
 
-                QueryUtil findThirdPartyPosition = new QueryUtil();
-                findThirdPartyPosition.addEqualFilter("position_id", String.valueOf(positionId));
-                findThirdPartyPosition.addEqualFilter("channel", String.valueOf(channel));
-
                 logger.info("search thirdparyposition");
-                ThirdPartyPositionData p = positionDaoService.getThirdPartyPosition(positionId, channel);
+                ThirdPartyPositionData p = positionDaoService.getThirdPartyPosition(positionId, account_id);
                 logger.info("thirdparyposition" + JSON.toJSONString(p));
                 if (account != null && account.getBinding() == AccountSync.bound.getValue() && p.getId() > 0
                         && p.getIs_synchronization() == PositionSync.bound.getValue()) {
                     logger.info("data allow");
                     String str = RedisClientFactory.getCacheClient().get(AppId.APPID_ALPHADOG.getValue(),
-                            KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(positionId), String.valueOf(channel));
+                            KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(positionId), String.valueOf(account_id));
                     if (StringUtils.isNullOrEmpty(str)) {
                         logger.info("cache allow");
                         permission = true;
@@ -387,9 +381,9 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
      * 创建刷新职位数据
      *
      * @param positionId 职位编号
-     * @param channel    渠道编号
+     * @param account_id 第三方账号ID
      */
-    public ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(int positionId, int channel) {
+    public ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(int positionId, int account_id) {
 
         ThirdPartyPositionForSynchronizationWithAccount account = new ThirdPartyPositionForSynchronizationWithAccount();
         try {
@@ -398,19 +392,18 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             findPosition.addEqualFilter("id", String.valueOf(positionId));
             Position position = positionDaoService.getPosition(findPosition);
 
-            ThirdPartyPositionData thirdPartyPosition = positionDaoService.getThirdPartyPosition(positionId, channel);
+            ThirdPartyPositionData thirdPartyPosition = positionDaoService.getThirdPartyPosition(positionId, account_id);
 
             QueryUtil findAccount = new QueryUtil();
-            findAccount.addEqualFilter("company_id", String.valueOf(position.getCompany_id()));
-            findAccount.addEqualFilter("channel", String.valueOf(channel));
+            findAccount.addEqualFilter("id", account_id);
             ThirdPartAccountData accountData = hrAccountDao.getThirdPartyAccount(findAccount);
             account.setUser_name(accountData.getUsername());
             account.setMember_name(accountData.getMembername());
             account.setPassword(accountData.getPassword());
-            account.setChannel(String.valueOf(channel));
+            account.setChannel(String.valueOf(accountData.getChannel()));
             account.setPosition_id(String.valueOf(positionId));
 
-            form.setChannel((byte) channel);
+            form.setChannel((byte) accountData.getChannel());
             if (position.getId() > 0 && thirdPartyPosition.getId() > 0) {
                 ThirdPartyPositionForSynchronization p = PositionChangeUtil.changeToThirdPartyPosition(form, position);
                 p.setJob_id(thirdPartyPosition.getThird_part_position_id());

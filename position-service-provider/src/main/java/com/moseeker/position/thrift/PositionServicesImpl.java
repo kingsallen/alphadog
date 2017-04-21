@@ -81,14 +81,14 @@ public class PositionServicesImpl implements Iface {
     }
 
     @Override
-    public boolean ifAllowRefresh(int user_id, int positionId, int channel) throws TException {
-        return service.ifAllowRefresh(user_id, positionId, channel);
+    public boolean ifAllowRefresh(int positionId,int account_id) throws TException {
+        return service.ifAllowRefresh(positionId,account_id);
     }
 
     @Override
-    public ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(int positionId, int channel)
+    public ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(int positionId, int account_id)
             throws TException {
-        return service.createRefreshPosition(positionId, channel);
+        return service.createRefreshPosition(positionId, account_id);
     }
 
     @Override

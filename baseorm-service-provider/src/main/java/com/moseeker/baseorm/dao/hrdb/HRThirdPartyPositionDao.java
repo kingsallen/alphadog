@@ -211,16 +211,16 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 	 *            渠道号
 	 * @return
 	 */
-	public ThirdPartyPositionData getThirdPartyPosition(int positionId, int channel) {
+	public ThirdPartyPositionData getThirdPartyPosition(int positionId, int account_id) {
 		ThirdPartyPositionData position = new ThirdPartyPositionData();
-		if (positionId > 0 && channel > 0) {
+		if (positionId > 0 && account_id > 0) {
 			try (Connection conn = DBConnHelper.DBConn.getConn();
 					DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);) {
 
 				HrThirdPartyPositionRecord record = create.selectFrom(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION)
 						.where(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID
 								.eq(UInteger.valueOf(positionId)))
-						.and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL.eq((short) channel)).fetchOne();
+						.and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.THIRD_PARTY_ACCOUNT_ID.eq(account_id)).fetchOne();
 				if (record != null) {
 					record.into(position);
 					position.setUpdate_time(sdf.format(record.getUpdateTime()));

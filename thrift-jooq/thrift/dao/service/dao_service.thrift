@@ -56,7 +56,7 @@ service PositionDao {
 	i32 updatePosition(1:position_struct.Position position);
 	position_struct.Position getPositionWithCityCode(1:common_struct.CommonQuery query);
 	list<dao_struct.ThirdPartyPositionData> getPositionThirdPartyPositions(1:common_struct.CommonQuery query);
-	dao_struct.ThirdPartyPositionData getThirdPartyPosition(1:i32 positionId, 2:i32 channel);
+	dao_struct.ThirdPartyPositionData getThirdPartyPosition(1:i32 positionId, 2:i32 account_id);
 	//添加或者修改第三方职位帐号信息
 	i32 upsertThirdPartyPositions(1: dao_struct.ThirdPartyPositionData position);
 }

@@ -25,8 +25,8 @@ public class CompanyThriftServiceTest {
 			TMultiplexedProtocol mulProtocol= new TMultiplexedProtocol(protocol, "com.moseeker.thrift.gen.company.service.CompanyServices");
 			Factory factory = new Factory();
 			Client client = factory.getClient(mulProtocol);
-			Response response = client.synchronizeThirdpartyAccount(96, (byte)3);
-			System.out.println(response.getData());
+			//Response response = client.synchronizeThirdpartyAccount(96, (byte)3);
+			//System.out.println(response.getData());
 		} catch (TException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -252,12 +252,16 @@ public class PositionBS {
 			//更新仟寻职位的修改时间
 			writeBackToQX(positionId);
 
-			boolean permission = positionServices.ifAllowRefresh(user_id,positionId, channel);
+			ThirdPartAccountData thirdPartAccountData = userHrAccountDao.getThirdPartyAccountByUserId(user_id,channel);
+			boolean permission = false;
+			if(thirdPartAccountData!=null) {
+				permission = positionServices.ifAllowRefresh(positionId, thirdPartAccountData.getId());
+			}
 			logger.info("permission:"+permission);
 
 			if (permission) {
 				ThirdPartyPositionForSynchronizationWithAccount refreshPosition = positionServices
-						.createRefreshPosition(positionId, channel);
+						.createRefreshPosition(positionId, thirdPartAccountData.getId());
 				if(refreshPosition.getPosition_info() != null && StringUtils.isNotNullOrEmpty(refreshPosition.getUser_name())) {
 					logger.info("refreshPosition:"+JSON.toJSONString(refreshPosition));
 					response = chaosService.refreshPosition(refreshPosition);
