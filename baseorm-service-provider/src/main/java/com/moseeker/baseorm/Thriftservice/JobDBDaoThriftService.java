@@ -41,6 +41,11 @@ public class JobDBDaoThriftService implements Iface {
 	}
 
 	@Override
+	public List<Integer> listPositionIdByUserId(int userId) throws CURDException, TException {
+		return positionDao.listPositionIdByUserId(userId);
+	}
+
+	@Override
 	public List<JobApplicationDO> getApplications(CommonQuery query) throws TException {
 		return applicationDao.getApplications(query);
 	}

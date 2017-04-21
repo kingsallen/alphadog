@@ -113,7 +113,6 @@ public class NodeInvoker<T> implements Invoker {
                         // hostSet.addDeadInstance(serverNode); // 加入dead集合中
                         exception = cause;
                         try {
-                            client = null;
                             // XXX:这里直接清空pool,否则会出现连接慢恢复的现象
                             // 发送socket异常时，证明socket已经失效，需要重新创建
                             if (cause.getCause() != null && cause.getCause() instanceof SocketException) {
@@ -133,6 +132,7 @@ public class NodeInvoker<T> implements Invoker {
                                 LOGGER.debug("after invalidateObject getNumActive:"+pool.getNumActive());
                                 pool.invalidateObject(node, client);
                             }
+                            client = null;
                         } catch (Exception e) {
                             LOGGER.error(e.getMessage(), e);
                         }

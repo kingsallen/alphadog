@@ -96,7 +96,7 @@ public class UserCenterThriftServiceTest {
      */
     //@Test
     public void testGetRecommendation() throws Exception {
-        RecommendationVO recommendationVO = userCenterService.getRecommendation(191549, (byte) 3, 1, 10);
+        RecommendationVO recommendationVO = userCenterService.getRecommendation(4021, (byte) 1, 1, 10);
         if(recommendationVO != null) {
             System.out.println("is recommended : "+recommendationVO.isHasRecommends());
             System.out.println("score:");
