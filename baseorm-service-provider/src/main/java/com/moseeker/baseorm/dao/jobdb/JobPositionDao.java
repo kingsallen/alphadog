@@ -20,7 +20,6 @@ import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.PositionDetails;
 
 import org.jooq.DSLContext;
-import org.jooq.GroupField;
 import org.jooq.Record;
 import org.jooq.Record4;
 import org.jooq.Result;
