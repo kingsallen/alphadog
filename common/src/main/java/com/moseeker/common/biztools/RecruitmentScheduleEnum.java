@@ -107,10 +107,29 @@ public enum RecruitmentScheduleEnum {
             case 11 :
             case 3: value = 3; break;
             case 4:
-                if(this.getLastID() ==0 || this.getLastID() > 13) {
+                if(this.getLastID() < 0 || this.getLastID() > 13) {
                     throw new RecruitmentScheduleLastStepNotExistException();
                 }
-                value = this.getLastID();
+                switch (lastID) {
+                    case 1:
+                    case 6:
+                        value = 1;
+                        break;
+                    case 8:
+                    case 9:
+                    case 10:
+                    case 2:
+                    case 5:
+                        value = 2;
+                        break;
+                    case 12:
+                    case 11:
+                    case 3:
+                        value = 3;
+                        break;
+                    case 4:
+                    default: value = 1;
+                }
                 break;
             default: value = 0;
         }
@@ -202,7 +221,7 @@ public enum RecruitmentScheduleEnum {
                 this.disable = true;
                 this.priority = 13;
                 this.recuritOrder = 13;
-                this.applierView = "很遗憾您与该职位无缘";
+                this.applierView = "暂不匹配，纳入人才库";
                 break;
             case 5:
                 this.id = value;
