@@ -7,6 +7,9 @@ package com.moseeker.baseorm.db.hrdb;
 import com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrChatUnreadCount;
 import com.moseeker.baseorm.db.hrdb.tables.HrChildCompany;
+import com.moseeker.baseorm.db.hrdb.tables.HrCmsMedia;
+import com.moseeker.baseorm.db.hrdb.tables.HrCmsModule;
+import com.moseeker.baseorm.db.hrdb.tables.HrCmsPages;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
@@ -54,6 +57,9 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrAppCvConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrChatUnreadCountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrChildCompanyRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrCmsMediaRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrCmsModuleRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrCmsPagesRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
@@ -128,6 +134,9 @@ public class Keys {
 
     public static final Identity<HrAppCvConfRecord, Integer> IDENTITY_HR_APP_CV_CONF = Identities0.IDENTITY_HR_APP_CV_CONF;
     public static final Identity<HrChildCompanyRecord, Integer> IDENTITY_HR_CHILD_COMPANY = Identities0.IDENTITY_HR_CHILD_COMPANY;
+    public static final Identity<HrCmsMediaRecord, Integer> IDENTITY_HR_CMS_MEDIA = Identities0.IDENTITY_HR_CMS_MEDIA;
+    public static final Identity<HrCmsModuleRecord, Integer> IDENTITY_HR_CMS_MODULE = Identities0.IDENTITY_HR_CMS_MODULE;
+    public static final Identity<HrCmsPagesRecord, Integer> IDENTITY_HR_CMS_PAGES = Identities0.IDENTITY_HR_CMS_PAGES;
     public static final Identity<HrCompanyRecord, UInteger> IDENTITY_HR_COMPANY = Identities0.IDENTITY_HR_COMPANY;
     public static final Identity<HrEmployeeCertConfRecord, Integer> IDENTITY_HR_EMPLOYEE_CERT_CONF = Identities0.IDENTITY_HR_EMPLOYEE_CERT_CONF;
     public static final Identity<HrEmployeeCustomFieldsRecord, Integer> IDENTITY_HR_EMPLOYEE_CUSTOM_FIELDS = Identities0.IDENTITY_HR_EMPLOYEE_CUSTOM_FIELDS;
@@ -178,6 +187,9 @@ public class Keys {
     public static final UniqueKey<HrAppCvConfRecord> KEY_HR_APP_CV_CONF_PRIMARY = UniqueKeys0.KEY_HR_APP_CV_CONF_PRIMARY;
     public static final UniqueKey<HrChatUnreadCountRecord> KEY_HR_CHAT_UNREAD_COUNT_PRIMARY = UniqueKeys0.KEY_HR_CHAT_UNREAD_COUNT_PRIMARY;
     public static final UniqueKey<HrChildCompanyRecord> KEY_HR_CHILD_COMPANY_PRIMARY = UniqueKeys0.KEY_HR_CHILD_COMPANY_PRIMARY;
+    public static final UniqueKey<HrCmsMediaRecord> KEY_HR_CMS_MEDIA_PRIMARY = UniqueKeys0.KEY_HR_CMS_MEDIA_PRIMARY;
+    public static final UniqueKey<HrCmsModuleRecord> KEY_HR_CMS_MODULE_PRIMARY = UniqueKeys0.KEY_HR_CMS_MODULE_PRIMARY;
+    public static final UniqueKey<HrCmsPagesRecord> KEY_HR_CMS_PAGES_PRIMARY = UniqueKeys0.KEY_HR_CMS_PAGES_PRIMARY;
     public static final UniqueKey<HrCompanyRecord> KEY_HR_COMPANY_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_PRIMARY;
     public static final UniqueKey<HrCompanyAccountRecord> KEY_HR_COMPANY_ACCOUNT_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_ACCOUNT_PRIMARY;
     public static final UniqueKey<HrCompanyConfRecord> KEY_HR_COMPANY_CONF_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_CONF_PRIMARY;
@@ -238,6 +250,9 @@ public class Keys {
     private static class Identities0 extends AbstractKeys {
         public static Identity<HrAppCvConfRecord, Integer> IDENTITY_HR_APP_CV_CONF = createIdentity(HrAppCvConf.HR_APP_CV_CONF, HrAppCvConf.HR_APP_CV_CONF.ID);
         public static Identity<HrChildCompanyRecord, Integer> IDENTITY_HR_CHILD_COMPANY = createIdentity(HrChildCompany.HR_CHILD_COMPANY, HrChildCompany.HR_CHILD_COMPANY.ID);
+        public static Identity<HrCmsMediaRecord, Integer> IDENTITY_HR_CMS_MEDIA = createIdentity(HrCmsMedia.HR_CMS_MEDIA, HrCmsMedia.HR_CMS_MEDIA.ID);
+        public static Identity<HrCmsModuleRecord, Integer> IDENTITY_HR_CMS_MODULE = createIdentity(HrCmsModule.HR_CMS_MODULE, HrCmsModule.HR_CMS_MODULE.ID);
+        public static Identity<HrCmsPagesRecord, Integer> IDENTITY_HR_CMS_PAGES = createIdentity(HrCmsPages.HR_CMS_PAGES, HrCmsPages.HR_CMS_PAGES.ID);
         public static Identity<HrCompanyRecord, UInteger> IDENTITY_HR_COMPANY = createIdentity(HrCompany.HR_COMPANY, HrCompany.HR_COMPANY.ID);
         public static Identity<HrEmployeeCertConfRecord, Integer> IDENTITY_HR_EMPLOYEE_CERT_CONF = createIdentity(HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF, HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF.ID);
         public static Identity<HrEmployeeCustomFieldsRecord, Integer> IDENTITY_HR_EMPLOYEE_CUSTOM_FIELDS = createIdentity(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS, HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.ID);
@@ -286,6 +301,9 @@ public class Keys {
         public static final UniqueKey<HrAppCvConfRecord> KEY_HR_APP_CV_CONF_PRIMARY = createUniqueKey(HrAppCvConf.HR_APP_CV_CONF, "KEY_hr_app_cv_conf_PRIMARY", HrAppCvConf.HR_APP_CV_CONF.ID);
         public static final UniqueKey<HrChatUnreadCountRecord> KEY_HR_CHAT_UNREAD_COUNT_PRIMARY = createUniqueKey(HrChatUnreadCount.HR_CHAT_UNREAD_COUNT, "KEY_hr_chat_unread_count_PRIMARY", HrChatUnreadCount.HR_CHAT_UNREAD_COUNT.ROOM_ID);
         public static final UniqueKey<HrChildCompanyRecord> KEY_HR_CHILD_COMPANY_PRIMARY = createUniqueKey(HrChildCompany.HR_CHILD_COMPANY, "KEY_hr_child_company_PRIMARY", HrChildCompany.HR_CHILD_COMPANY.ID);
+        public static final UniqueKey<HrCmsMediaRecord> KEY_HR_CMS_MEDIA_PRIMARY = createUniqueKey(HrCmsMedia.HR_CMS_MEDIA, "KEY_hr_cms_media_PRIMARY", HrCmsMedia.HR_CMS_MEDIA.ID);
+        public static final UniqueKey<HrCmsModuleRecord> KEY_HR_CMS_MODULE_PRIMARY = createUniqueKey(HrCmsModule.HR_CMS_MODULE, "KEY_hr_cms_module_PRIMARY", HrCmsModule.HR_CMS_MODULE.ID);
+        public static final UniqueKey<HrCmsPagesRecord> KEY_HR_CMS_PAGES_PRIMARY = createUniqueKey(HrCmsPages.HR_CMS_PAGES, "KEY_hr_cms_pages_PRIMARY", HrCmsPages.HR_CMS_PAGES.ID);
         public static final UniqueKey<HrCompanyRecord> KEY_HR_COMPANY_PRIMARY = createUniqueKey(HrCompany.HR_COMPANY, "KEY_hr_company_PRIMARY", HrCompany.HR_COMPANY.ID);
         public static final UniqueKey<HrCompanyAccountRecord> KEY_HR_COMPANY_ACCOUNT_PRIMARY = createUniqueKey(HrCompanyAccount.HR_COMPANY_ACCOUNT, "KEY_hr_company_account_PRIMARY", HrCompanyAccount.HR_COMPANY_ACCOUNT.ACCOUNT_ID);
         public static final UniqueKey<HrCompanyConfRecord> KEY_HR_COMPANY_CONF_PRIMARY = createUniqueKey(HrCompanyConf.HR_COMPANY_CONF, "KEY_hr_company_conf_PRIMARY", HrCompanyConf.HR_COMPANY_CONF.COMPANY_ID);
