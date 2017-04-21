@@ -108,7 +108,7 @@ public class GammaPositionService extends JOOQBaseServiceImpl<Position, JobPosit
      * @return positionDetailsVO
      */
     @CounterIface
-    public PositionDetailsListVO positionDetailsList(Integer companyId, Integer page, Integer per_age) {
+    public PositionDetailsListVO companyPositionDetailsList(Integer companyId, Integer page, Integer per_age) {
         PositionDetailsListVO positionDetailsListVO = new PositionDetailsListVO();
         try {
             if (companyId == 0) {
@@ -139,6 +139,46 @@ public class GammaPositionService extends JOOQBaseServiceImpl<Position, JobPosit
             logger.error(e.getMessage(), e);
         }
         return positionDetailsListVO;
+    }
+
+
+    /**
+     * 查询团队在招职位的详细信息
+     *
+     * @return positionDetailsVO
+     */
+    @CounterIface
+    public PositionDetailsListVO teamPositionDetailsList(Integer teamId, Integer page, Integer per_age) {
+        PositionDetailsListVO positionDetailsList = new PositionDetailsListVO();
+        try {
+            if (teamId == 0) {
+                positionDetailsList.setStatus(CommonMessage.COMPANYID_BLANK.getStatus());
+                positionDetailsList.setMessage(CommonMessage.COMPANYID_BLANK.getMessage());
+                return positionDetailsList;
+            }
+            CommonQuery commonQuery = new CommonQuery();
+            HashMap hashMap = new HashMap();
+            hashMap.put("team_id", String.valueOf(teamId));
+            commonQuery.setEqualFilter(hashMap);
+            commonQuery.setPage(page);
+            commonQuery.setPer_page(per_age);
+            List<PositionDetails> list = jobDbDao.positionDetailsList(commonQuery);
+            if (list != null && list.size() > 0) {
+                positionDetailsList.setStatus(CommonMessage.SUCCESS.getStatus());
+                positionDetailsList.setMessage(CommonMessage.SUCCESS.getMessage());
+                positionDetailsList.setData(list);
+                positionDetailsList.setPage(page);
+                positionDetailsList.setPer_age(per_age);
+            } else {
+                positionDetailsList.setStatus(CommonMessage.POSITIONLIST_NONEXIST.getStatus());
+                positionDetailsList.setMessage(CommonMessage.POSITIONLIST_NONEXIST.getMessage());
+            }
+        } catch (Exception e) {
+            positionDetailsList.setMessage(CommonMessage.EXCEPTION.getMessage());
+            positionDetailsList.setStatus(CommonMessage.EXCEPTION.getStatus());
+            logger.error(e.getMessage(), e);
+        }
+        return positionDetailsList;
     }
 
     @Override
