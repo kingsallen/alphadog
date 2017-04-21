@@ -58,6 +58,10 @@ public class CommonQuery {
         }
 
         public QueryBuilder select(String field) {
+            return select(field, SelectOp.FIELD);
+        }
+
+        public QueryBuilder select(String field, SelectOp selectOp) {
             if(StringUtils.isNullOrEmpty(field)) {
                 Select select = new Select(field, SelectOp.FIELD);
                 attributes.add(select);
