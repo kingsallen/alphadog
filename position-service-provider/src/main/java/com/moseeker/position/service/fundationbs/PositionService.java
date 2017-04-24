@@ -18,7 +18,6 @@ import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.db.dictdb.tables.DictPosition;
 import com.moseeker.db.dictdb.tables.records.DictCityPostcodeRecord;
 import com.moseeker.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.db.dictdb.tables.records.DictPositionRecord;
