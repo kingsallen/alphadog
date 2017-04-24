@@ -291,7 +291,7 @@ public class UserHrAccountController {
         long startTime= System.currentTimeMillis();
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            Integer userId = params.getInt("company_id");
+            Integer userId = params.getInt("id");
             if (userId == null) {
                 return ResponseLogNotification.fail(request, "id不能为空");
             }
