@@ -145,6 +145,7 @@ public class UrlUtil {
             while ((line = in.readLine()) != null) {
                 result += line;
             }
+            logger.info("sendPost result : {}", result);
         } catch (Exception e) {
         	LoggerFactory.getLogger(UrlUtil.class).error(e.getMessage(), e);
         	throw new ConnectException();
