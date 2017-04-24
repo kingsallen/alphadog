@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.math.NumberUtils;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -285,9 +286,10 @@ public class UserHrAccountController {
         }
     }
 
-    @RequestMapping(value = " /thirdpartyaccount/refresh", method = RequestMethod.GET)
+    @RequestMapping(value = "/thirdpartyaccount/refresh", method = RequestMethod.GET)
     @ResponseBody
     public String synchronizeThirdpartyAccount(HttpServletRequest request, HttpServletResponse response) {
+        logger.info("/thirdpartyaccount/refresh start : {}", new DateTime().toString("YYYY-MM-dd HH:mm:ss SSS"));
         long startTime= System.currentTimeMillis();
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
@@ -303,6 +305,7 @@ public class UserHrAccountController {
             e.printStackTrace();
             return ResponseLogNotification.fail(request, e.getMessage());
         }finally{
+            logger.info("/thirdpartyaccount/refresh start : {}", new DateTime().toString("YYYY-MM-dd HH:mm:ss SSS"));
             long allUseTime=System.currentTimeMillis()-startTime;
             logger.info("refresh thirdParyAccount in controller Use time==========================="+allUseTime);
         }
