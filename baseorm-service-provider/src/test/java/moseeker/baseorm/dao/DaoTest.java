@@ -13,7 +13,7 @@
 //import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 //import com.moseeker.baseorm.db.hrdb.tables.records.HrAppCvConfRecord;
 //import com.moseeker.common.util.BeanUtils;
-//import com.moseeker.thrift.gen.common.struct.CommonQuery;
+//import com.moseeker.thrift.gen.common.struct.Query;
 //import com.moseeker.thrift.gen.dao.struct.CURDException;
 //import com.moseeker.thrift.gen.dao.struct.CandidatePositionDO;
 //import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
@@ -35,7 +35,7 @@
 //	@Test
 //	public void dictCityDaoTest() throws Exception {
 //		DictCityDao dictCityDao = annConfig.getBean(DictCityDao.class);
-//		CommonQuery query = new CommonQuery();
+//		Query query = new Query();
 //		query.setEqualFilter(new HashMap<String, String>());
 //		query.getEqualFilter().put("code", "110000");
 //		DictCityRecord record = dictCityDao.getResource(query);
@@ -47,7 +47,7 @@
 //	@Test
 //	public void hrAppCvConfDaoTest() throws Exception {
 //		HrAppCvConfDao appCvConfDao = annConfig.getBean(HrAppCvConfDao.class);
-//		CommonQuery query = new CommonQuery();
+//		Query query = new Query();
 //		query.setEqualFilter(new HashMap<String, String>());
 //		query.getEqualFilter().put("code", "110000");
 //		HrAppCvConfRecord record = appCvConfDao.getResource(query);

@@ -63,7 +63,7 @@ public class OrmTools {
 			//do nothing
 		}
 		
-		/*CommonQuery query=new CommonQuery();
+		/*Query query=new Query();
 		HashMap<String,String> map=new HashMap<String,String>();
 		map.put("level", "1");
 		query.setEqualFilter(map);
@@ -76,7 +76,7 @@ public class OrmTools {
 				for(int i=0;i<list.size();i++){
 					DictOccupation occu=(DictOccupation) BeanUtils.DBToStruct(DictOccupation.class,list.get(i) );
 					int id=occu.getCode();
-					CommonQuery query1=new CommonQuery();
+					Query query1=new Query();
 					HashMap<String,String> map1=new HashMap<String,String>();
 					map1.put("parent_id", id+"");
 					query1.setEqualFilter(map1);
@@ -87,7 +87,7 @@ public class OrmTools {
 						for(int j=0;j<list1.size();j++){
 							DictOccupation occ1=(DictOccupation) BeanUtils.DBToStruct(DictOccupation.class,list1.get(j) );
 							int id1=occ1.getCode();
-							CommonQuery query2=new CommonQuery();
+							Query query2=new Query();
 							HashMap<String,String> map2=new HashMap<String,String>();
 							map2.put("parent_id", id1+"");
 							query2.setEqualFilter(map2);
@@ -174,7 +174,7 @@ public class OrmTools {
 	/*
 	 * 返回内部是单层的occupation集合的response，因为有child元素，所以没用公共方法，只能特殊处理
 	 */
-//	public static Response getSingle_layerOccupation(BaseDaoImpl<?,?> dao,CommonQuery query){
+//	public static Response getSingle_layerOccupation(BaseDaoImpl<?,?> dao,Query query){
 //		try{
 //			List<? extends UpdatableRecordImpl<?>> list=dao.getResources(query);
 //			List<DictOccupation> result=new ArrayList<DictOccupation>();

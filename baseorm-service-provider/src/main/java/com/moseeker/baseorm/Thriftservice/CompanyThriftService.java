@@ -159,7 +159,7 @@ public class CompanyThriftService implements Iface {
 	}
     /*
      * (non-Javadoc)
-     * @see com.moseeker.thrift.gen.dao.service.CompanyDao.Iface#getHrCompanyConfig(com.moseeker.thrift.gen.common.struct.CommonQuery)
+     * @see com.moseeker.thrift.gen.dao.service.CompanyDao.Iface#getHrCompanyConfig(com.moseeker.thrift.gen.common.struct.Query)
      * auth:zzt
      * time:2016 12 7
      * function:查询hrcompanyconf

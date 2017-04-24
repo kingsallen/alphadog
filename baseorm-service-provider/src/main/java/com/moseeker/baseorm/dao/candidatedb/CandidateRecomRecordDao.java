@@ -479,7 +479,7 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
                     .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID
                             .in(select(max(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID))
                                     .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
-                                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(UInteger.valueOf(userId))
+                                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(Integer.valueOf(userId))
                                             .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID.greaterThan(0))
                                             .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.in(positionIdList)))
                                     .groupBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
@@ -518,7 +518,7 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
                     .select(countDistinct(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
                             CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID))
                     .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
-                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(UInteger.valueOf(postUserId))
+                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(Integer.valueOf(postUserId))
                             .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.in(positionIdList)));
 
             Result<Record1<Integer>> result = selectConditionStep.fetch();
@@ -558,7 +558,7 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
                     .select(countDistinct(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
                             CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID))
                     .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
-                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(UInteger.valueOf(userId))
+                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(Integer.valueOf(userId))
                             .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID.greaterThan(0))
                             .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.in(positionIdList)))
                     .fetch();
@@ -594,7 +594,7 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
                                     .equal(CandidatePosition.CANDIDATE_POSITION.USER_ID))
                             .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID
                                     .equal(CandidatePosition.CANDIDATE_POSITION.POSITION_ID)))
-                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(UInteger.valueOf(userId))
+                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(Integer.valueOf(userId))
                             .and(CandidatePosition.CANDIDATE_POSITION.IS_INTERESTED.equal((byte)1))
                             .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.in(positionIdList)))
                     .fetch();
@@ -639,7 +639,7 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
                                             .equal(CandidatePosition.CANDIDATE_POSITION.USER_ID))
                                     .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID
                                             .equal(CandidatePosition.CANDIDATE_POSITION.POSITION_ID))
-                                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(UInteger.valueOf(userId)))
+                                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(Integer.valueOf(userId)))
                                     .and(CandidatePosition.CANDIDATE_POSITION.IS_INTERESTED.equal((byte)1))
                                     .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.in(positionIdList))
                                     .groupBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,

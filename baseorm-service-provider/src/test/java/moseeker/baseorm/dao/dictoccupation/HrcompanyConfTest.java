@@ -11,7 +11,7 @@ public class HrcompanyConfTest {
 	@Test
 	public void test(){
 		init();
-		CommonQuery query=new CommonQuery();
+		Query query=new Query();
 		Map<String,String> map=new HashMap<String,String>();
 		map.put("company_id", 2879+"");
 		query.setEqualFilter(map);

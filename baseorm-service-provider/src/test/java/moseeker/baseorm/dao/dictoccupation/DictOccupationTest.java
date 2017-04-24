@@ -28,7 +28,7 @@ public class DictOccupationTest {
 	@Test
 	public void test(){
 		init();
-		CommonQuery query=new CommonQuery();
+		Query query=new Query();
 		HashMap<String,String> map=new HashMap<String,String>();
 		map.put("level", "1");
 		map.put("status", "1");
@@ -48,7 +48,7 @@ public class DictOccupationTest {
 	/*@Test
 	public void testJobOccupation(){
 		init();
-		CommonQuery query=new CommonQuery();
+		Query query=new Query();
 		HashMap<String,String> map=new HashMap<String,String>();
 		map.put("company_id", "2");
 		map.put("status", "1");

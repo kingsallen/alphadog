@@ -188,7 +188,7 @@ public class UseraccountsService {
 	public Response postsendsignupcode(String mobile) throws TException {
 		// TODO 未注册用户才能发送。
 		/*
-		 * CommonQuery query = new CommonQuery(); Map<String, String> filters =
+		 * Query query = new Query(); Map<String, String> filters =
 		 * new HashMap<>();
 		 */
 

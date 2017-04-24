@@ -13,7 +13,7 @@ import com.moseeker.thrift.gen.position.struct.dao.JobOccupationCustom;
 /**
  * auth:zzt
  * time:2016-11-17
- * param:CommonQuery
+ * param:Query
  * function:获取job_occupation和job_custom
  */
 @Service

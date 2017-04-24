@@ -28,7 +28,7 @@ public class QueryUtilTest {
     /**
      * Method: addEqualFilter(String key, String value)
      */
-    @Test
+    /*@Test
     public void testAddEqualFilterForKeyValue() throws Exception {
         QueryUtil queryUtil = new QueryUtil();
         queryUtil.addEqualFilter("user_id", 1);
@@ -57,5 +57,5 @@ public class QueryUtilTest {
 
         assertEquals("name",queryUtil.getOrders().get(0).field);
         assertEquals(Order.DESC,queryUtil.getOrders().get(0).order);
-    }
+    }*/
 } 

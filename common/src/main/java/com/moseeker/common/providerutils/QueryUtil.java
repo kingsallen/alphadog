@@ -9,7 +9,7 @@ import java.util.Map;
  * 该类只为兼容以前的调用方式，后续接口直接使用CommonQuery，或者使用新的工具类
  */
 
-public class QueryUtil extends CommonQuery {
+public class QueryUtil extends Query {
 
     @Deprecated
     public QueryUtil addEqualFilter(String key, Object value) {
