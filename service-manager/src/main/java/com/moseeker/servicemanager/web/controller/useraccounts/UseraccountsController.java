@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Map;
 
 //@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
@@ -771,12 +772,11 @@ public class UseraccountsController {
     /**
      * 获取用户筛选条件
      * @param request
-     * @param response
      * @return
      */
-	@RequestMapping(value = "/user/searchcondition", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/searchcondition", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
     @ResponseBody
-	public String getUserSearchCondition(HttpServletRequest request, HttpServletResponse response) {
+	public String getUserSearchCondition(HttpServletRequest request) {
         try {
             Params<String, Object> param = ParamUtils.parseRequestParam(request);
             int userId = param.getInt("user_id", 0);
@@ -791,12 +791,11 @@ public class UseraccountsController {
     /**
      * 保存用户筛选条件
      * @param request
-     * @param response
      * @return
      */
-    @RequestMapping(value = "/user/searchcondition", method = RequestMethod.POST)
+    @RequestMapping(value = "/user/searchcondition", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ResponseBody
-    public String  postUserSearchCondition(HttpServletRequest request, HttpServletResponse response) {
+    public String  postUserSearchCondition(HttpServletRequest request) {
         try {
             UserSearchConditionDO conditionDO = ParamUtils.initModelForm(request, UserSearchConditionDO.class);
 
@@ -810,12 +809,11 @@ public class UseraccountsController {
     /**
      * 删除用户筛选条件
      * @param request
-     * @param response
      * @return
      */
-    @RequestMapping(value =  "/user/searchcondition", method = RequestMethod.DELETE)
+    @RequestMapping(value =  "/user/searchcondition", method = RequestMethod.DELETE, produces = "application/json; charset=utf-8")
     @ResponseBody
-    public String delUserSearchCondition(HttpServletRequest request, HttpServletResponse response) {
+    public String delUserSearchCondition(HttpServletRequest request) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int userId = params.getInt("user_id", 0);
@@ -831,12 +829,11 @@ public class UseraccountsController {
     /**
      *  用户收藏职位
      * @param request
-     * @param response
      * @return
      */
-    @RequestMapping(value = "/user/collect/position", method = RequestMethod.POST)
+    @RequestMapping(value = "/user/collect/position", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ResponseBody
-    public String postCollectPosition(HttpServletRequest request, HttpServletResponse response) {
+    public String postCollectPosition(HttpServletRequest request) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int userId = params.getInt("user_id", 0);
@@ -852,12 +849,11 @@ public class UseraccountsController {
     /**
      * 获取用户收藏的职位信息
      * @param request
-     * @param response
      * @return
      */
-    @RequestMapping(value = "/user/collect/position", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/collect/position", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
     @ResponseBody
-    public String getCollectPosition(HttpServletRequest request, HttpServletResponse response) {
+    public String getCollectPosition(HttpServletRequest request) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int userId = params.getInt("user_id", 0);
@@ -873,12 +869,11 @@ public class UseraccountsController {
     /**
      * 用户取消收藏职位
      * @param request
-     * @param response
      * @return
      */
-    @RequestMapping(value = "/user/collect/position", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/user/collect/position", method = RequestMethod.DELETE, produces = "application/json; charset=utf-8")
     @ResponseBody
-    public String delCollectPosition(HttpServletRequest request, HttpServletResponse response) {
+    public String delCollectPosition(HttpServletRequest request) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int userId = params.getInt("user_id", 0);
@@ -891,4 +886,43 @@ public class UseraccountsController {
         }
     }
 
+    /**
+     * 用户阅读的职位
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/user/viewed/position", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public String viewedPosition(HttpServletRequest request) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int userId = params.getInt("user_id", 0);
+            int positionId = params.getInt("position_id", 0);
+
+            return JSONObject.toJSONString(userQxService.userViewedPosition(userId, positionId));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 批量查询用户职位状态
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/user/position/status", method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public String userPositionStatus(HttpServletRequest request) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int userId = params.getInt("user_id", 0);
+            List<Integer> positionIds = (List<Integer>) params.get("position_ids");
+
+            return JSONObject.toJSONString(userQxService.getUserPositionStatus(userId, positionIds));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }

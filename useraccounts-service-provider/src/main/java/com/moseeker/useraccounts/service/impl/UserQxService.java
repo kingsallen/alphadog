@@ -2,6 +2,7 @@ package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.service.JobDBDao;
@@ -74,11 +75,16 @@ public class UserQxService {
         result.setSearchCondition(new UserSearchConditionDO());
         JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.SUCCESS);
         try {
-            userSearchCondition = userDao.saveUserSearchCondition(userSearchCondition);
-            if (userSearchCondition != null && userSearchCondition.getId() > 0) {
-                result.setSearchCondition(userSearchCondition);
+            if (userSearchCondition.getUserId() == 0 || StringUtils.isNullOrEmpty(userSearchCondition.getKeywords()) || StringUtils.isNullOrEmpty(userSearchCondition.getName())) {
+                logger.error("postUserSearchCondition 请求参数为空，请检查相关参数, userSearchCondition={}", userSearchCondition);
+                jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
             } else {
-                jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+                userSearchCondition = userDao.saveUserSearchCondition(userSearchCondition);
+                if (userSearchCondition != null && userSearchCondition.getId() > 0) {
+                    result.setSearchCondition(userSearchCondition);
+                } else {
+                    jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+                }
             }
         } catch (Exception e) {
             jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
@@ -104,15 +110,20 @@ public class UserQxService {
         result.setSearchCondition(new UserSearchConditionDO());
         JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.SUCCESS);
         try {
-            query.setEqualFilter(new HashMap<>());
-            query.getEqualFilter().put("user_id", String.valueOf(userId));
-            query.getEqualFilter().put("id", String.valueOf(id));
-            UserSearchConditionDO condition = userDao.getUserSearchCondition(query);
-            if(condition != null && condition.getId() > 0) {
-                result.setSearchCondition(condition.getDisable() == 1 ? condition : userDao.updateUserSearchCondition(condition.setDisable((byte)1)));
+            if (userId == 0 || id == 0) {
+                logger.error("delUserSearchCondition 请求参数为空，请检查相关参数, userId={}, id={}", userId, id);
+                jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
             } else {
-                jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
-                logger.error("用户(user_id={})不存在该筛选项(筛选项id={})", userId, id);
+                query.setEqualFilter(new HashMap<>());
+                query.getEqualFilter().put("user_id", String.valueOf(userId));
+                query.getEqualFilter().put("id", String.valueOf(id));
+                UserSearchConditionDO condition = userDao.getUserSearchCondition(query);
+                if(condition != null && condition.getId() > 0) {
+                    result.setSearchCondition(condition.getDisable() == 1 ? condition : userDao.updateUserSearchCondition(condition.setDisable((byte)1)));
+                } else {
+                    jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
+                    logger.error("用户(user_id={})不存在该筛选项(筛选项id={})", userId, id);
+                }
             }
         } catch (Exception e) {
             jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
@@ -171,26 +182,31 @@ public class UserQxService {
         result.setUserCollectPosition(new UserCollectPositionDO());
         JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.SUCCESS);
         try {
-            CommonQuery query = new CommonQuery();
-            query.setEqualFilter(new HashMap<>());
-            query.getEqualFilter().put("user_id", String.valueOf(userId));
-            query.getEqualFilter().put("positionId", String.valueOf(positionId));
-            UserCollectPositionDO entity = userDao.getUserCollectPosition(query);
-            if (entity != null && entity.getId() > 0) {
-                if (entity.getStatus() == status) {
-                    result.setUserCollectPosition(entity);
-                } else {
-                    entity.setStatus(status);
-                    entity.setUpdateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
-                    result.setUserCollectPosition(userDao.updateUserCollectPosition(entity));
-                }
+            if (userId == 0 || positionId == 0) {
+                logger.error("putUserCollectPosition 请求参数为空，请检查相关参数, userId={}, positionId={}, status={}", userId, positionId, status);
+                jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
             } else {
-                entity = new UserCollectPositionDO();
-                entity.setStatus(status);
-                entity.setUserId(userId);
-                entity.setPositionId(positionId);
-                entity.setCreateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
-                result.setUserCollectPosition(userDao.saveUserCollectPosition(entity));
+                CommonQuery query = new CommonQuery();
+                query.setEqualFilter(new HashMap<>());
+                query.getEqualFilter().put("user_id", String.valueOf(userId));
+                query.getEqualFilter().put("positionId", String.valueOf(positionId));
+                UserCollectPositionDO entity = userDao.getUserCollectPosition(query);
+                if (entity != null && entity.getId() > 0) {
+                    if (entity.getStatus() == status) {
+                        result.setUserCollectPosition(entity);
+                    } else {
+                        entity.setStatus(status);
+                        entity.setUpdateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
+                        result.setUserCollectPosition(userDao.updateUserCollectPosition(entity));
+                    }
+                } else {
+                    entity = new UserCollectPositionDO();
+                    entity.setStatus(status);
+                    entity.setUserId(userId);
+                    entity.setPositionId(positionId);
+                    entity.setCreateTime(LocalDateTime.now().withNano(0).toString().replace('T', ' '));
+                    result.setUserCollectPosition(userDao.saveUserCollectPosition(entity));
+                }
             }
         } catch (Exception e) {
             jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
@@ -279,7 +295,8 @@ public class UserQxService {
                     jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
                 }
             } else {
-                jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+                logger.error("userViewedPosition 请求参数为空，请检查相关参数, userId={}, positionId={}", userId, positionId);
+                jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
             }
         } catch (Exception e) {
             jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
