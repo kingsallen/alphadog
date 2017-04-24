@@ -125,6 +125,8 @@ public class UserCenterBizTools {
 				qu.addEqualFilter("post_user_id", userId).addEqualFilter("position_id",
 						StringUtils.converToArrayStr(positionIdList));
 				qu.addGroup("presentee_user_id").addGroup("position_id");
+				qu.setSortby("id");
+				qu.setOrder("desc");
 				qu.setPage(pageNo);
 				qu.setPer_page(pageSize);
 				recomRecordDOList = candidateDBDao.listCandidateRecomRecords(qu);

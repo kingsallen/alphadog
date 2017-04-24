@@ -827,9 +827,7 @@ struct HrWxWechatDO {
 	26: optional string updateTime,	//修改时间
 	27: optional double hrChat,	//IM聊天开关，0：不开启，1：开启
 	28: optional i32 showQxQrcode,	//显示仟寻聚合号二维码, 0:不允许，1:允许
-	29: optional i32 showNewJd,	//显示新JD样式, 0:不启用, 1:启用
 	30: optional i32 showCustomTheme	//show_custom_theme, 用于表示是否可以开启企业自定义颜色配置 0是否 1是开启
-
 }
 
 
