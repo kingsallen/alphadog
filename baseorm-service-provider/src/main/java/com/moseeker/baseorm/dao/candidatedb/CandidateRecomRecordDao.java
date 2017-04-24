@@ -23,8 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static org.jooq.impl.DSL.count;
-import static org.jooq.impl.DSL.countDistinct;
+import static org.jooq.impl.DSL.*;
 
 /**
  * Created by jack on 15/02/2017.
@@ -458,5 +457,211 @@ public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordD
             }
         }
         return count;
+    }
+
+    public List<CandidateRecomRecordDO> listCandidateRecomRecordsForAppliedByUserPositions(int userId, List<Integer> positionIdList, int pageNo, int pageSize) {
+        List<CandidateRecomRecordDO> candidateRecomRecordDOList = new ArrayList<>();
+        Connection conn = null;
+        try {
+            conn = DBConnHelper.DBConn.getConn();
+            DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+            SelectSeekStep1 selectConditionStep = create.select(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID,
+                    CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID,
+                    CandidateRecomRecord.CANDIDATE_RECOM_RECORD.REPOST_USER_ID,
+                    CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME,
+                    CandidateRecomRecord.CANDIDATE_RECOM_RECORD.RECOM_TIME,
+                    CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM,
+                    CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
+                    CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID)
+                    .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
+                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID
+                            .in(select(max(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID))
+                                    .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
+                                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(UInteger.valueOf(userId))
+                                            .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID.greaterThan(0))
+                                            .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.in(positionIdList)))
+                                    .groupBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
+                                            CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID)))
+                    .orderBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID.desc());
+
+            if(pageNo > 0 && pageSize > 0) {
+                selectConditionStep.limit((pageNo-1)*pageSize, pageSize);
+            }
+            Result<CandidateRecomRecordRecord> result = selectConditionStep.fetch().into(CandidateRecomRecord.CANDIDATE_RECOM_RECORD);
+            if(result != null && result.size() > 0) {
+                candidateRecomRecordDOList = BeanUtils.DBToStruct(CandidateRecomRecordDO.class, result);
+            }
+        } catch (SQLException e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+            try {
+                if(conn != null && !conn.isClosed()) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+        return candidateRecomRecordDOList;
+    }
+
+    public int countCandidateRecomRecordDistinctPresenteePosition(int postUserId, List<Integer> positionIdList) {
+        int count = 0;
+        Connection conn = null;
+        try {
+            conn = DBConnHelper.DBConn.getConn();
+            DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+
+            SelectConditionStep selectConditionStep = create
+                    .select(countDistinct(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
+                            CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID))
+                    .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
+                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(UInteger.valueOf(postUserId))
+                            .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.in(positionIdList)));
+
+            Result<Record1<Integer>> result = selectConditionStep.fetch();
+            if(result != null && result.size() > 0) {
+                count = (int) result.get(0).get(0);
+            }
+
+        } catch (SQLException e) {
+            try {
+                if(conn != null && !conn.isClosed()) {
+                    conn.rollback();
+                }
+            } catch (SQLException e1) {
+                logger.error(e1.getMessage(), e1);
+            }
+            logger.error(e.getMessage(), e);
+        } finally {
+            try {
+                if(conn != null && !conn.isClosed()) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+        return count;
+    }
+
+    public int countAppliedCandidateRecomRecordByUserPosition(int userId, List<Integer> positionIdList) {
+        int count = 0;
+
+        Connection conn = null;
+        try {
+            conn = DBConnHelper.DBConn.getConn();
+            DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+            Result<Record1<Integer>> result = create
+                    .select(countDistinct(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
+                            CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID))
+                    .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
+                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(UInteger.valueOf(userId))
+                            .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID.greaterThan(0))
+                            .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.in(positionIdList)))
+                    .fetch();
+            if(result != null && result.size() > 0) {
+                count = result.get(0).value1();
+            }
+        } catch (SQLException e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+            try {
+                if(conn != null && !conn.isClosed()) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+
+        return count;
+    }
+
+    public int countInterestedCandidateRecomRecordByUserPosition(int userId, List<Integer> positionIdList) {
+        int count = 0;
+        Connection conn = null;
+        try {
+            conn = DBConnHelper.DBConn.getConn();
+            DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+            Result<Record1<Integer>> result = create
+                    .select(countDistinct(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
+                            CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID))
+                    .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.leftJoin(CandidatePosition.CANDIDATE_POSITION)
+                            .on(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID
+                                    .equal(CandidatePosition.CANDIDATE_POSITION.USER_ID))
+                            .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID
+                                    .equal(CandidatePosition.CANDIDATE_POSITION.POSITION_ID)))
+                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(UInteger.valueOf(userId))
+                            .and(CandidatePosition.CANDIDATE_POSITION.IS_INTERESTED.equal((byte)1))
+                            .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.in(positionIdList)))
+                    .fetch();
+            if(result != null && result.size() > 0) {
+                count = result.get(0).value1();
+            }
+        } catch (SQLException e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+            try {
+                if(conn != null && !conn.isClosed()) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+        return count;
+    }
+
+    public List<CandidateRecomRecordDO> listInterestedCandidateRecomRecordByUserPositions(int userId, List<Integer> positionIdList, int pageNo, int pageSize) {
+        List<CandidateRecomRecordDO> candidateRecomRecordDOList = new ArrayList<>();
+        Connection conn = null;
+        try {
+            conn = DBConnHelper.DBConn.getConn();
+            DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+
+            SelectSeekStep1 selectConditionStep = create.select(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID,
+                    CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID,
+                    CandidateRecomRecord.CANDIDATE_RECOM_RECORD.REPOST_USER_ID,
+                    CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME,
+                    CandidateRecomRecord.CANDIDATE_RECOM_RECORD.RECOM_TIME,
+                    CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM,
+                    CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
+                    CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID)
+                    .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
+                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID
+                            .in(select(max(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID))
+                                    .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
+                                    .leftJoin(CandidatePosition.CANDIDATE_POSITION)
+                                    .on(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID
+                                            .equal(CandidatePosition.CANDIDATE_POSITION.USER_ID))
+                                    .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID
+                                            .equal(CandidatePosition.CANDIDATE_POSITION.POSITION_ID))
+                                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(UInteger.valueOf(userId)))
+                                    .and(CandidatePosition.CANDIDATE_POSITION.IS_INTERESTED.equal((byte)1))
+                                    .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.in(positionIdList))
+                                    .groupBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
+                                            CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID)))
+                    .orderBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID.desc());
+
+            if(pageNo > 0 && pageSize > 0) {
+                selectConditionStep.limit((pageNo-1)*pageSize, pageSize);
+            }
+            Result<CandidateRecomRecordRecord> result = selectConditionStep.fetch().into(CandidateRecomRecord.CANDIDATE_RECOM_RECORD);
+            if(result != null && result.size() > 0) {
+                candidateRecomRecordDOList = BeanUtils.DBToStruct(CandidateRecomRecordDO.class, result);
+            }
+        } catch (SQLException e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+            try {
+                if(conn != null && !conn.isClosed()) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+        return candidateRecomRecordDOList;
     }
 }

@@ -13,7 +13,6 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCmsPages;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
-import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConfBak;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeePosition;
@@ -63,7 +62,6 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrCmsMediaRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCmsModuleRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCmsPagesRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfBakRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrEmployeeCertConfRecord;
@@ -167,7 +165,7 @@ public class Keys {
 	public static final Identity<HrSearchConditionRecord, Integer> IDENTITY_HR_SEARCH_CONDITION = Identities0.IDENTITY_HR_SEARCH_CONDITION;
 	public static final Identity<HrSuperaccountApplyRecord, Integer> IDENTITY_HR_SUPERACCOUNT_APPLY = Identities0.IDENTITY_HR_SUPERACCOUNT_APPLY;
 	public static final Identity<HrTalentpoolRecord, Integer> IDENTITY_HR_TALENTPOOL = Identities0.IDENTITY_HR_TALENTPOOL;
-	public static final Identity<HrTeamRecord, Integer> IDENTITY_HR_TEAM = Identities0.IDENTITY_HR_TEAM;
+	public static final Identity<HrTeamRecord, UInteger> IDENTITY_HR_TEAM = Identities0.IDENTITY_HR_TEAM;
 	public static final Identity<HrTeamMemberRecord, Integer> IDENTITY_HR_TEAM_MEMBER = Identities0.IDENTITY_HR_TEAM_MEMBER;
 	public static final Identity<HrThirdPartyAccountRecord, Integer> IDENTITY_HR_THIRD_PARTY_ACCOUNT = Identities0.IDENTITY_HR_THIRD_PARTY_ACCOUNT;
 	public static final Identity<HrThirdPartyAccountHrRecord, Integer> IDENTITY_HR_THIRD_PARTY_ACCOUNT_HR = Identities0.IDENTITY_HR_THIRD_PARTY_ACCOUNT_HR;
@@ -198,7 +196,6 @@ public class Keys {
 	public static final UniqueKey<HrCompanyRecord> KEY_HR_COMPANY_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_PRIMARY;
 	public static final UniqueKey<HrCompanyAccountRecord> KEY_HR_COMPANY_ACCOUNT_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_ACCOUNT_PRIMARY;
 	public static final UniqueKey<HrCompanyConfRecord> KEY_HR_COMPANY_CONF_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_CONF_PRIMARY;
-	public static final UniqueKey<HrCompanyConfBakRecord> KEY_HR_COMPANY_CONF_BAK_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_CONF_BAK_PRIMARY;
 	public static final UniqueKey<HrEmployeeCertConfRecord> KEY_HR_EMPLOYEE_CERT_CONF_PRIMARY = UniqueKeys0.KEY_HR_EMPLOYEE_CERT_CONF_PRIMARY;
 	public static final UniqueKey<HrEmployeeCustomFieldsRecord> KEY_HR_EMPLOYEE_CUSTOM_FIELDS_PRIMARY = UniqueKeys0.KEY_HR_EMPLOYEE_CUSTOM_FIELDS_PRIMARY;
 	public static final UniqueKey<HrEmployeePositionRecord> KEY_HR_EMPLOYEE_POSITION_PRIMARY = UniqueKeys0.KEY_HR_EMPLOYEE_POSITION_PRIMARY;
@@ -206,6 +203,7 @@ public class Keys {
 	public static final UniqueKey<HrFeedbackRecord> KEY_HR_FEEDBACK_PRIMARY = UniqueKeys0.KEY_HR_FEEDBACK_PRIMARY;
 	public static final UniqueKey<HrHbConfigRecord> KEY_HR_HB_CONFIG_PRIMARY = UniqueKeys0.KEY_HR_HB_CONFIG_PRIMARY;
 	public static final UniqueKey<HrHbItemsRecord> KEY_HR_HB_ITEMS_PRIMARY = UniqueKeys0.KEY_HR_HB_ITEMS_PRIMARY;
+	public static final UniqueKey<HrHbItemsRecord> KEY_HR_HB_ITEMS_HB_CONFIG_BINDING_INDEX = UniqueKeys0.KEY_HR_HB_ITEMS_HB_CONFIG_BINDING_INDEX;
 	public static final UniqueKey<HrHbPositionBindingRecord> KEY_HR_HB_POSITION_BINDING_PRIMARY = UniqueKeys0.KEY_HR_HB_POSITION_BINDING_PRIMARY;
 	public static final UniqueKey<HrHbScratchCardRecord> KEY_HR_HB_SCRATCH_CARD_PRIMARY = UniqueKeys0.KEY_HR_HB_SCRATCH_CARD_PRIMARY;
 	public static final UniqueKey<HrHbSendRecordRecord> KEY_HR_HB_SEND_RECORD_PRIMARY = UniqueKeys0.KEY_HR_HB_SEND_RECORD_PRIMARY;
@@ -284,7 +282,7 @@ public class Keys {
 		public static Identity<HrSearchConditionRecord, Integer> IDENTITY_HR_SEARCH_CONDITION = createIdentity(HrSearchCondition.HR_SEARCH_CONDITION, HrSearchCondition.HR_SEARCH_CONDITION.ID);
 		public static Identity<HrSuperaccountApplyRecord, Integer> IDENTITY_HR_SUPERACCOUNT_APPLY = createIdentity(HrSuperaccountApply.HR_SUPERACCOUNT_APPLY, HrSuperaccountApply.HR_SUPERACCOUNT_APPLY.ID);
 		public static Identity<HrTalentpoolRecord, Integer> IDENTITY_HR_TALENTPOOL = createIdentity(HrTalentpool.HR_TALENTPOOL, HrTalentpool.HR_TALENTPOOL.ID);
-		public static Identity<HrTeamRecord, Integer> IDENTITY_HR_TEAM = createIdentity(HrTeam.HR_TEAM, HrTeam.HR_TEAM.ID);
+		public static Identity<HrTeamRecord, UInteger> IDENTITY_HR_TEAM = createIdentity(HrTeam.HR_TEAM, HrTeam.HR_TEAM.ID);
 		public static Identity<HrTeamMemberRecord, Integer> IDENTITY_HR_TEAM_MEMBER = createIdentity(HrTeamMember.HR_TEAM_MEMBER, HrTeamMember.HR_TEAM_MEMBER.ID);
 		public static Identity<HrThirdPartyAccountRecord, Integer> IDENTITY_HR_THIRD_PARTY_ACCOUNT = createIdentity(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT, HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID);
 		public static Identity<HrThirdPartyAccountHrRecord, Integer> IDENTITY_HR_THIRD_PARTY_ACCOUNT_HR = createIdentity(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR, HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.ID);
@@ -313,7 +311,6 @@ public class Keys {
 		public static final UniqueKey<HrCompanyRecord> KEY_HR_COMPANY_PRIMARY = createUniqueKey(HrCompany.HR_COMPANY, HrCompany.HR_COMPANY.ID);
 		public static final UniqueKey<HrCompanyAccountRecord> KEY_HR_COMPANY_ACCOUNT_PRIMARY = createUniqueKey(HrCompanyAccount.HR_COMPANY_ACCOUNT, HrCompanyAccount.HR_COMPANY_ACCOUNT.ACCOUNT_ID);
 		public static final UniqueKey<HrCompanyConfRecord> KEY_HR_COMPANY_CONF_PRIMARY = createUniqueKey(HrCompanyConf.HR_COMPANY_CONF, HrCompanyConf.HR_COMPANY_CONF.COMPANY_ID);
-		public static final UniqueKey<HrCompanyConfBakRecord> KEY_HR_COMPANY_CONF_BAK_PRIMARY = createUniqueKey(HrCompanyConfBak.HR_COMPANY_CONF_BAK, HrCompanyConfBak.HR_COMPANY_CONF_BAK.COMPANY_ID);
 		public static final UniqueKey<HrEmployeeCertConfRecord> KEY_HR_EMPLOYEE_CERT_CONF_PRIMARY = createUniqueKey(HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF, HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF.ID);
 		public static final UniqueKey<HrEmployeeCustomFieldsRecord> KEY_HR_EMPLOYEE_CUSTOM_FIELDS_PRIMARY = createUniqueKey(HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS, HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS.ID);
 		public static final UniqueKey<HrEmployeePositionRecord> KEY_HR_EMPLOYEE_POSITION_PRIMARY = createUniqueKey(HrEmployeePosition.HR_EMPLOYEE_POSITION, HrEmployeePosition.HR_EMPLOYEE_POSITION.ID);
@@ -321,6 +318,7 @@ public class Keys {
 		public static final UniqueKey<HrFeedbackRecord> KEY_HR_FEEDBACK_PRIMARY = createUniqueKey(HrFeedback.HR_FEEDBACK, HrFeedback.HR_FEEDBACK.ID);
 		public static final UniqueKey<HrHbConfigRecord> KEY_HR_HB_CONFIG_PRIMARY = createUniqueKey(HrHbConfig.HR_HB_CONFIG, HrHbConfig.HR_HB_CONFIG.ID);
 		public static final UniqueKey<HrHbItemsRecord> KEY_HR_HB_ITEMS_PRIMARY = createUniqueKey(HrHbItems.HR_HB_ITEMS, HrHbItems.HR_HB_ITEMS.ID);
+		public static final UniqueKey<HrHbItemsRecord> KEY_HR_HB_ITEMS_HB_CONFIG_BINDING_INDEX = createUniqueKey(HrHbItems.HR_HB_ITEMS, HrHbItems.HR_HB_ITEMS.HB_CONFIG_ID, HrHbItems.HR_HB_ITEMS.INDEX, HrHbItems.HR_HB_ITEMS.BINDING_ID);
 		public static final UniqueKey<HrHbPositionBindingRecord> KEY_HR_HB_POSITION_BINDING_PRIMARY = createUniqueKey(HrHbPositionBinding.HR_HB_POSITION_BINDING, HrHbPositionBinding.HR_HB_POSITION_BINDING.ID);
 		public static final UniqueKey<HrHbScratchCardRecord> KEY_HR_HB_SCRATCH_CARD_PRIMARY = createUniqueKey(HrHbScratchCard.HR_HB_SCRATCH_CARD, HrHbScratchCard.HR_HB_SCRATCH_CARD.ID);
 		public static final UniqueKey<HrHbSendRecordRecord> KEY_HR_HB_SEND_RECORD_PRIMARY = createUniqueKey(HrHbSendRecord.HR_HB_SEND_RECORD, HrHbSendRecord.HR_HB_SEND_RECORD.ID);

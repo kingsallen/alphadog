@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditionRecord> implements Record22<Integer, String, Integer, Integer, String, String, String, String, String, String, Integer, Integer, Integer, String, Integer, String, String, Integer, Integer, Timestamp, Integer, Integer> {
 
-	private static final long serialVersionUID = 681649749;
+	private static final long serialVersionUID = -1433987691;
 
 	/**
 	 * Setter for <code>hrdb.hr_search_condition.id</code>.
@@ -215,14 +215,14 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
 	}
 
 	/**
-	 * Setter for <code>hrdb.hr_search_condition.intention_city_name</code>. 期望工作地
+	 * Setter for <code>hrdb.hr_search_condition.intention_city_name</code>. 期望工作地(城市编码)
 	 */
 	public void setIntentionCityName(String value) {
 		setValue(13, value);
 	}
 
 	/**
-	 * Getter for <code>hrdb.hr_search_condition.intention_city_name</code>. 期望工作地
+	 * Getter for <code>hrdb.hr_search_condition.intention_city_name</code>. 期望工作地(城市编码)
 	 */
 	public String getIntentionCityName() {
 		return (String) getValue(13);

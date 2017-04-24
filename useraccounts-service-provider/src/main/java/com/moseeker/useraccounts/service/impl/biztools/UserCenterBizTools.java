@@ -9,6 +9,7 @@ import com.moseeker.thrift.gen.dao.service.*;
 import com.moseeker.thrift.gen.dao.struct.*;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
+import com.moseeker.thrift.gen.useraccounts.struct.RecommendationVO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,12 +109,12 @@ public class UserCenterBizTools {
 	 * 查找转发浏览记录
 	 * @param userId 用户编号
 	 * @param type 类型 1：表示所有相关的浏览记录，2：表示被推荐的浏览用户，3：表示提交申请的浏览记录
-	 * @param pageNo 页码
-	 * @param pageSize 每页显示的数量
-	 * @return 转发浏览记录集合
+	 * @param positionIdList 职位编号
+	 *@param pageNo 页码
+	 * @param pageSize 每页显示的数量   @return 转发浏览记录集合
 	 * @throws TException
 	 */
-	public List<CandidateRecomRecordDO> listCandidateRecomRecords(int userId, int type, int pageNo, int pageSize) throws TException {
+	public List<CandidateRecomRecordDO> listCandidateRecomRecords(int userId, int type, List<Integer> positionIdList, int pageNo, int pageSize) throws TException {
 		List<CandidateRecomRecordDO> recomRecordDOList = null;
 		switch (type) {
 			case 1:			//查找所有相关的职位转发记录
@@ -121,17 +122,20 @@ public class UserCenterBizTools {
 				qu.addSelectAttribute("id").addSelectAttribute("app_id").addSelectAttribute("repost_user_id")
 						.addSelectAttribute("click_time").addSelectAttribute("recom_time").addSelectAttribute("is_recom")
 						.addSelectAttribute("presentee_user_id").addSelectAttribute("position_id");
-				qu.addEqualFilter("post_user_id", userId);
+				qu.addEqualFilter("post_user_id", userId).addEqualFilter("position_id",
+						StringUtils.converToArrayStr(positionIdList));
 				qu.addGroup("presentee_user_id").addGroup("position_id");
+				qu.setSortby("id");
+				qu.setOrder("desc");
 				qu.setPage(pageNo);
 				qu.setPer_page(pageSize);
 				recomRecordDOList = candidateDBDao.listCandidateRecomRecords(qu);
 				break;
 			case 2:			//查找被推荐的职位转发记录
-				recomRecordDOList = candidateDBDao.listInterestedCandidateRecomRecord(userId, pageNo, pageSize);
+				recomRecordDOList = candidateDBDao.listInterestedCandidateRecomRecordByUserPositions(userId, positionIdList, pageNo, pageSize);
 				break;
 			case 3:			//查找申请的职位转发记录
-				recomRecordDOList = candidateDBDao.listCandidateRecomRecordsForApplied(userId, pageNo, pageSize);
+				recomRecordDOList = candidateDBDao.listCandidateRecomRecordsForAppliedByUserPositions(userId, positionIdList, pageNo, pageSize);
 				break;
 			default:
 		}
@@ -140,13 +144,14 @@ public class UserCenterBizTools {
 
 	/**
 	 * 根据转发者查找转发记录
-	 * @param userId
-	 * @return
+	 * @param userId 用户编号
+	 * @param positionIdList 公司下的职位编号
+ 	 * @return
 	 */
-	public int countCandidateRecomRecord(int userId) {
+	public int countCandidateRecomRecord(int userId, List<Integer> positionIdList) {
 		int count = 0;
 		try {
-			count = candidateDBDao.countCandidateRecomRecordDistinctPresentee(userId);
+			count = candidateDBDao.countCandidateRecomRecordDistinctPresenteePosition(userId, positionIdList);
 		} catch (TException e) {
 			logger.error(e.getMessage(), e);
 		}
@@ -172,13 +177,14 @@ public class UserCenterBizTools {
 
 	/**
 	 * 根据转发者查找已经被感兴趣的转发记录
-	 * @param userId
+	 * @param userId 用户编号
+	 * @param positionIdList 职位编号
 	 * @return
 	 */
-	public int countInterestedCandidateRecomRecord(int userId) {
+	public int countInterestedCandidateRecomRecord(int userId, List<Integer> positionIdList) {
 		int count = 0;
 		try {
-			count = candidateDBDao.countInterestedCandidateRecomRecord(userId);
+			count = candidateDBDao.countInterestedCandidateRecomRecordByUserPosition(userId, positionIdList);
 		} catch (TException e) {
 			logger.error(e.getMessage(), e);
 		}
@@ -187,15 +193,16 @@ public class UserCenterBizTools {
 
 	/**
 	 * 根据转发者查找已经申请的转发记录
-	 * @param userId
+	 * @param userId 用户编号
+	 * @param positionIdList 职位编号
 	 * @return
 	 */
-	public int countAppliedCandidateRecomRecord(int userId) {
+	public int countAppliedCandidateRecomRecord(int userId, List<Integer> positionIdList) {
 		int count = 0;
 		QueryUtil qu = new QueryUtil();
 		qu.addEqualFilter("post_user_id", userId);
 		try {
-			count = candidateDBDao.countAppliedCandidateRecomRecord(userId);
+			count = candidateDBDao.countAppliedCandidateRecomRecordByUserPosition(userId, positionIdList);
 		} catch (TException e) {
 			logger.error(e.getMessage(), e);
 		}
@@ -404,6 +411,20 @@ public class UserCenterBizTools {
 		queryUtil.setPer_page(Integer.MAX_VALUE);
 		try {
 			return hrDBDao.listHrOperationRecord(queryUtil);
+		} catch (TException e) {
+			logger.error(e.getMessage(), e);
+			return null;
+		}
+	}
+
+	/**
+	 * 查找查找推荐记录相关的职位编号
+	 * @param userId 用户编号
+	 * @return
+	 */
+	public List<Integer> listPositionIdByUserId(int userId) {
+		try {
+			return jobDBDao.listPositionIdByUserId(userId);
 		} catch (TException e) {
 			logger.error(e.getMessage(), e);
 			return null;
