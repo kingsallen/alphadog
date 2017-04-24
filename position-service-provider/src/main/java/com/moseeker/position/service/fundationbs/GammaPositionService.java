@@ -8,8 +8,6 @@ import com.moseeker.position.utils.CommonMessage;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.service.CampaignDBDao;
-import com.moseeker.thrift.gen.dao.service.CompanyDao;
-import com.moseeker.thrift.gen.dao.service.HrDBDao;
 import com.moseeker.thrift.gen.dao.service.JobDBDao;
 import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignHeadImageDO;

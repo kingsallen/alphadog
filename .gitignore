@@ -83,3 +83,10 @@ rpc-center/src/main/resources/*.properties
 
 /tmp/
 gen-java/
+/baseorm-service-provider/src/main/resources/log4j.properties
+/baseorm-service-provider/src/main/resources/service.properties
+/position-service-provider/src/main/resources/log4j.properties
+/position-service-provider/src/main/resources/service.properties
+/service-manager/src/main/resources/service.properties
+/service-manager/src/main/resources/log4j.properties
+/service-manager/src/main/resources/setting.properties
