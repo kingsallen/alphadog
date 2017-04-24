@@ -37,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
 
-	private static final long serialVersionUID = 1812331780;
+	private static final long serialVersionUID = 525426733;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_wx_wechat</code>
@@ -191,11 +191,6 @@ public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
 	 * The column <code>hrdb.hr_wx_wechat.show_qx_qrcode</code>. 显示仟寻聚合号二维码, 0:不允许，1:允许
 	 */
 	public final TableField<HrWxWechatRecord, Integer> SHOW_QX_QRCODE = createField("show_qx_qrcode", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "显示仟寻聚合号二维码, 0:不允许，1:允许");
-
-	/**
-	 * The column <code>hrdb.hr_wx_wechat.show_new_jd</code>.
-	 */
-	public final TableField<HrWxWechatRecord, Integer> SHOW_NEW_JD = createField("show_new_jd", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "");
 
 	/**
 	 * The column <code>hrdb.hr_wx_wechat.show_custom_theme</code>. show_custom_theme, 用于表示是否可以开启企业自定义颜色配置 0是否 1是开启

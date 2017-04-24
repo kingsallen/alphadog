@@ -228,7 +228,6 @@ public class Keys {
 	public static final UniqueKey<HrTeamRecord> KEY_HR_TEAM_PRIMARY = UniqueKeys0.KEY_HR_TEAM_PRIMARY;
 	public static final UniqueKey<HrTeamMemberRecord> KEY_HR_TEAM_MEMBER_PRIMARY = UniqueKeys0.KEY_HR_TEAM_MEMBER_PRIMARY;
 	public static final UniqueKey<HrThirdPartyAccountRecord> KEY_HR_THIRD_PARTY_ACCOUNT_PRIMARY = UniqueKeys0.KEY_HR_THIRD_PARTY_ACCOUNT_PRIMARY;
-	public static final UniqueKey<HrThirdPartyAccountRecord> KEY_HR_THIRD_PARTY_ACCOUNT_IDX_CHANNEL_COMPYID = UniqueKeys0.KEY_HR_THIRD_PARTY_ACCOUNT_IDX_CHANNEL_COMPYID;
 	public static final UniqueKey<HrThirdPartyAccountHrRecord> KEY_HR_THIRD_PARTY_ACCOUNT_HR_PRIMARY = UniqueKeys0.KEY_HR_THIRD_PARTY_ACCOUNT_HR_PRIMARY;
 	public static final UniqueKey<HrThirdPartyPositionRecord> KEY_HR_THIRD_PARTY_POSITION_PRIMARY = UniqueKeys0.KEY_HR_THIRD_PARTY_POSITION_PRIMARY;
 	public static final UniqueKey<HrTopicRecord> KEY_HR_TOPIC_PRIMARY = UniqueKeys0.KEY_HR_TOPIC_PRIMARY;
@@ -344,7 +343,6 @@ public class Keys {
 		public static final UniqueKey<HrTeamRecord> KEY_HR_TEAM_PRIMARY = createUniqueKey(HrTeam.HR_TEAM, HrTeam.HR_TEAM.ID);
 		public static final UniqueKey<HrTeamMemberRecord> KEY_HR_TEAM_MEMBER_PRIMARY = createUniqueKey(HrTeamMember.HR_TEAM_MEMBER, HrTeamMember.HR_TEAM_MEMBER.ID);
 		public static final UniqueKey<HrThirdPartyAccountRecord> KEY_HR_THIRD_PARTY_ACCOUNT_PRIMARY = createUniqueKey(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT, HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID);
-		public static final UniqueKey<HrThirdPartyAccountRecord> KEY_HR_THIRD_PARTY_ACCOUNT_IDX_CHANNEL_COMPYID = createUniqueKey(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT, HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL, HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.COMPANY_ID);
 		public static final UniqueKey<HrThirdPartyAccountHrRecord> KEY_HR_THIRD_PARTY_ACCOUNT_HR_PRIMARY = createUniqueKey(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR, HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.ID);
 		public static final UniqueKey<HrThirdPartyPositionRecord> KEY_HR_THIRD_PARTY_POSITION_PRIMARY = createUniqueKey(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION, HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.ID);
 		public static final UniqueKey<HrTopicRecord> KEY_HR_TOPIC_PRIMARY = createUniqueKey(HrTopic.HR_TOPIC, HrTopic.HR_TOPIC.ID);

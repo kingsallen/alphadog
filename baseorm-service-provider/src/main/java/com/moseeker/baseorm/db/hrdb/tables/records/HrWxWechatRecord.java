@@ -29,7 +29,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxWechatRecord extends UpdatableRecordImpl<HrWxWechatRecord> {
 
-	private static final long serialVersionUID = 1942138186;
+	private static final long serialVersionUID = 1802669281;
 
 	/**
 	 * Setter for <code>hrdb.hr_wx_wechat.id</code>.
@@ -424,31 +424,17 @@ public class HrWxWechatRecord extends UpdatableRecordImpl<HrWxWechatRecord> {
 	}
 
 	/**
-	 * Setter for <code>hrdb.hr_wx_wechat.show_new_jd</code>.
-	 */
-	public void setShowNewJd(Integer value) {
-		setValue(28, value);
-	}
-
-	/**
-	 * Getter for <code>hrdb.hr_wx_wechat.show_new_jd</code>.
-	 */
-	public Integer getShowNewJd() {
-		return (Integer) getValue(28);
-	}
-
-	/**
 	 * Setter for <code>hrdb.hr_wx_wechat.show_custom_theme</code>. show_custom_theme, 用于表示是否可以开启企业自定义颜色配置 0是否 1是开启
 	 */
 	public void setShowCustomTheme(Integer value) {
-		setValue(29, value);
+		setValue(28, value);
 	}
 
 	/**
 	 * Getter for <code>hrdb.hr_wx_wechat.show_custom_theme</code>. show_custom_theme, 用于表示是否可以开启企业自定义颜色配置 0是否 1是开启
 	 */
 	public Integer getShowCustomTheme() {
-		return (Integer) getValue(29);
+		return (Integer) getValue(28);
 	}
 
 	// -------------------------------------------------------------------------
@@ -477,7 +463,7 @@ public class HrWxWechatRecord extends UpdatableRecordImpl<HrWxWechatRecord> {
 	/**
 	 * Create a detached, initialised HrWxWechatRecord
 	 */
-	public HrWxWechatRecord(UInteger id, UInteger companyId, UByte type, String signature, String name, String alias, String username, String password, String token, String appid, String secret, Integer welcome, Integer default_, String qrcode, Byte passiveSeeker, Byte thirdOauth, Byte hrRegister, Integer accessTokenCreateTime, Integer accessTokenExpired, String accessToken, String jsapiTicket, Byte authorized, Integer unauthorizedTime, String authorizerRefreshToken, Timestamp createTime, Timestamp updateTime, Byte hrChat, Integer showQxQrcode, Integer showNewJd, Integer showCustomTheme) {
+	public HrWxWechatRecord(UInteger id, UInteger companyId, UByte type, String signature, String name, String alias, String username, String password, String token, String appid, String secret, Integer welcome, Integer default_, String qrcode, Byte passiveSeeker, Byte thirdOauth, Byte hrRegister, Integer accessTokenCreateTime, Integer accessTokenExpired, String accessToken, String jsapiTicket, Byte authorized, Integer unauthorizedTime, String authorizerRefreshToken, Timestamp createTime, Timestamp updateTime, Byte hrChat, Integer showQxQrcode, Integer showCustomTheme) {
 		super(HrWxWechat.HR_WX_WECHAT);
 
 		setValue(0, id);
@@ -508,7 +494,6 @@ public class HrWxWechatRecord extends UpdatableRecordImpl<HrWxWechatRecord> {
 		setValue(25, updateTime);
 		setValue(26, hrChat);
 		setValue(27, showQxQrcode);
-		setValue(28, showNewJd);
-		setValue(29, showCustomTheme);
+		setValue(28, showCustomTheme);
 	}
 }
