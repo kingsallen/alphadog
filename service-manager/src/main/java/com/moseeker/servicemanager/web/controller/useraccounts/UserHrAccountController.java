@@ -285,15 +285,18 @@ public class UserHrAccountController {
         }
     }
 
-    @RequestMapping(value = " /thirdpartyaccount/refresh/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = " /thirdpartyaccount/refresh", method = RequestMethod.GET)
     @ResponseBody
-    public String synchronizeThirdpartyAccount(@PathVariable int id, HttpServletRequest request, HttpServletResponse response) {
+    public String synchronizeThirdpartyAccount(HttpServletRequest request, HttpServletResponse response) {
         long startTime= System.currentTimeMillis();
         try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer userId = params.getInt("company_id");
+            if (userId == null) {
+                return ResponseLogNotification.fail(request, "id不能为空");
+            }
 
-            HashMap<String, Object> map = ParamUtils.parseRequestParam(request);
-            Response result = userHrAccountService.synchronizeThirdpartyAccount(id);
-
+            Response result = userHrAccountService.synchronizeThirdpartyAccount(userId);
 
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
