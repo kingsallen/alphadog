@@ -233,37 +233,43 @@ public class UserQxService {
         CommonQuery query = new CommonQuery();
         Map<Integer, Integer> positionStatus = new HashMap<>();
         try {
-            query.setEqualFilter(new HashMap<>());
-            query.getEqualFilter().put("applier_id", String.valueOf(userId));
-            query.getEqualFilter().put("position_id", Arrays.toString(positionIds.toArray()));
-            query.getEqualFilter().put("disable", String.valueOf(0));
-            // 查询已投递的职位
-            List<JobApplicationDO> applications = jobDBDao.getApplications(query);
-            Map<Integer, Integer> isApplication = applications.stream().map(m -> m.getPositionId()).collect(Collectors.toMap(k -> k, v -> 3));
-            positionIds.removeAll(isApplication.keySet());
-            // 查询已收藏的职位
-            query.getEqualFilter().clear();
-            query.getEqualFilter().put("user_id", String.valueOf(userId));
-            query.getEqualFilter().put("position_id", Arrays.toString(positionIds.toArray()));
-            query.getEqualFilter().put("status", String.valueOf(0));
-            List<UserCollectPositionDO> collectPositions = userDao.getUserCollectPositions(query);
-            Map<Integer, Integer> isCollect = collectPositions.stream().map(m -> m.getPositionId()).collect(Collectors.toMap(k -> k, v -> 2));
-            positionIds.removeAll(isCollect.keySet());
-            // 查询已查看的职位
-            query.getEqualFilter().clear();
-            query.getEqualFilter().put("user_id", String.valueOf(userId));
-            query.getEqualFilter().put("position_id", Arrays.toString(positionIds.toArray()));
-            List<UserViewedPositionDO> userViewedPositions = userDao.getUserViewedPositions(query);
-            Map<Integer, Integer> isViewed = userViewedPositions.stream().map(m -> m.getPositionId()).collect(Collectors.toMap(k -> k, v -> 1));
-            positionIds.removeAll(isViewed.keySet());
-            // 剩下都是未阅读的职位
-            Map<Integer, Integer> dotViewed = positionIds.stream().collect(Collectors.toMap(k -> k, v -> 0));
-            // 结果汇总
-            positionStatus.putAll(isApplication);
-            positionStatus.putAll(isCollect);
-            positionStatus.putAll(isViewed);
-            positionStatus.putAll(dotViewed);
-            result.setPositionStatus(positionStatus);
+            if (userId == 0 || StringUtils.isEmptyObject(positionIds)) {
+                logger.error("getUserPositionStatus 请求参数为空，请检查相关参数, userId={}, positionIds={}", userId, Arrays.toString(positionIds.toArray()));
+                jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
+            } else {
+                // 查询已投递的职位
+                query.setEqualFilter(new HashMap<>());
+                query.getEqualFilter().put("applier_id", String.valueOf(userId));
+                query.getEqualFilter().put("position_id", Arrays.toString(positionIds.toArray()));
+                query.getEqualFilter().put("disable", String.valueOf(0));
+                List<JobApplicationDO> applications = jobDBDao.getApplications(query);
+                Map<Integer, Integer> isApplication = applications.stream().map(m -> m.getPositionId()).collect(Collectors.toMap(k -> k, v -> 3));
+                positionIds.removeAll(isApplication.keySet());
+                // 查询已收藏的职位
+                query.getEqualFilter().clear();
+                query.getEqualFilter().put("user_id", String.valueOf(userId));
+                query.getEqualFilter().put("position_id", Arrays.toString(positionIds.toArray()));
+                query.getEqualFilter().put("status", String.valueOf(0));
+                List<UserCollectPositionDO> collectPositions = userDao.getUserCollectPositions(query);
+                Map<Integer, Integer> isCollect = collectPositions.stream().map(m -> m.getPositionId()).collect(Collectors.toMap(k -> k, v -> 2));
+                positionIds.removeAll(isCollect.keySet());
+                // 查询已查看的职位
+                query.getEqualFilter().clear();
+                query.getEqualFilter().put("user_id", String.valueOf(userId));
+                query.getEqualFilter().put("position_id", Arrays.toString(positionIds.toArray()));
+                List<UserViewedPositionDO> userViewedPositions = userDao.getUserViewedPositions(query);
+                Map<Integer, Integer> isViewed = userViewedPositions.stream().map(m -> m.getPositionId()).collect(Collectors.toMap(k -> k, v -> 1));
+                positionIds.removeAll(isViewed.keySet());
+                // 剩下都是未阅读的职位
+                Map<Integer, Integer> dotViewed = positionIds.stream().collect(Collectors.toMap(k -> k, v -> 0));
+                // 结果汇总
+                positionStatus.putAll(isApplication);
+                positionStatus.putAll(isCollect);
+                positionStatus.putAll(isViewed);
+                positionStatus.putAll(dotViewed);
+                result.setPositionStatus(positionStatus);
+            }
+
         } catch (Exception e) {
             jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
             logger.error(e.getMessage(), e);
