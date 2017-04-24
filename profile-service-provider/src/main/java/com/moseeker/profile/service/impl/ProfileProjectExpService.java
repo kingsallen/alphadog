@@ -168,7 +168,7 @@ public class ProfileProjectExpService extends JOOQBaseServiceImpl<ProjectExp, Pr
 	public Response postResource(ProjectExp struct) throws TException {
 		ValidationMessage<ProjectExp> vm = ProfileValidation.verifyProjectExp(struct);
 		if(!vm.isPass()) {
-			return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}'}", vm.getResult()));
+			return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", vm.getResult()));
 		}
 		Response response = super.postResource(struct);
 		if (response.getStatus() == 0) {
@@ -215,16 +215,16 @@ public class ProfileProjectExpService extends JOOQBaseServiceImpl<ProjectExp, Pr
 	@Override
 	protected ProjectExp DBToStruct(ProfileProjectexpRecord r) {
 		Map<String, String> equalRules = new HashMap<>();
-		equalRules.put("start_date", "start");
-		equalRules.put("end_date", "end");
+		equalRules.put("start", "start_date");
+		equalRules.put("end", "end_date");
 		return (ProjectExp) BeanUtils.DBToStruct(ProjectExp.class, r, equalRules);
 	}
 
 	@Override
 	protected ProfileProjectexpRecord structToDB(ProjectExp projectExp) throws ParseException {
 		Map<String, String> equalRules = new HashMap<>();
-		equalRules.put("start_date", "start");
-		equalRules.put("end_date", "end");
+		equalRules.put("start", "start_date");
+		equalRules.put("end", "end_date");
 		return (ProfileProjectexpRecord) BeanUtils.structToDB(projectExp, ProfileProjectexpRecord.class, equalRules);
 	}
 	

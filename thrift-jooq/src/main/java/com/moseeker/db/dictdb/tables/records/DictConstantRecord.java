@@ -31,7 +31,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictConstantRecord extends UpdatableRecordImpl<DictConstantRecord> implements Record7<UInteger, Integer, String, Byte, Integer, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = -713548911;
+	private static final long serialVersionUID = -731851740;
 
 	/**
 	 * Setter for <code>dictdb.dict_constant.id</code>. 主key

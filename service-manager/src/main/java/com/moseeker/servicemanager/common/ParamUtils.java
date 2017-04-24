@@ -73,7 +73,7 @@ public class ParamUtils {
      * @return 存储通过request请求传递过来的参数
      */
     public static Params<String, Object> parseRequestParam(HttpServletRequest request) throws Exception {
-        Params<String, Object> data = new Params<String, Object>();
+        Params<String, Object> data = new Params<>();
         data.putAll(initParamFromRequestBody(request));
         data.putAll(initParamFromRequestParameter(request));
 
@@ -200,21 +200,20 @@ public class ParamUtils {
                     }
                     param.put(entry.getKey(), values);
                 } else {
-                    if (request.getMethod().equals("GET")) {
-                        String value = entry.getValue()[0];
-                        param.put(entry.getKey(), new String(value.getBytes("iso8859-1"), request.getCharacterEncoding()));
-                    } else {
-                        param.put(entry.getKey(), entry.getValue()[0]);
-                    }
+                    param.put(entry.getKey(), entry.getValue()[0]);
                 }
             }
         }
-        if (param.size() > 0) {
+        if (param.size() > 0)
+
+        {
             param.forEach((key, value) -> {
                 LoggerFactory.getLogger(ParamUtils.class).info("----initParamFromRequestParameter key:{}    value:{}", key, value);
             });
         }
-        LoggerFactory.getLogger(ParamUtils.class).info("----initParamFromRequestBody:", param.toString());
+        LoggerFactory.getLogger(ParamUtils.class).
+
+                info("----initParamFromRequestBody:", param.toString());
         return param;
     }
 
@@ -235,6 +234,7 @@ public class ParamUtils {
                 jb.append(line);
             }
         } catch (IOException | IllegalStateException e) {
+            LoggerFactory.getLogger(ParamUtils.class).error(e.getMessage(), e);
         }
         LoggerFactory.getLogger(ParamUtils.class).info("----initParamFromRequestBody:", jb.toString());
         Map<String, Object> map = JsonToMap.parseJSON2Map(jb.toString());

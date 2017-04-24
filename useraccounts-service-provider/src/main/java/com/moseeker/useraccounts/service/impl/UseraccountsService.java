@@ -85,9 +85,6 @@ public class UseraccountsService {
 	protected UserDao userdao;
 
 	@Autowired
-	protected BaseDao<LogUserloginRecordRecord> loguserlogindao;
-
-	@Autowired
 	protected ProfileDao profileDao;
 
 	@Autowired
@@ -195,7 +192,7 @@ public class UseraccountsService {
 		logout.setUserId(userid);
 		logout.setActiontype(2);
 		try {
-			loguserlogindao.postResource(logout);
+			logger.info("userid:{} log out", userid);
 			return ResponseUtils.success(null);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

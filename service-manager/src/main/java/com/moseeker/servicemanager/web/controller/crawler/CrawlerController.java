@@ -55,7 +55,7 @@ public class CrawlerController {
 				logger.info("/crawler");
 				Response res = crawlerUtils.fetchFirstResume(form.getUsername(), form.getPassword(), form.getToken(),
 						form.getType(), form.getLang(), form.getSource(), form.getCompleteness(), form.getAppid(),
-						form.getUser_id());
+						form.getUser_id(), form.getUa());
 				if (res != null && res.getStatus() == 0) {
 					logger.info("/crawler    profile:"+res.getData());
 					res = profileService.importCV(res.getData(), form.getUser_id());

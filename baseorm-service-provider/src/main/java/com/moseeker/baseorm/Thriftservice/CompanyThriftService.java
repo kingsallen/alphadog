@@ -1,18 +1,13 @@
 package com.moseeker.baseorm.Thriftservice;
 
 import com.moseeker.baseorm.dao.hrdb.CompanyDao;
-import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
-import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
 import com.moseeker.baseorm.service.HrCompanyService;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.service.CompanyDao.Iface;
-import com.moseeker.thrift.gen.dao.struct.HrCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import org.apache.thrift.TException;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

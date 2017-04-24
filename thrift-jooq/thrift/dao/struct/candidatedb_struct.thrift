@@ -135,3 +135,8 @@ struct CandidateSuggestPositionDO {
     6: optional Timestamp createTime,           // 创建时间
     7: optional Timestamp updateTime            // 修改时间
 }
+
+struct CandidateRecomRecordSortingDO {
+    1: optional i32 postUserId,                 // 转发者编号
+    2: optional i32 count                       // 转发者编号
+}

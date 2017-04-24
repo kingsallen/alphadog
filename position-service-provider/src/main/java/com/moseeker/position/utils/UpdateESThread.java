@@ -5,13 +5,17 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.position.dao.JobPositionDao;
+import com.moseeker.position.service.fundationbs.PositionService;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
+
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Map;
@@ -28,37 +32,46 @@ public class UpdateESThread implements Runnable {
 
     private com.moseeker.thrift.gen.company.service.CompanyServices.Iface companyServices;
 
+    private JobPositionDao jobPositionDao;
 
-    private List<JobPositionRecord> list;
+    @Autowired
+    private PositionService positionService;
 
-    public UpdateESThread(SearchengineServices.Iface searchengineServices, CompanyServices.Iface companyServices, List<JobPositionRecord> list) {
+    private List<Integer> list;
+
+    public UpdateESThread(SearchengineServices.Iface searchengineServices, CompanyServices.Iface companyServices, List<Integer> list, JobPositionDao jobPositionDao) {
         this.searchengineServices = searchengineServices;
         this.companyServices = companyServices;
         this.list = list;
+        this.jobPositionDao = jobPositionDao;
     }
 
     @Override
     public void run() {
         logger.info("---Start ES Search Engine---");
         if (list != null && list.size() > 0) {
-            String companyId = BeanUtils.converToString(list.get(0).getCompanyId().intValue());
+            logger.info("需要更新ES总条数：" + list.size());
+            logger.info("需要更新ESJobPostionIDs：" + list.toString());
+            for (Integer jobPositionId : list) {
+                JobPositionRecord jobPositionRecord = jobPositionDao.getPositionById(jobPositionId);
+                Integer companyId = jobPositionRecord.getCompanyId().intValue();
 
-            CommonQuery query = new CommonQuery();
-            query.putToEqualFilter("id", companyId);
-            Response company_resp = null;
-            try {
-                company_resp = companyServices.getAllCompanies(query);
-            } catch (TException e) {
-                logger.error(e.getMessage(), e);
-            }
+                CommonQuery query = new CommonQuery();
+                query.putToEqualFilter("id", String.valueOf(companyId));
+                Response company_resp = null;
+                try {
+                    company_resp = companyServices.getAllCompanies(query);
+                } catch (TException e) {
+                    logger.error(e.getMessage(), e);
+                }
 
-            String company = company_resp.data;
-            List company_maps = (List) JSON.parse(company);
-            Map company_map = (Map) company_maps.get(0);
-            String company_name = (String) company_map.get("name");
-            String scale = (String) company_map.get("scale");
+                String company = company_resp.data;
+                logger.info("company:" + company);
 
-            for (JobPositionRecord jobPositionRecord : list) {
+                List company_maps = (List) JSON.parse(company);
+                Map company_map = (Map) company_maps.get(0);
+                String company_name = (String) company_map.get("name");
+                String scale = (String) company_map.get("scale");
                 try {
                     Map map = jobPositionRecord.intoMap();
                     map.put("company_name", company_name);
@@ -69,6 +82,8 @@ public class UpdateESThread implements Runnable {
                         degree_name = degree_name + "及以上";
                     }
                     map.put("degree_name", degree_name);
+                    logger.info("-- JobPositionJOSN -- :", JSONObject.toJSONString(map));
+                    logger.info("-- JobPositionId -- :", jobPositionRecord.getId());
                     searchengineServices.updateposition(JSONObject.toJSONString(map), jobPositionRecord.getId());
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
@@ -88,11 +103,19 @@ public class UpdateESThread implements Runnable {
     }
 
 
-    public List<JobPositionRecord> getList() {
+    public List<Integer> getList() {
         return list;
     }
 
-    public void setList(List<JobPositionRecord> list) {
+    public void setList(List<Integer> list) {
         this.list = list;
+    }
+
+    public JobPositionDao getJobPositionDao() {
+        return jobPositionDao;
+    }
+
+    public void setJobPositionDao(JobPositionDao jobPositionDao) {
+        this.jobPositionDao = jobPositionDao;
     }
 }

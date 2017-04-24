@@ -1,7 +1,7 @@
 package com.moseeker.baseorm.service.Impl;
 
-import com.moseeker.baseorm.dao.hr.HrTeamDao;
 import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
+import com.moseeker.baseorm.dao.hrdb.HrTeamDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrOperationRecordRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
@@ -14,8 +14,8 @@ import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.HistoryOperate;
-import com.moseeker.thrift.gen.dao.struct.HrOperationRecordDO;
-import com.moseeker.thrift.gen.dao.struct.HrTeamStruct;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamStruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +34,7 @@ public class HrDBServiceImpl implements HrDBService {
 
     @Autowired
     private HrTeamDao hrTeamDao;
+    
     Logger logger = LoggerFactory.getLogger(HrDBServiceImpl.class);
 
     @Autowired
@@ -48,6 +49,7 @@ public class HrDBServiceImpl implements HrDBService {
             return ResponseUtils.success(result);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
     }

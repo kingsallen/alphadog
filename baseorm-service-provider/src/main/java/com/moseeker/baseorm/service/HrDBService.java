@@ -3,7 +3,7 @@ package com.moseeker.baseorm.service;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.HrOperationRecordDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
 
 import java.util.List;
 

@@ -263,9 +263,10 @@ struct RecommendationRecordVO {
     4: optional string position,                //职位名称
     5: optional Timestamp click_time,           //点击事件
     6: optional i16 status,                     //招聘进度状态
-    7: optional i8 is_interested,              //是否推荐 0没有推荐 1推荐 
-    8: optional i32 view_number,               //点击次数
-    9: optional string headimgurl              //头像
+    7: optional i8 is_interested,               //是否推荐 0没有推荐 1推荐 
+    8: optional i32 view_number,                //点击次数
+    9: optional string headimgurl,              //头像
+    10: optional i32 id                         //编号
 }
 
 /*
