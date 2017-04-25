@@ -15,6 +15,8 @@ import com.moseeker.thrift.gen.useraccounts.service.UserQxService;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import com.moseeker.thrift.gen.useraccounts.service.UsersettingServices;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
+import org.apache.thrift.TSerializer;
+import org.apache.thrift.protocol.TSimpleJSONProtocol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -780,8 +782,7 @@ public class UseraccountsController {
         try {
             Params<String, Object> param = ParamUtils.parseRequestParam(request);
             int userId = param.getInt("user_id", 0);
-
-            return JSONObject.toJSONString(userQxService.userSearchConditionList(userId));
+            return new TSerializer(new TSimpleJSONProtocol.Factory()).toString(userQxService.userSearchConditionList(userId));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -799,7 +800,7 @@ public class UseraccountsController {
         try {
             UserSearchConditionDO conditionDO = ParamUtils.initModelForm(request, UserSearchConditionDO.class);
 
-            return JSONObject.toJSONString(userQxService.postUserSearchCondition(conditionDO));
+            return new TSerializer(new TSimpleJSONProtocol.Factory()).toString(userQxService.postUserSearchCondition(conditionDO));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -819,7 +820,7 @@ public class UseraccountsController {
             int userId = params.getInt("user_id", 0);
             int id = params.getInt("id", 0);
 
-            return JSONObject.toJSONString(userQxService.delUserSearchCondition(userId, id));
+            return new TSerializer(new TSimpleJSONProtocol.Factory()).toString(userQxService.delUserSearchCondition(userId, id));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -839,7 +840,7 @@ public class UseraccountsController {
             int userId = params.getInt("user_id", 0);
             int positionId = params.getInt("position_id", 0);
 
-            return JSONObject.toJSONString(userQxService.postUserCollectPosition(userId, positionId));
+            return new TSerializer(new TSimpleJSONProtocol.Factory()).toString(userQxService.postUserCollectPosition(userId, positionId));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -859,7 +860,7 @@ public class UseraccountsController {
             int userId = params.getInt("user_id", 0);
             int positionId = params.getInt("position_id", 0);
 
-            return JSONObject.toJSONString(userQxService.getUserCollectPosition(userId, positionId));
+            return new TSerializer(new TSimpleJSONProtocol.Factory()).toString(userQxService.getUserCollectPosition(userId, positionId));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -879,7 +880,7 @@ public class UseraccountsController {
             int userId = params.getInt("user_id", 0);
             int positionId = params.getInt("position_id", 0);
 
-            return JSONObject.toJSONString(userQxService.delUserCollectPosition(userId, positionId));
+            return new TSerializer(new TSimpleJSONProtocol.Factory()).toString(userQxService.delUserCollectPosition(userId, positionId));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -899,7 +900,7 @@ public class UseraccountsController {
             int userId = params.getInt("user_id", 0);
             int positionId = params.getInt("position_id", 0);
 
-            return JSONObject.toJSONString(userQxService.userViewedPosition(userId, positionId));
+            return new TSerializer(new TSimpleJSONProtocol.Factory()).toString(userQxService.userViewedPosition(userId, positionId));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -919,7 +920,7 @@ public class UseraccountsController {
             int userId = params.getInt("user_id", 0);
             List<Integer> positionIds = (List<Integer>) params.get("position_ids");
 
-            return JSONObject.toJSONString(userQxService.getUserPositionStatus(userId, positionIds));
+            return new TSerializer(new TSimpleJSONProtocol.Factory()).toString(userQxService.getUserPositionStatus(userId, positionIds));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
