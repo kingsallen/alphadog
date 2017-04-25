@@ -47,17 +47,16 @@ public class ChatDao {
     public List<HrChatUnreadCountDO> listChatRoomUnreadCount(ChatSpeakerType type, int id, int pageNo, int pageSize) {
         QueryUtil queryUtil = new QueryUtil();
         queryUtil.addSelectAttribute("room_id");
-        queryUtil.setOrder("desc");
         switch (type) {
             case HR:
-                queryUtil.addSelectAttribute("user_unread_count").addSelectAttribute("user_id");
-                queryUtil.setSortby("user_unread_count,room_id");
+                queryUtil.addSelectAttribute("user_unread_count").addSelectAttribute("hr_unread_count").addSelectAttribute("user_id");
+                queryUtil.setSortby("hr_unread_count,room_id");
                 queryUtil.addEqualFilter("hr_id", id);
                 queryUtil.setOrder("desc, desc");
                 break;
             case USER:
-                queryUtil.addSelectAttribute("hr_unread_count").addSelectAttribute("hr_id");
-                queryUtil.setSortby("hr_unread_count,room_id");
+                queryUtil.addSelectAttribute("user_unread_count").addSelectAttribute("hr_unread_count").addSelectAttribute("hr_id");
+                queryUtil.setSortby("user_unread_count,room_id");
                 queryUtil.addEqualFilter("user_id", id);
                 queryUtil.setOrder("desc,desc");
                 break;

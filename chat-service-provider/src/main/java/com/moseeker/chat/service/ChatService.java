@@ -71,7 +71,7 @@ public class ChatService {
                     HRChatRoomVO hrChatRoomVO = new HRChatRoomVO();
                     hrChatRoomVO.setId(chatUnreadCountDO.getRoomId());
                     hrChatRoomVO.setUserId(chatUnreadCountDO.getUserId());
-                    hrChatRoomVO.setUnReadNum(chatUnreadCountDO.getUserUnreadCount());
+                    hrChatRoomVO.setUnReadNum(chatUnreadCountDO.getHrUnreadCount());
 
                     List<HrWxHrChatListDO> chatRoomList = null;
                     List<UserUserDO> userList = null;
