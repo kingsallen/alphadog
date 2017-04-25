@@ -186,6 +186,7 @@ public class PositionController {
     @ResponseBody
     public String synchronizePosition(HttpServletRequest request, HttpServletResponse response) {
         try {
+            logger.info("-----------synchronizePosition------------params:"+request.getParameterMap());
             ThirdPartyPositionForm form = PositionParamUtils.parseSyncParam(request);
             logger.info("-----------synchronizePosition------------");
             logger.info("params:" + JSON.toJSONString(form));
