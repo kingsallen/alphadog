@@ -126,7 +126,7 @@ public class ChatService {
      * @return 聊天室分页信息
      */
     public UserChatRoomsVO listUserChatRoom(int userId, int pageNo, int pageSize) {
-        logger.debug("userChatRoomsVO userId:{}, pageNo:{} pageSize:{}", userId, pageNo, pageSize);
+        logger.info("userChatRoomsVO userId:{}, pageNo:{} pageSize:{}", userId, pageNo, pageSize);
         UserChatRoomsVO userChatRoomsVO = new UserChatRoomsVO();
 
         //计算数量的操作理论上是最快的，所以用它去判断是否有聊天室
@@ -211,7 +211,7 @@ public class ChatService {
                 userChatRoomsVO.setRooms(userChatRoomVOList);
             }
         }
-        logger.debug("userChatRoomsVO result:{}", userChatRoomsVO);
+        logger.info("userChatRoomsVO result:{}", userChatRoomsVO);
         return userChatRoomsVO;
     }
 
