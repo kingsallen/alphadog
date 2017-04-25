@@ -106,7 +106,7 @@ public class UserCenterBizTools {
 	}
 
 	/**
-	 * 查找转发浏览记录
+	 * 查找转发浏览记录。如果存在post_user_id == repost_user_id的情况，则将repost_user_id置为0
 	 * @param userId 用户编号
 	 * @param type 类型 1：表示所有相关的浏览记录，2：表示被推荐的浏览用户，3：表示提交申请的浏览记录
 	 * @param positionIdList 职位编号
@@ -138,6 +138,14 @@ public class UserCenterBizTools {
 				recomRecordDOList = candidateDBDao.listCandidateRecomRecordsForAppliedByUserPositions(userId, positionIdList, pageNo, pageSize);
 				break;
 			default:
+		}
+		//如果存在post_user_id == repost_user_id的情况，则将repost_user_id置为0
+		if (recomRecordDOList != null && recomRecordDOList.size() > 0) {
+			for (CandidateRecomRecordDO candidateRecomRecordDO : recomRecordDOList) {
+				if (candidateRecomRecordDO.getRepostUserId() == candidateRecomRecordDO.getPostUserId()) {
+					candidateRecomRecordDO.setRepostUserId(0);
+				}
+			}
 		}
 		return recomRecordDOList;
 	}
