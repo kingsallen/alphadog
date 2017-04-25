@@ -65,8 +65,14 @@ public class JobDBDaoThriftService implements Iface {
     }
 
     @Override
-    public List<PositionDetails> positionDetailsList(CommonQuery query) throws TException {
-        return positionDao.positionDetailsList(query);
+    public List<PositionDetails> hotPositionDetailsList(CommonQuery query) throws TException {
+        return positionDao.hotPositionDetailsList(query);
     }
+
+    @Override
+    public List<PositionDetails> similarityPositionDetailsList(CommonQuery query) throws TException {
+        return positionDao.similarityPositionDetailsList(query);
+    }
+
 
 }

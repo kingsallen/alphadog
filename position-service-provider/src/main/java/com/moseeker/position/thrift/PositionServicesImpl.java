@@ -2,6 +2,8 @@ package com.moseeker.position.thrift;
 
 import java.util.List;
 
+import com.moseeker.position.service.fundationbs.PositionQxService;
+import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.RpExtInfo;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
@@ -35,6 +37,9 @@ public class PositionServicesImpl implements Iface {
     private PositionService service;
     @Autowired
     private JobOccupationService customService;
+
+    @Autowired
+    private PositionQxService positionQxService;
 
     /**
      * 获取推荐职位
@@ -106,6 +111,25 @@ public class PositionServicesImpl implements Iface {
         return service.getShareInfo(hb_config_id);
     }
 
+    /**
+     * 职位列表头图信息
+     */
+    @Override
+    public CampaignHeadImageVO headImage() throws TException {
+        return positionQxService.headImage();
+    }
+
+    /**
+     * 查询单个职位详情
+     * @param positionId
+     * @return
+     * @throws TException
+     */
+    @Override
+    public PositionDetailsVO positionDetails(int positionId) throws TException {
+        return positionQxService.positionDetails(positionId);
+    }
+
     @Override
     public List<WechatRpPositionListData> getRpPositionList(int hb_config_id) throws TException {
         return service.getRpPositionList(hb_config_id);
@@ -142,7 +166,6 @@ public class PositionServicesImpl implements Iface {
     public Response getTeamIdByDepartmentName(int companyId, String departmentName) throws TException {
         return service.getTeamIdbyDepartmentName(companyId, departmentName);
     }
-
 
 
 }

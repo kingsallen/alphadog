@@ -28,10 +28,12 @@ import java.util.List;
  *
  * Date: 2017/4/17
  *
+ * Gamma 0.9 新增接口
+ *
  * Project_name :alphadog
  */
 @Service
-public class GammaPositionService extends JOOQBaseServiceImpl<Position, JobPositionRecord> {
+public class PositionQxService extends JOOQBaseServiceImpl<Position, JobPositionRecord> {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private CampaignDBDao.Iface campaignDBDao = ServiceManager.SERVICEMANAGER.getService(CampaignDBDao.Iface.class);
@@ -106,7 +108,7 @@ public class GammaPositionService extends JOOQBaseServiceImpl<Position, JobPosit
      * @return positionDetailsVO
      */
     @CounterIface
-    public PositionDetailsListVO companyPositionDetailsList(Integer companyId, Integer page, Integer per_age) {
+    public PositionDetailsListVO companyHotPositionDetailsList(Integer companyId, Integer page, Integer per_age) {
         PositionDetailsListVO positionDetailsListVO = new PositionDetailsListVO();
         try {
             if (companyId == 0) {
@@ -120,7 +122,7 @@ public class GammaPositionService extends JOOQBaseServiceImpl<Position, JobPosit
             commonQuery.setEqualFilter(hashMap);
             commonQuery.setPage(page);
             commonQuery.setPer_page(per_age);
-            List<PositionDetails> list = jobDbDao.positionDetailsList(commonQuery);
+            List<PositionDetails> list = jobDbDao.hotPositionDetailsList(commonQuery);
             if (list != null && list.size() > 0) {
                 positionDetailsListVO.setData(list);
                 positionDetailsListVO.setPage(page);
@@ -141,26 +143,26 @@ public class GammaPositionService extends JOOQBaseServiceImpl<Position, JobPosit
 
 
     /**
-     * 查询团队在招职位的详细信息
+     * 职位相关职位接口
      *
      * @return positionDetailsVO
      */
     @CounterIface
-    public PositionDetailsListVO teamPositionDetailsList(Integer teamId, Integer page, Integer per_age) {
+    public PositionDetailsListVO similarityPositionDetailsList(Integer pid, Integer page, Integer per_age) {
         PositionDetailsListVO positionDetailsList = new PositionDetailsListVO();
         try {
-            if (teamId == 0) {
-                positionDetailsList.setStatus(CommonMessage.COMPANYID_BLANK.getStatus());
-                positionDetailsList.setMessage(CommonMessage.COMPANYID_BLANK.getMessage());
+            if (pid == 0) {
+                positionDetailsList.setStatus(CommonMessage.POSITIONID_BLANK.getStatus());
+                positionDetailsList.setMessage(CommonMessage.POSITIONID_BLANK.getMessage());
                 return positionDetailsList;
             }
             CommonQuery commonQuery = new CommonQuery();
             HashMap hashMap = new HashMap();
-            hashMap.put("team_id", String.valueOf(teamId));
+            hashMap.put("pid", String.valueOf(pid));
             commonQuery.setEqualFilter(hashMap);
             commonQuery.setPage(page);
             commonQuery.setPer_page(per_age);
-            List<PositionDetails> list = jobDbDao.positionDetailsList(commonQuery);
+            List<PositionDetails> list = jobDbDao.similarityPositionDetailsList(commonQuery);
             if (list != null && list.size() > 0) {
                 positionDetailsList.setStatus(CommonMessage.SUCCESS.getStatus());
                 positionDetailsList.setMessage(CommonMessage.SUCCESS.getMessage());
@@ -168,8 +170,8 @@ public class GammaPositionService extends JOOQBaseServiceImpl<Position, JobPosit
                 positionDetailsList.setPage(page);
                 positionDetailsList.setPer_age(per_age);
             } else {
-                positionDetailsList.setStatus(CommonMessage.POSITIONLIST_NONEXIST.getStatus());
-                positionDetailsList.setMessage(CommonMessage.POSITIONLIST_NONEXIST.getMessage());
+                positionDetailsList.setStatus(CommonMessage.SIMILARITYPOSITIONLIST_NONEXIST.getStatus());
+                positionDetailsList.setMessage(CommonMessage.SIMILARITYPOSITIONLIST_NONEXIST.getMessage());
             }
         } catch (Exception e) {
             positionDetailsList.setMessage(CommonMessage.EXCEPTION.getMessage());
