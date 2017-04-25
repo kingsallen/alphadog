@@ -208,6 +208,7 @@ public class HRAccountDaoThriftService implements Iface {
         record.setMembername(account.getMember_name());
         record.setPassword(account.getPassword());
         record.setRemainNum(UInteger.valueOf(account.getRemainNum()));
+        record.setRemainProfileNum(account.getRemainProfileNum());
         record.setBinding((short) 1);
         record.setUsername(account.getUsername());
     }

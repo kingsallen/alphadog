@@ -81,8 +81,7 @@ public class PositionBS {
 				List<ThirdPartyPosition> positionFroms = new ArrayList<>(); // 可同步的职位
 
 				setCompanyAddress(position.getChannels(), positionStruct.getCompany_id());
-				List<ThirdPartAccountData> thirdPartyAccounts = userHrAccountDao
-						.getThirdPartyAccountsByUserId(position.getUser_id());
+				List<ThirdPartAccountData> thirdPartyAccounts = userHrAccountDao.getThirdPartyAccountsByUserId(position.getUser_id());
 				if (thirdPartyAccounts != null && thirdPartyAccounts.size() > 0) {
 					for (ThirdPartyPosition p : position.getChannels()) {
 						for (ThirdPartAccountData account : thirdPartyAccounts) {
@@ -114,8 +113,7 @@ public class PositionBS {
 				logger.info("positionFroms:" + JSON.toJSONString(positionFroms));
 				if (positionFroms.size() > 0) {
 					// 转成第三方渠道职位
-					List<ThirdPartyPositionForSynchronization> positions = positionServices
-							.changeToThirdPartyPosition(positionFroms, positionStruct);
+					List<ThirdPartyPositionForSynchronization> positions = positionServices.changeToThirdPartyPosition(positionFroms, positionStruct);
 					// 提交到chaos处理
 					List<ThirdPartyPositionForSynchronizationWithAccount> PositionsForSynchronizations = new ArrayList<>();
 					if (positions != null && positions.size() > 0) {
@@ -125,6 +123,7 @@ public class PositionBS {
 							thirdPartyAccounts.forEach(account -> {
 								if (account.getId() > 0 && account.binding == 1 && account.getRemain_num() > 0
 										&& account.getChannel() == pos.getChannel()) {
+									p.setAccount_id(String.valueOf(account.getId()));
 									p.setChannel(String.valueOf(pos.getChannel()));
 									p.setPassword(account.getPassword());
 									p.setUser_name(account.getUsername());

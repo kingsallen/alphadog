@@ -14,7 +14,8 @@ struct ThirdPartyPosition {
      5: optional bool use_company_address,   // 是否使用公司地址
      6: optional string occupation_level1,   // 倒数第二级的第三方职位职能
      7: optional string occupation_level2,   // 最后一级的第三方职位职能
-     8: optional i8 channel               // 渠道
+     8: optional i8 channel,               // 渠道
+     9: optional i32 third_party_account_id
 }
 
 struct ThirdPartyPositionForm {
