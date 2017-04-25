@@ -42,8 +42,7 @@ public class FunctionServer {
         			acac,"",
 					acac.getBean(FunctionService.class),
 					acac.getBean(ChaosThriftService.class),
-					acac.getBean(WordpressThriftService.class),
-					acac.getBean(HRAccountThriftService.class)
+					acac.getBean(WordpressThriftService.class)
         			);
 			server.startServer();
 			//开启监听同步完成任务

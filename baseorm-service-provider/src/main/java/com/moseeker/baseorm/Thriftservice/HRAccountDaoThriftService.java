@@ -201,24 +201,41 @@ public class HRAccountDaoThriftService implements Iface {
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
     }
 
-    @Override
-    public Response createThirdPartyAccount(BindAccountStruct account) throws TException {
+    public void copyToRecord(BindAccountStruct account, HrThirdPartyAccountRecord record) {
+        record.setBinding((short) account.getBinding());
+        record.setChannel((short) account.getChannel());
+        record.setCompanyId(UInteger.valueOf(account.getCompany_id()));
+        record.setMembername(account.getMember_name());
+        record.setPassword(account.getPassword());
+        record.setRemainNum(UInteger.valueOf(account.getRemainNum()));
+        record.setBinding((short) 1);
+        record.setUsername(account.getUsername());
+    }
 
+    /**
+     * 添加第三方账号
+     *
+     * @param userId
+     * @param account
+     * @return
+     * @throws TException
+     */
+    @Override
+    public Response addThirdPartyAccount(int userId, BindAccountStruct account) throws TException {
         try {
             HrThirdPartyAccountRecord record = new HrThirdPartyAccountRecord();
-            record.setBinding((short) account.getBinding());
-            record.setChannel((short) account.getChannel());
-            record.setCompanyId(UInteger.valueOf(account.getCompany_id()));
+            copyToRecord(account, record);
             Timestamp now = new Timestamp(System.currentTimeMillis());
             record.setCreateTime(now);
-            record.setMembername(account.getMember_name());
-            record.setPassword(account.getPassword());
-            record.setRemainNum(UInteger.valueOf(account.getRemainNum()));
+            record.setUpdateTime(now);
             record.setSyncTime(now);
-            record.setUsername(account.getUsername());
-            hrThirdPartyAccountDao.postResource(record);
+            int count = hrThirdPartyAccountDao.addThirdPartyAccount(userId, record);
+            if (count == 0) {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+            }
             HashMap<String, Object> map = new HashMap<>();
             map.put("remain_num", account.getRemainNum());
+            map.put("remain_profile_num", account.getRemainProfileNum());
             DateTime dt = new DateTime(now.getTime());
             map.put("sync_time", dt.toString("yyyy-MM-dd HH:mm:ss"));
             return ResponseUtils.success(map);
@@ -231,29 +248,34 @@ public class HRAccountDaoThriftService implements Iface {
         }
     }
 
+    /**
+     * 更新第三方账号
+     *
+     * @param accountId 第三方账号ID
+     * @param account
+     * @return
+     * @throws TException
+     */
     @Override
-    public Response upsertThirdPartyAccount(BindAccountStruct account) throws TException {
+    public Response updateThirdPartyAccount(int accountId, BindAccountStruct account) throws TException {
         try {
             HrThirdPartyAccountRecord record = new HrThirdPartyAccountRecord();
-            record.setBinding((short) account.getBinding());
-            record.setChannel((short) account.getChannel());
-            record.setCompanyId(UInteger.valueOf(account.getCompany_id()));
+            copyToRecord(account, record);
+            record.setId(accountId);
             Timestamp now = new Timestamp(System.currentTimeMillis());
-            record.setCreateTime(now);
-            record.setMembername(account.getMember_name());
-            record.setPassword(account.getPassword());
-            record.setRemainNum(UInteger.valueOf(account.getRemainNum()));
+            record.setUpdateTime(now);
             record.setSyncTime(now);
-            record.setBinding((short) 1);
-            record.setUsername(account.getUsername());
-            int count = hrThirdPartyAccountDao.upsertResource(record);
+            int count = hrThirdPartyAccountDao.updateThirdPartyAccount(record);
             if (count == 0) {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
             }
             HashMap<String, Object> map = new HashMap<>();
             map.put("remain_num", account.getRemainNum());
+            map.put("remain_profile_num", account.getRemainProfileNum());
             DateTime dt = new DateTime(now.getTime());
             map.put("sync_time", dt.toString("yyyy-MM-dd HH:mm:ss"));
+
+
             return ResponseUtils.success(map);
         } catch (Exception e) {
             e.printStackTrace();

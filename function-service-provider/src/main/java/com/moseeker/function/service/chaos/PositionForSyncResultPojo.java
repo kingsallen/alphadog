@@ -8,9 +8,10 @@ public class PositionForSyncResultPojo {
 	private String position_id;
 	private String channel;
 	private int remain_number;
-	private int remain_profile_number;
+	private int resume_number;
 	private String sync_time;
 	private String pub_place_name;
+	private int account_id;
 	
 	public int getStatus() {
 		return status;
@@ -61,11 +62,19 @@ public class PositionForSyncResultPojo {
 		this.pub_place_name = pub_place_name;
 	}
 
-	public int getRemain_profile_number() {
-		return remain_profile_number;
+	public int getResume_number() {
+		return resume_number;
 	}
 
-	public void setRemain_profile_number(int remain_profile_number) {
-		this.remain_profile_number = remain_profile_number;
+	public void setResume_number(int resume_number) {
+		this.resume_number = resume_number;
+	}
+
+	public int getAccount_id() {
+		return account_id;
+	}
+
+	public void setAccount_id(int account_id) {
+		this.account_id = account_id;
 	}
 }
