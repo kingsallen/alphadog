@@ -614,4 +614,60 @@ public class ChatDao {
             return null;
         }
     }
+
+    /**
+     * 清空C端账号未读消息
+     * @param chatRoomId
+     * @param hrId
+     * @param userId
+     * @return
+     */
+    public HrChatUnreadCountDO clearUserUnreadCount(int chatRoomId, int hrId, int userId) {
+        QueryUtil queryUtil = new QueryUtil();
+        queryUtil.addEqualFilter("room_id", chatRoomId);
+        try {
+            HrChatUnreadCountDO hrChatUnreadCountDO =  hrDBDao.getChatUnreadCount(queryUtil);
+
+            if(hrChatUnreadCountDO.getRoomId() > 0) {
+                hrChatUnreadCountDO.setUserUnreadCount(0);
+                hrChatUnreadCountDO = hrDBDao.updateChatUnreadCount(hrChatUnreadCountDO);
+            } else {
+                hrChatUnreadCountDO.setRoomId(chatRoomId);
+                hrChatUnreadCountDO.setHrId(hrId);
+                hrChatUnreadCountDO.setUserId(userId);
+                hrChatUnreadCountDO.setHrUnreadCount(0);
+                hrChatUnreadCountDO.setUserUnreadCount(0);
+                hrChatUnreadCountDO = hrDBDao.saveChatUnreadCount(hrChatUnreadCountDO);
+            }
+            return hrChatUnreadCountDO;
+        } catch (TException e) {
+            logger.error(e.getMessage(), e);
+            return null;
+        }
+    }
+
+    public HrChatUnreadCountDO addUnreadCount(int roomId, byte speaker) {
+        QueryUtil queryUtil = new QueryUtil();
+        queryUtil.addEqualFilter("room_id", roomId);
+        try {
+            HrChatUnreadCountDO hrChatUnreadCountDO =  hrDBDao.getChatUnreadCount(queryUtil);
+
+            if(hrChatUnreadCountDO.getRoomId() > 0) {
+                switch (speaker) {
+                    case 1:
+                        hrChatUnreadCountDO.setUserUnreadCount(hrChatUnreadCountDO.getUserUnreadCount()+1);
+                        break;
+                    case 0:
+                        hrChatUnreadCountDO.setHrUnreadCount(hrChatUnreadCountDO.getHrUnreadCount()+1);
+                        break;
+                    default:
+                }
+                hrChatUnreadCountDO = hrDBDao.updateChatUnreadCount(hrChatUnreadCountDO);
+            }
+            return hrChatUnreadCountDO;
+        } catch (TException e) {
+            logger.error(e.getMessage(), e);
+            return null;
+        }
+    }
 }

@@ -165,6 +165,16 @@ public class HrDBThriftService implements Iface {
 		return hrChatUnreadCountDao.saveResource(unreadCount);
 	}
 
+	@Override
+	public HrChatUnreadCountDO getChatUnreadCount(CommonQuery query) throws CURDException, TException {
+		return hrChatUnreadCountDao.findResource(query);
+	}
+
+	@Override
+	public HrChatUnreadCountDO updateChatUnreadCount(HrChatUnreadCountDO unreadCount) throws CURDException, TException {
+		return hrChatUnreadCountDao.updateResource(unreadCount);
+	}
+
 	public HrHbConfigDO getHbConfig(CommonQuery query) throws TException {
 		return hrDaoService.getHbConfig(query);
 	}

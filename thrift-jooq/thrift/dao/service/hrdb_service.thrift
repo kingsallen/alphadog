@@ -51,6 +51,8 @@ service HrDBDao {
     list<hrdb_struct.HrChatUnreadCountDO> listChatRoomUnreadSort(1: common_struct.CommonQuery query) throws (1:common_struct.CURDException e);
     
     hrdb_struct.HrChatUnreadCountDO saveChatUnreadCount(1: hrdb_struct.HrChatUnreadCountDO unreadCount) throws (1:common_struct.CURDException e);
+    hrdb_struct.HrChatUnreadCountDO getChatUnreadCount(1: common_struct.CommonQuery query) throws (1:common_struct.CURDException e);
+    hrdb_struct.HrChatUnreadCountDO updateChatUnreadCount(1: hrdb_struct.HrChatUnreadCountDO unreadCount) throws (1:common_struct.CURDException e);
 	
 	common_struct.Response getHrWxWechat(1: common_struct.CommonQuery query);
 	hrdb_struct.HrWxWechatDO getHrWxWechatDO(1: common_struct.CommonQuery query) throws (1:common_struct.CURDException e);
