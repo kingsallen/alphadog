@@ -16,7 +16,7 @@ public enum CommonMessage {
     POSITION_NONEXIST("该职位不存在，请检查PositionId是否正确", 51015),
     COMPANYID_BLANK("CompanyId不能为空", 51016),
     POSITIONLIST_NONEXIST("该公司下没有职位", 51017),
-    TEAM_NONEXIST("该团队不存在，请检查TeamId是否正确", 51018);
+    SIMILARITYPOSITIONLIST_NONEXIST("未找到相似职位", 51017);
 
 
     // 成员变量
