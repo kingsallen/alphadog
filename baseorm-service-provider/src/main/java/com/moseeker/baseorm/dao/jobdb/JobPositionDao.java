@@ -174,6 +174,7 @@ public class JobPositionDao extends StructDaoImpl<JobPositionDO, JobPositionReco
      * 包含职位的团队信息
      */
     public List<PositionDetails> hotPositionDetailsList(CommonQuery commonQuery) {
+        List<PositionDetails> positionDetails = new ArrayList<>();
         try (Connection conn = DBConnHelper.DBConn.getConn();
              DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn)) {
             JobPosition jp = JobPosition.JOB_POSITION.as("jp");
@@ -206,7 +207,7 @@ public class JobPositionDao extends StructDaoImpl<JobPositionDO, JobPositionReco
             }
             per_page = commonQuery.getPer_page() > 0 ? commonQuery.getPer_page() : per_page;
             record.limit((page - 1) * per_page, per_page);
-            List<PositionDetails> positionDetails = record.fetchInto(PositionDetails.class);
+            positionDetails = record.fetchInto(PositionDetails.class);
 
             if (positionDetails != null && positionDetails.size() > 0) {
                 // 查询职位图片信息
@@ -227,14 +228,14 @@ public class JobPositionDao extends StructDaoImpl<JobPositionDO, JobPositionReco
                     }
                 }
             }
-            return positionDetails;
+
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
         } finally {
 
         }
-        return null;
+        return positionDetails;
     }
 
 
@@ -341,10 +342,9 @@ public class JobPositionDao extends StructDaoImpl<JobPositionDO, JobPositionReco
                     }
                 }
             }
-            return positionDetails;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-        return null;
+        return positionDetails;
     }
 }
