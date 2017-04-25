@@ -21,7 +21,7 @@ public class Query {
     private int pageNum; // optional
     private Map<String,String> extras; // optional
 
-    public Query() {
+    private Query() {
         this.attributes = new ArrayList<>();
         this.orders = new ArrayList<>();
     }
@@ -52,7 +52,6 @@ public class Query {
         private int pageSize; // optional
         private int pageNum; // optional
         private Map<String,String> extras; // optional
-
         private Condition index;
 
         public QueryBuilder() {
@@ -79,55 +78,117 @@ public class Query {
             return this;
         }
 
-        public Condition where(String field, Object value) throws ConditionNotExist {
+        public QueryBuilder where(String field, Object value) throws ConditionNotExist {
             Condition condition = new Condition(field, value);
             setConditions(condition);
             index = condition;
-            return condition;
+            return this;
         }
 
-        public Condition where(Condition condition) throws ConditionNotExist {
+        public QueryBuilder where(Condition condition) throws ConditionNotExist {
             setConditions(condition);
             index = condition;
-            return condition;
+            return this;
         }
 
-        public Condition and(Condition condition) throws ConditionNotExist {
-            setConditions(condition);
+        public QueryBuilder and(Condition condition) throws ConditionNotExist {
+            if(this.index != null) {
+                conditions.addCondition(condition);
+            } else {
+                setConditions(condition);
+            }
             index = condition;
-            return condition;
+            return this;
         }
 
-        public Condition andInnerCondition(Condition condition) throws ConditionNotExist {
+        public QueryBuilder andInnerCondition(Condition condition) throws ConditionNotExist {
             return andInnerCondition(condition, ConditionOp.AND);
         }
 
-        public Condition andInnerCondition(Condition condition, ConditionOp op) throws ConditionNotExist {
+        public QueryBuilder andInnerCondition(Condition condition, ConditionOp op) throws ConditionNotExist {
+            if(index == null) {
+                throw new ConditionNotExist();
+            }
             ConditionJoin conditionJoin = new ConditionJoin(op, null, condition);
             index.addJoinCondition(conditionJoin);
             index = condition;
-            return condition;
+            return this;
         }
 
-        public Condition andOutCondition(Condition condition, ConditionOp op) throws ConditionNotExist {
+        public QueryBuilder andOutCondition(Condition condition, ConditionOp op) throws ConditionNotExist {
             if (index.getOutCondition() == null) {
                 throw new ConditionNotExist();
             }
             index.getOutCondition().addCondition(condition, op);
             index = condition;
-            return condition;
+            return this;
         }
 
-        public Condition andOutCondition(Condition condition) throws ConditionNotExist {
+        public QueryBuilder andOutCondition(Condition condition) throws ConditionNotExist {
             if (index.getOutCondition() == null) {
                 throw new ConditionNotExist();
             }
             index.getOutCondition().addCondition(condition, ConditionOp.AND);
             index = condition;
-            return condition;
+            return this;
         }
 
-        public void setConditions(Condition conditions) throws ConditionNotExist {
+        public QueryBuilder groupBy(String field) {
+            if (groups == null) {
+                groups = new ArrayList<>();
+            }
+            if(StringUtils.isNotNullOrEmpty(field)) {
+                groups.add(field);
+            }
+            return this;
+        }
+
+        public QueryBuilder orderBy(String field) {
+            if (orders == null) {
+                orders = new ArrayList<>();
+            }
+            if(StringUtils.isNotNullOrEmpty(field)) {
+                OrderBy orderBy = new OrderBy(field, Order.ASC);
+                orders.add(orderBy);
+            }
+            return this;
+        }
+
+        public QueryBuilder orderBy(String field, Order order) {
+            if (orders == null) {
+                orders = new ArrayList<>();
+            }
+            if(StringUtils.isNotNullOrEmpty(field)) {
+                OrderBy orderBy = new OrderBy(field, order);
+                orders.add(orderBy);
+            }
+            return this;
+        }
+
+        public QueryBuilder orderBy(OrderBy orderBy) {
+            if (orders == null) {
+                orders = new ArrayList<>();
+            }
+            if(orderBy != null && orderBy.getField() != null && orderBy.getOrder() != null) {
+                orders.add(orderBy);
+            }
+            return this;
+        }
+
+        public Query buildQuery() {
+            Query query = new Query();
+            query.attributes = this.attributes;
+            query.conditions = this.conditions;
+            query.extras = this.extras;
+            query.groups = this.groups;
+            query.orders = this.orders;
+            query.pageNum = this.pageNum;
+            query.pageSize = this.pageSize;
+
+            return query;
+        }
+
+        private void setConditions(Condition conditions) throws ConditionNotExist {
             if(conditions == null || StringUtils.isNullOrEmpty(conditions.getField()) || conditions.getValue() == null
                     || conditions.getValueOp() == null) {
                 throw new ConditionNotExist();

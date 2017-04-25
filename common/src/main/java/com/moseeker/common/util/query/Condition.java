@@ -14,7 +14,7 @@ public class Condition {
     private ValueOp valueOp;            //比较操作
 
     private ConditionJoin conditionJoin; //联合条件
-    private Condition outCondition;
+    private Condition outCondition;      //上一级别的查询条件
 
     public static Condition buildCommonCondition(String field, Object value, ValueOp op) throws ConditionNotExist {
         if(StringUtils.isNullOrEmpty(field) || value == null || op == null) {
