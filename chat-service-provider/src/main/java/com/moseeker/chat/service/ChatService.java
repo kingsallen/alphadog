@@ -48,7 +48,7 @@ public class ChatService {
      * @return 聊天室分页信息
      */
     public HRChatRoomsVO listHRChatRoom(int hrId, int pageNo, int pageSize) {
-        logger.debug("listHRChatRoom hrId:{}, pageNo:{} pageSize:{}", hrId, pageNo, pageSize);
+        logger.info("listHRChatRoom hrId:{}, pageNo:{} pageSize:{}", hrId, pageNo, pageSize);
         HRChatRoomsVO rooms = new HRChatRoomsVO();
         int count = chaoDao.countHRChatRoom(hrId);
         Page page = new Page(pageNo, pageSize, count);
@@ -114,7 +114,7 @@ public class ChatService {
             }
         }
 
-        logger.debug("listHRChatRoom result : {}", rooms);
+        logger.info("listHRChatRoom result : {}", rooms);
         return rooms;
     }
 
@@ -223,7 +223,7 @@ public class ChatService {
      * @return
      */
     public ChatsVO listChatLogs(int roomId, int pageNo, int pageSize) {
-        logger.debug("listChatLogs roomId:{} pageNo:{}, pageSize:{}", roomId, pageNo, pageSize);
+        logger.info("listChatLogs roomId:{} pageNo:{}, pageSize:{}", roomId, pageNo, pageSize);
         ChatsVO chatsVO = new ChatsVO();
 
         int count = 0;
@@ -259,7 +259,7 @@ public class ChatService {
         } catch (InterruptedException | ExecutionException e) {
             logger.error(e.getMessage(), e);
         }
-        logger.debug("listChatLogs result:{}", chatsVO);
+        logger.info("listChatLogs result:{}", chatsVO);
         return chatsVO;
     }
 
@@ -271,7 +271,7 @@ public class ChatService {
      * @param speaker 消息发送人标记
      */
     public void saveChat(int roomId, String content, int positionId, byte speaker) {
-        logger.debug("saveChat roomId:{} content:{}, positionId:{} speaker:{}", roomId, content, positionId, speaker);
+        logger.info("saveChat roomId:{} content:{}, positionId:{} speaker:{}", roomId, content, positionId, speaker);
         HrWxHrChatDO chatDO = new HrWxHrChatDO();
         String date = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
         chatDO.setCreateTime(date);
@@ -300,7 +300,7 @@ public class ChatService {
      * @return ResultOfSaveRoomVO
      */
     public ResultOfSaveRoomVO enterChatRoom(int userId, int hrId, int positionId, int roomId) {
-        logger.debug("enterChatRoom userId:{} hrId:{}, positionId:{} roomId:{}", userId, hrId, positionId, roomId);
+        logger.info("enterChatRoom userId:{} hrId:{}, positionId:{} roomId:{}", userId, hrId, positionId, roomId);
         final ResultOfSaveRoomVO resultOfSaveRoomVO;
 
         HrWxHrChatListDO chatRoom = chaoDao.getChatRoom(roomId, userId, hrId);
@@ -334,7 +334,7 @@ public class ChatService {
             resultOfSaveRoomVO = new ResultOfSaveRoomVO();
         }
         resultOfSaveRoomVO.setChatDebut(chatDebut);
-        logger.debug("enterChatRoom result:{}", resultOfSaveRoomVO);
+        logger.info("enterChatRoom result:{}", resultOfSaveRoomVO);
         return resultOfSaveRoomVO;
     }
 
@@ -345,7 +345,7 @@ public class ChatService {
      * @return
      */
     private ResultOfSaveRoomVO searchResult(HrWxHrChatListDO chatRoom, int positionId) {
-        logger.debug("searchResult HrWxHrChatListDO:{} positionId:{}", chatRoom, positionId);
+        logger.info("searchResult HrWxHrChatListDO:{} positionId:{}", chatRoom, positionId);
         ResultOfSaveRoomVO resultOfSaveRoomVO = new ResultOfSaveRoomVO();
         resultOfSaveRoomVO.setRoomId(chatRoom.getId());
 
@@ -425,7 +425,7 @@ public class ChatService {
             logger.error(e.getMessage(), e);
         }
 
-        logger.debug("searchResult result:{}", resultOfSaveRoomVO);
+        logger.info("searchResult result:{}", resultOfSaveRoomVO);
         return resultOfSaveRoomVO;
     }
 
@@ -437,7 +437,7 @@ public class ChatService {
      */
     private HrWxHrChatDO createChat(ResultOfSaveRoomVO resultOfSaveRoomVO) {
 
-        logger.debug("createChat ResultOfSaveRoomVO:{}", resultOfSaveRoomVO);
+        logger.info("createChat ResultOfSaveRoomVO:{}", resultOfSaveRoomVO);
         //1.如果HR的名称不存在，则存储 "我是{companyName}HR，我可以推荐您或者您的朋友加入我们！"
         //2.如果HR的名称存在，则存储 "我是{hrName}，{companyName}HR，我可以推荐您或者您的朋友加入我们！"
         HrWxHrChatDO chatDO = new HrWxHrChatDO();
@@ -458,7 +458,7 @@ public class ChatService {
             chatDO.setPid(resultOfSaveRoomVO.getPosition().getPositionId());
         }
         chaoDao.saveChat(chatDO);
-        logger.debug("createChat result:{}", chatDO);
+        logger.info("createChat result:{}", chatDO);
         return chatDO;
     }
 
