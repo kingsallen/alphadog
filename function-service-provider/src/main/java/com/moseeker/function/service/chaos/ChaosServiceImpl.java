@@ -186,6 +186,7 @@ public class ChaosServiceImpl {
 			p.setPosition_id(Integer.valueOf(position.getPosition_id()));
 			p.setIs_refresh((byte)PositionRefreshType.refreshing.getValue());
 			p.setRefresh_time((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
+			p.setAccount_id(position.getAccount_id());
 			positionDao.upsertThirdPartyPositions(p);
 			
 			DateTime dt = new DateTime();

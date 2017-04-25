@@ -72,7 +72,8 @@ struct ThirdPartyPositionData {
 	9: string update_time,
 	10: string occupation,
 	11: string address,
-	12: string sync_fail_reason
+	12: string sync_fail_reason,
+	13: string account_id,
 }
 
 struct HRCompanyConfData{

@@ -330,11 +330,10 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             Position position = positionDaoService.getPosition(findPositionById);
             logger.info("position:" + JSON.toJSONString(position));
             if (position.getId() > 0) {
-                logger.info("search company");
                 QueryUtil queryUtil = new QueryUtil();
                 queryUtil.addEqualFilter("id", account_id);
                 ThirdPartAccountData account = hrAccountDao.getThirdPartyAccount(queryUtil);
-                logger.info("company:" + JSON.toJSONString(account));
+                logger.info("ifAllowRefresh third party account:" + JSON.toJSONString(account));
 
                 logger.info("search thirdparyposition");
                 ThirdPartyPositionData p = positionDaoService.getThirdPartyPosition(positionId, account_id);
@@ -385,6 +384,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             account.setPassword(accountData.getPassword());
             account.setChannel(String.valueOf(accountData.getChannel()));
             account.setPosition_id(String.valueOf(positionId));
+            account.setAccount_id(String.valueOf(account_id));
 
             form.setChannel((byte) accountData.getChannel());
             if (position.getId() > 0 && thirdPartyPosition.getId() > 0) {
