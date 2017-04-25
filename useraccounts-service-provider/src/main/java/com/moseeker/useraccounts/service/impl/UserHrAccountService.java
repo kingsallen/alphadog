@@ -618,7 +618,7 @@ public class UserHrAccountService {
                     BindAccountStruct thirdPartyAccount1 = new BindAccountStruct();
                     thirdPartyAccount1.setBinding(1);
                     thirdPartyAccount1.setChannel((byte) data.getChannel());
-                    thirdPartyAccount1.setCompany_id(id);
+                    thirdPartyAccount1.setCompany_id(data.getCompany_id());
                     thirdPartyAccount1.setMember_name(data.getMembername());
                     thirdPartyAccount1.setPassword(data.getPassword());
                     thirdPartyAccount1.setUsername(data.getUsername());
