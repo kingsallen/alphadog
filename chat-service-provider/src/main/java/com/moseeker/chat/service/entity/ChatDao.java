@@ -5,6 +5,7 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.service.HrDBDao;
 import com.moseeker.thrift.gen.dao.service.JobDBDao;
 import com.moseeker.thrift.gen.dao.service.UserDBDao;
@@ -50,13 +51,15 @@ public class ChatDao {
         switch (type) {
             case HR:
                 queryUtil.addSelectAttribute("user_unread_count").addSelectAttribute("user_id");
-                queryUtil.setSortby("user_unread_count");
+                queryUtil.setSortby("user_unread_count, id");
                 queryUtil.addEqualFilter("hr_id", id);
+                queryUtil.setOrder("desc, desc");
                 break;
             case USER:
                 queryUtil.addSelectAttribute("hr_unread_count").addSelectAttribute("hr_id");
-                queryUtil.setSortby("hr_unread_count");
+                queryUtil.setSortby("hr_unread_count, id");
                 queryUtil.addEqualFilter("user_id", id);
+                queryUtil.setOrder("desc, desc");
                 break;
             default:
         }
