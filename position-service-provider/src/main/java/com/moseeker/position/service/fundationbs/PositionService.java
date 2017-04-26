@@ -778,6 +778,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 jobPositionCityDao.postResources(jobPositionCityRecordsAddlist);
             }
             // 更新jobPositionCity数据
+            logger.info("需要更新城市的列表：" + jobPositionCityRecordsUpdatelist.size() + jobPositionCityRecordsUpdatelist.toString());
             if (jobPositionCityRecordsUpdatelist.size() > 0) {
                 if (deleteCitylist.size() > 0) {
                     jobPositionCityDao.delJobPostionCityByPids(deleteCitylist);
@@ -901,6 +902,8 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 for (City city : citys) {
                     JobPositionCityRecord jobPositionCityRecord = new JobPositionCityRecord();
                     jobPositionCityRecord.setPid(pid);
+                    logger.info("城市类型：" + city.getType().toLowerCase());
+                    logger.info("VAlUE：" + city.getValue());
                     if (city.getType().toLowerCase().equals("text")) { // 城市名字，转换成cityCode，传入的是城市的时候查询dict_city
                         cityQuery.addEqualFilter("name", city.getValue());
                         try {
