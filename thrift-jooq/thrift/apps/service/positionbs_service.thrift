@@ -13,6 +13,6 @@ service PositionBS {
    	//职位同步
 	common_struct.Response synchronizePositionToThirdPartyPlatform(1: appbs_struct.ThirdPartyPositionForm position);
 	//刷新职位
-	common_struct.Response refreshPositionToThirdPartyPlatform(1:i32 user_id, 2: i32 positionId, 3:i32 channel);
+	common_struct.Response refreshPositionToThirdPartyPlatform(1: i32 positionId, 2:i32 channel);
 }
 

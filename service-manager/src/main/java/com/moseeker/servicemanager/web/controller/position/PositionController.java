@@ -250,10 +250,7 @@ public class PositionController {
             List<HashMap<Integer, Integer>> paramList = PositionParamUtils.parseRefreshParam(params);
             logger.info("/position/refresh paramList.size:" + paramList.size());
             List<Object> refreshResult = new ArrayList<>();
-            Integer user_id = params.getInt("user_id");
             ValidateUtil vu = new ValidateUtil();
-            vu.addRequiredValidate("user_id", user_id);
-            vu.addIntTypeValidate("user_id", user_id, null, null, 1, Integer.MAX_VALUE);
             String message = vu.validate();
             if (message != null) {
                 return ResponseLogNotification.fail(request, message);
@@ -262,7 +259,7 @@ public class PositionController {
                     map.forEach((positionId, channel) -> {
                         try {
                             logger.info("positionId:" + positionId + "    channel:" + channel);
-                            Response refreshPositionResponse = positionBS.refreshPositionToThirdPartyPlatform(user_id, positionId, channel);
+                            Response refreshPositionResponse = positionBS.refreshPositionToThirdPartyPlatform(positionId, channel);
                             logger.info("data:" + refreshPositionResponse.getData());
                             refreshResult.add(JSON.parse(refreshPositionResponse.getData()));
                         } catch (Exception e) {

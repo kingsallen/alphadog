@@ -22,5 +22,4 @@ struct ThirdPartyPositionForm {
     1: i32 position_id,				//职位编号
     2: i32 appid,				//调用方编号
     3: list<ThirdPartyPosition> channels,	//渠道参数
-    4: i32 user_id              //用户ID
 } 

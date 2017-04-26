@@ -32,8 +32,8 @@ public class PositionBSThriftService implements Iface {
      * 刷新职位
      */
     @Override
-    public Response refreshPositionToThirdPartyPlatform(int user_id, int positionId, int channel) throws TException {
-        return positionBS.refreshPosition(user_id, positionId, channel);
+    public Response refreshPositionToThirdPartyPlatform(int positionId, int channel) throws TException {
+        return positionBS.refreshPosition(positionId, channel);
     }
 
     public PositionBS getPositionBS() {
