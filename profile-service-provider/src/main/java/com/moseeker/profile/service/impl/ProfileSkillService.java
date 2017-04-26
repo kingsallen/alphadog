@@ -145,7 +145,7 @@ public class ProfileSkillService extends JOOQBaseServiceImpl<Skill, ProfileSkill
 	public Response postResource(Skill struct) throws TException {
 		ValidationMessage<Skill> vm = ProfileValidation.verifySkill(struct);
 		if(!vm.isPass()) {
-			return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}'}", vm.getResult()));
+			return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", vm.getResult()));
 		}
 		Response response = super.postResource(struct);
 		if (response.getStatus() == 0) {

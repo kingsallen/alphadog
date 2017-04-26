@@ -9,7 +9,6 @@ import com.moseeker.baseorm.db.hrdb.Keys;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrResourceRecord;
 import org.jooq.*;
 import org.jooq.impl.TableImpl;
-
 import javax.annotation.Generated;
 import java.sql.Timestamp;
 import java.util.Arrays;

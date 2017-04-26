@@ -344,6 +344,7 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
                     .where(JobApplication.JOB_APPLICATION.COMPANY_ID.eq(UInteger.valueOf(companyId)))
                     .and(JobApplication.JOB_APPLICATION.SOURCE_ID.eq(UInteger.valueOf(sourceId)))
                     .and(JobApplication.JOB_APPLICATION.ATS_STATUS.eq(atsStatus))
+                    .and(JobApplication.JOB_APPLICATION.EMAIL_STATUS.eq(0))
                     .fetchInto(com.moseeker.thrift.gen.application.struct.JobApplication.class)
                     .stream()
                     .map(application -> getRelatedDataByJobApplication(create, application, downloadApi, password, recommender, dl_url_required))

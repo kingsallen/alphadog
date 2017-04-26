@@ -39,6 +39,11 @@ public class JobDBDaoThriftService implements Iface {
         return positionDao.findResource(query);
     }
 
+	@Override
+	public List<Integer> listPositionIdByUserId(int userId) throws CURDException, TException {
+		return positionDao.listPositionIdByUserId(userId);
+	}
+
     @Override
     public List<JobApplicationDO> getApplications(CommonQuery query) throws TException {
         return applicationDao.getApplications(query);
@@ -73,6 +78,5 @@ public class JobDBDaoThriftService implements Iface {
     public List<PositionDetails> similarityPositionDetailsList(CommonQuery query) throws TException {
         return positionDao.similarityPositionDetailsList(query);
     }
-
 
 }

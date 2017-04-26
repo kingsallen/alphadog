@@ -5,10 +5,15 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.service.HrDBDao;
 import com.moseeker.thrift.gen.dao.service.JobDBDao;
 import com.moseeker.thrift.gen.dao.service.UserDBDao;
 import com.moseeker.thrift.gen.dao.struct.*;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrChatUnreadCountDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatListDO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,17 +47,18 @@ public class ChatDao {
     public List<HrChatUnreadCountDO> listChatRoomUnreadCount(ChatSpeakerType type, int id, int pageNo, int pageSize) {
         QueryUtil queryUtil = new QueryUtil();
         queryUtil.addSelectAttribute("room_id");
-        queryUtil.setOrder("desc");
         switch (type) {
             case HR:
-                queryUtil.addSelectAttribute("user_unread_count").addSelectAttribute("user_id");
-                queryUtil.setSortby("user_unread_count");
+                queryUtil.addSelectAttribute("user_unread_count").addSelectAttribute("hr_unread_count").addSelectAttribute("user_id");
+                queryUtil.setSortby("hr_unread_count,room_id");
                 queryUtil.addEqualFilter("hr_id", id);
+                queryUtil.setOrder("desc, desc");
                 break;
             case USER:
-                queryUtil.addSelectAttribute("hr_unread_count").addSelectAttribute("hr_id");
-                queryUtil.setSortby("hr_unread_count");
+                queryUtil.addSelectAttribute("user_unread_count").addSelectAttribute("hr_unread_count").addSelectAttribute("hr_id");
+                queryUtil.setSortby("user_unread_count,room_id");
                 queryUtil.addEqualFilter("user_id", id);
+                queryUtil.setOrder("desc,desc");
                 break;
             default:
         }

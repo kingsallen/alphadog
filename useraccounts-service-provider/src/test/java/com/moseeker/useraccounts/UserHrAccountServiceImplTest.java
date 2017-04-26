@@ -64,7 +64,7 @@ public class UserHrAccountServiceImplTest {
     }
 
 
-    @Test
+    //@Test
     public void userHrAccount() throws TException {
         UserHrAccountService.Iface user = ServiceManager.SERVICEMANAGER.getService(UserHrAccountService.Iface.class);
         Response response = user.userHrAccount(0, 1, 1, 10);

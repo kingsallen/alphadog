@@ -1,8 +1,11 @@
 package com.moseeker.baseorm.Thriftservice;
 
 import com.moseeker.baseorm.dao.userdb.*;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.service.UserEmployeeService;
+import com.moseeker.common.util.BeanUtils;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -13,6 +16,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserSearchConditionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserViewedPositionDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
+
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,14 +48,18 @@ public class UserDBDaoThriftService implements Iface {
 	@Autowired
 	private WxUserDao wxUserDao;
 
-	@Autowired
+    @Autowired
+    private UserEmployeePointsDao userEmployeePointsDao;
+
+    @Autowired
     private UserCollectPositionDao collectPositionDao;
 
 	@Autowired
     private UserSearchConditionDao searchConditionDao;
 
-	@Autowired
+    @Autowired
     private UserViewedPositionDao userViewedPositionDao;
+
 
 	@Override
 	public UserUserDO getUser(CommonQuery query) throws TException {
@@ -141,6 +149,11 @@ public class UserDBDaoThriftService implements Iface {
 	}
 
 	@Override
+	public int updateUserEmployeePoint(int id) throws BIZException, TException {
+		return employeeDao.updateUserEmployeePoint(id);
+	}
+
+	@Override
 	public Response getPointSum(List<Long> record) throws TException {
 		return userEmployeeService.getSumPoint(record);
 	}
@@ -158,6 +171,11 @@ public class UserDBDaoThriftService implements Iface {
 	@Override
 	public List<UserEmployeePointsRecordDO> getUserEmployeePoints(int employeeId) throws TException {
 		return userEmployeeService.getUserEmployeePoints(employeeId);
+	}
+
+	@Override
+	public UserEmployeePointsRecordDO saveUserEmployeePoints(UserEmployeePointsRecordDO employeePoint) throws BIZException, TException {
+		return userEmployeePointsDao.saveResource(employeePoint);
 	}
 
 	@Override
@@ -179,6 +197,20 @@ public class UserDBDaoThriftService implements Iface {
 	public UserWxUserDO getUserWxUserDO(CommonQuery query) throws CURDException, TException {
 		return wxUserDao.findResource(query);
 	}
+
+    @Override
+    public int postUserEmployeeDO(UserEmployeeDO userEmployee)
+            throws TException {
+        if (userEmployee != null) {
+            UserEmployeeRecord ueRecord = BeanUtils.structToDB(userEmployee, UserEmployeeRecord.class);
+            try {
+                return employeeDao.postResource(ueRecord);
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+        return 0;
+    }
 
     @Override
     public List<UserSearchConditionDO> getUserSearchConditions(CommonQuery query) throws TException {
@@ -234,5 +266,4 @@ public class UserDBDaoThriftService implements Iface {
     public UserViewedPositionDO saveUserViewedPosition(UserViewedPositionDO entity) throws TException {
         return userViewedPositionDao.saveResource(entity);
     }
-
 }

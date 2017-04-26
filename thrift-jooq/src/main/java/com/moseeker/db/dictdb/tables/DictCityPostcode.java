@@ -69,7 +69,6 @@ public class DictCityPostcode extends TableImpl<DictCityPostcodeRecord> {
 	 */
 	public final TableField<DictCityPostcodeRecord, String> CITY = createField("city", org.jooq.impl.SQLDataType.VARCHAR.length(10), this, "城市");
 
-
 	/**
 	 * The column <code>dictdb.dict_city_postcode.district</code>. 地区或区县
 	 */

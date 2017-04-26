@@ -5,11 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.ValueFilter;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.AccountSync;
-import com.moseeker.common.constants.AppId;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.constants.KeyIdentifier;
-import com.moseeker.common.constants.PositionSync;
+import com.moseeker.common.constants.*;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
@@ -21,60 +17,24 @@ import com.moseeker.db.dictdb.tables.records.DictCityPostcodeRecord;
 import com.moseeker.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.db.hrdb.tables.records.HrTeamRecord;
-import com.moseeker.db.jobdb.tables.records.JobCustomRecord;
-import com.moseeker.db.jobdb.tables.records.JobOccupationRecord;
-import com.moseeker.db.jobdb.tables.records.JobPositionCityRecord;
-import com.moseeker.db.jobdb.tables.records.JobPositionExtRecord;
-import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
-import com.moseeker.position.dao.DictCityPostCodeDao;
-import com.moseeker.position.dao.DictConstantDao;
-import com.moseeker.position.dao.HrTeamDao;
-import com.moseeker.position.dao.JobCustomDao;
-import com.moseeker.position.dao.JobOccupationDao;
-import com.moseeker.position.dao.JobPositionCityDao;
-import com.moseeker.position.dao.JobPositionDao;
-import com.moseeker.position.dao.JobPositonExtDao;
-import com.moseeker.position.dao.PositionDao;
-import com.moseeker.position.pojo.DictConstantPojo;
-import com.moseeker.position.pojo.JobPositionFailMess;
-import com.moseeker.position.pojo.JobPositionPojo;
-import com.moseeker.position.pojo.JobPostionResponse;
-import com.moseeker.position.pojo.PositionForSynchronizationPojo;
-import com.moseeker.position.pojo.RecommendedPositonPojo;
+import com.moseeker.db.jobdb.tables.records.*;
+import com.moseeker.position.dao.*;
+import com.moseeker.position.pojo.*;
 import com.moseeker.position.service.position.PositionChangeUtil;
-import com.moseeker.position.utils.UpdateESThread;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
-import com.moseeker.thrift.gen.dao.service.CampaignDBDao;
 import com.moseeker.thrift.gen.dao.service.CompanyDao;
 import com.moseeker.thrift.gen.dao.service.HrDBDao;
 import com.moseeker.thrift.gen.dao.service.UserHrAccountDao;
-import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
-import com.moseeker.thrift.gen.dao.struct.HrCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.HrHbConfigDO;
-import com.moseeker.thrift.gen.dao.struct.HrHbItemsDO;
-import com.moseeker.thrift.gen.dao.struct.HrHbPositionBindingDO;
-import com.moseeker.thrift.gen.dao.struct.HrTeamStruct;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
-import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignHeadImageDO;
-import com.moseeker.thrift.gen.position.struct.BatchHandlerJobPostion;
-import com.moseeker.thrift.gen.position.struct.City;
-import com.moseeker.thrift.gen.position.struct.JobPostrionObj;
-import com.moseeker.thrift.gen.position.struct.Position;
-import com.moseeker.thrift.gen.position.struct.RpExtInfo;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
-import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronizationWithAccount;
-import com.moseeker.thrift.gen.position.struct.WechatPositionListData;
-import com.moseeker.thrift.gen.position.struct.WechatPositionListQuery;
-import com.moseeker.thrift.gen.position.struct.WechatRpPositionListData;
-import com.moseeker.thrift.gen.position.struct.WechatShareData;
+import com.moseeker.thrift.gen.dao.struct.hrdb.*;
+import com.moseeker.thrift.gen.position.struct.*;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.mysql.jdbc.StringUtils;
-
 import org.apache.thrift.TException;
 import org.jooq.Field;
 import org.jooq.types.UInteger;
@@ -84,11 +44,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -503,6 +459,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             CommonQuery commonQuery = new CommonQuery();
             HashMap hashMap = new HashMap();
             hashMap.put("company_id", String.valueOf(companyId));
+            hashMap.put("source", String.valueOf(9));
             // 默认会取10条数据
             commonQuery.setPer_page(100000);
             commonQuery.setEqualFilter(hashMap);
@@ -558,13 +515,8 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     deleteCounts = dbOnlineList.size();
                     // 更新jobposition数据，由于做逻辑删除，所以不删除jobpositionExt和jobpositionCity数据
                     jobPositionDao.putResources(dbOnlineList);
-                    // 更新ES
-                    UpdateESThread updataESThread = new UpdateESThread(searchengineServices, companyServices, jobPositionIds, jobPositionDao);
-                    Thread thread = new Thread(updataESThread);
-                    thread.start();
                 }
             }
-
             // 判断哪些数据不需要更新的
             String fieldsNooverwrite = batchHandlerJobPosition.getFields_nooverwrite();
             String[] fieldsNooverwriteStrings = null;
@@ -655,7 +607,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                         query.addEqualFilter("pid", String.valueOf(jobPositionRecordTemp.getId()));
                         JobPositionExtRecord jobPositionExtRecord = jobPositonExtDao.getResource(query);
                         if (fieldsNohashs == null ||
-                                (!md5(fieldsNohashs, jobPositionRecordTemp, jobPositionExtRecord.getExtra()).equals(md5(fieldsNohashs, record, jobPositionHandlerDate.getExtra())))) {
+                                (!md5(fieldsNohashs, jobPositionRecordTemp, jobPositionExtRecord != null ? jobPositionExtRecord.getExtra() : "").equals(md5(fieldsNohashs, record, jobPositionHandlerDate.getExtra())))) {
 
                             record.setSourceId(jobPositionRecordTemp.getSourceId());
                             record.setCompanyId(UInteger.valueOf(companyId));
@@ -749,7 +701,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             jobPostionResponse.setTotalCounts(jobPositionHandlerDates.size());
             if (jobPositionIds.size() > 0) {
                 // 更新ES Search Engine
-                UpdateESThread updataESThread = new UpdateESThread(searchengineServices, companyServices, jobPositionIds, jobPositionDao);
+                PositionService.UpdateES updataESThread = new PositionService.UpdateES(jobPositionIds);
                 Thread thread = new Thread(updataESThread);
                 thread.start();
                 return ResponseUtils.success(jobPostionResponse);
@@ -791,7 +743,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 jobPositionDao.putResource(jobPositionRecord);
                 // 更新ES Search Engine
                 list.add(jobPositionRecord.getId());
-                UpdateESThread updataESThread = new UpdateESThread(searchengineServices, companyServices, list, jobPositionDao);
+                PositionService.UpdateES updataESThread = new PositionService.UpdateES(list);
                 Thread thread = new Thread(updataESThread);
                 thread.start();
                 return ResponseUtils.success(0);
@@ -999,17 +951,19 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
      */
     public List<WechatPositionListData> getPositionList(WechatPositionListQuery query) {
 
-        List<WechatPositionListData> dataList = new ArrayList<WechatPositionListData>();
+        List<WechatPositionListData> dataList = new ArrayList<>();
 
         try {
             String childCompanyId = "";
             String companyId = "";
 
-            if (query.isSetDid() && query.getCompany_id() != query.getDid()) {
+            if (query.isSetDid() && query.getDid() != 0) {
+                // 如果有did, 赋值 childCompanyId
                 childCompanyId = String.valueOf(query.getDid());
+
             } else {
                 QueryUtil qu = new QueryUtil();
-                qu.addEqualFilter("parent_id", String.valueOf(query.getCompany_id()));
+                qu.addEqualFilter("parent_id", companyId);
                 List<Hrcompany> companies = companyDao.getCompanies(qu);
 
                 List<Integer> cIds = new ArrayList<>();
@@ -1037,7 +991,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     query.getPage_size(),
                     childCompanyId,
                     query.getDepartment(),
-                    query.isOrder_by_priority(),
+                    true,
                     query.getCustom());
 
             if (ret.getStatus() == 0 && !StringUtils.isNullOrEmpty(ret.getData())) {
@@ -1047,7 +1001,9 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 
                 JSONArray pidsJson = jobj.getJSONArray("jd_id_list");
 
-                ArrayList<Integer> pids = new ArrayList<Integer>();
+                logger.info("pidsJson: " + pidsJson);
+
+                ArrayList<Integer> pids = new ArrayList<>();
                 if (pidsJson != null) {
                     int len = pidsJson.size();
                     for (int i = 0; i < len; i++) {
@@ -1087,9 +1043,12 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     e.setIn_hb(jr.getHbStatus() > 0);
                     e.setCount(jr.getCount());
                     e.setCity(jr.getCity());
+                    e.setPriority(jr.getPriority());
 
                     dataList.add(e);
                 }
+
+                logger.info(dataList.toString());
 
                 // 获取公司信息，拼装 company abbr, logo 等信息
                 final HrCompanyDO companyInfo;
@@ -1152,9 +1111,9 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
         qu.addEqualFilter("id", String.valueOf(hb_config_id));
         try {
             HrHbConfigDO hbConfig = this.hrDao.getHbConfig(qu);
-            result.setCover(hbConfig.getShare_img());
-            result.setTitle(hbConfig.getShare_title());
-            result.setDescription(hbConfig.getShare_desc());
+            result.setCover(hbConfig.getShareImg());
+            result.setTitle(hbConfig.getShareTitle());
+            result.setDescription(hbConfig.getShareDesc());
 
         } catch (TException e) {
             e.printStackTrace();
@@ -1210,34 +1169,35 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     List<HrHbPositionBindingDO> bindings = hrDao.getHbPositionBindings(qu);
 
                     // 确认 binding 只有一个，获取binding 对应的红包活动信息
-                    HrHbConfigDO hbConfig = hbConfigs.stream().filter(c -> c.getId() == bindings.get(0).getHb_config_id())
-                            .findFirst().orElseGet(null);
+                    if (bindings != null && bindings.size() > 0) {
+                        HrHbConfigDO hbConfig = hbConfigs.stream().filter(c -> c.getId() == bindings.get(0).getHbConfigId())
+                                .findFirst().orElseGet(null);
 
-                    if (hbConfig != null) {
-                        // 更新红包发送对象
-                        rpExtInfo.setEmployee_only(hbConfig.getTarget() == 0);
-                    } else {
-                        logger.warn("查询不到对应的 hbConfig");
-                        rpExtInfo.setEmployee_only(false);
+                        if (hbConfig != null) {
+                            // 更新红包发送对象
+                            rpExtInfo.setEmployee_only(hbConfig.getTarget() == 0);
+                        } else {
+                            logger.warn("查询不到对应的 hbConfig");
+                            rpExtInfo.setEmployee_only(false);
+                        }
+
+                        // 根据 binding 获取 hb_items 记录
+                        qu = new QueryUtil();
+                        qu.addEqualFilter("binding_id", String.valueOf(bindings.get(0).getId()));
+                        qu.addEqualFilter("wxuser_id", "0"); // 还未发出的
+                        List<HrHbItemsDO> remainItems = hrDao.getHbItems(qu);
+
+                        Double remain = remainItems.stream().mapToDouble(HrHbItemsDO::getAmount).sum();
+                        Integer remainInt = toIntExact(round(remain));
+                        if (remainInt < 0) {
+                            remainInt = 0;
+                        }
+
+                        rpExtInfo.setPid(p.getId());
+                        rpExtInfo.setRemain(remainInt);
+
+                        result.add(rpExtInfo);
                     }
-
-                    // 根据 binding 获取 hb_items 记录
-                    qu = new QueryUtil();
-                    qu.addEqualFilter("binding_id", String.valueOf(bindings.get(0).getId()));
-                    qu.addEqualFilter("wxuser_id", "0"); // 还未发出的
-                    List<HrHbItemsDO> remainItems = hrDao.getHbItems(qu);
-
-                    Double remain = remainItems.stream().mapToDouble(HrHbItemsDO::getAmount).sum();
-                    Integer remainInt = toIntExact(round(remain));
-                    if (remainInt < 0) {
-                        remainInt = 0;
-                    }
-
-                    rpExtInfo.setPid(p.getId());
-                    rpExtInfo.setRemain(remainInt);
-
-                    result.add(rpExtInfo);
-
                 } else if (p.getHb_status() == 3) {
                     // 该职位参与了两个红包活动
 
@@ -1250,7 +1210,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     //获取binding ids
                     List<Integer> bindingIds = bindings.stream().map(HrHbPositionBindingDO::getId).collect(Collectors.toList());
                     //获取binding 所对应的红包活动 id
-                    List<Integer> hbConfigIds = bindings.stream().map(HrHbPositionBindingDO::getHb_config_id).collect(Collectors.toList());
+                    List<Integer> hbConfigIds = bindings.stream().map(HrHbPositionBindingDO::getHbConfigId).collect(Collectors.toList());
 
                     // 得到对应的红包活动 pojo （2个）
                     List<HrHbConfigDO> configs = hbConfigs.stream().filter(s -> hbConfigIds.contains(s.getId())).collect(Collectors.toList());
@@ -1336,7 +1296,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             QueryUtil qu = new QueryUtil();
             qu.addEqualFilter("hb_config_id", String.valueOf(hbConfigId));
             List<HrHbPositionBindingDO> bindings = hrDao.getHbPositionBindings(qu);
-            List<Integer> pids = bindings.stream().map(HrHbPositionBindingDO::getPosition_id).collect(Collectors.toList());
+            List<Integer> pids = bindings.stream().map(HrHbPositionBindingDO::getPositionId).collect(Collectors.toList());
             String pidFilter = "[" + org.apache.commons.lang.StringUtils.join(pids.toArray(), ",") + "]";
 
             QueryUtil q = new QueryUtil();
@@ -1367,7 +1327,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             // 拼装公司信息
             qu = new QueryUtil();
             qu.addEqualFilter("id", String.valueOf(hbConfigId));
-            Integer companyId = hrDao.getHbConfig(qu).getCompany_id();
+            Integer companyId = hrDao.getHbConfig(qu).getCompanyId();
             qu.addEqualFilter("id", String.valueOf(companyId));
             HrCompanyDO company = companyDao.getCompany(qu);
             result.forEach(s -> {
@@ -1410,6 +1370,57 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             dest = m.replaceAll("");
         }
         return dest;
+    }
+
+    /**
+     * 内部线程类
+     * 用于更改ES索引
+     */
+    private class UpdateES extends Thread {
+        private List<Integer> list;
+
+        public UpdateES(List<Integer> list) {
+            this.list = list;
+        }
+
+        public void run() {
+            String position = "";
+            try {
+                logger.info("---Start ES Search Engine---");
+                for (Integer jobPositionId : list) {
+                    Response result = getPositionById(jobPositionId);
+                    position = result.data;
+                    Map position_map = JSON.parseObject(position, Map.class);
+                    String company_id = BeanUtils.converToString(position_map.get("company_id"));
+                    CommonQuery query = new CommonQuery();
+                    query.putToEqualFilter("id", company_id);
+                    Response company_resp = companyServices.getAllCompanies(query);
+                    String company = company_resp.data;
+                    if (com.moseeker.common.util.StringUtils.isNotNullOrEmpty(company) && company.startsWith("[")) {
+                        List company_maps = JSON.parseObject(company, List.class);
+                        Map company_map = (Map) company_maps.get(0);
+                        String company_name = (String) company_map.get("name");
+                        String scale = (String) company_map.get("scale");
+                        position_map.put("company_name", company_name);
+                        String degree_name = BeanUtils.converToString(position_map.get("degree_name"));
+                        Integer degree_above = BeanUtils.converToInteger(position_map.get("degree_above"));
+                        if (degree_above == 1) {
+                            degree_name = degree_name + "及以上";
+                        }
+                        position_map.put("degree_name", degree_name);
+                        position_map.put("scale", scale);
+                        logger.info("position_map:" + position_map.toString());
+                    }
+                    position = JSON.toJSONString(position_map);
+                    logger.info("position:" + position);
+                    searchengineServices.updateposition(position, jobPositionId);
+                }
+                logger.info("--- ES Search Engine end---");
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.error(e.getMessage(), e);
+            }
+        }
     }
 
 }

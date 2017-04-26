@@ -39,7 +39,6 @@ public class UseraccountsServer {
                     acac.getBean(UserQxServiceImpl.class));
             server.startServer();
 
-
             synchronized (UseraccountsServer.class) {
                 while (true) {
                     try {
