@@ -106,7 +106,6 @@ public class UserQxService {
         CommonQuery query = new CommonQuery();
         UserSearchConditionVO result = new UserSearchConditionVO();
         result.setSearchCondition(new UserSearchConditionDO());
-        result.setSearchCondition(new UserSearchConditionDO());
         JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.SUCCESS);
         try {
             if (userId == 0 || id == 0) {
@@ -144,7 +143,6 @@ public class UserQxService {
     public UserCollectPositionVO getUserCollectPosition(int userId, int positionId) throws TException {
         logger.info("getUserCollectPosition params: userId={}, positionId={}", userId, positionId);
         UserCollectPositionVO result = new UserCollectPositionVO();
-        result.setUserCollectPosition(new UserCollectPositionDO());
         result.setUserCollectPosition(new UserCollectPositionDO());
         JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.SUCCESS);
         try {
