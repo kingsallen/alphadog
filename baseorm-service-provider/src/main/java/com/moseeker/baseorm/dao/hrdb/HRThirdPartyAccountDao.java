@@ -62,7 +62,9 @@ public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecor
                 hrThirdPartyAccountHrRecord.setHrAccountId(userId);
                 hrThirdPartyAccountHrRecord.setThirdPartyAccountId(record.getId());
                 create.attach(hrThirdPartyAccountHrRecord);
-                return hrThirdPartyAccountHrRecord.insert();
+                int id = hrThirdPartyAccountHrRecord.insert();
+                conn.commit();
+                conn.setAutoCommit(true);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -75,7 +77,7 @@ public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecor
         } finally {
             if (conn != null) {
                 try {
-                    conn.setAutoCommit(false);
+                    conn.setAutoCommit(true);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
