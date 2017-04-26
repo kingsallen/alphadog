@@ -88,6 +88,7 @@ public class PositionBS {
 						for (ThirdPartAccountData account : thirdPartyAccounts) {
 							if (account.getId() > 0 && account.binding == 1 && account.getRemain_num() > 0) {
 								if (p.getChannel() == account.getChannel()) {
+									p.setThird_party_account_id(account.getId());
 									positionFroms.add(p);
 								}
 							}
@@ -158,6 +159,7 @@ public class PositionBS {
 							data.setOccupation(p.getCategory_sub_code());
 							data.setSync_time(syncTime);
 							data.setPosition_id(p.getPosition_id());
+							data.setAccount_id(String.valueOf(p.getAccount_id()));
 							pds.add(data);
 						});
 						// 回写数据到第三方职位表表

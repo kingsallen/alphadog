@@ -45,7 +45,7 @@ import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 @Service
 public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRecord, HrThirdPartyPosition> {
 
-	private static final String UPSERT_SQL = "insert into hrdb.hr_third_party_position(position_id, third_part_position_id, is_synchronization, is_refresh, sync_time, refresh_time, update_time, occupation, address, channel) select ?, ?, ?, ?, ?, ?, ?, ?, ?, ? from DUAL where not exists(select id from hrdb.hr_third_party_position where channel = ? and position_id = ?)";
+	private static final String UPSERT_SQL = "insert into hrdb.hr_third_party_position(position_id, third_part_position_id, is_synchronization, is_refresh, sync_time, refresh_time, update_time, occupation, address, channel, third_party_account_id) select ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? from DUAL where not exists(select id from hrdb.hr_third_party_position where third_party_account_id = ? and position_id = ?)";
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -125,8 +125,9 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 						pstmt.setString(8, position.getOccupation());
 						pstmt.setString(9, position.getAddress());
 						pstmt.setObject(10, position.getChannel());
-						pstmt.setObject(11, position.getChannel());
-						pstmt.setInt(12, position.getPosition_id());
+						pstmt.setObject(11, position.getAccount_id());
+						pstmt.setObject(12, position.getAccount_id());
+						pstmt.setInt(13, position.getPosition_id());
 						count = pstmt.executeUpdate();
 						if (count == 0) {
 							logger.info("companyDao upsertThirdPartyPositions exist");
@@ -134,8 +135,8 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 									.selectFrom(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION)
 									.where(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID
 											.equal(UInteger.valueOf(position.getPosition_id())))
-									.and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL
-											.equal(Short.valueOf(position.getChannel())))
+									.and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.THIRD_PARTY_ACCOUNT_ID
+											.equal(Integer.valueOf(position.getAccount_id())))
 									.fetchOne();
 							if (dbrecord != null) {
 								if(StringUtils.isNotNullOrEmpty(position.getAddress())) {
@@ -207,7 +208,6 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 	 * 
 	 * @param positionId
 	 *            职位编号
-	 * @param channel
 	 *            渠道号
 	 * @return
 	 */
@@ -259,7 +259,7 @@ public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRec
 			HrThirdPartyPositionRecord record = create.selectFrom(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION)
 					.where(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.POSITION_ID
 							.eq(UInteger.valueOf(position.getPosition_id())))
-					.and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.CHANNEL.eq((short) position.getChannel()))
+					.and(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION.THIRD_PARTY_ACCOUNT_ID.eq(Integer.valueOf(position.getAccount_id())))
 					.fetchOne();
 			if (record != null) {
 				//BeanUtils.structToDB(position, record, null);

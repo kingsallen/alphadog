@@ -166,6 +166,7 @@ struct ThirdPartyPositionForSynchronization {
     21: string job_id="",
     22: string pub_place_name="",
     23: string department=""
+    24: i32 account_id
 }
 
 struct ThirdPartyPositionForSynchronizationWithAccount {
