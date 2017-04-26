@@ -1,5 +1,6 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -90,10 +91,10 @@ public class UserHrAccountController {
     @ResponseBody
     public String bindThirdPartyAccount(HttpServletRequest request, HttpServletResponse response) {
         try {
-
             BindAccountStruct struct = ParamUtils.initModelForm(request, BindAccountStruct.class);
-
+            logger.info("bind thirdParyAccount in controller params==========================="+ JSON.toJSONString(struct));
             Response result = userHrAccountService.bind(struct);
+            logger.info("bind thirdParyAccount in controller end==========================="+result.getData());
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
