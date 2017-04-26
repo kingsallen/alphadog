@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrTeam extends TableImpl<HrTeamRecord> {
 
-    private static final long serialVersionUID = 361886744;
+    private static final long serialVersionUID = 1409161363;
 
     /**
      * The reference instance of <code>hrdb.hr_team</code>
@@ -120,6 +120,11 @@ public class HrTeam extends TableImpl<HrTeamRecord> {
      * The column <code>hrdb.hr_team.disable</code>. 0是正常 1是删除
      */
     public final TableField<HrTeamRecord, Integer> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "0是正常 1是删除");
+
+    /**
+     * The column <code>hrdb.hr_team.sub_title</code>. 团队小标题
+     */
+    public final TableField<HrTeamRecord, String> SUB_TITLE = createField("sub_title", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "团队小标题");
 
     /**
      * Create a <code>hrdb.hr_team</code> table reference

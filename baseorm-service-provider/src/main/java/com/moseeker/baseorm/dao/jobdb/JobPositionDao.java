@@ -1,16 +1,21 @@
 package com.moseeker.baseorm.dao.jobdb;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.JobPositionDO;
 import org.jooq.DSLContext;
+import org.jooq.Record1;
 import org.jooq.Result;
+import org.jooq.types.UInteger;
 import org.springframework.stereotype.Service;
 
 import com.moseeker.baseorm.db.dictdb.tables.DictCity;
@@ -20,7 +25,6 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPositionCity;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCityRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.common.dbutils.DBConnHelper;
-import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.position.struct.Position;
@@ -105,4 +109,50 @@ public class JobPositionDao extends StructDaoImpl<JobPositionDO, JobPositionReco
         return position;
     }
 
+    public List<Integer> listPositionIdByUserId(int userId) {
+        List<Integer> list = new ArrayList<>();
+
+        Connection conn = null;
+        try {
+            conn = DBConnHelper.DBConn.getConn();
+            DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+            UserEmployeeRecord employeeRecord = create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                    .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.equal(userId)
+                            .and(UserEmployee.USER_EMPLOYEE.DISABLE.equal((byte)0))
+                            .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.equal((byte)0)))
+                    .fetchOne();
+            if (employeeRecord != null) {
+                Result<Record1<Integer>> result = create.select(JobPosition.JOB_POSITION.ID)
+                        .from(JobPosition.JOB_POSITION)
+                        .where(JobPosition.JOB_POSITION.COMPANY_ID.equal(UInteger.valueOf(employeeRecord.getCompanyId())))
+                        .fetch();
+                if(result != null && result.size() > 0) {
+                    result.forEach(record ->  {
+                        list.add(record.value1());
+                    });
+                }
+            }
+
+
+        } catch (Exception e) {
+            try {
+                if(conn != null && !conn.isClosed()) {
+                    conn.rollback();
+                }
+            } catch (SQLException e1) {
+                logger.error(e1.getMessage(), e);
+            }
+            logger.error(e.getMessage(), e);
+        } finally {
+            try {
+                if(conn != null && !conn.isClosed()) {
+                    conn.close();
+                }
+            } catch (SQLException e1) {
+                logger.error(e1.getMessage(), e1);
+            }
+        }
+
+        return list;
+    }
 }

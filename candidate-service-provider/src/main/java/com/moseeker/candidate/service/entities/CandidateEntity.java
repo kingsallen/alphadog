@@ -396,7 +396,7 @@ public class CandidateEntity implements Candidate {
     /**
      * 组装排序结果
      * @param sortingDOList 推荐排序数组，按照推荐从多到少排序
-     * @param postUserId 推荐人编号
+     * @param postUserId 推荐人编号  @return 排序结果
      * @return 排序结果
      */
     private SortResult assembleSortingResult(List<CandidateRecomRecordSortingDO> sortingDOList, int postUserId) {
