@@ -205,29 +205,8 @@ public class PositionController {
     @ResponseBody
     public String thirdpartyposition(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Map<String, Object> data = ParamUtils.parseRequestParam(request);
-            List<ThirdPartyPositionData> datas = null;
-            if (data.containsKey("position_id")) {
-                //获取发布人的ID
-                int positionId = Integer.valueOf(data.get("position_id").toString());
-                Response resp = positonServices.getPositionById(positionId);
-                if(resp.getStatus() == 0) {
-                    int publisher = JSON.parseObject(resp.getData()).getInteger("publisher");
-                    //获取该发布人的第三方账号
-                    List<ThirdPartAccountData> thirdPartAccountDatas = hraccountDao.getThirdPartyAccountsByUserId(publisher);
-                    if (thirdPartAccountDatas.size() > 0) {
-                        CommonQuery qu = ParamUtils.initModelForm(data, CommonQuery.class);
-                        StringBuilder inIds = new StringBuilder();
-                        inIds.append('[');
-                        for (ThirdPartAccountData d : thirdPartAccountDatas) {
-                            inIds.append(',').append(d.getId());
-                        }
-                        inIds.delete(0, 1).append(']');
-                        qu.getEqualFilter().put("third_party_account_id", inIds.toString());
-                        datas = positonServices.getThirdPartyPositions(qu);
-                    }
-                }
-            }
+            CommonQuery qu = ParamUtils.initCommonQuery(request, CommonQuery.class);
+            List<ThirdPartyPositionData> datas = positonServices.getThirdPartyPositions(qu);
             Response result = ResponseUtils.success(datas);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
