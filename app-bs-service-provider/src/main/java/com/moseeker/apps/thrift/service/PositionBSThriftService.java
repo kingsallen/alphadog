@@ -1,6 +1,8 @@
 package com.moseeker.apps.thrift.service;
 
 import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,8 @@ import com.moseeker.thrift.gen.common.struct.Response;
 @Service
 public class PositionBSThriftService implements Iface {
 
+    Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     private PositionBS positionBS;
 
@@ -20,6 +24,7 @@ public class PositionBSThriftService implements Iface {
      */
     @Override
     public Response synchronizePositionToThirdPartyPlatform(ThirdPartyPositionForm position) throws TException {
+        logger.info("PositionBSThriftService.synchronizePositionToThirdPartyPlatform");
         return positionBS.synchronizePositionToThirdPartyPlatform(position);
     }
 
