@@ -66,6 +66,7 @@ public class PositionBS {
 	 * @return
 	 */
 	public Response synchronizePositionToThirdPartyPlatform(ThirdPartyPositionForm position) {
+		logger.info("synchronizePositionToThirdPartyPlatform:" + JSON.toJSONString(position));
 		Response response = null;
 		// 职位数据是否存在
 		QueryUtil qu = new QueryUtil();
