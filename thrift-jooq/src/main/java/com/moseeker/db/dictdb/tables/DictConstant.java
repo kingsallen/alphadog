@@ -36,7 +36,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictConstant extends TableImpl<DictConstantRecord> {
 
-	private static final long serialVersionUID = 742317522;
+	private static final long serialVersionUID = 657880397;
 
 	/**
 	 * The reference instance of <code>dictdb.dict_constant</code>

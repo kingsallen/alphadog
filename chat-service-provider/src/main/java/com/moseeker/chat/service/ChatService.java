@@ -1,13 +1,17 @@
 package com.moseeker.chat.service;
 
-import com.google.common.collect.Lists;
 import com.moseeker.chat.constant.ChatSpeakerType;
 import com.moseeker.chat.service.entity.ChatDao;
 import com.moseeker.chat.utils.Page;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.chat.struct.*;
 import com.moseeker.thrift.gen.dao.struct.*;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrChatUnreadCountDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatListDO;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +29,7 @@ import java.util.concurrent.Future;
  * Created by jack on 08/03/2017.
  */
 @Service
+@CounterIface
 public class ChatService {
 
     Logger logger = LoggerFactory.getLogger(ChatService.class);
@@ -49,7 +54,7 @@ public class ChatService {
      * @return 聊天室分页信息
      */
     public HRChatRoomsVO listHRChatRoom(int hrId, int pageNo, int pageSize) {
-        logger.debug("listHRChatRoom hrId:{}, pageNo:{} pageSize:{}", hrId, pageNo, pageSize);
+        logger.info("listHRChatRoom hrId:{}, pageNo:{} pageSize:{}", hrId, pageNo, pageSize);
         HRChatRoomsVO rooms = new HRChatRoomsVO();
         int count = chaoDao.countHRChatRoom(hrId);
         Page page = new Page(pageNo, pageSize, count);
@@ -72,7 +77,7 @@ public class ChatService {
                     HRChatRoomVO hrChatRoomVO = new HRChatRoomVO();
                     hrChatRoomVO.setId(chatUnreadCountDO.getRoomId());
                     hrChatRoomVO.setUserId(chatUnreadCountDO.getUserId());
-                    hrChatRoomVO.setUnReadNum(chatUnreadCountDO.getUserUnreadCount());
+                    hrChatRoomVO.setUnReadNum(chatUnreadCountDO.getHrUnreadCount());
 
                     List<HrWxHrChatListDO> chatRoomList = null;
                     List<UserUserDO> userList = null;
@@ -88,7 +93,7 @@ public class ChatService {
                                 .filter(chatRoom -> chatRoom.getId() == chatUnreadCountDO.getRoomId()).findFirst();
                         if(chatRoomDOOptional.isPresent()) {
                             hrChatRoomVO.setCreateTime(chatRoomDOOptional.get().getUpdateTime());
-                            int status = chatRoomDOOptional.get().isStatus()?1:0;
+                            int status = chatRoomDOOptional.get().getStatus();
                             hrChatRoomVO.setStatus(status);
                         }
                     }
@@ -115,7 +120,7 @@ public class ChatService {
             }
         }
 
-        logger.debug("listHRChatRoom result : {}", rooms);
+        logger.info("listHRChatRoom result : {}", rooms);
         return rooms;
     }
 
@@ -127,7 +132,7 @@ public class ChatService {
      * @return 聊天室分页信息
      */
     public UserChatRoomsVO listUserChatRoom(int userId, int pageNo, int pageSize) {
-        logger.debug("userChatRoomsVO userId:{}, pageNo:{} pageSize:{}", userId, pageNo, pageSize);
+        logger.info("userChatRoomsVO userId:{}, pageNo:{} pageSize:{}", userId, pageNo, pageSize);
         UserChatRoomsVO userChatRoomsVO = new UserChatRoomsVO();
 
         //计算数量的操作理论上是最快的，所以用它去判断是否有聊天室
@@ -164,7 +169,7 @@ public class ChatService {
                             Optional<HrWxHrChatListDO> chatRoomOptional = chatRooms.stream()
                                     .filter(chatRoom -> chatRoom.getId() == hrChatUnreadCountDO.getRoomId()).findFirst();
                             if(chatRoomOptional.isPresent()) {
-                                int status = chatRoomOptional.get().isStatus() ? 1:0;
+                                int status = chatRoomOptional.get().getStatus();
                                 userChatRoomVO.setStatus(status);
                                 userChatRoomVO.setCreateTime(chatRoomOptional.get().getUpdateTime());
                             }
@@ -212,7 +217,7 @@ public class ChatService {
                 userChatRoomsVO.setRooms(userChatRoomVOList);
             }
         }
-        logger.debug("userChatRoomsVO result:{}", userChatRoomsVO);
+        logger.info("userChatRoomsVO result:{}", userChatRoomsVO);
         return userChatRoomsVO;
     }
 
@@ -224,7 +229,7 @@ public class ChatService {
      * @return
      */
     public ChatsVO listChatLogs(int roomId, int pageNo, int pageSize) {
-        logger.debug("listChatLogs roomId:{} pageNo:{}, pageSize:{}", roomId, pageNo, pageSize);
+        logger.info("listChatLogs roomId:{} pageNo:{}, pageSize:{}", roomId, pageNo, pageSize);
         ChatsVO chatsVO = new ChatsVO();
 
         int count = 0;
@@ -249,7 +254,7 @@ public class ChatService {
                     chatVO.setId(chatDO.getId());
                     chatVO.setContent(chatDO.getContent());
                     chatVO.setCreate_time(chatDO.getCreateTime());
-                    byte speaker = (byte) (chatDO.isSpeaker() ? 1:0);
+                    byte speaker = chatDO.getSpeaker();
                     chatVO.setSpeaker(speaker);
                     chatVOList.add(chatVO);
                 });
@@ -260,7 +265,7 @@ public class ChatService {
         } catch (InterruptedException | ExecutionException e) {
             logger.error(e.getMessage(), e);
         }
-        logger.debug("listChatLogs result:{}", chatsVO);
+        logger.info("listChatLogs result:{}", chatsVO);
         return chatsVO;
     }
 
@@ -272,14 +277,13 @@ public class ChatService {
      * @param speaker 消息发送人标记
      */
     public void saveChat(int roomId, String content, int positionId, byte speaker) {
-        logger.debug("saveChat roomId:{} content:{}, positionId:{} speaker:{}", roomId, content, positionId, speaker);
+        logger.info("saveChat roomId:{} content:{}, positionId:{} speaker:{}", roomId, content, positionId, speaker);
         HrWxHrChatDO chatDO = new HrWxHrChatDO();
         String date = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
         chatDO.setCreateTime(date);
         chatDO.setContent(content);
         chatDO.setPid(positionId);
-        boolean spk = speaker == 0 ? false : true;
-        chatDO.setSpeaker(spk);
+        chatDO.setSpeaker(speaker);
         chatDO.setChatlistId(roomId);
         chaoDao.saveChat(chatDO);
 
@@ -302,7 +306,7 @@ public class ChatService {
      * @return ResultOfSaveRoomVO
      */
     public ResultOfSaveRoomVO enterChatRoom(int userId, int hrId, int positionId, int roomId) {
-        logger.debug("enterChatRoom userId:{} hrId:{}, positionId:{} roomId:{}", userId, hrId, positionId, roomId);
+        logger.info("enterChatRoom userId:{} hrId:{}, positionId:{} roomId:{}", userId, hrId, positionId, roomId);
         final ResultOfSaveRoomVO resultOfSaveRoomVO;
 
         HrWxHrChatListDO chatRoom = chaoDao.getChatRoom(roomId, userId, hrId);
@@ -313,7 +317,7 @@ public class ChatService {
             chatRoom.setCreateTime(createTime);
             chatRoom.setHraccountId(hrId);
             chatRoom.setSysuserId(userId);
-            chatRoom.setStatus(false);
+            chatRoom.setStatus((byte)0);
             chatRoom = chaoDao.saveChatRoom(chatRoom);
             chatDebut = true;
         }
@@ -336,7 +340,7 @@ public class ChatService {
             resultOfSaveRoomVO = new ResultOfSaveRoomVO();
         }
         resultOfSaveRoomVO.setChatDebut(chatDebut);
-        logger.debug("enterChatRoom result:{}", resultOfSaveRoomVO);
+        logger.info("enterChatRoom result:{}", resultOfSaveRoomVO);
         return resultOfSaveRoomVO;
     }
 
@@ -347,7 +351,7 @@ public class ChatService {
      * @return
      */
     private ResultOfSaveRoomVO searchResult(HrWxHrChatListDO chatRoom, int positionId) {
-        logger.debug("searchResult HrWxHrChatListDO:{} positionId:{}", chatRoom, positionId);
+        logger.info("searchResult HrWxHrChatListDO:{} positionId:{}", chatRoom, positionId);
         ResultOfSaveRoomVO resultOfSaveRoomVO = new ResultOfSaveRoomVO();
         resultOfSaveRoomVO.setRoomId(chatRoom.getId());
 
@@ -427,7 +431,7 @@ public class ChatService {
             logger.error(e.getMessage(), e);
         }
 
-        logger.debug("searchResult result:{}", resultOfSaveRoomVO);
+        logger.info("searchResult result:{}", resultOfSaveRoomVO);
         return resultOfSaveRoomVO;
     }
 
@@ -439,10 +443,12 @@ public class ChatService {
      */
     private HrWxHrChatDO createChat(ResultOfSaveRoomVO resultOfSaveRoomVO) {
 
-        logger.debug("createChat ResultOfSaveRoomVO:{}", resultOfSaveRoomVO);
+        logger.info("createChat ResultOfSaveRoomVO:{}", resultOfSaveRoomVO);
+        //1.如果HR的名称不存在，则存储 "我是{companyName}HR，我可以推荐您或者您的朋友加入我们！"
+        //2.如果HR的名称存在，则存储 "我是{hrName}，{companyName}HR，我可以推荐您或者您的朋友加入我们！"
         HrWxHrChatDO chatDO = new HrWxHrChatDO();
         chatDO.setChatlistId(resultOfSaveRoomVO.getRoomId());
-        chatDO.setSpeaker(true);
+        chatDO.setSpeaker((byte)1);
         String createTime = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
         chatDO.setCreateTime(createTime);
         String content = String.format(WELCOMES_CONTER, resultOfSaveRoomVO.getUser().getUserName());
@@ -451,7 +457,7 @@ public class ChatService {
             chatDO.setPid(resultOfSaveRoomVO.getPosition().getPositionId());
         }
         chaoDao.saveChat(chatDO);
-        logger.debug("createChat result:{}", chatDO);
+        logger.info("createChat result:{}", chatDO);
         return chatDO;
     }
 

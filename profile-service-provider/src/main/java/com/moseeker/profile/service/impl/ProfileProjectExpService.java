@@ -168,7 +168,7 @@ public class ProfileProjectExpService extends JOOQBaseServiceImpl<ProjectExp, Pr
 	public Response postResource(ProjectExp struct) throws TException {
 		ValidationMessage<ProjectExp> vm = ProfileValidation.verifyProjectExp(struct);
 		if(!vm.isPass()) {
-			return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}'}", vm.getResult()));
+			return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", vm.getResult()));
 		}
 		Response response = super.postResource(struct);
 		if (response.getStatus() == 0) {

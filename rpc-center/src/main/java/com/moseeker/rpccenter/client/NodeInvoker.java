@@ -5,7 +5,14 @@ import java.lang.reflect.Method;
 import java.net.ConnectException;
 import java.net.SocketException;
 
+import com.moseeker.rpccenter.common.ThriftUtils;
+import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.common.struct.CURDException;
 import org.apache.commons.pool.impl.GenericKeyedObjectPool;
+import org.apache.thrift.TApplicationException;
+import org.apache.thrift.TException;
+import org.apache.thrift.TServiceClient;
+import org.apache.thrift.server.TServer;
 import org.apache.thrift.transport.TTransportException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +61,7 @@ public class NodeInvoker<T> implements Invoker {
 	 * 
 	 */
 	@Override
-	public Object invoke(Method method, Object[] args) throws RpcException {
+	public Object invoke(Method method, Object[] args) throws CURDException, BIZException, RpcException {
 		T client = null;
         ZKPath root = null;
 		try {
@@ -83,41 +90,50 @@ public class NodeInvoker<T> implements Invoker {
                 Object result = method.invoke(client, args);
                 
                 return result;
+            } catch (CURDException | BIZException ce) {
+                System.out.println("CURDException | BIZException ce");
+                ce.printStackTrace();
+                throw ce;
             } catch (ConnectException ce) {
             	LOGGER.error(ce.getMessage(), ce);
             	pool.clear(node);
                 NodeManager.NODEMANAGER.removePath(node);
-            } catch (InvocationTargetException ite) {// XXX:InvocationTargetException异常发生在method.invoke()中
+            } catch (InvocationTargetException ite) {
+                // XXX:InvocationTargetException异常发生在method.invoke()中
                 Throwable cause = ite.getCause();
-                
-              //  cause.getMessage()
+                //  cause.getMessage()
                 if (cause != null) {
-                    if (cause instanceof TTransportException) {
+                    if (cause instanceof CURDException) {
+                        throw  (CURDException)cause;
+                    }
+                    if (cause instanceof BIZException) {
+                        throw  (BIZException)cause;
+                    }
+                    if (cause instanceof TTransportException || cause instanceof TApplicationException) {
 
                         // 超时
                         // hostSet.addDeadInstance(serverNode); // 加入dead集合中
-
                         exception = cause;
                         try {
                             // XXX:这里直接清空pool,否则会出现连接慢恢复的现象
                             // 发送socket异常时，证明socket已经失效，需要重新创建
                             if (cause.getCause() != null && cause.getCause() instanceof SocketException) {
                             	//有节点重建任务，一般不存在超时问题
-                                /*pool.clear(node);
-                                NodeManager.NODEMANAGER.removePath(node);*/
                                 //warning
                                 //Notification.sendThriftConnectionError(serverNode+"  socket已经失效, error:"+ite.getMessage());
+                                pool.clear(node);
                                 LOGGER.error(node+"  socket已经失效, error:"+ite.getMessage(), ite);
                                 LOGGER.error("parentName:{}  node:{}", parentName, node);
                                 LOGGER.debug("after clear getNumActive:"+pool.getNumActive());
                             } else {
                                 // XXX:其他异常的情况，需要将当前链接置为无效
-                                //pool.invalidateObject(node, client);
                             	//warning
                                 //Notification.sendThriftConnectionError(serverNode+"  链接置为无效, error:"+ite.getMessage());
+                                pool.invalidateObject(node, client);
                                 LOGGER.error(node+"  链接置为无效, error:"+ite.getMessage(), ite);
                                 LOGGER.debug("after invalidateObject getNumActive:"+pool.getNumActive());
                             }
+                            client = null;
                         } catch (Exception e) {
                             LOGGER.error(e.getMessage(), e);
                         }
@@ -128,10 +144,8 @@ public class NodeInvoker<T> implements Invoker {
                 } else {
                     exception = ite;
                 }
-                ite.printStackTrace();
                 LOGGER.error(ite.getMessage(), ite);
             } catch (Throwable e) {
-            	e.printStackTrace();
             	LOGGER.debug("after returnObject getNumActive:"+pool.getNumActive());
             	LOGGER.error(e.getMessage(), e);
                 exception = e;
@@ -146,7 +160,7 @@ public class NodeInvoker<T> implements Invoker {
                 }
             }
         }
-        throw new RpcException("服务超时，请稍候再试!", exception);
+        throw new RpcException(exception.getMessage(), exception);
 	}
 
 	

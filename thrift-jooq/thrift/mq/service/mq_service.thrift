@@ -12,7 +12,7 @@ service MqService {
    
    common_struct.Response sendEMail(1: mq_struct.EmailStruct emailStruct);
    
-   common_struct.Response sendAuthEMail(1: map<string, string> params, 2: i32 eventType, 3: string email, 4: string subject);
+   common_struct.Response sendAuthEMail(1: map<string, string> params, 2: i32 eventType, 3: string email, 4: string subject 5: string senderName, 6: string senderDisplay);
 
    common_struct.Response sendMandrilEmail(1: mq_struct.MandrillEmailStruct mandrillEmailStruct);
 

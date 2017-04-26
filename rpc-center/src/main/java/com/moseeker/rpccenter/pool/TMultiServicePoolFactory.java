@@ -84,6 +84,21 @@ public class TMultiServicePoolFactory<T> extends BaseKeyedPoolableObjectFactory<
         throw new RpcException("Not find a vilid server!");
     }
 
+    @Override
+    public void activateObject(ZKPath key, T obj) throws Exception {
+        if (obj != null) {
+            TTransport tp = ((TServiceClient) obj).getInputProtocol().getTransport();
+            if (!tp.isOpen()) {
+                tp.open();
+            }
+
+            TTransport output = ((TServiceClient) obj).getOutputProtocol().getTransport();
+            if(!output.isOpen()) {
+                output.open();
+            }
+        }
+    }
+
     /**
      * 销毁对象
      */

@@ -21,8 +21,10 @@ struct HrAppCvConfDO {
 struct HrChatUnreadCountDO {
 
 	1: optional i32 roomId,	//聊天室编号
-	2: optional i32 hrUnreadCount,	//hr未读消息数量
-	3: optional i32 userUnreadCount	//员工未读消息数量
+	2: optional i32 hrId,	//HR编号 userdb.user_hr_account
+	3: optional i32 userId,	//用户编号 userdb.user_user.id
+	4: optional i32 hrUnreadCount,	//hr未读消息数量
+	5: optional i32 userUnreadCount	//员工未读消息数量
 
 }
 
@@ -73,8 +75,13 @@ struct HrCmsModuleDO {
 	1: optional i32 id,	//null
 	2: optional i32 pageId,	//hr_cms_pages.id
 	3: optional string moduleName,	//模块名称
+<<<<<<< HEAD
 	4: optional i32 type,	//1,企业模块A 2，企业模块B，3企业模块C，4，企业模块D，5，企业模块E，6地图，7，二维码 8,团队详情9，职位详情，10，动态
 	5: optional i32 orders,	//顺序
+=======
+	4: optional i32 type,	//1,企业模块A 2，企业模块B，3企业模块C，4，企业模块D，5，企业模块E，6地图，7，二维码 8,团队详情9，职位详情10，动态
+	5: optional i32 order,	//顺序
+>>>>>>> master
 	6: optional string link,	//模板链接
 	7: optional i32 limit,	//限制显示数量，0为不限制
 	8: optional i32 disable,	//状态 0 是有效 1是无效
@@ -133,7 +140,7 @@ struct HrCompanyAccountDO {
 struct HrCompanyConfDO {
 
 	1: optional i32 companyId,	//null
-	2: optional i32 themeId,	//sys_theme id
+	2: optional i32 themeId,	//config_sys_theme.id
 	3: optional i32 hbThrottle,	//全局每人每次红包活动可以获得的红包金额上限
 	4: optional string appReply,	//申请提交成功回复信息
 	5: optional string createTime,	//创建时间
@@ -143,6 +150,7 @@ struct HrCompanyConfDO {
 	9: optional string recommendSuccess,	//推荐成功自定义文案
 	10: optional string forwardMessage,	//转发职位自定义文案
 	11: optional i32 applicationCountLimit,	//一个人在一个公司下每月申请次数限制
+<<<<<<< HEAD
 	12: optional string jobOccupation,	//自定义字段名称
 	13: optional string jobCustomTitle,	//职位自定义字段标题
 	14: optional string teamnameCustom,	//自定义部门别名
@@ -150,6 +158,15 @@ struct HrCompanyConfDO {
 	16: optional string applicationTime,	//newjd_status即新的jd页的生效时间，
 	17: optional double hrChat,	//IM聊天开关，0：不开启，1：开启
 	18: optional double showQxOnly	//公司信息、团队信息、职位信息等只在仟寻展示，0: 否， 1: 是
+=======
+	12: optional string jobCustomTitle,	//职位自定义字段标题
+	13: optional string searchSeq,	//搜索页页面设置顺序,3#1#2
+	14: optional string searchImg,	//搜索页页面设置背景图
+	15: optional string jobOccupation,	//自定义字段名称
+	16: optional string teamnameCustom,	//自定义部门别名
+	17: optional string applicationTime,	//newjd_status即新的jd页的生效时间，
+	18: optional i32 newjdStatus	//新jd页去设置状态0是未开启，1是用户申请开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
+>>>>>>> master
 
 }
 
@@ -257,9 +274,9 @@ struct HrHbItemsDO {
 	1: optional i32 id,	//null
 	2: optional i32 hbConfigId,	//hr_hb_config.id
 	3: optional i32 bindingId,	//position_hb_binding.id
-	4: optional i32 index,	//这条数据是第几个红包 0 < x <= 总红包数
+	4: optional i32 index,	//这条数据是第几个红包 0 < x <= 总红包数, 如果是 NULL 表示这是一个空红包
 	5: optional double amount,	//红包金额
-	6: optional i8 status,	//0:还未送出，1:已经送出
+	6: optional i8 status,	//0:初始状态,1:发送了消息模成功,2:发送消息模板失败,尝试直接发送有金额的红包,3:打开刮刮卡,点击红包数字前,4:点击刮刮卡上红包数字后,5:发送红包前,校验 current_user.qxuser 不通过,红包停发,6:发送红包前,校验刮刮卡中的 hb_item 不通过,红包停发,7:跳过模版消息直接发送红包失败,100: 发送消息模板后成功发送了红包,101: 跳过发送消息模板后成功发送了红包,-1: 发送了 0 元红包的消息模板
 	7: optional i32 wxuserId,	//获取红包的用户
 	8: optional string openTime,	//红包打开时间
 	9: optional string createTime,	//创建时间
@@ -315,7 +332,8 @@ struct HrHbSendRecordDO {
 	12: optional i32 totalAmount,	//付款金额,单位分
 	13: optional string sendTime,	//红包发送时间
 	14: optional string sendListid,	//红包订单的微信单号
-	15: optional string createTime	//null
+	15: optional string createTime,	//null
+	16: optional i32 hbItemId	//hr_hb_items.id 该红包 api 调用所对应的红包记录
 
 }
 
@@ -429,7 +447,7 @@ struct HrRecruitStatisticsDO {
 	15: optional i32 onBoardNum,	//入职人数
 	16: optional i32 recomOnBoardNum,	//推荐入职人数
 	17: optional i32 notViewedNum,	//简历未查阅人数
-	18: optional i32 recomNotViewedNum,	//推荐简历未查阅人数
+	18: optional i32 recomNotViewedNum,	//推荐未查阅人数
 	19: optional i32 notQualifiedNum,	//简历不匹配人数
 	20: optional i32 recomNotQualifiedNum	//推荐简历不匹配人数
 
@@ -485,7 +503,9 @@ struct HrResourceDO {
 	4: optional string remark,	//备注资源
 	5: optional i32 companyId,	//企业id
 	6: optional string title,	//资源名称
-	7: optional i32 disable	//0是正常1是删除
+	7: optional i32 disable,	//0是正常1是删除
+	8: optional string updateTime,	//资源修改时间
+	9: optional string createTime	//资源创建时间
 
 }
 
@@ -605,7 +625,8 @@ struct HrTeamMemberDO {
 	6: optional i32 userId,	//成员对应用户
 	7: optional string createTime,	//创建时间
 	8: optional string updateTime,	//更新时间
-	9: optional i32 resId	//成员头像hr_resource.id
+	9: optional i32 resId,	//成员头像hr_resource.id
+	10: optional i32 disable	//0是正常1是删除
 
 }
 
@@ -617,7 +638,7 @@ struct HrThirdPartyAccountDO {
 	3: optional string username,	//帐号
 	4: optional string password,	//密码
 	5: optional string membername,	//会员名称
-	6: optional i32 binding,	//0=未绑定,1=绑定,2=绑定中，3=绑定失败
+	6: optional i32 binding,	//0=未绑定,1=绑定
 	7: optional i32 companyId,	//hrdb.hr_company.id
 	8: optional i32 remainNum,	//点数
 	9: optional string syncTime,	//同步时间
@@ -701,7 +722,8 @@ struct HrWxHrChatListDO {
 	4: optional i8 status,	//状态，0：有效，1：无效
 	5: optional string createTime,	//创建时间
 	6: optional string wxChatTime,	//sysuser最近一次聊天时间
-	7: optional string hrChatTime	//HR最近一次聊天时间
+	7: optional string hrChatTime,	//HR最近一次聊天时间
+	8: optional string updateTime	//创建时间
 
 }
 
@@ -815,7 +837,7 @@ struct HrWxWechatDO {
 	12: optional i32 welcome,	//welcome message
 	13: optional i32 defMsg,	//default message
 	14: optional string qrcode,	//关注公众号的二维码
-	15: optional double passiveSeeker,	//被动求职者开关，0= 开启, 1=不开启
+	15: optional double passiveSeeker,	//被动求职者开关，0：开启，1：不开启
 	16: optional double thirdOauth,	//授权大岂第三方平台0：未授权 1：授权了
 	17: optional double hrRegister,	//是否启用免费雇主注册，0：不启用，1：启用
 	18: optional i32 accessTokenCreateTime,	//access_token最新更新时间
@@ -829,8 +851,7 @@ struct HrWxWechatDO {
 	26: optional string updateTime,	//修改时间
 	27: optional double hrChat,	//IM聊天开关，0：不开启，1：开启
 	28: optional i32 showQxQrcode,	//显示仟寻聚合号二维码, 0:不允许，1:允许
-	29: optional i32 showNewJd	//null
-
+	30: optional i32 showCustomTheme	//show_custom_theme, 用于表示是否可以开启企业自定义颜色配置 0是否 1是开启
 }
 
 

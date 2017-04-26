@@ -7,14 +7,18 @@ package com.moseeker.baseorm.db.hrdb.tables;
 import com.moseeker.baseorm.db.hrdb.Hrdb;
 import com.moseeker.baseorm.db.hrdb.Keys;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCmsPagesRecord;
-import org.jooq.*;
 import org.jooq.impl.TableImpl;
 
 import javax.annotation.Generated;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
-
+import org.jooq.Field;
+import org.jooq.Identity;
+import org.jooq.Schema;
+import org.jooq.Table;
+import org.jooq.TableField;
+import org.jooq.UniqueKey;
 
 /**
  * 微信端新jd配置表

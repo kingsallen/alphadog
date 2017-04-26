@@ -3,6 +3,7 @@ package com.moseeker.mq.thrift;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.moseeker.common.util.ConfigPropertiesUtil;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +76,11 @@ public class ThriftService implements Iface {
 				params.put("# username #", username);
 				params.put("# send_date #", new DateTime().toString("yyyy-MM-dd"));
 				params.put("# verified_url #", emailStruct.getUrl());
-				return emailProvider.sendBizEmail(params, emailStruct.getEventType(), emailStruct.getEmail(), emailStruct.getSubject());
+                ConfigPropertiesUtil propertiesUtil = ConfigPropertiesUtil.getInstance();
+				String subject = propertiesUtil.get("email.verify.subject", String.class);
+				String senderName = propertiesUtil.get("email.verify.sendName", String.class);
+				String senderDisplay = propertiesUtil.get("email.verify.sendDisplay", String.class);
+				return emailProvider.sendBizEmail(params, emailStruct.getEventType(), emailStruct.getEmail(), subject, senderName, senderDisplay);
 			} else {
 				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 			}
@@ -85,18 +90,17 @@ public class ThriftService implements Iface {
 		
 	}
 
-	@Override
+    @Override
 	public Response sendMandrilEmail(MandrillEmailStruct mandrillEmailStruct) throws TException {
 		// TODO Auto-generated method stub
 		return mandrillEmailProducer.queueEmail(mandrillEmailStruct);
 	}
-	
-	@Override
-	public Response sendAuthEMail(Map<String, String> params, int eventType,
-			String email, String subject) throws TException {
-		return emailProvider.sendBizEmail(params, eventType, email, subject);
-	}
-	
+
+    @Override
+    public Response sendAuthEMail(Map<String, String> params, int eventType, String email, String subject, String senderName, String senderDisplay) throws TException {
+        return emailProvider.sendBizEmail(params, eventType, email, subject, senderName, senderDisplay);
+    }
+
 	@Override
 	public Response sendSMS(SmsType smsType, String mobile,
 			Map<String, String> data, String sys, String ip) throws TException {

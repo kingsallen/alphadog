@@ -5,15 +5,13 @@ package com.moseeker.baseorm.db.hrdb.tables.records;
 
 
 import com.moseeker.baseorm.db.hrdb.tables.HrCmsModule;
+import java.sql.Timestamp;
+import javax.annotation.Generated;
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record10;
 import org.jooq.Row10;
 import org.jooq.impl.UpdatableRecordImpl;
-
-import javax.annotation.Generated;
-import java.sql.Timestamp;
-
 
 /**
  * 微信端新jd内容模块配置项
