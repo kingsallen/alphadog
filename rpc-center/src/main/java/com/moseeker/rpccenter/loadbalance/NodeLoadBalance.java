@@ -52,6 +52,11 @@ public enum NodeLoadBalance {
 			index.clear();
 			//warning
 		}
+		if (node == null){
+			logger.info("getNextNode null,root:" + root + ",name:" + name);
+			logger.info("root.getChirldren():" + root.getChirldren());
+		}
+		
 		return node;
 	}
 }
