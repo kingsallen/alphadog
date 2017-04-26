@@ -699,7 +699,7 @@ public class UserHrAccountService {
 
             ThirdPartAccountData thirdPartAccount = hraccountDao.getThirdPartyAccountByUserId((int) user.getId(), channelType);
 
-            if (thirdPartAccount != null && user.getAccount_type() != 0) {
+            if (thirdPartAccount != null && user.getAccount_type() != 0 && thirdPartAccount.getId() != 0) {
                 //已经绑定该渠道第三方账号，并且不是主账号，那么不允许绑定
                 return ResponseUtils.fail(ConstantErrorCodeMessage.HRACCOUNT_BINDING);
             } else {
@@ -723,7 +723,7 @@ public class UserHrAccountService {
                     return ResponseUtils.success(null);
                 }
             }
-        } catch (TException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);

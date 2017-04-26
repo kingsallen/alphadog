@@ -146,10 +146,10 @@ public class HRAccountDaoThriftService implements Iface {
                         .where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.in(thirdPartyAccounts))
                         .and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.eq((short) channel))
                         .fetchOneInto(ThirdPartAccountData.class);
-                return data;
+                return new ThirdPartAccountData();
             }
 
-            return null;
+            return new ThirdPartAccountData();
         } catch (Exception e) {
             throw new TException(e);
         }

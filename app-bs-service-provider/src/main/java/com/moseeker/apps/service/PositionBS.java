@@ -261,7 +261,7 @@ public class PositionBS {
             ThirdPartAccountData thirdPartAccountData = null;
             if (position != null) {
                 thirdPartAccountData = userHrAccountDao.getThirdPartyAccountByUserId(position.getPublisher(), channel);
-                if (thirdPartAccountData != null) {
+                if (thirdPartAccountData != null && thirdPartAccountData.getId() > 0) {
                     permission = positionServices.ifAllowRefresh(positionId, thirdPartAccountData.getId());
                 }
             }
