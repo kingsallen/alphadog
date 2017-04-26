@@ -17,10 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -45,6 +42,7 @@ public class UserQxService {
     public UserSearchConditionListVO userSearchConditionList(int userId) throws TException {
         logger.info("[Thread-id = {}] getUserSearchCondition params: userId = {}", Thread.currentThread().getId(), userId);
         UserSearchConditionListVO result = new UserSearchConditionListVO();
+        result.setSearchConditionList(new ArrayList<>());
         JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.SUCCESS);
         CommonQuery query;
         try {
@@ -108,6 +106,7 @@ public class UserQxService {
         CommonQuery query = new CommonQuery();
         UserSearchConditionVO result = new UserSearchConditionVO();
         result.setSearchCondition(new UserSearchConditionDO());
+        result.setSearchCondition(new UserSearchConditionDO());
         JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.SUCCESS);
         try {
             if (userId == 0 || id == 0) {
@@ -145,6 +144,7 @@ public class UserQxService {
     public UserCollectPositionVO getUserCollectPosition(int userId, int positionId) throws TException {
         logger.info("getUserCollectPosition params: userId={}, positionId={}", userId, positionId);
         UserCollectPositionVO result = new UserCollectPositionVO();
+        result.setUserCollectPosition(new UserCollectPositionDO());
         result.setUserCollectPosition(new UserCollectPositionDO());
         JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.SUCCESS);
         try {
@@ -232,6 +232,7 @@ public class UserQxService {
         JSONObject jsonObject = JSONObject.parseObject(ConstantErrorCodeMessage.SUCCESS);
         CommonQuery query = new CommonQuery();
         Map<Integer, Integer> positionStatus = new HashMap<>();
+        result.setPositionStatus(positionStatus);
         try {
             if (userId == 0 || StringUtils.isEmptyObject(positionIds)) {
                 logger.error("getUserPositionStatus 请求参数为空，请检查相关参数, userId={}, positionIds={}", userId, Arrays.toString(positionIds.toArray()));
@@ -267,7 +268,6 @@ public class UserQxService {
                 positionStatus.putAll(isCollect);
                 positionStatus.putAll(isViewed);
                 positionStatus.putAll(dotViewed);
-                result.setPositionStatus(positionStatus);
             }
 
         } catch (Exception e) {
