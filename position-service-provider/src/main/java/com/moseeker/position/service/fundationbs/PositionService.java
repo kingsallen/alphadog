@@ -1046,6 +1046,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     e.setCount(jr.getCount());
                     e.setCity(jr.getCity());
                     e.setPriority(jr.getPriority());
+                    e.setPublisher(jr.getPublisher()); // will be used for fetching sub company info
 
                     dataList.add(e);
                 }
@@ -1053,39 +1054,52 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 logger.info(dataList.toString());
 
                 // 获取公司信息，拼装 company abbr, logo 等信息
-                final HrCompanyDO companyInfo;
+                Map<Integer /* publisher id */, HrCompanyDO> publisherCompanyMap = new HashMap<>();
 
                 QueryUtil hrm = new QueryUtil();
-                if (query.getDid() == 0) {
-                    hrm.addEqualFilter("id", String.valueOf(query.getCompany_id()));
-                } else {
+
+                // 子公司特定
+                if (query.isSetDid() && query.getDid() != 0) {
+
+                    // 获取子公司info
                     hrm.addEqualFilter("id", String.valueOf(query.getDid()));
+                    HrCompanyDO subCompanyInfo = companyDao.getCompany(hrm);
+
+                    // 获取 hr_company_account
+                    hrm = new QueryUtil();
+                    hrm.addEqualFilter("company_id", subCompanyInfo.getId());
+                    List<HrCompanyAccountDO> companyAccountList = hrDBDao.listHrCompanyAccount(hrm);
+                    HrCompanyAccountDO subCompanyAccount = companyAccountList.get(0);
+
+                    // 写入 map
+                    publisherCompanyMap.put(subCompanyAccount.getAccountId(), subCompanyInfo);
+
                 }
-                HrCompanyDO mainCompanyInfo = companyDao.getCompany(hrm);
+                // 母公司 + 子公司
+                else {
+                    List<Integer> publisherList = dataList.stream().map(WechatPositionListData::getPublisher)
+                            .collect(Collectors.toList());
 
+                    // 根据 pbulisher_list 查询 hr_company_account_list
+                    hrm.addEqualFilter("account_id", buildQueryIds(publisherList));
 
-                if (query.isSetDid() && query.getDid() == query.getCompany_id()) {
-                    // 校验 did 是不是正确的子公司 id 则提前返回空列表
+                    List<HrCompanyAccountDO> companyAccountList = hrDBDao.listHrCompanyAccount(hrm);
 
-                    QueryUtil hrd = new QueryUtil();
-                    hrd.addEqualFilter("id", String.valueOf(query.getDid()));
-                    HrCompanyDO subCompanyInfo = companyDao.getCompany(hrd);
+                    for (HrCompanyAccountDO hrCompanyAccount : companyAccountList) {
+                        hrm = new QueryUtil();
+                        hrm.addEqualFilter("id", hrCompanyAccount.getCompanyId());
+                        HrCompanyDO companyInfo = hrDBDao.getCompany(hrm);
+                        publisherCompanyMap.put(hrCompanyAccount.accountId, companyInfo);
 
-                    if (subCompanyInfo.getParentId() == mainCompanyInfo.getId()) {
-                        companyInfo = subCompanyInfo;
-                    } else {
-                        // 错误的 did， 直接返回
-                        return new ArrayList<>();
                     }
-                } else {
-                    companyInfo = mainCompanyInfo;
                 }
+
 
                 //拼装 company 相关内容
                 dataList = dataList.stream().map(s -> {
-                    s.setCompany_abbr(companyInfo.getAbbreviation());
-                    s.setCompany_logo(companyInfo.getLogo());
-                    s.setCompany_name(companyInfo.getName());
+                    s.setCompany_abbr(publisherCompanyMap.get(s.getPublisher()).getAbbreviation());
+                    s.setCompany_logo(publisherCompanyMap.get(s.getPublisher()).getLogo());
+                    s.setCompany_name(publisherCompanyMap.get(s.getPublisher()).getName());
                     return s;
                 }).collect(Collectors.toList());
             } else {
@@ -1422,6 +1436,15 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 logger.error(e.getMessage(), e);
             }
         }
+    }
+
+
+    private String buildQueryIds(List<Integer> idList) {
+        StringBuffer sb = new StringBuffer();
+        for (Integer i : idList) {
+            sb.append(String.valueOf(i) + ",");
+        }
+        return "[" + sb.substring(0, sb.length()-1) + "]";
     }
 
 }
