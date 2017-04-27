@@ -106,6 +106,7 @@ public class PositionBS {
                         if (exist) {
                             PositionSyncResultPojo result = new PositionSyncResultPojo();
                             result.setChannel(pp.getChannel());
+                            result.setAccount_id(pp.getThird_party_account_id());
                             result.setSync_fail_reason("未绑定或者没有可发布职位点数!");
                             results.add(result);
                         }
@@ -149,6 +150,7 @@ public class PositionBS {
                             result.setChannel(p.getChannel());
                             result.setSync_status(2);
                             result.setSync_time(syncTime);
+                            result.setAccount_id(p.getAccount_id());
                             results.add(result);
 
                             ThirdPartyPositionData data = new ThirdPartyPositionData();

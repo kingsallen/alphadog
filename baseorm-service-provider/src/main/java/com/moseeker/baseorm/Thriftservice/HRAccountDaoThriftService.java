@@ -145,8 +145,11 @@ public class HRAccountDaoThriftService implements Iface {
                 ThirdPartAccountData data = create.select().from(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
                         .where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.in(thirdPartyAccounts))
                         .and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.eq((short) channel))
-                        .fetchOneInto(ThirdPartAccountData.class);
-                return new ThirdPartAccountData();
+                        .and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.BINDING.eq((short) 1))
+                        .fetchAnyInto(ThirdPartAccountData.class);
+                if(data!=null){
+                    return data;
+                }
             }
 
             return new ThirdPartAccountData();

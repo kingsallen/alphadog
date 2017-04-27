@@ -229,11 +229,7 @@ public class PositionController {
             List<HashMap<Integer, Integer>> paramList = PositionParamUtils.parseRefreshParam(params);
             logger.info("/position/refresh paramList.size:" + paramList.size());
             List<Object> refreshResult = new ArrayList<>();
-            ValidateUtil vu = new ValidateUtil();
-            String message = vu.validate();
-            if (message != null) {
-                return ResponseLogNotification.fail(request, message);
-            } else if (paramList.size() > 0) {
+            if (paramList.size() > 0) {
                 paramList.forEach(map -> {
                     map.forEach((positionId, channel) -> {
                         try {
