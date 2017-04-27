@@ -84,6 +84,7 @@ public class PositionSyncConsumer {
 		data.setChannel(Byte.valueOf(pojo.getChannel()));
 		data.setPosition_id(Integer.valueOf(pojo.getPosition_id()));
 		data.setThird_part_position_id(pojo.getJob_id());
+		data.setAccount_id(String.valueOf(pojo.getAccount_id()));
 		if(pojo.getStatus() == 0) {
 			data.setIs_synchronization((byte)PositionSync.bound.getValue());
 			data.setSync_time(pojo.getSync_time());
@@ -117,6 +118,7 @@ public class PositionSyncConsumer {
 					d.setRemain_profile_num(pojo.getResume_number());
 					d.setChannel(Integer.valueOf(pojo.getChannel().trim()));
 					d.setSync_time(pojo.getSync_time());
+					d.setId(pojo.getAccount_id());
 					//positionDao.updatePosition(p);
 					logger.info("completed queue update thirdpartyposition to synchronized");
 					userHrAccountDao.updatePartyAccountByCompanyIdChannel(d);

@@ -120,9 +120,7 @@ public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecor
         try (Connection conn = DBConnHelper.DBConn.getConn();
              DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);) {
             HrThirdPartyAccountRecord record = create.selectFrom(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
-                    .where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.COMPANY_ID
-                            .equal(UInteger.valueOf(account.getCompany_id())))
-                    .and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.equal((short) account.getChannel()))
+                    .where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.eq(account.getId()))
                     .fetchOne();
             if (record != null) {
                 logger.info("HrThirdPartyAccount.id:{}", record.getId().intValue());
