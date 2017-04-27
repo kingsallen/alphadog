@@ -65,12 +65,12 @@ public enum NodeLoadBalance {
 				if (parentPath.getName().equals(name) && parentPath.getChirldren() != null
 						&& parentPath.getChirldren().size() > 0) {
 					if(!index.containsKey(name)) {
-						index.put(name, 0);
+						//index.put(name, 0);
 					}
 					int position = index.get(name);
 					if(position >= parentPath.getChirldren().size()) {
 						position = 0;
-						index.put(name, 0);
+						//index.put(name, 0);
 					}
 					logger.info("position:" + position);
 					node = parentPath.getChirldren().get(position);
@@ -78,9 +78,9 @@ public enum NodeLoadBalance {
 					logger.info("loadbalance position:"+position);
 					logger.info(node.toString());
 					if(position+1 >= parentPath.getChirldren().size()) {
-						index.put(name, 0);
+						//index.put(name, 0);
 					} else {
-						index.put(name, position+1);
+						//index.put(name, position+1);
 					}
 					break;
 				}

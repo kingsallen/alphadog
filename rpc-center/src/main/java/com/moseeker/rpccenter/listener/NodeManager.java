@@ -236,27 +236,27 @@ public enum NodeManager {
 					public void childEvent(CuratorFramework client, PathChildrenCacheEvent event) throws Exception {
 						switch (event.getType()) {
 						case CHILD_ADDED:
-							System.out.println("CHILD_ADDED");
+							System.out.println("CHILD_ADDED in addListener");
 							addNewNodesListener(root);
 							break;
 						case CHILD_UPDATED:
-							System.out.println("CHILD_UPDATED");
+							System.out.println("CHILD_UPDATED in addListener");
 							break;
 						case CHILD_REMOVED:
-							System.out.println("CHILD_REMOVED");
+							System.out.println("CHILD_REMOVED in addListener");
 							refreshParentNode(root);
 							break;
 						case CONNECTION_SUSPENDED:
-							System.out.println("CONNECTION_SUSPENDED");
+							System.out.println("CONNECTION_SUSPENDED in addListener");
 							//clear(root);
 							break;
 						case CONNECTION_RECONNECTED:
-							System.out.println("CONNECTION_RECONNECTED");
+							System.out.println("CONNECTION_RECONNECTED in addListener");
 							refreshParentNode(root);
 							break;
 						case CONNECTION_LOST:
-							System.out.println("CONNECTION_LOST");
-							clear(root);
+							System.out.println("CONNECTION_LOST in addListener");
+							//clear(root); // commented by yaofeng, 临时避开 can't find node问题,待修复后再开启.
 							break;
 						case INITIALIZED:
 							break;
@@ -431,26 +431,26 @@ public enum NodeManager {
 						public void childEvent(CuratorFramework client, PathChildrenCacheEvent event) throws Exception {
 							switch (event.getType()) {
 							case CHILD_ADDED:
-								System.out.println("CHILD_ADDED");
+								System.out.println("CHILD_ADDED in addListenerToParentPath");
 								refreshServerNodes(parentPath);
 								break;
 							case CHILD_UPDATED:
-								System.out.println("CHILD_UPDATED");
+								System.out.println("CHILD_UPDATED in addListenerToParentPath");
 								break;
 							case CHILD_REMOVED:
-								System.out.println("CHILD_REMOVED");
+								System.out.println("CHILD_REMOVED in addListenerToParentPath");
 								refreshServerNodes(parentPath);
 								break;
 							case CONNECTION_SUSPENDED:
-								System.out.println("CONNECTION_SUSPENDED");
+								System.out.println("CONNECTION_SUSPENDED in addListenerToParentPath");
 								//removeParentPath(parentPath);
 								break;
 							case CONNECTION_RECONNECTED:
-								System.out.println("CONNECTION_RECONNECTED");
+								System.out.println("CONNECTION_RECONNECTED in addListenerToParentPath");
 								break;
 							case CONNECTION_LOST:
-								System.out.println("CONNECTION_LOST");
-								removeParentPath(parentPath);
+								System.out.println("CONNECTION_LOST in addListenerToParentPath");
+								// removeParentPath(parentPath); // commented by yaofeng, 临时避开 can't find node问题,待修复后再开启.
 								break;
 							case INITIALIZED:
 								break;
