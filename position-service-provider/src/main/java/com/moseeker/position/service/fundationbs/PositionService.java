@@ -425,6 +425,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
     /**
      * 批量处理修改职位
      */
+    @CounterIface
     public Response batchHandlerJobPostion(BatchHandlerJobPostion batchHandlerJobPosition) {
         logger.info("------开始批量修改职位--------");
         try {
