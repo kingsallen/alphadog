@@ -77,7 +77,7 @@ public class ChaosServiceImpl {
 		} catch (ConnectException e) {
 			e.printStackTrace();
 			logger.error(e.getMessage(), e);
-			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+				return ResponseUtils.fail(ConstantErrorCodeMessage.HRACCOUNT_BINDING_TIMEOUT);
 		} finally {
 			//do nothing
 		}

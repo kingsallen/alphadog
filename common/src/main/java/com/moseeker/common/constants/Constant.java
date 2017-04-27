@@ -182,7 +182,7 @@ public final class Constant {
 
 	public static final byte LOG_SMS_SENDRECORD_SYS_ALPHADOG = 5;
 	
-	public static final int READ_TIME_OUT = 60*1000;
+	public static final int READ_TIME_OUT = 50*1000;
 	public static final int CONNECTION_TIME_OUT = 60*1000;
 	
 	
