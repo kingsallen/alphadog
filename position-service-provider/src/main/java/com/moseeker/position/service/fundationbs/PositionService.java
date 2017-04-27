@@ -40,6 +40,7 @@ import com.moseeker.thrift.gen.dict.service.DictOccupationDao;
 import com.moseeker.thrift.gen.position.struct.*;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.mysql.jdbc.StringUtils;
+
 import org.apache.thrift.TException;
 import org.jooq.Field;
 import org.jooq.types.UInteger;
@@ -425,7 +426,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
      * 批量处理修改职位
      */
     public Response batchHandlerJobPostion(BatchHandlerJobPostion batchHandlerJobPosition) {
-        logger.info("开始批量修改职位");
+        logger.info("------开始批量修改职位--------");
         try {
             JobPostionResponse jobPostionResponse = new JobPostionResponse();
             // 返回新增或者更新失败的职位信息
@@ -691,7 +692,9 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 } else { // 数据的新增
                     record.setTeamId(team_id);
                     record.setCity(citys(jobPositionHandlerDate.getCity()));
+                    logger.info("-- 新增jobPostion数据开始，新增的jobPostion数据为：" + record.toString() + "--");
                     Integer pid = jobPositionDao.insertJobPostion(record);
+                    logger.info("-- 新增jobPostion数据结束,新增职位ID为：" + pid);
                     if (pid != null) {
                         jobPositionIds.add(pid);
                         if (cityCode(jobPositionHandlerDate.getCity(), record.getId()) != null && cityCode(jobPositionHandlerDate.getCity(), record.getId()).size() > 0) {
@@ -720,36 +723,66 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     }
                 }
             }
-            // 更新jobPostion数据
-            if (jobPositionUpdateRecordList.size() > 0) {
-                jobPositionDao.putResources(jobPositionUpdateRecordList);
-            }
-            // 更新jobPostionExt数据
-            if (jobPositionExtRecordUpdateRecords.size() > 0) {
-                jobPositonExtDao.putResources(jobPositionExtRecordUpdateRecords);
-            }
-            // 新增jobPostionExt数据
-            if (jobPositionExtRecordAddRecords.size() > 0) {
-                jobPositonExtDao.postResources(jobPositionExtRecordAddRecords);
-            }
-            // 新增jobPositionCity数据
-            if (jobPositionCityRecordsAddlist.size() > 0) {
-                jobPositionCityDao.postResources(jobPositionCityRecordsAddlist);
-            }
-            // 更新jobPositionCity数据
-            logger.info("需要更新城市的列表：" + jobPositionCityRecordsUpdatelist.size() + jobPositionCityRecordsUpdatelist.toString());
-            if (jobPositionCityRecordsUpdatelist.size() > 0) {
-                if (deleteCitylist.size() > 0) {
-                    jobPositionCityDao.delJobPostionCityByPids(deleteCitylist);
+            logger.info("----------------------------------------------------------");
+            logger.info("需要更新jobPostion数据的条数:" + jobPositionCityRecordsUpdatelist.size());
+            logger.info("需要更新jobPostionExt数据的条数:" + jobPositionExtRecordUpdateRecords.size());
+            logger.info("新增jobPostionExt数据的条数:" + jobPositionExtRecordAddRecords.size());
+            logger.info("新增jobPositionCity数据的条数:" + jobPositionCityRecordsAddlist.size());
+            logger.info("需要更新jobPositionCity数据条数:" + jobPositionCityRecordsUpdatelist.size());
+            logger.info("需要更新职能信息数据条数:" + jobOccupationRelRecordList.size());
+            logger.info("---------------------------------------------------------");
+            try {
+                // 更新jobPostion数据
+                if (jobPositionUpdateRecordList.size() > 0) {
+                    logger.info("-------------更新jobPostion数据开始------------------");
+                    jobPositionDao.putResources(jobPositionUpdateRecordList);
+                    logger.info("-------------更新jobPostion数据结束------------------");
                 }
-                jobPositionCityDao.postResources(jobPositionCityRecordsUpdatelist);
-            }
-            // 职能信息数据
-            if (jobOccupationRelRecordList.size() > 0) {
-                if (jobOccupationRelIdList.size() > 0) { // 先删除jobOccupationRel数据
-                    jobOccupationRelDao.delJobOccupationRelByPids(jobOccupationRelIdList);
+                // 更新jobPostionExt数据
+                if (jobPositionExtRecordUpdateRecords.size() > 0) {
+                    logger.info("-------------更新jobPostionExt数据开始------------------");
+                    jobPositonExtDao.putResources(jobPositionExtRecordUpdateRecords);
+                    logger.info("-------------更新jobPostionExt数据结束------------------");
                 }
-                jobOccupationRelDao.postResources(jobOccupationRelRecordList);
+                // 新增jobPostionExt数据
+                if (jobPositionExtRecordAddRecords.size() > 0) {
+                    logger.info("-------------新增jobPostionExt数据开始------------------");
+                    jobPositonExtDao.postResources(jobPositionExtRecordAddRecords);
+                    logger.info("-------------新增jobPostionExt数据结束------------------");
+                }
+                // 新增jobPositionCity数据
+                if (jobPositionCityRecordsAddlist.size() > 0) {
+                    logger.info("-------------新增jobPositionCity数据开始------------------");
+                    jobPositionCityDao.postResources(jobPositionCityRecordsAddlist);
+                    logger.info("-------------新增jobPositionCity数据结束------------------");
+                }
+                // 更新jobPositionCity数据
+                if (jobPositionCityRecordsUpdatelist.size() > 0) {
+                    if (deleteCitylist.size() > 0) {
+                        logger.info("-------------需要删除jobPositionCity的数据：" + deleteCitylist.toString());
+                        logger.info("-------------删除jobPositionCity的数据开始------------------");
+                        jobPositionCityDao.delJobPostionCityByPids(deleteCitylist);
+                        logger.info("-------------删除jobPositionCity的数据结束------------------");
+                    }
+                    logger.info("-------------新增jobPositionCity的数据开始------------------");
+                    jobPositionCityDao.postResources(jobPositionCityRecordsUpdatelist);
+                    logger.info("-------------新增jobPositionCity的数据结束------------------");
+                }
+                // 职能信息数据
+                if (jobOccupationRelRecordList.size() > 0) {
+                    if (jobOccupationRelIdList.size() > 0) { // 先删除jobOccupationRel数据
+                        logger.info("-------------需要删除jobOccupationRel数据：" + jobOccupationRelIdList.toString());
+                        logger.info("-------------删除jobOccupationRel数据开始------------------");
+                        jobOccupationRelDao.delJobOccupationRelByPids(jobOccupationRelIdList);
+                        logger.info("-------------删除jobOccupationRel数据结束------------------");
+                    }
+                    logger.info("-------------新增jobOccupationRel数据开始------------------");
+                    jobOccupationRelDao.postResources(jobOccupationRelRecordList);
+                    logger.info("-------------新增jobOccupationRel数据结束------------------");
+                }
+            } catch (Exception e) {
+                logger.info("更新和插入数据发生异常,异常信息为：" + e.getMessage());
+                e.printStackTrace();
             }
             jobPostionResponse.setJobPositionFailMessPojolist(jobPositionFailMessPojos);
             jobPostionResponse.setDeleteCounts(deleteCounts);
@@ -757,15 +790,17 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             jobPostionResponse.setUpdateCounts(jobPositionUpdateRecordList.size());
             jobPostionResponse.setTotalCounts(jobPositionHandlerDates.size());
             if (jobPositionIds.size() > 0) {
+                logger.info("插入和新增的jobPositionIds为:" + jobPositionIds.toString());
                 // 更新ES Search Engine
                 PositionService.UpdateES updataESThread = new PositionService.UpdateES(jobPositionIds);
                 Thread thread = new Thread(updataESThread);
                 thread.start();
                 return ResponseUtils.success(jobPostionResponse);
             }
-            logger.info("批量修改职位结束");
+            logger.info("-------批量修改职位结束---------");
             return ResponseUtils.fail(1, JSONArray.toJSONString(jobPostionResponse));
         } catch (Exception e) {
+            logger.info("发生异常，异常信息：" + e.getMessage());
             logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
@@ -1501,7 +1536,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
         for (Integer i : idList) {
             sb.append(String.valueOf(i) + ",");
         }
-        return "[" + sb.substring(0, sb.length()-1) + "]";
+        return "[" + sb.substring(0, sb.length() - 1) + "]";
     }
 
 }
