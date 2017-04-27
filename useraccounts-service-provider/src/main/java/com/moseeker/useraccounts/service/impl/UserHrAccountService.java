@@ -708,11 +708,10 @@ public class UserHrAccountService {
                 qu.addEqualFilter("company_id", user.getCompany_id());
                 qu.addEqualFilter("channel", String.valueOf(channelType));
                 qu.addEqualFilter("username", username);
+                qu.addEqualFilter("binding", 1);
                 ThirdPartAccountData data = hraccountDao.getThirdPartyAccount(qu);
                 if (data != null) {
-                    if (data.getBinding() == 0 || data.getBinding() == 3) {
-                        return ResponseUtils.success(null);
-                    } else if (data.getBinding() == 1) {
+                    if (data.getBinding() == 1) {
                         return ResponseUtils.fail(ConstantErrorCodeMessage.HRACCOUNT_ALREADY_BOUND);
                     } else if (data.getBinding() == 2) {
                         return ResponseUtils.fail(ConstantErrorCodeMessage.HRACCOUNT_BINDING);
