@@ -140,7 +140,7 @@ public enum ServiceManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        int connectionTimeOut = configUtils.get("thrift.timeout", Integer.class, 60000);
+        int connectionTimeOut = configUtils.get("thrift.timeout", Integer.class, 120*1000);
         int initialBufferCapacity = configUtils.get("thrift.initialBufferCapacity", Integer.class, 1024);
         int retry = configUtils.get("thrift.retry", Integer.class, 3);
         int maxLength = configUtils.get("thrift.maxLength", Integer.class, 1024*1024*1024);
