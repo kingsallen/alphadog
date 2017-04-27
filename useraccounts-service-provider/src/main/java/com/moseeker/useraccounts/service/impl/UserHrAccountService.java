@@ -716,7 +716,7 @@ public class UserHrAccountService {
                     } else if (data.getBinding() == 2) {
                         return ResponseUtils.fail(ConstantErrorCodeMessage.HRACCOUNT_BINDING);
                     } else {
-                        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+                        return ResponseUtils.success(null);
                     }
                 } else {
                     return ResponseUtils.success(null);
