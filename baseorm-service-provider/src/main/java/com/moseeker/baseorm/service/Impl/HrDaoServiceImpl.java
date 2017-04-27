@@ -1,5 +1,6 @@
 package com.moseeker.baseorm.service.Impl;
 
+import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrEmployeeCertConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrEmployeeCustomFieldsDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbConfigDao;
@@ -46,6 +47,9 @@ public class HrDaoServiceImpl implements HrDaoService {
 
     @Autowired
     private HrEmployeeCertConfDao hrEmployeeCertConfDao;
+
+    @Autowired
+    private HrCompanyAccountDao hrCompanyAccountDao;
 
     @Autowired
     private HrEmployeeCustomFieldsDao hrEmployeeCustomFieldsDao;
@@ -181,6 +185,20 @@ public class HrDaoServiceImpl implements HrDaoService {
         try {
             List<com.moseeker.baseorm.db.hrdb.tables.records.HrEmployeeCustomFieldsRecord> records = hrEmployeeCustomFieldsDao.getResources(query);
             result = BeanUtils.DBToStruct(HrEmployeeCustomFieldsDO.class, records);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+        }
+        return result;
+    }
+
+    @Override
+    public List<HrCompanyAccountDO> getHrCompanyAccounts(CommonQuery query) throws TException {
+        List<HrCompanyAccountDO> result = new ArrayList<HrCompanyAccountDO>();
+        try {
+            List<com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord> records = hrCompanyAccountDao.getResources(query);
+            result = BeanUtils.DBToStruct(HrCompanyAccountDO.class, records);
         }
         catch (Exception e) {
             e.printStackTrace();
