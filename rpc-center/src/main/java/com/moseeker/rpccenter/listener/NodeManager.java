@@ -447,6 +447,7 @@ public enum NodeManager {
 								break;
 							case CONNECTION_RECONNECTED:
 								System.out.println("CONNECTION_RECONNECTED in addListenerToParentPath");
+								refreshServerNodes(parentPath);  // added by yaofeng
 								break;
 							case CONNECTION_LOST:
 								System.out.println("CONNECTION_LOST in addListenerToParentPath");
