@@ -162,7 +162,6 @@ public class JobPoistionDaoImpl extends
                 } finally {
                     //do nothing
                 }
-
             }
         }
         return jobPositionRecord.getId();
