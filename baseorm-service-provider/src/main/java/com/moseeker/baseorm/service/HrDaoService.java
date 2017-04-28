@@ -29,4 +29,6 @@ public interface HrDaoService {
     List<HrPointsConfDO> getPointsConfs(CommonQuery query) throws TException;
 
     List<HrEmployeeCustomFieldsDO> getEmployeeCustomFields(CommonQuery query) throws TException;
+
+    List<HrCompanyAccountDO> getHrCompanyAccounts(CommonQuery query) throws TException;
 }
