@@ -1,7 +1,6 @@
 package com.moseeker.baseorm.dao.hrdb;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -10,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountHrRecord;
+import com.moseeker.baseorm.util.BaseDaoImpl;
 import org.jooq.DSLContext;
 import org.jooq.types.UInteger;
 import org.springframework.stereotype.Service;
@@ -17,11 +17,8 @@ import org.springframework.stereotype.Service;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
 import com.moseeker.common.dbutils.DBConnHelper;
-import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
-import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 
 /**
  * HR帐号数据库持久类

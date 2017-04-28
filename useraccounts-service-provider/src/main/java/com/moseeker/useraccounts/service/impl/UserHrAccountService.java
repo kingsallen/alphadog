@@ -697,33 +697,35 @@ public class UserHrAccountService {
     public Response allowBind(UserHrAccount user, byte channelType, String username) {
         try {
 
-            ThirdPartAccountData thirdPartAccount = hraccountDao.getThirdPartyAccountByUserId((int) user.getId(), channelType);
+            //主账号或者没有绑定第三方账号，检查公司下该渠道已经绑定过相同的第三方账号
+            QueryUtil qu = new QueryUtil();
+            qu.addEqualFilter("company_id", user.getCompany_id());
+            qu.addEqualFilter("channel", String.valueOf(channelType));
+            qu.addEqualFilter("username", username);
+            qu.addEqualFilter("binding", "[1,2]");//绑定中或者已经绑定
+            ThirdPartAccountData data = hraccountDao.getThirdPartyAccount(qu);
 
-            if (thirdPartAccount != null && thirdPartAccount.getId() != 0) {
-                if(user.getAccount_type() == 0) {
-                    //如果主账号已经绑定该渠道第三方账号，那么绑定人为空
-                    user.setId(0);
+            if (data == null || data.getId() == 0) {
+                //检查该用户是否绑定了其它相同渠道的账号
+                ThirdPartAccountData thirdPartAccount = hraccountDao.getThirdPartyAccountByUserId((int) user.getId(), channelType);
+                if (thirdPartAccount != null) {
+                    if (user.getAccount_type() == 0) {
+                        //如果主账号已经绑定该渠道第三方账号，那么绑定人为空,并允许绑定
+                        user.setId(0);
+                        return ResponseUtils.success(null);
+                    } else {
+                        //已经绑定该渠道第三方账号，并且不是主账号，那么不允许绑定
+                        return ResponseUtils.fail(ConstantErrorCodeMessage.HRACCOUNT_BINDING);
+                    }
+                } else {
                     return ResponseUtils.success(null);
-                }else{
-                    //已经绑定该渠道第三方账号，并且不是主账号，那么不允许绑定
-                    return ResponseUtils.fail(ConstantErrorCodeMessage.HRACCOUNT_BINDING);
                 }
             } else {
-                //主账号或者没有绑定第三方账号，检查公司下该渠道已经绑定过相同的第三方账号
-                QueryUtil qu = new QueryUtil();
-                qu.addEqualFilter("company_id", user.getCompany_id());
-                qu.addEqualFilter("channel", String.valueOf(channelType));
-                qu.addEqualFilter("username", username);
-                qu.addEqualFilter("binding", 1);
-                ThirdPartAccountData data = hraccountDao.getThirdPartyAccount(qu);
-                if (data != null) {
-                    if (data.getBinding() == 1) {
-                        return ResponseUtils.fail(ConstantErrorCodeMessage.HRACCOUNT_ALREADY_BOUND);
-                    } else if (data.getBinding() == 2) {
-                        return ResponseUtils.fail(ConstantErrorCodeMessage.HRACCOUNT_BINDING);
-                    } else {
-                        return ResponseUtils.success(null);
-                    }
+                //公司下已经有人绑定了这个第三方账号，则这个公司谁都不能再绑定这个账号了
+                if (data.getBinding() == 1) {
+                    return ResponseUtils.fail(ConstantErrorCodeMessage.HRACCOUNT_ALREADY_BOUND);
+                } else if (data.getBinding() == 2) {
+                    return ResponseUtils.fail(ConstantErrorCodeMessage.HRACCOUNT_BINDING);
                 } else {
                     return ResponseUtils.success(null);
                 }
