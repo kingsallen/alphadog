@@ -15,6 +15,8 @@ import com.moseeker.thrift.gen.useraccounts.service.UserQxService;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import com.moseeker.thrift.gen.useraccounts.service.UsersettingServices;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.thrift.TSerializer;
 import org.apache.thrift.protocol.TSimpleJSONProtocol;
 import org.slf4j.Logger;
@@ -26,8 +28,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 //@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
@@ -918,7 +923,7 @@ public class UseraccountsController {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int userId = params.getInt("user_id", 0);
-            List<Integer> positionIds = (List<Integer>) params.get("position_ids");
+            List<Integer> positionIds = ((ArrayList<String>)params.get("position_ids")).stream().map(Integer::valueOf).collect(Collectors.toList());
 
             return new TSerializer(new TSimpleJSONProtocol.Factory()).toString(userQxService.getUserPositionStatus(userId, positionIds));
         } catch (Exception e) {

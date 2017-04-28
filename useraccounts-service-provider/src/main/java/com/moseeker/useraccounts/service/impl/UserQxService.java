@@ -149,7 +149,7 @@ public class UserQxService {
             CommonQuery query = new CommonQuery();
             query.setEqualFilter(new HashMap<>());
             query.getEqualFilter().put("user_id", String.valueOf(userId));
-            query.getEqualFilter().put("positionId", String.valueOf(positionId));
+            query.getEqualFilter().put("position_id", String.valueOf(positionId));
             UserCollectPositionDO entity = userDao.getUserCollectPosition(query);
             if (entity != null && entity.getId() > 0) {
                 result.setUserCollectPosition(entity);
@@ -187,7 +187,7 @@ public class UserQxService {
                 CommonQuery query = new CommonQuery();
                 query.setEqualFilter(new HashMap<>());
                 query.getEqualFilter().put("user_id", String.valueOf(userId));
-                query.getEqualFilter().put("positionId", String.valueOf(positionId));
+                query.getEqualFilter().put("position_id", String.valueOf(positionId));
                 UserCollectPositionDO entity = userDao.getUserCollectPosition(query);
                 if (entity != null && entity.getId() > 0) {
                     if (entity.getStatus() == status) {
