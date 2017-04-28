@@ -46,6 +46,7 @@ public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecor
     }
 
     public int addThirdPartyAccount(int userId, HrThirdPartyAccountRecord record) {
+        logger.info("添加第三方账号到数据库："+userId+":"+record.getMembername());
         int count = 0;
         Connection conn = null;
         try {
@@ -57,6 +58,7 @@ public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecor
             record.insert();
             //HR关联到第三方账号
             if (userId > 0) {
+                logger.info("HR关联到第三方账号："+userId+":"+record.getMembername());
                 HrThirdPartyAccountHrRecord hrThirdPartyAccountHrRecord = new HrThirdPartyAccountHrRecord();
                 hrThirdPartyAccountHrRecord.setChannel(record.getChannel());
                 hrThirdPartyAccountHrRecord.setHrAccountId(userId);

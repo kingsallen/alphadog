@@ -304,7 +304,7 @@ public class UserHrAccountService {
                             JSONObject data = JSONObject.parseObject(response.getData());
                             account.setRemainNum(data.getIntValue("remain_number"));
                             account.setRemainProfileNum(data.getIntValue("resume_number"));
-                            return addThirdPartyAccount(account.getUser_id(), account);
+                            return addThirdPartyAccount((int) userHrAccount.getId(), account);
                         } else {
                             return response;
                         }
@@ -699,9 +699,15 @@ public class UserHrAccountService {
 
             ThirdPartAccountData thirdPartAccount = hraccountDao.getThirdPartyAccountByUserId((int) user.getId(), channelType);
 
-            if (thirdPartAccount != null && user.getAccount_type() != 0 && thirdPartAccount.getId() != 0) {
-                //已经绑定该渠道第三方账号，并且不是主账号，那么不允许绑定
-                return ResponseUtils.fail(ConstantErrorCodeMessage.HRACCOUNT_BINDING);
+            if (thirdPartAccount != null && thirdPartAccount.getId() != 0) {
+                if(user.getAccount_type() == 0) {
+                    //如果主账号已经绑定该渠道第三方账号，那么绑定人为空
+                    user.setId(0);
+                    return ResponseUtils.success(null);
+                }else{
+                    //已经绑定该渠道第三方账号，并且不是主账号，那么不允许绑定
+                    return ResponseUtils.fail(ConstantErrorCodeMessage.HRACCOUNT_BINDING);
+                }
             } else {
                 //主账号或者没有绑定第三方账号，检查公司下该渠道已经绑定过相同的第三方账号
                 QueryUtil qu = new QueryUtil();
