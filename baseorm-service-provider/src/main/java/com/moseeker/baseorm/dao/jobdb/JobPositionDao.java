@@ -22,6 +22,7 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.struct.JobPositionDO;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.PositionDetails;
+
 import org.jooq.*;
 import org.jooq.types.UByte;
 import org.jooq.types.UInteger;
@@ -68,7 +69,7 @@ public class JobPositionDao extends StructDaoImpl<JobPositionDO, JobPositionReco
 
         Position position = new Position();
         try (Connection conn = DBConnHelper.DBConn.getConn();
-             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);) {
+             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn)) {
 
             JobPositionRecord record = this.getResource(query);
             if (record != null) {
@@ -121,8 +122,10 @@ public class JobPositionDao extends StructDaoImpl<JobPositionDO, JobPositionReco
      */
     public PositionDetails positionDetails(Integer positionId) {
         PositionDetails positionDetails = new PositionDetails();
-        try (Connection conn = DBConnHelper.DBConn.getConn();
-             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn)) {
+        Connection conn = null;
+        try {
+            conn = DBConnHelper.DBConn.getConn();
+            DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
             JobPosition jp = JobPosition.JOB_POSITION.as("jp");
             HrTeam ht = HrTeam.HR_TEAM.as("ht");
             Record record = create.select(
@@ -154,6 +157,14 @@ public class JobPositionDao extends StructDaoImpl<JobPositionDO, JobPositionReco
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
+        } finally {
+            try {
+                if (conn != null && !conn.isClosed()) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                logger.error(e.getMessage(), e);
+            }
         }
         return positionDetails;
     }
@@ -165,8 +176,10 @@ public class JobPositionDao extends StructDaoImpl<JobPositionDO, JobPositionReco
      */
     public List<PositionDetails> hotPositionDetailsList(CommonQuery commonQuery) {
         List<PositionDetails> positionDetails = new ArrayList<>();
-        try (Connection conn = DBConnHelper.DBConn.getConn();
-             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn)) {
+        Connection conn = null;
+        try {
+            conn = DBConnHelper.DBConn.getConn();
+            DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
             JobPosition jp = JobPosition.JOB_POSITION.as("jp");
             HrTeam ht = HrTeam.HR_TEAM.as("ht");
             SelectOnConditionStep<Record> record = create.select(
@@ -223,7 +236,13 @@ public class JobPositionDao extends StructDaoImpl<JobPositionDO, JobPositionReco
             e.printStackTrace();
             logger.error(e.getMessage(), e);
         } finally {
-
+            try {
+                if (conn != null && !conn.isClosed()) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                logger.error(e.getMessage(), e);
+            }
         }
         return positionDetails;
     }
@@ -235,8 +254,10 @@ public class JobPositionDao extends StructDaoImpl<JobPositionDO, JobPositionReco
      */
     public List<PositionDetails> similarityPositionDetailsList(CommonQuery commonQuery) {
         List<PositionDetails> positionDetails = new ArrayList<>();
-        try (Connection conn = DBConnHelper.DBConn.getConn();
-             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn)) {
+        Connection conn = null;
+        try {
+            conn = DBConnHelper.DBConn.getConn();
+            DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 
             Map hashMap = commonQuery.getEqualFilter();
             if (hashMap.get("pid") != null) {
@@ -334,6 +355,15 @@ public class JobPositionDao extends StructDaoImpl<JobPositionDO, JobPositionReco
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
+
+        } finally {
+            try {
+                if (conn != null && !conn.isClosed()) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                logger.error(e.getMessage(), e);
+            }
         }
         return positionDetails;
     }
