@@ -191,6 +191,7 @@ public class ProfileService extends JOOQBaseServiceImpl<Profile, ProfileProfileR
         }
         String downloadUrl = propertiesUtils.get("GENERATE_USER_ID", String.class);
         String password = propertiesUtils.get("GENERATE_USER_PASSWORD", String.class);
+        logger.info("profilesByApplication:downloadUrl:{},companyId:{},sourceId:{},atsStatus:{},recommender:{},dlUrlRequired:{}",downloadUrl, companyId, sourceId, ats_status, recommender, dl_url_required);
         return profileProfileDao.getResourceByApplication(downloadUrl, password, companyId, sourceId, ats_status, recommender, dl_url_required);
     }
 }

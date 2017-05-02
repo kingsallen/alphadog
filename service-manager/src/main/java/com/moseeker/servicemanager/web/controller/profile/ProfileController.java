@@ -108,7 +108,7 @@ public class ProfileController {
     @RequestMapping(value = "/profiles", method = RequestMethod.POST)
     @ResponseBody
     public String getBatchProfiles(HttpServletRequest request, HttpServletResponse response) {
-        System.out.println("----------getBatchProfiles-----------");
+        logger.info("----------getBatchProfiles-----------");
         // PrintWriter writer = null;
         try {
             // GET方法 通用参数解析并赋值
@@ -282,7 +282,6 @@ public class ProfileController {
     @ResponseBody
     public String profilesByApplication(HttpServletRequest request, HttpServletResponse response) {
         try {
-
             Params<String, Object> form = ParamUtils.parseRequestParam(request);
 
             int companyId = form.getInt("company_id", -1);
@@ -296,7 +295,7 @@ public class ProfileController {
             } else if (sourceId == -1) {
                 return ResponseLogNotification.fail(request, "sourceId不能为空");
             }
-
+            logger.info("profilesByApplication:companyId:{},sourceId:{},atsStatus:{},recommender:{},dlUrlRequired:{}",companyId, sourceId, atsStatus, recommender, dlUrlRequired);
             Response result = service.getProfileByApplication(companyId, sourceId, atsStatus, recommender, dlUrlRequired);
 
             return ResponseLogNotification.success(request, result);

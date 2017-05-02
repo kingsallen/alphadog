@@ -97,6 +97,8 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
 
     public Map<String, Object> getRelatedDataByJobApplication(DSLContext create, com.moseeker.thrift.gen.application.struct.JobApplication application, String downloadApi, String password, boolean recommender, boolean dl_url_required) {
 
+        logger.info("profilesByApplication:application:{}",JSON.toJSONString(application));
+
         last = System.currentTimeMillis();
 
         Map<String, Object> map = new HashMap<>();
@@ -328,6 +330,8 @@ public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile
             buildMap(map, "recommender", recommenderMap);
             printQueryTime(application.getId() + ":recommender-----------:");
         }
+
+        logger.info("profilesByApplication:application:{},result:{}",application.getId(),JSON.toJSONString(application));
 
         return map;
 
