@@ -97,6 +97,7 @@ public class UserHrAccountController {
             logger.info("bind thirdParyAccount in controller end==========================="+result.getData());
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
+            logger.error(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         } finally {
             //do nothing

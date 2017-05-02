@@ -33,7 +33,7 @@ public class ThriftServerConfig {
     private String loadbalance = "random";
 
     /** thrift connect 超时时间，单位为ms，默认为60s */
-    private int timeout = 120 * 1000;
+    private int timeout = 60 * 1000;
 
     // 下面的配置项是连接池的基本配置
     /** 最大活跃连接数 */

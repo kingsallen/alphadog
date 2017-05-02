@@ -52,7 +52,7 @@ public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecor
             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
             create.attach(record);
             //添加第三方账号
-            record.insert();
+            count = record.insert();
             //HR关联到第三方账号
             if (userId > 0) {
                 logger.info("HR关联到第三方账号："+userId+":"+record.getMembername());
@@ -62,9 +62,8 @@ public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecor
                 hrThirdPartyAccountHrRecord.setThirdPartyAccountId(record.getId());
                 create.attach(hrThirdPartyAccountHrRecord);
                 count = hrThirdPartyAccountHrRecord.insert();
-                conn.commit();
-                conn.setAutoCommit(true);
             }
+            conn.commit();
         } catch (SQLException e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
