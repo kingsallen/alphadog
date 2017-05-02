@@ -121,13 +121,26 @@ public class PositionServicesImpl implements Iface {
 
     /**
      * 查询单个职位详情
-     * @param positionId
-     * @return
-     * @throws TException
      */
     @Override
     public PositionDetailsVO positionDetails(int positionId) throws TException {
         return positionQxService.positionDetails(positionId);
+    }
+
+    /**
+     * 查询公司热招职位的详细信息
+     */
+    @Override
+    public PositionDetailsListVO companyHotPositionDetailsList(int companyId, int page, int per_age) throws TException {
+        return positionQxService.companyHotPositionDetailsList(companyId, page, per_age);
+    }
+
+    /**
+     * 职位相关职位接口
+     */
+    @Override
+    public PositionDetailsListVO similarityPositionDetailsList(int pid, int page, int per_age) throws TException {
+        return positionQxService.similarityPositionDetailsList(pid, page, per_age);
     }
 
     @Override

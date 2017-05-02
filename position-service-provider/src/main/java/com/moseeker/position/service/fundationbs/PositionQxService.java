@@ -103,9 +103,9 @@ public class PositionQxService extends JOOQBaseServiceImpl<Position, JobPosition
 
 
     /**
-     * 查询公司在招职位的详细信息
+     * 查询公司热招职位的详细信息
      *
-     * @return positionDetailsVO
+     * @return PositionDetailsListVO
      */
     @CounterIface
     public PositionDetailsListVO companyHotPositionDetailsList(Integer companyId, Integer page, Integer per_age) {
