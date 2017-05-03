@@ -278,6 +278,7 @@ public class PositionBS {
                     ThirdPartyPositionData account = JSON.parseObject(response.getData(), ThirdPartyPositionData.class);
                     result.put("is_refresh", PositionRefreshType.refreshing.getValue());
                     result.put("sync_time", account.getSync_time());
+                    logger.info("refreshPosition:result" + JSON.toJSONString(result));
                     response = ResultMessage.SUCCESS.toResponse(result);
                 } else {
                     response = ResultMessage.PROGRAM_PARAM_NOTEXIST.toResponse(result);
