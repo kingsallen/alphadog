@@ -4,10 +4,12 @@ import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserHRAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
+import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.UserHrAccountDao.Iface;
@@ -49,7 +51,7 @@ public class HRAccountDaoThriftService implements Iface {
     @Override
     public Response getAccount(CommonQuery query) throws TException {
         try {
-            UserHrAccountRecord record = hraccountDao.getResource(query);
+            UserHrAccountRecord record = hraccountDao.getResource(QueryConvert.commonQueryConvertToQuery(query));
             if (record != null) {
                 return ResponseUtils.success(record.intoMap());
             } else {
@@ -67,7 +69,7 @@ public class HRAccountDaoThriftService implements Iface {
     @Override
     public Response getThirdPartyAccount(CommonQuery query) throws TException {
         try {
-            HrThirdPartyAccountRecord record = hrThirdPartyAccountDao.getResource(query);
+            HrThirdPartyAccountRecord record = hrThirdPartyAccountDao.getRecord(QueryConvert.commonQueryConvertToQuery(query));
             if (record != null) {
                 return ResponseUtils.success(record.intoMap());
             } else {
@@ -96,7 +98,7 @@ public class HRAccountDaoThriftService implements Iface {
             record.setRemainNum((int)(account.getRemainNum()));
             record.setSyncTime(now);
             record.setUsername(account.getUsername());
-            hrThirdPartyAccountDao.postResource(record);
+            hrThirdPartyAccountDao.addRecord(record);
             HashMap<String, Object> map = new HashMap<>();
             map.put("remain_num", account.getRemainNum());
             DateTime dt = new DateTime(now.getTime());
@@ -147,7 +149,7 @@ public class HRAccountDaoThriftService implements Iface {
     @Override
     public Response getAccounts(CommonQuery query) throws TException {
         try {
-            List<UserHrAccountRecord> records = hraccountDao.getResources(query);
+            List<UserHrAccountRecord> records = hraccountDao.getResources(QueryConvert.commonQueryConvertToQuery(query));
             List<UserHrAccount> datas = new ArrayList<>();
             if (records != null && records.size() > 0) {
                 records.forEach(record -> {

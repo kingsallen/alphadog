@@ -8,9 +8,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import org.joda.time.DateTime;
 import org.jooq.DSLContext;
 
+import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
@@ -19,7 +23,6 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyPositionRecord;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -43,21 +46,20 @@ import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
  * @version
  */
 @Service
-public class HRThirdPartyPositionDao extends BaseDaoImpl<HrThirdPartyPositionRecord, HrThirdPartyPosition> {
+public class HRThirdPartyPositionDao extends JooqCrudImpl<HrThirdPartyPositionDO, HrThirdPartyPositionRecord> {
 
 	private static final String UPSERT_SQL = "insert into hrdb.hr_third_party_position(position_id, third_part_position_id, is_synchronization, is_refresh, sync_time, refresh_time, update_time, occupation, address, channel) select ?, ?, ?, ?, ?, ?, ?, ?, ?, ? from DUAL where not exists(select id from hrdb.hr_third_party_position where channel = ? and position_id = ?)";
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-	@Override
-	protected void initJOOQEntity() {
-		this.tableLike = HrThirdPartyPosition.HR_THIRD_PARTY_POSITION;
+	public HRThirdPartyPositionDao(TableImpl<HrThirdPartyPositionRecord> table, Class<HrThirdPartyPositionDO> hrThirdPartyPositionDOClass) {
+		super(table, hrThirdPartyPositionDOClass);
 	}
 
-	public List<ThirdPartyPositionData> getThirdPartyPositions(CommonQuery query) {
+	public List<ThirdPartyPositionData> getThirdPartyPositions(Query query) {
 		List<ThirdPartyPositionData> datas = new ArrayList<>();
 		try {
-			List<HrThirdPartyPositionRecord> records = this.getResources(query);
+			List<HrThirdPartyPositionRecord> records = this.getRecords(query);
 			if (records != null && records.size() > 0) {
 				records.forEach(record -> {
 					ThirdPartyPositionData position = new ThirdPartyPositionData();

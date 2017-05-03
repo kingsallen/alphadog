@@ -1,7 +1,7 @@
 package com.moseeker.baseorm.service;
 
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
 
@@ -12,6 +12,6 @@ public interface HrDBService {
 	public Response postHrOperations(List<HrOperationRecordDO> record);
 	public Response getHrHistoryOpertation(List<ProcessValidationStruct> records);
 	// 获取团队信息
-	public Response getHrTeam(CommonQuery query);
-	public Response getHrWxWechat(CommonQuery query);
+	public Response getHrTeam(Query query);
+	public Response getHrWxWechat(Query query);
 }

@@ -28,146 +28,134 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobOccupationRelRecord extends UpdatableRecordImpl<JobOccupationRelRecord> implements Record2<Integer, Integer> {
 
-    private static final long serialVersionUID = 1811506874;
+	private static final long serialVersionUID = -1709079847;
 
-    /**
-     * Setter for <code>jobdb.job_occupation_rel.pid</code>. 职位id
-     */
-    public void setPid(Integer value) {
-        set(0, value);
-    }
+	/**
+	 * Setter for <code>jobdb.job_occupation_rel.pid</code>. 职位id
+	 */
+	public void setPid(Integer value) {
+		setValue(0, value);
+	}
 
-    /**
-     * Getter for <code>jobdb.job_occupation_rel.pid</code>. 职位id
-     */
-    public Integer getPid() {
-        return (Integer) get(0);
-    }
+	/**
+	 * Getter for <code>jobdb.job_occupation_rel.pid</code>. 职位id
+	 */
+	public Integer getPid() {
+		return (Integer) getValue(0);
+	}
 
-    /**
-     * Setter for <code>jobdb.job_occupation_rel.code</code>. 职位职能code
-     */
-    public void setCode(Integer value) {
-        set(1, value);
-    }
+	/**
+	 * Setter for <code>jobdb.job_occupation_rel.code</code>. 职位职能code
+	 */
+	public void setCode(Integer value) {
+		setValue(1, value);
+	}
 
-    /**
-     * Getter for <code>jobdb.job_occupation_rel.code</code>. 职位职能code
-     */
-    public Integer getCode() {
-        return (Integer) get(1);
-    }
+	/**
+	 * Getter for <code>jobdb.job_occupation_rel.code</code>. 职位职能code
+	 */
+	public Integer getCode() {
+		return (Integer) getValue(1);
+	}
 
-    // -------------------------------------------------------------------------
-    // Primary key information
-    // -------------------------------------------------------------------------
+	// -------------------------------------------------------------------------
+	// Record2 type implementation
+	// -------------------------------------------------------------------------
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Record1<Integer> key() {
-        return (Record1) super.key();
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Row2<Integer, Integer> fieldsRow() {
+		return (Row2) super.fieldsRow();
+	}
 
-    // -------------------------------------------------------------------------
-    // Record2 type implementation
-    // -------------------------------------------------------------------------
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Row2<Integer, Integer> valuesRow() {
+		return (Row2) super.valuesRow();
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Row2<Integer, Integer> fieldsRow() {
-        return (Row2) super.fieldsRow();
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Field<Integer> field1() {
+		return JobOccupationRel.JOB_OCCUPATION_REL.PID;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Row2<Integer, Integer> valuesRow() {
-        return (Row2) super.valuesRow();
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Field<Integer> field2() {
+		return JobOccupationRel.JOB_OCCUPATION_REL.CODE;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Field<Integer> field1() {
-        return JobOccupationRel.JOB_OCCUPATION_REL.PID;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Integer value1() {
+		return getPid();
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Field<Integer> field2() {
-        return JobOccupationRel.JOB_OCCUPATION_REL.CODE;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Integer value2() {
+		return getCode();
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Integer value1() {
-        return getPid();
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public JobOccupationRelRecord value1(Integer value) {
+		setPid(value);
+		return this;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Integer value2() {
-        return getCode();
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public JobOccupationRelRecord value2(Integer value) {
+		setCode(value);
+		return this;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public JobOccupationRelRecord value1(Integer value) {
-        setPid(value);
-        return this;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public JobOccupationRelRecord values(Integer value1, Integer value2) {
+		value1(value1);
+		value2(value2);
+		return this;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public JobOccupationRelRecord value2(Integer value) {
-        setCode(value);
-        return this;
-    }
+	// -------------------------------------------------------------------------
+	// Constructors
+	// -------------------------------------------------------------------------
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public JobOccupationRelRecord values(Integer value1, Integer value2) {
-        value1(value1);
-        value2(value2);
-        return this;
-    }
+	/**
+	 * Create a detached JobOccupationRelRecord
+	 */
+	public JobOccupationRelRecord() {
+		super(JobOccupationRel.JOB_OCCUPATION_REL);
+	}
 
-    // -------------------------------------------------------------------------
-    // Constructors
-    // -------------------------------------------------------------------------
+	/**
+	 * Create a detached, initialised JobOccupationRelRecord
+	 */
+	public JobOccupationRelRecord(Integer pid, Integer code) {
+		super(JobOccupationRel.JOB_OCCUPATION_REL);
 
-    /**
-     * Create a detached JobOccupationRelRecord
-     */
-    public JobOccupationRelRecord() {
-        super(JobOccupationRel.JOB_OCCUPATION_REL);
-    }
-
-    /**
-     * Create a detached, initialised JobOccupationRelRecord
-     */
-    public JobOccupationRelRecord(Integer pid, Integer code) {
-        super(JobOccupationRel.JOB_OCCUPATION_REL);
-
-        set(0, pid);
-        set(1, code);
-    }
+		setValue(0, pid);
+		setValue(1, code);
+	}
 }

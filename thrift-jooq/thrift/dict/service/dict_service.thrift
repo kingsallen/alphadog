@@ -1,4 +1,5 @@
 include "../struct/dict_struct.thrift"
+include "../../dao/struct/db/dictdb_struct.thrift"
 include "../../common/struct/common_struct.thrift"
 
 namespace java com.moseeker.thrift.gen.dict.service
@@ -48,6 +49,8 @@ service DictOccupationDao{
 	common_struct.Response getOccupationsZPin();
 	common_struct.Response getOccupation51(1:common_struct.CommonQuery query);
 	common_struct.Response getOccupationZPin(1:common_struct.CommonQuery query);
+    dictdb_struct.DictCityDO dictCityDO(1:common_struct.CommonQuery query);
+
 }
 /*
  service层第三方职位职能查询

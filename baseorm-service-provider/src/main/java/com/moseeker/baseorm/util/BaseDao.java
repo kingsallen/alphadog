@@ -1,8 +1,8 @@
 package com.moseeker.baseorm.util;
 
-import java.util.List;
+import com.moseeker.common.util.query.Query;
 
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import java.util.List;
 
 /**
  * 
@@ -16,11 +16,11 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
  */
 public interface BaseDao<S> {
 	
-	S getResource(CommonQuery query) throws Exception;
+	S getResource(Query query) throws Exception;
 
-	List<S> getResources(CommonQuery query) throws Exception;
+	List<S> getResources(Query query) throws Exception;
 	
-	int getResourceCount(CommonQuery query) throws Exception ;
+	int getResourceCount(Query query) throws Exception ;
 
 	int postResources(List<S> structs) throws Exception;
 

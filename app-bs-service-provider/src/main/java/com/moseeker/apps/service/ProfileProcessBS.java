@@ -1,21 +1,5 @@
 package com.moseeker.apps.service;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import com.moseeker.common.providerutils.QueryUtil;
-import com.moseeker.thrift.gen.dao.service.*;
-
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -27,6 +11,7 @@ import com.moseeker.apps.utils.BusinessUtil;
 import com.moseeker.apps.utils.ProcessUtils;
 import com.moseeker.common.annotation.notify.UpdateEs;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
@@ -34,12 +19,13 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.struct.ApplicationAts;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.config.ConfigSysPointsConfTpl;
 import com.moseeker.thrift.gen.config.HrAwardConfigTemplate;
+import com.moseeker.thrift.gen.dao.service.*;
 import com.moseeker.thrift.gen.dao.struct.HistoryOperate;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
 import com.moseeker.thrift.gen.mq.struct.MessageTplDataCol;
@@ -47,6 +33,17 @@ import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointSum;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
+import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ProfileProcessBS {
@@ -208,6 +205,7 @@ public class ProfileProcessBS {
                             rewardsToBeAdd.add(reward);
                             weChatIds.add(record.getRecommender_id());
                         }
+                        //注意在获取employyee时，weChatIds已经不用，此处没有修改thrift的代码，所以还在
                         Response employeeResult = userDao.getUserEmployee(
                                 companyId, weChatIds);
                         List<UserEmployeeStruct> employeesToBeUpdates = new ArrayList<UserEmployeeStruct>();
@@ -597,6 +595,20 @@ public class ProfileProcessBS {
         for (int i = 0; i < jsay.size(); i++) {
             ProcessValidationStruct record = JSONObject.toJavaObject(
                     jsay.getJSONObject(i), ProcessValidationStruct.class);
+//            Integer applier_id=record.getApplier_id();
+//            if(applier_id!=null&&applier_id!=0){
+//            	try{
+//	            	CommonQuery query=new CommonQuery();
+//	            	HashMap<String,String> map=new HashMap<String,String>();
+//	            	map.put("id", applier_id+"");
+//	            	query.setEqualFilter(map);
+//	            	UserUserDO userRecord=userDao.getUser(query);
+//	            	String applier_name=userRecord.getName();
+//	            	record.setApplier_name(applier_name);
+//            	}catch(Exception e){
+//            		logger.info(e.getMessage(),e);
+//            	}
+//            }
             list.add(record);
         }
         return list;

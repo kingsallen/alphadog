@@ -1,24 +1,23 @@
 package com.moseeker.baseorm.dao.wordpressdb;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
-import org.jooq.DSLContext;
-
-import org.springframework.stereotype.Service;
-
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressTermRelationships;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressTermRelationshipsRecord;
 import com.moseeker.common.dbutils.DBConnHelper;
-import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
+import com.moseeker.thrift.gen.dao.struct.wordpressdb.WordpressTermRelationshipsDO;
+import org.jooq.DSLContext;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Service;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 @Service
 public class WordpressTermRelationshipDao
-		extends BaseDaoImpl<WordpressTermRelationshipsRecord, WordpressTermRelationships> {
+		extends JooqCrudImpl<WordpressTermRelationshipsDO, WordpressTermRelationshipsRecord> {
 
-	protected void initJOOQEntity() {
-		this.tableLike = WordpressTermRelationships.WORDPRESS_TERM_RELATIONSHIPS;
-
+	public WordpressTermRelationshipDao(TableImpl<WordpressTermRelationshipsRecord> table, Class<WordpressTermRelationshipsDO> wordpressTermRelationshipsDOClass) {
+		super(table, wordpressTermRelationshipsDOClass);
 	}
 
 	public WordpressTermRelationshipsRecord getLastRelationships(long termTaxonomyId) {

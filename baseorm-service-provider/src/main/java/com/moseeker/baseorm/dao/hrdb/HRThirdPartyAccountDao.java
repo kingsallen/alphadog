@@ -1,5 +1,18 @@
 package com.moseeker.baseorm.dao.hrdb;
 
+import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
+import com.moseeker.common.dbutils.DBConnHelper;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
+import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import org.jooq.DSLContext;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Service;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -8,19 +21,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
-import org.jooq.DSLContext;
-
-import org.springframework.stereotype.Service;
-
-import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
-import com.moseeker.common.dbutils.DBConnHelper;
-import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
-import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 
 /**
  * 
@@ -39,13 +39,12 @@ import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
  * @version
  */
 @Service
-public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecord, HrThirdPartyAccount> {
+public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, HrThirdPartyAccountRecord> {
 
 	private static final String UPSERT_SQL = "insert into hrdb.hr_third_party_account(channel, username, password, membername, binding, company_id, remain_num, sync_time) select ?, ?, ?, ?, ?, ?, ?, ? from DUAL where not exists(select id from hrdb.hr_third_party_account where channel = ? and company_id = ?)";
 
-	@Override
-	protected void initJOOQEntity() {
-		this.tableLike = HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT;
+	public HRThirdPartyAccountDao(TableImpl<HrThirdPartyAccountRecord> table, Class<HrThirdPartyAccountDO> hrThirdPartyAccountDOClass) {
+		super(table, hrThirdPartyAccountDOClass);
 	}
 
 	public int upsertResource(HrThirdPartyAccountRecord record) {
@@ -89,9 +88,9 @@ public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecor
 		return count;
 	}
 
-	public List<HrThirdPartyAccountRecord> getThirdPartyBindingAccounts(CommonQuery query) {
+	public List<HrThirdPartyAccountRecord> getThirdPartyBindingAccounts(Query query) {
 		try {
-			return this.getResources(query);
+			return this.getRecords(query);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

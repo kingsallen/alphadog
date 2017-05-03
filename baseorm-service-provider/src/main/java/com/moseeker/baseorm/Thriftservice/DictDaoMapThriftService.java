@@ -1,5 +1,6 @@
 package com.moseeker.baseorm.Thriftservice;
 
+import com.moseeker.baseorm.tool.QueryConvert;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class DictDaoMapThriftService implements com.moseeker.thrift.gen.dao.serv
 		CityMap cityMap = new CityMap();
 		;
 		try {
-			DictCityMapRecord record = cityMapDao.getResource(query);
+			DictCityMapRecord record = cityMapDao.getResource(QueryConvert.commonQueryConvertToQuery(query));
 			if(record != null) {
 				cityMap.setId(record.getId());
 				if(record.getChannel() != null) {

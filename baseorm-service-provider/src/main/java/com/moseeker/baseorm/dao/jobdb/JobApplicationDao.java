@@ -7,11 +7,10 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.db.userdb.tables.UserUser;
-import com.moseeker.db.userdb.tables.UserWxUser;
 import com.moseeker.thrift.gen.application.struct.ApplicationAts;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.struct.JobApplicationDO;
 import org.jooq.*;
 
@@ -42,7 +41,7 @@ public class JobApplicationDao extends StructDaoImpl<JobApplicationDO, JobApplic
 	 * @param query
 	 * @return
 	 */
-	public List<JobApplicationDO> getApplications(CommonQuery query) {
+	public List<JobApplicationDO> getApplications(Query query) {
 		List<JobApplicationDO> applications = new ArrayList<>();
 		try {
 			List<JobApplicationRecord> records = getResources(query);
@@ -63,14 +62,14 @@ public class JobApplicationDao extends StructDaoImpl<JobApplicationDO, JobApplic
 		try {
 			conn = DBConnHelper.DBConn.getConn();
 			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-			SelectJoinStep<Record10<Integer, Integer, Integer, Integer, Integer, String, Integer, Integer, Integer, String>> table=create.select(
-					JobApplication.JOB_APPLICATION.ID, 
+			SelectJoinStep<Record9<Integer, Integer, Integer, Integer, Integer, String, Integer, Integer, String>> table=create.select(
+					JobApplication.JOB_APPLICATION.ID,
 					JobApplication.JOB_APPLICATION.COMPANY_ID, 
 					JobApplication.JOB_APPLICATION.RECOMMENDER_ID,
 					JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID,
 					JobApplication.JOB_APPLICATION.APPLIER_ID,
 					UserUser.USER_USER.NAME,
-					UserWxUser.USER_WX_USER.SYSUSER_ID,
+//					UserWxUser.USER_WX_USER.SYSUSER_ID,
 					ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.ID ,
 					ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.RECRUIT_ORDER,
 					JobPosition.JOB_POSITION.TITLE
@@ -78,7 +77,7 @@ public class JobApplicationDao extends StructDaoImpl<JobApplicationDO, JobApplic
 			table.leftJoin(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL)
 			.on("jobdb.job_application.app_tpl_id=configdb.config_sys_points_conf_tpl.id");
 			table.leftJoin(JobPosition.JOB_POSITION).on("jobdb.job_application.position_id=jobdb.job_position.id");
-			table.leftJoin(UserWxUser.USER_WX_USER).on("jobdb.job_application.recommender_id=userdb.user_wx_user.id");
+//			table.leftJoin(UserWxUser.USER_WX_USER).on("jobdb.job_application.recommender_id=userdb.user_wx_user.id");
 			table.leftJoin(UserUser.USER_USER).on("jobdb.job_application.applier_id=userdb.user_user.id");
 			table.where(JobApplication.JOB_APPLICATION.ID.in(appIds)
 					.and(JobApplication.JOB_APPLICATION.COMPANY_ID.eq((int)(companyId))));
@@ -87,10 +86,10 @@ public class JobApplicationDao extends StructDaoImpl<JobApplicationDO, JobApplic
 			}else if(progressStatus==99){
 				table.where().and(JobApplication.JOB_APPLICATION.APP_TPL_ID.equal((int)(4)));
 			}
-			Result<Record10<Integer, Integer, Integer, Integer, Integer, String, Integer, Integer, Integer, String>> result=table.fetch();
+			Result<Record9<Integer, Integer, Integer, Integer, Integer, String, Integer, Integer, String>> result=table.fetch();
 			if(result!=null&&result.size()>0){
 				ProcessValidationStruct data= null;
-				for(Record10<Integer, Integer, Integer, Integer, Integer, String, Integer, Integer, Integer, String> record :result){
+				for(Record9<Integer, Integer, Integer, Integer, Integer, String, Integer, Integer, String> record:result){
 					data=new ProcessValidationStruct();
 					data.setCompany_id(record.getValue(JobApplication.JOB_APPLICATION.COMPANY_ID).intValue());
 					data.setId(record.getValue(JobApplication.JOB_APPLICATION.ID).intValue());

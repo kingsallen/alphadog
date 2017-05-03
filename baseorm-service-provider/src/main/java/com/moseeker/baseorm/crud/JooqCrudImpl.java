@@ -1,9 +1,9 @@
 package com.moseeker.baseorm.crud;
 
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.CommonUpdate;
-import com.moseeker.thrift.gen.common.struct.Condition;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.Update;
+import com.moseeker.common.util.query.Condition;
 import org.jooq.Field;
 import org.jooq.UpdatableRecord;
 import org.jooq.UpdateSetFirstStep;
@@ -66,7 +66,7 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
 
     @Override
     public int delete(Condition conditions) {
-        return create.deleteFrom(table).where(new LocalCondition<>(table).convertCondition(conditions)).execute();
+        return create.deleteFrom(table).where(new LocalCondition<>(table).parseConditionUtil(conditions)).execute();
     }
 
     @Override
@@ -81,41 +81,41 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
     }
 
     @Override
-    public int update(CommonUpdate commonUpdate) {
+    public int update(Update update) {
         UpdateSetFirstStep updateSetFirstStep = create.update(table);
         UpdateSetMoreStep updateSetMoreStep = null;
-        for (String field : commonUpdate.getFieldValues().keySet()) {
+        for (String field : update.getFieldValues().keySet()) {
             Field<?> f = table.field(field);
             if (field != null) {
-                updateSetMoreStep = updateSetFirstStep.set(f, (Object) BeanUtils.convertTo(commonUpdate.getFieldValues().get(field), f.getType()));
+                updateSetMoreStep = updateSetFirstStep.set(f, (Object) BeanUtils.convertTo(update.getFieldValues().get(field), f.getType()));
             }
         }
-        return updateSetMoreStep.where(new LocalCondition<>(table).convertCondition(commonUpdate.getConditions())).execute();
+        return updateSetMoreStep.where(new LocalCondition<>(table).parseConditionUtil(update.getConditions())).execute();
     }
 
 
     @Override
-    public <T> T getData(CommonQuery query, Class<T> sClass) {
+    public <T> T getData(Query query, Class<T> sClass) {
         return new LocalQuery<R>(create, table, query).convertToResultQuery().fetchOneInto(sClass);
     }
 
     @Override
-    public <T> List<T> getDatas(CommonQuery query, Class<T> sClass) {
+    public <T> List<T> getDatas(Query query, Class<T> sClass) {
         return new LocalQuery<>(create, table, query).convertToResultQuery().fetchInto(sClass);
     }
 
     @Override
-    public R getRecord(CommonQuery query) {
+    public R getRecord(Query query) {
         return new LocalQuery<>(create, table, query).convertToResultQuery().fetchOne();
     }
 
     @Override
-    public List<R> getRecords(CommonQuery query) {
+    public List<R> getRecords(Query query) {
         return new LocalQuery<>(create, table, query).convertToResultQuery().fetchInto(table.getRecordType());
     }
 
     @Override
-    public int getCount(CommonQuery query) {
+    public int getCount(Query query) {
         return create.fetchCount(new LocalQuery<R>(create, table, query).convertToSelect());
     }
 }

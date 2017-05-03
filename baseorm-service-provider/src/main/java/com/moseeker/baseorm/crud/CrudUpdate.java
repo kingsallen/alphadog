@@ -1,5 +1,6 @@
 package com.moseeker.baseorm.crud;
 
+import com.moseeker.common.util.query.Update;
 import com.moseeker.thrift.gen.common.struct.CommonUpdate;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
  */
 interface CrudUpdate<R> {
 
-    int update(CommonUpdate commonUpdate);
+    int update(Update update);
 
     int updateRecord(R r);
 

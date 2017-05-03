@@ -3,6 +3,7 @@ package com.moseeker.baseorm.Thriftservice;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.moseeker.baseorm.tool.QueryConvert;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ public class WxUserDaoThriftService implements Iface {
 	@Override
 	public Response getResource(CommonQuery query) throws TException {
 		try {
-			UserWxUserRecord record = dao.getResource(query);
+			UserWxUserRecord record = dao.getResource(QueryConvert.commonQueryConvertToQuery(query));
 			if (record != null) {
 				Map<String, Object> result = new HashMap<String, Object>();
 				result.put("id", record.getId().longValue());

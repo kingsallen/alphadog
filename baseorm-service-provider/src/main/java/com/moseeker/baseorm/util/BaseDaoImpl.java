@@ -3,7 +3,7 @@ package com.moseeker.baseorm.util;
 import com.moseeker.baseorm.crud.LocalQuery;
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.thrift.gen.common.struct.*;
+import com.moseeker.common.util.query.Query;
 import org.jooq.*;
 import org.jooq.impl.TableImpl;
 import org.jooq.impl.UpdatableRecordImpl;
@@ -42,7 +42,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 	protected abstract void initJOOQEntity();
 
 	@SuppressWarnings("unchecked")
-	public List<R> getResources(CommonQuery query) throws Exception {
+	public List<R> getResources(Query query) throws Exception {
 		initJOOQEntity();
 		List<R> records;
 		Connection conn = null;
@@ -67,7 +67,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 	}
 
 	@SuppressWarnings({"unchecked"})
-	public R getResource(CommonQuery query) throws Exception {
+	public R getResource(Query query) throws Exception {
 		initJOOQEntity();
 		R record;
 		Connection conn = null;
@@ -92,7 +92,7 @@ public abstract class BaseDaoImpl<R extends UpdatableRecordImpl<R>, T extends Ta
 	}
 
 	@SuppressWarnings({"unchecked"})
-	public int getResourceCount(CommonQuery query) throws Exception {
+	public int getResourceCount(Query query) throws Exception {
 		initJOOQEntity();
 		int totalCount = 0;
 		Connection conn = null;

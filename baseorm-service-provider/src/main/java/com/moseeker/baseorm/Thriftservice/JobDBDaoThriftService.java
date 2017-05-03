@@ -3,6 +3,7 @@ package com.moseeker.baseorm.Thriftservice;
 import java.util.List;
 
 import com.moseeker.baseorm.service.PositionService;
+import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.JobApplicationDO;
@@ -32,12 +33,12 @@ public class JobDBDaoThriftService implements Iface {
 
 	@Override
 	public List<JobPositionDO> getPositions(CommonQuery query) throws TException {
-		return positionDao.getPositions(query);
+		return positionDao.getPositions(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override
 	public JobPositionDO getPosition(CommonQuery query) throws CURDException, TException {
-		return positionDao.findResource(query);
+		return positionDao.findResource(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override
@@ -47,22 +48,22 @@ public class JobDBDaoThriftService implements Iface {
 
 	@Override
 	public List<JobApplicationDO> getApplications(CommonQuery query) throws TException {
-		return applicationDao.getApplications(query);
+		return applicationDao.getApplications(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override
 	public JobApplicationDO getApplication(CommonQuery query) throws CURDException, TException {
-		return applicationDao.findResource(query);
+		return applicationDao.findResource(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override
 	public Response getJobCustoms(CommonQuery query) throws TException {
-		return position.getJobCustoms(query);
+		return position.getJobCustoms(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override
 	public Response getJobOccupations(CommonQuery query) throws TException {
-		return position.getJobOccupation(query);
+		return position.getJobOccupation(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 }

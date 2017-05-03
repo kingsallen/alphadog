@@ -1,31 +1,29 @@
 package com.moseeker.baseorm.dao.wordpressdb;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
-import org.jooq.DSLContext;
-import org.jooq.Record;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressPosts;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressTermRelationships;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressPostsRecord;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.dbutils.DBConnHelper;
-import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
+import com.moseeker.thrift.gen.dao.struct.wordpressdb.WordpressPostsDO;
+import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.impl.TableImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 @Service
-public class WordpressPostsDao extends BaseDaoImpl<WordpressPostsRecord, WordpressPosts> {
+public class WordpressPostsDao extends JooqCrudImpl<WordpressPostsDO, WordpressPostsRecord> {
 
 	private static Logger logger = LoggerFactory.getLogger(WordpressPostsDao.class);
 
-	protected void initJOOQEntity() {
-		// TODO Auto-generated method stub
-		this.tableLike = WordpressPosts.WORDPRESS_POSTS;
-
+	public WordpressPostsDao(TableImpl<WordpressPostsRecord> table, Class<WordpressPostsDO> wordpressPostsDOClass) {
+		super(table, wordpressPostsDOClass);
 	}
 
 	public WordpressPostsRecord getReleaseVersionPost() {

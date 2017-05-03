@@ -1,17 +1,15 @@
 package com.moseeker.baseorm.crud;
 
-import com.alibaba.fastjson.JSON;
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.thrift.gen.common.struct.ConditionOp;
-import com.moseeker.thrift.gen.common.struct.InnerCondition;
-import com.moseeker.thrift.gen.common.struct.ValueCondition;
-import com.moseeker.thrift.gen.common.struct.ValueOp;
+import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.ConditionOp;
+import com.moseeker.common.util.query.Order;
+import com.moseeker.common.util.query.ValueOp;
 import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.impl.TableImpl;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by moseeker on 2017/3/23.
@@ -24,34 +22,30 @@ public class LocalCondition<R extends Record> {
         this.table = table;
     }
 
-    public <T> T convertTo(String value, Class<T> tClass) {
+    public org.jooq.Condition parseConditionUtil(Condition condition) {
+        if (condition != null) {
+            org.jooq.Condition jooqCondition = parseCondition(condition);
+            return jooqCondition;
+        }
+
+        return null;
+    }
+
+    private <T> T convertTo(Object value, Class<T> tClass) {
         return BeanUtils.convertTo(value, tClass);
     }
 
-    public <E> org.jooq.Condition connectValueCondition(Field<E> field, String value, ValueOp valueOp) {
+    private <E> org.jooq.Condition connectValueCondition(Field<E> field, Object value, ValueOp valueOp) {
+
         switch (valueOp) {
             case EQ:
                 return field.equal(convertTo(value, field.getType()));
             case NEQ:
                 return field.notEqual(convertTo(value, field.getType()));
             case IN:
-                if (value.startsWith("[") && value.endsWith("]")) {
-                    return field.in(JSON.parseArray(value, String.class)
-                            .stream()
-                            .map(str -> convertTo(str, field.getType()))
-                            .collect(Collectors.toList()));
-                } else {
-                    return null;
-                }
+                return field.in((List)value);
             case NIN:
-                if (value.startsWith("[") && value.endsWith("]")) {
-                    return field.notIn(JSON.parseArray(value, String.class)
-                            .stream()
-                            .map(str -> convertTo(str, field.getType()))
-                            .collect(Collectors.toList()));
-                } else {
-                    return null;
-                }
+                return field.notIn((List)value);
             case GT:
                 return field.greaterThan(convertTo(value, field.getType()));
             case GE:
@@ -61,63 +55,96 @@ public class LocalCondition<R extends Record> {
             case LE:
                 return field.lessOrEqual(convertTo(value, field.getType()));
             case BT:
-                if (value.startsWith("[") && value.endsWith("]")) {
-                    List<E> list = JSON.parseArray(value, String.class)
-                            .stream()
-                            .map(str -> convertTo(str, field.getType()))
-                            .collect(Collectors.toList());
-                    return list.size() > 1 ? field.between(list.get(0), list.get(1)) : null;
-                } else {
-                    return null;
-                }
+                List list = (List)value;
+                return field.between(convertTo(list.get(0), field.getType()), convertTo(list.get(1), field.getType()));
             case NBT:
-                if (value.startsWith("[") && value.endsWith("]")) {
-                    List<E> list = JSON.parseArray(value, String.class)
-                            .stream()
-                            .map(str -> convertTo(str, field.getType()))
-                            .collect(Collectors.toList());
-                    return list.size() > 1 ? field.notBetween(list.get(0), list.get(1)) : null;
-                } else {
-                    return null;
-                }
+                List list1 = (List)value;
+                return field.notBetween(convertTo(list1.get(0), field.getType()), convertTo(list1.get(1), field.getType()));
             case LIKE:
-                return field.like(value);
+                return field.like(convertTo(value, String.class));
             case NLIKE:
-                return field.notLike(value);
+                return field.notLike(convertTo(value, String.class));
             default:
-                throw new IllegalArgumentException("error value constraint");
+                return null;
         }
     }
 
-    public org.jooq.Condition connectInnerCondition(InnerCondition innerCondition) {
-        org.jooq.Condition c1 = convertCondition(innerCondition.getFirstCondition());
-        org.jooq.Condition c2 = convertCondition(innerCondition.getSecondCondition());
+    private org.jooq.Condition convertCondition(Condition condition) {
 
-        if (innerCondition.getConditionOp() == ConditionOp.AND) {
-            return c1.and(c2);
-        } else if (innerCondition.getConditionOp() == ConditionOp.OR) {
-            return c1.or(c2);
-        } else {
-            throw new IllegalArgumentException("error condition");
+        if(condition != null) {
+            Field<?> field = table.field(condition.getField());
+            if(field != null) {
+                org.jooq.Condition jooqCondition = connectValueCondition(field, condition.getValue(),
+                        condition.getValueOp());
+
+                return jooqCondition;
+
+            }
+        }
+        return null;
+
+    }
+
+    private org.jooq.Condition parseCondition(Condition condition) {
+
+        org.jooq.Condition jooqCondition = null;
+        if (condition != null) {
+            jooqCondition = convertCondition(condition);
+            if (jooqCondition != null) {
+                if (condition.getConditionInnerJoin() != null && condition.getConditionInnerJoin().getCondition() != null) {
+                    org.jooq.Condition tempCondition = parseCondition(condition.getConditionInnerJoin().getCondition());
+                    jooqCondition = packageConditionOp(jooqCondition, tempCondition, condition.getConditionInnerJoin().getOp(), true);
+                }
+                if (condition.getConditionJoin() != null && condition.getConditionJoin().getCondition() != null) {
+                    org.jooq.Condition tempCondition = parseCondition(condition.getConditionJoin().getCondition());
+                    jooqCondition = packageConditionOp(jooqCondition, tempCondition, condition.getConditionJoin().getOp(), false);
+                }
+
+            }
+        }
+        return jooqCondition;
+    }
+
+    private org.jooq.Condition packageConditionOp(org.jooq.Condition jooqCondition, org.jooq.Condition nextCondition, ConditionOp op, boolean innerJoin) {
+        switch (op) {
+            case AND:
+                if (innerJoin) {
+                    return jooqCondition.and((nextCondition));
+                } else {
+                    return jooqCondition.and(nextCondition);
+                }
+
+            case OR:
+                if (innerJoin) {
+                    return jooqCondition.or((nextCondition));
+                } else {
+                    return jooqCondition.or(nextCondition);
+                }
+
+            default:
+                return jooqCondition;
         }
     }
 
-    public org.jooq.Condition connectValueCondition(ValueCondition valueCondition) {
-        Field<?> field = table.field(valueCondition.field);
-        if (field != null) {
-            return connectValueCondition(field, valueCondition.value, valueCondition.valueOp);
-        } else {
-            throw new IllegalArgumentException("error field:" + valueCondition.field);
-        }
-    }
+    public class ConditionCollection {
 
-    public org.jooq.Condition convertCondition(com.moseeker.thrift.gen.common.struct.Condition condition) {
-        if (condition.getInnerCondition() != null) {
-            return connectInnerCondition(condition.getInnerCondition());
-        } else if (condition.getValueCondition() != null) {
-            return connectValueCondition(condition.getValueCondition());
-        } else {
-            return null;
+        private Condition condition;
+        private ConditionOp op;
+
+        public Condition getCondition() {
+            return condition;
+        }
+
+        public void setCondition(Condition condition) {
+            this.condition = condition;
+        }
+
+        public ConditionOp getOp() {
+            return op;
+        }
+
+        public void setOp(ConditionOp op) {
+            this.op = op;
         }
     }
 }

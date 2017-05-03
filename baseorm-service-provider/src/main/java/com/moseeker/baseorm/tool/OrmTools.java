@@ -1,24 +1,17 @@
 package com.moseeker.baseorm.tool;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
+import com.moseeker.baseorm.util.BaseDaoImpl;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.thrift.gen.common.struct.Response;
 import org.apache.thrift.TBase;
 import org.jooq.impl.TableImpl;
 import org.jooq.impl.UpdatableRecordImpl;
 
-
-
-import com.moseeker.baseorm.util.BaseDaoImpl;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.BeanUtils;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.Response;
+import java.util.*;
 /**
  * 
  * @author zztaiwll
@@ -194,7 +187,7 @@ public class OrmTools {
 	/*
 	 * 按照内部是数据的list集合的方式返回response
 	 */
-	public static <K extends UpdatableRecordImpl<K>, V extends TableImpl<K>> Response getList(BaseDaoImpl<K,V> dao,CommonQuery query,TBase bean){
+	public static <K extends UpdatableRecordImpl<K>, V extends TableImpl<K>> Response getList(BaseDaoImpl<K,V> dao, Query query, TBase bean){
 		try{
 			List<K> list=dao.getResources(query);
 			List<TBase> result=new ArrayList<TBase>();
@@ -210,7 +203,7 @@ public class OrmTools {
 		}
 	}
 	
-	public static <K extends UpdatableRecordImpl<K>, V extends TableImpl<K>> Response getSingle(BaseDaoImpl<K,V> dao,CommonQuery query){
+	public static <K extends UpdatableRecordImpl<K>, V extends TableImpl<K>> Response getSingle(BaseDaoImpl<K,V> dao,Query query){
 		List<Map<String, Object>> allData = new ArrayList<>();
 		try{
 			List<K> list = dao.getResources(query);

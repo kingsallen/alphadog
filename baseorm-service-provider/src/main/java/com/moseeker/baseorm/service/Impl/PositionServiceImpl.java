@@ -1,5 +1,6 @@
 package com.moseeker.baseorm.service.Impl;
 
+import com.moseeker.common.util.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.moseeker.baseorm.dao.jobdb.JobCustomDao;
@@ -27,13 +28,13 @@ public class PositionServiceImpl implements PositionService {
 
     //获取job_occupation
     @Override
-    public Response getJobOccupation(CommonQuery query) {
+    public Response getJobOccupation(Query query) {
         // TODO Auto-generated method stub
         return OrmTools.getList(occuPationdao, query, new JobOccupationCustom());
     }
 
     //job_custom
-    public Response getJobCustoms(CommonQuery query) {
+    public Response getJobCustoms(Query query) {
         return OrmTools.getList(customDao, query, new JobOccupationCustom());
     }
 

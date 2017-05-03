@@ -1,9 +1,8 @@
 package com.moseeker.baseorm.util;
 
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.CURDException;
-import com.moseeker.thrift.gen.dao.struct.CandidateRemarkDO;
 import org.apache.thrift.TBase;
 import org.jooq.impl.TableImpl;
 import org.jooq.impl.UpdatableRecordImpl;
@@ -53,7 +52,7 @@ public abstract class StructDaoImpl<S extends  TBase, R extends UpdatableRecordI
         return s;
     }
 
-    public S findResource(CommonQuery query) throws CURDException {
+    public S findResource(Query query) throws CURDException {
         try {
             R record = this.getResource(query);
             if(record != null) {
@@ -74,7 +73,7 @@ public abstract class StructDaoImpl<S extends  TBase, R extends UpdatableRecordI
         }
     }
 
-    public List<S> listResources(CommonQuery query) throws CURDException {
+    public List<S> listResources(Query query) throws CURDException {
         List<S> resources = new ArrayList<S>();
         try {
             List<R> records = this.getResources(query);

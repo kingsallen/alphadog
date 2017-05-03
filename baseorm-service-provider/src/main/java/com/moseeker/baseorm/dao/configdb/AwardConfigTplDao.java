@@ -2,9 +2,9 @@ package com.moseeker.baseorm.dao.configdb;
 
 import com.moseeker.baseorm.util.BaseDaoImpl;
 import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.db.configdb.tables.ConfigSysPointsConfTpl;
 import com.moseeker.db.configdb.tables.records.ConfigSysPointsConfTplRecord;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.struct.ConfigSysPointConfTplDO;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +19,7 @@ public class AwardConfigTplDao extends BaseDaoImpl<ConfigSysPointsConfTplRecord,
 		this.tableLike = ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL;
 	}
 
-	public List<ConfigSysPointConfTplDO> getAwardConfigTpls(CommonQuery query) {
+	public List<ConfigSysPointConfTplDO> getAwardConfigTpls(Query query) {
 		List<ConfigSysPointConfTplDO> tpls = new ArrayList<>();
 		
 		try {

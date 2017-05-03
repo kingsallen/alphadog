@@ -3,6 +3,7 @@ package com.moseeker.baseorm.Thriftservice;
 import com.moseeker.baseorm.dao.userdb.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.service.UserEmployeeDaoService;
+import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -51,7 +52,7 @@ public class UserDBDaoThriftService implements Iface {
 	public UserUserDO getUser(CommonQuery query) throws TException {
 		UserUserDO user = new UserUserDO();
 		try {
-			UserUserRecord record = userDao.getResource(query);
+			UserUserRecord record = userDao.getResource(QueryConvert.commonQueryConvertToQuery(query));
 			if(record != null) {
 				user = record.into(UserUserDO.class);
 			}
@@ -67,7 +68,7 @@ public class UserDBDaoThriftService implements Iface {
 
 	@Override
 	public List<UserUserDO> listUser(CommonQuery query) throws TException {
-		return userDao.listResources(query);
+		return userDao.listResources(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override
@@ -85,12 +86,12 @@ public class UserDBDaoThriftService implements Iface {
 
 	@Override
 	public List<UserHrAccountDO> listUserHrAccount(CommonQuery query) throws CURDException, TException {
-		return userHRAccountDao.listResources(query);
+		return userHRAccountDao.listResources(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override
 	public UserHrAccountDO getUserHrAccount(CommonQuery query) throws CURDException, TException {
-		return userHRAccountDao.findResource(query);
+		return userHRAccountDao.findResource(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override
@@ -105,12 +106,12 @@ public class UserDBDaoThriftService implements Iface {
 
 	@Override
 	public List<UserFavPositionDO> getUserFavPositions(CommonQuery query) throws TException {
-		return favPositionDao.getUserFavPositions(query);
+		return favPositionDao.getUserFavPositions(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override
 	public UserEmployeeDO getEmployee(CommonQuery query) throws TException {
-		return employeeDao.getEmployee(query);
+		return employeeDao.getEmployee(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override
@@ -166,7 +167,7 @@ public class UserDBDaoThriftService implements Iface {
 
 	@Override
 	public List<UserEmployeeDO> getUserEmployeesDO(CommonQuery query) throws TException {
-		return userEmployeeDaoService.getEmployeesDO(query);
+		return userEmployeeDaoService.getEmployeesDO(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override
@@ -176,12 +177,12 @@ public class UserDBDaoThriftService implements Iface {
 
 	@Override
 	public List<UserWxUserDO> listUserWxUserDO(CommonQuery query) throws CURDException, TException {
-		return wxUserDao.listResources(query);
+		return wxUserDao.listResources(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override
 	public UserWxUserDO getUserWxUserDO(CommonQuery query) throws CURDException, TException {
-		return wxUserDao.findResource(query);
+		return wxUserDao.findResource(QueryConvert.commonQueryConvertToQuery(query));
 	}
 	
 	@Override
@@ -190,7 +191,7 @@ public class UserDBDaoThriftService implements Iface {
 		if (userEmployee != null) {
 			UserEmployeeRecord ueRecord = BeanUtils.structToDB(userEmployee, UserEmployeeRecord.class);
 			try {
-				return employeeDao.postResource(ueRecord);
+				return employeeDao.addRecord(ueRecord);
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
@@ -200,11 +201,11 @@ public class UserDBDaoThriftService implements Iface {
 
 	@Override
 	public int delUserEmployeeDO(UserEmployeeDO userEmployee) throws TException {
-		return employeeDao.deleteResource(userEmployee);
+		return employeeDao.deleteData(userEmployee);
 	}
 
 	@Override
 	public UserEmployeeDO getUserEmployeeDO(CommonQuery query) throws TException {
-		return employeeDao.getEmployee(query);
+		return employeeDao.getEmployee(QueryConvert.commonQueryConvertToQuery(query));
 	}
 }

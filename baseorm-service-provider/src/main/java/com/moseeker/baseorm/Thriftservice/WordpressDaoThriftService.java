@@ -1,15 +1,5 @@
 package com.moseeker.baseorm.Thriftservice;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.thrift.TException;
-import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.moseeker.baseorm.dao.wordpressdb.WordpressPostmetaDao;
 import com.moseeker.baseorm.dao.wordpressdb.WordpressPostsDao;
 import com.moseeker.baseorm.dao.wordpressdb.WordpressTermRelationshipDao;
@@ -18,6 +8,7 @@ import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressPostmetaRecor
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressPostsRecord;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressTermRelationshipsRecord;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressUserPostRecord;
+import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.QueryUtil;
@@ -28,6 +19,15 @@ import com.moseeker.thrift.gen.dao.service.WordpressDao.Iface;
 import com.moseeker.thrift.gen.dao.struct.PostExt;
 import com.moseeker.thrift.gen.dao.struct.WordpressPosts;
 import com.moseeker.thrift.gen.dao.struct.WordpressTermRelationships;
+import org.apache.thrift.TException;
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class WordpressDaoThriftService implements Iface{
@@ -53,7 +53,7 @@ public class WordpressDaoThriftService implements Iface{
 	public WordpressPosts getPost(CommonQuery query) throws TException {
 		WordpressPosts posts = new WordpressPosts();
 		try {
-			WordpressPostsRecord record = wordpressPostsDao.getResource(query);
+			WordpressPostsRecord record = wordpressPostsDao.getRecord(QueryConvert.commonQueryConvertToQuery(query));
 			if(record != null) {
 				posts = new WordpressPosts();
 				posts.setId(record.getId().longValue());
@@ -90,7 +90,7 @@ public class WordpressDaoThriftService implements Iface{
 			qu.addEqualFilter("term_taxonomy_id", String.valueOf(termTaxonomyId));
 		}
 		try {
-			WordpressTermRelationshipsRecord record = wordpressTermRelationshipDao.getResource(qu);
+			WordpressTermRelationshipsRecord record = wordpressTermRelationshipDao.getRecord(qu);
 			if(record != null) {
 				relationship.setObjectId(record.getObjectId().longValue());
 				relationship.setTermTaxonomyId(record.getTermTaxonomyId().longValue());
@@ -204,7 +204,7 @@ public class WordpressDaoThriftService implements Iface{
 		QueryUtil qu = new QueryUtil();
 		qu.addEqualFilter("user_id", String.valueOf(userId));
 		try {
-			WordpressUserPostRecord record = wordpressUserPostDao.getResource(qu);
+			WordpressUserPostRecord record = wordpressUserPostDao.getRecord(qu);
 			if(record != null) {
 				postId = record.getObjectId().longValue();
 			}

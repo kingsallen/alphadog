@@ -21,7 +21,7 @@ public class Query {
     private int pageNum; // optional
     private Map<String,String> extras; // optional
 
-    private Query() {
+    protected Query() {
         this.attributes = new ArrayList<>();
         this.orders = new ArrayList<>();
     }
@@ -64,7 +64,7 @@ public class Query {
         }
 
         public QueryBuilder select(String field, SelectOp selectOp) {
-            if(StringUtils.isNullOrEmpty(field)) {
+            if(StringUtils.isNotNullOrEmpty(field)) {
                 Select select = new Select(field, SelectOp.FIELD);
                 attributes.add(select);
             }
@@ -74,6 +74,13 @@ public class Query {
         public QueryBuilder select(Select select) {
             if(select != null) {
                 attributes.add(select);
+            }
+            return this;
+        }
+
+        public QueryBuilder removeSelect(String field) {
+            if(StringUtils.isNotNullOrEmpty(field)) {
+                attributes.remove(field);
             }
             return this;
         }
@@ -93,7 +100,7 @@ public class Query {
 
         public QueryBuilder and(Condition condition) throws ConditionNotExist {
             if(this.index != null) {
-                conditions.addCondition(condition);
+                conditions.andCondition(condition);
             } else {
                 setConditions(condition);
             }
@@ -101,34 +108,103 @@ public class Query {
             return this;
         }
 
-        public QueryBuilder andInnerCondition(Condition condition) throws ConditionNotExist {
-            return andInnerCondition(condition, ConditionOp.AND);
+        public QueryBuilder and(String field, Object value) throws ConditionNotExist {
+            Condition condition = new Condition(field, value);
+            if(this.index != null) {
+                index.andCondition(condition);
+            } else {
+                setConditions(condition);
+            }
+            index = condition;
+            return this;
         }
 
-        public QueryBuilder andInnerCondition(Condition condition, ConditionOp op) throws ConditionNotExist {
+        public QueryBuilder or(String field, Object value) throws ConditionNotExist {
+            Condition condition = new Condition(field, value);
+            if(this.index != null) {
+                conditions.addCondition(condition, ConditionOp.OR);
+            } else {
+                setConditions(condition);
+            }
+            index = condition;
+            return this;
+        }
+
+        public QueryBuilder or(Condition condition) throws ConditionNotExist {
+            if(condition == null) {
+                throw new ConditionNotExist();
+            }
+            if(this.index != null) {
+                conditions.addCondition(condition, ConditionOp.OR);
+            } else {
+                setConditions(condition);
+            }
+            index = condition;
+            return this;
+        }
+
+        public QueryBuilder andInnerCondition(String field, Object value) throws ConditionNotExist {
+            Condition condition = new Condition(field, value);
+            return andInnerCondition(condition);
+        }
+
+        public QueryBuilder andInnerCondition(Condition condition) throws ConditionNotExist {
+            return addInnerCondition(condition, ConditionOp.AND);
+        }
+
+        public QueryBuilder orInnerCondition(String field, Object value) throws ConditionNotExist {
+            Condition condition = new Condition(field, value);
+            return orInnerCondition(condition);
+        }
+
+        public QueryBuilder orInnerCondition(Condition condition) throws ConditionNotExist {
+            return addInnerCondition(condition, ConditionOp.OR);
+        }
+
+        public QueryBuilder addInnerCondition(Condition condition, ConditionOp op) throws ConditionNotExist {
             if(index == null) {
                 throw new ConditionNotExist();
             }
-            ConditionJoin conditionJoin = new ConditionJoin(op, null, condition);
-            index.addJoinCondition(conditionJoin);
+            index.addInnerCondition(condition, op);
             index = condition;
             return this;
         }
 
-        public QueryBuilder andOutCondition(Condition condition, ConditionOp op) throws ConditionNotExist {
-            if (index.getOutCondition() == null) {
-                throw new ConditionNotExist();
-            }
-            index.getOutCondition().addCondition(condition, op);
-            index = condition;
-            return this;
+        public QueryBuilder orOutCondition(String field, Object value) throws ConditionNotExist {
+            Condition condition = new Condition(field, value);
+            return orOutCondition(condition);
+        }
+
+        public QueryBuilder orOutCondition(Condition condition) throws ConditionNotExist {
+            return addOutCondition(condition, ConditionOp.OR);
+        }
+
+        public QueryBuilder andOutCondition(String field, Object value) throws ConditionNotExist {
+            Condition condition = new Condition(field, value);
+            return andOutCondition(condition);
         }
 
         public QueryBuilder andOutCondition(Condition condition) throws ConditionNotExist {
-            if (index.getOutCondition() == null) {
+            return addOutCondition(condition, ConditionOp.AND);
+        }
+
+        public QueryBuilder addOutCondition(Condition condition, ConditionOp op) throws ConditionNotExist {
+            if (index == null || index.getOutCondition() == null) {
                 throw new ConditionNotExist();
             }
-            index.getOutCondition().addCondition(condition, ConditionOp.AND);
+            if (index.getOutCondition().getConditionJoin() == null) {
+                index.getOutCondition().addCondition(condition, op);
+            } else {
+                Condition condition1 = index;
+                while (condition1.getConditionJoin() != null && condition1.getConditionJoin().getCondition() != null) {
+                    condition1 = condition1.getConditionJoin().getCondition();
+                }
+                if (condition1.getConditionJoin() == null) {
+                    condition1.addCondition(condition, op);
+                } else {
+                    condition1.getConditionJoin().setCondition(condition);
+                }
+            }
             index = condition;
             return this;
         }
@@ -175,6 +251,16 @@ public class Query {
             return this;
         }
 
+        public QueryBuilder setPageNum(int pageNum) {
+            this.pageNum = pageNum;
+            return this;
+        }
+
+        public QueryBuilder setPageSize(int pageSize) {
+            this.pageSize = pageSize;
+            return this;
+        }
+
         public Query buildQuery() {
             Query query = new Query();
             query.attributes = this.attributes;
@@ -196,5 +282,33 @@ public class Query {
             this.conditions = conditions;
             index = conditions;
         }
+    }
+
+    public List<Select> getAttributes() {
+        return attributes;
+    }
+
+    public Condition getConditions() {
+        return conditions;
+    }
+
+    public List<OrderBy> getOrders() {
+        return orders;
+    }
+
+    public List<String> getGroups() {
+        return groups;
+    }
+
+    public int getPageSize() {
+        return pageSize;
+    }
+
+    public int getPageNum() {
+        return pageNum;
+    }
+
+    public Map<String, String> getExtras() {
+        return extras;
     }
 }

@@ -1,8 +1,7 @@
 package com.moseeker.baseorm.crud;
 
-import com.moseeker.thrift.gen.common.struct.Condition;
+import com.moseeker.common.util.query.Condition;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**

@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.Thriftservice;
 
 import com.moseeker.baseorm.dao.profiledb.ProfileOtherDao;
+import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.service.ProfileDBDao;
@@ -22,12 +23,12 @@ public class ProfileDBDaoThriftService implements ProfileDBDao.Iface {
 
     @Override
     public List<ProfileOtherDO> listProfileOther(CommonQuery query) throws CURDException, TException {
-        return profileOtherDao.listResources(query);
+        return profileOtherDao.listResources(QueryConvert.commonQueryConvertToQuery(query));
     }
 
     @Override
     public ProfileOtherDO getProfileOther(CommonQuery query) throws CURDException, TException {
-        return profileOtherDao.findResource(query);
+        return profileOtherDao.findResource(QueryConvert.commonQueryConvertToQuery(query));
     }
 
     @Override

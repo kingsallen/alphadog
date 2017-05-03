@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.moseeker.baseorm.tool.QueryConvert;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +31,7 @@ public class SearchConditionDaoThriftService implements Iface {
 			throws TException {
 		List<SearchCondition> list = new ArrayList<SearchCondition>();
 		try {
-			dao.getResources(query).forEach(record -> {
+			dao.getResources(QueryConvert.commonQueryConvertToQuery(query)).forEach(record -> {
 				list.add((SearchCondition) BeanUtils.DBToStruct(SearchCondition.class, record));
 			});
 		} catch (Exception e) {
@@ -42,7 +43,7 @@ public class SearchConditionDaoThriftService implements Iface {
 	@Override
 	public SearchCondition getResource(CommonQuery query) throws TException {
 		try {
-			return (SearchCondition) BeanUtils.DBToStruct(SearchCondition.class, dao.getResource(query));
+			return (SearchCondition) BeanUtils.DBToStruct(SearchCondition.class, dao.getResource(QueryConvert.commonQueryConvertToQuery(query)));
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			throw new TException(MessageFormat.format("根据commonQuery={0}查询结果集出错", query.toString()));
@@ -52,7 +53,7 @@ public class SearchConditionDaoThriftService implements Iface {
 	@Override
 	public int getResourceCount(CommonQuery query) throws TException {
 		try {
-			return dao.getResourceCount(query);
+			return dao.getResourceCount(QueryConvert.commonQueryConvertToQuery(query));
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}

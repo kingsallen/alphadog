@@ -1,16 +1,16 @@
 package com.moseeker.baseorm.dao.userdb;
 
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.struct.UserEmployeeDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import org.jooq.*;
+import org.jooq.impl.TableImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -24,20 +24,19 @@ import java.util.List;
 import static org.jooq.impl.DSL.sum;
 
 @Service
-public class UserEmployeeDao extends StructDaoImpl<UserEmployeeDO, UserEmployeeRecord, UserEmployee> {
+public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRecord> {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Override
-    protected void initJOOQEntity() {
-        this.tableLike = UserEmployee.USER_EMPLOYEE;
+    public UserEmployeeDao(TableImpl<UserEmployeeRecord> table, Class<UserEmployeeDO> userEmployeeDOClass) {
+        super(table, userEmployeeDOClass);
     }
 
-    public UserEmployeeDO getEmployee(CommonQuery query) {
+    public UserEmployeeDO getEmployee(com.moseeker.common.util.query.Query query) {
         UserEmployeeDO employee = new UserEmployeeDO();
 
         try {
-            UserEmployeeRecord record = this.getResource(query);
+            UserEmployeeRecord record = this.getRecord(query);
             if (record != null) {
                 employee = BeanUtils.DBToStruct(UserEmployeeDO.class, record);
             }
@@ -76,11 +75,11 @@ public class UserEmployeeDao extends StructDaoImpl<UserEmployeeDO, UserEmployeeR
         return list;
     }
 
-    public int delResource(CommonQuery query) throws Exception {
+    public int delResource(com.moseeker.common.util.query.Query query) throws Exception {
         if (query != null && query.getConditions() != null) {
-            List<UserEmployeeRecord> records = getResources(query);
+            List<UserEmployeeRecord> records = getRecords(query);
             if (records.size() > 0) {
-                return delResources(records);
+                return deleteRecords(records).length;
             }
         }
         return 0;
@@ -103,21 +102,21 @@ public class UserEmployeeDao extends StructDaoImpl<UserEmployeeDO, UserEmployeeR
             queryUtil.setPageSize(Integer.MAX_VALUE);
 
             if (queryUtil != null) {
-                List<UserEmployeeRecord> userEmployeeRecords = getResources(queryUtil);
+                List<UserEmployeeRecord> userEmployeeRecords = getRecords(queryUtil);
                 if (userEmployeeRecords.size() > 0) {
                     int innserSuccessFlag = 0;
                     for (UserEmployeeRecord record : userEmployeeRecords) {
                         UserEmployeeRecord userEmployeeRecord = BeanUtils.structToDB(struct, UserEmployeeRecord.class);
                         userEmployeeRecord.setId(record.getId());
                         try {
-                            innserSuccessFlag += putResource(userEmployeeRecord);
+                            innserSuccessFlag += updateRecord(userEmployeeRecord);
                         } catch (Exception e) {
                         }
                     }
                     successArray[i] = innserSuccessFlag > 0 ? 1 : 0;
                 } else {
                     try {
-                        int id = postResource(BeanUtils.structToDB(struct, UserEmployeeRecord.class));
+                        int id = addRecord(BeanUtils.structToDB(struct, UserEmployeeRecord.class));
                         successArray[i] = id>0?1:0;
                     }catch (Exception e){
                         successArray[i] = 0;

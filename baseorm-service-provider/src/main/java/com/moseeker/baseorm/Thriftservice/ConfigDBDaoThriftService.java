@@ -2,6 +2,7 @@ package com.moseeker.baseorm.Thriftservice;
 
 import com.moseeker.baseorm.dao.configdb.AwardConfigTplDao;
 import com.moseeker.baseorm.service.ConfigService;
+import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.ConfigDBDao.Iface;
@@ -23,17 +24,17 @@ public class ConfigDBDaoThriftService implements Iface {
 
 	@Override
 	public List<ConfigSysPointConfTplDO> getAwardConfigTpls(CommonQuery query) throws TException {
-		return awardConfigTplDao.getAwardConfigTpls(query);
+		return awardConfigTplDao.getAwardConfigTpls(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override
 	public Response getConfigSysPointsConfTpls(CommonQuery query) throws TException {
-		return configService.getConfigSysPointsConfTpls(query);
+		return configService.getConfigSysPointsConfTpls(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override
 	public Response getConfigSysPointsConfTpl(CommonQuery query) throws TException {
-		return configService.getConfigSysPointsConfTpl(query);
+		return configService.getConfigSysPointsConfTpl(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override

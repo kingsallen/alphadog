@@ -1,13 +1,13 @@
 package com.moseeker.baseorm.service.Impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import com.moseeker.baseorm.dao.dictdb.Dict51OccupationDao;
 import com.moseeker.baseorm.dao.dictdb.DictZpinOccupationDao;
 import com.moseeker.baseorm.service.DictDaoService;
 import com.moseeker.baseorm.tool.OrmTools;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.common.struct.Response;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 @Service
 public class DictDaoServiceImpl implements DictDaoService{
 	/**
@@ -29,10 +29,10 @@ public class DictDaoServiceImpl implements DictDaoService{
 		// TODO Auto-generated method stub
 		return OrmTools.getAll(dictZpinDao);
 	}
-	public Response occupation51(CommonQuery query){
+	public Response occupation51(Query query){
 		return OrmTools.getSingle(dict51Dao,query);
 	}
-	public Response occupationZPin(CommonQuery query){
+	public Response occupationZPin(Query query){
 		return OrmTools.getSingle(dictZpinDao,query);
 	}
 }

@@ -1,27 +1,25 @@
 package com.moseeker.baseorm.dao.wordpressdb;
 
+import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressUserPostRecord;
+import com.moseeker.common.dbutils.DBConnHelper;
+import com.moseeker.thrift.gen.dao.struct.wordpressdb.WordpressUserPostDO;
+import org.jooq.DSLContext;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Service;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import org.jooq.DSLContext;
-
-import org.springframework.stereotype.Service;
-
-import com.moseeker.baseorm.db.wordpressdb.tables.WordpressUserPost;
-import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressUserPostRecord;
-import com.moseeker.common.dbutils.DBConnHelper;
-import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
-
 @Service
 public class WordpressUserPostDao
-		extends BaseDaoImpl<WordpressUserPostRecord, WordpressUserPost> {
+		extends JooqCrudImpl<WordpressUserPostDO, WordpressUserPostRecord> {
 	
 	private static final String INSERT_SQL = "insert into wordpressdb.wordpress_user_post(user_id, object_id) select ?, ? from DUAL where not exists(select user_id from wordpressdb.wordpress_user_post where user_id = ?)";
-	
-	protected void initJOOQEntity() {
-		this.tableLike = WordpressUserPost.WORDPRESS_USER_POST;
 
+	public WordpressUserPostDao(TableImpl<WordpressUserPostRecord> table, Class<WordpressUserPostDO> wordpressUserPostDOClass) {
+		super(table, wordpressUserPostDOClass);
 	}
 
 	public int upsertUserPost(int userId, long postId) {

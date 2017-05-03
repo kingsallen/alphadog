@@ -10,8 +10,8 @@ import com.moseeker.baseorm.service.HrDBService;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.HistoryOperate;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
@@ -94,7 +94,7 @@ public class HrDBServiceImpl implements HrDBService {
     }
 
     @Override
-    public Response getHrTeam(CommonQuery query) {
+    public Response getHrTeam(Query query) {
         // TODO Auto-generated method stub
         try {
             HrTeamRecord data = hrTeamDao.getResource(query);
@@ -110,7 +110,7 @@ public class HrDBServiceImpl implements HrDBService {
     }
 
     @Override
-    public Response getHrWxWechat(CommonQuery query) {
+    public Response getHrWxWechat(Query query) {
         try {
             HrWxWechatRecord rs = hrWxWechatDao.getResource(query);
             if (rs != null) {

@@ -1,14 +1,15 @@
 package com.moseeker.baseorm.dao.userdb;
 
-import com.moseeker.baseorm.db.userdb.tables.UserThirdpartyUser;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.userdb.tables.records.UserThirdpartyUserRecord;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserThirdpartyUserDO;
 import com.moseeker.thrift.gen.useraccounts.struct.ThirdPartyUser;
+import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -17,10 +18,10 @@ import java.sql.Timestamp;
  * Created by eddie on 2017/3/7.
  */
 @Service
-public class ThirdPartyUserDao extends BaseDaoImpl<UserThirdpartyUserRecord, UserThirdpartyUser> {
-    @Override
-    protected void initJOOQEntity() {
-        tableLike = UserThirdpartyUser.USER_THIRDPARTY_USER;
+public class ThirdPartyUserDao extends JooqCrudImpl<UserThirdpartyUserDO, UserThirdpartyUserRecord> {
+
+    public ThirdPartyUserDao(TableImpl<UserThirdpartyUserRecord> table, Class<UserThirdpartyUserDO> userThirdpartyUserDOClass) {
+        super(table, userThirdpartyUserDOClass);
     }
 
     public Response putThirdPartyUser(ThirdPartyUser user) {
@@ -31,7 +32,8 @@ public class ThirdPartyUserDao extends BaseDaoImpl<UserThirdpartyUserRecord, Use
                     QueryUtil queryUtil = new QueryUtil();
                     queryUtil.addEqualFilter("user_id", String.valueOf(user.getUser_id()));
                     queryUtil.addEqualFilter("source_id", String.valueOf(user.getSource_id()));
-                    UserThirdpartyUserRecord thirdPartyUser = getResource(queryUtil);
+
+                    UserThirdpartyUserRecord thirdPartyUser = getRecord(queryUtil);
                     if (thirdPartyUser != null) {
                         record = BeanUtils.structToDB(user, UserThirdpartyUserRecord.class);
                         record.setId(thirdPartyUser.getId());
@@ -44,7 +46,7 @@ public class ThirdPartyUserDao extends BaseDaoImpl<UserThirdpartyUserRecord, Use
             if (record != null) {
                 Timestamp updateTime = new Timestamp(System.currentTimeMillis());
                 record.setUpdateTime(updateTime);
-                int row = putResource(record);
+                int row = updateRecord(record);
                 if (row > 0) {
                     return ResponseUtils.success(row);
                 } else {

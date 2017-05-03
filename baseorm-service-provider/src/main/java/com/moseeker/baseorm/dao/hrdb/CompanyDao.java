@@ -4,7 +4,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ public class CompanyDao extends StructDaoImpl<HrCompanyDO, HrCompanyRecord, HrCo
 		this.tableLike = HrCompany.HR_COMPANY;
 	}
 
-	public HrCompanyDO getCompany(CommonQuery query) {
+	public HrCompanyDO getCompany(Query query) {
 		HrCompanyDO company = new HrCompanyDO();
 		try {
 			HrCompanyRecord record = this.getResource(query);
@@ -35,7 +35,7 @@ public class CompanyDao extends StructDaoImpl<HrCompanyDO, HrCompanyRecord, HrCo
 		return company;
 	}
 
-	public List<Hrcompany> getCompanies(CommonQuery query) {
+	public List<Hrcompany> getCompanies(Query query) {
 		List<Hrcompany> companies = new ArrayList<>();
 		
 		try {

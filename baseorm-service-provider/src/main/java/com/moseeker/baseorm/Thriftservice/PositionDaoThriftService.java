@@ -1,9 +1,14 @@
 package com.moseeker.baseorm.Thriftservice;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyPositionRecord;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.baseorm.tool.QueryConvert;
+import com.moseeker.common.util.BeanUtils;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.dao.service.PositionDao.Iface;
+import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.position.struct.Position;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -11,14 +16,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
-import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyPositionRecord;
-import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
-import com.moseeker.common.util.BeanUtils;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.dao.service.PositionDao.Iface;
-import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class PositionDaoThriftService implements Iface {
@@ -38,7 +38,7 @@ public class PositionDaoThriftService implements Iface {
 	public Position getPosition(CommonQuery query) throws TException {
 		Position position = new Position();
 		try {
-			JobPositionRecord record = positionDao.getResource(query);
+			JobPositionRecord record = positionDao.getResource(QueryConvert.commonQueryConvertToQuery(query));
 			if(record != null) {
 				record.into(position);
 				position.setHb_status(record.getHbStatus());
@@ -59,7 +59,8 @@ public class PositionDaoThriftService implements Iface {
 	@Override
 	public Position getPositionWithCityCode(CommonQuery query) throws TException {
 		// TODO Auto-generated method stub
-		return positionDao.getPositionWithCityCode(query);
+		return new Position();
+		//return positionDao.getPositionWithCityCode(query);
 	}
 
 	public JobPositionDao getPositionDao() {
@@ -74,7 +75,7 @@ public class PositionDaoThriftService implements Iface {
 	public List<ThirdPartyPositionData> getPositionThirdPartyPositions(CommonQuery query) throws TException {
 		List<ThirdPartyPositionData> datas = new ArrayList<>();
 		try {
-			List<HrThirdPartyPositionRecord> records = thirdpartyPositionDao.getResources(query);
+			List<HrThirdPartyPositionRecord> records = thirdpartyPositionDao.getRecords(QueryConvert.commonQueryConvertToQuery(query));
 			if(records != null && records.size() > 0) {
 				records.forEach(record -> {
 					ThirdPartyPositionData data = (ThirdPartyPositionData)BeanUtils.DBToStruct(ThirdPartyPositionData.class, record);

@@ -8,6 +8,8 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.query.Order;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.UserEmployeeDO;
@@ -81,7 +83,7 @@ public class UserEmployeeDaoServiceImpl implements UserEmployeeDaoService {
             for (UserEmployeeStruct bean : records) {
                 list.add(BeanUtils.structToDB(bean, UserEmployeeRecord.class));
             }
-            int result = dao.putResources(list);
+            int result = dao.updateRecords(list).length;
             return ResponseUtils.success(result);
         } catch (Exception e) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
@@ -109,8 +111,7 @@ public class UserEmployeeDaoServiceImpl implements UserEmployeeDaoService {
         try {
             QueryUtil qu = new QueryUtil();
             qu.addEqualFilter("employee_id", String.valueOf(employeeId));
-            qu.setSortby("id");
-            qu.setOrder("DESC");
+            qu.orderBy("id", Order.DESC);
             qu.setPer_page(Integer.MAX_VALUE);
             List<UserEmployeePointsRecordRecord> records =
                     dao1.getResources(qu);
@@ -125,7 +126,7 @@ public class UserEmployeeDaoServiceImpl implements UserEmployeeDaoService {
     public Response putUserEmployee(UserEmployeePointsRecordDO employeeDo) {
         try {
             UserEmployeeRecord record = BeanUtils.structToDB(employeeDo, UserEmployeeRecord.class);
-            int result = dao.putResource(record);
+            int result = dao.updateRecord(record);
             return ResponseUtils.success(result);
         } catch (Exception e) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
@@ -133,11 +134,11 @@ public class UserEmployeeDaoServiceImpl implements UserEmployeeDaoService {
     }
 
     @Override
-    public List<UserEmployeeDO> getEmployeesDO(CommonQuery query) {
+    public List<UserEmployeeDO> getEmployeesDO(Query query) {
         List<UserEmployeeDO> result = new ArrayList<>();
         try {
             List<UserEmployeeRecord> records =
-                    dao.getResources(query);
+                    dao.getRecords(query);
             result = BeanUtils.DBToStruct(UserEmployeeDO.class, records);
         } catch (Exception e) {
             e.printStackTrace();
@@ -152,7 +153,7 @@ public class UserEmployeeDaoServiceImpl implements UserEmployeeDaoService {
             for (UserEmployeeDO employeeDo : employeeDOs) {
                 list.add(BeanUtils.structToDB(employeeDo, UserEmployeeRecord.class));
             }
-            int result = dao.putResources(list);
+            int result = dao.updateRecords(list).length;
             return ResponseUtils.success(result);
         } catch (Exception e) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);

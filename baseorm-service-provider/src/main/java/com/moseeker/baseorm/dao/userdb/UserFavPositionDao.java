@@ -1,22 +1,24 @@
 package com.moseeker.baseorm.dao.userdb;
 
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.util.BaseDaoImpl;
 import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.db.userdb.tables.UserFavPosition;
 import com.moseeker.db.userdb.tables.records.UserFavPositionRecord;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.struct.UserFavPositionDO;
+import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class UserFavPositionDao extends BaseDaoImpl<UserFavPositionRecord, UserFavPosition> {
+public class UserFavPositionDao extends JooqCrudImpl<UserFavPositionDO, UserFavPositionRecord> {
 
-	@Override
-	protected void initJOOQEntity() {
-		this.tableLike = UserFavPosition.USER_FAV_POSITION;
+	public UserFavPositionDao(TableImpl<UserFavPositionRecord> table, Class<UserFavPositionDO> userFavPositionDOClass) {
+		super(table, userFavPositionDOClass);
 	}
 
 	/**
@@ -24,11 +26,11 @@ public class UserFavPositionDao extends BaseDaoImpl<UserFavPositionRecord, UserF
 	 * @param query
 	 * @return
 	 */
-	public List<UserFavPositionDO> getUserFavPositions(CommonQuery query) {
+	public List<UserFavPositionDO> getUserFavPositions(Query query) {
 		List<UserFavPositionDO> favPositions = new ArrayList<>();
 		
 		try {
-			List<UserFavPositionRecord> records = getResources(query);
+			List<UserFavPositionRecord> records = getRecords(query);
 			if(records != null && records.size() > 0) {
 				favPositions = BeanUtils.DBToStruct(UserFavPositionDO.class, records);
 			}

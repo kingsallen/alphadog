@@ -1,13 +1,13 @@
 package com.moseeker.baseorm.service;
 
-import java.util.List;
-
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
+
+import java.util.List;
 
 public interface UserEmployeeDaoService {
 	public Response getUserEmployeeByWeChats(Integer companyId,List<Integer> weChatIds);
@@ -17,6 +17,6 @@ public interface UserEmployeeDaoService {
 	public Response putUserEmployees(List<UserEmployeeStruct> records);
 	public List<UserEmployeePointsRecordDO> getUserEmployeePoints(int employeeId);
 	public Response putUserEmployee(UserEmployeePointsRecordDO employeeDO);
-	public List<UserEmployeeDO> getEmployeesDO(CommonQuery query);
+	public List<UserEmployeeDO> getEmployeesDO(Query query);
 	public Response putEmployeesDO(List<UserEmployeeDO> employeeDOs);
 }

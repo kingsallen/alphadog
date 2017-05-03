@@ -1,122 +1,97 @@
 package com.moseeker.baseorm.crud;
 
 import com.moseeker.common.exception.OrmException;
-import com.moseeker.thrift.gen.common.struct.*;
-import com.moseeker.thrift.gen.common.struct.Select;
+import com.moseeker.common.util.query.Query;
 import org.jooq.*;
-import org.jooq.SelectField;
 import org.jooq.impl.TableImpl;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 
 /**
  * Created by zhangdi on 2017/3/17.
  * CommonQuery包装类，实现CommonQuery和jooq语法对接
  */
-public class LocalQuery<R extends Record> extends CommonQuery {
+public class LocalQuery<R extends Record> {
     DSLContext create;
     TableImpl table;
-    CommonQuery commonQuery;
+    Query query;
     LocalCondition<R> localCondition;
 
 
-    public LocalQuery(DSLContext create, TableImpl<R> table, CommonQuery commonQuery) {
+    public LocalQuery(DSLContext create, TableImpl<R> table, Query query) {
         this.create = create;
         this.table = table;
         this.localCondition = new LocalCondition<R>(table);
-        this.commonQuery = commonQuery;
+        this.query = query;
         if (create == null) {
             throw new NullPointerException();
         }
         if (table == null) {
             throw new NullPointerException();
-        } else if (commonQuery == null) {
-            this.commonQuery = new CommonQuery();
+        } else if (query == null) {
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            this.query = queryBuilder.buildQuery();
         }
     }
 
-    @Override
     public int getPage() {
-        return commonQuery.getPage() > 0 ? commonQuery.getPage() : 1;
+        return query.getPageNum() > 0 ? query.getPageNum() : 1;
     }
 
-    @Override
     public int getPageSize() {
-        return commonQuery.getPageSize() > 0 ? commonQuery.getPageSize() : 10;
-    }
-
-    @Override
-    public List<Select> getAttributes() {
-        return commonQuery.getAttributes() == null ? new ArrayList<>() : commonQuery.getAttributes();
-    }
-
-    @Override
-    public com.moseeker.thrift.gen.common.struct.Condition getConditions() {
-        return commonQuery.getConditions();
-    }
-
-    @Override
-    public List<OrderBy> getOrders() {
-        return commonQuery.getOrders() == null ? new ArrayList<>() : commonQuery.getOrders();
-    }
-
-    @Override
-    public List<String> getGroups() {
-        return commonQuery.getGroups() == null ? new ArrayList<>() : commonQuery.getGroups();
+        return query.getPageSize() > 0 ? query.getPageSize() : 10;
     }
 
     public Collection<? extends SelectField<?>> buildSelect() {
-        return getAttributes().stream()
+        return query.getAttributes().stream()
                 .map(select -> {
-                    Field<?> field = table.field(select.field);
+                    Field<?> field = table.field(select.getField());
                     if (field == null) {
-                        throw new OrmException("field '" + select.field + "' not found in table " + table.getName());
+                        throw new OrmException("field '" + select.getField() + "' not found in table " + table.getName());
                     } else {
-                        switch (select.getOp()) {
+                        switch (select.getSelectOp()) {
                             case AVG:
-                                return field.avg().as(select.field + "_avg");
+                                return field.avg().as(select.getField() + "_avg");
                             case COUNT:
-                                return field.count().as(select.field + "_count");
+                                return field.count().as(select.getField() + "_count");
                             case COUNT_DISTINCT:
-                                return field.countDistinct().as(select.field + "_count_distinct");
+                                return field.countDistinct().as(select.getField() + "_count_distinct");
                             case TRIM:
-                                return field.trim().as(select.field + "_trim");
+                                return field.trim().as(select.getField() + "_trim");
                             case LCASE:
-                                return field.lower().as(select.field + "_lower");
+                                return field.lower().as(select.getField() + "_lower");
                             case LEN:
-                                return field.length().as(select.field + "_length");
+                                return field.length().as(select.getField() + "_length");
                             case MAX:
-                                return field.max().as(select.field + "_max");
+                                return field.max().as(select.getField() + "_max");
                             case MIN:
-                                return field.min().as(select.field + "_min");
+                                return field.min().as(select.getField() + "_min");
                             case ROUND:
-                                return field.round().as(select.field + "_round");
+                                return field.round().as(select.getField() + "_round");
                             case SUM:
-                                return field.sum().as(select.field + "_sum");
+                                return field.sum().as(select.getField() + "_sum");
                             case UCASE:
-                                return field.upper().as(select.field + "_ucase");
+                                return field.upper().as(select.getField() + "_ucase");
                             default:
                                 return field;
                         }
                     }
                 })
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     public Collection<? extends Field<?>> buildGroup() {
-        return getAttributes().stream()
+        return query.getGroups().stream()
                 .map(groupField -> {
-                    Field<?> field = table.field(groupField.field);
+                    Field<?> field = table.field(groupField);
                     if (field == null) {
-                        throw new OrmException("field '" + groupField.field + "' not found in table " + table.getName());
+                        throw new OrmException("field '" + groupField + "' not found in table " + table.getName());
                     } else {
                         return field;
                     }
                 })
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     /**
@@ -125,7 +100,7 @@ public class LocalQuery<R extends Record> extends CommonQuery {
      * @return
      */
     public org.jooq.Condition buildConditions() {
-        return localCondition.convertCondition(getConditions());
+        return localCondition.parseConditionUtil(query.getConditions());
     }
 
     /**
@@ -134,11 +109,11 @@ public class LocalQuery<R extends Record> extends CommonQuery {
      * @return
      */
     public Collection<? extends SortField<?>> buildOrder() {
-        return getOrders().stream()
+        return query.getOrders().stream()
                 .map(orderBy -> {
-                    Field<?> field = table.field(orderBy.field);
+                    Field<?> field = table.field(orderBy.getField());
                     if (field == null) {
-                        throw new OrmException("field '" + orderBy.field + "' not found in table " + table.getName());
+                        throw new OrmException("field '" + orderBy.getField() + "' not found in table " + table.getName());
                     } else {
                         switch (orderBy.getOrder()) {
                             case DESC:
@@ -148,7 +123,7 @@ public class LocalQuery<R extends Record> extends CommonQuery {
                         }
                     }
                 })
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     public SelectConditionStep convertToSelect() {

@@ -1,8 +1,8 @@
 package com.moseeker.common.providerutils;
 
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.*;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -11,98 +11,65 @@ import java.util.Map;
 
 public class QueryUtil extends Query {
 
+    Query.QueryBuilder queryBuilder = null;
+
+    public QueryUtil() {
+        queryBuilder = new Query.QueryBuilder();
+    }
+
     @Deprecated
     public QueryUtil addEqualFilter(String key, Object value) {
-        ValueCondition valueCondition = new ValueCondition(key, String.valueOf(value), ValueOp.EQ);
-        if (conditions == null) {
-            conditions = new Condition();
-            conditions.setValueCondition(valueCondition);
-        }
-
-        if (conditions.getValueCondition() != null) {
-            Condition conditions1 = new Condition();
-            conditions1.setValueCondition(conditions.getValueCondition());
-            Condition conditions2 = new Condition();
-            conditions2.setValueCondition(valueCondition);
-            conditions.setInnerCondition(new InnerCondition(conditions1, conditions2, ConditionOp.AND));
-        } else {
-            Condition replaceCondition = new Condition();
-            Condition newCondition = new Condition();
-            newCondition.setValueCondition(valueCondition);
-            InnerCondition innerCondition = new InnerCondition(conditions, newCondition, ConditionOp.AND);
-            replaceCondition.setInnerCondition(innerCondition);
-            conditions = replaceCondition;
-        }
+        queryBuilder.and(key, value);
         return this;
     }
 
     @Deprecated
     public QueryUtil setEqualFilter(Map<String, String> equalFilter) {
-        if(equalFilter==null || equalFilter.size() == 0){
-            conditions = null;
-        }else if (equalFilter.size() == 1) {
-            conditions = new Condition();
-            for (String key : equalFilter.keySet()) {
-                conditions.setValueCondition(new ValueCondition(key, equalFilter.get(key), ValueOp.EQ));
-            }
-        } else if (equalFilter.size() > 1) {
-            Condition newCondition = null;
-            for (String key : equalFilter.keySet()) {
-                ValueCondition valueCondition = new ValueCondition(key, equalFilter.get(key), ValueOp.EQ);
-                Condition valueConditionOuter = new Condition();
-                valueConditionOuter.setValueCondition(valueCondition);
-                if (newCondition == null) {
-                    newCondition = valueConditionOuter;
-                } else {
-                    InnerCondition innerCondition = new InnerCondition(newCondition, valueConditionOuter, ConditionOp.AND);
-                    newCondition = new Condition();
-                    newCondition.setInnerCondition(innerCondition);
-                }
-            }
-            conditions = newCondition;
+        if(equalFilter != null) {
+            equalFilter.forEach((key, value) -> {
+                queryBuilder.and(key, value);
+            });
         }
         return this;
     }
 
     @Deprecated
     public QueryUtil addGroupBy(String field) {
-        if (groups == null) {
-            groups = new ArrayList<>();
+        if (field == null) {
+            queryBuilder.groupBy(field);
         }
-        groups.add(field);
         return this;
     }
 
     @Deprecated
     public QueryUtil addOrderBy(String filed, Order order) {
-        if (orders == null) {
-            orders = new ArrayList<>();
+        if (StringUtils.isNotNullOrEmpty(filed) && order != null) {
+            queryBuilder.orderBy(filed, order);
         }
-        orders.add(new OrderBy(filed, order));
         return this;
     }
 
     @Deprecated
     public QueryUtil addSelectAttribute(String field) {
-        addSelect(new Select(field, SelectOp.FIELD));
+        if (StringUtils.isNotNullOrEmpty(field)) {
+            queryBuilder.select(field);
+        }
         return this;
     }
 
-    /*@Deprecated
-    public void setOrder(String order) {
-        this.tmpOrder = order;
-        checkOrder();
+    public QueryUtil orderBy(String field) {
+        return orderBy(field, Order.ASC);
+    }
+
+    public QueryUtil orderBy(String field, Order order) {
+        OrderBy orderBy = new OrderBy(field, order);
+        queryBuilder.orderBy(orderBy);
+        return this;
     }
 
     @Deprecated
-    public void setSortby(String sortby) {
-        this.tmpSort = sortby;
-        checkOrder();
-    }*/
-
-    @Deprecated
     public void setPer_page(int per_page) {
-        this.pageSize = per_page;
+        queryBuilder.setPageSize(per_page);
     }
 
     @Deprecated
@@ -130,7 +97,11 @@ public class QueryUtil extends Query {
         return new QueryUtil().select(selects);
     }
 
-    public static QueryUtil where(CommonCondition commonCondition) {
-        return new QueryUtil().select().where(commonCondition);
+    public static QueryUtil where(Condition condition) {
+        return new QueryUtil().select().where(condition);
+    }
+
+    public void setPageSize(int pageSize) {
+        this.setPageSize(pageSize);
     }
 }

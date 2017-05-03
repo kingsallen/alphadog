@@ -1,21 +1,20 @@
 package com.moseeker.baseorm.service.Impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.moseeker.baseorm.dao.configdb.ConfigSysPointsConfTplDao;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysPointsConfTplRecord;
 import com.moseeker.baseorm.service.ConfigService;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.config.ConfigSysPointsConfTpl;
 import com.moseeker.thrift.gen.config.HrAwardConfigTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ConfigServiceImpl implements ConfigService {
@@ -24,7 +23,7 @@ public class ConfigServiceImpl implements ConfigService {
 	private ConfigSysPointsConfTplDao configSysPointsConfTplDao;
 	
 	@Override
-	public Response getConfigSysPointsConfTpl(CommonQuery query) {
+	public Response getConfigSysPointsConfTpl(Query query) {
 		// TODO Auto-generated method stub
 		try{
 			ConfigSysPointsConfTpl result=
@@ -35,7 +34,7 @@ public class ConfigServiceImpl implements ConfigService {
 		}
 		
 	}
-	public Response getConfigSysPointsConfTpls(CommonQuery query) {
+	public Response getConfigSysPointsConfTpls(Query query) {
 		// TODO Auto-generated method stub
 		
 		try{

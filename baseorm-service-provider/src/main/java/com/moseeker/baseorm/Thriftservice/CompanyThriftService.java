@@ -6,6 +6,7 @@ import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
 import com.moseeker.baseorm.service.HrCompanyService;
+import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -51,7 +52,7 @@ public class CompanyThriftService implements Iface {
 		logger.info("getThirdPartyAccount");
 		ThirdPartAccountData data =  new ThirdPartAccountData();
 		try {
-			HrThirdPartyAccountRecord record = thirdPartyAccountDao.getResource(query);
+			HrThirdPartyAccountRecord record = thirdPartyAccountDao.getRecord(QueryConvert.commonQueryConvertToQuery(query));
 			if(record != null) {
 				copy(data, record);
 			}
@@ -69,7 +70,7 @@ public class CompanyThriftService implements Iface {
 	public List<ThirdPartAccountData> getThirdPartyBindingAccounts(CommonQuery query) throws TException {
 		List<ThirdPartAccountData> datas = new ArrayList<>();
 		try {
-			List<HrThirdPartyAccountRecord> records = thirdPartyAccountDao.getThirdPartyBindingAccounts(query);
+			List<HrThirdPartyAccountRecord> records = thirdPartyAccountDao.getThirdPartyBindingAccounts(QueryConvert.commonQueryConvertToQuery(query));
 			if(records != null && records.size() > 0) {
 				records.forEach(r -> {
 					ThirdPartAccountData data = new ThirdPartAccountData();
@@ -93,7 +94,7 @@ public class CompanyThriftService implements Iface {
 	@Override
 	public List<ThirdPartyPositionData> getThirdPartyPositions(CommonQuery query) throws TException {
 		
-		return thirdPartyPositionDao.getThirdPartyPositions(query);
+		return thirdPartyPositionDao.getThirdPartyPositions(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override
@@ -113,12 +114,12 @@ public class CompanyThriftService implements Iface {
 	
 	@Override
 	public HrCompanyDO getCompany(CommonQuery query) throws TException {
-		return companyDao.getCompany(query);
+		return companyDao.getCompany(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override
 	public List<Hrcompany> getCompanies(CommonQuery query) throws TException {
-		return companyDao.getCompanies(query);
+		return companyDao.getCompanies(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	private void copy(ThirdPartAccountData data, HrThirdPartyAccountRecord record) {
@@ -166,6 +167,6 @@ public class CompanyThriftService implements Iface {
      */
 	@Override
 	public Response getHrCompanyConfig(CommonQuery query){
-		return hrCompanyService.getCompanyConf(query);
+		return hrCompanyService.getCompanyConf(QueryConvert.commonQueryConvertToQuery(query));
 	}
 }

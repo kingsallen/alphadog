@@ -4,8 +4,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import org.junit.Test;
-
 import com.moseeker.common.exception.ParamNullException;
 
 public class FormCheck {
@@ -211,7 +209,7 @@ public class FormCheck {
 		return m.find();
 	}
 
-	@Test
+	/*@Test
 	public void pwTest() {
 		String str = "123【】6!@#$%^&*()-=_+";
 		System.out.println(pwdSpecialCharactor(str));
@@ -243,5 +241,5 @@ public class FormCheck {
 	public void isDateTimeTest() {
 		String date = "2012-02-29 23:59:59";
 		System.out.println("date." + isDateTime(date));
-	}
+	}*/
 }

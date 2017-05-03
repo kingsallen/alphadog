@@ -1,6 +1,8 @@
 package com.moseeker.baseorm.crud;
 
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.common.util.query.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -13,6 +15,8 @@ import java.util.stream.Collectors;
  * 其他dao调用该接口方法将自己的DSLContext传入方法，以实现多表操作的事物和回滚
  */
 public abstract class Crud<S, R> implements CrudAdd<R>, CrudDelete<R>, CrudUpdate<R>, CrudQuery<R> {
+
+    protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
     protected Class<S> sClass;
     protected Class<R> rClass;
@@ -53,11 +57,11 @@ public abstract class Crud<S, R> implements CrudAdd<R>, CrudDelete<R>, CrudUpdat
         return updateRecords(ss.stream().map(data -> dataToRecord(data)).collect(Collectors.toList()));
     }
 
-    public List<S> getDatas(CommonQuery query) {
+    public List<S> getDatas(Query query) {
         return getDatas(query, sClass);
     }
 
-    public S getData(CommonQuery query) {
+    public S getData(Query query) {
         return getData(query, sClass);
     }
 }

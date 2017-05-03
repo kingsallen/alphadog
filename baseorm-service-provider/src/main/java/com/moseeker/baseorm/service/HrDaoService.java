@@ -1,6 +1,6 @@
 package com.moseeker.baseorm.service;
 
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import org.apache.thrift.TException;
 
@@ -8,25 +8,27 @@ import java.util.List;
 
 public interface HrDaoService {
 
-    HrHbConfigDO getHbConfig(CommonQuery query) throws TException;
+    HrHbConfigDO getHbConfig(Query query) throws TException;
     
-    List<HrHbConfigDO> getHbConfigs(CommonQuery query) throws TException;
+    List<HrHbConfigDO> getHbConfigs(Query query) throws TException;
 
-    HrHbPositionBindingDO getHbPositionBinding(CommonQuery query) throws TException;
+    HrHbPositionBindingDO getHbPositionBinding(Query query) throws TException;
 
-    List<HrHbPositionBindingDO> getHbPositionBindings(CommonQuery query) throws TException;
+    List<HrHbPositionBindingDO> getHbPositionBindings(Query query) throws TException;
 
-    HrHbItemsDO getHbItem(CommonQuery query) throws TException;
+    HrHbItemsDO getHbItem(Query query) throws TException;
 
-    List<HrHbItemsDO> getHbItems(CommonQuery query) throws TException;
+    List<HrHbItemsDO> getHbItems(Query query) throws TException;
 
-    HrHbScratchCardDO getHbScratchCard(CommonQuery query) throws TException;
+    HrHbScratchCardDO getHbScratchCard(Query query) throws TException;
 
-    HrHbSendRecordDO getHbSendRecord(CommonQuery query) throws TException;
+    HrHbSendRecordDO getHbSendRecord(Query query) throws TException;
 
-    HrEmployeeCertConfDO getEmployeeCertConf(CommonQuery query) throws TException;
+    HrEmployeeCertConfDO getEmployeeCertConf(Query query) throws TException;
 
-    List<HrPointsConfDO> getPointsConfs(CommonQuery query) throws TException;
+    List<HrPointsConfDO> getPointsConfs(Query query) throws TException;
 
-    List<HrEmployeeCustomFieldsDO> getEmployeeCustomFields(CommonQuery query) throws TException;
+    List<HrEmployeeCustomFieldsDO> getEmployeeCustomFields(Query query) throws TException;
+
+    List<HrCompanyAccountDO> getHrCompanyAccounts(Query query) throws TException;
 }
