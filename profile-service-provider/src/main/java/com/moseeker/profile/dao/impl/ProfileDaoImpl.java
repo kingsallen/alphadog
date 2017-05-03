@@ -1183,11 +1183,11 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 
                 if (profile_intention != null) {
                     //all from profiledb.profile_intention_city
-                    IntentionCity profile_intention_city = create
+                    List<IntentionCity> profile_intention_city = create
                             .select()
                             .from(ProfileIntentionCity.PROFILE_INTENTION_CITY)
                             .where(ProfileIntentionCity.PROFILE_INTENTION_CITY.PROFILE_INTENTION_ID.eq(UInteger.valueOf(profile_intention.getId())))
-                            .fetchAnyInto(IntentionCity.class);
+                            .fetchInto(IntentionCity.class);
                     buildMap(map, "profile_intention_city", profile_intention_city);
 
                     //all from profiledb.profile_intention_industry
