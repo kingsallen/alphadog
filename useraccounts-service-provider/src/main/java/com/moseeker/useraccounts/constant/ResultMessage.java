@@ -19,7 +19,7 @@ import java.util.HashMap;
 public enum ResultMessage {
 
 	THIRD_PARTY_ACCOUNT_UNBOUND(34001, "未绑定第三方帐号！"),
-	THIRD_PARTY_ACCOUNT_SYNC_FAILED(34002, "获取点数失败！"),
+	THIRD_PARTY_ACCOUNT_SYNC_FAILED(34002, "刷新失败，请稍后再试！"),
 	THIRD_PARTY_ACCOUNT_HAVE_NO_REMAIN_NUM(34003, "没有可发布点数！"),
 	
 	SUCCESS(0, "success"),

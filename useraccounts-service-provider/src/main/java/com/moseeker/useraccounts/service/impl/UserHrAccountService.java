@@ -638,6 +638,21 @@ public class UserHrAccountService {
                     } else {
                         return ResultMessage.THIRD_PARTY_ACCOUNT_SYNC_FAILED.toResponse();
                     }
+                } else if (synchronizeResult != null) {
+                    Response response = new Response();
+                    response.setStatus(1);
+                    if (synchronizeResult.getStatus() == 1) {
+                        response.setMessage("账号或者密码错误！");
+                    } else if (synchronizeResult.getStatus() == 2) {
+                        response.setMessage("刷新超时，请稍后重试！");
+                    } else if (synchronizeResult.getStatus() == 3) {
+                        response.setMessage("刷新失败，请稍后重试！");
+                    } else if (synchronizeResult.getStatus() == 4) {
+                        response.setMessage("刷新失败，请稍后重试！");
+                    } else {
+                        response.setMessage("发生异常，请稍后重试！");
+                    }
+                    return response;
                 } else {
                     return ResultMessage.THIRD_PARTY_ACCOUNT_SYNC_FAILED.toResponse();
                 }

@@ -105,7 +105,9 @@ public class ChaosServiceImpl {
 			String synchronizationURI = chnnelType.getRemain(domain);
 			String params = ChaosTool.getParams(thirdPartyAccount.getUsername(), thirdPartyAccount.getPassword(), thirdPartyAccount.getMemberName(), chnnelType);
 			try {
+				logger.info("ChaosServiceImpl refresh refreshURI:"+synchronizationURI);
 				String data = UrlUtil.sendPost(synchronizationURI, params, Constant.CONNECTION_TIME_OUT, Constant.READ_TIME_OUT);
+				logger.info("ChaosServiceImpl refresh params:"+params);
 				//String data = "{\"status\":0,\"message\":\"success\", \"data\":{\"remain_number\":1,\"resume_number\":2}}";
 				if(data != null) {
 					JSONObject result = JSON.parseObject(data);
