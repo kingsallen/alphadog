@@ -708,7 +708,7 @@ public class UserHrAccountService {
             if (data == null || data.getId() == 0) {
                 //检查该用户是否绑定了其它相同渠道的账号
                 ThirdPartAccountData thirdPartAccount = hraccountDao.getThirdPartyAccountByUserId((int) user.getId(), channelType);
-                if (thirdPartAccount != null) {
+                if (thirdPartAccount != null && thirdPartAccount.getId() > 0) {
                     if (user.getAccount_type() == 0) {
                         //如果主账号已经绑定该渠道第三方账号，那么绑定人为空,并允许绑定
                         user.setId(0);
