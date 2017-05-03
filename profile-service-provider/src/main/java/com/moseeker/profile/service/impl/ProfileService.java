@@ -1,22 +1,5 @@
 package com.moseeker.profile.service.impl;
 
-import java.net.ConnectException;
-import java.text.ParseException;
-import java.util.UUID;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.moseeker.common.constants.RespnoseUtil;
-import com.moseeker.common.util.ConfigPropertiesUtil;
-import com.moseeker.common.util.UrlUtil;
-import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.dao.service.ProfileProfileDao;
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -24,6 +7,7 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.db.userdb.tables.records.UserSettingsRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
@@ -34,6 +18,14 @@ import com.moseeker.profile.dao.UserSettingsDao;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.profile.struct.Profile;
+import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.text.ParseException;
+import java.util.UUID;
 
 @Service
 @CounterIface
@@ -178,10 +170,6 @@ public class ProfileService extends JOOQBaseServiceImpl<Profile, ProfileProfileR
         this.completenessDao = completenessDao;
     }
 
-    ProfileProfileDao.Iface profileProfileDao = ServiceManager.SERVICEMANAGER
-            .getService(ProfileProfileDao.Iface.class);
-
-
     public Response getProfileByApplication(int companyId, int sourceId, int ats_status, boolean recommender, boolean dl_url_required) throws TException {
         ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil.getInstance();
         try {
@@ -192,6 +180,6 @@ public class ProfileService extends JOOQBaseServiceImpl<Profile, ProfileProfileR
         String downloadUrl = propertiesUtils.get("GENERATE_USER_ID", String.class);
         String password = propertiesUtils.get("GENERATE_USER_PASSWORD", String.class);
         logger.info("profilesByApplication:downloadUrl:{},companyId:{},sourceId:{},atsStatus:{},recommender:{},dlUrlRequired:{}",downloadUrl, companyId, sourceId, ats_status, recommender, dl_url_required);
-        return profileProfileDao.getResourceByApplication(downloadUrl, password, companyId, sourceId, ats_status, recommender, dl_url_required);
+        return dao.getResourceByApplication(downloadUrl, password, companyId, sourceId, ats_status, recommender, dl_url_required);
     }
 }

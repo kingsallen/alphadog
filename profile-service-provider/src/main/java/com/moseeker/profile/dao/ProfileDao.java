@@ -3,6 +3,7 @@ package com.moseeker.profile.dao;
 import java.util.List;
 import java.util.Set;
 
+import com.moseeker.thrift.gen.common.struct.Response;
 import org.jooq.Record2;
 import org.jooq.Result;
 import org.jooq.types.UInteger;
@@ -60,4 +61,5 @@ public interface ProfileDao extends BaseDao<ProfileProfileRecord> {
 
 	int updateUpdateTime(Set<Integer> profileIds);
 
+	Response getResourceByApplication(String downloadApi, String password, int companyId, int sourceId, int atsStatus, boolean recommender, boolean dl_url_required);
 }
