@@ -1059,7 +1059,7 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
     }
 
 
-    private boolean showEmptyKey = false;
+    private boolean showEmptyKey = true;
 
     private void buildMap(Map map, String key, Object object) {
         if (showEmptyKey) {
@@ -1139,6 +1139,14 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
                         .fetchAnyInto(Attachment.class);
                 buildMap(map, "profile_attachment", profile_attachment);
 
+                //all from profiledb.profile_basic
+                Basic profile_basic = create
+                        .select()
+                        .from(ProfileBasic.PROFILE_BASIC)
+                        .where(ProfileBasic.PROFILE_BASIC.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
+                        .fetchAnyInto(Basic.class);
+                buildMap(map, "profile_basic", profile_basic);
+
                 //all from profiledb.profile_award
                 List<Awards> profile_award = create
                         .select()
@@ -1191,19 +1199,19 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
                     buildMap(map, "profile_intention_city", profile_intention_city);
 
                     //all from profiledb.profile_intention_industry
-                    IntentionIndustry profile_intention_industry = create
+                    List<IntentionIndustry> profile_intention_industry = create
                             .select()
                             .from(ProfileIntentionIndustry.PROFILE_INTENTION_INDUSTRY)
                             .where(ProfileIntentionIndustry.PROFILE_INTENTION_INDUSTRY.PROFILE_INTENTION_ID.eq(UInteger.valueOf(profile_intention.getId())))
-                            .fetchAnyInto(IntentionIndustry.class);
+                            .fetchInto(IntentionIndustry.class);
                     buildMap(map, "profile_intention_industry", profile_intention_industry);
 
                     //all from profiledb.profile_intention_position
-                    IntentionPosition profile_intention_position = create
+                    List<IntentionPosition> profile_intention_position = create
                             .select()
                             .from(ProfileIntentionPosition.PROFILE_INTENTION_POSITION)
                             .where(ProfileIntentionPosition.PROFILE_INTENTION_POSITION.PROFILE_INTENTION_ID.eq(UInteger.valueOf(profile_intention.getId())))
-                            .fetchAnyInto(IntentionPosition.class);
+                            .fetchInto(IntentionPosition.class);
                     buildMap(map, "profile_intention_position", profile_intention_position);
                 }
 
