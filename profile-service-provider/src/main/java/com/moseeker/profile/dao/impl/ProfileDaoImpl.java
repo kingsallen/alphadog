@@ -1096,7 +1096,9 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
                 .from(JobPositionExt.JOB_POSITION_EXT)
                 .where(JobPositionExt.JOB_POSITION_EXT.PID.eq(position.getId()))
                 .fetchAnyInto(com.moseeker.thrift.gen.position.struct.JobPositionExt.class);
-        buildMap(map, "job_position_ext", positionExt);
+        if (positionExt != null && !StringUtils.isNullOrEmpty(positionExt.getExtra())) {
+            buildMap(map, "job_position_ext", positionExt);
+        }
 
         //other from jobdb.job_resume_other # custom résumé fields in JSON format
         com.moseeker.thrift.gen.application.struct.JobResumeOther resumeOther = create
