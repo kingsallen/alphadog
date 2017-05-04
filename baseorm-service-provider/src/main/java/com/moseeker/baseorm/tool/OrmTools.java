@@ -1,14 +1,13 @@
 package com.moseeker.baseorm.tool;
 
-import com.moseeker.baseorm.util.BaseDaoImpl;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.common.struct.Response;
 import org.apache.thrift.TBase;
-import org.jooq.impl.TableImpl;
+import org.jooq.UpdatableRecord;
 import org.jooq.impl.UpdatableRecordImpl;
 
 import java.util.*;
@@ -22,7 +21,7 @@ public class OrmTools {
 	/*
 	 * 按照内部是三层嵌套的方式的list集合的response
 	 */
-	public static <K extends UpdatableRecordImpl<K>, V extends TableImpl<K>> Response getAll(BaseDaoImpl<K,V> dao){
+	public static <K, V extends UpdatableRecord<V>> Response getAll(JooqCrudImpl<K,V> dao){
 		List<Map<String, Object>> result=new ArrayList<>();
 		try {
 			QueryUtil query=new QueryUtil();
@@ -31,7 +30,7 @@ public class OrmTools {
 			query.setPageSize(Integer.MAX_VALUE);
 			query.setEqualFilter(map1);
 			List<Map<String, Object>> allData = new ArrayList<>();
-			List<K> list = dao.getResources(query);
+			List<V> list = dao.getRecords(query);
 			if(list != null && list.size() > 0) {
 				list.forEach(r -> {
 					Map<String, Object> map = new HashMap<String, Object>();
@@ -187,26 +186,19 @@ public class OrmTools {
 	/*
 	 * 按照内部是数据的list集合的方式返回response
 	 */
-	public static <K extends UpdatableRecordImpl<K>, V extends TableImpl<K>> Response getList(BaseDaoImpl<K,V> dao, Query query, TBase bean){
+	public static <K extends UpdatableRecordImpl<K>, V extends UpdatableRecord<V>> Response getList(JooqCrudImpl<K,V> dao, Query query, TBase bean){
 		try{
-			List<K> list=dao.getResources(query);
-			List<TBase> result=new ArrayList<TBase>();
-			if(list!=null&&list.size()>0){
-				for(int z=0;z<list.size();z++){
-					bean= BeanUtils.DBToStruct(bean.getClass(),list.get(z) );
-					result.add(bean);
-				}
-			}
-			return ResponseUtils.success(result);
+			List<K> list=dao.getDatas(query);
+			return ResponseUtils.success(list);
 		}catch(Exception e){
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		}
 	}
 	
-	public static <K extends UpdatableRecordImpl<K>, V extends TableImpl<K>> Response getSingle(BaseDaoImpl<K,V> dao,Query query){
+	public static <K, V extends UpdatableRecordImpl<V>> Response getSingle(JooqCrudImpl<K,V> dao,Query query){
 		List<Map<String, Object>> allData = new ArrayList<>();
 		try{
-			List<K> list = dao.getResources(query);
+			List<V> list = dao.getRecords(query);
 			if(list != null && list.size() > 0) {
 				list.forEach(r -> {
 					Map<String, Object> map = new HashMap<String, Object>();
