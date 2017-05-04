@@ -133,16 +133,14 @@ public class LocalQueryTest {
         System.out.println(userId.and(name).or(nickname).and(activation));
         System.out.println(userId.and(name.or(nickname_activation).or(disable).and(eamil_headImg).and(activationCode)));
         Condition condition1 = userId.and(name.or(nickname_activation).or(disable).and(eamil_headImg).and(activationCode));
-        System.out.println(condition1);
         System.out.println(context.select(UserUser.USER_USER.ID)
                 .from(UserUser.USER_USER).where(condition1).getSQL());
 
-        Condition condition2 = userId.and(name);
-        Condition condition3 = condition2.or(nickname_activation);
-        Condition condition4 = condition3.or(disable);
-        Condition condition5 = condition4.and(eamil_headImg);
-        Condition condition6 = condition5.and(activationCode);
-        System.out.println(condition6);
+        Condition condition12 = userId.and(name);
+        Condition condition13 = condition12.or(nickname_activation).or(disable).and(eamil_headImg).and(activationCode);
+
+        System.out.println(context.select(UserUser.USER_USER.ID)
+                .from(UserUser.USER_USER).where(condition13).getSQL());
     }
 
     @Test

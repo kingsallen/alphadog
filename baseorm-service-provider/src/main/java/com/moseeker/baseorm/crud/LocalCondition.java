@@ -1,14 +1,13 @@
 package com.moseeker.baseorm.crud;
 
 import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.query.*;
 import com.moseeker.common.util.query.Condition;
-import com.moseeker.common.util.query.ConditionOp;
-import com.moseeker.common.util.query.Order;
-import com.moseeker.common.util.query.ValueOp;
-import org.jooq.Field;
-import org.jooq.Record;
+import org.jooq.*;
+import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -85,42 +84,90 @@ public class LocalCondition<R extends Record> {
 
     }
 
+    /**
+     * 解析查询条件
+     * @param condition
+     * @return
+     */
     private org.jooq.Condition parseCondition(Condition condition) {
+
 
         org.jooq.Condition jooqCondition = null;
         if (condition != null) {
             jooqCondition = convertCondition(condition);
             if (jooqCondition != null) {
-                if (condition.getConditionInnerJoin() != null && condition.getConditionInnerJoin().getCondition() != null) {
-                    org.jooq.Condition tempCondition = parseCondition(condition.getConditionInnerJoin().getCondition());
-                    jooqCondition = packageConditionOp(jooqCondition, tempCondition, condition.getConditionInnerJoin().getOp(), true);
-                }
-                if (condition.getConditionJoin() != null && condition.getConditionJoin().getCondition() != null) {
-                    org.jooq.Condition tempCondition = parseCondition(condition.getConditionJoin().getCondition());
-                    jooqCondition = packageConditionOp(jooqCondition, tempCondition, condition.getConditionJoin().getOp(), false);
-                }
+                List<ConditionCollection> conditionCollectionList = new ArrayList<>();
+                parseInnerCondition(condition, conditionCollectionList);
+                parseNextCondition(conditionCollectionList, condition);
+                jooqCondition = packageCondition(jooqCondition, conditionCollectionList);
 
             }
         }
         return jooqCondition;
     }
 
-    private org.jooq.Condition packageConditionOp(org.jooq.Condition jooqCondition, org.jooq.Condition nextCondition, ConditionOp op, boolean innerJoin) {
+    /**
+     * 组装同级别的查询条件
+     * @param jooqCondition 第一个查询条件
+     * @param conditionCollectionList 其余的查询条件集合
+     * @return 查询条件
+     */
+    private org.jooq.Condition packageCondition(org.jooq.Condition jooqCondition, List<ConditionCollection> conditionCollectionList) {
+
+        if (conditionCollectionList != null && conditionCollectionList.size() > 0) {
+            for (ConditionCollection conditionCollection : conditionCollectionList) {
+                jooqCondition = packageConditionOp(jooqCondition, conditionCollection.getCondition(), conditionCollection.getOp());
+            }
+        }
+        return jooqCondition;
+    }
+
+    /**
+     * 解析condition同级别的查询条件
+     * @param conditionCollectionList 解析结果
+     * @param condition 查询条件
+     */
+    private void parseNextCondition(List<ConditionCollection> conditionCollectionList, Condition condition) {
+        ConditionJoin temConditionJoin = condition.getConditionJoin();
+        while (temConditionJoin != null && temConditionJoin.getCondition() != null) {
+            org.jooq.Condition tempJooqCondition = convertCondition(temConditionJoin.getCondition());
+            if (tempJooqCondition != null) {
+
+                ConditionCollection conditionCollection = new ConditionCollection();
+                conditionCollection.setCondition(tempJooqCondition);
+                conditionCollection.setOp(temConditionJoin.getOp());
+                conditionCollectionList.add(conditionCollection);
+
+                parseInnerCondition(temConditionJoin.getCondition(), conditionCollectionList);
+            }
+            if (temConditionJoin.getCondition() != null && temConditionJoin.getCondition().getConditionJoin() != null) {
+                temConditionJoin = temConditionJoin.getCondition().getConditionJoin();
+            } else {
+                temConditionJoin = null;
+            }
+        }
+    }
+
+    private void parseInnerCondition(Condition condition, List<ConditionCollection> conditionCollectionList) {
+        if (condition.getConditionInnerJoin() != null && condition.getConditionInnerJoin().getCondition() != null) {
+            org.jooq.Condition tempJooqCondition = parseCondition(condition.getConditionInnerJoin().getCondition());
+            if (tempJooqCondition != null) {
+                ConditionCollection conditionCollection = new ConditionCollection();
+                conditionCollection.setCondition(tempJooqCondition);
+                conditionCollection.setOp(condition.getConditionInnerJoin().getOp());
+                conditionCollectionList.add(conditionCollection);
+            }
+        }
+    }
+
+    private org.jooq.Condition packageConditionOp(org.jooq.Condition jooqCondition, org.jooq.Condition nextCondition, ConditionOp op) {
+        org.jooq.Condition result = DSL.trueCondition();
+        result.and(jooqCondition);
         switch (op) {
             case AND:
-                if (innerJoin) {
-                    return jooqCondition.and((nextCondition));
-                } else {
-                    return jooqCondition.and(nextCondition);
-                }
-
+                return result.and(nextCondition);
             case OR:
-                if (innerJoin) {
-                    return jooqCondition.or((nextCondition));
-                } else {
-                    return jooqCondition.or(nextCondition);
-                }
-
+                return jooqCondition.or(nextCondition);
             default:
                 return jooqCondition;
         }
@@ -128,14 +175,14 @@ public class LocalCondition<R extends Record> {
 
     public class ConditionCollection {
 
-        private Condition condition;
+        private org.jooq.Condition condition;
         private ConditionOp op;
 
-        public Condition getCondition() {
+        public org.jooq.Condition getCondition() {
             return condition;
         }
 
-        public void setCondition(Condition condition) {
+        public void setCondition(org.jooq.Condition condition) {
             this.condition = condition;
         }
 
