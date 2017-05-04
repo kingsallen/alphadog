@@ -15,6 +15,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatListDO;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -33,7 +34,8 @@ public class ChatService {
 
     Logger logger = LoggerFactory.getLogger(ChatService.class);
 
-    private ChatDao chaoDao = new ChatDao();
+    @Autowired
+    private ChatDao chaoDao;
     private ThreadPool pool = ThreadPool.Instance;
 
     private static String AUTO_CONTENT_WITH_HR_NOTEXIST = "我是{companyName}HR，我可以推荐您或者您的朋友加入我们！";

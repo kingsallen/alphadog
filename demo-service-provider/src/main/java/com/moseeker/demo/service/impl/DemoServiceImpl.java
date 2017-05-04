@@ -3,11 +3,10 @@ package com.moseeker.demo.service.impl;
 import com.moseeker.baseorm.dao.demo.DemoDao;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.Update;
 import com.moseeker.demo.service.DemoService;
-import com.moseeker.thrift.gen.common.struct.BIZException;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.CommonUpdate;
-import com.moseeker.thrift.gen.common.struct.Condition;
 import com.moseeker.thrift.gen.demo.struct.DemoStruct;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,24 +23,14 @@ public class DemoServiceImpl implements DemoService {
 
     //此处我们只处理我们知道的异常，其它Runtime异常都直接抛给上面统一处理
     @Override
-    public String getData(CommonQuery query) throws TException {
-        try {
-            int a = 0;
-            int b = 1;
-            int c = b/a;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
-        throw new BIZException(1111, "exception");
-        /*DemoStruct demoStruct = demoDao.getData(query);
-        return ResponseUtils.successStructJson("{}");*/
+    public String getData(Query query) throws TException {
+        DemoStruct demoStruct = demoDao.getData(query);
+        return ResponseUtils.successStructJson(demoStruct);
     }
 
     @Override
     public String postData(DemoStruct demoStruct) throws TException {
-        return "{\"status\":0,\"message\":\"post success\"}";
-        /*try {
+        try {
             int id = demoDao.addData(demoStruct);
             if (id > 0) {
                 return ResponseUtils.successJson();
@@ -49,17 +38,16 @@ public class DemoServiceImpl implements DemoService {
             return ResponseUtils.failJson(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
         }catch (Exception e){
             throw new TException(e);
-        }*/
+        }
     }
 
     @Override
-    public String putData(CommonUpdate data) throws TException {
-        return "{\"status\":0,\"message\":\"put success\"}";
-        /*int success = demoDao.update(data);
+    public String putData(Update data) throws TException {
+        int success = demoDao.update(data);
         if(success>0){
             return ResponseUtils.successJson();
         }
-        return ResponseUtils.failJson(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);*/
+        return ResponseUtils.failJson(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
     }
 
     @Override

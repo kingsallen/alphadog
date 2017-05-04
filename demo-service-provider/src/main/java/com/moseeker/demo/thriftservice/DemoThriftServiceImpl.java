@@ -1,5 +1,7 @@
 package com.moseeker.demo.thriftservice;
 
+import com.moseeker.baseorm.tool.QueryConvert;
+import com.moseeker.common.util.query.Update;
 import com.moseeker.demo.service.DemoService;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.CommonUpdate;
@@ -21,7 +23,7 @@ public class DemoThriftServiceImpl implements DemoThriftService.Iface{
 
     @Override
     public String getData(CommonQuery query) throws TException {
-        return demoService.getData(query);
+        return demoService.getData(QueryConvert.commonQueryConvertToQuery(query));
     }
 
     @Override
@@ -31,11 +33,12 @@ public class DemoThriftServiceImpl implements DemoThriftService.Iface{
 
     @Override
     public String putData(CommonUpdate data) throws TException {
-        return demoService.putData(data);
+        Update.UpdateBuilder updateBuilder = new Update.UpdateBuilder();
+        return demoService.putData(updateBuilder.buildUpdate());
     }
 
     @Override
     public String deleteData(Condition condition) throws TException {
-        return demoService.deleteData(condition);
+        return demoService.deleteData(new com.moseeker.common.util.query.Condition("id", 1));
     }
 }

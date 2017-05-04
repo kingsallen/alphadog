@@ -1,4 +1,4 @@
-package com.moseeker.chat.server;
+package com.moseeker.chat;
 
 import com.moseeker.chat.thriftservice.ChatThriftService;
 import com.moseeker.rpccenter.exception.IncompleteException;
@@ -47,6 +47,7 @@ public class ChatServer {
 	private static AnnotationConfigApplicationContext initSpring() {
 		AnnotationConfigApplicationContext acac = new AnnotationConfigApplicationContext();
 		acac.scan("com.moseeker.chat");
+		acac.scan("com.moseeker.baseorm");
 		acac.scan("com.moseeker.common.aop.iface");
 		acac.refresh();
 		return acac;

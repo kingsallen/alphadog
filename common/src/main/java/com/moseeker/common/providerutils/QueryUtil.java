@@ -104,4 +104,9 @@ public class QueryUtil extends Query {
     public void setPageSize(int pageSize) {
         this.setPageSize(pageSize);
     }
+
+
+    public void setPageNo(int pageNo) {
+        this.setPageNo(pageNo);
+    }
 }

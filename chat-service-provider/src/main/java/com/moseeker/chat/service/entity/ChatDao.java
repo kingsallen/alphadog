@@ -1,11 +1,13 @@
 package com.moseeker.chat.service.entity;
 
+import com.moseeker.baseorm.dao.hrdb.HrChatUnreadCountDao;
+import com.moseeker.baseorm.dao.hrdb.HrWxHrChatListDao;
 import com.moseeker.chat.constant.ChatSpeakerType;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Order;
 import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.service.HrDBDao;
 import com.moseeker.thrift.gen.dao.service.JobDBDao;
 import com.moseeker.thrift.gen.dao.service.UserDBDao;
@@ -17,6 +19,8 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatListDO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +30,7 @@ import java.util.concurrent.Future;
 /**
  * Created by jack on 09/03/2017.
  */
+@Service
 public class ChatDao {
 
     Logger logger = LoggerFactory.getLogger(ChatDao.class);
@@ -33,6 +38,12 @@ public class ChatDao {
     HrDBDao.Iface hrDBDao = ServiceManager.SERVICEMANAGER.getService(HrDBDao.Iface.class);
     UserDBDao.Iface userDBDao = ServiceManager.SERVICEMANAGER.getService(UserDBDao.Iface.class);
     JobDBDao.Iface jobDBDao = ServiceManager.SERVICEMANAGER.getService(JobDBDao.Iface.class);
+
+    @Autowired
+    HrChatUnreadCountDao hrChatUnreadCountDao;
+
+    @Autowired
+    HrWxHrChatListDao hrWxHrChatListDao;
 
     ThreadPool threadPool = ThreadPool.Instance;
 
@@ -50,28 +61,19 @@ public class ChatDao {
         switch (type) {
             case HR:
                 queryUtil.addSelectAttribute("user_unread_count").addSelectAttribute("hr_unread_count").addSelectAttribute("user_id");
-                queryUtil.setSortby("hr_unread_count,room_id");
                 queryUtil.addEqualFilter("hr_id", id);
-                queryUtil.setOrder("desc, desc");
+                queryUtil.orderBy("hr_unread_count", Order.DESC).orderBy("room_id", Order.DESC);
                 break;
             case USER:
                 queryUtil.addSelectAttribute("user_unread_count").addSelectAttribute("hr_unread_count").addSelectAttribute("hr_id");
-                queryUtil.setSortby("user_unread_count,room_id");
                 queryUtil.addEqualFilter("user_id", id);
-                queryUtil.setOrder("desc,desc");
+                queryUtil.orderBy("user_unread_count", Order.DESC).orderBy("room_id", Order.DESC);
                 break;
             default:
         }
         queryUtil.setPer_page(pageSize);
-        queryUtil.setPage(pageNo);
-        try {
-            return hrDBDao.listChatRoomUnreadSort(queryUtil);
-        } catch (CURDException e) {
-            return new ArrayList<>();
-        } catch (TException e) {
-            logger.error(e.getMessage(), e);
-            return null;
-        }
+        queryUtil.setPageNo(pageNo);
+        return hrChatUnreadCountDao.getDatas(queryUtil);
     }
 
     /**
@@ -83,13 +85,7 @@ public class ChatDao {
 
         QueryUtil queryUtil = new QueryUtil();
         queryUtil.addEqualFilter("hraccount_id", hrId);
-
-        try {
-            return hrDBDao.listChatRooms(queryUtil);
-        } catch (TException e) {
-            logger.error(e.getMessage(), e);
-            return null;
-        }
+        return hrWxHrChatListDao.getDatas(queryUtil);
     }
 
     /**
@@ -100,11 +96,7 @@ public class ChatDao {
     public int countHRChatRoom(int hrId) {
         QueryUtil queryUtil = new QueryUtil();
         queryUtil.addEqualFilter("hraccount_id", hrId);
-        try {
-            return hrDBDao.countChatRooms(queryUtil);
-        } catch (TException e) {
-            return 0;
-        }
+        return hrWxHrChatListDao.getCount(queryUtil);
     }
 
     /**

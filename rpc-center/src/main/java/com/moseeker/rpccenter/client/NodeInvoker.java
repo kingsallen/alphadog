@@ -127,7 +127,6 @@ public class NodeInvoker<T> implements Invoker {
                                 // XXX:其他异常的情况，需要将当前链接置为无效
                             	//warning
                                 //Notification.sendThriftConnectionError(serverNode+"  链接置为无效, error:"+ite.getMessage());
-                                pool.invalidateObject(node, client);
                                 LOGGER.error(node+"  链接置为无效, error:"+ite.getMessage(), ite);
                                 LOGGER.debug("after invalidateObject getNumActive:"+pool.getNumActive());
                                 pool.invalidateObject(node, client);

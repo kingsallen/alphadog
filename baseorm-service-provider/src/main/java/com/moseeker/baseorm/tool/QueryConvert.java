@@ -3,7 +3,9 @@ package com.moseeker.baseorm.tool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.Update;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.common.struct.CommonUpdate;
 
 /**
  * Created by jack on 03/05/2017.
