@@ -48,9 +48,6 @@ public class PositionBS {
 
     PositionDao.Iface positionDao = ServiceManager.SERVICEMANAGER.getService(PositionDao.Iface.class);
 
-    UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICEMANAGER
-            .getService(UserHrAccountService.Iface.class);
-
     PositionServices.Iface positionServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
 
     CompanyDao.Iface CompanyDao = ServiceManager.SERVICEMANAGER.getService(CompanyDao.Iface.class);
@@ -66,7 +63,8 @@ public class PositionBS {
      */
     public Response synchronizePositionToThirdPartyPlatform(ThirdPartyPositionForm position) {
         logger.info("synchronizePositionToThirdPartyPlatform:" + JSON.toJSONString(position));
-        Response response = null;
+        Response response;
+        ;
         // 职位数据是否存在
         QueryUtil qu = new QueryUtil();
         qu.addEqualFilter("id", String.valueOf(position.getPosition_id()));
@@ -195,10 +193,10 @@ public class PositionBS {
             } else {
                 response = ResultMessage.PROGRAM_PARAM_NOTEXIST.toResponse();
             }
-        } catch (TException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-            response = ResultMessage.POSITION_NOT_EXIST.toResponse();
+            response = ResultMessage.PROGRAM_EXCEPTION.toResponse();
         } finally {
             // do nothing
         }
@@ -266,31 +264,33 @@ public class PositionBS {
                 if (thirdPartAccountData != null && thirdPartAccountData.getId() > 0) {
                     permission = positionServices.ifAllowRefresh(positionId, thirdPartAccountData.getId());
                 }
-            }
-            logger.info("permission:" + permission);
+                logger.info("permission:" + permission);
 
-            if (permission) {
-                ThirdPartyPositionForSynchronizationWithAccount refreshPosition = positionServices
-                        .createRefreshPosition(positionId, thirdPartAccountData.getId());
-                if (refreshPosition.getPosition_info() != null && StringUtils.isNotNullOrEmpty(refreshPosition.getUser_name())) {
-                    logger.info("refreshPosition:" + JSON.toJSONString(refreshPosition));
-                    response = chaosService.refreshPosition(refreshPosition);
-                    ThirdPartyPositionData account = JSON.parseObject(response.getData(), ThirdPartyPositionData.class);
-                    result.put("is_refresh", PositionRefreshType.refreshing.getValue());
-                    result.put("sync_time", account.getSync_time());
-                    logger.info("refreshPosition:result" + JSON.toJSONString(result));
-                    response = ResultMessage.SUCCESS.toResponse(result);
+                if (permission) {
+                    ThirdPartyPositionForSynchronizationWithAccount refreshPosition = positionServices
+                            .createRefreshPosition(positionId, thirdPartAccountData.getId());
+                    if (refreshPosition.getPosition_info() != null && StringUtils.isNotNullOrEmpty(refreshPosition.getUser_name())) {
+                        logger.info("refreshPosition:" + JSON.toJSONString(refreshPosition));
+                        response = chaosService.refreshPosition(refreshPosition);
+                        ThirdPartyPositionData account = JSON.parseObject(response.getData(), ThirdPartyPositionData.class);
+                        result.put("is_refresh", PositionRefreshType.refreshing.getValue());
+                        result.put("sync_time", account.getSync_time());
+                        logger.info("refreshPosition:result" + JSON.toJSONString(result));
+                        response = ResultMessage.SUCCESS.toResponse(result);
+                    } else {
+                        response = ResultMessage.PROGRAM_PARAM_NOTEXIST.toResponse(result);
+                    }
                 } else {
-                    response = ResultMessage.PROGRAM_PARAM_NOTEXIST.toResponse(result);
+                    result.put("is_refresh", PositionRefreshType.failed.getValue());
+                    response = ResultMessage.POSITION_NOT_ALLOW_REFRESH.toResponse(result);
                 }
             } else {
-                result.put("is_refresh", PositionRefreshType.failed.getValue());
-                response = ResultMessage.POSITION_NOT_ALLOW_REFRESH.toResponse(result);
+                response = ResultMessage.POSITION_NOT_EXIST.toResponse(result);
             }
-        } catch (TException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
-            response = ResultMessage.POSITION_NOT_EXIST.toResponse(result);
+            response = ResultMessage.PROGRAM_EXCEPTION.toResponse();
         } finally {
             // do nothing
         }
@@ -318,14 +318,6 @@ public class PositionBS {
 
     public void setPositionDao(PositionDao.Iface positionDao) {
         this.positionDao = positionDao;
-    }
-
-    public UserHrAccountService.Iface getUserHrAccountService() {
-        return userHrAccountService;
-    }
-
-    public void setUserHrAccountService(UserHrAccountService.Iface userHrAccountService) {
-        this.userHrAccountService = userHrAccountService;
     }
 
     public UserHrAccountDao.Iface getUserHrAccountDao() {

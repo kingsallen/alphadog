@@ -127,11 +127,11 @@ public class HRAccountDaoThriftService implements Iface {
                 logger.info("getThirdPartyAccountsByUserId:size"+datas.size());
                 return datas;
             }
-
-            return new ArrayList<>();
         } catch (Exception e) {
-            throw new TException(e);
+            e.printStackTrace();
+            logger.error(e.getMessage(),e);
         }
+        return new ArrayList<>();
     }
 
     @Override
@@ -156,10 +156,11 @@ public class HRAccountDaoThriftService implements Iface {
                 }
             }
             logger.info("getThirdPartyAccountByUserId:result:empty");
-            return new ThirdPartAccountData();
         } catch (Exception e) {
-            throw new TException(e);
+            e.printStackTrace();
+            logger.error(e.getMessage(),e);
         }
+        return new ThirdPartAccountData();
     }
 
     @Override

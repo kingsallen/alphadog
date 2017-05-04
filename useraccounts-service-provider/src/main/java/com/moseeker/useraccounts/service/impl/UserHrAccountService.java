@@ -659,7 +659,7 @@ public class UserHrAccountService {
             } else {
                 return ResultMessage.THIRD_PARTY_ACCOUNT_UNBOUND.toResponse();
             }
-        } catch (TException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
             return ResultMessage.PROGRAM_EXCEPTION.toResponse();
