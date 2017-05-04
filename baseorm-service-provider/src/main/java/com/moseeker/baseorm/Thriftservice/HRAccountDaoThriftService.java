@@ -113,6 +113,7 @@ public class HRAccountDaoThriftService implements Iface {
     @Override
     public List<ThirdPartAccountData> getThirdPartyAccountsByUserId(int user_id) throws TException {
         try {
+            logger.info("getThirdPartyAccountsByUserId:"+user_id);
             Connection conn = DBConnHelper.DBConn.getConn();
             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
             List<Integer> thirdPartyAccounts = create.select(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID).from(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR)
@@ -123,10 +124,11 @@ public class HRAccountDaoThriftService implements Iface {
                 List<ThirdPartAccountData> datas = create.select().from(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
                         .where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.in(thirdPartyAccounts))
                         .fetchInto(ThirdPartAccountData.class);
+                logger.info("getThirdPartyAccountsByUserId:size"+datas.size());
                 return datas;
             }
 
-            return null;
+            return new ArrayList<>();
         } catch (Exception e) {
             throw new TException(e);
         }
@@ -135,6 +137,7 @@ public class HRAccountDaoThriftService implements Iface {
     @Override
     public ThirdPartAccountData getThirdPartyAccountByUserId(int user_id, int channel) throws TException {
         try {
+            logger.info("getThirdPartyAccountByUserId:user_id{},channel:{}",user_id,channel);
             Connection conn = DBConnHelper.DBConn.getConn();
             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
             List<Integer> thirdPartyAccounts = create.select(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID).from(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR)
@@ -148,10 +151,11 @@ public class HRAccountDaoThriftService implements Iface {
                         .and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.BINDING.eq((short) 1))
                         .fetchAnyInto(ThirdPartAccountData.class);
                 if(data!=null){
+                    logger.info("getThirdPartyAccountByUserId:result:{}",data.getId());
                     return data;
                 }
             }
-
+            logger.info("getThirdPartyAccountByUserId:result:empty");
             return new ThirdPartAccountData();
         } catch (Exception e) {
             throw new TException(e);
