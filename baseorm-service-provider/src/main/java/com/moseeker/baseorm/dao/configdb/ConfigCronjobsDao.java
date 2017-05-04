@@ -1,11 +1,10 @@
 package com.moseeker.baseorm.dao.configdb;
 
-import org.springframework.stereotype.Repository;
-
-import com.moseeker.baseorm.db.configdb.tables.ConfigCronjobs;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigCronjobsRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigCronjobsDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +12,10 @@ import com.moseeker.thrift.gen.dao.struct.configdb.ConfigCronjobsDO;
 * 2017-03-20
 */
 @Repository
-public class ConfigCronjobsDao extends StructDaoImpl<ConfigCronjobsDO, ConfigCronjobsRecord, ConfigCronjobs> {
+public class ConfigCronjobsDao extends JooqCrudImpl<ConfigCronjobsDO, ConfigCronjobsRecord> {
 
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = ConfigCronjobs.CONFIG_CRONJOBS;
-   }
+    public ConfigCronjobsDao(TableImpl<ConfigCronjobsRecord> table, Class<ConfigCronjobsDO> configCronjobsDOClass) {
+        super(table, configCronjobsDOClass);
+    }
 }

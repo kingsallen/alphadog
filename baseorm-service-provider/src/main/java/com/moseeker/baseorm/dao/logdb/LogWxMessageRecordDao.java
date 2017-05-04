@@ -1,11 +1,10 @@
 package com.moseeker.baseorm.dao.logdb;
 
-import org.springframework.stereotype.Repository;
-
-import com.moseeker.baseorm.db.logdb.tables.LogWxMessageRecord;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.logdb.tables.records.LogWxMessageRecordRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogWxMessageRecordDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +12,10 @@ import com.moseeker.thrift.gen.dao.struct.logdb.LogWxMessageRecordDO;
 * 2017-03-21
 */
 @Repository
-public class LogWxMessageRecordDao extends StructDaoImpl<LogWxMessageRecordDO, LogWxMessageRecordRecord, LogWxMessageRecord> {
+public class LogWxMessageRecordDao extends JooqCrudImpl<LogWxMessageRecordDO, LogWxMessageRecordRecord> {
 
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = LogWxMessageRecord.LOG_WX_MESSAGE_RECORD;
-   }
+    public LogWxMessageRecordDao(TableImpl<LogWxMessageRecordRecord> table, Class<LogWxMessageRecordDO> logWxMessageRecordDOClass) {
+        super(table, logWxMessageRecordDOClass);
+    }
 }

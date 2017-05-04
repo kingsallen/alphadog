@@ -1,11 +1,10 @@
 package com.moseeker.baseorm.dao.configdb;
 
-import org.springframework.stereotype.Repository;
-
-import com.moseeker.baseorm.db.configdb.tables.ConfigAtsSource;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigAtsSourceRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigAtsSourceDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +12,10 @@ import com.moseeker.thrift.gen.dao.struct.configdb.ConfigAtsSourceDO;
 * 2017-03-20
 */
 @Repository
-public class ConfigAtsSourceDao extends StructDaoImpl<ConfigAtsSourceDO, ConfigAtsSourceRecord, ConfigAtsSource> {
+public class ConfigAtsSourceDao extends JooqCrudImpl<ConfigAtsSourceDO, ConfigAtsSourceRecord> {
 
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = ConfigAtsSource.CONFIG_ATS_SOURCE;
-   }
+    public ConfigAtsSourceDao(TableImpl<ConfigAtsSourceRecord> table, Class<ConfigAtsSourceDO> configAtsSourceDOClass) {
+        super(table, configAtsSourceDOClass);
+    }
 }

@@ -1,27 +1,19 @@
 package com.moseeker.baseorm.dao.candidatedb;
 
-import com.moseeker.baseorm.db.candidatedb.tables.CandidatePositionShareRecord;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidatePositionShareRecordRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
-import com.moseeker.thrift.gen.dao.struct.CURDException;
 import com.moseeker.thrift.gen.dao.struct.CandidatePositionShareRecordDO;
-import org.springframework.stereotype.Component;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
  * Created by jack on 15/02/2017.
  */
-@Component
-public class CandidatePositionShareRecordDao extends StructDaoImpl<CandidatePositionShareRecordDO, CandidatePositionShareRecordRecord, CandidatePositionShareRecord> {
+@Repository
+public class CandidatePositionShareRecordDao extends JooqCrudImpl<CandidatePositionShareRecordDO, CandidatePositionShareRecordRecord> {
 
 
-    @Override
-    protected void initJOOQEntity() {
-        this.tableLike = CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD;
-    }
-
-    public void deleteCandidatePositionShareRecord(int id) throws CURDException {
-        CandidatePositionShareRecordDO p = new CandidatePositionShareRecordDO();
-        p.setId(id);
-        this.deleteResource(p);
+    public CandidatePositionShareRecordDao(TableImpl<CandidatePositionShareRecordRecord> table, Class<CandidatePositionShareRecordDO> candidatePositionShareRecordDOClass) {
+        super(table, candidatePositionShareRecordDOClass);
     }
 }

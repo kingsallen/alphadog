@@ -1,11 +1,10 @@
 package com.moseeker.baseorm.dao.configdb;
 
-import org.springframework.stereotype.Repository;
-
-import com.moseeker.baseorm.db.configdb.tables.ConfigPositionKenexa;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigPositionKenexaRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigPositionKenexaDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +12,10 @@ import com.moseeker.thrift.gen.dao.struct.configdb.ConfigPositionKenexaDO;
 * 2017-03-20
 */
 @Repository
-public class ConfigPositionKenexaDao extends StructDaoImpl<ConfigPositionKenexaDO, ConfigPositionKenexaRecord, ConfigPositionKenexa> {
+public class ConfigPositionKenexaDao extends JooqCrudImpl<ConfigPositionKenexaDO, ConfigPositionKenexaRecord> {
 
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = ConfigPositionKenexa.CONFIG_POSITION_KENEXA;
-   }
+    public ConfigPositionKenexaDao(TableImpl<ConfigPositionKenexaRecord> table, Class<ConfigPositionKenexaDO> configPositionKenexaDOClass) {
+        super(table, configPositionKenexaDOClass);
+    }
 }

@@ -1,17 +1,15 @@
 package com.moseeker.baseorm.dao.candidatedb;
 
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidatePosition;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidatePositionRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.thrift.gen.dao.struct.CURDException;
 import com.moseeker.thrift.gen.dao.struct.CandidatePositionDO;
-import com.moseeker.thrift.gen.profile.struct.Intention;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
-import org.jooq.SelectJoinStep;
-
-import org.springframework.stereotype.Component;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -22,20 +20,19 @@ import java.util.Map;
 /**
  * Created by jack on 15/02/2017.
  */
-@Component
-public class CandidatePositionDao extends StructDaoImpl<CandidatePositionDO, CandidatePositionRecord, CandidatePosition> {
+@Repository
+public class CandidatePositionDao extends JooqCrudImpl<CandidatePositionDO, CandidatePositionRecord> {
 
 
-    @Override
-    protected void initJOOQEntity() {
-        this.tableLike = CandidatePosition.CANDIDATE_POSITION;
+    public CandidatePositionDao(TableImpl<CandidatePositionRecord> table, Class<CandidatePositionDO> candidatePositionDOClass) {
+        super(table, candidatePositionDOClass);
     }
 
     public void deleteCandidatePosition(int userId, int positionId) throws CURDException {
         CandidatePositionDO p = new CandidatePositionDO();
         p.setUserId(userId);
         p.setPositionId(positionId);
-        this.deleteResource(p);
+        this.deleteData(p);
     }
 
     /**

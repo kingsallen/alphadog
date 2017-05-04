@@ -1,9 +1,10 @@
 package com.moseeker.baseorm.dao.userdb;
 
-import com.moseeker.baseorm.util.StructDaoImpl;
-import com.moseeker.db.userdb.tables.UserUser;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.thrift.gen.dao.struct.UserUserDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,11 +16,10 @@ import org.springframework.stereotype.Service;
  * @author wjf
  * @version
  */
-@Service
-public class UserDao extends StructDaoImpl<UserUserDO, UserUserRecord, UserUser> {
+@Repository
+public class UserDao extends JooqCrudImpl<UserUserDO, UserUserRecord> {
 
-	@Override
-	protected void initJOOQEntity() {
-		this.tableLike = UserUser.USER_USER;
+	public UserDao(TableImpl<UserUserRecord> table, Class<UserUserDO> userUserDOClass) {
+		super(table, userUserDOClass);
 	}
 }

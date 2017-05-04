@@ -1,11 +1,10 @@
 package com.moseeker.baseorm.dao.profiledb;
 
-import org.springframework.stereotype.Repository;
-
-import com.moseeker.baseorm.db.profiledb.tables.ProfileCompleteness;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileCompletenessRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileCompletenessDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +12,10 @@ import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileCompletenessDO;
 * 2017-03-21
 */
 @Repository
-public class ProfileCompletenessDao extends StructDaoImpl<ProfileCompletenessDO, ProfileCompletenessRecord, ProfileCompleteness> {
+public class ProfileCompletenessDao extends JooqCrudImpl<ProfileCompletenessDO, ProfileCompletenessRecord> {
 
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = ProfileCompleteness.PROFILE_COMPLETENESS;
-   }
+    public ProfileCompletenessDao(TableImpl<ProfileCompletenessRecord> table, Class<ProfileCompletenessDO> profileCompletenessDOClass) {
+        super(table, profileCompletenessDOClass);
+    }
 }

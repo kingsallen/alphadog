@@ -1,17 +1,14 @@
 package com.moseeker.baseorm.dao.jobdb;
 
-import org.springframework.stereotype.Service;
-
-import com.moseeker.baseorm.db.jobdb.tables.JobOccupation;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobOccupationRecord;
-import com.moseeker.baseorm.util.BaseDaoImpl;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobOccupationDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Service;
 @Service
-public class JobOccupationDao extends BaseDaoImpl<JobOccupationRecord, JobOccupation> {
+public class JobOccupationDao extends JooqCrudImpl<JobOccupationDO, JobOccupationRecord> {
 
-	@Override
-	protected void initJOOQEntity() {
-		// TODO Auto-generated method stub
-		this.tableLike=JobOccupation.JOB_OCCUPATION;
+	public JobOccupationDao(TableImpl<JobOccupationRecord> table, Class<JobOccupationDO> jobOccupationDOClass) {
+		super(table, jobOccupationDOClass);
 	}
-
 }

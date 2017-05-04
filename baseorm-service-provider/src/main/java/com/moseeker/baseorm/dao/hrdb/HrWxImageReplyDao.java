@@ -1,11 +1,10 @@
 package com.moseeker.baseorm.dao.hrdb;
 
-import org.springframework.stereotype.Repository;
-
-import com.moseeker.baseorm.db.hrdb.tables.HrWxImageReply;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxImageReplyRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxImageReplyDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +12,10 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxImageReplyDO;
 * 2017-03-21
 */
 @Repository
-public class HrWxImageReplyDao extends StructDaoImpl<HrWxImageReplyDO, HrWxImageReplyRecord, HrWxImageReply> {
+public class HrWxImageReplyDao extends JooqCrudImpl<HrWxImageReplyDO, HrWxImageReplyRecord> {
 
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = HrWxImageReply.HR_WX_IMAGE_REPLY;
-   }
+    public HrWxImageReplyDao(TableImpl<HrWxImageReplyRecord> table, Class<HrWxImageReplyDO> hrWxImageReplyDOClass) {
+        super(table, hrWxImageReplyDOClass);
+    }
 }

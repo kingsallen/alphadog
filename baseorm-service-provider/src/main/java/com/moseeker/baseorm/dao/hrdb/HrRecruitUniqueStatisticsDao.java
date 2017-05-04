@@ -1,11 +1,10 @@
 package com.moseeker.baseorm.dao.hrdb;
 
-import org.springframework.stereotype.Repository;
-
-import com.moseeker.baseorm.db.hrdb.tables.HrRecruitUniqueStatistics;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrRecruitUniqueStatisticsRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrRecruitUniqueStatisticsDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +12,10 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrRecruitUniqueStatisticsDO;
 * 2017-03-21
 */
 @Repository
-public class HrRecruitUniqueStatisticsDao extends StructDaoImpl<HrRecruitUniqueStatisticsDO, HrRecruitUniqueStatisticsRecord, HrRecruitUniqueStatistics> {
+public class HrRecruitUniqueStatisticsDao extends JooqCrudImpl<HrRecruitUniqueStatisticsDO, HrRecruitUniqueStatisticsRecord> {
 
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = HrRecruitUniqueStatistics.HR_RECRUIT_UNIQUE_STATISTICS;
-   }
+    public HrRecruitUniqueStatisticsDao(TableImpl<HrRecruitUniqueStatisticsRecord> table, Class<HrRecruitUniqueStatisticsDO> hrRecruitUniqueStatisticsDOClass) {
+        super(table, hrRecruitUniqueStatisticsDOClass);
+    }
 }

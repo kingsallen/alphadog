@@ -10,14 +10,14 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserThirdpartyUserDO;
 import com.moseeker.thrift.gen.useraccounts.struct.ThirdPartyUser;
 import org.jooq.impl.TableImpl;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 
 /**
  * Created by eddie on 2017/3/7.
  */
-@Service
+@Repository
 public class ThirdPartyUserDao extends JooqCrudImpl<UserThirdpartyUserDO, UserThirdpartyUserRecord> {
 
     public ThirdPartyUserDao(TableImpl<UserThirdpartyUserRecord> table, Class<UserThirdpartyUserDO> userThirdpartyUserDOClass) {

@@ -1,11 +1,10 @@
 package com.moseeker.baseorm.dao.wordpressdb;
 
-import org.springframework.stereotype.Repository;
-
-import com.moseeker.baseorm.db.wordpressdb.tables.WordpressUsermeta;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressUsermetaRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.wordpressdb.WordpressUsermetaDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +12,10 @@ import com.moseeker.thrift.gen.dao.struct.wordpressdb.WordpressUsermetaDO;
 * 2017-03-21
 */
 @Repository
-public class WordpressUsermetaDao extends StructDaoImpl<WordpressUsermetaDO, WordpressUsermetaRecord, WordpressUsermeta> {
+public class WordpressUsermetaDao extends JooqCrudImpl<WordpressUsermetaDO, WordpressUsermetaRecord> {
 
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = WordpressUsermeta.WORDPRESS_USERMETA;
-   }
+    public WordpressUsermetaDao(TableImpl<WordpressUsermetaRecord> table, Class<WordpressUsermetaDO> wordpressUsermetaDOClass) {
+        super(table, wordpressUsermetaDOClass);
+    }
 }

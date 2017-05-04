@@ -6,13 +6,13 @@ import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.thrift.gen.dao.struct.wordpressdb.WordpressUserPostDO;
 import org.jooq.DSLContext;
 import org.jooq.impl.TableImpl;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-@Service
+@Repository
 public class WordpressUserPostDao
 		extends JooqCrudImpl<WordpressUserPostDO, WordpressUserPostRecord> {
 	

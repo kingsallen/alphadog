@@ -1,16 +1,17 @@
 package com.moseeker.baseorm.dao.userdb;
 
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRecord;
-import com.moseeker.baseorm.util.BaseDaoImpl;
 import com.moseeker.common.dbutils.DBConnHelper;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointSum;
-
 import org.jooq.DSLContext;
 import org.jooq.Record2;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
-import org.springframework.stereotype.Service;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -18,13 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.jooq.impl.DSL.sum;
-@Service
-public class UserEmployeePointsRecordDao extends BaseDaoImpl<UserEmployeePointsRecordRecord, UserEmployeePointsRecord>{
 
-	@Override
-	protected void initJOOQEntity() {
-		// TODO Auto-generated method stub
-		this.tableLike=UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD;
+@Repository
+public class UserEmployeePointsRecordDao extends JooqCrudImpl<UserEmployeePointsRecordDO, UserEmployeePointsRecordRecord> {
+
+	public UserEmployeePointsRecordDao(TableImpl<UserEmployeePointsRecordRecord> table, Class<UserEmployeePointsRecordDO> userEmployeePointsRecordDOClass) {
+		super(table, userEmployeePointsRecordDOClass);
 	}
 
 	public List<UserEmployeePointSum> getSumRecord(List<Long> list) throws Exception{

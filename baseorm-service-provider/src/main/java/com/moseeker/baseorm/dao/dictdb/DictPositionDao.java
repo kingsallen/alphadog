@@ -1,11 +1,10 @@
 package com.moseeker.baseorm.dao.dictdb;
 
-import org.springframework.stereotype.Repository;
-
-import com.moseeker.baseorm.db.dictdb.tables.DictPosition;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictPositionRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictPositionDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +12,10 @@ import com.moseeker.thrift.gen.dao.struct.dictdb.DictPositionDO;
 * 2017-03-21
 */
 @Repository
-public class DictPositionDao extends StructDaoImpl<DictPositionDO, DictPositionRecord, DictPosition> {
+public class DictPositionDao extends JooqCrudImpl<DictPositionDO, DictPositionRecord> {
 
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = DictPosition.DICT_POSITION;
-   }
+    public DictPositionDao(TableImpl<DictPositionRecord> table, Class<DictPositionDO> dictPositionDOClass) {
+        super(table, dictPositionDOClass);
+    }
 }

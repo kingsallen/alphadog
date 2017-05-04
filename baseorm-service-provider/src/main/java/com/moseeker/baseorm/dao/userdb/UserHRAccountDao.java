@@ -1,12 +1,12 @@
 package com.moseeker.baseorm.dao.userdb;
 
-import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.thrift.gen.dao.struct.UserHrAccountDO;
 import org.apache.thrift.TException;
-import org.springframework.stereotype.Component;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -19,26 +19,24 @@ import java.util.List;
  * @author wjf
  * @version
  */
-@Component
-public class UserHRAccountDao extends StructDaoImpl<UserHrAccountDO, UserHrAccountRecord, UserHrAccount> {
+@Repository
+public class UserHRAccountDao extends JooqCrudImpl<UserHrAccountDO, UserHrAccountRecord> {
 
-	@Override
-	protected void initJOOQEntity() {
-		this.tableLike = UserHrAccount.USER_HR_ACCOUNT;
+	public UserHRAccountDao(TableImpl<UserHrAccountRecord> table, Class<UserHrAccountDO> userHrAccountDOClass) {
+		super(table, userHrAccountDOClass);
 	}
-
 
 	public List<UserHrAccountDO> listHRFromCompany(int comanyId) throws TException {
 		QueryUtil qu = new QueryUtil();
 		qu.addEqualFilter("company_id", String.valueOf(comanyId));
-		return this.listResources(qu);
+		return this.getDatas(qu);
 	}
 
     public int deleteUserHrAccount(int id) {
 		UserHrAccountRecord record = new UserHrAccountRecord();
 		record.setId(id);
 		try {
-			return this.delResource(record);
+			return this.deleteRecord(record);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			return 0;

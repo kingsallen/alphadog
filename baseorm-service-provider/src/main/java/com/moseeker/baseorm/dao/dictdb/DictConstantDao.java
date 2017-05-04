@@ -1,11 +1,10 @@
 package com.moseeker.baseorm.dao.dictdb;
 
-import org.springframework.stereotype.Repository;
-
-import com.moseeker.baseorm.db.dictdb.tables.DictConstant;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictConstantRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictConstantDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +12,10 @@ import com.moseeker.thrift.gen.dao.struct.dictdb.DictConstantDO;
 * 2017-03-21
 */
 @Repository
-public class DictConstantDao extends StructDaoImpl<DictConstantDO, DictConstantRecord, DictConstant> {
+public class DictConstantDao extends JooqCrudImpl<DictConstantDO, DictConstantRecord> {
 
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = DictConstant.DICT_CONSTANT;
-   }
+    public DictConstantDao(TableImpl<DictConstantRecord> table, Class<DictConstantDO> dictConstantDOClass) {
+        super(table, dictConstantDOClass);
+    }
 }

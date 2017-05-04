@@ -1,11 +1,10 @@
 package com.moseeker.baseorm.dao.dictdb;
 
-import org.springframework.stereotype.Repository;
-
-import com.moseeker.baseorm.db.dictdb.tables.DictCollege;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCollegeRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCollegeDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +12,10 @@ import com.moseeker.thrift.gen.dao.struct.dictdb.DictCollegeDO;
 * 2017-03-21
 */
 @Repository
-public class DictCollegeDao extends StructDaoImpl<DictCollegeDO, DictCollegeRecord, DictCollege> {
+public class DictCollegeDao extends JooqCrudImpl<DictCollegeDO, DictCollegeRecord> {
 
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = DictCollege.DICT_COLLEGE;
-   }
+    public DictCollegeDao(TableImpl<DictCollegeRecord> table, Class<DictCollegeDO> dictCollegeDOClass) {
+        super(table, dictCollegeDOClass);
+    }
 }

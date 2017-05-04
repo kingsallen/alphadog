@@ -1,10 +1,10 @@
 package com.moseeker.baseorm.dao.jobdb;
 
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysPointsConfTpl;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.query.Query;
@@ -13,7 +13,7 @@ import com.moseeker.thrift.gen.application.struct.ApplicationAts;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
 import com.moseeker.thrift.gen.dao.struct.JobApplicationDO;
 import org.jooq.*;
-
+import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
@@ -28,14 +28,11 @@ import java.util.List;
  * email: wengjianfei@moseeker.com
  */
 @Service
-public class JobApplicationDao extends StructDaoImpl<JobApplicationDO, JobApplicationRecord, JobApplication> {
+public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplicationRecord> {
 
-	@Override
-	protected void initJOOQEntity() {
-		// TODO Auto-generated method stub
-		this.tableLike=JobApplication.JOB_APPLICATION;
+	public JobApplicationDao(TableImpl<JobApplicationRecord> table, Class<JobApplicationDO> jobApplicationDOClass) {
+		super(table, jobApplicationDOClass);
 	}
-
 	/**
 	 * 查询申请数据
 	 * @param query
@@ -44,7 +41,7 @@ public class JobApplicationDao extends StructDaoImpl<JobApplicationDO, JobApplic
 	public List<JobApplicationDO> getApplications(Query query) {
 		List<JobApplicationDO> applications = new ArrayList<>();
 		try {
-			List<JobApplicationRecord> records = getResources(query);
+			List<JobApplicationRecord> records = getRecords(query);
 			if(records != null && records.size() > 0) {
 				applications = BeanUtils.DBToStruct(JobApplicationDO.class, records);
 			}

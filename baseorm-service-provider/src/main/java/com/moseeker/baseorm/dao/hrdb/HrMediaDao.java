@@ -1,11 +1,10 @@
 package com.moseeker.baseorm.dao.hrdb;
 
-import org.springframework.stereotype.Repository;
-
-import com.moseeker.baseorm.db.hrdb.tables.HrMedia;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrMediaRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrMediaDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +12,10 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrMediaDO;
 * 2017-03-21
 */
 @Repository
-public class HrMediaDao extends StructDaoImpl<HrMediaDO, HrMediaRecord, HrMedia> {
+public class HrMediaDao extends JooqCrudImpl<HrMediaDO, HrMediaRecord> {
 
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = HrMedia.HR_MEDIA;
-   }
+    public HrMediaDao(TableImpl<HrMediaRecord> table, Class<HrMediaDO> hrMediaDOClass) {
+        super(table, hrMediaDOClass);
+    }
 }

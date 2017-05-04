@@ -1,11 +1,10 @@
 package com.moseeker.baseorm.dao.profiledb;
 
-import org.springframework.stereotype.Repository;
-
-import com.moseeker.baseorm.db.profiledb.tables.ProfileAwards;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileAwardsRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileAwardsDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +12,10 @@ import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileAwardsDO;
 * 2017-03-21
 */
 @Repository
-public class ProfileAwardsDao extends StructDaoImpl<ProfileAwardsDO, ProfileAwardsRecord, ProfileAwards> {
+public class ProfileAwardsDao extends JooqCrudImpl<ProfileAwardsDO, ProfileAwardsRecord> {
 
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = ProfileAwards.PROFILE_AWARDS;
-   }
+    public ProfileAwardsDao(TableImpl<ProfileAwardsRecord> table, Class<ProfileAwardsDO> profileAwardsDOClass) {
+        super(table, profileAwardsDOClass);
+    }
 }

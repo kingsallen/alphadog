@@ -1,11 +1,10 @@
 package com.moseeker.baseorm.dao.configdb;
 
-import org.springframework.stereotype.Repository;
-
-import com.moseeker.baseorm.db.configdb.tables.ConfigSysAppTemplate;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysAppTemplateRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysAppTemplateDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +12,10 @@ import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysAppTemplateDO;
 * 2017-03-20
 */
 @Repository
-public class ConfigSysAppTemplateDao extends StructDaoImpl<ConfigSysAppTemplateDO, ConfigSysAppTemplateRecord, ConfigSysAppTemplate> {
+public class ConfigSysAppTemplateDao extends JooqCrudImpl<ConfigSysAppTemplateDO, ConfigSysAppTemplateRecord> {
 
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = ConfigSysAppTemplate.CONFIG_SYS_APP_TEMPLATE;
-   }
+    public ConfigSysAppTemplateDao(TableImpl<ConfigSysAppTemplateRecord> table, Class<ConfigSysAppTemplateDO> configSysAppTemplateDOClass) {
+        super(table, configSysAppTemplateDOClass);
+    }
 }

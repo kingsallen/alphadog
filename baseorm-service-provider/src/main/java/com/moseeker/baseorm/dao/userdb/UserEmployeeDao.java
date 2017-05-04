@@ -11,9 +11,7 @@ import com.moseeker.thrift.gen.dao.struct.UserEmployeeDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import org.jooq.*;
 import org.jooq.impl.TableImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -23,10 +21,8 @@ import java.util.List;
 
 import static org.jooq.impl.DSL.sum;
 
-@Service
+@Repository
 public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRecord> {
-
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public UserEmployeeDao(TableImpl<UserEmployeeRecord> table, Class<UserEmployeeDO> userEmployeeDOClass) {
         super(table, userEmployeeDOClass);

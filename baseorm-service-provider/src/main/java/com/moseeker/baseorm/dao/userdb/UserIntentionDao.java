@@ -1,11 +1,10 @@
 package com.moseeker.baseorm.dao.userdb;
 
-import org.springframework.stereotype.Repository;
-
-import com.moseeker.baseorm.db.userdb.tables.UserIntention;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.userdb.tables.records.UserIntentionRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserIntentionDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +12,10 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserIntentionDO;
 * 2017-03-21
 */
 @Repository
-public class UserIntentionDao extends StructDaoImpl<UserIntentionDO, UserIntentionRecord, UserIntention> {
+public class UserIntentionDao extends JooqCrudImpl<UserIntentionDO, UserIntentionRecord> {
 
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = UserIntention.USER_INTENTION;
-   }
+    public UserIntentionDao(TableImpl<UserIntentionRecord> table, Class<UserIntentionDO> userIntentionDOClass) {
+        super(table, userIntentionDOClass);
+    }
 }

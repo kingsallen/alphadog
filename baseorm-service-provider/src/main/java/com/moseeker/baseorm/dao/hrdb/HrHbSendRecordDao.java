@@ -1,14 +1,15 @@
 package com.moseeker.baseorm.dao.hrdb;
 
-import com.moseeker.baseorm.db.hrdb.tables.HrHbSendRecord;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbSendRecordRecord;
-import com.moseeker.baseorm.util.BaseDaoImpl;
-import org.springframework.stereotype.Service;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrHbSendRecordDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
-@Service
-public class HrHbSendRecordDao extends BaseDaoImpl <HrHbSendRecordRecord, HrHbSendRecord> {
-    @Override
-    protected void initJOOQEntity() {
-        this.tableLike = HrHbSendRecord.HR_HB_SEND_RECORD;
+@Repository
+public class HrHbSendRecordDao extends JooqCrudImpl<HrHbSendRecordDO, HrHbSendRecordRecord> {
+
+    public HrHbSendRecordDao(TableImpl<HrHbSendRecordRecord> table, Class<HrHbSendRecordDO> hrHbSendRecordDOClass) {
+        super(table, hrHbSendRecordDOClass);
     }
 }

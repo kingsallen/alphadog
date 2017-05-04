@@ -1,5 +1,25 @@
 package com.moseeker.baseorm.dao.jobdb;
 
+import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.dictdb.tables.DictCity;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionCity;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCityRecord;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
+import com.moseeker.common.dbutils.DBConnHelper;
+import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.thrift.gen.dao.struct.JobPositionDO;
+import com.moseeker.thrift.gen.position.struct.Position;
+import org.jooq.DSLContext;
+import org.jooq.Record1;
+import org.jooq.Result;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Service;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -8,39 +28,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
-import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
-import com.moseeker.common.util.query.Query;
-import com.moseeker.thrift.gen.dao.struct.JobPositionDO;
-import org.jooq.DSLContext;
-import org.jooq.Record1;
-import org.jooq.Result;
-import org.springframework.stereotype.Service;
-
-import com.moseeker.baseorm.db.dictdb.tables.DictCity;
-import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
-import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionCity;
-import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCityRecord;
-import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
-import com.moseeker.common.dbutils.DBConnHelper;
-import com.moseeker.common.util.BeanUtils;
-import com.moseeker.thrift.gen.position.struct.Position;
-
 @Service
-public class JobPositionDao extends StructDaoImpl<JobPositionDO, JobPositionRecord, JobPosition> {
+public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecord> {
 
-    @Override
-    protected void initJOOQEntity() {
-        this.tableLike = JobPosition.JOB_POSITION;
+    public JobPositionDao(TableImpl<JobPositionRecord> table, Class<JobPositionDO> jobPositionDOClass) {
+        super(table, jobPositionDOClass);
     }
 
     public List<JobPositionDO> getPositions(Query query) {
         List<JobPositionDO> positions = new ArrayList<>();
 
         try {
-            List<JobPositionRecord> records = getResources(query);
+            List<JobPositionRecord> records = getRecords(query);
             if (records != null && records.size() > 0) {
                 positions = records.stream().filter(record -> record != null)
                         .map(record -> BeanUtils.DBToStruct(JobPositionDO.class, record))
@@ -63,7 +62,7 @@ public class JobPositionDao extends StructDaoImpl<JobPositionDO, JobPositionReco
         try (Connection conn = DBConnHelper.DBConn.getConn();
              DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);) {
 
-            JobPositionRecord record = this.getResource(query);
+            JobPositionRecord record = this.getRecord(query);
             if (record != null) {
                 position = record.into(position);
                 Map<Integer, String> citiesParam = new HashMap<Integer, String>();

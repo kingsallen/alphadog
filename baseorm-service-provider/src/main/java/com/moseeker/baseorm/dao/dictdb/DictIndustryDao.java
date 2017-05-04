@@ -1,11 +1,10 @@
 package com.moseeker.baseorm.dao.dictdb;
 
-import org.springframework.stereotype.Repository;
-
-import com.moseeker.baseorm.db.dictdb.tables.DictIndustry;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictIndustryRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictIndustryDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +12,10 @@ import com.moseeker.thrift.gen.dao.struct.dictdb.DictIndustryDO;
 * 2017-03-21
 */
 @Repository
-public class DictIndustryDao extends StructDaoImpl<DictIndustryDO, DictIndustryRecord, DictIndustry> {
+public class DictIndustryDao extends JooqCrudImpl<DictIndustryDO, DictIndustryRecord> {
 
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = DictIndustry.DICT_INDUSTRY;
-   }
+    public DictIndustryDao(TableImpl<DictIndustryRecord> table, Class<DictIndustryDO> dictIndustryDOClass) {
+        super(table, dictIndustryDOClass);
+    }
 }

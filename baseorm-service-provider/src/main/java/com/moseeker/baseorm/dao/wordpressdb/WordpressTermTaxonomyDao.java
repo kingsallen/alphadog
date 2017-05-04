@@ -1,11 +1,10 @@
 package com.moseeker.baseorm.dao.wordpressdb;
 
-import org.springframework.stereotype.Repository;
-
-import com.moseeker.baseorm.db.wordpressdb.tables.WordpressTermTaxonomy;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressTermTaxonomyRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.wordpressdb.WordpressTermTaxonomyDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +12,10 @@ import com.moseeker.thrift.gen.dao.struct.wordpressdb.WordpressTermTaxonomyDO;
 * 2017-03-21
 */
 @Repository
-public class WordpressTermTaxonomyDao extends StructDaoImpl<WordpressTermTaxonomyDO, WordpressTermTaxonomyRecord, WordpressTermTaxonomy> {
+public class WordpressTermTaxonomyDao extends JooqCrudImpl<WordpressTermTaxonomyDO, WordpressTermTaxonomyRecord> {
 
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = WordpressTermTaxonomy.WORDPRESS_TERM_TAXONOMY;
-   }
+    public WordpressTermTaxonomyDao(TableImpl<WordpressTermTaxonomyRecord> table, Class<WordpressTermTaxonomyDO> wordpressTermTaxonomyDOClass) {
+        super(table, wordpressTermTaxonomyDOClass);
+    }
 }

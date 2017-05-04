@@ -1,15 +1,14 @@
 package com.moseeker.baseorm.dao.profiledb;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
-import com.moseeker.baseorm.db.profiledb.Tables;
 import com.moseeker.baseorm.db.profiledb.tables.*;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserThirdpartyUser;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
-import com.moseeker.baseorm.util.BaseDaoImpl;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -19,6 +18,7 @@ import com.moseeker.common.util.JsonToMap;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.application.struct.JobResumeOther;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.position.struct.JobPositionExt;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.profile.struct.*;
@@ -28,6 +28,7 @@ import com.moseeker.thrift.gen.useraccounts.struct.ThirdPartyUser;
 import com.moseeker.thrift.gen.useraccounts.struct.User;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import org.jooq.DSLContext;
+import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Service;
 
 import java.net.ConnectException;
@@ -39,10 +40,10 @@ import java.util.stream.Collectors;
  * Created by moseeker on 2017/3/13.
  */
 @Service
-public class ProfileDao extends BaseDaoImpl<ProfileProfileRecord, ProfileProfile> {
-    @Override
-    protected void initJOOQEntity() {
-        tableLike = Tables.PROFILE_PROFILE;
+public class ProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfileProfileRecord> {
+
+    public ProfileDao(TableImpl<ProfileProfileRecord> table, Class<ProfileProfileDO> profileProfileDOClass) {
+        super(table, profileProfileDOClass);
     }
 
     private String getDownloadUrlByUserId(String downloadApi, String password, int userid) {

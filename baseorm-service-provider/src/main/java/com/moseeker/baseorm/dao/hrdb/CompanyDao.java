@@ -1,29 +1,28 @@
 package com.moseeker.baseorm.dao.hrdb;
 
-import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
-import org.springframework.stereotype.Service;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
-public class CompanyDao extends StructDaoImpl<HrCompanyDO, HrCompanyRecord, HrCompany> {
+@Repository
+public class CompanyDao extends JooqCrudImpl<HrCompanyDO, HrCompanyRecord> {
 
-	@Override
-	protected void initJOOQEntity() {
-		this.tableLike = HrCompany.HR_COMPANY;
+	public CompanyDao(TableImpl<HrCompanyRecord> table, Class<HrCompanyDO> hrCompanyDOClass) {
+		super(table, hrCompanyDOClass);
 	}
 
 	public HrCompanyDO getCompany(Query query) {
 		HrCompanyDO company = new HrCompanyDO();
 		try {
-			HrCompanyRecord record = this.getResource(query);
+			HrCompanyRecord record = this.getRecord(query);
 			record.into(company);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -39,7 +38,7 @@ public class CompanyDao extends StructDaoImpl<HrCompanyDO, HrCompanyRecord, HrCo
 		List<Hrcompany> companies = new ArrayList<>();
 		
 		try {
-			List<HrCompanyRecord> records = getResources(query);
+			List<HrCompanyRecord> records = getRecords(query);
 			if(records != null && records.size() > 0) {
 				companies = BeanUtils.DBToStruct(Hrcompany.class, records);
 			}

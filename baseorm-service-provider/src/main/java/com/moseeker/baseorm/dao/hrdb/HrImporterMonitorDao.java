@@ -1,11 +1,10 @@
 package com.moseeker.baseorm.dao.hrdb;
 
-import org.springframework.stereotype.Repository;
-
-import com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrImporterMonitorRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +12,10 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
 * 2017-03-21
 */
 @Repository
-public class HrImporterMonitorDao extends StructDaoImpl<HrImporterMonitorDO, HrImporterMonitorRecord, HrImporterMonitor> {
+public class HrImporterMonitorDao extends JooqCrudImpl<HrImporterMonitorDO, HrImporterMonitorRecord> {
 
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = HrImporterMonitor.HR_IMPORTER_MONITOR;
-   }
+    public HrImporterMonitorDao(TableImpl<HrImporterMonitorRecord> table, Class<HrImporterMonitorDO> hrImporterMonitorDOClass) {
+        super(table, hrImporterMonitorDOClass);
+    }
 }

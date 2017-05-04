@@ -1,11 +1,10 @@
 package com.moseeker.baseorm.dao.configdb;
 
-import org.springframework.stereotype.Repository;
-
-import com.moseeker.baseorm.db.configdb.tables.ConfigSysCvTpl;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysCvTplRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysCvTplDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +12,10 @@ import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysCvTplDO;
 * 2017-03-20
 */
 @Repository
-public class ConfigSysCvTplDao extends StructDaoImpl<ConfigSysCvTplDO, ConfigSysCvTplRecord, ConfigSysCvTpl> {
+public class ConfigSysCvTplDao extends JooqCrudImpl<ConfigSysCvTplDO, ConfigSysCvTplRecord> {
 
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = ConfigSysCvTpl.CONFIG_SYS_CV_TPL;
-   }
+    public ConfigSysCvTplDao(TableImpl<ConfigSysCvTplRecord> table, Class<ConfigSysCvTplDO> configSysCvTplDOClass) {
+        super(table, configSysCvTplDOClass);
+    }
 }

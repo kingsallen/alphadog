@@ -1,11 +1,10 @@
 package com.moseeker.baseorm.dao.profiledb;
 
-import org.springframework.stereotype.Repository;
-
-import com.moseeker.baseorm.db.profiledb.tables.ProfileProjectexp;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProjectexpRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProjectexpDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +12,10 @@ import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProjectexpDO;
 * 2017-03-21
 */
 @Repository
-public class ProfileProjectexpDao extends StructDaoImpl<ProfileProjectexpDO, ProfileProjectexpRecord, ProfileProjectexp> {
+public class ProfileProjectexpDao extends JooqCrudImpl<ProfileProjectexpDO, ProfileProjectexpRecord> {
 
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = ProfileProjectexp.PROFILE_PROJECTEXP;
-   }
+    public ProfileProjectexpDao(TableImpl<ProfileProjectexpRecord> table, Class<ProfileProjectexpDO> profileProjectexpDOClass) {
+        super(table, profileProjectexpDOClass);
+    }
 }

@@ -1,18 +1,16 @@
 package com.moseeker.baseorm.dao.dictdb;
 
+import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.dictdb.tables.records.Dict_51jobOccupationRecord;
+import com.moseeker.thrift.gen.dao.struct.dictdb.Dict51jobOccupationDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.baseorm.db.dictdb.tables.Dict_51jobOccupation;
-import com.moseeker.baseorm.db.dictdb.tables.records.Dict_51jobOccupationRecord;
-import com.moseeker.baseorm.util.BaseDaoImpl;
+@Repository
+public class Dict51OccupationDao extends JooqCrudImpl<Dict51jobOccupationDO, Dict_51jobOccupationRecord> {
 
-@Service
-public class Dict51OccupationDao extends BaseDaoImpl<Dict_51jobOccupationRecord, Dict_51jobOccupation>{
-
-	@Override
-	protected void initJOOQEntity() {
-		// TODO Auto-generated method stub
-		this.tableLike=Dict_51jobOccupation.DICT_51JOB_OCCUPATION;
+	public Dict51OccupationDao(TableImpl<Dict_51jobOccupationRecord> table, Class<Dict51jobOccupationDO> dict51jobOccupationDOClass) {
+		super(table, dict51jobOccupationDOClass);
 	}
-
 }

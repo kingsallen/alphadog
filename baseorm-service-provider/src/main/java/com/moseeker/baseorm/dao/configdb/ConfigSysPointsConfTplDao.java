@@ -1,22 +1,22 @@
 package com.moseeker.baseorm.dao.configdb;
 
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.configdb.tables.ConfigSysPointsConfTpl;
+import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysPointsConfTplRecord;
+import com.moseeker.baseorm.db.hrdb.tables.HrPointsConf;
+import com.moseeker.common.dbutils.DBConnHelper;
+import com.moseeker.thrift.gen.config.HrAwardConfigTemplate;
+import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysPointsConfTplDO;
 import org.jooq.DSLContext;
 import org.jooq.Record8;
 import org.jooq.Result;
 import org.jooq.SelectOnConditionStep;
+import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
-import com.moseeker.baseorm.db.configdb.tables.ConfigSysPointsConfTpl;
-import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysPointsConfTplRecord;
-import com.moseeker.baseorm.db.hrdb.tables.HrPointsConf;
-import com.moseeker.baseorm.util.StructDaoImpl;
-import com.moseeker.common.dbutils.DBConnHelper;
-import com.moseeker.thrift.gen.config.HrAwardConfigTemplate;
-import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysPointsConfTplDO;
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
 * @author xxx
@@ -24,14 +24,13 @@ import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysPointsConfTplDO;
 * 2017-03-20
 */
 @Repository
-public class ConfigSysPointsConfTplDao extends StructDaoImpl<ConfigSysPointsConfTplDO, ConfigSysPointsConfTplRecord, ConfigSysPointsConfTpl> {
+public class ConfigSysPointsConfTplDao extends JooqCrudImpl<ConfigSysPointsConfTplDO, ConfigSysPointsConfTplRecord> {
 
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL;
-   }
-   
+	public ConfigSysPointsConfTplDao(TableImpl<ConfigSysPointsConfTplRecord> table, Class<ConfigSysPointsConfTplDO> configSysPointsConfTplDOClass) {
+		super(table, configSysPointsConfTplDOClass);
+	}
+
    public List<HrAwardConfigTemplate> findRecruitProcesses(int companyId) throws Exception{
 		List<HrAwardConfigTemplate> list=new ArrayList<HrAwardConfigTemplate>();
 		Connection conn = null;

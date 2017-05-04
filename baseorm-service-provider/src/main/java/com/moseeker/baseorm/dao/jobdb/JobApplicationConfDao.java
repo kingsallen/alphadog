@@ -1,11 +1,10 @@
 package com.moseeker.baseorm.dao.jobdb;
 
-import org.springframework.stereotype.Repository;
-
-import com.moseeker.baseorm.db.jobdb.tables.JobApplicationConf;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationConfRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationConfDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +12,10 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationConfDO;
 * 2017-03-21
 */
 @Repository
-public class JobApplicationConfDao extends StructDaoImpl<JobApplicationConfDO, JobApplicationConfRecord, JobApplicationConf> {
+public class JobApplicationConfDao extends JooqCrudImpl<JobApplicationConfDO, JobApplicationConfRecord> {
 
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = JobApplicationConf.JOB_APPLICATION_CONF;
-   }
+    public JobApplicationConfDao(TableImpl<JobApplicationConfRecord> table, Class<JobApplicationConfDO> jobApplicationConfDOClass) {
+        super(table, jobApplicationConfDOClass);
+    }
 }

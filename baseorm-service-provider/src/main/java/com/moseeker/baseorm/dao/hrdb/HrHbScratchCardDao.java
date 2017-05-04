@@ -1,14 +1,15 @@
 package com.moseeker.baseorm.dao.hrdb;
 
-import com.moseeker.baseorm.db.hrdb.tables.HrHbScratchCard;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbScratchCardRecord;
-import com.moseeker.baseorm.util.BaseDaoImpl;
-import org.springframework.stereotype.Service;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrHbScratchCardDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
-@Service
-public class HrHbScratchCardDao extends BaseDaoImpl <HrHbScratchCardRecord, HrHbScratchCard> {
-    @Override
-    protected void initJOOQEntity() {
-        this.tableLike = HrHbScratchCard.HR_HB_SCRATCH_CARD;
+@Repository
+public class HrHbScratchCardDao extends JooqCrudImpl<HrHbScratchCardDO, HrHbScratchCardRecord> {
+
+    public HrHbScratchCardDao(TableImpl<HrHbScratchCardRecord> table, Class<HrHbScratchCardDO> hrHbScratchCardDOClass) {
+        super(table, hrHbScratchCardDOClass);
     }
 }

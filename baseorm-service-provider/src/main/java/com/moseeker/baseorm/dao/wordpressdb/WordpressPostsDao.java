@@ -12,12 +12,13 @@ import org.jooq.Record;
 import org.jooq.impl.TableImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-@Service
+@Repository
 public class WordpressPostsDao extends JooqCrudImpl<WordpressPostsDO, WordpressPostsRecord> {
 
 	private static Logger logger = LoggerFactory.getLogger(WordpressPostsDao.class);

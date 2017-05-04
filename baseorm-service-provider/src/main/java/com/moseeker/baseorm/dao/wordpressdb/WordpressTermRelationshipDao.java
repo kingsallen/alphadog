@@ -7,12 +7,12 @@ import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.thrift.gen.dao.struct.wordpressdb.WordpressTermRelationshipsDO;
 import org.jooq.DSLContext;
 import org.jooq.impl.TableImpl;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-@Service
+@Repository
 public class WordpressTermRelationshipDao
 		extends JooqCrudImpl<WordpressTermRelationshipsDO, WordpressTermRelationshipsRecord> {
 

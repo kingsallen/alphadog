@@ -1,11 +1,10 @@
 package com.moseeker.baseorm.dao.profiledb;
 
-import org.springframework.stereotype.Repository;
-
-import com.moseeker.baseorm.db.profiledb.tables.ProfileCredentials;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileCredentialsRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileCredentialsDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +12,9 @@ import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileCredentialsDO;
 * 2017-03-21
 */
 @Repository
-public class ProfileCredentialsDao extends StructDaoImpl<ProfileCredentialsDO, ProfileCredentialsRecord, ProfileCredentials> {
+public class ProfileCredentialsDao extends JooqCrudImpl<ProfileCredentialsDO, ProfileCredentialsRecord> {
 
-
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = ProfileCredentials.PROFILE_CREDENTIALS;
-   }
+    public ProfileCredentialsDao(TableImpl<ProfileCredentialsRecord> table, Class<ProfileCredentialsDO> profileCredentialsDOClass) {
+        super(table, profileCredentialsDOClass);
+    }
 }

@@ -1,9 +1,9 @@
 package com.moseeker.baseorm.dao.candidatedb;
 
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidatePosition;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.dao.struct.CURDException;
@@ -13,8 +13,9 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.jooq.*;
+import org.jooq.impl.TableImpl;
 import org.jooq.types.UInteger;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -28,19 +29,18 @@ import static org.jooq.impl.DSL.*;
 /**
  * Created by jack on 15/02/2017.
  */
-@Component
-public class CandidateRecomRecordDao extends StructDaoImpl<CandidateRecomRecordDO, CandidateRecomRecordRecord, CandidateRecomRecord> {
+@Repository
+public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO, CandidateRecomRecordRecord> {
 
 
-    @Override
-    protected void initJOOQEntity() {
-        this.tableLike = CandidateRecomRecord.CANDIDATE_RECOM_RECORD;
+    public CandidateRecomRecordDao(TableImpl<CandidateRecomRecordRecord> table, Class<CandidateRecomRecordDO> candidateRecomRecordDOClass) {
+        super(table, candidateRecomRecordDOClass);
     }
 
     public void deleteCandidateRecomRecord(int id) throws CURDException {
         CandidateRecomRecordDO p = new CandidateRecomRecordDO();
         p.setId(id);
-        this.deleteResource(p);
+        this.deleteData(p);
     }
 
     public List<CandidateRecomRecordDO> listCandidateRecomRecordsForApplied(int userId, int pageNo, int pageSize) {

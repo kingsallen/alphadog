@@ -1,11 +1,10 @@
 package com.moseeker.baseorm.dao.hrdb;
 
-import org.springframework.stereotype.Repository;
-
-import com.moseeker.baseorm.db.hrdb.tables.HrWxNoticeMessage;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxNoticeMessageRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxNoticeMessageDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +12,10 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxNoticeMessageDO;
 * 2017-03-21
 */
 @Repository
-public class HrWxNoticeMessageDao extends StructDaoImpl<HrWxNoticeMessageDO, HrWxNoticeMessageRecord, HrWxNoticeMessage> {
+public class HrWxNoticeMessageDao extends JooqCrudImpl<HrWxNoticeMessageDO, HrWxNoticeMessageRecord> {
 
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE;
-   }
+    public HrWxNoticeMessageDao(TableImpl<HrWxNoticeMessageRecord> table, Class<HrWxNoticeMessageDO> hrWxNoticeMessageDOClass) {
+        super(table, hrWxNoticeMessageDOClass);
+    }
 }

@@ -1,11 +1,10 @@
 package com.moseeker.baseorm.dao.profiledb;
 
-import org.springframework.stereotype.Repository;
-
-import com.moseeker.baseorm.db.profiledb.tables.ProfileIntention;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileIntentionDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +12,10 @@ import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileIntentionDO;
 * 2017-03-21
 */
 @Repository
-public class ProfileIntentionDao extends StructDaoImpl<ProfileIntentionDO, ProfileIntentionRecord, ProfileIntention> {
+public class ProfileIntentionDao extends JooqCrudImpl<ProfileIntentionDO, ProfileIntentionRecord> {
 
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = ProfileIntention.PROFILE_INTENTION;
-   }
+    public ProfileIntentionDao(TableImpl<ProfileIntentionRecord> table, Class<ProfileIntentionDO> profileIntentionDOClass) {
+        super(table, profileIntentionDOClass);
+    }
 }

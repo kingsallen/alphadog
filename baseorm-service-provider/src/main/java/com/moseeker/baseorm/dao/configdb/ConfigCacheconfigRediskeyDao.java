@@ -1,11 +1,10 @@
 package com.moseeker.baseorm.dao.configdb;
 
-import org.springframework.stereotype.Repository;
-
-import com.moseeker.baseorm.db.configdb.tables.ConfigCacheconfigRediskey;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigCacheconfigRediskeyRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigCacheconfigRediskeyDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +12,10 @@ import com.moseeker.thrift.gen.dao.struct.configdb.ConfigCacheconfigRediskeyDO;
 * 2017-03-20
 */
 @Repository
-public class ConfigCacheconfigRediskeyDao extends StructDaoImpl<ConfigCacheconfigRediskeyDO, ConfigCacheconfigRediskeyRecord, ConfigCacheconfigRediskey> {
+public class ConfigCacheconfigRediskeyDao extends JooqCrudImpl<ConfigCacheconfigRediskeyDO, ConfigCacheconfigRediskeyRecord> {
 
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = ConfigCacheconfigRediskey.CONFIG_CACHECONFIG_REDISKEY;
-   }
+    public ConfigCacheconfigRediskeyDao(TableImpl<ConfigCacheconfigRediskeyRecord> table, Class<ConfigCacheconfigRediskeyDO> configCacheconfigRediskeyDOClass) {
+        super(table, configCacheconfigRediskeyDOClass);
+    }
 }

@@ -1,17 +1,15 @@
 package com.moseeker.baseorm.dao.dictdb;
 
-import org.springframework.stereotype.Service;
-
-import com.moseeker.baseorm.db.dictdb.tables.DictZhilianOccupation;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictZhilianOccupationRecord;
-import com.moseeker.baseorm.util.BaseDaoImpl;
-@Service
-public class DictZpinOccupationDao extends BaseDaoImpl<DictZhilianOccupationRecord, DictZhilianOccupation>{
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictZhilianOccupationDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
-	@Override
-	protected void initJOOQEntity() {
-		// TODO Auto-generated method stub
-		this.tableLike=DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION;
+@Repository
+public class DictZpinOccupationDao extends JooqCrudImpl<DictZhilianOccupationDO, DictZhilianOccupationRecord> {
+
+	public DictZpinOccupationDao(TableImpl<DictZhilianOccupationRecord> table, Class<DictZhilianOccupationDO> dictZhilianOccupationDOClass) {
+		super(table, dictZhilianOccupationDOClass);
 	}
-
 }

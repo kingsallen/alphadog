@@ -1,11 +1,10 @@
 package com.moseeker.baseorm.dao.profiledb;
 
-import org.springframework.stereotype.Repository;
-
-import com.moseeker.baseorm.db.profiledb.tables.ProfileIntentionCity;
+import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionCityRecord;
-import com.moseeker.baseorm.util.StructDaoImpl;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileIntentionCityDO;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
 * @author xxx
@@ -13,11 +12,10 @@ import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileIntentionCityDO;
 * 2017-03-21
 */
 @Repository
-public class ProfileIntentionCityDao extends StructDaoImpl<ProfileIntentionCityDO, ProfileIntentionCityRecord, ProfileIntentionCity> {
+public class ProfileIntentionCityDao extends JooqCrudImpl<ProfileIntentionCityDO, ProfileIntentionCityRecord> {
 
 
-   @Override
-   protected void initJOOQEntity() {
-        this.tableLike = ProfileIntentionCity.PROFILE_INTENTION_CITY;
-   }
+    public ProfileIntentionCityDao(TableImpl<ProfileIntentionCityRecord> table, Class<ProfileIntentionCityDO> profileIntentionCityDOClass) {
+        super(table, profileIntentionCityDOClass);
+    }
 }
