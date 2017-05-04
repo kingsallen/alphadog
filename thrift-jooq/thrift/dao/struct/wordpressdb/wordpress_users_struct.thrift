@@ -4,7 +4,7 @@ namespace py thrift_gen.gen.dao.struct.wordpressdb
 
 struct WordpressUsersDO {
 
-	1: optional i32 id,	//null
+	1: optional i64 id,	//null
 	2: optional string userLogin,	//null
 	3: optional string userPass,	//null
 	4: optional string userNicename,	//null

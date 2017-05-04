@@ -18,6 +18,7 @@ struct HrHbSendRecordDO {
 	12: optional i32 totalAmount,	//付款金额,单位分
 	13: optional string sendTime,	//红包发送时间
 	14: optional string sendListid,	//红包订单的微信单号
-	15: optional string createTime	//null
+	15: optional string createTime,	//null
+	16: optional i32 hbItemId	//hr_hb_items.id 该红包 api 调用所对应的红包记录
 
 }

@@ -17,12 +17,12 @@ struct CandidateRecomRecordDO {
 	11: optional string position,	//被推荐者的职位
 	12: optional string recomReason,	//推荐理由, 逗号分隔
 	13: optional string recomTime,	//推荐时间
-	14: optional i32 isRecom,	//推荐状态，0：推荐过，1：未推荐
+	14: optional i32 isRecom,	//推荐状态，0：推荐过，1：未推荐,2:忽略--推荐被动求职者时，可以选中多个求职者挨个填写求职者信息。忽略是指跳过当前求职者，到下一个求职者。3： 选中--推荐被动求职者时，可以选中多个被动求职者。
 	15: optional string createTime,	//创建时间
 	16: optional string updateTime,	//更新时间
 	17: optional string mobile,	//被推荐者的手机号
 	18: optional i32 presenteeUserId,	//userdb.user_user.id 被推荐者的C端账号编号
-	19: optional i32 repostUserId,	//userdb.user_user.id 第2度人脉微信ID由第2度人脉C端账号编号
+	19: optional i32 repostUserId,	//userdb.user_user.id 第2度人脉推荐人C 端账号编号，用来标记谁的朋友
 	20: optional i32 postUserId	//userdb.user_user.id 推荐者的C端账号编号
 
 }

@@ -8,6 +8,7 @@ struct JobPositionExtDO {
 	2: optional i32 jobCustomId,	//job_custom.id
 	3: optional string createTime,	//创建时间
 	4: optional string updateTime,	//修改时间
-	5: optional i32 jobOccupationId	//jobdb.job_occupation.id
+	5: optional i32 jobOccupationId,	//jobdb.job_occupation.id
+	6: optional string extra	//SuccessFactors对接
 
 }

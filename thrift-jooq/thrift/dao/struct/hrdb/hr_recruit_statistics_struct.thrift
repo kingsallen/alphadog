@@ -21,7 +21,7 @@ struct HrRecruitStatisticsDO {
 	15: optional i32 onBoardNum,	//入职人数
 	16: optional i32 recomOnBoardNum,	//推荐入职人数
 	17: optional i32 notViewedNum,	//简历未查阅人数
-	18: optional i32 recomNotViewedNum,	//推荐简历未查阅人数
+	18: optional i32 recomNotViewedNum,	//推荐未查阅人数
 	19: optional i32 notQualifiedNum,	//简历不匹配人数
 	20: optional i32 recomNotQualifiedNum	//推荐简历不匹配人数
 

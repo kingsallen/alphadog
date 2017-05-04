@@ -12,6 +12,7 @@ struct DictCountryDO {
 	6: optional string code,	//COUNTRY CODE
 	7: optional string iconClass,	//国旗样式
 	8: optional i8 hotCountry,	//热门国家 0=否 1=是
-	9: optional i32 continentCode	//7大洲code, dict_constant.parent_code: 9103
+	9: optional i32 continentCode,	//7大洲code, dict_constant.parent_code: 9103
+	10: optional i16 priority	//优先级
 
 }

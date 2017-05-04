@@ -7,7 +7,7 @@ struct LogWxTemplateMessageSendrecordDO {
 	1: optional i32 id,	//主key
 	2: optional i32 templateId,	//我的模板ID
 	3: optional i32 wechatId,	//所属公众号
-	4: optional i32 msgid,	//发送消息ID
+	4: optional i64 msgid,	//发送消息ID
 	5: optional string openId,	//微信用户OPENID
 	6: optional string url,	//link
 	7: optional string topcolor,	//信息顶部颜色

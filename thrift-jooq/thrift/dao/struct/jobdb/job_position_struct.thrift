@@ -14,7 +14,7 @@ struct JobPositionDO {
 	8: optional i32 lJobid,	//jobid from ATS or other channel
 	9: optional string publishDate,	//Default: now, set by js
 	10: optional string stopDate,	//截止日期
-	11: optional string accountabilities,	//Job responsibilities
+	11: optional string accountabilities,	//Job responsibilities职位描述
 	12: optional string experience,	//工作经验
 	13: optional string requirement,	//职位要求
 	14: optional string salary,	//薪水

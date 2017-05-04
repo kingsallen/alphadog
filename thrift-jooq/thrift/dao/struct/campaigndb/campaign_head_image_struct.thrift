@@ -8,6 +8,6 @@ struct CampaignHeadImageDO {
 	2: optional string imageUrl,	//图片地址
 	3: optional string hrefUrl,	//超链接地址
 	4: optional string createTime,	//创建时间
-	5: optional string updateTime	//创建时间
+	5: optional string updateTime	//修改时间
 
 }

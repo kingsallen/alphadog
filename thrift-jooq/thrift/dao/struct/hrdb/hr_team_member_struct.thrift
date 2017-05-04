@@ -12,6 +12,7 @@ struct HrTeamMemberDO {
 	6: optional i32 userId,	//成员对应用户
 	7: optional string createTime,	//创建时间
 	8: optional string updateTime,	//更新时间
-	9: optional i32 resId	//成员头像hr_resource.id
+	9: optional i32 resId,	//成员头像hr_resource.id
+	10: optional i32 disable	//0是正常1是删除
 
 }
