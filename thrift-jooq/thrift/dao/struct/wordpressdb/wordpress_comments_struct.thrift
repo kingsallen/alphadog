@@ -4,8 +4,8 @@ namespace py thrift_gen.gen.dao.struct.wordpressdb
 
 struct WordpressCommentsDO {
 
-	1: optional i32 commentId,	//null
-	2: optional i32 commentPostId,	//null
+	1: optional i64 commentId,	//null
+	2: optional i64 commentPostId,	//null
 	3: optional string commentAuthor,	//null
 	4: optional string commentAuthorEmail,	//null
 	5: optional string commentAuthorUrl,	//null
@@ -17,7 +17,7 @@ struct WordpressCommentsDO {
 	11: optional string commentApproved,	//null
 	12: optional string commentAgent,	//null
 	13: optional string commentType,	//null
-	14: optional i32 commentParent,	//null
-	15: optional i32 userId	//null
+	14: optional i64 commentParent,	//null
+	15: optional i64 userId	//null
 
 }

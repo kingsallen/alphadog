@@ -4,8 +4,8 @@ namespace py thrift_gen.gen.dao.struct.wordpressdb
 
 struct WordpressPostsDO {
 
-	1: optional i32 id,	//null
-	2: optional i32 postAuthor,	//null
+	1: optional i64 id,	//null
+	2: optional i64 postAuthor,	//null
 	3: optional string postDate,	//null
 	4: optional string postDateGmt,	//null
 	5: optional string postContent,	//null
@@ -21,11 +21,11 @@ struct WordpressPostsDO {
 	15: optional string postModified,	//null
 	16: optional string postModifiedGmt,	//null
 	17: optional string postContentFiltered,	//null
-	18: optional i32 postParent,	//null
+	18: optional i64 postParent,	//null
 	19: optional string guid,	//null
 	20: optional i32 menuOrder,	//null
 	21: optional string postType,	//null
 	22: optional string postMimeType,	//null
-	23: optional i32 commentCount	//null
+	23: optional i64 commentCount	//null
 
 }

@@ -14,6 +14,6 @@ struct ConfigSysThemeDO {
 	8: optional double disable,	//是否禁用 0：可用1：不可用
 	9: optional string createTime,	//null
 	10: optional string updateTime,	//null
-	11: optional i32 companyId	//hr_company.id,用于隔离企业自定义的颜色，0是默认色，公共可用
+	11: optional i32 companyId	//hr_company.id, 用于隔离企业自定义的颜色
 
 }

@@ -8,7 +8,7 @@ struct UserEmployeeDO {
 	2: optional string employeeid,	//员工ID
 	3: optional i32 companyId,	//null
 	4: optional i32 roleId,	//sys_role.id
-	5: optional i32 wxuserId,	//userdb.user_wx_user.id 微信账号编号。现在已经废弃。关于员工绑定的C端账号，请参考user_id
+	5: optional i32 wxuserId,	//userdb.user_wx_user.id 微信账号编号。现在已经废弃。关于员工绑定的C端账号，请参考sysuser_id
 	6: optional double sex,	//0：未知，1：男，2：女
 	7: optional string ename,	//英文名
 	8: optional string efname,	//英文姓
@@ -33,7 +33,7 @@ struct UserEmployeeDO {
 	27: optional i32 award,	//员工积分
 	28: optional string bindingTime,	//null
 	29: optional string email,	//email
-	30: optional double activation,	//员工认证，0：认证成功 1：未认证 2：认证失败
+	30: optional double activation,	//员工认证，0：认证成功 1：未认证 2：认证失败 
 	31: optional string activationCode,	//激活码
 	32: optional double disable,	//是否禁用0：可用1：禁用
 	33: optional string createTime,	//创建时间
@@ -54,6 +54,6 @@ struct UserEmployeeDO {
 	48: optional i32 sectionId,	//hr_employee_section.id, 部门ID
 	49: optional i8 emailIsvalid,	//是否认证了1：是, 0：否
 	50: optional i8 authMethod,	//员工认证途径 0:使用邮箱认证 1:使用自定义认证 2:使用问答认证
-	51: optional string customFieldValues	//自定 义字段
+	51: optional string customFieldValues	//自定 义字段键值, 结构[{<id>: "<value>"},{...},...]
 
 }

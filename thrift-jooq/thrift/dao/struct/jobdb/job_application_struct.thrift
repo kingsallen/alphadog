@@ -7,9 +7,9 @@ struct JobApplicationDO {
 	1: optional i32 id,	//null
 	2: optional i32 wechatId,	//sys_wechat.id, 公众号ID
 	3: optional i32 positionId,	//hr_position.id, 职位ID
-	4: optional i32 recommenderId,	//user_wx_user.id,微信ID
+	4: optional i32 recommenderId,	//user_wx_user.id, 微信ID。现在已经废弃，推荐者信息请参考recommend_user_id
 	5: optional string submitTime,	//申请提交时间
-	6: optional i32 statusId,	//hr_points_conf.id, 申请状态ID
+	6: optional i32 statusId,	//hr_award_config.id, 申请状态ID
 	7: optional i32 lApplicationId,	//ATS的申请ID
 	8: optional i32 reward,	//当前申请的积分记录
 	9: optional i32 sourceId,	//job_source.id, 对应的ATS ID
@@ -28,7 +28,7 @@ struct JobApplicationDO {
 	22: optional i32 appTplId,	//申请状态,hr_award_config_template.id
 	23: optional i8 proxy,	//是否是代理投递 0：正常数据，1：代理假投递
 	24: optional i32 applyType,	//投递区分， 0：profile投递， 1：email投递
-	25: optional i32 emailStatus,	//0，有效；1,未收到回复邮件；2，文件格式不支持；3，附件超过10M；8: 包含特殊字体;  9，提取邮件失败
+	25: optional i32 emailStatus,	//0，有效；1,未收到回复邮件；2，文件格式不支持；3，附件超过10M；9，提取邮件失败
 	26: optional i32 viewCount,	//profile浏览次数
 	27: optional i32 recommenderUserId	//userdb.user_user.id 推荐人编号
 

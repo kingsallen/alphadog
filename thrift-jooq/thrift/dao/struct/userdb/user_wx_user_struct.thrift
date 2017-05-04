@@ -4,7 +4,7 @@ namespace py thrift_gen.gen.dao.struct.userdb
 
 struct UserWxUserDO {
 
-	1: optional i32 id,	//主key
+	1: optional i64 id,	//主key
 	2: optional i32 wechatId,	//所属公众号
 	3: optional i32 groupId,	//分组ID
 	4: optional i32 sysuserId,	//user_user.id, C端用户ID

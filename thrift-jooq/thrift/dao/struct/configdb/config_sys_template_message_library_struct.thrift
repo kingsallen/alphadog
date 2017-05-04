@@ -20,6 +20,8 @@ struct ConfigSysTemplateMessageLibraryDO {
 	14: optional string sendto,	//发送对象
 	15: optional string first,	//消息模板first文案
 	16: optional string remark,	//消息模板remark文案
-	17: optional string url	//跳转页面
+	17: optional string url,	//跳转页面
+	18: optional string fromName,	//null
+	19: optional string subject	//null
 
 }

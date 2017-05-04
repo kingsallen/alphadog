@@ -5,7 +5,7 @@ namespace py thrift_gen.gen.dao.struct.jobdb
 struct JobPositionShareTplConfDO {
 
 	1: optional i32 id,	//PK
-	2: optional double type,	//模板分类 1：雇主分享模板 2：员工分享模板
+	2: optional double type,	//模板分类 1:雇主分享模板 2:员工分享模板(已弃用) 3:转发模板 4:默认转发模板
 	3: optional string name,	//模板名称
 	4: optional string title,	//分享标题
 	5: optional string description,	//分享简介

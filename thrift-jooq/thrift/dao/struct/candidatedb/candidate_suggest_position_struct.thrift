@@ -11,6 +11,6 @@ struct CandidateSuggestPositionDO {
 	5: optional string createTime,	//创建时间
 	6: optional string updateTime,	//修改时间
 	7: optional i32 disable,	//是否生效 0：生效 1：不生效
-	8: optional i32 userId	//userdb.user_user.id C端账号编号。
+	8: optional i32 userId	//userdb.user_user.id C端账号编号
 
 }
