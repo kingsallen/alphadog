@@ -35,6 +35,8 @@ public class LocalQueryTest {
         query = queryBuilder.select("id").select("name")
                 .where("id", 1).or("name", "hello")
                 .andInnerCondition("nickname", "hello").and("activation", 1).orOutCondition("is_disable",1)
+                .orInnerCondition("email", 1).andInnerCondition("source", 1).or("unionid","unionid")
+                .orOutCondition("headimg", "headimg").andOutCondition("activation_code", 1)
                 .groupBy("nickname").groupBy("name").groupBy("activation")
                 .buildQuery();
 

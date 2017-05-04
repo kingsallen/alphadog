@@ -161,11 +161,11 @@ public class LocalCondition<R extends Record> {
     }
 
     private org.jooq.Condition packageConditionOp(org.jooq.Condition jooqCondition, org.jooq.Condition nextCondition, ConditionOp op) {
-        org.jooq.Condition result = DSL.trueCondition();
-        result.and(jooqCondition);
+        //org.jooq.Condition result = DSL.trueCondition();
+        //result.and(jooqCondition);
         switch (op) {
             case AND:
-                return result.and(nextCondition);
+                return jooqCondition.and(nextCondition);
             case OR:
                 return jooqCondition.or(nextCondition);
             default:

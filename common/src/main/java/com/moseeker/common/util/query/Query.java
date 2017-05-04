@@ -87,9 +87,7 @@ public class Query {
 
         public QueryBuilder where(String field, Object value) throws ConditionNotExist {
             Condition condition = new Condition(field, value);
-            setConditions(condition);
-            index = condition;
-            return this;
+            return where(condition);
         }
 
         public QueryBuilder where(Condition condition) throws ConditionNotExist {
@@ -98,18 +96,12 @@ public class Query {
             return this;
         }
 
-        public QueryBuilder and(Condition condition) throws ConditionNotExist {
-            if(this.index != null) {
-                conditions.andCondition(condition);
-            } else {
-                setConditions(condition);
-            }
-            index = condition;
-            return this;
-        }
-
         public QueryBuilder and(String field, Object value) throws ConditionNotExist {
             Condition condition = new Condition(field, value);
+            return and(condition);
+        }
+
+        public QueryBuilder and(Condition condition) throws ConditionNotExist {
             if(this.index != null) {
                 index.andCondition(condition);
             } else {
@@ -121,13 +113,7 @@ public class Query {
 
         public QueryBuilder or(String field, Object value) throws ConditionNotExist {
             Condition condition = new Condition(field, value);
-            if(this.index != null) {
-                conditions.addCondition(condition, ConditionOp.OR);
-            } else {
-                setConditions(condition);
-            }
-            index = condition;
-            return this;
+            return or(condition);
         }
 
         public QueryBuilder or(Condition condition) throws ConditionNotExist {
@@ -135,7 +121,7 @@ public class Query {
                 throw new ConditionNotExist();
             }
             if(this.index != null) {
-                conditions.addCondition(condition, ConditionOp.OR);
+                index.addCondition(condition, ConditionOp.OR);
             } else {
                 setConditions(condition);
             }
