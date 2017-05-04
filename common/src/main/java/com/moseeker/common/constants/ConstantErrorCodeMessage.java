@@ -79,6 +79,7 @@ public final class ConstantErrorCodeMessage {
     public static final String HRACCOUNT_ELLEGLE_DATA = "{'status':42002,'message':'数据格式错误！'}";
     public static final String HRACCOUNT_BINDING = "{'status':42003,'message':'绑定中！'}";
     public static final String HRACCOUNT_BINDING_TIMEOUT = "{'status':42004,'message':'绑定超时！'}";
+    public static final String HRACCOUNT_BINDING_LIMIT = "{'status':42005,'message':'无法绑定更多的账号了！'}";
 
     public static final String THIRD_PARTY_POSITION_UPSERT_FAILED = "{'status':42004,'message':'添加或者修改操作失败！'}";
 

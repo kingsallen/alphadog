@@ -730,7 +730,7 @@ public class UserHrAccountService {
                         return ResponseUtils.success(null);
                     } else {
                         //已经绑定该渠道第三方账号，并且不是主账号，那么不允许绑定
-                        return ResponseUtils.fail(ConstantErrorCodeMessage.HRACCOUNT_BINDING);
+                        return ResponseUtils.fail(ConstantErrorCodeMessage.HRACCOUNT_BINDING_LIMIT);
                     }
                 } else {
                     return ResponseUtils.success(null);
