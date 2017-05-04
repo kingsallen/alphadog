@@ -57,5 +57,7 @@ service HrDBDao {
 	common_struct.Response getHrWxWechat(1: common_struct.CommonQuery query);
 	hrdb_struct.HrWxWechatDO getHrWxWechatDO(1: common_struct.CommonQuery query) throws (1:common_struct.CURDException e);
 
+	list<hrdb_struct.HrCompanyAccountDO> listHrCompanyAccount(1: common_struct.CommonQuery query) throws (1:common_struct.CURDException e);
+
     common_struct.Response getHrTeam(1:common_struct.CommonQuery query);
 }

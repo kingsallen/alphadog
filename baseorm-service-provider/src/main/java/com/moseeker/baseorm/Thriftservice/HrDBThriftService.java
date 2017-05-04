@@ -236,12 +236,15 @@ public class HrDBThriftService implements Iface {
 		return hrWxWechatDao.findResource(query);
 	}
 
+	@Override
+	public List<HrCompanyAccountDO> listHrCompanyAccount(CommonQuery query) throws CURDException, TException {
+		return hrDaoService.getHrCompanyAccounts(query);
+	}
 
 	@Override
 	public Response getHrTeam(CommonQuery query) throws TException {
 		// TODO Auto-generated method stub
 		return hrDBService.getHrTeam(query);
 	}
-
 
 }
