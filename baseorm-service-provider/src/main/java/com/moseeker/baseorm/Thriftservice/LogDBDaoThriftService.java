@@ -21,7 +21,7 @@ public class LogDBDaoThriftService implements Iface {
 	public int saveSmsSenderRecord(LogSmsSendRecordDO smsSendRecordDO) throws TException {
 		try {
 			com.moseeker.thrift.gen.dao.struct.logdb.LogSmsSendrecordDO sms = new com.moseeker.thrift.gen.dao.struct.logdb.LogSmsSendrecordDO();
-			return smsDao.addData(sms);
+			return smsDao.addData(sms).getId();
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}

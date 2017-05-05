@@ -4,6 +4,7 @@ import com.moseeker.baseorm.dao.hrdb.HrChatUnreadCountDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxHrChatDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxHrChatListDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserHRAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
@@ -20,6 +21,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrChatUnreadCountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatListDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
@@ -29,7 +31,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -66,6 +67,9 @@ public class ChatDao {
 
     @Autowired
     HrWxHrChatDao hrWxHrChatDao;
+
+    @Autowired
+    JobPositionDao jobPositionDao;
 
     ThreadPool threadPool = ThreadPool.Instance;
 
@@ -333,12 +337,7 @@ public class ChatDao {
      * @return 聊天记录
      */
     public HrWxHrChatDO saveChat(HrWxHrChatDO chatDO) {
-        try {
-            return hrDBDao.saveChat(chatDO);
-        } catch (TException e) {
-            logger.error(e.getMessage(), e);
-            return null;
-        }
+        return hrWxHrChatDao.addData(chatDO);
     }
 
     /**
@@ -347,12 +346,7 @@ public class ChatDao {
      * @return 聊天室
      */
     public HrWxHrChatListDO saveChatRoom(HrWxHrChatListDO chatRoom) {
-        try {
-            return hrDBDao.saveChatRoom(chatRoom);
-        } catch (TException e) {
-            logger.error(e.getMessage(), e);
-            return null;
-        }
+        return hrWxHrChatListDao.addData(chatRoom);
     }
 
     /**
@@ -375,18 +369,13 @@ public class ChatDao {
 
         QueryUtil queryUtil = new QueryUtil();
         queryUtil.addEqualFilter("chatlist_id", roomId);
-        queryUtil.setSortby("create_time");
-        queryUtil.setOrder("desc");
-        try {
-            HrWxHrChatDO chatDO = hrDBDao.getChat(queryUtil);
-            if(chatDO != null && chatDO.getPid() > 0) {
-                QueryUtil findPosition = new QueryUtil();
-                findPosition.addEqualFilter("id", chatDO.getPid());
-                JobPositionDO positionDO = jobDBDao.getPosition(findPosition);
-                return positionDO;
-            }
-        } catch (TException e) {
-            logger.error(e.getMessage(), e);
+        queryUtil.orderBy("create_time", Order.DESC);
+        HrWxHrChatDO chatDO = hrWxHrChatDao.getData(queryUtil);
+        if(chatDO != null && chatDO.getPid() > 0) {
+            QueryUtil findPosition = new QueryUtil();
+            findPosition.addEqualFilter("id", chatDO.getPid());
+            JobPositionDO positionDO = jobPositionDao.getData(findPosition);
+            return positionDO;
         }
         return null;
     }
@@ -403,63 +392,57 @@ public class ChatDao {
                 .addSelectAttribute("company_id").addSelectAttribute("headimgurl");
         findHR.addEqualFilter("id", hrId);
 
-        try {
-            UserHrAccountDO userHrAccountDO = userDBDao.getUserHrAccount(findHR);
+        UserHrAccountDO userHrAccountDO = userHRAccountDao.getData(findHR);
 
-            /** 如果HR没有头像信息，则查找微信的头像信息；如果没有微信信息或者微信信息的头像不存在，则查找公司的logo */
-            if(userHrAccountDO != null && userHrAccountDO.getId() > 0
-                    && StringUtils.isNullOrEmpty(userHrAccountDO.getHeadimgurl())) {
+        /** 如果HR没有头像信息，则查找微信的头像信息；如果没有微信信息或者微信信息的头像不存在，则查找公司的logo */
+        if(userHrAccountDO != null && userHrAccountDO.getId() > 0
+                && StringUtils.isNullOrEmpty(userHrAccountDO.getHeadimgurl())) {
 
-                String headImg = null;
-                Future wxUserFuture = null;
-                Future companyFuture = null;
+            String headImg = null;
+            Future wxUserFuture = null;
+            Future companyFuture = null;
 
-                /** 查找微信的头像 */
-                if(userHrAccountDO.getWxuserId() > 0) {
-                    QueryUtil findWxUser = new QueryUtil();
-                    findWxUser.addSelectAttribute("id").addSelectAttribute("headimgurl");
-                    findWxUser.addEqualFilter("id", userHrAccountDO.getWxuserId());
-                    wxUserFuture = threadPool.startTast(() -> userDBDao.getUserWxUserDO(findWxUser));
-                }
-                /** 查找公司的logo */
-                if(userHrAccountDO.getCompanyId() > 0) {
-                    QueryUtil findCompany = new QueryUtil();
-                    findCompany.addSelectAttribute("id").addSelectAttribute("logo");
-                    findCompany.addEqualFilter("id", userHrAccountDO.getCompanyId());
-                    companyFuture = threadPool.startTast(() -> hrDBDao.getCompany(findCompany));
-                }
-
-                if(wxUserFuture != null) {
-                    try {
-                        UserWxUserDO userWxUserDO = (UserWxUserDO) wxUserFuture.get();
-                        if(userWxUserDO != null) {
-                            headImg = userWxUserDO.getHeadimgurl();
-                        }
-                    } catch (InterruptedException | ExecutionException e) {
-                        logger.error(e.getMessage(), e);
-                    }
-
-                }
-
-                if(companyFuture != null && StringUtils.isNullOrEmpty(headImg)) {
-                    try {
-                        HrCompanyDO companyDO = (HrCompanyDO) companyFuture.get();
-                        if(companyDO != null) {
-                            headImg = companyDO.getLogo();
-                        }
-                    } catch (InterruptedException | ExecutionException e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                }
-                userHrAccountDO.setHeadimgurl(headImg);
+            /** 查找微信的头像 */
+            if(userHrAccountDO.getWxuserId() > 0) {
+                QueryUtil findWxUser = new QueryUtil();
+                findWxUser.addSelectAttribute("id").addSelectAttribute("headimgurl");
+                findWxUser.addEqualFilter("id", userHrAccountDO.getWxuserId());
+                wxUserFuture = threadPool.startTast(() -> userWxUserDao.getData(findWxUser));
+            }
+            /** 查找公司的logo */
+            if(userHrAccountDO.getCompanyId() > 0) {
+                QueryUtil findCompany = new QueryUtil();
+                findCompany.addSelectAttribute("id").addSelectAttribute("logo");
+                findCompany.addEqualFilter("id", userHrAccountDO.getCompanyId());
+                companyFuture = threadPool.startTast(() -> hrCompanyDao.getData(findCompany));
             }
 
-            return userHrAccountDO;
-        } catch (TException e) {
-            logger.error(e.getMessage(), e);
-            return null;
+            if(wxUserFuture != null) {
+                try {
+                    UserWxUserDO userWxUserDO = (UserWxUserDO) wxUserFuture.get();
+                    if(userWxUserDO != null) {
+                        headImg = userWxUserDO.getHeadimgurl();
+                    }
+                } catch (InterruptedException | ExecutionException e) {
+                    logger.error(e.getMessage(), e);
+                }
+
+            }
+
+            if(companyFuture != null && StringUtils.isNullOrEmpty(headImg)) {
+                try {
+                    HrCompanyDO companyDO = (HrCompanyDO) companyFuture.get();
+                    if(companyDO != null) {
+                        headImg = companyDO.getLogo();
+                    }
+                } catch (InterruptedException | ExecutionException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
+            userHrAccountDO.setHeadimgurl(headImg);
         }
-        //userDBDao.get
+
+        return userHrAccountDO;
     }
 
     /**
@@ -467,13 +450,7 @@ public class ChatDao {
      * @param chatRoom
      */
     public void updateChatRoom(HrWxHrChatListDO chatRoom) {
-        if(chatRoom != null && chatRoom.getId() > 0) {
-            try {
-                hrDBDao.updateChatRoom(chatRoom);
-            } catch (TException e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
+        hrWxHrChatListDao.updateData(chatRoom);
     }
 
     /**
@@ -485,23 +462,7 @@ public class ChatDao {
         QueryUtil queryUtil = new QueryUtil();
         queryUtil.addSelectAttribute("id").addSelectAttribute("name").addSelectAttribute("nickname");
         queryUtil.addEqualFilter("id", userId);
-        try {
-            return userDBDao.getUser(queryUtil);
-        } catch (TException e) {
-            logger.error(e.getMessage(), e);
-            return null;
-        }
-    }
-
-    /**
-     * 判断聊天室是否存在
-     * @param roomId 聊天室编号
-     * @param userId 用户编号
-     * @param hrId HR编号
-     * @return true 存在, false 不存在
-     */
-    public boolean existChatRoom(int roomId, int userId, int hrId) {
-        return false;
+        return userUserDao.getData(queryUtil);
     }
 
     /**
@@ -516,13 +477,9 @@ public class ChatDao {
         if(roomId > 0) {
             QueryUtil queryUtil = new QueryUtil();
             queryUtil.addEqualFilter("id", roomId);
-            try {
-                chatRoom = hrDBDao.getChatRoom(queryUtil);
-                if(chatRoom == null) {
-                    chatRoom = findChatRoomByUserIdHrId(userId, hrId);
-                }
-            } catch (TException e) {
-                logger.error(e.getMessage(), e);
+            chatRoom = hrWxHrChatListDao.getData(queryUtil);
+            if(chatRoom == null) {
+                chatRoom = findChatRoomByUserIdHrId(userId, hrId);
             }
         } else {
                 chatRoom = findChatRoomByUserIdHrId(userId, hrId);
@@ -540,16 +497,10 @@ public class ChatDao {
      * @return 聊天室
      */
     private HrWxHrChatListDO findChatRoomByUserIdHrId(int userId, int hrId) {
-        HrWxHrChatListDO chatRoom = null;
         QueryUtil findChatRoom = new QueryUtil();
         findChatRoom.addEqualFilter("sysuser_id", userId);
         findChatRoom.addEqualFilter("hraccount_id", hrId);
-        try {
-            chatRoom = hrDBDao.getChatRoom(findChatRoom);
-        } catch (TException e) {
-            e.printStackTrace();
-        }
-        return chatRoom;
+        return hrWxHrChatListDao.getData(findChatRoom);
     }
 
     /**
@@ -560,12 +511,7 @@ public class ChatDao {
     public JobPositionDO getPositionById(int positionId) {
         QueryUtil queryUtil = new QueryUtil();
         queryUtil.addEqualFilter("id", positionId);
-        try {
-            return jobDBDao.getPosition(queryUtil);
-        } catch (TException e) {
-            logger.error(e.getMessage(), e);
-        }
-        return null;
+        return jobPositionDao.getData(queryUtil);
     }
 
     public HrChatUnreadCountDO saveUnreadCount(HrChatUnreadCountDO unreadCountDO) {

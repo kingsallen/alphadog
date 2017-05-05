@@ -63,7 +63,7 @@ public class SearchConditionDaoThriftService implements Iface {
 	@Override
 	public int postResource(SearchCondition searchCondition) throws TException {
 		try {
-			return dao.addRecord(BeanUtils.structToDB(searchCondition, HrSearchConditionRecord.class));
+			return dao.addRecord(BeanUtils.structToDB(searchCondition, HrSearchConditionRecord.class)).getId();
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}

@@ -14,6 +14,7 @@ import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -30,12 +31,12 @@ public class JobDBDaoThriftService implements Iface {
 
 	@Override
 	public List<JobPositionDO> getPositions(CommonQuery query) throws TException {
-		return positionDao.getPositions(QueryConvert.commonQueryConvertToQuery(query));
+		return new ArrayList<>();
 	}
 
 	@Override
 	public JobPositionDO getPosition(CommonQuery query) throws CURDException, TException {
-		return positionDao.getData(QueryConvert.commonQueryConvertToQuery(query));
+		return new JobPositionDO();
 	}
 
 	@Override
@@ -45,12 +46,12 @@ public class JobDBDaoThriftService implements Iface {
 
 	@Override
 	public List<JobApplicationDO> getApplications(CommonQuery query) throws TException {
-		return applicationDao.getApplications(QueryConvert.commonQueryConvertToQuery(query));
+		return new ArrayList<>();
 	}
 
 	@Override
 	public JobApplicationDO getApplication(CommonQuery query) throws CURDException, TException {
-		return applicationDao.getData(QueryConvert.commonQueryConvertToQuery(query));
+		return new JobApplicationDO();
 	}
 
 	@Override

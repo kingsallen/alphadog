@@ -196,7 +196,7 @@ public class UserDBDaoThriftService implements Iface {
 		if (userEmployee != null) {
 			UserEmployeeRecord ueRecord = BeanUtils.structToDB(userEmployee, UserEmployeeRecord.class);
 			try {
-				return employeeDao.addRecord(ueRecord);
+				return employeeDao.addRecord(ueRecord).getId();
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}

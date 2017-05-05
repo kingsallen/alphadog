@@ -58,7 +58,8 @@ public class UserEmployeeDaoServiceImpl implements UserEmployeeDaoService {
             for (UserEmployeePointStruct record : records) {
                 list.add(BeanUtils.structToDB(record, UserEmployeePointsRecordRecord.class));
             }
-            int result = dao1.addAllRecord(list).length;
+            int result = dao1.addAllRecord(list).size();
+
             return ResponseUtils.success(result);
         } catch (Exception e) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);

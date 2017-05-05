@@ -32,12 +32,18 @@ public abstract class Crud<S, R> implements CrudAdd<R>, CrudDelete<R>, CrudUpdat
 
     public abstract S recordToData(R r);
 
-    public int addData(S s) {
-        return addRecord(dataToRecord(s));
+    public S addData(S s) {
+        R r = dataToRecord(s);
+        this.addRecord(r);
+        return recordToData(r);
     }
 
-    public int[] addAllData(List<S> ss) {
-        return addAllRecord(ss.stream().map(data -> dataToRecord(data)).collect(Collectors.toList()));
+    public List<S> addAllData(List<S> ss) {
+        List<R> rList = addAllRecord(ss.stream().map(data -> dataToRecord(data)).collect(Collectors.toList()));
+        if (rList != null && rList.size() > 0) {
+            return rList.stream().map(r -> recordToData(r)).collect(Collectors.toList());
+        }
+        return null;
     }
 
     public int deleteData(S s) {

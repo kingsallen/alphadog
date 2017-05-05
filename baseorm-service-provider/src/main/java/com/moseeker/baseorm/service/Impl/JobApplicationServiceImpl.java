@@ -39,8 +39,8 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 		// TODO Auto-generated method stub
 		try{
 			JobApplicationRecord record=(JobApplicationRecord) BeanUtils.structToDB(application, JobApplicationRecord.class);
-			int result=dao.addRecord(record);
-			return ResponseUtils.success(result);
+			dao.addRecord(record);
+			return ResponseUtils.success(1);
 		}catch(Exception e){
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
 		}
@@ -49,7 +49,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 	public Response putJobApplication(JobApplication application) {
 		// TODO Auto-generated method stub
 		try{
-			JobApplicationRecord record=(JobApplicationRecord) BeanUtils.structToDB(application, JobApplicationRecord.class);
+			JobApplicationRecord record = BeanUtils.structToDB(application, JobApplicationRecord.class);
 			int result=dao.updateRecord(record);
 			return ResponseUtils.success(result);
 		}catch(Exception e){
@@ -60,7 +60,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 	public Response postJobApplications(List<JobApplication> applications) {
 		// TODO Auto-generated method stub
 		try{
-			int result=dao.addAllRecord(this.convertDB(applications)).length;
+			int result=dao.addAllRecord(this.convertDB(applications)).size();
 			return ResponseUtils.success(result);
 		}catch(Exception e){
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
@@ -79,7 +79,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 	private List<JobApplicationRecord>convertDB(List<JobApplication> applications){
 		List<JobApplicationRecord> list=new ArrayList<JobApplicationRecord>();
 		for(JobApplication application:applications){
-			list.add((JobApplicationRecord) BeanUtils.structToDB(application, JobApplicationRecord.class));
+			list.add(BeanUtils.structToDB(application, JobApplicationRecord.class));
 		}
 		return list;
 	}
@@ -89,7 +89,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 		try{
 			List<Integer> params=new ArrayList<Integer>();
 			for(Integer num:list){
-				params.add((int)(num));
+				params.add(num);
 			}
 			List<ApplicationAts> result=dao.getApplicationByLApId(params);
 			return ResponseUtils.success(result);

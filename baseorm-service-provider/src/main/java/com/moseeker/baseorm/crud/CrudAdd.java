@@ -9,7 +9,7 @@ import java.util.List;
  */
 interface CrudAdd<R> {
 
-    int addRecord(R r);
+    R addRecord(R r);
 
-    int[] addAllRecord(List<R> rs);
+    List<R> addAllRecord(List<R> rs);
 }
