@@ -82,6 +82,9 @@ public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecor
 				dbrecord.setBinding(record.getBinding());
 				dbrecord.setRemainNum(record.getRemainNum());
 				dbrecord.setSyncTime(record.getSyncTime());
+				dbrecord.setBinding(record.getBinding());
+				logger.info("HRThirdPartyAccountDao dbrecord:{}",dbrecord);
+				create.attach(dbrecord);
 				count = dbrecord.update();
 			}
 		} catch (SQLException e) {
