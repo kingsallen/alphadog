@@ -71,10 +71,10 @@ public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecor
 			logger.info("HRThirdPartyAccountDao count:{}",count);
 			if (count == 0) {
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-				/*HrThirdPartyAccountRecord dbrecord = create.selectFrom(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
+				HrThirdPartyAccountRecord dbrecord = create.selectFrom(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
 						.where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.COMPANY_ID.equal(record.getCompanyId())
 								.and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.equal(record.getChannel())))
-						.fetchOne();*/
+						.fetchOne();
 				logger.info(create.update(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
 						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.USERNAME, record.getUsername())
 						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.PASSWORD, record.getPassword())
@@ -82,7 +82,7 @@ public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecor
 						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.BINDING, record.getBinding())
 						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.REMAIN_NUM, record.getRemainNum())
 						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.SYNC_TIME, record.getSyncTime())
-						.where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.eq(record.getId())).getSQL());
+						.where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.eq(dbrecord.getId())).getSQL());
 				count = create.update(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
 						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.USERNAME, record.getUsername())
 						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.PASSWORD, record.getPassword())
@@ -90,7 +90,7 @@ public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecor
 						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.BINDING, record.getBinding())
 						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.REMAIN_NUM, record.getRemainNum())
 						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.SYNC_TIME, record.getSyncTime())
-						.where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.eq(record.getId())).execute();
+						.where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.eq(dbrecord.getId())).execute();
 				/*logger.info("HRThirdPartyAccountDao dbrecord:{}",dbrecord);
 				dbrecord.setUsername(record.getUsername());
 				dbrecord.setPassword(record.getPassword());
