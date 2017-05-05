@@ -334,30 +334,18 @@ public class ProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfileProfileRec
     }
 
     public Response getResourceByApplication(String downloadApi, String password, int companyId, int sourceId, int atsStatus, boolean recommender, boolean dl_url_required) throws Exception {
-        Connection conn = null;
-        try {
-            conn = DBConnHelper.DBConn.getConn();
-            DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-            Set<Map<String, Object>> datas = create
-                    .select()
-                    .from(JobApplication.JOB_APPLICATION)
-                    .where(JobApplication.JOB_APPLICATION.COMPANY_ID.eq(companyId))
-                    .and(JobApplication.JOB_APPLICATION.SOURCE_ID.eq(sourceId))
-                    .and(JobApplication.JOB_APPLICATION.ATS_STATUS.eq(atsStatus))
-                    .and(JobApplication.JOB_APPLICATION.EMAIL_STATUS.eq(0))
-                    .fetchInto(com.moseeker.thrift.gen.application.struct.JobApplication.class)
-                    .stream()
-                    .map(application -> getRelatedDataByJobApplication(create, application, downloadApi, password, recommender, dl_url_required))
-                    .collect(Collectors.toSet());
-            return ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(datas));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
-        } finally {
-            if (conn != null && !conn.isClosed()) {
-                conn.close();
-            }
-        }
+        Set<Map<String, Object>> datas = create
+                .select()
+                .from(JobApplication.JOB_APPLICATION)
+                .where(JobApplication.JOB_APPLICATION.COMPANY_ID.eq(companyId))
+                .and(JobApplication.JOB_APPLICATION.SOURCE_ID.eq(sourceId))
+                .and(JobApplication.JOB_APPLICATION.ATS_STATUS.eq(atsStatus))
+                .and(JobApplication.JOB_APPLICATION.EMAIL_STATUS.eq(0))
+                .fetchInto(com.moseeker.thrift.gen.application.struct.JobApplication.class)
+                .stream()
+                .map(application -> getRelatedDataByJobApplication(create, application, downloadApi, password, recommender, dl_url_required))
+                .collect(Collectors.toSet());
+        return ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(datas));
     }
 
 }

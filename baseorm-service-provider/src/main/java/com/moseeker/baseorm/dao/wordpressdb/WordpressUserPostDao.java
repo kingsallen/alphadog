@@ -24,28 +24,14 @@ public class WordpressUserPostDao
 
 	public int upsertUserPost(int userId, long postId) {
 		int count = 0;
-		try(Connection conn = DBConnHelper.DBConn.getConn();
-			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);) {
-			PreparedStatement pstmt = conn.prepareStatement(INSERT_SQL);
-			pstmt.setInt(1, userId);
-			pstmt.setLong(2, postId);;
-			pstmt.setInt(3, userId);
-			count = pstmt.executeUpdate();
-			if(count == 0) {
-				WordpressUserPostRecord userPost = new WordpressUserPostRecord();
-				userPost.setUserId(userId);
-				userPost.setObjectId((long)(postId));
-				create.attach(userPost);
-				count = userPost.update();
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			logger.error(e.getMessage(), e);
-		} finally {
-			//do nothing
+		count = create.execute(INSERT_SQL, userId, postId, userId);
+		if(count == 0) {
+			WordpressUserPostRecord userPost = new WordpressUserPostRecord();
+			userPost.setUserId(userId);
+			userPost.setObjectId((long)(postId));
+			create.attach(userPost);
+			count = userPost.update();
 		}
-		
 		return count;
 	}
 }

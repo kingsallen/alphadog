@@ -46,26 +46,13 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
 
     public List<UserEmployeeRecord> getEmployeeByWeChat(Integer companyId, List<Integer> weChatIds) throws Exception {
         List<UserEmployeeRecord> list = new ArrayList<UserEmployeeRecord>();
-        Connection conn = null;
-        try {
-            conn = DBConnHelper.DBConn.getConn();
-            DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-            SelectJoinStep<Record> table = create.select().from(UserEmployee.USER_EMPLOYEE);
-            table.where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
-                    .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) 0));
-            Result<Record> result = table.fetch();
-            if (result != null && result.size() > 0) {
-                for (Record r : result) {
-                    list.add((UserEmployeeRecord) r);
-                }
-            }
-        } catch (Exception e) {
-            logger.error("error", e);
-            throw new Exception(e);
-        } finally {
-            if (conn != null && !conn.isClosed()) {
-                conn.close();
-                conn = null;
+        SelectJoinStep<Record> table = create.select().from(UserEmployee.USER_EMPLOYEE);
+        table.where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) 0));
+        Result<Record> result = table.fetch();
+        if (result != null && result.size() > 0) {
+            for (Record r : result) {
+                list.add((UserEmployeeRecord) r);
             }
         }
         return list;
@@ -128,40 +115,18 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
 
     public int updateUserEmployeePoint(int id) {
         int count = 0;
-        Connection conn = null;
-        try {
-            conn = DBConnHelper.DBConn.getConn();
-            DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-            Result<Record1<BigDecimal>> result = create.select(sum(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.AWARD))
-                    .from(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD)
-                    .where(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID.equal((long)id)).fetch();
-            if(result != null) {
-                Record1<BigDecimal> record1 = result.get(0);
-                BigDecimal sum = (BigDecimal) record1.get(0);
-                UserEmployeeRecord userEmployeeRecord = new UserEmployeeRecord();
-                userEmployeeRecord.setId(id);
-                userEmployeeRecord.setAward(sum.intValue());
-                create.attach(userEmployeeRecord);
-                userEmployeeRecord.update();
-                count = sum.intValue();
-            }
-
-        } catch (SQLException e) {
-            try {
-                conn.rollback();
-            } catch (SQLException e1) {
-                logger.error(e1.getMessage(), e1);
-            }
-            logger.error(e.getMessage(), e);
-        } finally {
-            try {
-                if (conn != null && !conn.isClosed()) {
-                    conn.close();
-                    conn = null;
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        Result<Record1<BigDecimal>> result = create.select(sum(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.AWARD))
+                .from(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD)
+                .where(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID.equal((long)id)).fetch();
+        if(result != null) {
+            Record1<BigDecimal> record1 = result.get(0);
+            BigDecimal sum = (BigDecimal) record1.get(0);
+            UserEmployeeRecord userEmployeeRecord = new UserEmployeeRecord();
+            userEmployeeRecord.setId(id);
+            userEmployeeRecord.setAward(sum.intValue());
+            create.attach(userEmployeeRecord);
+            userEmployeeRecord.update();
+            count = sum.intValue();
         }
         return count;
     }

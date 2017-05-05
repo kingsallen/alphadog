@@ -24,22 +24,7 @@ public class UserFavPositionDao extends JooqCrudImpl<UserFavPositionDO, UserFavP
 	 * @return
 	 */
 	public List<UserFavPositionDO> getUserFavPositions(Query query) {
-		List<UserFavPositionDO> favPositions = new ArrayList<>();
-		
-		try {
-			List<UserFavPositionRecord> records = getRecords(query);
-			if(records != null && records.size() > 0) {
-				favPositions = BeanUtils.DBToStruct(UserFavPositionDO.class, records);
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			logger.error(e.getMessage(), e);
-		} finally {
-			//do nothing
-		}
-		
-		return favPositions;
+		return getDatas(query);
 	}
 
 }

@@ -22,19 +22,11 @@ public class WordpressTermRelationshipDao
 
 	public WordpressTermRelationshipsRecord getLastRelationships(long termTaxonomyId) {
 		WordpressTermRelationshipsRecord record = null;
-		try (Connection conn = DBConnHelper.DBConn.getConn();) {
-			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-			record = create.selectFrom(WordpressTermRelationships.WORDPRESS_TERM_RELATIONSHIPS)
-					.where(WordpressTermRelationships.WORDPRESS_TERM_RELATIONSHIPS.TERM_TAXONOMY_ID
-							.equal((long)(termTaxonomyId))).orderBy(WordpressTermRelationships.WORDPRESS_TERM_RELATIONSHIPS.OBJECT_ID.desc()).limit(1).fetchOne();
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			logger.error(e.getMessage(), e);
-		} finally {
-			//do nothing
-		}
+		record = create.selectFrom(WordpressTermRelationships.WORDPRESS_TERM_RELATIONSHIPS)
+				.where(WordpressTermRelationships.WORDPRESS_TERM_RELATIONSHIPS.TERM_TAXONOMY_ID
+						.equal((long)(termTaxonomyId)))
+				.orderBy(WordpressTermRelationships.WORDPRESS_TERM_RELATIONSHIPS.OBJECT_ID.desc())
+				.limit(1).fetchOne();
 		return record;
 	}
 

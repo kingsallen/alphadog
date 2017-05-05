@@ -28,42 +28,28 @@ public class UserEmployeePointsRecordDao extends JooqCrudImpl<UserEmployeePoints
 	}
 
 	public List<UserEmployeePointSum> getSumRecord(List<Long> list) throws Exception{
-		Connection conn = null;
 		List<UserEmployeePointSum> points=new ArrayList<UserEmployeePointSum>();
-		try {
-			conn = DBConnHelper.DBConn.getConn();
-			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-			SelectConditionStep<Record2<BigDecimal, Long>> table=create.select(
-					sum(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.AWARD),
-					UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID)
-			.from(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD)
-			.where(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID.in(list));
-			Result<Record2<BigDecimal, Long>> result=table.fetch();
-			if(result!=null&&result.size()>0){
-				UserEmployeePointSum point=null;
-				for(Record2<BigDecimal, Long> r:result){
-					point=new UserEmployeePointSum();
-					//由于可能没有记录，所以可能为null
-					if(r.getValue(0)==null){
-						point.setAward(0L);
-					}else{
-						point.setAward(Long.parseLong(r.getValue(0)+""));
-					}
-					//EMPLOYEE_ID不可能为null，所以不判断null
-					point.setEmployee_id((long)r.getValue(1));
-					points.add(point);
+		SelectConditionStep<Record2<BigDecimal, Long>> table=create.select(
+				sum(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.AWARD),
+				UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID)
+		.from(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD)
+		.where(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID.in(list));
+		Result<Record2<BigDecimal, Long>> result=table.fetch();
+		if(result!=null&&result.size()>0){
+			UserEmployeePointSum point=null;
+			for(Record2<BigDecimal, Long> r:result){
+				point=new UserEmployeePointSum();
+				//由于可能没有记录，所以可能为null
+				if(r.getValue(0)==null){
+					point.setAward(0L);
+				}else{
+					point.setAward(Long.parseLong(r.getValue(0)+""));
 				}
-			}
-			
-		}catch (Exception e) {
-			logger.error("error", e);
-			throw new Exception(e);
-		} finally {
-			if(conn != null && !conn.isClosed()) {
-				conn.close();
+				//EMPLOYEE_ID不可能为null，所以不判断null
+				point.setEmployee_id((long)r.getValue(1));
+				points.add(point);
 			}
 		}
-		
 		return points;
 	}
 }

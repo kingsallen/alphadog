@@ -22,30 +22,9 @@ public class WordpressPostmetaDao extends JooqCrudImpl<WordpressPostmetaDO, Word
 
 	public List<WordpressPostmetaRecord> getPostExt(long objectId, List<String> keys) {
 		List<WordpressPostmetaRecord> records = null;
-		Connection conn = null;
-		try {
-			conn = DBConnHelper.DBConn.getConn();
-			DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 			records = create.selectFrom(WordpressPostmeta.WORDPRESS_POSTMETA).where(WordpressPostmeta.WORDPRESS_POSTMETA.POST_ID
 					.equal((long)(objectId)).and(WordpressPostmeta.WORDPRESS_POSTMETA.META_KEY.in(keys)))
 					.fetch();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			logger.error(e.getMessage(), e);
-		} finally {
-			try {
-				if(conn != null && !conn.isClosed()) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			// do nothing
-		}
-
 		return records;
 	}
-
 }

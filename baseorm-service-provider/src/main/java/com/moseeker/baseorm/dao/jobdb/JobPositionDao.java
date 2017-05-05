@@ -36,22 +36,7 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
     }
 
     public List<JobPositionDO> getPositions(Query query) {
-        List<JobPositionDO> positions = new ArrayList<>();
-
-        try {
-            List<JobPositionRecord> records = getRecords(query);
-            if (records != null && records.size() > 0) {
-                positions = records.stream().filter(record -> record != null)
-                        .map(record -> BeanUtils.DBToStruct(JobPositionDO.class, record))
-                        .collect(Collectors.toList());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            //do nothing
-        }
-
-        return positions;
+        return this.getDatas(query);
     }
 
     public Position getPositionWithCityCode(Query query) {
@@ -59,98 +44,62 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
         logger.info("JobPositionDao getPositionWithCityCode");
 
         Position position = new Position();
-        try (Connection conn = DBConnHelper.DBConn.getConn();
-             DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);) {
-
-            JobPositionRecord record = this.getRecord(query);
-            if (record != null) {
-                position = record.into(position);
-                Map<Integer, String> citiesParam = new HashMap<Integer, String>();
-                List<Integer> cityCodes = new ArrayList<>();
-                Result<JobPositionCityRecord> cities = create.selectFrom(JobPositionCity.JOB_POSITION_CITY)
-                        .where(JobPositionCity.JOB_POSITION_CITY.PID.equal(record.getId())).fetch();
-                if (cities != null && cities.size() > 0) {
-                    cities.forEach(city -> {
-                        logger.info("code:{}", city.getCode());
-                        if (city.getCode() != null) {
-                            citiesParam.put(city.getCode(), null);
-                            cityCodes.add(city.getCode());
-                        }
-                    });
-                    logger.info("cityCodes:{}", cityCodes);
-                    Result<DictCityRecord> dictDicties = create.selectFrom(DictCity.DICT_CITY).where(DictCity.DICT_CITY.CODE.in(cityCodes)).fetch();
-                    if (dictDicties != null && dictDicties.size() > 0) {
-                        dictDicties.forEach(dictCity -> {
-                            citiesParam.entrySet().forEach(entry -> {
-                                if (entry.getKey().intValue() == dictCity.getCode().intValue()) {
-                                    logger.info("cityName:{}", dictCity.getName());
-                                    entry.setValue(dictCity.getName());
-                                }
-                            });
-                        });
+        JobPositionRecord record = this.getRecord(query);
+        if (record != null) {
+            position = record.into(position);
+            Map<Integer, String> citiesParam = new HashMap<Integer, String>();
+            List<Integer> cityCodes = new ArrayList<>();
+            Result<JobPositionCityRecord> cities = create.selectFrom(JobPositionCity.JOB_POSITION_CITY)
+                    .where(JobPositionCity.JOB_POSITION_CITY.PID.equal(record.getId())).fetch();
+            if (cities != null && cities.size() > 0) {
+                cities.forEach(city -> {
+                    logger.info("code:{}", city.getCode());
+                    if (city.getCode() != null) {
+                        citiesParam.put(city.getCode(), null);
+                        cityCodes.add(city.getCode());
                     }
-                }
-
-                position.setCompany_id(record.getCompanyId().intValue());
-                position.setCities(citiesParam);
-                citiesParam.forEach((cityCode, cityName) -> {
-                    logger.info("cityCode:{}, cityName:{}", cityCode, cityName);
                 });
+                logger.info("cityCodes:{}", cityCodes);
+                Result<DictCityRecord> dictDicties = create.selectFrom(DictCity.DICT_CITY).where(DictCity.DICT_CITY.CODE.in(cityCodes)).fetch();
+                if (dictDicties != null && dictDicties.size() > 0) {
+                    dictDicties.forEach(dictCity -> {
+                        citiesParam.entrySet().forEach(entry -> {
+                            if (entry.getKey().intValue() == dictCity.getCode().intValue()) {
+                                logger.info("cityName:{}", dictCity.getName());
+                                entry.setValue(dictCity.getName());
+                            }
+                        });
+                    });
+                }
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-        } finally {
-            // do nothing
+            position.setCompany_id(record.getCompanyId().intValue());
+            position.setCities(citiesParam);
+            citiesParam.forEach((cityCode, cityName) -> {
+                logger.info("cityCode:{}, cityName:{}", cityCode, cityName);
+            });
         }
         return position;
     }
 
     public List<Integer> listPositionIdByUserId(int userId) {
         List<Integer> list = new ArrayList<>();
-
-        Connection conn = null;
-        try {
-            conn = DBConnHelper.DBConn.getConn();
-            DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-            UserEmployeeRecord employeeRecord = create.selectFrom(UserEmployee.USER_EMPLOYEE)
-                    .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.equal(userId)
-                            .and(UserEmployee.USER_EMPLOYEE.DISABLE.equal((byte)0))
-                            .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.equal((byte)0)))
-                    .fetchOne();
-            if (employeeRecord != null) {
-                Result<Record1<Integer>> result = create.select(JobPosition.JOB_POSITION.ID)
-                        .from(JobPosition.JOB_POSITION)
-                        .where(JobPosition.JOB_POSITION.COMPANY_ID.equal(employeeRecord.getCompanyId()))
-                        .fetch();
-                if(result != null && result.size() > 0) {
-                    result.forEach(record ->  {
-                        list.add(record.value1());
-                    });
-                }
-            }
-
-
-        } catch (Exception e) {
-            try {
-                if(conn != null && !conn.isClosed()) {
-                    conn.rollback();
-                }
-            } catch (SQLException e1) {
-                logger.error(e1.getMessage(), e);
-            }
-            logger.error(e.getMessage(), e);
-        } finally {
-            try {
-                if(conn != null && !conn.isClosed()) {
-                    conn.close();
-                }
-            } catch (SQLException e1) {
-                logger.error(e1.getMessage(), e1);
+        UserEmployeeRecord employeeRecord = create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.equal(userId)
+                        .and(UserEmployee.USER_EMPLOYEE.DISABLE.equal((byte)0))
+                        .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.equal((byte)0)))
+                .fetchOne();
+        if (employeeRecord != null) {
+            Result<Record1<Integer>> result = create.select(JobPosition.JOB_POSITION.ID)
+                    .from(JobPosition.JOB_POSITION)
+                    .where(JobPosition.JOB_POSITION.COMPANY_ID.equal(employeeRecord.getCompanyId()))
+                    .fetch();
+            if(result != null && result.size() > 0) {
+                result.forEach(record ->  {
+                    list.add(record.value1());
+                });
             }
         }
-
         return list;
     }
 }
