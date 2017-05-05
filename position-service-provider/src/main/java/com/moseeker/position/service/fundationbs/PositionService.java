@@ -717,11 +717,11 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     }
                     // 需要新增的JobPosition数据
                     jobPositionAddRecordList.add(record);
-                    if (jobPositionHandlerDate.getExtra() != null || jobOccupationId != 0) {
+                    if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(jobPositionHandlerDate.getExtra()) || jobOccupationId != 0) {
                         // 新增jobPostion_ext数据
                         JobPositionExtRecord jobPositionExtRecord = new JobPositionExtRecord();
                         jobPositionExtRecord.setExtra(jobPositionHandlerDate.getExtra() == null ? "" : jobPositionHandlerDate.getExtra());
-                        jobPositionExtRecord.setJobCustomId(jobOccupationId);
+                        jobPositionExtRecord.setJobOccupationId(jobOccupationId);
                         jobPositionExtRecord.setPid(pid);
                         jobPositionExtRecordAddRecords.add(jobPositionExtRecord);
                     }
