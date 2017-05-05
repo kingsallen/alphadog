@@ -5,12 +5,12 @@ import java.util.Properties;
 
 import javax.annotation.PostConstruct;
 
+import com.moseeker.thrift.gen.dao.struct.configdb.Event;
+import com.moseeker.thrift.gen.dao.struct.configdb.WarnMsg;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.warn.dto.Event;
-import com.moseeker.warn.dto.WarnMsg;
 import com.moseeker.warn.utils.SendChannel;
 
 @Service
