@@ -71,11 +71,19 @@ public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecor
 			logger.info("HRThirdPartyAccountDao count:{}",count);
 			if (count == 0) {
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-				HrThirdPartyAccountRecord dbrecord = create.selectFrom(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
+				/*HrThirdPartyAccountRecord dbrecord = create.selectFrom(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
 						.where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.COMPANY_ID.equal(record.getCompanyId())
 								.and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.equal(record.getChannel())))
-						.fetchOne();
-				logger.info("HRThirdPartyAccountDao dbrecord:{}",dbrecord);
+						.fetchOne();*/
+				count = create.update(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
+						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.USERNAME, record.getUsername())
+						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.PASSWORD, record.getPassword())
+						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.MEMBERNAME, record.getMembername())
+						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.BINDING, record.getBinding())
+						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.REMAIN_NUM, record.getRemainNum())
+						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.SYNC_TIME, record.getSyncTime())
+						.where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.eq(record.getId())).execute();
+				/*logger.info("HRThirdPartyAccountDao dbrecord:{}",dbrecord);
 				dbrecord.setUsername(record.getUsername());
 				dbrecord.setPassword(record.getPassword());
 				dbrecord.setMembername(record.getMembername());
@@ -84,7 +92,7 @@ public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecor
 				dbrecord.setSyncTime(record.getSyncTime());
 				dbrecord.setBinding(record.getBinding());
 				logger.info("HRThirdPartyAccountDao dbrecord:{}",dbrecord);
-				count = create.executeUpdate(dbrecord);
+				count = create.executeUpdate(dbrecord);*/
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
