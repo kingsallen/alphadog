@@ -14,30 +14,30 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
   private static final org.apache.thrift.protocol.TField ID_FIELD_DESC = new org.apache.thrift.protocol.TField("id", org.apache.thrift.protocol.TType.I32, (short)1);
   private static final org.apache.thrift.protocol.TField USERNAME_FIELD_DESC = new org.apache.thrift.protocol.TField("username", org.apache.thrift.protocol.TType.STRING, (short)2);
   private static final org.apache.thrift.protocol.TField PASSWORD_FIELD_DESC = new org.apache.thrift.protocol.TField("password", org.apache.thrift.protocol.TType.STRING, (short)3);
-  private static final org.apache.thrift.protocol.TField IS_DISABLE_FIELD_DESC = new org.apache.thrift.protocol.TField("is_disable", org.apache.thrift.protocol.TType.BOOL, (short)4);
+  private static final org.apache.thrift.protocol.TField IS_DISABLE_FIELD_DESC = new org.apache.thrift.protocol.TField("isDisable", org.apache.thrift.protocol.TType.BYTE, (short)4);
   private static final org.apache.thrift.protocol.TField RANK_FIELD_DESC = new org.apache.thrift.protocol.TField("rank", org.apache.thrift.protocol.TType.I32, (short)5);
-  private static final org.apache.thrift.protocol.TField REGISTER_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("register_time", org.apache.thrift.protocol.TType.STRING, (short)6);
-  private static final org.apache.thrift.protocol.TField REGISTER_IP_FIELD_DESC = new org.apache.thrift.protocol.TField("register_ip", org.apache.thrift.protocol.TType.STRING, (short)7);
-  private static final org.apache.thrift.protocol.TField LAST_LOGIN_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("last_login_time", org.apache.thrift.protocol.TType.STRING, (short)8);
-  private static final org.apache.thrift.protocol.TField LAST_LOGIN_IP_FIELD_DESC = new org.apache.thrift.protocol.TField("last_login_ip", org.apache.thrift.protocol.TType.STRING, (short)9);
-  private static final org.apache.thrift.protocol.TField LOGIN_COUNT_FIELD_DESC = new org.apache.thrift.protocol.TField("login_count", org.apache.thrift.protocol.TType.I32, (short)10);
+  private static final org.apache.thrift.protocol.TField REGISTER_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("registerTime", org.apache.thrift.protocol.TType.STRING, (short)6);
+  private static final org.apache.thrift.protocol.TField REGISTER_IP_FIELD_DESC = new org.apache.thrift.protocol.TField("registerIp", org.apache.thrift.protocol.TType.STRING, (short)7);
+  private static final org.apache.thrift.protocol.TField LAST_LOGIN_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("lastLoginTime", org.apache.thrift.protocol.TType.STRING, (short)8);
+  private static final org.apache.thrift.protocol.TField LAST_LOGIN_IP_FIELD_DESC = new org.apache.thrift.protocol.TField("lastLoginIp", org.apache.thrift.protocol.TType.STRING, (short)9);
+  private static final org.apache.thrift.protocol.TField LOGIN_COUNT_FIELD_DESC = new org.apache.thrift.protocol.TField("loginCount", org.apache.thrift.protocol.TType.I32, (short)10);
   private static final org.apache.thrift.protocol.TField MOBILE_FIELD_DESC = new org.apache.thrift.protocol.TField("mobile", org.apache.thrift.protocol.TType.I64, (short)11);
   private static final org.apache.thrift.protocol.TField EMAIL_FIELD_DESC = new org.apache.thrift.protocol.TField("email", org.apache.thrift.protocol.TType.STRING, (short)12);
-  private static final org.apache.thrift.protocol.TField ACTIVATION_FIELD_DESC = new org.apache.thrift.protocol.TField("activation", org.apache.thrift.protocol.TType.BOOL, (short)13);
-  private static final org.apache.thrift.protocol.TField ACTIVATION_CODE_FIELD_DESC = new org.apache.thrift.protocol.TField("activation_code", org.apache.thrift.protocol.TType.STRING, (short)14);
+  private static final org.apache.thrift.protocol.TField ACTIVATION_FIELD_DESC = new org.apache.thrift.protocol.TField("activation", org.apache.thrift.protocol.TType.BYTE, (short)13);
+  private static final org.apache.thrift.protocol.TField ACTIVATION_CODE_FIELD_DESC = new org.apache.thrift.protocol.TField("activationCode", org.apache.thrift.protocol.TType.STRING, (short)14);
   private static final org.apache.thrift.protocol.TField TOKEN_FIELD_DESC = new org.apache.thrift.protocol.TField("token", org.apache.thrift.protocol.TType.STRING, (short)15);
   private static final org.apache.thrift.protocol.TField NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("name", org.apache.thrift.protocol.TType.STRING, (short)16);
   private static final org.apache.thrift.protocol.TField HEADIMG_FIELD_DESC = new org.apache.thrift.protocol.TField("headimg", org.apache.thrift.protocol.TType.STRING, (short)17);
-  private static final org.apache.thrift.protocol.TField NATIONAL_CODE_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("national_code_id", org.apache.thrift.protocol.TType.I32, (short)18);
-  private static final org.apache.thrift.protocol.TField WECHAT_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("wechat_id", org.apache.thrift.protocol.TType.I32, (short)19);
+  private static final org.apache.thrift.protocol.TField NATIONAL_CODE_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("nationalCodeId", org.apache.thrift.protocol.TType.I32, (short)18);
+  private static final org.apache.thrift.protocol.TField WECHAT_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("wechatId", org.apache.thrift.protocol.TType.I32, (short)19);
   private static final org.apache.thrift.protocol.TField UNIONID_FIELD_DESC = new org.apache.thrift.protocol.TField("unionid", org.apache.thrift.protocol.TType.STRING, (short)20);
-  private static final org.apache.thrift.protocol.TField SOURCE_FIELD_DESC = new org.apache.thrift.protocol.TField("source", org.apache.thrift.protocol.TType.I16, (short)21);
+  private static final org.apache.thrift.protocol.TField SOURCE_FIELD_DESC = new org.apache.thrift.protocol.TField("source", org.apache.thrift.protocol.TType.DOUBLE, (short)21);
   private static final org.apache.thrift.protocol.TField COMPANY_FIELD_DESC = new org.apache.thrift.protocol.TField("company", org.apache.thrift.protocol.TType.STRING, (short)22);
   private static final org.apache.thrift.protocol.TField POSITION_FIELD_DESC = new org.apache.thrift.protocol.TField("position", org.apache.thrift.protocol.TType.STRING, (short)23);
   private static final org.apache.thrift.protocol.TField PARENTID_FIELD_DESC = new org.apache.thrift.protocol.TField("parentid", org.apache.thrift.protocol.TType.I32, (short)24);
   private static final org.apache.thrift.protocol.TField NICKNAME_FIELD_DESC = new org.apache.thrift.protocol.TField("nickname", org.apache.thrift.protocol.TType.STRING, (short)25);
-  private static final org.apache.thrift.protocol.TField EMAIL_VERIFIED_FIELD_DESC = new org.apache.thrift.protocol.TField("email_verified", org.apache.thrift.protocol.TType.BYTE, (short)26);
-  private static final org.apache.thrift.protocol.TField UPDATE_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("update_time", org.apache.thrift.protocol.TType.STRING, (short)27);
+  private static final org.apache.thrift.protocol.TField EMAIL_VERIFIED_FIELD_DESC = new org.apache.thrift.protocol.TField("emailVerified", org.apache.thrift.protocol.TType.BYTE, (short)26);
+  private static final org.apache.thrift.protocol.TField UPDATE_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("updateTime", org.apache.thrift.protocol.TType.STRING, (short)27);
 
   private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new UserUserDOStandardSchemeFactory();
   private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new UserUserDOTupleSchemeFactory();
@@ -45,60 +45,60 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
   public int id; // optional
   public String username; // optional
   public String password; // optional
-  public boolean is_disable; // optional
+  public byte isDisable; // optional
   public int rank; // optional
-  public String register_time; // optional
-  public String register_ip; // optional
-  public String last_login_time; // optional
-  public String last_login_ip; // optional
-  public int login_count; // optional
+  public String registerTime; // optional
+  public String registerIp; // optional
+  public String lastLoginTime; // optional
+  public String lastLoginIp; // optional
+  public int loginCount; // optional
   public long mobile; // optional
   public String email; // optional
-  public boolean activation; // optional
-  public String activation_code; // optional
+  public byte activation; // optional
+  public String activationCode; // optional
   public String token; // optional
   public String name; // optional
   public String headimg; // optional
-  public int national_code_id; // optional
-  public int wechat_id; // optional
+  public int nationalCodeId; // optional
+  public int wechatId; // optional
   public String unionid; // optional
-  public short source; // optional
+  public double source; // optional
   public String company; // optional
   public String position; // optional
   public int parentid; // optional
   public String nickname; // optional
-  public byte email_verified; // optional
-  public String update_time; // optional
+  public byte emailVerified; // optional
+  public String updateTime; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
     ID((short)1, "id"),
     USERNAME((short)2, "username"),
     PASSWORD((short)3, "password"),
-    IS_DISABLE((short)4, "is_disable"),
+    IS_DISABLE((short)4, "isDisable"),
     RANK((short)5, "rank"),
-    REGISTER_TIME((short)6, "register_time"),
-    REGISTER_IP((short)7, "register_ip"),
-    LAST_LOGIN_TIME((short)8, "last_login_time"),
-    LAST_LOGIN_IP((short)9, "last_login_ip"),
-    LOGIN_COUNT((short)10, "login_count"),
+    REGISTER_TIME((short)6, "registerTime"),
+    REGISTER_IP((short)7, "registerIp"),
+    LAST_LOGIN_TIME((short)8, "lastLoginTime"),
+    LAST_LOGIN_IP((short)9, "lastLoginIp"),
+    LOGIN_COUNT((short)10, "loginCount"),
     MOBILE((short)11, "mobile"),
     EMAIL((short)12, "email"),
     ACTIVATION((short)13, "activation"),
-    ACTIVATION_CODE((short)14, "activation_code"),
+    ACTIVATION_CODE((short)14, "activationCode"),
     TOKEN((short)15, "token"),
     NAME((short)16, "name"),
     HEADIMG((short)17, "headimg"),
-    NATIONAL_CODE_ID((short)18, "national_code_id"),
-    WECHAT_ID((short)19, "wechat_id"),
+    NATIONAL_CODE_ID((short)18, "nationalCodeId"),
+    WECHAT_ID((short)19, "wechatId"),
     UNIONID((short)20, "unionid"),
     SOURCE((short)21, "source"),
     COMPANY((short)22, "company"),
     POSITION((short)23, "position"),
     PARENTID((short)24, "parentid"),
     NICKNAME((short)25, "nickname"),
-    EMAIL_VERIFIED((short)26, "email_verified"),
-    UPDATE_TIME((short)27, "update_time");
+    EMAIL_VERIFIED((short)26, "emailVerified"),
+    UPDATE_TIME((short)27, "updateTime");
 
     private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
@@ -208,18 +208,18 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
 
   // isset id assignments
   private static final int __ID_ISSET_ID = 0;
-  private static final int __IS_DISABLE_ISSET_ID = 1;
+  private static final int __ISDISABLE_ISSET_ID = 1;
   private static final int __RANK_ISSET_ID = 2;
-  private static final int __LOGIN_COUNT_ISSET_ID = 3;
+  private static final int __LOGINCOUNT_ISSET_ID = 3;
   private static final int __MOBILE_ISSET_ID = 4;
   private static final int __ACTIVATION_ISSET_ID = 5;
-  private static final int __NATIONAL_CODE_ID_ISSET_ID = 6;
-  private static final int __WECHAT_ID_ISSET_ID = 7;
+  private static final int __NATIONALCODEID_ISSET_ID = 6;
+  private static final int __WECHATID_ISSET_ID = 7;
   private static final int __SOURCE_ISSET_ID = 8;
   private static final int __PARENTID_ISSET_ID = 9;
-  private static final int __EMAIL_VERIFIED_ISSET_ID = 10;
+  private static final int __EMAILVERIFIED_ISSET_ID = 10;
   private short __isset_bitfield = 0;
-  private static final _Fields optionals[] = {_Fields.ID, _Fields.USERNAME, _Fields.PASSWORD, _Fields.IS_DISABLE, _Fields.RANK, _Fields.REGISTER_TIME, _Fields.REGISTER_IP, _Fields.LAST_LOGIN_TIME, _Fields.LAST_LOGIN_IP, _Fields.LOGIN_COUNT, _Fields.MOBILE, _Fields.EMAIL, _Fields.ACTIVATION, _Fields.ACTIVATION_CODE, _Fields.TOKEN, _Fields.NAME, _Fields.HEADIMG, _Fields.NATIONAL_CODE_ID, _Fields.WECHAT_ID, _Fields.UNIONID, _Fields.SOURCE, _Fields.COMPANY, _Fields.POSITION, _Fields.PARENTID, _Fields.NICKNAME, _Fields.EMAIL_VERIFIED, _Fields.UPDATE_TIME};
+  private static final _Fields optionals[] = {_Fields.ID,_Fields.USERNAME,_Fields.PASSWORD,_Fields.IS_DISABLE,_Fields.RANK,_Fields.REGISTER_TIME,_Fields.REGISTER_IP,_Fields.LAST_LOGIN_TIME,_Fields.LAST_LOGIN_IP,_Fields.LOGIN_COUNT,_Fields.MOBILE,_Fields.EMAIL,_Fields.ACTIVATION,_Fields.ACTIVATION_CODE,_Fields.TOKEN,_Fields.NAME,_Fields.HEADIMG,_Fields.NATIONAL_CODE_ID,_Fields.WECHAT_ID,_Fields.UNIONID,_Fields.SOURCE,_Fields.COMPANY,_Fields.POSITION,_Fields.PARENTID,_Fields.NICKNAME,_Fields.EMAIL_VERIFIED,_Fields.UPDATE_TIME};
   public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -229,27 +229,27 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.PASSWORD, new org.apache.thrift.meta_data.FieldMetaData("password", org.apache.thrift.TFieldRequirementType.OPTIONAL,
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.IS_DISABLE, new org.apache.thrift.meta_data.FieldMetaData("is_disable", org.apache.thrift.TFieldRequirementType.OPTIONAL,
-            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BOOL)));
+    tmpMap.put(_Fields.IS_DISABLE, new org.apache.thrift.meta_data.FieldMetaData("isDisable", org.apache.thrift.TFieldRequirementType.OPTIONAL,
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BYTE)));
     tmpMap.put(_Fields.RANK, new org.apache.thrift.meta_data.FieldMetaData("rank", org.apache.thrift.TFieldRequirementType.OPTIONAL,
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.REGISTER_TIME, new org.apache.thrift.meta_data.FieldMetaData("register_time", org.apache.thrift.TFieldRequirementType.OPTIONAL,
-            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING        , "Timestamp")));
-    tmpMap.put(_Fields.REGISTER_IP, new org.apache.thrift.meta_data.FieldMetaData("register_ip", org.apache.thrift.TFieldRequirementType.OPTIONAL,
+    tmpMap.put(_Fields.REGISTER_TIME, new org.apache.thrift.meta_data.FieldMetaData("registerTime", org.apache.thrift.TFieldRequirementType.OPTIONAL,
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.LAST_LOGIN_TIME, new org.apache.thrift.meta_data.FieldMetaData("last_login_time", org.apache.thrift.TFieldRequirementType.OPTIONAL,
-            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING        , "Timestamp")));
-    tmpMap.put(_Fields.LAST_LOGIN_IP, new org.apache.thrift.meta_data.FieldMetaData("last_login_ip", org.apache.thrift.TFieldRequirementType.OPTIONAL,
+    tmpMap.put(_Fields.REGISTER_IP, new org.apache.thrift.meta_data.FieldMetaData("registerIp", org.apache.thrift.TFieldRequirementType.OPTIONAL,
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.LOGIN_COUNT, new org.apache.thrift.meta_data.FieldMetaData("login_count", org.apache.thrift.TFieldRequirementType.OPTIONAL,
+    tmpMap.put(_Fields.LAST_LOGIN_TIME, new org.apache.thrift.meta_data.FieldMetaData("lastLoginTime", org.apache.thrift.TFieldRequirementType.OPTIONAL,
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.LAST_LOGIN_IP, new org.apache.thrift.meta_data.FieldMetaData("lastLoginIp", org.apache.thrift.TFieldRequirementType.OPTIONAL,
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.LOGIN_COUNT, new org.apache.thrift.meta_data.FieldMetaData("loginCount", org.apache.thrift.TFieldRequirementType.OPTIONAL,
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.MOBILE, new org.apache.thrift.meta_data.FieldMetaData("mobile", org.apache.thrift.TFieldRequirementType.OPTIONAL,
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64)));
     tmpMap.put(_Fields.EMAIL, new org.apache.thrift.meta_data.FieldMetaData("email", org.apache.thrift.TFieldRequirementType.OPTIONAL,
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.ACTIVATION, new org.apache.thrift.meta_data.FieldMetaData("activation", org.apache.thrift.TFieldRequirementType.OPTIONAL,
-            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BOOL)));
-    tmpMap.put(_Fields.ACTIVATION_CODE, new org.apache.thrift.meta_data.FieldMetaData("activation_code", org.apache.thrift.TFieldRequirementType.OPTIONAL,
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BYTE)));
+    tmpMap.put(_Fields.ACTIVATION_CODE, new org.apache.thrift.meta_data.FieldMetaData("activationCode", org.apache.thrift.TFieldRequirementType.OPTIONAL,
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.TOKEN, new org.apache.thrift.meta_data.FieldMetaData("token", org.apache.thrift.TFieldRequirementType.OPTIONAL,
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
@@ -257,14 +257,14 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.HEADIMG, new org.apache.thrift.meta_data.FieldMetaData("headimg", org.apache.thrift.TFieldRequirementType.OPTIONAL,
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.NATIONAL_CODE_ID, new org.apache.thrift.meta_data.FieldMetaData("national_code_id", org.apache.thrift.TFieldRequirementType.OPTIONAL,
+    tmpMap.put(_Fields.NATIONAL_CODE_ID, new org.apache.thrift.meta_data.FieldMetaData("nationalCodeId", org.apache.thrift.TFieldRequirementType.OPTIONAL,
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.WECHAT_ID, new org.apache.thrift.meta_data.FieldMetaData("wechat_id", org.apache.thrift.TFieldRequirementType.OPTIONAL,
+    tmpMap.put(_Fields.WECHAT_ID, new org.apache.thrift.meta_data.FieldMetaData("wechatId", org.apache.thrift.TFieldRequirementType.OPTIONAL,
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.UNIONID, new org.apache.thrift.meta_data.FieldMetaData("unionid", org.apache.thrift.TFieldRequirementType.OPTIONAL,
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.SOURCE, new org.apache.thrift.meta_data.FieldMetaData("source", org.apache.thrift.TFieldRequirementType.OPTIONAL,
-            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I16)));
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.DOUBLE)));
     tmpMap.put(_Fields.COMPANY, new org.apache.thrift.meta_data.FieldMetaData("company", org.apache.thrift.TFieldRequirementType.OPTIONAL,
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.POSITION, new org.apache.thrift.meta_data.FieldMetaData("position", org.apache.thrift.TFieldRequirementType.OPTIONAL,
@@ -273,10 +273,10 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.NICKNAME, new org.apache.thrift.meta_data.FieldMetaData("nickname", org.apache.thrift.TFieldRequirementType.OPTIONAL,
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.EMAIL_VERIFIED, new org.apache.thrift.meta_data.FieldMetaData("email_verified", org.apache.thrift.TFieldRequirementType.OPTIONAL,
+    tmpMap.put(_Fields.EMAIL_VERIFIED, new org.apache.thrift.meta_data.FieldMetaData("emailVerified", org.apache.thrift.TFieldRequirementType.OPTIONAL,
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BYTE)));
-    tmpMap.put(_Fields.UPDATE_TIME, new org.apache.thrift.meta_data.FieldMetaData("update_time", org.apache.thrift.TFieldRequirementType.OPTIONAL,
-            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING        , "Timestamp")));
+    tmpMap.put(_Fields.UPDATE_TIME, new org.apache.thrift.meta_data.FieldMetaData("updateTime", org.apache.thrift.TFieldRequirementType.OPTIONAL,
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(UserUserDO.class, metaDataMap);
   }
@@ -296,28 +296,28 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
     if (other.isSetPassword()) {
       this.password = other.password;
     }
-    this.is_disable = other.is_disable;
+    this.isDisable = other.isDisable;
     this.rank = other.rank;
-    if (other.isSetRegister_time()) {
-      this.register_time = other.register_time;
+    if (other.isSetRegisterTime()) {
+      this.registerTime = other.registerTime;
     }
-    if (other.isSetRegister_ip()) {
-      this.register_ip = other.register_ip;
+    if (other.isSetRegisterIp()) {
+      this.registerIp = other.registerIp;
     }
-    if (other.isSetLast_login_time()) {
-      this.last_login_time = other.last_login_time;
+    if (other.isSetLastLoginTime()) {
+      this.lastLoginTime = other.lastLoginTime;
     }
-    if (other.isSetLast_login_ip()) {
-      this.last_login_ip = other.last_login_ip;
+    if (other.isSetLastLoginIp()) {
+      this.lastLoginIp = other.lastLoginIp;
     }
-    this.login_count = other.login_count;
+    this.loginCount = other.loginCount;
     this.mobile = other.mobile;
     if (other.isSetEmail()) {
       this.email = other.email;
     }
     this.activation = other.activation;
-    if (other.isSetActivation_code()) {
-      this.activation_code = other.activation_code;
+    if (other.isSetActivationCode()) {
+      this.activationCode = other.activationCode;
     }
     if (other.isSetToken()) {
       this.token = other.token;
@@ -328,8 +328,8 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
     if (other.isSetHeadimg()) {
       this.headimg = other.headimg;
     }
-    this.national_code_id = other.national_code_id;
-    this.wechat_id = other.wechat_id;
+    this.nationalCodeId = other.nationalCodeId;
+    this.wechatId = other.wechatId;
     if (other.isSetUnionid()) {
       this.unionid = other.unionid;
     }
@@ -344,9 +344,9 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
     if (other.isSetNickname()) {
       this.nickname = other.nickname;
     }
-    this.email_verified = other.email_verified;
-    if (other.isSetUpdate_time()) {
-      this.update_time = other.update_time;
+    this.emailVerified = other.emailVerified;
+    if (other.isSetUpdateTime()) {
+      this.updateTime = other.updateTime;
     }
   }
 
@@ -360,40 +360,40 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
     this.id = 0;
     this.username = null;
     this.password = null;
-    setIs_disableIsSet(false);
-    this.is_disable = false;
+    setIsDisableIsSet(false);
+    this.isDisable = 0;
     setRankIsSet(false);
     this.rank = 0;
-    this.register_time = null;
-    this.register_ip = null;
-    this.last_login_time = null;
-    this.last_login_ip = null;
-    setLogin_countIsSet(false);
-    this.login_count = 0;
+    this.registerTime = null;
+    this.registerIp = null;
+    this.lastLoginTime = null;
+    this.lastLoginIp = null;
+    setLoginCountIsSet(false);
+    this.loginCount = 0;
     setMobileIsSet(false);
     this.mobile = 0;
     this.email = null;
     setActivationIsSet(false);
-    this.activation = false;
-    this.activation_code = null;
+    this.activation = 0;
+    this.activationCode = null;
     this.token = null;
     this.name = null;
     this.headimg = null;
-    setNational_code_idIsSet(false);
-    this.national_code_id = 0;
-    setWechat_idIsSet(false);
-    this.wechat_id = 0;
+    setNationalCodeIdIsSet(false);
+    this.nationalCodeId = 0;
+    setWechatIdIsSet(false);
+    this.wechatId = 0;
     this.unionid = null;
     setSourceIsSet(false);
-    this.source = 0;
+    this.source = 0.0;
     this.company = null;
     this.position = null;
     setParentidIsSet(false);
     this.parentid = 0;
     this.nickname = null;
-    setEmail_verifiedIsSet(false);
-    this.email_verified = 0;
-    this.update_time = null;
+    setEmailVerifiedIsSet(false);
+    this.emailVerified = 0;
+    this.updateTime = null;
   }
 
   public int getId() {
@@ -467,27 +467,27 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
     }
   }
 
-  public boolean isIs_disable() {
-    return this.is_disable;
+  public byte getIsDisable() {
+    return this.isDisable;
   }
 
-  public UserUserDO setIs_disable(boolean is_disable) {
-    this.is_disable = is_disable;
-    setIs_disableIsSet(true);
+  public UserUserDO setIsDisable(byte isDisable) {
+    this.isDisable = isDisable;
+    setIsDisableIsSet(true);
     return this;
   }
 
-  public void unsetIs_disable() {
-    __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __IS_DISABLE_ISSET_ID);
+  public void unsetIsDisable() {
+    __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __ISDISABLE_ISSET_ID);
   }
 
-  /** Returns true if field is_disable is set (has been assigned a value) and false otherwise */
-  public boolean isSetIs_disable() {
-    return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __IS_DISABLE_ISSET_ID);
+  /** Returns true if field isDisable is set (has been assigned a value) and false otherwise */
+  public boolean isSetIsDisable() {
+    return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __ISDISABLE_ISSET_ID);
   }
 
-  public void setIs_disableIsSet(boolean value) {
-    __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __IS_DISABLE_ISSET_ID, value);
+  public void setIsDisableIsSet(boolean value) {
+    __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __ISDISABLE_ISSET_ID, value);
   }
 
   public int getRank() {
@@ -513,123 +513,123 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
     __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __RANK_ISSET_ID, value);
   }
 
-  public String getRegister_time() {
-    return this.register_time;
+  public String getRegisterTime() {
+    return this.registerTime;
   }
 
-  public UserUserDO setRegister_time(String register_time) {
-    this.register_time = register_time;
+  public UserUserDO setRegisterTime(String registerTime) {
+    this.registerTime = registerTime;
     return this;
   }
 
-  public void unsetRegister_time() {
-    this.register_time = null;
+  public void unsetRegisterTime() {
+    this.registerTime = null;
   }
 
-  /** Returns true if field register_time is set (has been assigned a value) and false otherwise */
-  public boolean isSetRegister_time() {
-    return this.register_time != null;
+  /** Returns true if field registerTime is set (has been assigned a value) and false otherwise */
+  public boolean isSetRegisterTime() {
+    return this.registerTime != null;
   }
 
-  public void setRegister_timeIsSet(boolean value) {
+  public void setRegisterTimeIsSet(boolean value) {
     if (!value) {
-      this.register_time = null;
+      this.registerTime = null;
     }
   }
 
-  public String getRegister_ip() {
-    return this.register_ip;
+  public String getRegisterIp() {
+    return this.registerIp;
   }
 
-  public UserUserDO setRegister_ip(String register_ip) {
-    this.register_ip = register_ip;
+  public UserUserDO setRegisterIp(String registerIp) {
+    this.registerIp = registerIp;
     return this;
   }
 
-  public void unsetRegister_ip() {
-    this.register_ip = null;
+  public void unsetRegisterIp() {
+    this.registerIp = null;
   }
 
-  /** Returns true if field register_ip is set (has been assigned a value) and false otherwise */
-  public boolean isSetRegister_ip() {
-    return this.register_ip != null;
+  /** Returns true if field registerIp is set (has been assigned a value) and false otherwise */
+  public boolean isSetRegisterIp() {
+    return this.registerIp != null;
   }
 
-  public void setRegister_ipIsSet(boolean value) {
+  public void setRegisterIpIsSet(boolean value) {
     if (!value) {
-      this.register_ip = null;
+      this.registerIp = null;
     }
   }
 
-  public String getLast_login_time() {
-    return this.last_login_time;
+  public String getLastLoginTime() {
+    return this.lastLoginTime;
   }
 
-  public UserUserDO setLast_login_time(String last_login_time) {
-    this.last_login_time = last_login_time;
+  public UserUserDO setLastLoginTime(String lastLoginTime) {
+    this.lastLoginTime = lastLoginTime;
     return this;
   }
 
-  public void unsetLast_login_time() {
-    this.last_login_time = null;
+  public void unsetLastLoginTime() {
+    this.lastLoginTime = null;
   }
 
-  /** Returns true if field last_login_time is set (has been assigned a value) and false otherwise */
-  public boolean isSetLast_login_time() {
-    return this.last_login_time != null;
+  /** Returns true if field lastLoginTime is set (has been assigned a value) and false otherwise */
+  public boolean isSetLastLoginTime() {
+    return this.lastLoginTime != null;
   }
 
-  public void setLast_login_timeIsSet(boolean value) {
+  public void setLastLoginTimeIsSet(boolean value) {
     if (!value) {
-      this.last_login_time = null;
+      this.lastLoginTime = null;
     }
   }
 
-  public String getLast_login_ip() {
-    return this.last_login_ip;
+  public String getLastLoginIp() {
+    return this.lastLoginIp;
   }
 
-  public UserUserDO setLast_login_ip(String last_login_ip) {
-    this.last_login_ip = last_login_ip;
+  public UserUserDO setLastLoginIp(String lastLoginIp) {
+    this.lastLoginIp = lastLoginIp;
     return this;
   }
 
-  public void unsetLast_login_ip() {
-    this.last_login_ip = null;
+  public void unsetLastLoginIp() {
+    this.lastLoginIp = null;
   }
 
-  /** Returns true if field last_login_ip is set (has been assigned a value) and false otherwise */
-  public boolean isSetLast_login_ip() {
-    return this.last_login_ip != null;
+  /** Returns true if field lastLoginIp is set (has been assigned a value) and false otherwise */
+  public boolean isSetLastLoginIp() {
+    return this.lastLoginIp != null;
   }
 
-  public void setLast_login_ipIsSet(boolean value) {
+  public void setLastLoginIpIsSet(boolean value) {
     if (!value) {
-      this.last_login_ip = null;
+      this.lastLoginIp = null;
     }
   }
 
-  public int getLogin_count() {
-    return this.login_count;
+  public int getLoginCount() {
+    return this.loginCount;
   }
 
-  public UserUserDO setLogin_count(int login_count) {
-    this.login_count = login_count;
-    setLogin_countIsSet(true);
+  public UserUserDO setLoginCount(int loginCount) {
+    this.loginCount = loginCount;
+    setLoginCountIsSet(true);
     return this;
   }
 
-  public void unsetLogin_count() {
-    __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __LOGIN_COUNT_ISSET_ID);
+  public void unsetLoginCount() {
+    __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __LOGINCOUNT_ISSET_ID);
   }
 
-  /** Returns true if field login_count is set (has been assigned a value) and false otherwise */
-  public boolean isSetLogin_count() {
-    return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __LOGIN_COUNT_ISSET_ID);
+  /** Returns true if field loginCount is set (has been assigned a value) and false otherwise */
+  public boolean isSetLoginCount() {
+    return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __LOGINCOUNT_ISSET_ID);
   }
 
-  public void setLogin_countIsSet(boolean value) {
-    __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __LOGIN_COUNT_ISSET_ID, value);
+  public void setLoginCountIsSet(boolean value) {
+    __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __LOGINCOUNT_ISSET_ID, value);
   }
 
   public long getMobile() {
@@ -679,11 +679,11 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
     }
   }
 
-  public boolean isActivation() {
+  public byte getActivation() {
     return this.activation;
   }
 
-  public UserUserDO setActivation(boolean activation) {
+  public UserUserDO setActivation(byte activation) {
     this.activation = activation;
     setActivationIsSet(true);
     return this;
@@ -702,27 +702,27 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
     __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __ACTIVATION_ISSET_ID, value);
   }
 
-  public String getActivation_code() {
-    return this.activation_code;
+  public String getActivationCode() {
+    return this.activationCode;
   }
 
-  public UserUserDO setActivation_code(String activation_code) {
-    this.activation_code = activation_code;
+  public UserUserDO setActivationCode(String activationCode) {
+    this.activationCode = activationCode;
     return this;
   }
 
-  public void unsetActivation_code() {
-    this.activation_code = null;
+  public void unsetActivationCode() {
+    this.activationCode = null;
   }
 
-  /** Returns true if field activation_code is set (has been assigned a value) and false otherwise */
-  public boolean isSetActivation_code() {
-    return this.activation_code != null;
+  /** Returns true if field activationCode is set (has been assigned a value) and false otherwise */
+  public boolean isSetActivationCode() {
+    return this.activationCode != null;
   }
 
-  public void setActivation_codeIsSet(boolean value) {
+  public void setActivationCodeIsSet(boolean value) {
     if (!value) {
-      this.activation_code = null;
+      this.activationCode = null;
     }
   }
 
@@ -798,50 +798,50 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
     }
   }
 
-  public int getNational_code_id() {
-    return this.national_code_id;
+  public int getNationalCodeId() {
+    return this.nationalCodeId;
   }
 
-  public UserUserDO setNational_code_id(int national_code_id) {
-    this.national_code_id = national_code_id;
-    setNational_code_idIsSet(true);
+  public UserUserDO setNationalCodeId(int nationalCodeId) {
+    this.nationalCodeId = nationalCodeId;
+    setNationalCodeIdIsSet(true);
     return this;
   }
 
-  public void unsetNational_code_id() {
-    __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __NATIONAL_CODE_ID_ISSET_ID);
+  public void unsetNationalCodeId() {
+    __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __NATIONALCODEID_ISSET_ID);
   }
 
-  /** Returns true if field national_code_id is set (has been assigned a value) and false otherwise */
-  public boolean isSetNational_code_id() {
-    return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __NATIONAL_CODE_ID_ISSET_ID);
+  /** Returns true if field nationalCodeId is set (has been assigned a value) and false otherwise */
+  public boolean isSetNationalCodeId() {
+    return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __NATIONALCODEID_ISSET_ID);
   }
 
-  public void setNational_code_idIsSet(boolean value) {
-    __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __NATIONAL_CODE_ID_ISSET_ID, value);
+  public void setNationalCodeIdIsSet(boolean value) {
+    __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __NATIONALCODEID_ISSET_ID, value);
   }
 
-  public int getWechat_id() {
-    return this.wechat_id;
+  public int getWechatId() {
+    return this.wechatId;
   }
 
-  public UserUserDO setWechat_id(int wechat_id) {
-    this.wechat_id = wechat_id;
-    setWechat_idIsSet(true);
+  public UserUserDO setWechatId(int wechatId) {
+    this.wechatId = wechatId;
+    setWechatIdIsSet(true);
     return this;
   }
 
-  public void unsetWechat_id() {
-    __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __WECHAT_ID_ISSET_ID);
+  public void unsetWechatId() {
+    __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __WECHATID_ISSET_ID);
   }
 
-  /** Returns true if field wechat_id is set (has been assigned a value) and false otherwise */
-  public boolean isSetWechat_id() {
-    return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __WECHAT_ID_ISSET_ID);
+  /** Returns true if field wechatId is set (has been assigned a value) and false otherwise */
+  public boolean isSetWechatId() {
+    return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __WECHATID_ISSET_ID);
   }
 
-  public void setWechat_idIsSet(boolean value) {
-    __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __WECHAT_ID_ISSET_ID, value);
+  public void setWechatIdIsSet(boolean value) {
+    __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __WECHATID_ISSET_ID, value);
   }
 
   public String getUnionid() {
@@ -868,11 +868,11 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
     }
   }
 
-  public short getSource() {
+  public double getSource() {
     return this.source;
   }
 
-  public UserUserDO setSource(short source) {
+  public UserUserDO setSource(double source) {
     this.source = source;
     setSourceIsSet(true);
     return this;
@@ -986,50 +986,50 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
     }
   }
 
-  public byte getEmail_verified() {
-    return this.email_verified;
+  public byte getEmailVerified() {
+    return this.emailVerified;
   }
 
-  public UserUserDO setEmail_verified(byte email_verified) {
-    this.email_verified = email_verified;
-    setEmail_verifiedIsSet(true);
+  public UserUserDO setEmailVerified(byte emailVerified) {
+    this.emailVerified = emailVerified;
+    setEmailVerifiedIsSet(true);
     return this;
   }
 
-  public void unsetEmail_verified() {
-    __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __EMAIL_VERIFIED_ISSET_ID);
+  public void unsetEmailVerified() {
+    __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __EMAILVERIFIED_ISSET_ID);
   }
 
-  /** Returns true if field email_verified is set (has been assigned a value) and false otherwise */
-  public boolean isSetEmail_verified() {
-    return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __EMAIL_VERIFIED_ISSET_ID);
+  /** Returns true if field emailVerified is set (has been assigned a value) and false otherwise */
+  public boolean isSetEmailVerified() {
+    return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __EMAILVERIFIED_ISSET_ID);
   }
 
-  public void setEmail_verifiedIsSet(boolean value) {
-    __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __EMAIL_VERIFIED_ISSET_ID, value);
+  public void setEmailVerifiedIsSet(boolean value) {
+    __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __EMAILVERIFIED_ISSET_ID, value);
   }
 
-  public String getUpdate_time() {
-    return this.update_time;
+  public String getUpdateTime() {
+    return this.updateTime;
   }
 
-  public UserUserDO setUpdate_time(String update_time) {
-    this.update_time = update_time;
+  public UserUserDO setUpdateTime(String updateTime) {
+    this.updateTime = updateTime;
     return this;
   }
 
-  public void unsetUpdate_time() {
-    this.update_time = null;
+  public void unsetUpdateTime() {
+    this.updateTime = null;
   }
 
-  /** Returns true if field update_time is set (has been assigned a value) and false otherwise */
-  public boolean isSetUpdate_time() {
-    return this.update_time != null;
+  /** Returns true if field updateTime is set (has been assigned a value) and false otherwise */
+  public boolean isSetUpdateTime() {
+    return this.updateTime != null;
   }
 
-  public void setUpdate_timeIsSet(boolean value) {
+  public void setUpdateTimeIsSet(boolean value) {
     if (!value) {
-      this.update_time = null;
+      this.updateTime = null;
     }
   }
 
@@ -1061,9 +1061,9 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
 
       case IS_DISABLE:
         if (value == null) {
-          unsetIs_disable();
+          unsetIsDisable();
         } else {
-          setIs_disable((Boolean)value);
+          setIsDisable((Byte)value);
         }
         break;
 
@@ -1077,41 +1077,41 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
 
       case REGISTER_TIME:
         if (value == null) {
-          unsetRegister_time();
+          unsetRegisterTime();
         } else {
-          setRegister_time((String)value);
+          setRegisterTime((String)value);
         }
         break;
 
       case REGISTER_IP:
         if (value == null) {
-          unsetRegister_ip();
+          unsetRegisterIp();
         } else {
-          setRegister_ip((String)value);
+          setRegisterIp((String)value);
         }
         break;
 
       case LAST_LOGIN_TIME:
         if (value == null) {
-          unsetLast_login_time();
+          unsetLastLoginTime();
         } else {
-          setLast_login_time((String)value);
+          setLastLoginTime((String)value);
         }
         break;
 
       case LAST_LOGIN_IP:
         if (value == null) {
-          unsetLast_login_ip();
+          unsetLastLoginIp();
         } else {
-          setLast_login_ip((String)value);
+          setLastLoginIp((String)value);
         }
         break;
 
       case LOGIN_COUNT:
         if (value == null) {
-          unsetLogin_count();
+          unsetLoginCount();
         } else {
-          setLogin_count((Integer)value);
+          setLoginCount((Integer)value);
         }
         break;
 
@@ -1135,15 +1135,15 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
         if (value == null) {
           unsetActivation();
         } else {
-          setActivation((Boolean)value);
+          setActivation((Byte)value);
         }
         break;
 
       case ACTIVATION_CODE:
         if (value == null) {
-          unsetActivation_code();
+          unsetActivationCode();
         } else {
-          setActivation_code((String)value);
+          setActivationCode((String)value);
         }
         break;
 
@@ -1173,17 +1173,17 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
 
       case NATIONAL_CODE_ID:
         if (value == null) {
-          unsetNational_code_id();
+          unsetNationalCodeId();
         } else {
-          setNational_code_id((Integer)value);
+          setNationalCodeId((Integer)value);
         }
         break;
 
       case WECHAT_ID:
         if (value == null) {
-          unsetWechat_id();
+          unsetWechatId();
         } else {
-          setWechat_id((Integer)value);
+          setWechatId((Integer)value);
         }
         break;
 
@@ -1199,7 +1199,7 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
         if (value == null) {
           unsetSource();
         } else {
-          setSource((Short)value);
+          setSource((Double)value);
         }
         break;
 
@@ -1237,17 +1237,17 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
 
       case EMAIL_VERIFIED:
         if (value == null) {
-          unsetEmail_verified();
+          unsetEmailVerified();
         } else {
-          setEmail_verified((Byte)value);
+          setEmailVerified((Byte)value);
         }
         break;
 
       case UPDATE_TIME:
         if (value == null) {
-          unsetUpdate_time();
+          unsetUpdateTime();
         } else {
-          setUpdate_time((String)value);
+          setUpdateTime((String)value);
         }
         break;
 
@@ -1266,25 +1266,25 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
         return getPassword();
 
       case IS_DISABLE:
-        return isIs_disable();
+        return getIsDisable();
 
       case RANK:
         return getRank();
 
       case REGISTER_TIME:
-        return getRegister_time();
+        return getRegisterTime();
 
       case REGISTER_IP:
-        return getRegister_ip();
+        return getRegisterIp();
 
       case LAST_LOGIN_TIME:
-        return getLast_login_time();
+        return getLastLoginTime();
 
       case LAST_LOGIN_IP:
-        return getLast_login_ip();
+        return getLastLoginIp();
 
       case LOGIN_COUNT:
-        return getLogin_count();
+        return getLoginCount();
 
       case MOBILE:
         return getMobile();
@@ -1293,10 +1293,10 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
         return getEmail();
 
       case ACTIVATION:
-        return isActivation();
+        return getActivation();
 
       case ACTIVATION_CODE:
-        return getActivation_code();
+        return getActivationCode();
 
       case TOKEN:
         return getToken();
@@ -1308,10 +1308,10 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
         return getHeadimg();
 
       case NATIONAL_CODE_ID:
-        return getNational_code_id();
+        return getNationalCodeId();
 
       case WECHAT_ID:
-        return getWechat_id();
+        return getWechatId();
 
       case UNIONID:
         return getUnionid();
@@ -1332,10 +1332,10 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
         return getNickname();
 
       case EMAIL_VERIFIED:
-        return getEmail_verified();
+        return getEmailVerified();
 
       case UPDATE_TIME:
-        return getUpdate_time();
+        return getUpdateTime();
 
     }
     throw new IllegalStateException();
@@ -1355,19 +1355,19 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
       case PASSWORD:
         return isSetPassword();
       case IS_DISABLE:
-        return isSetIs_disable();
+        return isSetIsDisable();
       case RANK:
         return isSetRank();
       case REGISTER_TIME:
-        return isSetRegister_time();
+        return isSetRegisterTime();
       case REGISTER_IP:
-        return isSetRegister_ip();
+        return isSetRegisterIp();
       case LAST_LOGIN_TIME:
-        return isSetLast_login_time();
+        return isSetLastLoginTime();
       case LAST_LOGIN_IP:
-        return isSetLast_login_ip();
+        return isSetLastLoginIp();
       case LOGIN_COUNT:
-        return isSetLogin_count();
+        return isSetLoginCount();
       case MOBILE:
         return isSetMobile();
       case EMAIL:
@@ -1375,7 +1375,7 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
       case ACTIVATION:
         return isSetActivation();
       case ACTIVATION_CODE:
-        return isSetActivation_code();
+        return isSetActivationCode();
       case TOKEN:
         return isSetToken();
       case NAME:
@@ -1383,9 +1383,9 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
       case HEADIMG:
         return isSetHeadimg();
       case NATIONAL_CODE_ID:
-        return isSetNational_code_id();
+        return isSetNationalCodeId();
       case WECHAT_ID:
-        return isSetWechat_id();
+        return isSetWechatId();
       case UNIONID:
         return isSetUnionid();
       case SOURCE:
@@ -1399,9 +1399,9 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
       case NICKNAME:
         return isSetNickname();
       case EMAIL_VERIFIED:
-        return isSetEmail_verified();
+        return isSetEmailVerified();
       case UPDATE_TIME:
-        return isSetUpdate_time();
+        return isSetUpdateTime();
     }
     throw new IllegalStateException();
   }
@@ -1448,12 +1448,12 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
         return false;
     }
 
-    boolean this_present_is_disable = true && this.isSetIs_disable();
-    boolean that_present_is_disable = true && that.isSetIs_disable();
-    if (this_present_is_disable || that_present_is_disable) {
-      if (!(this_present_is_disable && that_present_is_disable))
+    boolean this_present_isDisable = true && this.isSetIsDisable();
+    boolean that_present_isDisable = true && that.isSetIsDisable();
+    if (this_present_isDisable || that_present_isDisable) {
+      if (!(this_present_isDisable && that_present_isDisable))
         return false;
-      if (this.is_disable != that.is_disable)
+      if (this.isDisable != that.isDisable)
         return false;
     }
 
@@ -1466,48 +1466,48 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
         return false;
     }
 
-    boolean this_present_register_time = true && this.isSetRegister_time();
-    boolean that_present_register_time = true && that.isSetRegister_time();
-    if (this_present_register_time || that_present_register_time) {
-      if (!(this_present_register_time && that_present_register_time))
+    boolean this_present_registerTime = true && this.isSetRegisterTime();
+    boolean that_present_registerTime = true && that.isSetRegisterTime();
+    if (this_present_registerTime || that_present_registerTime) {
+      if (!(this_present_registerTime && that_present_registerTime))
         return false;
-      if (!this.register_time.equals(that.register_time))
-        return false;
-    }
-
-    boolean this_present_register_ip = true && this.isSetRegister_ip();
-    boolean that_present_register_ip = true && that.isSetRegister_ip();
-    if (this_present_register_ip || that_present_register_ip) {
-      if (!(this_present_register_ip && that_present_register_ip))
-        return false;
-      if (!this.register_ip.equals(that.register_ip))
+      if (!this.registerTime.equals(that.registerTime))
         return false;
     }
 
-    boolean this_present_last_login_time = true && this.isSetLast_login_time();
-    boolean that_present_last_login_time = true && that.isSetLast_login_time();
-    if (this_present_last_login_time || that_present_last_login_time) {
-      if (!(this_present_last_login_time && that_present_last_login_time))
+    boolean this_present_registerIp = true && this.isSetRegisterIp();
+    boolean that_present_registerIp = true && that.isSetRegisterIp();
+    if (this_present_registerIp || that_present_registerIp) {
+      if (!(this_present_registerIp && that_present_registerIp))
         return false;
-      if (!this.last_login_time.equals(that.last_login_time))
-        return false;
-    }
-
-    boolean this_present_last_login_ip = true && this.isSetLast_login_ip();
-    boolean that_present_last_login_ip = true && that.isSetLast_login_ip();
-    if (this_present_last_login_ip || that_present_last_login_ip) {
-      if (!(this_present_last_login_ip && that_present_last_login_ip))
-        return false;
-      if (!this.last_login_ip.equals(that.last_login_ip))
+      if (!this.registerIp.equals(that.registerIp))
         return false;
     }
 
-    boolean this_present_login_count = true && this.isSetLogin_count();
-    boolean that_present_login_count = true && that.isSetLogin_count();
-    if (this_present_login_count || that_present_login_count) {
-      if (!(this_present_login_count && that_present_login_count))
+    boolean this_present_lastLoginTime = true && this.isSetLastLoginTime();
+    boolean that_present_lastLoginTime = true && that.isSetLastLoginTime();
+    if (this_present_lastLoginTime || that_present_lastLoginTime) {
+      if (!(this_present_lastLoginTime && that_present_lastLoginTime))
         return false;
-      if (this.login_count != that.login_count)
+      if (!this.lastLoginTime.equals(that.lastLoginTime))
+        return false;
+    }
+
+    boolean this_present_lastLoginIp = true && this.isSetLastLoginIp();
+    boolean that_present_lastLoginIp = true && that.isSetLastLoginIp();
+    if (this_present_lastLoginIp || that_present_lastLoginIp) {
+      if (!(this_present_lastLoginIp && that_present_lastLoginIp))
+        return false;
+      if (!this.lastLoginIp.equals(that.lastLoginIp))
+        return false;
+    }
+
+    boolean this_present_loginCount = true && this.isSetLoginCount();
+    boolean that_present_loginCount = true && that.isSetLoginCount();
+    if (this_present_loginCount || that_present_loginCount) {
+      if (!(this_present_loginCount && that_present_loginCount))
+        return false;
+      if (this.loginCount != that.loginCount)
         return false;
     }
 
@@ -1538,12 +1538,12 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
         return false;
     }
 
-    boolean this_present_activation_code = true && this.isSetActivation_code();
-    boolean that_present_activation_code = true && that.isSetActivation_code();
-    if (this_present_activation_code || that_present_activation_code) {
-      if (!(this_present_activation_code && that_present_activation_code))
+    boolean this_present_activationCode = true && this.isSetActivationCode();
+    boolean that_present_activationCode = true && that.isSetActivationCode();
+    if (this_present_activationCode || that_present_activationCode) {
+      if (!(this_present_activationCode && that_present_activationCode))
         return false;
-      if (!this.activation_code.equals(that.activation_code))
+      if (!this.activationCode.equals(that.activationCode))
         return false;
     }
 
@@ -1574,21 +1574,21 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
         return false;
     }
 
-    boolean this_present_national_code_id = true && this.isSetNational_code_id();
-    boolean that_present_national_code_id = true && that.isSetNational_code_id();
-    if (this_present_national_code_id || that_present_national_code_id) {
-      if (!(this_present_national_code_id && that_present_national_code_id))
+    boolean this_present_nationalCodeId = true && this.isSetNationalCodeId();
+    boolean that_present_nationalCodeId = true && that.isSetNationalCodeId();
+    if (this_present_nationalCodeId || that_present_nationalCodeId) {
+      if (!(this_present_nationalCodeId && that_present_nationalCodeId))
         return false;
-      if (this.national_code_id != that.national_code_id)
+      if (this.nationalCodeId != that.nationalCodeId)
         return false;
     }
 
-    boolean this_present_wechat_id = true && this.isSetWechat_id();
-    boolean that_present_wechat_id = true && that.isSetWechat_id();
-    if (this_present_wechat_id || that_present_wechat_id) {
-      if (!(this_present_wechat_id && that_present_wechat_id))
+    boolean this_present_wechatId = true && this.isSetWechatId();
+    boolean that_present_wechatId = true && that.isSetWechatId();
+    if (this_present_wechatId || that_present_wechatId) {
+      if (!(this_present_wechatId && that_present_wechatId))
         return false;
-      if (this.wechat_id != that.wechat_id)
+      if (this.wechatId != that.wechatId)
         return false;
     }
 
@@ -1646,21 +1646,21 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
         return false;
     }
 
-    boolean this_present_email_verified = true && this.isSetEmail_verified();
-    boolean that_present_email_verified = true && that.isSetEmail_verified();
-    if (this_present_email_verified || that_present_email_verified) {
-      if (!(this_present_email_verified && that_present_email_verified))
+    boolean this_present_emailVerified = true && this.isSetEmailVerified();
+    boolean that_present_emailVerified = true && that.isSetEmailVerified();
+    if (this_present_emailVerified || that_present_emailVerified) {
+      if (!(this_present_emailVerified && that_present_emailVerified))
         return false;
-      if (this.email_verified != that.email_verified)
+      if (this.emailVerified != that.emailVerified)
         return false;
     }
 
-    boolean this_present_update_time = true && this.isSetUpdate_time();
-    boolean that_present_update_time = true && that.isSetUpdate_time();
-    if (this_present_update_time || that_present_update_time) {
-      if (!(this_present_update_time && that_present_update_time))
+    boolean this_present_updateTime = true && this.isSetUpdateTime();
+    boolean that_present_updateTime = true && that.isSetUpdateTime();
+    if (this_present_updateTime || that_present_updateTime) {
+      if (!(this_present_updateTime && that_present_updateTime))
         return false;
-      if (!this.update_time.equals(that.update_time))
+      if (!this.updateTime.equals(that.updateTime))
         return false;
     }
 
@@ -1683,33 +1683,33 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
     if (isSetPassword())
       hashCode = hashCode * 8191 + password.hashCode();
 
-    hashCode = hashCode * 8191 + ((isSetIs_disable()) ? 131071 : 524287);
-    if (isSetIs_disable())
-      hashCode = hashCode * 8191 + ((is_disable) ? 131071 : 524287);
+    hashCode = hashCode * 8191 + ((isSetIsDisable()) ? 131071 : 524287);
+    if (isSetIsDisable())
+      hashCode = hashCode * 8191 + (int) (isDisable);
 
     hashCode = hashCode * 8191 + ((isSetRank()) ? 131071 : 524287);
     if (isSetRank())
       hashCode = hashCode * 8191 + rank;
 
-    hashCode = hashCode * 8191 + ((isSetRegister_time()) ? 131071 : 524287);
-    if (isSetRegister_time())
-      hashCode = hashCode * 8191 + register_time.hashCode();
+    hashCode = hashCode * 8191 + ((isSetRegisterTime()) ? 131071 : 524287);
+    if (isSetRegisterTime())
+      hashCode = hashCode * 8191 + registerTime.hashCode();
 
-    hashCode = hashCode * 8191 + ((isSetRegister_ip()) ? 131071 : 524287);
-    if (isSetRegister_ip())
-      hashCode = hashCode * 8191 + register_ip.hashCode();
+    hashCode = hashCode * 8191 + ((isSetRegisterIp()) ? 131071 : 524287);
+    if (isSetRegisterIp())
+      hashCode = hashCode * 8191 + registerIp.hashCode();
 
-    hashCode = hashCode * 8191 + ((isSetLast_login_time()) ? 131071 : 524287);
-    if (isSetLast_login_time())
-      hashCode = hashCode * 8191 + last_login_time.hashCode();
+    hashCode = hashCode * 8191 + ((isSetLastLoginTime()) ? 131071 : 524287);
+    if (isSetLastLoginTime())
+      hashCode = hashCode * 8191 + lastLoginTime.hashCode();
 
-    hashCode = hashCode * 8191 + ((isSetLast_login_ip()) ? 131071 : 524287);
-    if (isSetLast_login_ip())
-      hashCode = hashCode * 8191 + last_login_ip.hashCode();
+    hashCode = hashCode * 8191 + ((isSetLastLoginIp()) ? 131071 : 524287);
+    if (isSetLastLoginIp())
+      hashCode = hashCode * 8191 + lastLoginIp.hashCode();
 
-    hashCode = hashCode * 8191 + ((isSetLogin_count()) ? 131071 : 524287);
-    if (isSetLogin_count())
-      hashCode = hashCode * 8191 + login_count;
+    hashCode = hashCode * 8191 + ((isSetLoginCount()) ? 131071 : 524287);
+    if (isSetLoginCount())
+      hashCode = hashCode * 8191 + loginCount;
 
     hashCode = hashCode * 8191 + ((isSetMobile()) ? 131071 : 524287);
     if (isSetMobile())
@@ -1721,11 +1721,11 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
 
     hashCode = hashCode * 8191 + ((isSetActivation()) ? 131071 : 524287);
     if (isSetActivation())
-      hashCode = hashCode * 8191 + ((activation) ? 131071 : 524287);
+      hashCode = hashCode * 8191 + (int) (activation);
 
-    hashCode = hashCode * 8191 + ((isSetActivation_code()) ? 131071 : 524287);
-    if (isSetActivation_code())
-      hashCode = hashCode * 8191 + activation_code.hashCode();
+    hashCode = hashCode * 8191 + ((isSetActivationCode()) ? 131071 : 524287);
+    if (isSetActivationCode())
+      hashCode = hashCode * 8191 + activationCode.hashCode();
 
     hashCode = hashCode * 8191 + ((isSetToken()) ? 131071 : 524287);
     if (isSetToken())
@@ -1739,13 +1739,13 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
     if (isSetHeadimg())
       hashCode = hashCode * 8191 + headimg.hashCode();
 
-    hashCode = hashCode * 8191 + ((isSetNational_code_id()) ? 131071 : 524287);
-    if (isSetNational_code_id())
-      hashCode = hashCode * 8191 + national_code_id;
+    hashCode = hashCode * 8191 + ((isSetNationalCodeId()) ? 131071 : 524287);
+    if (isSetNationalCodeId())
+      hashCode = hashCode * 8191 + nationalCodeId;
 
-    hashCode = hashCode * 8191 + ((isSetWechat_id()) ? 131071 : 524287);
-    if (isSetWechat_id())
-      hashCode = hashCode * 8191 + wechat_id;
+    hashCode = hashCode * 8191 + ((isSetWechatId()) ? 131071 : 524287);
+    if (isSetWechatId())
+      hashCode = hashCode * 8191 + wechatId;
 
     hashCode = hashCode * 8191 + ((isSetUnionid()) ? 131071 : 524287);
     if (isSetUnionid())
@@ -1753,7 +1753,7 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
 
     hashCode = hashCode * 8191 + ((isSetSource()) ? 131071 : 524287);
     if (isSetSource())
-      hashCode = hashCode * 8191 + source;
+      hashCode = hashCode * 8191 + org.apache.thrift.TBaseHelper.hashCode(source);
 
     hashCode = hashCode * 8191 + ((isSetCompany()) ? 131071 : 524287);
     if (isSetCompany())
@@ -1771,13 +1771,13 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
     if (isSetNickname())
       hashCode = hashCode * 8191 + nickname.hashCode();
 
-    hashCode = hashCode * 8191 + ((isSetEmail_verified()) ? 131071 : 524287);
-    if (isSetEmail_verified())
-      hashCode = hashCode * 8191 + (int) (email_verified);
+    hashCode = hashCode * 8191 + ((isSetEmailVerified()) ? 131071 : 524287);
+    if (isSetEmailVerified())
+      hashCode = hashCode * 8191 + (int) (emailVerified);
 
-    hashCode = hashCode * 8191 + ((isSetUpdate_time()) ? 131071 : 524287);
-    if (isSetUpdate_time())
-      hashCode = hashCode * 8191 + update_time.hashCode();
+    hashCode = hashCode * 8191 + ((isSetUpdateTime()) ? 131071 : 524287);
+    if (isSetUpdateTime())
+      hashCode = hashCode * 8191 + updateTime.hashCode();
 
     return hashCode;
   }
@@ -1820,12 +1820,12 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetIs_disable()).compareTo(other.isSetIs_disable());
+    lastComparison = Boolean.valueOf(isSetIsDisable()).compareTo(other.isSetIsDisable());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetIs_disable()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.is_disable, other.is_disable);
+    if (isSetIsDisable()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.isDisable, other.isDisable);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -1840,52 +1840,52 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetRegister_time()).compareTo(other.isSetRegister_time());
+    lastComparison = Boolean.valueOf(isSetRegisterTime()).compareTo(other.isSetRegisterTime());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetRegister_time()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.register_time, other.register_time);
+    if (isSetRegisterTime()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.registerTime, other.registerTime);
       if (lastComparison != 0) {
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetRegister_ip()).compareTo(other.isSetRegister_ip());
+    lastComparison = Boolean.valueOf(isSetRegisterIp()).compareTo(other.isSetRegisterIp());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetRegister_ip()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.register_ip, other.register_ip);
+    if (isSetRegisterIp()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.registerIp, other.registerIp);
       if (lastComparison != 0) {
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetLast_login_time()).compareTo(other.isSetLast_login_time());
+    lastComparison = Boolean.valueOf(isSetLastLoginTime()).compareTo(other.isSetLastLoginTime());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetLast_login_time()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.last_login_time, other.last_login_time);
+    if (isSetLastLoginTime()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.lastLoginTime, other.lastLoginTime);
       if (lastComparison != 0) {
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetLast_login_ip()).compareTo(other.isSetLast_login_ip());
+    lastComparison = Boolean.valueOf(isSetLastLoginIp()).compareTo(other.isSetLastLoginIp());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetLast_login_ip()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.last_login_ip, other.last_login_ip);
+    if (isSetLastLoginIp()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.lastLoginIp, other.lastLoginIp);
       if (lastComparison != 0) {
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetLogin_count()).compareTo(other.isSetLogin_count());
+    lastComparison = Boolean.valueOf(isSetLoginCount()).compareTo(other.isSetLoginCount());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetLogin_count()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.login_count, other.login_count);
+    if (isSetLoginCount()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.loginCount, other.loginCount);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -1920,12 +1920,12 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetActivation_code()).compareTo(other.isSetActivation_code());
+    lastComparison = Boolean.valueOf(isSetActivationCode()).compareTo(other.isSetActivationCode());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetActivation_code()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.activation_code, other.activation_code);
+    if (isSetActivationCode()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.activationCode, other.activationCode);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -1960,22 +1960,22 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetNational_code_id()).compareTo(other.isSetNational_code_id());
+    lastComparison = Boolean.valueOf(isSetNationalCodeId()).compareTo(other.isSetNationalCodeId());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetNational_code_id()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.national_code_id, other.national_code_id);
+    if (isSetNationalCodeId()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.nationalCodeId, other.nationalCodeId);
       if (lastComparison != 0) {
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetWechat_id()).compareTo(other.isSetWechat_id());
+    lastComparison = Boolean.valueOf(isSetWechatId()).compareTo(other.isSetWechatId());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetWechat_id()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.wechat_id, other.wechat_id);
+    if (isSetWechatId()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.wechatId, other.wechatId);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -2040,22 +2040,22 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetEmail_verified()).compareTo(other.isSetEmail_verified());
+    lastComparison = Boolean.valueOf(isSetEmailVerified()).compareTo(other.isSetEmailVerified());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetEmail_verified()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.email_verified, other.email_verified);
+    if (isSetEmailVerified()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.emailVerified, other.emailVerified);
       if (lastComparison != 0) {
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetUpdate_time()).compareTo(other.isSetUpdate_time());
+    lastComparison = Boolean.valueOf(isSetUpdateTime()).compareTo(other.isSetUpdateTime());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetUpdate_time()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.update_time, other.update_time);
+    if (isSetUpdateTime()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.updateTime, other.updateTime);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -2105,10 +2105,10 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
       }
       first = false;
     }
-    if (isSetIs_disable()) {
+    if (isSetIsDisable()) {
       if (!first) sb.append(", ");
-      sb.append("is_disable:");
-      sb.append(this.is_disable);
+      sb.append("isDisable:");
+      sb.append(this.isDisable);
       first = false;
     }
     if (isSetRank()) {
@@ -2117,50 +2117,50 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
       sb.append(this.rank);
       first = false;
     }
-    if (isSetRegister_time()) {
+    if (isSetRegisterTime()) {
       if (!first) sb.append(", ");
-      sb.append("register_time:");
-      if (this.register_time == null) {
+      sb.append("registerTime:");
+      if (this.registerTime == null) {
         sb.append("null");
       } else {
-        sb.append(this.register_time);
+        sb.append(this.registerTime);
       }
       first = false;
     }
-    if (isSetRegister_ip()) {
+    if (isSetRegisterIp()) {
       if (!first) sb.append(", ");
-      sb.append("register_ip:");
-      if (this.register_ip == null) {
+      sb.append("registerIp:");
+      if (this.registerIp == null) {
         sb.append("null");
       } else {
-        sb.append(this.register_ip);
+        sb.append(this.registerIp);
       }
       first = false;
     }
-    if (isSetLast_login_time()) {
+    if (isSetLastLoginTime()) {
       if (!first) sb.append(", ");
-      sb.append("last_login_time:");
-      if (this.last_login_time == null) {
+      sb.append("lastLoginTime:");
+      if (this.lastLoginTime == null) {
         sb.append("null");
       } else {
-        sb.append(this.last_login_time);
+        sb.append(this.lastLoginTime);
       }
       first = false;
     }
-    if (isSetLast_login_ip()) {
+    if (isSetLastLoginIp()) {
       if (!first) sb.append(", ");
-      sb.append("last_login_ip:");
-      if (this.last_login_ip == null) {
+      sb.append("lastLoginIp:");
+      if (this.lastLoginIp == null) {
         sb.append("null");
       } else {
-        sb.append(this.last_login_ip);
+        sb.append(this.lastLoginIp);
       }
       first = false;
     }
-    if (isSetLogin_count()) {
+    if (isSetLoginCount()) {
       if (!first) sb.append(", ");
-      sb.append("login_count:");
-      sb.append(this.login_count);
+      sb.append("loginCount:");
+      sb.append(this.loginCount);
       first = false;
     }
     if (isSetMobile()) {
@@ -2185,13 +2185,13 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
       sb.append(this.activation);
       first = false;
     }
-    if (isSetActivation_code()) {
+    if (isSetActivationCode()) {
       if (!first) sb.append(", ");
-      sb.append("activation_code:");
-      if (this.activation_code == null) {
+      sb.append("activationCode:");
+      if (this.activationCode == null) {
         sb.append("null");
       } else {
-        sb.append(this.activation_code);
+        sb.append(this.activationCode);
       }
       first = false;
     }
@@ -2225,16 +2225,16 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
       }
       first = false;
     }
-    if (isSetNational_code_id()) {
+    if (isSetNationalCodeId()) {
       if (!first) sb.append(", ");
-      sb.append("national_code_id:");
-      sb.append(this.national_code_id);
+      sb.append("nationalCodeId:");
+      sb.append(this.nationalCodeId);
       first = false;
     }
-    if (isSetWechat_id()) {
+    if (isSetWechatId()) {
       if (!first) sb.append(", ");
-      sb.append("wechat_id:");
-      sb.append(this.wechat_id);
+      sb.append("wechatId:");
+      sb.append(this.wechatId);
       first = false;
     }
     if (isSetUnionid()) {
@@ -2289,19 +2289,19 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
       }
       first = false;
     }
-    if (isSetEmail_verified()) {
+    if (isSetEmailVerified()) {
       if (!first) sb.append(", ");
-      sb.append("email_verified:");
-      sb.append(this.email_verified);
+      sb.append("emailVerified:");
+      sb.append(this.emailVerified);
       first = false;
     }
-    if (isSetUpdate_time()) {
+    if (isSetUpdateTime()) {
       if (!first) sb.append(", ");
-      sb.append("update_time:");
-      if (this.update_time == null) {
+      sb.append("updateTime:");
+      if (this.updateTime == null) {
         sb.append("null");
       } else {
-        sb.append(this.update_time);
+        sb.append(this.updateTime);
       }
       first = false;
     }
@@ -2375,9 +2375,9 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
             }
             break;
           case 4: // IS_DISABLE
-            if (schemeField.type == org.apache.thrift.protocol.TType.BOOL) {
-              struct.is_disable = iprot.readBool();
-              struct.setIs_disableIsSet(true);
+            if (schemeField.type == org.apache.thrift.protocol.TType.BYTE) {
+              struct.isDisable = iprot.readByte();
+              struct.setIsDisableIsSet(true);
             } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -2392,40 +2392,40 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
             break;
           case 6: // REGISTER_TIME
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.register_time = iprot.readString();
-              struct.setRegister_timeIsSet(true);
+              struct.registerTime = iprot.readString();
+              struct.setRegisterTimeIsSet(true);
             } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
           case 7: // REGISTER_IP
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.register_ip = iprot.readString();
-              struct.setRegister_ipIsSet(true);
+              struct.registerIp = iprot.readString();
+              struct.setRegisterIpIsSet(true);
             } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
           case 8: // LAST_LOGIN_TIME
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.last_login_time = iprot.readString();
-              struct.setLast_login_timeIsSet(true);
+              struct.lastLoginTime = iprot.readString();
+              struct.setLastLoginTimeIsSet(true);
             } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
           case 9: // LAST_LOGIN_IP
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.last_login_ip = iprot.readString();
-              struct.setLast_login_ipIsSet(true);
+              struct.lastLoginIp = iprot.readString();
+              struct.setLastLoginIpIsSet(true);
             } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
           case 10: // LOGIN_COUNT
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.login_count = iprot.readI32();
-              struct.setLogin_countIsSet(true);
+              struct.loginCount = iprot.readI32();
+              struct.setLoginCountIsSet(true);
             } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -2447,8 +2447,8 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
             }
             break;
           case 13: // ACTIVATION
-            if (schemeField.type == org.apache.thrift.protocol.TType.BOOL) {
-              struct.activation = iprot.readBool();
+            if (schemeField.type == org.apache.thrift.protocol.TType.BYTE) {
+              struct.activation = iprot.readByte();
               struct.setActivationIsSet(true);
             } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -2456,8 +2456,8 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
             break;
           case 14: // ACTIVATION_CODE
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.activation_code = iprot.readString();
-              struct.setActivation_codeIsSet(true);
+              struct.activationCode = iprot.readString();
+              struct.setActivationCodeIsSet(true);
             } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -2488,16 +2488,16 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
             break;
           case 18: // NATIONAL_CODE_ID
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.national_code_id = iprot.readI32();
-              struct.setNational_code_idIsSet(true);
+              struct.nationalCodeId = iprot.readI32();
+              struct.setNationalCodeIdIsSet(true);
             } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
           case 19: // WECHAT_ID
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.wechat_id = iprot.readI32();
-              struct.setWechat_idIsSet(true);
+              struct.wechatId = iprot.readI32();
+              struct.setWechatIdIsSet(true);
             } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -2511,8 +2511,8 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
             }
             break;
           case 21: // SOURCE
-            if (schemeField.type == org.apache.thrift.protocol.TType.I16) {
-              struct.source = iprot.readI16();
+            if (schemeField.type == org.apache.thrift.protocol.TType.DOUBLE) {
+              struct.source = iprot.readDouble();
               struct.setSourceIsSet(true);
             } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -2552,16 +2552,16 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
             break;
           case 26: // EMAIL_VERIFIED
             if (schemeField.type == org.apache.thrift.protocol.TType.BYTE) {
-              struct.email_verified = iprot.readByte();
-              struct.setEmail_verifiedIsSet(true);
+              struct.emailVerified = iprot.readByte();
+              struct.setEmailVerifiedIsSet(true);
             } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
           case 27: // UPDATE_TIME
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-              struct.update_time = iprot.readString();
-              struct.setUpdate_timeIsSet(true);
+              struct.updateTime = iprot.readString();
+              struct.setUpdateTimeIsSet(true);
             } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -2600,9 +2600,9 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
           oprot.writeFieldEnd();
         }
       }
-      if (struct.isSetIs_disable()) {
+      if (struct.isSetIsDisable()) {
         oprot.writeFieldBegin(IS_DISABLE_FIELD_DESC);
-        oprot.writeBool(struct.is_disable);
+        oprot.writeByte(struct.isDisable);
         oprot.writeFieldEnd();
       }
       if (struct.isSetRank()) {
@@ -2610,37 +2610,37 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
         oprot.writeI32(struct.rank);
         oprot.writeFieldEnd();
       }
-      if (struct.register_time != null) {
-        if (struct.isSetRegister_time()) {
+      if (struct.registerTime != null) {
+        if (struct.isSetRegisterTime()) {
           oprot.writeFieldBegin(REGISTER_TIME_FIELD_DESC);
-          oprot.writeString(struct.register_time);
+          oprot.writeString(struct.registerTime);
           oprot.writeFieldEnd();
         }
       }
-      if (struct.register_ip != null) {
-        if (struct.isSetRegister_ip()) {
+      if (struct.registerIp != null) {
+        if (struct.isSetRegisterIp()) {
           oprot.writeFieldBegin(REGISTER_IP_FIELD_DESC);
-          oprot.writeString(struct.register_ip);
+          oprot.writeString(struct.registerIp);
           oprot.writeFieldEnd();
         }
       }
-      if (struct.last_login_time != null) {
-        if (struct.isSetLast_login_time()) {
+      if (struct.lastLoginTime != null) {
+        if (struct.isSetLastLoginTime()) {
           oprot.writeFieldBegin(LAST_LOGIN_TIME_FIELD_DESC);
-          oprot.writeString(struct.last_login_time);
+          oprot.writeString(struct.lastLoginTime);
           oprot.writeFieldEnd();
         }
       }
-      if (struct.last_login_ip != null) {
-        if (struct.isSetLast_login_ip()) {
+      if (struct.lastLoginIp != null) {
+        if (struct.isSetLastLoginIp()) {
           oprot.writeFieldBegin(LAST_LOGIN_IP_FIELD_DESC);
-          oprot.writeString(struct.last_login_ip);
+          oprot.writeString(struct.lastLoginIp);
           oprot.writeFieldEnd();
         }
       }
-      if (struct.isSetLogin_count()) {
+      if (struct.isSetLoginCount()) {
         oprot.writeFieldBegin(LOGIN_COUNT_FIELD_DESC);
-        oprot.writeI32(struct.login_count);
+        oprot.writeI32(struct.loginCount);
         oprot.writeFieldEnd();
       }
       if (struct.isSetMobile()) {
@@ -2657,13 +2657,13 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
       }
       if (struct.isSetActivation()) {
         oprot.writeFieldBegin(ACTIVATION_FIELD_DESC);
-        oprot.writeBool(struct.activation);
+        oprot.writeByte(struct.activation);
         oprot.writeFieldEnd();
       }
-      if (struct.activation_code != null) {
-        if (struct.isSetActivation_code()) {
+      if (struct.activationCode != null) {
+        if (struct.isSetActivationCode()) {
           oprot.writeFieldBegin(ACTIVATION_CODE_FIELD_DESC);
-          oprot.writeString(struct.activation_code);
+          oprot.writeString(struct.activationCode);
           oprot.writeFieldEnd();
         }
       }
@@ -2688,14 +2688,14 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
           oprot.writeFieldEnd();
         }
       }
-      if (struct.isSetNational_code_id()) {
+      if (struct.isSetNationalCodeId()) {
         oprot.writeFieldBegin(NATIONAL_CODE_ID_FIELD_DESC);
-        oprot.writeI32(struct.national_code_id);
+        oprot.writeI32(struct.nationalCodeId);
         oprot.writeFieldEnd();
       }
-      if (struct.isSetWechat_id()) {
+      if (struct.isSetWechatId()) {
         oprot.writeFieldBegin(WECHAT_ID_FIELD_DESC);
-        oprot.writeI32(struct.wechat_id);
+        oprot.writeI32(struct.wechatId);
         oprot.writeFieldEnd();
       }
       if (struct.unionid != null) {
@@ -2707,7 +2707,7 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
       }
       if (struct.isSetSource()) {
         oprot.writeFieldBegin(SOURCE_FIELD_DESC);
-        oprot.writeI16(struct.source);
+        oprot.writeDouble(struct.source);
         oprot.writeFieldEnd();
       }
       if (struct.company != null) {
@@ -2736,15 +2736,15 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
           oprot.writeFieldEnd();
         }
       }
-      if (struct.isSetEmail_verified()) {
+      if (struct.isSetEmailVerified()) {
         oprot.writeFieldBegin(EMAIL_VERIFIED_FIELD_DESC);
-        oprot.writeByte(struct.email_verified);
+        oprot.writeByte(struct.emailVerified);
         oprot.writeFieldEnd();
       }
-      if (struct.update_time != null) {
-        if (struct.isSetUpdate_time()) {
+      if (struct.updateTime != null) {
+        if (struct.isSetUpdateTime()) {
           oprot.writeFieldBegin(UPDATE_TIME_FIELD_DESC);
-          oprot.writeString(struct.update_time);
+          oprot.writeString(struct.updateTime);
           oprot.writeFieldEnd();
         }
       }
@@ -2775,25 +2775,25 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
       if (struct.isSetPassword()) {
         optionals.set(2);
       }
-      if (struct.isSetIs_disable()) {
+      if (struct.isSetIsDisable()) {
         optionals.set(3);
       }
       if (struct.isSetRank()) {
         optionals.set(4);
       }
-      if (struct.isSetRegister_time()) {
+      if (struct.isSetRegisterTime()) {
         optionals.set(5);
       }
-      if (struct.isSetRegister_ip()) {
+      if (struct.isSetRegisterIp()) {
         optionals.set(6);
       }
-      if (struct.isSetLast_login_time()) {
+      if (struct.isSetLastLoginTime()) {
         optionals.set(7);
       }
-      if (struct.isSetLast_login_ip()) {
+      if (struct.isSetLastLoginIp()) {
         optionals.set(8);
       }
-      if (struct.isSetLogin_count()) {
+      if (struct.isSetLoginCount()) {
         optionals.set(9);
       }
       if (struct.isSetMobile()) {
@@ -2805,7 +2805,7 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
       if (struct.isSetActivation()) {
         optionals.set(12);
       }
-      if (struct.isSetActivation_code()) {
+      if (struct.isSetActivationCode()) {
         optionals.set(13);
       }
       if (struct.isSetToken()) {
@@ -2817,10 +2817,10 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
       if (struct.isSetHeadimg()) {
         optionals.set(16);
       }
-      if (struct.isSetNational_code_id()) {
+      if (struct.isSetNationalCodeId()) {
         optionals.set(17);
       }
-      if (struct.isSetWechat_id()) {
+      if (struct.isSetWechatId()) {
         optionals.set(18);
       }
       if (struct.isSetUnionid()) {
@@ -2841,10 +2841,10 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
       if (struct.isSetNickname()) {
         optionals.set(24);
       }
-      if (struct.isSetEmail_verified()) {
+      if (struct.isSetEmailVerified()) {
         optionals.set(25);
       }
-      if (struct.isSetUpdate_time()) {
+      if (struct.isSetUpdateTime()) {
         optionals.set(26);
       }
       oprot.writeBitSet(optionals, 27);
@@ -2857,26 +2857,26 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
       if (struct.isSetPassword()) {
         oprot.writeString(struct.password);
       }
-      if (struct.isSetIs_disable()) {
-        oprot.writeBool(struct.is_disable);
+      if (struct.isSetIsDisable()) {
+        oprot.writeByte(struct.isDisable);
       }
       if (struct.isSetRank()) {
         oprot.writeI32(struct.rank);
       }
-      if (struct.isSetRegister_time()) {
-        oprot.writeString(struct.register_time);
+      if (struct.isSetRegisterTime()) {
+        oprot.writeString(struct.registerTime);
       }
-      if (struct.isSetRegister_ip()) {
-        oprot.writeString(struct.register_ip);
+      if (struct.isSetRegisterIp()) {
+        oprot.writeString(struct.registerIp);
       }
-      if (struct.isSetLast_login_time()) {
-        oprot.writeString(struct.last_login_time);
+      if (struct.isSetLastLoginTime()) {
+        oprot.writeString(struct.lastLoginTime);
       }
-      if (struct.isSetLast_login_ip()) {
-        oprot.writeString(struct.last_login_ip);
+      if (struct.isSetLastLoginIp()) {
+        oprot.writeString(struct.lastLoginIp);
       }
-      if (struct.isSetLogin_count()) {
-        oprot.writeI32(struct.login_count);
+      if (struct.isSetLoginCount()) {
+        oprot.writeI32(struct.loginCount);
       }
       if (struct.isSetMobile()) {
         oprot.writeI64(struct.mobile);
@@ -2885,10 +2885,10 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
         oprot.writeString(struct.email);
       }
       if (struct.isSetActivation()) {
-        oprot.writeBool(struct.activation);
+        oprot.writeByte(struct.activation);
       }
-      if (struct.isSetActivation_code()) {
-        oprot.writeString(struct.activation_code);
+      if (struct.isSetActivationCode()) {
+        oprot.writeString(struct.activationCode);
       }
       if (struct.isSetToken()) {
         oprot.writeString(struct.token);
@@ -2899,17 +2899,17 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
       if (struct.isSetHeadimg()) {
         oprot.writeString(struct.headimg);
       }
-      if (struct.isSetNational_code_id()) {
-        oprot.writeI32(struct.national_code_id);
+      if (struct.isSetNationalCodeId()) {
+        oprot.writeI32(struct.nationalCodeId);
       }
-      if (struct.isSetWechat_id()) {
-        oprot.writeI32(struct.wechat_id);
+      if (struct.isSetWechatId()) {
+        oprot.writeI32(struct.wechatId);
       }
       if (struct.isSetUnionid()) {
         oprot.writeString(struct.unionid);
       }
       if (struct.isSetSource()) {
-        oprot.writeI16(struct.source);
+        oprot.writeDouble(struct.source);
       }
       if (struct.isSetCompany()) {
         oprot.writeString(struct.company);
@@ -2923,11 +2923,11 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
       if (struct.isSetNickname()) {
         oprot.writeString(struct.nickname);
       }
-      if (struct.isSetEmail_verified()) {
-        oprot.writeByte(struct.email_verified);
+      if (struct.isSetEmailVerified()) {
+        oprot.writeByte(struct.emailVerified);
       }
-      if (struct.isSetUpdate_time()) {
-        oprot.writeString(struct.update_time);
+      if (struct.isSetUpdateTime()) {
+        oprot.writeString(struct.updateTime);
       }
     }
 
@@ -2948,32 +2948,32 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
         struct.setPasswordIsSet(true);
       }
       if (incoming.get(3)) {
-        struct.is_disable = iprot.readBool();
-        struct.setIs_disableIsSet(true);
+        struct.isDisable = iprot.readByte();
+        struct.setIsDisableIsSet(true);
       }
       if (incoming.get(4)) {
         struct.rank = iprot.readI32();
         struct.setRankIsSet(true);
       }
       if (incoming.get(5)) {
-        struct.register_time = iprot.readString();
-        struct.setRegister_timeIsSet(true);
+        struct.registerTime = iprot.readString();
+        struct.setRegisterTimeIsSet(true);
       }
       if (incoming.get(6)) {
-        struct.register_ip = iprot.readString();
-        struct.setRegister_ipIsSet(true);
+        struct.registerIp = iprot.readString();
+        struct.setRegisterIpIsSet(true);
       }
       if (incoming.get(7)) {
-        struct.last_login_time = iprot.readString();
-        struct.setLast_login_timeIsSet(true);
+        struct.lastLoginTime = iprot.readString();
+        struct.setLastLoginTimeIsSet(true);
       }
       if (incoming.get(8)) {
-        struct.last_login_ip = iprot.readString();
-        struct.setLast_login_ipIsSet(true);
+        struct.lastLoginIp = iprot.readString();
+        struct.setLastLoginIpIsSet(true);
       }
       if (incoming.get(9)) {
-        struct.login_count = iprot.readI32();
-        struct.setLogin_countIsSet(true);
+        struct.loginCount = iprot.readI32();
+        struct.setLoginCountIsSet(true);
       }
       if (incoming.get(10)) {
         struct.mobile = iprot.readI64();
@@ -2984,12 +2984,12 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
         struct.setEmailIsSet(true);
       }
       if (incoming.get(12)) {
-        struct.activation = iprot.readBool();
+        struct.activation = iprot.readByte();
         struct.setActivationIsSet(true);
       }
       if (incoming.get(13)) {
-        struct.activation_code = iprot.readString();
-        struct.setActivation_codeIsSet(true);
+        struct.activationCode = iprot.readString();
+        struct.setActivationCodeIsSet(true);
       }
       if (incoming.get(14)) {
         struct.token = iprot.readString();
@@ -3004,19 +3004,19 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
         struct.setHeadimgIsSet(true);
       }
       if (incoming.get(17)) {
-        struct.national_code_id = iprot.readI32();
-        struct.setNational_code_idIsSet(true);
+        struct.nationalCodeId = iprot.readI32();
+        struct.setNationalCodeIdIsSet(true);
       }
       if (incoming.get(18)) {
-        struct.wechat_id = iprot.readI32();
-        struct.setWechat_idIsSet(true);
+        struct.wechatId = iprot.readI32();
+        struct.setWechatIdIsSet(true);
       }
       if (incoming.get(19)) {
         struct.unionid = iprot.readString();
         struct.setUnionidIsSet(true);
       }
       if (incoming.get(20)) {
-        struct.source = iprot.readI16();
+        struct.source = iprot.readDouble();
         struct.setSourceIsSet(true);
       }
       if (incoming.get(21)) {
@@ -3036,12 +3036,12 @@ public class UserUserDO implements org.apache.thrift.TBase<UserUserDO, UserUserD
         struct.setNicknameIsSet(true);
       }
       if (incoming.get(25)) {
-        struct.email_verified = iprot.readByte();
-        struct.setEmail_verifiedIsSet(true);
+        struct.emailVerified = iprot.readByte();
+        struct.setEmailVerifiedIsSet(true);
       }
       if (incoming.get(26)) {
-        struct.update_time = iprot.readString();
-        struct.setUpdate_timeIsSet(true);
+        struct.updateTime = iprot.readString();
+        struct.setUpdateTimeIsSet(true);
       }
     }
   }
