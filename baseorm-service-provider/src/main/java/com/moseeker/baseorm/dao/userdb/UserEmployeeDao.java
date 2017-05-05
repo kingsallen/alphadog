@@ -4,18 +4,18 @@ import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
-import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.dao.struct.UserEmployeeDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
-import org.jooq.*;
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Result;
+import org.jooq.SelectJoinStep;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,7 +99,7 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                     successArray[i] = innserSuccessFlag > 0 ? 1 : 0;
                 } else {
                     try {
-                        int id = addRecord(BeanUtils.structToDB(struct, UserEmployeeRecord.class));
+                        int id = addRecord(BeanUtils.structToDB(struct, UserEmployeeRecord.class)).size();
                         successArray[i] = id>0?1:0;
                     }catch (Exception e){
                         successArray[i] = 0;

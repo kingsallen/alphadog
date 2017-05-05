@@ -5,18 +5,15 @@ import com.moseeker.baseorm.db.configdb.tables.ConfigSysPointsConfTpl;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
-import com.moseeker.common.dbutils.DBConnHelper;
-import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.db.userdb.tables.UserUser;
 import com.moseeker.thrift.gen.application.struct.ApplicationAts;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
-import com.moseeker.thrift.gen.dao.struct.JobApplicationDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import org.jooq.*;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Service;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 

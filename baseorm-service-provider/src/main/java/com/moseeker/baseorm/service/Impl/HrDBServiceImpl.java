@@ -3,7 +3,6 @@ package com.moseeker.baseorm.service.Impl;
 import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
 import com.moseeker.baseorm.dao.hrdb.HrTeamDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrOperationRecordRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
 import com.moseeker.baseorm.service.HrDBService;
@@ -21,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,8 +42,7 @@ public class HrDBServiceImpl implements HrDBService {
     public Response postHrOperation(HrOperationRecordDO record) {
         // TODO Auto-generated method stub
         try {
-            int result = hrOperationRecordDao.addData(record);
-            return ResponseUtils.success(result);
+            return ResponseUtils.success(hrOperationRecordDao.addData(record));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
 
@@ -57,8 +54,8 @@ public class HrDBServiceImpl implements HrDBService {
     public Response postHrOperations(List<HrOperationRecordDO> record) {
         // TODO Auto-generated method stub
         try {
-            int result = hrOperationRecordDao.addAllData(record).length;
-            return ResponseUtils.success(result);
+            List<HrOperationRecordDO> recordLIst = hrOperationRecordDao.addAllData(record);
+            return ResponseUtils.success(recordLIst);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);

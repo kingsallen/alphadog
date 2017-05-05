@@ -52,7 +52,7 @@ public class TalentpoolDaoThriftService implements Iface {
 	@Override
 	public int postResource(Talentpool talentpool) throws TException {
 		try {
-			return dao.addRecord((HrTalentpoolRecord)BeanUtils.structToDB(talentpool, HrTalentpoolRecord.class));
+			return dao.addRecord((HrTalentpoolRecord)BeanUtils.structToDB(talentpool, HrTalentpoolRecord.class)).getId();
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
