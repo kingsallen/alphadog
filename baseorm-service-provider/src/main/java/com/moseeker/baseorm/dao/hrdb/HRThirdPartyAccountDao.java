@@ -43,8 +43,6 @@ public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecor
 
 	private static final String UPSERT_SQL = "insert into hrdb.hr_third_party_account(channel, username, password, membername, binding, company_id, remain_num, sync_time) select ?, ?, ?, ?, ?, ?, ?, ? from DUAL where not exists(select id from hrdb.hr_third_party_account where channel = ? and company_id = ?)";
 
-	private static final String UPDATE = "update hrdb.hr_third_party_account set username = ?, password = ?, membername = ?, binding = ?, remain_num = ?, sync_time = ? where channel = ? and company_id = ?";
-
 	@Override
 	protected void initJOOQEntity() {
 		this.tableLike = HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT;
@@ -72,49 +70,23 @@ public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecor
 			count = pstmt.executeUpdate();
 			logger.info("HRThirdPartyAccountDao count:{}",count);
 			if (count == 0) {
-
-				PreparedStatement pstmt1 = conn.prepareStatement(UPDATE);
-				pstmt1.setString(1, record.getUsername());
-				pstmt1.setString(2, record.getPassword());
-				pstmt1.setString(3, record.getMembername());
-				pstmt1.setShort(4, record.getBinding());
-				pstmt1.setInt(5, record.getRemainNum().intValue());
-				pstmt1.setTimestamp(6, record.getSyncTime());
-				pstmt1.setShort(7, record.getChannel());
-				pstmt1.setInt(8, record.getCompanyId().intValue());
-				count = pstmt1.executeUpdate();
-				/*DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 				HrThirdPartyAccountRecord dbrecord = create.selectFrom(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
 						.where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.COMPANY_ID.equal(record.getCompanyId())
 								.and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.equal(record.getChannel())))
 						.fetchOne();
-
-				logger.info(create.update(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
-						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.USERNAME, record.getUsername())
-						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.PASSWORD, record.getPassword())
-						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.MEMBERNAME, record.getMembername())
-						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.BINDING, record.getBinding())
-						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.REMAIN_NUM, record.getRemainNum())
-						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.SYNC_TIME, record.getSyncTime())
-						.where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.eq(dbrecord.getId())).getSQL());
-				count = create.update(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
-						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.USERNAME, record.getUsername())
-						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.PASSWORD, record.getPassword())
-						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.MEMBERNAME, record.getMembername())
-						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.BINDING, record.getBinding())
-						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.REMAIN_NUM, record.getRemainNum())
-						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.SYNC_TIME, record.getSyncTime())
-						.where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.eq(dbrecord.getId())).execute();*/
-				/*logger.info("HRThirdPartyAccountDao dbrecord:{}",dbrecord);
+				logger.info("HRThirdPartyAccountDao dbrecord:{}",dbrecord);
 				dbrecord.setUsername(record.getUsername());
 				dbrecord.setPassword(record.getPassword());
 				dbrecord.setMembername(record.getMembername());
-				dbrecord.setBinding(record.getBinding());
 				dbrecord.setRemainNum(record.getRemainNum());
 				dbrecord.setSyncTime(record.getSyncTime());
 				dbrecord.setBinding(record.getBinding());
+				dbrecord.update();
+				conn.commit();
+				conn.setAutoCommit(true);
 				logger.info("HRThirdPartyAccountDao dbrecord:{}",dbrecord);
-				count = create.executeUpdate(dbrecord);*/
+
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
