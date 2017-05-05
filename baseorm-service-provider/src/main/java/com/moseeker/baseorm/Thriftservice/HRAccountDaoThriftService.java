@@ -126,8 +126,8 @@ public class HRAccountDaoThriftService implements Iface {
             record.setPassword(account.getPassword());
             record.setRemainNum(UInteger.valueOf(account.getRemainNum()));
             record.setSyncTime(now);
-            record.setBinding((short) 1);
             record.setUsername(account.getUsername());
+            logger.info("upsertThirdPartyAccount channel:{}, company_id:{}", account.getChannel(), account.getCompany_id());
             int count = hrThirdPartyAccountDao.upsertResource(record);
             logger.info("upsertThirdPartyAccount count:{}", count);
             if (count == 0) {
