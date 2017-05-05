@@ -43,43 +43,24 @@ public class CandidatePositionDao extends JooqCrudImpl<CandidatePositionDO, Cand
     public List<CandidatePositionDO> listCandidatePositionsByPositionIDUserID(List<Map<Integer, Integer>> positionIdAndUserId) {
         List<CandidatePositionDO> positionDOList = new ArrayList<>();
 
-        Connection conn = null;
-        try {
-            conn = DBConnHelper.DBConn.getConn();
-            DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+        Condition condition = null;
+        for(Map<Integer, Integer> map : positionIdAndUserId) {
+            for(Map.Entry<Integer, Integer> entry : map.entrySet()) {
+                Condition conditionValue = CandidatePosition.CANDIDATE_POSITION.POSITION_ID.equal(entry.getKey())
+                        .and(CandidatePosition.CANDIDATE_POSITION.USER_ID.equal((int)(entry.getValue())));
 
-            Condition condition = null;
-            for(Map<Integer, Integer> map : positionIdAndUserId) {
-                for(Map.Entry<Integer, Integer> entry : map.entrySet()) {
-                    Condition conditionValue = CandidatePosition.CANDIDATE_POSITION.POSITION_ID.equal(entry.getKey())
-                            .and(CandidatePosition.CANDIDATE_POSITION.USER_ID.equal((int)(entry.getValue())));
-
-                    if(condition != null) {
-                        condition = condition.or(conditionValue);
-                    } else {
-                        condition = conditionValue;
-                    }
+                if(condition != null) {
+                    condition = condition.or(conditionValue);
+                } else {
+                    condition = conditionValue;
                 }
-            }
-
-            positionDOList = create.select(CandidatePosition.CANDIDATE_POSITION.POSITION_ID, CandidatePosition.CANDIDATE_POSITION.USER_ID,
-                    CandidatePosition.CANDIDATE_POSITION.IS_INTERESTED, CandidatePosition.CANDIDATE_POSITION.VIEW_NUMBER)
-                    .from(CandidatePosition.CANDIDATE_POSITION)
-                    .where(condition).fetch().into(CandidatePositionDO.class);
-
-
-        } catch (SQLException e) {
-            logger.error(e.getMessage(), e);
-        } finally {
-            try {
-                if(conn != null && !conn.isClosed()) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                logger.error(e.getMessage(), e);
             }
         }
 
+        positionDOList = create.select(CandidatePosition.CANDIDATE_POSITION.POSITION_ID, CandidatePosition.CANDIDATE_POSITION.USER_ID,
+                CandidatePosition.CANDIDATE_POSITION.IS_INTERESTED, CandidatePosition.CANDIDATE_POSITION.VIEW_NUMBER)
+                .from(CandidatePosition.CANDIDATE_POSITION)
+                .where(condition).fetch().into(CandidatePositionDO.class);
 
         return positionDOList;
     }

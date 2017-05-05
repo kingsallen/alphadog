@@ -49,60 +49,29 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
 
 	public int upsertResource(HrThirdPartyAccountRecord record) {
 		int count = 0;
-		try (Connection conn = DBConnHelper.DBConn.getConn();) {
+		count = create.execute(UPSERT_SQL, record.getChannel(), record.getUsername(), record.getPassword(),
+				record.getMembername(), record.getBinding(), record.getCompanyId().intValue(),
+				record.getRemainNum().intValue(), record.getSyncTime(), record.getChannel(),
+				record.getCompanyId().intValue());
 
-			conn.setAutoCommit(false);
-			PreparedStatement pstmt = conn.prepareStatement(UPSERT_SQL);
-			pstmt.setShort(1, record.getChannel());
-			pstmt.setString(2, record.getUsername());
-			pstmt.setString(3, record.getPassword());
-			pstmt.setString(4, record.getMembername());
-			pstmt.setShort(5, record.getBinding());
-			pstmt.setInt(6, record.getCompanyId().intValue());
-			pstmt.setInt(7, record.getRemainNum().intValue());
-			pstmt.setTimestamp(8, record.getSyncTime());
-			pstmt.setShort(9, record.getChannel());
-			pstmt.setInt(10, record.getCompanyId().intValue());
-			count = pstmt.executeUpdate();
-			if (count == 0) {
-				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-				HrThirdPartyAccountRecord dbrecord = create.selectFrom(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
-						.where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.COMPANY_ID.equal(record.getCompanyId())
-								.and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.equal(record.getChannel())))
-						.fetchOne();
-				dbrecord.setUsername(record.getUsername());
-				dbrecord.setPassword(record.getPassword());
-				dbrecord.setMembername(record.getMembername());
-				dbrecord.setBinding(record.getBinding());
-				dbrecord.setRemainNum(record.getRemainNum());
-				dbrecord.setSyncTime(record.getSyncTime());
-				count = dbrecord.update();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			logger.error(e.getMessage(), e);
-
-		} finally {
-			// do nothing
+		if (count == 0) {
+			HrThirdPartyAccountRecord dbrecord = create.selectFrom(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
+					.where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.COMPANY_ID.equal(record.getCompanyId())
+							.and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.equal(record.getChannel())))
+					.fetchOne();
+			dbrecord.setUsername(record.getUsername());
+			dbrecord.setPassword(record.getPassword());
+			dbrecord.setMembername(record.getMembername());
+			dbrecord.setBinding(record.getBinding());
+			dbrecord.setRemainNum(record.getRemainNum());
+			dbrecord.setSyncTime(record.getSyncTime());
+			count = dbrecord.update();
 		}
 		return count;
 	}
 
 	public List<HrThirdPartyAccountRecord> getThirdPartyBindingAccounts(Query query) {
-		try {
-			return this.getRecords(query);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			logger.error(e.getMessage(), e);
-		} finally {
-			// do nothing
-		}
-		return null;
-	}
-
-	public Response saveThirdPartyPosition(ThirdPartyPositionData position) {
-		return null;
+		return getRecords(query);
 	}
 
 	/**
@@ -113,31 +82,22 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
 	public int updatePartyAccountByCompanyIdChannel(ThirdPartAccountData account) {
 		logger.info("updatePartyAccountByCompanyIdChannel");
 		int count = 0;
-		try (Connection conn = DBConnHelper.DBConn.getConn();
-				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);) {
+		try {
+			Date date = sdf.parse(account.getSync_time());
 			HrThirdPartyAccountRecord record = create.selectFrom(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
-					.where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.COMPANY_ID
-							.equal((int)(account.getCompany_id())))
-					.and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.equal((short) account.getChannel()))
-					.fetchOne();
+                    .where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.COMPANY_ID
+                            .equal((int)(account.getCompany_id())))
+                    .and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.equal((short) account.getChannel()))
+                    .fetchOne();
 			if(record != null) {
-				logger.info("HrThirdPartyAccount.id:{}", record.getId().intValue());
-				logger.info("remainume:{}",account.getRemain_num());
-				Date date = sdf.parse(account.getSync_time());
-				record.setSyncTime(new Timestamp(date.getTime()));
-				record.setRemainNum((int)(account.getRemain_num()));
-				count = record.update();
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			logger.error(e.getMessage(), e);
-
+                logger.info("HrThirdPartyAccount.id:{}", record.getId().intValue());
+                logger.info("remainume:{}",account.getRemain_num());
+                record.setSyncTime(new Timestamp(date.getTime()));
+                record.setRemainNum((int)(account.getRemain_num()));
+                count = record.update();
+            }
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 			logger.error(e.getMessage(), e);
-		} finally {
-			// do nothing
 		}
 		return count;
 	}

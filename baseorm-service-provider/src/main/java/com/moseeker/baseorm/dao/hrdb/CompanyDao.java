@@ -20,18 +20,7 @@ public class CompanyDao extends JooqCrudImpl<HrCompanyDO, HrCompanyRecord> {
 	}
 
 	public HrCompanyDO getCompany(Query query) {
-		HrCompanyDO company = new HrCompanyDO();
-		try {
-			HrCompanyRecord record = this.getRecord(query);
-			record.into(company);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			logger.error(e.getMessage(), e);
-		} finally {
-			//do nothing
-		}
-		return company;
+		return this.getData(query);
 	}
 
 	public List<Hrcompany> getCompanies(Query query) {

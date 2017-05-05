@@ -21,7 +21,7 @@ import java.util.List;
 public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
 
     @Autowired
-    DefaultDSLContext create;
+    protected DefaultDSLContext create;
 
     TableImpl<R> table;
 

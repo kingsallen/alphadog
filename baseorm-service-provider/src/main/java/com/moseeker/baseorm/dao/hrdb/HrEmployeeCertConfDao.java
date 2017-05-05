@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class HrEmployeeCertConfDao extends JooqCrudImpl<HrEmployeeCertConfDO, HrEmployeeCertConfRecord> {
+
     public HrEmployeeCertConfDao(TableImpl<HrEmployeeCertConfRecord> table, Class<HrEmployeeCertConfDO> hrEmployeeCertConfDOClass) {
         super(table, hrEmployeeCertConfDOClass);
     }
