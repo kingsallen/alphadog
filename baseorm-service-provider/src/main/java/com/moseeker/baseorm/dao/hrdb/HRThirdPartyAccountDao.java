@@ -50,7 +50,8 @@ public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecor
 
 	public int upsertResource(HrThirdPartyAccountRecord record) {
 		logger.info("HRThirdPartyAccountDao upsertResource");
-		logger.info("HRThirdPartyAccountDao channel:{}, company_id:{}",record.getChannel(), record.getCompanyId());
+		logger.info("HRThirdPartyAccountDao upsertResource channel:{}, company_id:{}",record.getChannel(), record.getCompanyId());
+		logger.info("HRThirdPartyAccountDao upsertResource record:{}",record);
 		int count = 0;
 		try (Connection conn = DBConnHelper.DBConn.getConn();) {
 
