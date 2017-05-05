@@ -15,8 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-
 /**
  * @author ltf
  * 事件配置服务
@@ -28,10 +26,10 @@ public class EventConfigService {
 
 	@Autowired
 	private ConfigAdminnotificationEventsDao dao;
-	
+
 	@Autowired
 	private ConfigAdminnotificationMembersDao memberDao;
-	
+
 	@Autowired
 	private ConfigAdminnotificationChannelDao channelDao;
 	
