@@ -1,16 +1,13 @@
 package com.moseeker.baseorm.Thriftservice;
 
+import com.moseeker.baseorm.dao.logdb.SmsSendrecordDao;
+import com.moseeker.thrift.gen.dao.service.LogDBDao.Iface;
+import com.moseeker.thrift.gen.dao.struct.LogSmsSendRecordDO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.moseeker.baseorm.dao.logdb.SmsSendrecordDao;
-import com.moseeker.baseorm.db.logdb.tables.records.LogSmsSendrecordRecord;
-import com.moseeker.common.util.BeanUtils;
-import com.moseeker.thrift.gen.dao.service.LogDBDao.Iface;
-import com.moseeker.thrift.gen.dao.struct.LogSmsSendRecordDO;
 
 @Service
 public class LogDBDaoThriftService implements Iface {
@@ -23,7 +20,8 @@ public class LogDBDaoThriftService implements Iface {
 	@Override
 	public int saveSmsSenderRecord(LogSmsSendRecordDO smsSendRecordDO) throws TException {
 		try {
-			return smsDao.postResource(BeanUtils.structToDB(smsSendRecordDO, LogSmsSendrecordRecord.class));
+			com.moseeker.thrift.gen.dao.struct.logdb.LogSmsSendrecordDO sms = new com.moseeker.thrift.gen.dao.struct.logdb.LogSmsSendrecordDO();
+			return smsDao.addData(sms);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}

@@ -29,7 +29,7 @@ public class TalentpoolDaoThriftService implements Iface {
 	public List<Talentpool> getResources(CommonQuery query) throws TException {
 		List<Talentpool> list = new ArrayList<Talentpool>();
 		try {
-			dao.getResources(QueryConvert.commonQueryConvertToQuery(query)).forEach(record -> {
+			dao.getRecords(QueryConvert.commonQueryConvertToQuery(query)).forEach(record -> {
 				list.add((Talentpool)BeanUtils.DBToStruct(Talentpool.class, record));
 			});
 		} catch (Exception e) {
@@ -42,7 +42,7 @@ public class TalentpoolDaoThriftService implements Iface {
 	@Override
 	public Talentpool getResource(CommonQuery query) throws TException {
 		try {
-			return (Talentpool)BeanUtils.DBToStruct(Talentpool.class, dao.getResource(QueryConvert.commonQueryConvertToQuery(query)));
+			return (Talentpool)BeanUtils.DBToStruct(Talentpool.class, dao.getRecord(QueryConvert.commonQueryConvertToQuery(query)));
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			throw new TException(MessageFormat.format("根据commonQuery={}查询结果集出错", query.toString()));
@@ -52,7 +52,7 @@ public class TalentpoolDaoThriftService implements Iface {
 	@Override
 	public int postResource(Talentpool talentpool) throws TException {
 		try {
-			return dao.postResource((HrTalentpoolRecord)BeanUtils.structToDB(talentpool, HrTalentpoolRecord.class));
+			return dao.addRecord((HrTalentpoolRecord)BeanUtils.structToDB(talentpool, HrTalentpoolRecord.class));
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
@@ -62,7 +62,7 @@ public class TalentpoolDaoThriftService implements Iface {
 	@Override
 	public int putResource(Talentpool talentpool) throws TException {
 		try {
-			return dao.putResource((HrTalentpoolRecord)BeanUtils.structToDB(talentpool, HrTalentpoolRecord.class));
+			return dao.updateRecord((HrTalentpoolRecord)BeanUtils.structToDB(talentpool, HrTalentpoolRecord.class));
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}

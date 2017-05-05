@@ -39,7 +39,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 		// TODO Auto-generated method stub
 		try{
 			JobApplicationRecord record=(JobApplicationRecord) BeanUtils.structToDB(application, JobApplicationRecord.class);
-			int result=dao.postResource(record);
+			int result=dao.addRecord(record);
 			return ResponseUtils.success(result);
 		}catch(Exception e){
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
@@ -50,7 +50,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 		// TODO Auto-generated method stub
 		try{
 			JobApplicationRecord record=(JobApplicationRecord) BeanUtils.structToDB(application, JobApplicationRecord.class);
-			int result=dao.putResource(record);
+			int result=dao.updateRecord(record);
 			return ResponseUtils.success(result);
 		}catch(Exception e){
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
@@ -60,7 +60,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 	public Response postJobApplications(List<JobApplication> applications) {
 		// TODO Auto-generated method stub
 		try{
-			int result=dao.postResources(this.convertDB(applications));
+			int result=dao.addAllRecord(this.convertDB(applications)).length;
 			return ResponseUtils.success(result);
 		}catch(Exception e){
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
@@ -70,7 +70,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 	public Response putJobApplications(List<JobApplication> applications) {
 		// TODO Auto-generated method stub
 		try{
-			int result=dao.putResources(this.convertDB(applications));
+			int result=dao.updateRecords(this.convertDB(applications)).length;
 			return ResponseUtils.success(result);
 		}catch(Exception e){
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);

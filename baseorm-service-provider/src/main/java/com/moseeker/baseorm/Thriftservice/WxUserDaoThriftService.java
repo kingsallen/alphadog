@@ -29,7 +29,7 @@ public class WxUserDaoThriftService implements Iface {
 	@Override
 	public Response getResource(CommonQuery query) throws TException {
 		try {
-			UserWxUserRecord record = dao.getResource(QueryConvert.commonQueryConvertToQuery(query));
+			UserWxUserRecord record = dao.getRecord(QueryConvert.commonQueryConvertToQuery(query));
 			if (record != null) {
 				Map<String, Object> result = new HashMap<String, Object>();
 				result.put("id", record.getId().longValue());

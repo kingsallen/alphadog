@@ -44,8 +44,7 @@ public class HrDBServiceImpl implements HrDBService {
     public Response postHrOperation(HrOperationRecordDO record) {
         // TODO Auto-generated method stub
         try {
-            HrOperationRecordRecord data = (HrOperationRecordRecord) BeanUtils.structToDB(record, HrOperationRecordRecord.class);
-            int result = hrOperationRecordDao.postResource(data);
+            int result = hrOperationRecordDao.addData(record);
             return ResponseUtils.success(result);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -58,11 +57,7 @@ public class HrDBServiceImpl implements HrDBService {
     public Response postHrOperations(List<HrOperationRecordDO> record) {
         // TODO Auto-generated method stub
         try {
-            List<HrOperationRecordRecord> list = new ArrayList<HrOperationRecordRecord>();
-            for (HrOperationRecordDO data : record) {
-                list.add((HrOperationRecordRecord) BeanUtils.structToDB(data, HrOperationRecordRecord.class));
-            }
-            int result = hrOperationRecordDao.postResources(list);
+            int result = hrOperationRecordDao.addAllData(record).length;
             return ResponseUtils.success(result);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -97,7 +92,7 @@ public class HrDBServiceImpl implements HrDBService {
     public Response getHrTeam(Query query) {
         // TODO Auto-generated method stub
         try {
-            HrTeamRecord data = hrTeamDao.getResource(query);
+            HrTeamRecord data = hrTeamDao.getRecord(query);
             if (data != null) {
                 HrTeamStruct result = BeanUtils.DBToStruct(HrTeamStruct.class, data);
                 return ResponseUtils.success(result);
@@ -112,7 +107,7 @@ public class HrDBServiceImpl implements HrDBService {
     @Override
     public Response getHrWxWechat(Query query) {
         try {
-            HrWxWechatRecord rs = hrWxWechatDao.getResource(query);
+            HrWxWechatRecord rs = hrWxWechatDao.getRecord(query);
             if (rs != null) {
                 Map<String, Object> result = new HashMap<String, Object>();
                 result.put("id", rs.getId());

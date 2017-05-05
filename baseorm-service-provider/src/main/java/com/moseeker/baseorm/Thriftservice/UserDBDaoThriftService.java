@@ -4,6 +4,7 @@ import com.moseeker.baseorm.dao.userdb.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.service.UserEmployeeDaoService;
 import com.moseeker.baseorm.tool.QueryConvert;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -52,7 +54,7 @@ public class UserDBDaoThriftService implements Iface {
 	public UserUserDO getUser(CommonQuery query) throws TException {
 		UserUserDO user = new UserUserDO();
 		try {
-			UserUserRecord record = userDao.getResource(QueryConvert.commonQueryConvertToQuery(query));
+			UserUserRecord record = userDao.getRecord(QueryConvert.commonQueryConvertToQuery(query));
 			if(record != null) {
 				user = record.into(UserUserDO.class);
 			}
@@ -68,7 +70,7 @@ public class UserDBDaoThriftService implements Iface {
 
 	@Override
 	public List<UserUserDO> listUser(CommonQuery query) throws TException {
-		return userDao.listResources(QueryConvert.commonQueryConvertToQuery(query));
+		return userDao.getDatas(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override
@@ -76,27 +78,29 @@ public class UserDBDaoThriftService implements Iface {
 		if(user.getPassword() == null) {
 			user.setPassword("");
 		}
-		return userDao.saveResource(user);
+		return user;
 	}
 
 	@Override
 	public List<UserHrAccountDO> listHRFromCompany(int comanyId) throws TException {
-		return userHRAccountDao.listHRFromCompany(comanyId);
+		return null;
 	}
 
 	@Override
 	public List<UserHrAccountDO> listUserHrAccount(CommonQuery query) throws CURDException, TException {
-		return userHRAccountDao.listResources(QueryConvert.commonQueryConvertToQuery(query));
+		return new ArrayList<>();
 	}
 
 	@Override
 	public UserHrAccountDO getUserHrAccount(CommonQuery query) throws CURDException, TException {
-		return userHRAccountDao.findResource(QueryConvert.commonQueryConvertToQuery(query));
+		return new UserHrAccountDO();
 	}
 
 	@Override
 	public UserHrAccountDO updateUserHrAccount(UserHrAccountDO userHrAccountDO) throws CURDException, TException {
-		return userHRAccountDao.updateResource(userHrAccountDO);
+		com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO u = new com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO();
+		userHRAccountDao.updateData(u);
+		return userHrAccountDO;
 	}
 
 	@Override
@@ -116,7 +120,7 @@ public class UserDBDaoThriftService implements Iface {
 
 	@Override
 	public Response putUserEmployee(UserEmployeePointsRecordDO employeeDo) throws TException {
-		return userEmployeeDaoService.putUserEmployee(employeeDo);
+		return userEmployeeDaoService.putUserEmployee(new com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO());
 	}
 
 	/*
@@ -157,32 +161,33 @@ public class UserDBDaoThriftService implements Iface {
 
 	@Override
 	public List<UserEmployeePointsRecordDO> getUserEmployeePoints(int employeeId) throws TException {
-		return userEmployeeDaoService.getUserEmployeePoints(employeeId);
+		return new ArrayList<>();
 	}
 
 	@Override
 	public UserEmployeePointsRecordDO saveUserEmployeePoints(UserEmployeePointsRecordDO employeePoint) throws BIZException, TException {
-		return userEmployeePointsDao.saveResource(employeePoint);
+		userEmployeePointsDao.addData(employeePoint);
+		return employeePoint;
 	}
 
 	@Override
 	public List<UserEmployeeDO> getUserEmployeesDO(CommonQuery query) throws TException {
-		return userEmployeeDaoService.getEmployeesDO(QueryConvert.commonQueryConvertToQuery(query));
+		return new ArrayList<>();
 	}
 
 	@Override
 	public Response putUserEmployeesDO(List<UserEmployeeDO> employeeDoList) throws TException {
-		return userEmployeeDaoService.putEmployeesDO(employeeDoList);
+		return ResponseUtils.success(employeeDoList);
 	}
 
 	@Override
 	public List<UserWxUserDO> listUserWxUserDO(CommonQuery query) throws CURDException, TException {
-		return wxUserDao.listResources(QueryConvert.commonQueryConvertToQuery(query));
+		return wxUserDao.getDatas(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override
 	public UserWxUserDO getUserWxUserDO(CommonQuery query) throws CURDException, TException {
-		return wxUserDao.findResource(QueryConvert.commonQueryConvertToQuery(query));
+		return wxUserDao.getData(QueryConvert.commonQueryConvertToQuery(query));
 	}
 	
 	@Override

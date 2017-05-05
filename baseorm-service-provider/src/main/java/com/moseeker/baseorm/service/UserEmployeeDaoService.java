@@ -2,8 +2,8 @@ package com.moseeker.baseorm.service;
 
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.UserEmployeeDO;
-import com.moseeker.thrift.gen.dao.struct.UserEmployeePointsRecordDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 

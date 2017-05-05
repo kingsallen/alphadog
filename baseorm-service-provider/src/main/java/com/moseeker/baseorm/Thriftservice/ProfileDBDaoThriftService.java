@@ -23,26 +23,28 @@ public class ProfileDBDaoThriftService implements ProfileDBDao.Iface {
 
     @Override
     public List<ProfileOtherDO> listProfileOther(CommonQuery query) throws CURDException, TException {
-        return profileOtherDao.listResources(QueryConvert.commonQueryConvertToQuery(query));
+        return profileOtherDao.getDatas(QueryConvert.commonQueryConvertToQuery(query));
     }
 
     @Override
     public ProfileOtherDO getProfileOther(CommonQuery query) throws CURDException, TException {
-        return profileOtherDao.findResource(QueryConvert.commonQueryConvertToQuery(query));
+        return profileOtherDao.getData(QueryConvert.commonQueryConvertToQuery(query));
     }
 
     @Override
     public ProfileOtherDO updateProfileOther(ProfileOtherDO profileOther) throws CURDException, TException {
-        return profileOtherDao.updateResource(profileOther);
+        profileOtherDao.updateData(profileOther);
+        return profileOther;
     }
 
     @Override
     public ProfileOtherDO saveProfileOther(ProfileOtherDO profileOther) throws CURDException, TException {
-        return profileOtherDao.saveResource(profileOther);
+        profileOtherDao.addData(profileOther);
+        return profileOther;
     }
 
     @Override
     public int deleteProfileOther(ProfileOtherDO profileOther) throws CURDException, TException {
-        return profileOtherDao.deleteResource(profileOther);
+        return profileOtherDao.deleteData(profileOther);
     }
 }

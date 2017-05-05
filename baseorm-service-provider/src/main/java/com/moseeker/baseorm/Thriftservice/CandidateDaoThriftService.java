@@ -45,27 +45,30 @@ public class CandidateDaoThriftService implements CandidateDBDao.Iface {
     @Override
     public CandidateRemarkDO getCandidateRemark(CommonQuery query) throws TException {
 
-        return candidateRemarkDao.findResource(QueryConvert.commonQueryConvertToQuery(query));
+        return candidateRemarkDao.getData(QueryConvert.commonQueryConvertToQuery(query));
     }
 
     @Override
     public List<CandidateRemarkDO> listCandidateRemarks(CommonQuery query) throws CURDException, TException {
-        return candidateRemarkDao.listResources(QueryConvert.commonQueryConvertToQuery(query));
+        return candidateRemarkDao.getDatas(QueryConvert.commonQueryConvertToQuery(query));
     }
 
     @Override
     public CandidateRemarkDO saveCandidateRemark(CandidateRemarkDO candidateRemark) throws TException {
-        return candidateRemarkDao.saveResource(candidateRemark);
+        candidateRemarkDao.addData(candidateRemark);
+        return candidateRemark;
     }
 
     @Override
     public CandidateRemarkDO updateCandidateRemark(CandidateRemarkDO candidateRemark) throws CURDException, TException {
-        return candidateRemarkDao.updateResource(candidateRemark);
+        candidateRemarkDao.updateData(candidateRemark);
+        return candidateRemark;
     }
 
     @Override
     public List<CandidateRemarkDO> updateCandidateRemarks(List<CandidateRemarkDO> candidateRemarks) throws CURDException, TException {
-        return candidateRemarkDao.updateResources(candidateRemarks);
+        candidateRemarkDao.updateDatas(candidateRemarks);
+        return candidateRemarks;
     }
 
     @Override
@@ -75,22 +78,24 @@ public class CandidateDaoThriftService implements CandidateDBDao.Iface {
 
     @Override
     public CandidateCompanyDO getCandidateCompany(CommonQuery query) throws CURDException, TException {
-        return candidateCompanyDao.findResource(QueryConvert.commonQueryConvertToQuery(query));
+        return candidateCompanyDao.getData(QueryConvert.commonQueryConvertToQuery(query));
     }
 
     @Override
     public List<CandidateCompanyDO> listCandidateCompanys(CommonQuery query) throws CURDException, TException {
-        return candidateCompanyDao.listResources(QueryConvert.commonQueryConvertToQuery(query));
+        return candidateCompanyDao.getDatas(QueryConvert.commonQueryConvertToQuery(query));
     }
 
     @Override
     public CandidateCompanyDO saveCandidateCompanys(CandidateCompanyDO candidateCompany) throws TException {
-        return candidateCompanyDao.saveResource(candidateCompany);
+        candidateCompanyDao.addData(candidateCompany);
+        return candidateCompany;
     }
 
     @Override
     public CandidateCompanyDO updateCandidateCompanys(CandidateCompanyDO candidateCompany) throws TException {
-        return candidateCompanyDao.updateResource(candidateCompany);
+        candidateCompanyDao.updateData(candidateCompany);
+        return candidateCompany;
     }
 
     @Override
@@ -100,12 +105,12 @@ public class CandidateDaoThriftService implements CandidateDBDao.Iface {
 
     @Override
     public CandidatePositionDO getCandidatePosition(CommonQuery query) throws TException {
-        return candidatePositionDao.findResource(QueryConvert.commonQueryConvertToQuery(query));
+        return candidatePositionDao.getData(QueryConvert.commonQueryConvertToQuery(query));
     }
 
     @Override
     public List<CandidatePositionDO> listCandidatePositions(CommonQuery query) throws TException {
-        return candidatePositionDao.listResources(QueryConvert.commonQueryConvertToQuery(query));
+        return candidatePositionDao.getDatas(QueryConvert.commonQueryConvertToQuery(query));
     }
 
     @Override
@@ -115,12 +120,14 @@ public class CandidateDaoThriftService implements CandidateDBDao.Iface {
 
     @Override
     public CandidatePositionDO updateCandidatePosition(CandidatePositionDO candidatePosition) throws TException {
-        return candidatePositionDao.updateResource(candidatePosition);
+        candidatePositionDao.updateData(candidatePosition);
+        return candidatePosition;
     }
 
     @Override
     public CandidatePositionDO saveCandidatePosition(CandidatePositionDO candidatePosition) throws com.moseeker.thrift.gen.common.struct.CURDException, TException {
-        return candidatePositionDao.saveResource(candidatePosition);
+        candidatePositionDao.addData(candidatePosition);
+        return candidatePosition;
     }
 
     @Override
@@ -130,17 +137,18 @@ public class CandidateDaoThriftService implements CandidateDBDao.Iface {
 
     @Override
     public CandidatePositionShareRecordDO getCandidatePositionShareRecord(CommonQuery query) throws TException {
-        return candidatePositionShareRecordDao.findResource(QueryConvert.commonQueryConvertToQuery(query));
+        return candidatePositionShareRecordDao.getData(QueryConvert.commonQueryConvertToQuery(query));
     }
 
     @Override
     public List<CandidatePositionShareRecordDO> listCandidatePositionShareRecord(CommonQuery query) throws TException {
-        return candidatePositionShareRecordDao.listResources(QueryConvert.commonQueryConvertToQuery(query));
+        return candidatePositionShareRecordDao.getDatas(QueryConvert.commonQueryConvertToQuery(query));
     }
 
     @Override
     public CandidatePositionShareRecordDO updateCandidatePositionShareRecord(CandidatePositionShareRecordDO candidatePositionShareRecord) throws TException {
-        return candidatePositionShareRecordDao.updateResource(candidatePositionShareRecord);
+        candidatePositionShareRecordDao.updateData(candidatePositionShareRecord);
+        return candidatePositionShareRecord;
     }
 
     @Override
@@ -150,7 +158,7 @@ public class CandidateDaoThriftService implements CandidateDBDao.Iface {
 
     @Override
     public CandidateRecomRecordDO getCandidateRecomRecord(CommonQuery query) throws TException {
-        return candidateRecomRecordDao.findResource(QueryConvert.commonQueryConvertToQuery(query));
+        return candidateRecomRecordDao.getData(QueryConvert.commonQueryConvertToQuery(query));
     }
 
     @Override
@@ -170,7 +178,7 @@ public class CandidateDaoThriftService implements CandidateDBDao.Iface {
 
     @Override
     public List<CandidateRecomRecordDO> listCandidateRecomRecords(CommonQuery query) throws TException {
-        return candidateRecomRecordDao.listResources(QueryConvert.commonQueryConvertToQuery(query));
+        return candidateRecomRecordDao.getDatas(QueryConvert.commonQueryConvertToQuery(query));
     }
 
     @Override
@@ -206,7 +214,7 @@ public class CandidateDaoThriftService implements CandidateDBDao.Iface {
     @Override
     public int countCandidateRecomRecord(CommonQuery query) throws TException {
         try {
-            return candidateRecomRecordDao.getResourceCount(QueryConvert.commonQueryConvertToQuery(query));
+            return candidateRecomRecordDao.getCount(QueryConvert.commonQueryConvertToQuery(query));
         } catch (Exception e) {
             throw new CURDException();
         }
@@ -244,7 +252,8 @@ public class CandidateDaoThriftService implements CandidateDBDao.Iface {
 
     @Override
     public CandidateRecomRecordDO updateCandidateRecomRecords(CandidateRecomRecordDO candidateRecomRecord) throws TException {
-        return candidateRecomRecordDao.updateResource(candidateRecomRecord);
+        candidateRecomRecordDao.updateData(candidateRecomRecord);
+        return candidateRecomRecord;
     }
 
     @Override
@@ -254,17 +263,18 @@ public class CandidateDaoThriftService implements CandidateDBDao.Iface {
 
     @Override
     public CandidateShareChainDO getCandidateShareChain(CommonQuery query) throws TException {
-        return candidateShareChainDao.findResource(QueryConvert.commonQueryConvertToQuery(query));
+        return candidateShareChainDao.getData(QueryConvert.commonQueryConvertToQuery(query));
     }
 
     @Override
     public List<CandidateShareChainDO> listCandidateShareChain(CommonQuery query) throws TException {
-        return candidateShareChainDao.listResources(QueryConvert.commonQueryConvertToQuery(query));
+        return candidateShareChainDao.getDatas(QueryConvert.commonQueryConvertToQuery(query));
     }
 
     @Override
     public CandidateShareChainDO updateCandidateShareChain(CandidateShareChainDO candidateShareChain) throws TException {
-        return candidateShareChainDao.updateResource(candidateShareChain);
+        candidateShareChainDao.updateData(candidateShareChain);
+        return candidateShareChain;
     }
 
     @Override
@@ -274,17 +284,18 @@ public class CandidateDaoThriftService implements CandidateDBDao.Iface {
 
     @Override
     public CandidateSuggestPositionDO getCandidateSuggestPosition(CommonQuery query) throws TException {
-        return candidateSuggestPositionDao.findResource(QueryConvert.commonQueryConvertToQuery(query));
+        return candidateSuggestPositionDao.getData(QueryConvert.commonQueryConvertToQuery(query));
     }
 
     @Override
     public List<CandidateSuggestPositionDO> listCandidateSuggestPosition(CommonQuery query) throws TException {
-        return candidateSuggestPositionDao.listResources(QueryConvert.commonQueryConvertToQuery(query));
+        return candidateSuggestPositionDao.getDatas(QueryConvert.commonQueryConvertToQuery(query));
     }
 
     @Override
     public CandidateSuggestPositionDO updateCandidateSuggestPosition(CandidateSuggestPositionDO candidateSuggestPosition) throws TException {
-        return candidateSuggestPositionDao.updateResource(candidateSuggestPosition);
+        candidateSuggestPositionDao.updateData(candidateSuggestPosition);
+        return candidateSuggestPosition;
     }
 
     @Override

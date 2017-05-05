@@ -1,15 +1,14 @@
 package com.moseeker.baseorm.service.Impl;
 
-import com.moseeker.common.util.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import com.moseeker.baseorm.dao.jobdb.JobCustomDao;
 import com.moseeker.baseorm.dao.jobdb.JobOccupationDao;
 import com.moseeker.baseorm.service.PositionService;
 import com.moseeker.baseorm.tool.OrmTools;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.position.struct.dao.JobOccupationCustom;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * auth:zzt

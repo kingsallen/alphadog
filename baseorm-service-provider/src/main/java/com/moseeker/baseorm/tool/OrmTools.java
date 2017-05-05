@@ -186,7 +186,7 @@ public class OrmTools {
 	/*
 	 * 按照内部是数据的list集合的方式返回response
 	 */
-	public static <K extends UpdatableRecordImpl<K>, V extends UpdatableRecord<V>> Response getList(JooqCrudImpl<K,V> dao, Query query, TBase bean){
+	public static <K, V extends UpdatableRecordImpl<V>> Response getList(JooqCrudImpl<K,V> dao, Query query, TBase bean){
 		try{
 			List<K> list=dao.getDatas(query);
 			return ResponseUtils.success(list);

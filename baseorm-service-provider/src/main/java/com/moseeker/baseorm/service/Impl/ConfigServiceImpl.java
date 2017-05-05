@@ -27,7 +27,7 @@ public class ConfigServiceImpl implements ConfigService {
 		// TODO Auto-generated method stub
 		try{
 			ConfigSysPointsConfTpl result=
-					(ConfigSysPointsConfTpl) BeanUtils.DBToStruct(ConfigSysPointsConfTpl.class,configSysPointsConfTplDao.getResource(query) );
+					(ConfigSysPointsConfTpl) BeanUtils.DBToStruct(ConfigSysPointsConfTpl.class,configSysPointsConfTplDao.getRecord(query) );
 			return ResponseUtils.success(result);
 		}catch(Exception e){
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
@@ -38,7 +38,7 @@ public class ConfigServiceImpl implements ConfigService {
 		// TODO Auto-generated method stub
 		
 		try{
-			List<ConfigSysPointsConfTplRecord> result=configSysPointsConfTplDao.getResources(query);
+			List<ConfigSysPointsConfTplRecord> result=configSysPointsConfTplDao.getRecords(query);
 			List<ConfigSysPointsConfTpl> list=this.convertStruct(result);
 			
 			return ResponseUtils.success(list);

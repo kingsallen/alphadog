@@ -31,7 +31,7 @@ public class SearchConditionDaoThriftService implements Iface {
 			throws TException {
 		List<SearchCondition> list = new ArrayList<SearchCondition>();
 		try {
-			dao.getResources(QueryConvert.commonQueryConvertToQuery(query)).forEach(record -> {
+			dao.getRecords(QueryConvert.commonQueryConvertToQuery(query)).forEach(record -> {
 				list.add((SearchCondition) BeanUtils.DBToStruct(SearchCondition.class, record));
 			});
 		} catch (Exception e) {
@@ -43,7 +43,7 @@ public class SearchConditionDaoThriftService implements Iface {
 	@Override
 	public SearchCondition getResource(CommonQuery query) throws TException {
 		try {
-			return (SearchCondition) BeanUtils.DBToStruct(SearchCondition.class, dao.getResource(QueryConvert.commonQueryConvertToQuery(query)));
+			return (SearchCondition) BeanUtils.DBToStruct(SearchCondition.class, dao.getRecord(QueryConvert.commonQueryConvertToQuery(query)));
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			throw new TException(MessageFormat.format("根据commonQuery={0}查询结果集出错", query.toString()));
@@ -53,7 +53,7 @@ public class SearchConditionDaoThriftService implements Iface {
 	@Override
 	public int getResourceCount(CommonQuery query) throws TException {
 		try {
-			return dao.getResourceCount(QueryConvert.commonQueryConvertToQuery(query));
+			return dao.getCount(QueryConvert.commonQueryConvertToQuery(query));
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
@@ -63,7 +63,7 @@ public class SearchConditionDaoThriftService implements Iface {
 	@Override
 	public int postResource(SearchCondition searchCondition) throws TException {
 		try {
-			return dao.postResource((HrSearchConditionRecord) BeanUtils.structToDB(searchCondition, HrSearchConditionRecord.class));
+			return dao.addRecord(BeanUtils.structToDB(searchCondition, HrSearchConditionRecord.class));
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}
