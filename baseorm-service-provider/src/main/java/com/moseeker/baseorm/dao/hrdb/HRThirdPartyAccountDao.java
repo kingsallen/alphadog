@@ -75,6 +75,14 @@ public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecor
 						.where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.COMPANY_ID.equal(record.getCompanyId())
 								.and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.equal(record.getChannel())))
 						.fetchOne();*/
+				logger.info(create.update(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
+						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.USERNAME, record.getUsername())
+						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.PASSWORD, record.getPassword())
+						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.MEMBERNAME, record.getMembername())
+						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.BINDING, record.getBinding())
+						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.REMAIN_NUM, record.getRemainNum())
+						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.SYNC_TIME, record.getSyncTime())
+						.where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.eq(record.getId())).getSQL());
 				count = create.update(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
 						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.USERNAME, record.getUsername())
 						.set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.PASSWORD, record.getPassword())
