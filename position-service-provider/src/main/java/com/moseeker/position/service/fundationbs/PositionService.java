@@ -18,6 +18,7 @@ import com.moseeker.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.db.dictdb.tables.records.DictPositionRecord;
 import com.moseeker.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.db.hrdb.tables.records.HrTeamRecord;
+import com.moseeker.db.jobdb.tables.JobOccupation;
 import com.moseeker.db.jobdb.tables.records.*;
 import com.moseeker.position.dao.*;
 import com.moseeker.position.pojo.*;
@@ -489,12 +490,15 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     dbOnlineList.add(jobPositionRecord);
                 }
             }
-            HashMap dictPositionRecordMap = new LinkedHashMap();
-            // 公司职能信息
-            QueryUtil dictPosition = new QueryUtil();
-            List<DictPositionRecord> dictPositionRecordList = dictPositionDao.getResources(dictPosition);
-            for (DictPositionRecord dictPositionRecord : dictPositionRecordList) {
-                dictPositionRecordMap.put(dictPositionRecord.getName().trim(), dictPositionRecord);
+            HashMap jobOccupationMap = new LinkedHashMap();
+            // 公司下职能信息
+            QueryUtil jobOccupationQuery = new QueryUtil();
+            jobOccupationQuery.addEqualFilter("company_id", String.valueOf(companyId));
+            jobOccupationQuery.setPer_page(100000);
+            jobOccupationQuery.addEqualFilter("status", 1);
+            List<JobOccupationRecord> jobOccupationList = jobOccupationDao.getResources(jobOccupationQuery);
+            for (JobOccupationRecord jobOccupationRecord : jobOccupationList) {
+                jobOccupationMap.put(jobOccupationRecord.getName().trim(), jobOccupationRecord);
             }
             // 需要删除的城市的数据ID列表
             List<Integer> deleteCitylist = new ArrayList<>();
@@ -605,6 +609,25 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 } else {
                     record.setDepartment("");
                 }
+                int jobOccupationId = 0;
+                // 验证职能信息是否正确
+                if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(jobPositionHandlerDate.getOccupation())) {
+                    JobOccupationRecord jobOccupationRecord = (JobOccupationRecord) jobOccupationMap.get(jobPositionHandlerDate.getOccupation().trim());
+                    if (jobOccupationRecord != null) {
+                        jobOccupationId = jobOccupationRecord.getId();
+                    } else {
+                        logger.info("-----职位职能设置错误,职能为:" + jobPositionHandlerDate.getOccupation());
+                        JobPositionFailMess jobPositionFailMessPojo = new JobPositionFailMess();
+                        jobPositionFailMessPojo.setCompanyId(jobPositionHandlerDate.getCompany_id());
+                        jobPositionFailMessPojo.setJobNumber(jobPositionHandlerDate.getJobnumber());
+                        jobPositionFailMessPojo.setSourceId(jobPositionHandlerDate.getSource_id());
+                        jobPositionFailMessPojo.setJobPostionId(jobPositionHandlerDate.getId());
+                        jobPositionFailMessPojo.setDepartment(jobPositionHandlerDate.getDepartment());
+                        jobPositionFailMessPojo.setMessage(ConstantErrorCodeMessage.POSITION_DATA_OCCUPATION_ERROR);
+                        jobPositionFailMessPojos.add(jobPositionFailMessPojo);
+                        continue;
+                    }
+                }
                 // 换算薪资范围
                 if (record.getSalaryBottom().intValue() == 0 && record.getSalaryTop().intValue() == 0) {
                     record.setSalary("面议");
@@ -663,28 +686,17 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                                 deleteCitylist.add(record.getId());
                                 jobPositionCityRecordsUpdatelist.addAll(cityCode(jobPositionHandlerDate.getCity(), record.getId()));
                             }
-
-                            // 查询到了职位职能信息
-                            if (jobPositionHandlerDate.getOccupation() != null) {
-                                DictPositionRecord dictPositionRecord = (DictPositionRecord) dictPositionRecordMap.get(jobPositionHandlerDate.getOccupation().trim());
-                                if (dictPositionRecord != null && dictPositionRecord.getCode().intValue() != 0) {
-                                    JobOccupationRelRecord jobOccupationRelRecord = new JobOccupationRelRecord();
-                                    jobOccupationRelRecord.setPid(record.getId());
-                                    jobOccupationRelRecord.setCode(dictPositionRecord.getCode().intValue());
-                                    jobOccupationRelRecordList.add(jobOccupationRelRecord);
-                                    jobOccupationRelIdList.add(record.getId());
-                                }
-                            }
-
                             // 需要更新的JobPositionExra数据
-                            if (jobPositionHandlerDate.getExtra() != null) {
+                            if (jobPositionHandlerDate.getExtra() != null || jobOccupationId != 0) {
                                 if (jobPositionExtRecord == null) {
                                     jobPositionExtRecord = new JobPositionExtRecord();
                                     jobPositionExtRecord.setPid(jobPositionRecordTemp.getId());
-                                    jobPositionExtRecord.setExtra(jobPositionHandlerDate.getExtra());
+                                    jobPositionExtRecord.setExtra(jobPositionHandlerDate.getExtra() == null ? "" : jobPositionHandlerDate.getExtra());
+                                    jobPositionExtRecord.setJobOccupationId(jobOccupationId);
                                     jobPositionExtRecordAddRecords.add(jobPositionExtRecord);
                                 } else {
-                                    jobPositionExtRecord.setExtra(jobPositionHandlerDate.getExtra());
+                                    jobPositionExtRecord.setExtra(jobPositionHandlerDate.getExtra() == null ? "" : jobPositionHandlerDate.getExtra());
+                                    jobPositionExtRecord.setJobOccupationId(jobOccupationId);
                                     jobPositionExtRecordUpdateRecords.add(jobPositionExtRecord);
                                 }
                             }
@@ -702,23 +714,14 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                             // 新增城市code时，需要先删除jobpostionCity数据
                             jobPositionCityRecordsAddlist.addAll(cityCode(jobPositionHandlerDate.getCity(), record.getId()));
                         }
-                        // 查询到了职位职能信息
-                        if (jobPositionHandlerDate.getOccupation() != null) {
-                            DictPositionRecord dictPositionRecord = (DictPositionRecord) dictPositionRecordMap.get(jobPositionHandlerDate.getOccupation().trim());
-                            if (dictPositionRecord != null && dictPositionRecord.getCode().intValue() != 0) {
-                                JobOccupationRelRecord jobOccupationRelRecord = new JobOccupationRelRecord();
-                                jobOccupationRelRecord.setPid(pid);
-                                jobOccupationRelRecord.setCode(dictPositionRecord.getCode().intValue());
-                                jobOccupationRelRecordList.add(jobOccupationRelRecord);
-                            }
-                        }
                     }
                     // 需要新增的JobPosition数据
                     jobPositionAddRecordList.add(record);
-                    if (jobPositionHandlerDate.getExtra() != null) {
+                    if (jobPositionHandlerDate.getExtra() != null || jobOccupationId != 0) {
                         // 新增jobPostion_ext数据
                         JobPositionExtRecord jobPositionExtRecord = new JobPositionExtRecord();
-                        jobPositionExtRecord.setExtra(jobPositionHandlerDate.getExtra());
+                        jobPositionExtRecord.setExtra(jobPositionHandlerDate.getExtra() == null ? "" : jobPositionHandlerDate.getExtra());
+                        jobPositionExtRecord.setJobCustomId(jobOccupationId);
                         jobPositionExtRecord.setPid(pid);
                         jobPositionExtRecordAddRecords.add(jobPositionExtRecord);
                     }
