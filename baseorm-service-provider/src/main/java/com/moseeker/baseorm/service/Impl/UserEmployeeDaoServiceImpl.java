@@ -10,10 +10,9 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.UserEmployeeDO;
-import com.moseeker.thrift.gen.dao.struct.UserEmployeePointsRecordDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeePointSum;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
@@ -59,7 +58,7 @@ public class UserEmployeeDaoServiceImpl implements UserEmployeeDaoService {
             for (UserEmployeePointStruct record : records) {
                 list.add(BeanUtils.structToDB(record, UserEmployeePointsRecordRecord.class));
             }
-            int result = dao1.postResources(list);
+            int result = dao1.addAllRecord(list).length;
             return ResponseUtils.success(result);
         } catch (Exception e) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
@@ -98,7 +97,7 @@ public class UserEmployeeDaoServiceImpl implements UserEmployeeDaoService {
             for (UserEmployeePointStruct record : records) {
                 list.add(BeanUtils.structToDB(record, UserEmployeePointsRecordRecord.class));
             }
-            int result = dao1.putResources(list);
+            int result = dao1.updateRecords(list).length;
             return ResponseUtils.success(result);
         } catch (Exception e) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
@@ -108,17 +107,11 @@ public class UserEmployeeDaoServiceImpl implements UserEmployeeDaoService {
     @Override
     public List<UserEmployeePointsRecordDO> getUserEmployeePoints(int employeeId) {
         List<UserEmployeePointsRecordDO> result = new ArrayList<>();
-        try {
-            QueryUtil qu = new QueryUtil();
-            qu.addEqualFilter("employee_id", String.valueOf(employeeId));
-            qu.orderBy("id", Order.DESC);
-            qu.setPer_page(Integer.MAX_VALUE);
-            List<UserEmployeePointsRecordRecord> records =
-                    dao1.getResources(qu);
-            result = BeanUtils.DBToStruct(UserEmployeePointsRecordDO.class, records);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        QueryUtil qu = new QueryUtil();
+        qu.addEqualFilter("employee_id", String.valueOf(employeeId));
+        qu.orderBy("id", Order.DESC);
+        qu.setPer_page(Integer.MAX_VALUE);
+        result = dao1.getDatas(qu);
         return result;
     }
 

@@ -30,7 +30,7 @@ public class HrCompanyServiceImpl implements HrCompanyService {
 	public Response getCompanyConf(Query query) {
 		// TODO Auto-generated method stub
 		try{
-			HrCompanyConfRecord result=hrCompantDao.getResource(query);
+			HrCompanyConfRecord result=hrCompantDao.getRecord(query);
 			if(result!=null){
 				return ResponseUtils.success(BeanUtils.DBToStruct(HRCompanyConfData.class,result));
 			}else{

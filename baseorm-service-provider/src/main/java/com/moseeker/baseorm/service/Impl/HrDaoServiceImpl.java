@@ -50,103 +50,44 @@ public class HrDaoServiceImpl implements HrDaoService {
 
     @Override
     public HrHbConfigDO getHbConfig(Query query) throws TException {
-    	HrHbConfigDO result = new HrHbConfigDO();
-        try {
-            result = BeanUtils.DBToStruct(HrHbConfigDO.class, hrHbConfigDao.getResource(query));
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-        }
-        return result;
+        return hrHbConfigDao.getData(query);
     }
     
     @Override
 	public List<HrHbConfigDO> getHbConfigs(Query query) throws TException {
-    	List<HrHbConfigDO> result = new ArrayList<HrHbConfigDO>();
-        try {
-            result = BeanUtils.DBToStruct(HrHbConfigDO.class, hrHbConfigDao.getResources(query));
-
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-        }
-        return result;
+        return hrHbConfigDao.getDatas(query);
 	}
 
     @Override
     public HrHbPositionBindingDO getHbPositionBinding(Query query) throws TException {
-    	HrHbPositionBindingDO result = new HrHbPositionBindingDO();
-        try {
-        	result = BeanUtils.DBToStruct(HrHbPositionBindingDO.class, hrHbPositionBindingDao.getResource(query));
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-        }
-        return result;
+        return hrHbPositionBindingDao.getData(query);
     }
 
     @Override
     public List<HrHbPositionBindingDO> getHbPositionBindings(Query query) throws TException {
-        List<HrHbPositionBindingDO> result = new ArrayList<HrHbPositionBindingDO>();
-        try {
-            result = BeanUtils.DBToStruct(HrHbPositionBindingDO.class, hrHbPositionBindingDao.getResources(query));
-
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-        }
-        return result;
+        return hrHbPositionBindingDao.getDatas(query);
     }
 
     @Override
     public HrHbItemsDO getHbItem(Query query) throws TException {
-    	HrHbItemsDO result = new HrHbItemsDO();
-        try {
-            result = BeanUtils.DBToStruct(HrHbItemsDO.class, hrHbItemsDao.getResource(query));
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-        }
-        return result;
+        return hrHbItemsDao.getData(query);
     }
 
     @Override
     public List<HrHbItemsDO> getHbItems(Query query) throws TException {
-        List<HrHbItemsDO> result = new ArrayList<HrHbItemsDO>();
-        try {
-            List<com.moseeker.baseorm.db.hrdb.tables.records.HrHbItemsRecord> records = hrHbItemsDao.getResources(query);
-            result = BeanUtils.DBToStruct(HrHbItemsDO.class, records);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-        }
-        return result;
+        return hrHbItemsDao.getDatas(query);
     }
 
     @Override
     public HrHbScratchCardDO getHbScratchCard(Query query) throws TException {
-        HrHbScratchCardDO result = new HrHbScratchCardDO();
-        try {
-            result = BeanUtils.DBToStruct(HrHbScratchCardDO.class, hrHbScratchCardDao.getResource(query));
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-        }
-        return result;
+        return hrHbScratchCardDao.getData(query);
     }
 
     @Override
     public HrHbSendRecordDO getHbSendRecord(Query query) throws TException {
         HrHbSendRecordDO result = new HrHbSendRecordDO();
         try {
-            result = BeanUtils.DBToStruct(HrHbSendRecordDO.class, hrHbSendRecordDao.getResource(query));
+            result = BeanUtils.DBToStruct(HrHbSendRecordDO.class, hrHbSendRecordDao.getRecord(query));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -159,7 +100,7 @@ public class HrDaoServiceImpl implements HrDaoService {
     public HrEmployeeCertConfDO getEmployeeCertConf(Query query) throws TException {
         HrEmployeeCertConfDO result = new HrEmployeeCertConfDO();
         try {
-        		HrEmployeeCertConfRecord record = hrEmployeeCertConfDao.getResource(query);
+        		HrEmployeeCertConfRecord record = hrEmployeeCertConfDao.getRecord(query);
         		logger.info("HrEmployeeCertConfRecord: {}", record.intoMap());
             result = BeanUtils.DBToStruct(HrEmployeeCertConfDO.class, record);
             logger.info("HrEmployeeCertConfDO: {}", result.toString());
@@ -172,44 +113,16 @@ public class HrDaoServiceImpl implements HrDaoService {
 
     @Override
     public List<HrEmployeeCustomFieldsDO> getEmployeeCustomFields(Query query) throws TException {
-        List<HrEmployeeCustomFieldsDO> result = new ArrayList<HrEmployeeCustomFieldsDO>();
-        try {
-            List<com.moseeker.baseorm.db.hrdb.tables.records.HrEmployeeCustomFieldsRecord> records = hrEmployeeCustomFieldsDao.getResources(query);
-            result = BeanUtils.DBToStruct(HrEmployeeCustomFieldsDO.class, records);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-        }
-        return result;
+        return hrEmployeeCustomFieldsDao.getDatas(query);
     }
 
     @Override
     public List<HrCompanyAccountDO> getHrCompanyAccounts(Query query) throws TException {
-        List<HrCompanyAccountDO> result = new ArrayList<HrCompanyAccountDO>();
-        try {
-            List<com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord> records = hrCompanyAccountDao.getResources(query);
-            result = BeanUtils.DBToStruct(HrCompanyAccountDO.class, records);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-        }
-        return result;
+        return hrCompanyAccountDao.getDatas(query);
     }
 
     @Override
     public List<HrPointsConfDO> getPointsConfs(Query query) throws TException {
-        List<HrPointsConfDO> result = new ArrayList<>();
-        try {
-            List<com.moseeker.baseorm.db.hrdb.tables.records.HrPointsConfRecord> records =
-                    hrPointsConfDao.getResources(query);
-            result = BeanUtils.DBToStruct(HrPointsConfDO.class, records);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage(), e);
-        }
-        return result;
+        return hrPointsConfDao.getDatas(query);
     }
 }

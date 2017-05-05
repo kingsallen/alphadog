@@ -11,6 +11,7 @@ import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,7 +25,7 @@ public class ConfigDBDaoThriftService implements Iface {
 
 	@Override
 	public List<ConfigSysPointConfTplDO> getAwardConfigTpls(CommonQuery query) throws TException {
-		return awardConfigTplDao.getAwardConfigTpls(QueryConvert.commonQueryConvertToQuery(query));
+		return new ArrayList<>();
 	}
 
 	@Override

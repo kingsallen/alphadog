@@ -4,6 +4,7 @@ import com.moseeker.baseorm.dao.userdb.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.service.UserEmployeeDaoService;
 import com.moseeker.baseorm.tool.QueryConvert;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -119,7 +120,7 @@ public class UserDBDaoThriftService implements Iface {
 
 	@Override
 	public Response putUserEmployee(UserEmployeePointsRecordDO employeeDo) throws TException {
-		return userEmployeeDaoService.putUserEmployee(employeeDo);
+		return userEmployeeDaoService.putUserEmployee(new com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO());
 	}
 
 	/*
@@ -160,7 +161,7 @@ public class UserDBDaoThriftService implements Iface {
 
 	@Override
 	public List<UserEmployeePointsRecordDO> getUserEmployeePoints(int employeeId) throws TException {
-		return userEmployeeDaoService.getUserEmployeePoints(employeeId);
+		return new ArrayList<>();
 	}
 
 	@Override
@@ -171,12 +172,12 @@ public class UserDBDaoThriftService implements Iface {
 
 	@Override
 	public List<UserEmployeeDO> getUserEmployeesDO(CommonQuery query) throws TException {
-		return userEmployeeDaoService.getEmployeesDO(QueryConvert.commonQueryConvertToQuery(query));
+		return new ArrayList<>();
 	}
 
 	@Override
 	public Response putUserEmployeesDO(List<UserEmployeeDO> employeeDoList) throws TException {
-		return userEmployeeDaoService.putEmployeesDO(employeeDoList);
+		return ResponseUtils.success(employeeDoList);
 	}
 
 	@Override
