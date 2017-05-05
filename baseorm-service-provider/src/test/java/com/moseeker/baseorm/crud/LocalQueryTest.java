@@ -9,6 +9,7 @@ import com.moseeker.thrift.gen.useraccounts.struct.User;
 import org.jooq.*;
 import org.jooq.Condition;
 import org.jooq.impl.DefaultDSLContext;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -143,21 +144,6 @@ public class LocalQueryTest {
 
         System.out.println(context.select(UserUser.USER_USER.ID)
                 .from(UserUser.USER_USER).where(condition13).getSQL());
-    }
-
-    @Test
-    public void testConsition() throws Exception {
-
-        Condition condition = localQuery.buildConditions();
-
-        System.out.println(context.select(UserUser.USER_USER.ID)
-                .from(UserUser.USER_USER).where(UserUser.USER_USER.ID.eq(1)
-                .or(UserUser.USER_USER.NAME.eq("hello")).and(UserUser.USER_USER.NICKNAME.eq("hello")
-                        .and(UserUser.USER_USER.ACTIVATION.eq((byte)1)))
-                        .or(UserUser.USER_USER.IS_DISABLE.eq((byte)1)).or((UserUser.USER_USER.EMAIL.eq("email")
-                                .or(UserUser.USER_USER.HEADIMG.eq("headimg"))))
-                        .and(UserUser.USER_USER.ACTIVATION_CODE.eq("1")))
-                .groupBy(UserUser.USER_USER.NICKNAME, UserUser.USER_USER.NAME, UserUser.USER_USER.ACTIVATION).getSQL());
     }
 
     @Test

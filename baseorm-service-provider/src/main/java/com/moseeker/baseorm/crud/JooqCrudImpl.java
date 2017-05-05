@@ -43,15 +43,17 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
 
 
     @Override
-    public int addRecord(R r) {
+    public R addRecord(R r) {
         create.attach(r);
-        return create.insertInto(table).set(r).execute();
+        r.insert();
+        return r;
     }
 
     @Override
-    public int[] addAllRecord(List<R> rs) {
+    public List<R> addAllRecord(List<R> rs) {
         create.attach(rs);
-        return create.batchInsert(rs).execute();
+        create.batchInsert(rs).execute();
+        return rs;
     }
 
     @Override
