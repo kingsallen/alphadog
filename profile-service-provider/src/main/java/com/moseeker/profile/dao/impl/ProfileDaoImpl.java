@@ -26,6 +26,8 @@ import com.moseeker.db.userdb.tables.records.UserSettingsRecord;
 import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.profile.dao.ProfileDao;
+import com.moseeker.profile.dao.entity.AtsProfileBasic;
+import com.moseeker.profile.dao.entity.AtsProfileWorkexp;
 import com.moseeker.profile.dao.entity.ProfileWorkexpEntity;
 import com.moseeker.profile.service.impl.serviceutils.CompletenessCalculator;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -1091,38 +1093,38 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
         buildMap(map, "job_position", position);
 
         //extra from jobdb.job_position_ext # custom job fields in JSON format
-        com.moseeker.thrift.gen.position.struct.JobPositionExt positionExt = create
+        Map<String, Object> positionExt = create
                 .select()
                 .from(JobPositionExt.JOB_POSITION_EXT)
                 .where(JobPositionExt.JOB_POSITION_EXT.PID.eq(position.getId()))
-                .fetchAnyInto(com.moseeker.thrift.gen.position.struct.JobPositionExt.class);
-        if (positionExt != null && !StringUtils.isNullOrEmpty(positionExt.getExtra())) {
+                .fetchAnyMap();
+        if (positionExt != null && !StringUtils.isNullOrEmpty(positionExt.get("extra") + "")) {
             buildMap(map, "job_position_ext", positionExt);
         }
 
         //other from jobdb.job_resume_other # custom résumé fields in JSON format
-        com.moseeker.thrift.gen.application.struct.JobResumeOther resumeOther = create
+        Map<String, Object> resumeOther = create
                 .select()
                 .from(JobResumeOther.JOB_RESUME_OTHER)
                 .where(JobResumeOther.JOB_RESUME_OTHER.APP_ID.eq(UInteger.valueOf(application.getId())))
-                .fetchAnyInto(com.moseeker.thrift.gen.application.struct.JobResumeOther.class);
+                .fetchAnyMap();
         buildMap(map, "job_resume_other", resumeOther);
 
         if (application.getApplier_id() != 0) {
             //all from userdb.user_user
-            User user = create
+            Map<String, Object> user = create
                     .select()
                     .from(UserUser.USER_USER)
                     .where(UserUser.USER_USER.ID.eq(UInteger.valueOf(application.getApplier_id())))
-                    .fetchAnyInto(User.class);
+                    .fetchAnyMap();
             buildMap(map, "user_user", user);
 
             //all from profiledb.user_thirdparty_user # ATS login
-            ThirdPartyUser thirdPartyUser = create
+            Map<String, Object> thirdPartyUser = create
                     .select()
                     .from(UserThirdpartyUser.USER_THIRDPARTY_USER)
                     .where(UserThirdpartyUser.USER_THIRDPARTY_USER.USER_ID.eq((int) application.getApplier_id()))
-                    .fetchAnyInto(ThirdPartyUser.class);
+                    .fetchAnyMap();
             buildMap(map, "user_thirdparty_user", thirdPartyUser);
 
             //all from profiledb.profile_profile
@@ -1134,53 +1136,70 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
             buildMap(map, "profile_profile", profile);
             if (profile != null) {
                 //all from profiledb.profile_attachment
-                Attachment profile_attachment = create
+                Map<String, Object> profile_attachment = create
                         .select()
                         .from(ProfileAttachment.PROFILE_ATTACHMENT)
                         .where(ProfileAttachment.PROFILE_ATTACHMENT.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
-                        .fetchAnyInto(Attachment.class);
+                        .fetchAnyMap();
                 buildMap(map, "profile_attachment", profile_attachment);
 
                 //all from profiledb.profile_basic
-                Basic profile_basic = create
-                        .select()
-                        .from(ProfileBasic.PROFILE_BASIC)
-                        .where(ProfileBasic.PROFILE_BASIC.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
-                        .fetchAnyInto(Basic.class);
+                ProfileBasic basic = ProfileBasic.PROFILE_BASIC.as("pb");
+                DictCountry dictCountry = DictCountry.DICT_COUNTRY.as("dc");
+                AtsProfileBasic profile_basic = create
+                        .select(basic.PROFILE_ID,
+                                basic.NAME,
+                                basic.GENDER,
+                                basic.NATIONALITY_CODE,
+                                basic.NATIONALITY_NAME,
+                                basic.CITY_NAME,
+                                basic.CITY_CODE,
+                                basic.BIRTH,
+                                basic.WEIXIN,
+                                basic.QQ,
+                                basic.MOTTO,
+                                basic.SELF_INTRODUCTION,
+                                basic.CREATE_TIME,
+                                basic.UPDATE_TIME,
+                                dictCountry.CODE.as("country_code")
+                        )
+                        .from(basic.leftJoin(dictCountry).on("pb.nationality_code=dc.id"))
+                        .where(basic.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
+                        .fetchAnyInto(AtsProfileBasic.class);
                 buildMap(map, "profile_basic", profile_basic);
 
                 //all from profiledb.profile_award
-                List<Awards> profile_award = create
+                List<Map<String, Object>> profile_award = create
                         .select()
                         .from(ProfileAwards.PROFILE_AWARDS)
                         .where(ProfileAwards.PROFILE_AWARDS.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
-                        .fetchInto(Awards.class);
+                        .fetchMaps();
                 buildMap(map, "profile_award", profile_award);
 
                 //all from profiledb.profile_credentials ORDER most recent first by start date
-                List<Credentials> profile_credentials = create
+                List<Map<String, Object>> profile_credentials = create
                         .select()
                         .from(ProfileCredentials.PROFILE_CREDENTIALS)
                         .where(ProfileCredentials.PROFILE_CREDENTIALS.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
                         .orderBy(ProfileCredentials.PROFILE_CREDENTIALS.GET_DATE.desc())
-                        .fetchInto(Credentials.class);
+                        .fetchMaps();
                 buildMap(map, "profile_credentials", profile_credentials);
 
                 //all from profiledb.profile_educations ORDER most recent first by start date
-                List<Education> profile_educations = create
+                List<Map<String, Object>> profile_educations = create
                         .select()
                         .from(ProfileEducation.PROFILE_EDUCATION)
                         .where(ProfileEducation.PROFILE_EDUCATION.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
                         .orderBy(ProfileEducation.PROFILE_EDUCATION.START.desc())
-                        .fetchInto(Education.class);
+                        .fetchMaps();
                 buildMap(map, "profile_educations", profile_educations);
 
                 //all from profiledb.profile_import
-                com.moseeker.thrift.gen.profile.struct.ProfileImport profile_import = create
+                Map<String, Object> profile_import = create
                         .select()
                         .from(ProfileImport.PROFILE_IMPORT)
                         .where(ProfileImport.PROFILE_IMPORT.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
-                        .fetchAnyInto(com.moseeker.thrift.gen.profile.struct.ProfileImport.class);
+                        .fetchAnyMap();
                 buildMap(map, "profile_import", profile_import);
 
                 //all from profiledb.profile_intention
@@ -1193,68 +1212,95 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 
                 if (profile_intention != null) {
                     //all from profiledb.profile_intention_city
-                    List<IntentionCity> profile_intention_city = create
+                    List<Map<String, Object>> profile_intention_city = create
                             .select()
                             .from(ProfileIntentionCity.PROFILE_INTENTION_CITY)
                             .where(ProfileIntentionCity.PROFILE_INTENTION_CITY.PROFILE_INTENTION_ID.eq(UInteger.valueOf(profile_intention.getId())))
-                            .fetchInto(IntentionCity.class);
+                            .fetchMaps();
                     buildMap(map, "profile_intention_city", profile_intention_city);
 
                     //all from profiledb.profile_intention_industry
-                    List<IntentionIndustry> profile_intention_industry = create
+                    List<Map<String, Object>> profile_intention_industry = create
                             .select()
                             .from(ProfileIntentionIndustry.PROFILE_INTENTION_INDUSTRY)
                             .where(ProfileIntentionIndustry.PROFILE_INTENTION_INDUSTRY.PROFILE_INTENTION_ID.eq(UInteger.valueOf(profile_intention.getId())))
-                            .fetchInto(IntentionIndustry.class);
+                            .fetchMaps();
                     buildMap(map, "profile_intention_industry", profile_intention_industry);
 
                     //all from profiledb.profile_intention_position
-                    List<IntentionPosition> profile_intention_position = create
+                    List<Map<String, Object>> profile_intention_position = create
                             .select()
                             .from(ProfileIntentionPosition.PROFILE_INTENTION_POSITION)
                             .where(ProfileIntentionPosition.PROFILE_INTENTION_POSITION.PROFILE_INTENTION_ID.eq(UInteger.valueOf(profile_intention.getId())))
-                            .fetchInto(IntentionPosition.class);
+                            .fetchMaps();
                     buildMap(map, "profile_intention_position", profile_intention_position);
                 }
 
                 //all from profiledb.profile_language
-                List<Language> profile_language = create
+                List<Map<String, Object>> profile_language = create
                         .select()
                         .from(ProfileLanguage.PROFILE_LANGUAGE)
                         .where(ProfileLanguage.PROFILE_LANGUAGE.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
-                        .fetchInto(Language.class);
+                        .fetchMaps();
                 buildMap(map, "profile_language", profile_language);
 
                 //all from profiledb.profile_other
-                com.moseeker.thrift.gen.profile.struct.ProfileOther profile_other = create
+                Map<String, Object> profile_other = create
                         .select()
                         .from(ProfileOther.PROFILE_OTHER)
                         .where(ProfileOther.PROFILE_OTHER.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
-                        .fetchAnyInto(com.moseeker.thrift.gen.profile.struct.ProfileOther.class);
+                        .fetchAnyMap();
                 buildMap(map, "profile_other", profile_other);
 
                 //all from profiledb.profile_projectexp ORDER most recent first by start date
-                List<ProjectExp> profile_projectexp = create
+                List<Map<String, Object>> profile_projectexp = create
                         .select()
                         .from(ProfileProjectexp.PROFILE_PROJECTEXP)
                         .where(ProfileProjectexp.PROFILE_PROJECTEXP.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
-                        .fetchInto(ProjectExp.class);
+                        .fetchMaps();
                 buildMap(map, "profile_projectexp", profile_projectexp);
 
                 //all from profiledb.profile_skills
-                List<Skill> profile_skills = create
+                List<Map<String, Object>> profile_skills = create
                         .select()
                         .from(ProfileSkill.PROFILE_SKILL)
                         .where(ProfileSkill.PROFILE_SKILL.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
-                        .fetchInto(Skill.class);
+                        .fetchMaps();
                 buildMap(map, "profile_skills", profile_skills);
 
                 //all from profiledb.profile_workexp
-                List<WorkExp> profile_workexp = create
-                        .select()
-                        .from(ProfileWorkexp.PROFILE_WORKEXP)
-                        .where(ProfileWorkexp.PROFILE_WORKEXP.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
-                        .fetchInto(WorkExp.class);
+                ProfileWorkexp workexp = ProfileWorkexp.PROFILE_WORKEXP;
+                HrCompany company = HrCompany.HR_COMPANY;
+                List<AtsProfileWorkexp> profile_workexp = create
+                        .select(workexp.ID,
+                                workexp.PROFILE_ID,
+                                workexp.START,
+                                workexp.END,
+                                workexp.END_UNTIL_NOW,
+                                workexp.SALARY_CODE,
+                                workexp.INDUSTRY_CODE,
+                                workexp.INDUSTRY_NAME,
+                                workexp.COMPANY_ID,
+                                workexp.DEPARTMENT_NAME,
+                                workexp.POSITION_CODE,
+                                workexp.POSITION_NAME,
+                                workexp.DESCRIPTION,
+                                workexp.TYPE,
+                                workexp.CITY_CODE,
+                                workexp.CITY_NAME,
+                                workexp.REPORT_TO,
+                                workexp.UNDERLINGS,
+                                workexp.REFERENCE,
+                                workexp.RESIGN_REASON,
+                                workexp.ACHIEVEMENT,
+                                workexp.CREATE_TIME,
+                                workexp.UPDATE_TIME,
+                                workexp.JOB,
+                                company.NAME.as("company_name")
+                        )
+                        .from(workexp.leftJoin(company).on(workexp.COMPANY_ID.eq(company.ID)))
+                        .where(workexp.PROFILE_ID.eq(UInteger.valueOf(profile.getId())))
+                        .fetchInto(AtsProfileWorkexp.class);
                 buildMap(map, "profile_workexp", profile_workexp);
 
             }
@@ -1267,32 +1313,29 @@ public class ProfileDaoImpl extends BaseDaoImpl<ProfileProfileRecord, ProfilePro
 
         if (recommender && application.getRecommender_user_id() != 0) {
             //user_employee.disable=0, activation=0, status=0
-            UserEmployeeStruct employee = create
+            Map<String, Object> employee = create
                     .select()
                     .from(UserEmployee.USER_EMPLOYEE)
                     .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq((int) application.getRecommender_user_id()))
                     .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) 0))
                     .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte) 0))
                     .and(UserEmployee.USER_EMPLOYEE.STATUS.eq(0))
-                    .fetchAnyInto(UserEmployeeStruct.class);
+                    .fetchAnyMap();
 
 
-            User recommenderUser = create
+            Map<String, Object> recommenderUser = create
                     .select()
                     .from(UserUser.USER_USER)
                     .where(UserUser.USER_USER.ID.eq(UInteger.valueOf(application.getRecommender_user_id())))
-                    .fetchAnyInto(User.class);
-            Map<String, Object> recommenderMap;
-            if (recommenderUser != null) {
-                recommenderMap = BeanUtils.object2Map(recommenderUser);
-            } else {
-                recommenderMap = new HashMap<>();
+                    .fetchAnyMap();
+            if (recommenderUser == null) {
+                recommenderUser = new HashMap<>();
             }
             if (employee != null) {
-                recommenderMap.put("employeeid", employee.getEmployeeid());
-                recommenderMap.put("custom_field", employee.getCustom_field());
+                recommenderUser.put("employeeid", employee.get("employeeid"));
+                recommenderUser.put("custom_field", employee.get("employeeid"));
             }
-            buildMap(map, "recommender", recommenderMap);
+            buildMap(map, "recommender", recommenderUser);
         }
 
         logger.info("profilesByApplication:application:{},result:{}", application.getId(), JSON.toJSONString(application));
