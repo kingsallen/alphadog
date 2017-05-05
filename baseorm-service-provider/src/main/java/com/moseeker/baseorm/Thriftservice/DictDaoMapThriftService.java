@@ -22,7 +22,7 @@ public class DictDaoMapThriftService implements com.moseeker.thrift.gen.dao.serv
 		CityMap cityMap = new CityMap();
 		;
 		try {
-			DictCityMapRecord record = cityMapDao.getResource(QueryConvert.commonQueryConvertToQuery(query));
+			DictCityMapRecord record = cityMapDao.getRecord(QueryConvert.commonQueryConvertToQuery(query));
 			if(record != null) {
 				cityMap.setId(record.getId());
 				if(record.getChannel() != null) {

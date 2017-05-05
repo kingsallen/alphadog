@@ -56,7 +56,7 @@ public class HrDBThriftService implements Iface {
 
 	@Override
 	public List<HrOperationRecordDO> listHrOperationRecord(CommonQuery query) throws TException {
-		return hrOperationRecordDao.listResources(QueryConvert.commonQueryConvertToQuery(query));
+		return hrOperationRecordDao.getDatas(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class HrDBThriftService implements Iface {
 
 	@Override
 	public HrPointsConfDO getPointsConf(CommonQuery query) throws BIZException, TException {
-		return hrPointsConfDao.findResource(QueryConvert.commonQueryConvertToQuery(query));
+		return hrPointsConfDao.getData(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override
@@ -91,18 +91,18 @@ public class HrDBThriftService implements Iface {
 
 	@Override
 	public List<HrCompanyDO> listCompany(CommonQuery query) throws CURDException, TException {
-		return companyDao.listResources(QueryConvert.commonQueryConvertToQuery(query));
+		return companyDao.getDatas(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override
 	public List<HrWxHrChatDO> listChats(CommonQuery query) throws CURDException, TException {
-		return chatDao.listResources(QueryConvert.commonQueryConvertToQuery(query));
+		return chatDao.getDatas(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override
 	public int countChats(CommonQuery query) throws CURDException, TException {
 		try {
-			return chatDao.getResourceCount(QueryConvert.commonQueryConvertToQuery(query));
+			return chatDao.getCount(QueryConvert.commonQueryConvertToQuery(query));
 		} catch (Exception e) {
 			throw new CURDExceptionUtils().buildGetNothingException();
 		}
@@ -111,7 +111,7 @@ public class HrDBThriftService implements Iface {
 	@Override
 	public HrWxHrChatDO getChat(CommonQuery query) throws CURDException, TException {
 		try {
-			return chatDao.findResource(QueryConvert.commonQueryConvertToQuery(query));
+			return chatDao.getData(QueryConvert.commonQueryConvertToQuery(query));
 		} catch (Exception e) {
 			throw new CURDExceptionUtils().buildGetNothingException();
 		}
@@ -119,23 +119,25 @@ public class HrDBThriftService implements Iface {
 
 	@Override
 	public HrWxHrChatDO saveChat(HrWxHrChatDO chatDO) throws CURDException, TException {
-		return chatDao.saveResource(chatDO);
+		chatDao.addData(chatDO);
+		return chatDO;
 	}
 
 	@Override
 	public HrWxHrChatDO updateChat(HrWxHrChatDO chatDO) throws CURDException, TException {
-		return chatDao.updateResource(chatDO);
+		chatDao.updateData(chatDO);
+		return chatDO;
 	}
 
 	@Override
 	public List<HrWxHrChatListDO> listChatRooms(CommonQuery query) throws CURDException, TException {
-		return chatRoomDao.listResources(QueryConvert.commonQueryConvertToQuery(query));
+		return chatRoomDao.getDatas(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override
 	public int countChatRooms(CommonQuery query) throws CURDException, TException {
 		try {
-			return chatRoomDao.getResourceCount(QueryConvert.commonQueryConvertToQuery(query));
+			return chatRoomDao.getCount(QueryConvert.commonQueryConvertToQuery(query));
 		} catch (Exception e) {
 			throw new CURDExceptionUtils().buildGetNothingException();
 		}
@@ -143,27 +145,30 @@ public class HrDBThriftService implements Iface {
 
 	@Override
 	public HrWxHrChatListDO getChatRoom(CommonQuery query) throws CURDException, TException {
-		return chatRoomDao.findResource(QueryConvert.commonQueryConvertToQuery(query));
+		return chatRoomDao.getData(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override
 	public HrWxHrChatListDO saveChatRoom(HrWxHrChatListDO chatRoom) throws CURDException, TException {
-		return chatRoomDao.saveResource(chatRoom);
+		chatRoomDao.addData(chatRoom);
+		return chatRoom;
 	}
 
 	@Override
 	public HrWxHrChatListDO updateChatRoom(HrWxHrChatListDO chatRoom) throws CURDException, TException {
-		return chatRoomDao.updateResource(chatRoom);
+		chatRoomDao.updateData(chatRoom);
+		return chatRoom;
 	}
 
 	@Override
 	public List<HrChatUnreadCountDO> listChatRoomUnreadSort(CommonQuery query) throws CURDException, TException {
-		return hrChatUnreadCountDao.listResources(QueryConvert.commonQueryConvertToQuery(query));
+		return hrChatUnreadCountDao.getDatas(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override
 	public HrChatUnreadCountDO saveChatUnreadCount(HrChatUnreadCountDO unreadCount) throws CURDException, TException {
-		return hrChatUnreadCountDao.saveResource(unreadCount);
+		hrChatUnreadCountDao.addData(unreadCount);
+		return unreadCount;
 	}
 
 	public HrHbConfigDO getHbConfig(CommonQuery query) throws TException {
@@ -224,7 +229,7 @@ public class HrDBThriftService implements Iface {
 
 	@Override
 	public HrWxWechatDO getHrWxWechatDO(CommonQuery query) throws CURDException, TException {
-		return hrWxWechatDao.findResource(QueryConvert.commonQueryConvertToQuery(query));
+		return hrWxWechatDao.getData(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override

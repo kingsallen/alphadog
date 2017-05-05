@@ -48,6 +48,6 @@ public class DictDaoThriftService implements Iface {
 
     @Override
     public DictCityDO dictCityDO(CommonQuery query) throws TException {
-        return dictCityDao.findResource(QueryConvert.commonQueryConvertToQuery(query));
+        return dictCityDao.getData(QueryConvert.commonQueryConvertToQuery(query));
     }
 }

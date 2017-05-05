@@ -3,7 +3,7 @@ package com.moseeker.baseorm.dao.userdb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.common.providerutils.QueryUtil;
-import com.moseeker.thrift.gen.dao.struct.UserHrAccountDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import org.apache.thrift.TException;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;

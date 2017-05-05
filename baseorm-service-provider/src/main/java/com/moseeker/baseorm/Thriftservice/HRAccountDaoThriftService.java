@@ -9,16 +9,13 @@ import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.UserHrAccountDao.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
-
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +48,7 @@ public class HRAccountDaoThriftService implements Iface {
     @Override
     public Response getAccount(CommonQuery query) throws TException {
         try {
-            UserHrAccountRecord record = hraccountDao.getResource(QueryConvert.commonQueryConvertToQuery(query));
+            UserHrAccountRecord record = hraccountDao.getRecord(QueryConvert.commonQueryConvertToQuery(query));
             if (record != null) {
                 return ResponseUtils.success(record.intoMap());
             } else {
@@ -149,7 +146,7 @@ public class HRAccountDaoThriftService implements Iface {
     @Override
     public Response getAccounts(CommonQuery query) throws TException {
         try {
-            List<UserHrAccountRecord> records = hraccountDao.getResources(QueryConvert.commonQueryConvertToQuery(query));
+            List<UserHrAccountRecord> records = hraccountDao.getRecords(QueryConvert.commonQueryConvertToQuery(query));
             List<UserHrAccount> datas = new ArrayList<>();
             if (records != null && records.size() > 0) {
                 records.forEach(record -> {

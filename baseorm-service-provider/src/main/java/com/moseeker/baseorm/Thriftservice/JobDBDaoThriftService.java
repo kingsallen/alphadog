@@ -1,23 +1,20 @@
 package com.moseeker.baseorm.Thriftservice;
 
-import java.util.List;
-
+import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.service.PositionService;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.thrift.gen.common.struct.CURDException;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.service.JobDBDao.Iface;
 import com.moseeker.thrift.gen.dao.struct.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.JobPositionDO;
-import com.moseeker.thrift.gen.position.struct.Position;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
-import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
-import com.moseeker.thrift.gen.application.struct.JobApplication;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.dao.service.JobDBDao.Iface;
+import java.util.List;
 
 @Service
 public class JobDBDaoThriftService implements Iface {
@@ -38,7 +35,7 @@ public class JobDBDaoThriftService implements Iface {
 
 	@Override
 	public JobPositionDO getPosition(CommonQuery query) throws CURDException, TException {
-		return positionDao.findResource(QueryConvert.commonQueryConvertToQuery(query));
+		return positionDao.getData(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override
@@ -53,7 +50,7 @@ public class JobDBDaoThriftService implements Iface {
 
 	@Override
 	public JobApplicationDO getApplication(CommonQuery query) throws CURDException, TException {
-		return applicationDao.findResource(QueryConvert.commonQueryConvertToQuery(query));
+		return applicationDao.getData(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override

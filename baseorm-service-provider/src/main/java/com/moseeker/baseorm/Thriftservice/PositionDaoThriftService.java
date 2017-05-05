@@ -38,7 +38,7 @@ public class PositionDaoThriftService implements Iface {
 	public Position getPosition(CommonQuery query) throws TException {
 		Position position = new Position();
 		try {
-			JobPositionRecord record = positionDao.getResource(QueryConvert.commonQueryConvertToQuery(query));
+			JobPositionRecord record = positionDao.getRecord(QueryConvert.commonQueryConvertToQuery(query));
 			if(record != null) {
 				record.into(position);
 				position.setHb_status(record.getHbStatus());
@@ -108,7 +108,7 @@ public class PositionDaoThriftService implements Iface {
 		if(position.getId() > 0) {
 			JobPositionRecord record = (JobPositionRecord)BeanUtils.structToDB(position, JobPositionRecord.class);
 			try {
-				count = positionDao.putResource(record);
+				count = positionDao.updateRecord(record);
 				
 			} catch (Exception e) {
 				e.printStackTrace();

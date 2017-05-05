@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -52,7 +53,7 @@ public class UserDBDaoThriftService implements Iface {
 	public UserUserDO getUser(CommonQuery query) throws TException {
 		UserUserDO user = new UserUserDO();
 		try {
-			UserUserRecord record = userDao.getResource(QueryConvert.commonQueryConvertToQuery(query));
+			UserUserRecord record = userDao.getRecord(QueryConvert.commonQueryConvertToQuery(query));
 			if(record != null) {
 				user = record.into(UserUserDO.class);
 			}
@@ -68,7 +69,7 @@ public class UserDBDaoThriftService implements Iface {
 
 	@Override
 	public List<UserUserDO> listUser(CommonQuery query) throws TException {
-		return userDao.listResources(QueryConvert.commonQueryConvertToQuery(query));
+		return userDao.getDatas(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override
@@ -76,27 +77,29 @@ public class UserDBDaoThriftService implements Iface {
 		if(user.getPassword() == null) {
 			user.setPassword("");
 		}
-		return userDao.saveResource(user);
+		return user;
 	}
 
 	@Override
 	public List<UserHrAccountDO> listHRFromCompany(int comanyId) throws TException {
-		return userHRAccountDao.listHRFromCompany(comanyId);
+		return null;
 	}
 
 	@Override
 	public List<UserHrAccountDO> listUserHrAccount(CommonQuery query) throws CURDException, TException {
-		return userHRAccountDao.listResources(QueryConvert.commonQueryConvertToQuery(query));
+		return new ArrayList<>();
 	}
 
 	@Override
 	public UserHrAccountDO getUserHrAccount(CommonQuery query) throws CURDException, TException {
-		return userHRAccountDao.findResource(QueryConvert.commonQueryConvertToQuery(query));
+		return new UserHrAccountDO();
 	}
 
 	@Override
 	public UserHrAccountDO updateUserHrAccount(UserHrAccountDO userHrAccountDO) throws CURDException, TException {
-		return userHRAccountDao.updateResource(userHrAccountDO);
+		com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO u = new com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO();
+		userHRAccountDao.updateData(u);
+		return userHrAccountDO;
 	}
 
 	@Override
@@ -162,7 +165,8 @@ public class UserDBDaoThriftService implements Iface {
 
 	@Override
 	public UserEmployeePointsRecordDO saveUserEmployeePoints(UserEmployeePointsRecordDO employeePoint) throws BIZException, TException {
-		return userEmployeePointsDao.saveResource(employeePoint);
+		userEmployeePointsDao.addData(employeePoint);
+		return employeePoint;
 	}
 
 	@Override
@@ -177,12 +181,12 @@ public class UserDBDaoThriftService implements Iface {
 
 	@Override
 	public List<UserWxUserDO> listUserWxUserDO(CommonQuery query) throws CURDException, TException {
-		return wxUserDao.listResources(QueryConvert.commonQueryConvertToQuery(query));
+		return wxUserDao.getDatas(QueryConvert.commonQueryConvertToQuery(query));
 	}
 
 	@Override
 	public UserWxUserDO getUserWxUserDO(CommonQuery query) throws CURDException, TException {
-		return wxUserDao.findResource(QueryConvert.commonQueryConvertToQuery(query));
+		return wxUserDao.getData(QueryConvert.commonQueryConvertToQuery(query));
 	}
 	
 	@Override
