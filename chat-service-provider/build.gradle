@@ -6,8 +6,6 @@ dependencies {
     compile project(":baseorm-service-provider")
     testCompile deps["junit"]
     testCompile deps["mockito"]
-    compile deps["spring-core"]
-    compile deps["spring-context"]
 }
 
 task copyJars(type: Copy) {

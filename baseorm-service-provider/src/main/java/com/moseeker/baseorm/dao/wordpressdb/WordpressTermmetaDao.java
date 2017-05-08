@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.wordpressdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.wordpressdb.tables.WordpressTermmeta;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressTermmetaRecord;
 import com.moseeker.thrift.gen.dao.struct.wordpressdb.WordpressTermmetaDO;
 import org.jooq.impl.TableImpl;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class WordpressTermmetaDao extends JooqCrudImpl<WordpressTermmetaDO, WordpressTermmetaRecord> {
 
+    public WordpressTermmetaDao() {
+        super(WordpressTermmeta.WORDPRESS_TERMMETA, WordpressTermmetaDO.class);
+    }
 
     public WordpressTermmetaDao(TableImpl<WordpressTermmetaRecord> table, Class<WordpressTermmetaDO> wordpressTermmetaDOClass) {
         super(table, wordpressTermmetaDOClass);

@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.hrdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.hrdb.tables.HrReferralStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrReferralStatisticsRecord;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrReferralStatisticsDO;
 import org.jooq.impl.TableImpl;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class HrReferralStatisticsDao extends JooqCrudImpl<HrReferralStatisticsDO, HrReferralStatisticsRecord> {
 
+    public HrReferralStatisticsDao() {
+        super(HrReferralStatistics.HR_REFERRAL_STATISTICS, HrReferralStatisticsDO.class);
+    }
 
     public HrReferralStatisticsDao(TableImpl<HrReferralStatisticsRecord> table, Class<HrReferralStatisticsDO> hrReferralStatisticsDOClass) {
         super(table, hrReferralStatisticsDOClass);

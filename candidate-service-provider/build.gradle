@@ -2,7 +2,6 @@ apply plugin: 'idea'
 apply plugin: 'eclipse'
 
 dependencies {
-
     compile project(":rpc-center")
     compile project(":baseorm-service-provider")
     testCompile deps["junit"]

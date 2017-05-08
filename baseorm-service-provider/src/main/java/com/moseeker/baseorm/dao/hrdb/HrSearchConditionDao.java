@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.hrdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.hrdb.tables.HrSearchCondition;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrSearchConditionRecord;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrSearchConditionDO;
@@ -15,6 +16,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class HrSearchConditionDao extends JooqCrudImpl<HrSearchConditionDO, HrSearchConditionRecord> {
 
+    public HrSearchConditionDao() {
+        super(HrSearchCondition.HR_SEARCH_CONDITION, HrSearchConditionDO.class);
+    }
 
 	public HrSearchConditionDao(TableImpl<HrSearchConditionRecord> table, Class<HrSearchConditionDO> hrSearchConditionDOClass) {
 		super(table, hrSearchConditionDOClass);

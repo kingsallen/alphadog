@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.wordpressdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.wordpressdb.tables.WordpressTermRelationships;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressTermRelationshipsRecord;
 import com.moseeker.thrift.gen.dao.struct.wordpressdb.WordpressTermRelationshipsDO;
 import org.jooq.impl.TableImpl;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class WordpressTermRelationshipsDao extends JooqCrudImpl<WordpressTermRelationshipsDO, WordpressTermRelationshipsRecord> {
 
+    public WordpressTermRelationshipsDao() {
+        super(WordpressTermRelationships.WORDPRESS_TERM_RELATIONSHIPS, WordpressTermRelationshipsDO.class);
+    }
 
     public WordpressTermRelationshipsDao(TableImpl<WordpressTermRelationshipsRecord> table, Class<WordpressTermRelationshipsDO> wordpressTermRelationshipsDOClass) {
         super(table, wordpressTermRelationshipsDOClass);

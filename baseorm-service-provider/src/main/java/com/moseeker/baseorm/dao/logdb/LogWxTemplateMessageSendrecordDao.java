@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.logdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.logdb.tables.LogWxTemplateMessageSendrecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogWxTemplateMessageSendrecordRecord;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogWxTemplateMessageSendrecordDO;
 import org.jooq.impl.TableImpl;
@@ -13,6 +14,10 @@ import org.springframework.stereotype.Repository;
 */
 @Repository
 public class LogWxTemplateMessageSendrecordDao extends JooqCrudImpl<LogWxTemplateMessageSendrecordDO, LogWxTemplateMessageSendrecordRecord> {
+
+    public LogWxTemplateMessageSendrecordDao() {
+        super(LogWxTemplateMessageSendrecord.LOG_WX_TEMPLATE_MESSAGE_SENDRECORD, LogWxTemplateMessageSendrecordDO.class);
+    }
 
     public LogWxTemplateMessageSendrecordDao(TableImpl<LogWxTemplateMessageSendrecordRecord> table, Class<LogWxTemplateMessageSendrecordDO> logWxTemplateMessageSendrecordDOClass) {
         super(table, logWxTemplateMessageSendrecordDOClass);

@@ -16,6 +16,10 @@ import java.sql.SQLException;
 public class WordpressTermRelationshipDao
 		extends JooqCrudImpl<WordpressTermRelationshipsDO, WordpressTermRelationshipsRecord> {
 
+	public WordpressTermRelationshipDao() {
+		super(WordpressTermRelationships.WORDPRESS_TERM_RELATIONSHIPS, WordpressTermRelationshipsDO.class);
+	}
+
 	public WordpressTermRelationshipDao(TableImpl<WordpressTermRelationshipsRecord> table, Class<WordpressTermRelationshipsDO> wordpressTermRelationshipsDOClass) {
 		super(table, wordpressTermRelationshipsDOClass);
 	}

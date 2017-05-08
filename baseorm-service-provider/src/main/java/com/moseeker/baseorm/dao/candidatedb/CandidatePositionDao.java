@@ -9,7 +9,6 @@ import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
 import org.jooq.Condition;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +19,9 @@ import java.util.Map;
 @Repository
 public class CandidatePositionDao extends JooqCrudImpl<CandidatePositionDO, CandidatePositionRecord> {
 
+    public CandidatePositionDao() {
+        super(CandidatePosition.CANDIDATE_POSITION, CandidatePositionDO.class);
+    }
 
     public CandidatePositionDao(TableImpl<CandidatePositionRecord> table, Class<CandidatePositionDO> candidatePositionDOClass) {
         super(table, candidatePositionDOClass);

@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.userdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import org.jooq.impl.TableImpl;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class UserUserDao extends JooqCrudImpl<UserUserDO, UserUserRecord> {
 
+    public UserUserDao() {
+        super(UserUser.USER_USER, UserUserDO.class);
+    }
 
     public UserUserDao(TableImpl<UserUserRecord> table, Class<UserUserDO> userUserDOClass) {
         super(table, userUserDOClass);

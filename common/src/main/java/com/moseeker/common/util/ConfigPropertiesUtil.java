@@ -23,15 +23,13 @@ import org.slf4j.LoggerFactory;
  */
 public class ConfigPropertiesUtil {
 
-	Logger logger = LoggerFactory.getLogger(ConfigPropertiesUtil.class);
+    Logger logger = LoggerFactory.getLogger(ConfigPropertiesUtil.class);
     private static Properties properties;            //储配置文件内容存
     private static ConfigPropertiesUtil self;
     private Set<String> files = new HashSet<>();
 
     /**
      * 读取配置信息帮助类 默认读取serviceprovider.properties配置文件
-     *
-     * @throws Exception
      */
     private ConfigPropertiesUtil() {
         properties = new Properties();
@@ -39,9 +37,9 @@ public class ConfigPropertiesUtil {
         try {
             //需要load common项目本地配置文件
             //load service provider的配置文件
-            inputStreamReader = new InputStreamReader(ConfigPropertiesUtil.class.getClassLoader().getResourceAsStream("common.properties.bak"), "UTF-8");
+            inputStreamReader = new InputStreamReader(ConfigPropertiesUtil.class.getClassLoader().getResourceAsStream("common.properties"), "UTF-8");
             properties.load(inputStreamReader);
-            files.add("common.properties.bak");
+            files.add("common.properties");
         } catch (Exception e) {
             //todo 错误信息需要记录到日志中
         } finally {
@@ -62,8 +60,8 @@ public class ConfigPropertiesUtil {
      * @throws Exception 如果配置文件不存在，抛出异常
      */
     public void loadResource(String fileName) throws Exception {
-    	if(!files.contains(fileName)) {
-    		InputStreamReader inputStreamReader = null;
+        if (!files.contains(fileName)) {
+            InputStreamReader inputStreamReader = null;
             try {
                 inputStreamReader = new InputStreamReader(ConfigPropertiesUtil.class.getClassLoader().getResourceAsStream(fileName), "UTF-8");
                 properties.load(inputStreamReader);
@@ -79,9 +77,9 @@ public class ConfigPropertiesUtil {
                     }
                 }
             }
-    	}
+        }
     }
-    
+
     /**
      * 读取指定名字的配置文件。如果配置文件的key和已存在的key冲突，会覆盖已存在的key的内容。
      *
@@ -89,7 +87,7 @@ public class ConfigPropertiesUtil {
      * @throws Exception 如果配置文件不存在，抛出异常
      */
     public void reloadResource(String fileName) throws Exception {
-		InputStreamReader inputStreamReader = null;
+        InputStreamReader inputStreamReader = null;
         try {
             inputStreamReader = new InputStreamReader(ConfigPropertiesUtil.class.getClassLoader().getResourceAsStream(fileName), "UTF-8");
             properties.load(inputStreamReader);
@@ -107,7 +105,7 @@ public class ConfigPropertiesUtil {
             }
         }
     }
-    
+
     /**
      * 读取指定名字的配置文件。如果配置文件的key和已存在的key冲突，会覆盖已存在的key的内容。
      *
@@ -115,26 +113,26 @@ public class ConfigPropertiesUtil {
      * @throws Exception 如果配置文件不存在，抛出异常
      */
     public void loadAbsoluteResource(String absoluteFile) throws Exception {
-    	if(!files.contains(absoluteFile)) {
-	        InputStreamReader inputStreamReader = null;
-	        try {
-	            inputStreamReader = new InputStreamReader(new FileInputStream(absoluteFile), "utf-8");
-	            properties.load(inputStreamReader);
-	        } catch (Exception e) {
-	            //todo 错误信息需要记录到日志中
-	            throw new Exception("can not find properties");
-	        } finally {
-	            if (inputStreamReader != null) {
-	                try {
-	                    inputStreamReader.close();
-	                } catch (IOException e) {
-	                    e.printStackTrace();
-	                }
-	            }
-	        }
-    	}
+        if (!files.contains(absoluteFile)) {
+            InputStreamReader inputStreamReader = null;
+            try {
+                inputStreamReader = new InputStreamReader(new FileInputStream(absoluteFile), "utf-8");
+                properties.load(inputStreamReader);
+            } catch (Exception e) {
+                //todo 错误信息需要记录到日志中
+                throw new Exception("can not find properties");
+            } finally {
+                if (inputStreamReader != null) {
+                    try {
+                        inputStreamReader.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
     }
-    
+
     /**
      * 读取指定名字的配置文件。如果配置文件的key和已存在的key冲突，会覆盖已存在的key的内容。
      *
@@ -172,17 +170,17 @@ public class ConfigPropertiesUtil {
         return self;
     }
 
-	public <T> T get(String key, Class<T> clazz) {
-		if(properties.get(key) != null) {
-			return BeanUtils.convertTo(properties.get(key), clazz);
-		}
-		return null;
-	}
+    public <T> T get(String key, Class<T> clazz) {
+        if (properties.get(key) != null) {
+            return BeanUtils.convertTo(properties.get(key), clazz);
+        }
+        return null;
+    }
 
     public <T> T get(String key, Class<T> clazz, T defaultValue) {
-        if(properties.get(key) != null) {
+        if (properties.get(key) != null) {
             T t = BeanUtils.convertTo(properties.get(key), clazz);
-            if(t != null) {
+            if (t != null) {
                 return t;
             } else {
                 return defaultValue;
@@ -192,7 +190,7 @@ public class ConfigPropertiesUtil {
     }
 
     public Set<Object> returnKeys() {
-        if(properties != null)
+        if (properties != null)
             return properties.keySet();
         return new HashSet<Object>();
     }

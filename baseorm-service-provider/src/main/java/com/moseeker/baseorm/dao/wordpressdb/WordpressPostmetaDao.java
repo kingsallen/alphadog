@@ -3,18 +3,18 @@ package com.moseeker.baseorm.dao.wordpressdb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressPostmeta;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressPostmetaRecord;
-import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.thrift.gen.dao.struct.wordpressdb.WordpressPostmetaDO;
-import org.jooq.DSLContext;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
 @Repository
 public class WordpressPostmetaDao extends JooqCrudImpl<WordpressPostmetaDO, WordpressPostmetaRecord> {
+
+	public WordpressPostmetaDao() {
+		super(WordpressPostmeta.WORDPRESS_POSTMETA, WordpressPostmetaDO.class);
+	}
 
 	public WordpressPostmetaDao(TableImpl<WordpressPostmetaRecord> table, Class<WordpressPostmetaDO> wordpressPostmetaDOClass) {
 		super(table, wordpressPostmetaDOClass);

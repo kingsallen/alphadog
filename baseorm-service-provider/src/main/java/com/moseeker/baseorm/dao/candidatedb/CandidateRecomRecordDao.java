@@ -4,7 +4,6 @@ import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidatePosition;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
-import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.dao.struct.CURDException;
 import com.moseeker.thrift.gen.dao.struct.CandidateRecomRecordDO;
@@ -17,8 +16,6 @@ import org.jooq.impl.TableImpl;
 import org.jooq.types.UInteger;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +29,10 @@ import static org.jooq.impl.DSL.*;
 @Repository
 public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO, CandidateRecomRecordRecord> {
 
+
+    public CandidateRecomRecordDao() {
+        super(CandidateRecomRecord.CANDIDATE_RECOM_RECORD, CandidateRecomRecordDO.class);
+    }
 
     public CandidateRecomRecordDao(TableImpl<CandidateRecomRecordRecord> table, Class<CandidateRecomRecordDO> candidateRecomRecordDOClass) {
         super(table, candidateRecomRecordDOClass);

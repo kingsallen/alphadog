@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.profiledb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.profiledb.tables.ProfileSkill;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileSkillRecord;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileSkillDO;
 import org.jooq.impl.TableImpl;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class ProfileSkillDao extends JooqCrudImpl<ProfileSkillDO, ProfileSkillRecord> {
 
+    public ProfileSkillDao() {
+        super(ProfileSkill.PROFILE_SKILL, ProfileSkillDO.class);
+    }
 
     public ProfileSkillDao(TableImpl<ProfileSkillRecord> table, Class<ProfileSkillDO> profileSkillDOClass) {
         super(table, profileSkillDOClass);

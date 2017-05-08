@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.hrdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrAppCvConfRecord;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrAppCvConfDO;
 import org.jooq.impl.TableImpl;
@@ -13,6 +14,10 @@ import org.springframework.stereotype.Repository;
 */
 @Repository
 public class HrAppCvConfDao extends JooqCrudImpl<HrAppCvConfDO, HrAppCvConfRecord> {
+
+    public HrAppCvConfDao() {
+        super(HrAppCvConf.HR_APP_CV_CONF, HrAppCvConfDO.class);
+    }
 
 
     public HrAppCvConfDao(TableImpl<HrAppCvConfRecord> table, Class<HrAppCvConfDO> hrAppCvConfDOClass) {

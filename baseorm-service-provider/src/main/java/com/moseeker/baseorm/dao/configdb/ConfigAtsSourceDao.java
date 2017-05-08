@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.configdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.configdb.tables.ConfigAtsSource;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigAtsSourceRecord;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigAtsSourceDO;
 import org.jooq.impl.TableImpl;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class ConfigAtsSourceDao extends JooqCrudImpl<ConfigAtsSourceDO, ConfigAtsSourceRecord> {
 
+    public ConfigAtsSourceDao() {
+        super(ConfigAtsSource.CONFIG_ATS_SOURCE, ConfigAtsSourceDO.class);
+    }
 
     public ConfigAtsSourceDao(TableImpl<ConfigAtsSourceRecord> table, Class<ConfigAtsSourceDO> configAtsSourceDOClass) {
         super(table, configAtsSourceDOClass);
