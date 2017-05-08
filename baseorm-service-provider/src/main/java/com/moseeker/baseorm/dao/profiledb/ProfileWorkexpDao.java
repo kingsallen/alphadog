@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.profiledb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.profiledb.tables.ProfileWorkexp;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileWorkexpRecord;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileWorkexpDO;
 import org.jooq.impl.TableImpl;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class ProfileWorkexpDao extends JooqCrudImpl<ProfileWorkexpDO, ProfileWorkexpRecord> {
 
+    public ProfileWorkexpDao() {
+        super(ProfileWorkexp.PROFILE_WORKEXP, ProfileWorkexpDO.class);
+    }
 
     public ProfileWorkexpDao(TableImpl<ProfileWorkexpRecord> table, Class<ProfileWorkexpDO> profileWorkexpDOClass) {
         super(table, profileWorkexpDOClass);

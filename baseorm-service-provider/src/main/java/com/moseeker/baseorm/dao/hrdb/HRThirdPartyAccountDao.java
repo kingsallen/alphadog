@@ -52,51 +52,11 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
 		logger.info("HRThirdPartyAccountDao upsertResource channel:{}, company_id:{}",record.getChannel(), record.getCompanyId());
 		logger.info("HRThirdPartyAccountDao upsertResource record:{}",record);
 		int count = 0;
-<<<<<<< HEAD
 		count = create.execute(UPSERT_SQL, record.getChannel(), record.getUsername(), record.getPassword(),
 				record.getMembername(), record.getBinding(), record.getCompanyId().intValue(),
 				record.getRemainNum().intValue(), record.getSyncTime(), record.getChannel(),
 				record.getCompanyId().intValue());
-=======
-		try (Connection conn = DBConnHelper.DBConn.getConn();) {
-
-			conn.setAutoCommit(false);
-			PreparedStatement pstmt = conn.prepareStatement(UPSERT_SQL);
-			pstmt.setShort(1, record.getChannel());
-			pstmt.setString(2, record.getUsername());
-			pstmt.setString(3, record.getPassword());
-			pstmt.setString(4, record.getMembername());
-			pstmt.setShort(5, record.getBinding());
-			pstmt.setInt(6, record.getCompanyId().intValue());
-			pstmt.setInt(7, record.getRemainNum().intValue());
-			pstmt.setTimestamp(8, record.getSyncTime());
-			pstmt.setShort(9, record.getChannel());
-			pstmt.setInt(10, record.getCompanyId().intValue());
-			count = pstmt.executeUpdate();
-			logger.info("HRThirdPartyAccountDao count:{}",count);
-			if (count == 0) {
-				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
-				HrThirdPartyAccountRecord dbrecord = create.selectFrom(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
-						.where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.COMPANY_ID.equal(record.getCompanyId())
-								.and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.equal(record.getChannel())))
-						.fetchOne();
-				logger.info("HRThirdPartyAccountDao dbrecord:{}",dbrecord);
-				dbrecord.setUsername(record.getUsername());
-				dbrecord.setPassword(record.getPassword());
-				dbrecord.setMembername(record.getMembername());
-				dbrecord.setRemainNum(record.getRemainNum());
-				dbrecord.setSyncTime(record.getSyncTime());
-				dbrecord.setBinding(record.getBinding());
-				count = dbrecord.update();
-				conn.commit();
-				conn.setAutoCommit(true);
-				logger.info("HRThirdPartyAccountDao dbrecord:{}",dbrecord);
-
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			logger.error(e.getMessage(), e);
->>>>>>> master
+		logger.info("HRThirdPartyAccountDao count:{}",count);
 
 		if (count == 0) {
 			HrThirdPartyAccountRecord dbrecord = create.selectFrom(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
