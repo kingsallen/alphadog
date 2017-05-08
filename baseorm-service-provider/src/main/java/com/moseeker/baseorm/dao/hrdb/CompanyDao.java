@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.hrdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.query.Query;
@@ -14,6 +15,10 @@ import java.util.List;
 
 @Repository
 public class CompanyDao extends JooqCrudImpl<HrCompanyDO, HrCompanyRecord> {
+
+    public CompanyDao() {
+        super(HrCompany.HR_COMPANY, HrCompanyDO.class);
+    }
 
 	public CompanyDao(TableImpl<HrCompanyRecord> table, Class<HrCompanyDO> hrCompanyDOClass) {
 		super(table, hrCompanyDOClass);

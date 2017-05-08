@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.logdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.logdb.tables.LogEmailSendrecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogEmailSendrecordRecord;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogEmailSendrecordDO;
 import org.jooq.impl.TableImpl;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class LogEmailSendrecordDao extends JooqCrudImpl<LogEmailSendrecordDO, LogEmailSendrecordRecord> {
 
+    public LogEmailSendrecordDao() {
+        super(LogEmailSendrecord.LOG_EMAIL_SENDRECORD, LogEmailSendrecordDO.class);
+    }
 
     public LogEmailSendrecordDao(TableImpl<LogEmailSendrecordRecord> table, Class<LogEmailSendrecordDO> logEmailSendrecordDOClass) {
         super(table, logEmailSendrecordDOClass);

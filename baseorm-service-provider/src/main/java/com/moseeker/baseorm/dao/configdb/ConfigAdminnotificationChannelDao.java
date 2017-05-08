@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.configdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationChannel;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigAdminnotificationChannelRecord;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigAdminnotificationChannelDO;
 import org.jooq.impl.TableImpl;
@@ -14,6 +15,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class ConfigAdminnotificationChannelDao extends JooqCrudImpl<ConfigAdminnotificationChannelDO, ConfigAdminnotificationChannelRecord> {
 
+
+    public ConfigAdminnotificationChannelDao() {
+        super(ConfigAdminnotificationChannel.CONFIG_ADMINNOTIFICATION_CHANNEL, ConfigAdminnotificationChannelDO.class);
+    }
 
     public ConfigAdminnotificationChannelDao(TableImpl<ConfigAdminnotificationChannelRecord> table, Class<ConfigAdminnotificationChannelDO> configAdminnotificationChannelDOClass) {
         super(table, configAdminnotificationChannelDOClass);

@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.hrdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.hrdb.tables.HrTopic;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTopicRecord;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTopicDO;
 import org.jooq.impl.TableImpl;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class HrTopicDao extends JooqCrudImpl<HrTopicDO, HrTopicRecord> {
 
+    public HrTopicDao() {
+        super(HrTopic.HR_TOPIC, HrTopicDO.class);
+    }
 
     public HrTopicDao(TableImpl<HrTopicRecord> table, Class<HrTopicDO> hrTopicDOClass) {
         super(table, hrTopicDOClass);

@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.hrdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxNewsReply;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxNewsReplyRecord;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxNewsReplyDO;
 import org.jooq.impl.TableImpl;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class HrWxNewsReplyDao extends JooqCrudImpl<HrWxNewsReplyDO, HrWxNewsReplyRecord> {
 
+    public HrWxNewsReplyDao() {
+        super(HrWxNewsReply.HR_WX_NEWS_REPLY, HrWxNewsReplyDO.class);
+    }
 
     public HrWxNewsReplyDao(TableImpl<HrWxNewsReplyRecord> table, Class<HrWxNewsReplyDO> hrWxNewsReplyDOClass) {
         super(table, hrWxNewsReplyDOClass);

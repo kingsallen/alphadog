@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.dictdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.dictdb.tables.DictCity;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import org.jooq.impl.TableImpl;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class DictCityDao extends JooqCrudImpl<DictCityDO, DictCityRecord> {
 
+    public DictCityDao() {
+        super(DictCity.DICT_CITY, DictCityDO.class);
+    }
 
     public DictCityDao(TableImpl<DictCityRecord> table, Class<DictCityDO> dictCityDOClass) {
         super(table, dictCityDOClass);

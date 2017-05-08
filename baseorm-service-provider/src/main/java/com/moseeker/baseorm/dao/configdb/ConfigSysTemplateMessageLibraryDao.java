@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.configdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.configdb.tables.ConfigSysTemplateMessageLibrary;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysTemplateMessageLibraryRecord;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysTemplateMessageLibraryDO;
 import org.jooq.impl.TableImpl;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class ConfigSysTemplateMessageLibraryDao extends JooqCrudImpl<ConfigSysTemplateMessageLibraryDO, ConfigSysTemplateMessageLibraryRecord> {
 
+    public ConfigSysTemplateMessageLibraryDao() {
+        super(ConfigSysTemplateMessageLibrary.CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY, ConfigSysTemplateMessageLibraryDO.class);
+    }
 
     public ConfigSysTemplateMessageLibraryDao(TableImpl<ConfigSysTemplateMessageLibraryRecord> table, Class<ConfigSysTemplateMessageLibraryDO> configSysTemplateMessageLibraryDOClass) {
         super(table, configSysTemplateMessageLibraryDOClass);

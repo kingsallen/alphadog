@@ -50,6 +50,10 @@ import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 @Service
 public class HRThirdPartyPositionDao extends JooqCrudImpl<HrThirdPartyPositionDO, HrThirdPartyPositionRecord> {
 
+    public HRThirdPartyPositionDao() {
+        super(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION, HrThirdPartyPositionDO.class);
+    }
+
 	private static final String UPSERT_SQL = "insert into hrdb.hr_third_party_position(position_id, third_part_position_id, is_synchronization, is_refresh, sync_time, refresh_time, update_time, occupation, address, channel) select ?, ?, ?, ?, ?, ?, ?, ?, ?, ? from DUAL where not exists(select id from hrdb.hr_third_party_position where channel = ? and position_id = ?)";
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
