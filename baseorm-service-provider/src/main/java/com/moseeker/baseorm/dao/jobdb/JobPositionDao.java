@@ -12,6 +12,7 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.struct.Position;
+
 import org.jooq.Record1;
 import org.jooq.Result;
 import org.jooq.impl.TableImpl;
@@ -25,9 +26,14 @@ import java.util.Map;
 @Service
 public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecord> {
 
-    public JobPositionDao(TableImpl<JobPositionRecord> table, Class<JobPositionDO> jobPositionDOClass) {
-        super(table, jobPositionDOClass);
+
+    public JobPositionDao() {
+        super(JobPosition.JOB_POSITION, JobPositionDO.class);
     }
+
+//    public JobPositionDao(TableImpl<JobPositionRecord> table, Class<JobPositionDO> jobPositionDOClass) {
+//        super(table, jobPositionDOClass);
+//    }
 
     public List<JobPositionDO> getPositions(Query query) {
         return this.getDatas(query);
@@ -80,16 +86,16 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
         List<Integer> list = new ArrayList<>();
         UserEmployeeRecord employeeRecord = create.selectFrom(UserEmployee.USER_EMPLOYEE)
                 .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.equal(userId)
-                        .and(UserEmployee.USER_EMPLOYEE.DISABLE.equal((byte)0))
-                        .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.equal((byte)0)))
+                        .and(UserEmployee.USER_EMPLOYEE.DISABLE.equal((byte) 0))
+                        .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.equal((byte) 0)))
                 .fetchOne();
         if (employeeRecord != null) {
             Result<Record1<Integer>> result = create.select(JobPosition.JOB_POSITION.ID)
                     .from(JobPosition.JOB_POSITION)
                     .where(JobPosition.JOB_POSITION.COMPANY_ID.equal(employeeRecord.getCompanyId()))
                     .fetch();
-            if(result != null && result.size() > 0) {
-                result.forEach(record ->  {
+            if (result != null && result.size() > 0) {
+                result.forEach(record -> {
                     list.add(record.value1());
                 });
             }

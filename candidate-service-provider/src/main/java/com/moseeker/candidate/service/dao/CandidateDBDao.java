@@ -135,16 +135,16 @@ public class CandidateDBDao {
     public JobPositionDO getPositionByID(int positionID) {
 //        QueryUtil queryUtil = new QueryUtil();
 //        queryUtil.addEqualFilter("id", String.valueOf(positionID));
-
         Query query = new Query.QueryBuilder().and("id", String.valueOf(positionID)).buildQuery();
         JobPositionDO positionDO = jobPositionDao.getData(query);
         return positionDO;
     }
 
     public UserUserDO getUserByID(int userID) {
-        QueryUtil queryUtil = new QueryUtil();
-        queryUtil.addEqualFilter("id", String.valueOf(userID));
-        UserUserDO userUserDO = userDao.getData(queryUtil);
+//        QueryUtil queryUtil = new QueryUtil();
+//        queryUtil.addEqualFilter("id", String.valueOf(userID));
+        Query query = new Query.QueryBuilder().and("id", String.valueOf(userID)).buildQuery();
+        UserUserDO userUserDO = userDao.getData(query);
         return userUserDO;
     }
 

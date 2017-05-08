@@ -36,7 +36,7 @@ public class BaseOrmServer {
                     acac.getBean(ApplicationDaoThriftService.class),
                     acac.getBean(ConfigDBDaoThriftService.class),
                     acac.getBean(HrDBThriftService.class),
-                    acac.getBean(CandidateDaoThriftService.class),
+//                    acac.getBean(CandidateDaoThriftService.class),
                     acac.getBean(SearchConditionDaoThriftService.class),
                     acac.getBean(ProfileDBDaoThriftService.class),
                     acac.getBean(WxUserDaoThriftService.class),
