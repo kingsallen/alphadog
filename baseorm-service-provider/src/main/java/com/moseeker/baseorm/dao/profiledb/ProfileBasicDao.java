@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.profiledb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.profiledb.tables.ProfileBasic;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileBasicRecord;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileBasicDO;
 import org.jooq.impl.TableImpl;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class ProfileBasicDao extends JooqCrudImpl<ProfileBasicDO, ProfileBasicRecord> {
 
+    public ProfileBasicDao() {
+        super(ProfileBasic.PROFILE_BASIC, ProfileBasicDO.class);
+    }
 
     public ProfileBasicDao(TableImpl<ProfileBasicRecord> table, Class<ProfileBasicDO> profileBasicDOClass) {
         super(table, profileBasicDOClass);

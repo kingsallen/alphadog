@@ -25,6 +25,10 @@ import java.util.Map;
 @Service
 public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecord> {
 
+    public JobPositionDao() {
+        super(JobPosition.JOB_POSITION, JobPositionDO.class);
+    }
+
     public JobPositionDao(TableImpl<JobPositionRecord> table, Class<JobPositionDO> jobPositionDOClass) {
         super(table, jobPositionDOClass);
     }

@@ -42,6 +42,10 @@ import java.util.stream.Collectors;
 @Service
 public class ProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfileProfileRecord> {
 
+    public ProfileDao() {
+        super(ProfileProfile.PROFILE_PROFILE, ProfileProfileDO.class);
+    }
+
     public ProfileDao(TableImpl<ProfileProfileRecord> table, Class<ProfileProfileDO> profileProfileDOClass) {
         super(table, profileProfileDOClass);
     }

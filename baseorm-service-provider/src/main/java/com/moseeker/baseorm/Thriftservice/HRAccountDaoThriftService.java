@@ -113,6 +113,8 @@ public class HRAccountDaoThriftService implements Iface {
     @Override
     public Response upsertThirdPartyAccount(BindAccountStruct account) throws TException {
         try {
+            logger.info("upsertThirdPartyAccount");
+            logger.info("upsertThirdPartyAccount account:{}", account);
             HrThirdPartyAccountRecord record = new HrThirdPartyAccountRecord();
             record.setBinding((short) account.getBinding());
             record.setChannel((short) account.getChannel());
@@ -125,7 +127,10 @@ public class HRAccountDaoThriftService implements Iface {
             record.setSyncTime(now);
             record.setBinding((short) 1);
             record.setUsername(account.getUsername());
+            logger.info("upsertThirdPartyAccount record:{}", record);
+            logger.info("upsertThirdPartyAccount channel:{}, company_id:{}", account.getChannel(), account.getCompany_id());
             int count = hrThirdPartyAccountDao.upsertResource(record);
+            logger.info("upsertThirdPartyAccount count:{}", count);
             if (count == 0) {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
             }
@@ -133,6 +138,7 @@ public class HRAccountDaoThriftService implements Iface {
             map.put("remain_num", account.getRemainNum());
             DateTime dt = new DateTime(now.getTime());
             map.put("sync_time", dt.toString("yyyy-MM-dd HH:mm:ss"));
+            logger.info("upsertThirdPartyAccount result:{}", map);
             return ResponseUtils.success(map);
         } catch (Exception e) {
             e.printStackTrace();

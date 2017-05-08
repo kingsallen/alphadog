@@ -27,6 +27,10 @@ import static jdk.nashorn.internal.runtime.regexp.joni.Config.log;
 public class ConfigAdminnotificationChannelDao extends JooqCrudImpl<ConfigAdminnotificationChannelDO, ConfigAdminnotificationChannelRecord> {
 
 
+    public ConfigAdminnotificationChannelDao() {
+        super(ConfigAdminnotificationChannel.CONFIG_ADMINNOTIFICATION_CHANNEL, ConfigAdminnotificationChannelDO.class);
+    }
+
     public ConfigAdminnotificationChannelDao(TableImpl<ConfigAdminnotificationChannelRecord> table, Class<ConfigAdminnotificationChannelDO> configAdminnotificationChannelDOClass) {
         super(table, configAdminnotificationChannelDOClass);
     }

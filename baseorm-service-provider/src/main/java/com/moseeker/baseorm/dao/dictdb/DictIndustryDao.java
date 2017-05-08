@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.dictdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.dictdb.tables.DictIndustry;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictIndustryRecord;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictIndustryDO;
 import org.jooq.impl.TableImpl;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class DictIndustryDao extends JooqCrudImpl<DictIndustryDO, DictIndustryRecord> {
 
+    public DictIndustryDao() {
+        super(DictIndustry.DICT_INDUSTRY, DictIndustryDO.class);
+    }
 
     public DictIndustryDao(TableImpl<DictIndustryRecord> table, Class<DictIndustryDO> dictIndustryDOClass) {
         super(table, dictIndustryDOClass);

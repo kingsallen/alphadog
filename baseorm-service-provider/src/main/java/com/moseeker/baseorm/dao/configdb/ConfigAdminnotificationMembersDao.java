@@ -28,14 +28,13 @@ public class ConfigAdminnotificationMembersDao extends JooqCrudImpl<ConfigAdminn
     @Autowired
     private ConfigAdminnotificationGroupmembersDao groupmembersDao;
 
+    public ConfigAdminnotificationMembersDao() {
+        super(ConfigAdminnotificationMembers.CONFIG_ADMINNOTIFICATION_MEMBERS, ConfigAdminnotificationMembersDO.class);
+    }
 
     public ConfigAdminnotificationMembersDao(TableImpl<ConfigAdminnotificationMembersRecord> table, Class<ConfigAdminnotificationMembersDO> configAdminnotificationMembersDOClass) {
         super(table, configAdminnotificationMembersDOClass);
     }
-
-   public ConfigAdminnotificationMembersDao() {
-        super(ConfigAdminnotificationMembers.CONFIG_ADMINNOTIFICATION_MEMBERS, ConfigAdminnotificationMembersDO.class);
-   }
 
     /**
      * 根据groupId获取组员信息

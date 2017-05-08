@@ -41,6 +41,10 @@ import java.util.List;
 @Service
 public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, HrThirdPartyAccountRecord> {
 
+    public HRThirdPartyAccountDao() {
+        super(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT, HrThirdPartyAccountDO.class);
+    }
+
 	private static final String UPSERT_SQL = "insert into hrdb.hr_third_party_account(channel, username, password, membername, binding, company_id, remain_num, sync_time) select ?, ?, ?, ?, ?, ?, ?, ? from DUAL where not exists(select id from hrdb.hr_third_party_account where channel = ? and company_id = ?)";
 
 	public HRThirdPartyAccountDao(TableImpl<HrThirdPartyAccountRecord> table, Class<HrThirdPartyAccountDO> hrThirdPartyAccountDOClass) {
@@ -48,11 +52,15 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
 	}
 
 	public int upsertResource(HrThirdPartyAccountRecord record) {
+		logger.info("HRThirdPartyAccountDao upsertResource");
+		logger.info("HRThirdPartyAccountDao upsertResource channel:{}, company_id:{}",record.getChannel(), record.getCompanyId());
+		logger.info("HRThirdPartyAccountDao upsertResource record:{}",record);
 		int count = 0;
 		count = create.execute(UPSERT_SQL, record.getChannel(), record.getUsername(), record.getPassword(),
 				record.getMembername(), record.getBinding(), record.getCompanyId().intValue(),
 				record.getRemainNum().intValue(), record.getSyncTime(), record.getChannel(),
 				record.getCompanyId().intValue());
+		logger.info("HRThirdPartyAccountDao count:{}",count);
 
 		if (count == 0) {
 			HrThirdPartyAccountRecord dbrecord = create.selectFrom(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)

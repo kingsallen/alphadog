@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.logdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.logdb.tables.LogWxMenuRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogWxMenuRecordRecord;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogWxMenuRecordDO;
 import org.jooq.impl.TableImpl;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class LogWxMenuRecordDao extends JooqCrudImpl<LogWxMenuRecordDO, LogWxMenuRecordRecord> {
 
+    public LogWxMenuRecordDao() {
+        super(LogWxMenuRecord.LOG_WX_MENU_RECORD, LogWxMenuRecordDO.class);
+    }
 
     public LogWxMenuRecordDao(TableImpl<LogWxMenuRecordRecord> table, Class<LogWxMenuRecordDO> logWxMenuRecordDOClass) {
         super(table, logWxMenuRecordDOClass);

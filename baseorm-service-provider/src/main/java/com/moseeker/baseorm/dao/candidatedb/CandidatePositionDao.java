@@ -3,16 +3,11 @@ package com.moseeker.baseorm.dao.candidatedb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidatePosition;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidatePositionRecord;
-import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.thrift.gen.dao.struct.CURDException;
 import com.moseeker.thrift.gen.dao.struct.CandidatePositionDO;
 import org.jooq.Condition;
-import org.jooq.DSLContext;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
-
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +18,9 @@ import java.util.Map;
 @Repository
 public class CandidatePositionDao extends JooqCrudImpl<CandidatePositionDO, CandidatePositionRecord> {
 
+    public CandidatePositionDao() {
+        super(CandidatePosition.CANDIDATE_POSITION, CandidatePositionDO.class);
+    }
 
     public CandidatePositionDao(TableImpl<CandidatePositionRecord> table, Class<CandidatePositionDO> candidatePositionDOClass) {
         super(table, candidatePositionDOClass);

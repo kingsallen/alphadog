@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.configdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.configdb.tables.ConfigSysAppTemplate;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysAppTemplateRecord;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysAppTemplateDO;
 import org.jooq.impl.TableImpl;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class ConfigSysAppTemplateDao extends JooqCrudImpl<ConfigSysAppTemplateDO, ConfigSysAppTemplateRecord> {
 
+    public ConfigSysAppTemplateDao() {
+        super(ConfigSysAppTemplate.CONFIG_SYS_APP_TEMPLATE, ConfigSysAppTemplateDO.class);
+    }
 
     public ConfigSysAppTemplateDao(TableImpl<ConfigSysAppTemplateRecord> table, Class<ConfigSysAppTemplateDO> configSysAppTemplateDOClass) {
         super(table, configSysAppTemplateDOClass);

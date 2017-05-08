@@ -26,6 +26,9 @@ import java.util.List;
 @Repository
 public class ConfigSysPointsConfTplDao extends JooqCrudImpl<ConfigSysPointsConfTplDO, ConfigSysPointsConfTplRecord> {
 
+    public ConfigSysPointsConfTplDao() {
+        super(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL, ConfigSysPointsConfTplDO.class);
+    }
 
 	public ConfigSysPointsConfTplDao(TableImpl<ConfigSysPointsConfTplRecord> table, Class<ConfigSysPointsConfTplDO> configSysPointsConfTplDOClass) {
 		super(table, configSysPointsConfTplDOClass);

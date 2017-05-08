@@ -27,6 +27,10 @@ import java.util.List;
 @Service
 public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplicationRecord> {
 
+    public JobApplicationDao() {
+        super(JobApplication.JOB_APPLICATION, JobApplicationDO.class);
+    }
+
 	public JobApplicationDao(TableImpl<JobApplicationRecord> table, Class<JobApplicationDO> jobApplicationDOClass) {
 		super(table, jobApplicationDOClass);
 	}

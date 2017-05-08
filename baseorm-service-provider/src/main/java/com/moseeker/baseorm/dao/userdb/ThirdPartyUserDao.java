@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.userdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.userdb.tables.UserThirdpartyUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserThirdpartyUserRecord;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.QueryUtil;
@@ -19,6 +20,10 @@ import java.sql.Timestamp;
  */
 @Repository
 public class ThirdPartyUserDao extends JooqCrudImpl<UserThirdpartyUserDO, UserThirdpartyUserRecord> {
+
+    public ThirdPartyUserDao() {
+        super(UserThirdpartyUser.USER_THIRDPARTY_USER, UserThirdpartyUserDO.class);
+    }
 
     public ThirdPartyUserDao(TableImpl<UserThirdpartyUserRecord> table, Class<UserThirdpartyUserDO> userThirdpartyUserDOClass) {
         super(table, userThirdpartyUserDOClass);

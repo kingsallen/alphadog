@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.candidatedb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.candidatedb.tables.CandidateRemark;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRemarkRecord;
 import com.moseeker.thrift.gen.dao.struct.CURDException;
 import com.moseeker.thrift.gen.dao.struct.CandidateRemarkDO;
@@ -13,6 +14,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class CandidateRemarkDao extends JooqCrudImpl<CandidateRemarkDO, CandidateRemarkRecord> {
 
+
+    public CandidateRemarkDao() {
+        super(CandidateRemark.CANDIDATE_REMARK, CandidateRemarkDO.class);
+    }
 
     public CandidateRemarkDao(TableImpl<CandidateRemarkRecord> table, Class<CandidateRemarkDO> candidateRemarkDOClass) {
         super(table, candidateRemarkDOClass);
