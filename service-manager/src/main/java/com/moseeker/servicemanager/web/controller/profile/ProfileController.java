@@ -278,7 +278,7 @@ public class ProfileController {
     /**
      * 批量修改职位
      */
-    @RequestMapping(value = "/profiles/application", method = RequestMethod.GET)
+    @RequestMapping(value = "/profiles/application", method = RequestMethod.POST)
     @ResponseBody
     public String profilesByApplication(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -289,14 +289,14 @@ public class ProfileController {
             int atsStatus = form.getInt("ats_status", 1);
             boolean recommender = form.getBoolean("recommender", false);
             boolean dlUrlRequired = form.getBoolean("dl_url_required", false);
-
+            Map<String, List<String>> filter = (Map<String, List<String>>) form.get("filter");
             if (companyId == -1) {
                 return ResponseLogNotification.fail(request, "company_id不能为空");
             } else if (sourceId == -1) {
                 return ResponseLogNotification.fail(request, "sourceId不能为空");
             }
-            logger.info("profilesByApplication:companyId:{},sourceId:{},atsStatus:{},recommender:{},dlUrlRequired:{}",companyId, sourceId, atsStatus, recommender, dlUrlRequired);
-            Response result = service.getProfileByApplication(companyId, sourceId, atsStatus, recommender, dlUrlRequired);
+            logger.info("profilesByApplication:companyId:{},sourceId:{},atsStatus:{},recommender:{},dlUrlRequired:{}", companyId, sourceId, atsStatus, recommender, dlUrlRequired);
+            Response result = service.getProfileByApplication(companyId, sourceId, atsStatus, recommender, dlUrlRequired, filter);
 
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
