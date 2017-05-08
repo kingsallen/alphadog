@@ -31,8 +31,8 @@ public class DemoServiceImpl implements DemoService {
     @Override
     public String postData(DemoStruct demoStruct) throws TException {
         try {
-            int id = demoDao.addData(demoStruct);
-            if (id > 0) {
+            demoStruct  = demoDao.addData(demoStruct);
+            if (demoStruct != null) {
                 return ResponseUtils.successJson();
             }
             return ResponseUtils.failJson(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);

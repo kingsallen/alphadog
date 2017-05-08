@@ -1,10 +1,9 @@
 package com.moseeker.demo.service;
 
-import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDaoTest;
-import com.moseeker.baseorm.dao.candidatedb.CandidatePositionDaoTest;
+import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
+import com.moseeker.baseorm.dao.candidatedb.CandidatePositionDao;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateCompanyRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidatePositionRecord;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,10 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class ServiceTest {
 
     @Autowired
-    CandidateCompanyDaoTest candidateCompanyDao;
+    CandidateCompanyDao candidateCompanyDao;
 
     @Autowired
-    CandidatePositionDaoTest candidatePositionDao;
+    CandidatePositionDao candidatePositionDao;
 
     @Transactional
     public void testTransaction() {
@@ -32,7 +31,7 @@ public class ServiceTest {
         candidateCompanyRecord.setMobile("mobile");
         candidateCompanyRecord.setNickname("nickname");
         candidateCompanyRecord.setSysUserId((int)(1));
-        candidateCompanyRecord = candidateCompanyDao.addCandidateCompany(candidateCompanyRecord);
+        candidateCompanyRecord = candidateCompanyDao.addRecord(candidateCompanyRecord);
 
         CandidatePositionRecord candidatePositionRecord = new CandidatePositionRecord();
         candidatePositionRecord.setCandidateCompanyId(candidateCompanyRecord.getId());
@@ -42,7 +41,7 @@ public class ServiceTest {
         candidatePositionRecord.setSharedFromEmployee((byte)0);
         candidatePositionRecord.setViewNumber(3);
         candidatePositionRecord.setWxuserId(3);
-        candidatePositionRecord = candidatePositionDao.addCandidatePosition(candidatePositionRecord);
+        candidatePositionRecord = candidatePositionDao.addRecord(candidatePositionRecord);
     }
 
     @Transactional
@@ -56,7 +55,7 @@ public class ServiceTest {
         candidateCompanyRecord.setMobile("mobile1");
         candidateCompanyRecord.setNickname("nickname1");
         candidateCompanyRecord.setSysUserId((int)(3));
-        candidateCompanyRecord = candidateCompanyDao.addCandidateCompany(candidateCompanyRecord);
+        candidateCompanyRecord = candidateCompanyDao.addRecord(candidateCompanyRecord);
 
         int i=1, j=0;
         int k = i/j;
@@ -69,6 +68,6 @@ public class ServiceTest {
         candidatePositionRecord.setSharedFromEmployee((byte)0);
         candidatePositionRecord.setViewNumber(3);
         candidatePositionRecord.setWxuserId(3);
-        candidatePositionRecord = candidatePositionDao.addCandidatePosition(candidatePositionRecord);
+        candidatePositionRecord = candidatePositionDao.addRecord(candidatePositionRecord);
     }
 }
