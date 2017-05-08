@@ -25,7 +25,6 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
-import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,10 +41,6 @@ import java.util.concurrent.Future;
 public class ChatDao {
 
     Logger logger = LoggerFactory.getLogger(ChatDao.class);
-
-    HrDBDao.Iface hrDBDao = ServiceManager.SERVICEMANAGER.getService(HrDBDao.Iface.class);
-    UserDBDao.Iface userDBDao = ServiceManager.SERVICEMANAGER.getService(UserDBDao.Iface.class);
-    JobDBDao.Iface jobDBDao = ServiceManager.SERVICEMANAGER.getService(JobDBDao.Iface.class);
 
     @Autowired
     HrChatUnreadCountDao hrChatUnreadCountDao;
@@ -515,11 +510,6 @@ public class ChatDao {
     }
 
     public HrChatUnreadCountDO saveUnreadCount(HrChatUnreadCountDO unreadCountDO) {
-        try {
-            return hrDBDao.saveChatUnreadCount(unreadCountDO);
-        } catch (TException e) {
-            logger.error(e.getMessage(), e);
-            return null;
-        }
+        return hrChatUnreadCountDao.addData(unreadCountDO);
     }
 }

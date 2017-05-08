@@ -24,6 +24,10 @@ import static org.jooq.impl.DSL.sum;
 @Repository
 public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRecord> {
 
+    public UserEmployeeDao() {
+        super(UserEmployee.USER_EMPLOYEE, UserEmployeeDO.class);
+    }
+
     public UserEmployeeDao(TableImpl<UserEmployeeRecord> table, Class<UserEmployeeDO> userEmployeeDOClass) {
         super(table, userEmployeeDOClass);
     }

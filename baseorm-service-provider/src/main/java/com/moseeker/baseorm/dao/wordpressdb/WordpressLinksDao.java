@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.wordpressdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.wordpressdb.tables.WordpressLinks;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressLinksRecord;
 import com.moseeker.thrift.gen.dao.struct.wordpressdb.WordpressLinksDO;
 import org.jooq.impl.TableImpl;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class WordpressLinksDao extends JooqCrudImpl<WordpressLinksDO, WordpressLinksRecord> {
 
+    public WordpressLinksDao() {
+        super(WordpressLinks.WORDPRESS_LINKS, WordpressLinksDO.class);
+    }
 
     public WordpressLinksDao(TableImpl<WordpressLinksRecord> table, Class<WordpressLinksDO> wordpressLinksDOClass) {
         super(table, wordpressLinksDOClass);

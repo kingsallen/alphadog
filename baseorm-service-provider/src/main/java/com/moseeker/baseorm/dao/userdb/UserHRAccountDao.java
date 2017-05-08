@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.userdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
@@ -21,6 +22,10 @@ import java.util.List;
  */
 @Repository
 public class UserHRAccountDao extends JooqCrudImpl<UserHrAccountDO, UserHrAccountRecord> {
+
+	public UserHRAccountDao() {
+		super(UserHrAccount.USER_HR_ACCOUNT, UserHrAccountDO.class);
+	}
 
 	public UserHRAccountDao(TableImpl<UserHrAccountRecord> table, Class<UserHrAccountDO> userHrAccountDOClass) {
 		super(table, userHrAccountDOClass);
