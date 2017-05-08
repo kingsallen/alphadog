@@ -2,11 +2,11 @@ package com.moseeker.baseorm.Thriftservice;
 
 import com.moseeker.baseorm.dao.userdb.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.service.UserEmployeeDaoService;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BeanUtils;
-import com.moseeker.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -30,7 +30,7 @@ public class UserDBDaoThriftService implements Iface {
 	private Logger logger = LoggerFactory.getLogger(UserDBDaoThriftService.class);
 	
 	@Autowired
-	private UserDao userDao;
+	private UserUserDao userDao;
 	
 	@Autowired
 	private UserFavPositionDao favPositionDao;
@@ -70,7 +70,7 @@ public class UserDBDaoThriftService implements Iface {
 
 	@Override
 	public List<UserUserDO> listUser(CommonQuery query) throws TException {
-		return userDao.getDatas(QueryConvert.commonQueryConvertToQuery(query));
+		return new ArrayList<>();
 	}
 
 	@Override
