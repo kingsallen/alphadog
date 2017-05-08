@@ -1,6 +1,4 @@
-package com.moseeker.warn.dto;
-
-import java.awt.print.Printable;
+package com.moseeker.thrift.gen.dao.struct.configdb;
 
 /**
  * @author ltf

@@ -41,6 +41,7 @@ public class WarnServer {
 	public static AnnotationConfigApplicationContext initSpring() {
 		AnnotationConfigApplicationContext annConfig = new AnnotationConfigApplicationContext();
 		annConfig.scan("com.moseeker.warn");
+		annConfig.scan("com.moseeker.baseorm");
 		annConfig.refresh();
 		return annConfig;
 	}

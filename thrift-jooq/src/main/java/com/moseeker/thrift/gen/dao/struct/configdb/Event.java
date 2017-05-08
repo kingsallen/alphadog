@@ -1,4 +1,4 @@
-package com.moseeker.warn.dto;
+package com.moseeker.thrift.gen.dao.struct.configdb;
 
 import java.util.Arrays;
 import java.util.List;

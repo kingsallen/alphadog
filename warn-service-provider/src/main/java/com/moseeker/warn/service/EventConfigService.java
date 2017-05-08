@@ -5,17 +5,15 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import com.moseeker.baseorm.dao.configdb.ConfigAdminnotificationChannelDao;
+import com.moseeker.baseorm.dao.configdb.ConfigAdminnotificationEventsDao;
+import com.moseeker.baseorm.dao.configdb.ConfigAdminnotificationMembersDao;
+import com.moseeker.baseorm.db.configdb.tables.records.ConfigAdminnotificationEventsRecord;
+import com.moseeker.thrift.gen.dao.struct.configdb.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.moseeker.db.configdb.tables.records.ConfigAdminnotificationEventsRecord;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.warn.dao.EventDao;
-import com.moseeker.warn.dao.MemberDao;
-import com.moseeker.warn.dao.NotifyChannelDao;
-import com.moseeker.warn.dto.Event;
 
 /**
  * @author ltf
@@ -27,13 +25,13 @@ public class EventConfigService {
 	private Logger log = LoggerFactory.getLogger(this.getClass());
 
 	@Autowired
-	private EventDao dao;
-	
+	private ConfigAdminnotificationEventsDao dao;
+
 	@Autowired
-	private MemberDao memberDao;
-	
+	private ConfigAdminnotificationMembersDao memberDao;
+
 	@Autowired
-	private NotifyChannelDao channelDao;
+	private ConfigAdminnotificationChannelDao channelDao;
 	
 	/**
 	 * 事件信息集合［K=projectAppid_eventKey, V={@link Event}］
@@ -48,7 +46,7 @@ public class EventConfigService {
 		eventMap.clear();
 		List<ConfigAdminnotificationEventsRecord> resources;
 		try {
-			resources = dao.getResources(new CommonQuery());
+			resources = dao.getRecords(null);
 			resources.forEach(record -> {
 				// 封装事件信息
 				Event event = new Event(record.getId(), record.getProjectAppid(), record.getEventKey(), record.getEventName(),

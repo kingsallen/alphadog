@@ -1,10 +1,22 @@
 package com.moseeker.baseorm.dao.configdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationChannel;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigAdminnotificationChannelRecord;
+import com.moseeker.common.dbutils.DBConnHelper;
+import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigAdminnotificationChannelDO;
+import org.jooq.DSLContext;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
+
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static jdk.nashorn.internal.runtime.regexp.joni.Config.log;
 
 /**
 * @author xxx
@@ -17,5 +29,17 @@ public class ConfigAdminnotificationChannelDao extends JooqCrudImpl<ConfigAdminn
 
     public ConfigAdminnotificationChannelDao(TableImpl<ConfigAdminnotificationChannelRecord> table, Class<ConfigAdminnotificationChannelDO> configAdminnotificationChannelDOClass) {
         super(table, configAdminnotificationChannelDOClass);
+    }
+
+
+    /**
+     * 获取发送渠道列表
+     * @param eventId
+     * @return
+     */
+    public List<String> getChannels(Integer eventId) {
+        QueryUtil query = new QueryUtil();
+        query.where(new Condition("event_id", eventId));
+        return getRecords(query).stream().map(m -> m.getChannel()).collect(Collectors.toList());
     }
 }
