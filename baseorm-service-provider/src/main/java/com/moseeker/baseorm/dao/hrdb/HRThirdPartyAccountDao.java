@@ -49,6 +49,9 @@ public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecor
 	}
 
 	public int upsertResource(HrThirdPartyAccountRecord record) {
+		logger.info("HRThirdPartyAccountDao upsertResource");
+		logger.info("HRThirdPartyAccountDao upsertResource channel:{}, company_id:{}",record.getChannel(), record.getCompanyId());
+		logger.info("HRThirdPartyAccountDao upsertResource record:{}",record);
 		int count = 0;
 		try (Connection conn = DBConnHelper.DBConn.getConn();) {
 
@@ -65,19 +68,25 @@ public class HRThirdPartyAccountDao extends BaseDaoImpl<HrThirdPartyAccountRecor
 			pstmt.setShort(9, record.getChannel());
 			pstmt.setInt(10, record.getCompanyId().intValue());
 			count = pstmt.executeUpdate();
+			logger.info("HRThirdPartyAccountDao count:{}",count);
 			if (count == 0) {
 				DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
 				HrThirdPartyAccountRecord dbrecord = create.selectFrom(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
 						.where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.COMPANY_ID.equal(record.getCompanyId())
 								.and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.equal(record.getChannel())))
 						.fetchOne();
+				logger.info("HRThirdPartyAccountDao dbrecord:{}",dbrecord);
 				dbrecord.setUsername(record.getUsername());
 				dbrecord.setPassword(record.getPassword());
 				dbrecord.setMembername(record.getMembername());
-				dbrecord.setBinding(record.getBinding());
 				dbrecord.setRemainNum(record.getRemainNum());
 				dbrecord.setSyncTime(record.getSyncTime());
+				dbrecord.setBinding(record.getBinding());
 				count = dbrecord.update();
+				conn.commit();
+				conn.setAutoCommit(true);
+				logger.info("HRThirdPartyAccountDao dbrecord:{}",dbrecord);
+
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
