@@ -1173,6 +1173,12 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     List<Integer> publisherList = dataList.stream().map(WechatPositionListData::getPublisher)
                             .collect(Collectors.toList());
 
+                    // publisherList 应该不为空
+                    // 如果 publisherList 为空，那么返回空 ArrayList
+                    if (publisherList == null || publisherList.size() == 0) {
+                        return new ArrayList<>();
+                    }
+
                     // 根据 pbulisher_list 查询 hr_company_account_list
                     hrm.addEqualFilter("account_id", buildQueryIds(publisherList));
 
@@ -1533,6 +1539,11 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 
 
     private String buildQueryIds(List<Integer> idList) {
+
+        if (idList == null || idList.size() == 0 ) {
+            return "[]";
+        }
+
         StringBuffer sb = new StringBuffer();
         for (Integer i : idList) {
             sb.append(String.valueOf(i) + ",");
