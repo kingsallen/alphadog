@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.wordpressdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.wordpressdb.tables.WordpressUserPost;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressUserPostRecord;
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.thrift.gen.dao.struct.wordpressdb.WordpressUserPostDO;
@@ -17,6 +18,10 @@ public class WordpressUserPostDao
 		extends JooqCrudImpl<WordpressUserPostDO, WordpressUserPostRecord> {
 	
 	private static final String INSERT_SQL = "insert into wordpressdb.wordpress_user_post(user_id, object_id) select ?, ? from DUAL where not exists(select user_id from wordpressdb.wordpress_user_post where user_id = ?)";
+
+	public WordpressUserPostDao() {
+		super(WordpressUserPost.WORDPRESS_USER_POST, WordpressUserPostDO.class);
+	}
 
 	public WordpressUserPostDao(TableImpl<WordpressUserPostRecord> table, Class<WordpressUserPostDO> wordpressUserPostDOClass) {
 		super(table, wordpressUserPostDOClass);

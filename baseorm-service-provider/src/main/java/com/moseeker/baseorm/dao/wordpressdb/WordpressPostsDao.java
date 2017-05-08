@@ -5,23 +5,17 @@ import com.moseeker.baseorm.db.wordpressdb.tables.WordpressPosts;
 import com.moseeker.baseorm.db.wordpressdb.tables.WordpressTermRelationships;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressPostsRecord;
 import com.moseeker.common.constants.Constant;
-import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.thrift.gen.dao.struct.wordpressdb.WordpressPostsDO;
-import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.impl.TableImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
-
-import java.sql.Connection;
-import java.sql.SQLException;
 
 @Repository
 public class WordpressPostsDao extends JooqCrudImpl<WordpressPostsDO, WordpressPostsRecord> {
 
-	private static Logger logger = LoggerFactory.getLogger(WordpressPostsDao.class);
+	public WordpressPostsDao() {
+		super(WordpressPosts.WORDPRESS_POSTS, WordpressPostsDO.class);
+	}
 
 	public WordpressPostsDao(TableImpl<WordpressPostsRecord> table, Class<WordpressPostsDO> wordpressPostsDOClass) {
 		super(table, wordpressPostsDOClass);

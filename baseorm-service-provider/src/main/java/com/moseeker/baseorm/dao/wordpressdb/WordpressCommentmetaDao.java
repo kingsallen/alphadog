@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.wordpressdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.wordpressdb.tables.WordpressCommentmeta;
 import com.moseeker.baseorm.db.wordpressdb.tables.records.WordpressCommentmetaRecord;
 import com.moseeker.thrift.gen.dao.struct.wordpressdb.WordpressCommentmetaDO;
 import org.jooq.impl.TableImpl;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class WordpressCommentmetaDao extends JooqCrudImpl<WordpressCommentmetaDO, WordpressCommentmetaRecord> {
 
+    public WordpressCommentmetaDao() {
+        super(WordpressCommentmeta.WORDPRESS_COMMENTMETA, WordpressCommentmetaDO.class);
+    }
 
     public WordpressCommentmetaDao(TableImpl<WordpressCommentmetaRecord> table, Class<WordpressCommentmetaDO> wordpressCommentmetaDOClass) {
         super(table, wordpressCommentmetaDOClass);
