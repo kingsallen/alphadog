@@ -4,18 +4,19 @@ import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
-import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.thrift.gen.dao.struct.UserEmployeeDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
-import org.jooq.*;
+
+import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Result;
+import org.jooq.SelectJoinStep;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -99,9 +100,9 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                     successArray[i] = innserSuccessFlag > 0 ? 1 : 0;
                 } else {
                     try {
-                        int id = addRecord(BeanUtils.structToDB(struct, UserEmployeeRecord.class));
-                        successArray[i] = id>0?1:0;
-                    }catch (Exception e){
+                        UserEmployeeRecord record = addRecord(BeanUtils.structToDB(struct, UserEmployeeRecord.class));
+                        successArray[i] = record.getId() > 0 ? 1 : 0;
+                    } catch (Exception e) {
                         successArray[i] = 0;
                     }
                 }
@@ -117,8 +118,8 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
         int count = 0;
         Result<Record1<BigDecimal>> result = create.select(sum(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.AWARD))
                 .from(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD)
-                .where(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID.equal((long)id)).fetch();
-        if(result != null) {
+                .where(UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD.EMPLOYEE_ID.equal((long) id)).fetch();
+        if (result != null) {
             Record1<BigDecimal> record1 = result.get(0);
             BigDecimal sum = (BigDecimal) record1.get(0);
             UserEmployeeRecord userEmployeeRecord = new UserEmployeeRecord();

@@ -1,4 +1,4 @@
-package com.moseeker.candidate.server;
+package com.moseeker.candidate;
 
 import com.moseeker.rpccenter.exception.IncompleteException;
 import com.moseeker.rpccenter.exception.RegisterException;
@@ -47,6 +47,7 @@ public class CandidateServer {
 	private static AnnotationConfigApplicationContext initSpring() {
 		AnnotationConfigApplicationContext acac = new AnnotationConfigApplicationContext();
 		acac.scan("com.moseeker.candidate");
+		acac.scan("com.moseeker.baseorm");
 		acac.scan("com.moseeker.common.aop.iface");
 		acac.refresh();
 		return acac;
