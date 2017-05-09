@@ -105,4 +105,30 @@ public class UserHrAccountServiceImpl implements Iface {
         return service.userHrAccount(company_id, disable, page, per_age);
     }
 
+    @Override
+    public Response synchronizeThirdpartyAccount(int id) throws TException {
+        // TODO Auto-generated method stub
+        return service.synchronizeThirdpartyAccount(id);
+    }
+
+    @Override
+    public Response ifSynchronizePosition(int companyId, int channel) throws TException {
+        // TODO Auto-generated method stub
+        return service.ifSynchronizePosition(companyId, channel);
+    }
+
+    @Override
+    public Response allowBind(UserHrAccount user, byte channelType, String username) throws TException {
+        return service.allowBind(user,channelType,username);
+    }
+
+    @Override
+    public Response addThirdPartyAccount(int userId, BindAccountStruct account) throws TException {
+        return service.addThirdPartyAccount(userId,account);
+    }
+
+    @Override
+    public Response updateThirdPartyAccount(int accountId, BindAccountStruct account) throws TException {
+        return service.updateThirdPartyAccount(accountId,account);
+    }
 }

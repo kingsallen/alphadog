@@ -23,7 +23,7 @@ import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.db.hrdb.tables.records.HrPointsConfRecord;
 import com.moseeker.db.userdb.tables.UserHrAccount;
 import com.moseeker.db.userdb.tables.records.UserHrAccountRecord;
-import com.moseeker.useraccounts.dao.UserHrAccountDao;
+import com.moseeker.useraccounts.dao.UserHrDao;
 
 /**
  * HR账号
@@ -32,7 +32,7 @@ import com.moseeker.useraccounts.dao.UserHrAccountDao;
  * Created by zzh on 16/5/31.
  */
 @Repository
-public class UserHrAccountDaoImpl extends BaseDaoImpl<UserHrAccountRecord, UserHrAccount> implements UserHrAccountDao {
+public class UserHrDaoImpl extends BaseDaoImpl<UserHrAccountRecord, UserHrAccount> implements UserHrDao {
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 

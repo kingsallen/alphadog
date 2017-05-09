@@ -44,17 +44,5 @@ public class CompanyServicesImpl implements Iface {
 		// TODO Auto-generated method stub
 		return service.getWechat(companyId, wechatId);
 	}
-
-	@Override
-	public Response synchronizeThirdpartyAccount(int id, byte channel) throws TException {
-		// TODO Auto-generated method stub
-		return service.synchronizeThirdpartyAccount(id, channel);
-	}
-
-	@Override
-	public Response ifSynchronizePosition(int companyId, int channel) throws TException {
-		// TODO Auto-generated method stub
-		return service.ifSynchronizePosition(companyId, channel);
-	}	
 }
 
