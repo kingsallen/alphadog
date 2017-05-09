@@ -475,9 +475,6 @@ public class ChatDao {
         } else {
                 chatRoom = findChatRoomByUserIdHrId(userId, hrId);
         }
-        if(chatRoom.getId() == 0) {
-            return null;
-        }
         return chatRoom;
     }
 

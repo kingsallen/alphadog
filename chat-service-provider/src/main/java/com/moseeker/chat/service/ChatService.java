@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,6 +33,7 @@ import java.util.concurrent.Future;
  */
 @Service
 @CounterIface
+@Transactional
 public class ChatService {
 
     Logger logger = LoggerFactory.getLogger(ChatService.class);
@@ -331,7 +333,6 @@ public class ChatService {
                 unreadCountDO.setHrUnreadCount(0);
                 unreadCountDO.setUserUnreadCount(1);
                 unreadCountDO.setRoomId(chatRoom.getId());
-                chaoDao.saveUnreadCount(unreadCountDO);
                 pool.startTast(() -> chaoDao.saveUnreadCount(unreadCountDO));
             }
         } else {
