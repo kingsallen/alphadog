@@ -124,7 +124,7 @@ public class ChatDao {
     public List<HrWxHrChatListDO> listChatRoom(int[] roomIdArray) {
         QueryUtil queryUtil = new QueryUtil();
         queryUtil.addSelectAttribute("create_time").addSelectAttribute("wx_chat_time").addSelectAttribute("hr_chat_time")
-                .addSelectAttribute("id");
+                .addSelectAttribute("id").addSelectAttribute("update_time");
         queryUtil.addEqualFilter("id", StringUtils.converFromArrayToStr(roomIdArray));
         return hrWxHrChatListDao.getDatas(queryUtil);
     }
