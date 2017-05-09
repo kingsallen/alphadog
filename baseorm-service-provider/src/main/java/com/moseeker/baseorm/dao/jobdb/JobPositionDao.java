@@ -309,7 +309,10 @@ public class JobPositionDao extends StructDaoImpl<JobPositionDO, JobPositionReco
                         recomResults = create.select().from(StJobSimilarity.ST_JOB_SIMILARITY).where(condition).fetch();
                         List<Integer> pids = new ArrayList<>();
                         for (Record recomResult : recomResults) {
-                            pids.add(((Integer) recomResult.getValue("recom_id")).intValue());
+                            Integer positionId = ((Integer) recomResult.getValue("recom_id")).intValue();
+                            if (positionId != pid) {  // 去掉回当前的职位ID
+                                pids.add(positionId);
+                            }
                         }
 
                         if (pids != null && pids.size() > 0) {
