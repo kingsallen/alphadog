@@ -906,9 +906,9 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     if (city.getType().toLowerCase().equals("text")) {
                         // 判断下是否是中文还是英文
                         if (isChinese(city.getValue())) { // 是中文
-                            cityQuery.addEqualFilter("ename", city.getValue());
-                        } else { // 英文
                             cityQuery.addEqualFilter("name", city.getValue());
+                        } else { // 英文
+                            cityQuery.addEqualFilter("ename", city.getValue());
                         }
                         try {
                             DictCityDO dictCityDO = (DictCityDO) cityMap.get(city.getValue());
