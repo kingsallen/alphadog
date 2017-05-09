@@ -35,10 +35,10 @@ public class HrDBThriftService implements Iface {
 	private CompanyDao companyDao;
 
 	@Autowired
-	private ChatDao chatDao;
+	private HrWxHrChatDao chatDao;
 
 	@Autowired
-	private ChatRoomDao chatRoomDao;
+	private HrWxHrChatListDao chatRoomDao;
 
 	@Autowired
 	private HrChatUnreadCountDao hrChatUnreadCountDao;

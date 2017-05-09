@@ -39,7 +39,7 @@ public class ConfigPropertiesUtil {
         try {
             //需要load common项目本地配置文件
             //load service provider的配置文件
-            inputStreamReader = new InputStreamReader(ConfigPropertiesUtil.class.getClassLoader().getResourceAsStream("common.properties.bak"), "UTF-8");
+            inputStreamReader = new InputStreamReader(ConfigPropertiesUtil.class.getClassLoader().getResourceAsStream("common.properties"), "UTF-8");
             properties.load(inputStreamReader);
             files.add("common.properties.bak");
         } catch (Exception e) {

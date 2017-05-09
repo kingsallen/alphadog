@@ -1,6 +1,7 @@
 package com.moseeker.chat.thriftservice;
 
 import com.moseeker.chat.service.ChatService;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.thrift.gen.chat.service.ChatService.Iface;
 import com.moseeker.thrift.gen.chat.struct.*;
 import com.moseeker.thrift.gen.common.struct.CURDException;
@@ -19,7 +20,12 @@ public class ChatThriftService implements Iface {
 
     @Override
     public HRChatRoomsVO listHRChatRoom(int hrId, int pageNo, int pageSize) throws CURDException, TException {
-        return chatService.listHRChatRoom(hrId, pageNo, pageSize);
+        try {
+            return chatService.listHRChatRoom(hrId, pageNo, pageSize);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new CURDException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,e.getMessage());
+        }
     }
 
     @Override
