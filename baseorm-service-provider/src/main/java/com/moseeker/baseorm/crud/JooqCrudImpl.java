@@ -108,7 +108,7 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
 
     @Override
     public R getRecord(Query query) {
-        return new LocalQuery<>(create, table, query).convertToResultQuery().fetchOne();
+        return new LocalQuery<>(create, table, query).convertToResultQuery().fetchOneInto(table.getRecordType());
     }
 
     @Override
@@ -118,6 +118,6 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
 
     @Override
     public int getCount(Query query) {
-        return create.fetchCount(new LocalQuery<R>(create, table, query).convertToSelect());
+        return create.fetchCount(new LocalQuery<R>(create, table, query).convertForCount());
     }
 }
