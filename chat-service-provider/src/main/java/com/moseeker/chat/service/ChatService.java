@@ -7,11 +7,13 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.chat.struct.*;
-import com.moseeker.thrift.gen.dao.struct.*;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrChatUnreadCountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatListDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -370,8 +372,8 @@ public class ChatService {
                     PositionVO positionVO = new PositionVO();
                     positionVO.setPositionId(positionDO.getId());
                     positionVO.setPositionTitle(positionDO.getTitle());
-                    positionVO.setSalaryBottom(positionDO.getSalaryBottom());
-                    positionVO.setSalaryTop(positionDO.getSalaryTop());
+                    positionVO.setSalaryBottom((int)positionDO.getSalaryBottom());
+                    positionVO.setSalaryTop((int)positionDO.getSalaryTop());
                     positionVO.setUpdateTime(positionDO.getUpdateTime());
                     positionVO.setCity(positionDO.getCity());
 

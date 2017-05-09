@@ -17,7 +17,7 @@ public class ChatThriftServiceTest {
     @Test
     public void listHRChatRoom() throws Exception {
 
-        HRChatRoomsVO chatRoomsVO = chatService.listHRChatRoom(82689, 1, 10);
+        HRChatRoomsVO chatRoomsVO = chatService.listHRChatRoom(82669, 1, 10);
         System.out.println("pageNo : "+chatRoomsVO.getPageNo());
         System.out.println("pageSize : " + chatRoomsVO.getPageSize());
         System.out.println("totalRow : " + chatRoomsVO.getTotalRow());
