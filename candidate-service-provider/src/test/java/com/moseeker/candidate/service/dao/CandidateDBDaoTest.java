@@ -24,7 +24,24 @@ public class CandidateDBDaoTest {
     public void getUserByID() throws Exception {
         AnnotationConfigApplicationContext acac = initSpring();
         CandidateDBDao candidateDBDao = acac.getBean(CandidateDBDao.class);
-        System.out.println(candidateDBDao.getPositionByID(1));
+        System.out.println(candidateDBDao.getPositionByID(378));
     }
+
+
+    @Test
+    public void getCandidateCompanyByUserIDCompanyID() throws Exception {
+        AnnotationConfigApplicationContext acac = initSpring();
+        CandidateDBDao candidateDBDao = acac.getBean(CandidateDBDao.class);
+        System.out.println(candidateDBDao.getCandidateCompanyByUserIDCompanyID(0, 2878));
+    }
+
+
+    @Test
+    public void getCandidateRemarks() throws Exception {
+        AnnotationConfigApplicationContext acac = initSpring();
+        CandidateDBDao candidateDBDao = acac.getBean(CandidateDBDao.class);
+        System.out.println(candidateDBDao.getCandidateRemarks(0, 8));
+    }
+
 
 }

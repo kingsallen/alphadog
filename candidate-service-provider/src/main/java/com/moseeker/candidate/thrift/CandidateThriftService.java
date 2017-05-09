@@ -7,6 +7,8 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 
 import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,17 +20,23 @@ import java.util.List;
 @Service
 public class CandidateThriftService implements CandidateService.Iface {
 
+    Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Autowired
     private Candidate candidate;
 
     @Override
-    public void glancePosition(int userId, int positionId, int shareChainId) throws TException {
-        candidate.glancePosition(userId, positionId, shareChainId);
+    public void glancePosition(int userId, int positionId, int shareChainId) {
+        try {
+            candidate.glancePosition(userId, positionId, shareChainId);
+        } catch (Exception e) {
+
+        }
     }
-    
+
     @Override
     public Response changeInteresting(int user_id, int position_id, byte is_interested) throws TException {
-    		return candidate.changeInteresting(user_id, position_id, is_interested);
+        return candidate.changeInteresting(user_id, position_id, is_interested);
     }
 
     @Override
