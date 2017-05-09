@@ -141,41 +141,41 @@ class LocalQuery<R extends Record> {
     }
 
     public SelectJoinStep<Record> convertForCount() {
-        SelectJoinStep<Record> table = null;
+        SelectJoinStep<Record> select = null;
         Collection<? extends SelectField<?>> selectFields = buildSelect();
         if (selectFields != null && selectFields.size() > 0) {
-            table = create.select(selectFields).from(table);
+            select = create.select(selectFields).from(table);
         } else {
-            table = create.select().from(table);
+            select = create.select().from(table);
         }
         Collection<? extends Field<?>> groups = buildGroup();
         if (groups != null && groups.size() > 0) {
-            table.groupBy(groups);
+            select.groupBy(groups);
         }
 
-        return table;
+        return select;
     }
 
     public SelectJoinStep<Record> convertToResultQuery() {
-        SelectJoinStep<Record> table = null;
+        SelectJoinStep<Record> select = null;
         Collection<? extends SelectField<?>> selectFields = buildSelect();
         if (selectFields != null && selectFields.size() > 0) {
-            table = create.select(selectFields).from(table);
+            select = create.select(selectFields).from(table);
         } else {
-            table = create.select().from(table);
+            select = create.select().from(table);
         }
         org.jooq.Condition condition = buildConditions();
         if (condition != null) {
-            table.where(condition);
+            select.where(condition);
         }
         Collection<? extends Field<?>> groups = buildGroup();
         if (groups != null && groups.size() > 0) {
-            table.groupBy(groups);
+            select.groupBy(groups);
         }
         Collection<? extends SortField<?>> orders = buildOrder();
         if (orders != null && orders.size() > 0) {
-            table.orderBy(orders);
+            select.orderBy(orders);
         }
-        return table;
+        return select;
     }
 }

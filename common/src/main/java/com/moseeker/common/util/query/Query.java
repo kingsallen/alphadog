@@ -26,22 +26,7 @@ public class Query {
         this.orders = new ArrayList<>();
     }
 
-    public void addSelect(String field) {
-        Select select = new Select(field, SelectOp.FIELD);
-        this.attributes.add(select);
-    }
 
-    public void addSelect(Select select) {
-        this.attributes.add(select);
-    }
-
-    public void addToOrders(OrderBy orderBy) {
-        this.orders.add(orderBy);
-    }
-
-    public void addToGroups(String field) {
-        this.groups.add(field);
-    }
 
     public static class QueryBuilder {
 

@@ -74,39 +74,19 @@ public class QueryUtil extends Query {
 
     @Deprecated
     public QueryUtil addGroup(String field) {
-        addToGroups(field);
+        queryBuilder.groupBy(field);
         return this;
     }
 
-    public static QueryUtil select() {
+    public QueryUtil select() {
         return new QueryUtil();
     }
 
-    public static QueryUtil select(String... fields) {
-        QueryUtil queryUtil = select();
-        if(fields != null) {
-            for (String field : fields) {
-                queryUtil.addSelect(field);
-            }
-
-        }
-        return new QueryUtil().select(fields);
-    }
-
-    public static QueryUtil select(Select... selects) {
-        return new QueryUtil().select(selects);
-    }
-
-    public static QueryUtil where(Condition condition) {
-        return new QueryUtil().select().where(condition);
-    }
-
     public void setPageSize(int pageSize) {
-        this.setPageSize(pageSize);
+        queryBuilder.setPageSize(pageSize);
     }
-
 
     public void setPageNo(int pageNo) {
-        this.setPageNo(pageNo);
+        queryBuilder.setPageNum(pageNo);
     }
 }
