@@ -13,10 +13,6 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Order;
-import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.dao.service.HrDBDao;
-import com.moseeker.thrift.gen.dao.service.JobDBDao;
-import com.moseeker.thrift.gen.dao.service.UserDBDao;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrChatUnreadCountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatDO;
@@ -128,7 +124,7 @@ public class ChatDao {
     public List<HrWxHrChatListDO> listChatRoom(int[] roomIdArray) {
         QueryUtil queryUtil = new QueryUtil();
         queryUtil.addSelectAttribute("create_time").addSelectAttribute("wx_chat_time").addSelectAttribute("hr_chat_time")
-                .addSelectAttribute("id");
+                .addSelectAttribute("id").addSelectAttribute("update_time");
         queryUtil.addEqualFilter("id", StringUtils.converFromArrayToStr(roomIdArray));
         return hrWxHrChatListDao.getDatas(queryUtil);
     }
@@ -478,9 +474,6 @@ public class ChatDao {
             }
         } else {
                 chatRoom = findChatRoomByUserIdHrId(userId, hrId);
-        }
-        if(chatRoom.getId() == 0) {
-            return null;
         }
         return chatRoom;
     }
