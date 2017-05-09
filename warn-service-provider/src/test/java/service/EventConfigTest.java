@@ -18,7 +18,8 @@ public class EventConfigTest {
 	public void init() {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 		context.scan("com.moseeker.warn");
-		context.scan("com.moseeker.baseorm");
+        context.scan("com.moseeker.baseorm.config");
+		context.scan("com.moseeker.baseorm.dao.configdb");
 		context.refresh();
 		service = context.getBean(EventConfigService.class);
 	}

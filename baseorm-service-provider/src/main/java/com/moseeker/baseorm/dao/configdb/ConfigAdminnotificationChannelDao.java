@@ -6,6 +6,7 @@ import com.moseeker.baseorm.db.configdb.tables.records.ConfigAdminnotificationCh
 import com.moseeker.common.dbutils.DBConnHelper;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigAdminnotificationChannelDO;
 import org.jooq.DSLContext;
 import org.jooq.impl.TableImpl;
@@ -42,8 +43,8 @@ public class ConfigAdminnotificationChannelDao extends JooqCrudImpl<ConfigAdminn
      * @return
      */
     public List<String> getChannels(Integer eventId) {
-        QueryUtil query = new QueryUtil();
-        query.where(new Condition("event_id", eventId));
-        return getRecords(query).stream().map(m -> m.getChannel()).collect(Collectors.toList());
+        Query.QueryBuilder query = new Query.QueryBuilder();
+        query.where("event_id", eventId);
+        return getRecords(query.buildQuery()).stream().map(m -> m.getChannel()).collect(Collectors.toList());
     }
 }

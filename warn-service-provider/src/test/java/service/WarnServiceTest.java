@@ -13,13 +13,15 @@ import com.moseeker.warn.utils.SendChannel;
 
 public class WarnServiceTest {
 	
-	/*private ValidationService service;
+	private ValidationService service;
 	
 	@SuppressWarnings("resource")
 	@Before
 	public void init() {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 		context.scan("com.moseeker.warn");
+        context.scan("com.moseeker.baseorm.config");
+        context.scan("com.moseeker.baseorm.dao.configdb");
 		context.refresh();
 		service = context.getBean(ValidationService.class);
 	}
@@ -48,5 +50,5 @@ public class WarnServiceTest {
 				break;
 			}
 		}
-	}*/
+	}
 }

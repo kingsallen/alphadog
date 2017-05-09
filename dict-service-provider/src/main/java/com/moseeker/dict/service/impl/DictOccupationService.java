@@ -2,9 +2,14 @@ package com.moseeker.dict.service.impl;
 
 import java.util.HashMap;
 
+import com.moseeker.baseorm.dao.dictdb.Dict51OccupationDao;
+import com.moseeker.baseorm.dao.dictdb.DictZpinOccupationDao;
+import com.moseeker.baseorm.service.DictDaoService;
+import com.moseeker.baseorm.service.Impl.DictDaoServiceImpl;
 import com.moseeker.common.providerutils.QueryUtil;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.constants.Constant;
@@ -29,8 +34,10 @@ public class DictOccupationService {
 	 * @time 2016－11－17
 	 */
 	Logger logger = org.slf4j.LoggerFactory.getLogger(DictOccupationService.class);
-	DictOccupationDao.Iface dictOccupationDao = ServiceManager.SERVICEMANAGER
-			.getService(DictOccupationDao.Iface.class);
+
+	@Autowired
+    private DictDaoServiceImpl dictOccupationDao;
+
 	private RedisClient redisClient = RedisClientFactory.getCacheClient();
 	/*
 	 * 查询第三方职位职能
@@ -59,9 +66,9 @@ public class DictOccupationService {
 				}
 				query.setEqualFilter(map);
 				if(channel==1){
-					return dictOccupationDao.getOccupation51(query);
+					return dictOccupationDao.occupation51(query);
 				}else if(channel==3){
-					return dictOccupationDao.getOccupationZPin(query);
+					return dictOccupationDao.occupationZPin(query);
 				}
 			}else{
 				if(channel==1){
@@ -71,7 +78,7 @@ public class DictOccupationService {
 						Response res=JSONObject.toJavaObject(JSONObject.parseObject(result), Response.class);
 						return res;
 					}else{
-						Response res=dictOccupationDao.getOccupations51();
+						Response res=dictOccupationDao.occupations51();
 						if(res.getStatus()==0&&!StringUtils.isEmpty(res.getData())&&!"[]".equals(res.getData())){
 							redisClient.set(Constant.APPID_ALPHADOG,ConstantEnum.JOB_OCCUPATION_KEY.toString(),key,JSONObject.toJSONString(res));
 						}
@@ -84,7 +91,7 @@ public class DictOccupationService {
 						Response res=JSONObject.toJavaObject(JSONObject.parseObject(result), Response.class);
 						return res;
 					}else{
-						Response res=dictOccupationDao.getOccupationsZPin();
+						Response res=dictOccupationDao.occupationsZPin();
 						if(res.getStatus()==0&&!StringUtils.isEmpty(res.getData())&&!"[]".equals(res.getData())){
 							redisClient.set(Constant.APPID_ALPHADOG,ConstantEnum.JOB_OCCUPATION_KEY.toString(),key ,JSONObject.toJSONString(res));
 						}
