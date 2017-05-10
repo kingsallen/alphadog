@@ -39,10 +39,8 @@ import com.moseeker.baseorm.db.hrdb.tables.HrSearchCondition;
 import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
 import com.moseeker.baseorm.db.hrdb.tables.HrTalentpool;
 import com.moseeker.baseorm.db.hrdb.tables.HrTeam;
-import com.moseeker.baseorm.db.hrdb.tables.HrTeamBluefocus;
 import com.moseeker.baseorm.db.hrdb.tables.HrTeamMember;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
-import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccountHr;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.baseorm.db.hrdb.tables.HrTopic;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxBasicReply;
@@ -56,7 +54,6 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxRule;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
-import com.moseeker.baseorm.db.hrdb.tables.VPositionRealcompany;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -81,7 +78,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-	private static final long serialVersionUID = 1309225019;
+	private static final long serialVersionUID = -66700097;
 
 	/**
 	 * The reference instance of <code>hrdb</code>
@@ -139,10 +136,8 @@ public class Hrdb extends SchemaImpl {
 			HrSuperaccountApply.HR_SUPERACCOUNT_APPLY,
 			HrTalentpool.HR_TALENTPOOL,
 			HrTeam.HR_TEAM,
-			HrTeamBluefocus.HR_TEAM_BLUEFOCUS,
 			HrTeamMember.HR_TEAM_MEMBER,
 			HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT,
-			HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR,
 			HrThirdPartyPosition.HR_THIRD_PARTY_POSITION,
 			HrTopic.HR_TOPIC,
 			HrWxBasicReply.HR_WX_BASIC_REPLY,
@@ -155,7 +150,6 @@ public class Hrdb extends SchemaImpl {
 			HrWxRule.HR_WX_RULE,
 			HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE,
 			HrWxWechat.HR_WX_WECHAT,
-			HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS,
-			VPositionRealcompany.V_POSITION_REALCOMPANY);
+			HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS);
 	}
 }

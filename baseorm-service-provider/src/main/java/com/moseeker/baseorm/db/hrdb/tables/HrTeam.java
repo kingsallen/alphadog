@@ -20,11 +20,10 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
- * 团队表
+ * 团队信息
  */
 @Generated(
 	value = {
@@ -36,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrTeam extends TableImpl<HrTeamRecord> {
 
-	private static final long serialVersionUID = -1782643285;
+	private static final long serialVersionUID = 982431197;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_team</code>
@@ -54,7 +53,7 @@ public class HrTeam extends TableImpl<HrTeamRecord> {
 	/**
 	 * The column <code>hrdb.hr_team.id</code>.
 	 */
-	public final TableField<HrTeamRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
+	public final TableField<HrTeamRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
 	/**
 	 * The column <code>hrdb.hr_team.name</code>. 团队/部门名称
@@ -145,14 +144,14 @@ public class HrTeam extends TableImpl<HrTeamRecord> {
 	}
 
 	private HrTeam(String alias, Table<HrTeamRecord> aliased, Field<?>[] parameters) {
-		super(alias, Hrdb.HRDB, aliased, parameters, "团队表");
+		super(alias, Hrdb.HRDB, aliased, parameters, "团队信息");
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Identity<HrTeamRecord, UInteger> getIdentity() {
+	public Identity<HrTeamRecord, Integer> getIdentity() {
 		return Keys.IDENTITY_HR_TEAM;
 	}
 

@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrRecruitStatisticsRecord extends UpdatableRecordImpl<HrRecruitStatisticsRecord> implements Record20<Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer, Date, Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer> {
 
-	private static final long serialVersionUID = -1202522444;
+	private static final long serialVersionUID = 1830246708;
 
 	/**
 	 * Setter for <code>hrdb.hr_recruit_statistics.id</code>. primary key
@@ -271,14 +271,14 @@ public class HrRecruitStatisticsRecord extends UpdatableRecordImpl<HrRecruitStat
 	}
 
 	/**
-	 * Setter for <code>hrdb.hr_recruit_statistics.recom_not_viewed_num</code>. 推荐简历未查阅人数
+	 * Setter for <code>hrdb.hr_recruit_statistics.recom_not_viewed_num</code>. 推荐未查阅人数
 	 */
 	public void setRecomNotViewedNum(Integer value) {
 		setValue(17, value);
 	}
 
 	/**
-	 * Getter for <code>hrdb.hr_recruit_statistics.recom_not_viewed_num</code>. 推荐简历未查阅人数
+	 * Getter for <code>hrdb.hr_recruit_statistics.recom_not_viewed_num</code>. 推荐未查阅人数
 	 */
 	public Integer getRecomNotViewedNum() {
 		return (Integer) getValue(17);

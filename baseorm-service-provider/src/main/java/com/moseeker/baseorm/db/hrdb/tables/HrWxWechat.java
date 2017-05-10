@@ -37,7 +37,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
 
-	private static final long serialVersionUID = 823940137;
+	private static final long serialVersionUID = -738946813;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_wx_wechat</code>
@@ -183,19 +183,19 @@ public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
 	public final TableField<HrWxWechatRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "修改时间");
 
 	/**
-	 * The column <code>hrdb.hr_wx_wechat.hr_chat</code>. IM聊天开关，0：不开启，1：开启
-	 */
-	public final TableField<HrWxWechatRecord, Byte> HR_CHAT = createField("hr_chat", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "IM聊天开关，0：不开启，1：开启");
-
-	/**
 	 * The column <code>hrdb.hr_wx_wechat.show_qx_qrcode</code>. 显示仟寻聚合号二维码, 0:不允许，1:允许
 	 */
 	public final TableField<HrWxWechatRecord, Integer> SHOW_QX_QRCODE = createField("show_qx_qrcode", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "显示仟寻聚合号二维码, 0:不允许，1:允许");
 
 	/**
-	 * The column <code>hrdb.hr_wx_wechat.show_custom_theme</code>. show_custom_theme,用于表示是否可以开启企业自定义颜色配置 0是否 1是开启
+	 * The column <code>hrdb.hr_wx_wechat.show_custom_theme</code>. show_custom_theme, 用于表示是否可以开启企业自定义颜色配置 0是否 1是开启
 	 */
-	public final TableField<HrWxWechatRecord, Integer> SHOW_CUSTOM_THEME = createField("show_custom_theme", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "show_custom_theme,用于表示是否可以开启企业自定义颜色配置 0是否 1是开启");
+	public final TableField<HrWxWechatRecord, Integer> SHOW_CUSTOM_THEME = createField("show_custom_theme", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "show_custom_theme, 用于表示是否可以开启企业自定义颜色配置 0是否 1是开启");
+
+	/**
+	 * The column <code>hrdb.hr_wx_wechat.hr_chat</code>. IM聊天开关，0：不开启，1：开启
+	 */
+	public final TableField<HrWxWechatRecord, Byte> HR_CHAT = createField("hr_chat", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "IM聊天开关，0：不开启，1：开启");
 
 	/**
 	 * Create a <code>hrdb.hr_wx_wechat</code> table reference

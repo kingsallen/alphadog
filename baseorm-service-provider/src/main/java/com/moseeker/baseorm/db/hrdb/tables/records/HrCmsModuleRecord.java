@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCmsModuleRecord extends UpdatableRecordImpl<HrCmsModuleRecord> implements Record10<Integer, Integer, String, Integer, Integer, String, Integer, Integer, Timestamp, Timestamp> {
 
-	private static final long serialVersionUID = -209226350;
+	private static final long serialVersionUID = -685850916;
 
 	/**
 	 * Setter for <code>hrdb.hr_cms_module.id</code>.
@@ -75,14 +75,14 @@ public class HrCmsModuleRecord extends UpdatableRecordImpl<HrCmsModuleRecord> im
 	}
 
 	/**
-	 * Setter for <code>hrdb.hr_cms_module.type</code>. 1,企业模块A 2，企业模块B，3企业模块C，4，企业模块D，5，企业模块E，6地图，7，二维码 ，8,团队详情，9，职位详情，10，动态
+	 * Setter for <code>hrdb.hr_cms_module.type</code>. 1,企业模块A 2，企业模块B，3企业模块C，4，企业模块D，5，企业模块E，6地图，7，二维码 8,团队详情9，职位详情10，动态
 	 */
 	public void setType(Integer value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>hrdb.hr_cms_module.type</code>. 1,企业模块A 2，企业模块B，3企业模块C，4，企业模块D，5，企业模块E，6地图，7，二维码 ，8,团队详情，9，职位详情，10，动态
+	 * Getter for <code>hrdb.hr_cms_module.type</code>. 1,企业模块A 2，企业模块B，3企业模块C，4，企业模块D，5，企业模块E，6地图，7，二维码 8,团队详情9，职位详情10，动态
 	 */
 	public Integer getType() {
 		return (Integer) getValue(3);
