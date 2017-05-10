@@ -4,6 +4,8 @@ import com.moseeker.common.exception.OrmException;
 import com.moseeker.common.util.query.Query;
 import org.jooq.*;
 import org.jooq.impl.TableImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -15,11 +17,13 @@ import java.util.stream.Collectors;
  * CommonQuery包装类，实现CommonQuery和jooq语法对接
  */
 class LocalQuery<R extends Record> {
+
+    Logger logger = LoggerFactory.getLogger(LocalQuery.class);
+
     DSLContext create;
     TableImpl table;
     Query query;
     LocalCondition<R> localCondition;
-
 
     public LocalQuery(DSLContext create, TableImpl<R> table, Query query) {
         this.create = create;
@@ -37,10 +41,20 @@ class LocalQuery<R extends Record> {
         }
     }
 
+    /**
+     * 获取页码。
+     * 如果大于0，则返回页码，否则返回 1
+     * @return 当前有效地页码
+     */
     public int getPage() {
         return query.getPageNum() > 0 ? query.getPageNum() : 1;
     }
 
+    /**
+     * 返回每页显示的信息数量
+     * 如果大于0，则返回当前的每页显示的数量；否则返回10
+     * @return
+     */
     public int getPageSize() {
         return query.getPageSize() > 0 ? query.getPageSize() : 10;
     }
@@ -87,6 +101,10 @@ class LocalQuery<R extends Record> {
         }
     }
 
+    /**
+     * 生成group条件
+     * @return
+     */
     public Collection<? extends Field<?>> buildGroup() {
         if (query != null && query.getGroups() != null) {
             return query.getGroups().stream()
@@ -140,22 +158,29 @@ class LocalQuery<R extends Record> {
         }
     }
 
-    public SelectJoinStep<Record> convertForCount() {
-        SelectJoinStep<Record> select = null;
-        Collection<? extends SelectField<?>> selectFields = buildSelect();
-        if (selectFields != null && selectFields.size() > 0) {
-            select = create.select(selectFields).from(table);
-        } else {
-            select = create.select().from(table);
+    /**
+     * 返回解析的查询条件。
+     * 该条件过滤了order条件和limit条件
+     * @return
+     */
+    public SelectJoinStep<Record1<Integer>> convertForCount() {
+        SelectJoinStep<Record1<Integer>> select = create.selectCount().from(table);
+        org.jooq.Condition condition = buildConditions();
+        if (condition != null) {
+            select.where(condition);
         }
         Collection<? extends Field<?>> groups = buildGroup();
         if (groups != null && groups.size() > 0) {
             select.groupBy(groups);
         }
-
+        logger.info(select.getSQL());
         return select;
     }
 
+    /**
+     * 返回解析的查询条件。解析条件包括查询的字段，过滤条件，分组条件，排序条件
+     * @return
+     */
     public SelectJoinStep<Record> convertToResultQuery() {
         SelectJoinStep<Record> select = null;
         Collection<? extends SelectField<?>> selectFields = buildSelect();
@@ -176,6 +201,8 @@ class LocalQuery<R extends Record> {
         if (orders != null && orders.size() > 0) {
             select.orderBy(orders);
         }
+        select.limit((getPage()-1) * getPageSize(), getPageSize());
+        logger.info(select.getSQL());
         return select;
     }
 }

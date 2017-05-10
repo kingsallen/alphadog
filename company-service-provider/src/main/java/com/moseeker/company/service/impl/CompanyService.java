@@ -1,30 +1,20 @@
 package com.moseeker.company.service.impl;
 
-import java.text.ParseException;
-import java.util.HashMap;
-import java.util.List;
-
-import org.apache.thrift.TException;
-import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
+import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
+import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
+import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.providerutils.bzutils.JOOQBaseServiceImpl;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.company.constant.BindingStatus;
 import com.moseeker.company.constant.ResultMessage;
-import com.moseeker.company.dao.CompanyDao;
-import com.moseeker.company.dao.WechatDao;
-import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
-import com.moseeker.db.hrdb.tables.records.HrWxWechatRecord;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -33,61 +23,62 @@ import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.foundation.chaos.struct.ThirdPartyAccountStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
+import org.apache.thrift.TException;
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.List;
 
 @Service
-public class CompanyService extends JOOQBaseServiceImpl<Hrcompany, HrCompanyRecord> {
+public class CompanyService{
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	
-	com.moseeker.thrift.gen.dao.service.CompanyDao.Iface companyDao = ServiceManager.SERVICEMANAGER.getService(com.moseeker.thrift.gen.dao.service.CompanyDao.Iface.class);
 	ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
-	com.moseeker.thrift.gen.dao.service.UserHrAccountDao.Iface hraccountDao = ServiceManager.SERVICEMANAGER
-			.getService(com.moseeker.thrift.gen.dao.service.UserHrAccountDao.Iface.class);
-	
+
     @Autowired
-    protected CompanyDao dao;
+    protected HrCompanyDao companyDao;
     
     @Autowired
-    protected WechatDao wechatDao;
+    protected HrWxWechatDao wechatDao;
 
-    @Override
-    protected void initDao() {
-        super.dao = this.dao;
+    @Autowired
+    private HRThirdPartyAccountDao hrThirdPartyAccountDao;
+
+    public Response getResource(CommonQuery query) throws TException {
+        try {
+            Hrcompany data = companyDao.getData(QueryConvert.commonQueryConvertToQuery(query), Hrcompany.class);
+            return ResponseUtils.success(data);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        }
     }
 
-    public CompanyDao getDao() {
-        return dao;
-    }
-
-    public void setDao(CompanyDao dao) {
-        this.dao = dao;
-    }
-
-    @Override
-    protected HrCompanyRecord structToDB(Hrcompany company) throws ParseException {
-        return (HrCompanyRecord) BeanUtils.structToDB(company, HrCompanyRecord.class);
-    }
-
-    @Override
-    protected Hrcompany DBToStruct(HrCompanyRecord r) {
-        return (Hrcompany) BeanUtils.DBToStruct(Hrcompany.class, r);
+    public Response getResources(CommonQuery query) throws TException {
+        try {
+            List<Hrcompany> list = companyDao.getDatas(QueryConvert.commonQueryConvertToQuery(query), Hrcompany.class);
+            return ResponseUtils.success(list);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        }
 
     }
 
     @CounterIface
     public Response getAllCompanies(CommonQuery query) {
-        if (dao == null) {
-            initDao();
-        }
         try {
-            List<HrCompanyRecord> records = dao.getAllCompanies(query);
-            List<Hrcompany> structs = DBsToStructs(records);
-
+            List<Hrcompany> structs =  companyDao.getDatas(QueryConvert.commonQueryConvertToQuery(query), Hrcompany.class);
             if (!structs.isEmpty()) {
                 return ResponseUtils.success(structs);
             }
-
         } catch (Exception e) {
             logger.error("getResources error", e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
@@ -102,31 +93,31 @@ public class CompanyService extends JOOQBaseServiceImpl<Hrcompany, HrCompanyReco
 		ValidateUtil vu = new ValidateUtil();
 		vu.addRequiredStringValidate("公司名称", company.getName(), null, null);
 		vu.addRequiredValidate("来源", company.getSource());
-		 String message = vu.validate();
-         if(StringUtils.isNullOrEmpty(message)) {
-        	boolean repeatName = dao.checkRepeatNameWithSuperCompany(company.getName());
-        	if(repeatName) {
-        		return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_NAME_REPEAT);
-        	} else {
-        		try {
-					HrCompanyRecord record = structToDB(company);
-					boolean scaleIllegal = dao.checkScaleIllegal(record.getScale());
-					if(!scaleIllegal) {
-						return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
-					}
-					boolean propertyIllegal = dao.checkPropertyIllegal(record.getScale());
-					if(!propertyIllegal) {
-						return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_PROPERTIY_ELLEGAL);
-					}
-					int companyId = dao.postResource(record);
-					return ResponseUtils.success(String.valueOf(companyId));
-				} catch (Exception e) {
-					logger.error(e.getMessage(), e);
-				}
-        	}
-         } else {
-        	 return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", message));
-         }
+        String message = vu.validate();
+        if(StringUtils.isNullOrEmpty(message)) {
+            boolean repeatName = companyDao.checkRepeatNameWithSuperCompany(company.getName());
+            if(repeatName) {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_NAME_REPEAT);
+            } else {
+                try {
+                    HrCompanyRecord record = BeanUtils.structToDB(company, HrCompanyRecord.class);
+                    boolean scaleIllegal = companyDao.checkScaleIllegal(record.getScale());
+                    if(!scaleIllegal) {
+                        return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+                    }
+                    boolean propertyIllegal = companyDao.checkPropertyIllegal(record.getScale());
+                    if(!propertyIllegal) {
+                        return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_PROPERTIY_ELLEGAL);
+                    }
+                    int companyId = companyDao.addRecord(record).getId();
+                    return ResponseUtils.success(String.valueOf(companyId));
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
+        } else {
+            return ResponseUtils.fail(ConstantErrorCodeMessage.VALIDATE_FAILED.replace("{MESSAGE}", message));
+        }
 		return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
 	}
 
@@ -136,19 +127,21 @@ public class CompanyService extends JOOQBaseServiceImpl<Hrcompany, HrCompanyReco
 	 * @param wechatId
 	 * @return
 	 */
+	@CounterIface
 	public Response getWechat(long companyId, long wechatId) {
 		
 		if(companyId == 0 && wechatId == 0) {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 		}
-		QueryUtil qu = new QueryUtil();
+		Query.QueryBuilder qu = new Query.QueryBuilder();
+		qu.setPageSize(Integer.MAX_VALUE);
 		if(wechatId > 0) {
-			qu.addEqualFilter("id", String.valueOf(wechatId));
+			qu.where("id", String.valueOf(wechatId));
 		} else if(companyId > 0) {
-			qu.addEqualFilter("company_id", String.valueOf(companyId));
+			qu.where("company_id", String.valueOf(companyId));
 		}
 		try {
-			HrWxWechatRecord record = wechatDao.getResource(qu);
+			HrWxWechatRecord record = wechatDao.getRecord(qu.buildQuery());
 			if(record == null) {
 				return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
 			} else {
@@ -166,15 +159,17 @@ public class CompanyService extends JOOQBaseServiceImpl<Hrcompany, HrCompanyReco
 	 * @param channel
 	 * @return
 	 */
+	@CounterIface
 	public Response synchronizeThirdpartyAccount(int id, byte channel) {
 		long startMethodTime=System.currentTimeMillis();
 		//查找第三方帐号
-		QueryUtil qu = new QueryUtil();
-		qu.addEqualFilter("company_id", String.valueOf(id));
-		qu.addEqualFilter("channel", String.valueOf(channel));
+		Query.QueryBuilder qu = new Query.QueryBuilder();
+		qu.setPageSize(Integer.MAX_VALUE);
+		qu.where("company_id", String.valueOf(id));
+		qu.where("channel", String.valueOf(channel));
 		try {
 			long startGetAccountData=System.currentTimeMillis();
-			ThirdPartAccountData data = companyDao.getThirdPartyAccount(qu);
+			ThirdPartAccountData data = hrThirdPartyAccountDao.getData(qu.buildQuery(), ThirdPartAccountData.class);
 			long getAccountUseTime=System.currentTimeMillis()-startGetAccountData;
 			logger.info("ThirdPartAccountData in CompanyService use  time========== "+getAccountUseTime); 
 			//如果是绑定状态，则进行
@@ -201,7 +196,7 @@ public class CompanyService extends JOOQBaseServiceImpl<Hrcompany, HrCompanyReco
 					thirdPartyAccount1.setRemainNum(synchronizeResult.getRemainNum());
 					//更新第三方帐号信息
 					long startUpdateTime=System.currentTimeMillis();
-					Response response = hraccountDao.upsertThirdPartyAccount(thirdPartyAccount1);
+					Response response = hrThirdPartyAccountDao.upsertThirdPartyAccount(thirdPartyAccount1);
 					long updateUseTime=System.currentTimeMillis() -startUpdateTime;
 					logger.info("update ThirdPartyAccount in CompanyService use time"+updateUseTime); 
 					if(response.getStatus() == 0) {
@@ -235,13 +230,15 @@ public class CompanyService extends JOOQBaseServiceImpl<Hrcompany, HrCompanyReco
 	 * @param channel 渠道号
 	 * @return
 	 */
+	@CounterIface
 	public Response ifSynchronizePosition(int companyId, int channel) {
 		Response response = ResultMessage.PROGRAM_EXHAUSTED.toResponse();
-		QueryUtil qu = new QueryUtil();
-		qu.addEqualFilter("company_id", String.valueOf(companyId));
-		qu.addEqualFilter("channel", String.valueOf(channel));
+		Query.QueryBuilder qu = new Query.QueryBuilder();
+		qu.setPageSize(Integer.MAX_VALUE);
+		qu.where("company_id", String.valueOf(companyId));
+		qu.where("channel", String.valueOf(channel));
 		try {
-			ThirdPartAccountData data = companyDao.getThirdPartyAccount(qu);
+			ThirdPartAccountData data = hrThirdPartyAccountDao.getData(qu.buildQuery(), ThirdPartAccountData.class);
 			if(data.getId() == 0 || data.getBinding() != 1) {
 				response = ResultMessage.THIRD_PARTY_ACCOUNT_UNBOUND.toResponse();
 			}
@@ -253,8 +250,7 @@ public class CompanyService extends JOOQBaseServiceImpl<Hrcompany, HrCompanyReco
 			} else {
 				response = ResultMessage.THIRD_PARTY_ACCOUNT_UNBOUND.toResponse();
 			}
-		} catch (TException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
 			response = ResultMessage.PROGRAM_EXHAUSTED.toResponse();
 			logger.error(e.getMessage(), e);
 		} finally {

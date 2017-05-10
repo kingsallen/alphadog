@@ -7,16 +7,19 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.chat.struct.*;
-import com.moseeker.thrift.gen.dao.struct.*;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrChatUnreadCountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatListDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,6 +33,7 @@ import java.util.concurrent.Future;
  */
 @Service
 @CounterIface
+@Transactional
 public class ChatService {
 
     Logger logger = LoggerFactory.getLogger(ChatService.class);
@@ -329,7 +333,6 @@ public class ChatService {
                 unreadCountDO.setHrUnreadCount(0);
                 unreadCountDO.setUserUnreadCount(1);
                 unreadCountDO.setRoomId(chatRoom.getId());
-                chaoDao.saveUnreadCount(unreadCountDO);
                 pool.startTast(() -> chaoDao.saveUnreadCount(unreadCountDO));
             }
         } else {
@@ -370,8 +373,8 @@ public class ChatService {
                     PositionVO positionVO = new PositionVO();
                     positionVO.setPositionId(positionDO.getId());
                     positionVO.setPositionTitle(positionDO.getTitle());
-                    positionVO.setSalaryBottom(positionDO.getSalaryBottom());
-                    positionVO.setSalaryTop(positionDO.getSalaryTop());
+                    positionVO.setSalaryBottom((int)positionDO.getSalaryBottom());
+                    positionVO.setSalaryTop((int)positionDO.getSalaryTop());
                     positionVO.setUpdateTime(positionDO.getUpdateTime());
                     positionVO.setCity(positionDO.getCity());
 

@@ -1,6 +1,7 @@
 package com.moseeker.warn;
 
 import com.moseeker.rpccenter.main.MoServer;
+import com.moseeker.warn.config.AppConfig;
 import com.moseeker.warn.thrift.WarnThriftService;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -37,8 +38,7 @@ public class WarnServer {
 	 */
 	public static AnnotationConfigApplicationContext initSpring() {
 		AnnotationConfigApplicationContext annConfig = new AnnotationConfigApplicationContext();
-		annConfig.scan("com.moseeker.warn");
-		annConfig.scan("com.moseeker.baseorm");
+		annConfig.register(AppConfig.class);
 		annConfig.refresh();
 		return annConfig;
 	}

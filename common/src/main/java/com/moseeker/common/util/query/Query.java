@@ -13,12 +13,12 @@ import java.util.Map;
  */
 public class Query {
 
-    private java.util.List<Select> attributes; // optional
-    private Condition conditions; // optional
-    private List<OrderBy> orders; // optional
-    private List<String> groups; // optional
-    private int pageSize; // optional
-    private int pageNum; // optional
+    protected java.util.List<Select> attributes; // optional
+    protected Condition conditions; // optional
+    protected List<OrderBy> orders; // optional
+    protected List<String> groups; // optional
+    protected int pageSize; // optional
+    protected int pageNum; // optional
     private Map<String,String> extras; // optional
 
     protected Query() {
