@@ -13,6 +13,7 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.Category;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
+import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.thrift.gen.candidate.struct.*;
@@ -602,6 +603,11 @@ public class CandidateEntity implements Candidate {
     private RecommendResult assembleResult(RecommendResult recommendResult, CandidateRecomRecordDO candidateRecomRecordDO,
                                 Future positionListFuture, Future presenteeListFuture) {
         recommendResult.setId(candidateRecomRecordDO.getId());
+        String date = candidateRecomRecordDO.getClickTime();
+        if (date != null && date.length() > 10) {
+            date = date.trim().substring(0,10);
+        }
+        recommendResult.setClickTime(date);
         try {
             JobPositionDO positionDO = (JobPositionDO) positionListFuture.get();
             if(positionDO != null) {
