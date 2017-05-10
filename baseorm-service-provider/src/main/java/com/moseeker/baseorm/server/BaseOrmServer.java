@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.server;
 
 import com.moseeker.baseorm.Thriftservice.*;
+import com.moseeker.baseorm.config.AppConfig;
 import com.moseeker.rpccenter.main.MoServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +15,7 @@ public class BaseOrmServer {
 
     public static AnnotationConfigApplicationContext initSpring() {
         AnnotationConfigApplicationContext annConfig = new AnnotationConfigApplicationContext();
-        annConfig.scan("com.moseeker.baseorm");
+        annConfig.register(AppConfig.class);
         annConfig.refresh();
         return annConfig;
     }

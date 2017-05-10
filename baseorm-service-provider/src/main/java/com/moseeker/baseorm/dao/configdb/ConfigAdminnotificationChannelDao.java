@@ -43,14 +43,9 @@ public class ConfigAdminnotificationChannelDao extends JooqCrudImpl<ConfigAdminn
      * @return
      */
     public List<String> getChannels(Integer eventId) {
-<<<<<<< HEAD
-        Query.QueryBuilder query = new Query.QueryBuilder();
-        query.where("event_id", eventId);
-        return getRecords(query.buildQuery()).stream().map(m -> m.getChannel()).collect(Collectors.toList());
-=======
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-        queryBuilder.where("event_id", eventId);
+        queryBuilder.setPageSize(Integer.MAX_VALUE);
+        queryBuilder.where("envent_id", eventId);
         return getRecords(queryBuilder.buildQuery()).stream().map(m -> m.getChannel()).collect(Collectors.toList());
->>>>>>> feature/basedao-surrender_wjf
     }
 }

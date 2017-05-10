@@ -47,7 +47,9 @@ public class EventConfigService {
 		eventMap.clear();
 		List<ConfigAdminnotificationEventsRecord> resources;
 		try {
-			resources = dao.getRecords(new Query.QueryBuilder().buildQuery());
+            Query.QueryBuilder query = new Query.QueryBuilder();
+            query.setPageSize(Integer.MAX_VALUE);
+            resources = dao.getRecords(query.buildQuery());
 			resources.forEach(record -> {
 				// 封装事件信息
 				Event event = new Event(record.getId(), record.getProjectAppid(), record.getEventKey(), record.getEventName(),

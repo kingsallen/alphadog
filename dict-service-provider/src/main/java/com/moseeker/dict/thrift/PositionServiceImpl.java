@@ -8,7 +8,7 @@ import com.moseeker.dict.service.impl.PositionService;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dict.service.PositionService.Iface;
 
-@Service
+@Service("positionServiceDao")
 public class PositionServiceImpl implements Iface {
 
 	@Autowired

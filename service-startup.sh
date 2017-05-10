@@ -16,7 +16,7 @@ java -classpath company-service-provider.jar com.moseeker.company.server.Company
 sleep 10
 
 # dict-service-provider
-java -classpath dict-service-provider.jar com.moseeker.dict.server.CityServer  -port 19210 &
+java -classpath dict-service-provider.jar CityServer  -port 19210 &
 
 sleep 10
 

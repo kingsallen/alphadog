@@ -149,8 +149,8 @@ public class LocalQueryTest {
     @Test
     public void convertToResultQuery() throws Exception {
 
-        ResultQuery<UserUserRecord> resultQuery = localQuery.convertToResultQuery();
-        System.out.println(resultQuery.getSQL());
+//        ResultQuery<UserUserRecord> resultQuery = localQuery.convertToResultQuery();
+//        System.out.println(resultQuery.getSQL());
     }
 
 }

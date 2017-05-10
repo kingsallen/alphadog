@@ -29,7 +29,7 @@ jar {
     }
 //
     manifest {
-       attributes 'Main-Class': 'com.moseeker.dict.server.CityServer'
+       attributes 'Main-Class': 'CityServer'
     }
 
 
