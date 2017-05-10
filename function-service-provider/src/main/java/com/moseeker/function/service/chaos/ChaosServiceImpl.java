@@ -155,6 +155,11 @@ public class ChaosServiceImpl {
                 DateTime dt = new DateTime();
                 int second = dt.getSecondOfDay();
                 for (ThirdPartyPositionForSynchronizationWithAccount position : positions) {
+                    //同步到智联的第三方职位不刷新
+                    if ("3".equals(position.getChannel())) {
+                        logger.info("synchronize position:zhilian skip");
+                        continue;
+                    }
                     position.getPosition_info().setEmail("cv_" + position.getPosition_id() + email);
                     String positionJson = JSON.toJSONString(position);
                     logger.info("synchronize position:" + positionJson);
