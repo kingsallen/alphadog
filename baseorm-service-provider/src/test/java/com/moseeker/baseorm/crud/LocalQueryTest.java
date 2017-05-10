@@ -146,11 +146,11 @@ public class LocalQueryTest {
                 .from(UserUser.USER_USER).where(condition13).getSQL());
     }
 
-    @Test
-    public void convertToResultQuery() throws Exception {
-
-        ResultQuery<UserUserRecord> resultQuery = localQuery.convertToResultQuery();
-        System.out.println(resultQuery.getSQL());
-    }
+//    @Test
+//    public void convertToResultQuery() throws Exception {
+//
+//        ResultQuery<UserUserRecord> resultQuery = localQuery.convertToResultQuery();
+//        System.out.println(resultQuery.getSQL());
+//    }
 
 }

@@ -31,7 +31,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrHbItemsRecord extends UpdatableRecordImpl<HrHbItemsRecord> implements Record11<Integer, Integer, Integer, Integer, BigDecimal, Byte, Integer, Timestamp, Timestamp, Timestamp, Integer> {
 
-    private static final long serialVersionUID = -733381124;
+    private static final long serialVersionUID = -1724745182;
 
     /**
      * Setter for <code>hrdb.hr_hb_items.id</code>.
@@ -76,14 +76,14 @@ public class HrHbItemsRecord extends UpdatableRecordImpl<HrHbItemsRecord> implem
     }
 
     /**
-     * Setter for <code>hrdb.hr_hb_items.index</code>. 这条数据是第几个红包 0 &lt; x &lt;= 总红包数, 如果是 NULL 表示这是一个空红包
+     * Setter for <code>hrdb.hr_hb_items.index</code>. 这条数据是第几个红包 0 &lt; x &lt;= 总红包数
      */
     public void setIndex(Integer value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_hb_items.index</code>. 这条数据是第几个红包 0 &lt; x &lt;= 总红包数, 如果是 NULL 表示这是一个空红包
+     * Getter for <code>hrdb.hr_hb_items.index</code>. 这条数据是第几个红包 0 &lt; x &lt;= 总红包数
      */
     public Integer getIndex() {
         return (Integer) get(3);
@@ -104,14 +104,14 @@ public class HrHbItemsRecord extends UpdatableRecordImpl<HrHbItemsRecord> implem
     }
 
     /**
-     * Setter for <code>hrdb.hr_hb_items.status</code>. 0:初始状态,1:发送了消息模成功,2:发送消息模板失败,尝试直接发送有金额的红包,3:打开刮刮卡,点击红包数字前,4:点击刮刮卡上红包数字后,5:发送红包前,校验 current_user.qxuser 不通过,红包停发,6:发送红包前,校验刮刮卡中的 hb_item 不通过,红包停发,7:跳过模版消息直接发送红包失败,100: 发送消息模板后成功发送了红包,101: 跳过发送消息模板后成功发送了红包,-1: 发送了 0 元红包的消息模板
+     * Setter for <code>hrdb.hr_hb_items.status</code>. 0:还未送出，1:已经送出
      */
     public void setStatus(Byte value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_hb_items.status</code>. 0:初始状态,1:发送了消息模成功,2:发送消息模板失败,尝试直接发送有金额的红包,3:打开刮刮卡,点击红包数字前,4:点击刮刮卡上红包数字后,5:发送红包前,校验 current_user.qxuser 不通过,红包停发,6:发送红包前,校验刮刮卡中的 hb_item 不通过,红包停发,7:跳过模版消息直接发送红包失败,100: 发送消息模板后成功发送了红包,101: 跳过发送消息模板后成功发送了红包,-1: 发送了 0 元红包的消息模板
+     * Getter for <code>hrdb.hr_hb_items.status</code>. 0:还未送出，1:已经送出
      */
     public Byte getStatus() {
         return (Byte) get(5);

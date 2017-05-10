@@ -8,6 +8,7 @@ import com.moseeker.baseorm.db.hrdb.Hrdb;
 import com.moseeker.baseorm.db.hrdb.Keys;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrChatUnreadCountRecord;
 
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrChatUnreadCount extends TableImpl<HrChatUnreadCountRecord> {
 
-    private static final long serialVersionUID = -1857296514;
+    private static final long serialVersionUID = 1550870222;
 
     /**
      * The reference instance of <code>hrdb.hr_chat_unread_count</code>
@@ -70,9 +71,24 @@ public class HrChatUnreadCount extends TableImpl<HrChatUnreadCountRecord> {
     public final TableField<HrChatUnreadCountRecord, Integer> HR_UNREAD_COUNT = createField("hr_unread_count", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "hr未读消息数量");
 
     /**
-     * The column <code>hrdb.hr_chat_unread_count.user_unread_count</code>. 员工未读消息数量
+     * The column <code>hrdb.hr_chat_unread_count.user_unread_count</code>. C端用户未读消息数量
      */
-    public final TableField<HrChatUnreadCountRecord, Integer> USER_UNREAD_COUNT = createField("user_unread_count", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "员工未读消息数量");
+    public final TableField<HrChatUnreadCountRecord, Integer> USER_UNREAD_COUNT = createField("user_unread_count", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "C端用户未读消息数量");
+
+    /**
+     * The column <code>hrdb.hr_chat_unread_count.status</code>. 状态，0：有效，1：无效
+     */
+    public final TableField<HrChatUnreadCountRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "状态，0：有效，1：无效");
+
+    /**
+     * The column <code>hrdb.hr_chat_unread_count.wx_chat_time</code>. sysuser最近一次聊天时间
+     */
+    public final TableField<HrChatUnreadCountRecord, Timestamp> WX_CHAT_TIME = createField("wx_chat_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "sysuser最近一次聊天时间");
+
+    /**
+     * The column <code>hrdb.hr_chat_unread_count.hr_chat_time</code>. HR最近一次聊天时间
+     */
+    public final TableField<HrChatUnreadCountRecord, Timestamp> HR_CHAT_TIME = createField("hr_chat_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "HR最近一次聊天时间");
 
     /**
      * Create a <code>hrdb.hr_chat_unread_count</code> table reference

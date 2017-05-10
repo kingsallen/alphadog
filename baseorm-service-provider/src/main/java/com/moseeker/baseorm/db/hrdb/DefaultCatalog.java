@@ -37,7 +37,7 @@ public class DefaultCatalog extends CatalogImpl {
     /**
      * The schema <code>hrdb</code>.
      */
-    public final Hrdb HRDB = Hrdb.HRDB;
+    public final Hrdb HRDB = com.moseeker.baseorm.db.hrdb.Hrdb.HRDB;
 
     /**
      * No further instances allowed

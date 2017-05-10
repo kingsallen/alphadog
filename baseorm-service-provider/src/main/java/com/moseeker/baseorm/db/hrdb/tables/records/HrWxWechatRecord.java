@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxWechatRecord extends UpdatableRecordImpl<HrWxWechatRecord> {
 
-    private static final long serialVersionUID = 942789942;
+    private static final long serialVersionUID = -1069560371;
 
     /**
      * Setter for <code>hrdb.hr_wx_wechat.id</code>.

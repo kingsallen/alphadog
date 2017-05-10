@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrTeam extends TableImpl<HrTeamRecord> {
 
-    private static final long serialVersionUID = 1409161363;
+    private static final long serialVersionUID = -112892445;
 
     /**
      * The reference instance of <code>hrdb.hr_team</code>
@@ -59,7 +59,7 @@ public class HrTeam extends TableImpl<HrTeamRecord> {
     /**
      * The column <code>hrdb.hr_team.name</code>. 团队/部门名称
      */
-    public final TableField<HrTeamRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "团队/部门名称");
+    public final TableField<HrTeamRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "团队/部门名称");
 
     /**
      * The column <code>hrdb.hr_team.summary</code>. 职能概述
@@ -124,7 +124,7 @@ public class HrTeam extends TableImpl<HrTeamRecord> {
     /**
      * The column <code>hrdb.hr_team.sub_title</code>. 团队小标题
      */
-    public final TableField<HrTeamRecord, String> SUB_TITLE = createField("sub_title", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false).defaultValue(org.jooq.impl.DSL.field("", org.jooq.impl.SQLDataType.VARCHAR)), this, "团队小标题");
+    public final TableField<HrTeamRecord, String> SUB_TITLE = createField("sub_title", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "团队小标题");
 
     /**
      * Create a <code>hrdb.hr_team</code> table reference

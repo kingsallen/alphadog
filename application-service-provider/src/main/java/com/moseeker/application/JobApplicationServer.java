@@ -1,4 +1,4 @@
-package com.moseeker.application.server;
+package com.moseeker.application;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,20 +13,11 @@ import com.moseeker.rpccenter.main.MultiRegServer;
  * Created by zzh on 16/5/24.
  */
 public class JobApplicationServer {
-
     private static Logger LOGGER = LoggerFactory.getLogger(JobApplicationServer.class);
-
     public static void main(String[] args) {
 
         AnnotationConfigApplicationContext acac = initSpring();
-        try {
-//        	MultiRegServer server = new MultiRegServer(
-//                    JobApplicationServer.class,
-//                    ServerNodeUtils.getPort(args),
-//                    acac.getBean(JobApplicataionServicesImpl.class)
-//            );
-//            server.start();
-            
+        try {           
             MoServer server = new MoServer(
                     acac,"",
                     acac.getBean(JobApplicataionServicesImpl.class)
@@ -52,6 +43,7 @@ public class JobApplicationServer {
         AnnotationConfigApplicationContext acac = new AnnotationConfigApplicationContext();
         acac.scan("com.moseeker.application");
         acac.scan("com.moseeker.common.aop.iface");
+        acac.scan("com.moseeker.baseorm");
         acac.refresh();
         return acac;
     }
