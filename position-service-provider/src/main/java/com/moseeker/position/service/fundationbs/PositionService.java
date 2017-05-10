@@ -622,8 +622,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                         jobPositionFailMessPojo.setJobNumber(jobPositionHandlerDate.getJobnumber());
                         jobPositionFailMessPojo.setSourceId(jobPositionHandlerDate.getSource_id());
                         jobPositionFailMessPojo.setJobPostionId(jobPositionHandlerDate.getId());
-                        jobPositionFailMessPojo.setDepartment(jobPositionHandlerDate.getDepartment());
-                        jobPositionFailMessPojo.setMessage(ConstantErrorCodeMessage.POSITION_DATA_OCCUPATION_ERROR);
+                        jobPositionFailMessPojo.setMessage(ConstantErrorCodeMessage.POSITION_DATA_OCCUPATION_ERROR.replace("{MESSAGE}", jobPositionHandlerDate.getOccupation()));
                         jobPositionFailMessPojos.add(jobPositionFailMessPojo);
                         continue;
                     }
