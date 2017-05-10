@@ -287,7 +287,7 @@ public class ChatService {
         chaoDao.updateChatRoom(chatRoomDO);
 
         //修改未读消息数量
-        pool.startTast(() -> chaoDao.addUnreadCount(roomId, speaker));
+        pool.startTast(() -> chaoDao.addUnreadCount(roomId, speaker, date));
     }
 
     /**

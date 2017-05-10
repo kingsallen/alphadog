@@ -50,13 +50,13 @@ public class ChatDao {
         switch (type) {
             case HR:
                 queryUtil.addSelectAttribute("user_unread_count").addSelectAttribute("hr_unread_count").addSelectAttribute("user_id");
-                queryUtil.setSortby("hr_unread_count,room_id");
+                queryUtil.setSortby("hr_unread_count,wx_chat_time");
                 queryUtil.addEqualFilter("hr_id", id);
                 queryUtil.setOrder("desc, desc");
                 break;
             case USER:
                 queryUtil.addSelectAttribute("user_unread_count").addSelectAttribute("hr_unread_count").addSelectAttribute("hr_id");
-                queryUtil.setSortby("user_unread_count,room_id");
+                queryUtil.setSortby("user_unread_count,hr_chat_time");
                 queryUtil.addEqualFilter("user_id", id);
                 queryUtil.setOrder("desc,desc");
                 break;
@@ -646,7 +646,7 @@ public class ChatDao {
         }
     }
 
-    public HrChatUnreadCountDO addUnreadCount(int roomId, byte speaker) {
+    public HrChatUnreadCountDO addUnreadCount(int roomId, byte speaker, String date) {
         QueryUtil queryUtil = new QueryUtil();
         queryUtil.addEqualFilter("room_id", roomId);
         try {
@@ -655,9 +655,11 @@ public class ChatDao {
             if(hrChatUnreadCountDO.getRoomId() > 0) {
                 switch (speaker) {
                     case 1:
+                        hrChatUnreadCountDO.setWxChatTime(date);
                         hrChatUnreadCountDO.setUserUnreadCount(hrChatUnreadCountDO.getUserUnreadCount()+1);
                         break;
                     case 0:
+                        hrChatUnreadCountDO.setHrChatTime(date);
                         hrChatUnreadCountDO.setHrUnreadCount(hrChatUnreadCountDO.getHrUnreadCount()+1);
                         break;
                     default:
