@@ -33,9 +33,8 @@ public class UserHRAccountDao extends JooqCrudImpl<UserHrAccountDO, UserHrAccoun
     }
 
     public List<UserHrAccountDO> listHRFromCompany(int comanyId) throws TException {
-        QueryUtil qu = new QueryUtil();
-        qu.addEqualFilter("company_id", String.valueOf(comanyId));
-
+//        QueryUtil qu = new QueryUtil();
+//        qu.addEqualFilter("company_id", String.valueOf(comanyId));
         Query query = new Query.QueryBuilder().where("company_id", String.valueOf(comanyId)).buildQuery();
         return this.getDatas(query);
     }
