@@ -783,6 +783,7 @@ public class CandidateEntity implements Candidate {
 
             com.moseeker.thrift.gen.candidate.struct.Candidate candidate = new com.moseeker.thrift.gen.candidate.struct.Candidate();
             candidate.setIsRecom(candidateRecomRecordDO.getIsRecom());
+            candidate.setId(candidateRecomRecordDO.getId());
 
             setPresentee(candidate, presenteeUserList, candidateRecomRecordDO);
 
