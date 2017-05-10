@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrHbSendRecord extends TableImpl<HrHbSendRecordRecord> {
 
-    private static final long serialVersionUID = 261456738;
+    private static final long serialVersionUID = 2110783473;
 
     /**
      * The reference instance of <code>hrdb.hr_hb_send_record</code>
@@ -125,11 +125,6 @@ public class HrHbSendRecord extends TableImpl<HrHbSendRecordRecord> {
      * The column <code>hrdb.hr_hb_send_record.create_time</code>.
      */
     public final TableField<HrHbSendRecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
-
-    /**
-     * The column <code>hrdb.hr_hb_send_record.hb_item_id</code>. hr_hb_items.id 该红包 api 调用所对应的红包记录
-     */
-    public final TableField<HrHbSendRecordRecord, Integer> HB_ITEM_ID = createField("hb_item_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "hr_hb_items.id 该红包 api 调用所对应的红包记录");
 
     /**
      * Create a <code>hrdb.hr_hb_send_record</code> table reference

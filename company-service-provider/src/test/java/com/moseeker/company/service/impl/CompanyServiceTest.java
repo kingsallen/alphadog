@@ -55,18 +55,20 @@ public class CompanyServiceTest {
 
     @Test
     public void getWechat() throws Exception {
-        Response response = service.getWechat(0, 278);
+        Response response = service.getWechat(2878, 0);
         System.out.println(response);
     }
 
     @Test
     public void synchronizeThirdpartyAccount() throws Exception {
-        service.synchronizeThirdpartyAccount(1, (byte)2);
+        Response response = service.synchronizeThirdpartyAccount(2878, (byte) 1);
+        System.out.println(response);
     }
 
     @Test
     public void ifSynchronizePosition() throws Exception {
-        service.ifSynchronizePosition(1,(byte)2);
+        Response response = service.ifSynchronizePosition(54545, (byte) 1);
+        System.out.println(response);
     }
 
 }

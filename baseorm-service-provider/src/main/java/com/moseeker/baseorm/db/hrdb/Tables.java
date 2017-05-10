@@ -13,6 +13,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCmsPages;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConfBak;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeePosition;
@@ -27,25 +28,21 @@ import com.moseeker.baseorm.db.hrdb.tables.HrHtml5Statistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrHtml5UniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor;
 import com.moseeker.baseorm.db.hrdb.tables.HrMedia;
-import com.moseeker.baseorm.db.hrdb.tables.HrMediaBackupChendi;
 import com.moseeker.baseorm.db.hrdb.tables.HrOperationRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrPointsConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrRecruitStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrRecruitUniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrReferralStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrResource;
-import com.moseeker.baseorm.db.hrdb.tables.HrResourceBackupChendi;
-import com.moseeker.baseorm.db.hrdb.tables.HrResourceOnline;
 import com.moseeker.baseorm.db.hrdb.tables.HrRuleStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrRuleUniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrSearchCondition;
 import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
 import com.moseeker.baseorm.db.hrdb.tables.HrTalentpool;
 import com.moseeker.baseorm.db.hrdb.tables.HrTeam;
-import com.moseeker.baseorm.db.hrdb.tables.HrTeamBackupChendi;
 import com.moseeker.baseorm.db.hrdb.tables.HrTeamMember;
-import com.moseeker.baseorm.db.hrdb.tables.HrTeamMemberBackupChendi;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
+import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccountHr;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.baseorm.db.hrdb.tables.HrTopic;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxBasicReply;
@@ -59,8 +56,6 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxRule;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
-import com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5Statistics;
-import com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5UniqueStatistics;
 
 import javax.annotation.Generated;
 
@@ -77,16 +72,6 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
-
-    /**
-     * The table <code>hrdb.hrdb.hr_html5_statistics</code>.
-     */
-    public static final HrdbHrHtml5Statistics HRDB_HR_HTML5_STATISTICS = HrdbHrHtml5Statistics.HRDB_HR_HTML5_STATISTICS;
-
-    /**
-     * The table <code>hrdb.hrdb.hr_html5_unique_statistics</code>.
-     */
-    public static final HrdbHrHtml5UniqueStatistics HRDB_HR_HTML5_UNIQUE_STATISTICS = HrdbHrHtml5UniqueStatistics.HRDB_HR_HTML5_UNIQUE_STATISTICS;
 
     /**
      * 企业申请简历校验配置
@@ -132,6 +117,11 @@ public class Tables {
      * 公司级别的配置信息表
      */
     public static final HrCompanyConf HR_COMPANY_CONF = HrCompanyConf.HR_COMPANY_CONF;
+
+    /**
+     * 公司级别的配置信息表
+     */
+    public static final HrCompanyConfBak HR_COMPANY_CONF_BAK = HrCompanyConfBak.HR_COMPANY_CONF_BAK;
 
     /**
      * 部门员工配置表
@@ -204,11 +194,6 @@ public class Tables {
     public static final HrMedia HR_MEDIA = HrMedia.HR_MEDIA;
 
     /**
-     * The table <code>hrdb.hr_media_backup_chendi</code>.
-     */
-    public static final HrMediaBackupChendi HR_MEDIA_BACKUP_CHENDI = HrMediaBackupChendi.HR_MEDIA_BACKUP_CHENDI;
-
-    /**
      * hr申请状态操作记录
      */
     public static final HrOperationRecord HR_OPERATION_RECORD = HrOperationRecord.HR_OPERATION_RECORD;
@@ -237,16 +222,6 @@ public class Tables {
      * 资源集合表
      */
     public static final HrResource HR_RESOURCE = HrResource.HR_RESOURCE;
-
-    /**
-     * The table <code>hrdb.hr_resource_backup_chendi</code>.
-     */
-    public static final HrResourceBackupChendi HR_RESOURCE_BACKUP_CHENDI = HrResourceBackupChendi.HR_RESOURCE_BACKUP_CHENDI;
-
-    /**
-     * The table <code>hrdb.hr_resource_online</code>.
-     */
-    public static final HrResourceOnline HR_RESOURCE_ONLINE = HrResourceOnline.HR_RESOURCE_ONLINE;
 
     /**
      * 微信图文传播次数统计表
@@ -279,24 +254,19 @@ public class Tables {
     public static final HrTeam HR_TEAM = HrTeam.HR_TEAM;
 
     /**
-     * The table <code>hrdb.hr_team_backup_chendi</code>.
-     */
-    public static final HrTeamBackupChendi HR_TEAM_BACKUP_CHENDI = HrTeamBackupChendi.HR_TEAM_BACKUP_CHENDI;
-
-    /**
      * 团队成员信息
      */
     public static final HrTeamMember HR_TEAM_MEMBER = HrTeamMember.HR_TEAM_MEMBER;
 
     /**
-     * The table <code>hrdb.hr_team_member_backup_chendi</code>.
-     */
-    public static final HrTeamMemberBackupChendi HR_TEAM_MEMBER_BACKUP_CHENDI = HrTeamMemberBackupChendi.HR_TEAM_MEMBER_BACKUP_CHENDI;
-
-    /**
      * 第三方渠道帐号
      */
     public static final HrThirdPartyAccount HR_THIRD_PARTY_ACCOUNT = HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT;
+
+    /**
+     * 第三方账号和hr表关联表，账号分配表，取消分配将status置为0，重新分配不修改记录而是新加分配记录
+     */
+    public static final HrThirdPartyAccountHr HR_THIRD_PARTY_ACCOUNT_HR = HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR;
 
     /**
      * 第三方渠道同步的职位

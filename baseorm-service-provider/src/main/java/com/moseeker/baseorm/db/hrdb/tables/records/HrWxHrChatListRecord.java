@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxHrChatListRecord extends UpdatableRecordImpl<HrWxHrChatListRecord> implements Record8<Integer, Integer, Integer, Byte, Timestamp, Timestamp, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 429013720;
+    private static final long serialVersionUID = 35980818;
 
     /**
      * Setter for <code>hrdb.hr_wx_hr_chat_list.id</code>. ID
@@ -131,14 +131,14 @@ public class HrWxHrChatListRecord extends UpdatableRecordImpl<HrWxHrChatListReco
     }
 
     /**
-     * Setter for <code>hrdb.hr_wx_hr_chat_list.update_time</code>. 更新时间
+     * Setter for <code>hrdb.hr_wx_hr_chat_list.update_time</code>. 创建时间
      */
     public void setUpdateTime(Timestamp value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_wx_hr_chat_list.update_time</code>. 更新时间
+     * Getter for <code>hrdb.hr_wx_hr_chat_list.update_time</code>. 创建时间
      */
     public Timestamp getUpdateTime() {
         return (Timestamp) get(7);

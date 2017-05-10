@@ -29,7 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -213,7 +212,7 @@ public class CompanyService{
 			} else {
 				return ResultMessage.THIRD_PARTY_ACCOUNT_UNBOUND.toResponse();
 			}
-		} catch (TException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error(e.getMessage(), e);
 			return ResultMessage.PROGRAM_EXCEPTION.toResponse();
@@ -234,7 +233,6 @@ public class CompanyService{
 	public Response ifSynchronizePosition(int companyId, int channel) {
 		Response response = ResultMessage.PROGRAM_EXHAUSTED.toResponse();
 		Query.QueryBuilder qu = new Query.QueryBuilder();
-		qu.setPageSize(Integer.MAX_VALUE);
 		qu.where("company_id", String.valueOf(companyId));
 		qu.where("channel", String.valueOf(channel));
 		try {
