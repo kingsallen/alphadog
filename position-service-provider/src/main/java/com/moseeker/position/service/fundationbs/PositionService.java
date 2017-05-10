@@ -622,8 +622,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                         jobPositionFailMessPojo.setJobNumber(jobPositionHandlerDate.getJobnumber());
                         jobPositionFailMessPojo.setSourceId(jobPositionHandlerDate.getSource_id());
                         jobPositionFailMessPojo.setJobPostionId(jobPositionHandlerDate.getId());
-                        jobPositionFailMessPojo.setDepartment(jobPositionHandlerDate.getDepartment());
-                        jobPositionFailMessPojo.setMessage(ConstantErrorCodeMessage.POSITION_DATA_OCCUPATION_ERROR);
+                        jobPositionFailMessPojo.setMessage(ConstantErrorCodeMessage.POSITION_DATA_OCCUPATION_ERROR.replace("{MESSAGE}", jobPositionHandlerDate.getOccupation()));
                         jobPositionFailMessPojos.add(jobPositionFailMessPojo);
                         continue;
                     }
@@ -902,8 +901,14 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     jobPositionCityRecord.setPid(pid);
                     logger.info("城市类型：" + city.getType().toLowerCase());
                     logger.info("VAlUE：" + city.getValue());
-                    if (city.getType().toLowerCase().equals("text")) { // 城市名字，转换成cityCode，传入的是城市的时候查询dict_city
-                        cityQuery.addEqualFilter("name", city.getValue());
+                    // 城市名字，转换成cityCode，传入的是城市的时候查询dict_city
+                    if (city.getType().toLowerCase().equals("text")) {
+                        // 判断下是否是中文还是英文
+                        if (isChinese(city.getValue())) { // 是中文
+                            cityQuery.addEqualFilter("name", city.getValue());
+                        } else { // 英文
+                            cityQuery.addEqualFilter("ename", city.getValue());
+                        }
                         try {
                             DictCityDO dictCityDO = (DictCityDO) cityMap.get(city.getValue());
                             if (dictCityDO != null) {
@@ -1542,5 +1547,24 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
         }
         return "[" + sb.substring(0, sb.length() - 1) + "]";
     }
+
+
+    /**
+     * 输入的字符是否是汉字
+     *
+     * @return boolean
+     */
+    public boolean isChinese(String str) {
+        boolean flag = false;
+        for (int i = 0; i < str.length(); i++) {
+            int v = str.charAt(i);
+            if ((v >= 19968 && v <= 171941)) {
+                flag = true;
+                break;
+            }
+        }
+        return flag;
+    }
+
 
 }
