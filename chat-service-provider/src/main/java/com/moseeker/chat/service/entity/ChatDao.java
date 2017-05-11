@@ -637,6 +637,7 @@ public class ChatDao {
                 hrChatUnreadCountDO.setUserId(userId);
                 hrChatUnreadCountDO.setHrUnreadCount(0);
                 hrChatUnreadCountDO.setUserUnreadCount(0);
+                hrChatUnreadCountDO.setUserHaveUnreadMsg((byte)0);
                 hrChatUnreadCountDO = hrDBDao.saveChatUnreadCount(hrChatUnreadCountDO);
             }
             return hrChatUnreadCountDO;
@@ -656,10 +657,12 @@ public class ChatDao {
                 switch (speaker) {
                     case 1:
                         hrChatUnreadCountDO.setWxChatTime(date);
+                        hrChatUnreadCountDO.setUserHaveUnreadMsg((byte)1);
                         hrChatUnreadCountDO.setUserUnreadCount(hrChatUnreadCountDO.getUserUnreadCount()+1);
                         break;
                     case 0:
                         hrChatUnreadCountDO.setHrChatTime(date);
+                        hrChatUnreadCountDO.setHrHaveUnreadMsg((byte)1);
                         hrChatUnreadCountDO.setHrUnreadCount(hrChatUnreadCountDO.getHrUnreadCount()+1);
                         break;
                     default:
