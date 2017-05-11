@@ -13,6 +13,7 @@ import org.apache.thrift.TApplicationException;
 import org.apache.thrift.TException;
 import org.apache.thrift.TServiceClient;
 import org.apache.thrift.server.TServer;
+import org.apache.thrift.transport.TTransport;
 import org.apache.thrift.transport.TTransportException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,8 +85,18 @@ public class NodeInvoker<T> implements Invoker {
                 	//warning
                     continue;
                 }
+                
+
+                
                 LOGGER.info(node.toString());
                 client = pool.borrowObject(node);
+                if (i>=0){
+                	LOGGER.error("try:" + (i+1));
+                	LOGGER.error("node:" + node);
+                    TTransport tp = ((TServiceClient) client).getInputProtocol().getTransport();
+                    LOGGER.error("client transport isopen:" + tp.isOpen());           
+                }
+                
                 System.out.println("after borrowObject getNumActive:"+pool.getNumActive());
                 Object result = method.invoke(client, args);
                 
@@ -130,7 +141,7 @@ public class NodeInvoker<T> implements Invoker {
                             	//warning
                                 //Notification.sendThriftConnectionError(serverNode+"  链接置为无效, error:"+ite.getMessage());
                                 pool.invalidateObject(node, client);
-                                LOGGER.error(node+"  链接置为无效, error:"+ite.getMessage(), ite);
+                                LOGGER.error(node+" current retry:" + retry + "  链接置为无效, error:"+ite.getMessage(), ite);
                                 LOGGER.debug("after invalidateObject getNumActive:"+pool.getNumActive());
                             }
                             client = null;
@@ -160,6 +171,7 @@ public class NodeInvoker<T> implements Invoker {
                 }
             }
         }
+        LOGGER.error("retry failed. "+ node);
         throw new RpcException(exception.getMessage(), exception);
 	}
 

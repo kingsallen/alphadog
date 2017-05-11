@@ -101,7 +101,7 @@ struct UserUserDO {
     8: optional Timestamp last_login_time,      //最后一次登录时间
     9: optional string last_login_ip,           //最后一次登录IP地址
     10: optional i32 login_count,               //登录次数
-    11: optional i32 mobile,                    //手机号码
+    11: optional i64 mobile,                    //手机号码
     12: optional string email,                  //邮箱
     13: optional bool activation,               //是否激活0:未激活 1:激活
     14: optional string activation_code,        //激活码
