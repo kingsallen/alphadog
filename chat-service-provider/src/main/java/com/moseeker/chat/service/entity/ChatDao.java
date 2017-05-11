@@ -47,6 +47,7 @@ public class ChatDao {
     public List<HrChatUnreadCountDO> listChatRoomUnreadCount(ChatSpeakerType type, int id, int pageNo, int pageSize) {
         QueryUtil queryUtil = new QueryUtil();
         queryUtil.addSelectAttribute("room_id");
+        queryUtil.addEqualFilter("status", 0);
         switch (type) {
             case HR:
                 queryUtil.addSelectAttribute("user_unread_count").addSelectAttribute("hr_unread_count").addSelectAttribute("user_id");
