@@ -85,6 +85,16 @@ service UserHrAccountService {
     common_struct.Response putResource(1: useraccounts_struct.UserHrAccount userHrAccount);
     //绑定第三方帐号 
     common_struct.Response bind(1: useraccounts_struct.BindAccountStruct account);
+    //是否可以绑定第三方账号
+    common_struct.Response allowBind(1:useraccounts_struct.UserHrAccount user, 3:byte channelType,4:string username);
+    //添加第三方账号
+    common_struct.Response addThirdPartyAccount(1:i32 userId,2:useraccounts_struct.BindAccountStruct account);
+    //更新第三方账号
+    common_struct.Response updateThirdPartyAccount(1:i32 accountId,2:useraccounts_struct.BindAccountStruct account);
+    //是否可以同步职位
+    common_struct.Response ifSynchronizePosition(1: i32 companyId, 2: i32 channel);
+    #同步第三方帐号
+    common_struct.Response synchronizeThirdpartyAccount(1:i32 id);
     // 获取常用筛选项
     common_struct.Response getSearchCondition(1: i32 hrAccountId, 2: i32 type); 
     // 保存常用筛选项
@@ -123,6 +133,7 @@ service UserCenterService {
 service ThirdPartyUserService {
     //更新账号
     common_struct.Response updateUser(1: useraccounts_struct.ThirdPartyUser user);
+
 }
 
 //UserEmployeeDao数据库单表操作

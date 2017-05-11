@@ -114,6 +114,7 @@ public class UrlUtil {
     }    
 	
 	public static String sendPost(String url, String param, int connectionTimeOut, int readTimeout) throws ConnectException {
+	    logger.info("sendPost:"+url+":"+param+":"+connectionTimeOut+":"+readTimeout);
 		PrintWriter out = null;
         BufferedReader in = null;
         String result = "";
@@ -144,6 +145,7 @@ public class UrlUtil {
             while ((line = in.readLine()) != null) {
                 result += line;
             }
+            logger.info("sendPost result : {}", result);
         } catch (Exception e) {
         	LoggerFactory.getLogger(UrlUtil.class).error(e.getMessage(), e);
         	throw new ConnectException();

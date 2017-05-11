@@ -12,9 +12,17 @@ include "../../application/struct/application_struct.thrift"
 
 service UserHrAccountDao {
 	common_struct.Response getAccount(1:common_struct.CommonQuery query);
-	common_struct.Response getThirdPartyAccount(1:common_struct.CommonQuery query);
-	common_struct.Response createThirdPartyAccount(1:useraccounts_struct.BindAccountStruct account);
-	common_struct.Response upsertThirdPartyAccount(1:useraccounts_struct.BindAccountStruct account);
+	dao_struct.ThirdPartAccountData getThirdPartyAccount(1:common_struct.CommonQuery query);
+	dao_struct.ThirdPartAccountData getThirdPartyAccountByUserId(1:i32 user_id,2:i32 channel);
+	list<dao_struct.ThirdPartAccountData> getThirdPartyAccountsByUserId(1:i32 user_id);
+    list<dao_struct.ThirdPartAccountData> getThirdPartyBindingAccounts(1:common_struct.CommonQuery query);
+    //获取第三方渠道职位
+    list<dao_struct.ThirdPartyPositionData> getThirdPartyPositions(1:common_struct.CommonQuery query);
+    //添加或者修改第三方渠道职位
+    common_struct.Response upsertThirdPartyPositions(1: list<dao_struct.ThirdPartyPositionData> positions);
+    common_struct.Response updatePartyAccountByCompanyIdChannel(1: dao_struct.ThirdPartAccountData account);
+	common_struct.Response updateThirdPartyAccount(1:i32 accountId,2:useraccounts_struct.BindAccountStruct account);
+	common_struct.Response addThirdPartyAccount(1:i32 userId,2:useraccounts_struct.BindAccountStruct account);
 	common_struct.Response getAccounts(1:common_struct.CommonQuery query);
 }
 
@@ -37,13 +45,6 @@ service WordpressDao {
 }
 
 service CompanyDao {
-	dao_struct.ThirdPartAccountData getThirdPartyAccount(1:common_struct.CommonQuery query);
-	list<dao_struct.ThirdPartAccountData> getThirdPartyBindingAccounts(1:common_struct.CommonQuery query);
-	//获取第三方渠道职位
-	list<dao_struct.ThirdPartyPositionData> getThirdPartyPositions(1:common_struct.CommonQuery query);
-	//添加或者修改第三方渠道职位
-	common_struct.Response upsertThirdPartyPositions(1: list<dao_struct.ThirdPartyPositionData> positions);
-	common_struct.Response updatePartyAccountByCompanyIdChannel(1: dao_struct.ThirdPartAccountData account);
 	//查找公司信息
 	hrdb_struct.HrCompanyDO getCompany(1:common_struct.CommonQuery query);
 	list<company_struct.Hrcompany> getCompanies(1:common_struct.CommonQuery query);
@@ -55,7 +56,7 @@ service PositionDao {
 	i32 updatePosition(1:position_struct.Position position);
 	position_struct.Position getPositionWithCityCode(1:common_struct.CommonQuery query);
 	list<dao_struct.ThirdPartyPositionData> getPositionThirdPartyPositions(1:common_struct.CommonQuery query);
-	dao_struct.ThirdPartyPositionData getThirdPartyPosition(1:i32 positionId, 2:i32 channel);
+	dao_struct.ThirdPartyPositionData getThirdPartyPosition(1:i32 positionId, 2:i32 account_id);
 	//添加或者修改第三方职位帐号信息
 	i32 upsertThirdPartyPositions(1: dao_struct.ThirdPartyPositionData position);
 }
