@@ -36,7 +36,7 @@ import org.jooq.types.UShort;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
 
-	private static final long serialVersionUID = 61454457;
+	private static final long serialVersionUID = -1418092388;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_company_conf</code>
@@ -124,7 +124,7 @@ public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
 	/**
 	 * The column <code>hrdb.hr_company_conf.job_occupation</code>. 自定义字段名称
 	 */
-	public final TableField<HrCompanyConfRecord, String> JOB_OCCUPATION = createField("job_occupation", org.jooq.impl.SQLDataType.VARCHAR.length(30), this, "自定义字段名称");
+	public final TableField<HrCompanyConfRecord, String> JOB_OCCUPATION = createField("job_occupation", org.jooq.impl.SQLDataType.VARCHAR.length(30).defaulted(true), this, "自定义字段名称");
 
 	/**
 	 * The column <code>hrdb.hr_company_conf.teamname_custom</code>. 自定义部门别名
@@ -137,9 +137,9 @@ public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
 	public final TableField<HrCompanyConfRecord, Timestamp> APPLICATION_TIME = createField("application_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "newjd_status即新的jd页的生效时间，");
 
 	/**
-	 * The column <code>hrdb.hr_company_conf.newjd_status</code>. 新jd页去设置状态0是未开启，1是用户申请开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
+	 * The column <code>hrdb.hr_company_conf.newjd_status</code>. 新jd页去设置状态 0是为开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
 	 */
-	public final TableField<HrCompanyConfRecord, Integer> NEWJD_STATUS = createField("newjd_status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "新jd页去设置状态0是未开启，1是用户申请开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0");
+	public final TableField<HrCompanyConfRecord, Integer> NEWJD_STATUS = createField("newjd_status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "新jd页去设置状态 0是为开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0");
 
 	/**
 	 * The column <code>hrdb.hr_company_conf.hr_chat</code>. IM聊天开关，0：不开启，1：开启

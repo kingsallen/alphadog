@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrResourceRecord extends UpdatableRecordImpl<HrResourceRecord> implements Record10<Integer, String, Integer, String, Integer, String, Integer, Timestamp, Timestamp, String> {
 
-	private static final long serialVersionUID = -1926938562;
+	private static final long serialVersionUID = 699347570;
 
 	/**
 	 * Setter for <code>hrdb.hr_resource.id</code>.
@@ -131,30 +131,30 @@ public class HrResourceRecord extends UpdatableRecordImpl<HrResourceRecord> impl
 	}
 
 	/**
-	 * Setter for <code>hrdb.hr_resource.update_time</code>. 资源修改时间
-	 */
-	public void setUpdateTime(Timestamp value) {
-		setValue(7, value);
-	}
-
-	/**
-	 * Getter for <code>hrdb.hr_resource.update_time</code>. 资源修改时间
-	 */
-	public Timestamp getUpdateTime() {
-		return (Timestamp) getValue(7);
-	}
-
-	/**
 	 * Setter for <code>hrdb.hr_resource.create_time</code>. 资源创建时间
 	 */
 	public void setCreateTime(Timestamp value) {
-		setValue(8, value);
+		setValue(7, value);
 	}
 
 	/**
 	 * Getter for <code>hrdb.hr_resource.create_time</code>. 资源创建时间
 	 */
 	public Timestamp getCreateTime() {
+		return (Timestamp) getValue(7);
+	}
+
+	/**
+	 * Setter for <code>hrdb.hr_resource.update_time</code>. 资源修改时间
+	 */
+	public void setUpdateTime(Timestamp value) {
+		setValue(8, value);
+	}
+
+	/**
+	 * Getter for <code>hrdb.hr_resource.update_time</code>. 资源修改时间
+	 */
+	public Timestamp getUpdateTime() {
 		return (Timestamp) getValue(8);
 	}
 
@@ -265,7 +265,7 @@ public class HrResourceRecord extends UpdatableRecordImpl<HrResourceRecord> impl
 	 */
 	@Override
 	public Field<Timestamp> field8() {
-		return HrResource.HR_RESOURCE.UPDATE_TIME;
+		return HrResource.HR_RESOURCE.CREATE_TIME;
 	}
 
 	/**
@@ -273,7 +273,7 @@ public class HrResourceRecord extends UpdatableRecordImpl<HrResourceRecord> impl
 	 */
 	@Override
 	public Field<Timestamp> field9() {
-		return HrResource.HR_RESOURCE.CREATE_TIME;
+		return HrResource.HR_RESOURCE.UPDATE_TIME;
 	}
 
 	/**
@@ -345,7 +345,7 @@ public class HrResourceRecord extends UpdatableRecordImpl<HrResourceRecord> impl
 	 */
 	@Override
 	public Timestamp value8() {
-		return getUpdateTime();
+		return getCreateTime();
 	}
 
 	/**
@@ -353,7 +353,7 @@ public class HrResourceRecord extends UpdatableRecordImpl<HrResourceRecord> impl
 	 */
 	@Override
 	public Timestamp value9() {
-		return getCreateTime();
+		return getUpdateTime();
 	}
 
 	/**
@@ -432,7 +432,7 @@ public class HrResourceRecord extends UpdatableRecordImpl<HrResourceRecord> impl
 	 */
 	@Override
 	public HrResourceRecord value8(Timestamp value) {
-		setUpdateTime(value);
+		setCreateTime(value);
 		return this;
 	}
 
@@ -441,7 +441,7 @@ public class HrResourceRecord extends UpdatableRecordImpl<HrResourceRecord> impl
 	 */
 	@Override
 	public HrResourceRecord value9(Timestamp value) {
-		setCreateTime(value);
+		setUpdateTime(value);
 		return this;
 	}
 
@@ -486,7 +486,7 @@ public class HrResourceRecord extends UpdatableRecordImpl<HrResourceRecord> impl
 	/**
 	 * Create a detached, initialised HrResourceRecord
 	 */
-	public HrResourceRecord(Integer id, String resUrl, Integer resType, String remark, Integer companyId, String title, Integer disable, Timestamp updateTime, Timestamp createTime, String cover) {
+	public HrResourceRecord(Integer id, String resUrl, Integer resType, String remark, Integer companyId, String title, Integer disable, Timestamp createTime, Timestamp updateTime, String cover) {
 		super(HrResource.HR_RESOURCE);
 
 		setValue(0, id);
@@ -496,8 +496,8 @@ public class HrResourceRecord extends UpdatableRecordImpl<HrResourceRecord> impl
 		setValue(4, companyId);
 		setValue(5, title);
 		setValue(6, disable);
-		setValue(7, updateTime);
-		setValue(8, createTime);
+		setValue(7, createTime);
+		setValue(8, updateTime);
 		setValue(9, cover);
 	}
 }
