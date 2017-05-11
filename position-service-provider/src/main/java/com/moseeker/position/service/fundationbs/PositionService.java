@@ -358,10 +358,10 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     String str = RedisClientFactory.getCacheClient().get(AppId.APPID_ALPHADOG.getValue(),
                             KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(positionId), String.valueOf(account_id));
                     permission = true;
-//                    if (StringUtils.isNullOrEmpty(str)) {
-//                        logger.info("cache allow");
-//                        permission = true;
-//                    }
+                    if (StringUtils.isNullOrEmpty(str)) {
+                        logger.info("cache allow");
+                        permission = true;
+                    }
                 }
             }
         } catch (TException e) {
