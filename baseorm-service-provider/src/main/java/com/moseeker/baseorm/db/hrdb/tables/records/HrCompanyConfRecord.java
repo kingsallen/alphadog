@@ -32,7 +32,7 @@ import org.jooq.types.UShort;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord> implements Record20<UInteger, Integer, Integer, String, Timestamp, Timestamp, String, String, String, String, UShort, String, String, String, String, String, Timestamp, Integer, Byte, Byte> {
 
-	private static final long serialVersionUID = -110429243;
+	private static final long serialVersionUID = -98968519;
 
 	/**
 	 * Setter for <code>hrdb.hr_company_conf.company_id</code>.
@@ -273,14 +273,14 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
 	}
 
 	/**
-	 * Setter for <code>hrdb.hr_company_conf.newjd_status</code>. 新jd页去设置状态0是未开启，1是用户申请开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
+	 * Setter for <code>hrdb.hr_company_conf.newjd_status</code>. 新jd页去设置状态 0是为开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
 	 */
 	public void setNewjdStatus(Integer value) {
 		setValue(17, value);
 	}
 
 	/**
-	 * Getter for <code>hrdb.hr_company_conf.newjd_status</code>. 新jd页去设置状态0是未开启，1是用户申请开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
+	 * Getter for <code>hrdb.hr_company_conf.newjd_status</code>. 新jd页去设置状态 0是为开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
 	 */
 	public Integer getNewjdStatus() {
 		return (Integer) getValue(17);

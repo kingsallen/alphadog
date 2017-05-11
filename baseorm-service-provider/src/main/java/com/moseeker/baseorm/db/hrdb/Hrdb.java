@@ -27,20 +27,26 @@ import com.moseeker.baseorm.db.hrdb.tables.HrHtml5Statistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrHtml5UniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor;
 import com.moseeker.baseorm.db.hrdb.tables.HrMedia;
+import com.moseeker.baseorm.db.hrdb.tables.HrMediaBackupChendi;
 import com.moseeker.baseorm.db.hrdb.tables.HrOperationRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrPointsConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrRecruitStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrRecruitUniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrReferralStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrResource;
+import com.moseeker.baseorm.db.hrdb.tables.HrResourceBackupChendi;
+import com.moseeker.baseorm.db.hrdb.tables.HrResourceOnline;
 import com.moseeker.baseorm.db.hrdb.tables.HrRuleStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrRuleUniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrSearchCondition;
 import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
 import com.moseeker.baseorm.db.hrdb.tables.HrTalentpool;
 import com.moseeker.baseorm.db.hrdb.tables.HrTeam;
+import com.moseeker.baseorm.db.hrdb.tables.HrTeamBackupChendi;
 import com.moseeker.baseorm.db.hrdb.tables.HrTeamMember;
+import com.moseeker.baseorm.db.hrdb.tables.HrTeamMemberBackupChendi;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
+import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccountHr;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.baseorm.db.hrdb.tables.HrTopic;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxBasicReply;
@@ -54,6 +60,8 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxRule;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
+import com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5Statistics;
+import com.moseeker.baseorm.db.hrdb.tables.HrdbHrHtml5UniqueStatistics;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -78,7 +86,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-	private static final long serialVersionUID = -66700097;
+	private static final long serialVersionUID = -1692069483;
 
 	/**
 	 * The reference instance of <code>hrdb</code>
@@ -101,6 +109,8 @@ public class Hrdb extends SchemaImpl {
 
 	private final List<Table<?>> getTables0() {
 		return Arrays.<Table<?>>asList(
+			HrdbHrHtml5Statistics.HRDB_HR_HTML5_STATISTICS,
+			HrdbHrHtml5UniqueStatistics.HRDB_HR_HTML5_UNIQUE_STATISTICS,
 			HrAppCvConf.HR_APP_CV_CONF,
 			HrChatUnreadCount.HR_CHAT_UNREAD_COUNT,
 			HrChildCompany.HR_CHILD_COMPANY,
@@ -124,20 +134,26 @@ public class Hrdb extends SchemaImpl {
 			HrHtml5UniqueStatistics.HR_HTML5_UNIQUE_STATISTICS,
 			HrImporterMonitor.HR_IMPORTER_MONITOR,
 			HrMedia.HR_MEDIA,
+			HrMediaBackupChendi.HR_MEDIA_BACKUP_CHENDI,
 			HrOperationRecord.HR_OPERATION_RECORD,
 			HrPointsConf.HR_POINTS_CONF,
 			HrRecruitStatistics.HR_RECRUIT_STATISTICS,
 			HrRecruitUniqueStatistics.HR_RECRUIT_UNIQUE_STATISTICS,
 			HrReferralStatistics.HR_REFERRAL_STATISTICS,
 			HrResource.HR_RESOURCE,
+			HrResourceBackupChendi.HR_RESOURCE_BACKUP_CHENDI,
+			HrResourceOnline.HR_RESOURCE_ONLINE,
 			HrRuleStatistics.HR_RULE_STATISTICS,
 			HrRuleUniqueStatistics.HR_RULE_UNIQUE_STATISTICS,
 			HrSearchCondition.HR_SEARCH_CONDITION,
 			HrSuperaccountApply.HR_SUPERACCOUNT_APPLY,
 			HrTalentpool.HR_TALENTPOOL,
 			HrTeam.HR_TEAM,
+			HrTeamBackupChendi.HR_TEAM_BACKUP_CHENDI,
 			HrTeamMember.HR_TEAM_MEMBER,
+			HrTeamMemberBackupChendi.HR_TEAM_MEMBER_BACKUP_CHENDI,
 			HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT,
+			HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR,
 			HrThirdPartyPosition.HR_THIRD_PARTY_POSITION,
 			HrTopic.HR_TOPIC,
 			HrWxBasicReply.HR_WX_BASIC_REPLY,
