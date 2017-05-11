@@ -32,6 +32,8 @@ import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.common.util.DateUtils;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.Query.QueryBuilder;
 import com.moseeker.thrift.gen.application.struct.ApplicationResponse;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.application.struct.JobResumeOther;
@@ -78,9 +80,8 @@ public class JobApplicataionService {
     public Response postApplication(JobApplication jobApplication) throws TException {
         try {
             // 获取该申请的职位
-    	    QueryUtil queryUtil = new QueryUtil();
-    	    queryUtil.addEqualFilter("id", jobApplication.getPosition_id());
-    	    JobPositionRecord jobPositionRecord =jobPositionDao.getRecord(queryUtil);
+        	Query query=new QueryBuilder().where("id", jobApplication.getPosition_id()).buildQuery();
+    	    JobPositionRecord jobPositionRecord =jobPositionDao.getRecord(query);
         	//JobPositionRecord jobPositionRecord = jobPositionDao.getPositionById((int) jobApplication.position_id);
             // 职位有效性验证
             Response responseJob = validateJobPosition(jobPositionRecord);
@@ -126,10 +127,8 @@ public class JobApplicataionService {
     public Response postApplicationIfNotApply(JobApplication jobApplication)throws TException {
         try {
             // 获取该申请的职位
-        	 QueryUtil queryUtil = new QueryUtil();
-        	 queryUtil.addEqualFilter("id", String.valueOf(jobApplication.position_id));
-        	 JobPositionRecord jobPositionRecord =jobPositionDao.getRecord(queryUtil);
-        	// JobPositionRecord jobPositionRecord = jobPositionDao.getPositionById((int) jobApplication.position_id);
+        	Query query=new QueryBuilder().where("id", jobApplication.position_id).buildQuery();
+        	JobPositionRecord jobPositionRecord =jobPositionDao.getRecord(query);
             // 职位有效性验证
             Response responseJob = validateJobPosition(jobPositionRecord);
             if (responseJob.status > 0) {
@@ -143,7 +142,6 @@ public class JobApplicataionService {
                 jobApplicationRecord.setWechatId((int)(0));
             }
             int jobApplicationId = jobApplicationService.saveApplicationIfNotExist(jobApplicationRecord, jobPositionRecord);
-            //int jobApplicationId = jobApplicationDao.saveApplicationIfNotExist(jobApplicationRecord, jobPositionRecord);
             if (jobApplicationId > 0) {
                 // proxy 0: 正常投递, 1: 代理投递, null:默认为0
                 // 代理投递不能增加用户的申请限制次数
@@ -217,17 +215,14 @@ public class JobApplicataionService {
             if (applicationId == 0) {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "id"));
             }
-            QueryUtil query=new QueryUtil();
-            query.addEqualFilter("id", applicationId);
+            Query query=new QueryBuilder().where("id", applicationId).buildQuery();
             JobApplicationRecord jobApplicationRecord =jobApplicationDao.getRecord(query);
-            //JobApplicationRecord jobApplicationRecord = jobApplicationDao.getApplicationById(applicationId);
             if (jobApplicationRecord == null) {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
             }
 
             // 删除的数据归档
             int status=jobApplicationService.archiveApplicationRecord(jobApplicationRecord);
-            //int status = jobApplicationDao.archiveApplicationRecord(jobApplicationRecord);
             // 归档成功后, 用户在该公司下的申请限制次数 -1
             if (status > 0) {
                 // 用户在该公司下的申请限制次数 -1 TODO: throw RedisException, 提示相关信息
@@ -494,11 +489,8 @@ public class JobApplicataionService {
      * @param positionId 职位id
      */
     private boolean isAppliedPosition(long userId, long positionId) throws Exception {
-    	QueryUtil query=new QueryUtil();
-    	query.addEqualFilter("applier_id", userId);
-    	query.addEqualFilter("position_id",positionId);
+    	Query query=new QueryBuilder().where("applier_id", userId).where("position_id",positionId).buildQuery();
     	Integer count =jobApplicationDao.getCount(query);
-    	//Integer count = jobApplicationDao.getApplicationByUserIdAndPositionId(userId, positionId);
         return count > 0 ? true : false;
     }
 
@@ -558,9 +550,7 @@ public class JobApplicataionService {
      */
     private int getApplicationCountLimit(int companyId) {
         int applicaitonCountLimit = APPLICATION_COUNT_LIMIT;
-        //HrCompanyConfRecord hrCompanyConfRecord = hrCompanyConfDao.getHrCompanyConfRecordByCompanyId(companyId);
-        QueryUtil query=new QueryUtil();
-        query.addEqualFilter("company_id", companyId);
+        Query query=new QueryBuilder().where("company_id", companyId).buildQuery();
         HrCompanyConfRecord hrCompanyConfRecord =hrCompanyConfDao.getRecord(query);
         if (hrCompanyConfRecord != null && hrCompanyConfRecord.getApplicationCountLimit().shortValue() > 0) {
             applicaitonCountLimit = hrCompanyConfRecord.getApplicationCountLimit().shortValue();
@@ -597,10 +587,8 @@ public class JobApplicataionService {
     private Response validateUserApplicationInfo(long userId) throws Exception {
 
         Response response = new Response(0, "ok");
-        QueryUtil query=new QueryUtil();
-        query.addEqualFilter("id", userId);
+        Query query=new QueryBuilder().where("id", userId).buildQuery();
         UserUserRecord userUserRecord=userUserDao.getRecord(query);
-        //UserUserRecord userUserRecord = userUserDao.getUserUserRecord(userId);
         // 申请人是否存在
         if (userUserRecord == null) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_USER_INVALID);
@@ -628,15 +616,11 @@ public class JobApplicataionService {
     public ApplicationResponse getAccountIdAndCompanyId(long applicationId) {
         ApplicationResponse applicationResponse = new ApplicationResponse();
         try {
-        	QueryUtil query=new QueryUtil();
-        	query.addEqualFilter("id", applicationId);
+        	Query query=new QueryBuilder().where("id", applicationId).buildQuery();
         	JobApplicationRecord jobApplicationRecord =jobApplicationDao.getRecord(query);
-            //JobApplicationRecord jobApplicationRecord = jobApplicationDao.getApplicationById(applicationId);
             if (jobApplicationRecord != null) {
-            	QueryUtil query1=new QueryUtil();
-            	query1.addEqualFilter("id", jobApplicationRecord.getPositionId().intValue());
+            	Query query1=new QueryBuilder().where("id", jobApplicationRecord.getPositionId().intValue()).buildQuery();
             	JobPositionRecord jobPositionRecord = jobPositionDao.getRecord(query1);
-                //JobPositionRecord jobPositionRecord = jobPositionDao.getPositionById(jobApplicationRecord.getPositionId().intValue());
                 applicationResponse.setAccount_id(jobPositionRecord.getPublisher());
                 applicationResponse.setCompany_id(jobApplicationRecord.getCompanyId().intValue());
             }

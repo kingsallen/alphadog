@@ -25,6 +25,8 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.Query.QueryBuilder;
 import com.moseeker.thrift.gen.application.struct.ApplicationAts;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
@@ -124,16 +126,12 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 		// TODO Auto-generated method stub
 		int appId=0;
 		try{
-			QueryUtil query=new QueryUtil();
-			query.addEqualFilter("id", jobApplicationRecord.getRecommenderUserId());
+        	Query query=new QueryBuilder().where("id", jobApplicationRecord.getRecommenderUserId()).buildQuery();
 			UserUserRecord userUserRecord=userUserDao.getRecord(query);
 			if(jobApplicationRecord.getRecommenderUserId() != null && jobApplicationRecord.getRecommenderUserId().intValue() > 0) {
 				boolean existUserEmployee = false;
-				QueryUtil query1=new QueryUtil();
-				query1.addEqualFilter("sysuser_id",userUserRecord.getId().intValue());
-				query1.addEqualFilter("disable", 0);
-				query1.addEqualFilter("activation",0 );
-				query1.addEqualFilter("status", 0);
+				Query query1=new QueryBuilder().where("sysuser_id",userUserRecord.getId().intValue())
+						.where("disable", 0).where("activation",0).where("status", 0).buildQuery();
 				UserEmployeeRecord userEmployeeRecord=userEmployeedao.getRecord(query1);
 				if(userEmployeeRecord==null){
 					existUserEmployee = true;
