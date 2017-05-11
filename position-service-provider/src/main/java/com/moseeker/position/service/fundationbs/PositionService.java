@@ -941,6 +941,19 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                         }
                     } else if (city.getType().toLowerCase().equals("citycode")) { // citycode 直接存储
                         jobPositionCityRecord.setCode(Integer.valueOf(city.getValue()));
+                    } else if (city.getType().toLowerCase().equals("fuzzypostcode")) { // 模糊邮编，取邮编的前四位查询
+                        String postCodeTemp = city.getValue().substring(0, 4);
+                        DictCityPostcodeRecord cityPostcodeRecord = (DictCityPostcodeRecord) cityPostCodeMap.get(postCodeTemp);
+                        if (cityPostcodeRecord != null) {
+                            jobPositionCityRecord.setCode(Integer.valueOf(cityPostcodeRecord.getCode()));
+                        } else {
+                            cityCodeQuery.addEqualFilter("postcode", postCodeTemp);
+                            cityPostcodeRecord = dictCityPostCodeDao.getResource(cityCodeQuery);
+                            if (cityPostcodeRecord != null && cityPostcodeRecord.getCode() != null) {
+                                jobPositionCityRecord.setCode(Integer.valueOf(cityPostcodeRecord.getCode()));
+                                cityPostCodeMap.put(city.getValue(), cityPostcodeRecord);
+                            }
+                        }
                     }
                     // 如果cityCode不入库
                     if (jobPositionCityRecord.getCode() != null) {
@@ -966,8 +979,25 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             int i = 0;
             for (City city : list) {
                 if (city.getType().toLowerCase().equals("text")) { // 城市名字，转换成cityCode
-                    cityCodeQuery.addEqualFilter("city", city.getValue());
-                    stringBuffer.append(city.getValue());
+                    if (isChinese(city.getValue())) { // 是中文
+                        stringBuffer.append(city.getValue());
+                    } else { // 英文
+                        cityCodeQuery.addEqualFilter("ename", city.getValue());
+                        try {
+                            DictCityDO dictCityDO = (DictCityDO) cityPostCodeMap.get(city.getValue());
+                            if (dictCityDO != null) {
+                                stringBuffer.append(dictCityDO.getName());
+                            } else {
+                                dictCityDO = dictOccupationDao.dictCityDO(cityCodeQuery);
+                                if (dictCityDO != null) {
+                                    stringBuffer.append(dictCityDO.getName());
+                                    cityPostCodeMap.put(city.getValue(), dictCityDO);
+                                }
+                            }
+                        } catch (Exception e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    }
                 } else if (city.getType().toLowerCase().equals("postcode")) { // 邮编，转成城市名
                     try {
                         DictCityPostcodeRecord cityPostcodeRecord = (DictCityPostcodeRecord) cityPostCodeMap.get(city.getValue());
@@ -998,9 +1028,30 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                             cityPostcodeRecord = dictCityPostCodeDao.getResource(cityCodeQuery);
                             if (cityPostcodeRecord != null && cityPostcodeRecord.getCity() != null) {
                                 if (cityPostcodeRecord.getCity() != null) {
-                                    stringBuffer.append(cityPostcodeRecord.getProvince());
-                                } else {
                                     stringBuffer.append(cityPostcodeRecord.getCity());
+                                } else {
+                                    stringBuffer.append(cityPostcodeRecord.getProvince());
+                                }
+                                cityPostCodeMap.put(city.getValue(), cityPostcodeRecord);
+                            }
+                        }
+                    } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                } else if (city.getType().toLowerCase().equals("fuzzypostcode")) {  // 模糊邮编查询，转为城市名字
+                    try {
+                        String postCodeTemp = city.getValue().substring(0, 4);
+                        DictCityPostcodeRecord cityPostcodeRecord = (DictCityPostcodeRecord) cityPostCodeMap.get(postCodeTemp);
+                        if (cityPostcodeRecord != null) {
+                            stringBuffer.append(cityPostcodeRecord.getCity());
+                        } else {
+                            cityCodeQuery.addEqualFilter("postcode", postCodeTemp);
+                            cityPostcodeRecord = dictCityPostCodeDao.getResource(cityCodeQuery);
+                            if (cityPostcodeRecord != null && cityPostcodeRecord.getCity() != null) {
+                                if (!com.moseeker.common.util.StringUtils.isEmptyObject(cityPostcodeRecord.getCity())) {
+                                    stringBuffer.append(cityPostcodeRecord.getCity());
+                                } else {
+                                    stringBuffer.append(cityPostcodeRecord.getProvince());
                                 }
                                 cityPostCodeMap.put(city.getValue(), cityPostcodeRecord);
                             }
