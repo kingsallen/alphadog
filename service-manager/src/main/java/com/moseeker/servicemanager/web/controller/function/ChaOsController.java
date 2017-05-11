@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.moseeker.common.annotation.iface.CounterIface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -22,6 +23,7 @@ import com.moseeker.thrift.gen.thirdpart.service.BindThirdPartService;
 import com.moseeker.thrift.gen.thirdpart.struct.ThirdPartParamer;
 
 @Controller
+@CounterIface
 public class ChaOsController {
 
 	Logger logger = LoggerFactory.getLogger(FunctionController.class);

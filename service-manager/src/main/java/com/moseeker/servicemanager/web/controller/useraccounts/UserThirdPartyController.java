@@ -1,5 +1,6 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
  * Created by eddie on 2017/3/7.
  */
 @Controller
+@CounterIface
 public class UserThirdPartyController {
 
     ThirdPartyUserService.Iface service = ServiceManager.SERVICEMANAGER.getService(ThirdPartyUserService.Iface.class);
