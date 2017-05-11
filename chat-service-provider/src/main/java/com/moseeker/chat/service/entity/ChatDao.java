@@ -47,16 +47,17 @@ public class ChatDao {
     public List<HrChatUnreadCountDO> listChatRoomUnreadCount(ChatSpeakerType type, int id, int pageNo, int pageSize) {
         QueryUtil queryUtil = new QueryUtil();
         queryUtil.addSelectAttribute("room_id");
+        queryUtil.addEqualFilter("status", 0);
         switch (type) {
             case HR:
                 queryUtil.addSelectAttribute("user_unread_count").addSelectAttribute("hr_unread_count").addSelectAttribute("user_id");
-                queryUtil.setSortby("hr_unread_count,wx_chat_time");
+                queryUtil.setSortby("hr_have_unread_msg,wx_chat_time");
                 queryUtil.addEqualFilter("hr_id", id);
                 queryUtil.setOrder("desc, desc");
                 break;
             case USER:
                 queryUtil.addSelectAttribute("user_unread_count").addSelectAttribute("hr_unread_count").addSelectAttribute("hr_id");
-                queryUtil.setSortby("user_unread_count,hr_chat_time");
+                queryUtil.setSortby("user_have_unread_msg,hr_chat_time");
                 queryUtil.addEqualFilter("user_id", id);
                 queryUtil.setOrder("desc,desc");
                 break;
@@ -637,6 +638,7 @@ public class ChatDao {
                 hrChatUnreadCountDO.setUserId(userId);
                 hrChatUnreadCountDO.setHrUnreadCount(0);
                 hrChatUnreadCountDO.setUserUnreadCount(0);
+                hrChatUnreadCountDO.setUserHaveUnreadMsg((byte)0);
                 hrChatUnreadCountDO = hrDBDao.saveChatUnreadCount(hrChatUnreadCountDO);
             }
             return hrChatUnreadCountDO;
@@ -656,10 +658,12 @@ public class ChatDao {
                 switch (speaker) {
                     case 1:
                         hrChatUnreadCountDO.setWxChatTime(date);
+                        hrChatUnreadCountDO.setUserHaveUnreadMsg((byte)1);
                         hrChatUnreadCountDO.setUserUnreadCount(hrChatUnreadCountDO.getUserUnreadCount()+1);
                         break;
                     case 0:
                         hrChatUnreadCountDO.setHrChatTime(date);
+                        hrChatUnreadCountDO.setHrHaveUnreadMsg((byte)1);
                         hrChatUnreadCountDO.setHrUnreadCount(hrChatUnreadCountDO.getHrUnreadCount()+1);
                         break;
                     default:

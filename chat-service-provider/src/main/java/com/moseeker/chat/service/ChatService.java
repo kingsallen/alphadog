@@ -145,6 +145,9 @@ public class ChatService {
                 int[] roomIdArray = chatUnreadCountDOlist.stream().mapToInt(chatUnreadCountDO -> chatUnreadCountDO.getRoomId()).toArray();
                 int[] hrIdArray = chatUnreadCountDOlist.stream().mapToInt(chatUnreadCountDO -> chatUnreadCountDO.getHrId()).toArray();
 
+                logger.info("roomIdArray:{}", roomIdArray);
+                logger.info("hrIdArray:{}", hrIdArray);
+
                 /** 异步查找聊天室内容，HR信息，HR所属的公司信息 */
                 Future chatRoomsFuture = pool.startTast(() -> chaoDao.listChatRoom(roomIdArray));
                 Future hrsFuture = pool.startTast(() -> chaoDao.listHr(hrIdArray));

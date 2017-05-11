@@ -35,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrChatUnreadCount extends TableImpl<HrChatUnreadCountRecord> {
 
-	private static final long serialVersionUID = -1962524437;
+	private static final long serialVersionUID = 88088668;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_chat_unread_count</code>
@@ -91,6 +91,19 @@ public class HrChatUnreadCount extends TableImpl<HrChatUnreadCountRecord> {
 	public final TableField<HrChatUnreadCountRecord, Timestamp> HR_CHAT_TIME = createField("hr_chat_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "HR最近一次聊天时间");
 
 	/**
+<<<<<<< HEAD
+=======
+	 * The column <code>hrdb.hr_chat_unread_count.hr_have_unread_msg</code>. HR是否有未读消息，0：没有，1有未读消息
+	 */
+	public final TableField<HrChatUnreadCountRecord, Byte> HR_HAVE_UNREAD_MSG = createField("hr_have_unread_msg", org.jooq.impl.SQLDataType.TINYINT.defaulted(true), this, "HR是否有未读消息，0：没有，1有未读消息");
+
+	/**
+	 * The column <code>hrdb.hr_chat_unread_count.user_have_unread_msg</code>. user是否有未读消息 ，0：没有，1有未读消息
+	 */
+	public final TableField<HrChatUnreadCountRecord, Byte> USER_HAVE_UNREAD_MSG = createField("user_have_unread_msg", org.jooq.impl.SQLDataType.TINYINT.defaulted(true), this, "user是否有未读消息 ，0：没有，1有未读消息");
+
+	/**
+>>>>>>> feature/chat_unread_count
 	 * Create a <code>hrdb.hr_chat_unread_count</code> table reference
 	 */
 	public HrChatUnreadCount() {
