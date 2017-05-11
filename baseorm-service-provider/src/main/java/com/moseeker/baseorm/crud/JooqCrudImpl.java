@@ -23,7 +23,7 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
     @Autowired
     protected DefaultDSLContext create;
 
-    TableImpl<R> table;
+    protected TableImpl<R> table;
 
     public JooqCrudImpl(TableImpl<R> table, Class<S> sClass) {
         super(sClass);

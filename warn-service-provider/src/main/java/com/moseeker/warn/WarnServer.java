@@ -1,18 +1,16 @@
-package com.moseeker.warn.server;
+package com.moseeker.warn;
 
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
-import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.MoServer;
-import com.moseeker.rpccenter.main.Server;
+import com.moseeker.warn.config.AppConfig;
 import com.moseeker.warn.thrift.WarnThriftService;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
  * @author ltf
  * 预警模块启动器
  */
 public class WarnServer {
-	
+
 	public static void main(String[] args){
 		try{
 			AnnotationConfigApplicationContext context = initSpring();
@@ -40,8 +38,7 @@ public class WarnServer {
 	 */
 	public static AnnotationConfigApplicationContext initSpring() {
 		AnnotationConfigApplicationContext annConfig = new AnnotationConfigApplicationContext();
-		annConfig.scan("com.moseeker.warn");
-		annConfig.scan("com.moseeker.baseorm");
+		annConfig.register(AppConfig.class);
 		annConfig.refresh();
 		return annConfig;
 	}

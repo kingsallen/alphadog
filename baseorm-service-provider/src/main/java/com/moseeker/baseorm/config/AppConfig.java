@@ -10,6 +10,7 @@ import org.jooq.impl.DefaultDSLContext;
 import org.jooq.impl.DefaultExecuteListenerProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -24,6 +25,7 @@ import javax.sql.DataSource;
  * Created by jack on 22/03/2017.
  */
 @Configuration
+@ComponentScan("com.moseeker.baseorm")
 @EnableTransactionManagement
 public class AppConfig {
 

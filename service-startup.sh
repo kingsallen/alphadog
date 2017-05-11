@@ -11,12 +11,12 @@ java -classpath application-service-provider.jar com.moseeker.application.server
 sleep 10
 
 # company-service-provider
-java -classpath company-service-provider.jar com.moseeker.company.server.CompanyServer -port 19200 &
+java -classpath company-service-provider.jar CompanyServer -port 19200 &
 
 sleep 10
 
 # dict-service-provider
-java -classpath dict-service-provider.jar com.moseeker.dict.server.CityServer  -port 19210 &
+java -classpath dict-service-provider.jar CityServer  -port 19210 &
 
 sleep 10
 

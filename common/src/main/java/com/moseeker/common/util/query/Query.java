@@ -42,6 +42,7 @@ public class Query {
         public QueryBuilder() {
             this.attributes = new ArrayList<>();
             this.orders = new ArrayList<>();
+            this.groups = new ArrayList<>();
         }
 
         public QueryBuilder select(String field) {

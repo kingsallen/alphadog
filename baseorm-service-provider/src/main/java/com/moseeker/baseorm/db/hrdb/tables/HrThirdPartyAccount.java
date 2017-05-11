@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
 
-    private static final long serialVersionUID = -1761301052;
+    private static final long serialVersionUID = 3865104;
 
     /**
      * The reference instance of <code>hrdb.hr_third_party_account</code>
@@ -77,9 +77,9 @@ public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
     public final TableField<HrThirdPartyAccountRecord, String> MEMBERNAME = createField("membername", org.jooq.impl.SQLDataType.VARCHAR.length(60).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "会员名称");
 
     /**
-     * The column <code>hrdb.hr_third_party_account.binding</code>. 0=未绑定,1=绑定
+     * The column <code>hrdb.hr_third_party_account.binding</code>. 0=未绑定,1=绑定,2=绑定中，3=绑定失败
      */
-    public final TableField<HrThirdPartyAccountRecord, Short> BINDING = createField("binding", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "0=未绑定,1=绑定");
+    public final TableField<HrThirdPartyAccountRecord, Short> BINDING = createField("binding", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "0=未绑定,1=绑定,2=绑定中，3=绑定失败");
 
     /**
      * The column <code>hrdb.hr_third_party_account.company_id</code>. hrdb.hr_company.id
@@ -105,6 +105,11 @@ public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
      * The column <code>hrdb.hr_third_party_account.create_time</code>. 创建时间
      */
     public final TableField<HrThirdPartyAccountRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
+
+    /**
+     * The column <code>hrdb.hr_third_party_account.remain_profile_num</code>. 第三方账号剩余简历数
+     */
+    public final TableField<HrThirdPartyAccountRecord, Integer> REMAIN_PROFILE_NUM = createField("remain_profile_num", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "第三方账号剩余简历数");
 
     /**
      * Create a <code>hrdb.hr_third_party_account</code> table reference
@@ -157,7 +162,7 @@ public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
      */
     @Override
     public List<UniqueKey<HrThirdPartyAccountRecord>> getKeys() {
-        return Arrays.<UniqueKey<HrThirdPartyAccountRecord>>asList(Keys.KEY_HR_THIRD_PARTY_ACCOUNT_PRIMARY, Keys.KEY_HR_THIRD_PARTY_ACCOUNT_IDX_CHANNEL_COMPYID);
+        return Arrays.<UniqueKey<HrThirdPartyAccountRecord>>asList(Keys.KEY_HR_THIRD_PARTY_ACCOUNT_PRIMARY);
     }
 
     /**

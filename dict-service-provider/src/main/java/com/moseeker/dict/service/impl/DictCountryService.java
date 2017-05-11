@@ -1,18 +1,20 @@
 package com.moseeker.dict.service.impl;
 
 
+import com.moseeker.baseorm.dao.dictdb.DictCountryDao;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import java.util.List;
-
+import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictCountryPojo;
 import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.dict.dao.DictCountryDao;
-import com.moseeker.dict.pojo.DictCountryPojo;
-import com.moseeker.thrift.gen.common.struct.Response;
+import java.util.List;
+
 
 /**
  * 国家字典数据服务
@@ -23,6 +25,8 @@ import com.moseeker.thrift.gen.common.struct.Response;
 @Service
 public class DictCountryService {
 
+    private static final Logger log = LoggerFactory.getLogger(DictCountryService.class);
+
     @Autowired
     public DictCountryDao dictCountryDao;
 
@@ -32,6 +36,7 @@ public class DictCountryService {
             List<DictCountryPojo> dictConstantList = dictCountryDao.getDictCountry();
             return ResponseUtils.success(dictConstantList);
         }catch (Exception e){
+            log.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
     }

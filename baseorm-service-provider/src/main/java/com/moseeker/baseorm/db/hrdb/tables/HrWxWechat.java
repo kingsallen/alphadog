@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
 
-    private static final long serialVersionUID = 1163384132;
+    private static final long serialVersionUID = -1023994433;
 
     /**
      * The reference instance of <code>hrdb.hr_wx_wechat</code>
@@ -119,7 +119,7 @@ public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
     /**
      * The column <code>hrdb.hr_wx_wechat.qrcode</code>. 关注公众号的二维码
      */
-    public final TableField<HrWxWechatRecord, String> QRCODE = createField("qrcode", org.jooq.impl.SQLDataType.VARCHAR.length(150).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "关注公众号的二维码");
+    public final TableField<HrWxWechatRecord, String> QRCODE = createField("qrcode", org.jooq.impl.SQLDataType.VARCHAR.length(300).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "关注公众号的二维码");
 
     /**
      * The column <code>hrdb.hr_wx_wechat.passive_seeker</code>. 被动求职者开关，0= 开启, 1=不开启
@@ -192,14 +192,6 @@ public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
     public final TableField<HrWxWechatRecord, Integer> SHOW_QX_QRCODE = createField("show_qx_qrcode", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "显示仟寻聚合号二维码, 0:不允许，1:允许");
 
     /**
-<<<<<<< HEAD
-     * The column <code>hrdb.hr_wx_wechat.show_new_jd</code>. 显示新JD样式, 0:不启用, 1:启用
-     */
-    public final TableField<HrWxWechatRecord, Integer> SHOW_NEW_JD = createField("show_new_jd", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "显示新JD样式, 0:不启用, 1:启用");
-
-    /**
-=======
->>>>>>> master
      * The column <code>hrdb.hr_wx_wechat.show_custom_theme</code>. show_custom_theme, 用于表示是否可以开启企业自定义颜色配置 0是否 1是开启
      */
     public final TableField<HrWxWechatRecord, Integer> SHOW_CUSTOM_THEME = createField("show_custom_theme", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "show_custom_theme, 用于表示是否可以开启企业自定义颜色配置 0是否 1是开启");

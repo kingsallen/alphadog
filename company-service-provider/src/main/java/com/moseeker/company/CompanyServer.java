@@ -1,13 +1,12 @@
-package com.moseeker.company.server;
+package com.moseeker.company;
 
+import com.moseeker.company.config.AppConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.moseeker.company.thrift.CompanyServicesImpl;
-import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.MoServer;
-import com.moseeker.rpccenter.main.Server;
 
 /**
  * 
@@ -57,8 +56,7 @@ public class CompanyServer {
 
 	private static AnnotationConfigApplicationContext initSpring() {
 		AnnotationConfigApplicationContext acac = new AnnotationConfigApplicationContext();
-		acac.scan("com.moseeker.company");
-		acac.scan("com.moseeker.common.aop.iface");
+		acac.register(AppConfig.class);
 		acac.refresh();
 		return acac;
 	}

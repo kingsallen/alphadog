@@ -3,9 +3,15 @@ package com.moseeker.baseorm.dao.hrdb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountRecord;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.useraccounts.struct.BindAccountStruct;
+import org.apache.thrift.TException;
+import org.joda.time.DateTime;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +19,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -102,6 +109,44 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
 		}
 		return count;
 	}
+
+    public Response upsertThirdPartyAccount(BindAccountStruct account) {
+        try {
+            logger.info("upsertThirdPartyAccount");
+            logger.info("upsertThirdPartyAccount account:{}", account);
+            HrThirdPartyAccountRecord record = new HrThirdPartyAccountRecord();
+            record.setBinding((short) account.getBinding());
+            record.setChannel((short) account.getChannel());
+            record.setCompanyId((int)(account.getCompany_id()));
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+            record.setCreateTime(now);
+            record.setMembername(account.getMember_name());
+            record.setPassword(account.getPassword());
+            record.setRemainNum((int)(account.getRemainNum()));
+            record.setSyncTime(now);
+            record.setBinding((short) 1);
+            record.setUsername(account.getUsername());
+            logger.info("upsertThirdPartyAccount record:{}", record);
+            logger.info("upsertThirdPartyAccount channel:{}, company_id:{}", account.getChannel(), account.getCompany_id());
+            int count = upsertResource(record);
+            logger.info("upsertThirdPartyAccount count:{}", count);
+            if (count == 0) {
+                return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
+            }
+            HashMap<String, Object> map = new HashMap<>();
+            map.put("remain_num", account.getRemainNum());
+            DateTime dt = new DateTime(now.getTime());
+            map.put("sync_time", dt.toString("yyyy-MM-dd HH:mm:ss"));
+            logger.info("upsertThirdPartyAccount result:{}", map);
+            return ResponseUtils.success(map);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        } finally {
+
+        }
+    }
 	
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 }

@@ -44,8 +44,10 @@ public class ConfigAdminnotificationMembersDao extends JooqCrudImpl<ConfigAdminn
     public List<Member> getMembers(Integer groupId){
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where("groupid", groupId);
+        queryBuilder.setPageSize(Integer.MAX_VALUE);
         List<Integer> memberIds = groupmembersDao.getRecords(queryBuilder.buildQuery()).stream().map(m -> m.getMemberid()).collect(Collectors.toList());
         Query.QueryBuilder queryBuilder1 = new Query.QueryBuilder();
+        queryBuilder1.setPageSize(Integer.MAX_VALUE);
         queryBuilder1.where(new Condition("id", memberIds, ValueOp.IN));
         queryBuilder1.and("status", 1);
         return getDatas(queryBuilder1.buildQuery(), Member.class);

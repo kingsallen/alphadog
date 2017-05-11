@@ -5,22 +5,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.moseeker.baseorm.dao.dictdb.DictPositionDao;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictPositionRecord;
+import com.moseeker.common.providerutils.QueryUtil;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.db.dictdb.tables.records.DictPositionRecord;
-import com.moseeker.dict.dao.PositionDao;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 
 @Service
 public class PositionService {
 
 	@Autowired
-	private PositionDao positionDao; 
+	private DictPositionDao positionDao;
 	
 	@CounterIface
 	public Response getPositionsByCode(String code) throws TException {
@@ -28,9 +28,9 @@ public class PositionService {
 		List<DictPositionRecord> positions = null;
 		try {
 			if(code == null || code.equals("")) {
-				CommonQuery query = new CommonQuery();
+                QueryUtil query = new QueryUtil();
 				query.setPageSize(Integer.MAX_VALUE);
-				positions = positionDao.getResources(query);
+				positions = positionDao.getRecords(query);
 			} else {
 				positions = positionDao.getIndustriesByParentCode(Integer.valueOf(code));
 			}
@@ -49,13 +49,5 @@ public class PositionService {
 			});
 		}
 		return ResponseUtils.success(industryMaps);
-	}
-
-	public PositionDao getPositionDao() {
-		return positionDao;
-	}
-
-	public void setPositionDao(PositionDao positionDao) {
-		this.positionDao = positionDao;
 	}
 }

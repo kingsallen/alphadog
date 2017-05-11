@@ -1,22 +1,22 @@
 package com.moseeker.dict.service.impl;
 
-import java.util.HashMap;
-
-import com.moseeker.common.providerutils.QueryUtil;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.dao.dictdb.Dict51OccupationDao;
+import com.moseeker.baseorm.dao.dictdb.DictZpinOccupationDao;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
 import com.moseeker.dict.enums.ConstantEnum;
-import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dict.service.DictOccupationDao;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
 
 @Service
 public class DictOccupationService {
@@ -29,8 +29,13 @@ public class DictOccupationService {
 	 * @time 2016－11－17
 	 */
 	Logger logger = org.slf4j.LoggerFactory.getLogger(DictOccupationService.class);
-	DictOccupationDao.Iface dictOccupationDao = ServiceManager.SERVICEMANAGER
-			.getService(DictOccupationDao.Iface.class);
+
+	@Autowired
+    private Dict51OccupationDao dict51OccupationDao;
+
+	@Autowired
+    private DictZpinOccupationDao dictZpinOccupationDao;
+
 	private RedisClient redisClient = RedisClientFactory.getCacheClient();
 	/*
 	 * 查询第三方职位职能
@@ -59,9 +64,9 @@ public class DictOccupationService {
 				}
 				query.setEqualFilter(map);
 				if(channel==1){
-					return dictOccupationDao.getOccupation51(query);
+					return ResponseUtils.success(dict51OccupationDao.getSingle(query));
 				}else if(channel==3){
-					return dictOccupationDao.getOccupationZPin(query);
+					return ResponseUtils.success(dictZpinOccupationDao.getSingle(query));
 				}
 			}else{
 				if(channel==1){
@@ -71,7 +76,7 @@ public class DictOccupationService {
 						Response res=JSONObject.toJavaObject(JSONObject.parseObject(result), Response.class);
 						return res;
 					}else{
-						Response res=dictOccupationDao.getOccupations51();
+						Response res=ResponseUtils.success(dict51OccupationDao.getAll());
 						if(res.getStatus()==0&&!StringUtils.isEmpty(res.getData())&&!"[]".equals(res.getData())){
 							redisClient.set(Constant.APPID_ALPHADOG,ConstantEnum.JOB_OCCUPATION_KEY.toString(),key,JSONObject.toJSONString(res));
 						}
@@ -84,7 +89,7 @@ public class DictOccupationService {
 						Response res=JSONObject.toJavaObject(JSONObject.parseObject(result), Response.class);
 						return res;
 					}else{
-						Response res=dictOccupationDao.getOccupationsZPin();
+						Response res=ResponseUtils.success(dictZpinOccupationDao.getAll());
 						if(res.getStatus()==0&&!StringUtils.isEmpty(res.getData())&&!"[]".equals(res.getData())){
 							redisClient.set(Constant.APPID_ALPHADOG,ConstantEnum.JOB_OCCUPATION_KEY.toString(),key ,JSONObject.toJSONString(res));
 						}
