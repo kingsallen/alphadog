@@ -947,8 +947,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                         if (cityPostcodeRecord != null) {
                             jobPositionCityRecord.setCode(Integer.valueOf(cityPostcodeRecord.getCode()));
                         } else {
-                            cityCodeQuery.addEqualFilter("postcode", postCodeTemp);
-                            cityPostcodeRecord = dictCityPostCodeDao.getResource(cityCodeQuery);
+                            cityPostcodeRecord = dictCityPostCodeDao.fuzzyGetCityPostCode(postCodeTemp);
                             if (cityPostcodeRecord != null && cityPostcodeRecord.getCode() != null) {
                                 jobPositionCityRecord.setCode(Integer.valueOf(cityPostcodeRecord.getCode()));
                                 cityPostCodeMap.put(city.getValue(), cityPostcodeRecord);
@@ -1045,8 +1044,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                         if (cityPostcodeRecord != null) {
                             stringBuffer.append(cityPostcodeRecord.getCity());
                         } else {
-                            cityCodeQuery.addEqualFilter("postcode", postCodeTemp);
-                            cityPostcodeRecord = dictCityPostCodeDao.getResource(cityCodeQuery);
+                            cityPostcodeRecord = dictCityPostCodeDao.fuzzyGetCityPostCode(postCodeTemp);
                             if (cityPostcodeRecord != null && cityPostcodeRecord.getCity() != null) {
                                 if (!com.moseeker.common.util.StringUtils.isEmptyObject(cityPostcodeRecord.getCity())) {
                                     stringBuffer.append(cityPostcodeRecord.getCity());
