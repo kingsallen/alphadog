@@ -42,6 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -61,6 +62,7 @@ import java.util.stream.Stream;
  */
 @Component
 @CounterIface
+@Transactional
 public class CandidateEntity implements Candidate {
 
     Logger logger = LoggerFactory.getLogger(CandidateEntity.class);
@@ -350,6 +352,7 @@ public class CandidateEntity implements Candidate {
      * @throws BIZException 业务异常
      */
     @Override
+    @CounterIface
     public RecomRecordResult getRecommendation(int id, int postUserId) throws BIZException {
         ValidateUtil vu = ParamCheckTool.checkGetRecommendation(id, postUserId);
         String message = vu.validate();
@@ -369,6 +372,7 @@ public class CandidateEntity implements Candidate {
     }
 
     @Override
+    @CounterIface
     public SortResult getRecommendatorySorting(int postUserId, int companyId) throws BIZException {
         /** 参数校验 */
         ValidateUtil vu = ParamCheckTool.checkRecommendatorySorting(postUserId, companyId);
@@ -398,6 +402,7 @@ public class CandidateEntity implements Candidate {
     }
 
     @Override
+    @CounterIface
     public RecommendResult ignore(int id, int companyId, int postUserId, String clickTime) throws BIZException {
         /** 参数校验 */
         ValidateUtil vu = ParamCheckTool.checkignore(id, companyId, postUserId, clickTime);
