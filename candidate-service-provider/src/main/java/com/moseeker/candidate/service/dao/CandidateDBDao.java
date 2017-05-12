@@ -141,6 +141,7 @@ public class CandidateDBDao {
         Query query = new Query.QueryBuilder().and("id", String.valueOf(userID)).buildQuery();
         UserUserDO userUserDO = userDao.getData(query);
         return userUserDO;
+
     }
 
     public List<CandidateRemarkDO> getCandidateRemarks(int userID, int companyId) throws TException {
