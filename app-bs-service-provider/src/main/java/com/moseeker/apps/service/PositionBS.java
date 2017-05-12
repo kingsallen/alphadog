@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.service.UserHrAccountDao;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -61,6 +62,7 @@ public class PositionBS {
      * @param position
      * @return
      */
+    @CounterIface
     public Response synchronizePositionToThirdPartyPlatform(ThirdPartyPositionForm position) {
         logger.info("synchronizePositionToThirdPartyPlatform:" + JSON.toJSONString(position));
         Response response;
@@ -244,6 +246,7 @@ public class PositionBS {
      * @param channel    渠道编号
      * @return
      */
+    @CounterIface
     public Response refreshPosition(int positionId, int channel) {
         logger.info("refreshPosition start");
         HashMap<String, Object> result = new HashMap<>();
