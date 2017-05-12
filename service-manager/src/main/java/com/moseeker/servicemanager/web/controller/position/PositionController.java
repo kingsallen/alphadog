@@ -1,6 +1,7 @@
 package com.moseeker.servicemanager.web.controller.position;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
@@ -18,7 +19,6 @@ import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.*;
-
 import org.jooq.tools.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +46,8 @@ public class PositionController {
     private JobDBDao.Iface jobDBDao = ServiceManager.SERVICEMANAGER.getService(JobDBDao.Iface.class);
     private PositionBS.Iface positionBS = ServiceManager.SERVICEMANAGER.getService(PositionBS.Iface.class);
 
-    com.moseeker.thrift.gen.dao.service.PositionDao.Iface positionDao1 = ServiceManager.SERVICEMANAGER.getService(com.moseeker.thrift.gen.dao.service.PositionDao.Iface.class);
+    com.moseeker.thrift.gen.dao.service.UserHrAccountDao.Iface hraccountDao = ServiceManager.SERVICEMANAGER
+            .getService(com.moseeker.thrift.gen.dao.service.UserHrAccountDao.Iface.class);
 
     @RequestMapping(value = "/positions", method = RequestMethod.GET)
     @ResponseBody
@@ -185,6 +186,7 @@ public class PositionController {
     @ResponseBody
     public String synchronizePosition(HttpServletRequest request, HttpServletResponse response) {
         try {
+            logger.info("-----------synchronizePosition------------params:" + request.getParameterMap());
             ThirdPartyPositionForm form = PositionParamUtils.parseSyncParam(request);
             logger.info("-----------synchronizePosition------------");
             logger.info("params:" + JSON.toJSONString(form));
@@ -223,17 +225,23 @@ public class PositionController {
     public String refreshPosition(HttpServletRequest request, HttpServletResponse response) {
         try {
             logger.info("/position/refresh");
-            List<HashMap<Integer, Integer>> paramList = PositionParamUtils.parseRefreshParam(request);
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            List<HashMap<Integer, Integer>> paramList = PositionParamUtils.parseRefreshParam(params);
             logger.info("/position/refresh paramList.size:" + paramList.size());
             List<Object> refreshResult = new ArrayList<>();
             if (paramList.size() > 0) {
                 paramList.forEach(map -> {
                     map.forEach((positionId, channel) -> {
                         try {
-                            logger.info("positionId:" + positionId + "    channel:" + channel);
-                            Response refreshPositionResponse = positionBS.refreshPositionToThirdPartyPlatform(positionId, channel);
-                            logger.info("data:" + refreshPositionResponse.getData());
-                            refreshResult.add(JSON.parse(refreshPositionResponse.getData()));
+                            //同步到智联的第三方职位不刷新
+                            if (ChannelType.ZHILIAN.getValue() == channel) {
+                                logger.info("synchronize position:{}:zhilian skip",positionId);
+                            }else {
+                                logger.info("positionId:" + positionId + "    channel:" + channel);
+                                Response refreshPositionResponse = positionBS.refreshPositionToThirdPartyPlatform(positionId, channel);
+                                logger.info("data:" + refreshPositionResponse.getData());
+                                refreshResult.add(JSON.parse(refreshPositionResponse.getData()));
+                            }
                         } catch (Exception e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();

@@ -1,12 +1,11 @@
 package com.moseeker.common.util;
 
+import com.moseeker.common.exception.ParamNullException;
+import org.junit.Test;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-
-import org.junit.Test;
-
-import com.moseeker.common.exception.ParamNullException;
 
 public class FormCheck {
 
@@ -244,4 +243,5 @@ public class FormCheck {
 		String date = "2012-02-29 23:59:59";
 		System.out.println("date." + isDateTime(date));
 	}
+
 }

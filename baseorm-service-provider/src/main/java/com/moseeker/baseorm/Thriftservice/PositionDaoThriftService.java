@@ -120,8 +120,8 @@ public class PositionDaoThriftService implements Iface {
 	}
 
 	@Override
-	public ThirdPartyPositionData getThirdPartyPosition(int positionId, int channel) throws TException {
-		return thirdpartyPositionDao.getThirdPartyPosition(positionId, channel);
+	public ThirdPartyPositionData getThirdPartyPosition(int positionId, int account_id) throws TException {
+		return thirdpartyPositionDao.getThirdPartyPosition(positionId, account_id);
 	}
 
 	@Override

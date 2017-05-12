@@ -236,7 +236,7 @@ public class ParamUtils {
         } catch (IOException | IllegalStateException e) {
             LoggerFactory.getLogger(ParamUtils.class).error(e.getMessage(), e);
         }
-        LoggerFactory.getLogger(ParamUtils.class).info("----initParamFromRequestBody:", jb.toString());
+        LoggerFactory.getLogger(ParamUtils.class).info("----initParamFromRequestBody:{}", jb.toString());
         Map<String, Object> map = JsonToMap.parseJSON2Map(jb.toString());
         return map;
     }

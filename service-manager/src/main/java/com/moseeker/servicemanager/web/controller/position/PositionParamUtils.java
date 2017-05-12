@@ -97,11 +97,10 @@ public class PositionParamUtils extends ParamUtils {
      * 解析职位刷新参数
      */
     @SuppressWarnings("unchecked")
-    public static List<HashMap<Integer, Integer>> parseRefreshParam(HttpServletRequest request) {
+    public static List<HashMap<Integer, Integer>> parseRefreshParam(Params<String, Object> params) {
 
         List<HashMap<Integer, Integer>> paramList = new ArrayList<>();
         try {
-            Params<String, Object> params = parseRequestParam(request);
             List<Map<String, Object>> positions = (List<Map<String, Object>>) params.get("params");
             if (positions != null && positions.size() > 0) {
                 positions.forEach(position -> {

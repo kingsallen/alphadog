@@ -11,7 +11,7 @@ namespace java com.moseeker.thrift.gen.apps.positionbs.service
  
 service PositionBS {
    	//职位同步
-	common_struct.Response synchronizePositionToThirdPartyPlatform(1: appbs_struct.ThridPartyPositionForm position);
+	common_struct.Response synchronizePositionToThirdPartyPlatform(1: appbs_struct.ThirdPartyPositionForm position);
 	//刷新职位
 	common_struct.Response refreshPositionToThirdPartyPlatform(1: i32 positionId, 2:i32 channel);
 }

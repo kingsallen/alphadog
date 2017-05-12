@@ -12,7 +12,7 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.thrift.gen.common.struct.Response;
 
 /**
- * 
+ *
  * chaos帮助类
  * <p>
  * Company: MoSeeker
@@ -23,7 +23,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
  * <p>
  * Email: wjf2255@gmail.com
  * </p>
- * 
+ *
  * @author wjf
  * @version
  */
@@ -62,9 +62,28 @@ public class ChaosTool {
 		Response response = new Response();
 		try {
 			JSONObject json = JSONObject.parseObject(data);
-			response.setData(json.getString("data"));
-			response.setStatus(json.getIntValue("status"));
-			response.setMessage(json.getString("message"));
+//			0 运行完成，返回结果
+//			1 账号密码错误
+//			2 网络超时
+//			3 验证码错误，处理方式同异常
+//			4 捕获异常，操作中断
+			int status = json.getIntValue("status");
+			response.setStatus(1);
+			if(status == 0) {
+				response.setData(json.getString("data"));
+				response.setStatus(status);
+				response.setMessage(json.getString("message"));
+			}else if (status == 1){
+				response.setMessage("账号或者密码错误！");
+			}else if(status == 2){
+				response.setMessage("绑定超时了，请重试！");
+			}else if(status == 3){
+				response.setMessage("绑定失败了，请重试！");
+			}else if(status== 4){
+				response.setMessage("绑定失败了，请稍后重试！");
+			}else{
+				response.setMessage("发生异常，请稍后重试！");
+			}
 		} catch (Exception e) {
 			LoggerFactory.getLogger(ChaosTool.class).error(e.getMessage(), e);
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);

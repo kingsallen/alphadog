@@ -19,9 +19,9 @@ service PositionServices {
     //转成第三方同步职位数据    
     list<position_struct.ThirdPartyPositionForSynchronization> changeToThirdPartyPosition(1:list<appbs_struct.ThirdPartyPosition> form, 2:position_struct.Position position);
     //生成第三方同步职位数据
-    position_struct.ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(1: i32 positionId, 2: i32 channel);
+    position_struct.ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(1: i32 positionId, 2: i32 account_id);
     //是否可以刷新
-    bool ifAllowRefresh(1: i32 positionId, 2:i32 channel);
+    bool ifAllowRefresh(1:i32 positionId, 2: i32 account_id);
     list<dao_struct.ThirdPartyPositionData> getThirdPartyPositions(1: common_struct.CommonQuery query);
 
     // 批量修改职位

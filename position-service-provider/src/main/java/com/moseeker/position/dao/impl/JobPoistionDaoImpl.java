@@ -153,6 +153,15 @@ public class JobPoistionDaoImpl extends
             } catch (Exception e) {
                 logger.error("error", e);
             } finally {
+                try {
+                    if (conn != null && !conn.isClosed()) {
+                        conn.close();
+                    }
+                } catch (SQLException e) {
+                    logger.error(e.getMessage(), e);
+                } finally {
+                    //do nothing
+                }
 
             }
         }
