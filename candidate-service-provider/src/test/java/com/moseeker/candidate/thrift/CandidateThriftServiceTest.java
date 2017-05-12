@@ -53,11 +53,11 @@ public class CandidateThriftServiceTest {
     public void testCandidateList() {
 
         CandidateListParam param = new CandidateListParam();
-        param.setCompanyId(39978);
-        param.setClickTime("2017-02-09");
-        param.setPostUserId(3341);
+        param.setCompanyId(1);
+        param.setClickTime("2017-02-21");
+        param.setPostUserId(4);
         List<Integer> recomList = new ArrayList<Integer>(){{
-            add(0);
+            add(1);
             add(2);
             add(3);
         }};
@@ -94,11 +94,11 @@ public class CandidateThriftServiceTest {
     //@Test
     public void testRecommend() {
         RecommmendParam param = new RecommmendParam();
-        param.setCompanyId(39978);
+        param.setCompanyId(1);
         param.setCompany("recommend-test");
-        param.setClickTime("2017-02-09");
-        param.setPostUserId(3341);
-        param.setId(14349);
+        param.setClickTime("2017-02-21");
+        param.setPostUserId(4);
+        param.setId(1);
         param.setMobile("15502117047");
         param.setPosition("recommend-position-test");
         param.setRealName("realname-test");
@@ -144,7 +144,7 @@ public class CandidateThriftServiceTest {
     //@Test
     public void testGetRecommendatorySorting() {
         try {
-            SortResult result = candidateService.getRecommendatorySorting(3341, 39978);
+            SortResult result = candidateService.getRecommendatorySorting(4, 1);
             System.out.println(result);
         } catch (TException e) {
             e.printStackTrace();
@@ -154,7 +154,7 @@ public class CandidateThriftServiceTest {
     //@Test
     public void testIgnore() {
         try {
-            RecommendResult result = candidateService.ignore(14348, 39978, 3341, "2017-02-09");
+            RecommendResult result = candidateService.ignore(1, 1, 4, "2017-02-21");
             System.out.println(result);
         } catch (TException e) {
             e.printStackTrace();

@@ -387,6 +387,15 @@ public class CandidateEntity implements Candidate {
         recomRecordDO.setIsRecom((byte)RecomType.IGNORE.getValue());
         try {
             CandidateDBDao.updateCandidateRecomRecord(recomRecordDO);
+            
+            List<CandidateRecomRecordDO> candidateRecomRecordList = CandidateDBDao.listFiltredCandidateRecomRecord(recomRecordDO);
+            if (candidateRecomRecordList != null && candidateRecomRecordList.size() > 0) {
+            	candidateRecomRecordList.forEach(candidate -> {
+            		candidate.setIsRecom((byte)RecomType.IGNORE.getValue());
+            	});
+            	CandidateDBDao.updateCandidateRecomRecords(candidateRecomRecordList);
+            }
+            
         } catch (TException e) {
             logger.error(e.getMessage(), e);
         }
@@ -570,6 +579,20 @@ public class CandidateEntity implements Candidate {
         candidateRecomRecordDO.setRecomTime(nowStr);
         candidateRecomRecordDO.setIsRecom((byte)0);
         CandidateDBDao.updateCandidateRecomRecord(candidateRecomRecordDO);
+        
+        List<CandidateRecomRecordDO> candidateRecomRecordList = CandidateDBDao.listFiltredCandidateRecomRecord(candidateRecomRecordDO);
+        if (candidateRecomRecordList != null && candidateRecomRecordList.size() > 0) {
+        	candidateRecomRecordList.forEach(candidate -> {
+        		candidate.setRecomReason(param.getRecomReason());
+        		candidate.setPosition(param.getPosition());
+        		candidate.setCompany(param.getCompany());
+        		candidate.setRealname(param.getRealName());
+        		candidate.setMobile(param.getMobile());
+        		candidate.setRecomTime(nowStr);
+        		candidate.setIsRecom((byte)0);
+        	});
+        	CandidateDBDao.updateCandidateRecomRecords(candidateRecomRecordList);
+        }
     }
 
     /**
