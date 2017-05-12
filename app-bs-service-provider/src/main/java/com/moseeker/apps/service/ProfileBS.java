@@ -57,7 +57,6 @@ public class ProfileBS {
 		try {
 			position = positionDao.getPosition(qu);
 		} catch (TException e1) {
-			e1.printStackTrace();
 			logger.error(e1.getMessage(), e1);
 			return ResultMessage.PROGRAM_EXCEPTION.toResponse();
 		} finally {

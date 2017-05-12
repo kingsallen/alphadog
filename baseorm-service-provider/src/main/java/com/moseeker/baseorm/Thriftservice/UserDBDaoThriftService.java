@@ -74,6 +74,7 @@ public class UserDBDaoThriftService implements Iface {
 		if(user.getPassword() == null) {
 			user.setPassword("");
 		}
+		logger.info("UserDBDaoThriftService saveUser user:{}", user);
 		return userDao.saveResource(user);
 	}
 
