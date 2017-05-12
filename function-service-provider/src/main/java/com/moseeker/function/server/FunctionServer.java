@@ -1,18 +1,14 @@
 package com.moseeker.function.server;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
 import com.moseeker.function.service.chaos.PositionRefreshConsumer;
 import com.moseeker.function.service.chaos.PositionSyncConsumer;
 import com.moseeker.function.thrift.service.ChaosThriftService;
 import com.moseeker.function.thrift.service.FunctionService;
-import com.moseeker.function.thrift.service.HRAccountThriftService;
 import com.moseeker.function.thrift.service.WordpressThriftService;
-import com.moseeker.rpccenter.common.ServerNodeUtils;
 import com.moseeker.rpccenter.main.MoServer;
-import com.moseeker.rpccenter.main.MultiRegServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
  * 
@@ -42,8 +38,7 @@ public class FunctionServer {
         			acac,"",
 					acac.getBean(FunctionService.class),
 					acac.getBean(ChaosThriftService.class),
-					acac.getBean(WordpressThriftService.class),
-					acac.getBean(HRAccountThriftService.class)
+					acac.getBean(WordpressThriftService.class)
         			);
 			server.startServer();
 			//开启监听同步完成任务

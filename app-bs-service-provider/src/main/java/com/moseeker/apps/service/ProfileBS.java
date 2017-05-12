@@ -128,6 +128,7 @@ public class ProfileBS {
 					
 					HashMap<String, Object> profileProfile = new HashMap<String, Object>();
 					profileProfile.put("user_id", userId);
+					profileProfile.put("source", 0);
 					resume.put("profile", profileProfile);
 					
 					Response response = wholeProfileService.createProfile(JSON.toJSONString(resume));

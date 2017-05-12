@@ -1,6 +1,7 @@
 package com.moseeker.servicemanager.web.controller.position;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
@@ -8,11 +9,13 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.apps.positionbs.service.PositionBS;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.JobDBDao;
+import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.*;
@@ -44,7 +47,8 @@ public class PositionController {
     private JobDBDao.Iface jobDBDao = ServiceManager.SERVICEMANAGER.getService(JobDBDao.Iface.class);
     private PositionBS.Iface positionBS = ServiceManager.SERVICEMANAGER.getService(PositionBS.Iface.class);
 
-    com.moseeker.thrift.gen.dao.service.PositionDao.Iface positionDao1 = ServiceManager.SERVICEMANAGER.getService(com.moseeker.thrift.gen.dao.service.PositionDao.Iface.class);
+    com.moseeker.thrift.gen.dao.service.UserHrAccountDao.Iface hraccountDao = ServiceManager.SERVICEMANAGER
+            .getService(com.moseeker.thrift.gen.dao.service.UserHrAccountDao.Iface.class);
 
     @RequestMapping(value = "/positions", method = RequestMethod.GET)
     @ResponseBody
@@ -71,58 +75,56 @@ public class PositionController {
         }
     }
 
-	/**
-	 * 获取职位列表
-	 *
-	 * @param request request
-	 * @param response response
-	 * @return 职位列表数据
-	 */
-	@RequestMapping(value = "/position/list", method = RequestMethod.GET)
-	@ResponseBody
-	public String getPositionList(HttpServletRequest request, HttpServletResponse response) {
-		try {
-			WechatPositionListQuery query = new WechatPositionListQuery();
+    /**
+     * 获取职位列表
+     *
+     * @param request  request
+     * @param response response
+     * @return 职位列表数据
+     */
+    @RequestMapping(value = "/position/list", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPositionList(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            WechatPositionListQuery query = new WechatPositionListQuery();
 
-			Map<String, Object> map = ParamUtils.parseRequestParam(request);
-			logger.info("map: " + map.toString());
+            Map<String, Object> map = ParamUtils.parseRequestParam(request);
+            logger.info("map: " + map.toString());
 
-			if (map.getOrDefault("company_id", null) != null) {
-				query.setCompany_id(Integer.valueOf((String)map.get("company_id")));
-			}
-			else {
-				throw new Exception("公司 id 未提供!");
-			}
+            if (map.getOrDefault("company_id", null) != null) {
+                query.setCompany_id(Integer.valueOf((String) map.get("company_id")));
+            } else {
+                throw new Exception("公司 id 未提供!");
+            }
 
-			query.setPage_from(Integer.valueOf((String)map.getOrDefault("page_from", "0")));
-			query.setPage_size(Integer.valueOf((String)map.getOrDefault("page_size", "10")));
+            query.setPage_from(Integer.valueOf((String) map.getOrDefault("page_from", "0")));
+            query.setPage_size(Integer.valueOf((String) map.getOrDefault("page_size", "10")));
 
-			query.setKeywords((String) map.getOrDefault("keywords", ""));
-			query.setCities((String) map.getOrDefault("cities", ""));
-			query.setIndustries((String) map.getOrDefault("industries", ""));
-			query.setOccupations((String) map.getOrDefault("occupations", ""));
-			query.setScale((String) map.getOrDefault("scale", ""));
-			query.setCandidate_source((String) map.getOrDefault("candidate_source", ""));
-			query.setEmployment_type((String) map.getOrDefault("employment_type", ""));
-			query.setExperience((String) map.getOrDefault("experience", ""));
-			query.setSalary((String) map.getOrDefault("salary", ""));
-			query.setDegree((String) map.getOrDefault("degree", ""));
-			query.setDepartment((String) map.getOrDefault("department", ""));
-			query.setCustom((String) map.getOrDefault("custom", ""));
-			query.setDid(Integer.valueOf((String)map.getOrDefault("did", "0")));
+            query.setKeywords((String) map.getOrDefault("keywords", ""));
+            query.setCities((String) map.getOrDefault("cities", ""));
+            query.setIndustries((String) map.getOrDefault("industries", ""));
+            query.setOccupations((String) map.getOrDefault("occupations", ""));
+            query.setScale((String) map.getOrDefault("scale", ""));
+            query.setCandidate_source((String) map.getOrDefault("candidate_source", ""));
+            query.setEmployment_type((String) map.getOrDefault("employment_type", ""));
+            query.setExperience((String) map.getOrDefault("experience", ""));
+            query.setSalary((String) map.getOrDefault("salary", ""));
+            query.setDegree((String) map.getOrDefault("degree", ""));
+            query.setDepartment((String) map.getOrDefault("department", ""));
+            query.setCustom((String) map.getOrDefault("custom", ""));
+            query.setDid(Integer.valueOf((String) map.getOrDefault("did", "0")));
 
-			String param_setOrder_by_priority = (String)map.getOrDefault("order_by_priority", "True");
-			query.setOrder_by_priority(param_setOrder_by_priority.equals("True"));
+            String param_setOrder_by_priority = (String) map.getOrDefault("order_by_priority", "True");
+            query.setOrder_by_priority(param_setOrder_by_priority.equals("True"));
 
-			List<WechatPositionListData> positionList = positonServices.getPositionList(query);
-			Response res = ResponseUtils.success(positionList);
-			return ResponseLogNotification.success(request, res);
-		}
-		catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			return ResponseLogNotification.fail(request, e.getMessage());
-		}
-	}
+            List<WechatPositionListData> positionList = positonServices.getPositionList(query);
+            Response res = ResponseUtils.success(positionList);
+            return ResponseLogNotification.success(request, res);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 
     @RequestMapping(value = "/positions/verifyCustomize", method = RequestMethod.GET)
     @ResponseBody
@@ -185,6 +187,7 @@ public class PositionController {
     @ResponseBody
     public String synchronizePosition(HttpServletRequest request, HttpServletResponse response) {
         try {
+            logger.info("-----------synchronizePosition------------params:" + request.getParameterMap());
             ThirdPartyPositionForm form = PositionParamUtils.parseSyncParam(request);
             logger.info("-----------synchronizePosition------------");
             logger.info("params:" + JSON.toJSONString(form));
@@ -223,17 +226,23 @@ public class PositionController {
     public String refreshPosition(HttpServletRequest request, HttpServletResponse response) {
         try {
             logger.info("/position/refresh");
-            List<HashMap<Integer, Integer>> paramList = PositionParamUtils.parseRefreshParam(request);
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            List<HashMap<Integer, Integer>> paramList = PositionParamUtils.parseRefreshParam(params);
             logger.info("/position/refresh paramList.size:" + paramList.size());
             List<Object> refreshResult = new ArrayList<>();
             if (paramList.size() > 0) {
                 paramList.forEach(map -> {
                     map.forEach((positionId, channel) -> {
                         try {
-                            logger.info("positionId:" + positionId + "    channel:" + channel);
-                            Response refreshPositionResponse = positionBS.refreshPositionToThirdPartyPlatform(positionId, channel);
-                            logger.info("data:" + refreshPositionResponse.getData());
-                            refreshResult.add(JSON.parse(refreshPositionResponse.getData()));
+                            //同步到智联的第三方职位不刷新
+                            if (ChannelType.ZHILIAN.getValue() == channel) {
+                                logger.info("synchronize position:{}:zhilian skip",positionId);
+                            }else {
+                                logger.info("positionId:" + positionId + "    channel:" + channel);
+                                Response refreshPositionResponse = positionBS.refreshPositionToThirdPartyPlatform(positionId, channel);
+                                logger.info("data:" + refreshPositionResponse.getData());
+                                refreshResult.add(JSON.parse(refreshPositionResponse.getData()));
+                            }
                         } catch (Exception e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
@@ -260,7 +269,7 @@ public class PositionController {
     /**
      * 根据 hb_config_id 获取分享信息
      *
-     * @param request request
+     * @param request  request
      * @param response response
      * @return 分享信息
      */
@@ -269,13 +278,12 @@ public class PositionController {
     public String getHbShareInfo(HttpServletRequest request, HttpServletResponse response) {
         try {
             Map<String, Object> params = ParamUtils.parseRequestParam(request);
-            Integer hbConfigId = Integer.valueOf((String)params.get("hb_config_id"));
+            Integer hbConfigId = Integer.valueOf((String) params.get("hb_config_id"));
             WechatShareData shareData = positonServices.getShareInfo(hbConfigId);
 
             Response res = ResponseUtils.success(shareData);
             return ResponseLogNotification.success(request, res);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseLogNotification.fail(request, e.getMessage());
         }
@@ -284,7 +292,7 @@ public class PositionController {
     /**
      * 根据 hb_config_id 获取职位列表
      *
-     * @param request request
+     * @param request  request
      * @param response response
      * @return 红包职位列表
      */
@@ -293,7 +301,7 @@ public class PositionController {
     public String getRpPositionList(HttpServletRequest request, HttpServletResponse response) {
         try {
             Map<String, Object> params = ParamUtils.parseRequestParam(request);
-            Integer hbConfigId = Integer.valueOf((String)params.get("hb_config_id"));
+            Integer hbConfigId = Integer.valueOf((String) params.get("hb_config_id"));
             if (hbConfigId == null) {
                 throw new Exception("红包活动 id 不正确!");
             }
@@ -301,8 +309,7 @@ public class PositionController {
 
             Response res = ResponseUtils.success(rpPositionList);
             return ResponseLogNotification.success(request, res);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseLogNotification.fail(request, e.getMessage());
         }
@@ -311,7 +318,7 @@ public class PositionController {
     /**
      * 根据 pids (List<Integer>) 获取职位的红包附加信息
      *
-     * @param request request
+     * @param request  request
      * @param response response
      * @return 红包职位列表
      */
@@ -328,8 +335,7 @@ public class PositionController {
 
             Response res = ResponseUtils.success(rpExtInfoList);
             return ResponseLogNotification.success(request, res);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.error(e.getMessage());
             return ResponseLogNotification.fail(request, e.getMessage());
         }

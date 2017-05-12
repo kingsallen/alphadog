@@ -1,7 +1,7 @@
 package com.moseeker.useraccounts.service.impl;
 
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.useraccounts.dao.UserHrAccountDao;
+import com.moseeker.useraccounts.dao.UserHrDao;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -10,7 +10,7 @@ public class UserHrAccountServiceTest {
 
 
     @Mock
-    private UserHrAccountDao userHrAccountDao;
+    private UserHrDao userHrDao;
 
     @InjectMocks
     private UserHrAccountService userHrAccountService;
