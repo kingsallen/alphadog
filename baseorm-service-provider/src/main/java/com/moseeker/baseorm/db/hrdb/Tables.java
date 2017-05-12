@@ -124,6 +124,10 @@ public class Tables {
     public static final HrCompanyConfBak HR_COMPANY_CONF_BAK = com.moseeker.baseorm.db.hrdb.tables.HrCompanyConfBak.HR_COMPANY_CONF_BAK;
 
     /**
+     * 公司级别的配置信息表
+     */
+
+    /**
      * 部门员工配置表
      */
     public static final HrEmployeeCertConf HR_EMPLOYEE_CERT_CONF = com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF;

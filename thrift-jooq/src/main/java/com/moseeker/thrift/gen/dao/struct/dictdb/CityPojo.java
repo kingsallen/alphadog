@@ -1,4 +1,4 @@
-package com.moseeker.dict.pojo;
+package com.moseeker.thrift.gen.dao.struct.dictdb;
 
 /**
  * Created by chendi on 6/3/16.

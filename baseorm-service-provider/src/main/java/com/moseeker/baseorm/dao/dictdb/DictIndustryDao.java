@@ -7,6 +7,8 @@ import com.moseeker.thrift.gen.dao.struct.dictdb.DictIndustryDO;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
 * @author xxx
 * DictIndustryDao 实现类 （groovy 生成）
@@ -21,5 +23,10 @@ public class DictIndustryDao extends JooqCrudImpl<DictIndustryDO, DictIndustryRe
 
     public DictIndustryDao(TableImpl<DictIndustryRecord> table, Class<DictIndustryDO> dictIndustryDOClass) {
         super(table, dictIndustryDOClass);
+    }
+
+    public List<DictIndustryRecord> getIndustriesByType(int type) {
+        return create.selectFrom(DictIndustry.DICT_INDUSTRY)
+                .where(DictIndustry.DICT_INDUSTRY.TYPE.equal((int)(type))).fetch();
     }
 }

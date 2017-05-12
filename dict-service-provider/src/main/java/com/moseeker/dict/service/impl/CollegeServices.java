@@ -6,6 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.moseeker.baseorm.dao.dictdb.DictCollegeDao;
+import com.moseeker.baseorm.tool.QueryConvert;
+import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import org.apache.thrift.TException;
 import org.jooq.Record;
 
@@ -21,8 +25,6 @@ import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
-import com.moseeker.dict.dao.CollegeDao;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dict.struct.College;
 
@@ -32,7 +34,7 @@ public class CollegeServices {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    protected CollegeDao dao;
+    protected DictCollegeDao dao;
 
     protected College DBToStruct(Record r) {
         College c = new College();
@@ -63,11 +65,11 @@ public class CollegeServices {
         String patternString = "DICT_COLLEGE";
         int appid = 0; // query.appid
         try {
-        		rc = RedisClientFactory.getCacheClient();
+            rc = RedisClientFactory.getCacheClient();
             cachedResult = rc.get(appid, patternString, cachKey, () -> {
                 String r = null;
                 try {
-                    List joinedResult = this.dao.getJoinedResults(query);
+                    List joinedResult = this.dao.getJoinedResults(QueryConvert.commonQueryConvertToQuery(query));
                     List<College> structs = DBsToStructs(joinedResult);
                     Collection transformed = transformData(structs);
                     r = JSON.toJSONString(ResponseUtils.success(transformed));
@@ -83,7 +85,7 @@ public class CollegeServices {
         		WarnService.notify(e);
         } catch(Exception e) {
             e.printStackTrace();
-            List joinedResult = this.dao.getJoinedResults(query);
+            List joinedResult = this.dao.getJoinedResults(QueryConvert.commonQueryConvertToQuery(query));
             List<College> structs = DBsToStructs(joinedResult);
             result = ResponseUtils.success(transformData(structs));
         }

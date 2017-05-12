@@ -54,7 +54,8 @@ public class BeanUtils {
 		put("module", "component");
 		put("default", "defMsg");
 		put("start", "startTime");
-		put("end", "endTime");	
+		put("end", "endTime");
+		put("map", "mapping");
 	}};
 
 	@SuppressWarnings("rawtypes")

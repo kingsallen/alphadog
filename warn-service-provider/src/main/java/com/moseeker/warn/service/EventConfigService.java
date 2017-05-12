@@ -9,6 +9,7 @@ import com.moseeker.baseorm.dao.configdb.ConfigAdminnotificationChannelDao;
 import com.moseeker.baseorm.dao.configdb.ConfigAdminnotificationEventsDao;
 import com.moseeker.baseorm.dao.configdb.ConfigAdminnotificationMembersDao;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigAdminnotificationEventsRecord;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.configdb.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +47,9 @@ public class EventConfigService {
 		eventMap.clear();
 		List<ConfigAdminnotificationEventsRecord> resources;
 		try {
-			resources = dao.getRecords(null);
+            Query.QueryBuilder query = new Query.QueryBuilder();
+            query.setPageSize(Integer.MAX_VALUE);
+            resources = dao.getRecords(query.buildQuery());
 			resources.forEach(record -> {
 				// 封装事件信息
 				Event event = new Event(record.getId(), record.getProjectAppid(), record.getEventKey(), record.getEventName(),

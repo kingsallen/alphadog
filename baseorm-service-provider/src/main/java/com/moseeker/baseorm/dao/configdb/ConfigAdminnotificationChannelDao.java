@@ -44,7 +44,8 @@ public class ConfigAdminnotificationChannelDao extends JooqCrudImpl<ConfigAdminn
      */
     public List<String> getChannels(Integer eventId) {
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-        queryBuilder.where("event_id", eventId);
+        queryBuilder.setPageSize(Integer.MAX_VALUE);
+        queryBuilder.where("envent_id", eventId);
         return getRecords(queryBuilder.buildQuery()).stream().map(m -> m.getChannel()).collect(Collectors.toList());
     }
 }

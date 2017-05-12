@@ -7,6 +7,8 @@ import com.moseeker.thrift.gen.dao.struct.dictdb.DictPositionDO;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
 * @author xxx
 * DictPositionDao 实现类 （groovy 生成）
@@ -21,5 +23,10 @@ public class DictPositionDao extends JooqCrudImpl<DictPositionDO, DictPositionRe
 
     public DictPositionDao(TableImpl<DictPositionRecord> table, Class<DictPositionDO> dictPositionDOClass) {
         super(table, dictPositionDOClass);
+    }
+
+    public List<DictPositionRecord> getIndustriesByParentCode(int parentCode) {
+        return create.selectFrom(DictPosition.DICT_POSITION)
+                .where(DictPosition.DICT_POSITION.PARENT.equal(parentCode)).fetch();
     }
 }

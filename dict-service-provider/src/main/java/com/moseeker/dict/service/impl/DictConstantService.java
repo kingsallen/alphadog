@@ -1,16 +1,17 @@
 package com.moseeker.dict.service.impl;
 
+import com.moseeker.baseorm.dao.dictdb.DictConstantDao;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import java.util.List;
-import java.util.Map;
+import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictConstantPojo;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.dict.dao.DictConstantDao;
-import com.moseeker.dict.pojo.DictConstantPojo;
-import com.moseeker.thrift.gen.common.struct.Response;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 常量字典服务
@@ -22,7 +23,8 @@ import com.moseeker.thrift.gen.common.struct.Response;
 public class DictConstantService {
 
     @Autowired
-    public DictConstantDao dictConstantDao;
+    public DictConstantDao
+            dictConstantDao;
 
     /**
      * 取得常量字典json数据

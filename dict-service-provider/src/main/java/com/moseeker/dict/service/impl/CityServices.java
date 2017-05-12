@@ -1,26 +1,25 @@
 package com.moseeker.dict.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import org.apache.thrift.TException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.exception.CacheConfigNotExistException;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.redis.RedisClient;
 import com.moseeker.common.redis.RedisClientFactory;
-import com.moseeker.dict.dao.CityDao;
-import com.moseeker.dict.pojo.CityPojo;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.dictdb.CityPojo;
+import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 @Service
 public class CityServices {
@@ -28,7 +27,7 @@ public class CityServices {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    protected CityDao dao;
+    protected DictCityDao dao;
 
     @CounterIface
     public Response getResources(CommonQuery query) throws TException {

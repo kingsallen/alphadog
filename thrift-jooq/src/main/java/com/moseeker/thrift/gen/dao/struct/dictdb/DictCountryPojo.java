@@ -1,4 +1,4 @@
-package com.moseeker.dict.pojo;
+package com.moseeker.thrift.gen.dao.struct.dictdb;
 
 /**
  * 国家字典Pojo

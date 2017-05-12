@@ -207,7 +207,6 @@ public class Hrdb extends SchemaImpl {
      * 模板媒体表，存储模板渲染的媒体信息
      */
     public final HrMedia HR_MEDIA = com.moseeker.baseorm.db.hrdb.tables.HrMedia.HR_MEDIA;
-
     /**
      * hr申请状态操作记录
      */

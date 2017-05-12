@@ -21,6 +21,8 @@ import com.moseeker.common.constants.PositionRefreshType;
 import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.Query.QueryBuilder;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
@@ -57,6 +59,9 @@ public class PositionBS {
 	CompanyDao.Iface CompanyDao = ServiceManager.SERVICEMANAGER.getService(CompanyDao.Iface.class);
 
 	ChaosServices.Iface chaosService = ServiceManager.SERVICEMANAGER.getService(ChaosServices.Iface.class);
+	//======================
+//	private PositionDao positionDao;
+	
 
 	/**
 	 * 
@@ -66,8 +71,9 @@ public class PositionBS {
 	public Response synchronizePositionToThirdPartyPlatform(ThirdPartyPositionForm position) {
 		Response response = null;
 		// 职位数据是否存在
-		QueryUtil qu = new QueryUtil();
-		qu.addEqualFilter("id", String.valueOf(position.getPosition_id()));
+//		QueryUtil qu = new QueryUtil();
+//		qu.addEqualFilter("id", String.valueOf(position.getPosition_id()));
+		Query query=new QueryBuilder().where("id", position.getPosition_id()).buildQuery();
 		try {
 			com.moseeker.thrift.gen.position.struct.Position positionStruct = positionDao.getPositionWithCityCode(qu);
 			logger.info("position:" + JSON.toJSONString(positionStruct));
