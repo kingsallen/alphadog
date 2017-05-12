@@ -1,6 +1,7 @@
 package com.moseeker.servicemanager.web.controller.position;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
@@ -233,10 +234,15 @@ public class PositionController {
                 paramList.forEach(map -> {
                     map.forEach((positionId, channel) -> {
                         try {
-                            logger.info("positionId:" + positionId + "    channel:" + channel);
-                            Response refreshPositionResponse = positionBS.refreshPositionToThirdPartyPlatform(positionId, channel);
-                            logger.info("data:" + refreshPositionResponse.getData());
-                            refreshResult.add(JSON.parse(refreshPositionResponse.getData()));
+                            //同步到智联的第三方职位不刷新
+                            if (ChannelType.ZHILIAN.getValue() == channel) {
+                                logger.info("synchronize position:{}:zhilian skip",positionId);
+                            }else {
+                                logger.info("positionId:" + positionId + "    channel:" + channel);
+                                Response refreshPositionResponse = positionBS.refreshPositionToThirdPartyPlatform(positionId, channel);
+                                logger.info("data:" + refreshPositionResponse.getData());
+                                refreshResult.add(JSON.parse(refreshPositionResponse.getData()));
+                            }
                         } catch (Exception e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
