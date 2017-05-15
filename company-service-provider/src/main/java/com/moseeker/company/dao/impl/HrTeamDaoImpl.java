@@ -5,6 +5,7 @@ import com.moseeker.common.providerutils.daoutils.BaseDaoImpl;
 import com.moseeker.db.hrdb.tables.HrTeam;
 import com.moseeker.db.hrdb.tables.records.HrTeamRecord;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamDO;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,9 +29,25 @@ public class HrTeamDaoImpl extends BaseDaoImpl<HrTeamRecord, HrTeam> {
         if (query == null) {
             query = new HashMap<>();
         }
-        query.remove("appid");
         queryUtil.setEqualFilter(query);
-        if (queryUtil.getEqualFilter().containsKey("company_id")) {
+
+        if (queryUtil.getEqualFilter().containsKey("appid")) {
+            query.remove("appid");
+        }
+
+        if (queryUtil.getEqualFilter().containsKey("page")) {
+            String page = query.remove("page");
+            if (StringUtils.isNumeric(page)) {
+                queryUtil.setPage(Integer.valueOf(page));
+            }
+        }
+
+        if (queryUtil.getEqualFilter().containsKey("per_page")) {
+            String perPage = query.remove("per_page");
+            if (StringUtils.isNumeric(perPage)) {
+                queryUtil.setPer_page(Integer.valueOf(perPage));
+            }
+        } else if (queryUtil.getEqualFilter().containsKey("company_id")) {
             queryUtil.setPer_page(Integer.MAX_VALUE);
         }
         List<HrTeamDO> hrTeamDOList = new ArrayList<>();
