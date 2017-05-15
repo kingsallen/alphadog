@@ -1,5 +1,6 @@
 package com.moseeker.company.server;
 
+import com.moseeker.company.thrift.HrTeamThriftServicesImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -38,7 +39,8 @@ public class CompanyServer {
 //			server.start(); // 启动服务，非阻塞
 			MoServer server = new MoServer(
 					acac,"",
-					acac.getBean(CompanyServicesImpl.class));
+					acac.getBean(CompanyServicesImpl.class),
+					acac.getBean(HrTeamThriftServicesImpl.class));
 			server.startServer();
 			synchronized (CompanyServer.class) {
 				while (true) {
