@@ -1,6 +1,8 @@
 package com.moseeker.dict.service.impl;
 
 import java.util.HashMap;
+
+import com.moseeker.common.annotation.iface.CounterIface;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,7 @@ public class DictOccupationService {
 	/*
 	 * 查询第三方职位职能
 	 */
+	@CounterIface
 	public Response queryOccupation(String param){
 		JSONObject obj=JSONObject.parseObject(param);
 		int single_layer=obj.getIntValue("single_layer");

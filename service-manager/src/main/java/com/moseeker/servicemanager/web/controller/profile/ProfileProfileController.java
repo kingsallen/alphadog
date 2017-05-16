@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.moseeker.common.annotation.iface.CounterIface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -23,6 +24,7 @@ import com.moseeker.thrift.gen.profile.struct.Profile;
 
 //@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
+@CounterIface
 public class ProfileProfileController {
 
 	Logger logger = LoggerFactory.getLogger(ProfileProfileController.class);

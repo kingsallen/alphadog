@@ -657,8 +657,11 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                             if (com.moseeker.common.util.StringUtils.isNullOrEmpty(record.getJobnumber())) {
                                 record.setJobnumber(jobPositionRecordTemp.getJobnumber());
                             }
-
-                            record.setCity(citys(jobPositionHandlerDate.getCity()));
+                            // 当城市无法转换时，入库为提交的数据
+                            String city = citys(jobPositionHandlerDate.getCity());
+                            if (com.moseeker.common.util.StringUtils.isNotNullOrEmpty(city)) {
+                                record.setCity(city);
+                            }
                             record.setTeamId(team_id);
                             // 设置不需要更新的字段
                             if (fieldsNooverwriteStrings != null && fieldsNooverwriteStrings.length > 0) {
@@ -696,7 +699,11 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     }
                 } else { // 数据的新增
                     record.setTeamId(team_id);
-                    record.setCity(citys(jobPositionHandlerDate.getCity()));
+                    String city = citys(jobPositionHandlerDate.getCity());
+                    // 当城市无法转换时，入库为提交的数据
+                    if (com.moseeker.common.util.StringUtils.isNotNullOrEmpty(city)) {
+                        record.setCity(city);
+                    }
                     logger.info("-- 新增jobPostion数据开始，新增的jobPostion数据为：" + record.toString() + "--");
                     Integer pid = jobPositionDao.insertJobPostion(record);
                     logger.info("-- 新增jobPostion数据结束,新增职位ID为：" + pid);
@@ -874,6 +881,32 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
         return md5;
     }
 
+    // 特殊城市拼音转CityCode
+    public final static Map specialCityMap = new LinkedHashMap();
+
+    static {
+        specialCityMap.put("Amur River", "黑龙江省");
+        specialCityMap.put("Anhwei", "安徽省");
+        specialCityMap.put("Canton", "广东省");
+        specialCityMap.put("Kwangtung", "广东省");
+        specialCityMap.put("Fukian", "福建省");
+        specialCityMap.put("Harbin", "哈尔滨");
+        specialCityMap.put("Hong Kong", "香港");
+        specialCityMap.put("Nankin", "南京");
+        specialCityMap.put("Nanking", "南京");
+        specialCityMap.put("Inner Mongolia", "内蒙古");
+        specialCityMap.put("Pekin", "北京");
+        specialCityMap.put("Peking", "北京");
+        specialCityMap.put("Shanxi", "山西省");
+        specialCityMap.put("Shaanxi", "陕西省");
+        specialCityMap.put("Szechwan", "四川");
+        specialCityMap.put("Taipei", "台北");
+        specialCityMap.put("Tibet", "西藏");
+        specialCityMap.put("Urumchi", "乌鲁木齐");
+        specialCityMap.put("Urumqi", "乌鲁木齐");
+        specialCityMap.put("Ürümqi", "乌鲁木齐");
+    }
+
     /**
      * 将地区或者邮编转换成行政编码
      */
@@ -882,20 +915,25 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
         try {
             // 将已经查询的到的cityCode放到map中，避免多次查询
             HashMap cityPostCodeMap = new LinkedHashMap();
-            // 查询DictCityPostCode条件
-            QueryUtil cityCodeQuery = new QueryUtil();
-            // 查询DictCity条件
-            QueryUtil cityQuery = new QueryUtil();
             // 将从DictCity查询
             HashMap cityMap = new LinkedHashMap();
             if (citys != null && citys.size() > 0 && pid != null) {
                 for (City city : citys) {
+                    // 查询DictCityPostCode条件
+                    QueryUtil cityCodeQuery = new QueryUtil();
+                    // 查询DictCity条件
+                    QueryUtil cityQuery = new QueryUtil();
                     JobPositionCityRecord jobPositionCityRecord = new JobPositionCityRecord();
                     jobPositionCityRecord.setPid(pid);
                     logger.info("城市类型：" + city.getType().toLowerCase());
                     logger.info("VAlUE：" + city.getValue());
                     // 城市名字，转换成cityCode，传入的是城市的时候查询dict_city
                     if (city.getType().toLowerCase().equals("text")) {
+                        // 判断是不是特殊城市中的
+                        String specicalCity = (String) specialCityMap.get(city.getValue());
+                        if (specicalCity != null) {
+                            city.setValue(specicalCity);
+                        }
                         // 判断下是否是中文还是英文
                         if (isChinese(city.getValue())) { // 是中文
                             cityQuery.addEqualFilter("name", city.getValue());
@@ -908,7 +946,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                                 jobPositionCityRecord.setCode(dictCityDO.getCode());
                             } else {
                                 dictCityDO = dictOccupationDao.dictCityDO(cityQuery);
-                                if (dictCityDO != null) {
+                                if (dictCityDO != null && dictCityDO.getCode() != 0) {
                                     jobPositionCityRecord.setCode(dictCityDO.getCode());
                                     cityMap.put(city.getValue(), dictCityDO);
                                 }
@@ -934,6 +972,18 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                         }
                     } else if (city.getType().toLowerCase().equals("citycode")) { // citycode 直接存储
                         jobPositionCityRecord.setCode(Integer.valueOf(city.getValue()));
+                    } else if (city.getType().toLowerCase().equals("fuzzypostcode")) { // 模糊邮编，取邮编的前四位查询
+                        String postCodeTemp = city.getValue().substring(0, 4);
+                        DictCityPostcodeRecord cityPostcodeRecord = (DictCityPostcodeRecord) cityPostCodeMap.get(postCodeTemp);
+                        if (cityPostcodeRecord != null) {
+                            jobPositionCityRecord.setCode(Integer.valueOf(cityPostcodeRecord.getCode()));
+                        } else {
+                            cityPostcodeRecord = dictCityPostCodeDao.fuzzyGetCityPostCode(postCodeTemp);
+                            if (cityPostcodeRecord != null && cityPostcodeRecord.getCode() != null) {
+                                jobPositionCityRecord.setCode(Integer.valueOf(cityPostcodeRecord.getCode()));
+                                cityPostCodeMap.put(city.getValue(), cityPostcodeRecord);
+                            }
+                        }
                     }
                     // 如果cityCode不入库
                     if (jobPositionCityRecord.getCode() != null) {
@@ -955,18 +1005,44 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
         if (list != null && list.size() > 0) {
             // 将已经查询的到的cityCode放到map中，避免多次查询
             HashMap cityPostCodeMap = new LinkedHashMap();
-            QueryUtil cityCodeQuery = new QueryUtil();
             int i = 0;
             for (City city : list) {
+                QueryUtil cityCodeQuery = new QueryUtil();
                 if (city.getType().toLowerCase().equals("text")) { // 城市名字，转换成cityCode
-                    cityCodeQuery.addEqualFilter("city", city.getValue());
-                    stringBuffer.append(city.getValue());
+                    // 判断是不是特殊城市中的
+                    String specicalCity = (String) specialCityMap.get(city.getValue());
+                    if (specicalCity != null) {
+                        stringBuffer.append(specicalCity);
+                    } else {
+                        if (isChinese(city.getValue())) { // 是中文
+                            stringBuffer.append(city.getValue());
+                        } else { // 英文
+                            cityCodeQuery.addEqualFilter("ename", city.getValue());
+                            try {
+                                DictCityDO dictCityDO = (DictCityDO) cityPostCodeMap.get(city.getValue());
+                                if (dictCityDO != null) {
+                                    stringBuffer.append(dictCityDO.getName());
+                                } else {
+                                    dictCityDO = dictOccupationDao.dictCityDO(cityCodeQuery);
+                                    if (dictCityDO != null && dictCityDO.getCode() != 0) {
+                                        stringBuffer.append(dictCityDO.getName());
+                                        cityPostCodeMap.put(city.getValue(), dictCityDO);
+                                    } else {
+                                        stringBuffer.append(city.getValue());
+                                    }
+                                }
+                            } catch (Exception e) {
+                                logger.error(e.getMessage(), e);
+                            }
+                        }
+                    }
                 } else if (city.getType().toLowerCase().equals("postcode")) { // 邮编，转成城市名
                     try {
                         DictCityPostcodeRecord cityPostcodeRecord = (DictCityPostcodeRecord) cityPostCodeMap.get(city.getValue());
                         if (cityPostcodeRecord != null) {
                             stringBuffer.append(cityPostcodeRecord.getCity());
                         } else {
+                            cityCodeQuery.clear();
                             cityCodeQuery.addEqualFilter("postcode", city.getValue());
                             cityPostcodeRecord = dictCityPostCodeDao.getResource(cityCodeQuery);
                             if (cityPostcodeRecord != null && cityPostcodeRecord.getCity() != null) {
@@ -983,17 +1059,35 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     }
                 } else if (city.getType().toLowerCase().equals("citycode")) { // citycode 直接存储
                     try {
-                        DictCityPostcodeRecord cityPostcodeRecord = (DictCityPostcodeRecord) cityPostCodeMap.get(city.getValue());
+                        DictCityDO dictCityDO = (DictCityDO) cityPostCodeMap.get(city.getValue());
+                        if (dictCityDO != null) {
+                            stringBuffer.append(dictCityDO.getName());
+                        } else {
+                            cityCodeQuery.clear();
+                            cityCodeQuery.addEqualFilter("code", city.getValue());
+                            dictCityDO = dictOccupationDao.dictCityDO(cityCodeQuery);
+//                            cityPostcodeRecord = dictCityPostCodeDao.getResource(cityCodeQuery);
+                            if (dictCityDO != null && dictCityDO.getName() != null) {
+                                stringBuffer.append(dictCityDO.getName());
+                                cityPostCodeMap.put(city.getValue(), dictCityDO);
+                            }
+                        }
+                    } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                } else if (city.getType().toLowerCase().equals("fuzzypostcode")) {  // 模糊邮编查询，转为城市名字
+                    try {
+                        String postCodeTemp = city.getValue().substring(0, 4);
+                        DictCityPostcodeRecord cityPostcodeRecord = (DictCityPostcodeRecord) cityPostCodeMap.get(postCodeTemp);
                         if (cityPostcodeRecord != null) {
                             stringBuffer.append(cityPostcodeRecord.getCity());
                         } else {
-                            cityCodeQuery.addEqualFilter("citycode", city.getValue());
-                            cityPostcodeRecord = dictCityPostCodeDao.getResource(cityCodeQuery);
+                            cityPostcodeRecord = dictCityPostCodeDao.fuzzyGetCityPostCode(postCodeTemp);
                             if (cityPostcodeRecord != null && cityPostcodeRecord.getCity() != null) {
-                                if (cityPostcodeRecord.getCity() != null) {
-                                    stringBuffer.append(cityPostcodeRecord.getProvince());
-                                } else {
+                                if (!com.moseeker.common.util.StringUtils.isEmptyObject(cityPostcodeRecord.getCity())) {
                                     stringBuffer.append(cityPostcodeRecord.getCity());
+                                } else {
+                                    stringBuffer.append(cityPostcodeRecord.getProvince());
                                 }
                                 cityPostCodeMap.put(city.getValue(), cityPostcodeRecord);
                             }
@@ -1003,9 +1097,12 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     }
                 }
                 i = i + 1;
-                if (i != list.size()) {
+                if (i != list.size() && com.moseeker.common.util.StringUtils.isNotNullOrEmpty(stringBuffer.toString()) && !stringBuffer.toString().endsWith(",")) {
                     stringBuffer.append(",");
                 }
+            }
+            if (stringBuffer.toString().endsWith(",")) {
+                stringBuffer.deleteCharAt(stringBuffer.length() - 1);
             }
         }
         return stringBuffer.toString();
@@ -1173,6 +1270,12 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 else {
                     List<Integer> publisherList = dataList.stream().map(WechatPositionListData::getPublisher)
                             .collect(Collectors.toList());
+
+                    // publisherList 应该不为空
+                    // 如果 publisherList 为空，那么返回空 ArrayList
+                    if (publisherList == null || publisherList.size() == 0) {
+                        return new ArrayList<>();
+                    }
 
                     // 根据 pbulisher_list 查询 hr_company_account_list
                     hrm.addEqualFilter("account_id", buildQueryIds(publisherList));
@@ -1534,6 +1637,11 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 
 
     private String buildQueryIds(List<Integer> idList) {
+
+        if (idList == null || idList.size() == 0) {
+            return "[]";
+        }
+
         StringBuffer sb = new StringBuffer();
         for (Integer i : idList) {
             sb.append(String.valueOf(i) + ",");

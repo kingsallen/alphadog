@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.moseeker.common.annotation.iface.CounterIface;
 import org.jooq.tools.json.JSONObject;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dict.service.DictOccupationService;
 
 @Controller
+@CounterIface
 public class DictOccupationController {
 	Logger logger = org.slf4j.LoggerFactory.getLogger(DictOccupationController.class);
 	DictOccupationService.Iface dictOccupationService = ServiceManager.SERVICEMANAGER

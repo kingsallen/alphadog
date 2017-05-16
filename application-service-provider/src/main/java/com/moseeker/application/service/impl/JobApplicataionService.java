@@ -132,6 +132,7 @@ public class JobApplicataionService {
     }
 
     @SuppressWarnings("serial")
+    @CounterIface
     public Response postApplicationIfNotApply(JobApplication jobApplication) {
         try {
 

@@ -42,6 +42,7 @@ public class CompanyServer {
 					acac.getBean(CompanyServicesImpl.class),
 					acac.getBean(HrTeamThriftServicesImpl.class));
 			server.startServer();
+			server.shutDownHook();
 			synchronized (CompanyServer.class) {
 				while (true) {
 					try {

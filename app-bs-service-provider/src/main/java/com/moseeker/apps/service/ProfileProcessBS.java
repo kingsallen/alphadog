@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.thrift.gen.dao.service.*;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
 import org.apache.thrift.TException;
@@ -75,6 +77,7 @@ public class ProfileProcessBS {
      * @return Response(status, message, data)
      * @author zzt
      */
+    @CounterIface
     public Response processProfileAts(int progressStatus, String params) {
         int companyId = 0;
         int accountId = 0;
@@ -268,6 +271,7 @@ public class ProfileProcessBS {
     /**
      * 发送消息模板
      */
+    @CounterIface
     public void sendTemplate(int userId, String userName, int companyId,
                              int status, String positionName, int applicationId, TemplateMs tm) {
         if (StringUtils.isNullOrEmpty(positionName)) {

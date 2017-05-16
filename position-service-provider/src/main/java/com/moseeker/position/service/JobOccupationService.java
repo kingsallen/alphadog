@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.thrift.gen.dao.service.JobDBDao;
 import org.apache.thrift.TBase;
 import org.apache.thrift.TException;
@@ -33,6 +34,8 @@ public class JobOccupationService {
 			.getService(JobDBDao.Iface.class);
 	CompanyDao.Iface companyDao=ServiceManager.SERVICEMANAGER
 			.getService(CompanyDao.Iface.class);
+
+	@CounterIface
 	public Response getCustomField(String param){
 		JSONObject obj=JSONObject.parseObject(param);
 		int company_id=obj.getIntValue("company_id");

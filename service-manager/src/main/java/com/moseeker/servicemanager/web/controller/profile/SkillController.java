@@ -3,6 +3,7 @@ package com.moseeker.servicemanager.web.controller.profile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.moseeker.common.annotation.iface.CounterIface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,7 @@ import com.moseeker.thrift.gen.profile.struct.Skill;
 
 //@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
+@CounterIface
 public class SkillController {
 
 	Logger logger = LoggerFactory.getLogger(SkillController.class);

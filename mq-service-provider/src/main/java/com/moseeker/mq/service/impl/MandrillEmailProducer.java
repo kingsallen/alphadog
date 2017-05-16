@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.moseeker.common.annotation.iface.CounterIface;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,7 @@ public class MandrillEmailProducer {
 	 * @param eventType
 	 * @return
 	 */
+	@CounterIface
 	public Response queueEmail(MandrillEmailStruct mandrillEmailStruct) {
 		try {
 			// 参数校验

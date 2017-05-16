@@ -3,6 +3,7 @@ package com.moseeker.servicemanager.web.controller.dict;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.moseeker.common.annotation.iface.CounterIface;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,7 @@ import com.moseeker.thrift.gen.dict.service.CityServices;
 
 //@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
+@CounterIface
 public class CityController {
 
 	Logger logger = org.slf4j.LoggerFactory.getLogger(CityController.class);
