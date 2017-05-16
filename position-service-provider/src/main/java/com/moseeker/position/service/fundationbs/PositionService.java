@@ -1364,7 +1364,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 }
             }
         } catch (TException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return result;
         } finally {
 
