@@ -19,7 +19,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -35,7 +34,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxBasicReply extends TableImpl<HrWxBasicReplyRecord> {
 
-	private static final long serialVersionUID = 1064540704;
+	private static final long serialVersionUID = 742960850;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_wx_basic_reply</code>
@@ -53,12 +52,12 @@ public class HrWxBasicReply extends TableImpl<HrWxBasicReplyRecord> {
 	/**
 	 * The column <code>hrdb.hr_wx_basic_reply.id</code>.
 	 */
-	public final TableField<HrWxBasicReplyRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
+	public final TableField<HrWxBasicReplyRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
 	/**
 	 * The column <code>hrdb.hr_wx_basic_reply.rid</code>.
 	 */
-	public final TableField<HrWxBasicReplyRecord, UInteger> RID = createField("rid", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "");
+	public final TableField<HrWxBasicReplyRecord, Integer> RID = createField("rid", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "");
 
 	/**
 	 * The column <code>hrdb.hr_wx_basic_reply.content</code>. 文本回复内容
@@ -91,7 +90,7 @@ public class HrWxBasicReply extends TableImpl<HrWxBasicReplyRecord> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Identity<HrWxBasicReplyRecord, UInteger> getIdentity() {
+	public Identity<HrWxBasicReplyRecord, Integer> getIdentity() {
 		return Keys.IDENTITY_HR_WX_BASIC_REPLY;
 	}
 

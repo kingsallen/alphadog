@@ -20,7 +20,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -36,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxWechatNoticeSyncStatus extends TableImpl<HrWxWechatNoticeSyncStatusRecord> {
 
-	private static final long serialVersionUID = -372449352;
+	private static final long serialVersionUID = -1857278340;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_wx_wechat_notice_sync_status</code>
@@ -54,12 +53,12 @@ public class HrWxWechatNoticeSyncStatus extends TableImpl<HrWxWechatNoticeSyncSt
 	/**
 	 * The column <code>hrdb.hr_wx_wechat_notice_sync_status.id</code>. 主key
 	 */
-	public final TableField<HrWxWechatNoticeSyncStatusRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
+	public final TableField<HrWxWechatNoticeSyncStatusRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "主key");
 
 	/**
 	 * The column <code>hrdb.hr_wx_wechat_notice_sync_status.wechat_id</code>. 所属公众号
 	 */
-	public final TableField<HrWxWechatNoticeSyncStatusRecord, UInteger> WECHAT_ID = createField("wechat_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "所属公众号");
+	public final TableField<HrWxWechatNoticeSyncStatusRecord, Integer> WECHAT_ID = createField("wechat_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "所属公众号");
 
 	/**
 	 * The column <code>hrdb.hr_wx_wechat_notice_sync_status.status</code>. 同步状态 0:成功, 1:行业修改失败, 2:模板数量超出上限, 3:接口调用失败
@@ -102,7 +101,7 @@ public class HrWxWechatNoticeSyncStatus extends TableImpl<HrWxWechatNoticeSyncSt
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Identity<HrWxWechatNoticeSyncStatusRecord, UInteger> getIdentity() {
+	public Identity<HrWxWechatNoticeSyncStatusRecord, Integer> getIdentity() {
 		return Keys.IDENTITY_HR_WX_WECHAT_NOTICE_SYNC_STATUS;
 	}
 
