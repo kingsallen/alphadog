@@ -1259,6 +1259,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             qu.addEqualFilter("status", "3"); //正在运行
             qu.addEqualFilter("company_id", String.valueOf(company_id));
             qu.addEqualFilter("type", "[2,3]"); //转发类职位
+            qu.setPer_page(Integer.MAX_VALUE);
             List<HrHbConfigDO> hbConfigs = hrDao.getHbConfigs(qu);
             List<Integer> hbConfgIds = hbConfigs.stream().map(HrHbConfigDO::getId).collect(Collectors.toList());
             String allHbConfigIdsFilterString = "[" + org.apache.commons.lang.StringUtils.join(hbConfgIds.toArray(), ",") + "]";
