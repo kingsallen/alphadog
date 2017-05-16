@@ -1097,7 +1097,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     }
                 }
                 i = i + 1;
-                if (i != list.size()) {
+                if (i != list.size() && !stringBuffer.toString().endsWith(",")) {
                     stringBuffer.append(",");
                 }
             }
