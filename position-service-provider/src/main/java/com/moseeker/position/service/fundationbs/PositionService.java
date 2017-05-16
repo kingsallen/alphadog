@@ -1363,7 +1363,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     logger.warn("pid: " + p.getId() + " 已经不属于任何红包活动");
                 }
             }
-        } catch (TException e) {
+        } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return result;
         } finally {
