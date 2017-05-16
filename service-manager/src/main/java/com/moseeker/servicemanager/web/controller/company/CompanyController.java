@@ -1,5 +1,6 @@
 package com.moseeker.servicemanager.web.controller.company;
 
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -22,6 +23,7 @@ import java.util.Map;
 
 //@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
+@CounterIface
 public class CompanyController {
 
 	Logger logger = LoggerFactory.getLogger(CompanyController.class);

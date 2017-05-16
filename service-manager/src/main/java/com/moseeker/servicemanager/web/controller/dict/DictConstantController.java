@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.moseeker.common.annotation.iface.CounterIface;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,7 @@ import com.moseeker.thrift.gen.dict.service.DictConstanService;
  */
 // @Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
+@CounterIface
 public class DictConstantController {
 
 

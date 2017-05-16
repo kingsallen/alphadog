@@ -48,6 +48,7 @@ public class CityServer {
                     acac.getBean(DictOccupationServiceImpl.class)
             );
         	server.startServer();
+            server.shutDownHook();
             synchronized (CityServer.class) {
                 while (true) {
                     try {

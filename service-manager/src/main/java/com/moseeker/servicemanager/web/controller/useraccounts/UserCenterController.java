@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.moseeker.common.annotation.iface.CounterIface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,7 @@ import com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm;
 import com.moseeker.thrift.gen.useraccounts.struct.FavPositionForm;
 
 @Controller
+@CounterIface
 public class UserCenterController {
 
 	Logger logger = LoggerFactory.getLogger(UseraccountsController.class);

@@ -1,6 +1,7 @@
 package com.moseeker.servicemanager.web.controller.position;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -15,11 +16,9 @@ import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.service.JobDBDao;
-import com.moseeker.thrift.gen.dao.struct.ThirdPartAccountData;
 import com.moseeker.thrift.gen.dao.struct.ThirdPartyPositionData;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.*;
-
 import org.jooq.tools.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,14 +30,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.*;
+import static java.util.Arrays.asList;
 
 //@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
+@CounterIface
 public class PositionController {
 
     private Logger logger = LoggerFactory.getLogger(PositionController.class);

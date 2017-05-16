@@ -3,6 +3,7 @@ package com.moseeker.servicemanager.web.controller.useraccounts;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.moseeker.common.annotation.iface.CounterIface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,7 @@ import com.moseeker.thrift.gen.foundation.wordpress.struct.NewsletterForm;
 import com.moseeker.thrift.gen.useraccounts.service.UserCommonService;
 
 @Controller
+@CounterIface
 public class UserCommonController {
 
 	Logger logger = LoggerFactory.getLogger(UseraccountsController.class);
