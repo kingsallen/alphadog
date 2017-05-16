@@ -1100,9 +1100,9 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 if (i != list.size() && com.moseeker.common.util.StringUtils.isNotNullOrEmpty(stringBuffer.toString()) && !stringBuffer.toString().endsWith(",")) {
                     stringBuffer.append(",");
                 }
-                if (stringBuffer.toString().endsWith(",")) {
-                    stringBuffer.deleteCharAt(stringBuffer.length() - 1);
-                }
+            }
+            if (stringBuffer.toString().endsWith(",")) {
+                stringBuffer.deleteCharAt(stringBuffer.length() - 1);
             }
         }
         return stringBuffer.toString();
