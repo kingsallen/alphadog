@@ -209,6 +209,7 @@ public class ChatService {
                     } catch (InterruptedException | ExecutionException e) {
                         logger.error(e.getMessage(), e);
                     }
+                    logger.info("userChatRoomVO:{}", userChatRoomVO);
                     userChatRoomVOList.add(userChatRoomVO);
                 });
                 userChatRoomsVO.setRooms(userChatRoomVOList);

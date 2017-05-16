@@ -20,7 +20,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -36,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProfileAttachment extends TableImpl<ProfileAttachmentRecord> {
 
-	private static final long serialVersionUID = -1192331951;
+	private static final long serialVersionUID = 1317045765;
 
 	/**
 	 * The reference instance of <code>profiledb.profile_attachment</code>
@@ -54,12 +53,12 @@ public class ProfileAttachment extends TableImpl<ProfileAttachmentRecord> {
 	/**
 	 * The column <code>profiledb.profile_attachment.id</code>. 主key
 	 */
-	public final TableField<ProfileAttachmentRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
+	public final TableField<ProfileAttachmentRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "主key");
 
 	/**
 	 * The column <code>profiledb.profile_attachment.profile_id</code>. profile.id
 	 */
-	public final TableField<ProfileAttachmentRecord, UInteger> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "profile.id");
+	public final TableField<ProfileAttachmentRecord, Integer> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "profile.id");
 
 	/**
 	 * The column <code>profiledb.profile_attachment.name</code>. 附件名称
@@ -112,7 +111,7 @@ public class ProfileAttachment extends TableImpl<ProfileAttachmentRecord> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Identity<ProfileAttachmentRecord, UInteger> getIdentity() {
+	public Identity<ProfileAttachmentRecord, Integer> getIdentity() {
 		return Keys.IDENTITY_PROFILE_ATTACHMENT;
 	}
 

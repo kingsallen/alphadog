@@ -11,6 +11,7 @@ import com.moseeker.baseorm.db.profiledb.tables.ProfileCompleteness;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileCredentials;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileEducation;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileImport;
+import com.moseeker.baseorm.db.profiledb.tables.ProfileImportBk;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileIntention;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileIntentionCity;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileIntentionIndustry;
@@ -18,10 +19,12 @@ import com.moseeker.baseorm.db.profiledb.tables.ProfileIntentionPosition;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileLanguage;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileOther;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileProfile;
+import com.moseeker.baseorm.db.profiledb.tables.ProfileProfileBk;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileProjectexp;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileSkill;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileWorkexp;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileWorks;
+import com.moseeker.baseorm.db.profiledb.tables.SchemaMigrations;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,7 +49,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Profiledb extends SchemaImpl {
 
-	private static final long serialVersionUID = 61827558;
+	private static final long serialVersionUID = -561558829;
 
 	/**
 	 * The reference instance of <code>profiledb</code>
@@ -76,6 +79,7 @@ public class Profiledb extends SchemaImpl {
 			ProfileCredentials.PROFILE_CREDENTIALS,
 			ProfileEducation.PROFILE_EDUCATION,
 			ProfileImport.PROFILE_IMPORT,
+			ProfileImportBk.PROFILE_IMPORT_BK,
 			ProfileIntention.PROFILE_INTENTION,
 			ProfileIntentionCity.PROFILE_INTENTION_CITY,
 			ProfileIntentionIndustry.PROFILE_INTENTION_INDUSTRY,
@@ -83,9 +87,11 @@ public class Profiledb extends SchemaImpl {
 			ProfileLanguage.PROFILE_LANGUAGE,
 			ProfileOther.PROFILE_OTHER,
 			ProfileProfile.PROFILE_PROFILE,
+			ProfileProfileBk.PROFILE_PROFILE_BK,
 			ProfileProjectexp.PROFILE_PROJECTEXP,
 			ProfileSkill.PROFILE_SKILL,
 			ProfileWorkexp.PROFILE_WORKEXP,
-			ProfileWorks.PROFILE_WORKS);
+			ProfileWorks.PROFILE_WORKS,
+			SchemaMigrations.SCHEMA_MIGRATIONS);
 	}
 }

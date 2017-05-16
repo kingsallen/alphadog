@@ -18,7 +18,6 @@ Supported generators:
 Defaults to org.jooq.util.JavaGenerator -->
 <name>org.jooq.util.JavaGenerator</name>
 <database>
-<unsignedTypes>false</unsignedTypes>
 <!-- The database type. The format here is:
 org.util.[database].[database]Database -->
 <name>org.jooq.util.mysql.MySQLDatabase</name>
@@ -36,7 +35,7 @@ Excludes match before includes -->
 </database>
 <target>
 <!-- The destination package of your generated classes (within the destination directory) -->
-<packageName>com.moseeker.baseorm.db.profiledb</packageName>
+<packageName>com.moseeker.db.profiledb</packageName>
 <!-- The destination directory of your generated classes -->
 <directory>/tmp/</directory>
 </target>
