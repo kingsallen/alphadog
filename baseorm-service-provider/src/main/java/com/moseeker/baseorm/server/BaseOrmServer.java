@@ -48,6 +48,7 @@ public class BaseOrmServer {
                     acac.getBean(TalentpoolDaoThriftService.class),
                     acac.getBean(CampaignDaoThriftService.class));
             server.startServer();
+            server.shutDownHook();
             synchronized (BaseOrmServer.class) {
                 while (true) {
                     try {

@@ -3,6 +3,7 @@ package com.moseeker.servicemanager.web.controller.warn;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.moseeker.common.annotation.iface.CounterIface;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.warn.service.WarnSetService;
 import com.moseeker.thrift.gen.warn.struct.WarnBean;
 @Controller
+@CounterIface
 public class WarnController {
 	Logger logger = org.slf4j.LoggerFactory.getLogger(WarnController.class);
 

@@ -23,7 +23,7 @@ public class CandidateServer {
 			// 启动服务，非阻塞
 			try {
 				server.startServer();
-
+				server.shutDownHook();
 				synchronized (CandidateServer.class) {
                     while (true) {
                         try {

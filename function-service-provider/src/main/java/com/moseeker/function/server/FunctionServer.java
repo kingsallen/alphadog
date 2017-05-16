@@ -48,6 +48,7 @@ public class FunctionServer {
 			PositionRefreshConsumer refreshListener = new PositionRefreshConsumer();
 			refreshListener.startTask();
 
+			server.shutDownHook();
 			synchronized (FunctionServer.class) {
 				while (true) {
 					try {

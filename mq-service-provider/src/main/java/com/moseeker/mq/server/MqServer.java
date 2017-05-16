@@ -56,6 +56,7 @@ public class MqServer {
     		Schedule schedule = new Schedule(0,1,TimeUnit.MINUTES);
     		schedule.startListeningMessageDelayQueue();
 
+            server.shutDownHook();
             synchronized (MqServer.class) {
                 while (true) {
                     try {

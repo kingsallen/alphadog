@@ -1089,15 +1089,15 @@ public class UseraccountsService {
 		}
 		user.setSource((byte)UserSource.RETRIEVE_PROFILE.getValue());
 		try {
+			logger.info("UseraccountsService createRetrieveProfileUser user:{}", user);
 			user = userDao.saveUser(user);
 		} catch (TException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
 			logger.error(e.getMessage(), e);
 		} finally {
 			//do nothing
 		}
-		return (int)user.getId();
+		return user.getId();
 	}
 
 	public boolean ifExistProfile(String mobile) {

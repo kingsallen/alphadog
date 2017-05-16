@@ -128,6 +128,7 @@ public class CompanyService extends JOOQBaseServiceImpl<Hrcompany, HrCompanyReco
 	 * @param wechatId
 	 * @return
 	 */
+	@CounterIface
 	public Response getWechat(long companyId, long wechatId) {
 		
 		if(companyId == 0 && wechatId == 0) {
