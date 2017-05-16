@@ -1,7 +1,8 @@
-package com.moseeker.profile.dao.entity;
+package com.moseeker.baseorm.dao.profiledb.entity;
 
-import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileWorkexpRecord;
+
+import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileWorkexpRecord;
 
 public class ProfileWorkexpEntity extends ProfileWorkexpRecord {
 

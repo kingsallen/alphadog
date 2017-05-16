@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.ThirdPartyPositionForSynchronization;
@@ -78,8 +79,8 @@ public class PositionBS {
 				// 是否可以同步职位
 				List<ThirdPartyPosition> positionFroms = new ArrayList<>(); // 可同步的职位
 
-				QueryUtil ThirdPartyBindingAccounts = new QueryUtil();
-				ThirdPartyBindingAccounts.addEqualFilter("company_id", String.valueOf(positionStruct.getCompany_id()));
+				CommonQuery query = new CommonQuery();
+				query.addEqualFilter("company_id", String.valueOf(positionStruct.getCompany_id()));
 				List<ThirdPartAccountData> thirdPartyAccounts = CompanyDao
 						.getThirdPartyBindingAccounts(ThirdPartyBindingAccounts);
 				if (thirdPartyAccounts != null && thirdPartyAccounts.size() > 0) {

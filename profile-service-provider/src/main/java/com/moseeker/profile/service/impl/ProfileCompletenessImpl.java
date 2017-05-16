@@ -1,57 +1,27 @@
 package com.moseeker.profile.service.impl;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-
-
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
+import com.moseeker.baseorm.dao.profiledb.*;
+import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.*;
+import com.moseeker.baseorm.db.userdb.tables.records.UserSettingsRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.providerutils.QueryUtil;
+import com.moseeker.common.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.providerutils.QueryUtil;
-import com.moseeker.common.util.StringUtils;
-import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileAwardsRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileBasicRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileCompletenessRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileCredentialsRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileEducationRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileIntentionCityRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileIntentionPositionRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileIntentionRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileLanguageRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileProfileRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileProjectexpRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileSkillRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileWorkexpRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileWorksRecord;
-import com.moseeker.db.userdb.tables.records.UserSettingsRecord;
-import com.moseeker.db.userdb.tables.records.UserUserRecord;
-import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
-import com.moseeker.profile.dao.AwardsDao;
-import com.moseeker.profile.dao.CompanyDao;
-import com.moseeker.profile.dao.CompletenessDao;
-import com.moseeker.profile.dao.CredentialsDao;
-import com.moseeker.profile.dao.EducationDao;
-import com.moseeker.profile.dao.IntentionCityDao;
-import com.moseeker.profile.dao.IntentionDao;
-import com.moseeker.profile.dao.IntentionPositionDao;
-import com.moseeker.profile.dao.LanguageDao;
-import com.moseeker.profile.dao.ProfileBasicDao;
-import com.moseeker.profile.dao.ProfileDao;
-import com.moseeker.profile.dao.ProjectExpDao;
-import com.moseeker.profile.dao.SkillDao;
-import com.moseeker.profile.dao.UserDao;
-import com.moseeker.profile.dao.UserSettingsDao;
-import com.moseeker.profile.dao.WXUserDao;
-import com.moseeker.profile.dao.WorkExpDao;
-import com.moseeker.profile.dao.WorksDao;
-import com.moseeker.profile.service.impl.serviceutils.CompletenessCalculator;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service
 @CounterIface
@@ -62,13 +32,13 @@ public class ProfileCompletenessImpl {
 	private CompletenessCalculator completenessCalculator = new CompletenessCalculator();
 
 	@Autowired
-	private UserDao userDao;
+	private UserUserDao userDao;
 
 	@Autowired
-	private ProfileDao profileDao;
+	private ProfileProfileDao profileDao;
 
 	@Autowired
-	private WXUserDao wxuserDao;
+	private UserWxUserDao wxuserDao;
 
 	@Autowired
 	private UserSettingsDao settingDao;
@@ -77,43 +47,43 @@ public class ProfileCompletenessImpl {
 	private ProfileBasicDao basicDao;
 
 	@Autowired
-	private WorkExpDao workExpDao;
+	private ProfileWorkexpDao workExpDao;
 
 	@Autowired
-	private CompanyDao companyDao;
+	private HrCompanyDao companyDao;
 
 	@Autowired
-	private ProjectExpDao projectExpDao;
+	private ProfileProjectexpDao projectExpDao;
 
 	@Autowired
-	private LanguageDao languageDao;
+	private ProfileLanguageDao languageDao;
 
 	@Autowired
-	private SkillDao skillDao;
+	private ProfileSkillDao skillDao;
 
 	@Autowired
-	private CredentialsDao credentialsDao;
+	private ProfileCredentialsDao credentialsDao;
 
 	@Autowired
-	private WorksDao worksDao;
+	private ProfileWorksDao worksDao;
 
 	@Autowired
-	private AwardsDao awardsDao;
+	private ProfileAwardsDao awardsDao;
 
 	@Autowired
-	private IntentionDao intentionDao;
+	private ProfileIntentionDao intentionDao;
 
 	@Autowired
-	private IntentionCityDao intentionCityDao;
+	private ProfileIntentionCityDao intentionCityDao;
 	
 	@Autowired
-	private EducationDao educationDao;
+	private ProfileEducationDao educationDao;
 
 	@Autowired
-	private IntentionPositionDao intentionPositionDao;
+	private ProfileIntentionPositionDao intentionPositionDao;
 	
 	@Autowired
-	private CompletenessDao completenessDao;
+	private ProfileCompletenessDao completenessDao;
 	
 	public int getCompleteness(int userId, String uuid, int profileId) {
 		int totalComplementness = 0;
@@ -128,7 +98,7 @@ public class ProfileCompletenessImpl {
 			qu.addEqualFilter("profile_id", String.valueOf(profileRecord.getId().intValue()));
 			ProfileCompletenessRecord completenessRecord;
 			try {
-				completenessRecord = completenessDao.getResource(qu);
+				completenessRecord = completenessDao.getRecord(qu);
 				if (completenessRecord != null) {
 					totalComplementness = completenessRecord.getUserUser()
 							+ completenessRecord.getProfileBasic() + completenessRecord.getProfileWorkexp()
@@ -138,7 +108,7 @@ public class ProfileCompletenessImpl {
 							+ completenessRecord.getProfileWorks() + completenessRecord.getProfileIntention();
 					if(totalComplementness != profileRecord.getCompleteness().intValue()) {
 						profileRecord.setCompleteness((byte)(totalComplementness));
-						profileDao.putResource(profileRecord);
+						profileDao.updateRecord(profileRecord);
 					}
 				} else {
 					totalComplementness = reCalculateProfileCompleteness(profileRecord.getId().intValue());
@@ -172,7 +142,7 @@ public class ProfileCompletenessImpl {
 			QueryUtil qu = new QueryUtil();
 			qu.addEqualFilter("profile_id", String.valueOf(profileId));
 			try {
-				ProfileBasicRecord record = basicDao.getResource(qu);
+				ProfileBasicRecord record = basicDao.getRecord(qu);
 				ProfileProfileRecord profileRecord = profileDao.getProfileByIdOrUserIdOrUUID(0, profileId, null);
 				if(profileRecord!=null){
 					UserUserRecord userRecord = userDao.getUserById(profileRecord.getUserId().intValue());
@@ -222,7 +192,7 @@ public class ProfileCompletenessImpl {
 				QueryUtil qu = new QueryUtil();
 				qu.addEqualFilter("username", mobile);
 				try {
-					UserUserRecord userRecord = userDao.getResource(qu);
+					UserUserRecord userRecord = userDao.getRecord(qu);
 					if(userRecord != null) {
 						profileRecord = profileDao.getProfileByIdOrUserIdOrUUID(userRecord.getId().intValue(), 0, null);
 					}
@@ -319,7 +289,7 @@ public class ProfileCompletenessImpl {
 				QueryUtil qu = new QueryUtil();
 				qu.addEqualFilter("id", String.valueOf(workExpId));
 				try {
-					ProfileWorkexpRecord workExpRecord = workExpDao.getResource(qu);
+					ProfileWorkexpRecord workExpRecord = workExpDao.getRecord(qu);
 					if(workExpRecord != null && workExpRecord.getProfileId() != null) {
 						profileId = workExpRecord.getProfileId().intValue();
 					}
@@ -389,7 +359,7 @@ public class ProfileCompletenessImpl {
 				QueryUtil qu = new QueryUtil();
 				qu.addEqualFilter("id", String.valueOf(educationId));
 				try {
-					ProfileEducationRecord educationRecord = educationDao.getResource(qu);
+					ProfileEducationRecord educationRecord = educationDao.getRecord(qu);
 					if(educationRecord != null && educationRecord.getProfileId() != null) {
 						profileId = educationRecord.getProfileId().intValue();
 					}
@@ -440,7 +410,7 @@ public class ProfileCompletenessImpl {
 			QueryUtil qu = new QueryUtil();
 			qu.addEqualFilter("id", String.valueOf(projectExpId));
 			try {
-				ProfileProjectexpRecord projectExpRecord = projectExpDao.getResource(qu);
+				ProfileProjectexpRecord projectExpRecord = projectExpDao.getRecord(qu);
 				if(projectExpRecord != null && projectExpRecord.getProfileId() != null) {
 					profileId = projectExpRecord.getProfileId().intValue();
 				}
@@ -458,8 +428,8 @@ public class ProfileCompletenessImpl {
 			qu.addEqualFilter("profile_id", String.valueOf(profileId));
 			try {
 				//传参加入工作经历
-				List<ProfileWorkexpRecord> workExps=workExpDao.getResources(qu);
-				List<ProfileProjectexpRecord> ProjectExpRecords = projectExpDao.getResources(qu);
+				List<ProfileWorkexpRecord> workExps=workExpDao.getRecords(qu);
+				List<ProfileProjectexpRecord> ProjectExpRecords = projectExpDao.getRecords(qu);
 				int projectExpCompleteness = completenessCalculator.calculateProjectexps(ProjectExpRecords,workExps);
 				if(projectExpCompleteness != completenessRecord.getProfileProjectexp().intValue()) {
 					completenessRecord.setProfileProjectexp(projectExpCompleteness);
@@ -481,7 +451,7 @@ public class ProfileCompletenessImpl {
 			QueryUtil qu = new QueryUtil();
 			qu.addEqualFilter("id", String.valueOf(languageId));
 			try {
-				ProfileLanguageRecord languageRecord = languageDao.getResource(qu);
+				ProfileLanguageRecord languageRecord = languageDao.getRecord(qu);
 				if(languageRecord != null && languageRecord.getProfileId() != null) {
 					profileId = languageRecord.getProfileId().intValue();
 				}
@@ -497,7 +467,7 @@ public class ProfileCompletenessImpl {
 			QueryUtil qu = new QueryUtil();
 			qu.addEqualFilter("profile_id", String.valueOf(profileId));
 			try {
-				List<ProfileLanguageRecord> languageRecords = languageDao.getResources(qu);
+				List<ProfileLanguageRecord> languageRecords = languageDao.getRecords(qu);
 				int languageCompleteness = completenessCalculator.calculateLanguages(languageRecords);
 				if(languageCompleteness != completenessRecord.getProfileLanguage().intValue()) {
 					completenessRecord.setProfileLanguage(languageCompleteness);
@@ -519,7 +489,7 @@ public class ProfileCompletenessImpl {
 			QueryUtil qu = new QueryUtil();
 			qu.addEqualFilter("id", String.valueOf(skillId));
 			try {
-				ProfileSkillRecord skillRecord = skillDao.getResource(qu);
+				ProfileSkillRecord skillRecord = skillDao.getRecord(qu);
 				if(skillRecord != null && skillRecord.getProfileId() != null) {
 					profileId = skillRecord.getProfileId().intValue();
 				}
@@ -534,7 +504,7 @@ public class ProfileCompletenessImpl {
 			QueryUtil qu = new QueryUtil();
 			qu.addEqualFilter("profile_id", String.valueOf(profileId));
 			try {
-				List<ProfileSkillRecord> skillRecords = skillDao.getResources(qu);
+				List<ProfileSkillRecord> skillRecords = skillDao.getRecords(qu);
 				int skillCompleteness = completenessCalculator.calculateSkills(skillRecords);
 				if(skillCompleteness != completenessRecord.getProfileSkill().intValue()) {
 					completenessRecord.setProfileSkill(skillCompleteness);
@@ -556,7 +526,7 @@ public class ProfileCompletenessImpl {
 			QueryUtil qu = new QueryUtil();
 			qu.addEqualFilter("id", String.valueOf(credentialId));
 			try {
-				ProfileCredentialsRecord credentialRecord = credentialsDao.getResource(qu);
+				ProfileCredentialsRecord credentialRecord = credentialsDao.getRecord(qu);
 				if(credentialRecord != null && credentialRecord.getProfileId() != null) {
 					profileId = credentialRecord.getProfileId().intValue();
 				}
@@ -571,7 +541,7 @@ public class ProfileCompletenessImpl {
 			QueryUtil qu = new QueryUtil();
 			qu.addEqualFilter("profile_id", String.valueOf(profileId));
 			try {
-				List<ProfileCredentialsRecord> credentialRecords = credentialsDao.getResources(qu);
+				List<ProfileCredentialsRecord> credentialRecords = credentialsDao.getRecords(qu);
 				int credentialCompleteness = completenessCalculator.calculateCredentials(credentialRecords);
 				if(credentialCompleteness != completenessRecord.getProfileCredentials().intValue()) {
 					completenessRecord.setProfileCredentials(credentialCompleteness);
@@ -593,7 +563,7 @@ public class ProfileCompletenessImpl {
 			QueryUtil qu = new QueryUtil();
 			qu.addEqualFilter("id", String.valueOf(awardId));
 			try {
-				ProfileAwardsRecord awardRecord = awardsDao.getResource(qu);
+				ProfileAwardsRecord awardRecord = awardsDao.getRecord(qu);
 				if(awardRecord != null && awardRecord.getProfileId() != null) {
 					profileId = awardRecord.getProfileId().intValue();
 				}
@@ -608,7 +578,7 @@ public class ProfileCompletenessImpl {
 			QueryUtil qu = new QueryUtil();
 			qu.addEqualFilter("profile_id", String.valueOf(profileId));
 			try {
-				List<ProfileAwardsRecord> awardRecords = awardsDao.getResources(qu);
+				List<ProfileAwardsRecord> awardRecords = awardsDao.getRecords(qu);
 				int awardCompleteness = completenessCalculator.calculateAwards(awardRecords);
 				if(awardCompleteness != completenessRecord.getProfileAwards().intValue()) {
 					completenessRecord.setProfileAwards(awardCompleteness);
@@ -630,7 +600,7 @@ public class ProfileCompletenessImpl {
 			QueryUtil qu = new QueryUtil();
 			qu.addEqualFilter("id", String.valueOf(worksId));
 			try {
-				ProfileWorksRecord worksRecord = worksDao.getResource(qu);
+				ProfileWorksRecord worksRecord = worksDao.getRecord(qu);
 				if(worksRecord != null && worksRecord.getProfileId() != null) {
 					profileId = worksRecord.getProfileId().intValue();
 				}
@@ -645,7 +615,7 @@ public class ProfileCompletenessImpl {
 			QueryUtil qu = new QueryUtil();
 			qu.addEqualFilter("profile_id", String.valueOf(profileId));
 			try {
-				List<ProfileWorksRecord> worksRecords = worksDao.getResources(qu);
+				List<ProfileWorksRecord> worksRecords = worksDao.getRecords(qu);
 				int worksCompleteness = completenessCalculator.calculateWorks(worksRecords);
 				if(worksCompleteness != completenessRecord.getProfileWorks().intValue()) {
 					completenessRecord.setProfileWorks(worksCompleteness);
@@ -667,7 +637,7 @@ public class ProfileCompletenessImpl {
 			QueryUtil qu = new QueryUtil();
 			qu.addEqualFilter("id", String.valueOf(intentionId));
 			try {
-				ProfileIntentionRecord intentionRecord = intentionDao.getResource(qu);
+				ProfileIntentionRecord intentionRecord = intentionDao.getRecord(qu);
 				if(intentionRecord != null && intentionRecord.getProfileId() != null) {
 					profileId = intentionRecord.getProfileId().intValue();
 				}
@@ -682,7 +652,7 @@ public class ProfileCompletenessImpl {
 			QueryUtil qu = new QueryUtil();
 			qu.addEqualFilter("profile_id", String.valueOf(profileId));
 			try {
-				List<ProfileIntentionRecord> intentionRecords = intentionDao.getResources(qu);
+				List<ProfileIntentionRecord> intentionRecords = intentionDao.getRecords(qu);
 				List<ProfileIntentionCityRecord> cityRecords = null;
 				List<ProfileIntentionPositionRecord> positionRecords = null;
 				if (intentionRecords != null && intentionRecords.size() > 0) {
@@ -740,7 +710,7 @@ public class ProfileCompletenessImpl {
 			Date birth=null;
 			ProfileBasicRecord basicRecord = null;
 			try {
-				basicRecord = basicDao.getResource(qu);
+				basicRecord = basicDao.getRecord(qu);
 				int basicCompleteness = completenessCalculator.calculateProfileBasic(basicRecord,userRecord.getMobile());
 				completenessRecord.setProfileBasic(basicCompleteness);
 				completeness += basicCompleteness;
@@ -753,7 +723,7 @@ public class ProfileCompletenessImpl {
 			}
 			List<ProfileEducationRecord> educations = null;
 			try {
-				educations = educationDao.getResources(qu);
+				educations = educationDao.getRecords(qu);
 				int educationCompleteness = completenessCalculator.calculateProfileEducations(educations);
 				completenessRecord.setProfileEducation(educationCompleteness);
 				completeness += educationCompleteness;
@@ -763,7 +733,7 @@ public class ProfileCompletenessImpl {
 			List<ProfileWorkexpRecord> workExps = null;
 			List<HrCompanyRecord> companies = null;
 			try {
-				workExps = workExpDao.getResources(qu);
+				workExps = workExpDao.getRecords(qu);
 				List<Integer> companyIds = new ArrayList<>();
 				if (workExps != null && workExps.size() > 0) {
 					workExps.forEach(workExp -> {
@@ -785,7 +755,7 @@ public class ProfileCompletenessImpl {
 			
 			List<ProfileProjectexpRecord> projectExps = null;
 			try {
-				projectExps = projectExpDao.getResources(qu);
+				projectExps = projectExpDao.getRecords(qu);
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
@@ -795,7 +765,7 @@ public class ProfileCompletenessImpl {
 
 			List<ProfileLanguageRecord> languageRecords = null;
 			try {
-				languageRecords = languageDao.getResources(qu);
+				languageRecords = languageDao.getRecords(qu);
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
@@ -805,7 +775,7 @@ public class ProfileCompletenessImpl {
 
 			List<ProfileSkillRecord> skillRecords = null;
 			try {
-				skillRecords = skillDao.getResources(qu);
+				skillRecords = skillDao.getRecords(qu);
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
@@ -815,7 +785,7 @@ public class ProfileCompletenessImpl {
 
 			List<ProfileCredentialsRecord> credentialsRecords = null;
 			try {
-				credentialsRecords = credentialsDao.getResources(qu);
+				credentialsRecords = credentialsDao.getRecords(qu);
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
@@ -825,7 +795,7 @@ public class ProfileCompletenessImpl {
 
 			List<ProfileAwardsRecord> awardRecords = null;
 			try {
-				awardRecords = awardsDao.getResources(qu);
+				awardRecords = awardsDao.getRecords(qu);
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
@@ -835,7 +805,7 @@ public class ProfileCompletenessImpl {
 
 			List<ProfileWorksRecord> workRecords = null;
 			try {
-				workRecords = worksDao.getResources(qu);
+				workRecords = worksDao.getRecords(qu);
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
@@ -845,7 +815,7 @@ public class ProfileCompletenessImpl {
 
 			List<ProfileIntentionRecord> intentionRecords = null;
 			try {
-				intentionRecords = intentionDao.getResources(qu);
+				intentionRecords = intentionDao.getRecords(qu);
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
@@ -866,7 +836,7 @@ public class ProfileCompletenessImpl {
 			completeness += intentionCompleteness;
 			profileRecord.setCompleteness((byte)(completeness));
 			try {
-				profileDao.putResource(profileRecord);
+				profileDao.updateRecord(profileRecord);
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 			}
@@ -884,47 +854,7 @@ public class ProfileCompletenessImpl {
 		ProfileProfileRecord profileRecord = profileDao.getProfileByIdOrUserIdOrUUID(0, completenessRecord.getProfileId().intValue(), null);
 		if(profileRecord != null) {
 			profileRecord.setCompleteness((byte)(totalComplementness));
-			profileDao.putResource(profileRecord);
+			profileDao.updateRecord(profileRecord);
 		}
-	}
-
-	public UserDao getUserDao() {
-		return userDao;
-	}
-
-	public void setUserDao(UserDao userDao) {
-		this.userDao = userDao;
-	}
-
-	public ProfileDao getProfileDao() {
-		return profileDao;
-	}
-
-	public void setProfileDao(ProfileDao profileDao) {
-		this.profileDao = profileDao;
-	}
-
-	public WXUserDao getWxuserDao() {
-		return wxuserDao;
-	}
-
-	public void setWxuserDao(WXUserDao wxuserDao) {
-		this.wxuserDao = wxuserDao;
-	}
-
-	public UserSettingsDao getSettingDao() {
-		return settingDao;
-	}
-
-	public void setSettingDao(UserSettingsDao settingDao) {
-		this.settingDao = settingDao;
-	}
-
-	public CompletenessDao getCompletenessDao() {
-		return completenessDao;
-	}
-
-	public void setCompletenessDao(CompletenessDao completenessDao) {
-		this.completenessDao = completenessDao;
 	}
 }

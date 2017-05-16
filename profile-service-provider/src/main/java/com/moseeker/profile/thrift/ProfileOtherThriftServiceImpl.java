@@ -1,11 +1,11 @@
-package com.moseeker.baseorm.Thriftservice;
+package com.moseeker.profile.thrift;
 
 import com.moseeker.baseorm.dao.profiledb.ProfileOtherDao;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.dao.service.ProfileDBDao;
-import com.moseeker.thrift.gen.dao.struct.ProfileOtherDO;
+import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
+import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ import java.util.List;
  * Created by jack on 15/03/2017.
  */
 @Service
-public class ProfileDBDaoThriftService implements ProfileDBDao.Iface {
+public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.Iface {
 
     @Autowired
     private ProfileOtherDao profileOtherDao;

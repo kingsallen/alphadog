@@ -33,7 +33,7 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
         }
     }
 
-    public R dataToRecord(S s) {
+    public R dataToRecord(Object s) {
         return BeanUtils.structToDB(s, table.getRecordType());
     }
 
@@ -41,6 +41,10 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
         return r.into(sClass);
     }
 
+    @Override
+    public <T> T recordToData(R r, Class<T> tClass) {
+        return r.into(tClass);
+    }
 
     @Override
     public R addRecord(R r) {

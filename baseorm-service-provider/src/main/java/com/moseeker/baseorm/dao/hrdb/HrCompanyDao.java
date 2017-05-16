@@ -8,13 +8,18 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.dbutils.DBConnHelper;
+import com.moseeker.common.util.BeanUtils;
+import com.moseeker.common.util.query.*;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
-import org.jooq.Record1;
-import org.jooq.Result;
+import org.jooq.*;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,5 +92,86 @@ public class HrCompanyDao extends JooqCrudImpl<HrCompanyDO, HrCompanyRecord> {
             scaleIllegal = true;
         }
         return scaleIllegal;
+    }
+
+    public List<HrCompanyRecord> getCompaniesByIds(List<Integer> companyIds) {
+        List<HrCompanyRecord> records = new ArrayList<>();
+        Connection conn = null;
+        try {
+            if(companyIds != null && companyIds.size() > 0) {
+                conn = DBConnHelper.DBConn.getConn();
+                DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+                SelectWhereStep<HrCompanyRecord> select = create.selectFrom(HrCompany.HR_COMPANY);
+                SelectConditionStep<HrCompanyRecord> selectCondition = null;
+                for(int i=0; i<companyIds.size(); i++) {
+                    if(i == 0) {
+                        selectCondition = select.where(HrCompany.HR_COMPANY.ID.equal((int)(companyIds.get(i))));
+                    } else {
+                        selectCondition.or(HrCompany.HR_COMPANY.ID.equal((int)(companyIds.get(i))));
+                    }
+                }
+                records = selectCondition.fetch();
+            }
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+            try {
+                if(conn != null && !conn.isClosed()) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                logger.error(e.getMessage(), e);
+            } finally {
+                //do nothing
+            }
+        }
+        return records;
+    }
+
+    public HrCompanyRecord getCompanyById(int companyId) {
+        HrCompanyRecord record = null;
+        Connection conn = null;
+        try {
+            if(companyId > 0) {
+                conn = DBConnHelper.DBConn.getConn();
+                DSLContext create = DBConnHelper.DBConn.getJooqDSL(conn);
+                Result<HrCompanyRecord> result = create.selectFrom(HrCompany.HR_COMPANY)
+                        .where(HrCompany.HR_COMPANY.ID.equal((int)(companyId)))
+                        .limit(1).fetch();
+                if(result != null && result.size() > 0) {
+                    record = result.get(0);
+                }
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+            try {
+                if(conn != null && !conn.isClosed()) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                logger.error(e.getMessage(), e);
+            } finally {
+                //do nothing
+            }
+        }
+        return record;
+    }
+
+    public List<Hrcompany> getCompanies(com.moseeker.common.util.query.Query query) {
+        List<Hrcompany> companies = new ArrayList<>();
+
+        try {
+            List<HrCompanyRecord> records = getRecords(query);
+            if(records != null && records.size() > 0) {
+                companies = BeanUtils.DBToStruct(Hrcompany.class, records);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(e.getMessage(), e);
+        }
+
+        return companies;
     }
 }

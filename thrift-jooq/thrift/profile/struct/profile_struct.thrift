@@ -151,13 +151,6 @@ struct Language {
     6: optional Timestamp update_time
 }
 
-struct ProfileOther {
-    1: optional i32 profile_id,
-    2: optional string other,
-    3: optional Timestamp create_time,
-    4: optional Timestamp update_time
-}
-
 struct CustomizeResume { 
     1: optional i32 profile_id,
     2: optional string other,

@@ -1,12 +1,13 @@
-package com.moseeker.profile.dao.impl;
+package com.moseeker.baseorm.dao.profiledb;
+
+
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionCityRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionIndustryRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionPositionRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionRecord;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.moseeker.db.profiledb.tables.records.ProfileIntentionCityRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileIntentionIndustryRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileIntentionPositionRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileIntentionRecord;
 
 public class IntentionRecord extends ProfileIntentionRecord {
 

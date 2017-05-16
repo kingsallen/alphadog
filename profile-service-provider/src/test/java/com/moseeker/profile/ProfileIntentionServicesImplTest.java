@@ -63,10 +63,4 @@ public class ProfileIntentionServicesImplTest {
         return intention;
     }
 
-    public static CommonQuery getCommonQuery(){
-        QueryUtil queryUtil = new QueryUtil();
-        queryUtil.addEqualFilter("profile_id", "452805");
-        return queryUtil;
-    }
-
 }

@@ -95,10 +95,5 @@ public class ProfileWorkExpServicesImplTest {
         return workExp;
     }
 
-    public static CommonQuery getCommonQuery(){
-        QueryUtil queryUtil = new QueryUtil();
-        queryUtil.addEqualFilter("profile_id", "452805");
-        return queryUtil;
-    }
 
 }

@@ -1,34 +1,18 @@
-package com.moseeker.profile.service.impl.serviceutils;
+package com.moseeker.baseorm.dao.profiledb;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.*;
+import com.moseeker.baseorm.db.userdb.tables.records.UserSettingsRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.ParamIllegalException;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileAwardsRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileBasicRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileCredentialsRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileEducationRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileIntentionCityRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileIntentionPositionRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileIntentionRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileLanguageRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileProjectexpRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileSkillRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileWorkexpRecord;
-import com.moseeker.db.profiledb.tables.records.ProfileWorksRecord;
-import com.moseeker.db.userdb.tables.records.UserSettingsRecord;
-import com.moseeker.db.userdb.tables.records.UserUserRecord;
-import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class CompletenessCalculator {
 	
@@ -68,7 +52,7 @@ public class CompletenessCalculator {
 		return completeness;
 	}
 
-	public int calculateProfileBasic(ProfileBasicRecord basicRecord,long mobile) throws ParamIllegalException {
+	public int calculateProfileBasic(ProfileBasicRecord basicRecord, long mobile) throws ParamIllegalException {
 		int completeness = 0;
 
 		if (basicRecord == null) {
@@ -119,7 +103,7 @@ public class CompletenessCalculator {
 		return completeness;
 	}
 	
-	public int calculateProfileWorkexps(List<? extends ProfileWorkexpRecord> workexpRecords,List<ProfileEducationRecord> education,Date birth) {
+	public int calculateProfileWorkexps(List<? extends ProfileWorkexpRecord> workexpRecords, List<ProfileEducationRecord> education, Date birth) {
 		int completeness = 0;
 		if(workexpRecords!=null&&workexpRecords.size()>0){
 			if(education!=null&&education.size()>0){
@@ -413,7 +397,7 @@ public class CompletenessCalculator {
 		return completeness;
 	}
 	
-	public int calculateProjectexps(List<ProfileProjectexpRecord> records,List<? extends ProfileWorkexpRecord> workexpRecords) {
+	public int calculateProjectexps(List<ProfileProjectexpRecord> records, List<? extends ProfileWorkexpRecord> workexpRecords) {
 		int completeness = 0;
 		//超过八年的，直接算10
 		if(workexpRecords!=null&&workexpRecords.size()>0){

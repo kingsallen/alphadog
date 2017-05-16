@@ -1,24 +1,16 @@
 package com.moseeker.profile.service.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import com.moseeker.thrift.gen.common.struct.Order;
-import com.moseeker.thrift.gen.common.struct.OrderBy;
-import org.apache.thrift.TException;
-
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.dao.dictdb.*;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.profiledb.*;
+import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
+import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -27,27 +19,25 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.db.dictdb.tables.records.DictCollegeRecord;
-import com.moseeker.db.dictdb.tables.records.DictConstantRecord;
-import com.moseeker.db.dictdb.tables.records.DictCountryRecord;
-import com.moseeker.db.hrdb.tables.records.HrCompanyRecord;
-import com.moseeker.db.jobdb.tables.records.JobPositionRecord;
-import com.moseeker.db.profiledb.tables.records.*;
-import com.moseeker.db.userdb.tables.records.UserSettingsRecord;
-import com.moseeker.db.userdb.tables.records.UserUserRecord;
-import com.moseeker.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictCollegeRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictConstantRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictCountryRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.*;
+import com.moseeker.baseorm.db.userdb.tables.records.UserSettingsRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.common.util.query.Order;
+import com.moseeker.common.util.query.OrderBy;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.profile.constants.StatisticsForChannelmportVO;
-import com.moseeker.profile.dao.*;
-import com.moseeker.profile.dao.entity.ProfileWorkexpEntity;
-import com.moseeker.profile.dao.impl.IntentionRecord;
 import com.moseeker.profile.service.impl.serviceutils.ProfilePojo;
 import com.moseeker.profile.service.impl.serviceutils.ProfileUtils;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
-
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,9 +104,9 @@ public class WholeProfileService {
 				Future<List<Map<String, Object>>> intentionsFuture = pool.startTast(() -> profileUtils.buildsIntentions(profileRecord, query,
 						constantRecords, intentionDao, intentionCityDao, intentionIndustryDao, intentionPositionDao,
 						dictCityDao, dictIndustryDao, dictPositionDao));
-				Future<List<ProfileAttachmentRecord>> attachmentRecordsFuture = pool.startTast(() -> attachmentDao.getResources(query));
-				Future<List<ProfileImportRecord>> importRecordsFuture = pool.startTast(() -> profileImportDao.getResources(query));
-				Future<List<ProfileOtherRecord>> otherRecordsFuture = pool.startTast(() -> customizeResumeDao.getResources(query));
+				Future<List<ProfileAttachmentRecord>> attachmentRecordsFuture = pool.startTast(() -> attachmentDao.getRecords(query));
+				Future<List<ProfileImportRecord>> importRecordsFuture = pool.startTast(() -> profileImportDao.getRecords(query));
+				Future<List<ProfileOtherRecord>> otherRecordsFuture = pool.startTast(() -> customizeResumeDao.getRecords(query));
 
 				Map<String, Object> basic = basicFuture.get();
 				profile.put("basic", basic);
@@ -510,7 +500,7 @@ public class WholeProfileService {
 		try {
 			if (originProfile == null && destProfile != null && userDao.getUserById(originUserId) != null) {
 				destProfile.setUserId((int)(originUserId));
-				profileDao.putResource(destProfile);
+				profileDao.updateRecord(destProfile);
 			}
 			if(originProfile != null && destProfile != null) {
 				QueryUtil queryUtil = new QueryUtil();
@@ -518,37 +508,37 @@ public class WholeProfileService {
 				queryUtil.setEqualFilter(eqs);
 				// dest 简历信息查询
 				eqs.put("profile_id", String.valueOf(destProfile.getId()));
-				ProfileBasicRecord destRecord = profileBasicDao.getResource(queryUtil);
-				List<ProfileAttachmentRecord> destAttachments = attachmentDao.getResources(queryUtil);
-				List<ProfileAwardsRecord> destAwards = awardsDao.getResources(queryUtil);
-				List<ProfileCredentialsRecord> destCredentials = credentialsDao.getResources(queryUtil);
-				List<ProfileEducationRecord> destEducations = educationDao.getResources(queryUtil);
+				ProfileBasicRecord destRecord = profileBasicDao.getRecord(queryUtil);
+				List<ProfileAttachmentRecord> destAttachments = attachmentDao.getRecords(queryUtil);
+				List<ProfileAwardsRecord> destAwards = awardsDao.getRecords(queryUtil);
+				List<ProfileCredentialsRecord> destCredentials = credentialsDao.getRecords(queryUtil);
+				List<ProfileEducationRecord> destEducations = educationDao.getRecords(queryUtil);
 				List<IntentionRecord> destIntentions = new ArrayList<IntentionRecord>();
 				QueryUtil query = new QueryUtil();
 				Map<String, String> param = new HashMap<>();
 				query.setEqualFilter(param);
-				intentionDao.getResources(queryUtil).forEach(intention -> {
+				intentionDao.getRecords(queryUtil).forEach(intention -> {
 					IntentionRecord irecodr = new IntentionRecord(intention);
 					param.put("profile_intention_id", String.valueOf(intention.getId().intValue()));
 					try {
-						irecodr.setCities(intentionCityDao.getResources(query));
-						irecodr.setPositions(intentionPositionDao.getResources(query));
-						irecodr.setIndustries(intentionIndustryDao.getResources(query));
+						irecodr.setCities(intentionCityDao.getRecords(query));
+						irecodr.setPositions(intentionPositionDao.getRecords(query));
+						irecodr.setIndustries(intentionIndustryDao.getRecords(query));
 						destIntentions.add(irecodr);
 					} catch (Exception e) {
 						logger.error(e.getMessage(), e);
 					}
 				});
-				List<ProfileLanguageRecord> destLanguages = languageDao.getResources(queryUtil);
-				ProfileOtherRecord destOther = otherDao.getResource(queryUtil);
-				List<ProfileProjectexpRecord> destProjectexps = projectExpDao.getResources(queryUtil);
-				List<ProfileSkillRecord> destSkills = skillDao.getResources(queryUtil);
+				List<ProfileLanguageRecord> destLanguages = languageDao.getRecords(queryUtil);
+				ProfileOtherRecord destOther = otherDao.getRecord(queryUtil);
+				List<ProfileProjectexpRecord> destProjectexps = projectExpDao.getRecords(queryUtil);
+				List<ProfileSkillRecord> destSkills = skillDao.getRecords(queryUtil);
 				List<ProfileWorkexpEntity> destWorkxps = new ArrayList<ProfileWorkexpEntity>();
-				workExpDao.getResources(queryUtil).forEach(workexp -> {
+				workExpDao.getRecords(queryUtil).forEach(workexp -> {
 					ProfileWorkexpEntity workexpEntity = new ProfileWorkexpEntity(workexp);
 					destWorkxps.add(workexpEntity);
 				});
-				List<ProfileWorksRecord> destWorks = worksDao.getResources(queryUtil);
+				List<ProfileWorksRecord> destWorks = worksDao.getRecords(queryUtil);
 				int originProfileId = originProfile.getId().intValue();
 				improveBasic(destRecord, originProfileId);
 				improveAttachment(destAttachments, originProfileId);
@@ -589,7 +579,7 @@ public class WholeProfileService {
 
 	private void improveUser(UserUserRecord userRecord) {
 		try {
-			userDao.putResource(userRecord);
+			userDao.updateRecord(userRecord);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -606,7 +596,7 @@ public class WholeProfileService {
 				worksRecords.forEach(skill -> {
 					skill.setProfileId((int)(profileId));
 				});
-				worksDao.postResources(worksRecords);
+				worksDao.addAllRecord(worksRecords);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -646,7 +636,7 @@ public class WholeProfileService {
 				skillRecords.forEach(skill -> {
 					skill.setProfileId((int)(profileId));
 				});
-				skillDao.postResources(skillRecords);
+				skillDao.addAllRecord(skillRecords);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -664,7 +654,7 @@ public class WholeProfileService {
 				projectExps.forEach(language -> {
 					language.setProfileId((int)(profileId));
 				});
-				projectExpDao.postResources(projectExps);
+				projectExpDao.addAllRecord(projectExps);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -680,10 +670,10 @@ public class WholeProfileService {
 			QueryUtil qu = new QueryUtil();
 			qu.addEqualFilter("profile_id", String.valueOf(profileId));
 			try {
-				ProfileOtherRecord record = otherDao.getResource(qu);
+				ProfileOtherRecord record = otherDao.getRecord(qu);
 				if(record == null && otherRecord != null) {
 					otherRecord.setProfileId((int)(profileId));
-					otherDao.postResource(otherRecord);
+					otherDao.addRecord(otherRecord);
 				} 
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -699,7 +689,7 @@ public class WholeProfileService {
 				languageRecords.forEach(language -> {
 					language.setProfileId((int)(profileId));
 				});
-				languageDao.postResources(languageRecords);
+				languageDao.addAllRecord(languageRecords);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -754,7 +744,7 @@ public class WholeProfileService {
 				credentialsRecords.forEach(credential -> {
 					credential.setProfileId((int)(profileId));
 				});
-				credentialsDao.postResources(credentialsRecords);
+				credentialsDao.addAllRecord(credentialsRecords);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -772,7 +762,7 @@ public class WholeProfileService {
 				awardsRecords.forEach(award -> {
 					award.setProfileId((int)(profileId));
 				});
-				awardsDao.postResources(awardsRecords);
+				awardsDao.addAllRecord(awardsRecords);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -790,7 +780,7 @@ public class WholeProfileService {
 				attachmentRecords.forEach(attachment -> {
 					attachment.setProfileId((int)(profileId));
 				});
-				attachmentDao.postResources(attachmentRecords);
+				attachmentDao.addAllRecord(attachmentRecords);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -812,7 +802,7 @@ public class WholeProfileService {
 			qu.addEqualFilter("profile_id", String.valueOf(profileId));
 			try {
 				boolean flag = false;
-				ProfileBasicRecord basic = profileBasicDao.getResource(qu);
+				ProfileBasicRecord basic = profileBasicDao.getRecord(qu);
 				if(basic != null) {
 					if(StringUtils.isNotNullOrEmpty(basicRecord.getName()) && StringUtils.isNullOrEmpty(basic.getName())) {
 						basic.setName(basicRecord.getName());
@@ -859,11 +849,11 @@ public class WholeProfileService {
 						flag = true;
 					}
 					if(flag) {
-						profileBasicDao.putResource(basic);
+						profileBasicDao.updateRecord(basic);
 					}
 				} else {
 					basicRecord.setProfileId((int)(profileId));
-					profileBasicDao.postResource(basicRecord);
+					profileBasicDao.addRecord(basicRecord);
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -890,7 +880,7 @@ public class WholeProfileService {
 						flag = true;
 					}
 					if(flag) {
-						profileDao.putResource(record);
+						profileDao.updateRecord(record);
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -918,10 +908,10 @@ public class WholeProfileService {
 		}
 	}
 
-	private List<Map<String, Object>> buildsWorks(ProfileProfileRecord profileRecord, CommonQuery query) {
+	private List<Map<String, Object>> buildsWorks(ProfileProfileRecord profileRecord, Query query) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
-			List<ProfileWorksRecord> records = worksDao.getResources(query);
+			List<ProfileWorksRecord> records = worksDao.getRecords(query);
 			if (records != null && records.size() > 0) {
 				records.forEach(record -> {
 					Map<String, Object> map = new HashMap<String, Object>();
@@ -941,10 +931,10 @@ public class WholeProfileService {
 		return list;
 	}
 
-	private List<Map<String, Object>> buildsAwards(ProfileProfileRecord profileRecord, CommonQuery query) {
+	private List<Map<String, Object>> buildsAwards(ProfileProfileRecord profileRecord, Query query) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
-			List<ProfileAwardsRecord> records = awardsDao.getResources(query);
+			List<ProfileAwardsRecord> records = awardsDao.getRecords(query);
 			if (records != null && records.size() > 0) {
 				records.forEach(record -> {
 					Map<String, Object> map = new HashMap<String, Object>();
@@ -964,10 +954,10 @@ public class WholeProfileService {
 		return list;
 	}
 
-	private List<Map<String, Object>> buildsCredentials(ProfileProfileRecord profileRecord, CommonQuery query) {
+	private List<Map<String, Object>> buildsCredentials(ProfileProfileRecord profileRecord, Query query) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
-			List<ProfileCredentialsRecord> records = credentialsDao.getResources(query);
+			List<ProfileCredentialsRecord> records = credentialsDao.getRecords(query);
 			if (records != null && records.size() > 0) {
 				records.forEach(record -> {
 					Map<String, Object> map = new HashMap<String, Object>();
@@ -997,10 +987,10 @@ public class WholeProfileService {
 		return list;
 	}
 
-	private List<Map<String, Object>> buildskills(ProfileProfileRecord profileRecord, CommonQuery query) {
+	private List<Map<String, Object>> buildskills(ProfileProfileRecord profileRecord, Query query) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
-			List<ProfileSkillRecord> records = skillDao.getResources(query);
+			List<ProfileSkillRecord> records = skillDao.getRecords(query);
 			if (records != null && records.size() > 0) {
 				records.forEach(record -> {
 					Map<String, Object> map = new HashMap<String, Object>();
@@ -1018,10 +1008,10 @@ public class WholeProfileService {
 		return list;
 	}
 
-	private List<Map<String, Object>> buildLanguage(ProfileProfileRecord profileRecord, CommonQuery query) {
+	private List<Map<String, Object>> buildLanguage(ProfileProfileRecord profileRecord, Query query) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
-			List<ProfileLanguageRecord> records = languageDao.getResources(query);
+			List<ProfileLanguageRecord> records = languageDao.getRecords(query);
 			if (records != null && records.size() > 0) {
 				records.forEach(record -> {
 					Map<String, Object> map = new HashMap<String, Object>();
@@ -1039,13 +1029,14 @@ public class WholeProfileService {
 		return list;
 	}
 
-	private List<Map<String, Object>> buildProjectexps(ProfileProfileRecord profileRecord, CommonQuery query) {
+	private List<Map<String, Object>> buildProjectexps(ProfileProfileRecord profileRecord, Query query) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
 			// 按照结束时间倒序
-			query.addToOrders(new OrderBy("end_until_now", Order.DESC));
-			query.addToOrders(new OrderBy("start", Order.DESC));
-			List<ProfileProjectexpRecord> records = projectExpDao.getResources(query);
+
+			query.getOrders().add(new OrderBy("end_until_now", Order.DESC));
+			query.getOrders().add(new OrderBy("start", Order.DESC));
+			List<ProfileProjectexpRecord> records = projectExpDao.getRecords(query);
 			if (records != null && records.size() > 0) {
 				records.forEach(record -> {
 					Map<String, Object> map = new HashMap<String, Object>();
@@ -1073,13 +1064,13 @@ public class WholeProfileService {
 		return list;
 	}
 
-	private List<Map<String, Object>> buildEducations(ProfileProfileRecord profileRecord, CommonQuery query) {
+	private List<Map<String, Object>> buildEducations(ProfileProfileRecord profileRecord, Query query) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
 			// 按照结束时间倒序
-			query.addToOrders(new OrderBy("end_until_now", Order.DESC));
-			query.addToOrders(new OrderBy("start", Order.DESC));
-			List<ProfileEducationRecord> records = educationDao.getResources(query);
+			query.getOrders().add(new OrderBy("end_until_now", Order.DESC));
+			query.getOrders().add(new OrderBy("start", Order.DESC));
+			List<ProfileEducationRecord> records = educationDao.getRecords(query);
 
 			if (records != null && records.size() > 0) {
 				List<Integer> collegeCodes = new ArrayList<>();
@@ -1127,13 +1118,13 @@ public class WholeProfileService {
 		return list;
 	}
 
-	private List<Map<String, Object>> buildWorkexps(ProfileProfileRecord profileRecord, CommonQuery query) {
+	private List<Map<String, Object>> buildWorkexps(ProfileProfileRecord profileRecord, Query query) {
 		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 		try {
 			// 按照结束时间倒序
-			query.addToOrders(new OrderBy("end_until_now", Order.DESC));
-			query.addToOrders(new OrderBy("start", Order.DESC));
-			List<ProfileWorkexpRecord> records = workExpDao.getResources(query);
+			query.getOrders().add(new OrderBy("end_until_now", Order.DESC));
+			query.getOrders().add(new OrderBy("start", Order.DESC));
+			List<ProfileWorkexpRecord> records = workExpDao.getRecords(query);
 			if (records != null && records.size() > 0) {
 				List<Integer> companyIds = new ArrayList<>();
 				records.forEach(record -> {
@@ -1177,7 +1168,7 @@ public class WholeProfileService {
 		return list;
 	}
 
-	private Map<String, Object> buildBasic(ProfileProfileRecord profileRecord, CommonQuery query,
+	private Map<String, Object> buildBasic(ProfileProfileRecord profileRecord, Query query,
 			List<DictConstantRecord> constantRecords) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
@@ -1187,7 +1178,7 @@ public class WholeProfileService {
 			UserSettingsRecord userSettingsRecord = userSettingsDao
 					.getUserSettingsById(profileRecord.getUserId().intValue());*/
 
-			Future<ProfileBasicRecord> basicRecordFuture = pool.startTast(() -> profileBasicDao.getResource(query));
+			Future<ProfileBasicRecord> basicRecordFuture = pool.startTast(() -> profileBasicDao.getRecord(query));
 			Future<UserUserRecord> userRecordFuture = pool.startTast(() -> userDao.getUserById(profileRecord.getUserId().intValue()));
 			Future<ProfileWorkexpRecord> lastWorkExpFuture = pool.startTast(() -> workExpDao.getLastWorkExp(profileRecord.getId().intValue()));
 			Future<UserSettingsRecord> userSettingsRecordFuture = pool.startTast(() -> userSettingsDao.getUserSettingsById(profileRecord.getUserId().intValue()));
@@ -1201,7 +1192,7 @@ public class WholeProfileService {
 			if (lastWorkExp != null) {
 				QueryUtil queryUtils = new QueryUtil();
 				queryUtils.addEqualFilter("id", lastWorkExp.getCompanyId().toString());
-				company = companyDao.getResource(queryUtils);
+				company = companyDao.getRecord(queryUtils);
 			}
 			if (userSettingsRecord != null) {
 				map.put("banner_url", userSettingsRecord.getBannerUrl());
@@ -1273,7 +1264,7 @@ public class WholeProfileService {
 		return map;
 	}
 
-	private Map<String, Object> buildProfile(ProfileProfileRecord profileRecord, CommonQuery query,
+	private Map<String, Object> buildProfile(ProfileProfileRecord profileRecord, Query query,
 			List<DictConstantRecord> constantRecords) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("id", profileRecord.getId().intValue());
@@ -1314,22 +1305,22 @@ public class WholeProfileService {
 	}
 
 	@Autowired
-	private IndustryDao dictIndustryDao;
+	private DictIndustryDao dictIndustryDao;
 
 	@Autowired
-	private PositionDao dictPositionDao;
+	private DictPositionDao dictPositionDao;
 
 	@Autowired
-	private CityDao dictCityDao;
+	private DictCityDao dictCityDao;
 
 	@Autowired
-	private WXUserDao wxuserDao;
+	private UserWxUserDao wxuserDao;
 
 	@Autowired
-	private ConstantDao constantDao;
+	private DictConstantDao constantDao;
 
 	@Autowired
-	private CustomizeResumeDao customizeResumeDao;
+	private ProfileOtherDao customizeResumeDao;
 
 	@Autowired
 	private JobPositionDao jobPositionDao;
@@ -1338,316 +1329,69 @@ public class WholeProfileService {
 	private UserSettingsDao userSettingsDao;
 
 	@Autowired
-	private IntentionCityDao intentionCityDao;
+	private ProfileIntentionCityDao intentionCityDao;
 
 	@Autowired
-	private CompanyDao companyDao;
+	private HrCompanyDao companyDao;
 
 	@Autowired
-	private IntentionPositionDao intentionPositionDao;
+	private ProfileIntentionPositionDao intentionPositionDao;
 
 	@Autowired
-	private IntentionIndustryDao intentionIndustryDao;
+	private ProfileIntentionIndustryDao intentionIndustryDao;
 
 	@Autowired
-	private AwardsDao awardsDao;
+	private ProfileAwardsDao awardsDao;
 
 	@Autowired
-	private CollegeDao collegeDao;
+	private DictCollegeDao collegeDao;
 
 	@Autowired
-	private CredentialsDao credentialsDao;
+	private ProfileCredentialsDao credentialsDao;
 
 	@Autowired
-	private CountryDao countryDao;
+	private DictCountryDao countryDao;
 
 	@Autowired
-	private UserDao userDao;
+	private UserUserDao userDao;
 
 	@Autowired
-	private AttachmentDao attachmentDao;
+	private ProfileAttachmentDao attachmentDao;
 
 	@Autowired
-	private WorksDao worksDao;
+	private ProfileWorksDao worksDao;
 
 	@Autowired
-	private EducationDao educationDao;
+	private ProfileEducationDao educationDao;
 
 	@Autowired
-	private IntentionDao intentionDao;
+	private ProfileIntentionDao intentionDao;
 
 	@Autowired
-	private LanguageDao languageDao;
+	private ProfileLanguageDao languageDao;
 	
 	@Autowired
-	private OtherDao otherDao;
+	private ProfileOtherDao otherDao;
 
 	@Autowired
 	private ProfileBasicDao profileBasicDao;
 
 	@Autowired
-	private ProfileDao profileDao;
+	private ProfileProfileDao profileDao;
 
 	@Autowired
 	private ProfileImportDao profileImportDao;
 
 	@Autowired
-	private ProjectExpDao projectExpDao;
+	private ProfileProjectexpDao projectExpDao;
 
 	@Autowired
-	private SkillDao skillDao;
+	private ProfileSkillDao skillDao;
 
 	@Autowired
-	private WorkExpDao workExpDao;
+	private ProfileWorkexpDao workExpDao;
 
 	@Autowired
 	private ProfileCompletenessImpl completenessImpl;
 
-	public Logger getLogger() {
-		return logger;
-	}
-
-	public void setLogger(Logger logger) {
-		this.logger = logger;
-	}
-
-	public AttachmentDao getAttachmentDao() {
-		return attachmentDao;
-	}
-
-	public void setAttachmentDao(AttachmentDao attachmentDao) {
-		this.attachmentDao = attachmentDao;
-	}
-
-	public WorksDao getWorksDao() {
-		return worksDao;
-	}
-
-	public void setWorksDao(WorksDao worksDao) {
-		this.worksDao = worksDao;
-	}
-
-	public EducationDao getEducationDao() {
-		return educationDao;
-	}
-
-	public void setEducationDao(EducationDao educationDao) {
-		this.educationDao = educationDao;
-	}
-
-	public IntentionDao getIntentionDao() {
-		return intentionDao;
-	}
-
-	public void setIntentionDao(IntentionDao intentionDao) {
-		this.intentionDao = intentionDao;
-	}
-
-	public LanguageDao getLanguageDao() {
-		return languageDao;
-	}
-
-	public void setLanguageDao(LanguageDao languageDao) {
-		this.languageDao = languageDao;
-	}
-
-	public ProfileBasicDao getProfileBasicDao() {
-		return profileBasicDao;
-	}
-
-	public void setProfileBasicDao(ProfileBasicDao profileBasicDao) {
-		this.profileBasicDao = profileBasicDao;
-	}
-
-	public ProfileDao getProfileDao() {
-		return profileDao;
-	}
-
-	public void setProfileDao(ProfileDao profileDao) {
-		this.profileDao = profileDao;
-	}
-
-	public ProfileImportDao getProfileImportDao() {
-		return profileImportDao;
-	}
-
-	public void setProfileImportDao(ProfileImportDao profileImportDao) {
-		this.profileImportDao = profileImportDao;
-	}
-
-	public ProjectExpDao getProjectExpDao() {
-		return projectExpDao;
-	}
-
-	public void setProjectExpDao(ProjectExpDao projectExpDao) {
-		this.projectExpDao = projectExpDao;
-	}
-
-	public SkillDao getSkillDao() {
-		return skillDao;
-	}
-
-	public void setSkillDao(SkillDao skillDao) {
-		this.skillDao = skillDao;
-	}
-
-	public WorkExpDao getWorkExpDao() {
-		return workExpDao;
-	}
-
-	public void setWorkExpDao(WorkExpDao workExpDao) {
-		this.workExpDao = workExpDao;
-	}
-
-	public UserDao getUserDao() {
-		return userDao;
-	}
-
-	public void setUserDao(UserDao userDao) {
-		this.userDao = userDao;
-	}
-
-	public CountryDao getCountryDao() {
-		return countryDao;
-	}
-
-	public void setCountryDao(CountryDao countryDao) {
-		this.countryDao = countryDao;
-	}
-
-	public CredentialsDao getCredentialsDao() {
-		return credentialsDao;
-	}
-
-	public void setCredentialsDao(CredentialsDao credentialsDao) {
-		this.credentialsDao = credentialsDao;
-	}
-
-	public AwardsDao getAwardsDao() {
-		return awardsDao;
-	}
-
-	public void setAwardsDao(AwardsDao awardsDao) {
-		this.awardsDao = awardsDao;
-	}
-
-	public IntentionCityDao getIntentionCityDao() {
-		return intentionCityDao;
-	}
-
-	public void setIntentionCityDao(IntentionCityDao intentionCityDao) {
-		this.intentionCityDao = intentionCityDao;
-	}
-
-	public IntentionPositionDao getIntentionPositionDao() {
-		return intentionPositionDao;
-	}
-
-	public void setIntentionPositionDao(IntentionPositionDao intentionPositionDao) {
-		this.intentionPositionDao = intentionPositionDao;
-	}
-
-	public IntentionIndustryDao getIntentionIndustryDao() {
-		return intentionIndustryDao;
-	}
-
-	public void setIntentionIndustryDao(IntentionIndustryDao intentionIndustryDao) {
-		this.intentionIndustryDao = intentionIndustryDao;
-	}
-
-	public CompanyDao getCompanyDao() {
-		return companyDao;
-	}
-
-	public void setCompanyDao(CompanyDao companyDao) {
-		this.companyDao = companyDao;
-	}
-
-	public CustomizeResumeDao getCustomizeResumeDao() {
-		return customizeResumeDao;
-	}
-
-	public void setCustomizeResumeDao(CustomizeResumeDao customizeResumeDao) {
-		this.customizeResumeDao = customizeResumeDao;
-	}
-
-	public UserSettingsDao getUserSettingsDao() {
-		return userSettingsDao;
-	}
-
-	public void setUserSettingsDao(UserSettingsDao userSettingsDao) {
-		this.userSettingsDao = userSettingsDao;
-	}
-
-	public CollegeDao getCollegeDao() {
-		return collegeDao;
-	}
-
-	public void setCollegeDao(CollegeDao collegeDao) {
-		this.collegeDao = collegeDao;
-	}
-
-	public JobPositionDao getJobPositionDao() {
-		return jobPositionDao;
-	}
-
-	public void setJobPositionDao(JobPositionDao jobPositionDao) {
-		this.jobPositionDao = jobPositionDao;
-	}
-
-	public ConstantDao getConstantDao() {
-		return constantDao;
-	}
-
-	public void setConstantDao(ConstantDao constantDao) {
-		this.constantDao = constantDao;
-	}
-
-	public WXUserDao getWxuserDao() {
-		return wxuserDao;
-	}
-
-	public void setWxuserDao(WXUserDao wxuserDao) {
-		this.wxuserDao = wxuserDao;
-	}
-
-	public ProfileCompletenessImpl getCompletenessImpl() {
-		return completenessImpl;
-	}
-
-	public void setCompletenessImpl(ProfileCompletenessImpl completenessImpl) {
-		this.completenessImpl = completenessImpl;
-	}
-
-	public CityDao getDictCityDao() {
-		return dictCityDao;
-	}
-
-	public void setDictCityDao(CityDao dictCityDao) {
-		this.dictCityDao = dictCityDao;
-	}
-
-	public IndustryDao getDictIndustryDao() {
-		return dictIndustryDao;
-	}
-
-	public void setDictIndustryDao(IndustryDao dictIndustryDao) {
-		this.dictIndustryDao = dictIndustryDao;
-	}
-
-	public PositionDao getDictPositionDao() {
-		return dictPositionDao;
-	}
-
-	public void setDictPositionDao(PositionDao dictPositionDao) {
-		this.dictPositionDao = dictPositionDao;
-	}
-
-	public OtherDao getOtherDao() {
-		return otherDao;
-	}
-
-	public void setOtherDao(OtherDao otherDao) {
-		this.otherDao = otherDao;
-	}
 }
