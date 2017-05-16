@@ -1059,20 +1059,17 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     }
                 } else if (city.getType().toLowerCase().equals("citycode")) { // citycode 直接存储
                     try {
-                        DictCityPostcodeRecord cityPostcodeRecord = (DictCityPostcodeRecord) cityPostCodeMap.get(city.getValue());
-                        if (cityPostcodeRecord != null) {
-                            stringBuffer.append(cityPostcodeRecord.getCity());
+                        DictCityDO dictCityDO = (DictCityDO) cityPostCodeMap.get(city.getValue());
+                        if (dictCityDO != null) {
+                            stringBuffer.append(dictCityDO.getName());
                         } else {
                             cityCodeQuery.clear();
-                            cityCodeQuery.addEqualFilter("citycode", city.getValue());
-                            cityPostcodeRecord = dictCityPostCodeDao.getResource(cityCodeQuery);
-                            if (cityPostcodeRecord != null && cityPostcodeRecord.getCity() != null) {
-                                if (cityPostcodeRecord.getCity() != null) {
-                                    stringBuffer.append(cityPostcodeRecord.getCity());
-                                } else {
-                                    stringBuffer.append(cityPostcodeRecord.getProvince());
-                                }
-                                cityPostCodeMap.put(city.getValue(), cityPostcodeRecord);
+                            cityCodeQuery.addEqualFilter("code", city.getValue());
+                            dictCityDO = dictOccupationDao.dictCityDO(cityCodeQuery);
+//                            cityPostcodeRecord = dictCityPostCodeDao.getResource(cityCodeQuery);
+                            if (dictCityDO != null && dictCityDO.getName() != null) {
+                                stringBuffer.append(dictCityDO.getName());
+                                cityPostCodeMap.put(city.getValue(), dictCityDO);
                             }
                         }
                     } catch (Exception e) {
@@ -1638,7 +1635,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 
     private String buildQueryIds(List<Integer> idList) {
 
-        if (idList == null || idList.size() == 0 ) {
+        if (idList == null || idList.size() == 0) {
             return "[]";
         }
 
