@@ -1,6 +1,6 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
-import com.alibaba.fastjson.JSONObject;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.BeanUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
@@ -15,8 +15,12 @@ import com.moseeker.thrift.gen.useraccounts.service.UserQxService;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import com.moseeker.thrift.gen.useraccounts.service.UsersettingServices;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.math.NumberUtils;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.thrift.TSerializer;
 import org.apache.thrift.protocol.TSimpleJSONProtocol;
 import org.slf4j.Logger;
@@ -26,16 +30,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 //@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
+@CounterIface
 public class UseraccountsController {
 
 	Logger logger = LoggerFactory.getLogger(UseraccountsController.class);

@@ -90,20 +90,30 @@ public class ThriftServerRegister implements IServer {
     public void start() throws IncompleteException, RpcException {
         logger.info("Server is start!");
         if(server != null) {
-            if(thread != null) {
+            logger.info("ThriftServerRegister start server != null");
+            if(thread != null && !thread.isInterrupted()) {
+                logger.info("ThriftServerRegister start before thread.isInterrupted()");
                 thread.interrupt();
+                logger.info("ThriftServerRegister start after thread.isInterrupted()");
                 thread = null;
             }
+            logger.info("ThriftServerRegister start before new thread");
             thread = new Thread(() -> server.serve());
+            logger.info("ThriftServerRegister start after new thread");
             thread.start();
+            logger.info("ThriftServerRegister start start()");
         } else {
-            if(thread != null) {
+            logger.info("ThriftServerRegister start server is null");
+            if(thread != null && !thread.isInterrupted()) {
+                logger.info("ThriftServerRegister start server is null before thread.isInterrupted()");
                 thread.interrupt();
+                logger.info("ThriftServerRegister start server is null after thread.isInterrupted()");
                 thread = null;
             }
             initServer();
             thread = new Thread(() -> server.serve());
             thread.start();
+            logger.info("ThriftServerRegister start server start()");
         }
         isStart = true;
     }
@@ -114,9 +124,29 @@ public class ThriftServerRegister implements IServer {
     @Override
     public void stop() {
         if(server != null) {
+            logger.info("ThriftServerRegister stop before server.stop()");
             server.stop();
-            if(thread != null) {
+            server = null;
+            logger.info("ThriftServerRegister stop after server.stop()");
+            if(thread != null && !thread.isInterrupted()) {
+               /* logger.info("ThriftServerRegister stop before thread.interrupt()");
                 thread.interrupt();
+                logger.info("ThriftServerRegister stop after thread.interrupt()");
+                try {
+                    logger.info("ThriftServerRegister stop before thread.join()");
+                    thread.join();
+                    logger.info("ThriftServerRegister stop after thread.join()");
+                } catch (InterruptedException e) {
+                    logger.info("ThriftServerRegister stop InterruptedException e");
+                    logger.error(e.getMessage(), e);
+                    thread.interrupt();
+                }*/
+                try {
+                    thread.join();
+                } catch (InterruptedException e) {
+                    thread.interrupt();
+                    logger.error(e.getMessage(), e);
+                }
                 thread = null;
             }
         }

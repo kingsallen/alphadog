@@ -364,7 +364,6 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             }
         } catch (TException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
         } finally {
             // do nothing
@@ -405,7 +404,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 p.setJob_id(thirdPartyPosition.getThird_part_position_id());
                 account.setPosition_info(p);
             }
-        } catch (TException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
         } finally {
@@ -867,7 +866,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             }
             md5 = MD5Util.md5(stringBuffer.toString());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         }
         return md5;
     }
@@ -1028,9 +1027,9 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 //				query.setEqualFilter(equalFilter);
 //			}
             datas = positionDaoService.getPositionThirdPartyPositions(query);
-        } catch (TException e) {
+        } catch (Exception e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
         } finally {
             //do nothing
         }
@@ -1172,6 +1171,12 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     List<Integer> publisherList = dataList.stream().map(WechatPositionListData::getPublisher)
                             .collect(Collectors.toList());
 
+                    // publisherList 应该不为空
+                    // 如果 publisherList 为空，那么返回空 ArrayList
+                    if (publisherList == null || publisherList.size() == 0) {
+                        return new ArrayList<>();
+                    }
+
                     // 根据 pbulisher_list 查询 hr_company_account_list
                     hrm.addEqualFilter("account_id", buildQueryIds(publisherList));
 
@@ -1189,9 +1194,9 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 
                 //拼装 company 相关内容
                 dataList = dataList.stream().map(s -> {
-                    s.setCompany_abbr(publisherCompanyMap.get(s.getPublisher()).getAbbreviation());
-                    s.setCompany_logo(publisherCompanyMap.get(s.getPublisher()).getLogo());
-                    s.setCompany_name(publisherCompanyMap.get(s.getPublisher()).getName());
+                    s.setCompany_abbr(publisherCompanyMap.get(s.getPublisher()) == null ? "" : publisherCompanyMap.get(s.getPublisher()).getAbbreviation());
+                    s.setCompany_logo(publisherCompanyMap.get(s.getPublisher()) == null ? "" : publisherCompanyMap.get(s.getPublisher()).getLogo());
+                    s.setCompany_name(publisherCompanyMap.get(s.getPublisher()) == null ? "" : publisherCompanyMap.get(s.getPublisher()).getName());
                     return s;
                 }).collect(Collectors.toList());
             } else {
@@ -1223,8 +1228,8 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             result.setTitle(hbConfig.getShareTitle());
             result.setDescription(hbConfig.getShareDesc());
 
-        } catch (TException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
         }
 
         return result;
@@ -1357,8 +1362,8 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     logger.warn("pid: " + p.getId() + " 已经不属于任何红包活动");
                 }
             }
-        } catch (TException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
             return result;
         } finally {
 
@@ -1439,9 +1444,9 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             qu.addEqualFilter("id", String.valueOf(companyId));
             HrCompanyDO company = companyDao.getCompany(qu);
             result.forEach(s -> {
-                s.setCompany_abbr(company.getAbbreviation());
-                s.setCompany_logo(company.getLogo());
-                s.setCompany_name(company.getName());
+                s.setCompany_abbr(company == null ? "" : company.getAbbreviation());
+                s.setCompany_logo(company == null ? "" : company.getLogo());
+                s.setCompany_name(company == null ? "" : company.getName());
             });
 
             // 拼装红包信息
@@ -1457,10 +1462,10 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             });
 
         } catch (TException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return result;
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return result;
         } finally {
             // do nothing
@@ -1525,7 +1530,6 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 }
                 logger.info("--- ES Search Engine end---");
             } catch (Exception e) {
-                e.printStackTrace();
                 logger.error(e.getMessage(), e);
             }
         }
@@ -1533,6 +1537,11 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 
 
     private String buildQueryIds(List<Integer> idList) {
+
+        if (idList == null || idList.size() == 0 ) {
+            return "[]";
+        }
+
         StringBuffer sb = new StringBuffer();
         for (Integer i : idList) {
             sb.append(String.valueOf(i) + ",");

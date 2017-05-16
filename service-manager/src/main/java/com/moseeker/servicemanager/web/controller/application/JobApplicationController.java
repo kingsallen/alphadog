@@ -1,5 +1,6 @@
 package com.moseeker.servicemanager.web.controller.application;
 
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -25,6 +26,7 @@ import java.util.Map;
  * Created by zzh on 16/5/24.
  */
 @Controller
+@CounterIface
 public class JobApplicationController {
 
 	Logger logger = org.slf4j.LoggerFactory.getLogger(JobApplicationController.class);
