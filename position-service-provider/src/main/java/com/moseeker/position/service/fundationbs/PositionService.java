@@ -1195,9 +1195,9 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 
                 //拼装 company 相关内容
                 dataList = dataList.stream().map(s -> {
-                    s.setCompany_abbr(publisherCompanyMap.get(s.getPublisher()).getAbbreviation());
-                    s.setCompany_logo(publisherCompanyMap.get(s.getPublisher()).getLogo());
-                    s.setCompany_name(publisherCompanyMap.get(s.getPublisher()).getName());
+                    s.setCompany_abbr(publisherCompanyMap.get(s.getPublisher()) == null ? "" : publisherCompanyMap.get(s.getPublisher()).getAbbreviation());
+                    s.setCompany_logo(publisherCompanyMap.get(s.getPublisher()) == null ? "" : publisherCompanyMap.get(s.getPublisher()).getLogo());
+                    s.setCompany_name(publisherCompanyMap.get(s.getPublisher()) == null ? "" : publisherCompanyMap.get(s.getPublisher()).getName());
                     return s;
                 }).collect(Collectors.toList());
             } else {
