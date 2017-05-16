@@ -201,8 +201,8 @@ public class JobPositionDao extends StructDaoImpl<JobPositionDO, JobPositionReco
             // 通过CompanyId查询职位列表
             if (hashMap.get("company_id") != null) {
                 List<SortField<?>> fields = new ArrayList<>(2);
-                fields.add(jp.UPDATE_TIME.desc());
                 fields.add(jp.IS_RECOM.asc());
+                fields.add(jp.UPDATE_TIME.desc());
                 record.where(jp.COMPANY_ID.equal(UInteger.valueOf(commonQuery.getEqualFilter().get("company_id")))).orderBy(fields);
             }
             // 分页
