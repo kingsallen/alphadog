@@ -72,7 +72,7 @@ public class ProfileServer {
 			// 启动服务，非阻塞
 			try {
 				server.startServer();
-
+				server.shutDownHook();
 				synchronized (ProfileServer.class) {
                     while (true) {
                         try {

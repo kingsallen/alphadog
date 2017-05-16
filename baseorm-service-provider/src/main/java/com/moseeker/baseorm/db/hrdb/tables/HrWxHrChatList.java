@@ -20,7 +20,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -36,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxHrChatList extends TableImpl<HrWxHrChatListRecord> {
 
-	private static final long serialVersionUID = -2142635326;
+	private static final long serialVersionUID = -1605747662;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_wx_hr_chat_list</code>
@@ -54,7 +53,7 @@ public class HrWxHrChatList extends TableImpl<HrWxHrChatListRecord> {
 	/**
 	 * The column <code>hrdb.hr_wx_hr_chat_list.id</code>. ID
 	 */
-	public final TableField<HrWxHrChatListRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "ID");
+	public final TableField<HrWxHrChatListRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "ID");
 
 	/**
 	 * The column <code>hrdb.hr_wx_hr_chat_list.sysuser_id</code>. sysuser.id
@@ -87,9 +86,9 @@ public class HrWxHrChatList extends TableImpl<HrWxHrChatListRecord> {
 	public final TableField<HrWxHrChatListRecord, Timestamp> HR_CHAT_TIME = createField("hr_chat_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "HR最近一次聊天时间");
 
 	/**
-	 * The column <code>hrdb.hr_wx_hr_chat_list.update_time</code>. 更新时间
+	 * The column <code>hrdb.hr_wx_hr_chat_list.update_time</code>. 创建时间
 	 */
-	public final TableField<HrWxHrChatListRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "更新时间");
+	public final TableField<HrWxHrChatListRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "创建时间");
 
 	/**
 	 * Create a <code>hrdb.hr_wx_hr_chat_list</code> table reference
@@ -117,7 +116,7 @@ public class HrWxHrChatList extends TableImpl<HrWxHrChatListRecord> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Identity<HrWxHrChatListRecord, UInteger> getIdentity() {
+	public Identity<HrWxHrChatListRecord, Integer> getIdentity() {
 		return Keys.IDENTITY_HR_WX_HR_CHAT_LIST;
 	}
 

@@ -4,11 +4,11 @@
 <jdbc>
 <driver>com.mysql.jdbc.Driver</driver>
 #<url>jdbc:mysql://192.168.31.66:3306/profiledb</url>
-<url>jdbc:mysql://db2.dqprism.com:3306/candidatedb</url>
+<url>jdbc:mysql://localhost:3306/profiledb</url>
 #<user>www</user>
-<user>daqi</user>
+<user>root</user>
 #<password>moseeker.com</password>
- <password>5F51692091B4031640E18E7C27430E071BC878C8</password>
+ <password>wjf</password>
 </jdbc>
 <generator>
 <!-- The default code generator. You can override this one, to generate your own code style.
@@ -18,6 +18,7 @@ Supported generators:
 Defaults to org.jooq.util.JavaGenerator -->
 <name>org.jooq.util.JavaGenerator</name>
 <database>
+<unsignedTypes>false</unsignedTypes>
 <!-- The database type. The format here is:
 org.util.[database].[database]Database -->
 <name>org.jooq.util.mysql.MySQLDatabase</name>

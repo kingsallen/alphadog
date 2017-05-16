@@ -19,7 +19,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -35,7 +34,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxNoticeMessage extends TableImpl<HrWxNoticeMessageRecord> {
 
-	private static final long serialVersionUID = 1740209957;
+	private static final long serialVersionUID = -838216275;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_wx_notice_message</code>
@@ -53,12 +52,12 @@ public class HrWxNoticeMessage extends TableImpl<HrWxNoticeMessageRecord> {
 	/**
 	 * The column <code>hrdb.hr_wx_notice_message.id</code>. 主key
 	 */
-	public final TableField<HrWxNoticeMessageRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "主key");
+	public final TableField<HrWxNoticeMessageRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "主key");
 
 	/**
 	 * The column <code>hrdb.hr_wx_notice_message.wechat_id</code>. 所属公众号
 	 */
-	public final TableField<HrWxNoticeMessageRecord, UInteger> WECHAT_ID = createField("wechat_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "所属公众号");
+	public final TableField<HrWxNoticeMessageRecord, Integer> WECHAT_ID = createField("wechat_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "所属公众号");
 
 	/**
 	 * The column <code>hrdb.hr_wx_notice_message.notice_id</code>. sys_notice_message.id
@@ -106,7 +105,7 @@ public class HrWxNoticeMessage extends TableImpl<HrWxNoticeMessageRecord> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Identity<HrWxNoticeMessageRecord, UInteger> getIdentity() {
+	public Identity<HrWxNoticeMessageRecord, Integer> getIdentity() {
 		return Keys.IDENTITY_HR_WX_NOTICE_MESSAGE;
 	}
 

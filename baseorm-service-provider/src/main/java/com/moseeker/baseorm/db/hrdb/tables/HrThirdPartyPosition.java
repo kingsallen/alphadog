@@ -20,7 +20,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -36,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> {
 
-	private static final long serialVersionUID = -1246801438;
+	private static final long serialVersionUID = -842835839;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_third_party_position</code>
@@ -59,7 +58,7 @@ public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> 
 	/**
 	 * The column <code>hrdb.hr_third_party_position.position_id</code>. jobdb.job_position.id
 	 */
-	public final TableField<HrThirdPartyPositionRecord, UInteger> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "jobdb.job_position.id");
+	public final TableField<HrThirdPartyPositionRecord, Integer> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "jobdb.job_position.id");
 
 	/**
 	 * The column <code>hrdb.hr_third_party_position.third_part_position_id</code>. 第三方渠道编号

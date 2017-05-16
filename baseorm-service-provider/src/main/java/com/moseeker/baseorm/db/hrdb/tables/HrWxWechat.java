@@ -20,8 +20,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UByte;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -37,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
 
-	private static final long serialVersionUID = -512576780;
+	private static final long serialVersionUID = 1837217236;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_wx_wechat</code>
@@ -55,17 +53,17 @@ public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
 	/**
 	 * The column <code>hrdb.hr_wx_wechat.id</code>.
 	 */
-	public final TableField<HrWxWechatRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
+	public final TableField<HrWxWechatRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
 	/**
 	 * The column <code>hrdb.hr_wx_wechat.company_id</code>. 所属公司id, company.id
 	 */
-	public final TableField<HrWxWechatRecord, UInteger> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "所属公司id, company.id");
+	public final TableField<HrWxWechatRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "所属公司id, company.id");
 
 	/**
 	 * The column <code>hrdb.hr_wx_wechat.type</code>. 公众号类型, 0:订阅号, 1:服务号
 	 */
-	public final TableField<HrWxWechatRecord, UByte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "公众号类型, 0:订阅号, 1:服务号");
+	public final TableField<HrWxWechatRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "公众号类型, 0:订阅号, 1:服务号");
 
 	/**
 	 * The column <code>hrdb.hr_wx_wechat.signature</code>. 公众号ID匿名化
@@ -120,7 +118,7 @@ public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
 	/**
 	 * The column <code>hrdb.hr_wx_wechat.qrcode</code>. 关注公众号的二维码
 	 */
-	public final TableField<HrWxWechatRecord, String> QRCODE = createField("qrcode", org.jooq.impl.SQLDataType.VARCHAR.length(150).nullable(false).defaulted(true), this, "关注公众号的二维码");
+	public final TableField<HrWxWechatRecord, String> QRCODE = createField("qrcode", org.jooq.impl.SQLDataType.VARCHAR.length(300).nullable(false).defaulted(true), this, "关注公众号的二维码");
 
 	/**
 	 * The column <code>hrdb.hr_wx_wechat.passive_seeker</code>. 被动求职者开关，0= 开启, 1=不开启
@@ -223,7 +221,7 @@ public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Identity<HrWxWechatRecord, UInteger> getIdentity() {
+	public Identity<HrWxWechatRecord, Integer> getIdentity() {
 		return Keys.IDENTITY_HR_WX_WECHAT;
 	}
 

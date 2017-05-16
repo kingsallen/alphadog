@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrTeam extends TableImpl<HrTeamRecord> {
 
-	private static final long serialVersionUID = 982431197;
+	private static final long serialVersionUID = -814974983;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_team</code>
@@ -58,7 +58,7 @@ public class HrTeam extends TableImpl<HrTeamRecord> {
 	/**
 	 * The column <code>hrdb.hr_team.name</code>. 团队/部门名称
 	 */
-	public final TableField<HrTeamRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaulted(true), this, "团队/部门名称");
+	public final TableField<HrTeamRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false).defaulted(true), this, "团队/部门名称");
 
 	/**
 	 * The column <code>hrdb.hr_team.summary</code>. 职能概述

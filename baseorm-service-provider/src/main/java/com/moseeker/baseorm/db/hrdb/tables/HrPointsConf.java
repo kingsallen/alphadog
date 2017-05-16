@@ -20,7 +20,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -36,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrPointsConf extends TableImpl<HrPointsConfRecord> {
 
-	private static final long serialVersionUID = -914723179;
+	private static final long serialVersionUID = 61599990;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_points_conf</code>
@@ -129,7 +128,7 @@ public class HrPointsConf extends TableImpl<HrPointsConfRecord> {
 	/**
 	 * The column <code>hrdb.hr_points_conf.template_id</code>. 申请状态模板ID，hr_award_config_template.id
 	 */
-	public final TableField<HrPointsConfRecord, UInteger> TEMPLATE_ID = createField("template_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "申请状态模板ID，hr_award_config_template.id");
+	public final TableField<HrPointsConfRecord, Integer> TEMPLATE_ID = createField("template_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "申请状态模板ID，hr_award_config_template.id");
 
 	/**
 	 * Create a <code>hrdb.hr_points_conf</code> table reference

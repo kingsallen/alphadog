@@ -20,8 +20,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UByte;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -37,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompany extends TableImpl<HrCompanyRecord> {
 
-	private static final long serialVersionUID = -2086163016;
+	private static final long serialVersionUID = -945429015;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_company</code>
@@ -55,12 +53,12 @@ public class HrCompany extends TableImpl<HrCompanyRecord> {
 	/**
 	 * The column <code>hrdb.hr_company.id</code>.
 	 */
-	public final TableField<HrCompanyRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
+	public final TableField<HrCompanyRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
 	/**
 	 * The column <code>hrdb.hr_company.type</code>. 公司区分(其它:2,免费用户:1,企业用户:0)
 	 */
-	public final TableField<HrCompanyRecord, UByte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "公司区分(其它:2,免费用户:1,企业用户:0)");
+	public final TableField<HrCompanyRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "公司区分(其它:2,免费用户:1,企业用户:0)");
 
 	/**
 	 * The column <code>hrdb.hr_company.name</code>. 公司注册名称
@@ -75,7 +73,7 @@ public class HrCompany extends TableImpl<HrCompanyRecord> {
 	/**
 	 * The column <code>hrdb.hr_company.scale</code>. 公司规模, dict_constant.parent_code=1102
 	 */
-	public final TableField<HrCompanyRecord, UByte> SCALE = createField("scale", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "公司规模, dict_constant.parent_code=1102");
+	public final TableField<HrCompanyRecord, Byte> SCALE = createField("scale", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "公司规模, dict_constant.parent_code=1102");
 
 	/**
 	 * The column <code>hrdb.hr_company.address</code>. 公司地址
@@ -85,7 +83,7 @@ public class HrCompany extends TableImpl<HrCompanyRecord> {
 	/**
 	 * The column <code>hrdb.hr_company.property</code>. 公司性质 0:未填写 1:外商独资 3:国企 4:合资 5:民营公司 6:事业单位 7:上市公司 8:政府机关/非盈利机构 10:代表处 11:股份制企业 12:创业公司 13:其它
 	 */
-	public final TableField<HrCompanyRecord, UByte> PROPERTY = createField("property", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.defaulted(true), this, "公司性质 0:未填写 1:外商独资 3:国企 4:合资 5:民营公司 6:事业单位 7:上市公司 8:政府机关/非盈利机构 10:代表处 11:股份制企业 12:创业公司 13:其它");
+	public final TableField<HrCompanyRecord, Byte> PROPERTY = createField("property", org.jooq.impl.SQLDataType.TINYINT.defaulted(true), this, "公司性质 0:未填写 1:外商独资 3:国企 4:合资 5:民营公司 6:事业单位 7:上市公司 8:政府机关/非盈利机构 10:代表处 11:股份制企业 12:创业公司 13:其它");
 
 	/**
 	 * The column <code>hrdb.hr_company.industry</code>. 所属行业
@@ -120,7 +118,7 @@ public class HrCompany extends TableImpl<HrCompanyRecord> {
 	/**
 	 * The column <code>hrdb.hr_company.parent_id</code>. 上级公司
 	 */
-	public final TableField<HrCompanyRecord, UInteger> PARENT_ID = createField("parent_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "上级公司");
+	public final TableField<HrCompanyRecord, Integer> PARENT_ID = createField("parent_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "上级公司");
 
 	/**
 	 * The column <code>hrdb.hr_company.hraccount_id</code>. 公司联系人, hr_account.id
@@ -145,7 +143,7 @@ public class HrCompany extends TableImpl<HrCompanyRecord> {
 	/**
 	 * The column <code>hrdb.hr_company.source</code>. 添加来源 0:hr系统, 1:官网下载行业报告, 6:无线官网添加, 7:PC端 添加, 8:微信端添加, 9:PC导入, 10:微信端导入
 	 */
-	public final TableField<HrCompanyRecord, UByte> SOURCE = createField("source", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "添加来源 0:hr系统, 1:官网下载行业报告, 6:无线官网添加, 7:PC端 添加, 8:微信端添加, 9:PC导入, 10:微信端导入");
+	public final TableField<HrCompanyRecord, Byte> SOURCE = createField("source", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "添加来源 0:hr系统, 1:官网下载行业报告, 6:无线官网添加, 7:PC端 添加, 8:微信端添加, 9:PC导入, 10:微信端导入");
 
 	/**
 	 * The column <code>hrdb.hr_company.slogan</code>. 公司口号
@@ -178,7 +176,7 @@ public class HrCompany extends TableImpl<HrCompanyRecord> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Identity<HrCompanyRecord, UInteger> getIdentity() {
+	public Identity<HrCompanyRecord, Integer> getIdentity() {
 		return Keys.IDENTITY_HR_COMPANY;
 	}
 

@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.moseeker.common.annotation.iface.CounterIface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -30,6 +31,7 @@ import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.taobao.api.internal.toplink.embedded.websocket.util.StringUtil;
 
 @Controller
+@CounterIface
 public class SearchengineController {
 
     Logger logger = LoggerFactory.getLogger(SearchengineController.class);

@@ -19,7 +19,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -35,7 +34,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxNewsReply extends TableImpl<HrWxNewsReplyRecord> {
 
-	private static final long serialVersionUID = 324416826;
+	private static final long serialVersionUID = 1135586902;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_wx_news_reply</code>
@@ -53,17 +52,17 @@ public class HrWxNewsReply extends TableImpl<HrWxNewsReplyRecord> {
 	/**
 	 * The column <code>hrdb.hr_wx_news_reply.id</code>.
 	 */
-	public final TableField<HrWxNewsReplyRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "");
+	public final TableField<HrWxNewsReplyRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
 	/**
 	 * The column <code>hrdb.hr_wx_news_reply.rid</code>.
 	 */
-	public final TableField<HrWxNewsReplyRecord, UInteger> RID = createField("rid", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "");
+	public final TableField<HrWxNewsReplyRecord, Integer> RID = createField("rid", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "");
 
 	/**
 	 * The column <code>hrdb.hr_wx_news_reply.parentid</code>.
 	 */
-	public final TableField<HrWxNewsReplyRecord, UInteger> PARENTID = createField("parentid", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false).defaulted(true), this, "");
+	public final TableField<HrWxNewsReplyRecord, Integer> PARENTID = createField("parentid", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "");
 
 	/**
 	 * The column <code>hrdb.hr_wx_news_reply.title</code>.
@@ -116,7 +115,7 @@ public class HrWxNewsReply extends TableImpl<HrWxNewsReplyRecord> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Identity<HrWxNewsReplyRecord, UInteger> getIdentity() {
+	public Identity<HrWxNewsReplyRecord, Integer> getIdentity() {
 		return Keys.IDENTITY_HR_WX_NEWS_REPLY;
 	}
 

@@ -20,7 +20,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -36,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrReferralStatistics extends TableImpl<HrReferralStatisticsRecord> {
 
-	private static final long serialVersionUID = 1755304490;
+	private static final long serialVersionUID = 521549289;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_referral_statistics</code>
@@ -74,7 +73,7 @@ public class HrReferralStatistics extends TableImpl<HrReferralStatisticsRecord> 
 	/**
 	 * The column <code>hrdb.hr_referral_statistics.company_id</code>. sys_wechat.id
 	 */
-	public final TableField<HrReferralStatisticsRecord, UInteger> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "sys_wechat.id");
+	public final TableField<HrReferralStatisticsRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "sys_wechat.id");
 
 	/**
 	 * The column <code>hrdb.hr_referral_statistics.create_date</code>. 创建时间

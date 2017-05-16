@@ -19,7 +19,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UByte;
 
 
 /**
@@ -35,7 +34,7 @@ import org.jooq.types.UByte;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxModule extends TableImpl<HrWxModuleRecord> {
 
-	private static final long serialVersionUID = -779784357;
+	private static final long serialVersionUID = -2122167879;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_wx_module</code>
@@ -53,7 +52,7 @@ public class HrWxModule extends TableImpl<HrWxModuleRecord> {
 	/**
 	 * The column <code>hrdb.hr_wx_module.id</code>.
 	 */
-	public final TableField<HrWxModuleRecord, UByte> ID = createField("id", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false), this, "");
+	public final TableField<HrWxModuleRecord, Byte> ID = createField("id", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "");
 
 	/**
 	 * The column <code>hrdb.hr_wx_module.name</code>. 标识
@@ -118,7 +117,7 @@ public class HrWxModule extends TableImpl<HrWxModuleRecord> {
 	/**
 	 * The column <code>hrdb.hr_wx_module.issystem</code>. 是否是系统模块
 	 */
-	public final TableField<HrWxModuleRecord, UByte> ISSYSTEM = createField("issystem", org.jooq.impl.SQLDataType.TINYINTUNSIGNED.nullable(false).defaulted(true), this, "是否是系统模块");
+	public final TableField<HrWxModuleRecord, Byte> ISSYSTEM = createField("issystem", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaulted(true), this, "是否是系统模块");
 
 	/**
 	 * The column <code>hrdb.hr_wx_module.options</code>. 扩展功能导航项
@@ -166,7 +165,7 @@ public class HrWxModule extends TableImpl<HrWxModuleRecord> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Identity<HrWxModuleRecord, UByte> getIdentity() {
+	public Identity<HrWxModuleRecord, Byte> getIdentity() {
 		return Keys.IDENTITY_HR_WX_MODULE;
 	}
 

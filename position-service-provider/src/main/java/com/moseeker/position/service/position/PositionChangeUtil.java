@@ -37,6 +37,7 @@ public class PositionChangeUtil {
 	public static ThirdPartyPositionForSynchronization changeToThirdPartyPosition(ThirdPartyPosition form, Position positionDB) {
 		LoggerFactory.getLogger(PositionChangeUtil.class).info("---------------------");
 		ThirdPartyPositionForSynchronization position = new ThirdPartyPositionForSynchronization();
+		position.setAccount_id(form.getThird_party_account_id());
 		position.setChannel(form.getChannel());
 		position.setTitle(positionDB.getTitle());
 		

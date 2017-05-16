@@ -110,7 +110,6 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 
     //获取hrdb库中的内容
     HrDBDao.Iface hrDBDao = ServiceManager.SERVICEMANAGER.getService(HrDBDao.Iface.class);
-    CompanyDao.Iface CompanyDao = ServiceManager.SERVICEMANAGER.getService(CompanyDao.Iface.class);
     private SearchengineServices.Iface searchEngineService = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
 
     private HrDBDao.Iface hrDao = ServiceManager.SERVICEMANAGER.getService(HrDBDao.Iface.class);
@@ -332,10 +331,10 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
      * 该职位是否可以刷新
      *
      * @param positionId 职位编号
-     * @param channel    渠道编号
+     * @param account_id 第三方账号ID
      * @return bool
      */
-    public boolean ifAllowRefresh(int positionId, int channel) {
+    public boolean ifAllowRefresh(int positionId, int account_id) {
         boolean permission = false;
         try {
             logger.info("ifAllowRefresh");
@@ -345,26 +344,20 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             Position position = positionDaoService.getPosition(findPositionById);
             logger.info("position:" + JSON.toJSONString(position));
             if (position.getId() > 0) {
-                QueryUtil findThirdPartyAccount = new QueryUtil();
-                findThirdPartyAccount.addEqualFilter("company_id", String.valueOf(position.getCompany_id()));
-                findThirdPartyAccount.addEqualFilter("channel", String.valueOf(channel));
-
-                logger.info("search company");
-                ThirdPartAccountData account = companyDao.getThirdPartyAccount(findThirdPartyAccount);
-                logger.info("company:" + JSON.toJSONString(account));
-
-                QueryUtil findThirdPartyPosition = new QueryUtil();
-                findThirdPartyPosition.addEqualFilter("position_id", String.valueOf(positionId));
-                findThirdPartyPosition.addEqualFilter("channel", String.valueOf(channel));
+                QueryUtil queryUtil = new QueryUtil();
+                queryUtil.addEqualFilter("id", account_id);
+                ThirdPartAccountData account = hrAccountDao.getThirdPartyAccount(queryUtil);
+                logger.info("ifAllowRefresh third party account:" + JSON.toJSONString(account));
 
                 logger.info("search thirdparyposition");
-                ThirdPartyPositionData p = positionDaoService.getThirdPartyPosition(positionId, channel);
+                ThirdPartyPositionData p = positionDaoService.getThirdPartyPosition(positionId, account_id);
                 logger.info("thirdparyposition" + JSON.toJSONString(p));
                 if (account != null && account.getBinding() == AccountSync.bound.getValue() && p.getId() > 0
                         && p.getIs_synchronization() == PositionSync.bound.getValue()) {
                     logger.info("data allow");
                     String str = RedisClientFactory.getCacheClient().get(AppId.APPID_ALPHADOG.getValue(),
-                            KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(positionId), String.valueOf(channel));
+                            KeyIdentifier.THIRD_PARTY_POSITION_REFRESH.toString(), String.valueOf(positionId), String.valueOf(account_id));
+                    permission = true;
                     if (StringUtils.isNullOrEmpty(str)) {
                         logger.info("cache allow");
                         permission = true;
@@ -385,9 +378,9 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
      * 创建刷新职位数据
      *
      * @param positionId 职位编号
-     * @param channel    渠道编号
+     * @param account_id 第三方账号ID
      */
-    public ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(int positionId, int channel) {
+    public ThirdPartyPositionForSynchronizationWithAccount createRefreshPosition(int positionId, int account_id) {
 
         ThirdPartyPositionForSynchronizationWithAccount account = new ThirdPartyPositionForSynchronizationWithAccount();
         try {
@@ -396,19 +389,19 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
             findPosition.addEqualFilter("id", String.valueOf(positionId));
             Position position = positionDaoService.getPosition(findPosition);
 
-            ThirdPartyPositionData thirdPartyPosition = positionDaoService.getThirdPartyPosition(positionId, channel);
+            ThirdPartyPositionData thirdPartyPosition = positionDaoService.getThirdPartyPosition(positionId, account_id);
 
             QueryUtil findAccount = new QueryUtil();
-            findAccount.addEqualFilter("company_id", String.valueOf(position.getCompany_id()));
-            findAccount.addEqualFilter("channel", String.valueOf(channel));
-            ThirdPartAccountData accountData = companyDao.getThirdPartyAccount(findAccount);
+            findAccount.addEqualFilter("id", account_id);
+            ThirdPartAccountData accountData = hrAccountDao.getThirdPartyAccount(findAccount);
             account.setUser_name(accountData.getUsername());
             account.setMember_name(accountData.getMembername());
             account.setPassword(accountData.getPassword());
-            account.setChannel(String.valueOf(channel));
+            account.setChannel(String.valueOf(accountData.getChannel()));
             account.setPosition_id(String.valueOf(positionId));
+            account.setAccount_id(String.valueOf(account_id));
 
-            form.setChannel((byte) channel);
+            form.setChannel((byte) accountData.getChannel());
             if (position.getId() > 0 && thirdPartyPosition.getId() > 0) {
                 ThirdPartyPositionForSynchronization p = PositionChangeUtil.changeToThirdPartyPosition(form, position);
                 p.setJob_id(thirdPartyPosition.getThird_part_position_id());
@@ -622,8 +615,7 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                         jobPositionFailMessPojo.setJobNumber(jobPositionHandlerDate.getJobnumber());
                         jobPositionFailMessPojo.setSourceId(jobPositionHandlerDate.getSource_id());
                         jobPositionFailMessPojo.setJobPostionId(jobPositionHandlerDate.getId());
-                        jobPositionFailMessPojo.setDepartment(jobPositionHandlerDate.getDepartment());
-                        jobPositionFailMessPojo.setMessage(ConstantErrorCodeMessage.POSITION_DATA_OCCUPATION_ERROR);
+                        jobPositionFailMessPojo.setMessage(ConstantErrorCodeMessage.POSITION_DATA_OCCUPATION_ERROR.replace("{MESSAGE}", jobPositionHandlerDate.getOccupation()));
                         jobPositionFailMessPojos.add(jobPositionFailMessPojo);
                         continue;
                     }
@@ -902,8 +894,14 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                     jobPositionCityRecord.setPid(pid);
                     logger.info("城市类型：" + city.getType().toLowerCase());
                     logger.info("VAlUE：" + city.getValue());
-                    if (city.getType().toLowerCase().equals("text")) { // 城市名字，转换成cityCode，传入的是城市的时候查询dict_city
-                        cityQuery.addEqualFilter("name", city.getValue());
+                    // 城市名字，转换成cityCode，传入的是城市的时候查询dict_city
+                    if (city.getType().toLowerCase().equals("text")) {
+                        // 判断下是否是中文还是英文
+                        if (isChinese(city.getValue())) { // 是中文
+                            cityQuery.addEqualFilter("name", city.getValue());
+                        } else { // 英文
+                            cityQuery.addEqualFilter("ename", city.getValue());
+                        }
                         try {
                             DictCityDO dictCityDO = (DictCityDO) cityMap.get(city.getValue());
                             if (dictCityDO != null) {
@@ -1175,6 +1173,12 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
                 else {
                     List<Integer> publisherList = dataList.stream().map(WechatPositionListData::getPublisher)
                             .collect(Collectors.toList());
+
+                    // publisherList 应该不为空
+                    // 如果 publisherList 为空，那么返回空 ArrayList
+                    if (publisherList == null || publisherList.size() == 0) {
+                        return new ArrayList<>();
+                    }
 
                     // 根据 pbulisher_list 查询 hr_company_account_list
                     hrm.addEqualFilter("account_id", buildQueryIds(publisherList));
@@ -1536,11 +1540,35 @@ public class PositionService extends JOOQBaseServiceImpl<Position, JobPositionRe
 
 
     private String buildQueryIds(List<Integer> idList) {
+
+        if (idList == null || idList.size() == 0 ) {
+            return "[]";
+        }
+
         StringBuffer sb = new StringBuffer();
         for (Integer i : idList) {
             sb.append(String.valueOf(i) + ",");
         }
         return "[" + sb.substring(0, sb.length() - 1) + "]";
     }
+
+
+    /**
+     * 输入的字符是否是汉字
+     *
+     * @return boolean
+     */
+    public boolean isChinese(String str) {
+        boolean flag = false;
+        for (int i = 0; i < str.length(); i++) {
+            int v = str.charAt(i);
+            if ((v >= 19968 && v <= 171941)) {
+                flag = true;
+                break;
+            }
+        }
+        return flag;
+    }
+
 
 }

@@ -23,6 +23,7 @@ public class SearchengineServer {
 //			server.start(); // 启动服务，非阻塞
 			MoServer server=new MoServer(acac,"",acac.getBean(SearchengineServiceImpl.class));
 			server.startServer();
+			server.shutDownHook();
 			synchronized (SearchengineServer.class) {
 				while (true) {
 					try {

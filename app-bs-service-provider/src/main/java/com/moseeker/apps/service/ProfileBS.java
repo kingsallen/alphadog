@@ -2,6 +2,7 @@ package com.moseeker.apps.service;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.apps.constants.ResultMessage;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.UserSource;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -46,6 +47,7 @@ public class ProfileBS {
 	
 
 	@SuppressWarnings("unchecked")
+	@CounterIface
 	public Response retrieveProfile(int positionId, String profile, int channel) {
 		
 		if(positionId == 0 || StringUtils.isNullOrEmpty(profile)) {
@@ -57,7 +59,6 @@ public class ProfileBS {
 		try {
 			position = positionDao.getPosition(qu);
 		} catch (TException e1) {
-			e1.printStackTrace();
 			logger.error(e1.getMessage(), e1);
 			return ResultMessage.PROGRAM_EXCEPTION.toResponse();
 		} finally {
@@ -128,6 +129,7 @@ public class ProfileBS {
 					
 					HashMap<String, Object> profileProfile = new HashMap<String, Object>();
 					profileProfile.put("user_id", userId);
+					profileProfile.put("source", 0);
 					resume.put("profile", profileProfile);
 					
 					Response response = wholeProfileService.createProfile(JSON.toJSONString(resume));

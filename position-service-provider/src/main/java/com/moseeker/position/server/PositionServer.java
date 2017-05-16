@@ -28,6 +28,7 @@ public class PositionServer {
                   acac.getBean(PositionServicesImpl.class)
           );
         	server.startServer();
+            server.shutDownHook();
             synchronized (PositionServer.class) {
                 while (true) {
                     try {

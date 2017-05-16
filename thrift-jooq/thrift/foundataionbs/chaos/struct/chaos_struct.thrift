@@ -13,6 +13,7 @@ struct ThirdPartyAccountStruct {
     4: i32 remainNum,
     5: string syncTime,
     6: byte channel,
-    7: i32 status
+    7: i32 status,
+    8: i32 remainProfileNum
 }
 

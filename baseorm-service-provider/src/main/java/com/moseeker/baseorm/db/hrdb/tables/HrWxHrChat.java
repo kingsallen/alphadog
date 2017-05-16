@@ -20,7 +20,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -36,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxHrChat extends TableImpl<HrWxHrChatRecord> {
 
-	private static final long serialVersionUID = 1016178094;
+	private static final long serialVersionUID = 100101872;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_wx_hr_chat</code>
@@ -54,7 +53,7 @@ public class HrWxHrChat extends TableImpl<HrWxHrChatRecord> {
 	/**
 	 * The column <code>hrdb.hr_wx_hr_chat.id</code>. ID
 	 */
-	public final TableField<HrWxHrChatRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "ID");
+	public final TableField<HrWxHrChatRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "ID");
 
 	/**
 	 * The column <code>hrdb.hr_wx_hr_chat.chatlist_id</code>. wx_hr_chat_list.id
@@ -112,7 +111,7 @@ public class HrWxHrChat extends TableImpl<HrWxHrChatRecord> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Identity<HrWxHrChatRecord, UInteger> getIdentity() {
+	public Identity<HrWxHrChatRecord, Integer> getIdentity() {
 		return Keys.IDENTITY_HR_WX_HR_CHAT;
 	}
 

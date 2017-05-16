@@ -20,7 +20,6 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 
 
 /**
@@ -36,7 +35,7 @@ import org.jooq.types.UInteger;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrFeedback extends TableImpl<HrFeedbackRecord> {
 
-	private static final long serialVersionUID = 1470883765;
+	private static final long serialVersionUID = -92397445;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_feedback</code>
@@ -54,7 +53,7 @@ public class HrFeedback extends TableImpl<HrFeedbackRecord> {
 	/**
 	 * The column <code>hrdb.hr_feedback.id</code>. ID
 	 */
-	public final TableField<HrFeedbackRecord, UInteger> ID = createField("id", org.jooq.impl.SQLDataType.INTEGERUNSIGNED.nullable(false), this, "ID");
+	public final TableField<HrFeedbackRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "ID");
 
 	/**
 	 * The column <code>hrdb.hr_feedback.hraccount_id</code>. hr_account.id 账号编号
@@ -117,7 +116,7 @@ public class HrFeedback extends TableImpl<HrFeedbackRecord> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Identity<HrFeedbackRecord, UInteger> getIdentity() {
+	public Identity<HrFeedbackRecord, Integer> getIdentity() {
 		return Keys.IDENTITY_HR_FEEDBACK;
 	}
 

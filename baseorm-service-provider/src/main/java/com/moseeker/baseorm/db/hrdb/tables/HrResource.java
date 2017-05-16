@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrResource extends TableImpl<HrResourceRecord> {
 
-	private static final long serialVersionUID = -2086098829;
+	private static final long serialVersionUID = 662281779;
 
 	/**
 	 * The reference instance of <code>hrdb.hr_resource</code>
@@ -86,6 +86,11 @@ public class HrResource extends TableImpl<HrResourceRecord> {
 	public final TableField<HrResourceRecord, Integer> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaulted(true), this, "0是正常1是删除");
 
 	/**
+	 * The column <code>hrdb.hr_resource.cover</code>. 视频封面
+	 */
+	public final TableField<HrResourceRecord, String> COVER = createField("cover", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false).defaulted(true), this, "视频封面");
+
+	/**
 	 * The column <code>hrdb.hr_resource.create_time</code>. 资源创建时间
 	 */
 	public final TableField<HrResourceRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "资源创建时间");
@@ -94,11 +99,6 @@ public class HrResource extends TableImpl<HrResourceRecord> {
 	 * The column <code>hrdb.hr_resource.update_time</code>. 资源修改时间
 	 */
 	public final TableField<HrResourceRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaulted(true), this, "资源修改时间");
-
-	/**
-	 * The column <code>hrdb.hr_resource.cover</code>. 视频封面
-	 */
-	public final TableField<HrResourceRecord, String> COVER = createField("cover", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false).defaulted(true), this, "视频封面");
 
 	/**
 	 * Create a <code>hrdb.hr_resource</code> table reference
