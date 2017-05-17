@@ -1,5 +1,6 @@
 package com.moseeker.profile;
 
+import com.moseeker.profile.conf.AppConfig;
 import com.moseeker.profile.thrift.*;
 import com.moseeker.rpccenter.exception.IncompleteException;
 import com.moseeker.rpccenter.exception.RegisterException;
@@ -79,9 +80,7 @@ public class ProfileServer {
 
 	private static AnnotationConfigApplicationContext initSpring() {
 		AnnotationConfigApplicationContext acac = new AnnotationConfigApplicationContext();
-		acac.scan("com.moseeker.profile");
-		acac.scan("com.moseeker.common.aop.iface");
-		acac.scan("com.moseeker.baseorm");
+		acac.register(AppConfig.class);
 		acac.refresh();
 		return acac;
 	}

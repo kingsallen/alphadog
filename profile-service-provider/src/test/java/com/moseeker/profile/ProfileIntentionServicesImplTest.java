@@ -1,66 +1,49 @@
 package com.moseeker.profile;
 
-import com.moseeker.common.providerutils.QueryUtil;
-import com.moseeker.rpccenter.config.ClientConfig;
-import com.moseeker.rpccenter.config.RegistryConfig;
+import com.moseeker.profile.conf.AppConfig;
+import com.moseeker.profile.service.impl.ProfileCompletenessImpl;
+import com.moseeker.profile.service.impl.ProfileIntentionService;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.profile.service.IntentionServices;
-import com.moseeker.thrift.gen.profile.struct.Intention;
+import com.moseeker.thrift.gen.common.struct.Response;
+import org.apache.thrift.TException;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Profile 求职意向 客户端 测试类
  *
  * Created by zzh on 16/7/5.
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = AppConfig.class)
 public class ProfileIntentionServicesImplTest {
 
-    public static void main(String[] args) {
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
-        RegistryConfig registryConfig = new RegistryConfig();
-        registryConfig.setConnectstr("127.0.0.1:2181");
-        registryConfig.setNamespace("services");
+    @Autowired
+    ProfileIntentionService profileIntentionService;
 
-        String iface = IntentionServices.Iface.class.getName();
-        ClientConfig<IntentionServices.Iface> clientConfig = new ClientConfig<IntentionServices.Iface>();
-        clientConfig.setService("com.moseeker.thrift.gen.profile.service.IntentionServices");
-        clientConfig.setIface(iface);
+    @Autowired
+    private ProfileCompletenessImpl completenessImpl;
 
-        IntentionServices.Iface intentionServices = null;
-
+    @Test
+    public void testGetResources() {
+        CommonQuery query = new CommonQuery();
+        Map<String, String> equelFilter = new HashMap<>();
+        equelFilter.put("profile_id", "3");
         try {
-            intentionServices = clientConfig.createProxy(registryConfig);
-
-//            System.out.println(intentionServices.postResource(getIntention()));
-//            System.out.println(intentionServices.putResource(getIntention1()));
-//            System.out.println(intentionServices.getResource(getCommonQuery()));
-            System.out.println(intentionServices.delResource(getIntention1()));
-
-        } catch (Exception e) {
-            e.printStackTrace();
+            Response response = profileIntentionService.getResources(query);
+            System.out.println(response);
+        } catch (TException e) {
+            logger.error(e.getMessage(), e);
         }
     }
-
-    public static Intention getIntention(){
-        Intention intention = new Intention();
-        intention.setProfile_id(452805);
-        intention.setWorkstate(1);
-        intention.setWorktype((short)1);
-        intention.setSalary_code(1);
-        intention.setTag("tag");
-        intention.setConsider_venture_company_opportunities((short)1);
-        return intention;
-    }
-
-    public static Intention getIntention1(){
-        Intention intention = new Intention();
-        intention.setId(444776);
-        intention.setProfile_id(452805);
-        intention.setWorkstate(2);
-        intention.setWorktype((short)2);
-        intention.setSalary_code(2);
-        intention.setTag("tag2");
-        intention.setConsider_venture_company_opportunities((short)2);
-        return intention;
-    }
-
 }
