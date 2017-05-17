@@ -58,7 +58,7 @@ public class JobApplicataionService {
     // 申请次数redis key
     private static final String REDIS_KEY_APPLICATION_COUNT_CHECK = "APPLICATION_COUNT_CHECK";
     //redis的客户端
-    private RedisClient redisClient = null;//RedisClientFactory.getCacheClient();
+    private RedisClient redisClient = RedisClientFactory.getCacheClient();
     @Autowired
     private JobPositionDao jobPositionDao;
     @Autowired
@@ -109,7 +109,7 @@ public class JobApplicataionService {
                 // 代理投递不能增加用户的申请限制次数
                 if (jobApplicationRecord.getProxy() == null || jobApplicationRecord.getProxy() == 0) {
                 // 添加该人该公司的申请次数
-//                    addApplicationCountAtCompany(jobApplication);
+                    addApplicationCountAtCompany(jobApplication);
                 }
                 // 返回 jobApplicationId
                 return ResponseUtils.success(new HashMap<String, Object>() {
