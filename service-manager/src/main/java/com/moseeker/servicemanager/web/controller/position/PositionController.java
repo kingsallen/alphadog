@@ -339,7 +339,7 @@ public class PositionController {
             Response res = ResponseUtils.success(rpExtInfoList);
             return ResponseLogNotification.success(request, res);
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
